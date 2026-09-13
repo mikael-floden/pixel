@@ -1,6 +1,6 @@
 {
   "format": "scenery-factory@2",
-  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones. [2026-08-14] MOUNTAIN WALLS ARE HUGE (maintainer): cliff_vines rebuilt at 256px and 7-16m tall with a fall-shaped description (much taller than wide), quota 50->70; cliff_features 45 at 192px; plus five new wall families — cliff_roots, cliff_falls (waterfalls), cliff_shrubs, cliff_mosses, cliff_ledgetrees. 340 pieces of wall decor total: the walls are the biggest empty surface in the game. [2026-08-14] DEMAND MULTIPLIERS: always-wanted groups (trees 0.35, stones 0.55, ancient_trees, mushrooms, stumps, fallen_logs, ferns, bushes, grass_tufts) read as emptier than they are, so nature keeps flowing under every other priority. Trees quota 100->200, stones 98->150. [2026-08-14] LIGHT REFORM: streetlights rebuilt as ROAD LIGHTS — open flame, candle, cresset, horn lantern, hand-made timber/iron/horn; no modern lamppost. Plus 11 more saturation freezes from his notes (bone_arbors, cattail_clumps, fairy_stumps, giant_fallen_bells, offering_tables, waystones and the earlier five). Whole light family reads RPG: horn, tin, birch-bark, pitch, tallow, resin — never municipal. [2026-08-14] SPECIAL WAVE 3 (his: 'if you gonna give me special items you have to come up with something new' — the old specials are full): sleeping giants under the turf, inland whale bones, door trees, giant eggs, floating stones, sky stairs ending in air, singing stones bored by wind, giant feathers planted like monuments, petrified waves, cocoon trees, battle marks, tar pools. [2026-08-14] STYLE FIX: the pixel-quality clause used to read 'every detail drawn at least a few pixels wide' — which is an instruction to UPSCALE, the exact defect he keeps rejecting. Now demands true 1:1 native-resolution pixel art with single-pixel detail, plus his own suggested 'high quality and detailed'. [2026-08-14] WALL DECOR = PLANT ONLY: the cliff_* descriptions named 'a vertical rock face', so the model drew the mountain into the sprite and every piece was unplaceable. All six rewritten to hanging-free-in-air with an explicit NO rock/cliff/wall/mountain/ground clause. [2026-08-14] WALL DECOR SILHOUETTE RULE: no rectangles, no straight edges, no filled panels — ragged trailing edges and a torn bottom, or the piece reads as an image rather than an object. [2026-08-14] FRAMING + DENSITY: style_base now demands the whole object sit inside the frame with margin (he saw pieces cropped at the edge); hanging wall decor tapers to a narrow point at the top instead of a flat cut (a cut top is unplaceable) and hangs SPARSE with gaps showing through rather than as a solid leaf wall. [2026-08-14] cliff_roots = ROOTS ONLY (his: 'the roots form a tree that is just cut') — no trunk/stump/root ball, thin trailing strands; cliff_ledgetrees PAUSED (repeatedly cut at frame edge). [2026-08-14] WALL GROWTH = NETWORK, NOT CURTAIN: vines/roots/mosses rewritten as sparse open graphs of runners and scattered patches that thin out at every edge — no top line, no origin, designed to be scattered and overlapped to clothe a whole wall. [2026-08-14] PROMPT LENGTH: the 1-direction endpoint (>168px) 422s on long descriptions — accumulated rules had reached 2010 chars. style_base compressed 1146->430 and the wall descriptions tightened; every law kept, wording halved. Watch total length when adding rules. [2026-08-14] WALL PROMPT REWRITE: dropped 'sparse open network/web/graph' language (it produced spider-web twig diagrams) for lush fantasy RPG nature — ivy on a ruin wall, gnarled roots over stone, deep moss cushions — with unevenness and edgelessness expressed as natural growth rather than geometry. [2026-08-14] JUNGLE + NO CORNERS: modifiers rewritten to spread across the frame (the old ones anchored growth in a corner), and wall growth is now lush wild jungle overgrowth — layered leaves, hanging creepers, tropical abundance — sparse in COVERAGE, never in character. [2026-08-14] CLIMBERS: roots/vines are now ONE long winding strand clinging to the face — coiling, doubling back, gripping with side-roots, leaves sprouting at points along it, origin out of frame. Replaces the parallel-strands reading. [2026-08-14] MOSS RECONCEIVED as a 64px DETAIL (small moss on a protruding rock knob, not a hanging drape — 'this looks like graphics to a different game'); ROOTS now slender and strictly VERTICAL, never diagonal, still no tree anywhere. [2026-09-13] CHIMNEYS, commissioned by name (maintainer: 'generate a chimney in section town we can put on housed with chimney ... 3 chimney with 5 variations / scenery (a total of 15 different chimney) ... They should be NOT_LIT ... Think about the scale'). Three pieces (quota 3, one per design in `variety`), each with FIVE NOT_LIT states and no lit one (`lights: LIGHTS_OFF` pins every piece unlit, `state_plan: [5, 0]` pins the ladder) = his 15. A ROOF-MOUNTED PIECE CARRIES ITS OWN MODIFIERS AND ITS OWN SCALE LADDER, the windows lesson: the shared `structure` pool and the default ground ladder both describe a prop standing on the ground ('knee-high', 'with fallen leaves collected at its base'), which is how you get a chimney drawn in a garden. SCALE: 51.2 px per metre (87 px avatar / 1.7 m) and world_px_height IS the art's own bbox since rescale.py, so the CANVAS is the scale knob — measured over 706 shipped pieces a 96 px canvas fills 0.75 of itself, i.e. ~72 px = 1.40 m, a stack standing chest-high on a person, which is what shows above a roofline. The first three rolls all failed the PIXEL-GRID GATE at 96px (single-px 0.426/0.561/0.565 against 0.597) and that gate was RIGHT: it counts same-colour runs that are exactly one pixel, and a flat masonry stack is honestly poor in them. The fix is detail in the ART, never a lower bar — the description now asks for every course and joint picked out pixel by pixel and dithered shading across the faces, which is also what makes a good pixel-art chimney at 72 px.",
+  "_comment": "The v2 scenery factory (maintainer's structure, 2026-08-12): 100 ranked TYPES, each a group folder scenery/<id>/. Quota per type = max(floor, base + step*rank) -> #1 trees 100, #2 stones 98 ... floor 2 so EVERY type ships its LIGHTS_ON + LIGHTS_OFF pair. Pieces are SOUTH-only 1-direction PixelLab objects, tagged SCENERY, generated ONE per call (create-8-direction-object <=168px, keeping only SOUTH; single create-1-direction-object above), half lit / half unlit, deterministic plan in pipeline/catalog.py. [2026-08-13] style_base now carries the two laws the maintainer's 438 wiki verdicts wrote: NO baked-in text, and NO hair-thin parts (solid grounded mass reads; poles/ropes/spokes/lattice do not). [2026-08-13] Groups 101-110 added on the maintainer's direction: mountain-wall decor (cliff_vines, cliff_features — layered over the wall tiles to break their repetition), indoor/house detail so a house feels lived in (tables, chairs_and_benches, beds, cupboards_and_shelves, hearths, rugs_and_hides, house_clutter), and wall_hangings for the coming top-wall-visible mechanic. These carry an explicit 'quota' field overriding the rank formula (rank>=51 would floor them at 2). Trees/stones variety was deepened so maps2 can theme REGIONS with coherent subsets — different areas get different trees. [2026-08-13 round-4] PLACEMENT LAW: no piece may imply infrastructure the world lacks — working machinery needs its network (rails, rivers), so connected things are designed ABANDONED/derelict instead; and whole buildings are never props (they read as miniatures beside the player — the maps2 agent builds buildings). [2026-08-14] 96px IS DEAD: the maintainer's 47 broken-art notes concentrate at 96px across two full review rounds (the 64px groups from the first migration collected ZERO), and 21 of them had passed the agent's zoom QA — the 8-direction endpoint is simply unreliable at 96. Every 96px group now renders at 64; streetlights drop 160->128. [2026-08-14] PROMPT RENEWAL (maintainer): modifier_pools add an independent composition axis (variety x modifier = dozens of distinct combos per group); nature groups deepened (he wants far more outdoor world scenery); indoor varieties fully rewritten (liked, but repeating). Concepts unchanged. [2026-08-14] TASTE-DRIVEN RESHAPE from his 995 verdicts: 7 dead concepts retired (rocking_horses/flower_garlands/fading_relics/dovecotes/nest_posts/bell_posts/orchard_trees, 0-5% approval); RARE TIER added — 16 landmark types at quota 6-8 for distinct world locations, fused from his loves (organic masses, rustic wood, glow-lore, cozy). [2026-08-14] TEXT LAW REFINED by a 5-star: READABLE text is forbidden and hated; GLOWING UNREADABLE RUNE-SCRIPT is loved (his 5-star signpost) and lore-perfect — the language of the dead. Rune glow concepts seeded first across the script-bearing groups. [2026-08-14] SATURATION CAPS: his review notes now also say when a type has ENOUGH pieces — those groups get quota frozen at their current count (toadstool_rings, wells). Budget flows to types still wanted. Scan his notes for enough/too many/plenty each pass. [2026-08-14] APPROVAL THROTTLE: groups under 30% approval across 8+ verdicts get quota frozen at their current count — the proportional planner was pouring budget into exactly the types he rejects most (they read as 'least full'). Budget follows his taste now. [2026-08-14] SPECIALS = BREADTH NOT DEPTH (maintainer: specials must be varied, he is tired of seeing the same ones). Every special/rare/experimental group capped at 3 pieces, and 18 new special TYPES added at 3 each — lone doorframes, stone boats, wishing trees, weeping stones, hollow kings, echo horns, memory mirrors, thread poles, star wells, pilgrim piles, wind harps, giant hourglasses, stone libraries, cradle stones, sky anchors, seed vaults, singing reeds, tide stones. [2026-08-14] MOUNTAIN WALLS ARE HUGE (maintainer): cliff_vines rebuilt at 256px and 7-16m tall with a fall-shaped description (much taller than wide), quota 50->70; cliff_features 45 at 192px; plus five new wall families — cliff_roots, cliff_falls (waterfalls), cliff_shrubs, cliff_mosses, cliff_ledgetrees. 340 pieces of wall decor total: the walls are the biggest empty surface in the game. [2026-08-14] DEMAND MULTIPLIERS: always-wanted groups (trees 0.35, stones 0.55, ancient_trees, mushrooms, stumps, fallen_logs, ferns, bushes, grass_tufts) read as emptier than they are, so nature keeps flowing under every other priority. Trees quota 100->200, stones 98->150. [2026-08-14] LIGHT REFORM: streetlights rebuilt as ROAD LIGHTS — open flame, candle, cresset, horn lantern, hand-made timber/iron/horn; no modern lamppost. Plus 11 more saturation freezes from his notes (bone_arbors, cattail_clumps, fairy_stumps, giant_fallen_bells, offering_tables, waystones and the earlier five). Whole light family reads RPG: horn, tin, birch-bark, pitch, tallow, resin — never municipal. [2026-08-14] SPECIAL WAVE 3 (his: 'if you gonna give me special items you have to come up with something new' — the old specials are full): sleeping giants under the turf, inland whale bones, door trees, giant eggs, floating stones, sky stairs ending in air, singing stones bored by wind, giant feathers planted like monuments, petrified waves, cocoon trees, battle marks, tar pools. [2026-08-14] STYLE FIX: the pixel-quality clause used to read 'every detail drawn at least a few pixels wide' — which is an instruction to UPSCALE, the exact defect he keeps rejecting. Now demands true 1:1 native-resolution pixel art with single-pixel detail, plus his own suggested 'high quality and detailed'. [2026-08-14] WALL DECOR = PLANT ONLY: the cliff_* descriptions named 'a vertical rock face', so the model drew the mountain into the sprite and every piece was unplaceable. All six rewritten to hanging-free-in-air with an explicit NO rock/cliff/wall/mountain/ground clause. [2026-08-14] WALL DECOR SILHOUETTE RULE: no rectangles, no straight edges, no filled panels — ragged trailing edges and a torn bottom, or the piece reads as an image rather than an object. [2026-08-14] FRAMING + DENSITY: style_base now demands the whole object sit inside the frame with margin (he saw pieces cropped at the edge); hanging wall decor tapers to a narrow point at the top instead of a flat cut (a cut top is unplaceable) and hangs SPARSE with gaps showing through rather than as a solid leaf wall. [2026-08-14] cliff_roots = ROOTS ONLY (his: 'the roots form a tree that is just cut') — no trunk/stump/root ball, thin trailing strands; cliff_ledgetrees PAUSED (repeatedly cut at frame edge). [2026-08-14] WALL GROWTH = NETWORK, NOT CURTAIN: vines/roots/mosses rewritten as sparse open graphs of runners and scattered patches that thin out at every edge — no top line, no origin, designed to be scattered and overlapped to clothe a whole wall. [2026-08-14] PROMPT LENGTH: the 1-direction endpoint (>168px) 422s on long descriptions — accumulated rules had reached 2010 chars. style_base compressed 1146->430 and the wall descriptions tightened; every law kept, wording halved. Watch total length when adding rules. [2026-08-14] WALL PROMPT REWRITE: dropped 'sparse open network/web/graph' language (it produced spider-web twig diagrams) for lush fantasy RPG nature — ivy on a ruin wall, gnarled roots over stone, deep moss cushions — with unevenness and edgelessness expressed as natural growth rather than geometry. [2026-08-14] JUNGLE + NO CORNERS: modifiers rewritten to spread across the frame (the old ones anchored growth in a corner), and wall growth is now lush wild jungle overgrowth — layered leaves, hanging creepers, tropical abundance — sparse in COVERAGE, never in character. [2026-08-14] CLIMBERS: roots/vines are now ONE long winding strand clinging to the face — coiling, doubling back, gripping with side-roots, leaves sprouting at points along it, origin out of frame. Replaces the parallel-strands reading. [2026-08-14] MOSS RECONCEIVED as a 64px DETAIL (small moss on a protruding rock knob, not a hanging drape — 'this looks like graphics to a different game'); ROOTS now slender and strictly VERTICAL, never diagonal, still no tree anywhere. [2026-09-13] CHIMNEYS, commissioned by name (maintainer: 'generate a chimney in section town we can put on housed with chimney ... 3 chimney with 5 variations / scenery (a total of 15 different chimney) ... They should be NOT_LIT ... Think about the scale'). Three pieces (quota 3, one per design in `variety`), each with FIVE NOT_LIT states and no lit one (`lights: LIGHTS_OFF` pins every piece unlit, `state_plan: [5, 0]` pins the ladder) = his 15. A ROOF-MOUNTED PIECE CARRIES ITS OWN MODIFIERS AND ITS OWN SCALE LADDER, the windows lesson: the shared `structure` pool and the default ground ladder both describe a prop standing on the ground ('knee-high', 'with fallen leaves collected at its base'), which is how you get a chimney drawn in a garden. SCALE: 51.2 px per metre (87 px avatar / 1.7 m) and world_px_height IS the art's own bbox since rescale.py, so the CANVAS is the scale knob — measured over 706 shipped pieces a 96 px canvas fills 0.75 of itself, i.e. ~72 px = 1.40 m, a stack standing chest-high on a person, which is what shows above a roofline. The first three rolls all failed the PIXEL-GRID GATE at 96px (single-px 0.426/0.561/0.565 against 0.597) and that gate was RIGHT: it counts same-colour runs that are exactly one pixel, and a flat masonry stack is honestly poor in them. The fix is detail in the ART, never a lower bar — the description now asks for every course and joint picked out pixel by pixel and dithered shading across the faces, which is also what makes a good pixel-art chimney at 72 px. [2026-09-13, his follow-up] 'Make some form of tag so the game/ambient-agent knows what this scenery is and can place it and attach an effect to it properly ... he will need to know where the chimney center hole is ... I also want both SE, S and SW ... Also want 25 more chimneys (40 in total).' THREE NEW PUBLISHED FIELDS, because a consumer must never infer any of them from a group name (the light.kind lesson: 99 of 500 pieces override their own group). `mount` says WHERE a placer may put the piece (ground | roof | wall | cliff); `fixture` says WHAT it is (chimney), which is what an effect attaches to; and `vent` says WHERE on the art the effect comes out — the flue mouth as dx/dy in frame pixels from the canvas centre, the same convention as light_frames, measured per STATE by pipeline/vent.py because every variant puts its hole somewhere else. quota 3 -> 8 (8 x 5 = his 40) and keep_directions SE/S/SW, which cost nothing at 96 px: the 8-direction path generated every facing when the piece was made (add_facings.py downloads them for the states that already exist). `mount` is a GENERAL field, not a chimney one: the groups whose placement surface the README already states carry it too — windows and wall_hangings are `wall`, the cliff_* families are `cliff`, chimneys are `roof`. Everything else is absent, which reads as ordinary ground; a placer should treat a missing mount as `ground` rather than guessing from the group's name.",
   "style_base": "cozy painterly RPG pixel art in the style of Grave Seasons, muted-but-warm palette, soft lighting with ambient occlusion, subtle dark outlines not hard black, HIGH QUALITY DETAILED true 1:1 pixel art at native resolution, crisp single-pixel detail, NOT upscaled, no chunky doubled pixels, no blur, no anti-aliasing, no text or letters, no people, a single centered prop fully inside the frame with margin, nothing cropped, transparent background",
   "tag": "SCENERY",
   "view": "low top-down",
@@ -3789,7 +3789,8 @@
         "color": "#9fe4ff",
         "reach": 2,
         "kind": "glow/magic"
-      }
+      },
+      "mount": "cliff"
     },
     {
       "rank": 83,
@@ -4596,7 +4597,8 @@
         "color": "#fff0a0",
         "reach": 2,
         "kind": "glow/bio"
-      }
+      },
+      "mount": "cliff"
     },
     {
       "rank": 102,
@@ -4649,7 +4651,8 @@
         "color": "#9fe4ff",
         "reach": 2,
         "kind": "glow/bio"
-      }
+      },
+      "mount": "cliff"
     },
     {
       "rank": 103,
@@ -4979,7 +4982,8 @@
         "color": "#ffb45c",
         "reach": 2,
         "kind": "glow/magic"
-      }
+      },
+      "mount": "wall"
     },
     {
       "rank": 111,
@@ -6625,7 +6629,8 @@
         "color": "#fff0a0",
         "reach": 2,
         "kind": "glow/bio"
-      }
+      },
+      "mount": "cliff"
     },
     {
       "rank": 156,
@@ -6676,7 +6681,8 @@
       "_jungle": "maintainer 2026-08-14: 'we get a lot of corner graphics and it doesn't look as jungle like as I would like it to be.' The corner modifiers were mine — replaced with spread-across-the-frame compositions; growth is now jungle-lush in character while coverage stays open with real gaps.",
       "type": "MOUNTAIN_WALL",
       "_complete": "maintainer 2026-08-14, in review: \"I would say the mountain wall scenery is complete now\", then \"That was my last review!\" — the MOUNTAIN_WALL family is DONE, not throttled. Its open quota (345 pieces) made these the emptiest groups in the plan, so the proportional planner would have poured the next several hundred dollars into work he has already signed off. Frozen at current count; unfreeze only if he asks for more wall decor.",
-      "frozen_reason": "Maintainer removed all 5 waterfalls 2026-08-29 and asked to stop discussing them. Quota 0, NOT deleted from the catalog: an empty group with a live quota is the resurrection case — the next pass would regenerate exactly what he just rejected. Do not raise this without him asking."
+      "frozen_reason": "Maintainer removed all 5 waterfalls 2026-08-29 and asked to stop discussing them. Quota 0, NOT deleted from the catalog: an empty group with a live quota is the resurrection case — the next pass would regenerate exactly what he just rejected. Do not raise this without him asking.",
+      "mount": "cliff"
     },
     {
       "rank": 157,
@@ -6730,7 +6736,8 @@
         "color": "#fff0a0",
         "reach": 1,
         "kind": "glow/bio"
-      }
+      },
+      "mount": "cliff"
     },
     {
       "rank": 158,
@@ -6784,7 +6791,8 @@
         "color": "#b0ffb0",
         "reach": 1,
         "kind": "glow/bio"
-      }
+      },
+      "mount": "cliff"
     },
     {
       "rank": 159,
@@ -6825,7 +6833,8 @@
       "_no_background": "maintainer 2026-08-14: 'WE NEED TO GET RID OF THE MOUNTAIN BEING PART OF THE IMAGE!!' — he rated these FIVE STARS for art and rejected them anyway, because a piece with the cliff drawn in cannot be layered over the wall tiles. Descriptions must never name the rock face; the piece is the plant alone on transparency, and maps2 supplies the wall.",
       "_silhouette": "maintainer 2026-08-14: 'Hard border due to being an image and not scenery.' A rectangular mat reads as a picture pasted on the wall; the one wall piece he approved was a waterfall — naturally narrow and ragged. Wall decor must have a torn, trailing silhouette.",
       "_paused": "maintainer 2026-08-14: rejected three times for 'this image is cut at the left side'. A tree leaning far out sideways fights the fit-in-frame rule by design; paused at its current count rather than burning budget on a concept that needs a rethink.",
-      "type": "MOUNTAIN_WALL"
+      "type": "MOUNTAIN_WALL",
+      "mount": "cliff"
     },
     {
       "rank": 160,
@@ -7370,7 +7379,8 @@
         "color": "#ffd27a",
         "reach": 4,
         "kind": "none"
-      }
+      },
+      "mount": "wall"
     },
     {
       "rank": 172,
@@ -7463,7 +7473,7 @@
       "id": "chimneys",
       "prefix": "chimney",
       "name": "Chimney",
-      "quota": 3,
+      "quota": 8,
       "type": "TOWN",
       "lights": "LIGHTS_OFF",
       "state_plan": [
@@ -7477,18 +7487,18 @@
       ],
       "description": "a house CHIMNEY seen from outside, ONLY the chimney stack itself standing alone, cold and unused, no roof around it, no house, no wall, no ground, no smoke, no fire, every course and joint picked out pixel by pixel, per-pixel weathering speckle and dithered shading across the faces, fantasy RPG village architecture, small clear margin at edges, transparent background",
       "variety": [
-        "red brick stack, corbelled cap course",
-        "rough grey fieldstone stack, pale mortar",
-        "whitewashed plaster stack with a round terracotta chimney pot",
-        "dark slate-grey stone stack with a wide flat cap",
-        "narrow yellow-brick stack with a twisted clay pot",
-        "squat river-cobble stack, rounded stones",
-        "timber-framed stack with clay infill",
         "tall thin brick stack with two clay pots side by side",
+        "red brick stack, corbelled cap course",
+        "squat river-cobble stack, rounded stones",
+        "whitewashed plaster stack with a round terracotta chimney pot",
+        "narrow yellow-brick stack with a twisted clay pot",
         "granite block stack banded with iron",
         "sandstone stack, wind-worn edges",
+        "timber-framed stack with clay infill",
         "brick stack rendered half-way up in cracked plaster",
-        "black basalt stack with a pale mortar cap"
+        "dark slate-grey stone stack with a wide flat cap",
+        "black basalt stack with a pale mortar cap",
+        "rough grey fieldstone stack, pale mortar"
       ],
       "modifiers": [
         "soot-blackened around the crown",
@@ -7517,7 +7527,14 @@
         ]
       ],
       "animation_idea": "a thin wisp lifting from the crown and thinning away",
-      "lore_fit": "A stack with nothing rising from it is a house that has stopped remembering to be warm. The villages keep their chimneys standing anyway, against the day someone lights a fire in one again."
+      "lore_fit": "A stack with nothing rising from it is a house that has stopped remembering to be warm. The villages keep their chimneys standing anyway, against the day someone lights a fire in one again.",
+      "keep_directions": [
+        "south-east",
+        "south",
+        "south-west"
+      ],
+      "mount": "roof",
+      "fixture": "chimney"
     }
   ],
   "modifier_pools": {

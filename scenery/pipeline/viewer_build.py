@@ -61,6 +61,18 @@ def _types_by_group(cfg):
     return out
 
 
+_GROUPS_BY_ID = None
+
+
+def _group_field(group_id, field):
+    """A group's own value for a field a piece may override — the `type`
+    pattern, so a piece minted before the field existed still publishes it."""
+    global _GROUPS_BY_ID
+    if _GROUPS_BY_ID is None:
+        _GROUPS_BY_ID = {g["id"]: g for g in factory.load_config().get("groups", [])}
+    return (_GROUPS_BY_ID.get(group_id) or {}).get(field)
+
+
 def build():
     cfg = factory.load_config()
     types_by_group = _types_by_group(cfg)
@@ -119,6 +131,17 @@ def build():
             # a consumer never has to join against the catalog to filter by it.
             # A piece may override its group; otherwise it inherits.
             "type": meta.get("type") or types_by_group.get(cat) or "OTHER",
+            # WHERE it may be placed, WHAT it is, and WHERE an effect comes out
+            # of it (2026-09-13). `mount`/`fixture` are the placement tag the
+            # game and the ambient agent read instead of matching group names;
+            # `vent` is the flue mouth in frame px from the canvas centre, the
+            # light_frames convention, measured per STATE by pipeline/vent.py
+            # (the per-state copies ride the `states` spread below).
+            **({"mount": meta.get("mount") or _group_field(cat, "mount")}
+               if (meta.get("mount") or _group_field(cat, "mount")) else {}),
+            **({"fixture": meta.get("fixture") or _group_field(cat, "fixture")}
+               if (meta.get("fixture") or _group_field(cat, "fixture")) else {}),
+            **({"vent": meta["vent"]} if meta.get("vent") else {}),
             # A SOUTH-only piece may be mirrored horizontally at placement time,
             # which doubles the variety of every group for free (maintainer's
             # idea, 2026-08-14). FALSE on pieces that carry facings: flipping a

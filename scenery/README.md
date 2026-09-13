@@ -253,6 +253,38 @@ ask for five; the 4-own/2-opposite default is unchanged).
   variety picker strides modulo the list, index 4 drew the SAME design as
   index 1. Two of his three chimneys came back one design; the group now
   carries twelve so a re-roll cannot collide.
+- **THE TAG A CONSUMER READS — `mount`, `fixture`, `vent`** (maintainer
+  2026-09-13: "make some form of tag so the game/ambient-agent knows what this
+  scenery is and can place it and attach an effect to it properly ... he will
+  need to know where the chimney center hole is"). Three published fields, none
+  of them inferable from a group's name — the `light.kind` lesson, where 99 of
+  500 pieces override their own group:
+  | field | where | what it says |
+  |---|---|---|
+  | `mount` | piece (group default) | the surface a placer may put it on: `roof`, `wall` (windows, wall_hangings), `cliff` (the cliff_* families). ABSENT means ordinary ground — read a missing mount as `ground`, never guess from the id |
+  | `fixture` | piece (group default) | WHAT it is, for a consumer attaching behaviour: `chimney` today |
+  | `vent` | per STATE, and the anchor's copy at the piece root | where the effect comes out: `{dx, dy, conf}` in FRAME PIXELS FROM THE CANVAS CENTRE, the `light_frames` convention, so the packed layer's `ox`/`oy` shift it like any other measured point |
+  `vent` is measured by `pipeline/vent.py`, per STATE because every variant
+  draws its own cap, and `conf` says `measured` (a real opening was found) or
+  `silhouette` (none was, so it is the middle of the top rows — a consumer that
+  cares can tell a measurement from a fallback). Three rules make it the mouth
+  and not something else, each paid for on this art: the cut is a fraction of
+  the piece's OWN median luma (a percentile finds a "darkest fifth" even where
+  there is no hole); a blob touching transparency is the sprite's outline and is
+  dropped; and a blob must span at least 3 rows, because a mortar course is
+  dark, interior and WIDE and beat the real opening on every brick stack in the
+  first pass. Measured over the first 15 states: 14 `measured`, 1 `silhouette`,
+  every mouth within 0.14 of the stack's axis and in the top 4-14% of the art.
+  **Run `--sheet` and LOOK at it** — it draws a cross on every mouth, and that
+  is the only thing that catches a blob that is a doorway or a window.
+- **SE/S/SW COST NOTHING** and are already a standing order (his 2026-08-28:
+  "Everything under 'Indoor' and under 'Town' should have SW, S and SE").
+  Anything 168 px or under went down `create-8-direction-object`, so PixelLab
+  generated all eight facings at birth and has stored them since;
+  `pipeline/add_facings.py` downloads SE/SW for any INDOOR/TOWN state that
+  lacks them, at zero generations, and the group's `keep_directions` keeps new
+  pieces shipping them from birth. Scenery still never ROTATES — three facings
+  exist because a wall (and a roof ridge) faces three ways.
 - **THE GAME CANNOT YET DRAW ONE ON A ROOF** (measured 2026-09-13, raised with
   games + maps2). A placement whose cell is under a `roof` or `cave` deck is
   flagged `roofed` (`games2/client/src/scenery3.ts roofedCells`) and is drawn
