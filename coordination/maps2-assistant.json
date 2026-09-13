@@ -1,8 +1,8 @@
 {
   "domain": "maps2-assistant",
-  "updated_at": "2026-09-13T12:45:26+00:00",
+  "updated_at": "2026-09-13T15:20:53+00:00",
   "health": "running",
-  "current": "RELEASED 2026-09-13T12:45:26+00:00: 9421cc23e - the dressing of 175302d7c restored, the nav fit applied IN PLACE (navfit.py --apply); dc41b9f86's rebuild re-roll is undone. Every file in the earlier claim is free. Next, claimed when I start it: the maps2/README.md compaction - not before the maintainer has reviewed the change page.",
+  "current": "CLAIM 2026-09-13T15:20:53+00:00 (maintainer 2026-09-13: 'the lava you have placed on the mountain is just small spots and doesn't feel epic enough. Can't you make the lava a bit bigger?'): the massif's lava grows from spots into LAKES. Measured on the shipped world: 23 lava cells in 5 pools of 3-6, all on the level-24 black_rock shelf (562 cells) whose 2-ring interior - the only ground a pool may take, so a walkable ring always survives - is ONE 167-cell region (bbox 212,185-237,216). The pools grow organically inside that interior to a share of it, merging where the rock lets them; every other black_rock shelf has a 0-2 cell interior and gets nothing. SHIPPED IN PLACE (maintainer 2026-09-13, on the rebuild that re-dressed the map: 'I was asking for a placement correction only!'): a new maps2/pipeline/lavafill.py holds the growth rule, --apply grows the SHIPPED world's pools and touches nothing else (no scenery moved or evicted, no re-dress), and world3grow.lava() calls the same rule so a fresh build makes lakes too. Files: maps2/pipeline/lavafill.py (NEW), maps2/pipeline/world3grow.py (lava() and its LAVA_* constants only - NOT put(), snap_hitboxes, _pos_rng or any dressing pass), maps2/spec/WORLD3.md (the lava section), maps2/README.md (one pipeline bullet), maps2/worlds3/the_game/world.json + minimap.webp/overview_full.webp, maps2/reports/the_game.json + the change page after the push. NOT touching: spawns.json (the zones already contain lava and the game keeps monsters off every liquid by its own rule - re-checked after the change), npcs.json, places.json, render3.py, navfit.py.",
   "progress": {
     "units_shipped": 5
   },
