@@ -14,9 +14,13 @@
 //     and the hollows in it are real. "The view from a ridge contains hollows"
 //     is not the claim; "a ridge fogs" is, and only the fog around your own
 //     feet can answer it.
-//  2. IT IS UNDER THE DARKNESS OVERLAY. The depth is the one bug that would
-//     look fine at dawn and ruin every night: above the overlay a pale bank is
-//     the brightest thing on a dark screen. A negative depth is the contract.
+//  2. IT IS JUST OVER THE DARKNESS OVERLAY — with `drips/`, `dust/` and the
+//     fish rings, and NOT in the surface band, where it started. Down there it
+//     sits under the terrain OCCLUDERS as well as the ground texture, so in a
+//     grassy hollow the fog is behind the world: measured, nineteen banks at
+//     alpha 0.45 moved the screen by one luma. Above the overlay it must also
+//     stay BELOW the lit copies (900_001+), so a tree still stands in front of
+//     the bank rather than the bank washing over it.
 //  3. THE SUN BURNS IT OFF, and a CLOUDY sky THINS it. The second half is
 //     backwards from every other weather-ish effect and is exactly the kind of
 //     rule a later change "fixes" by accident, so it is asserted here as well
@@ -270,7 +274,10 @@ if (!bestHollow.draw) fail("no patch ever reached the screen in a hollow");
 else {
   const d = bestHollow.draw;
   console.log(`draw: depth ${d.depth}, alpha ${d.alpha}, ${d.dw}x${d.dh}, tex ${d.tex}, blend ${d.blend}, tint ${d.tint}`);
-  if (!(d.depth < 0)) fail(`the mist draws at depth ${d.depth} — it must be in the SURFACE band, under the darkness overlay`);
+  if (!(d.depth > 900_000))
+    fail(`the mist draws at depth ${d.depth} — under the darkness overlay the night hides it (1 luma, measured)`);
+  if (!(d.depth < 900_001))
+    fail(`the mist draws at depth ${d.depth} — over the lit copies, so it would wash over the scenery standing in it`);
   if (!d.visible) fail("the thickest patch is not visible");
   if (d.blend !== 0) fail(`the mist draws in blend mode ${d.blend} — fog is in the way, it does not glow`);
   if (!(d.dw > 8 && d.dh > 3)) fail(`a patch is ${d.dw}x${d.dh} — that is a speck, not a bank`);

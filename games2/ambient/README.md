@@ -334,18 +334,25 @@ them; folder isolation beats DRY here).
     compose budget, and the drain did not repaint them); `__ml.groundRedraw()`
     brought the seam. A surface effect follows the RESOLVER, never the screen
     — the screen catches up. Reported to the games agent.
-- **THE SURFACE BAND IS ALSO WHERE A MARK GOES TO BE GRADED BY THE NIGHT**, and
-  `dawnmist/` is there for that reason rather than for the ground texture's.
-  Every crawler here sits deliberately ABOVE the overlay so its own colour
-  survives the dark (the ants' rule — a near-black dot on night grass differed
-  from it by one luma below the overlay). Fog is the exact reverse: a pale bank
-  ABOVE the overlay is the brightest thing on a 3am screen, which is the
-  rejected white-ants verdict in a new costume. Under it, the same grey is
-  near-black in the small hours, catches the first light with the ground it
-  lies on, and needs no sun term at all — the night shader does the whole
-  "dawn" for free. **Ask which side of the overlay a mark belongs on by asking
-  whether it EMITS or whether it is LIT**, and put it there; `dawnmist/` sits
-  at -999_999.5, under `foam/` so a coast line stays crisp over a bank.
+- **THE SURFACE BAND IS UNDER THE TERRAIN OCCLUDERS, NOT ONLY UNDER THE GROUND
+  TEXTURE — so almost nothing may live there.** `dawnmist/` was written for it
+  on the theory that the night would then grade the fog for free (multiplied
+  down with the ground it lies on, near-black at 3am, catching first light with
+  the world, no sun term needed). Elegant, and wrong where it counts: a grassy
+  hollow's ground is drawn with OCCLUDERS, so the fog was behind the world.
+  Measured — nineteen banks at alpha 0.45 moved the screen by ONE luma, and the
+  same banks lifted over the overlay were plainly visible in the same shot.
+  `foam/` can live down there because it animates a line the game paints INTO
+  the ground texture; assume nothing else can.
+  **EVERY OTHER GROUND-LYING MARK HERE SITS JUST OVER THE OVERLAY** — `drips/`
+  splash rings 900_000.05 "with the crawlers", `dust/` 900_000.09, `fish/`
+  rings 900_000.41, `dawnmist/` 900_000.3 — and pays for the position by
+  GRADING ITS OWN COLOUR, because a mark above the overlay keeps its colour
+  through the night and a pale one at 3am is the white-ants verdict again.
+  Stay under 900_001 so the scenery's lit copies still stand in front.
+  **And look at the screenshot before theorising about the compositing.** Three
+  cycles here went on reasoning about pixels nobody had looked at; the two
+  images side by side answered it immediately.
 - **Pixel art scales nearest-neighbour only, everywhere, always.**
   Procedural glow textures follow the game's own additive-circle idiom. No
   smoothing upscales, no vector gradients.
