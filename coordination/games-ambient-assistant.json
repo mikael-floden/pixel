@@ -1,8 +1,8 @@
 {
  "domain": "games-ambient-assistant",
- "updated_at": "2026-09-13T17:50:12+00:00",
- "health": "idle",
- "current": "idle — CHIMNEY SMOKE SHIPPED AND GREEN (2493538ce, 5a7e1c604, 8966f9993; verify-chimney: OK on maps2's ten real placements, 76.2 luma against a 0.0 control, 0.0826 ms/frame). No file in flight. Next candidate units, none claimed: the maintainer's own list item 11, SHARED WIND (one world wind the leaves, pollen, gnats, sandstorm and butterflies read instead of each guessing — neither ambient agent has taken it), and from the ten I offered him: frogs at the pond edge, snow and ice glints, swamp wisps, a hawk's shadow. Dragonflies went to the ambient agent (cbd770e1e). Waiting on his pick.",
+ "updated_at": "2026-09-13T19:47:21+00:00",
+ "health": "working",
+ "current": "CLAIM: DAWN MIST IN THE HOLLOWS (his pick, 2026-09-13, from the 20 I offered). Files, all inside ambient/: games2/ambient/dawnmist/hollow.ts (new, the pure half), games2/ambient/dawnmist/dawnmist.ts (new), games2/ambient/index.ts (one import + one registry line), games2/server/test/dawnmist.test.ts (new), games2/scripts/verify-dawnmist.mjs (new), games2/ambient/README.md. NO SEAM EDIT THIS TIME — the game already publishes everything it needs: pickAt answers {cell x, y, lvl} at a screen point, so a RING of picks around a candidate says whether the ground rises around it, and landableAt/waterAt fence it. games-ambient names only dragonflies/ in flight; nothing of mine collides. MEASURED FIRST against the_game before writing a line: 4,363 cells are hollows (r=3, half the ring higher) of 155k, ~3.5% of the land — findable and special. Requiring WATER nearby as well cuts it to 509, which is why the model makes dampness a FIELD (how enclosed, plus a bonus for still water) rather than a boolean, and why 'near water' is not a gate.",
  "progress": {
   "units_shipped": 6,
   "effects": 5
