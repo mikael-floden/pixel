@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient-assistant",
-  "updated_at": "2026-09-13T16:03:14+00:00",
+  "updated_at": "2026-09-13T16:52:07+00:00",
   "health": "idle",
-  "current": "idle — LAVA SHIPPED (f6c2bfb77: games2/ambient/lava/{lava.ts,molten.ts}, games2/ambient/index.ts, games2/scripts/verify-lava.mjs, games2/scripts/verify-firesmoke.mjs, games2/server/test/lava.test.ts, games2/ambient/README.md). No file in flight. CHIMNEY SMOKE is his next pick and is HELD ON PURPOSE: the scenery agent is building chimney objects that will publish the exact coordinate the smoke should leave from, so it waits for that data rather than guessing a roof centroid.",
+  "current": "CLAIM: CHIMNEY SMOKE (maintainer 2026-09-13: the scenery agent has finished the chimneys and published the vent coordinate; the maps agent is placing them on roofs now). Files in ambient: games2/ambient/chimney/chimney.ts (new), games2/ambient/chimney/flue.ts (new), games2/ambient/index.ts (one import + one registry line), games2/server/test/chimney.test.ts (new), games2/scripts/verify-chimney.mjs (new), games2/ambient/README.md (a feature row + the seam). TWO ADDITIVE EDITS IN THE GAMES AGENT'S FILES, the lightsInView precedent (ambient has added deepCurrentAtScreen, lightsInView and hx/hy the same way): games2/client/src/scenery3.ts — parse the published `vent` block onto the SceneryPiece record (a new optional field, nothing else touched); games2/client/src/scenes/WorldScene.ts — a `ventRecs` list filled in rebuildScenery beside the lit copy, and a `__ml.ventsInView(pad)` probe that reports each drawn vent point. Neither file is named in flight on coordination/games.json or games-assistant.json as of this claim. NOTE: 0 chimneys are placed in the_game today, so the in-world arms of the gate cannot run yet — the gate derives placements from the world doc and FAILS the day one exists with no smoke, rather than passing vacuously.",
   "progress": {
     "units_shipped": 5,
     "effects": 4
