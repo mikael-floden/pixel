@@ -219,8 +219,10 @@ function showUpdateBanner(sha: string) {
   // taller. It is CENTRED, so it can pass under either one — hence the max()
   // of both, not just the right chip's. The 78px fallbacks are this phone's
   // left-chip height, used on the select screen where there are no chips.
+  // The chips themselves sit under the cutout inset (--ml-safe-top,
+  // theme.ts), so the toast adds it too or it climbs back into them.
   el.style.cssText =
-    "position:fixed;top:calc(max(var(--bars-l-h, 78px), var(--bars-r-h, 78px)) + 20px);left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "position:fixed;top:calc(var(--ml-safe-top, 0px) + max(var(--bars-l-h, 78px), var(--bars-r-h, 78px)) + 20px);left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
     "padding:9px 16px;border-radius:10px;" +
     "background:var(--surface, #fff);color:var(--ink, #1f1e1a);" +
     "border:1px solid var(--border, #e6e2d7);font:600 13.5px var(--sans, sans-serif);" +

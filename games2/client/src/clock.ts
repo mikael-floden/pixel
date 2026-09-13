@@ -280,10 +280,12 @@ function mount() {
      chip instead (maintainer 2026-08-05) — same right margin, so the two
      right edges line up, and a 10px gap below the chip matching every other
      margin. --bars-r-h is the chip's MEASURED height (bars.ts publishes it;
-     the fallback only covers the first frame). Left-handed keeps the corner:
+     the fallback only covers the first frame), and the chip itself sits
+     under the cutout inset (--ml-safe-top), so the inset rides along or the
+     pill would climb back into the chip. Left-handed keeps the corner:
      there the stick is bottom-LEFT and the pill is nowhere near it. */
   :root.ml-land:not(.ml-lh) .ml-clock{
-    top:calc(var(--bars-r-h, 78px) + 20px);bottom:auto}
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);
   root = document.createElement("div");

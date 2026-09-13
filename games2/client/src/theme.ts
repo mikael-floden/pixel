@@ -177,4 +177,14 @@ const CSS_TOKENS = `
   color: var(--muted); font: 600 12px/1.2 var(--sans);
   letter-spacing: 0.08em; text-transform: uppercase;
 }
+
+/* ---- the cutout (notch / punch hole / status bar / gesture bar): env() is
+        CSS-only, so the insets are published HERE, once, for every surface —
+        the chips, the select corners, the landscape pill stack and the pages'
+        scroll end add them to their offsets (UI_AGENT.md). 0 wherever the
+        browser letterboxes the cutout or there is none. Gate: verify-safearea. */
+:root {
+  --ml-safe-top: env(safe-area-inset-top, 0px);
+  --ml-safe-bottom: env(safe-area-inset-bottom, 0px);
+}
 `;

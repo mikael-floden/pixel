@@ -101,7 +101,7 @@ function injectStyles(): void {
   /* RIGHT-HANDED LANDSCAPE: the pill is top-anchored under the XP chip, so
      the button hangs one step BELOW it — the same reading as everywhere else. */
   :root.ml-land:not(.ml-lh) .ml-wikibtn{
-    top:calc(var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}
   /* The keyboard lift: this row takes the line hud.ts clears above the keys,
      and the pill steps up over it exactly as it does at rest. */
   :root.ml-kb-up .ml-wikibtn{bottom:calc(var(--ml-inputlift) + 56px)}`;

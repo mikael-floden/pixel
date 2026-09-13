@@ -2104,7 +2104,7 @@ function injectStyles() {
   .ml-page{display:none;height:100%;overflow-y:auto;overflow-x:hidden;
     -webkit-overflow-scrolling:touch;flex-direction:column;align-items:center;
     justify-content:safe center;gap:12px;text-align:center;
-    padding:10px 16px 16px;background:var(--bg)}
+    padding:10px 16px calc(16px + var(--ml-safe-bottom, 0px));background:var(--bg)}
   .ml-page.show{display:flex}
   /* gamepad page: the analog stick + jump button position absolutely inside it */
   .ml-page[data-page=gamepad]{position:relative;overflow:hidden}
@@ -2367,7 +2367,7 @@ function injectStyles() {
     .ml-dials{gap:10px}
     .ml-tabrow{padding:8px 14px 8px}
     .ml-tab{height:48px}
-    .ml-page{gap:8px;padding:8px 14px 12px}
+    .ml-page{gap:8px;padding:8px 14px calc(12px + var(--ml-safe-bottom, 0px))}
     .ml-plate-btn{min-height:36px}
     .ml-set{gap:10px}
     .ml-amb-list{gap:6px}

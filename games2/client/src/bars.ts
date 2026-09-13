@@ -450,8 +450,10 @@ function injectStyles() {
   injected = true;
   const s = document.createElement("style");
   s.textContent = `
-  /* a translucent theme chip so the group reads over any world art */
-  .ml-bars{position:fixed;top:10px;z-index:8;pointer-events:none;display:flex;
+  /* a translucent theme chip so the group reads over any world art; the 10px
+     margin is measured from the cutout's edge (--ml-safe-top, theme.ts), so an
+     app drawn into the punch hole keeps its chips out of it */
+  .ml-bars{position:fixed;top:calc(10px + var(--ml-safe-top, 0px));z-index:8;pointer-events:none;display:flex;
     flex-direction:column;gap:7px;padding:8px 10px;border-radius:12px;
     background:color-mix(in srgb, var(--bg) 76%, transparent);
     border:1px solid color-mix(in srgb, var(--border) 65%, transparent);
