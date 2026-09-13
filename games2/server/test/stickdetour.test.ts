@@ -83,6 +83,11 @@ function holdStick(grid: ReturnType<typeof blobWorld>, ax: number, ay: number, u
     y = r.y;
     if (moved < 0.05) { frozenRun++; worstFrozen = Math.max(worstFrozen, frozenRun); }
     else frozenRun = 0;
+    // The blob is the subject: once it is well behind, stop — the run goes on
+    // to the fixture's own edge, where a TERRAIN wall (the world border)
+    // stops the body honestly (walkHeading's terrain branch, 2026-09-13) and
+    // that stop is not the freeze this measures.
+    if (((x - startX) * ux + (y - startY) * uy) / CELL_WU > 9) break;
   }
   // Progress along the direction actually asked for — sideways is not arrival.
   return { advanced: ((x - startX) * ux + (y - startY) * uy) / CELL_WU, worstFrozen, flapping };

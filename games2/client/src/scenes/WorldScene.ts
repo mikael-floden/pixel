@@ -109,6 +109,7 @@ import {
 } from "../navbias";
 import { ensureSpeedDial, playerSpeed } from "../playerspeed";
 import { ensureStickDial, ensureStickAngle, stickLean, stickHeading } from "../stickdir";
+import { ensureWallAssistDial, wallAssistDeg } from "../wallassist";
 import { roomCoverFraction, coversRoom, type ScreenBox, type ScreenPt } from "../scenerycover";
 import { ensureWallWrapDial, wallWrap, setWallWrap } from "../wallwrap";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
@@ -1843,6 +1844,9 @@ export class WorldScene extends Phaser.Scene {
   private inputSeq = 0;
   private sendAccum = 0;
   private lastInput: { ax: number; ay: number; running: boolean } = { ax: 0, ay: 0, running: false };
+  /** THE FACING: the thumbstick's own vector while the nav deflects the walk
+   *  (maintainer 2026-09-13), the walked vector otherwise — see predictAndSend. */
+  private lastFace: { ax: number; ay: number } = { ax: 0, ay: 0 };
   // Tap-to-move (mobile-first): tap the ground → walk there; double-tap → run.
   // The autopilot only SYNTHESIZES the same 8-way screen input the keyboard
   // produces, so prediction/server validation/auto-jump all behave identically.
@@ -6312,6 +6316,8 @@ export class WorldScene extends Phaser.Scene {
       // The input vector actually predicted+sent this frame (AFTER the
       // monster-dodge deflection) — dodge QA reads the deflection live.
       lastInput: () => this.lastInput,
+      /** The vector the sprite FACES this frame — the stick while the nav deflects. */
+      lastFace: () => this.lastFace,
       /** THE PREDICTION BACKLOG — how far the server's acks trail my sends,
        *  in windows and in the SECONDS of input it still owes. This is the
        *  instrument for input lag: the server integrates the queue against a
@@ -12465,11 +12471,13 @@ export class WorldScene extends Phaser.Scene {
         tx = rx;
         ty = ry;
         surfLevel = predElev;
-        // Animate from live input for instant turn/walk feedback.
+        // Animate from live input for instant turn/walk feedback — and FACE THE
+        // STICK, which is the walked vector unless the nav deflected it.
         const li = this.lastInput;
+        const lf = this.lastFace;
         moving = li.ax !== 0 || li.ay !== 0;
         running = li.running && moving;
-        dir = (moving ? vectorToDirection(li.ax, li.ay) : null) ?? player.dir;
+        dir = (moving ? vectorToDirection(lf.ax, lf.ay) : null) ?? player.dir;
       } else {
         tx = player.x;
         ty = player.y;
@@ -14241,6 +14249,20 @@ export class WorldScene extends Phaser.Scene {
     // the trip); otherwise steer toward the tapped target with the same 8-way
     // screen input a keyboard would produce.
     this.keysActive = ax !== 0 || ay !== 0;
+    /* THE FINGER'S REAL HEADING: the keys' vector leaned toward the stick's
+     * bearing by his dial (stickdir.ts), computed once because THREE things
+     * read it: walkHeading measures the wall-assist angle against it (the
+     * 8-way vector is 45 degrees coarse and the dial is in degrees), the lean
+     * below walks it when nothing deflected the heading, and the sprite faces
+     * it whatever walked. No finger (keyboard, autopilot) -> the keys' own
+     * vector and no lean, as before. */
+    let stickVec: { ax: number; ay: number } | null = null;
+    if (this.keysActive) {
+      const lean = stickLean();
+      const bearing = lean > 0 ? stickHeading() : null;
+      stickVec = bearing !== null ? leanHeading(ax, ay, bearing, lean) : { ax, ay };
+    }
+    let deflected = false;
     if (this.keysActive) {
       if (this.trip) this.clearMoveTarget();
       this.dropEngage(); // RO: moving breaks the attack / the fetch
@@ -14272,9 +14294,12 @@ export class WorldScene extends Phaser.Scene {
             fromElev: me.surfLevel ?? undefined,
             worldW: this.worldW,
             worldH: this.worldH,
+            heading: stickVec ?? undefined,
+            wallAssistDeg: wallAssistDeg(),
           });
           ax = r.ax;
           ay = r.ay;
+          deflected = r.deflected;
           this.stickTrip = r.trip;
         }
       }
@@ -14354,6 +14379,7 @@ export class WorldScene extends Phaser.Scene {
         if (dodge) {
           ax = dodge.ax;
           ay = dodge.ay;
+          deflected = true;
           this.dodgeState = dodge.state;
         } else this.dodgeState = undefined;
       }
@@ -14368,14 +14394,12 @@ export class WorldScene extends Phaser.Scene {
     // No finger on the stick (keyboard, gamepad-less, autopilot) -> no bearing
     // -> no lean, which is exactly right: "you will only be able to run in 8
     // directions on a keyboard".
-    const lean = stickLean();
-    if (lean > 0 && ax === rawAx && ay === rawAy && (ax !== 0 || ay !== 0)) {
-      const bearing = stickHeading();
-      if (bearing !== null) {
-        const led = leanHeading(ax, ay, bearing, lean);
-        ax = led.ax;
-        ay = led.ay;
-      }
+    // `deflected` and not only the vector compare: a run straightened along a
+    // wall can BE the key pair the stick snapped to (walkHeading), and leaning
+    // that back toward the finger walks it into the wall it was just taken off.
+    if (stickVec && !deflected && ax === rawAx && ay === rawAy && (ax !== 0 || ay !== 0)) {
+      ax = stickVec.ax;
+      ay = stickVec.ay;
     }
     // AUTO-JUMP, AND THE HOP INTO THE WALL — after the lean, so the finger's
     // real angle is what is probed. A ledge straight ahead fires the jump as
@@ -14388,6 +14412,14 @@ export class WorldScene extends Phaser.Scene {
     const hop = this.maybeAutoJump(ax, ay);
     ax = hop.ax;
     ay = hop.ay;
+    /* THE SPRITE FACES THE STICK, not the deflection (maintainer 2026-09-13:
+     * "the player will always continue looking in the direction you hold the
+     * thumbstick (even when the navigation helps you navigate around). This
+     * will make it easy to understand that the movement that is going on is a
+     * navigation helper movement"). The walked vector IS the stick whenever
+     * nothing deflected it; the autopilot faces its walk. Sent as `fd` so the
+     * server's copy of the body faces the same way for everyone else. */
+    this.lastFace = stickVec ?? { ax, ay };
     const sig = `${ax.toFixed(3)},${ay.toFixed(3)},${running ? 1 : 0}`;
     // If the input CHANGED, flush the elapsed window under the PREVIOUS input
     // first. Otherwise a quick tap gets re-attributed to the new vector (e.g.
@@ -15083,6 +15115,9 @@ export class WorldScene extends Phaser.Scene {
       ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum,
       sm: playerSpeed(),
     };
+    // The facing rides along only when it is not what the input itself says.
+    const fd = vectorToDirection(this.lastFace.ax, this.lastFace.ay);
+    if (fd && fd !== vectorToDirection(li.ax, li.ay)) msg.fd = fd;
     if (this.jumpQueued) {
       msg.jump = true;
       this.jumpQueued = false;
@@ -17273,6 +17308,7 @@ export class WorldScene extends Phaser.Scene {
       ensureDetailDial(); // the ground-details slider, below it
       ensureSpeedDial(); // the player-speed slider, injected the same way
       ensureStickDial(); // …and the stick's direction-freedom slider
+      ensureWallAssistDial(); // …and the wall-assist angle (how far off a wall the stick still runs along it)
       ensureStickAngle(); // (re)bind the bearing listeners on games-ui's stick
       ensureWallWrapDial(); // …and the night shader's wall light wrap
       if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way

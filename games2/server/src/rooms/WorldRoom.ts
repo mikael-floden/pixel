@@ -13,6 +13,7 @@ import { bus } from "../bus.js";
 Encoder.BUFFER_SIZE = 2 * 1024 * 1024;
 import {
   InputMessage,
+  DIRECTIONS,
   JoinOptions,
   ChatInput,
   ChatBroadcast,
@@ -708,6 +709,9 @@ export class WorldRoom extends Room<WorldState> {
             PLAYER_SPEED_MIN,
             PLAYER_SPEED_MAX,
           ),
+          // The facing the client asked for — the thumbstick while its nav
+          // deflects the walk (InputMessage.fd); a name off the list is dropped.
+          fd: typeof message.fd === "string" && (DIRECTIONS as readonly string[]).includes(message.fd) ? message.fd : undefined,
         });
       } else if (typeof message.seq === "number") {
         player.seq = message.seq; // overloaded queue: drop but still ack
@@ -1656,6 +1660,7 @@ export class WorldRoom extends Room<WorldState> {
         moving = r.moving;
         running = r.moving && inp.running;
         if (r.dir) player.dir = r.dir;
+        if (inp.fd) player.dir = inp.fd; // the facing the client asked for, validated on receipt
         if (typeof inp.seq === "number") player.seq = inp.seq; // ack after applying
       }
       player.moving = moving;

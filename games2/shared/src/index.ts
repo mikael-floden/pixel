@@ -179,6 +179,13 @@ export interface InputMessage {
    *  Absent = 1 (an old client, or a replayed message from before the dial).
    *  The server CLAMPS it to [PLAYER_SPEED_MIN, PLAYER_SPEED_MAX]. */
   sm?: number;
+  /** THE FACING, when it is not the input's own direction: the sprite faces
+   *  the THUMBSTICK while the nav deflects the walk (maintainer 2026-09-13:
+   *  "the player will always continue looking in the direction you hold the
+   *  thumbstick (even when the navigation helps you navigate around)"), and
+   *  the server mirrors it so everyone else sees the same body. Absent = the
+   *  walked vector's direction, as before. */
+  fd?: Direction;
 }
 
 /** THE PLAYER-SPEED DIAL's range. The maintainer asked for it to find a good
@@ -2484,6 +2491,100 @@ export function worldAxisToScreenInput(nx: number, ny: number): { ax: number; ay
   return { ax: -s, ay: s };
 }
 
+/** THE WALL-ASSIST ANGLE — his Settings dial (maintainer 2026-09-13). A run
+ *  leaned into a terrain wall by no more than this many SCREEN degrees off the
+ *  wall's drawn direction is straightened to run exactly along it at full
+ *  speed ("in the case just a little bit is into the wall we can help the
+ *  player to run straight alongside the wall"); past it the body keeps its own
+ *  heading and slides at the wall's rate, losing speed to the wall ("if we
+ *  tilt too much into the wall we will not help") — and hops a jumpable one.
+ *  Screen degrees, because the thumb's angle to the wall he SEES is what he
+ *  tunes; the default is a first guess for him to move. */
+export const WALL_ASSIST_DEG_MIN = 0;
+export const WALL_ASSIST_DEG_MAX = 60;
+export const WALL_ASSIST_DEG_DEFAULT = 30;
+
+/** The angle, in SCREEN degrees, between a screen input and a WORLD direction
+ *  as drawn — the wall-assist angle's own measure. A wall along world +x runs
+ *  down-right at 23.6 degrees on a 32x14 iso, and the thumb's angle to that
+ *  line is what the dial means. */
+export function wallAngleDeg(
+  ax: number,
+  ay: number,
+  wx: number,
+  wy: number,
+  iso: IsoGeometry = ISO_GEOMETRY,
+): number {
+  const al = Math.hypot(ax, ay);
+  const sx = (wx - wy) * iso.dx;
+  const sy = (wx + wy) * iso.dy;
+  const sl = Math.hypot(sx, sy);
+  if (al < 1e-9 || sl < 1e-9) return 90;
+  const c = Math.max(-1, Math.min(1, (ax * sx + ay * sy) / (al * sl)));
+  return (Math.acos(c) * 180) / Math.PI;
+}
+
+/** What a heading is pressed against, asked of the movement tick per WORLD
+ *  axis (never read off the intent's dominant component: screen-down is a
+ *  world diagonal): which axis the wall refuses, whether any refusing cell is
+ *  a solid prop (steerAssist's domain — the tree rules), and the direction
+ *  ALONG the wall the heading's free component points (null in a corner, and
+ *  for a push square on). Null when nothing is refused. */
+export interface WallContact {
+  refX: boolean;
+  refY: boolean;
+  prop: boolean;
+  tangent: { x: number; y: number } | null;
+}
+export function wallContact(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  elev?: number,
+): WallContact | null {
+  const w = screenToWorldVector(ax, ay);
+  const wl = Math.hypot(w.x, w.y);
+  if (wl < 1e-9) return null;
+  const ux = w.x / wl;
+  const uy = w.y / wl;
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const dt = 0.08;
+  const ge = elev === undefined ? undefined : () => elev;
+  const fwd = ge ? makeBlockedElev(grid, walk, ge) : makeBlocked(grid, walk);
+  const side = makeSideBlocked(grid, walk, ge);
+  const worldW = worldWidthOf(grid);
+  const worldH = worldHeightOf(grid);
+  const refused = (nx: number, ny: number) => {
+    const r = stepMovement(x, y, nx, ny, false, dt, fwd, 1, false, worldW, worldH, side);
+    return Math.hypot(r.x - x, r.y - y) <= WALK_SPEED * dt * 0.35;
+  };
+  const sx = Math.abs(ux) > 1e-6 ? Math.sign(ux) : 0;
+  const sy = Math.abs(uy) > 1e-6 ? Math.sign(uy) : 0;
+  const refX = sx !== 0 && refused(sx, 0);
+  const refY = sy !== 0 && refused(0, sy);
+  if (!refX && !refY) return null;
+  // The refusing cells: the leading edge along that axis, at the centre and
+  // at both lateral corner probes — the movement tick's own points — from
+  // just past the feet to the end of the probe step, so a footprint whose
+  // edge the step only reaches at its far end is still seen as the prop it is.
+  let prop = false;
+  const look = (axisX: boolean, sgn: number) => {
+    for (const ahead of [PLAYER_RADIUS + 3, PLAYER_RADIUS + WALK_SPEED * dt + 1])
+      for (const lat of [0, 0.75 * PLAYER_RADIUS, -0.75 * PLAYER_RADIUS]) {
+        const px = axisX ? x + sgn * ahead : x + lat;
+        const py = axisX ? y + lat : y + sgn * ahead;
+        if (cellSolid(grid, Math.floor(px / CELL_WU), Math.floor(py / CELL_WU), elev)) prop = true;
+      }
+  };
+  if (refX) look(true, sx);
+  if (refY) look(false, sy);
+  const tangent =
+    refX && !refY && sy !== 0 ? { x: 0, y: sy } : refY && !refX && sx !== 0 ? { x: sx, y: 0 } : null;
+  return { refX, refY, prop, tangent };
+}
+
 /** A hop in progress: the wall's inward WORLD normal, the screen input that
  *  walks into it, the level the feet left, and when the jump window ends. */
 export interface HopState {
@@ -2712,35 +2813,66 @@ function steerAssistWall(
   // cave, and every rock cell beside the lid then read as a wall to hunt a
   // door along (see steerAssist).
   const myLevel = elev ?? levelAtWorld(grid, x, y);
-  // The wall cell the body is stalled on: same probe points as the prop
-  // branch, but the tell is CLIMB — higher than even a jump takes. (A
-  // jumpable 1-level ledge never reaches here alive: auto-jump fires first,
-  // and if it somehow didn't, deflecting around it would fight the hop.)
-  const d = (PLAYER_RADIUS + 3) / Math.max(Math.abs(ux), Math.abs(uy));
-  const px = x + ux * d;
-  const py = y + uy * d;
-  let wc = -1;
-  let wr = -1;
-  for (const lat of [0, 0.75 * PLAYER_RADIUS, -0.75 * PLAYER_RADIUS]) {
-    const c = Math.floor((px - uy * lat) / CELL_WU);
-    const r = Math.floor((py + ux * lat) / CELL_WU);
-    if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
-    if (grid.deck[r * grid.width + c] >= 0) continue; // a walkable slab is not a wall
-    if (grid.level[r * grid.width + c] - myLevel > JUMP_CLIMB + 1e-9) {
-      wc = c;
-      wr = r;
-      break;
+  /* WHICH AXIS THE WALL REFUSES is asked of the movement tick, per world axis
+   * — never read off the intent's dominant component. Screen-down is a WORLD
+   * DIAGONAL: against the spawn house's south wall the dominant-axis guess
+   * called the wall "across x" and hunted up and down the room's floor beside
+   * it, so the door two cells along the wall was never seen (maintainer
+   * 2026-09-13). A corner refuses both axes, and both walls are hunted. */
+  const ge = elev === undefined ? undefined : () => elev;
+  const fwdPred = ge ? makeBlockedElev(grid, walk, ge) : makeBlocked(grid, walk);
+  const sidePred = makeSideBlocked(grid, walk, ge);
+  const worldW = worldWidthOf(grid);
+  const worldH = worldHeightOf(grid);
+  const refused = (nx: number, ny: number) =>
+    moved(stepMovement(x, y, nx, ny, false, 0.08, fwdPred, 1, false, worldW, worldH, sidePred)) <=
+    WALK_SPEED * 0.08 * 0.35;
+  // The wall cell on a refused axis: the leading edge along it — the centre,
+  // then the lateral corner probes — and the tell is CLIMB, higher than even
+  // a jump takes. (A jumpable 1-level ledge never reaches here alive:
+  // auto-jump fires first, and if it somehow didn't, deflecting around it
+  // would fight the hop. A walkable slab is not a wall.)
+  const wallOn = (axisX: boolean, sgn: number): { c: number; r: number } | null => {
+    for (const lat of [0, 0.75 * PLAYER_RADIUS, -0.75 * PLAYER_RADIUS]) {
+      const px = axisX ? x + sgn * (PLAYER_RADIUS + 3) : x + lat;
+      const py = axisX ? y + lat : y + sgn * (PLAYER_RADIUS + 3);
+      const c = Math.floor(px / CELL_WU);
+      const r = Math.floor(py / CELL_WU);
+      if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
+      if (grid.deck[r * grid.width + c] >= 0) continue;
+      if (grid.level[r * grid.width + c] - myLevel > JUMP_CLIMB + 1e-9) return { c, r };
     }
+    return null;
+  };
+  interface Wall {
+    wc: number;
+    wr: number;
+    perp: { x: number; y: number };
+    fwd: { x: number; y: number };
+    firstSgn: number;
   }
-  if (wc < 0) return null; // water/border/slope — an honest stop
-  const domX = Math.abs(w.x) >= Math.abs(w.y);
-  const perp = domX ? { x: 0, y: 1 } : { x: 1, y: 0 };
-  const fwd = domX ? { x: Math.sign(w.x), y: 0 } : { x: 0, y: Math.sign(w.y) };
+  const walls: Wall[] = [];
+  if (Math.abs(w.x) > 1e-9 && refused(Math.sign(w.x), 0)) {
+    const cell = wallOn(true, Math.sign(w.x));
+    // Closest side first: whichever side of the wall cell's centreline the
+    // body already leans toward is the shorter way along.
+    if (cell)
+      walls.push({
+        wc: cell.c, wr: cell.r, perp: { x: 0, y: 1 }, fwd: { x: Math.sign(w.x), y: 0 },
+        firstSgn: y <= (cell.r + 0.5) * CELL_WU ? -1 : 1,
+      });
+  }
+  if (Math.abs(w.y) > 1e-9 && refused(0, Math.sign(w.y))) {
+    const cell = wallOn(false, Math.sign(w.y));
+    if (cell)
+      walls.push({
+        wc: cell.c, wr: cell.r, perp: { x: 1, y: 0 }, fwd: { x: 0, y: Math.sign(w.y) },
+        firstSgn: x <= (cell.c + 0.5) * CELL_WU ? -1 : 1,
+      });
+  }
+  if (!walls.length) return null; // water/border/slope — an honest stop
   const myC = Math.floor(x / CELL_WU);
   const myR = Math.floor(y / CELL_WU);
-  const myPerp = domX ? y : x;
-  const wallPerp = domX ? (wr + 0.5) * CELL_WU : (wc + 0.5) * CELL_WU;
-  const firstSgn = myPerp <= wallPerp ? -1 : 1;
   const centre = (c: number, r: number) => ({ cx: (c + 0.5) * CELL_WU, cy: (r + 0.5) * CELL_WU });
   // A cell the body may pass through on the way to (or through) the door:
   // in bounds, not solid, reachable at walk climb from the previous cell,
@@ -2753,58 +2885,71 @@ function steerAssistWall(
     const t = centre(tc, tr);
     return canEnter(grid, f.cx, f.cy, t.cx, t.cy, walk);
   };
-  // NEAREST opening wins regardless of side: distance is the outer loop.
+  // NEAREST opening wins, over both walls and either side: distance is the
+  // outer loop.
   for (let dist = 1; dist <= STEER_DOOR_RANGE; dist++) {
-    for (const sgn of [firstSgn, -firstSgn]) {
-      // The candidate opening: the wall line's cell `dist` steps to the side.
-      const oc = wc + perp.x * sgn * dist;
-      const or_ = wr + perp.y * sgn * dist;
-      // The lane the body slides through sits on MY side of the wall — check
-      // it cell by cell up to the door's lateral offset. A door behind a
-      // boulder (or past a gap in the floor) is not a door.
-      let laneOk = true;
-      let pc = myC;
-      let pr = myR;
-      for (let k = 1; k <= dist && laneOk; k++) {
-        const lc = myC + perp.x * sgn * k;
-        const lr = myR + perp.y * sgn * k;
-        laneOk = passable(pc, pr, lc, lr);
-        pc = lc;
-        pr = lr;
-      }
-      if (!laneOk) continue;
-      // The opening itself must be enterable from the lane cell beside it…
-      if (!passable(pc, pr, oc, or_)) continue;
-      // …and must LEAD FORWARD (the input's own direction): the cell beyond
-      // it is enterable too, at jump climb — a sill one step up past a door
-      // is what auto-jump exists for. Without this an alcove attracts.
-      const fc = oc + fwd.x;
-      const fr = or_ + fwd.y;
-      if (fc < 0 || fr < 0 || fc >= grid.width || fr >= grid.height) continue;
-      if (myLevel - levelAtWorld(grid, (fc + 0.5) * CELL_WU, (fr + 0.5) * CELL_WU) >= FALL_DMG_MIN_LEVELS)
-        continue;
-      const o = centre(oc, or_);
-      const f = centre(fc, fr);
-      if (!canEnter(grid, o.cx, o.cy, f.cx, f.cy, { maxClimb: JUMP_CLIMB, canSwim: true }))
-        continue;
-      // Deflect purely sideways, snapped to a real 8-way input — exactly the
-      // prop assist's move. Re-evaluated every tick: the moment forward opens
-      // (the doorway), the stall test stops firing and forward resumes.
-      const target = { x: perp.x * sgn, y: perp.y * sgn };
-      let best: { ax: number; ay: number } | null = null;
-      let bestDot = 0.5;
-      for (const [cax, cay] of EIGHT_WAY) {
-        const cw = screenToWorldVector(cax, cay);
-        const cl = Math.hypot(cw.x, cw.y) || 1;
-        const dot = (cw.x * target.x + cw.y * target.y) / cl;
-        if (dot > bestDot) {
-          bestDot = dot;
-          best = { ax: cax, ay: cay };
+    for (const wall of walls) {
+      const { wc, wr, perp, fwd } = wall;
+      for (const sgn of [wall.firstSgn, -wall.firstSgn]) {
+        /* NEVER BACKWARDS — the rule of every local assist. An opening that
+         * lies along the wall but AGAINST the run is not steered to, at any
+         * distance: screen-down into the spawn house's corner had the door two
+         * cells along the south wall and one cell back, and steering to it ran
+         * the player away from where the stick pointed (maintainer 2026-09-13:
+         * "the door is way too far away for doing a 'run backwards'
+         * navigation"). Sideways is a dodge; the one backwards move there is
+         * is walkHeading's escape route, one cell at most. */
+        if (perp.x * sgn * ux + perp.y * sgn * uy < -1e-6) continue;
+        // The candidate opening: the wall line's cell `dist` steps to the side.
+        const oc = wc + perp.x * sgn * dist;
+        const or_ = wr + perp.y * sgn * dist;
+        // The lane the body slides through sits on MY side of the wall — check
+        // it cell by cell up to the door's lateral offset. A door behind a
+        // boulder (or past a gap in the floor) is not a door.
+        let laneOk = true;
+        let pc = myC;
+        let pr = myR;
+        for (let k = 1; k <= dist && laneOk; k++) {
+          const lc = myC + perp.x * sgn * k;
+          const lr = myR + perp.y * sgn * k;
+          laneOk = passable(pc, pr, lc, lr);
+          pc = lc;
+          pr = lr;
         }
+        if (!laneOk) continue;
+        // The opening itself must be enterable from the lane cell beside it…
+        if (!passable(pc, pr, oc, or_)) continue;
+        // …and must LEAD FORWARD (the input's own direction): the cell beyond
+        // it is enterable too, at jump climb — a sill one step up past a door
+        // is what auto-jump exists for. Without this an alcove attracts.
+        const fc = oc + fwd.x;
+        const fr = or_ + fwd.y;
+        if (fc < 0 || fr < 0 || fc >= grid.width || fr >= grid.height) continue;
+        if (myLevel - levelAtWorld(grid, (fc + 0.5) * CELL_WU, (fr + 0.5) * CELL_WU) >= FALL_DMG_MIN_LEVELS)
+          continue;
+        const o = centre(oc, or_);
+        const f = centre(fc, fr);
+        if (!canEnter(grid, o.cx, o.cy, f.cx, f.cy, { maxClimb: JUMP_CLIMB, canSwim: true }))
+          continue;
+        // Deflect purely sideways, snapped to a real 8-way input — exactly the
+        // prop assist's move. Re-evaluated every tick: the moment forward opens
+        // (the doorway), the stall test stops firing and forward resumes.
+        const target = { x: perp.x * sgn, y: perp.y * sgn };
+        let best: { ax: number; ay: number } | null = null;
+        let bestDot = 0.5;
+        for (const [cax, cay] of EIGHT_WAY) {
+          const cw = screenToWorldVector(cax, cay);
+          const cl = Math.hypot(cw.x, cw.y) || 1;
+          const dot = (cw.x * target.x + cw.y * target.y) / cl;
+          if (dot > bestDot) {
+            bestDot = dot;
+            best = { ax: cax, ay: cay };
+          }
+        }
+        if (!best) continue;
+        if (moved(sim(best.ax, best.ay)) < WALK_SPEED * 0.08 * 0.35) continue;
+        return best;
       }
-      if (!best) continue;
-      if (moved(sim(best.ax, best.ay)) < WALK_SPEED * 0.08 * 0.35) continue;
-      return best;
     }
   }
   return null;
@@ -3805,13 +3950,32 @@ export function walkHeading(
   ax: number,
   ay: number,
   hold: SlideMemo,
-  opts: { nowMs: number; trip: AutopilotTrip | null; fromElev?: number; worldW?: number; worldH?: number; noDetour?: boolean },
-): { ax: number; ay: number; trip: AutopilotTrip | null } {
+  opts: {
+    nowMs: number;
+    trip: AutopilotTrip | null;
+    fromElev?: number;
+    worldW?: number;
+    worldH?: number;
+    noDetour?: boolean;
+    /** The heading the frame would otherwise WALK — the keys' vector leaned
+     *  by the finger's bearing — so the wall-assist angle is measured against
+     *  the thumb and not the 45-degree-coarse 8-way vector. Absent = `ax,ay`. */
+    heading?: { ax: number; ay: number };
+    /** The wall-assist angle in screen degrees (his dial); absent = the default. */
+    wallAssistDeg?: number;
+  },
+): { ax: number; ay: number; trip: AutopilotTrip | null; deflected: boolean } {
+  /* `deflected` says whether the answer is the walk's own, not the stick's — so
+   * the caller neither leans it toward the finger nor faces it. It is NOT the
+   * same as "differs from the input": a run straightened along a wall is the
+   * diagonal key pair that locks onto that world axis, which may be the very
+   * key the stick snapped to; leaning that back toward the finger would walk
+   * it into the wall the rule just took it off. */
   let trip = opts.trip;
   if (ax === 0 && ay === 0) {
     hold.ax = 0;
     hold.ay = 0;
-    return { ax, ay, trip: null };
+    return { ax, ay, trip: null, deflected: false };
   }
   const worldW = opts.worldW ?? worldWidthOf(grid);
   const worldH = opts.worldH ?? worldHeightOf(grid);
@@ -3854,22 +4018,67 @@ export function walkHeading(
       } else if (!bodyStalled(grid, x, y, d.ax, d.ay, opts.fromElev)) {
         hold.ax = 0;
         hold.ay = 0;
-        return { ax: d.ax, ay: d.ay, trip };
+        return { ax: d.ax, ay: d.ay, trip, deflected: true };
       } else {
         trip = null; // the route itself is held: back to the local rules, the window still counting
       }
     } else if (!opts.noDetour && opts.nowMs - hold.bestAt! >= STUCK_ESCALATE_MS) {
       hold.bestAt = opts.nowMs; // one attempt per window, route or no route
       const esc = startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev);
-      if (esc) {
+      /* ONE CELL BACK, NO MORE. The escape is the only rule that may move
+       * against the stick, and it may do so only as far as the pocket's own
+       * exit — "the corner is just around the tile you currently is running
+       * into" (maintainer 2026-09-13). The dungeon pocket's exit is one tile
+       * aside; the spawn house's door is two tiles along the wall, and a route
+       * to it ran the player out of the house he was running into. */
+      if (esc && routeRetreat(esc, x, y, ux, uy) <= ESCAPE_RETREAT_CELLS) {
         const d = stepAutopilot(grid, esc, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
         if (!d.done) {
           hold.ax = 0;
           hold.ay = 0;
-          return { ax: d.ax, ay: d.ay, trip: esc };
+          return { ax: d.ax, ay: d.ay, trip: esc, deflected: true };
         }
       }
     }
+  }
+  /* A TERRAIN WALL GETS THE HONEST WALK (maintainer 2026-09-13, the spawn
+   * house's corner held down: "the player will first try to avoid the wall by
+   * running to the right ... then run back into the corner and then finally
+   * run out ... I feel this makes it hard to control and understand where the
+   * player is running"). Against a wall or in a corner, none of the tree
+   * rules below — no hold, no planned detour, no full-speed slide:
+   *  - a run leaned into the wall by no more than the wall-assist angle is
+   *    straightened to run exactly along it at full speed;
+   *  - past that angle the body keeps its own heading and the movement tick
+   *    slides it at the wall's rate — slower, and to a stop when the push is
+   *    square on or the corner refuses both axes ("the only correct way to
+   *    navigate is to in both start positions run the player into the
+   *    corner"); a jumpable wall is then hopped by the caller's auto-jump;
+   *  - a door SIDEWAYS or ahead within STEER_DOOR_RANGE is steered to (the
+   *    door-finder, which never looks behind the run);
+   *  - the one backwards move is rule 0's escape above, one cell at most.
+   * A solid prop refusing either axis keeps the tree rules: a footprint is a
+   * blob and those rules were measured on it. */
+  // Probed with the HEADING the frame would walk: the key pair the stick
+  // snapped to may lock onto the wall's own axis and have no push into it at
+  // all, while the finger's lean does.
+  const h = opts.heading ?? { ax, ay };
+  const wall = wallContact(grid, x, y, h.ax, h.ay, opts.fromElev);
+  if (wall && !wall.prop) {
+    hold.ax = 0;
+    hold.ay = 0;
+    if (wall.tangent) {
+      const deg = opts.wallAssistDeg ?? WALL_ASSIST_DEG_DEFAULT;
+      if (wallAngleDeg(h.ax, h.ay, wall.tangent.x, wall.tangent.y) <= deg + 1e-9) {
+        const s = worldAxisToScreenInput(wall.tangent.x, wall.tangent.y);
+        return { ax: s.ax, ay: s.ay, trip: null, deflected: true };
+      }
+    }
+    if (bodyStalled(grid, x, y, ax, ay, opts.fromElev)) {
+      const a = steerAssist(grid, x, y, ax, ay, opts.fromElev);
+      if (a) return { ax: a.ax, ay: a.ay, trip: null, deflected: true };
+    }
+    return { ax, ay, trip: null, deflected: false };
   }
   const rawClear = headingClear(grid, x, y, ax, ay, opts.fromElev);
   const skirted = Math.hypot(x - (hold.fromX ?? x), y - (hold.fromY ?? y));
@@ -3885,7 +4094,7 @@ export function walkHeading(
   const latched = hold.ax !== 0 || hold.ay !== 0;
   const release = rawClear && skirted >= HOLD_MIN_TRAVEL;
   if (latched && !release) {
-    if (!bodyStalled(grid, x, y, hold.ax, hold.ay, opts.fromElev)) return { ax: hold.ax, ay: hold.ay, trip: null };
+    if (!bodyStalled(grid, x, y, hold.ax, hold.ay, opts.fromElev)) return { ax: hold.ax, ay: hold.ay, trip: null, deflected: true };
     /* The committed heading ground to a stop against the same obstacle. Pick
      * ANOTHER deflection — never fall back to the raw heading, which is the one
      * pointing into the thing being avoided. Traced at tree_031: the held (1,0)
@@ -3893,7 +4102,7 @@ export function walkHeading(
      * and the body was pulled back onto the trunk it had just left — 90 flaps
      * with the deflection latched the whole way through. */
     const sl = slideAlong(grid, x, y, ax, ay, hold, opts.fromElev);
-    if (sl) return { ax: sl.ax, ay: sl.ay, trip: null };
+    if (sl) return { ax: sl.ax, ay: sl.ay, trip: null, deflected: true };
     hold.ax = 0;
     hold.ay = 0;
   }
@@ -3974,7 +4183,7 @@ export function walkHeading(
     hold.ax = hx;
     hold.ay = hy;
   }
-  return { ax: hx, ay: hy, trip };
+  return { ax: hx, ay: hy, trip, deflected };
 }
 
 /** Plan the short way round whatever the stick is jammed against. Null when
@@ -4004,9 +4213,17 @@ export function startEscapeRoute(
   nowMs: number,
   fromElev?: number,
 ): AutopilotTrip | null {
-  const trip = planRoundTheStick(grid, x, y, ax, ay, nowMs, fromElev, ESCAPE_GOALS, ESCAPE_NODES, ESCAPE_CORRIDOR_CELLS);
+  const trip = planRoundTheStick(grid, x, y, ax, ay, nowMs, fromElev, ESCAPE_GOALS, ESCAPE_NODES, ESCAPE_CORRIDOR_CELLS, true);
   if (trip) trip.committed = true;
   return trip;
+}
+
+/** A route ENDS where it was asked to — findPath answers an unreachable goal
+ *  with the reachable rim, and the rim of a goal behind an endless wall is the
+ *  spot beside the body (the target is clearance-adjusted, hence the slack). */
+function arrives(trip: AutopilotTrip, gx: number, gy: number): boolean {
+  const end = trip.path[trip.path.length - 1];
+  return !!end && Math.hypot(end.x - gx, end.y - gy) <= 1.5 * CELL_WU;
 }
 
 function planRoundTheStick(
@@ -4020,6 +4237,13 @@ function planRoundTheStick(
   goals: readonly [number, number][],
   maxNodes: number,
   corridorCells: number,
+  /* AN ESCAPE IS A WAY OUT, NOT A SKIRT (2026-09-13): it must ARRIVE at a goal
+   * that lies AHEAD. Pressed square against an endless wall, the fan's goals
+   * beyond it came back as best-effort rims — the spot beside the body — and
+   * its sideways goals as six-cell walks along the wall, so every 1.5 s the
+   * body that should stand there took a stroll. Sideways within reach is the
+   * door-finder's (4 cells, at once); a rim is no escape. */
+  escape = false,
 ): AutopilotTrip | null {
   const v = screenToWorldVector(ax, ay);
   const l = Math.hypot(v.x, v.y);
@@ -4027,6 +4251,7 @@ function planRoundTheStick(
   const ux = v.x / l;
   const uy = v.y / l;
   for (const [rot, dist] of goals) {
+    if (escape && Math.abs(rot) >= Math.PI / 2 - 1e-9) continue;
     const cs = Math.cos(rot);
     const sn = Math.sin(rot);
     const gx = x + (ux * cs - uy * sn) * dist * CELL_WU;
@@ -4035,9 +4260,38 @@ function planRoundTheStick(
       grid, x, y, gx, gy,
       false, nowMs, fromElev, undefined, maxNodes,
     );
-    if (trip && withinCorridor(trip, x, y, gx, gy, corridorCells)) return trip;
+    if (!trip || !withinCorridor(trip, x, y, gx, gy, corridorCells)) continue;
+    if (escape && !arrives(trip, gx, gy)) continue;
+    return trip;
   }
   return null;
+}
+
+/** How far AGAINST the stick an escape route may reach, in TILES: the exit
+ *  one tile aside of the tile being run into, never a door two tiles back
+ *  (maintainer 2026-09-13; see walkHeading rule 0). */
+export const ESCAPE_RETREAT_CELLS = 1;
+
+/** How many TILES against the ask a route reaches: over its points, the
+ *  largest backwards step of the point's CELL from the body's cell along
+ *  either world axis the ask runs on (an axis the ask does not run on is
+ *  sideways, and never counts). Whole tiles, the way he counts — "the corner
+ *  was 2 tiles away from the opening and not 1" — and not a distance: findPath
+ *  nudges its points off the walls, so the pocket's one-cell exit measured
+ *  1.07 cells and the house door's two-cell run 1.48. 0 for a route that only
+ *  ever goes sideways or on. */
+export function routeRetreat(trip: AutopilotTrip, x: number, y: number, ux: number, uy: number): number {
+  const bc = Math.floor(x / CELL_WU);
+  const br = Math.floor(y / CELL_WU);
+  const sx = Math.abs(ux) > 1e-6 ? Math.sign(ux) : 0;
+  const sy = Math.abs(uy) > 1e-6 ? Math.sign(uy) : 0;
+  let worst = 0;
+  for (const p of trip.path) {
+    const dc = Math.floor(p.x / CELL_WU) - bc;
+    const dr = Math.floor(p.y / CELL_WU) - br;
+    worst = Math.max(worst, -dc * sx, -dr * sy);
+  }
+  return worst;
 }
 
 /** How far off the straight line a detour may bulge and still be a SKIRT. A

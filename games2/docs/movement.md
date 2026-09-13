@@ -116,6 +116,15 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   the world's levels, so re-authoring cannot move it) and the open-ground
   case that must never escalate. Probe: `scripts/holdtrace.ts` (COL ROW AX
   AY) traces `walkHeading` at any spot of the real world, tick by tick.
+  **AND ONE TILE BACK, NO FURTHER** (maintainer 2026-09-13: "a backwards
+  navigation can only happen when ... the corner is just around the tile you
+  currently is running into ... the corner was 2 tiles away from the opening
+  and not 1"): the escape is the only rule that moves against the stick, and
+  `routeRetreat` counts its route's backwards reach in WHOLE TILES per world
+  axis from the body's cell (`ESCAPE_RETREAT_CELLS` 1) — the pocket's exit
+  one tile aside passes, the spawn house's door two tiles along the wall does
+  not. Tiles, not a distance: findPath nudges its points off the walls, so
+  the pocket measured 1.07 cells against the door's 1.48.
 - **THE RESCUE NEVER CLIMBS** (`unstickFromSolids` with the body's elevation):
   a push that would step more than a walk can climb, or drop, onto a cell
   with no deck at the body's level is refused — a cupboard against a wall
@@ -134,17 +143,63 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   ledges excluded (auto-jump's domain); the autopilot never uses it. Grounded
   in REAL `stepMovement` sims (incl. the 0.75R corner probes). Probe:
   `__ml.steerAt(x,y,ax,ay)`; tests: `server/test/steering.test.ts`.
-- **Terrain-wall steer assist — the door-finder** (`steerAssistWall`, called
-  when the stall is not a solid prop; maintainer: "find the closest path
-  around taking the player forward … helps when the player doesn't aim at the
-  door exactly right"): on a stall against terrain even a JUMP can't climb
-  (1-level ledges stay auto-jump's), hunt up to `STEER_DOOR_RANGE` (4) cells
-  laterally along the wall — nearest opening either side — and deflect purely
-  sideways, re-evaluated every tick. The slide LANE is checked cell by cell (a
-  door behind a boulder is not a door); the opening must LEAD FORWARD (cell
-  beyond enterable at jump climb — else an alcove attracts); no candidate may
-  sit a DAMAGING drop below the feet. No opening → null, honest collision.
-  Tests: the terrain-wall block of steering.test.ts.
+- **THE WALL WALK** (`walkHeading`'s terrain branch, `wallContact`;
+  maintainer 2026-09-13, the spawn house's corner held down: the body ran
+  right along the east wall, back into the corner, then out through the door
+  two cells behind it — "I feel this makes it hard to control and understand
+  where the player is running"). Against a TERRAIN wall none of the tree rules
+  run: no hold, no planned detour, no full-speed slide (a solid prop refusing
+  either axis keeps them — a footprint is a blob and those rules were measured
+  on it). Asked of the movement tick per WORLD axis, every tick, with the
+  heading the frame would walk (the finger's leaned vector: the 8-way key may
+  lock onto the wall's own axis and have no push into it at all):
+  - **Straight along the wall within his angle**: the thumb no more than the
+    "Wall assist angle" dial off the wall's drawn direction
+    (`client/src/wallassist.ts`; `WALL_ASSIST_DEG_*`, default 30, SCREEN
+    degrees — `wallAngleDeg`; 0 = off) runs exactly along it at full speed:
+    the diagonal key pair that locks onto that axis (`worldAxisToScreenInput`),
+    flagged `deflected` so the client neither leans it back into the wall nor
+    faces it — "just a little bit into the wall we can help the player to run
+    straight alongside the wall (to not lose friction and looking dumb)".
+  - **Past the angle the wall takes its share**: the heading is walked as it
+    is and the axes resolve as ever — the body slides at the wall's own rate
+    (a world 65-degree lean: 0.61 of the run; 45: the run's own screen speed,
+    the never-faster cap's doing), stops square on, and stops in a corner
+    (both axes refused): "the only correct way to navigate is to in both start
+    positions run the player into the corner". A jumpable wall is then hopped
+    by auto-jump (below) — "this sliding means the player will sooner or later
+    jump up on that hill".
+  - **A door sideways or ahead within `STEER_DOOR_RANGE`** (4) is steered to
+    by the door-finder (below); one behind the run never, at any distance —
+    "the door is way too far away for doing a 'run backwards' navigation".
+    From that corner, bottom-left (a run straight into the south wall) has the
+    door sideways and takes it; bottom-right (into the east wall) and down
+    (into the corner) have it behind and stand.
+  - **The sprite faces the stick** while anything deflects the walk — the
+    straightening, the door-finder, the dodge, the hop: `lastFace` in
+    `predictAndSend`, sent as `InputMessage.fd` so the server's body faces the
+    same way for everyone ("easy to understand that the movement that is going
+    on is a navigation helper movement"). Probe: `__ml.lastFace()`.
+  Gate: `server/test/wallcorner.test.ts` — a copy of the house's levels, his
+  two start spots, the three stick directions, the angle, the hop, the tile
+  cap. The world border is terrain too: a body runs into the map's corner and
+  stands (the footprint test stops once its blob is behind for that reason).
+- **The door-finder** (`steerAssistWall`, the terrain stall's assist;
+  maintainer 2026-08-12: "find the closest path around taking the player
+  forward … helps when the player doesn't aim at the door exactly right"): on
+  a stall against terrain even a JUMP can't climb (1-level ledges stay
+  auto-jump's) it asks the movement tick WHICH world axis refuses — never the
+  intent's dominant component: screen-down is a world diagonal, and the
+  dominant-axis guess hunted up and down the room's floor beside the south
+  wall instead of along it — hunts up to `STEER_DOOR_RANGE` (4) cells along
+  each refused wall (nearest opening first, either side, both walls in a
+  corner), skips any opening whose lateral direction opposes the stick, and
+  deflects purely sideways, re-evaluated every tick. The slide LANE is checked
+  cell by cell (a door behind a boulder is not a door); the opening must LEAD
+  FORWARD (cell beyond enterable at jump climb — else an alcove attracts); no
+  candidate may sit a DAMAGING drop below the feet. No opening → null, honest
+  collision. Tests: the terrain-wall block of steering.test.ts,
+  wallcorner.test.ts.
 - **FALL DAMAGE + THE NO-FALL ROUTING LAW** (maintainer: "the nav system
   should at any cost avoid fall damage"). One line: `FALL_DMG_MIN_LEVELS` = 6
   (a house roof). Three layers:
@@ -370,7 +425,12 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     resolveElevAt under the server's jump semantics): a 6-degree lean running
     climbs in ONE hop, at 117 ms, steered 133 ms, and is 471 wu
     on along its angle at 3 s; the old rule is still on the low ground,
-    pressed to the wall, 484 wu down it.
+    pressed to the wall, 484 wu down it. SINCE 2026-09-13 THE WALL WALK COMES
+    FIRST (above): a lean within the wall-assist angle is straightened along
+    the wall and never reaches this probe (nothing pushes into the wall); the
+    hop is what a lean PAST the angle does. hop.test.ts drives `hopIntoWall`
+    alone and keeps measuring the hop itself; wallcorner.test.ts runs the two
+    in the pipeline's order (a world 10-degree lean runs straight, 45 hops).
 - **Collision probes** (`stepMovement`): per axis, the forward CENTRE probe
   applies the full rule (`makeBlocked`); the two LATERAL corner probes
   (±`PLAYER_RADIUS*0.75`) apply `makeSideBlocked` (solids only) and are STRICT

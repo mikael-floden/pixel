@@ -1,6 +1,9 @@
-// THE HOP INTO THE WALL (maintainer 2026-09-12): a run leaned even slightly into
-// a ledge a jump would clear must climb it and keep its angle — never slide
-// along the wall "forever". Headless, on the real shared tick: the same
+// THE HOP INTO THE WALL (maintainer 2026-09-12): a run leaned into a ledge a
+// jump would clear must climb it and keep its angle — never slide along the
+// wall "forever". (Since 2026-09-13 walkHeading straightens a lean WITHIN the
+// wall-assist angle along the wall before this ever runs, so in the game the
+// hop is what a lean PAST that angle does — wallcorner.test.ts covers the
+// order; this file measures the hop itself.) Headless, on the real shared tick: the same
 // stepMovement / makeBlockedElev / resolveElevAt the server integrates with and
 // the client predicts with, under the server's own jump semantics (JUMP_CLIMB
 // for JUMP_MS at JUMP_SPEED_FACTOR, then JUMP_COOLDOWN_MS), driven frame by

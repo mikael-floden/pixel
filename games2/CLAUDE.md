@@ -80,13 +80,11 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   are MEASURED on the raw canvas and converted into the packed frame, so
   nothing moves (`docs/scenery.md`, `docs/monsters-combat.md`; gates
   `verify-scenery-pack.mjs`, `verify-npc-pack.mjs`).
-- Ground DETAILS are his approved `tiles/tops` details + the x-over-y top
-  approvals, one in N cells by the dial (default 1 in 100, his); never on an
-  indoor floor, a ramp, or touching another, so never tiled; drawn as an
-  OVERLAY — its top face alone, so it can never show a wall
-  (`detailplace.test.ts`, `detailwall.test.ts`).
+- Ground DETAILS (his approved tops) fall one in N cells by the dial (1 in
+  100, his), never indoors, on a ramp or touching another, and draw as an
+  OVERLAY, top face alone (`detailplace.test.ts`, `detailwall.test.ts`).
 - A base-set member leaves its set on his verdict on THE TILE, never on its
-  `#top` detail verdict (independent, maintainer 2026-09-12; `tiles3members.test.ts`).
+  `#top` detail verdict (maintainer 2026-09-12; `tiles3members.test.ts`).
 - The resolver is PER CELL (`Tiles3World`), never the sweep, held deeply equal
   to the sweep and to `maps2/pipeline/render3.py` by the parity fixtures
   (`scripts/tiles3-fixture.py`); a resolution rule changes in tiles3.ts AND
@@ -180,28 +178,26 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   the escape, and the rescue never climbs.
 - A footprint and a body belong to the FLOOR they stand on (`lvl`); every
   query that knows the surface level passes it.
-- The nav system avoids fall damage at any cost: ≥6 levels is not an edge; a
-  fall bills on IMPACT (`fallPend`, `fallDurationS`), never at the edge, and
-  the client draws the whole impact — blood, number, flinch — on its own
-  predicted touchdown frame, swallowing the server's late copy
-  (`fallhurt.ts`); its slow FADES with the number (`fallSlowAt`), never the
-  hit's 1.5 s stagger.
+- The nav avoids fall damage at any cost: ≥6 levels is not an edge; a fall
+  bills on IMPACT (`fallPend`), the client draws the impact on its own predicted
+  touchdown frame (`fallhurt.ts`), its slow FADES with the number (`fallSlowAt`).
 - Water is the player's sanctuary: no monster enters, swims or is hit there.
-  It lies FLAT: a liquid corner votes on the ground under a point only at the
-  cell's own level (`swimlevel.test.ts`), as on a boundary.
+  It lies FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
   clamps it; default 1.2x IS HIS (`playerspeed.ts`).
 - The stick "almost" snaps: `leanHeading` leans the heading between the
-  octants' REAL run headings by his dial (0 = snap, 1 = continuous; default
-  0.85 IS HIS), the grid-axis lock locks EXACT diagonals only, the facing
-  follows the run, and the bearing is read additively off games-ui's stick
-  (`stickdir.ts`).
-- Auto-jump fires on ANY push into a jumpable wall, and a wall BESIDE the
-  run is climbed by steering the hop into it (`hopIntoWall`): never a slide
-  along a ledge you lean into (maintainer 2026-09-12).
-- Never-backwards is a rule, not an absolute: `walkHeading` watches progress
-  along the ask and after `STUCK_ESCALATE_MS` (1.5 s) without any commits to
-  a planned escape route past the no-retreat rule and the hold (rule 0).
+  octants' REAL run headings by his dial (0 snap, 1 continuous; 0.85 IS HIS),
+  the grid-axis lock locks EXACT diagonals only, and the bearing is read
+  additively off games-ui's stick (`stickdir.ts`).
+- A TERRAIN wall gets the honest walk (`wallcorner.test.ts`, 2026-09-13):
+  within his "Wall assist angle" dial (30 screen deg) the run is
+  straightened along it; past it the body slides at the wall's rate or
+  stands, and auto-jump hops a jumpable one; a door SIDEWAYS or ahead within
+  4 cells is steered to, never one behind; the sprite faces the STICK while
+  the nav deflects (`InputMessage.fd`). No tree rules on terrain.
+- Never-backwards is a rule, not an absolute: after `STUCK_ESCALATE_MS`
+  (1.5 s) without progress `walkHeading` commits to an escape route that
+  ARRIVES ahead (rule 0), one TILE back at most (`routeRetreat`).
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet the
   walk (rejected twice); both readings of an ambiguous pixel are routed.
 - The body dodge is a manoeuvre: engage and hold on different thresholds,
@@ -215,9 +211,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   client sees across a border through GHOSTS, in their own maps so no server
   loop ever steps or fights one; a crossing is a hand-off over
   the bus (hot state under a one-shot key, `zone:go`, a fresh join, the old
-  room lets go on `handoff:done`). The sender rewrites that hot state EVERY
-  TICK and the client replays from the seq the new room reports (a frozen
-  snapshot snapped the body backwards).
+  room lets go on `handoff:done`); the sender rewrites the hot state EVERY
+  TICK and the client replays from the seq the new room reports.
 - A player's map key is its FIRST session id and never changes across
   hand-offs; the client finds itself by the synced `sid`, never by key.
 - ONE room per zone per process (`zoneRooms`, warmed at boot, autoDispose
