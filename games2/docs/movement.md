@@ -481,10 +481,24 @@ photographed: "the transition tile is not 100% water or 100% beach ... The
 player must use this boundary to know where it has to swim and where it can
 stand"). The lookup rounds to the nearest grid point with the renderer's own
 limits — a corner more than one storey off this cell's level folds back to
-the cell (`BOUNDARY_STEP`), and an exact cell centre stays the cell (strict
-`>`), so every `(c + 0.5) * CELL_WU` per-cell query is unchanged. A pure cell
-is unchanged byte for byte; level and deck stay per cell. Full server suite:
-the same 24 pre-existing fixture failures before and after, nothing added.
+the cell (`BOUNDARY_STEP`), A LIQUID CORNER VOTES ONLY AT THE CELL'S OWN
+LEVEL, and an exact cell centre stays the cell (strict `>`), so every
+`(c + 0.5) * CELL_WU` per-cell query is unchanged. A pure cell is unchanged
+byte for byte; level and deck stay per cell. Full server suite: the same 24
+pre-existing fixture failures before and after, nothing added.
+
+WATER LIES FLAT, AND THIS IS THE BODY'S HALF OF IT (2026-09-12). A sea one
+storey below lay inside the fold, so the quadrant of a shore STEP nearest the
+water read as water and the body swam a level above the sea — "Why do I swim
+one stair up?" (maintainer 2026-09-11 at 277.6, 269.5: dark_mud at level 1,
+the sea at 0; 9 quadrants over 8 cells of the_game, every one land at level 1
+beside water at 0, and light_beach along the south shore is seven of them).
+tiles3 `boundaryAt` folds the same corner away the same day, so that tile draws
+no water at all: this clause is what keeps the picture and the body telling one
+story, which is the whole reason the lookup reads the corner. A LAND corner
+keeps the one-storey vote — the beach quadrant of a water cell is still
+standable and that shore tile is still drawn (1,518 quadrants of the_game still
+swim at the water's own level). Gate: `server/test/swimlevel.test.ts`.
 
 The swim LOOK: the character FLOATS with a per-direction SHOULDER WATERLINE at
 the surface — head + shoulders above, below clipped, no shadow, head bob, idle

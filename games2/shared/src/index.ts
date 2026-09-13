@@ -1354,15 +1354,16 @@ function cellIndex(grid: TerrainGrid, x: number, y: number): number {
  * swim and where it can stand").
  *
  * So the ground under (x, y) is the type at the nearest GRID POINT — the cell
- * whose north-west corner that point is — with the renderer's own two limits:
+ * whose north-west corner that point is — with the renderer's own limits:
  * a corner more than one storey off this cell's level is not on this cell's
  * tile (the quad folds it to the cell's own ground; `BOUNDARY_STEP` in
- * tiles3.ts is 1), and a point exactly at the cell centre stays the cell's
- * own (strict `>`, so every `(c + 0.5) * CELL_WU` per-cell query in this file
+ * tiles3.ts is 1), A LIQUID CORNER VOTES ONLY AT THIS CELL'S OWN LEVEL
+ * (below), and a point exactly at the cell centre stays the cell's own
+ * (strict `>`, so every `(c + 0.5) * CELL_WU` per-cell query in this file
  * reads the cell it names). A pure cell — all four corners one ground — is
  * unchanged, byte for byte. Level and deck stay per cell: the face of a cliff
  * is drawn at the cell, not the corner. */
-const CORNER_FOLD_STEP = 1; // twin of tiles3.ts BOUNDARY_STEP
+const CORNER_FOLD_STEP = 1; // twin of tiles3.ts BOUNDARY_STEP — including its liquid clause
 function typeIndexAtWorld(grid: TerrainGrid, x: number, y: number): number {
   const i = cellIndex(grid, x, y);
   if (i < 0) return -1;
@@ -1375,7 +1376,22 @@ function typeIndexAtWorld(grid: TerrainGrid, x: number, y: number): number {
   if (cc === col && cr === row) return i;
   if (cc >= grid.width || cr >= grid.height) return i;
   const j = cr * grid.width + cc;
-  if (!grid.type[j] || Math.abs(grid.level[j] - grid.level[i]) > CORNER_FOLD_STEP) return i;
+  if (!grid.type[j]) return i;
+  const dz = grid.level[j] - grid.level[i];
+  if (Math.abs(dz) > CORNER_FOLD_STEP) return i;
+  /* WATER LIES FLAT, AND THIS IS THE BODY'S HALF OF THAT RULE (2026-09-12).
+   * A sea one storey below still lay within the fold, so the quadrant of a
+   * shore step nearest the water read as WATER and the body swam a whole
+   * level above it — "Why do I swim one stair up?" (maintainer 2026-09-11 at
+   * 277.6, 269.5: dark_mud at level 1, the sea at 0; 9 quadrants over 8 cells
+   * of the_game, every one land at level 1 beside water at 0). tiles3
+   * `boundaryAt` folds the same corner away, so that tile draws no water at
+   * all: this is what keeps the picture and the body telling one story, which
+   * is the whole point of reading the corner ("The player must use this
+   * boundary to know where it has to swim and where it can stand",
+   * 2026-09-09). A LAND corner keeps the one-storey vote — the beach quadrant
+   * of a water cell is still standable, and that shore tile is still drawn. */
+  if (dz !== 0 && surfaceFor(grid.type[j]).swimmable) return i;
   return j;
 }
 

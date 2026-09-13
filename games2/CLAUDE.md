@@ -74,14 +74,12 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   but exists on GitHub is that file.
 
 **Rendering a maps3 world** (`docs/tiles3-rendering.md`)
-- Monster strips ship PACKED (`monsters/<id>/packed/`, cropped to the art's
-  union box, content-hashed; the manifest builder prefers them and measures
-  anchors from them). Never point the game at a raw strip again.
-- Scenery and NPC art ship PACKED too (`<piece>/packed/` one box per state,
-  `npcs/<id>/packed/` one box per NPC; each domain's `pipeline/pack.py` after
-  its art changes): MEASURED on the raw canvas, cut or converted into the
-  packed frame — nothing moves (`docs/scenery.md`, `docs/monsters-combat.md`;
-  gates `verify-scenery-pack.mjs`, `verify-npc-pack.mjs`).
+- ALL ART SHIPS PACKED — monster strips (union box), scenery (one box per
+  state), NPCs (one box per NPC), each `<domain>/pipeline/pack.py`,
+  content-hashed; never point the game at a raw file again. Anchors and boxes
+  are MEASURED on the raw canvas and converted into the packed frame, so
+  nothing moves (`docs/scenery.md`, `docs/monsters-combat.md`; gates
+  `verify-scenery-pack.mjs`, `verify-npc-pack.mjs`).
 - Ground DETAILS are his approved `tiles/tops` details + the x-over-y top
   approvals, one in N cells by the Settings "Ground details" dial
   (`detailrate.ts`, default 1 in 56); never tiled, never on an indoor floor.
@@ -114,19 +112,17 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   `exists`); terrain has its own `LoaderPlugin` with `crossOrigin` set.
 - EVERYTHING STREAMED BEHIND THE LIVE WORLD goes through THE ART QUEUE
   (`client/src/artqueue.ts`, `docs/perf.md`): priority order, a BYTE budget
-  per frame (Settings dial "upload budget" until pinned), no kind's strips
-  before a monster of it exists, its fight art at the back and raised when a
-  fight starts, scenery animations last. Never the scene loader for it —
-  every slow frame on his phone carried a texture upload (measured 2026-09-12;
-  monsters mocked = the ceiling). The queue decodes on a worker and uploads
-  in bands (`artworker.ts`); never `texImage2D` an `<img>` for streamed art —
-  Chrome decodes it again inside the call, 5.8-9.2 ms a strip. Scenery
-  stills ride it too, and their fit boxes come with the bands: never measure
-  a streamed image's pixels on the frame thread (a first-sight canvas draw
-  is another decode; 33-66 ms a step into a fresh forest), and NEVER read a
-  banded texture back from the GPU inside the frame (a whole-still readback
-  drains a phone GPU: 62-92 ms a frame) — boxes come with the bands, alpha
-  and pixels from the worker on demand (`docs/perf.md`).
+  per frame, no kind's strips before a monster of it exists, its fight art
+  raised when a fight starts, scenery animations last. Never the scene loader
+  for it. The queue decodes on a worker and uploads in bands (`artworker.ts`):
+  never `texImage2D` an `<img>` for streamed art, never measure a streamed
+  image's pixels on the frame thread, and NEVER read a banded texture back
+  from the GPU inside the frame — every one of those is a decode or a pipeline
+  drain the phone pays per strip; boxes ride the bands, alpha and pixels come
+  from the worker on demand.
+- A DynamicTexture BRACKET is the GPU cost (a whole capture clear + blit): an
+  erase is the object's own ERASE blend inside the pass, and the capture binds
+  the rows in use (`coverRaster`, games-perf-assistant 2026-09-13).
 
 **Depth, occluders, scenery** (`docs/depth-sort.md`, `docs/scenery.md`)
 - ONE body pipeline: `resolveDrawDepth` + `placeBodyShadow` + `syncLitCopy`
@@ -188,6 +184,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   (`fallhurt.ts`); its slow FADES with the number (`fallSlowAt`), never the
   hit's 1.5 s stagger.
 - Water is the player's sanctuary: no monster enters, swims or is hit there.
+  It also lies FLAT: a liquid corner votes on the ground under a point only at
+  the cell's own level (`swimlevel.test.ts`), as it does on a boundary.
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
   clamps it; default 1.2x IS HIS (`playerspeed.ts`).
 - The stick "almost" snaps: `leanHeading` leans the heading between the
