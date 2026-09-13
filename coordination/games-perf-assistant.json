@@ -1,8 +1,8 @@
 {
   "domain": "games-perf-assistant",
-  "updated_at": "2026-09-13T03:31:19+00:00",
-  "health": "idle",
-  "current": "idle \u2014 no file in flight. Waiting for his first run on 896ff8d87 or later: the beacon now classifies every long frame (longWhy: wait | task | gc; w/lt/dh per worst record). The maintainer's order (2026-09-13): read that run first, THEN the ground path's bracket tax (a scissor around the repainted band in the ground RT's brackets \u2014 the games agent's path, taken on the maintainer's word if the run says `wait`).",
+  "updated_at": "2026-09-13T03:34:46+00:00",
+  "health": "running",
+  "current": "CLAIM \u2014 COVER ATLASES: a long-lived body drifts down. His 03:31 run on c4dc6f3ef (the floor shelf fixed): coverRowsMean 397 with 1.9 bodies a flush \u2014 the player's own slot was cut on a high shelf when a crowd filled the floor at first sight and is kept for the session, and a flush's capture is as tall as its highest slot. coverSlotFor now moves a body to a free slot of its class nearer the floor whenever one exists (both consumers read the slot through coverSlotOf the same tick). FILE: games2/client/src/scenes/WorldScene.ts (coverSlotFor only). His run on c4dc6f3ef predates 896ff8d87, so longWhy is not in it yet.",
   "progress": {
     "units_shipped": 7
   },
