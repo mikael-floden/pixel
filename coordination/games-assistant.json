@@ -1,8 +1,8 @@
 {
  "domain": "games-assistant",
- "updated_at": "2026-09-13T13:37:03+00:00",
- "health": "idle",
- "current": "Idle between runs. Shipped this run: the wall walk, the table's glide, his verdicts on both, and the three feel reports on 295b522ff (229efe5a7, see the latest note). No file in flight. Next candidates, none claimed: his verdict on the world-cosine slide and the walked escape, the monster half of his crossing requirement (ghosts at 10 Hz against 20), the respawn/teleport fade (maps2 relayed 09-09), the 12 red world/fixture tests (four render3 mirrors owed by maps2).",
+ "updated_at": "2026-09-13T13:44:07+00:00",
+ "health": "working",
+ "current": "CLAIMED: his verdict on the gait switch (2026-09-13: 'we switch from walking to running at too low velocity. The switch should come 50% closer to max speed'). The run gait's ON threshold moves halfway from where it is (1.15 x walk, 46% of the run) toward the run's speed, with the same hysteresis band; and the speed it is judged on is made uniform across directions if it is not (the free run's SCREEN speed is uniform, its world speed is not). FILES: games2/shared/src/index.ts (GAIT_RUN_ON/OFF, gaitRunning), games2/server/test/gait.test.ts, games2/client/src/scenes/WorldScene.ts and games2/server/src/rooms/WorldRoom.ts (only if the measured speed changes units), games2/docs/movement.md, games2/CLAUDE.md.",
  "progress": {
   "units_shipped": 14
  },
