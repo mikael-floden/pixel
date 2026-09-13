@@ -151,7 +151,9 @@ YOURS = {
     "default_girl": "High detail version, new face and hair, don't change her cloth. Bikini only.",
     "default_boy": "High detail version, don't change his cloth. Speedos only.",
 }
-YOURS_COUNT = 10
+# 2026-09-13 (later): "15 more girls. Same prompt" — the girl carries 25 of
+# these slots (HD 11-35), the boy 10 (HD 11-20).
+YOURS_COUNT = {"default_girl": 25, "default_boy": 10}
 
 
 def _slot(hero, n, brief, snap, edit):
@@ -162,16 +164,17 @@ def _slot(hero, n, brief, snap, edit):
 
 
 def slots(hero):
-    """The twenty (slot, brief, palette_snap, state_name, seed) rows of one hero:
+    """The (slot, brief, palette_snap, state_name, seed) rows of one hero:
     01-10 the five briefs, odd free and even snapped to the hero's palette;
-    11-20 the maintainer's prompt (`yours`), free, one seed each."""
+    11-N the maintainer's prompt (`yours`), free, one seed each (N = 10 +
+    YOURS_COUNT[hero]: the girl 35, the boy 20)."""
     out = []
     n = 0
     for brief in BRIEF_ORDER:
         for snap in (False, True):
             n += 1
             out.append(_slot(hero, n, brief, snap, BRIEFS[hero][brief]))
-    for _ in range(YOURS_COUNT):
+    for _ in range(YOURS_COUNT[hero]):
         n += 1
         out.append(_slot(hero, n, "yours", False, YOURS[hero]))
     return out
