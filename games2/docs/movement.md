@@ -150,7 +150,12 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   where the player is running"). Against a TERRAIN wall none of the tree rules
   run: no hold, no planned detour, no full-speed slide (a solid prop refusing
   either axis keeps them — a footprint is a blob and those rules were measured
-  on it). Asked of the movement tick per WORLD axis, every tick, with the
+  on it; **a scenery footprint the heading pushes into is a prop WHATEVER THE
+  NAV LAYER SAYS**: `cellSolid` reads the derived nav cells, a small piece
+  fills none, and under a roof every cell wears the deck and reads walkable —
+  the spawn house's table took the wall rules and stood, 2026-09-13; the
+  contact query `footprintContact` is the truth). Asked of the movement tick
+  per WORLD axis, every tick, with the
   heading the frame would walk (the finger's leaned vector: the 8-way key may
   lock onto the wall's own axis and have no push into it at all):
   - **Straight along the wall within his angle**: the thumb no more than the
@@ -440,7 +445,23 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   SUBSTEPPED (~4wu chunks): probes refuse an axis whose leading edge at the
   step's END is blocked; one 100ms run input (`MAX_INPUT_DT`) reaches ~30wu
   and pre-substep froze the body far from the wall. Test: "big-dt input
-  advances to contact instead of freezing a step early". Bodies inside a
+  advances to contact instead of freezing a step early". **THE GLIDE TRIES
+  THE TANGENT AS ONE MOVE FIRST** (maintainer 2026-09-13, the spawn house's
+  table "more sticky ... can't slide alongside it as I can with a wall ...
+  does it have to do with the table's rotation?" — it did): a rect footprint
+  facing south has its sides on the SCREEN axes, the map's diagonals, and
+  each axis probe reaches (12 + 9) x 0.71 = 15 wu toward such a side, past
+  the 12 the body keeps — the tangent's half toward the side was refused and
+  the half away taken, a zig-zag OFF the table at 0.64 of the run, while the
+  cupboard (facing south-west, sides on the world axes) slid at 1.0. Now when
+  an axis is refused and a footprint opposes the step, the step projected on
+  the shape's tangent is tried as ONE move (leading edge along it, corners
+  across it, capped to the free step's screen length) and taken when it
+  passes and carries more of the intent than the axes did; the per-axis retry
+  stays as the fallback, terrain has no contact normal and is untouched.
+  Measured: along a diagonal side 1.0 of the run, 45 degrees into it 0.71
+  (cos 45, on the side the whole way), square on it stands. Gate:
+  `server/test/sceneryslide.test.ts`. Bodies inside a
   solid's margin (fall landings, spawns, history) are freed by
   **`unstickFromSolids`** (shared): smooth, speed-limited push along the
   away-gradient, run by the SERVER before each input integration and mirrored

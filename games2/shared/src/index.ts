@@ -737,6 +737,58 @@ export function stepMovement(
      * a certain angle the player is moving much faster"). The slide keeps its
      * direction and is scaled so its SCREEN length never exceeds the free
      * step's. */
+    /* THE GLIDE, FIRST AS ONE MOVE ALONG THE SHAPE. A footprint side that runs
+     * DIAGONAL to the world axes — a rect facing south has its sides along the
+     * SCREEN axes, which are the map's diagonals — refused the per-axis halves
+     * of its own tangent: each axis probe reaches PLAYER_RADIUS along its axis
+     * and SIDE across it, (12 + 9) x 0.71 = 15 wu toward a diagonal side, past
+     * the 12 the body keeps, so the half toward the side was refused and the
+     * half away was taken, and the body zig-zagged OFF the table it was meant
+     * to slide along at 0.64 of the run — while the cupboard beside the wall,
+     * facing south-west with its sides on the world axes, slid at 1.0
+     * (maintainer 2026-09-13, the spawn house: "the table is more sticky ... I
+     * can't slide alongside it as I can with a wall ... does it have to do
+     * with the table's rotation?" — it does). So when an axis is refused and a
+     * footprint is what opposes the step, the step is projected onto the
+     * shape's tangent and tried as ONE move — its leading edge along the move,
+     * its corners across it, capped to the free step's screen length — and
+     * taken when it passes and carries more of the intent than the axes did.
+     * Terrain has no contact normal and is untouched; the per-axis retry
+     * below stays as the fallback for a move this one cannot make. */
+    if ((blockedX || blockedY) && blocked?.contactNormal) {
+      const sl0 = Math.hypot(sx, sy);
+      const hit = sl0 > 1e-9 ? blocked.contactNormal(fx, fy, sx / sl0, sy / sl0) : null;
+      if (hit) {
+        const into = sx * hit.nx + sy * hit.ny;
+        let gx = into < 0 ? sx - into * hit.nx : sx;
+        let gy = into < 0 ? sy - into * hit.ny : sy;
+        const want = Math.hypot((sx - sy) * ISO_DX, (sx + sy) * ISO_DY);
+        const got = Math.hypot((gx - gy) * ISO_DX, (gx + gy) * ISO_DY);
+        if (got > want + 1e-9) {
+          const f = want / got;
+          gx *= f;
+          gy *= f;
+        }
+        const gl = Math.hypot(gx, gy);
+        if (gl > 1e-9) {
+          const ex = gx / gl;
+          const ey = gy / gl;
+          const gtx = clamp(fx + gx, SPAWN_MARGIN, worldW - SPAWN_MARGIN);
+          const gty = clamp(fy + gy, SPAWN_MARGIN, worldH - SPAWN_MARGIN);
+          const lpx = gtx + ex * PLAYER_RADIUS;
+          const lpy = gty + ey * PLAYER_RADIUS;
+          const ox = -ey * SIDE;
+          const oy = ex * SIDE;
+          const ok = !(blocked(lpx, lpy, fx, fy) || sideB!(lpx + ox, lpy + oy, fx, fy) || sideB!(lpx - ox, lpy - oy, fx, fy));
+          if (ok && (gtx - fx) * sx + (gty - fy) * sy > (rx - fx) * sx + (ry - fy) * sy + 1e-9) {
+            rx = gtx;
+            ry = gty;
+            freeX = false;
+            freeY = false;
+          }
+        }
+      }
+    }
     if ((blockedX || blockedY) && (rx !== fx || ry !== fy)) {
       const mx = rx - fx;
       const my = ry - fy;
@@ -2580,6 +2632,16 @@ export function wallContact(
   };
   if (refX) look(true, sx);
   if (refY) look(false, sy);
+  /* A SCENERY FOOTPRINT IS A PROP WHATEVER THE NAV LAYER SAYS. `cellSolid`
+   * reads the derived nav cells, and inside a house every cell wears the roof
+   * DECK, which it calls walkable — so the spawn house's table read as
+   * terrain, took the wall rules (a straightening along a world axis, wrong
+   * for a side at 45 degrees) and stood square on where the tree rules would
+   * have slid or gone round (maintainer 2026-09-13, "more sticky"). A small
+   * piece blocks no nav cell at all, for the same answer. The collision truth
+   * is the shape: a footprint the heading pushes INTO is the prop in the way. */
+  const fc = footprintContact(grid, x, y, FOOTPRINT_REACH, ux, uy, elev);
+  if (fc && fc.nx * ux + fc.ny * uy < -0.1) prop = true;
   const tangent =
     refX && !refY && sy !== 0 ? { x: 0, y: sy } : refY && !refX && sx !== 0 ? { x: sx, y: 0 } : null;
   return { refX, refY, prop, tangent };

@@ -82,7 +82,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   `verify-scenery-pack.mjs`, `verify-npc-pack.mjs`).
 - Ground DETAILS (his approved tops) fall one in N cells by the dial (1 in
   100, his), never indoors, on a ramp or touching another, and draw as an
-  OVERLAY, top face alone (`detailplace.test.ts`, `detailwall.test.ts`).
+  OVERLAY, top face alone (`detail*.test.ts`).
 - A base-set member leaves its set on his verdict on THE TILE, never on its
   `#top` detail verdict (maintainer 2026-09-12; `tiles3members.test.ts`).
 - The resolver is PER CELL (`Tiles3World`), never the sweep, held deeply equal
@@ -181,7 +181,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge; a fall
   bills on IMPACT (`fallPend`), the client draws the impact on its own predicted
   touchdown frame (`fallhurt.ts`), its slow FADES with the number (`fallSlowAt`).
-- Water is the player's sanctuary: no monster enters, swims or is hit there.
+- Water is the player's sanctuary: no monster enters or is hit there.
   It lies FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
   clamps it; default 1.2x IS HIS (`playerspeed.ts`).
@@ -189,12 +189,15 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   octants' REAL run headings by his dial (0 snap, 1 continuous; 0.85 IS HIS),
   the grid-axis lock locks EXACT diagonals only, and the bearing is read
   additively off games-ui's stick (`stickdir.ts`).
-- A TERRAIN wall gets the honest walk (`wallcorner.test.ts`, 2026-09-13):
+- A TERRAIN wall gets the honest walk (`wallcorner.test.ts`):
   within his "Wall assist angle" dial (30 screen deg) the run is
   straightened along it; past it the body slides at the wall's rate or
   stands, and auto-jump hops a jumpable one; a door SIDEWAYS or ahead within
   4 cells is steered to, never one behind; the sprite faces the STICK while
-  the nav deflects (`InputMessage.fd`). No tree rules on terrain.
+  the nav deflects.
+- A scenery footprint is a PROP whatever the nav layer says (a roof hides
+  it), and its glide tries the tangent as ONE move first (a diagonal side
+  refused the per-axis halves; `sceneryslide.test.ts`).
 - Never-backwards is a rule, not an absolute: after `STUCK_ESCALATE_MS`
   (1.5 s) without progress `walkHeading` commits to an escape route that
   ARRIVES ahead (rule 0), one TILE back at most (`routeRetreat`).
@@ -304,10 +307,8 @@ assigned it.
 ## Probes
 
 `window.__ml` is the instrument — `tiles3()`, `t3at`, `occDump()`,
-`groundHash()`, `hitch()`, `lightAt`, `lightSlots()`, `indoor()`,
-`sceneryAnims()`, `monsterInfo()`, `teleport`, `lookAt`, `nearby()`,
-`sealedAt`, `fallHurt()`, `zone()` — and each doc names the ones for its
-subsystem. Counters over pixels: a gate cannot tell a correct dark frame
+`groundHash()`, `lightAt`, `indoor()`, `zone()` — and each doc names the ones
+for its subsystem. Counters over pixels: a gate cannot tell a correct dark frame
 from a black one.
 
 ## Don't
