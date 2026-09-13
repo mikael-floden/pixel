@@ -183,18 +183,18 @@
       },
       "vent": {
         "dx": 1.0,
-        "dy": -32.4,
-        "conf": "flue_top",
+        "dy": -28.0,
+        "conf": "opening",
         "rotations": {
           "south-east": {
-            "dx": -5.8,
-            "dy": -32.4,
-            "conf": "flue_top"
+            "dx": -5.0,
+            "dy": -26.5,
+            "conf": "opening"
           },
           "south-west": {
-            "dx": 7.0,
-            "dy": -32.4,
-            "conf": "flue_top"
+            "dx": 6.5,
+            "dy": -26.5,
+            "conf": "opening"
           }
         }
       }

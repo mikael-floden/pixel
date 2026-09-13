@@ -69,6 +69,7 @@ DARK_OF_MEDIAN = 0.62  # a mouth is this much darker than the piece's median
 CUT_LADDER = (1.0, 0.80, 0.64, 0.52, 0.42)   # x DARK_OF_MEDIAN
 RELAXED_OF_CUT = 1.37  # the whole hole is this much lighter than its darkest core
 MIN_ROWS = 2        # rows — a pot's mouth is a 2-row ellipse in a 3/4 view
+FLUE_MIN_ROWS_BLOB = 1  # ...but INSIDE a pot one row of deep shadow IS the mouth
 MAX_WIDTH_SHARE = 0.85  # a mouth is narrower than the silhouette; a course is not
 TOP_TOL = 4         # px — blobs starting this close to the highest are all 'at the top'
 FLUE_TOP_TOL = 1    # ...but INSIDE a pot the highest dark thing IS the mouth
@@ -80,6 +81,7 @@ EDGE_CLEAR = 2      # px of material a mouth's pixels stand back from the silhou
 DEEP_SHARE = 0.55   # ...over this share of the blob
 MIN_BLOB = 3        # px — smaller than this is a dither speck, not an opening
 ALPHA_MIN = 16
+MARK_RGBA = (0, 255, 255, 255)  # the sheet's marker: a colour this art never uses
 
 
 def _luma(px):
@@ -137,7 +139,14 @@ def _openings(dark, opaque, outside, deep, widths, flue, x0, y0, x1, y1):
         if outline or len(blob) < MIN_BLOB:
             continue
         rows = len({p[1] for p in blob})
-        if rows < MIN_ROWS:
+        # INSIDE A POT, ONE ROW IS ENOUGH. The 2-row floor is there to throw out
+        # mortar lines on a big masonry cap; a pot has no mortar, and its mouth
+        # in this projection is often a single row of deep shadow under the far
+        # rim with the rest of the bowl merely shaded. Holding the floor at 2
+        # there left the piece on its flue_top fallback, which anchors on the
+        # rim's top edge — 5 px above the mouth, and he marked every facing of
+        # that pot (maintainer 2026-09-13, fifth round).
+        if rows < (FLUE_MIN_ROWS_BLOB if len(flue) >= FLUE_MIN_ROWS else MIN_ROWS):
             continue
         top_row = min(p[1] for p in blob)
         # COMPARE THE OPENING WITH THE SILHOUETTE AT ITS WIDEST ROW, not at its
@@ -496,32 +505,72 @@ def run(group: str | None = None, check: bool = False, force: bool = False,
 
 
 def _sheet(shots, out_path, zoom=4, cols=10, pad=6):
-    """Zoomed contact sheet with a cross drawn on every measured vent."""
+    """Zoomed contact sheet with a crosshair on every vent, and a NUMBER per tile.
+
+    IT HAS TO SURVIVE THE PHONE. The maintainer reviews these on a phone, where a
+    3516 px sheet is drawn at ~1000 px: a one-pixel cross becomes a third of a
+    screen pixel and vanishes into the art, and he twice circled a light MORTAR
+    JUNCTION as "yours" because it was the only cross-shaped thing he could see
+    (2026-09-13, his fifth round). So the marker is drawn at the TILE's scale —
+    thick arms with a black halo, a ring, and a hole in the middle so the anchor
+    pixel itself stays visible — in a colour this art never uses. The number in
+    the corner is the other half of it: it lets him say WHICH tile, and it lets
+    this side map a mark back without guessing from the artwork."""
+    from PIL import ImageDraw
     tiles = []
     for name, path, v in shots:
         with Image.open(path) as im:
             im = im.convert("RGBA")
             w, h = im.size
             big = im.resize((w * zoom, h * zoom), Image.NEAREST)
-            px = big.load()
-            cx = int((v["dx"] + w / 2.0) * zoom)
-            cy = int((v["dy"] + h / 2.0) * zoom)
-            col = (255, 60, 60, 255) if v.get("conf") == "measured" else (255, 210, 60, 255)
-            for d in range(-3 * zoom, 3 * zoom + 1):
-                for x, y in ((cx + d, cy), (cx, cy + d)):
-                    if 0 <= x < big.width and 0 <= y < big.height:
-                        px[x, y] = col
-            tiles.append(big)
+        d = ImageDraw.Draw(big)
+        cx = (v["dx"] + w / 2.0 + 0.5) * zoom      # the CENTRE of that pixel
+        cy = (v["dy"] + h / 2.0 + 0.5) * zoom
+        arm, gap = max(10, 5 * zoom), max(2, zoom)
+        th = max(3, zoom)
+        for col, width in (((0, 0, 0, 255), th + 2), (MARK_RGBA, th)):
+            for a, b in (((cx - arm, cy), (cx - gap, cy)), ((cx + gap, cy), (cx + arm, cy)),
+                         ((cx, cy - arm), (cx, cy - gap)), ((cx, cy + gap), (cx, cy + arm))):
+                d.line([a, b], fill=col, width=width)
+            r = gap + th
+            d.ellipse([cx - r, cy - r, cx + r, cy + r], outline=col, width=max(1, width - 1))
+        tiles.append(big)
     if not tiles:
         return
     tw = max(t.width for t in tiles)
-    th = max(t.height for t in tiles)
-    rows = (len(tiles) + cols - 1) // cols
-    sheet = Image.new("RGBA", (cols * (tw + pad) + pad, rows * (th + pad) + pad), (30, 32, 38, 255))
+    th_ = max(t.height for t in tiles)
+    sheet = Image.new("RGBA", (cols * (tw + pad) + pad,
+                               ((len(tiles) + cols - 1) // cols) * (th_ + pad) + pad),
+                      (30, 32, 38, 255))
+    d = ImageDraw.Draw(sheet)
     for i, t in enumerate(tiles):
         r, c = divmod(i, cols)
-        sheet.alpha_composite(t, (pad + c * (tw + pad), pad + r * (th + pad)))
+        ox, oy = pad + c * (tw + pad), pad + r * (th_ + pad)
+        sheet.alpha_composite(t, (ox, oy))
+        _stamp(d, str(i + 1), ox + 6, oy + 6, scale=max(2, zoom))
     sheet.save(out_path)
+
+
+_DIGITS = {  # 3x5 blocks, so a tile number is legible at any zoom with no font file
+    "0": ("###", "# #", "# #", "# #", "###"), "1": (" # ", "## ", " # ", " # ", "###"),
+    "2": ("###", "  #", "###", "#  ", "###"), "3": ("###", "  #", "###", "  #", "###"),
+    "4": ("# #", "# #", "###", "  #", "  #"), "5": ("###", "#  ", "###", "  #", "###"),
+    "6": ("###", "#  ", "###", "# #", "###"), "7": ("###", "  #", "  #", "  #", "  #"),
+    "8": ("###", "# #", "###", "# #", "###"), "9": ("###", "# #", "###", "  #", "###"),
+}
+
+
+def _stamp(draw, text, x, y, scale):
+    """Draw `text` as 3x5 blocks at `scale`, on its own dark plate."""
+    w = (len(text) * 4 - 1) * scale
+    draw.rectangle([x - scale, y - scale, x + w + scale, y + 6 * scale],
+                   fill=(18, 19, 22, 255))
+    for i, ch in enumerate(text):
+        for ry, row in enumerate(_DIGITS.get(ch, ())):
+            for rx, on in enumerate(row):
+                if on == "#":
+                    px, py = x + (i * 4 + rx) * scale, y + ry * scale
+                    draw.rectangle([px, py, px + scale - 1, py + scale - 1], fill=MARK_RGBA)
 
 
 def main():

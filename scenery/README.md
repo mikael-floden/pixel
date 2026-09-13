@@ -318,7 +318,13 @@ ask for five; the 4-own/2-opposite default is unchanged).
   the way down a stack is not a hole), and INSIDE A POT the highest dark thing
   is the mouth — the size slack that lets a cap's far rim win belongs to caps,
   and it was handing a pot's shaded flank the anchor instead of its little
-  ellipse of a mouth.
+  ellipse of a mouth. **INSIDE A POT, ONE ROW OF SHADOW IS A MOUTH**: the 2-row
+  floor throws out mortar lines on a masonry cap, but a pot has no mortar and
+  in this projection its mouth is often a single row of deep shadow under the
+  far rim with the rest of the bowl merely shaded. Holding the floor at 2 left
+  those pieces on the `flue_top` fallback, which anchors on the rim's top edge
+  — 5 px above the mouth, and he marked every facing of that pot (his fifth
+  round, 2026-09-13).
   **A FLUE HOLDS ITS WIDTH; A CORNER NEVER DOES** — this is what tells a pot
   from the top corner of a box in three-quarter view, where every box starts
   narrow. A pot widens from its rim and then repeats one width down its body
@@ -336,10 +342,22 @@ ask for five; the 4-own/2-opposite default is unchanged).
   from the silhouette or it is the rim's own shadow.
   **A MEASUREMENT OF WHERE AN EFFECT LEAVES A PIECE CANNOT BE GATED, ONLY
   LOOKED AT.** Four cuts of this passed their own checks and read plausibly on
-  a contact sheet; his eye on the art caught every one. `--sheet` draws a cross
-  on every mouth: run it and LOOK. The counter-gate in `--check` is the cheap
-  half of the lesson — it re-reads every published anchor and fails any that is
-  off the art or on lit material — and it would have caught three of the four.
+  a contact sheet; his eye on the art caught every one. `--sheet` draws a
+  crosshair on every mouth: run it and LOOK. The counter-gate in `--check` is
+  the cheap half of the lesson — it re-reads every published anchor and fails
+  any that is off the art or on lit material — and it would have caught three
+  of the four.
+  **AND THE SHEET HAS TO SURVIVE THE PHONE, or the review is about the sheet
+  instead of the art.** He reviews on a phone, where a 3516 px sheet is drawn
+  at ~1000 px: the original one-pixel cross became a third of a screen pixel
+  and disappeared into the art, so he circled a light MORTAR JUNCTION as
+  "yours" on two different pieces — both times the measurement under his own
+  green cross was already correct to 3 px. A marker for a phone review is drawn
+  at the TILE's scale (arms 5x the zoom, thickness the zoom, a black halo, a
+  ring, and a hole in the middle so the anchor pixel stays visible) in a colour
+  the art never uses (cyan), and **every tile carries its NUMBER** — that is
+  what lets him say which tile is wrong instead of drawing on it, and what lets
+  this side map a mark back without guessing from the artwork.
 - **SE/S/SW COST NOTHING** and are already a standing order (his 2026-08-28:
   "Everything under 'Indoor' and under 'Town' should have SW, S and SE").
   Anything 168 px or under went down `create-8-direction-object`, so PixelLab
