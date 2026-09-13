@@ -1,10 +1,10 @@
 # CLAUDE.md — Nangijala, the game (law + pointers)
 
 This file is what every games2 turn loads, so it holds ONLY the rules and where
-each subsystem's detail lives. **The measurements, traps and rejected
-approaches are in `games2/docs/<topic>.md` — open the one for the subsystem
-you touch, and put new detail THERE.** A rule here is one or two lines: the
-present-tense law, the reason in parentheses, the doc that holds the story.
+each subsystem's detail lives. **Measurements, traps and rejected approaches
+live in `games2/docs/<topic>.md` — open the one for the subsystem you touch;
+new detail goes THERE.** A rule here is one or two lines: the law, the reason
+in parentheses, the doc with the story.
 (2026-09-09: 300 KB, paid before every message was read.)
 
 ## What this is
@@ -15,7 +15,7 @@ schema, plain `tsx`), `client/` (Phaser 3 + colyseus.js, Vite; prediction and
 reconciliation). Art is READ from the sibling domains (`characters2/`,
 `tiles/`, `maps2/`, `scenery/`) at `/assets/<domain>/…` — never copied, never
 edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`
-(tiles2 and the world@1/@2 tree are retired, 2026-09-09). Six agents share
+(tiles2 and world@1/@2 retired, 2026-09-09). Six agents share
 `games2/`: this one (gameplay, netcode, world, rendering), games-ui
 (`UI_AGENT.md` is the file split), games-audio (`composer/`, its own
 `CLAUDE.md`), games-ambient (`ambient/`, its own README), games-perf (frame
@@ -57,8 +57,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   category.
 - Never push red: `npm test` + `npm run typecheck` first. A world-reading test
   skips FIRST when `maps2/worlds3/the_game` is absent and listens inside the
-  try (`docs/testing.md`; the deploy's sparse checkout has no world tree, so
-  the deploy gate runs none of those tests — `docs/shipping.md`).
+  try (`docs/testing.md`; the deploy's sparse checkout has no world tree —
+  `docs/shipping.md`).
 
 **Content and shipping** (`docs/shipping.md`)
 - `config/publish.json` is the only hand-maintained list; everything the image
@@ -264,8 +264,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   uniform unconditionally.
 - `uCam` is this frame's rectangle (`renderedWorldView`), never `worldView`.
 - The light slot ledger: 12 slots, 8 world, strict reservations, tenure not
-  re-ranking; remote torches are never lights; every world light is a real
-  light at the campfire's peak; a sealed-room fire is indoor-only.
+  re-ranking; a light is a candidate when its POOL can touch the view
+  (`poolReachPx`); remote torches are never lights; every world light is a
+  real light at the campfire's peak; a sealed-room fire is indoor-only.
 - Scenery lights read the manifest `light` block as given (no radius cap);
   every scenery light casts shadows; scenery occludes like a prop, own cell =
   contact + directional core; the switches are pushed on the shader being
@@ -288,7 +289,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   the game view, a bottom-right version chip.
 - Dialog stability: a card's controls never move or get replaced; a DOM
   overlay does NOT keep pointers from Phaser (lock via `onUiLock`).
-- Rotation snaps under a veil (five rounds — keep the arc); anything placed
+- Rotation snaps under a veil (five rounds); anything placed
   against the gv vars listens to "ml-layout", never the raw resize.
 - The wiki drawer sleeps the game loop; waking is not `TimeStep.resume()`.
 
@@ -310,13 +311,13 @@ assigned it.
 
 ## Probes
 
-`window.__ml` is the instrument; each doc names its own probes. Counters over pixels: a gate cannot tell a correct dark frame
-from a black one.
+`window.__ml` is the instrument; each doc names its probes. Counters over
+pixels: a gate cannot tell a correct dark frame from a black one.
 
 ## Don't
 
 - Don't touch the art domains' files; don't hand-author world art.
 - Don't edit anything outside `games2/` except `coordination/games.json`
-  (unless the maintainer has granted the whole repo for a run).
+  (unless the maintainer grants the whole repo).
 - Don't grow this file: a new rule is one line here and its story in the
   topic doc.

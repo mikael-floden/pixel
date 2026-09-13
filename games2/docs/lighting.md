@@ -702,6 +702,24 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
     camera TELEPORT that legitimately dumps spawn-side holders — settle
     before the baseline — and fairness numbers are captured AFTER the frame's
     decisions.)
+  - **A LIGHT IS A CANDIDATE WHEN ITS POOL CAN TOUCH THE VIEW, SPRITE OR NO
+    SPRITE** (maintainer 2026-09-13, the dungeon at day with the run zoom
+    out: "spotlight in the distance popping into existence ... directly
+    influences lots of my camera view"). Two halves, both measured on the
+    slot trace (`__ml.lightSlots()` along 205.5,225.0 → 207.6,213.4, a
+    brazier acquired at edge −275 px, ramp 0.08): the picker's reach box was
+    `R·dx + 128` a side — HALF the pool's width; a pool of R cells is an iso
+    ellipse √2·R·dx wide and √2·R·dy tall (the stamp's own numbers), so a
+    hearth's pool sat 84 px inside the view before it was a candidate
+    (`poolReachPx`, per axis, `client/src/lightreach.ts`); and the scenery
+    build only pushed a light for a piece whose SPRITE was within its 200 px
+    pad, so a far brazier's light was born with its pool deep inside the view
+    and ramped up over all of it. Now `rebuildScenery` queries at least
+    `LIGHT_POOL_MAX_CELLS` (16, the beacons; gate `lightreach.test.ts` scans
+    the manifests) of reach, and a lit piece whose pool touches the view
+    (plus `LIGHT_EXIT_PX`) gets its light pushed with no sprite built
+    (`sceneryPoolReach`: the state's block, else the measured params, else
+    the bound). The ramp is then the rim's, where it is invisible.
   - The QA `probeLight` consumes a WORLD slot while set — slot-counting gates
     must expect ≤7 world holders. Probes: `__ml.lightSlots()` (live ledger +
     overflow), `__ml.lightAt()` (CPU twin), `__ml.torch(on?)`. Gate:

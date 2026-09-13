@@ -159,7 +159,14 @@ import {
 } from "../nightlight";
 import { SceneryLitPipeline, SCENERY_LIT_PIPELINE, SCENERY_LIT_OCC, type SceneryLitShape } from "../scenerylit";
 import { ShapeMapBuilder, shapeMapKey, decodeShape, type ShapeHitbox, type ShapeScale } from "../scenerylight";
-import { reservedLights, WORLD_LIGHT_SLOTS, RESERVED_LIGHT_SLOTS } from "../lightslots";
+import {
+  reservedLights,
+  WORLD_LIGHT_SLOTS,
+  RESERVED_LIGHT_SLOTS,
+  LIGHT_POOL_MAX_CELLS,
+  LIGHT_POOL_MARGIN_PX,
+  poolReachPx,
+} from "../lightslots";
 import { deriveEmissive, lightKindOf, lightParams, lightFromBlock, type SceneryLightParams } from "../scenerylights";
 import { joinWorld } from "../net";
 import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
@@ -20789,6 +20796,23 @@ export class WorldScene extends Phaser.Scene {
    *  placed at the emissive centroid's height above the anchor. Joins the
    *  props' ledger under `s3:<place>` with its pool stamp under the same id,
    *  so a slotted lamp's stamp is suppressed like a prop's. */
+  /** How far a lit piece's POOL reaches on screen, per axis, with the picker's
+   *  margin: the published block's radius when the manifest has one, the
+   *  derived params once the art has been measured (sceneryLightCache), and
+   *  the largest pool any piece publishes until then — a bound that only ever
+   *  errs toward a candidate the picker then judges on its real reach. */
+  private sceneryPoolReach(
+    piece: Parameters<typeof sceneryLightBlockFor>[0],
+    st: { key: string },
+    pieceId: string,
+    key: string,
+  ): { x: number; y: number } {
+    const block = sceneryLightBlockFor(piece, st.key);
+    const params = block ? lightFromBlock(block, lightKindOf(pieceId)) : null;
+    const radius = params?.radius ?? this.sceneryLightCache.get(key)?.params.radius ?? LIGHT_POOL_MAX_CELLS;
+    return poolReachPx(radius, this.geom.dx, this.geom.dy, LIGHT_POOL_MARGIN_PX);
+  }
+
   private pushSceneryLight(
     p: { i: number; x: number; y: number; ax: number; ay: number; dir?: string; piece: string },
     piece: { states: Record<string, { key: string; sprite: string; rotations: Record<string, string> }>; baseState: string; light: SceneryLight | null },
@@ -21268,7 +21292,15 @@ export class WorldScene extends Phaser.Scene {
     const pad = 200;
     const view = cam.worldView;
     const rect = { x: view.x - pad, y: view.y - pad, w: view.width + pad * 2, h: view.height + pad * 2 };
-    const reach = { x: view.x - view.width, y: view.y - view.height, w: view.width * 3, h: view.height * 3 };
+    // The query reaches a view's width beyond the view — and never less than
+    // the largest pool a lit piece can cast (LIGHT_POOL_MAX_CELLS), so a far
+    // light's source exists while its pool can touch the screen (see
+    // poolReachPx and the pool test below). 1,388 placements world-wide: the
+    // wider query is cheap, the early culls do the rest.
+    const poolMax = poolReachPx(LIGHT_POOL_MAX_CELLS, this.geom.dx, this.geom.dy, LIGHT_POOL_MARGIN_PX + LIGHT_EXIT_PX);
+    const rx = Math.max(view.width, poolMax.x);
+    const ry = Math.max(view.height, poolMax.y);
+    const reach = { x: view.x - rx, y: view.y - ry, w: view.width + rx * 2, h: view.height + ry * 2 };
     let drawn = 0;
     let roofedDrawn = 0;
     /* Pieces awaiting the SHARED depth/cover resolve (second pass, below). */
@@ -21305,7 +21337,26 @@ export class WorldScene extends Phaser.Scene {
       /* PREFETCH ONLY beyond the draw pad: the manifest is in hand and the art
        * is queued by `needScenery` above, which is the whole point of coming
        * out this far. Everything below builds a sprite. */
-      if (p.ax < rect.x - 256 || p.ax > rect.x + rect.w + 256 || p.ay < rect.y - 512 || p.ay > rect.y + rect.h + 256)
+      // A LIT PIECE'S LIGHT LIVES AS LONG AS ITS POOL CAN TOUCH THE VIEW,
+      // sprite or no sprite. The light used to be born with the sprite, at the
+      // 200 px pad — a far brazier's pool was already 275 px inside the view
+      // on its first frame and ramped up over all of it (maintainer
+      // 2026-09-13, the dungeon at day: "the light at the far end of the cave
+      // lights up and immediately influences a lot of pixels already in my
+      // camera view"). Measured on the pool's own extents with the picker's
+      // exit slack, so the picker sees every candidate it could hold.
+      const lit = p.lit && st.key.startsWith("LIT");
+      const pool = lit ? this.sceneryPoolReach(piece, st, p.piece, this.sKey(sprite)) : null;
+      const poolTouches =
+        pool !== null &&
+        p.ax + pool.x >= view.x - LIGHT_EXIT_PX &&
+        p.ax - pool.x <= view.right + LIGHT_EXIT_PX &&
+        p.ay + pool.y >= view.y - LIGHT_EXIT_PX &&
+        p.ay - pool.y <= view.bottom + LIGHT_EXIT_PX;
+      if (
+        !poolTouches &&
+        (p.ax < rect.x - 256 || p.ax > rect.x + rect.w + 256 || p.ay < rect.y - 512 || p.ay > rect.y + rect.h + 256)
+      )
         continue;
       const art = this.sceneryArtFit(this.sKey(sprite));
       if (!art) continue;
@@ -21331,8 +21382,12 @@ export class WorldScene extends Phaser.Scene {
         p.hflip,
         baseH,
       );
-      if (fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h)
+      if (fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h) {
+        // Out of the build rect: no sprite — but the light, when its pool
+        // reaches the view (the same push the built piece gets below).
+        if (poolTouches) this.pushSceneryLight(p, piece, st, this.sKey(sprite), fit, Math.floor(p.x), Math.floor(p.y));
         continue;
+      }
       // INDOORS a piece outside my room still DRAWS — it renders below the
       // multiply overlay, so zero ambient blacks it out for free and a torch
       // through the doorway finds it. That is the props' rule, and the reason
@@ -22948,11 +23003,16 @@ export class WorldScene extends Phaser.Scene {
     // hysteresis): a light comes alive just before its pool scrolls on, but a
     // HELD one is only released once it is comfortably past — a pool sitting
     // exactly on the boundary must not flicker candidacy.
-    const edgeOf = (sx: number, sy: number, reach: number) =>
-      Math.max(wv.x - (sx + reach), sx - reach - wv.right, wv.y - (sy + reach), sy - reach - wv.bottom);
+    // THE POOL'S OWN EXTENTS, per axis (poolReachPx): a pool of R cells is an
+    // iso ellipse √2·R·dx wide and √2·R·dy tall; the old box of R·dx a side
+    // was half the pool's width, and a hearth's pool sat 84 px inside the
+    // view before its light was a candidate (maintainer 2026-09-13, the
+    // dungeon at day: "spotlight in the distance popping into existence").
+    const edgeOf = (sx: number, sy: number, reach: { x: number; y: number }) =>
+      Math.max(wv.x - (sx + reach.x), sx - reach.x - wv.right, wv.y - (sy + reach.y), sy - reach.y - wv.bottom);
     if (fireLit && this.campfire) {
       const c = this.campfire;
-      const reach = 7 * this.geom.dx;
+      const reach = poolReachPx(7, this.geom.dx, this.geom.dy);
       const edge = edgeOf(c.x, c.y, reach);
       if (edge < LIGHT_EXIT_PX)
         cands.set("campfire", {
@@ -22963,9 +23023,9 @@ export class WorldScene extends Phaser.Scene {
         });
     }
     for (const s of this.sceneryLightSources.length ? this.emissiveSources.concat(this.sceneryLightSources) : this.emissiveSources) {
-      // A pool reaches radius*dx px past its anchor — the light must be LIVE
-      // before its source scrolls on, or pools visibly pop at the screen edge.
-      const reach = s.radius * this.geom.dx + 128;
+      // A pool reaches √2·radius·dx px past its anchor — the light must be
+      // LIVE before its rim scrolls on, or pools visibly pop at the screen edge.
+      const reach = poolReachPx(s.radius, this.geom.dx, this.geom.dy, LIGHT_POOL_MARGIN_PX);
       const edge = edgeOf(s.sx, s.sy, reach);
       if (edge >= LIGHT_EXIT_PX) continue;
       // A SEALED-ROOM fire is indoor-only: lit exactly to the degree I am in
