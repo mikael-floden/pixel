@@ -874,25 +874,37 @@ there before the footprint law judges it; `snap_hitboxes()` moves every
 non-flush piece there (never a whole cell) and asserts every footprint is on
 its offset.
 
-Measured on the_game, both worlds stamped with the game's own code: the
-mismatch over all 1,321 footprints falls 516.6 → 480.7 cells (0.392 → 0.364
-per footprint; 88 footprints leave the cell centre, 39.7 cells gained among
-them — the cart 3.40 → 1.54, an ancient tree 5.04 → 2.48, the rock spire
-6.01 → 3.18); the nav cells 1,267 → 1,261. A piece whose hitbox does not fill
-a cell blocks NONE by the game's design (the player slides past it) and the
-fit does not fight that: 172 footprints block no cell, every one under 1.4
-cells² of hitbox (median 0.35).
+**A PLACEMENT-RULE CHANGE REACHES THE SHIPPED WORLD THROUGH
+`python3 maps2/pipeline/navfit.py --apply maps2/worlds3/the_game`, NEVER
+THROUGH A REBUILD** (maintainer 2026-09-13, on a rebuild that re-dressed a
+tenth of the map under a placement fix: *"I was asking for a placement
+correction only!"*). `--apply` keeps every piece what it is — piece,
+variation, facing, flip, and the ground patches under it — and moves only the
+footprints the old rule had centred, each to its nav-fit offset, each judged
+there by the generator's own footprint law (walls, doorways, level, shore,
+the gap to every other footprint, the art over a drop) and left where it was
+when the law says no. A rebuild re-dresses: every variation is drawn from a
+hash of the piece and its spot, stable since 2026-09-13 (`_pos_rng`, crc32;
+`hash()` of a str is salted per process and re-rolled 137 placements and 133
+states between two unchanged builds), but the shipped dressing predates it,
+so the next full rebuild re-rolls the dressing ONCE — do that only when a
+re-dress is asked for, and say so on the change page.
+
+Measured on the_game, both worlds stamped with the game's own code: 1,106
+footprints stood on the old rule's centre; 486 move (25 by up to half a
+cell to a better offset — the cart 3.40 → 1.54, an ancient tree 5.04 → 2.48,
+the rock spire 6.01 → 3.18 — and 461 by under a tenth of a cell, onto the
+game-exact centre of their box), 580 stay (the centre is best), 40 are
+refused at the new spot by the law. The mismatch over all 1,318 footprints
+falls 516.6 → 490.1 cells (0.392 → 0.372 per footprint); the nav cells
+1,267 → 1,287. A piece whose hitbox does not fill a cell blocks NONE by the
+game's design (the player slides past it) and the fit does not fight that:
+157 footprints block no cell, every one under 1.4 cells² of hitbox.
 
 `x`/`y` is where the art is ANCHORED (its alpha-bbox bottom-centre), which is
 not where its footprint is. The offset between them is the piece's own
 business — its ellipse can sit well off the anchor — so the cell the game
 blocks landed wherever that offset fell before any snapping at all.
-
-Every variation is drawn from a STABLE hash of the piece and its spot
-(`_pos_rng`, crc32): `hash()` of a str is salted per process, and until
-2026-09-13 every build re-rolled every variation and re-dressed a tenth of the
-map (137 placements and 133 states between two unchanged builds; none with
-the seed pinned) — the build is reproducible now.
 
 The centre is computed with the game's own arithmetic (client `fitSprite` +
 the overlay's `hbX/hbY`, `games2/client/src/scenery3.ts`) and the game's own

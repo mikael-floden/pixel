@@ -496,12 +496,169 @@ def check(world_dir, game_dump=None, verbose=False):
     return disagree
 
 
+def _thresholds(doc):
+    """The doorway cells of every house, as the build knows them: a roof deck's
+    ring cell with no wall under it, the step outside it and the cell inside.
+    Reconstructed from the shipped world (the build's own list does not ship)."""
+    walls = {(c["x"], c["y"]) for w in doc.get("walls", []) if w.get("kind") != "cliff"
+             for c in w["cells"]}
+    out = set()
+    for d in doc.get("decks", []):
+        if d.get("kind") != "roof":
+            continue
+        cells = {(c["x"], c["y"]) for c in d["cells"]}
+        for (x, y) in cells:
+            outside = [(nx, ny) for (nx, ny) in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))
+                       if (nx, ny) not in cells]
+            if not outside or (x, y) in walls:
+                continue
+            out.add((x, y))
+            out.update(outside)
+            out.update((nx, ny) for (nx, ny) in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1))
+                       if (nx, ny) in cells and (nx, ny) not in walls)
+    return out
+
+
+def _cave_floor(doc):
+    lvl = doc["level"]
+    out = {}
+    for d in doc.get("decks", []):
+        if d.get("kind") != "cave":
+            continue
+        for c in d["cells"]:
+            if lvl[c["y"]][c["x"]] < d["level"]:
+                out[(c["x"], c["y"])] = d["level"]
+    return out
+
+
+def apply(world_dir, write=True):
+    """RE-FIT THE PUBLISHED WORLD'S PLACEMENTS IN PLACE — no rebuild, no
+    re-roll: every piece keeps what it is (piece, variation, facing, flip)
+    and only the footprints the old rule had centred move, each to its
+    nav-fit offset, each judged there by the generator's own footprint law
+    (walls, doorways, level, shore, the gap to every other footprint, the
+    art over a drop) and left where it was when the law says no.
+
+    A rebuild re-dresses the map (the variations are drawn per build), so
+    a placement-rule change reaches the shipped world THROUGH THIS, never
+    through world3grow.py (maintainer 2026-09-13: "I was asking for a
+    placement correction only")."""
+    import world3grow as W
+    path = os.path.join(world_dir, "world.json")
+    doc = json.load(open(path))
+    bbox, hit = load_docs()
+    g = W.Grow.__new__(W.Grow)
+    g.doc, g.G = doc, doc["grounds"]
+    g.gi = {n: i for i, n in enumerate(g.G)}
+    g.grd, g.lvl = doc["ground"], doc["level"]
+    g._bbox, g._hit, g._fp = bbox, hit, {}
+    g.door_cells = _thresholds(doc)
+    g.cave_floor = _cave_floor(doc)
+    W.NEW = min(doc["size"]["w"], doc["size"]["h"])      # the shipped world's bounds
+    rooms = {(c["x"], c["y"]) for r in doc.get("rooms", []) for c in r.get("cells", [])}
+    sc = doc["scenery"]
+    order = sorted(range(len(sc)), key=lambda i: (round(sc[i]["x"] + sc[i]["y"], 3), sc[i]["piece"]))
+
+    def shape(p):
+        sh = g._fp_shape(p)
+        if sh:
+            kind, dwx, dwy, hx, hy = sh
+            return p["x"] + dwx, p["y"] + dwy, (hx, hy) if kind == "rect" else (hx, None)
+        return int(p["x"]) + 0.5, int(p["y"]) + 0.5, (g.FP_DEFAULT, None)
+
+    def ok_at(p, x, y):
+        q = dict(p, x=x, y=y)
+        wx, wy, (R, HY) = shape(q)
+        return g._art_clear(p["piece"], x, y, p.get("state")) and \
+            g._footprint_ok(wx, wy, R, HY, flush=True, flat=False)
+
+    movable = {}
+    for i in order:
+        p = sc[i]
+        if p.get("z") is not None:
+            continue
+        bx = boxes_for(p, bbox, hit)
+        off = g._hitbox_offset(p)          # the old rule's own arithmetic
+        if not bx or off is None:
+            continue
+        fx, fy = (p["x"] + off[0]) % 1.0, (p["y"] + off[1]) % 1.0
+        if abs(fx - 0.5) < 1e-3 and abs(fy - 0.5) < 1e-3:   # the old rule's signature
+            movable[i] = bx
+    # every piece that stays claims its ground first
+    for i in order:
+        p = sc[i]
+        if p.get("z") is not None or i in movable or g._flat(p):
+            continue
+        wx, wy, (R, HY) = shape(p)
+        g._fp_add(wx, wy, R, HY)
+    moved, kept, refused, old = 0, 0, 0, {}
+    why = {}
+    for i in order:
+        if i not in movable:
+            continue
+        p = sc[i]
+        nx, ny, _fx, _fy, m, mc = target(p, movable[i], p["x"], p["y"])
+        nx, ny = round(nx, 4), round(ny, 4)
+        reason = None
+        if abs(nx - p["x"]) < 1e-6 and abs(ny - p["y"]) < 1e-6:
+            kept += 1
+            continue
+        if ((int(nx), int(ny)) in rooms) != ((int(p["x"]), int(p["y"])) in rooms):
+            reason = "room boundary"
+        elif not g.g(int(nx), int(ny)) or g.liquid(int(nx), int(ny)):
+            reason = "water/void"
+        elif not g._art_clear(p["piece"], nx, ny, p.get("state")):
+            reason = "art over a drop"
+        elif not ok_at(p, nx, ny):
+            reason = "footprint law"
+        if reason:
+            refused += 1
+            why[reason] = why.get(reason, 0) + 1
+        else:
+            old[i] = (p["x"], p["y"])
+            p["x"], p["y"] = nx, ny
+            moved += 1
+        wx, wy, (R, HY) = shape(p)
+        g._fp_add(wx, wy, R, HY)
+    # the law over the whole world at its final positions; a moved piece the
+    # neighbours it was judged before now crowd goes back where it was
+    for _round in range(6):
+        # as police_footprints judges: in order, each piece against the ones
+        # already claiming ground, then it claims its own
+        g._fp = {}
+        reverted = 0
+        for i in order:
+            p = sc[i]
+            if p.get("z") is not None or g._flat(p):
+                continue
+            if i in old and not ok_at(p, p["x"], p["y"]):
+                p["x"], p["y"] = old.pop(i)
+                moved -= 1
+                refused += 1
+                why["crowded after the move"] = why.get("crowded after the move", 0) + 1
+                reverted += 1
+            wx, wy, (R, HY) = shape(p)
+            g._fp_add(wx, wy, R, HY)
+        if not reverted:
+            break
+    print(f"{world_dir}: {len(sc)} placements, {len(movable)} on the old rule's cell centre: "
+          f"{moved} moved to their nav-fit offset, {kept} kept (the centre is best), "
+          f"{refused} refused at the new spot {why}; nothing else changed")
+    if write:
+        json.dump(doc, open(path, "w"), separators=(",", ":"))
+    return moved
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--check", metavar="WORLD_DIR")
     ap.add_argument("--game", metavar="DUMP_JSON", help="per-placement nav cells from the game")
+    ap.add_argument("--apply", metavar="WORLD_DIR", help="re-fit the published world's placements in place")
     ap.add_argument("-v", action="store_true")
     a = ap.parse_args()
+    if a.apply:
+        apply(a.apply)
+        return
     if a.check:
         bad = check(a.check, a.game, a.v)
         sys.exit(1 if bad else 0)

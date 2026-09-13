@@ -411,7 +411,10 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   walls as ONE — "the mountain reads as wallpaper".)
 - `navfit.py` — the game's scenery collision stamp and nav bake, mirrored:
   a footprint's offset inside its cell is chosen where the cells the game
-  blocks match the drawn hitbox best (`spec/WORLD3.md` → `scenery`); `--check
+  blocks match the drawn hitbox best (`spec/WORLD3.md` → `scenery`). **A
+  placement-rule change reaches the shipped world through `--apply
+  <world_dir>`, never a rebuild** (a rebuild re-dresses the map; maintainer
+  2026-09-13: "I was asking for a placement correction only!"); `--check
   <world_dir> --game <dump>` proves the mirror against the game's own stamp.
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
