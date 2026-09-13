@@ -104,7 +104,9 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   leaning, "pushed the wrong way when sliding against it"; the tick's glide
   and this escape cover what they existed for). The memo watches progress
   ALONG THE ASK, AS A RATE over a window of his "Nav help after" dial
-  (`client/src/navhelp.ts`, `NAV_HELP_MS_*`: 0.1 s default, up to 2 s —
+  (`client/src/navhelp.ts`, `NAV_HELP_MS_*`: 0.1 s default, 0.03 s (one
+  frame: below it there is no rate to measure) up to 2 s; at the floor the
+  nav fires on any single frame without headway, his to feel —
   maintainer 2026-09-13: "how fast the player has to run into something
   before the nav system helps. That should be extremely fast"; the 09-11
   window was 1.5 s, "we talk seconds"): a body that kept moving along the

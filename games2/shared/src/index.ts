@@ -4036,8 +4036,15 @@ export interface SlideMemo {
  *  into something before the nav system helps. That should be extremely fast
  *  ... 0.1s is a good default, but let the slider go all the way up to 2s").
  *  Milliseconds; `client/src/navhelp.ts` is the dial, `walkHeading` takes it
- *  as `stuckMs`. The 2026-09-11 window was 1.5 s ("we talk seconds"). */
-export const NAV_HELP_MS_MIN = 100;
+ *  as `stuckMs`. The 2026-09-11 window was 1.5 s ("we talk seconds"). THE
+ *  FLOOR IS ONE FRAME, not the default (the same evening: "you made the
+ *  default and min the same value to make it impossible to tweak?"): the
+ *  window measures progress as a RATE, and below a frame there is nothing to
+ *  measure. Down at the floor the nav fires on any single frame without
+ *  headway — a corner's tip, one refused probe — and each escape commits the
+ *  body to its route, so it may feel twitchy; the doubling backoff keeps the
+ *  planning cost bounded (2.4 ms a plan at his table gap). His to feel. */
+export const NAV_HELP_MS_MIN = 30;
 export const NAV_HELP_MS_MAX = 2000;
 export const NAV_HELP_MS_DEFAULT = 100;
 /** The window `walkHeading` uses when the caller passes none. */

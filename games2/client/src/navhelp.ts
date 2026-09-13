@@ -8,7 +8,10 @@
 // a RATE, so a slide round a scenery piece that keeps moving is left alone —
 // "the slide around a scenery object should be preferred if the sliding is
 // doing progress"). Shared constants NAV_HELP_MS_*; the walk takes it per call
-// as `stuckMs`, so the dial changes nothing the server integrates.
+// as `stuckMs`, so the dial changes nothing the server integrates. The floor
+// is one frame (0.03 s), below his 0.1 s default — he tunes it downward too
+// ("you made the default and min the same value to make it impossible to
+// tweak?"); the steps are hundredths so the low end has room.
 //
 // THE DIAL IS INJECTED FROM OUTSIDE, because games-ui owns hud.ts (UI_AGENT.md)
 // and this is the games agent's setting — the pattern of the nav, speed, stick
@@ -22,8 +25,8 @@ import { NAV_HELP_MS_MIN, NAV_HELP_MS_MAX, NAV_HELP_MS_DEFAULT } from "@nangijal
 const KEY = "ml-nav-help";
 export const NAV_HELP_EVENT = "ml-nav-help";
 
-/** Whole tenths of a second, clamped to the range. */
-const clampMs = (v: number) => Math.max(NAV_HELP_MS_MIN, Math.min(NAV_HELP_MS_MAX, Math.round(v / 100) * 100));
+/** Whole hundredths of a second, clamped to the range. */
+const clampMs = (v: number) => Math.max(NAV_HELP_MS_MIN, Math.min(NAV_HELP_MS_MAX, Math.round(v / 10) * 10));
 
 function read(): number {
   try {
@@ -54,10 +57,10 @@ export function setNavHelpMs(v: number): void {
   paint();
 }
 
-/** Slider percent (0..1) <-> the value, linear over the range in tenths. */
+/** Slider percent (0..1) <-> the value, linear over the range in hundredths. */
 export const msFromSlider = (p: number) => clampMs(NAV_HELP_MS_MIN + p * (NAV_HELP_MS_MAX - NAV_HELP_MS_MIN));
 export const sliderFromMs = (v: number) => (clampMs(v) - NAV_HELP_MS_MIN) / (NAV_HELP_MS_MAX - NAV_HELP_MS_MIN);
-export const msLabel = (v: number) => `${(v / 1000).toFixed(1)} s${v === NAV_HELP_MS_DEFAULT ? " (default)" : ""}`;
+export const msLabel = (v: number) => `${(v / 1000).toFixed(2)} s${v === NAV_HELP_MS_DEFAULT ? " (default)" : ""}`;
 
 /* -- the injected dial ------------------------------------------------------ */
 
