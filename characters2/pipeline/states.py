@@ -17,6 +17,7 @@ touched, nothing here carries the NPC tag, so the NPC mirror ignores it all.
   python characters2/pipeline/states.py plan                # exists / missing / cost so far
   python characters2/pipeline/states.py generate            # create the missing candidates (resumable)
   python characters2/pipeline/states.py generate --limit 1  # one, to read the price before the rest
+  python characters2/pipeline/states.py generate --slots 11-20   # just a range of slots
   python characters2/pipeline/states.py mirror              # download every candidate + sheets + index
 
 Resumable and never doubled: what exists is read from PixelLab (the hero's
@@ -142,20 +143,37 @@ BRIEFS = {
 }
 BRIEF_ORDER = ("refined", "face", "figure", "hair", "shading")
 
+# Slots 11-20: THE MAINTAINER'S OWN PROMPT, VERBATIM (2026-09-13: "My prompt was
+# 'High detail version' and my version looks best. Generate 10 more with my
+# prompt"), free palette like his own take, ten seeds. His wording is the design
+# lock there, not the briefs above; the ten are a seed spread of it.
+YOURS = {
+    "default_girl": "High detail version, new face and hair, don't change her cloth. Bikini only.",
+    "default_boy": "High detail version, don't change his cloth. Speedos only.",
+}
+YOURS_COUNT = 10
+
+
+def _slot(hero, n, brief, snap, edit):
+    return {"slot": n, "brief": brief, "palette_snap": snap,
+            "state_name": f"{PREFIX}{n:02d} {brief}{' P' if snap else ''}",
+            "seed": int(hashlib.sha1(f"{hero}/{n}".encode()).hexdigest()[:7], 16),
+            "edit_description": edit}
+
 
 def slots(hero):
-    """The ten (slot, brief, palette_snap, state_name, seed) rows of one hero.
-    Odd slots run free, even slots snap to the hero's palette."""
+    """The twenty (slot, brief, palette_snap, state_name, seed) rows of one hero:
+    01-10 the five briefs, odd free and even snapped to the hero's palette;
+    11-20 the maintainer's prompt (`yours`), free, one seed each."""
     out = []
     n = 0
     for brief in BRIEF_ORDER:
         for snap in (False, True):
             n += 1
-            name = f"{PREFIX}{n:02d} {brief}{' P' if snap else ''}"
-            seed = int(hashlib.sha1(f"{hero}/{n}".encode()).hexdigest()[:7], 16)
-            out.append({"slot": n, "brief": brief, "palette_snap": snap,
-                        "state_name": name, "seed": seed,
-                        "edit_description": BRIEFS[hero][brief]})
+            out.append(_slot(hero, n, brief, snap, BRIEFS[hero][brief]))
+    for _ in range(YOURS_COUNT):
+        n += 1
+        out.append(_slot(hero, n, "yours", False, YOURS[hero]))
     return out
 
 
@@ -200,12 +218,30 @@ def survey(client):
 
 # --- generate -----------------------------------------------------------------
 
+def _parse_slots(spec):
+    """'11-20' / '3,7,12' -> set of slot numbers; None when unset."""
+    if not spec:
+        return None
+    out = set()
+    for part in spec.split(","):
+        part = part.strip()
+        if "-" in part:
+            a, b = part.split("-", 1)
+            out.update(range(int(a), int(b) + 1))
+        elif part:
+            out.add(int(part))
+    return out
+
+
 def generate(client, args):
     sv = survey(client)
     heroes = [h for h in pinned() if not args.hero or h == args.hero]
     todo = []
+    wanted = _parse_slots(args.slots)
     for hero in heroes:
         for row in slots(hero):
+            if wanted is not None and row["slot"] not in wanted:
+                continue
             have = sv[hero]["by_name"].get(row["state_name"]) or []
             live = [s for s in have if (s.get("status") or "completed") != "failed"]
             if live:
@@ -495,6 +531,7 @@ def main():
     ap.add_argument("cmd", choices=("plan", "generate", "mirror"))
     ap.add_argument("--hero", default=None, help="default_boy | default_girl (default: both)")
     ap.add_argument("--limit", type=int, default=0, help="generate at most N states this run")
+    ap.add_argument("--slots", default=None, help="only these slot numbers, e.g. 11-20 or 3,7")
     ap.add_argument("--parallel", type=int, default=5, help="states in flight at once (PixelLab caps the account at 20)")
     ap.add_argument("--min-usd", type=float, default=30.0,
                     help="stop when the USD credits fall below this (the other domains' share)")

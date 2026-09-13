@@ -329,15 +329,17 @@ to all 8 rotations, saved as a sibling character in the hero's `group_id`), so
 they sit beside the hero in the PixelLab UI, where he picks. The pinned
 characters are never touched; nothing here carries the NPC tag.
 
-- **Ten slots per hero, named `HD 01 refined` … `HD 10 shading P`**: five
-  briefs (refined / face / figure / hair / shading) × {free palette, `P` =
-  snapped to the hero's own palette}. The snap is a real axis, not a repeat: it
-  forbids colour drift (his own `High detail version` grew gold clasps and
-  sandal straps on the girl) and costs shading tones. Every brief restates the
-  locked design (barefoot, bare hands, plain band top + briefs in
-  brown/black/grey/white, no blue; the boy shirtless in plain dark briefs, no
-  gear) because a state edit invents freely otherwise; "look better" rides on
-  the face / figure / hair briefs, never on a new design.
+- **Twenty slots per hero.** `HD 01 refined` … `HD 10 shading P`: five
+  assistant briefs (refined / face / figure / hair / shading) × {free palette,
+  `P` = snapped to the hero's own palette}; every brief restates the locked
+  design (barefoot, bare hands, plain cloth in brown/black/grey/white, no
+  blue; the boy in plain dark briefs, no gear) because a state edit invents
+  freely otherwise, and the snap forbids colour drift at the cost of tones.
+  `HD 11 yours` … `HD 20 yours`: **the maintainer's own prompt, verbatim**,
+  free palette, one seed each (2026-09-13: "my version looks best. Generate
+  10 more with my prompt" — girl: "High detail version, new face and hair,
+  don't change her cloth. Bikini only."; boy: "High detail version, don't
+  change his cloth. Speedos only."). His wording is the lock there.
 - **Resumable, never doubled**: the existing set is read from PixelLab (the
   group siblings named `HD …`) and from disk, never memory; seeds derive from
   (hero, slot). It runs on the USD credits (the generation pool reads 0.0) and
@@ -362,7 +364,7 @@ characters are never touched; nothing here carries the NPC tag.
 
 ```bash
 python characters2/pipeline/states.py plan       # exists / missing / price so far
-python characters2/pipeline/states.py generate   # create the missing slots (--limit 1 to price it)
+python characters2/pipeline/states.py generate   # create the missing slots (--limit 1 to price it, --slots 11-20)
 python characters2/pipeline/states.py mirror     # download + sheets + index.json
 ```
 
