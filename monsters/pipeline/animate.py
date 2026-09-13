@@ -490,7 +490,7 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
     # (Measured 2026-09-11: gating pro on 4 threw away 45 perfectly good clips
     # in one round, the entire round's spend.)
     want = (want_frames or spec["frames"]) + (1 if pinned else 0)
-    if spec.get("mode") != "pro" and len(frames) != want:
+    if spec.get("mode") != "pro" and pinned is not False and len(frames) != want:
         reasons.append(f"{len(frames)} frames, expected {want}")
     if not frames:
         return {"status": "fail", "reasons": reasons}
@@ -576,6 +576,7 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
             reasons.append(f"shallow strike: reach {rch:.2f} — eyeball it"); status = "warn" if status != "fail" else status
     else:
         rch = None
+    end_iou = None
     if "fall_pass" in band:
         # a die must END DEAD: the last frame is the body down or gone, never
         # the pose it started in (his 57: last vs first 0.27–1.41, median 0.90)
@@ -583,6 +584,24 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
             reasons.append(f"still standing: the last frame is only {loop:.2f} of the silhouette away from the first — no collapse"); status = "fail"
         elif loop < band["fall_pass"]:
             reasons.append(f"barely falls: last vs first {loop:.2f} — eyeball it"); status = "warn" if status != "fail" else status
+        # ...and the LAST frame must not still be the standing body. `loop`
+        # is fooled by motion in between (a fire demon that flares up and
+        # stands back down dark, a troll that only lowers its club): so the
+        # last frame is also matched against the base itself. His 57 (east):
+        # IoU median 0.21, p90 0.49, max 0.60. A LOW body (bbox height under
+        # 0.75 of its width — slug, crab, snail, turtle, octopus, mite) melts
+        # or crumbles inside its own footprint and cannot drop this number,
+        # so for those it only warns.
+        end_iou = float(_iou(ops[-1], b0))
+        ys, xs = np.where(b0)
+        low = len(ys) and (ys.max() - ys.min() + 1) < 0.75 * (xs.max() - xs.min() + 1)
+        if end_iou > band.get("end_iou_max", 0.60):
+            if low:
+                reasons.append(f"ends inside its own footprint: last frame matches the base at {end_iou:.2f} — eyeball it"); status = "warn" if status != "fail" else status
+            else:
+                reasons.append(f"still standing: the last frame matches the base at {end_iou:.2f} (his dies end under 0.60)"); status = "fail"
+        elif end_iou > band.get("end_iou_warn", 0.49) and not low:
+            reasons.append(f"ends near the base ({end_iou:.2f}) — eyeball it"); status = "warn" if status != "fail" else status
     if "loop_max" in band and loop > band["loop_max"]:
         reasons.append(f"loop does not close (last vs first {loop:.3f})"); status = "fail"
     elif "loop_warn" in band and loop > band["loop_warn"]:
@@ -629,6 +648,7 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
             "peak": (round(peak, 4) if "peak_pass" in band else None),
             "reach": (round(rch, 3) if rch is not None else None), "turn": turn,
             "end_area": round(float(ops[-1].sum() / max(1, ops[0].sum())), 3),
+            "end_iou": (round(end_iou, 3) if end_iou is not None else None),
             "canvas": list(frames[0].size), "reasons": reasons}
 
 
@@ -819,6 +839,7 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
             qa["pinned"] = True
             qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
         qa.update({"sub": client.sub_id(urls[0]), "group": group, "takes": len(cands), "version": version, "mirrored": False,
+                   "mode": spec.get("mode", "v3"),
                    "action": actions[d], "intensity": intensity_of(man, state),
                    "rolls": (tries or {}).get(d, 1), "frames": len(frames),
                    "rung": (rungs or {}).get(d, 0),
@@ -1024,10 +1045,11 @@ def cmd_requal(args):
             frames = load_frames(cid, args.state, d)
             if not frames:
                 continue
+            pro = q.get("mode") == "pro"           # PRO takes no pins and fixes its own count
             new = qa_clip(cid, args.state, d, frames,
-                          pinned=(True if q.get("pinned") else None),
+                          pinned=(True if q.get("pinned") else (False if pro else None)),
                           claw_take=(q.get("rung") or 0) >= 2,
-                          want_frames=(len(frames) - (1 if STATES[base_state(args.state)].get("keep_first", True) else 0)))
+                          want_frames=(len(frames) - (0 if pro else (1 if STATES[base_state(args.state)].get("keep_first", True) else 0))))
             if q.get("pinned"):
                 new["pinned"] = True
                 new["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
@@ -1035,7 +1057,7 @@ def cmd_requal(args):
             # it, or every sweep restarts at rung one with the same wording
             keep = {k: q[k] for k in ("sub", "group", "takes", "version", "mirrored",
                                       "generated_at", "action", "tries", "rolls",
-                                      "intensity", "frames", "manual", "rung") if k in q}
+                                      "intensity", "frames", "manual", "rung", "mode") if k in q}
             rec["directions"][d] = {**new, **keep}
             for md, src in MIRRORED.items():
                 if src == d and rec["directions"][d]["status"] != "fail":
