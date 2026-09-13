@@ -6,9 +6,7 @@ import { lakeAt } from "../runtime/water";
 import {
   MAX_PATCHES,
   MIN_DAMP,
-  MIST,
   PATCH_LIFE,
-  alphaFor,
   PATCH_RX,
   BREATHE_MS,
   basin,
@@ -20,6 +18,7 @@ import {
   driftX,
   driftY,
   nextGap,
+  mistTint,
   patchAlpha,
   sizeFor,
   weight,
@@ -80,9 +79,17 @@ const CELL_WU = 32;
 const WATER_PX = 2 * 32;
 /** Placement probes per attempt; the gap does the real throttling. */
 const TRIES = 2;
-/** Above the ground render texture (-1_000_000) and under `foam/` (-999_999),
- *  so the coast line stays crisp over the top of a bank. */
-const DEPTH = -999_999.5;
+/** JUST OVER THE DARKNESS OVERLAY, with every other ground-lying mark in this
+ *  folder (`drips/` splash rings 900_000.05, `dust/` 900_000.09, `fish/` rings
+ *  900_000.41) — and NOT in the surface band, which is where this started.
+ *  Measured: at -999_999.5 nineteen banks at alpha 0.45 moved the screen by
+ *  1 luma, and the same banks lifted above the overlay were plainly visible in
+ *  the same shot. The surface band is under the terrain OCCLUDERS as well as
+ *  the ground texture, and a grassy hollow's ground is drawn with those, so the
+ *  fog was simply behind the world. `foam/` can live down there because it
+ *  animates a line the game paints INTO the ground texture; nothing else here
+ *  can. The cost is paid in `mistTint`, which now has to grade itself. */
+const DEPTH = 900_000.3;
 /** Peak opacity of ONE patch. Low on purpose — the bank is built by OVERLAP,
  *  and the dither already leaves half the rim transparent — but not as low as
  *  the first cut: at 0.22 a bank moved its own pixels by 7.2 luma at first
@@ -202,13 +209,13 @@ export function dawnMistFeature(): AmbientFeature {
          * The DEPTH IS APPLIED HERE — a factory that takes one and forgets it
          * leaves the mark at 0, above the overlay, which for this effect would
          * undo the whole reason it is in the surface band (the drips, 2026-09-13). */
-        sprite: ctx.scene.add.image(0, 0, key).setOrigin(0.5, 0.5).setScale(1).setDepth(DEPTH).setTint(MIST).setVisible(false),
+        sprite: ctx.scene.add.image(0, 0, key).setOrigin(0.5, 0.5).setScale(1).setDepth(DEPTH).setVisible(false),
         x, y, age: 0, life: 0, period: 1, phase: 0, damp: d, rx: PATCH_RX[size], live: false,
       };
       patches.push(p);
     }
     if (!p) return; // at the ceiling
-    p.sprite.setTexture(key).setDepth(DEPTH).setTint(MIST);
+    p.sprite.setTexture(key).setDepth(DEPTH);
     p.x = x;
     p.y = y;
     p.age = 0;
@@ -318,6 +325,7 @@ export function dawnMistFeature(): AmbientFeature {
       }
 
       // ---- and lie there, breathing ----
+      const tint = mistTint(env.sun);
       const v = ctx.view;
       for (const p of patches) {
         if (!p.live) continue;
@@ -333,12 +341,12 @@ export function dawnMistFeature(): AmbientFeature {
           p.sprite.setVisible(false).setAlpha(0);
           continue;
         }
-        const a = patchAlpha(p.age, p.life) * breathe(p.age, p.period, p.phase) * alphaFor(ALPHA, env.sun) * g;
+        const a = patchAlpha(p.age, p.life) * breathe(p.age, p.period, p.phase) * ALPHA * g;
         if (a <= 0.004) {
           p.sprite.setVisible(false).setAlpha(0);
           continue;
         }
-        p.sprite.setPosition(Math.round(x), Math.round(y)).setAlpha(a).setVisible(true);
+        p.sprite.setPosition(Math.round(x), Math.round(y)).setTint(tint).setAlpha(a).setVisible(true);
       }
     },
     setSuppressed(on) {

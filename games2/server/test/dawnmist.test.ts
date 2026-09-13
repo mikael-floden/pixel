@@ -18,14 +18,11 @@ import {
   BREATHE,
   MAX_PATCHES,
   MIN_DAMP,
-  MIST,
   PATCH_LIFE,
   PATCH_RX,
   PER_SPOT,
   DRAIN_LEVELS,
-  NIGHT_LIFT,
   WATER_BONUS,
-  alphaFor,
   basin,
   drain,
   breathe,
@@ -33,6 +30,7 @@ import {
   damp,
   ditherPixels,
   driftX,
+  mistTint,
   driftY,
   hash01,
   nextGap,
@@ -232,33 +230,30 @@ test("a damper spot gets bigger patches and more of them", () => {
   assert.ok(lo >= 400 && hi <= 900, `the placement gap stays in its band (${lo}..${hi})`);
 });
 
-test("it is THICKER in the dark, because the night multiplies it with the ground", () => {
-  // The surface band puts the mist UNDER the darkness overlay, so the night
-  // scales the fog and the ground it lies on by the SAME factor: they keep
-  // their ratio and lose their difference. Measured at night in the world's
-  // deepest hollow: the banks covered 9.37% of the game area and moved those
-  // pixels by 3-9 luma. The opacity pays that back; the depth is not given up.
-  assert.ok(alphaFor(0.28, 0) > alphaFor(0.28, 1), "thicker at night than at noon");
-  assert.equal(alphaFor(0.28, 1), 0.28, "and untouched in full sun");
-  assert.ok(alphaFor(0.28, 0) <= 0.28 * (1 + NIGHT_LIFT) + 1e-9, "lifted by the stated factor, no more");
-  assert.ok(alphaFor(0.28, 0) < 0.75, "still fog, not paint");
-  for (const [b, s] of [[0.28, -1], [0.28, 5], [1, 0], [0, 0]] as const) {
-    const a = alphaFor(b, s);
-    assert.ok(a >= 0 && a <= 1, `alphaFor(${b},${s}) = ${a} out of range`);
+test("the colour grades itself, and is never a white bank on night grass", () => {
+  // The mist draws just OVER the darkness overlay with every other
+  // ground-lying mark here, so its own colour survives the night and it has to
+  // grade itself. The first cut drew it UNDER the overlay expecting that for
+  // free and measured 1 luma of change for nineteen banks at alpha 0.45: the
+  // surface band is under the terrain OCCLUDERS too, and a grassy hollow's
+  // ground is drawn with those, so the fog was behind the world.
+  const lum = (c: number) => 0.299 * ((c >> 16) & 255) + 0.587 * ((c >> 8) & 255) + 0.114 * (c & 255);
+  const day = mistTint(1);
+  const night = mistTint(0);
+  assert.ok(lum(day) > lum(night), "paler by day");
+  assert.ok(lum(night) <= 135, `not a white bank on night grass (${lum(night).toFixed(0)}) — the ants' verdict`);
+  assert.ok(lum(night) >= 90, `...but still fog rather than soot (${lum(night).toFixed(0)})`);
+  assert.ok(lum(day) <= 235, "and never white even at noon");
+  // neutral at both ends: a warm tint reads as dust, a cool one as magic
+  for (const c of [day, night]) {
+    assert.equal((c >> 16) & 255, (c >> 8) & 255);
+    assert.equal((c >> 8) & 255, c & 255);
   }
-  assert.ok(alphaFor(0.28, 0.5) > alphaFor(0.28, 0.8), "and it thins all the way up the morning");
-});
-
-test("the colour is a pale, near-neutral grey — the background palette law", () => {
-  const r = (MIST >> 16) & 255;
-  const g = (MIST >> 8) & 255;
-  const b = MIST & 255;
-  const sat = (Math.max(r, g, b) - Math.min(r, g, b)) / Math.max(r, g, b);
-  assert.ok(sat < 0.45, `saturation ${sat.toFixed(3)} is under MAX_SAT — this is background`);
-  assert.ok(sat < 0.1, `...and in fact near-neutral (${sat.toFixed(3)}): warm reads as dust, blue as magic`);
-  const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-  assert.ok(lum > 180, `pale (${lum.toFixed(0)})`);
-  assert.ok(lum < 245, "but not white: it is drawn UNDER the night overlay and graded with the ground");
+  assert.ok(lum(mistTint(0.5)) > lum(night) && lum(mistTint(0.5)) < lum(day), "and it ramps between");
+  for (const sv of [-3, 0, 0.5, 1, 7]) {
+    const v = (mistTint(sv) >> 16) & 255;
+    assert.ok(v >= 0 && v <= 255, `mistTint(${sv}) channel ${v} out of range`);
+  }
 });
 
 test("on the SHIPPED WORLD it finds the hollows, refuses the ridges, and stays rare", { skip }, () => {

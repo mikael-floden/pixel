@@ -200,27 +200,24 @@ export function ditherPixels(rx: number, ry: number, seed: number): [number, num
   return out;
 }
 
-/** HOW OPAQUE A PATCH IS AT THIS HOUR — and it is THICKER IN THE DARK, which
- *  looks backwards until you remember where this is drawn. The surface band is
- *  under the darkness overlay, so the night multiplies the mist by the same
- *  factor as the ground beneath it: the two keep their RATIO and lose their
- *  DIFFERENCE, and the fog quietly vanishes at exactly the hour it is
- *  thickest. Measured in the world's deepest hollow at night: the banks covered
- *  9.37% of the game area and moved those pixels by 3-9 luma.
+/** THE COLOUR, AND IT TRACKS THE SUN — which the first cut did not, on the
+ *  theory that drawing under the darkness overlay would grade it for free.
+ *  That theory was measured and it was wrong IN THE PLACE IT MATTERS: the
+ *  surface band is under the terrain occluders too, and a grassy hollow's
+ *  ground is drawn with those, so the fog was behind the world. Nineteen banks
+ *  at alpha 0.45 moved the screen by 1 luma; the same banks lifted over the
+ *  overlay were plainly visible in the same shot. Only `foam/` belongs down
+ *  there, and its own comment says why — it animates a line the game paints
+ *  INTO the ground texture.
  *
- *  So the opacity compensates for the multiply instead of the depth being
- *  given up. Everything the surface band buys is kept — the fog goes under
- *  bodies, it never glows, it takes the cliff's own shadow — and what it cost
- *  is paid back here, in the one number that can pay it. */
-export const NIGHT_LIFT = 1.2;
-export function alphaFor(base: number, sun: number): number {
-  return clamp01(base * (1 + NIGHT_LIFT * (1 - clamp01(sun))));
+ *  So this joins every other ground-lying mark in the folder, just over the
+ *  overlay with the crawlers and the splash rings — and pays for it here. A
+ *  mark above the overlay keeps its OWN colour through the night, so a pale
+ *  grey at 3am is the white-ants verdict again (maintainer 2026-09-07, on the
+ *  ants: "I don't like the way you make the ants white"). Dim grey by night,
+ *  pale by day, neutral at both ends: a warm tint reads as dust and a blue one
+ *  as a magic effect. */
+export function mistTint(sun: number): number {
+  const v = Math.round(120 + 100 * clamp01(sun)); // 120 at night, 220 in full sun
+  return (v << 16) | (v << 8) | v;
 }
-
-/** THE COLOUR, and it does NOT change with the sun. A pale, barely-cool grey:
- *  a warm one reads as dust and a blue one as a magic effect, and the
- *  background palette law caps the saturation of anything this big anyway
- *  (this measures 0.04). The DAWN is not painted here — the night shader
- *  grades the surface band, so the same grey is near-black at 3am and catches
- *  the first light with the ground around it. */
-export const MIST = 0xd8dee2;
