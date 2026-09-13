@@ -20,8 +20,8 @@ edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`
 (`UI_AGENT.md` is the file split), games-audio (`composer/`, its own
 `CLAUDE.md`), games-ambient (`ambient/`, its own README), games-perf (frame
 time only, from the beacon) — and each has an `<agent>-assistant` with the
-same remit and its own board (root `CLAUDE.md`). Work from `games2/`; `npm run dev`,
-`npm test`, `npm run typecheck`. Boards: `coordination/<agent>.json` and
+same remit and its own board (root `CLAUDE.md`). Work from `games2/` (`npm run
+dev|test|typecheck`). Boards: `coordination/<agent>.json` and
 `<agent>-assistant.json`.
 
 ## The docs
@@ -81,7 +81,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   100, his), never indoors, on a ramp or touching another, and draw as an
   OVERLAY, top face alone (`detail*.test.ts`).
 - A base-set member leaves its set on his verdict on THE TILE, never on its
-  `#top` detail verdict (maintainer 2026-09-12; `tiles3members.test.ts`).
+  `#top` detail verdict (2026-09-12; `tiles3members.test.ts`).
 - The resolver is PER CELL (`Tiles3World`), never the sweep, held deeply equal
   to the sweep and to `maps2/pipeline/render3.py` by the parity fixtures
   (`scripts/tiles3-fixture.py`); a resolution rule changes in tiles3.ts AND
@@ -276,8 +276,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - Solid objects are art, not walls (no face band); a cave mouth is not a face.
 - The wall wash is per PIXEL (the face gate's lateral is to the pixel, never
   the cell), its wrap is his "Wall light wrap" dial (default 0.7), and the
-  LOS march never blends a wall's own height into its front skirt; gate:
-  `scripts/verify-wallwash.mjs`.
+  LOS march never blends a wall's own height into its front skirt, nor the
+  skirt the LIGHT stands in; gate: `scripts/verify-wallwash.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark room 40%, lit room 12%; hidden outline 20% — his dials.

@@ -449,7 +449,21 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   OWN-CELL SKIRT SKIP: the bump's bilinear skirt reaches a cell out, so the
   tread under a 0.5-cell trunk darkened 21% on the torch side — a pixel whose
   cell carries a share now skips LOS samples within one cell of that cell's
-  centre (`ownShare`, twin in `lightAt`). THE LIGHT'S OWN CELL IS SKIPPED
+  centre (`ownShare`, twin in `lightAt`). AND THE LIGHT'S OWN NEAR FIELD, ON
+  TERRAIN TOO (`LIGHT_NEAR_R2`, half a cell squared; twin in `lightAt`): a
+  torch held within half a cell of a tall column stands INSIDE the column's
+  bilinear skirt, and every ray's last samples — the ones nearest the light —
+  read the skirt's phantom height and shadow the floor around the bearer's
+  own feet. Measured beside the dungeon pillar at 263.6,167.1 (maintainer
+  2026-09-13, "the ground next to the wall is dark"): occ 0.60 one cell west
+  of the torch and 1.00 a quarter cell further, the floor beside the feet 46
+  → 58 luma once the samples within half a cell of the light are skipped. A
+  wall that close is one the torch is pressed against, and its shadow is
+  still cast by the samples deeper inside it. What stays dark there is not
+  floor: a 1-level parapet's top face rises 15 px, a row step is 14, so the
+  cut top of every wall cell covers half of each floor cell up-screen of it
+  — the dark "ground" beside a wall under the cut-away is the wall's own top
+  (his wall-height pick). THE LIGHT'S OWN CELL IS SKIPPED
   THE SAME WAY (`lShare`,
   twin `lShare`): a fire IS its piece, and a share taller than the light
   (a lamp post's 2 levels vs a light at head height) would block its own

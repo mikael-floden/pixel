@@ -148,6 +148,10 @@ const SCN_SHADOW_DEEP = 0.3;
  *  the light's ray has NO step there — its largest step, 0.627, sits at 3.0
  *  cells and is a shadow edge. */
 const SHADOW_MARCH_MIN_LIGHT = 0.012;
+/** Half a cell, squared: LOS samples this close to the LIGHT are skipped (the
+ *  light-side near field — a torch held beside a column stands in the column's
+ *  bilinear skirt; see the march in FRAG and its twin in lightAt). */
+const LIGHT_NEAR_R2 = 0.25;
 /** The glow field's resolution divisor — see where glowRT is built. */
 const GLOW_FIELD_DIV = 2;
 /** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
@@ -1074,6 +1078,17 @@ void main() {
         // the wall cell — a false dark notch along every base line.
         vec2 dp = p - pos;
         if (dot(dp, dp) < 0.56) continue;
+        // THE LIGHT'S OWN NEAR FIELD, the mirror of the pixel's: a torch held
+        // within half a cell of a tall column stands INSIDE that column's
+        // bilinear skirt, and every ray's last samples — the ones nearest the
+        // light — read the skirt's phantom height and shadow the floor around
+        // the torch-bearer's own feet (maintainer 2026-09-13, 263.6,167.1
+        // beside the dungeon pillar: "the ground next to the wall is dark",
+        // measured occ 0.60 one cell west of the torch, 1.00 a quarter cell
+        // further). A real wall that close to the light is one the torch is
+        // pressed against, and its shadow is cast by the samples deeper in it.
+        vec2 dl = p - lp.xy;
+        if (dot(dl, dl) < ${LIGHT_NEAR_R2}) continue;
         if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
         if (lShare > 0.0 && dot(p - lC, p - lC) < 1.0) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
@@ -3459,6 +3474,7 @@ export class NightLights {
           const py = row + dy * tt;
           if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
           if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
+          if ((px - L.col) * (px - L.col) + (py - L.row) * (py - L.row) < LIGHT_NEAR_R2) continue; // the light's near field (see FRAG)
           if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
           if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0) continue; // the LIGHT's own trunk (a fire IS its piece)
           const hRay = z + (L.z - z) * tt + 0.2;
