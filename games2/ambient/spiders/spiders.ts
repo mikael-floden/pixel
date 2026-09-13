@@ -117,7 +117,16 @@ export function spidersFeature(): AmbientFeature {
       const visible = g > 0.02;
 
       if (!visible) {
-        for (const s of spiders) if (s.sprite.visible) s.sprite.setVisible(false);
+        /* HIDING IS NOT ENOUGH: ZERO THE ALPHA THE REPORT READS. `debug().all[].a`
+         * is the DRAWN alpha on every path, the early ones included — the indoor
+         * gate reads that field and cannot see a sprite. Hidden-but-not-zeroed,
+         * a spider kept the alpha it had the frame the gain crossed the line, so
+         * indoors it reported 0.021 for the whole 8 s the gate waits and the
+         * games agent asked whether to relax the gate to <= 0.03 (2026-09-09).
+         * It is not a floor in the curve and nothing was drawn: it is a stale
+         * number. The gate is right; this was wrong. */
+        for (const s of spiders)
+          if (s.sprite.visible) s.sprite.setVisible(false).setAlpha(0);
         return;
       }
 
@@ -255,7 +264,10 @@ export function spidersFeature(): AmbientFeature {
         gain: +gain.toFixed(3),
         spiders: spiders.length,
         nextInMs: Math.max(0, Math.round(nextIn)),
-        all: spiders.map((s) => ({
+        /* ...AND ONLY WHAT IS ON SCREEN, like every sibling in this folder
+         * (ants, crabs, gnats, moths, bubbles, deepwater all filter here). An
+         * unfiltered list reports parked sprites as live marks. */
+        all: spiders.filter((s) => s.sprite.visible).map((s) => ({
           x: Math.round(s.x), y: Math.round(s.y),
           dashing: s.dashing, spd: +s.spd.toFixed(1),
           lifeMs: Math.round(s.life), a: +s.sprite.alpha.toFixed(3),

@@ -398,9 +398,16 @@ typechecks and passes every unit test. Probe: `__mlAmbient.outdoor()` →
 `{ indoor, gain, fadeMs }`.
 
 **`debug().all[].a` IS THE DRAWN ALPHA ON EVERY PATH, including the ones that
-return early.** A feature that hides a sprite and `continue`s — parked while
-it waits for somewhere to go, off the view, out of budget — must zero `a`
-there too, not only where it draws. `butterflies/` kept the alpha each one had
+return early — and `all` LISTS ONLY WHAT IS ON SCREEN.** A feature that hides a
+sprite and `continue`s — parked while it waits for somewhere to go, off the
+view, out of budget — must zero `a` there too, not only where it draws, and
+filter its list on `sprite.visible` the way every other feature here does.
+`spiders/` did neither: indoors it kept reporting the alpha each spider had the
+frame the gain crossed 0.02 and the gate read a live mark that was not drawn
+(measured at the spawn house, 0.016-0.021 held for the whole 8 s the gate
+waits; 0 after, with the feature's update still running 120 frames). The games
+agent asked whether to relax the gate to <= 0.03 — the answer is no: a residual
+there is a stale number, never a floor in a curve. `butterflies/` kept the alpha each one had
 before it left, and over a sea with no grass within twenty cells the gate read
 four butterflies flying over open water that were not on screen at all. The
 indoor gate above reads the same field, so this is not just a QA nicety.
