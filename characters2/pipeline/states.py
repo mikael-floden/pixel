@@ -396,9 +396,11 @@ def _sheet(hero, base_folder, rows):
     return sheet
 
 
-def _publish_hashed(folder, stem, img, prev_name):
-    """Write `stem.<sha8>.webp`, never a stable name (the cache law), keep the
-    previous one, drop older siblings. Returns (current, previous)."""
+def _publish_hashed(folder, stem, img, cur_name, prev_name):
+    """Write `stem.<sha8>.webp`, never a stable name (the cache law), keep ONE
+    back, drop older siblings. Returns (current, previous). An unchanged
+    re-cut (same hash as `cur_name`) keeps the old `prev_name` — the first
+    version of this dropped the previous sheet on every no-op re-run."""
     tmp = os.path.join(folder, f".{stem}.tmp.webp")
     save_image(img, tmp)
     with open(tmp, "rb") as f:
@@ -409,8 +411,8 @@ def _publish_hashed(folder, stem, img, prev_name):
         os.remove(tmp)
     else:
         os.replace(tmp, dst)
-    prev = prev_name if prev_name and prev_name != name else None
-    if prev_name and prev_name != name and not os.path.exists(os.path.join(folder, prev_name)):
+    prev = prev_name if name == cur_name else cur_name
+    if prev and (prev == name or not os.path.exists(os.path.join(folder, prev))):
         prev = None
     for fn in os.listdir(folder):
         if fn.startswith(stem + ".") and fn.endswith(".webp") and fn not in (name, prev):
@@ -465,8 +467,10 @@ def mirror(client, args):
         prev_rec = (index.get("heroes") or {}).get(hero) or {}
         sheet_name, sheet_prev = (None, None)
         if sheet is not None:
-            sheet_name, sheet_prev = _publish_hashed(hero_folder, "sheet", sheet,
-                                                     os.path.basename(prev_rec.get("sheet") or ""))
+            sheet_name, sheet_prev = _publish_hashed(
+                hero_folder, "sheet", sheet,
+                os.path.basename(prev_rec.get("sheet") or ""),
+                os.path.basename(prev_rec.get("sheet_prev") or ""))
         heroes_out[hero] = {
             "pixellab_character_id": info["id"],
             "group_id": info["detail"].get("group_id"),
