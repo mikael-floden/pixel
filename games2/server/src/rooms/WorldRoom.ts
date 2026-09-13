@@ -14,6 +14,7 @@ Encoder.BUFFER_SIZE = 2 * 1024 * 1024;
 import {
   InputMessage,
   gaitRunning,
+  gaitSpeed,
   JoinOptions,
   ChatInput,
   ChatBroadcast,
@@ -1600,8 +1601,9 @@ export class WorldRoom extends Room<WorldState> {
           );
         }
         // The body's ACTUAL speed over this window (before the position is
-        // taken): walk vs run follows it, not the flag — see gaitRunning.
-        const actualSpeed = eff > 0 ? Math.hypot(r.x - player.x, r.y - player.y) / eff : -1;
+        // taken), on the screen, in the walk's units (gaitSpeed): walk vs run
+        // follows it, not the flag — see gaitRunning.
+        const actualSpeed = eff > 0 ? gaitSpeed(r.x - player.x, r.y - player.y, eff) : -1;
         /* THE DEEP-SEA CURRENT. Integrated as a SECOND ordinary move rather
          * than added to the position, so terrain still collides and the sea can
          * never push a body through a wall or onto a cliff. `speed` here is a

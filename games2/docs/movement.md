@@ -255,14 +255,27 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     BACK ("It looks much better if the player looks the way the nav system
     moves the player"), so the facing is the walked vector's on both sides
     and no facing rides on the input. Do not re-attempt.
-  - **Walk or run follows the body's ACTUAL speed** (`gaitRunning`, shared;
-    "the player movement is not that much so the player should here not run
-    ... depends on the player's speed after the collision with the wall has
-    been done and the v was cut"): the client asks it of its predicted
-    body's speed (an EMA over 100 ms, `av.gaitSpeed`), the server per input
-    for everyone else; hysteresis `GAIT_RUN_ON` 1.15 / `GAIT_RUN_OFF` 0.85 of
-    the walk's pace under the speed dial. A run cut below a walk walks; square
-    on, going nowhere, walks in place. Gate: `server/test/gait.test.ts`.
+  - **Walk or run follows the body's ACTUAL SCREEN speed** (`gaitSpeed` +
+    `gaitRunning`, shared; "the player movement is not that much so the
+    player should here not run ... depends on the player's speed after the
+    collision with the wall has been done and the v was cut"): the client
+    asks it of its predicted body's speed (an EMA over 100 ms,
+    `av.gaitSpeed`), the server per input for everyone else. The speed is the
+    body's SCREEN change in the walk's units — a free walk measures
+    `WALK_SPEED` whichever way it goes, a free run `RUN_SPEED`, a slide its
+    share of the run (world units were not one number: a screen-up walk
+    covers 1.6 world units for a screen-right walk's 0.7, so the same slide
+    ran or walked by which way the wall faced). THE RUN GAIT BEGINS AT 80% OF
+    THE RUN AND ENDS AT 74% (`GAIT_RUN_ON` 2.0 / `GAIT_RUN_OFF` 1.85 walks,
+    the run being 2.5; maintainer 2026-09-13: "we switch from walking to
+    running at too low velocity. The switch should come 50% closer to max
+    speed" — the line stood at 1.15 walks, 46% of the run, and every slide
+    along a wall played the run). Halfway to the run is 73%, a hair above the
+    71% every cardinal key slides at, and the run's own edge must sit above
+    that plateau too or a run cut to the slide keeps its gait through the
+    hysteresis: at 80/74 the 71% slide walks from either side, the free run
+    runs, and the band holds no plateau to flicker on. Square on, going
+    nowhere, walks in place. Gate: `server/test/gait.test.ts`.
   Gate: `server/test/wallcorner.test.ts` — a copy of the house's levels, his
   two start spots, the three stick directions, the angle, the hop, the tile
   cap. The world border is terrain too: a body runs into the map's corner and

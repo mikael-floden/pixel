@@ -49,6 +49,7 @@ import {
   bodyStalled,
   slideAlong,
   gaitRunning,
+  gaitSpeed,
   type SlideMemo,
   stepAutopilot,
   bodyStandoff,
@@ -12488,12 +12489,14 @@ export class WorldScene extends Phaser.Scene {
         moving = li.ax !== 0 || li.ay !== 0;
         /* WALK OR RUN FOLLOWS THE BODY'S ACTUAL SPEED (shared gaitRunning): the
          * run a wall cut to a slide plays the walk. The speed is the predicted
-         * position's change per frame, smoothed over ~100 ms; a body-length or
-         * more in one frame is a teleport or a rebind, not a speed. */
+         * position's SCREEN change per frame in the walk's units (shared
+         * gaitSpeed: uniform across directions, unlike world units), smoothed
+         * over ~100 ms; a body-length or more in one frame is a teleport or a
+         * rebind, not a speed. */
         const dv = Math.hypot(tx - av.fx, ty - av.fy);
         if (dt > 0 && dv < RUN_SPEED * 4 * dt + 8) {
           const k = Math.min(1, dt / 0.1);
-          av.gaitSpeed = (av.gaitSpeed ?? 0) * (1 - k) + (dv / dt) * k;
+          av.gaitSpeed = (av.gaitSpeed ?? 0) * (1 - k) + gaitSpeed(tx - av.fx, ty - av.fy, dt) * k;
         }
         av.gaitRun = moving && li.running && gaitRunning(!!av.gaitRun, av.gaitSpeed ?? 0, WALK_SPEED * playerSpeed());
         running = av.gaitRun;

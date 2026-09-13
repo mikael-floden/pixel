@@ -317,8 +317,18 @@ export const PLAYER_SPEED_DEFAULT = 1.2;
  *  slide hovering at the line does not flicker: `wasRunning` is the previous
  *  answer, `speed` the measured wu/s, `walkSpeed` the walk's pace under the
  *  player-speed dial. Only asked while the input asks to run. */
-export const GAIT_RUN_ON = 1.15;
-export const GAIT_RUN_OFF = 0.85;
+/** THE RUN GAIT BEGINS AT 80% OF THE RUN AND ENDS AT 74% — multiples of the
+ *  walk (the run is 2.5 walks), judged on the body's SCREEN speed (gaitSpeed).
+ *  Maintainer 2026-09-13: "we switch from walking to running at too low
+ *  velocity. The switch should come 50% closer to max speed" — the line stood
+ *  at 1.15 walks, 46% of the run, and every slide along a wall (a cardinal
+ *  key's is 71% of the run, the world cosine) played the run. Halfway to the
+ *  run is 73%, a hair above that 71% plateau, and the run's own edge must sit
+ *  above the plateau too, or a run cut to that slide keeps its gait through
+ *  the hysteresis: 80% on, 74% off — the 71% slide walks from either side,
+ *  the free run runs, and the band holds no plateau to flicker on. */
+export const GAIT_RUN_ON = 2.0;
+export const GAIT_RUN_OFF = 1.85;
 export function gaitRunning(wasRunning: boolean, speed: number, walkSpeed: number): boolean {
   return speed >= walkSpeed * (wasRunning ? GAIT_RUN_OFF : GAIT_RUN_ON);
 }
@@ -623,6 +633,18 @@ export function screenToWorldVector(
   const screenLen = Math.hypot((ux - uy) * iso.dx, (ux + uy) * iso.dy);
   const k = SCREEN_SPEED_REF / screenLen;
   return { x: ux * k, y: uy * k };
+}
+
+/** THE GAIT'S SPEED IS THE BODY'S SCREEN SPEED, in the units the walk speed is
+ *  stated in (the inverse of screenToWorldVector's normalisation): a free walk
+ *  measures WALK_SPEED whichever way it goes, a free run RUN_SPEED, a slide
+ *  its share of the run. The world-unit measure it replaces was not one
+ *  number: the free run's screen speed is uniform, its world speed is not — a
+ *  screen-up walk covers 1.6 world units for a screen-right walk's 0.7 — so
+ *  the run line at 1.15 walks was 46% of the run along one axis and 29% along
+ *  the other, and the same slide ran or walked by which way the wall faced. */
+export function gaitSpeed(dx: number, dy: number, dt: number): number {
+  return dt > 0 ? Math.hypot((dx - dy) * ISO_DX, (dx + dy) * ISO_DY) / SCREEN_SPEED_REF / dt : 0;
 }
 
 /** Blocked test for a *move*: is entering (toX,toY) from (fromX,fromY) disallowed?
