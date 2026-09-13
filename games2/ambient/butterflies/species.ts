@@ -55,8 +55,11 @@ const PEAT = 0x46382c;
 const LOAM = 0x574a37;
 const OLIVE = 0x3f463a;
 
-/** The most colour a background effect may carry (HSV saturation). */
-export const MAX_SAT = 0.45;
+/* THE SATURATION CAP IS A DOMAIN RULE and lives in `runtime/palette.ts` — his
+ * "no extreme/vibrant colors, this is a background effect" is not about
+ * butterflies, it is about everything drawn here. Re-exported so this file
+ * still reads as the whole contract for a butterfly's colour. */
+export { MAX_SAT, saturation } from "../runtime/palette";
 
 /** His bands, and the share of every butterfly drawn that each one takes. */
 export const BANDS = { pale: 28, dark: 22, green: 13, red: 12, free: 25 } as const;
@@ -115,15 +118,6 @@ export function pickSpecies(r: number): Species {
     if (acc < 0) return s;
   }
   return SPECIES[SPECIES.length - 1];
-}
-
-/** HSV saturation of a packed RGB, 0..1 — how much COLOUR it carries. */
-export function saturation(c: number): number {
-  const r = (c >> 16) & 255;
-  const g = (c >> 8) & 255;
-  const b = c & 255;
-  const hi = Math.max(r, g, b);
-  return hi === 0 ? 0 : (hi - Math.min(r, g, b)) / hi;
 }
 
 /* HOW THE MIX BECOMES PIXELS — and why a split cannot be taken literally at

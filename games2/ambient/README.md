@@ -71,6 +71,30 @@ them; folder isolation beats DRY here).
   white (maintainer 2026-09-11), and they would drift again at the next art
   regeneration. Measured over the eight birds: 5b9a42 green, e84940 red,
   cbd1d9 white, and six more all distinct.
+- **`runtime/scenery.ts` — `sceneryInView(view, categories)`** is how an
+  effect belongs to a PIECE rather than to the ground. A scenery sprite
+  carries its own path in its texture key
+  (`s3:reed_beds/reed_bed_007/sprite.webp`), so the first path segment is the
+  maps2 agent's own CATEGORY, and a feature keyed to `"reed_beds"` inherits
+  every reed bed the world gains later without a second list to maintain.
+  Match the category as a PREFIX, never a piece id: the probe truncates the
+  key at 44 characters and a long path loses its tail.
+  **IT WALKS THE WHOLE DISPLAY LIST** (1,072 objects in a busy view) AND
+  FILTERS AFTERWARDS, so the box it is handed does not change its price —
+  frequency is the only lever. Scanning twice a second cost a 9.8 ms frame.
+  Drive it off the CAMERA MOVING instead, with a slow heartbeat while it holds
+  pieces (they do not walk away) and a fast one while it holds none (nothing is
+  drawn then, so a slow frame stutters nothing).
+  **REJECTED: a "no water in view" pre-filter.** REEDS AND CATTAILS GROW ON
+  MARSH MUD, NOT IN WATER — only the lilies need water — and at the world's
+  densest reed bed `waterAtScreen` is false at all thirty sampled points. It
+  cost the feature its whole sense of place (0 pieces where it had found 21)
+  to save one 3 ms frame.
+- **`runtime/palette.ts` — `MAX_SAT` and `saturation()`** is the maintainer's
+  "no extreme/vibrant colors, this is a background effect" as a NUMBER, and it
+  is domain law rather than one feature's taste, so it lives here and both
+  `butterflies/` and `dragonflies/` measure against it. Real darters are
+  electric blue and scarlet; these are slate, olive and dusty brown.
 - **A LANDING IS ALREADY PUBLISHED — twice, and neither probe was added for
   it.** `__ml.me().jumping` is the SYNCED jump flag, so its rising edge plus
   the fixed `JUMP_MS` window is the touchdown, on the same clock every client
@@ -313,7 +337,7 @@ decision; an earlier version that jumped the world to each effect's
   (currently fireflies, pollen, water, deepwater, foam, fish, drips, ants, spiders, moths,
   smoke, lava,
   gnats, crabs, bubbles, embers, dust, bats, birds, feathers, butterflies,
-  thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
+  dragonflies, thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
 
 - **AUTO** — director + fields run normally; the button prints
@@ -390,6 +414,7 @@ controller (AUTO / NONE / solo-each).
 | `smoke/` | field | FIRE SMOKE — thin grey wisps curling up off an open flame, so a fire reads as burning BY DAY (the embers are the night half of the same object). A column, not a cloud: marks leave the same point a tenth of a second apart, lean on the cloud wind, bend together on a shared curl phase, gather from one pixel to three and thin away. DARK grey, and darker the brighter the day — the case is a fire on sunlit ground, where a pale wisp is nothing at all (measured 5.8 luma). NORMAL blend, never additive: smoke is in the way, it does not glow | Any OPEN fire in view (`light.kind` is `fire/*` and not `fire/enclosed` — a lantern burns behind glass); sorts against its own fire's lit copy; a sealed fire only while you are in the room with it. Full by day, a third at night |
 | `dust/` | field | LANDING DUST — a ring of specks kicked out at your boots when you come down. They go OUT, not up (a ring that rises reads as a spell; one that skims the ground, stalls and settles reads as weight), the ring is ISO so it lies on the floor instead of standing up out of it, and ONE dial drives count, spread, speed and life so a drop off a ledge cannot look like a hop. The colour is the ground itself, lifted — sand throws pale grit, stone grey, snow white, grass a dull olive | The LOCAL player's own landings, off `__ml.me().jumping` (+ JUMP_MS) and `__ml.fall().falling`; dry ground only, outdoors. An EVENT effect: nothing runs between landings |
 | `lava/` | field | THE POOL BREATHES — a dome swells slowly on the molten surface, HOLDS while its skin stretches, and bursts into a flash, a few sparks that fall back in, and a ring of cooled crust spreading from the spot; dark ash drifts up off the surface between bursts. Molten rock is viscous, so the whole cycle is slow — a fast bubble reads as boiling soup. THE POOL'S COLOUR IS THE TILES DOMAIN'S (`ground_types.json` `lava.palette.top` and `.wall`, fetched), and the marks depart from it BOTH WAYS: a hotter dome, a cooler crust, near-black ash | Any LAVA in view — the surface table's `harm` field, the game's one liquid that burns, so a second molten liquid bubbles the day it is added; found with `pickAt` + `surfaceAt`, never the landable helpers (lava is swimmable, not landable) |
+| `dragonflies/` | field | THE WATERLINE IN SUMMER, and the deliberate OPPOSITE of the butterflies above it: still, then a straight line at speed, then still again. It HOVERS on one point (a pixel of jitter, never a drift), DARTS in a linear segment that ends DEAD (easing the ends turns it into a bee), and PERCHES on a reed with its wings still OUT — a butterfly folds its wings at rest and a dragonfly never does, which at four pixels is the whole difference. The wings are a BLUR, not frames: at 400 beats a second there is no pose to draw | The maps2 agent's waterline pieces in view (`reed_beds`, `cattail_clumps`, `water_lily_clumps` — 124 placed), read by category from the display list; outdoors, by DAY, gone in rain and gone in wind |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
