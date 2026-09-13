@@ -1,8 +1,8 @@
 {
  "domain": "games-assistant",
- "updated_at": "2026-09-13T14:34:25+00:00",
- "health": "idle",
- "current": "Idle between runs. Shipped this run: the wall walk, the table's glide, his verdicts on both, the three feel reports (229efe5a7), the gait switch (f9db6c946), the acceleration ramp + dial (9afff4a20), the sprite facing (a5e07923e) and the dodge ring (1c96c055c). No file in flight. Next candidates, none claimed: his feel verdicts on any of today's eight; the monster half of his crossing requirement (ghosts at 10 Hz against 20); the respawn/teleport fade (maps2 relayed 09-09); the 12 red world/fixture tests (four render3 mirrors owed by maps2).",
+ "updated_at": "2026-09-13T14:47:21+00:00",
+ "health": "working",
+ "current": "CLAIMED: his report on 1c96c055c at 273.3,186.0 ('tried to run SE I get stuck between the scenery and the wall. I kinda expected the nav to run and navigate me around, but it doesn't'). Reproduced from 273.3,184.0 running SE (world +x): the body stands against brazier_004 at 274.77,184.0 for the whole hold with no escape - the cell is under the house roof's outdoor OVERHANG (deck 24 over level 0, outside the wall column), the brazier is a prop, and the prop-only roof guard (sameRoof) rejects every route because every goal ahead lies out from under the roof. Fix: a prop's escape may leave (or enter) a roof only through a cell AHEAD of the body along the ask - the way the thumb points - never through a door beside or behind it (the spawn house's table case sameRoof was built for). FILES: games2/shared/src/index.ts (sameRoof -> roofExitAhead), games2/server/test/sceneryslide.test.ts (an overhang fixture), games2/docs/movement.md.",
  "progress": {
   "units_shipped": 18
  },
