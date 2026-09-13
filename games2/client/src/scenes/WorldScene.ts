@@ -1,6 +1,6 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
-import { ART_IDLE_SHARE, ArtQueue, artWorkerEnabled, setArtWorker, setUploadKb, UPLOAD_KB_STEPS } from "../artqueue";
+import { ART_IDLE_SHARE, ArtQueue } from "../artqueue";
 import { drawFrameInto, drawableSource, readFrameAlpha, readTexturePixels, readTextureRect } from "../framepixels";
 import { renderRes } from "../resolution";
 import { ensureResDial } from "../resdial";
@@ -932,9 +932,10 @@ function sceneryPackEnabled(): boolean {
 /** THE COVER ATLASES' PASS SHAPE (coverRaster): on, each atlas is ONE draw
  *  bracket whose erases are the objects' own ERASE blend and whose capture is
  *  bound at the rows in use; off, the seven-bracket, whole-atlas path before
- *  2026-09-13. A Settings row ("cover passes"), remembered in `ml-cover-passes`;
- *  `?coverpasses=7` is the harness's spelling of off. Read at every flush so a
- *  flip takes effect on the next one. What `scripts/verify-cover.mjs` compares. */
+ *  2026-09-13. Remembered in `ml-cover-passes`, set by `?coverpasses=7` or by
+ *  the harness writing the key — its Settings row went when the pass shape was
+ *  decided (2026-09-13). Read at every flush so a flip takes effect on the next
+ *  one. What `scripts/verify-cover.mjs` compares. */
 function coverPassesFast(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("coverpasses");
@@ -945,19 +946,12 @@ function coverPassesFast(): boolean {
   }
 }
 
-function setCoverPasses(fast: boolean): void {
-  try {
-    localStorage.setItem("ml-cover-passes", fast ? "3" : "7");
-  } catch {
-    /* storage disabled — the setting simply does not persist */
-  }
-}
-
 /** THE GROUND BLIT'S SHAPE (groundEndDraw): on, a ground bracket's blit is
  *  scissored to the rect it painted; off, Phaser's whole-target blit — the path
- *  before 2026-09-13. Settings row "ground blit", remembered in
- *  `ml-ground-scissor`; `?groundscissor=0` is the harness's spelling of off.
- *  What scripts/verify-groundbracket.mjs compares. */
+ *  before 2026-09-13. Remembered in `ml-ground-scissor`, set by
+ *  `?groundscissor=0`, by the harness writing the key, or by the __ml ground
+ *  probe that A/Bs a repaint in place — its Settings row went when the blit was
+ *  decided (2026-09-13). What scripts/verify-groundbracket.mjs compares. */
 function groundScissorOn(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("groundscissor");
@@ -4739,69 +4733,19 @@ export class WorldScene extends Phaser.Scene {
          * the repo's ops rule: a step that needs a URL he cannot enter will not
          * happen. The switch is the same localStorage key the query param sets,
          * so either route works and the app remembers it across launches. */
-        /* THE UPLOAD BUDGET DIAL — KB of streamed art turned into textures per
-         * frame (artqueue.ts). His phone finds the number; then it is pinned
-         * and this goes (maintainer: no toggles for what is decided). */
-        {
-          label: "upload budget",
-          act: () => {
-            const q = this.artQueue();
-            const i = UPLOAD_KB_STEPS.indexOf(q.budgetKb as (typeof UPLOAD_KB_STEPS)[number]);
-            const next = UPLOAD_KB_STEPS[(i + 1) % UPLOAD_KB_STEPS.length];
-            q.budgetKb = next;
-            setUploadKb(next);
-            this.chat.addLog("—", `upload budget: ${next ? `${next} KB of textures per frame` : "unbounded — whatever arrives lands at once"}`);
-          },
-          get: () => this.artQueue().budgetKb > 0,
-          state: () => (this.artQueue().budgetKb ? `${this.artQueue().budgetKb} KB/f` : "unbounded"),
-        },
-        /* THE ART WORKER SWITCH (artqueue.ts, artworker.ts): off sends every
-         * streamed strip the way it went before 2026-09-12 — decoded again by
-         * texImage2D on this thread — so a report on monster or NPC art can
-         * be bisected in one tap. Takes effect on the next file; what landed
-         * stays. A Settings row, not a URL, for the same reason as the beacon. */
-        {
-          label: "art worker",
-          act: () => {
-            const on = !artWorkerEnabled();
-            setArtWorker(on);
-            this.chat.addLog("—", `art worker: ${on ? "on — strips decode on another core and upload in bands" : "OFF — every strip decodes on this thread (the path before 2026-09-12)"}`);
-          },
-          get: () => artWorkerEnabled(),
-          state: () => {
-            if (!artWorkerEnabled()) return "off";
-            const a = this.artQueue().peek();
-            return a.worker === 2 ? `on (fell back: ${a.workerError || "worker failed"})` : "on";
-          },
-        },
-        /* THE COVER ATLASES' PASS SHAPE (coverRaster): three brackets on the rows
-         * in use, or the seven whole-atlas brackets before 2026-09-13 — the bisect
-         * for a report on the hidden-behind outline or a lit copy, in one tap.
-         * Takes effect on the next flush. */
-        {
-          label: "cover passes",
-          act: () => {
-            const fast = !coverPassesFast();
-            setCoverPasses(fast);
-            this.chat.addLog("—", `cover passes: ${fast ? "3 — one bracket per atlas, on the rows in use" : "7 — whole-atlas brackets (the path before 2026-09-13)"}`);
-          },
-          get: () => coverPassesFast(),
-          state: () => (coverPassesFast() ? `3 (${this.coverStat.rows || COVER_ATLAS_H} rows)` : "7 (whole atlas)"),
-        },
-        /* THE GROUND BLIT (groundEndDraw): a ground bracket's blit bounded to the
-         * rect it painted, or Phaser's whole-target blit before 2026-09-13 — the
-         * bisect for a report on the ground after a scroll or a cell repaint, in
-         * one tap. Next bracket. */
-        {
-          label: "ground blit",
-          act: () => {
-            const on = !groundScissorOn();
-            setGroundScissor(on);
-            this.chat.addLog("—", `ground blit: ${on ? "the painted rect only" : "WHOLE texture (the path before 2026-09-13)"}`);
-          },
-          get: () => groundScissorOn(),
-          state: () => (groundScissorOn() ? "painted rect" : "whole"),
-        },
+        /* A SHIPPED OPTIMISATION'S BISECT IS NOT A SETTING (maintainer
+         * 2026-09-13, four rows circled on his screenshot: "I feel we have 4
+         * buttons we can finally remove/get rid of"). The upload budget, the
+         * art worker, the cover passes and the ground blit were each an A/B he
+         * could tap while its optimisation was under measurement; the upload
+         * budget's own comment carried the rule — "his phone finds the number;
+         * then it is pinned and this goes". All four are decided, so the ROWS
+         * are gone and NOTHING ELSE IS: each switch still reads its URL param
+         * (`?uploadkb=`, `?artworker=`, `?coverpasses=`, `?groundscissor=`) and
+         * the three gates that A/B them write the localStorage keys directly,
+         * never the row (verify-artworker, verify-cover, verify-groundbracket).
+         * A bisect an agent can still run, off a page he no longer has to
+         * read. */
         {
           label: "perf beacon",
           act: () => this.togglePerfBeacon(),

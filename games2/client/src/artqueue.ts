@@ -114,7 +114,6 @@ export interface ArtQueueStats {
 /** THE DIAL — KB of texture per frame. 0 means unbounded (the old behaviour:
  *  whatever arrived became a texture on arrival). Persisted so the phone
  *  keeps its number across launches. */
-export const UPLOAD_KB_STEPS = [64, 128, 256, 512, 0] as const;
 export const UPLOAD_KB_DEFAULT = 128;
 /** THE IDLE TIER: jobs at or past this priority are the art nobody needs yet
  *  (a present kind's fight strips before any fight, scenery animations) —
@@ -132,8 +131,20 @@ const ALPHA_READY_MAX = 64;
 /** Whole-image answers kept until a reader takes them (`pixels`) — a still is up to a few MB. */
 const PIXELS_READY_MAX = 8;
 
+/** KB OF STREAMED ART TURNED INTO TEXTURES PER FRAME — pinned at
+ *  `UPLOAD_KB_DEFAULT`, which is the number his phone found.
+ *
+ *  This was a Settings row that cycled the steps while the budget was under
+ *  measurement, and the row's own comment carried the rule: "his phone finds
+ *  the number; then it is pinned and this goes" (maintainer: no toggles for
+ *  what is decided). He had it removed on 2026-09-13 along with the other
+ *  three shipped-optimisation switches. `?uploadkb=<n>` keeps the bisect for a
+ *  harness — 0 means unbounded, and `scripts/verify-artworker.mjs` writes the
+ *  key directly as it always has. */
 export function uploadKb(): number {
   try {
+    const q = new URLSearchParams(location.search).get("uploadkb");
+    if (q !== null && Number.isFinite(Number(q)) && Number(q) >= 0) localStorage.setItem(KEY, String(Number(q)));
     const raw = localStorage.getItem(KEY);
     if (raw === null) return UPLOAD_KB_DEFAULT;
     const n = Number(raw);
@@ -143,12 +154,12 @@ export function uploadKb(): number {
   }
 }
 
-/** THE BISECT: the Settings row "art worker" (the maintainer plays from an
- *  installed home-screen app, which has no address bar — a switch he cannot
- *  reach is no switch) and, for a browser tab, `?artworker=0|1`; both write
- *  `ml-art-worker`, read again at EVERY fetch so a tap takes effect on the
- *  next file without a reload. Off sends every job the <img> way, the path
- *  before 2026-09-12; what already landed stays as it is. */
+/** THE BISECT: `?artworker=0|1`, or a harness writing `ml-art-worker`, read
+ *  again at EVERY fetch so a flip takes effect on the next file without a
+ *  reload. Off sends every job the <img> way, the path before 2026-09-12; what
+ *  already landed stays as it is. It was a Settings row while the worker was
+ *  under measurement — he had that removed on 2026-09-13, the worker being
+ *  decided. */
 export function artWorkerEnabled(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("artworker");
@@ -156,22 +167,6 @@ export function artWorkerEnabled(): boolean {
     return localStorage.getItem("ml-art-worker") !== "0";
   } catch {
     return true;
-  }
-}
-
-export function setArtWorker(on: boolean): void {
-  try {
-    localStorage.setItem("ml-art-worker", on ? "1" : "0");
-  } catch {
-    /* storage disabled — the setting simply does not persist */
-  }
-}
-
-export function setUploadKb(kb: number): void {
-  try {
-    localStorage.setItem(KEY, String(kb));
-  } catch {
-    /* storage disabled — the setting simply does not persist */
   }
 }
 

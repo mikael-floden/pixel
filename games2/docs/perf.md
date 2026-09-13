@@ -68,11 +68,13 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   window, 12 MB in one frame. With monsters MOCKED (Settings "monsters":
   mock — nothing loaded) the same stretches ran 2 and 9 lag frames a window,
   the burst-test ceiling; that is what this reaches for. No kind's strips
-  are asked for before a monster of it exists near me. THE BUDGET IS A DIAL
-  until his phone finds the number: Settings "upload budget" (64/128/256/512
-  KB a frame or unbounded, `ml-upload-kb`, default 128), beacon `run.sim` =
-  `up128`, `counts.artQueued/artReady/artLanded/artKbMax`, probe
-  `__ml.art()`. Then it is pinned and the dial goes. The boot batch (behind
+  are asked for before a monster of it exists near me. THE BUDGET IS PINNED AT 128 KB
+  A FRAME — his phone found it, and the dial went with the other three
+  shipped-optimisation switches on 2026-09-13 ("no toggles for what is
+  decided"; the row's own comment had promised exactly this). `ml-upload-kb`
+  still holds it and `?uploadkb=<n>` still sets it (0 = unbounded) for a
+  harness; beacon `run.sim` = `up128`,
+  `counts.artQueued/artReady/artLanded/artKbMax`, probe `__ml.art()`. The boot batch (behind
   the loading bar) and the ground art (its own loader, its own compose
   budget) stay outside it. Mock-mode caveat for future runs: "scenery: mock"
   and the old shader test both provoked `litShapeJobs` bursts of 50-400 ms
@@ -119,10 +121,10 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   or OffscreenCanvas, or a worker that dies, falls back per job to the
   `<img>` path. Beacon: `counts.artBands`, `counts.artBandMaxMs`,
   `counts.artWorker` (1 on, 2 fell back); `texUp` should lose the strips.
-  THE BISECT is the Settings row "art worker" (the installed home-screen app
-  has no address bar, so a URL-only switch is no switch — the beacon's own
-  lesson, 2026-09-03; `?artworker=0|1` still works in a tab): off sends every
-  job the `<img>` way from the next file on, remembered in `ml-art-worker`.
+  THE BISECT is `?artworker=0|1`, or a harness writing `ml-art-worker`: off
+  sends every job the `<img>` way from the next file on. It was a Settings row
+  while the worker was under measurement and he had it removed on 2026-09-13,
+  the worker being decided — a bisect an agent runs, not a setting he reads.
   Not measured here: the GPU side of an upload on a Mali — his next run's
   `texUp.slow` and the worst frames' `upKb` say.
 - **SCENERY STILLS RIDE THE ART QUEUE, AND THEIR FIT COMES WITH THE BANDS**
@@ -205,9 +207,10 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   fills ~0.8 Mpx. Texels identical by construction (Porter-Duff `over` is
   associative, the erase maths unchanged) — gate: `__ml.coverParity` in
   `scripts/verify-cover.mjs`, the three atlases raw byte-equal against the
-  seven-bracket path, plus the Settings switch live both ways. Settings "cover
-  passes" (a row, remembered in `ml-cover-passes`) restores the old path for
-  his A/B; the beacon carries `coverBr` and `coverRows`. MEASURED ON HIS
+  seven-bracket path, driving the switch live both ways. `?coverpasses=7`, or
+  a harness writing `ml-cover-passes`, restores the old path (its Settings row
+  went on 2026-09-13 with the other decided switches); the beacon carries
+  `coverBr` and `coverRows`. MEASURED ON HIS
   PHONE (02:02 run 2026-09-13 on 472f8f72a, moving, cool, same route as the
   22:53 baseline on de89282af): frames over 50 ms a window 14/20 -> 5/7, p99
   52 -> 42/40 ms, p90 34 -> 33/26, long-frame ms 700 -> 167/537,
@@ -580,8 +583,8 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   and compares all of it; gated by `scripts/verify-groundbracket.mjs`.
   `groundDrew.blitMpx` counts the blitted texels a window (headless, a 288 px
   latch: 0.43 Mpx against 2.12; nine cells: 0.47 against 4.24), `scissor`
-  says which way ran; Settings "ground blit" restores the whole blit for his
-  A/B. A drain that pays both bands of a diagonal latch in one frame unions
+  says which way ran; `?groundscissor=0` restores the whole blit (its Settings
+  row went on 2026-09-13 with the other decided switches). A drain that pays both bands of a diagonal latch in one frame unions
   to most of the texture — the phone pays ~one slice a frame, so its blits
   are one slice each. The stamp that opened its own whole-target bracket per
   cell repaint batches into the scratch's bracket (`skipBatch`). 384 px still

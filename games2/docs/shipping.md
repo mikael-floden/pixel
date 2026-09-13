@@ -210,8 +210,8 @@ pipeline.
   urgent clips, the NPC idles, the blood, my weapon/spell states, the other
   characters' states) and everything else streamed behind the live world go
   through one priority queue that decodes off the main thread and creates
-  textures under a BYTE budget per frame (Settings dial "upload budget",
-  `ml-upload-kb`, default 128 KB). Never the scene loader for anything behind
+  textures under a BYTE budget per frame (pinned at 128 KB, `ml-upload-kb`;
+  `?uploadkb=` for a harness). Never the scene loader for anything behind
   the live world: it is one FIFO, it made every landed file a decode + upload
   the moment it arrived, and bounding the files in flight (the old
   `maxParallelDownloads = 2`) bounded the count per frame, never the bytes —
