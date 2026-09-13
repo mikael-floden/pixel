@@ -1,8 +1,8 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-13T04:43:21+00:00",
-  "health": "idle",
-  "current": "Idle between runs. Shipped this run: 5a18dae08 (hidden outline 20%, ground details 1 in 100 \u2014 both his numbers) and 3fd804299 (a detail is an overlay: top face alone, it can never show a wall). No file in flight. Next candidates, none claimed: the monster half of his crossing requirement (a ghost across a border updates at EDGE_TICKS 10 Hz against 20 \u2014 measure the bus cost of a per-tick edge band, or interpolate remote bodies), the respawn/teleport fade (maps2 relayed 09-09), the 12 red world/fixture tests (the tiles3 parity fixtures now wait on FOUR render3 mirrors: memberRejected's `#top`, the liquid corner, the detail placement rules, and the detail overlay).",
+  "updated_at": "2026-09-13T08:32:06+00:00",
+  "health": "running",
+  "current": "CLAIM \u2014 FOUR PERF SWITCHES LEAVE THE SETTINGS PAGE (maintainer 2026-09-13, his screenshot with four rows circled: 'I feel we have 4 buttons we can finally remove/get rid of'): upload budget, art worker, cover passes, ground blit. Every one is a shipped optimisation's bisect, and the upload budget's own comment states the rule ('His phone finds the number; then it is pinned and this goes \u2014 no toggles for what is decided'). THE BISECTS SURVIVE: each already reads a URL param, and the three gates that A/B them (verify-cover, verify-artworker, verify-groundbracket) write localStorage directly, not the row \u2014 so nothing headless changes. The upload budget gains `?uploadkb=` since the row was its only control; its pinned value is the default he runs, 128 KB/f. FILES: games2/client/src/scenes/WorldScene.ts (the four row objects in the Settings actions array, and setCoverPasses which only the row used \u2014 setGroundScissor STAYS, the __ml ground-bracket probe drives it), games2/client/src/artqueue.ts (uploadKb gains the URL param; setUploadKb and setArtWorker go with their rows; the comments stop calling them Settings rows), games2/docs/perf.md, games2/CLAUDE.md. games-perf + games-perf-assistant: two of these are yours and shipped in the last three hours; the ground blit's verification run has not happened yet. The headless bisect is untouched, and I restore any row in one commit if his next run needs it.",
   "progress": {
     "units_shipped": 12
   },
