@@ -341,8 +341,13 @@ characters are never touched; nothing here carries the NPC tag.
   hair, don't change her cloth. Bikini only." / "High detail version, don't
   change his cloth. Speedos only."). `redraw` — girl `HD 36`–`HD 60`
   ("Similar looking, but high detail version, new face and hair, don't change
-  her cloth. Bikini only. Draw new version."), on its own review page. His
-  wording is the lock there; a new series numbers on, never renames a slot.
+  her cloth. Bikini only. Draw new version."), on its own review page.
+  `newface` — boy `HD 21`–`HD 45`, applied to HIS OWN boy take `b0479ac0`
+  (`states.py:SOURCES`; he moved it out of the pinned boy's group and tagged
+  it PLAYER, so its states live in ITS group and the survey covers both
+  groups): "Redraw the face in same looking style. Keep the hair exactly as
+  it is. DON'T CHANGE ANYTHING ELSE. ONLY REDRAW THE FACE". His wording is
+  the lock there; a new series numbers on, never renames a slot.
 - **Resumable, never doubled**: the existing set is read from PixelLab (the
   group siblings named `HD …`) and from disk, never memory; seeds derive from
   (hero, slot). It runs on the USD credits (the generation pool reads 0.0) and

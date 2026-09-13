@@ -163,7 +163,18 @@ YOURS_SERIES = (
         "default_girl": "Similar looking, but high detail version, new face and hair, don't change her cloth. "
                         "Bikini only. Draw new version.",
     }, {"default_girl": 25, "default_boy": 0}),
+    # newface — 25 face-only redraws of HIS OWN boy take b0479ac0 ("High detail
+    # version", moved out of the pinned boy's group into its own on 2026-09-13
+    # 04:38 and tagged PLAYER), so the source is that character, not the pinned
+    # boy: the states land in ITS group and are discovered there (SOURCES).
+    ("newface", {
+        "default_boy": "Redraw the face in same looking style. Keep the hair exactly as it is. DON'T CHANGE "
+                       "ANYTHING ELSE. ONLY REDRAW THE FACE",
+    }, {"default_girl": 0, "default_boy": 25}),
 )
+# series key -> {hero: character id the edit is applied to} when it is not the
+# pinned hero. Its group's siblings are surveyed and mirrored under the hero too.
+SOURCES = {"newface": {"default_boy": "b0479ac0-f12c-4318-ba5d-a2e67afca901"}}
 
 
 def _slot(hero, n, brief, snap, edit):
@@ -187,7 +198,11 @@ def slots(hero):
     for key, prompts, counts in YOURS_SERIES:
         for _ in range(counts.get(hero, 0)):
             n += 1
-            out.append(_slot(hero, n, key, False, prompts[hero]))
+            row = _slot(hero, n, key, False, prompts[hero])
+            src = SOURCES.get(key, {}).get(hero)
+            if src:
+                row["source_character_id"] = src
+            out.append(row)
     return out
 
 
@@ -217,12 +232,23 @@ def state_path(hero, cid):
 
 
 def survey(client):
-    """{hero: {"id", "detail", "siblings": [...], "by_name": {state_name: [sib]}}}."""
+    """{hero: {"id", "detail", "siblings": [...], "by_name": {state_name: [sib]}}}.
+    The siblings are the pinned hero's group PLUS every SOURCES group of that
+    hero (a source character itself included — it is the reference)."""
     listing = client.list_characters()
     out = {}
     for hero, hid in pinned().items():
         detail = client.get_character(hid)
         sibs = group_siblings(client, listing, hid, detail)
+        seen = {s["id"] for s in sibs}
+        for key, per_hero in SOURCES.items():
+            src = per_hero.get(hero)
+            if not src:
+                continue
+            sdetail = client.get_character(src)
+            for s in group_siblings(client, listing, hid, sdetail):
+                if s["id"] not in seen:
+                    sibs.append(s); seen.add(s["id"])
         by_name = {}
         for s in sibs:
             by_name.setdefault(s.get("state_name") or "", []).append(s)
@@ -282,7 +308,7 @@ def generate(client, args):
             for f in failed:                      # a failed sibling of this name: replace it
                 print(f"  · deleting failed state {f['id']} ({row['state_name']})")
                 client.delete_character(f["id"])
-            hid = sv[hero]["id"]
+            hid = row.get("source_character_id") or sv[hero]["id"]
             resp = client.create_character_state(
                 hid, row["edit_description"], seed=row["seed"], state_name=row["state_name"],
                 use_color_palette_from_reference=row["palette_snap"])
