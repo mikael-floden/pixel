@@ -207,13 +207,22 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `scripts/verify-cover.mjs`, the three atlases raw byte-equal against the
   seven-bracket path, plus the Settings switch live both ways. Settings "cover
   passes" (a row, remembered in `ml-cover-passes`) restores the old path for
-  his A/B; the beacon carries `coverBr` and `coverRows`. Untested on his phone
-  at the ship: his next moving run is the measurement (the suspect bucket is
-  `cells:unattributed`, 42 long frames of GPU waits on the 22:53 run). Traps:
-  the blit copies with the renderer's CURRENT blend func (NORMAL goes back
-  before `endDraw` or the blit erases); a shorter capture lands in the target's
-  LAST rows (`blitFrame` viewports at `target.h - source.h`, flipped) — hence
-  the packer grows upward from the atlas floor.
+  his A/B; the beacon carries `coverBr` and `coverRows`. MEASURED ON HIS
+  PHONE (02:02 run 2026-09-13 on 472f8f72a, moving, cool, same route as the
+  22:53 baseline on de89282af): frames over 50 ms a window 14/20 -> 5/7, p99
+  52 -> 42/40 ms, p90 34 -> 33/26, long-frame ms 700 -> 167/537,
+  `cells:unattributed` 20 -> 9/5 long frames, 43 -> 50-53 fps mean. What the
+  run then showed inside the flush: four long frames (48/29/14 ms, one more in
+  window 2) each with `fbNew 1, capSw 1` — the FIRST use of a new pooled
+  capture height paid the GPU allocation in the frame — so `initCoverSurfaces`
+  binds and unbinds all four heights behind the loading screen; and
+  `coverRows` read 384 with one body covered, because a freed slot was popped
+  by recency and a body could land three shelves up while the floor shelf
+  stood empty — `coverTakeLowestFree` hands out the free slot nearest the
+  floor. Traps: the blit copies with the renderer's CURRENT blend func (NORMAL
+  goes back before `endDraw` or the blit erases); a shorter capture lands in
+  the target's LAST rows (`blitFrame` viewports at `target.h - source.h`,
+  flipped) — hence the packer grows upward from the atlas floor.
 - **THE INDOOR FLIP IS INCREMENTAL** (`repaintIndoorFlip`, `debrisPool`,
   `occWinCuts`, 2026-09-12). Crossing a cave or house threshold used to be
   a full ground paint, a full occluder walk, the destruction of the whole

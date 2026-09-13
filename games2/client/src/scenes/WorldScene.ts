@@ -8983,6 +8983,21 @@ export class WorldScene extends Phaser.Scene {
       this.coverC = mk("cover-C");
       this.coverO = mk("cover-O");
       this.coverExact = !!(this.coverE && this.coverC && this.coverO);
+      /* WARM THE CAPTURE POOL for every height a flush can bind (COVER_ROWS_STEP
+       * steps; capturepool.ts keys one target per size, installed above in
+       * create). His 02:02 run (2026-09-13): the FIRST flush at each new height
+       * paid the target's GPU allocation inside the frame — four long frames of
+       * 48/29/14 ms, each carrying `fbNew 1, capSw 1` in the beacon's worst list.
+       * A bind (which clears, so the GPU allocates now) and an unbind here,
+       * behind the loading screen, and no flush ever meets a cold target. */
+      if (this.coverExact) {
+        const r = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
+        for (let rows = COVER_ROWS_STEP; rows <= COVER_ATLAS_H; rows += COVER_ROWS_STEP) {
+          r.beginCapture(COVER_ATLAS_W, rows);
+          r.endCapture();
+        }
+        r.resetViewport();
+      }
     } catch {
       this.coverExact = false;
     }
@@ -9007,8 +9022,7 @@ export class WorldScene extends Phaser.Scene {
     const cur = b.coverSlot;
     if (cur && cur.cls === cls) return cur;
     if (cur) this.releaseCoverSlot(b);
-    const pool = this.coverFree.get(cls);
-    let slot = pool && pool.length ? pool.pop() : undefined;
+    let slot = this.coverTakeLowestFree(cls);
     if (!slot) slot = this.coverAllocSlot(cw, ch, cls) ?? undefined;
     // ANY FREE SLOT BIG ENOUGH WILL DO. The shelf cursor never rewinds, so once
     // the atlas is packed the only way to serve a body is to reuse a slot — and
@@ -9070,14 +9084,28 @@ export class WorldScene extends Phaser.Scene {
     return victim;
   }
 
+  /** The free slot of this class nearest the atlas floor (largest y). The
+   * shelves pack bottom-up and a flush's capture is bound at the rows in use
+   * (coverRaster), so the slot handed out decides how tall that capture is:
+   * popping by recency let a body land three shelves up while the floor shelf
+   * stood empty (his 02:02 run, 2026-09-13: `coverRows` 384 with one body). */
+  private coverTakeLowestFree(cls: string): CoverSlot | undefined {
+    const pool = this.coverFree.get(cls);
+    if (!pool || !pool.length) return undefined;
+    let bi = 0;
+    for (let i = 1; i < pool.length; i++) if (pool[i].y > pool[bi].y) bi = i;
+    return pool.splice(bi, 1)[0];
+  }
+
   /** The smallest free slot that fits — see coverSlotFor. Smallest so a run of
-   * small bodies cannot eat the few boxes only a mammoth can use. */
+   * small bodies cannot eat the few boxes only a mammoth can use; among equals,
+   * the one nearest the floor (coverTakeLowestFree's reason). */
   private coverTakeLargerFree(cw: number, ch: number): CoverSlot | undefined {
     let best: CoverSlot | undefined;
     let bestPool: CoverSlot[] | undefined;
     for (const pool of this.coverFree.values())
       for (const s of pool)
-        if (s.w >= cw && s.h >= ch && (!best || s.w * s.h < best.w * best.h)) {
+        if (s.w >= cw && s.h >= ch && (!best || s.w * s.h < best.w * best.h || (s.w * s.h === best.w * best.h && s.y > best.y))) {
           best = s;
           bestPool = pool;
         }
