@@ -21,11 +21,10 @@ edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`
 (`UI_AGENT.md` is the file split), games-audio (`composer/`, its own
 `CLAUDE.md`), games-ambient (`ambient/`, its own README), games-perf (frame
 time only, from the phone's beacon, 2026-09-12) — and each has an
-`<agent>-assistant` with the same remit and its own board (2026-09-12; root
-`CLAUDE.md` "two writers": claim the unit and its files on your board before
-editing, never a file the partner names in flight, the original agent wins a
-collision). Work from `games2/`; `npm run dev`, `npm test`, `npm run
-typecheck`. Boards: `coordination/<agent>.json` and `<agent>-assistant.json`.
+`<agent>-assistant` with the same remit and its own board (2026-09-12; the
+root `CLAUDE.md` "two writers" law). Work from `games2/`; `npm run dev`,
+`npm test`, `npm run typecheck`. Boards: `coordination/<agent>.json` and
+`<agent>-assistant.json`.
 
 ## The docs
 
@@ -185,22 +184,24 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   lies FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
   clamps it; default 1.2x IS HIS (`playerspeed.ts`).
-- The stick "almost" snaps: `leanHeading` leans the heading between the
-  octants' REAL run headings by his dial (0 snap, 1 continuous; 0.85 IS HIS),
-  the grid-axis lock locks EXACT diagonals only, and the bearing is read
-  additively off games-ui's stick (`stickdir.ts`).
+- The stick "almost" snaps: `leanHeading` leans between the octants' run
+  headings by his dial (0 snap, 1 continuous; 0.85 IS HIS); the grid-axis
+  lock locks EXACT diagonals only; the bearing is read additively off
+  games-ui's stick (`stickdir.ts`).
 - A TERRAIN wall gets the honest walk (`wallcorner.test.ts`): within his
   "Wall assist angle" dial (10°, HIS) the run is straightened along it; past
-  it the body slides at the SCREEN share along the wall (`slideShare`, the
-  thumb's windows; a route keeps the world axis, `InputMessage.route`) or
-  stands, auto-jump hops a jumpable one; a door SIDEWAYS or ahead within 4
-  cells is steered to, never behind. The sprite faces its walk.
+  it the body slides at its screen speed times the WORLD cosine to the wall
+  (`slideShare`, 71% for a cardinal key; the thumb's windows, a route keeps
+  the world axis: `InputMessage.route`) or stands, auto-jump hops a jumpable
+  one; a door SIDEWAYS or ahead within 4 cells is steered to, never behind.
+  The sprite faces its walk.
 - Scenery, props and open ground walk the heading AS IT IS; the tick's glide
-  slides them (a footprint is a PROP whatever the nav layer says). No hold,
+  slides them (a footprint is a PROP whatever the nav layer says); no hold,
   detour or slide rule: the ESCAPE is the nav.
 - Never-backwards is a rule, not an absolute: after his "Nav help after"
   dial (0.1 s) without progress AT A RATE, `walkHeading` commits to an escape
-  route that ARRIVES ahead, one TILE back at most (`routeRetreat`).
+  route that ARRIVES ahead, one TILE back at most (`routeRetreat`), walked
+  before it is taken (`routeStallCell`), under its roof for a prop's only.
 - Walk or run follows the body's ACTUAL speed (`gaitRunning`).
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet
   the walk (rejected twice); both readings of an ambiguous pixel are routed.

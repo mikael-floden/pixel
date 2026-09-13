@@ -57,6 +57,24 @@ function house(): TerrainGrid {
   return buildTerrainGrid(W, H, rows, [], []);
 }
 
+/** THE BIG HOUSE (his 310,234): a ring wall cols 3..18 x rows 7..13, the door at
+ *  (9,13), and a ROOF deck over the interior and the door cell, so the door
+ *  post (10,13) is the one undecked level-6 cell beside the way out. */
+const BIG_DOOR = { c: 9, r: 13 };
+function bigHouse(roof: boolean): TerrainGrid {
+  const rows = Array.from({ length: H }, (_, r) =>
+    Array.from({ length: W }, (_, c) => {
+      const ring = ((c === 3 || c === 18) && r >= 7 && r <= 13) || ((r === 7 || r === 13) && c >= 3 && c <= 18);
+      const door = c === BIG_DOOR.c && r === BIG_DOOR.r;
+      return { t: "grass", l: ring && !door ? 6 : 0 };
+    }),
+  );
+  const cells: { col: number; row: number }[] = [];
+  for (let r = 8; r <= 12; r++) for (let c = 4; c <= 17; c++) cells.push({ col: c, row: r });
+  cells.push({ col: BIG_DOOR.c, row: BIG_DOOR.r });
+  return buildTerrainGrid(W, H, rows, [], roof ? [{ level: 6, thickness: 1, cells }] : []);
+}
+
 /** A field with one long wall across x at col 6 (the hop test's field): a body
  *  against it rests PLAYER_RADIUS west of the line with 20 cells of room along it. */
 function field(raised: number): TerrainGrid {
@@ -86,6 +104,8 @@ interface Held {
   trips: number;
   outs: Set<string>;
   travelled: number;
+  /** The longest run of ticks the body moved less than 0.05 wu: a stand. */
+  still: number;
 }
 
 /** Hold one stick from a spot for `ticks` frames of 33 ms, the client's way:
@@ -115,6 +135,8 @@ function hold(
   let deflected = 0;
   let trips = 0;
   let travelled = 0;
+  let still = 0;
+  let stillRun = 0;
   const outs = new Set<string>();
   for (let i = 0; i < ticks; i++) {
     t += 33;
@@ -135,13 +157,15 @@ function hold(
     const m = stepMovement(x, y, wax, way, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge), { screenSlide: true });
     // SCREEN pixels: the slide's law is a screen share (docs/movement.md).
     travelled += Math.hypot((m.x - x - (m.y - y)) * ISO_DX, (m.x - x + (m.y - y)) * ISO_DY);
+    if (Math.hypot(m.x - x, m.y - y) < 0.05) still = Math.max(still, ++stillRun);
+    else stillRun = 0;
     x = m.x;
     y = m.y;
     elev = levelAtWorld(grid, x, y);
     minCol = Math.min(minCol, x / CELL_WU);
     maxRow = Math.max(maxRow, y / CELL_WU);
   }
-  return { col: x / CELL_WU, row: y / CELL_WU, minCol, maxRow, deflected, trips, outs, travelled };
+  return { col: x / CELL_WU, row: y / CELL_WU, minCol, maxRow, deflected, trips, outs, travelled, still };
 }
 
 const near = (a: number, b: number, tol: number, what: string) =>
@@ -214,21 +238,26 @@ test("the wall-assist angle: a lean within the dial runs STRAIGHT along the wall
   const free = hold(grid, 3, 2, -1, 1, 60);
   near(straight.travelled, free.travelled, free.travelled * 0.02, "straightened run travels the free run's screen distance");
   // 45 degrees (world) is past the dial: the heading is walked as it is and
-  // the wall takes the SCREEN share — this lean is screen-down, 66 degrees
-  // off the wall's screen line, so 40% of the run (it slid at the run's own
-  // screen speed under the world-axis rule: the cliff asymmetry he felt).
+  // the wall takes the slide's share — the thumb's screen speed at the WORLD
+  // cosine, 71% of the run for this lean, which is screen-down (it slid at the
+  // run's own screen speed under the world-axis rule and at 40% under the
+  // screen projection: the cliff asymmetry he felt, both ways round).
   // (45 ticks: a free screen-down run from col 1 reaches the field's own wall
   // after five cells, and the reference must not slide too.)
   const diag = hold(grid, x0, 2, 0, 1, 45, lean(45));
   assert.equal(diag.deflected, 0, "45 degrees: never straightened");
   const diagFree = hold(grid, 1, 2, 0, 1, 45).travelled;
-  assert.ok(diag.travelled > diagFree * 0.3 && diag.travelled < diagFree * 0.5, `screen-down into a wall along +y: ${(diag.travelled / diagFree).toFixed(2)} of the run, cos 66`);
+  assert.ok(diag.travelled > diagFree * 0.6 && diag.travelled < diagFree * 0.8, `screen-down into a wall along +y: ${(diag.travelled / diagFree).toFixed(2)} of the run, world cos 45`);
   assert.ok(diag.row > 2 + 0.5, `and moving along the wall (row ${diag.row.toFixed(2)})`);
-  // 65 degrees (world) points 26 degrees from square on the SCREEN — more
-  // than a right angle from the way the wall runs — and stands.
+  // 65 degrees (world), 25 from square on: the world cosine, 42% of the run
+  // along the wall — a push that is not square on slides. (The screen
+  // projection stood this one: its screen direction was past a right angle
+  // from the wall's screen line, the same artefact that stood a body on the
+  // spawn house's door post.)
   const steep = hold(grid, x0, 2, 0, 1, 60, lean(65));
   assert.equal(steep.deflected, 0, "never straightened");
-  near(steep.travelled, 0, 2, "a push more than a right angle off the wall's screen line stands");
+  const steepFree = hold(grid, 1, 2, 0, 1, 60).travelled;
+  assert.ok(steep.travelled > steepFree * 0.3 && steep.travelled < steepFree * 0.55, `65 degrees in: ${(steep.travelled / steepFree).toFixed(2)} of the run, world cos 65`);
   // The dial at zero: even 10 degrees is walked as it is.
   const off = hold(grid, x0, 2, -1, 1, 60, lean(10), 0);
   assert.equal(off.deflected, 0, "dial at 0: nothing is straightened");
@@ -236,6 +265,37 @@ test("the wall-assist angle: a lean within the dial runs STRAIGHT along the wall
   const square = hold(grid, x0, 2, 1, 1, 60);
   assert.equal(square.deflected, 0);
   near(square.travelled, 0, 2, "square on: the honest stop");
+});
+
+test("beside the door under the roof, a lean that drifts the body onto the door post: out through the door, never a stand", () => {
+  // Maintainer 2026-09-13, the big house: "if I run into the wall and so the nav
+  // try to navigate me out of the house the player stops (only sometimes) on
+  // the door edge". Held into the south wall a few cells from the door with
+  // the finger leaned a little either way, the leaned heading's x axis drifted
+  // the body under the post, the y move was refused, and the x remainder's
+  // SCREEN share was zero (99 screen degrees off the thumb) — a stand for the
+  // length of the hold, while the exact key walked through. And with every
+  // escape held under the roof, the nav had no route out. The world cosine
+  // slides the remainder, and a terrain wall's escape may leave the house:
+  // all twelve holds are out in about a second, none stands.
+  const grid = bigHouse(true);
+  const leanScreen = (deg: number) => {
+    const a = Math.atan2(1, -1) + (deg * Math.PI) / 180; // screen down-left, turned
+    return { ax: Math.cos(a), ay: Math.sin(a) };
+  };
+  for (const [col, row] of [[12.1, 11.4], [11.6, 10.9], [12.5, 12.1], [10.6, 11.6]] as const) {
+    for (const deg of [-12, 0, 12]) {
+      const r = hold(grid, col, row, -1, 1, 90, deg ? leanScreen(deg) : undefined);
+      assert.ok(r.row > BIG_DOOR.r + 1, `from (${col},${row}) lean ${deg}: out of the house in 3 s (row ${r.row.toFixed(2)})`);
+      assert.ok(r.still < 6, `from (${col},${row}) lean ${deg}: never stands (${r.still} ticks still)`);
+    }
+  }
+  // The same holds with no roof: the escape and the walk are the same, so the
+  // roof is not a rule of its own — a terrain escape leaves it, a prop's (the
+  // table under it, sceneryslide.test.ts) never does.
+  const open = bigHouse(false);
+  const r = hold(open, 12.1, 11.4, -1, 1, 90, leanScreen(-12));
+  assert.ok(r.row > BIG_DOOR.r + 1 && r.still < 6, `open house: out (row ${r.row.toFixed(2)}), ${r.still} still`);
 });
 
 test("the hop waits for the angle: within the dial a lean into a JUMPABLE wall runs straight and never hops; past it the hop fires", () => {

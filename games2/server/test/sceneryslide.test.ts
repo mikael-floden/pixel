@@ -19,7 +19,7 @@ import assert from "node:assert/strict";
 import {
   CHARACTER_BODY_PX,
   buildTerrainGrid, stampSceneryCollision, stepMovement, makeBlockedElev, makeSideBlocked, unstickFromSolids,
-  walkHeading, wallContact, levelAtWorld,
+  walkHeading, wallContact, levelAtWorld, startEscapeRoute,
   CELL_WU, PLAYER_RADIUS, WALK_CLIMB, ISO_GEOMETRY_MAPS3, STUCK_ESCALATE_MS, ISO_DX, ISO_DY,
   type TerrainGrid, type SceneryBboxDoc, type SceneryHitboxDoc, type SlideMemo, type AutopilotTrip,
 } from "@nangijala/shared";
@@ -103,8 +103,8 @@ function hold(grid: TerrainGrid, from: { x: number; y: number }, ax: number, ay:
     const u = unstickFromSolids(grid, x, y, 80 * 0.033, undefined, elev);
     x = u.x;
     y = u.y;
-    // The thumb's window: the slide is the screen share (MoveOpts.screenSlide).
-    const m = stepMovement(x, y, iax, iay, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge), { screenSlide: true });
+    // The client's law per window: the thumb's slide share, a route's world axis (MoveOpts.screenSlide).
+    const m = stepMovement(x, y, iax, iay, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge), { screenSlide: trip === null });
     const moved = Math.hypot(m.x - x, m.y - y);
     travelled += Math.hypot((m.x - x - (m.y - y)) * ISO_DX, (m.x - x + (m.y - y)) * ISO_DY);
     if (moved < 0.05) frozen++;
@@ -152,14 +152,15 @@ test("along the south side the body runs at the run's own pace and stays on the 
   assert.ok(along.travelled >= alongFree * 0.95, `along the side: ${(along.travelled / alongFree).toFixed(2)} of the run (0.70 with the per-axis halves)`);
   const out = frameY(g, along.x, along.y) - g.footprints!.q[0] - PLAYER_RADIUS / CELL_WU;
   assert.ok(out < 0.15, `still on the side, not drifted off it: ${out.toFixed(2)} cells out`);
-  // Screen up-left is world -x: 45 degrees into the side in the WORLD, but on
-  // the thumb only 24 degrees off the side's screen line — the wall takes the
-  // screen share, 92% of the run (0.50 and drifting off the side with the
-  // per-axis halves).
+  // Screen up-left is world -x: 45 degrees into the side in the WORLD — the
+  // slide keeps the thumb's screen speed at the world cosine, 71% of the run
+  // (the screen projection took 92% here and 40% for screen-up at the
+  // cupboard below, the asymmetry he felt; 0.50 and drifting off the side
+  // with the per-axis halves).
   const into = hold(g, p, -1, -1, TICKS, false);
   const intoFree = free(-1, -1, p);
   assert.ok(into.frozen === 0, `45 degrees in: frozen ${into.frozen} ticks`);
-  assert.ok(into.travelled >= intoFree * 0.85 && into.travelled <= intoFree * 0.98, `world 45 / screen 24 degrees in: ${(into.travelled / intoFree).toFixed(2)} of the run`);
+  assert.ok(into.travelled >= intoFree * 0.6 && into.travelled <= intoFree * 0.8, `world 45 in: ${(into.travelled / intoFree).toFixed(2)} of the run`);
   assert.ok(into.x < p.x - CELL_WU, `and it went the way the side runs (x ${((into.x - p.x) / CELL_WU).toFixed(2)} cells)`);
   const intoOut = frameY(g, into.x, into.y) - g.footprints!.q[0] - PLAYER_RADIUS / CELL_WU;
   assert.ok(intoOut < 0.15, `still on the side: ${intoOut.toFixed(2)} cells out`);
@@ -175,10 +176,62 @@ test("the cupboard faces south-west: its sides lie on the world axes and always 
   // In this frame the box's long side runs along world x; a body screen-below
   // the piece pushing screen-up (world (-1,-1)) slides along x with y refused.
   const p = { x: (fp.cx[0] + 0.6) * CELL_WU, y: (fp.cy[0] + fp.supY[0] * Math.SQRT2 + 0.2) * CELL_WU };
-  const r = hold(g, p, 0, -1, TICKS, false);
+  // Fifteen ticks: the side is short, and a longer hold runs free past its end.
+  const ticks = 15;
+  const r = hold(g, p, 0, -1, ticks, false);
   assert.ok(r.frozen < 5, `cupboard, screen-up: frozen ${r.frozen} ticks`);
-  // Screen-up is 66 degrees off a world-x side's screen line: the screen share is 40%.
-  assert.ok(r.travelled >= free(0, -1, p) * 0.3 && r.travelled <= free(0, -1, p) * 0.5, `cupboard, screen-up: ${(r.travelled / free(0, -1, p)).toFixed(2)} of the run on screen`);
+  // Screen-up is 45 degrees into a world-x side in the WORLD: the world
+  // cosine, 71% of the run — the same share screen up-left gets at the table
+  // above (the screen projection gave 40% here and 92% there).
+  const fr = hold(emptyWorld(false), p, 0, -1, ticks, false).travelled;
+  assert.ok(r.travelled >= fr * 0.6 && r.travelled <= fr * 0.8, `cupboard, screen-up: ${(r.travelled / fr).toFixed(2)} of the run on screen`);
+});
+
+/** THE PINCH (his 253.1,303.7): a cupboard's ellipse and a table's box a cell
+ *  apart along world y, the way out west between them 20 wu wide at the cell's
+ *  middle and open along its edge — so the cell is nav-OPEN (some body position
+ *  exists in it) while no body walks THROUGH it. Both pieces face south. */
+function pinchWorld(): TerrainGrid {
+  const grid = emptyWorld(true);
+  const bbox: SceneryBboxDoc = {
+    pieces: { cup: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" }, tab: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } },
+    boxes: { s: [0, 0, 100, 100, 100, 100] },
+  };
+  // ay 50 puts the box's centre on the placement itself.
+  const hitbox: SceneryHitboxDoc = {
+    "scenery/cup": { boxes: [{ ax: 0, ay: 50, rx: 30, ry: 6, rot: 0 }] },
+    "scenery/tab": { boxes: [{ ax: 0, ay: 50, rx: 26, ry: 7.56, shape: "rect", rot: 0 }] },
+  };
+  stampSceneryCollision(grid, [{ piece: "cup", x: 15, y: 15.0 }, { piece: "tab", x: 15, y: 16.825 }], bbox, hitbox, ISO_GEOMETRY_MAPS3);
+  return grid;
+}
+
+test("a nav-open cell the body cannot fit through: the escape is walked before it is taken, and the route goes round", () => {
+  // Maintainer 2026-09-13, walking NW between the spawn house's cupboard and
+  // table: "I can't fit through and was hoping the player would have tried to
+  // run around using the nav system, but it doesn't". The nav layer answers
+  // per cell, findPath threaded the cell, the follower stood on the first
+  // step, the walk dropped the route and planned the same one every window.
+  const g = pinchWorld();
+  assert.ok(!g.blocked[15 * W + 15], "the pinch cell is nav-open: a body position exists along its edge");
+  const p = { x: 16.4 * CELL_WU, y: 15.45 * CELL_WU };
+  // The raw walk (no walkHeading) stands at the pinch: the body does not fit.
+  const raw = hold(g, p, -1, -1, 60, false);
+  assert.ok(raw.x / CELL_WU > 14.9, `raw walk stands at the pinch (x ${(raw.x / CELL_WU).toFixed(2)})`);
+  // Through the walk: the escape's first route threads the pinch and is
+  // refused by the proof, the cell is taken out, and the route round is taken.
+  // (Without the proof — the tree before it — the same hold ends at x 14.5,
+  // the follower dithering at the pinch for the whole 3 s.)
+  // (90 ticks: the goal is 2 cells on and the honest walk then carries on west;
+  // a longer hold reaches the world's margin and stands there.)
+  const r = hold(g, p, -1, -1, 90, true);
+  assert.ok(r.x / CELL_WU < 13.5, `round the pieces within 3 s (x ${(r.x / CELL_WU).toFixed(2)})`);
+  assert.ok(r.frozen < 10, `stands only for the window before the escape (${r.frozen} ticks)`);
+  assert.ok(r.deflected > 0, "the route did it");
+  // The planner itself: the proof's re-plan keeps the route out of the pinch cell.
+  const esc = startEscapeRoute(g, p.x, p.y, -1, -1, 1000, 0, 1, true);
+  assert.ok(esc, "an escape route is planned");
+  assert.ok(esc!.path.every((q) => !(Math.floor(q.x / CELL_WU) === 15 && Math.floor(q.y / CELL_WU) === 15)), `no waypoint in the pinch cell: ${esc!.path.map((q) => `(${(q.x / CELL_WU).toFixed(2)},${(q.y / CELL_WU).toFixed(2)})`).join(" ")}`);
 });
 
 test("through walkHeading, under the roof: the table never gets the wall's rules — the slide is the raw walk, square on the escape takes the body round", () => {

@@ -109,8 +109,9 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   before the nav system helps. That should be extremely fast"; the 09-11
   window was 1.5 s, "we talk seconds"): a body that kept moving along the
   ask at `STUCK_PROGRESS_RATE` (a TENTH of a walk's pace: moving at all — a
-  screen-up slide along a wall at the screen share is a sixth of the run
-  along the ask, and at the stall test's 0.35 the escape fired mid-slide)
+  slide's progress along the ask is its share times its cosine to the ask,
+  a sixth of the run for a screen-up slide under the old screen share, and
+  at the stall test's 0.35 the escape fired mid-slide)
   over the window is making progress and the window slides on ("the nav
   system should not help if the player seem to slide around the object by
   itself ... the slide should be preferred if the sliding is doing
@@ -136,16 +137,51 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   degrees off put the spawn house's door beside ITS line) and is by what is
   in the way: the pocket's 8 cells for terrain, `ESCAPE_PROP_CORRIDOR_CELLS`
   4.5 for a piece or a prop — a 5-cell footprint's half, findPath's buffer
-  cell off it and the cell the route runs through. And an escape STAYS UNDER
-  THE ROOF it started under, or out from under it (`sameRoof`: a deck above
-  the feet; a body on a bridge is under nothing): the route from the spawn
-  house's table out through the door and round the outside to a goal beyond
-  the wall is a journey, not a way round the table, and it sat 3.7 cells off
-  the ask's line, inside what a footprint needs. Replayed on the real grid: out of the pocket in
-  under six seconds (the slide to the corner at the screen share is most of
-  it, the escalation a tenth of a second after); the brazier at 240.5,265.3
-  rounded east-then-north; square on the tables at 252.8,303.5 and
-  300.1,195.1 the body is round them within the window.
+  cell off it and the cell the route runs through. And a PROP's escape STAYS
+  UNDER THE ROOF it started under, or out from under it (`sameRoof`: a deck
+  above the feet; a body on a bridge is under nothing): the route from the
+  spawn house's table out through the door and round the outside to a goal
+  beyond the wall is a journey, not a way round the table, and it sat 3.7
+  cells off the ask's line, inside what a footprint needs. A TERRAIN wall's
+  escape may leave the house: pressed to the big house's south wall, the way
+  out is the door — "the nav try to navigate me out of the house" is the nav
+  he knows — and holding every escape under the roof put a body that had
+  slid to the corner there for good (2026-09-13). AND THE ROUTE IS WALKED
+  BEFORE IT IS TAKEN (`routeStallCell`): the nav layer answers per CELL —
+  some body position exists in it — and a cell can hold a body without
+  letting one THROUGH. Between the spawn house's cupboard and its table the
+  cell is open along its west edge and 20 wu wide at its middle, the body 18
+  across at its corners, so findPath threaded it, the follower stood on the
+  first step, the walk dropped the route and planned the same one every
+  window (253.1,303.7 walking NW: "I can't fit through and was hoping the
+  player would have tried to run around using the nav system, but it
+  doesn't"). So an escape is followed on the movement tick itself, on a
+  copy, for `ROUTE_PROVE_STEPS` (60 frames of 33 ms, 2 s): one that arrives,
+  or consumes a waypoint and keeps its follower's progress clock running, is
+  real; one the walk would drop names the cell its LEADING EDGE stood in
+  (one radius ahead toward the waypoint, where the probe refused — not the
+  waypoint's cell: a waypoint at the pinch's own centre counts as reached
+  from its mouth, and the next sits in the free cell beyond), `findPath`
+  keeps out of it (`avoid`, threaded through `startTrip`) and the goal is
+  planned once more — the route that comes back goes round the table
+  (replayed: round it and 3.7 cells on within the hold). THE DROP AND THE
+  PROOF SHARE ONE CLOCK: a committed route with no progress toward its
+  waypoint for `ROUTE_STALL_MS` (250 ms, the follower's own
+  `progress.t`: 2 wu closer) is dropped — a stand or a dither alike — and
+  the proof fails a route by the same clock, so what it passes is what the
+  walk would keep. Not `bodyStalled`: its 0.08 s probe jumped a rect's
+  diagonal tip that the 33 ms frame did not (measured beside a south-facing
+  table: 0 wu at 0.033 and 0.05, 2.8 at 0.08) and kept a body that stood 45
+  frames on a route. TRAP: the probes are points at the substep's end, so a
+  frame the phone does not run at can still disagree with the proof at such
+  a tip; the walk's own drop then re-plans from the spot (synthetic pinches
+  of two small pieces, 378 placements: 357 round within 4 s). Gate: the
+  pinch in `server/test/sceneryslide.test.ts`. Replayed on the real grid: out of the pocket in under
+  six seconds (the slide to the corner is most of it, the escalation a tenth
+  of a second after); the brazier at 240.5,265.3 rounded east-then-north;
+  square on the tables at 252.8,303.5 and 300.1,195.1 the body is round them
+  within the window; the big house's south wall beside the door, held into
+  with any lean, is out through the door in 0.5-1.2 s.
   Gate: the pocket fixture in `server/test/stickdetour.test.ts` (a copy of
   the world's levels, so re-authoring cannot move it) and the open-ground
   case that must never escalate. Probe: `scripts/holdtrace.ts` (COL ROW AX
@@ -202,8 +238,8 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     straight alongside the wall (to not lose friction and looking dumb)".
   - **Past the angle the wall takes its share**: the heading is walked as it
     is and the axes resolve as ever — the body slides at the wall's own rate
-    (a world 65-degree lean: 0.61 of the run; 45: the run's own screen speed,
-    the never-faster cap's doing), stops square on, and stops in a corner
+    (the thumb's screen speed at the world cosine, `slideShare`: 45 degrees
+    in slides at 71% of the run, 65 at 42%), stops square on, and stops in a corner
     (both axes refused): "the only correct way to navigate is to in both start
     positions run the player into the corner". A jumpable wall is then hopped
     by auto-jump (below) — "this sliding means the player will sooner or later
@@ -488,29 +524,39 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   step's END is blocked; one 100ms run input (`MAX_INPUT_DT`) reaches ~30wu
   and pre-substep froze the body far from the wall. Test: "big-dt input
   advances to contact instead of freezing a step early". **A SLIDE IS THE
-  SCREEN VELOCITY'S SHARE ALONG THE WALL** (`slideShare`, maintainer
-  2026-09-13, the cliff at 229.9,304.4: "running straight up against the wall
-  the player slides very very fast to the left ... straight right ... very
-  very slow"): the per-axis resolution keeps the WORLD component along the
-  free axis, and the iso projection shows that as anything from half to
-  one-and-a-quarter of the run — a screen-up step is 3.7 world units, a
-  screen-right step 1.6, so the same 45-degree push into a cliff along x
-  slid at 92 px a tick one way (capped to the run's 74) and 40 the other.
-  Now the axis the wall leaves is the DIRECTION and the thumb's screen angle
-  to it the LENGTH: the free step's screen vector projected on the move's
-  screen direction (up is 66 degrees off that cliff's line and slides at
-  40%, right is 24 off and slides at 92%), nothing when the thumb is more
-  than a right angle from the way the wall runs. It implies the old "never
-  faster than the run" cap; a share above the per-axis remainder is
-  re-probed at its farther end. The same rule lengths a footprint's tangent
-  move. FOR THE THUMB'S WINDOWS ONLY (`MoveOpts.screenSlide`, sent per input
-  as `InputMessage.route` inverted, so a replayed window keeps its law): a
-  planned route — tap-to-move, the walk's escape — keeps the world-axis
-  slide under the old cap (`slideCap`). The share is a rule for a thumb; the
-  route's follower has none, was tuned on the world-axis slide, and at a 40%
-  slide turned a few frames early at a cliff and oscillated between two
-  flanking headings until it gave up (`navigation.sim.test.ts`, the mountain,
-  seed 5). Gate: the full-circle sweep in `collision.test.ts`, the shares in
+  THUMB'S SCREEN SPEED AT THE WORLD COSINE** (`slideShare`, maintainer
+  2026-09-13, the cliffs at 229.9,304.4 and 256.3,273.4): the axis the wall
+  leaves (or a footprint's tangent) is the DIRECTION; the LENGTH on screen
+  is the free step's screen length times the cosine, in WORLD, between the
+  step and that direction. The free run's screen speed is uniform (a
+  screen-up step is 3.7 world units, a screen-right step 1.6), so one angle
+  is one share: every screen-cardinal key meets a terrain wall at 45 degrees
+  in the world and slides at 71% of its own run, whichever wall and
+  whichever key; 65 degrees in slides at 42%; square on stands. Two laws
+  before it failed on the same cliff. The raw world component along the
+  free axis shows on the iso screen as anything from half to
+  one-and-a-quarter of the run — up slid at 100% (capped) and right at 55%
+  ("running straight up against the wall the player slides very very fast
+  to the left ... straight right ... very very slow"). The SCREEN projection
+  that replaced it slid up at 40% and right at 92% ("now super slow ... the
+  other way around this time. Running up must be faster, but maybe not as
+  fast as before") and stood a body on the spawn house's door post for the
+  length of the hold: the leaned heading's x axis had drifted it under the
+  post, the y move was refused, and the only remainder was 99 screen degrees
+  off the thumb — a zero share on a step the straight key would have taken.
+  The world cosine is zero only when the remainder is (a per-axis remainder
+  or a tangent glide always has a positive world cosine to its step), so a
+  slide can never stand where a step would pass. It implies the old "never
+  faster than the run" cap (cos <= 1); a share above the per-axis remainder
+  is re-probed at its farther end. FOR THE THUMB'S WINDOWS ONLY
+  (`MoveOpts.screenSlide`, sent per input as `InputMessage.route` inverted,
+  so a replayed window keeps its law): a planned route — tap-to-move, the
+  walk's escape — keeps the world-axis slide under the old cap
+  (`slideCap`). The share is a rule for a thumb; the route's follower has
+  none, was tuned on the world-axis slide, and at a 40% slide turned a few
+  frames early at a cliff and oscillated between two flanking headings
+  until it gave up (`navigation.sim.test.ts`, the mountain, seed 5). Gate:
+  the full-circle sweep in `collision.test.ts`, the shares in
   `wallcorner.test.ts` and `sceneryslide.test.ts`. **THE GLIDE TRIES
   THE TANGENT AS ONE MOVE FIRST** (maintainer 2026-09-13, the spawn house's
   table "more sticky ... can't slide alongside it as I can with a wall ...
@@ -554,15 +600,17 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   changes must persist `DIR_STICK_MS` before the sprite turns; 90°+ turns
   switch instantly; a direction-only clip change resumes at the same loop
   progress (no stride restart). Display-only — movement math untouched.
-- **A SLIDE IS THE SCREEN VELOCITY'S SHARE ALONG THE WALL** (`slideShare` in
-  `stepMovement`; the rule and its receipt are in the Collision probes
+- **A SLIDE IS THE THUMB'S SCREEN SPEED AT THE WORLD COSINE** (`slideShare`
+  in `stepMovement`; the rule and its receipt are in the Collision probes
   bullet above). It replaced the 2026-09-12 "never faster than the run" cap,
-  which it implies: the axes resolve separately and a refused axis left the
+  which it implies — the axes resolve separately and a refused axis left the
   other's WORLD component intact, which projects anything from half to
   one-and-a-quarter of the run on the iso screen (the caves, 2026-09-12:
   "when I run into a wall at a certain angle the player is moving much
   faster"; the cliff, 2026-09-13: "very very fast to the left ... very very
-  slow" to the right). Gate: the full-circle sweep in
+  slow" to the right) — and the screen projection of 2026-09-13 that
+  reversed the asymmetry ("now super slow ... the other way around") and
+  stood a body on a door post. Gate: the full-circle sweep in
   `server/test/collision.test.ts`.
 - **Controls are screen-relative**: `stepMovement(..., screenInput)` rotates
   input by the projection ratio (`ISO_DX`/`ISO_DY` in `shared/`; the client's

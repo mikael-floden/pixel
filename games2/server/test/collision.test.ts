@@ -804,11 +804,12 @@ test("sliding along a wall never moves faster on screen than running free", () =
     assert.ok(wall.screen <= free.screen * 1.001, `heading ${deg}deg: slid ${wall.screen.toFixed(0)} screen px/s against ${free.screen.toFixed(0)} free`);
   }
   // …and the slide still slides: screen-down into the +x wall carries on along
-  // +y — at the SCREEN share along it (slideShare): screen-down is 66 degrees
-  // off world +y's screen line, so 40% of the run, not the 125% the world axis
-  // component gave before the cap (2026-09-13, the cliff).
+  // +y — at the thumb's screen speed times the WORLD cosine (slideShare):
+  // screen-down meets world +y at 45 degrees, so 71% of the run — not the 125%
+  // the world axis component gave before the cap, and not the 40% the screen
+  // projection gave (2026-09-13, the cliff, both ways round).
   const down = run(0, 1, 19.4 * CELL_WU, 20 * CELL_WU);
   assert.ok(down.wy > 1.5, `screen-down against the wall should still slide along it, moved ${down.wy.toFixed(2)} cells in y`);
-  assert.ok(down.screen > free0.screen * 0.3 && down.screen < free0.screen * 0.5, `at the screen share, cos 66: ${(down.screen / free0.screen).toFixed(2)} of the free run`);
+  assert.ok(down.screen > free0.screen * 0.6 && down.screen < free0.screen * 0.8, `at the world cosine, 45: ${(down.screen / free0.screen).toFixed(2)} of the free run`);
   assert.ok(worst <= 1.001, `worst slide/free ratio ${worst.toFixed(3)}`);
 });

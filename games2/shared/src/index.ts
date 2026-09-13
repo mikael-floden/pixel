@@ -660,31 +660,36 @@ function slideCap(mx: number, my: number, sx: number, sy: number): number {
   return got > want + 1e-9 ? want / got : 1;
 }
 
-/** THE SLIDE IS THE SCREEN VELOCITY'S SHARE ALONG THE WALL — for the THUMB's
- *  windows (`MoveOpts.screenSlide`; a planned route keeps `slideCap`). Scale a world
- *  move `m` (the direction the wall leaves the body: an axis, a footprint's
- *  tangent) so that its SCREEN length is the free step's screen vector
- *  projected onto the move's screen direction — never more than the step,
- *  and nothing at all when the thumb points more than a right angle from the
- *  way the wall runs. The per-axis resolution keeps the WORLD component along
- *  the free axis, and the iso projection then shows that as anything from
- *  half to one-and-a-quarter of the run: a screen-up step is 3.7 world units,
- *  a screen-right step 1.6 (the screen speed is what is uniform), so the same
- *  45-degree push into a cliff along x slid at 92 px a tick one way and 40
- *  the other (maintainer 2026-09-13: "running straight up against the wall the
- *  player slides very very fast to the left ... straight right ... very very
- *  slow"). The thumb sees screen angles: up is 66 degrees off that cliff's
- *  line and slides at 40%, right is 24 off and slides at 92%. Returns the
- *  scale to apply to `m`; 0 when the projection is nothing. */
+/** THE SLIDE KEEPS THE THUMB'S SCREEN SPEED TIMES THE WORLD COSINE TO THE
+ *  WALL — for the THUMB's windows (`MoveOpts.screenSlide`; a planned route
+ *  keeps `slideCap`). Scale a world move `m` (the direction the wall leaves the
+ *  body: an axis, a footprint's tangent) so that its SCREEN length is the free
+ *  step's screen length times the cosine, IN WORLD, between the step and the
+ *  move. The free run's screen speed is uniform (a screen-up step is 3.7 world
+ *  units, a screen-right step 1.6), so this is one share for one angle: every
+ *  screen-cardinal key meets a terrain wall at 45 degrees in the world and
+ *  slides at 71% of its own run, whichever wall and whichever key. Never more
+ *  than the step (cos <= 1), and nothing only when the move itself is nothing
+ *  (a per-axis remainder or a tangent glide always has a positive world
+ *  cosine to the step) — so a slide can never stand where a step would pass.
+ *  The two laws before it each failed on the same cliff: the world remainder
+ *  showed as anything from half to one-and-a-quarter of the run (maintainer
+ *  2026-09-13: "running straight up against the wall the player slides very
+ *  very fast to the left ... straight right ... very very slow"), and the
+ *  SCREEN projection that replaced it slid up at 40% and right at 92% ("now
+ *  super slow ... the other way around this time. Running up must be faster,
+ *  but maybe not as fast as before") — and stood a body on the spawn house's
+ *  door post, where the only remainder was 99 screen degrees off the thumb.
+ *  Returns the scale to apply to `m`. */
 function slideShare(mx: number, my: number, sx: number, sy: number): number {
-  const msx = (mx - my) * ISO_DX;
-  const msy = (mx + my) * ISO_DY;
-  const ml = Math.hypot(msx, msy);
-  if (ml < 1e-9) return 0;
-  const ssx = (sx - sy) * ISO_DX;
-  const ssy = (sx + sy) * ISO_DY;
-  const want = (ssx * msx + ssy * msy) / ml;
-  return want <= 0 ? 0 : want / ml;
+  const ml = Math.hypot(mx, my);
+  const sl = Math.hypot(sx, sy);
+  if (ml < 1e-9 || sl < 1e-9) return 0;
+  const cos = (sx * mx + sy * my) / (sl * ml);
+  if (cos <= 0) return 0;
+  const sScreen = Math.hypot((sx - sy) * ISO_DX, (sx + sy) * ISO_DY);
+  const mScreen = Math.hypot((mx - my) * ISO_DX, (mx + my) * ISO_DY);
+  return (sScreen * cos) / mScreen;
 }
 
 /** Integrate one movement step. The SAME function runs on the server (each tick)
@@ -832,7 +837,7 @@ export function stepMovement(
         let gx = into < 0 ? sx - into * hit.nx : sx;
         let gy = into < 0 ? sy - into * hit.ny : sy;
         // The shape's tangent is the direction; the window's law gives the
-        // length (the screen share for the thumb, the cap for a route).
+        // length (slideShare for the thumb, the cap for a route).
         const gs = share(gx, gy, sx, sy);
         gx *= gs;
         gy *= gs;
@@ -856,13 +861,13 @@ export function stepMovement(
         }
       }
     }
-    /* A SLIDE ALONG A WALL IS THE SCREEN VELOCITY'S SHARE ALONG IT
-     * (slideShare): the axis the wall leaves is the direction, the thumb's
-     * screen angle to it the length. This replaces the earlier "never faster
-     * than the run" cap (which it implies) — that cap only clipped the 125%
-     * case and left the 54% one, the asymmetry he felt on the cliff. A share
-     * ABOVE the per-axis remainder is re-probed at its farther end before it
-     * is taken; a smaller one needs no probe. */
+    /* A SLIDE ALONG A WALL IS THE THUMB'S SCREEN SPEED AT THE WORLD COSINE
+     * (slideShare): the axis the wall leaves is the direction, the window's
+     * law the length. This replaces the earlier "never faster than the run"
+     * cap (which it implies) — that cap only clipped the 125% case and left
+     * the 54% one, the asymmetry he felt on the cliff. A share ABOVE the
+     * per-axis remainder is re-probed at its farther end before it is taken;
+     * a smaller one needs no probe. */
     if ((blockedX || blockedY) && (rx !== fx || ry !== fy)) {
       const mx = rx - fx;
       const my = ry - fy;
@@ -3288,7 +3293,16 @@ export function findPath(
   fromY: number,
   toX: number,
   toY: number,
-  opts?: { canSwim?: boolean; maxNodes?: number; fromElev?: number; goalLevel?: number },
+  opts?: {
+    canSwim?: boolean;
+    maxNodes?: number;
+    fromElev?: number;
+    goalLevel?: number;
+    /** Cells (row * width + col) this search may not enter — what the escape
+     *  planner has WALKED and found the body does not fit through, whatever
+     *  the nav layer says (see routeStallCell). */
+    avoid?: Set<number>;
+  },
   // Waypoints carry the LEVEL of the surface the route stands on there. The
   // last one's is the only honest answer to "where does this trip actually
   // END": a goal you cannot reach (a roof with no stairs) resolves to the
@@ -3334,8 +3348,9 @@ export function findPath(
   const inBand = (bc: number, br: number) =>
     bc >= 0 && br >= 0 && bc < W && br < H && inBandX(bc) && inBandY(br);
   const elevOf = (i: number, layer: number) => (layer === 1 ? grid.deck[i] : grid.level[i]);
+  const avoid = opts?.avoid;
   const reach = (elev: number, ac: number, ar: number, bc: number, br: number) =>
-    inBand(bc, br) ? stepReach(grid, elev, ac, ar, bc, br, canSwim) : [];
+    inBand(bc, br) && !avoid?.has(br * W + bc) ? stepReach(grid, elev, ac, ar, bc, br, canSwim) : [];
   // A DIAGONAL needs both flanking cardinals walk-reachable (the round body
   // can't squeeze a corner past a wall) AND near this level: a walk surface
   // into (bc,br) that is NOT a real drop below here (within WALK_CLIMB). A
@@ -4001,12 +4016,15 @@ const ESCAPE_GOALS_PROP: readonly [number, number][] = [
  *  a bulge question — see `sameRoof`. */
 const ESCAPE_PROP_CORRIDOR_CELLS = 4.5;
 
-/** AN ESCAPE STAYS UNDER THE ROOF IT STARTED UNDER — or out from under it.
- *  A route that leaves the room through the door and comes round the outside
- *  to a goal beyond the wall is a journey, not a way round the table, and
- *  the spawn house's did exactly that (3.7 cells off the ask's line, inside
- *  the corridor a 5-cell footprint needs). "Under" is a deck above the feet;
- *  a body ON a bridge deck is under nothing and is not constrained. */
+/** A PROP'S ESCAPE STAYS UNDER THE ROOF IT STARTED UNDER — or out from under
+ *  it. A route that leaves the room through the door and comes round the
+ *  outside to a goal beyond the wall is a journey, not a way round the table,
+ *  and the spawn house's did exactly that (3.7 cells off the ask's line,
+ *  inside the corridor a 5-cell footprint needs). A TERRAIN wall's escape is
+ *  not held to this: pressed to the big house's south wall, the way out is
+ *  the door, and holding it in put the body on the wall for good (2026-09-13).
+ *  "Under" is a deck above the feet; a body ON a bridge deck is under nothing
+ *  and is not constrained. */
 function sameRoof(grid: TerrainGrid, trip: AutopilotTrip, x: number, y: number, elev: number | undefined): boolean {
   const e = elev ?? 0;
   const under = (px: number, py: number) => {
@@ -4224,13 +4242,19 @@ export function walkHeading(
       hold.escapeWait = stuckMs;
     }
     if (trip && trip.committed) {
+      /* A ROUTE THE BODY MAKES NO PROGRESS ON IS DROPPED — by the follower's
+       * own per-waypoint clock (ROUTE_STALL_MS), not by a probe: bodyStalled's
+       * 0.08 s step jumped a rect's diagonal tip that the 33 ms frame did not,
+       * and called a body that stood 45 frames on a route "moving"; and a body
+       * that dithers at a waypoint it cannot reach moves every frame and
+       * progresses on none (see routeStallCell). */
       const d = stepAutopilot(grid, trip, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
       if (d.done) {
         trip = null;
         hold.progRef = p;
         hold.progAt = opts.nowMs;
         hold.escapeWait = stuckMs;
-      } else if (!bodyStalled(grid, x, y, d.ax, d.ay, opts.fromElev)) {
+      } else if (opts.nowMs - trip.progress.t < ROUTE_STALL_MS) {
         hold.ax = 0;
         hold.ay = 0;
         return { ax: d.ax, ay: d.ay, trip, deflected: true };
@@ -4357,6 +4381,8 @@ export function startEscapeRoute(
     grid, x, y, ax, ay, nowMs, fromElev,
     prop ? ESCAPE_GOALS_PROP : ESCAPE_GOALS, ESCAPE_NODES,
     prop ? ESCAPE_PROP_CORRIDOR_CELLS : ESCAPE_CORRIDOR_CELLS, true, side,
+    new Set<number>(), // the cells the walk stands at, found per plan (routeStallCell)
+    prop,
   );
   if (trip) trip.committed = true;
   return trip;
@@ -4389,6 +4415,16 @@ function planRoundTheStick(
    * door-finder's (4 cells, at once); a rim is no escape. */
   escape = false,
   side = 1,
+  /** An escape's cells the body was walked at and did not fit through
+   *  (routeStallCell); grows as goals are tried, and a goal is planned again
+   *  once without them. Absent = no proof, the route as planned. */
+  avoid?: Set<number>,
+  /** The escape stays under the roof it starts under (sameRoof): a PROP's
+   *  escape, where "a short path around it" is round the thing and never out
+   *  through the door. A terrain wall's escape may leave the house — that is
+   *  the nav walking a body pressed to the wall out of it, which he knows
+   *  (2026-09-13: "the nav try to navigate me out of the house"). */
+  underRoof = false,
 ): AutopilotTrip | null {
   const v = screenToWorldVector(ax, ay);
   const l = Math.hypot(v.x, v.y);
@@ -4402,10 +4438,6 @@ function planRoundTheStick(
     const sn = Math.sin(rot);
     const gx = x + (ux * cs - uy * sn) * dist * CELL_WU;
     const gy = y + (ux * sn + uy * cs) * dist * CELL_WU;
-    const trip = startTrip(
-      grid, x, y, gx, gy,
-      false, nowMs, fromElev, undefined, maxNodes,
-    );
     /* THE ESCAPE'S CORRIDOR RUNS ALONG THE ASK, not along the rotated goal:
      * a goal 45 degrees off puts the spawn house's door beside ITS line, and
      * the route out through the door and round the outside passed a 3-cell
@@ -4413,11 +4445,113 @@ function planRoundTheStick(
      * player asked to travel, whatever goal it is aimed at. */
     const cx = escape ? x + ux * dist * CELL_WU : gx;
     const cy = escape ? y + uy * dist * CELL_WU : gy;
-    if (!trip || !withinCorridor(trip, x, y, cx, cy, corridorCells)) continue;
-    if (escape && (!arrives(trip, gx, gy) || !sameRoof(grid, trip, x, y, fromElev))) continue;
-    return trip;
+    for (let attempt = 0; attempt < (escape && avoid ? 2 : 1); attempt++) {
+      const trip = startTrip(
+        grid, x, y, gx, gy,
+        false, nowMs, fromElev, undefined, maxNodes, undefined, avoid,
+      );
+      if (!trip || !withinCorridor(trip, x, y, cx, cy, corridorCells)) break;
+      if (escape) {
+        if (!arrives(trip, gx, gy) || (underRoof && !sameRoof(grid, trip, x, y, fromElev))) break;
+        if (avoid) {
+          const stood = routeStallCell(grid, trip, x, y, nowMs, fromElev);
+          if (stood >= 0) {
+            avoid.add(stood);
+            continue; // the same goal once more, round the cell the body stood at
+          }
+        }
+      }
+      return trip;
+    }
   }
   return null;
+}
+
+/** How long an escape route is walked before it is taken: 60 frames of a
+ *  phone's 33 ms, 2 s at a walk — 140 wu, four cells, past the first waypoint
+ *  and its turn. Longer proves more of the route at a cost paid on every
+ *  escape window. */
+const ROUTE_PROVE_STEPS = 60;
+const ROUTE_PROVE_DT = 0.033;
+/** A committed route whose follower has made no progress toward its waypoint
+ *  for this long is dropped (`AutopilotTrip.progress.t`, the follower's own
+ *  per-waypoint clock; progress is 2 wu closer). A quarter second: a route's
+ *  slide along a wall at a quarter of a walk registers progress every three
+ *  frames. The proof fails a route by the same clock, so what it passes is
+ *  what the walk would keep. */
+const ROUTE_STALL_MS = 250;
+
+/** THE ROUTE IS WALKED BEFORE IT IS TAKEN. The nav layer answers per CELL —
+ *  "some body position exists in it" — and a cell can hold a body without
+ *  letting one THROUGH: between the spawn house's cupboard and its table the
+ *  cell is open along its west edge and 20 wu wide at its middle, the body 18
+ *  across at its corners, so findPath threaded it, the follower stood on the
+ *  first step, the walk dropped the route and planned the same one every
+ *  window (maintainer 2026-09-13, 253.1,303.7 walking NW: "I can't fit
+ *  through and was hoping the player would have tried to run around using
+ *  the nav system, but it doesn't"). So an escape is followed on the movement
+ *  tick itself, on a copy, for ROUTE_PROVE_STEPS: one that arrives, or
+ *  consumes a waypoint and keeps its follower's progress clock running, is
+ *  real; one the walk would drop (ROUTE_STALL_MS without progress toward
+ *  the waypoint — a stand or a dither), or that reaches no waypoint at all,
+ *  names the cell its LEADING EDGE stood in — one radius ahead of the body
+ *  toward the waypoint, where the probe refused (row * width + col) — for
+ *  the planner to take out. Not the waypoint's cell: a waypoint at the
+ *  pinch's own centre counts as reached from its east mouth, and the next
+ *  one sits in the free cell beyond it. -1 when it walks. The proof steps at a PHONE's
+ *  frame (ROUTE_PROVE_DT), not the 0.08 s of bodyStalled: a point probe
+ *  against a rect's diagonal tip lands inside it for a small step and beyond
+ *  it for a larger one, and the larger probe called a body that stood every
+ *  33 ms frame "moving" (measured beside a south-facing table: 0 wu at 0.033
+ *  and 0.05, 2.8 at 0.08). A frame the phone does not run at can still
+ *  disagree with the proof at such a tip; the walk's own drop then re-plans
+ *  from the spot. */
+function routeStallCell(
+  grid: TerrainGrid,
+  trip: AutopilotTrip,
+  x: number,
+  y: number,
+  nowMs: number,
+  fromElev: number | undefined,
+): number {
+  const first = trip.path[0];
+  if (!first) return -1;
+  const sim: AutopilotTrip = {
+    ...trip,
+    target: { ...trip.target },
+    path: trip.path.map((p) => ({ ...p })),
+    progress: { ...trip.progress },
+    lastPos: null,
+    steer: null,
+  };
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const ge = fromElev === undefined ? undefined : () => fromElev;
+  const fwd = ge ? makeBlockedElev(grid, walk, ge) : makeBlocked(grid, walk);
+  const sideB = makeSideBlocked(grid, walk, ge);
+  const W = worldWidthOf(grid);
+  const H = worldHeightOf(grid);
+  const dt = ROUTE_PROVE_DT;
+  const n0 = sim.path.length;
+  let px = x;
+  let py = y;
+  let t = nowMs;
+  // The cell the body's leading edge stands in, toward `wp`.
+  const stoodAt = (wp: { x: number; y: number }) => {
+    const l = Math.hypot(wp.x - px, wp.y - py);
+    const ax = l > 1e-9 ? px + ((wp.x - px) / l) * PLAYER_RADIUS : wp.x;
+    const ay = l > 1e-9 ? py + ((wp.y - py) / l) * PLAYER_RADIUS : wp.y;
+    return Math.floor(ay / CELL_WU) * grid.width + Math.floor(ax / CELL_WU);
+  };
+  for (let i = 0; i < ROUTE_PROVE_STEPS; i++) {
+    t += dt * 1000;
+    const d = stepAutopilot(grid, sim, px, py, t, W, H, fromElev);
+    if (d.done) return -1;
+    if (t - sim.progress.t >= ROUTE_STALL_MS) return stoodAt(sim.path[0] ?? sim.target);
+    const m = stepMovement(px, py, d.ax, d.ay, false, dt, fwd, 1, true, W, H, sideB);
+    px = m.x;
+    py = m.y;
+  }
+  return sim.path.length < n0 ? -1 : stoodAt(first);
 }
 
 /** How far AGAINST the stick an escape route may reach, in TILES: the exit
@@ -4506,6 +4640,9 @@ export function startTrip(
   // Monsters route with canSwim false (water is a player sanctuary); player
   // taps omit it and keep findPath's swimming default.
   canSwim?: boolean,
+  // Cells the route may not enter (findPath's `avoid`): the escape planner's
+  // cells the body was walked at and did not fit through.
+  avoid?: Set<number>,
 ): AutopilotTrip | null {
   const path = grid
     ? (findPath(grid, fromX, fromY, toX, toY, {
@@ -4513,6 +4650,7 @@ export function startTrip(
         goalLevel,
         ...(maxNodes ? { maxNodes } : {}),
         ...(canSwim === undefined ? {} : { canSwim }),
+        ...(avoid ? { avoid } : {}),
       }) ?? [])
     : [{ x: toX, y: toY }];
   if (path.length === 0) return null;
