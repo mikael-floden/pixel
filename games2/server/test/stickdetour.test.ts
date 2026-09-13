@@ -35,8 +35,16 @@ function blobWorld(radius: number) {
   return grid;
 }
 
+/** Two 8-way headings a quarter turn or more apart (their screen vectors' dot
+ *  at or below zero): the snap that reads as a flap. */
+function reversal(a: string, b: string): boolean {
+  const [ax, ay] = a.split(",").map(Number);
+  const [bx, by] = b.split(",").map(Number);
+  return ax * bx + ay * by <= 0;
+}
+
 /** Hold one stick direction through the blob, driving it exactly as the client's
- *  input tick does: stick trip if one is live, else steer assist, else plan. */
+ *  input tick does: the escape if one is live, else the heading as it is. */
 function holdStick(grid: ReturnType<typeof blobWorld>, ax: number, ay: number, useDetour: boolean) {
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const v = screenToWorldVector(ax, ay);
@@ -70,14 +78,17 @@ function holdStick(grid: ReturnType<typeof blobWorld>, ax: number, ay: number, u
       if (a) { iax = a.ax; iay = a.ay; }
     }
     hist.push(`${iax},${iay}`);
-    // A-B-A: snapping back to the heading before last is the VISIBLE flap.
+    // A-B-A: snapping back to the heading before last is the VISIBLE flap —
+    // when A and B are a quarter turn or more apart. A committed route walked
+    // toward a waypoint off the eight lines steps between two ADJACENT
+    // headings, which the facing's hysteresis hides and is no flap.
     const n = hist.length;
-    if (n > 2 && hist[n - 1] === hist[n - 3] && hist[n - 1] !== hist[n - 2]) flapping++;
+    if (n > 2 && hist[n - 1] === hist[n - 3] && hist[n - 1] !== hist[n - 2] && reversal(hist[n - 1], hist[n - 2])) flapping++;
     const u = unstickFromSolids(grid, x, y, 80 * 0.033);
     x = u.x;
     y = u.y;
     const r = stepMovement(x, y, iax, iay, false, 0.033,
-      makeBlocked(grid, walk), 1, true, ww, wh, makeSideBlocked(grid, walk));
+      makeBlocked(grid, walk), 1, true, ww, wh, makeSideBlocked(grid, walk), { screenSlide: true }); // the thumb's window
     const moved = Math.hypot(r.x - x, r.y - y);
     x = r.x;
     y = r.y;
@@ -203,12 +214,12 @@ function holdFrom(grid: ReturnType<typeof pocketWorld>, col: number, row: number
     trip = r.trip;
     hist.push(`${r.ax},${r.ay}`);
     const n = hist.length;
-    if (n > 2 && hist[n - 1] === hist[n - 3] && hist[n - 1] !== hist[n - 2]) flapping++;
+    if (n > 2 && hist[n - 1] === hist[n - 3] && hist[n - 1] !== hist[n - 2] && reversal(hist[n - 1], hist[n - 2])) flapping++;
     const ge = () => elev;
     const u = unstickFromSolids(grid, x, y, 80 * 0.033);
     x = u.x;
     y = u.y;
-    const m = stepMovement(x, y, r.ax, r.ay, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge));
+    const m = stepMovement(x, y, r.ax, r.ay, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge), { screenSlide: true }); // the thumb's window
     x = m.x;
     y = m.y;
     elev = levelAtWorld(grid, x, y);
@@ -223,9 +234,12 @@ test("held DOWN in the dungeon pocket, the body gets OUT — seconds of no progr
   // 276.6,178.9 in the world is 14.6,8.9 in this copy.
   const r = holdFrom(grid, 14.6, 8.9, 0, 1, 600);
   assert.ok(r.advanced >= 5, `after 20 s of holding down the body advanced only ${r.advanced.toFixed(2)} cells along the ask (at ${r.col.toFixed(1)},${r.row.toFixed(1)})`);
-  // Out within ten seconds, not merely eventually: he holds it "for a long
-  // time (we talk seconds)"; the escalation waits its window and then GOES.
-  assert.ok(r.firstAt >= 0 && r.firstAt < 300, `5 cells took ${r.firstAt < 0 ? "forever" : `${(r.firstAt * 33 / 1000).toFixed(1)} s`}`);
+  // Out FAST: the escalation waits his "Nav help after" window (0.1 s by
+  // default, 2026-09-13 — it was 1.5 s, "we talk seconds") and then GOES;
+  // five cells along the ask inside six seconds, corner and all (the slide
+  // down the wall to the corner runs at the screen share, 40% for a
+  // screen-down push, and is most of that time).
+  assert.ok(r.firstAt >= 0 && r.firstAt < 180, `5 cells took ${r.firstAt < 0 ? "forever" : `${(r.firstAt * 33 / 1000).toFixed(1)} s`}`);
   assert.ok(r.flapping < 20, `${r.flapping} A-B-A flaps on the way out`);
 });
 

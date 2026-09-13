@@ -179,13 +179,16 @@ export interface InputMessage {
    *  Absent = 1 (an old client, or a replayed message from before the dial).
    *  The server CLAMPS it to [PLAYER_SPEED_MIN, PLAYER_SPEED_MAX]. */
   sm?: number;
-  /** THE FACING, when it is not the input's own direction: the sprite faces
-   *  the THUMBSTICK while the nav deflects the walk (maintainer 2026-09-13:
-   *  "the player will always continue looking in the direction you hold the
-   *  thumbstick (even when the navigation helps you navigate around)"), and
-   *  the server mirrors it so everyone else sees the same body. Absent = the
-   *  walked vector's direction, as before. */
-  fd?: Direction;
+  /** A PLANNED ROUTE STEERED THIS WINDOW — tap-to-move, or the walk's escape
+   *  round a thing — and its slides keep the WORLD axis (the old cap, never
+   *  faster than the run). The thumb's windows slide at the SCREEN share
+   *  along the wall (`slideShare`), which is a rule for a thumb: the route's
+   *  follower has none, was tuned on the world-axis slide, and at a 40% slide
+   *  turned a few frames early at a cliff and oscillated between two flanking
+   *  headings until it gave up (the mountain simulation, seed 5, 2026-09-13).
+   *  Per input like `sm`, so a replayed window integrates under the law it
+   *  was sent with. Absent = the thumb's. */
+  route?: boolean;
 }
 
 /** THE PLAYER-SPEED DIAL's range. The maintainer asked for it to find a good
@@ -303,11 +306,37 @@ export const PLAYER_SPEED_MAX = 4;
  *  "restore" 1. */
 export const PLAYER_SPEED_DEFAULT = 1.2;
 
+/** WALK OR RUN FOLLOWS THE BODY'S ACTUAL SPEED, not the input's flag
+ *  (maintainer 2026-09-13: "when it comes to the player running into a wall
+ *  the player movement is not that much so the player should here not run.
+ *  The player should walk. The switch from when the player walk/run depends
+ *  on the player's speed after the collision with the wall has been done and
+ *  the v was cut and ended up as a small sliding"). A run the wall cut below
+ *  a walk's pace plays the walk — on both sides: the client from its
+ *  predicted body, the server per input for everyone else. Hysteresis, so a
+ *  slide hovering at the line does not flicker: `wasRunning` is the previous
+ *  answer, `speed` the measured wu/s, `walkSpeed` the walk's pace under the
+ *  player-speed dial. Only asked while the input asks to run. */
+export const GAIT_RUN_ON = 1.15;
+export const GAIT_RUN_OFF = 0.85;
+export function gaitRunning(wasRunning: boolean, speed: number, walkSpeed: number): boolean {
+  return speed >= walkSpeed * (wasRunning ? GAIT_RUN_OFF : GAIT_RUN_ON);
+}
+
 // Anti-cheat bounds for input-stream integration: a single input may not claim
 // more than MAX_INPUT_DT, and a client can never accumulate more integration
 // time than real time elapsed (+ a small burst allowance, INPUT_TIME_SLACK).
 export const MAX_INPUT_DT = 0.1; // seconds
 export const INPUT_TIME_SLACK = 0.25; // seconds of burst credit
+
+/** Per-window movement law. `screenSlide`: the thumb's windows — a slide along
+ *  a wall is the screen velocity's share along it (`slideShare`); absent, a
+ *  planned route's — the world-axis slide, capped (`slideCap`). The client
+ *  sends it as `InputMessage.route` (inverted) and both sides integrate each
+ *  window under the law it was sent with. */
+export interface MoveOpts {
+  screenSlide?: boolean;
+}
 
 export interface MoveResult {
   x: number;
@@ -620,6 +649,44 @@ export type BlockedFn = ((toX: number, toY: number, fromX: number, fromY: number
  * touch a ledge edge, so sprites never rest overhanging the rim. */
 export type DropFn = (toX: number, toY: number, fromX: number, fromY: number) => boolean;
 
+/** THE OLD LAW, kept for a planned route's windows: the slide keeps the world
+ *  component the wall leaves, scaled so its SCREEN length never exceeds the
+ *  free step's (2026-09-12, the caves: "moving much faster"). Returns the
+ *  scale to apply to `m`. */
+function slideCap(mx: number, my: number, sx: number, sy: number): number {
+  const got = Math.hypot((mx - my) * ISO_DX, (mx + my) * ISO_DY);
+  if (got < 1e-9) return 0;
+  const want = Math.hypot((sx - sy) * ISO_DX, (sx + sy) * ISO_DY);
+  return got > want + 1e-9 ? want / got : 1;
+}
+
+/** THE SLIDE IS THE SCREEN VELOCITY'S SHARE ALONG THE WALL — for the THUMB's
+ *  windows (`MoveOpts.screenSlide`; a planned route keeps `slideCap`). Scale a world
+ *  move `m` (the direction the wall leaves the body: an axis, a footprint's
+ *  tangent) so that its SCREEN length is the free step's screen vector
+ *  projected onto the move's screen direction — never more than the step,
+ *  and nothing at all when the thumb points more than a right angle from the
+ *  way the wall runs. The per-axis resolution keeps the WORLD component along
+ *  the free axis, and the iso projection then shows that as anything from
+ *  half to one-and-a-quarter of the run: a screen-up step is 3.7 world units,
+ *  a screen-right step 1.6 (the screen speed is what is uniform), so the same
+ *  45-degree push into a cliff along x slid at 92 px a tick one way and 40
+ *  the other (maintainer 2026-09-13: "running straight up against the wall the
+ *  player slides very very fast to the left ... straight right ... very very
+ *  slow"). The thumb sees screen angles: up is 66 degrees off that cliff's
+ *  line and slides at 40%, right is 24 off and slides at 92%. Returns the
+ *  scale to apply to `m`; 0 when the projection is nothing. */
+function slideShare(mx: number, my: number, sx: number, sy: number): number {
+  const msx = (mx - my) * ISO_DX;
+  const msy = (mx + my) * ISO_DY;
+  const ml = Math.hypot(msx, msy);
+  if (ml < 1e-9) return 0;
+  const ssx = (sx - sy) * ISO_DX;
+  const ssy = (sx + sy) * ISO_DY;
+  const want = (ssx * msx + ssy * msy) / ml;
+  return want <= 0 ? 0 : want / ml;
+}
+
 /** Integrate one movement step. The SAME function runs on the server (each tick)
  * and on the client (prediction), so they stay in lockstep. `blocked` rejects a
  * move (resolved axis-separated so players slide along walls); `speedScale`
@@ -646,7 +713,9 @@ export function stepMovement(
   // `blocked`; real callers pass makeSideBlocked so elevation walls beside
   // the path can't wedge a player who just descended a cliff.
   sideBlocked?: BlockedFn,
+  opts?: MoveOpts,
 ): MoveResult {
+  const share = opts?.screenSlide ? slideShare : slideCap;
   const len = Math.hypot(ax, ay);
   if (len < 1e-6) return { x, y, dir: null, moving: false };
   const dir = vectorToDirection(ax / len, ay / len); // facing = what the player sees
@@ -762,13 +831,11 @@ export function stepMovement(
         const into = sx * hit.nx + sy * hit.ny;
         let gx = into < 0 ? sx - into * hit.nx : sx;
         let gy = into < 0 ? sy - into * hit.ny : sy;
-        const want = Math.hypot((sx - sy) * ISO_DX, (sx + sy) * ISO_DY);
-        const got = Math.hypot((gx - gy) * ISO_DX, (gx + gy) * ISO_DY);
-        if (got > want + 1e-9) {
-          const f = want / got;
-          gx *= f;
-          gy *= f;
-        }
+        // The shape's tangent is the direction; the window's law gives the
+        // length (the screen share for the thumb, the cap for a route).
+        const gs = share(gx, gy, sx, sy);
+        gx *= gs;
+        gy *= gs;
         const gl = Math.hypot(gx, gy);
         if (gl > 1e-9) {
           const ex = gx / gl;
@@ -789,19 +856,37 @@ export function stepMovement(
         }
       }
     }
+    /* A SLIDE ALONG A WALL IS THE SCREEN VELOCITY'S SHARE ALONG IT
+     * (slideShare): the axis the wall leaves is the direction, the thumb's
+     * screen angle to it the length. This replaces the earlier "never faster
+     * than the run" cap (which it implies) — that cap only clipped the 125%
+     * case and left the 54% one, the asymmetry he felt on the cliff. A share
+     * ABOVE the per-axis remainder is re-probed at its farther end before it
+     * is taken; a smaller one needs no probe. */
     if ((blockedX || blockedY) && (rx !== fx || ry !== fy)) {
       const mx = rx - fx;
       const my = ry - fy;
-      const want = Math.hypot((sx - sy) * ISO_DX, (sx + sy) * ISO_DY);
-      const got = Math.hypot((mx - my) * ISO_DX, (mx + my) * ISO_DY);
-      if (got > want + 1e-9) {
-        const f = want / got;
+      const f = share(mx, my, sx, sy);
+      let ok = true;
+      if (f > 1 + 1e-9) {
+        const tx2 = clamp(fx + mx * f, SPAWN_MARGIN, worldW - SPAWN_MARGIN);
+        const ty2 = clamp(fy + my * f, SPAWN_MARGIN, worldH - SPAWN_MARGIN);
+        if (mx !== 0) {
+          const px2 = tx2 + Math.sign(mx) * PLAYER_RADIUS;
+          ok = !(blocked!(px2, fy, fx, fy) || sideB!(px2, fy - SIDE, fx, fy) || sideB!(px2, fy + SIDE, fx, fy));
+        }
+        if (ok && my !== 0) {
+          const py2 = ty2 + Math.sign(my) * PLAYER_RADIUS;
+          ok = !(blocked!(fx, py2, fx, fy) || sideB!(fx - SIDE, py2, fx, fy) || sideB!(fx + SIDE, py2, fx, fy));
+        }
+      }
+      if (ok) {
         rx = fx + mx * f;
         ry = fy + my * f;
-        // The free axis must keep the scaled sum, not be re-applied whole.
-        freeX = false;
-        freeY = false;
       }
+      // The free axis must keep the scaled sum, not be re-applied whole.
+      freeX = false;
+      freeY = false;
     }
     if (rx === fx && ry === fy) {
       /* THE GLIDE. Per-axis resolution slides along a WALL — one axis survives
@@ -847,8 +932,9 @@ export function stepMovement(
        * 58.3% -> 63.9% on one tree and 69.8% -> 71.9% in the forest, because at
        * that curvature the lean is a third of the substep and turns a slide
        * into a retreat. The plain tangent is kept. */
-      const gx = sx - into * hit.nx;
-      const gy = sy - into * hit.ny;
+      const share0 = share(sx - into * hit.nx, sy - into * hit.ny, sx, sy);
+      const gx = (sx - into * hit.nx) * share0;
+      const gy = (sy - into * hit.ny) * share0;
       freeX = false;
       freeY = false;
       const gtx = clamp(rx + gx, SPAWN_MARGIN, worldW - SPAWN_MARGIN);
@@ -2551,10 +2637,12 @@ export function worldAxisToScreenInput(nx: number, ny: number): { ax: number; ay
  *  heading and slides at the wall's rate, losing speed to the wall ("if we
  *  tilt too much into the wall we will not help") — and hops a jumpable one.
  *  Screen degrees, because the thumb's angle to the wall he SEES is what he
- *  tunes; the default is a first guess for him to move. */
+ *  tunes. */
 export const WALL_ASSIST_DEG_MIN = 0;
 export const WALL_ASSIST_DEG_MAX = 60;
-export const WALL_ASSIST_DEG_DEFAULT = 30;
+/** HIS NUMBER (maintainer 2026-09-13, off the slider: "Wall assist angle
+ *  should be 10"). Not a placeholder — do not "restore" 30. */
+export const WALL_ASSIST_DEG_DEFAULT = 10;
 
 /** The angle, in SCREEN degrees, between a screen input and a WORLD direction
  *  as drawn — the wall-assist angle's own measure. A wall along world +x runs
@@ -2617,17 +2705,22 @@ export function wallContact(
   const refX = sx !== 0 && refused(sx, 0);
   const refY = sy !== 0 && refused(0, sy);
   if (!refX && !refY) return null;
-  // The refusing cells: the leading edge along that axis, at the centre and
-  // at both lateral corner probes — the movement tick's own points — from
-  // just past the feet to the end of the probe step, so a footprint whose
-  // edge the step only reaches at its far end is still seen as the prop it is.
+  // WHAT REFUSED THE AXIS, asked at the very points that refused it: the
+  // leading edge along that axis, at the centre and at both lateral corner
+  // probes — the movement tick's own points — from just past the feet to the
+  // end of the probe step. A solid cell there is a prop; so is a footprint's
+  // raw shape there (`footprintBlocks` with r = 0, the tick's own test): the
+  // brazier at 240.5,265.3 touched only the corner probe, 30 wu from the
+  // body's centre and past any contact query's reach, and read as terrain
+  // (maintainer 2026-09-13: "the navigation doesn't kick in").
   let prop = false;
   const look = (axisX: boolean, sgn: number) => {
     for (const ahead of [PLAYER_RADIUS + 3, PLAYER_RADIUS + WALK_SPEED * dt + 1])
       for (const lat of [0, 0.75 * PLAYER_RADIUS, -0.75 * PLAYER_RADIUS]) {
         const px = axisX ? x + sgn * ahead : x + lat;
         const py = axisX ? y + lat : y + sgn * ahead;
-        if (cellSolid(grid, Math.floor(px / CELL_WU), Math.floor(py / CELL_WU), elev)) prop = true;
+        if (cellSolid(grid, Math.floor(px / CELL_WU), Math.floor(py / CELL_WU), elev) || footprintBlocks(grid, px, py, 0, elev))
+          prop = true;
       }
   };
   if (refX) look(true, sx);
@@ -3848,45 +3941,91 @@ export interface SlideMemo {
   fromX?: number;
   fromY?: number;
   /** THE PROGRESS WINDOW (the fly at the window, see walkHeading rule 0): the
-   *  ask these marks belong to, the furthest point reached ALONG it, and when
-   *  that furthest point was last bettered. */
+   *  ask these marks belong to, the body's projection along it when the
+   *  window opened, when that was, and how long the open window is (his "Nav
+   *  help after" dial, doubling on each fruitless escape attempt). */
   askAx?: number;
   askAy?: number;
-  bestX?: number;
-  bestY?: number;
-  bestAt?: number;
+  progRef?: number;
+  progAt?: number;
+  escapeWait?: number;
 }
 
-/** How long a held direction may go without bettering its furthest point
- *  before the walk stops trusting the local rules and commits to a planned
- *  route — the maintainer's "we talk seconds" (2026-09-11). Short enough that
- *  a player who is stuck feels rescued, long enough that the hold, the assist
- *  and the slide have had their turn; a real opening is normally taken in
- *  well under a second. */
-export const STUCK_ESCALATE_MS = 1500;
-/** Progress that restarts the window: three quarters of a cell further along
- *  the ask than ever before. Oscillating up and down a wall never betters the
- *  furthest point, so it never counts. */
-const STUCK_PROGRESS_WU = CELL_WU * 0.75;
+/** HOW LONG THE BODY MAY GO WITHOUT PROGRESS BEFORE THE NAV HELPS — his "Nav
+ *  help after" dial (maintainer 2026-09-13: "how fast the player has to run
+ *  into something before the nav system helps. That should be extremely fast
+ *  ... 0.1s is a good default, but let the slider go all the way up to 2s").
+ *  Milliseconds; `client/src/navhelp.ts` is the dial, `walkHeading` takes it
+ *  as `stuckMs`. The 2026-09-11 window was 1.5 s ("we talk seconds"). */
+export const NAV_HELP_MS_MIN = 100;
+export const NAV_HELP_MS_MAX = 2000;
+export const NAV_HELP_MS_DEFAULT = 100;
+/** The window `walkHeading` uses when the caller passes none. */
+export const STUCK_ESCALATE_MS = NAV_HELP_MS_DEFAULT;
+/** PROGRESS IS A RATE, NOT A DISTANCE: over a window the body must have moved
+ *  along the ask at least this share of a walk's pace, or it is stuck. A
+ *  TENTH: "doing progress" means moving at all — a slide along a wall at the
+ *  screen share is 40% of the run for a screen-up push and only a sixth of
+ *  that along the ask, and at the stall test's 0.35 it read as stuck and the
+ *  escape fired mid-slide (the cliff, the spawn house's south wall). A slide
+ *  that keeps moving is left to slide (maintainer 2026-09-13: "the slide
+ *  around a scenery object should be preferred if the sliding is doing
+ *  progress"); a creep into a corner is not progress, and the flap up and
+ *  down a wall nets none. */
+const STUCK_PROGRESS_RATE = 0.1;
+/** A fruitless attempt doubles the wait, up to this: a true dead end at
+ *  0.1 s would otherwise cost the goal fan's searches ten times a second. */
+const ESCAPE_BACKOFF_MAX_MS = 2000;
 /** The escape route may bulge this far off the asked line — a pocket's exit is
  *  a real detour, not a skirt (DETOUR_CORRIDOR_CELLS is 3). */
 const ESCAPE_CORRIDOR_CELLS = 8;
 const ESCAPE_NODES = 2500; // a pocket, not a map crossing
-/** Escape goals: farther first, so a short slot leads OUT of the pocket rather
- *  than to its next wall; the fan is the detour's. */
-const ESCAPE_GOALS: readonly [number, number][] = [
-  [0, 8], [Q, 8], [-Q, 8], [0, 5], [Q, 5], [-Q, 5], [2 * Q, 6], [-2 * Q, 6], [0, 12],
+/** Escape goals out of a TERRAIN pocket: STRAIGHT AHEAD, farther first, so a
+ *  short slot leads OUT of the pocket rather than to its next wall. A way out
+ *  lies ahead; a goal off to the side is a stroll — with the old fan's
+ *  45-degree goals a steep push into an endless wall "escaped" eight cells
+ *  along it (2026-09-13). Sideways is the slide's and the door-finder's. */
+const ESCAPE_GOALS: readonly [number, number][] = [[0, 8], [0, 5], [0, 12]];
+/** The escape round a SCENERY PIECE or a PROP: near goals first — the thing
+ *  is a few cells at most, and in a small room every goal five cells on lies
+ *  beyond a wall, so a body square on a table stood with the way round one
+ *  cell away (his house at 252.8,303.5, 2026-09-13). The half-octant pair
+ *  leads, mirrored to the side the finger leans toward, so the way round is
+ *  the way the thumb points when the shape's tangent could not tell. */
+const ESCAPE_GOALS_PROP: readonly [number, number][] = [
+  [Q / 2, 2], [Q / 2, 3], [0, 2], [0, 3], [0, 5], [0, 8],
 ];
+/** How far off the ASK's line the escape round a piece or a prop may bulge:
+ *  a 5-cell footprint's half, the buffer cell findPath keeps off it, and the
+ *  cell the route runs through (2.5 + 1 + 1). A route out of the room is not
+ *  a bulge question — see `sameRoof`. */
+const ESCAPE_PROP_CORRIDOR_CELLS = 4.5;
+
+/** AN ESCAPE STAYS UNDER THE ROOF IT STARTED UNDER — or out from under it.
+ *  A route that leaves the room through the door and comes round the outside
+ *  to a goal beyond the wall is a journey, not a way round the table, and
+ *  the spawn house's did exactly that (3.7 cells off the ask's line, inside
+ *  the corridor a 5-cell footprint needs). "Under" is a deck above the feet;
+ *  a body ON a bridge deck is under nothing and is not constrained. */
+function sameRoof(grid: TerrainGrid, trip: AutopilotTrip, x: number, y: number, elev: number | undefined): boolean {
+  const e = elev ?? 0;
+  const under = (px: number, py: number) => {
+    const c = Math.floor(px / CELL_WU);
+    const r = Math.floor(py / CELL_WU);
+    if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return false;
+    const d = grid.deck[r * grid.width + c];
+    return d >= 0 && e < d - 0.5;
+  };
+  const start = under(x, y);
+  for (const p of trip.path) if (under(p.x, p.y) !== start) return false;
+  return true;
+}
 
 /** How far ahead a heading is simulated when asking "is the way actually open,
  *  or open for exactly one step?". 12 probe steps of 0.08s is about a second of
  *  walking — far enough to clear a footprint, which is 3-5 cells across. */
 const CLEAR_LOOKAHEAD_STEPS = 12;
 
-/** How far a committed deflection is skirted before it may be released: one
- *  cell. Distance, not ticks, so a slow phone and a fast one skirt the same
- *  shape. */
-const HOLD_MIN_TRAVEL = CELL_WU;
 
 
 
@@ -3986,24 +4125,27 @@ export function slideAlong(
 }
 
 /**
- * THE WHOLE WALK DECISION FOR A HELD DIRECTION, in one place, because the ORDER
- * is the thing that was wrong and order cannot be unit-tested when it lives
- * inline in the scene.
- *
- * Rules, in the order they fire:
- *  1. HOLD a deflection already committed to, until the raw heading is clear
- *     for a real lookahead — not for one step. Releasing on a one-step probe is
- *     what made the character "flip direction back and forth forever": the
- *     sidestep frees exactly one step, the raw heading walks straight back into
- *     the trunk, repeat. Traced at 456.0,361.8 held up, stuck at 452.4,358.4 —
- *     233 input flips in 300 frames, the body pinned to two hundredths of a
- *     cell. With the hold: 2 flips, and it walks away past the tree.
- *  2. Follow a detour already planned.
- *  3. The local steer assist (terrain walls and doorways, its real strength).
- *  4. Plan a detour with findPath — a footprint is a 3-to-5 cell blob and the
- *     local assist cannot round one, let alone escape a pocket between two.
- *  5. Slide: never stand still while any non-backward heading would move.
- *  6. Latch whatever deflection came out, so rule 1 can hold it next tick.
+ * THE WHOLE WALK DECISION FOR A HELD DIRECTION, in one place, because the
+ * ORDER is the thing that was wrong and order cannot be unit-tested when it
+ * lives inline in the scene. Three rules, since 2026-09-13:
+ *  0. THE ESCAPE: progress along the ask is watched as a rate over his "Nav
+ *     help after" window; a body making none gets a planned, COMMITTED route
+ *     that arrives ahead and reaches at most one tile back, followed to its
+ *     end. This is the only navigation there is.
+ *  1. A TERRAIN WALL gets the honest walk: straightened along it within his
+ *     angle, otherwise slid at the wall's own rate or stood; a door sideways
+ *     is steered to, never one behind.
+ *  2. Everything else — a scenery footprint, a prop, open ground — walks the
+ *     heading as it is and lets the movement tick's glide slide it: "the
+ *     slide around a scenery object should be preferred if the sliding is
+ *     doing progress", and when it is not, rule 0 has it within the window.
+ * RETIRED the same day: the per-tick local rules (a deflection held for a
+ * cell, the detour planned on an instantaneous stall, the full-speed slide
+ * that picked a side by list order). They judged a stall from the 8-way key,
+ * so a stick a hair off square-on read as square-on and the body was dragged
+ * a whole cell the way the thumb was NOT leaning ("pushed the wrong way when
+ * sliding against it"); the glide now takes the tangent as one move and the
+ * escape is a tenth of a second away, which is what they existed to cover.
  */
 export function walkHeading(
   grid: TerrainGrid,
@@ -4025,6 +4167,9 @@ export function walkHeading(
     heading?: { ax: number; ay: number };
     /** The wall-assist angle in screen degrees (his dial); absent = the default. */
     wallAssistDeg?: number;
+    /** How long without progress before the escape is planned, ms (his "Nav
+     *  help after" dial); absent = NAV_HELP_MS_DEFAULT. */
+    stuckMs?: number;
   },
 ): { ax: number; ay: number; trip: AutopilotTrip | null; deflected: boolean } {
   /* `deflected` says whether the answer is the walk's own, not the stick's — so
@@ -4041,6 +4186,12 @@ export function walkHeading(
   }
   const worldW = opts.worldW ?? worldWidthOf(grid);
   const worldH = opts.worldH ?? worldHeightOf(grid);
+  // What the heading is pressed against decides the escape's corridor (rule 0)
+  // and whether the wall rules apply (rule 1). Probed with the HEADING the
+  // frame would walk: the key pair the stick snapped to may lock onto a wall's
+  // own axis and have no push into it at all, while the finger's lean does.
+  const h = opts.heading ?? { ax, ay };
+  const wall = wallContact(grid, x, y, h.ax, h.ay, opts.fromElev);
   /* 0. THE FLY AT THE WINDOW. Rules 1-6 are local and never retreat, which is
    * right for a tree and wrong for a pocket whose only exit begins a little
    * AGAINST the stick: the planner found the way out every tick (one cell to
@@ -4049,34 +4200,36 @@ export function walkHeading(
    * down again — a six-second oscillation with the exit in view (maintainer
    * 2026-09-11, the dungeon at 276.6,178.9 held down: "like a fly flying into
    * a window ... the rule is good, but it is not an absolute"). So progress
-   * along the ask is watched: while the furthest point along it keeps being
-   * bettered, nothing here fires; once STUCK_ESCALATE_MS pass without, a
-   * route is planned with a pocket-sized corridor and COMMITTED — followed
-   * to its end past the retreat rule and the hold — and then the local rules
-   * resume. */
+   * along the ask is watched, AS A RATE over a window of his "Nav help after"
+   * dial (0.1 s by default, 2026-09-13: "the game should be very fast in
+   * using the nav system to help the player, but the nav system should not
+   * help if the player seem to slide around the object by itself"): a body
+   * that keeps moving along the ask at a third of a walk's pace is left to
+   * its slide; one that does not gets a route planned with a pocket-sized
+   * corridor and COMMITTED — followed to its end past the retreat rule and
+   * the hold — one attempt per window, the window doubling after a fruitless
+   * one so a dead end is not searched ten times a second. */
   {
     const w = screenToWorldVector(ax, ay);
     const wl = Math.hypot(w.x, w.y) || 1;
     const ux = w.x / wl;
     const uy = w.y / wl;
-    if (hold.askAx !== ax || hold.askAy !== ay || hold.bestAt === undefined) {
+    const p = x * ux + y * uy; // the body along the ask
+    const stuckMs = Math.max(1, opts.stuckMs ?? STUCK_ESCALATE_MS);
+    if (hold.askAx !== ax || hold.askAy !== ay || hold.progAt === undefined) {
       hold.askAx = ax;
       hold.askAy = ay;
-      hold.bestX = x;
-      hold.bestY = y;
-      hold.bestAt = opts.nowMs;
-    } else if ((x - hold.bestX!) * ux + (y - hold.bestY!) * uy >= STUCK_PROGRESS_WU) {
-      hold.bestX = x;
-      hold.bestY = y;
-      hold.bestAt = opts.nowMs;
+      hold.progRef = p;
+      hold.progAt = opts.nowMs;
+      hold.escapeWait = stuckMs;
     }
     if (trip && trip.committed) {
       const d = stepAutopilot(grid, trip, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
       if (d.done) {
         trip = null;
-        hold.bestX = x;
-        hold.bestY = y;
-        hold.bestAt = opts.nowMs;
+        hold.progRef = p;
+        hold.progAt = opts.nowMs;
+        hold.escapeWait = stuckMs;
       } else if (!bodyStalled(grid, x, y, d.ax, d.ay, opts.fromElev)) {
         hold.ax = 0;
         hold.ay = 0;
@@ -4084,31 +4237,50 @@ export function walkHeading(
       } else {
         trip = null; // the route itself is held: back to the local rules, the window still counting
       }
-    } else if (!opts.noDetour && opts.nowMs - hold.bestAt! >= STUCK_ESCALATE_MS) {
-      hold.bestAt = opts.nowMs; // one attempt per window, route or no route
-      const esc = startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev);
-      /* ONE CELL BACK, NO MORE. The escape is the only rule that may move
-       * against the stick, and it may do so only as far as the pocket's own
-       * exit — "the corner is just around the tile you currently is running
-       * into" (maintainer 2026-09-13). The dungeon pocket's exit is one tile
-       * aside; the spawn house's door is two tiles along the wall, and a route
-       * to it ran the player out of the house he was running into. */
-      if (esc && routeRetreat(esc, x, y, ux, uy) <= ESCAPE_RETREAT_CELLS) {
-        const d = stepAutopilot(grid, esc, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
-        if (!d.done) {
-          hold.ax = 0;
-          hold.ay = 0;
-          return { ax: d.ax, ay: d.ay, trip: esc, deflected: true };
+    } else {
+      const wait = hold.escapeWait ?? stuckMs;
+      const dtMs = opts.nowMs - hold.progAt!;
+      if (dtMs >= wait) {
+        if (p - hold.progRef! >= STUCK_PROGRESS_RATE * WALK_SPEED * (dtMs / 1000)) {
+          // Progress: the window slides on.
+          hold.progRef = p;
+          hold.progAt = opts.nowMs;
+          hold.escapeWait = stuckMs;
+        } else {
+          hold.progRef = p;
+          hold.progAt = opts.nowMs;
+          hold.escapeWait = Math.min(wait * 2, Math.max(stuckMs, ESCAPE_BACKOFF_MAX_MS));
+          if (!opts.noDetour) {
+            // The side the finger leans toward is tried first: the fan's
+            // sense is the cross product's.
+            const lh = opts.heading ?? { ax, ay };
+            const lw = screenToWorldVector(lh.ax, lh.ay);
+            const side = ux * lw.y - uy * lw.x < -1e-9 ? -1 : 1;
+            const esc = startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev, side, !(wall && !wall.prop));
+            /* ONE TILE BACK, NO MORE. The escape is the only rule that may move
+             * against the stick, and it may do so only as far as the pocket's own
+             * exit — "the corner is just around the tile you currently is running
+             * into" (maintainer 2026-09-13). The dungeon pocket's exit is one tile
+             * aside; the spawn house's door is two tiles along the wall, and a route
+             * to it ran the player out of the house he was running into. */
+            if (esc && routeRetreat(esc, x, y, ux, uy) <= ESCAPE_RETREAT_CELLS) {
+              const d = stepAutopilot(grid, esc, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
+              if (!d.done) {
+                hold.ax = 0;
+                hold.ay = 0;
+                return { ax: d.ax, ay: d.ay, trip: esc, deflected: true };
+              }
+            }
+          }
         }
       }
     }
   }
-  /* A TERRAIN WALL GETS THE HONEST WALK (maintainer 2026-09-13, the spawn
+  /* 1. A TERRAIN WALL GETS THE HONEST WALK (maintainer 2026-09-13, the spawn
    * house's corner held down: "the player will first try to avoid the wall by
    * running to the right ... then run back into the corner and then finally
    * run out ... I feel this makes it hard to control and understand where the
-   * player is running"). Against a wall or in a corner, none of the tree
-   * rules below — no hold, no planned detour, no full-speed slide:
+   * player is running"):
    *  - a run leaned into the wall by no more than the wall-assist angle is
    *    straightened to run exactly along it at full speed;
    *  - past that angle the body keeps its own heading and the movement tick
@@ -4118,17 +4290,11 @@ export function walkHeading(
    *    corner"); a jumpable wall is then hopped by the caller's auto-jump;
    *  - a door SIDEWAYS or ahead within STEER_DOOR_RANGE is steered to (the
    *    door-finder, which never looks behind the run);
-   *  - the one backwards move is rule 0's escape above, one cell at most.
-   * A solid prop refusing either axis keeps the tree rules: a footprint is a
-   * blob and those rules were measured on it. */
-  // Probed with the HEADING the frame would walk: the key pair the stick
-  // snapped to may lock onto the wall's own axis and have no push into it at
-  // all, while the finger's lean does.
-  const h = opts.heading ?? { ax, ay };
-  const wall = wallContact(grid, x, y, h.ax, h.ay, opts.fromElev);
+   *  - the one backwards move is rule 0's escape above, one tile at most.
+   * (The contact was probed above, with the heading the frame would walk.) */
+  hold.ax = 0;
+  hold.ay = 0;
   if (wall && !wall.prop) {
-    hold.ax = 0;
-    hold.ay = 0;
     if (wall.tangent) {
       const deg = opts.wallAssistDeg ?? WALL_ASSIST_DEG_DEFAULT;
       if (wallAngleDeg(h.ax, h.ay, wall.tangent.x, wall.tangent.y) <= deg + 1e-9) {
@@ -4140,112 +4306,12 @@ export function walkHeading(
       const a = steerAssist(grid, x, y, ax, ay, opts.fromElev);
       if (a) return { ax: a.ax, ay: a.ay, trip: null, deflected: true };
     }
-    return { ax, ay, trip: null, deflected: false };
   }
-  const rawClear = headingClear(grid, x, y, ax, ay, opts.fromElev);
-  const skirted = Math.hypot(x - (hold.fromX ?? x), y - (hold.fromY ?? y));
-  /* THE HOLD IS RELEASED BY ITS OWN CONDITION, NOT RE-ASKED EVERY TICK. Gating
-   * the hold on "is the raw heading clear right now" reintroduces the flap it
-   * exists to stop, because that lookahead FLICKERS beside an obstacle: traced
-   * at tree_031, the deflection stayed latched at (1,0) the whole time and the
-   * output still fell back to the raw (0,1) every third tick, pulling the body
-   * back onto the trunk it had just stepped off. A commitment that is
-   * re-litigated every frame is not a commitment. So: while a deflection is
-   * latched it is USED, and it ends only when the way ahead is genuinely open
-   * AND the body has skirted a full cell. */
-  const latched = hold.ax !== 0 || hold.ay !== 0;
-  const release = rawClear && skirted >= HOLD_MIN_TRAVEL;
-  if (latched && !release) {
-    if (!bodyStalled(grid, x, y, hold.ax, hold.ay, opts.fromElev)) return { ax: hold.ax, ay: hold.ay, trip: null, deflected: true };
-    /* The committed heading ground to a stop against the same obstacle. Pick
-     * ANOTHER deflection — never fall back to the raw heading, which is the one
-     * pointing into the thing being avoided. Traced at tree_031: the held (1,0)
-     * stalls every third tick, the fallback handed control to the raw (0,1),
-     * and the body was pulled back onto the trunk it had just left — 90 flaps
-     * with the deflection latched the whole way through. */
-    const sl = slideAlong(grid, x, y, ax, ay, hold, opts.fromElev);
-    if (sl) return { ax: sl.ax, ay: sl.ay, trip: null, deflected: true };
-    hold.ax = 0;
-    hold.ay = 0;
-  }
-  if (release) {
-    hold.ax = 0;
-    hold.ay = 0;
-  }
-  let hx = ax;
-  let hy = ay;
-  let deflected = false;
-  // 2. Follow a planned detour.
-  if (trip) {
-    const d = stepAutopilot(grid, trip, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
-    if (d.done) trip = null;
-    else {
-      hx = d.ax;
-      hy = d.ay;
-      deflected = true;
-    }
-  }
-  if (!trip) {
-    // 3. The local assist.
-    const a = steerAssist(grid, x, y, ax, ay, opts.fromElev);
-    if (a) {
-      hx = a.ax;
-      hy = a.ay;
-      deflected = true;
-    } else if (!opts.noDetour && bodyStalled(grid, x, y, ax, ay, opts.fromElev)) {
-      // 4. Plan round it.
-      trip = startStickDetour(grid, x, y, ax, ay, opts.nowMs, opts.fromElev);
-      if (trip) {
-        const d = stepAutopilot(grid, trip, x, y, opts.nowMs, worldW, worldH, opts.fromElev);
-        if (d.done) trip = null;
-        else {
-          hx = d.ax;
-          hy = d.ay;
-          deflected = true;
-        }
-      }
-    }
-  }
-  /* NO RETREAT, WHATEVER PICKED IT. A planned route is allowed to curve, but a
-   * heading that OPPOSES the stick is never what the player asked for: measured
-   * at tree_017, the detour's first heading was (1,1) against an input of
-   * (-1,-1) — dead backwards — and the hold then committed the body to walking
-   * away from the tree for fifteen frames before turning round and doing it
-   * again. That is the flapping, one level up from the steer assist's own
-   * version of the same mistake. Sideways is a dodge; backwards is a surrender,
-   * and the slide below always has a better answer. */
-  {
-    const iw = screenToWorldVector(ax, ay);
-    const il = Math.hypot(iw.x, iw.y) || 1;
-    const hw = screenToWorldVector(hx, hy);
-    const hl = Math.hypot(hw.x, hw.y) || 1;
-    if (deflected && (hw.x * iw.x + hw.y * iw.y) / (hl * il) < -1e-6) {
-      hx = ax;
-      hy = ay;
-      deflected = false;
-      trip = null;
-    }
-  }
-  // 5. Never motionless while there is a way out.
-  if (bodyStalled(grid, x, y, hx, hy, opts.fromElev)) {
-    const sl = slideAlong(grid, x, y, ax, ay, hold, opts.fromElev);
-    if (sl) {
-      hx = sl.ax;
-      hy = sl.ay;
-      deflected = true;
-      trip = null;
-    }
-  }
-  // 6. Latch it, and drop the latch once the way ahead is genuinely open.
-  if (deflected) {
-    if (hold.ax === 0 && hold.ay === 0) {
-      hold.fromX = x;
-      hold.fromY = y;
-    }
-    hold.ax = hx;
-    hold.ay = hy;
-  }
-  return { ax: hx, ay: hy, trip, deflected };
+  /* 2. A footprint, a prop, or nothing at all: the heading as it is. The
+   * movement tick's glide slides a body round a footprint (the tangent as one
+   * move, stepMovement) and along a prop's sides; a push that goes nowhere is
+   * rule 0's within the window. */
+  return { ax, ay, trip: null, deflected: false };
 }
 
 /** Plan the short way round whatever the stick is jammed against. Null when
@@ -4274,8 +4340,24 @@ export function startEscapeRoute(
   ay: number,
   nowMs: number,
   fromElev?: number,
+  /** Which side of the ask to try first, +1 or -1 in the goal fan's own
+   *  rotation sense: the side the finger LEANS toward (maintainer 2026-09-13,
+   *  "pushed the wrong way when sliding against it" — a route round the side
+   *  the thumb was not pointing at). */
+  side = 1,
+  /** What is in the way: a terrain pocket takes the far fan and the pocket's
+   *  ESCAPE_CORRIDOR_CELLS; a scenery piece or a prop the near fan and
+   *  ESCAPE_PROP_CORRIDOR_CELLS — "a short path around it" is round the
+   *  THING, and the wider corridor walked the body from the spawn house's
+   *  table out through the door and round the outside to a goal beyond the
+   *  wall. */
+  prop = false,
 ): AutopilotTrip | null {
-  const trip = planRoundTheStick(grid, x, y, ax, ay, nowMs, fromElev, ESCAPE_GOALS, ESCAPE_NODES, ESCAPE_CORRIDOR_CELLS, true);
+  const trip = planRoundTheStick(
+    grid, x, y, ax, ay, nowMs, fromElev,
+    prop ? ESCAPE_GOALS_PROP : ESCAPE_GOALS, ESCAPE_NODES,
+    prop ? ESCAPE_PROP_CORRIDOR_CELLS : ESCAPE_CORRIDOR_CELLS, true, side,
+  );
   if (trip) trip.committed = true;
   return trip;
 }
@@ -4306,14 +4388,16 @@ function planRoundTheStick(
    * body that should stand there took a stroll. Sideways within reach is the
    * door-finder's (4 cells, at once); a rim is no escape. */
   escape = false,
+  side = 1,
 ): AutopilotTrip | null {
   const v = screenToWorldVector(ax, ay);
   const l = Math.hypot(v.x, v.y);
   if (l < 1e-6) return null;
   const ux = v.x / l;
   const uy = v.y / l;
-  for (const [rot, dist] of goals) {
-    if (escape && Math.abs(rot) >= Math.PI / 2 - 1e-9) continue;
+  for (const [rot0, dist] of goals) {
+    if (escape && Math.abs(rot0) >= Math.PI / 2 - 1e-9) continue;
+    const rot = rot0 * (side < 0 ? -1 : 1); // the fan's mirror: the leaned-to side first
     const cs = Math.cos(rot);
     const sn = Math.sin(rot);
     const gx = x + (ux * cs - uy * sn) * dist * CELL_WU;
@@ -4322,8 +4406,15 @@ function planRoundTheStick(
       grid, x, y, gx, gy,
       false, nowMs, fromElev, undefined, maxNodes,
     );
-    if (!trip || !withinCorridor(trip, x, y, gx, gy, corridorCells)) continue;
-    if (escape && !arrives(trip, gx, gy)) continue;
+    /* THE ESCAPE'S CORRIDOR RUNS ALONG THE ASK, not along the rotated goal:
+     * a goal 45 degrees off puts the spawn house's door beside ITS line, and
+     * the route out through the door and round the outside passed a 3-cell
+     * corridor that way (2026-09-13). A skirt stays beside the line the
+     * player asked to travel, whatever goal it is aimed at. */
+    const cx = escape ? x + ux * dist * CELL_WU : gx;
+    const cy = escape ? y + uy * dist * CELL_WU : gy;
+    if (!trip || !withinCorridor(trip, x, y, cx, cy, corridorCells)) continue;
+    if (escape && (!arrives(trip, gx, gy) || !sameRoof(grid, trip, x, y, fromElev))) continue;
     return trip;
   }
   return null;

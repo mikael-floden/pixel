@@ -786,7 +786,7 @@ test("sliding along a wall never moves faster on screen than running free", () =
     let x = x0;
     let y = y0;
     for (let i = 0; i < 30; i++) {
-      const r = stepMovement(x, y, ax, ay, true, 1 / 30, makeBlocked(g, walk), 1, true, W * CELL_WU, H * CELL_WU, makeSideBlocked(g, walk));
+      const r = stepMovement(x, y, ax, ay, true, 1 / 30, makeBlocked(g, walk), 1, true, W * CELL_WU, H * CELL_WU, makeSideBlocked(g, walk), { screenSlide: true });
       x = r.x;
       y = r.y;
     }
@@ -794,6 +794,7 @@ test("sliding along a wall never moves faster on screen than running free", () =
   };
   // Every screen heading over the circle, keys and leaned alike.
   let worst = 0;
+  const free0 = run(0, 1, 10 * CELL_WU, 20 * CELL_WU);
   for (let deg = -180; deg < 180; deg += 5) {
     const ax = Math.cos((deg * Math.PI) / 180);
     const ay = Math.sin((deg * Math.PI) / 180);
@@ -802,8 +803,12 @@ test("sliding along a wall never moves faster on screen than running free", () =
     worst = Math.max(worst, wall.screen / Math.max(1, free.screen));
     assert.ok(wall.screen <= free.screen * 1.001, `heading ${deg}deg: slid ${wall.screen.toFixed(0)} screen px/s against ${free.screen.toFixed(0)} free`);
   }
-  // …and the slide still slides: screen-down into the +x wall carries on along +y.
+  // …and the slide still slides: screen-down into the +x wall carries on along
+  // +y — at the SCREEN share along it (slideShare): screen-down is 66 degrees
+  // off world +y's screen line, so 40% of the run, not the 125% the world axis
+  // component gave before the cap (2026-09-13, the cliff).
   const down = run(0, 1, 19.4 * CELL_WU, 20 * CELL_WU);
-  assert.ok(down.wy > 3, `screen-down against the wall should still slide along it, moved ${down.wy.toFixed(2)} cells in y`);
+  assert.ok(down.wy > 1.5, `screen-down against the wall should still slide along it, moved ${down.wy.toFixed(2)} cells in y`);
+  assert.ok(down.screen > free0.screen * 0.3 && down.screen < free0.screen * 0.5, `at the screen share, cos 66: ${(down.screen / free0.screen).toFixed(2)} of the free run`);
   assert.ok(worst <= 1.001, `worst slide/free ratio ${worst.toFixed(3)}`);
 });

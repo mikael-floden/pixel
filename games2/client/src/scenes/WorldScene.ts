@@ -48,6 +48,7 @@ import {
   walkHeading,
   bodyStalled,
   slideAlong,
+  gaitRunning,
   type SlideMemo,
   stepAutopilot,
   bodyStandoff,
@@ -110,6 +111,7 @@ import {
 import { ensureSpeedDial, playerSpeed } from "../playerspeed";
 import { ensureStickDial, ensureStickAngle, stickLean, stickHeading } from "../stickdir";
 import { ensureWallAssistDial, wallAssistDeg } from "../wallassist";
+import { ensureNavHelpDial, navHelpMs } from "../navhelp";
 import { roomCoverFraction, coversRoom, type ScreenBox, type ScreenPt } from "../scenerycover";
 import { ensureWallWrapDial, wallWrap, setWallWrap } from "../wallwrap";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
@@ -993,6 +995,10 @@ interface PendingInput {
   jumping: boolean;
   slow: number;
   sm: number;
+  /** A planned route steered this window (tap-to-move, the walk's escape):
+   *  its slides keep the world axis; the thumb's take the screen share.
+   *  Replayed under the law it was sent with (InputMessage.route, MoveOpts). */
+  route: boolean;
   at: number;
 }
 
@@ -1234,6 +1240,10 @@ interface Avatar {
   // Direction hysteresis (stableDir): the direction currently DISPLAYED, and
   // the pending adjacent-sector candidate with the time it first appeared.
   dispDir?: string;
+  /** The predicted body's smoothed speed (wu/s) and the walk/run answer it
+   *  gave last frame — walk vs run follows the ACTUAL speed (shared gaitRunning). */
+  gaitSpeed?: number;
+  gaitRun?: boolean;
   pendDir?: string;
   pendSince?: number;
   // EMA of the avatar's ground speed in WORLD units/s, back-projected from
@@ -1843,10 +1853,7 @@ export class WorldScene extends Phaser.Scene {
   private curSlowFactor = 1; // the hit-slow factor live integration ran under (captured per input)
   private inputSeq = 0;
   private sendAccum = 0;
-  private lastInput: { ax: number; ay: number; running: boolean } = { ax: 0, ay: 0, running: false };
-  /** THE FACING: the thumbstick's own vector while the nav deflects the walk
-   *  (maintainer 2026-09-13), the walked vector otherwise — see predictAndSend. */
-  private lastFace: { ax: number; ay: number } = { ax: 0, ay: 0 };
+  private lastInput: { ax: number; ay: number; running: boolean; route: boolean } = { ax: 0, ay: 0, running: false, route: false };
   // Tap-to-move (mobile-first): tap the ground → walk there; double-tap → run.
   // The autopilot only SYNTHESIZES the same 8-way screen input the keyboard
   // produces, so prediction/server validation/auto-jump all behave identically.
@@ -6316,8 +6323,6 @@ export class WorldScene extends Phaser.Scene {
       // The input vector actually predicted+sent this frame (AFTER the
       // monster-dodge deflection) — dodge QA reads the deflection live.
       lastInput: () => this.lastInput,
-      /** The vector the sprite FACES this frame — the stick while the nav deflects. */
-      lastFace: () => this.lastFace,
       /** THE PREDICTION BACKLOG — how far the server's acks trail my sends,
        *  in windows and in the SECONDS of input it still owes. This is the
        *  instrument for input lag: the server integrates the queue against a
@@ -12412,6 +12417,9 @@ export class WorldScene extends Phaser.Scene {
            *  one. Replaying the pending buffer under the current value is what
            *  rubber-bands the body the moment the slider moves. */
           sm: number,
+          /** Whether a planned route steered THIS window (its slides keep the
+           *  world axis; the thumb's take the screen share) — the same rule. */
+          route: boolean,
         ) => {
           let blocked;
           let sideBlocked;
@@ -12436,7 +12444,7 @@ export class WorldScene extends Phaser.Scene {
               sm;
           }
           // screenInput matches the server: on the iso world, input is screen-relative.
-          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked);
+          const r = stepMovement(rx, ry, ax, ay, running, sdt, blocked, speed, !!this.terrain, this.worldW, this.worldH, sideBlocked, { screenSlide: !route });
           rx = r.x;
           ry = r.y;
           /* THE DEEP-SEA CURRENT — the SAME second move the server integrates
@@ -12460,24 +12468,36 @@ export class WorldScene extends Phaser.Scene {
             predElev = resolveElevAt(this.terrain, predElev, rx, ry, ctx);
           }
         };
-        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow, p.sm ?? 1);
+        for (const p of this.pending) stepLocal(p.ax, p.ay, p.running, p.dt, p.jumping, p.slow, p.sm ?? 1, p.route);
         // Integrate the not-yet-sent input tail too, so the local player moves
         // every FRAME (60fps-smooth) instead of only at the 20Hz send tick.
         if (this.sendAccum > 0)
           stepLocal(
             this.lastInput.ax, this.lastInput.ay, this.lastInput.running, this.sendAccum, jumpingNow,
-            this.curSlowFactor, playerSpeed(),
+            this.curSlowFactor, playerSpeed(), this.lastInput.route,
           );
         tx = rx;
         ty = ry;
         surfLevel = predElev;
-        // Animate from live input for instant turn/walk feedback — and FACE THE
-        // STICK, which is the walked vector unless the nav deflected it.
+        // Animate from live input for instant turn/walk feedback. The sprite
+        // faces the way it WALKS — the deflection when the nav deflects
+        // (maintainer 2026-09-13, taking back the stick-facing of the same
+        // morning: "It looks much better if the player looks the way the nav
+        // system moves the player").
         const li = this.lastInput;
-        const lf = this.lastFace;
         moving = li.ax !== 0 || li.ay !== 0;
-        running = li.running && moving;
-        dir = (moving ? vectorToDirection(lf.ax, lf.ay) : null) ?? player.dir;
+        /* WALK OR RUN FOLLOWS THE BODY'S ACTUAL SPEED (shared gaitRunning): the
+         * run a wall cut to a slide plays the walk. The speed is the predicted
+         * position's change per frame, smoothed over ~100 ms; a body-length or
+         * more in one frame is a teleport or a rebind, not a speed. */
+        const dv = Math.hypot(tx - av.fx, ty - av.fy);
+        if (dt > 0 && dv < RUN_SPEED * 4 * dt + 8) {
+          const k = Math.min(1, dt / 0.1);
+          av.gaitSpeed = (av.gaitSpeed ?? 0) * (1 - k) + (dv / dt) * k;
+        }
+        av.gaitRun = moving && li.running && gaitRunning(!!av.gaitRun, av.gaitSpeed ?? 0, WALK_SPEED * playerSpeed());
+        running = av.gaitRun;
+        dir = (moving ? vectorToDirection(li.ax, li.ay) : null) ?? player.dir;
       } else {
         tx = player.x;
         ty = player.y;
@@ -14250,12 +14270,11 @@ export class WorldScene extends Phaser.Scene {
     // screen input a keyboard would produce.
     this.keysActive = ax !== 0 || ay !== 0;
     /* THE FINGER'S REAL HEADING: the keys' vector leaned toward the stick's
-     * bearing by his dial (stickdir.ts), computed once because THREE things
+     * bearing by his dial (stickdir.ts), computed once because TWO things
      * read it: walkHeading measures the wall-assist angle against it (the
-     * 8-way vector is 45 degrees coarse and the dial is in degrees), the lean
-     * below walks it when nothing deflected the heading, and the sprite faces
-     * it whatever walked. No finger (keyboard, autopilot) -> the keys' own
-     * vector and no lean, as before. */
+     * 8-way vector is 45 degrees coarse and the dial is in degrees), and the
+     * lean below walks it when nothing deflected the heading. No finger
+     * (keyboard, autopilot) -> the keys' own vector and no lean, as before. */
     let stickVec: { ax: number; ay: number } | null = null;
     if (this.keysActive) {
       const lean = stickLean();
@@ -14296,6 +14315,7 @@ export class WorldScene extends Phaser.Scene {
             worldH: this.worldH,
             heading: stickVec ?? undefined,
             wallAssistDeg: wallAssistDeg(),
+            stuckMs: navHelpMs(),
           });
           ax = r.ax;
           ay = r.ay;
@@ -14412,20 +14432,17 @@ export class WorldScene extends Phaser.Scene {
     const hop = this.maybeAutoJump(ax, ay);
     ax = hop.ax;
     ay = hop.ay;
-    /* THE SPRITE FACES THE STICK, not the deflection (maintainer 2026-09-13:
-     * "the player will always continue looking in the direction you hold the
-     * thumbstick (even when the navigation helps you navigate around). This
-     * will make it easy to understand that the movement that is going on is a
-     * navigation helper movement"). The walked vector IS the stick whenever
-     * nothing deflected it; the autopilot faces its walk. Sent as `fd` so the
-     * server's copy of the body faces the same way for everyone else. */
-    this.lastFace = stickVec ?? { ax, ay };
     const sig = `${ax.toFixed(3)},${ay.toFixed(3)},${running ? 1 : 0}`;
     // If the input CHANGED, flush the elapsed window under the PREVIOUS input
     // first. Otherwise a quick tap gets re-attributed to the new vector (e.g.
     // idle) — the tap's movement evaporates and the player pops back.
     if (sig !== this.lastSent && this.sendAccum > 0) this.flushInput();
-    this.lastInput = { ax, ay, running };
+    /* WHICH LAW THIS WINDOW SLIDES BY: a planned route steering — tap-to-move,
+     * or the walk's escape round a thing — keeps the world-axis slide its
+     * follower was tuned on; the thumb's own windows slide at the screen
+     * share (MoveOpts.screenSlide, InputMessage.route). */
+    const route = this.keysActive ? this.stickTrip !== null : this.trip !== null;
+    this.lastInput = { ax, ay, running, route };
     this.lastSent = sig;
     this.sendAccum += dt;
     // Regular cadence, and jumps flush immediately so the edge isn't delayed.
@@ -15105,6 +15122,7 @@ export class WorldScene extends Phaser.Scene {
       jumping: this.time.now < this.jumpUntil,
       slow: this.curSlowFactor,
       sm: playerSpeed(),
+      route: li.route,
       at: performance.now(),
     };
     this.pending.push(rec);
@@ -15115,9 +15133,7 @@ export class WorldScene extends Phaser.Scene {
       ax: li.ax, ay: li.ay, running: li.running, seq: this.inputSeq, dt: this.sendAccum,
       sm: playerSpeed(),
     };
-    // The facing rides along only when it is not what the input itself says.
-    const fd = vectorToDirection(this.lastFace.ax, this.lastFace.ay);
-    if (fd && fd !== vectorToDirection(li.ax, li.ay)) msg.fd = fd;
+    if (li.route) msg.route = true;
     if (this.jumpQueued) {
       msg.jump = true;
       this.jumpQueued = false;
@@ -17309,6 +17325,7 @@ export class WorldScene extends Phaser.Scene {
       ensureSpeedDial(); // the player-speed slider, injected the same way
       ensureStickDial(); // …and the stick's direction-freedom slider
       ensureWallAssistDial(); // …and the wall-assist angle (how far off a wall the stick still runs along it)
+      ensureNavHelpDial(); // …and how long the body may be stuck before the nav plans a way round
       ensureStickAngle(); // (re)bind the bearing listeners on games-ui's stick
       ensureWallWrapDial(); // …and the night shader's wall light wrap
       if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way

@@ -51,7 +51,7 @@ export class Player extends Schema {
    *  input is integrated under its own, because the client replays an RTT-deep
    *  buffer and a factor that changed mid-flight would rewrite the history of
    *  everything still in it (the same rule the hit-slow factor follows). */
-  inputQueue: { ax: number; ay: number; running: boolean; seq?: number; dt: number; sm: number; fd?: string }[] = [];
+  inputQueue: { ax: number; ay: number; running: boolean; seq?: number; dt: number; sm: number; route?: boolean }[] = [];
   timeCredit = 0; // seconds of integration budget (accrues with real time)
   lastMoving = false;
   jumpUntil = 0; // ms timestamp: jump window ends

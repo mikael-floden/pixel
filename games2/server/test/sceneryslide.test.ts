@@ -20,7 +20,7 @@ import {
   CHARACTER_BODY_PX,
   buildTerrainGrid, stampSceneryCollision, stepMovement, makeBlockedElev, makeSideBlocked, unstickFromSolids,
   walkHeading, wallContact, levelAtWorld,
-  CELL_WU, PLAYER_RADIUS, WALK_CLIMB, ISO_GEOMETRY_MAPS3,
+  CELL_WU, PLAYER_RADIUS, WALK_CLIMB, ISO_GEOMETRY_MAPS3, STUCK_ESCALATE_MS, ISO_DX, ISO_DY,
   type TerrainGrid, type SceneryBboxDoc, type SceneryHitboxDoc, type SlideMemo, type AutopilotTrip,
 } from "@nangijala/shared";
 
@@ -68,6 +68,8 @@ function frameY(grid: TerrainGrid, x: number, y: number): number {
   return (ox + oy) / Math.SQRT2;
 }
 
+/** `travelled` is SCREEN pixels: the slide's law is a screen share, and the
+ *  same world distance is a different length on screen per direction. */
 interface Run { x: number; y: number; travelled: number; frozen: number; deflected: number; outs: string[] }
 /** Hold a screen input from a point for `ticks` frames of 33 ms: the raw tick,
  *  or the client's way through walkHeading. */
@@ -101,9 +103,10 @@ function hold(grid: TerrainGrid, from: { x: number; y: number }, ax: number, ay:
     const u = unstickFromSolids(grid, x, y, 80 * 0.033, undefined, elev);
     x = u.x;
     y = u.y;
-    const m = stepMovement(x, y, iax, iay, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge));
+    // The thumb's window: the slide is the screen share (MoveOpts.screenSlide).
+    const m = stepMovement(x, y, iax, iay, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge), { screenSlide: true });
     const moved = Math.hypot(m.x - x, m.y - y);
-    travelled += moved;
+    travelled += Math.hypot((m.x - x - (m.y - y)) * ISO_DX, (m.x - x + (m.y - y)) * ISO_DY);
     if (moved < 0.05) frozen++;
     x = m.x;
     y = m.y;
@@ -149,11 +152,14 @@ test("along the south side the body runs at the run's own pace and stays on the 
   assert.ok(along.travelled >= alongFree * 0.95, `along the side: ${(along.travelled / alongFree).toFixed(2)} of the run (0.70 with the per-axis halves)`);
   const out = frameY(g, along.x, along.y) - g.footprints!.q[0] - PLAYER_RADIUS / CELL_WU;
   assert.ok(out < 0.15, `still on the side, not drifted off it: ${out.toFixed(2)} cells out`);
-  // Screen up-left is world -x: 45 degrees into the side. The wall takes its share.
+  // Screen up-left is world -x: 45 degrees into the side in the WORLD, but on
+  // the thumb only 24 degrees off the side's screen line — the wall takes the
+  // screen share, 92% of the run (0.50 and drifting off the side with the
+  // per-axis halves).
   const into = hold(g, p, -1, -1, TICKS, false);
   const intoFree = free(-1, -1, p);
   assert.ok(into.frozen === 0, `45 degrees in: frozen ${into.frozen} ticks`);
-  assert.ok(into.travelled >= intoFree * 0.65 && into.travelled <= intoFree * 0.8, `45 degrees in: ${(into.travelled / intoFree).toFixed(2)} of the run — the tangent's share, cos 45 (0.50 and drifting off the side with the per-axis halves)`);
+  assert.ok(into.travelled >= intoFree * 0.85 && into.travelled <= intoFree * 0.98, `world 45 / screen 24 degrees in: ${(into.travelled / intoFree).toFixed(2)} of the run`);
   assert.ok(into.x < p.x - CELL_WU, `and it went the way the side runs (x ${((into.x - p.x) / CELL_WU).toFixed(2)} cells)`);
   const intoOut = frameY(g, into.x, into.y) - g.footprints!.q[0] - PLAYER_RADIUS / CELL_WU;
   assert.ok(intoOut < 0.15, `still on the side: ${intoOut.toFixed(2)} cells out`);
@@ -171,10 +177,11 @@ test("the cupboard faces south-west: its sides lie on the world axes and always 
   const p = { x: (fp.cx[0] + 0.6) * CELL_WU, y: (fp.cy[0] + fp.supY[0] * Math.SQRT2 + 0.2) * CELL_WU };
   const r = hold(g, p, 0, -1, TICKS, false);
   assert.ok(r.frozen < 5, `cupboard, screen-up: frozen ${r.frozen} ticks`);
-  assert.ok(r.travelled >= free(0, -1, p) * 0.5, `cupboard, screen-up: ${(r.travelled / free(0, -1, p)).toFixed(2)} of the run`);
+  // Screen-up is 66 degrees off a world-x side's screen line: the screen share is 40%.
+  assert.ok(r.travelled >= free(0, -1, p) * 0.3 && r.travelled <= free(0, -1, p) * 0.5, `cupboard, screen-up: ${(r.travelled / free(0, -1, p)).toFixed(2)} of the run on screen`);
 });
 
-test("through walkHeading, under the roof: the table gets the tree rules, never the wall's — the slide is the raw walk, square on the body is not left standing", () => {
+test("through walkHeading, under the roof: the table never gets the wall's rules — the slide is the raw walk, square on the escape takes the body round", () => {
   const g = tableWorld(undefined, true);
   const p = touching(g);
   const along = hold(g, p, -1, 0, TICKS, true);
@@ -183,5 +190,55 @@ test("through walkHeading, under the roof: the table gets the tree rules, never 
   const into = hold(g, p, -1, -1, TICKS, true);
   assert.equal(into.deflected, 0, `45 degrees in: the natural slide, no straightening along a world axis (outputs ${into.outs.join(" ")})`);
   const square = hold(g, p, 0, -1, TICKS, true);
-  assert.ok(square.deflected > 0 && square.travelled > 20, `square on: the tree rules move it round (deflected ${square.deflected}, ${square.travelled.toFixed(0)} wu)`);
+  assert.ok(square.deflected > 0 && square.travelled > 20, `square on: the escape moves it round (deflected ${square.deflected}, ${square.travelled.toFixed(0)} wu)`);
+});
+
+/* THE BRAZIER (maintainer 2026-09-13, his screenshot at 240.5,265.3 running
+ * north-east — world -y — "the navigation doesn't kick in and help me around
+ * the object"): a round footprint one cell north, walls west and south, open
+ * east and beyond. The body's corner probe touched the brazier 30 wu from the
+ * body's centre — past any contact query's reach — so it read as terrain, the
+ * wall rules stood it still, and the planner's short way round (east, then
+ * north) was never followed. Copied here: level-12 walls, a cave lid deck over
+ * the floor (cellSolid calls a decked cell walkable, the other half of the
+ * table's lesson), the brazier's own 15 px ellipse. */
+function brazierPocket(): TerrainGrid {
+  const rows = Array.from({ length: H }, (_, r) =>
+    Array.from({ length: W }, (_, c) => ({ t: "dark_mud", l: c <= 9 || r >= 21 ? 12 : 0 })),
+  );
+  const cells: { col: number; row: number }[] = [];
+  for (let r = 0; r < 21; r++) for (let c = 10; c < W; c++) cells.push({ col: c, row: r });
+  const grid = buildTerrainGrid(W, H, rows, [], [{ level: 12, thickness: 0, cells }]);
+  const bbox: SceneryBboxDoc = {
+    pieces: { p: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } },
+    boxes: { s: [0, 0, 100, 100, 100, 100] },
+  };
+  // ay 50: the box centre ON the anchor (the frame's foot), so the ellipse
+  // lands where it is placed (the table fixture's -50 lifts its centre 3.6
+  // cells up-screen, which touching() absorbs by reading the stamped centre;
+  // here the walls matter).
+  const hitbox: SceneryHitboxDoc = { "scenery/p": { boxes: [{ ax: 0, ay: 50, rx: 21, ry: 21 }] } };
+  stampSceneryCollision(grid, [{ piece: "p", x: 10.53, y: 19.48 }], bbox, hitbox, ISO_GEOMETRY_MAPS3);
+  return grid;
+}
+
+test("the brazier: a round footprint only the corner probe touches is a PROP, and the body is round it fast", () => {
+  const g = brazierPocket();
+  const fp = g.footprints!;
+  assert.equal(fp.n, 1);
+  assert.equal(fp.rect[0], 0, "an ellipse");
+  assert.ok(Math.abs(fp.cx[0] - 10.53) < 0.3 && Math.abs(fp.cy[0] - 19.48) < 0.3, `placed in the pocket: (${fp.cx[0].toFixed(2)},${fp.cy[0].toFixed(2)})`);
+  // His stuck spot, 0.43 cells east and 0.84 south of the brazier's centre:
+  // the -y probe is refused through the lateral corner only.
+  const p = { x: (fp.cx[0] + 0.43) * CELL_WU, y: (fp.cy[0] + 0.84) * CELL_WU };
+  assert.ok(fp.cy[0] + 0.84 < 21 - 12 / CELL_WU, "and inside the pocket, off the south wall");
+  const wc = wallContact(g, p.x, p.y, 1, -1, 0);
+  assert.ok(wc && wc.refY && wc.prop, `refused through the corner, and a prop: ${JSON.stringify(wc)}`);
+  // Held north from his spot: no progress, so within his window the escape
+  // goes east and round — north of the brazier within two seconds, never
+  // frozen for half of one.
+  const r = hold(g, p, 1, -1, 60, true);
+  assert.ok(r.y < (fp.cy[0] - 0.8) * CELL_WU, `round the brazier: row ${(r.y / CELL_WU).toFixed(2)} against its ${fp.cy[0].toFixed(2)}`);
+  assert.ok(r.frozen < 15, `frozen ${r.frozen} of 60 ticks`);
+  assert.equal(STUCK_ESCALATE_MS, 100, "the escape waits his tenth of a second");
 });

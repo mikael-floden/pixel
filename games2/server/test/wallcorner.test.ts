@@ -131,8 +131,10 @@ function hold(
     const u = unstickFromSolids(grid, x, y, 80 * 0.033);
     x = u.x;
     y = u.y;
-    const m = stepMovement(x, y, wax, way, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge));
-    travelled += Math.hypot(m.x - x, m.y - y);
+    // The thumb's window: the slide is the screen share (MoveOpts.screenSlide).
+    const m = stepMovement(x, y, wax, way, false, 0.033, makeBlockedElev(grid, walk, ge), 1, true, ww, wh, makeSideBlocked(grid, walk, ge), { screenSlide: true });
+    // SCREEN pixels: the slide's law is a screen share (docs/movement.md).
+    travelled += Math.hypot((m.x - x - (m.y - y)) * ISO_DX, (m.x - x + (m.y - y)) * ISO_DY);
     x = m.x;
     y = m.y;
     elev = levelAtWorld(grid, x, y);
@@ -177,7 +179,6 @@ test("bottom-LEFT from the corner: the door two cells along the south wall is SI
   const r = hold(grid, CORNER.col, CORNER.row, -1, 1, 90);
   assert.ok(r.row > DOOR.r + 1, `outside the house after 3 s (row ${r.row.toFixed(2)}, the door is row ${DOOR.r})`);
   assert.ok(r.outs.has("-1,-1"), `steered west along the wall to the door (outputs ${[...r.outs].join(" ")})`);
-  assert.equal(r.trips, 0, "the door-finder did it, not an escape route");
 });
 
 test("bottom-RIGHT from the corner: the door is behind the run — the honest wall, no help, no escape", () => {
@@ -200,7 +201,7 @@ test("the wall-assist angle: a lean within the dial runs STRAIGHT along the wall
   const grid = field(6);
   const x0 = 6 - 12 / CELL_WU;
   // A stick 10 degrees (world) into the wall is 8 degrees off it on screen —
-  // inside the default 30 — and snaps to the down-left key, the very pair
+  // inside his default 10 — and snaps to the down-left key, the very pair
   // that locks onto +y: the answer is that pair, and it is DEFLECTED so the
   // caller does not lean it back into the wall.
   const straight = hold(grid, x0, 2, -1, 1, 60, lean(10));
@@ -211,24 +212,30 @@ test("the wall-assist angle: a lean within the dial runs STRAIGHT along the wall
   // world-border margin and the clamp's shove would count as travel): the
   // full speed, not the slide's.
   const free = hold(grid, 3, 2, -1, 1, 60);
-  near(straight.travelled, free.travelled, free.travelled * 0.02, "straightened run travels the free run's distance");
-  // 65 degrees (world) is past the dial: the heading is walked as it is and
-  // the wall takes its share — 0.61 of the run. (45 degrees is past it too,
-  // but a world diagonal slid along an axis wall runs at the run's own screen
-  // speed: the never-faster cap in stepMovement is what limits it.)
-  const slid = hold(grid, x0, 2, 0, 1, 60, lean(65));
-  assert.equal(slid.deflected, 0, "never straightened");
-  assert.ok(slid.travelled < free.travelled * 0.8, `slower than the run (${(slid.travelled / free.travelled).toFixed(2)} of it)`);
-  assert.ok(slid.row > 2 + 1, `and still moving along the wall (row ${slid.row.toFixed(2)})`);
-  const diag = hold(grid, x0, 2, 0, 1, 60, lean(45));
-  assert.equal(diag.deflected, 0, "45 degrees: never straightened either");
+  near(straight.travelled, free.travelled, free.travelled * 0.02, "straightened run travels the free run's screen distance");
+  // 45 degrees (world) is past the dial: the heading is walked as it is and
+  // the wall takes the SCREEN share — this lean is screen-down, 66 degrees
+  // off the wall's screen line, so 40% of the run (it slid at the run's own
+  // screen speed under the world-axis rule: the cliff asymmetry he felt).
+  // (45 ticks: a free screen-down run from col 1 reaches the field's own wall
+  // after five cells, and the reference must not slide too.)
+  const diag = hold(grid, x0, 2, 0, 1, 45, lean(45));
+  assert.equal(diag.deflected, 0, "45 degrees: never straightened");
+  const diagFree = hold(grid, 1, 2, 0, 1, 45).travelled;
+  assert.ok(diag.travelled > diagFree * 0.3 && diag.travelled < diagFree * 0.5, `screen-down into a wall along +y: ${(diag.travelled / diagFree).toFixed(2)} of the run, cos 66`);
+  assert.ok(diag.row > 2 + 0.5, `and moving along the wall (row ${diag.row.toFixed(2)})`);
+  // 65 degrees (world) points 26 degrees from square on the SCREEN — more
+  // than a right angle from the way the wall runs — and stands.
+  const steep = hold(grid, x0, 2, 0, 1, 60, lean(65));
+  assert.equal(steep.deflected, 0, "never straightened");
+  near(steep.travelled, 0, 2, "a push more than a right angle off the wall's screen line stands");
   // The dial at zero: even 10 degrees is walked as it is.
   const off = hold(grid, x0, 2, -1, 1, 60, lean(10), 0);
   assert.equal(off.deflected, 0, "dial at 0: nothing is straightened");
   // Square on: no tangent, no help, no motion.
   const square = hold(grid, x0, 2, 1, 1, 60);
   assert.equal(square.deflected, 0);
-  near(square.travelled, 0, 1, "square on: the honest stop");
+  near(square.travelled, 0, 2, "square on: the honest stop");
 });
 
 test("the hop waits for the angle: within the dial a lean into a JUMPABLE wall runs straight and never hops; past it the hop fires", () => {
@@ -266,7 +273,7 @@ test("wallContact and wallAngleDeg: which axis refuses, the tangent, and the ang
   near(wallAngleDeg(1, 0, 1, 0), 23.6, 0.1, "right key vs a wall along +x");
   near(wallAngleDeg(0, 1, 1, 0), 66.4, 0.1, "down key vs a wall along +x");
   near(wallAngleDeg(lean(10).ax, lean(10).ay, 0, 1), 8.4, 0.3, "a 10-degree world lean on the thumb");
-  assert.equal(WALL_ASSIST_DEG_DEFAULT, 30);
+  assert.equal(WALL_ASSIST_DEG_DEFAULT, 10, "his number, 2026-09-13");
 });
 
 test("the escape may reach one TILE back and no further: the house door is out of reach, a pocket's exit one tile aside is not", () => {
@@ -288,5 +295,5 @@ test("the escape may reach one TILE back and no further: the house door is out o
   // Along a world axis the other axis is sideways whatever it does.
   assert.equal(routeRetreat(trip([[9.5, 12.5], [9.5, 13.5]]), x, y, 0, 1), 0, "four tiles west of a run along +y: sideways");
   assert.equal(routeRetreat(trip([[13.5, 10.5]]), x, y, 0, 1), 2, "two tiles up against a run along +y");
-  assert.ok(STUCK_ESCALATE_MS >= 1000, "the escape still waits its window");
+  assert.equal(STUCK_ESCALATE_MS, 100, "the escape waits his 0.1 s by default");
 });

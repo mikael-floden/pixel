@@ -172,40 +172,41 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   with `scripts/perf-read.mjs` (`--diff shaA shaB` for two builds).
 
 **Movement** (`docs/movement.md`)
-- Server-authoritative, elevation-governed (`WALK_CLIMB` 0.5, `JUMP_CLIMB` 1);
-  shared math lives in `shared/` once; client predicts the same grid.
+- Server-authoritative, elevation-governed (`WALK_CLIMB`, `JUMP_CLIMB`); the
+  shared math lives in `shared/` once; the client predicts the same grid.
 - Never weaken the collision probes to fix a wedge — `unstickFromSolids` is
   the escape, and the rescue never climbs.
 - A footprint and a body belong to the FLOOR they stand on (`lvl`); every
   query that knows the surface level passes it.
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge; a fall
-  bills on IMPACT (`fallPend`), the client draws the impact on its own predicted
-  touchdown frame (`fallhurt.ts`), its slow FADES with the number (`fallSlowAt`).
-- Water is the player's sanctuary: no monster enters or is hit there.
-  It lies FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
+  bills on IMPACT (`fallPend`); the client draws the impact on its own
+  predicted frame (`fallhurt.ts`); the slow FADES with the number.
+- Water is the player's sanctuary (no monster enters or is hit there) and
+  lies FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
 - The player-speed dial rides PER INPUT (`InputMessage.sm`) and the SERVER
   clamps it; default 1.2x IS HIS (`playerspeed.ts`).
 - The stick "almost" snaps: `leanHeading` leans the heading between the
   octants' REAL run headings by his dial (0 snap, 1 continuous; 0.85 IS HIS),
   the grid-axis lock locks EXACT diagonals only, and the bearing is read
   additively off games-ui's stick (`stickdir.ts`).
-- A TERRAIN wall gets the honest walk (`wallcorner.test.ts`):
-  within his "Wall assist angle" dial (30 screen deg) the run is
-  straightened along it; past it the body slides at the wall's rate or
-  stands, and auto-jump hops a jumpable one; a door SIDEWAYS or ahead within
-  4 cells is steered to, never one behind; the sprite faces the STICK while
-  the nav deflects.
-- A scenery footprint is a PROP whatever the nav layer says (a roof hides
-  it), and its glide tries the tangent as ONE move first (a diagonal side
-  refused the per-axis halves; `sceneryslide.test.ts`).
-- Never-backwards is a rule, not an absolute: after `STUCK_ESCALATE_MS`
-  (1.5 s) without progress `walkHeading` commits to an escape route that
-  ARRIVES ahead (rule 0), one TILE back at most (`routeRetreat`).
-- A tap RUNS; the beacon is the pixel you touched and never moves to meet the
-  walk (rejected twice); both readings of an ambiguous pixel are routed.
+- A TERRAIN wall gets the honest walk (`wallcorner.test.ts`): within his
+  "Wall assist angle" dial (10°, HIS) the run is straightened along it; past
+  it the body slides at the SCREEN share along the wall (`slideShare`, the
+  thumb's windows; a route keeps the world axis, `InputMessage.route`) or
+  stands, auto-jump hops a jumpable one; a door SIDEWAYS or ahead within 4
+  cells is steered to, never behind. The sprite faces its walk.
+- Scenery, props and open ground walk the heading AS IT IS; the tick's glide
+  slides them (a footprint is a PROP whatever the nav layer says). No hold,
+  detour or slide rule: the ESCAPE is the nav.
+- Never-backwards is a rule, not an absolute: after his "Nav help after"
+  dial (0.1 s) without progress AT A RATE, `walkHeading` commits to an escape
+  route that ARRIVES ahead, one TILE back at most (`routeRetreat`).
+- Walk or run follows the body's ACTUAL speed (`gaitRunning`).
+- A tap RUNS; the beacon is the pixel you touched and never moves to meet
+  the walk (rejected twice); both readings of an ambiguous pixel are routed.
 - The body dodge is a manoeuvre: engage and hold on different thresholds,
-  `MONSTER_DODGE_TIGHTEN` never reaches the hold; a waypoint someone stands on
-  counts as arrived.
+  `MONSTER_DODGE_TIGHTEN` never reaches the hold; a waypoint someone stands
+  on counts as arrived.
 - The ground under a point is its nearest CORNER's, not its cell's.
 
 **Backend for 10k** (`spec/ZONES.md`, `docs/backend.md`)
@@ -306,9 +307,7 @@ assigned it.
 
 ## Probes
 
-`window.__ml` is the instrument — `tiles3()`, `t3at`, `occDump()`,
-`groundHash()`, `lightAt`, `indoor()`, `zone()` — and each doc names the ones
-for its subsystem. Counters over pixels: a gate cannot tell a correct dark frame
+`window.__ml` is the instrument; each doc names its own probes. Counters over pixels: a gate cannot tell a correct dark frame
 from a black one.
 
 ## Don't
