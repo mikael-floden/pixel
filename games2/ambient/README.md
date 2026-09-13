@@ -129,6 +129,15 @@ them; folder isolation beats DRY here).
   (`tiles/patterns/masks.webp`, fetched by the feature itself) says which
   pixels of the tile are water. Every earlier feature kept a measured
   DISTANCE from the water cells because it could not see that seam.
+- **THE LIGHT KINDS, AND WHICH EFFECT READS WHICH.** The scenery domain
+  classified all 500 lit pieces by eye, and the two fire effects ask different
+  questions of that data. `embers/` reads the published `light.embers` boolean
+  — "does this throw sparks" — because a lantern is a real fire that must throw
+  none. `smoke/` reads the KIND (`fire/*` and not `fire/enclosed`), because
+  "is it open to the air" is a different question: the two pick the same 82
+  pieces today, and a smouldering kiln that sparks nothing must still smoke.
+  Counted over the shipped pieces: `fire/open` 63, `fire/enclosed` 60,
+  `fire/ember` 19, and 355 `glow/*` that are not fire at all.
 - **`lightsInView(pad)`** — the second seam added to `WorldScene`, for
   `moths/`: every `EmissiveSource` the camera can see (emissive tiles AND
   scenery lamps) as `{id, x, y, footY, z, r, color, flicker, sealed}`,
@@ -278,6 +287,7 @@ decision; an earlier version that jumped the world to each effect's
   `AUTO → NONE → <each feature in registry order> → AUTO`
 
   (currently fireflies, pollen, water, deepwater, foam, fish, drips, ants, spiders, moths,
+  smoke,
   gnats, crabs, bubbles, embers, bats, birds, feathers, butterflies,
   thunder, sandstorm, leaves — the ring is built from `index.ts`, so a new
   folder joins it automatically.)
@@ -353,6 +363,7 @@ controller (AUTO / NONE / solo-each).
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes. TINTED FROM ITS OWN BIRD (`plumageOf`, lifted toward white): a red bird sheds a pink feather, a green one a pale green | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
 | `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. MUTED BY LAW (`species.ts`): the maintainer's bands — at least half pale-and-dark, a quarter green-and-red, a quarter free — and nothing over `MAX_SAT` 0.45 saturation, because this is background. It works the PATCH it was placed on, settles onto the grass now and then with its wings shut, and MINDS YOU: walk up and it turns away, hurries, and takes off if it was sitting | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, gone in rain, and gone in storm, snow or wind |
+| `smoke/` | field | FIRE SMOKE — thin grey wisps curling up off an open flame, so a fire reads as burning BY DAY (the embers are the night half of the same object). A column, not a cloud: marks leave the same point a tenth of a second apart, lean on the cloud wind, bend together on a shared curl phase, gather from one pixel to three and thin away. DARK grey, and darker the brighter the day — the case is a fire on sunlit ground, where a pale wisp is nothing at all (measured 5.8 luma). NORMAL blend, never additive: smoke is in the way, it does not glow | Any OPEN fire in view (`light.kind` is `fire/*` and not `fire/enclosed` — a lantern burns behind glass); sorts against its own fire's lit copy; a sealed fire only while you are in the room with it. Full by day, a third at night |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
@@ -546,6 +557,44 @@ what colour the creature is — is the last thing it reaches.
 **AND THE BODY IS BLENDED BACK TOWARD THE WING.** Twice a flat dark body split
 a creature into two blobs on screen: near-black over grass, then the mix's own
 black under brown wings. The pixel joining the wings must belong to them.
+**WHICH GREY, OR WHICH ANY COLOUR, IS DECIDED BY WHAT IS BEHIND IT.** `smoke/`
+shipped a pale grey first, on the reasoning that smoke is pale — and over the
+sunlit ground where 44 of the 51 open fires stand, a 150-grey wisp moved its own
+pixels by 5.8 luma. It is the crawlers' rule in another costume (an ant is
+never pale; a night spider is never white): pick the value from the BACKGROUND
+the mark will actually be drawn against, not from what the thing is. The tint
+now darkens as the sun rises, which is backwards from the first cut and is what
+makes it read: 25.0 luma at the same brazier.
+**AND "THIN" IS THE COLUMN, NOT THE MARK.** The same fix needed the peak alpha
+raised from 0.34 to 0.5. A mark nobody can see is not thin, it is absent — the
+embers' "technically visible is not visible", which this folder has now paid
+for three times.
+**A REPORT A GATE READS IS NOT ALLOWED TO LIE.** `smoke/` stored each puff's
+fire as an INDEX into a list that `lightsInView` rebuilds twice a second, so
+`debug().all` reported heights above a flame at the world origin: the gate read
+a 16,520 px wide column and a wisp below its own fire. The drawing was correct
+throughout — only the report was wrong — and the gate could not tell. Anything
+a mark is measured against travels ON the mark, captured at birth.
+**THE CLEAR AREA IS MEASURED OFF THE DOM, NEVER GUESSED.** Every gate here
+carried a hand-picked box, and each one is wrong for the next feature: the
+butterflies' canvas starts below the clock, and a cave drip HANGS near the
+ceiling — measured at y=11 and y=38, so every window `verify-drips` sampled was
+rejected and it read 0.0 luma on a working effect. Ask the page instead: the
+canvas is the game area, the HUD is DOM painted over it (23 rectangles at this
+viewport — the bars top-left and top-right, the wiki button), and every element
+will report its own rect. Skip anything covering ~all of the canvas, that is
+the wrapper. THE WHOLE WINDOW has to be judgeable, checked where the window is
+chosen — a window that overlaps an excluded rect silently scores 0 inside the
+judge, which reads exactly like an invisible effect.
+**AND THE CONTROL IS THE QUIET PRECONDITION.** "Wait for the screen to go
+quiet" is right for a wide box and measures the wrong thing twice for per-mark
+windows: a monster crossing the chamber or a torch flickering on the far wall
+moves pixels the arm will never look at (68.6 luma at the 99.5th percentile on
+a run whose own windows read 0.0). Take the evidence where the claim is made —
+the SAME windows with the effect off — and assert that low. If a wide box is
+genuinely needed, gate it on a PERCENTILE, never the maximum: the ground
+repainting moves a large share of the canvas, one creature moves a handful of
+pixels.
 **A PIXEL ARM MUST NOT CHASE A MOVING MARK, AND QUIET EXCLUDES THE PLAYER.**
 Two traps `verify-drips` paid for, both of which read as "the effect is
 invisible" on a tree where it was fine. (1) Asking the page where a mark is and

@@ -257,15 +257,6 @@ if (cave) {
   }, cave.at);
 
   await setOn(false);
-  /* THE BOX IS THE GAME AREA, NEVER THE SCREEN — the butterflies' measured
-   * canvas for this viewport. At 480x320 the camera shows about 198 px of world
-   * and the rest is HUD, where the clock and the chat line rewrite themselves
-   * while the gate runs: a box reaching y=20 measured 243 luma of "noise" at
-   * the clock, against 1.8% of samples moving at all. */
-  const BOX = { x0: 80, x1: 400, y0: 36, y1: 164 };
-  /** A SMALL MARK'S WINDOW IS THE MARK, not the game area: a wide box also
-   *  measures the cave's own lit scenery and the player's idle. */
-  const HALF = { x: 6, y: 7 };
   /* QUIET MEANS THE GROUND HAS FINISHED PAINTING — NOT THAT NOTHING MOVES.
    * The player is a known moving object and in here they are the loudest thing
    * on the screen: their idle animation and their TORCH swing their own pixels
@@ -274,63 +265,125 @@ if (cave) {
    * player's own box and asks the rest of the canvas to agree — which is the
    * question this precondition was always asking: has the ground render
    * texture finished its slices, or would the envelope measure it repainting? */
-  const me = await page.evaluate(() => window.__ml.myScreen());
-  const SKIP = me ? { x0: me.sx - 44, x1: me.sx + 44, y0: me.sy - 96, y1: me.sy + 28 } : null;
-  console.log(`pixels: skipping the player's own box ${SKIP ? `${Math.round(SKIP.x0)},${Math.round(SKIP.y0)}..${Math.round(SKIP.x1)},${Math.round(SKIP.y1)}` : "(no myScreen probe)"}`);
+  /* THE CLEAR AREA IS MEASURED, NOT GUESSED. Every gate here has carried a
+   * hand-picked box, and each one is wrong for the next feature: the
+   * butterflies' canvas starts at y=36 to miss the clock, and a cave drip HANGS
+   * near the ceiling — measured at y=11 and y=38, so every window this arm
+   * sampled was rejected and it read 0.0 luma on a working effect. Ask the page
+   * instead. The canvas is the game area; the HUD is DOM painted over it, and
+   * its rectangles can be read off the elements themselves. */
+  const layout = await page.evaluate(() => {
+    const cv = document.querySelector("canvas").getBoundingClientRect();
+    const over = [];
+    for (const el of document.querySelectorAll("body *")) {
+      if (el.tagName === "CANVAS") continue;
+      const st = getComputedStyle(el);
+      if (st.display === "none" || st.visibility === "hidden" || +st.opacity === 0) continue;
+      const b = el.getBoundingClientRect();
+      if (b.width < 1 || b.height < 1) continue;
+      if (b.bottom <= cv.top || b.top >= cv.bottom || b.right <= cv.left || b.left >= cv.right) continue;
+      // skip the wrappers: an element that covers the whole game area is the
+      // canvas's own container, not something painted on top of it
+      if (b.width * b.height > cv.width * cv.height * 0.9) continue;
+      over.push({ x0: b.left, x1: b.right, y0: b.top, y1: b.bottom });
+    }
+    return { cv: { x0: cv.left, x1: cv.right, y0: cv.top, y1: cv.bottom }, over, me: window.__ml.myScreen() };
+  });
+  const me = layout.me;
+  /* THE PLAYER'S BOX IS THE PLAYER, not half the frame. A generous one (88 x
+   * 124 px) swallows most of the game area, and since a drop hangs near the
+   * ceiling — exactly where such a box reaches — every window fell inside it.
+   * The avatar is about 26x34 px at this zoom; this is that plus the room its
+   * torch lights. */
+  const SKIP = me ? { x0: me.sx - 26, x1: me.sx + 26, y0: me.sy - 62, y1: me.sy + 16 } : null;
   const outsideMe = (x, y) => !SKIP || x < SKIP.x0 || x > SKIP.x1 || y < SKIP.y0 || y > SKIP.y1;
-  let prev = await shoot();
-  let settled = false, worst = -1;
-  for (let i = 0; i < 30 && !settled; i++) {
-    await page.waitForTimeout(400);
-    const now = await shoot();
-    worst = 0;
-    for (let y = BOX.y0; y < BOX.y1; y += 2)
-      for (let x = BOX.x0; x < BOX.x1; x += 2)
-        if (outsideMe(x, y)) worst = Math.max(worst, Math.abs(lum(now, x, y) - lum(prev, x, y)));
-    prev = now;
-    settled = worst < 8;
-  }
-  console.log(`pixels: the screen went quiet at frame-to-frame ${worst.toFixed(1)} (the player's box excluded)`);
-  if (!settled) fail("the screen never went quiet — an OFF envelope built on it would measure the cave, not the drips");
-
+  const onHud = (x, y) => layout.over.some((b) => x >= b.x0 && x <= b.x1 && y >= b.y0 && y <= b.y1);
+  const judgeable = (x, y) => x >= layout.cv.x0 && x <= layout.cv.x1 && y >= layout.cv.y0 && y <= layout.cv.y1 && outsideMe(x, y) && !onHud(x, y);
+  console.log(
+    `pixels: the game area is ${Math.round(layout.cv.x1 - layout.cv.x0)}x${Math.round(layout.cv.y1 - layout.cv.y0)}px ` +
+      `with ${layout.over.length} HUD rects over it; the player's box is ` +
+      `${SKIP ? `${Math.round(SKIP.x0)},${Math.round(SKIP.y0)}..${Math.round(SKIP.x1)},${Math.round(SKIP.y1)}` : "(no myScreen probe)"}`,
+  );
+  const BOX = { x0: Math.round(layout.cv.x0), x1: Math.round(layout.cv.x1), y0: Math.round(layout.cv.y0), y1: Math.round(layout.cv.y1) };
+  /* THE CONTROL IS THE PRECONDITION. This arm used to require the whole game
+   * area to go quiet before building an envelope — the butterflies' rule, and
+   * right for a wide box, because an envelope built while the ground is still
+   * painting its slices measures the ground. With per-mark windows that check
+   * measures the wrong thing twice over: a monster crossing the chamber, or the
+   * player's torch flickering on the far wall, moves pixels the arm will never
+   * look at (measured 68.6 luma at the 99.5th percentile on a run whose own
+   * windows read 0.0). So the evidence is taken where it counts instead — the
+   * SAME windows, with the effect off, asserted low below. A window that is not
+   * quiet fails there, in the place the claim is actually made.
+   *
+   * The settle is still waited out, just not asserted on: the camera has to
+   * arrive and the ground has to land before any of this means anything. */
+  for (let i = 0; i < 6; i++) await page.waitForTimeout(400);
   const offs = [];
   for (let i = 0; i < 6; i++) { offs.push(await shoot()); await page.waitForTimeout(200); }
   const noiseShot = await shoot();
   await setOn(true);
 
-  /* NO COORDINATES AT ALL — THE BEST LOCAL BRIGHTENING IN THE GAME AREA WINS.
-   * Asking the page where a mark is and then screenshotting is a race the
-   * effect keeps winning: a falling drop covers 24 px between the two calls,
-   * and even a HANGING one is only `all[0]` until a spout ahead of it in the
-   * list wakes up, so the window lands on bare rock (measured, contrast 0.0
-   * while a neighbourhood search found the same drop at 157 luma one pixel
-   * away). The embers gate settled this shape years of bugs ago: one envelope
-   * with the effect OFF, several frames with it ON, and the largest departure
-   * anywhere in the box is the answer. The control is one more OFF frame
-   * through the same judge, so a torch flicker or a swaying piece of scenery
-   * counts against both sides. */
-  const ons = [];
-  for (let i = 0; i < 8; i++) { ons.push(await shoot()); await page.waitForTimeout(170); }
-  const judge = (png) => {
-    let best = 0, at = null;
-    for (let y = BOX.y0; y < BOX.y1; y++)
-      for (let x = BOX.x0; x < BOX.x1; x++) {
-        if (!outsideMe(x, y)) continue;
+  /* THE WINDOW IS THE MARK, AND IT IS EVERY MARK — not the whole game area.
+   * Judging the largest departure anywhere in the box works right up until
+   * something else in the room moves: a monster walking through a chamber
+   * measured 110.8 luma against the drips' 183.1 and the arm could not tell
+   * them apart. Small windows on the feature's own marks cannot see it (the
+   * butterflies' rule: for a small mark the box is the MARK).
+   *
+   * AND IT JUDGES THE HANGING DROP, WHICH IS STANDING STILL. A screenshot is a
+   * separate round trip, so a falling drop has left the window by the time it
+   * lands; a drop swelling at the ceiling has not moved at all. Taking EVERY
+   * hanging mark rather than the first also removes the race that made this
+   * arm read bare rock: `all[0]` is whichever spout is first in the list, not
+   * the one that was there a moment ago. */
+  /** A SMALL MARK'S WINDOW IS THE MARK, not the game area. */
+  const HALF = 7;
+  const contrastAt = (png, p) => {
+    let m = -Infinity;
+    for (let y = p.y - HALF; y <= p.y + HALF; y++)
+      for (let x = p.x - HALF; x <= p.x + HALF; x++) {
+        if (!judgeable(x, y)) continue;
         let hi = 0, lo = 255;
         for (const o of offs) { const l = lum(o, x, y); hi = Math.max(hi, l); lo = Math.min(lo, l); }
         const l = lum(png, x, y);
-        const d = Math.max(l - hi, lo - l);
-        if (d > best) { best = d; at = [x, y]; }
+        m = Math.max(m, l - hi, lo - l); // contrast EITHER WAY
       }
-    return { best, at };
+    return m === -Infinity ? 0 : m;
   };
-  let best = 0, where = null;
-  for (const png of ons) { const q = judge(png); if (q.best > best) { best = q.best; where = q.at; } }
-  const noise = judge(noiseShot).best;
+  let best = 0, noise = 0, shots = 0, marks = 0;
+  for (let i = 0; i < 60 && shots < 6; i++) {
+    const pts = await page.evaluate(() => {
+      const v = window.__ml.camView();
+      const z = window.__ml.myScreen()?.zoom ?? 1;
+      return window.__mlAmbient.debug("drips").all
+        .filter((m) => m.phase === "hang" && m.a >= 0.5)
+        .map((m) => ({ x: Math.round((m.x - v.x) * z), y: Math.round(((m.dropY ?? m.y) - v.y) * z) }));
+    });
+    // ...and a window that touches the player's box is not evidence either, so
+    // it is rejected HERE rather than silently scoring 0 inside the judge.
+    const use = pts.filter(
+      (p) =>
+        judgeable(p.x - HALF, p.y - HALF) && judgeable(p.x + HALF, p.y + HALF) &&
+        judgeable(p.x - HALF, p.y + HALF) && judgeable(p.x + HALF, p.y - HALF),
+    );
+    if (!use.length) { await page.waitForTimeout(120); continue; }
+    const png = await shoot();
+    shots++;
+    marks += use.length;
+    for (const p of use) {
+      best = Math.max(best, contrastAt(png, p));
+      noise = Math.max(noise, contrastAt(noiseShot, p)); // the SAME windows, effect off
+    }
+  }
   console.log(
-    `pixels: over the game area (the player's box excluded) the drips shift a pixel by ${best.toFixed(1)} luma ` +
-      `at ${where ? where.join(",") : "?"} — against ${noise.toFixed(1)} for a frame with the effect off`,
+    `pixels: ${shots} shots over ${marks} hanging-drop windows — a drip shifts its own window by ${best.toFixed(1)} luma, ` +
+      `against ${noise.toFixed(1)} for the same windows with the effect off`,
   );
+  if (shots < 3) fail(`only ${shots} frames put a hanging drop in the clear game area`);
+  // The control IS the quiet precondition, measured in the windows that matter.
+  if (noise > 12)
+    fail(`the drops' own windows moved ${noise.toFixed(1)} luma with the effect OFF — the envelope is measuring the cave, not the drips`);
   if (!(best >= 25 && best >= noise * 2 + 8))
     fail(`no drip showed on screen (contrast ${best.toFixed(1)}, noise ${noise.toFixed(1)})`);
   // ...and what the sprite itself says, so a failure above says WHY.
