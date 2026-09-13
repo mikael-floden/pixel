@@ -403,9 +403,23 @@ nothing pins the end. The rules, measured on his own 57 shipped dies (east):
   plainer one — never the attack's swing, claw or extreme rungs. (Before this,
   every state's re-roll borrowed the attack ladder: an idle that froze was
   re-asked for "a big aggressive swing".)
-- Review: `pipeline/review_slot.py --slot die_v1` builds the page with the
-  clips playing (each plays through, holds its corpse frame, restarts) and a
-  redo toggle per direction; published as an artifact, never committed.
+- **A verdict set by hand carries `manual: true` and the reason**, and only
+  where the eye is satisfied and the metric cannot be: a puddle, a scatter
+  of shards or a spider on her back seen from above keeps the base's outline
+  (the slug, the octopus, the spider queen), and cracked-off pieces reaching
+  both canvas edges read as a wrap (the crab, the snail). 20 of 312
+  directions on the first complete set. `requal` leaves them alone.
+- **die_v1 as it stands (2026-09-13)**: 39/39 complete, 312 directions,
+  196 pass, 116 warn, 0 fail; 130 generated directions v3 at 6+1 frames, 65
+  PRO (PRO picks 4 or 16 frames per monster); ~$16 all in, sweeps and
+  A/Bs included. Review: `pipeline/review_slot.py --slot die_v1` builds the
+  page with the clips playing (each plays through, holds its corpse frame,
+  restarts) and a redo toggle per direction; published as an artifact
+  (https://claude.ai/code/artifact/33e04503-2b19-4249-b57b-203d83978624),
+  never committed. His verdicts come back as
+  `monsters/<id>#die_v1#<direction>`; `review --state die_v1` then
+  `die --slot die_v1` re-roll exactly those (`--pro` for a body v3 will not
+  change).
 
 ### His verdicts: read them, act, then DELETE the ones you acted on
 
