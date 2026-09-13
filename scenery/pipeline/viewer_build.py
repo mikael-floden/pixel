@@ -74,6 +74,7 @@ def _group_field(group_id, field):
 
 
 def build():
+    _ensure_vents()
     cfg = factory.load_config()
     types_by_group = _types_by_group(cfg)
     pieces, categories = [], {}
@@ -201,6 +202,22 @@ def build():
         json.dump(data, f, indent=2)
     _pack_placed()
     return data
+
+
+def _ensure_vents():
+    """THE FLUE MOUTH FOLLOWS THE ART, like the packed layer does. Every
+    pipeline script ends in build(), so a state generated this run is measured
+    in the same unit that generated it and no consumer ever sees a chimney
+    state without its `vent`. Fill-only (a state that has one is skipped) and
+    never fatal: a piece that cannot be measured publishes no vent rather than
+    failing a publish."""
+    try:
+        import vent
+        r = vent.run(log=lambda *a: None)
+        if r.get("wrote"):
+            print(f"  vents: measured {r['wrote']} new state mouth(s)")
+    except Exception as e:  # noqa: BLE001
+        print(f"  ! vent measurement skipped ({e}) — states keep whatever they have")
 
 
 def _pack_placed():

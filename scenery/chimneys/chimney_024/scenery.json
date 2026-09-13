@@ -55,7 +55,166 @@
     "NOT_LIT_1": {
       "sprite": "chimneys/chimney_024/sprite.webp",
       "pixellab_object_id": "8fab7f28-c80e-46bb-923f-7bcd4c15682d",
-      "generated_at": "2026-09-13T15:16:24+00:00"
+      "generated_at": "2026-09-13T15:16:24+00:00",
+      "rotations": {
+        "south-east": "chimneys/chimney_024/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_024/rotations/south-west.webp",
+        "south": "chimneys/chimney_024/sprite.webp"
+      },
+      "vent": {
+        "dx": 1.0,
+        "dy": -26.6,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": 4.5,
+            "dy": -32.4,
+            "conf": "flue_top"
+          },
+          "south-west": {
+            "dx": -2.2,
+            "dy": -28.3,
+            "conf": "opening"
+          }
+        }
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "chimneys/chimney_024/not_lit_2/sprite.webp",
+      "pixellab_object_id": "f48e75b0-ee77-4d51-a4a1-dea26281932f",
+      "generated_at": "2026-09-13T15:21:47+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.7952,
+      "glow_score": 0.5103,
+      "rotations": {
+        "south-east": "chimneys/chimney_024/not_lit_2/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_024/not_lit_2/rotations/south-west.webp",
+        "south": "chimneys/chimney_024/not_lit_2/sprite.webp"
+      },
+      "vent": {
+        "dx": 1.0,
+        "dy": -27.6,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": 2.7,
+            "dy": -30.7,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": -1.0,
+            "dy": -29.5,
+            "conf": "opening"
+          }
+        }
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "chimneys/chimney_024/not_lit_3/sprite.webp",
+      "pixellab_object_id": "6afc1f71-28d0-4d54-8646-3189adb91768",
+      "generated_at": "2026-09-13T15:23:20+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.3754,
+      "glow_score": 0.2056,
+      "rotations": {
+        "south-east": "chimneys/chimney_024/not_lit_3/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_024/not_lit_3/rotations/south-west.webp",
+        "south": "chimneys/chimney_024/not_lit_3/sprite.webp"
+      },
+      "vent": {
+        "dx": 0.6,
+        "dy": -27.3,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": 3.5,
+            "dy": -32.4,
+            "conf": "flue_top"
+          },
+          "south-west": {
+            "dx": -2.2,
+            "dy": -28.2,
+            "conf": "opening"
+          }
+        }
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "chimneys/chimney_024/not_lit_4/sprite.webp",
+      "pixellab_object_id": "ace34107-4e3f-45a7-b345-6dded2fa441e",
+      "generated_at": "2026-09-13T15:25:02+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4452,
+      "glow_score": 0.2812,
+      "rotations": {
+        "south-east": "chimneys/chimney_024/not_lit_4/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_024/not_lit_4/rotations/south-west.webp",
+        "south": "chimneys/chimney_024/not_lit_4/sprite.webp"
+      },
+      "vent": {
+        "dx": 1.4,
+        "dy": -24.0,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": 3.8,
+            "dy": -34.4,
+            "conf": "flue_top"
+          },
+          "south-west": {
+            "dx": 0.0,
+            "dy": -34.3,
+            "conf": "flue_top"
+          }
+        }
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "chimneys/chimney_024/not_lit_5/sprite.webp",
+      "pixellab_object_id": "3a97597f-0c00-4895-99c2-0e2adbced219",
+      "generated_at": "2026-09-13T15:26:35+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.4455,
+      "glow_score": 0.1458,
+      "rotations": {
+        "south-east": "chimneys/chimney_024/not_lit_5/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_024/not_lit_5/rotations/south-west.webp",
+        "south": "chimneys/chimney_024/not_lit_5/sprite.webp"
+      },
+      "vent": {
+        "dx": 1.1,
+        "dy": -36.5,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -0.5,
+            "dy": -42.3,
+            "conf": "flue_top"
+          },
+          "south-west": {
+            "dx": 3.3,
+            "dy": -42.4,
+            "conf": "flue_top"
+          }
+        }
+      }
+    }
+  },
+  "vent": {
+    "dx": 1.0,
+    "dy": -26.6,
+    "conf": "opening",
+    "rotations": {
+      "south-east": {
+        "dx": 4.5,
+        "dy": -32.4,
+        "conf": "flue_top"
+      },
+      "south-west": {
+        "dx": -2.2,
+        "dy": -28.3,
+        "conf": "opening"
+      }
     }
   }
 }

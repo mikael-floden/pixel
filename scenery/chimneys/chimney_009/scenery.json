@@ -53,7 +53,24 @@
       "vent": {
         "dx": 1.2,
         "dy": -35.8,
-        "conf": "measured"
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -5.0,
+            "dy": -39.0,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 6.0,
+            "dy": -44.4,
+            "conf": "flue_top"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_009/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_009/rotations/south-west.webp",
+        "south": "chimneys/chimney_009/sprite.webp"
       }
     },
     "NOT_LIT_2": {
@@ -66,7 +83,24 @@
       "vent": {
         "dx": -1.2,
         "dy": -33.0,
-        "conf": "measured"
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -6.8,
+            "dy": -38.7,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 5.8,
+            "dy": -38.4,
+            "conf": "opening"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_009/not_lit_2/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_009/not_lit_2/rotations/south-west.webp",
+        "south": "chimneys/chimney_009/not_lit_2/sprite.webp"
       }
     },
     "NOT_LIT_3": {
@@ -79,7 +113,24 @@
       "vent": {
         "dx": -3.6,
         "dy": -34.9,
-        "conf": "measured"
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -10.7,
+            "dy": -40.7,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 11.7,
+            "dy": -45.3,
+            "conf": "flue_top"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_009/not_lit_3/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_009/not_lit_3/rotations/south-west.webp",
+        "south": "chimneys/chimney_009/not_lit_3/sprite.webp"
       }
     },
     "NOT_LIT_4": {
@@ -92,7 +143,24 @@
       "vent": {
         "dx": -1.5,
         "dy": -32.2,
-        "conf": "measured"
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -11.8,
+            "dy": -38.2,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 11.2,
+            "dy": -44.4,
+            "conf": "flue_top"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_009/not_lit_4/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_009/not_lit_4/rotations/south-west.webp",
+        "south": "chimneys/chimney_009/not_lit_4/sprite.webp"
       }
     },
     "NOT_LIT_5": {
@@ -105,14 +173,43 @@
       "vent": {
         "dx": 1.5,
         "dy": -35.8,
-        "conf": "measured"
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -9.5,
+            "dy": -39.0,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 10.0,
+            "dy": -44.4,
+            "conf": "flue_top"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_009/not_lit_5/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_009/not_lit_5/rotations/south-west.webp",
+        "south": "chimneys/chimney_009/not_lit_5/sprite.webp"
       }
     }
   },
   "vent": {
     "dx": 1.2,
     "dy": -35.8,
-    "conf": "measured"
+    "conf": "opening",
+    "rotations": {
+      "south-east": {
+        "dx": -5.0,
+        "dy": -39.0,
+        "conf": "opening"
+      },
+      "south-west": {
+        "dx": 6.0,
+        "dy": -44.4,
+        "conf": "flue_top"
+      }
+    }
   },
   "mount": "roof",
   "fixture": "chimney"

@@ -54,7 +54,13 @@ import viewer_build  # noqa: E402
 
 TOP_SHARE = 0.55    # the mouth is in the top half of the piece, never the foot
 DARK_OF_MEDIAN = 0.62  # a mouth is this much darker than the piece's median
-MIN_ROWS = 3        # rows — deeper than a mortar course, which is 1-2
+MIN_ROWS = 2        # rows — a pot's mouth is a 2-row ellipse in a 3/4 view
+MAX_WIDTH_SHARE = 0.85  # a mouth is narrower than the silhouette; a course is not
+TOP_TOL = 4         # px — blobs starting this close to the highest are all 'at the top'
+FLUE_WIDTH_SHARE = 0.55  # a pot/pipe is this much narrower than the stack under it
+FLUE_MIN_ROWS = 4   # ...over at least this many rows, or the piece has no flue
+EDGE_CLEAR = 2      # px of material a mouth's pixels stand back from the silhouette
+DEEP_SHARE = 0.55   # ...over this share of the blob
 MIN_BLOB = 3        # px — smaller than this is a dither speck, not an opening
 ALPHA_MIN = 16
 
@@ -100,22 +106,44 @@ def measure(img: Image.Image) -> dict | None:
     if not opaque:
         return None
     cx_frame, cy_frame = w / 2.0, h / 2.0
+
+    # THE FLUE IS THE NARROW THING AT THE TOP, and the mouth is in IT.
+    # (Maintainer 2026-09-13, marking four chimneys by hand: the measurement had
+    # put the mouth on the CAP beside the pot, where the socket's shadow is
+    # bigger and darker than the pot's own opening; his mark is the top of the
+    # pot every time.) So walk down from the topmost row while the silhouette
+    # stays narrow against its widest row: that run IS the pot or the flue pipe,
+    # and nothing below it can win. A stack with no narrow top — a plain capped
+    # brick chimney — has no such run and is searched from its top as before.
+    rows_x = {}
+    for (x, y) in opaque:
+        lo, hi = rows_x.get(y, (x, x))
+        rows_x[y] = (min(lo, x), max(hi, x))
+    widths = {y: hi - lo + 1 for y, (lo, hi) in rows_x.items()}
+    widest = max(widths.values())
+    flue = []
+    for y in range(y0, y1):
+        if widths.get(y, 0) and widths[y] <= FLUE_WIDTH_SHARE * widest:
+            flue.append(y)
+        elif flue:
+            break
+    if len(flue) >= FLUE_MIN_ROWS:
+        search_lo, search_hi = flue[0], flue[-1] + 1
+    else:
+        search_lo, search_hi = y0, y0 + max(3, int((y1 - y0) * TOP_SHARE))
+
     lums = sorted(opaque.values())
     median = lums[len(lums) // 2]
     cut = median * DARK_OF_MEDIAN
-    top_cut = y0 + (y1 - y0) * TOP_SHARE
-    dark = {p for p, l in opaque.items() if l <= cut and p[1] < top_cut}
+    dark = {p for p, l in opaque.items() if l <= cut and search_lo <= p[1] < search_hi}
 
-    def open_air(p):
-        x, y = p
-        return any((x + dx, y + dy) not in opaque
-                   for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)))
+    deep = {p for p in opaque
+            if all((p[0] + dx, p[1] + dy) in opaque
+                   for dx in range(-EDGE_CLEAR, EDGE_CLEAR + 1)
+                   for dy in range(-EDGE_CLEAR, EDGE_CLEAR + 1))}
 
     seen: set[tuple[int, int]] = set()
-    best_blob = None
-    best_score = 0.0
-    span_x = max(1.0, (x1 - x0) / 2.0)
-    span_y = max(1.0, y1 - y0)
+    cands = []
     for seed in dark:
         if seed in seen:
             continue
@@ -126,7 +154,8 @@ def measure(img: Image.Image) -> dict | None:
         while stack:
             cx, cy = stack.pop()
             blob.append((cx, cy))
-            if open_air((cx, cy)):
+            if any((cx + dx, cy + dy) not in opaque
+                   for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1))):
                 outline = True
             for nb in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
                 if nb in dark and nb not in seen:
@@ -136,23 +165,58 @@ def measure(img: Image.Image) -> dict | None:
             continue
         rows = len({p[1] for p in blob})
         if rows < MIN_ROWS:
+            continue
+        top_row = min(p[1] for p in blob)
+        # COMPARE THE OPENING WITH THE SILHOUETTE AT ITS WIDEST ROW, not at its
+        # top one. (Maintainer 2026-09-13, second mark: on a capped stack the
+        # hole is the middle of the dark opening, and this test was throwing it
+        # away — in a three-quarter view the opening's TOP row is the cap's far
+        # corner, where the silhouette is at its narrowest, so a 31 px opening
+        # measured 31/29 and read as a mortar course.) At its widest row the
+        # cap is wide and the opening is plainly narrower; a course, which runs
+        # wall to wall, still is not.
+        sil = max((widths.get(y, x1 - x0) for y in {p[1] for p in blob}), default=x1 - x0)
+        blob_w = max(p[0] for p in blob) - min(p[0] for p in blob) + 1
+        if blob_w > MAX_WIDTH_SHARE * sil:
             continue                      # a mortar course, not a mouth
+        if len(flue) < FLUE_MIN_ROWS:
+            # On a plain cap the rim's own shadow hugs the silhouette; inside a
+            # narrow flue there is no room to stand back, so the test is only
+            # applied where it means something.
+            inside = sum(1 for p in blob if p in deep) / len(blob)
+            if inside < DEEP_SHARE:
+                continue
         bx = sum(p[0] for p in blob) / len(blob)
         by = sum(p[1] for p in blob) / len(blob)
-        score = (len(blob)
-                 * (1.0 - min(1.0, (by - y0) / span_y))
-                 * (1.0 - 0.7 * min(1.0, abs(bx - (x0 + x1) / 2.0) / span_x)))
-        if score > best_score:
-            best_score, best_blob = score, (bx, by)
-    if best_blob:
-        return {"dx": round(best_blob[0] - cx_frame, 1),
-                "dy": round(best_blob[1] - cy_frame, 1), "conf": "measured"}
+        cands.append({"top": top_row, "n": len(blob), "at": (bx, by)})
+
+    if cands:
+        # THE BIGGEST OPENING NEAR THE TOP, not simply the highest. Two rules
+        # were each wrong on real art: weighing size against height put the
+        # smoke 10 px low on a stack with two pots (the dark band under them is
+        # bigger than either mouth), and taking the strictly highest blob put it
+        # on the cap's far RIM in a three-quarter view, where the rim's shadow
+        # sits higher on screen than the opening's own centroid. So: take the
+        # highest top row, then the LARGEST blob starting within TOP_TOL of it.
+        top = min(c["top"] for c in cands)
+        near = [c for c in cands if c["top"] <= top + TOP_TOL]
+        pick = max(near, key=lambda c: c["n"])
+        return {"dx": round(pick["at"][0] - cx_frame, 1),
+                "dy": round(pick["at"][1] - cy_frame, 1), "conf": "opening"}
     # No opening to find (a solid cap, a pot drawn in silhouette): the middle of
     # the silhouette's top rows, and SAY it is a fallback.
-    rows = [p for p in opaque if p[1] < y0 + max(2, (y1 - y0) * 0.12)]
+    # NO DARK OPENING. On a pot whose mouth is drawn LIGHT rather than as a
+    # hole, the answer is still the top of the pot — which is what the
+    # maintainer marked by hand — so fall back to the middle of the flue's top
+    # rows and say which fallback it was. `conf` is the consumer's handle:
+    # `opening` a real hole was found, `flue_top` the top of the narrow flue,
+    # `silhouette` neither (the top of the piece).
+    flue_top = [p for p in opaque if search_lo <= p[1] < search_lo + 2]
+    rows = flue_top or [p for p in opaque if p[1] < y0 + max(2, (y1 - y0) * 0.12)]
     bx = sum(p[0] for p in rows) / len(rows)
     by = sum(p[1] for p in rows) / len(rows)
-    return {"dx": round(bx - cx_frame, 1), "dy": round(by - cy_frame, 1), "conf": "silhouette"}
+    return {"dx": round(bx - cx_frame, 1), "dy": round(by - cy_frame, 1),
+            "conf": "flue_top" if (flue_top and len(flue) >= FLUE_MIN_ROWS) else "silhouette"}
 
 
 def wants_vent(man: dict, group_cfg: dict) -> bool:
@@ -163,15 +227,25 @@ def wants_vent(man: dict, group_cfg: dict) -> bool:
     return fixture in ("chimney",)
 
 
-def states_of(rel: str, man: dict) -> list[tuple[str, str]]:
-    """[(state key, domain-relative sprite path)] — the anchor included."""
+def states_of(rel: str, man: dict) -> list[tuple[str, str, dict]]:
+    """[(state key, south sprite, {facing: sprite})] — the anchor included.
+
+    THE MOUTH MOVES WITH THE FACING. Scenery never rotates, but a TOWN piece
+    ships south-east, south and south-west because a wall (and a roof ridge)
+    faces three ways — and those are real three-quarter views, so the hole sits
+    at a different pixel in each. A consumer drawing smoke on an SE placement
+    needs the SE mouth, so every facing is measured, not just south."""
     out = []
     for key, ent in sorted((man.get("states") or {}).items()):
         sp = (ent or {}).get("sprite")
         if isinstance(sp, str) and sp:
-            out.append((key, sp))
+            rots = {d: v for d, v in ((ent or {}).get("rotations") or {}).items()
+                    if isinstance(v, str) and v and d != "south"}
+            out.append((key, sp, rots))
     if not out and isinstance(man.get("sprite"), str):
-        out.append(("", man["sprite"]))
+        rots = {d: v for d, v in (man.get("rotations") or {}).items()
+                if isinstance(v, str) and v and d != "south"}
+        out.append(("", man["sprite"], rots))
     return out
 
 
@@ -189,7 +263,7 @@ def run(group: str | None = None, check: bool = False, force: bool = False,
         if not wants_vent(man, groups.get(gid, {})):
             continue
         changed = False
-        for key, sp in states_of(rel, man):
+        for key, sp, rots in states_of(rel, man):
             path = os.path.join(factory.ROOT, sp)
             if not os.path.exists(path):
                 continue
@@ -207,6 +281,21 @@ def run(group: str | None = None, check: bool = False, force: bool = False,
             if not v:
                 missing.append(f"{rel}#{key}")
                 continue
+            # ...and one per FACING, because SE/SW are three-quarter views and
+            # the hole is not where the south view puts it.
+            per_dir = {}
+            for dirn, rsp in sorted(rots.items()):
+                rpath = os.path.join(factory.ROOT, rsp)
+                if not os.path.exists(rpath):
+                    continue
+                with Image.open(rpath) as rim:
+                    rv = measure(rim)
+                if rv:
+                    per_dir[dirn] = rv
+                    if sheet:
+                        shots.append((f"{rel}#{key}#{dirn}", rpath, rv))
+            if per_dir:
+                v = {**v, "rotations": per_dir}
             if key:
                 man.setdefault("states", {}).setdefault(key, {})["vent"] = v
                 # The anchor's vent is the piece default, like `light`.

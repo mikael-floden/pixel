@@ -52,8 +52,25 @@
       "generated_at": "2026-09-13T14:47:26+00:00",
       "vent": {
         "dx": 1.5,
-        "dy": -29.5,
-        "conf": "measured"
+        "dy": -29.9,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -0.5,
+            "dy": -29.0,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 1.5,
+            "dy": -29.0,
+            "conf": "opening"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/sprite.webp"
       }
     },
     "NOT_LIT_2": {
@@ -66,7 +83,24 @@
       "vent": {
         "dx": 1.2,
         "dy": -42.0,
-        "conf": "measured"
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": 0.4,
+            "dy": -42.0,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 2.0,
+            "dy": -42.1,
+            "conf": "opening"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/not_lit_2/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/not_lit_2/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/not_lit_2/sprite.webp"
       }
     },
     "NOT_LIT_3": {
@@ -79,7 +113,24 @@
       "vent": {
         "dx": 0.6,
         "dy": -23.7,
-        "conf": "measured"
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -0.5,
+            "dy": -32.4,
+            "conf": "flue_top"
+          },
+          "south-west": {
+            "dx": 1.0,
+            "dy": -32.4,
+            "conf": "flue_top"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/not_lit_3/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/not_lit_3/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/not_lit_3/sprite.webp"
       }
     },
     "NOT_LIT_4": {
@@ -91,8 +142,25 @@
       "glow_score": 0.6558,
       "vent": {
         "dx": 1.0,
-        "dy": -31.5,
-        "conf": "measured"
+        "dy": -31.9,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -6.0,
+            "dy": -31.0,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 5.8,
+            "dy": -31.1,
+            "conf": "opening"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/not_lit_4/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/not_lit_4/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/not_lit_4/sprite.webp"
       }
     },
     "NOT_LIT_5": {
@@ -103,16 +171,45 @@
       "difference_from_source": 0.9853,
       "glow_score": 0.0069,
       "vent": {
-        "dx": 2.5,
-        "dy": -26.5,
-        "conf": "measured"
+        "dx": 0.7,
+        "dy": -32.4,
+        "conf": "flue_top",
+        "rotations": {
+          "south-east": {
+            "dx": -0.3,
+            "dy": -32.4,
+            "conf": "flue_top"
+          },
+          "south-west": {
+            "dx": 1.5,
+            "dy": -32.4,
+            "conf": "flue_top"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/not_lit_5/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/not_lit_5/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/not_lit_5/sprite.webp"
       }
     }
   },
   "vent": {
     "dx": 1.5,
-    "dy": -29.5,
-    "conf": "measured"
+    "dy": -29.9,
+    "conf": "opening",
+    "rotations": {
+      "south-east": {
+        "dx": -0.5,
+        "dy": -29.0,
+        "conf": "opening"
+      },
+      "south-west": {
+        "dx": 1.5,
+        "dy": -29.0,
+        "conf": "opening"
+      }
+    }
   },
   "mount": "roof",
   "fixture": "chimney"

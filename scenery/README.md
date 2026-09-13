@@ -265,18 +265,33 @@ ask for five; the 4-own/2-opposite default is unchanged).
   | `fixture` | piece (group default) | WHAT it is, for a consumer attaching behaviour: `chimney` today |
   | `vent` | per STATE, and the anchor's copy at the piece root | where the effect comes out: `{dx, dy, conf}` in FRAME PIXELS FROM THE CANVAS CENTRE, the `light_frames` convention, so the packed layer's `ox`/`oy` shift it like any other measured point |
   `vent` is measured by `pipeline/vent.py`, per STATE because every variant
-  draws its own cap, and `conf` says `measured` (a real opening was found) or
-  `silhouette` (none was, so it is the middle of the top rows — a consumer that
-  cares can tell a measurement from a fallback). Three rules make it the mouth
-  and not something else, each paid for on this art: the cut is a fraction of
-  the piece's OWN median luma (a percentile finds a "darkest fifth" even where
-  there is no hole); a blob touching transparency is the sprite's outline and is
-  dropped; and a blob must span at least 3 rows, because a mortar course is
-  dark, interior and WIDE and beat the real opening on every brick stack in the
-  first pass. Measured over the first 15 states: 14 `measured`, 1 `silhouette`,
-  every mouth within 0.14 of the stack's axis and in the top 4-14% of the art.
-  **Run `--sheet` and LOOK at it** — it draws a cross on every mouth, and that
-  is the only thing that catches a blob that is a doorway or a window.
+  draws its own cap, AND PER FACING — SE and SW are real three-quarter views
+  and the hole is not where the south view puts it. `conf` says how it was
+  found: `opening` (a dark hole), `flue_top` (the top of the narrow flue, for
+  a pot whose mouth is drawn light rather than as a hole) or `silhouette`
+  (neither). Measured over the 40 states x 3 facings: 77 `opening`, 43
+  `flue_top`, 0 `silhouette`, every one landing on the art in the upper half.
+  **THE MAINTAINER MARKED TWO ROUNDS OF THIS BY HAND, and both corrections are
+  rules now** (2026-09-13, his red circles on the measurement against green
+  crosses on the truth):
+  - **THE FLUE IS THE NARROW THING AT THE TOP, and the mouth is in IT.** The
+    measurement had put it on the CAP beside the pot, where the socket's shadow
+    is bigger and darker than the pot's own opening. So the search walks down
+    from the topmost row while the silhouette stays under 55% of its widest
+    row; that run is the pot or pipe, and nothing below it can win. A plain
+    capped stack has no such run and is searched from its top as before.
+  - **AN OPENING IS COMPARED WITH THE SILHOUETTE AT ITS WIDEST ROW**, never at
+    its top one. On a capped stack the hole IS the big dark rhombus, and the
+    width test was throwing it away: in a three-quarter view the opening's top
+    row is the cap's far corner, where the silhouette is narrowest, so a 31 px
+    opening measured 31/29 and read as a mortar course.
+  The other rules that survive from the first pass: the darkness cut is a
+  fraction of the piece's OWN median luma (a percentile finds a "darkest fifth"
+  even where there is no hole); a blob touching transparency is the sprite's
+  outline; a blob must span 2+ rows (a pot's mouth is a two-row ellipse in a
+  three-quarter view); and on a plain cap a blob must stand back from the
+  silhouette or it is the rim's own shadow. **Run `--sheet` and LOOK at it** —
+  every one of those was caught by looking, not by a number.
 - **SE/S/SW COST NOTHING** and are already a standing order (his 2026-08-28:
   "Everything under 'Indoor' and under 'Town' should have SW, S and SE").
   Anything 168 px or under went down `create-8-direction-object`, so PixelLab
