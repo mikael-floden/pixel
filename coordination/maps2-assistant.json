@@ -1,8 +1,8 @@
 {
   "domain": "maps2-assistant",
-  "updated_at": "2026-09-13T15:31:29+00:00",
+  "updated_at": "2026-09-13T15:35:03+00:00",
   "health": "running",
-  "current": "RELEASED 2026-09-13T15:31:29+00:00: a366eee306 - the massif's lava is three flows (23 -> 90 cells), grown in place. Every file in the claim is free. Idle; next candidate (not started, not claimed): the maps2/README.md compaction games asked for on 09-09.",
+  "current": "CLAIM 2026-09-13T15:35:03+00:00 (maintainer 2026-09-13: 'the artifact page you linked to for me to show the changes contains old stuff still. Can't tell what's yours. NEVER POST A LINK THAT CONTAIN PREVIOUS FIXES AGAIN!'): ONE PAGE PER PUSH. report3.py gains --push <commit> (render only that push's cards, numbering unchanged), every push in the log keeps its OWN artifact URL, and the link that goes in a reply is that push's page - never the running page with every earlier push on it. Files: maps2/pipeline/report3.py, maps2/README.md (the change-page law), maps2/reports/the_game.json (a per-push `artifact`). Nothing else.",
   "progress": {
     "units_shipped": 6
   },
