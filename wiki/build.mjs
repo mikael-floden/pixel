@@ -28,6 +28,7 @@ import { execSync } from "node:child_process";
 // own art — for weeks, with a version stamp naming the wrong build. lib/ ships.
 import { contentBounds, decodeWebP } from "./lib/webp-pixels.mjs";
 import { measureOverhang } from "./lib/overhang.mjs";
+import { releases, writeCache as writeReleaseCache } from "./lib/releases.mjs";
 
 const WIKI_DIR = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -3346,6 +3347,15 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects, items,
   }
 }
 
+/* WHAT HAS LANDED — the Release Notes section (maintainer 2026-09-13). The
+ * derivation, and why the list is a cached file rather than a live read, are
+ * in wiki/lib/releases.mjs: this build refreshes the committed cache wherever
+ * git can answer, and reads it back where it cannot (the deploy image has no
+ * .git). Writing is best-effort — a read-only fs is normal in Docker, and the
+ * registry must not fail over a list of commit messages. */
+try { writeReleaseCache(ROOT); } catch { /* read-only fs (Docker) is fine */ }
+const releaseNotes = releases(ROOT);
+
 const data = {
   format: "pixel-wiki-data@1",
   generated_at: new Date().toISOString(),
@@ -3354,6 +3364,10 @@ const data = {
   // The in-game sound EVENTS (see buildSfx): what triggers a sound, what
   // plays, with which processing — derived from the composer's own engine.
   sfx,
+  // The last 50 commits on main, with the agent where it can be known — the
+  // Release Notes section. `from` says whether this build read git or the
+  // committed cache, and the page tells him which he is looking at.
+  releases: releaseNotes,
   directions: DIRS,
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
@@ -3409,6 +3423,7 @@ const data = {
     lore: lore?.length ?? 0,
     // Chapters only — the admin surface; the start tile counts all tales.
     lore_chapters: lore?.filter((e) => Number.isInteger(e.chapter)).length ?? 0,
+    releases: releaseNotes.commits.length,
     constants: constants.length,
   },
   // Absent domains become empty lists — the site must render, not blank out,

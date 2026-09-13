@@ -214,6 +214,32 @@ jobs:
         with:
           ref: ${{ needs.resolve.outputs.sha }}
 
+      # THE WIKI'S RELEASE NOTES NEED GIT, AND THE IMAGE HAS NONE (wiki agent,
+      # 2026-09-13). The Release Notes section lists the last 50 commits; the
+      # registry that carries them is rebuilt INSIDE the image, where the
+      # .dockerignore allowlist has kept .git out since the beginning. So the
+      # list is written into the build context here — the only place that has
+      # both the history and the commit being shipped — and the deployed page
+      # then names the 50 commits ending at the build the player is running.
+      #
+      # DEEPENED BLOBLESS, AND THAT IS THE WHOLE COST. The checkout above is
+      # depth 1 on purpose (a full checkout of this repo is the job's longest
+      # step), and `git log -50` in a depth-1 clone returns ONE commit. A
+      # blobless deepen fetches the missing commits and trees and no file
+      # content at all: measured on this repo, 60 commits of history is 0.1 MB
+      # over what the tip already carries (6.4 vs 6.3 MB of objects). Never
+      # widen this to a plain deepen — that one pulls every blob of every
+      # commit, which on an art repo is hundreds of megabytes.
+      #
+      # It cannot fail the deploy: a list of commit messages is not worth a
+      # rollout, and the committed wiki/release_notes.json is the fallback the
+      # image build reads if this step writes nothing.
+      - name: The wiki's release list (the image has no .git)
+        continue-on-error: true
+        run: |
+          git fetch --deepen=60 --filter=blob:none --no-tags origin "${{ needs.resolve.outputs.sha }}"
+          node wiki/lib/releases.mjs
+
       - id: auth
         uses: google-github-actions/auth@v2
         with:

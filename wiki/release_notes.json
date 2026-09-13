@@ -1,0 +1,558 @@
+{
+ "format": "pixel-wiki-releases@1",
+ "generated_at": "2026-09-13T03:28:34.314Z",
+ "head": "828b3cb17",
+ "repo": "https://github.com/mikael-floden/pixel",
+ "commits": [
+  {
+   "sha": "828b3cb17",
+   "at": "2026-09-13T03:18:11+00:00",
+   "author": "Claude",
+   "subject": "board: wiki-assistant claims Release Notes, and stands down from maps2-assistant",
+   "agent": "wiki-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c4dc6f3ef",
+   "at": "2026-09-13T03:17:36+00:00",
+   "author": "Claude",
+   "subject": "The crossing hands over the body it has NOW, and prediction cuts at the same seq",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 6
+  },
+  {
+   "sha": "20dbf89b3",
+   "at": "2026-09-13T05:13:37+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: client perf report",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "4c8453420",
+   "at": "2026-09-13T05:13:07+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: client perf report",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ce3b85d0b",
+   "at": "2026-09-13T03:09:13+00:00",
+   "author": "Claude",
+   "subject": "monsters: a die's LAST frame is matched against the base too, and a PRO-made direction is re-judged as PRO",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "2a9b89c75",
+   "at": "2026-09-13T02:55:11+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant claims the zone crossing's backwards snap (the hot state is frozen at zone:go)",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "95af8a01c",
+   "at": "2026-09-13T02:53:22+00:00",
+   "author": "Claude",
+   "subject": "Water lies flat under the feet too: no swimming a stair above the sea",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 4
+  },
+  {
+   "sha": "0b1b9ec37",
+   "at": "2026-09-13T02:50:49+00:00",
+   "author": "Claude",
+   "subject": "board: games-ambient-assistant releases the spiders fix and answers the games agent's gate question",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "e4f2deb11",
+   "at": "2026-09-13T02:50:24+00:00",
+   "author": "Claude",
+   "subject": "ambient: a hidden spider reports alpha 0 — the indoor gate was reading a mark that was not drawn",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "3799a47b3",
+   "at": "2026-09-13T02:47:40+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant — the floor shelf shipped; the indoor flip's frames at 272,184 posted to games",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "daf867c6e",
+   "at": "2026-09-13T02:47:35+00:00",
+   "author": "Claude",
+   "subject": "Cover atlases: the floor shelf is one step tall, fixed; the beacon averages bodies per flush",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "88e15d878",
+   "at": "2026-09-13T02:46:05+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant claims the swim-level fold and the CLAUDE.md phrase games-perf-assistant asked for",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ffa1612fc",
+   "at": "2026-09-13T02:43:52+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant claims the floor-shelf cap after his 02:40 run",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6d9546588",
+   "at": "2026-09-13T04:41:02+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: client perf report",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "151ec83ed",
+   "at": "2026-09-13T04:40:32+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: client perf report",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "640a3d7ad",
+   "at": "2026-09-13T02:37:52+00:00",
+   "author": "Claude",
+   "subject": "monsters: --pro, the escape for a body v3 will not change; the rule in the README; board",
+   "agent": "monsters-assistant",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "de3e3a0ab",
+   "at": "2026-09-13T02:34:24+00:00",
+   "author": "Claude",
+   "subject": "board: games-ambient-assistant claims the spiders alpha report (one file, not five)",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "7cd328939",
+   "at": "2026-09-13T02:33:05+00:00",
+   "author": "Claude",
+   "subject": "ambient: groundwork for cave drips — the shared iso ellipse, an `indoor` feature flag, and the drip timeline model with its test",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "games2"
+   ],
+   "files": 7
+  },
+  {
+   "sha": "eb3500a77",
+   "at": "2026-09-13T02:32:14+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant — the per-shelf packer shipped; the ground RT's bracket tax proposed to games",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "009526f61",
+   "at": "2026-09-13T02:32:09+00:00",
+   "author": "Claude",
+   "subject": "Cover atlases: a new slot goes on the lowest shelf with room; the beacon averages the bound rows",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "4299a3ebb",
+   "at": "2026-09-13T02:29:39+00:00",
+   "author": "Claude",
+   "subject": "monsters: die_v1 sweep, six rounds — 32 of 39 complete; 13 directions on seven flat bodies still stand",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 801
+  },
+  {
+   "sha": "94bd68cd4",
+   "at": "2026-09-13T02:28:40+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant claims the per-shelf packer after his 02:25 run",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "235db6244",
+   "at": "2026-09-13T04:26:08+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: client perf report",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "573deb61f",
+   "at": "2026-09-13T04:25:38+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: client perf report",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a1856b4ae",
+   "at": "2026-09-13T02:10:33+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant — the cover follow-up shipped (5e562b57c); the run's remaining long frames posted to games",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "5e562b57c",
+   "at": "2026-09-13T02:10:00+00:00",
+   "author": "Claude",
+   "subject": "Cover atlases: the capture pool is warmed at init, and a freed slot goes to the floor first",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "c91a64630",
+   "at": "2026-09-13T02:06:45+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant claims the cover follow-up (pool warm-up, lowest free slot) after his 02:02 run",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "d5bf3be18",
+   "at": "2026-09-13T04:02:43+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: client perf report",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "79abd9940",
+   "at": "2026-09-13T04:02:13+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: client perf report",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "901f03e26",
+   "at": "2026-09-13T01:59:27+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant — the boot check shipped (4bc9a3aff); games-perf's queue is empty",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "4bc9a3aff",
+   "at": "2026-09-13T01:58:46+00:00",
+   "author": "Claude",
+   "subject": "Boot: a page behind the site reloads itself once, while the loading screen is up",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "dae063da3",
+   "at": "2026-09-13T01:55:54+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant claims the boot check against /version (main.ts, verify-bootversion.mjs, shipping.md)",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "e9aa3b8a2",
+   "at": "2026-09-13T01:48:07+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant — the cover atlases shipped (472f8f72a); posted to games-assistant and games-perf",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "472f8f72a",
+   "at": "2026-09-13T01:47:23+00:00",
+   "author": "Claude",
+   "subject": "Cover atlases: one bracket per atlas, on the rows in use — 7 whole-atlas brackets before",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "350d7e032",
+   "at": "2026-09-13T01:31:34+00:00",
+   "author": "Claude",
+   "subject": "board: games-perf-assistant claims the cover atlases' bracket fill (WorldScene, verify-cover.mjs, perf.md)",
+   "agent": "games-perf-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "93974154a",
+   "at": "2026-09-13T01:30:13+00:00",
+   "author": "Claude",
+   "subject": "monsters: a flat or legless body does not collapse, it transforms — twelve die_action lines reworded, the rule in the README",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "e65a60359",
+   "at": "2026-09-13T01:29:20+00:00",
+   "author": "Claude",
+   "subject": "board: monsters-assistant — die first pass landed; flat bodies reworded to transformations, sweep running",
+   "agent": "monsters-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a9e0f138a",
+   "at": "2026-09-13T01:27:03+00:00",
+   "author": "Claude",
+   "subject": "monsters: die_v1 first pass on all 39 approved candidates — 106 pass, 28 warn, 61 fail; the sweep follows",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 2061
+  },
+  {
+   "sha": "bd61c107b",
+   "at": "2026-09-13T01:01:12+00:00",
+   "author": "Claude",
+   "subject": "board: games notes the zone-crossing fix and how it is measured on his phone",
+   "agent": "games",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ec7c989a0",
+   "at": "2026-09-13T00:51:24+00:00",
+   "author": "games agent",
+   "subject": "The zone crossing keeps its bodies: a join snapshot is a whole view",
+   "agent": "games",
+   "dirs": [
+    "games2"
+   ],
+   "files": 9
+  },
+  {
+   "sha": "f97dda767",
+   "at": "2026-09-13T01:39:26+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "664dac12b",
+   "at": "2026-09-13T01:37:40+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "698e740f4",
+   "at": "2026-09-13T01:36:32+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "dcb2f940d",
+   "at": "2026-09-13T01:34:17+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "34169c567",
+   "at": "2026-09-13T01:33:16+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "7790ff911",
+   "at": "2026-09-13T01:32:58+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8e06a82ff",
+   "at": "2026-09-13T01:32:44+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ad88a869b",
+   "at": "2026-09-13T01:32:03+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ab6aa927e",
+   "at": "2026-09-13T01:31:47+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "479e61c05",
+   "at": "2026-09-13T01:31:19+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/base_tile_sets.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  }
+ ]
+}

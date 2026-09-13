@@ -3617,6 +3617,10 @@ const SECTIONS = {
   // ADMIN-ONLY (maintainer 2026-07-30): parameters are designer machinery,
   // not encyclopedia — players must not even see the read-only page.
   tuning:     { label: "Parameters",    noun: "constants",  icon: "parameters", count: (d) => d.counts.constants, adminOnly: true },
+  // WHAT HAS LANDED (maintainer 2026-09-13, and his own icon). Admin-only for
+  // the same reason Parameters is: commit shas and agent names are the factory
+  // floor, not the encyclopedia.
+  releases:   { label: "Release Notes", noun: "commits",    icon: "notes",      count: (d) => d.counts.releases, adminOnly: true },
 };
 // ONE list, read by both the nav (renderNav) and the Overview tiles
 // (viewHome) — so the two can never disagree about the order.
@@ -3625,7 +3629,9 @@ const SECTIONS = {
 // monsters").
 // World (Tiles 3.0) sits where the ground system has always sat. (tiles2 — the
 // "Tiles OLD" row — was deleted 2026-09-09; history in git.)
-const SECTION_ORDER = ["characters", "monsters", "world", "objects", "sounds", "music", "items", "lore", "tuning"];
+// Release Notes sits with Parameters at the end: the two admin-only sections
+// are the machinery, and the sections a player reads keep the front.
+const SECTION_ORDER = ["characters", "monsters", "world", "objects", "sounds", "music", "items", "lore", "tuning", "releases"];
 // A section's label may depend on who is reading (see `tiles` above).
 const label = (slug) => { const l = SECTIONS[slug]?.label; return (typeof l === "function" ? l() : l) ?? slug; };
 /** What a section counts, in the voice of whoever is reading — the Game Master
@@ -13558,6 +13564,125 @@ function viewRedLine() {
  * column only appears if something else ever writes an override, so the page
  * still cannot lie about what the running game holds. Tuning happens on the
  * game's own sliders, where he can see the change as he drags it. */
+/* RELEASE NOTES — WHAT HAS LANDED (maintainer 2026-09-13: "The release notes
+ * is not release notes at all. Its just the last 50 gitsha with commint
+ * message and date (just so I as an admin can see more easily what has
+ * landed). Also put the agent if you have that data (you might be able to tell
+ * from the folder that was changed)").
+ *
+ * So: no curation, no versions, no grouping by feature — the last 50 commits
+ * on main, newest first, in the reader's own clock.
+ *
+ * WHERE THE AGENT COMES FROM: `wiki/lib/releases.mjs`, at build time — the
+ * board file a commit wrote (one writer per board, so that one cannot be
+ * wrong), the author where the runner set a real one, or a subject that opens
+ * with a known agent's name. Where none of the three answers, the row shows
+ * the FOLDERS the commit changed instead, which is what he suggested and is a
+ * fact rather than a guess: `games2/` alone is worked by ten agents, so a
+ * folder names the domain and can never name the agent.
+ *
+ * WHY THE LIST CAN BE OLDER THAN MAIN: the image has no .git, so the deploy
+ * writes the list into the build context (see wiki/lib/releases.mjs). It is
+ * therefore the 50 commits ending at the build being served — and the header
+ * line says so, naming the build's own sha when the two differ rather than
+ * letting the page imply it is live. */
+const RELEASE_WHERE = {
+  characters2: "Races", monsters: "Creatures", tiles: "World", maps2: "The map",
+  scenery: "Scenery", sounds: "Sound Effects", music: "Music", items: "Items",
+  lore: "Lore", wiki: "Wiki", games2: "Game", live: "Live channel",
+  account: "Accounts", coordination: "Boards", ".github": "CI", "": "Repo root",
+};
+const relWhere = (d) => RELEASE_WHERE[d] ?? d;
+/** Does this agent's NAME already say this folder? `monsters` in monsters/,
+ *  `item-assistant` in items/, `games-perf-assistant` in games2/ — the prefix
+ *  test covers the domain suffixes (items/items2/games2) without a second
+ *  table to keep in step with the roster. */
+const sameDomain = (agent, dir) => {
+  const base = String(agent).replace(/-assistant$/, "");
+  return !!dir && (dir.startsWith(base) || base.startsWith(dir));
+};
+/** Today / Yesterday / "Sat 13 Sep", in the reader's clock. The commits carry
+ *  mixed offsets — a runner stamps UTC, his phone stamps +02:00 — so every
+ *  date on this page is computed from the instant, never from the string. */
+function relDayLabel(d) {
+  const midnight = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const days = Math.round((midnight(new Date()) - midnight(d)) / 86400000);
+  if (days === 0) return "Today";
+  if (days === 1) return "Yesterday";
+  return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+}
+function viewReleases() {
+  const doc = state.data.releases ?? {};
+  const commits = doc.commits ?? [];
+  const head = doc.head ?? null;
+  const build = state.data.git_sha ?? null;
+  // The list ends at the commit it was built from. When that is not the build
+  // being served, SAY the gap rather than showing a list that looks live.
+  const behind = head && build && head !== build;
+  const shaEl = (sha) => (doc.repo
+    ? h("a", { class: "rel-sha", href: `${doc.repo}/commit/${sha}`, target: "_blank", rel: "noopener",
+      title: "Open this commit on GitHub" }, sha)
+    : h("span", { class: "rel-sha" }, sha));
+  const row = (c) => {
+    const when = new Date(c.at);
+    const where = (c.dirs ?? []).map(relWhere);
+    return h("div", { class: "rel-row" },
+      h("div", { class: "rel-when", title: when.toLocaleString() },
+        when.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", hour12: false })),
+      h("div", { class: "rel-main" },
+        h("div", { class: "rel-subject" }, c.subject ?? ""),
+        h("div", { class: "rel-meta" },
+          c.agent
+            ? h("span", { class: "pill rel-agent", title: `${c.agent} — its own board is coordination/${c.agent}.json` }, c.agent)
+            : (where.length
+              ? h("span", { class: "pill rel-where", title: "No agent could be named for this commit, so this is where it landed — the folders it changed" },
+                where.slice(0, 3).join(" · ") + (where.length > 3 ? ` +${where.length - 3}` : ""))
+              : null),
+          // The folders BESIDE a named agent only when they say something the
+          // name does not: "monsters · Creatures" is the same fact twice,
+          // while "wiki-assistant · Boards" and "games-perf · The map" are
+          // two. An assistant answers to its agent's domain, hence the strip.
+          c.agent && where.length && !(where.length === 1 && sameDomain(c.agent, c.dirs[0]))
+            ? h("span", { class: "rel-dirs" }, where.slice(0, 3).join(" · ") + (where.length > 3 ? ` +${where.length - 3}` : ""))
+            : null,
+          shaEl(c.sha),
+          h("span", { class: "rel-files" }, c.files === 1 ? "1 file" : `${(c.files ?? 0).toLocaleString()} files`))));
+  };
+  const out = [
+    sectionHead("releases"),
+    h("p", { class: "muted" }, commits.length
+      ? (behind
+        ? `The ${commits.length} commits up to ${head}. The build you are reading is ${build}, so anything pushed after that is not here yet.`
+        : `The ${commits.length} most recent commits on main, up to and including the build you are reading${head ? ` (${head})` : ""}.`)
+      : "No commit list in this build."),
+  ];
+  if (!commits.length) {
+    out.push(h("p", { class: "muted" },
+      "The list is written by the deploy from git, and by `node wiki/build.mjs` locally — see wiki/lib/releases.mjs."));
+    return h("div", {}, ...out);
+  }
+  // One panel per day, so the eye lands on "what happened today" first.
+  let day = null;
+  let panel = null;
+  let count = 0;
+  const closeDay = () => { if (panel && count) panel.querySelector(".panel-title .pill").textContent = count === 1 ? "1 commit" : `${count} commits`; };
+  for (const c of commits) {
+    const d = new Date(c.at);
+    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    if (key !== day) {
+      closeDay();
+      day = key; count = 0;
+      panel = h("div", { class: "panel rel-panel" },
+        h("div", { class: "panel-title" }, relDayLabel(d), h("span", { class: "pill" }, "")));
+      out.push(panel);
+    }
+    count++;
+    panel.append(row(c));
+  }
+  closeDay();
+  return h("div", {}, ...out);
+}
+
 function viewTuning() {
   const t = state.tuning.constants;
   const q = state.query;
@@ -13826,6 +13951,7 @@ function route() {
   }
   // Tuning is admin-only INCLUDING by direct link — players get the overview.
   else if (page === "tuning") view = state.admin ? viewTuning() : viewHome();
+  else if (page === "releases") view = state.admin ? viewReleases() : viewHome();
   // #/bench was its own section for a day; keep the link alive as the tab.
   else if (page === "bench") { if (state.admin) musicTab = "dynamic"; view = state.admin ? viewMusic() : viewHome(); }
   else view = viewHome();

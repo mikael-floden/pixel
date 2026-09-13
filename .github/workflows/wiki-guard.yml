@@ -23,6 +23,7 @@ on:
       - "wiki/tools/check-candidates.mjs"
       - "wiki/tools/check-gone.mjs"
       - "wiki/tools/check-queue.mjs"
+      - "wiki/tools/check-releases.mjs"
       - "wiki/tools/serve-repo.mjs"
       - "wiki/tools/check-script.mjs"
       - ".github/workflows/wiki-guard.yml"
@@ -68,3 +69,5 @@ jobs:
         run: node wiki/tools/check-gone.mjs
       - name: A review queue does not move under his thumb
         run: node wiki/tools/check-queue.mjs
+      - name: Release Notes are the build's own commits, and no player sees them
+        run: node wiki/tools/check-releases.mjs

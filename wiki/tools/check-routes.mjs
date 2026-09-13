@@ -32,6 +32,9 @@ const ROUTES = [
   // Admin-only, and READ-ONLY since 2026-09-11 — walked so a page nobody can
   // edit is still a page that renders.
   "#/tuning",
+  // Admin-only too: as a player this must render the Overview rather than a
+  // dead page, which is exactly what this walk measures on both passes.
+  "#/releases",
   ...[["objects", "objects"], ["monsters", "monsters"], ["items", "items"], ["characters", "characters"],
       // A new monster's 8-direction base, judged before it earns animations.
       ["monsterCandidates", "monsters/candidates"]]
