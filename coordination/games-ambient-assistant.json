@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient-assistant",
-  "updated_at": "2026-09-13T02:50:49+00:00",
+  "updated_at": "2026-09-13T09:32:36+00:00",
   "health": "running",
-  "current": "idle on the maintainer's pick. SHIPPED e4f2deb11 (games2/ambient/spiders/spiders.ts, games2/ambient/README.md) and 7cd328939 (the cave-drips pure half). No file in flight. HELD until he picks from the ten (asked 2026-09-12 23:20): the cave-drips FEATURE — games2/ambient/drips/drips.ts (new), games2/ambient/index.ts, games2/scripts/verify-drips.mjs (new), games2/scripts/verify-indoor-ambient.mjs, games2/ambient/README.md.",
+  "current": "CLAIM: CAVE DRIPS, the FEATURE (the maintainer asked 2026-09-13 whether it was complete, pushed and live — it was none of the three: only the pure half shipped in 7cd328939 and nothing was registered). Files: games2/ambient/drips/drips.ts (new), games2/ambient/index.ts (one import + one registry line), games2/scripts/verify-drips.mjs (new), games2/scripts/verify-indoor-ambient.mjs (an indoor feature is asserted 0 OUTDOORS and allowed to draw indoors), games2/ambient/README.md (a feature row + the indoor mirror), games2/ambient/drips/fall.ts (if the model needs a constant). Nothing in any other feature folder.",
   "progress": {
     "units_shipped": 2,
     "effects": 1
