@@ -126,6 +126,13 @@ them; folder isolation beats DRY here).
   bolts on the same frame.
   (`crabs/` and `gnats/` predate this and each carry their own copy; they can
   adopt it whenever they are next opened.)
+- **`pickAt` ALSO ANSWERS THE ELEVATION**, which is how `dawnmist/` finds a
+  hollow with no new seam at all: it returns `{x, y, lvl}` for whatever is
+  DRAWN at a screen point, so a RING of picks around a candidate says whether
+  the ground rises around it. Six picks is a placement cost, never a per-frame
+  one — and it is worth re-reading the probe list before asking the games agent
+  for anything, which is the moths' lesson finally paying off in the right
+  direction.
 - **A LIQUID IS FOUND WITH THE PICKER, NEVER WITH THE LANDABLE HELPERS.**
   Everything in `runtime/ground.ts` answers about walkable DRY TOP ground, so
   none of it can find water or lava at all, and `landableAtScreen` is not
@@ -316,6 +323,18 @@ them; folder isolation beats DRY here).
     compose budget, and the drain did not repaint them); `__ml.groundRedraw()`
     brought the seam. A surface effect follows the RESOLVER, never the screen
     — the screen catches up. Reported to the games agent.
+- **THE SURFACE BAND IS ALSO WHERE A MARK GOES TO BE GRADED BY THE NIGHT**, and
+  `dawnmist/` is there for that reason rather than for the ground texture's.
+  Every crawler here sits deliberately ABOVE the overlay so its own colour
+  survives the dark (the ants' rule — a near-black dot on night grass differed
+  from it by one luma below the overlay). Fog is the exact reverse: a pale bank
+  ABOVE the overlay is the brightest thing on a 3am screen, which is the
+  rejected white-ants verdict in a new costume. Under it, the same grey is
+  near-black in the small hours, catches the first light with the ground it
+  lies on, and needs no sun term at all — the night shader does the whole
+  "dawn" for free. **Ask which side of the overlay a mark belongs on by asking
+  whether it EMITS or whether it is LIT**, and put it there; `dawnmist/` sits
+  at -999_999.5, under `foam/` so a coast line stays crisp over a bank.
 - **Pixel art scales nearest-neighbour only, everywhere, always.**
   Procedural glow textures follow the game's own additive-circle idiom. No
   smoothing upscales, no vector gradients.
@@ -455,6 +474,7 @@ controller (AUTO / NONE / solo-each).
 | `chimney/` | field | A PLUME OFF A ROOF — a hearth burning inside, seen across the town. A body of smoke out of a hole, not a wisp off a flame (`flue.ts`): it leaves the flue already dense and HOLDS for the first third of its life, it only ever gets BIGGER (campfire smoke gathers and falls apart; this dies by thinning), and it BENDS OVER as it climbs, because a puff still in the lee of the roof barely moves sideways while one well above it is in the air that is moving. Each stack breathes on its OWN slow stoke cycle, derived from its placement index so the same chimney breathes the same way every time you walk past it. TWO-TONE, which is the only reason it can be seen: the plume crosses its own roof and then the sky, and the_game's roofs are surfaced snow (241 luma), grey paving (168), grey stone (128), parquet (127) and brown paving (116) over grass at 61 — no single grey departs from 241 AND from 61, so a puff is a pale core inside a darker rim (one texture, one tint) | Any drawn scenery whose manifest publishes a `vent` the domain actually MEASURED (`conf` `opening` or `flue_top` — never `silhouette`); outdoors; the hearth is banked at noon, roaring at night, stoked further by rain, and NEVER out — a chimney that stops is indistinguishable from a broken effect |
 | `lava/` | field | THE POOL BREATHES — a dome swells slowly on the molten surface, HOLDS while its skin stretches, and bursts into a flash, a few sparks that fall back in, and a ring of cooled crust spreading from the spot; dark ash drifts up off the surface between bursts. Molten rock is viscous, so the whole cycle is slow — a fast bubble reads as boiling soup. THE POOL'S COLOUR IS THE TILES DOMAIN'S (`ground_types.json` `lava.palette.top` and `.wall`, fetched), and the marks depart from it BOTH WAYS: a hotter dome, a cooler crust, near-black ash | Any LAVA in view — the surface table's `harm` field, the game's one liquid that burns, so a second molten liquid bubbles the day it is added; found with `pickAt` + `surfaceAt`, never the landable helpers (lava is swimmable, not landable) |
 | `dragonflies/` | field | THE WATERLINE IN SUMMER, and the deliberate OPPOSITE of the butterflies above it: still, then a straight line at speed, then still again. It HOVERS on one point (a pixel of jitter, never a drift), DARTS in a linear segment that ends DEAD (easing the ends turns it into a bee), and PERCHES on a reed with its wings still OUT — a butterfly folds its wings at rest and a dragonfly never does, which at four pixels is the whole difference. The wings are a BLUR, not frames: at 400 beats a second there is no pose to draw | The maps2 agent's waterline pieces in view (`reed_beds`, `cattail_clumps`, `water_lily_clumps` — 124 placed), read by category from the display list; outdoors, by DAY, gone in rain and gone in wind |
+| `dawnmist/` | field | GROUND FOG IN THE LOW GROUND — dithered banks lying in a dip, thickening and thinning as they breathe, drifting about a cell over a whole life. Where it belongs is a FIELD, not a place: how enclosed a spot is (a ring of `pickAt` levels around it) plus a bonus for still water beside it, so a deep hollow is thick, the foot of a cliff is half of one, a flat bank beside a pond is a wisp and a ridge is nothing. Drawn in the SURFACE band so the NIGHT grades it — that is what makes it read as dawn without a single sun term in the colour. Dithered, never blurred: density does the work a gradient would do elsewhere | Any hollow or still-water bank in view, outdoors. Thickest in the small hours, full through the sunrise, gone by mid-morning; DUSK gets a hint of it, not the main event. And it is the one effect here that prefers FINE WEATHER: radiation fog needs a clear sky, so cloud thins it and rain kills it |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
