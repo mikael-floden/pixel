@@ -391,6 +391,12 @@ export class HudBar {
   private invGrid: HTMLElement | null = null;
   private invItems: { item: string; n: number }[] = [];
   private activeDrag: { cancel: () => void } | null = null;
+  /** THE SELECTED BACKPACK SLOT, or null. A drag out of the backpack starts
+   * ONLY from this slot (maintainer 2026-09-14) — see armSlotDrag. Held as
+   * {slot, item} rather than an index: an "inv" refresh can compact the array
+   * under us, and a selection that silently moved to a different item would
+   * drop the wrong thing. */
+  private invSel: { slot: number; item: string } | null = null;
   /** Close hook for the open drop-quantity dialog (null = none open). */
   private qtyClose: (() => void) | null = null;
   private tabs = new Map<TabId, HTMLButtonElement>();
@@ -1112,6 +1118,10 @@ export class HudBar {
     // pointerup can then never fire — cancel the gesture explicitly or the
     // ghost sprite is orphaned on screen until reload.
     this.activeDrag?.cancel();
+    // The selection is keyed to the ITEM in the slot, so a refresh that
+    // compacts the array (a stack emptied, a pick-up landed) drops it rather
+    // than quietly re-pointing it at whatever moved in.
+    if (this.invSel && this.invItems[this.invSel.slot]?.item !== this.invSel.item) this.invSel = null;
     grid.textContent = "";
     const total = Math.max(15, Math.ceil((this.invItems.length + 1) / 5) * 5);
     for (let i = 0; i < total; i++) {
@@ -1129,19 +1139,44 @@ export class HudBar {
         const badge = document.createElement("b");
         badge.textContent = `×${entry.n}`;
         cell.appendChild(badge);
+        if (this.invSel?.slot === i) cell.classList.add("sel");
         this.armSlotDrag(cell, img, i, entry.item, entry.n);
       }
       grid.appendChild(cell);
     }
   }
 
-  /** Pointer-captured drag (the bird-density slider pattern): a ghost sprite
-   * rides the finger; releasing over the game view (above the HUD line) hands
-   * the client coords to the game, anywhere else snaps back. Capture keeps
-   * every move/up on the slot element, so Phaser never sees the gesture and
-   * cannot arm a move trip from it. */
+  /** SELECT, THEN DRAG (maintainer 2026-09-14: "it's hard to scroll in the
+   * backpack because I always drag an item by mistake … in order to drag an
+   * item to the game you must first select the item (so the slot is
+   * highlighted)"). A filled slot has two states and the difference is what
+   * the browser is allowed to do with a touch that starts on it:
+   *
+   *  - UNSELECTED: no pointer capture, no `touch-action`, nothing
+   *    preventDefault()ed — so a finger that moves SCROLLS THE PAGE, exactly
+   *    like a touch on any other cell. Selecting is a `click`, and that is
+   *    the whole fix: a touch that turns into a scroll never fires one (the
+   *    same rule the Settings "default" buttons ride in the slider gutter).
+   *    No threshold, no timer, no guessing at intent.
+   *  - SELECTED: `touch-action:none` and a pointer-captured drag, as before.
+   *    One slot at a time, so 1 cell of 15 is sticky and the other 14 scroll.
+   *
+   * Tapping the selected slot again clears it; a real drag suppresses the
+   * click that follows so an aborted drag keeps the selection.
+   * THE LIFTED ITEM LEAVES ITS SLOT (his second ask, same message: "when you
+   * drag the item it should not still be visible in the slot") — the cell
+   * reads as an empty slot wearing the selection outline, so what is in hand
+   * and where it came from are both obvious.
+   * Capture keeps every move/up on the slot element, so Phaser never sees the
+   * gesture and cannot arm a move trip from it. */
   private armSlotDrag(cell: HTMLElement, img: HTMLImageElement, slot: number, item: string, count: number) {
+    let dragged = false; // a real drag happened — swallow the click that follows
+    cell.addEventListener("click", () => {
+      if (dragged) { dragged = false; return; }
+      this.selectSlot(this.invSel?.slot === slot ? null : { slot, item });
+    });
     cell.addEventListener("pointerdown", (e: PointerEvent) => {
+      if (this.invSel?.slot !== slot) return; // unselected: leave the touch to the scroller
       e.preventDefault();
       this.activeDrag?.cancel(); // one gesture at a time
       cell.setPointerCapture(e.pointerId);
@@ -1152,6 +1187,7 @@ export class HudBar {
           ghost.className = "ml-slot-ghost";
           document.body.appendChild(ghost);
           cell.classList.add("dragging");
+          dragged = true;
         }
         ghost.style.left = `${ev.clientX - 20}px`;
         ghost.style.top = `${ev.clientY - 20}px`;
@@ -1166,9 +1202,9 @@ export class HudBar {
         this.activeDrag = null;
       };
       const finish = (ev: PointerEvent) => {
-        const dragged = !!ghost;
+        const wasDrag = !!ghost;
         cleanup();
-        if (dragged) {
+        if (wasDrag) {
           // Over the GAME VIEW (top 61.8% — everything above the HUD's own
           // top edge) => drop it into the world at that point. The item id
           // rides along: slot indices go stale in flight when a stack
@@ -1188,6 +1224,17 @@ export class HudBar {
       cell.addEventListener("pointercancel", cancel);
       this.activeDrag = { cancel: cleanup };
     });
+  }
+
+  /** Move the backpack selection (null clears it) and repaint the two cells
+   * it touches. Public through the probe so the gate can drive it. */
+  private selectSlot(next: { slot: number; item: string } | null) {
+    if (this.invSel?.slot === next?.slot && this.invSel?.item === next?.item) return;
+    this.activeDrag?.cancel();
+    this.invSel = next;
+    const cells = this.invGrid?.children;
+    if (!cells) return;
+    for (let i = 0; i < cells.length; i++) cells[i].classList.toggle("sel", i === next?.slot);
   }
 
   /** The drop-quantity dialog (maintainer 2026-08-05, refined the same day):
@@ -2128,7 +2175,12 @@ function injectStyles() {
   /* ── backpack slots: wiki empty cells ── */
   .ml-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
     width:100%;max-width:560px;margin:auto 0}
-  .ml-slot.filled{position:relative;cursor:grab;touch-action:none}
+  /* A filled slot is a TAP TARGET until it is selected: no touch-action here,
+     so a finger that moves scrolls the page instead of lifting the item
+     (maintainer 2026-09-14). Only the SELECTED slot takes the gesture. */
+  .ml-slot.filled{position:relative;cursor:pointer}
+  .ml-slot.filled.sel{cursor:grab;touch-action:none;
+    background:var(--accent-soft);border-color:var(--accent)}
   .ml-slot.filled img{width:80%;height:80%;object-fit:contain;image-rendering:pixelated;
     position:absolute;left:10%;top:10%;pointer-events:none}
   /* the ×N count, lower-right of EVERY filled slot (maintainer 2026-08-05).
@@ -2137,7 +2189,12 @@ function injectStyles() {
   .ml-slot.filled b{position:absolute;right:3px;bottom:2px;pointer-events:none;
     padding:0 3px;border-radius:6px;font:700 11px/1.5 var(--sans);color:var(--ink);
     background:color-mix(in srgb, var(--surface) 82%, transparent)}
-  .ml-slot.dragging{opacity:.45}
+  /* THE LIFTED ITEM LEAVES ITS SLOT (maintainer 2026-09-14: "when you drag the
+     item it should not still be visible in the slot … easier to understand that
+     you have grabbed the item"). visibility, not display: the cell keeps its
+     size, so nothing in the grid reflows under the finger. The selection
+     outline stays, so the empty cell still says where the item came from. */
+  .ml-slot.dragging img,.ml-slot.dragging b{visibility:hidden}
   .ml-slot-ghost{position:fixed;width:40px;height:40px;z-index:60;pointer-events:none;
     image-rendering:pixelated;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
   /* ── drop-quantity dialog: centred in the GAME VIEW, over a backdrop that

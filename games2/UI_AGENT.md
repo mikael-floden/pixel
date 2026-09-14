@@ -372,6 +372,42 @@ from the games agent), #18 (title/landing screen).
   12:1 and muted ≥ 4.5:1 — reverting to the wiki's white fails it. The DARK
   blocks are the wiki's verbatim and untouched. The wiki has the light values
   on its board to adopt; `wiki/` is never edited from here.
+- **THE BACKPACK IS SELECT, THEN DRAG — AND AN UNSELECTED SLOT IS THE
+  SCROLLER'S** (maintainer 2026-09-14: "it's hard to scroll in the backpack
+  because I always drag an item by mistake … in order to drag an item to the
+  game you must first select the item (so the slot is highlighted)"). The slot
+  took the gesture on `pointerdown` with `touch-action:none`, so a finger that
+  started on a filled cell could never scroll the page — on a full backpack
+  that is most of the page. Now a filled slot has TWO states and the difference
+  is what the browser may do with the touch: unselected, nothing is captured or
+  preventDefault()ed and there is no `touch-action`, so the finger scrolls;
+  selected, it wears `touch-action:none` and the pointer-captured drag as
+  before. One slot at a time, so 1 cell of 15 is sticky and the rest scroll.
+  SELECTING IS A `click`, which is the whole trick and costs nothing: a touch
+  that turns into a scroll never fires one — the same rule the "default"
+  buttons ride on in the slider gutter — so there is no threshold, no timer and
+  no guess at intent. A real drag swallows the click that follows it, so an
+  aborted drag keeps the selection; tapping the selected slot again clears it.
+  The highlight is the tab row's (`--accent-soft` on `--accent`), because a
+  selected thing should look selected the same way everywhere.
+  THE LIFTED ITEM LEAVES ITS SLOT (his second ask, same message: "when you drag
+  the item it should not still be visible in the slot … easier to understand
+  that you have grabbed the item"): mid-drag the cell hides its art and badge
+  with `visibility`, NOT `display` — the cell keeps its size, so the grid never
+  reflows under the finger — and keeps the selection outline, so an empty
+  outlined cell says both "this is in your hand" and "it came from here".
+  The selection is held as {slot, item}, never a bare index: an `inv` refresh
+  can compact the array under a live selection, and one that silently
+  re-pointed at whatever moved in would drop the wrong thing.
+  Gated in `verify-dropqty` section 1b, and the FIRST assertion is the
+  regression that protects his scroll: an unselected slot lifts no ghost and
+  opens no dialog.
+  STILL OWED (his third ask, 2026-09-14): dragging an item onto another slot to
+  move or swap it. The inventory order is SERVER state (`player.inv`, a dense
+  array, re-sent as `inv` on every change), so a client-side reorder would
+  revert on the next refresh — it needs a message in `WorldRoom.ts`, which is
+  the games agent's file. Requested on their board; the UI half hangs off one
+  optional `HudActions` callback when it lands.
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font

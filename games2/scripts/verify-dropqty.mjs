@@ -137,13 +137,35 @@ const geom = () =>
     };
   });
 
-/** Drag slot 0 out of the backpack and release over the game view's middle. */
-const dragSlotOut = async () => {
-  const from = await page.evaluate(() => {
-    const c = document.querySelector(".ml-slot.filled");
-    const b = c.getBoundingClientRect();
+/** The centre of slot 0. */
+const slot0 = () =>
+  page.evaluate(() => {
+    const b = document.querySelector(".ml-slot.filled").getBoundingClientRect();
     return { x: b.left + b.width / 2, y: b.top + b.height / 2 };
   });
+
+/** Click slot 0 the way a player does — a real click. A touch that turns into
+ *  a scroll never fires one, which is the whole point of the gesture
+ *  (maintainer 2026-09-14). The click TOGGLES, so every caller that wants the
+ *  slot selected goes through selectSlot0 instead of clicking blindly. */
+const tapSlot0 = async () => {
+  const p0 = await slot0();
+  await page.mouse.move(p0.x, p0.y);
+  await page.mouse.down();
+  await page.mouse.up();
+  await settle();
+};
+const isSel0 = () => page.evaluate(() => !!document.querySelector(".ml-slot.filled")?.classList.contains("sel"));
+/** Leave slot 0 SELECTED whatever state it was in. */
+const selectSlot0 = async () => {
+  if (!(await isSel0())) await tapSlot0();
+};
+
+/** Drag slot 0 out of the backpack and release over the game view's middle.
+ *  Selects first unless `pre` is false — an UNSELECTED slot must not drag. */
+const dragSlotOut = async (pre = true) => {
+  if (pre) await selectSlot0();
+  const from = await slot0();
   const to = await page.evaluate(() => {
     const cs = getComputedStyle(document.documentElement);
     const px = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
@@ -157,6 +179,40 @@ const dragSlotOut = async () => {
   await page.mouse.move(to.x, to.y, { steps: 8 });
   await page.mouse.up();
   await settle();
+};
+
+/** What the grid shows mid-drag: is there a ghost, and has the source slot
+ *  given up its art? Driven with the mouse held down. */
+const midDrag = async () => {
+  await selectSlot0();
+  const from = await slot0();
+  const to = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const px = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
+    return { x: (px("--gv-left") + window.innerWidth - px("--gv-right")) / 2,
+             y: (window.innerHeight - px("--hud-h")) / 2 };
+  });
+  await page.mouse.move(from.x, from.y);
+  await page.mouse.down();
+  await page.mouse.move(to.x, to.y, { steps: 8 });
+  const g = await page.evaluate(() => {
+    const c = document.querySelector(".ml-slot.filled");
+    const img = c.querySelector("img"), b = c.querySelector("b");
+    const vis = (e) => (e ? getComputedStyle(e).visibility : null);
+    return { ghosts: document.querySelectorAll(".ml-slot-ghost").length,
+             art: vis(img), badge: vis(b), sel: c.classList.contains("sel"),
+             box: Math.round(c.getBoundingClientRect().height) };
+  });
+  await page.mouse.up();
+  await settle();
+  // close whatever the release opened, so the caller starts clean
+  await page.evaluate(() => {
+    const back = document.querySelector(".ml-qty-back");
+    if (back) { const b = back.getBoundingClientRect();
+      back.dispatchEvent(new PointerEvent("pointerdown", { bubbles: true, clientX: b.left + 8, clientY: b.top + 8 })); }
+  });
+  await settle();
+  return g;
 };
 
 const clickQty = async (label) => {
@@ -206,6 +262,66 @@ try {
   badges.every((b) => b.corner)
     ? ok("badges sit in each slot's lower-right corner")
     : fail(`badge placement: ${JSON.stringify(badges)}`);
+
+  // ---- 1b. SELECT, THEN DRAG (maintainer 2026-09-14: "it's hard to scroll in
+  //          the backpack because I always drag an item by mistake … you must
+  //          first select the item"). The regression that protects his scroll
+  //          is the FIRST one: an unselected slot must not lift anything, and
+  //          it must leave the touch to the page. ----
+  const noTouchAction = await page.evaluate(() => {
+    const c = document.querySelector(".ml-slot.filled");
+    return { unsel: getComputedStyle(c).touchAction, sel: c.classList.contains("sel") };
+  });
+  !noTouchAction.sel && noTouchAction.unsel !== "none"
+    ? ok(`an unselected slot leaves the touch to the scroller (touch-action: ${noTouchAction.unsel})`)
+    : fail(`unselected slot is still grabbing the gesture: ${JSON.stringify(noTouchAction)}`);
+  await dragSlotOut(false); // drag WITHOUT selecting first
+  const stray = await page.evaluate(() => ({
+    dialog: !!document.querySelector(".ml-qty-back"),
+    ghosts: document.querySelectorAll(".ml-slot-ghost").length,
+  }));
+  !stray.dialog && stray.ghosts === 0
+    ? ok("dragging an UNSELECTED slot lifts nothing — no ghost, no drop dialog")
+    : fail(`an unselected slot still dragged: ${JSON.stringify(stray)}`);
+  await selectSlot0();
+  const picked = await page.evaluate(() => {
+    const cells = [...document.querySelectorAll(".ml-slot.filled")];
+    const c = cells[0], cs = getComputedStyle(c);
+    return { sel: c.classList.contains("sel"), touch: cs.touchAction,
+             others: cells.filter((x) => x.classList.contains("sel")).length,
+             bg: cs.backgroundColor, border: cs.borderColor,
+             accent: getComputedStyle(document.documentElement).getPropertyValue("--accent").trim() };
+  });
+  picked.sel && picked.others === 1
+    ? ok("a click selects exactly one slot")
+    : fail(`click did not select one slot: ${JSON.stringify(picked)}`);
+  picked.touch === "none"
+    ? ok("…and the selected slot takes the gesture (touch-action: none)")
+    : fail(`selected slot touch-action ${picked.touch}, wanted none`);
+  picked.bg !== "rgba(0, 0, 0, 0)" && picked.border !== picked.bg
+    ? ok(`…and it is highlighted (${picked.bg} on ${picked.border})`)
+    : fail(`the selected slot is not highlighted: ${JSON.stringify(picked)}`);
+  // THE LIFTED ITEM LEAVES ITS SLOT (his second ask, measured mid-drag)
+  const held = await midDrag();
+  held.ghosts === 1
+    ? ok("a drag from the selected slot lifts one ghost onto the finger")
+    : fail(`${held.ghosts} ghosts mid-drag, wanted 1`);
+  held.art === "hidden" && held.badge === "hidden"
+    ? ok("…and the slot it came from shows neither art nor badge")
+    : fail(`the item is still in its slot mid-drag (art ${held.art}, badge ${held.badge})`);
+  held.box > 0
+    ? ok(`…while the cell keeps its size (${held.box}px — the grid never reflows under the finger)`)
+    : fail("the source cell collapsed mid-drag");
+  held.sel
+    ? ok("…and keeps its outline, so you can see where the item came from")
+    : fail("the source slot lost its selection mid-drag");
+  // tapping the selected slot again puts it down
+  await selectSlot0(); // make sure it is up first (a drag may have cleared it)
+  await tapSlot0();
+  const selLeft = await page.evaluate(() => document.querySelectorAll(".ml-slot.sel").length);
+  selLeft === 0
+    ? ok("tapping it again clears the selection")
+    : fail(`a second tap left ${selLeft} slot(s) selected`);
 
   // ---- 2. a ×1 slot ALSO asks — the dialog doubles as the drop CONFIRM
   //         (maintainer: "we want it for dropping 1 item … as well") ----
