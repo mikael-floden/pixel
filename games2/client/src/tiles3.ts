@@ -800,6 +800,23 @@ export function viewFromDoc(doc: any, bounds?: Partial<Bounds>): World3View {
     isLiquid: (g) => liquids.has(g),
     wallSideAt: (x, y) => wallOver.get(y * width + x) ?? null,
     decks: doc.decks ?? [],
+    /* THE DOC'S PUBLISHED ROOMS, which this helper used to drop on the floor.
+     * A room floor asks for its MEMBER and its region at the room's ANCHOR —
+     * "one Parquet Floor per room!!!" — and with no rooms in the view that rule
+     * falls back to the `ROOM_FLOOR` ground alone, so a dark_mud or light_soil
+     * room resolves a patchwork. The runtime view (`tiles3runtime.ts`) has
+     * always carried them and the game draws the right thing; only this helper
+     * did not, so the parity gate was comparing a resolver that could not see
+     * what the game sees (measured 2026-09-14 on the_bay: the mud room at
+     * 298,192 picked member 5 at the cell, where render3 picks 1 at the room's
+     * anchor 297,192). Cells are `{x,y}` in a doc and `{col,row}` in a parsed
+     * world; this helper reads the doc. */
+    rooms: (doc.rooms ?? []).length
+      ? (doc.rooms as { ground: string; cells: { x: number; y: number }[] }[]).map((r) => ({
+          ground: r.ground,
+          cells: r.cells.map((c) => ({ x: c.x, y: c.y })),
+        }))
+      : undefined,
   };
 }
 

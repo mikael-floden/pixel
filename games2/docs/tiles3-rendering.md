@@ -546,6 +546,39 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   in tiles3.ts AND render3.py, then regenerates both fixtures (python3 from
   the repo root; render3 needs Pillow and the tiles tree).
 
+- **THE FIXTURE IS GENERATED AGAINST HIS PUBLISHED RULES WHERE render3 IS
+  BEHIND ON THEM** (2026-09-14). The generator is render3 — it imports it and
+  refuses to write a fixture its own prediction cannot reproduce — with exactly
+  three functions replaced, each one a decision of the maintainer's that the
+  game took and maps2 has not mirrored yet, each asserted to STILL MATTER so
+  the patch deletes itself the day render3 catches up, and all three posted to
+  maps2:
+  `_member_rejected` probes `<key>#top`, which the live channel says "does not
+  reject the tile" (live/README.md 2026-08-21) — on the_game it drops every
+  tile member of grey_stone set 1 and the region falls back to the clean plate;
+  `DETAIL_FREQ` is still 1/56 where he set 1 in 100 (49 details against the
+  game's 25 in the_bay alone); and `wall_palette` demands a whole measured set
+  where the game counts its SURVIVORS (his "the insanely good looking wall …
+  has stopped working. Now it's the same everywhere", 09-13 — the tiles agent's
+  review prunes left 3 of 182 pools with a whole set).
+  THE DETAIL OVERLAY is the one divergence that is not patched and not a bug:
+  the game draws a detail OVER the cell's plate, top face only ("A detail
+  should never be able to show its wall"), where render3 composites it instead
+  of the plate — the gate states that, exactly as it already states the fade
+  overlay, and the cells and the tile still have to agree.
+
+- **A PARITY HARNESS MUST HAND THE RESOLVER WHAT THE GAME HANDS IT.** Three of
+  the twelve CI reds this gate carried were the harness feeding a poorer
+  renderer than the one that ships: `viewFromDoc` dropped the doc's published
+  `rooms` (so a room floor asked for its member at the cell instead of the
+  room's anchor — the patchwork "one Parquet Floor per room!!!" is about);
+  `tiles3.test.ts` never passed `wallSets`, so every wall it resolved was rank 0
+  while the game picks per cell and storey; and `scenery3.test.ts` passed
+  `roofed` without `deckAt`, so a chimney ON a roof resolved as under it and
+  three of render3's survivors went missing. The runtime carried all three all
+  along. When a parity gate fails, ask what the harness is NOT giving the port
+  before you touch the port.
+
 - KNOWN GAPS, stated: no FADE GUARD in the game (it is a pixel test over art the
   pool has not fetched yet — measured, 2 of 10 pools keep a tile render3 drops,
   which is a wrong tile inside a 1-cell band, never a hole;

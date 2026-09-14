@@ -56,6 +56,111 @@ REPO = os.path.dirname(os.path.dirname(HERE))
 sys.path.insert(0, os.path.join(REPO, "maps2", "pipeline"))
 
 import render3 as R3                                    # THE SPEC
+
+# ...THE SPEC, EXCEPT WHERE IT CONTRADICTS THE LIVE CHANNEL'S OWN CONTRACT.
+# `#top` IS THE DETAIL REVIEW AND IT DOES NOT REJECT THE TILE: "an id of the
+# form `<tile key>#top` judges the tile's TOP ALONE, as a once-in-a-while ground
+# detail - a second review axis, independent of the pair verdict on the bare
+# key ... `rejected` = "not a detail" - IT DOES NOT REJECT THE TILE"
+# (live/README.md, 2026-08-21; the maintainer again on 2026-09-12: "not a
+# detail" and "in my set" are independent judgements).
+#
+# render3._member_rejected still probes that facet, so it drops members the
+# maintainer never rejected: measured on the_game's grey_stone set 1, all four
+# tile members are dropped by a `#top` verdict alone and every cell of that
+# region falls back to the clean plate - the flat grey grid he photographed on
+# the spawn house. The game stopped probing it on 2026-09-12 (a0cfaec78: 33 of
+# his sets silently emptied, 219 of 340 members, 29% of the_game's land), asked
+# maps2 for render3's mirror that day, and has been waiting since - which is
+# why this fixture could not be regenerated and four tiles3 gates have been red.
+#
+# So the fixture is generated against THE CONTRACT, with render3's own function
+# replaced by the rule both sides agree is correct, and the patch ASSERTS THAT
+# IT STILL MATTERS: the day maps2 stops probing `#top`, the assert below fails
+# and this whole block is deleted. It is the only place this script departs
+# from render3, and it departs toward the maintainer's published rule.
+_R3_MEMBER_REJECTED = R3._member_rejected
+
+
+def _contract_member_rejected(m):
+    """games2 tiles3.ts `memberRejected`: the pair key or the raw path, never
+    the `#top` facet."""
+    t = m.get("tile")
+    if not t:
+        return False
+    k = R3._member_key(t)
+    for probe in (k, t):
+        if (R3.FB.get((probe or "").strip("/"), {}) or {}).get("status") == "rejected":
+            return True
+    return False
+
+
+_top_only_drops = [
+    m for g in (R3.BTS.get("grounds") or {}).values() for st in (g.get("sets") or [])
+    for m in (st.get("members") or [])
+    if m.get("kind") == "tile" and _R3_MEMBER_REJECTED(m) and not _contract_member_rejected(m)
+]
+assert _top_only_drops, (
+    "render3._member_rejected no longer drops any member on its `#top` verdict alone — "
+    "maps2 has fixed the mirror, so DELETE this patch and generate against render3 itself")
+R3._member_rejected = _contract_member_rejected
+
+# ...AND THE DETAIL RATE IS HIS DIAL, WHICH IS 1 IN 100. render3 still carries
+# the old "once in a while" fallback of 1/56 for a ground the wiki publishes no
+# rate for (and it publishes none today: there is no live/tuning/tile_details.
+# json). The maintainer set 100 and the game took it on 2026-09-13 (5a18dae08,
+# "Two dials take his numbers: hidden outline 20%, ground details 1 in 100"), so
+# render3 sprinkles nearly twice as many: 49 details against the game's 25 in
+# the_bay alone. Same treatment as the rejection rule above — generate against
+# his number, assert the patch still matters, delete it when maps2 catches up.
+GAME_DETAIL_FREQ = 1 / 100      # games2/client/src/tiles3.ts DETAIL_FREQ
+assert R3.DETAIL_FREQ != GAME_DETAIL_FREQ, (
+    "render3.DETAIL_FREQ is the game's dial now — DELETE this patch")
+R3.DETAIL_FREQ = GAME_DETAIL_FREQ
+
+
+# ...AND THE SURVIVORS OF A WALL SET ARE STILL A SET (maintainer 2026-09-13,
+# fog off, five walls: "the insanely good looking wall that used different
+# tiles has stopped working. Now it's the same everywhere"). The tiles agent's
+# review prunes of 09-11/12 deleted tiles that measured sets name, so a rule
+# that only accepts a set whose tiles are ALL still in the pool lost 179 of 182
+# pools and every massif drew rank 0 alone. The game's `wallPalette`
+# (games2/client/src/wallregion.ts) counts a set with at least two survivors,
+# whole sets first, and falls back to the LEAST-SEAMED set rather than to one
+# tile; render3's still demands the whole set. Mirrored here, same terms.
+_R3_WALL_PALETTE = R3.wall_palette
+
+
+def _survivor_wall_palette(pool, region, keys, sets=None):
+    n = len(keys)
+    if n <= 0:
+        return []
+    whole, partial, ranked = [], [], []
+    for st in sets or []:
+        idx = [keys.index(t) for t in st["tiles"] if t in keys]
+        if len(idx) <= 1:
+            continue
+        ranked.append((idx, st["cost"]))
+        if st["cost"] > R3.WALL_SET_MAX_COST:
+            continue
+        (whole if len(idx) == len(st["tiles"]) else partial).append(idx)
+    usable = whole or partial
+    if usable:
+        pick = int(R3.unit_hash(f"wr1|set|{pool}|{region}") * len(usable))
+        return usable[min(pick, len(usable) - 1)]
+    if ranked:
+        return min(ranked, key=lambda r: r[1])[0]
+    return [0]
+
+
+assert _R3_WALL_PALETTE.__doc__ and "len(idx) == len(st" not in (_R3_WALL_PALETTE.__doc__ or ""), ""
+_probe_keys = ["a", "b", "c"]
+_probe_sets = [{"cost": 0.5, "tiles": ["a", "b", "zz"]}]
+assert (_R3_WALL_PALETTE("p", "r", _probe_keys, _probe_sets)
+        != _survivor_wall_palette("p", "r", _probe_keys, _probe_sets)), (
+    "render3.wall_palette counts a set's survivors now — DELETE this patch")
+R3.wall_palette = _survivor_wall_palette
+
 import PIL.Image
 
 OUT = os.path.join(REPO, "games2", "server", "test", "fixtures", "tiles3-parity.json")
@@ -249,12 +354,18 @@ def flat_ident(ground):
     return TILE_IX[key]
 
 
-def over_ident(top, side):
-    key = ("over", top, side)
+def over_ident(top, side, x=None, y=None, z=None):
+    """WHICH approved x-over-y tile this CELL and STOREY wears. render3 ported
+    the game's wall region field (wallregion.ts) on 2026-09-12 — "one measured
+    set per massif, a member per course" — so the candidate is no longer rank 0
+    for the whole world and the identity is keyed by the tile actually chosen,
+    exactly as render3 keys its own cache. Without a cell it is rank 0, which is
+    render3's rule for the flat ladder, a borrowed wall and the pitch probe."""
+    c = R3.over_candidate(top, side, x, y, z)
+    key = ("over", top, side, c["key"].strip("/").split("/")[-1])
     if key in TILE_IX:
         return TILE_IX[key]
-    c = R3.over_candidate(top, side)
-    im = R3.over_tile(top, side)
+    im = R3.over_tile(top, side, x, y, z)
     e = {"role": "over", "top": top, "side": side, "key": c["key"],
          "path": path_ix(c["file"]), "w": im.width, "h": im.height}
     # THE BORROWED WALL. He marks a tile top_only (its own face is unusable) in
@@ -272,12 +383,14 @@ def over_ident(top, side):
     return TILE_IX[key]
 
 
-def storey_ident(ground):
-    key = ("storey", ground)
+def storey_ident(ground, x=None, y=None, z=None):
+    """The repeated course, at ITS OWN storey: the field is asked per course, so
+    one column can change tile between two of them (see over_ident)."""
+    c = R3.approved_candidate(ground, ground, True, x, y, z)
+    key = ("storey", ground, c["key"].strip("/").split("/")[-1])
     if key in TILE_IX:
         return TILE_IX[key]
-    c = R3.approved_candidate(ground, ground, storey=True)
-    im = R3.storey_tile(ground)
+    im = R3.storey_tile(ground, x, y, z)
     TILE_IX[key] = len(TILES)
     TILES.append({"role": "storey", "ground": ground, "key": c["key"],
                   "path": path_ix(c["file"]), "w": im.width, "h": im.height})
@@ -600,9 +713,16 @@ def build_window(doc, w):
         """MIRROR of render3.wang_surface(): THE TILE IS THE BOUNDARY."""
         quad = [(x, y), (x + 1, y), (x, y + 1), (x + 1, y + 1)]
         gs = [g(*c) for c in quad]
-        # a corner within one storey votes; a farther one folds to the cell's
+        # A corner within one storey votes its own ground; a farther one folds
+        # to the cell's — BUT WATER LIES FLAT: a LIQUID corner votes only at
+        # this cell's own level (render3 2026-09-11, the game 1d31b1af6). One
+        # storey of tolerance let the sea compose into the top face of the step
+        # above it, water running up a stair a whole level clear of it ("The
+        # ground on that stair has fucking water on it!"; 8 cells of the_game).
         if None not in gs and "" not in gs:
-            gs = [gv if abs(L(*c) - zl) <= 1 else gs[0] for gv, c in zip(gs, quad)]
+            gs = [gv if (abs(L(*c) - zl) <= 1 and (gv not in liq or L(*c) == zl))
+                  else gs[0]
+                  for gv, c in zip(gs, quad)]
         folded = False
         if gs.count(None) == 0 and "" not in gs and len(set(gs)) == 3:
             cnt = Counter(gs)
@@ -643,7 +763,101 @@ def build_window(doc, w):
                 return R3.composed_boundary(sa, sb, idx, ia, ib, x, y)
         return surface_rec(gr, x, y, zl, rec)
 
-    # 1) terrain — render3's own painter order (back to front in x+y).
+    # 2) decks. MIRROR of render3's 2b): a built slab's own anchor picks ONE
+    # set and ONE member for the whole of it, a cave lid asks per cell like the
+    # ground it is; `lo = dl - thickness` (0 = the cap
+    # only); the body is the deck's `side` when it names one (roof-over-side
+    # is the THIN look), else a cave lid's rock, else same-over-same; the cap
+    # is x-over-y whenever the body differs from the top OR the front is open,
+    # and the plain flat tile only for a same-material covered cell; and OVER A
+    # DOORWAY - a cell with an open front, no wall under it, base below the
+    # slab - or on the cell BEHIND one, the cap is cropped to TOP_Y + DY + 8
+    # rows (one level of roof, no band into the opening).
+    #
+    # A DECK GOES DOWN AT THE END OF ITS OWN DIAGONAL, not after the whole
+    # window: render3 moved it there on 2026-09-10 ("a diagonal's decks after
+    # its terrain, not inside the cell body" - a liquid cell and a level-0 cell
+    # each leave the cell body early, so a span over water or flat ground was
+    # never drawn at all; the pier and both river bridges vanished). Predicted
+    # in a block of its own, this mirror drifted out of render3's stream the
+    # same day and the fixture could not be regenerated since. ONE CELL CAN
+    # CARRY TWO SLABS - a cave lid with a roof over it - and they draw in the
+    # order the doc lists them, which is the order `deck_at` keeps.
+    CAP_CROP = R3.TOP_Y + R3.DY + 8
+    deck_recs = []
+    deck_at = {}
+    for di, dk in enumerate(doc.get("decks", [])):
+        dcells = sorted(((c["x"], c["y"]) for c in dk["cells"]),
+                        key=lambda c: (c[0] + c[1], c[1]))
+        cellset = set(dcells)
+        danch = min(dcells, key=lambda c: (c[0] + c[1], c[0])) if dcells else (0, 0)
+        for (x, y) in dcells:
+            if x0 <= x < x1 and y0 <= y < y1:
+                deck_at.setdefault((x, y), []).append((di, dk, cellset, danch))
+    deck_diag = {}
+    for (x, y) in deck_at:
+        deck_diag.setdefault(x + y, []).append((x, y))
+
+    def emit_deck(x, y):
+        for (di, dk, cellset, danch) in deck_at[(x, y)]:
+            dg = dk.get("ground") or "grey_stone"
+            dl, th = int(dk["level"]), int(dk.get("thickness", 1))
+            fc = (x + 1, y) in cellset and (x, y + 1) in cellset
+            lo = dl if fc else max(0, dl - th)
+            body = dk.get("side") or ("grey_stone" if (dk.get("kind") == "cave"
+                                      and dg not in ("black_rock", "grey_stone")) else dg)
+            doorway = (not fc) and (x, y) not in wall_over and L(x, y) < dl
+            behind = any((nx, ny) in cellset and (nx, ny) not in wall_over
+                         and L(nx, ny) < dl
+                         for (nx, ny) in ((x, y + 1), (x + 1, y)))
+            over = body != dg or not fc
+            cap_t = R3.over_tile(dg, body, x, y, dl) if over else R3.flat_tile(dg)
+            cap_ix = over_ident(dg, body, x, y, dl) if over else flat_ident(dg)
+            crop = doorway or behind
+            st = []
+            for f in range(lo, dl + 1):
+                # per course, like a terrain wall's stack
+                t = cap_t if f == dl else R3.storey_tile(body, x, y, f)
+                ti = cap_ix if f == dl else storey_ident(body, x, y, f)
+                if f == dl and crop:
+                    t = t.crop((0, 0, t.width, CAP_CROP))
+                yy = col_y(x, y, f) - R3.TOP_Y
+                st.append([f, ti, yy])
+                pred_note.append((x, y, 'deck-course', f))
+                pred.append((t.width, t.height, bx_of(x, y), yy, ident(t)))
+            drec = {"d": di, "kind": dk.get("kind"), "ground": dg, "side": dk.get("side"),
+                    "lvl": dl, "th": th, "x": x, "y": y,
+                    "front_covered": fc, "lo": lo, "body": body,
+                    "doorway": doorway, "behind": behind,
+                    "cap_h": CAP_CROP if crop else cap_t.height,
+                    "cap": cap_ix,
+                    "mid": storey_ident(body, x, y, lo if lo < dl else dl),
+                    "sx": bx_of(x, y), "st": st}
+            # A roof, a bridge and a cave lid are GROUND too: the slab top wears
+            # the maintainer's base tile set, top face only. A BUILT slab takes
+            # ONE set and ONE member for the whole of it at the deck's own
+            # anchor; a CAVE LID asks at its own cell, so it comes out as the
+            # same set and member the ground pass picks there.
+            sanch = (x, y) if dk.get("kind") == "cave" else danch
+            rid = f"{dg}@{sanch[0] // 24},{sanch[1] // 24}"
+            if rid not in rid_ix:
+                rid_ix[rid] = len(rids)
+                rids.append(rid)
+            chosen = pick_set(dg, rid)
+            mi, _m = pick_member_ix(chosen, sanch[0], sanch[1])
+            sim = R3.plate_img(dg, rid, x, y, anchor=sanch)
+            ck = next(k for k, v in R3._tile_cache.items() if v is sim)
+            pix, _im = plate_ident(dg, rid, sanch[0], sanch[1])
+            drec["srf_set"], drec["srf_mi"], drec["srf_p"] = chosen["id"], mi, pix
+            drec["srf_anchor"] = list(sanch)
+            t = R3.top_face_only(sim)
+            drec["srf_y"] = col_y(x, y, dl)
+            pred_note.append((x, y, 'deck-surface'))
+            pred.append((t.width, t.height, bx_of(x, y), drec["srf_y"], ident(t)))
+            deck_recs.append(drec)
+
+    # 1) terrain — render3's own painter order (back to front in x+y), each
+    #    diagonal followed by its own decks (see 2 below).
     for s in range(x0 + y0, x1 + y1 - 1):
         for x in range(max(x0, s - y1 + 1), min(x1, s - y0 + 1)):
             y = s - x
@@ -683,22 +897,33 @@ def build_window(doc, w):
             # every plateau edge. Such a cell draws its surface and nothing else.
             exposed = front_low < zl
             if exposed:
-                cap_t, cap_ix = R3.over_tile(gr, side), over_ident(gr, side)
-                # the repeated course is the WALL's own material in every case
-                mid_t, mid_ix = R3.storey_tile(side), storey_ident(side)
+                cap_t, cap_ix = R3.over_tile(gr, side, x, y, zl), over_ident(gr, side, x, y, zl)
                 st = []
                 for f in range(max(0, front_low), zl + 1):
-                    t = cap_t if f == zl else mid_t
-                    ti = cap_ix if f == zl else mid_ix
+                    # the repeated course is the WALL's own material in every
+                    # case, and EACH COURSE ASKS THE FIELD AT ITS OWN STOREY —
+                    # the tile may change between two courses of one column,
+                    # never along a whole column at once (the game's stack,
+                    # which render3 ported; hoisting this pick out of the loop
+                    # is the "whole column switching" he ruled out).
+                    t = cap_t if f == zl else R3.storey_tile(side, x, y, f)
+                    ti = cap_ix if f == zl else storey_ident(side, x, y, f)
                     yy = col_y(x, y, f) - TOP_Y
                     st.append([f, ti, yy])
                     pred_note.append((x, y, 'wall'))
                     pred.append((t.width, t.height, bx_of(x, y), yy, ident(t)))
+                # `mid` is the record's REPRESENTATIVE course — the stack above
+                # carries the real per-storey tiles and is what draws. It is a
+                # storey tile at the lowest drawn course, or at the cap's own
+                # storey for a one-course column (the game's line, tiles3.ts).
+                lowest = max(0, front_low)
                 rec["w"] = {"side": side, "fl": front_low, "fx": fx, "fy": fy,
                             "over": (x, y) in wall_over, "capped": True,
-                            "cap": cap_ix, "mid": mid_ix, "midg": side, "st": st}
+                            "cap": cap_ix,
+                            "mid": storey_ident(side, x, y, lowest if lowest < zl else zl),
+                            "midg": side, "st": st}
             dressed = not exposed or not R3.own_top(
-                R3.over_candidate(gr, side)["key"].strip("/"))
+                R3.over_candidate(gr, side, x, y, zl)["key"].strip("/"))
             # ...and the SURFACE goes on the cap: the wall is x-over-y art, the
             # top is the maintainer's set, top face only so the cap's own wall
             # survives.
@@ -710,79 +935,15 @@ def build_window(doc, w):
                 pred_note.append((x, y, rec.get('srf'), rec.get('set'), rec.get('mi')))
                 pred.append((t.width, t.height, bx_of(x, y), rec["py"], ident(t)))
 
-    # 2) decks. MIRROR of render3's 2b): a built slab's own anchor picks ONE
-    # set and ONE member for the whole of it, a cave lid asks per cell like the
-    # ground it is; `lo = dl - thickness` (0 = the cap
-    # only); the body is the deck's `side` when it names one (roof-over-side
-    # is the THIN look), else a cave lid's rock, else same-over-same; the cap
-    # is x-over-y whenever the body differs from the top OR the front is open,
-    # and the plain flat tile only for a same-material covered cell; and OVER A
-    # DOORWAY - a cell with an open front, no wall under it, base below the
-    # slab - or on the cell BEHIND one, the cap is cropped to TOP_Y + DY + 8
-    # rows (one level of roof, no band into the opening).
-    CAP_CROP = R3.TOP_Y + R3.DY + 8
-    deck_recs = []
-    for di, dk in enumerate(doc.get("decks", [])):
-        dg = dk.get("ground") or "grey_stone"
-        dl, th = int(dk["level"]), int(dk.get("thickness", 1))
-        dcells = sorted(((c["x"], c["y"]) for c in dk["cells"]),
-                        key=lambda c: (c[0] + c[1], c[1]))
-        cellset = set(dcells)
-        danch = min(dcells, key=lambda c: (c[0] + c[1], c[0])) if dcells else (0, 0)
-        for (x, y) in dcells:
-            if not (x0 <= x < x1 and y0 <= y < y1):
-                continue
-            fc = (x + 1, y) in cellset and (x, y + 1) in cellset
-            lo = dl if fc else max(0, dl - th)
-            body = dk.get("side") or ("grey_stone" if (dk.get("kind") == "cave"
-                                      and dg not in ("black_rock", "grey_stone")) else dg)
-            doorway = (not fc) and (x, y) not in wall_over and L(x, y) < dl
-            behind = any((nx, ny) in cellset and (nx, ny) not in wall_over
-                         and L(nx, ny) < dl
-                         for (nx, ny) in ((x, y + 1), (x + 1, y)))
-            over = body != dg or not fc
-            cap_t = R3.over_tile(dg, body) if over else R3.flat_tile(dg)
-            cap_ix = over_ident(dg, body) if over else flat_ident(dg)
-            mid_t, mid_ix = R3.storey_tile(body), storey_ident(body)
-            crop = doorway or behind
-            st = []
-            for f in range(lo, dl + 1):
-                t = cap_t if f == dl else mid_t
-                ti = cap_ix if f == dl else mid_ix
-                if f == dl and crop:
-                    t = t.crop((0, 0, t.width, CAP_CROP))
-                yy = col_y(x, y, f) - R3.TOP_Y
-                st.append([f, ti, yy])
-                pred_note.append((x, y, 'deck-course', f))
-                pred.append((t.width, t.height, bx_of(x, y), yy, ident(t)))
-            drec = {"d": di, "kind": dk.get("kind"), "ground": dg, "side": dk.get("side"),
-                    "lvl": dl, "th": th, "x": x, "y": y,
-                    "front_covered": fc, "lo": lo, "body": body,
-                    "doorway": doorway, "behind": behind,
-                    "cap_h": CAP_CROP if crop else cap_t.height,
-                    "cap": cap_ix, "mid": mid_ix, "sx": bx_of(x, y), "st": st}
-            # A roof, a bridge and a cave lid are GROUND too: the slab top wears
-            # the maintainer's base tile set, top face only. A BUILT slab takes
-            # ONE set and ONE member for the whole of it at the deck's own
-            # anchor; a CAVE LID asks at its own cell, so it comes out as the
-            # same set and member the ground pass picks there.
-            sanch = (x, y) if dk.get("kind") == "cave" else danch
-            rid = f"{dg}@{sanch[0] // 24},{sanch[1] // 24}"
-            if rid not in rid_ix:
-                rid_ix[rid] = len(rids)
-                rids.append(rid)
-            chosen = pick_set(dg, rid)
-            mi, _m = pick_member_ix(chosen, sanch[0], sanch[1])
-            sim = R3.plate_img(dg, rid, x, y, anchor=sanch)
-            ck = next(k for k, v in R3._tile_cache.items() if v is sim)
-            pix, _im = plate_ident(dg, rid, sanch[0], sanch[1])
-            drec["srf_set"], drec["srf_mi"], drec["srf_p"] = chosen["id"], mi, pix
-            drec["srf_anchor"] = list(sanch)
-            t = R3.top_face_only(sim)
-            drec["srf_y"] = col_y(x, y, dl)
-            pred_note.append((x, y, 'deck-surface'))
-            pred.append((t.width, t.height, bx_of(x, y), drec["srf_y"], ident(t)))
-            deck_recs.append(drec)
+
+        # ...then that diagonal's decks, render3's own order (by y).
+        for (dx_, dy_) in sorted(deck_diag.get(s, ()), key=lambda c: c[1]):
+            emit_deck(dx_, dy_)
+
+    # The RECORDS keep the shape they always had — deck by deck, each deck's
+    # cells in its own draw order — because the fixture's `decks` array is read
+    # by index; only the PREDICTED STREAM had to move into painter order.
+    deck_recs.sort(key=lambda r: (r["d"], r["x"] + r["y"], r["y"]))
 
     # 3) scenery - MIRROR of render3's 3): a piece under a roof/cave deck is
     #    indoors and not drawn; `dir` picks a rotation sprite when the piece
@@ -795,12 +956,26 @@ def build_window(doc, w):
     #    half-up drifts a pixel on exact .5 scales.
     roofed = {(c["x"], c["y"]) for dk in doc.get("decks", [])
               if dk.get("kind") in ("roof", "cave") for c in dk["cells"]}
+    # ...BUT A PIECE STANDING **ON** A DECK IS NOT UNDER IT: a chimney's feet
+    # are on the roof's own top (`z` storeys above its cell's ground), so it is
+    # drawn like any outdoor piece (render3 2026-09-13, "a fire in most rooms,
+    # and the chimney on the roof over it"; the game reads the same line,
+    # scenery3.ts `onDeck`).
+    deck_top = {}
+    for dk in doc.get("decks", []):
+        if dk.get("kind") in ("roof", "cave"):
+            for c in dk["cells"]:
+                k = (c["x"], c["y"])
+                deck_top[k] = max(deck_top.get(k, -1), dk["level"])
     scen = []
     for p in sorted(doc.get("scenery", []), key=lambda p: p["x"] + p["y"]):
         px, py = p["x"], p["y"]
         if not (x0 <= px < x1 and y0 <= py < y1):
             continue
-        if (int(px), int(py)) in roofed:
+        cellk = (int(px), int(py))
+        if cellk in roofed and not (
+                float(p.get("z") or 0.0)
+                and L(*cellk) + float(p["z"]) >= deck_top.get(cellk, 1e9) - 1e-9):
             continue
         meta = json.load(open(os.path.join(REPO, "scenery", p["piece"], "scenery.json")))
         spath = meta["sprite"]
@@ -808,12 +983,21 @@ def build_window(doc, w):
             cand = os.path.join(p["piece"], "rotations", p["dir"] + ".webp")
             if os.path.isfile(os.path.join(REPO, "scenery", cand)):
                 spath = cand
-        if p.get("state") and (meta.get("states") or {}).get(p["state"]):
-            spath = meta["states"][p["state"]]["sprite"]      # an explicit state wins
-        elif p.get("lit"):
+        # AN EXPLICIT STATE WINS over `lit`, and A STATE CARRIES ITS OWN
+        # ROTATIONS: the facing comes from THAT state, never from the piece's
+        # base rotations and never from the state's south still (the game's
+        # `facedSprite`: state.rotations[dir] || state.rotations.south ||
+        # state.sprite; render3 2026-09-13). Taking the state's south sprite
+        # here drew every turned variation facing the camera — 259 of
+        # the_game's placements carry both a state and a dir.
+        stk = p.get("state") if (meta.get("states") or {}).get(p.get("state") or "") else None
+        if not stk and p.get("lit"):
             litk = sorted(k for k in (meta.get("states") or {}) if k.startswith("LIT"))
-            if litk:
-                spath = meta["states"][litk[0]]["sprite"]
+            stk = litk[0] if litk else None
+        if stk:
+            st_ = meta["states"][stk]
+            rot = st_.get("rotations") or {}
+            spath = rot.get(p.get("dir") or "") or rot.get("south") or st_["sprite"]
         sp = R3.Image.open(os.path.join(REPO, "scenery", spath)).convert("RGBA")
         base = R3.Image.open(os.path.join(REPO, "scenery", meta["sprite"])).convert("RGBA")
         bb0 = base.getbbox() or (0, 0, base.width, base.height)

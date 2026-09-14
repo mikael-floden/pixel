@@ -180,6 +180,12 @@ function build(): { t: Tiles3; pitch: number; groundTypes: Record<string, any> }
     slopes: load("tiles/slopes/index.json"),
     topWallOverrides: load("live/tuning/top_walls.json").overrides,
     topOverrides: load("live/tuning/tile_tops.json").overrides,
+    /* THE MEASURED WALL SETS, which this harness did not hand the resolver —
+     * so every wall it resolved fell back to rank 0 while the game (and, since
+     * it ported the game's field, render3) picks a member per cell and storey.
+     * The gate was comparing a renderer without its wall variety; the runtime
+     * has always loaded this file (tiles3runtime.ts). */
+    wallSets: (load("games2/client/src/wallsets.json") as { pools?: Record<string, { cost: number; tiles: string[] }[]> }).pools,
     fadeGuard: fadeGuard(groundTypes),
     slopeGuard: slopeGuard(),
     warn: () => {},
@@ -479,8 +485,22 @@ test("every cell of every window resolves to render3's art", { skip: !!MISSING.l
         assert.ok(mine.detail, `${at} detail`);
         assert.equal(mine.detail.index, c.d.i, `${at} detail index`);
         assert.equal(mine.detail.file, paths(c.d.t), `${at} detail tile`);
-        assert.equal((mine.art as any).path, paths(c.d.t), `${at} draws the detail`);
-        assert.equal(mine.art.kind, "conform", `${at} a detail is conformed`);
+        /* A DETAIL IS AN OVERLAY, exactly as the fade above is, and for the
+         * maintainer's own reason: "A detail should never be able to show its
+         * wall" (2026-09-13). A plate is a 29-row diamond plus a 17-row wall
+         * band; a detail that REPLACED the plate brought its own band, a dark
+         * rock or a puddle smeared seventeen rows into the ground at level 0,
+         * where nothing below the cell could ever justify it. So the cell keeps
+         * its own member plate and the detail is drawn over it, top face only —
+         * a deliberate divergence from render3 (which composites the detail
+         * instead of the plate), asked of maps2 the same day. The art therefore
+         * stays the plate, or the slope under it, and `cell.detail.file` is the
+         * only place the detail art is named. */
+        assert.equal(
+          (mine.art as any).path,
+          mine.slope ? mine.slope.file : mine.plate.path,
+          `${at} a detail is an overlay: the art stays the plate (or the slope under it)`,
+        );
       } else {
         assert.equal(mine.detail, undefined, `${at} the port placed a detail render3 does not`);
       }

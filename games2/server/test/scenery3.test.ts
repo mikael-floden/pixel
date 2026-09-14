@@ -420,6 +420,22 @@ test("a broken manifest degrades, once, and never throws", { skip }, () => {
   assert.equal(({} as any).sprite, undefined, "Object.prototype is intact");
 });
 
+/* THE DECK'S OWN WALKABLE LEVEL PER CELL, which is what tells a piece standing
+ * ON a roof from one under it (`SceneryPlacement.onDeck`): a chimney's feet are
+ * on the roof's top, so it draws from the street while the furniture beneath it
+ * waits for the cut-away. The scene reads `TerrainGrid.deck`; this is the same
+ * map off the doc, and without it every test here resolved a chimney as roofed
+ * and dropped three of render3's survivors. */
+const deckTopAt = (() => {
+  const top = new Map<number, number>();
+  for (const d of doc.decks ?? [])
+    for (const c of d.cells) {
+      const k = c.y * doc.size.w + c.x;
+      top.set(k, Math.max(top.get(k) ?? -1, d.level));
+    }
+  return (cx: number, cy: number) => top.get(cy * doc.size.w + cx) ?? -1;
+})();
+
 /* -- placements and the window ----------------------------------------------- */
 
 test("placements drop what render3 drops, and keep its painter order", { skip }, () => {
@@ -431,6 +447,7 @@ test("placements drop what render3 drops, and keep its painter order", { skip },
     frame,
     levelAt: view.levelAt,
     roofed: roofedCells(doc.decks, doc.size.w),
+    deckAt: deckTopAt,
     width: doc.size.w,
     bounds,
   });
@@ -495,6 +512,7 @@ test("the whole world's scenery resolves — the real counts", { skip }, () => {
     frame,
     levelAt: view.levelAt,
     roofed: roofedCells(doc.decks, doc.size.w),
+    deckAt: deckTopAt,
     width: doc.size.w,
   });
   assert.equal(all.length, doc.scenery.length);
@@ -525,6 +543,7 @@ test("a window query returns exactly what a full scan returns", { skip }, () => 
     frame,
     levelAt: view.levelAt,
     roofed: roofedCells(doc.decks, doc.size.w),
+    deckAt: deckTopAt,
     width: doc.size.w,
   });
   const idx = new SceneryIndex(ps, { bucket: 512 });
