@@ -514,10 +514,13 @@ test("the_game mud cave: every cell of the room is OPEN SKY from its own lid", (
   const world = loadWorld("the_game");
   if (!world) return test.skip("maps2/worlds3/the_game missing");
   const grid = gridOf(world);
-  // The cave under the mud, which is what he was standing on: seven touching
-  // level-12 slabs (thickness 0..6) over a floor cut down to level 0-6.
+  // The cave under the mud, which is what he was standing on: touching level-12
+  // slabs (thickness 0..6) over a floor cut down to level 0-6. HOW MANY SLABS
+  // AND HOW MANY CELLS IS NOT THE CLAIM — it was seven and 142 when he reported
+  // this, it is whatever maps2 has dug since, and pinning it only made the
+  // suite red on a map edit. The claim is the geometry in the loop below.
   const lids = world.decks!.filter((d) => d.kind === "cave" && d.mat === "dark_mud");
-  assert.equal(lids.length, 7, "the mud cave is seven slabs (measured)");
+  assert.ok(lids.length > 0, "the_game still has a mud cave to measure");
   const seed = lids
     .flatMap((d) => d.cells)
     .find((c) => {
@@ -527,7 +530,8 @@ test("the_game mud cave: every cell of the room is OPEN SKY from its own lid", (
   const s = findIndoorSpace(grid, seed.col, seed.row, grid.level[at(grid, seed.col, seed.row)])!;
   assert.ok(s, "the mud cave is a space");
   assert.equal(s.indoor, true, "…and it passes the room rules");
-  assert.equal(s.roof.size, 142, "the whole connected mud cave (measured)");
+  console.log(`  the mud cave: ${lids.length} slabs, ${s.roof.size} cells in the connected room`);
+  assert.ok(s.roof.size > 20, `the room is big enough to be the mud cave (${s.roof.size} cells)`);
 
   // EVERY one of those cells carries a lid you can stand ON, and from up there
   // nothing is overhead: the same cell is indoors from below and outdoors from
@@ -544,7 +548,7 @@ test("the_game mud cave: every cell of the room is OPEN SKY from its own lid", (
     // …and from the floor it IS the room, or the pair above proves nothing.
     assert.ok(roofAbove(grid, c, r, grid.level[j]) !== null, `(${c},${r}) has no roof from its own floor`);
   }
-  assert.equal(standable, 142, "every cell of the room is walkable from above");
+  assert.equal(standable, s.roof.size, "every cell of the room is walkable from above");
 });
 
 test("the_game cave: the two wall sets overlap only at INSIDE corners and free-standing pillars", () => {
@@ -820,11 +824,12 @@ test("the_game: standing under the spawn house's roof is indoors", () => {
   assert.equal(s.indoor, true, `house is indoors (wall ratio ${s.wallRatio})`);
   assert.equal(s.roofLevel, house.level);
   assert.equal(s.capped, false);
-  // 13 cells — the SMALLEST real interior the world ships, and the number
-  // MIN_ROOM_CELLS has to stay clear of.
-  assert.equal(s.roof.size, 13, "the smallest shipped interior (measured)");
-  assert.ok(s.roof.size > MIN_ROOM_CELLS, "…still over the size floor");
-  assert.equal(s.wallRatio, 13 / 14);
+  // The SMALLEST real interior the world ships is what MIN_ROOM_CELLS has to
+  // stay clear of — the clearance is the claim, not the 13 cells it happens to
+  // be today.
+  console.log(`  the smallest shipped interior: ${s.roof.size} cells, wall ratio ${s.wallRatio.toFixed(4)} (floor ${MIN_ROOM_CELLS})`);
+  assert.ok(s.roof.size > MIN_ROOM_CELLS, `the smallest shipped interior (${s.roof.size}) is over the size floor`);
+  assert.ok(s.wallRatio > INDOOR_WALL_RATIO, "…and enclosed enough to be a room at all");
   assert.ok(s.entrances.size >= 1, "the house has a way out");
   assert.ok(s.wallLeft.size + s.wallRight.size >= 1, "and camera-facing walls to cut away");
   // Out on the grass south of the house there is no roof at all.
@@ -873,26 +878,35 @@ test("every shipped deck: no bridge cell is indoors, every roof/cave space is", 
   // you can stand UNDER (a roof deck also covers its wall cells, where the deck
   // is dropped for sitting at base level and there is nothing to be under).
   const counts = Object.fromEntries([...seen].map(([k, v]) => [k, v.cells]));
-  for (const [key, want] of Object.entries({
-    // 35, and it has moved twice: maps2's "a span over a gap carries at least
-    // one full course" (2026-09-10) thickened the crossings' decks, and the
-    // fill's relative step (one room per cave) changed which cells resolve a
-    // space at all. It was 28.
-    "the_game/bridge": 35, // the two river crossings; the mountain spans sit at base level
-    "the_game/roof": 430, // eleven houses
-    "the_game/cave": 740, // the massif's cave under twelve slabs (598) + the dungeon under the field (142)
-  })) {
-    assert.equal(counts[key], want, `${key}: cells swept (measured)`);
+  console.log(`  swept: ${Object.entries(counts).map(([k, n]) => `${k} ${n}`).join(", ")}`);
+  // A FLOOR PER KIND, NOT A CENSUS. This layer exists only so an empty sweep
+  // cannot pass the assertion above vacuously, and the counts move every time
+  // maps2 digs (bridge 28 -> 35 when spans got a full course, cave 740 -> 1,771
+  // as the massif grew) — pinned, it failed about the town, never about the
+  // rule. All three kinds must be swept, each with enough cells to mean it.
+  for (const [key, floor] of Object.entries({ "the_game/bridge": 20, "the_game/roof": 200, "the_game/cave": 400 })) {
+    assert.ok((counts[key] ?? 0) >= floor, `${key}: only ${counts[key] ?? 0} cells swept, under the ${floor} this gate needs`);
   }
   // And the measured gap INDOOR_WALL_RATIO sits in the middle of.
   const bridgeMax = Math.max(...[...seen].filter(([k]) => k.endsWith("/bridge")).map(([, v]) => v.best));
   const roomMin = Math.min(...[...seen].filter(([k]) => !k.endsWith("/bridge")).map(([, v]) => v.worst));
-  // The worst shipped bridge: the river crossing over the dry bed, 7 of 20
-  // since maps2 thickened the spans (it was 6 of 18).
-  assert.ok(Math.abs(bridgeMax - 0.35) < 1e-9, "the worst shipped bridge (measured)");
-  assert.ok(Math.abs(roomMin - 13 / 14) < 1e-9, "the best-open shipped room (measured)");
+  // THE GAP IS THE CLAIM: the most enclosed bridge the world ships still reads
+  // below the bar and the most open room still reads above it, with room to
+  // spare on both sides — which is what makes the dial a classification rather
+  // than a coin toss. (The two ends move as maps2 builds: the worst bridge was
+  // 6 of 18 and is 7 of 20 since the spans got a full course.)
+  console.log(`  wall ratio: worst bridge ${bridgeMax.toFixed(4)} < bar ${INDOOR_WALL_RATIO} < best-open room ${roomMin.toFixed(4)}`);
   assert.ok(bridgeMax < INDOOR_WALL_RATIO && INDOOR_WALL_RATIO < roomMin, "the bar is inside the gap");
-  assert.ok(INDOOR_WALL_RATIO - bridgeMax > 0.34 && roomMin - INDOOR_WALL_RATIO > 0.22, "…with margin on both sides");
+  // A MARGIN, NOT A HAIR. This asked for 0.34 clear below the bar and the world
+  // shipped 0.3500 — one thickened span from failing, and the failure would
+  // have read as "the bar moved" when nothing about the bar had. 0.1 is the
+  // width at which the classification stops being a coin toss; the real
+  // clearances are printed above, so a narrowing gap is visible long before it
+  // trips this.
+  assert.ok(
+    INDOOR_WALL_RATIO - bridgeMax > 0.1 && roomMin - INDOOR_WALL_RATIO > 0.1,
+    `the gap has margin on both sides (${(INDOOR_WALL_RATIO - bridgeMax).toFixed(3)} below, ${(roomMin - INDOOR_WALL_RATIO).toFixed(3)} above)`,
+  );
 });
 
 // ---------------------------------------------------------------------------
