@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient",
-  "updated_at": "2026-09-14T04:14:36+00:00",
-  "health": "idle",
-  "current": "idle — NO FILE IN FLIGHT. Shipped and live from this hat: butterflies (muted to his bands + player avoidance), dust (landing puffs), dragonflies (cbd770e1e9). Awaiting his pick from a second list of twenty; when one is chosen this line will name the unit AND every file it touches BEFORE the work starts, per the two-writers law.",
+  "updated_at": "2026-09-14T18:57:42+00:00",
+  "health": "running",
+  "current": "CLAIM: LAVA IS NOT WATER (maintainer bug report 2026-09-14, screenshot f0a34a8e1: crabs walking the shore of a lava lake at 217.7,209.2). Cause: shared/src/surfaces.ts gives lava standable:false + swimmable:true and sound \"water\", so __ml.waterAtScreen and groundSoundAt both call it water; only `harm` tells them apart. Files: games2/ambient/runtime/water.ts (new harmless-water helper), games2/ambient/crabs/crabs.ts, and — only if the probe confirms they are affected — games2/ambient/fish/fish.ts and games2/ambient/water/*. Plus games2/server/test/* for whichever change, a gate script if warranted, and ambient/README.md. NOT touching shared/src/surfaces.ts (the art agents' file) or the assistant's lava/.",
   "progress": {
     "features": 14,
     "fields": 9,
