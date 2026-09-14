@@ -28,6 +28,7 @@ import { execSync } from "node:child_process";
 // own art — for weeks, with a version stamp naming the wrong build. lib/ ships.
 import { contentBounds, decodeWebP } from "./lib/webp-pixels.mjs";
 import { measureOverhang } from "./lib/overhang.mjs";
+import { releases, writeCache as writeReleaseCache } from "./lib/releases.mjs";
 
 const WIKI_DIR = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2);
@@ -273,6 +274,9 @@ function buildMonsters() {
     }
     const overrides = animMap.overrides?.[id] ?? {};
     const anims = {};
+    // FIRST in the row, always — the art every animation was rotated from.
+    const still = staticState(join(base, id, "rotations"), `monsters/${id}/rotations`);
+    if (still) anims.static = still;
     for (const state of states.length ? states : Object.keys(mj.animations ?? {})) {
       const folder = overrides[state] ?? animMap.states?.[state] ?? state;
       const dirs = {};
@@ -1149,19 +1153,28 @@ function buildObjects() {
       if (m) entries.push([`${top}/${child}`, top, m]);
     }
   }
-  // TYPE comes from the scenery domain's own catalog: every group in
-  // scenery/config/factory.json carries a `type` (TREE / WINDOW /
-  // MOUNTAIN_WALL / TOWN / INDOOR / NATURE / OTHER) so the wiki can offer a
-  // type filter without inventing the taxonomy here. A piece may override its
-  // group by putting its own `type` in scenery.json — the piece wins, the
-  // group is the default, and anything unrecognised falls to OTHER rather
-  // than vanishing from every filter.
-  const TYPES = ["TREE", "WINDOW", "MOUNTAIN_WALL", "TOWN", "INDOOR", "NATURE", "OTHER"];
+  /* TYPE COMES FROM THE SCENERY DOMAIN AND IS NOT A CLOSED LIST HERE. Every
+   * group in scenery/config/factory.json carries a `type`, and a piece may
+   * override its group with its own `type` in scenery.json — the piece wins,
+   * the group is the default.
+   *
+   * THE VOCABULARY IS THEIRS, ON HIS OWN RULE (2026-08-14: "it should be owned
+   * by the scenery"), so the wiki PUBLISHES WHAT IT IS GIVEN. This used to
+   * gate on a hardcoded seven and fold anything else into OTHER, which meant a
+   * new type could not reach the page at all: the scenery agent added CHIMNEY
+   * (f6fead335, 2026-09-13, "CHIMNEY is a type of its own, like WINDOW") and
+   * its 8 pieces arrived in the junk drawer with the blood spatter, with no
+   * chip of their own and no way to filter to them — he went looking and
+   * found nothing (maintainer 2026-09-13). A closed list in the consumer
+   * silently overrides the producer that owns the field.
+   *
+   * OTHER is now only what it says: a piece whose group and file BOTH name no
+   * type at all. */
   const factory = readJson(join(base, "config", "factory.json")) ?? {};
   const groupType = new Map((factory.groups ?? []).map((g) => [g.id, g.type]));
   const typeOf = (oj, group) => {
-    const t = String(oj.type ?? groupType.get(group ?? oj.group) ?? "OTHER").toUpperCase();
-    return TYPES.includes(t) ? t : "OTHER";
+    const t = String(oj.type ?? groupType.get(group ?? oj.group) ?? "").toUpperCase().trim();
+    return t || "OTHER";
   };
   const objects = [];
   for (const [rel, group, oj] of entries) {
@@ -2765,8 +2778,211 @@ function seedMonsterTuning(monsters, levels) {
   return { tuning: out, added, levelled };
 }
 
+/* THE 8-DIRECTION BASE AS A STATE (maintainer 2026-09-11: "On the monster
+ * details page I should in the animation preview be able to select 'static' as
+ * a state/animation type. Yes I know the original 8 direction static images is
+ * not really an animation, but it's good for me to have a way to see them. I
+ * want them to the left of 'idle', but I still want idle to be pre-selected.")
+ *
+ * A rotation IS a one-frame clip, so it needs no special case in the viewer —
+ * it goes in as `static`, FIRST in the row, and the viewer's own rule keeps
+ * idle selected because idle exists. */
+function staticState(absDir, rel) {
+  const dirs = {};
+  for (const dir of DIRS) {
+    const a = art(`${rel}/${dir}`);
+    if (!a) continue;
+    const dims = imageSize(join(ROOT, a));
+    dirs[dir] = { frames: 1, strip: a, fw: dims?.w ?? null, fh: dims?.h ?? null, framesDir: null, frameExt: null, framePad: 0 };
+  }
+  return Object.keys(dirs).length ? { folder: "rotations", fallback: null, dirs, still: true } : null;
+}
+
+/* PARALLEL TAKES OF ONE STATE (maintainer 2026-09-11: "he might try to create a
+ * different attack animation without deleting the old version in case the old
+ * version in the end was better. He is now at 'v3' and I can only see a single
+ * attack animation on the wiki so I can't see his new attempts. So we need a
+ * way to ... see all different parallel versions (and review/rate all parallel
+ * versions). In the end we will only have a single attack animation ofc.")
+ *
+ * The monsters agent builds a replacement beside the live one and promotes it
+ * when all eight directions are there — `attack`, `attack_try`,
+ * `attack_v3try`. They are the SAME state, so the registry publishes each take
+ * as its own entry carrying `takeOf` (the state it belongs to) and `takeLabel`
+ * (what the chip says), and the viewer groups them: one chip per state, a
+ * version row under it. Each take keeps its own feedback id — `<path>#<slot>
+ * #<dir>` — so a verdict on v3 is never a verdict on the live one. */
+// ALPHABETICAL, NUMBER-AWARE (maintainer 2026-09-11: "The monster-agent is also
+// working on renaming the versions to only call them 'v1', 'v2', 'v3', etc. So
+// the version selector has to be alphabetically sorted."). Numeric collation,
+// so v10 follows v9 instead of v1. The live take is not in this list — it is
+// the state itself and leads the row.
+const takeSlots = (onDisk, st) => onDisk
+  .filter((d) => d !== st && new RegExp(`^${st}[_-]`).test(d))
+  .sort((a, b) => takeLabel(a, st).localeCompare(takeLabel(b, st), undefined, { numeric: true, sensitivity: "base" }));
+function takeLabel(slot, st) {
+  const suffix = slot.slice(st.length).replace(/^[_-]+/, "");
+  const v = /^v(\d+)/.exec(suffix);
+  // "attack_v3try" is v3; the first try slot carries no number and is the try.
+  return v ? `v${v[1]}` : suffix.replace(/try$/i, "") || "try";
+}
+
+// AN APPROVED CANDIDATE IS ALREADY A CREATURE (maintainer 2026-09-10):
+// "Approved Candidates should become normal monsters. They may still not have
+// all animations yet (that's a work in progress), but they should exist as a
+// normal monster so I can look at the animations done so far and review them
+// like a normal monster."
+//
+// The monsters agent animates an approved candidate one state at a time and
+// writes the strips under `candidates/<id>/animations/` in exactly the shipped
+// layout — it just has not written `monster.json` or a roster entry yet, which
+// is all `buildMonsters` was keying on. So the registry derives a creature from
+// any candidate that HAS animations on disk: derived from the filesystem, not
+// from a flag, because the animations only ever exist for one he approved.
+//
+// Its `path` is `monsters/<id>` — the identity it keeps once the agent
+// promotes it — so every verdict he leaves on an animation survives the
+// promotion. (Its 8-direction verdict stays at `monsters/candidates/<id>`;
+// they judge different things.) A real `monsters/<id>` folder always wins, so
+// the day the agent ships one there is never a duplicate.
+function buildCandidateMonsters(shippedIds) {
+  const base = join(ROOT, "monsters", "candidates");
+  const ix = readJson(join(base, "index.json"));
+  if (!ix || !Array.isArray(ix.candidates)) return [];
+  const out = [];
+  for (const c of ix.candidates) {
+    if (!c?.id || shippedIds.has(c.id)) continue;
+    const animRoot = join(base, c.id, "animations");
+    if (!isDir(animRoot)) continue;
+    const frameW = c.size?.[0] ?? null, frameH = c.size?.[1] ?? frameW;
+    const anims = {};
+    const still = staticState(join(base, c.id, "rotations"), `monsters/candidates/${c.id}/rotations`);
+    if (still) anims.static = still;
+    // THE STATE ROW IS THE DOMAIN'S OWN LIST, IN ITS OWN ORDER — exactly what
+    // a shipped creature gets, which is `animation_map.json`: idle, walk,
+    // angry, attack, die (maintainer 2026-09-10: "Why do you sort 'attack,
+    // idle, walk' like this on Ashling and differently on Amethyrn? I like the
+    // old monsters sort in the animation buttons." — listDirs was giving the
+    // derived ones alphabetical instead).
+    //
+    // A folder the map does not name is NOT a state: the agent builds a new
+    // take in a try slot beside the live one (`attack_try`, its own doc: "a
+    // CANDIDATE record generated alongside it and never shown to the game")
+    // and promotes it into `attack` when all eight directions are there. The
+    // registry says what the creature HAS, so a trial is not in it — and a
+    // shipped creature has never shown one either.
+    const mapStates = Object.keys(readJson(join(ROOT, "monsters", "animation_map.json"))?.states ?? {});
+    const onDisk = listDirs(animRoot);
+    // Each state, then its parallel takes right after it — the version row's
+    // order. A folder belonging to no mapped state is not a state at all.
+    //
+    // A STATE CAN EXIST AS VERSIONS ONLY. The agent renamed its slots to
+    // `attack_v1, attack_v2, attack_v3` and stopped writing a bare `attack`
+    // folder, which dropped the state from the registry the moment the rename
+    // landed — it was keyed on the bare folder. A state is now present when
+    // its own folder OR any take of it is on disk, and the bare folder, when
+    // there is one, is the take that ships.
+    const ordered = mapStates
+      .map((st) => [st, takeSlots(onDisk, st)])
+      .filter(([st, takes]) => onDisk.includes(st) || takes.length)
+      .flatMap(([st, takes]) => [...(onDisk.includes(st) ? [st] : []), ...takes]);
+    for (const state of ordered) {
+      const base = mapStates.find((st) => st !== state && state.startsWith(st)) ?? null;
+      const dirs = {};
+      for (const dir of DIRS) {
+        const frameDir = join(animRoot, state, dir);
+        const frames = listFiles(frameDir, artRe("\\d+")).length;
+        if (!frames) continue;
+        const strip = art(`monsters/candidates/${c.id}/animations/${state}__${dir}`);
+        const dims = strip ? imageSize(join(ROOT, strip)) : null;
+        dirs[dir] = {
+          frames, strip,
+          fw: dims ? Math.round(dims.w / frames) : frameW,
+          fh: dims ? dims.h : frameH,
+          framesDir: `monsters/candidates/${c.id}/animations/${state}/${dir}`,
+          ...frameNaming(frameDir),
+        };
+      }
+      if (Object.keys(dirs).length) {
+        anims[state] = { folder: state, fallback: null, dirs,
+          ...(base ? { takeOf: base, takeLabel: takeLabel(state, base) } : {}) };
+      }
+    }
+    if (!Object.keys(anims).length) continue;
+    out.push({
+      id: c.id,
+      name: c.name ?? titleCase(c.id),
+      lore: c.lore ?? null,
+      kind: "object",
+      path: `monsters/${c.id}`,
+      preview: art(`monsters/candidates/${c.id}/rotations/south`),
+      frameW, frameH,
+      nativeW: frameW, nativeH: frameH,
+      pad: { x: 0, y: 0 },
+      artBottom: 0.85,
+      footW: null, bodyW: null, hoverPx: 0,
+      shadow: null,
+      inGame: false,
+      pixellab: null,
+      // IN THE MAKING, and the page says so: the states it has are the states
+      // the agent has finished, and the rest are coming (`candidate` also
+      // points back at the 8 directions he approved).
+      pending: true,
+      candidate: `monsters/candidates/${c.id}`,
+      animations: anims,
+    });
+  }
+  return out;
+}
+
+// ------------------------------------------------------- monster candidates
+// A NEW MONSTER IS JUDGED ON ITS 8 DIRECTIONS BEFORE IT EARNS ANIMATIONS
+// (maintainer 2026-09-09: "if the initial 8 directions is not perfect — don't
+// even think about continuing with that monster"). The monsters agent births
+// a candidate as an 8-direction base only and publishes
+// monsters/candidates/index.json (format monster-candidates@1); the wiki
+// shows the 8 facings and his verdict lands in live/feedback/monsters.json
+// under `monsters/candidates/<id>` — approved = generate every animation,
+// redo = same design next seed, rejected = drop the design. The agent's own
+// `review` field (pending/approved/rejected) rides along so the page can say
+// whether it has acted on the verdict yet.
+function buildMonsterCandidates() {
+  const base = join(ROOT, "monsters", "candidates");
+  const ix = readJson(join(base, "index.json"));
+  if (!ix || !Array.isArray(ix.candidates)) return [];
+  const dirs = Array.isArray(ix.directions) && ix.directions.length === 8 ? ix.directions : DIRS;
+  const rel = (p) => (p ? `monsters/candidates/${p}` : null);
+  return ix.candidates.filter((c) => c && c.id).map((c) => ({
+    id: c.id,
+    name: c.name ?? titleCase(c.id),
+    path: `monsters/candidates/${c.id}`,
+    tier: c.tier ?? null,
+    // small | standard | big — the agent's own size class (2026-09-09).
+    scale: c.scale ?? null,
+    notes: c.notes ?? null,
+    lore: c.lore ?? null,
+    biome: Array.isArray(c.biome) ? c.biome : [],
+    items: Array.isArray(c.items) ? c.items : [],
+    size: Array.isArray(c.size) ? c.size : null,
+    version: c.version ?? 1,
+    generatedAt: c.generated_at ?? ix.generated_at ?? null,
+    pixellab: c.pixellab_id ?? null,
+    sheet: rel(c.sheet),
+    rotations: Object.fromEntries(dirs.map((d) => [d, rel(c.rotations?.[d])]).filter(([, v]) => v)),
+    // The MEASURED ink box of the south facing, in frame pixels — the wiki's
+    // overview crops the padding away with it and draws every candidate at one
+    // shared scale, so a 32px design really looks a seventh of a 240px one.
+    bb: c.qa?.directions?.south?.bbox ?? null,
+    qa: c.qa ? { status: c.qa.status ?? null, minRun1: c.qa.min_run1 ?? null, reasons: c.qa.reasons ?? [] } : null,
+    review: c.review ?? "pending",
+  }));
+}
+
 // -------------------------------------------------------------------- main
 const monsters = buildMonsters();
+const monsterCandidates = buildMonsterCandidates();
+// The approved-and-being-animated ones stand beside the shipped roster.
+if (monsters) monsters.push(...buildCandidateMonsters(new Set(monsters.map((m) => m.id))));
 const characters = buildCharacters();
 const tiles = buildTiles();
 const worldCells = buildWorld();
@@ -3140,6 +3356,15 @@ for (const [dom, list] of Object.entries({ monsters, characters, objects, items,
   }
 }
 
+/* WHAT HAS LANDED — the Release Notes section (maintainer 2026-09-13). The
+ * derivation, and why the list is a cached file rather than a live read, are
+ * in wiki/lib/releases.mjs: this build refreshes the committed cache wherever
+ * git can answer, and reads it back where it cannot (the deploy image has no
+ * .git). Writing is best-effort — a read-only fs is normal in Docker, and the
+ * registry must not fail over a list of commit messages. */
+try { writeReleaseCache(ROOT); } catch { /* read-only fs (Docker) is fine */ }
+const releaseNotes = releases(ROOT);
+
 const data = {
   format: "pixel-wiki-data@1",
   generated_at: new Date().toISOString(),
@@ -3148,6 +3373,10 @@ const data = {
   // The in-game sound EVENTS (see buildSfx): what triggers a sound, what
   // plays, with which processing — derived from the composer's own engine.
   sfx,
+  // The last 50 commits on main, with the agent where it can be known — the
+  // Release Notes section. `from` says whether this build read git or the
+  // committed cache, and the page tells him which he is looking at.
+  releases: releaseNotes,
   directions: DIRS,
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
@@ -3184,6 +3413,7 @@ const data = {
   loreMeta,
   counts: {
     monsters: monsters?.length ?? 0,
+    monster_candidates: monsterCandidates.length,
     // Heroes and NPCs counted apart: the nav and start tile stay about the
     // PLAYABLE cast (maintainer 2026-08-01 — "player selectable Characters
     // foremost"); the NPC block carries its own count in its heading.
@@ -3202,6 +3432,7 @@ const data = {
     lore: lore?.length ?? 0,
     // Chapters only — the admin surface; the start tile counts all tales.
     lore_chapters: lore?.filter((e) => Number.isInteger(e.chapter)).length ?? 0,
+    releases: releaseNotes.commits.length,
     constants: constants.length,
   },
   // Absent domains become empty lists — the site must render, not blank out,
@@ -3210,6 +3441,7 @@ const data = {
     monsters: monsters ?? [], characters: characters ?? [], tiles: tiles ?? [],
     objects: objects ?? [], sounds: sounds ?? [], music: music ?? [], items: items ?? [],
     lore: lore ?? [], world: worldCells ?? [],
+    monsterCandidates,
   },
   // The tiles agent's own vocabulary and acceptance thresholds.
   worldMeta,

@@ -8,12 +8,13 @@ afterworld in Astrid Lindgren's *The Brothers Lionheart*.
 
 ## The experiment
 
-Each domain below is a self-contained top-level directory owned by its own AI
-agent, with its own pipeline, config, and viewer. Agents generate art on
-[PixelLab](https://pixellab.ai) and audio on ElevenLabs, commit the results,
-and push straight to `main` — the pipelines touch disjoint paths, so their
-concurrent pushes rebase cleanly. They coordinate through message boards in
-[`coordination/`](coordination/) (`PROTOCOL.md` is the contract).
+Each domain below is a self-contained top-level directory worked by its own
+AI agent and that agent's assistant, with its own pipeline, config, and
+viewer. Agents generate art on [PixelLab](https://pixellab.ai) and audio on
+ElevenLabs, commit the results, and push straight to `main` — two agents share
+each directory, so every push is rebased onto `main` and re-checked first.
+They coordinate through message boards in [`coordination/`](coordination/)
+(`PROTOCOL.md` is the contract).
 
 The maintainer keeps no clone and works from a phone: he plays the deployed
 game, and reviews, rates, and tunes everything from the **in-game wiki** —
@@ -33,7 +34,7 @@ is simultaneously the product and the communication channel.
 | [`items/`](items/) | Items — everything with an item-type tag on PixelLab (`MISC`, `SOUL`, `CONSUMABLE`, `SWORD`, `BOW`, `WAND`, `ARMOR`), with game metadata per item | [`items/README.md`](items/README.md) |
 | [`lore/`](lore/) | The story — the GM-facing "red line" backbone, player chapters, and per-entity lore for every other domain, published as `lore/lore.json` | [`lore/README.md`](lore/README.md) |
 | [`monsters/`](monsters/) | Monsters — everything tagged `MONSTER` on PixelLab, with canonical idle/walk/angry/attack/die states | [`monsters/README.md`](monsters/README.md) |
-| [`games2/`](games2/) | The game itself — Colyseus server + Phaser client, consumer of all art domains (two agents: gameplay and UI) | [`games2/README.md`](games2/README.md) |
+| [`games2/`](games2/) | The game itself — Colyseus server + Phaser client, consumer of all art domains (shared by several agents and their assistants) | [`games2/README.md`](games2/README.md) |
 | [`wiki/`](wiki/) | The in-game wiki — browse every asset, rate/approve/tune (maintainer's control room) | [`wiki/README.md`](wiki/README.md) |
 | [`live/`](live/) | The live-update channel — tuning + feedback files the running game server reads straight from `main`, no redeploy | [`live/README.md`](live/README.md) |
 

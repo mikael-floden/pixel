@@ -361,21 +361,50 @@ export function wallPalette(
 ): number[] {
   const n = keys.length;
   if (n <= 0) return [];
-  const usable: number[][] = [];
+  /* THE SURVIVORS OF A SET ARE STILL A SET (maintainer 2026-09-13, fog off,
+   * five walls: "the insanely good looking wall that used different tiles has
+   * stopped working. Now it's the same everywhere"). The tiles agent's review
+   * prunes of 09-11/12 deleted the walls his detail verdicts had marked — the
+   * `#top` misread the base sets got the same day — and every measured set
+   * that named one of them stopped matching its pool whole: 3 of 182 pools
+   * kept a usable set, grey_stone__over__grey_stone kept 1 of its 11 set
+   * tiles among 22 candidates, and every mountain drew rank 0 alone. The
+   * pairs inside a set were all measured, so the tiles of it that remain
+   * still join; a set counts with at least two of them present. Whole sets
+   * first, so the storey filter's partial set is still second to a complete
+   * one, and the generator's regeneration puts whole sets back. */
+  const whole: number[][] = [];
+  const partial: number[][] = [];
+  const ranked: { idx: number[]; cost: number }[] = [];
   for (const set of sets ?? []) {
-    if (set.cost > WALL_SET_MAX_COST) continue;
     const idx: number[] = [];
     for (const t of set.tiles) {
       const at = keys.indexOf(t);
       if (at >= 0) idx.push(at);
     }
-    // A set whose tiles are not all in THIS pool is not this pool's set — the
-    // storey filter can remove one, and a partial set is a different set.
-    if (idx.length === set.tiles.length && idx.length > 1) usable.push(idx);
+    if (idx.length <= 1) continue;
+    ranked.push({ idx, cost: set.cost });
+    if (set.cost > WALL_SET_MAX_COST) continue;
+    (idx.length === set.tiles.length ? whole : partial).push(idx);
   }
-  if (!usable.length) return [0]; // the old behaviour, deliberately
-  const pick = Math.floor(unitHashStr(`wr1|set|${pool}|${region}`) * usable.length);
-  return usable[Math.min(pick, usable.length - 1)];
+  const usable = whole.length ? whole : partial;
+  if (usable.length) {
+    const pick = Math.floor(unitHashStr(`wr1|set|${pool}|${region}`) * usable.length);
+    return usable[Math.min(pick, usable.length - 1)];
+  }
+  /* NO SET CLEARS THE GATE: THE LEAST-SEAMED SET, NOT ONE TILE. "One tile for
+   * a whole massif is the defect the maintainer reports, twice, with
+   * photographs" (the gate's own note) — and a third time today. A set over
+   * the gate shows joins worse than the art's own cracks; a single tile shows
+   * the same tile everywhere, which he has now rejected three times. The
+   * gate keeps its meaning as a PREFERENCE among sets; only a pool with no
+   * measured set at all, or fewer than two of any set's tiles, draws rank 0. */
+  if (ranked.length) {
+    let best = ranked[0];
+    for (const r of ranked) if (r.cost < best.cost) best = r;
+    return best.idx;
+  }
+  return [0];
 }
 
 /** WHICH APPROVED TILE PAINTS THIS CELL — the whole rule, in one call. */
@@ -451,7 +480,7 @@ export const WALL_TEST_VECTORS: {
   palette: [
     ["grey_stone__over__grey_stone","0,0,0",74,[3,7,11,13,17]],
     ["grey_stone__over__grey_stone","1,-2,0",74,[2,5,9,12,15]],
-    ["a__over__b","0,0,0",2,[0]],
+    ["a__over__b","0,0,0",2,[0,1]],
     ["a__over__b","0,0,0",1,[0]],
   ],
   pick: [

@@ -10,17 +10,13 @@
   "prompt": "light beach, a dried starfish arm in the middle, light beach all around the edge",
   "palette_top": "#e4c495",
   "tile_id": "1d48d3ef-3571-4020-ba4f-6f976015ad83",
-  "n_tiles": 16,
+  "n_tiles": 12,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
@@ -128,5 +124,27 @@
   },
   "motif": "a dried starfish arm",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_05.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_06.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_07.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

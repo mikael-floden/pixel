@@ -61,7 +61,20 @@ def _types_by_group(cfg):
     return out
 
 
+_GROUPS_BY_ID = None
+
+
+def _group_field(group_id, field):
+    """A group's own value for a field a piece may override — the `type`
+    pattern, so a piece minted before the field existed still publishes it."""
+    global _GROUPS_BY_ID
+    if _GROUPS_BY_ID is None:
+        _GROUPS_BY_ID = {g["id"]: g for g in factory.load_config().get("groups", [])}
+    return (_GROUPS_BY_ID.get(group_id) or {}).get(field)
+
+
 def build():
+    _ensure_vents()
     cfg = factory.load_config()
     types_by_group = _types_by_group(cfg)
     pieces, categories = [], {}
@@ -119,6 +132,17 @@ def build():
             # a consumer never has to join against the catalog to filter by it.
             # A piece may override its group; otherwise it inherits.
             "type": meta.get("type") or types_by_group.get(cat) or "OTHER",
+            # WHERE it may be placed, WHAT it is, and WHERE an effect comes out
+            # of it (2026-09-13). `mount`/`fixture` are the placement tag the
+            # game and the ambient agent read instead of matching group names;
+            # `vent` is the flue mouth in frame px from the canvas centre, the
+            # light_frames convention, measured per STATE by pipeline/vent.py
+            # (the per-state copies ride the `states` spread below).
+            **({"mount": meta.get("mount") or _group_field(cat, "mount")}
+               if (meta.get("mount") or _group_field(cat, "mount")) else {}),
+            **({"fixture": meta.get("fixture") or _group_field(cat, "fixture")}
+               if (meta.get("fixture") or _group_field(cat, "fixture")) else {}),
+            **({"vent": meta["vent"]} if meta.get("vent") else {}),
             # A SOUTH-only piece may be mirrored horizontally at placement time,
             # which doubles the variety of every group for free (maintainer's
             # idea, 2026-08-14). FALSE on pieces that carry facings: flipping a
@@ -176,7 +200,45 @@ def build():
     }
     with open(DATA_PATH, "w") as f:
         json.dump(data, f, indent=2)
+    _pack_placed()
     return data
+
+
+def _ensure_vents():
+    """THE FLUE MOUTH FOLLOWS THE ART, like the packed layer does. Every
+    pipeline script ends in build(), so a state generated this run is measured
+    in the same unit that generated it and no consumer ever sees a chimney
+    state without its `vent`. Fill-only (a state that has one is skipped) and
+    never fatal: a piece that cannot be measured publishes no vent rather than
+    failing a publish."""
+    try:
+        import vent
+        r = vent.run(log=lambda *a: None)
+        if r.get("wrote"):
+            print(f"  vents: measured {r['wrote']} new state mouth(s)")
+    except Exception as e:  # noqa: BLE001
+        print(f"  ! vent measurement skipped ({e}) — states keep whatever they have")
+
+
+def _pack_placed():
+    """THE PACKED LAYER FOLLOWS THE ART (scenery-assistant 2026-09-12). games2
+    draws every placed piece from <piece>/packed/ (pipeline/pack.py, README
+    "THE PACKED LAYER"), and every pipeline script that touches art ends in
+    build() — so this is the one place a regenerated placed piece is re-cut
+    for the game, in the same unit that regenerated it. Incremental (a family
+    whose raw bytes match its index is skipped: ~1 s over the 192 placed
+    pieces when nothing changed; a re-rolled piece costs its own encodes) and
+    never fatal: a piece that fails to pack draws raw, which is correct, just
+    bigger. Pieces the worlds place AFTER this ran are the workflow's
+    (.github/workflows/scenery-pack.yml)."""
+    try:
+        import pack
+        r = pack.refresh(jobs=1, log=lambda *a: None)
+        if r["touched"]:
+            print(f"  packed: {len(r['touched'])} placed piece(s) re-cut for the game "
+                  f"({', '.join(r['touched'][:6])}{', ...' if len(r['touched']) > 6 else ''})")
+    except Exception as e:  # noqa: BLE001 — packing must never fail a publish
+        print(f"  ! pack skipped ({e}) — placed pieces draw raw until pipeline/pack.py runs")
 
 
 if __name__ == "__main__":

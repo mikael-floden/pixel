@@ -5,7 +5,11 @@ trees, stones, graves, braziers, streetlights… Two properties define the
 domain against tiles: a piece can be placed anywhere (it does not follow the
 tile grid — `tiles2/`'s job), and it can animate (tiles cannot).
 
-Owned by the **scenery agent** (board file `coordination/scenery.json`).
+Owned by the **scenery agent** (board file `coordination/scenery.json`),
+with the **scenery-assistant** (2026-09-12, `coordination/scenery-assistant.json`)
+taking the units the scenery agent is idle or occupied for — it reads the
+scenery board first, never touches a file named there as in flight, and
+names every file it touches on its own board.
 Generated on [PixelLab](https://pixellab.ai); the **maps2 agent** places
 scenery in worlds; the game (`games2/`) renders it; the **maintainer**
 approves/rejects/comments every piece in the wiki's Scenery section.
@@ -212,6 +216,177 @@ types**. Regional identity is the zoom-out goal: trees/stones variety axes
 are deep so maps2 can theme AREAS with coherent subsets — one region's trees
 are not another's.
 
+### Roof-mounted: `chimneys` (maintainer 2026-09-13, commissioned by name)
+
+**THE GROUP IS ITS OWN TYPE, `CHIMNEY`** (maintainer 2026-09-13: "I can't find
+a separate filter for Chimney"), for the same reason `WINDOW` is one: a fixture
+that belongs to a building is reviewed and placed on its own, not scattered
+through TOWN. This domain owns the taxonomy (`config/factory.json` `types`,
+"the type is your responsibility the very second he commits"), so minting one
+is a line here plus the group's `type` — but the WIKI's two lists are hard-coded
+against it: `wiki/build.mjs` maps any type outside its literal `TYPES` array to
+OTHER, and the Scenery page's chip row iterates a literal `OBJ_TYPES`. Until the
+wiki reads the domain's list, a NEW type shows as "Other" there with no chip of
+its own. Mint a type and post to the wiki in the same run.
+
+"Generate a chimney in section town we can put on housed with chimney ... 3
+chimney with 5 variations / scenery (a total of 15 different chimney). They
+should be NOT_LIT." Three pieces, five NOT_LIT states each, no lit state at
+all: `lights: "LIGHTS_OFF"` pins every piece unlit and `state_plan: [5, 0]`
+pins the ladder (`state_variants.py`'s NOT_LIT rungs run to 10 so a group may
+ask for five; the 4-own/2-opposite default is unchanged).
+
+- **A ROOF-MOUNTED PIECE CARRIES ITS OWN `modifiers` AND ITS OWN
+  `scale_phrases`** — the windows lesson, and the same trap: the shared
+  `structure` pool and the default size ladder both describe a prop standing
+  on the ground ("knee-high", "with fallen leaves collected at its base"),
+  which is how a chimney ends up drawn in a garden.
+- **THE CANVAS IS THE SCALE KNOB.** `world_px_height` IS the art's own alpha
+  bbox (`rescale.py`), and the world is **51.2 px per metre** (the 87 px
+  avatar over 1.7 m), so what decides how tall a new group reads is the canvas
+  it is drawn on. Measured over the 706 shipped pieces: a 64 px canvas fills
+  0.78 of itself (≈ 0.98 m), **96 px fills 0.75 (≈ 1.40 m)**, 128 px fills
+  0.83 (≈ 2.07 m). Chimneys are 96 px, and the three landed at 1.15, 1.27 and
+  1.68 m — the fill is a median, not a promise, so measure after a pass and
+  re-roll what reads wrong rather than editing a number.
+- **The pixel-grid gate is expensive for masonry, and it is right.** It counts
+  same-colour runs exactly one pixel long, and a flat brick face honestly has
+  few: the first three rolls scored 0.426-0.565 against the 96 px threshold of
+  0.597 and were all re-rolled. The fix is detail in the ART — the description
+  asks for every course and joint picked out pixel by pixel and dithered
+  shading across the faces — never a lower bar. Budget for it: 11 rolls bought
+  3 pieces (~$0.09 a roll), so a masonry group costs ~4x the domain's usual
+  $0.16 a piece.
+- **A pinned-lights group takes its indices IN ORDER** (`catalog.next_indices`,
+  2026-09-13). Parity there carries the LIGHTS_ON/OFF promise, which a pinned
+  group does not have, and the scatter is not free: the first pass planned
+  002, 001, 004 — a gap at 003 that reads as a retired piece, and because the
+  variety picker strides modulo the list, index 4 drew the SAME design as
+  index 1. Two of his three chimneys came back one design; the group now
+  carries twelve so a re-roll cannot collide.
+- **THE TAG A CONSUMER READS — `mount`, `fixture`, `vent`** (maintainer
+  2026-09-13: "make some form of tag so the game/ambient-agent knows what this
+  scenery is and can place it and attach an effect to it properly ... he will
+  need to know where the chimney center hole is"). Three published fields, none
+  of them inferable from a group's name — the `light.kind` lesson, where 99 of
+  500 pieces override their own group:
+  | field | where | what it says |
+  |---|---|---|
+  | `mount` | piece (group default) | the surface a placer may put it on: `roof`, `wall` (windows, wall_hangings), `cliff` (the cliff_* families). ABSENT means ordinary ground — read a missing mount as `ground`, never guess from the id |
+  | `fixture` | piece (group default) | WHAT it is, for a consumer attaching behaviour: `chimney` today |
+  | `vent` | per STATE, and the anchor's copy at the piece root | where the effect comes out: `{dx, dy, conf}` in FRAME PIXELS FROM THE CANVAS CENTRE, the `light_frames` convention, so the packed layer's `ox`/`oy` shift it like any other measured point |
+  `vent` is measured by `pipeline/vent.py`, per STATE because every variant
+  draws its own cap, AND PER FACING — SE and SW are real three-quarter views
+  and the hole is not where the south view puts it. `conf` says how it was
+  found: `opening` (a dark hole), `flue_top` (the top of the narrow flue, for
+  a pot whose mouth is drawn light rather than as a hole) or `silhouette`
+  (neither). Measured over the 40 states x 3 facings: 117 `opening`, 3
+  `flue_top`, and every anchor lands on a pixel of its own art that is dark —
+  which `--check` proves on every run (`OFF THE HOLE` is a failure).
+  **THE MAINTAINER MARKED FOUR ROUNDS OF THIS BY HAND, and every correction is
+  a rule now** (2026-09-13, his red circles on the measurement against green
+  crosses on the truth). They are listed because each one is a trap the next
+  measurement of anything on a sprite will fall into:
+  - **THE FLUE IS THE NARROW THING AT THE TOP, and the mouth is in IT.** The
+    measurement had put it on the CAP beside the pot, where the socket's shadow
+    is bigger and darker than the pot's own opening. So the search walks down
+    from the topmost row while the silhouette stays under 55% of its widest
+    row; that run is the pot or pipe, and nothing below it can win. A plain
+    capped stack has no such run and is searched from its top as before.
+  - **AN OPENING IS COMPARED WITH THE SILHOUETTE AT ITS WIDEST ROW**, never at
+    its top one. On a capped stack the hole IS the big dark rhombus, and the
+    width test was throwing it away: in a three-quarter view the opening's top
+    row is the cap's far corner, where the silhouette is narrowest, so a 31 px
+    opening measured 31/29 and read as a mortar course.
+  - **THE SMOKE STARTS IN THE MIDDLE OF THE HOLE, not at its rim.** Only the
+    DARKEST part of a big opening clears the cut — the deep shadow under the
+    far rim — while the near inner wall catches light, so the winning blob is
+    grown over a relaxed cut (1.37x the cut that found it) before its middle is
+    taken.
+  - **AND THE MIDDLE MUST BE A PIXEL OF THE HOLE.** "You nailed everyone except
+    the 3 I posted": on three stacks the cross sat on the lit course just UNDER
+    the opening, and on a fourth on the rim above it. Four rules came out of
+    that round, and they are the ones to copy for any future measurement:
+    - A GROW CAN WALK OUT OF THE HOLE. A cap's rim casts a dark band that runs
+      wall to wall under the mouth and joins it through one shadowed mortar
+      joint; the mean of mouth+band lands on the band. A mouth is never as wide
+      as the stack, so a grown shape that is gets thrown away and the darkest
+      core alone is the hole.
+    - THE MIDDLE IS THE BOX CENTRE, NOT THE MEAN. A mouth carries a ragged dark
+      fringe down its shaded side and the mean rides into it (5 px off his mark
+      on chimney_009, where the box centre landed 1 px away). The point is then
+      SNAPPED to the nearest pixel actually in the region.
+    - A DARK CAP NEEDS A DARKER CUT. A wooden crown is as dark as its own
+      cavity at one cut, so the two fuse, touch the outline and are dropped —
+      the piece fell back to its silhouette and put the smoke on the rim. The
+      cut walks down a ladder until the cavity separates; the first rung that
+      finds anything wins, so pieces that already worked are untouched.
+    - THE OUTLINE IS THE OUTSIDE, NOT ANY TRANSPARENT PIXEL. A cap raised on
+      legs is drawn with real holes through it and the mouth under it touches
+      them; only the background the piece floats in disqualifies a blob, so the
+      transparent pixels are flood-filled from the canvas edge first.
+  A mouth must also BEGIN in the top third of the piece (a shadow a third of
+  the way down a stack is not a hole), and INSIDE A POT the highest dark thing
+  is the mouth — the size slack that lets a cap's far rim win belongs to caps,
+  and it was handing a pot's shaded flank the anchor instead of its little
+  ellipse of a mouth. **INSIDE A POT, ONE ROW OF SHADOW IS A MOUTH**: the 2-row
+  floor throws out mortar lines on a masonry cap, but a pot has no mortar and
+  in this projection its mouth is often a single row of deep shadow under the
+  far rim with the rest of the bowl merely shaded. Holding the floor at 2 left
+  those pieces on the `flue_top` fallback, which anchors on the rim's top edge
+  — 5 px above the mouth, and he marked every facing of that pot (his fifth
+  round, 2026-09-13).
+  **A FLUE HOLDS ITS WIDTH; A CORNER NEVER DOES** — this is what tells a pot
+  from the top corner of a box in three-quarter view, where every box starts
+  narrow. A pot widens from its rim and then repeats one width down its body
+  (7, 11, 13, 15, 17, 17, 17, 17); a corner gains a couple of pixels every row
+  and repeats nothing, so the test is a PLATEAU (one width over 30% of the
+  run). Two simpler rules died here and are not coming back: a ratio bound (a
+  pot tapers 2.6x from rim to foot, so the bound that stopped corners threw
+  pots away and let the anchor wander onto the brickwork beside one) and a
+  step-out under the run (in three-quarter the cap under the pot starts at ITS
+  own corner, so there is no step to find).
+  The rules that survive from the first pass: the darkness cut is a fraction of
+  the piece's OWN median luma (a percentile finds a "darkest fifth" even where
+  there is no hole); a blob must span 2+ rows (a pot's mouth is a two-row
+  ellipse in a three-quarter view); and on a plain cap a blob must stand back
+  from the silhouette or it is the rim's own shadow.
+  **A MEASUREMENT OF WHERE AN EFFECT LEAVES A PIECE CANNOT BE GATED, ONLY
+  LOOKED AT.** Four cuts of this passed their own checks and read plausibly on
+  a contact sheet; his eye on the art caught every one. `--sheet` draws a
+  crosshair on every mouth: run it and LOOK. The counter-gate in `--check` is
+  the cheap half of the lesson — it re-reads every published anchor and fails
+  any that is off the art or on lit material — and it would have caught three
+  of the four.
+  **AND THE SHEET HAS TO SURVIVE THE PHONE, or the review is about the sheet
+  instead of the art.** He reviews on a phone, where a 3516 px sheet is drawn
+  at ~1000 px: the original one-pixel cross became a third of a screen pixel
+  and disappeared into the art, so he circled a light MORTAR JUNCTION as
+  "yours" on two different pieces — both times the measurement under his own
+  green cross was already correct to 3 px. A marker for a phone review is drawn
+  at the TILE's scale (arms 5x the zoom, thickness the zoom, a black halo, a
+  ring, and a hole in the middle so the anchor pixel stays visible) in a colour
+  the art never uses (cyan), and **every tile carries its NUMBER** — that is
+  what lets him say which tile is wrong instead of drawing on it, and what lets
+  this side map a mark back without guessing from the artwork.
+- **SE/S/SW COST NOTHING** and are already a standing order (his 2026-08-28:
+  "Everything under 'Indoor' and under 'Town' should have SW, S and SE").
+  Anything 168 px or under went down `create-8-direction-object`, so PixelLab
+  generated all eight facings at birth and has stored them since;
+  `pipeline/add_facings.py` downloads SE/SW for any INDOOR/TOWN state that
+  lacks them, at zero generations, and the group's `keep_directions` keeps new
+  pieces shipping them from birth. Scenery still never ROTATES — three facings
+  exist because a wall (and a roof ridge) faces three ways.
+- **THE GAME CANNOT YET DRAW ONE ON A ROOF** (measured 2026-09-13, raised with
+  games + maps2). A placement whose cell is under a `roof` or `cave` deck is
+  flagged `roofed` (`games2/client/src/scenery3.ts roofedCells`) and is drawn
+  ONLY while that roof is cut away — it is the mechanism that furnishes
+  interiors — and maps2's `render3` drops it from the still render entirely.
+  So a chimney placed on a house today is invisible from outside and appears
+  when you walk in. The art is finished and reviewable; putting it on a house
+  needs a placement that sits ON a deck (drawn at the deck's level, never
+  indoor furniture) from those two domains.
+
 ## What a piece is, on disk
 
 ```
@@ -238,6 +413,49 @@ Art resolution ≠ world size. Each piece carries `placement.world_px_height`
 (from its seeded `world_height_m`; 64px = 1.7m character) — render the sprite
 scaled to that height and everything composes at believable scale. Group art
 sizes live in the config; heights vary per piece inside the group's range.
+
+## THE PACKED LAYER (games2 reads it; `pipeline/pack.py` writes it)
+
+Every piece the published worlds place carries `packed/`: each art file the
+game draws, cut to its STATE's box — the union of the opaque boxes of the
+state's still, its rotations and every frame of its clips, plus 1 px — under a
+content-hashed name (`packed/<same subpath>.<sha8>.webp`), with
+`packed/index.json` naming the current file per raw path and the cut (`ox,
+oy, w, h` on the `srcW x srcH` canvas). The game loads the packed twin,
+measures it back on its source canvas and registers the still's rectangle in
+the packed texels, so no placement, hitbox, `light_frames` offset or
+emissive centre moves (games2/docs/scenery.md; its gate
+`games2/scripts/verify-scenery-pack.mjs` proves it). Measured on the_game's
+192 pieces: the art fills 27% of its canvases, one box per state keeps 73%
+of the decoded bytes (291 -> 211 MB), 36 MB on disk.
+
+- **The raw files are untouched and stay the truth**: the wiki, the viewer,
+  render3, the bbox table and every review read them. Packing changes what
+  the game UPLOADS, never what anyone measures.
+- **A box is one canvas**: a file on a different canvas than its still
+  (crystal_tree_002's 68-px frames under a 64-px still) is not packed and
+  draws raw, exactly as before.
+- **Run it after anything changes what the worlds place or what a placed
+  piece looks like**: `python3 scenery/pipeline/pack.py` (placed pieces;
+  `--all` for the whole domain, `--only group/id`, `--check` exits 1 when a
+  placed piece is stale). Resumable: a family whose raw bytes hash to the
+  index's `src` is skipped. A newly placed piece draws raw until it runs —
+  correct, just bigger.
+- **Cache law**: never a stable name; current + one back (`prev`) so an open
+  page keeps rendering through a deploy.
+- **Who runs it — nobody, by hand** (scenery-assistant 2026-09-12; the games
+  agent wrote the script under the maintainer's grant and asked this domain to
+  keep it current). Two hooks, both incremental (a family whose raw bytes hash
+  to its index's `src` is skipped: ~1 s over the 192 placed pieces when
+  nothing changed): `viewer_build.build()` calls `pack.refresh(jobs=1)` at the
+  end of EVERY pipeline script, so a re-rolled placed piece is re-cut in the
+  unit that re-rolled it; and `.github/workflows/scenery-pack.yml` packs after
+  a push that changes `maps2/worlds3/*/world.json`, `games2/config/publish.json`
+  or `scenery/**` outside `packed/`, commits, and dispatches the deploy when it
+  pushed anything (a bot-token push triggers no workflow on its own — so it
+  cannot loop, and cannot roll without the dispatch). Packing never fails a
+  publish: a piece that will not pack draws raw. `pack.py --check` is the gate
+  either way.
 
 ## Random horizontal flip — the game's half of the deal
 

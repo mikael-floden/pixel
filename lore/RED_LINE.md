@@ -135,7 +135,7 @@ cruelest sentence in this document:
 living do, and grew old very slowly, and is alive still. The dead get no news
 of the living — that is the one mercy Nangijala refuses everyone — and so the
 kindest man in the world concluded, from a century of silence, that his wife
-had been stolen. And he went under the eastern mountain to find the thief.
+had been stolen. And he went under the mountain to find the thief.
 
 What is under the mountain now is what a century of that makes. Valter began
 *taking* memory — from the ground, from creatures, from anyone who came close —
@@ -210,7 +210,7 @@ sit; **Sigrun**, weaponsmith, who cracked the shape of her own thinned husband
 **Stig** rather than let a stranger do it, wears his stone in her hammer's
 head, and has not said his name aloud since (the trade's two words,
 *releasing* and *cracking*, are her biography); **Wendell**, an elder who was
-there when the east road was still safe and will trade what he remembers of it
+there when the mountain road was still safe and will trade what he remembers of it
 for company; **Osric**, a blacksmith who arrived only recently and still
 counts in living years; **Jehanne**, a priestess of a faith she has stopped
 believing and cannot stop practising, because the practice is a fire rota and

@@ -72,6 +72,45 @@ decoration, it breaks every interior in the running game — measured
   no `side` a deck draws same-over-same, which is the thick look. The game
   reads it (`Deck.side`, tiles3 `deckCell`) and draws the same body and cap as
   render3; the two are held equal by the game's parity fixture.
+* **A SPAN'S SHAPE IS DRAWN, NOT DECIDED** (`_shape_span`, maintainer
+  2026-09-10 on a two-wide, two-thick timber bridge: *"I feel a 2 tile wide
+  bridge is too small and a 2 tile thick bridge is too thick. A 3 tile wide
+  and 1 tile thick would have been better. Again this is not a hard rule!
+  Just a better default! If you change your script to always do what I say
+  the entire world will look the same and that would destroy the game. So my
+  input should nudge the rules in a direction and never create an if
+  statement."*). His shape is the WEIGHT, not the answer: `BRIDGE_WIDE =
+  ((3,6), (4,2), (2,1))` cells across and `BRIDGE_DEEP = ((1,6), (2,2))`
+  EXTRA courses under the cap, drawn per span from the deck's own anchor. A
+  lane is the whole deck offset one cell sideways — a straight bridge grows a
+  parallel lane, the diagonal pier a parallel diagonal — over the gap it
+  crosses or the bank it lands on, never over ground above it, sides
+  alternating so a span widens about its own line instead of sliding off it.
+  A lane that will not fit is not forced, and **a lane must LAND WHERE THE
+  SPAN LANDS** (maintainer 2026-09-11, at the foot of a widened bridge:
+  *"now it doesn't connect at this spot so it's a hole at the bottom right
+  side making it hard to enter the bridge"* — the third lane met the near
+  shore and ended over open water at the far one, so its far end was a dead
+  lip you had to walk around). A shore is a REGION, flooded over the
+  walkable ground at the span's own level within `SHORE_R = 8`, not the
+  cells the span happens to touch: comparing touched cells called two lanes
+  meeting the same bank a couple of cells apart different shores and refused
+  every widening (measured — no span grew at all). The far side is tried
+  instead, and the span keeps the width its banks allow. Never below
+  `BRIDGE_MIN = 2`, which
+  is a plank; build-asserted, and no two spans share a cell. the_game: one
+  span of three, one causeway of four, and two that stayed at two because
+  no third lane reaches both banks.
+* **A SPAN OVER A GAP CARRIES AT LEAST ONE FULL COURSE.** `thickness` 0 is
+  the cap alone, and a cap is a top diamond plus the band hanging under its
+  lower V — so along a span's open edge those bands step cell by cell and
+  leave notches between them: a sawtooth fringe that reads as a floating
+  sheet with no side at all (maintainer 2026-09-10, on this renderer's own
+  picture: *"That tile is 0 levels thin and has no walls!"*). One extra
+  course fills the notches and the edge becomes a solid beam, and that is
+  the thinnest solid span the tile set can draw — a true half-storey beam
+  wants a band tile the library has not got. 0 is sound only where a WALL
+  stands under the cap, which is the roof deck's own ring.
 * Changing decks changes gameplay. Tell the games agent before it lands.
 
 ### `rooms` — where a room ends, stated rather than guessed
@@ -272,8 +311,20 @@ reproduces:
 |---|---|---|
 | highland | top is snow or ice | grey_stone 3, black_rock 2, ice 1 |
 | rock | top is grey_stone or black_rock | black_rock 2, grey_stone 2, dark_mud 1 |
-| shore | foot at water, beach, or within `SHORE_R = 2` of the sea | light_beach 2, grey_stone 1, black_rock 1 |
+| shore | foot at water, beach, or within `SHORE_R = 2` of the sea | light_beach 2, grey_stone 1, dark_mud 1 |
 | lowland | everything else (grass, mud, soil) | grey_stone 3, black_rock 3, dark_mud 2, light_soil 2 |
+
+**NOT BLACK AT THE WATERLINE**: `black_rock` is a flat near-black — the same
+reason it is not a roof — and against open water, at night, a face of it reads
+as a hole in the world rather than as rock (maintainer 2026-09-11, swimming
+beside a black step at (277,269): *"Wtf happened on this tile? Why black?"*).
+It keeps its weight in every pool that stands inland; the shore draws stone or
+earth. A weight, not a rule — which is the only kind of dial this table has.
+
+**`SHORE_R` IS CLIFF_FACES' OWN NAME.** The class is one namespace, so a later
+`SHORE_R` written for something else silently re-dressed every face within 8
+cells of water instead of 2 — 278 of 4,092 faces, measured, from a constant
+added for spans. The span pass calls its own radius `SPAN_SHORE_R`.
 
 The draw never equals the top when the pool has another choice (a grey_stone
 top over a grey_stone face is the invisible same-over-same column). **Not a
@@ -336,19 +387,55 @@ Maintainer 2026-09-06: *"both slime and lava have never been used ... Lava
 feels best together with black_rock. So maybe we need some lava on top of
 the mountain. Again no hard rules. This game can combine anything with
 anything, some placements/combinations should just occur more often than
-others."* `lava()` (after the terrace colouring, which decides which shelves
-are black rock): every black_rock terrace of `LAVA_MIN = 40` cells or more at
-`LAVA_LEVEL = 20` or higher gets a pool, one more per `LAVA_PER = 200`
-cells, each a blob of 3–7 cells whose every cell has its whole 5×5 square in
-the shelf, pools 2 cells apart, clear of roads (and 2 cells beside them),
-ramps, decks, houses, caves and the wild. **Lava is a liquid**: the world
-declares `liquids: ["water", "deep_water", "lava"]` (that exact list is
-asserted by games2's parity test) and the engine decides what it means
-(`SURFACES.lava`: swum at 0.4 speed, 4 HP a second). In the reachability
-audit lava is swum like water — only deep water is off limits — so the
-walkable ring makes a pool a hazard beside the way, never the way itself.
-the_game: 31 lava cells in six pools on the level-24 shelf. `slime` is in
-the legend and is NOT a liquid (the game walks it).
+others."* **AND IT IS A FLOW, NOT A DAB** (maintainer 2026-09-13: *"the lava you have
+placed on the mountain is just small spots and doesn't feel epic enough. Can't
+you make the lava a bit bigger?"* — he was looking at 23 cells in five 3–6 cell
+pools). `lava()` (after the terrace colouring, which decides which shelves are
+black rock): every black_rock terrace of `LAVA_MIN = 40` cells or more at
+`LAVA_LEVEL = 20` or higher gets a seed, one more per `LAVA_PER = 200` cells,
+clear of roads (and 2 cells beside them), ramps, decks, houses, caves and the
+wild — and **every seed then GROWS into a lake** (`maps2/pipeline/lavafill.py`,
+the rule the generator and the in-place pass share).
+
+- **What bounds the size**: a pool may only take cells whose whole 5×5 square
+  is allowed ground, so a walkable ring of rock always survives and a lava cell
+  can never border anything but black_rock (the containment collar). On
+  the_game that interior is ONE 115-cell region of the level-24 shelf (562
+  cells); every other black_rock shelf in the world has an interior of 0–2
+  cells and gets no lava at all, which is why the lava is all in one place.
+- **How big**: `LAVA_SHARE = 0.78` of that interior — **his number, approved
+  on sight 2026-09-13** ("All changes looks good!"); do not re-tune it without
+  a picture he has seen. Rendered and looked at:
+  20% is the dabs he rejected, 62% is four ponds, 78% is three lava FLOWS that
+  read from the camera, and 100% floods the interior into one sheet with a
+  2-cell ledge round it — a corridor, not a mountain.
+- **What shape**: the candidate touching the most of the field wins
+  (compactness), nudged by a smooth value-noise field (lobes and bays), and
+  **every pool grows in turn, one cell per round**. Growing the field as a
+  whole spends the whole budget on the biggest cluster and leaves the outliers
+  as dabs — measured: one lake of 48 and four spots of 3–6. Pools that meet
+  MERGE; a lake with two arms is the point.
+
+**Lava is a liquid**: the world declares
+`liquids: ["water", "deep_water", "lava"]` (that exact list is asserted by
+games2's parity test) and the engine decides what it means (`SURFACES.lava`:
+swum at 0.4 speed, 4 HP a second). In the reachability audit lava is swum like
+water — only deep water is off limits — so the walkable ring makes a pool a
+hazard beside the way, never the way itself. A monster never stands in it
+either, whatever a zone polygon covers: the game builds a zone's roster from
+its STANDABLE cells and lava is not one (`buildZoneRuntimes`).
+
+the_game: **90 lava cells in three flows** on the level-24 shelf, 23 before.
+`slime` is in the legend and is NOT a liquid (the game walks it).
+
+A terrain change reaches the shipped world the way a placement change does
+— `python3 maps2/pipeline/lavafill.py --apply maps2/worlds3/the_game`, never a
+rebuild (see `scenery` above for why): it grows the pools the build already
+placed, refuses every cell a footprint, an NPC, a road, a room, a deck, a wall,
+a ramp, a door or a cave floor stands on, re-checks the collar and the
+reachable ground, and writes nothing else. Measured on the push that grew
+them: 67 cells black_rock → lava, every other field of world.json byte for
+byte what it was, all 87 spawn zones still holding standable ground.
 
 ### the cave — dug, not inherited
 
@@ -359,6 +446,23 @@ consequence of the top of the mountain and have not been thought through
 bit random."* The 12 ported cave lids kept the mountain's own top as their
 floor (snow and ice floors underground) and their inner walls took whatever
 pool the terrace above happened to draw.
+
+**A CAVE'S CEILING STANDS THE SAME HEIGHT ABOVE ITS FLOOR EVERYWHERE IN THAT
+CAVE** (`_cave_ceilings`, maintainer 2026-09-10, walking the dungeon: *"When
+I'm inside a cave — the cave looks completely different depending on what
+parts of the cave I'm currently at!"*). A lid's UNDERSIDE — `level −
+thickness`, the game's `deckBot` — is the roof the player reads, and one lid
+at the field's own level over chambers dug to 6, 3 and 0 gave headroom 6, 9
+and 12: a low room, a hall and a canyon in one dungeon. The **tightest
+chamber sets the height** and every chamber of that cave matches it, so a lid
+covering floors at several levels becomes one deck per level, each with the
+thickness that puts its underside `head` above its own floor — down a
+staircase the ceiling follows the steps. The ported mountain cave already
+obeyed this (five lids at 24–40 whose thicknesses all put the underside at
+8), which is what says the rule is the cave's own geometry and not a taste
+call. the_game: headroom 8 through the mountain, 6 through the dungeon.
+Build-asserted, and `_merge_lids` keys on the SLAB — level AND thickness —
+so two ceilings at two heights are never flattened into one.
 
 `caves()` (right after `i2_cave`): first **one lid per chamber**
 (`_merge_lids`): cave lids of one level whose cells touch become one deck (the
@@ -384,8 +488,9 @@ like half a room). **Slime** lies on the floor somewhere: one pool per
 the biggest hall, a blob of 3–5 interior cells ringed by floor
 (`_pool_blob`), walkable (the game classes slime as plain ground). `cliff_faces` gives a face whose foot
 is a cave floor that side and no other; the mountain top and its outer walls
-are untouched (the_game: one complex, black rock throughout, the level-40
-chamber in ice). The cap tile of an inner wall (`<top>__over__<side>`) still
+are untouched (the_game: two complexes — the mountain's, black rock
+throughout with the level-40 chamber in ice, and the dungeon under the field,
+see below). The cap tile of an inner wall (`<top>__over__<side>`) still
 carries the mountain's top ground — that band is the tiles/game contract, not
 a world channel. **Corridors are one cell wider**: every passage grows one
 cell on its east/south side, into rock at the lid's level that is interior
@@ -427,6 +532,241 @@ later, but that scenery will need training to use right."* (Windows were held
 back under the same ruling until 2026-09-09, when he asked for them — see
 "windows and hangings".) the_game: 29 pieces of 9 kinds, plus 19 braziers.
 
+### the dungeon under the field — down, not in
+
+Maintainer 2026-09-09: *"What I want is a cave where the player walks down
+into the ground. Not walking into a mountain this time. The dungeon is under
+the normal world ... What we will show here is that we can have elevation
+inside a dungeon (a cave doesn't have to be flat). And we can have worlds
+under level 0."* and *"Think pokemon. A cave usually has some places you can
+jump down but not up to."* the_game is the practice map for this: the way it
+is solved here is the reference for the real game.
+
+`dungeon()` (right after `i2_cave`, so `caves()` digs and dresses it like the
+mountain's): a **pit stair cut into open meadow, a doorway at its foot, and
+under the field ONE cave lid at the field's own level S** over three chambers
+at three depths. This is the hand-planned first of the_game's five; the
+other four and the three massif caves are planned by `_plan_cave` (see "more
+caves — planned, not drawn"), dug with the same pit, lids, ramps and site
+record, and audited by the same `dungeon_audit`. The plan, door at (0,0),
+north up:
+
+```
+x:   -2..2      3..6       7..12       8..13       level
+hall  H                                            S-6   six storeys: a house
+east         --E--> |v3    A                       S-6 | S-9    a ledge into A
+west  H <--W-- s1          A                       S-6 .. S-9   stair 1, the way back
+south                      A  |v3 (x 11)           S-9 | S-12   a ledge into B
+s2                         s2 (x 8,9)   B          S-9 .. S-12  stair 2, the way back
+door  x -1..1, y 0                                 S-6
+pit   y 1..5, three lanes; banks two above a step  S-5 .. S-1
+```
+
+* **Ledges are the shortcuts, stairs are the way back.** A ledge drops
+  `DUNGEON_LEDGE = 3` because the game jumps 2 (`JUMP_CLIMB`): you drop into
+  the next chamber and cannot climb back, and the long way round is a cut
+  stair of one-level steps (two lanes, published as `stair` ramp runs, foot
+  first). So every chamber is reachable by reversible moves and the reach
+  audit's trap rule (R − Rev) holds with no special case.
+* **The lid is one deck per chamber**, each at the field's level S carrying
+  the thickness that puts its underside a fixed height over its own floor —
+  see "a cave's ceiling" below, which is what shapes it. The doorway draws
+  as a house door: the cap band reaches S−1, the hall's floor is S−6.
+* **The whole box wears the field** (`dungeon_field`, after
+  `terrace_grounds`): the dig cuts the meadow's terrace into fragments, the
+  recolouring pass only takes a terrace of `TERRACE_MIN` cells or more and
+  the ground audit only dissolves a speck of `SPECK_MAX` or fewer, so a
+  three-cell scrap of the old grass sat in the middle of a dark-mud field
+  and read as a painted green rectangle (measured at (214–216, 279)). Every
+  natural cell of the box that is not road, ramp or cave floor takes the
+  field's own ground; build-asserted.
+* **The floors never go below 0.** The game clamps an avatar's rendered
+  elevation and a deck's underside at 0 (`games2/shared buildTerrainGrid`,
+  `WorldScene Math.max(0, elev)`), so the field stands
+  `DUNGEON_MIN_FIELD = 12` above the sea and the deepest chamber is at 0.
+  Under level 0 is a constant once games2 lifts the clamps (posted).
+* **The site** is the nearest meadow to the spawn whose 21×19 box is one
+  level of natural ground, the plan's own rect never road, deck, house or
+  floor; the margin ring may carry the road (a road past the pit is how it
+  is found). The plan is 17×15 because the_game's meadows are cut by roads
+  and ponds: its widest clean flat at 12 is 11×30, and a 24×18 plan fitted
+  nowhere (measured). the_game: 322 sites fit, the nearest is the level-12
+  dark-mud field south of the massif, door cells (209–211, 281), pit rim
+  torch, the lid 142 cells over floors at 6, 3 and 0 (115 dug, the rest
+  widened), black rock, three braziers, 10 pieces inside.
+* **The rock a cave is dug into is anything at its lid's level or above**
+  (`cave_rock_min = min(ROCK_MIN, lid)`: 24 for the mountain, whose lids
+  stand at 24–40 over floors at 0; the field's 12 for the dungeon). A
+  widened passage cell takes the level of the cell it widens (a cave floor
+  is not one level any more), and a cut stair is never widened (a third lane
+  at one step's level would be a step nobody cut). Braziers go three per
+  CHAMBER (`_chambers`: the connected patches of a lid's rooms), not per lid.
+* **Nothing carves it** (`_carvable`): a cave floor never wants a stair to
+  the surface — its lid is the surface — and the pit and the margin ring are
+  cut once, by `dungeon()`. The slope-top rule read the inner stair as a
+  slope ending under a cliff and cut a breach from its head up through the
+  field, and a breach up the shelf took the ring's corner (both measured).
+* **The pit stays clear** (`mouth_clear`, a `put()` refusal): nothing stands
+  in the doorway, on the stair, on the banks or on the jambs. The cave-mouth
+  torches stand one pair per door — the ported cave's in its mouth, a
+  dungeon's on the rim of its pit beside the top step, a planned mountain
+  cave's on the ground beside its mouth (`mouth_torches`, from every site's
+  `doors`).
+* **Build-asserted** (`dungeon_audit`, before `spawns`): every dug cell keeps
+  its level, the two ledges are still 3, the one lid is at S with thickness
+  0 and covers every floor and never the door, every lid cell is cave floor
+  or a stair, the margin ring is untouched field at S, the lid is the field,
+  every floor is reachable from the spawn, nothing stands in the pit, a
+  brazier burns inside, only cave dressing is inside, a torch marks the rim.
+  `ramps()` rebuilds the ROAD's runs and keeps every cut stair: rebuilding
+  from the road alone dropped the dungeon's seven runs, and the pit's lanes
+  then kept the meadow's grass and the way down was never a ramp (measured).
+  The dungeon also gets a cave-cast monster zone over all its floor levels
+  (`spawns`, `elev [fl, max(fl+2, fh)]`).
+
+### more caves — planned, not drawn
+
+Maintainer 2026-09-10: *"I can't tell you have fully nailed the dungeon
+concept unless you do 8 more caves. 4 caves that is under the playing world
+and 4 more mountain caves. Actually we only need 3 more mountain caves
+because 1 cave should have 2 entrances/exits. The new mountain caves should
+also show your ability to use different elevations inside the dungeon."*
+the_game carries `CAVE_PITS = 5` caves under a field (the hand-planned one
+above and four planned ones) and `CAVE_MOUTHS = 3` caves dug into the massif
+from its rim beside the ported one, `CAVE_TWO_MOUTHS = 1` of them running
+through to a second mouth — eight new entrances, seven new caves.
+
+**ONE PLANNER, TWO DOORS** (`_plan_cave`). A cave is planned in its own
+frame — the door at (0,0), the cave to the north — and dug into the world
+through a transform: a translation for a pit, a turn for a mountain mouth
+(south-facing rims keep the frame, east-facing rims transpose it, so the
+cave runs west into the rock). The plan is a random walk: a hall right
+behind the door, then rooms added one at a time off a room already placed,
+each through a corridor that is flat, a cut stair of one-level steps, or a
+LEDGE — a drop of `DUNGEON_LEDGE = 3` the player cannot climb back. A room
+only a ledge reaches then gets a RETURN STAIR (`dig_way`): a straight run
+of one-level steps out of it, then a flat corridor through the rock to the
+nearest floor already reachable by reversible moves — so every floor is
+reversibly reachable from the door and the reach audit's trap rule holds
+with no special case. `CAVE_BUFFER = 2` cells of rock stay between any two
+features of one cave (a corridor touches only the room it leaves and the
+room it enters), and the plan is refused unless every 4-adjacent pair of
+floor cells is flat, one step of a published stair, or a recorded ledge
+(`adjacency_ok`); a plan whose rooms all lie at one level is refused too — a
+flat cave shows nothing. **Every number is a pool, not a value**
+(maintainer: *"my input should nudge the rules in a direction and never
+create an if statement"*): rooms per cave `CAVE_ROOMS` (3 or 4 mostly, 2 or
+5 sometimes), room sizes `CAVE_ROOM_W/H`, corridor width `CAVE_LANES` (two
+lanes three times in four), the step between rooms `CAVE_STEP` (the ledge
+and the flat corridor weigh three each, the six stairs one each), flat cells
+before a step `CAVE_GAP_RUN`, headroom `CAVE_HEAD` (6, 8, 5), a pit's depth
+`PIT_DEPTH` (6 mostly), a mouth's width `CAVE_MOUTH_W`. **Nudges, not
+rules:** a digger rolls plans — they cost milliseconds — and takes the
+first that has a ledge (*"some places you can jump down but not up to"*),
+that fits a meadow (a pit), that reaches a second mouth while one is still
+owed (a mountain cave); after enough rolls it takes what comes. the_game's
+caves therefore differ in every one of these and the build log says how.
+
+**A pit dungeon** (`dungeons`, after `mountain_caves`) is planned first and
+the field is found for ITS shape (`_shape_fits`: the plan plus the pit, one
+flat level of natural ground with nothing built on it, `DUNGEON_MARGIN` of
+untouched field around; the ring may carry the road). The nearest fit to the
+spawn whose pit head is reversibly reachable, never within `CAVE_APART = 12`
+of another cave. The rooms lie north of the door, beside the pit or beyond
+its head, never under it. The pit, lid, ramps and site record are those of
+`dungeon()`; the door stands the pit's depth below the field and that depth
+is the headroom. **A pit in a terrace the player can only drop onto makes
+its whole cave a trap** (291 cells, measured) — hence the reach test.
+
+**A mountain cave** (`mountain_caves`, right after `dungeon`) opens in a rim
+cell of a rock body at `CAVE_MASS = 14` or higher that stands
+`CAVE_MOUTH_RISE = 8` above reversibly reachable natural ground outside —
+20 left one face free once the ported cave, the crown and the keep-outs had
+theirs. **The rim is drawn by the rock behind it**: the cells of a 17×16
+frame behind the mouth a floor could take, as the weight in the pool
+(drawn uniformly, the tries went to spurs and to the honeycomb over the
+ported cave: 0 of 400 halls stood). The mouth is as wide as the rim is
+straight there, up to `CAVE_MOUTH_W`. Floors go `CAVE_DOWN_MAX = 6` below
+the mouth's grade (never below 0) and `CAVE_UP_MAX = 6` above it. A floor
+cell is rock with `head` of rock left over it, never another cave's cell or
+a deck's; a wall is any land the floor beside it cannot climb (`CLIMB + 1`
+above it) — the rim row is ragged, a shoulder below `CAVE_MASS` walls a low
+floor as well as the massif's body does, and a bridge or lid over the cell
+is no less a wall. **Not behind the crown**: `mountain_back` cuts and voids
+what the ridge hides, and a cave dug there lost its floor to the valley
+(measured, (247–252, 412–416)); the planner reads the same crown map
+(`_crown_top`), in which **a cell under a cave lid counts at the lid's
+level** — the lid is what shows, and a floor dug to 4 under a 36 lid must
+not move the ridge. A cave floor is never cut or voided (build-asserted).
+The lid is the mountain top: one deck per (top level, top ground, floor
+level) carrying the thickness that puts the ceiling `head` above that floor.
+The second mouth is the same `dig_way` from a random room to a cell beside
+another rim of the same kind ten or more cells from the first, the rim cell
+becoming a door at its outside's grade; the flat search runs to 4000 cells
+for a rim (a return stair's target is near, 400).
+
+the_game (394×394 canvas): pit dungeons at doors (237,210) in the stone
+field at 20 (4 rooms, 2 ledges, depth 5), (242,266) in the dark-mud field
+at 12 beside the hand-planned one (2 rooms, depth 6), (156,229) in the
+snowfield at 36 (4 rooms, depth 6) and (185,208) in the snowfield at 32
+(4 rooms, 2 ledges, depth 7); massif caves at mouths (281,131) facing east
+(4 rooms, floors 0–3, 2 ledges, head 6), (217,236) facing east running
+through to a second mouth at (197,255) (4 rooms, floors 4–7, head 5) and
+(148,295) facing south (3 rooms, head 5). Every cave has floors at two
+levels or more, a brazier in every room, a torch at every door; 0 traps,
+every floor reachable, 17 cave monster zones.
+
+**A second lane beside every one-wide way** (`_widen_plan`, at dig time):
+maintainer 2026-09-12, in a one-wide stair of Cave III: *"A single monster
+will block the entire dungeon!"* — and, when the caves were replanned wider
+around him: *"I liked the old caves better! ... I want the old back, but with
+slightly wider corridors only!"* So the planner is untouched and the plan is
+widened after it is fixed and before it is dug, drawing nothing from the
+cave's random stream — every cave stays where and as it was planned. A flat
+corridor cell with floor along one axis only gets its neighbour on one side
+(per corridor, the side where more cells can take it: free rock, joining
+nothing at another level, its rock halo kept); a stair run gets a whole
+parallel lane on the first side where every step can, published as a run.
+At every bend the cell that closes the 2 × 2 between a corridor cell and its
+two neighbours is dug too, so the lane runs round the corner instead of
+stopping at it (maintainer 2026-09-12, at a one-wide bend of Cave III).
+A cell whose corridor's side cannot serve it takes the other side (a strip
+between a rock spine and the massif's shoulder stayed one wide for two
+cells). A lane needs one cell of rock beside it, not the planner's buffer: it
+joins nothing. A mouth one cell wide takes the rim cell beside it that faces
+the same way at the same grade, where the floor behind is the door's own;
+Cave III's two mouths have no such neighbour and stay one wide. Rooms, doors
+and the pit stay as they were; the keep-out between caves is the plan's box,
+not the lanes'. the_game: 158 cells and 13 lanes over the seven planned
+caves, and no passage cell one wide but those two mouths (measured on the
+published cells). **A brazier never stands in a passage**: a lid with no
+room `ROOM_MIN` deep lights the rooms three deep it has, and a lid of
+passages only stays dark (a fallback that lit "the biggest patch" put one in
+that same bend: *"How do you expect players to get through?"*).
+
+**The site record** (`_register_site`, `self.cave_sites`): every cave — the
+hand-planned dungeon included — is one record of its cells and levels,
+floor, doors (cells, outward step, the two torch cells beside the mouth,
+the cells kept clear in front of it), stairs, margin (the rock or field
+around it, with its levels), ledges, headroom and rock line. The passes read
+the list, never a single site: the road walks around every box
+(`i2_road`), nothing carves a margin or a cleared mouth (`_carvable`),
+nothing stands in a cleared mouth (`put`), every pit's box wears its field
+(`dungeon_field`), one pair of torches stands at every door (`lights`), a
+cave-cast monster zone covers every cave (`spawns`), and `dungeon_audit`
+audits every site: levels unchanged, lids cover the floor and never a door,
+one headroom, ledges of 3, the margin untouched, every floor reachable from
+the spawn, the mouths clear, a brazier inside, only cave dressing inside, a
+torch at every door. **A planned cave keeps its corridor width**: `caves()`
+does not widen it (a cell dug beside a planned corridor would join two
+floors the buffer keeps apart); its rock line is its own (`planned_rock`:
+the field's level for a pit, `grade + CLIMB + 1` for a mountain cave, so
+`lights` never reads a low wall as a way in). **The ice chamber is the
+deepest room** — the lid with the most rock over its floor (`level − floor`),
+which is the highest lid of the ported cave and the lowest chamber of a cave
+that steps down under a field; keyed on the lid's level alone, every lid of
+a pit dungeon was "deepest".
+
 ### windows and hangings — scenery ON a wall, not in front of it
 
 **`z` is the placement's height up the wall, in STOREYS.** A placement's feet
@@ -447,6 +787,24 @@ and where the game anchors everything (measured in the game 2026-09-09: paste
 row, anchor and sprite bottom coincide; the old `TOP_Y` lift on ground pieces
 drew them 10 px higher than the game, and lifting windows too put a cleared
 top back into the roof band — the maintainer marked it).
+
+**A WINDOW NEEDS A ROOM BEHIND IT** (maintainer 2026-09-14: *"You know the
+walls in this game is 1 cell/tile wide right? So if you place a window too
+close to the house edge there is no 'inside room' (the outer tile is just
+wall)."*). The wall is ONE cell thick, so the cell behind the face IS the
+room — and at a corner it is the wall turning. A face cell is **backed** when
+the cell one step into the house is inside the deck's box at the house's FLOOR
+level; the face is cut into the RUNS of backed cells and a window may only
+stand where its whole drawn width sits inside one. The face used to be taken
+whole, corners included, and `_slots` kept a margin of only 0.35 of the art's
+width, so an end slot hung 6 px of a 42 px frame past the wall: **28 of
+the_game's 40 windows** were over dead wall. Both halves are fixed — the
+margin is now at least the art's own half-width, and the piece for a house is
+chosen from the types that fit one of ITS backed runs (a frame that fits the
+15-cell house does not fit the 6-cell one, and choosing it there would leave
+the house blind). `windowfit.py --apply` slides an already-shipped world's
+windows into the nearest legal spot: the_game's 28 moved 0.11 to 0.55 cells,
+none removed, no house blinded.
 
 **Windows** (`windows()`, after `village`; maintainer 2026-09-09: *"It's now
 time for you to add windows to the houses. Make sure enough space exist to the
@@ -526,20 +884,213 @@ furniture already standing against that wall wins, and a wall with no clear
 cell gets nothing (a cupboard is as tall as the hanging is high). The old rule
 stood the hanging on the floor against the north wall like a chest.
 
-### `scenery` — a placement is centred on its HITBOX, not its art
+**Carpets** (`_lay_rug` / `_rug_spots`, maintainer 2026-09-11: *"When you
+place a carpet in a room can you please try to center it in the room. This is
+not a hard rule just a better default we still want variations."*): the middle
+is the WEIGHT. A ring is drawn per rug from `RUG_RING = ((0,6), (1,3), (2,1))`
+— dead centre six times in ten, a cell out three, two cells out one — and the
+room's cells are then tried from that ring outwards, so a rug the centre
+cannot take (a table stands there) lies near it rather than against a wall.
+The centre is the floor's own CENTROID, not its bounding box: an L-shaped room
+has no middle where the box says. **And not every room is carpeted**
+(`RUG_IN_ROOM = 0.6`): trying the centre and then outwards always finds a
+cell, where the old single shot at one fixed spot usually hit the furniture
+and dropped the rug — so centring alone took the_game from 3 carpets to one in
+every room, which is the sameness he keeps ruling out. the_game: 8 rugs in 13
+rooms, 0.25–1.52 cells off their centroids.
 
-**The hitbox centre stands in the middle of a tile** (maintainer, 2026-08-30:
-*"the game will mark that spot in the nav as a tile we must navigate around —
-so we want that ground we now have to navigate around to match the scenery
-hitbox as good as possible"*).
+### the fire indoors, and the chimney on the roof
+
+**70% of rooms get an open FIRE, 10% at least a LIGHT, 20% neither**
+(maintainer 2026-09-13, told one room of thirteen had a fire: *"ONLY ONE ROOM
+HAS FIRE?!?! WTF! I kinda want 70% to have a fire and 10% to at least have a
+light. Only 20% should have no fire and no light. This is not a hard rule but
+something to strive for."*). `indoorfire.role()` is the draw — weighted and
+seeded on the room's own corner, so it is a tendency and not a quota, and it
+is the SAME rule the build and the in-place pass use.
+
+- **A ROOM IS BUILT AROUND ITS FIRE: the fire asks FIRST.** It used to ask
+  last, after a cupboard every three cells of the same north wall, and a
+  hearth is 1.51 x 1.65 cells — the footprint law then had nowhere to put one
+  and refused 12 of 13, silently, because a refusal only bumps a counter.
+- **A hearth first, a brazier when the room is full.** A brazier is half a
+  cell of fire basket, the same open fire, and it takes its own chimney; it is
+  what keeps a dressed room from going cold (`indoorfire.FIRE_GROUPS`).
+- **A BACK WALL IS A LOCAL FACT, not the bounding box.** A wall run is the
+  cells with a WALL to their north (or west), longest run first. The box's own
+  min-x column and min-y row ARE the back walls of a rectangle and are wrong
+  for anything else: room 10 of the_game is an L of 54 cells whose box top row
+  is ONE cell, so the old reading had a single 4-cell wall to try and left the
+  room bare. (`_walls`.)
+- **AND A DOORWAY IS NOT A WALL** (maintainer 2026-09-14, standing in room 9's
+  doorway looking at a fireplace: *"How did you reason when you placed the fire
+  and chimney in front of the door to the room?"*). "The neighbour is not in
+  this room" is equally true of a wall, of a passage and of the next room's
+  floor, so the gap at (303,231) read as wall and the hearth went across it —
+  the door between rooms 9 and 10 was shut, and the room behind it was only
+  reachable the long way round through room 11. **A wall is a RAISED
+  neighbour** (a floor at level 0 under a wall column at 6); a neighbour within
+  one level is a way out, it is not a wall cell, and the run breaks there so no
+  piece can straddle it. Belt and braces, because a wide piece can reach past
+  the end of its own run: a candidate is refused when the cells the GAME
+  blocks for it (`navfit.nav_cells`, not the box) include an opening or the
+  floor cell you cross to reach one (`doors()`). The footprint law judges a
+  room's floor, never its ways out — measured over the_game, this hearth was
+  the only piece in the world standing across an opening, his furniture
+  included. `indoorfire.py --refit` moves one that does, and takes its chimney
+  with it.
+- **THE FACING COMES FROM THE STATE'S OWN `rotations`**, which is what
+  `facedSprite` reads — a brazier publishes its rotations per state and
+  nothing at the piece root, and a placement naming a facing its state does
+  not publish draws its south still anyway while the footprint lookup asks for
+  a box that was never measured. No rotation, no `dir`.
+- **The light budget is the engine's 8 per camera window, not a preference**
+  and the test is per WINDOW: a new light must not push a window IT IS IN over
+  8 (`max_overlap(..., only=box)`). A global worst answers "no" to every
+  indoor fire in this world, whose streetlamp windows already sit at 8 of 8.
+  An unlit LANTERN is furniture, so it is not placed at all.
+- **AND MOST OF THE FIRES BURN: an indoor fire outranks the lamp in the street
+  outside** (maintainer 2026-09-14, told 2 of 10 hearths were lit: *"You made
+  80% not lit? I think that number should be flipped and 80% should have been
+  lit."*). `indoorfire.py --relight` lights them nearest the arrival point
+  first — `lights()`'s own order, and the only one that survives contact with
+  a player — and pays for each slot by putting a light OUT (the post still
+  stands): a street lamp first (`DIM_RANK`, and the generator itself queues
+  the town's lamps last of everything it lights), then ambient glows, then
+  cave lights, never another indoor fire and never the lighthouse beacon.
+  Among equals the most REDUNDANT goes — the one with the most lit neighbours,
+  which is his own complaint about lamps that cluster.
+- **A DIMMER FIRE DOES NOT BUY A SLOT, and this is the number that decides the
+  whole trade:** a camera window is 899 x 774 px — about 28 x 26 cells, WIDER
+  THAN THE TOWN — so two lights within that share its 8 slots whatever their
+  radius. Capping a hearth's pool at 6 cells instead of the published 16 saves
+  5 lamps of 12 and costs the fire its glow (measured). And lighting a fire
+  spends the slot it just freed, so three hearths in one saturated window cost
+  three lamps however cleverly they are chosen.
+- the_game at 80%: **8 of 10 fires burn for 12 lights put out** — 5
+  streetlights, 3 lantern posts, 2 cave braziers, a crystal and a toadstool
+  ring, of 150. Every fire within 222 cells of the spawn is lit; the two dark
+  ones are the far town's, 246 cells out. 9 of 10 is the ceiling (15 lights
+  out); the tenth cannot be lit at all.
+- the_game 2026-09-13 (in place, additive): 13 rooms → **10 with a fire
+  (76%), 0 with a light only, 3 bare (23%)**; 9 pieces added. On a REBUILD
+  `lights()` lights the indoor fires right after the plaza's lamps and before
+  the rest of the town's, which is the build-side half of the same trade.
+
+### scenery ON a roof — the chimney over the fire
+
+**A chimney is placed for every open fire indoors, at that fire's own `x`/`y`,
+with `z` = the roof deck's level − the cell's ground level** (maintainer
+2026-09-13: *"place them whenever you have an open fire indoors and also be
+sure to place them OVER that indoor fire. If you can't place scenery on a roof
+yet, add support for it."*). Its feet land on the roof's top and the stack
+rises directly above the hearth — one column from fire to sky, which is what
+the ambient domain's smoke needs. A fire under a CAVE lid gets nothing: a
+mountain is not a house. (`chimneys.py`.)
+
+- **THE GAME HAD TO LEARN IT.** A `z` placement was wall scenery, and any
+  placement whose CELL is a roof cell is flagged `roofed` — indoor furniture,
+  drawn only while that roof is cut away, so a chimney would have been
+  invisible from the street and visible from inside the room. `scenery3.ts`
+  now asks where the FEET are (`buildPlacements` + `deckAt`): at or above the
+  deck's top the placement is `onDeck`, drawn like any outdoor piece, not on a
+  `wall`, and it fades with the roof's own curve when the cut takes it — the
+  still and its lit band both (`games2/server/test/scenerydeck.test.ts`).
+  render3 reads the same line. A window or a hanging, whose feet are below the
+  deck's top, keeps everything it had.
+- **SOUTH-EAST, and it is a taste call** (he asked for S, SE or SW): rendered
+  all three on the spawn-side house and looked. South is the stack seen flat
+  on, one face, and it reads as a sticker on the roof; the turned views show
+  the brick's corner so it stands up off the roof plane, and SE turns the LIT
+  face toward the side this world's roofs and walls are lit from.
+- **NO HFLIP, deliberately.** The art publishes its flue mouth per facing
+  (`scenery.json` `vent`) and ambient's smoke leaves from that exact point; a
+  mirrored placement would mirror the mouth and nothing downstream un-mirrors
+  it. A chimney is near enough symmetric that the variation is not worth the
+  trap.
+- **HIS VERDICTS DELETE ART UNDER A WORLD THAT ALREADY SHIPS.** A rejection in
+  the wiki is a standing removal order and the scenery agent acts on it — one
+  chimney piece and four states went in a single review (2026-09-14, and two
+  of the four were exactly the captioned variations below) — so a placement
+  can name art that is no longer on disk. The game tombstones the 404 and
+  draws nothing there; render3 stops dead. `chimneys.py --heal` re-asks
+  `pick()` for those cells only, over the pool as it is on disk, and leaves
+  every stack whose art survived exactly as it was. The same fault can reach
+  any group: the world's own references are worth auditing after a review
+  (measured after this one, the chimneys were the only two dangling of 1,406
+  placements).
+- **A CAPTIONED VARIATION IS NEVER PLACED.** PixelLab sometimes writes a word
+  across the bottom of the sheet: measured over all 120 chimney images,
+  chimney_022's NOT_LIT_2 and NOT_LIT_4 read "NEW" in rows 90-95 of the 96 px
+  canvas, in every facing. Drawn on a house that is a black word lying on the
+  roof. The test is the SHAPE of the defect, not the letters — a component of
+  the alpha mask detached from the piece in the bottom eighth of the canvas —
+  and the finding goes to the scenery agent, whose art it is to re-roll.
+- the_game: 10 chimneys, one per indoor fire, all at `z = 6`.
+
+### `scenery` — a placement stands where the game's NAV matches its hitbox
+
+**The footprint sits at the offset inside its cell where the cells the game
+blocks look most like the drawn hitbox** (maintainer 2026-09-13, beside a cart
+whose rectangle spans two cells and whose nav diamond is one: *"centering will
+not always (bigger objects) make the nav and collision look as similar as
+possible ... if we placed the scenery differently we might have been able to
+change the nav grid for a better fit"*). The 2026-08-30 rule — the hitbox
+centre on a cell centre, so *"that ground we now have to navigate around"*
+matches the hitbox — is the special case for a piece smaller than a cell.
+
+WHAT THE NAV IS (games2 `stampSceneryCollision` + `navCellOpen`): the body
+collides with the drawn hitbox itself; a cell is blocked only when no body of
+`PLAYER_RADIUS` (12 wu of 32) fits anywhere in it, sampled 4×4 then 8×8 per
+cell. So the nav is the hitbox GROWN by the body radius and cut to whole
+cells, and which cells those are depends on where the hitbox sits inside its
+cell: the cart (1.55 × 2.78 cells along the map diagonals) blocks ONE cell
+centred and FOUR on a lattice edge; an ancient tree's 14-cell² ellipse blocks
+one cell centred and twelve at its best offset. `maps2/pipeline/navfit.py`
+mirrors the stamp and the bake to the letter (`--check <world_dir> --game
+<dump>` compares it with the game's own stamp: 0 of 1,390 placements
+disagree), scores every offset of the shape's reference point on a 1/16-cell
+lattice by the SYMMETRIC DIFFERENCE between the blocked cells and the drawn
+shape, and takes the least — nearest the piece's current spot among equals,
+the cell centre whenever it is one of them. `put()` snaps a new placement
+there before the footprint law judges it; `snap_hitboxes()` moves every
+non-flush piece there (never a whole cell) and asserts every footprint is on
+its offset.
+
+(The fit and the lakes it moved were approved 2026-09-13, "All changes looks
+good!" — the offsets are his now, not a default to revisit.)
+
+**A PLACEMENT-RULE CHANGE REACHES THE SHIPPED WORLD THROUGH
+`python3 maps2/pipeline/navfit.py --apply maps2/worlds3/the_game`, NEVER
+THROUGH A REBUILD** (maintainer 2026-09-13, on a rebuild that re-dressed a
+tenth of the map under a placement fix: *"I was asking for a placement
+correction only!"*). `--apply` keeps every piece what it is — piece,
+variation, facing, flip, and the ground patches under it — and moves only the
+footprints the old rule had centred, each to its nav-fit offset, each judged
+there by the generator's own footprint law (walls, doorways, level, shore,
+the gap to every other footprint, the art over a drop) and left where it was
+when the law says no. A rebuild re-dresses: every variation is drawn from a
+hash of the piece and its spot, stable since 2026-09-13 (`_pos_rng`, crc32;
+`hash()` of a str is salted per process and re-rolled 137 placements and 133
+states between two unchanged builds), but the shipped dressing predates it,
+so the next full rebuild re-rolls the dressing ONCE — do that only when a
+re-dress is asked for, and say so on the change page.
+
+Measured on the_game, both worlds stamped with the game's own code: 1,106
+footprints stood on the old rule's centre; 486 move (25 by up to half a
+cell to a better offset — the cart 3.40 → 1.54, an ancient tree 5.04 → 2.48,
+the rock spire 6.01 → 3.18 — and 461 by under a tenth of a cell, onto the
+game-exact centre of their box), 580 stay (the centre is best), 40 are
+refused at the new spot by the law. The mismatch over all 1,318 footprints
+falls 516.6 → 490.1 cells (0.392 → 0.372 per footprint); the nav cells
+1,267 → 1,287. A piece whose hitbox does not fill a cell blocks NONE by the
+game's design (the player slides past it) and the fit does not fight that:
+157 footprints block no cell, every one under 1.4 cells² of hitbox.
 
 `x`/`y` is where the art is ANCHORED (its alpha-bbox bottom-centre), which is
 not where its footprint is. The offset between them is the piece's own
 business — its ellipse can sit well off the anchor — so the cell the game
-blocks landed wherever that offset fell. `world3grow.snap_hitboxes()` nudges
-every piece that publishes a footprint (always less than one cell) so its
-hitbox centre lands on a cell centre, which the game writes as
-`(col + 0.5, row + 0.5)`.
+blocks landed wherever that offset fell before any snapping at all.
 
 The centre is computed with the game's own arithmetic (client `fitSprite` +
 the overlay's `hbX/hbY`, `games2/client/src/scenery3.ts`) and the game's own
@@ -571,10 +1122,10 @@ number is what a reference render must draw at — at the contract's number ever
 piece in `render3.py` was 27% small, so no render of mine showed the crowding
 the game shows.
 
-Measured on the_game with the game's own cell test: pieces whose ellipse covers
-no cell centre — and which therefore block **nothing** — fall from **550 of
-1,421 (39%) to 11**, and the centring error from median 3.0 px to **0.00**.
-The footprints got accurate, not bigger. Build-asserted every run.
+(The 2026-09-04 measurement of this — pieces covering no cell centre falling
+from 550 of 1,421 to 11 under the game's raster of that day — is superseded:
+the game stamps the body-fit rule now, and the fit above is what is
+build-asserted every run.)
 
 **A RECT BOX IS READ PER FACING — all three channels.** `shape:"rect"` means
 the footprint is a rectangle on the ground, and the wiki writes three
@@ -952,7 +1503,10 @@ beside it is already dressed:
 | `STAIR_GROUND` | to 85% | the dominant natural ground at its ends |
 | the rest | 15% | `STAIR_ELSE`: light_soil, grey_paving_stone, dark_mud, brown_paving_stone |
 
-Never over paving or floors (`STAIR_OVER` lists what may be repainted), and
+**A stair is its lanes together**: a breach is up to three runs side by
+side and the dungeon's pit is three, and runs that touch roll ONCE and wear
+one material (rolling per run striped the pit light_soil | dark_mud |
+grey_paving_stone, measured; build-asserted). Never over paving or floors (`STAIR_OVER` lists what may be repainted), and
 the dissolver runs after it — a two-cell stair painted into open grass is a
 speck by the ground audit's own rule.
 
@@ -1060,7 +1614,14 @@ freestanding blocks, a wedge hugging the wall — were built and rejected
 rule ... Have you ever seen triangles like this in nature?"*). **Roads,
 ramps and the cells beside them, houses and the wild are never carved**; a
 stair that would need them is not built, and a trap under `LEDGE_MAX = 12`
-cells with no room joins the terrace above. **The road is never broken**:
+cells with no room joins the terrace above. **A stair into a cave covers no
+cliff**: a pit's lanes and a cave's inner stairs are the cave's way, not the
+hill's, so `_stair_coverage` does not count them — counted, the pit dug into
+the hill at (242,266) stood in for the hill's own stair fifteen cells off and
+the hill lost it (maintainer 2026-09-12: *"the stair up on the hill ... I
+really loved"*). **The outer cell of a pit's ring may carry a stair**
+(`margin_outer`): the ring keeps breaches off the pit's banks, and a cliff
+stair flares two cells wide; the audit reads a stair there as the hill's. **The road is never broken**:
 every two adjacent road cells differ by at most one level, as `ramps()` left
 them — asserted, because one build cut stairs across the Trollstigen
 switchbacks and the old road could not be climbed. Trap components are
@@ -1110,10 +1671,11 @@ a crop would move the dot off the player.
 |---|---|---|
 | iso | `tiles/review/manifest.json` iso block | 64px tile, dx 32, **dy 14** (GEOMETRY.md: the pitch where the v3 lattice closes; 15 leaks a 1px wall grid), storey pitch **measured** per tile (`tiles/pipeline/render.py wall_height` — assuming 17 leaks a stripe of the floor below at every storey, the tiles agent's own paid-for bug) |
 | fields | `live/tuning/base_tile_sets.json` | **his base tile sets, on every cell — land, liquid, deck and raised alike.** A SET per region (a 24-cell chunk of one ground), a MEMBER per cell, his weights throughout, clean as a member. A member draws **its own art**: the review candidate's published `textured` pass, or the file itself for a `tops`/`base_candidates` path, conformed into plate geometry. **Never `tiles/plates/<g>/<key8>.webp`** — that is the same tile flattened to the clean colour, and reading it painted 236 of his 340 members flat. A member he later **rejected** is dropped, his rejection outranking his set. (`live/tuning/base_tiles.json` is the superseded one-tile-per-ground channel and is empty.) |
-| walls | `tiles/review` x-over-y matrix | **the only tiles that ever show a wall.** A column stacks whole tiles (the tiles agent's `plateau` model): same-over-same for every storey below, capped by `top__over__side` where `side` = the ground at the face's FOOT (down-screen lower neighbour) — never an indoor floor, never a liquid — overridable per pair via `live/tuning/tile_walls.json`. Candidate per cell = the wiki's own rule: maintainer-approved, else rank 0. |
-| boundaries | `tiles/patterns` x `tiles/plates` | patterns publishes the **material-independent** Wang boundary and nothing else; the two grounds it divides come from their own set members. So **every pair is covered**, including roads (`light_soil` beside `grass`, the 2nd most common boundary on the_game) — no per-pair set is required. Corner lattice, index `8*NW+4*NE+2*SW+1*SE`; each half asks for **its own ground's** region. Only where the quad shares one level. |
+| walls | `tiles/review` x-over-y matrix | **the only tiles that ever show a wall.** A column stacks whole tiles (the tiles agent's `plateau` model): same-over-same for every storey below, capped by `top__over__side` where `side` = the ground at the face's FOOT (down-screen lower neighbour) — never an indoor floor, never a liquid — overridable per pair via `live/tuning/tile_walls.json`. Candidates = the wiki's own rule: maintainer-approved first, else rank 0. WHICH approved tile a course wears is the game's **wall region field** (`games2/client/src/wallregion.ts`, ported into render3 and proved against its `WALL_TEST_VECTORS` at import): a domain-warped 3-D region about 40 cells across picks ONE measured set of five joining tiles from `games2/client/src/wallsets.json` (expected seam cost ≤ 2.0 under the 8/5/3/2/1 mix; no such set → rank 0 alone), and a weighted member per cell AND storey — per storey, never per column, so a boundary crosses a face instead of running along it. A caller with no cell (the flat-tile ladder, a borrowed wall, the pitch probe) gets rank 0. |
+| decks | `decks` (roof, bridge, cave lid) | a slab whose top rides at its own level, drawn **at the end of its own DIAGONAL** — after that diagonal's terrain, before the next — so the cells in front cover whatever hangs below it, the way a cell's own wall band is covered by the same-level cell in front. Drawn after every cell in the window (the game's `windowOps` order, and this renderer's until 2026-09-09), a lid whose field continues at its own level beyond its south/east edge stood its skirt on the meadow: measured with a thickness-2 cave lid at 12 in a level-12 field, a two-storey grey wall along the edge, a one-storey band at thickness 0. Raised on the games2 board. **Per diagonal, not inside the cell body**: a liquid cell and a level-0 cell each leave that body early, so a first cut that called it there dropped every span over water or flat ground — the pier and both river bridges vanished from the render. The cap band still hangs where the front is open, which is the lintel over a doorway. |
+| boundaries | `tiles/patterns` x `tiles/plates` | patterns publishes the **material-independent** Wang boundary and nothing else; the two grounds it divides come from their own set members. So **every pair is covered**, including roads (`light_soil` beside `grass`, the 2nd most common boundary on the_game) — no per-pair set is required. Corner lattice, index `8*NW+4*NE+2*SW+1*SE`; each half asks for **its own ground's** region. Only where the quad shares one level. **WATER LIES FLAT**: a corner within one storey votes its own ground (the game's `BOUNDARY_STEP`, so a terrace rim still blends), but a LIQUID corner votes only at the cell's OWN level — one storey of tolerance let the sea compose into the top face of the step above it, water running up a stair on a cell a whole level clear of it (maintainer 2026-09-11, ringing the bottom step of a shore staircase: *"The ground on that stair has fucking water on it!"*; 8 cells of the_game, every one land at level 1 beside water at 0). A WATER cell still composes its land corner, which is the shore tile that is "not 100% water or 100% beach". **tiles3 carries the unamended rule** and the parity fixture pins the old stream — raised on the games2 board. |
 | fades | `tiles/fades` (`tiles3/fade-tiles@1`) | top-only mix tiles that warm the player up for a ground change **before** the switch. Placed by `edge_ground`, never by area majority ("big rocks ON an ice sheet"). **APPROVED ONLY** — he rates this layer actively (480 approved, 345 rejected of 3,575), so an unjudged tile is not a candidate; survivors are weighted by his rating. A **scattered event** over a real Chebyshev distance band, never a coat of one tile. |
-| details | `live/feedback/tiles.json` `<key>#top` approvals | **478 approvals.** The wiki's roof glyph is "rating the TOP as a once-in-a-while ground detail", and a tile **rejected as a pair** (bad wall) can still be a top-approved detail — the two reviews are independent by design. Drawn from the `textured` pass and conformed, so a detail's foreign lava/ice/sand wall never leaks into a field. |
+| details | `live/feedback/tiles.json` `<key>#top` approvals, then `tiles/tops/index.json` | **The x-over-y `#top` approvals first, then his detail LIBRARY** — every `flavour: detail` sheet's tile whose `<dir>/<tile>#top` verdict is approved (2,549 of 9,840 on 2026-09-12), drawn as its `post/` file matched by stem, never a constructed name. Index order, no existence check (the index is gated to 0 dangling files; a miss is loud, a shorter pool would shift every index after it) — the game's `detailPool` (tiles3.ts) builds the same list in the same order, so the per-cell roll `(x*83492791) ^ (y*2654435761) ^ 0xd47a` at `DETAIL_FREQ` 1/56 lands on the same tile in both. A tile **rejected as a pair** (bad wall) can still be a top-approved detail — the two reviews are independent by design. Conformed, so a detail's foreign lava/ice/sand wall never leaks into a field; never on `parquet_floor`. |
 | slopes | `tiles/slopes` (`tiles3/slopes@1`) | a Wang set on **elevation** (bit = that corner is raised), same 64x46 frame as a plate. A cell takes the graded tile when its **own** ground rises beside it. **Gated per tile on his verdicts** — he has judged 15 of 225 sets, so `light_soil` and `water` get no slope rather than an invented one. Every published set is a **4px sub-storey** grade: it softens the foot of a rise, it cannot bridge a 17px storey (storey-height sets requested from tiles). |
 | toggles | `live/tuning/tile_walls.json`, `top_walls.json`, `tile_tops.json` | `top_only` (this tile's wall is unusable) **paired with** `wall:` (the wall it borrows instead) — two files, and reading only the first left the mark dead. `own_top` keeps the x-over-y tile's own top instead of painting the set surface over it. |
 | scenery | `scenery/<piece>/scenery.json` + `live/tuning/scenery_hitbox.json` | sprite scaled to the height the GAME draws, `world_px_height × 88 / character_height_px` — **never the raw contract number** (`maps2/pipeline/sceneryscale.py`); feet at (x,y); `hflip` honoured (`must_be_imbplemented_with_random_hflip`); pieces under roof/cave decks skip (indoors). The hitbox is the wiki's, keyed `<path>#<state>` per variation, and the placement is centred on it — see above. |

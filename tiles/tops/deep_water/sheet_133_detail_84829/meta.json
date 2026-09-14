@@ -10,9 +10,8 @@
   "prompt": "deep water, a barnacled stone in the middle, deep water all around the edge",
   "palette_top": "#162843",
   "tile_id": "3e1dff1e-b831-41f1-aae8-7f18cb033621",
-  "n_tiles": 16,
+  "n_tiles": 12,
   "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
@@ -20,14 +19,11 @@
     "tile_05.webp",
     "tile_06.webp",
     "tile_07.webp",
-    "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -128,5 +124,27 @@
   },
   "motif": "a barnacled stone",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_00.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

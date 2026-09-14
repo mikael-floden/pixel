@@ -209,7 +209,8 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
       </div>
       <button id="ml-enter" class="ml-btn" type="button"><span>Enter world</span></button>
       <button id="ml-install" class="ml-corner ml-install" hidden type="button"
-        title="Install game" aria-label="Install game">⤓ Install</button>
+        title="Install game" aria-label="Install game"><img
+        class="ml-cicon ml-cicon-img" alt="" draggable="false">Install</button>
       <button id="ml-wiki" class="ml-corner ml-wiki" type="button"
          title="Game wiki — all monsters, characters, tiles, sounds &amp; tuning"><img
          class="ml-cicon ml-cicon-img" alt="" draggable="false">Wiki</button>
@@ -418,6 +419,11 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // prompt (main.ts stashes it in __mlInstall) and we're not already
     // running as an installed app.
     const installBtn = overlay.querySelector("#ml-install") as HTMLButtonElement;
+    // His own PixelLab download arrow (2026-09-13), replacing the ⤓ text
+    // glyph — a font character is whatever the phone's vendor drew that year,
+    // and it cannot be pixel art. Set here, not in the markup: the URL goes
+    // through withV() (cache stamping), which a template string cannot call.
+    (installBtn.querySelector(".ml-cicon-img") as HTMLImageElement).src = withV("/ui2/icon-install.webp");
     pressFx(installBtn);
     const installed = ["standalone", "fullscreen", "minimal-ui"].some(
       (m) => window.matchMedia?.(`(display-mode: ${m})`).matches,
@@ -688,21 +694,26 @@ function injectStyles() {
     box-shadow:var(--shadow);touch-action:manipulation;-webkit-tap-highlight-color:transparent}
   .ml-btn:hover{filter:brightness(1.06)}
   .ml-btn.press{transform:translateX(-50%) translateY(1px);filter:brightness(.97)}
-  /* ── corner ghost buttons: Wiki (left), Install (right) ── */
-  .ml-corner{position:fixed;top:12px;z-index:2;padding:7px 12px;cursor:pointer;
+  /* ── corner ghost buttons: Wiki (left), Install (right); their 12px is
+     measured from the cutout's edge (--ml-safe-top, theme.ts) ── */
+  .ml-corner{position:fixed;top:calc(12px + var(--ml-safe-top, 0px));z-index:2;padding:7px 12px;cursor:pointer;
     background:color-mix(in srgb, var(--surface) 82%, transparent);color:var(--ink);
     border:1px solid var(--border);border-radius:9px;font:600 13px/1 var(--sans);
     backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);
     touch-action:manipulation;-webkit-tap-highlight-color:transparent;user-select:none}
   .ml-corner:hover{background:var(--surface-2)}
   .ml-corner.press{transform:translateY(1px)}
-  /* The left-hand pair (Wiki over Theme) reads a step bigger than the utility
-     Install chip, and the two are sized TOGETHER so they can never drift apart
-     (maintainer 2026-07-30: the Theme button must match the Wiki button).
-     min-width equalises the boxes despite the different word lengths — stacked
-     in a column, a matched pair reads deliberate. */
-  .ml-wiki,.ml-theme{left:12px;padding:10px 16px;font-size:15px;border-radius:11px;
+  /* ALL THREE CORNER CHIPS ARE ONE SET — Wiki over Theme on the left, Install
+     on the right — sized by ONE rule so they can never drift apart (maintainer
+     2026-07-30: the Theme button must match the Wiki button; 2026-09-13, on
+     the download icon landing: "The button should look similar to Wiki and
+     theme same size and margin"). Install used to be a step smaller as a
+     "utility" chip; his verdict retires that reading. min-width equalises the
+     boxes despite the different word lengths, and the 12px margin from each
+     one's own edge is the same on both sides. */
+  .ml-wiki,.ml-theme,.ml-install{padding:10px 16px;font-size:15px;border-radius:11px;
     min-width:118px;display:flex;align-items:center;justify-content:flex-start;gap:8px}
+  .ml-wiki,.ml-theme{left:12px}
   /* The two leading glyphs share ONE FIXED BOX, so the pair can't differ in
      size or baseline (maintainer 2026-07-30: "the icon has different size and
      is not aligned") — the old ◐ was a thin TEXT glyph next to a colour emoji,
@@ -722,8 +733,14 @@ function injectStyles() {
      absolute offset, so it does NOT follow the Wiki button when that grows:
      the 24px icon box below made these two 5px taller and silently closed the
      gap to 4px. If .ml-cicon or the button padding changes again, re-measure
-     this with it — #ml-wiki's bottom edge is 12 + its height. */
-  .ml-theme{top:67px}
+     this with it — #ml-wiki's bottom edge is 12 + its height (+ the cutout
+     inset, which both carry, so the pair moves as one). */
+  .ml-theme{top:calc(67px + var(--ml-safe-top, 0px))}
+  /* Same box as the pair (above), mirrored to its own edge: his gold download
+     arrow in the same authored 24px .ml-cicon, the same 12px margin, the same
+     top line as Wiki. [hidden] must still win over the shared display:flex —
+     it is later AND more specific, which is the only reason the chip stays
+     invisible until the browser offers an install prompt. */
   .ml-install{right:12px}
   .ml-install[hidden]{display:none}`;
   const s = document.createElement("style");

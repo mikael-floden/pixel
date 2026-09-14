@@ -710,8 +710,9 @@ def build_window(doc, w):
                 pred_note.append((x, y, rec.get('srf'), rec.get('set'), rec.get('mi')))
                 pred.append((t.width, t.height, bx_of(x, y), rec["py"], ident(t)))
 
-    # 2) decks. MIRROR of render3's 2b): the slab's own anchor picks ONE set
-    # and ONE member for the whole slab; `lo = dl - thickness` (0 = the cap
+    # 2) decks. MIRROR of render3's 2b): a built slab's own anchor picks ONE
+    # set and ONE member for the whole of it, a cave lid asks per cell like the
+    # ground it is; `lo = dl - thickness` (0 = the cap
     # only); the body is the deck's `side` when it names one (roof-over-side
     # is the THIN look), else a cave lid's rock, else same-over-same; the cap
     # is x-over-y whenever the body differs from the top OR the front is open,
@@ -761,19 +762,22 @@ def build_window(doc, w):
                     "cap_h": CAP_CROP if crop else cap_t.height,
                     "cap": cap_ix, "mid": mid_ix, "sx": bx_of(x, y), "st": st}
             # A roof, a bridge and a cave lid are GROUND too: the slab top wears
-            # the maintainer's base tile set, top face only, ONE set and ONE
-            # member for the whole slab at the deck's own anchor.
-            rid = f"{dg}@{danch[0] // 24},{danch[1] // 24}"
+            # the maintainer's base tile set, top face only. A BUILT slab takes
+            # ONE set and ONE member for the whole of it at the deck's own
+            # anchor; a CAVE LID asks at its own cell, so it comes out as the
+            # same set and member the ground pass picks there.
+            sanch = (x, y) if dk.get("kind") == "cave" else danch
+            rid = f"{dg}@{sanch[0] // 24},{sanch[1] // 24}"
             if rid not in rid_ix:
                 rid_ix[rid] = len(rids)
                 rids.append(rid)
             chosen = pick_set(dg, rid)
-            mi, _m = pick_member_ix(chosen, danch[0], danch[1])
-            sim = R3.plate_img(dg, rid, x, y, anchor=danch)
+            mi, _m = pick_member_ix(chosen, sanch[0], sanch[1])
+            sim = R3.plate_img(dg, rid, x, y, anchor=sanch)
             ck = next(k for k, v in R3._tile_cache.items() if v is sim)
-            pix, _im = plate_ident(dg, rid, danch[0], danch[1])
+            pix, _im = plate_ident(dg, rid, sanch[0], sanch[1])
             drec["srf_set"], drec["srf_mi"], drec["srf_p"] = chosen["id"], mi, pix
-            drec["srf_anchor"] = list(danch)
+            drec["srf_anchor"] = list(sanch)
             t = R3.top_face_only(sim)
             drec["srf_y"] = col_y(x, y, dl)
             pred_note.append((x, y, 'deck-surface'))

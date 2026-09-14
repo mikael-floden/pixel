@@ -121,6 +121,9 @@ export class Toggles {
     return this.features.map((f) => ({
       name: f.name,
       kind: this.isEpisode(f) ? ("episode" as const) : ("field" as const),
+      // An effect that lives under a roof (drips/) — the indoor gate asserts
+      // the mirror of the outdoor rule for it. Absent/false = outdoor.
+      indoor: !!f.indoor,
       conflicts: this.conflictsOf(f.name),
       on: this.running(f),
       enabled: this.isEnabled(f.name),

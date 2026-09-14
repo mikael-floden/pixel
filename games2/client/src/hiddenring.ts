@@ -17,10 +17,10 @@
 
 const KEY = "ml-hidden-ring";
 
-/** Default 60% — a first dim, not a tuned number: the maintainer asked for the
- * slider so he can pick the real one by eye and tell us ("I will then tell you
- * what the default value should be"). Do not treat this as his verdict. */
-export const HIDDEN_RING_DEFAULT = 0.6;
+/** Default 20% — HIS VERDICT (2026-09-13: "Hidden outline should be 20% as
+ * default"), picked by eye off the live game, which is what the slider was
+ * built for. The 60% before it was only a first dim. */
+export const HIDDEN_RING_DEFAULT = 0.2;
 
 const clamp01 = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
 

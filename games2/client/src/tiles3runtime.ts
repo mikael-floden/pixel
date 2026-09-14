@@ -51,6 +51,7 @@ import {
   type Tiles3Data,
   type Tiles3DeckCell,
   type World3View,
+  TopsDoc,
 } from "./tiles3";
 import {
   artKey,
@@ -368,6 +369,11 @@ export const TILES3_DOCS = {
   review: "tiles/review/manifest.json",
   fades: "tiles/fades/index.json",
   slopes: "tiles/slopes/index.json",
+  /** His reviewed detail library (flavour "detail" sheets, one motif centred
+   *  on its own ground) — the detail pool reads it against his `#top`
+   *  verdicts. In the image: ship-tiles3 copies every document the closure
+   *  names, and the tops' post files wholesale. */
+  tops: "tiles/tops/index.json",
   baseTileSets: "live/tuning/base_tile_sets.json",
   basePromotions: "live/tuning/base_tiles.json",
   tileWalls: "live/tuning/tile_walls.json",
@@ -416,6 +422,7 @@ export function tiles3DataFrom(
     basePromotions: docs.basePromotions?.overrides,
     fades: docs.fades as FadesDoc | undefined,
     slopes: docs.slopes as SlopesDoc | undefined,
+    tops: docs.tops as TopsDoc | undefined,
     topWallOverrides: docs.topWalls?.overrides,
     topOverrides: docs.tileTops?.overrides,
     /* NO live/tuning/tile_details.json: the wiki has never published it, and a
@@ -480,12 +487,43 @@ export function cellBlits(
     if (!key || !tex.exists(key)) continue;
     out.push({ key, x: cell.sx, y: s.y, sx: 0, sy: 0, sw: tile.w, sh: tile.h, role: "wall" });
   }
+  /* THE STUMP WEARS THE ROCK IT IS CUT THROUGH. The course at the cut is a
+   * face whose top is one flat colour; the lid over it is the side material's
+   * textured set, at the surface anchor slid down to the cut storey (the
+   * stack's own y for that storey against the cap's). A cut through grey
+   * stone shows grey stone — never the snow the mountain wears on top. */
+  const lidKey = cutLidKey(t3, cell);
+  if (lidKey) {
+    const at = w.stack.find((s) => s.storey === hi);
+    const top = w.stack[w.stack.length - 1];
+    if (at && top && cell.cutCap)
+      out.push({
+        key: lidKey,
+        x: cell.sx,
+        y: (cell.pasteY ?? cell.sy) + (at.y - top.y),
+        sx: 0,
+        sy: 0,
+        sw: cell.cutCap.w,
+        sh: cell.cutCap.h,
+        role: "surface",
+      });
+  }
   return out;
+}
+
+/** The drawable key of a truncated column's lid — the SIDE rock's textured
+ *  plate (Tiles3Cell.cutCap), or null while it streams or the cell has none.
+ *  The occluder pass anchors it itself (a field stump keeps the plate anchor,
+ *  slid to the cut; a wall stump takes it over its top course). */
+export function cutLidKey(t3: Tiles3Textures, cell: Tiles3Cell): string | null {
+  const art = cell.cutCap;
+  if (!art || !cell.side || art.kind === "liquid") return null;
+  return t3.plate(art, cell.side);
 }
 
 /** Every repo-relative art file one resolved cell can draw — what the loader is
  *  asked for BEFORE the blits are taken, so the next redraw has it. */
-export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void): void {
+export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void, lid = true): void {
   /* THE SURFACE IS NAMED WHATEVER THE CELL'S KIND IS. A WALL cell wears the
    * maintainer's set on its cap — `resolveCell` dresses it and `cellOps` blits
    * it over the courses — so its file has to be named HERE or nothing ever asks
@@ -509,6 +547,20 @@ export function cellArtPaths(cell: Tiles3Cell, out: (p: string) => void): void {
    * loader and scripts/tiles3closure.ts, which decides what enters the image.
    * Miss it and every fade 404s in production and only in production. */
   if (cell.fade) out(cell.fade.file);
+  /* ...AND THE DETAIL'S, for exactly the same reason: since 2026-09-13 a detail
+   * is an OVERLAY and no longer the cell's `art`, so this is the only place its
+   * file is named. Miss it and every detail 404s at /assets/tiles/… in
+   * production and only in production (the loader drops the op, and
+   * scripts/ship-tiles3.ts never copies the file into the image). */
+  if (cell.detail) out(cell.detail.file);
+  /* ...AND THE STUMP'S LID (Tiles3Cell.cutCap) — for the ship closure always,
+   * for the LOADER only while the cut is up (`lid`). A landed terrain file
+   * rebuilds the occluders and unlocks a drain repaint (onTerrainBatch), so
+   * naming a plate nothing draws is not free: every raised cell's lid landing
+   * outdoors was 66 long occluder rebuilds and twice the full paints in one
+   * 30 s beacon window on the maintainer's phone (2026-09-09, "the lag we
+   * fixed is back"). Indoors the lids stream in like any other art. */
+  if (lid && cell.cutCap && cell.cutCap.kind !== "liquid") out(cell.cutCap.path);
   if (cell.kind !== "field" && cell.wall)
     for (const s of cell.wall.stack) if (s.tile.path) out(s.tile.path);
 }
@@ -642,6 +694,18 @@ export function faceKey(tex: TextureManagerLike, cell: Tiles3Cell): string | nul
  *
  *  Falls back to the representative course when this storey's own art has not
  *  landed — a band with a hole in it is a body drawn through a mountain. */
+/** THE STOREY'S OWN TILE KEY, resident or not — what `faceKeyAt` substitutes
+ *  the mid tile for while it streams. An occluder walk that took the
+ *  substitute marks its cell incomplete on this, so a landing walks it again
+ *  (measured 2026-09-12: a full walk after the art landed found 13-54 face
+ *  images the incremental set had drawn with the mid tile). */
+export function faceOwnKey(cell: Tiles3Cell, storey: number): string | null {
+  const w = cell.wall;
+  if (!w) return null;
+  const s = w.stack.length ? w.stack[storey - w.stack[0].storey] : undefined;
+  return s && s.storey === storey && s.tile.path ? artKey(s.tile.path) : null;
+}
+
 export function faceKeyAt(
   tex: TextureManagerLike,
   cell: Tiles3Cell,

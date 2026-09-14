@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-09-05T17:58:53.038Z",
+  "updated_at": "2026-09-14T15:52:07.478Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -53103,6 +53103,600 @@
       ],
       "auto": true,
       "updated_at": "2026-09-03T08:02:57.026715Z"
+    },
+    "scenery/chimneys/chimney_004#not_lit_1": {
+      "boxes": [
+        {
+          "ax": 1.34,
+          "ay": 28,
+          "rx": 26.5,
+          "ry": 12.42,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:41:15.222Z"
+    },
+    "scenery/chimneys/chimney_004#not_lit_2": {
+      "boxes": [
+        {
+          "ax": 0.14,
+          "ay": 23.2,
+          "rx": 32,
+          "ry": 15,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:41:21.049Z"
+    },
+    "scenery/chimneys/chimney_004#not_lit_3": {
+      "boxes": [
+        {
+          "ax": 1.53,
+          "ay": 26.43,
+          "rx": 27,
+          "ry": 12.66,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:41:24.109Z"
+    },
+    "scenery/chimneys/chimney_004#not_lit_4": {
+      "boxes": [
+        {
+          "ax": 0.38,
+          "ay": 11.73,
+          "rx": 35,
+          "ry": 27,
+          "rot": 0,
+          "rot_by_dir": {
+            "south-east": 179,
+            "south-west": 179
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:43:38.942Z"
+    },
+    "scenery/chimneys/chimney_004#not_lit_5": {
+      "boxes": [
+        {
+          "ax": 0.03,
+          "ay": 18.6,
+          "rx": 35,
+          "ry": 22.25,
+          "rot": 0,
+          "rot_by_dir": {
+            "south-east": 179,
+            "south-west": 174
+          },
+          "size_by_dir": {
+            "south-east": {
+              "rx": 34.25,
+              "ry": 22.75
+            }
+          },
+          "pos_by_dir": {
+            "south-east": {
+              "ax": 0.03,
+              "ay": 18.1
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:42:31.723Z"
+    },
+    "scenery/chimneys/chimney_022#not_lit_1": {
+      "boxes": [
+        {
+          "ax": 1.35,
+          "ay": 22.54,
+          "rx": 19.5,
+          "ry": 9.14,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:44:00.370Z"
+    },
+    "scenery/chimneys/chimney_022#not_lit_4": {
+      "boxes": [
+        {
+          "ax": 2.15,
+          "ay": 45.45,
+          "rx": 20,
+          "ry": 9.38,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:44:29.210Z"
+    },
+    "scenery/chimneys/chimney_022#not_lit_5": {
+      "boxes": [
+        {
+          "ax": 1.23,
+          "ay": 19.93,
+          "rx": 20.5,
+          "ry": 9.61,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -4.78,
+              "ay": 19.7
+            },
+            "south-west": {
+              "ax": 5.53,
+              "ay": 19.36
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:44:49.492Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_1": {
+      "boxes": [
+        {
+          "ax": 2.83,
+          "ay": 23.53,
+          "rx": 17,
+          "ry": 7.97,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -1,
+              "ay": 22.99
+            },
+            "south-west": {
+              "ax": 4.37,
+              "ay": 23.72
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:45:30.331Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_2": {
+      "boxes": [
+        {
+          "ax": 1.95,
+          "ay": 24.44,
+          "rx": 19,
+          "ry": 8.91,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 4.7,
+              "ay": 22.6
+            },
+            "south-east": {
+              "ax": -2.57,
+              "ay": 21.45
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:45:42.193Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_3": {
+      "boxes": [
+        {
+          "ax": 1.83,
+          "ay": 23.65,
+          "rx": 19,
+          "ry": 8.91,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 3.38,
+              "ay": 24.23
+            },
+            "south-east": {
+              "ax": -2.52,
+              "ay": 22.21
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:45:57.853Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_4": {
+      "boxes": [
+        {
+          "ax": 1.81,
+          "ay": 23.65,
+          "rx": 18,
+          "ry": 8.44,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -1.06,
+              "ay": 23.84
+            },
+            "south-west": {
+              "ax": 4.39,
+              "ay": 24.23
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:46:12.032Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_5": {
+      "boxes": [
+        {
+          "ax": 1.24,
+          "ay": 23.08,
+          "rx": 20,
+          "ry": 9.38,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 6.72,
+              "ay": 22.31
+            },
+            "south-east": {
+              "ax": -4.49,
+              "ay": 21.57
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:46:22.730Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_1": {
+      "boxes": [
+        {
+          "ax": 0.61,
+          "ay": 27.61,
+          "rx": 26.5,
+          "ry": 14.75,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -0.4,
+              "ay": 27.15
+            },
+            "south-west": {
+              "ax": 2.09,
+              "ay": 27.15
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:46:50.458Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_2": {
+      "boxes": [
+        {
+          "ax": 0.88,
+          "ay": 26.65,
+          "rx": 27.5,
+          "ry": 12.89,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": 4.13,
+              "ay": 26.7
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:47:06.916Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_3": {
+      "boxes": [
+        {
+          "ax": 1.53,
+          "ay": 26.47,
+          "rx": 27.5,
+          "ry": 12.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:47:12.651Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_4": {
+      "boxes": [
+        {
+          "ax": 3.19,
+          "ay": 26.45,
+          "rx": 26,
+          "ry": 12.19,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 2.37,
+              "ay": 27.9
+            },
+            "south-east": {
+              "ax": 0.32,
+              "ay": 26.72
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:47:26.542Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_5": {
+      "boxes": [
+        {
+          "ax": 0.85,
+          "ay": 27.62,
+          "rx": 26.5,
+          "ry": 12.42,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:47:31.983Z"
+    },
+    "scenery/chimneys/chimney_030#not_lit_1": {
+      "boxes": [
+        {
+          "ax": 0.77,
+          "ay": 27.65,
+          "rx": 19.5,
+          "ry": 9.14,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -0.42,
+              "ay": 23.19
+            },
+            "south-west": {
+              "ax": 1.2,
+              "ay": 22.53
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:48:00.121Z"
+    },
+    "scenery/chimneys/chimney_030#not_lit_2": {
+      "boxes": [
+        {
+          "ax": 2.04,
+          "ay": 24.77,
+          "rx": 21,
+          "ry": 9.84,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 2,
+              "ay": 23.53
+            },
+            "south-east": {
+              "ax": 0.66,
+              "ay": 24.53
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:48:13.418Z"
+    },
+    "scenery/chimneys/chimney_030#not_lit_3": {
+      "boxes": [
+        {
+          "ax": 1.41,
+          "ay": 26.14,
+          "rx": 19.5,
+          "ry": 9.14,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": 0.82,
+              "ay": 20.21
+            },
+            "south-west": {
+              "ax": 1.05,
+              "ay": 21.22
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:48:24.486Z"
+    },
+    "scenery/chimneys/chimney_030#not_lit_5": {
+      "boxes": [
+        {
+          "ax": -0.31,
+          "ay": 27.46,
+          "rx": 20.5,
+          "ry": 9.61,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -4.13,
+              "ay": 22.84
+            },
+            "south-west": {
+              "ax": 7.39,
+              "ay": 22.74
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:48:38.056Z"
+    },
+    "scenery/chimneys/chimney_007#not_lit_1": {
+      "boxes": [
+        {
+          "ax": 0.89,
+          "ay": 23.27,
+          "rx": 17.5,
+          "ry": 8.2,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:48:47.540Z"
+    },
+    "scenery/chimneys/chimney_007#not_lit_2": {
+      "boxes": [
+        {
+          "ax": 1.11,
+          "ay": 21.16,
+          "rx": 23.5,
+          "ry": 11.02,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:48:56.702Z"
+    },
+    "scenery/chimneys/chimney_007#not_lit_3": {
+      "boxes": [
+        {
+          "ax": 1.06,
+          "ay": 22.73,
+          "rx": 17.5,
+          "ry": 8.2,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:49:04.457Z"
+    },
+    "scenery/chimneys/chimney_007#not_lit_4": {
+      "boxes": [
+        {
+          "ax": 1.46,
+          "ay": 21.42,
+          "rx": 23.5,
+          "ry": 11.02,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 6.45,
+              "ay": 18.28
+            },
+            "south-east": {
+              "ax": -4.36,
+              "ay": 20.65
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:49:18.968Z"
+    },
+    "scenery/chimneys/chimney_007#not_lit_5": {
+      "boxes": [
+        {
+          "ax": 0.47,
+          "ay": 19.89,
+          "rx": 21,
+          "ry": 12.5,
+          "rot": 0,
+          "rot_by_dir": {
+            "south-west": 179,
+            "south-east": 179
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:49:34.356Z"
+    },
+    "scenery/chimneys/chimney_009#not_lit_1": {
+      "boxes": [
+        {
+          "ax": 0.66,
+          "ay": 30.95,
+          "rx": 28,
+          "ry": 13.13,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": 0.05,
+              "ay": 26.69
+            },
+            "south-west": {
+              "ax": 1.02,
+              "ay": 28.05
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:51:19.137Z"
+    },
+    "scenery/chimneys/chimney_009#not_lit_2": {
+      "boxes": [
+        {
+          "ax": 1.47,
+          "ay": 31.49,
+          "rx": 26.75,
+          "ry": 15.47,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 1.31,
+              "ay": 26.01
+            },
+            "south-east": {
+              "ax": -1.9,
+              "ay": 26.62
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:51:31.386Z"
+    },
+    "scenery/chimneys/chimney_009#not_lit_3": {
+      "boxes": [
+        {
+          "ax": 1.34,
+          "ay": 32.75,
+          "rx": 28.5,
+          "ry": 13.36,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -6.63,
+              "ay": 27.69
+            },
+            "south-west": {
+              "ax": 7.68,
+              "ay": 28.13
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:51:41.401Z"
+    },
+    "scenery/chimneys/chimney_009#not_lit_4": {
+      "boxes": [
+        {
+          "ax": 0.92,
+          "ay": 32.1,
+          "rx": 29.5,
+          "ry": 13.83,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -6.31,
+              "ay": 27.38
+            },
+            "south-west": {
+              "ax": 5.88,
+              "ay": 28.18
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:51:53.229Z"
+    },
+    "scenery/chimneys/chimney_009#not_lit_5": {
+      "boxes": [
+        {
+          "ax": 1.23,
+          "ay": 32.07,
+          "rx": 29,
+          "ry": 13.59,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -6.29,
+              "ay": 25.99
+            },
+            "south-west": {
+              "ax": 7.32,
+              "ay": 26.34
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:52:03.757Z"
     }
   }
 }

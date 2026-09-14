@@ -2,6 +2,49 @@
 
 How the ground pages, passes, transitions, ledger and filters work, and the breaks that shaped them. Moved verbatim out of `wiki/README.md` (2026-09-09), which keeps the rules and points here; rewrite in place under the root doc law.
 
+## The queue does not move under his thumb
+
+A verdict in a review QUEUE removes that card where it stands; nothing above it
+re-renders (maintainer 2026-09-12, on a ground's details: *"if I press approve
+the already reviewed element is moved down instead of the next item to review
+moving up. This means I have to scroll before I can press approve again. This
+takes time. I want to be able to not move my thumb and press approve/not a
+detail on the exact same place over and over again until everything is
+reviewed."*)
+
+- The old behaviour re-rendered the page at the same `scrollY`, and the judged
+  top joined the collection ABOVE — one card taller — so the queue and every
+  button in it slid down a card. Same scroll position, different pixels.
+- `judgedInPlace(card)` drops the card from the DOM and corrects the queue's
+  count in place. The collection and the "N approved" pill catch up on the next
+  natural render, which is the deal the stars have had since 2026-08-28.
+- **THE QUEUE GROWS BY ITSELF AT THE BOTTOM** (maintainer 2026-09-12: "Can you
+  automatically expand and show more once I'm at the bottom (will speed up the
+  review). It's also important that the approve/remove button stay on same
+  place after automatic expand."). An observer on a sentinel under the grid
+  appends the next dozen 900px before he reaches the end; the "Show 12 more"
+  button stays for a thumb that gets there first and calls the same function.
+  Nothing is re-rendered — the cards are APPENDED — so nothing already on
+  screen moves, and judging the last visible card appends rather than routes.
+- **A FIELD IS DRAWN WHEN IT COMES NEAR THE SCREEN**, 800px out (`drawNear`).
+  The old page decoded tiles and drew a 25-cell scene for every card the
+  moment it rendered — the whole approved collection included — which is the
+  lag he felt ("the page is very big and starts to lag. This lag in itself
+  slows down the review"). Measured on deep water: 4 fields drawn on entry
+  instead of 65, and an expand costs twelve cards instead of every card on the
+  page.
+- **The buttons sit on the RIGHT**, where a hand holding a phone already is,
+  and the stars keep the left (`judge-right`, `margin-left: auto` on the
+  verdict rather than a flex end on the row, so the stars do not move with
+  them). The reject button says **"✕ remove"** — his word (2026-09-12), not
+  "not a detail"; the tooltip still says what it touches, which is the detail
+  pool and not the tile.
+- Gate: `wiki/tools/check-queue.mjs` taps the same PIXEL four times and fails
+  unless each tap judges a different top and lands on the same coordinates,
+  asserts the labels and the right alignment, scrolls to the bottom to prove
+  the queue grows with no button pressed, and checks that fewer fields are
+  drawn than exist.
+
 ## The ground system: World (Tiles 3.0)
 
 `tiles/` is THE tile library (tiles2 — the "Tiles OLD" row — was deleted
@@ -799,8 +842,11 @@ claim:
   names a tile that no longer exists; that orphan row is the receipt) against
   any **still standing** (rejected, but the tile is still in the manifest). This
   is the "is anyone acting on me" number.
-- **Tops** — the second axis, judged vs total, with a press that opens the
-  biggest queue in **Textured**.
+- **Tops** — the second axis, judged vs total over EVERY top the Details tabs
+  list (the x-over-y candidates AND the top-only sheets, one rule: `typeTops`
+  / `detailQueue`), with the count still waiting as its pill and a press that
+  opens the biggest queue in **Textured**. (Until 2026-09-12 it counted the
+  x-over-y tops alone and read "all judged" over 9,008 waiting sheets.)
 
 Note for whoever runs `prune-feedback.mjs` next: the orphan rejected rows *are*
 the receipt the ledger reads. Pruning them is not wrong, but it zeroes "carried
@@ -901,14 +947,42 @@ when the type has none, landing the visitor on On top of.
   INDEPENDENT of the pair review: a tile rejected for its wall can still be a
   top-approved detail ("every nice tile that didn't make it into the other
   categories can still have a chance"), and the gate asserts a top approval
-  never leaks into the pair filters. The tab holds the approved collection
-  first, then **"Tops nobody has judged"** — the when-bored queue, twelve
-  composed cards at a time. Every pair-page tile card carries a collapsed
+  never leaks into the pair filters. **For the admin the tab opens on the
+  queue** — **"Tops waiting for your verdict"**, twelve composed cards at a
+  time — and the approved collection follows; the tab's chip is that queue's
+  count in the to-do colour (✓ once it is 0), and the World overview's ground
+  cards carry the same number, all three off one rule (`detailQueue`).
+  (Maintainer 2026-09-11, on black_rock: *"I have tried to review the entire
+  black_rock details. But I don't know if I have already or not becouse the
+  wiki has no way for me to filter so I only see tiles I have not reviewed
+  yet"* — the chip counted the 275 tops he had APPROVED and the 0 he needed
+  sat under them, a 275-card scroll away on a phone.) Every pair-page tile
+  card carries a collapsed
   **"☘ review the top"** toggle with its own stars and a "not a detail"
-  verdict, wearing the top's state on the button; detail cards carry **promote
-  to base tile**, the same modal as a tile card. Ground details are not in the
-  game yet — this is the pick list the tiles agent's detailed-variant pass and
-  the world agent will consume.
+  verdict, wearing the top's state on the button. Ground details ARE in the
+  game (games2 `detailPool`, 2026-09-12) and in the map renderer
+  (`maps2/pipeline/render3.py`), rolled once in every N field cells.
+
+- **A DETAIL IS NEVER A BASE TILE** (maintainer 2026-09-13, with the audition
+  offering him one: *"I want to remove so that is never even possible. A
+  detail should never be able to be selected/added to a base tile set."*) The
+  two placements are opposites — a set member is TILED across a region, a
+  detail is the once-in-a-while showpiece, *"looks amazing, but not if
+  tiled"* — and the tiles domain generates both flavours into `tiles/tops`,
+  which is how they came to share one pool. `isDetailTile` (wiki.js) is the
+  one predicate, and it reads the SHEET NAME (`sheet_<n>_detail_<seed>/`)
+  rather than the registry, because a set member carries only its paths while
+  a pool candidate carries `flavour`; `check-basesets.mjs` holds that rule
+  equal to every published flavour. It is applied at all three doors: the
+  audition pool, the card button that opens the promote modal, and a guard
+  inside the modal itself, so a door added later cannot reopen it. `basePool`
+  is NOT filtered — it stays the whole library so a member added before the
+  door was shut still resolves its art and draws honestly. Those members
+  (12 on 2026-09-13, in brown_paving_stone #5/#10, grey_paving_stone #8/#10
+  and snow #2) wear a red **"detail — not a base tile"** pill on the Base tab
+  beside the Remove that clears them: they are tiled across real ground today,
+  and which to keep is a taste call made where the field shows the
+  consequence.
 - **Transitions** mirror `tiles/transitions/` on disk, and each pair has its
   own DEMO PAGE (`#/world/transition/<a>__to__<b>`) composing the same Wang
   corner set across every direction a boundary can run — west|east,

@@ -241,10 +241,16 @@ function standingOpen(grid: TerrainGrid, i: number, elev: number): boolean {
 }
 
 /** Could the player under this roof actually BE on cell `i` — is it interior
- * FLOOR? Standing-open, and not a step UP bigger than `climb`: a cell whose own
- * terrain rises above the player's standing elevation is the room's WALL, even
- * when the roof deck also covers it. (Downward is free — gravity always is —
- * so a sunken floor is still floor.) */
+ * FLOOR? Standing-open, and within `climb` levels of the player's own standing
+ * elevation EITHER WAY: terrain that rises that much above them is the room's
+ * WALL even when the roof deck covers it, and terrain that drops that far below
+ * them is THE STOREY UNDER THIS ONE.
+ *
+ * THE FILL DOES NOT ANCHOR TO THE PLAYER — see the relative step in
+ * `findIndoorSpace`. This predicate is the player-relative reading, kept
+ * because the entrance predicate is tested against the movement code through
+ * it; the fill passes it each cell's OWN level.
+ */
 function interiorFloor(grid: TerrainGrid, i: number, elev: number, climb: number): boolean {
   /* A ROOM IS TERRAIN AND ROOF, NOT FURNITURE. `standingOpen` refuses a cell no
    * body fits in, which is right for a doorway — you cannot leave through a
@@ -527,6 +533,39 @@ function roofAboveIndex(grid: TerrainGrid, i: number, elev: number): number | nu
  *    a 2-cell arch over a 2-cell gully scores a perfect 1.00. See all three
  *    constants; each carries the measured numbers it was chosen from.
  */
+/** THE INDOOR CUT — the highest level any column of the world still draws
+ *  while you are inside, i.e. what takes the roof off and shortens the walls
+ *  in one rule. Pure, so it can be gated: the renderer holds the inputs, this
+ *  holds the arithmetic.
+ *
+ *  `spaceFloor` is the LOWEST level under the room's roof, not the level you
+ *  happen to stand on: a cave floor is not flat, and anchoring the cut to your
+ *  feet makes every wall in the room jump 16px each time you step onto a
+ *  ledge. The minimum also keeps the whole floor plan below the cut, so a
+ *  raised shelf reads as a shelf you look over rather than as a wall.
+ *
+ *  `myFloor` IS THE FLOOR UNDER YOUR FEET, and it is a floor under the answer
+ *  rather than the answer. The minimum is right for one room with ledges and
+ *  wrong the moment a space spans STOREYS: the_game's dungeon puts three
+ *  floors — levels 6, 3 and 0 — under ONE lid, joined by stair strips that
+ *  step a level at a time, and `interiorFloor` caps how far the fill may climb
+ *  but not how far it may DESCEND, so from the top floor the fill takes all
+ *  142 cells and the minimum is 0. Without this the cut landed at 1: the
+ *  storey you stood on was not drawn, and your body six levels above the cut
+ *  was not drawn either (maintainer 2026-09-10, three photographs of one spot
+ *  before and after a trip to the bottom floor: "the entrance ... is very very
+ *  black"). It only showed on the way BACK — the first descent is still
+ *  crossfading, which is why the same spot looked right on the way in.
+ *
+ *  A ledge up to `wall` levels high therefore leaves the cut exactly where the
+ *  room's own minimum put it; only a storey the cut would otherwise erase
+ *  pushes it up. `ceil` (the slab's underside) clamps it — a wall taller than
+ *  its own room would just seal the box again — and the far walls still rise
+ *  past the result wherever they can, which is the per-column raise. */
+export function indoorCutLevel(spaceFloor: number, myFloor: number, wall: number, ceil: number): number {
+  return Math.max(0, Math.min(ceil, Math.max(spaceFloor + wall, myFloor)));
+}
+
 export function findIndoorSpace(
   grid: TerrainGrid,
   col: number,
@@ -586,8 +625,18 @@ export function findIndoorSpace(
       if (nc < 0 || nr < 0 || nc >= w || nr >= h) continue;
       const j = nr * w + nc;
       if (mark[j] !== 0) continue;
-      if (roofAboveIndex(grid, j, elev) === null) continue; // no slab over this head
-      if (!interiorFloor(grid, j, elev, climb)) continue; // solid: wall, not floor
+      /* RELATIVE TO THE CELL WE CAME FROM, so a cave is ONE room from every
+       * floor of it: "I want to be able to see all rooms in the cave"
+       * (maintainer 2026-09-11). Anchored to the player instead, the fill
+       * capped how far it could CLIMB but descended for free, so the_game's
+       * dungeon — floors at 0, 3 and 6 under one lid, joined by stair strips
+       * that step a level at a time — was 176 cells from the bottom and all
+       * 352 from the top, and every wall of the chambers you had left was
+       * redrawn each time you climbed. A step of more than `climb` either way
+       * is still this room's WALL: a storey is 3 levels and `climb` is 2. */
+      if (Math.abs(grid.level[j] - grid.level[i]) > climb + EPS) continue;
+      if (roofAboveIndex(grid, j, grid.level[j]) === null) continue; // no slab over THAT floor
+      if (!interiorFloor(grid, j, grid.level[j], climb)) continue; // solid: wall, not floor
       if (tail >= cap) {
         capped = true; // budget spent — stop dead, report it, stay outdoors
         break;

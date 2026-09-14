@@ -1,0 +1,141 @@
+{
+  "id": "minotaur",
+  "name": "Hornmaul",
+  "tier": "boss",
+  "scale": "standard",
+  "lore": "The maze was built around it, not for it. It knows every turn, and it is always one turn behind you.",
+  "biome": [
+    "grey_paving_stone",
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Minotaur shown full body from head to feet, realistic proportions, a massive bull's head with wide curved horns and a ring through the nose, dark brown hide over enormous muscle, a leather harness, cloven hooves, and a double-headed axe held low at its side.",
+  "size": [
+    160,
+    160
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "minotaur/rotations/south.webp",
+    "south-east": "minotaur/rotations/south-east.webp",
+    "east": "minotaur/rotations/east.webp",
+    "north-east": "minotaur/rotations/north-east.webp",
+    "north": "minotaur/rotations/north.webp",
+    "north-west": "minotaur/rotations/north-west.webp",
+    "west": "minotaur/rotations/west.webp",
+    "south-west": "minotaur/rotations/south-west.webp"
+  },
+  "sheet": "minotaur/sheet.webp",
+  "review": "not_picked",
+  "pixellab_id": "5a25ac5d-984b-4694-a718-87b8e2661ed9",
+  "seed": 1939500433,
+  "version": 2,
+  "usage": null,
+  "generated_at": "2026-09-09T19:16:34+00:00",
+  "elapsed_s": 280.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.678,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.678,
+        "bbox": [
+          13,
+          7,
+          136,
+          153
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          31,
+          6,
+          131,
+          156
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.794,
+        "bbox": [
+          29,
+          4,
+          116,
+          156
+        ],
+        "fill": 0.517,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.772,
+        "bbox": [
+          15,
+          4,
+          144,
+          154
+        ],
+        "fill": 0.756,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.761,
+        "bbox": [
+          23,
+          6,
+          150,
+          153
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.768,
+        "bbox": [
+          34,
+          4,
+          129,
+          154
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.775,
+        "bbox": [
+          43,
+          4,
+          140,
+          156
+        ],
+        "fill": 0.576,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.795,
+        "bbox": [
+          12,
+          6,
+          148,
+          156
+        ],
+        "fill": 0.797,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,3 +1,4 @@
+import { renderRes, setFullBacking } from "./resolution";
 import { zoneAt, zoneGrid, CELL_WU, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
 import { mountFpsBadge } from "./fpsbadge";
 import Phaser from "phaser";
@@ -134,6 +135,63 @@ function watchForUpdates() {
   setInterval(check, 60_000);
 }
 
+/** THE BOOT CHECK AGAINST /version. A page restored from the phone's cache can
+ * run a bundle hours behind what the site serves: his 21:50 load on 2026-09-12
+ * was a 49 s old document (`performance.now()`) on the 14:54 bundle while
+ * production served 21:31's — the deploy guard's own logs prove production
+ * never went backwards, and that window's `net` stats show all 733 asset
+ * fetches from cache and none from the network (Chrome's tab restore prefers
+ * the cache even for a `no-cache` document). The minute poll above only ever
+ * offers the banner, so the stale build kept running until he tapped it (the
+ * banner's wording and behaviour are the maintainer's and stay). So at boot,
+ * ONCE, the served sha is read — `/version` is `no-store`, it always reaches
+ * the server — and a page that is behind it reloads itself while the loading
+ * screen is still up (a real reload revalidates the document); nothing is lost
+ * yet. Never mid-game: once `new Phaser.Game` has been reached the answer only
+ * feeds the banner. Never a loop: one boot reload per 60 s per tab
+ * (sessionStorage) — a cache that keeps answering stale, or a rollout crossing
+ * the load, gets the banner on the second pass. The rejoin flag (WorldScene's
+ * recovery reload) is re-armed across the reload so the fast path still skips
+ * the select screen. Gate: scripts/verify-bootversion.mjs. */
+let bootReloadOpen = true;
+async function reloadIfBehindAtBoot(): Promise<void> {
+  const mine = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
+  if (mine === "dev") return; // local dev: vite HMR handles it
+  let rejoin = false;
+  try {
+    rejoin = sessionStorage.getItem("ml-rejoin") === "1"; // read before boot() consumes it
+  } catch {
+    /* no storage */
+  }
+  try {
+    const res = await fetch("/version", { cache: "no-store" });
+    if (!res.ok) return;
+    const { sha } = (await res.json()) as { sha?: string };
+    if (!sha || sha === "dev" || sha === mine) return;
+    const key = "ml-boot-reload-at";
+    let last = 0;
+    try {
+      last = Number(sessionStorage.getItem(key) || 0);
+    } catch {
+      /* no storage — one reload is still bounded by bootReloadOpen */
+    }
+    if (!bootReloadOpen || Date.now() - last < 60_000) {
+      showUpdateBanner(sha);
+      return;
+    }
+    try {
+      sessionStorage.setItem(key, String(Date.now()));
+      if (rejoin) sessionStorage.setItem("ml-rejoin", "1");
+    } catch {
+      /* no storage */
+    }
+    console.log(`[nangijala] build ${mine.slice(0, 9)} is behind the served ${sha.slice(0, 9)} — reloading`);
+    location.reload();
+  } catch {
+    /* offline or a hiccup: the minute poll takes over */
+  }
+}
+
 let updateBannerShown = false;
 function showUpdateBanner(sha: string) {
   if (updateBannerShown) return;
@@ -161,8 +219,10 @@ function showUpdateBanner(sha: string) {
   // taller. It is CENTRED, so it can pass under either one — hence the max()
   // of both, not just the right chip's. The 78px fallbacks are this phone's
   // left-chip height, used on the select screen where there are no chips.
+  // The chips themselves sit under the cutout inset (--ml-safe-top,
+  // theme.ts), so the toast adds it too or it climbs back into them.
   el.style.cssText =
-    "position:fixed;top:calc(max(var(--bars-l-h, 78px), var(--bars-r-h, 78px)) + 20px);left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
+    "position:fixed;top:calc(var(--ml-safe-top, 0px) + max(var(--bars-l-h, 78px), var(--bars-r-h, 78px)) + 20px);left:50%;transform:translateX(-50%);z-index:100;cursor:pointer;" +
     "padding:9px 16px;border-radius:10px;" +
     "background:var(--surface, #fff);color:var(--ink, #1f1e1a);" +
     "border:1px solid var(--border, #e6e2d7);font:600 13.5px var(--sans, sans-serif);" +
@@ -189,6 +249,7 @@ async function boot() {
     /* no storage — no meter */
   }
   watchForUpdates();
+  void reloadIfBehindAtBoot(); // in parallel with the catalogs below; ~one RTT, long before the world is up
   // Composer's audition page (/#foley): every generated foley candidate,
   // playable on the real deploy — the maintainer's ears close the QA loop.
   if (location.hash === "#foley") {
@@ -337,7 +398,17 @@ async function boot() {
   // standard-DPI, tests) is byte-identical to before — a built-in kill switch.
   // Phaser's Scale.RESIZE renders 1:1 CSS with no DPR knob, so we drive the fit
   // manually under Scale.NONE: backing = #game size × RS, canvas CSS = #game size.
-  const RS = Math.min(4, Math.max(1, window.devicePixelRatio || 1));
+  /* THE BACKING: devicePixelRatio (capped) TIMES THE RESOLUTION DIAL
+   * (resolution.ts — 1, 2/3, 1/2, 1/3, 1/4, 1/8). `renderScale` is the EFFECTIVE
+   * backing per CSS px, which is what every consumer wants (the ground
+   * texture's world size, the pointer mapping); the scene's zoom re-derives
+   * the full-resolution zoom and scales it by the dial, so the same world
+   * fills the screen at the square of the fraction in fragments.
+   * "ml-render-res" refits the canvas live; the scene's resize
+   * handler re-zooms and re-makes the ground texture. */
+  const RS_FULL = Math.min(4, Math.max(1, window.devicePixelRatio || 1));
+  const rsNow = () => RS_FULL * renderRes();
+  bootReloadOpen = false; // from here a late /version answer only banners — never a reload with a game up
   const game = new Phaser.Game({
     type: Phaser.AUTO,
     parent: "game",
@@ -345,12 +416,13 @@ async function boot() {
     pixelArt: true,
     scale: {
       mode: Phaser.Scale.NONE,
-      width: Math.round(window.innerWidth * RS),
-      height: Math.round(window.innerHeight * RS),
+      width: Math.round(window.innerWidth * rsNow()),
+      height: Math.round(window.innerHeight * rsNow()),
     },
     scene: [WorldScene],
   });
-  game.registry.set("renderScale", RS);
+  game.registry.set("renderScale", rsNow());
+  game.registry.set("renderRes", renderRes());
   // A REAL touch device — hud.ts's touchDevice(), inlined (no import: keep
   // main.ts free of the HUD module graph). Gates the rotation coherence
   // check below so desktop is never affected.
@@ -386,6 +458,8 @@ async function boot() {
     const cssW = el.clientWidth;
     const cssH = el.clientHeight;
     if (cssW < 1 || cssH < 1) return;
+    const RS = rsNow();
+    setFullBacking(Math.round(cssW * RS_FULL), Math.round(cssH * RS_FULL));
     const bw = Math.round(cssW * RS);
     const bh = Math.round(cssH * RS);
     if (game.scale.width !== bw || game.scale.height !== bh) game.scale.resize(bw, bh);
@@ -424,6 +498,11 @@ async function boot() {
   // keeps its size, so the ResizeObserver never fires and only the bounds
   // POSITION goes stale. Same fix, different trigger.
   window.addEventListener("ml-hand", fitCanvas);
+  window.addEventListener("ml-render-res", () => {
+    game.registry.set("renderScale", rsNow());
+    game.registry.set("renderRes", renderRes());
+    fitCanvas();
+  });
   const gameEl = document.getElementById("game");
   if (gameEl && "ResizeObserver" in window) new ResizeObserver(fitCanvas).observe(gameEl);
 

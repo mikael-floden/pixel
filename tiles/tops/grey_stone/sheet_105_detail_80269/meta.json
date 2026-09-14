@@ -10,9 +10,8 @@
   "prompt": "grey stone, pale lichen in the middle, grey stone all around the edge",
   "palette_top": "#808082",
   "tile_id": "c9f49da5-8dbe-4b70-852e-897ab3fa99f7",
-  "n_tiles": 16,
+  "n_tiles": 15,
   "tiles": [
-    "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
@@ -128,5 +127,12 @@
   },
   "motif": "pale lichen",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_00.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

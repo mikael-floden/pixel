@@ -365,6 +365,83 @@ export function queueSheets(scene: Phaser.Scene, specs: SheetSpec[]): void {
   scene.load.start();
 }
 
+/* -- what colour IS this creature? ----------------------------------------- */
+
+const plumage = new Map<string, number | null>();
+
+/** THE DOMINANT PLUMAGE COLOUR OF A LOADED CREATURE SHEET, or null.
+ *
+ *  Anything that drops something a creature owns — a feather off a flushed
+ *  bird — has to be ITS colour, and there is only one honest source for that:
+ *  the art. Hand-picked tints were wrong the moment they were written
+ *  (maintainer 2026-09-11: "I run into white, red and green birds and the
+ *  feathers were all white"), and they would drift again the next time the
+ *  art is regenerated.
+ *
+ *  The body is the biggest block of mid-tone colour on the sheet, so: count
+ *  opaque pixels into 4-bit buckets, ignoring the near-black OUTLINE and any
+ *  near-white specular, take the fullest bucket and average the real pixels
+ *  in it. Sampled ONCE per sheet and cached — it reads the whole image.
+ *
+ *  Fenced: a missing texture, a source that is not an image, or a tainted
+ *  canvas all answer null, and the caller keeps its own default. */
+export function plumageOf(scene: Phaser.Scene, key: string): number | null {
+  const had = plumage.get(key);
+  if (had !== undefined) return had;
+  let out: number | null = null;
+  try {
+    if (scene.textures.exists(key)) {
+      const src = scene.textures.get(key).getSourceImage() as CanvasImageSource & { width: number; height: number };
+      const w = src.width | 0;
+      const h = src.height | 0;
+      if (w > 0 && h > 0) {
+        const cv = document.createElement("canvas");
+        cv.width = w;
+        cv.height = h;
+        const g = cv.getContext("2d", { willReadFrequently: true });
+        if (g) {
+          g.drawImage(src, 0, 0);
+          const d = g.getImageData(0, 0, w, h).data;
+          const n = new Map<number, number>();
+          const sum = new Map<number, [number, number, number]>();
+          for (let i = 0; i < d.length; i += 4) {
+            if (d[i + 3] < 200) continue;
+            const r = d[i], gg = d[i + 1], b = d[i + 2];
+            const luma = 0.299 * r + 0.587 * gg + 0.114 * b;
+            if (luma < 45 || luma > 235) continue; // the outline, and the highlight
+            const k = ((r >> 4) << 8) | ((gg >> 4) << 4) | (b >> 4);
+            n.set(k, (n.get(k) ?? 0) + 1);
+            const acc = sum.get(k);
+            if (acc) {
+              acc[0] += r;
+              acc[1] += gg;
+              acc[2] += b;
+            } else sum.set(k, [r, gg, b]);
+          }
+          let bestK = -1;
+          let bestN = 0;
+          for (const [k, c] of n)
+            if (c > bestN) {
+              bestN = c;
+              bestK = k;
+            }
+          if (bestK >= 0 && bestN > 0) {
+            const acc = sum.get(bestK) as [number, number, number];
+            out =
+              ((Math.round(acc[0] / bestN) & 255) << 16) |
+              ((Math.round(acc[1] / bestN) & 255) << 8) |
+              (Math.round(acc[2] / bestN) & 255);
+          }
+        }
+      }
+    }
+  } catch {
+    out = null; // tainted canvas or an odd source: the caller keeps its default
+  }
+  plumage.set(key, out);
+  return out;
+}
+
 /** Are every spec's textures present yet? (the runtime-load guard). */
 export function sheetsReady(scene: Phaser.Scene, specs: SheetSpec[]): boolean {
   return specs.every((s) => scene.textures.exists(s.key));

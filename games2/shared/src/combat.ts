@@ -105,6 +105,32 @@ export function slowFactorAt(hitAt: number, now: number): number {
   return now - hitAt < SLOW_MS ? SLOW_FACTOR : 1;
 }
 
+// --- the fall's slow: the impact's, and it fades with the number ------------
+
+/** How long a damage number floats over a head (WorldScene.spawnDamageFloat;
+ *  round 7, maintainer: "twice as big, on screen 0.2s longer"). Shared so the
+ *  fall's slow can end with it. */
+export const DMG_FLOAT_MS = 850;
+
+/** A FALL is not a hit. The 1.5 s stagger is combat's — it is what keeps a
+ *  hit-slowed runner from pulling clear of a chase — and on a landing it read
+ *  as a long, flat drag with a hard end (maintainer 2026-09-12: "The slowdown
+ *  after a fall is too long. Should only apply when the user hit the ground
+ *  and fade away. Maybe last as long as the dmg number but also fade away").
+ *  So the landing's slow is SLOW_FACTOR the moment the feet are down and
+ *  fades linearly back to 1 over the number's float: the feeling lasts
+ *  exactly as long as the number does, and both are gone together. */
+export const FALL_SLOW_MS = DMG_FLOAT_MS;
+
+/** The movement speed factor `now` for a body whose last fall LANDED at
+ *  `landedAt` (same clock); 1 before it landed and once the float is over.
+ *  Combined with the hit stagger and the flee slow by min(), like them. */
+export function fallSlowAt(landedAt: number, now: number): number {
+  const t = now - landedAt;
+  if (t < 0 || t >= FALL_SLOW_MS) return 1;
+  return SLOW_FACTOR + (1 - SLOW_FACTOR) * (t / FALL_SLOW_MS);
+}
+
 // --- monster brain ----------------------------------------------------------
 
 // A sword-MARKED monster (the player clicked attack on it) aggros the moment

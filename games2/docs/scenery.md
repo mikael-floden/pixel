@@ -121,6 +121,50 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   ASPECT RATIO, so the frame-to-world scaling cannot mask it, with an arm
   pinning that the fixture's two variations really are different shapes (the bug
   looked exactly like both resolving to one record).
+- **THE ART IS DRAWN INSIDE ITS OWN HITBOX: ONE CANVAS FOR EVERY FACING.** A
+  piece's rotations share their south still's canvas — measured, 0 of the
+  library's 3,001 rotations differs in canvas size from its own south still —
+  and that canvas is the only frame in which the object stands still. Its
+  SILHOUETTE does not: a turned view shows the front of the base, so the alpha
+  bbox reaches further down the same canvas (`hearths/hearth_901` `LIT_1`: foot
+  at y 112 facing south, y 125 facing south-west). `fitSprite` pinned the DRAWN
+  frame's own foot to the placement point, so a turned piece was pasted 13
+  screen px — half a cell of iso ground — UP-SCREEN of where its box is, and the
+  box the wiki draws on the same canvas no longer hugged it (maintainer
+  2026-09-14, with the wiki open beside the game: "the wiki hitbox is perfect on
+  both scenery objects and in-game they don't align at all"). **THE BOX IS THE
+  FIXED POINT, NOT THE ART** — his correction on the first fix, which moved the
+  footprint instead: "It's important to not move the hitbox to the scenery. The
+  hitbox looks to be correctly placed against the wall already. To me it looks
+  like it's the scenery that wasn't drawn inside the already correctly placed
+  hitbox." It is what the map agent places a piece by, so moving it moves the
+  furniture off its wall. Every facing is therefore anchored on the STATE's
+  SOUTH still's alpha foot (`fitSprite`'s `anchorBox`, from
+  `WorldScene.sceneryAnchorBox`; the collision stamp anchors there and always
+  did). Passing the frame being drawn — or nothing — is the old behaviour
+  bit-for-bit, which is what every south placement wants and what keeps
+  render3's paste exact; only the turned facings move. `render3.py` still pins
+  the drawn frame's own foot, so maps2' overview and the game disagree on a
+  turned piece by that 13 px until it mirrors this (posted).
+  ONE THING WAS THE STAMP'S and stays fixed: it scaled the published ellipse by
+  the STATE's bbox height where every frame draws at `drawnPx / the PIECE's base
+  bbox height` (`fitSprite`'s `scaleH`), which is what keeps a taller state and
+  a turned frame in proportion — wrong SIZE for 610 of the_game's 1,335 ground
+  placements, worst `braziers/brazier_001 LIT_2` at 42 px against the 57 the art
+  is drawn at (36%). `hitboxPosFor` (shared) is the ONE resolution of
+  `pos_by_dir` for the three consumers that need the same answer: the stamp, the
+  renderer's hitbox anchor (the piece's sort key, its lift and its cover line,
+  which read the base box on every facing) and the overlay.
+  Gates: `server/test/sceneryhitbox.test.ts` — the stamp against the two
+  documents (1,327 footprints, worst 0.0000 cells), then the law itself, that a
+  facing's box lands in one place whatever that frame's silhouette does (4,074
+  fits, worst 2.02 px, which is the integer crop and not the anchor), with a
+  CONTROL arm on the old rule and the hearth's own 13 px. And the browser arm in
+  `verify-indoorscenery.mjs`, which measures the DISPLAY OBJECT's own numbers
+  and the raw crop its frame name carries — the packed, streamed art, not a
+  table: 30 pieces in his hearth house, 14 of them turned, worst foot 0.98 px
+  off its anchor; on the old rule it fails at 13.76 px and names
+  `hearths/hearth_901 LIT_1 south-west`. Probe: `__ml.sceneryDrawn(place?)`.
 - **INDOOR SCENERY IS DRAWN WHILE ITS ROOF IS CUT AWAY** — the furniture of
   every house and cave. `buildPlacements` FLAGS a placement under a roof/cave
   deck (`SceneryPlacement.roofed`) instead of dropping it: render3 drops those
@@ -141,6 +185,49 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   cutAway/drawnRoofed/maskUp/grade). Gates: `scripts/verify-indoorscenery.mjs`
   (derives the most-furnished room from the world doc; a real join, inside and
   out) + the placement half of `server/test/scenery3.test.ts`.
+- **AND WHAT STANDS ON THE ROOF GOES WITH THE ROOF** — a chimney. Its feet are
+  on the deck's own top, so `buildPlacements` withholds `roofed` (it is not
+  furniture: it must draw from the street) and flags `onDeck` instead
+  (`level + z >= deckAt(cell)`), and `rebuildScenery` fades it on the roof's own
+  debris curve while the cut has the roof open. **THE HEIGHT THAT ANSWERS "IS
+  IT ON THE LID" IS THE PIECE'S FEET, AND EVERY TEST IN THE REBUILD MUST ASK
+  THE SAME ONE** (`feetLevel` / `onLid`, one pair of locals feeding the fade
+  branch, the cover record and the lit copy). The cover record used to ask
+  about `p.level` — the ground under the house, which the cut never passes — so
+  a chimney was BOTH "on the lid" (fading with the debris) and "a piece that
+  might bury my room" (alpha 1, since it covers nothing), and `stepSceneryCover`
+  runs the frame pass right after the lid fade and wrote that 1 straight over
+  it. The stack stood in the middle of the room with its own roof cut away from
+  under it (maintainer 2026-09-14, inside the meadow house at 303.0,233.4: "the
+  scenery object on top of the roof (the chimney) is visible when I am inside
+  the house"). Its LIT COPY faded correctly the whole time — that test already
+  read the feet — so only the still was left standing, which is the shape of
+  every two-pass scenery bug in this file. IT TOOK THE SMOKE WITH IT: a vent
+  publishes the piece's own drawn alpha (`ventsInView`) precisely so an
+  attached effect follows the cut without knowing about roofs, so the plume
+  was hanging over the open room too. Measured at his spot after: the vent's
+  alpha is 1 from the street and 0 inside.
+  **AND IT STANDS UP THERE FOR EVERY OTHER RULE TOO**: that same feet level is
+  the `lvl` handed to the shared depth rule and the `z` of the piece's LIT
+  COPY. Reading the cell's terrain level put a chimney on the house FLOOR while
+  its art was drawn six storeys up, so the roof deck legitimately COVERED a
+  thing standing under it and `coverY` cropped the copy partway up the stack —
+  above the crop the copy drew (it sits above the darkness overlay), below it
+  only the base sprite under the multiply, a hard horizontal step across the
+  chimney (maintainer 2026-09-14: "a visible edge that looks like a shadow
+  bug"; it vanished mid-fade only because the whole outdoors is dimmed there).
+  Measured at 333.26,232.33: z 0.5 with cover 8518 against the copy's own
+  8452..8536 — cropped 66 px down an 84 px sprite; after, z 6.5 and nothing
+  covering it. The copy's light and its depth fog are read at that z as well,
+  so the stack was also tinted by the hearth INSIDE the house. Probe:
+  `__ml.sceneryLitCopy(place?)` reports a copy's stand level, its cover line
+  and whether it is cropped; the street arm of `verify-indoorscenery.mjs`
+  asserts both. Probe: `__ml.sceneryIndoor()`
+  reports `onLid`, `onLidAlpha` (the mean alpha those sprites WEAR — the count
+  was right through the whole bug) and `deckPieces`. Gate: the lid arm of
+  `scripts/verify-indoorscenery.mjs`, which derives its own room (the roofed
+  deck carrying a piece whose `z` reaches its level) and asserts the alpha, not
+  the flag.
   **A HIDDEN PIECE'S ART IS STILL ASKED FOR.** `rebuildScenery` calls
   `needScenery` (which only QUEUES) before the roofed skip, so furniture under a
   roof streams in while you are outside; it used to be asked for after the
@@ -158,6 +245,12 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   epsilons and 0.49 under the bodies. `verify-indoorscope` runs on the_game.
   Probe: `__ml.indoorFade()` (debris count + alpha per frame).
 
+- **A PIECE OVER HALF THE ROOM FADES OUT while the room is entered**
+  (`scenerycover.ts`, `stepSceneryCover`; the rule and its receipt are in
+  `INDOOR.md`): the share of the room's floor cells under the piece's drawn
+  box, at or past 0.5 the sprite, lit copy and fog silhouette wear
+  `1 − indoorGrade()`. A smaller piece keeps its black silhouette over the
+  lit floor — the effect he asked to keep.
 - **FLAT SCENERY DRAWS UNDER EVERYTHING** (`collision: false` — the six rugs
   and one clutter piece; maintainer 2026-09-03: "no collision means the object
   is flat on the ground … everything marked as no collision should always be
@@ -233,6 +326,66 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   the furnished cells have their floor at 0 and their roof deck at 6, so a roof
   pixel is excluded and a floor pixel (z 0.02) is not — the contact shading
   under indoor furniture is untouched.
+
+## The packed layer (`scenery/<piece>/packed/`, scenery/pipeline/pack.py)
+
+Every scenery art file is LOADED as its packed twin — the raw canvas cut to
+its state's box (still + rotations + every clip frame share one box, +1 px),
+content-hashed beside the piece, named by `packed/index.json` — and MEASURED
+on its source canvas, so nothing about a placement moves. (Measured on
+the_game's 192 placed pieces, 2026-09-12: the art fills 27% of its canvases;
+one box per state keeps 73% of the decoded bytes, 291 -> 211 MB, on a phone
+that held 7-9k textures and paid for every transparent texel in decode,
+upload and video memory.) The loader fetches the index beside each manifest
+(`SceneryPieces`, one extra request per piece, a miss is silent = raw piece),
+and the scene meets the layer at four seams and nowhere else:
+
+- `sceneryUrl` — the packed URL when the index names one; the texture KEY
+  stays the raw path's (the same art, cut).
+- `sceneryCanvasPixels` — `unpackPixels` puts the packed bytes back on the
+  canvas for every measurement: `alphaBBox` (the fit), the emissive centroid
+  and the lit-against-unlit comparison (`pushSceneryLight`), which compares
+  two STATES cut to different boxes and therefore needs the canvas.
+- `addSceneryCut` — a canvas rectangle registered on a texture in its own
+  texels (`packedCut`); the frame NAME stays the canvas rectangle's, so a
+  frame swap finds the still's rectangle under one name on every texture of
+  the state. The rectangle keeps its size (the image was sized from it).
+- `attachSceneryShape` — the one reader that wants the texture's own texels
+  (the map is sampled at the copy's UV), so its hitbox shifts by the cut.
+
+Hitboxes, `light_frames`, the bbox doc and the collision stamp are in
+source-canvas pixels and untouched. A file on a different canvas than its
+still is not packed (pack.py leaves it raw; the swap draws it as before).
+Gate: `scripts/verify-scenery-pack.mjs` — the same spots with `?scnpack=1`
+and `?scnpack=0` (remembered in `ml-scenery-pack`; the bisect), every still's
+box, flip and cut-texel hash, every fit and every emissive centre identical.
+Probe: `__ml.sceneryPack()` (`{dump:true}` for the comparison). Rejected:
+per-file boxes (72% vs 73%, and a frame swap needs the still's rectangle
+inside every frame texture); Phaser frame trims (the whole-texture geometry
+is never drawn — scenery always draws a sub-frame — so explicit offsets at
+the seams are the smaller change).
+
+## Clips (stepSceneryAnims)
+
+A placement's clip sleeps by its class and plays once through at
+`SCENERY_ANIM_FPS` 8 (five frames, 625 ms; frame 0 is the still,
+`keep_first_frame`). Its frames come through the art queue at the lowest
+priority, and the still's canvas crop is registered on each frame texture in
+that texture's own texels (`addSceneryCut` through the frame's pack record;
+one box per state makes it the still's cut, so the image keeps its box, scale
+and flip and only its pixels change — `__ml.sceneryAnims({place})` reports
+the swap geometry of one placement). A CLIP PLAYS ONLY ON FRAMES THAT ARE ON
+THE GPU (`sceneryClipReady`: every frame key exists and none is
+`artQueue().refilling`), and a play snaps back to the still the moment that
+stops holding. (After a WebGL context restore — a phone backgrounds the tab —
+Phaser re-creates every banded texture EMPTY and the art queue refills them
+at the head of the queue in landing order, the still ahead of its frames;
+`textures.exists` said yes to the blank frames and the maintainer's
+streetlight vanished for 625 ms at a time until they landed, 2026-09-13,
+screenshots with "Reconnected." on each. Reproduced headless with
+`__ml.glLose(ms)`, which loses and restores the context; gate
+`scripts/verify-sceneryanim.mjs`: the swap keeps the box and the cut, nothing
+past the still shows while a frame is owed, and it plays again after.)
 
 ## Depth-fog on BODIES (syncLitCopy)
 

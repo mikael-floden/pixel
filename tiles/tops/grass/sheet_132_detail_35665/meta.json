@@ -10,19 +10,14 @@
   "prompt": "grass, a tiny fossil in the middle, grass all around the edge",
   "palette_top": "#14523b",
   "tile_id": "5929669b-5170-4ac6-95e8-a5cac80cd133",
-  "n_tiles": 16,
+  "n_tiles": 11,
   "tiles": [
     "tile_00.webp",
-    "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
     "tile_07.webp",
-    "tile_08.webp",
     "tile_09.webp",
-    "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
     "tile_13.webp",
@@ -128,5 +123,32 @@
   },
   "motif": "a tiny fossil",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_01.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:14+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_05.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:14+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_06.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:14+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:14+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:14+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

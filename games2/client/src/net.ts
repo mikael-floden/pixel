@@ -1,6 +1,11 @@
 import { Client, Room } from "colyseus.js";
+import { Schema, Decoder } from "@colyseus/schema";
 import { withJoinTimeout } from "./jointimeout";
-import { ROOM_NAME, JoinOptions } from "@nangijala/shared";
+import { ROOM_NAME, JoinOptions, installWorldUnitAccessors } from "@nangijala/shared";
+
+// POSITIONS ON THE WIRE (shared/worldunits.ts): px/py int16 room-relative
+// quarter units; every `player.x` the scene reads goes through this getter.
+installWorldUnitAccessors(Schema, Decoder);
 
 /** Resolve the world-server endpoint.
  *
@@ -32,6 +37,18 @@ export function serverEndpoint(route = ""): string {
  *  somebody new each time, which is exactly what attaching a login later
  *  fixes. */
 const ACCOUNT_KEY = "ml-account";
+
+/** Settings "disable aggro" (`ml-no-aggro`, owned by WorldScene's toggle) —
+ *  read HERE because this is the one funnel every join goes through: the first
+ *  join, a reconnect that fell through to a fresh join, and a zone hop. The
+ *  server must know before it ever scans for prey (see JoinOptions.noAggro). */
+export function noAggroOn(): boolean {
+  try {
+    return localStorage.getItem("ml-no-aggro") === "1";
+  } catch {
+    return false; // private mode / storage disabled
+  }
+}
 
 export function getAccount(): { id?: string; secret?: string } {
   try {
@@ -118,7 +135,7 @@ export async function joinWorld(
       forgetSeat();
     }
   }
-  const joining = client.joinOrCreate(room, { account: getAccount(), ...options });
+  const joining = client.joinOrCreate(room, { account: getAccount(), noAggro: noAggroOn(), ...options });
   const joined = await withJoinTimeout(joining, timeoutMs, (r) => void r.leave(false));
   // A MINTED PAIR IS PULLED, NEVER PUSHED. A message the server sends from
   // onJoin can arrive before this handler exists — and a dropped pair means

@@ -4,23 +4,23 @@
    (data-theme) must win in both directions. */
 
 :root {
-  --bg: #faf9f5;
-  --surface: #ffffff;
-  --surface-2: #f4f2ec;
-  --ink: #1f1e1a;
-  --muted: #706b5f;
-  --border: #e6e2d7;
-  --border-strong: #d5d0c2;
+  --bg: #f6f0e6;
+  --surface: #fdf9f3;
+  --surface-2: #eee6da;
+  --ink: #23211d;
+  --muted: #736d63;
+  --border: #e1dacd;
+  --border-strong: #cdc5b6;
   --accent: #d97757;
-  --accent-soft: #f6e3db;
-  --accent-ink: #b45309;
-  --good: #4d7c4d;
-  --good-soft: #e4efe4;
+  --accent-soft: #fbded4;
+  --accent-ink: #b15005;
+  --good: #497849;
+  --good-soft: #deecde;
   --bad: #b3453a;
-  --bad-soft: #f6e1de;
+  --bad-soft: #f8dedb;
   --star: #d9a13b;
-  --checker-a: #efece3;
-  --checker-b: #e2ded2;
+  --checker-a: #f1ebe1;
+  --checker-b: #e4ddd1;
   --shadow: 0 1px 2px rgba(40, 35, 25, 0.06), 0 4px 16px rgba(40, 35, 25, 0.05);
   --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
   --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
@@ -49,11 +49,11 @@
   }
 }
 :root[data-theme="light"] {
-  --bg: #faf9f5; --surface: #ffffff; --surface-2: #f4f2ec; --ink: #1f1e1a;
-  --muted: #706b5f; --border: #e6e2d7; --border-strong: #d5d0c2;
-  --accent: #d97757; --accent-soft: #f6e3db; --accent-ink: #b45309;
-  --good: #4d7c4d; --good-soft: #e4efe4; --bad: #b3453a; --bad-soft: #f6e1de;
-  --star: #d9a13b; --checker-a: #efece3; --checker-b: #e2ded2;
+  --bg: #f6f0e6; --surface: #fdf9f3; --surface-2: #eee6da; --ink: #23211d;
+  --muted: #736d63; --border: #e1dacd; --border-strong: #cdc5b6;
+  --accent: #d97757; --accent-soft: #fbded4; --accent-ink: #b15005;
+  --good: #497849; --good-soft: #deecde; --bad: #b3453a; --bad-soft: #f8dedb;
+  --star: #d9a13b; --checker-a: #f1ebe1; --checker-b: #e4ddd1;
   --shadow: 0 1px 2px rgba(40, 35, 25, 0.06), 0 4px 16px rgba(40, 35, 25, 0.05);
 }
 :root[data-theme="dark"] {
@@ -114,13 +114,17 @@ code { font-family: var(--mono); font-size: 0.86em; background: var(--surface-2)
 }
 #menu-btn { display: none; }
 #search {
-  flex: 1; max-width: 430px;
+  /* min-width 0 or the input refuses to shrink below its intrinsic width and
+     pushes the build stamp off the right edge — measured on a 393px phone: the
+     date and sha were cut in half and the whole page scrolled 4px sideways.
+     The search box is the elastic one here; the stamp is not. */
+  flex: 1; min-width: 0; max-width: 430px;
   background: var(--surface); color: var(--ink);
   border: 1px solid var(--border); border-radius: 9px;
   padding: 7px 12px; font: inherit; outline: none;
 }
 #search:focus { border-color: var(--accent); }
-#build-stamp { margin-left: auto; font-size: 12px; text-align: right; line-height: 1.35; }
+#build-stamp { flex: none; margin-left: auto; font-size: 12px; text-align: right; line-height: 1.35; }
 #build-stamp .stamp-date { white-space: nowrap; }
 #build-stamp .stamp-sha { font-family: var(--mono); font-size: 10.5px; opacity: 0.85; }
 .mute-game { display: inline-block; margin: 0 0 14px; }
@@ -323,6 +327,11 @@ a.card:hover { text-decoration: none; border-color: var(--border-strong); }
   margin-left: 7px; font-size: 11.5px; padding: 1px 7px; border-radius: 999px;
   background: color-mix(in srgb, var(--ink) 8%, transparent);
 }
+/* THE DETAILS CHIP IS A TO-DO (maintainer 2026-09-11): the tops waiting for
+   his verdict in the inbox colours, and a ✓ in the done colours once the ground
+   is judged through — never the size of the pile he has finished. */
+.groundtab .tab-n.todo { background: var(--accent-soft); color: var(--accent-ink); }
+.groundtab .tab-n.done { background: var(--good-soft); color: var(--good); }
 /* ---- BASE TILE SETS (maintainer 2026-08-25) ----
    A set panel is read top-down: what it is and how often it is used, then the
    FIELD (the only honest picture of a set), then the rows that make it. The
@@ -435,6 +444,32 @@ a.trans-row:hover { text-decoration: none; background: color-mix(in srgb, var(--
 .detail-card .group-stage { padding: 6px; }
 /* THE REVIEW LEDGER — what is actually left, before any art. */
 .ledger.clear { border-color: color-mix(in srgb, var(--ok) 40%, var(--border)); }
+/* ---- RELEASE NOTES — the last 50 commits (maintainer 2026-09-13) ----
+   One panel per day, one two-line row per commit: the subject is the headline
+   because that is the only part he reads at a glance, and the machine facts
+   (agent, folders, sha, size) sit under it in the muted row. The time column
+   is fixed-width and monospaced so 50 rows scan as a column rather than a
+   ragged edge, and the whole row wraps rather than scrolling sideways — this
+   page is read on a phone. */
+.rel-row { display: grid; grid-template-columns: 42px minmax(0, 1fr); gap: 10px; padding: 8px 0; border-top: 1px solid var(--border); }
+.rel-row:first-of-type { border-top: 0; }
+.rel-when { font-family: var(--mono); font-size: 11.5px; color: var(--muted); padding-top: 2px; }
+.rel-subject { font-size: 14px; line-height: 1.35; overflow-wrap: anywhere; }
+.rel-meta { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-top: 4px; font-size: 11.5px; color: var(--muted); }
+/* The agent is a claim about WHO; the folders are a fact about WHERE. They are
+   coloured apart on purpose — an agent chip is only ever drawn when the build
+   could name one (see wiki/lib/releases.mjs). */
+.pill.rel-agent { background: var(--accent-soft); color: var(--accent-ink); border-color: transparent; }
+.pill.rel-where { background: var(--surface-2); color: var(--muted); border-color: transparent; }
+.rel-dirs { color: var(--muted); }
+.rel-sha { font-family: var(--mono); font-size: 11.5px; color: var(--muted); text-decoration: none; border-bottom: 1px dotted var(--border-strong); }
+.rel-sha:hover { color: var(--ink); }
+.rel-files { color: var(--muted); }
+@media (max-width: 400px) {
+  .rel-row { grid-template-columns: 38px minmax(0, 1fr); gap: 8px; }
+  .rel-subject { font-size: 13.5px; }
+}
+
 .ledger-line { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; padding: 6px 0; border-top: 1px solid var(--border); }
 .ledger-line:first-of-type { border-top: 0; }
 .ledger-label { font-weight: 600; min-width: 92px; }
@@ -571,6 +606,13 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .seg button.on.judged-no, .dirpad button.on.judged-no { color: var(--bad); }
 .dirpad button.judged-ok { border-color: var(--good); }
 .dirpad button.judged-no { border-color: var(--bad); }
+/* REDO IS ITS OWN MARK. The per-animation row has no remove, so redo is the
+   verdict a bad clip gets, and it is neither settled (green) nor gone (red) —
+   it is the one still owed. The accent ink is the page's own "your attention"
+   colour, already carried by every warn pill. */
+.seg button.judged-redo, .dirpad button.judged-redo { color: var(--accent-ink); font-weight: 600; }
+.seg button.on.judged-redo, .dirpad button.on.judged-redo { color: var(--accent-ink); }
+.dirpad button.judged-redo { border-color: var(--accent); }
 
 /* ---- feedback controls ---- */
 /* BIG ENOUGH TO HIT (maintainer 2026-08-14: "I also want all stars in the
@@ -1911,3 +1953,39 @@ input[type="range"] { accent-color: var(--accent); }
 .light-rails .shadow-val { min-width: 64px; text-align: right; }
 /* A rail's readout: the same mono chip the sound picker's rails use. */
 .shadow-val { font-family: ui-monospace, monospace; font-size: 12px; color: var(--muted); }
+
+/* ---- MONSTER CANDIDATES: the 8 directions, judged before any animation ----
+ * Facings sit in MIRROR PAIRS (S|N, E|W, SE|SW, NE|NW): the twin the generator
+ * gets wrong is next to its mirror, and two sprites fit a phone at 1×. */
+/* The overview IS the creature showcase (same grid, same spans, same marks) —
+   only the zoom is the grid's own, shared by every card so the sizes compare. */
+.cand-card { text-decoration: none; color: inherit; }
+.cand-scale-note { margin: 6px 0 8px; }
+.cand-marks { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; min-height: 0; }
+.cand-judge { margin: 8px 0 12px; }
+.cand-hint { margin: 0 0 6px; }
+.cand-dirs { display: grid; grid-template-columns: repeat(var(--cand-cols, 2), var(--cand-w, 136px)); gap: 8px; justify-content: start; max-width: 100%; overflow-x: auto; padding-bottom: 8px; }
+.cand-dir { margin: 0; width: var(--cand-w, 136px); }
+/* THE BOX IS THE SAME ON EVERY DESIGN and the creature is centred in it, both
+   axes — true size then reads off the box (maintainer 2026-09-10: "I want to
+   see it in the true size always ... the preview bigger and centered"). */
+.cand-shot { width: var(--cand-w, 136px); height: var(--cand-w, 136px); border-radius: 8px; overflow: auto;
+  display: flex; align-items: safe center; justify-content: safe center; }
+.cand-dir img { display: block; image-rendering: pixelated; }
+/* UNDER the art, never over it: a label floating on a 64px design covered the
+   design (maintainer 2026-09-10). One line, and it is the art that is judged. */
+.cand-dir figcaption { margin-top: 4px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cand-dir figcaption b { color: var(--ink); }
+
+/* THE VERSION ROW — parallel takes of one state (live, try, v3). It sits under
+   the state row and only exists while a state has more than one take. */
+.take-row { display: flex; align-items: center; gap: 10px; }
+.take-row .take-label { flex: 0 0 auto; font-size: 12px; }
+.seg-takes { min-width: 0; }
+
+/* THE VERDICT SITS WHERE HIS THUMB IS (maintainer 2026-09-12, reviewing a
+   ground's details on a phone: "Can you right align the approve/not a detail
+   button"). The stars keep the left of the row; the buttons take the right,
+   which is the half a hand holding the phone already covers. `auto` rather
+   than a flex end on the row, so the stars do not move with them. */
+.judge-right .verdict { margin-left: auto; }

@@ -13,6 +13,14 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
 
 ## Monsters (client rendering = the SHARED body pipeline)
 
+**STRIPS ARE THE PACKED ONES** (`monsters/<id>/packed/`, `monsters/pipeline/pack.py`,
+2026-09-12). The manifest builder (`scripts/build-monsters-manifest.mjs`) points
+each strip at its packed file when the monster has one — the raw strip cropped to
+the union box of its frames' art (32% of the texels; a raw strip is 16% opaque)
+— and measures the anchors from that file, so nothing else in the game changes.
+Fewer decoded bytes per strip is fewer upload bands (artworker.ts), less video
+memory and fewer frames spent uploading; the raw strips stay for the wiki.
+
 - **Spawn placement is MAPS2 DATA**: every world ships
   `maps2/worlds3/<name>/spawns.json` (`pixel-maps3/spawns@1`, spec
   `maps2/spec/SPAWNS.md`) — polygon zones `{id, monster, area, elev, num}`.
@@ -27,8 +35,28 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
   and is enterable; a zone with more swimmable than standable cells is a WATER
   zone → its monsters get `canSwim`). WorldRoom seeds `num` per zone, roams
   via zone-cell targets within `MONSTER_ROAM_RADIUS_CELLS`, snaps escapees
-  back. **Missing spawns.json → no monsters** (maps2 owns placement; nothing
-  is invented). `build-monsters-manifest.mjs` resolves each monster's clips
+  back. **A STRAY COMES BACK ON ITS OWN LAYER** (`shared/nearestZoneCell`, used
+  by the roam safety net AND `disengageMonster`): a cell qualifies per SURFACE,
+  so where the band admits both, a building's floor and the roof over it are
+  two entries of the same column — the_game's `stone-1` resolves 120 cells over
+  one house, 27 floors at 0 and 93 roof/wall tops at 6, 27 columns listed
+  twice. Ranking the snap by plane distance alone therefore handed a monster on
+  the roof the FLOOR entry beside it and teleported it six levels DOWN THROUGH
+  THE SLAB IT STOOD ON — a monster appearing inside a sealed room through an
+  unbroken roof (maintainer 2026-09-14, standing in that house: "the monsters
+  that used to walk on the roof now and then fall down the roof ... the roof
+  doesn't have a single hole"). Measured on the shipped world: 6 drops in 40k
+  ticks, every one from the same polygon notch at cell 309,230 — a column the
+  roof spans and the polygon does not contain — landing on the floor half a
+  cell away; 0 in 3 × 120k ticks after. The layer is the first key and the
+  distance the second, with a fallback to the nearest of any layer so a body
+  thrown somewhere its zone has no surface is still returned. Gates: the
+  `nearestZoneCell` unit arm and the roof arm of `monsters.sim.test.ts` (which
+  derives the zone whose roof spans the most notches — shore-5 today — and
+  catches 4 cross-layer snaps of 151 on the old rule). NOT fixed by editing the
+  polygon: the notch is maps2 data, and a roof will always be able to span a
+  column the outline misses. **Missing spawns.json → no monsters** (maps2 owns
+  placement; nothing is invented). `build-monsters-manifest.mjs` resolves each monster's clips
   through `monsters/animation_map.json`. Gates:
   `server/test/monsters.sim.test.ts`, `monsters.test.ts`.
 - **Soft collision is RADIUS-AWARE** (one fixed comfort distance was rejected:
@@ -305,8 +333,11 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
     provokedChaseSpeed(victim's current possible speed) — always ~12% above
     whatever the victim can do (floor 60), AND the victim carries
     FLEE_SLOW_FACTOR 0.8 for the whole hunt (synced `slow` = min(hit-slow
-    0.55/1.5s, flee 0.8); the client predicts from the synced field; pending
-    inputs carry their factor).
+    0.55/1.5s, the fall's fading slow, flee 0.8); the client predicts from
+    the synced field; pending inputs carry their factor). A FALL is not a hit
+    here: its slow is `fallSlowAt`, 0.55 at impact fading to 1 over the
+    damage number's 850 ms (`docs/movement.md`, the landing's slow) — the
+    1.5 s stagger is this escape math's and stays.
   - The way out is the RUN-AWAY LINE: `ESCAPE_RADIUS_WU` **390 ≈ 0.75 of a
     screen** beyond the home ZONE bbox — crossing it makes the hunter give up
     and walk home (m.returning, aggro scan suppressed), flee slow lifts.
@@ -341,8 +372,9 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
     and item walk-tos pass showMarker=false to setMoveTarget — the ground
     beacon is for plain ground taps only.
 - **The two TARGET MARKERS** — borders built from the marked body's own
-  silhouette: `ringTextureFor` reads the frame's alpha into a RING_PAD(2)px-
-  padded canvas and grows a 2px TWO-TONE border (inner = base colour, outer a
+  silhouette: `ringTextureFor` reads the frame's alpha (a banded strip's from
+  the art worker, a few frames after first sight — `docs/perf.md`) into a
+  RING_PAD(2)px-padded grid and grows a 2px TWO-TONE border (inner = base colour, outer a
   step brighter), each line one **4-neighbour** dilation. SIDES ONLY, never
   diagonals — side-dilation leaves the single diagonally-touching pixels
   pixel art itself outlines with; dilating diagonally doubled the border at
@@ -385,16 +417,36 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
   .ml-bars/.ml-bar-row classes for new HUD chrome — verify-bars counts them
   (2 chips, 3 rows). Debug switch "aggro radius" (`ml-aggro-radius`) draws
   each monster's synced radius (red; gold provoke ring on the marked target).
-- **"DISABLE AGGRO"** (Settings, off by default, `ml-no-aggro`) — a testing
-  switch so a cave can be walked and looked at. Enforced on the SERVER per
-  SESSION (the proximity scan runs there); the client re-sends it on every
-  join. Deliberately NOT a schema field (a synced field per player for a
-  debug flag); it is a `Set<sessionId>` on the room, cleared in `onLeave`.
-  Suppresses UNPROVOKED aggro only — a sword-marked monster still comes, a
-  hit one still fights. Flipping ON also RELEASES every unprovoked chase via
-  `disengageMonster` (else you'd have to outrun what already noticed you).
-  Gate: `server/test/noaggro.test.ts` — each step on a FRESH predator (a
-  monster whose hunt just ended is `returning`, scan suppressed by design).
+- **"DISABLE AGGRO"** (Settings, first button, off by default, `ml-no-aggro`)
+  — a testing switch so a cave can be walked and looked at. Enforced on the
+  SERVER (the proximity scan runs there); the client re-sends it on every
+  join. Deliberately NOT a schema field (a synced field per player for a debug
+  flag); it is a `Set<pid>` on the room, carried in the hand-off's hot state
+  and in the edge snapshot (`ghostNoAggro`), cleared in `onLeave`.
+  **THE INVARIANT, once it is on: the only monster that may be hunting you is
+  one you are MARKING RIGHT NOW.** The mark (`player.target`, a tap) is the
+  one bypass — raising your sword IS the provocation — so everything that
+  drops a mark also calls the hunt off (`clearMark` + `releaseHunts`, and
+  `releaseHuntsNextDoor` for the neighbour rooms that hunt your ghost).
+  Flipping it ON drops your own mark and releases EVERY hunt on you, provoked
+  ones included; with the switch OFF a provoked hunt is the monster's own
+  business and dropping the mark does not end it.
+  - **THE MARK WAS THE LEAK** (2026-09-10). Both places that break off a fight
+    — a ground tap and a nudge of the analog stick — cleared the client's
+    `engagedId` and told the server NOTHING, though the comment beside each
+    claimed they disengaged explicitly; the server keeps a mark across
+    movement on purpose (the attack icon hangs over the target, approach-aggro
+    reads it). So one tap, and the tap box is 26x48 px so often an accident,
+    left that monster hunting through the switch for the rest of the session
+    and the body auto-swung at it again whenever it came to rest in range.
+    Measured on the_game's cave: the scan logged the bypass every 450 ms,
+    indefinitely. Both callers go through `dropEngage()` now.
+  Gates: `server/test/noaggro.test.ts` (an untouched predator, and a running
+  hunt released) — each step on a FRESH predator, since a monster whose hunt
+  just ended is `returning` and its scan is suppressed by design; and
+  `server/test/combat.test.ts` "only a monster you are marking may hunt you"
+  (the mark, the drop, the re-arm, and the switch-off case) on a `dbgmonster`
+  PINNED predator, which is what lets one monster be re-marked repeatedly.
 
 - **WATER IS A PLAYER SANCTUARY** (maintainer: "no monster can enter/go on
   water … the player can always use the water to escape/hide"). Every layer:
@@ -409,29 +461,39 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
   Chebyshev to the zone bbox) of the world's spawn OR of the cell the player
   last stood on in this world (`ml-lastpos:<world>`, written every 3 s —
   a returning player lands on their saved spot). Every other kind's strips
-  queue in the deferred batch behind my urgent clips and the NPC idles, and
-  a body whose kind is still deferred starts PARKED — culled, never the
-  placeholder wanderer — until ITS strips land (per-kind FILE_COMPLETE
-  count → `onMonsterArtLanded` registers the clips and releases the bodies;
-  an errored strip releases on the batch's COMPLETE and degrades to the
-  placeholder as before). No spawns.json / no zones / any fetch error → every
-  kind at boot, the pre-split behaviour. (the_game names all 57 kinds; 912
+  are asked of the ART QUEUE (`docs/perf.md`) when the FIRST monster of the
+  kind exists near me (`requestMonsterBody`: walk at ART_PRIO.walk, idle
+  behind it — walk stands in for idle until it lands — and the fight art at
+  the very back, raised if a fight starts), never the whole world's kinds at
+  once, and a body whose kind is still deferred starts PARKED — culled, never
+  the placeholder wanderer — until ITS walk strips land (per-kind count →
+  `onMonsterArtLanded` registers the clips and releases the bodies; a failed
+  strip counts as landed, so a missing file degrades to the placeholder as
+  before). No spawns.json / no zones / any fetch error → every kind at boot,
+  the pre-split behaviour. (the_game names all 57 kinds; 912
   strips / 5.3 MB were half of a cold boot's 1,884 requests, and 20 kinds
   live within 32 cells of the spawn: measured 320 strips before the avatar
   is in, 146 monsters with 92 parked, released one kind at a time, 57/57
   clips at the end, zero visible placeholders across 116 samples. A monster
-  roams only inside its zone and chases ≤ ESCAPE_RADIUS past it, so a
-  deferred kind cannot reach the player before the batch lands.) Probes:
+  roams only inside its zone and chases ≤ ESCAPE_RADIUS past it; a kind's
+  walk strips are 8 files, 2-16 MB of textures, ~0.3-1 s under the 128 KB a
+  frame budget.) Probes:
   `__ml.monsterBoot()` (boot/deferred/pending/clipKinds), `monsterInfo().
   artPending/spriteVisible`, `monsterGate().parkedInView` (a parked body in
   view is counted apart, never as a wrong cull). Gate:
   `server/test/monsterboot.test.ts` (definition, union of centres, the real
   partition on every world on disk).
-- **Monster combat clips**: attack/angry/die strips (~525 files, ~3.1MB)
-  background-load in the SAME deferred batch as the player's action states
-  (boot stays walk+idle of the NEAR kinds — above). The COMPLETE handler re-runs
-  buildMonsterAnimations (a late texture never registers a clip by itself —
-  the single-call-site trap). attack/die once-through (die paced to
+- **Monster combat clips**: a kind's attack/die strips (then angry, the
+  fight's idle) enter the art queue at the LOWEST priority when the kind's
+  first monster appears — fetched only when nothing else is waiting, so a
+  fight that starts later finds them resident — and JUMP to the front
+  (`requestMonsterCombat`, from playMonsterAnim's state) the moment one of it
+  chases, fights or dies. Never at launch for every kind (the_game's 57 kinds
+  carry 1,312 combat strips, 416 MB of textures, which used to stream in at
+  launch and were the lag). Each strip registers its clip as it lands
+  (buildMonsterAnimations per kind, idempotent — a late texture never
+  registers a clip by itself, the single-call-site trap); until then the
+  guards park the body on its walk contact frame. attack/die once-through (die paced to
   MONSTER_DIE_MS so clip and corpse sweep agree); angry loops between swings;
   6 kinds ship NO angry (forest_poring ×2, lava_poring, ice_crystal_golem,
   diablo ×2) and park on the walk contact frame — anims.exists guards
@@ -548,8 +610,8 @@ The shared body pipeline, spawn zones, shadows, gait, the monster brain, escape 
   stored TRIMMED to the maintainer's green-circled dispersal window — see
   scenery.json:edited before any resync): one of 8 direction variants,
   forward or REVERSED at random, 14fps, depth 900_001.95 (never dimmed),
-  preloaded in the deferred batch with the sword marker (lazy first-engage
-  load lost the walk-to race). Hurt flinch 16fps, 300ms overlay. `bloodFx()`
+  queued in the art queue the moment the avatar joins (ART_PRIO.blood, 8
+  tiny strips; a lazy first-engage load lost the walk-to race). Hurt flinch 16fps, 300ms overlay. `bloodFx()`
   probe; verify-combat asserts ≥1.
 - **Gates**: combat.unit.test.ts (curves/determinism/escape math),
   combat.test.ts (2 live rooms: fight loop + death/respawn),
@@ -657,16 +719,28 @@ spec `maps2/spec/NPCS.md`); characters2 owns who they are
 - Rendering goes through the SAME shared body pipeline (`resolveBodyDepth` +
   `placeBodyShadow` + lit copy; NpcAvatar satisfies BodyVisual). Never
   hand-roll a second path. Off-screen NPCs park like culled monsters.
+- **NPC art ships PACKED** (`characters2/npcs/<id>/packed/`, one box per NPC,
+  `characters2/pipeline/pack.py`): the manifest builder points `base` and
+  `idleUrls` at the packed files and CONVERTS the foot anchors it measures on
+  the raw frames into the packed box (footAnchor's band and lift scale with
+  the frame height, so a cropped frame would be a different measurement), so
+  the sprite's origin is the same pixel; `frameW/H` are the box. One box per
+  NPC because rotations and idle frames swap under one origin. Measured over
+  the roster: 38% of the canvas is body, 223 -> 84 MB decoded. Gate:
+  `scripts/verify-npc-pack.mjs` (raw vs packed manifest within 0.02 px, every
+  URL on disk, a headless boot drawing every placed NPC from its packed
+  texture with its feet on its shadow). `NPCS_PACK=0` builds the raw manifest.
 - **Faked client-side collision**, the monster pattern: NPCs join the
   `monsterDodge` near-list at NPC_BODY_RADIUS; not in the collision grid, not
   in findPath.
-- **Loading: standing art at BOOT; idle frames FIRST in the deferred batch.**
+- **Loading: standing art at BOOT; idle frames EARLY in the art queue.**
   Both original symptoms were one mistake — spawnNpcs started its OWN loader
   run in create(), which re-fired the loading overlay's progress events (bar
   restart) and delivered art late (pop-in). Now main.ts fetches placement at
   boot; `preloadNpcArt` queues one standing image per DISTINCT placed
-  character into the boot batch; idle frames go FIRST in the deferred batch
-  (queued last they landed 18.3s in behind ~800 action frames; first, 0.2s).
+  character into the boot batch; idle frames go into the art queue at
+  ART_PRIO.npc, behind only my own urgent clips (queued last they once
+  landed 18.3s in behind ~800 action frames; early, 0.2s).
   **Never put the idle frames in the boot batch** — that is the loading-bar
   regression. (The player's own art now outranks NPC idles — see loading.)
 - The idle clip registers LAZILY, per NPC, once its frame textures exist —

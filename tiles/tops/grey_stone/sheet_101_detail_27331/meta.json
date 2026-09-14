@@ -10,12 +10,11 @@
   "prompt": "grey stone, a spidering crack in the middle, grey stone all around the edge",
   "palette_top": "#808082",
   "tile_id": "b88c8bcd-f0f2-4eb6-b72f-9675c533bece",
-  "n_tiles": 16,
+  "n_tiles": 15,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
-    "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
     "tile_06.webp",
@@ -128,5 +127,12 @@
   },
   "motif": "a spidering crack",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_03.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

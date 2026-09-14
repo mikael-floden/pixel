@@ -7,6 +7,68 @@ World assembler. Names a **ground type per cell** from `tiles/ground_types.json`
 parses against live in `spec/`: `WORLD3.md`, `SPAWNS.md`, `NPCS.md`, `PLACES.md`.
 (tiles2 and the world@1/@2 worlds were retired 2026-09-09 — history in git.)
 
+Since 2026-09-12 this agent has an **assistant** (`coordination/maps2-assistant.json`):
+the same remit, for the units this agent is not in. It reads this board first,
+never touches a file named there as in flight, and names every file it touches
+on its own board (the games-assistant pattern, maintainer decision).
+
+## The change page — filled in AFTER every push to main (maintainer law, 2026-09-12)
+
+**Push first, page after — never the other way round.** Maintainer: *"From
+now on I always want to see an artifact page with screenshots of each change
+with a 'show on map' button ... I want that artifact page filled in after
+every push to main. Remember I said after! You can still push before me
+approving the change! I just want to be able to review it afterwards."* He
+plays on a phone and tests in production; a commit message names cells, the
+page shows him the place, and his review comes back as marked numbers.
+
+- **The log is in the repo**: `maps2/reports/<world>.json`
+  (`maps2/change-log@1`) — the page's own URL under `artifact`, and one entry
+  per push: `date`, `commit`, `before` (the commit whose world is "before",
+  from git), `title`, and the `changes` (name, what, cell, optional window,
+  optional `cutaway` to lift the cave lids). Changes are numbered straight
+  through across pushes and a number never moves once he may have quoted it:
+  APPEND a push, never reorder or renumber. The numbering runs over the WHOLE
+  log even though a page shows one push, so #22 is #22 wherever he reads it;
+  each push also carries its own `artifact` URL (the page he was linked).
+- **ONE PAGE PER PUSH, AND THE LINK NEVER CARRIES AN OLDER FIX** (maintainer
+  2026-09-13, on a page that opened with eleven earlier cards: *"the artifact
+  page you linked to for me to show the changes contains old stuff still.
+  Can't tell what's yours. NEVER POST A LINK THAT CONTAIN PREVIOUS FIXES
+  AGAIN!"*). After every push that changes a world: append the push to the
+  log, then
+  `python3 maps2/pipeline/report3.py maps2/reports/<world>.json <out_dir>
+  --push=latest` — **`--push` is not optional for a page you are about to
+  link**; without it the whole log renders, which is for reading history.
+  Publish that directory as **a NEW artifact** (a fresh `file_path`, so it
+  gets its own URL), write the URL into that push's own `artifact` field in
+  the log, and put THAT link in the reply. Never republish a page a previous
+  push already linked, and never hand him the running page. **RENDER INTO
+  `<scratch>/push-<commit>`, a directory per push**: the Artifact tool keys a
+  page by the FILE PATH it was published from, so a re-used `out_dir`
+  republishes the earlier page's URL rather than making the new one (measured
+  2026-09-13 — it overwrote the running log with one push's cards, and the
+  repair is to re-render the whole log into that same path and republish).
+  (`--push` renders each change twice — the world at the push and at `before` —
+  lossless WebP, copies the minimap, writes `index.html`, and parse-checks
+  nothing for you: run `node --check` on the page's script if you touched
+  report3.py.) Commit the log in the same or the next push.
+- **What the page does** (report3.py owns it): newest push first; every card
+  shows "after" with a pill top-right, a tap on the image flips to "before";
+  "Show on map" opens the minimap in a MODAL with the pin — the world's own
+  `minimap.json` dot formula at the cell's level, the pixel the game's map tab
+  puts a body on; the whole title row MARKS a change, a footer pinned to the
+  bottom always lists the marked numbers as chips, and "Copy marked" puts
+  `Changes I do not like: #a, #b` and one line per change (`#n name — cell
+  x,y, level l — commit`) on the clipboard — his review comes back as those
+  lines, and a reply that quotes those numbers is about those cards.
+- Cards are written in a player's words (what changed, why, the cell as the
+  game shows it under the player); a change he cannot see from the surface
+  gets its lids lifted. Not optional and not "when there is time": a push
+  that changed a world without its page is not finished. The page's script
+  is a RAW string in report3.py — templated once, a `\n` became a line break
+  inside a JavaScript string and nothing on the page worked (measured, twice).
+
 ## Releasing — deploy YOURSELF, always push to `main`
 
 **`main` is the release channel.** The game reads worlds from the repo at
@@ -75,6 +137,16 @@ directly"): once the deploy run is green, deliver
   **`python maps2/pipeline/minimaps.py`** backfills/refreshes every world from
   its committed `world.json` (no regeneration) — run it after touching the
   renderer.
+- **`minimap.json`** (`pixel-maps3/minimap@1`, written beside the image by
+  `render3.write_minimap`) — the dot formula (`kx ky kz x0 y0`: px from a
+  cell, its level and this file's crop) and the worked samples every consumer
+  gates itself against, each asserted at render time to land on drawn alpha:
+  the spawn, the land's four corners, and **one up high** — the highest land
+  cell (level 46 today). The high row is what makes the level term testable:
+  the five level-0 rows passed a consumer that projected every pin at level 0,
+  and Pit V's mouth sat 31.6 px down the slope for a day (games-ui
+  2026-09-12). A consumer compares its own px against the row, not the alpha
+  under it — that cell projected at level 0 still lands on land.
 - **`map_base.webp`** (`pipeline/cartomap.py`) — the Map tab's cartographic
   base layer: same iso projection but drawn to be READ at thumbnail size
   (per-material palette instead of tile art, hillshade from the level grid,
@@ -279,7 +351,9 @@ footprints (`bridge` excluded — a span is a roof over open air, outdoors), eac
 group gets a ROLE from world.json alone (`house-1` = nearest the arrival
 point), and `places.NAMES[world][role]` supplies the name — keying on role,
 never a coordinate, is what makes a name survive the terrain moving.
-Re-derived by `save_world`. **Canon wins where canon has a name**
+Re-derived by `save_world` (world@2, retired); the_game's come from the
+generator (`world3grow.places`: every cave complex, with `entrance` /
+`entrances` for the Map tab's pins). **Canon wins where canon has a name**
 (`lore/canon/CONSTRAINTS.md` §5): The Stone House and The Cave are adopted
 verbatim; The Meadow House is the one plain-descriptive addition.
 `mountain_top` is MEASURED, not chosen — snow line down to the massif's foot
@@ -343,7 +417,44 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   doorway crop, scenery scale with no lift — the maintainer's verdicts, taken
   in the game) and `games2/scripts/tiles3-fixture.py` holds the two equal by
   tracing this file's draw stream; a rule changes in both or the fixture
-  names the cells.
+  names the cells. Walls vary per cell and per storey exactly as the game's
+  do: `games2/client/src/wallregion.ts` (the warped region field that picks
+  one measured set of five joining tiles from `games2/client/src/wallsets.json`
+  per massif, then a weighted member per course) is ported into this file and
+  proved against its `WALL_TEST_VECTORS` at import; a caller with no cell
+  gets rank 0, as before. (Rank 0 everywhere drew all 74 approved grey_stone
+  walls as ONE — "the mountain reads as wallpaper".)
+- `navfit.py` — the game's scenery collision stamp and nav bake, mirrored:
+  a footprint's offset inside its cell is chosen where the cells the game
+  blocks match the drawn hitbox best (`spec/WORLD3.md` → `scenery`). **A
+  placement-rule change reaches the shipped world through `--apply
+  <world_dir>`, never a rebuild** (a rebuild re-dresses the map; maintainer
+  2026-09-13: "I was asking for a placement correction only!"); `--check
+  <world_dir> --game <dump>` proves the mirror against the game's own stamp.
+- `lavafill.py` — the massif's lava lakes: the growth rule `world3grow.lava()`
+  builds with, and `--apply <world_dir>` to grow a world that already ships
+  without rebuilding (and re-dressing) it (`spec/WORLD3.md` → lava).
+- `indoorfire.py` — the fire in a room: the 70/10/20 fire/light/bare draw the
+  build and the shipped world share, the back-wall runs it stands a hearth or
+  a brazier on (a wall is a RAISED neighbour — **a doorway is not a wall**,
+  and no footprint may cover an opening or the cell you cross to reach one),
+  and the engine's per-window light budget applied the way `lights()` applies
+  it (`spec/WORLD3.md` → the fire indoors). `--apply <world_dir>` gives a
+  world that already ships its fires, additively; `--refit <world_dir>` moves
+  a fire that stands across a doorway, and its chimney with it; `--relight
+  <world_dir> [--share 0.8]` lights most of them, putting a street lamp out
+  for each slot it takes (his 2026-09-14 trade: a fire indoors outranks the
+  lamp outside).
+- `chimneys.py` — a chimney on the roof over every open fire indoors, at the
+  fire's own cell with `z` lifting its feet to the deck's top
+  (`spec/WORLD3.md` → scenery ON a roof). `--apply <world_dir>`; `--dir`
+  overrides the south-east facing; `--heal <world_dir>` re-picks a stack whose
+  piece or state his review deleted (a dangling reference draws nothing in the
+  game and stops render3 dead).
+- `windowfit.py` — a window needs a ROOM behind it: the wall is one cell
+  thick, so a face is only usable where the cell behind it is floor
+  (`spec/WORLD3.md` → a window needs a room behind it). `--apply <world_dir>`
+  slides the windows of a world that already ships.
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 

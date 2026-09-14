@@ -10,24 +10,14 @@
   "prompt": "ice, a frozen wave line in the middle, ice all around the edge",
   "palette_top": "#99ced1",
   "tile_id": "48a984e6-f1c8-4d32-a56c-3360ec1e9a69",
-  "n_tiles": 16,
+  "n_tiles": 6,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
     "tile_02.webp",
     "tile_03.webp",
     "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_06.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -128,5 +118,57 @@
   },
   "motif": "a frozen wave line",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_05.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_07.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_09.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_11.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_12.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_14.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

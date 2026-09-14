@@ -51,6 +51,8 @@ export interface WorkerInit {
   worldUrl: string;
   frame: Frame;
   pitch: number;
+  /** The details dial (detailrate.ts) — the same rate the main thread rolls. */
+  detailRate?: number;
 }
 export interface WorkerResolve {
   type: "resolve";
@@ -108,6 +110,7 @@ async function init(msg: WorkerInit): Promise<void> {
   for (const [k, v] of docEntries) docs[k as Tiles3DocKey] = v;
   const data = tiles3DataFrom(docs, msg.pitch, () => {});
   if (!data) throw new Error("no ground_types/patterns — the resolver cannot be built");
+  if (msg.detailRate !== undefined) data.detailRate = msg.detailRate;
   const view = viewFromParsed(parsed as never);
   /* THE REGION FLOOD FILL — 38 ms over the_game on the dev host, and the single
    * biggest lump of the main thread's own world load. Here it is free. */

@@ -54,7 +54,25 @@ monsters/<id>/
   rotations/<dir>.webp             8 directions
   animations/<state>/<dir>/NN.webp per-frame art
   animations/<state>__<dir>.webp   sprite-sheet strip
+  packed/<state>__<dir>.<sha8>.webp  THE SAME STRIP CROPPED FOR THE GAME (derived; see below)
+  packed/index.json                  which packed file is current per strip
 ```
+
+**THE PACKED LAYER (`pipeline/pack.py`, 2026-09-12, maintainer-authorized for
+the game agent).** The game draws the strips under `packed/`, never the raw
+ones: a raw strip is 16% opaque texels (PixelLab's canvas around a small
+body, every frame centred in a max-size cell) and the phone's GPU paid for
+all of it — decoded bytes, upload bands, video memory. `pack.py` crops each
+strip to the union box of its frames' art (32% of the texels, measured over
+60 strips), one strip in one row as before, so the game slices it exactly as
+it slices a raw one and measures its anchors from it. It is DERIVED and never
+edited by hand: the raw strip stays this mirror's write-once output (the wiki
+and the contact sheets read it), the packed file is named by its content hash,
+`packed/index.json` names the current file per strip, and the previous
+generation is kept (current + one back — the cache law). Resumable: a strip
+whose raw bytes hash to what the index recorded is skipped, so `pack.py` runs
+after any sync that changes strips (`--check` exits 1 when an index is stale;
+`--only id` for one monster).
 
 **57 monsters** (20 authored in the objects store, 37 in the characters
 store; counts drift with tagging — the tag is ground truth). All serve
@@ -66,6 +84,464 @@ hardcoded `.png` silently drops a PNG into a WebP-only tree (trim_die_tails
 did exactly that once — 572 files). Paths that *read* art accept either
 extension; paths that *write* it go through the helpers; paths that *name* a
 file go through `_art_path`.
+
+## Candidates: the ONE place this domain spends generations
+
+New monsters are **designed by this agent** (`config/candidates.json`) and
+born on PixelLab as an 8-direction base only — `create-character-v3` from
+scratch, zero animations — tagged **`MONSTER_CANDIDATE`**, never `MONSTER`
+(sync would import a base with no animations as a broken monster). The set
+is **100 candidates**; the maintainer picks the best (he asked for 25 and
+picked 39 on 2026-09-09), and only an approved base earns its five states, because a bad direction cannot
+be fixed later (maintainer 2026-09-09: "if the initial 8 directions is not
+perfect — don't even think about continuing with that monster").
+
+```bash
+python monsters/pipeline/candidates.py status
+python monsters/pipeline/candidates.py generate [--only id,id] [--dry-run]
+python monsters/pipeline/candidates.py redo --only <id>       # next seed; old record deleted
+python monsters/pipeline/candidates.py drop --only <id> --reason "..."  # retire for good
+python monsters/pipeline/candidates.py qa                     # re-verdict from disk
+```
+
+Layout: `candidates/<id>/rotations/<dir>.webp`, `sheet.webp` (8-up, compass
+order) and `candidate.json`; `candidates/index.json` is the wiki's contract
+(`format: monster-candidates@1`, one entry per generated candidate with
+`scale`, `sheet`, `rotations`, `qa`, `notes`, `review`). Verdicts land in
+`live/feedback/monsters.json` under `monsters/candidates/<id>`. A retired
+design moves to `config.retired` with its reason — read that list before
+designing, it is the record of what the model cannot draw and what the
+maintainer will not take.
+
+**The bar is SERIOUS EXECUTION** (maintainer 2026-09-09, with five rejected
+examples). Cute is welcome when it is designed — a fawn, a fox kit, a seal
+pup; object-monsters and big heads are fine too. What never gets near the
+game is a gag: derpy faces, mascot grins, a chest with a lolling tongue, a
+cartoon skeleton. Every prompt therefore ends with the tier's clause from
+`defaults.style_suffix` (cute → "calm serious expression, no cartoon grin";
+mid/evil/boss → "grim menacing expression") plus "no drop shadow on the
+ground", and every landed sheet gets an eyeball pass before it stays. Lore
+lines are straight, never punchlines — the wiki shows them beside the art.
+
+`scale` is `small` (32–48 px, the hedgehog end of the roster), `standard`
+(64–176) or `big` (224–240): most enemies standard, then small, then big
+(maintainer order).
+
+What makes a base sound, and how much of it is machine-checked:
+- **1 px/px density, never a zoomed render.** `run1` = share of same-colour
+  runs exactly one pixel long; measured 0.47–0.83 over the 57 shipped
+  monsters, 0.32 on the maintainer's reference "zoomed" case
+  (storm_shellback, 256 px). Pass ≥ 0.50, warn ≥ 0.45, fail below. Density
+  holds through 184 px and is a coin flip from ~236 (Cragback 236 and
+  Magmane 252 crisp, Voltshell 256 and Voidmaw 236 zoomed) — every big
+  candidate so far passed, and the check, not a size cap, decides.
+- **All 8 present, one square canvas, no clipping, no speck-in-a-frame** —
+  machine-checked. A base that touches the edge is CLIPPED, not wrapped
+  (measured: the overflow pixels are absent from every other direction's
+  opposite edge), so the only fix is a re-roll — there is nothing to stitch.
+  Wrap-around is an ANIMATION bug and `postprocess.py` repairs it inside
+  sync, once a candidate is approved and animated. Silhouettes that fight a
+  square canvas and were retired after paid rolls: dragonfly wings (twice),
+  a horned beetle's side profile (three rolls), a hornet. Prompt bipeds
+  "shown full body from head to feet" and curl tails, fold wings, shoulder
+  weapons — a re-roll with the same silhouette clips the same way.
+- **Each facing IS its facing; no text and no ground shadow baked into the
+  art** — a human, or the agent reading `sheet.webp`. The machine cannot
+  judge this (baked shadows are fully opaque, measured — no alpha to key on).
+- **High-detail prompts** (maintainer: low detail confuses the model — it
+  cannot tell what is what) with "realistic proportions". Prompts never name
+  a facing or a background: v3 rotates a south sprite and always renders
+  transparent.
+
+Cost: 1 + ceil(size²·8/65536) generations (64 px → 2, 128 px → 3,
+176 px → 5, 240 px → 9), billed at $0.02/generation once the subscription
+pool is empty (measured 2026-09-09; the 100-set with re-rolls ran ≈ $10).
+The loop stops below `--min-usd` (default $5). Seeds are `crc32(id:vN)`, so
+a redo is reproducible and never re-rolls a kept one. Run workers with
+`setsid nohup … & disown` in disjoint `--only` batches; `drop` cleans the
+stray a killed worker leaves behind.
+
+## Animating approved candidates — one state at a time
+
+`pipeline/animate.py` gives an APPROVED candidate its states, one state for
+all monsters before the next (maintainer 2026-09-09: "get good at one
+animation at a time"). Idle, walk and attack are done for the 39 picked;
+angry and die follow the same path. Every state: generate S, SE, E, NE, N;
+mirror SW, W, NW; machine bands from the maintainer's own accepted clips;
+review on a published artifact page with the clips PLAYING.
+
+```bash
+python monsters/pipeline/animate.py approve --ids a,b,c        # review=approved + APPROVED tag
+python monsters/pipeline/animate.py idle [--only a,b] [--dry-run] # resumable: only missing/failed dirs
+python monsters/pipeline/animate.py redo --state idle --only a --dirs north,east
+python monsters/pipeline/animate.py requal --state idle        # re-verdict from disk, no network
+python monsters/pipeline/animate.py fetch --state idle --only a # re-download the last takes
+python monsters/pipeline/animate.py status --state idle
+```
+
+What an idle is (maintainer): "very, very calm and still breathing" —
+PixelLab tends to give far too much or nothing at all. The rules that get
+there:
+- **v3 custom clip with `end_frame` = the base rotation image**: the clip is
+  pinned neutral → breathing → neutral, 5 stored frames (base + 4). Same
+  shape as the maintainer's own accepted idles. PixelLab ignores
+  `animation_name` and stores a v3 clip as `custom-` + the first ~30 chars of
+  the action text, ONE entry per direction when a single direction is
+  pinned (measured) — the client matches takes by that prefix.
+- **Only S, SE, E, NE, N are generated; SW, W, NW are mirrors** of SE, E, NE.
+  No E/W confusion is possible and it is 5/8 of the jobs (maintainer: "a good
+  SE is also a good SW"; handedness flips for weapon-holders, accepted).
+- **v3 returns each direction on its own padded canvas** at the same pixel
+  scale (112 px base → south 148×132, north 128×128, east 140×132), frame 0
+  being the base shifted; `align_to_base` crops every frame by that offset
+  so the clip shares the monster's canvas and reports pixels that fell
+  outside (overflow).
+- **Machine bands, calibrated on the maintainer's 33 five-frame idles**
+  (silhouette XOR between consecutive frames / silhouette area 0.008–0.239,
+  median 0.091; centroid drift ≤ 3.8 px but two): pass 0.010–0.200 and drift
+  ≤ 4 px; warn to 0.300 / 6 px; fail below 0.005 (frozen — the model's usual
+  failure, 3 of 193 clips), above 0.300, drift > 6, a loop that does not
+  close, frame 0 not the base, more than 20 px cut by the canvas, or
+  mid-frames matching the MIRRORED opposite base better than their own by
+  > 0.05 (a symmetric body scores both ways equally — without the margin
+  Pebblemite and Shellet were false alarms). A mere border touch is a warn.
+- **`idle` is resumable and is the redo sweep**: it regenerates every
+  direction whose verdict is missing or fail, and clears that direction's
+  old takes on PixelLab first (a regenerated direction is by definition one
+  nobody wants to keep), so the record never accumulates rejected rolls.
+- **The take is picked by the job's own `animation_group_id`** (from the
+  finished background job), never by position in the character's animation
+  list: PixelLab returns that list in NO particular order (measured
+  2026-09-09 — a sweep's "last take" re-downloaded the previous roll for
+  three monsters in a row, verdicts identical to four decimals, $0.25 of
+  fresh clips never looked at). `fetch` (no job at hand) is the only caller
+  that falls back to the last listed take.
+- Review is a published artifact page with the clips PLAYING (maintainer:
+  "send the page as an artifact so I can see the real animation") — canvases
+  looping at idle pace, a redo toggle per direction that collects
+  `id:direction` pairs to paste back.
+
+Cost: 193 v3 idle clips moved the USD balance $67.33 → $64.87 — about
+$0.013 per direction, billed with a lag (the first five showed $0.00).
+
+### Walk — a full cycle that repeats, nothing pinned
+
+Maintainer: "a walk animation that can be repeated without looking weird. A
+full cycle. The monster should walk completely normal." Rules:
+- **Six free frames, no `end_frame`, no `keep_first`** — the loop is the
+  model's to close. Pinning the base gives neutral → walk → neutral, which is
+  a hitch every cycle; that is the maintainer's LAST-RESORT fallback ("if you
+  can't get anything sane at all") and is what `redo --pin` does. Used twice
+  (Cragtroll SE, Deepmaul N) after free rolls never looped; the verdict
+  carries `pinned: true` and the play pace hides it acceptably.
+- **Walk IN PLACE; the game moves the sprite.** Bands from the maintainer's
+  37 accepted 6-frame walks (east): step 0.13–0.39 (median 0.22), last→first
+  hand-off 0.5–2.7× a normal step (median 1.47), centroid drift median 2.2 px,
+  x-travel median 1.3 px. Pass: step 0.10–0.40, loop ratio ≤ 2.0, drift
+  ≤ 5 px, travel ≤ 4 px; warn to 0.55 / 2.7 / 8 / 7; fail beyond. Drift and
+  travel scale with the canvas (max(band, 3 % / 5 % of width)), so a 200 px
+  titan is judged like a 64 px mite.
+- **Non-walkers get their own wording** (`walk_action` in the design):
+  a wraith glides, a snail and slug crawl, an octopus crawls on its arms, a
+  cobra slithers, a mite scuttles — the generic "legs alternate" prompt
+  froze them (frame step < 0.05). `walk_slow` (snail, slug, cobra, octopus,
+  turtle, mite, grub, crab) lowers the step floor to 0.4× because a crawl
+  is a small silhouette change even when it reads correctly.
+- **Big bodies, wings and tails grow the canvas** rather than get cut:
+  `align_to_base` pads symmetrically to the clip's canvas and records the
+  pad; the review page plays the grown canvas. (First version cropped to the
+  base canvas and shipped headless drakes — never crop a clip.)
+- **A verdict may be set by hand** (`manual: true` + the reason) when the
+  metrics never settle but the eye is satisfied: Crystal Titan SE after six
+  rolls. `requal` leaves manual verdicts alone and recreates their mirrors.
+
+### Attack — it must STRIKE: frame 0 pinned, the END FREE
+
+Maintainer's verdict on a full 39-monster round that passed every metric:
+"95% look like idle animations. No strike/attack at all. The monster just
+moves slowly forward and back again." The cause was the second pin — v3 with
+`end_frame` = the base interpolates from the base pose back to the base
+pose, and the only motion it can invent in between is a lean out and back.
+The rules that produce a real strike:
+- **Frame 0 is the base (`keep_first`), the end is FREE (no `end_frame`).**
+  The game paces an attack to ~700 ms and cuts back to idle afterwards, so
+  the clip does not have to return, and the maintainer's own 57 accepted
+  attacks mostly do not (loop up to 0.79). He does want the first frame
+  pinned: "at least you didn't generate any buggy attack that didn't animate
+  well from the idle position at the first frame".
+- **The FRAME COUNT is a dial too** (maintainer: "sometimes you have to play
+  with the number of frames so the generator has enough frames to perform an
+  attack, but often more frames leads to garbage"). Measured on Cragtroll
+  east: 4 frames gave a full overhead club swing (reach 0.45), 6 frames the
+  same club barely moving (0.21). So 4 is the default and the most-tried
+  rung, and a stubborn direction walks `FRAME_LADDER` (4, 6, 4, 8, 4, 6, 4,
+  8, 6, 4) across its rolls rather than committing to one count. Frame paths
+  are read from disk, never computed from the state's default count.
+- **`reach` is the gate that catches a lean.** It is the 95th-percentile
+  distance of NEW pixels from the base silhouette over the body's short
+  side: a strike throws a limb or a weapon far outside the outline, a lean
+  translates the whole body so every new pixel hugs it. His 57 (east):
+  median 0.45, p25 0.34, p10 0.23, min 0.14. The rejected round: median
+  0.26. Pass ≥ 0.30, warn ≥ 0.22 — which failed 173 of those 195 shipped
+  directions, the same call he made by eye. Silhouette step, peak and drift
+  do NOT separate the two (a lean scores as well as a swing); reach is the
+  metric that does.
+- **Preset-style wording that COMMITS**: `"Move Name - <body doing one
+  decisive thing>"` ("Club Smash - Raises the stone club overhead and
+  smashes it straight down"). No "then returns to idle stance" tail — with
+  a free end that clause spends half the frames coming back and reads as
+  the lean again. Free prose instead of this format makes PixelLab paint an
+  impact effect (flash 0.044 median vs 0.001 on his set), and no negative
+  wording suppresses it.
+- **Flash gate** unchanged: new near-white, yellow or cyan pixels over
+  frame 0 fail at > 0.10 of the body, warn at > 0.04, relaxed 5× for
+  designs flagged `fx` (elementals, breath, spells — 14 of 39) whose effect
+  IS the attack. Eyeball the sheets too: pale arcs slip under it, and a
+  direction set `status: fail, manual: true` is re-rolled by the next sweep.
+- **Roll the same direction before changing anything.** Maintainer: "if
+  you're stuck on a single direction generating a garbage animation, keep
+  retrying maybe 10 times before you give up the entire animation." The
+  ladder per direction, counted by `rolls` on its verdict: 1–2 re-roll the
+  logical attack on a new seed; from 3 a clawed design switches to the
+  SIMPLER `CLAW_SLASH` ("often you need to try something simpler, and a
+  'claw' attack with swoosh lines often works" — its white swoosh is wanted,
+  so the flash gate opens to 0.45 for it); from 5 the design's **EXTREME**
+  attack; from 7 the monster's intensity dial goes up, which redoes all its
+  directions; at 10 the direction stops being rolled, because what is wrong
+  is the attack CONCEPT, not the dice — reword it in the config and the
+  whole slot regenerates.
+- **`attack_extreme`: an EVENT the model cannot render passively.** Maintainer
+  2026-09-10: "what happens if you go even more extreme? 'The crab's shell
+  explodes in a powerful attack'. You can always step up the prompt a notch.
+  Think outside the box and try to generate something the AI can't stay
+  passive anymore. This is very monster to monster individual." Every design
+  carries one hand-written dramatic line — the crab's shell cracks open and
+  throws shards, the elephant hurls itself forward with dust exploding under
+  it, the bog titan drives both arms into the ground and erupts mud. Adverbs
+  ("aggressive", "huge exaggerated motion") move the needle far less than
+  changing WHAT HAPPENS. Its debris is exempt from the flash gate, like the
+  claw swoosh.
+- **Write the attack that feels LOGICAL for the creature first** (maintainer:
+  "that will usually generate the correct attack"). The simple claw is the
+  fallback, not the opening move.
+- **Painted effects and shallow strikes are a dice roll, so the sweep is a
+  LOOP**: run `attack --try` until `--dry-run` reports nothing.
+- **A clip that rendered PAST the canvas is REPAIRED, not rejected**
+  (maintainer 2026-09-11: "we still need to try and save the animations that
+  did render outside, so it appeared on the other side the next frame"). The
+  shipped monsters have had `postprocess`'s wrap repair since sync;
+  candidates run the same pass on every landing before QA — the canvas grows,
+  each wrapped strip is lifted off the frame it landed on and pasted back
+  beyond the true border of the frame it belongs to. The Lava Slug's magma
+  jet was cut at the edge with a detached chunk on the far side; repaired, it
+  is whole and the direction went from fail to pass. `unwrap --state <slot>`
+  does the same for clips already on disk. Only a clip that STILL overflows
+  after repair steps the ladder down to calmer wording — overflow means too
+  much, never too little.
+
+### Die — it must END DEAD: frame 0 pinned, SIX frames, the end free
+
+Slot `die_v1` on the 39 approved candidates (monsters-assistant, 2026-09-12;
+`animate.py die --slot die_v1`, resumable like the others). The game plays a
+die once into the server's 1.1 s corpse window and never returns to it, so
+nothing pins the end. The rules, measured on his own 57 shipped dies (east):
+- **His wording is the model**: "faints and fades away" for 30 of the 57, the
+  rest creature-specific ("Melts into a puddle of water and disappears",
+  "Cracks and turns into a crystal pile", "Burns up in a flame"). Every design
+  carries a `die_action` in that style — what the body does, then it fades:
+  the armor collapses into a heap of plates, the elemental collapses into a
+  puddle, the treant topples like a felled tree. The default is his majority
+  line.
+- **Frame 0 is the base (`keep_first`), the end is FREE, six generated
+  frames** (7 stored). A/B on Warmaul south: at 4 frames the model stands
+  still for two frames and drops into a heap on the third; at 6 it staggers,
+  kneels, goes to its hands and lies down; at 8 it pads five standing frames
+  in front of the same 3-frame fall. The die ladder walks 6, 6, 8, never 4.
+- **The gate is the LAST frame, not the loop**: `loop` (last vs first
+  silhouette, the idle's "must close" number) must be ≥ 0.40 to pass, ≥ 0.25
+  to warn, below is "still standing" and fails — his 57 run 0.27–1.41,
+  median 0.90 (the body is down or gone); a clip that keeps standing scores
+  0.11–0.25 (Pebblemite, Stonegaze east on the first roll). Silhouette step
+  0.10–0.90 (his median 0.42), drift is expected (his median 20 px — the
+  centroid falls with the body) and only fails past 55 % of the canvas. The
+  facing check is off: a body on the ground matches neither base. Flash is
+  recorded, never gated. `end_area` (last frame's opaque area over frame 0)
+  goes on the record: 10 of his 57 end fully transparent, most end at
+  0.5–0.9 — a solid corpse the game removes is fine; "fades away" is mostly
+  ignored by the model and that is no loss.
+- **A flat or legless body does not COLLAPSE — it TRANSFORMS.** First pass,
+  195 directions: 56 of the 61 fails sat on the crabs, slug, snail, mites,
+  grub, octopus, turtle, ice sprite and mist hound, every one "still
+  standing" — a collapse is no silhouette change for a body already on the
+  ground, and the model drew nothing (Inkling south: seven identical
+  frames). His own low creatures never collapse either: "The turtle shell
+  cracks and the turtle melts", "Turns into green smaller balls and
+  disappears", "Melts to lava". So their `die_action` is an event that
+  changes the silhouette — the shell cracks and the crab crumbles to pieces,
+  the octopus melts into a puddle of ink, the mist hound bursts into wisps.
+  Rewording a `_vN` slot means DISCARDING it first (`discard --state die
+  --from die_v1 --only …`): the record keeps the wording it was generated
+  with, by design, while `needed_dirs` compares the config — left alone, the
+  old-wording directions would regenerate with the old text forever.
+- **PRO is the escape for a body v3 will not change** (`--pro` on the state
+  command and on `redo`; measured 2026-09-13 on Shellet south): after six
+  rolls and every rung of wording, v3 interpolating from the pinned base
+  kept seven flat bodies intact (last vs first 0.05–0.23, the body fully
+  there at the end); an empty `end_frame` only cut to nothing on the last
+  frame; his own poring recipe (12 frames, "faints and fades away") froze
+  without the pin. PRO drew the shell cracking apart and the turtle melting
+  into a puddle that shrinks away — 16 frames, ~$0.19 a direction against
+  $0.013. PRO takes no pins and fixes its own count, so `--pro` turns
+  `keep_first` off and restarts the ladder at the design's own words; run
+  it on a monster's five directions together (`redo … --dirs
+  south,south-east,east,north-east,north --pro`) so the state keeps one
+  frame count — `needed_dirs` redoes the odd-length directions of a mixed
+  state, and a lone 16-frame PRO direction beside 7-frame v3 ones would be
+  re-rolled back into the failure.
+- **The die ladder is its own** (`amplify`/`calm` on the STATES entry): a
+  "still standing" fail asks for a heavier collapse, an overflow asks for a
+  plainer one — never the attack's swing, claw or extreme rungs. (Before this,
+  every state's re-roll borrowed the attack ladder: an idle that froze was
+  re-asked for "a big aggressive swing".)
+- **A verdict set by hand carries `manual: true` and the reason**, and only
+  where the eye is satisfied and the metric cannot be: a puddle, a scatter
+  of shards or a spider on her back seen from above keeps the base's outline
+  (the slug, the octopus, the spider queen), and cracked-off pieces reaching
+  both canvas edges read as a wrap (the crab, the snail). 20 of 312
+  directions on the first complete set. `requal` leaves them alone.
+- **die_v1 as it stands (2026-09-13)**: 39/39 complete, 312 directions,
+  196 pass, 116 warn, 0 fail; 130 generated directions v3 at 6+1 frames, 65
+  PRO (PRO picks 4 or 16 frames per monster); ~$16 all in, sweeps and
+  A/Bs included. Review: `pipeline/review_slot.py --slot die_v1` builds the
+  page with the clips playing (each plays through, holds its corpse frame,
+  restarts) and a redo toggle per direction; published as an artifact
+  (https://claude.ai/code/artifact/33e04503-2b19-4249-b57b-203d83978624),
+  never committed. His verdicts come back as
+  `monsters/<id>#die_v1#<direction>`; `review --state die_v1` then
+  `die --slot die_v1` re-roll exactly those (`--pro` for a body v3 will not
+  change).
+
+### His verdicts: read them, act, then DELETE the ones you acted on
+
+Maintainer 2026-09-11, seeing his own redo note still sitting under a clip
+that had already been regenerated: "I can still see my old comment even when
+you have acted on it and generated a new animation. My comment is obsolete
+and should be removed when you act on the review." Same lifecycle the tiles
+agent was given in 2026-08: a rejection's whole job is to cause a
+regeneration, and once that happened the entry has done its work.
+
+```bash
+python monsters/pipeline/animate.py review --state attack_v3   # his verdicts -> fails, with his note
+python monsters/pipeline/animate.py attack --slot attack_v3    # re-roll exactly those
+python monsters/pipeline/animate.py prune-feedback             # drop the notes that were acted on
+```
+
+- **`review`** reads `live/feedback/monsters.json` (keys
+  `monsters/<id>#<slot>#<direction>`), turns every `redo`/`rejected` into a
+  fail carrying his words, and redoes a MIRROR by redoing its source — that
+  is what actually produces it.
+- **`prune-feedback`** deletes a redo verdict only when that direction's
+  `generated_at` is newer than the verdict's `updated_at`, so a note is
+  removed for one reason only: the art it judged no longer exists.
+- **An APPROVAL is never pruned.** That is his pick and it has to outlive the
+  review.
+- **A SLOT RENAME must carry his verdicts with it** (`migrate-feedback`).
+  Renaming `attack` to `attack_v1` orphaned 49 of them — approvals included —
+  because the key holds the slot name. A verdict whose art cannot be found
+  under any `<state>_v<N>` is then dropped, since it judges something that no
+  longer exists.
+- **Both run automatically at the end of every generation**, so a note is
+  cleared by the regeneration it asked for rather than by someone remembering
+  to run a command.
+- **A verdict is never applied twice**: `review` skips any note older than the
+  art it judges, or the redo that produced a clip would fail that clip.
+
+### A WRONG DIRECTION is the maintainer's call, never the agent's
+
+Maintainer 2026-09-11, after I started reporting monsters whose 8-direction
+set looked rotated: "I don't trust your eyes to correct this. Let this be
+something only I can correct."
+
+- **Never relabel, rotate or re-map a monster's directions.** Not from a
+  metric, not from a contact sheet, not from 'the frontal view looks like it
+  is under SE'. Both the symmetry and the mirror-pair fits are far too noisy
+  to act on — measured 2026-09-11, the detector rated 23 of 39 approved sets
+  "rotated", including obvious false positives at a 0.003 margin, while the
+  one case confirmed by eye scored below them.
+- **Report and stop.** When a direction looks wrong, say which monster, which
+  slot, and what it appears to show, and leave it. He decides whether the set
+  is wrong and what it should be.
+- The clips inherit whatever the BASE rotations say, so a rotated base set
+  makes every state of that monster rotated with it. That is a fact about the
+  base, not something an animation re-roll can fix.
+
+### NOTHING in candidates is live — they are numbered attempts, and HE picks
+
+Maintainer 2026-09-11, after I called the first attack set "the set the game
+would load today": "LOL NO! The game will never ever load something still not
+done. This is in development. The wiki literally says 'in the making'. We have
+not even done all mandatory animations yet. This is all tests until we have
+settled on a complete set that works. All your versions is just as not-live as
+everything else! I will approve and pick what is live or not!"
+
+- **A candidate's animations are ATTEMPTS, numbered in the order they were
+  made**: `attack` (attempt 1, made before the numbering), `attack_v2`,
+  `attack_v3`, … Every one of them has equal standing. None is live, none is
+  the default, and the newest is not automatically the best — the highest
+  number is only the one being worked on.
+- **Never name a slot after the thing that produced it.** The second attempt
+  was called `attack_v3try` because it used PixelLab's V3 *mode*, and the
+  wiki dutifully labelled it "v3" next to a "try" that was actually attempt
+  three: "What is live vs try vs v3? … This is confusing as hell." Slots are
+  `<state>` or `<state>_v<N>`, nothing else; the generation mode belongs in
+  the record, not the name.
+- **The maintainer decides which attempt becomes the animation**, through the
+  wiki's approve. `promote --state attack` is the mechanic that carries out
+  HIS choice — it copies the chosen attempt into the shipping state name and
+  deletes the directions it replaces, on PixelLab and on disk. It is never
+  run on the agent's own judgement of "this one looks better".
+- **A whole state is replaced, never half of one.** An attempt is built
+  alongside the others and only becomes the state when it covers all eight
+  directions (maintainer 2026-09-10: "it's possible to start generating an
+  attack v2 without deleting v1 and only switch to v2 once v2 has proven it
+  can generate the attack for all directions … that can make you go back to
+  v1 and try again if you see v2 was not easier at all"). `promote` refuses
+  anything incomplete; `discard --state <s>` throws an attempt away.
+
+```bash
+python monsters/pipeline/animate.py attack --try          # build the next attempt
+python monsters/pipeline/animate.py status --state attack_try
+python monsters/pipeline/animate.py promote --state attack   # carry out HIS pick
+python monsters/pipeline/animate.py discard --state attack   # bin the attempt
+```
+
+### Skeleton template animations (`mode: "template"`) — measured, not used
+
+PixelLab also animates from a library of SKELETON-driven templates, 1
+generation per direction, no prompt. The library is **per skeleton**: the
+character's `template_id` decides it, and the list in the API docs is neither
+complete nor right for a given character.
+
+| skeleton | of the 39 | attack-ish templates |
+|---|---|---|
+| `mannequin` | 23 | `cross-punch`, `high-kick`, `flying-kick`, `hurricane-kick`, `fireball` |
+| `bear` | 15 | `attack-left`, `attack-right`, `jump-attack` |
+| `dog` | 1 (Ghost Hound) | none |
+
+**It does not solve the compact-creature problem** (measured 2026-09-10):
+`attack-right` on Tide Crab moved the body 5 px and never touched the claws,
+reach 0.056 — worse than the v3 prompt it was meant to rescue. The templates
+are rigged for the SKELETON, not the silhouette, so a crab on a bear rig gets
+a bear's weight shift. The maintainer's route is what works: the logical
+attack, then a simpler one with swoosh lines, rolled many times.
+
+**Never probe a template with a fake direction.** An invalid id is rejected
+with the valid list (that is how the list is read), but a valid id with a bad
+direction starts a job that never finishes: there is no cancel endpoint,
+deleting its animation group does not release it, and 20 of them exhaust the
+account's concurrency for everything until they time out — measured, ~25
+minutes of a fully blocked pipeline.
+
 
 ## Review gallery (chat artifact, NOT in git)
 

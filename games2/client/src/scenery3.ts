@@ -201,6 +201,12 @@ export interface SceneryState {
   sprite: string;
   rotations: Record<string, string>;
   anims: Record<string, SceneryAnim>;
+  /** THIS STATE'S OWN vent point (see SceneryVent). Per state because every
+   *  variant draws its own cap: across the 8 shipped chimneys the five
+   *  NOT_LIT_n stacks of one piece differ by up to 11 px in dy and 17 in dx,
+   *  so a plume placed from the piece's block alone comes out of the
+   *  brickwork on four stacks in five. Null when the state publishes none. */
+  vent: SceneryVent | null;
 }
 
 export interface SceneryPiece {
@@ -248,6 +254,16 @@ export interface SceneryPiece {
    *  Null when the manifest carries none — the game then derives one from the
    *  pixels (scenerylights.ts). The maintainer tunes this table from the wiki. */
   light: SceneryLight | null;
+  /** `fixture` — WHAT the piece is, for a consumer attaching behaviour
+   *  ("chimney" today). Published per piece from its group's default, so a
+   *  piece written before the field existed carries none: 4 of the 8 shipped
+   *  chimneys have it. NEVER the discriminator for an effect — `vent` is (a
+   *  hole is what a plume needs, and every chimney publishes one). */
+  fixture: string | null;
+  /** THE PUBLISHED VENT BLOCK (`scenery.json` `vent`, scenery 2026-09-13) —
+   *  the ANCHOR STATE's copy, kept at the root. Null when the manifest carries
+   *  none; only the `chimneys` group publishes one today. */
+  vent: SceneryVent | null;
 }
 
 const str = (v: unknown): string => (typeof v === "string" ? v : "");
@@ -338,6 +354,83 @@ function parseLightLevel(o: any, fallback?: SceneryLightLevel): SceneryLightLeve
   return { strength, color, radius };
 }
 
+/** WHERE A PIECE VENTS — the opening a plume of smoke leaves from, published
+ *  per piece by the scenery domain (2026-09-13, the chimneys) as an offset in
+ *  ART PIXELS from the piece's drawn anchor, with a per-rotation table because
+ *  a stack's pot is not centred when you see it from the side.
+ *
+ *  Ambient asked for this rather than deriving it: a plume from the middle of
+ *  a chimney's box comes out of the brickwork, and the moths already paid for
+ *  guessing an anchor twice (`hx`/`hy` exists for the same reason). `conf`
+ *  says how the scenery domain found it — "opening" means the real hole was
+ *  measured. */
+export interface SceneryVent {
+  dx: number;
+  dy: number;
+  conf: string;
+  rotations: Record<string, { dx: number; dy: number; conf: string }>;
+}
+
+function parseVentPoint(o: any): { dx: number; dy: number; conf: string } | null {
+  if (!o || typeof o !== "object") return null;
+  if (typeof o.dx !== "number" || typeof o.dy !== "number") return null;
+  if (!Number.isFinite(o.dx) || !Number.isFinite(o.dy)) return null;
+  return { dx: o.dx, dy: o.dy, conf: str(o.conf) };
+}
+
+/** The manifest's `vent` block, sanitised; null when absent or unusable. */
+export function parseVent(json: any): SceneryVent | null {
+  const top = parseVentPoint(json);
+  if (!top) return null;
+  const rotations: Record<string, { dx: number; dy: number; conf: string }> = {};
+  if (json.rotations && typeof json.rotations === "object" && !Array.isArray(json.rotations)) {
+    for (const [k, v] of Object.entries(json.rotations as Record<string, any>)) {
+      if (k === "__proto__") continue;
+      const pt = parseVentPoint(v);
+      if (pt) rotations[k] = pt;
+    }
+  }
+  return { ...top, rotations };
+}
+
+/** THE VENT FOR WHAT IS ACTUALLY DRAWN: this state's block if it publishes
+ *  one, else the piece's anchor copy, and inside it this facing's entry if
+ *  there is one. Both fallbacks matter — a state's cap is its own (the five
+ *  NOT_LIT stacks of one chimney differ by up to 11 px), and SE/SW are real
+ *  three-quarter views whose hole is not where the south view puts it. Still
+ *  in FRAME PIXELS FROM THE CANVAS CENTRE: the flip belongs to the draw
+ *  transform, and applying it here as well would cancel it (ventPoint). */
+export function ventFor(
+  piece: SceneryPiece,
+  state: SceneryState,
+  dir?: string,
+): { dx: number; dy: number; conf: string } | null {
+  const vent = state.vent ?? piece.vent;
+  if (!vent) return null;
+  const faced = facedDir(state, dir);
+  return vent.rotations[faced] || { dx: vent.dx, dy: vent.dy, conf: vent.conf };
+}
+
+/** ...and where that lands on screen, under the still's OWN transform.
+ *
+ *  THE MIRROR IS ABOUT THE CROP'S CENTRE, not the canvas centre — fitSprite's
+ *  own rule, and `frameRect` maps a whole canvas through exactly this. The
+ *  scenery hitbox's inline arithmetic takes the canvas centre instead, which is
+ *  the same point only while the alpha bbox is horizontally centred; a vent is
+ *  one pixel of one hole, so it takes the exact transform. */
+export function ventPoint(
+  pt: { dx: number; dy: number },
+  fit: SceneryFit,
+  canvas: { w: number; h: number },
+): { x: number; y: number } {
+  const cx = canvas.w / 2 + pt.dx;
+  const cy = canvas.h / 2 + pt.dy;
+  return {
+    x: fit.flipX ? fit.x + fit.w - (cx - fit.sx) * fit.kx : fit.x + (cx - fit.sx) * fit.kx,
+    y: fit.y + (cy - fit.sy) * fit.ky,
+  };
+}
+
 /** The manifest's `light` block, sanitised; null when absent or unusable. */
 export function parseLight(json: any): SceneryLight | null {
   const top = parseLightLevel(json);
@@ -410,6 +503,7 @@ export function parsePiece(
       sprite: ss,
       rotations: parseRotations(s.rotations),
       anims: parseAnims(s.animations, `${id}#${key}`, warn),
+      vent: parseVent(s.vent),
     };
   }
 
@@ -421,7 +515,7 @@ export function parsePiece(
   // publishes none (2 of 712) — so every draw path goes through one shape.
   const base = baseState ?? "";
   if (!baseState)
-    states[base] = { key: base, sprite, rotations: pieceRot, anims: legacy };
+    states[base] = { key: base, sprite, rotations: pieceRot, anims: legacy, vent: parseVent(json.vent) };
   else if (!Object.keys(states[baseState].rotations).length && Object.keys(pieceRot).length)
     states[baseState] = { ...states[baseState], rotations: pieceRot };
 
@@ -440,6 +534,8 @@ export function parsePiece(
     baseState: base,
     lightsOn: states.LIGHTS_ON ? "LIGHTS_ON" : null,
     light: parseLight(json.light),
+    fixture: str(json.fixture) || null,
+    vent: parseVent(json.vent),
   };
 }
 
@@ -481,6 +577,14 @@ export function stateFor(piece: SceneryPiece, lit?: boolean, override?: string |
  *  does not publish still draws, rather than resolving to a missing file. */
 export function facedSprite(state: SceneryState, dir?: string): string {
   return (dir ? state.rotations[dir] : "") || state.rotations.south || state.sprite;
+}
+
+/** WHICH FACING `facedSprite` actually chose. A `dir` the state has no
+ *  rotation for draws the SOUTH still, so a point MEASURED per facing (a vent)
+ *  must be read under this key and not under the asked-for one — otherwise the
+ *  mark sits where the hole is on art that is not on screen. */
+export function facedDir(state: SceneryState, dir?: string): string {
+  return dir && state.rotations[dir] ? dir : "south";
 }
 
 /** The south still. Kept for callers that mean SOUTH specifically. */
@@ -588,6 +692,29 @@ export function fitSprite(
    * proportions relative to the piece. Omitted, this is the old behaviour
    * exactly, which is what every base-sprite placement already wants. */
   scaleH?: number,
+  /* AND THE ANCHOR IS THE STATE'S SOUTH STILL'S, NOT THE DRAWN FRAME'S — the
+   * rotations of a piece share ONE canvas (measured: 0 of the library's 3,001
+   * rotations differs in canvas size from its own south still), and that canvas
+   * is the only frame in which the object stands still. Its SILHOUETTE does
+   * not: a turned view shows the front of the base, so the alpha bbox reaches
+   * further down the same canvas — hearth_901's LIT_1 has its foot at y 112
+   * facing south and at y 125 facing south-west. Pinning the drawn frame's own
+   * foot to the placement point therefore lifts the turned art 13 screen px
+   * (half a cell of iso ground) UP-SCREEN, out of the hitbox that the wiki
+   * draws on the same canvas and the map agent places against the wall.
+   *
+   * The maintainer, seeing that footprint and that art side by side
+   * (2026-09-14): "It's important to not move the hitbox to the scenery. The
+   * hitbox looks to be correctly placed against the wall already. To me it
+   * looks like it's the scenery that wasn't drawn inside the already correctly
+   * placed hitbox." So the box is the fixed point and the art moves into it.
+   *
+   * Pass the SOUTH still's alpha bbox (the frame the state's hitbox was drawn
+   * on) and every facing is pasted through one canvas alignment. Omitted — or
+   * passed for the frame actually being drawn — this is the old behaviour
+   * bit-for-bit, which is what every south placement wants and what keeps
+   * render3's paste exact. */
+  anchorBox?: BBox | null,
 ): SceneryFit {
   // A fully transparent sprite has no bbox; PIL's `crop(None)` copies the whole
   // image, so the whole canvas is the crop.
@@ -598,13 +725,20 @@ export function fitSprite(
   const k = want / (scaleH && scaleH > 0 ? scaleH : sh);
   const w = Math.max(1, rint(sw * k));
   const h = Math.max(1, rint(sh * k));
+  /* The anchor as a DELTA off the drawn crop's own bottom centre, in the scale
+   * actually applied (`w / sw`, the same numbers every other canvas→screen read
+   * uses), so the south path stays the integer arithmetic render3 pastes with.
+   * A flip mirrors the canvas about the crop's centre, so the horizontal half
+   * of the delta mirrors with it — exactly as the hitbox's own `ax` does. */
+  const adx = anchorBox ? ((anchorBox[0] + anchorBox[2]) / 2 - (l + sw / 2)) * (w / sw) : 0;
+  const ady = anchorBox ? (anchorBox[3] - b) * (h / sh) : 0;
   return {
     sx: l,
     sy: t,
     sw,
     sh,
-    x: Math.trunc(ax - w / 2),
-    y: Math.trunc(ay - h),
+    x: Math.trunc(ax - w / 2 - (flipX ? -adx : adx)),
+    y: Math.trunc(ay - h - ady),
     w,
     h,
     flipX,
@@ -705,6 +839,24 @@ export interface SceneryPlacement {
    *  roof is actually cut away (WorldScene.roofCutAwayAt) — outdoors, and
    *  inside the neighbour's still-roofed house, it stays hidden as before. */
   roofed?: boolean;
+  /** STANDING ON A DECK, NOT UNDER IT — a `z` piece whose feet reach the deck's
+   *  own top at its cell: maps2's chimney on a house roof (`spec/WORLD3.md`
+   *  "scenery ON a roof").
+   *
+   *  The cell is a roof cell, so `roofedCells` holds it and the piece would be
+   *  flagged `roofed` — indoor furniture, drawn ONLY while that roof is cut
+   *  away, i.e. invisible from the street and visible from inside the room.
+   *  That is backwards for anything standing on top, so `roofed` is withheld
+   *  here and this flag is set instead: the scene draws it like any outdoor
+   *  piece and fades it with the roof's own curve when the cut takes the roof
+   *  (WorldScene: the `sceneryAboveCutAt` test reads the FEET of an onDeck
+   *  piece, `level + z`, not its ground).
+   *
+   *  A window or a wall hanging is NOT this: their feet are below the deck's
+   *  top, so they keep exactly the behaviour they had. `wall` is also withheld
+   *  — a chimney is not hanging on a wall face, so it sorts on its own painter
+   *  line like a tree instead of at a wall column's depth. */
+  onDeck?: true;
 }
 
 export interface PlacementOptions {
@@ -715,6 +867,10 @@ export interface PlacementOptions {
    *  placement on one of these cells is FLAGGED `roofed`, not dropped — see
    *  SceneryPlacement.roofed. Omit for a world with no roof deck. */
   roofed?: Set<number>;
+  /** The deck's own walkable level at a cell, or -1 for none
+   *  (`TerrainGrid.deck`). Only a world that stands scenery ON a roof needs
+   *  it; without it nothing is `onDeck` and every placement behaves as before. */
+  deckAt?: (cx: number, cy: number) => number;
   width?: number;
   /** render3's window filter, on continuous coordinates. Defaults to the
    *  frame's own bounds, which is what render3 does. */
@@ -754,6 +910,11 @@ export function buildPlacements(
         : p.dir === "south-east" ? east
         : o.levelAt(east.cx, east.cy) > o.levelAt(south.cx, south.cy) ? east : south;
     }
+    /* ON TOP OF THE DECK, or under it — see SceneryPlacement.onDeck. The feet
+     * of a `z` piece are at `level + z`; the deck's top at this cell is what
+     * decides which side of it they are on. */
+    const deckTop = z === undefined ? -1 : (o.deckAt?.(cx, cy) ?? -1);
+    const onDeck = z !== undefined && deckTop >= 0 && level + z >= deckTop - 1e-9;
     return {
       i,
       piece: p.piece,
@@ -763,11 +924,13 @@ export function buildPlacements(
       lit: !!p.lit,
       ...(p.dir ? { dir: p.dir } : {}),
       ...(p.state ? { state: p.state } : {}),
-      ...(o.roofed?.has(cy * width + cx) ? { roofed: true as const } : {}),
+      ...(!onDeck && o.roofed?.has(cy * width + cx) ? { roofed: true as const } : {}),
+      ...(onDeck ? { onDeck: true as const } : {}),
       cx,
       cy,
       level,
-      ...(z !== undefined && wall ? { z, wall } : {}),
+      ...(z !== undefined ? { z } : {}),
+      ...(z !== undefined && wall && !onDeck ? { wall } : {}),
       ax: anchorX(o.frame, p.x, p.y),
       // Lifted `z` storeys up its wall — render3's column_y(x, y, level + z).
       ay: anchorY(o.frame, p.x, p.y, level + (z ?? 0)),
@@ -789,6 +952,80 @@ export function distinctPieces(ps: readonly SceneryPlacement[]): string[] {
       out.push(p.piece);
     }
   return out;
+}
+
+/* -- what burns under a vent ------------------------------------------------ */
+
+/** HOW CLOSE THE FIRE IS TO THE CHIMNEY OVER IT, in cells. The dressing pass
+ *  drops the pair at ONE point: all 8 of the_game's vent placements sit at
+ *  distance 0.00 from a flame piece — the placement immediately before them —
+ *  and the next nearest flame to any of them is 1.32 cells away. Half a cell is
+ *  far more than any nudge a dressing pass has applied (the largest measured is
+ *  0.01) and well clear of the nearest wrong answer. */
+export const HEARTH_CELLS = 0.5;
+
+/** A fire on the map: its placement, the state it actually DRAWS, and whether
+ *  that state is a LIT one. */
+export interface FirePlace {
+  p: SceneryPlacement;
+  state: string;
+  lit: boolean;
+}
+
+/** EVERY FIRE ON THE MAP, burning or cold — the flame pieces, each resolved to
+ *  the state its placement draws.
+ *
+ *  `light.flame` is the discriminator, never a name or a colour and never the
+ *  `kind` path (the booleans exist so no consumer parses it): brazier_001 is a
+ *  bowl of teal crystals and torch_post_004's fire is blue. 142 of 712 pieces
+ *  are flame.
+ *
+ *  `lit` is read off the RESOLVED state and not off the placement's `lit` flag,
+ *  because they disagree in both directions: the_game has LIT_* placements
+ *  carrying no flag, and a flag naming a state the piece does not publish draws
+ *  unlit art (`stateFor`). The art is the truth — a cold hearth must never read
+ *  as burning because the doc said `lit`.
+ *
+ *  A piece whose manifest has not landed is simply absent; the caller re-derives
+ *  when `SceneryPieces.stats.loaded` moves, which is 205 times a session. */
+export function firePlaces(
+  places: readonly SceneryPlacement[],
+  pieceOf: (id: string) => SceneryPiece | null | undefined,
+): FirePlace[] {
+  const out: FirePlace[] = [];
+  for (const p of places) {
+    const piece = pieceOf(p.piece);
+    if (!piece || !piece.light?.flame) continue;
+    const key = stateFor(piece, p.lit, p.state).key;
+    out.push({ p, state: key, lit: key.startsWith("LIT") });
+  }
+  return out;
+}
+
+/** The fire a vent at (x, y) vents — the nearest flame placement within
+ *  `HEARTH_CELLS`, or null when the chimney stands over nothing at all.
+ *
+ *  COLD FIRES COME BACK TOO. "There is a hearth here and it is out" and "there
+ *  is no hearth here" are different answers and a probe must be able to tell
+ *  them apart; a consumer that only wants smoke reads `.lit`. */
+export function fireUnder(
+  fires: readonly FirePlace[],
+  x: number,
+  y: number,
+  radius = HEARTH_CELLS,
+): FirePlace | null {
+  const r2 = radius * radius;
+  let best: FirePlace | null = null;
+  let bestD = Infinity;
+  for (const f of fires) {
+    const dx = f.p.x - x;
+    const dy = f.p.y - y;
+    const d = dx * dx + dy * dy;
+    if (d > r2 || d >= bestD) continue;
+    bestD = d;
+    best = f;
+  }
+  return best;
 }
 
 /* -- the spatial index ------------------------------------------------------ */
@@ -942,6 +1179,84 @@ export function artKey(spritePath: string): string {
   return "s3:" + spritePath;
 }
 
+/* -- the packed layer (scenery/pipeline/pack.py) ----------------------------- */
+
+/** ONE RAW ART PATH'S PACKED TWIN: the same pixels cut to the box of its STATE
+ *  (the still, its rotations and every frame of its clips share one box, so a
+ *  frame swap finds the still's rectangle inside every texture it lands on),
+ *  under a content-hashed name beside the piece. `path` is the packed file's
+ *  domain-relative art path, `ox/oy` where the cut sits on the source canvas
+ *  (`srcW` x `srcH`), `w/h` the cut. Everything the game measures — the bbox,
+ *  the hitbox from the frame centre, `light_frames`, the emissive centroid —
+ *  stays in SOURCE-CANVAS pixels: the packed texture is put back on its canvas
+ *  to be measured (`unpackPixels`) and a canvas rectangle is registered on it
+ *  through `packedCut`. No geometry changes, only the texels that exist. */
+export interface SceneryPackRec {
+  path: string;
+  ox: number;
+  oy: number;
+  w: number;
+  h: number;
+  srcW: number;
+  srcH: number;
+}
+
+export const SCENERY_PACK_SCHEMA = "scenery-packed@1";
+
+export function packIndexPath(pieceId: string): string {
+  return `scenery/${pieceId}/packed/index.json`;
+}
+
+export function packIndexUrl(pieceId: string, route?: UrlRoute): string {
+  return routeUrl(packIndexPath(pieceId), route);
+}
+
+/** The index as pack.py writes it — `files[rawPath] = {file, ox, oy, w, h,
+ *  srcW, srcH, ...}` — validated per record (a record the cut does not fit is
+ *  dropped, never a texture registered outside its own bytes). Null for
+ *  anything that is not this schema. */
+export function parsePackIndex(json: unknown, pieceId: string): Record<string, SceneryPackRec> | null {
+  const doc = json as { schema?: unknown; files?: unknown } | null;
+  if (!doc || typeof doc !== "object" || doc.schema !== SCENERY_PACK_SCHEMA) return null;
+  if (!doc.files || typeof doc.files !== "object" || Array.isArray(doc.files)) return null;
+  const out: Record<string, SceneryPackRec> = {};
+  const int = (v: unknown): v is number => typeof v === "number" && Number.isInteger(v);
+  for (const [raw, r] of Object.entries(doc.files as Record<string, any>)) {
+    if (raw === "__proto__" || !r || typeof r !== "object") continue;
+    const file = str(r.file);
+    if (!file || file.includes("..") || file.startsWith("/")) continue;
+    if (!int(r.ox) || !int(r.oy) || !int(r.w) || !int(r.h) || !int(r.srcW) || !int(r.srcH)) continue;
+    if (r.ox < 0 || r.oy < 0 || r.w < 1 || r.h < 1 || r.ox + r.w > r.srcW || r.oy + r.h > r.srcH) continue;
+    out[raw.replace(/^\/+/, "")] = { path: `${pieceId}/packed/${file}`, ox: r.ox, oy: r.oy, w: r.w, h: r.h, srcW: r.srcW, srcH: r.srcH };
+  }
+  return out;
+}
+
+/** The packed texture's pixels put back on the source canvas, so a measurement
+ *  made on the raw file (alphaBBox, the emissive centroid, a lit-against-unlit
+ *  comparison of two states cut to different boxes) reads the same numbers
+ *  from the packed one. Transparent black outside the cut — what the raw
+ *  canvas holds there (exact=True keeps the RGB under alpha 0 in the FILE, and
+ *  a browser's premultiplied read-back returns 0,0,0,0 for it anyway). */
+export function unpackPixels(px: Pixels, rec: SceneryPackRec): Pixels {
+  if (px.w === rec.srcW && px.h === rec.srcH) return px;
+  const data = new Uint8ClampedArray(rec.srcW * rec.srcH * 4);
+  const w = Math.max(0, Math.min(px.w, rec.srcW - rec.ox));
+  const h = Math.max(0, Math.min(px.h, rec.srcH - rec.oy));
+  for (let y = 0; y < h; y++) data.set(px.data.subarray(y * px.w * 4, (y * px.w + w) * 4), ((rec.oy + y) * rec.srcW + rec.ox) * 4);
+  return { w: rec.srcW, h: rec.srcH, data };
+}
+
+/** A source-canvas rectangle in the packed texture's own texels. The rectangle
+ *  keeps its size — the image it fills was sized from it (`fitSprite`), and a
+ *  shrunk cut would stretch the art — so a rectangle the cut does not contain
+ *  comes back partly outside the texture (the sampler clamps to the transparent
+ *  margin), which the pack step's one-box-per-state rule makes impossible for
+ *  a still or a frame of the same state. */
+export function packedCut(rec: SceneryPackRec, sx: number, sy: number, sw: number, sh: number): { x: number; y: number; w: number; h: number } {
+  return { x: sx - rec.ox, y: sy - rec.oy, w: sw, h: sh };
+}
+
 /** One art file to load and the key it lands under — same shape as
  *  `Tiles3Load`, so one loader serves both. */
 export interface SceneryLoad {
@@ -988,13 +1303,18 @@ export function sceneryLoads(
  *  render pass never awaits: it draws what is resident and picks the rest up on
  *  a later frame. */
 export class SceneryPieces {
-  readonly stats = { requested: 0, loaded: 0, failed: 0 };
+  readonly stats = { requested: 0, loaded: 0, failed: 0, packed: 0 };
   private cache = new Map<string, SceneryPiece | null>();
   private inflight = new Map<string, Promise<void>>();
+  /** Raw art path -> its packed twin, from every `packed/index.json` that has
+   *  landed. Filled BEFORE `onLanded`, so the art a manifest names is asked
+   *  for by its packed URL from the first rebuild that sees it. */
+  private packs = new Map<string, SceneryPackRec>();
   private fetchJson: (url: string) => Promise<any>;
   private route?: UrlRoute;
   private warn: (m: string) => void;
   private onLanded?: () => void;
+  private packOn: boolean;
 
   constructor(o: {
     fetchJson: (url: string) => Promise<any>;
@@ -1005,10 +1325,15 @@ export class SceneryPieces {
      *  the manifest names; without it the art waited for the next
      *  camera-driven rebuild. */
     onLanded?: () => void;
+    /** Also fetch each piece's `packed/index.json` (default on; the
+     *  `?scnpack=0` bisect turns it off). A piece without one — not packed
+     *  yet, or a 404 — simply loads its raw files. */
+    pack?: boolean;
   }) {
     this.fetchJson = o.fetchJson;
     this.route = o.route;
     this.onLanded = o.onLanded;
+    this.packOn = o.pack !== false;
     // ONCE PER PIECE, not once per placement: a broken manifest on a piece
     // placed 26 times must not put 26 lines in the console every frame.
     const warned = new Set<string>();
@@ -1034,12 +1359,21 @@ export class SceneryPieces {
     return this.inflight.size === 0;
   }
 
+  /** The packed twin of a raw art path, once its piece's index has landed. */
+  packOf(spritePath: string): SceneryPackRec | undefined {
+    return this.packs.get(spritePath.replace(/^\/+/, ""));
+  }
+
+  get packedFiles(): number {
+    return this.packs.size;
+  }
+
   request(id: string): Promise<void> {
     const done = this.inflight.get(id);
     if (done) return done;
     if (this.cache.has(id)) return Promise.resolve();
     this.stats.requested++;
-    const p = this.fetchJson(manifestUrl(id, this.route))
+    const manifest = this.fetchJson(manifestUrl(id, this.route))
       .then((json) => {
         const piece = parsePiece(id, json, this.warn);
         this.cache.set(id, piece);
@@ -1050,7 +1384,22 @@ export class SceneryPieces {
         this.cache.set(id, null);
         this.stats.failed++;
         this.warn(`scenery3: ${id} manifest failed to load (${e})`);
-      })
+      });
+    // The packed index rides beside the manifest — one more request in the
+    // same round trip, never a second one after it — and a miss is silent:
+    // an unpacked piece is a normal piece.
+    const packed = !this.packOn
+      ? Promise.resolve()
+      : this.fetchJson(packIndexUrl(id, this.route))
+          .then((json) => {
+            const idx = parsePackIndex(json, id);
+            if (!idx) return;
+            for (const [raw, rec] of Object.entries(idx)) this.packs.set(raw, rec);
+            this.stats.packed++;
+          })
+          .catch(() => {});
+    const p = Promise.all([manifest, packed])
+      .then(() => undefined)
       .finally(() => {
         this.inflight.delete(id);
         this.onLanded?.();

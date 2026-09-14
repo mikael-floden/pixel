@@ -92,6 +92,14 @@ export interface AmbientFeature {
    * (fireflies by day, pollen at night), so "select fireflies" actually
    * shows fireflies. The player's own time-of-day still grades the lighting. */
   setForced?(on: boolean): void;
+  /** THIS FEATURE LIVES UNDER A ROOF (drips/, 2026-09-12). Every other feature
+   * is outdoor by charter and multiplies by `ctx.outdoor`; an indoor one
+   * multiplies by `1 - ctx.outdoor` — the same eased crossing, mirrored, so it
+   * fades IN as the roof is cut away and OUT on the way back into the open.
+   * The indoor gate (`scripts/verify-indoor-ambient.mjs`) reads this through
+   * `__mlAmbient.effects()` and asserts the mirror: alpha 0 OUTDOORS, drawing
+   * allowed indoors. Absent = an outdoor effect, as before. */
+  indoor?: boolean;
   /** Effects this one CANNOT run alongside (maintainer 2026-07-19: toggle each
    * effect on/off independently, but an effect can't be enabled while an
    * incompatible one is active). Default = compatible with everything (the

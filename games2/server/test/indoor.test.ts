@@ -15,6 +15,7 @@ import {
   buildTerrainGrid,
   parseWorld,
   findIndoorSpace,
+  indoorCutLevel,
   roofAbove,
   canEnterElev,
   CELL_WU,
@@ -268,13 +269,13 @@ test("the flood fill is bounded by the visited cap", () => {
 // (1) the wall-dominance bar sits in the MEASURED gap between bridges and rooms
 // ---------------------------------------------------------------------------
 
-test("the wall bar sits mid-gap: 0.37 over the worst bridge, 0.23 under the lowest room", () => {
+test("the wall bar sits mid-gap: 0.35 over the worst bridge, 0.23 under the lowest room", () => {
   assert.equal(INDOOR_WALL_RATIO, 0.7, "the bar itself");
   // The two ends of the measured gap, from the whole-world sweep at the bottom
   // of this file. If either of these ever moves, re-centre the constant.
-  const HIGHEST_BRIDGE = 1 / 3; // the_game's river crossing over the dry bed
+  const HIGHEST_BRIDGE = 0.35; // the_game's river crossing over the dry bed
   const LOWEST_ROOM = 13 / 14; // the_game's spawn house
-  assert.ok(INDOOR_WALL_RATIO - HIGHEST_BRIDGE >= 0.36, "clear of every shipped bridge");
+  assert.ok(INDOOR_WALL_RATIO - HIGHEST_BRIDGE >= 0.34, "clear of every shipped bridge");
   assert.ok(LOWEST_ROOM - INDOOR_WALL_RATIO >= 0.22, "under every shipped room");
 
   // The pier the old 0.5 bar was pinned to: it is now 0.20 clear, not one
@@ -494,6 +495,56 @@ test("wallLeft/wallRight hold the FAR walls only; the near walls are fringe minu
   // This fixture happens to have NO corner in both sets, which is exactly why
   // the old subtraction identity survived here — see the cave test below.
   assert.equal([...s.wallLeft].filter((i) => s.wallRight.has(i)).length, 0);
+});
+
+// ============================================================================
+// A CAVE'S FLOOR AND ITS LID SHARE ONE CELL INDEX
+// ============================================================================
+//
+// This is not a fact about this module — `findIndoorSpace` gets it right — it
+// is the fact every CONSUMER that memoises a verdict per cell has to respect.
+// WorldScene's `roomCellMemo` did not: one fill from the mud cave's floor
+// stamped all 142 of its cells "room" for the rest of the session, and from
+// then on every monster that wandered onto the LID — open sky, level 12, the
+// same mud the player is standing on — read as sealed in a room he was not in
+// and was parked invisible (maintainer 2026-09-11, three photographs a second
+// apart: "monsters just disappears"). The renderer now asks `roofAbove` before
+// it reads the memo; this gate is the geometry that makes that necessary.
+test("the_game mud cave: every cell of the room is OPEN SKY from its own lid", () => {
+  const world = loadWorld("the_game");
+  if (!world) return test.skip("maps2/worlds3/the_game missing");
+  const grid = gridOf(world);
+  // The cave under the mud, which is what he was standing on: seven touching
+  // level-12 slabs (thickness 0..6) over a floor cut down to level 0-6.
+  const lids = world.decks!.filter((d) => d.kind === "cave" && d.mat === "dark_mud");
+  assert.equal(lids.length, 7, "the mud cave is seven slabs (measured)");
+  const seed = lids
+    .flatMap((d) => d.cells)
+    .find((c) => {
+      const i = at(grid, c.col, c.row);
+      return grid.deck[i] >= 0 && grid.level[i] < grid.deckBot[i] - 1;
+    })!;
+  const s = findIndoorSpace(grid, seed.col, seed.row, grid.level[at(grid, seed.col, seed.row)])!;
+  assert.ok(s, "the mud cave is a space");
+  assert.equal(s.indoor, true, "…and it passes the room rules");
+  assert.equal(s.roof.size, 142, "the whole connected mud cave (measured)");
+
+  // EVERY one of those cells carries a lid you can stand ON, and from up there
+  // nothing is overhead: the same cell is indoors from below and outdoors from
+  // above. A consumer keyed on the cell alone cannot tell those two apart.
+  let standable = 0;
+  for (const j of s.roof) {
+    const c = j % grid.width;
+    const r = (j - c) / grid.width;
+    const top = grid.deck[j];
+    assert.ok(top >= 0, `(${c},${r}) is in the room but carries no lid`);
+    standable++;
+    assert.equal(roofAbove(grid, c, r, top), null, `(${c},${r}) standing ON the lid is not open sky`);
+    assert.equal(findIndoorSpace(grid, c, r, top), null, `(${c},${r}) reads as a room from on top of its own lid`);
+    // …and from the floor it IS the room, or the pair above proves nothing.
+    assert.ok(roofAbove(grid, c, r, grid.level[j]) !== null, `(${c},${r}) has no roof from its own floor`);
+  }
+  assert.equal(standable, 142, "every cell of the room is walkable from above");
 });
 
 test("the_game cave: the two wall sets overlap only at INSIDE corners and free-standing pillars", () => {
@@ -823,20 +874,25 @@ test("every shipped deck: no bridge cell is indoors, every roof/cave space is", 
   // is dropped for sitting at base level and there is nothing to be under).
   const counts = Object.fromEntries([...seen].map(([k, v]) => [k, v.cells]));
   for (const [key, want] of Object.entries({
-    "the_game/bridge": 28, // the two river crossings; the mountain spans sit at base level
+    // 35, and it has moved twice: maps2's "a span over a gap carries at least
+    // one full course" (2026-09-10) thickened the crossings' decks, and the
+    // fill's relative step (one room per cave) changed which cells resolve a
+    // space at all. It was 28.
+    "the_game/bridge": 35, // the two river crossings; the mountain spans sit at base level
     "the_game/roof": 430, // eleven houses
-    "the_game/cave": 598, // the one connected cave under twelve slabs
+    "the_game/cave": 740, // the massif's cave under twelve slabs (598) + the dungeon under the field (142)
   })) {
     assert.equal(counts[key], want, `${key}: cells swept (measured)`);
   }
   // And the measured gap INDOOR_WALL_RATIO sits in the middle of.
   const bridgeMax = Math.max(...[...seen].filter(([k]) => k.endsWith("/bridge")).map(([, v]) => v.best));
   const roomMin = Math.min(...[...seen].filter(([k]) => !k.endsWith("/bridge")).map(([, v]) => v.worst));
-  // The worst shipped bridge: the river crossing over the dry bed, 6 of 18.
-  assert.ok(Math.abs(bridgeMax - 1 / 3) < 1e-9, "the worst shipped bridge (measured)");
+  // The worst shipped bridge: the river crossing over the dry bed, 7 of 20
+  // since maps2 thickened the spans (it was 6 of 18).
+  assert.ok(Math.abs(bridgeMax - 0.35) < 1e-9, "the worst shipped bridge (measured)");
   assert.ok(Math.abs(roomMin - 13 / 14) < 1e-9, "the best-open shipped room (measured)");
   assert.ok(bridgeMax < INDOOR_WALL_RATIO && INDOOR_WALL_RATIO < roomMin, "the bar is inside the gap");
-  assert.ok(INDOOR_WALL_RATIO - bridgeMax > 0.36 && roomMin - INDOOR_WALL_RATIO > 0.22, "…with margin on both sides");
+  assert.ok(INDOOR_WALL_RATIO - bridgeMax > 0.34 && roomMin - INDOOR_WALL_RATIO > 0.22, "…with margin on both sides");
 });
 
 // ---------------------------------------------------------------------------
@@ -1161,3 +1217,77 @@ test("shell: an interior partition's T-junction is drawn (the multi-room case)",
     assert.ok(s.roof.has(j) || s.shell.has(j) || s.entrances.has(j), `north wall (${c},0) is drawn`);
   }
 });
+
+/* THE CUT AND THE STOREY TRAP (`indoorCutLevel`, 2026-09-10).
+ *
+ * A space's floor is the LOWEST level under its roof so the walls hold still
+ * as you step around a room's ledges. A space that spans STOREYS breaks that:
+ * the_game's dungeon puts three floors under ONE lid, joined by stairs that
+ * step a level at a time, and the room fill caps how far it may climb but not
+ * how far it may DESCEND — so from the top floor the minimum is the BOTTOM
+ * floor's, and the cut erased the storey the player was standing on, and the
+ * player with it. */
+test("the indoor cut holds still over a ledge and never erases the floor underfoot", () => {
+  // A flat room: the dial measures UP from the floor.
+  assert.equal(indoorCutLevel(0, 0, 1, 12), 1);
+  assert.equal(indoorCutLevel(0, 0, 3, 12), 3);
+  // ...clamped by the ceiling — a wall taller than its room would reseal it.
+  assert.equal(indoorCutLevel(0, 0, 9, 6), 6);
+  // A LEDGE up to the dial's height does not move the cut: step on and off a
+  // 1-level shelf with the dial at 1 and the walls hold still. This is what
+  // the space minimum is for, and it still wins.
+  assert.equal(indoorCutLevel(0, 1, 1, 12), 1);
+  assert.equal(indoorCutLevel(0, 0, 1, 12), 1);
+  assert.equal(indoorCutLevel(0, 2, 3, 12), 3);
+  // A STOREY the cut would otherwise erase pushes it up to the floor you are
+  // standing on — never below it, whatever the space minimum says.
+  assert.equal(indoorCutLevel(0, 6, 1, 12), 6);
+  assert.equal(indoorCutLevel(0, 3, 1, 12), 3);
+  // ...and the ceiling still clamps that.
+  assert.equal(indoorCutLevel(0, 9, 1, 6), 6);
+  assert.ok(indoorCutLevel(0, 6, 1, 12) >= 6, "the floor underfoot is drawn");
+});
+
+test("the_game dungeon: one lid, three storeys — the SAME room from every floor", (t) => {
+  const world = loadWorld("the_game");
+  if (!world) return t.skip("maps2/worlds3/the_game missing");
+  const grid = gridOf(world);
+  // The entrance floor and the bottom floor, from his own screenshots. Their
+  // levels are what makes this a storey trap: one lid over three floors, joined
+  // by stair strips that step a level at a time.
+  const top = { col: 212, row: 277 };
+  const bottom = { col: 224, row: 288 };
+  const lvl = (c: { col: number; row: number }) => grid.level[c.row * grid.width + c.col];
+  assert.equal(lvl(top), 6, "the entrance floor");
+  assert.equal(lvl(bottom), 0, "the bottom floor");
+
+  // ONE ROOM, THE SAME SET OF CELLS, FROM EITHER FLOOR — "I want to be able to
+  // see all rooms in the cave". Anchored to the player the fill took 176 cells
+  // from the bottom and 352 from the top, so the same cave was a different room
+  // from each of its floors.
+  const a = findIndoorSpace(grid, top.col, top.row, lvl(top));
+  const b = findIndoorSpace(grid, bottom.col, bottom.row, lvl(bottom));
+  assert.ok(a && b, "both floors are indoors");
+  assert.equal(a!.roof.size, b!.roof.size, "same room, same size");
+  for (const i of a!.roof) assert.ok(b!.roof.has(i), `cell ${i} is in the room from both floors`);
+  assert.ok(a!.indoor && b!.indoor, "and it is a room from both");
+
+  // ...and it really spans the three storeys, or the equality above is vacuous.
+  const levels = new Set<number>();
+  for (const i of a!.roof) levels.add(grid.level[i]);
+  for (const want of [0, 3, 6]) assert.ok(levels.has(want), `level ${want} is in the room`);
+
+  // The cut then keeps the storey underfoot drawn from either end. Per column
+  // that is `localFloor + wall` (WorldScene.computeIndoorCuts); the scalar
+  // below is the kill-switch reading and must hold too.
+  let floor = Infinity;
+  for (const i of a!.roof) if (grid.level[i] < floor) floor = grid.level[i];
+  const ceil = grid.deckBot[top.row * grid.width + top.col];
+  for (const wall of [1, 2, 3]) {
+    const cut = indoorCutLevel(floor, lvl(top), wall, ceil);
+    assert.ok(cut >= lvl(top), `wall ${wall}: the storey underfoot is drawn (cut ${cut})`);
+  }
+});
+
+
+

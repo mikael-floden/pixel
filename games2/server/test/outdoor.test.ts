@@ -18,11 +18,11 @@ import { OUTDOOR_FADE_MS, OutdoorGain, readIndoor } from "../../ambient/runtime/
 // WorldScene's INDOOR_TAU (seconds) and the roll it drives:
 //   game   k = 1 - exp(-dt_s / TAU)
 //   here   k = 1 - exp(-(dt_ms / fadeMs) * 3)      =>  fadeMs = 3 * TAU * 1000
-const INDOOR_TAU_S = 0.35;
+const INDOOR_TAU_S = 0.45; // WorldScene, 2026-09-10 (was 0.35)
 
 test("ships as a FADE that matches the game's own crossing, frame for frame", () => {
-  // Rounded: 3 * 0.35 * 1000 is 1049.9999999999998 in binary floating point,
-  // and the constant is written as the integer a human would read.
+  // Rounded: 3 * TAU * 1000 lands a hair off an integer in binary floating
+  // point, and the constant is written as the integer a human would read.
   assert.equal(OUTDOOR_FADE_MS, Math.round(3 * INDOOR_TAU_S * 1000),
     "the ambient fade must be the game's INDOOR_TAU roll in this class's units");
   // Same flip, same dt, same curve — asserted against the game's formula, so a

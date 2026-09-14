@@ -24,6 +24,21 @@ belief, not a fact — write it as one.*
 a path going elsewhere, a hill that is no longer there. Not a disaster; weather
 on a longer clock.
 
+**the meadow** — the grass everyone wakes on, with the fire and the little
+stone house on it. A village green now: chess tables, streetlamps, a market
+stall, a second house across the grass. The fires are a handful; the meadow is
+not empty, and prose should not pretend it is.
+
+**the mountain** — the one massif, north of the meadow (up-screen in the game;
+never say so in prose — see the compass rule below). Snow and ice on top,
+black rock and lava on its ledges, the caves in it and under it. *Under the
+mountain* is where the hole is.
+
+**the mountain road** — the old road out of the meadow to the foot of the
+mountain and the cave under it. Wendell's road: the carts, the inn at the
+ford, the summer the verge came up in flowers. Named by where it goes, never by
+compass — on the island before this one it ran east, and a Turn moved it.
+
 ---
 
 ## Arrival
@@ -177,3 +192,9 @@ and let them decide.
 - **"kill", "murder", "slay"** for creatures — *release*, *crack*, *break the
   shape*
 - **"respawn", "level up", "loot"** — system words; never in prose
+- **"east", "west", "north", "south"** as directions from the meadow — the
+  compass was retired 2026-09-12 when the world was replaced and the cave
+  moved from east of the meadow to north of it (`CONSTRAINTS.md` §5). Say
+  where a thing is by what it is near: *the mountain road*, *under the
+  mountain*, *across the grass*, *the far fires*, *the near beach*. (The
+  northern lights keep their name — that is the sky, not a direction.)

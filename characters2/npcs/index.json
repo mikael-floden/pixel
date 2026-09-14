@@ -1,7 +1,7 @@
 {
   "format": "characters2-npcs@1",
-  "_comment": "Roll-up of the tag-driven NPC mirror: every PixelLab character tagged NPC, keyed by its npcs/<folder>. The tag is the ground truth \u2014 sync.py prunes untagged folders. `name` is PixelLab prompt junk; authored facts belong in characters2/metadata.json under the same folder key.",
-  "count": 191,
+  "_comment": "Roll-up of the tag-driven NPC mirror: every PixelLab character tagged NPC, keyed by its npcs/<folder>. The tag is the ground truth \u2014 sync.py prunes untagged folders, minus anything the maintainer rejected in the review (metadata.json `rejected`, applied by verdicts.py). `name` is PixelLab prompt junk; authored facts belong in characters2/metadata.json under the same folder key.",
+  "count": 190,
   "npcs": {
     "029c4198": {
       "pixellab_character_id": "029c4198-1e05-4e3c-9535-565dea9a4ef7",
@@ -1172,22 +1172,6 @@
       "sex": "Male",
       "role": "herbalist",
       "lore": "Stellan, a herbalist of Nangijala. Knows which leaf mends and which ends. Sells both, warns about one."
-    },
-    "645f1252": {
-      "pixellab_character_id": "645f1252-f89e-408d-8939-bf3eb8580625",
-      "pixellab_name": "Add light armor to t (copy 3)",
-      "animations": [
-        "custom-calm-still-idle-breathing"
-      ],
-      "states": {
-        "idle": "custom-calm-still-idle-breathing"
-      },
-      "display_name": "Thorne",
-      "species": "Human",
-      "sex": "Male",
-      "role": "armorer",
-      "lore": "Thorne, an armorer of Nangijala. Fits plate to bodies and knows exactly where every one of them is soft.",
-      "no_turn": true
     },
     "646b922c": {
       "pixellab_character_id": "646b922c-5986-43a1-b5e9-6c11c424c3b4",

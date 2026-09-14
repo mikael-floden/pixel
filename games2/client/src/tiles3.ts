@@ -70,11 +70,14 @@ export const FADE_BAND = 2;
  *  every ground-change quad spanned two levels or more, out to forty. One storey
  *  is a terrace lip or a stair: the same surface continuing, and the case the
  *  maintainer wants eased. Anything further is two surfaces you cannot walk
- *  between, and blending them put wood across a paved roof. */
+ *  between, and blending them put wood across a paved roof. A LIQUID corner
+ *  gets no tolerance at all: water lies flat, so it votes only at the cell's
+ *  own level (`boundaryAt`, 2026-09-12). */
 export const BOUNDARY_STEP = 1;
-/** A detail roughly once per 56 field cells — "once in a while", overridable per
- *  ground by live/tuning/tile_details.json (`rate`), which publishes none today. */
-export const DETAIL_FREQ = 1 / 56;
+/** A detail roughly once per 100 field cells — HIS default (2026-09-13), and
+ *  the twin of `detailrate.ts`'s DETAIL_EVERY_DEFAULT. Overridable per ground
+ *  by live/tuning/tile_details.json (`rate`), which publishes none today. */
+export const DETAIL_FREQ = 1 / 100;
 /** Set 0 is reserved, named Clean, and holds nothing but the clean member. It is
  *  never deleted — it is switched off by weight, so a ground can always draw. */
 export const CLEAN_SET_ID = 0;
@@ -262,6 +265,12 @@ export interface Regions {
  *  as many of his sets as he weighted (measured on the_game: the top set's share
  *  of grass 98.7% -> 75.1%, of snow 99.7% -> 41.3%, of grey_stone 80.5% ->
  *  41.9%). render3.py's `region_at`, to the character. */
+/** The 8-neighbourhood, up-screen first, in the fixed order a borrowed side is
+ *  searched in (deterministic: the same cell always borrows the same rock). */
+const NEIGHBOURS8: ReadonlyArray<readonly [number, number]> = [
+  [0, -1], [-1, 0], [-1, -1], [1, -1], [-1, 1], [1, 0], [0, 1], [1, 1],
+];
+
 export function regionAt(ground: string, x: number, y: number): string {
   return `${ground}@${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
 }
@@ -558,6 +567,14 @@ export interface TileArt {
 
 /* -- the data this resolver reads ------------------------------------------- */
 
+/** tiles/tops/index.json: sheets of top-only tiles, `flavour` "detail" or
+ *  "subtle", their surviving tiles and the post pass of each (index order,
+ *  matched by stem). A rejected tile leaves the index on every review pass,
+ *  so "listed and approved" is the whole rule. */
+export interface TopsDoc {
+  sheets?: { ground: string; flavour?: string; dir: string; tiles?: string[]; post_files?: string[] }[];
+}
+
 export interface Tiles3Data {
   /** live/tuning/base_tile_sets.json. LIVE — see `setBaseTileSets`. */
   baseTileSets: BaseTileSetsDoc;
@@ -606,8 +623,13 @@ export interface Tiles3Data {
    *  tile's OWN top; the base-tile-set surface is not painted over it. */
   topOverrides?: Record<string, { own_top?: boolean }>;
   /** live/tuning/tile_details.json `.rate` — a per-ground detail rate. Nothing
-   *  is published today; every ground uses DETAIL_FREQ. */
+   *  is published today; every ground uses `detailRate`, then DETAIL_FREQ. */
   detailRates?: Record<string, number>;
+  /** THE SETTINGS DIAL (detailrate.ts): one detail in every 1/rate field
+   *  cells, for every ground without a published per-ground rate. */
+  detailRate?: number;
+  /** tiles/tops/index.json — his reviewed detail library. */
+  tops?: TopsDoc;
   /** The fade set's ALIEN-PALETTE GUARD, which is a pixel test render3 runs over
    *  the tile's own top diamond (80th percentile of the per-pixel distance to
    *  the nearer of the two palette tops, rejected above 78). A pure module
@@ -654,8 +676,9 @@ export interface Tiles3Data {
    *  OWN level — another deck at that level votes its ground, base ground
    *  within a storey votes its own, everything else votes the slab's — and
    *  wears the composed tile top-face-only over its surface; its own half
-   *  is the slab's one anchored member, so the transition matches the roof
-   *  it sits in. Off (default) a slab is the single surface render3 draws. */
+   *  is the slab's own member (a roof's one anchored pick, a cave lid's
+   *  per-cell one), so the transition matches the slab it sits in. Off
+   *  (default) a slab is the single surface render3 draws. */
   deckBoundary?: boolean;
   /** Where a stale index or an unresolvable member is reported. Defaults to
    *  console.warn; the counters in `stats` are always kept. */
@@ -944,6 +967,19 @@ export interface Tiles3Cell {
   /** The surface is painted at all. False only where the maintainer set
    *  `own_top` on the cap's review key: keep the x-over-y tile's own top. */
   dressed?: boolean;
+  /** THE LID OF A TRUNCATED COLUMN. The indoor cut-away stops a column short
+   *  of its own top, and the stump it leaves wears the ROCK IT IS CUT THROUGH:
+   *  `side` is the wall material (the maintainer's `walls[]` group, else the
+   *  lowest front neighbour's ground — the same pick the face courses use) and
+   *  `cutCap` that ground's textured set plate, top face only. Set on every
+   *  raised cell with a NAMED rock (or a named neighbour's), exposed or not —
+   *  which is every cell the cut-away can truncate; the near and side walls of a cave room show
+   *  no face to the camera, so they resolve as fields, and their stumps were
+   *  drawing the mountain's own snow and ice as their lid (maintainer
+   *  2026-09-09, five photographs: "Why is the tile under me clean snow/ice?
+   *  Looks weird"). The mountain top is untouched — it is still `ground`. */
+  side?: string;
+  cutCap?: FieldArt;
   /** A WALL'S FACE ENDS ON THIS CELL: `ul` when the (x-1, y) neighbour is
    *  higher, `ur` when (x, y-1) is, `uu` when (x-1, y-1) is — each the SIDE
    *  material that wall is drawn in (the same rule the wall cell itself uses to
@@ -1501,14 +1537,27 @@ export class Tiles3 {
     return [ax, (a - ax) / view.width];
   }
 
-  /** Did he reject this member? The verdict rides the member's key, that key
-   *  plus `#top`, or the raw tile string. */
+  /** Did he reject this member — THE TILE ITSELF? The verdict rides the
+   *  member's key (a review member's pair verdict) or the raw tile string.
+   *
+   *  NEVER THE `#top` FACET. `<key>#top` is his DETAIL review — "is this top a
+   *  once-in-a-while detail" — and by the live channel's own contract a
+   *  `rejected` there means "not a detail", "it does not reject the tile"
+   *  (live/README.md, 2026-08-21). The maintainer said it again on
+   *  2026-09-12: "not a detail" and "in my set" are independent judgements, so
+   *  a tile stays in his set whatever its detail verdict, and a `tiles/tops`
+   *  member — whose ONLY verdict key is that facet — leaves a set only when he
+   *  removes it in the wiki. This probed the facet until 2026-09-12 and his
+   *  detail pass that morning silently emptied 33 of his sets (219 of 340
+   *  members dropped, none by a verdict on the tile): 29% of the_game's land
+   *  and 11 of its 16 roofs and bridges drew the clean plate, which is the flat
+   *  grey grid he photographed on the spawn house. render3's `_member_rejected`
+   *  is the mirror; the parity fixture holds the two equal. */
   memberRejected(m: BaseMember): boolean {
     if (m.kind !== "tile" || !m.tile) return false;
     const fb = this.data.feedback ?? {};
     const k = memberVerdictKey(m.tile);
-    for (const probe of [k, `${k}#top`, m.tile])
-      if (fb[strip(probe)]?.status === "rejected") return true;
+    for (const probe of [k, m.tile]) if (fb[strip(probe)]?.status === "rejected") return true;
     return false;
   }
 
@@ -1769,8 +1818,39 @@ export class Tiles3 {
         if (rel) out.push(rel);
       }
     }
+    /* AND HIS DETAIL LIBRARY (tiles/tops, 2026-09-12). 9,840 tiles were bought
+     * as details — flavour "detail", one motif centred on its own ground,
+     * generated for exactly this once-in-a-while placement — and he reviewed
+     * every one; 2,549 are approved. Until now none reached a field except as
+     * a base-set member, where the weighted pick TILED it, the one placement
+     * he says a detail must never have ("looks amazing, but not if tiled").
+     * The rule, from the tiles agent's board note: a sheet with flavour
+     * "detail", a tile whose `<dir>/<tile>#top` verdict is approved, drawn as
+     * `<dir>/post/<post file>` — the post pass, matched by stem, NEVER a
+     * constructed name. The x-over-y textured tops above stay in the pool:
+     * they are his approvals for the same purpose. Index order, so the pick's
+     * hash lands on the same tile every boot. */
+    for (const sh of this.data.tops?.sheets ?? []) {
+      if (sh.ground !== ground || sh.flavour !== "detail") continue;
+      const tiles = sh.tiles ?? [];
+      const post = sh.post_files ?? [];
+      for (let i = 0; i < tiles.length; i++) {
+        if (fb[`${sh.dir}/${tiles[i]}#top`]?.status !== "approved") continue;
+        const stem = tiles[i].replace(/\.[^.]+$/, "");
+        const file = post.find((f) => f.startsWith(`${stem}.`)) ?? post[i];
+        if (file) out.push(`${sh.dir}/post/${file}`);
+      }
+    }
     this.detailCache.set(ground, out);
     return out;
+  }
+
+  /** THE DETAILS DIAL, live: a new rate for every ground without a published
+   *  one. The picks are made per cell by whoever resolves cells (the scene's
+   *  cache, the worker), so the caller re-resolves; the pool itself does not
+   *  change. */
+  setDetailRate(rate: number): void {
+    this.data = { ...this.data, detailRate: rate };
   }
 
   /* -- slopes -------------------------------------------------------------- */
@@ -2050,8 +2130,35 @@ export class Tiles3 {
     /* Stone over its own body; water is never a wall material either. Only when
      * the maintainer has NOT named the side himself. */
     if (!override && (INDOOR_GROUNDS.includes(side) || view.isLiquid(side))) side = gr;
-
+    /* The stump's lid, whatever the cell's kind turns out to be (see
+     * Tiles3Cell.cutCap): the side's own set, picked at this cell like any
+     * ground's plate, so a cut wall reads as the same rock as its courses. */
     const exposed = frontLow < zl;
+    /* ONLY A NAMED ROCK GETS A LID. The cut-away truncates the walls of a
+     * building — a house's ring, a cave's ring — and maps2 names every one of
+     * those in `walls[]`; a faceless cell one step further in borrows the
+     * named neighbour's rock (a cave room's second ring is the mountain's
+     * snow by its own pick). Every other raised cell — the plateau, the
+     * terrace, the mountain outdoors — is never cut and gets none: the lid
+     * is one more file for the loader and the ship closure per cell, for a
+     * plate nothing ever draws. (The resolver itself does not care: 60x60 of
+     * the town resolves in 36-37 ms with the lid on every raised cell, on
+     * named cells only, or not at all — measured 2026-09-09, ten runs each.) */
+    let lidSide: string | null = override;
+    if (lidSide === null && !exposed)
+      for (const [nx, ny] of NEIGHBOURS8) {
+        const named = view.wallSideAt(x + nx, y + ny);
+        if (named !== null) {
+          lidSide = named;
+          break;
+        }
+      }
+    if (lidSide !== null) {
+      cell.side = lidSide;
+      const lid = this.plateAt(lidSide, regionAt(lidSide, x, y), x, y).art;
+      cell.cutCap = { kind: lid.kind, path: lid.path, w: lid.w, h: lid.h, topOnly: true };
+    }
+
     let dressed = true;
     if (exposed) {
       const cap = this.overTile(gr, side, x, y, zl);
@@ -2243,7 +2350,24 @@ export class Tiles3 {
     let feet: (string | null)[] | null = null;
     /* The data flag is the default so EVERY caller gets it — the streaming
      * runtime asks `boundaryAt` directly, not through `wangSurface`. */
-    if (opts?.foot ?? this.data.footBoundary) {
+    /* NOT ON WATER. The foot rule makes a corner at a higher wall vote the
+     * WALL'S SIDE material, so a water cell at a cliff foot composed
+     * water<->light_beach and drew a strip of BEACH on the sea — the pale band
+     * along every coast cliff, and the beaded chain further out where the
+     * lattice caught a corner on its own (maintainer 2026-09-10/11, four
+     * reports: "I don't like the transition tiles we added in the specific case
+     * that the ground is water", and of the wall itself, "I want the wall to
+     * look as if it was continuing down the water surface as before"). It is
+     * also what the foot BAND was getting lost in, which is why removing the
+     * band never removed the sand.
+     *
+     * THE SHORE ITSELF STILL COMPOSES: a water cell whose corners include a
+     * real beach still blends water<->beach below, which is his 2026-09-09
+     * verdict ("the transition tile is not 100% water or 100% beach"). Only the
+     * CLIFF-FOOT vote is refused here. render3.py carries the same footBoundary
+     * rule and is NOT changed — a noted divergence for maps2, not a silent one.
+     */
+    if ((opts?.foot ?? this.data.footBoundary) && !view.isLiquid(g0)) {
       const f0 = this.footSide(view, g, L, x, y, z0);
       const f1 = this.footSide(view, g, L, x + 1, y, z0);
       const f2 = this.footSide(view, g, L, x, y + 1, z0);
@@ -2316,8 +2440,19 @@ export class Tiles3 {
         }
       }
     }
+    /* ...BUT WATER LIES FLAT: A LIQUID CORNER VOTES ONLY AT THIS CELL'S OWN
+     * LEVEL. One storey of tolerance let the sea compose into the top face of
+     * the step above it — water running up a stair, on a cell a whole level
+     * clear of it (maintainer 2026-09-11, ringing the bottom step of a shore
+     * staircase: "The ground on that stair has fucking water on it!"; 8 cells
+     * of the_game, every one land at level 1 beside water at 0). Land still
+     * blends across one storey — the terrace rim the step rule was written for
+     * — and a WATER cell still composes its land corner, which is the shore
+     * tile that is "not 100% water or 100% beach" (2026-09-09). Only a liquid
+     * corner standing off the plane of the cell it would paint is folded away.
+     * render3 `wang_surface` carries the same clause (maps2, 2026-09-11). */
     let gs: (string | null)[] = [g0, gz[0], gz[1], gz[2]].map((gv, i) =>
-      Math.abs(zs[i] - z0) <= BOUNDARY_STEP ? gv : g0,
+      Math.abs(zs[i] - z0) <= BOUNDARY_STEP && (zs[i] === z0 || !view.isLiquid(gv as string)) ? gv : g0,
     );
     /* The foot overrides the fold: the face is ON this plane by construction. */
     let ownRef: string | null = null; // the cell's own ground when its corner was lent away
@@ -2695,21 +2830,77 @@ export class Tiles3 {
     /* DETAILS: once in a while, one of his top-approved tops — but NEVER on an
      * indoor floor. A detail is a different tile, so one landing in a room is
      * one plank of the wrong board, and the rule is that a room is laid as ONE.
-     * (render3 places no detail anywhere today: its branch is only reachable
-     * while the field tile is still flat_tile(), and plate_img took the field
-     * over. This keeps details where he asked for them and off the floor.) */
-    if (gr === ROOM_FLOOR) return out;
-    const dp = this.detailPool(gr);
-    if (dp.length) {
-      const rate = this.data.detailRates?.[gr] ?? DETAIL_FREQ;
-      const rd = lcg((x * 83492791) ^ (y * 2654435761) ^ 0xd47a);
-      if (rd() < rate) {
-        const index = Math.trunc(rd() * dp.length) % dp.length;
-        out.detail = { index, file: dp[index] };
-        out.art = { kind: "conform", path: dp[index], w: TILE, h: PLATE_H };
-      }
+     *
+     * NEVER ON A RAMP, AND NEVER TOUCHING ANOTHER (maintainer 2026-09-13: "A
+     * tile detail is a tile that doesn't look good repeated, but look very good
+     * alone. Can you place them in the world where it looks good"). Measured on
+     * the_game at the default 1 in 56 before this: of 860 details, 28 sat on a
+     * slope cell and REPLACED its graded ramp tile, and 101 had another detail
+     * in their 8-ring (at 1 in 10: 156 and 2,365). A slope cell keeps its slope;
+     * the neighbourhood rule is `detailAlone` below. render3 carries the same
+     * two clauses (asked of maps2, 2026-09-13). */
+    if (gr === ROOM_FLOOR || sidx) return out;
+    const roll = this.detailRoll(gr, x, y);
+    if (roll && this.detailAlone(g, L, x, y, roll.u)) {
+      const dp = this.detailPool(gr);
+      const index = Math.trunc(roll.pick * dp.length) % dp.length;
+      /* AN OVERLAY, NOT A REPLACEMENT — "a detail should never be able to show
+       * its wall" (maintainer 2026-09-13). `out.art` stays the cell's own
+       * member plate, so the 17-row band under the diamond is the ground's as
+       * it is on every other cell, and the detail paints its top face over it
+       * (`tiles3draw.detailOverlay`, which is where the reasoning lives). The
+       * picture on the diamond is unchanged: a conformed top face is opaque
+       * over the whole library silhouette. DIVERGES FROM render3, which still
+       * returns the detail as the cell's art — the same divergence, and for the
+       * same reason, as the fade overlay before it; asked of maps2. */
+      out.detail = { index, file: dp[index] };
     }
     return out;
+  }
+
+  /** THE DETAIL ROLL OF ONE CELL: `u` in [0,1) against the ground's rate, and
+   *  the pick draw after it. Null when the ground is the room floor, has no
+   *  pool, or the roll fails. A pure function of (ground, x, y) and the rate,
+   *  so every thread — and render3 — computes the same answer for a cell and
+   *  for its neighbours. */
+  private detailRoll(gr: string, x: number, y: number): { u: number; pick: number } | null {
+    if (gr === ROOM_FLOOR || !this.detailPool(gr).length) return null;
+    const rate = this.data.detailRates?.[gr] ?? this.data.detailRate ?? DETAIL_FREQ;
+    const rd = lcg((x * 83492791) ^ (y * 2654435761) ^ 0xd47a);
+    const u = rd();
+    return u < rate ? { u, pick: rd() } : null;
+  }
+
+  /** NO TWO DETAILS TOUCHING. Among the raw winners of an 8-neighbourhood the
+   *  SMALLEST roll keeps its detail and every other yields — symmetric and
+   *  order-free (both cells of a pair compute the same two numbers), so a
+   *  streaming window, the worker and a full sweep agree without any shared
+   *  state. At the dial's top (every cell wins) this packs to the local minima
+   *  of the hash field, about one cell in nine and never adjacent: a detail is
+   *  never tiled, whatever the slider says — his own law. A neighbour on a
+   *  ramp never draws, so it never vetoes; a neighbour a fade took still vetoes
+   *  (its fade needs the view; the over-veto is one band cell wide and keeps
+   *  this local). Equal rolls yield both ways — never seen, and harmless. */
+  private detailAlone(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    x: number,
+    y: number,
+    u: number,
+  ): boolean {
+    for (let dy = -1; dy <= 1; dy++)
+      for (let dx = -1; dx <= 1; dx++) {
+        if (!dx && !dy) continue;
+        const nx = x + dx;
+        const ny = y + dy;
+        const gn = g(nx, ny);
+        if (!gn) continue;
+        const r = this.detailRoll(gn, nx, ny);
+        if (!r || r.u > u) continue;
+        if (this.slopeIndexAt(g, L, gn, nx, ny, L(nx, ny))) continue;
+        return false;
+      }
+    return true;
   }
 
   /** side_a / side_b for a pair, canonical via the pattern library's own
@@ -2914,8 +3105,9 @@ export class Tiles3 {
         ...(f === dl && capH !== cap.h ? { h: capH } : {}),
       });
     const mid = this.storeyTile(body, x, y, lo < dl ? lo : dl);
-    /* A SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE DECK,
-     * anchored at its own first cell, exactly as render3 does it (render3.py
+    /* A BUILT SLAB IS ONE SURFACE — ONE SET AND ONE MEMBER FOR THE WHOLE ROOF
+     * OR BRIDGE, anchored at its own first cell, exactly as render3 does it
+     * (a cave lid is the exception, see below) (render3.py
      * :1387 "a roof, a bridge and a cave lid are GROUND too ... ONE set and ONE
      * member for the WHOLE slab, anchored at the deck's own first cell").
      *
@@ -2934,7 +3126,18 @@ export class Tiles3 {
      * there. One bridge deck is `parquet_floor` and would take the room path.
      * The anchor fixes both, which is why it is the anchor and not a special
      * case for rooms.) */
-    const [dax, day] = this.deckAnchor(dk);
+    /* A CAVE LID IS NOT A BUILT SLAB — IT IS THE GROUND YOU WALK ON, and it
+     * asks at its OWN cell, which is the same set and the same member the
+     * ground pass picks there. The cave is something you find at the mouth,
+     * never from the dirt under your feet: anchored, the_game's one mud cave is
+     * SEVEN decks, so the lid read as seven flat one-member patches against mud
+     * that varies cell to cell (maintainer 2026-09-11, standing on it: "I can
+     * see there is a cave under me because the dark_mud ground looks different
+     * and doesn't seem to use the 'base tile set' the mud around it uses").
+     * STILL `plateAt`, NOT `plateFor`: the room map must not reach a slab from
+     * either direction — the room under a lid is the cave itself, and its floor
+     * plan belongs underground. */
+    const [dax, day] = dk.kind === "cave" ? [x, y] : this.deckAnchor(dk);
     const p = this.plateAt(dg, regionAt(dg, dax, day), x, y, dax, day);
     /* THE SLAB'S TRANSITION (Tiles3Data.deckBoundary): a corner lattice of the
      * slab's OWN level. A cell carrying a deck at this level votes that deck's
@@ -2942,8 +3145,9 @@ export class Tiles3 {
      * rock it is cut into), anything else votes the slab's — the same
      * `boundaryAt` the ground uses, so the masks, the seam, the three-ground
      * fold and the nature-wall foot are all the ground's. The slab's own half
-     * is its ONE anchored member, never a per-cell pick, so the transition
-     * tile and the roof around it are the same picture. */
+     * is whatever `p` above resolved — the roof's one anchored member, or a
+     * lid's own-cell pick — so the transition tile and the slab around it are
+     * always the same picture. */
     let boundary: Tiles3Boundary | undefined;
     if (this.data.deckBoundary) {
       const W = view.width;

@@ -13,14 +13,24 @@
 // covers every piece, and (2) the filter reaches all the way into the pager —
 // a filter that quietly stops applying when you click a card is worse than no
 // filter, because you cannot see that it stopped.
-import { readFileSync } from "node:fs";
+import { readFileSync, existsSync } from "node:fs";
 import { createRequire } from "node:module";
 const { chromium } = createRequire(process.env.PLAYWRIGHT_FROM ?? new URL("../../games2/package.json", import.meta.url))("playwright-core");
 const fails = []; const ok = (c, m) => { console.log((c ? "  ok: " : "  FAIL: ") + m); if (!c) fails.push(m); };
 const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url), "utf8"));
 const FACTORY = JSON.parse(readFileSync(new URL("../../scenery/config/factory.json", import.meta.url), "utf8"));
 const objs = D.domains.objects ?? [];
-const TYPES = ["TREE", "WINDOW", "MOUNTAIN_WALL", "TOWN", "INDOOR", "NATURE", "OTHER"];
+/* THE VOCABULARY IS THE SCENERY DOMAIN'S, READ FROM ITS OWN CONFIG — never a
+ * copy kept here. A closed list in the CONSUMER silently overrides the
+ * producer that owns the field, and the wiki had three of them: build.mjs
+ * folded any unknown type into OTHER, wiki.js drew a chip only for the seven
+ * it knew, and this gate held the same stale list and called the result
+ * correct. So when the scenery agent added CHIMNEY (f6fead335, 2026-09-13,
+ * declared in factory.json's own `types.values`) its 8 pieces landed in the
+ * junk drawer with no chip and nothing to filter, and he went looking for them
+ * and found nothing. Everything below counts what the FACTORY declares, so a
+ * type added tomorrow is checked tomorrow. */
+const TYPES = FACTORY.types?.values ?? [];
 
 // ------------------------------------------------ the data, and whose it is
 const groups = FACTORY.groups ?? [];
@@ -28,16 +38,30 @@ const untyped = groups.filter((g) => !g.type);
 console.log(`factory: ${groups.length} groups, vocabulary ${JSON.stringify(FACTORY.types?.values ?? null)}`);
 ok(untyped.length === 0, `every group in the scenery catalog carries a type${untyped.length ? ` — missing on ${untyped.slice(0, 3).map((g) => g.id).join(", ")}` : ` (${groups.length})`}`);
 ok(groups.every((g) => TYPES.includes(g.type)), "and every one of them is from the agreed vocabulary");
-ok(JSON.stringify(FACTORY.types?.values) === JSON.stringify(TYPES), "which the config states outright, for whoever edits it next");
+ok(TYPES.length >= 7 && TYPES.includes("OTHER"),
+  `the scenery config declares that vocabulary itself, and this gate reads it rather than a copy (${TYPES.length}: ${TYPES.join(", ")})`);
 ok(!!FACTORY.types?._note, "with a note saying who added it and that the scenery domain owns it");
 
 const noType = objs.filter((o) => !o.type);
 ok(noType.length === 0, `every piece reaches the wiki with a type${noType.length ? ` — ${noType.slice(0, 3).map((o) => o.id).join(", ")}` : ` (${objs.length})`}`);
-// The wiki must not be inventing them: a piece's type has to match its group's
-// (or its own override), never a guess made in build.mjs.
+/* The wiki must not be inventing them: a published type has to be the piece's
+ * OWN, and its group's only where the piece names none. THE PIECE WINS is the
+ * contract (factory.json's own note), and asserting the group's type flatly
+ * contradicted it — 19 pieces legitimately override theirs (cliff moss and
+ * cliff roots are NATURE growing on a MOUNTAIN_WALL group), and this line
+ * called every one of them a wiki opinion. Read from the source rather than
+ * from the group, so the check is what it claims to be. */
 const gType = new Map(groups.map((g) => [g.id, g.type]));
-const mismatch = objs.filter((o) => gType.has(o.category) && o.type !== gType.get(o.category));
-ok(mismatch.length === 0, `and it is the group's own type, not the wiki's opinion${mismatch.length ? ` — ${mismatch.slice(0, 3).map((o) => `${o.id}: ${o.type} vs ${gType.get(o.category)}`).join(", ")}` : ""}`);
+const ownType = (o) => {
+  const f = new URL(`../../${o.path}/scenery.json`, import.meta.url);
+  try { return existsSync(f) ? (JSON.parse(readFileSync(f, "utf8")) ?? {}).type ?? null : null; } catch { return null; }
+};
+const wrongType = objs.filter((o) => {
+  const want = ownType(o) ?? gType.get(o.category);
+  return want && o.type !== String(want).toUpperCase();
+});
+const overrides = objs.filter((o) => ownType(o) && gType.has(o.category) && ownType(o) !== gType.get(o.category));
+ok(wrongType.length === 0, `and it is the piece's own type, or its group's where it names none — never the wiki's opinion${wrongType.length ? ` — ${wrongType.slice(0, 3).map((o) => `${o.id}: ${o.type}`).join(", ")}` : ` (${overrides.length} pieces override their group, as the contract allows)`}`);
 const counts = Object.fromEntries(TYPES.map((t) => [t, objs.filter((o) => o.type === t).length]));
 console.log("pieces by type:", JSON.stringify(counts));
 ok(Object.values(counts).filter((n) => n > 0).length >= 6, "the types genuinely divide the domain — this is a filter, not a label");
@@ -99,7 +123,9 @@ const shape = await p.evaluate(() => [...document.querySelectorAll(".sortbar")].
 console.log("bar shape:", JSON.stringify(shape));
 /* FOUR strips since 2026-08-27: the hitbox queue joined type, sort and review
  * when scenery gained a footprint editor. */
-ok(shape.length === 4, `four pick-one strips: type, hitbox, sort, review (${shape.length})`);
+// FIVE since the animation bar landed (2026-09-09) — type, hitbox, animation,
+// sort, review. The count was left at four and nothing noticed.
+ok(shape.length === 5, `five pick-one strips: type, hitbox, animation, sort, review (${shape.length})`);
 ok(shape.every((s2) => s2.rows === 1), `each is ONE row — it pans, it does not wrap (${shape.map((s2) => s2.rows).join(", ")})`);
 ok(shape.every((s2) => s2.bordered && parseFloat(s2.radius) >= 6), "with one border around the whole set, not one per chip");
 ok(shape.every((s2) => s2.chipBorders.every((v) => v === "0px")), `the chips carry no borders of their own (${shape[0].chipBorders.join(", ")})`);

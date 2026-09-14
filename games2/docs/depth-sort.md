@@ -2,6 +2,48 @@
 
 How bodies and pieces interleave with terrain columns: the occluder set, the pure depth rule and its cover lines. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
 
+- **REJECTED 2026-09-12 — THE RENDER RETAKE (per-pixel terrain depth test
+  instead of occluder sprites).** Commits 75b4d049..491a7f7a, reverted the
+  same day; the code, its parity harness and its measurements live in git
+  history under branch `render-retake-start` (the marker) and the revert
+  commit. It deleted the occluder sprites and every CPU section shrank
+  (display list 800 vs 4.7-6.7k, occCull gone), and it was 4.5x WORSE on his
+  phone: lag frames over 50 ms per window 171 vs 38, then 73-90 vs 38 after
+  arming the walk on terrain cover only and bounding it — the phone is
+  fill-rate bound and 13 ms of CPU idle per frame was it waiting on the GPU.
+  Where nothing was tested a window hit 4 lag frames, so the CPU savings were
+  real; the per-pixel GPU walk over covered scenery ate them. Nothing headless
+  can measure his GPU (WebGL1, no timer query). THE RULE THE CAPTURE POOL
+  TAUGHT AND THIS CONFIRMED: an optimisation for his phone adds ZERO GPU
+  work and only removes CPU bursts; the beacon's `gapIdle` is the GPU's
+  bill. His verdict: "the game is still totally broken... only if we get
+  super smooth and high fps" — not worth a month of bugs for no gain.
+- **REJECTED 2026-09-12: THE PROXIMITY CULL — submitting only the occluders
+  that meet a body** (`cullOccludersNear`, kept OFF as the A/B for a
+  front-closed version). The premise — an occluder far from every body is
+  the ground's own pixels drawn twice, so skipping it is the identity — is
+  false, because the set is a painter-ordered STACK: a course that is shown
+  while the cap in front of it is hidden paints over the cap's ground pixels
+  (his screenshot at 258,217: a dark band along the cliff top, "the Z-order
+  looks fucked up"). A subset chosen per image is not a valid picture; only
+  the whole set is, or a subset closed under "everything in front that
+  overlaps a shown image", which fans out over a plateau. The view cull is
+  consistent because visibility is per pixel: an on-screen pixel's cover is
+  on screen too. It DID buy what it promised on his phone (render 6.7 →
+  3.9 ms, cull 2.1 → 1.1, sort 2.1 → 1.5 in the mountain window), which is
+  the size of the prize for the real way out: draw a covered body through
+  its cover surface (E, the frame minus every covering occluder, which the
+  cover pass already rasterises for the lit copy) and drop the occluder
+  sprites from the display list altogether — the retake's goal without its
+  per-pixel GPU walk.
+- **THE DEPTH SORT IS AN INSERTION SORT** (`installDepthSort`, 2026-09-12).
+  Phaser re-runs a merge sort of the whole display list whenever any depth
+  changed — every frame a body moves — 0.85-2.1 ms on his phone over 4.6-9.7k
+  objects, while the list is nearly sorted (only the bodies moved). A stable
+  insertion sort costs one pass plus a slot per inversion and hands the list
+  to Phaser's own sort when the inversions pass the list's length (a rebuild
+  added hundreds of images). Equal depths keep their order in both, so the
+  picture is the same.
 - **SEE-THROUGH WALLS IS DELETED — never reintroduce a per-frame occluder
   alpha sweep.** The prototype ([7] key, "see-through walls" switch,
   `occFade`/`occFocus`/`occApply` probes) swept the whole live occluder set
@@ -83,15 +125,15 @@ How bodies and pieces interleave with terrain columns: the occluder set, the pur
   treatment.
 
 - **THE HIDDEN-BEHIND OUTLINE HAS A STRENGTH DIAL** (`hiddenring.ts`, Settings
-  "Hidden outline", default 60%). The line draws ABOVE the darkness overlay, so
-  at full opacity a body behind a wall is the most legible thing on screen and
-  being hidden reads as an ADVANTAGE (maintainer 2026-09-07: "see the objects
-  behind the wall, not see them way better when behind the wall"). Separate
-  knob from `RING_LIGHT_FLOOR`, which decides how far the ring tracks the light
-  at the body's own spot: that one keeps the line from going black after
-  sunset, this one decides how loud it is at all. THE 60% IS A FIRST DIM, NOT A
-  VERDICT — he asked for the slider so he can pick the real default by eye.
-  Probe `__ml.hiddenRing(v?)`.
+  "Hidden outline", default 20% — HIS VERDICT, 2026-09-13, picked by eye off
+  the live game; the 60% before it was the first dim he asked the slider for).
+  The line draws ABOVE the darkness overlay, so at full opacity a body behind a
+  wall is the most legible thing on screen and being hidden reads as an
+  ADVANTAGE (maintainer 2026-09-07: "see the objects behind the wall, not see
+  them way better when behind the wall"). Separate knob from
+  `RING_LIGHT_FLOOR`, which decides how far the ring tracks the light at the
+  body's own spot: that one keeps the line from going black after sunset, this
+  one decides how loud it is at all. Probe `__ml.hiddenRing(v?)`.
 
 - **A CALLER NEVER LIFTS MORE THAN 2.5 CELLS PAST ITS OWN ANCHOR**
   (`LIFT_MAX_PX` 35, `depthrule.ts`). The lift exists so the flat tile IN FRONT

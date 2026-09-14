@@ -92,7 +92,7 @@ class PixelLabClient:
         self.require_key()
         return {"Authorization": f"Bearer {self.api_key}", "Content-Type": "application/json"}
 
-    def _request(self, method, path, retries=5, **kw):
+    def _request(self, method, path, retries=8, **kw):
         """HTTP with retry on transient network errors and 5xx/429. 4xx (except
         429) are real request errors and raise immediately."""
         url = path if path.startswith("http") else f"{V2_BASE}/{path.lstrip('/')}"
@@ -107,7 +107,13 @@ class PixelLabClient:
                 continue
             if r.status_code in (429, 500, 502, 503, 504):
                 last = PixelLabError(f"{method} {path} -> {r.status_code}: {r.text[:200]}")
-                time.sleep(min(2 ** attempt, 30))
+                # 429 here is the ACCOUNT CONCURRENCY cap (20 background jobs,
+                # Tier 3), not a rate limit: it clears only when a running job
+                # finishes, which takes minutes. Back off in minutes, not
+                # seconds, so a sweep queues behind its own workers instead of
+                # burning its retries in half a minute and dying.
+                slow = r.status_code == 429 and "concurrent background jobs" in r.text
+                time.sleep(min(60 * (attempt + 1), 300) if slow else min(2 ** attempt, 30))
                 continue
             if r.status_code >= 400:
                 raise PixelLabError(f"{method} {path} -> {r.status_code}: {r.text[:300]}")
@@ -305,10 +311,195 @@ class PixelLabClient:
             out.append(g)
         return out
 
+    # -- writes: candidate creation (the ONLY generation this domain does) ----
+
+    def wait_job(self, job_id, timeout=900, interval=6):
+        """Poll a background job to completion; returns the job record."""
+        deadline = time.monotonic() + timeout
+        while True:
+            j = self._request("GET", f"background-jobs/{job_id}")
+            st = j.get("status")
+            if st == "completed":
+                return j
+            if st == "failed":
+                raise PixelLabError(f"job {job_id} failed: {str(j.get('last_response'))[:300]}")
+            if time.monotonic() > deadline:
+                raise PixelLabError(f"job {job_id} timed out after {timeout}s")
+            time.sleep(interval)
+
+    def create_character_v3(self, description, size, view="low top-down",
+                            template_id="mannequin", name=None, seed=None,
+                            outline=None, detail=None, job_timeout=900):
+        """Create an 8-direction character FROM SCRATCH (create-character-v3:
+        Pixen draws a south sprite, v3 rotates it). Cost per the API contract:
+        1 + ceil(size*size*8 / 65536) generations — 64px→2, 128px→3,
+        176px→5. Returns (character_id, usage). Blocks until the job lands."""
+        payload = {
+            "description": description,
+            "image_size": {"width": int(size), "height": int(size)},
+            "view": view,
+            "template_id": template_id,
+        }
+        if name:
+            payload["name"] = name
+        if seed is not None:
+            payload["seed"] = int(seed)
+        for k, v in (("outline", outline), ("detail", detail)):
+            if v:
+                payload[k] = v
+        resp = self._request("POST", "create-character-v3", json=payload)
+        cid = resp.get("character_id")
+        job = resp.get("background_job_id")
+        if job:
+            self.wait_job(job, timeout=job_timeout)
+        return cid, resp.get("usage")
+
+    def character_rotations(self, character_id, wait=240, poll=5):
+        """{direction: PIL} for all 8 rotations; keeps polling while the CDN
+        files settle after generation."""
+        deadline = time.monotonic() + wait
+        out = {}
+        while True:
+            detail = self.get_character(character_id)
+            urls = {d: u for d, u in (detail.get("rotation_urls") or {}).items() if u}
+            missing = [d for d in urls if d not in out]
+            for d, img in zip(missing, self.download_many([urls[d] for d in missing])):
+                if img is not None:
+                    out[d] = img
+            if urls and len(out) == len(urls):
+                return out
+            if time.monotonic() > deadline:
+                return out
+            time.sleep(poll)
+
+    def animate_v3(self, character_id, name, action, direction, frame_count=4,
+                   end_frame=None, seed=None, keep_first=True):
+        """Start ONE v3 custom animation job for ONE direction of an existing
+        character. Returns the background job id.
+
+        `end_frame` (PIL) turns on interpolation mode: the clip runs from the
+        character's rotation image for `direction` to that pose — passing the
+        rotation image itself pins a loop that starts and ends neutral (the
+        maintainer's trick for calm idles). keep_first_frame stays True, so
+        the stored clip is frame_count+1 frames with the base as frame 0."""
+        payload = {
+            "character_id": character_id,
+            "animation_name": name,
+            "action_description": action,
+            "mode": "v3",
+            "frame_count": int(frame_count),
+            "directions": [direction],
+            "keep_first_frame": bool(keep_first),
+        }
+        if end_frame is not None:
+            payload["end_frame"] = _image_to_b64obj(end_frame)
+        if seed is not None:
+            payload["seed"] = int(seed)
+        resp = self._request("POST", "characters/animations", json=payload)
+        jobs = resp.get("background_job_ids") or []
+        return jobs[0] if jobs else None
+
+    def animate_pro(self, character_id, action, directions, name=None, seed=None):
+        """PRO mode: the maintainer's own attacks are made with this, not v3
+        (2026-09-11 — his Ground Bite is "4 FRAMES PRO" while every clip I made
+        was V3). It takes only an action description and a direction list: no
+        frame_count (pro fixes its own), no end_frame, no keep_first_frame. It
+        generates the directions SEQUENTIALLY, using finished sides as
+        reference, which is why its eight views agree with each other — and
+        why it bills 20-40 generations per direction instead of one."""
+        payload = {"character_id": character_id, "mode": "pro",
+                   "action_description": action, "directions": list(directions)}
+        if name:
+            payload["animation_name"] = name
+        if seed is not None:
+            payload["seed"] = int(seed)
+        resp = self._request("POST", "characters/animations", json=payload)
+        return resp.get("background_job_ids") or []
+
+    def animate_template(self, character_id, template_animation_id, directions, seed=None):
+        """SKELETON-DRIVEN animation from PixelLab's template library (mode
+        "template", 1 generation per direction). The templates are per
+        SKELETON (`template_id` on the character), not global — mannequin has
+        cross-punch/high-kick/flying-kick/hurricane-kick/fireball, bear has
+        attack-left/attack-right/jump-attack, dog has none. An invalid id is
+        rejected with the valid list for that skeleton, which is how the list
+        is discovered — but a request with a valid id and a bad DIRECTION
+        starts a job that never finishes and holds a concurrency slot (20 per
+        account, no cancel endpoint, deleting the animation group does not
+        free it). Probe with a real direction or not at all."""
+        payload = {"character_id": character_id, "mode": "template",
+                   "template_animation_id": template_animation_id,
+                   "directions": list(directions)}
+        if seed is not None:
+            payload["seed"] = int(seed)
+        resp = self._request("POST", "characters/animations", json=payload)
+        return resp.get("background_job_ids") or []
+
+    def template_takes(self, character_id, template_animation_id):
+        """{direction: [{"urls": [...], "group": gid}, ...]} for a template
+        animation (stored under the template id, no "custom-" prefix)."""
+        out = {}
+        for a in self.get_character(character_id).get("animations") or []:
+            if (a.get("animation_type") or "") != template_animation_id:
+                continue
+            for x in a.get("directions") or []:
+                urls = [u for u in (x.get("frames") or []) if u]
+                if x.get("direction") and urls:
+                    out.setdefault(x["direction"], []).append(
+                        {"urls": urls, "group": a.get("animation_group_id")})
+        return out
+
+    def skeleton_template(self, character_id):
+        """The character's SKELETON id (mannequin, bear, dog, cat…) — decides
+        which animation templates exist for it."""
+        return (self.get_character(character_id) or {}).get("template_id")
+
+    def animation_takes(self, character_id, action):
+        """{direction: [[urls], ...]} — EVERY take of every direction of the
+        v3 animations made from `action`. PixelLab ignores animation_name and
+        stores a v3 clip as animation_type "custom-" + the first ~30 chars of
+        the action text (measured 2026-09-09: 'custom-Calm still idle,
+        breathing ver'), ONE entry per direction when end_frame pins a single
+        direction — so several entries share one type. Callers pick; the last
+        take is what the UI shows."""
+        detail = self.get_character(character_id)
+        out = {}
+        for a in detail.get("animations") or []:
+            t = a.get("animation_type") or ""
+            if t.startswith("custom-") and (("custom-" + action).startswith(t) or t == ("custom-" + action)[:len(t)]):
+                for x in a.get("directions") or []:
+                    urls = [u for u in (x.get("frames") or []) if u]
+                    if x.get("direction") and urls:
+                        out.setdefault(x["direction"], []).append(
+                            {"urls": urls, "group": a.get("animation_group_id")})
+        return out
+
+    def delete_animation(self, character_id, animation_type=None, group_id=None, direction=None):
+        """Delete an animation (all directions, or one). PixelLab keys by
+        animation_type or animation_group_id."""
+        q = {}
+        if group_id:
+            q["animation_group_id"] = group_id
+        elif animation_type:
+            q["animation_type"] = animation_type
+        if direction:
+            q["direction"] = direction
+        return self._request("DELETE", f"characters/{character_id}/animations", params=q)
+
+    def set_character_tags(self, character_id, tags):
+        """REPLACES the character's tag list (PATCH semantics on PixelLab)."""
+        return self._request("PATCH", f"characters/{character_id}/tags", json={"tags": list(tags)})
+
+    def delete_character(self, character_id):
+        return self._request("DELETE", f"characters/{character_id}")
+
     # -- balance / budget ----------------------------------------------------
 
     def balance(self):
         return self._request("GET", BALANCE_URL)
+
+    def usd_credits(self):
+        return float(self.balance().get("credits", {}).get("usd", 0) or 0)
 
     def generations_remaining(self):
         b = self.balance()

@@ -10,7 +10,7 @@
   "prompt": "dark mud, a splash mark in the middle, dark mud all around the edge",
   "palette_top": "#514137",
   "tile_id": "bfbfb2bc-b5a6-46b3-ad64-4cc5e906dac9",
-  "n_tiles": 16,
+  "n_tiles": 14,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -19,15 +19,13 @@
     "tile_04.webp",
     "tile_05.webp",
     "tile_06.webp",
-    "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
     "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -128,5 +126,17 @@
   },
   "motif": "a splash mark",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_07.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:25+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:25+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

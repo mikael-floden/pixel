@@ -2,6 +2,135 @@
 
 The shadow editor, the animation viewer, the showcase, usage stats and the review idioms of the creature pages. Moved verbatim out of `wiki/README.md` (2026-09-09), which keeps the rules and points here; rewrite in place under the root doc law.
 
+## The 8-direction base is a state called "static"
+
+Every creature's row opens with **static** — the eight rotations the animations
+were made from — and **idle is still what opens** (maintainer 2026-09-11: *"I
+should in the animation preview be able to select 'static' as a
+state/animation type. Yes I know the original 8 direction static images is not
+really an animation, but it's good for me to have a way to see them. I want
+them to the left of 'idle', but I still want idle to be pre-selected."*)
+
+- A rotation IS a one-frame clip, so it needs no special case in the viewer:
+  `staticState()` publishes `monsters/<id>/rotations/<dir>` (or a candidate's
+  `candidates/<id>/rotations/<dir>`) as `animations.static`, first in the
+  object, carrying `still: true`. The viewer's own rule — idle if idle exists —
+  keeps idle selected.
+- **It is looked at, not judged.** The facet row is replaced by one line: no
+  agent consumes a verdict on the base, and a rating nobody reads is worse than
+  none. A bad base means the design goes, which is the verdict beside the
+  creature's name; for a design still being animated the line points at its
+  candidate page, where the 8 directions are the whole review.
+
+## Parallel takes of one state — live, try, v3
+
+The monsters agent builds a replacement beside the live animation instead of
+over it, so a state can have several takes at once: `attack`, `attack_try`,
+`attack_v3try`. He reviews them all (maintainer 2026-09-11: *"he might try to
+create a different attack animation without deleting the old version in case
+the old version in the end was better. He is now at 'v3' and I can only see a
+single attack animation on the wiki so I can't see his new attempts. So we need
+a way to ... see all different parallel versions (and review/rate all parallel
+versions). In the end we will only have a single attack animation ofc."*)
+
+- **A take is published as its own entry** carrying `takeOf` (the state it
+  belongs to) and `takeLabel` (`v1`, `v2`, `try` — parsed from the slot name, so
+  `attack_v3try` and `attack_v3` both read v3). Any folder matching `<state>_*`
+  is a take of that state; anything else on disk is not a state at all.
+- **A state can exist as VERSIONS ONLY.** The agent renamed its slots to
+  `attack_v1, attack_v2, attack_v3` and stopped writing a bare `attack` folder,
+  which dropped the state from the registry the hour the rename landed — both
+  the build and the viewer were keyed on the bare folder. A state is present
+  when its own folder OR any take of it is on disk; the bare folder, when there
+  is one, is the take that ships and leads the row as "live". The viewer's
+  state list is therefore derived from what each entry BELONGS to, never from
+  the entries that belong to nothing.
+- **The versions are sorted, live first, numbers in number order** — the agent
+  is renaming them `v1, v2, v3`, so the row collates numerically and v10
+  follows v9 rather than v1 (maintainer 2026-09-11).
+- **One chip per STATE, versions on their own row.** The viewer's `takeRow`
+  appears only while the state on screen has more than one take, and reads
+  `live | try | v3`. A take is never a second state chip — it is the same
+  state.
+- **`cur.state` is the SLOT being shown**, so every verdict, art stamp, chip
+  mark and clip lookup keeps working on a plain `animations` key and a verdict
+  on v3 can never land on the live take: its feedback id is
+  `<path>#attack_v3try#<dir>`. The judging pill says "Attack v3", never the raw
+  slot.
+- **The version he is reviewing follows him**, creature to creature and state
+  to state (maintainer 2026-09-11: "When I stand on a monster and review the
+  attack animation version today named 'try' I want to be able to click 'next
+  next next' to see the next monsters attack 'try' animation. I don't want the
+  wiki to switch back to the 'live' version."). Remembered as the LABEL
+  (`wiki-viewer-take-<kind>`), never the slot: the slot is per state
+  (`attack_v2`) while the question is per version — show me everyone's v2. A
+  creature or state without that version opens on its live take and does NOT
+  forget his choice, so stepping through Idle on the way back to Attack still
+  lands on v2.
+- The state chip carries the LIVE take's marks (that is the one that ships);
+  each version chip carries its own.
+- The Animations panel counts STATES and says "N parallel takes" beside it.
+- In the end only one survives: the agent promotes a take into the state and
+  deletes the rest, and the version row disappears on its own.
+
+## One animation is REDONE, never removed
+
+The per-animation row — one state in one direction, the unit the agent
+regenerates — is **approve + redo**. There is no remove on it, and the reason
+is a rule about the game, not about the row (maintainer 2026-09-10): *"we never
+want a monster to 'not have an attack'. Redo is the only option. If we can't
+generate the attack we need to remove the entire monster."* A creature ships
+with all five states in all eight directions or it does not ship. So a bad clip
+has exactly two ends: another take, or the whole creature goes. Removal is
+therefore a verdict about the WHOLE creature and lives on the row beside its
+name, which still carries it — and the redo button says so, for the day a state
+simply cannot be generated.
+
+- `redo` on `<path>#<state>#<dir>` in `live/feedback/<domain>.json`, stamped
+  with that clip's own art hash, is the producing agent's cue to regenerate
+  exactly that clip and nothing else. A creature can never be left with a state
+  missing: an agent that cannot produce one asks for the creature to be
+  removed rather than shipping it incomplete.
+- A row whose verdict ALREADY says `rejected` still shows its remove button, so
+  an old removal can be cleared rather than stranded on a row that can no
+  longer set one.
+- The chip carries it: a state or direction with a redo wears `judged-redo`
+  (the accent ink every warn pill uses), and a redo OUTRANKS an approval on the
+  same chip — it is the one still owed. Green means settled, red means gone.
+- The SCENERY state row is the one review that keeps both (maintainer
+  2026-09-03) — there, remove deletes a state the piece can do without.
+
+## "Removed" must be TRUE — one 404 proves nothing
+
+Maintainer 2026-09-11: *"When I first open the wiki or press on a page I get an
+error saying 'removed'. I then click back and on the same page again and the
+same img/monster loads."* Three routine things answer 404 for art that is on
+main this second, and each of them showed him a deletion that had not happened:
+
+- **the deployed image**, which carries only what the game reaches — a creature
+  still being animated is staging by arrangement (`games2/scripts/shipset.mjs`);
+- **the boot pin**, a sha cached for ten minutes while the art agents push every
+  few;
+- **a CDN that has not fetched the path yet.**
+
+So a `gone` verdict has to survive being asked again at `main`, the newest ref
+there is (`probeGone`). If main has the file it is not gone: the element is
+repointed there and it loads — which is exactly what his second visit did by
+hand. One extra HEAD, only on the miss path. A path neither side has is still
+`gone`, and the piece still leaves the wiki.
+
+STAGING IS ADMIN-ONLY, for the same reason. A player has no repo to fall back
+to, so a creature the image does not carry would be a permanently broken card
+for them: `creatures()` hides `pending` ones from the player face (and the
+Candidates tab with them), which is what the shipset law already said — "stays
+visible to a signed-in admin in the wiki". The nav count follows the same
+accessor, and `setAdmin` drops the creature index so signing in or out changes
+the roster immediately.
+
+Gate: `wiki/tools/check-gone.mjs` drives it across TWO origins — the image 404s
+the strip, the repo has it — and fails if the page says "removed" about art main
+still has. It runs in `wiki-guard.yml`, which now starts `serve-repo.mjs` too.
+
 ## A deleted piece LEAVES the wiki — it does not become a tombstone
 
 **The admin reads ART from HEAD of main and the PIECE LIST from the deployed
@@ -90,6 +219,114 @@ Gate: `wiki/tools/check-litstate.mjs` — drives the real page, corrects a state
 commits, and asserts the file, the key, the `was`, that nothing lands in the
 feedback file, that agreeing again DELETES, that the switch follows the state
 chip (unlit → 💡lit) and that a reader never sees the control at all.
+## A new monster is judged on its 8 DIRECTIONS before it earns animations
+
+A candidate is an 8-direction base and nothing else. The monsters agent
+designs and generates its own monsters now, and "the first step before
+generating a monster is generating a character in 8 directions. If you are
+happy with this character you can go on and generate all animations needed"
+(maintainer 2026-09-09) — and a bad facing cannot be fixed later, so the
+verdict comes BEFORE the five states are spent on it.
+
+- **Contract in:** `monsters/candidates/index.json` (`monster-candidates@1`).
+  `build.mjs` publishes it as `domains.monsterCandidates` (+ `counts
+  .monster_candidates`): id, name, tier, lore, biome, items, size, `version`,
+  `generatedAt`, the 8 `rotations` paths, the agent's `qa` and its `review`.
+- **Contract out:** `live/feedback/monsters.json` under
+  `monsters/candidates/<id>` — `approved` = generate every animation in all 8
+  directions; `redo` = same design, next seed; `rejected` = drop the design.
+  Rating and note ride as on every other feedback entry.
+- **Every verdict is stamped with the candidate's `version`.** A redo rolls
+  the next seed and the agent deletes the old record, so a verdict carrying an
+  older version is about a picture that no longer exists: the page shows
+  "regenerated — judge again", the queue counts it as unjudged, and the agent
+  must ignore it. (Same rule the scenery states use with their art hash.)
+- **Pages:** `#/monsters/candidates` — chips `to judge | approved | redo |
+  removed | all` with counts, "to judge" by default, newest first; the cards
+  are the CREATURE SHOWCASE (below), same grid, same measured spans, same
+  marks-on-the-art. `#/monsters/candidates/
+  <id>` — the 8 facings in MIRROR-PAIR order (S, N, E, W, SE, SW, NE, NW), so
+  the twin the generator gets wrong (a SE drawn as SW) is the next picture
+  down, or beside it when two fit. The verdict row sits UNDER the pictures,
+  where his thumb is after reading them. ‹ › walks the current chip's list.
+- **TRUE SIZE ALWAYS — the BOX gets bigger, never the creature** (maintainer
+  2026-09-10, on a grub scaled 11× to fill the screen: "11x zoom? WTF. I want
+  to see it in the true size always! You just had todo the preview bigger and
+  centered the monster!"). One zoom for every candidate, from the same ladder
+  the overview uses — the largest of `2 · 1.5 · 1 · 0.75 · 0.5` at which the
+  LARGEST canvas in the whole set fits the measured column (1.5× on a 393px
+  phone) — and an IDENTICAL box on every design, its side that largest canvas
+  at that zoom. A 32px grub is then 48px of art centred in the 360px box a
+  240px warden fills edge to edge. Both per-design zooms are rejected and both
+  were shipped and rejected by him: a fixed 1×/2×/3× ladder made the grub a
+  64px stamp, and fitting each design to the column made it an 11× monster
+  bigger on screen than the warden. The chips are the CREATURE PAGE'S OWN — `same`
+  (default) `1×` `2×` `4×`, where "same" means there what it means here, every
+  design at one scale so sizes compare between pages (maintainer 2026-09-10:
+  "See how monsters is displayed on their details page. I think we have 1x 2x
+  or 4x"). The chip is remembered (`wiki-cand-zoom`), and the steps are an
+  ARRAY: integer-like object keys sort to the front and put "same" last. Magnifying grows the CREATURE, not the box: the box stops at the
+  column and a magnified big design scrolls inside it, the preview-stage rule.
+- **The label sits UNDER its facing.** Floating it on the art covered a small
+  design completely, and the art is the thing being judged.
+- **ONE ZOOM FOR THE WHOLE GRID, and the card is what varies** (maintainer
+  2026-09-10: "It's important when I scroll the candidates overview I can see
+  the monster in the correct scale. So I was thinking the cards could be the
+  same as in the monster overview. In the monster overview we get bigger cards
+  for bigger monsters."). The designs run 32px to 240px of native art — nearly
+  twice the shipped roster's range — and the biggest at the game's own 2× is
+  456px against a 386px double stage, so the grid picks the largest zoom on the
+  ladder `2 · 1.5 · 1 · 0.75 · 0.5` at which the BIGGEST card still fits a 2×2
+  (1.5× on a 393px phone: 56 designs take one cell, 33 the full four). Every
+  card shares that zoom, so ratios between cards are ratios between designs; the
+  cap is the game's 2×, and the page says which zoom it landed on. NOT
+  per-card fitting — that is what he was looking at when he wrote the note:
+  every thumbnail 150px, every creature the same size, the scale unreadable.
+- **The agent's own `review` is a pill only where it DIFFERS from his verdict.**
+  It mirrors his verdicts within the run, so an unconditional pill put "agent:
+  approved" under his own "approved" on every judged card, and its idle values
+  (`pending`, `not_picked`) say nothing at all. What earns a pill is the gap:
+  an approval it has not acted on yet reads "waiting for the agent".
+- **CREATURES AND CANDIDATES ARE TWO TABS OF ONE SECTION**, and nothing on
+  screen moves between them (maintainer 2026-09-10: "I also feel the
+  Creatures/Candidates should be a tab and not a warning div. Also when
+  clicking on Candidates now the breadcrumb 'jumps' compared to the Creatures
+  page"). Both pages open `sectionHead(...)` then `creatureTabs(...)`, in that
+  order, so the crumb, the title and the tab row land on the same pixel on
+  both. NOT an accent-bordered door on the Creatures page — a box in that
+  colour reads as a warning, and it moved the head down one line.
+- **An approved design that HAS animations is a normal creature** (maintainer
+  2026-09-10: "Approved Candidates should become normal monsters. They may
+  still not have all animations yet (that's a work in progress), but they
+  should exist as a normal monster so I can look at the animations done so far
+  and review them like a normal monster"). `buildCandidateMonsters` derives one
+  from any candidate with strips under `candidates/<id>/animations/` — from the
+  FILESYSTEM, not from a flag, because the agent only ever animates one he
+  approved — and pushes it into `domains.monsters` beside the shipped roster,
+  so the viewer, the per-state per-direction verdicts, the shadow editor and
+  the stats all work on it unchanged. Its `path` is `monsters/<id>`, the
+  identity it keeps once the agent writes `monster.json`, so no verdict is lost
+  in the promotion; a real `monsters/<id>` folder always wins, so there is
+  never a duplicate. Its state row is the DOMAIN'S list in the domain's
+  order — `animation_map.json`'s `idle, walk, angry, attack, die` — never the
+  filesystem's, which is alphabetical and had two creatures side by side
+  disagreeing about where idle was (maintainer 2026-09-10: "I like the old
+  monsters sort in the animation buttons"). A folder the map does not name is
+  not a state — it is a parallel TAKE of one (below).
+  It carries `pending: true` and `candidate: <path>`: the
+  card shows "in the making", the Animations panel says "more coming", the page
+  links back to the 8 directions, and the filter row grows an "in the making"
+  chip. The nav count is the whole list — a design being animated is a
+  creature he can review.
+- Gate: `wiki/tools/check-candidates.mjs` (the two tabs and that the head does
+  not move between them, an in-the-making creature opening as an ordinary
+  creature page, chips, one shared zoom with
+  true size ratios and bigger spans for bigger designs, 8 loaded facings, one
+  box the smallest and biggest design share with their art at one zoom inside
+  it, the same/1×/2×/4× chips in that order, the label under the art,
+  approve stamps `version` and leaves the queue, an older-version verdict
+  reads as judge-again). Runs in `wiki-guard.yml`.
+
 ## The facet block is ONE idiom — a label column, chip radios, a pill
 
 Maintainer 2026-09-09: *"I can see you have added a lot of UX/UI that doesn't
@@ -127,6 +364,29 @@ Gate: `wiki/tools/check-facet.mjs` (light details under the Light row, one
 row called Light on an unlit state, a three-chip animation radio, no control
 smaller than the page's others).
 ## "Which ones have I already done?" — the shadow queue
+
+ONE FILTER ROW, ONE SORT ROW, and "in the making" belongs to the FILTER one
+(maintainer 2026-09-10: "If I press in the making you still say 'all 94'. With
+that filter it can't be 94."). It was a sort chip in the row above, so pressing
+it left "all 94" selected in this row and the page claimed both at once. Every
+chip HERE answers "which creatures" — all, in the making, no shadow, shadow set
+— and a chip nothing can fill is not drawn. A filter also follows him onto a
+creature page, which a sort cannot.
+
+‹ › WALKS THE LIST HE IS LOOKING AT: `monsterNav()` applies the filter AND the
+sort (`monsterSort`, the one comparator the overview uses), so "next" means what
+the last screen showed. An empty filter never strands him — the pager falls back
+to the whole roster.
+
+THE ANIMATION HE IS REVIEWING SURVIVES THE PAGE (maintainer 2026-09-10: "going
+to the next page should still show the attack animation if I was on the attack
+animation"). `makePlayer` opens on the last state he picked, remembered per KIND and only for
+CREATURES (`wiki-viewer-state-monster` / `-character`), whose five states are
+one fixed vocabulary; a scenery piece's states are numbered per piece
+(`lit_2`, `not_lit_3`) so carrying one across pieces lands him somewhere else
+each time. Only honoured when the entity has that state — else idle, else its
+first.
+
 
 Maintainer 2026-08-22: *"If I login with admin the monster page should make it
 possible to filter by 'no shadow set'. This is to be able to know what I have

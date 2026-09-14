@@ -5,6 +5,12 @@ heroes** plus **every character tagged `NPC`**. **PixelLab is the source of
 truth** — `pipeline/sync.py` mirrors it into the repo with **zero generations**.
 (The earlier `characters/` skeleton-exploration domain is retired; history in git.)
 
+Two agents work it (maintainer 2026-09-12): the **characters2 agent** and its
+**characters2-assistant** — the same remit, for the units the characters2 agent
+is not in. The assistant reads `coordination/characters2.json` first, never
+touches a file named there as in flight, and names every file it touches on
+`coordination/characters2-assistant.json` before pushing.
+
 ## PixelLab mental model + conventions
 
 - A **skeleton** = a generation-parameter profile: view, canvas size,
@@ -88,13 +94,26 @@ was deleted. Tag in the PixelLab UI → next sync brings it in; untag → remove
   determinism instead of filesystem order. `overrides.<npc>.<state>` pins an
   exact folder. Adding a state (walk, talk, work) is one entry — no code change.
 - **`no_turn`** (bool on the NPC's `metadata.json` record) marks an NPC whose
-  ART only reads right from ONE facing — the game must never turn it.
-  **Thorne** is the only one so far (his breastplate prop appears in
-  south/south-west but not south-east, so a turn makes it pop). Absent = false.
-- `verify_sync.py` checks the set BOTH ways (nothing tagged missing, nothing
-  untagged surviving), full per-NPC integrity, AND that every REQUIRED state
-  resolves to a folder with real frames — an NPC without an idle can never
-  ship silently frozen.
+  ART only reads right from ONE facing — the game must never turn it. Absent =
+  false. **No NPC carries it today**: it was written for Thorne, whose armorer's
+  breastplate stood beside him in south/south-west and vanished in south-east,
+  and Thorne was rejected 2026-09-14. The field stays — PixelLab produces that
+  defect regularly, and the game already honours the flag.
+- **REJECTED IN THE REVIEW BEATS THE TAG.** `live/feedback/characters.json` is
+  the maintainer's verdict channel (`rejected` → remove the asset, then clear
+  the entry). A wiki rejection does NOT untag the character on PixelLab, so a
+  plain delete would survive exactly until the next sync re-downloads it. So
+  `pipeline/verdicts.py` records the verdict in `metadata.json: rejected` —
+  this domain's own durable exclusion list — and clears the handled entry.
+  `sync.py` ingests verdicts before it downloads anything, prunes every listed
+  folder, keeps it out of the index, and prints the ones PixelLab still tags;
+  `verify_sync.py` fails if a rejected NPC reappears in the tree or the index.
+  Verdicts on the two **locked heroes** are never acted on by script — they are
+  reported and left in the feedback file. Rejected so far: `645f1252` (Thorne).
+- `verify_sync.py` checks the set BOTH ways (everything tagged AND not rejected
+  is present, nothing untagged or rejected survives), full per-NPC integrity,
+  AND that every REQUIRED state resolves to a folder with real frames — an NPC
+  without an idle can never ship silently frozen.
 
 ```bash
 python characters2/pipeline/sync.py npcs        # just the NPC set
@@ -218,6 +237,20 @@ downloads only what changed:
   all frames are on disk (newly-added *directions* still get picked up);
 - a true mirror — animations / directions / stray frames deleted in the UI are
   removed locally too;
+- **a direction regenerated in the UI keeps its old take in the record**, with
+  no timestamp and no current-flag, so a direction can arrive twice — the take
+  that ships is **the LAST one in the record** (`sync._pick_take`), which is
+  the take the PixelLab editor renders. (Not the newest by CDN Last-Modified:
+  the monsters domain measured that ranking against the editor over 19 real
+  doubled directions and it agreed about half the time, and the maintainer
+  lost finished animations to the disagreement. `verify_sync.py` expects the
+  same take.)
+- **the packed layer is re-cut at the end of every NPC pass** (`pack_npcs`,
+  before the commit), so a commit that carries new raw art always carries the
+  packed frames the game draws from — see "THE PACKED LAYER";
+- **the sync's commit stages only the mirror** (`humans/`, `npcs/`) — a local
+  `sync.py --no-push` from a dirty tree used to sweep pipeline edits into a
+  commit titled "sync N NPCs" (2026-09-12); it cannot now.
 - declared retouches (`retouch.json`) re-applied to every downloaded frame —
   see "Retouch layer" above.
 
@@ -237,7 +270,8 @@ workflow" button or run locally; it commits/pushes only on change.
 ```
 characters2/
   config.json                    pinned hero IDs (+ frame_format: webp)
-  metadata.json                  authored metadata for ALL characters (see above)
+  metadata.json                  authored metadata for ALL characters + the
+                                 `rejected` exclusion list (see above)
   animation_map.json             game-state -> folder contract (see above)
   retouch.json                   pixel patches on the mirror, sha-pinned (see above)
   humans/
@@ -252,10 +286,42 @@ characters2/
   npcs/
     index.json                   the NPC roll-up (characters2-npcs@1)
     <id8>/                       one NPC, same shape as a hero
+      packed/                    THE PACKED LAYER games2 loads (below)
   pipeline/
-    pixellab_client.py  sync.py  verify_sync.py  retouch.py  retouch_author.py
-    to_webp.py  generate.py (legacy explorer)
+    pixellab_client.py  sync.py  verify_sync.py  verdicts.py  retouch.py
+    retouch_author.py
+    to_webp.py  generate.py (legacy explorer)  pack.py (the packed layer)
 ```
+
+## THE PACKED LAYER (`npcs/<id>/packed/`; games2 reads it, `pipeline/pack.py` writes it)
+
+Every NPC carries `packed/`: each art file (8 rotations, every idle frame)
+cut to ONE box per NPC — the union of the opaque boxes of all its files, +1
+px — under a content-hashed name (`packed/<same subpath>.<sha8>.webp`), with
+`packed/index.json` naming the box and the current file per raw path. The
+game draws an NPC as one sprite whose origin is the foot anchor as a fraction
+of the frame and swaps rotations and idle frames under it, so every texture
+of an NPC must be the same size with the art at the same offset — hence one
+box per NPC, not per file. Measured over the roster (191 NPCs, 4,436 files):
+a body fills 38% of its 112x112 canvas; the packed frames are 223 -> 84 MB
+of decoded texels, 24 MB on disk.
+
+- **The raw files are untouched and stay the truth**: the wiki, the previews,
+  `verify_sync.py` and the anchor measurement read them. games2's
+  `build-npcs-manifest.mjs` measures the foot anchors on the RAW frames
+  (footAnchor's band and lift scale with the frame height) and converts them
+  into the packed frame; its gate `games2/scripts/verify-npc-pack.mjs` proves
+  the packed feet land on the raw pixel.
+- **It runs at the end of every NPC sync** (`sync.py` calls `pack.py` before
+  it commits, 2026-09-12 — a step someone has to remember is a step that gets
+  skipped, and an NPC whose raw art changed draws from STALE packed frames
+  until it is re-cut). By hand: `python3 characters2/pipeline/pack.py`
+  (resumable: an NPC whose raw bytes hash to its index is skipped, ~2 s for
+  the roster; `--check` exits 1 when any NPC is stale; `--only`). `sync.py`'s
+  mirror pass never touches `packed/` — it prunes inside `base/` and
+  `animations/` only. An NPC without a current packed layer draws raw.
+- **Cache law**: never a stable name; current + one back (`prev`) so an open
+  page keeps rendering through a deploy.
 
 Verify a sync is exact (read-only; re-fetches PixelLab and diffs the repo —
 every animation/direction/frame-count, image validity, stale folders, states):

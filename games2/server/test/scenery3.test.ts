@@ -52,6 +52,11 @@ import {
   SceneryPieces,
   MAX_ART_PX,
   type SceneryPiece,
+  SCENERY_PACK_SCHEMA,
+  packIndexPath,
+  parsePackIndex,
+  unpackPixels,
+  packedCut,
 } from "../../client/src/scenery3";
 // @ts-expect-error — plain .mjs helper shared with the build scripts
 import { imgRGBA } from "../../scripts/imagelib.mjs";
@@ -607,13 +612,14 @@ test("manifests load once per piece, failures tombstone, warnings fire once", { 
   });
   assert.equal(store.get("g/p"), undefined, "synchronous until it lands");
   await Promise.all([store.request("g/p"), store.request("g/p"), store.request("g/p")]);
-  assert.equal(seen.length, 1, "three requests, one fetch");
+  // One manifest fetch — the packed index rides beside it (its own test below).
+  assert.equal(seen.filter((u) => !u.endsWith("/packed/index.json")).length, 1, "three requests, one fetch");
   assert.equal(store.get("g/p")!.sprite, "g/p/sprite.webp");
   await store.ensure(["g/dead", "g/dead", "g/p"]);
   assert.equal(store.get("g/dead"), null, "a tombstone, not a retry");
   await store.request("g/dead");
-  assert.equal(seen.filter((u) => u.includes("/dead/")).length, 1);
-  assert.deepEqual(store.stats, { requested: 2, loaded: 1, failed: 1 });
+  assert.equal(seen.filter((u) => u.includes("/dead/") && !u.endsWith("/packed/index.json")).length, 1);
+  assert.deepEqual(store.stats, { requested: 2, loaded: 1, failed: 1, packed: 0 });
   assert.equal(warns.length, 1, "one line for a dead piece, not one per frame");
 });
 
@@ -668,4 +674,111 @@ test("a placement with `z` is lifted in storeys and hangs on the wall its facing
   assert.deepEqual(east.wall, { cx: 5, cy: 3 }, "an east face hangs on the cell up-screen in x");
   assert.deepEqual(guess.wall, { cx: 5, cy: 3 }, "no facing: the higher of the two");
   assert.equal(south.ax, flat.ax, "the lift is vertical only");
+});
+
+/* THE PACKED LAYER (scenery/pipeline/pack.py, docs/scenery.md): a packed
+ * texture is the raw canvas cut to its state's box. The game keeps every
+ * measurement in SOURCE-CANVAS pixels — it puts the packed bytes back on the
+ * canvas to measure them and registers a canvas rectangle on the texture in
+ * the texture's own texels — so a placement's fit, hitbox and light cannot
+ * move by being packed. These pin the two conversions and the index parser. */
+const pxOf = (w: number, h: number, on: (x: number, y: number) => boolean) => {
+  const data = new Uint8ClampedArray(w * h * 4);
+  for (let y = 0; y < h; y++)
+    for (let x = 0; x < w; x++)
+      if (on(x, y)) data.set([10 + x, 20 + y, 30, 255], (y * w + x) * 4);
+  return { w, h, data };
+};
+
+test("packed pixels put back on the canvas measure exactly what the raw canvas did", () => {
+  // A 16x12 canvas whose art is the rectangle [5,3)-[11,9); the pack cut it at (4,2) 8x8.
+  const raw = pxOf(16, 12, (x, y) => x >= 5 && x < 11 && y >= 3 && y < 9);
+  const rec = { path: "g/p/packed/sprite.abcd1234.webp", ox: 4, oy: 2, w: 8, h: 8, srcW: 16, srcH: 12 };
+  const packed = pxOf(8, 8, (x, y) => x + 4 >= 5 && x + 4 < 11 && y + 2 >= 3 && y + 2 < 9);
+  // The packed texels carry the canvas colours of the pixels they came from.
+  for (let y = 0; y < 8; y++)
+    for (let x = 0; x < 8; x++) {
+      const i = (y * 8 + x) * 4;
+      if (packed.data[i + 3]) packed.data.set([10 + x + 4, 20 + y + 2, 30, 255], i);
+    }
+  const back = unpackPixels(packed, rec);
+  assert.equal(back.w, 16);
+  assert.equal(back.h, 12);
+  assert.deepEqual(Array.from(back.data), Array.from(raw.data), "byte-identical to the raw canvas");
+  assert.deepEqual(alphaBBox(back), alphaBBox(raw), "the same bbox, in canvas pixels");
+  assert.deepEqual(alphaBBox(back), [5, 3, 11, 9]);
+  // A texture that IS the canvas (nothing was cut) comes back as itself.
+  assert.equal(unpackPixels(raw, { ...rec, ox: 0, oy: 0, w: 16, h: 12 }), raw);
+  // The canvas rectangle the fit produced, on the packed texture's texels.
+  const bb = alphaBBox(back)!;
+  assert.deepEqual(packedCut(rec, bb[0], bb[1], bb[2] - bb[0], bb[3] - bb[1]), { x: 1, y: 1, w: 6, h: 6 });
+  // ... and those texels are the art: the cut's corners are opaque, the margin is not.
+  const at = (x: number, y: number) => packed.data[(y * 8 + x) * 4 + 3];
+  assert.equal(at(1, 1), 255);
+  assert.equal(at(6, 6), 255);
+  assert.equal(at(0, 0), 0);
+  assert.equal(at(7, 7), 0);
+});
+
+test("the packed index parses per record and drops a cut that does not fit its canvas", () => {
+  const ok = { file: "lit_2/sprite.1a2b3c4d.webp", ox: 4, oy: 2, w: 8, h: 8, srcW: 16, srcH: 12, src: "deadbeef" };
+  const idx = parsePackIndex(
+    {
+      schema: SCENERY_PACK_SCHEMA,
+      files: {
+        "g/p/lit_2/sprite.webp": ok,
+        "g/p/bad_fit.webp": { ...ok, ox: 9 }, // 9 + 8 > 16
+        "g/p/bad_zero.webp": { ...ok, w: 0 },
+        "g/p/bad_float.webp": { ...ok, ox: 1.5 },
+        "g/p/bad_file.webp": { ...ok, file: "../escape.webp" },
+        "g/p/bad_type.webp": "sprite.webp",
+        "/g/p/leading_slash.webp": ok,
+      },
+    },
+    "g/p",
+  )!;
+  assert.ok(idx);
+  assert.deepEqual(Object.keys(idx).sort(), ["g/p/leading_slash.webp", "g/p/lit_2/sprite.webp"]);
+  assert.deepEqual(idx["g/p/lit_2/sprite.webp"], { path: "g/p/packed/lit_2/sprite.1a2b3c4d.webp", ox: 4, oy: 2, w: 8, h: 8, srcW: 16, srcH: 12 });
+  assert.equal(parsePackIndex({ schema: "other", files: {} }, "g/p"), null, "not this schema");
+  assert.equal(parsePackIndex({ schema: SCENERY_PACK_SCHEMA }, "g/p"), null, "no files");
+  assert.equal(parsePackIndex(null, "g/p"), null);
+  assert.equal(packIndexPath("g/p"), "scenery/g/p/packed/index.json");
+});
+
+test("the loader fetches a piece's packed index beside its manifest and a miss is silent", async () => {
+  const urls: string[] = [];
+  const warned: string[] = [];
+  const rec = { file: "sprite.1a2b3c4d.webp", ox: 4, oy: 2, w: 8, h: 8, srcW: 16, srcH: 12 };
+  const store = new SceneryPieces({
+    fetchJson: async (url) => {
+      urls.push(url);
+      if (url.endsWith("/packed/index.json")) {
+        if (url.includes("/unpacked/")) throw new Error("404");
+        return { schema: SCENERY_PACK_SCHEMA, files: { "g/p/sprite.webp": rec } };
+      }
+      return { sprite: url.includes("/unpacked/") ? "g/unpacked/sprite.webp" : "g/p/sprite.webp" };
+    },
+    warn: (m) => warned.push(m),
+    onLanded: () => {
+      // The packed twin is known BEFORE the landing hook: the first rebuild
+      // that sees the manifest asks for the art by its packed URL.
+      if (store.get("g/p")) assert.ok(store.packOf("g/p/sprite.webp"), "index landed before onLanded");
+    },
+  });
+  await store.request("g/p");
+  assert.deepEqual(store.packOf("g/p/sprite.webp"), { path: "g/p/packed/sprite.1a2b3c4d.webp", ox: 4, oy: 2, w: 8, h: 8, srcW: 16, srcH: 12 });
+  assert.equal(store.packOf("g/p/other.webp"), undefined);
+  assert.equal(store.stats.packed, 1);
+  assert.equal(urls.filter((u) => u.endsWith("/packed/index.json")).length, 1, "one index request per piece");
+  await store.request("g/unpacked");
+  assert.equal(store.get("g/unpacked")?.sprite, "g/unpacked/sprite.webp", "the manifest still lands");
+  assert.equal(store.packOf("g/unpacked/sprite.webp"), undefined, "a missing index is a raw piece");
+  assert.equal(warned.length, 0, "and nothing is said about it");
+  assert.equal(store.stats.packed, 1);
+  const off = new SceneryPieces({ fetchJson: async (url) => (urls.push(url), { sprite: "g/p/sprite.webp" }), pack: false, warn: () => {} });
+  const before = urls.length;
+  await off.request("g/p");
+  assert.equal(urls.length - before, 1, "pack off: the manifest only");
+  assert.equal(off.packOf("g/p/sprite.webp"), undefined);
 });

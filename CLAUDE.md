@@ -11,10 +11,13 @@ ever made, by utilizing AI to the fullest.
   maintainer and the agents — one ambitious conversation. The wiki is the
   clearest example: he reviews, verdicts, and tunes from inside it (`wiki/` +
   `live/`), and agents act on those verdicts.
-- Each agent owns **one top-level domain** with full control and full
-  responsibility inside it. Agents talk over the coordination boards
-  (`coordination/<domain>.json`), push straight to `main`, and the pace is
-  fast on purpose.
+- Each top-level domain is worked by **two agents in the same directory**:
+  its agent and that agent's assistant, `<agent>-assistant` (maintainer
+  2026-09-12: "an assistant that works with the same tasks and in the same
+  folder as the original agent"), with full control and full responsibility
+  inside it. Agents talk over the coordination boards
+  (`coordination/<agent>.json`, one per agent — assistants have their own),
+  push straight to `main`, and the pace is fast on purpose.
 - **No human keeps a clone.** The maintainer works from a PHONE and tests in
   production. Any ops step that needs a laptop will not happen — make setup a
   Cloud-Shell one-liner or derive the value in the workflow.
@@ -59,8 +62,9 @@ works. This map answers one question only — whose directory is that.
   `lore/lore.json` where **the owning domain's own text always wins** and lore
   only fills gaps.
 - `games2/` — the game itself: consumer of every art domain and **read-only
-  toward them**. The ONE domain shared by TWO agents (maintainer decision) —
-  the game agent and the games-ui agent; split in `games2/UI_AGENT.md`.
+  toward them**. The domain shared by the MOST agents (maintainer decision):
+  games, games-ui (file split in `games2/UI_AGENT.md`), games-audio,
+  games-ambient, games-perf and their assistants; roster in `games2/CLAUDE.md`.
 - `wiki/` — browses everything the agents produce; the maintainer rates,
   approves/rejects and tunes from inside it.
 - `live/` — the LIVE-UPDATE channel: read by the running game server **straight
@@ -140,11 +144,33 @@ without the key set.
 - Derive seeds deterministically so re-runs reproduce; loops are
   budget-aware (`/balance`) and stop cleanly when generations run low.
 
-**Git: push to `main`, disjoint paths.** One commit + push per unit of work;
-on rejection `git fetch && git rebase origin/main` and retry — domains touch
-disjoint paths, so rebases merge cleanly. One writer per file; the only
-cross-domain hazard is two agents editing a *shared* file at once. Loops are
-resumable: derive the next unit from the filesystem, never from memory.
+**Git: push to `main` — and YOUR DIRECTORY HAS TWO WRITERS (maintainer
+2026-09-12).** Your assistant (or your agent) works the same tasks in the same
+directory, so "disjoint paths, rebases merge cleanly" is over: a rebase can
+conflict, and a rebase that applies cleanly can still be broken — the other
+agent may have changed the file, the function or the index you built on. The
+procedure is `coordination/PROTOCOL.md` "Two writers per directory"; the law:
+- **Claim before you edit.** Your board's `current` names the unit and every
+  file it will touch, pushed BEFORE the work (a claim that ships with the
+  work protects nothing; `coordination/**` triggers no deploy). Read your
+  partner's board first each run: a file it names in flight is not yours,
+  and a collision goes to the original agent — the assistant yields.
+- **Rebase before EVERY push, not on rejection.** `git fetch && git rebase
+  origin/main`; if `origin/main` moved under your directory, re-run the
+  domain's checks on the REBASED tree (typecheck, tests, gates; a regenerable
+  index is rebuilt from the filesystem, never merged by hand). What passed
+  before the rebase proves nothing about what you are about to push.
+- **Resolve, never overrule.** A conflict is read and merged with both
+  intents. Never `--ours`/`--theirs` over a partner's hunk, never a
+  force-push, never a revert of a partner's commit to make yours apply. If
+  both sides changed the same logic and either choice loses behaviour: keep
+  that file out of the push, post to the partner, ship the rest.
+- **A request or feedback verdict to the domain is taken once.** Whoever
+  claims it on their board first has it; claimed or acked on EITHER board
+  means consumed (re-applied, a stale request overwrites the newer decision).
+One commit + push per unit; one writer per file AT A TIME (the boards say
+who); loops stay resumable and derive the next unit from the filesystem AND
+the partner's claim, never from memory.
 
 **`.dockerignore` decides what reaches the DEPLOYED GAME.** It is an
 allowlist of what `games2/Dockerfile` builds from: a new top-level domain is

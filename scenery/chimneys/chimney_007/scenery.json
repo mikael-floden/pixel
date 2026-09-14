@@ -1,0 +1,216 @@
+{
+  "format": "scenery-piece@2",
+  "generated_at": "2026-09-13T14:47:26+00:00",
+  "id": "chimney_007",
+  "group": "chimneys",
+  "type": "CHIMNEY",
+  "rank": 174,
+  "index": 7,
+  "name": "Whitewashed plaster stack with a round terracotta chimney pot 007",
+  "lights": "LIGHTS_OFF",
+  "variety": "whitewashed plaster stack with a round terracotta chimney pot",
+  "modifier": "one course missing from the cap",
+  "glow_concept": null,
+  "prompt": "a house CHIMNEY seen from outside, ONLY the chimney stack itself standing alone, cold and unused, no roof around it, no house, no wall, no ground, no smoke, no fire, every course and joint picked out pixel by pixel, per-pixel weathering speckle and dithered shading across the faces, fantasy RPG village architecture, small clear margin at edges, transparent background, whitewashed plaster stack with a round terracotta chimney pot, one course missing from the cap, a chimney stack about chest-high on a person, completely unlit, no glow, no light sources, no self-emission",
+  "view": "low top-down",
+  "direction": "south",
+  "directions": [
+    "south"
+  ],
+  "must_be_imbplemented_with_random_hflip": true,
+  "rotations": null,
+  "size": 96,
+  "sprite": "chimneys/chimney_007/sprite.webp",
+  "placement": {
+    "declared_height_m": 1.35,
+    "character_height_px": 87,
+    "character_height_m": 1.7,
+    "note": "ONE SCENERY PIXEL IS ONE PLAYER PIXEL. world_px_height IS the art's own alpha bbox height, so scenery is placed into the world at 1:1 exactly as the avatar is (setScale(1)) and the two share one pixel grid. The CAMERA still zooms the whole scene \u2014 that is uniform and correct; what must never happen is scenery being resampled on its own, against the player.",
+    "content_box": [
+      32,
+      15,
+      67,
+      80
+    ],
+    "content_px_height": 65,
+    "world_px_height": 65,
+    "canvas_render_px": 96,
+    "world_height_m": 1.27
+  },
+  "pixellab_object_id": "b4659131-3b95-4630-84e1-3cf4e2a4defa",
+  "pixellab_directions": 8,
+  "tags": [
+    "SCENERY"
+  ],
+  "status": "complete",
+  "animations": {},
+  "source": "pixellab.ai create-8-direction-object (SOUTH kept, S-only domain)",
+  "states": {
+    "NOT_LIT_1": {
+      "sprite": "chimneys/chimney_007/sprite.webp",
+      "pixellab_object_id": "b4659131-3b95-4630-84e1-3cf4e2a4defa",
+      "generated_at": "2026-09-13T14:47:26+00:00",
+      "vent": {
+        "dx": 1.5,
+        "dy": -29.5,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -0.5,
+            "dy": -29.0,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 1.5,
+            "dy": -29.0,
+            "conf": "opening"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/sprite.webp"
+      }
+    },
+    "NOT_LIT_2": {
+      "sprite": "chimneys/chimney_007/not_lit_2/sprite.webp",
+      "pixellab_object_id": "865559e1-b8a2-4087-8482-331c7c6984ae",
+      "generated_at": "2026-09-13T14:56:59+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.8806,
+      "glow_score": 0.4679,
+      "vent": {
+        "dx": 1.0,
+        "dy": -42.0,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": 0.5,
+            "dy": -42.0,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 1.5,
+            "dy": -42.0,
+            "conf": "opening"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/not_lit_2/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/not_lit_2/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/not_lit_2/sprite.webp"
+      }
+    },
+    "NOT_LIT_3": {
+      "sprite": "chimneys/chimney_007/not_lit_3/sprite.webp",
+      "pixellab_object_id": "8a97e01d-abc6-4f34-a5a7-c34625d159eb",
+      "generated_at": "2026-09-13T15:00:10+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9437,
+      "glow_score": 0.5409,
+      "vent": {
+        "dx": 0.5,
+        "dy": -26.5,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -0.5,
+            "dy": -26.5,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 0.5,
+            "dy": -26.5,
+            "conf": "opening"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/not_lit_3/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/not_lit_3/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/not_lit_3/sprite.webp"
+      }
+    },
+    "NOT_LIT_4": {
+      "sprite": "chimneys/chimney_007/not_lit_4/sprite.webp",
+      "pixellab_object_id": "7f2c2199-8433-4e6c-b918-8d94f6ee6003",
+      "generated_at": "2026-09-13T15:01:55+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.5386,
+      "glow_score": 0.6558,
+      "vent": {
+        "dx": 1.0,
+        "dy": -31.5,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": -6.0,
+            "dy": -31.0,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 6.0,
+            "dy": -31.0,
+            "conf": "opening"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/not_lit_4/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/not_lit_4/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/not_lit_4/sprite.webp"
+      }
+    },
+    "NOT_LIT_5": {
+      "sprite": "chimneys/chimney_007/not_lit_5/sprite.webp",
+      "pixellab_object_id": "e75838d1-9ff4-40f7-ae35-95b1fd1b36ef",
+      "generated_at": "2026-09-13T15:03:40+00:00",
+      "glow_concept": null,
+      "difference_from_source": 0.9853,
+      "glow_score": 0.0069,
+      "vent": {
+        "dx": 1.0,
+        "dy": -28.5,
+        "conf": "opening",
+        "rotations": {
+          "south-east": {
+            "dx": 0.5,
+            "dy": -28.5,
+            "conf": "opening"
+          },
+          "south-west": {
+            "dx": 1.5,
+            "dy": -28.5,
+            "conf": "opening"
+          }
+        }
+      },
+      "rotations": {
+        "south-east": "chimneys/chimney_007/not_lit_5/rotations/south-east.webp",
+        "south-west": "chimneys/chimney_007/not_lit_5/rotations/south-west.webp",
+        "south": "chimneys/chimney_007/not_lit_5/sprite.webp"
+      }
+    }
+  },
+  "vent": {
+    "dx": 1.5,
+    "dy": -29.5,
+    "conf": "opening",
+    "rotations": {
+      "south-east": {
+        "dx": -0.5,
+        "dy": -29.0,
+        "conf": "opening"
+      },
+      "south-west": {
+        "dx": 1.5,
+        "dy": -29.0,
+        "conf": "opening"
+      }
+    }
+  },
+  "mount": "roof",
+  "fixture": "chimney"
+}

@@ -25,7 +25,17 @@ import {
   parseWorld, buildTerrainGrid, findPath, monsterDodge, screenToWorldVector, bodyStandoff,
   startTrip, stepAutopilot, stepMovement, makeBlockedElev, makeSideBlocked,
   CELL_WU, PLAYER_RADIUS, WALK_CLIMB, WALK_SPEED,
+  dodgePersonal, MONSTER_DODGE_LOOKAHEAD, PLAYER_BODY_RADIUS,
 } from "@nangijala/shared";
+
+/** A body DEAD AHEAD, just inside the dodge's lookahead (which scales with the
+ *  personal radius: max(MONSTER_DODGE_LOOKAHEAD, personal + 20)) and well
+ *  outside personal space — the normal approach. Derived, so the fixtures
+ *  follow MONSTER_DODGE_TIGHTEN instead of silently measuring nothing when it
+ *  moves (2026-09-13: 0.85 -> 0.425 put a body at 40 wu outside the lookahead). */
+const AHEAD = Math.max(MONSTER_DODGE_LOOKAHEAD, dodgePersonal(9, PLAYER_BODY_RADIUS) + 20) - 6;
+/** Inside personal space (a 9-wu body seen by a 9-wu walker). */
+const INSIDE_PERSONAL = dodgePersonal(9, PLAYER_BODY_RADIUS) - 3;
 
 // Anchored to THIS FILE, not process.cwd(): the suite runs this from the
 // `server` workspace (`npm run test -w server`) while a direct run sits in
@@ -145,7 +155,7 @@ test("the dodge goes around a body on the side that is WALKABLE, not merely room
   const east: [number, number] = [1, 0];
   const w = screenToWorldVector(east[0], east[1]);
   const wl = Math.hypot(w.x, w.y);
-  const AT = 40; // wu ahead — inside the lookahead, outside personal space
+  const AT = AHEAD; // wu ahead — inside the lookahead, outside personal space
   const bodies = [{ id: "npc:1", x: (w.x / wl) * AT, y: (w.y / wl) * AT, r: 9 }];
   const geoOnly = monsterDodge(0, 0, east[0], east[1], bodies, undefined, undefined, undefined);
   assert.ok(geoOnly, "no dodge at all — the fixture does not put the body in the way");
@@ -186,7 +196,7 @@ test("a dodge holds its side until the body is passed, instead of re-deciding ev
   const wl = Math.hypot(w.x, w.y);
   const at = (d: number) => ({ id: "npc:1", x: (w.x / wl) * d, y: (w.y / wl) * d, r: 9 });
 
-  const first = monsterDodge(0, 0, east[0], east[1], [at(40)]);
+  const first = monsterDodge(0, 0, east[0], east[1], [at(AHEAD)]);
   assert.ok(first, "no dodge fired at all");
   const side = first!.state.side;
 
@@ -217,7 +227,7 @@ test("a dodge holds its side until the body is passed, instead of re-deciding ev
   // never come true. Latching it made the walker orbit (maintainer 2026-08-08:
   // "the player runs a full circle around the NPC"). Held SIDE, free MAGNITUDE.
   const wide = { ...first!.state, wide: true };
-  const relaxed = monsterDodge(0, 0, east[0], east[1], [at(40)], wide);
+  const relaxed = monsterDodge(0, 0, east[0], east[1], [at(AHEAD)], wide);
   assert.ok(relaxed, "the dodge dropped its blocker");
   assert.equal(relaxed!.state.side, side, "the side stopped being held");
   assert.equal(relaxed!.state.wide, false,
@@ -239,9 +249,10 @@ test("a dodge only emits a heading it checked, and keeps making progress", () =>
   const w = screenToWorldVector(east[0], east[1]);
   const wl = Math.hypot(w.x, w.y);
   const at = (d: number) => ({ id: "npc:1", x: (w.x / wl) * d, y: (w.y / wl) * d, r: 9 });
-  // Personal space is 9 + 9 + 6 = 24wu, so 40wu is a normal approach and 18wu
-  // is already inside it.
-  const far = [at(40)];
+  // Personal space is dodgePersonal(9, 9) — 9 + (9 + 6) x MONSTER_DODGE_TIGHTEN,
+  // 15.4 wu at 0.425 — so AHEAD is a normal approach and INSIDE_PERSONAL is
+  // already inside it.
+  const far = [at(AHEAD)];
 
   const pref = monsterDodge(0, 0, east[0], east[1], far, undefined, undefined, () => true);
   assert.ok(pref, "no dodge fired at all");
@@ -265,7 +276,7 @@ test("a dodge only emits a heading it checked, and keeps making progress", () =>
   // Inside the personal space the 90° step-out IS allowed: that is the one
   // case a person really does sidestep, and it cannot persist because the step
   // itself opens the distance.
-  const inside = monsterDodge(0, 0, east[0], east[1], [at(18)], undefined, undefined, () => true);
+  const inside = monsterDodge(0, 0, east[0], east[1], [at(INSIDE_PERSONAL)], undefined, undefined, () => true);
   assert.ok(inside, "no dodge fired from inside the personal space");
   assert.ok(inside!.state.wide, "a walker already inside the body cannot step out sideways");
 });
@@ -293,10 +304,12 @@ test("a body standing on the route is passed, not orbited", (t) => {
   const npcCol = run[Math.floor(run.length / 2)];
   const npc = { id: "npc:villager", x: (npcCol + 0.5) * CELL_WU, y: (wallRow + 1.5) * CELL_WU, r: 9 };
 
-  // 9 (npc) + (9 + 6) * MONSTER_DODGE_TIGHTEN(0.85). A GUARD, not a behaviour
+  // 9 (npc) + (9 + 6) * MONSTER_DODGE_TIGHTEN(0.425). A GUARD, not a behaviour
   // check: it fires when the clearance moves so this fixture's geometry gets
-  // re-examined rather than silently measuring nothing.
-  assert.equal(bodyStandoff(npc.x, npc.y, [npc]), 21.75,
+  // re-examined rather than silently measuring nothing (re-examined
+  // 2026-09-13 at 0.425: she still stands on the route, the dodge still
+  // engages within its lookahead, both trips still pass her).
+  assert.equal(bodyStandoff(npc.x, npc.y, [npc]), 15.375,
     "personal space moved — this test's geometry no longer matches the dodge's");
   assert.equal(bodyStandoff(npc.x + 100, npc.y, [npc]), 0, "a free point reported occupied");
 

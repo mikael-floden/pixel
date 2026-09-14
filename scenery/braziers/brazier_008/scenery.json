@@ -415,7 +415,12 @@
       "generated_at": "2026-08-15T20:39:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2801,
-      "glow_score": 0.0242
+      "glow_score": 0.0242,
+      "rotations": {
+        "south-east": "braziers/brazier_008/not_lit_2/rotations/south-east.webp",
+        "south-west": "braziers/brazier_008/not_lit_2/rotations/south-west.webp",
+        "south": "braziers/brazier_008/not_lit_2/sprite.webp"
+      }
     }
   },
   "collision": true,

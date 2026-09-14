@@ -1,4 +1,5 @@
-import { Schema, MapSchema, ArraySchema, defineTypes, view } from "@colyseus/schema";
+import { Schema, MapSchema, ArraySchema, defineTypes, view, Decoder } from "@colyseus/schema";
+import { installWorldUnitAccessors } from "@nangijala/shared";
 import { DEFAULT_DIRECTION, DEFAULT_TIME_IDX, MAX_STAMINA } from "@nangijala/shared";
 import type { AutopilotTrip } from "@nangijala/shared";
 import type { AccountRecord } from "../account/store.js";
@@ -11,8 +12,10 @@ import type { AccountRecord } from "../account/store.js";
  * `experimentalDecorators` tsconfig required.
  */
 export class Player extends Schema {
-  declare x: number;
-  declare y: number;
+  x = 0; // world units, SERVER-SIDE; synced as px/py (shared/worldunits.ts)
+  y = 0;
+  declare px: number;
+  declare py: number;
   declare dir: string;
   declare moving: boolean;
   declare running: boolean;
@@ -44,7 +47,11 @@ export class Player extends Schema {
   // Server-only (not synced): queued inputs + rate-limit bookkeeping. The
   // server integrates each input's dt (client-reported, budget-bounded) so
   // both sides run identical movement math.
-  inputQueue: { ax: number; ay: number; running: boolean; seq?: number; dt: number }[] = [];
+  /** `sm` is the PLAYER-SPEED dial the client sent WITH this window — every
+   *  input is integrated under its own, because the client replays an RTT-deep
+   *  buffer and a factor that changed mid-flight would rewrite the history of
+   *  everything still in it (the same rule the hit-slow factor follows). */
+  inputQueue: { ax: number; ay: number; running: boolean; seq?: number; dt: number; sm: number; route?: boolean; ac?: number }[] = [];
   timeCredit = 0; // seconds of integration budget (accrues with real time)
   lastMoving = false;
   jumpUntil = 0; // ms timestamp: jump window ends
@@ -70,6 +77,7 @@ export class Player extends Schema {
   target = ""; // engaged monster id ("" = none)
   nextSwingAt = 0;
   lastHitAt = -100000; // when the last hit LANDED on this player (drives slow)
+  lastFallAt = -100000; // when the last FALL landed (drives the fading fall slow — shared fallSlowAt)
   lastCombatAt = -100000; // last swing given OR taken (gates regen)
   respawnAt = 0; // while dead: the EARLIEST a press may revive (die clip done)
   deadUntil = 0; // ...and the backstop, if the press never comes (closed tab)
@@ -81,12 +89,14 @@ export class Player extends Schema {
   pid = ""; // the stable id (the map key); the first session id of this login
   handoff: { to: number; key: string; at: number } | null = null; // a crossing in flight
   lastSeen = 0; // ghosts only: when the owner's last edge snapshot carried it
+  ghostNoAggro = false; // ghosts only: the body's "disable aggro" switch at home
+  ghostSwings = 0; // ghosts only: this room's own swing counter for the damage roll
 
   constructor() {
     super();
     this.sid = "";
-    this.x = 0;
-    this.y = 0;
+    this.px = 0;
+    this.py = 0;
     this.dir = DEFAULT_DIRECTION;
     this.moving = false;
     this.running = false;
@@ -113,8 +123,8 @@ export class Player extends Schema {
 }
 
 defineTypes(Player, {
-  x: "number",
-  y: "number",
+  px: "int16",
+  py: "int16",
   dir: "string",
   moving: "boolean",
   running: "boolean",
@@ -151,8 +161,10 @@ defineTypes(Player, {
  */
 export class Monster extends Schema {
   declare kind: string; // monsters roster id (drives which sprite/strip to draw)
-  declare x: number; // authoritative world-unit position
-  declare y: number;
+  x = 0; // authoritative world-unit position, SERVER-SIDE; synced as px/py
+  y = 0;
+  declare px: number;
+  declare py: number;
   declare dir: string; // Direction name (from stepMovement) — 8-dir facing
   declare moving: boolean; // true while hopping — drives walk anim vs freeze on pause
   declare elev: number; // surface elevation in LEVELS (client lift + y-sort, like Player)
@@ -194,13 +206,14 @@ export class Monster extends Schema {
   diedAt = 0; // when the death started (drops + removal at diedAt + MONSTER_DIE_MS)
   // ZONES (spec/ZONES.md), server-only.
   home = -1; // the zone room that seeded it (its respawn goes back there)
+  pinned = false; // debug: dbgmonster {pin} holds it in place while roaming
   lastSeen = 0; // ghosts only
 
   constructor() {
     super();
     this.kind = "";
-    this.x = 0;
-    this.y = 0;
+    this.px = 0;
+    this.py = 0;
     this.dir = DEFAULT_DIRECTION;
     this.moving = false;
     this.elev = 0;
@@ -216,8 +229,8 @@ export class Monster extends Schema {
 
 defineTypes(Monster, {
   kind: "string",
-  x: "number",
-  y: "number",
+  px: "int16",
+  py: "int16",
   dir: "string",
   moving: "boolean",
   elev: "number",
@@ -237,8 +250,10 @@ defineTypes(Monster, {
  */
 export class GroundItem extends Schema {
   declare item: string; // items/ folder id
-  declare x: number; // world units
-  declare y: number;
+  x = 0; // world units, SERVER-SIDE; synced as px/py
+  y = 0;
+  declare px: number;
+  declare py: number;
   declare elev: number; // surface level where it landed (client lift)
 
   // Server-only.
@@ -248,16 +263,16 @@ export class GroundItem extends Schema {
   constructor() {
     super();
     this.item = "";
-    this.x = 0;
-    this.y = 0;
+    this.px = 0;
+    this.py = 0;
     this.elev = 0;
   }
 }
 
 defineTypes(GroundItem, {
   item: "string",
-  x: "number",
-  y: "number",
+  px: "int16",
+  py: "int16",
   elev: "number",
 });
 
@@ -369,6 +384,11 @@ export class WorldState extends Schema {
   declare ghostDrops: MapSchema<GroundItem>;
   declare chessBoards: MapSchema<ChessBoard>;
   declare chessMatches: MapSchema<ChessMatch>;
+  /** POSITIONS ON THE WIRE (shared/worldunits.ts): every px/py in this
+   *  state is `(x - ox) * pq`, int16. */
+  declare ox: number;
+  declare oy: number;
+  declare pq: number;
   declare timeIdx: number; // shared time-of-day phase (server-owned)
   declare phaseT: number; // continuous progress 0..1 through the phase (clock hand/sun sweep smoothly)
   declare weather: number; // shared weather layer (server-owned; 0 = clear)
@@ -387,6 +407,9 @@ export class WorldState extends Schema {
     this.ghostDrops = new MapSchema<GroundItem>();
     this.chessBoards = new MapSchema<ChessBoard>();
     this.chessMatches = new MapSchema<ChessMatch>();
+    this.ox = 0;
+    this.oy = 0;
+    this.pq = 2;
     this.timeIdx = DEFAULT_TIME_IDX;
     this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
     this.weather = 0;
@@ -413,6 +436,9 @@ defineTypes(WorldState, {
   ghostDrops: { map: GroundItem },
   chessBoards: { map: ChessBoard },
   chessMatches: { map: ChessMatch },
+  ox: "number",
+  oy: "number",
+  pq: "number",
   timeIdx: "number",
   phaseT: "number",
   weather: "number",
@@ -429,3 +455,14 @@ defineTypes(WorldState, {
 // stayed false and every client received the whole room).
 for (const field of ["players", "monsters", "drops", "ghosts", "ghostMonsters", "ghostDrops"])
   view()(WorldState.prototype, field);
+/** OWNER-ONLY FIELDS: the input ack (`seq`) and the prediction inputs
+ *  (`slow`, `stamina`) change every tick for every body and mean nothing to
+ *  anyone but the body's own client. Tagged OWNER_VIEW_TAG, they reach only
+ *  the view that added the player with that tag (`attachView`). Measured at
+ *  200 packed bots: 32.4 → ? KB/s per client (docs/backend.md). */
+export const OWNER_VIEW_TAG = 1;
+for (const field of ["seq", "slow", "stamina"]) view(OWNER_VIEW_TAG)(Player.prototype, field);
+// The client-side `x`/`y` getters (tests decode with the same library copy
+// as colyseus.js, so installing here covers them; the browser installs in
+// client/src/net.ts).
+installWorldUnitAccessors(Schema, Decoder);

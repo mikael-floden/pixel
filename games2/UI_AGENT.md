@@ -11,6 +11,13 @@ UI/HUD/MENU-agent"):
 - the **games-ui agent** (THIS charter) — everything the player reads and
   taps that isn't the world itself: the HUD, the page frame, menus, screens,
   overlays (board file `coordination/games-ui.json`).
+- the **games-ui-assistant** — the games-ui agent's first assistant
+  (maintainer 2026-09-12, the shape the game agent's `games-assistant` set):
+  this charter and remit, for the units the games-ui agent is occupied
+  elsewhere for. It reads `coordination/games-ui.json` first, never touches a
+  file named there as in flight, names every file it touches on
+  `coordination/games-ui-assistant.json`, and rebases onto games-ui's pushes
+  before every push.
 
 Both follow `games2/CLAUDE.md` (it stays the single source of truth for how
 the game works) and `coordination/PROTOCOL.md`. This file only adds the
@@ -72,8 +79,10 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
 - `client/public/ui2/`, `client/public/logo*.webp`, `client/public/icons/`,
   `client/public/manifest.webmanifest` — UI art + PWA shell.
   **UI art is lossless WebP** (project default, 2026-07-31). `public/ui2/`
-  now holds ONLY what the runtime loads: `select-bg`, `gold-icon` and the
-  seven tab icons. The 4.7 MB of retired UI-kit bakes (frame/stone/plate/
+  now holds ONLY what the runtime loads: `select-bg`, `gold-icon`, the seven
+  tab icons and the four CORNER icons (`icon-wiki`, `icon-theme`,
+  `icon-search`, `icon-install`), each an exact 2x bake of the untouched
+  export kept beside it in `client/ui-src/icon-<name>-src.png`. The 4.7 MB of retired UI-kit bakes (frame/stone/plate/
   kit-*/select-frame/select2/select3 and all of `public/ui/`) was DELETED —
   the wiki-style remake stopped loading it in 2026-07-30 and it was pure
   deploy weight; the maintainer's SOURCE art is untouched in
@@ -83,9 +92,9 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   ~236 KB saving that would cost the install icon on iPhones, and nobody
   downloads them during play.
 - UI build scripts: `scripts/build-ui-tiles.mjs`, `scripts/build-pwa-icons.py`,
-  `scripts/bake-tab-icons.py` (emits `.webp` — convert at the SOURCE, never
-  as a build step: a Dockerfile conversion would add minutes to every deploy
-  and bust the layer cache).
+  `scripts/bake-tab-icons.py`, `scripts/bake-corner-icons.py` (all emit
+  `.webp` — convert at the SOURCE, never as a build step: a Dockerfile
+  conversion would add minutes to every deploy and bust the layer cache).
 - UI verify scripts: `scripts/verify-select.mjs`, `scripts/verify-chat.mjs`,
   `scripts/verify-mobile.mjs`, `scripts/verify-landscape.mjs`,
   `scripts/verify-dropqty.mjs` (backpack ×N badges + the drop dialog, both
@@ -99,6 +108,10 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/verify-wikibtn.mjs` (the in-game Wiki button, the wiki's
   remembered reading spot, the game-loop freeze while it is open, the
   🔍 button + its `wiki:near` contract, and that the 🔍 icon really decoded).
+  `scripts/verify-safearea.mjs` (the cutout: the insets driven over CDP,
+  the chips, the select corners and the landscape pill stack stepping down by
+  the top inset, the pages' scroll end by the bottom one, and the plain
+  geometry back the moment the insets are 0).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -251,8 +264,47 @@ from the games agent), #18 (title/landing screen).
   was right for exactly one day: it is the check that CAUGHT the crop
   landing, and the samples above replaced it because a cropped render has no
   such relationship to the grid.
+- **A MAP LAYER READS THE PUBLISHER'S OWN NAMES, NEVER ITS OWN DERIVATION.**
+  The `dungeons` chip pins maps2's `places.json` (`pixel-maps2/places@2`) —
+  `kind: "cave"`, the display `name`, and the published `entrance` if there is
+  one else `anchor` (the spec's own map-pin cell; for a cave the centroid is
+  inside the mountain and the useful cell is the mouth). A dungeon appears the
+  day maps2 ships it and nothing here moves when the terrain does. Houses and
+  summits ride in the same file and are one `LAYERS` entry each.
+  A CHIP IS OFFERED ONLY WHEN SOMETHING IS BEHIND IT (`Layer.has`) — a world
+  with no caves shows no dungeons button.
+  A PIN IS A DIAMOND IN HTML: the overlay `<svg>` is stretched to the image box
+  (`preserveAspectRatio="none"`), so a circle drawn in it comes out an ellipse,
+  and SHAPE is what separates a place from the round accent "you are here" dot
+  at 2 inches wide and to a colour-blind eye. NO NAME IS EVER DRAWN — the icon
+  is the whole mark (maintainer 2026-09-12: "when I want to see dungeons on the
+  minimap I don't want any text over the dungeons … just icon is enough"). The
+  first version placed a name under each pin and dropped the ones that
+  collided; with nine caves in one massif that both half-failed and covered the
+  island he was reading. The name rides the element as `data-pin`, which is
+  what the gate finds a pin by and what a future tap-a-pin would open.
+  A PIN IS PROJECTED AT ITS CELL'S OWN LEVEL, never the ground plane. maps2's
+  formula lifts a cell by `kz*level` (1.05px per storey on this render), so a
+  cave mouth 30 storeys up the massif drawn at level 0 lands 32px low on a
+  478px image — 6.6% of the frame, out on the snowfield below the hole he
+  walks into (maintainer 2026-09-12: "you should of course mark the entrance
+  and not the center"). `minimapCellPct`'s `level` defaults to 0 because a
+  FLAT overlay (the zone grid) wants the ground plane; anything that marks a
+  place you STAND on passes `__ml.levelAt((col+0.5)*32, (row+0.5)*32)`.
+  Gated in `verify-map` against maps2's own worked sample: the fixture's cave
+  entrance IS sample 0's cell, so a pin agreeing with the published pixel
+  cannot be agreeing with a shared misreading of the projection. The fixture
+  rides on top of whatever the world really publishes.
+  …AND AGAINST THE DOT, because every published sample is a level-0 land
+  corner and therefore cannot tell a level-aware projection from one that
+  passes 0 — which is how the level bug shipped past a green gate. The check
+  stands the player ON the highest published cave mouth and requires the pin
+  to be under them; the dot is itself gated against the samples, so this tests
+  the level through a different mechanism. Pins carry `data-cell` for it,
+  because a pin has no rendered text to be found by — and the same check
+  asserts that: any ink on the island fails it.
 - **SLIDER ROWS LEAVE A SCROLL GUTTER; BUTTONS DO NOT** (`--ml-slider-gutter`,
-  80px, maintainer 2026-09-08 with the strip circled on a screenshot: "when
+  100px, maintainer 2026-09-08 with the strip circled on a screenshot: "when
   scrolling in settings it's hard to not by mistake edit a slider … this is
   because the sliders spawn 100% width"). A track takes its value on
   POINTERDOWN — a tap anywhere on it jumps there, which is deliberate — so the
@@ -275,6 +327,97 @@ from the games agent), #18 (title/landing screen).
   thumb is the same size on every screen, so this must never become a
   fraction of the viewport. The gate's floor is that number rather than the
   44px generic touch target, so shrinking it back toward a guideline fails.
+  THE GUTTER IS ALSO THE "default" BUTTON'S LANE (`.ml-slider-def`, maintainer
+  2026-09-10: "I want it to the right of the slider. We already have extra room
+  there because the slider doesn't take up 100%"). The two uses do not fight: a
+  button is not draggable — a touch that moves becomes a scroll and never fires
+  a click — so the strip still starts scrolls and the track keeps its width. The
+  button's flex-basis IS `--ml-slider-gutter` minus the row gap, so widening the
+  gutter widens the button and the two numbers can never drift apart.
+- **EVERY DIAL CARRIES A "default", AND DISABLED MEANS "already there"** (his
+  words). `pctSlider`/`rangeSlider` take the default as a REQUIRED argument, in
+  the same 0..1 axis as `get`/`set`, so a log or stepped dial converts it the
+  way it converts everything else — and a new dial cannot forget to name one.
+  The button asks the STORED value, never the drag's raw position: a drag that
+  lands on the default must go dead, and a pointer fraction never equals a
+  stored number exactly. These dials exist so he can find a number by eye, so
+  the way back from a hand he did not like is part of the widget, not a nicety.
+- **EVERY SLIDER SITS IN ONE BLOCK** (`.ml-dials`, maintainer 2026-09-10: "we
+  have two settings sliders at the bottom of the page and the rest in the
+  middle. Put all in the middle."). The two strays were the bird-density dial,
+  which the ambient checklist built into ITSELF, and the games agent's Uphill
+  bias, injected onto the end of the column from `navbias.ts`. A slider dropped
+  anywhere else in `.ml-set` is MOVED into the group by an observer rather than
+  asked to know about it: outside injectors find the page by class and re-inject
+  after every HudBar rebuild, so the rule only stays true if it lives on the
+  receiving side. Moving a node out of `.ml-set` fires only records the observer
+  ignores, so it cannot loop.
+  ADOPTION ALSO DRESSES IT (`adoptDial`): the track and the reset button are put
+  into a `.ml-slider-row` and the button gains `.ml-slider-def`, reading none of
+  the injector's own classes. PAID FOR — `navbias.ts` kept a private copy of the
+  row CSS and a rewrite left the copy but dropped the call that injected it, so
+  both Uphill dials shipped with the button on its own centred line above the
+  track (maintainer 2026-09-11: "two default buttons look missplaced"). The gate
+  now measures that a button's centre falls INSIDE its track's box, because that
+  layout passes every class check.
+- **THE LIGHT GROUND IS BEIGE, NOT WHITE** (maintainer 2026-09-12: "the light
+  css is a bit too light/white … make it a little more beige … I just don't
+  want this super white"). `theme.ts` light tokens: ground `#f6f0e6`, card
+  `#fdf9f3`, pressed `#eee6da`, border `#e1dacd` — one CIELAB hue (86°, warm
+  paper; 78° reads salmon beside the coral accent, 92° goes dusty olive), an
+  even L* ramp 98.2 / 95.0 / 91.7 / 87.2 / 79.7, chroma rising as it darkens.
+  HIS PICK from six rendered candidates was the SOFTER one (chroma × 0.72, a
+  step lighter than the fuller paper beige) — "a little bit more beige than
+  white", not a parchment (maintainer decision). `--good` / `--accent-ink` are
+  a hair darker than the wiki's purely to hold ≥ 4.5:1 on the new ground.
+  Pinned in `verify-hudtabs` (`palette()`): ground max channel ≤ 248 and R−B
+  ≥ 12 (the old `#faf9f5` is 250 / 5), a card lighter than the ground, ink ≥
+  12:1 and muted ≥ 4.5:1 — reverting to the wiki's white fails it. The DARK
+  blocks are the wiki's verbatim and untouched. The wiki has the light values
+  on its board to adopt; `wiki/` is never edited from here.
+- **THE BACKPACK IS SELECT, THEN DRAG — AND AN UNSELECTED SLOT IS THE
+  SCROLLER'S** (maintainer 2026-09-14: "it's hard to scroll in the backpack
+  because I always drag an item by mistake … in order to drag an item to the
+  game you must first select the item (so the slot is highlighted)"). The slot
+  took the gesture on `pointerdown` with `touch-action:none`, so a finger that
+  started on a filled cell could never scroll the page — on a full backpack
+  that is most of the page. Now a filled slot has TWO states and the difference
+  is what the browser may do with the touch: unselected, nothing is captured or
+  preventDefault()ed and there is no `touch-action`, so the finger scrolls;
+  selected, it wears `touch-action:none` and the pointer-captured drag as
+  before. One slot at a time, so 1 cell of 15 is sticky and the rest scroll.
+  SELECTING IS A `click`, which is the whole trick and costs nothing: a touch
+  that turns into a scroll never fires one — the same rule the "default"
+  buttons ride on in the slider gutter — so there is no threshold, no timer and
+  no guess at intent. A real drag swallows the click that follows it, so an
+  aborted drag keeps the selection; tapping the selected slot again clears it.
+  The highlight is the tab row's (`--accent-soft` on `--accent`), because a
+  selected thing should look selected the same way everywhere.
+  THE LIFTED ITEM LEAVES ITS SLOT (his second ask, same message: "when you drag
+  the item it should not still be visible in the slot … easier to understand
+  that you have grabbed the item"): mid-drag the cell hides its art and badge
+  with `visibility`, NOT `display` — the cell keeps its size, so the grid never
+  reflows under the finger — and keeps the selection outline, so an empty
+  outlined cell says both "this is in your hand" and "it came from here".
+  The selection is held as {slot, item}, never a bare index: an `inv` refresh
+  can compact the array under a live selection, and one that silently
+  re-pointed at whatever moved in would drop the wrong thing.
+  THE GHOST IS THE SLOT'S ART AT THE SLOT'S SIZE (maintainer 2026-09-14: "when
+  I start to drag an item the item icon becomes smaller vs how big it is in the
+  slot"). It was a literal 40px against a slot that draws its art at 80% of the
+  cell — ~51px on his phone, and a different number at every breakpoint and in
+  landscape. The ghost MEASURES the image it lifts and centres that on the
+  finger, so the two can never drift apart again; the gate measures it against
+  the art still showing in a neighbouring slot rather than against a number.
+  Gated in `verify-dropqty` section 1b, and the FIRST assertion is the
+  regression that protects his scroll: an unselected slot lifts no ghost and
+  opens no dialog.
+  STILL OWED (his third ask, 2026-09-14): dragging an item onto another slot to
+  move or swap it. The inventory order is SERVER state (`player.inv`, a dense
+  array, re-sent as `inv` on every change), so a client-side reorder would
+  revert on the next refresh — it needs a message in `WorldRoom.ts`, which is
+  the games agent's file. Requested on their board; the UI half hangs off one
+  optional `HudActions` callback when it lands.
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font
@@ -290,6 +433,29 @@ from the games agent), #18 (title/landing screen).
   pure mirror, a 2x must reproduce the source in every 2x2 block, and a
   re-centring must move the same pixels it started with — or you have
   resampled pixel art without noticing.
+  ALL FOUR CORNER ICONS COME OUT OF ONE SCRIPT NOW
+  (`scripts/bake-corner-icons.py`, 2026-09-13): the first three were baked by
+  hand, so their transforms lived only in a commit message and nothing could
+  be reproduced. It re-bakes the shipped three and compares them BYTE FOR BYTE
+  — a disagreement fails the run instead of overwriting his art — and asserts
+  each transform as above. The Install chip's ⤓ TEXT GLYPH went the way of the
+  emoji the same day: his gold download arrow (PixelLab prompt "Download"),
+  baked untransformed because its 18x21 ink already sits as centred as an odd
+  remainder allows, and the artist's placement inside the canvas is part of
+  the design. THE THREE CORNER CHIPS ARE ONE SET, sized by ONE rule
+  (maintainer 2026-09-13, on the arrow landing in the old smaller chip: "The
+  button should look similar to Wiki and theme same size and margin") — 118x46,
+  the authored 24px icon box, 12px from each one's OWN edge, Install on Wiki's
+  top line. The "utility chip reads a step smaller" reading is retired.
+  `verify-select` asserts the SET — box, margin, line and the icon's inset
+  inside its chip — never one chip on its own, which is the same rule that
+  keeps the pair matched.
+  AND THE GATE WAITS FOR THE DECODE: `naturalWidth` is 0 for a 404 AND for a
+  file that has not arrived yet (on a cold dev server the corner art lands
+  ~300 ms after the button exists, the hidden Install chip's later still), so
+  verify-select waits for every `.ml-cicon-img` to decode before measuring.
+  A missing file never decodes, so the wait times out and the gate still fails
+  with the same meaning — it stops passing or failing on the harness's luck.
   WHEN AN ICON SHARES A BOX, GROW THE BOX — never squeeze the art. The select
   screen's Wiki and Theme glyphs sit in one fixed `.ml-cicon` exactly so the
   pair cannot differ in size or baseline (his 2026-07-30 report), so it went
@@ -302,6 +468,41 @@ from the games agent), #18 (title/landing screen).
   while the book beside it was centred, which reads as 2px of misalignment in
   a shared box; the bake centres the ink (pure integer translation, export
   kept as the source of record).
+- **THE CHROME CLEARS THE CUTOUT THROUGH ONE TOKEN** (`--ml-safe-top` /
+  `--ml-safe-bottom`, declared once in `theme.ts` as `env(safe-area-inset-*)`,
+  0 wherever the browser letterboxes the cutout or there is none; the games
+  agent's 2026-08-05 heads-up when Chrome began drawing installed apps INTO the
+  punch hole). Anything hugging the TOP edge adds the token to its offset — the
+  stat chips, the select corners, the update toast, and the landscape pill
+  stack, which hangs off the chip's MEASURED height and so needs the inset
+  itself. Pages pad their scroll end by the bottom one (the gesture bar). NEVER
+  a literal `env()` in a consumer: one declaration is what lets the gate drive
+  every surface at once. `env()` is CSS-only, so this is the ONE layout var
+  `applyLayout()` cannot publish in px; a JS consumer reads the element's rect.
+  AND THE BAND ITSELF IS PAINTED (`#ml-safebar`, `client/index.html`: one
+  fixed strip, `height: env(safe-area-inset-top)`, the letterbox's own `#000`,
+  `pointer-events:none`, z 9). THE TRIGGER IS A TAB-OUT AND BACK (his words,
+  after "the card is not at the top … I then restarted the game and that fixed
+  the issue"): his shell letterboxes the cutout, and on a resume from the task
+  switcher it hands the app the whole screen instead, so the state flips
+  MID-SESSION and a restart "fixes" it by landing back in the letterboxed one.
+  MEASURED on his shots of the
+  same build: the card does not move — its HP bar is 198 vs 196 device px from
+  the top of the glass — because the chips already clear the cutout. All that
+  differs is what fills the 152 device px (55.3 css px) above it: black
+  letterbox, or live world. World there reads as a floating card, so the band
+  wears the same black either way and the two launches are pixel-alike. It is
+  PAINT, NOT LAYOUT — nothing is inset, the canvas is not re-fitted, the golden
+  split is untouched — which is why it costs no gate. REJECTED: chips flush to
+  the glass at 10px, the pre-inset layout; that is exactly what the inset
+  exists to prevent, and a top-corner camera hole then sits on the HP numbers.
+  Gated in `verify-safearea` through CDP's inset override — the only way to
+  see a cutout on this harness — before AND after, so "inert at 0" is measured,
+  not assumed. NOT DONE YET: the landscape cutout is a LEFT/RIGHT inset (the
+  menu column and the floating stick) and the stick's well already touches the
+  page bottom where the gesture bar lands — both wait for his device to
+  confirm edge-to-edge, since a phantom inset there would move controls he
+  has placed by hand.
 - **A MISSING `/ui2` FILE IS AN EMPTY BOX, NOT AN ERROR.** Nothing throws, the
   button keeps its shape, and a screenshot at a glance looks like a design
   choice. The only honest gate is the DECODED bitmap — `naturalWidth` is 0 for

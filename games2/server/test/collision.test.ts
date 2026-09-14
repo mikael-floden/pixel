@@ -22,6 +22,9 @@ import {
   JUMP_CLIMB,
   PLAYER_RADIUS,
   integrateFall,
+  fallDurationS,
+  ISO_GEOMETRY_MAPS3,
+  FALL_DMG_MIN_LEVELS,
   parseWorld,
   MAX_STAMINA,
   SWIM_DRAIN,
@@ -30,6 +33,16 @@ import {
   ISO_DX,
   ISO_DY,
 } from "@nangijala/shared";
+import {
+  FALL_HURT_RATE,
+  HURT_IMPACT_FRAME,
+  hurtLeadFrames,
+  hurtLeadMs,
+  hurtFrameAt,
+  hurtClipMs,
+  hurtFireSlackMs,
+  hurtSeekFrames,
+} from "../../client/src/fallhurt";
 
 // A 3×3 world. Centre column is grass; left column water; the right column is a
 // raised grass wall (elevation 2) — a 2-level ledge you can't walk up. (A single
@@ -279,6 +292,122 @@ test("integrateFall: a cliff drop falls under gravity (animated, not a snap)", (
   assert.equal(s.elev, 0);
   assert.equal(s.falling, false);
   assert.ok(frames < 30, `a 2-level fall should land quickly, took ${frames} frames`);
+});
+
+// THE SERVER BILLS A FALL WHEN THE BODY LANDS, and the only thing that tells it
+// when that is, is this function. It has to agree with the descent the client
+// actually draws — a closed form that ran short would put the hp back where the
+// bug was (maintainer 2026-09-11: "when I fall down a cliff I should take fall
+// damage when I hit the ground and not when I start falling"), and one that ran
+// long would leave you standing on the ground at full health for a beat.
+test("fallDurationS matches the drawn descent, and never lands the hit early", () => {
+  const lh = ISO_GEOMETRY_MAPS3.lh; // the pitch the game ships
+  const dt = 1 / 60;
+  const rows: string[] = [];
+  for (const levels of [FALL_DMG_MIN_LEVELS, 8, 12, 20, 32, 46]) {
+    let s = { elev: levels * lh, fallV: 0, falling: false };
+    let frames = 0;
+    while (s.elev > 0 && frames < 6000) {
+      s = integrateFall(s, 0, dt, lh);
+      frames++;
+    }
+    const drawn = frames * dt; // rounded UP to the frame the body first touches down
+    const t = fallDurationS(levels, lh);
+    // WITHIN ONE FRAME of the drawn descent, either way. Closer than that is
+    // not a thing anyone can observe: the server settles the hit on its 20 Hz
+    // tick, so the real granularity is 50 ms — three frames — and `drawn`
+    // itself is quantised to the client's own frame.
+    assert.ok(
+      Math.abs(t - drawn) <= dt + 1e-9,
+      `${levels} levels: clock ${t.toFixed(3)}s vs the ${drawn.toFixed(3)}s descent`,
+    );
+    rows.push(`${levels}lv ${(t * 1000).toFixed(0)}ms`);
+  }
+  // A fall worth billing is never instant: the shortest one the damage rule
+  // sees is still most of a second, which is the whole point of deferring it.
+  assert.ok(fallDurationS(FALL_DMG_MIN_LEVELS, lh) > 0.4, "the smallest damaging fall is still a visible descent");
+  assert.equal(fallDurationS(0, lh), 0, "no drop, no wait");
+  assert.equal(fallDurationS(-3, lh), 0, "a climb is not a fall");
+  console.log(`fall clock: ${rows.join(", ")}`);
+});
+
+// THE GOT-HIT FRAME LANDS WITH THE FEET. The server bills a fall on impact and
+// its patch arrives a round trip later, so a flinch triggered by the hit starts
+// on the ground and then plays its wind-up there (maintainer 2026-09-11: "I feel
+// the players 'take dmg' animation is not in sync with the frame we hit the
+// ground"). The client starts the clip EARLY by exactly the frames before the
+// got-hit frame — "the 4th frame is the 'got hit frame'", his words — and plays
+// it faster so those frames pass quickly in the air. Both halves are one
+// arithmetic claim, and this is it.
+test("the fall flinch's 4th frame is the frame on screen at touchdown", () => {
+  const FRAMES = 5; // both heroes' got-punched clip
+  const BASE = 16; // ANIM_FPS.hurt — combat's rate, untouched
+  const lead = hurtLeadMs(FRAMES, BASE);
+  // AT TOUCHDOWN — `lead` ms after the clip started — the 4th frame is up.
+  assert.equal(hurtFrameAt(lead, FRAMES, BASE), HURT_IMPACT_FRAME, "the got-hit frame is not the one on screen when the feet land");
+  // The frame BEFORE touchdown is still the wind-up, and it is still the clip:
+  // start one frame later and the fold would land late, which is the bug.
+  assert.equal(hurtFrameAt(lead - 1, FRAMES, BASE), HURT_IMPACT_FRAME - 1, "the frame before landing is already the fold");
+  // The clip OUTLASTS its own lead, or the flinch would be over mid-air.
+  const clip = hurtClipMs(FRAMES, BASE);
+  assert.ok(clip > lead, `the clip (${clip.toFixed(0)}ms) ends before it lands (${lead.toFixed(0)}ms)`);
+  // …and the lead is short enough to read as bracing rather than as a flinch
+  // with nothing hitting it: a fraction of even the SHORTEST damaging fall.
+  const shortest = fallDurationS(FALL_DMG_MIN_LEVELS, ISO_GEOMETRY_MAPS3.lh) * 1000;
+  assert.ok(lead < shortest * 0.35, `${lead.toFixed(0)}ms of flinch in a ${shortest.toFixed(0)}ms fall is too much air`);
+  // FASTER THAN COMBAT, which is the other half of what he asked for.
+  assert.ok(FALL_HURT_RATE > 1, "a fall's flinch must play faster than a punch's");
+  // Art with a shorter clip leads by what it has, never by longer than it lasts.
+  assert.equal(hurtLeadFrames(2), 1);
+  assert.equal(hurtLeadFrames(1), 0);
+  assert.equal(hurtLeadMs(1, BASE), 0, "a one-frame clip cannot lead");
+  console.log(
+    `fall flinch: ${FRAMES} frames at ${(BASE * FALL_HURT_RATE).toFixed(0)}fps = ${clip.toFixed(0)}ms, ` +
+      `starting ${lead.toFixed(0)}ms before touchdown on frame ${HURT_IMPACT_FRAME + 1}`,
+  );
+});
+
+// THE FIRING CHECK RUNS ONCE A FRAME, so "fire when the remaining fall is under
+// the lead" can only trigger at or AFTER the right instant — always late, by a
+// whole frame on a 30 fps phone, which is most of a clip frame at 24 fps. Two
+// corrections, and this pins what they are worth: half a frame of slack so the
+// error is CENTRED, and a seek past frames already missed so a late start does
+// not slide the whole clip. Measured worst case, per render rate.
+test("the flinch's residual error is bounded to half a frame, not a whole one", () => {
+  const FRAMES = 5;
+  const BASE = 16;
+  const per = 1000 / (BASE * FALL_HURT_RATE); // one clip frame: 41.67ms
+  const rows: string[] = [];
+  for (const fps of [60, 45, 30, 24]) {
+    const frameMs = 1000 / fps;
+    const slack = hurtFireSlackMs(frameMs);
+    // Sweep every sub-frame phase the fall can land on and take the worst
+    // got-hit-frame error the wiring can produce.
+    let worstNaive = 0;
+    let worst = 0;
+    for (let i = 0; i < 200; i++) {
+      const phase = (i / 200) * frameMs; // how far past the due moment this frame is
+      // NAIVE: no slack, no seek — the clip simply starts `phase` late.
+      worstNaive = Math.max(worstNaive, phase);
+      // SHIPPED: the slack lets the check fire up to `slack` early, and the
+      // seek then skips whole frames already missed.
+      const lateMs = phase - slack;
+      const err = lateMs - hurtSeekFrames(Math.max(0, lateMs), BASE) * per;
+      worst = Math.max(worst, Math.abs(err));
+    }
+    assert.ok(
+      worst <= per / 2 + 1e-6,
+      `${fps}fps: worst got-hit error ${worst.toFixed(1)}ms exceeds half a clip frame (${(per / 2).toFixed(1)}ms)`,
+    );
+    assert.ok(worst < worstNaive || fps >= 120, `${fps}fps: the corrections did not improve on ${worstNaive.toFixed(1)}ms`);
+    rows.push(`${fps}fps ${worstNaive.toFixed(0)}→${worst.toFixed(0)}ms`);
+  }
+  // Under half a frame of lateness skips nothing; a frame's worth skips one.
+  assert.equal(hurtSeekFrames(0, BASE), 0);
+  assert.equal(hurtSeekFrames(-5, BASE), 0, "an EARLY start never seeks");
+  assert.equal(hurtSeekFrames(per * 0.4, BASE), 0);
+  assert.equal(hurtSeekFrames(per * 1.1, BASE), 1);
+  console.log(`fall flinch worst-case sync error: ${rows.join(", ")}`);
 });
 
 test("integrateFall: up-steps EASE up (staircase step), gentle down-steps ease, no fall", () => {
@@ -637,4 +766,50 @@ test("findPath best-effort: unreachable goal routes to the reachable rim", () =>
   assert.ok(path, "best-effort path exists");
   const end = path[path.length - 1];
   assert.ok(end.x < 4 * CELL_WU, `stops on the reachable side (ended at x=${end.x.toFixed(0)})`);
+});
+
+
+/* A SLIDE IS NEVER FASTER THAN THE RUN (maintainer 2026-09-12, the caves:
+ * "when I run into a wall at a certain angle the player is moving much
+ * faster"). The axes resolve separately, and a world axis projects longer on
+ * the iso screen than the heading it came from — so sliding along a wall
+ * went up to 1.36x the free speed ON SCREEN. */
+test("sliding along a wall never moves faster on screen than running free", () => {
+  const W = 40;
+  const H = 40;
+  const rows = Array.from({ length: H }, () => Array.from({ length: W }, () => ({ t: "grass", l: 0 })));
+  for (let r = 0; r < H; r++) for (let c = 20; c < W; c++) rows[r][c].l = 5; // a wall across +x
+  const g = buildTerrainGrid(W, H, rows, [], []);
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const screenLen = (mx: number, my: number) => Math.hypot((mx - my) * ISO_DX, (mx + my) * ISO_DY);
+  const run = (ax: number, ay: number, x0: number, y0: number) => {
+    let x = x0;
+    let y = y0;
+    for (let i = 0; i < 30; i++) {
+      const r = stepMovement(x, y, ax, ay, true, 1 / 30, makeBlocked(g, walk), 1, true, W * CELL_WU, H * CELL_WU, makeSideBlocked(g, walk), { screenSlide: true });
+      x = r.x;
+      y = r.y;
+    }
+    return { screen: screenLen(x - x0, y - y0), wy: (y - y0) / CELL_WU };
+  };
+  // Every screen heading over the circle, keys and leaned alike.
+  let worst = 0;
+  const free0 = run(0, 1, 10 * CELL_WU, 20 * CELL_WU);
+  for (let deg = -180; deg < 180; deg += 5) {
+    const ax = Math.cos((deg * Math.PI) / 180);
+    const ay = Math.sin((deg * Math.PI) / 180);
+    const free = run(ax, ay, 10 * CELL_WU, 20 * CELL_WU);
+    const wall = run(ax, ay, 19.4 * CELL_WU, 20 * CELL_WU);
+    worst = Math.max(worst, wall.screen / Math.max(1, free.screen));
+    assert.ok(wall.screen <= free.screen * 1.001, `heading ${deg}deg: slid ${wall.screen.toFixed(0)} screen px/s against ${free.screen.toFixed(0)} free`);
+  }
+  // …and the slide still slides: screen-down into the +x wall carries on along
+  // +y — at the thumb's screen speed times the WORLD cosine (slideShare):
+  // screen-down meets world +y at 45 degrees, so 71% of the run — not the 125%
+  // the world axis component gave before the cap, and not the 40% the screen
+  // projection gave (2026-09-13, the cliff, both ways round).
+  const down = run(0, 1, 19.4 * CELL_WU, 20 * CELL_WU);
+  assert.ok(down.wy > 1.5, `screen-down against the wall should still slide along it, moved ${down.wy.toFixed(2)} cells in y`);
+  assert.ok(down.screen > free0.screen * 0.6 && down.screen < free0.screen * 0.8, `at the world cosine, 45: ${(down.screen / free0.screen).toFixed(2)} of the free run`);
+  assert.ok(worst <= 1.001, `worst slide/free ratio ${worst.toFixed(3)}`);
 });

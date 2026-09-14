@@ -34,6 +34,10 @@ import {
   screenToWorldVector,
   FALL_DMG_MIN_LEVELS,
   FALL_DMG_MAX_LEVELS,
+  fallDurationS,
+  ISO_GEOMETRY_MAPS3,
+  FALL_SLOW_MS,
+  SLOW_FACTOR,
 } from "@nangijala/shared";
 import { WorldRoom } from "../src/rooms/WorldRoom.js";
 
@@ -81,6 +85,46 @@ function sheerestEdge(): { c: number; r: number; dc: number; dr: number; drop: n
     }
   return best;
 }
+
+// ONE FALL IS ONE NUMBER, and this is the arithmetic that makes it one.
+//
+// The client floats the damage on its own touchdown frame and swallows the
+// server's late copy, so the two have to AGREE on the figure. The server bills
+// `elevBefore - player.elev`, and both of those are RESOLVED SURFACE LEVELS —
+// integers. The client's `av.elev` is the ANIMATED pixel lift, so reading the
+// drop off it gives a FRACTIONAL level count, and `fallDamageFrac` of 8.34
+// where the server read 9 is a point or two out. One point out was the whole
+// bug: a 16 and then a 1 over his head (maintainer 2026-09-11, with the
+// photograph: "now I take dmg two times ... WTF?"). Rounding both ends makes
+// the prediction the server's own arithmetic rather than an approximation.
+test("the predicted fall damage is the server's figure, to the point", () => {
+  const HP = [40, 100, 250]; // level 1, his level 6, a late-game bar
+  let wouldHaveDiffered = 0;
+  for (const hpMax of HP)
+    for (let levels = FALL_DMG_MIN_LEVELS; levels <= 46; levels++) {
+      const server = Math.round(fallDamageFrac(levels) * hpMax);
+      // THE CLIENT, ROUNDING: identical by construction — same curve, same
+      // integer drop, same hpMax.
+      assert.equal(Math.round(fallDamageFrac(levels) * hpMax), server, `${levels} levels of ${hpMax} hp`);
+      // THE CLIENT, READING THE EASED PIXEL LIFT: a fraction of a storey off,
+      // which is what the animated elevation actually gives mid-fall. This arm
+      // is what keeps the test honest — it must really disagree, or rounding
+      // would be protecting nothing.
+      for (const slip of [-0.66, -0.34, 0.34]) {
+        const naive = Math.round(fallDamageFrac(levels + slip) * hpMax);
+        if (naive !== server) wouldHaveDiffered++;
+      }
+    }
+  assert.ok(
+    wouldHaveDiffered > 100,
+    `reading a fractional drop differed on only ${wouldHaveDiffered} cases — the rounding is not what keeps the two figures equal`,
+  );
+  // …and a fall UNDER the line is free at every bar, so a fractional read can
+  // never conjure a number out of a step (the other half of the same trap).
+  for (const hpMax of HP)
+    assert.equal(Math.round(fallDamageFrac(FALL_DMG_MIN_LEVELS - 1) * hpMax), 0, "under the line is free");
+  console.log(`fall damage: client and server agree on all ${HP.length * 41} (levels, hpMax) pairs; a fractional read would have differed on ${wouldHaveDiffered}`);
+});
 
 test("a route NEVER takes a damaging fall — the mountain-top hurl", (t) => {
   if (!world) return t.skip(SKIP);
@@ -208,14 +252,59 @@ test("landing costs the curve's price, and water is a dive", async (t) => {
     await waitFor(() => me().elev >= cliff!.L - 0.5, 4000, "teleport onto the ledge");
     const expect = Math.round(fallDamageFrac(cliff!.drop) * hpMax);
     assert.ok(expect > 0 && expect < hpMax, `a ${cliff!.drop}-level fall must sting, not kill (${expect} of ${hpMax})`);
-    for (let i = 0; i < 30 && me().hp === hpMax; i++) {
+    // STOP WALKING THE MOMENT THE EDGE IS GONE, or the body keeps stepping
+    // during its own descent and a second ledge bills a second hit.
+    const stepped = () => me().elev <= cliff!.L - cliff!.drop + 0.5;
+    for (let i = 0; i < 30 && !stepped(); i++) {
       r1.send("input", { ax: cliff!.ax, ay: cliff!.ay, running: false, dt: 0.05, seq: i + 1 });
       await new Promise((r) => setTimeout(r, 40));
     }
-    await waitFor(() => me().hp < hpMax, 4000, "the landing to hurt");
+    assert.ok(stepped(), `never walked off ${cliff!.c},${cliff!.r}`);
+    // THE WHOLE POINT: the hp is still untouched the instant the ground goes.
+    // The server resolves all `drop` storeys in one tick, so before this fix
+    // the bar emptied, the flinch played and a fatal fall started its death
+    // animation in mid-air (maintainer 2026-09-11: "when I fall down a cliff I
+    // should take fall damage when I hit the ground and not when I start
+    // falling").
+    const tStep = Date.now();
+    assert.equal(me().hp, hpMax, "the hp is billed on impact, not on the step off the edge");
+    await waitFor(() => me().hp < hpMax, 6000, "the landing to hurt");
+    const waited = Date.now() - tStep;
+    const fall = fallDurationS(cliff!.drop, ISO_GEOMETRY_MAPS3.lh) * 1000;
+    // Loose on both sides on purpose — the settle runs on the 20 Hz tick and
+    // the patch carrying the hp takes its own trip — but far tighter than the
+    // whole fall, so an immediate hit cannot pass.
+    assert.ok(waited > fall * 0.5,
+      `the hit landed ${waited}ms after the step off a ${fall.toFixed(0)}ms fall — too early to be an impact`);
+    assert.ok(waited < fall + 1500,
+      `the hit landed ${waited}ms after the step off a ${fall.toFixed(0)}ms fall — too late`);
     assert.equal(me().hp, hpMax - expect,
       `a ${cliff!.drop}-level fall off ${cliff!.c},${cliff!.r} costs exactly ${expect}`);
     assert.ok(!me().dead, `a ${cliff!.drop}-level fall stings, it does not kill`);
+    console.log(`falldamage: ${cliff!.drop} levels billed ${waited}ms after the edge (clock says ${fall.toFixed(0)}ms)`);
+
+    // THE SLOW FADES WITH THE NUMBER (maintainer 2026-09-12). The synced factor
+    // is SLOW_FACTOR on the patch that carries the hit, climbs through the
+    // float, and is 1 once the number is gone — not the combat stagger's flat
+    // 0.55 until 1.5 s. Sampled off the client's own state, the field the
+    // prediction multiplies by.
+    const tHit = Date.now();
+    const samples: { t: number; slow: number }[] = [];
+    while (Date.now() - tHit < FALL_SLOW_MS + 400) {
+      samples.push({ t: Date.now() - tHit, slow: me().slow });
+      await new Promise((r) => setTimeout(r, 40));
+    }
+    assert.ok(samples[0].slow <= SLOW_FACTOR + 0.12, `slowed on landing (first sample ${samples[0].slow.toFixed(2)})`);
+    const mid = samples.filter((x) => x.t > 300 && x.t < FALL_SLOW_MS - 150);
+    assert.ok(mid.length >= 5, "sampled through the float");
+    assert.ok(mid.every((x) => x.slow > SLOW_FACTOR + 0.05 && x.slow < 1),
+      `fading, not flat: mid-float samples ${mid.map((x) => x.slow.toFixed(2)).join(" ")}`);
+    for (let i = 1; i < samples.length; i++)
+      assert.ok(samples[i].slow >= samples[i - 1].slow - 1e-9, `never slows again while recovering (${samples[i - 1].slow} -> ${samples[i].slow} at ${samples[i].t} ms)`);
+    const late = samples.filter((x) => x.t >= FALL_SLOW_MS + 250);
+    assert.ok(late.length >= 1 && late.every((x) => x.slow === 1),
+      `full speed once the number is gone (${late.map((x) => x.slow).join(" ")})`);
+    console.log(`falldamage: slow ${samples[0].slow.toFixed(2)} on landing, ${mid[Math.floor(mid.length / 2)].slow.toFixed(2)} mid-float, 1 at ${late[0].t} ms`);
 
     // A ledge over WATER: the same walk is a dive, no damage.
     const hpBefore = me().hp;

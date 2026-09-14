@@ -17,6 +17,13 @@
 //   * they travel the same number of pixels per unit of world time
 //   * nothing jumps at a phase boundary or at the day's wrap
 //
+// WHERE IT SITS (maintainer 2026-09-03: "the wiki+search is under the
+// time-of-day pill"): the Wiki row takes the game view's bottom-right corner
+// anchor (10px in, 10px above the HUD rail) and the pill steps up over it by
+// --ml-stack-step, the row's own outer height + gap, PUBLISHED once by
+// wikibtn.ts and read by clock.ts — so this gate reads the same variable
+// rather than restating 44. Section 1 asserts that stack, not a bare 10.
+//
 // Drives the REAL client headlessly against a dev stack.
 import { chromium } from "playwright-core";
 
@@ -163,6 +170,9 @@ try {
       right: r.right,
       bottom: r.bottom,
       hudTop: document.querySelector(".ml-hud").getBoundingClientRect().top,
+      // the Wiki row under the pill, and the step the pill climbs over it
+      wiki: document.querySelector(".ml-wikibtn")?.getBoundingClientRect() ?? null,
+      step: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ml-stack-step")),
       vw: innerWidth,
       cw: cv.width,
       ch: cv.height,
@@ -174,17 +184,24 @@ try {
   });
   if (s.pos !== "fixed" || s.pe !== "none") fail(`pill not a fixed pass-through (${s.pos}/${s.pe})`);
   // Bottom-right of the GAME VIEW: 10px in from the right edge (the margin
-  // the XP chip keeps at the top) and 10px above the HUD rail.
+  // the XP chip keeps at the top); the Wiki row holds the corner 10px above
+  // the HUD rail and the pill sits exactly one published step above it.
   if (Math.abs(s.vw - s.right - 10) > 1) fail(`pill right margin ${s.vw - s.right}px, want 10`);
-  if (Math.abs(s.hudTop - s.bottom - 10) > 1)
-    fail(`pill sits ${s.hudTop - s.bottom}px above the HUD rail, want 10`);
+  if (!s.wiki) fail("no .ml-wikibtn under the pill — the stack the pill is measured against is missing");
+  if (!(s.step > 0)) fail(`--ml-stack-step "${s.step}" is not a published px height`);
+  if (Math.abs(s.hudTop - s.wiki.bottom - 10) > 1)
+    fail(`Wiki row sits ${s.hudTop - s.wiki.bottom}px above the HUD rail, want 10`);
+  if (Math.abs(s.vw - s.wiki.right - (s.vw - s.right)) > 1)
+    fail(`Wiki row right edge ${s.vw - s.wiki.right}px in, the pill's is ${s.vw - s.right} — one right edge`);
+  if (Math.abs(s.hudTop - s.bottom - (10 + s.step)) > 1)
+    fail(`pill sits ${s.hudTop - s.bottom}px above the HUD rail, want 10 + the ${s.step}px stack step`);
   if (s.cw !== AW || s.ch !== AH) fail(`canvas backing store ${s.cw}x${s.ch}, want ${AW}x${AH} art px`);
   if (Math.abs(s.rect.width - AW * 2) > 1 || Math.abs(s.rect.height - AH * 2) > 1)
     fail(`canvas drawn ${s.rect.width}x${s.rect.height}, want ${AW * 2}x${AH * 2} (x2 exact)`);
   if (s.smooth !== "pixelated") fail(`image-rendering ${s.smooth}, want pixelated`);
   if (s.imgs !== 0) fail(`${s.imgs} <img> inside the pill — the art is painted, not loaded`);
   if (s.relics !== 0) fail(`${s.relics} half-dial relics (hand/face/hub) still in the DOM`);
-  console.log(`structure OK (${AW}x${AH} art px at x2, pixelated, bottom-right of the game view)`);
+  console.log(`structure OK (${AW}x${AH} art px at x2, pixelated, one ${s.step}px step over the Wiki row in the game view's bottom-right)`);
 
   // ---- 2. NOON: the sun alone, at the apex, dead centre ----
   const noon = await both(DAY, 0.5);

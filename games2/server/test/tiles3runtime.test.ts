@@ -306,3 +306,44 @@ test("a field cell above the cut draws nothing; at, below, or without a cut it d
   assert.deepEqual(cellBlits(t3, tex, field(0), 1), [op]);
   assert.deepEqual(cellBlits(t3, tex, field(0), 0), [op]);
 });
+
+/* THE STUMP'S LID — a truncated WALL column ends in its course and then the
+ * SIDE rock's textured plate at the cut storey's surface anchor (the cave's
+ * near walls wore the mountain's snow; its cut faces one flat colour —
+ * maintainer 2026-09-09, five photographs). Whole and uncut columns carry no
+ * lid: opsForCell draws them. */
+test("a truncated wall column wears the side rock's plate at the cut; a whole column does not", () => {
+  const whole = { key: "whole", x: 0, y: 0, sx: 0, sy: 0, sw: 64, sh: 46, role: "surface" as const };
+  const t3 = {
+    opsForCell: () => [whole],
+    plate: (art: { path: string }, ground: string) => `plate:${ground}:${art.path}`,
+  } as unknown as Tiles3Textures;
+  const tex = { exists: () => true } as unknown as TextureManagerLike;
+  const tile = (path: string) => ({ path, w: 64, h: 64 });
+  const stack = [0, 1, 2, 3].map((storey) => ({ storey, tile: tile(`s${storey}`), y: 1000 - storey * 15 }));
+  const cell = {
+    kind: "wall",
+    level: 3,
+    ground: "snow",
+    sx: 7,
+    sy: 100,
+    pasteY: 100,
+    side: "grey_stone",
+    cutCap: { kind: "plate", path: "grey.webp", w: 64, h: 46, topOnly: true },
+    wall: { side: "grey_stone", mid: tile("mid"), stack },
+  } as unknown as Tiles3Cell;
+  const ops = cellBlits(t3, tex, cell, 1);
+  assert.deepEqual(
+    ops.map((o) => [o.key, o.y, o.role]),
+    [
+      ["t2:s0", 1000, "wall"],
+      ["t2:mid", 985, "wall"],
+      ["plate:grey_stone:grey.webp", 130, "surface"], // 100 + (985 - 955): two storeys down from the cap
+    ],
+  );
+  assert.deepEqual(cellBlits(t3, tex, cell, 3), [whole]);
+  assert.deepEqual(cellBlits(t3, tex, cell, undefined), [whole]);
+  // Without a lid the stump is the stack alone, as before.
+  const bare = { ...(cell as object), cutCap: undefined } as unknown as Tiles3Cell;
+  assert.deepEqual(cellBlits(t3, tex, bare, 1).map((o) => o.role), ["wall", "wall"]);
+});

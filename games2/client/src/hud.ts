@@ -21,8 +21,15 @@ import { mountWikiButton } from "./wikibtn";
 import { mountWikiNearButton } from "./wikinear";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
-import { indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "./indoorlight";
-import { hiddenRing, setHiddenRing } from "./hiddenring";
+import {
+  indoorLight,
+  indoorLightLit,
+  setIndoorLight,
+  setIndoorLightLit,
+  INDOOR_LIGHT_DEFAULT,
+  INDOOR_LIGHT_LIT_DEFAULT,
+} from "./indoorlight";
+import { hiddenRing, setHiddenRing, HIDDEN_RING_DEFAULT } from "./hiddenring";
 import {
   fadeTune,
   setFadeTune,
@@ -32,6 +39,7 @@ import {
   sliderFromAmount,
   falloffFromSlider,
   sliderFromFalloff,
+  FADE_TUNE_DEFAULT,
 } from "./fadetune";
 import {
   SCENERY_ANIM_CLASSES,
@@ -39,16 +47,30 @@ import {
   SCENERY_SLEEP_MAX,
   sceneryAnimTune,
   setSceneryAnimTune,
+  SCENERY_ANIM_DEFAULT,
 } from "./sceneryanim";
-import { lightAnimTune, setLightAnimTune, ratioFromSlider, sliderFromRatio } from "./lightanim";
+import {
+  lightAnimTune,
+  setLightAnimTune,
+  ratioFromSlider,
+  sliderFromRatio,
+  LIGHT_ANIM_DEFAULT,
+} from "./lightanim";
 import {
   lightScale,
   setLightScale,
   lightScaleLabel,
   lightScaleFromSlider,
   sliderFromLightScale,
+  LIGHT_SCALE_DEFAULT,
 } from "./lightscale";
-import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "./indoorwall";
+import {
+  indoorWall,
+  setIndoorWall,
+  INDOOR_WALL_MIN,
+  INDOOR_WALL_MAX,
+  INDOOR_WALL_DEFAULT,
+} from "./indoorwall";
 import { withV } from "./assetver";
 import { minimapDotPct, mapImageUrls, loadMinimapMeta, type MinimapFeed, type MinimapMeta } from "./maps";
 import { gameAudio } from "../../composer/index";
@@ -369,11 +391,23 @@ export class HudBar {
   private invGrid: HTMLElement | null = null;
   private invItems: { item: string; n: number }[] = [];
   private activeDrag: { cancel: () => void } | null = null;
+  /** THE SELECTED BACKPACK SLOT, or null. A drag out of the backpack starts
+   * ONLY from this slot (maintainer 2026-09-14) — see armSlotDrag. Held as
+   * {slot, item} rather than an index: an "inv" refresh can compact the array
+   * under us, and a selection that silently moved to a different item would
+   * drop the wrong thing. */
+  private invSel: { slot: number; item: string } | null = null;
   /** Close hook for the open drop-quantity dialog (null = none open). */
   private qtyClose: (() => void) | null = null;
   private tabs = new Map<TabId, HTMLButtonElement>();
   private switches: [HTMLButtonElement, () => boolean][] = [];
   private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
+  /** The dial group: EVERY slider on the Settings page, in one block in the
+   * middle of the column (maintainer 2026-09-10: "we have two settings sliders
+   * at the bottom of the page and the rest in the middle. Put all in the
+   * middle."). Sliders injected from OUTSIDE this file land here too — see the
+   * observer in buildSettings. */
+  private dials: HTMLElement | null = null;
   // ambient-effect checklist (populated once window.__mlAmbient is up)
   private ambSection: HTMLElement | null = null;
   private ambList: HTMLElement | null = null;
@@ -641,12 +675,14 @@ export class HudBar {
     // then one row per effect in registry order.
     this.ambAuto = this.ambRow(null, "Auto");
     for (const e of effects) this.ambRow(e.name, capWords(e.name));
-    // Bird-density slider under the checklist — scales BOTH bird flocks 0.1×–10×
-    // (maintainer 2026-07-25). Only when the ambient layer exposes birdDensity
-    // (older layers degrade to no slider).
+    // Bird-density slider — scales BOTH bird flocks 0.1×–10× (maintainer
+    // 2026-07-25). Only when the ambient layer exposes birdDensity (older
+    // layers degrade to no slider).
     const bd = api.birdDensity;
-    if (this.ambSection && typeof bd === "function") {
-      this.ambSection.appendChild(birdSlider(() => bd(), (v) => bd(v)));
+    if (this.dials && typeof bd === "function") {
+      // …and it joins the DIAL GROUP up the page, not the checklist it is
+      // registered by: every slider sits together (maintainer 2026-09-10).
+      this.dials.appendChild(birdSlider(() => bd(), (v) => bd(v)));
     }
     this.refreshAmbient();
   }
@@ -822,14 +858,40 @@ export class HudBar {
       });
     }).observe(row, { childList: true });
 
+    /* THE DIAL GROUP — every slider on this page, in one block, above the
+     * ambient checklist (maintainer 2026-09-10: "we have two settings sliders
+     * at the bottom of the page and the rest in the middle. Put all in the
+     * middle."). The two strays were the bird-density dial, which the ambient
+     * checklist built into ITSELF, and the games agent's Uphill bias, injected
+     * from client/src/navbias.ts onto the end of the column.
+     * A slider dropped anywhere else in this column is MOVED here rather than
+     * asked to know about this container: outside injectors (navbias.ts, the
+     * ambient layer) find the page by class and append, and they re-inject
+     * after every HudBar rebuild, so the rule has to live on the receiving
+     * side to stay true. Moving a node out of `wrap` only fires records we
+     * ignore, so this cannot loop. */
+    const dials = mk("div", "ml-dials");
+    this.dials = dials;
+    wrap.appendChild(dials);
+    new MutationObserver((recs) => {
+      for (const r of recs)
+        for (const n of r.addedNodes)
+          if (n instanceof HTMLElement && n.classList.contains("ml-amb-slider")) adoptDial(dials, n);
+    }).observe(wrap, { childList: true });
+
     // INDOOR LIGHT: the base ambient inside houses and caves (maintainer
     // 2026-08-06: "a slider on the settings page … 0% = BLACK, 100% = THE TILE
     // WILL LOOK JUST LIKE THE PNG"). Lives on the Settings page proper, NOT in
     // the Ambient-effects section below — that section is the ambient agent's
     // and is built lazily from its registry. indoorlight.ts owns the value and
     // its persistence; the scene listens for "ml-indoor-light".
-    wrap.appendChild(
-      pctSlider("Indoor light (dark room)", () => indoorLight(), (v) => setIndoorLight(v)),
+    dials.appendChild(
+      pctSlider(
+        "Indoor light (dark room)",
+        () => indoorLight(),
+        (v) => setIndoorLight(v),
+        INDOOR_LIGHT_DEFAULT,
+      ),
     );
     /* TWO DIALS, ONE FOR EACH KIND OF ROOM (maintainer 2026-09-07, on walking
      * into a house with a lit fireplace: "the old indoor ambient light at 40%
@@ -837,15 +899,20 @@ export class HudBar {
      * a room with NO light of its own needs to read as stone; the second is
      * what a room that lights itself gets, where the base only has to keep the
      * far corners off black. Both live so he can tune each by eye in-game. */
-    wrap.appendChild(
-      pctSlider("Indoor light (lit room)", () => indoorLightLit(), (v) => setIndoorLightLit(v)),
+    dials.appendChild(
+      pctSlider(
+        "Indoor light (lit room)",
+        () => indoorLightLit(),
+        (v) => setIndoorLightLit(v),
+        INDOOR_LIGHT_LIT_DEFAULT,
+      ),
     );
     /* HIDDEN OUTLINE: how loud the wall-hack silhouette is. The line draws
      * above the darkness overlay, so at full opacity a body behind a wall is
      * the most legible thing on screen — being hidden reads as an advantage.
      * hiddenring.ts owns the value and its persistence. */
-    wrap.appendChild(
-      pctSlider("Hidden outline", () => hiddenRing(), (v) => setHiddenRing(v)),
+    dials.appendChild(
+      pctSlider("Hidden outline", () => hiddenRing(), (v) => setHiddenRing(v), HIDDEN_RING_DEFAULT),
     );
 
     /* THE THREE FADE DIALS (games agent, at the maintainer's request 2026-09-09
@@ -856,30 +923,33 @@ export class HudBar {
      * fadetune.ts owns the values; the scene re-resolves the world on
      * "ml-fade-tune" once the thumb rests. The fourth control, whether a fade
      * may sit on a transition tile, is a button in the scene's Settings list. */
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Fade reach",
         () => sliderFromReach(fadeTune().reach),
         (p) => setFadeTune({ reach: reachFromSlider(p) }),
+        sliderFromReach(FADE_TUNE_DEFAULT.reach),
         {
           snap: (p) => sliderFromReach(reachFromSlider(p)),
           format: (p) => `${reachFromSlider(p)} cells`,
         },
       ),
     );
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Fade amount",
         () => sliderFromAmount(fadeTune().amount),
         (p) => setFadeTune({ amount: amountFromSlider(p) }),
+        sliderFromAmount(FADE_TUNE_DEFAULT.amount),
         { format: (p) => `${amountFromSlider(p).toFixed(2)}x` },
       ),
     );
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Fade falloff",
         () => sliderFromFalloff(fadeTune().falloff),
         (p) => setFadeTune({ falloff: falloffFromSlider(p) }),
+        sliderFromFalloff(FADE_TUNE_DEFAULT.falloff),
         { format: (p) => `exp ${falloffFromSlider(p).toFixed(2)}` },
       ),
     );
@@ -890,7 +960,7 @@ export class HudBar {
      * fire on repeat is fine and a tree on repeat is not. sceneryanim.ts owns
      * the values; the scene reads the range at each sleep it schedules. */
     for (const cls of SCENERY_ANIM_CLASSES) {
-      wrap.appendChild(
+      dials.appendChild(
         rangeSlider(
           `${SCENERY_ANIM_LABEL[cls]} sleep`,
           () => {
@@ -898,6 +968,10 @@ export class HudBar {
             return [lo / SCENERY_SLEEP_MAX, hi / SCENERY_SLEEP_MAX];
           },
           ([lo, hi]) => setSceneryAnimTune(cls, [Math.round(lo * SCENERY_SLEEP_MAX), Math.round(hi * SCENERY_SLEEP_MAX)]),
+          [
+            SCENERY_ANIM_DEFAULT[cls][0] / SCENERY_SLEEP_MAX,
+            SCENERY_ANIM_DEFAULT[cls][1] / SCENERY_SLEEP_MAX,
+          ],
           { format: ([lo, hi]) => `${Math.round(lo * SCENERY_SLEEP_MAX)}–${Math.round(hi * SCENERY_SLEEP_MAX)} s` },
         ),
       );
@@ -909,19 +983,21 @@ export class HudBar {
      * and 2.0 means twice the effect ... 0.05 to 20x. This is for me to test
      * what looks best." Log dials; lightanim.ts owns the values; the scene
      * reads them every frame. */
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Light intensity swing",
         () => sliderFromRatio(lightAnimTune().intensity),
         (p) => setLightAnimTune({ intensity: ratioFromSlider(p) }),
+        sliderFromRatio(LIGHT_ANIM_DEFAULT.intensity),
         { format: (p) => `${ratioFromSlider(p).toFixed(2)}x` },
       ),
     );
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Light centre swing",
         () => sliderFromRatio(lightAnimTune().position),
         (p) => setLightAnimTune({ position: ratioFromSlider(p) }),
+        sliderFromRatio(LIGHT_ANIM_DEFAULT.position),
         { format: (p) => `${ratioFromSlider(p).toFixed(2)}x` },
       ),
     );
@@ -936,11 +1012,12 @@ export class HudBar {
      * SQUARE of the dial, so 50% is a quarter of the work and reads like half.
      * lightscale.ts owns the value; nightlight.ts rebuilds all three render
      * targets on "ml-light-scale", so it takes effect without a reload. */
-    wrap.appendChild(
+    dials.appendChild(
       pctSlider(
         "Light resolution",
         () => sliderFromLightScale(lightScale()),
         (p) => setLightScale(lightScaleFromSlider(p)),
+        sliderFromLightScale(LIGHT_SCALE_DEFAULT),
         {
           snap: (p) => sliderFromLightScale(lightScaleFromSlider(p)),
           format: (p) => lightScaleLabel(lightScaleFromSlider(p)),
@@ -959,8 +1036,8 @@ export class HudBar {
     const wallSpan = INDOOR_WALL_MAX - INDOOR_WALL_MIN;
     const p2wall = (p: number) => INDOOR_WALL_MIN + Math.round(p * wallSpan);
     const wall2p = (v: number) => (v - INDOOR_WALL_MIN) / wallSpan;
-    wrap.appendChild(
-      pctSlider("Indoor wall height", () => wall2p(indoorWall()), (p) => setIndoorWall(p2wall(p)), {
+    dials.appendChild(
+      pctSlider("Indoor wall height", () => wall2p(indoorWall()), (p) => setIndoorWall(p2wall(p)), wall2p(INDOOR_WALL_DEFAULT), {
         snap: (p) => wall2p(p2wall(p)),
         format: (p) => `${p2wall(p)} level${p2wall(p) === 1 ? "" : "s"}`,
       }),
@@ -1041,6 +1118,10 @@ export class HudBar {
     // pointerup can then never fire — cancel the gesture explicitly or the
     // ghost sprite is orphaned on screen until reload.
     this.activeDrag?.cancel();
+    // The selection is keyed to the ITEM in the slot, so a refresh that
+    // compacts the array (a stack emptied, a pick-up landed) drops it rather
+    // than quietly re-pointing it at whatever moved in.
+    if (this.invSel && this.invItems[this.invSel.slot]?.item !== this.invSel.item) this.invSel = null;
     grid.textContent = "";
     const total = Math.max(15, Math.ceil((this.invItems.length + 1) / 5) * 5);
     for (let i = 0; i < total; i++) {
@@ -1058,32 +1139,70 @@ export class HudBar {
         const badge = document.createElement("b");
         badge.textContent = `×${entry.n}`;
         cell.appendChild(badge);
+        if (this.invSel?.slot === i) cell.classList.add("sel");
         this.armSlotDrag(cell, img, i, entry.item, entry.n);
       }
       grid.appendChild(cell);
     }
   }
 
-  /** Pointer-captured drag (the bird-density slider pattern): a ghost sprite
-   * rides the finger; releasing over the game view (above the HUD line) hands
-   * the client coords to the game, anywhere else snaps back. Capture keeps
-   * every move/up on the slot element, so Phaser never sees the gesture and
-   * cannot arm a move trip from it. */
+  /** SELECT, THEN DRAG (maintainer 2026-09-14: "it's hard to scroll in the
+   * backpack because I always drag an item by mistake … in order to drag an
+   * item to the game you must first select the item (so the slot is
+   * highlighted)"). A filled slot has two states and the difference is what
+   * the browser is allowed to do with a touch that starts on it:
+   *
+   *  - UNSELECTED: no pointer capture, no `touch-action`, nothing
+   *    preventDefault()ed — so a finger that moves SCROLLS THE PAGE, exactly
+   *    like a touch on any other cell. Selecting is a `click`, and that is
+   *    the whole fix: a touch that turns into a scroll never fires one (the
+   *    same rule the Settings "default" buttons ride in the slider gutter).
+   *    No threshold, no timer, no guessing at intent.
+   *  - SELECTED: `touch-action:none` and a pointer-captured drag, as before.
+   *    One slot at a time, so 1 cell of 15 is sticky and the other 14 scroll.
+   *
+   * Tapping the selected slot again clears it; a real drag suppresses the
+   * click that follows so an aborted drag keeps the selection.
+   * THE LIFTED ITEM LEAVES ITS SLOT (his second ask, same message: "when you
+   * drag the item it should not still be visible in the slot") — the cell
+   * reads as an empty slot wearing the selection outline, so what is in hand
+   * and where it came from are both obvious.
+   * Capture keeps every move/up on the slot element, so Phaser never sees the
+   * gesture and cannot arm a move trip from it. */
   private armSlotDrag(cell: HTMLElement, img: HTMLImageElement, slot: number, item: string, count: number) {
+    let dragged = false; // a real drag happened — swallow the click that follows
+    cell.addEventListener("click", () => {
+      if (dragged) { dragged = false; return; }
+      this.selectSlot(this.invSel?.slot === slot ? null : { slot, item });
+    });
     cell.addEventListener("pointerdown", (e: PointerEvent) => {
+      if (this.invSel?.slot !== slot) return; // unselected: leave the touch to the scroller
       e.preventDefault();
       this.activeDrag?.cancel(); // one gesture at a time
       cell.setPointerCapture(e.pointerId);
       let ghost: HTMLImageElement | null = null;
+      let half = 20; // half the ghost's size; measured from the art it left
       const move = (ev: PointerEvent) => {
         if (!ghost) {
           ghost = img.cloneNode(true) as HTMLImageElement;
           ghost.className = "ml-slot-ghost";
+          // THE GHOST IS THE SLOT'S ART AT THE SLOT'S SIZE (maintainer
+          // 2026-09-14: "when I start to drag an item the item icon becomes
+          // smaller vs how big it is in the slot"). The old 40px was a
+          // literal; the slot draws its art at 80% of a cell, which is ~51px
+          // on his phone and changes with the breakpoints, so the ghost
+          // MEASURES the image it is lifting instead of guessing at it.
+          const r = img.getBoundingClientRect();
+          const size = Math.round(Math.max(r.width, r.height)) || 40;
+          ghost.style.width = `${size}px`;
+          ghost.style.height = `${size}px`;
+          half = size / 2; // …and the finger stays at its centre
           document.body.appendChild(ghost);
           cell.classList.add("dragging");
+          dragged = true;
         }
-        ghost.style.left = `${ev.clientX - 20}px`;
-        ghost.style.top = `${ev.clientY - 20}px`;
+        ghost.style.left = `${ev.clientX - half}px`;
+        ghost.style.top = `${ev.clientY - half}px`;
       };
       const cleanup = () => {
         cell.removeEventListener("pointermove", move);
@@ -1095,9 +1214,9 @@ export class HudBar {
         this.activeDrag = null;
       };
       const finish = (ev: PointerEvent) => {
-        const dragged = !!ghost;
+        const wasDrag = !!ghost;
         cleanup();
-        if (dragged) {
+        if (wasDrag) {
           // Over the GAME VIEW (top 61.8% — everything above the HUD's own
           // top edge) => drop it into the world at that point. The item id
           // rides along: slot indices go stale in flight when a stack
@@ -1117,6 +1236,17 @@ export class HudBar {
       cell.addEventListener("pointercancel", cancel);
       this.activeDrag = { cancel: cleanup };
     });
+  }
+
+  /** Move the backpack selection (null clears it) and repaint the two cells
+   * it touches. Public through the probe so the gate can drive it. */
+  private selectSlot(next: { slot: number; item: string } | null) {
+    if (this.invSel?.slot === next?.slot && this.invSel?.item === next?.item) return;
+    this.activeDrag?.cancel();
+    this.invSel = next;
+    const cells = this.invGrid?.children;
+    if (!cells) return;
+    for (let i = 0; i < cells.length; i++) cells[i].classList.toggle("sel", i === next?.slot);
   }
 
   /** The drop-quantity dialog (maintainer 2026-08-05, refined the same day):
@@ -1344,6 +1474,64 @@ function plateButton(label: string, onPress: () => void): HTMLButtonElement {
   return b;
 }
 
+/** Take in a dial built OUTSIDE this file: move it into the group, and dress
+ * its track and its reset button in the shared row so it sits where every
+ * other dial sits. The same fix-up the settings button row does for injected
+ * plate buttons, and for the same reason — an outside injector dresses itself
+ * by class and what it misses is invisible until a screenshot arrives.
+ * PAID FOR TWICE: navbias.ts kept a private copy of the row CSS, and a rewrite
+ * left the copy behind but dropped the call that injected it — so its two
+ * dials shipped with the button on its own centred line above the track
+ * (maintainer 2026-09-11: "two default buttons look missplaced"). Nothing here
+ * reads the injector's own classes, so it holds however they build it. */
+function adoptDial(group: HTMLElement, dial: HTMLElement): void {
+  group.appendChild(dial);
+  const track = dial.querySelector<HTMLElement>(".ml-slider");
+  if (!track || track.parentElement?.classList.contains("ml-slider-row")) return;
+  const btn = dial.querySelector<HTMLButtonElement>("button");
+  const host = track.parentElement;
+  if (!host) return;
+  // the row lands where the injector's own container sat, so the head stays
+  // above it and the order of the dial's parts is unchanged
+  const row = mk("div", "ml-slider-row");
+  dial.insertBefore(row, host === dial ? track : host);
+  row.appendChild(track);
+  if (btn) {
+    btn.classList.add("ml-slider-def"); // additive: their own hooks still work
+    row.appendChild(btn);
+  }
+  if (host !== dial && !host.childElementCount) host.remove();
+}
+
+/** THE "default" BUTTON EVERY SLIDER CARRIES, riding in the scroll gutter to
+ * the RIGHT of its track (maintainer 2026-09-10: "I want it to the right of
+ * the slider. We already have extra room there because the slider doesn't take
+ * up 100%" — and on what disabled means: "disabled 'default' meant we are
+ * already at default"). It is the one control that tells him what the shipped
+ * value even IS: these dials exist so he can find a number by eye, and without
+ * this there is no way back from a hand he did not like.
+ * `atDefault` is asked the CURRENT STORED value, never the drag's raw
+ * position — a drag that lands on the default must disable the button, and a
+ * raw pointer fraction never equals a stored number exactly.
+ * A button is not draggable, so the gutter it fills is still a place a scroll
+ * can safely start; that is why it could go here at all. */
+function sliderRow(
+  track: HTMLElement,
+  atDefault: () => boolean,
+  reset: () => void,
+): { row: HTMLElement; sync: () => void } {
+  const row = mk("div", "ml-slider-row");
+  const btn = mk("button", "ml-slider-def") as HTMLButtonElement;
+  btn.type = "button";
+  btn.textContent = "default";
+  btn.title = "back to the default";
+  btn.addEventListener("click", reset);
+  row.append(track, btn);
+  // NOT called here: the sliders declare `atDefault` before their own state
+  // exists, and the first paint runs it once everything is up.
+  return { row, sync: () => (btn.disabled = atDefault()) };
+}
+
 /** A Settings slider for the bird-density ratio — wiki style: a slim rounded
  * track (surface-2 well), an accent fill, and a round draggable knob. LOG
  * scale 0.1×–10× with 1× centred and a soft detent that snaps to exactly 1×.
@@ -1369,7 +1557,14 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
   const fill = mk("div", "ml-slider-fill");
   const knob = mk("div", "ml-slider-knob");
   track.append(fill, knob);
-  wrap.append(head, track);
+  // ×1 is the default — "today's amount" (ambient/runtime/density.ts), and the
+  // value the log axis is centred on and detents to.
+  const { row, sync } = sliderRow(
+    track,
+    () => Math.abs(get() - 1) < 1e-4,
+    () => applyP(0.5),
+  );
+  wrap.append(head, row);
 
   let curP = toP(get());
   const render = (p: number) => {
@@ -1394,6 +1589,7 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
     if (Math.abs(p - 0.5) < 0.03) p = 0.5; // soft detent → exactly 1×
     render(p);
     set(toV(p));
+    sync();
   };
   let dragging = false;
   track.addEventListener("pointerdown", (e) => {
@@ -1423,6 +1619,7 @@ function birdSlider(get: () => number, set: (v: number) => void): HTMLElement {
     });
 
   render(curP);
+  sync();
   return wrap;
 }
 
@@ -1435,6 +1632,11 @@ function pctSlider(
   labelText: string,
   get: () => number,
   set: (v: number) => void,
+  // THE DEFAULT, in the same 0..1 axis as `get`/`set` — not the setting's own
+  // units, so a dial with a log or stepped axis converts it exactly the way it
+  // converts everything else. REQUIRED: every dial has a default button, and a
+  // call site that had to think of one cannot forget to name it.
+  def: number,
   // A STEPPED slider is the same widget with two hooks: `snap` pulls a raw
   // 0..1 drag onto the nearest legal position, and `format` writes the readout
   // in the setting's own units. Defaults give the plain percent slider back,
@@ -1454,7 +1656,13 @@ function pctSlider(
   const fill = mk("div", "ml-slider-fill");
   const knob = mk("div", "ml-slider-knob");
   track.append(fill, knob);
-  wrap.append(head, track);
+  const defP = snap(clamp01(def));
+  const { row, sync } = sliderRow(
+    track,
+    () => Math.abs(snap(clamp01(get())) - defP) < 1e-4,
+    () => applyP(defP),
+  );
+  wrap.append(head, row);
 
   let curP = snap(clamp01(get()));
   const render = (p: number) => {
@@ -1475,6 +1683,7 @@ function pctSlider(
     const p = snap(raw);
     render(p);
     set(p);
+    sync();
   };
   let dragging = false;
   track.addEventListener("pointerdown", (e) => {
@@ -1504,6 +1713,7 @@ function pctSlider(
     });
 
   render(curP);
+  sync();
   return wrap;
 }
 
@@ -1515,6 +1725,8 @@ function rangeSlider(
   labelText: string,
   get: () => [number, number],
   set: (v: [number, number]) => void,
+  /** The default pair, in the same 0..1 axis as `get`/`set` (see pctSlider). */
+  def: [number, number],
   opts: { format?: (v: [number, number]) => string } = {},
 ): HTMLElement {
   const clamp01 = (p: number) => Math.max(0, Math.min(1, p));
@@ -1530,7 +1742,20 @@ function rangeSlider(
   const knobLo = mk("div", "ml-slider-knob lo");
   const knobHi = mk("div", "ml-slider-knob hi");
   track.append(fill, knobLo, knobHi);
-  wrap.append(head, track);
+  const defV: [number, number] = [clamp01(def[0]), clamp01(def[1])];
+  const { row, sync } = sliderRow(
+    track,
+    () => {
+      const v = get();
+      return Math.abs(v[0] - defV[0]) < 1e-4 && Math.abs(v[1] - defV[1]) < 1e-4;
+    },
+    () => {
+      render(defV);
+      set(defV);
+      sync();
+    },
+  );
+  wrap.append(head, row);
 
   let cur: [number, number] = get().map(clamp01) as [number, number];
   if (cur[0] > cur[1]) cur = [cur[1], cur[0]];
@@ -1560,6 +1785,7 @@ function rangeSlider(
     v[dragging] = dragging === 0 ? Math.min(raw, cur[1]) : Math.max(raw, cur[0]);
     render(v);
     set(v);
+    sync();
   };
   track.addEventListener("pointerdown", (e) => {
     const p = clientToP(e.clientX);
@@ -1594,6 +1820,7 @@ function rangeSlider(
     });
 
   render(cur);
+  sync();
   return wrap;
 }
 
@@ -1936,7 +2163,7 @@ function injectStyles() {
   .ml-page{display:none;height:100%;overflow-y:auto;overflow-x:hidden;
     -webkit-overflow-scrolling:touch;flex-direction:column;align-items:center;
     justify-content:safe center;gap:12px;text-align:center;
-    padding:10px 16px 16px;background:var(--bg)}
+    padding:10px 16px calc(16px + var(--ml-safe-bottom, 0px));background:var(--bg)}
   .ml-page.show{display:flex}
   /* gamepad page: the analog stick + jump button position absolutely inside it */
   .ml-page[data-page=gamepad]{position:relative;overflow:hidden}
@@ -1960,7 +2187,12 @@ function injectStyles() {
   /* ── backpack slots: wiki empty cells ── */
   .ml-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
     width:100%;max-width:560px;margin:auto 0}
-  .ml-slot.filled{position:relative;cursor:grab;touch-action:none}
+  /* A filled slot is a TAP TARGET until it is selected: no touch-action here,
+     so a finger that moves scrolls the page instead of lifting the item
+     (maintainer 2026-09-14). Only the SELECTED slot takes the gesture. */
+  .ml-slot.filled{position:relative;cursor:pointer}
+  .ml-slot.filled.sel{cursor:grab;touch-action:none;
+    background:var(--accent-soft);border-color:var(--accent)}
   .ml-slot.filled img{width:80%;height:80%;object-fit:contain;image-rendering:pixelated;
     position:absolute;left:10%;top:10%;pointer-events:none}
   /* the ×N count, lower-right of EVERY filled slot (maintainer 2026-08-05).
@@ -1969,8 +2201,15 @@ function injectStyles() {
   .ml-slot.filled b{position:absolute;right:3px;bottom:2px;pointer-events:none;
     padding:0 3px;border-radius:6px;font:700 11px/1.5 var(--sans);color:var(--ink);
     background:color-mix(in srgb, var(--surface) 82%, transparent)}
-  .ml-slot.dragging{opacity:.45}
-  .ml-slot-ghost{position:fixed;width:40px;height:40px;z-index:60;pointer-events:none;
+  /* THE LIFTED ITEM LEAVES ITS SLOT (maintainer 2026-09-14: "when you drag the
+     item it should not still be visible in the slot … easier to understand that
+     you have grabbed the item"). visibility, not display: the cell keeps its
+     size, so nothing in the grid reflows under the finger. The selection
+     outline stays, so the empty cell still says where the item came from. */
+  .ml-slot.dragging img,.ml-slot.dragging b{visibility:hidden}
+  /* width/height are SET FROM THE SOURCE ART (armSlotDrag) — the lifted icon
+     is the same size as the one in the slot, never a literal. */
+  .ml-slot-ghost{position:fixed;z-index:60;pointer-events:none;
     image-rendering:pixelated;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
   /* ── drop-quantity dialog: centred in the GAME VIEW, over a backdrop that
      eats every pointer (that IS the movement lock's first half; the second is
@@ -2090,6 +2329,29 @@ function injectStyles() {
      viewport. At his 393px width it leaves the track 259px, which is still
      ample for a percentage. */
   :root{--ml-slider-gutter:100px}
+  /* THE GUTTER IS THE "default" BUTTON'S LANE (maintainer 2026-09-10: "I want
+     it to the right of the slider. We already have extra room there because
+     the slider doesn't take up 100%"). A button is not draggable — a touch
+     that moves becomes a scroll and never fires a click — so the strip does
+     both jobs at once and the track keeps exactly the width it had.
+     The button OWNS the gutter width (flex-basis = gutter − gap), so the two
+     numbers can never drift apart: widen --ml-slider-gutter and the button
+     grows with it. The .ml-slider margin is the fallback for a track that
+     arrives without a row of its own. */
+  .ml-slider-row{display:flex;align-items:center;gap:8px;width:100%}
+  .ml-slider-row>.ml-slider{flex:1 1 auto;min-width:0;margin-right:0}
+  .ml-slider-def{flex:0 0 calc(var(--ml-slider-gutter) - 8px);min-height:26px;padding:3px 6px;
+    background:var(--surface);color:var(--ink);border:1px solid var(--border);border-radius:8px;
+    font:600 11px/1 var(--sans);cursor:pointer;
+    touch-action:manipulation;-webkit-tap-highlight-color:transparent;
+    user-select:none;-webkit-user-select:none}
+  .ml-slider-def:hover:not(:disabled){background:var(--surface-2)}
+  /* DISABLED MEANS "you are already at the default" (his words) — the state
+     is information, not a dead control, so it stays legible rather than
+     fading to nothing. */
+  .ml-slider-def:disabled{opacity:.42;cursor:default}
+  /* the dial group: one block, same rhythm as the column it sits in */
+  .ml-dials{display:flex;flex-direction:column;gap:14px;width:100%}
   .ml-amb-slider{display:flex;flex-direction:column;gap:6px;width:100%;padding:0 2px 6px}
   .ml-amb-slider-head{display:flex;justify-content:space-between;align-items:baseline;
     font:600 13px/1.2 var(--sans);color:var(--ink)}
@@ -2173,9 +2435,10 @@ function injectStyles() {
     .ml-plate-btn{padding:6px 8px;font-size:12px}
   }
   @media (max-height:640px){
+    .ml-dials{gap:10px}
     .ml-tabrow{padding:8px 14px 8px}
     .ml-tab{height:48px}
-    .ml-page{gap:8px;padding:8px 14px 12px}
+    .ml-page{gap:8px;padding:8px 14px calc(12px + var(--ml-safe-bottom, 0px))}
     .ml-plate-btn{min-height:36px}
     .ml-set{gap:10px}
     .ml-amb-list{gap:6px}

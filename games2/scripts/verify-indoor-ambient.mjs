@@ -49,6 +49,17 @@ await page.evaluate((w) => {
 await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 40_000 });
 await page.waitForFunction(() => window.__mlAmbient?.outdoor, null, { timeout: 30_000 });
 
+/* WHICH EFFECTS ARE OUTDOOR ONES. Nearly all of them: this whole layer is
+ * weather and wildlife, and the roof the game cuts away is what it must stop
+ * falling through. An INDOOR feature (`drips/`, 2026-09-13) is the mirror of
+ * that rule — it multiplies by 1 - ctx.outdoor — so it is asserted silent
+ * OUTDOORS and left alone indoors, where drawing is the whole point of it.
+ * The flag is declared on the feature and published through effects(). */
+const indoorFeatures = new Set(
+  (await page.evaluate(() => window.__mlAmbient.effects().filter((e) => e.indoor).map((e) => e.name))) ?? [],
+);
+console.log(`indoor features (asserted silent OUTDOORS, allowed to draw indoors): ${[...indoorFeatures].join(", ") || "none"}`);
+
 // Run the birds — the busiest effect, and the one with the most draw paths
 // (ground flock, migratory groups, fog wash, ground shadow).
 await page.evaluate(() => {
@@ -73,6 +84,20 @@ console.log(`outdoors: indoor=${outside.o.indoor} gain=${outside.o.gain} birds=$
 if (outside.o.indoor) fail("expected to start OUTDOORS");
 if (outside.o.gain !== 1) fail(`outdoor gain should be 1, got ${outside.o.gain}`);
 if (!(outside.maxA > 0)) fail("birds are outdoors but drawing at alpha 0 — the gain is inverted or stuck");
+
+// ...and the mirror: an indoor feature must be silent out here, forced or not.
+const outIndoor = await page.evaluate(async (names) => {
+  for (const n of names) window.__mlAmbient.setEnabled(n, true);
+  for (let i = 0; i < 180; i++) await new Promise((r) => requestAnimationFrame(r));
+  const out = {};
+  for (const n of names) out[n] = Math.max(0, ...((window.__mlAmbient.debug(n)?.all ?? []).map((x) => x.a ?? 0)));
+  for (const n of names) window.__mlAmbient.setEnabled(n, false);
+  return out;
+}, [...indoorFeatures]);
+for (const [n, a] of Object.entries(outIndoor)) {
+  console.log(`  ${n} (indoor feature) outdoors: maxAlpha ${a}`);
+  if (a > 0) fail(`${n} is an INDOOR feature and it drew outdoors (alpha ${a})`);
+}
 
 // Remember where we stood outside, so the walk back out is a real return.
 const home = await page.evaluate(() => {
@@ -144,6 +169,10 @@ if (!spot || spot.error) {
   if (!inside.o.indoor) fail("the game says outdoors at a cell it just called indoors");
   if (inside.o.gain !== 0) fail(`outdoor gain never landed on 0 indoors (${inside.o.fadeMs} ms fade), got ${inside.o.gain}`);
   for (const [n, a] of Object.entries(inside.alphas)) {
+    if (indoorFeatures.has(n)) {
+      console.log(`  ${n}: maxAlpha ${a} (indoor feature — drawing here is its job)`);
+      continue;
+    }
     console.log(`  ${n}: maxAlpha ${a}`);
     if (a > 0) fail(`${n} is still drawing indoors (alpha ${a})`);
   }

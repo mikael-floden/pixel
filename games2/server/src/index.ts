@@ -5,10 +5,10 @@ import { fileURLToPath } from "url";
 import express from "express";
 import compression from "compression";
 import { constants as zlibConstants } from "zlib";
-import { Server } from "@colyseus/core";
+import { Server, matchMaker } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { ROOM_NAME } from "@nangijala/shared";
-import { WorldRoom, sceneryBbox, zonesConfigFor } from "./rooms/WorldRoom.js";
+import { WorldRoom, sceneryBbox, zonesConfigFor, perfStats, DEFAULT_WORLD } from "./rooms/WorldRoom.js";
 import { initLive, registerLiveRoutes, sceneryHitboxOverrides } from "./live.js";
 import { cacheControlFor } from "./cachepolicy.js";
 import { assetHash } from "./assethash.js";
@@ -109,6 +109,9 @@ app.get("/api/scenery-collision", (_req, res) =>
 app.get("/api/zones/:world", (req, res) =>
   res.setHeader("Cache-Control", "no-cache").json(zonesConfigFor(String(req.params.world).replace(/[^a-z0-9_-]/gi, ""))),
 );
+// THE SERVER'S OWN LOAD NUMBERS (tick p50/p95/max per room, CPU of one core
+// since the last call, event-loop lag) — what scripts/loadbot.mjs reads.
+app.get("/api/stats", (_req, res) => res.setHeader("Cache-Control", "no-store").json(perfStats()));
 app.get("/version", (_req, res) =>
   res.setHeader("Cache-Control", "no-store").json({ sha: process.env.GIT_SHA || "dev" }),
 );
@@ -204,9 +207,29 @@ const gameServer = new Server({
 // room for each other pair (spec/ZONES.md; no zone = the whole-world room).
 gameServer.define(ROOM_NAME, WorldRoom).filterBy(["world", "zone"]);
 
+/** WARM ROOMS: every zone room of the published world exists before the
+ *  first player arrives — no join waits for a terrain load, and the
+ *  joinOrCreate race that made two rooms of one zone has no window. */
+async function warmZoneRooms() {
+  const cfg = zonesConfigFor(DEFAULT_WORLD);
+  if (!cfg) return;
+  const t0 = Date.now();
+  for (let z = 0; z < cfg.cols * cfg.rows; z++) {
+    try {
+      await matchMaker.createRoom(ROOM_NAME, { world: DEFAULT_WORLD, zone: z });
+    } catch (e) {
+      console.error(`[zones] warm-up of zone ${z} failed:`, e);
+    }
+  }
+  console.log(`[zones] ${cfg.cols * cfg.rows} zone rooms of ${DEFAULT_WORLD} warm in ${Date.now() - t0} ms`);
+}
+
 gameServer
   .listen(PORT)
-  .then(() => console.log(`[nangijala] world server listening on ws://localhost:${PORT}`))
+  .then(() => {
+    console.log(`[nangijala] world server listening on ws://localhost:${PORT}`);
+    void warmZoneRooms();
+  })
   .catch((err) => {
     console.error(err);
     process.exit(1);

@@ -108,10 +108,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   unknown key, NOT undefined — handed to the composer an unloaded 64x46 plate
   arrives as 32x32 and kills the frame, so the scene passes an adapter whose
   `get` answers through `exists`. And terrain gets its **own `LoaderPlugin`**:
-  `this.load` is one FIFO queue and `loadDeferredAnims` pushes ~1,700 action
-  frames onto it the moment the avatar is in — measured, 95 plate files sat at
-  position 1,719 and the ground never filled in while every counter said it had
-  been requested. The dedicated loader also carries `crossOrigin =
+  `this.load` is one FIFO queue shared with everything the scene loads
+  (measured before the art queue existed: 1,700 deferred action frames ahead
+  of 95 plate files at position 1,719, and the ground never filled in while
+  every counter said it had been requested). The dedicated loader also carries `crossOrigin =
   "anonymous"`, which a staging join depends on: a composed boundary reads its
   plates back with `getImageData`, and a cross-origin image loaded without the
   attribute taints the canvas and makes every boundary in the world vanish.
@@ -198,10 +198,11 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   and 41 fades resolved. A settings switch (`seam`) flips it live, and
   `boundaryKey` carries `|noseam`, so seamed and unseamed are different
   pictures under different keys.
-- **THE FADE HAS THREE DIALS AND A SWITCH, AND HE TUNES THEM** (`client/src/
-  fadetune.ts` owns the values; Settings sliders "Fade reach" / "Fade amount"
-  / "Fade falloff" in hud.ts, the button "fade on transition" in the scene's
-  list; `Tiles3Data.fadeTune` carries them into the resolver, and
+- **THE FADE HAS THREE DIALS, AND HE TUNES THEM** (`client/src/fadetune.ts`
+  owns the values; Settings sliders "Fade reach" / "Fade amount" / "Fade
+  falloff" in hud.ts; `onBoundary` — a fade on a transition tile — is always
+  false, maintainer 2026-09-12, no switch; `Tiles3Data.fadeTune` carries them
+  into the resolver, and
   "ml-fade-tune" re-resolves and repaints the world 400 ms after the thumb
   rests). Maintainer 2026-09-09, on the beach: the fades "look like random
   dots and don't read 'a transition' at all ... I kinda feel I need 3 sliders
@@ -230,10 +231,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   pool tile (from tiles/fades/index.json); exposing that per placement is
   not built.
 - **A NATURE WALL'S FOOT IS A TRANSITION TILE, AND A DECK SLAB COMPOSES
-  TRANSITIONS TOO** (`Tiles3Data.footBoundary` / `deckBoundary`; ONE Settings
-  switch "cliff-foot & lid transitions", `client/src/transitions.ts`, on by
-  default; off is the resolver's parity picture and the render3 fixtures
-  hold). Maintainer 2026-09-09: "When a nature wall (not a house, etc)
+  TRANSITIONS TOO** (`Tiles3Data.footBoundary` / `deckBoundary`, both always
+  true — the switch that turned them off is gone, maintainer 2026-09-12; the
+  render3 fixtures still hold the resolver's picture with both false).
+  Maintainer 2026-09-09: "When a nature wall (not a house, etc)
   intersect the ground we should make the ground a transition/boundary tile
   to make the connection look better", and on the cave lid "the ground up
   here also look very sharp and has no transition/boundary tiles". FOOT:
@@ -474,11 +475,54 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   `(1+1.6·rating)·max(0, 1−|pct−target|/(span/2))` with target = pctMin +
   span·pos^falloff — at the resolver's own constants FADE_BAND 2 / amount 1 /
   falloff 1 (the fixtures pin those; the game's dials are the maintainer's and
-  differ); a detail rolls wherever no fade landed, never on parquet_floor;
+  differ); a detail rolls wherever no fade landed, never on parquet_floor,
+  NEVER ON A RAMP (a slope cell keeps its graded tile) and NEVER TOUCHING
+  ANOTHER, and drawn as an OVERLAY — its top face alone, never its band
+  (`detailOverlay`; "a detail should never be able to show its wall",
+  maintainer 2026-09-13. A detail used to REPLACE the plate, so at level 0 —
+  the one place a surface is not `topOnly` — the 17-row band under its diamond
+  was the DETAIL'S, smeared down by `capWallToSurface`. That band is never
+  legitimate art and the tiles in front cover nearly all of it, but a one-texel
+  coverage error along a diamond edge shows a short broken run, which is the
+  artefact class of 2026-09-04's 633 palette-wall texels in 116 chevrons — in a
+  detail's own colour this time. As an overlay the cell keeps its member plate
+  and the detail paints only the diamond, with NO margin row, so it cannot
+  contribute one band texel by construction. The diamond is unchanged: a
+  conformed top face is opaque over the whole library silhouette, 924 texels.
+  Keyed per ground like a fade's, built locally rather than on the compose
+  worker — one cell in a hundred is no per-frame pressure. `cellArtPaths` names
+  `cell.detail.file`, which is now the ONLY place it is named: miss it and
+  every detail 404s in production and only in production. Gate
+  `server/test/detailwall.test.ts`) — (`detailAlone`: among the raw winners of
+  an 8-ring the smallest roll keeps, the others yield — symmetric and order-free, so the worker, a
+  streaming window and a sweep agree; at the dial's top the field packs to the
+  hash's local minima, about one in nine, never tiled. Maintainer 2026-09-13,
+  "doesn't look good repeated, but look very good alone"; measured before it
+  at 1 in 56: 28 of the_game's 860 details on ramps, 101 touching; gate
+  `server/test/detailplace.test.ts`) —
+  THE POOL is his `#top` approvals over the x-over-y textured tops PLUS his
+  reviewed detail library (`tiles/tops/index.json`: flavour "detail" sheets,
+  a tile whose `<dir>/<tile>#top` verdict is approved, drawn as
+  `<dir>/post/<post file>` matched by stem; 2,549 approved, 2026-09-12 —
+  before that none of them could reach a field except as a base-set member,
+  TILED, "the one thing a detail must never be"), and THE RATE is the
+  Settings "Ground details" dial (`detailrate.ts`: one in N cells, N on a
+  geometric track from every cell to one in 10,000, default 1 in 100 — HIS,
+  2026-09-13, off the live game; 1 in 56 was the rate before he had a slider;
+  "ml-detail-rate" rebuilds the resolver on both threads like the fade dials,
+  and the worker rolls the same rate — `WorkerInit.detailRate`); render3
+  mirrors the pool (asked of maps2 on their board), not the dial; probe
+  `__ml.details()`; gate `scripts/verify-details.mjs`;
   MADE_GROUND = brown_paving_stone, grey_paving_stone, parquet_floor; a
   boundary corner within `BOUNDARY_STEP` votes and a farther one folds to its
-  own ground, liquid pairs compose and the liquid cell draws top-face-only
-  with no wall; a room anchors its member ONLY for the room's own floor ground
+  own ground — EXCEPT A LIQUID CORNER, which votes only at the drawing cell's
+  own level (water lies flat: one storey of tolerance composed the sea into
+  the top face of the step above it, 8 cells of the_game, all land at level 1
+  beside water at 0 — maintainer 2026-09-11, "The ground on that stair has
+  fucking water on it!"; render3 2026-09-11, the game 2026-09-12; a water
+  cell still composes its land corner one storey up, the shore tile that is
+  "not 100% water or 100% beach"; gate `tiles3liquid.test.ts`), liquid pairs
+  compose and the liquid cell draws top-face-only with no wall; a room anchors its member ONLY for the room's own floor ground
   (`roomFloorAt`; a foreign ground inside a room keeps its cell); a deck's
   `side`, cap tile, doorway/behind crop (the deck bullet under Decks); scenery
   takes an explicit `state` over `lit`, its `dir` rotation, drawn-px scale
@@ -510,6 +554,30 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   is held equal with render3 by the parity fixtures (THE RESOLVER AND render3
   HOLD ONE RULE SET, above).
 
+- **A SET MEMBER LEAVES ITS SET ON HIS VERDICT ON THE TILE, NEVER ON ITS
+  `#top` DETAIL VERDICT** (`memberRejected`, 2026-09-12). The pool drops a
+  member whose review key (the pair verdict) or raw tile string is `rejected`;
+  `<key>#top` is his detail review, and a `rejected` there is "not a detail" —
+  by the live channel's contract "it does not reject the tile" (live/README.md,
+  2026-08-21), and by his word "not a detail" and "in my set" are independent
+  judgements (2026-09-12, via the tiles agent, who keeps the 57 rejected tops
+  his sets draw). A `tiles/tops` member's ONLY verdict key is that facet, so
+  it leaves a set only when he removes it in the wiki. (The pool probed the
+  facet until 2026-09-12, and his detail pass that morning silently emptied 33
+  of his sets: 219 of 340 members dropped, none by a verdict on the tile;
+  measured on the_game, 29.3% of the land and 11 of the 16 roofs and bridges
+  drew the clean plate, brown/grey paving and parquet at 74-96% flat — the
+  flat grey grid he photographed on the spawn house, whose roof's region picks
+  brown_paving_stone set 2, all four members `#top`-rejected between 04:13
+  and 04:15 UTC. Under the tile-verdict rule no set is empty and the flat share
+  is the 12.6% his weighted Clean sets ask for.) STILL OPEN: a set he empties
+  by rejecting every TILE still wins its region at full weight and draws clean
+  — none today; the fix would be weight 0 for an emptied set in `pickSet`,
+  mirrored in render3 and the wiki reference. render3's `_member_rejected`
+  probes the facet too and is asked of maps2 to mirror this, then the parity
+  fixtures regenerate. Gate: `server/test/tiles3members.test.ts` (data-free
+  arms run in the deploy gate).
+
 - **Anti-tiling: NONE, on purpose.** Varying tiles is the maps agent's job —
   this repo never swaps a cell's art. REJECTED and fully rolled back: a shader
   seam-smear AND a brightness "ground wash" (maintainer wants the fresh,
@@ -521,6 +589,24 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   up-screen — onto the cave floor behind it, as a plain white band under the
   maintainer's feet at 267.9,157.8. Underlay skipped with it; the occluder's
   stump cap for a field keeps the plate anchor. Rule + reason: `INDOOR.md`.
+- **A STUMP'S LID IS THE ROCK IT IS CUT THROUGH** (`Tiles3Cell.side`/`cutCap`,
+  `cutLidKey`, 2026-09-09). Every raised cell carries its wall material and
+  that material's textured set plate (top face only); a column the cut-away
+  truncates draws that plate at the cut storey — in the ground texture over
+  the top course (`cellBlits`) and as the occluder cap (a field stump keeps its
+  plate anchor, a wall stump takes it over its course). Before: a cave room's
+  near and side walls are fields (no face toward the camera) and their stumps
+  wore the mountain's own snow and ice; a wall stump wore its course's one
+  flat colour (maintainer 2026-09-09, five photographs in the cave at
+  261-286,153-171: "Why is the tile under me clean snow/ice? Looks weird",
+  "plain grey_stone"). The mountain top stays `ground` — outdoors nothing
+  changes. Only a cell with a NAMED rock (maps2's `walls[]`, or a faceless
+  cell beside one) carries a lid — that is every cell the cut can truncate —
+  and `cellArtPaths` names its file to ship-tiles3 always but to the LOADER
+  only while the cut is up: a landed terrain file rebuilds the occluders and
+  unlocks a drain repaint, and one lid per raised cell landing outdoors was
+  66 long occluder rebuilds and twice the full paints in a 30 s beacon
+  window (2026-09-09, "the lag we fixed is back").
 - **A BOUNDARY IS SKIPPED INDOORS ONLY WHERE ITS OWN COLUMN IS TRUNCATED,
   AND A CUT-SUPPRESSED CELL IS NEVER OWED** (`cutSuppressed`, 2026-09-05).
   The transition raster replaces the cell's plate at its own uncut level; if
@@ -541,13 +627,23 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   "not truncated", so its quad clause is gone and the two passes agree.
   Legacy kill switch (cuts null) still suppresses every boundary.
 
-- **A SLAB WEARS ONE SURFACE, AND IT IS DRAWN** (and, since 2026-09-09, its
-  transitions over it — see the nature-wall-foot bullet). A roof, a bridge and a cave
-  lid take ONE set and ONE member for the whole deck, anchored at the deck's own
-  first cell (min by `x + y`, tie on `x` — render3.py:1387 and its `danch`), and
-  `opsForDeck` pastes that plate TOP FACE ONLY over the cap at `surfaceY` —
-  render3's `top_face_only(plate_img(..., anchor=danch))` at `col_y(x, y, dl)`,
-  to the row. TWO DEFECTS SAT ON TOP OF EACH OTHER HERE (2026-09-05): `deckCell`
+- **A BUILT SLAB WEARS ONE SURFACE, A CAVE LID WEARS THE GROUND'S — AND BOTH
+  ARE DRAWN** (and, since 2026-09-09, their transitions over them — see the
+  nature-wall-foot bullet). A ROOF or a BRIDGE takes ONE set and ONE member for
+  the whole deck, anchored at the deck's own first cell (min by `x + y`, tie on
+  `x` — render3's `danch`). A CAVE LID is the ground you walk on, so it asks at
+  its OWN cell and resolves to the very set, member and art `plateFor` gives the
+  field cell beside it: you find a cave at its mouth, never from the dirt under
+  your feet. Anchored, the_game's one mud cave is SEVEN decks and the lid read
+  as seven flat one-member patches against mud that varies cell to cell
+  (maintainer 2026-09-11, standing on it: "I can see there is a cave under me
+  because the dark_mud ground looks different and doesn't seem to use the 'base
+  tile set' the mud around it uses"). Either way the anchor goes through
+  `plateAt`, never `plateFor`, so the ROOM map reaches no slab from either
+  direction — the room under a lid is the cave, and its floor plan belongs
+  underground. `opsForDeck` then pastes that plate TOP FACE ONLY over the cap at
+  `surfaceY` — render3's `top_face_only(plate_img(..., anchor=...))` at
+  `col_y(x, y, dl)`, to the row. TWO DEFECTS SAT ON TOP OF EACH OTHER HERE (2026-09-05): `deckCell`
   resolved the surface PER CELL (22 of the_game's 28 decks patchwork, the
   180-cell inn across 8 arts), and NOTHING DREW IT AT ALL — `Tiles3DeckCell
   .surface` was resolved, carried and parity-gated against render3, and no
@@ -566,10 +662,12 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   the surface covers wall caps and inner walls alike; decks draw LAST, as in
   render3, so no down-screen cap can paint over it. NOTE: the room map never
   reached the_game's roofs — they are `brown_paving_stone`, not the room floor;
-  the visible seams were the cap tiles and the per-cell member. Gates: `a deck
-  is ONE set and ONE member, eave to eave` (control resolves each cell as a
-  synthetic ONE-CELL deck, which reproduces the per-cell answer exactly, and
-  must keep finding >=10 patchwork slabs) and the deck arm of `every op the
+  the visible seams were the cap tiles and the per-cell member. Gates: `a built
+  slab is ONE surface; a cave lid is the ground's own pick` (the control
+  resolves each cell as a synthetic ONE-CELL deck, which reproduces the per-cell
+  answer exactly, and must keep finding >=8 patchwork roofs; the lid arm asserts
+  every lid cell equals `plateFor` there and that those picks are not uniform)
+  and the deck arm of `every op the
   factory hands back is drawable` (the surface op exists, is `t3f:`-keyed, sits
   at `surfaceY` with role `deck`; an unloaded surface emits nothing).
   **AND THE OCCLUDER COPY MUST END WITH IT TOO** (`capDecks`, same day, from
@@ -661,3 +759,28 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   deploys never stall on the game agent. Runbook: **`games2/SURFACES.md`**.
   If a DIFFERENT gate fails on an art push, that's a real art bug, not a
   surfaces edit.
+- **A wall face wears its region's least-seamed measured set, never one tile**
+  (maintainer 2026-09-13, fog off, five walls: "the insanely good looking
+  wall that used different tiles has stopped working. Now it's the same
+  everywhere"). The rule is `client/src/wallregion.ts` (a region field over
+  world position and elevation; a SET per region, a member per cell, weights
+  8/5/3/2/1) and the data is `client/src/wallsets.json`, sets of five walls
+  whose expected seam `scripts/wall-sets.py` measured by compositing every
+  ordered pair as the game stacks them. WHAT BROKE IT: the tiles agent's
+  review prunes of 09-11/12 (6a61b679c, ca9755ce5, 177b571eb, 403469edb —
+  11,359 wall files left git) deleted the walls his detail verdicts had
+  marked, the same `#top` misread the base sets got the same day, and every
+  measured set that named one of them stopped matching its pool whole: 3 of
+  182 pools kept a usable set, `grey_stone__over__grey_stone` kept 1 of its
+  11 set tiles among 22 candidates, `snow__over__dark_mud` has no candidate
+  left at all, and every mountain drew rank 0 alone (the maps2 assistant
+  measured and posted it 2026-09-12 23:11). Three things hold it now:
+  `wallsets.json` is regenerated from today's approved walls (five members,
+  then three for pools with fewer than five); a set counts with at least two
+  of its tiles present in the pool (their pairs were measured together;
+  whole sets first); and when no set clears `WALL_SET_MAX_COST` the
+  LEAST-SEAMED set is the palette, not one tile — the gate's own note said
+  the single-tile fallback was the reported defect, and today it was reported
+  a third time. `WALL_TEST_VECTORS` regenerated (`scripts/wall-vectors.mjs`);
+  render3 carries a port of this rule (maps2, 3fad4e69a) and must take the
+  two changes and the vectors. Gate: `server/test/wallregion.test.ts`.

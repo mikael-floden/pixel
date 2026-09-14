@@ -72,8 +72,10 @@ test("snapping is idempotent and survives a localStorage round-trip", () => {
 test("the readout names the FRAGMENT count, which is the square", () => {
   // 50% reads like half the work and is a quarter of it; that is the whole
   // reason the second number is printed.
-  assert.match(lightScaleLabel(0.5), /^50% · 25% of the pixels$/);
-  assert.match(lightScaleLabel(1), /full/);
+  // The resolution dial's units: a fraction of the FULL backing (the render
+  // resolution is 1 under Node, and no backing size is known — no pixels).
+  assert.match(lightScaleLabel(0.5), /^1\/2$/);
+  assert.match(lightScaleLabel(1), /^1\/1$/);
   // Under 10% a whole-percent readout would print several steps identically.
-  assert.match(lightScaleLabel(LIGHT_SCALE_MIN), /^2\.0% · 0\.04% of the pixels$/);
+  assert.match(lightScaleLabel(LIGHT_SCALE_MIN), /^1\/50$/);
 });

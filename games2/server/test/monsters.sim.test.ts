@@ -33,6 +33,7 @@ import {
   pointInZone,
   zonePolygonCells,
   buildZoneRuntimes,
+  nearestZoneCell,
   monsterDodge,
   separationPush,
   screenToWorldVector,
@@ -240,7 +241,18 @@ function roamOneMonster(
   rt: ZoneRuntime,
   seed: number,
   ticks: number,
-): { moved: boolean; violations: string[]; trips: number } {
+  /** Start here instead of a random zone cell — the roof tests want a monster
+   *  that begins ON the lid, which a random pick reaches only by luck. */
+  start?: { c: number; r: number; lvl: number },
+): {
+  moved: boolean;
+  violations: string[];
+  trips: number;
+  snaps: Array<{ fromElev: number; toElev: number; sameLayerNear: boolean }>;
+  elev: number;
+  x: number;
+  y: number;
+} {
   const { grid, worldW, worldH } = w;
   const rng = mulberry32(seed);
   const ctx = { maxClimb: WALK_CLIMB, canSwim: rt.canSwim };
@@ -248,7 +260,7 @@ function roamOneMonster(
   let nowMs = 0;
 
   // Spawn exactly like seedMonsters: a random pre-validated zone cell.
-  const cell0 = rt.cells[Math.floor(rng() * rt.cells.length)];
+  const cell0 = start ?? rt.cells[Math.floor(rng() * rt.cells.length)];
   let x = (cell0.c + 0.5 + (rng() - 0.5) * 0.5) * CELL_WU;
   let y = (cell0.r + 0.5 + (rng() - 0.5) * 0.5) * CELL_WU;
   let elev = cell0.lvl;
@@ -260,6 +272,10 @@ function roamOneMonster(
   const startY = y;
   const violations: string[] = [];
   let trips = 0;
+  /** Every snap-back the run took: where it stood, where it was put, and
+   *  whether the zone held a cell on its own layer to be put back on. The
+   *  roof case is asserted on these (see the lid test). */
+  const snaps: Array<{ fromElev: number; toElev: number; sameLayerNear: boolean }> = [];
 
   // Exactly WorldRoom.pickMonsterTarget: random zone cells, prefer local.
   const pickTarget = (): { x: number; y: number } => {
@@ -322,15 +338,15 @@ function roamOneMonster(
     const mc = Math.floor(x / CELL_WU);
     const mr = Math.floor(y / CELL_WU);
     if (!rt.cellSet.has(mc + mr * grid.width)) {
-      let best = rt.cells[0];
-      let bestD = Infinity;
-      for (const cell of rt.cells) {
-        const d = Math.hypot(cell.c - mc, cell.r - mr);
-        if (d < bestD) {
-          bestD = d;
-          best = cell;
-        }
-      }
+      // The server's own rule: nearest cell ON MY LAYER (see nearestZoneCell).
+      const best = nearestZoneCell(rt.cells, mc, mr, elev) ?? rt.cells[0];
+      snaps.push({
+        fromElev: elev,
+        toElev: best.lvl,
+        sameLayerNear: rt.cells.some(
+          (c) => Math.abs(c.lvl - elev) <= WALK_CLIMB && Math.hypot(c.c - mc, c.r - mr) <= 6,
+        ),
+      });
       x = (best.c + 0.5) * CELL_WU;
       y = (best.r + 0.5) * CELL_WU;
       elev = best.lvl;
@@ -356,7 +372,7 @@ function roamOneMonster(
   }
 
   const moved = Math.hypot(x - startX, y - startY) > 1 || trips > 0;
-  return { moved, violations, trips };
+  return { moved, violations, trips, snaps, elev, x, y };
 }
 
 for (const worldName of ["the_game"]) {
@@ -389,6 +405,76 @@ for (const worldName of ["the_game"]) {
     assert.ok(anyMoved, "at least one sampled monster actually roamed");
   });
 }
+
+// ---------------------------------------------------------------------------
+// A STRAY COMES BACK ON ITS OWN LAYER — the roof case (nearestZoneCell).
+// ---------------------------------------------------------------------------
+
+test("nearestZoneCell: the layer is the first key, the distance the second", () => {
+  // One column's two surfaces (a floor at 0 under a roof at 6) plus a far
+  // cell on each layer. A body on the roof must never be handed a floor.
+  const cells = [
+    { c: 10, r: 10, lvl: 0 }, // right here, but six levels down
+    { c: 14, r: 10, lvl: 6 }, // four cells away, on my layer
+    { c: 30, r: 30, lvl: 0 },
+  ];
+  assert.deepEqual(nearestZoneCell(cells, 10, 10, 6), { c: 14, r: 10, lvl: 6 }, "on the roof: the roof cell");
+  assert.deepEqual(nearestZoneCell(cells, 10, 10, 0), { c: 10, r: 10, lvl: 0 }, "on the floor: the floor cell");
+  // A body one walk step off a layer still belongs to it.
+  assert.deepEqual(nearestZoneCell(cells, 10, 10, 5), { c: 14, r: 10, lvl: 6 }, "within a walk step counts as my layer");
+  // No cell on my layer at all: the nearest of any, rather than nothing.
+  assert.deepEqual(nearestZoneCell(cells, 10, 10, 20), { c: 10, r: 10, lvl: 0 }, "no layer of mine: the nearest");
+  assert.equal(nearestZoneCell([], 0, 0, 0), null, "an empty zone answers null");
+});
+
+test("the_game: a monster roaming a house ROOF is never snapped through it", () => {
+  const w = loadWorld3("the_game");
+  if (!w) return test.skip("the_game missing");
+  // The shipped case (maintainer 2026-09-14, standing inside the house at
+  // 310.4,228.6: "the monsters that used to walk on the roof now and then fall
+  // down the roof ... the roof doesn't have a single hole"). Two facts make
+  // it: the zone's band admits BOTH a building's floor and the roof over it,
+  // so its cell list holds the same column twice; and the polygon NOTCHES
+  // around a column the roof still spans, so a monster walking the roof
+  // crosses out of the zone and hits the snap-back. Derived, not hardcoded:
+  // the zone with the most roof cells beside such a notch.
+  let pick: { rt: ZoneRuntime; roof: { c: number; r: number; lvl: number }; notches: number } | null = null;
+  for (const rt of w.runtimes) {
+    const dual = new Map<number, number[]>();
+    for (const c of rt.cells) {
+      const k = c.c + c.r * w.grid.width;
+      dual.set(k, [...(dual.get(k) ?? []), c.lvl]);
+    }
+    const layered = [...dual.values()].some((l) => l.length > 1 && Math.max(...l) - Math.min(...l) > WALK_CLIMB);
+    if (!layered) continue; // no second surface to be dropped onto
+    const onLid = rt.cells.filter((c) => w.grid.deck[c.r * w.grid.width + c.c] === c.lvl);
+    const beside = onLid.filter((c) =>
+      [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dc, dr]) => {
+        const k = c.c + dc + (c.r + dr) * w.grid.width;
+        return !rt.cellSet.has(k) && w.grid.deck[k] >= 0; // the roof spans a column the zone does not hold
+      }),
+    );
+    if (!beside.length || (pick && beside.length <= pick.notches)) continue;
+    pick = { rt, roof: beside[0], notches: beside.length };
+  }
+  assert.ok(pick, "the_game zones a roof that spans a column outside its own polygon");
+  const { rt, roof } = pick!;
+  const crossed: string[] = [];
+  let snaps = 0;
+  for (let seed = 0; seed < 4; seed++) {
+    const run = roamOneMonster(w, rt, 4000 + seed * 31, 4000, roof);
+    snaps += run.snaps.length;
+    for (const s of run.snaps)
+      if (s.sameLayerNear && Math.abs(s.toElev - s.fromElev) > WALK_CLIMB)
+        crossed.push(`${rt.zone.id}: snapped from level ${s.fromElev} to ${s.toElev} with its own layer in reach`);
+  }
+  assert.ok(snaps > 0, `the run never strayed off the polygon — the notch case was not exercised (${rt.zone.id})`);
+  assert.equal(
+    crossed.length,
+    0,
+    `${crossed.length} of ${snaps} snaps crossed layers — a monster teleported through the slab it stood on: ${crossed.slice(0, 3).join("; ")}`,
+  );
+});
 
 // ---------------------------------------------------------------------------
 // Client-side soft monster collision (monsterDodge): the player's 8-way input

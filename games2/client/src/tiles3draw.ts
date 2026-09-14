@@ -274,11 +274,66 @@ export function composeBoundary(
   return out;
 }
 
+/** THE BOUNDARY RASTER FROM ITS TWO PLATE RASTERS — one function for BOTH
+ *  threads (composeworker.ts composes with it, the factory composes with it),
+ *  so a raster built off the frame thread is the raster this thread would
+ *  have built. The compose, then the pass: a raised cap keeps the top face
+ *  only (with the margin row when nothing is drawn under it), a level-0
+ *  boundary keeps its wall band capped to the surface — see `boundary()`. */
+export function buildBoundaryPixels(
+  sheets: PatternSheets,
+  b: { maskFrame: number | null; topOnly?: boolean; noWall?: boolean },
+  a: Pixels,
+  bb: Pixels,
+  seam: boolean,
+): Pixels {
+  const out = composeBoundary(sheets, b.maskFrame as number, a, bb, { seam });
+  return b.topOnly ? topFaceOnly(sheets, out, { margin: !!b.noWall }) : capWallToSurface(sheets, out);
+}
+
+/** A PLATE RASTER FROM ITS DECODED SOURCE — the conform when the resolver asked
+ *  for it, then the cap, then the top-face mask (in that order: see
+ *  `platePixels`). Shared with the worker for the same reason. */
+export function buildPlatePixels(sheets: PatternSheets, art: PlateLike, src: Pixels, wallRGB: readonly [number, number, number]): Pixels {
+  const out = art.kind === "conform" ? conformPlate(sheets, src, wallRGB) : src;
+  return art.topOnly ? topFaceOnly(sheets, capWallToSurface(sheets, out)) : capWallToSurface(sheets, out);
+}
+
 /** A FADE OVERLAY'S KEY. Distinct from the conformed plate of the same file:
  *  it is a DIFFERENT PICTURE (the field texels are transparent), and two
  *  pictures must never share a key. */
 export function fadeKey(path: string, ground: string): string {
   return `t3d:${ground}|${path}`;
+}
+
+/** A DETAIL OVERLAY'S KEY. Like a fade's, a different picture from the
+ *  conformed plate of the same file, so never the same key. */
+export function detailKey(path: string, ground: string): string {
+  return `t3dt:${ground}|${path}`;
+}
+
+/** A DETAIL'S TOP FACE AND NOTHING ELSE — the maintainer's law, 2026-09-13: "A
+ *  detail should never be able to show its wall."
+ *
+ *  A detail used to REPLACE the cell's plate, so at level 0 (the one place a
+ *  plate is not `topOnly`) the 17-row band under its diamond was the detail's:
+ *  `capWallToSurface` smears each column's bottom top-face pixel down it. That
+ *  band is never legitimate art — nothing exists below a level-0 cell — and the
+ *  tiles in front cover almost all of it, but "almost" is the whole story here:
+ *  a one-texel coverage error along a diamond edge shows a short broken run of
+ *  it, which is exactly the artefact he photographed in September (633 texels
+ *  of light_beach's palette wall in 116 chevrons). With a detail's own colour in
+ *  that band — a dark rock or a puddle on grass — the same error reads as a
+ *  chevron of the motif.
+ *
+ *  So a detail is an OVERLAY, like a fade: the cell keeps its own member plate
+ *  and the detail paints its diamond over it. `topFaceOnly` with NO margin row,
+ *  because the plate underneath already carries the whole band — the overlay
+ *  must not put one texel of itself below the top face. The picture on the
+ *  diamond is unchanged: a conformed plate's top face is fully opaque over the
+ *  library silhouette, so it covers the member's. */
+export function detailOverlay(sheets: PatternSheets, src: Pixels, wallRGB: readonly [number, number, number]): Pixels {
+  return topFaceOnly(sheets, conformPlate(sheets, src, wallRGB), { margin: false });
 }
 
 /** HOW CLOSE TO THE GROUND'S OWN TOP COLOUR COUNTS AS "FIELD", and therefore
@@ -666,7 +721,15 @@ const FOOT_UNDER = 2;
 const FOOT_DARKEN = 0.82;
 /** Under water: crest, second crest, then the submerged wall's alpha by depth. */
 const FOOT_CREST = [0.5, 0.22]; // how far each crest row is lifted toward white
-const FOOT_SUNK_MIX = 0.35; // how much of the water's colour the sunk wall takes
+/* HOW MUCH OF THE WATER'S COLOUR THE SUNK WALL TAKES. 0.35 is his approved
+ * look and it is BACK: running the mix and a dimming with depth (0.62 to 0.92,
+ * dim to 0.72) was tried to stop a sand-topped cliff reading as a beach on the
+ * water, and it went too far the other way — "can't see any effect at all where
+ * the wall enters the water" (maintainer 2026-09-10). The sand read is not
+ * fixed by sinking the wall out of sight; what is misplaced is the CREST, and
+ * that is arithmetic, not colour. Do not re-tune this without fixing the crest
+ * first, or the effect just disappears again. */
+const FOOT_SUNK_MIX = 0.35;
 const FOOT_SUNK = [0.95, 0.9, 0.8, 0.7, 0.58, 0.46, 0.34, 0.24, 0.15, 0.08];
 
 const mix = (a: number, b: number, t: number) => Math.round(a + (b - a) * t);
@@ -951,7 +1014,7 @@ export interface Tiles3Blit {
   sh: number;
   /** What produced this op — for the depth sort, the occluder pass and QA.
    *  `foot` is the wall-foot band on a lower cell (see `footBand`). */
-  role: "surface" | "wall" | "boundary" | "deck" | "fade" | "foot";
+  role: "surface" | "wall" | "boundary" | "deck" | "fade" | "detail" | "foot";
 }
 
 /** The ops for one resolved cell, in render3's own order: a field cell is ONE
@@ -1011,7 +1074,7 @@ function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
   let water: string | null = LIQUID_SET.has(cell.ground) ? cell.ground : null;
   let mask = "";
   const b = cell.boundary;
-  if (b && b.maskFrame !== null) {
+  if (water && b && b.maskFrame !== null) {
     const aL = LIQUID_SET.has(b.a);
     const bL = LIQUID_SET.has(b.b);
     if (aL !== bL) {
@@ -1019,6 +1082,16 @@ function pushFoot(cell: Tiles3Cell, ops: Tiles3Blit[]): void {
       mask = `m${b.maskFrame}${bL ? "b" : "a"}`;
     }
   }
+  /* ONLY A CELL THAT IS ITSELF WATER, never a shore tile that merely draws
+   * some. A transition tile carries its OWN cell's level, and the_game has
+   * `dark_mud` at level 1 blending to water beside a level-0 sea: its water
+   * side is drawn a whole storey above the sea, so the band on it — crest rows
+   * and all — floated out in the open with no wall beside it to explain the
+   * shape (maintainer 2026-09-10: "the water foam effect is not even close to
+   * the wall water intersection", of cell 277,269 exactly). A full water cell
+   * is at the water's real level, so the band meets the surface it is drawing
+   * the wall into. The mask above still clips a full water cell's own boundary
+   * to its water side — "part of the tile is water, but not the entire tile". */
   if (!water) return;
   const walls = dirs.map((d) => `${d}:${f[d]}`).join("+");
   ops.push({ key: footKey(walls, water, mask), x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: TILE, sh: PLATE_H, role: "foot" });
@@ -1046,6 +1119,20 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
         sw: TILE,
         sh: PLATE_H,
         role: "fade",
+      });
+    }
+    /* ...AND A DETAIL THE SAME WAY, top face only: "a detail should never be
+     * able to show its wall" (maintainer 2026-09-13). See `detailOverlay`. */
+    if (cell.detail) {
+      ops.push({
+        key: detailKey(cell.detail.file, cell.ground),
+        x: cell.sx,
+        y: cell.pasteY ?? cell.sy,
+        sx: 0,
+        sy: 0,
+        sw: TILE,
+        sh: PLATE_H,
+        role: "detail",
       });
     }
     pushFoot(cell, ops);
@@ -1094,6 +1181,21 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
         sw: TILE,
         sh: PLATE_H,
         role: "fade",
+      });
+    }
+    /* ...and its detail, for that same reason. The cap's surface is already
+     * `topOnly`, so this changes no pixel there — it keeps ONE rule for where a
+     * detail's art may land, on a cap and on flat ground alike. */
+    if (cell.detail) {
+      ops.push({
+        key: detailKey(cell.detail.file, cell.ground),
+        x: cell.sx,
+        y: cell.pasteY ?? cell.sy,
+        sx: 0,
+        sy: 0,
+        sw: TILE,
+        sh: PLATE_H,
+        role: "detail",
       });
     }
   }
@@ -1202,7 +1304,34 @@ export interface TextureManagerLike {
   remove(key: string): unknown;
 }
 
+/** ONE SIDE OF A COMPOSITION AS THE WORKER NEEDS IT: the art, its routed URL
+ *  (the worker fetches its own copy — a cache hit), and the palette colour a
+ *  conformed plate fills with. */
+export interface ComposeSide {
+  kind: string;
+  path: string;
+  topOnly: boolean;
+  url: string;
+  wall: [number, number, number];
+}
+export type ComposeJob =
+  | { kind: "boundary"; key: string; frame: number; seam: boolean; topOnly: boolean; noWall: boolean; a: ComposeSide; b: ComposeSide }
+  | { kind: "fade"; key: string; side: ComposeSide; top: [number, number, number] };
+
+/** Something that composes OFF THE FRAME THREAD (composeclient.ts). The
+ *  factory hands it a job when `ready()` and draws the plain plate until the
+ *  raster comes back through `landRemote`; not ready means the factory
+ *  composes here, as it always did. */
+export interface RemoteComposer {
+  ready(): boolean;
+  compose(job: ComposeJob): void;
+}
+
 export interface Tiles3TexturesOpts {
+  /** THE COMPOSE WORKER, and the routed URL of a repo-relative art path it
+   *  needs to fetch a plate itself. Both or neither. */
+  remote?: RemoteComposer;
+  artUrl?: (path: string) => string;
   /** The storey pitch the occluder pass stacks faces at (`geom.lh`) — the wall
    *  foot band is placed from it. Defaults to the shipped 16. */
   pitch?: number;
@@ -1253,6 +1382,14 @@ export interface Tiles3TexturesStats {
    *  spent. Each one draws its plain plate instead and is repainted by
    *  `t3retryBoundaries` when a later frame's budget affords it. */
   deferred: number;
+  /** Compositions handed to the worker, and the rasters it sent back that
+   *  were registered here (composeworker.ts). */
+  queued: number;
+  landed: number;
+  /** The audit (`Tiles3Textures.audit`): landed rasters composed a second time
+   *  on this thread and compared byte for byte. `auditDiff` must be 0. */
+  auditSame: number;
+  auditDiff: number;
 }
 
 /**
@@ -1263,7 +1400,18 @@ export interface Tiles3TexturesStats {
  * atlas bake.
  */
 export class Tiles3Textures {
-  readonly stats: Tiles3TexturesStats = { built: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0, builtBoundary: 0, deferred: 0 };
+  readonly stats: Tiles3TexturesStats = { built: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0, builtBoundary: 0, deferred: 0, queued: 0, landed: 0, auditSame: 0, auditDiff: 0 };
+  /** THE WORKER AUDIT — off unless `__ml.composeWorker({ audit: true })`: every
+   *  raster the worker lands is composed again here and compared. */
+  audit = false;
+  auditSample: { key: string; at: number; worker: number[]; sync: number[] } | null = null;
+  /** Keys the worker is composing right now; a second ask draws the plain
+   *  plate and waits, it never posts twice. */
+  private inflight = new Set<string>();
+  /** Keys the worker could not build (its fetch failed): this thread composes
+   *  those itself, which answers with the same failure or the art. */
+  private remoteDead = new Set<string>();
+  private auditJobs = new Map<string, () => Pixels | null>();
   /** Ops `opsForCell` DROPPED because their texture was not registered. It has
    *  always dropped them silently; nothing counted it, so "a tile simply never
    *  drew" was invisible to every probe. The maintainer's artefact is bare
@@ -1272,6 +1420,10 @@ export class Tiles3Textures {
    *  a 32-row overlap between neighbours the only way to expose the background
    *  is an op that never drew. This counts them. */
   droppedOps = 0;
+  /** Plates drawn from their RAW file because the capped raster could not be
+   *  built yet (`plate()`'s fallback) — the picture is not final there, and
+   *  the scene owes those cells a repaint (WorldScene.t3dropOwed). */
+  plateRawFallbacks = 0;
   /** DIAGNOSTIC: paint a MAGENTA diamond where an op was dropped instead of
    *  leaving the background showing (the maintainer's own idea, sharpened —
    *  "clear the screen with pink before we draw, then we know if the pixels are
@@ -1310,7 +1462,6 @@ export class Tiles3Textures {
    * session, so they cost nothing to leave alone. */
   private composeBudgetMs = Infinity;
   private composeSpent = 0;
-
   private mine = new Map<string, true>();
   private pix = new Map<string, Pixels | null>();
 
@@ -1325,6 +1476,26 @@ export class Tiles3Textures {
   boundary(b: Tiles3Boundary): string | null {
     const key = boundaryKeyFor(b, this.o.seam !== false);
     if (!key) return null;
+    /* THE WORKER COMPOSES IT (composeworker.ts): the job goes over once, and
+     * until the raster lands this answers null exactly as a budget-refused
+     * composition did — the cell draws its plain plate, lands in the owed set
+     * and is repainted when the key exists. The ring asks ahead of the
+     * camera, so on a walk the raster is usually there before the cell is. */
+    const remote = this.remoteFor(key);
+    if (remote) {
+      if (!this.inflight.has(key)) {
+        this.inflight.add(key);
+        this.stats.queued++;
+        if (this.audit)
+          this.auditJobs.set(key, () => {
+            const a = this.platePixels(b.plateA, b.a);
+            const bb = this.platePixels(b.plateB, b.b);
+            return a && bb ? buildBoundaryPixels(this.o.sheets, b, a, bb, this.o.seam !== false) : null;
+          });
+        remote.compose({ kind: "boundary", key, frame: b.maskFrame as number, seam: this.o.seam !== false, topOnly: !!b.topOnly, noWall: !!b.noWall, a: this.side(b.plateA, b.a), b: this.side(b.plateB, b.b) });
+      }
+      return null;
+    }
     // THE BUDGET, and the ONE place it is enforced. An already-composed key is
     // free and is always answered — refusing a cache hit would make the ground
     // flicker between plate and transition as the camera moved.
@@ -1337,7 +1508,8 @@ export class Tiles3Textures {
       const a = this.platePixels(b.plateA, b.a);
       const bb = this.platePixels(b.plateB, b.b);
       if (!a || !bb) return null;
-      const out = composeBoundary(this.o.sheets, b.maskFrame as number, a, bb, { seam: this.o.seam !== false });
+      // The compose and the pass below are `buildBoundaryPixels` — the same
+      // function the worker composes with.
       /* A COMPOSED BOUNDARY IS TOP FACE ONLY, ALWAYS — and this is the
        * maintainer's zigzag on the beach (2026-09-03).
        *
@@ -1419,9 +1591,7 @@ export class Tiles3Textures {
        * which is what he photographed swimming over the deep-water rim. A
        * raised cap keeps `margin: false`: its own wall column is drawn beneath
        * and the extra row would paint surface over the course. */
-      return b.topOnly
-        ? topFaceOnly(this.o.sheets, out, { margin: !!b.noWall })
-        : capWallToSurface(this.o.sheets, out);
+      return buildBoundaryPixels(this.o.sheets, b, a, bb, this.o.seam !== false);
     });
     if (this.stats.built !== before) this.stats.builtBoundary++;
     return out;
@@ -1507,7 +1677,9 @@ export class Tiles3Textures {
       if (hit) return hit;
       const capped = this.ensure(skey, () => this.platePixels(art, ground));
       if (capped) return capped;
-      return this.o.textures.exists(key) ? key : null;
+      if (!this.o.textures.exists(key)) return null;
+      this.plateRawFallbacks++;
+      return key;
     }
     return this.ensureHit(key) ?? this.ensure(key, () => this.platePixels(art, ground));
   }
@@ -1517,10 +1689,38 @@ export class Tiles3Textures {
    *  which is the pre-fade look and never a hole. */
   fade(path: string, ground: string): string | null {
     const key = fadeKey(path, ground);
+    const remote = this.remoteFor(key);
+    if (remote) {
+      if (!this.inflight.has(key)) {
+        this.inflight.add(key);
+        this.stats.queued++;
+        if (this.audit)
+          this.auditJobs.set(key, () => {
+            const src = this.sourcePixels(artKey(path));
+            return src ? fadeOverlay(this.o.sheets, src, this.topRGB(ground), this.wallRGB(ground)) : null;
+          });
+        remote.compose({ kind: "fade", key, side: { kind: "plate", path, topOnly: false, url: this.o.artUrl!(path), wall: this.wallRGB(ground) }, top: this.topRGB(ground) });
+      }
+      return null;
+    }
     return this.ensure(key, () => {
       const src = this.sourcePixels(artKey(path));
       if (!src) return null;
       return fadeOverlay(this.o.sheets, src, this.topRGB(ground), this.wallRGB(ground));
+    });
+  }
+
+  /** THE DETAIL OVERLAY for one file on one ground, built once and cached.
+   *  Null while its art has not decoded — the cell then draws its plain member
+   *  plate, which is the pre-detail look and never a hole. Built locally: a
+   *  detail lands on about one cell in a hundred, so there is no per-frame
+   *  compose pressure to move off the frame thread the way a fade's had. */
+  detail(path: string, ground: string): string | null {
+    const key = detailKey(path, ground);
+    return this.ensure(key, () => {
+      const src = this.sourcePixels(artKey(path));
+      if (!src) return null;
+      return detailOverlay(this.o.sheets, src, this.wallRGB(ground));
     });
   }
 
@@ -1555,6 +1755,22 @@ export class Tiles3Textures {
       if (op.role === "fade") {
         const f = cell.fade;
         const built = f ? this.fade(f.file, cell.ground) : null;
+        if (built) {
+          if (built !== op.key && !out) out = base.slice(0, i);
+          if (out) out.push(built === op.key ? op : { ...op, key: built });
+        } else {
+          this.droppedOps++;
+          if (!out) out = base.slice(0, i);
+        }
+        continue;
+      }
+      /* A DETAIL OP BUILDS ITS OVERLAY — the top face alone, no band. Dropped
+       * like any other op if its art has not landed; the member plate under it
+       * is already drawn, so a dropped detail is the plain ground, never a
+       * hole. */
+      if (op.role === "detail") {
+        const d = cell.detail;
+        const built = d ? this.detail(d.file, cell.ground) : null;
         if (built) {
           if (built !== op.key && !out) out = base.slice(0, i);
           if (out) out.push(built === op.key ? op : { ...op, key: built });
@@ -1765,7 +1981,9 @@ export class Tiles3Textures {
    *  A plate is never budgeted (see `plate`), so this op is never refused; it is
    *  dropped only while its file streams, exactly like a course. */
   opsForDeck(d: Tiles3DeckCell): Tiles3Blit[] {
-    const ops = deckOps(d).filter((op) => this.o.textures.exists(op.key));
+    const all = deckOps(d);
+    const ops = all.filter((op) => this.o.textures.exists(op.key));
+    this.droppedOps += all.length - ops.length; // a course still streaming counts as a drop, like any other op
     // A slab whose surface did not resolve draws its courses alone — the cap
     // tile, the pre-fix look — never a hole.
     if (d.surface && d.ground) {
@@ -1827,12 +2045,18 @@ export class Tiles3Textures {
       this.stats.missing++;
       return null;
     }
+    this.admit(key, t0);
+    return key;
+  }
+
+  /** A registered raster becomes one of mine: the counters, the budget (a
+   *  plate composition spends it too — it is part of the same frame — it is
+   *  just never refused by it) and the LRU. */
+  private admit(key: string, t0: number): void {
     this.mine.set(key, true);
     this.stats.built++;
-    const ms = typeof performance !== "undefined" ? performance.now() - t0 : 0;
+    const ms = t0 && typeof performance !== "undefined" ? performance.now() - t0 : 0;
     this.stats.buildMs += ms;
-    // Plate compositions spend the budget too — they are part of the same
-    // frame — they are just never refused by it.
     this.composeSpent += ms;
     this.stats.live = this.mine.size;
     const limit = this.o.limit ?? 0;
@@ -1843,7 +2067,60 @@ export class Tiles3Textures {
         this.drop(oldest);
       }
     }
-    return key;
+  }
+
+  /** THE WORKER, when it may take this key: it is ready, the art has a URL,
+   *  the key is not built and the worker has not already failed it. */
+  private remoteFor(key: string): RemoteComposer | null {
+    const r = this.o.remote;
+    if (!r || !this.o.artUrl || !r.ready() || this.remoteDead.has(key) || this.o.textures.exists(key)) return null;
+    return r;
+  }
+
+  private side(art: PlateLike, ground: string): ComposeSide {
+    return { kind: art.kind, path: art.path, topOnly: !!art.topOnly, url: this.o.artUrl!(art.path), wall: this.wallRGB(ground) };
+  }
+
+  /** A raster the worker composed (composeclient.ts): registered like one
+   *  built here, and audited against one built here when the audit is on. */
+  landRemote(key: string, px: Pixels): void {
+    this.inflight.delete(key);
+    const job = this.auditJobs.get(key);
+    this.auditJobs.delete(key);
+    if (job) {
+      const sync = job();
+      if (sync) {
+        let at = -1;
+        if (sync.w !== px.w || sync.h !== px.h || sync.data.length !== px.data.length) at = 0;
+        else for (let i = 0; i < px.data.length; i++) if (sync.data[i] !== px.data[i]) { at = i; break; }
+        if (at < 0) this.stats.auditSame++;
+        else {
+          this.stats.auditDiff++;
+          const o = at - (at % 4);
+          if (!this.auditSample) this.auditSample = { key, at, worker: Array.from(px.data.slice(o, o + 4)), sync: Array.from(sync.data.slice(o, o + 4)) };
+        }
+      }
+    }
+    if (this.o.textures.exists(key)) return; // built here meanwhile
+    const t0 = typeof performance !== "undefined" ? performance.now() : 0;
+    if (!this.registerRaster(key, px)) {
+      this.stats.missing++;
+      return;
+    }
+    this.admit(key, t0);
+    this.stats.landed++;
+    if (!key.startsWith("t3d:")) this.stats.builtBoundary++;
+  }
+
+  /** The worker could not build this key; this thread will. */
+  remoteMissed(key: string): void {
+    this.inflight.delete(key);
+    this.auditJobs.delete(key);
+    this.remoteDead.add(key);
+  }
+
+  inflightCount(): number {
+    return this.inflight.size;
   }
 
   private drop(key: string): void {
@@ -1864,13 +2141,11 @@ export class Tiles3Textures {
     const key = plateKey(art, ground);
     const hit = this.pix.get(key);
     if (hit) return hit;
-    let out: Pixels | null = null;
-    if (art.kind === "conform") {
-      const src = this.sourcePixels(artKey(art.path));
-      out = src ? conformPlate(this.o.sheets, src, this.wallRGB(ground)) : null;
-    } else {
-      out = this.sourcePixels(artKey(art.path));
-    }
+    const src = this.sourcePixels(artKey(art.path));
+    // The conform, the cap and the mask are `buildPlatePixels` — the same
+    // function the worker builds a side with; the order is the whole point
+    // and is explained there.
+    const out: Pixels | null = src ? buildPlatePixels(this.o.sheets, art, src, this.wallRGB(ground)) : null;
     /* LAST, over the conformed raster too: conforming REPAINTS the wall band
      * from the ground palette, so masking first would hand it back. */
     /* CAP FIRST, THEN MASK — and the order is the whole point.
@@ -1888,8 +2163,6 @@ export class Tiles3Textures {
      * came back with them. Capping first repaints that band from each column's
      * own bottom top-face texel, so the margin row is the SURFACE's colour and
      * cannot read as a course whatever the mask keeps. */
-    if (out && art.topOnly) out = topFaceOnly(this.o.sheets, capWallToSurface(this.o.sheets, out));
-    else if (out) out = capWallToSurface(this.o.sheets, out);
     if (out) this.pix.set(key, out);
     return out;
   }

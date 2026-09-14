@@ -146,7 +146,66 @@ async function check(label, ctxOpts) {
   } finally { await page.context().close(); }
 }
 
+/** THE LIGHT GROUND IS BEIGE, NOT WHITE (maintainer 2026-09-12: "the light
+ *  css is a bit too light/white … make it a little more beige … I just don't
+ *  want this super white"). A taste verdict, so it is pinned here or the next
+ *  palette edit quietly walks it back to #fff; the accessibility floors ride
+ *  along, because the ground moved DOWN and dark text on a lighter ground is
+ *  the thing that pays for it. Read from the live document, not the source:
+ *  what ships is what `mountTheme` computes. */
+async function palette() {
+  const page = await browser.newPage();
+  try {
+    await page.addInitScript(() => localStorage.setItem("wiki-theme", "light"));
+    await page.goto(`${BASE}/`, { waitUntil: "load" });
+    await page.waitForFunction(() => getComputedStyle(document.documentElement).getPropertyValue("--bg").trim(), null, { timeout: 20000 });
+    const tok = await page.evaluate(() => {
+      const cs = getComputedStyle(document.documentElement);
+      const read = (n) => {
+        const el = document.createElement("div");
+        el.style.color = cs.getPropertyValue(n).trim();
+        document.body.appendChild(el);
+        const m = getComputedStyle(el).color.match(/\d+/g).map(Number);
+        el.remove();
+        return m.slice(0, 3);
+      };
+      return { theme: document.documentElement.dataset.theme, bg: read("--bg"), surface: read("--surface"), ink: read("--ink"), muted: read("--muted") };
+    });
+    const lum = ([r, g, b]) =>
+      [r, g, b].map((v) => (v / 255 <= 0.04045 ? v / 255 / 12.92 : ((v / 255 + 0.055) / 1.055) ** 2.4))
+        .reduce((a, v, i) => a + v * [0.2126, 0.7152, 0.0722][i], 0);
+    const ratio = (a, b) => {
+      const [x, y] = [lum(a), lum(b)].sort((m, n) => n - m);
+      return (x + 0.05) / (y + 0.05);
+    };
+    const hex = (c) => "#" + c.map((v) => v.toString(16).padStart(2, "0")).join("");
+    if (tok.theme !== "light") fail(`palette: asked for the light theme, got "${tok.theme}"`);
+    // NOT NEAR-WHITE: #faf9f5 (the old ground) maxes at 250 and #ffffff at 255;
+    // his pick (#f6f0e6 / #fdf9f3) at 246 / 253.
+    Math.max(...tok.bg) <= 248 && Math.max(...tok.surface) <= 254
+      ? ok(`light ground is off-white (bg ${hex(tok.bg)}, surface ${hex(tok.surface)})`)
+      : fail(`light theme is back to white: bg ${hex(tok.bg)}, surface ${hex(tok.surface)} — he asked for beige, not #fff`);
+    // WARM, not a grey: beige is red-over-blue. The old ground had 250-245=5
+    // and #fff has 0; his pick has 16 on the ground and 10 on a card.
+    tok.bg[0] - tok.bg[2] >= 12 && tok.surface[0] - tok.surface[2] >= 6
+      ? ok(`…and it is warm (bg R−B ${tok.bg[0] - tok.bg[2]}, surface R−B ${tok.surface[0] - tok.surface[2]})`)
+      : fail(`the light ground is a grey, not a beige (bg R−B ${tok.bg[0] - tok.bg[2]})`);
+    // …and a card still LIFTS off the ground rather than melting into it.
+    lum(tok.surface) > lum(tok.bg)
+      ? ok("…and a card is lighter than the ground it sits on")
+      : fail("--surface is no lighter than --bg — cards stop reading as cards");
+    const inkR = ratio(tok.ink, tok.bg);
+    const mutedR = ratio(tok.muted, tok.bg);
+    inkR >= 12 && mutedR >= 4.5
+      ? ok(`…and text holds on it (ink ${inkR.toFixed(1)}:1, muted ${mutedR.toFixed(2)}:1)`)
+      : fail(`darkening the ground cost contrast: ink ${inkR.toFixed(1)}:1 (want 12), muted ${mutedR.toFixed(2)}:1 (want 4.5)`);
+  } finally {
+    await page.context().close();
+  }
+}
+
 try {
+  await palette();
   // the maintainer's desktop-site phone view (design width — the approved look)
   await check("desktop-site", { viewport: { width: 980, height: 2123 }, screen: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });
   // narrow mobile (force-desktop OFF): where the plates/icons diverged

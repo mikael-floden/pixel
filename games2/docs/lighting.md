@@ -255,8 +255,9 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   ambient clock so shadows sweep. CPU twin `sunFactorAt()` shades lit-copy
   tints. Probes: `__ml.sunInfo()`, `__ml.sunAt(col,row[,z])` (z=−1 = own
   height). Regression: scripts/verify-sunshadow.mjs.
-- STALE GATES, known: verify-solidband + verify-wallspread (predate maps2
-  worlds, fail on baseline); verify-penumbra is PINNED TO NIGHT and finds
+- STALE GATES, known: verify-solidband (predates maps2 worlds, fails on
+  baseline; verify-wallspread went the same way and was replaced by
+  verify-wallwash, which finds its wall on the_game); verify-penumbra is PINNED TO NIGHT and finds
   pre-existing base defects at some ledges (fails identically on the pre-sun
   baseline — candidate-placement sensitivity, needs its own follow-up).
   verify-glow-seams went with its glow_test world (2026-09-09).
@@ -266,6 +267,79 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
   (cell + height) → point lights with attenuation, LOS cast shadows, Lambert
   face gating with penumbras at both ends of every wall band.
+- **THE WALL WASH IS PER PIXEL, AND ITS WRAP IS HIS DIAL** (maintainer
+  2026-09-11, a torch beside a house wall at night: "the light doesn't travel
+  very long along the wall", a hard seam at every tile edge along the lit
+  wall, and the bottom course darker than the rest). Three laws, each pinned
+  by `scripts/verify-wallwash.mjs` (BEFORE → AFTER on the 3-storey terrace at
+  243..247/291, probe light 0.4 cells out):
+  - The face Lambert gate's lateral distance is the light to THIS PIXEL's
+    point on the face plane (`pos`), never to the cell's face segment
+    (`clamp(lp, baseF, baseF+1)`): the per-cell form gave a whole tile one
+    gate value, so the wash stepped a tile's worth of falloff at every edge
+    (worst neighbour step 26% of the run's range → 6%).
+  - The gate's exponent is `uWallWrap = max(0.02, 1 − wrap)` from the
+    Settings dial "Wall light wrap" (`client/src/wallwrap.ts`, default 0.7 —
+    the old hard-coded 0.45 exponent was "a bit too extreme"; 0 = a plain
+    cosine, 1 = the light hugs the wall as far as it reaches on the ground).
+    `front` keeps its own `smoothstep(0, 0.25)`; a light behind the plane
+    never lights the face at any wrap. THE FLAME HAS A SIZE: the cosine is
+    measured from no closer than `FLAME_HALF_CELLS` (0.5) in front of the
+    plane — with the lateral per pixel, a point light pressed against a wall
+    lit only the pixels straight in front of it and the wall behind a body
+    touching it went black at wrap 0 (his first night with the dial: "2
+    tiles under the player is lit up. The surrounding is completely dark").
+    The per-cell lateral had hidden that by accident (lateral 0 for the
+    whole cell behind the light). `scripts/nightshot.mjs COL= ROW= [WRAP=]
+    [FOG=] OUT=` shoots any spot at night with the torch for a look.
+  - The LOS march never reads the wall's own column for a sample inside the
+    wall's FRONT SKIRT: `heightAtSoft`/`groundAtSoft` are bilinear, so a
+    sample within half a cell in front of the face plane blended the wall's
+    own height in and shadowed the bottom course from its own wall (foot/mid
+    luma 0.59 on the tiles beside the light → 1.00). For face pixels the
+    sample point is pushed to the half-cell line in front of the plane before
+    the height reads.
+- **A SKIRT SAMPLE COUNTS ONLY BESIDE A HARD HIT** (maintainer 2026-09-13,
+  the torch beside a tall wall at 285.4,115.8: the pool ended in a hard,
+  cell-stepped edge along the wall's foot — "standing near a wall effects how
+  the torch light up the ground"; at 286.4,125.3 the floor cell in front of
+  each face of a pillar was a flat dark diamond he read as the wall's bottom
+  course). The floor beside a wall sits in the same bilinear skirt with no
+  plane to push away from, and a light that also stands beside the wall sends
+  its ray along the band the whole way: every sample past the near fields
+  read the wall's phantom height and the wall shadowed the floor in front of
+  itself — measured at the 0.22 bounce floor beside a lit cell one column
+  out, at night, evening and day alike (the cave-swallow and sun paths were
+  ruled out first: no roofed cell within ten of either spot, and the diamond
+  stood at night). Law: the bilinear reads apply only where a sample's own
+  cell — the linear map read at its texel centre, `heightAtHard` — stands
+  above the ray, on the sample before the ray enters such a cell (applied
+  retroactively) and the one after it leaves; a ray that enters no taller
+  cell is not shadowed, whatever the skirt beside it reads. The midpoint of
+  each segment is hard-tested too: samples sit dist/13 apart, 1.2 cells
+  under a radius-16 hearth, and a one-cell house wall can fall between two
+  (the bilinear reads caught it from either side; exact reads alone let the
+  light through). Cost: two nearest fetches per sample on an unshadowed ray
+  where two bilinear ones were; up to four on a shadowed sample. `skirtOcc`
+  holds the soft read, the deck two-span rule and the scenery hardness; the
+  CPU twin `lightAt` mirrors the whole state machine. The sun march is
+  untouched (its cliff look is locked). Gate: `scripts/verify-wallfoot.mjs`
+  — the run verify-wallwash finds, the probe 0.4 cells out at its start:
+  the front row's floor against the row one out (≥ 0.8 per cell — the front
+  cell is the CLOSER one; skirt-shadowed it read ~0.3), the foot's
+  half-reach ≥ 3/4 of the pool's own, and a shadow control on a
+  free-standing column when the world offers one. Rejected: exact reads for
+  ground pixels alone (no penumbra, thin walls missed) and a pixel-side
+  plane push for the ground (the floor has no single plane).
+  - The harness reads pattern 5 (raw field, opaque) at face points found by
+    pattern 4 (faces red) — the TALLEST red run under the cell anchor, since
+    the terrace behind paints a sliver of its own face just above the lip;
+    depth fog off (it bands the field); the run's corners are excluded from
+    the seam metric (the corner blend brightens the last 1/8 cell). Pattern 6
+    paints `fract(pos.x)`, `fract(z)`, `gateFade` per face pixel for
+    diagnosing the resolve. Absolute luma drifts run to run (the night
+    ramp); every assertion is within-run. Reach is judged against the pool's
+    own half-distance on flat ground, 0.29 r (r/3 is unmeetable).
 - **THE SURFACE MARCH SKIPS WHOLE BLOCKS** (`blockMaxAt`, `uHBlock`, 2026-09-02).
   Every pixel of the night, mist and depth-fog passes resolves the ground
   under it by walking a ray from the WORLD's max level down, one cell boundary
@@ -407,7 +481,21 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   OWN-CELL SKIRT SKIP: the bump's bilinear skirt reaches a cell out, so the
   tread under a 0.5-cell trunk darkened 21% on the torch side — a pixel whose
   cell carries a share now skips LOS samples within one cell of that cell's
-  centre (`ownShare`, twin in `lightAt`). THE LIGHT'S OWN CELL IS SKIPPED
+  centre (`ownShare`, twin in `lightAt`). AND THE LIGHT'S OWN NEAR FIELD, ON
+  TERRAIN TOO (`LIGHT_NEAR_R2`, half a cell squared; twin in `lightAt`): a
+  torch held within half a cell of a tall column stands INSIDE the column's
+  bilinear skirt, and every ray's last samples — the ones nearest the light —
+  read the skirt's phantom height and shadow the floor around the bearer's
+  own feet. Measured beside the dungeon pillar at 263.6,167.1 (maintainer
+  2026-09-13, "the ground next to the wall is dark"): occ 0.60 one cell west
+  of the torch and 1.00 a quarter cell further, the floor beside the feet 46
+  → 58 luma once the samples within half a cell of the light are skipped. A
+  wall that close is one the torch is pressed against, and its shadow is
+  still cast by the samples deeper inside it. What stays dark there is not
+  floor: a 1-level parapet's top face rises 15 px, a row step is 14, so the
+  cut top of every wall cell covers half of each floor cell up-screen of it
+  — the dark "ground" beside a wall under the cut-away is the wall's own top
+  (his wall-height pick). THE LIGHT'S OWN CELL IS SKIPPED
   THE SAME WAY (`lShare`,
   twin `lShare`): a fire IS its piece, and a share taller than the light
   (a lamp post's 2 levels vs a light at head height) would block its own
@@ -646,6 +734,24 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
     camera TELEPORT that legitimately dumps spawn-side holders — settle
     before the baseline — and fairness numbers are captured AFTER the frame's
     decisions.)
+  - **A LIGHT IS A CANDIDATE WHEN ITS POOL CAN TOUCH THE VIEW, SPRITE OR NO
+    SPRITE** (maintainer 2026-09-13, the dungeon at day with the run zoom
+    out: "spotlight in the distance popping into existence ... directly
+    influences lots of my camera view"). Two halves, both measured on the
+    slot trace (`__ml.lightSlots()` along 205.5,225.0 → 207.6,213.4, a
+    brazier acquired at edge −275 px, ramp 0.08): the picker's reach box was
+    `R·dx + 128` a side — HALF the pool's width; a pool of R cells is an iso
+    ellipse √2·R·dx wide and √2·R·dy tall (the stamp's own numbers), so a
+    hearth's pool sat 84 px inside the view before it was a candidate
+    (`poolReachPx`, per axis, `client/src/lightreach.ts`); and the scenery
+    build only pushed a light for a piece whose SPRITE was within its 200 px
+    pad, so a far brazier's light was born with its pool deep inside the view
+    and ramped up over all of it. Now `rebuildScenery` queries at least
+    `LIGHT_POOL_MAX_CELLS` (16, the beacons; gate `lightreach.test.ts` scans
+    the manifests) of reach, and a lit piece whose pool touches the view
+    (plus `LIGHT_EXIT_PX`) gets its light pushed with no sprite built
+    (`sceneryPoolReach`: the state's block, else the measured params, else
+    the bound). The ramp is then the rim's, where it is invisible.
   - The QA `probeLight` consumes a WORLD slot while set — slot-counting gates
     must expect ≤7 world holders. Probes: `__ml.lightSlots()` (live ledger +
     overflow), `__ml.lightAt()` (CPU twin), `__ml.torch(on?)`. Gate:
@@ -674,6 +780,26 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   `worldView`; anything pixel-exact placed in update() may not.
 - Debug: `__ml.nightCal(flip,span,test)` (field test patterns — headless
   only; the old [6]-[9] keys are retired); `__ml.probeLight(col,row,z,
-  radius)`; `__ml.lookAt(col,row)`. Numeric probes: verify-solidband,
-  verify-penumbra, verify-wallspread, verify-timecycle, verify-lit-order.
+  radius)`; `__ml.lookAt(col,row)`; `__ml.wallWrap(v?)`. Numeric probes:
+  verify-wallwash, verify-wallfoot, verify-solidband, verify-penumbra,
+  verify-timecycle, verify-lit-order.
   Run them against a dev stack before touching the shader.
+
+## Windows
+
+- **A WINDOW GLOWS BY THE ROOM'S BRIGHTNESS, NEVER ON/OFF** (`windowGlow`,
+  WorldScene). The LIGHTS_ON overlay's alpha is a floor plus a fade: the floor
+  is the room's indoor ambient — the dark-room dial (40%) for a room with no
+  light of its own, the lit-room dial (12%) for one that lights itself — and
+  the room's lit scenery fades the rest of the way up (peak x squared falloff,
+  summed at the cell inside the wall, squashed between `WINDOW_GLOW_LO` 0.1
+  and `_HI` 0.7), all scaled by the night factor (0 by day). **Every body in
+  the room is a torch** (`WINDOW_TORCH_R` 6 cells, peak 1, re-read every 150
+  ms): a player walking up to a window from inside brightens it for whoever is
+  outside. (Maintainer 2026-09-09: "The plan was not to go binary dark
+  window/lit window ... fade between them based on the brightness inside ...
+  houses without a light source [get] more ambient light ... I run up to a
+  window with my TORCH. It would be so cool if a player outside can see that
+  brightness being reflected in the window.") Remote torches own no light
+  slot; the window is a sum, not the light field. Probe:
+  `__ml.windowGlowDebug(place)` → floor, sources, bodies with distance, glow.

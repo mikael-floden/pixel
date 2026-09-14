@@ -158,6 +158,25 @@ function maps3DotFrac(m: MinimapFeed): [number, number] {
   ];
 }
 
+/** ANY world cell -> [x%, y%] of the map image, UNCLAMPED. Same projection as
+ *  the "you are here" dot (one arithmetic for both, so an overlay can never
+ *  drift from the dot), minus the clamp: an overlay drawing world geometry —
+ *  the zone grid, say — has corners that fall outside a CROPPED render, and
+ *  clamping them would bend its straight edges along the image rim instead of
+ *  letting the overlay clip them. `level` 0 is the ground plane, which is what
+ *  a flat world-space overlay wants. */
+export function minimapCellPct(
+  m: MinimapFeed,
+  meta: MinimapMeta | null | undefined,
+  col: number,
+  row: number,
+  level = 0,
+): [number, number] {
+  const at = { ...m, col, row, level };
+  const [fx, fy] = meta ? metaDotFrac(at, meta) : maps3DotFrac(at);
+  return [fx * 100, fy * 100];
+}
+
 /** Player cell (col,row) at terrain `level` -> [x%, y%] of the world's map
  *  image. `meta` is the render's OWN projection when maps2 published one
  *  (minimap.json) and outranks both replicas — it is the only thing that knows
@@ -300,6 +319,90 @@ export async function loadPlaces(name: string = DEFAULT_WORLD): Promise<PlaceLoo
     return { at: (cx, cy) => byCell.get(((cx | 0) << 16) | (cy & 0xffff)) ?? null, ids };
   } catch {
     return null;
+  }
+}
+
+/** THE MAP TAB'S PINS — the same `places.json`, kept whole. `loadPlaces` above
+ * answers the question the SCENE asks ("what am I standing in?") and throws
+ * the rest away; the Map tab asks the other one — "where are they?" — and
+ * needs the name, the kind and a cell to pin. A separate reader rather than a
+ * wider return from that one: it runs on every world load and builds a
+ * per-cell Map, and a caller that wants six pins should not pay for it.
+ *
+ * ONE MARK PER WAY IN. `entrances` is every mouth of the place (maps2 shipped
+ * it with the caves, `entrance` first); a cave that runs through the massif
+ * has two, and both are somewhere a player can walk to, so both are pinned
+ * under the place's name. Falling back: `entrances` → `entrance` → `anchor`,
+ * which is the spec's own map-pin cell ("one cell inside the place, nearest
+ * its centroid. For map pins and debug") and is right for a house but lands
+ * inside the mountain for a cave.
+ *
+ * A missing file is not an error: a world may simply have no named places. */
+export interface PlaceMark {
+  id: string;
+  /** display text (lore owns the vocabulary) — never bind to it */
+  name: string;
+  /** `house` | `cave` | `summit` today; unknown kinds pass through so a new
+   *  one shows up as data rather than disappearing. */
+  kind: string;
+  indoor: boolean;
+  /** the cell to pin: a mouth when published, else the anchor */
+  at: [number, number];
+  /** true when `at` is a published mouth rather than the centroid */
+  mouth: boolean;
+}
+
+export async function loadPlaceMarks(name: string = DEFAULT_WORLD): Promise<PlaceMark[]> {
+  const url = gameUrl(worldFileUrl(name, "places.json"));
+  try {
+    const res = await fetch(url);
+    if (!res.ok) return [];
+    const doc = (await res.json()) as {
+      places?: {
+        id?: unknown;
+        name?: unknown;
+        kind?: unknown;
+        indoor?: unknown;
+        anchor?: unknown;
+        entrance?: unknown;
+        entrances?: unknown;
+      }[];
+    };
+    const cell = (v: unknown): [number, number] | null =>
+      Array.isArray(v) && v.length >= 2 && Number.isFinite(Number(v[0])) && Number.isFinite(Number(v[1]))
+        ? [Number(v[0]), Number(v[1])]
+        : null;
+    const out: PlaceMark[] = [];
+    for (const p of doc.places ?? []) {
+      if (typeof p?.id !== "string" || !p.id) continue;
+      const mouths = (Array.isArray(p.entrances) ? p.entrances : [])
+        .map(cell)
+        .filter((c): c is [number, number] => !!c);
+      if (!mouths.length) {
+        const one = cell(p.entrance);
+        if (one) mouths.push(one);
+      }
+      // nothing to pin it by → the anchor, and if that is missing too the
+      // record is dropped rather than guessed at
+      const spots: [number, number][] = mouths.length ? mouths : [];
+      if (!spots.length) {
+        const a = cell(p.anchor);
+        if (!a) continue;
+        spots.push(a);
+      }
+      for (const at of spots)
+        out.push({
+          id: p.id,
+          name: typeof p.name === "string" && p.name ? p.name : p.id,
+          kind: typeof p.kind === "string" ? p.kind : "",
+          indoor: p.indoor === true,
+          at,
+          mouth: mouths.length > 0,
+        });
+    }
+    return out;
+  } catch {
+    return [];
   }
 }
 

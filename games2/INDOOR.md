@@ -27,6 +27,27 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   twice as tall in the caves. From the floor, 2 is 2 in a cottage and a
   cathedral. The ceiling survives as a CLAMP and as the "am I above the
   room?" line (`indoorCeil`, still `deckBot`, never `roofLevel`).
+- **A STOREY IS A ROOM.** The fill keeps to the floor you are standing on:
+  `interiorFloor` accepts a cell within `ENTRANCE_CLIMB` of your elevation
+  EITHER WAY, so terrain that rises that much is the room's wall and terrain
+  that drops that far is the storey below. The downward half used to be free,
+  and the_game's dungeon (three floors at 0/3/6 under one lid, joined by stair
+  strips that step a level at a time) then read as 176 cells from the bottom
+  and all 352 from the top — the same cave, a different room from each of its
+  floors, every wall of the chambers you had left redrawn each time you
+  climbed. Rejected: merging the storeys into one space (either by a
+  step-relative or a symmetric fill) — that is the x-ray this whole feature is
+  not, and it puts the entire enclosure in the mask (88 mask cells → 352),
+  truncating the surrounding rock to parapets across the dungeon.
+- **Every column is cut over ITS OWN chamber**, never over yours: a floor cell
+  measures from its own level, a wall from the highest chamber floor it borders
+  (it holds that floor up), and the deck over THAT column is the clamp. The
+  space-wide scalar had to pick a storey and got the others wrong — lifted to
+  your feet it grew the walls of the chamber you had left, dropped to the
+  space's lowest floor it truncated the storey underfoot. The scalar
+  (`indoorTop`, `indoorCutLevel`) survives for the QA kill switch, the body
+  cull and the room texture's fallback, and is not part of the mask signature
+  while the per-cell cuts are on — so climbing does not repaint the world.
 - **The floor is the ROOM'S MINIMUM**, not the cell underfoot (anchoring to
   the feet made every wall jump 16px per ledge step; the minimum keeps a
   raised shelf below the cut). The MAX is 6 = the tallest shipped room
@@ -97,12 +118,12 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     (entry done by mix ⅓; exit by ⅔); `indoorGrade()` — the eased mix at
     1.5×, clamped — is what every LIGHT half rides (`night.indoorMix`, every
     CPU light gain: fireRoomK, torch enable, outside fade, sealed fires,
-    ambEff/sunIn/fogScale). The raw `indoorMix` stays the 0.35s easing
+    ambEff/sunIn/fogScale). The raw `indoorMix` stays the 0.45s easing
     substrate (what `indoor().mix` reports and the pin targets); consumers
     take the grade or the alpha, never the raw mix.
   - **The exit swap lands WITH the light grade (mix ⅓), not at mix 0**: the
     debris is view-culled to the FLIP frame's camera, so the old mix-0
-    landing ~1.9s later exposed cut-state cells the walking player had
+    landing ~2.4s later (5.4 tau) exposed cut-state cells the walking player had
     dragged the camera onto. The grade lands ~0.39s in (≤~60px drift vs
     OCC_CULL_PAD ~360) and the swap frame is pixel-identical — LOCK THE
     CAMERA before trusting any screenshot diff (an unlocked run's
@@ -181,6 +202,23 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   emission floor and NOTHING ELSE. Point lights stay additive — the torch
   spills through the doorway with the opening's own shadow (measured 5.2×
   brighter down the doorway than at the flanks).
+  - **A PIECE OVER HALF THE ROOM FADES OUT** (`scenerycover.ts`,
+    `stepSceneryCover`; maintainer 2026-09-12, at the spawn: "I feel the tree
+    at the spawn almost cover the entire house ... I still want to see this
+    effect on trees and other scenery that doesn't cover 50% of the house").
+    Zero ambient makes an outside piece a black silhouette over the lit
+    floor, and that stays the rule for a bush at the door; a canopy that
+    buries the room is the room gone. The measure is the share of the room's
+    `roof` cells whose projected top centre lies under the piece's drawn box
+    (the art's whole crop); at or past `SCENERY_COVER_FADE` (0.5) the sprite,
+    its lit copy and its fog silhouette wear `1 − indoorGrade()` — dissolving
+    as the roof leaves, back as it returns — and under it nothing changes.
+    Measured once per room entered and after each scenery rebuild; leaving
+    keeps the shares so the fade-in rides the grade, never the flip frame.
+    Furniture, lid pieces, flat pieces and wall hangings are not candidates
+    (each has its own rule). Probes: `__ml.indoorFade().covering`,
+    `__ml.sceneryCover(n)`; gates: `scripts/verify-scenerycover.mjs` (the
+    spawn house on the_game) and `server/test/scenerycover.test.ts`.
   - **The cut applies to EVERY column in the world**, not just the building:
     painter order draws down-screen columns over the room (a column buries
     an interior cell once ~0.94·k levels taller at k steps). Around the
@@ -230,6 +268,17 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     GATED ON THE DRAWN STATE (`sealedAway`: not while the room's light mask
     still holds the cell) — keyed on the verdict alone, the bodies in the
     room you leave vanish on the flip frame under a roof still 30% in.
+    **AND GATED ON `roofAbove` BEFORE THE MEMO IS EVEN READ.** A cave's floor
+    and its LID are one cell index, and `roomCellMemo` cannot tell them apart:
+    one fill from the mud cave's floor stamped all 142 of its cells "room" for
+    the session, so every monster that then walked onto the lid — open sky,
+    level 12, the same mud the player stands on — was parked invisible
+    (maintainer 2026-09-11, three photographs a second apart: "monsters just
+    disappears"). `roofAbove` is the same O(1) predicate `findIndoorSpace`
+    opens with, so the memo can never contradict a fresh fill, and it keeps
+    every deckless cell in the world out of the map entirely. Probe:
+    `__ml.sealedAt(col,row,lvl)`; gate: "the_game mud cave: every cell of the
+    room is OPEN SKY from its own lid" in `indoor.test.ts`.
   - **Anything drawn ABOVE the darkness overlay must gate itself** — zero
     ambient can't touch depth 900_001+. `indoorOutside(fx,fy,z)` is the
     predicate (NOT a visibility test; bodies are always drawn): name labels
@@ -345,7 +394,8 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     mask** — `roomMask` outlives the verdict for the ambient ease, and reading
     it kept cave monsters outlined through rock for a second after exit. One
     flood fill per space (`roomCellMemo`, filled from `space.roof`, cleared on
-    world change); fails OPEN (a spare outline is cosmetic; a missing one is
+    world change, and never consulted for a body with nothing overhead — see
+    the parking rule above); fails OPEN (a spare outline is cosmetic; a missing one is
     the feature broken). Gate: section 8 of verify-indoor — samples the first
     frame that is already outdoors with the fade still running (settle would
     wait it out), kept non-vacuous by `coverFrac` (≥2 sealed >50%-buried

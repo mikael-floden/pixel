@@ -223,3 +223,71 @@ test("groundDrew carries every key the client sends — it was capped one short"
   assert.equal(Object.keys(r.groundDrew).length, 19);
   assert.equal(r.groundDrew.k18, 18);
 });
+
+test("the context, round-trip, cpu and gpu blocks reach the file — added with the fields that emit them", () => {
+  const r = perfReport(
+    {
+      frames: { n: 900, p50: 16.7, p90: 20, p99: 40, max: 120, le17: 700, le34: 150, le50: 30, le100: 15, gt100: 5, mean: 18.2, rafHz: 60 },
+      run: { runId: "ab12cd34", winIdx: 3, sinceLoadS: 95, visible: true, zone: 10, hops: 1, hopJoinMs: 812, moveFrac: 0.7, runFrac: 0.2, travelCells: 41.5, connType: "4g", ua: "Mozilla/5.0 (Linux; Android 14)" },
+      rtt: { n: 590, p50: 83, p90: 140, p99: 260, max: 612, patches: 610, patchHz: 20.3, reconnects: 0 },
+      cpu: { bench: "xorshift400k", scoreMs: 4.7 },
+      gpu: { avail: false, reason: "no EXT_disjoint_timer_query_webgl2", n: 0, p50: 0 },
+      counts: Object.fromEntries(Array.from({ length: 50 }, (_, i) => [`c${i}`, i])),
+    },
+    AT,
+  );
+  assert.equal(r.frames?.rafHz, 60, "the histogram and display rate ride in frames — 12 keys, so the old cap of 12 was one short");
+  assert.equal(r.frames?.gt100, 5);
+  assert.equal(r.run?.runId, "ab12cd34");
+  assert.equal(r.run?.visible, true, "booleans survive in run");
+  assert.equal(r.run?.hopJoinMs, 812);
+  assert.equal(r.rtt?.p50, 83);
+  assert.equal(r.rtt?.patchHz, 20.3);
+  assert.equal(r.cpu?.scoreMs, 4.7);
+  assert.equal(r.cpu?.bench, "xorshift400k");
+  assert.equal(r.gpu?.avail, false, "an absent GPU timer says so instead of reporting 0 ms");
+  assert.equal(r.gpu?.reason, "no EXT_disjoint_timer_query_webgl2");
+  assert.equal(Object.keys(r.counts ?? {}).length, 50, "counts carries the four new means beside the 40 it had");
+});
+
+test("longWhere and a whole worst record reach the file — the place census and the evidence tail", () => {
+  const rec = { f: 12, total: 212.4, other: 30, sec: { redrawGround: 120, occCull: 40 }, mode: "full", composed: 9, composeMs: 60, bnd: 8, defer: 2, owed: 3, tex: 14, files: 2, objs: 40, ring: 11, gl: { texNew: 3 }, burst: 2, q: 1, dl: 4259, occ: 3648, at: "276.6,178.9", z: 3, t: 18422 };
+  const r = perfReport(
+    {
+      frames: { n: 100 },
+      longWhere: { "272,176": { n: 14, ms: 1802, avg: 128.7, worst: 212 }, "264,216": { n: 3, ms: 260, avg: 86.7, worst: 120 } },
+      worst: [rec],
+    },
+    AT,
+  );
+  assert.equal(r.longWhere?.["272,176"]?.n, 14, "the place census is a record of records, not scalars");
+  assert.equal(r.longWhere?.["272,176"]?.worst, 212);
+  const back = JSON.parse(r.worst![0]!);
+  assert.deepEqual(back, rec, "a worst record arrives WHOLE — the cap cut the evidence tail twice before");
+  assert.equal(back.at, "276.6,178.9", "and it says where the frame happened");
+});
+
+/* THE ZONE CROSSINGS (WorldScene's `zone` block). A crossing can only be
+ * judged on HIS device — a headless client binds the new room hundreds of ms
+ * after the join and never meets the window a phone does — so the beacon
+ * carries one folded row per hop, and the whitelist has to let a record of
+ * records through (the class of field that has been silently dropped twice). */
+test("the zone block survives the whitelist: hops and the folded crossing rows", () => {
+  const row = { zone: 10, joinMs: 412, stateMs: 486, boundMs: 488, snapPlayers: 1, snapMonsters: 47, inView: 0, removed: 6, frames: 96, visMed: 21, visFloor: 19 };
+  const r = perfReport({ frames: { n: 100 }, zone: { hops: 3, last: [row] } }, AT);
+  assert.equal(r.zone?.hops, 3);
+  assert.deepEqual((r.zone?.last as unknown[])?.[0], row, "a crossing row arrives WHOLE — every field is the evidence");
+  assert.ok(!perfReport({ frames: { n: 1 } }, AT).zone, "a window with no crossing carries no block");
+});
+
+test("longWhy — why the long frames were long — survives the allowlist", () => {
+  // The fourth field this allowlist would otherwise eat silently: the client
+  // classifies every long frame (wait | task | gc) and the ground-path
+  // decision rests on which population `cells:unattributed` turns out to be.
+  const r = perfReport({ frames: { n: 10 }, longWhy: { n: 42, wait: 39, task: 2, gc: 1, taskMs: 217, waitIdleMs: 1650, gcMb: 31 } }, AT) as Record<string, any>;
+  assert.equal(r.longWhy.wait, 39);
+  assert.equal(r.longWhy.task, 2);
+  assert.equal(r.longWhy.taskMs, 217);
+  assert.equal(r.longWhy.gcMb, 31);
+  assert.equal(perfReport({ frames: { n: 1 } }, AT).longWhy, null);
+});

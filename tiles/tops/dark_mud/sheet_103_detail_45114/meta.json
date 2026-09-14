@@ -10,7 +10,7 @@
   "prompt": "dark mud, a dry cracked patch in the middle, dark mud all around the edge",
   "palette_top": "#514137",
   "tile_id": "3a782c1d-260c-422b-a938-598b82808ddb",
-  "n_tiles": 16,
+  "n_tiles": 14,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -24,10 +24,8 @@
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
-    "tile_12.webp",
     "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -128,5 +126,17 @@
   },
   "motif": "a dry cracked patch",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_12.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:25+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T05:05:25+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

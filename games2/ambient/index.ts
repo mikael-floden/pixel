@@ -10,12 +10,23 @@ import { mothsFeature } from "./moths/moths";
 import { gnatsFeature } from "./gnats/gnats";
 import { crabsFeature } from "./crabs/crabs";
 import { bubblesFeature } from "./bubbles/bubbles";
+import { dragonfliesFeature } from "./dragonflies/dragonflies";
+import { dustFeature } from "./dust/dust";
 import { embersFeature } from "./embers/embers";
+import { smokeFeature } from "./smoke/smoke";
+import { chimneyFeature } from "./chimney/chimney";
+import { dawnMistFeature } from "./dawnmist/dawnmist";
+import { lavaFeature } from "./lava/lava";
 import { batsFeature } from "./bats/bats";
 import { birdsFeature } from "./birds/birds";
+import { feathersFeature } from "./feathers/feathers";
+import { butterfliesFeature } from "./butterflies/butterflies";
 import { thunderFeature } from "./thunder/thunder";
 import { sandstormFeature } from "./sandstorm/sandstorm";
 import { leavesFeature } from "./leaves/leaves";
+import { foamFeature } from "./foam/foam";
+import { fishFeature } from "./fish/fish";
+import { dripsFeature } from "./drips/drips";
 
 /** The ambient-life registry — one entry per feature folder. FIELD features
  * (fireflies, pollen, water) gate themselves on the environment/terrain;
@@ -36,6 +47,9 @@ export function mountAmbient(game: Phaser.Game) {
     pollenFeature(),
     waterFeature(),
     deepWaterFeature(),
+    foamFeature(),
+    fishFeature(),
+    dripsFeature(),
     antsFeature(),
     spidersFeature(),
     mothsFeature(),
@@ -43,8 +57,16 @@ export function mountAmbient(game: Phaser.Game) {
     crabsFeature(),
     bubblesFeature(),
     embersFeature(),
+    dustFeature(),
+    smokeFeature(),
+    chimneyFeature(),
+    dawnMistFeature(),
+    lavaFeature(),
     batsFeature(),
     birdsFeature(),
+    feathersFeature(),
+    butterfliesFeature(),
+    dragonfliesFeature(),
     thunderFeature(),
     sandstormFeature(),
     leavesFeature(),

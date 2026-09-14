@@ -290,6 +290,14 @@ def finalize_piece(client, cfg, group, spec, oid, pixellab_directions, detail,
         # The domain-owned TYPE, stamped at birth so a piece can never
         # exist without one (viewer_build refuses to publish untyped groups).
         "type": group.get("type"),
+        # WHERE a placer may put it and WHAT it is, stamped at birth for the
+        # same reason `type` is: a consumer must read these off the piece, never
+        # infer them from the group's name (maintainer 2026-09-13, "make some
+        # form of tag so the game/ambient-agent knows what this scenery is and
+        # can place it and attach an effect to it properly"). Absent on a group
+        # that declares neither, which is every ordinary ground piece.
+        **({"mount": group["mount"]} if group.get("mount") else {}),
+        **({"fixture": group["fixture"]} if group.get("fixture") else {}),
         "rank": group["rank"],
         "index": spec["index"],
         "name": spec["name"],

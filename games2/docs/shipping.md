@@ -205,21 +205,22 @@ pipeline.
   - The world picker's thumbnail (`build-worlds.mjs`) probes `webp` before
     `png` per stem, so a mid-conversion world keeps its picture.
 
-- **The deferred animation batch is PACED (#7).** `loadDeferredAnims` (every
-  character's non-boot states, every NPC rotation/idle frame, 525 monster
-  combat strips, ~1,000 files) streams behind the live world, and each landed
-  file is a decode + GPU upload on the main thread the moment it arrives. At
-  the loader's default parallelism (32; 6 on Android) a warm cache landed them
-  in bursts: measured on the north run, 32-105 textures added per step for
-  the whole run. The batch runs with `maxParallelDownloads = 2`
-  (`DEFERRED_PARALLEL`; restored on COMPLETE), which bounds arrivals to ~2 per
-  frame — measured 3-15 per step — at the price of the batch taking ~10-16 s
-  on a phone instead of ~3 s; nothing in it is needed in the first seconds
-  (my urgent clips are queued first and register per state as they land).
-  Anything appended to the scene loader meanwhile (item icons, the grave
-  cross, chess pieces) queues behind it, as before — FIFO — only later. Dev
-  A/B: localStorage `ml-deferred-parallel` (0 = the loader's own);
-  `__ml.perf()` reports texture adds by key family and the per-frame max.
+- **The deferred animation batch is THE ART QUEUE (#7)** (`client/src/
+  artqueue.ts`, `docs/perf.md` THE ART QUEUE). `loadDeferredAnims` (my
+  urgent clips, the NPC idles, the blood, my weapon/spell states, the other
+  characters' states) and everything else streamed behind the live world go
+  through one priority queue that decodes off the main thread and creates
+  textures under a BYTE budget per frame (pinned at 128 KB, `ml-upload-kb`;
+  `?uploadkb=` for a harness). Never the scene loader for anything behind
+  the live world: it is one FIFO, it made every landed file a decode + upload
+  the moment it arrived, and bounding the files in flight (the old
+  `maxParallelDownloads = 2`) bounded the count per frame, never the bytes —
+  measured 12 MB in one frame, 564 MB in a window, and every slow frame on
+  his phone carrying an upload. Scenery STILLS ride it too (2026-09-12,
+  games-perf: through the terrain loader they were decoded three times on
+  the frame thread on first sight, 33-66 ms a step into a fresh forest —
+  `docs/perf.md`, SCENERY STILLS RIDE THE ART QUEUE). Item icons, the grave
+  cross and chess pieces still use the scene loader (small, on demand).
 
 - **THE DEPLOY GATE AND CI MUST SEE THE SAME WORLD** — they do not, and that
   is why main can deploy while CI is red (ambient agent, 2026-09-07). The
@@ -239,8 +240,17 @@ pipeline.
 - **Deploy** (push to main → live): the workflow runs `test` (typecheck +
   full suite) IN PARALLEL with the layer-cached image build; `deploy` needs
   both. Triggers on `games2/**` AND every domain the image bakes (art pushes
-  deploy automatically — maintainer; the concurrency group collapses rapid
-  pushes into the newest run). A maps2 push using an unclassified tile
+  deploy automatically — maintainer). EVERY PUSH IS ITS OWN RUN (a shared
+  concurrency group deadlocked the pipeline for 18 hours, 2026-08-06), so runs
+  finish in build order, and THE ROLLOUT GUARD ASKS PRODUCTION: it reads the
+  sha the site serves (`/version`, the image's own GIT_SHA) and skips only when
+  a DESCENDANT of its commit is already live; two rollouts that cross re-roll
+  the newer commit once. Never main's tip — that starved production for 45
+  minutes behind an art-push burst (every run found a newer tip by the time
+  its build was done) and let a `live/**` save, which never deploys, cancel
+  the rollout he was waiting for (2026-09-11/12). A green run whose summary
+  says "Not rolled out" means the site is already PAST that commit, never
+  behind it. A maps2 push using an unclassified tile
   category fails check-surfaces and BLOCKS its own deploy (prod stays on the
   previous revision) until the SURFACES entry ships — watch for red runs.
   Dockerfile layers are ordered deps → art (per-domain) → game source LAST;
@@ -300,6 +310,21 @@ pipeline.
   Gates: `cachepolicy.test.ts` (the ?h grant is verified against served
   bytes; malformed, stale and mismatched hashes never freeze; hashing is
   lazy), `assethash.test.ts`, `assetver.test.ts`.
+- **A PAGE BEHIND THE SITE RELOADS ITSELF AT BOOT** (`reloadIfBehindAtBoot`,
+  main.ts, 2026-09-13). `index.html` is `no-cache`, but a phone can restore a
+  tab from its cache without asking: his 21:50 load on 2026-09-12 was a 49 s
+  old document on the 14:54 bundle while production served 21:31's (the
+  deploy guard's logs: production never went backwards; that window's `net`
+  stats: 733/733 asset fetches from cache, 0 from the network). The minute
+  poll only banners. Now the bundle's `VITE_GIT_SHA` is checked once at boot
+  against `/version` (`no-store`, always the server) and a page behind it
+  reloads while the loading screen is up — never once `new Phaser.Game` is
+  reached (then the banner, as before), at most one boot reload per 60 s per
+  tab (sessionStorage `ml-boot-reload-at`), the rejoin flag re-armed across
+  it. Gate: `scripts/verify-bootversion.mjs` — a bundle built behind the
+  server's `GIT_SHA` reloads exactly once, still rejoins, and banners instead
+  of looping; a matching one never reloads. sw.js stays cache-free; the fix
+  lives in the page because a restore may not consult the worker at all.
   **THE BUNDLE IS A SEPARATE GRANT**: everything rollup emits into
   `client/dist/assets` is content-hashed by the bundler, so those URLs are
   immutable by construction. The rule matched `js|css` only, leaving 532 of

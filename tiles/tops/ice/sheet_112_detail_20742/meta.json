@@ -10,25 +10,8 @@
   "prompt": "ice, a skate mark in the middle, ice all around the edge",
   "palette_top": "#99ced1",
   "tile_id": "39f5809b-c379-4959-bde2-3904dee44715",
-  "n_tiles": 16,
-  "tiles": [
-    "tile_00.webp",
-    "tile_01.webp",
-    "tile_02.webp",
-    "tile_03.webp",
-    "tile_04.webp",
-    "tile_05.webp",
-    "tile_06.webp",
-    "tile_07.webp",
-    "tile_08.webp",
-    "tile_09.webp",
-    "tile_10.webp",
-    "tile_11.webp",
-    "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
-  ],
+  "n_tiles": 0,
+  "tiles": [],
   "settings": {
     "tile_size": 64,
     "tile_view": "high top-down",
@@ -128,5 +111,87 @@
   },
   "motif": "a skate mark",
   "motif_source": "tiles/config/details.json",
-  "walkable": true
+  "walkable": true,
+  "removed": {
+    "tile_00.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_01.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_02.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_03.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_04.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_05.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_06.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_07.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_08.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_09.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_10.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_11.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_12.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_14.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    }
+  }
 }

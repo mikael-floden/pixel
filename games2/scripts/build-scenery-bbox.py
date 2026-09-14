@@ -11,7 +11,10 @@ both sides read the same numbers — the client's own runtime measurement and th
 table agree by construction because they are the same definition.
 
 Keyed by the sprite path as `scenery.json` names it ("trees/tree_075/sprite.webp"),
-which is exactly what `southSprite()` hands the renderer.
+which is exactly what `southSprite()` hands the renderer. A TURNED frame has no
+box here and needs none: a piece's rotations share their south still's canvas,
+and that canvas is what both the renderer (fitSprite's `anchorBox`) and the
+collision stamp anchor on, so ONE box per state answers for every facing.
 
 Run: python3 games2/scripts/build-scenery-bbox.py [--check]
 """
@@ -59,6 +62,11 @@ def main() -> int:
         # The contract's own character height, so the stamp re-bases wph to the
         # game's person exactly as the draw does (shared sceneryDrawnPx).
         cpx = ((man.get("placement") or {}).get("character_height_px"))
+        # WHICH STILL EACH STATE SHOWS: its SOUTH frame (`southSprite`), which
+        # is the frame its hitbox was drawn on in the wiki and the canvas every
+        # facing of that state is anchored in — the renderer's `anchorBox` and
+        # the collision stamp both read it, so one box per state answers for all
+        # of that state's rotations.
         states = {}
         for k, st in (man.get("states") or {}).items():
             spr = (st or {}).get("rotations", {}).get("south") or (st or {}).get("sprite")
@@ -83,7 +91,9 @@ def main() -> int:
         "pieces": pieces,
         "_comment": (
             "Alpha bbox per scenery sprite: [x0,y0,x1,y1,frameW,frameH] in FRAME pixels, plus "
-            "each piece's world_px_height and state->sprite map. "
+            "each piece's world_px_height and its state->sprite map. A state's SOUTH still is "
+            "the frame every facing is anchored on (the rotations share its canvas), so one "
+            "box per state answers for all of them. "
             "Measured by games2/scripts/build-scenery-bbox.py so the SERVER can place a "
             "scenery hitbox ellipse (live/tuning/scenery_hitbox.json, frame px from the "
             "frame centre) into world cells without decoding art. Same definition the "

@@ -66,3 +66,5 @@ export function reservedLights(): {
 } {
   return reserved;
 }
+
+export { LIGHT_POOL_MAX_CELLS, LIGHT_POOL_MARGIN_PX, poolReachPx } from "./lightreach";

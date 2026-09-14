@@ -1,0 +1,624 @@
+{
+ "schema": "maps2/change-log@1",
+ "world": "the_game",
+ "artifact": "https://claude.ai/code/artifact/a5a64840-824c-483d-aa73-9e4f16b64100",
+ "title": "Nangijala Map Changes",
+ "subtitle": "Every push to main that changed the_game, newest first. Tap a title to mark it, copy the marks, paste them to maps2. Coordinates are the ones the game shows under the player.",
+ "pushes": [
+  {
+   "date": "2026-09-11 / 12",
+   "commit": "329e27423d → 52f7a50bdf",
+   "before": "d3f2329f0f",
+   "title": "Nine caves, wider ways",
+   "changes": [
+    {
+     "name": "The hill's stair, back",
+     "what": "The cut stair up the level-12 hill west of the town. Lost in the eight-caves commit because Pit I's own stair stood in for it; a stair into a cave now covers no cliff, so the fixer cut it again where it was.",
+     "cell": [
+      255,
+      255
+     ],
+     "window": [
+      244,
+      243,
+      270,
+      264
+     ],
+     "commit": "52f7a50bdf",
+     "before": "fdaf01ffd3"
+    },
+    {
+     "name": "The hill's western stair, back",
+     "what": "The hill's other old stair, beside Pit I's ring. The outer cell of a pit's ring may now carry a stair's flare.",
+     "cell": [
+      237,
+      268
+     ],
+     "window": [
+      226,
+      258,
+      252,
+      278
+     ],
+     "commit": "52f7a50bdf",
+     "before": "fdaf01ffd3"
+    },
+    {
+     "name": "Cave III: lanes beside every one-wide way",
+     "what": "Lids lifted. The bend where a brazier stood in a one-wide passage: the lane now runs round the corner, and no brazier stands on a passage.",
+     "cell": [
+      208,
+      213
+     ],
+     "window": [
+      196,
+      200,
+      222,
+      226
+     ],
+     "cutaway": true,
+     "commit": "fdaf01ffd3",
+     "before": "6074217997"
+    },
+    {
+     "name": "Cave III: the through-cave",
+     "what": "Lids lifted. Runs from its east mouth to a second mouth further south-west; both mouths are single rim cells and stay one wide.",
+     "cell": [
+      210,
+      229
+     ],
+     "window": [
+      192,
+      202,
+      222,
+      258
+     ],
+     "cutaway": true,
+     "commit": "6074217997",
+     "before": "fa149c642d"
+    },
+    {
+     "name": "Cave II, east face",
+     "what": "Mouth on the massif's east face at grade 2; four rooms, floors 0 to 3, two ledges.",
+     "cell": [
+      281,
+      132
+     ],
+     "window": [
+      266,
+      118,
+      292,
+      148
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Cave IV, south face",
+     "what": "Mouth on the massif's south-west face at grade 2; three rooms.",
+     "cell": [
+      148,
+      295
+     ],
+     "window": [
+      134,
+      262,
+      160,
+      300
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit I, beside the old dungeon",
+     "what": "In the dark-mud field at 12, a few cells east of the hand-planned dungeon; a hall at 6 and a room at 4.",
+     "cell": [
+      242,
+      266
+     ],
+     "window": [
+      232,
+      252,
+      258,
+      276
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit II, stone field",
+     "what": "The field at 20 north of the massif's foot; four rooms, two ledges, depth 5.",
+     "cell": [
+      237,
+      210
+     ],
+     "window": [
+      226,
+      194,
+      254,
+      218
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit IV, snowfield at 32",
+     "what": "Four rooms, two ledges, depth 7.",
+     "cell": [
+      185,
+      208
+     ],
+     "window": [
+      172,
+      190,
+      198,
+      216
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit V, snowfield at 36",
+     "what": "Four rooms, depth 6.",
+     "cell": [
+      156,
+      229
+     ],
+     "window": [
+      144,
+      214,
+      170,
+      236
+     ],
+     "commit": "329e27423d"
+    },
+    {
+     "name": "Pit III, the first dungeon",
+     "what": "Unchanged: the hand-planned dungeon under the field, for reference.",
+     "cell": [
+      210,
+      281
+     ],
+     "window": [
+      204,
+      270,
+      228,
+      292
+     ],
+     "commit": "8b0155dbe0",
+     "before": null
+    }
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "commit": "dc41b9f86",
+   "before": "175302d7c",
+   "title": "Scenery stands where the nav matches its hitbox (UNDONE two pushes later: this rebuild also re-dressed a tenth of the map)",
+   "changes": [
+    {
+     "name": "The cart by the field, four nav cells under it",
+     "what": "The cooper's cart you stood beside. Its collision box is a rectangle 1.5 cells wide and 2.8 cells long down the screen, and centred on a cell it blocked ONE nav cell, so the diamonds never matched the box. It stands half a cell over now, on a cell edge, and the nav blocks the four cells under the box: nav-vs-hitbox mismatch 3.4 cells down to 1.5. Turn on 'collision (hitbox)' in settings to see the diamonds under the blue box. The art moved half a cell in x, nothing else.",
+     "cell": [
+      324,
+      241
+     ],
+     "window": [
+      314,
+      234,
+      335,
+      250
+     ]
+    },
+    {
+     "name": "The rock spire on the massif",
+     "what": "The lit spire's footprint is 15 cells of ground. Centred it blocked 9 nav cells; at its best offset the nav blocks 13 and follows the shape, mismatch 6.0 cells down to 3.2.",
+     "cell": [
+      209,
+      178
+     ],
+     "window": [
+      199,
+      171,
+      220,
+      187
+     ]
+    },
+    {
+     "name": "An ancient tree above the south shore",
+     "what": "Fourteen cells of canopy over a footprint that blocked 9 nav cells centred; it blocks 12 now, mismatch 5.0 down to 2.5. The same rule moves the other four ancient trees and 83 more footprints across the map. A piece that does not fill a cell blocks no cell, as the game intends, and stands exactly where it did.",
+     "cell": [
+      186,
+      306
+     ],
+     "window": [
+      176,
+      299,
+      197,
+      315
+     ]
+    },
+    {
+     "name": "The dragon ribcage on the beach",
+     "what": "One nav cell centred, four now, under a footprint of 4.4 cells: mismatch 3.4 down to 1.0.",
+     "cell": [
+      260,
+      163
+     ],
+     "window": [
+      250,
+      156,
+      271,
+      172
+     ]
+    },
+    {
+     "name": "The toadstool ring in the west woods",
+     "what": "One nav cell centred, three now: mismatch 3.0 down to 1.2.",
+     "cell": [
+      136,
+      139
+     ],
+     "window": [
+      126,
+      132,
+      147,
+      148
+     ]
+    },
+    {
+     "name": "The hanging willow on the fen isle",
+     "what": "Three nav cells centred, five now under the 6.3-cell canopy: mismatch 3.3 down to 2.0.",
+     "cell": [
+      33,
+      200
+     ],
+     "window": [
+      23,
+      193,
+      44,
+      209
+     ]
+    },
+    {
+     "name": "Every variation from a stable seed",
+     "what": "UNDONE in the next push: this rebuild re-rolled about a tenth of the dressing (147 pieces wore another variation, about 200 nature pieces stood elsewhere), which nobody asked for. 9421cc23e puts every piece back exactly as it was and keeps only the footprint moves; a placement change never goes through a rebuild again. The window is the spawn - the signpost that changed here is back to its old one there.",
+     "cell": [
+      333,
+      237
+     ],
+     "window": [
+      323,
+      230,
+      344,
+      246
+     ]
+    }
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "commit": "9421cc23e",
+   "before": "dc41b9f86",
+   "title": "The dressing you had, back: every piece as it was, only 486 footprints move (25 by up to half a cell, 461 by under a tenth)",
+   "changes": [
+    {
+     "name": "Every object back where and what it was",
+     "what": "The world is the dressing you had before the placement push - every piece, variation, facing, flip and the ground under it - with the footprint fit applied in place instead of by a rebuild. The signpost by the spawn reads what it did; the same at every other spot the rebuild had re-rolled. Of the 1,106 footprints the old rule had centred, 486 move: 25 by up to half a cell to a better nav fit (the cart, the ancient trees, the rock spire, the dragon ribcage) and 461 by under a tenth of a cell onto the exact centre of their box; 580 stay; 40 are refused at the new spot by the footprint law. Nothing else changed.",
+     "cell": [
+      333,
+      237
+     ],
+     "window": [
+      323,
+      230,
+      344,
+      246
+     ]
+    },
+    {
+     "name": "The cart, moved the same way, nothing else around it",
+     "what": "The same half-cell move as before - four nav cells under the box - and every neighbour is the piece it was: the signpost, the haystack, the scarecrow, the waystone.",
+     "cell": [
+      324,
+      241
+     ],
+     "window": [
+      314,
+      234,
+      335,
+      250
+     ]
+    }
+   ]
+  },
+  {
+   "date": "2026-09-13",
+   "commit": "a366eee306",
+   "before": "9421cc23e2",
+   "title": "The massif's lava: three flows where there were five dabs (23 cells -> 90)",
+   "changes": [
+    {
+     "name": "The lava field, from the air",
+     "what": "The whole black rock shelf. It had five dabs of 3 to 6 cells; it has three lava flows now, 90 cells of lava against 470 of rock. What stops it getting bigger is the rock's own shape: a pool only takes cells with a full two-cell ring of rock around them, so there is always a way past it on foot and lava never touches anything but black rock. Everything else on this shelf is exactly where it was - no piece moved, nothing re-dressed.",
+     "cell": [
+      222,
+      200
+     ],
+     "window": [
+      203,
+      178,
+      243,
+      222
+     ]
+    },
+    {
+     "name": "The north flow, 35 cells",
+     "what": "The two pools that sat near the top of the shelf grew into each other and now run east as one flow with rock islands in it. Its edge is lobed rather than round: the growth is nudged by a noise field so a lake gets bays and capes.",
+     "cell": [
+      226,
+      190
+     ],
+     "window": [
+      216,
+      183,
+      237,
+      199
+     ]
+    },
+    {
+     "name": "The west flow, 35 cells",
+     "what": "The dab on the west side, grown down the shelf into a long river of lava. The two-cell rock ledge on both sides of it is the rule, not luck - it is what keeps a flow a hazard beside the way instead of a wall across it. Lava is swum at 0.4 speed for 4 HP a second, so the ledge is where you want to be.",
+     "cell": [
+      215,
+      208
+     ],
+     "window": [
+      205,
+      201,
+      226,
+      217
+     ]
+    },
+    {
+     "name": "The middle pool, 20 cells",
+     "what": "The smallest of the three, between the other two. Every pool grows in turn, one cell each per round: growing the field as a whole would have spent it all on the biggest lake and left these as spots, which is what you were looking at.",
+     "cell": [
+      218,
+      196
+     ],
+     "window": [
+      208,
+      189,
+      229,
+      205
+     ]
+    }
+   ],
+   "artifact": "https://claude.ai/code/artifact/2495fc84-cd00-4c8e-8240-e67bd666ed32"
+  },
+  {
+   "date": "2026-09-13",
+   "commit": "67a94df8c9",
+   "before": "30ffaad2e3",
+   "title": "A fire in 10 of 13 rooms, and a chimney on the roof over every one",
+   "changes": [
+    {
+     "name": "The town's skyline: five roofs, five chimneys",
+     "what": "Every house whose room has an open fire now carries a chimney on its roof, standing directly over that fire. Tap the picture for the same view yesterday: the same roofs, bare. This is also the whole reason the game had to learn a new trick - a piece standing ON a roof used to be read as furniture UNDER it, so it would have been invisible from the street and visible from inside the room.",
+     "cell": [
+      110,
+      162
+     ],
+     "window": [
+      92,
+      142,
+      128,
+      182
+     ]
+    },
+    {
+     "name": "One stack, up close",
+     "what": "The house by the well. South-east of the three facings you asked about (S, SE, SW): I rendered all three on this roof and looked. South is the stack seen flat on - one face, its clay pot dead centre - and it reads as a sticker lying on the roof. The two turned views show the brick's corner, so the stack has a lit face and a shaded one and stands up off the roof plane; south-east turns the LIT face toward the same side this world's roofs and walls are lit from, which is what makes it look like part of the building.",
+     "cell": [
+      97,
+      164
+     ],
+     "window": [
+      92,
+      158,
+      106,
+      170
+     ]
+    },
+    {
+     "name": "...and the fire under it",
+     "what": "The same house with its roof lifted, so you can see what the chimney is for: the hearth stands against the back wall and the stack rises from its own cell. One column from the fire to the sky, which is what the ambient agent's smoke needs - the art publishes where the flue mouth is per facing, and the smoke leaves from that exact pixel. Tap for yesterday: this room had no fire at all.",
+     "cell": [
+      97,
+      164
+     ],
+     "window": [
+      92,
+      158,
+      106,
+      170
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "The one that actually burns",
+     "what": "Nine of the ten fires are laid but cold, and this is the honest reason: the engine renders 8 world lights per camera window and the town already spends all 8 on its streetlamps, so only this house - out past the town - had a slot free. Everything else about a cold hearth is right (it is a fireplace, it has its chimney); it just is not lit. Say the word and I will let the fires take the slots from the street lamps instead, which is what the builder now does when the whole world is rebuilt.",
+     "cell": [
+      253,
+      303
+     ],
+     "window": [
+      246,
+      297,
+      260,
+      310
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "A brazier where a hearth will not fit",
+     "what": "A hearth is a metre and a half of masonry along a wall and this room has no such stretch left - bed, table, chair, barrels, chest. Rather than leave it cold it gets a fire basket: half a cell, the same open fire, and it takes its own chimney like any other. Two rooms of thirteen are still bare and one drew 'a light' it could not have lit, which is the 76 / 0 / 23 against the 70 / 10 / 20 you asked for.",
+     "cell": [
+      253,
+      144
+     ],
+     "window": [
+      247,
+      138,
+      261,
+      152
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "The L-shaped house gets its fire back",
+     "what": "This one is 54 cells in an L, and the old rule looked for the back wall in the bounding box's top row - which here is ONE cell, so it had a single short wall to try and gave up. A wall is a local fact now: any run of floor whose neighbour to the north (or west) is outside the room, longest run first. That found this 10-cell wall in the middle of the L, and the fire is on it.",
+     "cell": [
+      305,
+      233
+     ],
+     "window": [
+      296,
+      226,
+      314,
+      241
+     ],
+     "roofcut": true
+    }
+   ],
+   "artifact": "https://claude.ai/code/artifact/3ddee28c-e8e7-4a5d-9a70-10eaf8389d34"
+  },
+  {
+   "date": "2026-09-14",
+   "commit": "6a799100a3",
+   "before": "f7f501b432",
+   "title": "The hearth that stood in room 9's doorway, moved — and two stacks whose art you deleted",
+   "changes": [
+    {
+     "name": "A doorway is not a wall",
+     "what": "You were standing at 303.4, 231.6 - in the door between the two rooms - with a fireplace filling it. I did not reason about it: my wall test asked only whether the cell beyond was part of THIS room, which is just as true of a wall, of a passage, and of the next room's floor. That door is a floor cell poking through the wall row, so it read as wall, the 10-cell run swallowed it and the hearth took the cell you cross to get through. A wall is a RAISED neighbour now, an opening breaks the run, and on top of that a piece is refused if the cells the GAME blocks for it touch a doorway at all. The hearth moved two cells east, onto the same wall but between the two doors - where the dividing wall of the rooms above comes down, so it reads as the house's own chimney breast. Its stack went with it. Tap for what you saw.",
+     "cell": [
+      305,
+      233
+     ],
+     "window": [
+      296,
+      224,
+      314,
+      240
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "Two stacks re-picked after your review",
+     "what": "Your chimney review deleted chimney_002 and four states - two of them exactly the ones with 'NEW' printed on the roof that this pass was already refusing to place. Two houses were left naming a piece that is no longer on disk: the game draws nothing there and the map renderer stops dead. They were re-asked for a stack over what survives, and every other roof kept the one it had. (No 'before' picture for this one: the old shot cannot be drawn any more - the art it needs is the art you deleted.)",
+     "cell": [
+      103,
+      149
+     ],
+     "window": [
+      95,
+      141,
+      113,
+      158
+     ],
+     "before": null
+    }
+   ],
+   "artifact": "https://claude.ai/code/artifact/40a7898e-65ea-4219-8e06-5a8db5548203"
+  },
+  {
+   "date": "2026-09-14",
+   "commit": "d5b1905b0a",
+   "before": "6a799100a3",
+   "title": "8 of 10 hearths burn — the fires take their slots from the street lamps",
+   "changes": [
+    {
+     "name": "The fire is lit",
+     "what": "Two of ten hearths were burning; eight are now. I did not choose that 80% were dark - the engine renders 8 world lights per camera window and the town had spent all 8 on its lamps - but you have made the trade, so this is it: an indoor fire outranks the lamp in the street outside. The fires are lit nearest where you arrive first, and every one within 222 cells of the spawn now burns.",
+     "cell": [
+      333,
+      232
+     ],
+     "window": [
+      327,
+      226,
+      341,
+      239
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "...and this is what paid for it",
+     "what": "Twelve lights went out of 150 to free those slots - 5 streetlights, 3 lantern posts, 2 cave braziers, a crystal and a toadstool ring. A lamp is not removed, it is put OUT: the post still stands. A street lamp goes first because the builder itself lights the town's lamps last of everything, and among equals the one that goes is the one with the most lit neighbours - your own complaint about lamps that cluster. Tap for the street as it was.",
+     "cell": [
+      315,
+      243
+     ],
+     "window": [
+      305,
+      233,
+      327,
+      254
+     ]
+    },
+    {
+     "name": "Why a dimmer fire would not have helped",
+     "what": "The number that decides the whole trade: a camera window is 899 x 774 px - about 28 x 26 cells, WIDER THAN THE TOWN - so two lights inside that share its 8 slots whatever their radius. Capping a hearth's pool at 6 cells instead of the published 16 saves 5 lamps of 12 and costs the fire its glow (measured at 12, 10, 8 and 6). And lighting a fire spends the slot it just freed, so three hearths in one window cost three lamps however they are chosen. The two still dark are the far town's, 246 cells out; 9 of 10 is the ceiling and costs 15 lights.",
+     "cell": [
+      97,
+      164
+     ],
+     "window": [
+      92,
+      158,
+      106,
+      170
+     ],
+     "roofcut": true
+    }
+   ],
+   "artifact": "https://claude.ai/code/artifact/7a1f4701-1bcf-46a7-9075-211522b11a81"
+  },
+  {
+   "date": "2026-09-14",
+   "commit": "2223be5845",
+   "before": "d5b1905b0a",
+   "title": "A window needs a room behind it — 28 of 40 were hanging over dead wall",
+   "changes": [
+    {
+     "name": "The window you circled",
+     "what": "You were right, and it was not one window: 28 of the 40 in the world had part of their frame over a wall cell with no room behind it. The wall is one cell thick, so the cell behind the face IS the room - at a corner it is the wall turning - and the placer laid its slots along the whole face, corners included, keeping a margin of only a third of the frame's width. A face is cut into the RUNS of cells that have floor behind them now, the margin is at least the frame's own half-width, and a house is given a window type that fits one of ITS runs. The 28 slid 0.11 to 0.55 cells along their own wall; nothing was removed and no house lost its windows.",
+     "cell": [
+      303,
+      236
+     ],
+     "window": [
+      295,
+      231,
+      313,
+      241
+     ]
+    },
+    {
+     "name": "The same rule on the rest of the town",
+     "what": "Three houses at once. Every frame here now sits over a wall with a room behind it, and only the position along the wall changed - same window type, same face, same height. The L-shaped house was the interesting one to get right: its east wall is two runs with the notch between them, and the rule finds both.",
+     "cell": [
+      100,
+      166
+     ],
+     "window": [
+      92,
+      143,
+      112,
+      182
+     ]
+    }
+   ],
+   "artifact": "https://claude.ai/code/artifact/4cf82092-b4af-45d4-b5a9-381b4aac238d"
+  }
+ ],
+ "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
+ "_artifact_note": "ONE PAGE PER PUSH (maintainer 2026-09-13). Each push entry carries its own `artifact` URL - that page holds THAT push's cards only, and it is the link a reply gives him. The top-level `artifact` is the running page over every push: it is history, never a link in a reply. RENDER EACH PUSH'S PAGE INTO ITS OWN DIRECTORY (<scratch>/push-<commit>): the Artifact tool keys an artifact by the FILE PATH it was published from, so re-using one out_dir republishes the previous push's URL instead of creating the new page - measured 2026-09-13, it overwrote the running log."
+}

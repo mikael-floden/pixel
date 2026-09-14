@@ -10,7 +10,7 @@
   "prompt": "grey paving stones, cool pale grey, evenly laid, worn flat, plain",
   "palette_top": "#a8a8a8",
   "tile_id": "c71cdc81-282d-46cc-a279-75c5d4fb7188",
-  "n_tiles": 16,
+  "n_tiles": 13,
   "tiles": [
     "tile_00.webp",
     "tile_01.webp",
@@ -18,16 +18,13 @@
     "tile_03.webp",
     "tile_04.webp",
     "tile_05.webp",
-    "tile_06.webp",
     "tile_07.webp",
     "tile_08.webp",
     "tile_09.webp",
     "tile_10.webp",
     "tile_11.webp",
     "tile_12.webp",
-    "tile_13.webp",
-    "tile_14.webp",
-    "tile_15.webp"
+    "tile_14.webp"
   ],
   "settings": {
     "tile_size": 64,
@@ -125,5 +122,22 @@
     ],
     "mean_colours": 13.75,
     "mean_dominant_share": 0.682
+  },
+  "removed": {
+    "tile_06.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_13.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    },
+    "tile_15.webp": {
+      "status": "rejected",
+      "at": "2026-09-12T16:46:23+00:00",
+      "record": "tiles/tops/removed.json"
+    }
   }
 }

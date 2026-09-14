@@ -1,0 +1,559 @@
+{
+ "format": "pixel-wiki-releases@1",
+ "generated_at": "2026-09-13T19:45:03.432Z",
+ "head": "aa30d2b72",
+ "repo": "https://github.com/mikael-floden/pixel",
+ "commits": [
+  {
+   "sha": "aa30d2b72",
+   "at": "2026-09-13T19:43:59+00:00",
+   "author": "Claude",
+   "subject": "board: wiki-assistant claims the scenery-type flattening (CHIMNEY reads as OTHER)",
+   "agent": "wiki-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "61ba5b2e6",
+   "at": "2026-09-13T18:09:43+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant — b4658567b confirmed live; idle between reports",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "f33dce9fe",
+   "at": "2026-09-13T17:50:13+00:00",
+   "author": "Claude",
+   "subject": "board: games-ambient-assistant — the chimney gate is green on the real stacks",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8966f9993",
+   "at": "2026-09-13T17:46:00+00:00",
+   "author": "Claude",
+   "subject": "ambient: the chimney gate stands OUTSIDE the house, and two more gate laws",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "5a7e1c604",
+   "at": "2026-09-13T17:41:57+00:00",
+   "author": "Claude",
+   "subject": "ambient: the vent probe holds its own lit copy, and the gate aims at the vent",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "bc9f473d2",
+   "at": "2026-09-13T17:40:31+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant — the wall faces vary again; 42a7fca77 confirmed live",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "b4658567b",
+   "at": "2026-09-13T17:40:30+00:00",
+   "author": "Claude",
+   "subject": "games2: a wall face wears its region's least-seamed measured set, never one tile — the sets regenerated from today's walls",
+   "agent": "games-assistant",
+   "dirs": [
+    "games2"
+   ],
+   "files": 5
+  },
+  {
+   "sha": "e06a180e1",
+   "at": "2026-09-13T17:35:47+00:00",
+   "author": "Claude",
+   "subject": "board: games-ambient-assistant — chimney smoke shipped, and the lava answer to maps2",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "2493538ce",
+   "at": "2026-09-13T17:34:29+00:00",
+   "author": "Claude",
+   "subject": "ambient: chimney smoke — a plume off a roof, out of the hole the scenery domain measured",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "games2"
+   ],
+   "files": 9
+  },
+  {
+   "sha": "f7f501b43",
+   "at": "2026-09-13T17:32:21+00:00",
+   "author": "Claude",
+   "subject": "maps2: the change page for the fire/chimney push, and the out_dir trap it paid for",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 4
+  },
+  {
+   "sha": "d9790b3c6",
+   "at": "2026-09-13T17:29:25+00:00",
+   "author": "Claude",
+   "subject": "board: scenery-assistant mints CHIMNEY and posts the wiki's two hard-coded lists",
+   "agent": "scenery-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "f6fead335",
+   "at": "2026-09-13T17:28:51+00:00",
+   "author": "Claude",
+   "subject": "scenery: CHIMNEY is a type of its own, like WINDOW",
+   "agent": "scenery",
+   "dirs": [
+    "scenery"
+   ],
+   "files": 13
+  },
+  {
+   "sha": "a5caec40f",
+   "at": "2026-09-13T17:26:52+00:00",
+   "author": "pixel-scenery-bot",
+   "subject": "scenery: pack 10 placed piece(s) — the packed layer follows the worlds",
+   "agent": "scenery",
+   "dirs": [
+    "scenery"
+   ],
+   "files": 241
+  },
+  {
+   "sha": "67a94df8c",
+   "at": "2026-09-13T17:26:22+00:00",
+   "author": "Claude",
+   "subject": "maps2: a fire in most rooms, and the chimney on the roof over it",
+   "agent": "maps2",
+   "dirs": [
+    "games2",
+    "maps2"
+   ],
+   "files": 13
+  },
+  {
+   "sha": "30ffaad2e",
+   "at": "2026-09-13T17:26:18+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant claims the uniform wall faces (his fog-off screenshots)",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6c592df4d",
+   "at": "2026-09-13T17:25:25+00:00",
+   "author": "Claude",
+   "subject": "board: maps2-assistant claims the fire in most rooms + the chimney over it",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8ed2db501",
+   "at": "2026-09-13T17:24:44+00:00",
+   "author": "Claude",
+   "subject": "games2: a light is a candidate when its POOL can touch the view, sprite or no sprite — no more popping spotlights",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 6
+  },
+  {
+   "sha": "0c411c3f8",
+   "at": "2026-09-13T17:09:37+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant claims the popping cave light (the picker's reach box)",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "cbd770e1e",
+   "at": "2026-09-13T17:07:46+00:00",
+   "author": "Claude",
+   "subject": "ambient: dragonflies work the reeds, and they are the butterfly's opposite",
+   "agent": "games-ambient",
+   "dirs": [
+    "games2"
+   ],
+   "files": 10
+  },
+  {
+   "sha": "fa9d4ef6b",
+   "at": "2026-09-13T16:58:59+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant — four units live, the reconnect black areas and the hard arch shadow posted to games",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "42a7fca77",
+   "at": "2026-09-13T16:58:20+00:00",
+   "author": "Claude",
+   "subject": "games2: the LOS march skips the light's own near field — a torch beside a column no longer shadows the floor at its own feet",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "15f7695fe",
+   "at": "2026-09-13T16:57:57+00:00",
+   "author": "Claude",
+   "subject": "board: scenery-assistant — the pot's one-row mouth, and the sheet law it exposed",
+   "agent": "scenery-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "61b79f2ae",
+   "at": "2026-09-13T16:57:07+00:00",
+   "author": "Claude",
+   "subject": "scenery: a pot's mouth can be ONE row of shadow — and a review sheet has to survive the phone",
+   "agent": "scenery",
+   "dirs": [
+    "scenery"
+   ],
+   "files": 4
+  },
+  {
+   "sha": "554187b55",
+   "at": "2026-09-13T16:54:42+00:00",
+   "author": "Claude",
+   "subject": "games2: a relogin comes back on the surface you left, never on a wall's top",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 4
+  },
+  {
+   "sha": "1d5e0b02b",
+   "at": "2026-09-13T16:52:10+00:00",
+   "author": "Claude",
+   "subject": "board: games-ambient-assistant claims chimney smoke and the vent seam",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "3f4924201",
+   "at": "2026-09-13T16:51:25+00:00",
+   "author": "Claude",
+   "subject": "board: maps2-assistant claims chimneys on the roof + the authorised roof-mount edit in games2",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "181cda7eb",
+   "at": "2026-09-13T16:35:29+00:00",
+   "author": "Claude",
+   "subject": "games2: the scenery bbox table regenerated for the chimneys (the gate is green again)",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "b999077e9",
+   "at": "2026-09-13T16:34:56+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant claims the scenery bbox regeneration and the join-restore guard",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "852cc4e1d",
+   "at": "2026-09-13T16:34:56+00:00",
+   "author": "Claude",
+   "subject": "games2: the escape gets ON — the farthest point along the ask inside the corridor, not the point ahead",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 4
+  },
+  {
+   "sha": "9f291397a",
+   "at": "2026-09-13T16:28:10+00:00",
+   "author": "Claude",
+   "subject": "board: scenery-assistant records his fourth round on the flue mouth, and the gate it bought",
+   "agent": "scenery-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "fcc81090a",
+   "at": "2026-09-13T16:27:14+00:00",
+   "author": "Claude",
+   "subject": "scenery: the anchor must be a PIXEL OF THE HOLE — his fourth round of marks",
+   "agent": "scenery",
+   "dirs": [
+    "scenery"
+   ],
+   "files": 11
+  },
+  {
+   "sha": "24ba22547",
+   "at": "2026-09-13T16:08:10+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant claims the escape's progress goal and the dungeon torch report",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "3b9faf699",
+   "at": "2026-09-13T16:03:15+00:00",
+   "author": "Claude",
+   "subject": "board: games-ambient-assistant releases lava (f6c2bfb77); chimney smoke waits on the scenery agent's chimneys",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "f6c2bfb77",
+   "at": "2026-09-13T15:57:38+00:00",
+   "author": "Claude",
+   "subject": "ambient: LAVA — the pool breathes, a dome swells and bursts into a crust ring, and ash drifts off the surface",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 7
+  },
+  {
+   "sha": "47592d1b7",
+   "at": "2026-09-13T15:53:04+00:00",
+   "author": "Claude",
+   "subject": "board: scenery-assistant releases the chimney unit — the third mark, and the lesson it paid for",
+   "agent": "scenery-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "28ed1a8d0",
+   "at": "2026-09-13T15:51:21+00:00",
+   "author": "Claude",
+   "subject": "scenery: the flue mouth is the middle of the hole — his three hand-marked corrections",
+   "agent": "scenery",
+   "dirs": [
+    "scenery"
+   ],
+   "files": 23
+  },
+  {
+   "sha": "e95413ce8",
+   "at": "2026-09-13T15:50:06+00:00",
+   "author": "Claude",
+   "subject": "ambient: the ground answers when you land on it",
+   "agent": "games-ambient",
+   "dirs": [
+    "games2"
+   ],
+   "files": 7
+  },
+  {
+   "sha": "735da457e",
+   "at": "2026-09-13T15:44:10+00:00",
+   "author": "Claude",
+   "subject": "board: scenery-assistant — the release note the last commit got wrong, and the post to the ambient agent",
+   "agent": "scenery-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6e960a054",
+   "at": "2026-09-13T15:43:25+00:00",
+   "author": "Claude",
+   "subject": "board: scenery-assistant releases the chimney follow-up; posts the tag and the mouth to ambient, games and maps2",
+   "agent": "scenery-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "08786f5b0",
+   "at": "2026-09-13T15:43:01+00:00",
+   "author": "Claude",
+   "subject": "scenery: the flue mouth, corrected twice by hand — the pot's mouth, and the middle of the opening",
+   "agent": "scenery",
+   "dirs": [
+    "scenery"
+   ],
+   "files": 102
+  },
+  {
+   "sha": "d7a670a24",
+   "at": "2026-09-13T15:42:53+00:00",
+   "author": "Claude",
+   "subject": "board: maps2-assistant records the approval and goes idle",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "13c98d574",
+   "at": "2026-09-13T15:42:53+00:00",
+   "author": "Claude",
+   "subject": "maps2: the lava share and the nav fit are approved numbers, not defaults",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "e20c30666",
+   "at": "2026-09-13T15:42:49+00:00",
+   "author": "Claude",
+   "subject": "board: maps2-assistant claims two approval stamps in WORLD3.md",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "800c2e8f1",
+   "at": "2026-09-13T15:36:57+00:00",
+   "author": "Claude",
+   "subject": "board: maps2-assistant releases the page files and relays the one-page-per-push ruling to maps2",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "2dd66d5bf",
+   "at": "2026-09-13T15:36:34+00:00",
+   "author": "Claude",
+   "subject": "maps2: one change page per push — a link never carries a previous fix again",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "089a994de",
+   "at": "2026-09-13T15:35:04+00:00",
+   "author": "Claude",
+   "subject": "board: maps2-assistant claims one-page-per-push for the change page (maintainer's ruling)",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "d2774c6b2",
+   "at": "2026-09-13T15:31:29+00:00",
+   "author": "Claude",
+   "subject": "maps2: the change page for the lava flows (cards #21-#24); board: released, posted to ambient and games",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "a366eee30",
+   "at": "2026-09-13T15:29:17+00:00",
+   "author": "Claude",
+   "subject": "maps2: the massif's lava is three flows, not five dabs",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 7
+  },
+  {
+   "sha": "0870ac25a",
+   "at": "2026-09-13T15:20:55+00:00",
+   "author": "Claude",
+   "subject": "board: maps2-assistant claims the massif's lava lakes (the maintainer's \"not epic enough\")",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "4ba414098",
+   "at": "2026-09-13T15:20:26+00:00",
+   "author": "Claude",
+   "subject": "scenery: the chimney group trimmed to his eight, and one design retired on the art",
+   "agent": "scenery",
+   "dirs": [
+    "scenery"
+   ],
+   "files": 26
+  }
+ ]
+}

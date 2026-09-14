@@ -6,6 +6,12 @@ in git. Maintainer: "We will never go back to the tile2 system again.")
 
 > Naming: `tiles/` = Tiles 3.0; the plain name was reused from the retired v1.
 
+> Two agents work here (maintainer 2026-09-12): the tiles agent and **tiles-assistant**,
+> the same tasks in the same directory. The procedure is `coordination/PROTOCOL.md`
+> "Two writers per directory": claim the unit and its files on your board before
+> editing, never a file the partner's board names in flight, rebase before every push
+> and re-run the gates after it. The PixelLab pool is one; the floor is the tiles agent's.
+
 ## What is actually different
 
 Tiles 2.0 generated *interesting* tiles and then spent months fighting the results in
@@ -111,6 +117,8 @@ tiles/
     chase.py             roll a cell until it yields candidates; the prompt ladder
     publish.py           promote candidates into review/ with a manifest
     review.py            turn the maintainer's wiki verdicts into rejections
+    review_prune.py      remove x-over-y candidates rejected on EVERY face from manifest + git
+    tops_review.py       remove rejected top-only tiles (subtle/detail) from index + git
     tombstones.py        permanent rejections AND overrides
     restore.py           rebuild the matrix from PixelLab, free
     reference.py         derive a material's palette from a reference tile
@@ -217,6 +225,34 @@ transition was never drawn, and no amount of re-ranking will produce one.
 Paths are **repo-relative**, matching how the wiki addresses every other domain's art.
 Verdicts are read back from `live/feedback/tiles.json` in the `pixel-wiki-feedback@1`
 format the scenery domain already uses.
+
+**A rejected tile leaves git** (maintainer 2026-09-11: "remove tiles I have rejected
+everywhere and is not good enough for anything and never referenced"). `review_prune.py`
+drops an x-over-y candidate whose every voted face (`#top`, `#wall`) is rejected;
+`tops_review.py` drops a top-only tile whose `#top` is rejected. Both keep, and report,
+anything something still DRAWS: a base-set member (`live/tuning/base_tile_sets.json`,
+`tiles/resolve.json`), a wall donor in `live/tuning/top_walls.json` ("the wall might
+still have been accepted" - the game draws that wall under other tiles), a plate-pool
+member, a games2 fixture. `tile_walls.json` `top_only` is the wall's own rejection and
+never keeps. **A base-set member stays whatever its detail verdict** (maintainer
+2026-09-12: "99.99% of the time a detail tile is not part of a base tile. But this is
+different sets so ofc it may happen ... it's not a rule that is forbidden"). "Not a
+detail" and "in my set" are two independent judgements, so a rejected tile that his set
+draws is not a conflict to put to him - it is kept, silently, until he drops it from the
+set. The bare-key verdict from before faces existed (2026-08-21, every
+candidate carries an approval there) counts only while no faced verdict is newer -
+read beside a later `#top` rejection it kept every rejected tile. A top-only sheet
+shrinks with the verdict (its `meta.json` lists the `removed` tiles, so `is_complete`
+stays true); a sheet that lost EVERY tile keeps `meta.json` as a tombstone with
+`n_tiles` 0 and leaves the index, so the seed is never bought again.
+`tiles/tops/removed.json` is the durable record - the wiki prunes a feedback entry
+once the tile leaves the index. A rejected candidate's source is deferred in
+`tombstones.json` so `publish.py` cannot bring it back; a cell left empty is flagged
+`needs_regeneration`. `review_prune.py --apply` re-folds `tile_states.py` when it is done
+(a surviving top-only tile may borrow its wall from a donor the pass deleted, and a key is
+not a file, so the file checks never saw it - three grey_stone-over-ice tops, 2026-09-12),
+and `check_immutable.py` fails on any `borrow_wall`, `resolve.json` member or promoted
+base tile that no longer resolves.
 
 ## Art immutability (LAW, 2026-08-27)
 

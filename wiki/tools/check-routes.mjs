@@ -29,10 +29,23 @@ const first = (dom) => (DATA.domains?.[dom] ?? [])[0]?.id ?? null;
 const ROUTES = [
   "#/", "#/objects", "#/monsters", "#/items", "#/sounds", "#/music", "#/world",
   "#/characters", "#/lore", "#/tiles", "#/near",
-  ...[["objects", "objects"], ["monsters", "monsters"], ["items", "items"], ["characters", "characters"]]
+  // Admin-only, and READ-ONLY since 2026-09-11 — walked so a page nobody can
+  // edit is still a page that renders.
+  "#/tuning",
+  // Admin-only too: as a player this must render the Overview rather than a
+  // dead page, which is exactly what this walk measures on both passes.
+  "#/releases",
+  ...[["objects", "objects"], ["monsters", "monsters"], ["items", "items"], ["characters", "characters"],
+      // A new monster's 8-direction base, judged before it earns animations.
+      ["monsterCandidates", "monsters/candidates"]]
     .map(([dom, path]) => (first(dom) ? `#/${path}/${first(dom)}` : null)).filter(Boolean),
+  ...(first("monsterCandidates") ? ["#/monsters/candidates"] : []),
 ];
 const fails = [];
+/** Parameters is a reference table: no input, select or button may exist on it
+ *  (maintainer 2026-09-11: "the admin should not be able to change settings
+ *  here ... I will never ever do it and don't want the wiki to let me"). */
+const READONLY_ROUTE = "#/tuning";
 /* THE BROWSER, wherever it is: this sandbox bakes one in at a fixed path, CI
  * installs one where playwright itself can find it. An empty CHROMIUM_PATH is
  * not a path — passing "" as executablePath fails to launch, which is what a
@@ -57,6 +70,13 @@ for (const admin of [false, true]) {
   for (const r of ROUTES) {
     await p.goto(W + r, { waitUntil: "load" });
     await p.waitForTimeout(2200);
+    if (r === READONLY_ROUTE) {
+      const controls = await p.evaluate(() => document.querySelectorAll("#content table.tune input, #content table.tune select, #content table.tune button").length);
+      const rows = await p.evaluate(() => document.querySelectorAll("#content table.tune tbody tr").length);
+      console.log(`  ${admin ? "Game Master" : "player     "}: ${r} — ${rows} constants, ${controls} controls`);
+      if (controls) fails.push(`${admin ? "admin" : "player"}: ${r} offers ${controls} control(s) — Parameters is read-only`);
+      if (admin && !rows) fails.push(`admin: ${r} rendered no constants`);
+    }
   }
   const rendered = await p.evaluate(() => (document.body.innerText || "").length);
   console.log(`  ${admin ? "Game Master" : "player     "}: ${ROUTES.length} routes, ${errs.size} distinct errors, ${rendered} chars rendered`);

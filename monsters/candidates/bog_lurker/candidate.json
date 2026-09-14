@@ -1,0 +1,140 @@
+{
+  "id": "bog_lurker",
+  "name": "Boglurk",
+  "tier": "mid",
+  "lore": "Only the gills show above the mud, red as flowers. Pick one and the rest of it comes up smiling.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy amphibian monster like a giant axolotl with slimy dark olive skin, feathery crimson external gills fanning from its head, a wide flat toothy grin, bulging yellow eyes, four webbed clawed limbs, a short tail curled tightly under its round body, and strands of slime and pond weed hanging from its body.",
+  "size": [
+    136,
+    136
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bog_lurker/rotations/south.webp",
+    "south-east": "bog_lurker/rotations/south-east.webp",
+    "east": "bog_lurker/rotations/east.webp",
+    "north-east": "bog_lurker/rotations/north-east.webp",
+    "north": "bog_lurker/rotations/north.webp",
+    "north-west": "bog_lurker/rotations/north-west.webp",
+    "west": "bog_lurker/rotations/west.webp",
+    "south-west": "bog_lurker/rotations/south-west.webp"
+  },
+  "sheet": "bog_lurker/sheet.webp",
+  "review": "not_picked",
+  "pixellab_id": "e0dca645-7838-4945-8fd7-5fac5bb51e17",
+  "seed": 845355077,
+  "version": 3,
+  "usage": null,
+  "generated_at": "2026-09-09T17:42:51+00:00",
+  "elapsed_s": 212.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.646,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.646,
+        "bbox": [
+          10,
+          8,
+          129,
+          125
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.774,
+        "bbox": [
+          22,
+          6,
+          117,
+          128
+        ],
+        "fill": 0.627,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.75,
+        "bbox": [
+          7,
+          8,
+          113,
+          128
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.718,
+        "bbox": [
+          9,
+          6,
+          111,
+          126
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.695,
+        "bbox": [
+          18,
+          10,
+          118,
+          123
+        ],
+        "fill": 0.611,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.701,
+        "bbox": [
+          26,
+          6,
+          111,
+          123
+        ],
+        "fill": 0.538,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.742,
+        "bbox": [
+          20,
+          8,
+          129,
+          128
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.769,
+        "bbox": [
+          17,
+          6,
+          129,
+          128
+        ],
+        "fill": 0.739,
+        "touches_edge": false
+      }
+    }
+  }
+}

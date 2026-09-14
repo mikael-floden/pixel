@@ -244,6 +244,48 @@ function probeArt(url) {
   }
   return artProbe.get(url);
 }
+/* GONE IS PROVED AT MAIN, NOWHERE ELSE (maintainer 2026-09-11: "When I first
+ * open the wiki or press on a page I get an error saying 'removed'. I then
+ * click back and on the same page again and the same img/monster loads.")
+ *
+ * A single 404 is not a deletion. THREE routine things answer 404 for art that
+ * is on main this second: the deployed image, which carries only what the game
+ * reaches (a creature still being animated is staging by arrangement — see
+ * shipset.mjs); the boot PIN, a sha cached for ten minutes while the art agents
+ * push every few; and a CDN that has not fetched the path yet. Each of those
+ * showed him "removed — the agent acted on this" on art that loaded when he
+ * walked back into the page.
+ *
+ * So a "gone" verdict now has to survive being asked again at `main`, the
+ * newest ref there is. If main has the file it is not gone — the element is
+ * repointed there and it simply loads, which is what his second visit was
+ * doing by hand. One extra HEAD, only on the miss path. */
+function repoRel(url) {
+  const u = new URL(url, location.href);
+  if (repoBase && u.href.startsWith(String(repoBase))) return u.href.slice(String(repoBase).length);
+  const rel = u.pathname.replace(/^.*\/assets\//, "");
+  return rel && !rel.startsWith("/") ? rel : null;
+}
+/** The same art at HEAD of main — the one ref that cannot be stale. */
+function mainTwin(url) {
+  const rel = repoRel(url);
+  if (!rel) return null;
+  const href = new URL(rel, stagingBase("main")).href;
+  // An injected base (the gates, a dev run) can resolve to the url that just
+  // missed — that is no new information, and asking twice proves nothing.
+  return href === url ? null : href;
+}
+/** probeArt, but a 404 must repeat itself at main before it counts as gone. */
+async function probeGone(url) {
+  const first = await probeArt(url);
+  if (first !== "gone") return { verdict: first, twin: null };
+  const twin = mainTwin(url);
+  if (!twin) return { verdict: "gone", twin: null };
+  const atMain = await probeArt(twin);
+  // Anything but a 404 at main — it is there, or the network hiccuped. Either
+  // way this is not a deletion, and the twin is where the art actually is.
+  return atMain === "gone" ? { verdict: "gone", twin: null } : { verdict: "failed", twin };
+}
 /** Paths already served by the repo, so the second card of a domain the image
  *  does not carry goes straight there instead of 404ing first.
  *
@@ -347,7 +389,14 @@ async function onArtMissing(img) {
   // been retried against the repo, a 404 THERE is real news.
   const fromRepo = !!repoBase && url.startsWith(String(repoBase));
   const unshipped = isUnshipped(domain) && !fromRepo;
-  const verdict = (/\/icons\//.test(url) || unshipped) ? "failed" : await probeArt(url);
+  let verdict = "failed", mainAt = null;
+  if (!/\/icons\//.test(url) && !unshipped) {
+    const p = await probeGone(url);
+    verdict = p.verdict; mainAt = p.twin;
+  }
+  // Main has it: point at main and let it load, rather than telling him a
+  // story about art that is right there.
+  if (mainAt && img.isConnected) { img.dataset.triedRepo = "1"; img.src = mainAt; return; }
   // GONE MEANS GONE — the piece leaves the wiki, it does not become a
   // tombstone (maintainer 2026-08-16, on three "removed" cards sitting in his
   // partly-reviewed filter: "why is the object not removed then removed? Why
@@ -492,7 +541,7 @@ const state = {
   admin: false,          // signed in as the game designer? (server-verified)
   feedback: {},          // domain -> parsed pixel-wiki-feedback@1
   tuning: { monsters: null, constants: null, shadow_notes: null, tile_walls: null },
-  dirty: new Set(),      // "feedback/monsters" | "tuning/monsters" | "tuning/constants"
+  dirty: new Set(),      // "feedback/monsters" | "tuning/monsters" | "tuning/scenery_hitbox" …
   // Per file: WHICH ids this session actually edited. Saves send exactly
   // these ids as a delta — the server merges them into the current document,
   // so a stale page can never clobber entries committed earlier.
@@ -730,7 +779,14 @@ function verdictWidget(domain, id, { onchange, onStarChange = onchange, reject =
       // always 'unstar'"). Removing it is the last thing he will say about it,
       // so a rating left behind would outlive the thing it rated — and on the
       // star filters it would keep reading as a piece he liked.
-      h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, onclick: (e) => {
+      // REDO-ONLY ROWS HAVE NO REMOVE (maintainer 2026-09-10: "The individual
+      // animations should only have a REDO. Not a remove!"). You do not delete
+      // one animation of a creature — you ask for another take of it, and the
+      // creature as a whole is where removal lives. A verdict that ALREADY says
+      // rejected still shows its button, so an old removal can never be stuck
+      // on a row that can no longer set one.
+      reject === false && st !== "rejected" ? null
+      : h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, onclick: (e) => {
         e.stopPropagation();
         const on = st === "rejected";
         setFb(domain, id, on ? { status: null } : { status: "rejected", rating: null, ...(stamp ?? {}) });
@@ -784,8 +840,14 @@ function facetHead(pillBox, box) {
     box);
 }
 /** The pill that says exactly which generated file is being judged. */
-const facetName = (st, dir) => h("span", { class: "pill", title: `${st} · ${dir}` },
-  `${stateLabel(st)} · ${DIR_LABEL[dir] ?? dir}`);
+/** The pill that says exactly which generated file is being judged. A parallel
+ *  take reads as its state and its version — "Attack v3", never the raw slot
+ *  name "Attack V3try". */
+const facetName = (st, dir, entity = null) => {
+  const a = entity?.animations?.[st];
+  const label = a?.takeOf ? `${stateLabel(a.takeOf)} ${a.takeLabel}` : stateLabel(st);
+  return h("span", { class: "pill", title: `${st} · ${dir}` }, `${label} · ${DIR_LABEL[dir] ?? dir}`);
+};
 function feedbackRow(domain, id, opts = {}) {
   return h("div", { class: "fb-row" },
     starsWidget(domain, id, opts.onStars, opts.glyph),
@@ -1586,7 +1648,7 @@ function clearShadow(entity) {
 const FACET_DOMAIN = { monster: "monsters", character: "characters", object: "objects" };
 function facetMark(domain, path, state, dirs, entity) {
   if (!domain || !path || !dirs.length) return { cls: "", title: null };
-  let approved = 0, rejected = 0, stale = 0;
+  let approved = 0, rejected = 0, stale = 0, redo = 0;
   for (const d of dirs) {
     const e = fb(domain, `${path}#${state}#${d}`);
     // Regenerated since it was judged: it reads as unjudged, because that is
@@ -1595,21 +1657,82 @@ function facetMark(domain, path, state, dirs, entity) {
     if (entity && (e.status || e.rating) && facetStale(entity, state, d, e)) { stale++; continue; }
     if (e.status === "approved") approved++;
     else if (e.status === "rejected") rejected++;
+    // REDO IS THE VERDICT AN ANIMATION GETS (the row has no remove), so the
+    // chip has to carry it — otherwise the one thing he says about a bad walk
+    // leaves the state row looking untouched.
+    else if (e.status === "redo") redo++;
   }
   const of = dirs.length === 1 ? "" : ` of ${dirs.length} directions`;
   const note = stale ? ` — ${stale} regenerated since, needs another look` : "";
   if (rejected) return { cls: "judged-no", title: `${rejected}${of} rejected${note}` };
+  // A redo outranks an approval on the same chip: it is the one still owed.
+  if (redo) return { cls: "judged-redo", title: `${redo}${of} to be redone${note}` };
   if (approved === dirs.length) return { cls: "judged-ok", title: `approved${of ? ` (all ${dirs.length} directions)` : ""}` };
   if (stale) return { cls: "", title: `judged before the art was regenerated${of} — needs another look` };
   if (approved) return { cls: "", title: `${approved}${of} approved — not finished` };
   return { cls: "", title: "not reviewed yet" };
 }
 
+/* THE ANIMATION HE IS REVIEWING SURVIVES THE PAGE (maintainer 2026-09-10:
+ * "after I click on a monster and click 'next next next' ... going to the next
+ * page should still show the attack animation if I was on the attack
+ * animation"). Reviewing is one state across many creatures — attack after
+ * attack after attack — and every page opening on idle made that four taps per
+ * creature. Remembered per KIND and only for CREATURES, whose five states are
+ * one fixed vocabulary; a scenery piece's states are its own (lit_2, not_lit_3,
+ * numbered per piece), so carrying one across pieces would land him on a
+ * different thing each time rather than the same one. Only honoured when the
+ * entity actually has that state. */
+const VIEWER_STATE_KINDS = new Set(["monster", "character"]);
+const VIEWER_STATE_KEY = (kind) => `wiki-viewer-state-${kind}`;
+/* ...AND THE VERSION WITH IT (maintainer 2026-09-11: "When I stand on a monster
+ * and review the attack animation version today named 'try' I want to be able
+ * to click 'next next next' to see the next monsters attack 'try' animation. I
+ * don't want the wiki to switch back to the 'live' version.")
+ *
+ * Remembered as the LABEL — "try", "v2" — never the slot, because the slot is
+ * per state (`attack_v2`) while the question he is asking is per version: show
+ * me everyone's v2. A creature without that version opens on its live take. */
+const VIEWER_TAKE_KEY = (kind) => `wiki-viewer-take-${kind}`;
+const lastViewerState = (kind) => {
+  if (!VIEWER_STATE_KINDS.has(kind)) return null;
+  try { return localStorage.getItem(VIEWER_STATE_KEY(kind)); } catch { return null; }
+};
+const rememberViewerState = (kind, st) => {
+  if (!VIEWER_STATE_KINDS.has(kind)) return;
+  try { localStorage.setItem(VIEWER_STATE_KEY(kind), st); } catch { /* private mode */ }
+};
+const lastViewerTake = (kind) => {
+  if (!VIEWER_STATE_KINDS.has(kind)) return null;
+  try { return localStorage.getItem(VIEWER_TAKE_KEY(kind)); } catch { return null; }
+};
+const rememberViewerTake = (kind, label) => {
+  if (!VIEWER_STATE_KINDS.has(kind)) return;
+  try { localStorage.setItem(VIEWER_TAKE_KEY(kind), label); } catch { /* private mode */ }
+};
 function makePlayer(entity, kind, opts = {}) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
+  // A take is not a state: one chip per state, versions on their own row. A
+  // state may exist as VERSIONS ONLY — the agent's rename to v1/v2/v3 stopped
+  // writing a bare `attack` folder — so the state list is derived from what
+  // each entry belongs to, not from the entries that belong to nothing.
+  const takeOf = (s) => anims[s]?.takeOf ?? s;
+  const baseStates = [...new Set(stateNames.map(takeOf))];
+  const takesOf = (st) => [...(anims[st] ? [st] : []), ...stateNames.filter((s) => anims[s]?.takeOf === st)];
+  const takeLabelOf = (s) => anims[s]?.takeLabel ?? "live";
+  /** The slot to show for a state: the version he last picked when this state
+   *  has one, else the take that ships, else its first version. */
+  const slotFor = (st, label) => {
+    const takes = takesOf(st);
+    return (label && takes.find((s) => takeLabelOf(s) === label)) || takes[0] || st;
+  };
+  const kept = lastViewerState(kind);
+  const keptTake = lastViewerTake(kind);
+  const openState = kept && baseStates.includes(kept) ? kept
+    : baseStates.includes("idle") ? "idle" : baseStates[0];
   let cur = {
-    state: stateNames.includes("idle") ? "idle" : stateNames[0],
+    state: slotFor(openState, keptTake),
     dir: "south", frame: 0, playing: true, speed: 1, zoom: 0 /* 0 = auto */,
     shadow: kind === "monster",
     editShadow: false,
@@ -2246,6 +2369,25 @@ function makePlayer(entity, kind, opts = {}) {
   // rows, which carry the same class and sit in the same panel. Styling still
   // comes from `.seg`.
   const stateSeg = h("span", { class: "seg seg-states" });
+  /* PARALLEL TAKES OF ONE STATE (maintainer 2026-09-11: "he might try to create
+   * a different attack animation without deleting the old version in case the
+   * old version in the end was better. He is now at 'v3' and I can only see a
+   * single attack animation on the wiki so I can't see his new attempts. So we
+   * need a way to ... see all different parallel versions (and review/rate all
+   * parallel versions). In the end we will only have a single attack animation
+   * ofc.")
+   *
+   * One chip per STATE in the row above, and — only when a state has more than
+   * one take — a version row under it: live, try, v3. `cur.state` stays the
+   * SLOT being shown, so every verdict, stamp, mark and clip lookup below keeps
+   * working on a plain animations key, and v3's verdict can never land on the
+   * live take. */
+  const takeSeg = h("span", { class: "seg seg-takes" });
+  // The whole row disappears when a state has one take, which is every creature
+  // the agent has finished with — an empty control row is a question with no
+  // answer on a 393px screen.
+  const takeRow = h("div", { class: "player-controls take-row", hidden: "hidden" },
+    h("span", { class: "muted take-label" }, "Takes"), takeSeg);
   // Keep the ACTIVE state visible inside the pannable row — scrollLeft only,
   // never scrollIntoView: that can drag the whole page along with it.
   function revealActiveState() {
@@ -2258,25 +2400,62 @@ function makePlayer(entity, kind, opts = {}) {
   }
   const fbDomain = state.admin ? FACET_DOMAIN[kind] : null;
   function renderStateSeg() {
-    stateSeg.replaceChildren(...stateNames.map((s) => {
-      const mark = fbDomain ? facetMark(fbDomain, entity.path, s, Object.keys(anims[s]?.dirs ?? {}), entity) : { cls: "", title: null };
+    stateSeg.replaceChildren(...baseStates.map((s) => {
+      // A state's chip carries the LIVE take's verdicts — that is the one that
+      // ships; the version row carries each take's own.
+      // A state with no take of its own is marked by the take that ships, or
+      // by its first version when every take is a version.
+      const shown = anims[s] ? s : takesOf(s)[0];
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, shown, Object.keys(anims[shown]?.dirs ?? {}), entity) : { cls: "", title: null };
       return h("button", {
-        class: [s === cur.state ? "on" : "", mark.cls].filter(Boolean).join(" "),
+        class: [s === takeOf(cur.state) ? "on" : "", mark.cls].filter(Boolean).join(" "),
         onclick: () => {
-          cur.state = s;
+          // Stay on the version he is reviewing when this state has one too —
+          // the same rule that carries it from creature to creature.
+          // The REMEMBERED version leads: it is the answer to "which version am
+          // I reviewing", and the state chip he just left may have had none.
+          cur.state = slotFor(s, lastViewerTake(kind) ?? takeLabelOf(cur.state));
+          rememberViewerState(kind, s);
+          // A state with ONE take says nothing about which version he wants:
+          // stepping through Idle on the way back to Attack must not forget
+          // that he is reviewing v2.
+          if (takesOf(s).length > 1) rememberViewerTake(kind, takeLabelOf(cur.state));
           // Direction availability differs per state (e.g. stone_golem's
           // angry ships 5/8 dirs) — refresh the pad and hop to an available
           // direction if the current one has no clip in this state.
-          if (!anims[s]?.dirs?.[cur.dir]) {
-            cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
+          if (!anims[cur.state]?.dirs?.[cur.dir]) {
+            cur.dir = state.data.directions.find((d) => anims[cur.state]?.dirs?.[d]) ?? cur.dir;
           }
           // ...and the hitbox bar, which now shows THIS variation's own box
           // (2026-08-29): without this the rails kept driving the previous
           // variation's numbers while a different picture was on screen.
-          loadClip(); renderStateSeg(); revealActiveState(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.();
+          loadClip(); renderStateSeg(); renderTakeSeg(); revealActiveState(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.();
         },
         title: mark.title ? `${stateWords(s)} — ${mark.title}` : stateWords(s),
-      }, stateLabel(s) + (anims[s].fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""));
+      }, stateLabel(s) + (anims[s]?.fallback ? ` (→${stateLabel(anims[s].fallback)})` : ""));
+    }));
+  }
+  /** The version row: one chip per take of the state on screen, or nothing at
+   *  all when there is only the one — which is every creature the agent has
+   *  finished with. */
+  function renderTakeSeg() {
+    const takes = takesOf(takeOf(cur.state));
+    takeRow.hidden = takes.length < 2;
+    if (takeRow.hidden) { takeSeg.replaceChildren(); return; }
+    takeSeg.replaceChildren(...takes.map((s) => {
+      const mark = fbDomain ? facetMark(fbDomain, entity.path, s, Object.keys(anims[s]?.dirs ?? {}), entity) : { cls: "", title: null };
+      const label = anims[s]?.takeLabel ?? "live";
+      const words = s === takeOf(s) ? "the take that ships" : `a parallel take of ${stateWords(takeOf(s))}, not in the game`;
+      return h("button", {
+        class: [s === cur.state ? "on" : "", mark.cls].filter(Boolean).join(" "),
+        title: mark.title ? `${label} — ${words} — ${mark.title}` : `${label} — ${words}`,
+        onclick: () => {
+          cur.state = s;
+          rememberViewerTake(kind, takeLabelOf(s));
+          if (!anims[s]?.dirs?.[cur.dir]) cur.dir = state.data.directions.find((d) => anims[s]?.dirs?.[d]) ?? cur.dir;
+          loadClip(); renderStateSeg(); renderTakeSeg(); renderDirPad(); refreshShadowBar(); refreshHitBar(); onFacetChange?.();
+        },
+      }, label);
     }));
   }
 
@@ -2310,6 +2489,7 @@ function makePlayer(entity, kind, opts = {}) {
   }
   const clipForDir = (d) => anims[cur.state]?.dirs?.[d];
   renderStateSeg();
+  renderTakeSeg();
   requestAnimationFrame(revealActiveState);
   renderDirPad();
 
@@ -3063,6 +3243,7 @@ function makePlayer(entity, kind, opts = {}) {
     // maintainer reviews hundreds of pieces in a row and the art has to stay
     // put. A lone state reads "Static"; a lone direction shows just "S".
     h("div", { class: "player-controls" }, stateSeg),
+    takeRow,
     // ONE PLACE FOR THE DIRECTION PAD, whatever the entity (maintainer
     // 2026-08-14: "on monsters and players the direction is OVER the preview
     // — please make it similar looking"). A still's pad sat under the stage
@@ -3079,7 +3260,7 @@ function makePlayer(entity, kind, opts = {}) {
     getState: () => cur.state,
     getDir: () => cur.dir,
     /** Repaint the approved/rejected marks — call after a verdict changes. */
-    refreshMarks() { renderStateSeg(); revealActiveState(); renderDirPad(); },
+    refreshMarks() { renderStateSeg(); renderTakeSeg(); revealActiveState(); renderDirPad(); },
     /** Repaint the art alone — a mirror request changes the picture, nothing else. */
     redraw() { draw(); },
     /** Shadow editing: one record per monster (see shadowRec). */
@@ -3395,7 +3576,7 @@ function takeRow(domain, entityPath, take, extra = []) {
 // (maintainer 2026-07-30 named these). Add a section here and the nav, the
 // start page, the headings and the back-links all follow.
 const SECTIONS = {
-  monsters:   { label: "Creatures",     noun: "creatures",  icon: "creatures",  count: (d) => d.counts.monsters },
+  monsters:   { label: "Creatures",     noun: "creatures",  icon: "creatures",  count: () => creatures().length },
   // "Races", not "Characters" (maintainer 2026-08-05: "Characters" reads too
   // close to "Creatures"). The nav counts RACES; the start tile keeps heroes.
   // "Races", not "Characters" (maintainer 2026-08-05: "Characters" reads too
@@ -3436,6 +3617,10 @@ const SECTIONS = {
   // ADMIN-ONLY (maintainer 2026-07-30): parameters are designer machinery,
   // not encyclopedia — players must not even see the read-only page.
   tuning:     { label: "Parameters",    noun: "constants",  icon: "parameters", count: (d) => d.counts.constants, adminOnly: true },
+  // WHAT HAS LANDED (maintainer 2026-09-13, and his own icon). Admin-only for
+  // the same reason Parameters is: commit shas and agent names are the factory
+  // floor, not the encyclopedia.
+  releases:   { label: "Release Notes", noun: "commits",    icon: "notes",      count: (d) => d.counts.releases, adminOnly: true },
 };
 // ONE list, read by both the nav (renderNav) and the Overview tiles
 // (viewHome) — so the two can never disagree about the order.
@@ -3444,7 +3629,9 @@ const SECTIONS = {
 // monsters").
 // World (Tiles 3.0) sits where the ground system has always sat. (tiles2 — the
 // "Tiles OLD" row — was deleted 2026-09-09; history in git.)
-const SECTION_ORDER = ["characters", "monsters", "world", "objects", "sounds", "music", "items", "lore", "tuning"];
+// Release Notes sits with Parameters at the end: the two admin-only sections
+// are the machinery, and the sections a player reads keep the front.
+const SECTION_ORDER = ["characters", "monsters", "world", "objects", "sounds", "music", "items", "lore", "tuning", "releases"];
 // A section's label may depend on who is reading (see `tiles` above).
 const label = (slug) => { const l = SECTIONS[slug]?.label; return (typeof l === "function" ? l() : l) ?? slug; };
 /** What a section counts, in the voice of whoever is reading — the Game Master
@@ -3470,10 +3657,10 @@ function sectionIcon(slug, size = 48) {
 // what every section page already opens with, so one crumb covers Creatures,
 // Races, World, Scenery, Sound Effects, Music, Items, Lore and Parameters —
 // and any section added later gets it without anyone remembering to.
-function sectionHead(slug) {
+function sectionHead(slug, title = null) {
   return h("div", {},
     h("a", { class: "crumb", href: "#/" }, "← Overview"),
-    h("div", { class: "sect-head" }, sectionIcon(slug), h("h1", {}, label(slug))));
+    h("div", { class: "sect-head" }, sectionIcon(slug), h("h1", {}, title ?? label(slug))));
 }
 function renderNav() {
   const cur = location.hash.replace(/^#\/?/, "").split("/")[0];
@@ -4191,8 +4378,20 @@ const MONSTER_SORT_KEY = "wiki-monster-sort";
  * hit on tiles ("I use your code to filter on NOT reviewed. I then click on
  * that tile set, but can't navigate further"). */
 const MONSTER_SHADOW_KEY = "wiki-monster-shadow";
+/* ONE FILTER ROW, ONE SORT ROW (maintainer 2026-09-10: "If I press in the
+ * making you still say 'all 94'. With that filter it can't be 94."). "In the
+ * making" was a SORT chip in the row above, so pressing it left "all 94"
+ * selected here and the page claimed both at once. It is a filter — it answers
+ * "which creatures", the question every chip in THIS row answers — and the
+ * shadow chips are the others. A filter also follows him onto a creature page,
+ * which a sort could not: ‹ › then walks only what he filtered to. */
 const MONSTER_SHADOWS = {
   all: { label: "all", title: "Every creature", hit: () => true },
+  making: {
+    label: "in the making",
+    title: "Approved designs the monsters agent is still animating — their states arrive one at a time",
+    hit: (m) => !!m.pending,
+  },
   none: {
     label: "no shadow",
     title: "Creatures still drawing the art-derived default — these are the ones left to do",
@@ -4209,14 +4408,30 @@ const shadowFilter = () => {
   try { return MONSTER_SHADOWS[localStorage.getItem(MONSTER_SHADOW_KEY)] ? localStorage.getItem(MONSTER_SHADOW_KEY) : "all"; }
   catch { return "all"; }
 };
-/** The creatures the current filter keeps, in the page's own order — the list
- *  ‹ › walks on a creature page. */
+/** The sort the overview is showing, as a comparator — so the page and the
+ *  ‹ › pager cannot disagree about what "next" means. */
+function monsterSort(list) {
+  let sort = "name";
+  try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
+  const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
+  const byName = (a, b) => a.name.localeCompare(b.name);
+  const lvl = (m) => Number(stat.get(m.id)?.level ?? 0);
+  const CMP = {
+    name: byName,
+    level: (a, b) => lvl(b) - lvl(a) || byName(a, b),
+    // Aggressive first, and hardest first within each half — "what can come
+    // for me, worst first" is the question this sort answers.
+    threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
+  };
+  return [...list].sort(CMP[sort] ?? byName);
+}
+/** The creatures the current filter keeps, in the order the overview shows
+ *  them — the list ‹ › walks on a creature page. */
 function monsterNav() {
   const mode = shadowFilter();
-  const all = state.data.domains.monsters;
-  if (mode === "all") return all;
-  const kept = all.filter((m) => MONSTER_SHADOWS[mode].hit(m));
-  return kept.length ? kept : all;   // never strand him on an empty pager
+  const all = creatures();
+  const kept = mode === "all" ? all : all.filter((m) => MONSTER_SHADOWS[mode].hit(m));
+  return monsterSort(kept.length ? kept : all);   // never strand him on an empty pager
 }
 /* ---- THE CREATURES OVERVIEW IS A SHOWCASE ----
  * Maintainer 2026-08-18, round 1: "some big monsters are displayed with 0.5x
@@ -4312,6 +4527,11 @@ function showcaseArt(m) {
   // LAZY BY OBSERVATION. 57 strips is 296 KB, but a phone should still not
   // fetch the bottom of the list to show the top of it — and an animation
   // nobody can see is work nobody asked for.
+  observeShowcase(art);
+  return stage;
+}
+/** Fetch and animate a card's art only while it is near the screen. */
+function observeShowcase(art) {
   showcaseWatch ??= new IntersectionObserver((entries) => {
     for (const e of entries) {
       const el = e.target;
@@ -4320,7 +4540,6 @@ function showcaseArt(m) {
     }
   }, { rootMargin: "300px 0px" });
   showcaseWatch.observe(art);
-  return stage;
 }
 /* ---- A BACKGROUND IMAGE CANNOT REPORT A 404, so this one asks first ----
  *
@@ -4386,7 +4605,15 @@ async function showcaseMissing(el, url) {
   //    means the entity leaves the wiki, anything else stays visible and says
   //    it did not load.
   if (!el.isConnected) return;
-  const verdict = await probeArt(url);
+  const { verdict, twin: atMain } = await probeGone(url);
+  if (atMain && el.isConnected) {
+    el.dataset.triedRepo = "1";
+    el.dataset.strip = atMain;
+    if (el.dataset.preview) el.dataset.preview = mainTwin(el.dataset.preview) ?? el.dataset.preview;
+    el.style.backgroundImage = "";
+    paintShowcase(el);
+    return;
+  }
   if (verdict === "gone" && dropGoneEntity(el.dataset.preview || url)) return;
   if (!el.isConnected) return;
   const stage = el.closest(".showcase");
@@ -4477,8 +4704,8 @@ function fitShowcase(grid) {
   grid.dataset.over = String(over);
 }
 let showcaseFit = null;
-function watchShowcase(grid) {
-  const run = () => fitShowcase(grid);
+function watchShowcase(grid, fit = fitShowcase) {
+  const run = () => fit(grid);
   requestAnimationFrame(run);
   if (showcaseFit) window.removeEventListener("resize", showcaseFit);
   showcaseFit = () => { if (!grid.isConnected) { window.removeEventListener("resize", showcaseFit); showcaseFit = null; return; } run(); };
@@ -4487,41 +4714,53 @@ function watchShowcase(grid) {
 
 /** The grid itself — built here so the fit pass is armed the moment it exists,
  *  and never forgotten at a call site. */
-function showcaseGrid(...cards) {
+function showcaseGrid(cards, fit = fitShowcase) {
   const grid = h("div", { class: "showcase-grid" }, ...cards);
   grid.style.setProperty("--sc-row", `${SHOWCASE_ROW}px`);
   grid.style.setProperty("--sc-gap", `${SHOWCASE_GAP}px`);
   grid.style.setProperty("--sc-min", `${SHOWCASE_MINCELL}px`);
-  watchShowcase(grid);
+  watchShowcase(grid, fit);
   return grid;
 }
 
+/* CREATURES AND CANDIDATES ARE TWO TABS OF ONE SECTION (maintainer 2026-09-10:
+ * "I also feel the Creatures/Candidates should be a tab and not a warning div.
+ * Also when clicking on Candidates now the breadcrumb 'jumps' compared to the
+ * Creatures page.")
+ *
+ * Both were true of the same thing: the door was an accent-bordered box that
+ * read as a warning, and the candidates page opened with a sticky `.crumb-row`
+ * where the creatures page has `sectionHead`, so the title moved as he
+ * switched. Now both pages are `sectionHead` + this row, in that order, and
+ * nothing on screen moves between them. */
+function creatureTabs(cur) {
+  // The candidates are staging art as well — a player has no repo to read them
+  // from, so the tab is the Game Master's.
+  const nCand = state.admin ? candidates().length : 0;
+  return sortBar("wiki-creature-tab", [
+    ["monsters", `Creatures ${creatures().length}`, "Everything the monsters agent has animated"],
+    ...(nCand ? [["candidates", `Candidates ${nCand}`, "New designs, judged on their 8 directions before they earn animations"]] : []),
+  ], cur, (id) => { location.hash = id === "monsters" ? "#/monsters" : "#/monsters/candidates"; }, { persist: false });
+}
 function viewMonsters() {
   const q = state.query;
-  const list = state.data.domains.monsters.filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
+  const list = creatures().filter((m) => matches(q, m.id, m.name, m.kind, monsterLore(m), ...(m.loreStory ?? [])));
   // Default is BY NAME. The underlying order is the folder id, which reads as
   // random to anyone looking at display names (Emberwing, Nightmule, Ashfiend…).
   let sort = "name";
   try { sort = localStorage.getItem(MONSTER_SORT_KEY) || "name"; } catch { /* private mode */ }
   const stat = new Map(list.map((m) => [m.id, monsterStats(m.id)]));
-  const byName = (a, b) => a.name.localeCompare(b.name);
-  const lvl = (m) => Number(stat.get(m.id).level ?? 0);
-  const CMP = {
-    name: byName,
-    level: (a, b) => lvl(b) - lvl(a) || byName(a, b),
-    // Aggressive first, and hardest first within each half — "what can come
-    // for me, worst first" is the question this sort answers.
-    threat: (a, b) => (isAggressive(stat.get(b.id)) - isAggressive(stat.get(a.id))) || lvl(b) - lvl(a) || byName(a, b),
-  };
   const mode = shadowFilter();
   const shown = list.filter((m) => MONSTER_SHADOWS[mode].hit(m));
-  const sorted = [...shown].sort(CMP[sort] ?? byName);
+  const sorted = monsterSort(shown);
   const nAggro = list.filter((m) => isAggressive(stat.get(m.id))).length;
+  const nPending = list.filter((m) => m.pending).length;
   const nNone = list.filter((m) => !shadowRaw(m)).length;
   return h("div", {},
     sectionHead("monsters"),
+    creatureTabs("monsters"),
     h("p", { class: "muted" }, state.admin
-      ? `${list.length} creatures from the monsters agent — ${nAggro} attack on sight. Click one to preview every animation, check its shadow, edit its stats and loot.`
+      ? `${list.length} creatures from the monsters agent — ${nAggro} attack on sight${nPending ? `, and ${nPending} are approved designs still being animated` : ""}. Click one to preview every animation, check its shadow, edit its stats and loot.`
       : `${list.length} creatures roam Nangijala, ${nAggro} of them aggressive. Click one to watch every animation and study its stats.`),
     sortBar(MONSTER_SORT_KEY, [
       ["name", "by name", "Alphabetical"],
@@ -4531,8 +4770,11 @@ function viewMonsters() {
     // HIS SHADOW QUEUE. Counts on the control itself, so "what is left" is
     // answered before a single card is read.
     state.admin ? sortBar(MONSTER_SHADOW_KEY,
-      Object.entries(MONSTER_SHADOWS).map(([id, f]) => [id,
-        `${f.label} ${id === "all" ? list.length : list.filter((m) => f.hit(m)).length}`, f.title]),
+      Object.entries(MONSTER_SHADOWS)
+        // A chip nothing can fill is not an option — "in the making 0" the day
+        // the agent finishes them all would just be a dead button.
+        .filter(([id, f]) => id === "all" || list.some((m) => f.hit(m)))
+        .map(([id, f]) => [id, `${f.label} ${id === "all" ? list.length : list.filter((m) => f.hit(m)).length}`, f.title]),
       mode, () => route()) : null,
     state.admin && mode !== "all" ? h("p", { class: "muted" },
       shown.length
@@ -4542,7 +4784,7 @@ function viewMonsters() {
           : "No creature has a tuned shadow yet.") : null,
     state.admin && mode === "all" && nNone ? h("p", { class: "muted" },
       `${nNone} of ${list.length} still draw the default shadow.`) : null,
-    showcaseGrid(...sorted.map((m) => {
+    showcaseGrid(sorted.map((m) => {
       // The card leads with what matters to a PLAYER — the creature's stats
       // (live/tuning/monsters.json), not image resolution (maintainer
       // 2026-07-30). "not in game yet" is dev info → admin only.
@@ -4569,7 +4811,8 @@ function viewMonsters() {
         // question this page answers at a glance, and a green "calm" chip on 48
         // of 57 cards answers it by shouting at everybody. Absence is the calm.
         ...(isAggressive(st) ? [h("span", { class: "pill err", title: "Attacks on sight" }, "aggressive")] : []),
-        ...(sp ? [] : [h("span", { class: "pill showcase-nospawn", title: "No world places this creature yet — you will not meet it in the wild." }, "not spawned")]),
+        ...(m.pending ? [h("span", { class: "pill warn", title: `An approved design the monsters agent is still animating — ${Object.keys(m.animations ?? {}).length} of its states are done. Open it to review them.` }, "in the making")] : []),
+        ...(sp || m.pending ? [] : [h("span", { class: "pill showcase-nospawn", title: "No world places this creature yet — you will not meet it in the wild." }, "not spawned")]),
         // THE REVIEW BADGES RIDE UP HERE TOO — ★★★ / approved / remove — and
         // that is a layout rule, not a taste: they appear only once the Game
         // Master has judged a creature, so left in the text block they would
@@ -4588,6 +4831,323 @@ function viewMonsters() {
           h("div", { class: "card-sub" },
             `HP ${st.max_hp ?? "?"} · DMG ${st.damage ?? "?"} · XP ${st.xp ?? "?"}${state.admin && !m.inGame ? " · not in game yet" : ""}`)));
     })));
+}
+/* ================= MONSTER CANDIDATES — the 8 directions, judged FIRST =====
+ * Maintainer 2026-09-09: the monsters agent now designs and generates its own
+ * monsters, and "the first step before generating a monster is generating a
+ * character in 8 directions. If you are happy with this character you can go
+ * on and generate all animations needed." A candidate is that 8-direction
+ * base and nothing else (monsters/candidates/index.json, format
+ * monster-candidates@1); it becomes a creature only once he approves it here.
+ *
+ * THE VERDICT IS ABOUT ONE VERSION OF THE ART. A redo rolls the next seed and
+ * the agent deletes the old record, so every verdict is stamped with the
+ * candidate's `version` — a verdict carrying an older version is a decision
+ * about a picture that no longer exists and reads as undecided (the same rule
+ * the scenery states use with their art hash).
+ *
+ * The three verdicts, in the vocabulary the agent consumes from
+ * live/feedback/monsters.json under monsters/candidates/<id>:
+ *   approved → generate every animation in all 8 directions
+ *   redo     → same design, next seed (all 8 directions again)
+ *   rejected → drop the design; the agent never continues it
+ *
+ * THE FACINGS SIT IN MIRROR PAIRS. Two columns — S|N, E|W, SE|SW, NE|NW — so
+ * the twin the generator is most likely to get wrong (SE drawn as SW, his
+ * scenery complaint) is side by side with its mirror, and two 136px sprites
+ * still fit a 393px phone at 1×. */
+const CAND_FILTER_KEY = "wiki-cand-filter";
+const CAND_ZOOM_KEY = "wiki-cand-zoom";
+const CAND_PAIRS = [["south", "north"], ["east", "west"], ["south-east", "south-west"], ["north-east", "north-west"]];
+const candidates = () => state.data.domains.monsterCandidates ?? [];
+const candById = (id) => candidates().find((c) => c.id === id) ?? null;
+const candFb = (c) => fb("monsters", c.path);
+const candStale = (c) => { const e = candFb(c); return !!e.status && e.version != null && e.version !== c.version; };
+const candStatus = (c) => (candStale(c) ? null : (candFb(c).status ?? null));
+const CAND_FILTERS = {
+  pending:  { label: "to judge", title: "No verdict of yours yet on this version of the 8 directions", hit: (c) => !candStatus(c) },
+  approved: { label: "approved", title: "Approved — the monsters agent generates every animation", hit: (c) => candStatus(c) === "approved" },
+  redo:     { label: "redo",     title: "Same design, next seed", hit: (c) => candStatus(c) === "redo" },
+  rejected: { label: "removed",  title: "Dropped — the design is not continued", hit: (c) => candStatus(c) === "rejected" },
+  all:      { label: "all",      title: "Every candidate", hit: () => true },
+};
+const candFilter = () => {
+  try { return CAND_FILTERS[localStorage.getItem(CAND_FILTER_KEY)] ? localStorage.getItem(CAND_FILTER_KEY) : "pending"; }
+  catch { return "pending"; }
+};
+/** Newest first: the ones just born are the ones he has not seen. */
+const candList = (mode = candFilter()) => candidates().filter(CAND_FILTERS[mode].hit)
+  .sort((a, b) => String(b.generatedAt ?? "").localeCompare(String(a.generatedAt ?? "")) || a.name.localeCompare(b.name));
+const candSizeLine = (c) => [c.tier, c.scale && c.scale !== "standard" ? c.scale : null, c.size ? `${c.size[0]}px` : null, `v${c.version}`].filter(Boolean).join(" · ");
+/** The marks that ride on a card or head the page: his verdict (or that it is
+ *  stale), the machine QA, and whether the agent has acted on the verdict. */
+/** The agent's own `review` in HIS vocabulary; its defaults (pending,
+ *  not_picked) say nothing and map to nothing. */
+const CAND_AGENT = { approved: "approved", rejected: "rejected", dropped: "rejected" };
+function candMarks(c) {
+  const out = [];
+  if (candStale(c)) out.push(h("span", { class: "pill warn", title: "You judged an earlier version of these 8 directions — the agent has rolled a new seed since. Judge this one." }, "regenerated — judge again"));
+  else out.push(...entityBadge("monsters", c.path));
+  if (c.qa?.status && c.qa.status !== "pass") out.push(h("span", { class: `pill ${c.qa.status === "fail" ? "err" : "warn"}`, title: (c.qa.reasons ?? []).join("; ") || "The agent's own density/clipping checks" }, `qa ${c.qa.status}`));
+  // THE AGENT'S OWN RECORD IS SHOWN ONLY WHERE IT DIFFERS FROM HIS. It mirrors
+  // his verdict within the run, so once it has read the board every card would
+  // otherwise carry "agent: approved" under his own "approved" — 100 pills
+  // saying what the pill above them says. What is worth a pill is the gap: an
+  // approval it has not acted on yet, or a state he never gave it.
+  const mine = candStatus(c), theirs = CAND_AGENT[c.review] ?? null;
+  if (mine === "approved" && theirs !== "approved") {
+    out.push(h("span", { class: "pill warn", title: "You approved these 8 directions — the monsters agent has not recorded it yet. Its animations come on its next run." }, "waiting for the agent"));
+  } else if (theirs && theirs !== mine) {
+    out.push(h("span", { class: "pill", title: "The monsters agent's own record of this candidate — what it has acted on" }, `agent: ${theirs}`));
+  }
+  return out;
+}
+function candFeedback(c) {
+  return feedbackRow("monsters", c.path, {
+    stamp: { version: c.version },
+    stale: () => candStale(c),
+    rejectTitle: "Remove = drop this design; the monsters agent never continues it",
+    rejectedLabel: "dropped",
+    redo: { label: "↻ redo", title: "Keep the design, roll the next seed — the agent regenerates all 8 directions", doneLabel: "next seed requested" },
+  });
+}
+/* ---- THE OVERVIEW IS TRUE SCALE, and the card is what varies ----
+ * Maintainer 2026-09-10, scrolling the candidates: "It's important when I
+ * scroll the candidates overview I can see the monster in the correct scale.
+ * So I was thinking the cards could be the same as in the monster overview. In
+ * the monster overview we get bigger cards for bigger monsters."
+ *
+ * So this is the creature showcase, cell for cell — `.showcase-card` in the
+ * same grid, spans measured after layout, dense packing — with ONE difference
+ * that the designs force: the candidates span 32px to 240px of native art,
+ * nearly twice the shipped roster's range, and the biggest at the game's own 2×
+ * is 456px of art against a 386px double stage. So the grid picks ONE zoom for
+ * every card on it — the largest on the ladder at which the BIGGEST candidate
+ * still fits a 2×2 — instead of fitting each picture to its box. One shared
+ * zoom is the whole point: ratios between cards are then exactly the ratios
+ * between the designs, and a 32px sandsting really is a seventh of a 240px
+ * warden. (Per-card fitting is what he was looking at when he wrote the note:
+ * every thumbnail 150px, every creature the same size, the scale unreadable.)
+ *
+ * The zoom is capped at the game's 2× — a candidate is never drawn BIGGER than
+ * the game would draw it — and the page says which zoom it landed on, because
+ * "is this its real size" must have an answer on screen. */
+const CAND_ZOOMS = [2, 1.5, 1, 0.75, 0.5];
+/** One candidate's art: the south facing, cropped to its measured ink box, at
+ *  the grid's shared zoom (set by fitCandidates once the layout is known). */
+function candArt(c) {
+  const stage = h("div", { class: "showcase checker" });
+  const src = c.rotations?.south ?? Object.values(c.rotations ?? {})[0] ?? null;
+  if (!src) return stage;
+  const fw = c.size?.[0] ?? null, fh = c.size?.[1] ?? fw;
+  // No measured box (a candidate the agent's QA could not read): fall back to
+  // the plain contained preview rather than inventing a crop.
+  if (!c.bb || !fw) {
+    stage.append(h("img", { class: "showcase-plain", src: assetUrl(src), alt: c.name, loading: "lazy" }));
+    return stage;
+  }
+  const [x0, y0, x1, y1] = c.bb;
+  const art = h("div", { class: "showcase-art" });
+  art.dataset.raw = `${Math.max(1, x1 - x0)}x${Math.max(1, y1 - y0)}`;
+  art.dataset.box = `${x0},${y0},${fw},${fh}`;
+  art.dataset.strip = assetUrl(src);
+  art.dataset.preview = assetUrl(src);
+  art.style.setProperty("--frames", "1");
+  stage.append(art);
+  observeShowcase(art);
+  return stage;
+}
+/** The grid's ONE zoom, then every card's span — both from the geometry the
+ *  browser really laid out, never from arithmetic over the stylesheet. */
+function fitCandidates(grid) {
+  if (!grid?.isConnected) return;
+  const cards = [...grid.querySelectorAll(".showcase-card")];
+  if (!cards.length) return;
+  const gw = grid.getBoundingClientRect().width;
+  if (!gw) return;
+  const cols = Math.max(1, Math.floor((gw + SHOWCASE_GAP) / (SHOWCASE_MINCELL + SHOWCASE_GAP)));
+  const cell = (gw - (cols - 1) * SHOWCASE_GAP) / cols;
+  // Measure the single-cell stage off a card that IS one (borrowing one for a
+  // frame if none is), exactly as the creature grid does.
+  let probe = cards.find((c) => (c.dataset.span ?? "1x1") === "1x1");
+  let restore = null;
+  if (!probe) {
+    probe = cards[0];
+    restore = { c: probe.style.getPropertyValue("--c"), r: probe.style.getPropertyValue("--r") };
+    probe.style.setProperty("--c", "1");
+    probe.style.setProperty("--r", "1");
+  }
+  const el = probe.querySelector(".showcase");
+  const pad = el && getComputedStyle(el);
+  const w1 = el ? el.clientWidth - parseFloat(pad.paddingLeft) - parseFloat(pad.paddingRight) : 0;
+  const h1 = el ? el.clientHeight - parseFloat(pad.paddingTop) - parseFloat(pad.paddingBottom) : 0;
+  if (restore) { probe.style.setProperty("--c", restore.c || "1"); probe.style.setProperty("--r", restore.r || "1"); }
+  if (!(h1 > 0)) return;
+  const w2 = cols > 1 ? w1 + cell + SHOWCASE_GAP : w1, h2 = h1 + SHOWCASE_ROW + SHOWCASE_GAP;
+  const arts = cards.map((c) => c.querySelector(".showcase-art")).filter(Boolean);
+  if (!arts.length) return;
+  let maxW = 1, maxH = 1;
+  for (const a of arts) {
+    const [w, hgt] = (a.dataset.raw ?? "1x1").split("x").map(Number);
+    maxW = Math.max(maxW, w); maxH = Math.max(maxH, hgt);
+  }
+  // The biggest design decides for all of them. Below the ladder's last rung
+  // the exact ratio is used rather than clipping — a design that large is a
+  // tripwire, not a layout to design for.
+  const z = CAND_ZOOMS.find((k) => maxW * k <= w2 && maxH * k <= h2) ?? Math.min(w2 / maxW, h2 / maxH);
+  for (const card of cards) {
+    const art = card.querySelector(".showcase-art");
+    let c = 1, r = 1;
+    if (art) {
+      const [w, hgt] = (art.dataset.raw ?? "1x1").split("x").map(Number);
+      const [x0, y0, fw, fh] = (art.dataset.box ?? "0,0,1,1").split(",").map(Number);
+      art.style.width = `${Math.round(w * z)}px`;
+      art.style.height = `${Math.round(hgt * z)}px`;
+      art.style.backgroundSize = `${fw * z}px ${fh * z}px`;
+      art.style.backgroundPositionX = `${-x0 * z}px`;
+      art.style.backgroundPositionY = `${-y0 * z}px`;
+      // A one-frame sweep is a no-op, but the shared keyframe still reads them.
+      art.style.setProperty("--f0", `${-x0 * z}px`);
+      art.style.setProperty("--fn", `${-x0 * z}px`);
+      art.dataset.zoom = String(z);
+      art.dataset.drawn = `${Math.round(w * z)}x${Math.round(hgt * z)}`;
+      c = w * z > w1 && cols > 1 ? 2 : 1;
+      r = hgt * z > h1 ? 2 : 1;
+    }
+    card.style.setProperty("--c", String(c));
+    card.style.setProperty("--r", String(r));
+    card.dataset.span = `${c}x${r}`;
+  }
+  grid.dataset.cols = String(cols);
+  grid.dataset.zoom = String(z);
+  const note = document.querySelector(".cand-scale-note");
+  if (note) note.textContent = `Every card at ${z}× — one scale for all of them, so a big design really looks big.`;
+}
+function viewCandidates() {
+  if (!state.admin) return h("div", {}, sectionHead("monsters", "Candidates"),
+    h("p", { class: "muted" }, "New creature designs are reviewed by the Game Master before they are animated. Sign in to see them."));
+  const mode = candFilter();
+  const all = candidates();
+  const shown = candList(mode).filter((c) => matches(state.query, c.id, c.name, c.tier, c.lore));
+  return h("div", {},
+    sectionHead("monsters", "Candidates"),
+    creatureTabs("candidates"),
+    h("p", { class: "muted" }, state.admin
+      ? `${all.length} new creature designs from the monsters agent, born as 8 directions only. Approve one and it earns every animation; redo rolls the next seed; remove drops the design.`
+      : `${all.length} creature designs the monsters agent is auditioning. None of these roam Nangijala yet.`),
+    all.length ? sortBar(CAND_FILTER_KEY,
+      Object.entries(CAND_FILTERS).map(([id, f]) => [id, `${f.label} ${all.filter(f.hit).length}`, f.title]),
+      mode, () => route()) : null,
+    shown.length ? h("p", { class: "muted cand-scale-note" }, "") : null,
+    shown.length ? showcaseGrid(shown.map((c) => {
+      const stage = candArt(c);
+      // EVERYTHING THAT IS NOT THE PICTURE RIDES ON THE PICTURE, in the top
+      // corner — a 1×1 cell is 150px wide and a row per pill would letterbox
+      // the design (the creature grid's law, and the same corners are empty
+      // here because a creature stands centred).
+      const marks = candMarks(c);
+      if (marks.length) stage.append(h("div", { class: "showcase-marks" }, ...marks));
+      return h("a", { class: "card showcase-card cand-card", href: `#/monsters/candidates/${c.id}` },
+        stage,
+        // EXACTLY TWO LINES, ALWAYS: every row is one height, so anything that
+        // appears on some cards only rides on the art instead.
+        h("div", { class: "showcase-text" },
+          h("div", { class: "card-name" }, c.name),
+          h("div", { class: "card-sub" }, candSizeLine(c))));
+    }), fitCandidates) : h("p", { class: "muted" }, all.length
+      ? (mode === "pending" ? "Every candidate has a verdict. Nothing left to judge." : "No candidate in this state.")
+      : "The monsters agent has not generated a candidate yet."));
+}
+function viewCandidate(id) {
+  if (!state.admin) return viewCandidates();
+  const c = candById(id);
+  if (!c) return h("p", {}, "Unknown candidate.");
+  const list = candList();
+  const walk = list.some((x) => x.id === id) ? list : candList("all");
+  const size = c.size?.[0] ?? 128;
+  /* TRUE SIZE, ALWAYS — the box is what gets bigger, never the creature
+   * (maintainer 2026-09-10, on a grub scaled 11× to fill the screen: "11x
+   * zoom? WTF. I want to see it in the true size always! You just had todo the
+   * preview bigger and centered the monster!").
+   *
+   * So ONE zoom for every candidate on this page and the last, and an
+   * IDENTICAL box on every design: its side is the LARGEST canvas any
+   * candidate has, at that zoom. A 32px grub is then 32px of art centred in
+   * the same box a 240px warden fills edge to edge — which is what true size
+   * looks like, and it reads at a glance because the box does not move.
+   *
+   * Per-design zoom is the rejected idea, twice over: a fixed 1×/2×/3× ladder
+   * made the grub a 64px stamp, and fitting each design to the column made it
+   * an 11× monster bigger than the warden. Both lie about the size. */
+  const col = $("#content"), cs = col ? getComputedStyle(col) : null;
+  const room = col ? col.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) : 341;
+  const gap = 8;
+  // The biggest canvas in the whole set decides the box, so the box is the same
+  // on every candidate page — not the biggest in the current filter, which
+  // would resize the box as he changes chips.
+  const maxCanvas = candidates().reduce((m, x) => Math.max(m, x.size?.[0] ?? 0), 0) || size;
+  // The game's own 2× if it fits, else the largest step down that does. Whole
+  // and half steps only: pixel art is never scaled by an arbitrary fraction.
+  const trueZ = CAND_ZOOMS.find((k) => maxCanvas * k <= room) ?? room / maxCanvas;
+  // THE SAME FOUR CHIPS THE CREATURE PAGE HAS (maintainer 2026-09-10: "See how
+  // monsters is displayed on their details page. I think we have 1x 2x or 4x"),
+  // with "same" meaning exactly what it means there — every design at one
+  // scale, so sizes are comparable between pages — and 1× / 2× / 4× the
+  // design's own pixels.
+  // An ARRAY, not an object: integer-like keys sort themselves to the front of
+  // an object, which put "same" last in the row.
+  const ZOOM_STEPS = [["same", trueZ], ["1", 1], ["2", 2], ["4", 4]];
+  const ZOOMS = Object.fromEntries(ZOOM_STEPS);
+  let mode = "same";
+  try { mode = ZOOMS[localStorage.getItem(CAND_ZOOM_KEY)] ? localStorage.getItem(CAND_ZOOM_KEY) : "same"; } catch { /* private mode */ }
+  const z = ZOOMS[mode];
+  // The box never outgrows the column: magnifying grows the CREATURE inside it,
+  // and a magnified big design scrolls INSIDE its box — the same rule the
+  // scenery preview stage settled on, for the same reason (a box wider than the
+  // screen slides its own content out of reach).
+  const box = Math.round(Math.min(maxCanvas * z, room));
+  // Two boxes side by side when they fit (a desktop, or a magnified phone is
+  // one); past the column the strip scrolls sideways rather than shrinking.
+  const cols = 2 * box + gap <= room ? 2 : 1;
+  const grid = h("div", { class: "cand-dirs" });
+  grid.style.setProperty("--cand-w", `${box}px`);
+  grid.style.setProperty("--cand-cols", String(cols));
+  for (const pair of CAND_PAIRS) for (const d of pair) {
+    const src = c.rotations[d];
+    grid.append(h("figure", { class: "cand-dir", "data-dir": d },
+      // THE CREATURE IS CENTRED IN THE BOX, both axes — the box is a frame, not
+      // a diorama (the same rule the creature showcase settled on).
+      h("div", { class: "cand-shot checker" },
+        src ? h("img", { src: assetUrl(src), alt: `${c.name}, facing ${d}`, width: Math.round(size * z), height: Math.round(size * z) }) : h("span", { class: "pill err" }, "missing")),
+      // UNDER THE PICTURE, NEVER ON IT. A label floating on the art covered a
+      // small design completely, and it is the art he is judging.
+      h("figcaption", {}, h("b", {}, DIR_LABEL[d] ?? d), " ", d.replace("-", " "))));
+  }
+  const ZOOM_LABEL = { same: "same", "1": "1×", "2": "2×", "4": "4×" };
+  const zoomSeg = h("div", { class: "seg cand-zoom", role: "radiogroup",
+    title: `“same” draws every design at one scale (${trueZ}× here), so sizes are comparable between pages` },
+    ...ZOOM_STEPS.map(([k]) => h("button", {
+      class: k === mode ? "on" : "", type: "button", "aria-checked": k === mode ? "true" : "false", role: "radio",
+      title: k === "same" ? `Every design at ${trueZ}× — a small one really is small` : `${k}× the design's own pixels`,
+      "data-zoom": k,
+      onclick: () => { try { localStorage.setItem(CAND_ZOOM_KEY, k); } catch { /* private mode */ } route(); } }, ZOOM_LABEL[k])));
+  return h("div", {},
+    crumbRow("#/monsters/candidates", "← Candidates", "monsters/candidates", walk, id),
+    h("div", { class: "sect-head" }, sectionIcon("monsters"), h("h1", {}, c.name)),
+    c.lore ? h("p", { class: "lore" }, c.lore) : null,
+    c.notes ? h("p", { class: "muted" }, String(c.notes)) : null,
+    h("p", { class: "muted" }, [candSizeLine(c), c.biome.length ? `lives in ${c.biome.map(titleish).join(", ")}` : null,
+      c.items.length ? `drops ${c.items.join(", ")}` : null, c.qa?.minRun1 != null ? `density ${c.qa.minRun1}` : null].filter(Boolean).join(" · ")),
+    h("div", { class: "cand-marks" }, ...candMarks(c)),
+    h("div", { class: "card-sub lit-mode" }, h("span", { class: "muted lit-label" }, "Zoom"), zoomSeg),
+    grid,
+    // THE VERDICT COMES AFTER THE EIGHT PICTURES. He reads down through the
+    // pairs and judges at the bottom, where his thumb already is — buttons at
+    // the top would make every verdict a scroll back up.
+    state.admin ? h("div", { class: "cand-judge" },
+      h("p", { class: "muted cand-hint" }, "Every facing must BE its facing — a wrong direction cannot be fixed later. Approve = the agent generates all animations in all 8 directions. Redo = same design, next seed. Remove = drop it."),
+      candFeedback(c)) : null,
+    c.pixellab ? h("p", { class: "muted" }, "PixelLab id ", h("code", {}, c.pixellab)) : null);
 }
 const monsterLore = (m) => m.loreDesc ?? m.lore ?? `Travellers tell of the ${m.name} roaming the wilds of Nangijala. What it wants — and what it guards — no chronicler has written down yet.`;
 // The admin tail is folded INTO the accessor, not added as a second <p>:
@@ -5421,7 +5981,17 @@ function levelBadge(stats) {
 /* --- loot: the item ↔ creature join (build.mjs precomputes both ways) --- */
 let _itemIx = null, _monIx = null;
 const itemById = (id) => (_itemIx ??= new Map((state.data.domains.items ?? []).map((i) => [i.id, i]))).get(id);
-const monsterById = (id) => (_monIx ??= new Map((state.data.domains.monsters ?? []).map((m) => [m.id, m]))).get(id);
+/* STAGING IS ADMIN-ONLY — a creature still being animated is not in the image
+ * (shipset.mjs: "anything not in the closure is STAGING: it stays in git, stays
+ * visible to a signed-in admin in the wiki, and does NOT enter the image"), so
+ * a player asking for its art gets a 404 with no repo to fall back to. The
+ * whole roster is one accessor away, and everything that lists, counts, pages
+ * or looks up a creature goes through it. */
+const creatures = () => {
+  const all = state.data.domains.monsters ?? [];
+  return state.admin ? all : all.filter((m) => !m.pending);
+};
+const monsterById = (id) => (_monIx ??= new Map(creatures().map((m) => [m.id, m]))).get(id);
 /** A drop chance (a FRACTION) as a percentage a human can read. The data spans
  *  0.006..0.45, so a fixed precision either prints "1%" for three different
  *  odds or "45.0%" for none of them: keep one decimal below 10%, whole
@@ -5715,8 +6285,20 @@ function zoneMapPanel(monsterId) {
 }
 
 function viewMonster(id) {
-  const m = state.data.domains.monsters.find((x) => x.id === id);
+  const m = creatures().find((x) => x.id === id);
   if (!m) return h("p", {}, "Unknown monster.");
+  // AN APPROVED DESIGN IS A CREATURE WHILE IT IS STILL BEING ANIMATED
+  // (maintainer 2026-09-10: "They may still not have all animations yet
+  // (that's a work in progress), but they should exist as a normal monster so
+  // I can look at the animations done so far and review them like a normal
+  // monster"). Everything on this page works on it — the viewer, the per-state
+  // per-direction verdicts, the shadow, the stats — so the only thing to say
+  // is that the missing states are coming, and where its 8 directions are.
+  const pendingNote = m.pending
+    ? h("p", { class: "muted" },
+        `Approved design, still being animated — ${Object.keys(m.animations ?? {}).length} state${Object.keys(m.animations ?? {}).length === 1 ? "" : "s"} done so far. Review them as usual; the rest arrive as the monsters agent finishes them. `,
+        h("a", { href: `#/monsters/candidates/${m.id}` }, "See the 8 directions you approved →"))
+    : null;
   const facetPill = h("span", {});
   const facetBox = h("div", {});
   const player = makePlayer(m, "monster", { headerEl: facetHead(facetPill, facetBox) });
@@ -5727,7 +6309,19 @@ function viewMonster(id) {
   // all eight directions at once.
   const renderFacet = () => {
     const st = player.getState(), dir = player.getDir();
-    facetPill.replaceChildren(facetName(st, dir));
+    facetPill.replaceChildren(facetName(st, dir, m));
+    // THE 8-DIRECTION BASE IS LOOKED AT, NOT JUDGED. It is the source art every
+    // animation was rotated from, not something the agent regenerates one
+    // facing of, and no verdict channel consumes it — a rating left here would
+    // be one nobody reads. A bad base means the design itself goes, which is
+    // the verdict beside the creature's name (and, for a design still being
+    // animated, the 8 directions on its candidate page).
+    if (m.animations?.[st]?.still) {
+      facetBox.replaceChildren(h("span", { class: "muted" },
+        m.pending ? "The 8 directions you approved — judged on its candidate page, not here."
+          : "The 8-direction base every animation was rotated from. Nothing to judge here."));
+      return;
+    }
     facetBox.replaceChildren(feedbackRow("monsters", `${m.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),
@@ -5736,8 +6330,13 @@ function viewMonster(id) {
       // since regenerated.
       stamp: { art: m.animations?.[st]?.dirs?.[dir]?.h ?? null },
       stale: () => facetStale(m, st, dir, fb("monsters", `${m.path}#${st}#${dir}`)),
-      rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the monsters agent to regenerate`,
+      // ONE ANIMATION IN ONE DIRECTION IS REDONE, NEVER REMOVED — see the
+      // widget. Removal is a verdict about the whole creature and lives on the
+      // row beside its name.
+      reject: false,
+      rejectTitle: `Slated for removal — clear it here; this row only asks for redos now`,
       rejectedLabel: "slated for removal",
+      redo: { label: "↻ redo", title: `Ask the monsters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted. If this state can never be made right, remove the whole creature instead — it must not ship without it.`, doneLabel: "another take requested" },
     }));
   };
   player.onFacetChange = renderFacet;
@@ -5777,16 +6376,25 @@ function viewMonster(id) {
         // reserves for the longest blurb then falls at the bottom of the
         // column, where it reads as the gap before the next panel instead of
         // opening a blank line in the middle of the page.
-        loreSlot(monsterLore(m), state.data.domains.monsters.map(monsterLore)),
+        loreSlot(monsterLore(m), creatures().map(monsterLore)),
         // The art/render tech line (resolution, pads, foot metrics, kind) is
         // GONE — maintainer 2026-08-15: "only the text 'Open in PixelLab ↗' is
         // enough for the admin here". It was measurement output, useful while
         // the shadows and foot anchors were being calibrated and noise ever
         // since; every number in it is still in data.json for whoever needs it.
         state.admin && m.pixellab ? h("p", {}, h("a", { href: m.pixellab, target: "_blank", rel: "noopener" }, "Open in PixelLab ↗")) : null,
+        pendingNote,
         feedbackRow("monsters", m.path))),
     h("div", { class: "panel" },
-      h("div", { class: "panel-title" }, "Animations", h("span", { class: "pill" }, `${Object.keys(m.animations).length} states × 8 directions`)),
+      h("div", { class: "panel-title" }, "Animations",
+        h("span", { class: "pill" }, `${Object.values(m.animations).filter((a) => !a.takeOf).length} states × 8 directions`),
+        // Parallel takes are worth saying out loud — they are what the version
+        // row is for, and they are not extra states.
+        (() => {
+          const t = Object.values(m.animations).filter((a) => a.takeOf).length;
+          return t ? h("span", { class: "pill warn", title: "The monsters agent is trying a replacement beside the live take — pick a version under the state row to review it." }, `${t} parallel take${t === 1 ? "" : "s"}`) : null;
+        })(),
+        m.pending ? h("span", { class: "pill warn", title: "The monsters agent animates an approved design one state at a time — the rest are coming." }, "more coming") : null),
       player.el),
     zoneMapPanel(m.id),
     // What it drops, each row a link to that item's page.
@@ -5947,7 +6555,7 @@ function viewCharacter(id) {
   // when facing north-west is regenerated for north-west alone.
   const renderFacet = () => {
     const st = player.getState(), dir = player.getDir();
-    facetPill.replaceChildren(facetName(st, dir));
+    facetPill.replaceChildren(facetName(st, dir, c));
     facetBox.replaceChildren(feedbackRow("characters", `${c.path}#${st}#${dir}`, {
       // The chip the verdict belongs to turns green or red the moment it lands.
       onchange: () => player.refreshMarks(),
@@ -5956,8 +6564,13 @@ function viewCharacter(id) {
       // since regenerated.
       stamp: { art: c.animations?.[st]?.dirs?.[dir]?.h ?? null },
       stale: () => facetStale(c, st, dir, fb("characters", `${c.path}#${st}#${dir}`)),
-      rejectTitle: `Reject just this one — ${stateLabel(st)} facing ${dir} — for the characters agent to regenerate`,
+      // ONE ANIMATION IN ONE DIRECTION IS REDONE, NEVER REMOVED — see the
+      // widget. Removal is a verdict about the whole creature and lives on the
+      // row beside its name.
+      reject: false,
+      rejectTitle: `Slated for removal — clear it here; this row only asks for redos now`,
       rejectedLabel: "slated for removal",
+      redo: { label: "↻ redo", title: `Ask the characters agent for another take of just this one — ${stateLabel(st)} facing ${dir}. Nothing is deleted. If this state can never be made right, remove the whole creature instead — it must not ship without it.`, doneLabel: "another take requested" },
     }));
   };
   player.onFacetChange = renderFacet;
@@ -6319,6 +6932,31 @@ const setLabel = (s) => `${s.name} #${s.id}`;
  * wants at a glance. What identifies a base tile to him is the WALL it was
  * generated over (that is what makes two tops of one ground differ) and a
  * short handle to tell twins apart. */
+/* A DETAIL IS NEVER A BASE TILE (maintainer 2026-09-13, looking at the Add to
+ * Set audition offering him one: "I want to remove so that is never even
+ * possible. A detail should never be able to be selected/added to a base tile
+ * set.").
+ *
+ * The two placements are opposites, and that is the whole reason: a base-set
+ * member is TILED across a region, while a detail is the once-in-a-while
+ * showpiece — "looks amazing, but not if tiled" (2026-09-12). The tiles domain
+ * generates the two flavours side by side into tiles/tops, which is how they
+ * ended up in one pool.
+ *
+ * ONE PREDICATE, and it reads the SHEET rather than the registry, so it answers
+ * for a set member (which carries only its paths) exactly as it answers for a
+ * candidate (which carries `flavour`). Every top's raw and post path names its
+ * sheet — `sheet_<n>_detail_<seed>/` — and that name is the tiles agent's own,
+ * the same string tiles/tops/index.json's `flavour` is derived from.
+ *
+ * Applied at every door a tile can walk through into a set: the audition pool,
+ * the card button that opens the promote modal, and the modal itself (a guard,
+ * so a door added later cannot reopen this). Gated by check-basesets.mjs. */
+const DETAIL_SHEET = /\/sheet_\d+_detail_\d+\//;
+const isDetailTile = (x) => (typeof x === "string"
+  ? DETAIL_SHEET.test(x)
+  : x?.flavour === "detail" || DETAIL_SHEET.test(x?.id ?? "") || DETAIL_SHEET.test(x?.tile ?? "") || DETAIL_SHEET.test(x?.raw ?? ""));
+
 function memberLabel(typeId, id) {
   // A top-only tile names its flavour and its sheet — there is no wall to name
   // it by, which is the whole point of that pool.
@@ -6748,7 +7386,10 @@ function openPoolPicker(typeId, setId, onDone) {
   const setNow = () => groundSets(typeId).find((s) => s.id === setId);
   const already = () => new Set(setNow()?.members.map((m) => m.id) ?? []);
   const rejectedHere = new Set(setNow()?.rejected ?? []);
-  const pool = basePool(typeId).filter((c) => !already().has(c.id) && !rejectedHere.has(c.id));
+  // A DETAIL IS NEVER OFFERED (isDetailTile — his rule, 2026-09-13). basePool
+  // stays the whole library so an EXISTING member still resolves its art and
+  // draws honestly; what a detail can never be is CHOSEN.
+  const pool = basePool(typeId).filter((c) => !already().has(c.id) && !rejectedHere.has(c.id) && !isDetailTile(c));
   const rejectedN = rejectedHere.size;
   const setOf = () => groundSets(typeId).find((s) => s.id === setId) ?? { id: setId, name: "Set", clean: 0, members: [] };
   /* EVERY CANDIDATE IS AUDITIONED IN THE SET (maintainer 2026-08-27: "a
@@ -7588,8 +8229,36 @@ function detailField(typeId, cand, view, origin = [0, 0], scale = 1) {
   };
   const paths = [...new Set(cells.map((x) => x.img).filter(Boolean))];
   if (!paths.length) { box.append(h("p", { class: "muted" }, "no ground to stand this on yet")); return box; }
-  loadImages(paths, (images) => box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso())));
+  /* DRAWN WHEN IT COMES NEAR THE SCREEN, never all at once (maintainer
+   * 2026-09-12: "The expand at the end is also a bit slow now since the page is
+   * very big and starts to lag. This lag in itself slows down the review.")
+   * A ground's details page holds the whole approved collection above the
+   * queue — hundreds of these — and each one decodes its tiles and draws a
+   * 25-cell scene. Doing that for every card the moment the page renders is
+   * the lag, and almost all of it is for cards a phone screen will never show
+   * on the way down. An observer gives each field its work when it is 800px
+   * away, which on a scroll is early enough to be already drawn. */
+  drawNear(box, () => loadImages(paths, (images) =>
+    box.replaceChildren(isoScene(cells.filter((x) => x.img), images, scale, 4, worldIso()))));
   return box;
+}
+/** Run `work` once, when `el` comes within 800px of the viewport — or right
+ *  now where there is no observer to ask (an old browser, a gate's jsdom). */
+let nearWatch = null;
+const nearWork = new WeakMap();
+function drawNear(el, work) {
+  if (typeof IntersectionObserver !== "function") { work(); return; }
+  nearWatch ??= new IntersectionObserver((entries) => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      nearWatch.unobserve(e.target);
+      const job = nearWork.get(e.target);
+      nearWork.delete(e.target);
+      job?.();
+    }
+  }, { rootMargin: "800px 0px" });
+  nearWork.set(el, work);
+  nearWatch.observe(el);
 }
 
 /** A transition set's tile path — derivable, never shipped (build.mjs ships
@@ -8731,20 +9400,25 @@ function reviewLedger() {
   const entries = state.feedback.tiles?.entries ?? {};
   const carried = Object.keys(entries).filter((k) =>
     !k.endsWith("#top") && !liveKeys.has(k) && entries[k]?.status === "rejected").length;
-  const tops = tiles.filter((x) => judged(topKey(x.cand.key))).length;
   const byPair = new Map();
   for (const x of left) {
     const id = `${x.cell.top}/${x.cell.side}`;
     byPair.set(id, { n: (byPair.get(id)?.n ?? 0) + 1, name: x.cell.name });
   }
-  // Which ground has the most unjudged tops — where the top review starts.
+  // THE SECOND AXIS COUNTS THE WHOLE LIBRARY (2026-09-12): the x-over-y tops
+  // AND the purpose-built top-only sheets, through the same typeTops rule the
+  // Details tab and the ground cards read, so the three numbers can never
+  // disagree. 9,008 of his tops were waiting while this line counted only the
+  // x-over-y ones. The biggest queue is where the top review starts.
+  const allTops = worldTypes().flatMap((t) => typeTops(t.id));
   const topsBy = new Map();
-  for (const x of tiles) {
-    if (judged(topKey(x.cand.key))) continue;
+  let tops = 0;
+  for (const x of allTops) {
+    if (topReviewed(x.cand.key)) { tops++; continue; }
     topsBy.set(x.cell.top, (topsBy.get(x.cell.top) ?? 0) + 1);
   }
   const biggestTops = [...topsBy.entries()].sort((a, b) => b[1] - a[1])[0] ?? null;
-  return { total: tiles.length, left, approved, standing, carried, tops, byPair, biggestTops };
+  return { total: tiles.length, left, approved, standing, carried, tops, topsTotal: allTops.length, byPair, biggestTops };
 }
 function reviewLedgerPanel() {
   const L = reviewLedger();
@@ -8785,8 +9459,10 @@ function reviewLedgerPanel() {
     L.standing
       ? h("span", { class: "pill warn", title: "Rejected, but the tile is still in the manifest — the agent has not run since" }, `${L.standing} not yet acted on`)
       : h("span", { class: "pill ok" }, "nothing waiting on the agent")),
-    line("Tops", `${L.tops.toLocaleString()} of ${L.total.toLocaleString()} judged — the second axis, and the one that is open`,
-      L.tops ? null : h("span", { class: "pill warn" }, "untouched")),
+    line("Tops", `${L.tops.toLocaleString()} of ${L.topsTotal.toLocaleString()} judged — the second axis: every ground's detail queue`,
+      L.tops < L.topsTotal
+        ? h("span", { class: "pill warn" }, `${(L.topsTotal - L.tops).toLocaleString()} waiting`)
+        : h("span", { class: "pill ok" }, "all judged")),
     L.biggestTops ? h("div", { class: "ledger-jump" },
       h("button", {
         class: "ghost-btn",
@@ -8852,6 +9528,10 @@ function viewWorld() {
   const mode = state.admin ? starFilter() : "all";
   const on = mode !== "all";
   const allTypes = worldTypes().filter((t) => matches(state.query, t.id, t.name));
+  // HIS TOP QUEUE, PER GROUND (maintainer 2026-09-11): which grounds still
+  // owe him a pass, without opening each one. The same rule as the Details
+  // tab's chip — detailQueue — so the two numbers can never disagree.
+  const waiting = state.admin ? new Map(allTypes.map((t) => [t.id, detailQueue(t.id).length])) : null;
   // Types holding at least one tile the mode keeps.
   const hitTypes = allTypes.filter((t) => t.pairs.some((c) => pairHits(c, mode)));
   const types = on ? hitTypes : allTypes;
@@ -8862,7 +9542,7 @@ function viewWorld() {
   return h("div", {},
     sectionHead("world"),
     h("p", { class: "muted" }, state.admin
-      ? "Tiles 3.0 — the ground system being built to replace Tiles OLD. Open a ground type to see every wall it can stand on."
+      ? "Tiles 3.0 — the ground the game draws. Open a ground type to see every wall it can stand on."
       : "The ground of Nangijala. Open a ground to see the cliffs it makes where the land steps down."),
     // THE "WHAT IS NEW" PANEL IS GONE, for everyone (maintainer 2026-08-17,
     // first "I feel this is too technical for players that visits the World
@@ -8912,7 +9592,8 @@ function viewWorld() {
               tileCount(t.pairs.reduce((m, c) => m + pairHits(c, mode), 0), mode))
             : null,
           state.admin && !on && t.open ? h("span", { class: "pill warn" }, `${t.open} to review`) : null,
-          state.admin && !on && t.picked ? h("span", { class: "pill ok" }, `${t.picked} picked`) : null))))
+          state.admin && !on && t.picked ? h("span", { class: "pill ok" }, `${t.picked} picked`) : null,
+          state.admin && !on && waiting?.get(t.id) ? h("span", { class: "pill warn tops-waiting" }, `${waiting.get(t.id)} tops waiting`) : null))))
       : h("p", { class: "muted" }, state.admin && on
         ? `${TILE_MATCH_EMPTY[mode]} Nothing is waiting for you.`
         : "No pairs generated yet — the tiles agent publishes them to tiles/review/manifest.json."));
@@ -8991,12 +9672,12 @@ function viewWorldType(top) {
    * textured now, Clean is a real thing to judge a detail against, so every
    * chip means itself. */
   const detailPass = () => worldViewFor(t.id);
-  const tabBtn = (id, label2, count, disabled, title) => h("button", {
+  const tabBtn = (id, label2, count, disabled, title, tone = "") => h("button", {
     class: `groundtab${tab === id ? " sel" : ""}${disabled ? " off" : ""}`,
     type: "button", title,
     ...(disabled ? { disabled: "disabled" } : {}),
     onclick: disabled ? null : () => pickTab(id),
-  }, label2, count == null ? null : h("span", { class: "tab-n" }, String(count)));
+  }, label2, count == null ? null : h("span", { class: `tab-n${tone ? ` ${tone}` : ""}` }, String(count)));
 
   /* ---------------- TAB: base (the ground's sets) ---------------- */
   const baseTab = () => {
@@ -9045,6 +9726,14 @@ function viewWorldType(top) {
               : h("span", { class: "swatch ground-swatch" }),
           h("span", { class: "set-row-name", title: m.clean ? null : m.id },
             m.clean ? "Clean colour" : m.gone ? `${memberLabel(t.id, m.id)} — art is gone` : memberLabel(t.id, m.id)),
+          /* A DETAIL THAT IS ALREADY IN A SET SAYS SO, next to the Remove that
+           * clears it (his rule, 2026-09-13). Nothing is removed on his behalf:
+           * these were added before the door was shut, they are tiled across
+           * real ground today, and which of them to keep is a taste call made
+           * where the field above shows the consequence. */
+          !m.clean && isDetailTile(m)
+            ? h("span", { class: "pill err", title: "This is a DETAIL: it is meant to appear once in a while, and a set member is tiled across the region. It can no longer be added to a set — Remove takes it out; the tile itself is untouched." }, "detail — not a base tile")
+            : null,
           h("span", { class: "pill", title: "How much of this set's ground this row paints" }, sharePct(mShares[i])),
           state.admin && !(m.clean && s.id === CLEAN_SET) ? weightBox(m.weight,
             m.clean ? "How often this set paints the plain colour instead of a tile. 0 always draws with texture; make it the only weight and the set is all clean."
@@ -9255,8 +9944,22 @@ function viewWorldType(top) {
       tabBtn("base", "Base", null, baseDead,
         state.admin ? "The sets this ground paints its fields from — what is in each, how often, and how often each set is used"
           : "The looks this ground comes in"),
-      tabBtn("details", "Details", details.length || null, detailsDead,
-        details.length ? "The tops that look amazing once in a while — this ground's small wonders" : state.admin ? "No details approved yet — the queue inside is your TODO" : "No details approved for this ground yet"),
+      /* THE CHIP IS HIS TO-DO, NOT HIS DONE PILE (maintainer 2026-09-11, on
+       * black_rock: "I have tried to review the entire black_rock details. But
+       * I don't know if I have already or not becouse the wiki has no way for
+       * me to filter so I only see tiles I have not reviewed yet"). The chip
+       * read 275 — the tops he had APPROVED — and the 0 he needed sat under a
+       * 275-card grid. For the admin the chip is the queue: the count while
+       * tops wait, ✓ once the ground is judged through. A player still sees
+       * the collection's size, which is what a player is shown. */
+      tabBtn("details", "Details",
+        state.admin ? (queue.length || (typeTops(t.id).length ? "✓" : null)) : (details.length || null), detailsDead,
+        state.admin
+          ? (queue.length
+            ? `${queue.length} top${queue.length === 1 ? "" : "s"} waiting for your verdict · ${details.length} approved`
+            : `Every top of this ground has been judged · ${details.length} approved`)
+          : (details.length ? "The tops that look amazing once in a while — this ground's small wonders" : "No details approved for this ground yet"),
+        state.admin ? (queue.length ? "todo" : "done") : ""),
       /* SHORT LABELS, ONE ROW (maintainer 2026-08-28: "We need to change the
        * title button to fit all buttons on the same row. You can call 'On top
        * of' just 'Wall' instead. You can call 'Transitions' just 'Fade'.").
@@ -9355,7 +10058,72 @@ function viewWorldType(top) {
      * change each. The stars now fill in place and the card stays until the
      * next natural render. The roof glyph went with it: lit and dim ⌂ differ
      * only by colour, which is exactly what he could not see. */
-    const detailCard = ({ cell, cand }) => h("div", { class: "card detail-card" },
+    /* HIS THUMB DOES NOT MOVE (maintainer 2026-09-12: "if I press approve the
+     * already reviewed element is moved down instead of the next item to
+     * review moving up. This means I have to scroll before I can press approve
+     * again. This takes time. I want to be able to not move my thumb and press
+     * approve/not a detail on the exact same place over and over again until
+     * everything is reviewed.")
+     *
+     * A verdict used to re-render the page at the same scrollY, and the
+     * judged top joined the collection ABOVE — which is one card taller, so
+     * the queue and every button in it slid DOWN a card. Now the judged card
+     * is removed from the DOM where it stands: the next one rises into its
+     * place and its buttons land under the thumb that just tapped. The
+     * collection and the counts catch up on the next natural render, which is
+     * the same deal the stars already had.
+     *
+     * The counts are corrected in place so nothing on screen lies in the
+     * meantime, and the queue re-renders only when it runs out of cards. */
+    /* THE QUEUE GROWS AT THE BOTTOM, BY ITSELF (maintainer 2026-09-12: "Can you
+     * automatically expand and show more once I'm at the bottom (will speed up
+     * the review). It's also important that the approve/remove button stay on
+     * same place after automatic expand. The expand at the end is also a bit
+     * slow now since the page is very big and starts to lag.")
+     *
+     * Both halves are the same change: the next dozen cards are APPENDED to the
+     * grid, and the page is never re-rendered. Nothing above the new cards
+     * moves, so the button he is aiming at does not move either; and the work
+     * is twelve cards rather than every card on a page that is now hundreds
+     * long — which is what the old `route()` did on every press of "Show 12
+     * more". */
+    let shownNow = shownQueue;
+    let judged = 0;
+    const queueGrid = h("div", { class: "grid detail-grid detail-queue" });
+    const queueCount = h("span", { class: "pill detail-queue-count" }, String(queue.length));
+    const moreBtn = h("button", { class: "ghost-btn queue-more", style: "margin-top:10px" });
+    const endMark = h("div", { class: "queue-end", "aria-hidden": "true" });
+    const appendMore = () => {
+      const next = queue.slice(shownNow, shownNow + 12);
+      if (!next.length) { moreBtn.hidden = true; return; }
+      shownNow += next.length;
+      detailShown.set(t.id, shownNow);
+      queueGrid.append(...next.map(detailCard));
+      moreBtn.hidden = shownNow >= queue.length;
+      moreBtn.textContent = `Show 12 more (${queue.length - shownNow} left)`;
+      // The sentinel goes back under the new bottom, and is watched again.
+      watchEnd();
+    };
+    let endWatch = null;
+    const watchEnd = () => {
+      if (typeof IntersectionObserver !== "function" || shownNow >= queue.length) return;
+      endWatch?.disconnect();
+      endWatch = new IntersectionObserver((entries) => {
+        if (entries.some((e) => e.isIntersecting)) appendMore();
+      }, { rootMargin: "900px 0px" });
+      endWatch.observe(endMark);
+    };
+    const judgedInPlace = (card) => {
+      const inQueue = !!card.closest(".detail-queue");
+      card.remove();
+      if (!inQueue) return;
+      judged++;
+      queueCount.textContent = String(Math.max(0, queue.length - judged));
+      // Judged the last card on screen: pull the next dozen in, still without
+      // a render.
+      if (!queueGrid.children.length) appendMore();
+    };
+    const detailCardBody = ({ cell, cand }, card) => [
       detailField(t.id, cand, dPass, [dSeed % 89, (dSeed * 7) % 83], 1),
       /* NO WALL PICKER ON A DETAIL (maintainer 2026-09-03: "Why did you add
        * the wall selector to details? A detail only has a top and will never
@@ -9383,9 +10151,13 @@ function viewWorldType(top) {
         dPass === PASS_RAW && !cand.raw
           ? h("span", { class: "pill warn", title: "No raw art for this tile (pre-@2 generation) — showing the postprocessed top" }, "after only")
           : null),
-      state.admin ? h("div", { class: "card-sub" },
+      // THE BUTTONS SIT UNDER HIS THUMB — right, where a hand holding a phone
+      // already is (maintainer 2026-09-12), and on the same pixel card after
+      // card (see judgedInPlace).
+      state.admin ? h("div", { class: "card-sub judge-right" },
         feedbackRow("tiles", topKey(cand.key), {
-          onchange: () => { keepScrollY = window.scrollY; route(); },
+          // THE CARD LEAVES, THE PAGE DOES NOT MOVE — see judgedInPlace above.
+          onchange: () => judgedInPlace(card),
           // ...but not from a star: it fills in place and the card stays.
           onStarChange: null,
           /* THE CARD HOLDS STILL UNDER A STAR (maintainer
@@ -9398,15 +10170,44 @@ function viewWorldType(top) {
            * this row's onchange; the star is now routed past it instead. An
            * explicit approve still moves the card into the collection, which is
            * its own pinned behaviour. */
-          reject: "✕ not a detail",
-          rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
-          rejectedLabel: "not a detail",
+          // "REMOVE", not "not a detail" (maintainer 2026-09-12). The verdict
+          // is the same one every other review writes, and the tooltip still
+          // says what it touches: the top leaves the detail pool, the tile
+          // itself is untouched.
+          reject: "✕ remove",
+          rejectTitle: "Remove this top from the ground's details — the tile itself is untouched",
+          rejectedLabel: "removed",
           note: false,
-        })) : null);
+        })) : null];
+    const detailCard = (x) => {
+      const card = h("div", { class: "card detail-card" });
+      card.append(...detailCardBody(x, card).filter(Boolean));
+      return card;
+    };
+    /* THE QUEUE COMES FIRST (his words on the chip above): the work is what
+     * the tab is opened for, and it sat under the whole approved collection —
+     * 275 cards to scroll past on a phone before the "0 waiting" that answered
+     * his question. The collection follows. */
+    const queuePanel = state.admin ? h("div", { class: "panel" },
+      h("div", { class: "panel-title" }, "Tops waiting for your verdict", queueCount,
+        h("span", { class: "muted", style: "font-weight:400;font-size:12.5px" }, " — approve or remove; the next one rises under your thumb")),
+      queue.length
+        ? (() => {
+          queueGrid.append(...queue.slice(0, shownNow).map(detailCard));
+          moreBtn.hidden = shownNow >= queue.length;
+          moreBtn.textContent = `Show 12 more (${Math.max(0, queue.length - shownNow)} left)`;
+          // The button stays for a thumb that gets there first, and does
+          // exactly what the scroll does.
+          moreBtn.onclick = appendMore;
+          requestAnimationFrame(watchEnd);
+          return h("div", {}, queueGrid, endMark, moreBtn);
+        })()
+        : h("p", { class: "muted" }, "Every top of this ground has been judged — nothing waits for you here.")) : null;
     return h("div", {},
       h("p", { class: "muted" }, state.admin
         ? `The detail ONCE in the centre of the ground it would decorate. Tops that look amazing when they appear ONCE IN A WHILE — a flower, a stone, a glint. The wall never shows, so only the top is judged. ${dPass === worldViewFor(t.id) ? `Drawn ${dPass === PASS_RAW ? "RAW — the generator's own" : passSet(t.id, dPass) ? `in ${setLabel(passSet(t.id, dPass))}` : "on the clean colour"}, as the switch says.` : "Drawn in this ground's first set whatever the switch says: the clean colour flattens a top to one tone, which is nothing to judge. Pick Raw for the generator's own."}`
         : `The small wonders of ${t.name.toLowerCase()} — details that appear once in a while as you walk.`),
+      queuePanel,
       h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "This ground's details",
           h("span", { class: "pill" }, details.length ? `${details.length} approved` : "none yet"),
@@ -9414,20 +10215,8 @@ function viewWorldType(top) {
         details.length
           ? h("div", { class: "grid detail-grid" }, ...details.map(detailCard))
           : h("p", { class: "muted" }, state.admin
-            ? "Nothing approved yet — the queue below is where they come from."
-            : "None yet — they are being picked right now.")),
-      state.admin ? h("div", { class: "panel" },
-        h("div", { class: "panel-title" }, "Tops nobody has judged",
-          h("span", { class: "pill" }, String(queue.length)),
-          h("span", { class: "muted", style: "font-weight:400;font-size:12.5px" }, " — your when-bored queue")),
-        queue.length
-          ? h("div", {},
-            h("div", { class: "grid detail-grid" }, ...queue.slice(0, shownQueue).map(detailCard)),
-            queue.length > shownQueue ? h("button", {
-              class: "ghost-btn", style: "margin-top:10px",
-              onclick: () => { detailShown.set(t.id, shownQueue + 12); keepScrollY = window.scrollY; route(); },
-            }, `Show 12 more (${queue.length - shownQueue} left)`) : null)
-          : h("p", { class: "muted" }, "Every top of this ground has been judged. Boredom will have to find something else.")) : null);
+            ? "Nothing approved yet — the queue above is where they come from."
+            : "None yet — they are being picked right now.")));
   }
 }
 /* ---- THE TRANSITION PAGE — a demo, not a list (maintainer 2026-08-21:
@@ -10027,6 +10816,10 @@ function viewWorldTransition(pairId) {
  * inside the model. You can from here promote this tile to the base tile
  * set.") ---- */
 function openPromoteModal(cell, cand, onDone) {
+  // THE LAST DOOR, BOLTED FROM THE INSIDE (his rule, 2026-09-13). The card
+  // button above already hides for a detail; this refuses even if some future
+  // caller does not, so "never even possible" survives the next feature.
+  if (isDetailTile(cand)) { toast("A detail is never a base tile — it is placed once in a while, not tiled."); return; }
   document.querySelector(".promote-modal")?.remove();
   const typeId = cell.top;
   /* PROMOTING IS ADDING TO A SET now, not creating a group (maintainer
@@ -10615,12 +11408,16 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
       // base tiles, ringed exactly as the game places it.
 
       onTop
-        ? feedbackRow("tiles", topKey(cand.key), {
+        ? h("div", { class: "judge-right" }, feedbackRow("tiles", topKey(cand.key), {
           glyph: ROOF_GLYPH,
-          reject: "✕ not a detail",
-          rejectTitle: "This top is not ground-detail material — the tile itself is untouched",
-          rejectedLabel: "not a detail",
-        })
+          // "REMOVE", not "not a detail" (maintainer 2026-09-12). The verdict
+          // is the same one every other review writes, and the tooltip still
+          // says what it touches: the top leaves the detail pool, the tile
+          // itself is untouched.
+          reject: "✕ remove",
+          rejectTitle: "Remove this top from the ground's details — the tile itself is untouched",
+          rejectedLabel: "removed",
+        }))
         : feedbackRow("tiles", cand.key, {
           onchange: onVerdict,
           // Under a filter this tile can disappear the moment it is marked, so
@@ -10675,6 +11472,15 @@ function worldCandidate(cell, cand, i, onVerdict, onStars) {
        * meadow and a lawn — so the button offers the modal whether or not it is
        * already in one, and removal happens per set on the Base tab where the
        * consequences are visible. */
+      // A DETAIL CARD HAS NO WAY IN (his rule, 2026-09-13). The line replaces
+      // the button rather than disabling it: a control that can never work is
+      // a worse answer than none, and the card should say which of the two
+      // placements this tile is for.
+      if (isDetailTile(cand)) {
+        return h("div", { class: "card-sub base-row muted" },
+          h("span", { title: "A base-set member is tiled across a region; a detail is placed once in a while. This tile is a detail." },
+            "a detail — never a base tile"));
+      }
       const inSets = setsWith(cell.top, cand.key);
       return h("div", { class: "card-sub base-row" },
         inSets.length ? h("span", { class: "pill ok", title: `${typeLabelWorld(cell.top)} paints fields from this tile` },
@@ -11025,11 +11831,25 @@ const stillDirs = (o) => Math.max(0, ...stillStates(o).map((s) => Object.keys(o.
 const OBJ_SORT_KEY = "wiki-obj-sort";
 const OBJ_FILTER_KEY = "wiki-obj-filter";
 const OBJ_TYPE_KEY = "wiki-obj-type";
+/* THE TYPES THE WIKI KNOWS HOW TO NAME — an ORDER and a label table, never a
+ * gate. The scenery domain owns the vocabulary (his rule, 2026-08-14: "it
+ * should be owned by the scenery"), so a type it invents tomorrow gets a chip
+ * of its own with a title-cased name, sorted in before Other. */
 const OBJ_TYPES = {
   TREE: "Trees", WINDOW: "Windows", MOUNTAIN_WALL: "Mountain wall", TOWN: "Town",
   INDOOR: "Indoor", NATURE: "Nature", OTHER: "Other",
 };
 const objTypeLabel = (t) => OBJ_TYPES[t] ?? titleish(t ?? "other");
+/** Every type the domain actually has, in reading order: the ones named above
+ *  first, then anything new alphabetically, and Other last because it is the
+ *  drawer rather than a kind. Read through typeOf, so a piece he has re-filed
+ *  counts where he put it. */
+function objTypeOrder() {
+  const known = Object.keys(OBJ_TYPES).filter((t) => t !== "OTHER");
+  const seen = new Set((state.data.domains.objects ?? []).map((o) => typeOf(o)).filter(Boolean));
+  const extra = [...seen].filter((t) => !OBJ_TYPES[t]).sort((a, b) => objTypeLabel(a).localeCompare(objTypeLabel(b)));
+  return [...known, ...extra, "OTHER"];
+}
 /* WALKING THE ANIMATIONS (maintainer 2026-09-09: "The wiki will make it
  * possible to filter and review animations so I will when I have time mark the
  * animation as ANIMATION_APPROVED or ANIMATION_REDO"). A piece matches when ANY
@@ -11172,7 +11992,7 @@ function viewObjects() {
     // "Indoor 0" is a dead end you can press.
     sortBar(OBJ_TYPE_KEY, [
       ["all", `all ${q.total}`, "Every kind of scenery"],
-      ...Object.keys(OBJ_TYPES)
+      ...objTypeOrder()
         .map((t) => [t, t, state.data.domains.objects.filter((o) => typeOf(o) === t).length])
         .filter(([, , n]) => n > 0)
         .map(([t, , n]) => [t, `${objTypeLabel(t)} ${n}`, `Only ${objTypeLabel(t).toLowerCase()} — ${n} pieces`]),
@@ -12794,40 +13614,163 @@ function viewRedLine() {
 }
 
 /* --- tuning --- */
+/* PARAMETERS IS A READ-ONLY REFERENCE (maintainer 2026-09-11: "I like this page
+ * being only visible for the admin, but the admin should not be able to change
+ * settings here. I have found a better way to tweak the game and that is using
+ * sliders under the in game settings menu. So the parameters/constants here
+ * should always only be read only. This means you can simplify the code
+ * involved in me editing this (I will never ever do it and don't want the wiki
+ * to let me).")
+ *
+ * The override input, its touch/markDirty bookkeeping and the save path that
+ * carried `tuning/constants` are gone — the wiki never writes that file. The
+ * column only appears if something else ever writes an override, so the page
+ * still cannot lie about what the running game holds. Tuning happens on the
+ * game's own sliders, where he can see the change as he drags it. */
+/* RELEASE NOTES — WHAT HAS LANDED (maintainer 2026-09-13: "The release notes
+ * is not release notes at all. Its just the last 50 gitsha with commint
+ * message and date (just so I as an admin can see more easily what has
+ * landed). Also put the agent if you have that data (you might be able to tell
+ * from the folder that was changed)").
+ *
+ * So: no curation, no versions, no grouping by feature — the last 50 commits
+ * on main, newest first, in the reader's own clock.
+ *
+ * WHERE THE AGENT COMES FROM: `wiki/lib/releases.mjs`, at build time — the
+ * board file a commit wrote (one writer per board, so that one cannot be
+ * wrong), the author where the runner set a real one, or a subject that opens
+ * with a known agent's name. Where none of the three answers, the row shows
+ * the FOLDERS the commit changed instead, which is what he suggested and is a
+ * fact rather than a guess: `games2/` alone is worked by ten agents, so a
+ * folder names the domain and can never name the agent.
+ *
+ * WHY THE LIST CAN BE OLDER THAN MAIN: the image has no .git, so the deploy
+ * writes the list into the build context (see wiki/lib/releases.mjs). It is
+ * therefore the 50 commits ending at the build being served — and the header
+ * line says so, naming the build's own sha when the two differ rather than
+ * letting the page imply it is live. */
+const RELEASE_WHERE = {
+  characters2: "Races", monsters: "Creatures", tiles: "World", maps2: "The map",
+  scenery: "Scenery", sounds: "Sound Effects", music: "Music", items: "Items",
+  lore: "Lore", wiki: "Wiki", games2: "Game", live: "Live channel",
+  account: "Accounts", coordination: "Boards", ".github": "CI", "": "Repo root",
+};
+const relWhere = (d) => RELEASE_WHERE[d] ?? d;
+/** Does this agent's NAME already say this folder? `monsters` in monsters/,
+ *  `item-assistant` in items/, `games-perf-assistant` in games2/ — the prefix
+ *  test covers the domain suffixes (items/items2/games2) without a second
+ *  table to keep in step with the roster. */
+const sameDomain = (agent, dir) => {
+  const base = String(agent).replace(/-assistant$/, "");
+  return !!dir && (dir.startsWith(base) || base.startsWith(dir));
+};
+/** Today / Yesterday / "Sat 13 Sep", in the reader's clock. The commits carry
+ *  mixed offsets — a runner stamps UTC, his phone stamps +02:00 — so every
+ *  date on this page is computed from the instant, never from the string. */
+function relDayLabel(d) {
+  const midnight = (x) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const days = Math.round((midnight(new Date()) - midnight(d)) / 86400000);
+  if (days === 0) return "Today";
+  if (days === 1) return "Yesterday";
+  return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+}
+function viewReleases() {
+  const doc = state.data.releases ?? {};
+  const commits = doc.commits ?? [];
+  const head = doc.head ?? null;
+  const build = state.data.git_sha ?? null;
+  // The list ends at the commit it was built from. When that is not the build
+  // being served, SAY the gap rather than showing a list that looks live.
+  const behind = head && build && head !== build;
+  const shaEl = (sha) => (doc.repo
+    ? h("a", { class: "rel-sha", href: `${doc.repo}/commit/${sha}`, target: "_blank", rel: "noopener",
+      title: "Open this commit on GitHub" }, sha)
+    : h("span", { class: "rel-sha" }, sha));
+  const row = (c) => {
+    const when = new Date(c.at);
+    const where = (c.dirs ?? []).map(relWhere);
+    return h("div", { class: "rel-row" },
+      h("div", { class: "rel-when", title: when.toLocaleString() },
+        when.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", hour12: false })),
+      h("div", { class: "rel-main" },
+        h("div", { class: "rel-subject" }, c.subject ?? ""),
+        h("div", { class: "rel-meta" },
+          c.agent
+            ? h("span", { class: "pill rel-agent", title: `${c.agent} — its own board is coordination/${c.agent}.json` }, c.agent)
+            : (where.length
+              ? h("span", { class: "pill rel-where", title: "No agent could be named for this commit, so this is where it landed — the folders it changed" },
+                where.slice(0, 3).join(" · ") + (where.length > 3 ? ` +${where.length - 3}` : ""))
+              : null),
+          // The folders BESIDE a named agent only when they say something the
+          // name does not: "monsters · Creatures" is the same fact twice,
+          // while "wiki-assistant · Boards" and "games-perf · The map" are
+          // two. An assistant answers to its agent's domain, hence the strip.
+          c.agent && where.length && !(where.length === 1 && sameDomain(c.agent, c.dirs[0]))
+            ? h("span", { class: "rel-dirs" }, where.slice(0, 3).join(" · ") + (where.length > 3 ? ` +${where.length - 3}` : ""))
+            : null,
+          shaEl(c.sha),
+          h("span", { class: "rel-files" }, c.files === 1 ? "1 file" : `${(c.files ?? 0).toLocaleString()} files`))));
+  };
+  const out = [
+    sectionHead("releases"),
+    h("p", { class: "muted" }, commits.length
+      ? (behind
+        ? `The ${commits.length} commits up to ${head}. The build you are reading is ${build}, so anything pushed after that is not here yet.`
+        : `The ${commits.length} most recent commits on main, up to and including the build you are reading${head ? ` (${head})` : ""}.`)
+      : "No commit list in this build."),
+  ];
+  if (!commits.length) {
+    out.push(h("p", { class: "muted" },
+      "The list is written by the deploy from git, and by `node wiki/build.mjs` locally — see wiki/lib/releases.mjs."));
+    return h("div", {}, ...out);
+  }
+  // One panel per day, so the eye lands on "what happened today" first.
+  let day = null;
+  let panel = null;
+  let count = 0;
+  const closeDay = () => { if (panel && count) panel.querySelector(".panel-title .pill").textContent = count === 1 ? "1 commit" : `${count} commits`; };
+  for (const c of commits) {
+    const d = new Date(c.at);
+    const key = `${d.getFullYear()}-${d.getMonth()}-${d.getDate()}`;
+    if (key !== day) {
+      closeDay();
+      day = key; count = 0;
+      panel = h("div", { class: "panel rel-panel" },
+        h("div", { class: "panel-title" }, relDayLabel(d), h("span", { class: "pill" }, "")));
+      out.push(panel);
+    }
+    count++;
+    panel.append(row(c));
+  }
+  closeDay();
+  return h("div", {}, ...out);
+}
+
 function viewTuning() {
   const t = state.tuning.constants;
   const q = state.query;
   const rows = state.data.constants.filter((c) => matches(q, c.name, c.description, c.source));
+  const overrides = t?.overrides ?? {};
+  const anyOverride = rows.some((c) => overrides[c.name] !== undefined);
   return h("div", {},
     sectionHead("tuning"),
     h("p", { class: "muted" }, state.admin
-      ? "Game constants discovered in games2/shared. Set an override and Save — it commits to live/tuning/constants.json and is pushed to the running game and every client over the WebSocket, no redeploy. (Each system adopts its overrides as the games agent wires them in.)"
-      : "The knobs behind the game — live values the designer can tune while the world runs."),
+      ? "Game constants discovered in games2/shared — what the running game is built with, and where each one lives. Read-only on purpose: the knobs you actually turn are the sliders in the game's own settings menu, where you see the change as you drag it."
+      : "The knobs behind the game — the values the world is built from."),
     h("div", { class: "panel table-scroll" },
       h("table", { class: "tune" },
         h("thead", {}, h("tr", {},
-          h("th", {}, "constant"), h("th", {}, "game value"), h("th", {}, "override"), h("th", {}, "what it does"), h("th", {}, "source"))),
+          h("th", {}, "constant"), h("th", {}, "game value"),
+          anyOverride ? h("th", {}, "override") : null,
+          h("th", {}, "what it does"), h("th", {}, "source"))),
         h("tbody", {}, ...rows.map((c) => {
-          const cur = t?.overrides?.[c.name];
-          let overrideCell;
-          if (state.admin) {
-            const input = h("input", { type: "number", step: "any", value: cur !== undefined ? String(cur) : "", placeholder: String(c.value), class: cur !== undefined ? "overridden" : "" });
-            input.addEventListener("change", () => {
-              if (input.value === "" || Number(input.value) === c.value) delete t.overrides[c.name];
-              else t.overrides[c.name] = Number(input.value);
-              input.classList.toggle("overridden", t.overrides[c.name] !== undefined);
-              t.updated_at = new Date().toISOString();
-              touch("tuning/constants", c.name);
-              markDirty("tuning/constants");
-            });
-            overrideCell = input;
-          } else {
-            overrideCell = cur !== undefined ? h("span", { class: "pill warn" }, String(cur)) : h("span", { class: "muted" }, "—");
-          }
+          const cur = overrides[c.name];
           return h("tr", {},
             h("td", {}, h("code", {}, c.name)),
             h("td", { class: "num" }, String(c.value)),
-            h("td", {}, overrideCell),
+            anyOverride ? h("td", {}, cur !== undefined
+              ? h("span", { class: "pill warn", title: "Something is overriding this constant live" }, String(cur))
+              : h("span", { class: "muted" }, "—")) : null,
             h("td", { class: "muted" }, c.description ?? ""),
             h("td", { class: "muted" }, h("code", {}, `${c.source.replace("games2/shared/src/", "")}:${c.line}`)));
         })))));
@@ -13044,7 +13987,7 @@ function route() {
   if (!(page === "world" && id === "transition")) fadeOrder = { key: null, keys: [], firstDone: 0 };
   let view;
   if (state.query && !id) view = viewSearch();
-  else if (page === "monsters") view = id ? viewMonster(id) : viewMonsters();
+  else if (page === "monsters") view = id === "candidates" ? (sub ? viewCandidate(sub) : viewCandidates()) : id ? viewMonster(id) : viewMonsters();
   // #/characters/<hero>/<event> lights that hero's own sound card — where the
   // 🔍 page's voice-scoped rows (player.jump@default_boy) land.
   else if (page === "characters") { view = id ? viewCharacter(id) : viewCharacters(); if (id && sub) spotlight(`[data-event="${CSS.escape(sub)}"]`); }
@@ -13071,6 +14014,7 @@ function route() {
   }
   // Tuning is admin-only INCLUDING by direct link — players get the overview.
   else if (page === "tuning") view = state.admin ? viewTuning() : viewHome();
+  else if (page === "releases") view = state.admin ? viewReleases() : viewHome();
   // #/bench was its own section for a day; keep the link alive as the tab.
   else if (page === "bench") { if (state.admin) musicTab = "dynamic"; view = state.admin ? viewMusic() : viewHome(); }
   else view = viewHome();
@@ -13376,6 +14320,10 @@ function initChrome() {
 
 function setAdmin(on, { keepEdits = false } = {}) {
   state.admin = on;
+  // The creature index is built through `creatures()`, whose answer depends on
+  // this flag — a stale one would leave a player's roster on screen after he
+  // signs in, or the staging creatures on screen after he signs out.
+  _monIx = null;
   document.documentElement.classList.toggle("is-admin", on);
   const btn = $("#admin-btn");
   btn.textContent = on ? "Sign out (Game Master)" : "Game Master";
@@ -13569,6 +14517,9 @@ async function upgradeToStaging() {
   // Headless QA hook (mirrors the games2 __ml convention).
   window.__wiki = {
     state, route,
+    // The gone-verdict path, so a gate can ask it directly rather than
+    // reconstructing a two-origin miss.
+    probeGone,
     // The pass -> art-path resolver, so a gate can assert WHICH pass a card
     // resolves to without counting network requests — which measures the HTTP
     // cache once anything has been viewed, not the page.

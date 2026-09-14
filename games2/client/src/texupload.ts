@@ -29,9 +29,16 @@ interface Up {
   px: number;
   samples: number[];
   worst: { ms: number; w: number; h: number }[];
+  /** WHO CREATES WHAT: creations by (source kind, size) — `RT` is a render
+   *  target (a null source), else the source element's tag — with the first
+   *  caller seen (three bundle frames above the renderer; a build's lines
+   *  are stable, so a size can be mapped back to code from the deploy). The
+   *  maintainer's shader-test run created 1,353 GL textures in a window
+   *  (480 MB) of sizes no art file has — this says whose. */
+  by: Map<string, { n: number; px: number; at: string }>;
 }
 
-const zero = (): Up => ({ n: 0, ms: 0, px: 0, samples: [], worst: [] });
+const zero = (): Up => ({ n: 0, ms: 0, px: 0, samples: [], worst: [], by: new Map() });
 let up = zero();
 let installed = false;
 
@@ -63,6 +70,20 @@ export function installTexUploadProbe(renderer: unknown): void {
     up.n++;
     up.ms += ms;
     up.px += w * h;
+    const kind = src === null || src === undefined ? "RT" : ((src as { tagName?: string }).tagName ?? "src");
+    const key = `${kind} ${w}x${h}`;
+    const have = up.by.get(key);
+    if (have) {
+      have.n++;
+      have.px += w * h;
+    } else {
+      const at = (new Error().stack ?? "")
+        .split("\n")
+        .slice(3, 6)
+        .map((l) => l.replace(/^.*\/([^/)]+)\)?$/, "$1").trim())
+        .join(" < ");
+      up.by.set(key, { n: 1, px: w * h, at });
+    }
     if (up.samples.length < MAX_SAMPLES) up.samples.push(ms);
     if (ms >= SLOW_MS) {
       up.worst.push({ ms: +ms.toFixed(1), w, h });
@@ -79,6 +100,7 @@ const pct = (sorted: number[], p: number) =>
 export function texUploadTake(secs: number): {
   stats: Record<string, number | boolean>;
   worst: string[];
+  by: string[];
 } {
   const s = up.samples.slice().sort((a, b) => a - b);
   const stats = {
@@ -102,6 +124,10 @@ export function texUploadTake(secs: number): {
     .sort((a, b) => b.ms - a.ms)
     .slice(0, 10)
     .map((w) => `${w.ms}ms ${w.w}x${w.h} (${((w.w * w.h) / 1000).toFixed(0)}kpx)`);
+  const by = [...up.by.entries()]
+    .sort((a, b) => b[1].px - a[1].px)
+    .slice(0, 10)
+    .map(([k, v]) => `${k} x${v.n} ${(v.px * 4 / 1048576).toFixed(1)}MB @ ${v.at}`);
   up = zero();
-  return { stats, worst };
+  return { stats, worst, by };
 }

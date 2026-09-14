@@ -4,6 +4,7 @@ import type { SceneryFootprints } from "@nangijala/shared";
 import { World, MAP_GEOMETRY, geometryFor } from "./maps";
 import { renderedWorldView, ViewRect } from "./camview";
 import { lightScale } from "./lightscale";
+import { wallWrapExponent } from "./wallwrap";
 
 /**
  * Serious night lighting: a fullscreen MULTIPLY shader that reconstructs each
@@ -108,6 +109,13 @@ const SCN_EXCL_R = 1.8;
  *  inside a piece's share cell is shaded by its own trunk only where the ray to
  *  the light (or the sun) passes through this core between them. */
 const SCN_CORE = 0.45;
+/** The half-width, in cells, the face Lambert gate credits a light with: the
+ *  cosine is measured from at least this far in front of the wall plane, so a
+ *  torch held against a wall still washes the wall around it (a point light
+ *  there lights only the pixels straight in front of it). 0.5 = a half-cell
+ *  flame; at the default wrap (0.7) the wall behind a body touching it reads
+ *  ~0.9 of full a half cell to either side, ~0.7 at wrap 0. */
+const FLAME_HALF_CELLS = "0.5";
 /** The CONTACT blob under a piece: radius (cells) and strength for the sun
  *  patch (a `m` share) and the torch march (an occ factor). Every direction —
  *  the ground beside and in front of a post read as bright spots against the
@@ -140,6 +148,10 @@ const SCN_SHADOW_DEEP = 0.3;
  *  the light's ray has NO step there — its largest step, 0.627, sits at 3.0
  *  cells and is a shadow edge. */
 const SHADOW_MARCH_MIN_LIGHT = 0.012;
+/** Half a cell, squared: LOS samples this close to the LIGHT are skipped (the
+ *  light-side near field — a torch held beside a column stands in the column's
+ *  bilinear skirt; see the march in FRAG and its twin in lightAt). */
+const LIGHT_NEAR_R2 = 0.25;
 /** The glow field's resolution divisor — see where glowRT is built. */
 const GLOW_FIELD_DIV = 2;
 /** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
@@ -247,6 +259,10 @@ uniform float uAurora;    // aurora night 0..1: northern-light curtains ADD colo
 uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
 uniform float uTest;      // 1 = output a raw world-y gradient (calibration)
 uniform float uShadowDbg; // 0 = normal, 1 = shadows OFF, 2 = shadows RED (settings switch)
+// THE WALL-WASH EXPONENT — how hard a face's Lambert term falls off with the
+// grazing angle (the maintainer's "wall light wrap" dial, wallwrap.ts): 1 is
+// physical cosine, 0 is no angle falloff at all. Was a hard-coded 0.45.
+uniform float uWallWrap;
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
@@ -350,6 +366,39 @@ float sceneryNearAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
   return texture2D(uHeightG, uv).g;
+}
+// The occlusion height of the cell a sample lies in — the linear map read at
+// its texel centre, so the bilinear filter returns the cell's own value with
+// no neighbour blended in. The march's HARD test: does this cell itself stand
+// above the ray? (see skirtOcc)
+float heightAtHard(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  return texture2D(uHeightL, (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / uHScale;
+}
+// One march sample's SOFT occlusion: the bilinear reads (blockers ramp in over
+// a cell, so a cast shadow's edge gets a penumbra), the two-span deck rule and
+// the scenery-share hardness. ps is where the heights are read (a face
+// pixel's own-skirt push), p the true sample point (the share test).
+// Returns the factor occ is multiplied by; 1 when nothing stands above the ray.
+float skirtOcc(vec2 ps, vec2 p, float hRay, float lz) {
+  // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
+  // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
+  // under it. A slab can therefore only block a ray whose LIGHT is on the
+  // far side of it — sun/lamp above, ray below. A torch under the same
+  // slab is in the open air with it and must shine straight through.
+  // (The sun march is deliberately untouched: it wants the deck to block,
+  // and its cliff look is locked.)
+  float H = heightAtSoft(ps);
+  float hg = groundAtSoft(ps);
+  float blocker = (H > hg + 0.01 && lz <= H) ? hg : H;
+  if (blocker < 90.0 && blocker > hRay) {
+    float pen = clamp((blocker - hRay) * 1.5, 0.0, 1.0);
+    // A scenery share shadows HARD (one or two samples per piece);
+    // terrain keeps the wall chain. One extra read, blocking samples only.
+    float sc = uSceneryOn > 0.5 ? step(0.01, sceneryShareAt(p)) : 0.0;
+    return mix(mix(0.8, 0.45, pen), mix(${SCN_SHADOW_NEAR}, ${SCN_SHADOW_DEEP}, pen), sc);
+  }
+  return 1.0;
 }
 // groundAt WITHOUT the scenery share — the terrain + solid column, for the
 // cave-mouth walk: a trunk bump on a cliff-top cell must not extend that
@@ -723,7 +772,7 @@ void main() {
   }
 
   float Ha = heightAt(cell);
-  if (uTest > 3.5) {
+  if (uTest > 3.5 && uTest < 4.5) {
     // Calibration 4: final surface classification — wall-face pixels RED,
     // top pixels GREEN (probed numerically by the verify scripts).
     float isFace = (Ha < 90.0 && Ha - z > 0.05 && groundAt(cell) - z > 0.05) ? 1.0 : 0.0;
@@ -806,6 +855,15 @@ void main() {
     }
   }
 
+  if (uTest > 5.5 && uTest < 6.5) {
+    // Calibration 6: WHAT A FACE PIXEL THINKS IT IS. R = fract(pos.x) (its
+    // point along the plane), G = fract(z) (its resolved height), B = the
+    // gate's top penumbra gateFade. A term that is per-cell shows up as a
+    // FLAT channel across a tile; per-pixel terms ramp. Opaque like every
+    // pattern >= 3, so the art underneath cannot leak into the read.
+    gl_FragColor = vec4(fract(pos.x), fract(z), gateFade, 1.0);
+    return;
+  }
   // DIRECTIONAL SUN (day phases; maintainer): daylight is modelled as
   // SKY + SUN — the phase ambient is split into a flat sky term (55%) and a
   // directional sun term (45%) that only reaches tiles with a clear line
@@ -1041,6 +1099,14 @@ void main() {
     vec2 lC = floor(lp.xy) + 0.5;
     float peakC = max(max(uLightCol[i].r, uLightCol[i].g), uLightCol[i].b);
     if (uLightPos[i].w > 0.0 && att * peakC > ${SHADOW_MARCH_MIN_LIGHT} && (z < lp.z + 0.05 || objAt(cell) > 0.5)) {
+      // The previous VALID sample (see the skirt law below): whether its own
+      // cell stood above the ray, and where it was read.
+      bool prevHard = false;
+      bool prevOk = false;
+      bool prevDone = false; // the previous sample's soft read already applied (it left a blocker)
+      vec2 prevPs = pos;
+      vec2 prevP = pos;
+      float prevHRay = 0.0;
       for (int s = 1; s <= 12; s++) {
         float t = float(s) / 13.0;
         // March from the EXACT surface point (same as attenuation): marching
@@ -1053,26 +1119,96 @@ void main() {
         // the wall cell — a false dark notch along every base line.
         vec2 dp = p - pos;
         if (dot(dp, dp) < 0.56) continue;
+        // THE LIGHT'S OWN NEAR FIELD, the mirror of the pixel's: a torch held
+        // within half a cell of a tall column stands INSIDE that column's
+        // bilinear skirt, and every ray's last samples — the ones nearest the
+        // light — read the skirt's phantom height and shadow the floor around
+        // the torch-bearer's own feet (maintainer 2026-09-13, 263.6,167.1
+        // beside the dungeon pillar: "the ground next to the wall is dark",
+        // measured occ 0.60 one cell west of the torch, 1.00 a quarter cell
+        // further). A real wall that close to the light is one the torch is
+        // pressed against, and its shadow is cast by the samples deeper in it.
+        vec2 dl = p - lp.xy;
+        if (dot(dl, dl) < ${LIGHT_NEAR_R2}) continue;
         if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
         if (lShare > 0.0 && dot(p - lC, p - lC) < 1.0) continue;
         float hRay = mix(z, lp.z, t) + 0.2;
-        // TWO SOLID SPANS PER COLUMN, not one height. The ground is solid
-        // from 0 to hg; a deck (when H > hg) is a slab at H with OPEN AIR
-        // under it. A slab can therefore only block a ray whose LIGHT is on the
-        // far side of it — sun/lamp above, ray below. A torch under the same
-        // slab is in the open air with it and must shine straight through.
-        // (The sun march is deliberately untouched: it wants the deck to block,
-        // and its cliff look is locked.)
-        float H = heightAtSoft(p);
-        float hg = groundAtSoft(p);
-        float blocker = (H > hg + 0.01 && lp.z <= H) ? hg : H;
-        if (blocker < 90.0 && blocker > hRay) {
-          float pen = clamp((blocker - hRay) * 1.5, 0.0, 1.0);
-          // A scenery share shadows HARD (one or two samples per piece);
-          // terrain keeps the wall chain. One extra read, blocking samples only.
-          float sc = uSceneryOn > 0.5 ? step(0.01, sceneryShareAt(p)) : 0.0;
-          occ *= mix(mix(0.8, 0.45, pen), mix(${SCN_SHADOW_NEAR}, ${SCN_SHADOW_DEEP}, pen), sc);
+        // A WALL MUST NOT SHADOW ITS OWN FOOT THROUGH ITS BILINEAR SKIRT.
+        // The march reads the LINEAR height map so cast shadows get a
+        // penumbra — and that same filter smears a wall's height half a cell
+        // INTO THE FLOOR in front of it, as a ramp from the wall's level down
+        // to the ground's. A face pixel's ray toward a light that stands off
+        // to the side runs nearly parallel to the plane, so its first samples
+        // past the 0.75-cell near-field skip sit only 0.1-0.2 cells in front
+        // of the plane — deep in that ramp — and read a phantom blocker two
+        // storeys tall: three or four samples at 0.45 each, and the bottom
+        // course of the wall is black while the course above it is lit. The
+        // maintainer drew it in red (2026-09-11: "the bottom of the wall (the
+        // tile closest to the ground) seem to be darkened more than the rest
+        // of the wall"), and it is worse the further along the wall from the
+        // light, exactly as the geometry says. Same for a lit scenery piece.
+        // For a FACE pixel, a sample inside the skirt band in front of its own
+        // plane is read at the band's outer edge instead — where the wall's
+        // weight is zero and the floor row's own heights (a barrel standing
+        // against the wall included) are what the filter returns.
+        vec2 ps = p;
+        if (isFace) {
+          vec2 nF = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), step(0.5, pickR));
+          float fp = dot(p - (baseF + 1.0), nF); // cells in front of the plane
+          if (fp > -0.01 && fp < 0.5) ps = p + nF * (0.5 - fp);
         }
+        // A SKIRT SAMPLE COUNTS ONLY BESIDE A HARD HIT. The push above covers
+        // a face's OWN skirt; the GROUND beside a wall has the same ramp under
+        // it and no plane of its own to push away from. A torch that stands
+        // beside a wall sends its ray to the floor further along that wall
+        // INSIDE the skirt band the whole way — every sample past the near
+        // fields reads the wall's phantom height and the wall shadows the
+        // floor in front of itself, from a light that is also in front of it:
+        // the pool ended in a hard, cell-stepped edge along the foot beyond
+        // ~1.5 cells (maintainer 2026-09-13, 285.4,115.8 with the torch:
+        // "standing near a wall effects how the torch light up the ground";
+        // 286.4,125.3: the ground cell in front of each face of a pillar a
+        // flat dark diamond read as the wall's bottom course; measured at the
+        // 0.22 floor beside a lit cell one column out).
+        // A real shadow is cast by a column the ray ENTERS: some sample's own
+        // cell, read at its texel centre with nothing blended in, stands
+        // above the ray. The bilinear reads exist to give THAT edge a
+        // penumbra, so they are applied where the ray is inside a hard cell,
+        // on the sample just before it enters one (retroactively — the
+        // approach side) and the one after it leaves (the far side). A ray
+        // that never enters a taller cell is not shadowed at all, whatever
+        // the skirt beside it reads: a wall throws no shadow onto the floor
+        // in front of it. Unshadowed rays now cost two nearest fetches per
+        // sample (the sample and the midpoint below) where they cost two
+        // bilinear ones; shadowed samples cost up to four.
+        float hHard = heightAtHard(ps);
+        bool hard = hHard < 90.0 && hHard > hRay;
+        // A THIN WALL BETWEEN TWO SAMPLES IS STILL A HIT. Samples sit
+        // dist/13 apart — 1.2 cells under a radius-16 hearth — so a one-cell
+        // house wall can fall between two of them; the bilinear reads used to
+        // catch it from either side, the exact reads would not. The midpoint
+        // of the segment from the previous sample is tested too (the same
+        // own-cell and own-trunk skips), which halves the spacing.
+        if (!hard && prevOk) {
+          vec2 pm = 0.5 * (p + prevP);
+          bool own = floor(pm.x) == floor(pos.x) && floor(pm.y) == floor(pos.y);
+          if (ownShare > 0.0 && dot(pm - ownC, pm - ownC) < 1.0) own = true;
+          if (lShare > 0.0 && dot(pm - lC, pm - lC) < 1.0) own = true;
+          if (!own) {
+            float hm = heightAtHard(pm);
+            hard = hm < 90.0 && hm > 0.5 * (hRay + prevHRay);
+          }
+        }
+        if (hard || prevHard) {
+          if (hard && !prevHard && prevOk && !prevDone) occ *= skirtOcc(prevPs, prevP, prevHRay, lp.z);
+          occ *= skirtOcc(ps, p, hRay, lp.z);
+        }
+        prevDone = hard || prevHard;
+        prevHard = hard;
+        prevOk = true;
+        prevPs = ps;
+        prevP = p;
+        prevHRay = hRay;
       }
       // Bounce floor: firelight scatters — shadowed ground near a light keeps
       // a faint glow instead of dropping to pitch ambient. Faces still gate
@@ -1125,22 +1261,45 @@ void main() {
     if (isFace && uLightPos[i].w > 0.0) {
       float frontL = lp.y - (baseF.y + 1.0); // beyond the +row (left) face
       float frontR = lp.x - (baseF.x + 1.0); // beyond the +col (right) face
-      // Lateral: how far the light sits OUTSIDE the face's own 1-cell span.
-      float latL = abs(lp.x - clamp(lp.x, baseF.x, baseF.x + 1.0));
-      float latR = abs(lp.y - clamp(lp.y, baseF.y, baseF.y + 1.0));
+      // Lateral: how far the light sits along the plane from THIS PIXEL'S
+      // point on it — pos, the same exact face point the attenuation
+      // already uses. This used to be the light's distance from the CELL's
+      // one-cell span (clamp(lp.x, baseF.x, baseF.x + 1)), which is one
+      // number for a whole tile and jumps at every tile edge: with a torch
+      // near a wall the Lambert gate stepped 0.0 -> 0.7 -> 1.7 cells of
+      // lateral across three tiles and drew a hard vertical seam at each
+      // boundary — the "sharp tile edges" the maintainer drew in blue
+      // (2026-09-11: "I don't really understand why a boundary exists at
+      // all. Isn't this shader in pixelspace?"). It is now; this was the one
+      // face term that was not.
+      float latL = abs(lp.x - pos.x);
+      float latR = abs(lp.y - pos.y);
       float front = mix(frontL, frontR, pickR);
       float lat = mix(latL, latR, pickR);
-      // Lambert from the NEAREST point of the face to the light: a torch in
-      // front of a long wall lights the whole run (cosine taper + the normal
-      // distance attenuation) instead of only the single facing cell, while
+      // True per-pixel Lambert in the ground plane: front / distance-along-
+      // the-plane, so a torch in front of a long wall washes the whole run
+      // continuously (cosine taper + the normal distance attenuation), while
       // a light behind the plane still leaves the face dark.
-      float cosF = front / max(sqrt(front * front + lat * lat), 0.001);
-      // Lambert-like lateral taper. The old smoothstep(0.2,0.6,cosF) crushed
-      // grazing light: a torch CLOSE to a wall lit ~1 cell of it while its
-      // ground pool spread 4+ cells (light must extend along the wall about
-      // as far as along the ground). pow keeps a gentle cosine-ish falloff
-      // along the run; the front gate still keeps back faces dark.
-      float gate = smoothstep(0.0, 0.25, front) * pow(clamp(cosF, 0.0, 1.0), 0.45);
+      // THE FLAME HAS A SIZE. A point light pressed against a wall lights
+      // nothing but the pixels straight in front of it (cos -> 0 a hair to
+      // either side), and with the lateral now per PIXEL that is exactly
+      // what a torch held against a wall did: the wall behind the body went
+      // black at the dial's hard end (maintainer 2026-09-11, "2 tiles under
+      // the player is lit up. The surrounding is completely dark"). The old
+      // per-cell lateral hid this by accident — the whole cell behind the
+      // light had lateral 0. So the cosine is taken from no closer than
+      // FLAME_HALF_CELLS in front of the plane: a half-cell flame, not a
+      // point. The back-face gate below still reads the true front.
+      float frontC = max(front, ${FLAME_HALF_CELLS});
+      float cosF = frontC / max(sqrt(frontC * frontC + lat * lat), 0.001);
+      // THE WRAP: pow(cos, uWallWrap). A physical cosine (1.0) crushes
+      // grazing light — a torch held close to a wall lights a cell of it
+      // while its ground pool spreads 4+ cells, because the ground takes no
+      // angle term at all. 0.45 was the first softening; the maintainer
+      // still found it "a bit too extreme so only the wall very close to the
+      // player is lit up", so the exponent is his dial now (wallwrap.ts) —
+      // the front gate keeps back faces dark at every setting.
+      float gate = smoothstep(0.0, 0.25, front) * pow(clamp(cosF, 0.0, 1.0), uWallWrap);
       // Penumbra: the gate fades in up the face (see gateFade above).
       occ *= mix(1.0, gate, gateFade);
     }
@@ -2145,6 +2304,9 @@ export class NightLights {
       uFlip: { type: "1f", value: 1 },
       uTest: { type: "1f", value: 0 },
       uShadowDbg: { type: "1f", value: 0 },
+      // DECLARED (the uSun lesson): an undeclared uniform never syncs on a
+      // real phone GPU and the wall wrap would silently sit at 0 = no falloff.
+      uWallWrap: { type: "1f", value: wallWrapExponent() },
       // Animation clock (seconds). MUST be driven every frame from the SAME
       // clock as the JS emission layers (stamps/lit copies, scene.time.now/
       // 1000) or the shader floor/fire flicker either freezes (the long-
@@ -3380,34 +3542,69 @@ export class NightLights {
       const lcx = lc + 0.5;
       const lcy = lr + 0.5;
       if (L.radius > 0 && (att * Math.max(L.color[0], L.color[1], L.color[2]) > SHADOW_MARCH_MIN_LIGHT || wantOcc) && (z < L.z + 0.05 || isObj)) {
-        for (let sN = 1; sN <= 12; sN++) {
-          const tt = sN / 13;
-          const px = col + dx * tt;
-          const py = row + dy * tt;
-          if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
-          if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
-          if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
-          if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0) continue; // the LIGHT's own trunk (a fire IS its piece)
-          const hRay = z + (L.z - z) * tt + 0.2;
-          // EXACT twin of the shader's two-span test: a deck is a floating
-          // slab, so it only blocks a ray whose light is on its far side.
+        // One sample's SOFT occlusion — the twin of the shader's skirtOcc:
+        // bilinear reads, the two-span deck test (a deck is a floating slab,
+        // so it only blocks a ray whose light is on its far side), the
+        // scenery-share hardness, and the lit copy's own-share exclusion.
+        const softOcc = (px: number, py: number, hRay: number): number => {
           let hh = hAtSoft(px, py);
           let hg = gAtSoft(px, py);
-          if (selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2) {
+          const inSelf = selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2;
+          if (inSelf) {
             // The piece's OWN shares (0 off-grid) — subtracted inside its
             // exclusion radius so its lit copy is never shadowed by itself.
             hh -= this.shareAtSoft(this.sArrH, px, py);
             hg -= this.shareAtSoft(this.sArrG, px, py);
           }
           const blocker = hh > hg + 0.01 && L.z <= hh ? hg : hh;
-          if (blocker < 90 && blocker > hRay) {
-            const pen = Math.min(1, (blocker - hRay) * 1.5);
-            const pc = Math.floor(px);
-            const pr = Math.floor(py);
-            const inSelf = selfR2 > 0 && (px - col) * (px - col) + (py - row) * (py - row) < selfR2;
-            const sc = !inSelf && this.hasSceneryShares && pc >= 0 && pr >= 0 && pc < W && pr < H && this.sArrG[pr * W + pc] > 0.01;
-            occ *= sc ? SCN_SHADOW_NEAR + (SCN_SHADOW_DEEP - SCN_SHADOW_NEAR) * pen : 0.8 + (0.45 - 0.8) * pen;
+          if (!(blocker < 90 && blocker > hRay)) return 1;
+          const pen = Math.min(1, (blocker - hRay) * 1.5);
+          const pc = Math.floor(px);
+          const pr = Math.floor(py);
+          const sc = !inSelf && this.hasSceneryShares && pc >= 0 && pr >= 0 && pc < W && pr < H && this.sArrG[pr * W + pc] > 0.01;
+          return sc ? SCN_SHADOW_NEAR + (SCN_SHADOW_DEEP - SCN_SHADOW_NEAR) * pen : 0.8 + (0.45 - 0.8) * pen;
+        };
+        // A SKIRT SAMPLE COUNTS ONLY BESIDE A HARD HIT — the shader's law (see
+        // FRAG): the soft reads apply where a sample's own cell stands above
+        // the ray, on the sample before the ray enters such a cell and the one
+        // after it leaves; a ray that enters no taller cell is unshadowed.
+        let prevHard = false;
+        let prevOk = false;
+        let prevDone = false;
+        let prevPx = col, prevPy = row, prevHRay = 0;
+        for (let sN = 1; sN <= 12; sN++) {
+          const tt = sN / 13;
+          const px = col + dx * tt;
+          const py = row + dy * tt;
+          if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
+          if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
+          if ((px - L.col) * (px - L.col) + (py - L.row) * (py - L.row) < LIGHT_NEAR_R2) continue; // the light's near field (see FRAG)
+          if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
+          if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0) continue; // the LIGHT's own trunk (a fire IS its piece)
+          const hRay = z + (L.z - z) * tt + 0.2;
+          const hHard = hAt(px, py);
+          let hard = hHard < 90 && hHard > hRay;
+          if (!hard && prevOk) {
+            // A thin wall between two samples is still a hit (see FRAG).
+            const mx = 0.5 * (px + prevPx), my = 0.5 * (py + prevPy);
+            let own = Math.floor(mx) === Math.floor(col) && Math.floor(my) === Math.floor(row);
+            if (ownShare > 0 && (mx - ocx) * (mx - ocx) + (my - ocy) * (my - ocy) < 1.0) own = true;
+            if (lShare > 0 && (mx - lcx) * (mx - lcx) + (my - lcy) * (my - lcy) < 1.0) own = true;
+            if (!own) {
+              const hm = hAt(mx, my);
+              hard = hm < 90 && hm > 0.5 * (hRay + prevHRay);
+            }
           }
+          if (hard || prevHard) {
+            if (hard && !prevHard && prevOk && !prevDone) occ *= softOcc(prevPx, prevPy, prevHRay);
+            occ *= softOcc(px, py, hRay);
+          }
+          prevDone = hard || prevHard;
+          prevHard = hard;
+          prevOk = true;
+          prevPx = px;
+          prevPy = py;
+          prevHRay = hRay;
         }
         // THE OWN TRUNK'S CORE, DIRECTIONALLY — the shader's rule.
         if (ownShare > 0 && selfR2 <= 0) {
@@ -4003,6 +4200,7 @@ export class NightLights {
     // light field, free of the art underneath.
     s.setUniform("uTest.value", this.testPattern === 5 ? 0 : this.testPattern);
     s.setUniform("uShadowDbg.value", this.shadowDbg);
+    s.setUniform("uWallWrap.value", wallWrapExponent());
     this.overlay?.setFlipY(this.overlayFlip);
     // Raw-readback test mode draws opaque (multiply would mix in the art).
     this.overlay?.setBlendMode(

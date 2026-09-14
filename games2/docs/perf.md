@@ -2,6 +2,294 @@
 
 The ground render texture (scroll, slices, cell repaints, prefetch, compose budget), the pooled occluders, the capture pool, and how the perf beacon is read. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
 
+- **REJECTED 2026-09-12: replacing the occluder sprites with a per-pixel
+  depth test** (the render retake, `docs/depth-sort.md`) — GPU-bound on his
+  phone, 4.5x the lag frames. The CPU bursts the beacon's worst frames name
+  on the sprite path are the targets instead, proved by a Settings switch
+  that skipped them all (38/51 → 3/2 frames over 50 ms per window, p90 19 ms;
+  removed once the bursts were fixed one by one): the full-paint-per-drain
+  loop (done: THE DROP DRAIN REPAINTS CELLS below; cliffs 38 → 11, cave 51 →
+  17), `rebuildOccluders` 50-133 ms every 96 px (done: THE WALK IS
+  INCREMENTAL below; 7/7), then the ground compose (next). After burst 2 no
+  single burst is left; a slow frame is the ground texture work (slice 15-38
+  ms, cell repaints 10-54 ms, prefetch 10-20 ms — ~600 ms of the 48 slowest
+  frames) plus GPU waits (~580 ms) that track the composed-texture churn
+  (window 1: 669 GL textures created, 165 MB uploaded, 8,800-10,600 textures
+  live). THERE IS NO TRANSITION SHADER IN THE GAME: every boundary, fade and
+  capped plate is composed on the CPU per (pattern, groundA, groundB) and
+  uploaded as its own texture (the shader with a parity test was the render
+  retake's terrain DEPTH shader, rolled back).
+- **THE STEADY FRAME IS THE LAG, NOT THE BURSTS** (measured 2026-09-12 on
+  the overworld run that "felt laggy": 14.6-21.8 ms of CPU per frame on a
+  cool phone, 37% of frames under 17 ms; the same route on a throttled phone
+  26-33 ms). It scales with the occluder count (3.5-8.8k sprites in the
+  display list): `render` 2.8-7.6, `occCull` 0.9-2.2, `depthSort` 0.85-2.1 —
+  answered by the proximity cull and the insertion sort (`docs/depth-sort.md`).
+  What is left after them, per frame: the ground streaming (`prefetch` +
+  `repaintCells` + `groundSlice` 2.4-5.5 ms), `gapBusy` 1.8-4 (unattributed),
+  `monsterLoop` 0.5-2.4 (20-40 monsters, ~70 µs each), `lighting` ~1, the
+  lit copies ~1, and 100-240 MB of texture uploads per 30 s window (every
+  composed boundary is its own texture). RUNS ARE ONLY COMPARABLE ON A COOL
+  PHONE: `cpu.scoreMs` (the beacon's 400k-iteration loop) reads 2.6-4.3 ms
+  cool and 7.2-7.8 after five back-to-back runs, with the display dropping
+  to 41 Hz — a run whose score is over ~5 measures the throttling, not the
+  build.
+- **REJECTED 2026-09-12: A GPU TRANSITION COMPOSITOR** (a SinglePipeline
+  subclass doing the composer's three reads per boundary quad, 0.83% of
+  texels off the CPU composer; removed with its Settings switch). Three runs
+  with it on were worse — 44/51 and 102/117 lag frames a window against 7/7
+  and 15/15 with it off — and none was a clean measurement: every slow frame
+  in every run carried a monster-strip upload, and the sim's one draw with
+  per-draw uniforms per boundary is the shape a Mali dislikes. Its whole
+  upside is ~1-2 ms of CPU and ~8 MB of uploads a window (the composed
+  `t3x:` textures, 600-1,200 a window at 12 KB), while the runs were
+  dominated by hundreds of MB of monster art (next bullet). Not worth a
+  fourth run.
+- **THE ART QUEUE** (`client/src/artqueue.ts`, 2026-09-12): every texture
+  streamed behind the live world — monster strips, characters' deferred
+  states, NPC idles, scenery animation frames — is fetched and decoded off
+  the main thread, then turned into a GPU texture under a BYTE BUDGET PER
+  FRAME in the maintainer's priority order (`ART_PRIO`: my urgent clips; the
+  attack and die strips of a kind whose monster chases or fights, then its
+  angry; a kind's walk when the first monster of it exists, idle behind it —
+  walk stands in for idle until then; NPC idles and the blood; my weapon and
+  spell states; the other characters' states; then, when nothing above is
+  waiting, the fight art of every kind that exists, so a fight that starts
+  later finds it resident — a fight only RAISES those requests; scenery
+  animations behind that; angry dead last). One file bigger than the budget
+  goes in one piece and its overshoot is charged to the frames after it, so
+  the average holds whatever the file sizes; decoded pixels waiting are
+  capped at 48 MB. MEASURED, four runs on his phone: every slow frame (24 of
+  24, 15 of 15, 45 of 48) carried a texture upload and the uploads were
+  monster strips — the game queued the combat strips of all 57 kinds at
+  launch (1,312 files, 416 MB of textures; walk+idle of all kinds another
+  912 files, 284 MB; a 256-px kind is 40 MB) and the loader's "two in
+  flight" bounded the count per frame, never the bytes: 564 MB in one 30 s
+  window, 12 MB in one frame. With monsters MOCKED (Settings "monsters":
+  mock — nothing loaded) the same stretches ran 2 and 9 lag frames a window,
+  the burst-test ceiling; that is what this reaches for. No kind's strips
+  are asked for before a monster of it exists near me. THE BUDGET IS PINNED AT 128 KB
+  A FRAME — his phone found it, and the dial went with the other three
+  shipped-optimisation switches on 2026-09-13 ("no toggles for what is
+  decided"; the row's own comment had promised exactly this). `ml-upload-kb`
+  still holds it and `?uploadkb=<n>` still sets it (0 = unbounded) for a
+  harness; beacon `run.sim` = `up128`,
+  `counts.artQueued/artReady/artLanded/artKbMax`, probe `__ml.art()`. The boot batch (behind
+  the loading bar) and the ground art (its own loader, its own compose
+  budget) stay outside it. Mock-mode caveat for future runs: "scenery: mock"
+  and the old shader test both provoked `litShapeJobs` bursts of 50-400 ms
+  (shape maps rebuilt for the substituted textures), so a scenery-mock run
+  is not a clean ceiling.
+- **THE ART QUEUE DECODES ON A WORKER AND UPLOADS IN BANDS**
+  (`client/src/artworker.ts`, `artqueue.ts`, 2026-09-12, games-perf). The
+  queue's `texImage2D` of an `<img>` it had already `decode()`d cost 5.8-9.2
+  ms of main thread per monster strip headless and 4.5-8.9 ms on his phone
+  (`texUp.p90/max`, 22-60 uploads over 4 ms a window; a 1-1.6 MB strip rode
+  in many of his worst frames) — Chrome decodes the WebP AGAIN inside every
+  such call, the same whether the upload follows `decode()` at once or
+  seconds later (both measured), so the byte budget bounded the bytes and
+  never the atom. Decoded on the worker into an ImageBitmap (premultiplied
+  there, under the browser-default colour rule), a strip reaches the GPU as
+  row BANDS of one frame's budget through `texSubImage2D`: 0.0-0.2 ms per
+  128 KB band (p50 0.09), so a frame's upload is bounded by the dial
+  exactly — `frameKbMax` 98-125 KB against 128, debt 0. The worker also
+  measures every frame's opaque box and hands it over before the bitmap is
+  closed (`artBounds` used to draw the source into a canvas on first use:
+  a second decode of every body's strip on the main thread, 188 ms of a 60 s
+  harness profile). A banded texture holds no source pixels, so a context
+  restore refills it through the queue (`onContextRestored`, unbudgeted —
+  the art is already off the screen) after Phaser re-creates the wrapper
+  blank. A banded texture holds no element for the CPU readers of a body's
+  frame either, and A GL READBACK IS NEVER INSIDE THE FRAME FOR ONE (Smooth
+  5, 2026-09-12: his 19:44 run of Smooth 3 had the outline's first sight of
+  a banded frame as a 63 and a 32 ms readback): `artBounds` has the worker's
+  boxes, and the outline (`ringTextureFor`) and the foam clamp (`alphaMap`)
+  ask the worker for the frame's alpha (`ArtQueue.frameAlpha` — one request
+  per rectangle, the file's bytes from the HTTP cache, the last four decoded
+  files kept on the worker so a body's frames cost one decode per file) and
+  show nothing until it answers a few frames later; the map is not cached
+  while it is pending. `framepixels.ts` keeps the two synchronous paths
+  (an element drawn as before; a bare GL texture read back through a
+  temporary framebuffer, alpha exact, premultiplied colour) for a texture
+  the worker cannot serve and for the parity probes. Gates:
+  `__ml.artAlpha(key, frame)` is the readback against the `<img>` path's
+  alpha, `__ml.artAlphaWorker(key, frame)` the worker's answer against the
+  readback. Pixel parity: `__ml.artParity()` reads the banded texture and an
+  `<img>` upload of the same file back from the same context — byte-identical
+  on 6 of 6 strips, and again after a forced context loss
+  (`scripts/verify-artworker.mjs`). A browser without workers, ImageBitmaps
+  or OffscreenCanvas, or a worker that dies, falls back per job to the
+  `<img>` path. Beacon: `counts.artBands`, `counts.artBandMaxMs`,
+  `counts.artWorker` (1 on, 2 fell back); `texUp` should lose the strips.
+  THE BISECT is `?artworker=0|1`, or a harness writing `ml-art-worker`: off
+  sends every job the `<img>` way from the next file on. It was a Settings row
+  while the worker was under measurement and he had it removed on 2026-09-13,
+  the worker being decided — a bisect an agent runs, not a setting he reads.
+  Not measured here: the GPU side of an upload on a Mali — his next run's
+  `texUp.slow` and the worst frames' `upKb` say.
+- **SCENERY STILLS RIDE THE ART QUEUE, AND THEIR FIT COMES WITH THE BANDS**
+  (`flushScenery`, `onBounds`, 2026-09-12, games-perf). His 20:51 run (build
+  4736387f1, strips already banded) still had 18 and 12 frames over 50 ms a
+  window, and 10 of the first window's 13 were `rebuildScenery` at 33-66 ms
+  per 96 px occluder step into a fresh forest; the scoped profile said the
+  loop itself is ~1 ms a step and the rest is FIRST-SIGHT PIXEL WORK per new
+  still: the stills rode the terrain loader's Phaser queue (a `texImage2D` of
+  an `<img>` — decode one), then `sceneryArtFit` drew the source into a
+  canvas for `alphaBBox` (decode two) and `resolveDrawDepth → artBounds` drew
+  it again for the opaque box (decode three), 4.5-8.9 ms each on his phone.
+  Now `flushScenery` requests every still from the queue (`ART_PRIO.
+  sceneryStill` 1.75: behind my clips and a fight's strips, ahead of a
+  newcomer's walk; behind the loading screen `sceneryBoot` -1, first of
+  all — the hold waits for the stills and for nothing else in this queue,
+  and behind my own clips none of 43 had landed 5 s after they were asked
+  for, headless); the worker decodes it once and hands over both
+  boxes with the bands — `bounds` (artBounds' rule, alpha > 16) and `bbox0`
+  (alphaBBox's rule, alpha > 0, all -1 when empty) — and `onBounds` seeds
+  `artBoundsCache` and `sceneryFit` before the first rebuild sees the
+  texture, so a step into a new forest measures nothing on the frame
+  thread. Landings count on the loading bar as before
+  (`sceneryArt.done`, one per `onLanded`, at once for a key the queue
+  already holds) and mark the occluder repaint after a
+  `SCENERY_MANIFEST_SETTLE_MS` settle (one repaint per burst, as the
+  loader's batch `complete` was). THE BOOT HOLD waits for them by that
+  tally (`sceneryArt.done >= requested` in its `scenery` condition — the
+  stills left the terrain loader, whose `isLoading` was what held it), and
+  the queue ticks UNBOUNDED while the loading screen is up
+  (`tick(!worldUp)`, as the compose budget already is): there is no frame
+  to protect behind it and the byte budget would only make the bar slower;
+  the frame stats (`frames`, `frameKbMax`) count budgeted frames only.
+  `texPixels` reads a banded texture back through `readTexturePixels`
+  (un-premultiplied within rounding — the scenery light block's colour
+  average and the shape maps can bear that) for the readers that still want
+  the whole still (`sceneryFit.clear()` on the scenery switch, the shape
+  maps) — and THE READBACK IS NEVER INSIDE THE FRAME (Smooth 6, 2026-09-12:
+  his 21:57 run on Smooth 4 had `rebuildScenery` at 62-92 ms a long frame,
+  25 in one window, WORSE than the 33-66 before, and the headless profile
+  said why — `readPixels` was 59% of the rebuild's time: a scenery still is
+  drawn through a CUT frame (`addSceneryCut`), so `artBounds` missed the
+  seeded `__BASE` box and read the texture back, and the light derivation
+  and the shape jobs read the whole still back for its pixels; on a Mali a
+  readback drains the pipeline, worse than the decode it replaced). Now a
+  cut frame's box is the seeded whole-image box clipped into the cut — exact
+  when the cut holds every opaque texel (a still's cut is its own alpha box,
+  a clip frame's crop its state's box), a superset otherwise, refined from
+  the worker's alpha when it answers (`artBoundsRefine`) — and `texPixels`
+  on a banded texture hands over the worker's pixels on demand
+  (`ArtQueue.pixels`, one request per key, the answer taken once): the
+  light waits a rebuild for them (and for its unlit sibling's, so the
+  derivation never runs without the sibling and caches that), a shape job
+  waits a frame without blocking the jobs behind it. `texPixels(key, true)`
+  is the probes' synchronous readback. Gates: `__ml.artPixelsWorker(key)`
+  (alpha exact, colour within the un-premultiply's rounding),
+  `__ml.artBoundsParity(n)` (every derived cut-frame box against a fresh
+  measure). `__ml.sceneryFitParity(n)` compares
+  every seeded fit against a fresh `alphaBBox` of the readback, in
+  `scripts/verify-artworker.mjs` (checked > 0, mismatched 0). The art-worker
+  Settings row bisects this too: off sends the stills the `<img>` way.
+- **MEASURED 2026-09-12, NOT THE LAG** (headless traces of the overworld run,
+  games-perf; each was a suspect for the unattributed `gapBusy`): the
+  Colyseus patch decode is 1.1 ms per SECOND (21 messages/s, 92 KB);
+  no style or layout work runs per frame (the HUD's DOM is quiet;
+  `PrePaint` 0.13 ms/frame); the JS heap's 25-53 MB/s of growth is
+  short-lived garbage — GC is 0.4% of CPU (scavenges; the beacon's `drops`
+  are those), so cutting allocations is not a frame-time lever here.
+- **THE COVER ATLASES ARE ONE BRACKET EACH, ON THE ROWS IN USE** (`coverRaster`,
+  2026-09-13). A flush ran 7 brackets and 3 whole-atlas clears, and every
+  bracket clears the capture target and blits it whole into the 1024x512 atlas
+  — ~7 Mpx of fill a flush, ~23 flushes/s, ~2x the visible screen's fill, for
+  typically ONE 40x96 body (his 22:53 run: `coverSlots` 1, `coverQuads` 24).
+  Now an erase is the object's own ERASE blend inside the pass (Phaser 3.90
+  `batchGameObject` applies `gameObject.blendMode`; dst * (1 - a) is the erase
+  blit's own maths), so E, C and O are three brackets; and slots pack bottom-up
+  so the capture is bound at the rows the flush's slots occupy (`coverRows`,
+  128-512 in steps of 128 — at most four pooled capture sizes, `capSizes` 3 ->
+  up to 6) and the atlas is cleared over those rows only: a one-body flush
+  fills ~0.8 Mpx. Texels identical by construction (Porter-Duff `over` is
+  associative, the erase maths unchanged) — gate: `__ml.coverParity` in
+  `scripts/verify-cover.mjs`, the three atlases raw byte-equal against the
+  seven-bracket path, driving the switch live both ways. `?coverpasses=7`, or
+  a harness writing `ml-cover-passes`, restores the old path (its Settings row
+  went on 2026-09-13 with the other decided switches); the beacon carries
+  `coverBr` and `coverRows`. MEASURED ON HIS
+  PHONE (02:02 run 2026-09-13 on 472f8f72a, moving, cool, same route as the
+  22:53 baseline on de89282af): frames over 50 ms a window 14/20 -> 5/7, p99
+  52 -> 42/40 ms, p90 34 -> 33/26, long-frame ms 700 -> 167/537,
+  `cells:unattributed` 20 -> 9/5 long frames, 43 -> 50-53 fps mean. What the
+  run then showed inside the flush: four long frames (48/29/14 ms, one more in
+  window 2) each with `fbNew 1, capSw 1` — the FIRST use of a new pooled
+  capture height paid the GPU allocation in the frame — so `initCoverSurfaces`
+  binds and unbinds all four heights behind the loading screen; and
+  `coverRows` read 384 with one body covered, because a freed slot was popped
+  by recency and a body could land three shelves up while the floor shelf
+  stood empty — `coverTakeLowestFree` hands out the free slot nearest the
+  floor. His 02:25 run on a1856b4ae (7/4 frames over 50 ms, p99 39.6/37.2,
+  `glFbNew` 0 both windows — the warm-up held) still read `coverRows` 512 with
+  one body: a NEW slot was always cut on the topmost shelf. The packer now
+  places it on the lowest shelf with the width and the height (only the top
+  shelf grows), and the beacon's `coverRowsMean` averages the bound rows over
+  a window's flushes. His 02:40 run on 7cd328939 read it at 197/303 with
+  about one body a flush: a 160 px monster class placed on the FLOOR shelf
+  had grown it past a step, and every flush after that bound 256+ rows. The
+  floor shelf is now opened at exactly one step and takes only slots that fit
+  it (characters and 53 of 57 monster classes); taller slots go up. The
+  beacon's `coverSlotsMean` says how many bodies a flush carried, which is
+  what `coverRowsMean` is to be read against — the next run should show it
+  near 128 whenever the mean bodies are ~1. Traps:
+  the blit copies with the renderer's CURRENT blend func (NORMAL
+  goes back before `endDraw` or the blit erases); a shorter capture lands in
+  the target's LAST rows (`blitFrame` viewports at `target.h - source.h`,
+  flipped) — hence the packer grows upward from the atlas floor.
+- **THE INDOOR FLIP IS INCREMENTAL** (`repaintIndoorFlip`, `debrisPool`,
+  `occWinCuts`, 2026-09-12). Crossing a cave or house threshold used to be
+  a full ground paint, a full occluder walk, the destruction of the whole
+  old set (the 120-160 ms cleanup frame after) and a crossfade layer of
+  every removed sprite built in one frame — his mountain window carried four
+  crossings at 150-490 ms a frame, 350 ms of it the 2,647-sprite debris
+  build. Now: (1) the ground repaints only the cells IN a cut, old or new,
+  through the clipped cell path under the NEW indoor state — the anchor's
+  mask and top are moved first, because `repaintTiles3Cells` paints under
+  the anchor's — pixel-identical to a full paint after every crossing
+  (`scripts/verify-cave.mjs`; the legacy scalar cut still paints in full);
+  (2) the occluder rebuild finds the cut change itself (`occWinCuts`) and
+  re-walks those cells plus their west and north neighbours (the
+  exposed-face rule reads the east and south neighbour's cut), the pool
+  giving back every unchanged image; (3) the crossfade's sprites come from
+  a POOL warmed 16 a frame once the world is up (4,000; taken with one
+  display-list add, returned in one batch filter) and are culled to the
+  camera plus 96 px instead of the occluders' 360 — a cave exit at the old
+  pad built 7,035 of them, now a third. A storey drawn with the mid tile
+  while its own tile streams (`faceKeyAt`'s substitute), and a cut wall's
+  cap course drawn with the cap tile while the mid streams, mark their cell
+  incomplete (`faceOwnKey`), so a landing walks it again — a full walk used
+  to find 13-54 such faces the incremental set lacked. Gate:
+  `scripts/verify-cave.mjs` (four crossings: 0 sprites missing, 0 extra in
+  view, the ground hash equal to a full paint after each; `INC=0` is the
+  full-paint control). The only difference left is the per-diagonal depth
+  slot, which is walk order and never orders two overlapping images.
+- **THE RESOLUTION DIAL** (`client/src/resolution.ts`, the slider in
+  `resdial.ts` just above the HUD's "Light resolution", 2026-09-12): the
+  canvas backing is `devicePixelRatio` (capped at 4) × the dial — 1, 2/3,
+  1/2, 1/3, 1/4, 1/8 — and the camera zoom is derived at full resolution and
+  scaled by the dial, so the SAME world fills the screen with the square of
+  the fraction in fragments (`zoomFor`; a step whose zoom is not whole — 2/3
+  and 1/3 always, 1/4 and below on his phone — resamples the art and
+  camzoom.ts's seam can show; the thirds are his ask for more options, not a
+  look). Measured (frames over 50 ms per window): 1/1 7 and 21, 1/2 4 and
+  2, 1/4 12 and 23 — below 1/2 nothing more comes back, so past that point
+  the frame is the CPU bursts, not the fill; his verdict is that 1/1 "looks
+  best by far" and is the target. `renderScale`
+  in the registry is the EFFECTIVE backing per CSS px, which is what the
+  ground texture's world size and the pointer mapping want; "ml-render-res"
+  refits the canvas live and the scene's resize handler re-zooms and re-makes
+  the ground texture. The light dial is a fraction of the canvas, so its
+  ceiling follows this one by construction, and both readouts name the same
+  units: `1/2 540×702`, a fraction of the FULL backing and the pixels it
+  means (`resFractionLabel`). Beacon: `run.sim` carries `/r1.5`, `/r2`,
+  `/r3`, `/r4`, `/r8`;
+  `view` and `lights.backing` show the size. Measured on his phone before it
+  existed (the light dial alone): 100% → 50% light resolution moved fps 43 →
+  49 with CPU work flat — the frame is fragment-bound, and this dial asks
+  how much of it is everything else.
 - **THE OCCLUDER SET IS POOLED, NOT REBUILT** (`occImage`, `destroyBatch`,
   2026-09-02). A rebuild used to destroy every image and create every image,
   and 90-95% of what it created was bit-identical to what it had just
@@ -25,13 +313,18 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   column's faces and cap share one depth (`oDepth = by + dy`) and stack only
   because they were inserted bottom-up, cap last — so once images outlive a
   rebuild, insertion order is gone and EVERY image a rebuild places gets
-  depth = base + creationIndex × `OCC_DEPTH_EPS` (1e-6), scenery included,
-  which reproduces "insertion order among equals" exactly and tops out at
-  ~0.006 — far inside the ≥0.3 every body and light keeps from a column
-  (`resolveBodyDepth` +0.5 / above+0.6 / below−0.3; lights +0.1). The
-  metadata (`occluderMeta`, `emissiveLights`, the cover index) is still
-  rebuilt in full every time: it is data, and the cover index's staleness
-  contract is unchanged. **The epsilon is a BASE-band quantity: nothing that
+  depth = base + slot × `OCC_DEPTH_EPS` (1e-6), where the slot is STATED, not
+  counted: a terrain image's slot is its cell's place on its diagonal
+  (`u mod 128` × 40 + the cell's own creation order; a 24-storey column is
+  ~30 images, and two cells 128 diagonals apart never overlap) and scenery
+  starts past every terrain slot (`OCC_SEQ_SCENERY`) so a piece on a wall
+  top still draws over the wall — the incremental walk creates cells in any
+  order, so a running count would have put a newly entered cell over an
+  older neighbour on the same diagonal. Tops out at ~0.006 — far inside the
+  ≥0.3 every body and light keeps from a column (`resolveBodyDepth` +0.5 /
+  above+0.6 / below−0.3; lights +0.1). `emissiveLights` and the cover index
+  are still rebuilt in full every time: data, and the cover index's
+  staleness contract is unchanged. **The epsilon is a BASE-band quantity: nothing that
   goes through `litDepth` (×1e-5) takes it** — lit copies are never pooled
   and keep their creation order, and 1e-6 in the lit band is 0.1 world px
   per index (review caught scenery lit copies 165-540 px in front of the
@@ -40,6 +333,44 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   pool is drained at the next rebuild. The pool holds TEXTURE OBJECTS across
   rebuilds, so tiles3's `limit: 0` cache must stay unbounded, or an eviction
   must clear the pool too.
+- **THE WALK IS INCREMENTAL TOO** (`rebuildOccluders` full vs step,
+  `tiles3Occluders(..., only)`, 2026-09-12). The pool kept the IMAGES; the
+  walk that decided them still visited every cell of the window — ~2,700 on
+  his phone — every 96 px, and it was the largest burst left after the drain
+  (50-133 ms frames, `rebuildOccluders` 1.1-1.5 ms/frame mean while moving).
+  A step now walks only the cells that ENTERED the window, the kept cells
+  whose images the moving cull box refused last time (`partial`), and the
+  kept cells the texture factory could not fully serve (`incomplete`: its
+  own plate or course missing, or a boundary, fade, deck course or dress
+  refused — every refusal moves one of `droppedOps`, `plateRawFallbacks`,
+  `stats.missing`, `stats.deferred`, and the walk reads them before and
+  after each cell). Cells that LEFT take their images and per-cell meta
+  bucket (`occMetaByCell`) with them; nothing else is touched, and the flat
+  `occluders`/`occluderMeta` views are rebuilt from the buckets after every
+  step. A terrain landing and a raised boundary repair set `occRelanded`,
+  which walks the incomplete cells alone from wherever the camera stands
+  (both used to poison the latch: a FULL rebuild per batch, 200-300 batches a
+  window while running, rate-limited to 400 ms for the repair). The full
+  walk remains for the first set, a poisoned latch (teleport, manifest
+  settle, `repaintWorld`) and any indoor change (the cut mask rewrites every
+  column). Measured headless, spawn area, 10 run trips each: the walk 2.85 ms
+  avg / 9.2 max per step → 0.26 avg / 3.8 max (~80-100 cells walked per step
+  of ~1,900), and the incremental set IDENTICAL to a fresh full walk at every
+  check — same images, same meta — except kept cells' images the cull box
+  would now refuse, which stay (harmless: a few extra sprites, none in view,
+  never a missing one), and the per-diagonal depth slot after a cut change
+  (walk order; a diagonal's cells sit side by side, so it never orders two
+  overlapping images). `scripts/verify-occinc.mjs` is that check (`__ml.occInc()`
+  counters and A/B — `occInc(false)` walks the window every step;
+  `__ml.occIncCheck()` steps to the exact camera, then compares against a
+  full walk). NOT time-slicing the full walk across frames (stash of
+  2026-09-12: a generator with a staged swap — the set is stale for the
+  frames it takes, lit copies were lost at one spot, and it still does all
+  the work). The scenery rebuild (`rebuildScenery`) and the cover index
+  still run in full every step; the rebuild's loop is ~1 ms a step headless
+  and its 33-66 ms steps on his phone were first-sight pixel work per new
+  still, now measured on the worker (SCENERY STILLS RIDE THE ART QUEUE) —
+  the cover index is next if his run still names it.
 - **STREAMING REPAINTS ARE COALESCED** (`requestRepaint`, 2026-09-02). While
   a window's art streams in, three things used to run a FULL synchronous
   repaint — the terrain batch landing (`Tiles3Loader.onBatch`), the scenery
@@ -49,10 +380,12 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   with art landing: 8 of 11 occluder rebuilds and 8 of 8 ground redraws were
   that, not camera movement. Now a landing MARKS what it dirtied and
   `update()` poisons the matching latch at most once per frame: a terrain
-  batch needs ground + occluders (its plates were holes, its faces skipped);
-  a scenery batch or manifest needs the occluder rebuild ONLY — scenery rides
-  inside it; the terrain occluders come back out of the pool, while the
-  scenery images and lit copies are rebuilt in full (not pooled). The
+  batch needs the ground and a re-walk of the occluder cells the last walk
+  left INCOMPLETE (its plates were holes, its faces skipped — `occRelanded`,
+  never the whole window); a scenery batch or manifest needs the occluder
+  rebuild ONLY — scenery rides inside it; the terrain occluders come back out
+  of the pool, while the scenery images and lit copies are rebuilt in full
+  (not pooled). The
   explicit `repaintWorld()` callers (the indoor cut, landed hitbox docs) stay
   synchronous — state changes whose callers may read the result on the same
   frame — and clear the pending flags, so a landing beside a state change
@@ -226,10 +559,36 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   per frame (`t3paintSliceStep`). Identical pixels (the slices are disjoint
   rects through the same clipped pass the bands used). THE SLICE SIZE IS A
   GPU TRADE, not just a JS one: every `beginDraw`/`endDraw` bracket costs a
-  full capture-target clear AND a full-texture blit whatever it draws
-  (`DynamicTexture.beginDraw` → `RenderTarget.bind`, `endDraw` → `blitFrame`),
-  so more slices spread the JS but multiply whole-texture GPU passes; 384 px
-  gives 4-8 slices, which keeps the GPU within ~2x the unsliced scroll.
+  full capture-target clear (`DynamicTexture.beginDraw` → `RenderTarget.bind`;
+  it cannot be bounded — `adjustViewport` disables the scissor test right
+  before it — and a tiler's transaction elimination makes the repeat nearly
+  free) and a blit (`endDraw` → `blitFrame`). THE BLIT IS THE PAINTED RECT'S
+  SINCE 2026-09-13 (`groundEndDraw`): the drain's slices, the flush's union,
+  the cell repaint's clip on the scratch and its copy-back frame on the RT are
+  scissored; the full paint and the scroll stay whole. Before that it was a
+  full-texture blit whatever the bracket drew — 2.5 Mpx of fragments per
+  bracket, six brackets in one cell-repaint frame on his phone (~30 Mpx,
+  twenty screens), and his 03:53 run's `longWhy` put 66 of 69 long frames in
+  `wait`, the compositor waiting on that fill. Inside the rect the texels are
+  identical; outside it the scissor DROPS THE SPILL, and the spill was wrong:
+  a band pass draws an op crossing the band edge whole (the clip decides
+  whether, never what — the zigzag fix), and the whole blit then laid those
+  earlier cells' pixels over later cells' in a 13-45 px strip past every band
+  edge — measured 3.5-7.7k texels per latch that had been exact (the kept
+  picture equals a full paint texel for texel; the spilled strip did not).
+  The band's own difference from a full paint (2.6-10k texels inside it) is
+  the compositions it still owed (15-734 `boundary` owed at the moment of
+  judgement), which the landing repaint settles, and is the same either way.
+  `__ml.groundBracketParity(sx, sy)` scrolls the ground itself by a latch step
+  and compares all of it; gated by `scripts/verify-groundbracket.mjs`.
+  `groundDrew.blitMpx` counts the blitted texels a window (headless, a 288 px
+  latch: 0.43 Mpx against 2.12; nine cells: 0.47 against 4.24), `scissor`
+  says which way ran; `?groundscissor=0` restores the whole blit (its Settings
+  row went on 2026-09-13 with the other decided switches). A drain that pays both bands of a diagonal latch in one frame unions
+  to most of the texture — the phone pays ~one slice a frame, so its blits
+  are one slice each. The stamp that opened its own whole-target bracket per
+  cell repaint batches into the scratch's bracket (`skipBatch`). 384 px still
+  gives 4-8 slices.
   A new scroll FLUSHES what is owed before copying the picture forward, a full
   paint drops it, and every probe that reads the texture back flushes first —
   so a slice can never paint into a swapped texture or a stale anchor.
@@ -261,8 +620,38 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   the occluder+scenery rebuild and the per-frame fog/lit-copy pass. The lag
   he FELT was not this floor: it was the capture-target re-allocation (see
   "THE RUNNING-INTO-A-NEW-AREA LAG", below).
-- **COMPOSING IS BUDGETED, AND A CELL WITHOUT ITS TRANSITION YET DRAWS THE
-  PLAIN PLATE** (`Tiles3Textures.armCompose`, `GROUND_COMPOSE_MS` = 2). One
+- **THE GROUND AHEAD IS COMPOSED OFF THE FRAME THREAD** (`composeworker.ts`,
+  `composeclient.ts`, `Tiles3Textures.landRemote`, 2026-09-12; maintainer:
+  "a background thread that prepares the world you are next to enter …
+  You must not do everything on the main thread!"). Every boundary
+  transition and fade overlay is a job the factory posts to a worker the
+  first time it is asked for: the worker fetches the plates itself (a cache
+  hit — the ground loader asked for the same files), decodes them with
+  `createImageBitmap`, reads them through an OffscreenCanvas, composes with
+  the SAME functions the factory uses (`buildPlatePixels`,
+  `buildBoundaryPixels`, `fadeOverlay` — one code path, so the rasters are
+  byte-identical: unit test in tiles3draw.test.ts, live audit
+  `__ml.composeWorker({audit:true})`, gate `scripts/verify-compose.mjs`)
+  and posts the raster back with its buffer transferred; the frame thread's
+  whole cost is one `texImage2D` of 11,776 bytes (`counts.composeApplyMs`).
+  Until a raster lands the cell draws its plain plate and sits in the owed
+  set, exactly as a budget-refused composition did, and the directional ring
+  asks AHEAD of the camera, so on a walk the raster is there before the cell
+  is. Jobs batch into one message a frame; a raster from a rebuilt factory's
+  generation is dropped; a worker that fails to boot, dies, or is switched
+  off (`ml-compose-worker`, `__ml.composeWorker(false)`) leaves the factory
+  composing here as before, and a key the worker cannot fetch is composed
+  here too. NOT build-time packaging (maintainer: the pairs × patterns × set
+  members "will grow insane") — the compositions stay per-cell at runtime,
+  they just happen on another core, ahead. What still builds on the frame
+  thread: conformed plates and foot bands (5-9 a window, cached for the
+  session) and the resolution of the ring's cells (the resolver worker,
+  `ml-resolve-worker`, is off by default). Beacon: `run.sim` carries `/cw`
+  while the worker is ready; `counts.composeQueued/Landed/Missed/WorkerMs`.
+  `T3_BOUNDARY_LAND` = 12 caps how many landed cells one frame repaints.
+- **COMPOSING ON THE FRAME THREAD IS BUDGETED, AND A CELL WITHOUT ITS
+  TRANSITION YET DRAWS THE PLAIN PLATE** (`Tiles3Textures.armCompose`,
+  `GROUND_COMPOSE_MS` = 2; the path the worker's fallback takes). One
   composition costs **6.0-9.6 ms on his phone** (measured composeMs/composed
   over the worst frames of the 0a0d1e775 beacon — NOT the "2-4 ms" this file
   used to guess), and the pass composed every boundary a fresh window needed
@@ -410,25 +799,29 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   because it never grew. Removed. Any self-tuning ratchet whose growth test is
   stricter than its target has this bug.
 
-- **THE GROUND DRAIN REPAINTS ONLY WHEN ART HAS LANDED** (`t3drainDrops`,
-  `t3texGen`/`t3drainGen`). A dropped ground op drops because the art it wanted
-  is not resident, so a repaint can only change the picture if something has
-  LANDED since — and the flag was re-armed by the very repaint it triggered, so
-  a permanently undrawable op (a 404, an unpublished x-over-y pair) bought a
-  FULL ground paint at every loader idle edge, forever. The rising-edge guard
-  bounded it to one per loader cycle, but the loader cycles constantly while
-  prefetching. MEASURED in his 2026-09-07 run, window 1: `drains` 20,
-  `drainsDeferred` 0, `texturesAdded` **0** — with nothing landing, every one of
-  those 20 full paints was futile by construction. HONEST SIZE, from the run's
-  own ceiling rather than the older per-paint note: w1's `redrawGround` is 1.09
-  ms/frame over 1027 frames = 1119 ms for the WHOLE window, and 24 full paints
-  in it, so a full paint averages at most 46.6 ms — the fix returns roughly
-  800-900 ms of a 30 s window (~3%), concentrated in ~20 hitches, and moves p99
-  and max rather than p50. That window spent 3306 ms in tasks over 50 ms
-  against a ~1280 ms floor in the quiet windows. Arming on the
-  residency counter leaves the feature intact (one repaint per drop episode,
-  which is what it was for) and removes the loop. Verified headless: drains
-  stopped at 2 and full paints at 6, flat for 72 s while textures kept arriving.
+- **THE DROP DRAIN REPAINTS CELLS, NEVER THE TEXTURE** (`t3drainDrops`,
+  `t3dropOwed`, 2026-09-12). A ground op drops when its art is not resident
+  or its composition is deferred; the landing path repairs the first
+  (`t3missing` -> `repaintTiles3Cells`) and `t3retryBoundaries` the composed
+  transitions, and the drain — one repaint per loader idle edge — catches
+  what neither owns (fades, plates, decks). It used to poison the latch and
+  paint the WHOLE ground: measured on his phone, one full paint per drain,
+  14-19 per 30 s window with ZERO textures landing, 46-77 ms each — the
+  largest share of his lag frames on the sprite path, and the "burst test"
+  that skipped it with the other bursts ran 2-3 lag frames per window
+  against 38-51. Now every pass records the cells whose ops dropped and the
+  drain queues THOSE (x-sorted) and `t3drainTick` repaints one group of
+  `T3_DRAIN_GROUP` (8, under the half-texture split) per frame through the
+  clipped cell path until the queue drains — a fresh area streams in with
+  hundreds of deferred fades, and repainting them all at the edge was the
+  full paint's burst under another name (a 48-per-edge cap instead left 13%
+  of the texture plain against a full paint). A still-dropping cell re-owes
+  itself, so a permanently undrawable op costs one small rect per loader
+  cycle. GROUND ONLY: the occluder set keeps its own latch. Gates: the
+  streamed picture equals a forced full paint once the ring is drained
+  (`groundSnapshot` overlap, 0.09% at 275,224 either way), and `fullPaints`
+  per window ~0 while running with `drains` unchanged.
+
 - **`lighting` IS THE NIGHT PASS UPDATE — SPLIT IT, DON'T GUESS IT.** The
   maintainer's 2026-09-07 beacon run made `lighting` the biggest CPU section
   and the least explained: 2.48 ms in one window and 17.13 in another on a
@@ -460,6 +853,58 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   `perfCountN` pattern already exists). `zoomMean` and `jumps` were sent by the
   client and DROPPED by the allowlist for two whole runs — the same trap this
   file warns about one bullet down, walked into twice.
+- **`longWhy` SAYS WHY A LONG FRAME WAS LONG** (2026-09-13). Every frame over
+  HITCH_LONG_MS is classified at report time: `task` — a browser `longtask`
+  overlapped the interval the beacon counted as idle (GC's idle-time tasks, a
+  touch handler, a patch we do not time); `gc` — the JS heap dropped >= 16 MB
+  across the frame (a collection ran in it, our own JS included); `wait` —
+  neither: the thread was free and the next frame did not come, which is the
+  compositor waiting on the GPU. `{n, wait, task, gc, taskMs, waitIdleMs,
+  gcMb}`; each `worst` record carries `dh` (heap MB across the frame), `w`
+  and `lt` (overlapping task ms) EARLY in the record, where the 1200-char cap
+  cannot reach them. Read `cells:unattributed` against it: `wait` is the
+  ground path's GPU fill (its whole-target clear + blit per bracket, the
+  cover atlases' old tax), `task`/`gc` is the main thread. His 03:13 run on
+  95af8a01c had 42 of 55 long frames in one window as idle gaps of 35-120 ms
+  with nothing of ours in the frame; the window's 2 long tasks (217 ms) match
+  its two CPU-heavy frames, which already argues `wait` — this settles it per
+  frame.
+- **THE BEACON CARRIES THE WINDOW'S CONTEXT, THE ROUND TRIP, THE THROTTLING
+  PROXY AND THE GPU'S CLOCK** (2026-09-11, prepared for the next optimisation
+  task so a run answers on its own). Beside the sections and counts: `run`
+  (`runId` per page load + `winIdx`, `sinceLoadS`, zone and hops with the
+  last hop's join/state/bound ms, `moveFrac`/`runFrac`/`travelCells` —
+  what he was DOING, `deviceMemoryGb`, the connection hint, the UA); `rtt`
+  (input seq sent → the server's ack, p50/p90/p99/max — network plus the 20
+  Hz tick, the one lag no CPU section can see — with `patches`/`patchHz`
+  and `reconnects`); `cpu` (`xorshift400k` scoreMs: the same work every
+  window, so a window where it rose while the sections did not is the phone
+  throttling, not the game); `gpu` (`EXT_disjoint_timer_query` — Phaser 3 is
+  WebGL1; the `_webgl2` form is tried first — frame time p50/p90/p99 when the
+  browser lends it, `avail`+`reason` first: "no numbers" is never 0 ms, and
+  headless Chromium withholds it); `frames` now
+  carries the histogram (`le17/le34/le50/le100/gt100`, `mean`) and `rafHz`
+  (the refresh read off the 15th-percentile interval — 60/90/120, or 30 when
+  the browser throttled the tab); and the snapshot counts are promoted to
+  means (`litOccMean`, `monActMean`, `flushMean`, `sceneryImgsMean`).
+  Every WORST-FRAME record now also says WHERE it happened (`at`, the body's
+  cell), at what `z`oom and `t` ms into the window — every report he sends is
+  about a place ("if I stand here and run down...") — and `longWhere` is the
+  long-frame census BY PLACE, in 8-cell blocks keyed by the block's corner so
+  it reads back as a teleport target (`longBy` could only say what the bad
+  frames were doing). A STATIONARY WINDOW IS NO LONGER DROPPED WHEN IT WAS
+  BAD: the old gate was "have you moved 2 cells", which threw away exactly
+  the report he keeps sending by hand — standing still while it stutters —
+  so a window carrying a >100 ms frame, a browser long task or a p90 over 30
+  ms now posts too, and `run.why` says which (`moved`/`bad`/`flush`).
+  READ A RUN WITH `node scripts/perf-read.mjs [--last N] [--run id] [--build
+  sha] [--diff shaA shaB]` — one line per window, both censuses, the worst
+  frames with their place, and two builds' medians side by side; "-" is "not
+  measured", never 0. GATE:
+  `scripts/verify-beacon.mjs` captures the client's real POST headless and
+  asserts every block survives `perfReport` — the eaten-field trap, made a
+  test. Instruments: `client/src/gputimer.ts`, `client/src/perfextra.ts`
+  (unit-tested in `server/test/perfextra.test.ts`).
 - **THE PERF BEACON'S SERVER SIDE IS AN ALLOWLIST** (`server/src/perfreport.ts`,
   `perfReport`, tested in `server/test/perfreport.test.ts`): `/api/perf`
   rebuilds the report field by field, so a block the client starts sending is

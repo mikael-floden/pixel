@@ -164,9 +164,15 @@ class PixelLabClient:
             offset += len(chars)
 
     def last_modified(self, url):
-        """Last-Modified datetime for a CDN asset (None if unavailable). Used to
-        pick the newest frames when PixelLab returns duplicate direction entries
-        for an animation it just regenerated in place."""
+        """Last-Modified datetime for a CDN asset (None if unavailable).
+
+        NOT a way to choose between duplicate takes of a direction any more:
+        sync.py ranked doubled directions by this until 2026-09-12, and the
+        monsters domain measured that ranking against the PixelLab editor over
+        19 real duplicates — it agreed about half the time (CDN upload time is
+        not authoring order) and the maintainer lost finished animations to
+        the disagreement. The take that ships is the LAST in the record
+        (sync._pick_take). Kept for ad-hoc CDN diagnostics only."""
         from email.utils import parsedate_to_datetime
         for _ in range(3):
             try:
