@@ -930,13 +930,34 @@ is the SAME rule the build and the in-place pass use.
   and the test is per WINDOW: a new light must not push a window IT IS IN over
   8 (`max_overlap(..., only=box)`). A global worst answers "no" to every
   indoor fire in this world, whose streetlamp windows already sit at 8 of 8.
-  An unlit hearth is still a fireplace and still gets its chimney; an unlit
-  LANTERN is furniture, so it is not placed at all.
+  An unlit LANTERN is furniture, so it is not placed at all.
+- **AND MOST OF THE FIRES BURN: an indoor fire outranks the lamp in the street
+  outside** (maintainer 2026-09-14, told 2 of 10 hearths were lit: *"You made
+  80% not lit? I think that number should be flipped and 80% should have been
+  lit."*). `indoorfire.py --relight` lights them nearest the arrival point
+  first — `lights()`'s own order, and the only one that survives contact with
+  a player — and pays for each slot by putting a light OUT (the post still
+  stands): a street lamp first (`DIM_RANK`, and the generator itself queues
+  the town's lamps last of everything it lights), then ambient glows, then
+  cave lights, never another indoor fire and never the lighthouse beacon.
+  Among equals the most REDUNDANT goes — the one with the most lit neighbours,
+  which is his own complaint about lamps that cluster.
+- **A DIMMER FIRE DOES NOT BUY A SLOT, and this is the number that decides the
+  whole trade:** a camera window is 899 x 774 px — about 28 x 26 cells, WIDER
+  THAN THE TOWN — so two lights within that share its 8 slots whatever their
+  radius. Capping a hearth's pool at 6 cells instead of the published 16 saves
+  5 lamps of 12 and costs the fire its glow (measured). And lighting a fire
+  spends the slot it just freed, so three hearths in one saturated window cost
+  three lamps however cleverly they are chosen.
+- the_game at 80%: **8 of 10 fires burn for 12 lights put out** — 5
+  streetlights, 3 lantern posts, 2 cave braziers, a crystal and a toadstool
+  ring, of 150. Every fire within 222 cells of the spawn is lit; the two dark
+  ones are the far town's, 246 cells out. 9 of 10 is the ceiling (15 lights
+  out); the tenth cannot be lit at all.
 - the_game 2026-09-13 (in place, additive): 13 rooms → **10 with a fire
-  (76%), 0 with a light only, 3 bare (23%)**; 9 pieces added, 1 of them lit —
-  the town's windows are full of streetlamps, and on a REBUILD `lights()`
-  lights the indoor fires right after the plaza's lamps and before the rest of
-  the town's, which is the only way the other nine burn.
+  (76%), 0 with a light only, 3 bare (23%)**; 9 pieces added. On a REBUILD
+  `lights()` lights the indoor fires right after the plaza's lamps and before
+  the rest of the town's, which is the build-side half of the same trade.
 
 ### scenery ON a roof — the chimney over the fire
 

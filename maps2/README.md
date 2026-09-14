@@ -441,7 +441,10 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   and the engine's per-window light budget applied the way `lights()` applies
   it (`spec/WORLD3.md` → the fire indoors). `--apply <world_dir>` gives a
   world that already ships its fires, additively; `--refit <world_dir>` moves
-  a fire that stands across a doorway, and its chimney with it.
+  a fire that stands across a doorway, and its chimney with it; `--relight
+  <world_dir> [--share 0.8]` lights most of them, putting a street lamp out
+  for each slot it takes (his 2026-09-14 trade: a fire indoors outranks the
+  lamp outside).
 - `chimneys.py` — a chimney on the roof over every open fire indoors, at the
   fire's own cell with `z` lifting its feet to the deck's top
   (`spec/WORLD3.md` → scenery ON a roof). `--apply <world_dir>`; `--dir`

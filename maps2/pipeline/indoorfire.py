@@ -490,13 +490,226 @@ def refit(world_dir, write=True):
     return len(moved)
 
 
+# WHAT GIVES UP ITS SLOT TO A FIRE, cheapest rank first. The generator's own
+# `lights()` queues "the rest of the town's lamps" LAST of everything it
+# lights, so a street lamp is the cheapest slot in the world — and his
+# standing complaint about them is that they CLUSTER ("I have 3 very bright
+# streetlights very very close together ... it's just very very bright
+# here"), so the one that goes dark is the one with the most lit neighbours.
+# Nothing of a dearer rank is touched while a cheaper one is still available
+# at that window.
+DIM_RANK = {"streetlights": 0, "lantern_posts": 0,
+            "mushrooms": 1, "giant_mushrooms": 1, "toadstool_rings": 1,
+            "crystals": 1, "crystal_trees": 1, "ancient_trees": 1,
+            "soulstone_outcrops": 1, "rock_spires": 1, "chess_tables": 1,
+            "charcoal_kilns": 1,
+            "braziers": 2, "torch_posts": 2, "cauldron_camps": 2,
+            "waystones": 3, "wayside_shrines": 3}
+# NEVER put out: another indoor fire (that is the thing being lit) and the
+# lighthouse BEACON, the one big far light and the only one on its headland.
+# The game's own spawn bonfire is not a placement, so it cannot be touched.
+DIM_NEVER = ("beacons",)
+
+
+def relight(world_dir, share=0.8, write=True):
+    """LIGHT MOST OF THE FIRES, AND TAKE THE SLOTS FROM THE LAMPS.
+
+    Maintainer 2026-09-14, told 2 of 10 hearths burn: *"You made 80% not lit?
+    I think that number should be flipped and 80% should have been lit."* The
+    engine's 8 world lights per camera window is a hard ceiling, so this is
+    not a number that can simply be asked for — it is a TRADE, and he has now
+    made it: an indoor fire outranks the lamp in the street outside.
+
+    WHY IT COSTS WHAT IT COSTS, and why a dimmer fire does not help: the
+    budget is per CAMERA WINDOW, and a window is 899 x 774 px — about 28 x 26
+    cells, which is bigger than the town. Every light within that of another
+    shares its 8 slots whatever its radius, so capping a hearth's pool at 6
+    cells instead of the published 16 saves 5 lamps of 12 and costs the fire
+    its glow (measured). And lighting a fire SPENDS the slot it just freed, so
+    three hearths in one saturated window cost three lamps however cleverly
+    they are chosen.
+
+    A lamp is not removed, it is put OUT: the post still stands in the street.
+    """
+    import world3
+    import world3grow as W
+    import navfit
+    path = os.path.join(world_dir, "world.json")
+    doc = json.load(open(path))
+    g = _shell(doc, world_dir)
+    rooms = {(c["x"], c["y"]) for r in doc.get("rooms", []) for c in r.get("cells", [])}
+    cave = navfit._cave_floor(doc)
+    sx, sy = doc["spawn"]
+    extra = [(sx + 0.5, sy + 0.5, W.Grow.BONFIRE_R)]
+
+    def space(x, y):
+        c = (int(x), int(y))
+        return "in" if c in rooms else "cave" if c in cave else "out"
+
+    fires = [p for p in doc["scenery"] if p.get("z") is None
+             and p.get("piece", "").split("/")[0] in FIRE_GROUPS
+             and (int(p["x"]), int(p["y"])) in rooms]
+    if not fires:
+        print(f"{world_dir}: no indoor fires")
+        return 0
+    want = math.ceil(share * len(fires))
+    was_lit = sum(1 for p in fires if p.get("lit"))
+
+    def lit_pts():
+        out = [(sx + 0.5, sy + 0.5, W.Grow.BONFIRE_R, "out")]
+        for q in doc["scenery"]:
+            if world3.is_lit(q):
+                out.append((q["x"], q["y"],
+                            world3.light_meta(q["piece"], q.get("state"))[0],
+                            space(q["x"], q["y"])))
+        return out
+
+    def states_of(piece):
+        """its LIT variations, DIMMEST FIRST — a smaller pool is a smaller
+        box, so the quietest fire that still reads as a fire is the one that
+        might fit without putting anything out."""
+        meta = _meta(piece).get("states") or {}
+        ks = [k for k in meta if k.startswith("LIT") and g._rated(piece, k)[0]]
+        return sorted(ks, key=lambda k: (world3.light_meta(piece, k)[0], k))
+
+    def fits(p):
+        box = world3.light_boxes([p])[0]
+        n, where = world3.max_overlap(
+            world3.light_boxes(doc["scenery"], extra) + [box], only=box)
+        return n <= world3.SLOTS, where
+
+    def crowded(p, r):
+        sp = space(p["x"], p["y"])
+        return any(sp == lsp and math.hypot(p["x"] - lx, p["y"] - ly)
+                   < W.Grow.MIN_CORE * max(r, lr)
+                   for (lx, ly, lr, lsp) in lit_pts()
+                   if (lx, ly) != (p["x"], p["y"]))
+
+    def blockers(where):
+        """the lit placements whose own box covers that point"""
+        out = []
+        for q in doc["scenery"]:
+            if not world3.is_lit(q):
+                continue
+            b = world3.light_boxes([q])[0]
+            if b[0] <= where[0] <= b[1] and b[2] <= where[1] <= b[3]:
+                out.append(q)
+        return out
+
+    def dim_order(cands, fire, rest):
+        """Which light gives up its slot: cheapest RANK first, then the one in
+        the way of the most fires still dark, then the most redundant, then
+        the farthest from this fire. Do not expect the second key to save many
+        lamps — lighting a fire spends the slot it freed — but it cannot cost
+        anything and it breaks the tie the right way."""
+        pts = lit_pts()
+        boxes = {id(q): world3.light_boxes([q])[0] for q in cands}
+        want_boxes = [world3.light_boxes([dict(f, lit=True,
+                                               state=states_of(f["piece"])[0])])[0]
+                      for f in rest if states_of(f["piece"])]
+
+        def key(q):
+            b = boxes[id(q)]
+            helps = sum(1 for w in want_boxes
+                        if not (b[1] < w[0] or w[1] < b[0]
+                                or b[3] < w[2] or w[3] < b[2]))
+            near = sum(1 for (lx, ly, _r, _s) in pts
+                       if (lx, ly) != (q["x"], q["y"])
+                       and math.hypot(q["x"] - lx, q["y"] - ly) < 14)
+            return (DIM_RANK.get(q["piece"].split("/")[0], 9), -helps, -near,
+                    -math.hypot(q["x"] - fire["x"], q["y"] - fire["y"]))
+        return sorted(cands, key=key)
+
+    dark = [p for p in fires if not p.get("lit")]
+
+    def light(fire, rest):
+        """Light this one, putting lights out until it fits. Returns the
+        placements dimmed, or None — and on None nothing is changed."""
+        for st in states_of(fire["piece"]):
+            r = world3.light_meta(fire["piece"], st)[0]
+            was = fire.get("state")
+            fire["state"], fire["lit"] = st, True
+            if crowded(fire, r):
+                fire["state"] = was
+                del fire["lit"]
+                continue
+            ok, where = fits(fire)
+            undo = []
+            while not ok:
+                cands = [q for q in blockers(where)
+                         if q is not fire
+                         and q["piece"].split("/")[0] not in DIM_NEVER
+                         and not ((int(q["x"]), int(q["y"])) in rooms
+                                  and q["piece"].split("/")[0] in FIRE_GROUPS)
+                         and _state(g, q["piece"], (int(q["x"]), int(q["y"])), lit=False)]
+                if not cands:
+                    break
+                q = dim_order(cands, fire, rest)[0]
+                undo.append((q, q.get("state"), q.get("lit")))
+                # PUT OUT, not removed, and it must wear an unlit look:
+                # settle_states asserts that nothing unlit wears a LIT one.
+                q["state"] = _state(g, q["piece"],
+                                    (int(q["x"]), int(q["y"])), lit=False)
+                q.pop("lit", None)
+                ok, where = fits(fire)
+            if ok:
+                return [q for (q, _s, _l) in undo]
+            for (q, st0, lit0) in undo:            # this fire is not lit after
+                q["state"] = st0                   # all: put them back
+                if lit0:
+                    q["lit"] = lit0
+            fire["state"] = was
+            fire.pop("lit", None)
+        return None
+
+    # NEAREST THE ARRIVAL POINT FIRST, which is `lights()`'s own order and the
+    # only one that survives contact with a player: the fires he walks past
+    # are the ones that burn, and the share decides how far out the budget
+    # reaches. (Pricing every fire and lighting the cheapest was tried and
+    # rejected — it left a hearth 55 cells from spawn cold while three houses
+    # 245 cells away burned, because a fire is only "cheap" by accident of
+    # which lamps happen to stand near it.) What IS priced is how each one is
+    # PAID for: dim_order spends a street lamp before a cave torch, always.
+    lit_count, dimmed, failed = was_lit, [], []
+    order = sorted(dark, key=lambda q: (q["x"] - sx) ** 2 + (q["y"] - sy) ** 2)
+    for i, fire in enumerate(order):
+        if lit_count >= want:
+            break
+        got = light(fire, [f for f in order[i + 1:] if not f.get("lit")])
+        if got is None:
+            failed.append((fire["piece"], fire["x"], fire["y"]))
+            continue
+        dimmed += [(q["piece"], q["x"], q["y"]) for q in got]
+        lit_count += 1
+
+    nlit, worst = world3._light_audit(doc["scenery"], extra)
+    print(f"{world_dir}: {lit_count} of {len(fires)} indoor fires lit "
+          f"({100 * lit_count // len(fires)}%, asked for {100 * share:.0f}%, "
+          f"was {was_lit}); {len(dimmed)} light(s) put out to pay for it; "
+          f"world lights {nlit}, worst camera window {worst}/{world3.SLOTS}")
+    for (piece, x, y) in dimmed:
+        print(f"   OUT  {piece} at {x},{y}")
+    for t in failed:
+        print(f"   COULD NOT LIGHT {t}")
+    if write and (dimmed or lit_count != was_lit):
+        json.dump(doc, open(path, "w"), separators=(",", ":"))
+    return lit_count
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--apply", metavar="WORLD_DIR")
+    ap.add_argument("--relight", metavar="WORLD_DIR",
+                    help="light most of the indoor fires, putting lamps out to pay")
+    ap.add_argument("--share", type=float, default=0.8,
+                    help="how many of the fires should burn (default 0.8)")
     ap.add_argument("--refit", metavar="WORLD_DIR",
                     help="move a fire that shuts a door (and its chimney)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
+    if a.relight:
+        relight(a.relight, a.share, write=not a.dry_run)
+        return
     if a.refit:
         refit(a.refit, write=not a.dry_run)
         return
