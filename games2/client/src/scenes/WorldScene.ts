@@ -4032,6 +4032,18 @@ export class WorldScene extends Phaser.Scene {
       wy: number;
       item: string;
       bornAt: number;
+      /* WHERE IT STANDS, in the body pipeline's own terms — the screen point
+       * (`lx`), the painter line at the FLAT ground (`lyFlat`, what the depth
+       * rule sorts on), the LIFTED line the art is drawn at (`ly`) and the
+       * level it lies on. A drop does not move, so these are measured once. */
+      lx: number;
+      lyFlat: number;
+      ly: number;
+      lvl: number;
+      /** The occluder generation its depth was resolved against (see
+       *  `occEpoch`): a drop is static, so it re-resolves only when the set it
+       *  was sorted against is rebuilt. */
+      depthEpoch?: number;
       // Held past the server's removal until my pickup clip reaches the frame
       // the hand closes on it (removeDrop / stepGroundDecor).
       grabbedAt?: number;
@@ -4039,6 +4051,7 @@ export class WorldScene extends Phaser.Scene {
       sawPickup?: boolean; // the clip has actually started (see stepGroundDecor)
     }
   >();
+  private fakeDropSeq = 0; // __ml.dropFake's counter (see the probe)
   private roomBoundAt = 0; // when the current room's state flood began (join vs witnessed)
   // Grave crosses (scenery/grave_cross): appear where a monster died, hold on
   // the last frame, then REVERSE back into the ground and vanish.
@@ -8501,13 +8514,36 @@ export class WorldScene extends Phaser.Scene {
       dropsList: () => {
         const out: Array<{
           id: string; item: string; x: number; y: number; shown: boolean; sx: number; sy: number;
+          depth: number; lvl: number; lyFlat: number; shadowY: number;
         }> = [];
         // x/y = FLAT world units (server space); sx/sy = the drawn image in
         // iso screen-space (what tapAt compares against — round-12 QA).
+        // `depth` is what it SORTS at: a drop is a body, so on raised ground it
+        // must match a body standing on the same cell (verify-dropdepth).
         this.drops.forEach((d, id) =>
-          out.push({ id, item: d.item, x: d.wx, y: d.wy, shown: d.img.visible, sx: d.img.x, sy: d.img.y }),
+          out.push({
+            id, item: d.item, x: d.wx, y: d.wy, shown: d.img.visible, sx: d.img.x, sy: d.img.y,
+            depth: +d.img.depth.toFixed(2), lvl: d.lvl, lyFlat: +d.lyFlat.toFixed(1),
+            shadowY: +d.shadow.y.toFixed(1),
+          }),
         );
         return out;
+      },
+      /** A GROUND DROP WITHOUT THE LOOT ROLL — the same `addDrop` the room's
+       *  state drives, at a cell of my choosing. The world half of the drop
+       *  path had no gate because loot is a per-kill roll and the hill is not
+       *  where the monsters are; this is how verify-dropdepth puts a real item
+       *  on real raised ground. Server-side nothing exists, so it despawns with
+       *  the page, and a pickup finds nothing — a probe, not a cheat. */
+      dropFake: (item: string, col?: number, row?: number, elev?: number) => {
+        const me = this.avatars.get(this.myId);
+        const c = col ?? (me ? me.fx / CELL_WU : 0);
+        const r = row ?? (me ? me.fy / CELL_WU : 0);
+        const id = `fake:${this.fakeDropSeq++}`;
+        const lvl =
+          elev ?? (this.terrain ? this.terrain.level[Math.floor(r) * this.terrain.width + Math.floor(c)] ?? 0 : 0);
+        this.addDrop(id, { x: c * CELL_WU, y: r * CELL_WU, item, elev: lvl });
+        return { id, col: c, row: r, elev: lvl };
       },
       // WHAT IS AROUND ME, by wiki id (games-ui's 🔍 button — spec/WIKI_NEAR.md,
       // maintainer 2026-09-02: "a way to fast find what you stand next to").
@@ -9124,7 +9160,8 @@ export class WorldScene extends Phaser.Scene {
   private addDrop(id: string, g: any) {
     if (this.drops.has(id)) return; // a zone swap re-adds what is already drawn
     const p = this.projectFlat(g.x, g.y);
-    const y = p.y - Math.max(g.elev ?? 0, p.lvl) * this.geom.lh;
+    const lvl = Math.max(g.elev ?? 0, p.lvl);
+    const y = p.y - lvl * this.geom.lh;
     if (this.time.now > this.joinQuietUntil) {
       const spG = this.worldSpatial(p.x, y);
       gameAudio.event("item.drop", { pan: spG.pan, dist: spG.dist });
@@ -9135,6 +9172,13 @@ export class WorldScene extends Phaser.Scene {
       .setDisplaySize(20, 9)
       .setAlpha(0.55)
       .setDepth(y - 0.6);
+    /* THE DEPTH IS RESOLVED, NOT THE LIFTED y — see syncDropDepth. Sorting a
+     * drop on the line its ART is drawn at put every drop on raised ground
+     * behind the ground in front of it; the two agree only at level 0, which is
+     * exactly the line he drew (maintainer 2026-09-14: "It works when I stand
+     * on level 0, but when I walk up elevation and drop I can't see the item").
+     * Born at the lifted line and re-sorted the moment its texture lands: the
+     * depth rule measures the ART's box, and there is none until then. */
     const img = this.add.image(p.x, y - 7, "__MISSING").setVisible(false).setDepth(y);
     // Witnessed drops carry their local birth time (drives the end-of-life
     // flash); join-inherited ones (the state flood right after bind) start
@@ -9147,11 +9191,16 @@ export class WorldScene extends Phaser.Scene {
       wy: g.y,
       item: g.item,
       bornAt: this.time.now,
+      lx: p.x,
+      lyFlat: p.y,
+      ly: y,
+      lvl,
     };
     this.drops.set(id, rec);
     this.withItemTexture(g.item, (key) => {
       if (this.drops.get(id) !== rec) return; // picked up before the art landed
       img.setTexture(key).setScale(0.6).setVisible(true);
+      this.syncDropDepth(rec);
       // The little TOSS (maintainer: "thrown up from the ground", subtle):
       // freshly witnessed drops pop up a few px and settle; the join flood
       // (< 2s after bind) lands silent so a full field doesn't bounce at us.
@@ -9164,6 +9213,49 @@ export class WorldScene extends Phaser.Scene {
           } });
       }
     });
+  }
+
+  /** A DROP IS A BODY — one depth pipeline, one shadow rule (CLAUDE.md: never
+   *  hand-roll a second depth/shadow path). It was the last body kind that
+   *  still did: its depth was the LIFTED screen y its art is drawn at, while
+   *  `resolveDrawDepth` sorts every other body on the painter line of the FLAT
+   *  ground (`lyFlat + 0.5`) and lets the rule lift it from there. On raised
+   *  ground the two differ by exactly the lift, so a dropped item sorted
+   *  elev·lh px in front of where it stands and the cliff face painted over it
+   *  — invisible, still tappable, still in the world (maintainer 2026-09-14:
+   *  "It works when I stand on level 0, but when I walk up elevation and drop I
+   *  can't see the item"; diagnosed by games-ui-assistant, whose measurement at
+   *  elev 32 reported the sprite textured, visible and simply behind terrain).
+   *  Its shadow had the lift twice over: it hung at the lifted feet instead of
+   *  the landing ground, which `placeBodyShadow` is the one place that knows.
+   *
+   *  A drop does not move, so this runs when its art lands and whenever the
+   *  occluder set it was sorted against is rebuilt (`occEpoch`), never per
+   *  frame per drop. */
+  private syncDropDepth(rec: {
+    img: Phaser.GameObjects.Image;
+    shadow: Phaser.GameObjects.Image;
+    wx: number; wy: number; lx: number; lyFlat: number; ly: number; lvl: number; depthEpoch?: number;
+  }): void {
+    if (rec.img.texture.key === "__MISSING") return; // no art box to measure yet
+    const r = this.resolveDrawDepth(
+      { sprite: rec.img, lx: rec.lx, lyFlat: rec.lyFlat, ly: rec.ly, fx: rec.wx, fy: rec.wy },
+      rec.lvl,
+    );
+    rec.img.setDepth(r.depth);
+    // The FLASH owns the shadow's alpha (stepGroundDecor ramps it as the drop
+    // dies); the shared shadow rule sets its own for a body in the air, so put
+    // it back rather than let a landed drop blink to full for one frame.
+    const a = rec.shadow.alpha;
+    this.placeBodyShadow(
+      { sprite: rec.img, shadow: rec.shadow, lx: rec.lx, lyFlat: rec.lyFlat, ly: rec.ly },
+      rec.lvl * this.geom.lh,
+      0,
+      20,
+      9,
+    );
+    rec.shadow.setAlpha(a);
+    rec.depthEpoch = this.occEpoch;
   }
 
   private removeDrop(id: string) {
@@ -10957,6 +11049,9 @@ export class WorldScene extends Phaser.Scene {
         : 0;
       const cutA = this.cutFade(dropLvl, rec.wx, rec.wy);
       const out = rec.img.texture.key === "__MISSING" || cutA <= 0.004;
+      // The set it was sorted against has been rebuilt: re-sort it. Static art,
+      // so this is once per drop per rebuild, not once per frame.
+      if (!out && rec.depthEpoch !== this.occEpoch) this.syncDropDepth(rec);
       rec.img.setVisible(!out).setAlpha(cutA);
       rec.shadow.setVisible(!out).setAlpha(0.55 * cutA);
       const left = DROP_TTL_MS - (now - rec.bornAt);
@@ -15716,7 +15811,9 @@ export class WorldScene extends Phaser.Scene {
    * hop shrinks it (sizes differ per body art — parameterized so the incoming
    * larger monsters can pass their own). */
   private placeBodyShadow(
-    b: BodyVisual,
+    // The fields it actually reads — BodyVisual satisfies this, and so does a
+    // ground DROP, which is a body for depth and shadow like every other.
+    b: { sprite: { depth: number }; shadow: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number },
     targetElevPx: number,
     hopPx: number,
     w: number,
@@ -23014,7 +23111,13 @@ export class WorldScene extends Phaser.Scene {
   /** Dev A/B: `__ml.occCull(false)` restores the old every-object submit. */
   private occCullOn = true;
 
+  /** BUMPED ON EVERY OCCLUDER REBUILD. Bodies re-resolve their depth each
+   *  frame because they move; a DROP lies still, so it re-resolves only when
+   *  the set it is sorted against has actually changed (stepGroundDecor). */
+  private occEpoch = 0;
+
   private rebuildOccluders() {
+    this.occEpoch++;
     if (!this.world) return;
     // The pool's cell key is row*stride+col; the stride is the world's width.
     this.occStride = this.world.width;

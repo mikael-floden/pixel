@@ -29,7 +29,7 @@ each with an `<agent>-assistant` of the same remit and its own board (root
 | `docs/shipping.md` | publish policy, curated image root, world tree, staging, WebP, `?h=` grant, brotli pin, loading order, deploy |
 | `docs/tiles3-rendering.md` | tiles3 resolver and draw ops, plates, transitions, seams, fades, decks, wall feet, render3 parity |
 | `docs/scenery.md` | sizing, hitboxes, animation, windows on walls, indoor furniture, flat pieces, fog silhouettes |
-| `docs/depth-sort.md` | occluder set, `depthrule.ts`, cover lines, lifts |
+| `docs/depth-sort.md` | occluder set, `depthrule.ts`, cover lines, lifts, drops |
 | `docs/perf.md` | ground render texture (scroll, slices, repaints, prefetch, compose budget), pooled occluders, capture pool, art queue, beacon |
 | `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, dodge, swimming, footsteps, gait, camera |
 | `docs/monsters-combat.md` | spawn zones, shadows, gait, brain, escape math, loot, backpack, levelling, death, NPCs |
@@ -120,7 +120,7 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
 
 **Depth, occluders, scenery** (`docs/depth-sort.md`, `docs/scenery.md`)
 - ONE body pipeline: `resolveDrawDepth` + `placeBodyShadow` + `syncLitCopy`
-  for players, monsters, NPCs and scenery. Never hand-roll a second
+  for players, monsters, NPCs, scenery AND DROPS. Never hand-roll a second
   depth/shadow/lighting path ("we will end up with the player's renderer").
 - `depthrule.ts` is a pure function tested against DUMPED occluder records;
   never reconstruct a fixture's projection.
@@ -248,8 +248,8 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
 
 **Monsters, combat** (`docs/monsters-combat.md`)
 - Spawn placement is maps2 data (`spawns.json`); no spawns → no monsters.
-- A zone cell is a SURFACE, so a stray snaps back to the nearest one on ITS
-  OWN LAYER (`nearestZoneCell`), never through the slab it stands on.
+- A zone cell is a SURFACE: a stray snaps back to the nearest one on ITS OWN
+  LAYER (`nearestZoneCell`), never through the slab it stands on.
 - The tuned shadow beats everything art-measured: centre = position, size =
   hit box, one size for all facings, via `monsterRadiusFor`.
 - `separationPush` stays squared-distance: broad-phase, never micro-tuning.
@@ -285,8 +285,7 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark room 40%, lit room 12%; hidden outline 20% — his dials.
 - MY ROOM IS A VOLUME: the room test takes a HEIGHT (`indoorCeil`, not the
-  cut), and over my own roof its lights and halo field are blocked outright,
-  never eased.
+  cut), and over my own roof its lights and halo field are blocked outright.
 
 **UI and mobile** (`docs/ui.md`, `UI_AGENT.md`)
 - Wiki-themed DOM HUD, golden split, ONE 10 px edge margin; pixel art scales

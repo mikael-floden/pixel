@@ -167,6 +167,34 @@ How bodies and pieces interleave with terrain columns: the occluder set, the pur
   stub BESIDE him cannot claim the front. It fixed one of the three positions,
   left the other two broken, and dropped covers everywhere else in the world
   for nothing. The lateral test is the whole fix; `fwd` keeps its +1.2 slack.)
+- **A DROPPED ITEM IS A BODY** (`addDrop` → `syncDropDepth`). It was the last
+  body kind that hand-rolled its own depth: `.setDepth(y)` on the LIFTED screen
+  y its art is drawn at, while `resolveDrawDepth` sorts every other body on the
+  painter line of the FLAT ground (`lyFlat + 0.5`) and lets the rule lift it
+  from there. The two agree only at level 0 — which is exactly the line the
+  maintainer drew (2026-09-14: "It works when I stand on level 0, but when I
+  walk up elevation and drop I can't see the item"; earlier, "I can't see the
+  item in the game world, but it is still removed from my Inventory … I can pick
+  it up again if I manage to click on that invisible object"). Measured on
+  the_game at level 6: the drop sorted 104.6 px behind a body standing on the
+  same cell, so the ground in front painted over it — the sprite was textured,
+  visible and simply behind terrain, which is why tapping it still worked. Its
+  SHADOW had the lift twice: hung at the lifted feet instead of the landing
+  ground, which `placeBodyShadow` is the one place that knows. Diagnosed by
+  games-ui-assistant, who ruled out the art (all 226 item sprites serve 200 at
+  their hashed URLs), the texture load and a context restore first.
+  A drop does not move, so it re-resolves when its art lands and whenever the
+  occluder set is rebuilt (`occEpoch`), never per frame per drop; and the FLASH
+  owns its shadow's alpha, so the shared rule's own alpha is put back.
+  `placeBodyShadow` now takes the fields it reads rather than a whole
+  `BodyVisual`, which is what lets a drop use the real one instead of a copy.
+  Gate: `verify-dropdepth.mjs` — a real drop (`__ml.dropFake`, the same addDrop
+  the room state drives, without the per-kill loot roll) on a derived raised
+  cell with lower ground in front, asserting it sorts within 2 px of a body
+  standing on it: Δ 0.0 px on the new rule, −104.6 on the old, and −0.5 at level
+  0 either way. `__ml.dropsList()` reports each drop's `depth`, `lvl`, `lyFlat`
+  and `shadowY`.
+
 - **THE DEPTH RULE IS A PURE FUNCTION — `client/src/depthrule.ts`**, and
   `WorldScene.resolveDrawDepth` only feeds it (art box, occluder list,
   geometry). The cave sort broke three times and each round the only check was
