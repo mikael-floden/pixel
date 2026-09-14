@@ -488,6 +488,45 @@
     }
    ],
    "artifact": "https://claude.ai/code/artifact/3ddee28c-e8e7-4a5d-9a70-10eaf8389d34"
+  },
+  {
+   "date": "2026-09-14",
+   "commit": "6a799100a3",
+   "before": "f7f501b432",
+   "title": "The hearth that stood in room 9's doorway, moved — and two stacks whose art you deleted",
+   "changes": [
+    {
+     "name": "A doorway is not a wall",
+     "what": "You were standing at 303.4, 231.6 - in the door between the two rooms - with a fireplace filling it. I did not reason about it: my wall test asked only whether the cell beyond was part of THIS room, which is just as true of a wall, of a passage, and of the next room's floor. That door is a floor cell poking through the wall row, so it read as wall, the 10-cell run swallowed it and the hearth took the cell you cross to get through. A wall is a RAISED neighbour now, an opening breaks the run, and on top of that a piece is refused if the cells the GAME blocks for it touch a doorway at all. The hearth moved two cells east, onto the same wall but between the two doors - where the dividing wall of the rooms above comes down, so it reads as the house's own chimney breast. Its stack went with it. Tap for what you saw.",
+     "cell": [
+      305,
+      233
+     ],
+     "window": [
+      296,
+      224,
+      314,
+      240
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "Two stacks re-picked after your review",
+     "what": "Your chimney review deleted chimney_002 and four states - two of them exactly the ones with 'NEW' printed on the roof that this pass was already refusing to place. Two houses were left naming a piece that is no longer on disk: the game draws nothing there and the map renderer stops dead. They were re-asked for a stack over what survives, and every other roof kept the one it had. (No 'before' picture for this one: the old shot cannot be drawn any more - the art it needs is the art you deleted.)",
+     "cell": [
+      103,
+      149
+     ],
+     "window": [
+      95,
+      141,
+      113,
+      158
+     ],
+     "before": null
+    }
+   ],
+   "artifact": "https://claude.ai/code/artifact/40a7898e-65ea-4219-8e06-5a8db5548203"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
