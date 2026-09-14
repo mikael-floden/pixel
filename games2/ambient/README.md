@@ -112,7 +112,8 @@ them; folder isolation beats DRY here).
   `falling` clears on the frame the elevation reaches its target, when the
   body is already down.
 - **THE PROBE SURFACE IS NOT ONE COORDINATE SPACE, AND TWO OF ITS ANSWERS ARE
-  NOT WHAT THEIR NAMES SUGGEST.** Both cost `dawnmist/` a gate run each:
+  NOT WHAT THEIR NAMES SUGGEST.** Both cost the ground-fog attempt (removed —
+  see Don't) a gate run each:
   `__ml.pickAt` answers in WORLD UNITS (32 to the cell), so a distance taken
   from it and compared against a threshold in CELLS is out by 32x — every
   sample fell in the wrong bucket and the deepest hollow in the game reported
@@ -137,13 +138,14 @@ them; folder isolation beats DRY here).
   bolts on the same frame.
   (`crabs/` and `gnats/` predate this and each carry their own copy; they can
   adopt it whenever they are next opened.)
-- **`pickAt` ALSO ANSWERS THE ELEVATION**, which is how `dawnmist/` finds a
-  hollow with no new seam at all: it returns `{x, y, lvl}` for whatever is
-  DRAWN at a screen point, so a RING of picks around a candidate says whether
-  the ground rises around it. Six picks is a placement cost, never a per-frame
-  one — and it is worth re-reading the probe list before asking the games agent
-  for anything, which is the moths' lesson finally paying off in the right
-  direction.
+- **`pickAt` ALSO ANSWERS THE ELEVATION**, so an effect can find a hollow, a
+  summit or a cliff foot with no new seam at all: it returns `{x, y, lvl}` for
+  whatever is DRAWN at a screen point, so a RING of picks around a candidate
+  says whether the ground rises around it. Six picks is a placement cost, never
+  a per-frame one — and it is worth re-reading the probe list before asking the
+  games agent for anything, which is the moths' lesson finally paying off in the
+  right direction. (Proven on the removed ground fog; the technique is sound
+  and the seam is still there, it was the LOOK that was rejected.)
 - **A LIQUID IS FOUND WITH THE PICKER, NEVER WITH THE LANDABLE HELPERS.**
   Everything in `runtime/ground.ts` answers about walkable DRY TOP ground, so
   none of it can find water or lava at all, and `landableAtScreen` is not
@@ -355,8 +357,8 @@ them; folder isolation beats DRY here).
     brought the seam. A surface effect follows the RESOLVER, never the screen
     — the screen catches up. Reported to the games agent.
 - **THE SURFACE BAND IS UNDER THE TERRAIN OCCLUDERS, NOT ONLY UNDER THE GROUND
-  TEXTURE — so almost nothing may live there.** `dawnmist/` was written for it
-  on the theory that the night would then grade the fog for free (multiplied
+  TEXTURE — so almost nothing may live there.** The ground fog was written for
+  it on the theory that the night would then grade the fog for free (multiplied
   down with the ground it lies on, near-black at 3am, catching first light with
   the world, no sun term needed). Elegant, and wrong where it counts: a grassy
   hollow's ground is drawn with OCCLUDERS, so the fog was behind the world.
@@ -366,7 +368,7 @@ them; folder isolation beats DRY here).
   the ground texture; assume nothing else can.
   **EVERY OTHER GROUND-LYING MARK HERE SITS JUST OVER THE OVERLAY** — `drips/`
   splash rings 900_000.05 "with the crawlers", `dust/` 900_000.09, `fish/`
-  rings 900_000.41, `dawnmist/` 900_000.3 — and pays for the position by
+  rings 900_000.41 — and pays for the position by
   GRADING ITS OWN COLOUR, because a mark above the overlay keeps its colour
   through the night and a pale one at 3am is the white-ants verdict again.
   Stay under 900_001 so the scenery's lit copies still stand in front.
@@ -512,7 +514,6 @@ controller (AUTO / NONE / solo-each).
 | `chimney/` | field | A PLUME OFF A ROOF — a hearth burning inside, seen across the town. A body of smoke out of a hole, not a wisp off a flame (`flue.ts`): it leaves the flue already dense and HOLDS for the first third of its life, it only ever gets BIGGER (campfire smoke gathers and falls apart; this dies by thinning), and it BENDS OVER as it climbs, because a puff still in the lee of the roof barely moves sideways while one well above it is in the air that is moving. Each stack breathes on its OWN slow stoke cycle, derived from its placement index so the same chimney breathes the same way every time you walk past it. TWO-TONE, which is the only reason it can be seen: the plume crosses its own roof and then the sky, and the_game's roofs are surfaced snow (241 luma), grey paving (168), grey stone (128), parquet (127) and brown paving (116) over grass at 61 — no single grey departs from 241 AND from 61, so a puff is a pale core inside a darker rim (one texture, one tint) | Any drawn scenery whose manifest publishes a `vent` the domain actually MEASURED (`conf` `opening` or `flue_top` — never `silhouette`) **AND has a fire actually burning under it** (`smokes`: the seam's `hearth`, a `light.flame` placement within half a cell drawing a LIT state — how many of the world's stacks that is belongs to maps2 and moves); outdoors; the hearth is banked at noon, roaring at night, stoked further by rain, and NEVER out — a chimney that stops is indistinguishable from a broken effect |
 | `lava/` | field | THE POOL BREATHES — a dome swells slowly on the molten surface, HOLDS while its skin stretches, and bursts into a flash, a few sparks that fall back in, and a ring of cooled crust spreading from the spot; dark ash drifts up off the surface between bursts. Molten rock is viscous, so the whole cycle is slow — a fast bubble reads as boiling soup. THE POOL'S COLOUR IS THE TILES DOMAIN'S (`ground_types.json` `lava.palette.top` and `.wall`, fetched), and the marks depart from it BOTH WAYS: a hotter dome, a cooler crust, near-black ash | Any LAVA in view — the surface table's `harm` field, the game's one liquid that burns, so a second molten liquid bubbles the day it is added; found with `pickAt` + `surfaceAt`, never the landable helpers (lava is swimmable, not landable) |
 | `dragonflies/` | field | THE WATERLINE IN SUMMER, and the deliberate OPPOSITE of the butterflies above it: still, then a straight line at speed, then still again. It HOVERS on one point (a pixel of jitter, never a drift), DARTS in a linear segment that ends DEAD (easing the ends turns it into a bee), and PERCHES on a reed with its wings still OUT — a butterfly folds its wings at rest and a dragonfly never does, which at four pixels is the whole difference. The wings are a BLUR, not frames: at 400 beats a second there is no pose to draw | The maps2 agent's waterline pieces in view (`reed_beds`, `cattail_clumps`, `water_lily_clumps` — 124 placed), read by category from the display list; outdoors, by DAY, gone in rain and gone in wind |
-| `dawnmist/` | field | GROUND FOG IN THE LOW GROUND — dithered banks lying in a dip, thickening and thinning as they breathe, drifting about a cell over a whole life. Where it belongs is a FIELD, not a place: how enclosed a spot is (a ring of `pickAt` levels around it) plus a bonus for still water beside it, so a deep hollow is thick, the foot of a cliff is half of one, a flat bank beside a pond is a wisp and a ridge is nothing. Drawn in the SURFACE band so the NIGHT grades it — that is what makes it read as dawn without a single sun term in the colour. Dithered, never blurred: density does the work a gradient would do elsewhere | Any hollow or still-water bank in view, outdoors. Thickest in the small hours, full through the sunrise, gone by mid-morning; DUSK gets a hint of it, not the main event. And it is the one effect here that prefers FINE WEATHER: radiation fog needs a clear sky, so cloud thins it and rain kills it |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
@@ -692,8 +693,9 @@ feature folder, a new probe) may simply not be there — check
 `__mlAmbient.list()` for your effect before believing a zero, and restart the
 dev server rather than debugging the effect.
 **AND "THE FEATURE IS REGISTERED" PROVES NOTHING ABOUT YOUR LATEST EDIT.** A
-server will serve commit N-1 of a file perfectly happily: `dawnmist/` reported
-zero fog in the world's deepest hollow for a whole gate run because the served
+server will serve commit N-1 of a file perfectly happily: the ground-fog
+attempt reported zero fog in the world's deepest hollow for a whole gate run
+because the served
 module still carried the previous commit's arithmetic, while its debug block
 carried a field from that same commit and so looked fresh. Touching the file
 did not shake it loose. GREP THE SERVED MODULE FOR THE EXACT SYMBOL YOU
@@ -870,3 +872,12 @@ through the client's tsconfig via the import chain.
   `scenery/`, `sounds/`) — read-only, same as ever.
 - Don't write any `coordination/*.json` except `games-ambient.json`.
 - Don't push red — `npm test` + `npm run typecheck` first.
+- **Don't re-propose GROUND FOG / dawn mist in the hollows.** Built, shipped,
+  and removed the same day on the maintainer's verdict (2026-09-14: "Please
+  remove the Dawnmist effect. It is ugly and I don't want it") — item 12 of his
+  own effect list, so being ASKED for a thing is not a verdict on how it ends
+  up looking. The field arithmetic was sound and the gate was green; a
+  dithered bank of pale pixels lying over the ground is not a look this game
+  wants, at any density. History is in git if the technique is ever wanted for
+  something else; the `pickAt` hollow-finding it proved is written up above and
+  outlived it.

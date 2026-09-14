@@ -108,7 +108,7 @@ export const CORE_FRAC = 0.62;
  *  13 px disc is a wall of coordinates nobody will ever check.
  *
  *  ROUND, NOT ISO-SQUASHED: this is smoke in the AIR. The ground shapes in
- *  this folder (`fish/` rings, `dawnmist/` patches) take the projection's
+ *  this folder (`fish/` rings, `drips/` splash rings) take the projection's
  *  14/32 squash because they lie ON the ground; a puff would read as a
  *  pancake if it did. */
 export function blobPixels(r: number): { core: [number, number][]; rim: [number, number][] } {
