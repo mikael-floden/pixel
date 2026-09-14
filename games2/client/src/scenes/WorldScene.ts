@@ -5993,9 +5993,10 @@ export class WorldScene extends Phaser.Scene {
        * when the chimney stands over nothing. The join is made HERE and not in
        * the effect because only the index can make it: the hearth is indoor
        * furniture and is not in the display list at all from the street, which
-       * is precisely where the plume shows. 6 of the_game's 8 chimneys stand
-       * over a cold hearth (maintainer 2026-09-14: "the fire in the house is not
-       * burning (not a LIT state) and you still show smoke when I walk out").
+       * is precisely where the plume shows. 6 of the 8 chimneys placed that
+       * morning stood over a cold hearth (maintainer 2026-09-14: "the fire in
+       * the house is not burning (not a LIT state) and you still show smoke
+       * when I walk out"); how many burn is the maps2 agent's to set.
        *
        * `litDepth` is the drawn piece's lit copy, the same join lightsInView
        * makes and for the same reason: a mark in the ambient band (~900_000.0x)

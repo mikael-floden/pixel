@@ -479,7 +479,7 @@ test("a fire is judged by the ART IT DRAWS, not by the doc's lit flag", () => {
   assert.equal(fireUnder(fires, 5, 5), null, "a manifest that has not landed is simply not here yet");
 });
 
-test("the_game: 2 of the 8 stacks have a fire under them, and 6 are cold", { skip: skipWorld }, () => {
+test("the_game: every stack is paired with a fire, and the pairing has room", { skip: skipWorld }, () => {
   const doc: any = JSON.parse(readFileSync(WORLD, "utf8"));
   // A FLAT FRAME OVER THE WHOLE WORLD. The join reads `x`, `y`, `piece`, `lit`
   // and `state` — the iso projection and the levels reach only `ax`/`ay`, which
@@ -505,29 +505,16 @@ test("the_game: 2 of the 8 stacks have a fire under them, and 6 are cold", { ski
     return !!piece && !!ventFor(piece, stateFor(piece, p.lit, p.state), p.dir);
   });
   assert.ok(stacks.length >= 4, `the world places vents (${stacks.length})`);
+  const verdicts = stacks.map((p) => ({ p, f: fireUnder(fires, p.x, p.y) }));
 
-  const verdicts = stacks.map((p) => {
-    const f = fireUnder(fires, p.x, p.y);
-    return { p, f };
-  });
+  /* THE PAIRING IS THE INVARIANT. The dressing pass drops the fire and the
+   * chimney over it at ONE point, and that is what the join relies on — so a
+   * stack that lands with no fire under it is either a chimney placed on a cold
+   * roof (which must never smoke and would look broken doing it) or a pairing
+   * that has drifted past the radius. Either way it is worth a failure here
+   * rather than a plume nobody can explain. */
   for (const { p, f } of verdicts)
     assert.ok(f, `the stack at ${p.x},${p.y} (${p.piece}) stands over a fire — the pair is placed at one point`);
-
-  const burning = verdicts.filter((v) => v.f!.lit);
-  assert.equal(burning.length, 2, `2 of ${stacks.length} hearths are lit: ${burning.map((v) => v.f!.p.piece).join(", ")}`);
-  assert.ok(stacks.length - burning.length >= 5, "...and the rest are cold, which is the bug he saw");
-
-  // HIS HOUSE. The screenshot's chimney, with its own hearth in a NOT_LIT state
-  // — the case the whole unit exists for, named so a world edit that moves it
-  // says so instead of silently passing.
-  const his = verdicts.find((v) => Math.hypot(v.p.x - 333.3, v.p.y - 232.3) < 0.6);
-  assert.ok(his, "the chimney at 333.3,232.3 is still placed");
-  assert.equal(his!.f!.lit, false, `his hearth is out (${his!.f!.p.piece}#${his!.f!.state})`);
-  assert.ok(his!.f!.state.startsWith("NOT_LIT"), "...drawn in a NOT_LIT state, exactly as he read it");
-
-  // THE RADIUS HAS ROOM. The paired fire is at 0.00 and the next nearest flame
-  // placement is far outside HEARTH_CELLS — the margin that makes half a cell
-  // safe, measured rather than assumed.
   for (const { p, f } of verdicts) {
     const own = Math.hypot(f!.p.x - p.x, f!.p.y - p.y);
     assert.ok(own < 0.05, `${p.piece} sits on its fire (${own.toFixed(3)} cells)`);
@@ -536,4 +523,30 @@ test("the_game: 2 of the 8 stacks have a fire under them, and 6 are cold", { ski
       .reduce((m, g) => Math.min(m, Math.hypot(g.p.x - p.x, g.p.y - p.y)), Infinity);
     assert.ok(next > HEARTH_CELLS * 2, `the next fire to ${p.piece} is ${next.toFixed(2)} cells off, clear of ${HEARTH_CELLS}`);
   }
+
+  /* HOW MANY OF THEM BURN IS THE MAPS2 AGENT'S TO TUNE, and it moves under this
+   * file: his report landed on a world where 2 of 8 hearths were lit, and the
+   * maps2 agent lit 8 of 10 within the hour ("the fires take their slots from
+   * the street lamps", d5b1905b0). So the tally is REPORTED and not asserted —
+   * only that a burning one exists at all, without which every arm that proves
+   * the plume draws is measuring an empty world. */
+  const burning = verdicts.filter((v) => v.f!.lit);
+  const report = verdicts
+    .map((v) => `${Math.round(v.p.x)},${Math.round(v.p.y)}:${v.f!.lit ? "LIT" : "out"}`)
+    .join(" ");
+  assert.ok(burning.length > 0, `some stack has a fire burning under it — ${report}`);
+  assert.ok(burning.length <= stacks.length, `${burning.length} of ${stacks.length} stacks burn — ${report}`);
+
+  // HIS HOUSE. The chimney from the screenshot, named so that the pairing it
+  // exposed keeps being checked at the exact spot he stood. Its hearth's STATE
+  // is the maps2 agent's to set (it was NOT_LIT_2 when he reported it and is
+  // lit today) — that it resolves to a hearth at all is this join's business.
+  const his = verdicts.find((v) => Math.hypot(v.p.x - 333.3, v.p.y - 232.3) < 0.6);
+  assert.ok(his, "the chimney at 333.3,232.3 is still placed");
+  assert.ok(his!.f!.p.piece.startsWith("hearths/"), `a hearth stands under it (${his!.f!.p.piece}#${his!.f!.state})`);
+  assert.equal(
+    his!.f!.lit,
+    his!.f!.state.startsWith("LIT"),
+    "the verdict and the drawn state agree — the art is what decides",
+  );
 });

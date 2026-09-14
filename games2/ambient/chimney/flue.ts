@@ -140,9 +140,10 @@ export function vents(conf: string | null | undefined): boolean {
 /** DOES THIS STACK SMOKE? A real hole AND a fire burning under it.
  *
  *  The second half is the whole rule: a chimney is masonry, not a smoke
- *  machine, and 6 of the_game's 8 stand over a hearth in a NOT_LIT state
- *  (maintainer 2026-09-14, standing in one of them: "the fire in the house is
- *  not burning (not a LIT state) and you still show smoke when I walk out").
+ *  machine, and 6 of the 8 stacks placed that morning stood over a hearth in a
+ *  NOT_LIT state (maintainer 2026-09-14, standing in one of them: "the fire in
+ *  the house is not burning (not a LIT state) and you still show smoke when I
+ *  walk out"). How many burn is the maps2 agent's to set and moves.
  *  `hearth` is the seam's answer for the flame placement within half a cell of
  *  this vent — the effect never looks for the fire itself, because from the
  *  street the fire is not drawn at all.
