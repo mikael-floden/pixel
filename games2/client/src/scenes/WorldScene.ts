@@ -3542,6 +3542,10 @@ export class WorldScene extends Phaser.Scene {
    * its own room would seal the box again) and the "am I above the room?" line
    * for bodies and flyers. */
   private indoorCeil = 0;
+  /** The last room ceiling that was real — held so the cut-away's height rules
+   *  survive the doorway flip for the length of the roll (see the night
+   *  publish). */
+  private lastRoomCeil = 0;
   /** THE CUT — the highest level any column of the WORLD still draws while
    * indoors: `min(roomFloor + indoorWall(), indoorCeil)`. Everything above it
    * is simply not drawn, which is what takes the roof off AND what shortens the
@@ -5095,6 +5099,13 @@ export class WorldScene extends Phaser.Scene {
             imgH: +lo.img.displayHeight.toFixed(1),
             cropped: lo.img.isCropped,
             alpha: +lo.img.alpha.toFixed(3),
+            // The tint it is DRAWN with — the flat ambient side of its light
+            // (the pipeline adds the point lights per texel over it), the
+            // sample point that tint was read at, and whether it is on screen.
+            tint: lo.img.tintTopLeft,
+            shape: lo.shape ? { fc: +lo.shape.fc.toFixed(2), fr: +lo.shape.fr.toFixed(2), fz: lo.shape.fz, occ: [...lo.shape.occ].slice(0, 4).map((v) => +v.toFixed(3)) } : null,
+            emission: !!lo.emission,
+            vis: lo.img.visible,
             roofed: !!lo.roofed,
             aboveCut: !!lo.aboveCut,
           })),
@@ -6075,11 +6086,14 @@ export class WorldScene extends Phaser.Scene {
       lights: () => this.night?.lightsNow() ?? [],
       // ...and the light's own view of the indoor state, which is what roomAt
       // and inMyRoom read (the scene's fields are published to it per frame).
-      nightIndoor: () => ({
+      nightIndoor: (col?: number, row?: number) => ({
         indoor: this.night?.indoor ?? null,
         top: this.night?.indoorTop ?? null,
         ceil: this.night?.indoorCeil ?? null,
         mix: this.night ? +this.night.indoorMix.toFixed(3) : null,
+        // ...and what the room test says about one cell, which is the other
+        // half of every "why is that lit like the room under it" question.
+        cell: col !== undefined && row !== undefined ? this.night?.roomAtCell(col, row) ?? null : null,
       }),
       lightSlots: () => ({
         max: MAX_SHADER_LIGHTS,
@@ -7965,6 +7979,7 @@ export class WorldScene extends Phaser.Scene {
        *  arithmetic itself — verify-indoorscenery.mjs. */
       sceneryDrawn: (place?: number) => {
         const ps = this.scenery?.placements ?? [];
+        const cam = this.cameras.main;
         const out: Record<string, unknown>[] = [];
         for (const img of this.sceneryImgs) {
           const i = (img as unknown as { __place?: number }).__place;
@@ -7982,6 +7997,18 @@ export class WorldScene extends Phaser.Scene {
             turned: sprite !== southSprite(st), flipX: !!p.hflip,
             ax: +p.ax.toFixed(2), ay: +p.ay.toFixed(2),
             box: [+img.x.toFixed(2), +img.y.toFixed(2), +img.displayWidth.toFixed(2), +img.displayHeight.toFixed(2)],
+            /* ...AND WHERE THAT IS ON THE SCREEN (same transform as
+             * cellScreen), so a gate can read the piece's own PIXELS. The
+             * chimney taught this twice: a probe that samples the light MODEL
+             * agrees with a fix that never reached the pixels — the scenery
+             * pipeline adds its lights per texel, so only the picture is proof
+             * (verify-indoorscenery's fade walk). */
+            screen: [
+              +((img.x - cam.worldView.x) * cam.zoom).toFixed(1),
+              +((img.y - cam.worldView.y) * cam.zoom).toFixed(1),
+              +(img.displayWidth * cam.zoom).toFixed(1),
+              +(img.displayHeight * cam.zoom).toFixed(1),
+            ],
             crop: name.startsWith("s3c:") ? name.slice(4).split(",").map(Number) : null,
             canvas: art ? [art.canvas.w, art.canvas.h] : null,
             south: south ? [south[0], south[1], south[2], south[3]] : null,
@@ -13860,10 +13887,19 @@ export class WorldScene extends Phaser.Scene {
         // are entering lights as a room immediately.
         this.night.indoor = this.indoorInside && !!this.indoorMask;
         this.night.indoorTop = this.indoorTop;
-        // ...and the room's UNDERSIDE, which is the inside/outside line for a
-        // sample's HEIGHT (roomAt/inMyRoom): a chimney on the roof shares the
-        // room's cells and is outdoors.
-        this.night.indoorCeil = this.indoorCeil;
+        /* ...and the room's UNDERSIDE, which is the inside/outside line for a
+         * sample's HEIGHT (roomAt/inMyRoom): a chimney on the roof shares the
+         * room's cells and is outdoors.
+         *
+         * OF THE ROOM THE MASK IS STILL DRAWING, not of the room I am standing
+         * in — the same reason `indoor` above is gated on the mask. Leaving
+         * clears the verdict (and with it the ceiling) at the doorway flip
+         * while the roll lasts another third of a second, so for that whole
+         * exit the height rule had no line to compare against and the room's
+         * own lights reached the chimney above it again at (1 − mix): his
+         * flash, on the way out, on the build that carried the first fix. */
+        if (this.indoorCeil > 0) this.lastRoomCeil = this.indoorCeil;
+        this.night.indoorCeil = this.indoorMask ? this.indoorCeil || this.lastRoomCeil : 0;
         // The LIGHT half of the same state rides the GRADE — 1.5×, its own
         // clip: a bit faster than the raw roll (maintainer 2026-08-13: the
         // darkening trailed the roof by the rest of the roll), deliberately
@@ -21917,9 +21953,19 @@ export class WorldScene extends Phaser.Scene {
         if (onWall) this.litOccluders[this.litOccluders.length - 1].cover = Infinity; // the wall is BEHIND it
         const lo = this.litOccluders[this.litOccluders.length - 1];
         if (coverRec) coverRec.lo = lo;
-        // THE VOLUME (scenery-lit): attached BEFORE the silhouette so the
-        // silhouette can take the same pipeline — see makeFogSilhouette.
-        this.attachSceneryShape(lo, key, art, fit, box0, hbX, hbY, p, world.rows[srow]?.[scol]?.l ?? 0, tileSize);
+        /* THE VOLUME (scenery-lit): attached BEFORE the silhouette so the
+         * silhouette can take the same pipeline — see makeFogSilhouette.
+         *
+         * AT THE PIECE'S FEET, like everything else about it. This level is
+         * where the per-TEXEL lighting samples (`shape.fz`), and reading the
+         * cell's terrain put a chimney's volume six storeys down, INSIDE the
+         * house: the room's ambient, its hearth and its halo, added per texel
+         * by scenerylit.ts — which is why fixing the light model alone left
+         * the flash exactly as it was (maintainer 2026-09-14, on that build:
+         * "the chimney on the roof still flashes in brightness when I walk
+         * in/out a house"). Same feet rule as the sprite, the copy's own z,
+         * the cover record and the light. */
+        this.attachSceneryShape(lo, key, art, fit, box0, hbX, hbY, p, feetLevel, tileSize);
         this.makeFogSilhouette(lo);
       }
       this.registerSceneryAnim(p.i, piece, st, key, name, [fit.sx, fit.sy, fit.sw, fit.sh], img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null);

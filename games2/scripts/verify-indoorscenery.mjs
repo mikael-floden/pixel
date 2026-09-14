@@ -133,6 +133,12 @@ await page.waitForFunction(() => { try { return window.__ml.tiles3().drew.blits 
 // one again and four sections failed on a picture nothing had changed. Same
 // switch verify-indoor and verify-indoorscope already throw.
 await page.evaluate(() => window.__ml.noAggro?.(true));
+// AND THE CLOCK STOPS. Every arm here compares one moment with another, and the
+// world's own time of day moves between them: measured, a walk that takes 20
+// seconds crossed a phase and read 275% of its own "street" baseline with
+// nothing wrong at all. Frozen at DAY, which is also the condition his
+// screenshots are taken in.
+await page.evaluate(() => { window.__ml.timeSpeed?.(0); window.__ml.timeOfDay?.("night", true); });
 
 // SETTLE ON THE PICTURE, NEVER ON A FIXED WAIT — and never on "the loaders
 // are quiet" alone. Teleporting lands in a neighbourhood whose scenery streams
@@ -328,12 +334,68 @@ if (lid && lid.onLidIdx.length) {
     //     house"). The piece may only DIM across the crossing, with the outside
     //     it belongs to — never brighten, never warm.
     const pl = lid.onLid[0];
-    const probe = { col: pl.x, row: pl.y, z: (lid.d.level ?? 0) + 0.5 };
+    const probe = { col: pl.x, row: pl.y, z: (lid.d.level ?? 0) + 0.5, place: lid.onLidIdx[0] };
+    // THE BASELINE IS THE STREET, so wait for the mask to be fully rolled back
+    // before reading it: taken mid-roll it is dim, and every honest outdoor
+    // sample later reads as a "flash" against it.
+    await page
+      .waitForFunction(() => window.__ml.indoor().mix < 0.01, null, { timeout: 30_000, polling: 100 })
+      .catch(() => {});
+    await settle();
     const base = await page.evaluate((q) => window.__ml.lightAtCell(q.col, q.row, q.z), probe);
     if (!base) check(false, "no light reading at the piece on the lid — the fade arm is unmeasured");
     else {
       const peak = (l) => Math.max(l[0], l[1], l[2]);
       const warm = (l) => l[0] - l[2];
+      const luma8 = (t) =>
+        t === null || t === undefined ? null : 0.2126 * ((t >> 16) & 255) + 0.7152 * ((t >> 8) & 255) + 0.0722 * (t & 255);
+      /* TWO CLAIMS, and the second is the one the first fix missed.
+       *
+       * (1) THE LIGHT MODEL at the piece's own point (lightAtCell): its ambient
+       *     and the glow halos, which is what a body standing there would take.
+       *
+       * (2) WHAT THE COPY IS ACTUALLY DRAWN WITH. A scenery piece is not lit by
+       *     that sum: scenerylit.ts adds each light PER TEXEL from the same
+       *     ledger and takes only the OCCLUSION from it, at the volume's own
+       *     sample point — which carried the CELL's terrain level, six storeys
+       *     under a chimney and inside the room. So the model went quiet while
+       *     the picture did not (maintainer 2026-09-14, on that build: "the
+       *     chimney on the roof still flashes in brightness when I walk in/out
+       *     a house"). The tint it is drawn with, the level its volume is
+       *     sampled at, and the per-light occlusion the pipeline multiplies are
+       *     the three numbers the picture is made of, and all three are exact.
+       *
+       * NOT THE PIXELS THEMSELVES: the camera glides for about a second after a
+       * crossing while the roll lasts a third of one, so the piece's box travels
+       * over changing background and its mean luma moves 15% with nothing wrong
+       * — measured identical on the broken build and the fixed one, which makes
+       * it a gate that cannot tell them apart. */
+      const sample = () =>
+        page.evaluate((q) => {
+          const lit = (window.__ml.sceneryLitCopy(q.place) ?? [])[0] ?? null;
+          const ni = window.__ml.nightIndoor(q.col, q.row);
+          const ceil = ni.ceil ?? 0;
+          // Every light of the room UNDER this piece: within reach, and below
+          // that room's own underside. None of them may touch it.
+          const room = window.__ml
+            .lights()
+            .map((L, i) => ({ i, z: L.z, d: Math.hypot(L.col - q.col, L.row - q.row) }))
+            .filter((L) => ceil > 0 && L.z < ceil && L.d < 14);
+          return {
+            mix: window.__ml.indoor().mix,
+            l: window.__ml.lightAtCell(q.col, q.row, q.z),
+            tint: lit?.tint ?? null,
+            alpha: lit?.alpha ?? null,
+            fz: lit?.shape?.fz ?? null,
+            fc: lit?.shape?.fc ?? null,
+            fr: lit?.shape?.fr ?? null,
+            roomCells: window.__ml.roomTex?.()?.cells ?? null,
+            roomLit: room.map((L) => ({ i: L.i, z: L.z, d: +L.d.toFixed(1), occ: lit?.shape?.occ?.[L.i] ?? null })),
+            ni,
+          };
+        }, probe);
+      const street = await sample();
+      const baseTint = luma8(street.tint);
       const walk = [];
       // Into the house and straight back out, sampling the roll itself — the
       // flash is 2-3 frames wide and lands early, while the piece is still
@@ -342,12 +404,7 @@ if (lid && lid.onLidIdx.length) {
         await page.evaluate(([c2, r2]) => window.__ml.teleport(c2 + 0.5, r2 + 0.5), [c, r]);
         for (let i = 0; i < 18; i++) {
           await page.waitForTimeout(70);
-          walk.push(
-            await page.evaluate(
-              (q) => ({ mix: window.__ml.indoor().mix, l: window.__ml.lightAtCell(q.col, q.row, q.z) }),
-              probe,
-            ),
-          );
+          walk.push(await sample());
         }
         await settle();
       }
@@ -365,7 +422,30 @@ if (lid && lid.onLidIdx.length) {
       check(rolled >= 4, `the walk really crossed the fade (${rolled} samples with mix > 0.02)`);
       check(hot <= 1.02, `the piece on the roof never brightens across the crossing (peak ${(hot * 100).toFixed(0)}% of the street)`);
       check(hotWarm <= 0.03, `and never takes the fire's colour (peak +${hotWarm.toFixed(3)} R-B over the street)`);
-    }
+      const tints = walk.map((w) => luma8(w.tint)).filter((v) => typeof v === "number");
+      const tintHot = tints.length && baseTint ? Math.max(...tints) / Math.max(1, baseTint) : 0;
+      const feet = [...new Set(walk.map((w) => w.fz).filter((v) => v !== null))];
+      // Only frames where the copy is actually DRAWN: while it is dissolved its
+      // volume is not re-lit, so what the probe reads there is the last value
+      // it was drawn with, not a light reaching anything.
+      const leaks = walk
+        .filter((w) => w.mix > 0.02 && (w.alpha ?? 0) > 0.01)
+        .flatMap((w) => w.roomLit.filter((L) => (L.occ ?? 0) > 0.001));
+      console.log(
+        `    room test at the volume: ${JSON.stringify(walk.find((w) => w.mix > 0.02)?.ni ?? null)}\n` +
+        `    leaks: ${JSON.stringify(leaks.slice(0, 3))}\n` +
+        `    drawn with: tint luma ${baseTint?.toFixed(1)} at the street, brightest ${(tintHot * 100).toFixed(0)}%; volume sampled at level ${feet.join("/")} cell ${walk.find((w) => w.fc !== null)?.fc},${walk.find((w) => w.fr !== null)?.fr} (deck cell: ${lid.cells.has(`${Math.floor(walk.find((w) => w.fc !== null)?.fc ?? -1)},${Math.floor(walk.find((w) => w.fr !== null)?.fr ?? -1)}`)}); ${leaks.length} room-light leak(s)`,
+      );
+      check(tints.length >= 8 && !!baseTint, `the copy's tint was readable from the street and across the walk (${tints.length} samples)`);
+      check(tintHot <= 1.02, `THE TINT IT IS DRAWN WITH never brightens past its street value (peak ${(tintHot * 100).toFixed(0)}%)`);
+      check(
+        feet.length > 0 && feet.every((z) => z >= (lid.d.level ?? 0)),
+        `its lit volume is sampled at the piece's FEET, on the deck (level ${feet.join("/")}, deck at ${lid.d.level})`,
+      );
+      check(
+        leaks.length === 0,
+        `no light of the room under it reaches it while the mask is up (${leaks.length} leak(s), worst occ ${leaks.reduce((a, L) => Math.max(a, L.occ ?? 0), 0).toFixed(3)})`,
+      );    }
   }
 }
 

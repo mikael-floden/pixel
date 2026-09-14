@@ -667,12 +667,39 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   cells at or above its underside takes none of it) because the field is summed
   into an RT before it is sampled — and that is what lets the CPU twin, which
   lights the objects standing up there, be the same rule.
+  AND A SCENERY PIECE IS NOT LIT BY THAT SUM, which is why the first fix left
+  the flash exactly where it was (maintainer, on the build carrying it: "the
+  chimney on the roof still flashes in brightness when I walk in/out a house").
+  `scenerylit.ts` adds every light PER TEXEL from the same ledger, with its own
+  distance term, and takes only the OCCLUSION from `lightAt` — so the block has
+  to ride on `occ`, not on the sum. Three more places it had to reach:
+  `parts.occ[i]` carries the block (the pipeline multiplies it);
+  `attachSceneryShape` takes the piece's FEET level, because the volume's own
+  sample point carried the CELL's terrain — six storeys under a chimney, inside
+  the room (measured: the copy drawn at 266% of its street tint, taking the
+  room's lights at occlusion 1.000); and the roof test reads
+  `roomConstrainedAt` — my room's cells OR the cone that covers them — because
+  a chimney's volume samples over its own ROOF, which is a covering cell and
+  not a floor cell of the room.
+  THE CEILING OUTLIVES THE VERDICT, like the mask itself: `indoorCeil` is
+  cleared at the doorway flip while the roll lasts another third of a second,
+  so on every exit the height rule had no line to compare against and the
+  room's lights reached the chimney again at (1 − mix). The scene publishes the
+  ceiling of the room the MASK is still drawing (`lastRoomCeil`).
   Gate: the fade-walk arm of `verify-indoorscenery.mjs` — 36 samples across a
-  walk in and back out, asserting the piece on the lid never brightens (peak
-  99% of its street value, was 379%) and never takes the fire's colour (+0.000
-  R−B, was +0.575). Probes: `__ml.lights()` (the ledger itself — which lights,
-  where, how far) and `__ml.nightIndoor()` (what the light pass believes about
-  the room).
+  walk in and back out. It asserts the light model (peak 100% of the street,
+  +0.000 R−B) AND the three numbers the picture is actually made of: the TINT
+  the copy is drawn with (100%, was 266%), the LEVEL its volume is sampled at
+  (the deck's, was the floor's), and the per-light occlusion the pipeline
+  multiplies (0 leaks, was 10 at occ 1.000). NOT the pixels themselves: the
+  camera glides for about a second after a crossing while the roll lasts a
+  third of one, so the piece's box travels over changing background and its
+  mean luma moves 15% with nothing wrong — measured identical on the broken
+  build and the fixed one. And the clock is FROZEN in that gate: the world's
+  own time of day moved 275% of a "street" baseline between two samples.
+  Probes: `__ml.lights()` (the ledger itself), `__ml.nightIndoor(col?, row?)`
+  (what the light pass believes about the room, and about one cell) and the
+  `tint`/`shape` fields of `__ml.sceneryLitCopy`.
 
 - **A SCENERY LIGHT SITS AT THE PIECE'S FEET, NOT ON THE GROUND UNDER IT**
   (`pushSceneryLight`): `lvl` is `p.onDeck ? p.level + p.z : the cell's terrain

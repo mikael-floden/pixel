@@ -87,8 +87,10 @@ export const MAX_SHADER_LIGHTS = 12;
 /** lightAt's BREAKDOWN for the scenery-lit pipeline (scenerylit.ts), which
  *  adds the point lights per texel and needs everything else at the foot:
  *  `base` = ambient·sun·cloud + aurora, AO'd, plus the glow stamps — the
- *  copy's flat tint minus the point lights; `occ[i]` = light i's LOS occlusion
- *  at the foot (1 = clear; the pipeline carries the first 8); `ao` = the
+ *  copy's flat tint minus the point lights; `occ[i]` = HOW MUCH OF LIGHT i
+ *  REACHES the foot: its LOS occlusion (1 = clear), times the indoor block —
+ *  0 for a light inside the room this piece's roof belongs to, since the
+ *  pipeline applies nothing but distance itself (the first 8 ride); `ao` = the
  *  ground AO factor; `sunF` = the sun factor alone (no cloud), so the pipeline
  *  can re-weight the sun share by the volume's Lambert. Filled in place. */
 export interface LightParts {
@@ -579,6 +581,22 @@ float roomCellAt(vec2 cr) {
   return step(0.5, texture2D(uRoom, uv).r);
 }
 
+// ...AND WHETHER THE CUT-AWAY CONSTRAINS THIS COLUMN AT ALL: my room's own
+// cells (128 + cut) or a cell of the cone that covers it (0..126) — the roof
+// and its overhang. NOT the unconstrained 127 (the neighbour's roof, the
+// mountain up-screen), which is drawn whole and lit like the street.
+// The ROOF is why this exists beside roomCellAt: a chimney's volume samples
+// over its own roof, which is a covering cell and not a floor cell of the room,
+// so a membership test alone answers "not mine" for the one piece the rule is
+// about (measured at his lid house: the volume sits at cell 305.91,231.98).
+float roomConstrainedAt(vec2 cr) {
+  if (uIndoorMix < 0.001 || uRoomOn < 0.5) return 0.0;
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  float rb = texture2D(uRoom, uv).r * 255.0;
+  return rb < 0.5 || abs(rb - 127.0) < 0.5 ? 0.0 : 1.0;
+}
+
 float roomAt(vec2 cr, float z) {
   // GATED ON THE EASE, NOT THE VERDICT. uIndoor is boolean geometry and flips
   // the instant you cross the threshold; the mask has to outlive it, or
@@ -1051,7 +1069,7 @@ void main() {
   // the room's lights and its halo field are blocked here OUTRIGHT, at every
   // point of the crossing — the per-light ease below is for the street, which
   // has a doorway to see through. See the light loop and the uGlow block.
-  float overMyRoom = uIndoorCeil > 0.5 && z >= uIndoorCeil ? roomCellAt(cell) : 0.0;
+  float overMyRoom = uIndoorCeil > 0.5 && z >= uIndoorCeil ? roomConstrainedAt(cell) : 0.0;
   float inRoom = mix(1.0, r, uIndoorMix);
   // TWO GRADES, ONE CROSSING. A cell in MY ROOM rides uAmbient, which is
   // already the eased blend from the outdoor grade to the interior dial. A cell
@@ -3499,6 +3517,19 @@ export class NightLights {
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
 
+  /** WHAT THE ROOM TEST SAYS ABOUT ONE CELL — is it my room's, does the
+   *  cut-away constrain it (the roof and its cone), and what cut does it
+   *  carry. The instrument for "why is that thing lit like the room under
+   *  it" (__ml.nightIndoor(col,row)). */
+  roomAtCell(col: number, row: number): { room: boolean; constrained: boolean; cut: number | null } {
+    const idx = Math.floor(row) * this.world.width + Math.floor(col);
+    return {
+      room: this.roomCells.has(idx),
+      constrained: this.roomCells.has(idx) || (this.roomCuts?.has(idx) ?? false),
+      cut: this.roomCuts?.get(idx) ?? null,
+    };
+  }
+
   /** THE LIGHT LEDGER AS THE SHADER HAS IT THIS FRAME — which lights, where
    *  they stand (cells and storeys), how far they reach and in what colour.
    *  `lightSlots` says how MANY are held; this says WHICH, which is what a
@@ -3541,6 +3572,19 @@ export class NightLights {
    *  it. */
   private roomCellAt(col: number, row: number): boolean {
     return this.roomCells.has(Math.floor(row) * this.world.width + Math.floor(col));
+  }
+
+  /** ...AND WHETHER THE CUT-AWAY CONSTRAINS THIS COLUMN AT ALL (the GLSL
+   *  roomConstrainedAt): my room's own cells, or a cell of the cone that covers
+   *  it — the ROOF and its overhang, which is where a chimney's volume actually
+   *  samples (measured at his lid house: cell 305.91,231.98, a deck cell of the
+   *  roof and not a floor cell of the room, so membership alone said "not
+   *  mine" for the one piece the rule is about). An UNCONSTRAINED column (no
+   *  entry) is the neighbour's roof or the mountain up-screen: drawn whole, lit
+   *  like the street. */
+  private roomConstrainedAt(col: number, row: number): boolean {
+    const idx = Math.floor(row) * this.world.width + Math.floor(col);
+    return this.roomCells.has(idx) || (this.roomCuts?.has(idx) ?? false);
   }
 
   lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts, groundContact = false): [number, number, number] {
@@ -3598,7 +3642,7 @@ export class NightLights {
     // its underside. The room's lights and its halo field are blocked here
     // outright — a roof is geometry, and the ease below belongs to the street.
     const overMyRoom =
-      this.indoorMix > 0 && this.indoorCeil > 0 && z >= this.indoorCeil && this.roomCellAt(col, row) ? 1 : 0;
+      this.indoorMix > 0 && this.indoorCeil > 0 && z >= this.indoorCeil && this.roomConstrainedAt(col, row) ? 1 : 0;
     const inRoom = 1 + (hit - 1) * this.indoorMix;
     // TWIN of the fragment's two-grade `amb` mix: in-room rides curAmbient (the
     // blended one), outside fades between black and the OUTDOOR grade only.
@@ -3626,10 +3670,22 @@ export class NightLights {
       const dist = Math.sqrt(dx * dx + dy * dy + Math.pow((L.z - z) * 0.6, 2));
       let att = Math.max(0, 1 - dist / radius);
       att *= att;
-      // Twin of the shader's above-the-light rule outside my room (see FRAG):
-      // the ease is for LEAVING only — entering, the light arrives at the flip
-      // and a ramped block is a flash on everything above it.
-      att *= 1 - Math.max(overMyRoom, Math.max(this.indoor ? 1 : 0, this.indoorMix) * (1 - hit)) * (z >= L.z - 0.05 ? 1 : 0);
+      /* Twin of the shader's above-the-light rule outside my room (see FRAG):
+       * the ease is for LEAVING only — entering, the light arrives at the flip
+       * and a ramped block is a flash on everything above it.
+       *
+       * IT RIDES ON `occ`, NOT ON `att` ALONE, because a SCENERY piece is not
+       * lit by this sum: `scenerylit.ts` adds each light PER TEXEL from the
+       * same ledger, with its own distance attenuation, and the only thing this
+       * function tells it is the occlusion. Blocking the sum alone therefore
+       * fixed bodies and the ground and left the chimney exactly as it was
+       * (maintainer 2026-09-14, on the build that carried the first fix: "the
+       * chimney on the roof still flashes in brightness when I walk in/out a
+       * house"). `occ` is what both consumers read, so the block belongs
+       * there. */
+      const blockK =
+        1 - Math.max(overMyRoom, Math.max(this.indoor ? 1 : 0, this.indoorMix) * (1 - hit)) * (z >= L.z - 0.05 ? 1 : 0);
+      att *= blockK;
       // A lit copy's crown reaches nearer the light than its axis: its
       // occlusion is marched whenever the light is within reach of the volume.
       const wantOcc = parts !== undefined && dist < radius + SCN_CROWN_REACH;
@@ -3722,7 +3778,7 @@ export class NightLights {
         }
         occ = Math.max(occ, 0.22 * inRoom); // bounce floor — same as the shader, room-gated
       }
-      if (parts && i < parts.occ.length) parts.occ[i] = occ;
+      if (parts && i < parts.occ.length) parts.occ[i] = occ * blockK;
       if (att <= 0.001) continue;
       const fl = L.flicker;
       const flick = 1 - fl * 0.1 * (0.5 + 0.5 * Math.sin(t * 2.9 + i * 5.3)) - fl * 0.05 * Math.sin(t * 7.1 + i * 11.1);
