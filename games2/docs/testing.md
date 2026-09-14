@@ -26,6 +26,15 @@ Where a test belongs, the browser gates, the harness traps, device geometry. Mov
   the shader both read (`__ml.lightAt`). The lesson generalises: pixels prove
   a DIFFERENCE between two pictures of the same thing, never a value.
 
+- **A BUDGET WITH NO TEST IS A BUDGET THAT DRIFTS** (`server/test/lawsize.test.ts`,
+  2026-09-14). `games2/CLAUDE.md` is loaded into every turn of six agents and the
+  maintainer capped it at 20 KB when he split it; nothing measured that, and it
+  was 20,648 bytes — over by 168 — with no one at fault, because a doc grows one
+  correct line at a time. The same shape as the derived fixture above: a rule
+  stated only in prose is a rule that decays. When it fails, a MEASUREMENT moves
+  into the `docs/<topic>.md` that owns the subsystem (check the receipt is really
+  there first) — never a rule.
+
 - **Navigation/movement logic → `server/test/navigation.sim.test.ts`**, NOT
   the browser: the real brain (stepAutopilot) against the real body (unstick
   + stepMovement + auto-jump) on REAL worlds at ~1000× real time — ~100

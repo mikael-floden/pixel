@@ -35,14 +35,16 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 | `docs/ui.md` | wiki-themed HUD, chess, landscape and handedness, rotation, PWA, reconnect |
 | `docs/audio.md` | composer binding |
 | `docs/testing.md` | where a test belongs, browser gates, harness traps, device geometry |
-| `docs/backend.md`, `spec/ZONES.md` | one world for 10k: interest management, bus, zone rooms, ghosts, hand-off, routing |
+| `docs/backend.md`, `spec/ZONES.md` | one world for 10k: interest management, positions on the wire, bus, zone rooms, ghosts, hand-off, routing |
 | `INDOOR.md` | cut-away — READ IT before touching anything that draws, lights, picks or hides a cell indoors |
 | `SURFACES.md`, `spec/*.md`, `deploy/DEPLOY.md`, `loop/LOOP.md` | surfaces runbook, agent contracts, deploy, scheduled loop |
 
 ## Laws (every one is paid for; the doc named holds the receipt)
 
 **Repo-wide** (root `CLAUDE.md`, loaded with this one): cache safety, lossless
-`exact=True` WebP, no secrets, rebase before every push, no PRs unless asked.
+`exact=True` WebP, no secrets, `.dockerignore` decides what the image ships (an
+asset that 404s in prod but is on GitHub IS that file), rebase before every
+push, no PRs unless asked.
 
 **Scope**
 - Never edit the art domains; we may improve the RENDERER, never the art.
@@ -61,16 +63,13 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 - Every `/assets` URL carries its content hash; the server grants `immutable`
   only after verifying it against the bytes it serves. sw.js caches nothing.
   Brotli quality stays pinned at 4.
-- `.dockerignore` decides what reaches the image; an asset that 404s in prod
-  but exists on GitHub is that file.
 
 **Rendering a maps3 world** (`docs/tiles3-rendering.md`)
 - ALL ART SHIPS PACKED — monster strips (union box), scenery (one box per
   state), NPCs (one box per NPC), each `<domain>/pipeline/pack.py`,
   content-hashed; never point the game at a raw file again. Anchors and boxes
   are MEASURED on the raw canvas and converted into the packed frame, so
-  nothing moves (`docs/scenery.md`, `docs/monsters-combat.md`; gates
-  `verify-scenery-pack.mjs`, `verify-npc-pack.mjs`).
+  nothing moves (gates `verify-scenery-pack.mjs`, `verify-npc-pack.mjs`).
 - Ground DETAILS (his approved tops) fall one in N cells by the dial (1 in
   100, his), never indoors, on a ramp or touching another, and draw as an
   OVERLAY, top face alone (`detail*.test.ts`).
@@ -78,8 +77,7 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
   `#top` detail verdict (`tiles3members.test.ts`).
 - The resolver is PER CELL (`Tiles3World`), never the sweep, held deeply equal
   to the sweep and to `maps2/pipeline/render3.py` by the parity fixtures
-  (`tiles3-fixture.py`); a resolution rule changes in tiles3.ts AND
-  render3.py, then both fixtures regenerate.
+  (`tiles3-fixture.py`); a rule changes in BOTH, then both regenerate.
 - Painter order: a cell draws once and everything it wears draws in its slot;
   boundaries are NOT a second pass; decks draw last.
 - SLACK, NOT EXACTNESS: a full plate overlaps 17 rows; a top-face-only plate
@@ -103,14 +101,13 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 - Phaser: `textures.get` returns `__MISSING` for an unknown key (adapter via
   `exists`); terrain has its own `LoaderPlugin`, `crossOrigin` set.
 - EVERYTHING STREAMED BEHIND THE LIVE WORLD goes through THE ART QUEUE
-  (`artqueue.ts`, `docs/perf.md`): priority order, a BYTE budget per frame, no
-  kind's strips before a monster of it exists, its fight art raised when a
-  fight starts, scenery animations last. It decodes on a worker and uploads in
-  bands (`artworker.ts`): never `texImage2D` an `<img>` for streamed art, never
-  measure a streamed image's pixels on the frame thread, never read a banded
-  texture back from the GPU inside the frame — each is a decode or a pipeline
-  drain per strip on the phone; boxes ride the bands, alpha and pixels come
-  from the worker on demand.
+  (`artqueue.ts`): priority order, a BYTE budget per frame, no kind's strips
+  before a monster of it exists, its fight art raised when a fight starts,
+  scenery animations last. It decodes on a worker and uploads in bands
+  (`artworker.ts`); boxes ride the bands, alpha and pixels come from the worker
+  on demand. THREE NEVERS, each a decode or a pipeline drain per strip on the
+  phone: `texImage2D` an `<img>` for streamed art, measure a streamed image's
+  pixels on the frame thread, read a banded texture back inside the frame.
 - A DynamicTexture BRACKET is the GPU cost (a capture clear + blit): an erase
   is the object's own ERASE blend inside the pass, and the capture binds the
   rows in use (`coverRaster`).
@@ -122,9 +119,8 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 - `depthrule.ts` is a pure function tested against DUMPED occluder records;
   never reconstruct a fixture's projection. A piece is COVERED by a footprint
   and SORTED against art (`ax0`, the hit/hitArt split), and never lifts past
-  its own art (`liftMax`) — a bed keyed on its footprint centre took the
-  blanket 35 px and drew over a player standing in front of it; gate
-  `verify-scenerysort.mjs`.
+  its own art (`liftMax`: the blanket 35 px drew a bed over a player standing
+  in front of it); gate `verify-scenerysort.mjs`.
 - SEE-THROUGH WALLS IS DELETED — never a per-frame occluder alpha sweep.
 - The occluder set is POOLED; depth = base + creationIndex × 1e-6 in the base
   band only; tiles3's texture cache stays unbounded.
@@ -178,8 +174,8 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge; a fall
   bills on IMPACT (`fallPend`), drawn on the client's predicted frame
   (`fallhurt.ts`), and the slow FADES with the number.
-- Water is the player's sanctuary (no monster enters or is hit there) and lies
-  FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
+- Water is the player's sanctuary (no monster enters or is hit there) and is
+  as FLAT under the feet as in the art (`swimlevel.test.ts`).
 - The speed dial and the acceleration ramp ride PER INPUT (`InputMessage.sm`,
   `.ac`) and the SERVER clamps them; 1.1x and 0.17 s to full speed ARE HIS
   (`playerspeed.ts`, `accel.ts`, `accelStep`).
@@ -212,34 +208,20 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
   on counts as arrived.
 - The ground under a point is its nearest CORNER's, not its cell's.
 
-**Backend for 10k** (`spec/ZONES.md`, `docs/backend.md`)
+**Backend for 10k** (`docs/backend.md`, `spec/ZONES.md` — the wire (`px/py`
+quarter units, `OWNER_VIEW_TAG`), the stable player key, the warm-room table,
+the view API and every trap in them live THERE, read before you touch the
+netcode; these are the invariants)
 - ONE world, never instances (maintainer). Zones are rooms
-  (`config/zones.json`; no entry = one room); entities belong to the zone
-  containing them; the client sees across a border through GHOSTS, in their
-  own maps so no server loop ever steps or fights one; a crossing is a
-  hand-off over the bus (hot state under a one-shot key, `zone:go`, a fresh
-  join, the old room lets go on `handoff:done`); the sender rewrites that
-  state EVERY TICK and the client replays from the seq the new room reports.
-- A player's map key is its FIRST session id and never changes across hand-
-  offs; the client finds itself by the synced `sid`, never by key.
-- ONE room per zone per process (`zoneRooms`, warmed at boot, autoDispose
-  off; a duplicate locks and hands its arrivals to the owner). An empty one
-  runs its sim at a quarter rate (`IDLE_DIVISOR`).
-- `Encoder.BUFFER_SIZE` holds EVERY client's view section of one patch (2 MB;
-  an overflow freezes clients silently, never errors). `loadbot.mjs`
-  + `/api/stats` are the load instrument.
-- Positions are int16 quarter units relative to the room (`px/py`,
-  `shared/worldunits.ts`); the server keeps float `x/y` and syncs before
-  every patch; the client reads `x/y` through installed getters. A field only
-  its owner needs (`seq`, `slow`) carries `OWNER_VIEW_TAG`.
+  (`config/zones.json`; no entry = one room), ONE per zone per process; a
+  border is crossed by a HAND-OFF over the bus, and what a client sees across
+  it are GHOSTS in their own maps, so no server loop ever steps or fights one.
 - A client receives only what is within `INTEREST_WU` of itself (a `StateView`
-  per client, recomputed every `INTEREST_TICKS`); "unlimited" is a view of
-  everything, granted only by a room CREATE option. THE JOIN SNAPSHOT IS A
-  WHOLE VIEW (`attachView` runs the pass for the joiner) — a crossing binds on
-  it; gate `verify-zonehop.mjs`.
-- `view()` is applied as a decorator call after `defineTypes` (the `view:
-  true` flag is ignored there); `Encoder.BUFFER_SIZE` is set in the room
-  module.
+  per client); THE JOIN SNAPSHOT IS A WHOLE VIEW, which is what a crossing
+  binds on; gate `verify-zonehop.mjs`.
+- `Encoder.BUFFER_SIZE` holds EVERY client's view section of one patch (2 MB):
+  an overflow freezes clients silently, never errors. `loadbot.mjs` +
+  `/api/stats` are the load instrument.
 - Rooms talk ONLY over `server/src/bus.ts` (ioredis when `REDIS_URL`, else
   the in-process fake, same asynchronous contract). Writes are the Firestore
   bill: a save on leave, death, level-up and the dirty flush (a player who
@@ -319,6 +301,6 @@ assigned it.
 `window.__ml` is the instrument; each doc names its probes. Counters over
 pixels: a gate cannot tell a correct dark frame from a black one.
 
-Don't touch the art domains' files or hand-author world art; don't edit outside
-`games2/` except your own board (unless he grants the whole repo); don't grow
-this file — a new rule is one line here, its story in the topic doc.
+Don't hand-author world art; don't edit outside `games2/` except your own board
+(unless he grants the whole repo); don't grow this file — a new rule is one line
+here, its story in the topic doc.

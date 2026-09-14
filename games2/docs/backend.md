@@ -1,7 +1,12 @@
 # Backend: one world for 10,000 players
 
 The rules are in `spec/ZONES.md`; this doc holds the measurements, the traps
-and the rejected approaches as each phase lands. Rewrite in place.
+and the rejected approaches as each phase lands. Rewrite in place. It is also
+where the netcode's own rules live — the wire format, the stable player key,
+the warm-room table, the view API — because `CLAUDE.md` keeps the invariants
+only (2026-09-14: the law file was 168 bytes over its 20 KB budget, and a
+subsystem nobody touches without opening this doc is where that budget is
+found; gate `server/test/lawsize.test.ts`).
 
 ## Interest management (2026-09-09)
 
