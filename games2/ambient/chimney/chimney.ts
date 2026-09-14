@@ -6,9 +6,11 @@ import {
   MAX_PUFFS,
   PER_VENT,
   PUFF_LIFE,
+  PUFF_R,
   RIM_MIX,
   RISE0,
   SPREAD_PX,
+  blobPixels,
   driftX,
   driftY,
   flueTint,
@@ -71,10 +73,13 @@ const SRC_LIFT = 1e-6;
 const ABOVE_LIT = 900_001.3;
 
 const KEY = (n: number) => `amb-flue${n}`;
-/** The peak opacity of one puff. Higher than the campfire's 0.5: this is a
- *  body of smoke out of a pipe rather than a thin wisp, and it is read from
- *  across a town rather than at the player's feet. */
-const ALPHA = 0.58;
+/** The peak opacity of one puff. Higher than the campfire's 0.5 — this is a
+ *  body of smoke out of a pipe rather than a thin wisp, read from across a
+ *  town rather than at the player's feet — but DOWN from its own first cut,
+ *  because the marks grew to the size of the hole they leave (PUFF_R) and a
+ *  13 px blob lays about nine times the ink of the 4 px one it replaced. Fewer,
+ *  bigger, softer. */
+const ALPHA = 0.46;
 
 interface Puff {
   sprite: Phaser.GameObjects.Image;
@@ -235,19 +240,18 @@ export function chimneyFeature(): AmbientFeature {
   return {
     name: NAME,
     init(ctx) {
-      // 1 and 2 px are core only — there is no room for a rim inside two
-      // pixels, and a lone dark pixel at the mouth reads as soot, not smoke.
-      paintTwoTone(ctx.scene, KEY(1), 1, 1, [[0, 0]], []);
-      paintTwoTone(ctx.scene, KEY(2), 2, 2, [[0, 0], [1, 0], [0, 1], [1, 1]], []);
-      // 3 px: a core pixel inside a rim cross.
-      paintTwoTone(ctx.scene, KEY(3), 3, 3, [[1, 1]], [[1, 0], [0, 1], [2, 1], [1, 2]]);
-      // 4 px: a 2x2 core inside a rounded rim — the corners stay empty so the
-      // mark is a blob rather than a square.
-      paintTwoTone(
-        ctx.scene, KEY(4), 4, 4,
-        [[1, 1], [2, 1], [1, 2], [2, 2]],
-        [[1, 0], [2, 0], [0, 1], [3, 1], [0, 2], [3, 2], [1, 3], [2, 3]],
-      );
+      // One texture per PUFF_R, generated: the sizes are measured against the
+      // flue mouth now (5 to 13 px across) and a hand-listed 13 px disc is a
+      // wall of coordinates nobody would ever check.
+      for (let i = 0; i < PUFF_R.length; i++) {
+        const r = PUFF_R[i];
+        const { core, rim } = blobPixels(r);
+        paintTwoTone(
+          ctx.scene, KEY(i + 1), r * 2 + 1, r * 2 + 1,
+          core.map(([x, y]) => [r + x, r + y] as [number, number]),
+          rim.map(([x, y]) => [r + x, r + y] as [number, number]),
+        );
+      }
     },
     update(ctx, dt) {
       const dtc = Math.min(dt, 100);

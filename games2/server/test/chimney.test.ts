@@ -20,13 +20,16 @@ import { fileURLToPath } from "node:url";
 import {
   CURL_PX,
   GAP_MS,
+  CORE_FRAC,
   PER_VENT,
   PUFF_LIFE,
+  PUFF_R,
   RIM_MIX,
   RISE0,
   SPREAD_PX,
   STOKE_MS,
   WIND_X,
+  blobPixels,
   driftX,
   driftY,
   flueTint,
@@ -91,6 +94,46 @@ test("the column is a ribbon at the mouth and a fan at the top", () => {
   // the curl opens on the same ramp — a wisp at the mouth does not wander
   const curlAt = (t: number) => Math.abs(driftX(t * life, life, CURL_PX[1], Math.PI / 2, 0, 0) - driftX(t * life, life, 0, Math.PI / 2, 0, 0));
   assert.ok(curlAt(0.05) < curlAt(0.95), "the wander widens with height");
+});
+
+test("a puff is sized against the HOLE it comes out of", () => {
+  // Measured on the shipped art at the published vent point: the flue mouth
+  // runs 10-12 px across on the narrow stacks (chimney_002 10 px on a 28 px
+  // stack, chimney_007 12 on 35), and scenery draws one art pixel to one
+  // player pixel. The first cut topped out at a FOUR pixel mark — about a
+  // third of the mouth — and the maintainer saw it straight away
+  // (2026-09-14: "a bit small right now compared to the chimney hole").
+  const widest = PUFF_R[PUFF_R.length - 1] * 2 + 1;
+  const narrowest = PUFF_R[0] * 2 + 1;
+  assert.ok(widest >= 11, `the biggest puff is ${widest}px — the mouth it leaves is 10-12`);
+  assert.ok(widest <= 19, `${widest}px is a cloud, not a puff`);
+  assert.ok(narrowest >= 5, `${narrowest}px at the mouth is a speck`);
+  assert.ok(narrowest < 10, "...but it still leaves NARROWER than the hole — a mark at full mouth width reads as a chain of balls");
+  let prev = 0;
+  for (const r of PUFF_R) {
+    assert.ok(r > prev, "the radii climb");
+    prev = r;
+  }
+  // and the blob is ROUND: smoke is in the air, not lying on the ground, so it
+  // takes none of the projection's squash
+  for (const r of PUFF_R) {
+    const { core, rim } = blobPixels(r);
+    const all = [...core, ...rim];
+    const xs = all.map(([x]) => x);
+    const ys = all.map(([, y]) => y);
+    assert.equal(Math.max(...xs), -Math.min(...xs), `r=${r} is symmetric across x`);
+    assert.equal(Math.max(...ys), -Math.min(...ys), `r=${r} is symmetric across y`);
+    assert.equal(Math.max(...xs), Math.max(...ys), `r=${r} is ROUND, not squashed — a puff is in the air`);
+    assert.ok(all.length > 3 * r, `r=${r} drew ${all.length}px`);
+    for (const [x, y] of all) assert.ok(Math.sqrt(x * x + y * y) <= r + 0.36, `r=${r}: (${x},${y}) is outside the disc`);
+    // the two tones: a pale core inside a darker rim, both present at every size
+    assert.ok(core.length > 0, `r=${r} has a core`);
+    assert.ok(rim.length > 0, `r=${r} has a rim`);
+    for (const [x, y] of core) assert.ok(Math.sqrt(x * x + y * y) <= r * CORE_FRAC, `r=${r}: core pixel (${x},${y}) is out in the rim`);
+    assert.ok(rim.length >= core.length * 0.5, `r=${r}: the rim is not a hairline (${rim.length} vs ${core.length})`);
+  }
+  // a column of these overlaps into one plume, so it holds FEWER of them
+  assert.ok(PER_VENT >= 6 && PER_VENT <= 12, `${PER_VENT} marks a column — fewer, bigger, softer`);
 });
 
 test("a puff only ever gets BIGGER — smoke out of a hole expands", () => {
@@ -183,7 +226,7 @@ test("a stoked fire puffs FASTER, and never faster than the gap band", () => {
   assert.ok(nextGap(() => 0, 1) >= GAP_MS[0], "never quicker than the band's floor");
   assert.ok(nextGap(() => 0.999, 0.3) <= (GAP_MS[1] / 0.3) + 1, "and the divide is clamped");
   // the ceiling holds a column, not a cloud
-  assert.ok(PER_VENT >= 8 && PER_VENT <= 20, "enough marks to read as a line, few enough to be smoke");
+  assert.ok(PER_VENT >= 6 && PER_VENT <= 20, "enough marks to read as a line, few enough to be smoke");
 });
 
 test("the mark is TWO tones, and the pale one never reaches white at night", () => {

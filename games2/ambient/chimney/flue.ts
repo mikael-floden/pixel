@@ -58,18 +58,54 @@ export const WIND_X = 42 * 0.24;
 export const WIND_Y = 23 * 0.12;
 /** Gap between puffs from one flue, before the stoke shortens it. */
 export const GAP_MS: [number, number] = [150, 280];
+/** THE PUFF RADII, in px — and they are sized against the HOLE, which is the
+ *  thing a puff has to look like it came out of (maintainer 2026-09-14: "the
+ *  smoke puff particles should be a little bigger, they are a bit small right
+ *  now compared to the chimney hole"). Measured on the shipped art at the
+ *  published vent: the flue mouth runs 10-12 px across on the narrow stacks
+ *  (chimney_002 10 px on a 28 px stack, chimney_007 12 on 35), and scenery is
+ *  drawn one art pixel to one player pixel. The first cut topped out at a FOUR
+ *  pixel mark, about a third of the mouth, which is what he saw.
+ *  A puff still leaves slightly narrower than the hole and widens above it — a
+ *  mark that starts at full mouth width reads as a chain of balls rather than
+ *  a plume. */
+export const PUFF_R = [2, 3, 4, 6] as const;
 /** The most puffs one flue keeps in the air, and the ceiling over all flues.
- *  A column needs its marks to read as a LINE, so the ceiling is sized for a
- *  village rather than for one stack: at PER_VENT a flue holds 14, and seven
- *  roofs in view is an ordinary town square. (The campfire's 64 is right for
- *  fires, whose puffs live half as long and so accumulate half as many.) */
-export const PER_VENT = 14;
+ *  A column needs its marks to read as a LINE — but at the sizes above they
+ *  overlap into one, so the count comes DOWN as the marks go up: fewer, bigger,
+ *  softer is a hearth plume; fourteen 13 px blobs is a smoke machine. */
+export const PER_VENT = 10;
 export const MAX_PUFFS = 96;
 /** One stoke cycle: a hearth fed and dying back. Long enough that the column
  *  is never seen to pulse, short enough to change while you stand there. */
 export const STOKE_MS: [number, number] = [11_000, 26_000];
-/** The rim's share of the core's value, baked into the texture (see header). */
+/** The rim's share of the core's value, baked into the texture (see header),
+ *  and how much of the blob's radius the core occupies. A THIN rim on a 13 px
+ *  mark is a hard outline; a proportional one keeps the two-tone reading as
+ *  soft smoke at every size. */
 export const RIM_MIX = 0.45;
+export const CORE_FRAC = 0.62;
+
+/** A round, whole-pixel blob of radius `r`, split into the pale core and the
+ *  darker rim the two-tone trick needs (see the header). Generated rather than
+ *  hand-listed because the sizes now go up to 13 px across, and a hand-listed
+ *  13 px disc is a wall of coordinates nobody will ever check.
+ *
+ *  ROUND, NOT ISO-SQUASHED: this is smoke in the AIR. The ground shapes in
+ *  this folder (`fish/` rings, `dawnmist/` patches) take the projection's
+ *  14/32 squash because they lie ON the ground; a puff would read as a
+ *  pancake if it did. */
+export function blobPixels(r: number): { core: [number, number][]; rim: [number, number][] } {
+  const core: [number, number][] = [];
+  const rim: [number, number][] = [];
+  for (let y = -r; y <= r; y++)
+    for (let x = -r; x <= r; x++) {
+      const d = Math.sqrt(x * x + y * y);
+      if (d > r + 0.35) continue;
+      (d > r * CORE_FRAC ? rim : core).push([x, y]);
+    }
+  return { core, rim };
+}
 
 const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 
@@ -160,9 +196,10 @@ export function puffAlpha(age: number, life: number): number {
   return inn * Math.pow((1 - t) / 0.7, 1.35);
 }
 
-/** How big the mark is. MONOTONE: a plume expands and dies by thinning, so
- *  this never goes back down — the campfire's does, and that is the difference
- *  between smoke leaving a hole and smoke leaving a flame. */
+/** How big the mark is, as an index into PUFF_R. MONOTONE: a plume expands
+ *  and dies by thinning, so this never goes back down — the campfire's does,
+ *  and that is the difference between smoke leaving a hole and smoke leaving a
+ *  flame. */
 export function puffSize(age: number, life: number): 1 | 2 | 3 | 4 {
   const t = clamp01(age / life);
   if (t < 0.06) return 1;
