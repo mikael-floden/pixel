@@ -15,15 +15,18 @@
 // receipt is really in that doc before you cut it from this one.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { statSync } from "node:fs";
+import { existsSync, statSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const GAMES2 = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const LIMIT = 20 * 1024;
+const LAW = join(GAMES2, "CLAUDE.md");
 
-test("the law file stays under 20 KB", () => {
-  const n = statSync(join(GAMES2, "CLAUDE.md")).size;
+// Skips FIRST if the file is not in this checkout (the repo's rule for every
+// test that reads a tree the deploy's sparse checkout may not have).
+test("the law file stays under 20 KB", { skip: !existsSync(LAW) && "no games2/CLAUDE.md in this checkout" }, () => {
+  const n = statSync(LAW).size;
   console.log(`  games2/CLAUDE.md: ${n} bytes, ${Math.abs(LIMIT - n)} ${n <= LIMIT ? "under" : "OVER"} the ${LIMIT} line`);
   assert.ok(
     n <= LIMIT,
