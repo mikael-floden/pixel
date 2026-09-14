@@ -14,13 +14,11 @@ schema, plain `tsx`), `client/` (Phaser 3 + colyseus.js, Vite; prediction and
 reconciliation). Art is READ from the sibling domains (`characters2/`,
 `tiles/`, `maps2/`, `scenery/`) at `/assets/<domain>/…`, never copied or
 edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`.
-Six agents share `games2/`: this one
-(gameplay, netcode, world, rendering), games-ui (`UI_AGENT.md` is the file
-split), games-audio (`composer/`, its own `CLAUDE.md`), games-ambient
-(`ambient/`, its own README), games-perf (frame time only, from the beacon) —
-each with an `<agent>-assistant` of the same remit and its own board (root
-`CLAUDE.md`). Work from `games2/` (`npm run dev|test|typecheck`); boards
-`coordination/<agent>[-assistant].json`.
+Six agents share `games2/`: this one (gameplay, netcode, world, rendering),
+games-ui (`UI_AGENT.md` splits the files), games-audio (`composer/`),
+games-ambient (`ambient/`), games-perf (frame time, from the beacon) — each
+with an `<agent>-assistant` of the same remit and board. Work from `games2/`
+(`npm run dev|test|typecheck`); boards `coordination/<agent>[-assistant].json`.
 
 ## The docs
 
@@ -30,10 +28,10 @@ each with an `<agent>-assistant` of the same remit and its own board (root
 | `docs/tiles3-rendering.md` | tiles3 resolver and draw ops, plates, transitions, seams, fades, decks, wall feet, render3 parity |
 | `docs/scenery.md` | sizing, hitboxes, animation, windows on walls, indoor furniture, flat pieces, fog silhouettes |
 | `docs/depth-sort.md` | occluder set, `depthrule.ts`, cover lines, lifts, drops |
-| `docs/perf.md` | ground render texture (scroll, slices, repaints, prefetch, compose budget), pooled occluders, capture pool, art queue, beacon |
-| `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, dodge, swimming, footsteps, gait, camera |
+| `docs/perf.md` | ground render texture (scroll, slices, repaints, prefetch, compose), pooled occluders, capture pool, art queue, beacon |
+| `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, dodge, swimming, gait, camera |
 | `docs/monsters-combat.md` | spawn zones, shadows, gait, brain, escape math, loot, backpack, levelling, death, NPCs |
-| `docs/lighting.md` | night shader and its CPU twins, light slots, scenery lights and shadows, depth fog, sun, time of day, weather, indoor ambient |
+| `docs/lighting.md` | night shader and its CPU twins, light slots, scenery lights and shadows, depth fog, sun, time, weather, indoor ambient |
 | `docs/ui.md` | wiki-themed HUD, chess, landscape and handedness, rotation, PWA, reconnect |
 | `docs/audio.md` | composer binding |
 | `docs/testing.md` | where a test belongs, browser gates, harness traps, device geometry |
@@ -43,9 +41,8 @@ each with an `<agent>-assistant` of the same remit and its own board (root
 
 ## Laws (every one is paid for; the doc named holds the receipt)
 
-**Repo-wide** (root `CLAUDE.md`, loaded with this one): cache safety is
-absolute — no regenerable asset under a stable name; lossless `exact=True`
-WebP; no secrets; rebase before every push; no PRs unless asked.
+**Repo-wide** (root `CLAUDE.md`, loaded with this one): cache safety, lossless
+`exact=True` WebP, no secrets, rebase before every push, no PRs unless asked.
 
 **Scope**
 - Never edit the art domains; we may improve the RENDERER, never the art.
@@ -142,19 +139,17 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
   is gated (`check-scenery-bbox.mjs`).
 - A hitbox is an ellipse OR a perspective ground rect — port the wiki's
   `rectCorners`, never re-derive; one lookup (`sceneryHitboxRec`), one
-  per-facing placement (`hitboxPosFor`). THE BOX IS THE FIXED POINT (his), the
-  art moves into it: a facing draws through the STATE's SOUTH still's canvas
-  (`anchorBox`) at the PIECE's base scale, else it stands half a cell off the
-  footprint it was placed by.
+  per-facing placement (`hitboxPosFor`). THE BOX IS FIXED and the art moves
+  into it (his): a facing draws through the STATE's SOUTH still's canvas
+  (`anchorBox`) at the PIECE's base scale.
 - Indoor furniture draws while its roof is cut away and crossfades with it; a
-  piece standing ON that roof goes with it, and its FEET are the height EVERY
-  rule reads — lid fade, cover record, lit copy, its light, and the `lvl` the
-  depth rule covers it by (its ground put it under its own roof). Flat
+  piece ON that roof goes with it, and its FEET are the height EVERY rule reads
+  (lid fade, cover, lit copy, light, lit volume, depth `lvl`). Flat
   (`collision:false`) pieces draw under everything, no lit copy; an OUTSIDE
-  piece over half the room's floor fades out (`scenerycover.ts`), a smaller one
-  keeps its silhouette.
+  piece over half the room's floor fades out (`scenerycover.ts`).
 - Scenery animates once then sleeps per class; a lit clip moves its light
-  (his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30; swing 0.12x). A clip
+  (his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30; swing 0.12x). A TURNED
+  piece plays ITS OWN clip (`animFrames`) — never turn art to animate it. A clip
   plays only on frames ON THE GPU: a banded texture behind a context-restore
   refill is blank (`sceneryClipReady`; `verify-sceneryanim.mjs`).
 - `projectCellCorner` is the ONE projection for anything on the ground plane;
@@ -252,8 +247,8 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
 
 **Monsters, combat** (`docs/monsters-combat.md`)
 - Spawn placement is maps2 data (`spawns.json`); no spawns → no monsters.
-- A zone cell is a SURFACE: a stray snaps back to the nearest one on ITS OWN
-  LAYER (`nearestZoneCell`), never through the slab it stands on.
+- A zone cell is a SURFACE: a stray snaps back on ITS OWN LAYER
+  (`nearestZoneCell`), never through the slab it stands on.
 - The tuned shadow beats everything art-measured: centre = position, size =
   hit box, one size for all facings, via `monsterRadiusFor`.
 - `separationPush` stays squared-distance: broad-phase, never micro-tuning.
@@ -262,6 +257,8 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
   rejected step.
 - Monster stats come from live tuning (a content check, not truthiness);
   nothing may block the revive press, and the ask is retried.
+- The backpack's ORDER is server state: a drag sends `invmove` — it MOVES,
+  never swaps, and the item id says which entry (a slot index goes stale).
 
 **Lighting** (`docs/lighting.md`)
 - Every twinned field (clouds, aurora, mist, sun, light) has an EXACT JS twin;
@@ -283,13 +280,14 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
 - The wall wash is per PIXEL (the face gate's lateral is to the pixel, not the
   cell), its wrap is his "Wall light wrap" dial (0.7), and the LOS march never
   blends a wall's own height into its front skirt, nor the skirt the LIGHT
-  stands in; a skirt sample counts only beside a HARD hit (a wall never shadows
-  the floor before it). Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
+  stands in; a skirt sample counts only beside a HARD hit. Gates:
+  `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark room 40%, lit room 12%; hidden outline 20% — his dials.
-- MY ROOM IS A VOLUME: the room test takes a HEIGHT (`indoorCeil`, not the
-  cut), and over my own roof its lights and halo field are blocked outright.
+- MY ROOM IS A VOLUME: the room test takes a HEIGHT (`indoorCeil`, held while
+  the mask is), and over my own roof its lights and halo field are blocked
+  outright — on `occ`, all the scenery pipeline reads.
 
 **UI and mobile** (`docs/ui.md`, `UI_AGENT.md`)
 - Wiki-themed DOM HUD, golden split, ONE 10 px edge margin; pixel art scales

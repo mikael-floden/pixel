@@ -242,6 +242,43 @@ export const PICKUP_RADIUS_WU = 40; // how close the body must be to grab
 export const INV_MAX_STACK = 99;
 export const INV_MAX_SLOTS = 30;
 
+/** DRAG AN ENTRY TO ANOTHER SLOT — the backpack's own reorder, server-side
+ *  because the ORDER IS SERVER STATE (`player.inv`, re-sent on every change):
+ *  a client-side reorder reverts on the next refresh (maintainer 2026-09-14,
+ *  his third backpack ask: "dragging an item onto another slot to move or swap
+ *  it").
+ *
+ *  IT MOVES, IT DOES NOT SWAP: the entry comes out and goes back in at the
+ *  target, and everything between closes up behind it — what dragging one cell
+ *  onto another does in a list that has no holes. The array is COMPACTED (a
+ *  stack that empties is spliced out), so the grid's empty cells are simply
+ *  past the end: a drop beyond the last entry means "put it last", which is
+ *  what clamping the target to the list does.
+ *
+ *  THE ITEM ID IS THE GROUND TRUTH for which entry moved, when the caller has
+ *  one. A slot index goes stale the moment a stack empties and the array
+ *  compacts — the trap the drop path documents — and a reorder that trusted a
+ *  stale index would move whatever slid into that slot instead. False means
+ *  nothing moved; the caller heals the client's grid with the inventory the
+ *  server actually holds. */
+export function moveInvEntry<T extends { item: string }>(
+  inv: T[],
+  from: number,
+  to: number,
+  item?: string,
+): boolean {
+  if (!Number.isFinite(from) || !Number.isFinite(to)) return false;
+  const src = Math.floor(from);
+  if (src < 0 || src >= inv.length) return false;
+  const entry = inv[src];
+  if (item !== undefined && entry.item !== item) return false;
+  const dest = Math.max(0, Math.min(Math.floor(to), inv.length - 1));
+  if (dest === src) return false;
+  inv.splice(src, 1);
+  inv.splice(dest, 0, entry);
+  return true;
+}
+
 /** Roll a monster's drops. `loot` is the tuning table entry: item ids with
  * drop chances (0..1). Deterministic from the seed pair. Every entry rolls
  * independently (RO-style — a lucky kill can drop everything). */
