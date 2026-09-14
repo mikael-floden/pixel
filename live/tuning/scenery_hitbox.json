@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-09-14T15:44:52.956Z",
+  "updated_at": "2026-09-14T15:46:24.349Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -53229,6 +53229,116 @@
         }
       ],
       "updated_at": "2026-09-14T15:44:49.492Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_1": {
+      "boxes": [
+        {
+          "ax": 2.83,
+          "ay": 23.53,
+          "rx": 17,
+          "ry": 7.97,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -1,
+              "ay": 22.99
+            },
+            "south-west": {
+              "ax": 4.37,
+              "ay": 23.72
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:45:30.331Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_2": {
+      "boxes": [
+        {
+          "ax": 1.95,
+          "ay": 24.44,
+          "rx": 19,
+          "ry": 8.91,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 4.7,
+              "ay": 22.6
+            },
+            "south-east": {
+              "ax": -2.57,
+              "ay": 21.45
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:45:42.193Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_3": {
+      "boxes": [
+        {
+          "ax": 1.83,
+          "ay": 23.65,
+          "rx": 19,
+          "ry": 8.91,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 3.38,
+              "ay": 24.23
+            },
+            "south-east": {
+              "ax": -2.52,
+              "ay": 22.21
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:45:57.853Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_4": {
+      "boxes": [
+        {
+          "ax": 1.81,
+          "ay": 23.65,
+          "rx": 18,
+          "ry": 8.44,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -1.06,
+              "ay": 23.84
+            },
+            "south-west": {
+              "ax": 4.39,
+              "ay": 24.23
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:46:12.032Z"
+    },
+    "scenery/chimneys/chimney_024#not_lit_5": {
+      "boxes": [
+        {
+          "ax": 1.24,
+          "ay": 23.08,
+          "rx": 20,
+          "ry": 9.38,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 6.72,
+              "ay": 22.31
+            },
+            "south-east": {
+              "ax": -4.49,
+              "ay": 21.57
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:46:22.730Z"
     }
   }
 }
