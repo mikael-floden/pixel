@@ -5168,6 +5168,51 @@ export interface ZoneRuntime {
   canSwim: boolean;
 }
 
+/** THE ZONE CELL A STRAY GOES BACK TO — the nearest one ON ITS OWN LAYER.
+ *
+ * A zone's cell list holds one entry per (column, SURFACE): where the elev
+ * band admits both, a house's floor and the roof over it are two entries of
+ * the same column — the_game's `stone-1` resolves 120 cells over one building,
+ * 27 floors at level 0 and 93 roof/wall tops at 6, with 27 columns listed
+ * twice. Ranking those by plane distance alone hands a body on the roof the
+ * FLOOR entry of a neighbouring column: the snap-back then teleports it six
+ * levels DOWN THROUGH THE SLAB IT IS STANDING ON, which is a monster falling
+ * into a sealed room through an unbroken roof (maintainer 2026-09-14, standing
+ * inside that house: "the monsters that used to walk on the roof now and then
+ * fall down the roof ... the roof doesn't have a single hole"). Measured on
+ * the shipped world: a brute roaming that roof took the drop 6 times in 40k
+ * ticks, always from the same polygon notch at cell 309,230, always landing on
+ * the floor half a cell away.
+ *
+ * So the layer is the FIRST key and the distance the second: a body comes back
+ * beside where it strayed, on the surface it strayed from. `layer` is how far
+ * apart two levels may be and still count as one surface — a walk step by
+ * default, since that is what a body can cross without falling.
+ *
+ * FALLS BACK TO THE NEAREST OF ANY LAYER, deliberately: a zone whose cells are
+ * all on one level and a body that got somewhere else entirely (a knockback
+ * off a ledge) must still be returned rather than left outside the polygon —
+ * that is what this function exists for. Null only when the zone has no cells,
+ * which `buildZoneRuntimes` already refuses to publish. */
+export function nearestZoneCell(
+  cells: ReadonlyArray<{ c: number; r: number; lvl: number }>,
+  c: number,
+  r: number,
+  elev: number,
+  layer = WALK_CLIMB,
+): { c: number; r: number; lvl: number } | null {
+  let best: { c: number; r: number; lvl: number } | null = null;
+  let bestOff = 1; // 0 = on my layer, 1 = off it — ranked BEFORE the distance
+  let bestD = Infinity;
+  for (const cell of cells) {
+    const off = Math.abs(cell.lvl - elev) > layer + 1e-9 ? 1 : 0;
+    if (best && off > bestOff) continue;
+    const d = Math.hypot(cell.c - c, cell.r - r);
+    if (!best || off < bestOff || d < bestD) { best = cell; bestOff = off; bestD = d; }
+  }
+  return best;
+}
+
 /** Client-side SOFT MONSTER COLLISION for the player (maintainer 2026-07-30):
  * monsters are not in the collision grid — instead the player's 8-way screen
  * INPUT slips around a monster's personal space, exactly the steer-assist

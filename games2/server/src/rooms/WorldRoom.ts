@@ -76,6 +76,7 @@ import {
   WEATHER_COUNT,
   parseSpawns,
   buildZoneRuntimes,
+  nearestZoneCell,
   ZoneRuntime,
   zoneBBox,
   canEnterElev,
@@ -2126,15 +2127,11 @@ export class WorldRoom extends Room<WorldState> {
       const mc = Math.floor(m.x / CELL_WU);
       const mr = Math.floor(m.y / CELL_WU);
       if (!m.returning && !zone.cellSet.has(mc + mr * grid.width)) {
-        let best = zone.cells[0];
-        let bestD = Infinity;
-        for (const cell of zone.cells) {
-          const d = Math.hypot(cell.c - mc, cell.r - mr);
-          if (d < bestD) {
-            bestD = d;
-            best = cell;
-          }
-        }
+        // ON ITS OWN LAYER — see nearestZoneCell. A zone that admits a floor
+        // and the roof over it holds both as cells of the same column, and
+        // the nearest by plane distance alone is a teleport DOWN THROUGH THE
+        // ROOF the monster is standing on.
+        const best = nearestZoneCell(zone.cells, mc, mr, m.elev) ?? zone.cells[0];
         m.x = (best.c + 0.5) * CELL_WU;
         m.y = (best.r + 0.5) * CELL_WU;
         m.elev = best.lvl;
@@ -2189,15 +2186,7 @@ export class WorldRoom extends Room<WorldState> {
     const mc = Math.floor(m.x / CELL_WU);
     const mr = Math.floor(m.y / CELL_WU);
     if (!zone.cellSet.has(mc + mr * grid.width)) {
-      let best = zone.cells[0];
-      let bestD = Infinity;
-      for (const cell of zone.cells) {
-        const d = Math.hypot(cell.c - mc, cell.r - mr);
-        if (d < bestD) {
-          bestD = d;
-          best = cell;
-        }
-      }
+      const best = nearestZoneCell(zone.cells, mc, mr, m.elev) ?? zone.cells[0]; // its own layer first
       m.targetX = (best.c + 0.5) * CELL_WU;
       m.targetY = (best.r + 0.5) * CELL_WU;
       m.trip = startTrip(grid, m.x, m.y, m.targetX, m.targetY, false, now, m.elev, undefined, 900, false);

@@ -27,45 +27,44 @@ dev|test|typecheck`). Boards: `coordination/<agent>.json` and
 
 | doc | holds |
 |---|---|
-| `docs/shipping.md` | publish policy, the curated image root, the world tree, staging, WebP, the `?h=` cache grant, brotli pin, loading order, deploy |
-| `docs/tiles3-rendering.md` | the tiles3 resolver and draw ops, plates, transitions, seams, fades, decks, wall feet, the render3 parity contract |
+| `docs/shipping.md` | publish policy, the curated image root, the world tree, staging, WebP, the `?h=` grant, brotli pin, loading order, deploy |
+| `docs/tiles3-rendering.md` | the tiles3 resolver and draw ops, plates, transitions, seams, fades, decks, wall feet, render3 parity |
 | `docs/scenery.md` | sizing, hitboxes, animation, windows on walls, indoor furniture, flat pieces, fog silhouettes |
 | `docs/depth-sort.md` | the occluder set, `depthrule.ts`, cover lines, lifts |
-| `docs/perf.md` | the ground render texture (scroll, slices, cell repaints, prefetch, compose budget), pooled occluders, the capture pool, the art queue, the perf beacon |
-| `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, the body dodge, swimming, footsteps, gait playback, camera |
-| `docs/monsters-combat.md` | spawn zones, shadows, gait, the monster brain, escape math, loot, backpack, levelling, death, NPCs |
-| `docs/lighting.md` | the night shader and its CPU twins, light slots, scenery lights and shadows, depth fog, sun, time-of-day, weather, indoor ambient |
+| `docs/perf.md` | the ground render texture (scroll, slices, repaints, prefetch, compose budget), pooled occluders, the capture pool, the art queue, the beacon |
+| `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, the dodge, swimming, footsteps, gait, camera |
+| `docs/monsters-combat.md` | spawn zones, shadows, gait, the brain, escape math, loot, backpack, levelling, death, NPCs |
+| `docs/lighting.md` | the night shader and its CPU twins, light slots, scenery lights and shadows, depth fog, sun, time of day, weather, indoor ambient |
 | `docs/ui.md` | the wiki-themed HUD, chess, landscape and handedness, rotation, PWA, reconnect |
 | `docs/audio.md` | the composer binding |
 | `docs/testing.md` | where a test belongs, the browser gates, harness traps, device geometry |
-| `docs/backend.md`, `spec/ZONES.md` | one world for 10k players: interest management, the bus, zone rooms, ghosts, hand-off, routing |
+| `docs/backend.md`, `spec/ZONES.md` | one world for 10k: interest management, the bus, zone rooms, ghosts, hand-off, routing |
 | `INDOOR.md` | the cut-away — READ IT before touching anything that draws, lights, picks or hides a cell indoors |
-| `SURFACES.md`, `spec/*.md`, `deploy/DEPLOY.md`, `loop/LOOP.md` | the surfaces runbook, contracts with other agents, the deploy, the scheduled loop |
+| `SURFACES.md`, `spec/*.md`, `deploy/DEPLOY.md`, `loop/LOOP.md` | the surfaces runbook, agent contracts, the deploy, the scheduled loop |
 
 ## Laws (every one is paid for; the doc named holds the receipt)
 
 **Repo-wide** (root `CLAUDE.md`): cache safety is absolute — no regenerable
 asset under a stable name; lossless `exact=True` WebP for all art; never commit
-secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
+secrets; push to `main`, rebase before every push, no PRs unless asked.
 
 **Scope**
-- Never edit the art domains; the games agent may improve the RENDERER, never
-  the art. Anti-tiling effects: NONE (rejected twice).
+- Never edit the art domains; we may improve the RENDERER, never the art.
+  Anti-tiling effects: NONE (rejected twice).
 - The ONE games2 file art agents may edit is `shared/src/surfaces.ts`
-  (`SURFACES.md`). `check-surfaces.mjs` fails `npm test` on an unclassified
+  (`SURFACES.md`); `check-surfaces.mjs` fails `npm test` on an unclassified
   category.
 - Never push red: `npm test` + `npm run typecheck` first. A world-reading test
   skips FIRST when `maps2/worlds3/the_game` is absent and listens inside the
-  try (`docs/testing.md`; the deploy's sparse checkout has no world tree —
-  `docs/shipping.md`).
+  try (the deploy's sparse checkout has no world tree).
 
 **Content and shipping** (`docs/shipping.md`)
 - `config/publish.json` is the only hand-maintained list; everything the image
   ships is DERIVED from it (shipset closure + the tiles3 resolver's exact
   closure). Measure and tune against `the_game`, never a fixture world.
 - Every `/assets` URL carries its content hash; the server grants `immutable`
-  only after verifying the hash against the bytes it serves. sw.js caches
-  nothing. Brotli quality stays pinned at 4.
+  only after verifying it against the bytes it serves. sw.js caches nothing.
+  Brotli quality stays pinned at 4.
 - `.dockerignore` decides what reaches the image; an asset that 404s in prod
   but exists on GitHub is that file.
 
@@ -177,7 +176,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   query that knows the surface level passes it.
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge; a fall
   bills on IMPACT (`fallPend`), drawn on the client's predicted frame
-  (`fallhurt.ts`); the slow FADES with the number.
+  (`fallhurt.ts`), and the slow FADES with the number.
 - Water is the player's sanctuary (no monster enters or is hit there) and lies
   FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
 - The speed dial and the acceleration ramp ride PER INPUT (`InputMessage.sm`,
@@ -247,14 +246,16 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 
 **Monsters, combat** (`docs/monsters-combat.md`)
 - Spawn placement is maps2 data (`spawns.json`); no spawns → no monsters.
+- A zone cell is a SURFACE, so a stray snaps back to the nearest one on ITS
+  OWN LAYER (`nearestZoneCell`), never through the slab it stands on.
 - The tuned shadow beats everything art-measured: centre = position, size =
-  hit box, ONE size for all facings, through `monsterRadiusFor`.
-- `separationPush` stays squared-distance: a broad-phase, never micro-tuning.
-- Passive by default; predators aggro; a provoked chase paces its victim and
-  the RUN-AWAY LINE is `ESCAPE_RADIUS_WU` 390 past the zone; the give-up IS
-  the rejected step.
-- Monster stats come from live tuning (a content check, not truthiness).
-- Nothing may block the revive press; the ask is retried.
+  hit box, one size for all facings, via `monsterRadiusFor`.
+- `separationPush` stays squared-distance: broad-phase, never micro-tuning.
+- Passive by default; predators aggro; a provoked chase paces its victim, the
+  RUN-AWAY LINE is `ESCAPE_RADIUS_WU` 390 past the zone, the give-up IS the
+  rejected step.
+- Monster stats come from live tuning (a content check, not truthiness);
+  nothing may block the revive press, and the ask is retried.
 
 **Lighting** (`docs/lighting.md`)
 - Every twinned field (clouds, aurora, mist, sun, light) has an EXACT JS twin;
@@ -297,17 +298,17 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 **Testing** (`docs/testing.md`)
 - Logic belongs in `server/test` (seconds); a browser gate is one session in
   `scripts/verify-smoke.mjs`; keep e2e viewports small (starvation fakes bugs).
-- A one-pixel bug is reproduced on HIS screen (393x851, dpr 2.75, isMobile)
-  and judged on the SCREENSHOT, moving as well as at rest.
+- A one-pixel bug is reproduced on HIS screen (393x851, dpr 2.75, isMobile),
+  judged on the SCREENSHOT, moving as well as at rest.
 - Compare colours unlit (`__ml.lightAtCell`); a headless GL run cannot
-  reproduce a phone GPU's precision, contents loss, or lag.
+  reproduce a phone GPU's precision, contents loss or lag.
 
 **Indoor** (`INDOOR.md`): a cut-away, not an x-ray; never go back to culling;
 the outside is drawn at zero ambient, never skipped; wall height 1 and
-brightness 40% are his picks.
+brightness 40% are his.
 
 **Audio** (`docs/audio.md`): talk to the composer only through `gameAudio`;
-emit semantic events with literal names; a sound plays only when the wiki
+emit semantic events with literal names; a sound plays only if the wiki
 assigned it.
 
 ## Probes
@@ -318,7 +319,7 @@ pixels: a gate cannot tell a correct dark frame from a black one.
 ## Don't
 
 - Don't touch the art domains' files; don't hand-author world art.
-- Don't edit anything outside `games2/` except `coordination/games.json`
+- Don't edit anything outside `games2/` except your own coordination board
   (unless the maintainer grants the whole repo).
 - Don't grow this file: a new rule is one line here and its story in the
   topic doc.

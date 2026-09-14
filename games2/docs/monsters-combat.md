@@ -35,8 +35,28 @@ memory and fewer frames spent uploading; the raw strips stay for the wiki.
   and is enterable; a zone with more swimmable than standable cells is a WATER
   zone → its monsters get `canSwim`). WorldRoom seeds `num` per zone, roams
   via zone-cell targets within `MONSTER_ROAM_RADIUS_CELLS`, snaps escapees
-  back. **Missing spawns.json → no monsters** (maps2 owns placement; nothing
-  is invented). `build-monsters-manifest.mjs` resolves each monster's clips
+  back. **A STRAY COMES BACK ON ITS OWN LAYER** (`shared/nearestZoneCell`, used
+  by the roam safety net AND `disengageMonster`): a cell qualifies per SURFACE,
+  so where the band admits both, a building's floor and the roof over it are
+  two entries of the same column — the_game's `stone-1` resolves 120 cells over
+  one house, 27 floors at 0 and 93 roof/wall tops at 6, 27 columns listed
+  twice. Ranking the snap by plane distance alone therefore handed a monster on
+  the roof the FLOOR entry beside it and teleported it six levels DOWN THROUGH
+  THE SLAB IT STOOD ON — a monster appearing inside a sealed room through an
+  unbroken roof (maintainer 2026-09-14, standing in that house: "the monsters
+  that used to walk on the roof now and then fall down the roof ... the roof
+  doesn't have a single hole"). Measured on the shipped world: 6 drops in 40k
+  ticks, every one from the same polygon notch at cell 309,230 — a column the
+  roof spans and the polygon does not contain — landing on the floor half a
+  cell away; 0 in 3 × 120k ticks after. The layer is the first key and the
+  distance the second, with a fallback to the nearest of any layer so a body
+  thrown somewhere its zone has no surface is still returned. Gates: the
+  `nearestZoneCell` unit arm and the roof arm of `monsters.sim.test.ts` (which
+  derives the zone whose roof spans the most notches — shore-5 today — and
+  catches 4 cross-layer snaps of 151 on the old rule). NOT fixed by editing the
+  polygon: the notch is maps2 data, and a roof will always be able to span a
+  column the outline misses. **Missing spawns.json → no monsters** (maps2 owns
+  placement; nothing is invented). `build-monsters-manifest.mjs` resolves each monster's clips
   through `monsters/animation_map.json`. Gates:
   `server/test/monsters.sim.test.ts`, `monsters.test.ts`.
 - **Soft collision is RADIUS-AWARE** (one fixed comfort distance was rejected:
