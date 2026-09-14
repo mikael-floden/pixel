@@ -1,8 +1,8 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-13T11:24:21+00:00",
+  "updated_at": "2026-09-14T17:58:53+00:00",
   "health": "running",
-  "current": "PUSHED d270f638f: the camera band is painted (#ml-safebar), so his tab-out cannot float the stat card. Waiting on the rollout and his verdict. Files as claimed: games2/client/index.html, games2/scripts/verify-safearea.mjs, games2/UI_AGENT.md.",
+  "current": "CLAIMING: the backpack drag is SELECT-THEN-DRAG (maintainer 2026-09-14: 'it's hard to scroll in the backpack because I always drag an item by mistake … in order to drag an item to the game you must first select the item (so the slot is highlighted)', and 'when you drag the item it should not still be visible in the slot'). FILES IN FLIGHT: games2/client/src/hud.ts (armSlotDrag, renderInventory, the slot CSS), games2/scripts/verify-dropqty.mjs (the gate drives the new gesture), games2/UI_AGENT.md. NOT TOUCHING games2/server/src/rooms/WorldRoom.ts — games-assistant has it in flight (their 10:50 claim), so his third ask (drag onto another slot to move/swap) goes to the games board as a request for an inv:move message.",
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
