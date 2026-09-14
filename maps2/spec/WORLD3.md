@@ -899,11 +899,28 @@ is the SAME rule the build and the in-place pass use.
   cell of fire basket, the same open fire, and it takes its own chimney; it is
   what keeps a dressed room from going cold (`indoorfire.FIRE_GROUPS`).
 - **A BACK WALL IS A LOCAL FACT, not the bounding box.** A wall run is the
-  cells whose north (or west) neighbour is outside the room, longest run
-  first. The box's own min-x column and min-y row ARE the back walls of a
-  rectangle and are wrong for anything else: room 10 of the_game is an L of 54
-  cells whose box top row is ONE cell, so the old reading had a single 4-cell
-  wall to try and left the room bare. (`_walls`.)
+  cells with a WALL to their north (or west), longest run first. The box's own
+  min-x column and min-y row ARE the back walls of a rectangle and are wrong
+  for anything else: room 10 of the_game is an L of 54 cells whose box top row
+  is ONE cell, so the old reading had a single 4-cell wall to try and left the
+  room bare. (`_walls`.)
+- **AND A DOORWAY IS NOT A WALL** (maintainer 2026-09-14, standing in room 9's
+  doorway looking at a fireplace: *"How did you reason when you placed the fire
+  and chimney in front of the door to the room?"*). "The neighbour is not in
+  this room" is equally true of a wall, of a passage and of the next room's
+  floor, so the gap at (303,231) read as wall and the hearth went across it —
+  the door between rooms 9 and 10 was shut, and the room behind it was only
+  reachable the long way round through room 11. **A wall is a RAISED
+  neighbour** (a floor at level 0 under a wall column at 6); a neighbour within
+  one level is a way out, it is not a wall cell, and the run breaks there so no
+  piece can straddle it. Belt and braces, because a wide piece can reach past
+  the end of its own run: a candidate is refused when the cells the GAME
+  blocks for it (`navfit.nav_cells`, not the box) include an opening or the
+  floor cell you cross to reach one (`doors()`). The footprint law judges a
+  room's floor, never its ways out — measured over the_game, this hearth was
+  the only piece in the world standing across an opening, his furniture
+  included. `indoorfire.py --refit` moves one that does, and takes its chimney
+  with it.
 - **THE FACING COMES FROM THE STATE'S OWN `rotations`**, which is what
   `facedSprite` reads — a brazier publishes its rotations per state and
   nothing at the piece root, and a placement naming a facing its state does
@@ -952,6 +969,17 @@ mountain is not a house. (`chimneys.py`.)
   mirrored placement would mirror the mouth and nothing downstream un-mirrors
   it. A chimney is near enough symmetric that the variation is not worth the
   trap.
+- **HIS VERDICTS DELETE ART UNDER A WORLD THAT ALREADY SHIPS.** A rejection in
+  the wiki is a standing removal order and the scenery agent acts on it — one
+  chimney piece and four states went in a single review (2026-09-14, and two
+  of the four were exactly the captioned variations below) — so a placement
+  can name art that is no longer on disk. The game tombstones the 404 and
+  draws nothing there; render3 stops dead. `chimneys.py --heal` re-asks
+  `pick()` for those cells only, over the pool as it is on disk, and leaves
+  every stack whose art survived exactly as it was. The same fault can reach
+  any group: the world's own references are worth auditing after a review
+  (measured after this one, the chimneys were the only two dangling of 1,406
+  placements).
 - **A CAPTIONED VARIATION IS NEVER PLACED.** PixelLab sometimes writes a word
   across the bottom of the sheet: measured over all 120 chimney images,
   chimney_022's NOT_LIT_2 and NOT_LIT_4 read "NEW" in rows 90-95 of the 96 px

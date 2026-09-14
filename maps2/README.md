@@ -436,13 +436,18 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   without rebuilding (and re-dressing) it (`spec/WORLD3.md` → lava).
 - `indoorfire.py` — the fire in a room: the 70/10/20 fire/light/bare draw the
   build and the shipped world share, the back-wall runs it stands a hearth or
-  a brazier on, and the engine's per-window light budget applied the way
-  `lights()` applies it (`spec/WORLD3.md` → the fire indoors). `--apply
-  <world_dir>` gives a world that already ships its fires, additively.
+  a brazier on (a wall is a RAISED neighbour — **a doorway is not a wall**,
+  and no footprint may cover an opening or the cell you cross to reach one),
+  and the engine's per-window light budget applied the way `lights()` applies
+  it (`spec/WORLD3.md` → the fire indoors). `--apply <world_dir>` gives a
+  world that already ships its fires, additively; `--refit <world_dir>` moves
+  a fire that stands across a doorway, and its chimney with it.
 - `chimneys.py` — a chimney on the roof over every open fire indoors, at the
   fire's own cell with `z` lifting its feet to the deck's top
   (`spec/WORLD3.md` → scenery ON a roof). `--apply <world_dir>`; `--dir`
-  overrides the south-east facing.
+  overrides the south-east facing; `--heal <world_dir>` re-picks a stack whose
+  piece or state his review deleted (a dangling reference draws nothing in the
+  game and stops render3 dead).
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 

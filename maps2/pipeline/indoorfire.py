@@ -136,25 +136,53 @@ def _state(g, piece, key, lit):
     return st[r % len(st)]
 
 
-def _walls(cells):
-    """This room's BACK walls as runs of floor cells, longest first:
-    `("north", y, [x...])` for a run whose north neighbour is outside the
-    room, `("west", x, [y...])` for one whose west neighbour is.
+def doors(cells, lvl):
+    """A ROOM'S OPENINGS, and the floor cell in front of each: every room cell
+    with a neighbour you can STEP to that is not this room's floor.
 
-    `interiors().against()` takes the bounding box's own min-x column and
-    min-y row, which IS the back wall of a rectangle and is wrong for anything
-    else: the_game's room 10 is an L of 54 cells whose bbox top row is ONE
-    cell, so the pass had exactly one 4-cell wall to try and left the room
-    bare. A wall face is a local fact — the cell north of me is not in this
-    room — and reading it that way finds every wall a rectangle has plus the
-    ones an L has."""
+    A wall in this world is a raised column (a room floor at level 0 with its
+    wall at level 6), so a neighbour within one level of the floor is not a
+    wall — it is the next room, a passage, or the street. Both cells are
+    returned: the opening and the cell you cross to reach it, because a
+    footprint covering either one shuts the door."""
+    out = set()
+    for (x, y) in cells:
+        for n in ((x + 1, y), (x - 1, y), (x, y + 1), (x, y - 1)):
+            if n in cells:
+                continue
+            if abs(lvl[n[1]][n[0]] - lvl[y][x]) <= 1:
+                out.add((x, y))
+                out.add(n)
+    return out
+
+
+def _walls(cells, lvl):
+    """This room's BACK walls as runs of floor cells, longest first:
+    `("north", y, [x...])` for a run with a WALL to its north, `("west", x,
+    [y...])` for one with a wall to its west.
+
+    Two things this has to get right, and the second was paid for.
+    - `interiors().against()` takes the bounding box's own min-x column and
+      min-y row, which IS the back wall of a rectangle and is wrong for
+      anything else: the_game's room 10 is an L of 54 cells whose bbox top row
+      is ONE cell, so the pass had one 4-cell wall to try and left the room
+      bare. A wall face is a LOCAL fact, so it is read per cell.
+    - **A DOORWAY IS NOT A WALL** (maintainer 2026-09-14, standing in room 9's
+      only doorway looking at a fireplace: *"How did you reason when you
+      placed the fire and chimney in front of the door to the room?"*). The
+      first cut asked only whether the neighbour was in THIS room, which is
+      equally true of a wall, of a passage and of the next room's floor — so
+      the gap at (303,231) read as wall and the hearth went across it, sealing
+      room 9. The test is the LEVEL: a wall is a raised column. An opening is
+      not a wall cell, so the run breaks there and no piece can straddle it.
+    """
     runs = []
     for side in ("north", "west"):
         by = {}
         for (x, y) in cells:
             nb = (x, y - 1) if side == "north" else (x - 1, y)
-            if nb in cells:
-                continue
+            if nb in cells or lvl[nb[1]][nb[0]] <= lvl[y][x]:
+                continue              # my own floor, or a way out: not a wall
             by.setdefault(y if side == "north" else x, []).append(
                 x if side == "north" else y)
         for k, vs in by.items():
@@ -181,11 +209,13 @@ def _against(g, room, group, piece_key, lit):
     footprint's near edge exactly ON the wall face.
 
     Returns the placement dict, or None when no wall can take it."""
+    import navfit
     cells = {(c["x"], c["y"]) for c in room.get("cells", [])}
     if not cells:
         return None
     ground = room.get("ground") or "parquet_floor"
-    for (side, wk, run) in _walls(cells):
+    shut = doors(cells, g.lvl)
+    for (side, wk, run) in _walls(cells, g.lvl):
         along_y = side == "west"
         d = "south-east" if along_y else "south-west"
         for piece in _pool(g, group, piece_key):
@@ -229,6 +259,16 @@ def _against(g, room, group, piece_key, lit):
                 wx, wy = x + cx, y + cy
                 R, HY = (hx, hy) if _kind == "rect" else (hx, None)
                 if not g._footprint_ok(wx, wy, R, HY, flush=True, flat=False):
+                    continue
+                # AND IT MUST NOT SHUT A DOOR. The footprint law judges the
+                # room's floor, not its ways out, and a hearth is wide enough
+                # to reach past the end of its wall into the gap beside it:
+                # measured in the game's OWN stamp (the cells it blocks), not
+                # in the box, because that is what stops a body.
+                probe2 = dict(probe, x=x, y=y)
+                nav = navfit.nav_cells(
+                    navfit.boxes_for(probe2, g._bbox, g._hit), x, y)
+                if shut.intersection(nav):
                     continue
                 g._fp_add(wx, wy, R, HY)
                 p = {"piece": piece, "x": x, "y": y}
@@ -383,11 +423,83 @@ def apply(world_dir, write=True):
     return len(added)
 
 
+def refit(world_dir, write=True):
+    """MOVE A FIRE THAT SHUTS A DOOR, and its chimney with it.
+
+    The rule changed under a world that already ships (a doorway is not a
+    wall, `_walls`), so the world needs the same correction the rule now
+    prevents: every fire whose footprint covers one of its room's openings is
+    lifted and asked for again under the new rule, the chimney standing on its
+    cell goes with it, and nothing else in the room is touched."""
+    import chimneys
+    import navfit
+    path = os.path.join(world_dir, "world.json")
+    doc = json.load(open(path))
+    lvl = doc["level"]
+    bbox, hit = navfit.load_docs()
+    moved, stuck = [], []
+    for room in doc.get("rooms", []):
+        cells = {(c["x"], c["y"]) for c in room.get("cells", [])}
+        if not cells:
+            continue
+        shut = doors(cells, lvl)
+        for p in list(doc["scenery"]):
+            if p.get("z") is not None:
+                continue
+            if p.get("piece", "").split("/")[0] not in FIRE_GROUPS:
+                continue
+            if (int(p["x"]), int(p["y"])) not in cells:
+                continue
+            nav = navfit.nav_cells(navfit.boxes_for(p, bbox, hit), p["x"], p["y"])
+            if not shut.intersection(nav):
+                continue
+            cell = (int(p["x"]), int(p["y"]))
+            stack = [q for q in doc["scenery"]
+                     if q.get("piece", "").split("/")[0] == chimneys.GROUP
+                     and (int(q["x"]), int(q["y"])) == cell]
+            doc["scenery"].remove(p)
+            for q in stack:
+                doc["scenery"].remove(q)
+            key = (min(x for x, _ in cells), min(y for _, y in cells))
+            g = _shell(doc, world_dir)          # after the removal: its ground is free
+            new = None
+            for group in FIRE_GROUPS:
+                new = _against(g, room, group, key, lit=bool(p.get("lit")))
+                if new:
+                    break
+            if not new:
+                doc["scenery"] += [p] + stack   # nowhere better: leave it be
+                stuck.append((p["piece"], p["x"], p["y"]))
+                continue
+            if p.get("lit"):
+                st = _state(g, new["piece"], (int(new["x"]), int(new["y"])), lit=True)
+                if st:
+                    new["state"], new["lit"] = st, True
+            doc["scenery"].append(new)
+            doc["scenery"].sort(key=lambda q: q["x"] + q["y"])
+            moved.append((p["piece"], (p["x"], p["y"]), new["piece"],
+                          (new["x"], new["y"]), sorted(shut.intersection(nav))))
+    print(f"{world_dir}: {len(moved)} fire(s) moved off a doorway, {len(stuck)} "
+          f"with nowhere to go")
+    for (was, wxy, now, nxy, hit_cells) in moved:
+        print(f"   {was} {wxy} -> {now} {nxy}   (it blocked {hit_cells})")
+    for t in stuck:
+        print(f"   STUCK {t}")
+    if write and moved:
+        json.dump(doc, open(path, "w"), separators=(",", ":"))
+    return len(moved)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--apply", metavar="WORLD_DIR")
+    ap.add_argument("--refit", metavar="WORLD_DIR",
+                    help="move a fire that shuts a door (and its chimney)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
+    if a.refit:
+        refit(a.refit, write=not a.dry_run)
+        return
     if a.apply:
         apply(a.apply, write=not a.dry_run)
         return

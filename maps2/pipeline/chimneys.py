@@ -271,12 +271,62 @@ def apply(world_dir, dir=DIR, write=True):
     return len(new)
 
 
+def heal(world_dir, write=True):
+    """RE-PICK A STACK WHOSE ART IS GONE, and leave every other one alone.
+
+    His wiki verdicts are standing removal orders and the scenery agent acts
+    on them — chimney_002 and four states went in one review (2026-09-14) —
+    so a world that shipped the day before names art that is not on disk. A
+    dangling piece draws nothing in the game (the manifest 404s and is
+    tombstoned) and stops render3 dead. `pick()` reads the pool FROM DISK, so
+    re-asking it for the same cell is the repair: the cells whose art still
+    exists keep exactly what they wear, because nothing else is touched."""
+    path = os.path.join(world_dir, "world.json")
+    doc = json.load(open(path))
+    pieces = _pieces()
+    fixed, gone = [], []
+    for p in doc.get("scenery", []):
+        if p.get("piece", "").split("/")[0] != GROUP:
+            continue
+        d = os.path.join(REPO, "scenery", p["piece"], "scenery.json")
+        st = (_meta(p["piece"]).get("states") or {}) if os.path.isfile(d) else {}
+        ok = os.path.isfile(d) and (not p.get("state") or p["state"] in st) \
+            and _ok(p["piece"], p.get("state")) and not _captioned(p["piece"], p["state"]) \
+            if os.path.isfile(d) else False
+        if ok:
+            continue
+        was = (p["piece"], p.get("state"))
+        cell = (int(p["x"]), int(p["y"]))
+        piece, state = pick(cell, pieces)
+        if not piece:
+            gone.append(was)
+            continue
+        p["piece"], p["state"] = piece, state
+        if p.get("dir"):
+            rot = (_meta(piece).get("states") or {}).get(state, {}).get("rotations") or {}
+            if not rot.get(p["dir"]):
+                del p["dir"]
+        fixed.append((was, (piece, state), cell))
+    print(f"{world_dir}: {len(fixed)} chimney(s) re-picked, {len(gone)} with no "
+          f"art left at all")
+    for (was, now, cell) in fixed:
+        print(f"   {was[0]} {was[1]} -> {now[0]} {now[1]} at {cell}")
+    if write and fixed:
+        json.dump(doc, open(path, "w"), separators=(",", ":"))
+    return len(fixed)
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--apply", metavar="WORLD_DIR")
+    ap.add_argument("--heal", metavar="WORLD_DIR",
+                    help="re-pick a stack whose piece or state was deleted")
     ap.add_argument("--dir", default=DIR, choices=("south", "south-east", "south-west"))
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args()
+    if a.heal:
+        heal(a.heal, write=not a.dry_run)
+        return
     if a.apply:
         apply(a.apply, a.dir, write=not a.dry_run)
         return
