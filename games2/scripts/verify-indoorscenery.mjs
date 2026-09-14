@@ -314,6 +314,58 @@ if (lid && lid.onLidIdx.length) {
       );
       check(!c.cropped, `and nothing crops it (cover ${c.cover}) — the deck it stands on is not over it`);
     }
+
+    // --- AND IT IS NEVER LIT BY THE ROOM UNDER IT. Standing on the roof puts a
+    //     piece in its room's CELLS while it is outdoors, and the light did not
+    //     ask about height: the interior ambient, the hearth's point light, and
+    //     — the one that actually did it — the hearth's glow HALO, a
+    //     screen-space bloom with no line of sight, reached straight up through
+    //     the roof into the chimney standing over it. Measured at his house:
+    //     +41% and warm (1.309,1.146,1.007 against the street's 0.930,0.898,
+    //     0.893) at an alpha still 0.79, which is a bright flash on the way in
+    //     and again on the way out (maintainer 2026-09-14: "the chimney on the
+    //     roof flashes bright as if it suddenly got the light from inside the
+    //     house"). The piece may only DIM across the crossing, with the outside
+    //     it belongs to — never brighten, never warm.
+    const pl = lid.onLid[0];
+    const probe = { col: pl.x, row: pl.y, z: (lid.d.level ?? 0) + 0.5 };
+    const base = await page.evaluate((q) => window.__ml.lightAtCell(q.col, q.row, q.z), probe);
+    if (!base) check(false, "no light reading at the piece on the lid — the fade arm is unmeasured");
+    else {
+      const peak = (l) => Math.max(l[0], l[1], l[2]);
+      const warm = (l) => l[0] - l[2];
+      const walk = [];
+      // Into the house and straight back out, sampling the roll itself — the
+      // flash is 2-3 frames wide and lands early, while the piece is still
+      // nearly opaque (the lid fade runs at 3x).
+      for (const [c, r] of [lidStand, spot]) {
+        await page.evaluate(([c2, r2]) => window.__ml.teleport(c2 + 0.5, r2 + 0.5), [c, r]);
+        for (let i = 0; i < 18; i++) {
+          await page.waitForTimeout(70);
+          walk.push(
+            await page.evaluate(
+              (q) => ({ mix: window.__ml.indoor().mix, l: window.__ml.lightAtCell(q.col, q.row, q.z) }),
+              probe,
+            ),
+          );
+        }
+        await settle();
+      }
+      const lit = walk.filter((w) => w.l);
+      const hot = lit.reduce((a, w) => Math.max(a, peak(w.l) / Math.max(0.001, peak(base))), 0);
+      const hotWarm = lit.reduce((a, w) => Math.max(a, warm(w.l) - warm(base)), 0);
+      const rolled = lit.filter((w) => w.mix > 0.02).length;
+      const worst = lit.reduce((a, w) => (peak(w.l) > peak(a.l) ? w : a), lit[0]);
+      console.log(
+        `  fade walk: ${lit.length} samples (${rolled} with the mask rolling), brightest ${(hot * 100).toFixed(0)}% of the street, warmest +${hotWarm.toFixed(3)} R-B`,
+      );
+      console.log(
+        `    street ${base.map((v) => v.toFixed(3))} | hottest ${worst.l.map((v) => v.toFixed(3))} at mix ${worst.mix}`,
+      );
+      check(rolled >= 4, `the walk really crossed the fade (${rolled} samples with mix > 0.02)`);
+      check(hot <= 1.02, `the piece on the roof never brightens across the crossing (peak ${(hot * 100).toFixed(0)}% of the street)`);
+      check(hotWarm <= 0.03, `and never takes the fire's colour (peak +${hotWarm.toFixed(3)} R-B over the street)`);
+    }
   }
 }
 

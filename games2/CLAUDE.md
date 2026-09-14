@@ -106,14 +106,14 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
 - Phaser: `textures.get` returns `__MISSING` for an unknown key (adapter via
   `exists`); terrain has its own `LoaderPlugin`, `crossOrigin` set.
 - EVERYTHING STREAMED BEHIND THE LIVE WORLD goes through THE ART QUEUE
-  (`client/src/artqueue.ts`, `docs/perf.md`): priority order, a BYTE budget
-  per frame, no kind's strips before a monster of it exists, its fight art
-  raised when a fight starts, scenery animations last. It decodes on a worker
-  and uploads in bands (`artworker.ts`): never `texImage2D` an `<img>` for
-  streamed art, never measure a streamed image's pixels on the frame thread,
-  and NEVER read a banded texture back from the GPU inside the frame — each is
-  a decode or a pipeline drain the phone pays per strip; boxes ride the bands,
-  alpha and pixels come from the worker on demand.
+  (`artqueue.ts`, `docs/perf.md`): priority order, a BYTE budget per frame, no
+  kind's strips before a monster of it exists, its fight art raised when a
+  fight starts, scenery animations last. It decodes on a worker and uploads in
+  bands (`artworker.ts`): never `texImage2D` an `<img>` for streamed art, never
+  measure a streamed image's pixels on the frame thread, never read a banded
+  texture back from the GPU inside the frame — each is a decode or a pipeline
+  drain per strip on the phone; boxes ride the bands, alpha and pixels come
+  from the worker on demand.
 - A DynamicTexture BRACKET is the GPU cost (a capture clear + blit): an erase
   is the object's own ERASE blend inside the pass, and the capture binds the
   rows in use (`coverRaster`).
@@ -138,14 +138,14 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
   is gated (`check-scenery-bbox.mjs`).
 - A hitbox is an ellipse OR a perspective ground rect — port the wiki's
   `rectCorners`, never re-derive; one lookup (`sceneryHitboxRec`), one
-  per-facing placement (`hitboxPosFor`). THE BOX IS THE FIXED POINT (his) and
-  the art moves into it: a facing draws through the STATE's SOUTH still's canvas
+  per-facing placement (`hitboxPosFor`). THE BOX IS THE FIXED POINT (his), the
+  art moves into it: a facing draws through the STATE's SOUTH still's canvas
   (`anchorBox`) at the PIECE's base scale, else it stands half a cell off the
-  footprint the map placed by.
+  footprint it was placed by.
 - Indoor furniture draws while its roof is cut away and crossfades with it; a
   piece standing ON that roof goes with it, and its FEET are the height EVERY
-  rule reads — lid fade, cover record, lit copy, and the `lvl` the depth rule
-  covers and lights it by (its ground put it under its own roof). Flat
+  rule reads — lid fade, cover record, lit copy, its light, and the `lvl` the
+  depth rule covers it by (its ground put it under its own roof). Flat
   (`collision:false`) pieces draw under everything, no lit copy; an OUTSIDE
   piece over half the room's floor fades out (`scenerycover.ts`), a smaller one
   keeps its silhouette.
@@ -166,10 +166,8 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
   bisects.
 - The beacon's `sections` are window means and its `counts` snapshots — never
   correlate them; its server side is an allowlist (add fields on both sides;
-  `verify-beacon.mjs` proves the POST survives it). It carries `run`,
-  `rtt` (input round trip), `cpu` (throttling proxy), `gpu` (its clock when
-  lent), the frame histogram and `rafHz`; read one with
-  `perf-read.mjs` (`--diff shaA shaB` for two builds).
+  `verify-beacon.mjs` proves the POST survives it). Its fields are in the doc;
+  read one with `perf-read.mjs` (`--diff shaA shaB` for two builds).
 
 **Movement** (`docs/movement.md`)
 - Server-authoritative, elevation-governed (`WALK_CLIMB`, `JUMP_CLIMB`); the
@@ -235,11 +233,11 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
   `shared/worldunits.ts`); the server keeps float `x/y` and syncs before
   every patch; the client reads `x/y` through installed getters. A field only
   its owner needs (`seq`, `slow`) carries `OWNER_VIEW_TAG`.
-- A client receives only what is within `INTEREST_WU` of itself (a
-  `StateView` per client, recomputed every `INTEREST_TICKS`); "unlimited" is
-  a view of everything, granted only by a room CREATE option. THE JOIN
-  SNAPSHOT IS A WHOLE VIEW (`attachView` runs the pass for the joiner) — a
-  crossing binds on it; gate `verify-zonehop.mjs`.
+- A client receives only what is within `INTEREST_WU` of itself (a `StateView`
+  per client, recomputed every `INTEREST_TICKS`); "unlimited" is a view of
+  everything, granted only by a room CREATE option. THE JOIN SNAPSHOT IS A
+  WHOLE VIEW (`attachView` runs the pass for the joiner) — a crossing binds on
+  it; gate `verify-zonehop.mjs`.
 - `view()` is applied as a decorator call after `defineTypes` (the `view:
   true` flag is ignored there); `Encoder.BUFFER_SIZE` is set in the room
   module.
@@ -278,14 +276,17 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
 - The light passes render at half resolution by default (his eye first sees
   25%), the glow field too; an overlay's RT ratio survives update().
 - Solid objects are art, not walls (no face band); a cave mouth is not a face.
-- The wall wash is per PIXEL (the face gate's lateral is to the pixel, never
-  the cell), its wrap is his "Wall light wrap" dial (0.7), and the LOS march
-  never blends a wall's own height into its front skirt, nor the skirt the LIGHT
+- The wall wash is per PIXEL (the face gate's lateral is to the pixel, not the
+  cell), its wrap is his "Wall light wrap" dial (0.7), and the LOS march never
+  blends a wall's own height into its front skirt, nor the skirt the LIGHT
   stands in; a skirt sample counts only beside a HARD hit (a wall never shadows
   the floor before it). Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark room 40%, lit room 12%; hidden outline 20% — his dials.
+- MY ROOM IS A VOLUME: the room test takes a HEIGHT (`indoorCeil`, not the
+  cut), and over my own roof its lights and halo field are blocked outright,
+  never eased.
 
 **UI and mobile** (`docs/ui.md`, `UI_AGENT.md`)
 - Wiki-themed DOM HUD, golden split, ONE 10 px edge margin; pixel art scales
@@ -306,21 +307,17 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
   reproduce a phone GPU's precision, contents loss or lag.
 
 **Indoor** (`INDOOR.md`): a cut-away, not an x-ray; never go back to culling;
-the outside is drawn at zero ambient, never skipped; wall height 1 and
-brightness 40% are his.
+the outside is drawn at zero ambient, never skipped; wall height 1 is his.
 
 **Audio** (`docs/audio.md`): talk to the composer only through `gameAudio`;
 emit semantic events with literal names; a sound plays only if the wiki
 assigned it.
 
-## Probes
+## Probes, and don't
 
 `window.__ml` is the instrument; each doc names its probes. Counters over
 pixels: a gate cannot tell a correct dark frame from a black one.
 
-## Don't
-
-- Don't touch the art domains' files or hand-author world art; don't edit
-  outside `games2/` except your own board (unless he grants the whole repo).
-- Don't grow this file: a new rule is one line here, its story in the topic
-  doc.
+Don't touch the art domains' files or hand-author world art; don't edit outside
+`games2/` except your own board (unless he grants the whole repo); don't grow
+this file — a new rule is one line here, its story in the topic doc.

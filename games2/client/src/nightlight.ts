@@ -268,6 +268,7 @@ uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
+uniform float uIndoorCeil; // MY ROOM's underside (deckBot): at or above it is outdoors
 uniform sampler2D uRoom;  // R: 128+cut where the cell is in MY room, 0 outside
                           // (roomAt tests the top half; heightAt reads the cut).
                           // G: depth from the nearest opening PLUS ONE (0 = not a room).
@@ -567,7 +568,18 @@ float heightAt(vec2 cr) {
 // NEAREST-filtered and read at the texel CENTRE, like every other per-cell
 // map here — a smoothed room boundary would bleed a half-cell of ambient
 // through the walls.
-float roomAt(vec2 cr) {
+// MEMBERSHIP ALONE — is this CELL my room's, whatever the height. roomAt is
+// that test AND the ceiling one; the glow field needs the halves apart (see the
+// uGlow block: a pixel above my room is outdoors, but it is still my room's
+// cell, and that is exactly the pixel a halo inside must not reach).
+float roomCellAt(vec2 cr) {
+  if (uIndoorMix < 0.001 || uRoomOn < 0.5) return 0.0;
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  return step(0.5, texture2D(uRoom, uv).r);
+}
+
+float roomAt(vec2 cr, float z) {
   // GATED ON THE EASE, NOT THE VERDICT. uIndoor is boolean geometry and flips
   // the instant you cross the threshold; the mask has to outlive it, or
   // stepping OUT hands the whole world the interior's own light for the length
@@ -586,7 +598,16 @@ float roomAt(vec2 cr) {
   // outside — see setRoom), so membership is the top half of the byte, not the
   // raw value: returning r itself would hand a 128/255 ambient to every room
   // cell whose wall keeps the scalar cut.
-  return step(0.5, texture2D(uRoom, uv).r);
+  // ...AND A SAMPLE HAS A HEIGHT. Membership is per CELL, and a chimney on the
+  // ROOF shares its room's cells while standing outside it. The line is the
+  // room's UNDERSIDE (uIndoorCeil, the scene's own z < indoorCeil rule — the
+  // ceiling, never the cut: the cut is raised per column exactly where a stack
+  // stands, so it answers "inside" for the one piece this is about). For a
+  // ground pixel of my room this can only say 1 — the surface resolve is
+  // clamped well under the ceiling — except the ROOF slab itself mid-fade,
+  // which is outdoor ground and now shades like the street it belongs to.
+  float m = step(0.5, texture2D(uRoom, uv).r);
+  return uIndoorCeil > 0.5 ? m * step(z, uIndoorCeil - 0.001) : m;
 }
 
 // Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
@@ -1023,7 +1044,14 @@ void main() {
   // 0.35s roll the indoor ambient itself rides, so crossing a doorway FADES the
   // outside to black under an interior that is still dimming, instead of
   // blacking half the screen a frame before the room has caught up.
-  float r = roomAt(cell);
+  float r = roomAt(cell, z);
+  // OVER MY OWN ROOF: this pixel's cell is my room's and it sits at or above
+  // the room's underside — the roof slab itself, and whatever stands on it.
+  // What is between it and everything in the room is GEOMETRY, not a fade, so
+  // the room's lights and its halo field are blocked here OUTRIGHT, at every
+  // point of the crossing — the per-light ease below is for the street, which
+  // has a doorway to see through. See the light loop and the uGlow block.
+  float overMyRoom = uIndoorCeil > 0.5 && z >= uIndoorCeil ? roomCellAt(cell) : 0.0;
   float inRoom = mix(1.0, r, uIndoorMix);
   // TWO GRADES, ONE CROSSING. A cell in MY ROOM rides uAmbient, which is
   // already the eased blend from the outdoor grade to the interior dial. A cell
@@ -1073,9 +1101,16 @@ void main() {
     // straight through my ceiling, distance-faded only — the one lit thing in
     // a black street (maintainer 2026-09-09: "I still see the house next to
     // me lit up"). Nothing above a light inside my room has a line to it.
-    // Eased on the same mix as the ambient; inside my room, or below the
-    // light (the street through the doorway), untouched.
-    att *= 1.0 - uIndoorMix * (1.0 - r) * step(lp.z - 0.05, z);
+    // Inside my room, or below the light (the street through the doorway),
+    // untouched. THE EASE IS FOR LEAVING ONLY (max with uIndoor): the mask
+    // rolling back is what needs a ramp, because the light is still in the
+    // ledger while the world outside comes up. ENTERING, the light itself
+    // arrives at the flip — easing the block on the same roll let a sealed
+    // hearth reach the chimney on its own roof at (1 - mix) for the length of
+    // the fade, which is a bright warm flash on a piece that is outdoors
+    // (maintainer 2026-09-14). Nothing above a light inside my room has a line
+    // to it, at any point in the crossing.
+    att *= 1.0 - max(overMyRoom, max(uIndoor, uIndoorMix) * (1.0 - r)) * step(lp.z - 0.05, z);
     if (att <= 0.001) continue;
 
     // Line of sight: march the heightmap toward the light. Occlusion scales
@@ -1370,7 +1405,7 @@ void main() {
     vec2 dcell = groundCellAt(u, v0, kk);
     float dep = dcell.x < 0.0 ? caveDepthAt(cell) : caveDepthAt(dcell);
     if (dep > 0.0) {
-      float mine = roomAt(cell) * uIndoorMix;
+      float mine = roomAt(cell, z) * uIndoorMix;
       // THE MOUTH ITSELF IS UNTOUCHED, and it goes dark FAST behind it. dep is
       // stored as depth+1 so that 0 can mean "not a room" (see setRoom), and
       // feeding that straight into the curve darkened the opening cell by half
@@ -1439,7 +1474,17 @@ void main() {
   // occlusion, and adding (not max) lets halos ride on top of pools/floors.
   // The field shares uCam's window exactly (stamps are placed by the same
   // world->texel mapping in update(), so a halo stays on its source at any zoom).
-  if (uGlowOn > 0.5) {
+  // ...AND IT STOPS AT MY OWN CEILING. The field is a screen-space SUM with no
+  // line of sight and no per-source room test, so a hearth's pool reached
+  // straight up through its own roof: the chimney standing over it took +0.4 of
+  // warm light the moment the mask went up, at an alpha still 0.79 — a bright
+  // flash on a piece that is outdoors (maintainer 2026-09-14: "the chimney on
+  // the roof flashes bright as if it suddenly got the light from inside the
+  // house"). A pixel in MY ROOM's cells at or above its underside is outdoors,
+  // and takes none of the field. Blanket, not per source, because the field is
+  // already summed by the time it is sampled — and so the CPU twin (lightAt's
+  // stamp term, which lights the objects standing there) can be the same rule.
+  if (uGlowOn > 0.5 && overMyRoom < 0.5) {
     vec2 guv = vec2((wx - uCam.x) / uCam.z, (wy - uCam.y) / uCam.w);
     if (guv.x > 0.0 && guv.x < 1.0 && guv.y > 0.0 && guv.y < 1.0) {
       light += texture2D(uGlow, vec2(guv.x, mix(guv.y, 1.0 - guv.y, uGlowFlip))).rgb;
@@ -2111,6 +2156,11 @@ export class NightLights {
    * the SURFACE resolve clamps; the occlusion march does not (the building is
    * still solid to the sun). See heightAt(). */
   indoorTop = 0;
+  /** WorldScene.indoorCeil — MY ROOM's underside (deckBot). The inside/outside
+   *  line for a SAMPLE's height: at or above it is outdoors, however deep
+   *  inside the room's cells it stands. 0 when there is no ceiling to be under,
+   *  which falls back to membership alone. */
+  indoorCeil = 0;
   /** WorldScene.indoorGrade() — the LIGHT grade, 0..1: the raw eased mix at
    * 1.5×, clamped (since 2026-08-13 every light half of the crossing rides
    * this one ramp — a bit faster than the raw roll, deliberately slower than
@@ -2328,6 +2378,7 @@ export class NightLights {
       // missing from this config gets no GL setter and silently never reaches
       // real phone GPUs, where headless SwiftShader would never show it.
       uIndoorTop: { type: "1f", value: 0 },
+      uIndoorCeil: { type: "1f", value: 0 },
       uIndoorMix: { type: "1f", value: 0 },
       // OFF (0) until the containment is right. The depth map and the multiply are
       // correct and tested; what is NOT solved is telling an INSIDE pixel from an
@@ -3448,6 +3499,50 @@ export class NightLights {
     return 1 - sunShare + sunShare * Math.max(0, Math.min(1, sunVis));
   }
 
+  /** THE LIGHT LEDGER AS THE SHADER HAS IT THIS FRAME — which lights, where
+   *  they stand (cells and storeys), how far they reach and in what colour.
+   *  `lightSlots` says how MANY are held; this says WHICH, which is what a
+   *  report of the form "that thing is suddenly lit" needs (__ml.lights). */
+  lightsNow(): { col: number; row: number; z: number; r: number; glow: boolean; color: [number, number, number] }[] {
+    return this.curLights.slice(0, MAX_SHADER_LIGHTS).map((L) => ({
+      col: +L.col.toFixed(2), row: +L.row.toFixed(2), z: +L.z.toFixed(2),
+      r: +Math.abs(L.radius).toFixed(2), glow: L.radius < 0,
+      color: [+L.color[0].toFixed(2), +L.color[1].toFixed(2), +L.color[2].toFixed(2)],
+    }));
+  }
+
+  /** IS THIS SAMPLE IN THE ROOM THE CUT HAS OPENED? — the CPU half of `roomAt`,
+   *  and the one that matters, because this side lights OBJECTS at their own
+   *  height while the fragment only ever shades ground it has already clamped
+   *  to the cut.
+   *
+   *  MEMBERSHIP IS PER CELL AND A SAMPLE ALSO HAS A HEIGHT, and treating those
+   *  as one question lit a chimney standing on the ROOF as if it were in the
+   *  room under it: the interior ambient, and the hearth's own fire six storeys
+   *  below, on a piece that is outdoors (maintainer 2026-09-14: "the chimney on
+   *  the roof flashes bright as if it suddenly got the light from inside the
+   *  house"). Measured at his: +41% and warm (1.309,1.146,1.007 against the
+   *  street's 0.930,0.898,0.893) the moment the mask went up, at an alpha still
+   *  0.79 — a flash, then the lid fade took it.
+   *
+   *  THE THRESHOLD IS THE ROOM'S UNDERSIDE (`indoorCeil`), which is the scene's
+   *  own `z < indoorCeil` rule — the same line `indoorOutside` and the flyer
+   *  case in `critterLight` already draw. NOT the cut: the cut is RAISED per
+   *  column exactly where a stack stands (26 raised cells at his house, up to
+   *  6), so a cut test answers "inside" for the one piece this is about. */
+  private inMyRoom(col: number, row: number, z: number): number {
+    if (!this.roomCellAt(col, row)) return 0;
+    return this.indoorCeil > 0 && z >= this.indoorCeil ? 0 : 1;
+  }
+
+  /** Membership alone — MY ROOM's cell, whatever the height (the GLSL
+   *  roomCellAt). The halves are needed apart for the glow field, whose gate is
+   *  "my room's cell, above its ceiling" — the roof, and whatever stands on
+   *  it. */
+  private roomCellAt(col: number, row: number): boolean {
+    return this.roomCells.has(Math.floor(row) * this.world.width + Math.floor(col));
+  }
+
   lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts, groundContact = false): [number, number, number] {
     const W = this.world.width;
     const H = this.world.height;
@@ -3490,7 +3585,7 @@ export class NightLights {
     const sunOnly = this.sunFactorAt(col, row, z, this.curSun, selfR2, groundContact);
     const sunF = sunOnly * this.cloudFactorAt(wxT, wyT);
     const aur = this.auroraAt(wxT, wyT);
-    // EXACT TWIN of the fragment's `inRoom` (roomAt): indoors, a cell outside
+    // EXACT TWIN of the fragment's `inRoom` (roomAt): indoors, a sample outside
     // MY room gets no ambient and no sky glow — only the point lights below.
     // The shader and this must agree or a body standing just outside the
     // doorway is tinted for a different world than the ground it stands on.
@@ -3498,10 +3593,12 @@ export class NightLights {
     // and gated on the EASE rather than `indoor` for the same reason: the mask
     // has to outlive the boolean or stepping out gives the whole world the
     // interior's light for the length of the fade.
-    const hit =
-      this.indoorMix > 0
-        ? this.roomCells.has(Math.floor(row) * this.world.width + Math.floor(col)) ? 1 : 0
-        : 1;
+    const hit = this.indoorMix > 0 ? this.inMyRoom(col, row, z) : 1;
+    // OVER MY OWN ROOF (the fragment's overMyRoom): my room's cell, at or above
+    // its underside. The room's lights and its halo field are blocked here
+    // outright — a roof is geometry, and the ease below belongs to the street.
+    const overMyRoom =
+      this.indoorMix > 0 && this.indoorCeil > 0 && z >= this.indoorCeil && this.roomCellAt(col, row) ? 1 : 0;
     const inRoom = 1 + (hit - 1) * this.indoorMix;
     // TWIN of the fragment's two-grade `amb` mix: in-room rides curAmbient (the
     // blended one), outside fades between black and the OUTDOOR grade only.
@@ -3529,8 +3626,10 @@ export class NightLights {
       const dist = Math.sqrt(dx * dx + dy * dy + Math.pow((L.z - z) * 0.6, 2));
       let att = Math.max(0, 1 - dist / radius);
       att *= att;
-      // Twin of the shader's above-the-light rule outside my room (see FRAG).
-      att *= 1 - this.indoorMix * (1 - hit) * (z >= L.z - 0.05 ? 1 : 0);
+      // Twin of the shader's above-the-light rule outside my room (see FRAG):
+      // the ease is for LEAVING only — entering, the light arrives at the flip
+      // and a ramped block is a flash on everything above it.
+      att *= 1 - Math.max(overMyRoom, Math.max(this.indoor ? 1 : 0, this.indoorMix) * (1 - hit)) * (z >= L.z - 0.05 ? 1 : 0);
       // A lit copy's crown reaches nearer the light than its axis: its
       // occlusion is marched whenever the light is within reach of the volume.
       const wantOcc = parts !== undefined && dist < radius + SCN_CROWN_REACH;
@@ -3677,7 +3776,11 @@ export class NightLights {
     // Glow-halo twin (added after AO, like the shader): a character standing
     // in a mushroom/crystal halo must carry its glow — the field lights the
     // ground but the lit copy is tinted by THIS function only.
-    if (this.curStamps.length) {
+    // THE HALO FIELD STOPS AT MY OWN CEILING — the twin of the uGlow gate (see
+    // FRAG): a sample in my room's cells at or above its underside is outdoors,
+    // and a pool inside the room has no line to it. This is what the chimney
+    // over its own hearth was taking.
+    if (this.curStamps.length && !overMyRoom) {
       const { dx, dy, lh } = this.geo;
       const wx = this.iso.ox + (col - row) * dx + dx;
       const wy = this.iso.oy + (col + row) * dy + dy - z * lh;
@@ -4218,6 +4321,7 @@ export class NightLights {
     s.setUniform("uCloud.value", cloud);
     s.setUniform("uIndoor.value", this.indoor ? 1 : 0);
     s.setUniform("uIndoorTop.value", this.indoorTop);
+    s.setUniform("uIndoorCeil.value", this.indoorCeil);
     s.setUniform("uIndoorMix.value", this.indoorMix);
     // Only now is roomAt allowed to darken anything: buildShader really bound
     // the sampler on THIS shader object. Until then it fails LIT (see roomAt).
@@ -4526,8 +4630,7 @@ export class NightLights {
     // the indoor mix (a silhouette would otherwise paint fog on a body the
     // pass paints none on — a pale teal figure in the zero-ambient dark).
     if (this.fogRoomBound && this.indoorMix > 0) {
-      const hit = this.roomCells.has(Math.floor(row) * this.world.width + Math.floor(col)) ? 1 : 0;
-      a *= 1 + (hit - 1) * this.indoorMix;
+      a *= 1 + (this.inMyRoom(col, row, z) - 1) * this.indoorMix;
     }
     if (a <= 0.002) return NONE;
     // Dim the fog tone with the ambient, same floor as the fragment.

@@ -634,6 +634,55 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   same condition or the gates measure a rule that doesn't ship. Real walls
   untouched (their ground top IS their surface).
 
+- **MY ROOM IS A VOLUME, NOT A SET OF CELLS — AND ITS ROOF IS GEOMETRY, NOT A
+  FADE** (`roomAt(cell, z)` + its CPU twin `inMyRoom`/`roomCellAt`;
+  `uIndoorCeil` = WorldScene's `indoorCeil`, the room's underside). The room
+  test was membership per CELL, so a chimney standing on the ROOF counted as
+  inside the room under it and took everything the room had: the interior
+  ambient, the hearth's point light, and — the one that actually did it — the
+  hearth's glow HALO, which is a screen-space bloom with no line of sight at
+  all. Measured at his house, at day, the frame the mask went up: 1.309,1.146,
+  1.007 against the street's 0.930,0.898,0.893 — +41% and fire-coloured, at a
+  lid-fade alpha still 0.79, so it reads as a flash on the way in and again on
+  the way out (maintainer 2026-09-14: "the chimney on the roof flashes bright
+  as if it suddenly got the light from inside the house"). Three parts, all of
+  them the same rule:
+  THE LINE IS THE CEILING, NOT THE CUT. `indoorCeil` is the scene's own
+  `z < indoorCeil` test (`indoorOutside`, and the flyer case in `critterLight`
+  that had to state it by hand). The CUT is wrong for this: it is RAISED per
+  column exactly where a stack stands (26 raised cells at his house, up to 6),
+  so a cut test answers "inside" for the one piece this is about.
+  OVER MY OWN ROOF, THE ROOM'S LIGHTS AND ITS HALO FIELD ARE BLOCKED OUTRIGHT
+  (`overMyRoom`), never eased. The per-light ease (`max(uIndoor, uIndoorMix)`)
+  is for the STREET, which has a doorway to see through; between a hearth and
+  the chimney over it there is a roof at every frame of the crossing. Easing it
+  on the mix let the hearth back in at (1 − mix) for the length of the exit
+  roll — the walking-OUT half of his report.
+  AND THE EASE ITSELF IS FOR LEAVING ONLY. Entering, the light arrives with the
+  flip while the mix is still ~0.1, so a block that ramps with the mix is no
+  block at all on the frame it is needed; `max(uIndoor, uIndoorMix)` blocks from
+  the verdict and eases only on the way out, where the ledger still holds the
+  room's lights while the world outside comes up.
+  The GLOW FIELD's gate is blanket rather than per source (a pixel in my room's
+  cells at or above its underside takes none of it) because the field is summed
+  into an RT before it is sampled — and that is what lets the CPU twin, which
+  lights the objects standing up there, be the same rule.
+  Gate: the fade-walk arm of `verify-indoorscenery.mjs` — 36 samples across a
+  walk in and back out, asserting the piece on the lid never brightens (peak
+  99% of its street value, was 379%) and never takes the fire's colour (+0.000
+  R−B, was +0.575). Probes: `__ml.lights()` (the ledger itself — which lights,
+  where, how far) and `__ml.nightIndoor()` (what the light pass believes about
+  the room).
+
+- **A SCENERY LIGHT SITS AT THE PIECE'S FEET, NOT ON THE GROUND UNDER IT**
+  (`pushSceneryLight`): `lvl` is `p.onDeck ? p.level + p.z : the cell's terrain
+  level`, the same feet rule the sprite, its lit copy and its cover record take.
+  Read off the cell, a brazier on a roof would light the room six storeys below
+  it — and be judged `sealed` by that room's neighbours, so it would appear as
+  an indoor-only light the moment you stepped inside. 0 of the_game's 1,406
+  placements are both `lit` and raised today, so this moves nothing now; it is
+  the rule the next chimney with a fire in it needs.
+
 - **A `lit` SCENERY PLACEMENT IS A LIGHT — THE MANIFEST'S `light` BLOCK WINS,
   THE PIXELS ARE THE FALLBACK** (`client/src/scenery3.ts` `parseLight`/
   `lightBlockFor`, `client/src/scenerylights.ts`, `pushSceneryLight` in

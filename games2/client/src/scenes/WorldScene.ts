@@ -6050,6 +6050,18 @@ export class WorldScene extends Phaser.Scene {
             litDepth: r.lo?.img.scene ? r.lo.img.depth : null,
           }));
       },
+      // WHAT IS IN THE LEDGER, not just how much of it: every light the shader
+      // holds this frame, where it stands and how far it reaches. The companion
+      // to lightSlots (counts) whenever the question is "what is lighting that".
+      lights: () => this.night?.lightsNow() ?? [],
+      // ...and the light's own view of the indoor state, which is what roomAt
+      // and inMyRoom read (the scene's fields are published to it per frame).
+      nightIndoor: () => ({
+        indoor: this.night?.indoor ?? null,
+        top: this.night?.indoorTop ?? null,
+        ceil: this.night?.indoorCeil ?? null,
+        mix: this.night ? +this.night.indoorMix.toFixed(3) : null,
+      }),
       lightSlots: () => ({
         max: MAX_SHADER_LIGHTS,
         reserved: RESERVED_LIGHT_SLOTS,
@@ -13744,6 +13756,10 @@ export class WorldScene extends Phaser.Scene {
         // are entering lights as a room immediately.
         this.night.indoor = this.indoorInside && !!this.indoorMask;
         this.night.indoorTop = this.indoorTop;
+        // ...and the room's UNDERSIDE, which is the inside/outside line for a
+        // sample's HEIGHT (roomAt/inMyRoom): a chimney on the roof shares the
+        // room's cells and is outdoors.
+        this.night.indoorCeil = this.indoorCeil;
         // The LIGHT half of the same state rides the GRADE — 1.5×, its own
         // clip: a bit faster than the raw roll (maintainer 2026-08-13: the
         // darkening trailed the roof by the rest of the roll), deliberately
@@ -20981,7 +20997,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private pushSceneryLight(
-    p: { i: number; x: number; y: number; ax: number; ay: number; dir?: string; piece: string },
+    p: { i: number; x: number; y: number; ax: number; ay: number; dir?: string; piece: string; level: number; z?: number; onDeck?: true },
     piece: { states: Record<string, { key: string; sprite: string; rotations: Record<string, string> }>; baseState: string; light: SceneryLight | null },
     st: { key: string },
     key: string,
@@ -21026,7 +21042,16 @@ export class WorldScene extends Phaser.Scene {
     if (!rec && !fromBlock) return; // no block and nothing bright in the art
     const params = fromBlock ?? rec!.params;
     const world = this.world!;
-    const lvl = world.rows[srow]?.[scol]?.l ?? 0;
+    /* THE LEVEL THE PIECE STANDS ON, not the ground under it — the same feet
+     * rule the sprite, its lit copy and its cover record take (see feetLevel).
+     * Reading the cell's terrain put a chimney's own fire six storeys below its
+     * art, INSIDE the house it stands on: a radius-16 warm light in the room,
+     * and a piece lit from under its own roof (maintainer 2026-09-14: "the
+     * chimney on the roof flashes bright as if it suddenly got the light from
+     * inside the house" — it did, and it was its own). `sealed` is asked at the
+     * same level, so a fire on a roof is the outdoor light it looks like rather
+     * than an indoor-only one that appears when you step inside. */
+    const lvl = p.onDeck ? p.level + (p.z ?? 0) : world.rows[srow]?.[scol]?.l ?? 0;
     // The emissive centroid on screen → levels above the anchor line (a piece
     // whose art shows nothing bright but whose manifest lights it: 1 level).
     const headY = rec ? fit.y + (rec.cy - fit.sy) * fit.ky : fit.ay - this.geom.lh;
