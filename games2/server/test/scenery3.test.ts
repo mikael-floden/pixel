@@ -426,15 +426,23 @@ test("a broken manifest degrades, once, and never throws", { skip }, () => {
  * waits for the cut-away. The scene reads `TerrainGrid.deck`; this is the same
  * map off the doc, and without it every test here resolved a chimney as roofed
  * and dropped three of render3's survivors. */
-const deckTopAt = (() => {
-  const top = new Map<number, number>();
-  for (const d of doc.decks ?? [])
-    for (const c of d.cells) {
-      const k = c.y * doc.size.w + c.x;
-      top.set(k, Math.max(top.get(k) ?? -1, d.level));
-    }
-  return (cx: number, cy: number) => top.get(cy * doc.size.w + cx) ?? -1;
-})();
+// BUILT ON FIRST USE, NEVER AT IMPORT: `doc` is null when the world tree is
+// absent (the deploy's sparse checkout), and a module-scope read of it throws
+// before a single test can skip — which is the repo's oldest test law and
+// exactly how this file broke the deploy's gate once.
+let deckTops: Map<number, number> | null = null;
+const deckTopAt = (cx: number, cy: number): number => {
+  if (!doc) return -1;
+  if (!deckTops) {
+    deckTops = new Map<number, number>();
+    for (const d of doc.decks ?? [])
+      for (const c of d.cells) {
+        const k = c.y * doc.size.w + c.x;
+        deckTops.set(k, Math.max(deckTops.get(k) ?? -1, d.level));
+      }
+  }
+  return deckTops.get(cy * doc.size.w + cx) ?? -1;
+};
 
 /* -- placements and the window ----------------------------------------------- */
 
