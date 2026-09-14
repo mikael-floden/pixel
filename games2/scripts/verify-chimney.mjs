@@ -353,6 +353,14 @@ if (placed.length) {
     return out;
   }, { spots, OFFSETS: [[2.5, 4.5], [4.5, 6.5], [-3.5, 6.5], [6.5, -2.5], [0, 9.5], [9.5, 0], [-9.5, 0], [0, -9.5]] });
   const byId = new Map(said.map((v) => [v.id, v]));
+  /* THE RECORD'S SHAPE, CHECKED WHERE A RECORD ACTUALLY EXISTS. The seam arm
+   * above runs at the spawn, which on this world has no chimney in view — so
+   * its key check skips silently and a dropped field would reach here as a
+   * plausible `undefined` instead of a failure. */
+  if (byId.size) {
+    const keys = Object.keys([...byId.values()][0]).sort();
+    for (const k of ["hearth", "fire"]) if (!keys.includes(k)) fail(`ventsInView records are missing \`${k}\``);
+  }
   console.log(`agree: the game reported ${byId.size} distinct vent(s); ${[...byId.values()].filter((v) => v.hearth).length} say a fire is burning`);
   for (const [i, s] of (worldDoc?.scenery ?? []).entries()) {
     const v = byId.get(`s3:${i}`);
