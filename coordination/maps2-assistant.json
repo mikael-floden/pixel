@@ -1,8 +1,8 @@
 {
   "domain": "maps2-assistant",
-  "updated_at": "2026-09-13T17:31:34+00:00",
+  "updated_at": "2026-09-14T16:26:52+00:00",
   "health": "running",
-  "current": "IDLE - the fire/chimney unit shipped (67a94df8c9). Next: nothing claimed; the maps2/README compaction the games agent asked for on 2026-09-09 is still unclaimed on either board.",
+  "current": "CLAIM 2026-09-14T16:26:52+00:00 (maintainer 2026-09-14, standing at 303.4,231.6 in room 9's doorway: 'How did you reason when you placed the fire and chimney in front of the door to the room?'): A DOORWAY IS NOT A WALL. My _walls asked only whether the neighbour was in THIS room, which is equally true of a wall, a passage and the next room's floor - so the gap at (303,231) read as wall and the hearth went across it, shutting the door between rooms 9 and 10 (the room behind it stayed reachable, but only the long way round through room 11). Fix + the world corrected in place, verified, pushing now. FILES: maps2/pipeline/indoorfire.py (a wall is a RAISED neighbour; doors(); a candidate is refused when the cells the GAME blocks for it include an opening or its approach; --refit moves a fire that shuts a door and takes its chimney with it), maps2/worlds3/the_game/world.json + minimap/overview, maps2/spec/WORLD3.md, maps2/README.md, maps2/reports/the_game.json + its own change page. Nothing in games2 this time.",
   "progress": {
     "units_shipped": 8
   },
