@@ -527,6 +527,96 @@
     }
    ],
    "artifact": "https://claude.ai/code/artifact/40a7898e-65ea-4219-8e06-5a8db5548203"
+  },
+  {
+   "date": "2026-09-14",
+   "commit": "d5b1905b0a",
+   "before": "6a799100a3",
+   "title": "8 of 10 hearths burn — the fires take their slots from the street lamps",
+   "changes": [
+    {
+     "name": "The fire is lit",
+     "what": "Two of ten hearths were burning; eight are now. I did not choose that 80% were dark - the engine renders 8 world lights per camera window and the town had spent all 8 on its lamps - but you have made the trade, so this is it: an indoor fire outranks the lamp in the street outside. The fires are lit nearest where you arrive first, and every one within 222 cells of the spawn now burns.",
+     "cell": [
+      333,
+      232
+     ],
+     "window": [
+      327,
+      226,
+      341,
+      239
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "...and this is what paid for it",
+     "what": "Twelve lights went out of 150 to free those slots - 5 streetlights, 3 lantern posts, 2 cave braziers, a crystal and a toadstool ring. A lamp is not removed, it is put OUT: the post still stands. A street lamp goes first because the builder itself lights the town's lamps last of everything, and among equals the one that goes is the one with the most lit neighbours - your own complaint about lamps that cluster. Tap for the street as it was.",
+     "cell": [
+      315,
+      243
+     ],
+     "window": [
+      305,
+      233,
+      327,
+      254
+     ]
+    },
+    {
+     "name": "Why a dimmer fire would not have helped",
+     "what": "The number that decides the whole trade: a camera window is 899 x 774 px - about 28 x 26 cells, WIDER THAN THE TOWN - so two lights inside that share its 8 slots whatever their radius. Capping a hearth's pool at 6 cells instead of the published 16 saves 5 lamps of 12 and costs the fire its glow (measured at 12, 10, 8 and 6). And lighting a fire spends the slot it just freed, so three hearths in one window cost three lamps however they are chosen. The two still dark are the far town's, 246 cells out; 9 of 10 is the ceiling and costs 15 lights.",
+     "cell": [
+      97,
+      164
+     ],
+     "window": [
+      92,
+      158,
+      106,
+      170
+     ],
+     "roofcut": true
+    }
+   ],
+   "artifact": "https://claude.ai/code/artifact/7a1f4701-1bcf-46a7-9075-211522b11a81"
+  },
+  {
+   "date": "2026-09-14",
+   "commit": "2223be5845",
+   "before": "d5b1905b0a",
+   "title": "A window needs a room behind it — 28 of 40 were hanging over dead wall",
+   "changes": [
+    {
+     "name": "The window you circled",
+     "what": "You were right, and it was not one window: 28 of the 40 in the world had part of their frame over a wall cell with no room behind it. The wall is one cell thick, so the cell behind the face IS the room - at a corner it is the wall turning - and the placer laid its slots along the whole face, corners included, keeping a margin of only a third of the frame's width. A face is cut into the RUNS of cells that have floor behind them now, the margin is at least the frame's own half-width, and a house is given a window type that fits one of ITS runs. The 28 slid 0.11 to 0.55 cells along their own wall; nothing was removed and no house lost its windows.",
+     "cell": [
+      303,
+      236
+     ],
+     "window": [
+      295,
+      231,
+      313,
+      241
+     ]
+    },
+    {
+     "name": "The same rule on the rest of the town",
+     "what": "Three houses at once. Every frame here now sits over a wall with a room behind it, and only the position along the wall changed - same window type, same face, same height. The L-shaped house was the interesting one to get right: its east wall is two runs with the notch between them, and the rule finds both.",
+     "cell": [
+      100,
+      166
+     ],
+     "window": [
+      92,
+      143,
+      112,
+      182
+     ]
+    }
+   ],
+   "artifact": "https://claude.ai/code/artifact/4cf82092-b4af-45d4-b5a9-381b4aac238d"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
