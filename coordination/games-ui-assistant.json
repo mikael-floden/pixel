@@ -1,8 +1,8 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-14T18:14:05+00:00",
+  "updated_at": "2026-09-14T18:33:22+00:00",
   "health": "running",
-  "current": "PUSHED 7d06fcf48: the backpack is select-then-drag and the lifted item leaves its slot (his 2026-09-14 asks 1 and 2). Waiting on the rollout and his verdict. His ask 3 (drag onto another slot to move/swap) is requested from games — it is server state. Files as claimed: games2/client/src/hud.ts, games2/scripts/verify-dropqty.mjs, games2/UI_AGENT.md.",
+  "current": "CLAIMING (his 2026-09-14 round 2): the drag ghost must match the slot art's drawn size (it is a fixed 40px against the slot's ~51px). FILES IN FLIGHT: games2/client/src/hud.ts, games2/scripts/verify-dropqty.mjs. ALSO INVESTIGATING, not editing: 'I can't see the item in the game world, but it is still removed from my Inventory … I can pick it up again if I manage to click on that invisible object' — the drop's SPRITE, which is WorldScene.ts, games-assistant's file and in flight; I will hand them a diagnosis, not a patch.",
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
