@@ -788,6 +788,24 @@ row, anchor and sprite bottom coincide; the old `TOP_Y` lift on ground pieces
 drew them 10 px higher than the game, and lifting windows too put a cleared
 top back into the roof band — the maintainer marked it).
 
+**A WINDOW NEEDS A ROOM BEHIND IT** (maintainer 2026-09-14: *"You know the
+walls in this game is 1 cell/tile wide right? So if you place a window too
+close to the house edge there is no 'inside room' (the outer tile is just
+wall)."*). The wall is ONE cell thick, so the cell behind the face IS the
+room — and at a corner it is the wall turning. A face cell is **backed** when
+the cell one step into the house is inside the deck's box at the house's FLOOR
+level; the face is cut into the RUNS of backed cells and a window may only
+stand where its whole drawn width sits inside one. The face used to be taken
+whole, corners included, and `_slots` kept a margin of only 0.35 of the art's
+width, so an end slot hung 6 px of a 42 px frame past the wall: **28 of
+the_game's 40 windows** were over dead wall. Both halves are fixed — the
+margin is now at least the art's own half-width, and the piece for a house is
+chosen from the types that fit one of ITS backed runs (a frame that fits the
+15-cell house does not fit the 6-cell one, and choosing it there would leave
+the house blind). `windowfit.py --apply` slides an already-shipped world's
+windows into the nearest legal spot: the_game's 28 moved 0.11 to 0.55 cells,
+none removed, no house blinded.
+
 **Windows** (`windows()`, after `village`; maintainer 2026-09-09: *"It's now
 time for you to add windows to the houses. Make sure enough space exist to the
 left and to the right ... between windows. Use one window type per house ...

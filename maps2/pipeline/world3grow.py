@@ -5203,13 +5203,46 @@ class Grow:
             return "stone"
         return "wood"
 
+    def _backed_runs(self, cells, name, x0, y0, w, h, base):
+        """The face cut into the RUNS that have a room behind them, in px
+        along the face.
+
+        A WINDOW NEEDS A ROOM BEHIND IT, and the wall is ONE cell thick, so
+        the cell behind the face IS the room — at a corner it is the wall
+        turning (maintainer 2026-09-14: "if you place a window too close to
+        the house edge there is no 'inside room' (the outer tile is just
+        wall)"). The face used to be taken whole, corners included, and 28 of
+        the_game's 40 windows hung part of their frame over dead wall.
+        `windowfit.py` holds the same rule for a world that already ships."""
+        back = [(c[0], c[1] - 1) if name == "south" else (c[0] - 1, c[1])
+                for c in cells]
+        ok = [x0 < b[0] < x0 + w - 1 and y0 < b[1] < y0 + h - 1
+              and self.lvl[b[1]][b[0]] == base for b in back]
+        out, i = [], 0
+        while i < len(ok):
+            if not ok[i]:
+                i += 1
+                continue
+            j = i
+            while j + 1 < len(ok) and ok[j + 1]:
+                j += 1
+            out.append((i * self.FACE_PX, (j + 1) * self.FACE_PX))
+            i = j + 1
+        return out
+
     def _slots(self, span, w, r):
         """Where along a face of `span` px pieces `w` px wide go: spaced
         evenly between WIN_EDGE margins, then nudged, sometimes one fewer
         than fit - a row of windows that a ruler would confirm reads as a
         barracks (maintainer: "Think about even spacing. But don't make it
-        too even/regular")."""
-        m = max(self.WIN_EDGE, 0.35 * w)
+        too even/regular").
+
+        THE MARGIN IS AT LEAST THE ART'S OWN HALF-WIDTH, or the piece leaves
+        the segment it was placed in: 0.35 x w put the centre 14.7 px from the
+        end of a 42 px window, so 6 px of frame hung past it (maintainer
+        2026-09-14, on a window at a house corner). The margin is a bare-wall
+        rule, so it is measured from the art's EDGE."""
+        m = max(self.WIN_EDGE + w / 2, 0.85 * w)
         gap = max(self.WIN_GAP, 0.8 * w)
         usable = span - 2 * m
         if usable < w:
@@ -5289,12 +5322,6 @@ class Grow:
             # the wall ring's own material; the two v2-ported houses carry
             # none and their deck's side is the wall
             side = wall_of.get((x0, y0)) or hs["side"] or "parquet_floor"
-            fits = [q for q in pool if self._window_material(q) in self.WINDOW_OF.get(side, ("wood",))]
-            assert fits, f"no window frame belongs on a {side} wall"
-            # the least-used type of the right material, best rating, then luck
-            piece = min(fits, key=lambda q: (used[q], -pool[q], r()))
-            used[piece] += 1
-            hs["piece"] = piece
             faces = []
             # south face: cells (x, y0+h-1), foot line y = y0+h, left to right
             # is +x; east face: cells (x0+w-1, y), foot line x = x0+w, and +y
@@ -5307,6 +5334,22 @@ class Grow:
             faces.append(("east", [(ex, y) for y in range(y0, y0 + h)],
                           lambda t: (ex + 1 + 1e-3, y0 + t / self.FACE_PX),
                           "south-east"))
+            runs = {name: self._backed_runs(cells, name, x0, y0, w, h, base)
+                    for (name, cells, _at, _d) in faces}
+            fits = [q for q in pool if self._window_material(q) in self.WINDOW_OF.get(side, ("wood",))]
+            assert fits, f"no window frame belongs on a {side} wall"
+            # ...AND IT HAS TO FIT A WALL THIS HOUSE ACTUALLY HAS. The backed
+            # runs are shorter than the face (a corner has no room behind it),
+            # so a wide frame that fits the biggest house does not fit the
+            # smallest - and choosing it there would leave the house blind.
+            able = [q for q in fits
+                    if any(self._slots(b - a, self._wall_art(q, d)[0], lambda: 0.5)
+                           for (name, _c, _at, d) in faces for (a, b) in runs[name])]
+            assert able, f"no window frame fits any wall of the house at {(x0, y0)}"
+            # the least-used type of the right material, best rating, then luck
+            piece = min(able, key=lambda q: (used[q], -pool[q], r()))
+            used[piece] += 1
+            hs["piece"] = piece
             got = 0
             for fi, (name, cells, at, d) in enumerate(faces):
                 if fi == 1 and got == 0:
@@ -5316,13 +5359,23 @@ class Grow:
                     continue
                 wpx, hpx = self._wall_art(piece, d)
                 z = self._lift(hpx, rise, self.WIN_CENTRE)
-                # the face in px, cut where the door is (8 px clear of it)
-                n = len(cells)
-                segs = [(0.0, n * self.FACE_PX)]
+                # A WINDOW NEEDS A ROOM BEHIND IT, and the wall is ONE cell
+                # thick, so the cell behind the face IS the room - at a corner
+                # it is the wall turning (maintainer 2026-09-14: "if you place
+                # a window too close to the house edge there is no 'inside
+                # room' (the outer tile is just wall)"). The face is cut into
+                # the RUNS of cells that are backed by floor, never taken
+                # whole. windowfit.py holds the same rule for a world that
+                # already ships.
+                segs = list(runs[name])
+                # ...and the door keeps 8 px of bare wall either side of it
                 if door in cells:
                     k = cells.index(door)
-                    segs = [(0.0, k * self.FACE_PX - 8),
-                            ((k + 1) * self.FACE_PX + 8, n * self.FACE_PX)]
+                    cut = (k * self.FACE_PX - 8, (k + 1) * self.FACE_PX + 8)
+                    segs = [t for seg in segs
+                            for t in ((seg[0], min(seg[1], cut[0])),
+                                      (max(seg[0], cut[1]), seg[1]))
+                            if t[1] - t[0] > 0]
                 for (a, b) in segs:
                     for t in self._slots(b - a, wpx, r):
                         x, y = at(a + t)

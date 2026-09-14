@@ -451,6 +451,10 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   overrides the south-east facing; `--heal <world_dir>` re-picks a stack whose
   piece or state his review deleted (a dangling reference draws nothing in the
   game and stops render3 dead).
+- `windowfit.py` — a window needs a ROOM behind it: the wall is one cell
+  thick, so a face is only usable where the cell behind it is floor
+  (`spec/WORLD3.md` → a window needs a room behind it). `--apply <world_dir>`
+  slides the windows of a world that already ships.
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 
