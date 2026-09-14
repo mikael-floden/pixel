@@ -137,6 +137,40 @@ try {
   if (geo.lineCount < 1 || !geo.msgShown)
     throw new Error(`chat overlay log missing the message chip (lines=${geo.lineCount}, shown=${geo.msgShown})`);
   console.log("GEO OK");
+
+  // ── a settings toggle is a STATUS, not a transcript ────────────────────
+  // Maintainer 2026-09-14, at six bubbles and three copies of the legend from
+  // three taps of the collision button: "I don't like the big wall of text
+  // that happens when I switch collision in settings on/off". Flipping a
+  // switch N times must leave ONE line saying what it is now — and the legend,
+  // which is a reference rather than an event, must print once a session.
+  const toggles = await p2.evaluate(async () => {
+    const btn = [...document.querySelectorAll('.ml-page[data-page="settings"] .ml-plate-btn')].find((b) =>
+      b.textContent.toLowerCase().includes("collision"),
+    );
+    if (!btn) return { err: "no collision button on the Settings page" };
+    const was = document.querySelectorAll(".ml-chatlog .ml-chatline").length;
+    for (let i = 0; i < 6; i++) {
+      btn.click();
+      await new Promise((r) => setTimeout(r, 120));
+    }
+    const lines = [...document.querySelectorAll(".ml-chatlog .ml-chatline")].map((l) => l.textContent);
+    return {
+      was,
+      lines,
+      state: lines.filter((t) => t.includes("Collision overlay:")).length,
+      legend: lines.filter((t) => t.includes("red = terrain")).length,
+    };
+  });
+  if (toggles.err) throw new Error(toggles.err);
+  if (toggles.state !== 1)
+    throw new Error(
+      `six taps of the collision button left ${toggles.state} state lines on screen, not 1 — a status line must replace itself: ${JSON.stringify(toggles.lines)}`,
+    );
+  if (toggles.legend > 1)
+    throw new Error(`the collision legend printed ${toggles.legend} times — it is a reference, not an event`);
+  console.log(`TOGGLE OK — six taps, ${toggles.state} state line, ${toggles.legend} legend (log went ${toggles.was} → ${toggles.lines.length} lines)`);
+
   await p2.screenshot({ path: `${OUT}/chat.png` });
   console.log("PASS");
 } finally {

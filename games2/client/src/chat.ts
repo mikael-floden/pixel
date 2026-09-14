@@ -20,6 +20,8 @@ export class ChatUI {
   onLog: ((name: string, text: string) => void) | null = null;
   private input: HTMLInputElement;
   private log: HTMLDivElement;
+  /** The live status line per key — see `statusKey`. */
+  private status = new Map<string, { line: HTMLElement; timers: number[] }>();
 
   constructor(
     private onSend: (text: string) => void,
@@ -75,10 +77,31 @@ export class ChatUI {
     this.onClose();
   }
 
+  /** A SETTINGS TOGGLE IS A STATUS, NOT AN EVENT — the key it replaces itself
+   *  by (maintainer 2026-09-14, at six bubbles from three taps of the collision
+   *  button: "I don't like the big wall of text that happens when I switch
+   *  collision in settings on/off"). Flipping a switch three times leaves ONE
+   *  line saying what it is now, not a transcript of the flipping.
+   *  The key is whatever a SYSTEM line says before its first colon — "Collision
+   *  overlay", "Zone borders", "fog", "Weather" — so every toggle in the scene
+   *  gets this without a call site changing, and anything without a short
+   *  prefix ("Reconnected.", "Bex reached level 7!", the collision legend)
+   *  still stacks like the event it is. Player chat is never keyed: the author
+   *  is the player, and two people saying the same thing are two messages. */
+  private statusKey(name: string, text: string): string | null {
+    if (name !== "—") return null;
+    const i = text.indexOf(":");
+    return i > 0 && i <= 24 ? text.slice(0, i) : null;
+  }
+
   addLog(name: string, text: string) {
     // Mirror to the Chat page's history BEFORE the transient line so the two
-    // stay in the same order even if a listener throws.
+    // stay in the same order even if a listener throws. The PAGE keeps every
+    // line — it is a scrollback, and "when did I turn that off?" is a fair
+    // question to ask it; only the on-screen log collapses.
     this.onLog?.(name, text);
+    const key = this.statusKey(name, text);
+    if (key) this.dropStatus(key);
     const line = document.createElement("div");
     line.className = "ml-chatline";
     const who = document.createElement("span");
@@ -88,12 +111,26 @@ export class ChatUI {
     this.log.appendChild(line);
     while (this.log.childElementCount > 8) this.log.removeChild(this.log.firstChild!);
     // chat/event lines are transient (maintainer): fade after 20s, then drop.
-    window.setTimeout(() => {
-      line.classList.add("ml-chatfade");
-      line.addEventListener("transitionend", () => line.remove(), { once: true });
-      // transitions don't run in backgrounded tabs — make sure it still leaves
-      window.setTimeout(() => line.remove(), 3000);
-    }, CHAT_LINE_TTL_MS);
+    const timers: number[] = [];
+    timers.push(
+      window.setTimeout(() => {
+        line.classList.add("ml-chatfade");
+        line.addEventListener("transitionend", () => line.remove(), { once: true });
+        // transitions don't run in backgrounded tabs — make sure it still leaves
+        timers.push(window.setTimeout(() => line.remove(), 3000));
+      }, CHAT_LINE_TTL_MS),
+    );
+    if (key) this.status.set(key, { line, timers });
+  }
+
+  /** Remove the line a key is currently showing, and its pending fade — a
+   *  replaced line must not take its successor's place in the fade queue. */
+  private dropStatus(key: string) {
+    const prev = this.status.get(key);
+    if (!prev) return;
+    for (const t of prev.timers) window.clearTimeout(t);
+    prev.line.remove();
+    this.status.delete(key);
   }
 }
 

@@ -10592,6 +10592,9 @@ export class WorldScene extends Phaser.Scene {
     return this.bareGrid.view;
   }
 
+  /** The collision legend is printed once a session — see toggleCollision. */
+  private collisionLegendShown = false;
+
   private toggleCollision(on = !this.collisionOn) {
     this.collisionOn = on;
     try {
@@ -10601,13 +10604,21 @@ export class WorldScene extends Phaser.Scene {
     this.chat.addLog("—", `Collision overlay: ${on ? "on" : "off"}`);
     // The legend on its own line: the marks do not fit on the end of a
     // sentence, and this overlay is unreadable without knowing which is which.
-    if (on)
+    // ONCE PER SESSION, though — it is a reference, not an event, and he
+    // toggles this overlay constantly (maintainer 2026-09-14: "I don't like
+    // the big wall of text that happens when I switch collision in settings
+    // on/off" — three taps had printed it three times, ~15 lines over the game
+    // view). The state line above collapses onto itself; this one cannot,
+    // having no key, so it must not repeat.
+    if (on && !this.collisionLegendShown) {
+      this.collisionLegendShown = true;
       this.chat.addLog(
         "—",
         "red = terrain · amber = a cell the nav routes around · teal = the REAL hitbox ellipse " +
           "(violet = widened to the minimum) · white = your body · green = a monster or NPC body, " +
           "faint green = where its dodge turns you",
       );
+    }
     return this.collisionOn;
   }
 
