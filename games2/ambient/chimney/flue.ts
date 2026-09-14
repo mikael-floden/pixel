@@ -35,10 +35,21 @@
 
 /** How long one puff is in the air: much longer than a campfire's 1.8-3.2 s —
  *  a plume has to climb clear of a roof and still be there. */
-export const PUFF_LIFE: [number, number] = [3400, 5400];
+export const PUFF_LIFE: [number, number] = [3400, 4800];
 /** Rise in px/s AT THE MOUTH, and the share of that still left at the end.
- *  Slower than a flame's: this gas has already given up its heat to a flue. */
-export const RISE0: [number, number] = [14, 23];
+ *  Slower than a flame's: this gas has already given up its heat to a flue.
+ *
+ *  THE COLUMN GROWS WITH THE MARKS. At 13 px a plume climbing 45 px was three
+ *  puffs tall and read as a line; at 27 px the same climb is TWO, which is a
+ *  lump sitting on the chimney rather than a column leaving it. Tripling the
+ *  mark without raising the climb would have undone the size increase it was
+ *  meant to deliver, so the rise comes up with it: the SHORTEST-lived puff now
+ *  climbs 74 px for a 27 px mark, which the unit test holds at 2.5 mark-heights
+ *  (the first attempt at this set 26 and the test caught 64 against a required
+ *  68 — the size increase was quietly undoing itself). The top of the band is
+ *  held DOWN rather than up for the same reason in reverse: at 46 px/s the
+ *  longest-lived puff climbed 180 px, which is most of the game area. */
+export const RISE0: [number, number] = [30, 38];
 export const RISE_DRAG = 0.45;
 /** The curl — wider and slower than a campfire's, and it OPENS with height. */
 export const CURL_PX: [number, number] = [3, 7];
@@ -66,15 +77,20 @@ export const GAP_MS: [number, number] = [150, 280];
  *  (chimney_002 10 px on a 28 px stack, chimney_007 12 on 35), and scenery is
  *  drawn one art pixel to one player pixel. The first cut topped out at a FOUR
  *  pixel mark, about a third of the mouth, which is what he saw.
- *  A puff still leaves slightly narrower than the hole and widens above it — a
- *  mark that starts at full mouth width reads as a chain of balls rather than
- *  a plume. */
-export const PUFF_R = [2, 3, 4, 6] as const;
+ *  A puff leaves at about the mouth's own width and then billows WELL past it
+ *  — 9 px at the flue, 27 by the top. Twice he has called these too small
+ *  (2026-09-14, on marks that ran 1-4 px and then 5-13), and the reason the
+ *  first correction did not land is that "as wide as the hole" is the floor,
+ *  not the target: smoke leaves a chimney at the mouth's width and then
+ *  expands into the air for as long as you can see it. */
+export const PUFF_R = [4, 6, 9, 13] as const;
 /** The most puffs one flue keeps in the air, and the ceiling over all flues.
  *  A column needs its marks to read as a LINE — but at the sizes above they
  *  overlap into one, so the count comes DOWN as the marks go up: fewer, bigger,
- *  softer is a hearth plume; fourteen 13 px blobs is a smoke machine. */
-export const PER_VENT = 10;
+ *  softer is a hearth plume; fourteen 27 px blobs is a smoke machine. The ink
+ *  per column stays about level across both size changes, which is the point —
+ *  he asked for bigger MARKS, not for more smoke. */
+export const PER_VENT = 8;
 export const MAX_PUFFS = 96;
 /** One stoke cycle: a hearth fed and dying back. Long enough that the column
  *  is never seen to pulse, short enough to change while you stand there. */

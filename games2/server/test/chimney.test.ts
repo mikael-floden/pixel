@@ -105,10 +105,13 @@ test("a puff is sized against the HOLE it comes out of", () => {
   // (2026-09-14: "a bit small right now compared to the chimney hole").
   const widest = PUFF_R[PUFF_R.length - 1] * 2 + 1;
   const narrowest = PUFF_R[0] * 2 + 1;
-  assert.ok(widest >= 11, `the biggest puff is ${widest}px — the mouth it leaves is 10-12`);
-  assert.ok(widest <= 19, `${widest}px is a cloud, not a puff`);
-  assert.ok(narrowest >= 5, `${narrowest}px at the mouth is a speck`);
-  assert.ok(narrowest < 10, "...but it still leaves NARROWER than the hole — a mark at full mouth width reads as a chain of balls");
+  // "As wide as the hole" is the FLOOR, not the target — that reading is what
+  // made the first correction miss. Smoke leaves at the mouth's width and then
+  // billows into the air, so the top end is a multiple of the mouth.
+  assert.ok(narrowest >= 8, `${narrowest}px at the flue is under the 10-12px mouth it leaves`);
+  assert.ok(narrowest <= 13, `${narrowest}px at the flue is already wider than the stack's hole`);
+  assert.ok(widest >= narrowest * 2.5, `it billows: ${narrowest}px at the mouth to ${widest}px at the top`);
+  assert.ok(widest <= 33, `${widest}px is a cloud bank, not a plume`);
   let prev = 0;
   for (const r of PUFF_R) {
     assert.ok(r > prev, "the radii climb");
@@ -133,7 +136,12 @@ test("a puff is sized against the HOLE it comes out of", () => {
     assert.ok(rim.length >= core.length * 0.5, `r=${r}: the rim is not a hairline (${rim.length} vs ${core.length})`);
   }
   // a column of these overlaps into one plume, so it holds FEWER of them
-  assert.ok(PER_VENT >= 6 && PER_VENT <= 12, `${PER_VENT} marks a column — fewer, bigger, softer`);
+  assert.ok(PER_VENT >= 5 && PER_VENT <= 12, `${PER_VENT} marks a column — fewer, bigger, softer`);
+  // AND THE COLUMN HAS TO BE TALL ENOUGH TO HOLD THEM. At the top size a plume
+  // must be several marks tall or it is a lump sitting on the chimney: this is
+  // the check that would have caught the size change undoing itself.
+  const climb = riseY(PUFF_LIFE[0], PUFF_LIFE[0], RISE0[0]);
+  assert.ok(climb > widest * 2.5, `the shortest plume climbs ${climb.toFixed(0)}px for a ${widest}px mark — under ${(widest * 2.5).toFixed(0)} it is a blob, not a column`);
 });
 
 test("a puff only ever gets BIGGER — smoke out of a hole expands", () => {
