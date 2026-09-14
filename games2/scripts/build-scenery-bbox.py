@@ -11,7 +11,10 @@ both sides read the same numbers — the client's own runtime measurement and th
 table agree by construction because they are the same definition.
 
 Keyed by the sprite path as `scenery.json` names it ("trees/tree_075/sprite.webp"),
-which is exactly what `southSprite()` hands the renderer.
+which is exactly what `southSprite()` hands the renderer. A TURNED frame is not
+a box here: `pieces[<id>].rots[<state>][<dir>]` carries its anchor (the bottom
+centre of its alpha bbox), which is all the stamp needs to place an ellipse on
+the frame that is actually drawn — see the `rots` block below.
 
 Run: python3 games2/scripts/build-scenery-bbox.py [--check]
 """
@@ -60,10 +63,40 @@ def main() -> int:
         # game's person exactly as the draw does (shared sceneryDrawnPx).
         cpx = ((man.get("placement") or {}).get("character_height_px"))
         states = {}
+        # ...AND WHERE EACH TURNED FRAME STANDS: state -> dir -> [anchorX,
+        # anchorY], the alpha bbox's BOTTOM CENTRE in that frame's pixels.
+        #
+        # A piece placed with `dir` is drawn from `rotations/<dir>.webp` and
+        # `fitSprite` puts THAT frame's bottom centre on the placement's anchor,
+        # so the collision stamp has to anchor the published ellipse on the same
+        # point — hearth_901's lit_1 is 93 px tall with its foot at y 112 facing
+        # south and 119 with its foot at 125 facing south-west, which is 13
+        # screen px, half a cell of iso ground, of footprint standing in front
+        # of its own art (maintainer 2026-09-14: "the wiki hitbox is perfect on
+        # both scenery objects and in-game they don't align at all").
+        #
+        # THE ANCHOR ALONE, not the whole box: the stamp needs the bottom centre
+        # and the frame size, and a turned frame's CANVAS is its south still's
+        # on every one of the library's 3,001 measurable rotations — so the box
+        # table stays south-only and this costs ~4,100 pairs instead of doubling
+        # a 565 KB document the client fetches on every join.
+        rots: dict[str, dict[str, list[float]]] = {}
         for k, st in (man.get("states") or {}).items():
             spr = (st or {}).get("rotations", {}).get("south") or (st or {}).get("sprite")
             if spr:
                 states[k] = spr
+            for d, rp in ((st or {}).get("rotations") or {}).items():
+                if d == "south" or not rp:
+                    continue
+                full = os.path.join(SRC, rp)
+                try:
+                    with Image.open(full) as im:
+                        im = im.convert("RGBA")
+                        bb = im.getbbox() or (0, 0, im.width, im.height)
+                except Exception as e:
+                    print(f"  skip {rp}: {e}", file=sys.stderr)
+                    continue
+                rots.setdefault(k, {})[d] = [(bb[0] + bb[2]) / 2, bb[3]]
         # FLAT = LIES ON THE FLOOR AND BLOCKS NOTHING. `scenery.json`'s own
         # `collision: false`, carried here because the COLLISION STAMP is the
         # one path that never saw it: the server hands stampSceneryCollision
@@ -75,6 +108,8 @@ def main() -> int:
         # is the same flag reaching the same decision on both sides.
         flat = man.get("collision") is False
         pieces[pid] = {"wph": wph, "cpx": cpx, "sprite": man.get("sprite"), "states": states}
+        if rots:
+            pieces[pid]["rots"] = rots
         if flat:
             pieces[pid]["flat"] = True
 
@@ -83,7 +118,9 @@ def main() -> int:
         "pieces": pieces,
         "_comment": (
             "Alpha bbox per scenery sprite: [x0,y0,x1,y1,frameW,frameH] in FRAME pixels, plus "
-            "each piece's world_px_height and state->sprite map. "
+            "each piece's world_px_height, its state->sprite map, and `rots` — the BOTTOM "
+            "CENTRE [x,y] of each turned frame's alpha bbox, which is where fitSprite stands "
+            "that frame and therefore where the collision stamp must anchor its ellipse. "
             "Measured by games2/scripts/build-scenery-bbox.py so the SERVER can place a "
             "scenery hitbox ellipse (live/tuning/scenery_hitbox.json, frame px from the "
             "frame centre) into world cells without decoding art. Same definition the "

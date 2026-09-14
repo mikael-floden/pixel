@@ -102,7 +102,9 @@ import {
   dodgePersonal,
   PROVOKE_RADIUS_WU,
   DROP_TTL_MS,
-  DROP_FLASH_MS, zoneRoute, zoneGrid, zoneRect, INTEREST_LEAVE_WU, WHOLE_WORLD, type ZoneCfg } from "@nangijala/shared";
+  DROP_FLASH_MS, zoneRoute, zoneGrid, zoneRect, INTEREST_LEAVE_WU, WHOLE_WORLD, type ZoneCfg,
+  hitboxPosFor,
+} from "@nangijala/shared";
 import { CharacterDef, Manifest, frameUrl, frameKey, BOOT_ANIM_STATES } from "../manifest";
 import { indoorAmbient, indoorLight, indoorLightLit, setIndoorLight, setIndoorLightLit } from "../indoorlight";
 import { ensureMapLayers, mapLayers } from "../maplayers";
@@ -21552,10 +21554,16 @@ export class WorldScene extends Phaser.Scene {
        * rewrites the record without the flag — the game reads whatever is
        * current, with no code change either way. */
       const box0 = hb?.boxes[0];
-      const hbX = box0
-        ? fit.x + (art.canvas.w / 2 + (fit.flipX ? -box0.ax : box0.ax) - fit.sx) * fit.kx
+      /* ...ON THE FACING THAT IS DRAWN. A rect's placement is per facing
+       * (`pos_by_dir`), and reading the base ax/ay put a turned piece's sort
+       * key — and with it its lift and cover line — where its south view's box
+       * would be. `hitboxPosFor` is the one resolution the collision stamp and
+       * the overlay use, so all three agree by construction. */
+      const hbPos = box0 ? hitboxPosFor(box0, p.dir || "south") : null;
+      const hbX = hbPos
+        ? fit.x + (art.canvas.w / 2 + (fit.flipX ? -hbPos.ax : hbPos.ax) - fit.sx) * fit.kx
         : fit.x + fit.w / 2;
-      const hbY = box0 ? fit.y + (art.canvas.h / 2 + box0.ay - fit.sy) * fit.ky : fit.ay;
+      const hbY = hbPos ? fit.y + (art.canvas.h / 2 + hbPos.ay - fit.sy) * fit.ky : fit.ay;
       /* THE SORT KEY IS THE FOOTPRINT'S CENTRE, not the sprite's anchor — the
        * maintainer's rule, and the same quantity the body sorts on (its nadir
        * centre). IN THE BODY'S OWN PROJECTION: `projectFlat` is what a body's

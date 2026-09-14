@@ -121,6 +121,47 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   ASPECT RATIO, so the frame-to-world scaling cannot mask it, with an arm
   pinning that the fixture's two variations really are different shapes (the bug
   looked exactly like both resolving to one record).
+- **THE FOOTPRINT IS PUT WHERE `fitSprite` PUTS THE ART — the stamp is its
+  mirror, not a second derivation of the same decision.** The maintainer,
+  2026-09-14, standing in front of a hearth and a chest with the wiki open: "the
+  wiki hitbox is perfect on both scenery objects and in-game they don't align at
+  all ... the map-agent uses the hitboxes to place the object perfectly against
+  the wall". Two halves, both re-derived and both wrong:
+  SCALE — every frame of a piece draws at `drawnPx / the PIECE's base bbox
+  height` (`fitSprite`'s `scaleH`), which is what keeps a taller state and a
+  turned frame in proportion with the piece. The stamp scaled the published
+  ellipse by the STATE's own height, so any state that is not the base's height
+  got a footprint of the wrong SIZE: 610 of the_game's 1,335 ground placements,
+  worst `braziers/brazier_001 LIT_2` at 42 px against the 57 the art is drawn
+  at, a 36% error.
+  ANCHOR — `fitSprite` stands the DRAWN frame's alpha bbox bottom centre on the
+  placement point, and a turned frame's bbox is its own: `hearths/hearth_901`
+  `lit_1` is 93 px tall with its foot at y 112 facing south, 119 with its foot
+  at y 125 facing south-west. Anchoring on the south still therefore stood a
+  turned piece's whole footprint 13 screen px — half a cell of iso ground —
+  in FRONT of its own art: of the_game's 40 turned ground placements, 20 moved
+  more than a quarter cell, 13 more than half, worst 0.94.
+  `pieces[<id>].rots[<state>][<dir>]` in `config/scenery-bbox.json` carries that
+  anchor, measured by `build-scenery-bbox.py` off `rotations/<dir>.webp`.
+  ANCHORS ONLY, NOT BOXES: a turned frame's CANVAS is its south still's on every
+  one of the library's 3,001 measurable rotations, so the box table stays
+  south-only and the document the client fetches on every join grew 565 KB →
+  655 KB instead of doubling. A facing a piece does not publish draws the south
+  still (`facedSprite`) and answers with the south anchor for the same reason; a
+  placement with no `state` resolves the base state (the one whose sprite is the
+  piece's own) so a stateless turned placement cannot silently fall back.
+  `hitboxPosFor` (shared) is now the ONE resolution of `pos_by_dir` for all
+  three consumers — the stamp, the renderer's hitbox anchor (which is the
+  piece's sort key, its lift and its cover line) and the overlay — so they agree
+  by construction rather than by three copies staying in step. Nav effect on
+  the_game is small and expected: cells blocked by scenery 1,313 → 1,320 (the
+  anchor half alone: 5 newly blocked, 21 freed). Gate:
+  `server/test/sceneryhitbox.test.ts` — the reference is written out from the
+  two documents rather than by calling the stamp, so it is parity and not a
+  tautology (1,327 footprints, worst 0.0000 cells), with a CONTROL arm that
+  re-runs the old rules and asserts they still disagree (28 of 40 turned
+  placements move more than 0.1 cell) so the test cannot pass on a build that
+  has the bug back.
 - **INDOOR SCENERY IS DRAWN WHILE ITS ROOF IS CUT AWAY** — the furniture of
   every house and cave. `buildPlacements` FLAGS a placement under a roof/cave
   deck (`SceneryPlacement.roofed`) instead of dropping it: render3 drops those

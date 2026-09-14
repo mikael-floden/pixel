@@ -1,10 +1,10 @@
 # CLAUDE.md — Nangijala, the game (law + pointers)
 
-This file is what every games2 turn loads, so it holds ONLY the rules and where
-each subsystem's detail lives. **Measurements, traps and rejected approaches
-live in `games2/docs/<topic>.md` — open the one for the subsystem you touch;
-new detail goes THERE.** A rule here is one or two lines: the law, the reason
-in parentheses, the doc with the story. (300 KB was once paid per message.)
+This file loads on every games2 turn, so it holds ONLY the rules and where each
+subsystem's detail lives. **Measurements, traps and rejected approaches live in
+`games2/docs/<topic>.md` — open the one for the subsystem you touch; new detail
+goes THERE.** A rule here is one or two lines: the law, the reason in
+parentheses, the doc with the story. (300 KB was once paid per message.)
 
 ## What this is
 
@@ -12,41 +12,40 @@ The Nangijala client + server: TypeScript npm workspaces `shared/`, `server/`
 (Node + Colyseus, authoritative `WorldRoom`, 20 Hz tick, decorator-free
 schema, plain `tsx`), `client/` (Phaser 3 + colyseus.js, Vite; prediction and
 reconciliation). Art is READ from the sibling domains (`characters2/`,
-`tiles/`, `maps2/`, `scenery/`) at `/assets/<domain>/…` — never copied, never
-edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`
-(tiles2 and world@1/@2 retired). Six agents share
-`games2/`: this one (gameplay, netcode, world, rendering), games-ui
-(`UI_AGENT.md` is the file split), games-audio (`composer/`, its own
-`CLAUDE.md`), games-ambient (`ambient/`, its own README), games-perf (frame
-time only, from the beacon) — and each has an `<agent>-assistant` with the
-same remit and its own board (root `CLAUDE.md`). Work from `games2/` (`npm run
-dev|test|typecheck`). Boards: `coordination/<agent>.json` and
-`<agent>-assistant.json`.
+`tiles/`, `maps2/`, `scenery/`) at `/assets/<domain>/…`, never copied or
+edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`.
+Six agents share `games2/`: this one
+(gameplay, netcode, world, rendering), games-ui (`UI_AGENT.md` is the file
+split), games-audio (`composer/`, its own `CLAUDE.md`), games-ambient
+(`ambient/`, its own README), games-perf (frame time only, from the beacon) —
+each with an `<agent>-assistant` of the same remit and its own board (root
+`CLAUDE.md`). Work from `games2/` (`npm run dev|test|typecheck`); boards
+`coordination/<agent>[-assistant].json`.
 
 ## The docs
 
 | doc | holds |
 |---|---|
-| `docs/shipping.md` | publish policy, the curated image root, the world tree, staging, WebP, the `?h=` grant, brotli pin, loading order, deploy |
-| `docs/tiles3-rendering.md` | the tiles3 resolver and draw ops, plates, transitions, seams, fades, decks, wall feet, render3 parity |
+| `docs/shipping.md` | publish policy, curated image root, world tree, staging, WebP, `?h=` grant, brotli pin, loading order, deploy |
+| `docs/tiles3-rendering.md` | tiles3 resolver and draw ops, plates, transitions, seams, fades, decks, wall feet, render3 parity |
 | `docs/scenery.md` | sizing, hitboxes, animation, windows on walls, indoor furniture, flat pieces, fog silhouettes |
-| `docs/depth-sort.md` | the occluder set, `depthrule.ts`, cover lines, lifts |
-| `docs/perf.md` | the ground render texture (scroll, slices, repaints, prefetch, compose budget), pooled occluders, the capture pool, the art queue, the beacon |
-| `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, the dodge, swimming, footsteps, gait, camera |
-| `docs/monsters-combat.md` | spawn zones, shadows, gait, the brain, escape math, loot, backpack, levelling, death, NPCs |
-| `docs/lighting.md` | the night shader and its CPU twins, light slots, scenery lights and shadows, depth fog, sun, time of day, weather, indoor ambient |
-| `docs/ui.md` | the wiki-themed HUD, chess, landscape and handedness, rotation, PWA, reconnect |
-| `docs/audio.md` | the composer binding |
-| `docs/testing.md` | where a test belongs, the browser gates, harness traps, device geometry |
-| `docs/backend.md`, `spec/ZONES.md` | one world for 10k: interest management, the bus, zone rooms, ghosts, hand-off, routing |
-| `INDOOR.md` | the cut-away — READ IT before touching anything that draws, lights, picks or hides a cell indoors |
-| `SURFACES.md`, `spec/*.md`, `deploy/DEPLOY.md`, `loop/LOOP.md` | the surfaces runbook, agent contracts, the deploy, the scheduled loop |
+| `docs/depth-sort.md` | occluder set, `depthrule.ts`, cover lines, lifts |
+| `docs/perf.md` | ground render texture (scroll, slices, repaints, prefetch, compose budget), pooled occluders, capture pool, art queue, beacon |
+| `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, dodge, swimming, footsteps, gait, camera |
+| `docs/monsters-combat.md` | spawn zones, shadows, gait, brain, escape math, loot, backpack, levelling, death, NPCs |
+| `docs/lighting.md` | night shader and its CPU twins, light slots, scenery lights and shadows, depth fog, sun, time of day, weather, indoor ambient |
+| `docs/ui.md` | wiki-themed HUD, chess, landscape and handedness, rotation, PWA, reconnect |
+| `docs/audio.md` | composer binding |
+| `docs/testing.md` | where a test belongs, browser gates, harness traps, device geometry |
+| `docs/backend.md`, `spec/ZONES.md` | one world for 10k: interest management, bus, zone rooms, ghosts, hand-off, routing |
+| `INDOOR.md` | cut-away — READ IT before touching anything that draws, lights, picks or hides a cell indoors |
+| `SURFACES.md`, `spec/*.md`, `deploy/DEPLOY.md`, `loop/LOOP.md` | surfaces runbook, agent contracts, deploy, scheduled loop |
 
 ## Laws (every one is paid for; the doc named holds the receipt)
 
 **Repo-wide** (root `CLAUDE.md`): cache safety is absolute — no regenerable
-asset under a stable name; lossless `exact=True` WebP for all art; never commit
-secrets; push to `main`, rebase before every push, no PRs unless asked.
+asset under a stable name; lossless `exact=True` WebP; never commit secrets;
+push to `main`, rebase before every push, no PRs unless asked.
 
 **Scope**
 - Never edit the art domains; we may improve the RENDERER, never the art.
@@ -138,13 +137,17 @@ secrets; push to `main`, rebase before every push, no PRs unless asked.
 - Scenery is sized against the 88-px person (`sceneryDrawnPx`); the bbox doc
   is gated by `check-scenery-bbox.mjs`.
 - A hitbox is an ellipse OR a perspective ground rect — port the wiki's
-  `rectCorners`, never re-derive; one lookup, `sceneryHitboxRec`.
+  `rectCorners`, never re-derive; one lookup (`sceneryHitboxRec`), one
+  per-facing placement (`hitboxPosFor`). The stamp MIRRORS `fitSprite` — the
+  PIECE's base height scales it, the DRAWN frame's own foot anchors it
+  (`rots`) — or a turned footprint stands half a cell in front of its art.
 - Indoor furniture draws while its roof is cut away and crossfades with it; a
   piece standing ON that roof goes with it, and its FEET are the height EVERY
   rule reads — lid fade, cover record, lit copy, and the `lvl` the depth rule
-  covers and lights it by (its ground put it under its own roof). Flat (`collision:false`) pieces
-  draw under everything, no lit copy. An OUTSIDE piece over half the room's
-  floor fades out (`scenerycover.ts`); a smaller one keeps its silhouette.
+  covers and lights it by (its ground put it under its own roof). Flat
+  (`collision:false`) pieces draw under everything, no lit copy; an OUTSIDE
+  piece over half the room's floor fades out (`scenerycover.ts`), a smaller one
+  keeps its silhouette.
 - Scenery animates once then sleeps per class; a lit clip moves its light
   (his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30; swing 0.12x). A clip
   plays only on frames ON THE GPU: a banded texture behind a context-restore
@@ -272,15 +275,13 @@ secrets; push to `main`, rebase before every push, no PRs unless asked.
   contact + directional core; the switches are pushed on the shader being
   BUILT.
 - The light passes render at half resolution by default (his eye first sees
-  25%); the glow field is half resolution; an overlay's RT ratio survives
-  update().
+  25%), the glow field too; an overlay's RT ratio survives update().
 - Solid objects are art, not walls (no face band); a cave mouth is not a face.
 - The wall wash is per PIXEL (the face gate's lateral is to the pixel, never
-  the cell), its wrap is his "Wall light wrap" dial (0.7), and the
-  LOS march never blends a wall's own height into its front skirt, nor the
-  skirt the LIGHT stands in; a skirt sample counts only beside a HARD hit (a
-  wall never shadows the floor before it); gates:
-  `scripts/verify-wallwash.mjs`, `verify-wallfoot.mjs`.
+  the cell), its wrap is his "Wall light wrap" dial (0.7), and the LOS march
+  never blends a wall's own height into its front skirt, nor the skirt the LIGHT
+  stands in; a skirt sample counts only beside a HARD hit (a wall never shadows
+  the floor before it). Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark room 40%, lit room 12%; hidden outline 20% — his dials.
@@ -318,8 +319,7 @@ pixels: a gate cannot tell a correct dark frame from a black one.
 
 ## Don't
 
-- Don't touch the art domains' files; don't hand-author world art.
-- Don't edit anything outside `games2/` except your own coordination board
-  (unless the maintainer grants the whole repo).
-- Don't grow this file: a new rule is one line here and its story in the
-  topic doc.
+- Don't touch the art domains' files or hand-author world art; don't edit
+  outside `games2/` except your own board (unless he grants the whole repo).
+- Don't grow this file: a new rule is one line here, its story in the topic
+  doc.
