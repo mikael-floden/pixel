@@ -1181,16 +1181,28 @@ export class HudBar {
       this.activeDrag?.cancel(); // one gesture at a time
       cell.setPointerCapture(e.pointerId);
       let ghost: HTMLImageElement | null = null;
+      let half = 20; // half the ghost's size; measured from the art it left
       const move = (ev: PointerEvent) => {
         if (!ghost) {
           ghost = img.cloneNode(true) as HTMLImageElement;
           ghost.className = "ml-slot-ghost";
+          // THE GHOST IS THE SLOT'S ART AT THE SLOT'S SIZE (maintainer
+          // 2026-09-14: "when I start to drag an item the item icon becomes
+          // smaller vs how big it is in the slot"). The old 40px was a
+          // literal; the slot draws its art at 80% of a cell, which is ~51px
+          // on his phone and changes with the breakpoints, so the ghost
+          // MEASURES the image it is lifting instead of guessing at it.
+          const r = img.getBoundingClientRect();
+          const size = Math.round(Math.max(r.width, r.height)) || 40;
+          ghost.style.width = `${size}px`;
+          ghost.style.height = `${size}px`;
+          half = size / 2; // …and the finger stays at its centre
           document.body.appendChild(ghost);
           cell.classList.add("dragging");
           dragged = true;
         }
-        ghost.style.left = `${ev.clientX - 20}px`;
-        ghost.style.top = `${ev.clientY - 20}px`;
+        ghost.style.left = `${ev.clientX - half}px`;
+        ghost.style.top = `${ev.clientY - half}px`;
       };
       const cleanup = () => {
         cell.removeEventListener("pointermove", move);
@@ -2195,7 +2207,9 @@ function injectStyles() {
      size, so nothing in the grid reflows under the finger. The selection
      outline stays, so the empty cell still says where the item came from. */
   .ml-slot.dragging img,.ml-slot.dragging b{visibility:hidden}
-  .ml-slot-ghost{position:fixed;width:40px;height:40px;z-index:60;pointer-events:none;
+  /* width/height are SET FROM THE SOURCE ART (armSlotDrag) — the lifted icon
+     is the same size as the one in the slot, never a literal. */
+  .ml-slot-ghost{position:fixed;z-index:60;pointer-events:none;
     image-rendering:pixelated;filter:drop-shadow(0 2px 6px rgba(0,0,0,.45))}
   /* ── drop-quantity dialog: centred in the GAME VIEW, over a backdrop that
      eats every pointer (that IS the movement lock's first half; the second is

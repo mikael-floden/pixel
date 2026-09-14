@@ -399,6 +399,13 @@ from the games agent), #18 (title/landing screen).
   The selection is held as {slot, item}, never a bare index: an `inv` refresh
   can compact the array under a live selection, and one that silently
   re-pointed at whatever moved in would drop the wrong thing.
+  THE GHOST IS THE SLOT'S ART AT THE SLOT'S SIZE (maintainer 2026-09-14: "when
+  I start to drag an item the item icon becomes smaller vs how big it is in the
+  slot"). It was a literal 40px against a slot that draws its art at 80% of the
+  cell — ~51px on his phone, and a different number at every breakpoint and in
+  landscape. The ghost MEASURES the image it lifts and centres that on the
+  finger, so the two can never drift apart again; the gate measures it against
+  the art still showing in a neighbouring slot rather than against a number.
   Gated in `verify-dropqty` section 1b, and the FIRST assertion is the
   regression that protects his scroll: an unselected slot lifts no ghost and
   opens no dialog.

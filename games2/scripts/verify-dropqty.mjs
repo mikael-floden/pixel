@@ -196,12 +196,18 @@ const midDrag = async () => {
   await page.mouse.down();
   await page.mouse.move(to.x, to.y, { steps: 8 });
   const g = await page.evaluate(() => {
-    const c = document.querySelector(".ml-slot.filled");
+    const cells = [...document.querySelectorAll(".ml-slot.filled")];
+    const c = cells[0];
     const img = c.querySelector("img"), b = c.querySelector("b");
     const vis = (e) => (e ? getComputedStyle(e).visibility : null);
+    const gh = document.querySelector(".ml-slot-ghost")?.getBoundingClientRect();
+    // the art still SHOWING in another filled slot is the reference size
+    const ref = cells[1]?.querySelector("img")?.getBoundingClientRect();
     return { ghosts: document.querySelectorAll(".ml-slot-ghost").length,
              art: vis(img), badge: vis(b), sel: c.classList.contains("sel"),
-             box: Math.round(c.getBoundingClientRect().height) };
+             box: Math.round(c.getBoundingClientRect().height),
+             ghostW: gh ? Math.round(gh.width) : 0, ghostH: gh ? Math.round(gh.height) : 0,
+             artW: ref ? Math.round(ref.width) : 0, artH: ref ? Math.round(ref.height) : 0 };
   });
   await page.mouse.up();
   await settle();
@@ -306,6 +312,13 @@ try {
   held.ghosts === 1
     ? ok("a drag from the selected slot lifts one ghost onto the finger")
     : fail(`${held.ghosts} ghosts mid-drag, wanted 1`);
+  // THE GHOST IS THE SLOT'S ART AT THE SLOT'S SIZE (maintainer 2026-09-14:
+  // "the item icon becomes smaller vs how big it is in the slot"). Measured
+  // against the art in a NEIGHBOURING filled slot, never a literal: the slot
+  // art is a percentage of the cell and the cell changes with the breakpoints.
+  Math.abs(held.ghostW - held.artW) <= 1 && Math.abs(held.ghostH - held.artH) <= 1
+    ? ok(`…at the size it had in the slot (${held.ghostW}px vs ${held.artW}px)`)
+    : fail(`the ghost is ${held.ghostW}x${held.ghostH}, the slot art is ${held.artW}x${held.artH}`);
   held.art === "hidden" && held.badge === "hidden"
     ? ok("…and the slot it came from shows neither art nor badge")
     : fail(`the item is still in its slot mid-drag (art ${held.art}, badge ${held.badge})`);
