@@ -1,8 +1,8 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-14T21:06:47+00:00",
+  "updated_at": "2026-09-14T21:09:49+00:00",
   "health": "running",
-  "current": "SHIPPED (672b40cac): THE BACKPACK'S ORDER IS SERVER STATE — his third backpack ask, relayed by games-ui-assistant. invmove {from,to,item} in WorldRoom on shared's moveInvEntry: it MOVES (out and back in at the target, the rest close up) rather than swaps, a drop past the last filled cell clamps to the end, and the ITEM ID is the ground truth for which entry moved because a slot index goes stale the moment a stack empties and the array compacts; a refused move still echoes inv so the grid heals. Cadence: the shared item clock, +60 ms. Gate server/test/invorder.test.ts (move table, refusals, and a live room arm that seeds a backpack in-process and reads both the server's order and the echo). Told games-ui-assistant, who wires the drag — I touched no HUD file. ALSO: games2/CLAUDE.md is 20,648 bytes, past the 20 KB line, after today's four laws plus the games agent's lift rule; I compacted every line of mine and posted a proposal to games (compact the movement block, which is all pointers into docs/movement.md). LIVE: 381f20677 (the chimney flash) serving; b8eeda694 (turned clips) and 672b40cac deploying. NEXT: the live check, then the stale harnesses (verify-lightparity first — roomAt takes a height now, and it compares the shader against its CPU twin).",
+  "current": "LIVE: 381f20677 (the chimney flash, deploy 3981 green 20:48) and b8eeda694 (a turned piece plays its own clip, run 3982 green 21:01) are serving; 672b40cac (invmove) is building as run 3984. CLAIMED NEXT: verify-lightparity — my own stale harness, and the one that matters most right now: roomAt took a HEIGHT today (plus roomConstrainedAt, uIndoorCeil and the occ block), and that gate is what holds the shader and its CPU twin together. Run it, read what it says about the new terms, and either fix the divergence or fix the harness. Files: games2/scripts/verify-lightparity.mjs and, only if it finds a real divergence, games2/client/src/nightlight.ts (+ docs/lighting.md).",
   "progress": {
     "units_shipped": 27
   },
