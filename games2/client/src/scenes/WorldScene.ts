@@ -5053,6 +5053,28 @@ export class WorldScene extends Phaser.Scene {
           return c.length ? +(c.reduce((a, r) => a + r.img.alpha, 0) / c.length).toFixed(3) : null;
         })(),
       }),
+      /** ONE PIECE'S LIT COPY, as the depth rule left it: the level the piece
+       *  is judged to STAND on (`z`), the screen line terrain crops the copy
+       *  at (`cover`, Infinity = nothing covers it), whether the copy is
+       *  actually cropped right now, and the copy's own alpha. The crop is the
+       *  instrument for the roof case: a piece on a deck judged at the ground
+       *  under it reads as covered by the very deck it stands on. */
+      sceneryLitCopy: (place?: number) =>
+        this.litOccluders
+          .filter((lo) => lo.place !== undefined && (place === undefined || lo.place === place))
+          .map((lo) => ({
+            place: lo.place,
+            col: +lo.col.toFixed(2),
+            row: +lo.row.toFixed(2),
+            z: lo.z,
+            cover: lo.cover === undefined ? null : lo.cover === Infinity ? "inf" : +lo.cover.toFixed(1),
+            imgY: +lo.img.y.toFixed(1),
+            imgH: +lo.img.displayHeight.toFixed(1),
+            cropped: lo.img.isCropped,
+            alpha: +lo.img.alpha.toFixed(3),
+            roofed: !!lo.roofed,
+            aboveCut: !!lo.aboveCut,
+          })),
       // Every outside piece with its measured share of the room's floor and
       // the alpha it wears — sorted by share, biggest first (scenerycover.ts).
       sceneryCover: (n = 12) =>
@@ -21667,7 +21689,10 @@ export class WorldScene extends Phaser.Scene {
             .setDepth(litDepth(onWall ? wallDepth : hbDepth)), // NO epsilon here — see OCC_DEPTH_EPS: this is the lit band
           col: p.x,
           row: p.y,
-          z: (world.rows[srow]?.[scol]?.l ?? 0) + 0.5,
+          // THE LEVEL IT STANDS ON, not the ground under it — a piece on a deck
+          // is six storeys up and is lit, fogged and covered up there (see
+          // feetLevel).
+          z: feetLevel + 0.5,
           phase: ((((scol * 73856093) ^ (srow * 19349663)) >>> 0) % 628) / 100,
           bx: p.ax,
           by: p.ay,
@@ -21758,7 +21783,20 @@ export class WorldScene extends Phaser.Scene {
           hbX,
           hbY,
           hbDepth,
-          lvl: world.rows[srow]?.[scol]?.l ?? 0,
+          /* THE SURFACE IT STANDS ON. `lvl` is what the shared depth rule
+           * lifts the piece by and what decides which terrain COVERS it, and
+           * reading the cell's terrain level put a chimney on the house FLOOR
+           * while its art was drawn six storeys up on the roof: the roof deck
+           * then legitimately covered a thing standing under it, and `coverY`
+           * cropped the lit copy partway up the stack. Above the crop the copy
+           * drew (it sits above the darkness overlay), below it only the base
+           * sprite under the multiply — a hard horizontal step across the
+           * chimney, which is what the maintainer drew in red (2026-09-14:
+           * "the chimney scenery on top of the roof has a visible edge that
+           * looks like a shadow bug"). Measured at 333.26,232.33: the copy
+           * stood at z 0.5 with cover 8518 against its own 8452..8536, cropped
+           * 66 px down an 84 px sprite. */
+          lvl: feetLevel,
           fx: p.x * CELL_WU,
           fy: p.y * CELL_WU,
         });

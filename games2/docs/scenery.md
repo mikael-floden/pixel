@@ -162,7 +162,23 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   publishes the piece's own drawn alpha (`ventsInView`) precisely so an
   attached effect follows the cut without knowing about roofs, so the plume
   was hanging over the open room too. Measured at his spot after: the vent's
-  alpha is 1 from the street and 0 inside. Probe: `__ml.sceneryIndoor()`
+  alpha is 1 from the street and 0 inside.
+  **AND IT STANDS UP THERE FOR EVERY OTHER RULE TOO**: that same feet level is
+  the `lvl` handed to the shared depth rule and the `z` of the piece's LIT
+  COPY. Reading the cell's terrain level put a chimney on the house FLOOR while
+  its art was drawn six storeys up, so the roof deck legitimately COVERED a
+  thing standing under it and `coverY` cropped the copy partway up the stack —
+  above the crop the copy drew (it sits above the darkness overlay), below it
+  only the base sprite under the multiply, a hard horizontal step across the
+  chimney (maintainer 2026-09-14: "a visible edge that looks like a shadow
+  bug"; it vanished mid-fade only because the whole outdoors is dimmed there).
+  Measured at 333.26,232.33: z 0.5 with cover 8518 against the copy's own
+  8452..8536 — cropped 66 px down an 84 px sprite; after, z 6.5 and nothing
+  covering it. The copy's light and its depth fog are read at that z as well,
+  so the stack was also tinted by the hearth INSIDE the house. Probe:
+  `__ml.sceneryLitCopy(place?)` reports a copy's stand level, its cover line
+  and whether it is cropped; the street arm of `verify-indoorscenery.mjs`
+  asserts both. Probe: `__ml.sceneryIndoor()`
   reports `onLid`, `onLidAlpha` (the mean alpha those sprites WEAR — the count
   was right through the whole bug) and `deckPieces`. Gate: the lid arm of
   `scripts/verify-indoorscenery.mjs`, which derives its own room (the roofed

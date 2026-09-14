@@ -115,9 +115,9 @@ secrets; push to `main`, rebase before every push, no PRs unless asked.
   and NEVER read a banded texture back from the GPU inside the frame — each is
   a decode or a pipeline drain the phone pays per strip; boxes ride the bands,
   alpha and pixels come from the worker on demand.
-- A DynamicTexture BRACKET is the GPU cost (a whole capture clear + blit): an
-  erase is the object's own ERASE blend inside the pass, and the capture binds
-  the rows in use (`coverRaster`).
+- A DynamicTexture BRACKET is the GPU cost (a capture clear + blit): an erase
+  is the object's own ERASE blend inside the pass, and the capture binds the
+  rows in use (`coverRaster`).
 
 **Depth, occluders, scenery** (`docs/depth-sort.md`, `docs/scenery.md`)
 - ONE body pipeline: `resolveDrawDepth` + `placeBodyShadow` + `syncLitCopy`
@@ -134,15 +134,15 @@ secrets; push to `main`, rebase before every push, no PRs unless asked.
   Gate: `__ml.composeWorker({audit:true}).audit.diff` = 0.
 - The occluder set is drawn WHOLE (view cull only). Never submit a subset
   chosen per image: a shown course whose front cap is hidden paints over the
-  cap's ground (the proximity cull, rejected). The list is insertion-sorted.
-- Scenery is sized against the 88-px person this game draws
-  (`sceneryDrawnPx`); the bbox doc is gated by `check-scenery-bbox.mjs`.
+  cap's ground (proximity cull, rejected). The list is insertion-sorted.
+- Scenery is sized against the 88-px person (`sceneryDrawnPx`); the bbox doc
+  is gated by `check-scenery-bbox.mjs`.
 - A hitbox is an ellipse OR a perspective ground rect — port the wiki's
   `rectCorners`, never re-derive; one lookup, `sceneryHitboxRec`.
 - Indoor furniture draws while its roof is cut away and crossfades with it; a
-  piece standing ON that roof goes with it, judged at its FEET, and ONE
-  `onLid` answers for the fade, the cover record and the lit copy (two frame
-  passes else fight over one sprite's alpha). Flat (`collision:false`) pieces
+  piece standing ON that roof goes with it, and its FEET are the height EVERY
+  rule reads — lid fade, cover record, lit copy, and the `lvl` the depth rule
+  covers and lights it by (its ground put it under its own roof). Flat (`collision:false`) pieces
   draw under everything, no lit copy. An OUTSIDE piece over half the room's
   floor fades out (`scenerycover.ts`); a smaller one keeps its silhouette.
 - Scenery animates once then sleeps per class; a lit clip moves its light

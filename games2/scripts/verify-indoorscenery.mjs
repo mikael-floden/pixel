@@ -85,7 +85,9 @@ for (const d of doc.decks ?? []) {
   const furniture = (doc.scenery ?? []).filter((p) => cells.has(`${trunc(p.x)},${trunc(p.y)}`));
   const onLid = furniture.filter((p) => typeof p.z === "number" && p.z >= (d.level ?? 0) - 1e-9);
   if (!onLid.length) continue;
-  if (!lid || cells.size > lid.cells.size) lid = { d, cells, furniture, onLid };
+  // The placement INDEX is what the scene keys a lit copy on (`place`).
+  const onLidIdx = onLid.map((p) => (doc.scenery ?? []).indexOf(p));
+  if (!lid || cells.size > lid.cells.size) lid = { d, cells, furniture, onLid, onLidIdx };
 }
 const lidStand = lid ? standIn(lid) : null;
 const spawn0 = doc.spawn ?? [Math.round(doc.size.w / 2), Math.round(doc.size.h / 2)];
@@ -238,6 +240,39 @@ check(out.scenery.drawn > 0, `outdoor scenery still draws (${out.scenery.drawn} 
 // outdoor piece from the street, at full opacity like any other.
 check(out.scenery.onLid === 0, `no piece is treated as standing on a cut lid outdoors (${out.scenery.onLid})`);
 await page.screenshot({ path: join(ROOT, "scripts", "_tmp-indoor-outside.png") });
+
+// --- AND FROM THE STREET, THE PIECE ON THE LID STANDS ON THE LID. The shared
+//     depth rule takes the level a piece STANDS on; reading the cell's terrain
+//     level put a chimney on the house floor while its art was drawn six
+//     storeys up, so the roof it stands on counted as covering it and `coverY`
+//     cropped its lit copy partway up the stack — a hard horizontal step
+//     across the chimney (maintainer 2026-09-14: "a visible edge that looks
+//     like a shadow bug"). Measured on the sprite, not on the flag: the copy's
+//     own crop state.
+if (lid && lid.onLidIdx.length) {
+  // A floor cell a few rows south of the room — outside it, in view of it.
+  const cells = [...lid.cells].map((k) => k.split(",").map(Number));
+  const midC = Math.round(cells.reduce((a, c) => a + c[0], 0) / cells.length);
+  const maxR = Math.max(...cells.map((c) => c[1]));
+  let spot = null;
+  for (let dr = 3; dr <= 8 && !spot; dr++)
+    if (doc.level?.[maxR + dr]?.[midC] === 0 && !lid.cells.has(`${midC},${maxR + dr}`)) spot = [midC, maxR + dr];
+  if (!spot) check(false, "no floor cell south of the lid house to stand on — the street arm is unmeasured");
+  else {
+    const street = await at(spot[0], spot[1], "outside, beside the lid house");
+    const copies = await page.evaluate((ids) => (window.__ml.sceneryLitCopy?.() ?? []).filter((l) => ids.includes(l.place)), lid.onLidIdx);
+    console.log(`  lit copies of the on-lid pieces in view: ${JSON.stringify(copies)}`);
+    check(street.indoor?.indoor === false, "standing in the street is outdoors");
+    if (!copies.length) check(false, "the piece on the lid has no lit copy from the street — nothing to measure");
+    for (const c of copies) {
+      check(
+        c.z >= (lid.d.level ?? 0),
+        `its lit copy stands ON the lid (z ${c.z}, deck at ${lid.d.level})`,
+      );
+      check(!c.cropped, `and nothing crops it (cover ${c.cover}) — the deck it stands on is not over it`);
+    }
+  }
+}
 
 await browser.close(); stop();
 console.log(fails.length ? `\nverify-indoorscenery: ${fails.length} FAILED` : "\nverify-indoorscenery: OK");
