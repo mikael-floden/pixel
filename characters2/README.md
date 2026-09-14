@@ -94,13 +94,26 @@ was deleted. Tag in the PixelLab UI → next sync brings it in; untag → remove
   determinism instead of filesystem order. `overrides.<npc>.<state>` pins an
   exact folder. Adding a state (walk, talk, work) is one entry — no code change.
 - **`no_turn`** (bool on the NPC's `metadata.json` record) marks an NPC whose
-  ART only reads right from ONE facing — the game must never turn it.
-  **Thorne** is the only one so far (his breastplate prop appears in
-  south/south-west but not south-east, so a turn makes it pop). Absent = false.
-- `verify_sync.py` checks the set BOTH ways (nothing tagged missing, nothing
-  untagged surviving), full per-NPC integrity, AND that every REQUIRED state
-  resolves to a folder with real frames — an NPC without an idle can never
-  ship silently frozen.
+  ART only reads right from ONE facing — the game must never turn it. Absent =
+  false. **No NPC carries it today**: it was written for Thorne, whose armorer's
+  breastplate stood beside him in south/south-west and vanished in south-east,
+  and Thorne was rejected 2026-09-14. The field stays — PixelLab produces that
+  defect regularly, and the game already honours the flag.
+- **REJECTED IN THE REVIEW BEATS THE TAG.** `live/feedback/characters.json` is
+  the maintainer's verdict channel (`rejected` → remove the asset, then clear
+  the entry). A wiki rejection does NOT untag the character on PixelLab, so a
+  plain delete would survive exactly until the next sync re-downloads it. So
+  `pipeline/verdicts.py` records the verdict in `metadata.json: rejected` —
+  this domain's own durable exclusion list — and clears the handled entry.
+  `sync.py` ingests verdicts before it downloads anything, prunes every listed
+  folder, keeps it out of the index, and prints the ones PixelLab still tags;
+  `verify_sync.py` fails if a rejected NPC reappears in the tree or the index.
+  Verdicts on the two **locked heroes** are never acted on by script — they are
+  reported and left in the feedback file. Rejected so far: `645f1252` (Thorne).
+- `verify_sync.py` checks the set BOTH ways (everything tagged AND not rejected
+  is present, nothing untagged or rejected survives), full per-NPC integrity,
+  AND that every REQUIRED state resolves to a folder with real frames — an NPC
+  without an idle can never ship silently frozen.
 
 ```bash
 python characters2/pipeline/sync.py npcs        # just the NPC set
@@ -257,7 +270,8 @@ workflow" button or run locally; it commits/pushes only on change.
 ```
 characters2/
   config.json                    pinned hero IDs (+ frame_format: webp)
-  metadata.json                  authored metadata for ALL characters (see above)
+  metadata.json                  authored metadata for ALL characters + the
+                                 `rejected` exclusion list (see above)
   animation_map.json             game-state -> folder contract (see above)
   retouch.json                   pixel patches on the mirror, sha-pinned (see above)
   humans/
@@ -274,7 +288,8 @@ characters2/
     <id8>/                       one NPC, same shape as a hero
       packed/                    THE PACKED LAYER games2 loads (below)
   pipeline/
-    pixellab_client.py  sync.py  verify_sync.py  retouch.py  retouch_author.py
+    pixellab_client.py  sync.py  verify_sync.py  verdicts.py  retouch.py
+    retouch_author.py
     to_webp.py  generate.py (legacy explorer)  pack.py (the packed layer)
 ```
 

@@ -27,6 +27,7 @@ from PIL import Image
 
 from pixellab_client import DIRECTIONS_8, PixelLabClient
 from retouch import frame_key, load_spec, pixel_sha
+from verdicts import rejected_ids
 from sync import (HUMANS, NPCS, load_config, frame_ext, list_npcs, npc_folder,
                   npc_state_map, _assign_slugs, _slug)
 
@@ -214,7 +215,16 @@ def verify_npcs(client):
     folders = {}
     for c in sorted(npcs, key=lambda c: c["id"]):
         folders[c["id"]] = npc_folder(c["id"], set(folders.values()))
-    expected = set(folders.values())
+    # A REJECTED NPC is not expected even while PixelLab still carries its tag:
+    # the maintainer's verdict outranks the tag (verdicts.py). Its art must be
+    # absent from the mirror, the index and the packed layer.
+    rejected = rejected_ids()
+    expected = set(folders.values()) - rejected
+    for f in sorted(set(folders.values()) & rejected):
+        d = os.path.join(NPCS, f)
+        if os.path.isdir(d):
+            problems.append(f"npcs: REJECTED folder '{f}' still present "
+                            f"(run pipeline/sync.py npcs to prune it)")
 
     on_disk = {f for f in (os.listdir(NPCS) if os.path.isdir(NPCS) else [])
                if os.path.isdir(os.path.join(NPCS, f))}
@@ -237,7 +247,9 @@ def verify_npcs(client):
     idx = json.load(open(os.path.join(NPCS, "index.json"))) if os.path.exists(
         os.path.join(NPCS, "index.json")) else {}
     if set((idx.get("npcs") or {}).keys()) != expected:
-        problems.append("npcs: index.json folder set != tagged set")
+        problems.append("npcs: index.json folder set != tagged-minus-rejected set")
+    for f in sorted(rejected & set((idx.get("npcs") or {}).keys())):
+        problems.append(f"npcs/index.json: REJECTED '{f}' is still listed")
 
     # GAME STATES: the game addresses `idle`, never a PixelLab animation name.
     # Every REQUIRED state must resolve to a folder that really has frames, for
@@ -275,7 +287,10 @@ def main():
             probs, n, frames = verify_npcs(client)
             all_problems["npcs"] = probs
             status = "PASS" if not probs else f"FAIL ({len(probs)} problems)"
-            print(f"[{status}] npcs: {n} NPC-tagged characters, {frames} animation frames on disk")
+            rej = rejected_ids()
+            print(f"[{status}] npcs: {n} NPC-tagged characters"
+                  + (f" ({len(rej)} REJECTED in review, excluded: {sorted(rej)})" if rej else "")
+                  + f", {n - len(rej)} mirrored, {frames} animation frames on disk")
             for p in probs[:20]:
                 print(f"    - {p}")
             continue

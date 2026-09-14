@@ -50,6 +50,7 @@ from collections import Counter
 from PIL import Image
 
 from retouch import apply_retouch, frame_key, load_spec
+from verdicts import ingest as ingest_verdicts, rejected_ids
 from pixellab_client import DIRECTIONS_8, PixelLabClient
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))   # characters2/
@@ -517,14 +518,29 @@ def sync_npcs(client, force=False, only=None):
     to chase a handful of stragglers — e.g. the NPCs still missing a direction —
     without re-pulling thousands of unchanged frames."""
     os.makedirs(NPCS, exist_ok=True)
+
+    # The maintainer's review verdicts come first: a rejected NPC must be gone
+    # from the mirror BEFORE anything is downloaded, and it stays gone even
+    # though rejecting in the wiki does not untag it on PixelLab — the
+    # exclusion set OUTRANKS the tag (verdicts.py explains why).
+    ingest_verdicts(verbose=True)
+    rejected = rejected_ids()
+
     npcs = list_npcs(client)
 
     # id-prefix folder per NPC, resolved against the whole set at once
     folders = {}
     for c in sorted(npcs, key=lambda c: c["id"]):
         folders[c["id"]] = npc_folder(c["id"], set(folders.values()))
+    still_tagged = sorted(f for f in folders.values() if f in rejected)
+    folders = {cid: f for cid, f in folders.items() if f not in rejected}
+    if still_tagged:
+        print(f"  npcs: {len(still_tagged)} REJECTED but still NPC-tagged on PixelLab "
+              f"— excluded from the mirror: {still_tagged}")
+    npcs = [c for c in npcs if c["id"] in folders]
 
-    totals = {"npcs": len(npcs), "rot_new": 0, "anim_new": 0, "frames": 0, "skipped": 0}
+    totals = {"npcs": len(npcs), "rot_new": 0, "anim_new": 0, "frames": 0, "skipped": 0,
+              "rejected": len(rejected)}
     index = {}
     for i, c in enumerate(sorted(npcs, key=lambda c: c["id"]), 1):
         cid = c["id"]; folder = folders[cid]
@@ -546,7 +562,8 @@ def sync_npcs(client, force=False, only=None):
             print(f"  npcs: {i}/{len(npcs)} mirrored "
                   f"(+{totals['frames']} frames so far)", flush=True)
 
-    # prune folders whose character is no longer NPC-tagged on PixelLab
+    # prune folders whose character lost the NPC tag, was deleted, or was
+    # REJECTED in the review (rejected wins even while the tag is still on)
     keep = set(folders.values())
     pruned = []
     for fn in sorted(os.listdir(NPCS)):
@@ -561,7 +578,9 @@ def sync_npcs(client, force=False, only=None):
         "format": "characters2-npcs@1",
         "_comment": "Roll-up of the tag-driven NPC mirror: every PixelLab "
                     "character tagged NPC, keyed by its npcs/<folder>. The tag "
-                    "is the ground truth — sync.py prunes untagged folders. "
+                    "is the ground truth — sync.py prunes untagged folders, "
+                    "minus anything the maintainer rejected in the review "
+                    "(metadata.json `rejected`, applied by verdicts.py). "
                     "`name` is PixelLab prompt junk; authored facts belong in "
                     "characters2/metadata.json under the same folder key.",
         "count": len(index),
