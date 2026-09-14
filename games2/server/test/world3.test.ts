@@ -9,9 +9,14 @@
 // gated here against the REAL file rather than a fixture.
 //
 // Every assertion below is checked against a direct read of the JSON in the
-// same test, so the file and the parser can never drift apart quietly. Counts
-// that are pinned as numbers are MEASURED on the shipped doc and say so; a maps2
-// re-export moves them and the assertion names what moved.
+// same test, so the file and the parser can never drift apart quietly. NO COUNT
+// IS PINNED: this file used to carry the world's census as equalities ("5,609
+// wall cells", "28 decks", "a lava cell at 234,184"), and the town grew — 6,171
+// wall cells, 61 decks, black_rock over the old lava — so four gates failed
+// about a map edit that broke nothing, every day, until the whole suite's reds
+// were something to scroll past. The census is PRINTED on every run instead,
+// where a human sees the world move; the assertions say what the PARSER must do
+// at any size, with a floor so none of them can pass on an empty world.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -66,8 +71,14 @@ test("size and spawn come from the doc, not the grid shape", () => {
 // them can tell the two readings apart; only cells with EXPLICIT x/y can, and
 // wall cells are the sharpest: a wall cell stands under a cliff or house FACE.
 // Read [y][x], the only wall cells at level 0 are cave-floor cells under a cave
-// ceiling's face (60 of 5,453, every one under a deck); read [x][y], 1,162 land
-// on open sea floor.
+// ceiling's face — every one of them under a deck; read [x][y], an order of
+// magnitude more land on open sea floor.
+//
+// NO CENSUS PINS (the lesson the scenery gate at the foot of this file already
+// paid for, applied here 2026-09-14): this counted 5,609 wall cells, the town
+// grew to 6,171, and the suite went red on a map edit that broke nothing. The
+// census is PRINTED instead — a human reading the run sees the world move, and
+// the assertions say what the PARSER must do whatever size it is.
 test("grids are row-major [y][x] — measured on the wall cells", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
   const grid = buildTerrainGrid(world.width, world.height, world.rows, [], world.decks);
@@ -84,11 +95,10 @@ test("grids are row-major [y][x] — measured on the wall cells", () => {
     }
     if (doc.level[x][y] === 0) atZeroXY++;
   }
-  assert.equal(cells.size, 5609, "distinct wall cells (measured; the cave ring is named whole, 2026-09-09)");
-  assert.equal(atZeroYX, 60, "read [y][x]: 60 wall cells sit at level 0 (measured)");
-  assert.equal(zeroUnderCeiling, atZeroYX, "…and every one of them is a cave floor under its ceiling's face");
-  assert.equal(atZeroXY, 1211, "read [x][y]: 1,211 wall cells land on the sea floor — that reading is wrong");
-  assert.ok(atZeroXY > 10 * atZeroYX, "the two readings must stay far apart or the gate is blunt");
+  console.log(`  ${cells.size} wall cells: at level 0, ${atZeroYX} read [y][x] (${zeroUnderCeiling} under a deck) vs ${atZeroXY} read [x][y]`);
+  assert.ok(cells.size > 1000, `the world offers wall cells to measure (${cells.size})`);
+  assert.equal(zeroUnderCeiling, atZeroYX, "read [y][x]: every wall cell at level 0 is a cave floor under its ceiling's face");
+  assert.ok(atZeroXY > 10 * atZeroYX, `read [x][y] puts ${atZeroXY} wall cells on the sea floor — that reading is wrong, and the two must stay an order of magnitude apart or the gate is blunt`);
   // …and the parser reads it the same way.
   for (const k of cells) {
     const [x, y] = k.split(",").map(Number);
@@ -98,27 +108,27 @@ test("grids are row-major [y][x] — measured on the wall cells", () => {
 
 test("ground names come from grounds[] via ground[y][x]", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
-  assert.equal(doc.grounds.length, 15, "grounds the doc declares (measured)");
-  // Every sample is a cell where ground[y][x] !== ground[x][y], so each one of
-  // them also fails if the grid is read transposed. One per declared ground.
-  const samples: [number, number, string][] = [
-    [273, 86, "black_rock"],
-    [109, 151, "brown_paving_stone"],
-    [226, 71, "dark_mud"],
-    [200, 20, "deep_water"],
-    [211, 33, "grass"],
-    [244, 82, "grey_stone"],
-    [216, 144, "ice"],
-    [210, 32, "light_beach"],
-    [209, 83, "light_soil"],
-    [96, 161, "parquet_floor"],
-    [259, 93, "snow"],
-    [207, 29, "water"],
-    [104, 166, "grey_paving_stone"],
-    [234, 184, "lava"],
-    [273, 178, "slime"],
-  ];
-  assert.deepEqual(new Set(samples.map((s) => s[2])), new Set(doc.grounds), "one sample per ground the doc declares");
+  // ONE SAMPLE PER DECLARED GROUND, FOUND IN THE DOC rather than typed into it:
+  // a cell where `ground[y][x]` is that ground and `ground[x][y]` is NOT, so
+  // every sample fails on its own if the grid is read transposed. Typed, this
+  // list pinned 15 grounds and a lava cell at 234,184 that is black_rock today —
+  // the volcano moved and the gate failed about the wrong thing. Derived, it
+  // covers whatever maps2 declares, including the grounds it adds next.
+  const samples: [number, number, string][] = [];
+  const missing: string[] = [];
+  for (let gi = 0; gi < doc.grounds.length; gi++) {
+    let found: [number, number, string] | null = null;
+    for (let y = 0; y < H && !found; y++)
+      for (let x = 0; x < W; x++)
+        if (doc.ground[y][x] === gi && doc.ground[x]?.[y] !== gi) { found = [x, y, doc.grounds[gi]]; break; }
+    if (found) samples.push(found);
+    else missing.push(doc.grounds[gi]);
+  }
+  console.log(`  ${doc.grounds.length} grounds declared, ${samples.length} sampled at an orientation-sensitive cell`);
+  // A ground laid only on the diagonal has no such cell — possible, never seen;
+  // it would silently shrink this gate, so it is named rather than ignored.
+  assert.deepEqual(missing, [], `every declared ground has an orientation-sensitive cell (${missing.join(", ")} did not)`);
+  assert.ok(samples.length >= 10, `the world declares enough grounds to test (${samples.length})`);
   for (const [x, y, name] of samples) {
     assert.equal(doc.grounds[doc.ground[y][x]], name, `doc ${x},${y}`);
     assert.notEqual(doc.grounds[doc.ground[x][y]], name, `${x},${y} must be orientation-sensitive`);
@@ -154,8 +164,8 @@ test("every cell's ground and level round-trip the whole grid, voids included", 
     }
   }
   // The sea margin around the land box is VOID (maps2 2026-09-09: "the canvas
-  // is the land plus a sea margin"): 735 cells, and a void is not ground.
-  assert.equal(voids, 735, "void cells (measured)");
+  // is the land plus a sea margin"), and a void is not ground.
+  console.log(`  ${voids} void cells; levels ${minL}..${maxL}`);
   assert.ok(voids > 0, "the -1 branch is data here, not just spec");
   // A void cell is neither ground nor water: surfaceAtWorld answers VOID_SURFACE
   // for `t: ""`, so nobody can stand or swim in the sea margin.
@@ -167,21 +177,33 @@ test("every cell's ground and level round-trip the whole grid, voids included", 
   assert.ok(!v.standable && !v.swimmable, "nobody stands or swims in the margin");
   assert.equal(used.size, doc.grounds.length + 1, "every declared ground is used, plus the void");
   assert.equal(minL, 0);
-  assert.equal(maxL, 46, "levels are the same unit as before: 0..46, the tallest roof deck's own level (measured)");
+  // LEVELS ARE LEVELS, NOT PIXELS — the unit is what this asserts, and the
+  // cross-check is the decks, which carry their own `level` and are built by a
+  // different half of render3: the tallest terrain cell IS a deck's own level
+  // (a roof laps its walls), so the two maxima meet. Pinning 46 instead only
+  // said how tall the town happened to be.
+  const deckMax = Math.max(...doc.decks.map((d: any) => d.level));
+  assert.ok(maxL > 0 && deckMax > 0, `terrain ${maxL} and decks ${deckMax} both rise off the floor`);
+  assert.equal(maxL, deckMax, "terrain levels and deck levels are one unit");
 });
 
 test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
-  assert.equal(doc.decks.length, 28, "decks (measured)");
-  assert.equal(world.decks?.length, doc.decks.length);
+  assert.equal(world.decks?.length, doc.decks.length, "every deck is carried");
   const kinds: Record<string, number> = {};
   let cells = 0;
   for (const d of doc.decks) {
     kinds[d.kind] = (kinds[d.kind] ?? 0) + 1;
     cells += d.cells.length;
   }
-  assert.deepEqual(kinds, { cave: 12, roof: 11, bridge: 5 }, "deck kinds (measured)");
-  assert.equal(cells, 1570, "deck cells (measured)");
+  console.log(`  ${doc.decks.length} decks (${Object.entries(kinds).map(([k, n]) => `${k} ${n}`).join(", ")}), ${cells} cells`);
+  // THE KINDS ARE THE CONTRACT, not how many of each the town has built this
+  // week (it was 12 caves / 11 roofs / 5 bridges; it is not any more). An
+  // unknown kind is the failure that matters: `roof`/`cave` mean INDOORS to
+  // everything downstream and `bridge` means an overpass, so a fourth word
+  // here would be silently mis-rendered and mis-lit.
+  assert.deepEqual(Object.keys(kinds).sort(), ["bridge", "cave", "roof"], "the deck kinds the engine knows, all present");
+  assert.ok(cells > 500, `the world offers deck cells to check (${cells})`);
   assert.equal(world.decks!.reduce((n, d) => n + d.cells.length, 0), cells, "no deck cell may be dropped");
   for (let i = 0; i < doc.decks.length; i++) {
     const src = doc.decks[i];
@@ -199,8 +221,8 @@ test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
   // overpass, and buildTerrainGrid keeps no deck there (1,198 of 1,556).
   const grid = buildTerrainGrid(world.width, world.height, world.rows, [], world.decks);
   const raised = grid.deck.filter((d) => d >= 0).length;
-  assert.equal(raised, 1205, `deck cells in terrain (measured): ${raised}`);
-  assert.ok(raised > cells / 2 && raised < cells, "most, not all, deck cells float over their base");
+  console.log(`  ${raised} of ${cells} deck cells float over their base`);
+  assert.ok(raised > cells / 2 && raised < cells, `most, not all, deck cells float over their base (${raised} of ${cells})`);
   // Every deck material must be a classified surface — a bridge you cross reads
   // its speed/sound from deckType, not from the water underneath.
   for (const d of world.decks!) assert.ok(isKnownSurface(d.mat), `deck material ${d.mat} is classified`);
@@ -208,8 +230,7 @@ test("decks carry ground→mat, kind verbatim, and lose no cell", () => {
 
 test("walls override the face material per cell, and LATER WINS", () => {
   if (!world) return test.skip("maps2/worlds3/the_game missing");
-  assert.equal(doc.walls.length, 21, "wall groups (measured)");
-  assert.equal(doc.walls.reduce((n: number, g: any) => n + g.cells.length, 0), 5616, "wall claims (measured; the cave ring is named whole, 2026-09-09)");
+  const totalClaims = doc.walls.reduce((n: number, g: any) => n + g.cells.length, 0);
   const claims = new Map<string, string[]>();
   for (const g of doc.walls) {
     for (const c of g.cells) {
@@ -219,11 +240,16 @@ test("walls override the face material per cell, and LATER WINS", () => {
       claims.set(k, at);
     }
   }
-  assert.equal(claims.size, 5609, "5,616 claims over 5,609 distinct cells (measured)");
-  assert.equal([...claims.values()].filter((v) => v.length > 1).length, 7, "cells claimed twice (measured)");
+  const twice = [...claims.values()].filter((v) => v.length > 1).length;
   const contested = [...claims.entries()].filter(([, v]) => new Set(v).size > 1);
-  assert.equal(contested.length, 2, "cells claimed by groups naming DIFFERENT materials (measured)");
-  assert.ok(contested.length > 0, "a contested cell is what makes the later-wins rule testable");
+  console.log(`  ${doc.walls.length} wall groups, ${totalClaims} claims over ${claims.size} cells: ${twice} claimed twice, ${contested.length} of those by groups naming DIFFERENT materials`);
+  assert.ok(claims.size > 1000, `the world offers wall cells to check (${claims.size})`);
+  assert.equal(claims.size, new Set([...claims.keys()]).size);
+  assert.ok(totalClaims >= claims.size, "a claim count below the cell count means cells were invented");
+  // THE CONTESTED CELLS ARE THE TEST. Without one, the later-wins loop below
+  // passes on a world where no rule was ever exercised — so the day the map has
+  // none, this gate says so rather than going quietly green.
+  assert.ok(contested.length > 0, "no cell is claimed by two groups naming different materials — the later-wins rule is untested on this world");
   assert.equal(Object.keys(world.wallSides!).length, claims.size);
   // render3.py builds wall_over as a dict in array order, so the LAST group to
   // claim a cell decides its material. Reproduce that or the contested cells
