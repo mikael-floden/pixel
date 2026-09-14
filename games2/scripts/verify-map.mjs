@@ -231,13 +231,21 @@ try {
           return [...document.querySelectorAll(".ml-maplayer-marks b.pin")].map((b) => {
             const d = b.querySelector("s").getBoundingClientRect();
             return {
-              name: b.querySelector("em")?.textContent ?? "",
+              name: b.dataset.pin ?? "",
+              // NO TEXT OVER THE MAP (maintainer 2026-09-12: "I don't want any
+              // text over the dungeons … just icon is enough"). The name rides
+              // the element as data; ink on the island is the regression.
+              text: b.textContent.trim(),
               fx: (d.left + d.width / 2 - f.left) / f.width,
               fy: (d.top + d.height / 2 - f.top) / f.height,
             };
           });
         });
       }
+      const inked = pins.filter((p) => p.text);
+      inked.length
+        ? fail(`${inked.length} dungeon pin(s) print their name on the map (${inked.map((p) => p.name).join(", ")}) — the icon is the whole mark`)
+        : ok(`no pin prints text over the map (${pins.length} pins)`);
       const mine = pins.find((p) => p.name === "Gate Cave");
       if (!mine) fail(`the dungeons layer drew no pin for the published cave (${pins.length} pins: ${pins.map((p) => p.name).join(", ")})`);
       else {

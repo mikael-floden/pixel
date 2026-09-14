@@ -50,7 +50,8 @@ export interface LayerCtx {
    *  anisotropically, and the zone numbers came out as unreadable smears. HTML
    *  positioned in percent is crisp at any box shape. */
   label: (col: number, row: number, text: string, strong?: boolean) => void;
-  /** A PLACE PIN: a diamond at the cell with its name under it. HTML for the
+  /** A PLACE PIN: a diamond at the cell — `text` names it in the DOM only,
+   *  never on the map. HTML for the
    *  same reason `label` is — the svg is stretched to the image box, so a
    *  circle drawn in it comes out an ellipse and a square comes out a
    *  rectangle. The SHAPE is what separates a pin from the "you are here"
@@ -151,10 +152,11 @@ const LAYERS: Layer[] = [
     // appears here the moment maps2 ships it, and nothing on this side is
     // touched when the terrain moves.
     // Only `kind: "cave"`. Houses and summits are in the same file and are one
-    // more entry each when he asks for them.
+    // more entry each when he asks for them. The NAME is never drawn — see
+    // `pin` — so this layer answers "where are they", not "which is which".
     id: "dungeons",
     label: "dungeons",
-    note: "named caves, pinned at the mouth",
+    note: "cave mouths",
     has: () => caves().length > 0,
     draw: (ctx) => {
       for (const c of caves()) ctx.pin(c.at[0], c.at[1], c.name);
@@ -233,10 +235,7 @@ function styleOnce() {
   .${MARK_CLS} b.pin s{position:absolute;left:-5px;top:-5px;width:10px;height:10px;
     box-sizing:border-box;transform:rotate(45deg);background:rgba(255,196,92,0.96);
     border:1.5px solid rgba(0,0,0,0.8);box-shadow:0 0 0 1px rgba(255,255,255,0.35)}
-  .${MARK_CLS} b.pin em{position:absolute;left:0;top:8px;transform:translateX(-50%);
-    white-space:nowrap;font:700 10px/1 var(--sans);font-style:normal;
-    color:rgba(255,223,168,0.98);text-shadow:0 1px 2px rgba(0,0,0,0.9)}
-  .${MARK_CLS} b.pin em.up{top:auto;bottom:8px}`;
+  .${MARK_CLS} b.pin s{text-decoration:none}`;
   document.head.appendChild(st);
 }
 
@@ -343,7 +342,6 @@ export function ensureMapLayers() {
   sig = next;
   svg.textContent = "";
   if (marks) marks.textContent = "";
-  const boxes: { x0: number; x1: number; y0: number; y1: number }[] = []; // placed name boxes, px
   if (!on.size) return;
   const at = (col: number, row2: number) => minimapCellPct(feed, meta, col, row2, 0);
   const ctx: LayerCtx = {
@@ -389,46 +387,17 @@ export function ensureMapLayers() {
       b.className = "pin";
       b.style.left = `${px.toFixed(3)}%`;
       b.style.top = `${py.toFixed(3)}%`;
-      // A STABLE HOOK ON EVERY PIN, named and not: the gate that checks a pin's
-      // placement has to find the one it teleported to, and the crowded ones —
-      // exactly the ones on the massif, where the level matters most — are the
-      // ones whose name is dropped. Finding them by rendered text made the
-      // check skip itself.
+      // THE MARK IS THE WHOLE PIN — NO TEXT OVER THE MAP (maintainer
+      // 2026-09-12: "when I want to see dungeons on the minimap I don't want
+      // any text over the dungeons. The dungeons should not have a name (just
+      // icon is enough)"). The map is ~300px wide on a phone and nine caves
+      // sit in one massif, so names were half-dropped for overlap anyway and
+      // the ones that survived covered the island he was reading. The name
+      // still rides the element as data, not ink: it is what the gate finds a
+      // pin by, and what a future tap-a-pin would open.
       b.dataset.pin = text;
       b.dataset.cell = `${col},${row2}`;
       b.appendChild(document.createElement("s"));
-      // THE DIAMOND ALWAYS, THE NAME IF IT FITS. The map is ~300px wide on a
-      // phone and a dozen caves sit in one massif — two names a few px apart
-      // overlap into an unreadable smear (measured with three). So a name
-      // takes the space under its own pin, or over it, or is left off: the
-      // mark still says something is there, which is the question the layer
-      // answers. Width is ESTIMATED from the glyph count (~5.5px average at
-      // 10px/700) — measuring each would mean a layout per pin, and being a
-      // few px out only costs a name that could have fitted.
-      const fw = frame.clientWidth || 1;
-      const cx = (px / 100) * fw;
-      const cy = (py / 100) * (frame.clientHeight || 1);
-      const w = text.length * 5.5 + 6;
-      const box = (up: boolean) => ({
-        x0: cx - w / 2,
-        x1: cx + w / 2,
-        y0: up ? cy - 20 : cy + 7,
-        y1: up ? cy - 7 : cy + 20,
-      });
-      const free = (bx: { x0: number; x1: number; y0: number; y1: number }) =>
-        bx.x0 > -6 &&
-        bx.x1 < fw + 6 &&
-        boxes.every((o) => bx.x1 < o.x0 || bx.x0 > o.x1 || bx.y1 < o.y0 || bx.y0 > o.y1);
-      const down = box(false);
-      const up = box(true);
-      const spot = free(down) ? down : free(up) ? up : null;
-      if (spot) {
-        boxes.push(spot);
-        const name = document.createElement("em");
-        if (spot === up) name.className = "up";
-        name.textContent = text;
-        b.appendChild(name);
-      }
       marks.appendChild(b);
     },
   };
