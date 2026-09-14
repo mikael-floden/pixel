@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { waterAt as harmlessWaterAt } from "../runtime/water";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { GLINT_SHAPES, GLINT_SIZE, reflection } from "../runtime/glint";
 
@@ -137,11 +138,12 @@ export function waterFeature(): AmbientFeature {
     }
   };
 
-  const waterAt = (wx: number, wy: number): boolean => {
-    const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
-    const f = ml?.waterAtScreen as undefined | ((x: number, y: number) => boolean);
-    return f ? !!f(wx, wy) && !deepAt(wx, wy) : false;
-  };
+  /* LAKE CHOP IS FOR WATER, NOT FOR LAVA. The game's own probe answers
+   * `!standable && swimmable` and lava is both, so this used to paint three
+   * wavelets and a moon glint on molten rock (measured at the lava lake).
+   * `runtime/water.ts` owns that distinction now — `harm` is the only field
+   * separating lava from a pond. */
+  const waterAt = (wx: number, wy: number): boolean => harmlessWaterAt(wx, wy) && !deepAt(wx, wy);
 
   const ensureTextures = (scene: Phaser.Scene) => {
     if (scene.textures.exists(WAVE_FRAMES[0])) return;

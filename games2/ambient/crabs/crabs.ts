@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientEnv, AmbientFeature } from "../runtime/types";
 import { landableAt, paintPixels } from "../runtime/ground";
+import { waterAt as harmlessWaterAt } from "../runtime/water";
 
 /* BEACH CRABS — the sideways scuttle at the water's edge.
  *
@@ -86,6 +87,18 @@ const RING_R = 22; // px out
  * constant distance, which is where crabs actually are. */
 const EDGE_STEP = 6; // px per probe when looking for the first water cell
 const EDGE_MAX = 54; // and how far to look
+/* A COLONY IS RE-CHECKED, NOT JUST REMEMBERED (2026-09-14). A beach is decided
+ * in ONE frame and then held for up to LIFE (50 s), so a single bad read
+ * outlives the moment that produced it by most of a minute — and the frames
+ * right after a teleport are exactly when the reads are bad, because the new
+ * area's cells have not resolved yet. Measured at the lava lake: with every
+ * lava point correctly rejected, a colony still appeared within 1 s of
+ * arriving and then sat there for its whole life while forty consecutive
+ * samples found NOT ONE point of harmless water anywhere in view. One bounded
+ * probe a second, along the direction the colony already believes the water
+ * lies in, drops it as soon as the world disagrees. Nothing lava-specific: it
+ * closes every transient, and on a real beach it simply passes. */
+const RECHECK_MS = 1000;
 const WATER_CLEAR = 22; // stand this far back from it: half a tile diamond
 const BAND = 12; // and how much further inland than that they scatter
 
@@ -154,6 +167,7 @@ export function crabsFeature(): AmbientFeature {
   const crabs: Crab[] = [];
   let colony: Colony | null = null;
   let sinceTry = 0;
+  let sinceCheck = 0;
   let probes = 0;
   let searches = 0;
   let gain = 0;
@@ -165,11 +179,15 @@ export function crabsFeature(): AmbientFeature {
 
   const ml = () => (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
 
+  /* A LAVA SHORE IS NOT A BEACH (maintainer 2026-09-14, with the screenshot).
+   * The game's water probe answers `!standable && swimmable` and lava is
+   * both — plus its surface `sound` is literally "water" — so the beach walk
+   * found a 480 px "shoreline" around a molten lake and strung the colony
+   * along it. `runtime/water.ts` excludes anything with `harm` now, which is
+   * the one field a pond and a lava lake do not share. */
   const waterAt = (x: number, y: number): boolean => {
-    const f = ml()?.waterAtScreen as undefined | ((x: number, y: number) => boolean);
-    if (!f) return false;
     probes++;
-    try { return !!f(x, y); } catch { return false; }
+    return harmlessWaterAt(x, y);
   };
   const landAt = (x: number, y: number): boolean => { probes++; return landableAt(x, y); };
 
@@ -228,6 +246,16 @@ export function crabsFeature(): AmbientFeature {
     for (let d = EDGE_STEP; d <= EDGE_MAX; d += EDGE_STEP)
       if (waterAt(x + wx * d, y + wy * d)) return d;
     return EDGE_MAX;
+  };
+
+  /** Is there STILL water along `w` from here? Deliberately not `waterEdge(...)
+   * < EDGE_MAX`: that returns EDGE_MAX both for "water at the last probe" and
+   * for "no water at all", which would churn a colony whose shoreline sits
+   * exactly at the end of the scan. */
+  const waterStill = (x: number, y: number, wx: number, wy: number): boolean => {
+    for (let d = EDGE_STEP; d <= EDGE_MAX; d += EDGE_STEP)
+      if (waterAt(x + wx * d, y + wy * d)) return true;
+    return false;
   };
 
   /** WALK THE SHORE from a point, turning to follow the water as it curves.
@@ -413,10 +441,17 @@ export function crabsFeature(): AmbientFeature {
       const v = ctx.view;
       if (colony) {
         colony.life -= dt;
+        sinceCheck += dt;
+        // the water it was placed against must still be there
+        let dry = false;
+        if (sinceCheck >= RECHECK_MS) {
+          sinceCheck = 0;
+          dry = !waterStill(colony.x, colony.y, colony.wx, colony.wy);
+        }
         const off =
           colony.x < v.x - OFF_VIEW || colony.x > v.x + v.width + OFF_VIEW ||
           colony.y < v.y - OFF_VIEW || colony.y > v.y + v.height + OFF_VIEW;
-        if (colony.life <= 0 || off) colony = null;
+        if (colony.life <= 0 || off || dry) colony = null;
       }
       sinceTry += dt;
       if (!colony) {

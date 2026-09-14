@@ -183,11 +183,54 @@ them; folder isolation beats DRY here).
   CELL. Dividing a critter's gx by 32 put the test player 150 cells away and
   nothing ever happened. `__ml.pickAt(gx, gy)` inverts the projection and is
   the only correct way back.
-- **`runtime/water.ts`** answers the two water questions no feature can derive:
-  is this point swimmable, and is it the OPEN SEA (`deepCurrentAtScreen`, a
-  non-null moving answer). `water` and `deep_water` carry identical Surface
-  records, so the split between the lake chop and the seaward current is a
-  contract, not a detail — anything new that draws on water inherits it.
+- **`runtime/water.ts`** answers the three water questions no feature can
+  derive: is this point WATER YOU COULD SWIM IN (`waterAt`), is it the OPEN
+  SEA (`deepAt` — `deepCurrentAtScreen`, a non-null moving answer), and does
+  the liquid here BURN (`burnsAt`). `water` and `deep_water` carry identical
+  Surface records, so the split between the lake chop and the seaward current
+  is a contract, not a detail — anything new that draws on water inherits it.
+- **LAVA IS WATER TO THE GAME'S PROBE — ask `runtime/water.ts`, never
+  `waterAtScreen`** (maintainer 2026-09-14, with a screenshot of crabs on a
+  lava shore: "Why did you place crabs near the lava?"). `isWaterAtScreen`
+  answers `!standable && swimmable`, and `shared/src/surfaces.ts` gives lava
+  BOTH — plus `sound: "water"`, so `groundSoundAt` agrees. Every field of
+  lava's record is a lake's except `harm`. Measured at the lava lake before
+  the fix: 42 of 52 molten sample points answered `waterAtScreen` true,
+  `crabs/` had strung a colony along a 480 px "shoreline", `fish/` reported
+  `lakeFrac 0.28` with four rises spawned, and `water/` was painting three
+  wavelets and a moon glint on molten rock. `waterAt` therefore means
+  swimmable AND harmless, because that is what every ambient effect has ever
+  meant by water; `swimmableAt` is the raw any-liquid answer and is almost
+  never what you want. Gate: `scripts/verify-lava-is-not-water.mjs` stands at
+  the lake (cell 218,209) and asserts all six watery features draw ZERO.
+- **A PLACEMENT DECIDED IN ONE FRAME MUST BE RE-CHECKED, or a transient
+  outlives the moment that produced it.** `crabs/` picks a beach in a single
+  frame and then holds it for up to LIFE (50 s). The frames right after a
+  TELEPORT are exactly when the terrain probes are wrong — the new area's
+  cells have not resolved yet — so the one bad read gets latched for most of a
+  minute. Measured at the lava lake with every lava point already correctly
+  rejected: a colony STILL appeared within 1 s of arriving and then sat there
+  its whole life while forty consecutive samples found not one point of
+  harmless water anywhere in view (`PASS=0`, `pickAt` present the entire
+  time). Fix: one bounded probe a second along the direction the colony
+  already believes the water lies in (`waterStill`, `RECHECK_MS`), dropping it
+  the moment the world disagrees. Nothing lava-specific — it closes every
+  transient, and on a real beach it just passes. Any feature that CACHES a
+  placement owes itself the same re-check.
+  And the check is a BOOLEAN scan, not `waterEdge(...) < EDGE_MAX`: that
+  sentinel means both "water at the last probe" and "no water at all", so
+  reusing it would churn a colony whose shoreline sits at the end of the scan.
+- **THE TWO LIQUID PROBES DISAGREE AT AN EDGE, and a harm check on `pickAt`
+  alone is not the fix.** `waterAtScreen` walks the drawn faces and answers
+  about the FRONT-MOST one; `pickAt` resolves the cell you would stand in. 16
+  px off the crab colony's home, measured: `waterAtScreen` TRUE while `pickAt`
+  + `surfaceAt` said stone, swimmable false, harm 0 — so the first fix passed
+  the very pixels the colony was anchored to (fish 0.28→0.04, water
+  0.27→0.03, colony still there). `waterAt` requires BOTH probes to agree and
+  resolves every disagreement to NOT WATER: a shoreline pixel the game itself
+  is of two minds about is not somewhere to anchor a creature. Cached per
+  resolved cell (a surface never changes at runtime), so the second probe is
+  paid once per cell, not per frame.
   `findLake` takes SEPARATE x and y margins: the projection squashes y by
   14/32, so a mark reaching 15 px sideways reaches 7 down the screen, and one
   symmetric margin refuses most of a real pond for clearance it never needed.
@@ -500,13 +543,13 @@ controller (AUTO / NONE / solo-each).
 | `spiders/` | field | The SKITTER — 3px, dart-stop-dart, solitary, keeps out of the player's lap | Dry ground; dusk/night leaning (0.25 by day) |
 | `moths/` | field | The LAMP DANCE — a few cream specks holding a squashed orbit round a lit lamp, diving at it now and then | Night, outdoors, and only where `lightsInView` reports an unsealed lamp of radius >= 1.5 |
 | `gnats/` | field | THE COLUMN — dozens of specks flying hard inside a column of AIR (about a metre across and two tall) that stands still over one patch of ground; walk into it and it breaks up, then gathers again | Dusk (Evening full, Morning half), outdoors, dry ground; gone in rain, storm, snow or wind |
-| `crabs/` | field | THE SIDEWAYS SCUTTLE — red crabs strung out along the WHOLE beach (the shoreline is walked, so a curving bay comes out as a curve), still, then running hard along it; the ones at your feet bolt as you pass | Daylight-leaning (night 0.3), outdoors, dry ground with water within a few steps |
+| `crabs/` | field | THE SIDEWAYS SCUTTLE — red crabs strung out along the WHOLE beach (the shoreline is walked, so a curving bay comes out as a curve), still, then running hard along it; the ones at your feet bolt as you pass | Daylight-leaning (night 0.3), outdoors, dry ground with HARMLESS water within a few steps (a lava shore is not a beach) |
 | `bubbles/` | field | A STRING FROM THE DEEP — bubbles climbing out of one spot on the open sea, growing and sharpening as they rise, bursting into a ring at the top, leaning downstream on the real current | Open sea only (`deepCurrentAtScreen`); nothing at all over land |
 | `embers/` | field | SPARKS OFF A FIRE — they leave the flame, rise on its heat and slow, cool from the fire's own colour toward deep red, and wink out; a blue flame throws blue sparks | Outdoor, unsealed sources whose published `light.embers` is true (a lantern is a fire and throws none); night-leaning, never off by day |
 | `foam/` | field | SEA FOAM — the white line where moving water meets land, alive: a one-pixel band hugging the coast seam and the wall's crest, a train of crest lines sliding in from a few pixels out, the band swelling as each arrives (onto the sand over a beach; thick and bright against a wall), in a slow sweep along the coast. Solid contours only, Wind Waker not grain (maintainer's picks) | Any water/land edge in view — the composed boundary seam (mask sheet) and the wall foot's crest (`footBand` replicated, parity-tested); outdoors |
-| `fish/` | field | THE RISE — a fish takes a fly: a dorsal fin breaks the surface, a tail flicks a beat later, and two or three rings leave the spot and widen until they fade; the harder takes throw a few specks of water. Rings are ISO ELLIPSES (a circle stands up out of the lake like a hoop) at whole-pixel radii, the lead ring big and the followers smaller so nested rings stay legible | Lakes and shallows only (`runtime/water.ts`; the open sea is `deepwater/`'s), outdoors. Peaks at dawn and dusk on a bump in the sun, never zero, hidden by heavy rain |
+| `fish/` | field | THE RISE — a fish takes a fly: a dorsal fin breaks the surface, a tail flicks a beat later, and two or three rings leave the spot and widen until they fade; the harder takes throw a few specks of water. Rings are ISO ELLIPSES (a circle stands up out of the lake like a hoop) at whole-pixel radii, the lead ring big and the followers smaller so nested rings stay legible | Lakes and shallows only (`runtime/water.ts` — swimmable AND harmless, so never lava; the open sea is `deepwater/`'s), outdoors. Peaks at dawn and dusk on a bump in the sun, never zero, hidden by heavy rain |
 | `drips/` | field (INDOOR) | CAVE DRIPS — a POINT THAT KEEPS DRIPPING, not a rain of drops: a drop swells out of the dark above the walls, hangs, lets go, falls faster and faster, and lands in a ring on the floor with a flash and two specks; the same spot takes another one a few seconds later. THE ONLY EFFECT HERE THAT LIVES UNDER A ROOF — it multiplies by `1 - ctx.outdoor`, the mirror of every other row | Inside a CAVE only: a cell whose slab is a `cave` deck (`__ml.t3at`, published kind — a cottage that drips is a leak); dry floor on your own terrace; nothing outdoors, ever |
-| `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: water on screen (iso probe) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
+| `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: harmless water on screen (`runtime/water.ts`, never lava) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes. TINTED FROM ITS OWN BIRD (`plumageOf`, lifted toward white): a red bird sheds a pink feather, a green one a pale green | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
 | `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. MUTED BY LAW (`species.ts`): the maintainer's bands — at least half pale-and-dark, a quarter green-and-red, a quarter free — and nothing over `MAX_SAT` 0.45 saturation, because this is background. It works the PATCH it was placed on, settles onto the grass now and then with its wings shut, and MINDS YOU: walk up and it turns away, hurries, and takes off if it was sitting | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, gone in rain, and gone in storm, snow or wind |
 | `smoke/` | field | FIRE SMOKE — thin grey wisps curling up off an open flame, so a fire reads as burning BY DAY (the embers are the night half of the same object). A column, not a cloud: marks leave the same point a tenth of a second apart, lean on the cloud wind, bend together on a shared curl phase, gather from one pixel to three and thin away. DARK grey, and darker the brighter the day — the case is a fire on sunlit ground, where a pale wisp is nothing at all (measured 5.8 luma). NORMAL blend, never additive: smoke is in the way, it does not glow | Any OPEN fire in view (`light.kind` is `fire/*` and not `fire/enclosed` — a lantern burns behind glass); sorts against its own fire's lit copy; a sealed fire only while you are in the room with it. Full by day, a third at night |
@@ -645,7 +688,11 @@ shipping.
 
 Per-feature browser gates live in `games2/scripts/verify-<feature>.mjs`
 (embers, moths, foam, fish, feathers, butterflies, drips, firesmoke, lava,
-chimney, …). SPOOKING A FLOCK IS A PROTOCOL, not
+chimney, …), plus one CROSS-FEATURE gate:
+`verify-lava-is-not-water.mjs` parks at the lava lake (cell 218,209) and
+asserts all six watery features — crabs, fish, water, deepwater, bubbles,
+foam — draw ZERO there. It belongs to no feature because the bug did not
+either: one shared probe was wrong and four effects believed it. SPOOKING A FLOCK IS A PROTOCOL, not
 a lunge: a flock only SETTLES while the player is far away, so chasing it keeps
 it airborne and it never lands to be flushed — stand off, wait for `landed`,
 convert the bird's drawn position with `pickAt`, then close.
