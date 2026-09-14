@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-scenery-hitbox@1",
   "_comment": "THE GROUND A SCENERY PIECE OCCUPIES (maintainer 2026-08-27). One or more ellipses per piece, in FRAME PIXELS with the origin at the frame's centre — the same quantity and units as a monster's nadir shadow, so a consumer that already resolves those needs no new arithmetic. It is NOT a shadow and is never drawn: it is the piece's HITBOX, and its centre line is what decides render order — a player above an ellipse's centre is drawn behind that part of the piece, below it in front. A piece may need SEVERAL (an entrance with two pillars touching the ground is two), and each carries its own rotation, because scenery always faces south but its footprint need not sit square to the screen. Keyed by the piece's path, e.g. scenery/anchors/anchor_001. THREE STATES, and the difference matters for review: NO ENTRY means nobody has decided yet; boxes:[] means decided - this piece needs none, which is the right answer for anything hung on a wall (MOUNTAIN_WALL, WINDOW); boxes:[...] is the footprint. Written by the wiki's Scenery pages; consumed by the game for collision and draw order. See live/README.md. KEYED PER VARIATION since 2026-08-29 (maintainer: \"different variations can be different size\"): \"<path>#<state>\", e.g. scenery/anchors/anchor_001#not_lit_2. A record under the BARE path is an older piece-level decision and still answers for any variation that has none of its own. An entry with auto:true is the wiki's ALPHA-PLACED PROPOSAL, measured from that variation's own art: shown as the default, but the variation still counts as 'no hitbox yet' until the maintainer accepts it (Accept default hitbox) or edits it, either of which rewrites the record without the flag. Consumers (the game) may use auto boxes as provisional footprints; filter on !auto for confirmed ones only.",
-  "updated_at": "2026-09-14T15:46:24.349Z",
+  "updated_at": "2026-09-14T15:47:36.942Z",
   "overrides": {
     "scenery/chess_tables/chess_table_009": {
       "boxes": [
@@ -53339,6 +53339,92 @@
         }
       ],
       "updated_at": "2026-09-14T15:46:22.730Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_1": {
+      "boxes": [
+        {
+          "ax": 0.61,
+          "ay": 27.61,
+          "rx": 26.5,
+          "ry": 14.75,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": -0.4,
+              "ay": 27.15
+            },
+            "south-west": {
+              "ax": 2.09,
+              "ay": 27.15
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:46:50.458Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_2": {
+      "boxes": [
+        {
+          "ax": 0.88,
+          "ay": 26.65,
+          "rx": 27.5,
+          "ry": 12.89,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-east": {
+              "ax": 4.13,
+              "ay": 26.7
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:47:06.916Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_3": {
+      "boxes": [
+        {
+          "ax": 1.53,
+          "ay": 26.47,
+          "rx": 27.5,
+          "ry": 12.89,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:47:12.651Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_4": {
+      "boxes": [
+        {
+          "ax": 3.19,
+          "ay": 26.45,
+          "rx": 26,
+          "ry": 12.19,
+          "rot": 0,
+          "pos_by_dir": {
+            "south-west": {
+              "ax": 2.37,
+              "ay": 27.9
+            },
+            "south-east": {
+              "ax": 0.32,
+              "ay": 26.72
+            }
+          }
+        }
+      ],
+      "updated_at": "2026-09-14T15:47:26.542Z"
+    },
+    "scenery/chimneys/chimney_025#not_lit_5": {
+      "boxes": [
+        {
+          "ax": 0.85,
+          "ay": 27.62,
+          "rx": 26.5,
+          "ry": 12.42,
+          "rot": 0
+        }
+      ],
+      "updated_at": "2026-09-14T15:47:31.983Z"
     }
   }
 }
