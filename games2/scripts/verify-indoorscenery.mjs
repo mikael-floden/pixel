@@ -209,6 +209,49 @@ check(
 );
 await page.screenshot({ path: join(ROOT, "scripts", "_tmp-indoor-inside.png") });
 
+// --- AND EVERY FACING IS DRAWN INSIDE ITS OWN FOOTPRINT. The room is where the
+//     turned pieces are (maps2 stands furniture against the walls), and a
+//     piece's rotations share their south still's CANVAS while their silhouette
+//     does not: a turned view shows the front of the base and reaches further
+//     down the same canvas (hearth_901 LIT_1: foot y 112 south, y 125
+//     south-west). fitSprite used to pin the DRAWN frame's own foot to the
+//     placement point, which lifted turned art 13 px off the footprint the map
+//     agent placed against the wall and the wiki drew its box on (maintainer
+//     2026-09-14: "the hitbox looks to be correctly placed against the wall
+//     already ... it's the scenery that wasn't drawn inside the already
+//     correctly placed hitbox"). So: the SOUTH still's alpha foot must land on
+//     the anchor, measured on the display object's own numbers and the raw crop
+//     its frame name carries — which is the packed, streamed art, not a table.
+const drawn = await page.evaluate(() => window.__ml.sceneryDrawn());
+let fitN = 0;
+let fitTurned = 0;
+let fitWorst = 0;
+let fitWho = "";
+for (const d of drawn) {
+  if (!d.crop || !d.south || !d.canvas) continue;
+  const [sx, sy, sw, sh] = d.crop;
+  const [x, y, w, h] = d.box;
+  const kx = w / sw;
+  const ky = h / sh;
+  const cx = (d.south[0] + d.south[2]) / 2;
+  const foot = {
+    // A flip mirrors the canvas inside the same destination rect.
+    x: d.flipX ? x + w - (cx - sx) * kx : x + (cx - sx) * kx,
+    y: y + (d.south[3] - sy) * ky,
+  };
+  const off = Math.max(Math.abs(foot.x - d.ax), Math.abs(foot.y - d.ay));
+  if (off > fitWorst) { fitWorst = off; fitWho = `${d.piece} ${d.state} ${d.dir}`; }
+  fitN++;
+  if (d.turned) fitTurned++;
+}
+console.log(`  drawn pieces measured: ${fitN} (${fitTurned} turned), worst foot ${fitWorst.toFixed(2)} px off its anchor`);
+check(fitN > 5, `the room draws pieces to measure (${fitN})`);
+check(fitTurned > 0, `at least one of them is TURNED — the facing this rule is about (${fitTurned})`);
+check(
+  fitWorst <= 1.5,
+  `every facing stands its south still's foot on the placement anchor — worst ${fitWorst.toFixed(2)} px (${fitWho})`,
+);
+
 // --- THE LID: a piece standing on the roof dissolves with it, and the alpha is
 //     what is asserted (see the header — the flag was right all through the bug)
 if (!lid || !lidStand) {

@@ -262,6 +262,8 @@ import {
   artUrl as sceneryArtUrl,
   roofedCells,
   facedSprite,
+  facedDir,
+  southSprite,
   stateFor,
   ventFor,
   ventPoint,
@@ -7919,6 +7921,40 @@ export class WorldScene extends Phaser.Scene {
           .map((p) => ({ i: p.i, piece: p.piece, x: +p.x.toFixed(2), y: +p.y.toFixed(2), cell: [p.cx, p.cy], level: p.level, z: p.z ?? null,
             wall: p.wall ? [p.wall.cx, p.wall.cy] : null, dir: p.dir ?? null, roofed: !!p.roofed,
             manifest: this.sceneryPieces?.get(p.piece) === undefined ? "pending" : this.sceneryPieces?.get(p.piece) === null ? "tombstoned" : "loaded" })),
+      /** WHERE A DRAWN PIECE ACTUALLY IS: the display object's own numbers —
+       *  its destination rect, the RAW canvas crop its frame name carries (the
+       *  packed texture's own texels are not it) — joined to the placement and
+       *  to the state's SOUTH still. The law it is here to measure: every
+       *  facing is pasted through that still's canvas, so the still's alpha
+       *  foot lands on the placement's anchor whatever the drawn frame's
+       *  silhouette does (fitSprite's `anchorBox`). The gate does that
+       *  arithmetic itself — verify-indoorscenery.mjs. */
+      sceneryDrawn: (place?: number) => {
+        const ps = this.scenery?.placements ?? [];
+        const out: Record<string, unknown>[] = [];
+        for (const img of this.sceneryImgs) {
+          const i = (img as unknown as { __place?: number }).__place;
+          if (i === undefined || (place !== undefined && i !== place)) continue;
+          const p = ps.find((q) => q.i === i);
+          const piece = p ? this.sceneryPieces?.get(p.piece) : null;
+          if (!p || !piece) continue;
+          const st = stateFor(piece, p.lit, p.state);
+          const sprite = facedSprite(st, p.dir);
+          const south = this.sceneryBboxDoc?.boxes?.[southSprite(st)];
+          const art = this.sceneryArtFit(this.sKey(sprite));
+          const name = img.frame.name;
+          out.push({
+            place: i, piece: p.piece, state: st.key, dir: facedDir(st, p.dir),
+            turned: sprite !== southSprite(st), flipX: !!p.hflip,
+            ax: +p.ax.toFixed(2), ay: +p.ay.toFixed(2),
+            box: [+img.x.toFixed(2), +img.y.toFixed(2), +img.displayWidth.toFixed(2), +img.displayHeight.toFixed(2)],
+            crop: name.startsWith("s3c:") ? name.slice(4).split(",").map(Number) : null,
+            canvas: art ? [art.canvas.w, art.canvas.h] : null,
+            south: south ? [south[0], south[1], south[2], south[3]] : null,
+          });
+        }
+        return out;
+      },
       sceneryWalls: () =>
         this.sceneryWalls.map((w) => ({
           place: w.place, piece: w.piece, z: +w.z.toFixed(2),
@@ -16815,7 +16851,7 @@ export class WorldScene extends Phaser.Scene {
       if (this.needScenery(spriteOn)) {
         const art = this.sceneryArtFit(this.sKey(spriteOn));
         if (art) {
-          const fit = fitSprite(art.bbox, art.canvas, sceneryDrawnPx(piece.worldPxHeight, piece.contractCharacterPx), p.ax, p.ay, p.hflip, baseH);
+          const fit = fitSprite(art.bbox, art.canvas, sceneryDrawnPx(piece.worldPxHeight, piece.contractCharacterPx), p.ax, p.ay, p.hflip, baseH, this.sceneryAnchorBox(onState, spriteOn, art.canvas));
           if (!(fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h)) {
             const key = this.sKey(spriteOn);
             const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
@@ -21178,6 +21214,25 @@ export class WorldScene extends Phaser.Scene {
     });
   }
 
+  /* THE FRAME A STATE'S HITBOX WAS DRAWN ON — its SOUTH still — which is the
+   * canvas alignment every facing of that state is pasted through (fitSprite's
+   * `anchorBox`). The rotations share that canvas and only their SILHOUETTE
+   * moves on it, so the south still's alpha foot is the one point that holds
+   * the object still while it turns, and the published box (drawn on the same
+   * canvas, per facing through `pos_by_dir`) keeps hugging the art.
+   *
+   * null in the two cases that are already the identity: the drawn frame IS the
+   * south still, and a rotation that came back on a canvas of its own (none in
+   * today's library; it would have no shared frame to be anchored in, so it
+   * keeps its own foot, exactly as before). */
+  private sceneryAnchorBox(st: SceneryState, sprite: string, canvas: { w: number; h: number }): SceneryBBox | null {
+    const south = southSprite(st);
+    if (sprite === south) return null;
+    const b = this.sceneryBboxDoc?.boxes?.[south];
+    if (!b || b[4] !== canvas.w || b[5] !== canvas.h) return null;
+    return [b[0], b[1], b[2], b[3]];
+  }
+
   private sceneryArtFit(key: string): SceneryArtFit | null {
     const hit = this.sceneryFit.get(key);
     if (hit !== undefined) return hit;
@@ -21511,6 +21566,7 @@ export class WorldScene extends Phaser.Scene {
         p.ay,
         p.hflip,
         baseH,
+        this.sceneryAnchorBox(st, sprite, art.canvas),
       );
       if (fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h) {
         // Out of the build rect: no sprite — but the light, when its pool
@@ -21603,6 +21659,10 @@ export class WorldScene extends Phaser.Scene {
       const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
       if (!tex.has(name)) this.addSceneryCut(tex, key, name, fit.sx, fit.sy, fit.sw, fit.sh);
       const img = this.scnImage(key, name, fit.x, fit.y, fit.w, fit.h, fit.flipX);
+      // WHICH PLACEMENT THIS IS, for `__ml.sceneryDrawn` — one number on an
+      // object that already carries a per-piece frame name; the probe joins it
+      // back to the placement and a gate does the anchor arithmetic itself.
+      (img as unknown as { __place?: number }).__place = p.i;
       this.sceneryImgs.push(
         img
           /* THE UNLIFTED PAINTER LINE AT THE ANCHOR — and NO cell-front `+dy`.

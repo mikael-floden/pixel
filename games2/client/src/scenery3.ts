@@ -692,6 +692,29 @@ export function fitSprite(
    * proportions relative to the piece. Omitted, this is the old behaviour
    * exactly, which is what every base-sprite placement already wants. */
   scaleH?: number,
+  /* AND THE ANCHOR IS THE STATE'S SOUTH STILL'S, NOT THE DRAWN FRAME'S — the
+   * rotations of a piece share ONE canvas (measured: 0 of the library's 3,001
+   * rotations differs in canvas size from its own south still), and that canvas
+   * is the only frame in which the object stands still. Its SILHOUETTE does
+   * not: a turned view shows the front of the base, so the alpha bbox reaches
+   * further down the same canvas — hearth_901's LIT_1 has its foot at y 112
+   * facing south and at y 125 facing south-west. Pinning the drawn frame's own
+   * foot to the placement point therefore lifts the turned art 13 screen px
+   * (half a cell of iso ground) UP-SCREEN, out of the hitbox that the wiki
+   * draws on the same canvas and the map agent places against the wall.
+   *
+   * The maintainer, seeing that footprint and that art side by side
+   * (2026-09-14): "It's important to not move the hitbox to the scenery. The
+   * hitbox looks to be correctly placed against the wall already. To me it
+   * looks like it's the scenery that wasn't drawn inside the already correctly
+   * placed hitbox." So the box is the fixed point and the art moves into it.
+   *
+   * Pass the SOUTH still's alpha bbox (the frame the state's hitbox was drawn
+   * on) and every facing is pasted through one canvas alignment. Omitted — or
+   * passed for the frame actually being drawn — this is the old behaviour
+   * bit-for-bit, which is what every south placement wants and what keeps
+   * render3's paste exact. */
+  anchorBox?: BBox | null,
 ): SceneryFit {
   // A fully transparent sprite has no bbox; PIL's `crop(None)` copies the whole
   // image, so the whole canvas is the crop.
@@ -702,13 +725,20 @@ export function fitSprite(
   const k = want / (scaleH && scaleH > 0 ? scaleH : sh);
   const w = Math.max(1, rint(sw * k));
   const h = Math.max(1, rint(sh * k));
+  /* The anchor as a DELTA off the drawn crop's own bottom centre, in the scale
+   * actually applied (`w / sw`, the same numbers every other canvas→screen read
+   * uses), so the south path stays the integer arithmetic render3 pastes with.
+   * A flip mirrors the canvas about the crop's centre, so the horizontal half
+   * of the delta mirrors with it — exactly as the hitbox's own `ax` does. */
+  const adx = anchorBox ? ((anchorBox[0] + anchorBox[2]) / 2 - (l + sw / 2)) * (w / sw) : 0;
+  const ady = anchorBox ? (anchorBox[3] - b) * (h / sh) : 0;
   return {
     sx: l,
     sy: t,
     sw,
     sh,
-    x: Math.trunc(ax - w / 2),
-    y: Math.trunc(ay - h),
+    x: Math.trunc(ax - w / 2 - (flipX ? -adx : adx)),
+    y: Math.trunc(ay - h - ady),
     w,
     h,
     flipX,

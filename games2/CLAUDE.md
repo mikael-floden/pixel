@@ -43,9 +43,9 @@ each with an `<agent>-assistant` of the same remit and its own board (root
 
 ## Laws (every one is paid for; the doc named holds the receipt)
 
-**Repo-wide** (root `CLAUDE.md`): cache safety is absolute — no regenerable
-asset under a stable name; lossless `exact=True` WebP; never commit secrets;
-push to `main`, rebase before every push, no PRs unless asked.
+**Repo-wide** (root `CLAUDE.md`, loaded with this one): cache safety is
+absolute — no regenerable asset under a stable name; lossless `exact=True`
+WebP; no secrets; rebase before every push; no PRs unless asked.
 
 **Scope**
 - Never edit the art domains; we may improve the RENDERER, never the art.
@@ -81,7 +81,7 @@ push to `main`, rebase before every push, no PRs unless asked.
   `#top` detail verdict (`tiles3members.test.ts`).
 - The resolver is PER CELL (`Tiles3World`), never the sweep, held deeply equal
   to the sweep and to `maps2/pipeline/render3.py` by the parity fixtures
-  (`scripts/tiles3-fixture.py`); a resolution rule changes in tiles3.ts AND
+  (`tiles3-fixture.py`); a resolution rule changes in tiles3.ts AND
   render3.py, then both fixtures regenerate.
 - Painter order: a cell draws once and everything it wears draws in its slot;
   boundaries are NOT a second pass; decks draw last.
@@ -134,13 +134,14 @@ push to `main`, rebase before every push, no PRs unless asked.
 - The occluder set is drawn WHOLE (view cull only). Never submit a subset
   chosen per image: a shown course whose front cap is hidden paints over the
   cap's ground (proximity cull, rejected). The list is insertion-sorted.
-- Scenery is sized against the 88-px person (`sceneryDrawnPx`); the bbox doc
-  is gated by `check-scenery-bbox.mjs`.
+- Scenery is sized against the 88-px person (`sceneryDrawnPx`); its bbox doc
+  is gated (`check-scenery-bbox.mjs`).
 - A hitbox is an ellipse OR a perspective ground rect — port the wiki's
   `rectCorners`, never re-derive; one lookup (`sceneryHitboxRec`), one
-  per-facing placement (`hitboxPosFor`). The stamp MIRRORS `fitSprite` — the
-  PIECE's base height scales it, the DRAWN frame's own foot anchors it
-  (`rots`) — or a turned footprint stands half a cell in front of its art.
+  per-facing placement (`hitboxPosFor`). THE BOX IS THE FIXED POINT (his) and
+  the art moves into it: a facing draws through the STATE's SOUTH still's canvas
+  (`anchorBox`) at the PIECE's base scale, else it stands half a cell off the
+  footprint the map placed by.
 - Indoor furniture draws while its roof is cut away and crossfades with it; a
   piece standing ON that roof goes with it, and its FEET are the height EVERY
   rule reads — lid fade, cover record, lit copy, and the `lvl` the depth rule
@@ -165,10 +166,10 @@ push to `main`, rebase before every push, no PRs unless asked.
   bisects.
 - The beacon's `sections` are window means and its `counts` snapshots — never
   correlate them; its server side is an allowlist (add fields on both sides;
-  `scripts/verify-beacon.mjs` proves the POST survives it). It carries `run`,
+  `verify-beacon.mjs` proves the POST survives it). It carries `run`,
   `rtt` (input round trip), `cpu` (throttling proxy), `gpu` (its clock when
   lent), the frame histogram and `rafHz`; read one with
-  `scripts/perf-read.mjs` (`--diff shaA shaB` for two builds).
+  `perf-read.mjs` (`--diff shaA shaB` for two builds).
 
 **Movement** (`docs/movement.md`)
 - Server-authoritative, elevation-governed (`WALK_CLIMB`, `JUMP_CLIMB`); the
@@ -228,7 +229,7 @@ push to `main`, rebase before every push, no PRs unless asked.
   off; a duplicate locks and hands its arrivals to the owner). An empty one
   runs its sim at a quarter rate (`IDLE_DIVISOR`).
 - `Encoder.BUFFER_SIZE` holds EVERY client's view section of one patch (2 MB;
-  an overflow freezes clients silently, never errors). `scripts/loadbot.mjs`
+  an overflow freezes clients silently, never errors). `loadbot.mjs`
   + `/api/stats` are the load instrument.
 - Positions are int16 quarter units relative to the room (`px/py`,
   `shared/worldunits.ts`); the server keeps float `x/y` and syncs before
@@ -238,7 +239,7 @@ push to `main`, rebase before every push, no PRs unless asked.
   `StateView` per client, recomputed every `INTEREST_TICKS`); "unlimited" is
   a view of everything, granted only by a room CREATE option. THE JOIN
   SNAPSHOT IS A WHOLE VIEW (`attachView` runs the pass for the joiner) — a
-  crossing binds on it; gate `scripts/verify-zonehop.mjs`.
+  crossing binds on it; gate `verify-zonehop.mjs`.
 - `view()` is applied as a decorator call after `defineTypes` (the `view:
   true` flag is ignored there); `Encoder.BUFFER_SIZE` is set in the room
   module.
@@ -298,7 +299,7 @@ push to `main`, rebase before every push, no PRs unless asked.
 
 **Testing** (`docs/testing.md`)
 - Logic belongs in `server/test` (seconds); a browser gate is one session in
-  `scripts/verify-smoke.mjs`; keep e2e viewports small (starvation fakes bugs).
+  `verify-smoke.mjs`; keep e2e viewports small (starvation fakes bugs).
 - A one-pixel bug is reproduced on HIS screen (393x851, dpr 2.75, isMobile),
   judged on the SCREENSHOT, moving as well as at rest.
 - Compare colours unlit (`__ml.lightAtCell`); a headless GL run cannot

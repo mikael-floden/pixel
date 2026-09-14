@@ -5653,14 +5653,6 @@ export type SceneryBboxDoc = {
       cpx?: number | null;
       sprite?: string | null;
       states?: Record<string, string>;
-      /** WHERE A TURNED FRAME STANDS: state -> dir -> the bottom CENTRE [x,y]
-       *  of that frame's alpha bbox, in its own frame pixels. `fitSprite`
-       *  stands the drawn frame on that point, so the collision stamp anchors
-       *  the published ellipse there too; the frame SIZE is the south still's
-       *  (every measurable rotation in the library shares it). Absent for a
-       *  piece with no rotations, and for a facing it does not publish — both
-       *  draw the south still, and both answer with the south anchor. */
-      rots?: Record<string, Record<string, [number, number]>>;
       /** `scenery.json`'s `collision: false` — the piece LIES ON THE FLOOR and
        *  blocks nothing. Carried in this document because the stamp is handed
        *  only this and the hitbox doc, and so could not see the flag at all. */
@@ -5931,42 +5923,31 @@ export function stampSceneryCollision(
     const sw = Math.max(1, bx1 - bx0);
     const sh = Math.max(1, by1 - by0);
     const dir = pl.dir || "south";
-    /* THE SCALE IS THE PIECE'S AND THE ANCHOR IS THE DRAWN FRAME'S — the two
-     * halves of `fitSprite`, which is what actually puts the art on screen, and
-     * this function has to be its exact mirror or the footprint is not under
-     * the piece.
+    /* THE SCALE IS THE PIECE'S AND THE ANCHOR IS THE STATE'S SOUTH STILL'S —
+     * the two halves of `fitSprite`, because this function and that one have to
+     * agree about the same placement or the footprint is not under the art.
      *
      * SCALE: every frame of a piece draws at `drawnPx / the PIECE's base bbox
-     * height` (fitSprite's `scaleH`), so a state whose art is taller draws
-     * taller — that is the rule that keeps a rotation's proportions. Reading
-     * the STATE's own height here instead made the ellipse the wrong SIZE for
-     * every state that is not the base's height: 610 of the_game's 1,335 ground
-     * placements, worst brazier_001 LIT_2 at 42 vs 57 px, a 36% error.
+     * height` (fitSprite's `scaleH`), which is what keeps a taller state and a
+     * turned frame in proportion with the piece. Reading the STATE's own height
+     * here made the ellipse the wrong SIZE for every state that is not the
+     * base's height: 610 of the_game's 1,335 ground placements, worst
+     * brazier_001 LIT_2 at 42 px against the 57 the art is drawn at (36%).
      *
-     * ANCHOR: fitSprite stands the DRAWN frame's alpha bbox bottom-centre on
-     * the placement point, and a turned frame's bbox is its own — hearth_901's
-     * lit_1 is 93 px tall with its foot at y 112 facing south, 119 with its
-     * foot at 125 facing south-west. Anchoring the published ellipse on the
-     * south still therefore put it 13 screen px — half a cell of iso ground —
-     * in FRONT of a turned piece (maintainer 2026-09-14, beside the wiki: "the
-     * wiki hitbox is perfect on both scenery objects and in-game they don't
-     * align at all"; 20 of the_game's 40 turned placements over a quarter cell
-     * out, 13 over half). `rots` carries that anchor per state and facing; the
-     * frame SIZE is the south still's, which every measurable rotation in the
-     * library shares. A piece with no rotation for the asked-for facing draws
-     * the south still (facedSprite), and answers here with the south anchor for
-     * the same reason. */
+     * ANCHOR: the south still's alpha bbox foot, on EVERY facing. A piece's
+     * rotations share one canvas and only their silhouette moves on it, so that
+     * foot is the one point that holds the object still while it turns — and it
+     * is where the wiki draws the hitbox and where the map agent placed the
+     * piece against its wall. The renderer is the side that was wrong: it
+     * pinned the DRAWN frame's own foot, which lifted turned art 13 screen px
+     * out of its own box (maintainer 2026-09-14: "the hitbox looks to be
+     * correctly placed against the wall already ... it's the scenery that
+     * wasn't drawn inside the already correctly placed hitbox"). Fixed there,
+     * in fitSprite's `anchorBox`; nothing to re-derive here. */
     const baseBB = facts.sprite ? bbox.boxes[facts.sprite] : undefined;
-    const baseH = baseBB ? Math.max(1, baseBB[3] - baseBB[1]) : sh;
-    const k = wph / baseH;
-    /* A PLACEMENT WITH NO STATE draws the piece's BASE state (the one whose
-     * sprite is the piece's own), so it turns with that state's frames. Today
-     * no shipped placement is both stateless and turned; without this the rule
-     * would quietly fall back to the south anchor the first time one is. */
-    const rotState = pl.state ?? Object.keys(facts.states ?? {}).find((k) => facts.states?.[k] === facts.sprite);
-    const rot = rotState ? facts.rots?.[rotState]?.[dir] : undefined;
-    const anchorFx = rot ? rot[0] : bx0 + sw / 2;
-    const anchorFy = rot ? rot[1] : by1;
+    const k = wph / (baseBB ? Math.max(1, baseBB[3] - baseBB[1]) : sh);
+    const anchorFx = bx0 + sw / 2;
+    const anchorFy = by1;
     for (const b of boxes) {
       /* PER FACING, exactly as the wiki resolves it. The art's anchor is not the
        * same point on every facing, so SIZE is one decision for the piece and
