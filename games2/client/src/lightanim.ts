@@ -6,7 +6,7 @@
  *  (WorldScene.stepSceneryAnims), each scaled by a RATIO the maintainer sets
  *  here — "0.5 means half the effect and 2.0 means twice the effect ... 0.05 to
  *  20x. This is for me to test what looks best. Will give you the defaults once
- *  I found it." (2026-09-09). 1 is the data as published; he chose 0.12.
+ *  I found it." (2026-09-09). 1 is the data as published.
  *
  *  Same contract as sceneryanim.ts: this module owns the values and their
  *  persistence, the Settings sliders are the only writers, and the scene reads
@@ -19,9 +19,16 @@ export interface LightAnimTune {
   position: number;
 }
 
-/** THE MAINTAINER'S DEFAULTS (2026-09-09, from the sliders in play: "This is
- *  good defaults"): 0.12x on both — an eighth of the published swing. */
-export const LIGHT_ANIM_DEFAULT: LightAnimTune = { intensity: 0.12, position: 0.12 };
+/** THE MAINTAINER'S DEFAULTS, read off the dials he settled on. The CENTRE
+ *  offset stays at 0.12x (2026-09-09, "This is good defaults"); the INTENSITY
+ *  swing is 0.30x — he ran the lanterns at it and asked for it to be what
+ *  ships (2026-09-14: 'The "Light intensity swing" should default to 0.3').
+ *  The two are not one number: the swing is how much a flame brightens and
+ *  dims, the offset is how far its hot spot wanders, and he tuned them apart.
+ *  A player who has already moved either dial keeps their own value — this is
+ *  the value a fresh profile starts at, and what the dial's "default" button
+ *  returns to. */
+export const LIGHT_ANIM_DEFAULT: LightAnimTune = { intensity: 0.3, position: 0.12 };
 /** ratio = MIN * (MAX/MIN)^p — a log dial, 0.05..20, 1 near the middle. */
 export const LIGHT_ANIM_MIN = 0.05;
 export const LIGHT_ANIM_MAX = 20;
