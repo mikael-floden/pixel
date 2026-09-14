@@ -263,6 +263,9 @@ import {
   stateFor,
   ventFor,
   ventPoint,
+  firePlaces,
+  fireUnder,
+  type FirePlace,
   sceneryHitboxFor,
   type SceneryHitboxRec,
   type SceneryHitbox,
@@ -3415,7 +3418,17 @@ export class WorldScene extends Phaser.Scene {
    *  hole itself. Rebuilt with the scenery, read through `__ml.ventsInView`;
    *  an effect attaches its plume to this instead of guessing a point on the
    *  art, which is what the moths' `hx`/`hy` exists for one layer down. */
-  private ventRecs: { img: Phaser.GameObjects.Image; lo: WorldScene["litOccluders"][number] | null; place: number; piece: string; state: string; fixture: string; conf: string; x: number; y: number; footY: number }[] = [];
+  private ventRecs: { img: Phaser.GameObjects.Image; lo: WorldScene["litOccluders"][number] | null; place: number; piece: string; state: string; fixture: string; conf: string; x: number; y: number; footY: number; hearth: boolean; fire: string }[] = [];
+  /** WHAT BURNS ON THE MAP (scenery3 `firePlaces`): every flame placement with
+   *  the state it draws, so a vent can ask what is under IT. Derived off the
+   *  index identity and the manifest counter — 205 landings a session, not 60 a
+   *  second — because the answer only moves when a manifest lands. Nothing in
+   *  the display list can answer this: the hearth is under a roof and is not
+   *  drawn at all while you stand outside, which is exactly where the smoke is
+   *  seen (maintainer 2026-09-14: "the fire in the house is not burning (not a
+   *  LIT state) and you still show smoke when I walk out"). */
+  private sceneryFires: FirePlace[] = [];
+  private sceneryFiresFor: { idx: SceneryIndex | null; loaded: number } = { idx: null, loaded: -1 };
   /** SCENERY ON A WALL (maps2 `z`: windows, hangings) — one record per drawn
    *  placement, stepped every frame: the base image and the lit copy take the
    *  wall column's cut fade, and a window's LIGHTS_ON art crossfades in over
@@ -5974,6 +5987,16 @@ export class WorldScene extends Phaser.Scene {
        * ADVISORY: it is a group default written at manifest time and 4 of the 8
        * shipped chimneys predate it. The vent block is the discriminator.
        *
+       * `hearth` IS WHETHER ANYTHING IS ACTUALLY BURNING under this vent — the
+       * nearest flame placement within half a cell (scenery3 `fireUnder`) draws
+       * a LIT state — and `fire` names that placement, cold or lit, or is empty
+       * when the chimney stands over nothing. The join is made HERE and not in
+       * the effect because only the index can make it: the hearth is indoor
+       * furniture and is not in the display list at all from the street, which
+       * is precisely where the plume shows. 6 of the_game's 8 chimneys stand
+       * over a cold hearth (maintainer 2026-09-14: "the fire in the house is not
+       * burning (not a LIT state) and you still show smoke when I walk out").
+       *
        * `litDepth` is the drawn piece's lit copy, the same join lightsInView
        * makes and for the same reason: a mark in the ambient band (~900_000.0x)
        * is painted over outright by the copy at ~900_001+. Null when there is
@@ -5995,6 +6018,7 @@ export class WorldScene extends Phaser.Scene {
             id: `s3:${r.place}`,
             x: r.x, y: r.y, footY: r.footY,
             piece: r.piece, state: r.state, fixture: r.fixture, conf: r.conf,
+            hearth: r.hearth, fire: r.fire,
             alpha: +(r.img.scene ? r.img.alpha : 0).toFixed(3),
             litDepth: r.lo?.img.scene ? r.lo.img.depth : null,
           }));
@@ -21346,6 +21370,15 @@ export class WorldScene extends Phaser.Scene {
       this.scnDrain();
       return;
     }
+    /* THE FIRES, ONCE PER LANDING. A chimney smokes only over a BURNING hearth,
+     * and that hearth is indoor furniture — so this is derived from the INDEX,
+     * which holds every placement whether or not it is drawn, and cached against
+     * the manifest counter so a rebuild re-walks 1,406 placements only when a
+     * manifest has actually landed. */
+    if (this.sceneryFiresFor.idx !== idx || this.sceneryFiresFor.loaded !== pieces.stats.loaded) {
+      this.sceneryFires = firePlaces(idx.placements, (id) => pieces.get(id));
+      this.sceneryFiresFor = { idx, loaded: pieces.stats.loaded };
+    }
     const { dy, lh, tile: tileSize } = this.geom;
     /* TWO RADII: what is DRAWN, and what is FETCHED.
      *
@@ -21671,10 +21704,16 @@ export class WorldScene extends Phaser.Scene {
          * the last one pushed — the anim registration below relies on exactly
          * that — so it is taken here rather than searched for later. */
         const vlo = this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null;
+        /* AND WHAT IS BURNING UNDER IT. The vent publishes the fact, not the
+         * rule: the effect decides what to do with a cold hearth, and a probe
+         * can tell "the hearth is out" (`fire` names it) from "this chimney
+         * stands over nothing" (`fire` empty) — which are different bugs. */
+        const fire = fireUnder(this.sceneryFires, p.x, p.y);
         this.ventRecs.push({
           img, lo: vlo && vlo.place === p.i ? vlo : null,
           place: p.i, piece: p.piece, state: st.key, fixture: piece.fixture ?? "",
           conf: vpt.conf, x: vxy.x, y: vxy.y, footY: p.ay,
+          hearth: !!fire?.lit, fire: fire ? `${fire.p.piece}#${fire.state}` : "",
         });
       }
       const meta = flat || onWall ? null : {

@@ -18,6 +18,7 @@ import {
   puffAlpha,
   puffSize,
   riseY,
+  smokes,
   stoke,
   vents,
   weight,
@@ -104,6 +105,27 @@ interface Puff {
   live: boolean;
 }
 
+/** ONE ROW OF `__ml.ventsInView` — the seam's shape, mirrored here so the
+ *  effect reads it through one declaration. `hearth` and `fire` are optional
+ *  only because an older game build predates them; a missing `hearth` reads as
+ *  "nothing is burning" (`smokes`), which is the safe direction — a chimney
+ *  that stays quiet for a frame is invisible, a chimney smoking over a cold
+ *  hearth is the bug. */
+interface VentRow {
+  id: string;
+  x: number;
+  y: number;
+  footY: number;
+  piece: string;
+  state: string;
+  fixture: string;
+  conf: string;
+  hearth?: boolean;
+  fire?: string;
+  alpha: number;
+  litDepth: number | null;
+}
+
 interface Vent {
   id: string;
   place: number;
@@ -145,7 +167,8 @@ export function chimneyFeature(): AmbientFeature {
   const puffs: Puff[] = [];
   let vlist: Vent[] = [];
   let probes = 0;
-  let seen = 0; // vents in view at the last read, before the conf filter (QA)
+  let seen = 0; // vents in view at the last read, before any filter (QA)
+  let holes = 0; // ...of those, real holes (`conf`) whatever burns under them
   let gain = 0;
   let suppressed = false;
   let forced = false;
@@ -157,22 +180,24 @@ export function chimneyFeature(): AmbientFeature {
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
   const range = ([a, b]: [number, number]) => a + rnd() * (b - a);
 
-  const readVents = (): Vent[] => {
-    const ml = (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
-    const f = ml?.ventsInView as
+  /** The seam's vent list, or undefined on an older game build — no probe, no
+   *  smoke, no throw. Looked up per call: the effect can be enabled before the
+   *  scene has published `__ml`. */
+  const ventProbe = () =>
+    (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml?.ventsInView as
       | undefined
-      | ((pad?: number) => {
-          id: string; x: number; y: number; footY: number;
-          piece: string; state: string; fixture: string; conf: string;
-          alpha: number; litDepth: number | null;
-        }[]);
-    if (!f) return []; // an older game build: no probe, no smoke, no throw
+      | ((pad?: number) => VentRow[]);
+
+  const readVents = (): Vent[] => {
+    const f = ventProbe();
+    if (!f) return [];
     probes++;
     try {
       const all = f(96) || [];
       seen = all.length;
+      holes = all.filter((v) => vents(v.conf)).length;
       return all
-        .filter((v) => vents(v.conf))
+        .filter((v) => smokes(v.conf, v.hearth))
         .map((v) => ({
           id: v.id,
           // `s3:<placement index>` — the index is what makes a stack's stoke
@@ -345,8 +370,23 @@ export function chimneyFeature(): AmbientFeature {
         sun: +lastSun.toFixed(3),
         rain: +lastRain.toFixed(3),
         probes, // QA: the vent list walks the drawn scenery — stay throttled
-        seen, // how many vents were in view at all, before the conf filter
-        vents: vlist.length, // ...and how many of those are holes worth using
+        seen, // how many vents were in view at all, before any filter
+        holes, // ...of those, real holes (`conf`), cold hearths included
+        vents: vlist.length, // ...and of THOSE, how many have a fire burning
+        /* EVERY VENT IN VIEW WITH ITS VERDICT — the cold ones too. Without this
+         * a chimney that correctly stays quiet and one the probe never saw are
+         * the same "0 vents", which is the pair a falsification arm has to tell
+         * apart. */
+        ventSeen: (() => {
+          try {
+            return (ventProbe()?.(96) || []).map((v) => ({
+              id: v.id, piece: v.piece, state: v.state, conf: v.conf,
+              hearth: v.hearth === true, fire: v.fire ?? "",
+            }));
+          } catch {
+            return [];
+          }
+        })(),
         ventList: vlist.map((v) => ({
           id: v.id, x: Math.round(v.x), y: Math.round(v.y),
           piece: v.piece, conf: v.conf, alpha: v.alpha, depth: v.depth,

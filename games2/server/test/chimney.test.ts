@@ -38,18 +38,36 @@ import {
   puffAlpha,
   puffSize,
   riseY,
+  smokes,
   stoke,
   stokePeriod,
   stokePhase,
   vents,
   weight,
 } from "../../ambient/chimney/flue.js";
-import { parsePiece, ventFor, ventPoint, facedDir, facedSprite, fitSprite, frameRect, stateFor } from "../../client/src/scenery3.js";
+import {
+  parsePiece,
+  ventFor,
+  ventPoint,
+  facedDir,
+  facedSprite,
+  fitSprite,
+  frameRect,
+  stateFor,
+  buildPlacements,
+  firePlaces,
+  fireUnder,
+  HEARTH_CELLS,
+  type SceneryPiece,
+} from "../../client/src/scenery3.js";
+import { isoFrame } from "../../client/src/tiles3.js";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..", "..");
 const CHIMNEYS = join(REPO, "scenery", "chimneys");
+const WORLD = join(REPO, "maps2", "worlds3", "the_game", "world.json");
 const skip = !existsSync(CHIMNEYS);
+const skipWorld = skip || !existsSync(WORLD);
 
 /* -- the plume ------------------------------------------------------------- */
 
@@ -388,5 +406,134 @@ test("the drawn state of an unlit chimney resolves, and it is not a LIT one", { 
     assert.ok(st, `${piece.id} resolves a base state`);
     assert.ok(!st.key.startsWith("LIT"), `${piece.id} is an unlit fixture (${st.key})`);
     assert.ok(ventFor(piece, st), `${piece.id} vents in the state it draws`);
+  }
+});
+
+/* -- the seam: WHAT IS BURNING UNDER THE STACK ------------------------------ */
+//
+// The one his eye caught that no arithmetic could (2026-09-14, standing in a
+// house with a cold hearth): "the fire in the house is not burning (not a LIT
+// state) and you still show smoke when I walk out". A chimney is masonry — the
+// plume is the FIRE's, and 6 of the_game's 8 stacks stand over a hearth that is
+// out. The join cannot be made from the display list, because from the street
+// the hearth is indoor furniture and is not drawn at all; it is made off the
+// placement index, which holds every piece whatever is drawn.
+
+test("a stack smokes only over a hole AND a fire", () => {
+  assert.equal(smokes("opening", true), true, "a measured hole over a burning hearth");
+  assert.equal(smokes("flue_top", true), true);
+  assert.equal(smokes("opening", false), false, "the hearth is out — masonry, not a smoke machine");
+  // no fire under it at all reads the same as a cold one: nothing is burning
+  assert.equal(smokes("opening", undefined), false, "an older game build has no answer — stay quiet");
+  assert.equal(smokes("silhouette", true), false, "a roaring fire cannot rescue a guessed hole");
+  assert.equal(smokes(null, true), false);
+  assert.equal(smokes("", false), false);
+});
+
+test("fireUnder takes the NEAREST fire, and only within reach", () => {
+  const at = (x: number, y: number, lit: boolean, id = `p/${x}_${y}`) =>
+    ({ p: { piece: id, x, y } as never, state: lit ? "LIT_1" : "NOT_LIT_1", lit });
+  const fires = [at(10, 10, false), at(10.2, 10, true), at(11.4, 10, true)];
+  assert.equal(fireUnder(fires, 10, 10)?.p.piece, "p/10_10", "the one it stands on");
+  assert.equal(fireUnder(fires, 10.3, 10)?.p.piece, "p/10.2_10", "...and not the one a hair further");
+  // the neighbour's hearth is 1.4 cells off — past the radius, so unseen
+  assert.equal(fireUnder(fires, 11.4, 10)?.p.piece, "p/11.4_10");
+  assert.equal(fireUnder(fires, 12.5, 10), null, "nothing within half a cell");
+  assert.ok(HEARTH_CELLS > 0 && HEARTH_CELLS < 1.3, `the radius clears the nearest wrong answer (${HEARTH_CELLS})`);
+});
+
+test("a fire is judged by the ART IT DRAWS, not by the doc's lit flag", () => {
+  // A piece with no LIT state: the flag says lit, stateFor falls back to unlit
+  // art, and the hearth is COLD. Reading the flag would smoke over a fire that
+  // is not drawn burning anywhere on screen.
+  const cold = parsePiece("test/cold", {
+    sprite: "a.webp",
+    light: { strength: 1, color: "#fff", radius: 4, kind: "fire/open", flame: true },
+    states: { NOT_LIT_1: { sprite: "a.webp" } },
+  }) as SceneryPiece;
+  const warm = parsePiece("test/warm", {
+    sprite: "a.webp",
+    light: { strength: 1, color: "#fff", radius: 4, kind: "fire/open", flame: true },
+    states: { LIT_1: { sprite: "b.webp" }, NOT_LIT_1: { sprite: "a.webp" } },
+  }) as SceneryPiece;
+  const glow = parsePiece("test/glow", {
+    sprite: "a.webp",
+    light: { strength: 1, color: "#fff", radius: 4, kind: "glow/magic", flame: false },
+    states: { LIT_1: { sprite: "b.webp" } },
+  }) as SceneryPiece;
+  const by: Record<string, SceneryPiece> = { "test/cold": cold, "test/warm": warm, "test/glow": glow };
+  const places = [
+    { piece: "test/cold", x: 1, y: 1, lit: true },
+    { piece: "test/warm", x: 2, y: 2, lit: true },
+    { piece: "test/warm", x: 3, y: 3, lit: false, state: "NOT_LIT_1" },
+    { piece: "test/glow", x: 4, y: 4, lit: true },
+    { piece: "test/gone", x: 5, y: 5, lit: true },
+  ] as never[];
+  const fires = firePlaces(places, (id) => by[id]);
+  assert.deepEqual(
+    fires.map((f) => `${f.p.piece}#${f.state}:${f.lit}`),
+    ["test/cold#NOT_LIT_1:false", "test/warm#LIT_1:true", "test/warm#NOT_LIT_1:false"],
+    "flame pieces only, each at the state it draws",
+  );
+  assert.equal(fireUnder(fires, 4, 4), null, "a magic glow is not a fire");
+  assert.equal(fireUnder(fires, 5, 5), null, "a manifest that has not landed is simply not here yet");
+});
+
+test("the_game: 2 of the 8 stacks have a fire under them, and 6 are cold", { skip: skipWorld }, () => {
+  const doc: any = JSON.parse(readFileSync(WORLD, "utf8"));
+  // A FLAT FRAME OVER THE WHOLE WORLD. The join reads `x`, `y`, `piece`, `lit`
+  // and `state` — the iso projection and the levels reach only `ax`/`ay`, which
+  // nothing here touches — so the frame exists to let the REAL resolver run
+  // rather than a hand-rolled projection that could drift from it.
+  const frame = isoFrame({ x0: 0, y0: 0, x1: doc.size.w, y1: doc.size.h }, 0, 15);
+  const places = buildPlacements(doc.scenery, { frame, levelAt: () => 0, width: doc.size.w });
+  assert.equal(places.length, doc.scenery.length, "every placement resolves (nothing dropped by the flat frame)");
+
+  const cache = new Map<string, SceneryPiece | null>();
+  const pieceOf = (id: string) => {
+    if (!cache.has(id)) {
+      const f = join(REPO, "scenery", id, "scenery.json");
+      cache.set(id, existsSync(f) ? parsePiece(id, JSON.parse(readFileSync(f, "utf8"))) : null);
+    }
+    return cache.get(id);
+  };
+  const fires = firePlaces(places, pieceOf);
+  assert.ok(fires.length > 50, `the world is full of fires (${fires.length})`);
+
+  const stacks = places.filter((p) => {
+    const piece = pieceOf(p.piece);
+    return !!piece && !!ventFor(piece, stateFor(piece, p.lit, p.state), p.dir);
+  });
+  assert.ok(stacks.length >= 4, `the world places vents (${stacks.length})`);
+
+  const verdicts = stacks.map((p) => {
+    const f = fireUnder(fires, p.x, p.y);
+    return { p, f };
+  });
+  for (const { p, f } of verdicts)
+    assert.ok(f, `the stack at ${p.x},${p.y} (${p.piece}) stands over a fire — the pair is placed at one point`);
+
+  const burning = verdicts.filter((v) => v.f!.lit);
+  assert.equal(burning.length, 2, `2 of ${stacks.length} hearths are lit: ${burning.map((v) => v.f!.p.piece).join(", ")}`);
+  assert.ok(stacks.length - burning.length >= 5, "...and the rest are cold, which is the bug he saw");
+
+  // HIS HOUSE. The screenshot's chimney, with its own hearth in a NOT_LIT state
+  // — the case the whole unit exists for, named so a world edit that moves it
+  // says so instead of silently passing.
+  const his = verdicts.find((v) => Math.hypot(v.p.x - 333.3, v.p.y - 232.3) < 0.6);
+  assert.ok(his, "the chimney at 333.3,232.3 is still placed");
+  assert.equal(his!.f!.lit, false, `his hearth is out (${his!.f!.p.piece}#${his!.f!.state})`);
+  assert.ok(his!.f!.state.startsWith("NOT_LIT"), "...drawn in a NOT_LIT state, exactly as he read it");
+
+  // THE RADIUS HAS ROOM. The paired fire is at 0.00 and the next nearest flame
+  // placement is far outside HEARTH_CELLS — the margin that makes half a cell
+  // safe, measured rather than assumed.
+  for (const { p, f } of verdicts) {
+    const own = Math.hypot(f!.p.x - p.x, f!.p.y - p.y);
+    assert.ok(own < 0.05, `${p.piece} sits on its fire (${own.toFixed(3)} cells)`);
+    const next = fires
+      .filter((g) => g !== f)
+      .reduce((m, g) => Math.min(m, Math.hypot(g.p.x - p.x, g.p.y - p.y)), Infinity);
+    assert.ok(next > HEARTH_CELLS * 2, `the next fire to ${p.piece} is ${next.toFixed(2)} cells off, clear of ${HEARTH_CELLS}`);
   }
 });

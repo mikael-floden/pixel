@@ -924,6 +924,80 @@ export function distinctPieces(ps: readonly SceneryPlacement[]): string[] {
   return out;
 }
 
+/* -- what burns under a vent ------------------------------------------------ */
+
+/** HOW CLOSE THE FIRE IS TO THE CHIMNEY OVER IT, in cells. The dressing pass
+ *  drops the pair at ONE point: all 8 of the_game's vent placements sit at
+ *  distance 0.00 from a flame piece — the placement immediately before them —
+ *  and the next nearest flame to any of them is 1.32 cells away. Half a cell is
+ *  far more than any nudge a dressing pass has applied (the largest measured is
+ *  0.01) and well clear of the nearest wrong answer. */
+export const HEARTH_CELLS = 0.5;
+
+/** A fire on the map: its placement, the state it actually DRAWS, and whether
+ *  that state is a LIT one. */
+export interface FirePlace {
+  p: SceneryPlacement;
+  state: string;
+  lit: boolean;
+}
+
+/** EVERY FIRE ON THE MAP, burning or cold — the flame pieces, each resolved to
+ *  the state its placement draws.
+ *
+ *  `light.flame` is the discriminator, never a name or a colour and never the
+ *  `kind` path (the booleans exist so no consumer parses it): brazier_001 is a
+ *  bowl of teal crystals and torch_post_004's fire is blue. 142 of 712 pieces
+ *  are flame.
+ *
+ *  `lit` is read off the RESOLVED state and not off the placement's `lit` flag,
+ *  because they disagree in both directions: the_game has LIT_* placements
+ *  carrying no flag, and a flag naming a state the piece does not publish draws
+ *  unlit art (`stateFor`). The art is the truth — a cold hearth must never read
+ *  as burning because the doc said `lit`.
+ *
+ *  A piece whose manifest has not landed is simply absent; the caller re-derives
+ *  when `SceneryPieces.stats.loaded` moves, which is 205 times a session. */
+export function firePlaces(
+  places: readonly SceneryPlacement[],
+  pieceOf: (id: string) => SceneryPiece | null | undefined,
+): FirePlace[] {
+  const out: FirePlace[] = [];
+  for (const p of places) {
+    const piece = pieceOf(p.piece);
+    if (!piece || !piece.light?.flame) continue;
+    const key = stateFor(piece, p.lit, p.state).key;
+    out.push({ p, state: key, lit: key.startsWith("LIT") });
+  }
+  return out;
+}
+
+/** The fire a vent at (x, y) vents — the nearest flame placement within
+ *  `HEARTH_CELLS`, or null when the chimney stands over nothing at all.
+ *
+ *  COLD FIRES COME BACK TOO. "There is a hearth here and it is out" and "there
+ *  is no hearth here" are different answers and a probe must be able to tell
+ *  them apart; a consumer that only wants smoke reads `.lit`. */
+export function fireUnder(
+  fires: readonly FirePlace[],
+  x: number,
+  y: number,
+  radius = HEARTH_CELLS,
+): FirePlace | null {
+  const r2 = radius * radius;
+  let best: FirePlace | null = null;
+  let bestD = Infinity;
+  for (const f of fires) {
+    const dx = f.p.x - x;
+    const dy = f.p.y - y;
+    const d = dx * dx + dy * dy;
+    if (d > r2 || d >= bestD) continue;
+    bestD = d;
+    best = f;
+  }
+  return best;
+}
+
 /* -- the spatial index ------------------------------------------------------ */
 
 /** A camera window in the frame's pixel space. */

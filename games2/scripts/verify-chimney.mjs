@@ -81,12 +81,75 @@ console.log(
     (placed.length ? ` (${[...new Set(placed.map((p) => p.piece))].join(", ")})` : ""),
 );
 
-/* WHILE NOTHING REAL IS PLACED: the most-placed piece in the world becomes the
- * stand-in, and its manifest is rewritten in flight. Derived, so this follows
- * the world rather than naming a piece that may be retired tomorrow. */
+/* ---- ...AND WHICH OF THOSE HAVE A FIRE BURNING UNDER THEM ----
+ * DERIVED HERE INDEPENDENTLY of the game, off the world doc and the shipped
+ * manifests, so the arms below can be aimed at a stack that SHOULD smoke and a
+ * stack that should NOT — and so the two derivations can be held against each
+ * other (the cross-check below the seam). scenery3's own rule, re-stated: a
+ * flame piece (`light.flame`) within HEARTH cells, at the state the placement
+ * actually draws — the override if the piece publishes it, else the
+ * alphabetically first LIT_* when the doc says `lit`, else the base still. */
+const HEARTH = 0.5;
+const manifests = new Map();
+const manifestOf = (id) => {
+  if (!manifests.has(id)) {
+    const f = join("..", "scenery", id, "scenery.json");
+    manifests.set(id, existsSync(f) ? JSON.parse(readFileSync(f, "utf8")) : null);
+  }
+  return manifests.get(id);
+};
+const drawnState = (j, s) => {
+  const states = j?.states ?? {};
+  if (s.state && states[s.state]) return s.state;
+  if (s.lit) {
+    const k = Object.keys(states).filter((n) => n.startsWith("LIT")).sort();
+    if (k.length) return k[0];
+  }
+  const base = Object.keys(states).find((n) => states[n]?.sprite === j?.sprite);
+  return base ?? Object.keys(states)[0] ?? "";
+};
+const fires = (worldDoc?.scenery ?? [])
+  .map((s) => ({ s, j: manifestOf(s.piece) }))
+  .filter(({ j }) => j?.light?.flame === true)
+  .map(({ s, j }) => {
+    const st = drawnState(j, s);
+    return { s, state: st, lit: st.startsWith("LIT") };
+  });
+const fireUnderDoc = (s) => {
+  let best = null;
+  for (const f of fires) {
+    const d = Math.hypot(f.s.x - s.x, f.s.y - s.y);
+    if (d > HEARTH || (best && d >= best.d)) continue;
+    best = { ...f, d };
+  }
+  return best;
+};
+const withFire = placed.map((s) => ({ s, f: fireUnderDoc(s) }));
+const burning = withFire.filter((v) => v.f?.lit).map((v) => v.s);
+const cold = withFire.filter((v) => !v.f?.lit).map((v) => v.s);
+if (placed.length)
+  console.log(
+    `hearths: ${burning.length} of ${placed.length} stacks have a fire burning under them, ${cold.length} are cold` +
+      ` — ${withFire.map((v) => `${Math.round(v.s.x)},${Math.round(v.s.y)}:${v.f ? (v.f.lit ? "LIT" : "out") : "none"}`).join(" ")}`,
+  );
+if (placed.length && !burning.length)
+  fail("no chimney in this world stands over a burning fire — the smoke arms below cannot prove anything");
+if (placed.length && !cold.length)
+  console.log("note: every placed stack is burning, so the falsification arm has nothing to stand at");
+
+/* WHILE NOTHING REAL IS PLACED: a stand-in piece is given a vent in flight, and
+ * its manifest is rewritten. Derived, so this follows the world rather than
+ * naming a piece that may be retired tomorrow — and taken from the pieces that
+ * are ALREADY PLACED BURNING, because a stack only smokes over a fire and the
+ * cheapest way to stand one over a fire is to vent the fire itself (the join is
+ * a radius, and a placement's distance to itself is 0). Falls back to the
+ * most-placed piece, which then proves the wiring and nothing else. */
 const counts = new Map();
 for (const s of worldDoc?.scenery ?? []) counts.set(s.piece, (counts.get(s.piece) ?? 0) + 1);
-const fixturePiece = placed.length ? null : [...counts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+const litCounts = new Map();
+for (const f of fires) if (f.lit) litCounts.set(f.s.piece, (litCounts.get(f.s.piece) ?? 0) + 1);
+const pick = (m) => [...m.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] ?? null;
+const fixturePiece = placed.length ? null : pick(litCounts) ?? pick(counts);
 const FIXTURE_VENT = { dx: 0.5, dy: -28, conf: "opening", rotations: {} };
 
 const browser = await chromium.launch({ executablePath: chromePath(), args: ["--no-sandbox"] });
@@ -145,7 +208,7 @@ if (probe.error) fail(probe.error);
 else {
   console.log(`seam: __ml.ventsInView answers ${probe.n} vent(s) here${probe.keys.length ? ` with ${probe.keys.join(",")}` : ""}`);
   if (probe.keys.length) {
-    for (const k of ["id", "x", "y", "conf", "alpha", "litDepth", "piece", "state"])
+    for (const k of ["id", "x", "y", "conf", "alpha", "litDepth", "piece", "state", "hearth", "fire"])
       if (!probe.keys.includes(k)) fail(`ventsInView records are missing \`${k}\``);
   }
 }
@@ -261,8 +324,58 @@ else if (!(thr.probes > 0))
   fail(`the effect was running at gain ${thr.gain} and never read the vent list — it cannot see a chimney`);
 if (thr.probes > budget) fail(`the vent list was read ${thr.probes} times in ${Math.round(thr.ms)}ms — it must stay on its throttle`);
 
-/* ---- THE IN-WORLD ARMS ---- */
-const source = placed.length ? placed : (worldDoc?.scenery ?? []).filter((s) => s.piece === fixturePiece);
+/* ---- THE GAME AND THE WORLD DOC AGREE ABOUT WHAT IS BURNING ----
+ * Two independent derivations of the same fact: this file's, off the world doc
+ * and the shipped manifests, and the game's, off the placement index inside the
+ * running scene. Held against each other at every stack, so a join that quietly
+ * starts answering "everything is lit" (or "nothing is") fails here rather than
+ * being invisible behind a plume that looks plausible either way. */
+if (placed.length) {
+  const spots = [...new Map(placed.map((p) => [`${Math.floor(p.x / 8)},${Math.floor(p.y / 8)}`, p])).values()];
+  const said = await page.evaluate(async ({ spots, OFFSETS }) => {
+    const step = () => new Promise((r) => requestAnimationFrame(r));
+    const out = [];
+    for (const s of spots) {
+      /* OUT IN THE OPEN, walked the same way the smoke arms walk it: a stack's
+       * own house is directly under it, and from inside the room the piece is
+       * dissolved with the lid and publishes no record at all. */
+      for (const [dx, dy] of OFFSETS) {
+        window.__ml.teleport(s.x + dx, s.y + dy);
+        for (let i = 0; i < 70; i++) await step();
+        if (window.__ml.indoor?.().indoor) continue;
+        const list = window.__ml.ventsInView(200) || [];
+        if (!list.length) continue;
+        for (const v of list)
+          out.push({ id: v.id, piece: v.piece, hearth: v.hearth === true, fire: v.fire ?? "", x: v.x, y: v.y });
+        break;
+      }
+    }
+    return out;
+  }, { spots, OFFSETS: [[2.5, 4.5], [4.5, 6.5], [-3.5, 6.5], [6.5, -2.5], [0, 9.5], [9.5, 0], [-9.5, 0], [0, -9.5]] });
+  const byId = new Map(said.map((v) => [v.id, v]));
+  console.log(`agree: the game reported ${byId.size} distinct vent(s); ${[...byId.values()].filter((v) => v.hearth).length} say a fire is burning`);
+  for (const [i, s] of (worldDoc?.scenery ?? []).entries()) {
+    const v = byId.get(`s3:${i}`);
+    if (!v) continue;
+    const want = fireUnderDoc(s);
+    if (!!want?.lit !== v.hearth)
+      fail(`s3:${i} ${v.piece}: the game says hearth=${v.hearth}, the world doc says ${want ? (want.lit ? "LIT" : `out (${want.s.piece}#${want.state})`) : "no fire at all"}`);
+    const wantName = want ? `${want.s.piece}#${want.state}` : "";
+    if (want && v.fire !== wantName) fail(`s3:${i}: the game names \`${v.fire}\` under it, the doc names \`${wantName}\``);
+  }
+  if (!byId.size) fail("no placed stack was ever reported by the seam — the agreement arm proved nothing");
+}
+
+/* ---- THE IN-WORLD ARMS ----
+ * AIMED AT A BURNING STACK. 6 of the_game's 8 chimneys are over a cold hearth
+ * and correctly draw nothing, so walking `placed` would spend the arms below on
+ * stacks that must stay quiet and read as a broken effect. The cold ones get
+ * their own arm, after. */
+const source = burning.length
+  ? burning
+  : placed.length
+    ? placed
+    : (worldDoc?.scenery ?? []).filter((s) => s.piece === fixturePiece && fireUnderDoc(s)?.lit);
 if (!placed.length)
   console.log(
     "WAITING: no chimney is placed in this world yet (the maps2 agent is putting them on the roofs). " +
@@ -500,6 +613,81 @@ else {
     if (noise > 12) fail(`the puffs' own windows moved ${noise.toFixed(1)} luma with the effect OFF — the envelope is measuring the world, not the smoke`);
     if (best < 12) fail(`a puff changes its own pixels by ${best.toFixed(1)} luma — it cannot be seen`);
     if (best < noise * 1.8 + 3) fail(`the marks move ${best.toFixed(1)} luma where the world alone moves ${noise.toFixed(1)}`);
+  }
+}
+
+/* ---- FALSIFICATION: A COLD HEARTH DOES NOT SMOKE ----
+ * The arm this whole unit exists for (maintainer 2026-09-14, standing in a
+ * house with a dead fire: "the fire in the house is not burning (not a LIT
+ * state) and you still show smoke when I walk out"). Every arm above says the
+ * effect DRAWS; without this one, "it draws" and "it draws everywhere" are the
+ * same green.
+ *
+ * `holes` is what makes it a falsification rather than an absence: the vent has
+ * to be SEEN and REJECTED. A stack the camera never found reports zero on every
+ * counter too, and that is the shape of a broken probe, not a working rule. */
+if (cold.length) {
+  const spots = [...new Map(cold.map((p) => [`${Math.floor(p.x / 8)},${Math.floor(p.y / 8)}`, p])).values()].slice(0, 8);
+  const OFFSETS = [[2.5, 4.5], [4.5, 6.5], [-3.5, 6.5], [6.5, -2.5], [0, 9.5], [9.5, 0], [-9.5, 0], [0, -9.5]];
+  const out = await page.evaluate(async ({ spots, FRAME, OFFSETS }) => {
+    const step = () => new Promise((r) => requestAnimationFrame(r));
+    const tried = [];
+    for (const s of spots) {
+      for (const [dx, dy] of OFFSETS) {
+        window.__ml.teleport(s.x + dx, s.y + dy);
+        for (let i = 0; i < 70; i++) await step();
+        if (window.__ml.indoor?.().indoor) continue;
+        await (0, eval)(FRAME)(s); // the same aim the smoking arms use
+        const list = window.__ml.ventsInView(96) || [];
+        if (!list.length) continue;
+        // A BURNING STACK IN THE SAME VIEW would smoke correctly and this arm
+        // would read its plume as a failure. Walk on to the next stand-off.
+        if (list.some((v) => v.hearth)) continue;
+        /* DRAIN FIRST, AND WAIT FOR A FRESH READ. Both counters carry: a puff
+         * lives up to 4.8 s, so one emitted at the BURNING stack this walk came
+         * from is still in the air here, and `seen`/`holes` hold whatever the
+         * last throttled read saw until the next one lands. Measuring through
+         * either would mark a correct silence as a failure — or, worse, pass a
+         * broken one on a stale count. */
+        let drained = false;
+        const p0 = window.__mlAmbient.debug("chimney").probes;
+        for (let i = 0; i < 600; i++) {
+          const d = window.__mlAmbient.debug("chimney");
+          if (d.puffs === 0 && d.probes > p0 + 1) { drained = true; break; }
+          await step();
+        }
+        let holes = 0, vents = 0, puffs = 0, seen = 0;
+        for (let i = 0; i < 260; i++) {
+          const d = window.__mlAmbient.debug("chimney");
+          seen = Math.max(seen, d.seen);
+          holes = Math.max(holes, d.holes);
+          vents = Math.max(vents, d.vents);
+          puffs = Math.max(puffs, d.puffs);
+          await step();
+        }
+        const d = window.__mlAmbient.debug("chimney");
+        tried.push({
+          x: s.x, y: s.y, seen, holes, vents, puffs, gain: d.gain, drained,
+          fires: (d.ventSeen || []).map((v) => `${v.piece}#${v.state}:${v.fire || "none"}${v.hearth ? "*LIT*" : ""}`),
+        });
+        break;
+      }
+      if (tried.length >= 2) break;
+    }
+    return tried;
+  }, { spots, FRAME: FRAME_JS, OFFSETS });
+  if (!out.length) fail(`could not stand at any of the ${cold.length} cold stacks in open air with the vent in view`);
+  for (const t of out) {
+    console.log(
+      `cold: at ${t.x.toFixed(1)},${t.y.toFixed(1)} — ${t.seen} vent(s) in view, ${t.holes} real hole(s), ` +
+        `${t.vents} taken, ${t.puffs} puffs, gain ${t.gain} [${t.fires.join(" ")}]`,
+    );
+    if (!(t.gain > 0.05)) fail(`the effect was parked at the cold stack (gain ${t.gain}) — it proved nothing`);
+    if (!t.drained)
+      fail(`the puffs from the last stack never cleared at ${t.x},${t.y} — this arm would be reading them, not this chimney`);
+    if (!(t.holes > 0)) fail(`the cold stack's vent was never seen as a hole (seen ${t.seen}) — nothing was rejected`);
+    if (t.vents !== 0) fail(`a cold hearth's vent was TAKEN (${t.vents} of ${t.holes}) — ${t.fires.join(" ")}`);
+    if (t.puffs !== 0) fail(`${t.puffs} puffs came out of a chimney with no fire under it at ${t.x},${t.y}`);
   }
 }
 

@@ -137,6 +137,22 @@ export function vents(conf: string | null | undefined): boolean {
   return conf === "opening" || conf === "flue_top";
 }
 
+/** DOES THIS STACK SMOKE? A real hole AND a fire burning under it.
+ *
+ *  The second half is the whole rule: a chimney is masonry, not a smoke
+ *  machine, and 6 of the_game's 8 stand over a hearth in a NOT_LIT state
+ *  (maintainer 2026-09-14, standing in one of them: "the fire in the house is
+ *  not burning (not a LIT state) and you still show smoke when I walk out").
+ *  `hearth` is the seam's answer for the flame placement within half a cell of
+ *  this vent — the effect never looks for the fire itself, because from the
+ *  street the fire is not drawn at all.
+ *
+ *  A vent with NO fire under it does not smoke either: "nothing is burning"
+ *  is the same answer whether the hearth is cold or absent. */
+export function smokes(conf: string | null | undefined, hearth: boolean | undefined): boolean {
+  return vents(conf) && hearth === true;
+}
+
 /** A stable value in [0,1) per placement — murmur3's finalizer. DETERMINISTIC
  *  ON PURPOSE: a chimney's stoke phase and period must be the same every time
  *  you walk past it, or the same stack breathes differently on each rebuild
