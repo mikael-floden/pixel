@@ -276,9 +276,13 @@ from the games agent), #18 (title/landing screen).
   A PIN IS A DIAMOND IN HTML: the overlay `<svg>` is stretched to the image box
   (`preserveAspectRatio="none"`), so a circle drawn in it comes out an ellipse,
   and SHAPE is what separates a place from the round accent "you are here" dot
-  at 2 inches wide and to a colour-blind eye. The NAME takes the space under
-  its pin, or over it, or is left off — six caves in one massif smear into one
-  another otherwise, and the diamond alone still answers the question.
+  at 2 inches wide and to a colour-blind eye. NO NAME IS EVER DRAWN — the icon
+  is the whole mark (maintainer 2026-09-12: "when I want to see dungeons on the
+  minimap I don't want any text over the dungeons … just icon is enough"). The
+  first version placed a name under each pin and dropped the ones that
+  collided; with nine caves in one massif that both half-failed and covered the
+  island he was reading. The name rides the element as `data-pin`, which is
+  what the gate finds a pin by and what a future tap-a-pin would open.
   A PIN IS PROJECTED AT ITS CELL'S OWN LEVEL, never the ground plane. maps2's
   formula lifts a cell by `kz*level` (1.05px per storey on this render), so a
   cave mouth 30 storeys up the massif drawn at level 0 lands 32px low on a
@@ -296,10 +300,9 @@ from the games agent), #18 (title/landing screen).
   passes 0 — which is how the level bug shipped past a green gate. The check
   stands the player ON the highest published cave mouth and requires the pin
   to be under them; the dot is itself gated against the samples, so this tests
-  the level through a different mechanism. Pins carry `data-cell` for it: the
-  crowded pins are the ones whose NAME is dropped, and they are exactly the
-  ones on the massif, so looking them up by rendered text made the check skip
-  the case it exists for.
+  the level through a different mechanism. Pins carry `data-cell` for it,
+  because a pin has no rendered text to be found by — and the same check
+  asserts that: any ink on the island fails it.
 - **SLIDER ROWS LEAVE A SCROLL GUTTER; BUTTONS DO NOT** (`--ml-slider-gutter`,
   100px, maintainer 2026-09-08 with the strip circled on a screenshot: "when
   scrolling in settings it's hard to not by mistake edit a slider … this is
