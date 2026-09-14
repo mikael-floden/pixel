@@ -265,6 +265,7 @@ import {
   facedDir,
   southSprite,
   stateFor,
+  animFrames,
   ventFor,
   ventPoint,
   firePlaces,
@@ -1636,6 +1637,9 @@ interface NpcAvatar {
 /** One placement's animation clock (see `sceneryAnimRuns`). */
 interface SceneryAnimRun {
   clip: SceneryAnim;
+  /** The FACING this run plays (`facedDir`): a turned piece has its own clip,
+   *  and playing the south one turns the object for the animation's length. */
+  dir?: string;
   cls: SceneryAnimClass;
   /** Texture keys of the frames, in order — frame 0 is the still. */
   keys: string[];
@@ -7916,7 +7920,7 @@ export class WorldScene extends Phaser.Scene {
         if (opts?.play) {
           for (const r of runs) {
             if (r.run.frame < 0) r.run.next = now;
-            for (const f of r.run.clip.frames) {
+            for (const f of animFrames(r.run.clip, r.run.dir)) {
               const k = this.sKey(f);
               if (!this.textures.exists(k)) this.artQueue().request({ key: k, url: this.sceneryUrl(f), prio: ART_PRIO.sceneryBoot });
             }
@@ -19067,22 +19071,27 @@ export class WorldScene extends Phaser.Scene {
     crop: [number, number, number, number],
     img: Phaser.GameObjects.Image,
     lo: (typeof this.litOccluders)[number] | null,
+    /** The facing actually DRAWN (`facedDir`) — a turned piece plays its own
+     *  clip, not the south one, or the object turns for the animation and turns
+     *  back afterwards (his report, 2026-09-14). */
+    dir?: string,
   ): void {
     const clip = this.sceneryClipFor(piece, st);
     if (!clip) return;
+    const frames = animFrames(clip, dir);
     let run = this.sceneryAnimRuns.get(place);
-    if (!run || run.clip !== clip) {
+    if (!run || run.clip !== clip || run.dir !== dir) {
       const cls = sceneryAnimClass(clip.cls);
       // A fresh clock starts at a random point of its sleep, so a field of
       // one piece does not sway in unison after a load.
-      run = { clip, cls, keys: clip.frames.map((f) => this.sKey(f)), frame: -1, t0: 0, next: this.time.now + Math.random() * scenerySleepMs(cls) };
+      run = { clip, dir, cls, keys: frames.map((f) => this.sKey(f)), frame: -1, t0: 0, next: this.time.now + Math.random() * scenerySleepMs(cls) };
       this.sceneryAnimRuns.set(place, run);
     }
     // ANIMATION FRAMES ARE THE LOWEST-PRIORITY ART THERE IS (maintainer
     // 2026-09-12: "Scenery animations should be lowest prio. They only play
     // once in a while anyways!"): the art queue, behind everything a body
     // needs. The run plays once every frame is resident (below).
-    for (const f of clip.frames) {
+    for (const f of frames) {
       const k = this.sKey(f);
       if (!this.textures.exists(k)) this.artQueue().request({ key: k, url: this.sceneryUrl(f), prio: ART_PRIO.sceneryAnim });
     }
@@ -21968,7 +21977,7 @@ export class WorldScene extends Phaser.Scene {
         this.attachSceneryShape(lo, key, art, fit, box0, hbX, hbY, p, feetLevel, tileSize);
         this.makeFogSilhouette(lo);
       }
-      this.registerSceneryAnim(p.i, piece, st, key, name, [fit.sx, fit.sy, fit.sw, fit.sh], img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null);
+      this.registerSceneryAnim(p.i, piece, st, key, name, [fit.sx, fit.sy, fit.sw, fit.sh], img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null, facedDir(st, p.dir));
       if (p.lit && st.key.startsWith("LIT")) this.pushSceneryLight(p, piece, st, key, fit, scol, srow);
       /* ...AND WHERE IT VENTS, for the ambient plume. The manifest's point is
        * in frame pixels from the CANVAS CENTRE (scenery's `light_frames`

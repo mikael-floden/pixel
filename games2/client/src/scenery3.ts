@@ -173,7 +173,17 @@ export function roofedCells(
  *  340x68 strip for a 64x64 still). */
 export interface SceneryAnim {
   name: string;
+  /** The SOUTH clip — and the only one a piece with no turned art publishes. */
   frames: string[];
+  /** ...AND THE CLIP FOR EACH FACING THAT HAS ITS OWN (`animations.<name>.
+   *  directions.<dir>.frame_paths`). A turned piece has turned animation art:
+   *  playing the south clip on it turns the OBJECT for the length of the
+   *  animation and turns it back afterwards (maintainer 2026-09-14: "The
+   *  scenery object next to me turns S when it plays the animation and then
+   *  turns back SE again. This looks so bad. SE has it's own animation. You
+   *  don't turn objects just to play their animation!"). Read through
+   *  `animFrames`, never directly. */
+  dirs: Record<string, string[]>;
   strip: string | null;
   frameCount: number;
   /** Frame 0 IS the state's still (`keep_first_frame`), so a clip that starts
@@ -283,9 +293,16 @@ function parseAnims(raw: unknown, where: string, warn: (m: string) => void): Rec
       warn(`scenery3: ${where}.animations.${name} names no frames — ignored`);
       continue;
     }
+    const dirs: Record<string, string[]> = {};
+    for (const [d, dv] of Object.entries((a.directions ?? {}) as Record<string, any>)) {
+      if (d === "__proto__") continue;
+      const df = Array.isArray(dv?.frame_paths) ? dv.frame_paths.filter((p: unknown) => !!str(p)) : [];
+      if (df.length) dirs[d] = df;
+    }
     out[name] = {
       name,
       frames,
+      dirs,
       strip,
       frameCount: Number.isFinite(a.frame_count) ? a.frame_count : frames.length,
       keepFirstFrame: a.keep_first_frame !== false,
@@ -560,6 +577,15 @@ export function stateFor(piece: SceneryPiece, lit?: boolean, override?: string |
     ?? (lit ? litState(piece) : null)
     ?? piece.baseState;
   return piece.states[key] ?? { key: "", sprite: piece.sprite, rotations: {}, anims: {} };
+}
+
+/** THE CLIP FOR THE FACING THAT IS DRAWN. A piece whose turned art has its own
+ *  animation must play THAT one: the south clip on a south-east still swaps the
+ *  object's facing for the length of the animation and swaps it back (his
+ *  report, 2026-09-14). South is the fallback, which is what a piece with one
+ *  clip has always used, and what a facing with no frames of its own needs. */
+export function animFrames(a: SceneryAnim, dir?: string): string[] {
+  return (dir && a.dirs[dir]?.length ? a.dirs[dir] : null) ?? a.frames;
 }
 
 /** The still for a state, in the facing the PLACEMENT asked for.
@@ -1287,7 +1313,8 @@ export function sceneryLoads(
     // Queue the art the placement will actually DRAW, not the south still: a
     // faced placement whose rotation was never queued pops in later, or never.
     add(facedSprite(st, pl.dir));
-    if (opts.anims) for (const a of Object.values(st.anims)) for (const f of a.frames) add(f);
+    if (opts.anims)
+      for (const a of Object.values(st.anims)) for (const f of animFrames(a, facedDir(st, pl.dir))) add(f);
   }
   return [...out.values()];
 }

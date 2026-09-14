@@ -165,6 +165,30 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   table: 30 pieces in his hearth house, 14 of them turned, worst foot 0.98 px
   off its anchor; on the old rule it fails at 13.76 px and names
   `hearths/hearth_901 LIT_1 south-west`. Probe: `__ml.sceneryDrawn(place?)`.
+- **A TURNED PIECE PLAYS ITS OWN CLIP — you do not turn an object to animate
+  it.** The manifests publish one clip per facing
+  (`animations.<name>.directions.<dir>.frame_paths`) and `parseAnims` read only
+  the flat `frame_paths`, which is the SOUTH one. So a south-east hearth drew
+  its south-east still until its flame played, swapped to the south frames for
+  the length of the clip, and swapped back (maintainer 2026-09-14, standing
+  beside `hearths/hearth_001` LIT_2 south-east: "The scenery object next to me
+  turns S when it plays the animation and then turns back SE again. This looks
+  so bad. SE has it's own animation. You don't turn objects just to play their
+  animation!"). `SceneryAnim.dirs` carries them and `animFrames(clip, dir)` is
+  the ONE reader — the drawn facing's frames, south as the fallback, which is
+  what a piece with a single clip has always used. The facing goes to
+  `registerSceneryAnim` (the run is keyed by clip AND dir, so a rebuild that
+  changes the facing re-keys it) and to the art queue, which had been streaming
+  the wrong frames for those placements — prefetch included (`sceneryLoads`).
+  the_game turns 111 placements; 7 of them publish a clip for the facing they
+  stand in. Gates: `server/test/scenery3.test.ts` (the fallback table, and
+  every one of those 7 resolving to its own frames — plus the library-wide
+  existence check extended to the turned clips) and the turned arm of
+  `verify-sceneryanim.mjs`, which derives a candidate from the world doc, walks
+  the ones that are drawn and playable, and asserts the frames it plays carry
+  the facing its still does. Proven to fail on the old rule: "it plays the
+  SOUTH clip on its south-west still".
+
 - **INDOOR SCENERY IS DRAWN WHILE ITS ROOF IS CUT AWAY** — the furniture of
   every house and cave. `buildPlacements` FLAGS a placement under a roof/cave
   deck (`SceneryPlacement.roofed`) instead of dropping it: render3 drops those

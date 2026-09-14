@@ -32,6 +32,8 @@ import {
   stateFor,
   southSprite,
   facedSprite,
+  facedDir,
+  animFrames,
   alphaBBox,
   fitSprite,
   frameRect,
@@ -351,6 +353,7 @@ test("every published manifest parses, and every piece the world places resolves
   const warns: string[] = [];
   let pieces = 0;
   let withAnim = 0;
+  let dirClips = 0;
   for (const g of readdirSync(rel("scenery"), { withFileTypes: true })) {
     if (!g.isDirectory()) continue;
     for (const d of readdirSync(rel(`scenery/${g.name}`), { withFileTypes: true })) {
@@ -366,6 +369,12 @@ test("every published manifest parses, and every piece the world places resolves
         for (const a of Object.values(st.anims)) {
           withAnim++;
           for (const f of a.frames) assert.ok(existsSync(rel(artPath(f))), `${id} ${a.name} frame`);
+          // ...and the TURNED clips, which a turned placement plays instead of
+          // the south one (animFrames).
+          for (const [d, fr] of Object.entries(a.dirs)) {
+            dirClips++;
+            for (const f of fr) assert.ok(existsSync(rel(artPath(f))), `${id} ${a.name} ${d} frame`);
+          }
         }
       }
     }
@@ -373,6 +382,7 @@ test("every published manifest parses, and every piece the world places resolves
   assert.equal(warns.length, 0, `manifests parsed with no surprises:\n${warns.join("\n")}`);
   assert.ok(pieces >= 700, `${pieces} pieces`);
   assert.ok(withAnim >= 1000, `${withAnim} state animations`);
+  assert.ok(dirClips >= 100, `${dirClips} turned clips beside them`);
 });
 
 test("a broken manifest degrades, once, and never throws", { skip }, () => {
@@ -781,4 +791,65 @@ test("the loader fetches a piece's packed index beside its manifest and a miss i
   await off.request("g/p");
   assert.equal(urls.length - before, 1, "pack off: the manifest only");
   assert.equal(off.packOf("g/p/sprite.webp"), undefined);
+});
+
+// ============================================================================
+// A TURNED PIECE PLAYS ITS OWN CLIP — you do not turn an object to animate it
+// ============================================================================
+//
+// "The scenery object next to me turns S when it plays the animation and then
+// turns back SE again. This looks so bad. SE has it's own animation. You don't
+// turn objects just to play their animation!" (maintainer 2026-09-14, standing
+// beside hearth_001 LIT_2 south-east at 297.4,196.1.)
+//
+// The manifests publish a clip per facing (`animations.<name>.directions.<dir>.
+// frame_paths`) and the parser read only the flat `frame_paths` — the SOUTH
+// one. So a south-east hearth drew its south-east still until its flame played,
+// swapped to the south frames for the length of the clip, and swapped back.
+test("a clip is chosen for the facing that is DRAWN, with south as the fallback", () => {
+  const a = {
+    name: "flame",
+    frames: ["s/00.webp", "s/01.webp"],
+    dirs: { "south-east": ["se/00.webp", "se/01.webp"] },
+    strip: null,
+    frameCount: 2,
+    keepFirstFrame: true,
+    review: null,
+    cls: null,
+    lightFrames: null,
+  };
+  assert.deepEqual(animFrames(a, "south-east"), ["se/00.webp", "se/01.webp"], "its own facing");
+  assert.deepEqual(animFrames(a, "south-west"), a.frames, "a facing it does not publish falls back to south");
+  assert.deepEqual(animFrames(a, "south"), a.frames, "south is south");
+  assert.deepEqual(animFrames(a), a.frames, "no facing asked = south");
+});
+
+test("the_game's turned placements resolve to their own clips", { skip }, () => {
+  let turned = 0;
+  let own = 0;
+  const same: string[] = [];
+  for (const pl of doc.scenery ?? []) {
+    if (!pl.dir || pl.dir === "south") continue;
+    const id = String(pl.piece);
+    if (!existsSync(rel(manifestPath(id)))) continue;
+    const piece = parsePiece(id, manifest(id), () => {});
+    if (!piece) continue;
+    const st = stateFor(piece, pl.lit, pl.state);
+    const dir = facedDir(st, pl.dir);
+    for (const a of Object.values(st.anims)) {
+      if (!a.dirs[dir]?.length) continue;
+      turned++;
+      const frames = animFrames(a, dir);
+      if (frames === a.frames) same.push(`${id}#${st.key} ${dir}`);
+      else own++;
+      // The frames it plays must belong to the facing it is drawn in.
+      assert.ok(
+        frames.every((f) => f.includes(`/${dir}/`)),
+        `${id}#${st.key} plays ${dir} frames (${frames[0]})`,
+      );
+    }
+  }
+  console.log(`  ${turned} turned placements publish their own clip; ${own} resolve to it`);
+  assert.ok(turned >= 5, `the world turns animated pieces (${turned})`);
+  assert.equal(same.length, 0, `none of them falls back to the south clip: ${same.join(", ")}`);
 });
