@@ -2037,6 +2037,31 @@ export class WorldScene extends Phaser.Scene {
   private sceneryPieces: SceneryPieces | null = null; // lazy per-piece manifests
   private sceneryImgs: Phaser.GameObjects.Image[] = [];
   private sceneryFit = new Map<string, SceneryArtFit | null>(); // per distinct art file, measured once
+  /** WHICH PACK RECORD A LOADED TEXTURE WAS FETCHED WITH, per key — null when
+   *  it was fetched raw.
+   *
+   *  The pack index lands per piece, asynchronously, and `sceneryUrl` and the
+   *  three readers (the fit seeding, `sceneryCanvasPixels`, `addSceneryCut`)
+   *  each asked `packOf` at their OWN moment. Between the request and the
+   *  worker's bounds callback the answer can change, and then the texture on
+   *  hand is read against a record that does not describe it:
+   *  - index landed after the request: RAW art measured with the packed
+   *    offsets, so the box is shifted down by `oy` and the piece draws that
+   *    many px HIGH (and clipped at the top);
+   *  - index gone/not resolvable at seeding: a PACKED texture read as raw, so
+   *    the source canvas's bottom margin disappears and the piece draws that
+   *    many px LOW.
+   *  Both stick, because the fit is seeded once per key and never revisited —
+   *  and a piece's LIT and UNLIT art are different keys, so they can disagree
+   *  in the same session. Measured on the_game's windows, `srcH - (oy + h)`:
+   *  window_086 13 px, window_033 12, window_111 6 — against a 15 px storey
+   *  (maintainer 2026-09-14, three shots of one window on one house at two
+   *  heights: "SOMEONE HAS CHANGED THE WINDOW Z"). Nobody had: maps2' z is
+   *  byte-identical across those builds.
+   *
+   *  The cure is that the answer is recorded WHERE THE URL IS CHOSEN and every
+   *  reader takes that one. */
+  private sceneryLoadedAs = new Map<string, SceneryPackRec | null>();
   private sceneryPackOn = sceneryPackEnabled();
   private sceneryAsked = new Set<string>();
   private sceneryQueue: [string, string][] = [];
@@ -21439,12 +21464,20 @@ export class WorldScene extends Phaser.Scene {
    * texture's own texels, and shifts its hitbox instead (attachSceneryShape).
    * Off, every one of these is the identity. */
   private sceneryPackOf(key: string): SceneryPackRec | undefined {
-    if (!this.sceneryPackOn || !key.startsWith("s3:")) return undefined;
+    if (!key.startsWith("s3:")) return undefined;
+    // THE RECORD THE TEXTURE WAS FETCHED WITH WINS — see sceneryLoadedAs. The
+    // live index is only the answer for a key this session never requested.
+    const asLoaded = this.sceneryLoadedAs.get(key);
+    if (asLoaded !== undefined) return asLoaded ?? undefined;
+    if (!this.sceneryPackOn) return undefined;
     return this.sceneryPieces?.packOf(key.slice(3));
   }
 
   private sceneryUrl(spritePath: string): string {
     const rec = this.sceneryPackOn ? this.sceneryPieces?.packOf(spritePath) : undefined;
+    // Pin it: whatever the index says later, THIS texture is the bytes of this
+    // record (or of the raw file), and every reader has to agree with that.
+    this.sceneryLoadedAs.set(this.sKey(spritePath), rec ?? null);
     return sceneryArtUrl(rec ? rec.path : spritePath, this.t3route);
   }
 
