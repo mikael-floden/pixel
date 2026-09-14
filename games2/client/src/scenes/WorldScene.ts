@@ -3878,6 +3878,12 @@ export class WorldScene extends Phaser.Scene {
     x1: number;
     y0: number;
     y1: number;
+    /** THE DRAWN ART'S BOX, when it is wider than the record's footprint —
+     *  what a caller must out-SORT, while x0..y1 stays what may COVER it
+     *  (`OccluderMeta.ax0`). Terrain leaves these unset. */
+    ax0?: number;
+    ax1?: number;
+    ay1?: number;
   }[] = [];
   private lastOccl = { x: NaN, y: NaN };
   /** THE INCREMENTAL REBUILD'S BOOKKEEPING (2026-09-12): the window the live
@@ -6428,7 +6434,10 @@ export class WorldScene extends Phaser.Scene {
         const x0 = s.x - s.displayWidth / 2, x1 = s.x + s.displayWidth / 2;
         const y0 = s.y - s.displayHeight, y1 = s.y;
         return {
-          me: { depth: s.depth, fx: av.fx, fy: av.fy, coverY: av.coverY ?? null },
+          // lx/ly are the SCENE coordinates the depth rule works in — the same
+          // space as every occluder box and every `sceneryDrawn` box, so a
+          // gate can join the two without reconstructing the projection.
+          me: { depth: s.depth, fx: av.fx, fy: av.fy, lx: av.lx, ly: av.ly, coverY: av.coverY ?? null },
           near: this.occluderMeta
             .filter((o) => !(o.x1 < x0 || o.x0 > x1 || o.y1 < y0 || o.y0 > y1))
             .map((o) => ({ col: o.col, row: o.row, depth: o.depth, top: o.top })),
@@ -15772,7 +15781,7 @@ export class WorldScene extends Phaser.Scene {
    *  `occluderMeta` (bodies are not), and without it a tree reads itself as a
    *  solid covering itself and crops its own lit copy away. */
   private resolveDrawDepth(
-    v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number; cx0?: number; cx1?: number },
+    v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number; cx0?: number; cx1?: number; liftMax?: number },
     lvl: number,
     self?: unknown,
   ): { depth: number; coverY: number | undefined } {
@@ -15794,7 +15803,7 @@ export class WorldScene extends Phaser.Scene {
       const sy0 = aTop + ab.y0 * b.sprite.scaleY - 4;
       const sy1 = aTop + ab.y1 * b.sprite.scaleY + 4;
       const r = resolveDepthRule(
-        { colf, rowf, lvl, lx: b.lx, ly: b.ly, lyFlat: b.lyFlat, sx0, sx1, sy0, sy1, lh: this.geom.lh, dy: this.geom.dy, self, cx0: b.cx0, cx1: b.cx1 },
+        { colf, rowf, lvl, lx: b.lx, ly: b.ly, lyFlat: b.lyFlat, sx0, sx1, sy0, sy1, lh: this.geom.lh, dy: this.geom.dy, self, cx0: b.cx0, cx1: b.cx1, liftMax: b.liftMax },
         this.occluderMeta,
       );
       depth = r.depth;
@@ -21973,6 +21982,14 @@ export class WorldScene extends Phaser.Scene {
         x1: box0 ? hbX + box0.rx * fit.kx : fit.x + fit.w / 2 + Math.min(tileSize, fit.w) / 2,
         y0: fit.y,
         y1: box0 ? hbY + box0.ry * fit.ky : fit.y + fit.h,
+        /* AND THE BOX IT IS DRAWN IN. The footprint above decides who covers
+         * whom; this is what a caller must out-SORT, because it is what the
+         * player sees over himself. A bed's footprint is 1.9 cells wide and
+         * its art 3.6, so a body beside it was never even compared with it
+         * (see OccluderMeta.ax0). */
+        ax0: fit.x,
+        ax1: fit.x + fit.w,
+        ay1: fit.y + fit.h,
       };
       if (meta) this.occluderMeta.push(meta);
       if (onWall) this.registerSceneryWall(p, piece, st, img, this.night && !flat ? this.litOccluders[this.litOccluders.length - 1] : null, baseH, rect);
@@ -22016,7 +22033,14 @@ export class WorldScene extends Phaser.Scene {
       const d = this.resolveDrawDepth(
         // cx0/cx1: the piece's FOOTPRINT span, not its canopy — only terrain
         // over what it stands on may crop its lit copy (see DepthCtx.cover column).
-        { sprite: r.img, lx: r.hbX, lyFlat: r.hbDepth - 0.5, ly: r.hbY, fx: r.fx, fy: r.fy, cx0: r.meta?.x0, cx1: r.meta?.x1 },
+        /* ...AND IT MAY NOT LIFT PAST ITS OWN ART (DepthCtx.liftMax). Keyed on
+         * its footprint centre, a long piece's art box overlaps floor tiles
+         * two and three diagonals forward, and the blanket 35 px carried a bed
+         * from its centre to its feet line — where it outranked a player
+         * standing in front of it (maintainer 2026-09-14). Its art's bottom is
+         * the last ground it actually covers. */
+        { sprite: r.img, lx: r.hbX, lyFlat: r.hbDepth - 0.5, ly: r.hbY, fx: r.fx, fy: r.fy, cx0: r.meta?.x0, cx1: r.meta?.x1,
+          liftMax: r.meta?.ay1 !== undefined ? r.meta.ay1 - (r.hbDepth - 0.5) : undefined },
         r.lvl,
         r.meta,
       );

@@ -123,7 +123,11 @@ WebP; no secrets; rebase before every push; no PRs unless asked.
   for players, monsters, NPCs, scenery AND DROPS. Never hand-roll a second
   depth/shadow/lighting path ("we will end up with the player's renderer").
 - `depthrule.ts` is a pure function tested against DUMPED occluder records;
-  never reconstruct a fixture's projection.
+  never reconstruct a fixture's projection. A piece is COVERED by a footprint
+  and SORTED against art (`ax0`, the hit/hitArt split), and never lifts past
+  its own art (`liftMax`) — a bed keyed on its footprint centre took the
+  blanket 35 px and drew over a player standing in front of it; gate
+  `verify-scenerysort.mjs`.
 - SEE-THROUGH WALLS IS DELETED — never a per-frame occluder alpha sweep.
 - The occluder set is POOLED; depth = base + creationIndex × 1e-6 in the base
   band only; tiles3's texture cache stays unbounded.

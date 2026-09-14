@@ -158,3 +158,87 @@ test("A WALL ONLY COVERS FROM IN FRONT — `wallBehind` means behind", () => {
   assert.equal(resolveDepthRule(caller, [wall(309, 233)]).coverY, undefined, "a wall the caller stands in front of must not cut its copy");
   assert.equal(resolveDepthRule(caller, [wall(308, 232)]).coverY, undefined);
 });
+
+/* THE BED THAT DREW OVER A PLAYER STANDING BESIDE IT (maintainer 2026-09-14,
+ * four spots around beds/bed_001 at 301.33,234.63 — "I'm still being rendered
+ * behind the bed at this spot").
+ *
+ * EVERY NUMBER BELOW WAS READ OUT OF THE RUNNING GAME at those spots
+ * (`__ml.sceneryDrawn`, `__ml.occDump`, `__ml.myCover`): the bed's drawn box
+ * is [14693, 8100, 114, 112], its published south-east footprint is ax 0 /
+ * ay 22.5 / rx 29.79 / ry 23.16 frame px on a 128 px canvas, so its FOOTPRINT
+ * spans x 14719..14780 while its ART spans 14693..14807. It sorts on its
+ * footprint centre (8183.9) and is then lifted the full LIFT_MAX_PX to
+ * 8218.3 — measured — which is its own feet line.
+ *
+ * The mechanism: his feet at 14801 are 21 px OUTSIDE the footprint and 6 px
+ * inside the art. The rule's overlap test used the record box alone, so the
+ * bed was skipped for his body entirely — no cover (right: he is beside it,
+ * not behind it) but also NO LIFT, while the bed itself outranked him. */
+const BED: OccluderMeta = {
+  col: 301, row: 234, top: 7, solid: true, point: true,
+  depth: 8183.9, drawDepth: 8218.3,
+  x0: 14719.4, x1: 14779.5, y0: 8100, y1: 8202.6,
+  ax0: 14693, ax1: 14807, ay1: 8212,
+};
+/** His body, measured: 301.7,233.4 -> lx 14801 / lyFlat 8204.5, and
+ *  300.2,235.2 -> lx 14773 / lyFlat 8208.2. Same art box as above. */
+const besideBed = (lx: number, lyFlat: number): DepthCtx => ({
+  colf: 301.7, rowf: 233.4, lvl: 0, lx, ly: lyFlat, lyFlat,
+  sx0: lx + BOX.dx0, sx1: lx + BOX.dx1, sy0: lyFlat + BOX.dy0, sy1: lyFlat + BOX.dy1,
+  lh: LH, dy: DY,
+});
+
+test("a body BESIDE a bed, in front of its footprint centre, draws over it", () => {
+  for (const [lx, lyFlat, where] of [[14801, 8204.5, "301.7,233.4"], [14773, 8208.2, "300.2,235.2"]] as const) {
+    const r = resolveDepthRule(besideBed(lx, lyFlat), [BED]);
+    assert.ok(
+      r.depth > BED.drawDepth!,
+      `${where}: the body resolved to ${r.depth.toFixed(2)} and the bed draws at ${BED.drawDepth} — it is in front of the bed's footprint centre (${BED.depth}) and must sort over it`,
+    );
+    assert.equal(r.coverY, undefined, `${where}: beside a bed is not behind it — nothing may crop the body`);
+  }
+});
+
+test("the bed still covers a body BEHIND its footprint centre, and crops at its art top", () => {
+  // 299.9,232.5 measured: lx 14772.8 / lyFlat 8165.5, inside the footprint's
+  // x span and up-screen of its centre — his "the wallhack works here" spot.
+  const r = resolveDepthRule(besideBed(14772.8, 8165.5), [BED]);
+  assert.ok(r.depth < BED.drawDepth!, `a body behind the bed stays behind it (got ${r.depth.toFixed(2)})`);
+  assert.equal(r.coverY, BED.y0, "and is cropped at the bed's own art top, which is what the outline follows");
+});
+
+test("the footprint, not the art, is still what CROPS: a canopy beside the feet may not", () => {
+  // The same record with the art box only: a body beside the footprint gets
+  // the lift (it is in front) and never a cover line — the canopy rule.
+  const r = resolveDepthRule(besideBed(14801, 8204.5), [BED]);
+  assert.ok(r.depth > BED.depth, "lifted over the piece it stands in front of");
+  assert.equal(r.coverY, undefined, "no crop from a box the feet are outside of");
+});
+
+test("A PIECE NEVER LIFTS PAST ITS OWN ART: the ceiling is what it covers, not 2.5 cells", () => {
+  // The bed again, as its own caller: keyed on its footprint centre (8183.9)
+  // with its art reaching 8212. A floor plate three diagonals in front would
+  // lift it the full LIFT_MAX_PX to 8219.5 — past its own art, i.e. in front
+  // of ground it does not cover, which is how it outranked a player standing
+  // there. `liftMax` binds it to its art's bottom instead.
+  const floorInFront: OccluderMeta = {
+    col: 302, row: 236, top: 0, stand: 0, depth: 8260, solid: false, point: false,
+    x0: 14693, x1: 14807, y0: 8180, y1: 8260,
+  };
+  const asPiece = (liftMax?: number): DepthCtx => ({
+    colf: 301.33, rowf: 234.63, lvl: 0, lx: 14749.5, ly: 8179.2, lyFlat: 8183.4,
+    sx0: 14693, sx1: 14807, sy0: 8100, sy1: 8212, lh: LH, dy: DY, liftMax,
+  });
+  const blanket = resolveDepthRule(asPiece(undefined), [floorInFront]);
+  assert.equal(+blanket.depth.toFixed(2), +(8183.4 + LIFT_MAX_PX + 0.6).toFixed(2), "with no ceiling it takes the blanket 35 px");
+  // The ceiling the game passes: the art's bottom, measured from the very
+  // anchor line the lift is added to (WorldScene: `ay1 - (hbDepth - 0.5)`).
+  const bounded = resolveDepthRule(asPiece(8212 - 8183.4), [floorInFront]);
+  assert.equal(+bounded.depth.toFixed(2), 8212.6, "bounded by its own art's bottom (8212) + 0.6");
+  assert.ok(bounded.depth < blanket.depth, "and that is strictly less than the blanket lift");
+  // A ceiling below one diagonal is still one diagonal: the lift's own job is
+  // to clear the tile in FRONT of the anchor, which is dy away.
+  const tiny = resolveDepthRule(asPiece(2), [floorInFront]);
+  assert.equal(+tiny.depth.toFixed(2), +(8183.4 + DY + 0.6).toFixed(2), "never less than one diagonal");
+});

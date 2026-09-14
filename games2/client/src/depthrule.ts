@@ -27,6 +27,15 @@ export interface OccluderMeta {
   x1: number;
   y0: number;
   y1: number;
+  /** THE DRAWN ART'S OWN BOX, when it is WIDER than the record's (a point
+   *  piece's box is its FOOTPRINT — a bed's footprint is 60 px and its art
+   *  114). The cover and clamp arms keep asking the footprint, which is what
+   *  makes a tree's canopy walkable; the LIFT arm asks this, because what a
+   *  caller has to out-sort is the thing that is DRAWN over it. Absent = the
+   *  record box is the art box (all terrain). */
+  ax0?: number;
+  ax1?: number;
+  ay1?: number;
 }
 
 /** Everything the rule needs about the caller: where it stands, the screen box
@@ -46,6 +55,14 @@ export interface DepthCtx {
   lh: number;
   dy: number;
   self?: unknown;
+  /** HOW FAR THIS CALLER MAY LIFT past its own anchor line, when it knows a
+   *  tighter bound than `LIFT_MAX_PX`. A PIECE knows one: its own drawn art.
+   *  Lifting past that is claiming to be in front of ground it does not even
+   *  cover — which is the ribcage bug and the bed bug both (a bed keyed on its
+   *  footprint centre took the full 35 px and landed at its feet line, so it
+   *  outranked a player standing in front of it). Clamped to [dy, LIFT_MAX_PX]:
+   *  one diagonal is the job the lift exists for. */
+  liftMax?: number;
   /** THE COVER COLUMN — the screen-x span that may CROP this caller's lit copy,
    *  narrower than the art box when the caller is wider than what it stands on.
    *  A tree's canopy is ~170 px across while its trunk stands on one cell, and
@@ -67,7 +84,26 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
   const feetY = ctx.ly;
   for (const o of metas) {
     if (o === ctx.self) continue; // never occlude yourself — see the note above
-    if (o.x1 < ctx.sx0 || o.x0 > ctx.sx1 || o.y1 < ctx.sy0 || o.y0 > ctx.sy1) continue;
+    /* TWO OVERLAPS, ONE RECORD. `hit` is the record's own box — the FOOTPRINT
+     * for a point piece — and it gates every arm that covers or clamps, so a
+     * canopy still crops nothing and a body still walks under branches.
+     * `hitArt` is the box the piece is DRAWN in, and it gates the LIFT alone:
+     * a body BESIDE a bed's footprint but under its art never entered this
+     * loop at all, so it never lifted over a piece that had itself been
+     * lifted to its feet line — and the bed drew over a player standing in
+     * front of it (maintainer 2026-09-14, four spots around one bed; measured
+     * there: footprint x 14719..14780, art x 14693..14807, his feet at
+     * 14801 — 21 px outside the footprint, 6 px inside the art). */
+    const hit = !(o.x1 < ctx.sx0 || o.x0 > ctx.sx1 || o.y1 < ctx.sy0 || o.y0 > ctx.sy1);
+    const hitArt =
+      hit ||
+      !(
+        (o.ax1 ?? o.x1) < ctx.sx0 ||
+        (o.ax0 ?? o.x0) > ctx.sx1 ||
+        (o.ay1 ?? o.y1) < ctx.sy0 ||
+        o.y0 > ctx.sy1
+      );
+    if (!hitArt) continue;
     const od = o.drawDepth ?? o.depth; // what it DRAWS at — see drawDepth
     const higher = o.top > ctx.lvl;
     // (a) Wall genuinely between the camera and the feet point.
@@ -163,7 +199,7 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
       // of trees cropped on one horizontal line (maintainer, 2026-09-07).
       o.col + o.row >= ctx.colf + ctx.rowf &&
       !(ctx.colf + ctx.rowf > o.col + o.row + 1);
-    if (rayBlocked || faceOverFeet || solidArtOver || wallBehind) {
+    if (hit && (rayBlocked || faceOverFeet || solidArtOver || wallBehind)) {
       below = Math.min(below, od);
       // The DEPTH decision keeps the whole art box — a piece in front must
       // still push this one back — but only something over the caller's OWN
@@ -218,7 +254,9 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
    * piece outranked both him and the rock stubs at 10232 that stand in front of
    * it, so the terrain itself sorted behind it too. 35 px = 2.5 cells clears
    * every piece measured (max 2.06) and cuts the outlier. */
-  if (above > -Infinity) depth = Math.max(depth, Math.min(above, ctx.lyFlat + LIFT_MAX_PX) + 0.6);
+  const liftMax =
+    ctx.liftMax === undefined ? LIFT_MAX_PX : Math.min(LIFT_MAX_PX, Math.max(ctx.dy, ctx.liftMax));
+  if (above > -Infinity) depth = Math.max(depth, Math.min(above, ctx.lyFlat + liftMax) + 0.6);
   /* WALLS WIN CONFLICTS — and among the things one wall clamps, a BODY sits
    * a hair above a PIECE. A cave's one-level rock stub in front of both a
    * player and the pod behind him clamped both to the same value, and the

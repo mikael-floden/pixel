@@ -135,19 +135,37 @@ How bodies and pieces interleave with terrain columns: the occluder set, the pur
   body's own spot: that one keeps the line from going black after sunset, this
   one decides how loud it is at all. Probe `__ml.hiddenRing(v?)`.
 
-- **A CALLER NEVER LIFTS MORE THAN 2.5 CELLS PAST ITS OWN ANCHOR**
-  (`LIFT_MAX_PX` 35, `depthrule.ts`). The lift exists so the flat tile IN FRONT
-  OF THE FEET — one diagonal, dy px — cannot draw over them; it is a one-cell
-  job. But `above` takes the MAX over every occluder the ART BOX overlaps, and
-  a WIDE piece overlaps ground tiles three and four diagonals forward.
-  MEASURED on the_game: 54 treeline pieces lift a median 14.8 px (1.06 cells),
-  at most 28.8; the cave's dragon ribcage, 97 px wide, lifts 55.9 px — FOUR
-  cells. Lifted to 10245.70 it outranked not just the player but the rock stubs
-  at 10232 that stand a cell IN FRONT of it, so the cave floor sorted behind it
-  too and any body those stubs clamped went behind it with them. THIS is why
-  the maintainer kept landing behind that ribcage from four different tiles
-  while each cover-side fix only moved which tiles did it. 35 px clears every
-  piece measured and cuts the outlier.
+- **A PIECE NEVER LIFTS PAST ITS OWN DRAWN ART, AND NOTHING LIFTS MORE THAN
+  2.5 CELLS** (`DepthCtx.liftMax`, `LIFT_MAX_PX` 35, `depthrule.ts`). The lift
+  exists so the flat tile IN FRONT OF THE FEET — one diagonal, dy px — cannot
+  draw over them; it is a one-cell job. But `above` takes the MAX over every
+  occluder the ART BOX overlaps, and a WIDE piece overlaps ground tiles three
+  and four diagonals forward. MEASURED on the_game: 54 treeline pieces lift a
+  median 14.8 px (1.06 cells), at most 28.8; the cave's dragon ribcage, 97 px
+  wide, lifts 55.9 px — FOUR cells, where it outranked the rock stubs at 10232
+  that stand a cell IN FRONT of it, so the cave floor sorted behind it too and
+  every body those stubs clamped went with them.
+  A piece knows a tighter bound than the blanket 35 px: its own art's bottom
+  (`OccluderMeta.ay1`, passed as `liftMax`), because lifting past that claims
+  to be in front of ground it does not even cover. A bed keyed on its
+  FOOTPRINT CENTRE — 2.4 cells up-screen of its feet — took the full 35 px and
+  landed at 8218.3, its own feet line, so it outranked a player standing in
+  front of it (maintainer 2026-09-14, five spots around two beds: "the player
+  feet center is at a lower screen-y than the beds hitbox center and still we
+  draw the player behind the bed"). Bounded by its art it draws at 8212.1.
+  Clamped to [dy, `LIFT_MAX_PX`]: one diagonal is the job, 2.5 cells the roof.
+- **A CALLER SORTS AGAINST A PIECE'S ART, AND IS COVERED ONLY BY ITS
+  FOOTPRINT** (`OccluderMeta.ax0/ax1/ay1`, the `hit` / `hitArt` split in
+  `depthrule.ts`). A point piece's record box is its FOOTPRINT — that is what
+  makes a canopy walkable and what may set a crop line — but the box it is
+  DRAWN in is wider: measured on `beds/bed_001`, footprint x 14719..14780
+  against art x 14693..14807. A body BESIDE the footprint and under the art
+  failed the loop's overlap test outright, so it never lifted over a piece
+  that had itself been lifted, and the bed drew over him with no cover line to
+  show for it. The cover and clamp arms still ask the footprint; the LIFT arm
+  asks the art. Gate: `scripts/verify-scenerysort.mjs` (his five spots, the
+  piece named per spot because a tall chimney five cells away legitimately
+  covers him too).
 - **A LEDGE COVERS ONLY WHAT IT STANDS OVER — `feetInColumn` in
   `depthrule.ts`**: the ledge rule (`faceOverFeet`) additionally requires the
   caller's FEET X to lie in the occluder's screen column (±6), exactly as
