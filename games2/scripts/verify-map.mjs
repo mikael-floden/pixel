@@ -242,6 +242,21 @@ try {
           });
         });
       }
+      // NO EXPLAINING TEXT IN THE MAP VIEW AT ALL (maintainer 2026-09-14): the
+      // chips name themselves and nothing else on this page is allowed to
+      // talk. The whole layer row's text must be the chip labels, nothing
+      // more — a caption under them is what he asked to be rid of.
+      const rowText = await page.evaluate(() => {
+        const row = document.querySelector(".ml-maplayers");
+        if (!row) return null;
+        const chips = [...row.querySelectorAll(".ml-plate-btn")].map((b) => b.textContent.trim());
+        return { all: row.textContent.trim(), chips };
+      });
+      if (!rowText) fail("no layer row on the Map page");
+      else if (rowText.all !== rowText.chips.join(""))
+        fail(`the Map tab's layer row says more than its chips (${JSON.stringify(rowText.all)}) — no explaining text on this page`);
+      else ok(`the layer row is chips only (${rowText.chips.join(", ")})`);
+
       const inked = pins.filter((p) => p.text);
       inked.length
         ? fail(`${inked.length} dungeon pin(s) print their name on the map (${inked.map((p) => p.name).join(", ")}) — the icon is the whole mark`)

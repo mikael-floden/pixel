@@ -264,6 +264,25 @@ from the games agent), #18 (title/landing screen).
   was right for exactly one day: it is the check that CAUGHT the crop
   landing, and the samples above replaced it because a cropped render has no
   such relationship to the grid.
+- **NO EXPLAINING TEXT IN THE UI — NOT OVER THE MAP, NOT STACKED OVER THE
+  GAME** (maintainer 2026-09-14, twice in one sitting: "I don't like the big
+  wall of text that happens when I switch collision in settings on/off" and "I
+  don't like the explaining text in the map view when toggling a pill/layer.
+  Should be no explaining text at all"). Two rules came out of it.
+  (a) The Map tab's layer row is CHIPS ONLY — the caption that named each live
+  layer's marks is gone, with the per-layer `note` that fed it. What a colour
+  means belongs in a comment or the wiki, not over the island he is reading.
+  `verify-map` asserts the row's whole text equals its chip labels.
+  (b) A SETTINGS TOGGLE IS A STATUS, NOT AN EVENT: `chat.ts` keys every SYSTEM
+  line by whatever it says before its first colon ("Collision overlay", "Zone
+  borders", "fog") and a new line REPLACES the live one with that key instead
+  of stacking. Six taps leave one line saying what it is now. No call site
+  changed — 25 `addLog` sites in the scene get it for free — and a line with no
+  short prefix ("Reconnected.", "Bex reached level 7!") still stacks like the
+  event it is. Player chat is never keyed: two people saying the same thing are
+  two messages. The Chat PAGE keeps every line; it is a scrollback. The
+  collision LEGEND, which has no key and cannot collapse, prints once a
+  session. Gated in `verify-chat` (six taps → exactly 1 state line, ≤1 legend).
 - **A MAP LAYER READS THE PUBLISHER'S OWN NAMES, NEVER ITS OWN DERIVATION.**
   The `dungeons` chip pins maps2's `places.json` (`pixel-maps2/places@2`) —
   `kind: "cave"`, the display `name`, and the published `entrance` if there is

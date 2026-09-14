@@ -21,6 +21,13 @@
 // ADDING A LAYER is one entry in LAYERS: an id, a label, and a draw function
 // handed the projection and an SVG to fill. Nothing else changes — the chip
 // row, the persistence and the redraw are generic.
+//
+// NO EXPLAINING TEXT IN THE MAP VIEW (maintainer 2026-09-14: "I don't like the
+// explaining text in the map view when toggling a pill/layer. Should be no
+// explaining text at all"). A caption under the chips used to name each live
+// layer's marks; it is gone, with the per-layer `note` that fed it. What a
+// colour means belongs in the wiki or in a comment, not over the map he is
+// trying to read.
 import {
   minimapCellPct,
   type MinimapFeed,
@@ -64,8 +71,6 @@ export interface LayerCtx {
 interface Layer {
   id: string;
   label: string;
-  /** A short line for the row's caption when the layer is on. */
-  note?: string;
   /** Offer the chip only when there is something behind it. A world with no
    *  dungeons must not show a dungeons button that draws nothing — the same
    *  graceful-degradation rule the ambient checklist follows (no rows, no
@@ -103,7 +108,6 @@ const LAYERS: Layer[] = [
   {
     id: "zones",
     label: "zones",
-    note: "blue: one room per rectangle. red: the hand-off band",
     draw: (ctx) => {
       const z = ml()?.zones?.();
       if (!z) return;
@@ -156,7 +160,6 @@ const LAYERS: Layer[] = [
     // `pin` — so this layer answers "where are they", not "which is which".
     id: "dungeons",
     label: "dungeons",
-    note: "cave mouths",
     has: () => caves().length > 0,
     draw: (ctx) => {
       for (const c of caves()) ctx.pin(c.at[0], c.at[1], c.name);
@@ -186,7 +189,6 @@ const on = readOn();
 let row: HTMLElement | null = null;
 let svg: SVGSVGElement | null = null;
 let marks: HTMLElement | null = null;
-let caption: HTMLElement | null = null;
 let sig = ""; // what the overlay was last drawn for
 let metaFor = ""; // which world `meta` belongs to
 let meta: MinimapMeta | null = null;
@@ -213,8 +215,6 @@ function styleOnce() {
   .${ROW_CLS}{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;
     width:100%;padding:6px 8px 0;box-sizing:border-box}
   .${ROW_CLS} .ml-plate-btn{min-height:30px;padding:4px 10px;font-size:12px;border-radius:8px}
-  .${ROW_CLS}-note{width:100%;text-align:center;font:500 11px/1.3 var(--sans);
-    color:var(--ink-soft,#8b8b8b);padding:2px 8px 0;box-sizing:border-box;min-height:14px}
   /* CLIPPED TO THE IMAGE BOX, both of them. A zone rectangle covers water and
      the render is CROPPED to the island, so the outer zones project OUTSIDE
      the image — with overflow visible their lines and their numbers escaped
@@ -257,15 +257,11 @@ function build(page: HTMLElement, frame: HTMLElement) {
       writeOn(on);
       paint();
       sig = ""; // redraw now, not on the next move
-      syncCaption();
     });
     paint();
     row.appendChild(b);
     chips.set(l.id, b);
   }
-  caption = document.createElement("div");
-  caption.className = `${ROW_CLS}-note`;
-  row.appendChild(caption);
   // ABOVE the map, which is what "at the top of the Map tab" means; the page's
   // first child is the .ml-map wrapper.
   page.insertBefore(row, page.firstChild);
@@ -276,7 +272,6 @@ function build(page: HTMLElement, frame: HTMLElement) {
   marks.className = MARK_CLS;
   frame.appendChild(marks);
   syncChips();
-  syncCaption();
 }
 
 /** Hide the chip for a layer that has nothing behind it in this world. The
@@ -287,12 +282,6 @@ function syncChips() {
     const b = chips.get(l.id);
     if (b) b.hidden = l.has ? !l.has() : false;
   }
-}
-
-function syncCaption() {
-  if (!caption) return;
-  const notes = LAYERS.filter((l) => on.has(l.id) && l.note).map((l) => l.note!);
-  caption.textContent = notes.join(" · ");
 }
 
 /** Idempotent: keep one live chip row + overlay on the Map page, and redraw the
@@ -415,7 +404,6 @@ export function mapLayers(id?: string, want?: boolean): string[] {
     ensureMapLayers();
     const b = row?.querySelectorAll<HTMLElement>(".ml-plate-btn")[LAYERS.findIndex((l) => l.id === id)];
     b?.classList.toggle("on", to);
-    syncCaption();
   }
   return [...on];
 }
