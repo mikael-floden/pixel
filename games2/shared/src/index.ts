@@ -5057,6 +5057,9 @@ export function stepAutopilot(
   const probeBlocked = grid ? makeBlockedElev(grid, walkCtx, () => probeElev) : undefined;
   const probeSide = grid ? makeSideBlocked(grid, walkCtx, () => probeElev) : undefined;
   const PROBE_DT = 0.15; // one honest walk step (~10.5wu): reaches past the next cell edge
+  /* The level the ROUTE wants the body at next: a waypoint carries its own
+   * (`findPath`), and the final target falls back to the trip's goal level. */
+  const wp0Lvl = (trip.path[0] as { lvl?: number } | undefined)?.lvl ?? trip.endLevel ?? trip.goalLevel ?? probeElev;
   const cand: { ax: number; ay: number; dot: number; open: boolean }[] = [];
   for (let iy = -1; iy <= 1; iy++) {
     for (let ix = -1; ix <= 1; ix++) {
@@ -5075,6 +5078,26 @@ export function stepAutopilot(
         // disqualified the best detours around props.
         const frac = Math.hypot(r.x - x, r.y - y) / (wl * WALK_SPEED * PROBE_DT);
         open = frac > 0.45 || autoJumpWanted(grid, x, y, w.x, w.y, probeElev);
+        /* A STEP THE BODY CANNOT UNDO IS NOT OPEN. Movement lets a body walk
+         * off any ledge under the fall-damage line — that is the player's own
+         * doing and stays untouched — but the AUTOPILOT must not spend the
+         * route on one: below the waypoint by more than a jump, the walker
+         * cannot climb back, and the trip ends at the foot of the drop.
+         * Measured on the_game's mountain at 133 ms frames (a struggling
+         * phone, navigation.sim): a run step is 30-70wu there, wide enough to
+         * carry the body a cell past the rim; it took a 5-level drop the route
+         * never asked for (the route's own levels never go below 11), and from
+         * level 5 the one stall re-plan could not get back — the trip reported
+         * arrival 2.7 cells short, which the gate reads as the failure it is.
+         * Only a drop BELOW THE ROUTE's own next level is refused, so a route
+         * that legitimately goes down a cliff still walks down it. */
+        if (open && grid) {
+          // DECK-AWARE, like every other elevation question here: the base
+          // cell under a bridge is the water, so reading the raw level would
+          // call every step onto a span a cliff and strand the walker on it.
+          const endLvl = resolveElevAt(grid, probeElev, r.x, r.y, walkCtx);
+          if (probeElev - endLvl > JUMP_CLIMB && endLvl < wp0Lvl - JUMP_CLIMB) open = false;
+        }
       }
       cand.push({ ax: ix, ay: iy, dot, open });
     }

@@ -171,9 +171,11 @@ push, no PRs unless asked.
   escape, and the rescue never climbs.
 - A footprint and a body belong to the FLOOR they stand on (`lvl`); every
   query that knows the surface level passes it.
-- The nav avoids fall damage at any cost: ≥6 levels is not an edge; a fall
-  bills on IMPACT (`fallPend`), drawn on the client's predicted frame
-  (`fallhurt.ts`), and the slow FADES with the number.
+- The nav avoids fall damage at any cost: ≥6 levels is not an edge, and the
+  walker never STEERS off a step it cannot undo either (a drop of more than a
+  jump below the route's own next level is not open); a fall bills on IMPACT
+  (`fallPend`), drawn on the client's predicted frame (`fallhurt.ts`), and the
+  slow FADES with the number.
 - Water is the player's sanctuary (no monster enters or is hit there) and is
   as FLAT under the feet as in the art (`swimlevel.test.ts`).
 - The speed dial and the acceleration ramp ride PER INPUT (`InputMessage.sm`,

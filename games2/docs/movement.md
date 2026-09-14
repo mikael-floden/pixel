@@ -348,6 +348,20 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     KNOWN CONSEQUENCE: the island house's roof and floor are reachable from
     DISJOINT regions, so beacon rule 2's real-world case became one-sided —
     its test uses a synthetic both-arrive fixture (beacon.test.ts).
+  - **Steering** (`stepAutopilot`'s openness probe, 2026-09-14): a candidate
+    heading is not open when it would put the body more than `JUMP_CLIMB`
+    below BOTH its own elevation and the ROUTE's next waypoint level — a step
+    it cannot undo. Movement itself is untouched (a player who walks off a
+    ledge meant to); this is only about the autopilot spending the route on
+    one. Measured on the_game's mountain at 133 ms frames (a struggling phone,
+    navigation.sim): a run step there is 30-70 wu, wide enough to carry the
+    body a cell past the rim, and it took a 5-level drop — under the damage
+    line, so nothing hurt, but the route's own levels never went below 11 and
+    from level 5 the single stall re-plan could not climb back. The trip
+    reported ARRIVAL 2.7 cells short at the foot of the drop. The probe is
+    deck-aware (`resolveElevAt`): reading the raw level would call every step
+    onto a bridge a cliff and strand the walker on the span — which is what
+    the first cut of this did, and the three bridge arms caught it.
   - **Landing** (WorldRoom, on the input integration's elev resolve ONLY —
     teleport/respawn/join assign elev directly and never bill a fall): a drop
     ≥ 6 levels costs `round(frac·hpMax)` through the standard `hurtPlayer`.
