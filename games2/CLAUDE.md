@@ -4,8 +4,7 @@ This file is what every games2 turn loads, so it holds ONLY the rules and where
 each subsystem's detail lives. **Measurements, traps and rejected approaches
 live in `games2/docs/<topic>.md` — open the one for the subsystem you touch;
 new detail goes THERE.** A rule here is one or two lines: the law, the reason
-in parentheses, the doc with the story.
-(2026-09-09: 300 KB, paid before every message was read.)
+in parentheses, the doc with the story. (300 KB was once paid per message.)
 
 ## What this is
 
@@ -98,26 +97,25 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   silhouette texel, holes inside a column included.
 - A liquid diamond wears `sheets.libTop`, not a formula.
 - A BUILT slab (roof, bridge) wears ONE surface, anchored at the deck's first
-  cell; a CAVE LID is ground and picks per cell, so it matches the terrain
-  beside it. Both are drawn (ground pass AND occluder copy); `thickness` is
-  the contract (0 = top only); `side` is the body, the doorway crops the cap.
+  cell; a CAVE LID is ground and picks per cell, matching the terrain beside
+  it. Both are drawn (ground pass AND occluder copy); `thickness` is the
+  contract (0 = top only); `side` is the body, the doorway crops the cap.
 - A wall face wears its region's least-seamed measured set, never one tile
   (`wallregion.ts`; `wallsets.json` regenerates from today's approved walls).
 - The fade has three dials and a switch; THE DEFAULTS ARE HIS (reach 4,
-  amount 0.46, falloff 4). Cliff-foot and lid transitions default on.
+  amount 0.46, falloff 4). Cliff-foot and lid transitions are on.
 - Regions are 24-cell chunks; a cell edit is bounded by its chunk + 5x5.
 - Phaser: `textures.get` returns `__MISSING` for an unknown key (adapter via
   `exists`); terrain has its own `LoaderPlugin`, `crossOrigin` set.
 - EVERYTHING STREAMED BEHIND THE LIVE WORLD goes through THE ART QUEUE
   (`client/src/artqueue.ts`, `docs/perf.md`): priority order, a BYTE budget
   per frame, no kind's strips before a monster of it exists, its fight art
-  raised when a fight starts, scenery animations last. The queue decodes on a
-  worker and uploads in bands (`artworker.ts`):
-  never `texImage2D` an `<img>` for streamed art, never measure a streamed
-  image's pixels on the frame thread, and NEVER read a banded texture back
-  from the GPU inside the frame — every one of those is a decode or a pipeline
-  drain the phone pays per strip; boxes ride the bands, alpha and pixels come
-  from the worker on demand.
+  raised when a fight starts, scenery animations last. It decodes on a worker
+  and uploads in bands (`artworker.ts`): never `texImage2D` an `<img>` for
+  streamed art, never measure a streamed image's pixels on the frame thread,
+  and NEVER read a banded texture back from the GPU inside the frame — each is
+  a decode or a pipeline drain the phone pays per strip; boxes ride the bands,
+  alpha and pixels come from the worker on demand.
 - A DynamicTexture BRACKET is the GPU cost (a whole capture clear + blit): an
   erase is the object's own ERASE blend inside the pass, and the capture binds
   the rows in use (`coverRaster`).
@@ -132,65 +130,66 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - The occluder set is POOLED; depth = base + creationIndex × 1e-6 in the base
   band only; tiles3's texture cache stays unbounded.
 - Boundary transitions and fades are composed OFF THE FRAME THREAD
-  (`composeworker.ts`), ahead of the camera, with the factory's own
-  builders; the main thread only uploads. The sync path is the fallback and
-  the tests. Gate: `__ml.composeWorker({audit:true}).audit.diff` = 0.
+  (`composeworker.ts`), ahead of the camera, with the factory's own builders;
+  the main thread only uploads. The sync path is the fallback and the tests.
+  Gate: `__ml.composeWorker({audit:true}).audit.diff` = 0.
 - The occluder set is drawn WHOLE (view cull only). Never submit a subset
-  chosen per image: a shown course whose front cap is hidden paints over
-  the cap's ground (the proximity cull, rejected). The display list is
-  insertion-sorted.
+  chosen per image: a shown course whose front cap is hidden paints over the
+  cap's ground (the proximity cull, rejected). The list is insertion-sorted.
 - Scenery is sized against the 88-px person this game draws
   (`sceneryDrawnPx`); the bbox doc is gated by `check-scenery-bbox.mjs`.
-- A hitbox is an ellipse OR a ground rect drawn in perspective — port the
-  wiki's `rectCorners`, never re-derive; one lookup, `sceneryHitboxRec`.
-- Indoor furniture draws while its roof is cut away and crossfades with it;
-  flat (`collision:false`) pieces draw under everything, no lit copy. An
-  OUTSIDE piece over half the room's floor fades out (`scenerycover.ts`); a
-  smaller one keeps its silhouette.
+- A hitbox is an ellipse OR a perspective ground rect — port the wiki's
+  `rectCorners`, never re-derive; one lookup, `sceneryHitboxRec`.
+- Indoor furniture draws while its roof is cut away and crossfades with it; a
+  piece standing ON that roof goes with it, judged at its FEET, and ONE
+  `onLid` answers for the fade, the cover record and the lit copy (two frame
+  passes else fight over one sprite's alpha). Flat (`collision:false`) pieces
+  draw under everything, no lit copy. An OUTSIDE piece over half the room's
+  floor fades out (`scenerycover.ts`); a smaller one keeps its silhouette.
 - Scenery animates once then sleeps per class; a lit clip moves its light
-  (defaults his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30; swing 0.12x).
-  A clip plays only on frames that are ON THE GPU: a banded texture behind a
-  context-restore refill is blank (`sceneryClipReady`; `verify-sceneryanim.mjs`).
+  (his: foliage 1-8 s, fire 0-1, water 1-4, rigid 10-30; swing 0.12x). A clip
+  plays only on frames ON THE GPU: a banded texture behind a context-restore
+  refill is blank (`sceneryClipReady`; `verify-sceneryanim.mjs`).
 - `projectCellCorner` is the ONE projection for anything on the ground plane;
   `projectFlat` is where feet are DRAWN (4 px body seat, never "fixed").
 
 **Perf** (`docs/perf.md`)
 - The capture pool is ALWAYS ON: no draw bracket may resize Phaser's capture
-  target (that re-allocation WAS the running-into-a-new-area lag).
-- The ground scrolls, paints in slices, repaints landed cells only, prefetches
-  ahead, budgets compositions (`GROUND_COMPOSE_MS` 2, boundaries only) — and
-  every one of those is pixel-identical to a forced full paint
-  (`__ml.groundHash`). A tab-in poisons the latch. Do not remove the drop
-  drain's repaint. `?ground=legacy` is the bisect.
+  target (that re-allocation WAS the new-area lag).
+- The ground scrolls, paints in slices, repaints landed cells only,
+  prefetches ahead, budgets compositions (`GROUND_COMPOSE_MS` 2, boundaries
+  only) — each pixel-identical to a forced full paint (`__ml.groundHash`). A
+  tab-in poisons the latch. Keep the drop drain's repaint. `?ground=legacy`
+  bisects.
 - The beacon's `sections` are window means and its `counts` snapshots — never
-  correlate them; its server side is an allowlist (add fields on both sides,
-  and `scripts/verify-beacon.mjs` proves the POST survives it). It carries
-  `run` (context), `rtt` (input round trip), `cpu` (throttling proxy), `gpu`
-  (the GPU's clock when lent), the frame histogram and `rafHz`; read a run
-  with `scripts/perf-read.mjs` (`--diff shaA shaB` for two builds).
+  correlate them; its server side is an allowlist (add fields on both sides;
+  `scripts/verify-beacon.mjs` proves the POST survives it). It carries `run`,
+  `rtt` (input round trip), `cpu` (throttling proxy), `gpu` (its clock when
+  lent), the frame histogram and `rafHz`; read one with
+  `scripts/perf-read.mjs` (`--diff shaA shaB` for two builds).
 
 **Movement** (`docs/movement.md`)
 - Server-authoritative, elevation-governed (`WALK_CLIMB`, `JUMP_CLIMB`); the
   shared math lives in `shared/` once; the client predicts the same grid.
-- Never weaken the collision probes to fix a wedge — `unstickFromSolids` is
-  the escape, and the rescue never climbs.
+- Never weaken the collision probes to fix a wedge: `unstickFromSolids` is the
+  escape, and the rescue never climbs.
 - A footprint and a body belong to the FLOOR they stand on (`lvl`); every
   query that knows the surface level passes it.
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge; a fall
-  bills on IMPACT (`fallPend`), drawn on the client's own predicted frame
+  bills on IMPACT (`fallPend`), drawn on the client's predicted frame
   (`fallhurt.ts`); the slow FADES with the number.
-- Water is the player's sanctuary (no monster enters or is hit there) and
-  lies FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
+- Water is the player's sanctuary (no monster enters or is hit there) and lies
+  FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
 - The speed dial and the acceleration ramp ride PER INPUT (`InputMessage.sm`,
-  `.ac`), the SERVER clamps them; 1.1x and 0.17 s to full speed ARE HIS
+  `.ac`) and the SERVER clamps them; 1.1x and 0.17 s to full speed ARE HIS
   (`playerspeed.ts`, `accel.ts`, `accelStep`).
 - The stick "almost" snaps: `leanHeading` leans between the octants' run
   headings by his dial (0 snap, 1 continuous; 0.85 IS HIS); the grid-axis
   lock locks EXACT diagonals only; the bearing is games-ui's stick's
   (`stickdir.ts`).
 - A TERRAIN wall gets the honest walk (`wallcorner.test.ts`): within his
-  "Wall assist angle" dial (10°, HIS) the run is straightened along it; past
-  it the body slides at its screen speed times the WORLD cosine to the wall
+  "Wall assist angle" dial (10°) the run is straightened along it; past it the
+  body slides at its screen speed times the WORLD cosine to the wall
   (`slideShare`, 71% for a cardinal key; the thumb's windows only,
   `InputMessage.route`) or stands, auto-jump hops a jumpable one; a door
   SIDEWAYS or ahead within 4 cells is steered to, never behind. The sprite
@@ -208,23 +207,23 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   the run gait from 80% of the run, off below 74% (HIS).
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet
   the walk (rejected twice); both readings of an ambiguous pixel route.
-- The body dodge is a manoeuvre: engage and hold on different thresholds,
-  `MONSTER_DODGE_TIGHTEN` never reaches the hold; a waypoint someone stands
+- The body dodge is a manoeuvre: engage and hold on different thresholds
+  (`MONSTER_DODGE_TIGHTEN` never reaches the hold); a waypoint someone stands
   on counts as arrived.
 - The ground under a point is its nearest CORNER's, not its cell's.
 
 **Backend for 10k** (`spec/ZONES.md`, `docs/backend.md`)
-- ONE world, never instances (maintainer). Zones are rooms (`config/zones.json`;
-  no entry = one room); entities belong to the zone containing them; the
-  client sees across a border through GHOSTS, in their own maps so no server
-  loop ever steps or fights one; a crossing is a hand-off over
-  the bus (hot state under a one-shot key, `zone:go`, a fresh join, the old
-  room lets go on `handoff:done`); the sender rewrites the hot state EVERY
-  TICK and the client replays from the seq the new room reports.
-- A player's map key is its FIRST session id and never changes across
-  hand-offs; the client finds itself by the synced `sid`, never by key.
+- ONE world, never instances (maintainer). Zones are rooms
+  (`config/zones.json`; no entry = one room); entities belong to the zone
+  containing them; the client sees across a border through GHOSTS, in their
+  own maps so no server loop ever steps or fights one; a crossing is a
+  hand-off over the bus (hot state under a one-shot key, `zone:go`, a fresh
+  join, the old room lets go on `handoff:done`); the sender rewrites that
+  state EVERY TICK and the client replays from the seq the new room reports.
+- A player's map key is its FIRST session id and never changes across hand-
+  offs; the client finds itself by the synced `sid`, never by key.
 - ONE room per zone per process (`zoneRooms`, warmed at boot, autoDispose
-  off; a duplicate locks and hands its arrivals to the owner). An empty room
+  off; a duplicate locks and hands its arrivals to the owner). An empty one
   runs its sim at a quarter rate (`IDLE_DIVISOR`).
 - `Encoder.BUFFER_SIZE` holds EVERY client's view section of one patch (2 MB;
   an overflow freezes clients silently, never errors). `scripts/loadbot.mjs`
@@ -241,19 +240,19 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - `view()` is applied as a decorator call after `defineTypes` (the `view:
   true` flag is ignored there); `Encoder.BUFFER_SIZE` is set in the room
   module.
-- Rooms talk ONLY over `server/src/bus.ts` (ioredis when `REDIS_URL`, else the
-  in-process fake with the same asynchronous contract). Writes are the
-  Firestore bill: a save on leave, death, level-up and the dirty flush (a
-  player who earned nothing is never written).
+- Rooms talk ONLY over `server/src/bus.ts` (ioredis when `REDIS_URL`, else
+  the in-process fake, same asynchronous contract). Writes are the Firestore
+  bill: a save on leave, death, level-up and the dirty flush (a player who
+  earned nothing is never written).
 
 **Monsters, combat** (`docs/monsters-combat.md`)
 - Spawn placement is maps2 data (`spawns.json`); no spawns → no monsters.
-- The tuned shadow overrides everything art-measured: centre = position, size
-  = hit box, ONE size for all facings, through `monsterRadiusFor`.
-- `separationPush` stays squared-distance; a broad-phase, never micro-tuning.
-- Passive by default; predators aggro; provoked chases pace the victim and the
-  RUN-AWAY LINE is `ESCAPE_RADIUS_WU` 390 past the zone; the give-up IS the
-  rejected step.
+- The tuned shadow beats everything art-measured: centre = position, size =
+  hit box, ONE size for all facings, through `monsterRadiusFor`.
+- `separationPush` stays squared-distance: a broad-phase, never micro-tuning.
+- Passive by default; predators aggro; a provoked chase paces its victim and
+  the RUN-AWAY LINE is `ESCAPE_RADIUS_WU` 390 past the zone; the give-up IS
+  the rejected step.
 - Monster stats come from live tuning (a content check, not truthiness).
 - Nothing may block the revive press; the ask is retried.
 
@@ -265,8 +264,8 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - `uCam` is this frame's rectangle (`renderedWorldView`), never `worldView`.
 - The light slot ledger: 12 slots, 8 world, strict reservations, tenure not
   re-ranking; a light is a candidate when its POOL can touch the view
-  (`poolReachPx`); remote torches are never lights; every world light is a
-  real light at the campfire's peak; a sealed-room fire is indoor-only.
+  (`poolReachPx`); remote torches are never lights; a world light is a real
+  light at the campfire's peak; a sealed-room fire is indoor-only.
 - Scenery lights read the manifest `light` block as given (no radius cap);
   every scenery light casts shadows; scenery occludes like a prop, own cell =
   contact + directional core; the switches are pushed on the shader being
@@ -290,9 +289,9 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
   nearest-neighbour by a whole DEVICE-pixel factor; rejected: a frame around
   the game view, a bottom-right version chip.
 - Dialog stability: a card's controls never move or get replaced; a DOM
-  overlay does NOT keep pointers from Phaser (lock via `onUiLock`).
-- Rotation snaps under a veil (five rounds); anything placed
-  against the gv vars listens to "ml-layout", never the raw resize.
+  overlay does NOT keep pointers from Phaser (lock with `onUiLock`).
+- Rotation snaps under a veil; anything placed against the gv vars listens to
+  "ml-layout", never the raw resize.
 - The wiki drawer sleeps the game loop; waking is not `TimeStep.resume()`.
 
 **Testing** (`docs/testing.md`)

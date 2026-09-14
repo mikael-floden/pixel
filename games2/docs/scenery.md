@@ -141,6 +141,33 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   cutAway/drawnRoofed/maskUp/grade). Gates: `scripts/verify-indoorscenery.mjs`
   (derives the most-furnished room from the world doc; a real join, inside and
   out) + the placement half of `server/test/scenery3.test.ts`.
+- **AND WHAT STANDS ON THE ROOF GOES WITH THE ROOF** — a chimney. Its feet are
+  on the deck's own top, so `buildPlacements` withholds `roofed` (it is not
+  furniture: it must draw from the street) and flags `onDeck` instead
+  (`level + z >= deckAt(cell)`), and `rebuildScenery` fades it on the roof's own
+  debris curve while the cut has the roof open. **THE HEIGHT THAT ANSWERS "IS
+  IT ON THE LID" IS THE PIECE'S FEET, AND EVERY TEST IN THE REBUILD MUST ASK
+  THE SAME ONE** (`feetLevel` / `onLid`, one pair of locals feeding the fade
+  branch, the cover record and the lit copy). The cover record used to ask
+  about `p.level` — the ground under the house, which the cut never passes — so
+  a chimney was BOTH "on the lid" (fading with the debris) and "a piece that
+  might bury my room" (alpha 1, since it covers nothing), and `stepSceneryCover`
+  runs the frame pass right after the lid fade and wrote that 1 straight over
+  it. The stack stood in the middle of the room with its own roof cut away from
+  under it (maintainer 2026-09-14, inside the meadow house at 303.0,233.4: "the
+  scenery object on top of the roof (the chimney) is visible when I am inside
+  the house"). Its LIT COPY faded correctly the whole time — that test already
+  read the feet — so only the still was left standing, which is the shape of
+  every two-pass scenery bug in this file. IT TOOK THE SMOKE WITH IT: a vent
+  publishes the piece's own drawn alpha (`ventsInView`) precisely so an
+  attached effect follows the cut without knowing about roofs, so the plume
+  was hanging over the open room too. Measured at his spot after: the vent's
+  alpha is 1 from the street and 0 inside. Probe: `__ml.sceneryIndoor()`
+  reports `onLid`, `onLidAlpha` (the mean alpha those sprites WEAR — the count
+  was right through the whole bug) and `deckPieces`. Gate: the lid arm of
+  `scripts/verify-indoorscenery.mjs`, which derives its own room (the roofed
+  deck carrying a piece whose `z` reaches its level) and asserts the alpha, not
+  the flag.
   **A HIDDEN PIECE'S ART IS STILL ASKED FOR.** `rebuildScenery` calls
   `needScenery` (which only QUEUES) before the roofed skip, so furniture under a
   roof streams in while you are outside; it used to be asked for after the

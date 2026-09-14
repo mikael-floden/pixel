@@ -7916,6 +7916,21 @@ export class WorldScene extends Phaser.Scene {
           maskUp: !!this.indoorMask,
           grade: +this.indoorGrade().toFixed(3),
           pieces: [...new Set(roofed.map((p) => p.piece))].length,
+          // ON THE LID — the chimney class: how many built sprites the cut
+          // flagged as standing on a removed roof, and the opacity they
+          // actually wear this frame. The second number is the one with a bug
+          // in its history: the fade is applied per frame and another per-frame
+          // pass (stepSceneryCover) used to write over it, so a count alone
+          // reported a piece as handled while it stood there at full alpha
+          // (verify-indoorscenery's lid arm).
+          onLid: this.sceneryAboveCutImgs.length,
+          onLidAlpha: this.sceneryAboveCutImgs.length
+            ? +(this.sceneryAboveCutImgs.reduce((a, i) => a + i.alpha, 0) / this.sceneryAboveCutImgs.length).toFixed(3)
+            : null,
+          // ...and the placements that COULD be on a lid at all (a `z` piece
+          // whose feet reach its cell's deck top), so the arm can tell "none
+          // was flagged" from "this world stands nothing on a roof".
+          deckPieces: ps.filter((p) => p.onDeck).length,
         };
       },
       /** The boot/deferred split of monster art and what is still parked. */
@@ -21542,15 +21557,32 @@ export class WorldScene extends Phaser.Scene {
                 : hbDepth + this.occSeq++ * OCC_DEPTH_EPS,
           ),
       );
+      /* ONE HEIGHT ANSWERS "IS THIS PIECE ON THE LID", AND EVERY TEST BELOW
+       * ASKS IT — the fade branch, the cover record and the lit copy. A piece
+       * standing ON a deck is judged at its FEET (`level + z`, see
+       * SceneryPlacement.onDeck); everything else stands on its own ground.
+       *
+       * THE THREE MUST AGREE OR THE PIECE IS IN TWO LISTS AT ONCE. The cover
+       * record used to ask about `p.level` alone, so a chimney — feet on the
+       * roof at level 6, ground under the house at 0 — was BOTH "on the lid"
+       * (fading with the debris) and "a piece that might bury my room"
+       * (alpha 1 while it covers nothing). stepSceneryCover runs immediately
+       * after the above-cut pass every frame and wrote that 1 straight over
+       * the debris fade, so the stack stood in the middle of the room with
+       * its own roof cut away from under it (maintainer 2026-09-14, inside
+       * the meadow house at 303.0,233.4: "the scenery object on top of the
+       * roof (the chimney) is visible when I am inside the house"). Its LIT
+       * copy faded correctly — that test already read the feet — which is why
+       * only the still was left standing. */
+      const feetLevel = p.onDeck ? p.level + (p.z ?? 0) : p.level;
+      const onLid = this.sceneryAboveCutAt(p.cx, p.cy, feetLevel);
       // INDOOR FURNITURE FADES WITH THE ROOF IT STANDS UNDER (see roofedFade):
       // held apart here, and given the crossfade's alpha from the frame it is
       // built so a rebuild mid-transition continues the dissolve.
       if (p.roofed) {
         img.setAlpha(this.roofedFade());
         this.sceneryRoofedImgs.push(img);
-        // ON the deck (a chimney): the cut is asked about its FEET, not the
-        // ground under the house — see SceneryPlacement.onDeck.
-      } else if (this.sceneryAboveCutAt(p.cx, p.cy, p.onDeck ? p.level + (p.z ?? 0) : p.level)) {
+      } else if (onLid) {
         // ON the lid: it goes with the roof, on the roof's own curve — opaque
         // at the flip frame and dissolving with the debris, so walking in and
         // out fades it away and back instead of popping it. Furniture cannot
@@ -21562,7 +21594,7 @@ export class WorldScene extends Phaser.Scene {
       // out over a room it buries (THE TREE OVER THE HOUSE, stepSceneryCover).
       // Its lit copy joins the record below, once it exists.
       const coverRec =
-        !flat && !onWall && !p.roofed && !this.sceneryAboveCutAt(p.cx, p.cy, p.level)
+        !flat && !onWall && !p.roofed && !onLid
           ? { img, lo: null as { fade?: number } | null, box: { x: fit.x, y: fit.y, w: fit.w, h: fit.h }, place: p.i, cover: -1 }
           : null;
       if (coverRec) this.sceneryCoverRecs.push(coverRec);
@@ -21611,7 +21643,7 @@ export class WorldScene extends Phaser.Scene {
           // ...and the FEET of a piece standing on the deck, same as the still
           // above: a chimney's lit band has to dissolve with its own sprite,
           // or the cut leaves a glowing ghost stack on an open roof.
-          aboveCut: this.sceneryAboveCutAt(p.cx, p.cy, p.onDeck ? p.level + (p.z ?? 0) : p.level),
+          aboveCut: onLid,
         });
         if (onWall) this.litOccluders[this.litOccluders.length - 1].cover = Infinity; // the wall is BEHIND it
         const lo = this.litOccluders[this.litOccluders.length - 1];

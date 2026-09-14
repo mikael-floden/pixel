@@ -11,9 +11,23 @@
 // something is invisible inside this house"). The index now keeps them flagged
 // and the scene draws one only while its roof is cut away.
 //
+// AND WHAT STANDS ON THE ROOF GOES WITH THE ROOF — the other half of the same
+// rule (the lid arm below). A chimney's feet are on the deck's top, so it draws
+// from the street and must dissolve when the cut removes the roof under it.
+// That test read the piece's GROUND (the floor of the house, which the cut
+// never passes) instead of its feet, so the same sprite was flagged as "on the
+// lid" AND kept as a room-covering candidate — and stepSceneryCover, which runs
+// a frame pass right after the lid fade, wrote alpha 1 over it. The stack stood
+// in the middle of the room with its own roof cut away from under it
+// (maintainer 2026-09-14, inside the meadow house: "the scenery object on top
+// of the roof (the chimney) is visible when I am inside the house"). So the arm
+// reads the ALPHA the sprite wears, never the flag: the count was right through
+// the whole bug.
+//
 // The house is DERIVED from the world doc, never hardcoded: the roof deck with
 // the most furniture, a free floor cell inside it to stand on, and the spawn to
-// step back out to.
+// step back out to. The lid arm derives its own — the roofed deck that carries
+// a piece standing on top of it.
 import { spawn } from "node:child_process";
 import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
@@ -44,20 +58,43 @@ for (const d of doc.decks ?? []) {
   if (!house || furniture.length > house.furniture.length) house = { d, cells, furniture };
 }
 if (!house || house.furniture.length < 3) die("no roofed deck on this world holds furniture — nothing to verify");
-const occupied = new Set(house.furniture.map((p) => `${trunc(p.x)},${trunc(p.y)}`));
-const inside = [...house.cells]
-  .map((k) => k.split(",").map(Number))
-  .filter(([x, y]) => !occupied.has(`${x},${y}`) && doc.level?.[y]?.[x] === 0)
-  .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
-if (!inside.length) die("the furnished room has no free floor cell to stand on");
 // THE FREEST FLOOR CELL, not the middle one: since 2026-09-09 maps2 stands
 // furniture against the walls, and a cupboard's footprint reaches the cell
 // beside it — a probe teleported there was pushed off it by the rescue. The
 // cell farthest from every piece's anchor is the one a body can stand on.
-const far = (c) => Math.min(...house.furniture.map((p) => Math.hypot(p.x - (c[0] + 0.5), p.y - (c[1] + 0.5))));
-const stand = inside.reduce((best, c) => (far(c) > far(best) ? c : best), inside[0]);
+const standIn = (h) => {
+  const occupied = new Set(h.furniture.map((p) => `${trunc(p.x)},${trunc(p.y)}`));
+  const free = [...h.cells]
+    .map((k) => k.split(",").map(Number))
+    .filter(([x, y]) => !occupied.has(`${x},${y}`) && doc.level?.[y]?.[x] === 0)
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  if (!free.length) return null;
+  const far = (c) => Math.min(...h.furniture.map((p) => Math.hypot(p.x - (c[0] + 0.5), p.y - (c[1] + 0.5))));
+  return free.reduce((best, c) => (far(c) > far(best) ? c : best), free[0]);
+};
+const stand = standIn(house);
+if (!stand) die("the furnished room has no free floor cell to stand on");
+// THE LID HOUSE: a roofed deck carrying a piece whose own `z` puts its feet on
+// that deck's top — the chimney class. Biggest such room, so it has floor to
+// stand on; null on a world that stands nothing on a roof (the arm then says so
+// instead of passing silently).
+let lid = null;
+for (const d of doc.decks ?? []) {
+  if (d.kind !== "roof" && d.kind !== "cave") continue;
+  const cells = new Set((d.cells ?? []).map((c) => `${c.x ?? c.col},${c.y ?? c.row}`));
+  const furniture = (doc.scenery ?? []).filter((p) => cells.has(`${trunc(p.x)},${trunc(p.y)}`));
+  const onLid = furniture.filter((p) => typeof p.z === "number" && p.z >= (d.level ?? 0) - 1e-9);
+  if (!onLid.length) continue;
+  if (!lid || cells.size > lid.cells.size) lid = { d, cells, furniture, onLid };
+}
+const lidStand = lid ? standIn(lid) : null;
 const spawn0 = doc.spawn ?? [Math.round(doc.size.w / 2), Math.round(doc.size.h / 2)];
 console.log(`[indoorscenery] ${WORLD}: room of ${house.cells.size} cells with ${house.furniture.length} pieces; standing at ${stand}, outside at ${spawn0}`);
+console.log(
+  lid
+    ? `[indoorscenery] lid room: ${lid.cells.size} cells at level ${lid.d.level}, ${lid.onLid.length} piece(s) on top (${[...new Set(lid.onLid.map((p) => p.piece))].join(", ")}); standing at ${lidStand}`
+    : "[indoorscenery] no piece stands on a roof in this world — the lid arm will report that, not pass",
+);
 
 // --- a prod server on the working tree
 const port = 2600 + Math.floor(Math.random() * 300);
@@ -170,12 +207,36 @@ check(
 );
 await page.screenshot({ path: join(ROOT, "scripts", "_tmp-indoor-inside.png") });
 
+// --- THE LID: a piece standing on the roof dissolves with it, and the alpha is
+//     what is asserted (see the header — the flag was right all through the bug)
+if (!lid || !lidStand) {
+  check(false, "no roofed deck carries a piece standing on top of it — the lid rule is unmeasured on this world");
+} else {
+  const onLid =
+    lidStand[0] === stand[0] && lidStand[1] === stand[1]
+      ? home
+      : await at(lidStand[0], lidStand[1], "inside the lid house");
+  check(onLid.indoor?.indoor === true, "standing in the lid room puts the renderer indoors");
+  check(
+    onLid.scenery.deckPieces > 0,
+    `the index flags the pieces standing ON a deck (${onLid.scenery.deckPieces} placements)`,
+  );
+  check(onLid.scenery.onLid > 0, `the cut catches what stands on the removed roof (${onLid.scenery.onLid} sprite(s))`);
+  check(
+    onLid.scenery.onLidAlpha !== null && onLid.scenery.onLidAlpha <= 0.02,
+    `and those sprites are INVISIBLE, not merely flagged — alpha ${onLid.scenery.onLidAlpha}`,
+  );
+}
+
 const out = await at(spawn0[0], spawn0[1], "outside at the spawn");
 check(out.indoor?.indoor === false, "back outdoors");
 check(out.scenery.maskUp === false, "the cut-away is fully rolled back (the exit fade landed)");
 check(out.scenery.cutAway === 0, `with no cut drawn, NO roofed piece may pass (${out.scenery.cutAway})`);
 check(out.scenery.drawnRoofed === 0, `no roofed piece is drawn outdoors — no furniture on a roof (${out.scenery.drawnRoofed})`);
 check(out.scenery.drawn > 0, `outdoor scenery still draws (${out.scenery.drawn} sprites)`);
+// ...and with no roof cut, nothing is on a lid: the chimney is an ordinary
+// outdoor piece from the street, at full opacity like any other.
+check(out.scenery.onLid === 0, `no piece is treated as standing on a cut lid outdoors (${out.scenery.onLid})`);
 await page.screenshot({ path: join(ROOT, "scripts", "_tmp-indoor-outside.png") });
 
 await browser.close(); stop();
