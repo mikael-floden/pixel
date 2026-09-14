@@ -4,6 +4,28 @@ Where a test belongs, the browser gates, the harness traps, device geometry. Mov
 
 ## Dev-test workflow (fast loop — keep it this way)
 
+- **A DERIVED FIXTURE DRIFTS WITH THE WORLD, AND A SILENT ONE IS WORSE THAN A
+  TYPED ONE** (verify-lightparity, repaired 2026-09-14). The gate takes "the
+  lit piece nearest spawn" as its outdoor lamp — correct when it was written
+  (a streetlight on the road) and a SEALED HEARTH INDOORS once the town grew
+  around the spawn house, which is indoor-only by design. Three arms then
+  measured a wall and failed for the right reason about the wrong subject. A
+  derivation must carry the property the arm depends on: the lamp is now the
+  nearest lit piece that stands OUTSIDE every room (`world.rooms`), which is
+  what "holds a world slot while I stand beside it" needs. Same class: the
+  sweep that finds plain night ground indexed the ground rows with a placement's
+  FRACTIONAL y (`ground[233.04]` is undefined), so every cell read as "no
+  ground" and the gate died on a null.
+- **A RING OF PIXELS AROUND ONE SITE IS NOT A LIGHT MEASUREMENT** (same
+  repair). Luminance around a lamp is whatever the MAP put there — the ground
+  material, the neighbours' art, the piece's own contact shadow. Measured at
+  today's fixture the profile RISES outward (1.2:107 2:99 3:110 4:159 6:174
+  8:183) while the pool falls away the whole time. A pixel claim survives only
+  where the confounders CANCEL — the same piece at the same radii, as a ratio
+  (the twin-parity arm) — and a falloff is asked of the light the pipeline and
+  the shader both read (`__ml.lightAt`). The lesson generalises: pixels prove
+  a DIFFERENCE between two pictures of the same thing, never a value.
+
 - **Navigation/movement logic → `server/test/navigation.sim.test.ts`**, NOT
   the browser: the real brain (stepAutopilot) against the real body (unstick
   + stepMovement + auto-jump) on REAL worlds at ~1000× real time — ~100

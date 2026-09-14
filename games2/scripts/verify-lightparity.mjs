@@ -30,9 +30,13 @@
 // isolated from mine by __ml.torch(false).
 //
 // FIXTURES are derived from maps2/worlds3/the_game/world.json, never typed: a
-// lit piece is `s3:<index into scenery[]>` in the ledger (scenery3.ts). Today
-// that resolves to streetlight_013 three cells west of the spawn house, its
-// twin on the east road, and hearth_901 inside the town's first parquet room.
+// lit piece is `s3:<index into scenery[]>` in the ledger (scenery3.ts). The
+// derivation must carry the property its arms depend on, not just "nearest" —
+// the outdoor lamp is the nearest lit piece OUTSIDE every room, because the
+// nearest lit piece full stop became a sealed hearth once the town grew around
+// spawn, and three arms then measured a wall. Which pieces it picked is
+// PRINTED on every run (`fixtures:`); nothing here names them, because a name
+// in a comment is the next thing to go stale.
 import { chromium } from "playwright-core";
 import { PNG } from "pngjs";
 import { readFileSync } from "node:fs";
@@ -54,16 +58,29 @@ if (!lit.length) fatal("the_game places no lit scenery — nothing to gate");
 const d2 = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
 const liquid = new Set(world.liquids ?? []);
 const groundAt = (c, r) => world.grounds[world.ground[r]?.[c]] ?? "";
-// The lit piece nearest spawn: the lamp a new player sees first.
-const LAMP = lit.slice().sort((a, b) => d2(a, { x: SPAWN_C, y: SPAWN_R }) - d2(b, { x: SPAWN_C, y: SPAWN_R }))[0];
+// Which cells belong to a room — a sealed light is indoor-only by design, so
+// the OUTDOOR sections must not pick one.
+const roomCellSets = world.rooms.map((rm) => new Set(rm.cells.map((c) => `${c.x},${c.y}`)));
+const inARoom = (p) => roomCellSets.some((s) => s.has(`${Math.floor(p.x)},${Math.floor(p.y)}`));
+// THE LAMP: the lit piece nearest spawn that stands OUTDOORS. Sections 2/2b
+// measure a pool on open ground and a slot that is held while I stand beside
+// it — a sealed room's hearth holds neither (2c asserts exactly that), and
+// since the town grew around the spawn the nearest lit piece has become one:
+// the fixture silently turned into a hearth indoors and three arms measured a
+// wall (hearths/hearth_004 @333.3,232.3, the spawn house).
+const outdoorLit = lit.filter((p) => !inARoom(p));
+if (!outdoorLit.length) fatal("every lit placement stands in a room — the outdoor sections have no fixture");
+const LAMP = outdoorLit
+  .slice()
+  .sort((a, b) => d2(a, { x: SPAWN_C, y: SPAWN_R }) - d2(b, { x: SPAWN_C, y: SPAWN_R }))[0];
 // Its twin: the nearest other placement of the SAME piece (same art → same
 // derived light), far enough away that the two pools do not overlap.
 const LAMP2 = lit
   .filter((p) => p !== LAMP && p.piece === LAMP.piece && d2(p, LAMP) >= 10)
   .sort((a, b) => d2(a, LAMP) - d2(b, LAMP))[0];
 // The lit piece standing on a ROOM cell (world.json `rooms`): a sealed light.
-const roomCells = world.rooms.map((rm) => new Set(rm.cells.map((c) => `${c.x},${c.y}`)));
-const HEARTH = lit.find((p) => roomCells.some((s) => s.has(`${Math.floor(p.x)},${Math.floor(p.y)}`)));
+const roomCells = roomCellSets;
+const HEARTH = lit.find((p) => inARoom(p));
 if (!HEARTH) fatal("no lit scenery stands inside a room — the sealed-room fixture is gone");
 const ROOM = world.rooms[roomCells.findIndex((s) => s.has(`${Math.floor(HEARTH.x)},${Math.floor(HEARTH.y)}`))].cells;
 const ROOF = world.decks.find((d) => d.kind === "roof" && d.cells.some((c) => c.x === Math.floor(HEARTH.x) && c.y === Math.floor(HEARTH.y)));
@@ -76,10 +93,35 @@ const roofY0 = Math.min(...ROOF.cells.map((c) => c.y));
 const OUTSIDE = { x: Math.floor(HEARTH.x), y: roofY0 - 2 }; // two cells north of the wall, outdoors
 // Plain night ground: within R cells of (cx,cy), the land cell farthest from
 // every lit piece (so nothing but ambient reaches it).
+/* THE RINGS CLEAR THE PIECE'S OWN ART. A pool's falloff is measured on the
+ * GROUND around the lamp, and a ring that lands on the lamp itself measures a
+ * dark silhouette: the fixture the world gives today is a cauldron camp two
+ * cells wide, and its inner ring read 100.7 against 158.9 further out — the
+ * art, not the light. The piece's drawn width comes from the same bbox table
+ * the renderer scales by (config/scenery-bbox.json: the alpha box, the piece's
+ * world_px_height re-based to our 88 px person), so the inner ring starts just
+ * outside it whatever the world places here. */
+const bboxDoc = JSON.parse(readFileSync(new URL("../config/scenery-bbox.json", import.meta.url), "utf8"));
+const drawnHalfCells = (p) => {
+  const facts = bboxDoc.pieces?.[p.piece];
+  const spr = (p.state ? facts?.states?.[p.state] : null) ?? facts?.sprite;
+  const bb = spr ? bboxDoc.boxes?.[spr] : null;
+  const base = facts?.sprite ? bboxDoc.boxes?.[facts.sprite] : null;
+  if (!facts || !bb || !base || !facts.wph) return 1.2;
+  const drawn = (facts.wph * 88) / (facts.cpx || 64); // sceneryDrawnPx
+  const k = drawn / Math.max(1, base[3] - base[1]);
+  return Math.max(0.8, ((bb[2] - bb[0]) * k) / 2 / 32); // half the drawn width, in cells
+};
 const plainNear = (cx, cy, R = 25) => {
   let best = null;
-  for (let r = Math.max(0, cy - R); r <= Math.min(world.size.h - 1, cy + R); r++)
-    for (let c = Math.max(0, cx - R); c <= Math.min(world.size.w - 1, cx + R); c++) {
+  // FLOORED BOUNDS: a placement's x/y are FRACTIONAL (maps3 places scenery at
+  // continuous cell coordinates), and a fractional loop index indexes the
+  // ground rows with a float — `ground[233.04]` is undefined, so every cell
+  // read as "no ground" and the sweep came back empty.
+  const c0 = Math.floor(cx);
+  const r0 = Math.floor(cy);
+  for (let r = Math.max(0, r0 - R); r <= Math.min(world.size.h - 1, r0 + R); r++)
+    for (let c = Math.max(0, c0 - R); c <= Math.min(world.size.w - 1, c0 + R); c++) {
       const g = groundAt(c, r);
       if (!g || liquid.has(g)) continue;
       const d = Math.min(...lit.map((p) => Math.hypot(p.x - c, p.y - r)));
@@ -90,6 +132,9 @@ const plainNear = (cx, cy, R = 25) => {
 const FAR_LAMP = plainNear(LAMP.x, LAMP.y);
 const FAR_HOUSE = plainNear(OUTSIDE.x, OUTSIDE.y);
 // Budget sweep: the densest lit clusters (lit pieces within 6 cells), 10+ cells apart.
+// Just outside the art, and far enough out to see the pool fall away.
+const RING_IN = +Math.max(2.2, drawnHalfCells(LAMP) + 0.9).toFixed(1);
+const RING_OUT = +(RING_IN * 1.9).toFixed(1);
 const SWEEP = lit
   .map((p) => ({ p, n: lit.filter((q) => d2(p, q) <= 6).length }))
   .sort((a, b) => b.n - a.n)
@@ -98,7 +143,7 @@ const SWEEP = lit
 console.log(
   `fixtures: lamp ${LAMP.id} ${LAMP.piece} @${LAMP.x.toFixed(1)},${LAMP.y.toFixed(1)}; twin ${LAMP2?.id ?? "none"}; ` +
   `hearth ${HEARTH.id} ${HEARTH.piece} @${HEARTH.x.toFixed(1)},${HEARTH.y.toFixed(1)} (roof level ${ROOF.level}); ` +
-  `outside ${OUTSIDE.x},${OUTSIDE.y}; plain ${FAR_LAMP.x},${FAR_LAMP.y} (${FAR_LAMP.d.toFixed(1)} cells from any light)`,
+  `outside ${OUTSIDE.x},${OUTSIDE.y}; plain ${FAR_LAMP.x},${FAR_LAMP.y} (${FAR_LAMP.d.toFixed(1)} cells from any light); rings ${RING_IN}/${RING_OUT} cells`,
 );
 
 const browser = await chromium.launch({
@@ -163,16 +208,32 @@ await page.waitForTimeout(900);
 const lampSlots = await page.evaluate(() => window.__ml.lightSlots());
 ok(lampSlots.slotted.includes(LAMP.id), `the lamp by spawn (${LAMP.id}) holds a world slot`);
 const lampShot = await shoot();
-const lampR2 = lumRing(lampShot, CX, CY, ringPx(2.2));
-const lampR4 = lumRing(lampShot, CX, CY, ringPx(4));
+const lampR2 = lumRing(lampShot, CX, CY, ringPx(RING_IN));
+const lampR4 = lumRing(lampShot, CX, CY, ringPx(RING_OUT));
 // "The lamp's ground is LIT": the CPU light twin (the very sample lit copies
 // tint by), 2 cells from the lamp vs plain night ground far from every source —
 // pixels near the screen edge hit HUD chips, this cannot.
 const lit2 = await page.evaluate((p) => window.__ml.lightAt(p.x + 2, p.y + 1), LAMP);
 const litFar = await page.evaluate((p) => window.__ml.lightAt(p.x, p.y), FAR_LAMP);
-console.log(`luma: lamp r2.2=${lampR2.toFixed(1)} r4=${lampR4.toFixed(1)} | lightAt near=${mag(lit2).toFixed(3)} far=${mag(litFar).toFixed(3)}`);
+console.log(`luma: lamp r${RING_IN}=${lampR2.toFixed(1)} r${RING_OUT}=${lampR4.toFixed(1)} | lightAt near=${mag(lit2).toFixed(3)} far=${mag(litFar).toFixed(3)}`);
+console.log("  luma profile by cell: " + [1.2, 2, 3, 4, 5, 6, 8, 10].map((c) => `${c}:${lumRing(lampShot, CX, CY, ringPx(c)).toFixed(0)}`).join(" "));
 ok(mag(lit2) > mag(litFar) * 2.2, `the lamp's ground is LIT (lightAt ${mag(lit2).toFixed(3)} vs far ${mag(litFar).toFixed(3)})`);
-ok(lampR2 > lampR4, `the pool falls off with distance on real pixels (r2.2 ${lampR2.toFixed(1)} > r4 ${lampR4.toFixed(1)})`);
+/* THE FALLOFF IS MEASURED ON THE LIGHT, NOT ON ONE SITE'S PIXELS. A ring of
+ * ground around a lamp is whatever the MAP put there — its material, its
+ * neighbours' art, the piece's own contact shadow — and at today's fixture the
+ * luma profile rises outward (1.2:107 2:99 3:110 4:159 6:174 8:183) with the
+ * pool falling away the whole time: a brighter ground two cells out beats a
+ * darker one under the lamp. The pixel claim survives where the confounders
+ * CANCEL — the twin arm below, which is a ratio of the same piece at the same
+ * radii — and the falloff itself is asked of the light the pipeline and the
+ * shader both read. */
+const litNear = await page.evaluate(([p, d]) => window.__ml.lightAt(p.x + d, p.y), [LAMP, RING_IN]);
+const litOut = await page.evaluate(([p, d]) => window.__ml.lightAt(p.x + d, p.y), [LAMP, RING_OUT]);
+console.log(`  falloff: lightAt ${RING_IN} cells = ${mag(litNear).toFixed(3)}, ${RING_OUT} cells = ${mag(litOut).toFixed(3)}`);
+ok(
+  mag(litNear) > mag(litOut),
+  `the pool falls off with distance (lightAt ${mag(litNear).toFixed(3)} at ${RING_IN} cells > ${mag(litOut).toFixed(3)} at ${RING_OUT})`,
+);
 
 // ---- 2b. PARITY: two placements of the same lamp model -----------------------
 // Same art → the same derived light. The ground albedo under each may differ,
@@ -184,13 +245,13 @@ else {
   const twinSlots = await page.evaluate(() => window.__ml.lightSlots());
   ok(twinSlots.slotted.includes(LAMP2.id), `the twin lamp (${LAMP2.id}) holds a world slot`);
   const twinShot = await shoot();
-  const twinR2 = lumRing(twinShot, CX, CY, ringPx(2.2));
-  const twinR4 = lumRing(twinShot, CX, CY, ringPx(4));
+  const twinR2 = lumRing(twinShot, CX, CY, ringPx(RING_IN));
+  const twinR4 = lumRing(twinShot, CX, CY, ringPx(RING_OUT));
   const par2 = twinR2 / Math.max(1, lampR2);
   const par4 = twinR4 / Math.max(1, lampR4);
-  console.log(`luma: twin r2.2=${twinR2.toFixed(1)} r4=${twinR4.toFixed(1)}`);
-  ok(par2 > 0.5 && par2 < 2.0, `parity at 2.2 cells: twin/lamp = ${par2.toFixed(2)}`);
-  ok(par4 > 0.5 && par4 < 2.0, `parity at 4 cells: twin/lamp = ${par4.toFixed(2)}`);
+  console.log(`luma: twin r${RING_IN}=${twinR2.toFixed(1)} r${RING_OUT}=${twinR4.toFixed(1)}`);
+  ok(par2 > 0.5 && par2 < 2.0, `parity at ${RING_IN} cells: twin/lamp = ${par2.toFixed(2)}`);
+  ok(par4 > 0.5 && par4 < 2.0, `parity at ${RING_OUT} cells: twin/lamp = ${par4.toFixed(2)}`);
 }
 
 // ---- 2c. A SEALED ROOM'S FIRE NEVER LEAKS OUTSIDE ---------------------------
