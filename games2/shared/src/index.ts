@@ -318,11 +318,13 @@ export function leanHeading(
 
 export const PLAYER_SPEED_MIN = 0.5;
 export const PLAYER_SPEED_MAX = 4;
-/** HIS NUMBER, off the slider (maintainer 2026-09-11: "the player speed 1.2x
- *  should be the new default") — which is what the dial was built for. The
- *  shipped walk is 1.2x of what it was this morning. Not a placeholder: do not
- *  "restore" 1. */
-export const PLAYER_SPEED_DEFAULT = 1.2;
+/** HIS NUMBER, off the slider — which is what the dial was built for
+ *  (maintainer 2026-09-14: "1.1x should be the new player default speed";
+ *  1.2x was his pick on 2026-09-11 and 1x the walk before the dial existed).
+ *  The dial is the only way this number ever changes: he rides it, then says
+ *  the value. Not a placeholder — do not "restore" 1, and do not tune it
+ *  toward anything. */
+export const PLAYER_SPEED_DEFAULT = 1.1;
 
 /** THE ACCELERATION RAMP — his dial: the time, in seconds, a body takes from
  *  rest to its full speed (maintainer 2026-09-13: "The player's acceleration

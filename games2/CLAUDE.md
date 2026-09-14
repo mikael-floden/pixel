@@ -182,7 +182,7 @@ secrets; push to `main`, rebase on reject, no PRs unless asked; doc law.
 - Water is the player's sanctuary (no monster enters or is hit there) and
   lies FLAT: a liquid corner votes only at its own level (`swimlevel.test.ts`).
 - The speed dial and the acceleration ramp ride PER INPUT (`InputMessage.sm`,
-  `.ac`), the SERVER clamps them; 1.2x and 0.17 s to full speed ARE HIS
+  `.ac`), the SERVER clamps them; 1.1x and 0.17 s to full speed ARE HIS
   (`playerspeed.ts`, `accel.ts`, `accelStep`).
 - The stick "almost" snaps: `leanHeading` leans between the octants' run
   headings by his dial (0 snap, 1 continuous; 0.85 IS HIS); the grid-axis

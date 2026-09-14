@@ -133,8 +133,9 @@ test("the player-speed dial is authoritative, clamped, and carried per input", a
     const slow = await runWith(PLAYER_SPEED_MIN, 1);
 
     // EVERY RUN IS ASSERTED AS A RATIO AGAINST THE DEFAULT, never as a pinned
-    // multiple of the baseline — the default is HIS dial to move (it went 1 ->
-    // 1.2 the day the slider shipped) and a test that hardcoded "2x is twice
+    // multiple of the baseline — the default is HIS dial to move (1 -> 1.2 the
+    // day the slider shipped, 1.2 -> 1.1 three days later) and a test that
+    // hardcoded "2x is twice
     // the baseline" would have gone red on his taste rather than on a bug.
     // 1% tolerance: the integration is deterministic (measured exact to four
     // places), so anything wider would only hide a dial that is partly applied.

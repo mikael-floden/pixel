@@ -443,9 +443,11 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     still the wind-up, and the clip outlasts its own lead.
 - **THE PLAYER-SPEED DIAL** (`client/src/playerspeed.ts`), his instrument for
   finding a default and for crossing the map (2026-09-11: "a way for me to
-  travel the map faster"). 0.5x-4x, default **1.2x — HIS NUMBER off the
-  slider** the day it shipped ("the player speed 1.2x should be the new
-  default"); do not "restore" 1. `localStorage`, with the "default" button
+  travel the map faster"). 0.5x-4x, default **1.1x — HIS NUMBER off the
+  slider** (2026-09-14: "1.1x should be the new player default speed"; 1.2x
+  was his pick on 2026-09-11, 1x the walk before the dial existed). He rides
+  the dial and then says the number — the ONLY way this default moves; do not
+  "restore" 1, and do not tune it toward anything. `localStorage`, with the "default" button
   every slider carries, injected into the Settings page from outside exactly
   like the nav dials (games-ui owns hud.ts).
   - **IT RIDES PER INPUT** (`InputMessage.sm`), not as room state. Movement is
@@ -491,8 +493,9 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
     input stream at each dial, asserted as RATIOS AGAINST THE DEFAULT rather
     than pinned multiples, because the default is his to move and a hardcoded
     "2x is twice the baseline" would go red on his taste instead of on a bug.
-    Measured against 1.2x: 2x = 1.65x, no dial = 0.99x, sm=99 = 3.25x (the cap
-    4/1.2), 0.5x = 0.40x. It BURNS A WARM-UP RUN first — the real-time input
+    Measured at the 1.1x default: the default walk covers 147.84 wu over the
+    stream, 2x = 1.818x, no dial = 1.000x, sm=99 = 3.636x (the cap, 4, over
+    the default), 0.5x = 0.455x — every ratio is `sm / default`, exactly. It BURNS A WARM-UP RUN first — the real-time input
     budget starts empty on join, so the session's first run is clipped and made
     every later ratio read ~19% high. Probe: `__ml.speed()`.
 - **ALMOST EIGHT DIRECTIONS** (`client/src/stickdir.ts`, `leanHeading` in
