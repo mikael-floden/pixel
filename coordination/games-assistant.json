@@ -1,8 +1,8 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-15T16:54:22+00:00",
+  "updated_at": "2026-09-15T16:58:54+00:00",
   "health": "running",
-  "current": "IN FLIGHT \u2014 the \"Indoor light (lit room)\" default goes 12% -> 25% (maintainer 2026-09-15). A room that lights itself sits on the lower of the two indoor ambient dials; he wants its floor raised. FILES: games2/client/src/indoorlight.ts (INDOOR_LIGHT_LIT_DEFAULT) and games2/docs/lighting.md, plus this board. A player who has already moved the slider keeps their own value \u2014 this is the fresh-profile value and what the dial's \"default\" button returns to.",
+  "current": "IDLE \u2014 the \"Indoor light (lit room)\" default is 25% (maintainer 2026-09-15), measured in his fireplace room at [0.209, 0.218, 0.250] against the unlit dial's [0.342, 0.355, 0.400]. A player who already moved the slider keeps their own value. Live before it: 9b0d99c90d, the scenery-shadow fix (a scenery light's shadow is cast from SHADOW_LIGHT_Z = 0.55 above its OWN FOOTING; his room 0.97 -> 2.98 cells, pool unchanged). He saw a black screen twice on a cold load of it and both cleared by themselves; checked and NOT reproducible \u2014 5/5 cold loads of the production bundle reached the world in 6.7-10.3 s with no page errors, every asset the live index names is 200, and there is no service worker, so no stale-shell path. The cold load is 2.75 MB of bundle plus a 3.4 MB asset index before the world streams. Open, unclaimed: emissive TILES still cast their shadow from their own z (same class as the fix, deliberately untouched); the scenery-lights switch also moves the room's base ambient. Waiting on maps2 for render3's four ports.",
   "progress": {
     "units_shipped": 37
   },

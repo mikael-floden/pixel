@@ -2,7 +2,7 @@
 
 The night shader and its CPU twins, the light slot ledger, scenery lights and shadows, depth fog, sun, time-of-day, weather, indoor ambient. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
 
-- **TWO INDOOR AMBIENT DIALS — DARK ROOM 40%, LIT ROOM 12%**
+- **TWO INDOOR AMBIENT DIALS — DARK ROOM 40%, LIT ROOM 25%**
   (`indoorlight.ts`, both in Settings). A room with no light of its own needs
   40% to read as stone rather than void; a room that lights ITSELF gets its
   brightness from its own hearth, and the base ambient only has to keep the far
@@ -12,8 +12,10 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   scenery light or an emissive tile — whose cell is inside MY room mask
   (`indoorOutside`) counts, re-tested at most every `ROOM_LIT_MS` 400 ms, and
   the switch between the two rides the indoor grade's own ease so it never
-  pops. Measured: the fireplace house resolves to [0.0995, 0.1041, 0.12], an
-  unlit room to [0.342, 0.355, 0.400]. Probe `__ml.indoorLight(v?, "dark"|"lit")`
+  pops. Measured: the fireplace house resolves to [0.209, 0.218, 0.250], an
+  unlit room to [0.342, 0.355, 0.400]. The lit dial was 12% until 2026-09-15,
+  when the maintainer raised it by eye once the scenery-shadow fix made a lit
+  room's floor readable enough to judge. Probe `__ml.indoorLight(v?, "dark"|"lit")`
   reports both dials, `roomHasLight` and every drawn light with the room
   test's verdict on it. `roomHasLight` reads the DRAWN light set, so it can
   differ by camera window, never by the room (measured 2026-09-15: it did NOT
@@ -21,7 +23,7 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   still held the hearth). THE SETTINGS "SCENERY LIGHTS" SWITCH MOVES THIS DIAL
   WITH IT: it returns at the top of `pushSceneryLight`, so the source list it
   empties is the list `roomHasLight` scans, and the room re-reads as unlit —
-  [0.0995, 0.1041, 0.12] on, [0.3418, 0.3548, 0.4] off, a 3.4x brighter floor
+  [0.209, 0.218, 0.250] on, [0.3418, 0.3548, 0.4] off, a brighter floor
   from a switch whose label promises only "what they light is gone". A pair of
   screenshots A/B'd on that switch is therefore NOT a like-for-like pair.
   Note also that a piece's light needs its ART RESIDENT before
@@ -951,7 +953,7 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
 - **A WINDOW GLOWS BY THE ROOM'S BRIGHTNESS, NEVER ON/OFF** (`windowGlow`,
   WorldScene). The LIGHTS_ON overlay's alpha is a floor plus a fade: the floor
   is the room's indoor ambient — the dark-room dial (40%) for a room with no
-  light of its own, the lit-room dial (12%) for one that lights itself — and
+  light of its own, the lit-room dial (25%) for one that lights itself — and
   the room's lit scenery fades the rest of the way up (peak x squared falloff,
   summed at the cell inside the wall, squashed between `WINDOW_GLOW_LO` 0.1
   and `_HI` 0.7), all scaled by the night factor (0 by day). **Every body in

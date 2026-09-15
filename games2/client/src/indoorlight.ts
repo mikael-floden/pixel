@@ -38,14 +38,18 @@ const KEY_LIT = "ml-indoor-light-lit";
  * corners of a room read as stone rather than as void. */
 export const INDOOR_LIGHT_DEFAULT = 0.4;
 
-/** ...AND 12% WHEN THE ROOM LIGHTS ITSELF (maintainer 2026-09-07, walking into
- * a house with a lit fireplace: "the old indoor ambient light at 40% is too
- * much if we have lights inside the house"). 40% is the brightness an UNLIT
- * room needs to read as stone rather than void; a room with a hearth in it
- * gets its brightness from the hearth, and the base ambient only has to keep
- * the far corners from going black. Two dials, both tunable in Settings,
- * because the right answer differs per room and he tunes by eye. */
-export const INDOOR_LIGHT_LIT_DEFAULT = 0.12;
+/** ...AND 25% WHEN THE ROOM LIGHTS ITSELF (maintainer 2026-09-15). 40% is the
+ * brightness an UNLIT room needs to read as stone rather than void; a room with
+ * a hearth in it gets its brightness from the hearth, and the base ambient only
+ * has to keep the far corners from going black — which is why this dial is the
+ * lower of the two (maintainer 2026-09-07, walking into a house with a lit
+ * fireplace: "the old indoor ambient light at 40% is too much if we have lights
+ * inside the house"). It was 12%: raised by eye, HIS dial and HIS call, after
+ * the scenery-shadow fix landed and a lit room's floor became readable enough
+ * to judge. At 25% the triple is [0.209, 0.218, 0.250], measured in his
+ * fireplace room. Two dials, both tunable in Settings, because the right answer
+ * differs per room and he tunes by eye. */
+export const INDOOR_LIGHT_LIT_DEFAULT = 0.25;
 
 /** The indoor HUE, as ratios (the tuned triple over its own max).
  *
