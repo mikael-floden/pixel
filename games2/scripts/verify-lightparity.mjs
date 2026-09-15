@@ -70,6 +70,22 @@ const inARoom = (p) => roomCellSets.some((s) => s.has(`${Math.floor(p.x)},${Math
 // since the town grew around the spawn the nearest lit piece has become one:
 // the fixture silently turned into a hearth indoors and three arms measured a
 // wall (hearths/hearth_004 @333.3,232.3, the spawn house).
+const levelAt = (c, r) => (Array.isArray(world.level[0]) ? world.level[r]?.[c] : world.level[r * world.size.w + c]) ?? 0;
+/* SECTION 6's PAIR: a lit piece with an UNLIT piece 1.3-2.6 cells away on the same
+ * level — a light and something for it to throw a shadow of. Preferring a pair on
+ * RAISED ground is the whole point of the arm: a shadow height clamped absolutely
+ * instead of against the light's own footing is identical to the right answer at
+ * level 0 and 39 storeys wrong on a cliff top, and level 0 is where every site in
+ * the 2026-09-15 investigation happened to sit. */
+const unlit = world.scenery.map((p, i) => ({ ...p, i, id: `s3:${i}` })).filter((p) => !p.lit);
+const SHADOW_PAIRS = lit
+  .filter((L) => !inARoom(L)) // a SEALED light is indoor-only by design: outside its room it never reaches the ledger at all
+  .flatMap((L) => unlit
+    .filter((C) => levelAt(Math.floor(C.x), Math.floor(C.y)) === levelAt(Math.floor(L.x), Math.floor(L.y)))
+    .map((C) => ({ L, C, d: d2(L, C) }))
+    .filter((x) => x.d >= 1.3 && x.d <= 2.6))
+  .sort((a, b) => (levelAt(Math.floor(b.L.x), Math.floor(b.L.y)) - levelAt(Math.floor(a.L.x), Math.floor(a.L.y))) || a.d - b.d);
+const SHADOW = SHADOW_PAIRS[0];
 const outdoorLit = lit.filter((p) => !inARoom(p));
 if (!outdoorLit.length) fatal("every lit placement stands in a room — the outdoor sections have no fixture");
 const LAMP = outdoorLit
@@ -333,7 +349,15 @@ const offLit = await beside();
 const drawnOff = await page.evaluate((i) => (window.__ml.sceneryDrawn(i) ?? []).length, LAMP.i);
 console.log(`scenery lights: on ${swOn.sources}/${swOn.stamps}/${swOn.slotted} lightAt ${onLit.toFixed(3)} -> off ${swOff.sources}/${swOff.stamps}/${swOff.slotted} lightAt ${offLit.toFixed(3)}`);
 ok(!swOff.on && swOff.sources === 0 && swOff.stamps === 0 && swOff.slotted === 0, "off leaves no source, no halo and no slot to any piece");
-ok(offLit < onLit * 0.6, `and the ground beside the lamp goes dark (${offLit.toFixed(3)} vs ${onLit.toFixed(3)})`);
+/* THE LAMP'S OWN CONTRIBUTION, not a ratio against the total. This arm read
+ * `offLit < onLit * 0.6` until the fixture drifted onto ground something ELSE
+ * also lights (2026-09-15: on 1.045 -> off 0.756, and the switch had done its
+ * job — sources, stamps and slots were all 0). An emissive TILE is not a
+ * scenery light and must not switch off, so a threshold that assumes the lamp
+ * is alone on its ground is measuring the map, not the switch. */
+const emit = await page.evaluate(() => window.__ml.lightSlots().sources);
+console.log(`the residual ${offLit.toFixed(3)} sits under ${emit} emissive tile source(s), which this switch does not touch`);
+ok(onLit - offLit > 0.15, `and the lamp's own contribution is gone (${onLit.toFixed(3)} -> ${offLit.toFixed(3)}, delta ${(onLit - offLit).toFixed(3)})`);
 ok(drawnOff === drawnOn && drawnOn > 0, `the piece itself is still drawn (${drawnOff} image(s), as with the lights on)`);
 await page.evaluate(() => window.__ml.sceneryLights(true));
 await page.waitForTimeout(1600);
@@ -341,6 +365,84 @@ const swBack = await page.evaluate(() => window.__ml.sceneryLights());
 const backLit = await beside();
 ok(swBack.sources === swOn.sources && swBack.stamps === swOn.stamps, `and ON restores them with no rejoin (${swBack.sources} sources, ${swBack.stamps} stamps)`);
 ok(Math.abs(backLit - onLit) < 0.05, `the pool is the one it was (${backLit.toFixed(3)} vs ${onLit.toFixed(3)})`);
+
+// ---- 6. A CAST SHADOW IS THROWN FROM THE LIGHT'S OWN FOOTING ----------------
+// The shadow's length is the light's HEIGHT and nothing else (docs/lighting.md,
+// measured 2026-09-15): a light below the blocker's top throws a shadow that
+// runs the whole pool, one above it throws a stub. Every lit scenery piece
+// derives its height from its art and lands on the 1.5 clamp's ceiling, so the
+// march is told SHADOW_LIGHT_Z above the light's own footing instead.
+//
+// TWO CLAIMS, and the second is the one a screenshot cannot make: the shadow
+// reaches, AND the height it is cast from is relative to the piece's FOOTING.
+// An absolute clamp passes the first arm everywhere and fails this one on any
+// piece that does not stand at level 0.
+if (!SHADOW) {
+  console.log("SKIP 6: the_game has no lit piece with an unlit one 1.3-2.6 cells away");
+} else {
+  const lvl = levelAt(Math.floor(SHADOW.L.x), Math.floor(SHADOW.L.y));
+  console.log(`shadow fixture: ${SHADOW.L.piece} ${SHADOW.L.id} -> ${SHADOW.C.piece} ${SHADOW.C.id}, ${SHADOW.d.toFixed(2)} cells apart on level ${lvl}`);
+  // BETWEEN the two, because a sealed room's light is indoor-only by design and
+  // the highest-standing pair in the_game is inside one: teleporting short of it
+  // measures a room I am not in, and its light never reaches the ledger.
+  await page.evaluate((p) => window.__ml.teleport(p.x, p.y), { x: (SHADOW.L.x + SHADOW.C.x) / 2, y: (SHADOW.L.y + SHADOW.C.y) / 2 });
+  /* HIS OWN GEOMETRY FOR THIS ARM. The rest of the file measures luma patches in
+   * a 480x320 window; a light's CANDIDACY is a view test (its pool must touch
+   * the screen), and a small window with a distant fixture is how this arm read
+   * "no light in the ledger" while the same fixture lit up fine at 393x851.
+   * Nothing runs after section 6, so the resize is not restored. */
+  await page.setViewportSize({ width: 393, height: 851 });
+  await page.waitForTimeout(1500);
+  // A PIECE'S LIGHT ARRIVES IN TWO STEPS and both have to be waited for: its ART
+  // has to land before pushSceneryLight can derive anything (measured 27-34 s
+  // from a cold teleport), and only then can it take a ledger slot. Waiting for
+  // the slot alone times out on a piece whose pixels are still in flight.
+  await page.waitForTimeout(6000);
+  await page.evaluate(() => { window.__ml.torch(false); window.__ml.sceneryLights(true); });
+  await page
+    .waitForFunction((id) => (window.__ml.indoorLight().lights ?? []).some((l) => l.id === id), SHADOW.L.id, { timeout: 60_000, polling: 300 })
+    .catch(() => {});
+  await page.evaluate((p) => window.__ml.lookAt(p.x, p.y), SHADOW.C);
+  await page
+    .waitForFunction((p) => (window.__ml.lights() ?? []).some((l) => Math.hypot(l.col - p.x, l.row - p.y) < 0.15), SHADOW.L, { timeout: 60_000, polling: 250 })
+    .catch(() => {});
+  await page.waitForTimeout(2500);
+
+  /* BY POSITION, NOT BY NEAREST. The fixture's own neighbourhood can hold more
+   * than one lit piece — this pair sits 10 cells from a second crystal — and
+   * "nearest" quietly picked the other one, whose pool does not touch this
+   * caster at all, so the reach arm read a clean occ 1.000 and called the fix
+   * broken. The index into `occ` is the ledger's own order. */
+  const found = await page.evaluate((p) => {
+    const ls = window.__ml.lights() ?? [];
+    const i = ls.findIndex((l) => Math.hypot(l.col - p.x, l.row - p.y) < 0.15);
+    return i < 0 ? null : { i, rec: ls[i] };
+  }, SHADOW.L);
+  const rec = found?.rec ?? null;
+  if (!rec) {
+    ok(false, "the fixture's light reached the ledger");
+  } else {
+    console.log(`its ledger record: z=${rec.z} sz=${rec.sz} r=${rec.r}`);
+    // THE FOOTING ARM. sz is the light's own footing plus at most SHADOW_LIGHT_Z,
+    // so on a level-N piece it is N + something, never a bare 0.55.
+    ok(rec.sz <= rec.z + 1e-3, `the shadow is cast from no higher than the light (sz ${rec.sz} <= z ${rec.z})`);
+    ok(rec.sz >= lvl - 1e-3 && rec.sz <= lvl + 0.55 + 1e-3,
+       `and from its OWN footing: level ${lvl} <= sz ${rec.sz} <= ${lvl + 0.55} (an absolute clamp gives 0.55 here)`);
+    // THE REACH ARM, along the light -> caster ray, 2 cells past the caster.
+    const ax = (SHADOW.C.x - SHADOW.L.x) / SHADOW.d, ay = (SHADOW.C.y - SHADOW.L.y) / SHADOW.d;
+    const idx = found.i;
+    const occAlong = async (past) => {
+      const c = +(SHADOW.C.x + ax * past).toFixed(3), r = +(SHADOW.C.y + ay * past).toFixed(3);
+      const o = await page.evaluate(([cc, rr]) => window.__ml.occAt(cc, rr)?.occ ?? [], [c, r]);
+      return o[idx] ?? 1;
+    };
+    const near = await occAlong(0.5), far = await occAlong(2.0);
+    console.log(`occ past the caster: 0.5 cells ${near.toFixed(3)}, 2.0 cells ${far.toFixed(3)}`);
+    ok(near < 0.9, `the caster shadows the ground right behind it (occ ${near.toFixed(3)})`);
+    ok(far < 0.9, `and 2 cells on, where a light at the 1.5 ceiling casts nothing (occ ${far.toFixed(3)})`);
+  }
+  await page.evaluate(() => window.__ml.torch(true));
+}
 
 await browser.close();
 console.log(failed ? `\nverify-lightparity: ${failed} FAILURE(S)` : "\nverify-lightparity OK");

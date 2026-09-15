@@ -28,7 +28,35 @@ export interface ShaderLight {
   radius: number; // in cells; NEGATIVE = shadow-free GLOW pool (tile emission)
   color: [number, number, number];
   flicker: number; // 0 = steady, 1 = full fire flicker
+  /** THE HEIGHT THE SHADOW IS CAST FROM, when it is not the height the light
+   *  SHINES from. Absolute levels, like `z`; omitted means "the same", which is
+   *  what every light but a scenery piece wants. See SHADOW_LIGHT_Z. */
+  sz?: number;
 }
+
+/** A CAST SHADOW'S LENGTH IS THE LIGHT'S HEIGHT AND NOTHING ELSE (measured
+ *  2026-09-15; docs/lighting.md carries the sweep). A blocker shadows a sample
+ *  only while it stands above the march ray, so a light BELOW the blocker's top
+ *  throws a shadow that runs the whole pool and one ABOVE it throws a stub: the
+ *  player's torch at 0.55 levels threw 2.98 cells past a table, the same room's
+ *  hearth at 1.36 threw 0.97, and at 2.20 there was no shadow at all. Every lit
+ *  scenery piece in the world derives its height from the emissive centroid of
+ *  its own art and lands on the 0.3..1.5 clamp's CEILING — 15 of 15 families
+ *  sampled — so indoors, where the furniture is all one level, every scenery
+ *  shadow is a stub while the torch's is a shadow.
+ *
+ *  THE POOL IS NOT THE SHADOW, so this does not move the light. Dropping the
+ *  light itself to 0.55 (the one-line version) fixes the shadow and takes the
+ *  lamp post's own head with it — the 1.5 ceiling exists because "a lamp's at
+ *  1.5 still lights the post". So the light keeps its height for attenuation,
+ *  for its lit copies and for its halo, and the OCCLUSION MARCH ALONE is told
+ *  it stands this far above the light's OWN FOOTING.
+ *
+ *  ABOVE ITS OWN FOOTING, not absolute: a chimney fire on a level-6 roof must
+ *  cast from 6.55, not from 0.55 seven storeys under itself. The footing is
+ *  known only where the light is born (a deck's level, not the terrain under
+ *  it), so `sz` is computed there and carried. */
+export const SHADOW_LIGHT_Z = 0.55;
 
 /** One glowing pixel cluster inside a tile variant (tile-emission@2). */
 export interface EmissionSource {
@@ -268,6 +296,12 @@ uniform float uWallWrap;
 uniform float uNumLights;
 uniform vec4 uLightPos[${MAX_SHADER_LIGHTS}];  // col, row, z, radius(cells)
 uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
+// x = the height the light's SHADOW is cast from (levels, absolute). Its own
+// array rather than a component of the two above, because both are full; the
+// remaining three floats are deliberate headroom. 4fv because that is the array
+// form this shader already syncs everywhere — see the undeclared-uniform note
+// below for why a new uniform TYPE is not worth finding out about on a phone.
+uniform vec4 uLightExt[${MAX_SHADER_LIGHTS}];
 uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
 uniform float uIndoorCeil; // MY ROOM's underside (deckBot): at or above it is outdoors
@@ -1105,6 +1139,7 @@ void main() {
   for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
     if (float(i) >= uNumLights) continue;
     vec3 lp = uLightPos[i].xyz;
+    float lsz = uLightExt[i].x;
     // Sign of w: positive = a real light (casts LOS shadows); NEGATIVE = a
     // GLOW pool from tile emission — soft ambience with no shadow geometry,
     // like Sea of Stars' environment point lights.
@@ -1185,7 +1220,11 @@ void main() {
         if (dot(dl, dl) < ${LIGHT_NEAR_R2}) continue;
         if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
         if (lShare > 0.0 && dot(p - lC, p - lC) < 1.0) continue;
-        float hRay = mix(z, lp.z, t) + 0.2;
+        // THE SHADOW'S OWN LIGHT HEIGHT (uLightExt.x = lp.z for every light that
+        // does not ask for another). Everything else on this ray — the
+        // attenuation above, skirtOcc's two-span deck rule below — keeps the
+        // REAL height: a deck still blocks by where the light physically is.
+        float hRay = mix(z, lsz, t) + 0.2;
         // A WALL MUST NOT SHADOW ITS OWN FOOT THROUGH ITS BILINEAR SKIRT.
         // The march reads the LINEAR height map so cast shadows get a
         // penumbra — and that same filter smears a wall's height half a cell
@@ -2108,6 +2147,8 @@ export class NightLights {
   private curPlayerZ = 0;
   private curPlayerXY: [number, number] = [0, 0];
   private posArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
+  /** x = the shadow's light height (SHADOW_LIGHT_Z); y,z,w are headroom. */
+  private extArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private colArr = new Float32Array(MAX_SHADER_LIGHTS * 4);
   private fieldCount = 0;
   /** Canvas ÷ render-target size — 1 at full light resolution. See buildShader. */
@@ -2384,6 +2425,7 @@ export class NightLights {
       uNumLights: { type: "1f", value: 0 },
       uLightPos: { type: "4fv", value: this.posArr },
       uLightCol: { type: "4fv", value: this.colArr },
+      uLightExt: { type: "4fv", value: this.extArr },
       uEmitN: { type: "1f", value: 0 },
       uGlowOn: { type: "1f", value: 0 },
       uGlowFlip: { type: "1f", value: 1 },
@@ -3534,9 +3576,13 @@ export class NightLights {
    *  they stand (cells and storeys), how far they reach and in what colour.
    *  `lightSlots` says how MANY are held; this says WHICH, which is what a
    *  report of the form "that thing is suddenly lit" needs (__ml.lights). */
-  lightsNow(): { col: number; row: number; z: number; r: number; glow: boolean; color: [number, number, number] }[] {
+  lightsNow(): { col: number; row: number; z: number; sz: number; r: number; glow: boolean; color: [number, number, number] }[] {
     return this.curLights.slice(0, MAX_SHADER_LIGHTS).map((L) => ({
       col: +L.col.toFixed(2), row: +L.row.toFixed(2), z: +L.z.toFixed(2),
+      // What the SHADOW is cast from — equal to z unless the light asked for
+      // another height. A gate has no other way to see it: it reaches the
+      // fragment as a uniform and leaves no mark on lightAt's result.
+      sz: +(L.sz ?? L.z).toFixed(2),
       r: +Math.abs(L.radius).toFixed(2), glow: L.radius < 0,
       color: [+L.color[0].toFixed(2), +L.color[1].toFixed(2), +L.color[2].toFixed(2)],
     }));
@@ -3693,6 +3739,7 @@ export class NightLights {
       let occ = 1;
       const lc = Math.floor(L.col);
       const lr = Math.floor(L.row);
+      const lsz = L.sz ?? L.z; // twin of the fragment's uLightExt.x
       const lShare = this.hasSceneryShares && lc >= 0 && lr >= 0 && lc < W && lr < H ? this.sArrG[lr * W + lc] : 0;
       const lcx = lc + 0.5;
       const lcy = lr + 0.5;
@@ -3736,7 +3783,7 @@ export class NightLights {
           if ((px - L.col) * (px - L.col) + (py - L.row) * (py - L.row) < LIGHT_NEAR_R2) continue; // the light's near field (see FRAG)
           if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
           if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0) continue; // the LIGHT's own trunk (a fire IS its piece)
-          const hRay = z + (L.z - z) * tt + 0.2;
+          const hRay = z + (lsz - z) * tt + 0.2;
           const hHard = hAt(px, py);
           let hard = hHard < 90 && hHard > hRay;
           if (!hard && prevOk) {
@@ -4407,6 +4454,8 @@ export class NightLights {
       this.posArr[i * 4 + 1] = l.row;
       this.posArr[i * 4 + 2] = l.z;
       this.posArr[i * 4 + 3] = l.radius;
+      // A light with no shadow height of its own casts from where it shines.
+      this.extArr[i * 4] = l.sz ?? l.z;
       this.colArr[i * 4] = l.color[0];
       this.colArr[i * 4 + 1] = l.color[1];
       this.colArr[i * 4 + 2] = l.color[2];
@@ -4426,6 +4475,7 @@ export class NightLights {
     this.bill.ambient = this.lightStats.ambient;
     s.setUniform("uLightPos.value", this.posArr);
     s.setUniform("uLightCol.value", this.colArr);
+    s.setUniform("uLightExt.value", this.extArr);
     s.setUniform("uEmitN.value", this.emitList.length);
 
     // MIST overlay — same world window/clock as the light field, its own

@@ -601,17 +601,34 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   shrines, soulstones), 15 of 15 at 1.500 above their own footing. The derived
   height is not a distribution — the centroid always exceeds the clamp, so the
   clamp IS the value, and one number decides every scenery shadow in the game.
-  Candidates measured 2026-09-15 against that 0.92-level caster (baseline 0.97
-  indoors / 2.09 outdoors, the torch 3.10): clamping the march's own `lp.z` to
-  0.55 while attenuation keeps the real height → 2.98 / 4.73 with the pool
-  pixel-identical; capping the light itself at 0.55 → the same shadow but the
-  pool moves with it; ray bias 0.2 → 0.05 → 1.47 / 2.78 and it deepens the
+  SHIPPED (maintainer 2026-09-15, "B is the one"): the light keeps its height
+  for ATTENUATION, its lit copies and its halo, and the OCCLUSION MARCH ALONE is
+  told it stands `SHADOW_LIGHT_Z` = 0.55 above the light's OWN FOOTING.
+  `EmissiveSource.shadowZ` → `ShaderLight.sz` → `uLightExt.x`, with the CPU twin
+  reading the same number; absent means "cast from `z`", which is every light
+  but a scenery piece. Measured after: his room 0.97 → 2.98 cells (his torch is
+  3.10), outdoors 2.09 → 4.73, and the pool, colour and room are unchanged
+  because `z` never moved.
+  ABOVE ITS OWN FOOTING, NOT ABSOLUTE, and no screenshot could have caught the
+  difference: every site in the investigation sat on terrain level 0, where the
+  two are the same number. `min(lp.z, 0.55)` would cast a level-40 brazier's
+  shadow from 39 storeys under itself. Gated on a level-32 crystal
+  (verify-lightparity section 6): `z 33.5, sz 32.55`, and the arm fails on the
+  old rule (`sz undefined`, occ 0.955 two cells behind the caster where the fix
+  gives 0.253).
+  A NEW UNIFORM TYPE WAS NOT WORTH FINDING OUT ABOUT ON A PHONE: `uLightExt` is
+  a third `vec4[12]` (`4fv`) rather than a `float[12]`, because 4fv is the array
+  form this shader already syncs everywhere and an undeclared or unsupported
+  uniform silently never syncs on real phone GPUs. Three floats of headroom.
+  REJECTED, each measured against that 0.92-level caster: capping the light
+  itself at 0.55 → the same shadow, but the light really drops and takes the
+  lamp post's own head with it (the 1.5 ceiling exists so "a lamp's at 1.5 still
+  lights the post"); ray bias 0.2 → 0.05 → 1.47 / 2.78 and it deepens the
   TORCH's shadow too; penumbra slope 1.5 → 3.0 → no change at all (the shadow
   already sits on the 0.22 bounce floor, so depth was never the term); halving
   the caster quantiser → no change, because a 52 px table is 1.18 levels and
-  still rounds to 1 (the caster route would have to model his table at ~1.5
-  levels, three times its drawn height). Nothing shipped — the fix is the
-  maintainer's with Fable5 (2026-09-15: "I don't want you to fix this").
+  still rounds to 1 (that route would have to model his table at ~1.5 levels,
+  three times its drawn height).
 
 - **A PASS THAT IS "OFF" MUST LEAVE THE DISPLAY LIST** (`setPassRunning` in
   nightlight.ts). `setVisible(false)` does NOT stop a render-to-texture Shader:

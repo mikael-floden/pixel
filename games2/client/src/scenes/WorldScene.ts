@@ -150,6 +150,7 @@ import {
   NightLights,
   ShaderLight,
   MAX_SHADER_LIGHTS,
+  SHADOW_LIGHT_Z,
   emissionWave,
   emissionSelfPulse,
   EmissionMap,
@@ -636,6 +637,13 @@ interface EmissiveSource {
   col: number;
   row: number;
   z: number;
+  /** THE HEIGHT ITS SHADOW IS CAST FROM (absolute levels), when that is not `z`.
+   *  `z` is capped at 1.5 so a lamp still lights its own post; a shadow cast
+   *  from up there is a stub (see nightlight.ts SHADOW_LIGHT_Z). Computed HERE
+   *  because only here is the piece's own FOOTING known — a deck's level, not
+   *  the terrain under it. Absent = cast from `z`, which is what an emissive
+   *  TILE wants until its own look has been measured. */
+  shadowZ?: number;
   radius: number; // cells
   color: [number, number, number];
   flicker: number;
@@ -21328,7 +21336,8 @@ export class WorldScene extends Phaser.Scene {
     const id = `s3:${p.i}`;
     const pr = params;
     this.sceneryLightSources.push({
-      id, col: p.x, row: p.y, z: lvl + z, radius: pr.radius, color: pr.color, flicker: pr.flicker, shadows: pr.shadows,
+      id, col: p.x, row: p.y, z: lvl + z, shadowZ: lvl + Math.min(SHADOW_LIGHT_Z, z),
+      radius: pr.radius, color: pr.color, flicker: pr.flicker, shadows: pr.shadows,
       sx: p.ax, sy: p.ay, hx: headX, hy: headY, piece: p.piece,
       embers: piece.light?.embers === true, kind: piece.light?.kind ?? "", sealed,
     });
@@ -23650,6 +23659,7 @@ export class WorldScene extends Phaser.Scene {
           col: s.col,
           row: s.row,
           z: s.z,
+          sz: s.shadowZ,
           // Sign of radius: negative = the shader's shadow-free glow pool.
           radius: s.shadows ? s.radius : -s.radius,
           color: gain === 1 ? s.color : [s.color[0] * gain, s.color[1] * gain, s.color[2] * gain],
