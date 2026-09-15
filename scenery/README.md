@@ -264,6 +264,23 @@ ask for five; the 4-own/2-opposite default is unchanged).
   variety picker strides modulo the list, index 4 drew the SAME design as
   index 1. Two of his three chimneys came back one design; the group now
   carries twelve so a re-roll cannot collide.
+- **A TUNING REVIEW IS NOT LIVE UNTIL THIS DOMAIN APPLIES IT** (maintainer
+  2026-09-15: "is the change I did live yet? Me doing a review doesn't redeploy
+  the game as far as I know" — he is right). THE GAME'S LIVE TUNING IS THREE
+  DOCUMENTS, not every file in `live/tuning`: `LiveTuning` in
+  `games2/server/src/live.ts` is `{monsters, constants, scenery_animation}`, and
+  the client fetches five tiles3 ground docs of its own (`tiles3runtime.ts`).
+  Every other channel this domain owns — `scenery_lighting`, `scenery_hitbox`,
+  `scenery_types`, `scenery_flips`, `scenery_lights`, `scenery_collision` — is
+  registered by the server but read by NOBODY in the game: a light block reaches
+  it from the PIECE'S OWN `scenery.json` under `/assets` (`scenery3.ts`), which
+  is baked into the deploy image. So his correction sits inert until
+  `pipeline/consume_review.py` applies it and the push deploys it (`scenery/**`
+  is a `nangijala-deploy` path; his hearth went live six minutes after the
+  apply). The opposite trap is in the same sentence: `scenery_animation` IS
+  live-read, so retiring a spent entry there changes the running game the moment
+  it lands — clear one only when the manifest already carries the same verdict,
+  and verify that before pushing, never after.
 - **THE LIGHT LADDER, AND WHERE THE NUMBERS COME FROM.** `strength` is a
   multiplier on THE SPAWN CAMPFIRE, not an absolute: games2 computes the slot's
   intensity as `CAMPFIRE_PEAK (1.9) x strength` and normalises the hex colour by
