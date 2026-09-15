@@ -517,11 +517,24 @@ test("placements drop what render3 drops, and keep its painter order", { skip },
   // ones; the index keeps the roofed pieces for the cut-away to show.
   const ps = all.filter((p) => !p.roofed);
   assert.equal(ps.length, W.scenery.length, "same survivors as render3");
+  /* EVERY FIELD THE FIXTURE LEANS ON, not just where the piece stands. The fit
+   * arm above resolves each placement's sprite from the FIXTURE's own `state`,
+   * `dir` and `lit`, and lifts it by the fixture's own `z` — so a placement the
+   * map agent re-dresses or re-hangs INSIDE one of these windows would keep
+   * being tested at its old look for ever, silently. This loop is the only
+   * place the world's own placements are read, so it is where that has to be
+   * caught. (It is also what lets the whole-file sha assertion go: a world edit
+   * OUTSIDE the windows cannot reach the fixture, and one INSIDE is named here,
+   * or by the per-cell and per-deck arms of tiles3.test.ts.) */
   for (let i = 0; i < ps.length; i++) {
     assert.equal(ps[i].piece, W.scenery[i].piece, `#${i} piece`);
     assert.equal(ps[i].x, W.scenery[i].x);
     assert.equal(ps[i].y, W.scenery[i].y);
     assert.equal(ps[i].hflip, W.scenery[i].hflip);
+    assert.equal(ps[i].dir ?? null, W.scenery[i].dir ?? null, `#${i} ${ps[i].piece} facing`);
+    assert.equal(ps[i].state ?? null, W.scenery[i].state ?? null, `#${i} ${ps[i].piece} state`);
+    assert.equal(!!ps[i].lit, !!W.scenery[i].lit, `#${i} ${ps[i].piece} lit`);
+    assert.equal(ps[i].z ?? null, W.scenery[i].z ?? null, `#${i} ${ps[i].piece} z on the wall`);
     if (i) assert.ok(ps[i].sort >= ps[i - 1].sort, "sorted by x+y");
   }
 });

@@ -546,6 +546,25 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   in tiles3.ts AND render3.py, then regenerates both fixtures (python3 from
   the repo root; render3 needs Pillow and the tiles tree).
 
+- **THE FIXTURE IS STALE WHEN ITS OWN WINDOWS MOVED, NOT WHEN THE WORLD DID**
+  (2026-09-15). It used to assert the sha256 of the whole 40 MB world.json, so
+  every maps2 push turned `the fixture matches the world on disk` red — on
+  SOMEONE ELSE'S commit, for an edit that provably cannot reach three 56x56
+  windows. Measured the day it was changed: sixteen wall hangings moved, none
+  inside a window, and the regenerated fixture differed by exactly that one sha
+  line. A red that arrives on another agent's push is how a suite goes back to
+  being scrolled past, which this one had just been rescued from.
+  THE SHA IS NOW PRINTED, NOT ASSERTED, because every input the fixture leans
+  on is already compared against TODAY's doc, cell by cell and with a message
+  that names what moved: the per-cell arm (ground, level, wall side), the deck
+  arm (every deck cell), and scenery3.test.ts's placement loop — which now
+  covers not just piece and position but FACING, STATE, LIT and Z, because the
+  fit arm resolves each sprite from the fixture's own copy of those and would
+  otherwise have gone on testing a re-dressed piece at its old look for ever.
+  Proven by mutating the fixture as if the world had changed under it: a cell's
+  ground fails as "the_bay (328,193) ground", a re-dressed tree and a re-hung
+  chimney each fail by name. Regenerating is a decision again, not a reflex.
+
 - **THE FIXTURE IS GENERATED AGAINST HIS PUBLISHED RULES WHERE render3 IS
   BEHIND ON THEM** (2026-09-14). The generator is render3 — it imports it and
   refuses to write a fixture its own prediction cannot reproduce — with exactly
