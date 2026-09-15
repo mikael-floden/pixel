@@ -3576,6 +3576,13 @@ export class NightLights {
    *  they stand (cells and storeys), how far they reach and in what colour.
    *  `lightSlots` says how MANY are held; this says WHICH, which is what a
    *  report of the form "that thing is suddenly lit" needs (__ml.lights). */
+  /** The ambient the frame is shading with, and the OUTDOOR grade it blends
+   *  toward — a probe reads both because "the whole house lights up for a
+   *  frame" is what an indoor ambient outliving its blend looks like. */
+  ambientNow(): { cur: [number, number, number]; out: [number, number, number]; mix: number } {
+    return { cur: [...this.curAmbient] as [number, number, number], out: [...this.ambientOut] as [number, number, number], mix: this.indoorMix };
+  }
+
   lightsNow(): { col: number; row: number; z: number; sz: number; r: number; glow: boolean; color: [number, number, number] }[] {
     return this.curLights.slice(0, MAX_SHADER_LIGHTS).map((L) => ({
       col: +L.col.toFixed(2), row: +L.row.toFixed(2), z: +L.z.toFixed(2),

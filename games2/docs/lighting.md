@@ -968,8 +968,19 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   before. Nought after. Gate: verify-lightparity section 7 walks in and out of
   the world's most-windowed house and fails on the old rule (16 dark frames of
   575, the first at `inside=false` — the leaving case he reported).
-  The probe is `__ml.winTrace(true|false)`: every wall piece's drawn state per
-  frame, off unless asked. The ENTERING case still draws an unlit pane while
+  The probe is `__ml.winTrace(true, [col,row,z?] )`: every wall piece's drawn
+  state per frame, plus ONE scene row per frame beside them — the ambient the
+  frame shades with and the outdoor grade it blends toward (`ambientNow`), the
+  mix, the grade, whether the room mask and the indoor mask are still up, the
+  ledger size, the raw stamp array AND the set the glow field is about to draw
+  (`drawN`/`drawA`, which the raw array cannot see: a source that LEAVES the
+  ledger is deleted from tenure and hands its pool stamp back at full alpha,
+  because the crossfade only runs for a HOLDER), the roofed and above-cut
+  counts, the scenery rebuild counter, and `lightAt`+`occ` at the given cell.
+  Off unless asked; nothing is allocated while it is off. What it is FOR is the
+  class of report that names no piece — "the entire house lights up for a
+  frame" — where the question is which of the crossing's rules stepped instead
+  of easing. The ENTERING case still draws an unlit pane while
   `outK = 1 - indoorGrade()` suppresses it, and that is the cut-away's own rule
   (27 such frames, all with a correct glow), not this fault.
 

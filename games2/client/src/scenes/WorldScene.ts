@@ -8141,9 +8141,11 @@ export class WorldScene extends Phaser.Scene {
        * picture. `winTrace(true)` starts, `winTrace(false)` returns {rows, frames}
        * and detaches. Read-only, off unless asked, and nothing is allocated while
        * it is off. */
-      winTrace: (on?: boolean) => {
+      winTrace: (on?: boolean, at?: [number, number, number?]) => {
         if (on === true) {
           this.winTrace = [];
+          this.winScene = [];
+          this.winAt = at ?? null;
           this.winFrames = 0;
           /* POST_UPDATE, not inside stepSceneryWalls. A rebuild recreates every wall
            * record mid-frame with glow 0 and its overlay at alpha 0, and a later step
@@ -8153,6 +8155,55 @@ export class WorldScene extends Phaser.Scene {
           this.winSample = () => {
             this.winFrames++;
             if (!this.winTrace || this.winTrace.length >= 20000) return;
+            /* THE FRAME'S OWN LIGHTING STATE, once per frame beside the wall rows —
+             * "the whole house lights up for a frame" is not a wall-piece fault, it is
+             * the room's light escaping or the indoor ambient outliving the blend that
+             * confines it, and neither shows in a per-piece row. `at` samples occAt at
+             * one cell: a light's occ carries the indoor BLOCK, so a room's fire
+             * reaching a street cell shows here as its occ leaving 0. */
+            if (this.winScene && this.night && this.world) {
+              const a = this.winAt;
+              let occ: number[] = [];
+              let lit: number[] = [];
+              if (a) {
+                const zz = a[2] ?? (this.world.rows[Math.floor(a[1])]?.[Math.floor(a[0])]?.l ?? 0);
+                const parts = { base: [0, 0, 0] as [number, number, number], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1 };
+                lit = this.night.lightAt(a[0], a[1], zz, false, 0, parts, true).map((v) => +v.toFixed(4));
+                occ = [...parts.occ.slice(0, this.night.lightsNow().length)].map((v) => +v.toFixed(3));
+              }
+              /* THE STAMPS AS THE FIELD REALLY PAINTS THEM, not the raw array. A
+               * source that LEAVES the ledger (a sealed fire whose gain hit 0.01 on
+               * the way out) is deleted from tenure, and the next frame's map hands
+               * its pool stamp back at FULL alpha — the crossfade only runs for a
+               * HOLDER. `stampA` is the raw array's alpha and cannot see that; `drawA`
+               * is what update() is about to draw. */
+              let stampA = 0;
+              let drawA = 0;
+              let drawN = 0;
+              for (const g of this.sceneryStamps) stampA += g.alpha;
+              for (const g of this.glowStamps.concat(this.sceneryStamps)) {
+                let a = g.alpha;
+                if (g.srcId && g.ry !== undefined && this.slotTenure.size) {
+                  const t = this.slotTenure.get(g.srcId);
+                  if (t && this.slotLit.has(g.srcId)) {
+                    if (t.ramp >= 1) continue;
+                    const k = t.ramp * t.ramp * (3 - 2 * t.ramp);
+                    a = g.alpha * (1 - k);
+                  }
+                }
+                drawA += a;
+                drawN++;
+              }
+              this.winScene.push({ f: this.winFrames, t: Math.round(this.time.now),
+                amb: (() => { const a = this.night!.ambientNow(); return { cur: a.cur.map((v) => +v.toFixed(4)), out: a.out.map((v) => +v.toFixed(4)) }; })(),
+                mix: +this.indoorMix.toFixed(3), inside: this.indoorInside,
+                grade: +this.indoorGrade().toFixed(3), roomLit: this.roomHasLight(),
+                roomOn: !!this.roomMask, maskOn: !!this.indoorMask, slots: this.slotTenure.size,
+                stampN: this.sceneryStamps.length, stampA: +stampA.toFixed(2),
+                drawN, drawA: +drawA.toFixed(3),
+                roofed: this.sceneryRoofedImgs.length, aboveCut: this.sceneryAboveCutImgs.length,
+                lights: this.night.lightsNow().length, lit, occ, rebuilds: this.scnRebuilds });
+            }
             for (const w of this.sceneryWalls)
               this.winTrace.push({ f: this.winFrames, t: Math.round(this.time.now), place: w.place,
                 hasOn: !!w.on, onAlpha: w.on ? +w.on.alpha.toFixed(3) : null, base: +w.img.alpha.toFixed(3),
@@ -8163,8 +8214,9 @@ export class WorldScene extends Phaser.Scene {
         } else if (on === false) {
           if (this.winSample) this.events.off(Phaser.Scenes.Events.POST_UPDATE, this.winSample);
           this.winSample = undefined;
-          const t = this.winTrace; const f = this.winFrames; this.winTrace = null;
-          return { rows: t, frames: f };
+          const t = this.winTrace; const sc = this.winScene; const f = this.winFrames;
+          this.winTrace = null; this.winScene = null; this.winAt = null;
+          return { rows: t, scene: sc, frames: f };
         }
         return this.winTrace?.length ?? 0;
       },
@@ -17093,6 +17145,8 @@ export class WorldScene extends Phaser.Scene {
    *  the rebuild that produced it rather than to a wall-clock guess. */
   private scnRebuilds = 0;
   private winSample?: () => void;
+  private winScene: Array<Record<string, unknown>> | null = null;
+  private winAt: [number, number, number?] | null = null;
   private roomLitAt = 0;
   private roomLitVal = false;
   private roomHasLight(): boolean {
