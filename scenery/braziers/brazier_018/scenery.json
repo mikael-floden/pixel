@@ -513,7 +513,7 @@
       "animations": {
         "flame": {
           "group_id": "33d3e28d-e1f0-4ef0-8bb4-8d8845f2b633",
-          "description": "Animate the flame only",
+          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -527,34 +527,6 @@
                 "braziers/brazier_018/lit_4/animations/flame/south/02.webp",
                 "braziers/brazier_018/lit_4/animations/flame/south/03.webp",
                 "braziers/brazier_018/lit_4/animations/flame/south/04.webp"
-              ],
-              "strip": "braziers/brazier_018/lit_4/animations/flame__south.webp",
-              "light_frames": [
-                {
-                  "intensity": 1.359,
-                  "dx": -0.2,
-                  "dy": -14.9
-                },
-                {
-                  "intensity": 1.007,
-                  "dx": 0.5,
-                  "dy": -13.6
-                },
-                {
-                  "intensity": 0.908,
-                  "dx": 1.0,
-                  "dy": -13.8
-                },
-                {
-                  "intensity": 0.811,
-                  "dx": -0.2,
-                  "dy": -13.7
-                },
-                {
-                  "intensity": 0.915,
-                  "dx": -0.4,
-                  "dy": -13.6
-                }
               ]
             },
             "south-east": {
@@ -565,34 +537,6 @@
                 "braziers/brazier_018/lit_4/animations/flame/south-east/02.webp",
                 "braziers/brazier_018/lit_4/animations/flame/south-east/03.webp",
                 "braziers/brazier_018/lit_4/animations/flame/south-east/04.webp"
-              ],
-              "strip": "braziers/brazier_018/lit_4/animations/flame__south-east.webp",
-              "light_frames": [
-                {
-                  "intensity": 1.035,
-                  "dx": -1.0,
-                  "dy": -11.2
-                },
-                {
-                  "intensity": 1.048,
-                  "dx": -0.9,
-                  "dy": -11.2
-                },
-                {
-                  "intensity": 1.033,
-                  "dx": -1.1,
-                  "dy": -11.5
-                },
-                {
-                  "intensity": 0.911,
-                  "dx": -0.9,
-                  "dy": -11.2
-                },
-                {
-                  "intensity": 0.973,
-                  "dx": -0.3,
-                  "dy": -10.5
-                }
               ]
             },
             "south-west": {
@@ -603,52 +547,10 @@
                 "braziers/brazier_018/lit_4/animations/flame/south-west/02.webp",
                 "braziers/brazier_018/lit_4/animations/flame/south-west/03.webp",
                 "braziers/brazier_018/lit_4/animations/flame/south-west/04.webp"
-              ],
-              "strip": "braziers/brazier_018/lit_4/animations/flame__south-west.webp",
-              "light_frames": [
-                {
-                  "intensity": 1.278,
-                  "dx": -0.1,
-                  "dy": -11.6
-                },
-                {
-                  "intensity": 1.281,
-                  "dx": 0.0,
-                  "dy": -12.3
-                },
-                {
-                  "intensity": 0.682,
-                  "dx": 0.1,
-                  "dy": -8.6
-                },
-                {
-                  "intensity": 0.886,
-                  "dx": -0.0,
-                  "dy": -10.4
-                },
-                {
-                  "intensity": 0.874,
-                  "dx": 0.2,
-                  "dy": -9.8
-                }
               ]
             }
           },
-          "generated_at": "2026-08-29T08:12:28+00:00",
-          "review": "ANIMATION_PROBABLY_BAD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.2786,
-            "still": 0.737
-          },
-          "frame_paths": [
-            "braziers/brazier_018/lit_4/animations/flame/south/00.webp",
-            "braziers/brazier_018/lit_4/animations/flame/south/01.webp",
-            "braziers/brazier_018/lit_4/animations/flame/south/02.webp",
-            "braziers/brazier_018/lit_4/animations/flame/south/03.webp",
-            "braziers/brazier_018/lit_4/animations/flame/south/04.webp"
-          ],
-          "strip": "braziers/brazier_018/lit_4/animations/flame__south.webp",
+          "generated_at": "2026-09-15T18:26:34+00:00",
           "light_frames": [
             {
               "intensity": 1.359,

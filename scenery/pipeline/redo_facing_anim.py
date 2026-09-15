@@ -54,7 +54,7 @@ ALL3 = ("south-west", "south", "south-east")
 EIGHT_DIR_MAX = 168          # over this a piece is 1-direction: no facings exist
 FRAME_COUNT = 4              # + keep_first_frame = 5 frames, 3 generations
 USD_PER_GEN = 0.012
-PARALLEL = 8
+PARALLEL = 4  # 8 in parallel got 5-retry API failures on 28 of 40
 _LOCKS = defaultdict(threading.Lock)
 
 # A note that asks for LESS MOVEMENT, not for more frames. His own words on the
@@ -197,13 +197,15 @@ def one(client, rel, state, name, dirs, prompt):
         size = int(man.get("size") or 64)
         payload = {"animation_group_id": gid, "directions": list(dirs),
                    "frame_count": FRAME_COUNT, "mode": "v3", "keep_first_frame": True}
-        # A DIRECTION THAT IS ALREADY IN THE GROUP MUST BE OVERWRITTEN, NOT ADDED.
-        # Extending is the only call, and it refuses a direction it already has:
-        # 409 "directions already exist in group: ['south-east']. Pass
-        # replace_existing=true to overwrite." — which is precisely a redo, and
-        # it keeps the group (and its id) rather than leaving a second one.
-        if set(dirs) & _have_dirs(a):
-            payload["replace_existing"] = True
+        # ALWAYS OVERWRITE, because the STORE decides what exists and it knows
+        # more than the manifest does. Extending is the only call and it refuses
+        # a direction it already has — 409 "directions already exist in group:
+        # ['south-east']. Pass replace_existing=true to overwrite." — and the
+        # manifest can say a facing is absent while PixelLab still holds it: a
+        # partial download had lost the local copy, so the restore asked to ADD
+        # what the store already had and was refused. Overwriting a direction
+        # that is genuinely new costs nothing, so it is unconditional.
+        payload["replace_existing"] = True
         if prompt:
             # Replaces the group's description; without it the API carries the
             # old wording across, which is the wording he rejected.
@@ -221,7 +223,15 @@ def one(client, rel, state, name, dirs, prompt):
         base = A.anim_dir(rel, state, man, name)
         for old in glob.glob(os.path.join(factory.ROOT, base, "*.webp")):
             os.remove(old)                 # flat south-only frames cannot coexist
-        made = {}
+        had = set(_have_dirs(a))
+        # A PARTIAL DOWNLOAD MUST NEVER DELETE A FACING THAT WORKS. The client
+        # accepts whatever has landed when a direction stops arriving (its stall
+        # rule, which is right — waiting out 10 minutes for a stuck job costs the
+        # whole pass), so a redo can come back with two of three. Rewriting
+        # `directions` from that alone is how hearth_900 LIT_1 lost its
+        # south-west clip on a re-roll that had gone 5/5/5 the run before. So the
+        # old entries survive and only what came back is replaced.
+        made = dict((a.get("directions") or {}) if isinstance(a.get("directions"), dict) else {})
         for d, imgs in frames.items():
             imgs = [factory._normalize(im.convert("RGBA"), size) for im in imgs]
             paths = []
@@ -253,6 +263,12 @@ def one(client, rel, state, name, dirs, prompt):
             states[state] = ent
             man["states"] = states
             factory.write_manifest(rel, man)
+        lost = sorted(had - set(made))
+        if lost:
+            return (rel, state, name, len(made), f"ok but LOST {','.join(lost)} — re-run it")
+        short = sorted(d for d in dirs if d not in frames)
+        if short:
+            return (rel, state, name, len(made), f"ok but {','.join(short)} did not come back")
         return (rel, state, name, len(made), "ok")
     except PixelLabError as e:
         return (rel, state, name, 0, f"FAILED: {str(e)[:110]}")
