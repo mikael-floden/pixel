@@ -15,7 +15,21 @@ import { fileURLToPath } from "url";
 const HAVE_WORLD = existsSync(join(dirname(fileURLToPath(import.meta.url)), "..", "..", "..", "maps2", "worlds3", "the_game", "world.json"));
 const SKIP = "maps2/worlds3/the_game missing";
 
-async function waitFor(cond: () => boolean, timeout = 5000, what = "condition"): Promise<void> {
+/** THE BUDGET IS GENEROUS ON PURPOSE, and it is not what any claim here rests
+ *  on — the CONDITION is; the budget only decides how long a broken build takes
+ *  to say so. Everything waited for in this file crosses the bus and lands on a
+ *  room's own interval: an edge snapshot is `EDGE_TICKS` = 2 ticks (10 Hz), a
+ *  hand-off is one round trip. 5 s was fifty of those and CI still timed out on
+ *  the ghost that follows a monster transfer (run 1605, "timeout waiting for
+ *  the old room sees it as a ghost", 5.8 s into a 132 s suite): a two-core
+ *  runner with 720 tests in parallel starves the interval, so the wait measured
+ *  the runner, not the server. It failed the same way on this box only while a
+ *  dev stack was running beside the suite, and never in eleven runs without
+ *  one. Raised together rather than one at a time, because they are all the
+ *  same wait. */
+const BUS_MS = 20_000;
+
+async function waitFor(cond: () => boolean, timeout = BUS_MS, what = "condition"): Promise<void> {
   const start = Date.now();
   const ready = () => { try { return cond(); } catch { return false; } };
   while (!ready()) {
@@ -65,7 +79,7 @@ test("ghosts across the border, then a hand-off that keeps the body", async (t) 
     const cB = new Client(`ws://localhost:${port}`);
     const rA: any = await cA.joinOrCreate(ROOM_NAME, { ...base, zone: 0, name: "Left", character: "default_boy" });
     const rB: any = await cB.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Right", character: "default_girl" });
-    await waitFor(() => rA.state.players.size === 1 && rB.state.players.size === 1, 8000, "both joined their zones");
+    await waitFor(() => rA.state.players.size === 1 && rB.state.players.size === 1, BUS_MS, "both joined their zones");
     const pidA = rA.sessionId;
     const pidB = rB.sessionId;
     // Both are placed at the world spawn, which lies in ONE of the zones: the
@@ -74,27 +88,27 @@ test("ghosts across the border, then a hand-off that keeps the body", async (t) 
     rA.send("teleport", { x: BORDER_X - 3 * CELL_WU, y });
     rB.send("teleport", { x: BORDER_X + 3 * CELL_WU, y });
     // Each is a ghost in the other's room, under its stable id, with its name.
-    await waitFor(() => rA.state.ghosts?.get(pidB)?.name === "Right", 5000, "Right ghosts into zone 0");
-    await waitFor(() => rB.state.ghosts?.get(pidA)?.name === "Left", 5000, "Left ghosts into zone 1");
+    await waitFor(() => rA.state.ghosts?.get(pidB)?.name === "Right", BUS_MS, "Right ghosts into zone 0");
+    await waitFor(() => rB.state.ghosts?.get(pidA)?.name === "Left", BUS_MS, "Left ghosts into zone 1");
     assert.ok(!rA.state.players.has(pidB), "a ghost is not a player of this room");
     const gB = rA.state.ghosts.get(pidB);
     assert.ok(Math.abs(gB.x - (BORDER_X + 3 * CELL_WU)) < 1, "the ghost stands where the body stands");
     // Far from the border the ghost is dropped.
     rB.send("teleport", { x: BORDER_X + 3 * INTEREST_LEAVE_WU, y });
-    await waitFor(() => !rA.state.ghosts.has(pidB), 5000, "a body away from the border is no ghost");
+    await waitFor(() => !rA.state.ghosts.has(pidB), BUS_MS, "a body away from the border is no ghost");
     rB.send("teleport", { x: BORDER_X + 3 * CELL_WU, y });
-    await waitFor(() => rA.state.ghosts.has(pidB), 5000, "and comes back");
+    await waitFor(() => rA.state.ghosts.has(pidB), BUS_MS, "and comes back");
 
     // A HIT BEFORE THE HOP, through the real path (dbgkill = hurtPlayer for
     // full hp, then the press-to-continue revive), so the counters the hop
     // must carry are non-zero. The revive stands the body at the world spawn;
     // park it back by the border.
     rA.send("dbgkill");
-    await waitFor(() => rA.state.players.get(pidA)?.dead === true, 5000, "dbgkill killed Left");
+    await waitFor(() => rA.state.players.get(pidA)?.dead === true, BUS_MS, "dbgkill killed Left");
     for (let i = 0; i < 60 && rA.state.players.get(pidA)?.dead !== false; i++) { rA.send("respawn"); await settle(150); }
     assert.equal(rA.state.players.get(pidA)?.dead, false, "Left revived");
     rA.send("teleport", { x: BORDER_X - 3 * CELL_WU, y });
-    await waitFor(() => Math.abs(rA.state.players.get(pidA).x - (BORDER_X - 3 * CELL_WU)) < 1, 5000, "parked again");
+    await waitFor(() => Math.abs(rA.state.players.get(pidA).x - (BORDER_X - 3 * CELL_WU)) < 1, BUS_MS, "parked again");
     // THE HAND-OFF: Left crosses into zone 1. The old room sends zone:go; the
     // client joins the new room with the pid + key.
     const go = new Promise<{ zone: number; pid: string; key: string }>((res) => rA.onMessage("zone:go", res));
@@ -109,7 +123,7 @@ test("ghosts across the border, then a hand-off that keeps the body", async (t) 
     assert.ok(hitSeqBefore > 0, "the body crosses with a hit on its counter (the test below is about that)");
     const cA2 = new Client(`ws://localhost:${port}`);
     const rA2: any = await cA2.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Left", character: "default_boy", pid: msg.pid, handoff: msg.key });
-    await waitFor(() => rA2.state.players.get(pidA)?.sid === rA2.sessionId, 5000, "the body is in zone 1 under the SAME id, bound to the new session");
+    await waitFor(() => rA2.state.players.get(pidA)?.sid === rA2.sessionId, BUS_MS, "the body is in zone 1 under the SAME id, bound to the new session");
     const me2 = rA2.state.players.get(pidA);
     assert.equal(me2.name, "Left");
     assert.equal(me2.hp, hpBefore);
@@ -120,13 +134,13 @@ test("ghosts across the border, then a hand-off that keeps the body", async (t) 
     assert.equal(me2.actionSeq, actionSeqBefore, "actionSeq carried over");
     assert.ok(Math.abs(me2.x - (BORDER_X + 2 * CELL_WU)) < 1, "position carried over");
     // The old room let go of the body (handoff:done over the bus).
-    await waitFor(() => !rA.state.players.has(pidA), 5000, "zone 0 dropped the handed-over body");
+    await waitFor(() => !rA.state.players.has(pidA), BUS_MS, "zone 0 dropped the handed-over body");
     // Right, in zone 1, now sees Left as a REAL player, not a ghost.
-    await waitFor(() => rB.state.players.has(pidA) && !rB.state.ghosts.has(pidA), 5000, "the neighbour sees a player where the ghost was");
+    await waitFor(() => rB.state.players.has(pidA) && !rB.state.ghosts.has(pidA), BUS_MS, "the neighbour sees a player where the ghost was");
     // A stale key is refused: the same pair joins as a fresh body.
     const cX = new Client(`ws://localhost:${port}`);
     const rX: any = await cX.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Imp", character: "default_boy", pid: msg.pid, handoff: msg.key });
-    await waitFor(() => rX.state.players.size >= 1, 5000, "impostor joined");
+    await waitFor(() => rX.state.players.size >= 1, BUS_MS, "impostor joined");
     await settle(300);
     assert.ok(rX.state.players.get(rX.sessionId), "a consumed key yields an ordinary join under the session id");
     assert.equal(rX.state.players.get(pidA)?.name, "Left", "and never touches the handed body");
@@ -151,7 +165,7 @@ test("a monster pushed over the border is transferred with its brain; chat cross
     const cB = new Client(`ws://localhost:${port}`);
     const rA: any = await cA.joinOrCreate(ROOM_NAME, { ...base, zone: 0, name: "Left", character: "default_boy" });
     const rB: any = await cB.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Right", character: "default_girl" });
-    await waitFor(() => rA.state.monsters.size > 0 && rB.state.monsters.size > 0, 8000, "both zones seeded");
+    await waitFor(() => rA.state.monsters.size > 0 && rB.state.monsters.size > 0, BUS_MS, "both zones seeded");
     await settle(300);
     // Every monster of a zone room stands inside its rectangle and carries its prefix.
     const r0 = zoneRect(GRID, 0);
@@ -167,15 +181,15 @@ test("a monster pushed over the border is transferred with its brain; chat cross
     const [mid, m0] = [...rA.state.monsters.entries()][0] as [string, any];
     const kind = m0.kind;
     rA.send("dbgmonster", { id: mid, x: BORDER_X + CELL_WU, y });
-    await waitFor(() => !rA.state.monsters.has(mid) && rB.state.monsters.get(mid)?.kind === kind, 5000, "the monster changed owner");
+    await waitFor(() => !rA.state.monsters.has(mid) && rB.state.monsters.get(mid)?.kind === kind, BUS_MS, "the monster changed owner");
     assert.ok(!rB.state.ghostMonsters?.has(mid), "the new owner holds no ghost of it");
     // ...and it stands as a ghost in the room it left, since it is in the band.
-    await waitFor(() => rA.state.ghostMonsters?.get(mid)?.kind === kind, 5000, "the old room sees it as a ghost");
+    await waitFor(() => rA.state.ghostMonsters?.get(mid)?.kind === kind, BUS_MS, "the old room sees it as a ghost");
     // Chat reaches both zones over the bus.
     const heard: string[] = [];
     rB.onMessage("chat", (c: any) => heard.push(c.text));
     rA.send("chat", { text: "hello over the line" });
-    await waitFor(() => heard.includes("hello over the line"), 3000, "chat crossed the zones");
+    await waitFor(() => heard.includes("hello over the line"), BUS_MS, "chat crossed the zones");
     rA.leave(); rB.leave();
   } finally {
     await gameServer.gracefullyShutdown(false);
@@ -197,13 +211,13 @@ test("one live session per account, world-wide: a second tab in another zone kic
     const r1: any = await c1.joinOrCreate(ROOM_NAME, { ...base, zone: 0, name: "Tab1", character: "default_boy" });
     const pair = await new Promise<{ id: string; secret: string }>((res) => { r1.onMessage("account", res); r1.send("account:want"); });
     assert.ok(pair.id && pair.secret, "the first join minted an account");
-    await waitFor(() => r1.state.players.size === 1, 5000, "tab 1 in zone 0");
+    await waitFor(() => r1.state.players.size === 1, BUS_MS, "tab 1 in zone 0");
     let left: number | null = null;
     r1.onLeave((code: number) => { left = code; });
     const c2 = new Client(`ws://localhost:${port}`);
     const r2: any = await c2.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Tab2", character: "default_boy", account: pair });
-    await waitFor(() => r2.state.players.size === 1, 5000, "tab 2 in zone 1");
-    await waitFor(() => left !== null, 5000, "tab 1 was kicked from zone 0 by a join in zone 1");
+    await waitFor(() => r2.state.players.size === 1, BUS_MS, "tab 2 in zone 1");
+    await waitFor(() => left !== null, BUS_MS, "tab 1 was kicked from zone 0 by a join in zone 1");
     assert.equal(left, 4001, "the kick code");
     r2.leave();
   } finally {
@@ -259,7 +273,7 @@ test("cross-border combat: a player fights, is hit by, kills and loots a monster
     const rB: any = await cB.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Far", character: "default_girl" });
     const inv: any[] = [];
     rA.onMessage("inv", (m: any) => inv.push(m.items));
-    await waitFor(() => rA.state.players.size === 1 && rB.state.monsters.size > 0, 8000, "joined, zone 1 seeded");
+    await waitFor(() => rA.state.players.size === 1 && rB.state.monsters.size > 0, BUS_MS, "joined, zone 1 seeded");
     const pidA = rA.sessionId;
     rB.send("teleport", { x: BORDER_X + 60 * CELL_WU, y: 60 * CELL_WU }); // Far stays out of it
     // A zone-1 monster whose spawn area reaches the border, so the fight spot
@@ -285,16 +299,16 @@ test("cross-border combat: a player fights, is hit by, kills and loots a monster
     rA.send("teleport", { x: BORDER_X - 12, y });
     await settle(300);
     rB.send("dbgmonster", { id: mid, x: BORDER_X + 12, y, pin: true });
-    await waitFor(() => rA.state.ghostMonsters?.has(mid), 5000, "the monster is a ghost in zone 0");
+    await waitFor(() => rA.state.ghostMonsters?.has(mid), BUS_MS, "the monster is a ghost in zone 0");
     const me = () => rA.state.players.get(pidA);
     const monster = () => rB.state.monsters.get(mid) ?? rA.state.monsters.get(mid);
     rA.send("engage", { id: mid });
-    await waitFor(() => (monster()?.hp ?? hp) < hp, 8000, "the ghost monster loses hp");
-    await waitFor(() => me().actionSeq >= 1, 4000, "the real body swings at home");
+    await waitFor(() => (monster()?.hp ?? hp) < hp, BUS_MS, "the ghost monster loses hp");
+    await waitFor(() => me().actionSeq >= 1, BUS_MS, "the real body swings at home");
     await waitFor(() => me().hitSeq >= 1, 12000, "the monster hits back across the line");
     const xp0 = me().xp, lvl0 = me().level;
     await waitFor(() => !monster() || monster()?.mstate === "die", 40000, "the monster dies");
-    await waitFor(() => me().xp > xp0 || me().level > lvl0, 5000, "xp reached home");
+    await waitFor(() => me().xp > xp0 || me().level > lvl0, BUS_MS, "xp reached home");
     assert.ok(!me().dead, "the body survived the fight (a dead ghost may not swing)");
     // Its loot lies where it died; pick it up from across the line.
     let did = "";
@@ -303,7 +317,7 @@ test("cross-border combat: a player fights, is hit by, kills and loots a monster
       st.ghostDrops?.forEach((d: any, id: string) => { if (!did && Math.hypot(d.x - me().x, d.y - me().y) < 6 * CELL_WU) did = id; });
       st.drops?.forEach((d: any, id: string) => { if (!did && Math.hypot(d.x - me().x, d.y - me().y) < 6 * CELL_WU) did = id; });
       return !!did;
-    }, 8000, "the loot is visible");
+    }, BUS_MS, "the loot is visible");
     const drop = rA.state.ghostDrops?.get(did) ?? rA.state.drops.get(did);
     rA.send("teleport", { x: drop.x - 8, y: drop.y });
     await settle(300);
@@ -345,7 +359,7 @@ test("a login in another zone evicts a body whose link merely dropped", async (t
     const c1 = new Client(`ws://localhost:${port}`);
     const r1: any = await c1.joinOrCreate(ROOM_NAME, { ...base, zone: 0, name: "Twin", character: "default_boy" });
     const pair = await new Promise<{ id: string; secret: string }>((res) => { r1.onMessage("account", res); r1.send("account:want"); });
-    await waitFor(() => r1.state.players.size === 1, 5000, "the first session in zone 0");
+    await waitFor(() => r1.state.players.size === 1, BUS_MS, "the first session in zone 0");
     const zone0 = r1.roomId;
     const bodies = () => matchMaker.getLocalRoomById(zone0)?.state?.players?.size ?? -1;
     assert.equal(bodies(), 1, "zone 0 holds the body");
@@ -359,12 +373,12 @@ test("a login in another zone evicts a body whose link merely dropped", async (t
     // spawn zone, not the one he saved in).
     const c2 = new Client(`ws://localhost:${port}`);
     const r2: any = await c2.joinOrCreate(ROOM_NAME, { ...base, zone: 1, name: "Twin", character: "default_boy", account: pair });
-    await waitFor(() => r2.state.players.size === 1, 5000, "the second session in zone 1");
+    await waitFor(() => r2.state.players.size === 1, BUS_MS, "the second session in zone 1");
 
     // The body in zone 0 is gone — asserted from zone 0's own state, well
     // inside the 45 s grace so a pass cannot come from it expiring.
     const started = Date.now();
-    await waitFor(() => bodies() === 0, 8000, "the dropped body is still standing in zone 0");
+    await waitFor(() => bodies() === 0, BUS_MS, "the dropped body is still standing in zone 0");
     assert.ok(Date.now() - started < 30_000, "the grace expired on its own — this proved nothing");
     r2.leave();
   } finally {
