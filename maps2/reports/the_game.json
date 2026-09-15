@@ -617,6 +617,45 @@
     }
    ],
    "artifact": "https://claude.ai/code/artifact/4cf82092-b4af-45d4-b5a9-381b4aac238d"
+  },
+  {
+   "date": "2026-09-15",
+   "commit": "7d2001c9c1",
+   "before": "2223be5845",
+   "title": "The wall hangings come out from behind the furniture",
+   "changes": [
+    {
+     "name": "The crest you circled",
+     "what": "You were looking at a hanging sitting inside the fireplace's chimney breast. Mine: the fire pass put a hearth on a wall that already had a hanging on it, and nothing checked. The placer did have the rule - the slot farthest from the furniture on that wall wins - but it judges the FOOTPRINT, and a hearth's footprint is half a cell while its breast covers most of the wall. It is judged on the DRAWN ART now, out of the same table the game draws from. The fire stays put and the hanging moves: it slides along its own wall to the nearest clear slot, and it is offered the room's other wall before anything is given up.",
+     "cell": [
+      299,
+      194
+     ],
+     "window": [
+      294,
+      189,
+      305,
+      199
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "Sixteen of twenty-one, five of them invisible",
+     "what": "It was not one room. Sixteen hangings of twenty-one were behind something - nine against a fire this pass placed, five completely hidden, which is decoration you paid for and could never see. Fourteen slid (0.38 to 6.75 cells), two came out of the one room too full to take them anywhere, and nothing over 12% hidden is left. The fires, the chimneys and the furniture did not move.",
+     "cell": [
+      99,
+      174
+     ],
+     "window": [
+      92,
+      168,
+      106,
+      180
+     ],
+     "roofcut": true
+    }
+   ],
+   "artifact": "https://claude.ai/artifact/8sEyfm6QyGsxsq1QZ6Doxi"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
