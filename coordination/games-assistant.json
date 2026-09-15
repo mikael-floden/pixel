@@ -1,8 +1,8 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-15T10:54:57+00:00",
+  "updated_at": "2026-09-15T11:21:28+00:00",
   "health": "running",
-  "current": "IDLE \u2014 everything claimed is shipped. Live: fc1a00cdb (his 'scenery lights' switch + the window Z fix). Pushed and deploying: 78e1a3281 (the zones budgets) and bfff2020b (the window-scoped fixture staleness). Nothing in flight. Open, unclaimed: the local sparse-checkout test run; verify-penumbra and verify-indoor; SWAP instead of MOVE for a backpack drag if he asks. Waiting on maps2 for render3's four ports.",
+  "current": "IN FLIGHT \u2014 SHADOW ASYMMETRY INVESTIGATION (maintainer 2026-09-15, ULTRACODE, INVESTIGATION ONLY: \"I don't want you to fix this... I will wait for Fable5 until we make the actual fix\"). Why a table's shadow cast by a SCENERY light (hearths/hearth_001 LIT_2, s3:1194) looks worse than the same table's shadow cast by the PLAYER TORCH \u2014 indoors AND outdoors. Measured in real Chromium at his device geometry (393x851 dpr 2.75), a screenshot per attempt. FILES I WILL TOUCH: games2/docs/lighting.md (the findings, doc law) and this board. TEMPORARY, LOCAL-ONLY AND REVERTED, never pushed: games2/client/src/nightlight.ts and games2/client/src/scenes/WorldScene.ts (fix-attempt screenshots only). Everything else lives in a scratchpad. No shipped behaviour change in this unit.",
   "progress": {
     "units_shipped": 37
   },
