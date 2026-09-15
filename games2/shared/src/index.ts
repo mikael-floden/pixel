@@ -1727,8 +1727,10 @@ export interface SceneryFootprints {
    *  doesn't exist"). Every query that knows the body's surface level passes
    *  it and skips footprints more than FOOTPRINT_LEVEL_SLACK away; a query
    *  without one (the nav bake at base level, a headless sim) keeps the old
-   *  elevation-blind answer. KNOWN GAP: a piece placed ON a deck reads the base
-   *  under the deck (no the_game piece stands on one). */
+   *  elevation-blind answer. A piece placed ON A DECK is filed at the DECK's
+   *  level, not the base under it (the_game's ten chimneys stand on roofs) — see
+   *  stampSceneryCollision, which is also where a deck-standing piece is told
+   *  apart from one hung on a wall. */
   lvl: Float64Array;
   /** CSR bucket index over the grid: the footprints whose reach covers cell i
    *  are items[start[i] .. start[i+1]-1]. */
@@ -5867,8 +5869,27 @@ export function stampSceneryCollision(
   const recCache = new Map<string, SceneryHitboxDoc[string] | null | undefined>();
   for (let pi = 0; pi < scenery.length; pi++) {
     const pl = scenery[pi];
-    // A window or a hanging hangs on the wall behind the cell; the wall blocks.
-    if (typeof pl.z === "number" && Number.isFinite(pl.z)) continue;
+    /* A LIFTED PIECE IS ONE OF TWO THINGS, and `z` alone cannot tell them apart.
+     * A window or a hanging HANGS ON THE WALL behind the cell and takes no
+     * ground — the wall blocks, so it stamps nothing. A chimney STANDS ON THE
+     * ROOF DECK and has a real footprint up there. Every one of the_game's ten
+     * chimneys carries z:6 and none of them blocked anything (maintainer
+     * 2026-09-15, standing on a roof: "the hitbox on the chimney is not
+     * working" — the wiki's box was perfect and never reached the grid).
+     * The test is the one scenery3 already draws for the render side: the feet
+     * of a `z` piece are at `level + z`, and a deck's top at this cell decides
+     * which side of it they are on. */
+    const dz = typeof pl.z === "number" && Number.isFinite(pl.z) ? pl.z : null;
+    let deckLvl = -1;
+    if (dz !== null) {
+      const pc = Math.floor(pl.x);
+      const pr = Math.floor(pl.y);
+      const pi2 = pr * grid.width + pc;
+      const okCell = pc >= 0 && pr >= 0 && pc < grid.width && pr < grid.height;
+      const top = okCell ? grid.deck[pi2] : -1;
+      if (okCell && top >= 0 && grid.level[pi2] + dz >= top - 1e-9) deckLvl = top;
+      if (deckLvl < 0) continue; // hung on a wall: the wall blocks, not the cell
+    }
     const facts = bbox.pieces[pl.piece];
     // The DRAWN height, never the contract's raw px — see sceneryDrawnPx.
     const wph = sceneryDrawnPx(facts?.wph, facts?.cpx);
@@ -6016,10 +6037,18 @@ export function stampSceneryCollision(
       erot.push(th);
       eplace.push(pi);
       eartH.push(Math.max(0, (bcy - by0) * k));
-      // The floor the piece stands on — see SceneryFootprints.lvl.
+      /* The floor the piece stands on — see SceneryFootprints.lvl. A piece ON A
+       * DECK stands on the DECK, not on the ground under it: reading the base
+       * would file a chimney with the room below its roof, so a body up there
+       * would miss it and a body inside would walk into a pillar that is not
+       * there. */
       const lc = Math.floor(wx);
       const lr = Math.floor(wy);
-      elvl.push(lc >= 0 && lr >= 0 && lc < grid.width && lr < grid.height ? grid.level[lr * grid.width + lc] : 0);
+      elvl.push(
+        deckLvl >= 0 ? deckLvl
+        : lc >= 0 && lr >= 0 && lc < grid.width && lr < grid.height ? grid.level[lr * grid.width + lc]
+        : 0,
+      );
     }
   }
   const n = ecx.length;

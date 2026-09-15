@@ -1,6 +1,29 @@
 # Scenery
 
 Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor furniture, flat pieces, fog silhouettes. Moved verbatim out of `games2/CLAUDE.md` (2026-09-09), which keeps the law and points here; the measurements, traps and rejected approaches live in this file. Rewrite in place under the root doc law.
+- **A LIFTED PIECE IS EITHER HUNG ON A WALL OR STANDING ON A DECK, and `z`
+  alone cannot tell them apart.** `stampSceneryCollision` skipped every
+  placement carrying a numeric `z` — right for a window or a crest, which hangs
+  on the wall behind its cell and takes no ground, and wrong for a chimney,
+  which stands on the roof deck and has a real footprint up there. All ten of
+  the_game's chimneys carry `z: 6`, so not one of them blocked anything
+  (maintainer 2026-09-15, from a roof a monster had pushed him onto: "the hitbox
+  on the chimney is not working" — the wiki's box was perfect and never reached
+  the grid; he took fall damage jumping down, so the position was real). The
+  test is the one `scenery3` already draws for the render side: the feet of a
+  `z` piece are at `level + z`, and the DECK'S TOP at that cell decides which
+  side of it they are on (`grid.deck[i]`). A deck-standing piece is stamped and
+  filed at the DECK's level, not the base under it — file it at the base and
+  `FOOTPRINT_LEVEL_SLACK` 1.5 puts an invisible pillar in the room below the
+  roof while leaving the roof itself clear. `SceneryFootprints.lvl` had carried
+  the gap as a note ("no the_game piece stands on one"); ten do.
+  Gate: `server/test/sceneryhitbox.test.ts` asserts each deck-standing chimney
+  is stamped at all, is filed at its deck, is separated from its own floor by
+  more than the slack, and blocks a body on its roof — it fails on the old rule
+  with "z 6 used to skip it outright". The probe is the footprint's OWN centre,
+  not the placement anchor: the ellipse hangs off the published hitbox and sits
+  a little off the anchor, so a radius-0 probe at the anchor falls outside it.
+
 
 - **SCENERY IS SIZED AGAINST THE PERSON THIS GAME DRAWS, NOT THE ONE THE
   CONTRACT ASSUMES** (`shared/CHARACTER_BODY_PX` = 88, `sceneryDrawnPx`). A

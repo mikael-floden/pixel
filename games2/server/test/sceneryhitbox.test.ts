@@ -37,6 +37,9 @@ import {
   sceneryDrawnPx,
   sceneryHitboxRec,
   hitboxPosFor,
+  footprintBlocks,
+  FOOTPRINT_LEVEL_SLACK,
+  CELL_WU,
   ISO_GEOMETRY_MAPS3,
   type SceneryBboxDoc,
   type SceneryHitboxDoc,
@@ -196,4 +199,68 @@ test("the hearth he reported: its south-west art is pasted 13 px lower, and its 
   // Its canvas foot — the point the box hangs off — is back on the anchor.
   const foot = anchored.y + (south![3] - anchored.sy) * anchored.ky;
   assert.ok(Math.abs(foot) <= 1, `the south foot lands on the placement point (${foot.toFixed(2)} px off)`);
+});
+
+/* A CHIMNEY STANDS ON THE ROOF; A WINDOW HANGS ON THE WALL. Both carry a `z`,
+ * and stampSceneryCollision used to skip every placement that had one — "a
+ * window or a hanging hangs on the wall behind the cell; the wall blocks" —
+ * which is right for the window and wrong for the chimney. All ten of
+ * the_game's chimneys carry z:6 and not one of them blocked anything
+ * (maintainer 2026-09-15, standing on a roof a monster had pushed him onto:
+ * "the hitbox on the chimney is not working"; he took fall damage jumping off,
+ * so the roof position was real).
+ *
+ * BOTH HALVES ARE THE CLAIM. A chimney must block a body ON ITS ROOF, and it
+ * must NOT block one in the room underneath — a footprint filed at the base
+ * level would put an invisible pillar in the middle of somebody's floor, which
+ * is the failure the level-aware footprint exists to prevent. */
+test("a chimney is stamped on its roof, filed at the deck and not at the base", { skip }, () => {
+  const bbox = JSON.parse(readFileSync(BBOX, "utf8")) as SceneryBboxDoc;
+  const hitbox = JSON.parse(readFileSync(HITBOX, "utf8")).overrides as SceneryHitboxDoc;
+  const world = parseWorld(JSON.parse(readFileSync(WORLD, "utf8")))!;
+  const grid = buildTerrainGrid(world.width, world.height, world.rows, world.props, world.decks);
+  stampSceneryCollision(grid, world.scenery ?? [], bbox, hitbox, ISO_GEOMETRY_MAPS3);
+  const fp = grid.footprints;
+  assert.ok(fp && fp.n > 0, "the world stamps footprints at all");
+
+  const scen = world.scenery ?? [];
+  // THE CHIMNEY'S OWN FOOTPRINT, by placement index — not "is anything here",
+  // which a hearth or a wall piece on the floor below answers for free (the
+  // first cut of this test asserted that and failed on chimney_022's own room).
+  const ofPlace = new Map<number, number>();
+  for (let i = 0; i < fp!.n; i++) ofPlace.set(fp!.place[i], i);
+
+  let checked = 0;
+  for (let pi = 0; pi < scen.length; pi++) {
+    const c = scen[pi];
+    if (!/chimney/.test(c.piece)) continue;
+    const i = Math.floor(c.y) * grid.width + Math.floor(c.x);
+    const deck = grid.deck[i];
+    const base = grid.level[i];
+    // Only the ones that really stand on a deck: a chimney the map hangs on a
+    // wall is a window as far as collision is concerned, and is not this claim.
+    if (!(deck >= 0 && base + (c.z ?? 0) >= deck - 1e-9)) continue;
+    checked++;
+    const f = ofPlace.get(pi);
+    assert.ok(f !== undefined, `${c.piece} at ${c.x.toFixed(1)},${c.y.toFixed(1)} is stamped at all (z ${c.z} used to skip it outright)`);
+    assert.equal(
+      fp!.lvl[f!], deck,
+      `${c.piece} is filed at its DECK (${deck}), not the base under it (${base})`,
+    );
+    // ...which is what keeps it out of the room below: the level-aware queries
+    // skip a footprint further than FOOTPRINT_LEVEL_SLACK from the body.
+    assert.ok(
+      Math.abs(deck - base) > FOOTPRINT_LEVEL_SLACK,
+      `${c.piece}'s roof is far enough above its own floor for the slack to separate them (${base} -> ${deck})`,
+    );
+    // At the footprint's OWN centre, not at the placement point: the ellipse is
+    // hung off the published hitbox and sits a little off the anchor, so a
+    // radius-0 probe at the anchor can fall outside its own box.
+    assert.equal(
+      footprintBlocks(grid, fp!.cx[f!] * CELL_WU, fp!.cy[f!] * CELL_WU, 0, deck), true,
+      `${c.piece} blocks a body standing on its own roof`,
+    );
+  }
+  assert.ok(checked > 0, "at least one chimney stands on a deck");
+  console.log(`# ${checked} deck-standing chimney(s) stamped on their roofs`);
 });
