@@ -1,8 +1,8 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-15T17:10:41+00:00",
+  "updated_at": "2026-09-15T17:33:39+00:00",
   "health": "running",
-  "current": "IN FLIGHT \u2014 WINDOWS FLICKER TO NOT_LIT FOR ONE FRAME when you run OUT of a house and the outdoor fade starts (maintainer 2026-09-15). A window is a base image plus an ON overlay at alpha = cutFade x windowGlow x outK, where outK = indoorOutside(window) ? 1 - indoorGrade() : 1. Suspect, to be MEASURED not assumed: indoorOutside keys off roomMask, which flips as a STEP when the room binding drops, while indoorGrade is a RAMP that is still ~1 at that instant \u2014 so outK momentarily hits 0 and only the unlit base draws. FILES: games2/client/src/scenes/WorldScene.ts (stepSceneryWalls and whatever the trace blames), a gate, and games2/docs/lighting.md. Tracing per frame through a temporary local probe first.",
+  "current": "IDLE \u2014 the window NOT_LIT flicker is fixed (maintainer 2026-09-15). A wall record is destroyed and recreated on EVERY scenery rebuild \u2014 and an indoor transition rebuilds every frame \u2014 with glow 0 and its ON overlay at alpha 0, while the unlit BASE took its cut fade at once, so any frame drawn before the next stepSceneryWalls showed the unlit pane alone. registerSceneryWall now steps the record it just pushed, and stepSceneryWalls is that same call in a loop. Measured at POST_UPDATE (what the frame is about to draw): 52 dark frames over three round trips -> 0. Gate: verify-lightparity section 7, proven to fail on the old rule (16 of 575, first at inside=false). New read-only probe __ml.winTrace(true|false). NOT this fault, and left alone: the ENTERING case draws an unlit pane while outK = 1 - indoorGrade() suppresses it \u2014 27 frames, all with a correct glow, which is the cut-away's own rule. Open, unclaimed: emissive TILES cast their shadow from their own z; the scenery-lights switch also moves the room's base ambient. Waiting on maps2 for render3's four ports.",
   "progress": {
     "units_shipped": 37
   },

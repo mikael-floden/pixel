@@ -950,6 +950,29 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
 
 ## Windows
 
+- **A REBUILT WALL PIECE IS STEPPED ON THE FRAME IT IS BUILT**
+  (`registerSceneryWall` ends by calling `stepSceneryWall` on the record it just
+  pushed; `stepSceneryWalls` is now that same call in a loop, so the creation
+  path and the per-frame path cannot drift). A wall record is destroyed and
+  recreated on EVERY scenery rebuild — and during an indoor transition there is
+  a rebuild every frame — with `glow: 0` and its ON overlay at `setAlpha(0)`,
+  while the unlit BASE took its real cut fade at once. Any frame drawn between
+  the rebuild and the next `stepSceneryWalls` therefore showed the unlit pane
+  alone: the maintainer's "when I run out of a house ... the windows flicker to
+  NOT_LIT for what looks like a single frame before they render correctly"
+  (2026-09-15). Measured at POST_UPDATE — what the frame is ABOUT TO DRAW, not
+  what a mid-frame reset leaves for a later step to repair, which is why a
+  sample taken inside `stepSceneryWalls` sees the fault and cannot tell whether
+  it reaches the screen: 52 such frames over three round trips, every one
+  `base=1 onAlpha=0 glow=0` against `onAlpha=0.171 glow=0.188` the frame
+  before. Nought after. Gate: verify-lightparity section 7 walks in and out of
+  the world's most-windowed house and fails on the old rule (16 dark frames of
+  575, the first at `inside=false` — the leaving case he reported).
+  The probe is `__ml.winTrace(true|false)`: every wall piece's drawn state per
+  frame, off unless asked. The ENTERING case still draws an unlit pane while
+  `outK = 1 - indoorGrade()` suppresses it, and that is the cut-away's own rule
+  (27 such frames, all with a correct glow), not this fault.
+
 - **A WINDOW GLOWS BY THE ROOM'S BRIGHTNESS, NEVER ON/OFF** (`windowGlow`,
   WorldScene). The LIGHTS_ON overlay's alpha is a floor plus a fade: the floor
   is the room's indoor ambient — the dark-room dial (40%) for a room with no

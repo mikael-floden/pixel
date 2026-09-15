@@ -86,6 +86,43 @@ const SHADOW_PAIRS = lit
     .filter((x) => x.d >= 1.3 && x.d <= 2.6))
   .sort((a, b) => (levelAt(Math.floor(b.L.x), Math.floor(b.L.y)) - levelAt(Math.floor(a.L.x), Math.floor(a.L.y))) || a.d - b.d);
 const SHADOW = SHADOW_PAIRS[0];
+/* SECTION 7's HOUSE: the room hanging the most windows, with a cell inside it and one
+ * outside on the same level to step between. A window's lit pane is an ON overlay over
+ * an unlit base, and the fault it gates is a rebuilt overlay drawn before it is given
+ * its alpha. */
+const winRoomCells = world.rooms.map((rm) => rm.cells.map((c) => [c.x, c.y]));
+const levelOf = (c, r) => (Array.isArray(world.level[0]) ? world.level[r]?.[c] : world.level[r * world.size.w + c]) ?? 0;
+const winPerRoom = world.rooms.map((_, i) => 0);
+for (const sc of world.scenery) {
+  if (!/window/.test(sc.piece)) continue;
+  // The NEAREST room, not the first one that happens to be within reach: rooms are
+  // walked in index order and a window between two of them was being credited to
+  // whichever came first, which picked a one-window house over a six-window one.
+  let best = -1, bd = 2.5;
+  winRoomCells.forEach((cells, i) => {
+    for (const [x, y] of cells) {
+      const d = Math.hypot(x - sc.x, y - sc.y);
+      if (d < bd) { bd = d; best = i; }
+    }
+  });
+  if (best >= 0) winPerRoom[best]++;
+}
+const HOUSE = (() => {
+  let best = -1;
+  for (let i = 0; i < winPerRoom.length; i++) if (winPerRoom[i] > (best < 0 ? 0 : winPerRoom[best])) best = i;
+  if (best < 0) return null;
+  const cells = winRoomCells[best];
+  const xs = cells.map((c) => c[0]), ys = cells.map((c) => c[1]);
+  const mid = [Math.round(xs.reduce((a, b) => a + b, 0) / xs.length), Math.round(ys.reduce((a, b) => a + b, 0) / ys.length)];
+  const inside = cells.slice().sort((a, b) => Math.abs(a[0] - mid[0]) + Math.abs(a[1] - mid[1]) - (Math.abs(b[0] - mid[0]) + Math.abs(b[1] - mid[1])))[0];
+  const own = new Set(cells.map(([x, y]) => `${x},${y}`));
+  const lvl = levelOf(inside[0], inside[1]);
+  let out = null;
+  for (let r = Math.max(...ys) + 1; r <= Math.max(...ys) + 6 && !out; r++)
+    for (let c = Math.min(...xs); c <= Math.max(...xs); c++)
+      if (!own.has(`${c},${r}`) && levelOf(c, r) === lvl) { out = [c, r]; break; }
+  return out ? { room: best, windows: winPerRoom[best], inside, out } : null;
+})();
 const outdoorLit = lit.filter((p) => !inARoom(p));
 if (!outdoorLit.length) fatal("every lit placement stands in a room — the outdoor sections have no fixture");
 const LAMP = outdoorLit
@@ -442,6 +479,57 @@ if (!SHADOW) {
     ok(far < 0.9, `and 2 cells on, where a light at the 1.5 ceiling casts nothing (occ ${far.toFixed(3)})`);
   }
   await page.evaluate(() => window.__ml.torch(true));
+}
+
+// ---- 7. A REBUILT WINDOW IS LIT ON THE FRAME IT IS BUILT ---------------------
+// Maintainer 2026-09-15: "when I run out of a house ... the windows flicker to
+// NOT_LIT for what looks like a single frame before they render correctly." A
+// wall record is destroyed and recreated on every scenery rebuild — and during
+// an indoor transition there is a rebuild EVERY frame — with its glow at 0 and
+// its ON overlay at alpha 0, while the unlit base takes its real alpha at once.
+// Any frame drawn before the next step showed the unlit pane alone.
+if (!HOUSE) {
+  console.log("SKIP 7: no room in the_game hangs a window");
+} else {
+  console.log(`window house: room ${HOUSE.room}, ${HOUSE.windows} windows; inside ${HOUSE.inside}, outside ${HOUSE.out}`);
+  await page.evaluate((p) => window.__ml.teleport(p[0] + 0.5, p[1] + 0.5), HOUSE.inside);
+  await page.waitForTimeout(5000);
+  // The ON overlay only exists once the window's LIGHTS_ON art has landed.
+  await page
+    .waitForFunction(() => (window.__ml.sceneryWalls() ?? []).some((x) => x.on !== null), null, { timeout: 120_000, polling: 400 })
+    .catch(() => {});
+  await page.waitForTimeout(2500);
+  const built = await page.evaluate(() => (window.__ml.sceneryWalls() ?? []).filter((x) => x.on !== null).length);
+  ok(built > 0, `the house's windows carry a lit overlay (${built})`);
+
+  await page.evaluate(() => window.__ml.winTrace(true));
+  for (let i = 0; i < 2; i++) {
+    await page.evaluate((p) => window.__ml.teleport(p[0] + 0.5, p[1] + 0.5), HOUSE.out);
+    await page.waitForTimeout(3000);
+    await page.evaluate((p) => window.__ml.teleport(p[0] + 0.5, p[1] + 0.5), HOUSE.inside);
+    await page.waitForTimeout(3000);
+  }
+  const tr = await page.evaluate(() => window.__ml.winTrace(false));
+  const rows = tr?.rows ?? [];
+  // NOT VACUOUS: the walk has to have actually rebuilt, and the panes have to have
+  // actually been lit at some point, or "no dark frames" means nothing.
+  const rebuilds = new Set(rows.map((r) => r.rebuilds)).size;
+  const everLit = rows.filter((r) => r.hasOn && r.onAlpha > 0.005).length;
+  ok(rebuilds > 2, `the walk rebuilt the scenery (${rebuilds} distinct rebuilds over ${tr?.frames ?? 0} frames)`);
+  ok(everLit > 0, `and the panes were lit during it (${everLit} lit frames)`);
+  // THE FAULT: a visible pane whose glow is 0 — the freshly-built record's value,
+  // never the value windowGlow returns for a room (its floor alone is non-zero).
+  const dark = rows.filter((r) => r.base > 0.05 && r.hasOn && r.onAlpha <= 0.005 && r.glow === 0);
+  // NOT AN ASSERTION: `sceneryWalls` holds every WALL-HUNG piece, and a crest, a
+  // hanging or a chimney has no lit variant at all — "visible with no overlay" is
+  // the normal state for most of them, not a fault.
+  const noOverlay = rows.filter((r) => r.base > 0.05 && !r.hasOn);
+  console.log(`  (${noOverlay.length} of ${rows.length} frames are wall pieces with no lit variant — crests, hangings, chimneys)`);
+  if (dark.length) {
+    const d = dark[0];
+    console.log(`  first: place ${d.place} frame ${d.f} rebuild #${d.rebuilds} base=${d.base} onAlpha=${d.onAlpha} glow=${d.glow} inside=${d.inside}`);
+  }
+  ok(dark.length === 0, `no frame draws a window's unlit base with its overlay unfilled (${dark.length} of ${rows.length})`);
 }
 
 await browser.close();

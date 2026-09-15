@@ -8133,6 +8133,41 @@ export class WorldScene extends Phaser.Scene {
         })),
       /** Why a window glows what it glows: its room, the room's own sources
        *  as the glow sums them, and the night factor. */
+      /* EVERY WALL PIECE'S DRAWN STATE, PER FRAME, while tracing — the only way to
+       * see a one-frame fault in something the eye reports as a flicker. Sampled at
+       * POST_UPDATE, so it is what the frame is ABOUT TO DRAW: a rebuild recreates
+       * every wall record mid-frame with glow 0 and its overlay at alpha 0, and a
+       * sample taken inside stepSceneryWalls measures that reset rather than the
+       * picture. `winTrace(true)` starts, `winTrace(false)` returns {rows, frames}
+       * and detaches. Read-only, off unless asked, and nothing is allocated while
+       * it is off. */
+      winTrace: (on?: boolean) => {
+        if (on === true) {
+          this.winTrace = [];
+          this.winFrames = 0;
+          /* POST_UPDATE, not inside stepSceneryWalls. A rebuild recreates every wall
+           * record mid-frame with glow 0 and its overlay at alpha 0, and a later step
+           * in the SAME frame repairs it — so a sample taken at the step measures the
+           * reset, not the picture. What the frame is about to draw is what a "flickers
+           * for one frame" report is about. */
+          this.winSample = () => {
+            this.winFrames++;
+            if (!this.winTrace || this.winTrace.length >= 20000) return;
+            for (const w of this.sceneryWalls)
+              this.winTrace.push({ f: this.winFrames, t: Math.round(this.time.now), place: w.place,
+                hasOn: !!w.on, onAlpha: w.on ? +w.on.alpha.toFixed(3) : null, base: +w.img.alpha.toFixed(3),
+                glow: +w.glow.toFixed(3), rebuilds: this.scnRebuilds,
+                inside: this.indoorInside, mix: +this.indoorMix.toFixed(3) });
+          };
+          this.events.on(Phaser.Scenes.Events.POST_UPDATE, this.winSample);
+        } else if (on === false) {
+          if (this.winSample) this.events.off(Phaser.Scenes.Events.POST_UPDATE, this.winSample);
+          this.winSample = undefined;
+          const t = this.winTrace; const f = this.winFrames; this.winTrace = null;
+          return { rows: t, frames: f };
+        }
+        return this.winTrace?.length ?? 0;
+      },
       windowGlowDebug: (place: number) => {
         const w = this.sceneryWalls.find((x) => x.place === place);
         if (!w) return null;
@@ -17051,6 +17086,13 @@ export class WorldScene extends Phaser.Scene {
    *  every ROOM_LIT_MS: the answer only changes when the room binding or the
    *  scenery around me does, and the crossfade between the two dials is the
    *  indoor grade's own ease, so a late frame costs nothing visible. */
+  /** The `__ml.winTrace` buffer — null unless a gate or a probe is tracing. */
+  private winTrace: Array<Record<string, unknown>> | null = null;
+  private winFrames = 0;
+  /** Scenery rebuilds so far — a trace row carries it, so a fault can be tied to
+   *  the rebuild that produced it rather than to a wall-clock guess. */
+  private scnRebuilds = 0;
+  private winSample?: () => void;
   private roomLitAt = 0;
   private roomLitVal = false;
   private roomHasLight(): boolean {
@@ -17160,6 +17202,18 @@ export class WorldScene extends Phaser.Scene {
     img.setAlpha(a);
     if (lo) lo.fade = a;
     this.sceneryWalls.push({ place: p.i, piece: p.piece, img, lo, on, z, fx, fy, inner, glow: 0, glowAt: -Infinity });
+    /* A REBUILT WINDOW IS LIT ON THE FRAME IT IS BUILT, not on the next one.
+     * The base image takes its cut fade right here, but the ON overlay was created
+     * at alpha 0 with the record's glow at 0, and only `stepSceneryWalls` filled
+     * them in — so any frame that DREW between the rebuild and that step showed the
+     * unlit pane alone. Measured at POST_UPDATE (what the frame is about to draw)
+     * walking in and out of a house: 52 such frames over three round trips, every
+     * one of them `base=1 onAlpha=0 glow=0` on the frame of a rebuild, against
+     * `onAlpha=0.171 glow=0.188` on the frame before — the maintainer's "the
+     * windows flicker to NOT_LIT for what looks like a single frame" (2026-09-15).
+     * Stepping the record it just pushed costs one windowGlow on a rebuild, which
+     * is what the next frame would have paid anyway. */
+    this.stepSceneryWall(this.sceneryWalls[this.sceneryWalls.length - 1]);
   }
 
   /** THE ROOM'S FLOOR ON SCREEN: the top centre of every cell under my roof
@@ -17210,19 +17264,24 @@ export class WorldScene extends Phaser.Scene {
    *  window's ON overlay its glow. Cheap — the_game hangs 61 pieces. */
   private stepSceneryWalls(): void {
     if (!this.sceneryWalls.length) return;
+    for (const w of this.sceneryWalls) this.stepSceneryWall(w);
+  }
+
+  /** ONE wall piece's fade and, for a window, its ON overlay — the whole rule, in
+   *  one place, so a record built mid-frame gets exactly what the per-frame pass
+   *  would have given it. */
+  private stepSceneryWall(w: (typeof this.sceneryWalls)[number]): void {
     const now = this.time.now;
-    for (const w of this.sceneryWalls) {
-      const a = this.cutFade(w.z, w.fx, w.fy);
-      w.img.setAlpha(a);
-      if (w.lo) w.lo.fade = a;
-      if (w.on) {
-        if (now - w.glowAt > WINDOW_GLOW_MS) {
-          w.glow = this.windowGlow(w.inner);
-          w.glowAt = now;
-        }
-        const outK = this.indoorOutside(w.fx, w.fy, w.z) ? 1 - this.indoorGrade() : 1;
-        w.on.setAlpha(a * w.glow * outK);
+    const a = this.cutFade(w.z, w.fx, w.fy);
+    w.img.setAlpha(a);
+    if (w.lo) w.lo.fade = a;
+    if (w.on) {
+      if (now - w.glowAt > WINDOW_GLOW_MS) {
+        w.glow = this.windowGlow(w.inner);
+        w.glowAt = now;
       }
+      const outK = this.indoorOutside(w.fx, w.fy, w.z) ? 1 - this.indoorGrade() : 1;
+      w.on.setAlpha(a * w.glow * outK);
     }
   }
 
@@ -21729,6 +21788,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private rebuildScenery(cam: Phaser.Cameras.Scene2D.Camera) {
+    this.scnRebuilds++;
     /* THE CURRENT SET BECOMES THE POOL (see `scnImage`). Whatever this rebuild
      * does not take back out is destroyed by `scnDrain` at every exit. The
      * self-heal mirrors the occluders': a throw between the swap and the drain
