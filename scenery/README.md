@@ -264,6 +264,27 @@ ask for five; the 4-own/2-opposite default is unchanged).
   variety picker strides modulo the list, index 4 drew the SAME design as
   index 1. Two of his three chimneys came back one design; the group now
   carries twelve so a re-roll cannot collide.
+- **THE LIGHT LADDER, AND WHERE THE NUMBERS COME FROM.** `strength` is a
+  multiplier on THE SPAWN CAMPFIRE, not an absolute: games2 computes the slot's
+  intensity as `CAMPFIRE_PEAK (1.9) x strength` and normalises the hex colour by
+  its own brightest channel (`games2/client/src/scenerylights.ts`,
+  `lightFromBlock`), so the hex sets the HUE and `strength` sets the brightness.
+  `radius` is in CELLS and is passed through uncapped (maintainer 2026-09-07:
+  "the campfire is one light, not the game's maximum"). Two fixed points to
+  judge a new piece against, and the second one is the one he actually sees in
+  play: the campfire is strength 1.0 at radius 7, and THE PLAYER'S OWN TORCH is
+  the game's `[0.85, 0.58, 0.32]` at radius 6 — the same three numbers a
+  manifest would write as **#ffae60, strength 0.45, radius 6** (0.85 / 1.9), a
+  gentle flicker of 0.35, held at waist height, only ever your own, and ×1.6
+  overbright while you are dead. Anything at strength 0.45 lights a room as
+  much as walking in with a torch does. The published spread today: median
+  strength 0.12 and median radius 2, up through a lantern post (0.42, r7), a
+  streetlight (0.60, r11), a hearth (0.84, r16) to the beacons at 1.0, r18.
+  That ladder is on the wiki's strength slider too — the `reference` string in
+  every light block is what the wiki shows as the rail's title
+  (`wiki/site/wiki.js`, `rail("strength", ...)`), so it is where a number he
+  needs mid-review belongs; `pipeline/light.py`'s `REFERENCE` writes it and the
+  500 pieces that carry one are backfilled with it.
 - **THE TAG A CONSUMER READS — `mount`, `fixture`, `vent`** (maintainer
   2026-09-13: "make some form of tag so the game/ambient-agent knows what this
   scenery is and can place it and attach an effect to it properly ... he will

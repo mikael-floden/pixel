@@ -74,7 +74,7 @@ KINDS = ("fire/open",      # a visible flame: torch, candle, hearth, campfire
 V_MIN, S_MIN = 0.8, 0.2          # what counts as an emissive pixel
 MIN_EMISSIVE_PX = 24             # fewer than this and the colour is not trusted
 NUDGE_LO, NUDGE_HI = 0.6, 1.3    # share / group median -> 0.8 | 1.0 | 1.2
-REFERENCE = "the spawn bonfire is 1.0 (radius 7) and NOT the maximum; strength 0 is no light"
+REFERENCE = "the spawn bonfire is 1.0 (radius 7) and NOT the maximum; YOUR OWN TORCH is 0.45 (radius 6, #ffae60); strength 0 is no light"
 
 
 def _cfg_light():
