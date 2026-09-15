@@ -751,6 +751,27 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   ground 1 cell from the nearest lamp 0.63 luma vs 0.30 at 4.5 cells — half
   the campfire, exactly the table's strength 0.5; brightness is now the
   maintainer's column, not ours.
+- **SETTINGS "SCENERY LIGHTS" TURNS OFF EVERY LIGHT A PIECE MAKES, AND NOTHING
+  ELSE** (his ask, 2026-09-15: "a way to turn off Scenery lights ... I just
+  want it to easier debug the scene"). A persisted two-state switch beside
+  `fog`, ON by default (`ml-scenery-lights`), gated at the ONE line where a
+  piece's light is born — the top of `pushSceneryLight`, which fills both
+  `sceneryLightSources` (the ledger candidate) and `sceneryStamps` (its glow
+  halo), so one `return` removes both and cannot remove anything else. What
+  deliberately STAYS: the sprite, because a `LIT_*` state is a variation and
+  not a light; the piece's shadow shape (`setSceneryOccluders`), so a torch is
+  still blocked by the barrel that blocks it today; and the art's own emissive
+  texels in the lit copy. So with the switch off, anything still bright is the
+  sun, the sky, a torch or the art — which is the question you are asking when
+  a corner of the scene looks wrong. BOTH DIRECTIONS ARE IMMEDIATE, unlike the
+  `monsters`/`scenery` subtraction switches beside it: nothing is re-loaded, the
+  two lists are rebuilt from the placements already on screen, and the ledger
+  retires what it held on its own ramp so the pools fade rather than pop.
+  Measured beside the lamp near spawn at Night, torch off: 1 source / 1 stamp /
+  1 slot and `lightAt` 0.515 on, 0/0/0 and 0.226 off (the ambient floor), 0.516
+  when switched back on without a rejoin. Probe `__ml.sceneryLights(on?)`;
+  gate: `verify-lightparity.mjs` section 5, which also asserts the piece is
+  still drawn.
 - **EVERY WORLD LIGHT IS A REAL LIGHT — THE LIGHT SLOT LEDGER** (maintainer:
   "NO DIFFERENCE in how bright the bonfire is vs the campfire"; measured
   parity 0.95). The sources are the scenery lights (`sceneryLightSources`,

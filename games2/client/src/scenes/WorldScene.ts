@@ -1864,6 +1864,16 @@ export class WorldScene extends Phaser.Scene {
    *  default and remembered. A SCREENSHOT instrument: both wash the picture,
    *  and the maintainer photographs walls to review the art on them. */
   private fogOn = localStorage.getItem("ml-fog") !== "0";
+  /** Settings "scenery lights" — every light DERIVED FROM A PIECE (its pool in
+   *  the ledger and its glow halo), ON by default and remembered. A DEBUG
+   *  instrument, his ask (2026-09-15: "a way to turn off Scenery lights ... I
+   *  just want it to easier debug the scene"): with them gone, whatever is
+   *  still bright is the sun, the sky, a torch or the art itself, which is the
+   *  question you are asking when a corner of the scene looks wrong. The art
+   *  stays lit — a LIT_* state is a VARIATION, not a light — and so do the
+   *  pieces' shadow shapes, so a torch is still blocked by the barrel it is
+   *  blocked by today. */
+  private sceneryLightsOn = localStorage.getItem("ml-scenery-lights") !== "0";
   private spawnZones: SpawnZone[] | null = null; // lazily fetched when first shown
   private spawnZonesLoading = false;
   private keys!: Record<string, Phaser.Input.Keyboard.Key>;
@@ -4747,6 +4757,27 @@ export class WorldScene extends Phaser.Scene {
           get: () => this.fogOn,
           state: () => (this.fogOn ? "on" : "off"),
         },
+        /* SCENERY LIGHTS: every light a PIECE makes — its pool in the slot
+         * ledger and its glow halo — off in one tap, his ask (2026-09-15: "a
+         * way to turn off Scenery lights ... I just want it to easier debug the
+         * scene"). Distinct from the "scenery" cycler below, which removes the
+         * pieces themselves: here the world keeps every sprite and every
+         * shadow-caster and loses only what those sprites LIGHT, so whatever is
+         * still bright is the sun, the sky, a torch or the art's own emissive
+         * texels. Both directions are immediate — nothing is re-loaded, the
+         * two lists are rebuilt from the placements already on screen. */
+        {
+          label: "scenery lights",
+          act: () => {
+            this.setSceneryLights(!this.sceneryLightsOn);
+            this.chat.addLog(
+              "—",
+              `scenery lights: ${this.sceneryLightsOn ? "on" : "OFF — the pieces and their shadows stay; only what they light is gone"}`,
+            );
+          },
+          get: () => this.sceneryLightsOn,
+          state: () => (this.sceneryLightsOn ? `on (${this.sceneryLightSources.length})` : "off"),
+        },
         /* THE TWO SUBTRACTION SWITCHES — "does it still stutter without X?".
          * Turning one OFF takes effect immediately, because that is the arm
          * being measured: the bodies are destroyed and the index dropped here
@@ -6114,6 +6145,18 @@ export class WorldScene extends Phaser.Scene {
       // holds this frame, where it stands and how far it reaches. The companion
       // to lightSlots (counts) whenever the question is "what is lighting that".
       lights: () => this.night?.lightsNow() ?? [],
+      /** Settings "scenery lights" from a gate: read it, or set it and get the
+       *  two lists back — `sources` are the ledger candidates a piece makes,
+       *  `stamps` its glow halos, and both must be 0 when it is off. */
+      sceneryLights: (on?: boolean) => {
+        if (on !== undefined && on !== this.sceneryLightsOn) this.setSceneryLights(on);
+        return {
+          on: this.sceneryLightsOn,
+          sources: this.sceneryLightSources.length,
+          stamps: this.sceneryStamps.length,
+          slotted: [...this.slotLit].filter((id) => id.startsWith("s3:")).length,
+        };
+      },
       // ...and the light's own view of the indoor state, which is what roomAt
       // and inMyRoom read (the scene's fields are published to it per frame).
       nightIndoor: (col?: number, row?: number) => ({
@@ -14117,6 +14160,22 @@ export class WorldScene extends Phaser.Scene {
     this.hud?.refreshSettings(); // the switch prints its own state
   }
 
+  /** Settings "scenery lights" — both directions take effect NOW. Unlike the
+   *  monsters/scenery subtraction switches there is nothing to re-load: the
+   *  candidate list and the halo list are rebuilt from the placements already
+   *  on screen, so turning them back on needs no rejoin. The ledger retires
+   *  what it was holding on its own ramp, so the pools fade rather than pop. */
+  private setSceneryLights(on: boolean) {
+    this.sceneryLightsOn = on;
+    try {
+      localStorage.setItem("ml-scenery-lights", on ? "1" : "0");
+    } catch {}
+    this.sceneryLightSources = [];
+    this.sceneryStamps = [];
+    if (this.scenery) this.rebuildScenery(this.cameras.main); // refills both when on
+    this.hud?.refreshSettings();
+  }
+
   private toggleSpawnAreas(on = !this.spawnAreasOn) {
     this.spawnAreasOn = on;
     try {
@@ -21182,6 +21241,9 @@ export class WorldScene extends Phaser.Scene {
     scol: number,
     srow: number,
   ): void {
+    // Settings "scenery lights": the switch stands HERE, where a piece's light
+    // and its halo are both born, so one line removes both and nothing else.
+    if (!this.sceneryLightsOn) return;
     /* THE MANIFEST WINS (maps2/scenery ask, 2026-09-06): the state's block,
      * else the piece's — radius as given (no cap: the campfire is one light,
      * not the game's maximum — maintainer 2026-09-07), colour as

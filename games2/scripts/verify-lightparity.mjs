@@ -23,6 +23,8 @@
 //  3. INDOORS — the hearth lights its room and falls off across it
 //  4. BUDGET — total lights never exceed 12; the QA probe consumes a world
 //     slot; overflow is reported, not silently truncated
+//  5. THE SETTINGS SWITCH — "scenery lights" off removes every piece's pool
+//     and halo and nothing else; ON restores them without a rejoin
 //
 // Method notes: every luminance number is a MEDIAN over a pixel patch (the
 // footstep/ambient-agent lesson — single pixels lie); the camera is parked
@@ -305,6 +307,40 @@ for (const p of [...SWEEP, LAMP, HEARTH]) {
 }
 ok(worstTotal <= 12, `worst-case total across the sweep = ${worstTotal} <= 12`);
 ok(sawOverflowField, "overflow is reported at every spot");
+
+// ---- 5. THE SETTINGS SWITCH: "scenery lights" off ---------------------------
+// His debug instrument (2026-09-15: "a way to turn off Scenery lights ... I
+// just want it to easier debug the scene"). OFF must remove every light a
+// PIECE makes — its pool in the ledger and its glow halo — and nothing else:
+// the piece is still drawn, the sky and a torch still light the scene, and the
+// switch is not a rejoin, so ON restores it from the placements on screen.
+// Measured beside the derived lamp, which section 2 already proved is lit.
+await page.evaluate((p) => window.__ml.lookAt(p.x, p.y), LAMP);
+await page.evaluate((p) => window.__ml.teleport(p.x + 1, p.y + 3), LAMP);
+await page.waitForTimeout(2500);
+await page
+  .waitForFunction(() => window.__ml.sceneryLights().sources > 0, null, { timeout: 60_000, polling: 200 })
+  .catch(() => {});
+const swOn = await page.evaluate(() => window.__ml.sceneryLights());
+const beside = async () => mag(await page.evaluate((p) => window.__ml.lightAt(p.x + 1.5, p.y + 1), LAMP));
+const onLit = await beside();
+ok(swOn.on && swOn.sources > 0 && swOn.stamps > 0, `it ships ON, with the lamp's light and halo (${swOn.sources} sources, ${swOn.stamps} stamps)`);
+const drawnOn = await page.evaluate((i) => (window.__ml.sceneryDrawn(i) ?? []).length, LAMP.i);
+await page.evaluate(() => window.__ml.sceneryLights(false));
+await page.waitForTimeout(1600);
+const swOff = await page.evaluate(() => window.__ml.sceneryLights());
+const offLit = await beside();
+const drawnOff = await page.evaluate((i) => (window.__ml.sceneryDrawn(i) ?? []).length, LAMP.i);
+console.log(`scenery lights: on ${swOn.sources}/${swOn.stamps}/${swOn.slotted} lightAt ${onLit.toFixed(3)} -> off ${swOff.sources}/${swOff.stamps}/${swOff.slotted} lightAt ${offLit.toFixed(3)}`);
+ok(!swOff.on && swOff.sources === 0 && swOff.stamps === 0 && swOff.slotted === 0, "off leaves no source, no halo and no slot to any piece");
+ok(offLit < onLit * 0.6, `and the ground beside the lamp goes dark (${offLit.toFixed(3)} vs ${onLit.toFixed(3)})`);
+ok(drawnOff === drawnOn && drawnOn > 0, `the piece itself is still drawn (${drawnOff} image(s), as with the lights on)`);
+await page.evaluate(() => window.__ml.sceneryLights(true));
+await page.waitForTimeout(1600);
+const swBack = await page.evaluate(() => window.__ml.sceneryLights());
+const backLit = await beside();
+ok(swBack.sources === swOn.sources && swBack.stamps === swOn.stamps, `and ON restores them with no rejoin (${swBack.sources} sources, ${swBack.stamps} stamps)`);
+ok(Math.abs(backLit - onLit) < 0.05, `the pool is the one it was (${backLit.toFixed(3)} vs ${onLit.toFixed(3)})`);
 
 await browser.close();
 console.log(failed ? `\nverify-lightparity: ${failed} FAILURE(S)` : "\nverify-lightparity OK");
