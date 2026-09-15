@@ -16,7 +16,19 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   unlit room to [0.342, 0.355, 0.400]. Probe `__ml.indoorLight(v?, "dark"|"lit")`
   reports both dials, `roomHasLight` and every drawn light with the room
   test's verdict on it. `roomHasLight` reads the DRAWN light set, so it can
-  differ by camera window, never by the room. THE PHONE'S OWN NUMBERS come
+  differ by camera window, never by the room (measured 2026-09-15: it did NOT
+  flip with the camera walked 22 cells off his fireplace room — the padded cull
+  still held the hearth). THE SETTINGS "SCENERY LIGHTS" SWITCH MOVES THIS DIAL
+  WITH IT: it returns at the top of `pushSceneryLight`, so the source list it
+  empties is the list `roomHasLight` scans, and the room re-reads as unlit —
+  [0.0995, 0.1041, 0.12] on, [0.3418, 0.3548, 0.4] off, a 3.4x brighter floor
+  from a switch whose label promises only "what they light is gone". A pair of
+  screenshots A/B'd on that switch is therefore NOT a like-for-like pair.
+  Note also that a piece's light needs its ART RESIDENT before
+  `pushSceneryLight` can derive anything: measured 27-34 s from teleport to the
+  hearth entering the list in a cold headless session, so a probe that reads
+  the dial too early measures a room with no light in it.
+  THE PHONE'S OWN NUMBERS come
   from the Settings button "indoor report" (one chat line: verdict, grade,
   mix, cell, elev, room key and size, mask cells and whether the mask
   texture is bound, cave depth at my cell, which ambient dial, torch and its
@@ -555,16 +567,51 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   light in it; this drops the outer 8-12% of each radius, 15-21% of its area.
   Measured at that lamp (skip radius 9.87 cells): no step in the luma profile
   there — the largest step, 0.627, is a shadow edge at 3.0 cells.
-- **SCENERY SHADOWS READ NOW — GEOMETRY, NOT DARKNESS, WAS THE PROBLEM.** A
-  shadow lands at `d × h_blocker / (h_light − h_blocker)` beyond the blocker,
-  so the spawn campfire (flame LOW, radius 7, pieces taller than it) throws
-  long hard shadows across a bright pool, while a radius-4 lamp with its head
-  at 1.5 levels threw its shadow into the pool's dim tail or past its edge —
-  the maintainer saw "only the bonfire" doing it (2026-09-07). Measured at the
-  town's radius-11 lamp with a piece 2.4 cells away: the ground behind it now
-  sits at 0.46-0.60 of unshadowed across 2-4.8 cells. Bigger published radii
-  are what put the shadow back inside the lit area, so a lamp's radius is a
-  LOOK knob, not just a reach knob.
+- **A CAST SHADOW'S LENGTH IS THE LIGHT'S HEIGHT, AND NOTHING ELSE.** A blocker
+  shadows a sample only while it stands above the march ray
+  `mix(z_pixel, lp.z, t) + 0.2`, so a light BELOW the blocker's top throws a
+  shadow with no geometric tip — it runs the whole pool — and one ABOVE it
+  throws `d × (h_b − 0.2) / (h_l − h_b + 0.2)`, shortened further by the
+  march's own near-field skips (which is why a high light's shadow breaks into
+  detached patches rather than just ending: measured occ 1.000 between dips at
+  0.47, 0.72 and 0.97 cells). Swept with a neutral `__ml.probeLight` 1.8 cells
+  from a 0.92-level caster, radius held, reach in cells at
+  z 0.30/0.55/0.90/1.36/1.50/2.20: **2.98 / 2.98 / 2.22 / 0.97 / 0.72 / 0.00**
+  indoors, **3.18 / 3.18 / 2.93 / 0.92 / 0.67 / 0.00** outdoors on flat grass
+  against the same-size caster. Not an indoor rule — the same rule.
+  **RADIUS DOES NOTHING TO A SHADOW**: swept 4/6/9/13/16 cells at a fixed
+  height, reach is 0.97 at every value, indoors and out. (2026-09-07 read the
+  radius as the cure. It is not: a wider pool puts brighter floor around the
+  same stub, so it changes what you can SEE of a shadow, never the shadow.)
+  The player's torch is a hardcoded 0.55 (`litLevelOf(me) + 0.55`); every
+  scenery light derives its own from the emissive centroid of its art, clamped
+  0.3..1.5 — his hearth resolves to 1.36, a cauldron camp to the 1.50 ceiling.
+  Indoor furniture is all ONE level (`round(artH / CHARACTER_BODY_PX)` clamped
+  1..3 — a 52 px table and a 130 px wardrobe are the same 0.92-level wall), so
+  indoors the lights hang above their casters; outdoor casters (trees, cairns,
+  standing stones) are 2-3 levels and stay above theirs. That crossover, not
+  who owns the light, is the whole of "why does the torch's shadow look better
+  than the hearth's" (maintainer 2026-09-15, two screenshots). Measured at his
+  own device geometry with `__ml.occAt`, which returns the march's occlusion
+  term per ledger light — the only number a shadow question wants, since
+  `lightAt` mixes the shadow with attenuation, colour and ambient.
+  EVERY LIT SCENERY PIECE IN THE WORLD IS AT THE 1.5 CAP: one piece per family
+  sampled across the_game (trees, braziers, cauldron camps, crystals,
+  mushrooms, hearths, lantern posts, streetlights, torch posts, waystones,
+  shrines, soulstones), 15 of 15 at 1.500 above their own footing. The derived
+  height is not a distribution — the centroid always exceeds the clamp, so the
+  clamp IS the value, and one number decides every scenery shadow in the game.
+  Candidates measured 2026-09-15 against that 0.92-level caster (baseline 0.97
+  indoors / 2.09 outdoors, the torch 3.10): clamping the march's own `lp.z` to
+  0.55 while attenuation keeps the real height → 2.98 / 4.73 with the pool
+  pixel-identical; capping the light itself at 0.55 → the same shadow but the
+  pool moves with it; ray bias 0.2 → 0.05 → 1.47 / 2.78 and it deepens the
+  TORCH's shadow too; penumbra slope 1.5 → 3.0 → no change at all (the shadow
+  already sits on the 0.22 bounce floor, so depth was never the term); halving
+  the caster quantiser → no change, because a 52 px table is 1.18 levels and
+  still rounds to 1 (the caster route would have to model his table at ~1.5
+  levels, three times its drawn height). Nothing shipped — the fix is the
+  maintainer's with Fable5 (2026-09-15: "I don't want you to fix this").
 
 - **A PASS THAT IS "OFF" MUST LEAVE THE DISPLAY LIST** (`setPassRunning` in
   nightlight.ts). `setVisible(false)` does NOT stop a render-to-texture Shader:

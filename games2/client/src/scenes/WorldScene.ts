@@ -6005,6 +6005,26 @@ export class WorldScene extends Phaser.Scene {
         // A GROUND sample (the probe's use): it takes the contact blob a body's tint does not.
         return this.night.lightAt(col, row, zz, false, 0, undefined, true).map((v) => +v.toFixed(4));
       },
+      /* THE SHADOW ITSELF, per light, at an exact cell: parts.occ[i] is how much
+       * of light i REACHES this ground (1 = clear, 0.22 = the march's bounce
+       * floor). lightAt answers what the ground ENDS UP at, which mixes the
+       * shadow with attenuation, colour, ambient and the sun — so "is this
+       * shadow shorter than that one" cannot be read from it without modelling
+       * the pool. This returns the occlusion term the march computed, in the
+       * ledger's own order (__ml.lights()), which is the only number a shadow
+       * question actually wants. */
+      occAt: (col: number, row: number, z?: number) => {
+        if (!this.night || !this.world) return null;
+        const zz = z ?? (this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0);
+        const parts = { base: [0, 0, 0] as [number, number, number], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1 };
+        const l = this.night.lightAt(col, row, zz, false, 0, parts, true);
+        // Both halves from ONE march: a grid probe that wants the picture's value AND
+        // the shadow behind it must not pay for the march twice.
+        return {
+          l: l.map((v) => +v.toFixed(4)),
+          occ: [...parts.occ.slice(0, this.night.lightsNow().length)].map((v) => +v.toFixed(4)),
+        };
+      },
       // Torch switch for gates: measuring a fire's OWN pool needs my torch
       // dark, and the settings button is not reachable headlessly.
       torch: (on?: boolean) => {
