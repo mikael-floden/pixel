@@ -451,6 +451,11 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   overrides the south-east facing; `--heal <world_dir>` re-picks a stack whose
   piece or state his review deleted (a dangling reference draws nothing in the
   game and stops render3 dead).
+- `hangfit.py` — a wall hanging is not hung behind the furniture, judged on
+  the DRAWN art rather than the footprint (`spec/WORLD3.md` → a hanging is not
+  hung behind the furniture). `--apply <world_dir>` slides the covered ones
+  along their wall, offers them the room's other wall, and removes only what
+  neither wall can take.
 - `windowfit.py` — a window needs a ROOM behind it: the wall is one cell
   thick, so a face is only usable where the cell behind it is floor
   (`spec/WORLD3.md` → a window needs a room behind it). `--apply <world_dir>`

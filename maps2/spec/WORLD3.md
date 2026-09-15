@@ -884,6 +884,22 @@ furniture already standing against that wall wins, and a wall with no clear
 cell gets nothing (a cupboard is as tall as the hanging is high). The old rule
 stood the hanging on the floor against the north wall like a chest.
 
+**A HANGING IS NOT HUNG BEHIND THE FURNITURE, and the test is the DRAWN ART**
+(maintainer 2026-09-15, on a crest hung inside the chimney breast of the hearth
+below it: *"a wall decoration you placed so it collides with the open fire
+scenery. It looks really ugly."*). `_hang` already has the rule — the slot
+farthest from the furniture on that wall wins — but it judges the FOOTPRINT,
+and a hearth's breast rises most of the wall while its footprint is half a
+cell. It also ran BEFORE `indoorfire` put a fire on the same wall. Measured on
+the_game: 22 hangings overlapped a floor piece's art, 9 of them a fire this
+pass placed, five completely hidden. **The fire wins and the hanging moves**
+(`hangfit.py --apply`): the covered hanging slides along its own wall to the
+nearest clear slot, is offered the room's OTHER wall when its own is full, and
+is removed only when neither has room — which is `_hang`'s own fallback. Both
+rectangles come from the table the game draws with (`scenery-bbox.json`), the
+hanging's lifted by `z` at the GAME's 15 px storey, not render3's 17. the_game:
+14 slid, 2 removed, 0 left over 12% hidden.
+
 **Carpets** (`_lay_rug` / `_rug_spots`, maintainer 2026-09-11: *"When you
 place a carpet in a room can you please try to center it in the room. This is
 not a hard rule just a better default we still want variations."*): the middle
