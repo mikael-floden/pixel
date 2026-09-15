@@ -269,6 +269,16 @@ interface MonsterXfer {
   hp: number; hpMax: number; mstate: string; actionSeq: number; level: number; aggro: number;
   areaId: string; home: number; orbitSign: number; provoked: boolean; returning: boolean;
   targetSid: string; chaseOx: number; chaseOy: number;
+  /** THE DEBUG PIN CROSSES THE BORDER WITH THE BODY. `dbgmonster {pin}` means
+   *  "stand exactly here", and a pin the hand-off drops is not a pin: the
+   *  receiving room built a fresh Monster with pinned false and `nextMoveAt =
+   *  now + 200`, so a monster pushed over the line snapped home 200 ms later —
+   *  measured 1 cell into zone 1 at 201 ms, ownerless at 401 ms, 15 cells back
+   *  inside zone 0 at 602 ms. Anything asserting what the neighbour sees of it
+   *  (the edge snapshot runs every EDGE_TICKS) had a 200 ms window to sample,
+   *  which no timeout can widen. Optional so a hot state written by the
+   *  previous build still restores during a rollout. */
+  pinned?: boolean;
 }
 type CtlMessage =
   | { type: "handoff:done"; pid: string }
@@ -3170,6 +3180,7 @@ export class WorldRoom extends Room<WorldState> {
       mon.mstate = victim && (d.mstate === "chase" || d.mstate === "combat") ? d.mstate : "roam";
       mon.tsid = mon.mstate === "roam" ? "" : victim;
       mon.returning = !victim && d.returning;
+      mon.pinned = !!d.pinned; // a debug pin is a pin on both sides of the line
       mon.nextMoveAt = now + 200;
       this.state.ghostMonsters.delete(m.id);
       this.ghostOwner.delete(m.id);
@@ -3239,7 +3250,7 @@ export class WorldRoom extends Room<WorldState> {
       kind: m.kind, x: m.x, y: m.y, dir: m.dir, moving: m.moving, elev: m.elev,
       hp: m.hp, hpMax: m.hpMax, mstate: m.mstate, actionSeq: m.actionSeq, level: m.level, aggro: m.aggro,
       areaId: m.areaId, home: m.home, orbitSign: m.orbitSign, provoked: m.provoked, returning: m.returning,
-      targetSid: m.targetSid, chaseOx: m.chaseOx, chaseOy: m.chaseOy,
+      targetSid: m.targetSid, chaseOx: m.chaseOx, chaseOy: m.chaseOy, pinned: m.pinned,
     };
     void bus().publish(this.chan.ctl(to), { type: "monster:xfer", id, m: data } satisfies CtlMessage);
     this.state.monsters.delete(id);

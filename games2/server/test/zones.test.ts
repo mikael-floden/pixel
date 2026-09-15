@@ -19,14 +19,20 @@ const SKIP = "maps2/worlds3/the_game missing";
  *  on — the CONDITION is; the budget only decides how long a broken build takes
  *  to say so. Everything waited for in this file crosses the bus and lands on a
  *  room's own interval: an edge snapshot is `EDGE_TICKS` = 2 ticks (10 Hz), a
- *  hand-off is one round trip. 5 s was fifty of those and CI still timed out on
- *  the ghost that follows a monster transfer (run 1605, "timeout waiting for
- *  the old room sees it as a ghost", 5.8 s into a 132 s suite): a two-core
- *  runner with 720 tests in parallel starves the interval, so the wait measured
- *  the runner, not the server. It failed the same way on this box only while a
- *  dev stack was running beside the suite, and never in eleven runs without
- *  one. Raised together rather than one at a time, because they are all the
- *  same wait. */
+ *  hand-off is one round trip.
+ *
+ *  A LONGER BUDGET WAS NEVER THE FIX for the ghost that follows a monster
+ *  transfer, and 5 s -> 20 s only made CI take longer to say so (runs 1605,
+ *  1606, 1607, all "timeout waiting for the old room sees it as a ghost", the
+ *  last one burning the whole 20 s). Traced: the push put the monster 1 cell
+ *  over the line, the hand-off worked, and 200 ms later it SNAPPED HOME —
+ *  measured owned by zone 1 at 201 ms, ownerless at 401 ms, 15 cells back
+ *  inside zone 0 at 602 ms, because the receiving room rebuilt it with
+ *  `nextMoveAt = now + 200` and no pin. The neighbour's ghost therefore existed
+ *  for one edge snapshot at best, and a poll that missed that window could
+ *  never catch it again — which is a race no timeout widens. The monster is
+ *  PINNED over the line now (`dbgmonster {pin}`, and the pin crosses the border
+ *  with the body), so what is asserted is a state that stands still. */
 const BUS_MS = 20_000;
 
 async function waitFor(cond: () => boolean, timeout = BUS_MS, what = "condition"): Promise<void> {
@@ -180,11 +186,23 @@ test("a monster pushed over the border is transferred with its brain; chat cross
     // Push one of zone 0's monsters just over the line.
     const [mid, m0] = [...rA.state.monsters.entries()][0] as [string, any];
     const kind = m0.kind;
-    rA.send("dbgmonster", { id: mid, x: BORDER_X + CELL_WU, y });
+    // PINNED: unpinned it snaps back to its zone-0 home within 200 ms of landing,
+    // and the ghost this test is about exists only while it stands over the line.
+    rA.send("dbgmonster", { id: mid, x: BORDER_X + CELL_WU, y, pin: true });
     await waitFor(() => !rA.state.monsters.has(mid) && rB.state.monsters.get(mid)?.kind === kind, BUS_MS, "the monster changed owner");
     assert.ok(!rB.state.ghostMonsters?.has(mid), "the new owner holds no ghost of it");
     // ...and it stands as a ghost in the room it left, since it is in the band.
     await waitFor(() => rA.state.ghostMonsters?.get(mid)?.kind === kind, BUS_MS, "the old room sees it as a ghost");
+    // ...and it STAYS there. `pinned` is server-side only (it is not worth a
+    // synced field on every monster), so the pin is asserted by its effect: a
+    // second later the body is still the neighbour's and still over the line.
+    // Unpinned it is 15 cells back inside zone 0 by then, and this test passed
+    // only by winning a 200 ms race.
+    await settle(1000);
+    const held = rB.state.monsters.get(mid);
+    assert.ok(held, "the pin held the body in the zone it was pushed into");
+    assert.ok(held.x > BORDER_X, `the pinned body stands over the line (x ${held?.x} vs border ${BORDER_X})`);
+    assert.ok(!rA.state.monsters.has(mid), "and zone 0 has not taken it back");
     // Chat reaches both zones over the bus.
     const heard: string[] = [];
     rB.onMessage("chat", (c: any) => heard.push(c.text));
