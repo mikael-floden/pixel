@@ -264,6 +264,19 @@ ask for five; the 4-own/2-opposite default is unchanged).
   variety picker strides modulo the list, index 4 drew the SAME design as
   index 1. Two of his three chimneys came back one design; the group now
   carries twelve so a re-roll cannot collide.
+- **`placed` — WHICH STATES THE WORLD ACTUALLY PUTS IN THE GAME**, per piece
+  (`{"LIT_2": 1, "LIT_3": 1}`; absent = in no published world). The domain
+  publishes every state a piece has and the world picks one or two of them, so a
+  review of "hearth_001 lit_1" can be perfectly applied, deployed and verified
+  on the live server and still change nothing anybody sees — which is exactly
+  what happened (maintainer 2026-09-15: "I feel the change I did on that scenery
+  light is still not in the game"; the world places that hearth as LIT_2 and
+  LIT_3 and LIT_1 nowhere). MEASURED THE SAME DAY: 1319 LIT states published,
+  77 placed — so a lighting review picked at random is 1 in 17 to be visible.
+  The join is `pipeline/pack.py` `placed_states()`, the same closure the packed
+  layer already uses (`games2/config/publish.json` -> `maps2/worlds3/<w>/
+  world.json`), published by `viewer_build` and never fatal: if the worlds are
+  not on disk the field is simply absent.
 - **A TUNING REVIEW IS NOT LIVE UNTIL THIS DOMAIN APPLIES IT** (maintainer
   2026-09-15: "is the change I did live yet? Me doing a review doesn't redeploy
   the game as far as I know" — he is right). THE GAME'S LIVE TUNING IS THREE

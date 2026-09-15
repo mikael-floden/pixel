@@ -200,6 +200,39 @@ def placed_pieces() -> list:
     return sorted(i for i in ids if os.path.exists(os.path.join(ROOT, i, "scenery.json")))
 
 
+def placed_states() -> dict:
+    """{piece rel: {state: how many the published worlds place}} — the same
+    closure as placed_pieces(), one level finer.
+
+    WHICH STATE IS ACTUALLY IN THE GAME. A piece publishes every state it has;
+    the world picks one or two of them. He tuned hearth_001#LIT_1's light from
+    the wiki, it applied and deployed correctly, and he saw no change in the
+    game for the only reason that mattered: the world places that hearth as
+    LIT_2 and LIT_3 and LIT_1 nowhere (maintainer 2026-09-15, "I feel the change
+    I did on that scenery light is still not in the game"). Measured at the same
+    time: scenery publishes 1319 LIT states and the world places 77 of them, so
+    a review that cannot see this is tuning something nobody will ever look at
+    19 times out of 20. Published per piece in viewer_data.json so the wiki can
+    say so before he spends a session on it."""
+    pol = os.path.join(REPO, "games2", "config", "publish.json")
+    if not os.path.exists(pol):
+        return {}
+    policy = json.load(open(pol))
+    out: dict = {}
+    for w in (policy.get("userWorlds") or []) + (policy.get("devWorlds3") or []):
+        wp = os.path.join(REPO, "maps2", "worlds3", w, "world.json")
+        if not os.path.exists(wp):
+            continue
+        for s in json.load(open(wp)).get("scenery") or []:
+            if not isinstance(s, dict) or not isinstance(s.get("piece"), str):
+                continue
+            st = s.get("state")
+            key = st if isinstance(st, str) and st else "(base)"
+            out.setdefault(s["piece"], {})
+            out[s["piece"]][key] = out[s["piece"]].get(key, 0) + 1
+    return out
+
+
 def all_pieces() -> list:
     out = []
     for g in sorted(os.listdir(ROOT)):

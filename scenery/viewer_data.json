@@ -1805,6 +1805,11 @@
       "sprite": "ancient_trees/ancient_tree_001/sprite.webp",
       "art_hash": "efee6317fb901f85",
       "type": "TREE",
+      "placed": {
+        "LIT_3": 1,
+        "LIT_1": 2,
+        "LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -2480,6 +2485,11 @@
       "sprite": "ancient_trees/ancient_tree_002/sprite.webp",
       "art_hash": "ba869feeea238b28",
       "type": "TREE",
+      "placed": {
+        "LIT_3": 1,
+        "LIT_4": 1,
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -4393,6 +4403,9 @@
       "sprite": "barrels/barrel_001/sprite.webp",
       "art_hash": "4c11534c26cd9bbe",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -4720,6 +4733,9 @@
       "sprite": "barrels/barrel_007/sprite.webp",
       "art_hash": "1ccaebfa51d67d25",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 3
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -4883,6 +4899,10 @@
       "sprite": "barrels/barrel_010/sprite.webp",
       "art_hash": "abbb75251e80ac8b",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 2,
+        "NOT_LIT_5": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -5661,6 +5681,9 @@
       "sprite": "beacons/beacon_001/sprite.webp",
       "art_hash": "ef6d4e46ad4b555d",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -8579,6 +8602,10 @@
       "sprite": "beast_skulls/beast_skull_002/sprite.webp",
       "art_hash": "d48fa7e2c6fd6af7",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 1,
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -8722,6 +8749,9 @@
       "sprite": "beds/bed_001/sprite.webp",
       "art_hash": "4bacea1d9dc29036",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 3
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -9105,6 +9135,9 @@
       "sprite": "beds/bed_002/sprite.webp",
       "art_hash": "a938588161cedd52",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -9793,6 +9826,10 @@
       "sprite": "beds/bed_005/sprite.webp",
       "art_hash": "8c1c5f1ec2894be4",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_4": 2,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -10302,6 +10339,9 @@
       "sprite": "beehives/beehive_003/sprite.webp",
       "art_hash": "93369409bef7475b",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -10962,6 +11002,13 @@
       "sprite": "braziers/brazier_001/sprite.webp",
       "art_hash": "554ff84796f08262",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 11,
+        "NOT_LIT_1": 9,
+        "NOT_LIT_3": 5,
+        "LIT_2": 2,
+        "LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -11334,6 +11381,13 @@
       "sprite": "braziers/brazier_003/sprite.webp",
       "art_hash": "b1d81594873c7acf",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 7,
+        "NOT_LIT_3": 8,
+        "NOT_LIT_4": 6,
+        "LIT_2": 5,
+        "NOT_LIT_1": 4
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -11599,6 +11653,14 @@
       "sprite": "braziers/brazier_004/sprite.webp",
       "art_hash": "324754573a6d0c03",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 14,
+        "NOT_LIT_2": 6,
+        "LIT_2": 5,
+        "LIT_1": 4,
+        "LIT_4": 2,
+        "LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -13647,6 +13709,9 @@
       "sprite": "braziers/brazier_010/sprite.webp",
       "art_hash": "678e94b004525d4c",
       "type": "TOWN",
+      "placed": {
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -17599,6 +17664,9 @@
       "sprite": "briar_thickets/briar_thicket_020/sprite.webp",
       "art_hash": "d44d64c78bf3e6b2",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -18217,6 +18285,9 @@
       "sprite": "bushes/bush_001/sprite.webp",
       "art_hash": "cfbfef7316407d44",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -18426,6 +18497,10 @@
       "sprite": "bushes/bush_007/sprite.webp",
       "art_hash": "8fcc4b3069b9d334",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 2,
+        "NOT_LIT_4": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -18576,6 +18651,10 @@
       "sprite": "bushes/bush_008/sprite.webp",
       "art_hash": "c2923b978cb48ec2",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 7,
+        "NOT_LIT_2": 7
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -18943,6 +19022,10 @@
       "sprite": "bushes/bush_014/sprite.webp",
       "art_hash": "a6ded6ce32257309",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -19040,6 +19123,9 @@
       "sprite": "bushes/bush_015/sprite.webp",
       "art_hash": "f18b66482ca1fd37",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -19273,6 +19359,9 @@
       "sprite": "bushes/bush_016/sprite.webp",
       "art_hash": "6d502ee400c884ec",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 3
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -19384,6 +19473,9 @@
       "sprite": "bushes/bush_017/sprite.webp",
       "art_hash": "2d1687d12b1dbadd",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -19562,6 +19654,10 @@
       "sprite": "cairns/cairn_009/sprite.webp",
       "art_hash": "94b2e3ce59d5de52",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1,
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -19793,6 +19889,9 @@
       "sprite": "cairns/cairn_010/sprite.webp",
       "art_hash": "4b2e09896cef5fbd",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_5": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -19905,6 +20004,9 @@
       "sprite": "cairns/cairn_011/sprite.webp",
       "art_hash": "196c60f1574f6129",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -20574,6 +20676,9 @@
       "sprite": "cairns/cairn_015/sprite.webp",
       "art_hash": "2afee934c2afcb30",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -20828,6 +20933,9 @@
       "sprite": "cairns/cairn_016/sprite.webp",
       "art_hash": "b37901981790e0a3",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -21329,6 +21437,9 @@
       "sprite": "cairns/cairn_019/sprite.webp",
       "art_hash": "c9107464262eaa3d",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -21578,6 +21689,9 @@
       "sprite": "cairns/cairn_021/sprite.webp",
       "art_hash": "eeceafbae4761bd6",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -21809,6 +21923,10 @@
       "sprite": "cairns/cairn_022/sprite.webp",
       "art_hash": "30a396d539ddf09e",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_5": 2,
+        "NOT_LIT_6": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -22458,6 +22576,9 @@
       "sprite": "carts/cart_004/sprite.webp",
       "art_hash": "0a8b797e6e7d7173",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -22649,6 +22770,9 @@
       "sprite": "carts/cart_011/sprite.webp",
       "art_hash": "524f9258ea5ef4e6",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -23136,6 +23260,10 @@
       "sprite": "cattail_clumps/cattail_clump_005/sprite.webp",
       "art_hash": "2962ac7d13162deb",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -23267,6 +23395,12 @@
       "sprite": "cattail_clumps/cattail_clump_007/sprite.webp",
       "art_hash": "ff32001b9e10f40e",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_4": 2,
+        "NOT_LIT_3": 5,
+        "NOT_LIT_2": 6,
+        "NOT_LIT_1": 6
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -23399,6 +23533,10 @@
       "sprite": "cattail_clumps/cattail_clump_020/sprite.webp",
       "art_hash": "8b8bf63876ce5e72",
       "type": "NATURE",
+      "placed": {
+        "LIT_2": 9,
+        "LIT_4": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -23636,6 +23774,10 @@
       "sprite": "cattail_clumps/cattail_clump_900/sprite.webp",
       "art_hash": "33ce69e32bae0d2e",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_4": 2,
+        "NOT_LIT_5": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -23762,6 +23904,9 @@
       "sprite": "cauldron_camps/cauldron_camp_001/sprite.webp",
       "art_hash": "2132931270766c07",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 6
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -24315,6 +24460,10 @@
       "sprite": "cauldron_camps/cauldron_camp_002/sprite.webp",
       "art_hash": "0e4c3a7f7f923f52",
       "type": "TOWN",
+      "placed": {
+        "LIT_2": 2,
+        "LIT_3": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -24590,6 +24739,9 @@
       "sprite": "chairs_and_benches/chair_001/sprite.webp",
       "art_hash": "5776e967fd734cb4",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -24683,6 +24835,9 @@
       "sprite": "chairs_and_benches/chair_003/sprite.webp",
       "art_hash": "5fea1a0e1b676c2b",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -24791,6 +24946,9 @@
       "sprite": "chairs_and_benches/chair_005/sprite.webp",
       "art_hash": "d2ae0e5162ac88e4",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_2": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -24966,6 +25124,9 @@
       "sprite": "chairs_and_benches/chair_010/sprite.webp",
       "art_hash": "f421b0c5bfa2e43e",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -25093,6 +25254,9 @@
       "sprite": "chairs_and_benches/chair_012/sprite.webp",
       "art_hash": "67eec3188a3f706a",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -25877,6 +26041,10 @@
       "sprite": "chairs_and_benches/chair_014/sprite.webp",
       "art_hash": "5367ef0ff2b0b562",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_6": 1,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -25999,6 +26167,10 @@
       "sprite": "charcoal_kilns/charcoal_kiln_002/sprite.webp",
       "art_hash": "84764aae8062329f",
       "type": "TOWN",
+      "placed": {
+        "LIT_4": 3,
+        "LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -26331,6 +26503,9 @@
       "sprite": "chess_tables/chess_table_006/sprite.webp",
       "art_hash": "28395cd6dd1f4bfc",
       "type": "INDOOR",
+      "placed": {
+        "(base)": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -26370,6 +26545,9 @@
       "sprite": "chess_tables/chess_table_009/sprite.webp",
       "art_hash": "d0305f70484744c7",
       "type": "INDOOR",
+      "placed": {
+        "(base)": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -26427,6 +26605,10 @@
             "conf": "opening"
           }
         }
+      },
+      "placed": {
+        "NOT_LIT_4": 1,
+        "NOT_LIT_3": 1
       },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
@@ -26643,6 +26825,9 @@
           }
         }
       },
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -26853,6 +27038,9 @@
             "conf": "opening"
           }
         }
+      },
+      "placed": {
+        "NOT_LIT_1": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -27065,6 +27253,10 @@
           }
         }
       },
+      "placed": {
+        "NOT_LIT_5": 2,
+        "NOT_LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -27186,6 +27378,10 @@
             "conf": "opening"
           }
         }
+      },
+      "placed": {
+        "NOT_LIT_4": 1,
+        "NOT_LIT_3": 1
       },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
@@ -37825,6 +38021,19 @@
       "sprite": "crystal_trees/crystal_tree_002/sprite.webp",
       "art_hash": "de2a06175766b0f0",
       "type": "NATURE",
+      "placed": {
+        "LIT_3": 3,
+        "LIT_4": 3,
+        "LIT_1": 2,
+        "NOT_LIT_2": 1,
+        "NOT_LIT_9": 1,
+        "NOT_LIT_3": 2,
+        "NOT_LIT_7": 1,
+        "NOT_LIT_1": 1,
+        "NOT_LIT_5": 1,
+        "NOT_LIT_4": 1,
+        "NOT_LIT_8": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -38590,6 +38799,10 @@
       "sprite": "crystals/crystal_005/sprite.webp",
       "art_hash": "0c3251a362df801d",
       "type": "NATURE",
+      "placed": {
+        "LIT_1": 2,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -38717,6 +38930,10 @@
       "sprite": "crystals/crystal_006/sprite.webp",
       "art_hash": "cca35a355dfceead",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_5": 1,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -38832,6 +39049,10 @@
       "sprite": "crystals/crystal_009/sprite.webp",
       "art_hash": "bc86656b1d64c7da",
       "type": "NATURE",
+      "placed": {
+        "LIT_2": 1,
+        "LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -39158,6 +39379,10 @@
       "sprite": "crystals/crystal_011/sprite.webp",
       "art_hash": "2d165f981c209c3a",
       "type": "NATURE",
+      "placed": {
+        "LIT_2": 4,
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -39315,6 +39540,11 @@
       "sprite": "crystals/crystal_012/sprite.webp",
       "art_hash": "09392efd668a72a8",
       "type": "NATURE",
+      "placed": {
+        "LIT_4": 2,
+        "LIT_2": 1,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -39559,6 +39789,9 @@
       "sprite": "crystals/crystal_014/sprite.webp",
       "art_hash": "cb0abdc5d1f87204",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -39646,6 +39879,10 @@
       "sprite": "crystals/crystal_901/sprite.webp",
       "art_hash": "d1148c7289893ef0",
       "type": "NATURE",
+      "placed": {
+        "LIT_1": 2,
+        "LIT_2": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -39860,6 +40097,10 @@
       "sprite": "cup_fungi/cup_fungus_001/sprite.webp",
       "art_hash": "8a9b3887aba6365b",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1,
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -40113,6 +40354,10 @@
       "sprite": "cup_fungi/cup_fungus_002/sprite.webp",
       "art_hash": "61724682c05aadcd",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 4,
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -40495,6 +40740,10 @@
       "sprite": "cupboards_and_shelves/cupboard_002/sprite.webp",
       "art_hash": "b9e306a7bfec02f6",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_5": 1,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -40635,6 +40884,9 @@
       "sprite": "cupboards_and_shelves/cupboard_003/sprite.webp",
       "art_hash": "da18978d1dcccf97",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_3": 4
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -40797,6 +41049,9 @@
       "sprite": "cupboards_and_shelves/cupboard_005/sprite.webp",
       "art_hash": "f9b24be7cb98c337",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -40973,6 +41228,10 @@
       "sprite": "cupboards_and_shelves/cupboard_008/sprite.webp",
       "art_hash": "1016ea22f533da28",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_3": 1,
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -41384,6 +41643,9 @@
       "sprite": "dock_pilings/dock_piling_005/sprite.webp",
       "art_hash": "a3b9656ed8fd7287",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -41531,6 +41793,9 @@
       "sprite": "dock_pilings/dock_piling_006/sprite.webp",
       "art_hash": "3183ee434e101b3b",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -42996,6 +43261,9 @@
       "sprite": "dragon_ribcages/dragon_ribcage_001/sprite.webp",
       "art_hash": "f7e61a654fc95ef0",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -43171,6 +43439,11 @@
       "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",
       "art_hash": "7f30d02860cf3c08",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_10": 1,
+        "NOT_LIT_1": 1,
+        "NOT_LIT_9": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -44190,6 +44463,9 @@
       "sprite": "fallen_logs/fallen_log_013/sprite.webp",
       "art_hash": "4548d0534ac7cfc8",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -46269,6 +46545,10 @@
       "sprite": "ferns/fern_007/sprite.webp",
       "art_hash": "287466fa4d851310",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -47010,6 +47290,9 @@
       "sprite": "fish_drying_racks/fish_drying_rack_002/sprite.webp",
       "art_hash": "a335a8ebb8713d8d",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -52934,6 +53217,9 @@
       "sprite": "flower_stands/flower_stand_003/sprite.webp",
       "art_hash": "2915ef4c90693079",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -54206,6 +54492,10 @@
       "sprite": "geodes/geode_001/sprite.webp",
       "art_hash": "e004f9ae45766357",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1,
+        "NOT_LIT_4": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -54474,6 +54764,9 @@
       "sprite": "giant_mushrooms/giant_mushroom_001/sprite.webp",
       "art_hash": "989aaa46e0e56615",
       "type": "NATURE",
+      "placed": {
+        "LIT_1": 6
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -54638,6 +54931,9 @@
       "sprite": "giant_mushrooms/giant_mushroom_002/sprite.webp",
       "art_hash": "0a768a883d4f57cc",
       "type": "NATURE",
+      "placed": {
+        "LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -55669,6 +55965,9 @@
       "sprite": "gravel_piles/gravel_pile_001/sprite.webp",
       "art_hash": "29b9a319dbf2a7e1",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -55862,6 +56161,10 @@
       "sprite": "gravel_piles/gravel_pile_002/sprite.webp",
       "art_hash": "aaa8d78ac6ef9658",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 1,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -58849,6 +59152,9 @@
       "sprite": "hanging_willows/hanging_willow_001/sprite.webp",
       "art_hash": "ff61dd2c22930668",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -59497,6 +59803,9 @@
       "sprite": "hanging_willows/hanging_willow_002/sprite.webp",
       "art_hash": "4e97b252b7f1366f",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_5": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -60242,6 +60551,9 @@
       "sprite": "haystacks/haystack_008/sprite.webp",
       "art_hash": "ecfa990428e5a7aa",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -60698,6 +61010,10 @@
       "sprite": "hearths/hearth_001/sprite.webp",
       "art_hash": "881022c7c60c7619",
       "type": "INDOOR",
+      "placed": {
+        "LIT_2": 1,
+        "LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -62497,6 +62813,9 @@
       "sprite": "hearths/hearth_004/sprite.webp",
       "art_hash": "e2fe1702c06c2637",
       "type": "INDOOR",
+      "placed": {
+        "LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -63252,6 +63571,10 @@
       "sprite": "hearths/hearth_008/sprite.webp",
       "art_hash": "9246ea3b380cd2a5",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 1,
+        "LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -64538,6 +64861,10 @@
       "sprite": "hearths/hearth_901/sprite.webp",
       "art_hash": "6074a78a0526a3d0",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 1,
+        "LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -70071,6 +70398,10 @@
       "sprite": "lantern_posts/lantern_post_001/sprite.webp",
       "art_hash": "9937c15ae3b54056",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 3,
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -70458,6 +70789,10 @@
       "sprite": "lantern_posts/lantern_post_004/sprite.webp",
       "art_hash": "fddbfc8a7ae4b6f6",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 1,
+        "LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -71235,6 +71570,9 @@
       "sprite": "lantern_posts/lantern_post_005/sprite.webp",
       "art_hash": "3db58a8420802459",
       "type": "TOWN",
+      "placed": {
+        "LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -71831,6 +72169,9 @@
       "sprite": "lantern_posts/lantern_post_008/sprite.webp",
       "art_hash": "0cc24025bf3fb4fb",
       "type": "TOWN",
+      "placed": {
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -72887,6 +73228,9 @@
       "sprite": "lantern_posts/lantern_post_016/sprite.webp",
       "art_hash": "81b52e33e3044892",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -73506,6 +73850,9 @@
       "sprite": "lantern_posts/lantern_post_017/sprite.webp",
       "art_hash": "ea0733facc60a034",
       "type": "TOWN",
+      "placed": {
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -76751,6 +77098,9 @@
       "sprite": "letter_boxes/letter_box_003/sprite.webp",
       "art_hash": "32952c66bbad8708",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -76859,6 +77209,9 @@
       "sprite": "market_stalls/market_stall_001/sprite.webp",
       "art_hash": "696a7ec057a77fc5",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -77122,6 +77475,9 @@
       "sprite": "market_stalls/market_stall_002/sprite.webp",
       "art_hash": "29da64b1e1dfbd10",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -77288,6 +77644,9 @@
       "sprite": "market_stalls/market_stall_003/sprite.webp",
       "art_hash": "aba6aafec0635f64",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -78037,6 +78396,9 @@
       "sprite": "maypoles/maypole_002/sprite.webp",
       "art_hash": "4bfa6f6c18fb87da",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -80181,6 +80543,10 @@
       "sprite": "mushrooms/mushroom_005/sprite.webp",
       "art_hash": "c25e090c5ead9e52",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 2,
+        "NOT_LIT_4": 4
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -80254,6 +80620,10 @@
       "sprite": "mushrooms/mushroom_006/sprite.webp",
       "art_hash": "fcef8155e1fa4ec6",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_6": 1,
+        "NOT_LIT_5": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -80551,6 +80921,11 @@
       "sprite": "mushrooms/mushroom_008/sprite.webp",
       "art_hash": "387fa844e41b1ec2",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_6": 1,
+        "NOT_LIT_2": 1,
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -80637,6 +81012,10 @@
       "sprite": "mushrooms/mushroom_009/sprite.webp",
       "art_hash": "bc2b05fecc860c1c",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 2,
+        "NOT_LIT_6": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -80827,6 +81206,10 @@
       "sprite": "mushrooms/mushroom_011/sprite.webp",
       "art_hash": "f9a9882b945e4ba2",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_4": 1,
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -81043,6 +81426,12 @@
       "sprite": "mushrooms/mushroom_013/sprite.webp",
       "art_hash": "44edd9f286ea6550",
       "type": "NATURE",
+      "placed": {
+        "LIT_1": 2,
+        "NOT_LIT_4": 1,
+        "NOT_LIT_3": 1,
+        "NOT_LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -81199,6 +81588,9 @@
       "sprite": "mushrooms/mushroom_016/sprite.webp",
       "art_hash": "938554f3093f950e",
       "type": "NATURE",
+      "placed": {
+        "LIT_4": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -84105,6 +84497,9 @@
       "sprite": "owl_snags/owl_snag_002/sprite.webp",
       "art_hash": "1854634021f38ecf",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_10": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -85255,6 +85650,9 @@
       "sprite": "puffballs/puffball_001/sprite.webp",
       "art_hash": "d181eea4e9fd977a",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -85498,6 +85896,9 @@
       "sprite": "puffballs/puffball_900/sprite.webp",
       "art_hash": "05779083a3bd90cf",
       "type": "NATURE",
+      "placed": {
+        "LIT_1": 4
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -85764,6 +86165,11 @@
       "sprite": "reed_beds/reed_bed_007/sprite.webp",
       "art_hash": "6a56114c426d51cc",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 11,
+        "NOT_LIT_4": 8,
+        "NOT_LIT_1": 8
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -85857,6 +86263,11 @@
       "sprite": "reed_beds/reed_bed_010/sprite.webp",
       "art_hash": "a147ebd004c2f5ce",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_6": 4,
+        "NOT_LIT_5": 3,
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -86208,6 +86619,10 @@
       "sprite": "rock_spires/rock_spire_002/sprite.webp",
       "art_hash": "2549b91a33c51db9",
       "type": "NATURE",
+      "placed": {
+        "LIT_4": 1,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -86827,6 +87242,10 @@
       "sprite": "rugs_and_hides/rug_009/sprite.webp",
       "art_hash": "8e27e6cb0f3b62fe",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 1,
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": false,
       "hitbox_shape": "rect",
@@ -87044,6 +87463,9 @@
       "sprite": "rugs_and_hides/rug_012/sprite.webp",
       "art_hash": "869cda6d692a38ef",
       "type": "INDOOR",
+      "placed": {
+        "LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": false,
       "hitbox_shape": "rect",
@@ -87137,6 +87559,10 @@
       "sprite": "rugs_and_hides/rug_014/sprite.webp",
       "art_hash": "c190d4a3e4f3cee3",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_4": 1,
+        "NOT_LIT_5": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": false,
       "hitbox_shape": "rect",
@@ -87396,6 +87822,9 @@
       "sprite": "rugs_and_hides/rug_017/sprite.webp",
       "art_hash": "2146752678c2cba5",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_4": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": false,
       "hitbox_shape": "rect",
@@ -88350,6 +88779,9 @@
       "sprite": "scarecrows/scarecrow_005/sprite.webp",
       "art_hash": "0e2bfc98082c1937",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -90167,6 +90599,9 @@
       "sprite": "shipwreck_prows/shipwreck_prow_002/sprite.webp",
       "art_hash": "1ded1b4de28154c5",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_5": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -90264,6 +90699,10 @@
       "sprite": "signposts/signpost_004/sprite.webp",
       "art_hash": "641d33ecbbde5839",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_5": 1,
+        "NOT_LIT_6": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -90361,6 +90800,9 @@
       "sprite": "signposts/signpost_009/sprite.webp",
       "art_hash": "700a467deace7f52",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -90441,6 +90883,9 @@
       "sprite": "signposts/signpost_025/sprite.webp",
       "art_hash": "c75b7a8dbc71df10",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -90613,6 +91058,9 @@
       "sprite": "signposts/signpost_028/sprite.webp",
       "art_hash": "38e3b937fa91070d",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -92032,6 +92480,9 @@
       "sprite": "soulstone_outcrops/soulstone_outcrop_014/sprite.webp",
       "art_hash": "929c23506615d3b5",
       "type": "NATURE",
+      "placed": {
+        "LIT_4": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -92406,6 +92857,9 @@
       "sprite": "soulstone_outcrops/soulstone_outcrop_016/sprite.webp",
       "art_hash": "84c7f57e63805702",
       "type": "NATURE",
+      "placed": {
+        "LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -92957,6 +93411,9 @@
       "sprite": "soulstone_outcrops/soulstone_outcrop_900/sprite.webp",
       "art_hash": "804ae4a0687a27f0",
       "type": "NATURE",
+      "placed": {
+        "LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -93877,6 +94334,9 @@
       "sprite": "standing_stones/standing_stone_001/sprite.webp",
       "art_hash": "7a80e2f58843a7b8",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -93999,6 +94459,9 @@
       "sprite": "statues/statue_003/sprite.webp",
       "art_hash": "2dbe1d8a827f0106",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -94431,6 +94894,9 @@
       "sprite": "stone_fountains/stone_fountain_004/sprite.webp",
       "art_hash": "bb2d5a2e096f31c3",
       "type": "TOWN",
+      "placed": {
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -94640,6 +95106,9 @@
       "sprite": "stones/stone_001/sprite.webp",
       "art_hash": "30420173c1ee5562",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -95568,6 +96037,12 @@
       "sprite": "stones/stone_011/sprite.webp",
       "art_hash": "c088f37d89cf4f40",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 6,
+        "NOT_LIT_3": 6,
+        "NOT_LIT_4": 7,
+        "NOT_LIT_2": 5
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -95706,6 +96181,12 @@
       "sprite": "stones/stone_012/sprite.webp",
       "art_hash": "1b09b5f8dce7e206",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 2,
+        "NOT_LIT_5": 9,
+        "NOT_LIT_6": 1,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -96021,6 +96502,12 @@
       "sprite": "stones/stone_015/sprite.webp",
       "art_hash": "e6d6e6c458bcc4ff",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_4": 2,
+        "NOT_LIT_3": 1,
+        "NOT_LIT_2": 1,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -96109,6 +96596,10 @@
       "sprite": "stones/stone_017/sprite.webp",
       "art_hash": "ce905d58b9569361",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_4": 4,
+        "NOT_LIT_3": 3
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -97191,6 +97682,10 @@
       "sprite": "stones/stone_024/sprite.webp",
       "art_hash": "d0e409df648b5cf6",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 2,
+        "NOT_LIT_1": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -97396,6 +97891,12 @@
       "sprite": "stones/stone_025/sprite.webp",
       "art_hash": "b857dd649f271266",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 5,
+        "NOT_LIT_3": 2,
+        "NOT_LIT_4": 2,
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -98937,6 +99438,9 @@
       "sprite": "stones/stone_037/sprite.webp",
       "art_hash": "587ff517da486fbb",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -99677,6 +100181,9 @@
       "sprite": "stones/stone_042/sprite.webp",
       "art_hash": "a64f88757e4b64bc",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 17
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -99878,6 +100385,9 @@
       "sprite": "stones/stone_043/sprite.webp",
       "art_hash": "403e7a075e9beef0",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -100102,6 +100612,10 @@
       "sprite": "stones/stone_044/sprite.webp",
       "art_hash": "32dab1569d1a7a4c",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 10,
+        "NOT_LIT_1": 8
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -100616,6 +101130,10 @@
       "sprite": "stones/stone_047/sprite.webp",
       "art_hash": "f26c3c5323e77183",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_4": 2,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -100710,6 +101228,9 @@
       "sprite": "stones/stone_048/sprite.webp",
       "art_hash": "95a025042d5b40b7",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 8
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -101616,6 +102137,9 @@
       "sprite": "stones/stone_056/sprite.webp",
       "art_hash": "2af57e4365a354fb",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -101817,6 +102341,9 @@
       "sprite": "story_posts/story_post_001/sprite.webp",
       "art_hash": "616e0ad8a9aa29cb",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -102809,6 +103336,11 @@
       "sprite": "streetlights/streetlight_007/sprite.webp",
       "art_hash": "2a289d58457f52bb",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 1,
+        "LIT_2": 3,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -103147,6 +103679,9 @@
       "sprite": "streetlights/streetlight_011/sprite.webp",
       "art_hash": "fb2f24fce6e24bf3",
       "type": "TOWN",
+      "placed": {
+        "LIT_4": 4
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -103288,6 +103823,10 @@
       "sprite": "streetlights/streetlight_013/sprite.webp",
       "art_hash": "1f5120a092a27a91",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 1,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -103566,6 +104105,9 @@
       "sprite": "streetlights/streetlight_024/sprite.webp",
       "art_hash": "e9caa4985ef1be3a",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_2": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -103880,6 +104422,9 @@
       "sprite": "streetlights/streetlight_034/sprite.webp",
       "art_hash": "9668259d19eb38e0",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -106391,6 +106936,11 @@
       "sprite": "stumps/stump_013/sprite.webp",
       "art_hash": "bda436446428a201",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 1,
+        "NOT_LIT_5": 1,
+        "NOT_LIT_9": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -106723,6 +107273,9 @@
       "sprite": "stumps/stump_014/sprite.webp",
       "art_hash": "a8f9a21273a0dc40",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -107503,6 +108056,9 @@
       "sprite": "sundials/sundial_002/sprite.webp",
       "art_hash": "1bf85ec082f99c07",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_5": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -107815,6 +108371,9 @@
       "sprite": "tables/table_005/sprite.webp",
       "art_hash": "1b82f7a776c97851",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_5": 2
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -108006,6 +108565,12 @@
       "sprite": "tables/table_007/sprite.webp",
       "art_hash": "eba663348331a7b8",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_4": 1,
+        "NOT_LIT_1": 1,
+        "NOT_LIT_3": 1,
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -108984,6 +109549,9 @@
       "sprite": "tables/table_009/sprite.webp",
       "art_hash": "c821e8e392b9e5ee",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -109121,6 +109689,9 @@
       "sprite": "tables/table_010/sprite.webp",
       "art_hash": "fb8069fdceb038eb",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -109411,6 +109982,9 @@
       "sprite": "tables/table_011/sprite.webp",
       "art_hash": "031d437c8dac08a8",
       "type": "INDOOR",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -111886,6 +112460,10 @@
       "sprite": "toadstool_rings/toadstool_ring_005/sprite.webp",
       "art_hash": "f1788b9c8f3f637e",
       "type": "NATURE",
+      "placed": {
+        "LIT_2": 1,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -112154,6 +112732,12 @@
       "sprite": "toadstool_rings/toadstool_ring_009/sprite.webp",
       "art_hash": "ab77f0c622c86fa8",
       "type": "NATURE",
+      "placed": {
+        "LIT_1": 1,
+        "LIT_2": 1,
+        "NOT_LIT_2": 1,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -112385,6 +112969,11 @@
       "sprite": "toadstool_rings/toadstool_ring_010/sprite.webp",
       "art_hash": "e788b827b619f78a",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 1,
+        "NOT_LIT_1": 2,
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -112550,6 +113139,9 @@
       "sprite": "toadstool_rings/toadstool_ring_011/sprite.webp",
       "art_hash": "06d9ee3ebe183a8c",
       "type": "NATURE",
+      "placed": {
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -113274,6 +113866,10 @@
       "sprite": "torch_posts/torch_post_004/sprite.webp",
       "art_hash": "1e7e55a828815e4f",
       "type": "TOWN",
+      "placed": {
+        "LIT_2": 7,
+        "LIT_3": 3
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -117186,6 +117782,9 @@
       "sprite": "torch_posts/torch_post_018/sprite.webp",
       "art_hash": "97c845d2e9288ea8",
       "type": "TOWN",
+      "placed": {
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -119584,6 +120183,10 @@
       "sprite": "trees/tree_001/sprite.webp",
       "art_hash": "6986601e9755592f",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_2": 2,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -127042,6 +127645,14 @@
       "sprite": "trees/tree_015/sprite.webp",
       "art_hash": "b7a0311330d447bd",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_2": 1,
+        "NOT_LIT_8": 1,
+        "NOT_LIT_1": 1,
+        "NOT_LIT_6": 1,
+        "NOT_LIT_5": 1,
+        "NOT_LIT_10": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -128322,6 +128933,18 @@
       "sprite": "trees/tree_017/sprite.webp",
       "art_hash": "495e4b92afdc0474",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_8": 53,
+        "NOT_LIT_6": 60,
+        "NOT_LIT_9": 53,
+        "NOT_LIT_1": 50,
+        "NOT_LIT_7": 61,
+        "NOT_LIT_3": 49,
+        "NOT_LIT_2": 42,
+        "NOT_LIT_10": 42,
+        "NOT_LIT_5": 44,
+        "NOT_LIT_4": 46
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -132107,6 +132730,18 @@
       "sprite": "trees/tree_023/sprite.webp",
       "art_hash": "f0f3175bfea9cd30",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_2": 9,
+        "NOT_LIT_10": 12,
+        "NOT_LIT_9": 13,
+        "NOT_LIT_5": 20,
+        "NOT_LIT_4": 12,
+        "NOT_LIT_7": 21,
+        "NOT_LIT_6": 14,
+        "NOT_LIT_3": 15,
+        "NOT_LIT_8": 10,
+        "NOT_LIT_1": 8
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -145908,6 +146543,15 @@
       "sprite": "trees/tree_049/sprite.webp",
       "art_hash": "d51d5c6b07eb1440",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_6": 2,
+        "NOT_LIT_7": 1,
+        "NOT_LIT_10": 1,
+        "NOT_LIT_4": 1,
+        "NOT_LIT_8": 1,
+        "NOT_LIT_9": 2,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -148432,6 +149076,14 @@
       "sprite": "trees/tree_053/sprite.webp",
       "art_hash": "db4dea899b586478",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_5": 2,
+        "NOT_LIT_8": 1,
+        "NOT_LIT_4": 1,
+        "NOT_LIT_3": 1,
+        "NOT_LIT_9": 2,
+        "NOT_LIT_6": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -162333,6 +162985,15 @@
       "sprite": "trees/tree_083/sprite.webp",
       "art_hash": "66a2dcfc41158e91",
       "type": "TREE",
+      "placed": {
+        "NOT_LIT_5": 2,
+        "NOT_LIT_7": 1,
+        "NOT_LIT_6": 2,
+        "NOT_LIT_2": 1,
+        "NOT_LIT_9": 2,
+        "NOT_LIT_3": 2,
+        "NOT_LIT_10": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -164198,6 +164859,9 @@
       "art_hash": "3401ff8fe3090c46",
       "type": "INDOOR",
       "mount": "wall",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -164414,6 +165078,9 @@
       "art_hash": "68420aef3abcf06e",
       "type": "INDOOR",
       "mount": "wall",
+      "placed": {
+        "NOT_LIT_3": 3
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -164603,6 +165270,10 @@
       "art_hash": "2e5adda5e33b941c",
       "type": "INDOOR",
       "mount": "wall",
+      "placed": {
+        "NOT_LIT_5": 2,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -165344,6 +166015,9 @@
       "art_hash": "36c2eed9679ed48a",
       "type": "INDOOR",
       "mount": "wall",
+      "placed": {
+        "NOT_LIT_3": 5
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -165459,6 +166133,10 @@
       "art_hash": "e27d493bba584ec1",
       "type": "INDOOR",
       "mount": "wall",
+      "placed": {
+        "NOT_LIT_3": 1,
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -165762,6 +166440,9 @@
       "art_hash": "af88f395697e9362",
       "type": "INDOOR",
       "mount": "wall",
+      "placed": {
+        "NOT_LIT_2": 5
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -169214,6 +169895,11 @@
       "sprite": "water_lily_clumps/water_lily_clump_001/sprite.webp",
       "art_hash": "ddc4a6bfe2e37b1f",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 10,
+        "NOT_LIT_2": 13,
+        "NOT_LIT_1": 17
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -169397,6 +170083,10 @@
       "sprite": "water_lily_clumps/water_lily_clump_002/sprite.webp",
       "art_hash": "ff601fc8b1f4ce3c",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 4,
+        "NOT_LIT_1": 4
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -169591,6 +170281,10 @@
       "sprite": "water_lily_clumps/water_lily_clump_004/sprite.webp",
       "art_hash": "d00647249ef5b31b",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_5": 3,
+        "NOT_LIT_4": 3
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -170565,6 +171259,9 @@
       "sprite": "wayside_shrines/wayside_shrine_010/sprite.webp",
       "art_hash": "d659966fc4ea3578",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 6
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -171105,6 +171802,9 @@
       "sprite": "wayside_shrines/wayside_shrine_015/sprite.webp",
       "art_hash": "c4b8915c8f26dff8",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -171291,6 +171991,10 @@
       "sprite": "wayside_shrines/wayside_shrine_016/sprite.webp",
       "art_hash": "cd9ba54dc330fedb",
       "type": "TOWN",
+      "placed": {
+        "LIT_4": 1,
+        "LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -171516,6 +172220,10 @@
       "sprite": "wayside_shrines/wayside_shrine_020/sprite.webp",
       "art_hash": "ae125d0fd29b22cd",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 1,
+        "LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -171955,6 +172663,11 @@
       "sprite": "waystones/waystone_008/sprite.webp",
       "art_hash": "49ea8d14223d345e",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 1,
+        "NOT_LIT_2": 1,
+        "LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -172307,6 +173020,10 @@
       "sprite": "waystones/waystone_009/sprite.webp",
       "art_hash": "4b001599ed61d05e",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 1,
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -172468,6 +173185,9 @@
       "sprite": "waystones/waystone_010/sprite.webp",
       "art_hash": "b1ae10de74e6d6a1",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -172609,6 +173329,9 @@
       "sprite": "waystones/waystone_011/sprite.webp",
       "art_hash": "94bbc7fe32c273b2",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -172785,6 +173508,10 @@
       "sprite": "waystones/waystone_013/sprite.webp",
       "art_hash": "e42830d57a96a4fe",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1,
+        "LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -172961,6 +173688,9 @@
       "sprite": "waystones/waystone_015/sprite.webp",
       "art_hash": "c483c51bfca9d41e",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -173147,6 +173877,9 @@
       "sprite": "waystones/waystone_016/sprite.webp",
       "art_hash": "44b856ee62a87bfa",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -173314,6 +174047,9 @@
       "sprite": "waystones/waystone_019/sprite.webp",
       "art_hash": "1b40991b4d584293",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_4": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -173568,6 +174304,9 @@
       "sprite": "waystones/waystone_022/sprite.webp",
       "art_hash": "d19e470b00b698d1",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -174498,6 +175237,9 @@
       "sprite": "wells/well_008/sprite.webp",
       "art_hash": "0b476934aac05205",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -176552,6 +177294,9 @@
       "art_hash": "ff85e122b6b34a9d",
       "type": "WINDOW",
       "mount": "wall",
+      "placed": {
+        "(base)": 6
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -176960,6 +177705,9 @@
       "art_hash": "4428b8bafd5dece1",
       "type": "WINDOW",
       "mount": "wall",
+      "placed": {
+        "(base)": 4
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -177230,6 +177978,9 @@
       "art_hash": "b2fe52b228a5d848",
       "type": "WINDOW",
       "mount": "wall",
+      "placed": {
+        "(base)": 2
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -177298,6 +178049,9 @@
       "art_hash": "1c6c6dfbce605e26",
       "type": "WINDOW",
       "mount": "wall",
+      "placed": {
+        "(base)": 5
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -178309,6 +179063,9 @@
       "art_hash": "a0de4cd8daf72557",
       "type": "WINDOW",
       "mount": "wall",
+      "placed": {
+        "(base)": 8
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -178913,6 +179670,9 @@
       "art_hash": "713e7948ab3111a7",
       "type": "WINDOW",
       "mount": "wall",
+      "placed": {
+        "(base)": 3
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -179047,6 +179807,9 @@
       "art_hash": "2fe1d256ede88829",
       "type": "WINDOW",
       "mount": "wall",
+      "placed": {
+        "(base)": 4
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -179800,6 +180563,9 @@
       "art_hash": "cdecb45031d847d4",
       "type": "WINDOW",
       "mount": "wall",
+      "placed": {
+        "(base)": 2
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -180068,6 +180834,9 @@
       "art_hash": "c2066c094f7a7be7",
       "type": "WINDOW",
       "mount": "wall",
+      "placed": {
+        "(base)": 6
+      },
       "must_be_imbplemented_with_random_hflip": false,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -181051,6 +181820,9 @@
       "sprite": "woodpiles/woodpile_001/sprite.webp",
       "art_hash": "d9a0d764015735e8",
       "type": "TOWN",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",

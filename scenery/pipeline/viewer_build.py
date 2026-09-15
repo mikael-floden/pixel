@@ -75,6 +75,7 @@ def _group_field(group_id, field):
 
 def build():
     _ensure_vents()
+    placed = _placed_states()
     cfg = factory.load_config()
     types_by_group = _types_by_group(cfg)
     pieces, categories = [], {}
@@ -143,6 +144,16 @@ def build():
             **({"fixture": meta.get("fixture") or _group_field(cat, "fixture")}
                if (meta.get("fixture") or _group_field(cat, "fixture")) else {}),
             **({"vent": meta["vent"]} if meta.get("vent") else {}),
+            # WHICH STATES THE WORLD ACTUALLY PLACES, and how many of each
+            # ({"LIT_2": 1, "LIT_3": 1}); ABSENT means this piece is in no
+            # published world. The domain publishes every state a piece has and
+            # the world picks one or two, so a review cannot tell which of them
+            # is in the game — he tuned a hearth's LIT_1 light, it applied and
+            # deployed correctly, and nothing changed in the game because the
+            # world places that hearth as LIT_2 and LIT_3 only (2026-09-15).
+            # 1319 LIT states published, 77 placed: without this the odds are
+            # against any given review being visible.
+            **({"placed": placed[rel]} if placed.get(rel) else {}),
             # A SOUTH-only piece may be mirrored horizontally at placement time,
             # which doubles the variety of every group for free (maintainer's
             # idea, 2026-08-14). FALSE on pieces that carry facings: flipping a
@@ -202,6 +213,17 @@ def build():
         json.dump(data, f, indent=2)
     _pack_placed()
     return data
+
+
+def _placed_states():
+    """{piece: {state: count}} from the published worlds, or {} if they are not
+    on disk — a publish never fails or waits on another domain's file."""
+    try:
+        import pack
+        return pack.placed_states()
+    except Exception as e:  # noqa: BLE001
+        print(f"  ! placement join skipped ({e}) — pieces publish no `placed`")
+        return {}
 
 
 def _ensure_vents():
