@@ -487,11 +487,12 @@
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "tree copy behind walls + cave outline fixed. Next: lava swims and burns (surface row + server drain; maps2 must add lava to liquids). Owed: phone GPU cost (?fps=1) with up to 8 street lights, canopy verdict, sea wedges, light pass per-frame change, dodge 0.5, parity fixture drift",
+  "current": "WALL CLEARANCE + THE POINT-BLANK TORCH (maintainer 2026-09-15, three shots at 251.0-251.2/280.0-282.8): walking around a corner ends closer to a wall than running straight into it, and at that distance his torch leaves the wall dark. files: shared/src/index.ts, server/test/wallclear.test.ts, client/src/nightlight.ts, client/src/scenes/WorldScene.ts, scripts/verify-wallwash.mjs, docs/movement.md, docs/lighting.md",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
-  ]
+  ],
+  "updated": "2026-09-15T18:49:23+00:00"
 }
