@@ -62,10 +62,23 @@ _LOCKS = defaultdict(threading.Lock)
 LESS_MOTION = re.compile(r"less\s+(motion|extreme)|only\s+the\s+fire|not\s+only\s+the\s+fire", re.I)
 # ...and one that says the facing has no clip at all.
 NO_CLIP = re.compile(r"not enough frames|only one|one frame|no animation", re.I)
-STILL_PROMPT = {
-    "flame": "Animate the flame only. Nothing else moves.",
-    "motion": "Animate the flame only. Nothing else moves.",
-}
+# THE WORDING THAT MEASURES 0.0, not the one that sounds like it should work.
+# "Animate the flame only" is what these clips already carried and what he
+# rejected; "Animate the flame only. Nothing else moves." took four hearths from
+# rejected to 0.0029-0.1262 — three of them only just under his 0.10 line and one
+# still over it. The long brief below is the domain's own motion wording (the one
+# on hearth_001 LIT_3, which scored 0.0 on the same measure): it never names a
+# material that must hold still — his rule, naming them makes the model paint
+# them — and instead says EVERYTHING else is copied pixel for pixel.
+FLAME_BRIEF = (
+    "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly "
+    "visible in every frame, including the first. It stays exactly the same size and shape in "
+    "every frame: it never grows and never spreads, only its inner detail shifts. Nothing is "
+    "added or removed anywhere: every object appears in every frame, the same number of them, in "
+    "the same places, at the same size. Everything else is copied from the first frame exactly, "
+    "pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame "
+    "matches the first exactly.")
+STILL_PROMPT = {"flame": FLAME_BRIEF, "motion": FLAME_BRIEF, "wind": FLAME_BRIEF}
 
 
 def _clip(man, state, name):
@@ -184,6 +197,13 @@ def one(client, rel, state, name, dirs, prompt):
         size = int(man.get("size") or 64)
         payload = {"animation_group_id": gid, "directions": list(dirs),
                    "frame_count": FRAME_COUNT, "mode": "v3", "keep_first_frame": True}
+        # A DIRECTION THAT IS ALREADY IN THE GROUP MUST BE OVERWRITTEN, NOT ADDED.
+        # Extending is the only call, and it refuses a direction it already has:
+        # 409 "directions already exist in group: ['south-east']. Pass
+        # replace_existing=true to overwrite." — which is precisely a redo, and
+        # it keeps the group (and its id) rather than leaving a second one.
+        if set(dirs) & _have_dirs(a):
+            payload["replace_existing"] = True
         if prompt:
             # Replaces the group's description; without it the API carries the
             # old wording across, which is the wording he rejected.
