@@ -1,0 +1,288 @@
+#!/usr/bin/env python3
+"""REDO AN ANIMATION ON THE FACINGS HE MARKED — his review IS the work list.
+
+Maintainer 2026-09-15: "I did a review on Hearth objects, but don't want to write
+to you on every object where SE or SW doesn't have any animation (it shows as if
+the animation only have 1 frame). I also want you to redo some animations where
+the entire Hearth was moving and not only the fire."
+
+TWO FAULTS, ONE OPERATION. Either a state ships south-east and south-west stills
+while its animation covers `south` alone — the game then draws the still on those
+facings, which is exactly "as if the animation only has one frame" — or the clip
+is there and the whole piece moves instead of the fire. Both are "generate this
+animation for these directions", which is the single call PixelLab has: extend
+the EXISTING animation group with the directions wanted and download the group
+back whole. Never post a second animation (flame_facings.py, 2026-08-28: it
+leaves a piece with two whose wording drifts apart).
+
+HIS REVIEW IS THE INPUT, so he never has to list them. `--from-feedback` reads
+live/feedback/objects.json for `status: "redo"` entries keyed
+<piece>#<state>#<direction> and does those exact directions; `--missing` does the
+whole class, which is 332 state-clips across 51 groups today.
+
+THE PROMPT IS THE ONLY LEVER ON HOW MUCH MOVES. animate_object has no motion
+strength — `animation_description` is the whole instrument. His note decides the
+wording, and the rule from the window prompts holds: never name the things that
+must stay still ("the stone", "the woodgrain") or the model starts painting them
+(maintainer 2026-08-14). "Animate the flame only. Nothing else moves." is the
+whole of it.
+
+    python3 pipeline/redo_facing_anim.py --from-feedback --dry-run
+    python3 pipeline/redo_facing_anim.py --from-feedback
+    python3 pipeline/redo_facing_anim.py --missing --dry-run
+"""
+from __future__ import annotations
+
+import argparse
+import glob
+import json
+import os
+import re
+import sys
+import threading
+from collections import Counter, defaultdict
+from concurrent.futures import ThreadPoolExecutor, as_completed
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import factory                                        # noqa: E402
+import viewer_build                                   # noqa: E402
+import animate_trees as A                             # noqa: E402
+from pixellab_client import PixelLabClient, PixelLabError, V2_BASE  # noqa: E402
+
+FEEDBACK = os.path.join(os.path.dirname(factory.ROOT), "live", "feedback", "objects.json")
+ALL3 = ("south-west", "south", "south-east")
+EIGHT_DIR_MAX = 168          # over this a piece is 1-direction: no facings exist
+FRAME_COUNT = 4              # + keep_first_frame = 5 frames, 3 generations
+USD_PER_GEN = 0.012
+PARALLEL = 8
+_LOCKS = defaultdict(threading.Lock)
+
+# A note that asks for LESS MOVEMENT, not for more frames. His own words on the
+# hearths: "Less motion on non fire", "Less extreme franes".
+LESS_MOTION = re.compile(r"less\s+(motion|extreme)|only\s+the\s+fire|not\s+only\s+the\s+fire", re.I)
+# ...and one that says the facing has no clip at all.
+NO_CLIP = re.compile(r"not enough frames|only one|one frame|no animation", re.I)
+STILL_PROMPT = {
+    "flame": "Animate the flame only. Nothing else moves.",
+    "motion": "Animate the flame only. Nothing else moves.",
+}
+
+
+def _clip(man, state, name):
+    return (((man.get("states") or {}).get(state) or {}).get("animations") or {}).get(name)
+
+
+def _have_dirs(a):
+    """The directions this clip actually has frames for. The old shape stored a
+    south-only clip as a LIST of names with the frames at the animation root;
+    the current one is {direction: {frames, frame_paths}}."""
+    d = (a or {}).get("directions")
+    if isinstance(d, dict):
+        return {k for k, v in d.items() if (v or {}).get("frames")}
+    if isinstance(d, list):
+        return set(d)
+    return set()
+
+
+def _state_key(man, st):
+    for k in (man.get("states") or {}):
+        if k.lower() == st.lower():
+            return k
+    return None
+
+
+def from_feedback():
+    """[(rel, state, anim, dirs, prompt, why)] — exactly what he marked redo."""
+    if not os.path.exists(FEEDBACK):
+        return []
+    doc = json.load(open(FEEDBACK, encoding="utf-8"))
+    ent = doc.get("entries") or doc.get("overrides") or {}
+    want = defaultdict(set)
+    notes = {}
+    for key, v in ent.items():
+        if (v or {}).get("status") != "redo":
+            continue
+        body = key[len("scenery/"):] if key.startswith("scenery/") else key
+        parts = body.split("#")
+        if len(parts) != 3:
+            continue                       # a piece- or state-level rejection is not this tool's
+        rel, st, dirn = parts
+        if dirn not in ALL3:
+            continue
+        man = factory.read_manifest(rel)
+        if not man:
+            continue
+        state = _state_key(man, st)
+        if not state:
+            continue
+        for name in ((man["states"][state].get("animations") or {})):
+            want[(rel, state, name)].add(dirn)
+            notes[(rel, state, name, dirn)] = (v.get("note") or "")
+    out = []
+    for (rel, state, name), dirs in sorted(want.items()):
+        joined = " | ".join(notes.get((rel, state, name, d), "") for d in sorted(dirs))
+        prompt = STILL_PROMPT.get(name) if LESS_MOTION.search(joined) else None
+        out.append((rel, state, name, sorted(dirs), prompt, joined.strip(" |")))
+    return out
+
+
+def missing():
+    """[(rel, state, anim, dirs, None, why)] — every clip short of a facing the
+    state actually ships. This is the class his five hearth reports sample."""
+    out = []
+    for p in sorted(glob.glob(os.path.join(factory.ROOT, "*", "*", "scenery.json"))):
+        rel = os.path.relpath(os.path.dirname(p), factory.ROOT)
+        man = json.load(open(p, encoding="utf-8"))
+        if int(man.get("size") or 64) > EIGHT_DIR_MAX:
+            continue                        # 1-direction piece: no facing exists to animate
+        for state, e in sorted((man.get("states") or {}).items()):
+            ships = {d for d in (e.get("rotations") or {}) if d in ALL3 and d != "south"}
+            for name, a in sorted((e.get("animations") or {}).items()):
+                if not a.get("group_id") or not e.get("pixellab_object_id"):
+                    continue
+                gap = sorted(ships - _have_dirs(a))
+                if gap:
+                    out.append((rel, state, name, gap, None, "no clip on that facing"))
+    return out
+
+
+def flagged_bad():
+    """[(rel, state, anim, dirs, prompt, why)] — every clip THIS DOMAIN already
+    calls ANIMATION_PROBABLY_BAD, redone on every facing it has.
+
+    His second complaint needs no reporting either: anim_review.py already
+    measures exactly it — "as soon as the root moves it looks wrong" — as the
+    share of the object's bottom 15% whose silhouette changes, and 298 clips are
+    over the 0.10 line today. A clip he marked by hand is one of those; the rest
+    are the same fault nobody has walked past yet."""
+    out = []
+    for p in sorted(glob.glob(os.path.join(factory.ROOT, "*", "*", "scenery.json"))):
+        rel = os.path.relpath(os.path.dirname(p), factory.ROOT)
+        man = json.load(open(p, encoding="utf-8"))
+        for state, e in sorted((man.get("states") or {}).items()):
+            for name, a in sorted((e.get("animations") or {}).items()):
+                if a.get("review") != "ANIMATION_PROBABLY_BAD":
+                    continue
+                if not a.get("group_id") or not e.get("pixellab_object_id"):
+                    continue
+                dirs = sorted(_have_dirs(a)) or ["south"]
+                m = a.get("review_metrics") or {}
+                out.append((rel, state, name, dirs, STILL_PROMPT.get(name, STILL_PROMPT["flame"]),
+                            f"base {m.get('base')} of 0.10"))
+    return out
+
+
+def one(client, rel, state, name, dirs, prompt):
+    """Extend/redo `name` on `dirs` and rewrite the clip from what comes back."""
+    try:
+        man = factory.read_manifest(rel) or {}
+        ent = (man.get("states") or {}).get(state) or {}
+        a = (ent.get("animations") or {}).get(name) or {}
+        oid, gid = ent.get("pixellab_object_id"), a.get("group_id")
+        if not oid or not gid:
+            return (rel, state, name, 0, "no object/group id")
+        size = int(man.get("size") or 64)
+        payload = {"animation_group_id": gid, "directions": list(dirs),
+                   "frame_count": FRAME_COUNT, "mode": "v3", "keep_first_frame": True}
+        if prompt:
+            # Replaces the group's description; without it the API carries the
+            # old wording across, which is the wording he rejected.
+            payload["animation_description"] = prompt
+        r = client._request("POST", f"{V2_BASE}/objects/{oid}/animations", json=payload)
+        for j in (r.get("background_job_ids") or []):
+            try:
+                client.wait_job(j, timeout=900)
+            except PixelLabError:
+                pass
+        want = len(_have_dirs(a) | set(dirs))
+        frames = client.download_object_animation(oid, gid, expected=want, wait=600)
+        if not frames:
+            return (rel, state, name, 0, "no frames came back")
+        base = A.anim_dir(rel, state, man, name)
+        for old in glob.glob(os.path.join(factory.ROOT, base, "*.webp")):
+            os.remove(old)                 # flat south-only frames cannot coexist
+        made = {}
+        for d, imgs in frames.items():
+            imgs = [factory._normalize(im.convert("RGBA"), size) for im in imgs]
+            paths = []
+            for i, im in enumerate(imgs):
+                fp = f"{base}/{d}/{i:02d}.webp"
+                factory.save_webp(im, os.path.join(factory.ROOT, fp))
+                paths.append(fp)
+            made[d] = {"frames": len(paths), "frame_paths": paths}
+        with _LOCKS[rel]:
+            man = factory.read_manifest(rel) or {}
+            states = dict(man.get("states") or {})
+            ent = dict(states.get(state) or {})
+            anims = dict(ent.get("animations") or {})
+            a = dict(anims.get(name) or {})
+            a["directions"] = made
+            a["frame_count"] = max(v["frames"] for v in made.values())
+            a.pop("frame_paths", None)
+            a.pop("strip", None)
+            if prompt:
+                a["description"] = prompt
+            # HIS VERDICT IS SPENT ON THE OLD ART. The clip is new, so the
+            # classification and his review of it are both about a picture that
+            # no longer exists (consume_verdicts.py's hash rule says the same).
+            a.pop("review", None)
+            a.pop("review_metrics", None)
+            a["generated_at"] = A._now()
+            anims[name] = a
+            ent["animations"] = anims
+            states[state] = ent
+            man["states"] = states
+            factory.write_manifest(rel, man)
+        return (rel, state, name, len(made), "ok")
+    except PixelLabError as e:
+        return (rel, state, name, 0, f"FAILED: {str(e)[:110]}")
+    except Exception as e:                  # noqa: BLE001
+        return (rel, state, name, 0, f"ERROR: {type(e).__name__}: {str(e)[:100]}")
+
+
+def main():
+    ap = argparse.ArgumentParser(description="Redo scenery animations per facing.")
+    src = ap.add_mutually_exclusive_group(required=True)
+    src.add_argument("--from-feedback", action="store_true", help="his redo verdicts")
+    src.add_argument("--missing", action="store_true", help="every facing with no clip")
+    src.add_argument("--bad", action="store_true", help="every clip classed ANIMATION_PROBABLY_BAD")
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--limit", type=int, default=0)
+    ap.add_argument("--min-usd", type=float, default=2.0)
+    args = ap.parse_args()
+
+    todo = (from_feedback() if args.from_feedback
+            else flagged_bad() if args.bad else missing())
+    if args.limit:
+        todo = todo[:args.limit]
+    gens = sum(len(t[3]) for t in todo) * 3
+    print(f"{len(todo)} clip(s), {sum(len(t[3]) for t in todo)} direction(s) "
+          f"~{gens} generations x ${USD_PER_GEN} = about ${gens * USD_PER_GEN:.2f}")
+    for rel, state, name, dirs, prompt, why in todo[:40]:
+        print(f"  {rel:<28} {state:<10} {name:<7} {','.join(dirs):<24} "
+              f"{'RE-PROMPT' if prompt else 'extend':<9} {why[:44]}")
+    if len(todo) > 40:
+        for g, n in Counter(t[0].split('/')[0] for t in todo).most_common(10):
+            print(f"    ... {g:<24} {n}")
+    if args.dry_run or not todo:
+        return 0
+
+    client = PixelLabClient()
+    bal = (client.balance().get("credits") or {}).get("usd")
+    if bal is not None and bal < args.min_usd:
+        print(f"balance ${bal:.2f} under the ${args.min_usd:.2f} floor — stopping")
+        return 1
+    ok = 0
+    with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
+        futs = [pool.submit(one, client, r, s, n, d, p) for r, s, n, d, p, _ in todo]
+        for f in as_completed(futs):
+            rel, state, name, n, how = f.result()
+            ok += how == "ok"
+            print(f"  {'=' if how == 'ok' else '!'} {rel} {state} {name}: {n} direction(s) {how}")
+    print(f"\n{ok}/{len(todo)} clip(s) redone")
+    viewer_build.build()
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
