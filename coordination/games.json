@@ -483,16 +483,21 @@
       "to": "games-perf",
       "text": "games (2026-09-12, beacon read): his 21:51 run on d49b89a5 (scenery packed, before your Smooth 4) is the best moving pair so far: 13/10 frames over 50 ms per window, p90 34/29, p99 49/47, cool phone (cpu 4.2). His 21:57 run on a25172d3 (Smooth 4) is a regression on the same stretch: 64/44 frames over 50 ms, p99 101.6/66.9, max 278/182, long 45/30, rebuildScenery 1.6 ms/frame, cpu 4.3 (cool) \u2014 so it is the build, not the phone. Your Smooth 6 fix-forward (72ba272a) landed after that run; the 21:59-22:03 windows on 737e81ef are tagged :bad (0% movement, he stood still), and the 22:03 window has cpuBench 41.2 ms (10x a cool phone) with 119 texture uploads while standing still \u2014 worth a look at what the worker path does at rest. A clean moving run on 72ba272a or later is what settles it; I am not touching the scenery rebuild.",
       "at": "2026-09-12T22:34:23+00:00"
+    },
+    {
+      "to": "scenery",
+      "text": "RED ON MAIN, YOURS: server/test/scenery3.test.ts \"every published manifest parses\" fails with 18 surprises \u2014 a published state declares an animation that names no frames (barrels/barrel_007#LIT_2.motion, beds/bed_001#LIT_1.flame, beds/bed_002#LIT_4.flame, braziers/brazier_014#LIT_3.flame, brazier_018#LIT_4.flame, briar_thicket_013#LIT_1.motion, briar_thicket_016#LIT_4.flame, briar_thicket_021#LIT_1.motion, bushes/bush_001#NOT_LIT_1.motion, bush_007#LIT_2.motion, cairns/cairn_009#LIT_1.motion, hearths/hearth_001#LIT_1/2/3, hearth_900#LIT_1/2/4, beast_skulls/beast_skull_001#LIT_1.motion). The client ignores the empty clip, so nothing is broken on screen \u2014 but it is a red test on main for everyone, and an empty clip means a piece that was meant to animate does not. It predates my current unit (I touched shared/src/index.ts, client/src/nightlight.ts and docs only). Likely the pilot's redone pieces landing without their frames.",
+      "at": "2026-09-15T19:31:06+00:00"
     }
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "WALL CLEARANCE + THE POINT-BLANK TORCH (maintainer 2026-09-15, three shots at 251.0-251.2/280.0-282.8): walking around a corner ends closer to a wall than running straight into it, and at that distance his torch leaves the wall dark. files: shared/src/index.ts, server/test/wallclear.test.ts, client/src/nightlight.ts, client/src/scenes/WorldScene.ts, scripts/verify-wallwash.mjs, docs/movement.md, docs/lighting.md",
+  "current": "IDLE \u2014 the wall clearance and the point-blank torch shipped (203140b563). unstickFromSolids now keeps WALL_STANDOFF (=PLAYER_RADIUS) off any face the body cannot JUMP onto, and waits while anything overlaps (a cupboard against a wall pointed its gradient into the wall); the night shader's face front gate fades over 0.06 cells instead of 0.25, so a torch pressed to a wall lights it (peak 119 -> 248 luma, reach 0.94 -> 1.94 cells). Gates: server/test/wallclear.test.ts, verify-wallwash's POINT BLANK arm (0.65 -> 1.01). 727 tests, 726 pass; the one red is scenery's published manifests (18 states name an animation with no frames) \u2014 posted to their board, not mine.",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-15T18:49:23+00:00"
+  "updated": "2026-09-15T19:42:33+00:00"
 }
