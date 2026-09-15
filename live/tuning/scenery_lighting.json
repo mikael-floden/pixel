@@ -1,5 +1,18 @@
 {
- "format": "pixel-wiki-scenery-lighting@1",
- "updated_at": "",
- "overrides": {}
+  "format": "pixel-wiki-scenery-lighting@1",
+  "updated_at": "2026-09-15T16:45:48.721Z",
+  "overrides": {
+    "scenery/hearths/hearth_001#lit_1": {
+      "color": "#dbb093",
+      "strength": 0.6,
+      "radius": 12,
+      "was": {
+        "color": "#ffa057",
+        "strength": 0.84,
+        "radius": 16
+      },
+      "state": "lit_1",
+      "updated_at": "2026-09-15T16:45:46.973Z"
+    }
+  }
 }
