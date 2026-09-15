@@ -1,21 +1,19 @@
 {
   "format": "pixel-wiki-scenery-lighting@1",
-  "updated_at": "2026-09-15T16:59:02.254Z",
+  "updated_at": "2026-09-15T17:35:33.243Z",
   "overrides": {
     "scenery/hearths/hearth_001#lit_1": {
-      "color": "#dbb093",
-      "strength": 0.6,
-      "radius": 12,
+      "color": "#d4412a",
+      "radius": 8,
       "was": {
-        "color": "#ffa057",
-        "strength": 0.84,
-        "radius": 16
+        "color": "#dbb093",
+        "radius": 12
       },
       "state": "lit_1",
-      "updated_at": "2026-09-15T16:45:46.973Z"
+      "updated_at": "2026-09-15T17:35:10.590Z"
     },
     "scenery/hearths/hearth_001#lit_2": {
-      "color": "#c46a43",
+      "color": "#bd3e1e",
       "strength": 0.6,
       "radius": 8,
       "was": {
@@ -24,7 +22,7 @@
         "radius": 13
       },
       "state": "lit_2",
-      "updated_at": "2026-09-15T16:56:19.229Z"
+      "updated_at": "2026-09-15T17:35:22.845Z"
     },
     "scenery/hearths/hearth_901#lit_1": {
       "strength": 0.65,
@@ -35,6 +33,18 @@
       },
       "state": "lit_1",
       "updated_at": "2026-09-15T16:59:03.563Z"
+    },
+    "scenery/hearths/hearth_001#lit_3": {
+      "color": "#bd3c28",
+      "strength": 0.6,
+      "radius": 8,
+      "was": {
+        "color": "#ffc575",
+        "strength": 0.7,
+        "radius": 13
+      },
+      "state": "lit_3",
+      "updated_at": "2026-09-15T17:35:35.097Z"
     }
   }
 }
