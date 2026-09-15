@@ -296,8 +296,18 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
     Settings dial "Wall light wrap" (`client/src/wallwrap.ts`, default 0.7 —
     the old hard-coded 0.45 exponent was "a bit too extreme"; 0 = a plain
     cosine, 1 = the light hugs the wall as far as it reaches on the ground).
-    `front` keeps its own `smoothstep(0, 0.25)`; a light behind the plane
-    never lights the face at any wrap. THE FLAME HAS A SIZE: the cosine is
+    A light BEHIND the plane never lights the face, at any wrap, and that is
+    the front gate's whole job: `smoothstep(0, FACE_FRONT_FADE)` with the fade
+    0.06 cells = 2wu, under one screen pixel, so a light crossing the plane
+    does not pop. It was a QUARTER CELL (8wu) and the body stands 12wu off a
+    wall head-on and ~2 rounding its corner, so the closer the torch came the
+    darker the wall got: measured on the probe, peak 249 → 119 luma and the
+    wash's reach 2.06 → 0.94 cells from 0.4 cells out to 0.05 — the inverse of
+    light (maintainer 2026-09-15: "when I get that super close to the wall the
+    players TORCH doesn't even light it up and it looks bad"; the standoff that
+    ended the 2wu case is in docs/movement.md). The gate's POINT BLANK arm
+    holds it: the face at 0.06 cells is at least 0.9 of the face at 0.4.
+    THE FLAME HAS A SIZE: the cosine is
     measured from no closer than `FLAME_HALF_CELLS` (0.5) in front of the
     plane — with the lateral per pixel, a point light pressed against a wall
     lit only the pixels straight in front of it and the wall behind a body

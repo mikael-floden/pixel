@@ -170,7 +170,11 @@ push, no PRs unless asked.
 - Server-authoritative, elevation-governed (`WALK_CLIMB`, `JUMP_CLIMB`); the
   shared math lives in `shared/` once; the client predicts the same grid.
 - Never weaken the collision probes to fix a wedge: `unstickFromSolids` is the
-  escape, and the rescue never climbs.
+  escape, and the rescue never climbs — and it keeps `WALL_STANDOFF` (=
+  PLAYER_RADIUS) off any face the body cannot walk up, so a wall met around a
+  corner is as far off as one met head-on (the lateral probes read solids only;
+  a refused move there wedges every corner). A descent stays forgiving
+  (`wallclear.test.ts`).
 - A footprint and a body belong to the FLOOR they stand on (`lvl`); every
   query that knows the surface level passes it.
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge, and the
@@ -264,10 +268,11 @@ netcode; these are the invariants)
   25%), the glow field too; an overlay's RT ratio survives update().
 - Solid objects are art, not walls (no face band); a cave mouth is not a face.
 - The wall wash is per PIXEL (the face gate's lateral is to the pixel, not the
-  cell), its wrap is his "Wall light wrap" dial (0.7), and the LOS march never
-  blends a wall's own height into its front skirt, nor the skirt the LIGHT
-  stands in; a skirt sample counts only beside a HARD hit. Gates:
-  `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
+  cell), its wrap is his "Wall light wrap" dial (0.7), its front gate fades
+  over 2wu and not a quarter cell (a torch pressed to a wall must not dim it),
+  and the LOS march never blends a wall's own height into its front skirt, nor
+  the skirt the LIGHT stands in; a skirt sample counts only beside a HARD hit.
+  Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark room 40%, lit room 12%; hidden outline 20% — his dials.

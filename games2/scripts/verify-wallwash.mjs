@@ -22,6 +22,10 @@
 //   * REACH  — where along the run the wash falls to half its peak, in cells,
 //              against where the pool halves on flat ground by its own
 //              attenuation (0.29 r): the wall must keep at least 3/4 of it.
+//   * POINT  — the same wall with the light pressed against it (0.06 cells):
+//     BLANK    the face must be at least as bright as from FRONT out. Light
+//              does not dim as it approaches a surface, and the body gets
+//              that close around a wall's corner (server/test/wallclear.ts).
 // GEOMETRY IS SELF-CHECKED FIRST with test pattern 4 (faces RED, tops GREEN):
 // every face sample point must read red, or the sampling is wrong and no luma
 // it reads means anything.
@@ -303,6 +307,28 @@ const groundReach = LIGHT.radius * (1 - Math.sqrt(0.5));
 console.log(`reach: wash falls to half its range ${reach.toFixed(2)} cells along the wall; the pool halves on flat ground at ${groundReach.toFixed(2)} (ratio ${(reach / groundReach).toFixed(2)})`);
 if (reach < groundReach * 0.75) fail(`the wash dies within ${reach.toFixed(2)} cells of the light, under 3/4 of the pool's own ${groundReach.toFixed(2)} — "only the wall very close to the player is lit"`);
 
-console.log(JSON.stringify({ wrap, range: +range.toFixed(1), worstStepPct: +((worstStep / Math.max(range, 1)) * 100).toFixed(1), reach: +reach.toFixed(2), reachRatio: +(reach / groundReach).toFixed(2), base: base.map((b) => b.ratio) }));
+// POINT BLANK: the same wall with the light pressed against it. A body walks
+// to within PLAYER_RADIUS of a wall head-on (0.375 cells) and the standoff
+// holds it there from every direction, but the push is speed-limited, so
+// rounding a corner it spends a few frames closer still. The face must be
+// lit AT LEAST as brightly as from further out — the front gate exists to
+// keep light BEHIND the plane off the face, and it used to fade in over a
+// quarter cell, which took the peak from 249 to 119 and halved the wash's
+// reach as the torch closed in (maintainer 2026-09-15: "when I get that
+// super close to the wall the players TORCH doesn't even light it up").
+const farPeak = peak;
+await page.evaluate(({ col, row, radius, g }) => window.__ml.probeLight(col, row, g + 0.55, radius), { col: LIGHT.col, row: wall.r + 1 + 0.06, radius: LIGHT.radius, g: wall.g });
+await page.waitForTimeout(600);
+const close = await shoot(5);
+let nearPeak = 0;
+for (let k = 0; k < RUN; k++)
+  for (const s of [0.2, 0.5, 0.8]) {
+    const pt = await facePt(wall.c + k, wall.r, s, 0.5);
+    if (pt) nearPeak = Math.max(nearPeak, luma(close.at(pt.x, pt.y)));
+  }
+console.log(`point blank: the light 0.06 cells in front of the plane peaks at ${nearPeak.toFixed(1)} luma against ${farPeak.toFixed(1)} from ${FRONT} cells out (ratio ${(nearPeak / Math.max(farPeak, 1)).toFixed(2)})`);
+if (nearPeak < farPeak * 0.9) fail(`a torch pressed against the wall lights it to ${nearPeak.toFixed(1)} luma where one ${FRONT} cells out reaches ${farPeak.toFixed(1)} — the closer the light, the darker the wall`);
+
+console.log(JSON.stringify({ wrap, range: +range.toFixed(1), pointBlankRatio: +(nearPeak / Math.max(farPeak, 1)).toFixed(2), worstStepPct: +((worstStep / Math.max(range, 1)) * 100).toFixed(1), reach: +reach.toFixed(2), reachRatio: +(reach / groundReach).toFixed(2), base: base.map((b) => b.ratio) }));
 await page.evaluate(() => window.__ml.nightCal(0, 1, 0));
 await browser.close();

@@ -1031,6 +1031,12 @@ export function stepMovement(
 // cell is ~36). Bigger = stop further from walls; too big blocks 1-cell gaps.
 export const PLAYER_RADIUS = 12;
 
+/** How far a body keeps its centre from a wall it cannot walk up, in every
+ *  direction (unstickFromSolids). PLAYER_RADIUS, because that is exactly what
+ *  the forward probe already enforces head-on — one number, so a wall met
+ *  around a corner is as far away as one met face first. */
+export const WALL_STANDOFF = PLAYER_RADIUS;
+
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v));
 }
@@ -2411,8 +2417,21 @@ export function makeBlockedElev(grid: TerrainGrid, ctx: MoveContext, getElev: ()
  * spawns, historical positions) because every axis reads blocked — instead
  * of weakening the probes, the server tick and the client prediction both
  * run this before integrating each input, so a wedged body drifts free in a
- * few ticks and normal movement takes over. Elevation walls are untouched
- * (the forgiving-edge overhang is a feature).
+ * few ticks and normal movement takes over.
+ *
+ * AND IT KEEPS THE BODY OFF A WALL IT CANNOT WALK UP (`WALL_STANDOFF`). A
+ * DESCENT is still forgiving — feet may rest at a rim with the billboard
+ * overhanging, which is the feature — but a face ABOVE the body is standoff
+ * territory, because the lateral probes let a body carry any lateral offset
+ * along a wall (they read solids only, so a wall beside the path cannot wedge
+ * a cliff descent) while the forward probe stops a head-on walk at
+ * PLAYER_RADIUS. Measured on a straight wall: 12.3-14.0wu head-on, and 5.2wu
+ * for the same wall entered around its corner — the body walks down the free
+ * column beside it and the wall simply appears at its shoulder (maintainer
+ * 2026-09-15: "walking around a corner I sometimes can get much closer to the
+ * wall than if I run straight into a wall ... the players TORCH doesn't even
+ * light it up"). A refused MOVE would wedge every such corner; a push cannot,
+ * so the state is corrected instead of the probe tightened.
  */
 export function unstickFromSolids(
   grid: TerrainGrid,
@@ -2440,6 +2459,7 @@ export function unstickFromSolids(
        * stickdetour.test.ts: a held stick advanced 3.63 cells instead of
        * crossing, because every step forward was undone by the rescue. */
       if (!cellSolidTerrain(grid, c, r)) continue;
+      const keep = clearance;
       const x0 = c * CELL_WU;
       const y0 = r * CELL_WU;
       const nx = clamp(x, x0, x0 + CELL_WU);
@@ -2447,7 +2467,7 @@ export function unstickFromSolids(
       let dx = x - nx;
       let dy = y - ny;
       let d = Math.hypot(dx, dy);
-      if (d >= clearance) continue;
+      if (d >= keep) continue;
       if (d < 1e-6) {
         // Centre inside the solid cell: exit toward the nearest face.
         const exits = [
@@ -2463,7 +2483,7 @@ export function unstickFromSolids(
         dx /= d;
         dy /= d;
       }
-      const need = clearance - d;
+      const need = keep - d;
       px += dx * need;
       py += dy * need;
       worst = Math.min(worst, d);
@@ -2481,6 +2501,43 @@ export function unstickFromSolids(
   if (fpHit) {
     px += fpHit.nx * fpHit.depth;
     py += fpHit.ny * fpHit.depth;
+  }
+  /* THE STANDOFF WAITS FOR A BODY THAT IS OVERLAPPING SOMETHING. Freeing comes
+   * first: a cupboard wedged against a wall points its ellipse's gradient INTO
+   * the wall, and a standoff added to that push drives the body the other way
+   * — deeper into the cupboard (footprint.test.ts's "refuses a push up a
+   * wall"). While anything overlaps, the rescue does its own job and the
+   * ordinary movement rules take over; the standoff applies from the next tick
+   * the body is clean. */
+  if (elev !== undefined && Math.hypot(px, py) < 1e-6) {
+    for (let dr = -1; dr <= 1; dr++) {
+      for (let dc = -1; dc <= 1; dc++) {
+        const c = c0 + dc;
+        const r = r0 + dr;
+        if (!cellWallFrom(grid, c, r, elev)) continue;
+        const x0 = c * CELL_WU;
+        const y0 = r * CELL_WU;
+        let dx = x - clamp(x, x0, x0 + CELL_WU);
+        let dy = y - clamp(y, y0, y0 + CELL_WU);
+        let d = Math.hypot(dx, dy);
+        if (d >= WALL_STANDOFF) continue;
+        if (d < 1e-6) {
+          /* THE CENTRE EXACTLY ON THE FACE — where he stood (251.0 is the
+           * 250/251 plane). The clamp gives no direction there, so the normal
+           * comes off whichever edge the point sits on. A centre strictly
+           * INSIDE a wall cell is not this function's business (the body is
+           * over the wall and `resolveElevAt` owns it), so it is left alone. */
+          if (x > x0 && x < x0 + CELL_WU && y > y0 && y < y0 + CELL_WU) continue;
+          dx = x <= x0 ? -1 : x >= x0 + CELL_WU ? 1 : 0;
+          dy = y <= y0 ? -1 : y >= y0 + CELL_WU ? 1 : 0;
+          d = Math.hypot(dx, dy);
+          if (d < 1e-6) continue;
+        }
+        const need = WALL_STANDOFF - d;
+        px += (dx / d) * need;
+        py += (dy / d) * need;
+      }
+    }
   }
   const pl = Math.hypot(px, py);
   if (pl < 1e-6) return { x, y };
@@ -3274,6 +3331,26 @@ function cellSolid(grid: TerrainGrid, c: number, r: number, elev?: number): bool
  * this cell solid as a CELL — a maps2 prop, or ground nothing can enter? A
  * scenery footprint is deliberately absent: it is an ellipse, tested as one, and
  * the only caller (unstickFromSolids) pushes out of that shape separately. */
+/** Is cell (c,r) a WALL to a body standing at `elev` — a face it cannot get
+ *  onto at all? A DECK cell offers both its slab and the ground under it
+ *  (stepReach), so it is a wall only when neither is reachable; anything at or
+ *  below the body is a descent, not a wall, and the forgiving rim stays
+ *  forgiving. Solids (props, water, non-standable surfaces) are
+ *  cellSolidTerrain's, not this one's.
+ *
+ *  JUMP_CLIMB, not WALK_CLIMB: a body pressed against a ledge it can HOP is
+ *  about to be on top of it, and holding it off pushed it out of the hop's own
+ *  reach — measured, a leaned run that climbed a 2-level wall in one jump took
+ *  five (hop.test.ts). A standoff belongs only to a face that is the end of
+ *  the road. */
+function cellWallFrom(grid: TerrainGrid, c: number, r: number, elev: number): boolean {
+  if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return false;
+  const i = r * grid.width + c;
+  const up = (l: number) => l - elev > JUMP_CLIMB + 1e-9;
+  if (grid.deck[i] >= 0 && !up(grid.deck[i])) return false;
+  return up(grid.level[i]);
+}
+
 function cellSolidTerrain(grid: TerrainGrid, c: number, r: number): boolean {
   if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) return false;
   const i = r * grid.width + c;

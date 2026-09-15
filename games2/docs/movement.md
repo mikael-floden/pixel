@@ -685,6 +685,23 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   away-gradient, run by the SERVER before each input integration and mirrored
   by client prediction (`stepLocal`). **Never weaken the probes to fix a
   wedge** — unstick is the escape hatch. Tests in collision.test.ts.
+  **AND IT KEEPS `WALL_STANDOFF` (= PLAYER_RADIUS) OFF ANY FACE THE BODY
+  CANNOT WALK UP** (`cellWallFrom`, elevation-relative; a DECK cell is a wall
+  only when neither its slab nor the ground under it is reachable): the
+  lateral probes read solids only, so a body carries any lateral offset it
+  likes along a wall, and walking down the free column beside a wall that
+  starts further on left it 5.2wu off the face where a head-on run rests at
+  12.3-14.0 (maintainer 2026-09-15: "walking around a corner I sometimes can
+  get much closer to the wall than if I run straight into a wall ... the
+  players TORCH doesn't even light it up"). A refused MOVE there would wedge
+  every corner — the state is corrected, never the probe tightened. A DESCENT
+  is untouched (the rim overhang is the feature), a 1-level step is a walk not
+  a wall, a one-cell door still passes from every offset across it and a
+  one-cell corridor centres the body instead of railing it along one side; the
+  push is speed-limited (80 wu/s), so rounding a corner at a run the body is
+  inside the standoff for ~130 ms and no longer. Gate:
+  `server/test/wallclear.test.ts` (the bisect arm drops the elevation from the
+  rescue call and asserts the body hugs the face again).
 - **Edge feel / falling**: feet walk to the rim (no early commit, no anchor
   snap); once the centre crosses to the lower cell the descent is a gravity
   FALL animated client-side — `WorldScene` keeps each avatar's elevation lift

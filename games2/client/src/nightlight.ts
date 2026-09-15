@@ -146,6 +146,20 @@ const SCN_CORE = 0.45;
  *  flame; at the default wrap (0.7) the wall behind a body touching it reads
  *  ~0.9 of full a half cell to either side, ~0.7 at wrap 0. */
 const FLAME_HALF_CELLS = "0.5";
+/** How far in front of the plane a light must stand for the face gate to be
+ *  fully open, in cells. It exists only so a light crossing the plane does not
+ *  pop — a light BEHIND it must leave the face dark, and that is the gate's
+ *  whole job. It was a QUARTER CELL, which is 8wu, and the body walks to
+ *  within 12 of a wall head-on and 2 around its corner: measured on the
+ *  wallwash probe against a 3-storey wall, the face's peak luma fell 249 ->
+ *  119 and the wash's reach along the wall 2.06 -> 0.94 cells as the light
+ *  came from 0.4 cells in front of the plane to 0.05 — the closer the torch,
+ *  the darker the wall, which is the inverse of light (maintainer 2026-09-15:
+ *  "when I get that super close to the wall the players TORCH doesn't even
+ *  light it up and it looks bad"). 0.06 = 2wu, under one screen pixel, so the
+ *  ramp is invisible and the flame's own half-width (above) carries the
+ *  cosine. */
+const FACE_FRONT_FADE = "0.06";
 /** The CONTACT blob under a piece: radius (cells) and strength for the sun
  *  patch (a `m` share) and the torch march (an occ factor). Every direction —
  *  the ground beside and in front of a post read as bright spots against the
@@ -1391,7 +1405,7 @@ void main() {
       // still found it "a bit too extreme so only the wall very close to the
       // player is lit up", so the exponent is his dial now (wallwrap.ts) —
       // the front gate keeps back faces dark at every setting.
-      float gate = smoothstep(0.0, 0.25, front) * pow(clamp(cosF, 0.0, 1.0), uWallWrap);
+      float gate = smoothstep(0.0, ${FACE_FRONT_FADE}, front) * pow(clamp(cosF, 0.0, 1.0), uWallWrap);
       // Penumbra: the gate fades in up the face (see gateFade above).
       occ *= mix(1.0, gate, gateFade);
     }
