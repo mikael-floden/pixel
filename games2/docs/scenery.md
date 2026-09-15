@@ -138,12 +138,33 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   hitbox looks to be correctly placed against the wall already. To me it looks
   like it's the scenery that wasn't drawn inside the already correctly placed
   hitbox." It is what the map agent places a piece by, so moving it moves the
-  furniture off its wall. Every facing is therefore anchored on the STATE's
-  SOUTH still's alpha foot (`fitSprite`'s `anchorBox`, from
-  `WorldScene.sceneryAnchorBox`; the collision stamp anchors there and always
+  furniture off its wall. Every facing that STANDS ON GROUND is therefore
+  anchored on the STATE's SOUTH still's alpha foot (`fitSprite`'s `anchorBox`,
+  decided by `anchorBoxFor` in scenery3.ts — one rule, one place, because the
+  scene and its gate both need it; the collision stamp anchors there and always
   did). Passing the frame being drawn — or nothing — is the old behaviour
   bit-for-bit, which is what every south placement wants and what keeps
-  render3's paste exact; only the turned facings move. `render3.py` still pins
+  render3's paste exact; only the turned facings move.
+  **A PIECE HUNG ON A WALL IS NOT ONE OF THEM, AND THAT COST HIM HIS WINDOWS**
+  (2026-09-15: "we had put an enormous effort into making the window Z look good
+  and now it's changed"). `stampSceneryCollision` already says why: it skips
+  every placement carrying `z` — "such a piece takes NO ground — the wall behind
+  it is what blocks — so it stamps nothing" — so there is no box for its art to
+  be inside, and its fixed point is the height the maintainer tuned plus its own
+  art's foot, which is what render3 and the wiki draw. Anchoring it to a still
+  it never draws moved all 71 of the_game's wall-hung placements DOWN, every one
+  of them turned: the 40 windows by 3.0-7.1 px (`window_086` on his own house
+  6.1), wall hangings by up to 11.1 (`wall_hanging_017` `NOT_LIT_3`), chimneys
+  by up to 4.0 — against a 15 px storey. Measured in the live scene at
+  305.44,237 (his house): the window pasted at y 8237 under the anchor rule and
+  8230 without it.
+  THE GATE MISSED IT BECAUSE IT CALLED A SIMPLER OVERLOAD THAN THE SCENE:
+  scenery3.test.ts's parity arm fitted every placement WITHOUT an anchor box, so
+  it proved render3's rule against itself and never saw the game's. It now calls
+  `anchorBoxFor` — the shipped rule — and asserts both halves: a wall-hung
+  placement pastes exactly where render3 pastes it, and a ground placement's
+  south foot lands on the placement point. Removing the `z` line makes it fail
+  on the first chimney. `render3.py` still pins
   the drawn frame's own foot, so maps2' overview and the game disagree on a
   turned piece by that 13 px until it mirrors this (posted).
   ONE THING WAS THE STAMP'S and stays fixed: it scaled the published ellipse by

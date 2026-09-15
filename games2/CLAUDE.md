@@ -137,7 +137,9 @@ push, no PRs unless asked.
   `rectCorners`, never re-derive; one lookup (`sceneryHitboxRec`), one
   per-facing placement (`hitboxPosFor`). THE BOX IS FIXED and the art moves
   into it (his): a facing draws through the STATE's SOUTH still's canvas
-  (`anchorBox`) at the PIECE's base scale.
+  (`anchorBox`) at the PIECE's base scale — but ONLY where a footprint is
+  stamped. A piece with `z` hangs on a wall and stamps none, so it keeps its
+  own art's foot: the height HE tuned (`anchorBoxFor`, one rule, one place).
 - Indoor furniture draws while its roof is cut away and crossfades with it; a
   piece ON that roof goes with it, and its FEET are the height EVERY rule reads
   (lid fade, cover, lit copy, light, lit volume, depth `lvl`). Flat

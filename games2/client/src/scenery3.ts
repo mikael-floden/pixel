@@ -622,6 +622,44 @@ export function southSprite(state: SceneryState): string {
 
 export type BBox = [number, number, number, number];
 
+/** WHICH BOX A TURNED FRAME IS DRAWN INTO — the whole rule, in one place,
+ *  because the scene and its gate both need it and a gate that re-states a
+ *  rule tests itself (`sceneryHitboxRec`'s note, for the same reason).
+ *
+ *  THE FOOTPRINT IS THE FIXED POINT for a piece standing on the ground: the
+ *  maintainer places its hitbox against a wall, the wiki draws that box on the
+ *  STATE's south still, and a rotation only changes the SILHOUETTE on that same
+ *  canvas — so the art is drawn into the box rather than the box following the
+ *  art ("It's important to not move the hitbox to the scenery ... it's the
+ *  scenery that wasn't drawn inside the already correctly placed hitbox",
+ *  2026-09-14).
+ *
+ *  A PIECE HUNG ON A WALL HAS NO SUCH BOX, and shared's collision stamp is
+ *  where that is already written: it skips every placement carrying `z` — "such
+ *  a piece takes NO ground — the wall behind it is what blocks — so it stamps
+ *  nothing". Its fixed point is the maintainer's tuned height on the wall and
+ *  its own art's foot, which is what render3 and the wiki draw; anchoring it to
+ *  a still it never draws moved every window on the map DOWN (measured on
+ *  the_game: 3.0-7.1 px on the 40 windows, up to 11.1 on a wall hanging,
+ *  against a 15 px storey — "we had put an enormous effort into making the
+ *  window Z look good and now it's changed", 2026-09-15).
+ *
+ *  `south` is the still's alpha box WITH the canvas it was measured on: the
+ *  rotations share that canvas, and a mismatch means the two were measured
+ *  against different art, where no offset between them is meaningful. */
+export function anchorBoxFor(
+  placement: { z?: number | null },
+  state: SceneryState,
+  sprite: string,
+  canvas: { w: number; h: number },
+  south: { box: BBox; canvas: { w: number; h: number } } | null | undefined,
+): BBox | null {
+  if (placement.z !== undefined && placement.z !== null) return null; // on a wall: no footprint
+  if (sprite === southSprite(state)) return null; // the still draws on its own foot
+  if (!south || south.canvas.w !== canvas.w || south.canvas.h !== canvas.h) return null;
+  return south.box;
+}
+
 /** PIL `Image.getbbox()` on the ALPHA channel — right half-open, so
  *  `[l, t, r, b]` with width `r - l`. null for a fully transparent image.
  *

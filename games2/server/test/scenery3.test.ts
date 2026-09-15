@@ -34,6 +34,7 @@ import {
   facedSprite,
   facedDir,
   animFrames,
+  anchorBoxFor,
   alphaBBox,
   fitSprite,
   frameRect,
@@ -98,6 +99,8 @@ test("every fixture placement lands on render3's pixel", { skip }, () => {
    * 2026-09-09 and the fixture records every input (base_bbox, k, dir, state,
    * z, lift) so a drift on either side names its field. */
   let checked = 0;
+  let wall = 0;
+  let inside = 0;
   const dys: number[] = [];
   for (const s of W.scenery) {
     const meta = manifest(s.piece);
@@ -132,9 +135,60 @@ test("every fixture placement lands on render3's pixel", { skip }, () => {
     assert.equal(fit.h, s.h, `${s.piece} scaled h`);
     assert.equal(fit.x, s.sx, `${s.piece} paste x`);
     dys.push(fit.y - s.sy);
+
+    /* ...AND THE CALL THE SCENE ACTUALLY MAKES. The fit above is render3's
+     * rule — the drawn frame's own foot on the placement point — and this arm
+     * used to stop there, which is why it stayed green while the game drew
+     * something else: WorldScene passes an ANCHOR BOX for a turned frame (the
+     * STATE's south still, whose canvas its rotations share) so the art is
+     * drawn INSIDE the hitbox the maintainer placed, his correction of
+     * 2026-09-14. A gate that calls a simpler overload than the scene proves
+     * the scene's rule against nothing.
+     *
+     * THE TWO KINDS, and the line between them is the collision stamp's own:
+     * a placement with `z` hangs on a wall and stamps NOTHING ("such a piece
+     * takes NO ground — the wall behind it is what blocks", shared
+     * stampSceneryCollision), so it has no box to be inside and keeps
+     * render3's anchor — which IS the height he tuned, and moving it is what
+     * he reported as "someone has changed the window z". Everything else
+     * stands on ground with a footprint, and its south still's FOOT is what
+     * lands on the placement point whatever the drawn frame's silhouette
+     * does. */
+    const southImg = px(artPath(southSprite(st)));
+    const southBox = alphaBBox(southImg);
+    const anchor = anchorBoxFor(
+      { z: s.z },
+      st,
+      sprite,
+      { w: img.w, h: img.h },
+      southBox ? { box: southBox, canvas: { w: southImg.w, h: southImg.h } } : null,
+    );
+    const scene = fitSprite(
+      bbox,
+      img,
+      want,
+      anchorX(frame, s.x, s.y),
+      anchorY(frame, s.x, s.y, level),
+      s.hflip,
+      baseBBox ? baseBBox[3] - baseBBox[1] : undefined,
+      anchor,
+    );
+    if (s.z !== undefined && s.z !== null) {
+      assert.equal(anchor, null, `${s.piece} hangs on a wall: it has no footprint to be drawn inside`);
+      assert.equal(scene.y, s.sy, `${s.piece} hangs on a wall: it pastes where render3 pastes it`);
+      wall++;
+    } else if (anchor && southBox) {
+      const foot = scene.y + (southBox[3] - scene.sy) * scene.ky;
+      assert.ok(
+        Math.abs(foot - anchorY(frame, s.x, s.y, level)) <= 1,
+        `${s.piece} stands on ground: its south still's foot lands on the placement point (${foot.toFixed(2)} vs ${anchorY(frame, s.x, s.y, level)})`,
+      );
+      inside++;
+    }
     checked++;
   }
-  console.log(`scenery parity: ${checked} placements; paste-y deltas (port - render3): ${[...new Set(dys)].join(",")}`);
+  console.log(`scenery parity: ${checked} placements (${wall} hung on a wall, ${inside} turned into their own box); paste-y deltas (port - render3): ${[...new Set(dys)].join(",")}`);
+  assert.ok(wall > 0, "the window has no wall-hung placement to check — this arm is not testing what it says");
   for (const [i, dy] of dys.entries()) assert.equal(dy, 0, `${W.scenery[i].piece} paste y (lift ${W.scenery[i].lift})`);
   assert.ok(checked > 0);
 });

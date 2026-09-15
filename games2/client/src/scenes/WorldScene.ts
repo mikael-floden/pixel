@@ -264,6 +264,7 @@ import {
   facedSprite,
   facedDir,
   southSprite,
+  anchorBoxFor,
   stateFor,
   animFrames,
   ventFor,
@@ -17049,7 +17050,7 @@ export class WorldScene extends Phaser.Scene {
       if (this.needScenery(spriteOn)) {
         const art = this.sceneryArtFit(this.sKey(spriteOn));
         if (art) {
-          const fit = fitSprite(art.bbox, art.canvas, sceneryDrawnPx(piece.worldPxHeight, piece.contractCharacterPx), p.ax, p.ay, p.hflip, baseH, this.sceneryAnchorBox(onState, spriteOn, art.canvas));
+          const fit = fitSprite(art.bbox, art.canvas, sceneryDrawnPx(piece.worldPxHeight, piece.contractCharacterPx), p.ax, p.ay, p.hflip, baseH, this.sceneryAnchorBox(p, onState, spriteOn, art.canvas));
           if (!(fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h)) {
             const key = this.sKey(spriteOn);
             const name = `s3c:${fit.sx},${fit.sy},${fit.sw},${fit.sh}`;
@@ -21437,12 +21438,17 @@ export class WorldScene extends Phaser.Scene {
    * south still, and a rotation that came back on a canvas of its own (none in
    * today's library; it would have no shared frame to be anchored in, so it
    * keeps its own foot, exactly as before). */
-  private sceneryAnchorBox(st: SceneryState, sprite: string, canvas: { w: number; h: number }): SceneryBBox | null {
-    const south = southSprite(st);
-    if (sprite === south) return null;
-    const b = this.sceneryBboxDoc?.boxes?.[south];
-    if (!b || b[4] !== canvas.w || b[5] !== canvas.h) return null;
-    return [b[0], b[1], b[2], b[3]];
+  /** THE RULE IS `anchorBoxFor` (scenery3.ts) — this only looks the south
+   *  still's measured box up in the bbox doc, where the game keeps it. */
+  private sceneryAnchorBox(
+    p: { z?: number | null },
+    st: SceneryState,
+    sprite: string,
+    canvas: { w: number; h: number },
+  ): SceneryBBox | null {
+    const b = this.sceneryBboxDoc?.boxes?.[southSprite(st)];
+    const south = b ? { box: [b[0], b[1], b[2], b[3]] as SceneryBBox, canvas: { w: b[4], h: b[5] } } : null;
+    return anchorBoxFor(p, st, sprite, canvas, south);
   }
 
   private sceneryArtFit(key: string): SceneryArtFit | null {
@@ -21786,7 +21792,7 @@ export class WorldScene extends Phaser.Scene {
         p.ay,
         p.hflip,
         baseH,
-        this.sceneryAnchorBox(st, sprite, art.canvas),
+        this.sceneryAnchorBox(p, st, sprite, art.canvas),
       );
       if (fit.x + fit.w < rect.x || fit.x > rect.x + rect.w || fit.y + fit.h < rect.y || fit.y > rect.y + rect.h) {
         // Out of the build rect: no sprite — but the light, when its pool
