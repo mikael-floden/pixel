@@ -17539,6 +17539,20 @@ export class WorldScene extends Phaser.Scene {
       const bx = this.iso.ox + u * dx;
       const by = this.iso.oy + v * dy;
       const depth = by + dy + 0.01;
+      const base = world.rows[row]?.[col]?.l ?? 0;
+      const decks = this.t3decksOf(t3, col, row);
+      /* THE LAP — a deck sitting at its own column's level. The ground pass
+       * paints that column's cap and the deck pass then paints over it, both
+       * at alpha 1, so the deck is the only one ever seen and the cap costs
+       * nothing. A FADE LAYER runs at alpha < 1, where stamping both
+       * composites 1−(1−a)² instead of a: measured at house_a's wall-top ring
+       * (104,154, deck level 12) as two identical pieces, so the ring read
+       * half again as solid as the roof it rings for the whole crossing. ONE
+       * STAMP PER (CELL, LEVEL), and the one that survives is the one the
+       * picture shows — the deck. (Not the mirror of the old regression, where
+       * the two keys DIFFERED and the dark deck tile flipped the whole ring at
+       * the swap; that one is the same rule seen from the other side.) */
+      const lapped = decks.some((d) => d.level >= base && d.level === cell.level);
       // The storeys the cut took off this column, and its real cap.
       if (cutE < cell.level && (cell.kind === "wall" || cell.level > 0)) {
         const topKey = t3SurfaceKey(tex, this.t3tm, cell);
@@ -17550,12 +17564,11 @@ export class WorldScene extends Phaser.Scene {
           const sy = t3SurfaceY(cell);
           const capX = sy !== null ? cell.sx : bx;
           const capY = sy !== null ? sy : by - cell.level * lh;
-          if (shows(capX, capY)) push(capX, capY, topKey, depth);
+          if (!lapped && shows(capX, capY)) push(capX, capY, topKey, depth);
         }
       }
       // Every deck a constrained column hides — the roof itself.
-      const base = world.rows[row]?.[col]?.l ?? 0;
-      for (const d of this.t3decksOf(t3, col, row)) {
+      for (const d of decks) {
         if (d.level < base) continue; // buried: nothing of it ever shows
         for (const op of tex.opsForDeck(d)) if (shows(bx, op.y)) push(bx, op.y, op.key, depth);
       }

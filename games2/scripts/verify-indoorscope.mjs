@@ -99,15 +99,29 @@ try {
   await page.evaluate((i) => { window.__mlSelect.pickWorld(i); window.__mlSelect.commit(); }, idx);
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 40000 });
   await page.waitForFunction(() => !document.querySelector("#ml-loading"), { timeout: 25000 });
+  // THE PHASE HAS TO BE THE SERVER'S. `timeOfDay()` sets timeIdx on the CLIENT,
+  // and the room patches timeIdx/phaseT continuously — so the pin held for a
+  // frame or two and then the world went back to whatever the server's clock
+  // said. Invisible while that clock happened to sit on Day, and a flake the
+  // moment it did not: the entry's outdoor roof anchor came back at 34.2
+  // instead of 126.2 and the run died on "the roof patch barely changes —
+  // sample is wrong", which is the gate accusing its own fixture. `worldTime`
+  // sends the room's own "timeofday" message, and timeSpeed(0) has to LAND
+  // first (it is a message too) or the freeze arrives after the jump.
   await page.evaluate(() => window.__ml.timeSpeed(0));
-  await page.waitForTimeout(400);
+  await page.waitForTimeout(1500);
   await page.evaluate(() => {
-    window.__ml.timeOfDay("Day", true);
+    window.__ml.worldTime(2); // TIME_PHASES[2] = Day
     window.__ml.aurora(false, true);
     window.__ml.weather(0, true);
     window.__ml.noAggro?.(true);
   });
-  await page.waitForTimeout(600);
+  const phased = await page.waitForFunction(
+    () => window.__ml.timeOfDay().name === "Day" ? window.__ml.timeOfDay() : null,
+    null, { timeout: 20000, polling: 150 },
+  ).then(() => true).catch(() => false);
+  if (!phased) fail(`the world clock never reached Day — it reports ${JSON.stringify(await page.evaluate(() => window.__ml.timeOfDay().name))}`);
+  await page.waitForTimeout(2500); // the 2.5s phase ease has to finish, or every anchor is mid-blend
 
   const shoot = async (name) => {
     const buf = await page.screenshot();
@@ -468,8 +482,11 @@ try {
   // roll is one or two harness frames, far too few to land a correction inside.
   // It changes the clock and nothing else; the assertion is about the rule.
   {
+    // `roofs` carries the deck's ENCODED cells; houseOf is what turns them into
+    // [col,row] pairs (X/Y), and every roof counts here, not just the ones with
+    // floor enough to be a "house".
     const roofCells = new Set();
-    for (const d of roofs) for (const [c, r] of d.cells) roofCells.add(`${c},${r}`);
+    for (const d of roofs) for (const [c, r] of houseOf(d).cells) roofCells.add(`${c},${r}`);
     const FAR = [[4, 0], [0, 4], [-4, 0], [0, -4], [5, 3], [-5, 3]]
       .map(([dc, dr]) => [OUT_SPOT[0] + dc, OUT_SPOT[1] + dr])
       .find(([c, r]) => c > 1 && r > 1 && !roofCells.has(`${Math.floor(c)},${Math.floor(r)}`));

@@ -103,15 +103,25 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   reverse the fade (the mix IS the state). Instant paths stay instant (kill
   switch, world unload, QA toggle). A direct room-A→B crossing mid-fade
   keeps ≤1s of stale fade art — accepted. Probe: `__ml.indoorFade()`.
-  - **The debris obeys the LAP RULE**: where a deck coincides with its own
-    equal-height column (`deck.level == cell.l` — a roof lapping its walls,
-    hall pillars), the real renderers draw the COLUMN's baked top and skip
-    the deck; buildIndoorDebris must too (same `dk.deck.level > cell.l`
-    guard as rebuildOccluders/redrawGround) — else the fade shows a dark
-    slab popping to the real mixed-tile roof. `__ml.debrisAt(c,r)` lists a
-    cell's pieces (lvl, key); the gate holds a lap cell to ONE piece per
-    level with the wall's own top (tone-independent — a pixel bar can't see
-    this).
+  - **The debris obeys the LAP RULE — ONE STAMP PER (CELL, LEVEL)**: where a
+    deck coincides with its own equal-height column (a roof lapping its walls,
+    hall pillars), the real renderers draw BOTH and let the deck land last
+    (rebuildOccluders collects an equal-level deck as a `capDeck` and pushes
+    it after the cap and the boundary; creation order is draw order in that
+    band), so at alpha 1 the DECK is the only one ever seen and the cap under
+    it costs nothing. A FADE LAYER is not at alpha 1: stamping both composites
+    1−(1−a)² instead of a, and house_a's wall-top ring came back as two
+    identical pieces at deck level 12 (104,154) — the ring reading half again
+    as solid as the roof it rings, for the whole crossing. So
+    buildIndoorDebris3 pushes the deck and SKIPS the column's own cap where
+    the two coincide (`d.level === cell.level`, buried decks already out) —
+    the one that survives is the one the picture shows. The mirror of the same
+    rule is the older regression, where the two keys DIFFERED and the dark
+    deck tile flipped the whole ring at the swap (the island hall: "the roof
+    suddenly changes look... the walls having a different tile than the
+    roof"). `__ml.debrisAt(c,r)` lists a cell's pieces (lvl, key); the gate
+    holds a lap cell to ONE piece per level (tone-independent — a pixel bar
+    cannot see this: both keys were the same art here).
   - **TWO SPEEDS: debris at 3×, light grade at 1.5×** (`INDOOR_DEBRIS_RATE`
     / `INDOOR_GRADE_RATE`, both maintainer-tuned separately — running
     everything at 3× was sent back). `debrisAlpha()` keeps its 3× curves
