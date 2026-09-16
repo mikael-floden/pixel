@@ -119,6 +119,7 @@ import { ensureNavHelpDial, navHelpMs } from "../navhelp";
 import { ensureAccelDial, accelS } from "../accel";
 import { roomCoverFraction, coversRoom, type ScreenBox, type ScreenPt } from "../scenerycover";
 import { ensureWallWrapDial, wallWrap, setWallWrap } from "../wallwrap";
+import { ensureDoorFadeDial, doorFadeSpeed, setDoorFadeSpeed, DOOR_FADE_MIN, DOOR_FADE_MAX } from "../doorfade";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import {
@@ -5130,6 +5131,11 @@ export class WorldScene extends Phaser.Scene {
       indoorFade: () => ({
         cutCells: this.indoorCut?.size ?? 0,
         debris: this.indoorDebris?.length ?? 0,
+        /* How many times the BLEND has been snapped to an endpoint. A jump no
+         * roll can produce, and the only thing that tells a snapped crossfade
+         * from a very fast one — a gate that only watched `mix` could not say
+         * whether the fade ended or merely finished. */
+        snaps: this.indoorSnaps,
         alpha: +this.debrisAlpha().toFixed(3),
         exiting: !this.indoorInside && !!this.indoorMask,
         mix: +this.indoorMix.toFixed(3),
@@ -5216,6 +5222,16 @@ export class WorldScene extends Phaser.Scene {
       indoorMixPin: (v?: number | null) => {
         this.indoorMixPinV = typeof v === "number" ? Math.max(0.001, Math.min(0.999, v)) : null;
         return this.indoorMixPinV;
+      },
+      /* THE CROSSING'S SPEED (doorfade.ts), settable without a pointer drag. Not
+       * the same instrument as the pin: the pin PARKS the blend, which is how a
+       * gate photographs one value deterministically, while this one lets the
+       * real roll run — every rule crossing every threshold in its own order —
+       * only slower, which is the only way a 15fps rig can render the stretch a
+       * 60fps phone renders in twenty-seven frames. */
+      doorFade: (v?: number) => {
+        if (typeof v === "number") setDoorFadeSpeed(Math.max(DOOR_FADE_MIN, Math.min(DOOR_FADE_MAX, v)));
+        return doorFadeSpeed();
       },
       // Is the room mask really reaching the shader? The one failure this
       // feature has that is INVISIBLE on the headless harness and fatal on a
@@ -8199,6 +8215,7 @@ export class WorldScene extends Phaser.Scene {
                 mix: +this.indoorMix.toFixed(3), inside: this.indoorInside,
                 grade: +this.indoorGrade().toFixed(3), roomLit: this.roomHasLight(),
                 roomOn: !!this.roomMask, maskOn: !!this.indoorMask, slots: this.slotTenure.size,
+                snaps: this.indoorSnaps,
                 stampN: this.sceneryStamps.length, stampA: +stampA.toFixed(2),
                 drawN, drawA: +drawA.toFixed(3),
                 roofed: this.sceneryRoofedImgs.length, aboveCut: this.sceneryAboveCutImgs.length,
@@ -13240,6 +13257,11 @@ export class WorldScene extends Phaser.Scene {
       let snapped = false;
       if (Math.abs(g.x - av.lx) > CELL_WU * 2 || Math.abs(g.y - av.lyFlat) > CELL_WU * 2) {
         snapped = true;
+        // Where the body was STANDING before the correction — the indoor blend
+        // below needs both ends of the jump, and lx/lyFlat are about to become
+        // the server's.
+        const wasCol = av.lx / CELL_WU;
+        const wasRow = av.lyFlat / CELL_WU;
         av.lx = g.x;
         av.lyFlat = g.y;
         av.elev = targetElev;
@@ -13257,10 +13279,30 @@ export class WorldScene extends Phaser.Scene {
           this.clearMoveTarget();
           this.dropHold();
         }
-        // …and the indoor verdict: a snap across the map must not spend 250ms
-        // of dwell rendering the room you left, nor cross-fade the grade over
-        // what is really a cut.
-        if (id === myId) this.indoorSnap();
+        /* …and the indoor verdict: a snap across the map must not spend 250ms of
+         * dwell rendering the room you left, nor cross-fade the grade over what
+         * is really a cut.
+         *
+         * THE BLEND IS THE PART THAT IS NOT ALWAYS A TELEPORT. This branch is
+         * also the ORDINARY RECONCILIATION — it fires whenever the server
+         * corrects the predictor by more than two cells, and running out of a
+         * doorway at full speed (collision, steer assist, a door steered to
+         * within 4 cells) is exactly when that happens. Resetting the blend
+         * there ends the crossfade wherever it had got to: measured at day, the
+         * mix jumped 0.524 -> 0 in ONE frame and the sampled roof point 0.715 ->
+         * 1.0 with it, the whole outdoor world brightening 40% at once
+         * (maintainer 2026-09-15: "the last frame when fading from indoor to
+         * outdoor the entire house sometimes light up" — SOMETIMES because the
+         * correction has to land inside the 0.39s crossing).
+         *
+         * So the dwell reset stays unconditional and the BLEND is reset only
+         * when the jump really changes which room you are in. `inMyRoom` is the
+         * LIGHT mask, which outlives the verdict by one roll — up for the whole
+         * crossfade in both directions, and true everywhere outdoors, so a
+         * correction out in the open resets nothing (there is nothing to
+         * reset). */
+        if (id === myId)
+          this.indoorSnap(this.inMyRoom(wasCol, wasRow) !== this.inMyRoom(g.x / CELL_WU, g.y / CELL_WU));
       } else {
         const px0 = av.lx;
         const py0 = av.lyFlat;
@@ -17145,6 +17187,10 @@ export class WorldScene extends Phaser.Scene {
    *  the rebuild that produced it rather than to a wall-clock guess. */
   private scnRebuilds = 0;
   private winSample?: () => void;
+  /** How many times the blend has been SNAPPED to an endpoint (indoorSnap) —
+   *  a jump of the mix that no roll can produce, and the one thing a per-frame
+   *  trace cannot otherwise tell from a very fast fade. */
+  private indoorSnaps = 0;
   private winScene: Array<Record<string, unknown>> | null = null;
   private winAt: [number, number, number?] | null = null;
   private roomLitAt = 0;
@@ -17868,7 +17914,11 @@ export class WorldScene extends Phaser.Scene {
    * clamp so it settles exactly instead of asymptotically. */
   private easeIndoorMix() {
     const to = this.indoorInside ? 1 : 0;
-    const k = 1 - Math.exp(-(this.game.loop.delta / 1000) / INDOOR_TAU);
+    // HIS SPEED DIAL rides the ROLL RATE (doorfade.ts), so 1.00 is exactly the
+    // tuned crossing and everything downstream — the debris' 3x curves, the
+    // grade's 1.5x, the landing — stretches with it, because all three are
+    // functions of the mix and not of the clock.
+    const k = 1 - Math.exp(-((this.game.loop.delta / 1000) * doorFadeSpeed()) / INDOOR_TAU);
     this.indoorMix += (to - this.indoorMix) * k;
     if (Math.abs(this.indoorMix - to) < 0.005) this.indoorMix = to;
     // QA PIN (__ml.indoorMixPin): parks the blend anywhere in (0,1) so a
@@ -17924,6 +17974,7 @@ export class WorldScene extends Phaser.Scene {
       ensureAccelDial(); // …and the acceleration ramp (time from rest to full speed)
       ensureStickAngle(); // (re)bind the bearing listeners on games-ui's stick
       ensureWallWrapDial(); // …and the night shader's wall light wrap
+      ensureDoorFadeDial(); // …and how fast a doorway crossing fades (1.00 = his)
       if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way
     }
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
@@ -17960,10 +18011,18 @@ export class WorldScene extends Phaser.Scene {
 
   /** Teleport / respawn: apply the next verdict instantly. A snap across the
    * map must not spend 250ms of dwell rendering the room you left, nor
-   * cross-fade the grade over what is really a cut. */
-  private indoorSnap() {
+   * cross-fade the grade over what is really a cut.
+   *
+   * TWO HALVES, and only the first is always right. Re-evaluating NOW is right
+   * for every position jump, teleport or prediction correction alike. Resetting
+   * the BLEND is right only for a jump that changes which room you are in — its
+   * caller decides, because an ordinary reconciliation mid-crossing would
+   * otherwise end the crossfade in one frame (see the call site). */
+  private indoorSnap(resetBlend = true) {
     this.indoorDirty = true;
     this.indoorFlipAt = -Infinity;
+    if (!resetBlend) return;
+    this.indoorSnaps++;
     this.indoorMix = this.indoorInside ? 1 : 0;
   }
 

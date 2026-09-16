@@ -283,13 +283,21 @@ try {
     await page.waitForTimeout(300);
     const before = await roofMed(`${label}-before`);
     // Pin at a MID blend, then trigger in the same evaluate: entry alpha at
-    // mix .15 = .55; exit alpha at mix .85 = .45 — both genuinely blended.
+    // mix .15 = .55, exit alpha at mix .75 = .75 — both genuinely blended
+    // (leaving, the debris completes by mix ⅔, so the pin has to stay above it).
+    // THE EXIT PIN IS .75 BECAUSE THE ROOM GOT BRIGHTER. The roof anchor rides
+    // the outside's fade-up-from-black, `ambOut · (1 − grade)`, so the pin sets
+    // it: .85 is grade .775, i.e. 22.5% of daylight — 28.0 against an interior
+    // endpoint that was ~20 when a lit room was the 12% dial and is 24.4 at his
+    // 25% (2026-09-15). The frame was still a real blend; it had simply stopped
+    // LOOKING like one, and the assertion below is about looking. .75 is grade
+    // .625 — 37.5%, ~47 — clear of both ends by more than the 8-luma bar.
     await page.evaluate(([tc, tr, pin]) => {
       window.__ml.indoorMixPin(pin);
       const m = window.__ml.me();
       if (m?.dead) window.__ml.roomSend("respawn", {});
       window.__ml.teleport(tc, tr);
-    }, [...(goIn ? [aC + 0.5, aR + 0.5] : OUT_SPOT), goIn ? 0.15 : 0.85]);
+    }, [...(goIn ? [aC + 0.5, aR + 0.5] : OUT_SPOT), goIn ? 0.15 : 0.75]);
     const flipped = await page.waitForFunction(
       (w) => window.__ml.indoor().indoor === w && window.__ml.indoorFade().debris > 0,
       goIn,
@@ -444,6 +452,57 @@ try {
   if (Math.max(...farL) > 1e-6)
     fail(`the outdoor ambient is not zero while indoors (${farL.map((v) => v.toFixed(4)).join(",")}) — the black-NPC feature's mechanism moved`);
   ok("outdoor ambient is exactly zero while indoors — the darkened-NPC feature's mechanism is untouched");
+
+  // ---- 7. A PREDICTION CORRECTION MUST NOT END THE CROSSFADE --------------
+  // The client snaps the body when the server's position is more than two
+  // cells from the predicted one, and that snap used to reset the indoor BLEND
+  // too — right for a teleport across the map, wrong for the ordinary
+  // reconciliation, which is exactly what running out of a doorway at full
+  // speed produces. Measured at day before the split: the mix jumped 0.524 to 0
+  // in ONE frame and a roof sample 0.715 to 1.0 with it (maintainer 2026-09-15:
+  // "the last frame when fading from indoor to outdoor the entire house
+  // sometimes light up"). The rule now: re-evaluate the verdict on every jump,
+  // reset the blend only when the jump changes which room you are in.
+  //
+  // doorFade(0.15) is what makes this assertable at all — at 1.00x the whole
+  // roll is one or two harness frames, far too few to land a correction inside.
+  // It changes the clock and nothing else; the assertion is about the rule.
+  {
+    const roofCells = new Set();
+    for (const d of roofs) for (const [c, r] of d.cells) roofCells.add(`${c},${r}`);
+    const FAR = [[4, 0], [0, 4], [-4, 0], [0, -4], [5, 3], [-5, 3]]
+      .map(([dc, dr]) => [OUT_SPOT[0] + dc, OUT_SPOT[1] + dr])
+      .find(([c, r]) => c > 1 && r > 1 && !roofCells.has(`${Math.floor(c)},${Math.floor(r)}`));
+    if (!FAR) fail("no roof-free spot 4 cells from OUT_SPOT — the street fixture is gone");
+    await page.evaluate(() => window.__ml.doorFade(0.15));
+    await goTo(aC + 0.5, aR + 0.5);
+    if (!(await settle(true, 45000))) fail("could not re-enter house_a for the reconciliation pin");
+    await page.evaluate(([c, r]) => window.__ml.teleport(c, r), OUT_SPOT); // the real crossing: room -> street
+    const caught = await page.waitForFunction(
+      () => { const f = window.__ml.indoorFade(); return f.exiting === true && f.mix < 0.92 && f.mix > 0.45 ? f : null; },
+      null, { timeout: 25000, polling: 25 },
+    ).then((h) => h.jsonValue()).catch(() => null);
+    if (!caught) fail("never caught the exit roll mid-flight — doorFade(0.15) is not stretching the crossing");
+    // ...and now correct the predictor by more than two cells WITHOUT leaving
+    // the street. Under the old rule this ended the fade on the spot.
+    await page.evaluate(([c, r]) => window.__ml.teleport(c, r), FAR);
+    const landed = await page.waitForFunction(
+      ([c, r]) => { const m = window.__ml?.me?.(); return !!m && Math.abs(m.x / 32 - c) < 0.9 && Math.abs(m.y / 32 - r) < 0.9; },
+      FAR, { timeout: 10000, polling: 25 },
+    ).then(() => true).catch(() => false);
+    if (!landed) fail(`the reconciliation teleport to ${FAR} never took`);
+    const after = await page.evaluate(() => window.__ml.indoorFade());
+    if (after.snaps !== caught.snaps)
+      fail(`a ${'>'}2-cell correction on the street SNAPPED the blend (snaps ${caught.snaps} -> ${after.snaps}, ` +
+        `mix ${caught.mix.toFixed(3)} -> ${after.mix.toFixed(3)}) — the crossfade ends in one frame and the whole ` +
+        `outdoor world jumps to full ambient: his "the entire house sometimes light up"`);
+    if (!(after.mix > 0.02))
+      fail(`the blend reached 0 across the correction (mix ${caught.mix.toFixed(3)} -> ${after.mix.toFixed(3)}) — ` +
+        `the roll was ended, not merely advanced`);
+    ok(`a ${'>'}2-cell correction on the street leaves the crossfade rolling: mix ${caught.mix.toFixed(3)} -> ` +
+      `${after.mix.toFixed(3)}, blend snaps unchanged at ${after.snaps}`);
+    await page.evaluate(() => window.__ml.doorFade(1));
+  }
 
   if (errs.length) fail(`page errors: ${errs.join(" | ")}`);
   console.log(`\nverify-indoorscope: ALL OK (${passed})`);

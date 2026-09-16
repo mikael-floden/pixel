@@ -138,6 +138,48 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     starved harness photographs the crossfade deterministically (pin BEFORE
     the teleport). An exit pin ≤ ⅓ IS the landed grade — the swap fires
     under it; pin above ⅓ to hold the pre-swap frame.
+  - **THE CROSSING'S SPEED IS A DIAL** (`doorfade.ts`, `__ml.doorFade(v?)`,
+    Settings "Doorway fade speed"): a multiplier on the ROLL RATE, **1.00 =
+    his tuned crossing** and bit-identical to no dial at all. The two rates
+    above, the grade and the landing are all functions of the MIX, never of
+    wall-clock, so they stretch with it and keep their proportions. What it is
+    for is the class of report the pin cannot reach: a fault that lasts one or
+    two FRAMES while a budgeted pass catches up is 16 ms of a 0.39 s crossing
+    on a 60 fps phone, and the headless rig renders that whole stretch as ONE
+    frame — parking the blend photographs a VALUE, not a frame-ordering. At
+    0.15× the crossing is 3.3 s and ~50 harness frames.
+    Two costs, both only away from 1.00: the exit draws the CUT world under
+    opaque debris until the grade lands, and that layer carries a BUILD-TIME
+    view cull, so a stretched exit lets a running player drag the camera past
+    it (the artefact the 1.5× grade was chosen to bound) — which for an
+    instrument is the point; and the ambient agent's `OUTDOOR_FADE_MS`, pinned
+    to 3 · INDOOR_TAU, is a CONSTANT, so its outdoor layer keeps the default
+    speed while the game's crossing is slowed.
+  - **A PREDICTION CORRECTION IS NOT A TELEPORT.** The client snaps the body
+    whenever the server's position is more than **2 cells** from the predicted
+    one, and that snap called `indoorSnap()`, which reset the BLEND to its
+    endpoint. Right for a jump across the map — a respawn must not spend the
+    250 ms dwell rendering the room you left — and wrong for the ordinary
+    reconciliation, which running out of a doorway at full speed (collision,
+    steer assist, a door steered to within 4 cells) is exactly what produces.
+    It ended the crossfade wherever it had got to: measured at day on a real
+    run out of a real door, the mix jumped **0.524 → 0 in one frame** and a
+    roof sample **0.715 → 1.0** with it — the whole outdoor world, house
+    included, brightening 40% at once (maintainer 2026-09-15: "the last frame
+    when fading from indoor to outdoor the entire house sometimes light up";
+    SOMETIMES because the correction has to land inside the 0.39 s crossing).
+    `indoorSnap(resetBlend)` now splits the two: **re-evaluating the verdict is
+    unconditional, resetting the blend happens only when the jump changes which
+    room you are in** (`inMyRoom`, the LIGHT mask — up for the whole crossfade
+    in both directions, and true everywhere outdoors, so a correction in the
+    open resets nothing). After: the same run lands the last frame at **+0.7%**
+    (0.9929 → 1.0). `indoorFade().snaps` counts blend resets — the only thing
+    that tells a snapped crossfade from a very fast one.
+  - Gate: verify-indoorscope section 7 (enter, cross to the street, catch the
+    roll mid-flight, then correct the predictor 4 cells along the SAME street:
+    the blend must still be rolling and `snaps` unchanged — it fails on the old
+    rule). It runs at `doorFade(0.15)` because at 1.00x the whole roll is one or
+    two harness frames, too few to land a correction inside.
   - Gate: verify-indoorscope sections 4-5 (pinned mid frame distinct from
     both endpoints >8 luma; debris gone at settle; the TWO SPEEDS are real;
     the late-exit frame matches the settled outdoor roof within a tight

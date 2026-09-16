@@ -175,6 +175,9 @@ push, no PRs unless asked.
   corner is as far off as one met head-on (the lateral probes read solids only;
   a refused move there wedges every corner). A descent stays forgiving
   (`wallclear.test.ts`).
+- A >2-cell position correction re-checks the indoor verdict but NEVER resets
+  the doorway crossfade — only a room change does; its SPEED is a dial (1.00x
+  is his, and slower is the only instrument for a one-frame report).
 - A footprint and a body belong to the FLOOR they stand on (`lvl`); every
   query that knows the surface level passes it.
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge, and the
@@ -275,7 +278,7 @@ netcode; these are the invariants)
   Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
-- Indoor ambient: dark room 40%, lit room 12%; hidden outline 20% — his dials.
+- Indoor ambient: dark room 40%, lit room 25%; hidden outline 20% — his dials.
 - MY ROOM IS A VOLUME: the room test takes a HEIGHT (`indoorCeil`, held while
   the mask is), and over my own roof its lights and halo field are blocked
   outright — on `occ`, all the scenery pipeline reads.
