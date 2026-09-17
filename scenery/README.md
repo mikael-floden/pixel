@@ -679,6 +679,16 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   `directions.<dir>.frame_paths` as well as the flat list: a turned placement
   plays the facing's own frames, and a path the index lacks is served raw
   under a stable name, outside the hashed layer (2026-09-17, 65 families).
+- **A redo brief names the piece's OWN moving thing** — `config/redo_prompts.json`,
+  keyed `<group>/<piece>#<STATE>#<anim>`, read by `redo_facing_anim.py`; the
+  generic flame brief is the fallback, never the rule. Wording alone does not
+  hold a piece still if the subject is wrong (2026-09-15: "ONLY the flame
+  flickers" sent to a barrel of water, a skull's eye-light, a bush's leaves and
+  a cairn's ripple measured 0.16–0.81; the same wording with the right subject
+  is what took the hearths to 0.003–0.028). `--only a,b,c` restricts any
+  selector; `--rounds N` re-selects only the still-PROBABLY_BAD targets after
+  each finish (maintainer 2026-09-17: "give them 2 new rounds if they need
+  it") and prints what is still over the line at the end.
 - Read contract: `states[<LIT state>]` wins for a placement drawn in that
   state, else the top-level piece default (`maps2/pipeline/world3.py
   light_meta`). Published whole in `viewer_data.json` as `light` so the wiki

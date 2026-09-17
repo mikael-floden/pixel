@@ -57,7 +57,7 @@
       "animations": {
         "motion": {
           "group_id": "e4eb74dd-08d8-4c9a-a45f-67b5ccd95971",
-          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the shallow water at the foot of the stones moves, rippling very slightly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -72,63 +72,63 @@
                 "cairns/cairn_009/lit_1/animations/motion/south/03.webp",
                 "cairns/cairn_009/lit_1/animations/motion/south/04.webp"
               ],
-              "strip": "cairns/cairn_009/lit_1/animations/motion__south.6406ced8.webp",
+              "strip": "cairns/cairn_009/lit_1/animations/motion__south.c02177b2.webp",
               "light_frames": [
                 {
                   "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
+                  "dx": 0.9,
+                  "dy": 20.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -4.5,
+                  "dy": 19.6
+                },
+                {
+                  "intensity": 1.052,
+                  "dx": 5.6,
+                  "dy": 22.2
+                },
+                {
+                  "intensity": 0.979,
+                  "dx": 1.6,
+                  "dy": 21.0
                 },
                 {
                   "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
-                },
-                {
-                  "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
-                },
-                {
-                  "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
-                },
-                {
-                  "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
+                  "dx": 0.9,
+                  "dy": 20.9
                 }
               ]
             }
           },
-          "generated_at": "2026-09-15T18:26:36+00:00",
+          "generated_at": "2026-09-17T16:17:09+00:00",
           "brief": "Q12",
           "light_frames": [
             {
               "intensity": 0.5,
-              "dx": 0.0,
-              "dy": 0.0
+              "dx": 0.9,
+              "dy": 20.9
+            },
+            {
+              "intensity": 1.5,
+              "dx": -4.5,
+              "dy": 19.6
+            },
+            {
+              "intensity": 1.052,
+              "dx": 5.6,
+              "dy": 22.2
+            },
+            {
+              "intensity": 0.979,
+              "dx": 1.6,
+              "dy": 21.0
             },
             {
               "intensity": 0.5,
-              "dx": 0.0,
-              "dy": 0.0
-            },
-            {
-              "intensity": 0.5,
-              "dx": 0.0,
-              "dy": 0.0
-            },
-            {
-              "intensity": 0.5,
-              "dx": 0.0,
-              "dy": 0.0
-            },
-            {
-              "intensity": 0.5,
-              "dx": 0.0,
-              "dy": 0.0
+              "dx": 0.9,
+              "dy": 20.9
             }
           ],
           "frame_paths": [
@@ -138,10 +138,10 @@
             "cairns/cairn_009/lit_1/animations/motion/south/03.webp",
             "cairns/cairn_009/lit_1/animations/motion/south/04.webp"
           ],
-          "strip": "cairns/cairn_009/lit_1/animations/motion__south.6406ced8.webp",
-          "review": "ANIMATION_PROBABLY_BAD",
+          "strip": "cairns/cairn_009/lit_1/animations/motion__south.c02177b2.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.2821
+            "base_outline": 0.0214
           }
         }
       }

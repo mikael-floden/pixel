@@ -109,7 +109,7 @@
       "animations": {
         "motion": {
           "group_id": "16d8397e-0ba8-4623-869e-7caa0893d348",
-          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the leaves move, shivering very slightly in a faint breeze: no leaf shifts by more than a pixel or two, and the bush keeps exactly its outline. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -124,10 +124,10 @@
                 "bushes/bush_001/animations/motion/south/03.webp",
                 "bushes/bush_001/animations/motion/south/04.webp"
               ],
-              "strip": "bushes/bush_001/animations/motion__south.5737ab8c.webp"
+              "strip": "bushes/bush_001/animations/motion__south.a026751c.webp"
             }
           },
-          "generated_at": "2026-09-15T18:26:34+00:00",
+          "generated_at": "2026-09-17T16:18:05+00:00",
           "brief": "G7",
           "frame_paths": [
             "bushes/bush_001/animations/motion/south/00.webp",
@@ -136,10 +136,10 @@
             "bushes/bush_001/animations/motion/south/03.webp",
             "bushes/bush_001/animations/motion/south/04.webp"
           ],
-          "strip": "bushes/bush_001/animations/motion__south.5737ab8c.webp",
+          "strip": "bushes/bush_001/animations/motion__south.a026751c.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.2326
+            "base_outline": 0.5407
           }
         }
       }

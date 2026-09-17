@@ -51,7 +51,7 @@
       "animations": {
         "motion": {
           "group_id": "794e5eb2-737a-4d8d-99fb-d616983eb15a",
-          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the glowing green lines brighten a little and return. They are lit and clearly visible in every frame, including the first. They stay exactly the same size and shape in every frame: they never grow and never spread, only their brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -66,62 +66,62 @@
                 "briar_thickets/briar_thicket_021/lit_1/animations/motion/south/03.webp",
                 "briar_thickets/briar_thicket_021/lit_1/animations/motion/south/04.webp"
               ],
-              "strip": "briar_thickets/briar_thicket_021/lit_1/animations/motion__south.6d6e336d.webp",
+              "strip": "briar_thickets/briar_thicket_021/lit_1/animations/motion__south.857e531b.webp",
               "light_frames": [
                 {
-                  "intensity": 1.194,
+                  "intensity": 1.02,
                   "dx": 6.4,
                   "dy": -0.9
                 },
                 {
-                  "intensity": 1.076,
-                  "dx": 7.2,
-                  "dy": 0.2
-                },
-                {
-                  "intensity": 0.989,
-                  "dx": 7.5,
-                  "dy": 0.4
-                },
-                {
-                  "intensity": 0.867,
-                  "dx": 7.0,
+                  "intensity": 1.001,
+                  "dx": 6.9,
                   "dy": -0.9
                 },
                 {
-                  "intensity": 0.873,
+                  "intensity": 1.023,
                   "dx": 6.7,
+                  "dy": -1.2
+                },
+                {
+                  "intensity": 1.02,
+                  "dx": 6.5,
+                  "dy": -1.4
+                },
+                {
+                  "intensity": 0.936,
+                  "dx": 6.5,
                   "dy": -2.8
                 }
               ]
             }
           },
-          "generated_at": "2026-09-15T18:26:31+00:00",
+          "generated_at": "2026-09-17T16:17:05+00:00",
           "brief": "Y31",
           "light_frames": [
             {
-              "intensity": 1.194,
+              "intensity": 1.02,
               "dx": 6.4,
               "dy": -0.9
             },
             {
-              "intensity": 1.076,
-              "dx": 7.2,
-              "dy": 0.2
-            },
-            {
-              "intensity": 0.989,
-              "dx": 7.5,
-              "dy": 0.4
-            },
-            {
-              "intensity": 0.867,
-              "dx": 7.0,
+              "intensity": 1.001,
+              "dx": 6.9,
               "dy": -0.9
             },
             {
-              "intensity": 0.873,
+              "intensity": 1.023,
               "dx": 6.7,
+              "dy": -1.2
+            },
+            {
+              "intensity": 1.02,
+              "dx": 6.5,
+              "dy": -1.4
+            },
+            {
+              "intensity": 0.936,
+              "dx": 6.5,
               "dy": -2.8
             }
           ],
@@ -132,10 +132,10 @@
             "briar_thickets/briar_thicket_021/lit_1/animations/motion/south/03.webp",
             "briar_thickets/briar_thicket_021/lit_1/animations/motion/south/04.webp"
           ],
-          "strip": "briar_thickets/briar_thicket_021/lit_1/animations/motion__south.6d6e336d.webp",
-          "review": "ANIMATION_PROBABLY_BAD",
+          "strip": "briar_thickets/briar_thicket_021/lit_1/animations/motion__south.857e531b.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.1791
+            "base_outline": 0.0034
           }
         }
       }

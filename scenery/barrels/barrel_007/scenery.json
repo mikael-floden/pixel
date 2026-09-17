@@ -55,7 +55,7 @@
       "animations": {
         "motion": {
           "group_id": "473ab0e9-536b-4b9e-bac2-e5e449ea1301",
-          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the outermost edge of the cyan water in the barrel changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The water is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -70,63 +70,63 @@
                 "barrels/barrel_007/lit_2/animations/motion/south/03.webp",
                 "barrels/barrel_007/lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "barrels/barrel_007/lit_2/animations/motion__south.0572e5d3.webp",
+              "strip": "barrels/barrel_007/lit_2/animations/motion__south.c7bea707.webp",
               "light_frames": [
                 {
-                  "intensity": 0.901,
+                  "intensity": 1.5,
                   "dx": -0.6,
                   "dy": -15.9
                 },
                 {
-                  "intensity": 0.568,
-                  "dx": -0.6,
-                  "dy": -15.6
-                },
-                {
-                  "intensity": 0.5,
-                  "dx": 0.1,
-                  "dy": -11.4
-                },
-                {
-                  "intensity": 1.5,
+                  "intensity": 1.317,
                   "dx": -0.5,
                   "dy": -15.7
                 },
                 {
                   "intensity": 1.5,
                   "dx": -0.5,
-                  "dy": -16.0
+                  "dy": -16.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -0.5,
+                  "dy": -15.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -0.5,
+                  "dy": -15.9
                 }
               ]
             }
           },
-          "generated_at": "2026-09-15T18:26:27+00:00",
+          "generated_at": "2026-09-17T16:17:46+00:00",
           "brief": "H46",
           "light_frames": [
             {
-              "intensity": 0.901,
+              "intensity": 1.5,
               "dx": -0.6,
               "dy": -15.9
             },
             {
-              "intensity": 0.568,
-              "dx": -0.6,
-              "dy": -15.6
-            },
-            {
-              "intensity": 0.5,
-              "dx": 0.1,
-              "dy": -11.4
-            },
-            {
-              "intensity": 1.5,
+              "intensity": 1.317,
               "dx": -0.5,
               "dy": -15.7
             },
             {
               "intensity": 1.5,
               "dx": -0.5,
-              "dy": -16.0
+              "dy": -16.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.5,
+              "dy": -15.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": -0.5,
+              "dy": -15.9
             }
           ],
           "frame_paths": [
@@ -136,7 +136,7 @@
             "barrels/barrel_007/lit_2/animations/motion/south/03.webp",
             "barrels/barrel_007/lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "barrels/barrel_007/lit_2/animations/motion__south.0572e5d3.webp",
+          "strip": "barrels/barrel_007/lit_2/animations/motion__south.c7bea707.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.8091

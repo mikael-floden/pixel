@@ -405,7 +405,7 @@
       "animations": {
         "flame": {
           "group_id": "94698988-b122-42e2-b52d-5ef8993bacee",
-          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the fire in the bowl flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -420,32 +420,32 @@
                 "braziers/brazier_014/lit_3/animations/flame/south/03.webp",
                 "braziers/brazier_014/lit_3/animations/flame/south/04.webp"
               ],
-              "strip": "braziers/brazier_014/lit_3/animations/flame__south.f9c3f845.webp",
+              "strip": "braziers/brazier_014/lit_3/animations/flame__south.84a5ce78.webp",
               "light_frames": [
                 {
-                  "intensity": 1.5,
+                  "intensity": 0.5,
                   "dx": -0.6,
                   "dy": -7.2
                 },
                 {
-                  "intensity": 1.103,
-                  "dx": 0.5,
-                  "dy": -8.4
+                  "intensity": 1.051,
+                  "dx": 0.7,
+                  "dy": -8.0
                 },
                 {
-                  "intensity": 1.16,
-                  "dx": -0.1,
-                  "dy": -8.3
+                  "intensity": 1.5,
+                  "dx": -0.8,
+                  "dy": -6.9
                 },
                 {
-                  "intensity": 0.75,
-                  "dx": 1.0,
-                  "dy": -5.2
+                  "intensity": 1.003,
+                  "dx": 0.7,
+                  "dy": -9.5
                 },
                 {
                   "intensity": 0.5,
-                  "dx": -0.4,
-                  "dy": -4.2
+                  "dx": -1.8,
+                  "dy": -5.5
                 }
               ]
             },
@@ -458,32 +458,32 @@
                 "braziers/brazier_014/lit_3/animations/flame/south-east/03.webp",
                 "braziers/brazier_014/lit_3/animations/flame/south-east/04.webp"
               ],
-              "strip": "braziers/brazier_014/lit_3/animations/flame__south-east.7a371241.webp",
+              "strip": "braziers/brazier_014/lit_3/animations/flame__south-east.54610e05.webp",
               "light_frames": [
                 {
-                  "intensity": 0.503,
+                  "intensity": 0.54,
                   "dx": 1.9,
                   "dy": -5.7
                 },
                 {
-                  "intensity": 1.354,
-                  "dx": 0.3,
-                  "dy": -13.7
+                  "intensity": 1.199,
+                  "dx": -0.9,
+                  "dy": -5.9
                 },
                 {
-                  "intensity": 1.5,
-                  "dx": -0.2,
-                  "dy": -16.4
+                  "intensity": 1.176,
+                  "dx": -1.0,
+                  "dy": -5.9
                 },
                 {
-                  "intensity": 0.838,
-                  "dx": -3.3,
-                  "dy": -14.5
+                  "intensity": 1.055,
+                  "dx": -1.5,
+                  "dy": -6.0
                 },
                 {
-                  "intensity": 0.5,
-                  "dx": -1.2,
-                  "dy": -4.1
+                  "intensity": 1.03,
+                  "dx": -3.2,
+                  "dy": -6.8
                 }
               ]
             },
@@ -496,62 +496,62 @@
                 "braziers/brazier_014/lit_3/animations/flame/south-west/03.webp",
                 "braziers/brazier_014/lit_3/animations/flame/south-west/04.webp"
               ],
-              "strip": "braziers/brazier_014/lit_3/animations/flame__south-west.15444f78.webp",
+              "strip": "braziers/brazier_014/lit_3/animations/flame__south-west.eeedfcc8.webp",
               "light_frames": [
                 {
-                  "intensity": 0.794,
+                  "intensity": 0.802,
                   "dx": -1.5,
                   "dy": -4.4
                 },
                 {
-                  "intensity": 1.139,
+                  "intensity": 0.729,
+                  "dx": -2.3,
+                  "dy": -3.3
+                },
+                {
+                  "intensity": 1.199,
                   "dx": -2.4,
-                  "dy": -8.8
+                  "dy": -4.3
                 },
                 {
-                  "intensity": 1.157,
-                  "dx": -1.4,
-                  "dy": -7.5
+                  "intensity": 1.5,
+                  "dx": -3.1,
+                  "dy": -11.7
                 },
                 {
-                  "intensity": 0.963,
-                  "dx": -0.4,
-                  "dy": -6.0
-                },
-                {
-                  "intensity": 0.946,
-                  "dx": -1.1,
-                  "dy": -5.1
+                  "intensity": 0.668,
+                  "dx": -2.3,
+                  "dy": -2.1
                 }
               ]
             }
           },
-          "generated_at": "2026-09-15T18:26:37+00:00",
+          "generated_at": "2026-09-17T16:17:01+00:00",
           "light_frames": [
             {
-              "intensity": 1.5,
+              "intensity": 0.5,
               "dx": -0.6,
               "dy": -7.2
             },
             {
-              "intensity": 1.103,
-              "dx": 0.5,
-              "dy": -8.4
+              "intensity": 1.051,
+              "dx": 0.7,
+              "dy": -8.0
             },
             {
-              "intensity": 1.16,
-              "dx": -0.1,
-              "dy": -8.3
+              "intensity": 1.5,
+              "dx": -0.8,
+              "dy": -6.9
             },
             {
-              "intensity": 0.75,
-              "dx": 1.0,
-              "dy": -5.2
+              "intensity": 1.003,
+              "dx": 0.7,
+              "dy": -9.5
             },
             {
               "intensity": 0.5,
-              "dx": -0.4,
-              "dy": -4.2
+              "dx": -1.8,
+              "dy": -5.5
             }
           ],
           "frame_paths": [
@@ -561,10 +561,10 @@
             "braziers/brazier_014/lit_3/animations/flame/south/03.webp",
             "braziers/brazier_014/lit_3/animations/flame/south/04.webp"
           ],
-          "strip": "braziers/brazier_014/lit_3/animations/flame__south.f9c3f845.webp",
-          "review": "ANIMATION_PROBABLY_BAD",
+          "strip": "braziers/brazier_014/lit_3/animations/flame__south.84a5ce78.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.1743
+            "base_outline": 0.0
           }
         }
       },

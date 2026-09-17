@@ -181,9 +181,25 @@ def flagged_bad():
                     continue
                 dirs = sorted(_have_dirs(a)) or ["south"]
                 m = a.get("review_metrics") or {}
-                out.append((rel, state, name, dirs, STILL_PROMPT.get(name, STILL_PROMPT["flame"]),
-                            f"base {m.get('base')} of 0.10"))
+                # THE BRIEF MUST NAME THE PIECE'S OWN MOVING THING. The 09-15
+                # round sent STILL_PROMPT ("ONLY the flame flickers") to a barrel
+                # of water, a skull's eye-light, a bush's leaves and a cairn's
+                # ripple — 0.16-0.81 on the outline rule, wording notwithstanding.
+                # config/redo_prompts.json carries the per-clip subject; the
+                # generic flame brief is the fallback, not the rule.
+                prompt = clip_prompts().get(f"{rel}#{state}#{name}") or STILL_PROMPT.get(name, STILL_PROMPT["flame"])
+                out.append((rel, state, name, dirs, prompt,
+                            f"outline {m.get('base_outline', m.get('base'))} of 0.10"))
     return out
+
+
+def clip_prompts():
+    p = os.path.join(factory.ROOT, "config", "redo_prompts.json")
+    try:
+        with open(p, encoding="utf-8") as f:
+            return {k: v for k, v in json.load(f).items() if not k.startswith("_")}
+    except (OSError, ValueError):
+        return {}
 
 
 def one(client, rel, state, name, dirs, prompt):
@@ -286,12 +302,25 @@ def main():
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--min-usd", type=float, default=2.0)
+    ap.add_argument("--only", default=None,
+                    help="comma-separated clip ids <group>/<piece>#<STATE>#<anim>; the selector is filtered to these")
+    ap.add_argument("--rounds", type=int, default=1,
+                    help="after each round, redo again only the clips still over the outline line (maintainer 2026-09-17: "
+                         "'give them 2 new rounds if they need it')")
     args = ap.parse_args()
 
-    todo = (from_feedback() if args.from_feedback
-            else flagged_bad() if args.bad else missing())
-    if args.limit:
-        todo = todo[:args.limit]
+    def select():
+        todo = (from_feedback() if args.from_feedback
+                else flagged_bad() if args.bad else missing())
+        if args.only:
+            keep = set(args.only.split(","))
+            todo = [t for t in todo if f"{t[0]}#{t[1]}#{t[2]}" in keep]
+        if args.limit:
+            todo = todo[:args.limit]
+        return todo
+
+    todo = select()
+    targets = {f"{t[0]}#{t[1]}#{t[2]}" for t in todo}
     gens = sum(len(t[3]) for t in todo) * 3
     print(f"{len(todo)} clip(s), {sum(len(t[3]) for t in todo)} direction(s) "
           f"~{gens} generations x ${USD_PER_GEN} = about ${gens * USD_PER_GEN:.2f}")
@@ -309,25 +338,41 @@ def main():
     if bal is not None and bal < args.min_usd:
         print(f"balance ${bal:.2f} under the ${args.min_usd:.2f} floor — stopping")
         return 1
-    ok, done = 0, []
-    with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
-        futs = [pool.submit(one, client, r, s, n, d, p) for r, s, n, d, p, _ in todo]
-        for f in as_completed(futs):
-            rel, state, name, n, how = f.result()
-            ok += how == "ok"
-            if how == "ok":
-                done.append(f"{rel}#{state}#{name}")
-            print(f"  {'=' if how == 'ok' else '!'} {rel} {state} {name}: {n} direction(s) {how}")
-    print(f"\n{ok}/{len(todo)} clip(s) redone")
-    # A REDONE CLIP IS NOT PUBLISHED UNTIL IT IS FINISHED. This tool pops
-    # frame_paths/strip/review off the clip (they described the old art) and
-    # parseAnims drops a clip with neither frames nor strip at the top level:
-    # 18 clips — every hearth among them — shipped that way on 2026-09-15 and
-    # the hearth in his house went still. finish_clips publishes hashed strips,
-    # lifts the fields, stamps the review, recomputes light_frames, re-packs,
-    # rebuilds the viewer and runs the gate; a red gate is a failed run.
-    if done and not finish_clips.finish(done):
-        return 1
+    for rnd in range(1, args.rounds + 1):
+        if rnd > 1:
+            # A LATER ROUND REDOES ONLY WHAT THE LAST ONE LEFT OVER THE LINE:
+            # finish_clips has just re-measured every redone clip, so the
+            # PROBABLY_BAD set is current, and only the original targets count.
+            todo = [t for t in flagged_bad() if f"{t[0]}#{t[1]}#{t[2]}" in targets]
+            if not todo:
+                print(f"\nround {rnd}: nothing left over the line")
+                break
+            print(f"\nround {rnd}: {len(todo)} clip(s) still over the line")
+        ok, done = 0, []
+        with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
+            futs = [pool.submit(one, client, r, s, n, d, p) for r, s, n, d, p, _ in todo]
+            for f in as_completed(futs):
+                rel, state, name, n, how = f.result()
+                ok += how == "ok"
+                if how == "ok":
+                    done.append(f"{rel}#{state}#{name}")
+                print(f"  {'=' if how == 'ok' else '!'} {rel} {state} {name}: {n} direction(s) {how}")
+        print(f"\n{ok}/{len(todo)} clip(s) redone")
+        # A REDONE CLIP IS NOT PUBLISHED UNTIL IT IS FINISHED. This tool pops
+        # frame_paths/strip/review off the clip (they described the old art)
+        # and parseAnims drops a clip with neither frames nor strip at the top
+        # level: 18 clips — every hearth among them — shipped that way on
+        # 2026-09-15 and the hearth in his house went still. finish_clips
+        # publishes hashed strips, lifts the fields, stamps the review,
+        # recomputes light_frames, re-packs, rebuilds the viewer and runs the
+        # gate; a red gate is a failed run.
+        if done and not finish_clips.finish(done):
+            return 1
+    left = [t for t in flagged_bad() if f"{t[0]}#{t[1]}#{t[2]}" in targets]
+    print(f"\n{len(targets) - len(left)}/{len(targets)} target clip(s) now under the line; "
+          f"{len(left)} still over it")
+    for rel, state, name, _, _, why in left:
+        print(f"  still over: {rel} {state} {name} — {why}")
     viewer_build.build()
     return 0
 

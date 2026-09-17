@@ -26,10 +26,8 @@ red (38 unjudged, 37 light problems) and nobody ran them before the push.
 """
 from __future__ import annotations
 
-import glob
 import hashlib
 import os
-import re
 import subprocess
 import sys
 from io import BytesIO
@@ -45,7 +43,6 @@ from repair_strips import frames_in                   # noqa: E402
 
 ROOT = factory.ROOT
 HERE = os.path.dirname(os.path.abspath(__file__))
-HASHED = re.compile(r"^(?P<stem>.+)\.(?P<h>[0-9a-f]{8})\.webp$")
 
 
 def _abs(p):
@@ -67,10 +64,13 @@ def _strip_bytes(frame_dir):
     return buf.getvalue(), len(ims)
 
 
-def _publish_strip(name, direction, frame_paths, previous):
+def _publish_strip(name, direction, frame_paths):
     """Write the strip for one facing under its content hash and return its
-    domain-relative path. Keeps the previously recorded file (current + one
-    back); older hashed generations of the same facing go."""
+    domain-relative path. NEVER deletes a superseded generation: 'one back'
+    is measured from the last PUBLISHED state, and two redo rounds in one
+    push would have removed the strip every open wiki page still names
+    (2026-09-17, 20 strips restored). A hashed name can only ever serve the
+    bytes it names; deleting it 404s a page already open."""
     frame_dir = _abs(os.path.dirname(frame_paths[0]))
     data, n = _strip_bytes(frame_dir)
     if not data:
@@ -83,11 +83,6 @@ def _publish_strip(name, direction, frame_paths, previous):
     if not os.path.exists(_abs(rel)):
         with open(_abs(rel), "wb") as f:
             f.write(data)
-    keep = {rel, previous} if previous else {rel}
-    for old in glob.glob(_abs(f"{anim_parent}/{name}__{direction}.*.webp")):
-        r = os.path.relpath(old, ROOT)
-        if r not in keep and HASHED.match(os.path.basename(old)):
-            os.remove(old)
     return rel
 
 
@@ -142,7 +137,7 @@ def restrip(clip_ids):
                 for direction, dv in d.items():
                     if not isinstance(dv, dict) or not dv.get("frame_paths"):
                         continue
-                    new = _publish_strip(name, direction, dv["frame_paths"], dv.get("strip"))
+                    new = _publish_strip(name, direction, dv["frame_paths"])
                     if new:
                         dv["strip"] = new
                         done += 1
@@ -151,7 +146,7 @@ def restrip(clip_ids):
                     a["frame_paths"] = list(south["frame_paths"])
                     a["strip"] = south.get("strip")
             elif a.get("frame_paths"):
-                new = _publish_strip(name, "south", a["frame_paths"], a.get("strip"))
+                new = _publish_strip(name, "south", a["frame_paths"])
                 if new:
                     a["strip"] = new
                     done += 1

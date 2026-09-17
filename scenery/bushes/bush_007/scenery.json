@@ -50,7 +50,7 @@
       "animations": {
         "motion": {
           "group_id": "5baf4c47-9bb2-4884-b5d1-f4d7a09b4025",
-          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the glowing edges of the leaves brighten a little and return. They are lit and clearly visible in every frame, including the first. They stay exactly the same size and shape in every frame: they never grow and never spread, only their brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -65,63 +65,63 @@
                 "bushes/bush_007/lit_2/animations/motion/south/03.webp",
                 "bushes/bush_007/lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "bushes/bush_007/lit_2/animations/motion__south.8275ebb6.webp",
+              "strip": "bushes/bush_007/lit_2/animations/motion__south.5bf0765a.webp",
               "light_frames": [
                 {
-                  "intensity": 1.175,
+                  "intensity": 1.128,
                   "dx": 0.4,
                   "dy": -7.9
                 },
                 {
-                  "intensity": 0.901,
-                  "dx": 0.7,
-                  "dy": -8.3
-                },
-                {
-                  "intensity": 0.9,
-                  "dx": 0.4,
-                  "dy": -8.4
-                },
-                {
-                  "intensity": 0.908,
+                  "intensity": 1.234,
                   "dx": 0.5,
-                  "dy": -9.2
+                  "dy": -5.7
                 },
                 {
-                  "intensity": 1.116,
-                  "dx": 1.0,
-                  "dy": -8.3
+                  "intensity": 0.5,
+                  "dx": 0.7,
+                  "dy": 4.6
+                },
+                {
+                  "intensity": 1.479,
+                  "dx": 1.7,
+                  "dy": 3.1
+                },
+                {
+                  "intensity": 0.681,
+                  "dx": 0.9,
+                  "dy": -10.9
                 }
               ]
             }
           },
-          "generated_at": "2026-09-15T18:26:35+00:00",
+          "generated_at": "2026-09-17T16:18:07+00:00",
           "brief": "Z50",
           "light_frames": [
             {
-              "intensity": 1.175,
+              "intensity": 1.128,
               "dx": 0.4,
               "dy": -7.9
             },
             {
-              "intensity": 0.901,
-              "dx": 0.7,
-              "dy": -8.3
-            },
-            {
-              "intensity": 0.9,
-              "dx": 0.4,
-              "dy": -8.4
-            },
-            {
-              "intensity": 0.908,
+              "intensity": 1.234,
               "dx": 0.5,
-              "dy": -9.2
+              "dy": -5.7
             },
             {
-              "intensity": 1.116,
-              "dx": 1.0,
-              "dy": -8.3
+              "intensity": 0.5,
+              "dx": 0.7,
+              "dy": 4.6
+            },
+            {
+              "intensity": 1.479,
+              "dx": 1.7,
+              "dy": 3.1
+            },
+            {
+              "intensity": 0.681,
+              "dx": 0.9,
+              "dy": -10.9
             }
           ],
           "frame_paths": [
@@ -131,10 +131,10 @@
             "bushes/bush_007/lit_2/animations/motion/south/03.webp",
             "bushes/bush_007/lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "bushes/bush_007/lit_2/animations/motion__south.8275ebb6.webp",
+          "strip": "bushes/bush_007/lit_2/animations/motion__south.5bf0765a.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1646
+            "base_outline": 0.1297
           }
         }
       }
