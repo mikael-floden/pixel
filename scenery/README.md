@@ -689,6 +689,17 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   selector; `--rounds N` re-selects only the still-PROBABLY_BAD targets after
   each finish (maintainer 2026-09-17: "give them 2 new rounds if they need
   it") and prints what is still over the line at the end.
+- **Removed art is published, not just deleted: `scenery/retired.json`**
+  (`scenery/retired@1`; `pipeline/retired.py`, republished by every
+  `viewer_build.build()`, `--check` gates it against the retirement records).
+  `pieces` are gone whole; `states` are gone while their piece stays and carry
+  the piece's `surviving` states so a consumer can re-state a placement rather
+  than drop it. This is the join point for the world (maps2) and the game's
+  gate — the thing that ends "the art is gone, the world still places it"
+  (maintainer 2026-09-17: "You need a way to directly remove/replace assets
+  from the game when you have revoked/removed them"; cupboard_004 x2 in
+  August, chimney_002 x2 from 09-14 — both sat red until someone else ran).
+  Consumers read this file, never `config/retired_*.json`.
 - Read contract: `states[<LIT state>]` wins for a placement drawn in that
   state, else the top-level piece default (`maps2/pipeline/world3.py
   light_meta`). Published whole in `viewer_data.json` as `light` so the wiki

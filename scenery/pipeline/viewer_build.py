@@ -261,6 +261,14 @@ def _pack_placed():
                   f"({', '.join(r['touched'][:6])}{', ...' if len(r['touched']) > 6 else ''})")
     except Exception as e:  # noqa: BLE001 — packing must never fail a publish
         print(f"  ! pack skipped ({e}) — placed pieces draw raw until pipeline/pack.py runs")
+    # THE RETIREMENT CONTRACT rides on every publish: the world (maps2) and the
+    # game's gate read scenery/retired.json to drop or re-state placements of
+    # art a wiki verdict removed, instead of waiting for a run that notices.
+    try:
+        import retired
+        retired.publish()
+    except Exception as e:  # noqa: BLE001 — never fails a publish either
+        print(f"  ! retired.json not republished ({e}) — run pipeline/retired.py")
 
 
 if __name__ == "__main__":
