@@ -238,11 +238,12 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   The doorway spill is untouched: light with a clear line through the
   opening never met the floor. Outdoors `inRoom` is 1.
 - **ABOVE A LIGHT, OUTSIDE MY ROOM, NOTHING IS LIT** (`att *= 1 − uIndoorMix ·
-  (1 − r) · step(lp.z, z)`, shader and CPU twin): a surface above a light
-  skips the LOS march (the billboard rule), so the neighbour's roof took the
-  hearth straight through my ceiling, distance-faded only — the one lit
-  thing in a black street (maintainer 2026-09-09). Below the light the
-  march still carries the doorway spill; inside my room nothing changes.
+  (1 − r) · step(lp.z, z)`, shader and CPU twin): the neighbour's roof took
+  the hearth straight through my ceiling, distance-faded only — the one lit
+  thing in a black street (maintainer 2026-09-09). The march runs above a
+  light too now (docs/lighting.md, 2026-09-17), but a lid is a slab the
+  two-span rule lets a light UNDER it shine through, so the cut stays. Below
+  the light the march carries the doorway spill; inside my room nothing changes.
 - **The outside is DRAWN AT ZERO AMBIENT — never skipped** (the maintainer's
   original idea: the torch reveals the outdoors through the doorway before
   you step out; point lights from outside are off). Skipping cost three bugs

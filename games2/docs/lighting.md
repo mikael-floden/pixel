@@ -335,6 +335,22 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
     luma 0.59 on the tiles beside the light → 1.00). For face pixels the
     sample point is pushed to the half-cell line in front of the plane before
     the height reads.
+  - EVERY SURFACE MARCHES, ABOVE THE LIGHT TOO — a cast shadow never ends at
+    the light's own height. (The march used to be skipped for a surface above
+    the light: the billboard rule, from before bodies had lit copies — a body's
+    upper pixels resolve to the wall behind it, and a rim-shadowed backdrop
+    blackened the body with it. The lit copies composite ABOVE the light
+    field, so the wall no longer lights the body, and the skip cut every cast
+    shadow off at exactly z = light.z: the ice-cave wall at 205,207 stands in
+    the shadow of the corner column 206,206 and was dark below the brazier's
+    flame, lit above it — one hard line across the face, the torch's line a
+    storey lower; maintainer 2026-09-17 at 208.4,205.1, "the fire can only
+    cast a shadow on walls 2 levels above itself". The harness showed it all
+    along — it was measured over the brazier, where the wall has a clear line,
+    not on the side walls he marked. Rejected: a fade band above the light — a
+    soft line at the light's height is still a line, and the shadow is real
+    geometry. Gate: `scripts/verify-shadowline.mjs`, on his screen geometry,
+    shader and CPU twin.)
 - **A SKIRT SAMPLE COUNTS ONLY BESIDE A HARD HIT** (maintainer 2026-09-13,
   the torch beside a tall wall at 285.4,115.8: the pool ended in a hard,
   cell-stepped edge along the wall's foot — "standing near a wall effects how

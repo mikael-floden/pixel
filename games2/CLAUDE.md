@@ -262,26 +262,26 @@ netcode; these are the invariants)
   re-ranking; a light is a candidate when its POOL can touch the view
   (`poolReachPx`); remote torches are never lights; a world light is a real
   light at the campfire's peak; a sealed-room fire is indoor-only.
-- Scenery lights read the manifest `light` block as given (no radius cap);
-  every scenery light casts shadows; scenery occludes like a prop, own cell =
-  contact + directional core; the switches are pushed on the shader being
-  BUILT.
+- Scenery lights read the manifest `light` block as given (no radius cap) and
+  cast shadows; scenery occludes like a prop, own cell = contact + directional
+  core; the switches are pushed on the shader being BUILT.
 - The light passes render at half resolution by default (his eye first sees
   25%), the glow field too; an overlay's RT ratio survives update().
 - Solid objects are art, not walls (no face band); a cave mouth is not a face.
-- The wall wash is per PIXEL (the face gate's lateral is to the pixel, not the
-  cell), its wrap is his "Wall light wrap" dial (0.7), its front gate fades
-  over 2wu and not a quarter cell (a torch pressed to a wall must not dim it),
-  and the LOS march never blends a wall's own height into its front skirt, nor
-  the skirt the LIGHT stands in; a skirt sample counts only beside a HARD hit.
-  Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
+- The wall wash is per PIXEL (lateral to the pixel), wrap = his dial (0.7),
+  front gate fades over 2wu (a torch pressed to a wall must not dim it); the
+  LOS march never blends a wall's own height into its front skirt nor the
+  skirt the LIGHT stands in, a skirt sample counts only beside a HARD hit, and
+  every surface marches, above the light too (no shadow ends at the light's
+  height). Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`,
+  `verify-shadowline.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark 40%, lit 25%; hidden outline 20% (his).
 - MY ROOM IS A VOLUME: the room test takes a HEIGHT — the deck over the
   SAMPLE'S OWN column (`roomCeilAt`; no deck, no line), never the one under
-  my feet (`verify-cavewall.mjs`) — and over my own roof its lights and halo
-  field are blocked outright — on `occ`, all the scenery pipeline reads.
+  my feet (`verify-cavewall.mjs`); over my own roof its lights and halo are
+  blocked outright, on `occ` (all the scenery pipeline reads).
 
 **UI and mobile** (`docs/ui.md`, `UI_AGENT.md`)
 - Wiki-themed DOM HUD, golden split, ONE 10 px edge margin; pixel art scales

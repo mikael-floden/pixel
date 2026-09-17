@@ -1242,12 +1242,17 @@ void main() {
     // instead of stamping hard cell-shaped shadow blocks. Only samples in the
     // pixel's OWN column are skipped (a wall must not shadow its own face,
     // but it MUST still block light for the ground right at its base).
-    // Surfaces ABOVE the light skip the LOS shadow and fade by distance only:
-    // characters are billboards, and a body's upper pixels sample the terrain
-    // BEHIND them — if a higher backdrop rim-shadows itself against a low
-    // torch, the character standing lit in front turns black with it. Light
-    // received from above or level (cliff bases, object shadows, faces)
-    // keeps full occlusion.
+    // EVERY SURFACE MARCHES, ABOVE THE LIGHT TOO. Surfaces above a light used
+    // to skip the march and fade by distance only (the billboard rule: a
+    // body's upper pixels resolve to the wall BEHIND it, and a rim-shadowed
+    // backdrop blackened the body with it). Bodies have had their own lit
+    // copies above the light field since the render retake, so the wall no
+    // longer lights the body — and the skip cut every cast shadow off at
+    // exactly the light's own height: a wall in the shadow of a corner column
+    // was dark below the brazier's flame and lit above it, one hard line
+    // across the face, the torch's line 1 storey lower (maintainer 2026-09-17,
+    // the ice cave at 208.4,205.1: "the fire can only cast a shadow on walls
+    // 2 levels above itself"). Gated by scripts/verify-shadowline.mjs.
     float occ = 1.0;
     // A light standing INSIDE a scenery share — a campfire, a brazier: the
     // fire IS the piece — must not be blocked by its own trunk (measured: a
@@ -1257,7 +1262,7 @@ void main() {
     float lShare = uSceneryOn > 0.5 ? sceneryShareAt(lp.xy) : 0.0;
     vec2 lC = floor(lp.xy) + 0.5;
     float peakC = max(max(uLightCol[i].r, uLightCol[i].g), uLightCol[i].b);
-    if (uLightPos[i].w > 0.0 && att * peakC > ${SHADOW_MARCH_MIN_LIGHT} && (z < lp.z + 0.05 || objAt(cell) > 0.5)) {
+    if (uLightPos[i].w > 0.0 && att * peakC > ${SHADOW_MARCH_MIN_LIGHT}) {
       // The previous VALID sample (see the skirt law below): whether its own
       // cell stood above the ray, and where it was read.
       bool prevHard = false;
@@ -3857,7 +3862,7 @@ export class NightLights {
       const lShare = this.hasSceneryShares && lc >= 0 && lr >= 0 && lc < W && lr < H ? this.sArrG[lr * W + lc] : 0;
       const lcx = lc + 0.5;
       const lcy = lr + 0.5;
-      if (L.radius > 0 && (att * Math.max(L.color[0], L.color[1], L.color[2]) > SHADOW_MARCH_MIN_LIGHT || wantOcc) && (z < L.z + 0.05 || isObj)) {
+      if (L.radius > 0 && (att * Math.max(L.color[0], L.color[1], L.color[2]) > SHADOW_MARCH_MIN_LIGHT || wantOcc)) {
         // One sample's SOFT occlusion — the twin of the shader's skirtOcc:
         // bilinear reads, the two-span deck test (a deck is a floating slab,
         // so it only blocks a ray whose light is on its far side), the
