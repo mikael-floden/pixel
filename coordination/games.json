@@ -497,12 +497,12 @@
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "NAV JITTER AT THE DOOR JAMB (maintainer 2026-09-17 on e7d1b7a13c) — fix in the gates: a door chosen over a route sticks for DOOR_COMMIT_MS, and within DOOR_SEEN_MS of a door steer a window that ends with the ask making headway plans nothing (askHeadway walks the tick's own walk). files: shared/src/index.ts, server/test/doorfirst.test.ts, docs/movement.md, CLAUDE.md. Shipped meanwhile: 72385a88f8 — the cave walls keep their soft shadows (the lid stays in the hard test; the trunk skip spares share cells only). CONTACT AMBIENT OCCLUSION (the six marked screenshots) is in progress on the same files as claimed before: client/src/nightlight.ts, client/src/scenerycontact.ts (new), client/src/scenes/WorldScene.ts, docs/lighting.md, CLAUDE.md, scripts/verify-contactao.mjs, server/test/scenerycontact.test.ts.",
+  "current": "THE HEARTH ROOM, two units (maintainer 2026-09-17, 298.2,192.4 and 331.4,232.7): (1) the wall hanging beside the fireplace snaps bright/dark with the fire's animation; (2) dark spots on the fireplace's own art near its base — a piece shading itself from its own light or the seam AO landing on its lit copy. Investigating in the harness first (lights ledger, lit-copy tints per frame). files: client/src/scenes/WorldScene.ts (applyObjectLights, stepSceneryWalls, pushSceneryLight), client/src/scenerylit.ts, client/src/nightlight.ts (lightAt), docs/lighting.md, CLAUDE.md, scripts/verify-hearth.mjs. Shipped: 7ab2ba0b0f (no jitter at the door jamb), 72385a88f8 (the cave walls keep their soft shadows, live). CONTACT AO stays claimed on its files (in progress, set aside for these).",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-17T19:46:01+00:00"
+  "updated": "2026-09-17T19:51:58+00:00"
 }
