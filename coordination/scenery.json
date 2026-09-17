@@ -1,8 +1,8 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-11T21:38:46.638574+00:00",
+  "updated_at": "2026-09-17T16:02:05.765341+00:00",
   "health": "idle",
-  "current": "idle \u2014 his black_rock review relayed to tiles (not a scenery channel); awaiting ANIMATION_REDO examples",
+  "current": "IN FLIGHT \u2014 18 regenerated clips are invisible to the game (no top-level frame_paths/strip, review None, stale strips, turned-facing frames never packed). FILES: scenery/pipeline/finish_clips.py (new), scenery/pipeline/pack.py (_frames closure), scenery/pipeline/redo_facing_anim.py (call finish at end), scenery/README.md, the 13 manifests + strips + packed/ of: hearths/hearth_001, hearths/hearth_900, barrels/barrel_007, beast_skulls/beast_skull_001, beds/bed_001, beds/bed_002, braziers/brazier_014, braziers/brazier_018, briar_thickets/briar_thicket_013, briar_thickets/briar_thicket_016, briar_thickets/briar_thicket_021, bushes/bush_001, bushes/bush_007, cairns/cairn_009; scenery/viewer_data.json.",
   "progress": {
     "scenery_complete": 736,
     "scenery_target": 2146,
