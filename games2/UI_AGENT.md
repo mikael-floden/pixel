@@ -425,12 +425,13 @@ from the games agent), #18 (title/landing screen).
   and the rest scroll. A tap toggles the selection; a real drag swallows the
   click that follows it, so an aborted drag keeps the selection.
   SELECTING IS ALSO A HOLD (maintainer 2026-09-17: "hold down until you see it
-  has been selected and then you can drag … 0.25s"): still for 250ms on an
-  unselected slot → it selects itself (the accent outline is the signal) → the
-  SAME finger drags. The scroller is not robbed: the hold timer dies on the
+  has been selected and then you can drag … 0.25s", then halved the same
+  sitting once he felt it: "0.25s is too much. Lower it to 0.125 (half)"):
+  still for 125ms on an unselected slot → it selects itself (the accent outline
+  is the signal) → the SAME finger drags. The scroller is not robbed: the hold timer dies on the
   first move past 8px or on the `pointercancel` the browser sends when it takes
   the touch for a scroll, so a moving finger scrolls exactly as before. A finger
-  still for 250ms has begun no scroll, and from that instant every `touchmove`
+  still for 125ms has begun no scroll, and from that instant every `touchmove`
   is preventDefault()ed by a NON-PASSIVE listener registered at touchstart — a
   scroll the browser has not begun can still be refused, whereas
   `touch-action` is read once at touchstart and changing it mid-gesture does
@@ -445,12 +446,13 @@ from the games agent), #18 (title/landing screen).
   -webkit-touch-callout:none`, so a long press opens no platform menu.
   GATE TIMING TRAP: one driver round-trip (a `page.mouse` step, a CDP touch
   send) costs ~750ms of wall time on the headless harness (measured), so a
-  driver-paced "press then slide" holds still past 250ms and LIFTS — the hold
+  driver-paced "press then slide" holds still past the hold and LIFTS — the hold
   doing its job, not a scroll being stolen. The scroll arms therefore dispatch
   the press and its first move IN THE PAGE (synthetic PointerEvents, 40ms
   apart); only the still-hold arm uses real CDP touch, because holding still
-  needs no fast events. `verify-bagswap`: 120ms in nothing is selected, 350ms
-  in slot 0 is, the same touch drags and swaps, and nothing later can be read
+  needs no fast events. `verify-bagswap`: 60ms in nothing is selected, 260ms in
+  slot 0 is (half the hold either side — a read ON the boundary is a flake, not
+  a check), the same touch drags and swaps, and nothing later can be read
   off a faked bag (the swap's echo of the REAL inventory replaces it — the
   authority, not a regression); a move past 8px inside the hold, or leaving the
   cell, selects and lifts nothing.

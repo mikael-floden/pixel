@@ -1182,7 +1182,7 @@ export class HudBar {
       this.selectSlot(this.invSel?.slot === slot ? null : { slot, item });
     });
     /** The drag itself, from the pointer that is already down on this cell —
-     * reached at once from a SELECTED slot, or 250ms into a hold on an
+     * reached at once from a SELECTED slot, or 125ms into a hold on an
      * unselected one (armHold below). */
     const beginDrag = (e: PointerEvent) => {
       this.activeDrag?.cancel(); // one gesture at a time
@@ -1309,9 +1309,11 @@ export class HudBar {
      * without moving for a short period and it gets selected automatically
      * and you can start to drag the item around … instead of first clicking
      * then dragging you just hold down until you see it has been selected …
-     * the time might be 0.25s"). One gesture: still for HOLD_MS → the slot
-     * selects itself (the accent outline is the "you see it") → the same
-     * finger drags. The tap-to-select path stays; this is the shortcut.
+     * the time might be 0.25s"), HALVED the same sitting once he felt it:
+     * "0.25s is too much. Lower it to 0.125 (half)". One gesture: still for
+     * HOLD_MS → the slot selects itself (the accent outline is the "you see
+     * it") → the same finger drags. The tap-to-select path stays; this is the
+     * shortcut.
      *
      * THE SCROLLER KEEPS ITS FINGER. An unselected cell still has no
      * touch-action, so a finger that MOVES before the hold fires scrolls the
@@ -1324,7 +1326,7 @@ export class HudBar {
      * away half-way. Changing touch-action mid-gesture would do nothing: it is
      * read once, at touchstart. A hold is not a tap: the click that follows
      * the release must not toggle the selection back off. */
-    const HOLD_MS = 250;
+    const HOLD_MS = 125;
     const SLOP = 8;
     const armHold = (e: PointerEvent) => {
       const x0 = e.clientX;

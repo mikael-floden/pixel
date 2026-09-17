@@ -15,7 +15,7 @@
 //      transform behind;
 //   5. the release over the game view still opens the drop dialog (dropqty's
 //      contract, re-pinned here because the release path now has three exits);
-//   6. HOLD TO SELECT (real touch via CDP): 250ms still selects the slot, the
+//   6. HOLD TO SELECT (real touch via CDP): 125ms still selects the slot, the
 //      same finger drags and drops, and the click after a hold does not
 //      toggle the selection off;
 //   7. a finger that moves before the hold fires selects and lifts nothing.
@@ -193,11 +193,15 @@ try {
   }
   if ((await selAt()) !== -1) fail(`could not clear the selection before the hold arm (still on ${await selAt()})`);
   const movesBeforeHold = (await page.evaluate(() => window.__ml.invMoves())).length;
+  // 125ms (maintainer 2026-09-17: "0.25s is too much. Lower it to 0.125
+  // (half)"). The early read is at 60ms — half the hold, the same margin the
+  // 250ms version left at 120 — and the late one at 260ms total, because a
+  // read that lands ON the boundary is a flake, not a check.
   await touch("touchStart", c[0].cx, c[0].cy);
-  await page.waitForTimeout(120);
-  (await selAt()) === -1 ? ok("120ms into a hold nothing is selected yet") : fail("the slot selected itself before the hold had elapsed");
-  await page.waitForTimeout(230); // 350ms in total — past the 250ms hold
-  (await selAt()) === 0 ? ok("a still finger selects the slot at ~250ms") : fail(`after 350ms of holding still the selection is on ${await selAt()}, not slot 0`);
+  await page.waitForTimeout(60);
+  (await selAt()) === -1 ? ok("60ms into a hold nothing is selected yet") : fail("the slot selected itself before the hold had elapsed");
+  await page.waitForTimeout(200); // 260ms in total — past the 125ms hold
+  (await selAt()) === 0 ? ok("a still finger selects the slot at ~125ms") : fail(`after 260ms of holding still the selection is on ${await selAt()}, not slot 0`);
   // …and the SAME finger drags: move to slot 2, the preview follows
   for (let i = 1; i <= 6; i++) await touch("touchMove", c[0].cx + ((c[2].cx - c[0].cx) * i) / 6, c[0].cy + ((c[2].cy - c[0].cy) * i) / 6);
   await settle();
@@ -244,7 +248,7 @@ try {
     const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
     c.dispatchEvent(ev("pointerdown", cx, cy));
     await new Promise((res) => setTimeout(res, 40));
-    c.dispatchEvent(ev("pointermove", cx, cy - 30)); // 30px inside 40ms
+    c.dispatchEvent(ev("pointermove", cx, cy - 30)); // 30px inside 40ms, inside the 125ms hold
     await new Promise((res) => setTimeout(res, 400)); // well past the hold
     const mid = { sel: [...document.querySelectorAll(".ml-slot")].findIndex((x) => x.classList.contains("sel")), ghosts: document.querySelectorAll(".ml-slot-ghost").length };
     window.dispatchEvent(ev("pointerup", cx, cy - 120));
