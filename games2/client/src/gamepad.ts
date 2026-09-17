@@ -46,6 +46,27 @@ const SNAP_MS = 80; // the fast (not instant) glide between snap positions
 // the cap's centre moves less than the thumb; the input circle (dead zone,
 // run, full gate) is untouched.
 const CAP_VISUAL_FRAC = 0.65;
+// WHERE HIS THUMBS ARE. Portrait centres as a fraction of the HUD page's
+// width; left-handed mirrors each (1 - fx). He marks the spot in red on a
+// device screenshot and these are read off it — 2026-09-17, two crosses:
+// "I have placed two red cross where I think the new WALK and JUMP input
+// center should be. My new location feels more where my thumbs are when
+// holding the phone." Both moved OUTWARD, toward the edges he grips.
+// MEASURED IN HIS OWN SCREENSHOT rather than converted through a dpr (the
+// trap this file has paid for once — see UI_AGENT.md): the shipped controls
+// and their labels are in the same 1080px-wide image as the crosses, so the
+// page width comes out of the two known fractions (jump .25, stick .705 at
+// 98.1 and 276.6 css ⇒ 392.3 css of page) and every number below is a ratio
+// inside one picture. Jump 98.1 → 75.2 css, stick 276.6 → 294.6; his marks
+// land within 0.7 css px of these fractions. The vertical did not move (his
+// crosses sit at 752.0 and 751.6 against the controls' own 753.2/755.4, i.e.
+// the same row) — he moved them sideways only.
+// PICK UP IS UNMARKED AND UNMOVED: .465 already sits within half a pixel of
+// the midpoint of the two new spots ((.19 + .75)/2 = .47), so it still reads
+// as "between jump and the stick", which is the only thing ever asked of it.
+const STICK_FX = 0.75;
+const JUMP_FX = 0.19;
+const PICK_FX = 0.465;
 // LANDSCAPE ghost inset from the game view's corner, css px. The maintainer
 // marked the centre he wants in red on two device screenshots (2026-08-05):
 // ~257 DEVICE px in from the side edge AND from the bottom, "the margins
@@ -177,7 +198,7 @@ export function mountGamepadStick(page: HTMLElement) {
   }
 
   // ── layout: sizes step with the FEEL tier; anchors keep the maintainer's
-  // marked spots (stick centre ~70.5% across, jump at 25%, both centred on
+  // marked spots (STICK_FX across, JUMP_FX for jump, both centred on
   // one midline). ──
   let maxCss = 56; // full-gate travel in css px (well-derived; see layout)
   let well = 148; // well diameter, css px
@@ -226,15 +247,15 @@ export function mountGamepadStick(page: HTMLElement) {
     const padBot = parseFloat(cs.paddingBottom) || 0;
     const midY = padTop + (page.clientHeight - padTop - padBot) * 0.5;
     // HANDEDNESS (controls.ts): right-handed (default) keeps the maintainer's
-    // marked spots — stick 70.5% across, pick-up 46.5%, jump 25%; left-handed
-    // mirrors all three. The stick side is the promise ("always on the right
+    // marked spots (STICK_FX / PICK_FX / JUMP_FX); left-handed mirrors all
+    // three. The stick side is the promise ("always on the right
     // / always on the left"), portrait and landscape alike. Pick up sits
     // between jump and the stick, a size down so the jump stays the primary
     // thumb target (games agent, 2026-08-05 — merged with handedness here).
     const leftHand = getHand() === "left";
-    const stickFx = leftHand ? 1 - 0.705 : 0.705;
-    const jumpFx = leftHand ? 1 - 0.25 : 0.25;
-    const pickFx = leftHand ? 1 - 0.465 : 0.465;
+    const stickFx = leftHand ? 1 - STICK_FX : STICK_FX;
+    const jumpFx = leftHand ? 1 - JUMP_FX : JUMP_FX;
+    const pickFx = leftHand ? 1 - PICK_FX : PICK_FX;
     const pickD = Math.round(jumpD * 0.72);
     const land = document.documentElement.classList.contains("ml-land");
     // glide only when HANDEDNESS changes and the page is actually visible —

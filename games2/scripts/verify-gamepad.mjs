@@ -259,6 +259,63 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   } else {
     ok("ambient header not built (ambient layer down) — look-match check skipped");
   }
+
+  // ── WHERE HIS THUMBS ARE. The portrait centres are the spots he marks in
+  //    red on a device screenshot (2026-09-17: "I have placed two red cross
+  //    where I think the new WALK and JUMP input center should be. My new
+  //    location feels more where my thumbs are when holding the phone"), and
+  //    NOTHING held them before this: the gate found each control wherever it
+  //    happened to be, so any later edit could drift his marks silently.
+  //    Asserted as a FRACTION of the page's own width, which is what the code
+  //    positions by and what survives a different phone; ±3 css px, well
+  //    inside the ~2px his hand-drawn crosses measure to. ──
+  await page.evaluate(() => document.querySelector('[data-tab="gamepad"]')?.click());
+  await page.waitForTimeout(350);
+  const spots = await page.evaluate(() => {
+    const page_ = document.querySelector('.ml-page[data-page="gamepad"]');
+    const mid = (sel) => {
+      const el = document.querySelector(sel);
+      if (!el || !page_) return null;
+      const r = el.getBoundingClientRect();
+      const p = page_.getBoundingClientRect();
+      return { fx: (r.left + r.width / 2 - p.left) / page_.clientWidth, cy: r.top + r.height / 2, w: r.width };
+    };
+    return { W: page_?.clientWidth ?? 0, jump: mid(".ml-pad-jump"), pick: mid(".ml-pad-pickup"), stick: mid(".ml-pad-stick") };
+  });
+  const WANT = { jump: 0.19, pick: 0.465, stick: 0.75 };
+  if (!spots.jump || !spots.stick) fail("gamepad controls not mounted for the placement check");
+  else {
+    for (const k of ["jump", "pick", "stick"]) {
+      const got = spots[k];
+      if (!got) { fail(`${k} not mounted`); continue; }
+      const offCss = (got.fx - WANT[k]) * spots.W;
+      Math.abs(offCss) <= 3
+        ? ok(`${k} centred on his mark (${(got.fx * 100).toFixed(1)}% of ${spots.W}px, ${offCss >= 0 ? "+" : ""}${offCss.toFixed(1)}px)`)
+        : fail(`${k} sits at ${(got.fx * 100).toFixed(1)}% of the page, his mark is ${(WANT[k] * 100).toFixed(1)}% — ${offCss.toFixed(1)}css px off`);
+    }
+    // …and all three share ONE row: he moved them sideways, never up or down.
+    const ys = [spots.jump, spots.pick, spots.stick].filter(Boolean).map((v) => v.cy);
+    Math.max(...ys) - Math.min(...ys) <= 1.5
+      ? ok(`jump, pick up and the stick share one centre row (y ${ys[0].toFixed(0)})`)
+      : fail(`the three controls are not on one row: y ${ys.map((y) => y.toFixed(0)).join(", ")}`);
+    // LEFT-HANDED MIRRORS THEM (controls.ts): each fraction becomes 1 - fx.
+    await page.evaluate(() => window.__ml?.hand?.("left") ?? localStorage.setItem("ml-hand", "left"));
+    await page.evaluate(() => window.dispatchEvent(new Event("ml-hand")));
+    await page.waitForTimeout(400);
+    const lefty = await page.evaluate(() => {
+      const page_ = document.querySelector('.ml-page[data-page="gamepad"]');
+      const el = document.querySelector(".ml-pad-stick");
+      if (!el || !page_) return null;
+      const r = el.getBoundingClientRect(), p = page_.getBoundingClientRect();
+      return (r.left + r.width / 2 - p.left) / page_.clientWidth;
+    });
+    if (lefty === null) fail("stick not mounted after switching hands");
+    else
+      Math.abs(lefty - (1 - WANT.stick)) * spots.W <= 3
+        ? ok(`left-handed mirrors the stick to ${(lefty * 100).toFixed(1)}%`)
+        : fail(`left-handed stick at ${(lefty * 100).toFixed(1)}%, want ${((1 - WANT.stick) * 100).toFixed(1)}%`);
+    await page.evaluate(() => localStorage.setItem("ml-hand", "right"));
+  }
   await page.context().close();
 }
 

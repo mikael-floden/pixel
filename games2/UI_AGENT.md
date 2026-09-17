@@ -197,6 +197,21 @@ from the games agent), #18 (title/landing screen).
   and he caught it. Anchor every measurement to something whose CSS size you
   KNOW and can find in the image — the analog stick's 148px well (fit a
   circle to its blur disc), the clock pill's 80×32 — then convert.
+- **THE STICK AND JUMP SIT WHERE HIS THUMBS ARE, AND HE MARKS THE SPOT**
+  (`gamepad.ts` `STICK_FX` .75 / `PICK_FX` .465 / `JUMP_FX` .19 — fractions of
+  the HUD page's width; left-handed mirrors each). Maintainer 2026-09-17, two
+  red crosses on a device screenshot: "my new location feels more where my
+  thumbs are when holding the phone" — both moved OUTWARD toward the edges he
+  grips (jump 98.1 → 75.2 css, stick 276.6 → 294.6), the vertical unchanged.
+  MEASURE INSIDE HIS OWN SCREENSHOT, never through a dpr (the law above, paid
+  for once): the shipped controls and their labels are in the same image as the
+  crosses, so the page width falls out of the two fractions already known
+  (jump .25 and stick .705 at 98.1 and 276.6 css ⇒ 392.3 css), and every number
+  is a ratio inside one picture. PICK UP is unmarked and unmoved: .465 is within
+  half a pixel of the midpoint of the two new spots, so it still reads as
+  "between jump and the stick". Gated in `verify-gamepad` as a FRACTION of the
+  page (±3 css px), plus one shared centre row and the left-handed mirror —
+  nothing held these before, so any edit could drift his marks silently.
 - HUD geometry: `applyLayout()` publishes `--hud-h`/`--hud-h-inv` in REAL px
   (consumers parseFloat them — keyboard lift, chat anchors). The split must
   keep matching `#game`'s 61.8/38.2.
