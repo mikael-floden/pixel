@@ -637,9 +637,15 @@ class Grow:
         return True
 
     def pool(self, group):
+        """The group's pieces that EXIST: a manifest on disk and not listed
+        in scenery/retired.json (heal.py owns that reading). A dir without a
+        manifest is a deletion in progress, not a piece."""
+        import heal
         gp = os.path.join(REPO, "scenery", group)
+        gone = heal._retired()[0]
         return sorted(f"{group}/{d}" for d in os.listdir(gp)
-                      if os.path.isdir(os.path.join(gp, d)))
+                      if os.path.isfile(os.path.join(gp, d, "scenery.json"))
+                      and f"{group}/{d}" not in gone)
 
     # -- the archipelago ------------------------------------------------------
     def islet(self, cx, cy, r, ground, seed, beach=True):
@@ -8270,6 +8276,19 @@ class Grow:
         assert not fakes, ("placements whose look disagrees with lit", len(fakes), fakes[:5])
 
 
+    def resolve_audit(self):
+        """EVERY PLACEMENT RESOLVES (maintainer 2026-09-17, to scenery and
+        maps2: removed art must leave the game without anyone waiting). The
+        same test the scenery agent runs on the shipped world after a delete
+        (heal.py --check); here it proves a build can never place a piece or
+        state that scenery has retired, whatever pool handed it out."""
+        import heal
+        bad = heal.dangling(self.doc)
+        for i, p, why in bad[:20]:
+            print(f"  DANGLING .scenery[{i}] {p['piece']} {p.get('state') or ''} "
+                  f"at ({p['x']}, {p['y']}): {why}")
+        assert not bad, f"{len(bad)} placement(s) name scenery art that does not exist"
+
     def run(self):
         import time
         t0 = time.time()
@@ -8293,7 +8312,8 @@ class Grow:
                      self.lights, self.npcs,
                      self.rooms, self.cliff_faces, self.cliff_apron, self.way_ground,
                      self.audit_ground,
-                     self.dungeon_audit, self.spawns, self.places, self.recentre, self.settle_states):
+                     self.dungeon_audit, self.spawns, self.places, self.recentre, self.settle_states,
+                     self.resolve_audit):
             t = time.time()
             step()
             print(f"  [{step.__name__} {time.time() - t:.1f}s]", flush=True)

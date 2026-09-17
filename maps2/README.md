@@ -62,6 +62,11 @@ page shows him the place, and his review comes back as marked numbers.
   `Changes I do not like: #a, #b` and one line per change (`#n name — cell
   x,y, level l — commit`) on the clipboard — his review comes back as those
   lines, and a reply that quotes those numbers is about those cards.
+- **A push scenery made with `heal.py` is in the log already** (`commit:
+  "heal"`, one card per cell, no "before" — the art it would need is deleted).
+  On the next maps2 run: write the commit that carried it into that entry,
+  render it with `--push=<that entry>`, link it. His change page is maps2's
+  whoever made the change.
 - Cards are written in a player's words (what changed, why, the cell as the
   game shows it under the player); a change he cannot see from the surface
   gets its lids lifted. Not optional and not "when there is time": a push
@@ -451,6 +456,30 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   overrides the south-east facing; `--heal <world_dir>` re-picks a stack whose
   piece or state his review deleted (a dangling reference draws nothing in the
   game and stops render3 dead).
+- `heal.py` — **RETIRED SCENERY LEAVES THE WORLD IN SCENERY'S OWN COMMIT**
+  (maintainer 2026-09-17, to scenery and maps2: "you need a way to directly
+  remove/replace assets from the game when you have revoked/removed them ...
+  so you don't have to wait"). `--check <world_dir>` lists every placement
+  naming art that does not exist (no manifest, no state, no art for its
+  facing, listed in `scenery/retired.json` — scenery's contract for removed
+  art, never its `config/retired_*.json`, which also list planner ids whose
+  art still ships — or rejected in `live/feedback/objects.json`) and exits 1;
+  `world3grow.run` ends with the same test (`resolve_audit`) and `pool()`
+  never hands out a listed piece. `--apply <world_dir>` re-picks each such
+  placement AT ITS OWN CELL, deterministic from the cell: the same piece's
+  surviving state of the same LIT/NOT_LIT family, else a piece of the same
+  group with that family, the facing it wears and a drawn height within a
+  quarter of the old one's (a pool weighted by closeness, read from git when
+  the manifest is gone), else the same piece dark, else the placement is
+  dropped and named; chimneys go through `chimneys.pick`. It touches ONLY
+  dangling placements, never rebuilds, and appends the push to
+  `reports/<world>.json` with `commit: "heal"`. **The scenery agent runs it**
+  right after every prune, in the same commit as the delete, claimed on its
+  board (`scenery/README.md` names the hook); it posts to maps2 only when a
+  placement was dropped or the script raised. `--replace old=new` names a
+  successor for a re-rolled slot. (Without it: chimney_002 stood dangling
+  three days, cupboard_004 in August longer — the game tombstones the 404
+  and draws nothing, render3 dies mid-render, games2's gate goes red.)
 - `hangfit.py` — a wall hanging is not hung behind the furniture, judged on
   the DRAWN art rather than the footprint (`spec/WORLD3.md` → a hanging is not
   hung behind the furniture). `--apply <world_dir>` slides the covered ones

@@ -1298,6 +1298,39 @@ whose variation is not the base's height the two disagree — worst
 offset. maps2 aims at the ART (the draw path): it is what he sees through the
 overlay and what draw order uses.
 
+### retired scenery — it leaves the world in scenery's own commit
+
+**Every placement resolves, on main, at all times**: its piece has a manifest
+on disk, its state is one the manifest publishes, the art for the facing it
+wears exists, and neither piece nor state is listed in `scenery/retired.json`
+(scenery's contract for removed art — a piece listed has no manifest, a state
+listed is gone while its piece stays, with the survivors named) or rejected in
+`live/feedback/objects.json`. `maps2/pipeline/heal.py --check` is the test,
+`world3grow.resolve_audit` runs it at the end of every build, and `pool()`
+never hands a build a listed piece. (Maintainer 2026-09-17, to scenery and
+maps2 together: removed art must leave the game without anyone waiting. A
+placement naming deleted art is tombstoned by the game and draws nothing,
+stops render3 mid-render, and reddens games2's gate; chimney_002 stood so for
+three days, cupboard_004 for longer.)
+
+**The heal is a re-pick at the placement's own cell**, deterministic from the
+cell so re-runs reproduce, and it is the world's rule, not the caller's: the
+same piece's surviving state of the same LIT/NOT_LIT family; else a piece of
+the same group with such a state, the facing the placement wears and a drawn
+height within HEIGHT_TOL (0.25) of the old one's, as a pool weighted by how
+close the height is (the old manifest is read from git); else the same piece
+dark with `lit` cleared (a dark lamp keeps the street's shape, a hole does
+not); else the placement is dropped and named. Chimneys go through
+`chimneys.pick` (the roof and the fire decide). Heal touches ONLY dangling
+placements — a diff of world.json after it is exactly those — and never
+rebuilds. **The scenery agent runs `heal.py --apply` in the commit that
+deletes the art**, claimed on its board, and the push entry heal appends to
+`maps2/reports/<world>.json` is rendered by maps2 on its next run. Not
+"first surviving state": a fixed choice makes every healed cell in a group
+wear the same state (a pool, never a rule — the maintainer's meta-law). Not
+"drop what is gone": a vanished barrel leaves a hole where the yard had a
+barrel, and the group has more.
+
 ### lights — the town spends the whole budget, the woods keep one glow
 
 (maintainer 2026-09-06: *"a single scene in the game should never show more
