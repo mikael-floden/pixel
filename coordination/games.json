@@ -497,12 +497,12 @@
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "THE HARD LINE ON THE CAVE WALL ABOVE THE BRAZIER (maintainer 2026-09-17, 208.4,205.1 in the ice cave, torch off, evening): the wall is lit to ~2 storeys over the fire and dark above, with a hard edge \u2014 suspected the cut-away lid's slab body (underside 9) blocking the room's own light in the LOS march while the picture shows no lid. Investigating; fix without a 'levels above the light' rule. files: client/src/nightlight.ts, scripts/verify-cavewall.mjs, docs/lighting.md, INDOOR.md",
+  "current": "IDLE \u2014 the hard line over the brazier shipped (3362a6fce9): GLSL pow((lp.z - z)*0.6, 2.0) in the light loop had a NEGATIVE base for every pixel above a light \u2014 undefined, NaN on the phone, the square on headless GL \u2014 so every point light died in a hard line at its own height. Squared as a product; gate server/test/glslpow.test.ts (static, reads the fragment sources: every pow() base clamped or literal). Note to self and partner: I pushed 7db49c9cd7 with lawsize.test.ts red (CLAUDE.md 11 bytes over) \u2014 a grep in a && chain hid the failure; fixed in 42a7938ce9 within minutes. Assert the test's exit, not a grep.",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-17T17:00:45+00:00"
+  "updated": "2026-09-17T17:13:48+00:00"
 }
