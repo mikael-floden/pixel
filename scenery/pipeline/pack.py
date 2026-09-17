@@ -23,9 +23,10 @@ draws that file exactly as it always did.
 THE CACHE LAW (CLAUDE.md): a regenerable published asset is never rewritten
 under a stable name. A packed file is `packed/<same subpath>.<sha8>.webp`
 beside the piece, `packed/index.json` names the current file per raw path
-(plus the crop: ox, oy, w, h and the source canvas), and the PREVIOUS
-generation is kept (current + one back) so an open page keeps rendering
-through a deploy.
+(plus the crop: ox, oy, w, h and the source canvas), and NO superseded
+generation is ever deleted here: "one back" is measured from the last
+PUBLISHED state, which a refresh cannot know, so a page open through a deploy
+— or through two refreshes in one push — keeps rendering.
 
     python3 scenery/pipeline/pack.py            # the pieces the published worlds place
     python3 scenery/pipeline/pack.py --all      # every piece with a manifest
@@ -351,21 +352,18 @@ def refresh(ids=None, jobs=None, check=False, log=print) -> dict:
     for piece in sorted(touched):
         index = indexes[piece]
         pdir = os.path.join(ROOT, piece, "packed")
-        # Drop index entries whose raw file is gone, then keep current + one back.
+        # Drop index entries whose raw file is gone. NOTHING ON DISK IS DELETED:
+        # a packed name is content-addressed, so a superseded file can only
+        # ever serve the bytes an open page already asked for, and removing it
+        # 404s that page. "Current + one back" is measured from the last
+        # PUBLISHED state, which this function cannot know — two refreshes in
+        # one push (2026-09-17: 43 frames, restored) and a clip that changes
+        # layout (flat -> per-direction, beast_skull_001: 9 frames, restored)
+        # both dropped the generation still being served. The index names what
+        # is current; the rest is a few KB of harmless history.
         for rel in list(index["files"]):
             if not os.path.isfile(os.path.join(ROOT, rel)):
                 del index["files"][rel]
-        keep = set()
-        for r in index["files"].values():
-            keep.add(r.get("file"))
-            if r.get("prev"):
-                keep.add(r["prev"])
-        for dp, _, fns in os.walk(pdir):
-            for fn in fns:
-                if fn.endswith(ART_EXT):
-                    relp = os.path.relpath(os.path.join(dp, fn), pdir).replace(os.sep, "/")
-                    if relp not in keep:
-                        os.remove(os.path.join(dp, fn))
         with open(os.path.join(pdir, "index.json"), "w") as f:
             json.dump(index, f, indent=1, sort_keys=True)
             f.write("\n")
