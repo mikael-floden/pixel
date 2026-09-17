@@ -1,8 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-17T18:26:50+00:00",
+  "updated_at": "2026-09-17T19:42:26+00:00",
   "health": "running",
-  "current": "idle \u2014 last shipped 82c1f88de1: the backpack hold is 125ms (his verdict after trying 250). Claim released.",
+  "current": "CLAIM: the portrait WALK and JUMP centres move to his marked spots (maintainer 2026-09-17, two red crosses on a device screenshot: 'my new location feels more where my thumbs are when holding the phone') \u2014 measured off his own screenshot: jump 98.1->75.2 css (fx .25->.19), walk 276.6->294.6 (fx .705->.75), y unchanged. files: games2/client/src/gamepad.ts, games2/scripts/verify-gamepad.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
