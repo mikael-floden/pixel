@@ -514,6 +514,8 @@ everything — the goal is many at once). The runtime makes it symmetric
 | `fireflies` ⟷ `pollen` | day vs night floating motes |
 
 `water`, `thunder`, `sandstorm`, `leaves` are compatible with everything.
+THE SIX WEATHERS ARE THE ONE FULLY-EXCLUSIVE GROUP: each lists the other
+five, so at most one sheet can ever be on.
 (Rain "one-at-a-time" is the games agent's WEATHER system — a single index —
 not an ambient toggle.)
 
@@ -559,6 +561,12 @@ controller (AUTO / NONE / solo-each).
 | `dragonflies/` | field | THE WATERLINE IN SUMMER, and the deliberate OPPOSITE of the butterflies above it: still, then a straight line at speed, then still again. It HOVERS on one point (a pixel of jitter, never a drift), DARTS in a linear segment that ends DEAD (easing the ends turns it into a bee), and PERCHES on a reed with its wings still OUT — a butterfly folds its wings at rest and a dragonfly never does, which at four pixels is the whole difference. The wings are a BLUR, not frames: at 400 beats a second there is no pose to draw | The maps2 agent's waterline pieces in view (`reed_beds`, `cattail_clumps`, `water_lily_clumps` — 124 placed), read by category from the display list; outdoors, by DAY, gone in rain and gone in wind |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
+| `weather/` (drizzle) | field | Fine rain: short soft streaks, a light drift left, ripples where each drop lands | Weather 3 |
+| `weather/` (rain) | field | Rain proper — longer streaks, harder slant, ground ripples | Weather 4 |
+| `weather/` (heavyrain) | field | A downpour: twice the count, longer and faster | Weather 5 |
+| `weather/` (storm) | field | The downpour plus a shared wind GUST every streak leans by, and camera-flash lightning with the composer's thunder in sync | Weather 6 |
+| `weather/` (snow) | field | Flakes that sway, SETTLE on the ground for a few seconds, then melt and fall again — and melt on contact with water instead of lying on it | Weather 7 |
+| `weather/` (windy) | field | Tumbling autumn debris streaming mostly sideways, with faint anime motion-lines racing ahead of it on the gust | Weather 8 |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
 | `sandstorm/` | episode | Warm dust veil + wind-driven sand streaks | base 0.6 × **sand** (only rolls while the player stands on sandy ground) × dryness |
 | `leaves/` | episode | Autumn leaves spiralling down, tumbling edge-on | base 0.5 × (0.6 + 0.4·cloud); prefers Evening |
@@ -613,6 +621,61 @@ flock wheels through the ceiling.
   indoor tap lands where the finger is), so **every indoor placement asks the
   picker**, and `flatWith`/`findGround` stay outdoor tools until someone
   teaches them the cut.
+- **WEATHER IS AMBIENT'S, AND IT IS SIX FEATURES SHARING ONE SHEET**
+  (maintainer 2026-09-17: "That should have always been an ambient effect …
+  I give you full rights to change the game so you have full control over the
+  whether effects!"). `client/src/weatherfx.ts` is gone; `weather/` holds a
+  pure model (`precip.ts`), one pooled Phaser layer (`layer.ts`) and a factory
+  that registers **drizzle, rain, heavyrain, storm, snow, windy**. He chose one
+  row per type, so each is its own Settings toggle.
+  THE RAIN TYPES CANNOT OVERLAP, TWICE OVER: structurally in AUTO (each gates
+  on `env.weather === its index` and the world has ONE index), and by
+  `conflicts` in MANUAL — which is the half that needed saying, because manual
+  mode lets a player force effects on by hand and nothing else would stop snow
+  and heavy rain running together.
+  ONE POOL, NOT SIX: only one weather can draw. Every feature's `update` runs
+  every frame in ARRAY ORDER (`runtime/mount.ts`), so each writes its request
+  and THE LAST ONE CREATED resolves and steps the layer exactly once — no
+  frame of latency, no double-step. Preserve that if they are re-registered.
+  DEPTH IS A DELIBERATE EXCEPTION: the sheet stays at 899_500 (splashes
+  899_490), BELOW the darkness overlay and NOT in the 900_000.x band, because
+  that is what makes rain dim with the night, take torchlight, and leave a
+  character reading in FRONT of it.
+- **WEATHER'S GRIP ON THE LIGHT IS A PURE FUNCTION THE RENDERER CALLS, NOT A
+  FEATURE'S OUTPUT.** `weather/gloom.ts` owns the cloud/dim/mist tables and
+  their ~4 s ease — ambient's numbers now — but `WorldScene` IMPORTS and calls
+  it. It must never read them off a registered feature: those three feed
+  `ambOut`, the NIGHT SHADER's ambient, so a player switching the Rain effect
+  off in Settings would BRIGHTEN THE WORLD mid-storm. World lighting may not
+  depend on an optional cosmetic subsystem. The test reproduces WorldScene's
+  old inline ease frame for frame, and `dim` deliberately does NOT snap to
+  target the way cloud and mist do (it multiplies the whole ambient; a snap
+  there is a visible step in a dark scene).
+- **A PORT MAY NOT RESTYLE WHAT IT MOVES**, and two things nearly slipped
+  through. (1) I added a 4 s gain ease on top of the layer's 4 s density ease;
+  measured live, a storm was still drawing 160 drops on a CLEAR sky and
+  rising, because the original hid every drop the instant the weather had no
+  config. The density ease is the ONE fade a weather gets. (2) The storm gust
+  is `0.65 + 0.55·sin + 0.2·sin`, envelope [-0.10, 1.40] — it dips below zero
+  and the wind briefly blows BACKWARDS. That is the original's behaviour and
+  is now pinned, so retuning it is a decision rather than an accident.
+  The one behaviour deliberately ADDED: the sheet multiplies by `ctx.outdoor`.
+  `weatherfx.ts` drew rain through a roof the game had cut away.
+- **`env.rain` COMES FROM AMBIENT'S OWN LAYER NOW** (`runtime/precipstate.ts`).
+  It used to read `__ml.weatherInfo().precip.shown` — a round-trip through the
+  renderer that owned the sheet. It must follow the DRAWN density, not the
+  weather index: the index flips instantly and the sheet fades in over ~4 s, so
+  gating creatures on the index makes butterflies and gnats vanish before a
+  drop is visible. The holder lives in `runtime/` for the charter's reason —
+  `runtime/env.ts` may not import a feature, and a feature may not import
+  another feature, but both may use `runtime/`.
+- **KNOWN, NOT YET HIS CALL: STORM AND `thunder/` BOTH MAKE LIGHTNING.**
+  `thunder/` is an EPISODE weighted ×2 in rain and ×3 at night+rain, so the
+  director is likeliest to roll it exactly while Storm runs — and Storm has its
+  own `cam.flash` plus a second `gameAudio.thunder` call. Two lightning systems
+  and two audio paths at once. Both are ambient's now, so it is fixable here;
+  which one should own a storm's lightning is a TASTE verdict and is waiting on
+  him. Do not "fix" it silently.
 - **A RATE DIAL IS THE WHOLE CYCLE, NOT THE CONSTANT THAT SOUNDS LIKE IT.**
   A `drips/` spout resets at `timeline().nextAt` = `hang + period`, so the gap
   a player SEES is `HANG_MS` plus `PERIOD` — and `HANG_MS` owns a quarter of

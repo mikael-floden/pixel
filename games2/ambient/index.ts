@@ -23,6 +23,7 @@ import { butterfliesFeature } from "./butterflies/butterflies";
 import { thunderFeature } from "./thunder/thunder";
 import { sandstormFeature } from "./sandstorm/sandstorm";
 import { leavesFeature } from "./leaves/leaves";
+import { weatherFeatures } from "./weather/weather";
 import { foamFeature } from "./foam/foam";
 import { fishFeature } from "./fish/fish";
 import { dripsFeature } from "./drips/drips";
@@ -68,5 +69,9 @@ export function mountAmbient(game: Phaser.Game) {
     thunderFeature(),
     sandstormFeature(),
     leavesFeature(),
+    // WEATHER — six rows, one per precipitation, sharing one pooled sheet.
+    // Mutually exclusive twice over: structurally in AUTO (one weather index)
+    // and by `conflicts` in MANUAL. See ambient/weather/weather.ts.
+    ...weatherFeatures(),
   ]);
 }

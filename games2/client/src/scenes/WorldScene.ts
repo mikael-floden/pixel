@@ -175,7 +175,7 @@ import { deriveEmissive, lightKindOf, lightParams, lightFromBlock, type SceneryL
 import { joinWorld } from "../net";
 import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
 import { ChatUI } from "../chat";
-import { WeatherFX } from "../weatherfx";
+import { Gloom, easeGloom, newGloom, snapGloom } from "../../../ambient/weather/gloom";
 import { Footsteps } from "../footsteps";
 import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
@@ -535,8 +535,13 @@ const CAMPFIRE_BASE = 83 / 96;
 // Per-weather overcast (uCloud scale) + flat ambient gloom: the rain family
 // brings clouds, drizzle/snow/windy only partly. Shared by the ease loop and
 // the instant paths (join sync + the __ml.weather QA probe).
-const WEATHER_CLOUD: Record<number, number> = { 1: 1, 3: 0.35, 4: 0.7, 5: 1, 6: 1, 7: 0.4, 8: 0.25 };
-const WEATHER_DIM: Record<number, number> = { 3: 0.05, 4: 0.12, 5: 0.22, 6: 0.34, 7: 0.05 };
+/* WEATHER'S GRIP ON THE LIGHT IS AMBIENT'S (maintainer 2026-09-17, full
+ * ownership of the weather effects). The cloud/dim/mist tables and their ~4s
+ * ease live in ambient/weather/gloom.ts; this scene holds the eased state and
+ * calls that pure function. It is imported and CALLED, deliberately not read
+ * off a registered ambient feature: these three feed ambOut, the night
+ * shader's ambient, and a player switching the Rain effect off in Settings
+ * must not brighten the world mid-storm. */
 
 const OVERLAYS = [
   { name: "none", color: null as string | null },
@@ -4200,10 +4205,7 @@ export class WorldScene extends Phaser.Scene {
   // Weather layer (server-owned like timeIdx): cloud cover eases toward the
   // target over a few seconds — clouds roll in, they don't blink in.
   private weatherIdx = 0;
-  private curCloud = 0;
-  private curMist = 0;
-  private curPrecipDim = 0;
-  private weatherFX?: WeatherFX;
+  private gloom: Gloom = newGloom();
   private footsteps?: Footsteps;
   private timeFrozen = true; // synced mirror of WorldState.frozen (switch state)
   private timeSpeed = 0; // synced mirror of WorldState.timeSpeed (button label)
@@ -5611,25 +5613,21 @@ export class WorldScene extends Phaser.Scene {
       weatherInfo: () => ({
         idx: this.weatherIdx,
         name: WEATHER_NAMES[this.weatherIdx],
-        cloud: this.curCloud,
-        mist: this.curMist,
-        precipDim: this.curPrecipDim,
-        precip: this.weatherFX?.info() ?? null,
+        cloud: this.gloom.cloud,
+        mist: this.gloom.mist,
+        precipDim: this.gloom.dim,
       }),
       weather: (idx?: number, instant = true) => {
         if (idx !== undefined) {
           this.weatherIdx = idx % WEATHER_COUNT;
           if (instant) {
-            this.curCloud = WEATHER_CLOUD[this.weatherIdx] ?? 0;
-            this.curMist = this.weatherIdx === 2 ? 1 : 0;
-            this.curPrecipDim = WEATHER_DIM[this.weatherIdx] ?? 0;
-            this.weatherFX?.snap();
+            snapGloom(this.gloom, this.weatherIdx);
           }
         }
         return this.weatherIdx;
       },
-      cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.curCloud, this.curSun[3]) ?? 1,
-      mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.curMist) ?? 0,
+      cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.gloom.cloud, this.curSun[3]) ?? 1,
+      mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.gloom.mist) ?? 0,
       // Is the ground drawn at this world/screen point open water? (snow-melt QA)
       waterAtScreen: (wx: number, wy: number) => this.isWaterAtScreen(wx, wy),
       // Is it walkable dry TOP ground (not a cliff face / water)? (ambient bird landing)
@@ -5702,7 +5700,7 @@ export class WorldScene extends Phaser.Scene {
            * five rounds here today. `fogOn` is the switch, `mist` the other
            * atmospheric it also kills. */
           fogOn: this.fogOn,
-          mist: this.fogOn ? this.curMist : 0,
+          mist: this.fogOn ? this.gloom.mist : 0,
           testZ: this.night?.fogTestZ ?? null,
           testXY: this.night?.fogTestXY ?? null,
           playerZ: av ? +Math.max(0, av.elev / this.geom.lh).toFixed(2) : 0,
@@ -8976,10 +8974,7 @@ export class WorldScene extends Phaser.Scene {
       this.weatherIdx = idx % WEATHER_COUNT;
       this.hud?.refreshSettings(); // the weather button prints the state
       if (firstWeatherSync) {
-        this.curCloud = WEATHER_CLOUD[this.weatherIdx] ?? 0; // no roll-in on join
-        this.curMist = this.weatherIdx === 2 ? 1 : 0;
-        this.curPrecipDim = WEATHER_DIM[this.weatherIdx] ?? 0;
-        this.weatherFX?.snap();
+        snapGloom(this.gloom, this.weatherIdx); // no roll-in on join
       }
       else this.chat.addLog("—", `Weather: ${WEATHER_NAMES[this.weatherIdx]}`);
       firstWeatherSync = false;
@@ -12891,8 +12886,8 @@ export class WorldScene extends Phaser.Scene {
     const wn = WEATHER_NAMES[this.weatherIdx % WEATHER_NAMES.length] as string;
     gameAudio.setEnv({
       sun: this.curSun[3],
-      cloud: this.curCloud,
-      mist: this.curMist,
+      cloud: this.gloom.cloud,
+      mist: this.gloom.mist,
       rain: wn === "Drizzle" ? 0.35 : wn === "Rain" ? 0.7 : wn === "Heavy rain" || wn === "Storm" ? 1 : 0,
       storm: wn === "Storm",
       snow: wn === "Snowing",
@@ -14054,22 +14049,14 @@ export class WorldScene extends Phaser.Scene {
       // Weather: ease the cloud cover toward the synced target (~4s roll),
       // and grey the sky a touch while cloudy — "the sky is not perfect
       // blue" — before handing the ambient to the shader + CPU twin.
-      const cloudTo = WEATHER_CLOUD[this.weatherIdx] ?? 0;
+      easeGloom(this.gloom, this.weatherIdx, this.game.loop.delta);
+      // the same ~4s roll the gloom uses, kept here for the aurora below
       const ca = 1 - Math.exp(-(this.game.loop.delta / 1000) / 4);
-      this.curCloud += (cloudTo - this.curCloud) * ca;
-      if (Math.abs(this.curCloud - cloudTo) < 0.005) this.curCloud = cloudTo;
-      // Mist (weather 2) creeps in on the same roll — banks ease up from
-      // nothing rather than popping.
-      const mistTo = this.weatherIdx === 2 ? 1 : 0;
-      this.curMist += (mistTo - this.curMist) * ca;
-      if (Math.abs(this.curMist - mistTo) < 0.005) this.curMist = mistTo;
-      // Flat rain-gloom on the ambient (the patchy cloud shade rides on top).
-      const dimTo = WEATHER_DIM[this.weatherIdx] ?? 0;
-      this.curPrecipDim += (dimTo - this.curPrecipDim) * ca;
-      if (!this.weatherFX) this.weatherFX = new WeatherFX(this);
-      this.weatherFX.setWeather(this.weatherIdx);
       this.ps();
-      this.weatherFX.update(this.game.loop.delta, this.cameras.main, (wx, wy) => this.isWaterAtScreen(wx, wy));
+      // The precipitation SHEET is ambient's (ambient/weather/): six features,
+      // one per weather, sharing one pooled layer at depth 899_500. Nothing to
+      // drive from here any more — ambient mounts itself and reads the weather
+      // off __ml.weatherInfo(), the same probe every other effect uses.
       this.pe("litWeather");
       // Aurora eases on the same ~4s roll (the curtains breathe in).
       const auroraTo = this.auroraOn ? 1 : 0;
@@ -14096,8 +14083,8 @@ export class WorldScene extends Phaser.Scene {
       // brighter than night and has to fade back down". See uAmbientOut.
       const ambOut = this.curAmbient.map((v) => {
         const grey = (this.curAmbient[0] + this.curAmbient[1] + this.curAmbient[2]) / 3;
-        const clouded = v + (grey * 0.94 - v) * this.curCloud * 0.22;
-        return clouded * (1 - this.curPrecipDim);
+        const clouded = v + (grey * 0.94 - v) * this.gloom.cloud * 0.22;
+        return clouded * (1 - this.gloom.dim);
       }) as [number, number, number];
       const ambEff = ambOut.map((outdoor, i) => outdoor + (indoorTarget[i] - outdoor) * iF) as
         [number, number, number];
@@ -14210,9 +14197,9 @@ export class WorldScene extends Phaser.Scene {
         ambEff,
         stampsDrawn,
         sunIn,
-        this.curCloud * (1 - iF),
+        this.gloom.cloud * (1 - iF),
         this.curAurora * (1 - iF),
-        this.curMist * (1 - iF),
+        this.gloom.mist * (1 - iF),
         playerZ,
         playerCol,
         playerRow,

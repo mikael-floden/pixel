@@ -1,4 +1,5 @@
 import { AmbientEnv, defaultEnv } from "./types";
+import { precipShown } from "./precipstate";
 
 /** Sample the world's mood off the game's documented `__ml` probe surface.
  * Every read is fenced: a missing/reshaped probe yields the daylight default
@@ -56,8 +57,10 @@ export function sampleEnv(prev?: AmbientEnv, cx?: number, cy?: number): AmbientE
       // the games agent's live drop count so splashes appear as the rain
       // rolls in, not before.
       const kind = RAIN_INTENSITY[w.name] ?? 0;
-      const shown = w.precip && typeof w.precip.shown === "number" ? w.precip.shown : null;
-      const ramp = shown === null ? 1 : Math.min(1, shown / 40);
+      // The DRAWN density comes from ambient's own weather layer now, not
+      // from the game (ambient owns weather since 2026-09-17) — see
+      // runtime/precipstate.ts for why the seam lives in runtime/.
+      const ramp = Math.min(1, precipShown() / 40);
       env.rain = kind * ramp;
     }
   } catch {
