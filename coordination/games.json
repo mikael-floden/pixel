@@ -497,12 +497,12 @@
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "THE HARD LINE OVER THE BRAZIER, FOUND AND FIXED (maintainer 2026-09-17, 208.4,205.1): not the pow() — the point-light LOS march was skipped for every surface ABOVE the light (the billboard rule, from before bodies had lit copies), so a cast shadow ended at exactly the light's own height: one hard line across the wall, the torch's a storey lower. Every surface marches now, shader + CPU twin. Gate scripts/verify-shadowline.mjs (his screen geometry; catches the old code). Pushing now. files: client/src/nightlight.ts, scripts/verify-shadowline.mjs, docs/lighting.md, INDOOR.md, CLAUDE.md. NEXT: games-ui's deploy-latency note (image build 4m48s of a 6m22s push).",
+  "current": "THE BRAZIER LINE, PART 2 (maintainer 2026-09-17, on the shipped after-image): the right wall beside the inner corner is lit while the run beyond it sits in a phantom shadow. The march's HARD test reads the deck-inflated occlusion height, so under a cave lid EVERY floor sample is a hard hit and the skirt rule's protection is defeated — the corner column's bilinear ground skirt (0.2 weight = 8.8) then shadows the wall from a brazier that clears the corner. Fix: the hard test takes the two-span rule (a slab over the light is air; the GROUND column is the hard blocker), shader + twin; verify-shadowline gains the arm. files: client/src/nightlight.ts, scripts/verify-shadowline.mjs, docs/lighting.md. Part 1 shipped: see the last commit.",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-17T18:07:03+00:00"
+  "updated": "2026-09-17T18:13:55+00:00"
 }
