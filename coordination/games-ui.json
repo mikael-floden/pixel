@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "PUSHED 5c682beb5e (the thumb row balances on its INNER GAPS: STICK_FX .771 / PICK_FX .454 — gaps 36.0/36.0, margins 35.0/30.0 at 393 css; JUMP stays on his red cross). The finding worth keeping: the row's outer margins were ALREADY even (35.2/38.2) — the imbalance he saw was the inner spacing, 40.1 vs 23.5. verify-gamepad now asserts that rule, not just the fractions. No files in flight.",
+  "current": "CLAIM: a PORTRAIT ghost stick over the game view whenever the gamepad page is hidden (maintainer 2026-09-17: 'I want the same semi transparent control in [portrait]… better to have it at a worse location than not have this control at all' — a red loop above the clock pill, bottom-right of the game view; wiki, search and the pill stay tappable, the ghost fires only on its own disc). files: games2/client/src/gamepad.ts, games2/client/src/clock.ts, games2/scripts/verify-gamepad.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
