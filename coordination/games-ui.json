@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: portrait corner re-stack (maintainer 2026-09-17, red arrows on a screenshot): the Wiki+🔍 row moves to the TOP-right directly under the XP card, the time-of-day pill under the Wiki row, and the portrait ghost stick drops to the game view's bottom-right corner. files: games2/client/src/wikibtn.ts, games2/client/src/wikinear.ts, games2/client/src/clock.ts, games2/client/src/gamepad.ts, games2/client/src/hud.ts, games2/scripts/verify-gamepad.mjs, games2/scripts/verify-landscape.mjs, games2/UI_AGENT.md",
+  "current": "CLAIM: portrait corner re-stack (maintainer 2026-09-17, red arrows on a screenshot): the Wiki+🔍 row moves to the TOP-right directly under the XP card, the time-of-day pill under the Wiki row, and the portrait ghost stick drops to the game view's bottom-right corner. files: games2/client/src/wikibtn.ts, games2/client/src/wikinear.ts, games2/client/src/clock.ts, games2/client/src/gamepad.ts, games2/client/src/hud.ts, games2/scripts/verify-gamepad.mjs, games2/scripts/verify-landscape.mjs, games2/scripts/verify-chat.mjs, games2/scripts/verify-chatpage.mjs (their Wiki-row/pill assertions encode the corner stack), games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
