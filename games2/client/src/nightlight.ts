@@ -318,7 +318,6 @@ uniform vec4 uLightCol[${MAX_SHADER_LIGHTS}];  // r, g, b, flicker
 uniform vec4 uLightExt[${MAX_SHADER_LIGHTS}];
 uniform float uIndoor;   // 1 while the local player is indoors (see heightAt)
 uniform float uIndoorTop; // the cut-away's top level while indoors (see heightAt)
-uniform float uIndoorCeil; // MY ROOM's underside (deckBot): at or above it is outdoors
 uniform sampler2D uRoom;  // R: 128+cut where the cell is in MY room, 0 outside
                           // (roomAt tests the top half; heightAt reads the cut).
                           // G: depth from the nearest opening PLUS ONE (0 = not a room).
@@ -645,6 +644,22 @@ float roomConstrainedAt(vec2 cr) {
   return rb < 0.5 || abs(rb - 127.0) < 0.5 ? 0.0 : 1.0;
 }
 
+// THE CEILING OVER ONE COLUMN — the deck's underside where a slab sits on
+// this cell, 0 where nothing does. "A slab sits here" is the raw surface
+// standing above the ground column (R of the surface map is max(ground, deck),
+// the ground map never carries a deck). The underside itself is the mask's B
+// channel, which setRoom fills with deckBot for every roofed floor cell — but
+// B on a FAR CAVE WALL holds the top of the OPENING for the mouth's swallow
+// (buildCaveDepth: a wall is framed by the same opening as the floor it
+// faces), and that is not a ceiling over the wall: read blindly it lit the
+// ice cave's 24-storey walls to 9. A wall carries no deck, so it has no line.
+float roomCeilAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  float raw = texture2D(uHeight, uv).r * 255.0 / uHScale;
+  return raw > groundAt(cr) + 0.01 ? caveUnderAt(cr) : 0.0;
+}
+
 float roomAt(vec2 cr, float z) {
   // GATED ON THE EASE, NOT THE VERDICT. uIndoor is boolean geometry and flips
   // the instant you cross the threshold; the mask has to outlive it, or
@@ -665,15 +680,25 @@ float roomAt(vec2 cr, float z) {
   // raw value: returning r itself would hand a 128/255 ambient to every room
   // cell whose wall keeps the scalar cut.
   // ...AND A SAMPLE HAS A HEIGHT. Membership is per CELL, and a chimney on the
-  // ROOF shares its room's cells while standing outside it. The line is the
-  // room's UNDERSIDE (uIndoorCeil, the scene's own z < indoorCeil rule — the
-  // ceiling, never the cut: the cut is raised per column exactly where a stack
-  // stands, so it answers "inside" for the one piece this is about). For a
-  // ground pixel of my room this can only say 1 — the surface resolve is
-  // clamped well under the ceiling — except the ROOF slab itself mid-fade,
-  // which is outdoor ground and now shades like the street it belongs to.
+  // ROOF shares its room's cells while standing outside it. The line is THIS
+  // COLUMN'S underside — the deck over the pixel's own cell (roomCeilAt: the
+  // mask's blue channel where a slab really sits on the cell, 0 where nothing
+  // roofs it) — never the cut (raised per column
+  // exactly where a stack stands, so it answers "inside" for the one piece
+  // this is about) and NEVER THE CEILING UNDER MY FEET. That scalar was the
+  // line for a week, and a cave wall is not roofed by the lid over the floor
+  // beside it: the_game's ice cave at 203,232 has a 24-storey wall whose cells
+  // carry no deck, and the scalar lit it to the underside of the lid I stood
+  // under — 5 storeys from the floor, 8 from the landing three steps up, and
+  // black above — so the wall grew and shrank with my feet (maintainer
+  // 2026-09-17: "the wall height should not move when I walk around in a
+  // cave"). A column with no deck has no line: its face is lit as high as it
+  // is drawn. For a ground pixel of my room this can only say 1 — the surface
+  // resolve is clamped well under its own deck — except the ROOF slab itself
+  // mid-fade, which is outdoor ground and shades like the street it belongs to.
   float m = step(0.5, texture2D(uRoom, uv).r);
-  return uIndoorCeil > 0.5 ? m * step(z, uIndoorCeil - 0.001) : m;
+  float c = roomCeilAt(cr);
+  return c > 0.5 ? m * step(z, c - 0.001) : m;
 }
 
 // Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
@@ -1112,12 +1137,14 @@ void main() {
   // blacking half the screen a frame before the room has caught up.
   float r = roomAt(cell, z);
   // OVER MY OWN ROOF: this pixel's cell is my room's and it sits at or above
-  // the room's underside — the roof slab itself, and whatever stands on it.
+  // ITS OWN deck's underside — the roof slab itself, and whatever stands on it
+  // (a wall column with no deck over it is never "over" anything; see roomAt).
   // What is between it and everything in the room is GEOMETRY, not a fade, so
   // the room's lights and its halo field are blocked here OUTRIGHT, at every
   // point of the crossing — the per-light ease below is for the street, which
   // has a doorway to see through. See the light loop and the uGlow block.
-  float overMyRoom = uIndoorCeil > 0.5 && z >= uIndoorCeil ? roomConstrainedAt(cell) : 0.0;
+  float cz = roomCeilAt(cell);
+  float overMyRoom = cz > 0.5 && z >= cz ? roomConstrainedAt(cell) : 0.0;
   float inRoom = mix(1.0, r, uIndoorMix);
   // TWO GRADES, ONE CROSSING. A cell in MY ROOM rides uAmbient, which is
   // already the eased blend from the outdoor grade to the interior dial. A cell
@@ -2229,10 +2256,10 @@ export class NightLights {
    * the SURFACE resolve clamps; the occlusion march does not (the building is
    * still solid to the sun). See heightAt(). */
   indoorTop = 0;
-  /** WorldScene.indoorCeil — MY ROOM's underside (deckBot). The inside/outside
-   *  line for a SAMPLE's height: at or above it is outdoors, however deep
-   *  inside the room's cells it stands. 0 when there is no ceiling to be under,
-   *  which falls back to membership alone. */
+  /** WorldScene.indoorCeil — MY ROOM's underside (deckBot) under my own cell.
+   *  Published for probes only: the inside/outside line for a SAMPLE's height
+   *  is the deck over the sample's OWN column (`ceilAt`, the mask's blue
+   *  channel), never this scalar. */
   indoorCeil = 0;
   /** WorldScene.indoorGrade() — the LIGHT grade, 0..1: the raw eased mix at
    * 1.5×, clamped (since 2026-08-13 every light half of the crossing rides
@@ -2452,7 +2479,6 @@ export class NightLights {
       // missing from this config gets no GL setter and silently never reaches
       // real phone GPUs, where headless SwiftShader would never show it.
       uIndoorTop: { type: "1f", value: 0 },
-      uIndoorCeil: { type: "1f", value: 0 },
       uIndoorMix: { type: "1f", value: 0 },
       // OFF (0) until the containment is right. The depth map and the multiply are
       // correct and tested; what is NOT solved is telling an INSIDE pixel from an
@@ -2891,6 +2917,19 @@ export class NightLights {
     // mode — re-assert NEAREST rather than trust that it survived. A LINEAR
     // room mask would bleed a half-cell of ambient straight through the walls.
     t.setFilter(Phaser.Textures.FilterMode.NEAREST);
+  }
+
+  /** ONE texel of the room mask, as the shader reads it: R = 128 + cut inside
+   *  / cut or 127 outside, G = cave depth + 1, B = the deck underside over the
+   *  cell (0 = none). The gate for the ceiling rule reads this (verify-cavewall). */
+  roomTexAt(col: number, row: number): { r: number; g: number; b: number } | null {
+    const d = this.roomImg?.data;
+    const w = this.world.width;
+    const c = Math.floor(col);
+    const r = Math.floor(row);
+    if (!d || c < 0 || r < 0 || c >= w || r >= this.world.height) return null;
+    const i = (r * w + c) * 4;
+    return { r: d[i], g: d[i + 1], b: d[i + 2] };
   }
 
   /** What the room mask really holds, and whether the shader really has it.
@@ -3623,14 +3662,38 @@ export class NightLights {
    *  street's 0.930,0.898,0.893) the moment the mask went up, at an alpha still
    *  0.79 — a flash, then the lid fade took it.
    *
-   *  THE THRESHOLD IS THE ROOM'S UNDERSIDE (`indoorCeil`), which is the scene's
-   *  own `z < indoorCeil` rule — the same line `indoorOutside` and the flyer
-   *  case in `critterLight` already draw. NOT the cut: the cut is RAISED per
-   *  column exactly where a stack stands (26 raised cells at his house, up to
-   *  6), so a cut test answers "inside" for the one piece this is about. */
+   *  THE THRESHOLD IS THE UNDERSIDE OF THE DECK OVER THE SAMPLE'S OWN COLUMN
+   *  (`ceilAt`). NOT the cut: the cut is RAISED per column exactly where a
+   *  stack stands (26 raised cells at his house, up to 6), so a cut test
+   *  answers "inside" for the one piece this is about. And NOT the room's
+   *  underside under MY feet (`indoorCeil`, the first cut of this rule): a
+   *  cave wall carries no deck, and that scalar lit it only up to the lid I
+   *  happened to stand under — the wall's lit height followed my feet up the
+   *  stairs (maintainer 2026-09-17). */
   private inMyRoom(col: number, row: number, z: number): number {
     if (!this.roomCellAt(col, row)) return 0;
-    return this.indoorCeil > 0 && z >= this.indoorCeil ? 0 : 1;
+    const c = this.ceilAt(col, row);
+    return c > 0 && z >= c ? 0 : 1;
+  }
+
+  /** The ceiling over ONE column — the twin of the fragment's roomCeilAt: the
+   *  deck underside setRoom published in the mask's blue channel, and only
+   *  where a slab really sits on the cell (the lit surface `tArr` above the
+   *  ground column `gArr`), 0 otherwise. B on a far cave wall is the OPENING's
+   *  top for the mouth's swallow, not a ceiling. The ONLY ceiling the room
+   *  test reads: the scalar under my feet (`indoorCeil`) lit a cave wall to
+   *  the height of the lid I stood under and moved that line with every step
+   *  (see roomAt). */
+  private ceilAt(col: number, row: number): number {
+    const d = this.roomImg?.data;
+    if (!d) return 0;
+    const w = this.world.width;
+    const c = Math.floor(col);
+    const r = Math.floor(row);
+    if (c < 0 || r < 0 || c >= w || r >= this.world.height) return 0;
+    const i = r * w + c;
+    if (!(this.tArr[i] > this.gArr[i] + 0.01)) return 0;
+    return d[i * 4 + 2];
   }
 
   /** Membership alone — MY ROOM's cell, whatever the height (the GLSL
@@ -3708,8 +3771,8 @@ export class NightLights {
     // OVER MY OWN ROOF (the fragment's overMyRoom): my room's cell, at or above
     // its underside. The room's lights and its halo field are blocked here
     // outright — a roof is geometry, and the ease below belongs to the street.
-    const overMyRoom =
-      this.indoorMix > 0 && this.indoorCeil > 0 && z >= this.indoorCeil && this.roomConstrainedAt(col, row) ? 1 : 0;
+    const cz = this.indoorMix > 0 ? this.ceilAt(col, row) : 0;
+    const overMyRoom = cz > 0 && z >= cz && this.roomConstrainedAt(col, row) ? 1 : 0;
     const inRoom = 1 + (hit - 1) * this.indoorMix;
     // TWIN of the fragment's two-grade `amb` mix: in-room rides curAmbient (the
     // blended one), outside fades between black and the OUTDOOR grade only.
@@ -4445,7 +4508,6 @@ export class NightLights {
     s.setUniform("uCloud.value", cloud);
     s.setUniform("uIndoor.value", this.indoor ? 1 : 0);
     s.setUniform("uIndoorTop.value", this.indoorTop);
-    s.setUniform("uIndoorCeil.value", this.indoorCeil);
     s.setUniform("uIndoorMix.value", this.indoorMix);
     // Only now is roomAt allowed to darken anything: buildShader really bound
     // the sampler on THIS shader object. Until then it fails LIT (see roomAt).

@@ -6412,6 +6412,7 @@ export class WorldScene extends Phaser.Scene {
       blockedAt: (x: number, y: number) => (this.terrain ? isBlockedAtWorld(this.terrain, x, y) : null),
       // Sample the CPU light (what a character's lit copy is tinted by) at a
       // grid cell — headless probe for emission monotonicity/colour.
+      roomTexAt: (col: number, row: number) => (this.night ? this.night.roomTexAt(col, row) : null),
       lightAtCell: (col: number, row: number, z = 0) =>
         this.night ? this.night.lightAt(col, row, z, false) : null,
       // Light + depth-fog for an ambient flyer at iso-screen ground point (gx,gy)

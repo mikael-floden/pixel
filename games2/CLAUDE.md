@@ -171,10 +171,8 @@ push, no PRs unless asked.
   shared math lives in `shared/` once; the client predicts the same grid.
 - Never weaken the collision probes to fix a wedge: `unstickFromSolids` is the
   escape, and the rescue never climbs — and it keeps `WALL_STANDOFF` (=
-  PLAYER_RADIUS) off any face the body cannot walk up, so a wall met around a
-  corner is as far off as one met head-on (the lateral probes read solids only;
-  a refused move there wedges every corner). A descent stays forgiving
-  (`wallclear.test.ts`).
+  PLAYER_RADIUS) off any face the body cannot jump onto (the lateral probes
+  read solids only; a refused move there wedges; `wallclear.test.ts`).
 - A >2-cell position correction re-checks the indoor verdict but NEVER resets
   the doorway crossfade — only a room change does; its SPEED is a dial (1.00x
   is his, and slower is the only instrument for a one-frame report).
@@ -279,9 +277,10 @@ netcode; these are the invariants)
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
 - Indoor ambient: dark room 40%, lit room 25%; hidden outline 20% — his dials.
-- MY ROOM IS A VOLUME: the room test takes a HEIGHT (`indoorCeil`, held while
-  the mask is), and over my own roof its lights and halo field are blocked
-  outright — on `occ`, all the scenery pipeline reads.
+- MY ROOM IS A VOLUME: the room test takes a HEIGHT — the deck over the
+  SAMPLE'S OWN column (`roomCeilAt`; no deck, no line), never the one under
+  my feet (`verify-cavewall.mjs`) — and over my own roof its lights and halo
+  field are blocked outright — on `occ`, all the scenery pipeline reads.
 
 **UI and mobile** (`docs/ui.md`, `UI_AGENT.md`)
 - Wiki-themed DOM HUD, golden split, ONE 10 px edge margin; pixel art scales

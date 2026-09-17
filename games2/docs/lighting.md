@@ -711,8 +711,8 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   untouched (their ground top IS their surface).
 
 - **MY ROOM IS A VOLUME, NOT A SET OF CELLS — AND ITS ROOF IS GEOMETRY, NOT A
-  FADE** (`roomAt(cell, z)` + its CPU twin `inMyRoom`/`roomCellAt`;
-  `uIndoorCeil` = WorldScene's `indoorCeil`, the room's underside). The room
+  FADE** (`roomAt(cell, z)` + its CPU twin `inMyRoom`/`roomCellAt`; the line
+  is `roomCeilAt`/`ceilAt`: the deck over THE SAMPLE'S OWN COLUMN). The room
   test was membership per CELL, so a chimney standing on the ROOF counted as
   inside the room under it and took everything the room had: the interior
   ambient, the hearth's point light, and — the one that actually did it — the
@@ -723,11 +723,26 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   the way out (maintainer 2026-09-14: "the chimney on the roof flashes bright
   as if it suddenly got the light from inside the house"). Three parts, all of
   them the same rule:
-  THE LINE IS THE CEILING, NOT THE CUT. `indoorCeil` is the scene's own
-  `z < indoorCeil` test (`indoorOutside`, and the flyer case in `critterLight`
-  that had to state it by hand). The CUT is wrong for this: it is RAISED per
-  column exactly where a stack stands (26 raised cells at his house, up to 6),
-  so a cut test answers "inside" for the one piece this is about.
+  THE LINE IS THE CEILING OVER THE SAMPLE'S OWN COLUMN, NOT THE CUT AND NOT
+  THE CEILING UNDER MY FEET. `roomCeilAt` (GLSL) / `ceilAt` (twin): the mask's
+  B channel — `deckBot` of a roofed floor cell — read only where a slab really
+  sits on the cell (the raw surface above the ground column), 0 elsewhere; a
+  column with no deck has no line and is lit as high as it is drawn. The CUT is
+  wrong for this: it is RAISED per column exactly where a stack stands (26
+  raised cells at his house, up to 6), so a cut test answers "inside" for the
+  one piece this is about. The scene's scalar `indoorCeil` (the underside under
+  MY cell) was the line for three days and is wrong for a cave: its walls carry
+  no deck, so they were lit only up to the lid I stood under — the_game's ice
+  cave at 203,232 (a 24-storey wall, lids of thickness 15/14/13/12 over the
+  floor and the stair) read 5 storeys from the floor and 8 from the landing
+  three steps up, black above, the line moving with every step (maintainer
+  2026-09-17: "the wall height should not move when I walk around in a cave").
+  Measured on the twin after: lit to the drawn cut from both floors, and a
+  floor cell under the lid still dark from its own underside (9). B on a far
+  cave wall is the OPENING's top for the mouth's swallow (`buildCaveDepth`),
+  which is why the slab test is part of the read — taken blindly it lit that
+  wall to 9 from everywhere. Gate: `scripts/verify-cavewall.mjs`. `indoorCeil`
+  stays for the scene's own tests (`aboveCut`, `indoorOutside`, the flyer).
   OVER MY OWN ROOF, THE ROOM'S LIGHTS AND ITS HALO FIELD ARE BLOCKED OUTRIGHT
   (`overMyRoom`), never eased. The per-light ease (`max(uIndoor, uIndoorMix)`)
   is for the STREET, which has a doorway to see through; between a hearth and
