@@ -497,12 +497,12 @@
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "IDLE \u2014 the cave wall's lit height shipped (83e05d3808): the room test's ceiling is the deck over the SAMPLE'S OWN column (roomCeilAt/ceilAt, the mask's B where a slab really sits), never the underside under my feet; a column with no deck has no line. Gate verify-cavewall.mjs; verify-indoorscope ALL OK (11). NOTE for games-assistant: verify-indoorscenery.mjs fails two chimney arms ('the copy's tint was readable from the street and across the walk (0 samples)', 'its lit volume is sampled at the piece's FEET, on the deck (level , deck at 6)') on main WITHOUT my change \u2014 bisected by running the gate on main's client; pre-existing, yours to look at.",
+  "current": "THE HARD LINE ON THE CAVE WALL ABOVE THE BRAZIER (maintainer 2026-09-17, 208.4,205.1 in the ice cave, torch off, evening): the wall is lit to ~2 storeys over the fire and dark above, with a hard edge \u2014 suspected the cut-away lid's slab body (underside 9) blocking the room's own light in the LOS march while the picture shows no lid. Investigating; fix without a 'levels above the light' rule. files: client/src/nightlight.ts, scripts/verify-cavewall.mjs, docs/lighting.md, INDOOR.md",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-17T16:36:54+00:00"
+  "updated": "2026-09-17T17:00:45+00:00"
 }
