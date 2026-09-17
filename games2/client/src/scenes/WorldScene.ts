@@ -292,6 +292,7 @@ import {
 } from "../scenery3";
 import { sceneryAnimClass, scenerySleepMs, SCENERY_ANIM_FPS, type SceneryAnimClass } from "../sceneryanim";
 import { lightAnimTune } from "../lightanim";
+import { boundLightFrame, easeLightFrame, atLightRest, LIGHT_FRAME_REST, type LightFrameState } from "../lightframe";
 import { sceneryAnimVerdict } from "../live";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
@@ -1686,6 +1687,9 @@ interface SceneryAnimLive {
   } | false;
   /** What the last step applied, for the probe. */
   lightNow?: { i: number; dcol: number; drow: number };
+  /** The eased state and when it was stepped (lightanim.ts): the light never
+   *  snaps to a frame's target, and eases back to rest after the clip. */
+  lightEase?: { i: number; dcol: number; drow: number; at: number };
 }
 
 interface BodyVisual {
@@ -19461,6 +19465,8 @@ export class WorldScene extends Phaser.Scene {
       const run = this.sceneryAnimRuns.get(live.place);
       if (!run) continue;
       if (run.frame < 0) {
+        // A light still easing back to rest after the clip keeps stepping.
+        if (live.lightEase) this.applySceneryLightFrame(live, null);
         if (now < run.next) continue;
         if (!this.sceneryClipReady(run)) {
           run.next = now + 1000;
@@ -19529,28 +19535,42 @@ export class WorldScene extends Phaser.Scene {
       return;
     }
     const { src, base } = L;
-    if (!lf) {
+    const now = this.time.now;
+    // BOUNDED AND EASED (lightanim.ts): the frame's target through the dials,
+    // clamped, then eased from the last applied state; the clip's end targets
+    // rest and the scheduler keeps stepping until the light is back there.
+    let target: LightFrameState = LIGHT_FRAME_REST;
+    if (lf) {
+      const tune = lightAnimTune();
+      const sx = (lf.dx - L.stillDx) * live.kx;
+      const sy = (lf.dy - L.stillDy) * live.ky;
+      const { dx, dy } = this.geom;
+      target = boundLightFrame(lf.intensity, (sx / dx + sy / dy) / 2, (sy / dy - sx / dx) / 2, tune);
+    }
+    const prev = live.lightEase ?? { ...LIGHT_FRAME_REST, at: now };
+    const e = easeLightFrame(prev, target, now - prev.at);
+    if (!lf && atLightRest(e)) {
       src.col = base.col;
       src.row = base.row;
       src.color = base.color;
       src.hx = base.hx;
       src.hy = base.hy;
       live.lightNow = undefined;
+      live.lightEase = undefined;
       return;
     }
-    const tune = lightAnimTune();
-    const i = Math.max(0.05, 1 + (lf.intensity - 1) * tune.intensity);
-    const sx = (lf.dx - L.stillDx) * live.kx * tune.position;
-    const sy = (lf.dy - L.stillDy) * live.ky * tune.position;
     const { dx, dy } = this.geom;
-    const dcol = (sx / dx + sy / dy) / 2;
-    const drow = (sy / dy - sx / dx) / 2;
-    src.col = base.col + dcol;
-    src.row = base.row + drow;
+    // Back from cells to screen px for the head point (hx, hy): the inverse
+    // of the (sx, sy) -> (dcol, drow) map above.
+    const sx = (e.dcol - e.drow) * dx;
+    const sy = (e.dcol + e.drow) * dy;
+    src.col = base.col + e.dcol;
+    src.row = base.row + e.drow;
     src.hx = base.hx + sx;
     src.hy = base.hy + sy;
-    src.color = [base.color[0] * i, base.color[1] * i, base.color[2] * i];
-    live.lightNow = { i, dcol, drow };
+    src.color = [base.color[0] * e.i, base.color[1] * e.i, base.color[2] * e.i];
+    live.lightNow = { i: e.i, dcol: e.dcol, drow: e.drow };
+    live.lightEase = { ...e, at: now };
   }
 
   private makeFogSilhouette(lo: (typeof this.litOccluders)[number]): void {

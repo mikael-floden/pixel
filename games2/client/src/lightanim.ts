@@ -33,6 +33,10 @@ export const LIGHT_ANIM_DEFAULT: LightAnimTune = { intensity: 0.3, position: 0.1
 export const LIGHT_ANIM_MIN = 0.05;
 export const LIGHT_ANIM_MAX = 20;
 
+// The bound and the ease live in lightframe.ts (pure: no window, no storage,
+// so the server's test can import them); this module owns the dials.
+export { LIGHT_ANIM_I_MIN, LIGHT_ANIM_I_MAX, LIGHT_ANIM_POS_MAX, LIGHT_ANIM_EASE_MS, LIGHT_FRAME_REST, boundLightFrame, easeLightFrame, atLightRest, type LightFrameState } from "./lightframe";
+
 const KEY = "ml-light-anim";
 let value: LightAnimTune = load();
 

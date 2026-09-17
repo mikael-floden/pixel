@@ -455,6 +455,26 @@ screenshots with "Reconnected." on each. Reproduced headless with
 `scripts/verify-sceneryanim.mjs`: the swap keeps the box and the cut, nothing
 past the still shows while a frame is owed, and it plays again after.)
 
+**THE CLIP'S LIGHT SWING IS BOUNDED AND EASED, WHATEVER THE DIAL**
+(`lightanim.ts`; maintainer 2026-09-17, the house at the hearth: the wall
+hanging beside the fire snapped bright/dark with the flame clip — "a real
+fire can't flip the light on a wall scenery this much while burning"). A
+LIT clip's `light_frames` carry a per-frame intensity around 1 (a hearth's
+five frames read 0.85..1.25) and the emissive centre's offset; the dials
+(`ml-light-anim`, 0.05..20x, HUD sliders) multiply the swing and the
+offset, and at the top of the range a 0.85 frame was 1 + (−0.15 × 20) = −2,
+floored to 0.05 — the light went OUT for that frame, and a wall piece lit by
+that light alone (a wall piece takes no halo pool: its sample stands at the
+wall's height) snapped at 8 fps. Reproduced headless with both dials at 20:
+the hanging's luma 38 → 54 → 44 → 38 across one play; steady at the
+default. Law: the applied intensity lives in `LIGHT_ANIM_I_MIN`..`_MAX`
+(0.6..1.5), the offset within `LIGHT_ANIM_POS_MAX` (0.35 cells), and both
+EASE toward the frame's target with `LIGHT_ANIM_EASE_MS` (90) — a fire's
+brightness changes continuously, an 8 fps step is a snap; the clip's end
+eases back to rest and the scheduler keeps stepping until it is there. The
+dials keep their range and past ~3x only reach the bound sooner. Gate:
+`server/test/lightanim.test.ts`.
+
 ## Depth-fog on BODIES (syncLitCopy)
 
 Monsters and remote players are coloured by the elevation depth-fog like the
