@@ -172,7 +172,7 @@ push, no PRs unless asked.
 - Never weaken the collision probes to fix a wedge: `unstickFromSolids` is the
   escape, and the rescue never climbs — and it keeps `WALL_STANDOFF` (=
   PLAYER_RADIUS) off any face the body cannot jump onto (the lateral probes
-  read solids only; a refused move there wedges; `wallclear.test.ts`).
+  read solids only; a refused move wedges; `wallclear.test.ts`).
 - A >2-cell position correction re-checks the indoor verdict but NEVER resets
   the doorway crossfade — only a room change does; its SPEED is a dial (1.00x
   is his, and slower is the only instrument for a one-frame report).
@@ -254,7 +254,7 @@ netcode; these are the invariants)
 **Lighting** (`docs/lighting.md`)
 - Every twinned field (clouds, aurora, mist, sun, light) has an EXACT JS twin;
   change both; hash noise with the integer chain, never `fract(sin(...))`;
-  no GLSL `pow()` on a base that can go negative (`glslpow.test.ts`).
+  no GLSL `pow()` on a base that can be negative (`glslpow.test.ts`).
 - A pass that is "off" leaves the display list AND writes its strength
   uniform unconditionally.
 - `uCam` is this frame's rectangle (`renderedWorldView`), never `worldView`.
@@ -277,7 +277,7 @@ netcode; these are the invariants)
   Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
-- Indoor ambient: dark 40%, lit 25%; hidden outline 20% — his dials.
+- Indoor ambient: dark 40%, lit 25%; hidden outline 20% (his).
 - MY ROOM IS A VOLUME: the room test takes a HEIGHT — the deck over the
   SAMPLE'S OWN column (`roomCeilAt`; no deck, no line), never the one under
   my feet (`verify-cavewall.mjs`) — and over my own roof its lights and halo
