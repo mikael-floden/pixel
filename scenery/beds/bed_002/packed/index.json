@@ -1,51 +1,156 @@
 {
  "files": {
-  "beds/bed_002/animations/flame/south/00.webp": {
-   "file": "animations/flame/south/00.0eefcd29.webp",
-   "h": 110,
+  "beds/bed_002/animations/flame/south-east/00.webp": {
+   "file": "animations/flame/south-east/00.68ee42dd.webp",
+   "h": 111,
    "ox": 5,
-   "oy": 9,
+   "oy": 8,
+   "src": "c36b79d0",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/animations/flame/south-east/01.webp": {
+   "file": "animations/flame/south-east/01.e09d9164.webp",
+   "h": 111,
+   "ox": 5,
+   "oy": 8,
+   "src": "5fc1e824",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/animations/flame/south-east/02.webp": {
+   "file": "animations/flame/south-east/02.4bed0644.webp",
+   "h": 111,
+   "ox": 5,
+   "oy": 8,
+   "src": "c1bd791b",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/animations/flame/south-east/03.webp": {
+   "file": "animations/flame/south-east/03.6f16edfe.webp",
+   "h": 111,
+   "ox": 5,
+   "oy": 8,
+   "src": "56cf782b",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/animations/flame/south-east/04.webp": {
+   "file": "animations/flame/south-east/04.777778e5.webp",
+   "h": 111,
+   "ox": 5,
+   "oy": 8,
+   "src": "1b8a96fa",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/animations/flame/south/00.webp": {
+   "file": "animations/flame/south/00.dfb988bd.webp",
+   "h": 111,
+   "ox": 5,
+   "oy": 8,
+   "prev": "animations/flame/south/00.0eefcd29.webp",
    "src": "4217d8b8",
    "srcH": 128,
    "srcW": 128,
    "w": 119
   },
   "beds/bed_002/animations/flame/south/01.webp": {
-   "file": "animations/flame/south/01.38a06b1e.webp",
-   "h": 110,
+   "file": "animations/flame/south/01.66291417.webp",
+   "h": 111,
    "ox": 5,
-   "oy": 9,
+   "oy": 8,
+   "prev": "animations/flame/south/01.38a06b1e.webp",
    "src": "476a87f4",
    "srcH": 128,
    "srcW": 128,
    "w": 119
   },
   "beds/bed_002/animations/flame/south/02.webp": {
-   "file": "animations/flame/south/02.ae7a23b6.webp",
-   "h": 110,
+   "file": "animations/flame/south/02.4c810730.webp",
+   "h": 111,
    "ox": 5,
-   "oy": 9,
+   "oy": 8,
+   "prev": "animations/flame/south/02.ae7a23b6.webp",
    "src": "31f0bd4d",
    "srcH": 128,
    "srcW": 128,
    "w": 119
   },
   "beds/bed_002/animations/flame/south/03.webp": {
-   "file": "animations/flame/south/03.5a2e391a.webp",
-   "h": 110,
+   "file": "animations/flame/south/03.1e8da196.webp",
+   "h": 111,
    "ox": 5,
-   "oy": 9,
+   "oy": 8,
+   "prev": "animations/flame/south/03.5a2e391a.webp",
    "src": "053c44e4",
    "srcH": 128,
    "srcW": 128,
    "w": 119
   },
   "beds/bed_002/animations/flame/south/04.webp": {
-   "file": "animations/flame/south/04.84925ad7.webp",
-   "h": 110,
+   "file": "animations/flame/south/04.fcc6935e.webp",
+   "h": 111,
    "ox": 5,
-   "oy": 9,
+   "oy": 8,
+   "prev": "animations/flame/south/04.84925ad7.webp",
    "src": "dd209605",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_2/animations/flame/south-east/00.webp": {
+   "file": "lit_2/animations/flame/south-east/00.cf82d0dc.webp",
+   "h": 115,
+   "ox": 5,
+   "oy": 4,
+   "src": "b8090a2e",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_2/animations/flame/south-east/01.webp": {
+   "file": "lit_2/animations/flame/south-east/01.e863e78f.webp",
+   "h": 115,
+   "ox": 5,
+   "oy": 4,
+   "src": "f140584c",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_2/animations/flame/south-east/02.webp": {
+   "file": "lit_2/animations/flame/south-east/02.2ac29e5c.webp",
+   "h": 115,
+   "ox": 5,
+   "oy": 4,
+   "src": "da0c2b32",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_2/animations/flame/south-east/03.webp": {
+   "file": "lit_2/animations/flame/south-east/03.3370053d.webp",
+   "h": 115,
+   "ox": 5,
+   "oy": 4,
+   "src": "f3b4be0a",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_2/animations/flame/south-east/04.webp": {
+   "file": "lit_2/animations/flame/south-east/04.dcebe9f9.webp",
+   "h": 115,
+   "ox": 5,
+   "oy": 4,
+   "src": "a982a682",
    "srcH": 128,
    "srcW": 128,
    "w": 119
@@ -130,6 +235,56 @@
    "srcW": 128,
    "w": 119
   },
+  "beds/bed_002/lit_3/animations/flame/south-east/00.webp": {
+   "file": "lit_3/animations/flame/south-east/00.dea8373b.webp",
+   "h": 110,
+   "ox": 1,
+   "oy": 9,
+   "src": "732b21ed",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 126
+  },
+  "beds/bed_002/lit_3/animations/flame/south-east/01.webp": {
+   "file": "lit_3/animations/flame/south-east/01.f8066d16.webp",
+   "h": 110,
+   "ox": 1,
+   "oy": 9,
+   "src": "affdd9e5",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 126
+  },
+  "beds/bed_002/lit_3/animations/flame/south-east/02.webp": {
+   "file": "lit_3/animations/flame/south-east/02.b140a2c7.webp",
+   "h": 110,
+   "ox": 1,
+   "oy": 9,
+   "src": "c7e22f9b",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 126
+  },
+  "beds/bed_002/lit_3/animations/flame/south-east/03.webp": {
+   "file": "lit_3/animations/flame/south-east/03.7da27b60.webp",
+   "h": 110,
+   "ox": 1,
+   "oy": 9,
+   "src": "408e2d1f",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 126
+  },
+  "beds/bed_002/lit_3/animations/flame/south-east/04.webp": {
+   "file": "lit_3/animations/flame/south-east/04.a15f4af7.webp",
+   "h": 110,
+   "ox": 1,
+   "oy": 9,
+   "src": "6a2e0112",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 126
+  },
   "beds/bed_002/lit_3/animations/flame/south/00.webp": {
    "file": "lit_3/animations/flame/south/00.f085a9c3.webp",
    "h": 110,
@@ -209,6 +364,106 @@
    "srcH": 128,
    "srcW": 128,
    "w": 126
+  },
+  "beds/bed_002/lit_4/animations/flame/south-east/00.webp": {
+   "file": "lit_4/animations/flame/south-east/00.cb6b6f93.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "f9a4444a",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_4/animations/flame/south-east/01.webp": {
+   "file": "lit_4/animations/flame/south-east/01.0150000e.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "9f0d04fb",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_4/animations/flame/south-east/02.webp": {
+   "file": "lit_4/animations/flame/south-east/02.98fd5566.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "b2e55632",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_4/animations/flame/south-east/03.webp": {
+   "file": "lit_4/animations/flame/south-east/03.3c1617a1.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "afa0991c",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_4/animations/flame/south-east/04.webp": {
+   "file": "lit_4/animations/flame/south-east/04.4d87d052.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "b14d1db8",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_4/animations/flame/south-west/00.webp": {
+   "file": "lit_4/animations/flame/south-west/00.16c5a029.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "0ec852ab",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_4/animations/flame/south-west/01.webp": {
+   "file": "lit_4/animations/flame/south-west/01.ad778571.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "55e66839",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_4/animations/flame/south-west/02.webp": {
+   "file": "lit_4/animations/flame/south-west/02.8d09c3df.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "8768761e",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_4/animations/flame/south-west/03.webp": {
+   "file": "lit_4/animations/flame/south-west/03.ff5959bf.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "a4201fa3",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
+  },
+  "beds/bed_002/lit_4/animations/flame/south-west/04.webp": {
+   "file": "lit_4/animations/flame/south-west/04.f5e68935.webp",
+   "h": 112,
+   "ox": 5,
+   "oy": 7,
+   "src": "5af3c0d7",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 119
   },
   "beds/bed_002/lit_4/animations/flame/south/00.webp": {
    "file": "lit_4/animations/flame/south/00.c07fbede.webp",
@@ -351,30 +606,33 @@
    "w": 119
   },
   "beds/bed_002/rotations/south-east.webp": {
-   "file": "rotations/south-east.75b1c052.webp",
-   "h": 110,
+   "file": "rotations/south-east.68ee42dd.webp",
+   "h": 111,
    "ox": 5,
-   "oy": 9,
+   "oy": 8,
+   "prev": "rotations/south-east.75b1c052.webp",
    "src": "c36b79d0",
    "srcH": 128,
    "srcW": 128,
    "w": 119
   },
   "beds/bed_002/rotations/south-west.webp": {
-   "file": "rotations/south-west.42796f06.webp",
-   "h": 110,
+   "file": "rotations/south-west.aa37e0fc.webp",
+   "h": 111,
    "ox": 5,
-   "oy": 9,
+   "oy": 8,
+   "prev": "rotations/south-west.42796f06.webp",
    "src": "ff5fb3d3",
    "srcH": 128,
    "srcW": 128,
    "w": 119
   },
   "beds/bed_002/sprite.webp": {
-   "file": "sprite.0eefcd29.webp",
-   "h": 110,
+   "file": "sprite.dfb988bd.webp",
+   "h": 111,
    "ox": 5,
-   "oy": 9,
+   "oy": 8,
+   "prev": "sprite.0eefcd29.webp",
    "src": "4217d8b8",
    "srcH": 128,
    "srcW": 128,

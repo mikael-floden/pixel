@@ -69,10 +69,30 @@ def encode_webp(img: Image.Image) -> bytes:
 
 
 def _frames(anims) -> list:
+    """Every frame file of every clip, in BOTH shapes a clip is stored in.
+
+    PER-DIRECTION FRAMES WERE INVISIBLE HERE, and that is how a redone clip
+    stopped reaching the game (2026-09-17). A south-only clip keeps its frames
+    flat at the animation root as `frame_paths`; a clip with facings moves them
+    under `directions.<dir>.frame_paths` and DROPS the flat list, because
+    `directions` supersedes it. Reading only the flat list meant such a clip
+    reported NO frames: nothing was ever stale, nothing was re-cut, and the
+    packed index went on serving the frames of the animation that had been
+    replaced — the art in the repo and the art in the game quietly disagreeing.
+    Found on hearths/hearth_001 LIT_3 the day its motion clip gained SE and SW;
+    it is the shape every facing-extension writes (flame_facings.py since
+    2026-08-28, redo_facing_anim.py since 2026-09-15), so it was never about one
+    piece."""
     out = []
     for a in (anims or {}).values() if isinstance(anims, dict) else []:
-        if isinstance(a, dict):
-            out += [p for p in (a.get("frame_paths") or []) if isinstance(p, str) and p]
+        if not isinstance(a, dict):
+            continue
+        out += [p for p in (a.get("frame_paths") or []) if isinstance(p, str) and p]
+        dirs = a.get("directions")
+        if isinstance(dirs, dict):
+            for v in dirs.values():
+                if isinstance(v, dict):
+                    out += [p for p in (v.get("frame_paths") or []) if isinstance(p, str) and p]
     return out
 
 
