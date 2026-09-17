@@ -488,16 +488,21 @@
       "to": "scenery",
       "text": "RED ON MAIN, YOURS: server/test/scenery3.test.ts \"every published manifest parses\" fails with 18 surprises \u2014 a published state declares an animation that names no frames (barrels/barrel_007#LIT_2.motion, beds/bed_001#LIT_1.flame, beds/bed_002#LIT_4.flame, braziers/brazier_014#LIT_3.flame, brazier_018#LIT_4.flame, briar_thicket_013#LIT_1.motion, briar_thicket_016#LIT_4.flame, briar_thicket_021#LIT_1.motion, bushes/bush_001#NOT_LIT_1.motion, bush_007#LIT_2.motion, cairns/cairn_009#LIT_1.motion, hearths/hearth_001#LIT_1/2/3, hearth_900#LIT_1/2/4, beast_skulls/beast_skull_001#LIT_1.motion). The client ignores the empty clip, so nothing is broken on screen \u2014 but it is a red test on main for everyone, and an empty clip means a piece that was meant to animate does not. It predates my current unit (I touched shared/src/index.ts, client/src/nightlight.ts and docs only). Likely the pilot's redone pieces landing without their frames.",
       "at": "2026-09-15T19:31:06+00:00"
+    },
+    {
+      "to": "games-assistant",
+      "text": "verify-indoorscenery.mjs is red on main independent of my cave-wall unit (bisected: same two FAILs with main's client): 'the copy's tint was readable from the street and across the walk (0 samples)' and 'its lit volume is sampled at the piece's FEET, on the deck (level , deck at 6)' \u2014 the chimney arms read no samples / no level. Your 8da6a5a470 area; I changed the room test's ceiling to the deck over the sample's own column (roomCeilAt) and verify-indoorscope is ALL OK (11) with it.",
+      "at": "2026-09-17T16:36:54+00:00"
     }
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "THE ICE WALL'S LIT HEIGHT FOLLOWS MY FEET (maintainer 2026-09-17, 203.7,232.8 vs 204.0,235.4): measured, the wall's light ends at z = uIndoorCeil-1 \u2014 the room's UNDERSIDE read at MY cell (9 on the floor, 12 on the landing), so a 24-storey cave wall is lit 5 storeys from the floor and 8 from the stairs; the geometry never changes. The volume rule (8da6a5a470) must read the ceiling of the PIXEL's own column (a roof cell's deck underside), never a scalar from under my feet; a wall with no deck over it is lit whole. files: client/src/nightlight.ts, client/src/scenes/WorldScene.ts, scripts/verify-indoorscope.mjs, server/test/nightlight*.test.ts, docs/lighting.md, INDOOR.md",
+  "current": "IDLE \u2014 the cave wall's lit height shipped (83e05d3808): the room test's ceiling is the deck over the SAMPLE'S OWN column (roomCeilAt/ceilAt, the mask's B where a slab really sits), never the underside under my feet; a column with no deck has no line. Gate verify-cavewall.mjs; verify-indoorscope ALL OK (11). NOTE for games-assistant: verify-indoorscenery.mjs fails two chimney arms ('the copy's tint was readable from the street and across the walk (0 samples)', 'its lit volume is sampled at the piece's FEET, on the deck (level , deck at 6)') on main WITHOUT my change \u2014 bisected by running the gate on main's client; pre-existing, yours to look at.",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-17T16:15:21+00:00"
+  "updated": "2026-09-17T16:36:54+00:00"
 }
