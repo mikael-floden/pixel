@@ -3019,7 +3019,7 @@ export function steerAssist(
   ax: number,
   ay: number,
   elev?: number,
-): { ax: number; ay: number } | null {
+): { ax: number; ay: number; doorDist?: number } | null {
   if (ax === 0 && ay === 0) return null;
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const worldW = worldWidthOf(grid);
@@ -3151,7 +3151,7 @@ function steerAssistWall(
   sim: (iax: number, iay: number) => { x: number; y: number },
   moved: (r: { x: number; y: number }) => number,
   elev?: number,
-): { ax: number; ay: number } | null {
+): { ax: number; ay: number; doorDist: number } | null {
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   // The SURFACE level when the caller knows it: the base under a deck is the
   // cave, and every rock cell beside the lid then read as a wall to hunt a
@@ -3292,7 +3292,7 @@ function steerAssistWall(
         }
         if (!best) continue;
         if (moved(sim(best.ax, best.ay)) < WALK_SPEED * 0.08 * 0.35) continue;
-        return best;
+        return { ...best, doorDist: dist };
       }
     }
   }
@@ -4569,6 +4569,22 @@ export function walkHeading(
             const lw = screenToWorldVector(lh.ax, lh.ay);
             const side = ux * lw.y - uy * lw.x < -1e-9 ? -1 : 1;
             const esc = startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev, side, !(wall && !wall.prop));
+            /* A DOOR IN REACH IS A ROUTE TOO, AND THE SHORTER WALK WINS. Sliding
+             * sideways to a doorway makes no progress along the ask, so this
+             * window fired while the door-finder (rule 1) was already steering
+             * to the door one cell over, and the route it committed ran west
+             * and round the whole house (maintainer 2026-09-17, 299.3,199.1:
+             * "the door is literally next to the player"). Neither has
+             * precedence ("Closest path around the object should win"): the
+             * door's walk is its lateral cells plus the doorway and the cell
+             * beyond; the route's is its length. */
+            const door = wall && !wall.prop ? steerAssist(grid, x, y, ax, ay, opts.fromElev) : null;
+            if (door?.doorDist !== undefined && (!esc || door.doorDist + 2 <= routeCells(esc))) {
+              hold.progRef = p;
+              hold.progAt = opts.nowMs;
+              hold.escapeWait = stuckMs;
+              return { ax: door.ax, ay: door.ay, trip: null, deflected: true };
+            }
             /* ONE TILE BACK, NO MORE. The escape is the only rule that may move
              * against the stick, and it may do so only as far as the pocket's own
              * exit — "the corner is just around the tile you currently is running
@@ -4894,6 +4910,13 @@ export const ESCAPE_RETREAT_CELLS = 1;
  *  285.6,208.6 held down) is one tile west, ten south, then two west and up
  *  a ramp — two tiles back on the col axis, eleven tiles on; the spawn
  *  house's door is two tiles back in the route's first two points. */
+/** A route's walk, in cells: the sum of its legs. */
+export function routeCells(trip: AutopilotTrip): number {
+  let len = 0;
+  for (let i = 1; i < trip.path.length; i++) len += Math.hypot(trip.path[i].x - trip.path[i - 1].x, trip.path[i].y - trip.path[i - 1].y);
+  return len / CELL_WU;
+}
+
 export function routeRetreat(trip: AutopilotTrip, x: number, y: number, ux: number, uy: number): number {
   const bc = Math.floor(x / CELL_WU);
   const br = Math.floor(y / CELL_WU);

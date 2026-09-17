@@ -218,6 +218,23 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   along the ask): backwards is the first move against the tile being run
   into; a step against the stick taken eleven tiles on is the way round,
   and the corridor bounds it.
+  **A DOOR IN REACH IS A ROUTE TOO, AND THE SHORTER WALK WINS** (maintainer
+  2026-09-17, 299.3,199.1 held straight at the house's south wall with the
+  doorway one cell to the side: "the door is literally next to the player.
+  Why navigate around the house when the player obviously missed the door";
+  and on priority: "It should be the same priority. Closest path around the
+  object should win"): sliding sideways to a door makes no progress along
+  the ask, so the window fired while the door-finder was already steering
+  to it (165 ms in, measured) and rule 0 committed a route west and round
+  the whole house (297 ms in). Now the escape branch asks the door-finder
+  too, and compares walks: the door's lateral cells plus two (the doorway
+  and the cell beyond) against the escape route's length in cells; the
+  shorter is taken, the door as the sideways deflection it always was, the
+  route as a committed trip. Neither has precedence — a door four cells
+  along a wall whose corner is one cell away loses to the corner. Gate:
+  `doorfirst.test.ts` — his house synthetic and the_game's own, from both
+  sides of the door (through it inside 2.5 s, never west of the door), and
+  the corner case where round the house is the shorter walk.
   **THE GOAL IS GETTING ON, NOT THE POINT AHEAD** (maintainer 2026-09-13,
   285.6,208.6 held down into a level-4 plateau's notch: "It's extremely
   clear I can continue downwards if I navigate a bit backwards and left ...
