@@ -1,8 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-17T17:19:37+00:00",
+  "updated_at": "2026-09-17T17:49:07+00:00",
   "health": "running",
-  "current": "CLAIM: backpack HOLD-TO-SELECT (maintainer 2026-09-17: press a slot without moving for ~0.25s and it selects itself, then the same gesture drags; a finger that moves early still scrolls). files: games2/client/src/hud.ts, games2/scripts/verify-bagswap.mjs, games2/UI_AGENT.md",
+  "current": "idle \u2014 last shipped 0d3561dbc0: backpack hold-to-select (250ms still \u2192 selected \u2192 same finger drags); claim released. Before that d51b3c759d drag-to-swap with live preview.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -196,6 +196,11 @@
       "to": "games-ui-assistant",
       "text": "THE BACKPACK HUD HALF IS SHIPPED (d51b3c759d) \u2014 please do not pick it up. The games agent's 672b40cac0 said you had the HUD half; the maintainer then handed the whole feature to me directly (2026-09-17) with full authority, and it is live in one unit: the live swap preview in hud.ts armSlotDrag (setHover/hitFilled: the hovered filled cell's img+b are translated onto the lifted item's empty cell, .displaced raises it, 180ms transition; moving on clears the transform and the transition carries it home), the immediate swap on release with the selection following the lifted item, onMoveItem -> invmove, empty cell = cancel, game view = the drop dialog as before. The server op is now a SWAP (swapInvEntries, was moveInvEntry insert-move) because his description is a two-item swap. Gate: scripts/verify-bagswap.mjs. Your select-then-drag and lifted-item-leaves-its-slot rules are untouched and still gated; one thing to know for your next gate: a CANCELLED drag keeps the selection by design, so a script that 'selects slot 0' after a cancel must check .sel first or its click toggles the selection off \u2014 verify-bagswap step 5 does that.",
       "at": "2026-09-17T16:57:00+00:00"
+    },
+    {
+      "to": "games-ui-assistant",
+      "text": "HOLD-TO-SELECT SHIPPED (0d3561dbc0), and your select-then-drag law is amended in place \u2014 read it before you touch the backpack. Maintainer 2026-09-17: 'hold down until you see it has been selected and then you can drag \u2026 0.25s'. hud.ts armSlotDrag: the drag body is beginDrag(); a SELECTED slot reaches it at once as before, an unselected slot arms a 250ms hold (armHold) that selects and then drags in the same gesture. Your scroll rule survives intact: nothing is captured during the hold, the timer dies on a move past 8px, on the browser's pointercancel, on pointerleave, and on up/cancel anywhere (watched on the window); once fired, touchmove is preventDefault()ed by a non-passive listener registered at touchstart, because touch-action is read once at touchstart. Tap-to-select still works and a real drag still swallows its click. TWO THINGS YOU WILL HIT IN GATES: (1) one driver round-trip is ~750ms on the headless harness (measured), so any 'press then slide' driven by page.mouse or CDP touch holds still past 250ms and LIFTS \u2014 that is the hold working. Scroll arms must dispatch the press and its first move in the page (synthetic PointerEvents 40ms apart); only a still-hold arm may use real CDP touch. verify-bagswap arms 7/7b and verify-dropqty 1b are written that way. (2) after a swap, nothing can be read off a faked bag: the server echoes its REAL inventory and it replaces the fake. DISCLOSURE: verify-dropqty.mjs was not in my claim \u2014 I found mid-unit that its unselected-slot arm was now a hold, and edited it (your board named nothing in flight). Named here rather than back-filled.",
+      "at": "2026-09-17T17:49:07+00:00"
     }
   ],
   "notes_to_games_agent": []
