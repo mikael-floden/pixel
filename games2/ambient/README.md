@@ -548,7 +548,7 @@ controller (AUTO / NONE / solo-each).
 | `embers/` | field | SPARKS OFF A FIRE — they leave the flame, rise on its heat and slow, cool from the fire's own colour toward deep red, and wink out; a blue flame throws blue sparks | Outdoor, unsealed sources whose published `light.embers` is true (a lantern is a fire and throws none); night-leaning, never off by day |
 | `foam/` | field | SEA FOAM — the white line where moving water meets land, alive: a one-pixel band hugging the coast seam and the wall's crest, a train of crest lines sliding in from a few pixels out, the band swelling as each arrives (onto the sand over a beach; thick and bright against a wall), in a slow sweep along the coast. Solid contours only, Wind Waker not grain (maintainer's picks) | Any water/land edge in view — the composed boundary seam (mask sheet) and the wall foot's crest (`footBand` replicated, parity-tested); outdoors |
 | `fish/` | field | THE RISE — a fish takes a fly: a dorsal fin breaks the surface, a tail flicks a beat later, and two or three rings leave the spot and widen until they fade; the harder takes throw a few specks of water. Rings are ISO ELLIPSES (a circle stands up out of the lake like a hoop) at whole-pixel radii, the lead ring big and the followers smaller so nested rings stay legible | Lakes and shallows only (`runtime/water.ts` — swimmable AND harmless, so never lava; the open sea is `deepwater/`'s), outdoors. Peaks at dawn and dusk on a bump in the sun, never zero, hidden by heavy rain |
-| `drips/` | field (INDOOR) | CAVE DRIPS — a POINT THAT KEEPS DRIPPING, not a rain of drops: a drop swells out of the dark above the walls, hangs, lets go, falls faster and faster, and lands in a ring on the floor with a flash and two specks; the same spot takes another one a few seconds later. THE ONLY EFFECT HERE THAT LIVES UNDER A ROOF — it multiplies by `1 - ctx.outdoor`, the mirror of every other row | Inside a CAVE only: a cell whose slab is a `cave` deck (`__ml.t3at`, published kind — a cottage that drips is a leak); dry floor on your own terrace; nothing outdoors, ever |
+| `drips/` | field (INDOOR) | CAVE DRIPS — a POINT THAT KEEPS DRIPPING, not a rain of drops: a drop swells out of the dark above the walls, hangs, lets go, falls faster and faster, and lands in a ring on the floor with a flash and two specks; the same spot takes another one a few seconds later (about every 3.9 s per spout, 15.5 a minute — his 2026-09-17 verdict: "I love the ambient cave drip effect so much I want a little bit more of it! It should drop a bit more often! Maybe 50% more often!"). THE ONLY EFFECT HERE THAT LIVES UNDER A ROOF — it multiplies by `1 - ctx.outdoor`, the mirror of every other row | Inside a CAVE only: a cell whose slab is a `cave` deck (`__ml.t3at`, published kind — a cottage that drips is a leak); dry floor on your own terrace; nothing outdoors, ever |
 | `water/` | field | Living water — pixel-art wavelets + sun/moon reflection glints (frame-animated, full-pixel, no sub-px slide) | LAKES AND SHALLOWS: harmless water on screen (`runtime/water.ts`, never lava) MINUS anywhere the deep-sea current runs — the open sea is `deepwater/`'s |
 | `feathers/` | field | WHAT A FLUSH LEAVES BEHIND — spook a landed flock and each bird drops a feather or two: knocked loose by the wingbeat so it rises first, then sinks slowly, swinging side to side and LEANING into each slide, and lies on the ground a few seconds before it goes. TINTED FROM ITS OWN BIRD (`plumageOf`, lifted toward white): a red bird sheds a pink feather, a green one a pale green | Only when `birds/` announces a flush (`runtime/flush.ts`); outdoors. Selected ALONE in Settings there is no flock, so it sheds a demo feather then and only then |
 | `butterflies/` | field | THE MEADOW IN SUMMER — at four pixels a butterfly is a WAY OF MOVING, not a shape: the body BOBS a whole pixel or three with every wingbeat (a mark that slides level reads as a bee), the path is short runs broken by hard turns (a smooth curve reads as a bird), and the beat is uneven so it does not tick. Wings change SILHOUETTE WIDTH, 5 px open / 3 half / 1 shut, on frames all the same height so only the wings move. MUTED BY LAW (`species.ts`): the maintainer's bands — at least half pale-and-dark, a quarter green-and-red, a quarter free — and nothing over `MAX_SAT` 0.45 saturation, because this is background. It works the PATCH it was placed on, settles onto the grass now and then with its wings shut, and MINDS YOU: walk up and it turns away, hurries, and takes off if it was sitting | Grass (the surface's own `sound`, `groundSoundAt`), outdoors, by DAY: a ramp on sun strength, gone in rain, and gone in storm, snow or wind |
@@ -613,6 +613,22 @@ flock wheels through the ceiling.
   indoor tap lands where the finger is), so **every indoor placement asks the
   picker**, and `flatWith`/`findGround` stay outdoor tools until someone
   teaches them the cut.
+- **A RATE DIAL IS THE WHOLE CYCLE, NOT THE CONSTANT THAT SOUNDS LIKE IT.**
+  A `drips/` spout resets at `timeline().nextAt` = `hang + period`, so the gap
+  a player SEES is `HANG_MS` plus `PERIOD` — and `HANG_MS` owns a quarter of
+  it. Asked for "50% more often" (his, 2026-09-17), scaling `PERIOD` by the
+  obvious 1/1.5 delivers **1.33x**, measured, because the hang does not shrink
+  with it; the cycle has to be solved for instead (5803 ms -> 3862 ms, 1.503x,
+  `PERIOD` [2200,6500] -> [1220,3610], `HANG_MS` deliberately untouched because
+  the swell is the part he likes). The unit test that already existed could not
+  catch this: it asserted the period sits inside its own jittered band, which
+  is true for ANY value of `PERIOD`. **A tuning test must be written against
+  the quantity the request names** — `drips.test.ts` now measures the CYCLE and
+  is checked to fail at both the old value (0.999x) and the naive scaling
+  (1.332x).
+  There is also a FLOOR: `nextAt` takes `max(doneAt, hang + period)`, so once a
+  period drops under `fallMs(h) + SPLASH_MS` (840 ms at the tallest fall) the
+  dial silently stops doing anything. Pinned.
 - **A MARK ABOVE THE DARKNESS OVERLAY STILL NEEDS ITS DEPTH SET.** `drips/`
   shipped its sprite factory taking a `depth` argument and never applying it,
   so every drop sat at Phaser's default 0 — under the overlay at 900_000,

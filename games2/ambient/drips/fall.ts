@@ -40,9 +40,26 @@ export const RING_RMAX = 5;
 export const FLASH_MS = 80;
 export const SPECK_N = 2;
 export const SPECK_MS = 260;
-/** Ms from one drop's release to the next, per spout — and each interval is
- *  jittered so two spouts never lock into step. */
-export const PERIOD: [number, number] = [2200, 6500];
+/** Ms of WAITING between drops, per spout — and each interval is jittered so
+ *  two spouts never lock into step.
+ *
+ *  THIS IS NOT THE DRIP INTERVAL, and the difference is the whole trap: a
+ *  spout resets at `timeline().nextAt` = `hang + period`, so the gap a player
+ *  actually sees is HANG PLUS THIS. Tuning the rate by scaling `PERIOD` alone
+ *  under-delivers by the share `hang` owns of the cycle.
+ *
+ *  Maintainer 2026-09-17, "I love the ambient cave drip effect so much I want
+ *  a little bit more of it! It should drop a bit more often! Maybe 50% more
+ *  often!": the cycle went 1450 + 4350 = 5800 ms to 1450 + 2415 = 3865 ms, so
+ *  drops land 1.50x as often. `HANG_MS` is deliberately untouched — the swell
+ *  at the ceiling is the part he said he loves, and shortening it would buy
+ *  rate by changing the look.
+ *
+ *  FLOOR: `nextAt` takes `max(doneAt, hang + period)`, so a period shorter
+ *  than `fallMs(h) + SPLASH_MS` (840 ms at the tallest 90 px fall) stops
+ *  governing and the rate silently stops responding. The jittered minimum here
+ *  is 1220 * 0.75 = 915 ms, which clears it. */
+export const PERIOD: [number, number] = [1220, 3610];
 export const PERIOD_JITTER = 0.25;
 
 export type Phase = "hang" | "fall" | "splash" | "wait";

@@ -14,6 +14,7 @@ import {
   HANG_MS,
   LH,
   PERIOD,
+  PERIOD_JITTER,
   RING_R0,
   RING_RMAX,
   SPECK_MS,
@@ -173,4 +174,56 @@ test("periods are jittered inside their band and hangs stay in theirs", () => {
   }
   assert.ok(seen.size > 100, "two spouts never lock into step");
   assert.ok(HANG_MS[0] > 0 && HANG_MS[1] > HANG_MS[0]);
+});
+
+/* THE DRIP RATE IS THE CYCLE, NOT `PERIOD` — and this is the arm that makes a
+ * rate change deliver what it claims.
+ *
+ * A spout resets at `timeline().nextAt` = `hang + period`, so the gap a player
+ * sees is HANG PLUS PERIOD. The band test above is measured against `PERIOD`
+ * itself, so it passes whatever `PERIOD` is set to and can never notice a rate
+ * that under-delivered; only a test written against the CYCLE can.
+ *
+ * Maintainer 2026-09-17: "It should drop a bit more often! Maybe 50% more
+ * often!" The cycle was 1450 + 4350 = 5800 ms. Scaling `PERIOD` by the naive
+ * 1/1.5 would have left 1450 + 2900 = 4350 ms — only 1.33x, because `hang`
+ * owns a quarter of the cycle and does not shrink with it. */
+const OLD_CYCLE_MS = 5800; // hang 1450 + period 4350, the rate he asked to raise
+const ASKED = 1.5;
+
+test("drips land 1.5x as often as they did — measured on the CYCLE", () => {
+  let seed = 11;
+  const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
+  let total = 0;
+  const N = 20000;
+  for (let i = 0; i < N; i++) {
+    const hang = HANG_MS[0] + rnd() * (HANG_MS[1] - HANG_MS[0]);
+    const h = fallHeightPx(FALL_LEVELS[1], 0);
+    total += timeline(hang, h, nextPeriod(rnd)).nextAt;
+  }
+  const cycle = total / N;
+  const faster = OLD_CYCLE_MS / cycle;
+  assert.ok(
+    Math.abs(faster - ASKED) <= 0.04,
+    `asked for ${ASKED}x as often, got ${faster.toFixed(3)}x (cycle ${cycle.toFixed(0)} ms)`,
+  );
+});
+
+test("the period still GOVERNS the rate — it never sinks under the fall+splash floor", () => {
+  // `nextAt` takes max(doneAt, hang + period). Once a period drops below
+  // fallMs(h) + SPLASH_MS the cycle stops shortening with it, and the rate
+  // silently stops responding to the dial. The tallest fall is the tight case.
+  const tallest = fallHeightPx(FALL_LEVELS[1], 0);
+  const floor = fallMs(tallest) + SPLASH_MS;
+  const minJittered = PERIOD[0] * (1 - PERIOD_JITTER);
+  assert.ok(
+    minJittered > floor,
+    `the shortest period ${minJittered.toFixed(0)} ms is under the ${floor.toFixed(0)} ms floor — the dial has stopped working`,
+  );
+});
+
+test("the swell he likes is untouched: rate was bought from the wait, not the hang", () => {
+  // Shortening HANG_MS would raise the rate too, by making the drop let go
+  // sooner — a different LOOK, which is not what he asked for.
+  assert.deepEqual(HANG_MS, [700, 2200]);
 });
