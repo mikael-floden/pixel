@@ -64,6 +64,34 @@
                 "briar_thickets/briar_thicket_013/lit_1/animations/motion/south/02.webp",
                 "briar_thickets/briar_thicket_013/lit_1/animations/motion/south/03.webp",
                 "briar_thickets/briar_thicket_013/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "briar_thickets/briar_thicket_013/lit_1/animations/motion__south.25b0a778.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.712,
+                  "dx": 2.2,
+                  "dy": -2.9
+                },
+                {
+                  "intensity": 1.058,
+                  "dx": 2.3,
+                  "dy": -1.2
+                },
+                {
+                  "intensity": 1.042,
+                  "dx": 1.7,
+                  "dy": -1.8
+                },
+                {
+                  "intensity": 1.352,
+                  "dx": -0.1,
+                  "dy": -2.0
+                },
+                {
+                  "intensity": 0.836,
+                  "dx": -1.2,
+                  "dy": -1.9
+                }
               ]
             }
           },
@@ -95,7 +123,19 @@
               "dx": -1.2,
               "dy": -1.9
             }
-          ]
+          ],
+          "frame_paths": [
+            "briar_thickets/briar_thicket_013/lit_1/animations/motion/south/00.webp",
+            "briar_thickets/briar_thicket_013/lit_1/animations/motion/south/01.webp",
+            "briar_thickets/briar_thicket_013/lit_1/animations/motion/south/02.webp",
+            "briar_thickets/briar_thicket_013/lit_1/animations/motion/south/03.webp",
+            "briar_thickets/briar_thicket_013/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "briar_thickets/briar_thicket_013/lit_1/animations/motion__south.25b0a778.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1606
+          }
         }
       }
     },

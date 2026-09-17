@@ -64,6 +64,34 @@
                 "bushes/bush_007/lit_2/animations/motion/south/02.webp",
                 "bushes/bush_007/lit_2/animations/motion/south/03.webp",
                 "bushes/bush_007/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "bushes/bush_007/lit_2/animations/motion__south.8275ebb6.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.175,
+                  "dx": 0.4,
+                  "dy": -7.9
+                },
+                {
+                  "intensity": 0.901,
+                  "dx": 0.7,
+                  "dy": -8.3
+                },
+                {
+                  "intensity": 0.9,
+                  "dx": 0.4,
+                  "dy": -8.4
+                },
+                {
+                  "intensity": 0.908,
+                  "dx": 0.5,
+                  "dy": -9.2
+                },
+                {
+                  "intensity": 1.116,
+                  "dx": 1.0,
+                  "dy": -8.3
+                }
               ]
             }
           },
@@ -95,7 +123,19 @@
               "dx": 1.0,
               "dy": -8.3
             }
-          ]
+          ],
+          "frame_paths": [
+            "bushes/bush_007/lit_2/animations/motion/south/00.webp",
+            "bushes/bush_007/lit_2/animations/motion/south/01.webp",
+            "bushes/bush_007/lit_2/animations/motion/south/02.webp",
+            "bushes/bush_007/lit_2/animations/motion/south/03.webp",
+            "bushes/bush_007/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "bushes/bush_007/lit_2/animations/motion__south.8275ebb6.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1646
+          }
         }
       }
     },

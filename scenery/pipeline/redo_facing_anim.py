@@ -46,6 +46,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import factory                                        # noqa: E402
 import viewer_build                                   # noqa: E402
+import finish_clips                                   # noqa: E402
 import animate_trees as A                             # noqa: E402
 from pixellab_client import PixelLabClient, PixelLabError, V2_BASE  # noqa: E402
 
@@ -308,14 +309,25 @@ def main():
     if bal is not None and bal < args.min_usd:
         print(f"balance ${bal:.2f} under the ${args.min_usd:.2f} floor — stopping")
         return 1
-    ok = 0
+    ok, done = 0, []
     with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
         futs = [pool.submit(one, client, r, s, n, d, p) for r, s, n, d, p, _ in todo]
         for f in as_completed(futs):
             rel, state, name, n, how = f.result()
             ok += how == "ok"
+            if how == "ok":
+                done.append(f"{rel}#{state}#{name}")
             print(f"  {'=' if how == 'ok' else '!'} {rel} {state} {name}: {n} direction(s) {how}")
     print(f"\n{ok}/{len(todo)} clip(s) redone")
+    # A REDONE CLIP IS NOT PUBLISHED UNTIL IT IS FINISHED. This tool pops
+    # frame_paths/strip/review off the clip (they described the old art) and
+    # parseAnims drops a clip with neither frames nor strip at the top level:
+    # 18 clips — every hearth among them — shipped that way on 2026-09-15 and
+    # the hearth in his house went still. finish_clips publishes hashed strips,
+    # lifts the fields, stamps the review, recomputes light_frames, re-packs,
+    # rebuilds the viewer and runs the gate; a red gate is a failed run.
+    if done and not finish_clips.finish(done):
+        return 1
     viewer_build.build()
     return 0
 

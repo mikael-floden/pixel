@@ -123,11 +123,24 @@
                 "bushes/bush_001/animations/motion/south/02.webp",
                 "bushes/bush_001/animations/motion/south/03.webp",
                 "bushes/bush_001/animations/motion/south/04.webp"
-              ]
+              ],
+              "strip": "bushes/bush_001/animations/motion__south.5737ab8c.webp"
             }
           },
           "generated_at": "2026-09-15T18:26:34+00:00",
-          "brief": "G7"
+          "brief": "G7",
+          "frame_paths": [
+            "bushes/bush_001/animations/motion/south/00.webp",
+            "bushes/bush_001/animations/motion/south/01.webp",
+            "bushes/bush_001/animations/motion/south/02.webp",
+            "bushes/bush_001/animations/motion/south/03.webp",
+            "bushes/bush_001/animations/motion/south/04.webp"
+          ],
+          "strip": "bushes/bush_001/animations/motion__south.5737ab8c.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.2326
+          }
         }
       }
     },

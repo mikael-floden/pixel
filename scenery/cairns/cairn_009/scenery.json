@@ -71,6 +71,34 @@
                 "cairns/cairn_009/lit_1/animations/motion/south/02.webp",
                 "cairns/cairn_009/lit_1/animations/motion/south/03.webp",
                 "cairns/cairn_009/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "cairns/cairn_009/lit_1/animations/motion__south.6406ced8.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                }
               ]
             }
           },
@@ -102,7 +130,19 @@
               "dx": 0.0,
               "dy": 0.0
             }
-          ]
+          ],
+          "frame_paths": [
+            "cairns/cairn_009/lit_1/animations/motion/south/00.webp",
+            "cairns/cairn_009/lit_1/animations/motion/south/01.webp",
+            "cairns/cairn_009/lit_1/animations/motion/south/02.webp",
+            "cairns/cairn_009/lit_1/animations/motion/south/03.webp",
+            "cairns/cairn_009/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "cairns/cairn_009/lit_1/animations/motion__south.6406ced8.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.2821
+          }
         }
       }
     },

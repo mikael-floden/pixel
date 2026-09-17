@@ -68,6 +68,54 @@
                 "beast_skulls/beast_skull_001/lit_1/animations/motion/south/06.webp",
                 "beast_skulls/beast_skull_001/lit_1/animations/motion/south/07.webp",
                 "beast_skulls/beast_skull_001/lit_1/animations/motion/south/08.webp"
+              ],
+              "strip": "beast_skulls/beast_skull_001/lit_1/animations/motion__south.23c5bef3.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.442,
+                  "dx": 4.4,
+                  "dy": -0.5
+                },
+                {
+                  "intensity": 1.13,
+                  "dx": 4.8,
+                  "dy": -5.2
+                },
+                {
+                  "intensity": 0.997,
+                  "dx": 4.2,
+                  "dy": -6.3
+                },
+                {
+                  "intensity": 0.937,
+                  "dx": 3.4,
+                  "dy": -7.7
+                },
+                {
+                  "intensity": 0.906,
+                  "dx": 1.7,
+                  "dy": -11.2
+                },
+                {
+                  "intensity": 0.815,
+                  "dx": 1.7,
+                  "dy": -12.2
+                },
+                {
+                  "intensity": 0.967,
+                  "dx": 1.0,
+                  "dy": -11.4
+                },
+                {
+                  "intensity": 0.885,
+                  "dx": 1.0,
+                  "dy": -10.5
+                },
+                {
+                  "intensity": 0.922,
+                  "dx": 1.3,
+                  "dy": -8.7
+                }
               ]
             }
           },
@@ -119,7 +167,23 @@
               "dx": 1.3,
               "dy": -8.7
             }
-          ]
+          ],
+          "frame_paths": [
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/south/00.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/south/01.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/south/02.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/south/03.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/south/04.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/south/05.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/south/06.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/south/07.webp",
+            "beast_skulls/beast_skull_001/lit_1/animations/motion/south/08.webp"
+          ],
+          "strip": "beast_skulls/beast_skull_001/lit_1/animations/motion__south.23c5bef3.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.5468
+          }
         }
       }
     },

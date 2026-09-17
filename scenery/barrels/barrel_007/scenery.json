@@ -69,6 +69,34 @@
                 "barrels/barrel_007/lit_2/animations/motion/south/02.webp",
                 "barrels/barrel_007/lit_2/animations/motion/south/03.webp",
                 "barrels/barrel_007/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "barrels/barrel_007/lit_2/animations/motion__south.0572e5d3.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.901,
+                  "dx": -0.6,
+                  "dy": -15.9
+                },
+                {
+                  "intensity": 0.568,
+                  "dx": -0.6,
+                  "dy": -15.6
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.1,
+                  "dy": -11.4
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.5,
+                  "dy": -15.7
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.5,
+                  "dy": -16.0
+                }
               ]
             }
           },
@@ -100,7 +128,19 @@
               "dx": -0.5,
               "dy": -16.0
             }
-          ]
+          ],
+          "frame_paths": [
+            "barrels/barrel_007/lit_2/animations/motion/south/00.webp",
+            "barrels/barrel_007/lit_2/animations/motion/south/01.webp",
+            "barrels/barrel_007/lit_2/animations/motion/south/02.webp",
+            "barrels/barrel_007/lit_2/animations/motion/south/03.webp",
+            "barrels/barrel_007/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "barrels/barrel_007/lit_2/animations/motion__south.0572e5d3.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.8091
+          }
         }
       }
     },

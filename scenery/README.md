@@ -663,6 +663,22 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   name after the file was gone; parseAnims takes any string and 404s it).
   `anim_review.py --check` refuses a playable verdict on a clip either
   consumer cannot resolve, or whose strip is missing.
+  **A regenerated clip is unpublished until `finish_clips.py` has run on it**
+  — strips rebuilt from the CURRENT frames under content-hashed names
+  (`<name>__<dir>.<sha8>.webp`, previous kept) and recorded, fields lifted,
+  `review` stamped, `light_frames` recomputed, piece re-packed, viewer
+  rebuilt, gate run. `redo_facing_anim.py` ends with it; any tool that
+  rewrites frames must. `finish_clips.py --check` is the gate (0 unfinished,
+  0 unreadable, and the review / light_frames / pack gates green) and it is
+  run before a push, not after. (Paid for 2026-09-15: the redo tool popped
+  `frame_paths`/`strip`/`review` off 18 clips — every hearth clip among them
+  — and pushed; parseAnims dropped all 18, the hearth in his house went
+  still, and the untouched strips on disk kept showing the wiki the OLD
+  flame. `repair_strips.py` skips a strip that exists, so it cannot refresh
+  one — that is finish_clips' job.) The packer's closure follows
+  `directions.<dir>.frame_paths` as well as the flat list: a turned placement
+  plays the facing's own frames, and a path the index lacks is served raw
+  under a stable name, outside the hashed layer (2026-09-17, 65 families).
 - Read contract: `states[<LIT state>]` wins for a placement drawn in that
   state, else the top-level piece default (`maps2/pipeline/world3.py
   light_meta`). Published whole in `viewer_data.json` as `light` so the wiki

@@ -63,6 +63,34 @@
                 "hearths/hearth_900/animations/flame/south/02.webp",
                 "hearths/hearth_900/animations/flame/south/03.webp",
                 "hearths/hearth_900/animations/flame/south/04.webp"
+              ],
+              "strip": "hearths/hearth_900/animations/flame__south.674cfdb1.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.882,
+                  "dx": 1.1,
+                  "dy": 25.6
+                },
+                {
+                  "intensity": 1.003,
+                  "dx": -0.1,
+                  "dy": 24.6
+                },
+                {
+                  "intensity": 1.037,
+                  "dx": -0.3,
+                  "dy": 24.1
+                },
+                {
+                  "intensity": 1.057,
+                  "dx": -0.1,
+                  "dy": 24.7
+                },
+                {
+                  "intensity": 1.022,
+                  "dx": 0.4,
+                  "dy": 25.0
+                }
               ]
             },
             "south-east": {
@@ -73,6 +101,34 @@
                 "hearths/hearth_900/animations/flame/south-east/02.webp",
                 "hearths/hearth_900/animations/flame/south-east/03.webp",
                 "hearths/hearth_900/animations/flame/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_900/animations/flame__south-east.1ae1e302.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 5.5,
+                  "dy": 23.2
+                },
+                {
+                  "intensity": 1.028,
+                  "dx": 7.6,
+                  "dy": 21.0
+                },
+                {
+                  "intensity": 1.08,
+                  "dx": 7.5,
+                  "dy": 20.5
+                },
+                {
+                  "intensity": 1.24,
+                  "dx": 6.8,
+                  "dy": 19.6
+                },
+                {
+                  "intensity": 1.279,
+                  "dx": 6.8,
+                  "dy": 18.9
+                }
               ]
             },
             "south-west": {
@@ -83,6 +139,34 @@
                 "hearths/hearth_900/animations/flame/south-west/02.webp",
                 "hearths/hearth_900/animations/flame/south-west/03.webp",
                 "hearths/hearth_900/animations/flame/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_900/animations/flame__south-west.72c625b5.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -6.4,
+                  "dy": 22.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -7.9,
+                  "dy": 13.6
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -7.9,
+                  "dy": 13.5
+                },
+                {
+                  "intensity": 0.868,
+                  "dx": -8.8,
+                  "dy": 20.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -4.5,
+                  "dy": 22.3
+                }
               ]
             }
           },
@@ -113,7 +197,19 @@
               "dx": -0.1,
               "dy": 26.7
             }
-          ]
+          ],
+          "frame_paths": [
+            "hearths/hearth_900/animations/flame/south/00.webp",
+            "hearths/hearth_900/animations/flame/south/01.webp",
+            "hearths/hearth_900/animations/flame/south/02.webp",
+            "hearths/hearth_900/animations/flame/south/03.webp",
+            "hearths/hearth_900/animations/flame/south/04.webp"
+          ],
+          "strip": "hearths/hearth_900/animations/flame__south.674cfdb1.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0044
+          }
         }
       },
       "rotations": {
@@ -145,6 +241,29 @@
                 "hearths/hearth_900/lit_2/animations/flame/south/01.webp",
                 "hearths/hearth_900/lit_2/animations/flame/south/02.webp",
                 "hearths/hearth_900/lit_2/animations/flame/south/03.webp"
+              ],
+              "strip": "hearths/hearth_900/lit_2/animations/flame__south.340f052c.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.036,
+                  "dx": 3.7,
+                  "dy": 18.7
+                },
+                {
+                  "intensity": 1.134,
+                  "dx": 3.0,
+                  "dy": 17.9
+                },
+                {
+                  "intensity": 1.034,
+                  "dx": 3.2,
+                  "dy": 18.3
+                },
+                {
+                  "intensity": 0.796,
+                  "dx": 3.9,
+                  "dy": 17.8
+                }
               ]
             },
             "south-east": {
@@ -155,6 +274,34 @@
                 "hearths/hearth_900/lit_2/animations/flame/south-east/02.webp",
                 "hearths/hearth_900/lit_2/animations/flame/south-east/03.webp",
                 "hearths/hearth_900/lit_2/animations/flame/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_900/lit_2/animations/flame__south-east.01e17b03.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.266,
+                  "dx": -0.7,
+                  "dy": 16.8
+                },
+                {
+                  "intensity": 0.864,
+                  "dx": -0.9,
+                  "dy": 17.2
+                },
+                {
+                  "intensity": 0.797,
+                  "dx": -0.6,
+                  "dy": 17.5
+                },
+                {
+                  "intensity": 1.108,
+                  "dx": -0.3,
+                  "dy": 16.1
+                },
+                {
+                  "intensity": 0.966,
+                  "dx": -0.2,
+                  "dy": 17.4
+                }
               ]
             },
             "south-west": {
@@ -165,6 +312,34 @@
                 "hearths/hearth_900/lit_2/animations/flame/south-west/02.webp",
                 "hearths/hearth_900/lit_2/animations/flame/south-west/03.webp",
                 "hearths/hearth_900/lit_2/animations/flame/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_900/lit_2/animations/flame__south-west.fe2c1a85.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 2.8,
+                  "dy": 17.4
+                },
+                {
+                  "intensity": 1.203,
+                  "dx": -6.9,
+                  "dy": 20.5
+                },
+                {
+                  "intensity": 1.153,
+                  "dx": -7.1,
+                  "dy": 20.5
+                },
+                {
+                  "intensity": 1.169,
+                  "dx": -7.0,
+                  "dy": 20.3
+                },
+                {
+                  "intensity": 1.25,
+                  "dx": -6.6,
+                  "dy": 20.0
+                }
               ]
             }
           },
@@ -195,7 +370,18 @@
               "dx": 3.9,
               "dy": 17.8
             }
-          ]
+          ],
+          "frame_paths": [
+            "hearths/hearth_900/lit_2/animations/flame/south/00.webp",
+            "hearths/hearth_900/lit_2/animations/flame/south/01.webp",
+            "hearths/hearth_900/lit_2/animations/flame/south/02.webp",
+            "hearths/hearth_900/lit_2/animations/flame/south/03.webp"
+          ],
+          "strip": "hearths/hearth_900/lit_2/animations/flame__south.340f052c.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0029
+          }
         }
       },
       "rotations": {
@@ -228,6 +414,34 @@
                 "hearths/hearth_900/lit_4/animations/flame/south/02.webp",
                 "hearths/hearth_900/lit_4/animations/flame/south/03.webp",
                 "hearths/hearth_900/lit_4/animations/flame/south/04.webp"
+              ],
+              "strip": "hearths/hearth_900/lit_4/animations/flame__south.c5385441.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 0.7,
+                  "dy": 23.4
+                },
+                {
+                  "intensity": 0.954,
+                  "dx": -0.4,
+                  "dy": 25.0
+                },
+                {
+                  "intensity": 1.24,
+                  "dx": -0.9,
+                  "dy": 24.4
+                },
+                {
+                  "intensity": 1.324,
+                  "dx": -0.5,
+                  "dy": 24.2
+                },
+                {
+                  "intensity": 1.362,
+                  "dx": -0.5,
+                  "dy": 24.1
+                }
               ]
             },
             "south-east": {
@@ -238,6 +452,34 @@
                 "hearths/hearth_900/lit_4/animations/flame/south-east/02.webp",
                 "hearths/hearth_900/lit_4/animations/flame/south-east/03.webp",
                 "hearths/hearth_900/lit_4/animations/flame/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_900/lit_4/animations/flame__south-east.2e915aa3.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.965,
+                  "dx": 0.8,
+                  "dy": 19.9
+                },
+                {
+                  "intensity": 1.013,
+                  "dx": 1.3,
+                  "dy": 20.9
+                },
+                {
+                  "intensity": 1.024,
+                  "dx": 1.2,
+                  "dy": 21.9
+                },
+                {
+                  "intensity": 1.003,
+                  "dx": 1.1,
+                  "dy": 20.3
+                },
+                {
+                  "intensity": 0.994,
+                  "dx": 1.5,
+                  "dy": 22.9
+                }
               ]
             },
             "south-west": {
@@ -248,6 +490,34 @@
                 "hearths/hearth_900/lit_4/animations/flame/south-west/02.webp",
                 "hearths/hearth_900/lit_4/animations/flame/south-west/03.webp",
                 "hearths/hearth_900/lit_4/animations/flame/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_900/lit_4/animations/flame__south-west.002f494e.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.926,
+                  "dx": -1.0,
+                  "dy": 20.2
+                },
+                {
+                  "intensity": 1.007,
+                  "dx": 0.1,
+                  "dy": 20.9
+                },
+                {
+                  "intensity": 1.004,
+                  "dx": 0.7,
+                  "dy": 21.0
+                },
+                {
+                  "intensity": 1.061,
+                  "dx": 1.9,
+                  "dy": 20.4
+                },
+                {
+                  "intensity": 1.002,
+                  "dx": 1.9,
+                  "dy": 20.3
+                }
               ]
             }
           },
@@ -278,7 +548,19 @@
               "dx": -0.5,
               "dy": 24.1
             }
-          ]
+          ],
+          "frame_paths": [
+            "hearths/hearth_900/lit_4/animations/flame/south/00.webp",
+            "hearths/hearth_900/lit_4/animations/flame/south/01.webp",
+            "hearths/hearth_900/lit_4/animations/flame/south/02.webp",
+            "hearths/hearth_900/lit_4/animations/flame/south/03.webp",
+            "hearths/hearth_900/lit_4/animations/flame/south/04.webp"
+          ],
+          "strip": "hearths/hearth_900/lit_4/animations/flame__south.c5385441.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0081
+          }
         }
       },
       "rotations": {
