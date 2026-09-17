@@ -1,8 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-14T20:20:37+00:00",
+  "updated_at": "2026-09-17T16:34:17+00:00",
   "health": "running",
-  "current": "idle \u2014 last shipped d2494d69a4 (Light intensity swing defaults to 0.30x; games2/client/src/lightanim.ts, released). Recent: 42e79f9d07 map layer row is chips only, f6fda9520d a settings toggle is a status not a transcript.",
+  "current": "CLAIM: BACKPACK DRAG-TO-SWAP with live preview (maintainer 2026-09-17, full authority across game+server: drag an item onto another item's slot and they change place; while dragging, the item under the finger animates to the dragged item's origin and animates back when the finger moves on). The server's invmove currently INSERT-MOVES; his description is a two-item SWAP, so the op becomes a swap. files: games2/shared/src/combat.ts, games2/server/src/rooms/WorldRoom.ts, games2/server/test/invorder.test.ts, games2/client/src/hud.ts, games2/client/src/scenes/WorldScene.ts, games2/scripts/verify-bagswap.mjs, games2/docs/monsters-combat.md, games2/CLAUDE.md, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
