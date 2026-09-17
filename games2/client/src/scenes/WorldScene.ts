@@ -4429,6 +4429,13 @@ export class WorldScene extends Phaser.Scene {
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
       try {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
+        /* `?nightcal=N` — the night pass's calibration pattern from the PHONE
+         * (the same as `__ml.nightCal(0, 1, N)`): 4 faces/tops, 5 the light
+         * field composited opaque, 6 a face pixel's own numbers, 7 the three
+         * switches a point light flips at its own height. For a bug only his
+         * GPU shows (docs/lighting.md); one page load, never remembered. */
+        const cal = Number(new URLSearchParams(location.search).get("nightcal"));
+        if (Number.isFinite(cal) && cal > 0) this.night.testPattern = cal;
         this.night.create();
         this.night.atmoOff = !this.fogOn;
         // Footprints stamped before the night existed (the boot restamp, or docs

@@ -1146,6 +1146,27 @@ void main() {
   float cz = roomCeilAt(cell);
   float overMyRoom = cz > 0.5 && z >= cz ? roomConstrainedAt(cell) : 0.0;
   float inRoom = mix(1.0, r, uIndoorMix);
+  if (uTest > 6.5 && uTest < 7.5) {
+    // Calibration 7: THE THREE SWITCHES A POINT LIGHT FLIPS AT ITS OWN HEIGHT,
+    // read on the phone itself (?nightcal=7), because the harness GL never
+    // reproduced his hard line on the ice-cave wall (2026-09-17). R = r, the
+    // room test for this sample (0 = outside my room: no ambient, and a point
+    // light above its own height is cut by (1 − r)); G = 1 where this sample
+    // sits BELOW the strongest light and so runs the LOS march, 0 above it;
+    // B = overMyRoom. A line in G alone is the march gate; in R or B it is
+    // the room volume. Opaque like every pattern >= 3.
+    float below = 0.0;
+    float bestA = -1.0;
+    for (int i = 0; i < ${MAX_SHADER_LIGHTS}; i++) {
+      if (float(i) >= uNumLights) continue;
+      vec3 lp7 = uLightPos[i].xyz;
+      vec2 dd = lp7.xy - pos;
+      float a7 = abs(uLightPos[i].w) - length(dd);
+      if (uLightPos[i].w > 0.0 && a7 > bestA) { bestA = a7; below = z < lp7.z + 0.05 ? 1.0 : 0.0; }
+    }
+    gl_FragColor = vec4(r, below, overMyRoom, 1.0);
+    return;
+  }
   // TWO GRADES, ONE CROSSING. A cell in MY ROOM rides uAmbient, which is
   // already the eased blend from the outdoor grade to the interior dial. A cell
   // OUTSIDE fades between BLACK and its own OUTDOOR grade and never touches the
