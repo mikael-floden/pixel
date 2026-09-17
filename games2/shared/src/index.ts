@@ -5135,6 +5135,12 @@ const AUTOPILOT_IDLE: AutopilotDrive = {
  * still snug between props). Auto-jump handles 1-level ledges on the way
  * (the caller fires the actual jump; see autoJumpWanted).
  */
+/** How far (in dot) the follower's current 8-way heading may trail the best
+ *  one and still be kept (see stepAutopilot): the two headings flanking a
+ *  bearing differ by 0.29 at most (cos 0 − cos 45°), and 0.12 lets the bearing
+ *  drift ~28° off the kept heading before the walk turns. */
+export const FOLLOW_HOLD_DOT = 0.12;
+
 export function stepAutopilot(
   grid: TerrainGrid | null,
   trip: AutopilotTrip,
@@ -5297,8 +5303,20 @@ export function stepAutopilot(
     if (c.open && (!bestOpen || c.dot > bestOpen.dot)) bestOpen = c;
   }
   let best = rawBest;
+  const kept = trip.steer ? cand.find((c) => c.ax === trip.steer!.ax && c.ay === trip.steer!.ay) : undefined;
   if (rawBest.open || !grid) {
-    trip.steer = null; // direct heading works — normal driving
+    /* THE FOLLOWER'S HEADING HOLDS. The two 8-way headings flanking a
+     * waypoint's bearing swap the top dot every tick as the body crosses the
+     * waypoint's axis, and the walk alternated (1,0) / (1,-1) toward a point
+     * between them — at the doorway of the hearth house and again inside it
+     * (maintainer 2026-09-17, 333.0,235.1, tap-to-walk: "jitter and change
+     * direction back and forth super fast ... at the door entrance"; 7
+     * reversals in 2 s measured in doorfirst.test.ts). The heading walked last
+     * tick is kept while it is still open and within FOLLOW_HOLD_DOT of the
+     * best; a genuinely better direction re-decides. Same memo as the
+     * body-blocked detour below (`steer`), cleared at every new waypoint. */
+    best = kept && kept.open && kept.dot >= rawBest.dot - FOLLOW_HOLD_DOT ? kept : rawBest;
+    trip.steer = { ax: best.ax, ay: best.ay };
   } else {
     // Direct heading is body-blocked: steer with an OPEN detour heading, and
     // COMMIT to it. The two open headings flanking a blocked direction have
@@ -5307,7 +5325,6 @@ export function stepAutopilot(
     // the player vibrates in place at a gap's mouth. The committed heading
     // holds while it stays open and roughly sane; a clearly better escape
     // (+0.35 dot) or an opened direct heading re-decides.
-    const kept = trip.steer ? cand.find((c) => c.ax === trip.steer!.ax && c.ay === trip.steer!.ay) : undefined;
     if (kept && kept.open && kept.dot > -0.3 && (!bestOpen || kept.dot >= bestOpen.dot - 0.35)) {
       best = kept;
     } else if (bestOpen && bestOpen.dot > -0.3) {

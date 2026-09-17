@@ -785,6 +785,21 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   stair/ramp tiles from the maps agent. If the tile "house format" changes,
   re-measure `MAP_GEOMETRY` and update `ISO_DX/ISO_DY`.
 
+  **THE FOLLOWER'S HEADING HOLDS** (`FOLLOW_HOLD_DOT` 0.12, stepAutopilot;
+  maintainer 2026-09-17, 333.0,235.1, tap-to-walk into the hearth house:
+  "the player starts to jitter and change direction back and forth super
+  fast ... at the door entrance"). The autopilot picks the 8-way heading with
+  the best dot toward its waypoint every tick, and the two headings flanking
+  a bearing between them swap the top dot as the body crosses the waypoint's
+  axis — the walk alternated (1,0) / (1,-1) at the doorway and again inside
+  (12 heading changes, 7 reversals in 2 s, `doorfirst.test.ts` tap arm). The
+  heading walked last tick is kept while it is still open and within 0.12 of
+  the best dot (the flanking pair differs by 0.29 at most, so the bearing
+  drifts ~28° off the kept heading before the walk turns); a genuinely
+  better direction re-decides. Same memo as the body-blocked detour
+  (`steer`), cleared at every new waypoint. Measured after: 3 changes, 0
+  reversals, through the door from three starts.
+
 ## Animation playback (anti-moonwalk)
 
 - **State→art mapping is the art domain's contract**: `build-manifest.mjs`

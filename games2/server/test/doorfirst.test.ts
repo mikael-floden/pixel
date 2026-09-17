@@ -22,6 +22,10 @@ import {
   levelAtWorld,
   walkHeading,
   worldAxisToScreenInput,
+  startTrip,
+  stepAutopilot,
+  bodyStalled,
+  slideAlong,
   CELL_WU,
   WALK_CLIMB,
   ISO_GEOMETRY_MAPS3,
@@ -160,4 +164,60 @@ test("the_game's house at 299.3,199.1 (skipped without the world tree)", (t) => 
   const grid = buildTerrainGrid(world!.width, world!.height, world!.rows, world!.props, world!.decks);
   stampSceneryCollision(grid, world!.scenery ?? [], sceneryBbox(), sceneryHitboxOverrides(), ISO_GEOMETRY_MAPS3);
   assertThroughTheDoor(hold(grid, 299.3, 199.1, INTO_THE_WALL, 120), "the_game");
+});
+
+/** The TAP path, as the client drives it (driveAutopilot + the tap-slide
+ *  floor): a trip from `from` to `to`, stepped with the real movement tick;
+ *  the walked heading per tick. */
+function drive(grid: TerrainGrid, from: [number, number], to: [number, number], ticks: number) {
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  let x = from[0] * CELL_WU;
+  let y = from[1] * CELL_WU;
+  let elev = levelAtWorld(grid, x, y);
+  const ww = grid.width * CELL_WU;
+  const wh = grid.height * CELL_WU;
+  const trip = startTrip(grid, x, y, to[0] * CELL_WU, to[1] * CELL_WU, false, 0, elev, levelAtWorld(grid, to[0] * CELL_WU, to[1] * CELL_WU));
+  assert.ok(trip, "a trip was planned");
+  const tapSlide: SlideMemo = { ax: 0, ay: 0 };
+  const path: { col: number; row: number; ax: number; ay: number }[] = [];
+  let t = 0;
+  for (let i = 0; i < ticks; i++) {
+    t += 33;
+    const d = stepAutopilot(grid, trip!, x, y, t, ww, wh, elev);
+    if (d.done) break;
+    let ax = d.ax, ay = d.ay;
+    if ((ax !== 0 || ay !== 0) && bodyStalled(grid, x, y, ax, ay, elev)) {
+      const sl = slideAlong(grid, x, y, ax, ay, tapSlide, elev);
+      if (sl) { ax = sl.ax; ay = sl.ay; }
+    } else { tapSlide.ax = 0; tapSlide.ay = 0; }
+    const u = unstickFromSolids(grid, x, y, 80 * 0.033, undefined, elev);
+    x = u.x; y = u.y;
+    const m = stepMovement(x, y, ax, ay, false, 0.033, makeBlockedElev(grid, walk, () => elev), 1, true, ww, wh, makeSideBlocked(grid, walk, () => elev), { screenSlide: true });
+    x = m.x; y = m.y;
+    elev = levelAtWorld(grid, x, y);
+    path.push({ col: x / CELL_WU, row: y / CELL_WU, ax, ay });
+  }
+  return path;
+}
+
+test("the_game's hearth house at 333,234 by TAP from the street: through the door, no jitter (skipped without the world tree)", (t) => {
+  // Maintainer 2026-09-17 (333.0,235.1, build 5c682beb5): "the player starts
+  // to jitter and change direction back and forth super fast when the player
+  // navigates onto a house (the player starts to jitter at the door entrance)".
+  const file = join(process.cwd(), "..", "..", "maps2", "worlds3", "the_game", "world.json");
+  if (!existsSync(file)) return t.skip("no world tree in this checkout");
+  const world = parseWorld(JSON.parse(readFileSync(file, "utf8")));
+  const grid = buildTerrainGrid(world!.width, world!.height, world!.rows, world!.props, world!.decks);
+  stampSceneryCollision(grid, world!.scenery ?? [], sceneryBbox(), sceneryHitboxOverrides(), ISO_GEOMETRY_MAPS3);
+  for (const from of [[333.0, 236.6], [332.2, 236.2], [334.0, 236.4]] as [number, number][]) {
+    const path = drive(grid, from, [333.0, 232.6], 240);
+    let changes = 0;
+    for (let i = 1; i < path.length; i++) if (path[i].ax !== path[i - 1].ax || path[i].ay !== path[i - 1].ay) changes++;
+    const inside = path.findIndex((p) => p.row < 234);
+    const flips = reversals(path);
+    console.log(`tap from ${from}: ${path.length} ticks, ${changes} heading changes, ${flips} reversals, inside at ${inside < 0 ? "never" : inside * 33 + " ms"}; rest ${path[path.length - 1].col.toFixed(2)},${path[path.length - 1].row.toFixed(2)}`);
+    assert.ok(inside >= 0 && inside * 33 <= 4000, `from ${from}: not through the door within 4 s`);
+    assert.ok(flips <= 3, `from ${from}: the heading turned back on itself ${flips} times — the jitter at the door`);
+    assert.ok(changes <= 8, `from ${from}: the walked heading changed ${changes} times on the way in`);
+  }
 });

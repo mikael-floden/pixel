@@ -195,10 +195,10 @@ push, no PRs unless asked.
   "Wall assist angle" dial (10°) the run is straightened along it; past it the
   body slides at its screen speed times the WORLD cosine to the wall
   (`slideShare`, 71% for a cardinal key; the thumb's windows only,
-  `InputMessage.route`) or stands, auto-jump hops a jumpable one; a door
-  SIDEWAYS or ahead within 4 cells is a route: the shorter walk wins, never
-  behind; a chosen door sticks (`doorfirst.test.ts`). The sprite faces its
-  walk.
+  `InputMessage.route`) or stands, auto-jump hops; a door sideways or ahead
+  within 4 cells is a route, the shorter walk wins; a door sticks; the
+  tap follower holds its heading (`doorfirst.test.ts`). The sprite faces
+  its walk.
 - Scenery, props and open ground walk the heading AS IT IS; the tick's glide
   slides them (a footprint is a PROP whatever the nav layer says); no hold,
   detour or slide rule: the ESCAPE is the nav.
