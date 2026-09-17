@@ -699,7 +699,15 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   (maintainer 2026-09-17: "You need a way to directly remove/replace assets
   from the game when you have revoked/removed them"; cupboard_004 x2 in
   August, chimney_002 x2 from 09-14 — both sat red until someone else ran).
-  Consumers read this file, never `config/retired_*.json`.
+  Consumers read this file, never `config/retired_*.json`. **A retirement
+  record means the art is DELETED** — `retired_ids.json` / `retired_states.json`
+  are facts about the art, never planner flags: an id with a manifest, or a
+  state its manifest still carries, must not be on them (`retired.py --check`
+  fails; `--clean` un-lists them). (2026-09-17: six live pieces were listed —
+  chess_table_006/009, placed in the_game, and four graves — and the
+  maintainer read "retired" as "removed": "I love the chess-tables!" Un-listing
+  is safe: the loop creates only MISSING assets, so an id with a manifest is
+  never re-rolled either way.)
 - Read contract: `states[<LIT state>]` wins for a placement drawn in that
   state, else the top-level piece default (`maps2/pipeline/world3.py
   light_meta`). Published whole in `viewer_data.json` as `light` so the wiki

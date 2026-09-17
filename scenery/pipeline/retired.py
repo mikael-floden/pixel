@@ -88,15 +88,63 @@ def publish(log=print):
     return True
 
 
+def stale():
+    """Records that say DELETED about art that ships: retired ids with a
+    manifest, retired states their manifest still carries. The maintainer read
+    'retired' as 'removed' and thought his chess tables were gone (2026-09-17:
+    "I love the chess-tables!") — six pieces were listed that way, none of
+    them deleted. A record is a fact about the art, not a planner flag."""
+    ids = _load(IDS)
+    bad_ids = [(g, p) for g, l in ids.items() for p in (l or []) if factory.read_manifest(f"{g}/{p}")]
+    bad_states = []
+    for rel, lst in _load(STATES).items():
+        man = factory.read_manifest(rel)
+        if man:
+            bad_states += [(rel, s) for s in (lst or []) if s in (man.get("states") or {})]
+    return bad_ids, bad_states
+
+
+def clean():
+    """Un-list the stale records and republish. Safe: the generation phase is
+    over and the loop creates only MISSING assets, so an id with a manifest is
+    never re-rolled whether listed or not."""
+    bad_ids, bad_states = stale()
+    ids = _load(IDS)
+    for g, p in bad_ids:
+        ids[g] = [x for x in ids[g] if x != p]
+        print(f"  un-listed {g}/{p} — its art ships")
+    ids = {g: l for g, l in ids.items() if l}
+    st = _load(STATES)
+    for rel, s in bad_states:
+        st[rel] = [x for x in st[rel] if x != s]
+        print(f"  un-listed {rel} {s} — its art ships")
+    st = {r: l for r, l in st.items() if l}
+    for p, doc in ((IDS, ids), (STATES, st)):
+        with open(p, "w") as f:          # factory.retire()'s own format, so the diff is the change
+            json.dump({k: sorted(v) for k, v in sorted(doc.items()) if v}, f, indent=1)
+            f.write("\n")
+    publish()
+    return len(bad_ids) + len(bad_states)
+
+
 def check():
     cur = {k: v for k, v in _load(OUT).items() if k != "generated_at"}
     ok = cur == derive()
-    print("PASS — retired.json matches the retirement records" if ok
-          else "FAIL — retired.json is stale: run pipeline/retired.py")
+    bad_ids, bad_states = stale()
+    for g, p in bad_ids:
+        print(f"  listed as deleted, but ships: {g}/{p}")
+    for rel, s in bad_states:
+        print(f"  listed as deleted, but ships: {rel} {s}")
+    ok = ok and not bad_ids and not bad_states
+    print("PASS — retired.json matches the records and every record is about deleted art" if ok
+          else "FAIL — run pipeline/retired.py --clean (stale records) or pipeline/retired.py (stale file)")
     return ok
 
 
 if __name__ == "__main__":
     if "--check" in sys.argv:
         sys.exit(0 if check() else 1)
+    if "--clean" in sys.argv:
+        print(f"{clean()} stale record(s) removed")
+        sys.exit(0)
     publish()
