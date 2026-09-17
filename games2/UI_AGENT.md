@@ -417,46 +417,43 @@ from the games agent), #18 (title/landing screen).
 - **THE BACKPACK IS SELECT, THEN DRAG — AND AN UNSELECTED SLOT IS THE
   SCROLLER'S** (maintainer 2026-09-14: "it's hard to scroll in the backpack
   because I always drag an item by mistake … in order to drag an item to the
-  game you must first select the item (so the slot is highlighted)"). The slot
-  took the gesture on `pointerdown` with `touch-action:none`, so a finger that
-  started on a filled cell could never scroll the page — on a full backpack
-  that is most of the page. Now a filled slot has TWO states and the difference
-  is what the browser may do with the touch: unselected, nothing is captured or
-  preventDefault()ed and there is no `touch-action`, so the finger scrolls;
-  selected, it wears `touch-action:none` and the pointer-captured drag as
-  before. One slot at a time, so 1 cell of 15 is sticky and the rest scroll.
-  SELECTING IS A `click`, which is the whole trick and costs nothing: a touch
-  that turns into a scroll never fires one — the same rule the "default"
-  buttons ride on in the slider gutter — so there is no threshold, no timer and
-  no guess at intent. A real drag swallows the click that follows it, so an
-  aborted drag keeps the selection; tapping the selected slot again clears it.
-  The highlight is the tab row's (`--accent-soft` on `--accent`), because a
-  selected thing should look selected the same way everywhere.
-  THE LIFTED ITEM LEAVES ITS SLOT (his second ask, same message: "when you drag
-  the item it should not still be visible in the slot … easier to understand
-  that you have grabbed the item"): mid-drag the cell hides its art and badge
-  with `visibility`, NOT `display` — the cell keeps its size, so the grid never
-  reflows under the finger — and keeps the selection outline, so an empty
-  outlined cell says both "this is in your hand" and "it came from here".
-  The selection is held as {slot, item}, never a bare index: an `inv` refresh
-  can compact the array under a live selection, and one that silently
-  re-pointed at whatever moved in would drop the wrong thing.
-  THE GHOST IS THE SLOT'S ART AT THE SLOT'S SIZE (maintainer 2026-09-14: "when
-  I start to drag an item the item icon becomes smaller vs how big it is in the
-  slot"). It was a literal 40px against a slot that draws its art at 80% of the
-  cell — ~51px on his phone, and a different number at every breakpoint and in
-  landscape. The ghost MEASURES the image it lifts and centres that on the
-  finger, so the two can never drift apart again; the gate measures it against
-  the art still showing in a neighbouring slot rather than against a number.
-  Gated in `verify-dropqty` section 1b, and the FIRST assertion is the
-  regression that protects his scroll: an unselected slot lifts no ghost and
-  opens no dialog.
-  STILL OWED (his third ask, 2026-09-14): dragging an item onto another slot to
-  move or swap it. The inventory order is SERVER state (`player.inv`, a dense
-  array, re-sent as `inv` on every change), so a client-side reorder would
-  revert on the next refresh — it needs a message in `WorldRoom.ts`, which is
-  the games agent's file. Requested on their board; the UI half hangs off one
-  optional `HudActions` callback when it lands.
+  game you must first select the item (so the slot is highlighted)"). A filled
+  slot has TWO states and the difference is what the browser may do with the
+  touch: unselected, nothing is captured or preventDefault()ed and there is no
+  `touch-action`, so the finger scrolls; selected, it wears `touch-action:none`
+  and the pointer-captured drag. One slot at a time, so 1 cell of 15 is sticky
+  and the rest scroll. A tap toggles the selection; a real drag swallows the
+  click that follows it, so an aborted drag keeps the selection.
+  SELECTING IS ALSO A HOLD (maintainer 2026-09-17: "hold down until you see it
+  has been selected and then you can drag … 0.25s"): still for 250ms on an
+  unselected slot → it selects itself (the accent outline is the signal) → the
+  SAME finger drags. The scroller is not robbed: the hold timer dies on the
+  first move past 8px or on the `pointercancel` the browser sends when it takes
+  the touch for a scroll, so a moving finger scrolls exactly as before. A finger
+  still for 250ms has begun no scroll, and from that instant every `touchmove`
+  is preventDefault()ed by a NON-PASSIVE listener registered at touchstart — a
+  scroll the browser has not begun can still be refused, whereas
+  `touch-action` is read once at touchstart and changing it mid-gesture does
+  nothing (the trap). NOTHING IS CAPTURED DURING THE HOLD (capture is what
+  would rob the scroller), so a pointer that leaves the cell or lifts may never
+  send it another event — the hold also ends on `pointerleave`, and up/cancel
+  are watched on the WINDOW; a timer that outlived its pointer selected a slot
+  the finger had left and started a drag on a pointer that was gone (paid for:
+  verify-dropqty's press-and-slide caught it). The click after a hold is
+  swallowed (`dragged`), or it would toggle the fresh selection off.
+  `contextmenu` is prevented and the cell wears `user-select:none;
+  -webkit-touch-callout:none`, so a long press opens no platform menu.
+  GATE TIMING TRAP: one driver round-trip (a `page.mouse` step, a CDP touch
+  send) costs ~750ms of wall time on the headless harness (measured), so a
+  driver-paced "press then slide" holds still past 250ms and LIFTS — the hold
+  doing its job, not a scroll being stolen. The scroll arms therefore dispatch
+  the press and its first move IN THE PAGE (synthetic PointerEvents, 40ms
+  apart); only the still-hold arm uses real CDP touch, because holding still
+  needs no fast events. `verify-bagswap`: 120ms in nothing is selected, 350ms
+  in slot 0 is, the same touch drags and swaps, and nothing later can be read
+  off a faked bag (the swap's echo of the REAL inventory replaces it — the
+  authority, not a regression); a move past 8px inside the hold, or leaving the
+  cell, selects and lifts nothing.
 - **A UI ICON IS THE MAINTAINER'S ART AT ITS AUTHORED GRID, NEVER AN EMOJI.**
   The 🔍 button shipped with the `&#128269;` glyph and he replaced it with his
   own PixelLab piece (2026-09-03) — an emoji is whatever the phone's font

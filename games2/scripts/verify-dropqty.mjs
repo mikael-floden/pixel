@@ -273,7 +273,11 @@ try {
   //          the backpack because I always drag an item by mistake … you must
   //          first select the item"). The regression that protects his scroll
   //          is the FIRST one: an unselected slot must not lift anything, and
-  //          it must leave the touch to the page. ----
+  //          it must leave the touch to the page. Since 2026-09-17 a press
+  //          that HOLDS STILL for 250ms selects and lifts (verify-bagswap) —
+  //          this arm presses and moves at once, which is a scroll, and must
+  //          stay one; it also caught the hold timer outliving a pointer that
+  //          slid straight off the cell. ----
   const noTouchAction = await page.evaluate(() => {
     const c = document.querySelector(".ml-slot.filled");
     return { unsel: getComputedStyle(c).touchAction, sel: c.classList.contains("sel") };
@@ -281,13 +285,26 @@ try {
   !noTouchAction.sel && noTouchAction.unsel !== "none"
     ? ok(`an unselected slot leaves the touch to the scroller (touch-action: ${noTouchAction.unsel})`)
     : fail(`unselected slot is still grabbing the gesture: ${JSON.stringify(noTouchAction)}`);
-  await dragSlotOut(false); // drag WITHOUT selecting first
-  const stray = await page.evaluate(() => ({
-    dialog: !!document.querySelector(".ml-qty-back"),
-    ghosts: document.querySelectorAll(".ml-slot-ghost").length,
-  }));
-  !stray.dialog && stray.ghosts === 0
-    ? ok("dragging an UNSELECTED slot lifts nothing — no ghost, no drop dialog")
+  // The press and its first move are dispatched IN THE PAGE, back to back: a
+  // scroll's first move arrives within a frame of the touch on a phone, but
+  // one driver round-trip costs ~750ms on this starved harness (measured), so
+  // a mouse-driven slide would sit still past the 250ms hold and lift the item
+  // — which is the hold doing its job, not a scroll being stolen.
+  const stray = await page.evaluate(async () => {
+    const c = document.querySelector(".ml-slot.filled");
+    const r = c.getBoundingClientRect();
+    const ev = (type, x, y) => new PointerEvent(type, { bubbles: true, cancelable: true, pointerId: 7, pointerType: "touch", isPrimary: true, clientX: x, clientY: y });
+    c.dispatchEvent(ev("pointerdown", r.left + r.width / 2, r.top + r.height / 2));
+    await new Promise((res) => setTimeout(res, 40));
+    c.dispatchEvent(ev("pointermove", r.left + r.width / 2, r.top + r.height / 2 - 30)); // 30px inside 40ms: a scroll
+    await new Promise((res) => setTimeout(res, 400)); // past the hold
+    const mid = { sel: c.classList.contains("sel"), ghosts: document.querySelectorAll(".ml-slot-ghost").length };
+    window.dispatchEvent(ev("pointerup", r.left + r.width / 2, r.top + r.height / 2 - 120));
+    await new Promise((res) => setTimeout(res, 100));
+    return { dialog: !!document.querySelector(".ml-qty-back"), ghosts: Math.max(mid.ghosts, document.querySelectorAll(".ml-slot-ghost").length), sel: mid.sel };
+  });
+  !stray.dialog && stray.ghosts === 0 && !stray.sel
+    ? ok("a press that moves at once on an UNSELECTED slot lifts nothing — no selection, no ghost, no drop dialog")
     : fail(`an unselected slot still dragged: ${JSON.stringify(stray)}`);
   await selectSlot0();
   const picked = await page.evaluate(() => {

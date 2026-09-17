@@ -1181,9 +1181,10 @@ export class HudBar {
       if (dragged) { dragged = false; return; }
       this.selectSlot(this.invSel?.slot === slot ? null : { slot, item });
     });
-    cell.addEventListener("pointerdown", (e: PointerEvent) => {
-      if (this.invSel?.slot !== slot) return; // unselected: leave the touch to the scroller
-      e.preventDefault();
+    /** The drag itself, from the pointer that is already down on this cell —
+     * reached at once from a SELECTED slot, or 250ms into a hold on an
+     * unselected one (armHold below). */
+    const beginDrag = (e: PointerEvent) => {
       this.activeDrag?.cancel(); // one gesture at a time
       cell.setPointerCapture(e.pointerId);
       let ghost: HTMLImageElement | null = null;
@@ -1302,6 +1303,88 @@ export class HudBar {
       cell.addEventListener("pointerup", finish);
       cell.addEventListener("pointercancel", cancel);
       this.activeDrag = { cancel: cleanup };
+    };
+
+    /* HOLD TO SELECT (maintainer 2026-09-17: "what if you hold down/press it
+     * without moving for a short period and it gets selected automatically
+     * and you can start to drag the item around … instead of first clicking
+     * then dragging you just hold down until you see it has been selected …
+     * the time might be 0.25s"). One gesture: still for HOLD_MS → the slot
+     * selects itself (the accent outline is the "you see it") → the same
+     * finger drags. The tap-to-select path stays; this is the shortcut.
+     *
+     * THE SCROLLER KEEPS ITS FINGER. An unselected cell still has no
+     * touch-action, so a finger that MOVES before the hold fires scrolls the
+     * page exactly as before — the timer is cancelled on the first move past
+     * SLOP, or on the pointercancel the browser sends when it takes the
+     * gesture for a scroll. A finger that is still for HOLD_MS has started no
+     * scroll, and from that moment every touchmove is preventDefault()ed
+     * (non-passive listener, registered at touchstart time — a scroll the
+     * browser has not begun can still be refused), so the drag is never torn
+     * away half-way. Changing touch-action mid-gesture would do nothing: it is
+     * read once, at touchstart. A hold is not a tap: the click that follows
+     * the release must not toggle the selection back off. */
+    const HOLD_MS = 250;
+    const SLOP = 8;
+    const armHold = (e: PointerEvent) => {
+      const x0 = e.clientX;
+      const y0 = e.clientY;
+      let held = false;
+      let timer: number | null = null;
+      const onTouchMove = (ev: TouchEvent) => {
+        if (held) ev.preventDefault();
+      };
+      // NOTHING IS CAPTURED DURING THE HOLD (capture is what would rob the
+      // scroller), so a pointer that leaves the cell, or lifts, may never send
+      // the cell another event — the release lands on whatever is under it.
+      // So the hold ends on `pointerleave`, and the up/cancel are watched on
+      // the WINDOW: a timer that outlives its pointer would select a slot the
+      // finger left long ago and start a drag on a pointer that is gone (the
+      // first version did exactly that when a press slid straight off into
+      // the game view — verify-dropqty caught it).
+      const stop = () => {
+        if (timer !== null) window.clearTimeout(timer);
+        timer = null;
+        cell.removeEventListener("pointermove", onMove);
+        cell.removeEventListener("pointerleave", stop);
+        window.removeEventListener("pointerup", stop, true);
+        window.removeEventListener("pointercancel", stop, true);
+        cell.removeEventListener("touchmove", onTouchMove);
+      };
+      const onMove = (ev: PointerEvent) => {
+        if (Math.hypot(ev.clientX - x0, ev.clientY - y0) > SLOP) stop(); // it is a scroll
+      };
+      const fire = () => {
+        timer = null;
+        held = true;
+        dragged = true; // swallow the click after the release
+        cell.removeEventListener("pointermove", onMove);
+        cell.removeEventListener("pointerleave", stop);
+        window.removeEventListener("pointerup", stop, true);
+        window.removeEventListener("pointercancel", stop, true);
+        const done = () => cell.removeEventListener("touchmove", onTouchMove);
+        cell.addEventListener("pointerup", done, { once: true });
+        cell.addEventListener("pointercancel", done, { once: true });
+        this.selectSlot({ slot, item });
+        beginDrag(e);
+      };
+      cell.addEventListener("pointermove", onMove);
+      cell.addEventListener("pointerleave", stop);
+      window.addEventListener("pointerup", stop, true);
+      window.addEventListener("pointercancel", stop, true);
+      cell.addEventListener("touchmove", onTouchMove, { passive: false });
+      timer = window.setTimeout(fire, HOLD_MS);
+    };
+    // a long press must not open the platform's context menu or selection
+    cell.addEventListener("contextmenu", (e) => e.preventDefault());
+
+    cell.addEventListener("pointerdown", (e: PointerEvent) => {
+      if (this.invSel?.slot === slot) {
+        e.preventDefault();
+        beginDrag(e);
+        return;
+      }
+      armHold(e); // unselected: the scroller keeps the touch unless it holds still
     });
   }
 
@@ -2257,7 +2340,8 @@ function injectStyles() {
   /* A filled slot is a TAP TARGET until it is selected: no touch-action here,
      so a finger that moves scrolls the page instead of lifting the item
      (maintainer 2026-09-14). Only the SELECTED slot takes the gesture. */
-  .ml-slot.filled{position:relative;cursor:pointer}
+  .ml-slot.filled{position:relative;cursor:pointer;
+    user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
   .ml-slot.filled.sel{cursor:grab;touch-action:none;
     background:var(--accent-soft);border-color:var(--accent)}
   .ml-slot.filled img{width:80%;height:80%;object-fit:contain;image-rendering:pixelated;
