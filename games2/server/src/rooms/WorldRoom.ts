@@ -131,7 +131,7 @@ import {
   DROP_SPACING_WU,
   INV_MAX_STACK,
   INV_MAX_SLOTS,
-  moveInvEntry,
+  swapInvEntries,
 } from "@nangijala/shared";
 import { WorldState, Player, Monster, MonsterArea, GroundItem, OWNER_VIEW_TAG } from "../schema/WorldState.js";
 import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
@@ -935,19 +935,19 @@ export class WorldRoom extends Room<WorldState> {
       client.send("inv", { items: player.inv });
     });
 
-    /* DRAG TO REORDER THE BACKPACK — his third backpack ask (2026-09-14, via
-     * games-ui-assistant, who has the HUD half): "dragging an item onto another
-     * slot to move or swap it". It has to be a message because the ORDER IS
-     * SERVER STATE (`player.inv`, re-sent on every change), so a client-side
-     * reorder would revert on the next refresh.
+    /* DRAG TO SWAP TWO BACKPACK SLOTS (maintainer 2026-09-17: "drag an item to
+     * a different item's slot so they change place"). It has to be a message
+     * because the ORDER IS SERVER STATE (`player.inv`, re-sent on every
+     * change), so a client-side reorder would revert on the next refresh.
      *
-     * A drag MOVES (see moveInvEntry): the entry comes out and goes back in at
-     * the target, the rest close up behind it, and a drop past the last filled
-     * cell puts it last — the grid's empty cells are simply past the end of a
-     * compacted list. The item id is the ground truth for WHICH entry moved (a
-     * slot index goes stale the moment a stack empties and the array compacts —
-     * the same trap `drop` above documents), and a refused move heals the grid
-     * with what the server actually holds rather than leaving it guessing.
+     * A drag SWAPS (see swapInvEntries): the two entries trade places and
+     * nothing else moves — that is what the HUD previews while the finger is
+     * down, so it is what the drop must do. Both slots must hold an entry; the
+     * grid's empty cells are past the end of a compacted list and are not
+     * targets. The item id is the ground truth for WHICH entry was lifted (a
+     * slot index goes stale the moment a stack empties and the array compacts
+     * — the same trap `drop` above documents), and a refused swap heals the
+     * grid with what the server actually holds rather than leaving it guessing.
      *
      * Cadence: a drag is cheap but not free, and it shares the item clock with
      * pickup and drop so a burst cannot outrun them. */
@@ -960,7 +960,7 @@ export class WorldRoom extends Room<WorldState> {
       const from = typeof message?.from === "number" ? message.from : -1;
       const to = typeof message?.to === "number" ? message.to : -1;
       const item = typeof message?.item === "string" ? message.item : undefined;
-      if (moveInvEntry(player.inv, from, to, item)) player.dirty = true;
+      if (swapInvEntries(player.inv, from, to, item)) player.dirty = true;
       client.send("inv", { items: player.inv });
     });
 

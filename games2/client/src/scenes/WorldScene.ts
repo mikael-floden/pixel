@@ -4644,6 +4644,13 @@ export class WorldScene extends Phaser.Scene {
         if (g) this.room.send("drop", { slot, item, n, wx: g.x, wy: g.y });
         else this.room.send("drop", { slot, item, n }); // void/solid target: at my feet
       },
+      // Backpack drag-to-swap (maintainer 2026-09-17): the HUD has already
+      // swapped its grid; the server's `invmove` echo is the authority.
+      onMoveItem: (from, to, item) => {
+        this.invMoveLog.push({ from, to, item });
+        if (this.invMoveLog.length > 32) this.invMoveLog.shift();
+        this.room?.send("invmove", { from, to, item });
+      },
       // A HUD modal is up (the drop-quantity dialog): FREEZE the player —
       // "when this dialog is open the player can't walk" (maintainer
       // 2026-08-05). Same gate the chat input uses (Phaser's keyboard, which
@@ -8859,6 +8866,10 @@ export class WorldScene extends Phaser.Scene {
       // demand. Drops made from a faked slot are healed by the server's item
       // check, so this exercises the DIALOG, not the economy.
       invFake: (items: { item: string; n: number }[]) => this.hud?.setInventory(items ?? []),
+      // QA: the swap messages this client has sent (newest last) — the gate
+      // proves a release over another slot asked the server for exactly the
+      // swap the preview showed.
+      invMoves: () => this.invMoveLog.map((m) => ({ ...m })),
       /** Is the player allowed to walk right now? (chat typing and the HUD's
        * drop-quantity modal both freeze Phaser's keyboard — the stick
        * synthesizes into it too, so this covers every input path.) */
@@ -12268,6 +12279,8 @@ export class WorldScene extends Phaser.Scene {
     }
   }
   private mapLayersAt = 0; // next ensureMapLayers() poll (see the update loop)
+  /** `invmove` messages sent by this client, newest last (QA probe __ml.invMoves). */
+  private invMoveLog: { from: number; to: number; item: string }[] = [];
   private zoneHops = 0;
   private spawnAreaRedraw = false; // one overlay redraw per batch of adds
   /** One row per crossing for the beacon — see the report's `zone` block. */

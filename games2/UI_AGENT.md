@@ -394,6 +394,26 @@ from the games agent), #18 (title/landing screen).
   12:1 and muted ≥ 4.5:1 — reverting to the wiki's white fails it. The DARK
   blocks are the wiki's verbatim and untouched. The wiki has the light values
   on its board to adopt; `wiki/` is never edited from here.
+- **A DRAG ONTO ANOTHER ITEM SWAPS THEM, AND THE SWAP IS PREVIEWED LIVE**
+  (maintainer 2026-09-17: "drag an item to a different item's slot so they
+  change place. When I drag around the item I should see that item moving to
+  the item I drag's location so I understand what will happen if I drop the
+  item here … the item at that spot will animate towards the item I'm
+  dragging's location, and the old item that was animated to this slot will
+  animate back"). While a lifted item's ghost is over a FILLED cell, that
+  cell's art is translated onto the lifted item's empty cell (`.displaced`,
+  180ms transition on `img`/`b`, the cell raised above its neighbours); moving
+  on clears the translation and the transition carries it home. The transform
+  is on the ART, never the cell — the grid must not reflow under a finger that
+  is still deciding. On release over that cell the HUD swaps its own grid AT
+  ONCE (the selection follows the lifted item) and calls `onMoveItem(from, to,
+  item)`; the game sends `invmove` and the server's echo is the authority — a
+  refused swap heals the grid back. EMPTY CELLS ARE NOT TARGETS: the server
+  list is compacted, there is nothing there to trade with, so a release on one
+  is a cancel (the displaced art glides home, nothing is sent). The game view
+  stays the drop exit (the quantity dialog). Gate: `scripts/verify-bagswap.mjs`
+  — measured art centres for the preview both ways, the immediate swap plus the
+  exact `invmove` (`__ml.invMoves`), the empty-cell cancel, and the dialog exit.
 - **THE BACKPACK IS SELECT, THEN DRAG — AND AN UNSELECTED SLOT IS THE
   SCROLLER'S** (maintainer 2026-09-14: "it's hard to scroll in the backpack
   because I always drag an item by mistake … in order to drag an item to the

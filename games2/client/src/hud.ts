@@ -168,6 +168,12 @@ export interface HudActions {
    * HOW MANY of the stack to drop (the quantity dialog's answer; 1 for a
    * lone item, which never opens the dialog). */
   onDropItem?: (slot: number, item: string, cx: number, cy: number, n: number) => void;
+  /** Backpack drag-to-swap: the item in `from` was released over the filled
+   * slot `to` — the two trade places. The HUD has already swapped its own grid
+   * (so the drop lands the instant the finger lifts); the game sends `invmove`
+   * and the server's echo is the authority. `item` is the lifted item's id,
+   * the server's guard against a slot index gone stale in flight. */
+  onMoveItem?: (from: number, to: number, item: string) => void;
   /** A modal (the drop-quantity dialog) opened/closed. While locked the game
    * freezes movement — the chat-input pattern (Phaser keyboard off, which
    * also blocks the stick's synthesized keys; the dialog's own full-screen
@@ -1182,6 +1188,44 @@ export class HudBar {
       cell.setPointerCapture(e.pointerId);
       let ghost: HTMLImageElement | null = null;
       let half = 20; // half the ghost's size; measured from the art it left
+      /* THE PREVIEW IS THE SWAP, SHOWN EARLY (maintainer 2026-09-17: "when I
+       * drag around the item I should see that item moving to the item I
+       * drag's location so I understand what will happen if I drop the item
+       * here … if I continue to drag to a different slot instead, the item at
+       * that spot will animate towards the item I'm dragging's location, and
+       * the old item that was animated to this slot will animate back").
+       * `hover` is the filled cell under the finger; its art is translated
+       * onto THIS cell (the lifted item's empty slot), and when the finger
+       * moves on the translation is cleared, so the CSS transition carries it
+       * back. The transform is on the art, not the cell: the grid must not
+       * reflow under a finger that is still deciding. Empty cells are not
+       * targets — a compacted list has nothing there to trade with — so
+       * hovering one just shows the ghost. */
+      let hover: { cell: HTMLElement; idx: number } | null = null;
+      const setHover = (next: { cell: HTMLElement; idx: number } | null) => {
+        if (hover?.cell === next?.cell) return;
+        if (hover) {
+          hover.cell.classList.remove("displaced");
+          for (const el of hover.cell.querySelectorAll<HTMLElement>("img,b")) el.style.transform = "";
+        }
+        hover = next;
+        if (hover) {
+          const from = cell.getBoundingClientRect();
+          const at = hover.cell.getBoundingClientRect();
+          const dx = from.left + from.width / 2 - (at.left + at.width / 2);
+          const dy = from.top + from.height / 2 - (at.top + at.height / 2);
+          hover.cell.classList.add("displaced");
+          for (const el of hover.cell.querySelectorAll<HTMLElement>("img,b"))
+            el.style.transform = `translate(${dx.toFixed(1)}px, ${dy.toFixed(1)}px)`;
+        }
+      };
+      const hitFilled = (x: number, y: number): { cell: HTMLElement; idx: number } | null => {
+        // the ghost is pointer-events:none, so the point sees the grid under it
+        const el = document.elementFromPoint(x, y)?.closest<HTMLElement>(".ml-slot.filled");
+        if (!el || el === cell || !this.invGrid || el.parentElement !== this.invGrid) return null;
+        const idx = Array.prototype.indexOf.call(this.invGrid.children, el);
+        return idx >= 0 && idx < this.invItems.length ? { cell: el, idx } : null;
+      };
       const move = (ev: PointerEvent) => {
         if (!ghost) {
           ghost = img.cloneNode(true) as HTMLImageElement;
@@ -1203,19 +1247,42 @@ export class HudBar {
         }
         ghost.style.left = `${ev.clientX - half}px`;
         ghost.style.top = `${ev.clientY - half}px`;
+        setHover(hitFilled(ev.clientX, ev.clientY));
       };
       const cleanup = () => {
         cell.removeEventListener("pointermove", move);
         cell.removeEventListener("pointerup", finish);
         cell.removeEventListener("pointercancel", cancel);
         cell.classList.remove("dragging");
+        setHover(null); // a displaced item glides home
         ghost?.remove();
         ghost = null;
         this.activeDrag = null;
       };
       const finish = (ev: PointerEvent) => {
         const wasDrag = !!ghost;
+        const target = hover; // read before cleanup clears it
         cleanup();
+        if (wasDrag && target) {
+          // RELEASED ON ANOTHER ITEM: the swap the preview promised. The grid
+          // swaps NOW — a drop that waited for the server's echo would show
+          // the displaced item snapping home first and then jumping back —
+          // and the selection follows the lifted item to its new slot, so a
+          // second drag picks up where the finger left it. The echo is the
+          // authority; a refused swap heals the grid back.
+          const from = slot;
+          const to = target.idx;
+          const a = this.invItems[from];
+          const b = this.invItems[to];
+          if (a && b && a.item === item) {
+            this.invItems[from] = b;
+            this.invItems[to] = a;
+            this.invSel = { slot: to, item };
+            this.renderInventory();
+            this.actions.onMoveItem?.(from, to, item);
+          }
+          return;
+        }
         if (wasDrag) {
           // Over the GAME VIEW (top 61.8% — everything above the HUD's own
           // top edge) => drop it into the world at that point. The item id
@@ -2207,6 +2274,15 @@ function injectStyles() {
      size, so nothing in the grid reflows under the finger. The selection
      outline stays, so the empty cell still says where the item came from. */
   .ml-slot.dragging img,.ml-slot.dragging b{visibility:hidden}
+  /* THE SWAP PREVIEW: the art of the item under the finger is TRANSLATED onto
+     the lifted item's empty cell and glides back when the finger moves on
+     (maintainer 2026-09-17). The transition is on the art, not the cell, so
+     the grid never reflows under a finger that is still deciding; the cell it
+     leaves rises above its neighbours so the moving art crosses them rather
+     than ducking under. 180ms: long enough to read as movement toward a place,
+     short enough that a finger sweeping the row is not chasing stragglers. */
+  .ml-slot.filled img,.ml-slot.filled b{transition:transform .18s ease}
+  .ml-slot.displaced{z-index:2}
   /* width/height are SET FROM THE SOURCE ART (armSlotDrag) — the lifted icon
      is the same size as the one in the slot, never a literal. */
   .ml-slot-ghost{position:fixed;z-index:60;pointer-events:none;

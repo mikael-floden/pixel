@@ -242,40 +242,45 @@ export const PICKUP_RADIUS_WU = 40; // how close the body must be to grab
 export const INV_MAX_STACK = 99;
 export const INV_MAX_SLOTS = 30;
 
-/** DRAG AN ENTRY TO ANOTHER SLOT — the backpack's own reorder, server-side
+/** DRAG AN ENTRY ONTO ANOTHER — the backpack's own reorder, server-side
  *  because the ORDER IS SERVER STATE (`player.inv`, re-sent on every change):
- *  a client-side reorder reverts on the next refresh (maintainer 2026-09-14,
- *  his third backpack ask: "dragging an item onto another slot to move or swap
- *  it").
+ *  a client-side reorder reverts on the next refresh.
  *
- *  IT MOVES, IT DOES NOT SWAP: the entry comes out and goes back in at the
- *  target, and everything between closes up behind it — what dragging one cell
- *  onto another does in a list that has no holes. The array is COMPACTED (a
- *  stack that empties is spliced out), so the grid's empty cells are simply
- *  past the end: a drop beyond the last entry means "put it last", which is
- *  what clamping the target to the list does.
+ *  IT SWAPS, IT DOES NOT INSERT (maintainer 2026-09-17: "drag an item to a
+ *  different item's slot so they change place … the item at that spot will
+ *  animate towards the item I'm dragging's location"). Two entries trade
+ *  places and nothing else moves. An insert-move — out at `from`, in at `to`,
+ *  the run between closing up — was the first version, and it is what a list
+ *  does, but it is not what he described: with an insert every entry between
+ *  the two slides one cell, so the preview he asked for (ONE item gliding to
+ *  the lifted item's slot) would be a lie about what the drop does.
  *
- *  THE ITEM ID IS THE GROUND TRUTH for which entry moved, when the caller has
- *  one. A slot index goes stale the moment a stack empties and the array
- *  compacts — the trap the drop path documents — and a reorder that trusted a
+ *  BOTH SLOTS MUST HOLD AN ENTRY. The array is compacted (an emptied stack is
+ *  spliced out), so the grid's empty cells are past the end, and a swap with
+ *  nothing is not a swap — the client does not offer empty cells as targets,
+ *  and a message naming one is refused rather than quietly turned into "put it
+ *  last".
+ *
+ *  THE ITEM ID IS THE GROUND TRUTH for which entry was lifted, when the caller
+ *  has one. A slot index goes stale the moment a stack empties and the array
+ *  compacts — the trap the drop path documents — and a swap that trusted a
  *  stale index would move whatever slid into that slot instead. False means
  *  nothing moved; the caller heals the client's grid with the inventory the
  *  server actually holds. */
-export function moveInvEntry<T extends { item: string }>(
+export function swapInvEntries<T extends { item: string }>(
   inv: T[],
   from: number,
   to: number,
   item?: string,
 ): boolean {
   if (!Number.isFinite(from) || !Number.isFinite(to)) return false;
-  const src = Math.floor(from);
-  if (src < 0 || src >= inv.length) return false;
-  const entry = inv[src];
-  if (item !== undefined && entry.item !== item) return false;
-  const dest = Math.max(0, Math.min(Math.floor(to), inv.length - 1));
-  if (dest === src) return false;
-  inv.splice(src, 1);
-  inv.splice(dest, 0, entry);
+  const a = Math.floor(from);
+  const b = Math.floor(to);
+  if (a < 0 || b < 0 || a >= inv.length || b >= inv.length || a === b) return false;
+  if (item !== undefined && inv[a].item !== item) return false;
+  const lifted = inv[a];
+  inv[a] = inv[b];
+  inv[b] = lifted;
   return true;
 }
 

@@ -248,8 +248,8 @@ netcode; these are the invariants)
   rejected step.
 - Monster stats come from live tuning (a content check, not truthiness);
   nothing may block the revive press, and the ask is retried.
-- The backpack's ORDER is server state: a drag sends `invmove` — it MOVES,
-  never swaps, and the item id says which entry (a slot index goes stale).
+- Backpack ORDER is server state: a drag sends `invmove` — a SWAP of two filled
+  slots, never an insert; the item id names the entry, not the slot.
 
 **Lighting** (`docs/lighting.md`)
 - Every twinned field (clouds, aurora, mist, sun, light) has an EXACT JS twin;

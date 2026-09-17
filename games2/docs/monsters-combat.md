@@ -312,28 +312,31 @@ memory and fewer frames spent uploading; the raw strips stay for the wiki.
   progression (two sessions dup/eat items on last-writer-wins). savePlayer
   flushes on leave, death, level-up and a 30s timer.
 - **THE BACKPACK'S ORDER IS SERVER STATE, so a drag is a MESSAGE**
-  (`invmove` in WorldRoom, `moveInvEntry` in shared). His third backpack ask
-  (2026-09-14, through games-ui-assistant, who has the HUD half): "dragging an
-  item onto another slot to move or swap it". `player.inv` is re-sent on every
-  change, so a client-side reorder reverts on the next refresh — the list the
-  grid draws is the server's.
-  IT MOVES, IT DOES NOT SWAP: the entry comes out and goes back in at the
-  target and the rest close up behind it, which is what dragging one cell onto
-  another does in a list with no holes. The array is COMPACTED (an emptied
-  stack is spliced out), so the grid's empty cells are simply past the end and
-  a drop there means "put it last" — the target clamps to the list.
-  THE ITEM ID IS THE GROUND TRUTH for which entry moved: a slot index goes
+  (`invmove` in WorldRoom, `swapInvEntries` in shared). `player.inv` is
+  re-sent on every change, so a client-side reorder reverts on the next
+  refresh — the list the grid draws is the server's.
+  IT SWAPS, IT DOES NOT INSERT (maintainer 2026-09-17: "drag an item to a
+  different item's slot so they change place … the item at that spot will
+  animate towards the item I'm dragging's location"): the two entries trade
+  places and nothing else moves, which is exactly what the HUD previews while
+  the finger is down. The first version was an insert-move (out at `from`, in
+  at `to`, the run between closing up); it is what a list does, and it is the
+  one behaviour a one-item preview cannot show — rejected for that.
+  BOTH SLOTS MUST HOLD AN ENTRY. The array is COMPACTED (an emptied stack is
+  spliced out), so the grid's empty cells are past the end; the HUD does not
+  offer them as targets and a message naming one is refused, never turned into
+  "put it last".
+  THE ITEM ID IS THE GROUND TRUTH for which entry was lifted: a slot index goes
   stale the moment a stack empties and the array compacts (the trap `drop`
-  documents), and a reorder trusting a stale index would move whatever slid
-  into that slot. A refused move still echoes `inv`, so a stale grid heals
-  instead of guessing. The cadence is the shared item clock (+60 ms — a drag is
-  cheap, but a burst may not outrun pickup and drop).
-  Gate: `server/test/invorder.test.ts` — the move table (forward, backward,
-  past the end), the refusals (self, out of range, NaN, stale id) and a LIVE
-  room arm that seeds a backpack in-process, sends the message and reads both
-  the server's own order and the echo. Persistence has its own arm in
-  `combat.test.ts`; `dirty` cannot be asserted after an await, since the next
-  save flush clears it.
+  documents), and a swap trusting a stale index would move whatever slid into
+  that slot. A refused swap still echoes `inv`, so a stale grid heals instead
+  of guessing. The cadence is the shared item clock (+60 ms — a drag is cheap,
+  but a burst may not outrun pickup and drop).
+  Gate: `server/test/invorder.test.ts` — the swap table (forward, backward,
+  past the end refused), the refusals (self, out of range, NaN, stale id) and a
+  LIVE room arm that seeds a backpack in-process, sends the message and reads
+  both the server's order and the echo. The HUD half (the preview, the
+  optimistic swap, the cancel on an empty cell) is `scripts/verify-bagswap.mjs`.
 
 - **Tap a monster to engage**: the client autopilots into radius-aware reach
   (attackRange = rA+rB+12), then the SERVER drives the swing loop while the
