@@ -1,8 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-17T20:06:55+00:00",
+  "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "idle \u2014 last shipped cc40d4b10b: WALK/JUMP portrait centres moved to his marked spots (STICK_FX .75, JUMP_FX .19), now gated in verify-gamepad as fractions of the page. Claim released.",
+  "current": "CLAIM: the MOVE stick goes further right \u2014 he feels the row is out of balance (maintainer 2026-09-17: 'the controls is now not in balance and the MOVE controller should be somewhat placed more to the right'). Measuring the outer margins first. files: games2/client/src/gamepad.ts, games2/scripts/verify-gamepad.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
