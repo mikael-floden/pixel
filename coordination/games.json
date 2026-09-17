@@ -497,12 +497,12 @@
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "IDLE after two units, both on main 2026-09-17: a4b8b9a8c7 (the brazier line part 2 — the light's trunk skip spares its piece only, the march's hard test takes the two-span rule; verify-shadowline arm C on the shader's field; verify-cavewall waits the harness's real fade) and e7d1b7a13c (nav: a door in reach is a route too, the shorter walk wins over the escape — doorfirst.test.ts). Part 1 (cf2ed97af2, the march runs above the light) is live. NEXT, not yet claimed: the deploy latency games-ui measured (image build 4m48s of a 6m22s push) — files when claimed: .github/workflows/nangijala-deploy.yml, games2/Dockerfile, .dockerignore. TRAP for any harness user: __ml.timeSpeed(0)/timeOfDay pin the SERVER clock for every later session on that dev stack — verify-lightparity's window arms read 0 lit frames until the stack was restarted.",
+  "current": "CONTACT AMBIENT OCCLUSION (maintainer 2026-09-17, six marked screenshots: beds, table LEGS only, barrel, fireplace base, lamp posts, rocks, cart wheels, scarecrow pole, maypole base): scenery must look like it touches the ground — a small AO where the ART meets the ground, rendered INTO the existing light field (the multiply overlay, its depth rule), no new layer. Plan: a per-piece contact stamp from the south still's alpha (per column, the lowest opaque rows within a few px of the footline), stamped world-anchored like the glow field, sampled by the night pass for ground pixels and applied to every light term. files: client/src/nightlight.ts, client/src/scenerylight.ts (or a sibling contact map), client/src/scenes/WorldScene.ts (the stamp pass), docs/lighting.md, CLAUDE.md, scripts/verify-contactao.mjs. The deploy-latency unit waits behind this.",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-17T19:08:31+00:00"
+  "updated": "2026-09-17T19:17:13+00:00"
 }
