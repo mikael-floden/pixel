@@ -1186,7 +1186,16 @@ void main() {
     // like Sea of Stars' environment point lights.
     float radius = abs(uLightPos[i].w);
     vec2 d2 = lp.xy - pos;
-    float dist = sqrt(dot(d2, d2) + pow((lp.z - z) * 0.6, 2.0));
+    // NEVER pow() A DIFFERENCE. pow(x, 2.0) is undefined for x < 0 in GLSL,
+    // and a phone GPU takes that literally: for every pixel ABOVE the light
+    // (z > lp.z) the old pow((lp.z - z) * 0.6, 2.0) came back NaN/0 and the
+    // light ended in a hard line at exactly its own height, torch lower than
+    // brazier (maintainer 2026-09-17, the ice cave: "the shadow from the
+    // spotlight (the fire) can only cast a shadow on walls 2 levels above
+    // itself"). SwiftShader squares it and shows nothing, which is why no
+    // headless gate ever saw it; server/test/glslpow.test.ts reads the source.
+    float dzl = (lp.z - z) * 0.6;
+    float dist = sqrt(dot(d2, d2) + dzl * dzl);
     float att = clamp(1.0 - dist / radius, 0.0, 1.0);
     att *= att;
     // INDOORS, A PIXEL OUTSIDE MY ROOM THAT SITS ABOVE THE LIGHT TAKES NONE OF

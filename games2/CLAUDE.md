@@ -253,7 +253,8 @@ netcode; these are the invariants)
 
 **Lighting** (`docs/lighting.md`)
 - Every twinned field (clouds, aurora, mist, sun, light) has an EXACT JS twin;
-  change both; hash noise with the integer chain, never `fract(sin(...))`.
+  change both; hash noise with the integer chain, never `fract(sin(...))`;
+  no GLSL `pow()` on a base that can go negative (`glslpow.test.ts`).
 - A pass that is "off" leaves the display list AND writes its strength
   uniform unconditionally.
 - `uCam` is this frame's rectangle (`renderedWorldView`), never `worldView`.
@@ -276,7 +277,7 @@ netcode; these are the invariants)
   Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed on the pill).
-- Indoor ambient: dark room 40%, lit room 25%; hidden outline 20% — his dials.
+- Indoor ambient: dark 40%, lit 25%; hidden outline 20% — his dials.
 - MY ROOM IS A VOLUME: the room test takes a HEIGHT — the deck over the
   SAMPLE'S OWN column (`roomCeilAt`; no deck, no line), never the one under
   my feet (`verify-cavewall.mjs`) — and over my own roof its lights and halo

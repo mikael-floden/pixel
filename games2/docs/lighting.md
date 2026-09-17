@@ -281,6 +281,18 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
   (cell + height) → point lights with attenuation, LOS cast shadows, Lambert
   face gating with penumbras at both ends of every wall band.
+- **GLSL `pow()` NEVER SEES A BASE THAT CAN BE NEGATIVE** (gate:
+  `server/test/glslpow.test.ts`, reads the fragment sources). The spec leaves
+  `pow(x, y)` undefined for x < 0 and a phone GPU takes it literally, while
+  SwiftShader and desktop GL quietly return the square — so no headless gate
+  can ever see it. The light loop squared the sample's height below the light
+  with `pow((lp.z - z) * 0.6, 2.0)`: negative for every wall pixel ABOVE the
+  light, so on his phone every point light ended in a hard line at exactly
+  its own height, torch lower than brazier, gone with both off (maintainer
+  2026-09-17, the ice cave at 207.4,206.4: "the shadow from the spotlight
+  (the fire) can only cast a shadow on walls 2 levels above itself"). A
+  difference is squared as a product; `pow` is for a clamped cosine and a
+  literal, and the wrap exponent is already clamped off 0 (`wallwrap.ts`).
 - **THE WALL WASH IS PER PIXEL, AND ITS WRAP IS HIS DIAL** (maintainer
   2026-09-11, a torch beside a house wall at night: "the light doesn't travel
   very long along the wall", a hard seam at every tile edge along the lit
