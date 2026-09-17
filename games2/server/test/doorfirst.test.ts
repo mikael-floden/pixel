@@ -43,7 +43,7 @@ function hold(grid: TerrainGrid, col: number, row: number, s: { ax: number; ay: 
   const memo: SlideMemo = { ax: 0, ay: 0 };
   const ww = grid.width * CELL_WU;
   const wh = grid.height * CELL_WU;
-  const path: { col: number; row: number }[] = [];
+  const path: { col: number; row: number; ax: number; ay: number }[] = [];
   for (let i = 0; i < ticks; i++) {
     t += 33;
     const r = walkHeading(grid, x, y, s.ax, s.ay, memo, { nowMs: t, trip, fromElev: elev, worldW: ww, worldH: wh });
@@ -57,9 +57,24 @@ function hold(grid: TerrainGrid, col: number, row: number, s: { ax: number; ay: 
     x = m.x;
     y = m.y;
     elev = levelAtWorld(grid, x, y);
-    path.push({ col: x / CELL_WU, row: y / CELL_WU });
+    path.push({ col: x / CELL_WU, row: y / CELL_WU, ax: wax, ay: way });
   }
   return path;
+}
+
+/** How many times the walked heading turned back on itself along the run —
+ *  a body that goes through a doorway turns a few times at most; one that
+ *  alternates every window between the raw heading and a sideways nudge
+ *  turns dozens (maintainer 2026-09-17: "the player start to jitter and change
+ *  direction back and forth super fast"). */
+function reversals(path: { ax: number; ay: number }[]): number {
+  let n = 0;
+  for (let i = 2; i < path.length; i++) {
+    const a = path[i - 2], b = path[i - 1], c = path[i];
+    const turnedBack = (a.ax !== b.ax || a.ay !== b.ay) && c.ax === a.ax && c.ay === a.ay && (b.ax !== c.ax || b.ay !== c.ay);
+    if (turnedBack) n++;
+  }
+  return n;
 }
 
 /** His house, synthetic: a 6-storey shell with its doorway at (300,197) in
@@ -82,10 +97,12 @@ function house(): TerrainGrid {
 
 const INTO_THE_WALL = worldAxisToScreenInput(0, -1); // straight at the south wall
 
-function assertThroughTheDoor(path: { col: number; row: number }[], what: string) {
+function assertThroughTheDoor(path: { col: number; row: number; ax: number; ay: number }[], what: string) {
   const westMost = Math.min(...path.map((p) => p.col));
   const end = path[path.length - 1];
   const inside = path.findIndex((p) => p.row < 197);
+  const flips = reversals(path);
+  assert.ok(flips <= 3, `${what}: the heading turned back on itself ${flips} times on the way in — the jitter at the jamb`);
   assert.ok(westMost > 298.5, `${what}: the body was routed round the house — it went west to col ${westMost.toFixed(2)} (the door is at col 300)`);
   assert.ok(inside >= 0 && inside * 33 <= 2500, `${what}: not through the door within 2.5 s (first inside at ${inside < 0 ? "never" : inside * 33 + " ms"}; rest at ${end.col.toFixed(2)},${end.row.toFixed(2)})`);
 }
@@ -115,6 +132,24 @@ test("a door four cells along a short wall loses to the wall's end one cell away
   const past = path.findIndex((p) => p.row < 197);
   assert.ok(eastMost < 299.5, `the body went for the door (east to col ${eastMost.toFixed(2)}) instead of round the wall's end`);
   assert.ok(past >= 0 && past * 33 <= 2500, `not past the wall within 2.5 s (first past at ${past < 0 ? "never" : past * 33 + " ms"})`);
+});
+
+test("the_game's house from 298.6,199.6: no heading jitter at the jamb (skipped without the world tree)", (t) => {
+  // The spot the harness scan found (2026-09-17): the slide to the door ran
+  // nine ticks, the next window read it as no progress, the door-finder was
+  // quiet (forward open) and a ROUTE through the doorway was committed — its
+  // follower alternated right / up-right every tick toward a waypoint between
+  // the two. His words: "jitter and change direction back and forth super fast".
+  const file = join(process.cwd(), "..", "..", "maps2", "worlds3", "the_game", "world.json");
+  if (!existsSync(file)) return t.skip("no world tree in this checkout");
+  const world = parseWorld(JSON.parse(readFileSync(file, "utf8")));
+  const grid = buildTerrainGrid(world!.width, world!.height, world!.rows, world!.props, world!.decks);
+  stampSceneryCollision(grid, world!.scenery ?? [], sceneryBbox(), sceneryHitboxOverrides(), ISO_GEOMETRY_MAPS3);
+  const path = hold(grid, 298.6, 199.6, INTO_THE_WALL, 120);
+  let changes = 0;
+  for (let i = 1; i < path.length; i++) if (path[i].ax !== path[i - 1].ax || path[i].ay !== path[i - 1].ay) changes++;
+  assert.ok(changes <= 4, `the walked heading changed ${changes} times in 4 s on the way through the door (the jitter at the jamb)`);
+  assertThroughTheDoor(path, "the_game from 298.6,199.6");
 });
 
 test("the_game's house at 299.3,199.1 (skipped without the world tree)", (t) => {

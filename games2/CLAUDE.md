@@ -168,7 +168,7 @@ push, no PRs unless asked.
 
 **Movement** (`docs/movement.md`)
 - Server-authoritative, elevation-governed (`WALK_CLIMB`, `JUMP_CLIMB`); the
-  shared math lives in `shared/` once; the client predicts the same grid.
+  shared math lives in `shared/` once; the client predicts that grid.
 - Never weaken the collision probes to fix a wedge: `unstickFromSolids` is the
   escape, and the rescue never climbs — and it keeps `WALL_STANDOFF` (=
   PLAYER_RADIUS) off any face the body cannot jump onto (lateral probes read
@@ -181,24 +181,24 @@ push, no PRs unless asked.
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge, and the
   walker never STEERS off a step it cannot undo (a drop of more than a jump
   below the route's own next level is not open); a fall bills on IMPACT
-  (`fallPend`), drawn on the client's predicted frame (`fallhurt.ts`), and the
+  (`fallPend`), drawn on the client's predicted frame (`fallhurt.ts`); the
   slow FADES with the number.
-- Water is the player's sanctuary (no monster enters or is hit there), as
-  FLAT underfoot as in the art (`swimlevel.test.ts`).
+- Water is the player's sanctuary (no monster enters or hits there), as FLAT
+  underfoot as in the art (`swimlevel.test.ts`).
 - The speed dial and the acceleration ramp ride PER INPUT (`InputMessage.sm`,
   `.ac`) and the SERVER clamps them; 1.1x and 0.17 s to full speed ARE HIS
   (`playerspeed.ts`, `accel.ts`).
 - The stick "almost" snaps: `leanHeading` leans between the octants' run
   headings by his dial (0 snap, 1 continuous; 0.85 IS HIS); the grid-axis
-  lock locks EXACT diagonals only; the bearing is games-ui's stick's
-  (`stickdir.ts`).
+  lock locks EXACT diagonals only; the bearing is games-ui's (`stickdir.ts`).
 - A TERRAIN wall gets the honest walk (`wallcorner.test.ts`): within his
   "Wall assist angle" dial (10°) the run is straightened along it; past it the
   body slides at its screen speed times the WORLD cosine to the wall
   (`slideShare`, 71% for a cardinal key; the thumb's windows only,
   `InputMessage.route`) or stands, auto-jump hops a jumpable one; a door
   SIDEWAYS or ahead within 4 cells is a route: the shorter walk wins, never
-  behind (`doorfirst.test.ts`). The sprite faces its walk.
+  behind; a chosen door sticks (`doorfirst.test.ts`). The sprite faces its
+  walk.
 - Scenery, props and open ground walk the heading AS IT IS; the tick's glide
   slides them (a footprint is a PROP whatever the nav layer says); no hold,
   detour or slide rule: the ESCAPE is the nav.
@@ -247,7 +247,7 @@ netcode; these are the invariants)
   RUN-AWAY LINE is `ESCAPE_RADIUS_WU` 390 past the zone, the give-up IS the
   rejected step.
 - Monster stats come from live tuning (a content check, not truthiness);
-  nothing may block the revive press, and the ask is retried.
+  nothing blocks the revive press, and the ask is retried.
 - Backpack ORDER is server state: a drag sends `invmove` — a SWAP of two filled
   slots, never an insert; the item id names the entry, not the slot.
 

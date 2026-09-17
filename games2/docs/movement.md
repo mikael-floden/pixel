@@ -235,6 +235,26 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   `doorfirst.test.ts` — his house synthetic and the_game's own, from both
   sides of the door (through it inside 2.5 s, never west of the door), and
   the corner case where round the house is the shorter walk.
+  **AND THE DOOR STICKS, AND A FREE ASK AT THE DOORWAY PLANS NOTHING**
+  (maintainer 2026-09-17, on the first cut: "when the player is at the
+  corner just next to the entrance the player start to jitter and change
+  direction back and forth super fast"): the slide to the door is sideways,
+  so the next window read it as no progress, the door-finder had gone quiet
+  (forward was open by then) and a ROUTE through the doorway was committed —
+  whose follower alternates two 8-way headings toward a waypoint that sits
+  between them (measured from 298.6,199.6: 11 heading changes in 4 s). Two
+  rules: a door chosen over a route is kept for `DOOR_COMMIT_MS` (2.5 s, a
+  door four cells along the wall) — the windows steer with the door-finder
+  while it has a door and plan nothing; and within `DOOR_SEEN_MS` (0.4 s) of
+  a door-finder steer, a window that ends with the ask making HEADWAY
+  (`askHeadway`: the tick's own walk — the leaned heading, the screen slide —
+  carries a third of a walk along the ask) plans nothing either: the body
+  is at the doorway, the raw heading walks in. The probe walks the tick's
+  own walk because the pure key's world slide called a body wedged on a
+  door post "free" (wallcorner.test.ts, the lean onto the post) and the
+  escape that gets it out never came. A new ask drops both. Gate:
+  `doorfirst.test.ts` — from the harness's worst spot the walked heading
+  changes at most four times on the way in.
   **THE GOAL IS GETTING ON, NOT THE POINT AHEAD** (maintainer 2026-09-13,
   285.6,208.6 held down into a level-4 plateau's notch: "It's extremely
   clear I can continue downwards if I navigate a bit backwards and left ...

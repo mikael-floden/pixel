@@ -4187,6 +4187,38 @@ export function bodyStalled(
 
 /** The side the body is currently sliding along, so a slide does not alternate
  *  between two equally good ways round. Caller-owned; `slideAlong` is pure. */
+/** Does the ask itself make HEADWAY right now — the raw heading's probe step
+ *  carried at least a third of a walk ALONG the ask? bodyStalled asks whether
+ *  the body moves at all; a slide along a wall moves and makes no headway,
+ *  and that slide must still escape. A body that has just slid sideways to a
+ *  doorway makes headway again, and must not be given a route. */
+export function askHeadway(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  ax: number,
+  ay: number,
+  elev?: number,
+  heading?: { ax: number; ay: number },
+): boolean {
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const dt = 0.08;
+  const ge = elev === undefined ? undefined : () => elev;
+  // THE WALK THE TICK TAKES: the leaned heading, the screen slide — a body
+  // wedged on a door post slides a hair off it in the world frame and not at
+  // all on the thumb's window, and the pure key's world slide called that
+  // "headway" (wallcorner.test.ts, the lean onto the post).
+  const h = heading ?? { ax, ay };
+  const r = stepMovement(
+    x, y, h.ax, h.ay, false, dt,
+    ge ? makeBlockedElev(grid, walk, ge) : makeBlocked(grid, walk), 1, true, worldWidthOf(grid), worldHeightOf(grid),
+    makeSideBlocked(grid, walk, ge), { screenSlide: true },
+  );
+  const w = screenToWorldVector(ax, ay);
+  const l = Math.hypot(w.x, w.y) || 1;
+  return ((r.x - x) * w.x + (r.y - y) * w.y) / l >= WALK_SPEED * dt * 0.35;
+}
+
 export interface SlideMemo {
   ax: number;
   ay: number;
@@ -4202,6 +4234,13 @@ export interface SlideMemo {
    *  window opened, when that was, and how long the open window is (his "Nav
    *  help after" dial, doubling on each fruitless escape attempt). */
   askAx?: number;
+  /** THE DOOR STICKS: once rule 0 has chosen the door over a route, until
+   *  this time the windows keep steering to it and plan nothing (see
+   *  walkHeading). 0 = no commitment. */
+  doorMs?: number;
+  /** When rule 1's door-finder last steered toward a door: a window that
+   *  ends with the ask free right after that is a body at the doorway. */
+  doorSeenMs?: number;
   askAy?: number;
   progRef?: number;
   progAt?: number;
@@ -4528,6 +4567,8 @@ export function walkHeading(
       hold.progRef = p;
       hold.progAt = opts.nowMs;
       hold.escapeWait = stuckMs;
+      hold.doorMs = 0;
+      hold.doorSeenMs = 0;
     }
     if (trip && trip.committed) {
       /* A ROUTE THE BODY MAKES NO PROGRESS ON IS DROPPED — by the follower's
@@ -4562,7 +4603,42 @@ export function walkHeading(
           hold.progRef = p;
           hold.progAt = opts.nowMs;
           hold.escapeWait = Math.min(wait * 2, Math.max(stuckMs, ESCAPE_BACKOFF_MAX_MS));
-          if (!opts.noDetour) {
+          /* NO PROGRESS IS NOT THE SAME AS STUCK. A body that has just slid
+           * sideways to a doorway made no headway along the ask over the
+           * window, but the ask now walks freely — planning a route here is
+           * what put a ROUTE through the doorway under a body that could
+           * simply walk in, and the follower's two-heading dither at the
+           * jamb was his "jitter" (2026-09-17). A window that ends with the
+           * ask free plans nothing: the raw heading gets its chance, and the
+           * next window measures that. */
+          // (0 is "never": the memo starts at 0 and a fresh hold must not read
+          // the first 400 ms of any run as "just steered to a door".)
+          const seenAgo = hold.doorSeenMs ? opts.nowMs - hold.doorSeenMs : Infinity;
+          const free = seenAgo <= DOOR_SEEN_MS && askHeadway(grid, x, y, ax, ay, opts.fromElev, opts.heading);
+          if (free) {
+            hold.escapeWait = stuckMs;
+          } else if (!opts.noDetour && (hold.doorMs ?? 0) > opts.nowMs) {
+            // (Falls through to the planner below when the door-finder has no
+            // door any more — a body drifted onto the post is the escape's.)
+            /* THE DOOR STICKS (maintainer 2026-09-17, e7d1b7a13c: "when the
+             * player is at the corner just next to the entrance the player
+             * start to jitter and change direction back and forth super
+             * fast"): the slide to the door is sideways, so the next window
+             * read it as no progress, the door-finder had gone quiet (forward
+             * was open by then) and a ROUTE through the doorway was committed
+             * — whose follower alternates two 8-way headings toward a waypoint
+             * that sits between them. A door once chosen is kept for
+             * DOOR_COMMIT_MS: the door-finder steers while it has a door, the
+             * raw heading walks in once forward is open, and nothing is
+             * planned. */
+            const door = wall && !wall.prop ? steerAssist(grid, x, y, ax, ay, opts.fromElev) : null;
+            if (door) {
+              hold.escapeWait = stuckMs;
+              return { ax: door.ax, ay: door.ay, trip: null, deflected: true };
+            }
+            hold.doorMs = 0;
+          }
+          if (!opts.noDetour && !free) {
             // The side the finger leans toward is tried first: the fan's
             // sense is the cross product's.
             const lh = opts.heading ?? { ax, ay };
@@ -4583,6 +4659,7 @@ export function walkHeading(
               hold.progRef = p;
               hold.progAt = opts.nowMs;
               hold.escapeWait = stuckMs;
+              hold.doorMs = opts.nowMs + DOOR_COMMIT_MS;
               return { ax: door.ax, ay: door.ay, trip: null, deflected: true };
             }
             /* ONE TILE BACK, NO MORE. The escape is the only rule that may move
@@ -4632,7 +4709,10 @@ export function walkHeading(
     }
     if (bodyStalled(grid, x, y, ax, ay, opts.fromElev)) {
       const a = steerAssist(grid, x, y, ax, ay, opts.fromElev);
-      if (a) return { ax: a.ax, ay: a.ay, trip: null, deflected: true };
+      if (a) {
+        if (a.doorDist !== undefined) hold.doorSeenMs = opts.nowMs;
+        return { ax: a.ax, ay: a.ay, trip: null, deflected: true };
+      }
     }
   }
   /* 2. A footprint, a prop, or nothing at all: the heading as it is. The
@@ -4705,6 +4785,12 @@ function arrives(trip: AutopilotTrip, gx: number, gy: number): boolean {
  *  is none, the way past a plateau's notch is seven. Two: the cell the body
  *  is in and the one past it. */
 export const ESCAPE_MIN_PROGRESS_CELLS = 2;
+/** How long a door, once chosen over a route, keeps the escape from planning:
+ *  a door STEER_DOOR_RANGE cells along the wall is ~1.7 s of sideways walk. */
+export const DOOR_COMMIT_MS = 2500;
+/** How recently the door-finder must have steered for a window that ends with
+ *  the ask FREE to plan nothing (the body is at the doorway: walk in). */
+export const DOOR_SEEN_MS = 400;
 
 /** How far ALONG THE ASK a route's end lies from the body, in cells. */
 export function routeProgress(trip: AutopilotTrip, x: number, y: number, ux: number, uy: number): number {
