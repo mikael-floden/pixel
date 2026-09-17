@@ -8550,6 +8550,10 @@ export class WorldScene extends Phaser.Scene {
           dir: me.dispDir,
           grabFrame: (me.dispDir && def?.grab?.[me.dispDir]?.f) ?? null,
           approx: (me.dispDir && def?.grab?.[me.dispDir]?.approx) ?? false,
+          // WHICH measurement this facing's frame came from: undefined = the
+          // item the art draws vanishing (which also yields the offset),
+          // "crouch" = the gesture's deepest crouch (frame only).
+          from: (me.dispDir && def?.grab?.[me.dispDir]?.from) ?? null,
           spot: spot ? { x: +spot.x.toFixed(1), y: +spot.y.toFixed(1), dir: spot.dir } : null,
           // How far the body is from the aligned spot (wu) — 0 = the hand
           // lands exactly on the item.
@@ -11063,6 +11067,13 @@ export class WorldScene extends Phaser.Scene {
     if (!fw || !fh) return null;
     let best: { x: number; y: number; dir: string; d: number } | null = null;
     for (const [dir, g] of Object.entries(grab)) {
+      // ONLY A MEASURED OFFSET STEERS THE WALK. Every facing carries a frame
+      // now, most of them from the gesture's crouch, and a crouch says WHEN the
+      // hand closes and nothing about WHERE the item has to lie. Reading a
+      // missing x/y here would put NaN in the first candidate and every later
+      // comparison against it is false, so the whole approach would collapse to
+      // that one facing.
+      if (typeof g.x !== "number" || typeof g.y !== "number") continue;
       // Frame fractions → screen px → world units (the same inverse iso the
       // gait speed measurement uses: Δsx = Δ(x−y)·dx/CELL, Δsy = Δ(x+y)·dy/CELL).
       const sx = g.x * fw;

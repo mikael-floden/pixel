@@ -38,13 +38,17 @@ export interface CharacterDef {
   // speed (WALK_SPEED/RUN_SPEED). One rate per gait — every direction keeps
   // the same leg cadence. Runtime speed variation scales anims.timeScale.
   gaitFps?: Record<string, number>;
-  /** THE GRAB, per direction (build-manifest grabOf): `x`/`y` = where the
-   * pickup gesture's hand meets the ground RELATIVE TO THE FOOT ANCHOR, in
-   * frame fractions — measured from the item the art itself draws lying on
-   * the ground — and `f` = the frame that item vanishes, i.e. the hand
-   * closing on it. `approx` marks the two axis views (south/north) the art
-   * draws merged into the body, interpolated from their neighbours. */
-  grab?: Record<string, { f: number; x: number; y: number; approx?: boolean }>;
+  /** THE GRAB, per direction (build-manifest grabOf). `f` = the frame the hand
+   * CLOSES on the item, and every facing has one. `x`/`y` = where the gesture's
+   * hand meets the ground RELATIVE TO THE FOOT ANCHOR, in frame fractions, and
+   * only some facings do: the offset is measured from the item the art itself
+   * draws lying on the ground, which it draws detached on the north diagonals
+   * alone. `approx` marks an axis view (south/north) interpolated from its
+   * neighbours; `from: "crouch"` marks a frame taken from the gesture's deepest
+   * crouch instead of the drawn item — the answer for the other five facings,
+   * and the ONLY answer for a character whose art draws no loose item at all.
+   * A `from: "crouch"` entry carries NO offset: it says when, never where. */
+  grab?: Record<string, { f: number; x?: number; y?: number; approx?: boolean; from?: string }>;
 }
 
 export interface Manifest {

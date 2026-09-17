@@ -323,7 +323,58 @@ function grabOf(animsDir, src, perDir, anchors) {
   };
   lerpAxis("south", "south-west", "south-east");
   lerpAxis("north", "north-west", "north-east");
+  /* EVERY FACING GETS A FRAME, because the runtime gives up without one.
+   *
+   * The drawn-item method above is the authority where it works, and it works
+   * on exactly two of the eight facings: the art draws a DETACHED item only on
+   * the north diagonals. Everywhere else `grabFrameFor` returned null and
+   * `removeDrop` destroyed the sprite the instant the server validated the
+   * pickup — so the deferral never engaged facing the camera, and never at all
+   * for a character shipping no measurement (default_girl shipped none, for any
+   * facing). The maintainer, 2026-09-17: "the item is picked up the first 'pick
+   * up frame' and not the frame the players character actually touches the
+   * ground".
+   *
+   * THE CROWN ROW answers it for all eight. A pickup is one crouch, so the
+   * topmost opaque row rises to a single peak and falls back, and the peak is
+   * the bottom of the gesture — measured, both characters, every facing. The
+   * frame the hand CLOSES is the one after it, which is the same convention the
+   * drawn item gives (`last + 1`), and the two agree exactly where both can be
+   * measured: boy north-west and north-east peak at 5 and the art says f 6.
+   * FIRST of a tie, deliberately: those two peak across frames 5 AND 6 (crown
+   * 20, 20) and the art vanishes the item at 6, so the run's first frame + 1 is
+   * the answer, not its last.
+   *
+   * NO OFFSET comes out of this. `x`/`y` say where the item must LIE for the
+   * gesture to land on it, which only the drawn item can answer; a crouch says
+   * when, not where. grabStandSpot skips an entry without one rather than
+   * steering the walk by a guess. */
+  for (const [d, n] of Object.entries(perDir)) {
+    if (out[d] || !n) continue;
+    let deep = -1;
+    let deepY = -1;
+    for (let i = 0; i < n; i++) {
+      const p = findImg(join(animsDir, src, d), String(i));
+      const png = p && imgAlpha(p);
+      if (!png) continue;
+      const y = crownRow(png);
+      if (y > deepY) {
+        deepY = y;
+        deep = i;
+      }
+    }
+    // A peak on the last frame is not a grab: there is no frame after it for
+    // the hand to close on, and the clip ending already retires the drop.
+    if (deep >= 0 && deep + 1 < n) out[d] = { f: deep + 1, from: "crouch" };
+  }
   return Object.keys(out).length ? out : null;
+}
+
+/** The topmost opaque row of a frame — the crown of the head. See grabOf. */
+function crownRow(png) {
+  const { w, h, opaque } = png;
+  for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (opaque(x, y)) return y;
+  return -1;
 }
 
 /** The lowest DETACHED silhouette component of a frame — the item lying on the

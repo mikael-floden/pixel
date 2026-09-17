@@ -543,14 +543,33 @@ memory and fewer frames spent uploading; the raw strips stay for the wiki.
   die state; `graveCrosses()` probe + verify-combat assert it.
 - **THE GRAB LANDS ON THE ITEM** (maintainer: the hand must come down on the
   exact item, which vanishes "the exact frame the hand is closest to the
-  ground"). The ART answers both: the pickup clip draws a little item on the
-  ground and it disappears on the grab frame. `build-manifest.mjs grabOf`
-  measures per direction `grab[dir] = {f, x, y}` (offset from the FOOT
-  ANCHOR, frame fractions + vanish frame). Candidate blobs are VALIDATED
-  (at/below the foot line, on the facing side) — a late frame splits off the
-  hair, and "lowest detached blob" put north's target 24px out. SOUTH/NORTH
-  draw the item merged into the silhouette, so both are interpolated from
-  neighbours and flagged `approx` — never invented. A grabbing player TURNS
+  ground"). The ART answers WHERE, and where it can, WHEN: the pickup clip
+  draws a little item on the ground and it disappears on the grab frame.
+  `build-manifest.mjs grabOf` measures per direction `grab[dir] = {f, x, y}`
+  (offset from the FOOT ANCHOR, frame fractions + vanish frame). Candidate
+  blobs are VALIDATED (at/below the foot line, on the facing side) — a late
+  frame splits off the hair, and "lowest detached blob" put north's target
+  24px out.
+  **BUT THE ART ONLY DRAWS A DETACHED ITEM ON THE NORTH DIAGONALS**, and a
+  facing with no frame is a facing the runtime cannot defer on at all:
+  `grabFrameFor` returns null and `removeDrop` destroys the sprite the instant
+  the server validates. Shipped that way for a year — five of eight facings on
+  default_boy, and ALL EIGHT on default_girl, whose art draws no loose item
+  anywhere. Facing the camera, the common case, the pickup always snapped
+  (maintainer 2026-09-17: "the item is picked up the first 'pick up frame' and
+  not the frame the players character actually touches the ground").
+  So `f` falls back to **THE DEEPEST CROUCH + 1** (`crownRow`: the topmost
+  opaque row, which rises to one peak and falls back; FIRST of a tie, because
+  the gesture holds its lowest pose across two frames and the art vanishes the
+  item on the second). It agrees with the drawn item exactly wherever both can
+  be read — boy north-west and north-east peak at 5, the art says f 6 — and
+  diagonals and cardinals genuinely differ (5 vs 6), so a constant would be
+  wrong. A crouch entry is flagged `from: "crouch"` and carries **NO offset**:
+  a crouch says WHEN, never WHERE, and `grabStandSpot` skips an entry without
+  one rather than steering the walk by a guess (reading a missing x/y put NaN
+  in the first candidate, which every later comparison then lost to).
+  SOUTH/NORTH's `approx` interpolation still applies when both their
+  neighbours carry a real offset. A grabbing player TURNS
   TO the item: predicted locally (the pending-pickup facing) and synced for
   everyone (the server's pickup handler sets `player.dir` toward the drop).
   Runtime: `grabStandSpot`
@@ -565,8 +584,14 @@ memory and fewer frames spent uploading; the raw strips stay for the wiki.
   listener FIRST (requiring a live pickup clip made the deferral never
   engage); and character frames are PER-FRAME TEXTURES keyed
   `f:<uid>:<state>:<dir>:<n>` — take the frame index from the texture key
-  (`frame.name` pinned every read at 0). Gate: `scripts/verify-pickup.mjs`;
-  probe `__ml.grabInfo()`.
+  (`frame.name` pinned every read at 0). Gates: `server/test/grabframe.test.ts`
+  — every facing of every character has a frame inside its clip, a crouch
+  entry never carries an offset, and the crouch rule REPRODUCES the drawn
+  item's answer wherever the art can be read (the only evidence the substitute
+  measures the same moment); `scripts/verify-pickup.mjs` refuses to certify a
+  deferral it never armed (`hasGrabData` alone was true throughout the year the
+  five facings were missing). Probe `__ml.grabInfo()` — `dir`, `grabFrame`,
+  `from`.
 - Item sprites are uniform `items/<id>/sprite.webp` 48×48 (verified across
   the full set) — lazy-loaded per KIND, no manifest fetch. TAP an item to
   fetch it, or the PICKUP button / F key (nearest within 5 cells; the gamepad
