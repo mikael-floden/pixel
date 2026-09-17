@@ -267,13 +267,13 @@ netcode; these are the invariants)
   core; the switches are pushed on the shader being BUILT.
 - The light passes and the glow field render at half resolution by default
   (his eye first sees 25%); an overlay's RT ratio survives update().
-- Solid objects are art, not walls (no face band); a cave mouth is not a face.
-- The wall wash is per PIXEL, wrap = his dial (0.7), front gate fades over
-  2wu (a torch pressed to a wall must not dim it); the LOS march never blends
-  a wall's own height into its front skirt nor the skirt the LIGHT stands in;
-  a skirt sample counts only beside a HARD hit (ground column; a lid is air);
-  the trunk skip spares the piece only; every surface marches, above the
-  light too (no shadow ends at the light's height). Gates:
+- Solid objects are art, not walls (no face band); a cave mouth is no face.
+- The wall wash is per PIXEL, wrap his dial (0.7), front gate fades over 2wu
+  (a pressed torch must not dim); the LOS march never blends a wall's own
+  height into its front skirt nor the skirt the LIGHT stands in; a
+  skirt sample counts only beside a HARD hit (a lid counts: its soft wedge is
+  his wall shadow); the trunk skip spares share cells only; every surface
+  marches, above a light too (no shadow ends at a light's height). Gates:
   `verify-wallwash.mjs`, `verify-wallfoot.mjs`, `verify-shadowline.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed).
