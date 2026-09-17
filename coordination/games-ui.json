@@ -1,8 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-17T17:49:07+00:00",
+  "updated_at": "2026-09-17T18:20:19+00:00",
   "health": "running",
-  "current": "idle \u2014 last shipped 0d3561dbc0: backpack hold-to-select (250ms still \u2192 selected \u2192 same finger drags); claim released. Before that d51b3c759d drag-to-swap with live preview.",
+  "current": "CLAIM: the backpack hold-to-select drops to 125ms (maintainer 2026-09-17: '0.25s is too much. Lower it to 0.125 (half)'). files: games2/client/src/hud.ts, games2/scripts/verify-bagswap.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
