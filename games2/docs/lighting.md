@@ -371,18 +371,72 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   each segment is hard-tested too: samples sit dist/13 apart, 1.2 cells
   under a radius-16 hearth, and a one-cell house wall can fall between two
   (the bilinear reads caught it from either side; exact reads alone let the
-  light through). THE LID STAYS IN THE HARD TEST: under a cave lid every
-  floor sample is a hard hit (the nearest read is max(ground, deck)) and the
-  wall's bilinear skirt then shades the cave walls in long soft wedges —
-  that IS the wall shadow he judged right (2026-09-17, "the nice shadow").
-  Rejected: a two-span hard test (a slab over the light as air, the ground
-  column as the blocker) — geometrically purer, and it lit every cave wall
-  flat; shipped for an hour and reverted on his fourth mark. Cost: two
-  nearest fetches per sample on an unshadowed ray
-  where two bilinear ones were; up to four on a shadowed sample. `skirtOcc`
-  holds the soft read, the deck two-span rule and the scenery hardness; the
-  CPU twin `lightAt` mirrors the whole state machine. The sun march is
-  untouched (its cliff look is locked). Gate: `scripts/verify-wallfoot.mjs`
+  light through). THE HARD TEST TAKES THE TWO-SPAN RULE (`hardHeightAt`,
+  twin `hardAt`): a slab with the light under it is air, the GROUND column
+  (terrain + scenery share) is the hard blocker. The nearest read alone is
+  max(ground, deck), so under a cave lid every floor sample was a hard hit,
+  the skirt law protected nothing indoors, and the neighbour walls' skirts
+  shaded every ray that ran beside them: the torch pool cut into a circle
+  beside a wall and a wall in full view of the torch wore the next wall's
+  skirt as a triangle (maintainer 2026-09-17, 203.4,220.9, marked on the
+  calibration render; measured on his screen: the pool at 56% of its start
+  one sample out, a 1.75 max/min across a face two cells from the torch).
+  AND A FIRE IN A PIECE IS AN AREA SOURCE. The march's two EDGE rays (offset
+  ±`SOURCE_R_SHARE`·t across the centre ray, 1 cell at the light's end,
+  ground column only, `edgeShare`) find the columns that clear the centre by
+  a hair — the ice cave's corner column at 207,204 against the brazier at
+  207.8,205.8, whose centre passes 0.18 cells clear of it, so the pure
+  two-span march lit the strip beside it flat (his fourth mark, "the nice
+  shadow ... you removed"). A sample whose edge ray enters such a column
+  takes the skirt read by a BLOCKED SHARE: 1 within half the reach of the
+  column's box, fading to 0 at the reach, the distance being the exact box
+  entry along the perpendicular (`boxEntry`, no reads) — the strip beside
+  the column fully dark to ~0.6 cells and lit within a cell, the look he
+  approved twice ("we nailed that shadow"). AND A COLUMN COUNTS ONLY IF IT
+  REALLY HIDES PART OF THE FIRE: the fire's physical disc (`SOURCE_R_PHYS`
+  0.5, AT THE PIECE'S CELL CENTRE — the bowl fills its cell; the anchor is
+  its foot at the cell's edge) against the column's four corners projected
+  from the pixel (`srcBlocked`, a smooth gate ×6). The reach is the look;
+  the disc is the truth — the edge rays at mid-run found the rubble column
+  a cell SOUTH of the floor's ray to the brazier, which hides none of the
+  fire from there, and drew a dark strip across the lit floor (his "chaos
+  looking floor shadows"); with the disc at the anchor the corner column hid
+  9% of it from the floor beside its face and that strip came out ragged
+  under a full one on the wall ("still broken"). The near-field samples run
+  the edge rays too (a floor pixel beside the column is under two cells from
+  the fire — every sample of its ray sat in a near field and the strip ended
+  at the floor line); the disc gate is what keeps a wall the pixel stands
+  against — behind it, hiding nothing — from shading its own foot. The
+  light's own trunk and the pixel's own cell and share are no columns for the
+  edge rays. THE EDGE SHADE IS COMPOUNDED ALONG A LONG RAY AND TAKEN ONCE ON
+  A SHORT ONE (`EDGE_ONCE_NEAR` 1.2 .. `EDGE_ONCE_FAR` 2.2 cells from the
+  light, blended): per-sample factors multiply into the deep strip on a wall
+  two to four cells from the fire; a floor pixel beside the column's foot is
+  barely over a cell from it, the near fields leave it one or two samples,
+  and their count showed as bands. AND A FIRE RAISED IN A BOWL SHADOWS ITS
+  OWN FOOT (`BOWL_FOOT_SHADE` 0.8 within `BOWL_FOOT_R` 0.75 cells of the
+  light's cell centre, ground only, scaled by the flame's lift over its
+  ground: a brazier's 1.5 levels fully, a campfire's 0.5 not at all). What
+  stays lit at the column's front corner is floor the fire really reaches
+  (twin: occlusion 0.98..1.0 at 208.2..208.5, 205.05..205.4) — darkening it
+  is a taste knob (a wider bowl foot or a wider corner AO), not a rule, and
+  is left to him. Rejected, each measured on his screen: a yes/no edge test (one
+  stripe per march sample — his "vertical glitches"); the share read off the
+  bilinear ground ramp (a second wall in the same read made it jump —
+  lobes); one analytic disc share per pixel instead of the per-sample share
+  (hard polygons wherever a sample first landed in a column, and a lighter,
+  narrower strip — "you destroyed the wall"); the lid kept in the hard test
+  (the approved cave look for an hour, and the torch bugs above). The wall
+  beyond the strip is as dark as the DISTANCE leaves it (identical in every
+  build — never occlusion).
+  Cost: two nearest fetches per sample on an unshadowed ray, plus two edge
+  reads per sample under a share light (the disc test is ALU, on hits only).
+  `skirtOcc` holds the soft read, the deck two-span rule and the scenery
+  hardness; the CPU twin `lightAt` mirrors the whole state machine. The sun
+  march is untouched (its cliff look is locked). Gate: `scripts/verify-shadowline.mjs`
+  arms C and D (his screen: the strip beside the column dark, the torch pool
+  ≥ 75% of its start along the wall, a face in full view ≤ 1.3 max/min), and
+  `scripts/verify-wallfoot.mjs`
   — the run verify-wallwash finds, the probe 0.4 cells out at its start:
   the front row's floor against the row one out (≥ 0.8 per cell — the front
   cell is the CLOSER one; skirt-shadowed it read ~0.3), the foot's
@@ -567,10 +621,10 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   shadow (maintainer 2026-09-17, on the shipped shadow-line fix: "the red
   area being fully lit up is the bug"). A sample inside the radius is spared
   only when its own cell carries a share (`sceneryShareAt`, twin `shareAt`):
-  not stone, and not bare floor either — under a lid a floor sample's skirt
-  darkening is part of the wall shadow, and sparing it cut a bright notch
-  beside the corner. Gate: `verify-shadowline.mjs` arm C — the corner dark,
-  the first half cell from it never darker, the soft run beyond it kept.
+  not the stone beside it. The strip's shadow itself is the fire's penumbra
+  (the area-source edge rays above). Gate: `verify-shadowline.mjs` arm C —
+  the corner dark, the first half cell from it never darker, the strip
+  within 1.5 cells under its peak.
   By construction — the cave
   braziers' fires sit above their 1-level share (own ring identical on/off);
   town emitters after: the one real town emitter, a bonfire at 443.5,364.5 with no share in its own cell, reads its pool 0.92x with shadows on - a uniform 8% from its OWN multi-cell footprint, outside the own-cell skip; a per-light exclusion radius needs a uniform slot (open). Trunk position is cell-quantised (one texel per cell): up

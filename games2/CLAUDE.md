@@ -271,9 +271,10 @@ netcode; these are the invariants)
 - The wall wash is per PIXEL, wrap his dial (0.7), front gate fades over 2wu
   (a pressed torch must not dim); the LOS march never blends a wall's own
   height into its front skirt nor the skirt the LIGHT stands in; a
-  skirt sample counts only beside a HARD hit (a lid counts: its soft wedge is
-  his wall shadow); the trunk skip spares share cells only; every surface
-  marches, above a light too (no shadow ends at a light's height). Gates:
+  skirt sample counts only beside a HARD hit, two-span (a lid over the light
+  is air); a fire in a piece is an AREA source (edge rays); the trunk
+  skip spares share cells; every surface marches, above a light too.
+  Gates:
   `verify-wallwash.mjs`, `verify-wallfoot.mjs`, `verify-shadowline.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed).

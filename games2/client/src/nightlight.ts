@@ -196,6 +196,42 @@ const SHADOW_MARCH_MIN_LIGHT = 0.012;
  *  light-side near field — a torch held beside a column stands in the column's
  *  bilinear skirt; see the march in FRAG and its twin in lightAt). */
 const LIGHT_NEAR_R2 = 0.25;
+// A FIRE IN A PIECE IS AN AREA SOURCE: the reach (cells) of its edge rays
+// across the centre ray at the light's end. The march's hard test runs the
+// centre ray AND both edge rays (ground column only), so a column that clears
+// the centre by a hair still throws its shadow — the ice cave's corner column
+// at 207,204 against the brazier at 207.8,205.8, whose centre passes 0.18
+// cells clear of it. A column within half the reach shadows the sample
+// fully, the rest fades — measured against the look he approved (2026-09-17,
+// 208.4,205.1): the strip beside the column fully dark out to ~0.7 cells,
+// lit at 0.9. A torch (no share) is a point.
+const SOURCE_R_SHARE = 1.0;
+// ...AND ONLY A COLUMN THAT REALLY HIDES PART OF THE FIRE COUNTS. The reach
+// above is the LOOK (his approved strip); whether a column found by an edge
+// ray shades at all is decided by the fire's PHYSICAL disc — this radius at
+// the light, the column's four corners projected onto it (`srcBlocked`). An
+// edge ray at mid-run reaches half a cell out and found the rubble column
+// one cell SOUTH of the floor's ray to the brazier, which hides none of the
+// fire from there: a dark strip across the lit floor (his "chaos looking
+// floor shadows"). The share gates the sample's blocked share smoothly
+// (× clamp(6·share)), so the strip beside the corner column keeps its look
+// (that column hides ~70% of the disc) and the rubble shades nothing.
+const SOURCE_R_PHYS = 0.5;
+// The bowl's own foot shadow (see the march): its depth at the cell centre
+// and its reach (cells) from the light's cell centre.
+const BOWL_FOOT_SHADE = 0.8;
+const BOWL_FOOT_R = 0.75;
+// The edge rays' shade: the darkest single factor up to EDGE_ONCE_NEAR cells
+// from the light, the compounded product from EDGE_ONCE_FAR (see the march).
+const EDGE_ONCE_NEAR = 1.2;
+const EDGE_ONCE_FAR = 2.2;
+// ...AND THE DISC SITS AT THE PIECE'S CELL CENTRE (`lC`), not at the light's
+// anchor: a brazier's anchor is its foot at the cell's edge, 0.18 cells from
+// the corner column's face, where the column hides 9% of a disc there and
+// the strip beside the face came out ragged on the floor and full on the
+// wall above it (his "still broken"). The bowl fills its cell; from its
+// centre the column hides half the fire for the whole strip, wall and floor
+// alike, and the rubble a cell off the ray still hides none.
 /** The glow field's resolution divisor — see where glowRT is built. */
 const GLOW_FIELD_DIV = 2;
 /** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
@@ -424,6 +460,81 @@ float sceneryNearAt(vec2 cr) {
 float heightAtHard(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   return texture2D(uHeightL, (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / uHScale;
+}
+// THE HARD TEST TAKES THE TWO-SPAN RULE. heightAtHard is the occlusion
+// height, max(ground, deck): under a cave lid EVERY floor sample read as a
+// hard hit, the skirt law protected nothing indoors, and the walls' bilinear
+// skirts shaded every ray that ran beside them — the torch pool cut into a
+// circle beside a wall and a wall in full view of the torch wore the
+// neighbouring wall's skirt as a triangle (maintainer 2026-09-17,
+// 203.4,220.9). A slab with the light UNDER it is open air; the hard blocker
+// is the GROUND column (groundAt: terrain + scenery share, so a barrel under
+// a roof still blocks). Twin: hardAt in lightAt.
+float hardHeightAt(vec2 cr, float lz) {
+  float h = heightAtHard(cr);
+  float g = groundAt(cr);
+  return (h > g + 0.01 && lz <= h) ? g : h;
+}
+// Distance along the unit direction dir from p (outside) to the cell box c
+// (its lower corner) — the slab test; 0 when p already touches the box.
+float boxEntry(vec2 p, vec2 dir, vec2 c) {
+  vec2 sg = sign(dir);
+  sg = mix(vec2(1.0), sg, abs(sg)); // a zero component keeps a sign
+  vec2 inv = 1.0 / (sg * max(abs(dir), vec2(1e-4)));
+  vec2 t1 = (c - p) * inv;
+  vec2 t2 = (c + 1.0 - p) * inv;
+  vec2 tmin = min(t1, t2);
+  return max(max(tmin.x, tmin.y), 0.0);
+}
+// The share of a disc source (radius r at L) that the cell box c (its lower
+// corner) hides from P: the box's corners projected from P onto the disc's
+// line at L, clipped against [-r, r]. Continuous in P.
+float srcBlocked(vec2 P, vec2 L, float r, vec2 c) {
+  vec2 dl = L - P;
+  float len = length(dl);
+  vec2 u = dl / max(len, 1e-4);
+  vec2 v = vec2(-u.y, u.x);
+  float lo = 1e9;
+  float hi = -1e9;
+  for (int k = 0; k < 4; k++) {
+    vec2 q = c + vec2(k == 1 || k == 3 ? 1.0 : 0.0, k >= 2 ? 1.0 : 0.0) - P;
+    float a = dot(q, u);
+    if (a <= 0.01) continue;
+    float o = dot(q, v) * (len / a);
+    lo = min(lo, o);
+    hi = max(hi, o);
+  }
+  return clamp((min(hi, r) - max(lo, -r)) / (2.0 * r), 0.0, 1.0);
+}
+// THE FIRE'S EDGE RAYS at one march sample (see SOURCE_R_SHARE): the two
+// points e cells across the centre ray at ps; a ground column under either
+// (never the pixel's own cell, the light's own trunk or the pixel's own
+// share) that really hides part of the fire's disc blocks a share of the
+// source — 1 within e/2 of the column's box, fading to 0 at e.
+float edgeShare(vec2 pos, vec2 ps, vec2 sideL, float e, float hRay, vec2 L, float lShare, vec2 lC, float ownShare, vec2 ownC) {
+  vec2 q1 = ps + sideL * e;
+  vec2 q2 = ps - sideL * e;
+  float e1 = groundAt(q1);
+  float e2 = groundAt(q2);
+  if (floor(q1) == floor(pos)) e1 = 0.0;
+  if (floor(q2) == floor(pos)) e2 = 0.0;
+  if (lShare > 0.0 && dot(q1 - lC, q1 - lC) < 1.0 && sceneryShareAt(q1) > 0.01) e1 = 0.0;
+  if (lShare > 0.0 && dot(q2 - lC, q2 - lC) < 1.0 && sceneryShareAt(q2) > 0.01) e2 = 0.0;
+  if (ownShare > 0.0 && dot(q1 - ownC, q1 - ownC) < 1.0) e1 = 0.0;
+  if (ownShare > 0.0 && dot(q2 - ownC, q2 - ownC) < 1.0) e2 = 0.0;
+  float d = e;
+  float sh = 0.0;
+  if (e1 < 90.0 && e1 > hRay) {
+    vec2 c1 = floor(q1);
+    float s1 = srcBlocked(pos, L, ${SOURCE_R_PHYS.toFixed(2)}, c1);
+    if (s1 > 0.0) { d = min(d, boxEntry(ps, sideL, c1)); sh = max(sh, s1); }
+  }
+  if (e2 < 90.0 && e2 > hRay) {
+    vec2 c2 = floor(q2);
+    float s2 = srcBlocked(pos, L, ${SOURCE_R_PHYS.toFixed(2)}, c2);
+    if (s2 > 0.0) { d = min(d, boxEntry(ps, -sideL, c2)); sh = max(sh, s2); }
+  }
+  return clamp(2.0 * (e - d) / e, 0.0, 1.0) * clamp(sh * 20.0, 0.0, 1.0);
 }
 // One march sample's SOFT occlusion: the bilinear reads (blockers ramp in over
 // a cell, so a cast shadow's edge gets a penumbra), the two-span deck rule and
@@ -1261,6 +1372,11 @@ void main() {
     // cell; the piece still shadows every OTHER light.
     float lShare = uSceneryOn > 0.5 ? sceneryShareAt(lp.xy) : 0.0;
     vec2 lC = floor(lp.xy) + 0.5;
+    // The area source's edge rays: offset across the centre ray, growing from
+    // 0 at the pixel to SOURCE_R_SHARE at the light (see the constant).
+    float lR = lShare > 0.0 ? ${SOURCE_R_SHARE.toFixed(2)} : 0.0;
+    vec2 dirL = lp.xy - pos;
+    vec2 sideL = lR > 0.0 ? normalize(vec2(-dirL.y, dirL.x)) : vec2(0.0);
     float peakC = max(max(uLightCol[i].r, uLightCol[i].g), uLightCol[i].b);
     if (uLightPos[i].w > 0.0 && att * peakC > ${SHADOW_MARCH_MIN_LIGHT}) {
       // The previous VALID sample (see the skirt law below): whether its own
@@ -1268,6 +1384,18 @@ void main() {
       bool prevHard = false;
       bool prevOk = false;
       bool prevDone = false; // the previous sample's soft read already applied (it left a blocker)
+      float prevHf = 0.0; // the previous sample's blocked share of the source
+      bool prevEdge = false; // ...and whether that hardness came from the edge rays
+      // THE EDGE RAYS' SHADE IS COMPOUNDED ALONG A LONG RAY AND TAKEN ONCE ON
+      // A SHORT ONE. Per-sample factors multiply into the deep strip he
+      // approved on a wall two to four cells from the fire; a floor pixel
+      // beside the column's foot is barely over a cell from it, the near
+      // fields leave it one or two samples, and their count showed as bands
+      // (his "small pixels in the corner still lit up"). Both are kept —
+      // the product and the darkest single factor — and blended by the ray's
+      // length after the march (EDGE_ONCE_NEAR..EDGE_ONCE_FAR cells).
+      float edgeProd = 1.0;
+      float edgeMin = 1.0;
       vec2 prevPs = pos;
       vec2 prevP = pos;
       float prevHRay = 0.0;
@@ -1282,7 +1410,15 @@ void main() {
         // point, a ground pixel AT a wall base gets its first sample inside
         // the wall cell — a false dark notch along every base line.
         vec2 dp = p - pos;
-        if (dot(dp, dp) < 0.56) continue;
+        bool nearP = dot(dp, dp) < 0.56;
+        // (The face pixel's own-skirt push, see the skirt law below — computed
+        // here because the near-field samples run the edge rays from it too.)
+        vec2 ps = p;
+        if (isFace) {
+          vec2 nF = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), step(0.5, pickR));
+          float fp = dot(p - (baseF + 1.0), nF); // cells in front of the plane
+          if (fp > -0.01 && fp < 0.5) ps = p + nF * (0.5 - fp);
+        }
         // THE SHADOW'S OWN LIGHT HEIGHT (uLightExt.x = lp.z for every light that
         // does not ask for another). Everything else on this ray — the
         // attenuation above, skirtOcc's two-span deck rule below — keeps the
@@ -1298,7 +1434,29 @@ void main() {
         // further). A real wall that close to the light is one the torch is
         // pressed against, and its shadow is cast by the samples deeper in it.
         vec2 dl = p - lp.xy;
-        if (dot(dl, dl) < ${LIGHT_NEAR_R2}) continue;
+        bool nearL = dot(dl, dl) < ${LIGHT_NEAR_R2};
+        // THE NEAR FIELDS STILL RUN THE EDGE RAYS. A floor pixel beside the
+        // corner column's face is under two cells from the brazier, so every
+        // sample of its ray fell in one near field or the other and the edge
+        // rays never looked — the strip that dresses the wall above ended at
+        // the floor line, leaving the column's bare centre-ray sliver on the
+        // floor (his "still broken", 2026-09-17). The disc gate inside
+        // edgeShare is what makes this safe: a wall the pixel stands against
+        // lies behind it and hides none of the fire.
+        // Applied ONCE per light, from the sample with the largest share —
+        // multiplying per sample made the number of near-field samples show
+        // as bands at the column's foot (his "small pixels still lit up").
+        if (nearP || nearL) {
+          if (lR > 0.0) {
+            float hfN = edgeShare(pos, ps, sideL, lR * t, hRay, lC, lShare, lC, ownShare, ownC);
+            if (hfN > 0.0) {
+              float fN = mix(1.0, skirtOcc(ps, p, hRay, lp.z), hfN);
+              edgeProd *= fN;
+              edgeMin = min(edgeMin, fN);
+            }
+          }
+          continue;
+        }
         if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
         // ...AND THE PIECE ONLY: a sample inside the radius is spared only when
         // its own cell carries a scenery share. The radius reaches into the
@@ -1330,12 +1488,6 @@ void main() {
         // plane is read at the band's outer edge instead — where the wall's
         // weight is zero and the floor row's own heights (a barrel standing
         // against the wall included) are what the filter returns.
-        vec2 ps = p;
-        if (isFace) {
-          vec2 nF = mix(vec2(0.0, 1.0), vec2(1.0, 0.0), step(0.5, pickR));
-          float fp = dot(p - (baseF + 1.0), nF); // cells in front of the plane
-          if (fp > -0.01 && fp < 0.5) ps = p + nF * (0.5 - fp);
-        }
         // A SKIRT SAMPLE COUNTS ONLY BESIDE A HARD HIT. The push above covers
         // a face's OWN skirt; the GROUND beside a wall has the same ramp under
         // it and no plane of its own to push away from. A torch that stands
@@ -1360,8 +1512,42 @@ void main() {
         // in front of it. Unshadowed rays now cost two nearest fetches per
         // sample (the sample and the midpoint below) where they cost two
         // bilinear ones; shadowed samples cost up to four.
-        float hHard = heightAtHard(ps);
+        float hHard = hardHeightAt(ps, lp.z);
         bool hard = hHard < 90.0 && hHard > hRay;
+        // THE FIRE'S EDGE RAYS (ground column only). A column that clears the
+        // centre ray but not an edge ray blocks a SHARE of the source: the
+        // source's reach here is e = lR·t across the ray, the hit column's
+        // box lies d cells off the centre along that perpendicular (the exact
+        // entry distance, boxEntry — no reads), and the blocked share is 1
+        // within e/2, fading to 0 at e. Continuous in d, so the penumbra is a
+        // smooth band. Rejected: a yes/no edge test (one stripe per march
+        // sample — his "vertical glitches"); d read off the bilinear ground
+        // ramp (a second wall's ramp in the same read made the share jump
+        // where an edge ray entered the column — lobes on the floor).
+        // THE FIRE'S EDGE RAYS (ground column only). A column that clears the
+        // centre ray but not an edge ray blocks a SHARE of the source: the
+        // source's reach here is e = lR·t across the ray, the hit column's
+        // box lies d cells off the centre along that perpendicular (the exact
+        // entry distance, boxEntry — no reads), and the blocked share is 1
+        // within e/2, fading to 0 at e. Continuous in d, so the penumbra is a
+        // smooth band. Rejected: a yes/no edge test (one stripe per march
+        // sample — his "vertical glitches"); d read off the bilinear ground
+        // ramp (a second wall's ramp in the same read made the share jump);
+        // one analytic disc share per pixel and column instead of the
+        // per-sample share (polygons wherever a sample first landed in a
+        // column, and a lighter wall — the per-sample skirt chain IS the look
+        // he approved).
+        // THE LIGHT'S OWN TRUNK AND THE PIXEL'S OWN SHARE ARE NO COLUMNS HERE
+        // EITHER (the centre ray's skips): the brazier's 1-level bowl stands
+        // just above the ray, and an edge point landing in its cell shaded the
+        // floor at the column's foot in lobes (his "chaos looking floor").
+        float hf = hard ? 1.0 : 0.0;
+        bool edgeHit = false;
+        if (!hard && lR > 0.0) {
+          hf = edgeShare(pos, ps, sideL, lR * t, hRay, lC, lShare, lC, ownShare, ownC);
+          hard = hf > 0.0;
+          edgeHit = hard;
+        }
         // A THIN WALL BETWEEN TWO SAMPLES IS STILL A HIT. Samples sit
         // dist/13 apart — 1.2 cells under a radius-16 hearth — so a one-cell
         // house wall can fall between two of them; the bilinear reads used to
@@ -1374,20 +1560,37 @@ void main() {
           if (ownShare > 0.0 && dot(pm - ownC, pm - ownC) < 1.0) own = true;
           if (lShare > 0.0 && dot(pm - lC, pm - lC) < 1.0 && sceneryShareAt(pm) > 0.01) own = true;
           if (!own) {
-            float hm = heightAtHard(pm);
+            float hm = hardHeightAt(pm, lp.z);
             hard = hm < 90.0 && hm > 0.5 * (hRay + prevHRay);
+            if (hard) { hf = 1.0; edgeHit = false; }
           }
         }
         if (hard || prevHard) {
-          if (hard && !prevHard && prevOk && !prevDone) occ *= skirtOcc(prevPs, prevP, prevHRay, lp.z);
-          occ *= skirtOcc(ps, p, hRay, lp.z);
+          float f = mix(1.0, skirtOcc(ps, p, hRay, lp.z), max(hf, prevHf));
+          if (hard && !prevHard && prevOk && !prevDone) f *= mix(1.0, skirtOcc(prevPs, prevP, prevHRay, lp.z), hf);
+          if (hard ? edgeHit : prevEdge) { edgeProd *= f; edgeMin = min(edgeMin, f); } else occ *= f;
         }
         prevDone = hard || prevHard;
         prevHard = hard;
+        prevHf = hf;
+        prevEdge = edgeHit;
         prevOk = true;
         prevPs = ps;
         prevP = p;
         prevHRay = hRay;
+      }
+      occ *= mix(edgeMin, edgeProd, smoothstep(${EDGE_ONCE_NEAR.toFixed(1)}, ${EDGE_ONCE_FAR.toFixed(1)}, length(lp.xy - pos)));
+      // A FIRE RAISED IN A BOWL SHADOWS ITS OWN FOOT. The floor of the
+      // fire's own cell — the strip between a brazier's bowl and the wall
+      // behind it — sat fully lit, 0.3 cells from a flame the own-trunk skip
+      // lets straight through (his "small pixels in the corner still lit
+      // up", 2026-09-17; the approved look had the bowl's phantom skirt
+      // there). Ground only, the piece's cell, scaled by how high the flame
+      // sits over its ground: a brazier's at 1.5 levels darkens fully, a
+      // campfire's at 0.5 not at all — a campfire lights the ground around it.
+      if (lShare > 0.0 && !isFace) {
+        float lift = clamp((lp.z - groundTerrAt(lp.xy) - 0.6) / 0.9, 0.0, 1.0);
+        occ *= 1.0 - ${BOWL_FOOT_SHADE.toFixed(2)} * lift * smoothstep(${BOWL_FOOT_R.toFixed(2)}, ${(BOWL_FOOT_R * 0.35).toFixed(3)}, distance(pos, lC));
       }
       // Bounce floor: firelight scatters — shadowed ground near a light keeps
       // a faint glow instead of dropping to pitch ambient. Faces still gate
@@ -3784,6 +3987,67 @@ export class NightLights {
     const hAtSoft = soft2(this.hArr);
     // Twin of groundAtSoft: the ground column alone, deck excluded.
     const gAtSoft = soft2(this.gArr);
+    // Twin of groundAt (nearest): the ground column, the two-span hard blocker.
+    const gAt = (c: number, r: number) => {
+      const ci = Math.floor(c), ri = Math.floor(r);
+      return ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.gArr[ri * W + ci];
+    };
+    // Twin of hardHeightAt: a slab with the light under it is air for the
+    // hard test; the ground column (terrain + share) is the hard blocker.
+    const hardAt = (c: number, r: number, lz: number) => {
+      const h = hAt(c, r);
+      const g = gAt(c, r);
+      return h > g + 0.01 && lz <= h ? g : h;
+    };
+    // Twin of boxEntry: the distance along (dx,dy) from (px,py) to the cell box.
+    const boxEntry = (px: number, py: number, dx: number, dy: number, cx: number, cy: number) => {
+      const ix = 1 / (Math.sign(dx || 1) * Math.max(Math.abs(dx), 1e-4));
+      const iy = 1 / (Math.sign(dy || 1) * Math.max(Math.abs(dy), 1e-4));
+      const tx = Math.min((cx - px) * ix, (cx + 1 - px) * ix);
+      const ty = Math.min((cy - py) * iy, (cy + 1 - py) * iy);
+      return Math.max(tx, ty, 0);
+    };
+    // Twin of srcBlocked: the share of the disc (radius r at L) the cell box hides from P.
+    const srcBlocked = (Px: number, Py: number, Lx: number, Ly: number, r: number, cx: number, cy: number) => {
+      const dlx = Lx - Px, dly = Ly - Py;
+      const len = Math.max(Math.hypot(dlx, dly), 1e-4);
+      const ux = dlx / len, uy = dly / len;
+      const vx = -uy, vy = ux;
+      let lo = 1e9, hi = -1e9;
+      for (let k = 0; k < 4; k++) {
+        const qx = cx + (k === 1 || k === 3 ? 1 : 0) - Px;
+        const qy = cy + (k >= 2 ? 1 : 0) - Py;
+        const a = qx * ux + qy * uy;
+        if (a <= 0.01) continue;
+        const o = (qx * vx + qy * vy) * (len / a);
+        lo = Math.min(lo, o);
+        hi = Math.max(hi, o);
+      }
+      return Math.min(1, Math.max(0, (Math.min(hi, r) - Math.max(lo, -r)) / (2 * r)));
+    };
+    // Twin of edgeShare (see FRAG).
+    const edgeShare = (px: number, py: number, sideX: number, sideY: number, e: number, hRay: number, Lx: number, Ly: number, lShare: number, lcx: number, lcy: number, ownShare: number, ocx: number, ocy: number) => {
+      const spared = (qx: number, qy: number) =>
+        (Math.floor(qx) === Math.floor(col) && Math.floor(qy) === Math.floor(row)) ||
+        (lShare > 0 && (qx - lcx) * (qx - lcx) + (qy - lcy) * (qy - lcy) < 1.0 && shareAt(qx, qy) > 0.01) ||
+        (ownShare > 0 && (qx - ocx) * (qx - ocx) + (qy - ocy) * (qy - ocy) < 1.0);
+      const ox = sideX * e, oy = sideY * e;
+      const e1 = spared(px + ox, py + oy) ? 0 : gAt(px + ox, py + oy);
+      const e2 = spared(px - ox, py - oy) ? 0 : gAt(px - ox, py - oy);
+      let d = e;
+      let sh = 0;
+      if (e1 < 90 && e1 > hRay) {
+        const cx = Math.floor(px + ox), cy = Math.floor(py + oy);
+        const s1 = srcBlocked(col, row, Lx, Ly, SOURCE_R_PHYS, cx, cy);
+        if (s1 > 0) { d = Math.min(d, boxEntry(px, py, sideX, sideY, cx, cy)); sh = Math.max(sh, s1); }
+      }
+      if (e2 < 90 && e2 > hRay) {
+        const cx = Math.floor(px - ox), cy = Math.floor(py - oy);
+        const s2 = srcBlocked(col, row, Lx, Ly, SOURCE_R_PHYS, cx, cy);
+        if (s2 > 0) { d = Math.min(d, boxEntry(px, py, -sideX, -sideY, cx, cy)); sh = Math.max(sh, s2); }
+      }
+      return Math.min(1, Math.max(0, (2 * (e - d)) / e)) * Math.min(1, sh * 20);
+    };
     // Twin of the trunk skip's share test: the sample's own cell carries a share.
     const shareAt = (c: number, r: number) => {
       const ci = Math.floor(c), ri = Math.floor(r);
@@ -3879,6 +4143,12 @@ export class NightLights {
       const lShare = this.hasSceneryShares && lc >= 0 && lr >= 0 && lc < W && lr < H ? this.sArrG[lr * W + lc] : 0;
       const lcx = lc + 0.5;
       const lcy = lr + 0.5;
+      // The area source's edge rays (see FRAG): across the centre ray, 0 at
+      // the pixel to SOURCE_R_SHARE at the light.
+      const lR = lShare > 0 ? SOURCE_R_SHARE : 0;
+      const dLen = Math.hypot(dx, dy) || 1;
+      const sideX = lR > 0 ? -dy / dLen : 0;
+      const sideY = lR > 0 ? dx / dLen : 0;
       if (L.radius > 0 && (att * Math.max(L.color[0], L.color[1], L.color[2]) > SHADOW_MARCH_MIN_LIGHT || wantOcc)) {
         // One sample's SOFT occlusion — the twin of the shader's skirtOcc:
         // bilinear reads, the two-span deck test (a deck is a floating slab,
@@ -3910,20 +4180,44 @@ export class NightLights {
         let prevOk = false;
         let prevDone = false;
         let prevPx = col, prevPy = row, prevHRay = 0;
+        let prevHf = 0;
+        let prevEdge = false;
+        let edgeProd = 1;
+        let edgeMin = 1;
         for (let sN = 1; sN <= 12; sN++) {
           const tt = sN / 13;
           const px = col + dx * tt;
           const py = row + dy * tt;
           if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
-          if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
+          const nearP = (px - col) * (px - col) + (py - row) * (py - row) < 0.56; // near-field
           const hRay = z + (lsz - z) * tt + 0.2;
-          if ((px - L.col) * (px - L.col) + (py - L.row) * (py - L.row) < LIGHT_NEAR_R2) continue; // the light's near field (see FRAG)
+          const nearL = (px - L.col) * (px - L.col) + (py - L.row) * (py - L.row) < LIGHT_NEAR_R2; // the light's near field (see FRAG)
+          if (nearP || nearL) {
+            // The near fields still run the edge rays, applied once (see FRAG).
+            if (lR > 0) {
+              const hfN = edgeShare(px, py, sideX, sideY, lR * tt, hRay, lcx, lcy, lShare, lcx, lcy, ownShare, ocx, ocy);
+              if (hfN > 0) {
+                const fN = 1 + (softOcc(px, py, hRay) - 1) * hfN;
+                edgeProd *= fN;
+                edgeMin = Math.min(edgeMin, fN);
+              }
+            }
+            continue;
+          }
           if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
           // The LIGHT's own trunk (a fire IS its piece) — share cells only, never
           // the stone or the bare floor beside it (see FRAG).
           if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0 && shareAt(px, py) > 0.01) continue;
-          const hHard = hAt(px, py);
+          const hHard = hardAt(px, py, L.z);
           let hard = hHard < 90 && hHard > hRay;
+          // The fire's edge rays: the blocked share of the source (see FRAG).
+          let hf = hard ? 1 : 0;
+          let edgeHit = false;
+          if (!hard && lR > 0) {
+            hf = edgeShare(px, py, sideX, sideY, lR * tt, hRay, lcx, lcy, lShare, lcx, lcy, ownShare, ocx, ocy);
+            hard = hf > 0;
+            edgeHit = hard;
+          }
           if (!hard && prevOk) {
             // A thin wall between two samples is still a hit (see FRAG).
             const mx = 0.5 * (px + prevPx), my = 0.5 * (py + prevPy);
@@ -3931,20 +4225,32 @@ export class NightLights {
             if (ownShare > 0 && (mx - ocx) * (mx - ocx) + (my - ocy) * (my - ocy) < 1.0) own = true;
             if (lShare > 0 && (mx - lcx) * (mx - lcx) + (my - lcy) * (my - lcy) < 1.0 && shareAt(mx, my) > 0.01) own = true;
             if (!own) {
-              const hm = hAt(mx, my);
+              const hm = hardAt(mx, my, L.z);
               hard = hm < 90 && hm > 0.5 * (hRay + prevHRay);
+              if (hard) { hf = 1; edgeHit = false; }
             }
           }
           if (hard || prevHard) {
-            if (hard && !prevHard && prevOk && !prevDone) occ *= softOcc(prevPx, prevPy, prevHRay);
-            occ *= softOcc(px, py, hRay);
+            let f = 1 + (softOcc(px, py, hRay) - 1) * Math.max(hf, prevHf);
+            if (hard && !prevHard && prevOk && !prevDone) f *= 1 + (softOcc(prevPx, prevPy, prevHRay) - 1) * hf;
+            if (hard ? edgeHit : prevEdge) { edgeProd *= f; edgeMin = Math.min(edgeMin, f); } else occ *= f;
           }
           prevDone = hard || prevHard;
+          prevHf = hf;
+          prevEdge = edgeHit;
           prevHard = hard;
           prevOk = true;
           prevPx = px;
           prevPy = py;
           prevHRay = hRay;
+        }
+        occ *= edgeMin + (edgeProd - edgeMin) * smoothStep01(EDGE_ONCE_NEAR, EDGE_ONCE_FAR, Math.hypot(dx, dy));
+        // A fire raised in a bowl shadows its own foot (see FRAG): ground only.
+        if (lShare > 0 && !isObj) {
+          const li = lr * W + lc;
+          const gBase = this.gArr[li] - (this.hasSceneryShares ? this.sArrG[li] : 0);
+          const lift = Math.min(1, Math.max(0, (L.z - gBase - 0.6) / 0.9));
+          occ *= 1 - BOWL_FOOT_SHADE * lift * smoothStep01(BOWL_FOOT_R, BOWL_FOOT_R * 0.35, Math.hypot(col - lcx, row - lcy));
         }
         // THE OWN TRUNK'S CORE, DIRECTIONALLY — the shader's rule.
         if (ownShare > 0 && selfR2 <= 0) {

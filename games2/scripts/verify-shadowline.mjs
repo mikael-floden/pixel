@@ -10,7 +10,13 @@
 //     column's peak (the old code stepped ~45%);
 //  B. the CPU TWIN (`__ml.occAt`): the brazier's occlusion up the left wall's
 //     column is continuous through the light's height (the old code jumped
-//     0.22 → 1.0 at z 5.5).
+//     0.22 → 1.0 at z 5.5);
+//  C. the corner column's shadow on the wall beside it (the fire is an AREA
+//     source: its edge rays widen the hard test);
+//  D. the TORCH beside a wall at 203.4,220.9: the pool reaches the wall and a
+//     wall in full view is lit flat (the hard test takes the two-span rule —
+//     under a lid the floor is not a hard hit, so no neighbour's skirt shades
+//     a ray that runs beside it).
 // Needs the dev stack (npm run dev). PORT overrides vite's port.
 import { chromium } from "playwright-core";
 import { PNG } from "pngjs";
@@ -68,15 +74,14 @@ console.log(`twin: brazier occ up (205.99,207.5) z ${zs[0]}..${zs[zs.length - 1]
 if (!(jump < 0.15)) fail(`twin: the brazier's occlusion jumps ${jump.toFixed(2)} at z=${jz} — the march stops at the light's height`);
 
 // C. THE INNER CORNER OF THE RIGHT WALL IS IN THE CORNER COLUMN'S SHADOW. The
-// stone column at (207,204) stands on the ray from the first ~0.3 cells of the
-// +row face of (208,203) to the brazier, but those samples fell inside the
-// light's own-trunk skip (a one-cell radius around the brazier's cell, meant
-// for the fire's own piece) and the strip at the corner read fully lit beside
-// a shadowed run (his second mark, 2026-09-17: "the red area being fully lit up
-// is the bug"). The run beyond it KEEPS its soft shadow — the lid-plus-skirt
-// darkening he judged right ("the outer part already in shadow looks good");
-// the version that dropped it lit every cave wall flat (his fourth mark, "the
-// nice shadow ... you removed"). Read on the SHADER's field (calibration 5).
+// stone column at (207,204) stands beside the ray from the +row face of
+// (208,203) to the brazier — the brazier's centre passes 0.18 cells clear of
+// it, so a point-source march lit the whole strip (his fourth mark, "the nice
+// shadow ... you removed"). The fire is an AREA source: its edge rays widen the
+// hard test, and the strip beside the column is in its penumbra — fully dark
+// at the corner, fading out within ~a cell, no stripe per sample (his "vertical
+// glitches"), and the wall beyond as the distance falloff leaves it. Read on
+// the SHADER's field (calibration 5).
 await page.evaluate(() => window.__ml.nightCal(0, 1, 5));
 await page.waitForTimeout(800);
 const png5 = PNG.sync.read(await page.screenshot());
@@ -92,6 +97,37 @@ for (const y of [480, 600]) {
   // the field sits well under its peak further along.
   const soft = Math.min(...run.slice(4, 12));
   if (!(soft < 0.85 * peak)) fail(`y=${y}: the run beyond the corner has lost its soft shadow (min ${soft.toFixed(0)} against peak ${peak.toFixed(0)})`);
+}
+// D. THE TORCH BESIDE A WALL (maintainer 2026-09-17, 203.4,220.9, his marks on
+// the calibration render): the pool "cut into a circle" and a triangle shadow
+// on the wall in full view. Under the cave lid every floor cell's occlusion
+// height IS the lid, so every march sample was a hard hit and the neighbour
+// walls' bilinear skirts shaded every ray that ran beside them. Measured on his
+// screen (calibration 5): the pool along y=800 fell to 56% of its value at
+// x=550 within 25px; the wall face at y=600 ran 72 → 126 → 107 across five
+// samples (a 1.75 ratio) where a face in full view of a torch two cells away
+// is flat. With the two-span hard test: 87% and 1.19.
+await page.evaluate(() => window.__ml.teleport(203.4, 220.9));
+await page.waitForFunction(() => { const e = document.getElementById("ml-loading"); return !e || !e.isConnected || getComputedStyle(e).display === "none" || Number(getComputedStyle(e).opacity) === 0; }, null, { timeout: 90000 });
+// The cut-away's crossfade must land (~27 s at the harness's ~1.7 fps).
+for (let i = 0; i < 90; i++) { await page.waitForTimeout(500); const st = await page.evaluate(() => window.__ml.indoor()); if (st.indoor && st.mix >= 0.999) break; }
+await page.evaluate(() => window.__ml.timeOfDay("Day", true));
+await page.evaluate(() => window.__ml.torch?.(true));
+await page.waitForTimeout(4000);
+await page.evaluate(() => window.__ml.nightCal(0, 1, 5));
+await page.waitForTimeout(800);
+const pngD = PNG.sync.read(await page.screenshot());
+const lumD = (x, y) => { const i = (y * pngD.width + x) * 4; return 0.299 * pngD.data[i] + 0.587 * pngD.data[i + 1] + 0.114 * pngD.data[i + 2]; };
+await page.evaluate(() => window.__ml.nightCal(0, 1, 0));
+const pool = []; for (let x = 550; x <= 700; x += 25) pool.push(lumD(x, 800));
+const poolMin = Math.min(...pool.slice(1));
+console.log(`torch pool along y=800 from x=550: ${pool.map((v) => v.toFixed(0)).join(" ")} — min beyond ${poolMin.toFixed(0)} against ${pool[0].toFixed(0)} at the start`);
+if (!(poolMin >= 0.75 * pool[0])) fail(`the torch pool is cut beside the wall: ${poolMin.toFixed(0)} against ${pool[0].toFixed(0)} at x=550 (want ≥ 75%)`);
+for (const y of [500, 600]) {
+  const face = []; for (let x = 700; x <= 780; x += 20) face.push(lumD(x, y));
+  const ratio = Math.max(...face) / Math.max(1, Math.min(...face));
+  console.log(`right wall face at y=${y}, x 700..780: ${face.map((v) => v.toFixed(0)).join(" ")} — max/min ${ratio.toFixed(2)}`);
+  if (!(ratio <= 1.3)) fail(`y=${y}: the wall in full view of the torch wears a shadow (max/min ${ratio.toFixed(2)}, want ≤ 1.3)`);
 }
 if (errs.length) fail(`page errors: ${errs.join(" | ")}`);
 await browser.close();
