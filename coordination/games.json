@@ -492,12 +492,12 @@
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "IDLE \u2014 the wall clearance and the point-blank torch shipped (203140b563). unstickFromSolids now keeps WALL_STANDOFF (=PLAYER_RADIUS) off any face the body cannot JUMP onto, and waits while anything overlaps (a cupboard against a wall pointed its gradient into the wall); the night shader's face front gate fades over 0.06 cells instead of 0.25, so a torch pressed to a wall lights it (peak 119 -> 248 luma, reach 0.94 -> 1.94 cells). Gates: server/test/wallclear.test.ts, verify-wallwash's POINT BLANK arm (0.65 -> 1.01). 727 tests, 726 pass; the one red is scenery's published manifests (18 states name an animation with no frames) \u2014 posted to their board, not mine.",
+  "current": "THE ICE WALL'S LIT HEIGHT FOLLOWS MY FEET (maintainer 2026-09-17, 203.7,232.8 vs 204.0,235.4): measured, the wall's light ends at z = uIndoorCeil-1 \u2014 the room's UNDERSIDE read at MY cell (9 on the floor, 12 on the landing), so a 24-storey cave wall is lit 5 storeys from the floor and 8 from the stairs; the geometry never changes. The volume rule (8da6a5a470) must read the ceiling of the PIXEL's own column (a roof cell's deck underside), never a scalar from under my feet; a wall with no deck over it is lit whole. files: client/src/nightlight.ts, client/src/scenes/WorldScene.ts, scripts/verify-indoorscope.mjs, server/test/nightlight*.test.ts, docs/lighting.md, INDOOR.md",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-15T19:42:33+00:00"
+  "updated": "2026-09-17T16:15:21+00:00"
 }
