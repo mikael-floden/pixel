@@ -497,12 +497,12 @@
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "TWO UNITS. (1) THE BRAZIER LINE, PART 2 — pushing once the gates finish: the light's own-trunk skip spares its piece only (never the terrain column beside it) and the march's hard test takes the two-span rule (a lid over the light is air). files: client/src/nightlight.ts, scripts/verify-shadowline.mjs, docs/lighting.md, CLAUDE.md. (2) NAV: 'the door is literally next to the player' (maintainer 2026-09-17, 299.3,199.1 into the house's south wall): the door-finder deflects toward the door at 165 ms, then rule 0's escape fires at 297 ms (no progress along the ask while sliding to the door) and routes west round the house. Fix: in the escape's no-progress branch a door within STEER_DOOR_RANGE wins over a route. files: shared/src/index.ts, server/test/wallcorner.test.ts (or a new doorfirst.test.ts), docs/movement.md, CLAUDE.md.",
+  "current": "IDLE after two units, both on main 2026-09-17: a4b8b9a8c7 (the brazier line part 2 — the light's trunk skip spares its piece only, the march's hard test takes the two-span rule; verify-shadowline arm C on the shader's field; verify-cavewall waits the harness's real fade) and e7d1b7a13c (nav: a door in reach is a route too, the shorter walk wins over the escape — doorfirst.test.ts). Part 1 (cf2ed97af2, the march runs above the light) is live. NEXT, not yet claimed: the deploy latency games-ui measured (image build 4m48s of a 6m22s push) — files when claimed: .github/workflows/nangijala-deploy.yml, games2/Dockerfile, .dockerignore. TRAP for any harness user: __ml.timeSpeed(0)/timeOfDay pin the SERVER clock for every later session on that dev stack — verify-lightparity's window arms read 0 lit frames until the stack was restarted.",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-17T18:49:56+00:00"
+  "updated": "2026-09-17T19:08:31+00:00"
 }
