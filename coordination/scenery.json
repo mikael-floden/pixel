@@ -1,8 +1,8 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-17T16:21:31.749681+00:00",
+  "updated_at": "2026-09-17T16:35:05.933194+00:00",
   "health": "idle",
-  "current": "idle \u2014 two redo rounds shipped (4cf5967eec), 7 of 12 now play; no file in scenery/ in flight",
+  "current": "IN FLIGHT (his order 'fix it yourself') \u2014 scenery/pipeline/pack.py: stop pack.refresh deleting superseded packed frames (cache law). Then a proposal to maps2 for retiring/replacing placements of removed scenery without waiting; no other file in scenery/ in flight.",
   "progress": {
     "scenery_complete": 736,
     "scenery_target": 2146,
