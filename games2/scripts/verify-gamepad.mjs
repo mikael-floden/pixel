@@ -275,8 +275,120 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   //    — with margins 35.2/38.2 and gaps 40.1/23.5, the crowding was the
   //    gaps). Both are checked, so a later size change that keeps the
   //    fractions but breaks the rhythm still fails here. ──
+  // ── PORTRAIT GHOST (maintainer 2026-09-17: "I want the same semi
+  //    transparent control [in portrait]… better to have it at a worse
+  //    location than not have this control at all"). With the gamepad page
+  //    hidden the stick floats over the game view as the NEXT STEP of the
+  //    bottom-right stack — Wiki row, clock pill, stick: the stack's 10px
+  //    right margin, one 10px gap above the pill. "Just make sure pressing on
+  //    the wiki or the search still works and this input triggers when you
+  //    press on this and nothing else": hit-tested at every neighbour, and a
+  //    press beside or above the well must reach the canvas. The input path
+  //    is asserted on the synthesized KEYS, not on distance moved — the
+  //    phone-dpr frame loop is starved here (see joinWorld). ──
+  await page.evaluate(() => document.querySelector('[data-tab="map"]')?.click());
+  await page.waitForTimeout(400);
+  const ghostGeom = () =>
+    page.evaluate(() => {
+      const q = (sel) => document.querySelector(sel);
+      const rr = (sel) => {
+        const e = q(sel);
+        if (!e) return null;
+        const r = e.getBoundingClientRect();
+        return { l: r.left, t: r.top, r: r.right, b: r.bottom, w: r.width, h: r.height };
+      };
+      const pad = q(".ml-pad-stick");
+      const hit = (x, y) => {
+        const e = document.elementFromPoint(x, y);
+        if (!e) return "none";
+        if (pad && pad.contains(e)) return "stick";
+        if (e.closest(".ml-wikibtn")) return "wiki";
+        if (e.closest(".ml-wikinear")) return "search";
+        if (e.tagName === "CANVAS") return "canvas";
+        return e.className || e.tagName;
+      };
+      const s = rr(".ml-pad-stick"), c = rr(".ml-clock"), w = rr(".ml-wikibtn"), n = rr(".ml-wikinear");
+      const cs = getComputedStyle(document.documentElement);
+      return {
+        parent: pad?.parentElement?.tagName,
+        pos: pad ? getComputedStyle(pad).position : null,
+        ghostClass: document.documentElement.classList.contains("ml-stickghost"),
+        blur: q(".ml-pad-blur") ? getComputedStyle(q(".ml-pad-blur")).display : null,
+        tab: q(".ml-tab.sel")?.dataset.tab,
+        hudTop: innerHeight - (parseFloat(cs.getPropertyValue("--hud-h")) || 0),
+        s, c, w, n,
+        hits: s && {
+          stick: hit(s.l + s.w / 2, s.t + s.h / 2),
+          wiki: w && hit(w.l + w.w / 2, w.t + w.h / 2),
+          search: n && hit(n.l + n.w / 2, n.t + n.h / 2),
+          clock: c && hit(c.l + c.w / 2, c.t + c.h / 2),
+          beside: hit(s.l - 30, s.t + s.h / 2),
+          above: hit(s.l + s.w / 2, s.t - 30),
+        },
+        op: { well: getComputedStyle(q(".ml-pad-well")).opacity, cap: getComputedStyle(q(".ml-pad-top")).opacity },
+      };
+    });
+  const gh = await ghostGeom();
+  if (!gh.s || gh.parent !== "BODY" || gh.pos !== "fixed")
+    fail(`portrait ghost not floating over the game view on the ${gh.tab} tab: ${JSON.stringify({ parent: gh.parent, pos: gh.pos, s: gh.s })}`);
+  else {
+    ok(`portrait ghost floats over the game view on the ${gh.tab} tab (parented to <body>, ${gh.s.w.toFixed(0)}px)`);
+    gh.ghostClass ? ok("ml-stickghost set while the page is hidden") : fail("ml-stickghost missing in portrait ghost mode");
+    gh.blur === "block" ? ok("blur disc shown under the portrait ghost") : fail(`blur disc ${gh.blur} under the portrait ghost`);
+    // THE STACK RULE: right edge on the pill's, one 10px gap above it
+    Math.abs(393 - 10 - gh.s.r) <= 1.5 && gh.c && Math.abs(gh.s.r - gh.c.r) <= 1.5
+      ? ok(`ghost right edge on the stack's margin (r=${gh.s.r.toFixed(1)}, pill r=${gh.c.r.toFixed(1)})`)
+      : fail(`ghost right edge ${gh.s.r.toFixed(1)}, pill ${gh.c && gh.c.r.toFixed(1)} — want both at ${393 - 10}`);
+    gh.c && Math.abs(gh.c.t - gh.s.b - 10) <= 1.5
+      ? ok(`ghost parks one 10px gap above the clock pill (well b=${gh.s.b.toFixed(1)}, pill t=${gh.c.t.toFixed(1)})`)
+      : fail(`ghost/pill gap ${gh.c && (gh.c.t - gh.s.b).toFixed(1)}px, want 10`);
+    gh.s.b < gh.hudTop - 60 ? ok(`ghost clear of the HUD rail (b=${gh.s.b.toFixed(0)}, rail ${gh.hudTop.toFixed(0)})`) : fail(`ghost at b=${gh.s.b} against rail ${gh.hudTop}`);
+    // ONLY THE WELL FIRES; everything around it keeps its own press
+    const h = gh.hits;
+    h.stick === "stick" ? ok("a press on the well hits the stick") : fail(`well centre hits ${h.stick}`);
+    h.wiki === "wiki" ? ok("the Wiki button still takes its press") : fail(`Wiki centre hits ${h.wiki}`);
+    h.search === "search" ? ok("the 🔍 button still takes its press") : fail(`🔍 centre hits ${h.search}`);
+    h.clock !== "stick" ? ok(`the clock pill's spot is not the stick's (${h.clock})`) : fail("a press on the clock pill drives the stick");
+    h.beside === "canvas" && h.above === "canvas"
+      ? ok("a press beside or above the well reaches the canvas")
+      : fail(`beside the well hits ${h.beside}, above it ${h.above} — want canvas`);
+    Math.abs(parseFloat(gh.op.well) - 0.15) <= 0.02 && Math.abs(parseFloat(gh.op.cap) - 0.25) <= 0.02
+      ? ok(`portrait ghost at rest carries the ghost alphas (well ${gh.op.well}, cap ${gh.op.cap})`)
+      : fail(`portrait ghost alphas ${JSON.stringify(gh.op)}, want .15/.25 (light)`);
+    await page.screenshot({ path: `${OUT}/gamepad-portrait-ghost.png` });
+    // DRIVES THE PLAYER from there: a northward drag synthesizes W (+SHIFT
+    // past the run radius); recorded at window level, timing-free.
+    await page.evaluate(() => {
+      window.__ghostKeys = [];
+      window.addEventListener("keydown", (e) => window.__ghostKeys.push(e.key), { capture: true });
+    });
+    const cx = gh.s.l + gh.s.w / 2, cy = gh.s.t + gh.s.h / 2;
+    await page.mouse.move(cx, cy);
+    await page.mouse.down();
+    await page.mouse.move(cx, cy - 70, { steps: 4 });
+    await page.waitForTimeout(500);
+    const held = await page.evaluate(() => ({
+      keys: window.__ghostKeys.slice(),
+      well: getComputedStyle(document.querySelector(".ml-pad-well")).opacity,
+      cap: getComputedStyle(document.querySelector(".ml-pad-top")).opacity,
+      tab: document.querySelector(".ml-tab.sel")?.dataset.tab,
+    }));
+    await page.mouse.up();
+    held.keys.includes("w") ? ok(`the portrait ghost steers (keys ${held.keys.join("+")})`) : fail(`no W from a northward ghost drag: ${JSON.stringify(held.keys)}`);
+    Math.abs(parseFloat(held.well) - 1) <= 0.02 && Math.abs(parseFloat(held.cap) - 1) <= 0.02
+      ? ok("…and both parts fade to 100% while held")
+      : fail(`held portrait ghost alphas ${held.well}/${held.cap}, want 1/1`);
+    held.tab === gh.tab ? ok(`…without leaving the ${gh.tab} tab`) : fail(`the ghost drag switched tabs: ${held.tab}`);
+  }
+  // OPENING THE GAMEPAD PAGE takes the stick back onto it — one stick, never two
   await page.evaluate(() => document.querySelector('[data-tab="gamepad"]')?.click());
   await page.waitForTimeout(350);
+  const back = await ghostGeom();
+  const sticks = await page.evaluate(() => document.querySelectorAll(".ml-pad-stick").length);
+  sticks === 1 ? ok("one stick in the DOM") : fail(`${sticks} sticks in the DOM`);
+  back.parent !== "BODY" && back.pos !== "fixed" && !back.ghostClass && back.blur === "none"
+    ? ok("opening the gamepad page takes the stick back onto it (opaque, no blur, ml-stickghost off)")
+    : fail(`stick after opening the gamepad page: ${JSON.stringify({ parent: back.parent, pos: back.pos, ghostClass: back.ghostClass, blur: back.blur })}`);
   const spots = await page.evaluate(() => {
     const page_ = document.querySelector('.ml-page[data-page="gamepad"]');
     const mid = (sel) => {
@@ -334,6 +446,13 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
       Math.abs(lefty - (1 - WANT.stick)) * spots.W <= 3
         ? ok(`left-handed mirrors the stick to ${(lefty * 100).toFixed(1)}%`)
         : fail(`left-handed stick at ${(lefty * 100).toFixed(1)}%, want ${((1 - WANT.stick) * 100).toFixed(1)}%`);
+    // …and the LEFT-HANDED portrait ghost mirrors to the bottom-LEFT
+    await page.evaluate(() => document.querySelector('[data-tab="map"]')?.click());
+    await page.waitForTimeout(400);
+    const lg = await ghostGeom();
+    lg.s && lg.parent === "BODY" && Math.abs(lg.s.l - 10) <= 1.5
+      ? ok(`left-handed portrait ghost at the game view's bottom-left (l=${lg.s.l.toFixed(1)})`)
+      : fail(`left-handed portrait ghost: ${JSON.stringify({ parent: lg.parent, s: lg.s })}`);
     await page.evaluate(() => localStorage.setItem("ml-hand", "right"));
   }
   await page.context().close();

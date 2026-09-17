@@ -221,6 +221,34 @@ from the games agent), #18 (title/landing screen).
   FRACTIONS (±3 css px) **and as the rule** (gaps within 2.5px, no margin under
   26), plus one shared centre row and the left-handed mirror — nothing held any
   of this before, so an edit could drift his marks silently.
+- **THE STICK IS NEVER OUT OF REACH: a GHOST floats over the game view whenever
+  the gamepad page is not showing** — landscape on every tab (2026-08-05), and
+  since 2026-09-17 PORTRAIT too (maintainer: "I want the same semi transparent
+  control [in portrait]… we can't place it at a perfect thumb location, but it's
+  better to have it at a worse location than not have this control at all").
+  `gamepad.ts` `layout()`: `ghost = land || page hidden`; the ghost is the SAME
+  element reparented to `<body>` (`position:fixed`, z 4, blur disc under it),
+  and opening the gamepad page takes it back onto the page — one stick, never
+  two. The root class `ml-stickghost` carries the ghost alphas (light .15/.25,
+  dark .4/.5, 1/1 while held); it is NOT keyed on `ml-land` any more.
+  PORTRAIT PLACEMENT is a RULE, not a coordinate: the ghost is the next step of
+  the game view's bottom-right stack — Wiki row, clock pill, stick — the
+  stack's own 10px right margin and one 10px gap above the pill, anchored in
+  CSS to `--hud-h` + `--ml-stack-top` (clock.ts publishes the stack's reach, so
+  a taller pill lifts the stick instead of sliding under it). He drew a red
+  loop: measured inside his screenshot its centre was 78 css in from the right
+  and 118 above the HUD rail, but its lower third lay over the clock pill (top
+  at rail − 88), so the well is lifted to clear the pill rather than shifted
+  80px left out of his loop. Left-handed mirrors to the bottom-left over the
+  chat overlay (its lines are pointer-events:none). "Just make sure pressing on
+  the wiki or the search still works and this input triggers when you press on
+  this and nothing else" is the z-order, not a special case: 4 sits under the
+  chat overlay (5/6) and the Wiki/🔍/pill row (8), and only the well listens —
+  `verify-gamepad` hit-tests the well, the Wiki, the 🔍, the pill's spot and a
+  point beside/above the well (canvas), asserts the stack rule, the alphas at
+  rest and held, the synthesized W from a northward drag (keys, not distance —
+  the phone-dpr frame loop is starved in the harness), and that the gamepad
+  page takes the stick back.
 - HUD geometry: `applyLayout()` publishes `--hud-h`/`--hud-h-inv` in REAL px
   (consumers parseFloat them — keyboard lift, chat anchors). The split must
   keep matching `#game`'s 61.8/38.2.

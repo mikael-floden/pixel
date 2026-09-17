@@ -89,6 +89,23 @@ const PICK_FX = 0.454;
 // 10px inset produces. The mark is therefore ~112 css px in, i.e. a 38px
 // corner inset — a 28px move, not the 10px a portrait-dpr reading suggested.
 const LAND_INSET = 38;
+// PORTRAIT GHOST (maintainer 2026-09-17, a red loop on a device screenshot:
+// "I want the same semi transparent control [in portrait]… we can't place it
+// at a perfect thumb location, but it's better to have it at a worse location
+// than not have this control at all"). Whenever the gamepad page is hidden
+// the stick floats over the game view as the NEXT STEP of its bottom-right
+// stack — Wiki row, clock pill, stick — the stack's own 10px right margin and
+// one 10px gap above the pill (clock.ts publishes the stack's reach as
+// --ml-stack-top, so a taller pill lifts the stick instead of sliding under
+// it). Measured inside his screenshot (2.748 device px per css px, the HUD
+// rail at 567.7 css): his loop centred 78 css in from the right and 118 above
+// the rail — but its lower third lay over the clock pill (top at rail − 88),
+// so the well is LIFTED to clear the pill rather than shifted 80px left out of
+// his loop, and the stack's margin puts the centre 8px right of his mark.
+// Opening the gamepad page takes the stick back onto it — one stick, never
+// two. Left-handed mirrors to the bottom-left over the chat overlay (its lines
+// are pointer-events:none, exactly as in landscape).
+const PORT_GHOST_GAP = 10;
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
 // keyboard player would.
@@ -147,7 +164,8 @@ export function mountGamepadStick(page: HTMLElement) {
   // (a child or ::before can't escape it either; parent opacity applies to
   // the whole group). So the blur is a full-opacity, transparent disc pinned
   // under the stick (z 3 vs 4), carrying exactly the bars chips' blur(5px).
-  // Landscape only — the portrait stick sits on the opaque HUD page.
+  // Ghost modes only (landscape; portrait with the gamepad page hidden) — on
+  // the page the stick sits on the opaque HUD.
   const padBlur = mk("div", "ml-pad-blur");
   page.appendChild(padBlur);
 
@@ -272,6 +290,11 @@ export function mountGamepadStick(page: HTMLElement) {
     const vis = page.clientWidth > 0;
     if (vis && lastHand !== null && leftHand !== lastHand) armAnim();
     lastHand = leftHand;
+    // GHOST = the stick floats over the game view instead of sitting on the
+    // page: landscape on every tab, and portrait whenever the gamepad page is
+    // hidden (PORT_GHOST_GAP). The root class carries the ghost alphas.
+    const ghost = land || !vis;
+    document.documentElement.classList.toggle("ml-stickghost", ghost);
     if (land) {
       // LANDSCAPE: the stick leaves the page ENTIRELY — reparented to <body>
       // so it shows on EVERY tab (maintainer 2026-08-05: "always display the
@@ -288,13 +311,13 @@ export function mountGamepadStick(page: HTMLElement) {
       if (pad.parentElement !== document.body) document.body.append(padBlur, pad);
       pad.style.position = "fixed";
       pad.style.zIndex = "4";
+      pad.style.right = pad.style.bottom = "";
       pad.style.left = `${leftHand ? LAND_INSET : window.innerWidth - LAND_INSET - well}px`;
       pad.style.top = `${window.innerHeight - LAND_INSET - well}px`;
       // the blur disc rides exactly under it
       padBlur.style.display = "block";
       padBlur.style.width = padBlur.style.height = `${well}px`;
-      padBlur.style.left = pad.style.left;
-      padBlur.style.top = pad.style.top;
+      for (const k of ["left", "top", "right", "bottom"] as const) padBlur.style[k] = pad.style[k];
       // JUMP sits UNDER PICK UP (maintainer 2026-08-05) — a centred vertical
       // stack around the column's midline, label above each button. Page-
       // relative writes only while the page is VISIBLE: while it is
@@ -317,15 +340,34 @@ export function mountGamepadStick(page: HTMLElement) {
         jumpLabel.style.top = `${Math.round(midY + gap / 2 - 10)}px`;
       }
       walkLabel.style.display = "none"; // a floating label over world art is noise
+    } else if (ghost) {
+      // PORTRAIT GHOST: the page is hidden, so the stick floats over the game
+      // view as the top of the corner stack (see PORT_GHOST_GAP) — anchored
+      // in CSS to --hud-h and --ml-stack-top like the Wiki row and the pill,
+      // so it rides with them. Same z 4 as landscape: under the chat overlay
+      // (5/6), the pill and the Wiki row (8), so "pressing on the wiki or the
+      // search still works" is the z-order, not a special case — and a press
+      // beside the well reaches the canvas, because only the well listens.
+      if (pad.parentElement !== document.body) document.body.append(padBlur, pad);
+      pad.style.position = "fixed";
+      pad.style.zIndex = "4";
+      pad.style.left = pad.style.top = pad.style.right = "";
+      pad.style[leftHand ? "left" : "right"] = `calc(var(${leftHand ? "--gv-left" : "--gv-right"}, 0px) + 10px)`;
+      pad.style.bottom = `calc(var(--hud-h, 38.2dvh) + var(--ml-stack-top, 88px) + ${PORT_GHOST_GAP}px)`;
+      padBlur.style.display = "block";
+      padBlur.style.width = padBlur.style.height = `${well}px`;
+      for (const k of ["left", "top", "right", "bottom"] as const) padBlur.style[k] = pad.style[k];
+      walkLabel.style.display = "none";
     } else {
-      // PORTRAIT: back into the page (absolute inside it), opaque.
+      // PORTRAIT PAGE: back into the page (absolute inside it), opaque.
       if (pad.parentElement !== page) {
         page.insertBefore(pad, page.firstChild);
         page.insertBefore(padBlur, pad);
       }
       pad.style.position = "";
       pad.style.zIndex = "";
-      padBlur.style.display = "none"; // portrait sits on the opaque HUD page
+      pad.style.right = pad.style.bottom = "";
+      padBlur.style.display = "none"; // the page is opaque — nothing to blur
       if (vis) {
         pad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
         pad.style.top = `${Math.round(midY - well / 2)}px`;
@@ -509,32 +551,33 @@ function injectStyles() {
   .ml-pad-top{position:absolute;border-radius:50%;pointer-events:none;box-sizing:border-box;
     background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow);
     transition:transform ${SNAP_MS}ms ease-out,opacity .25s ease}
-  /* ── the LANDSCAPE ghost's rest alphas (maintainer 2026-08-05, two
-     rounds). The cap always reads a step stronger than the well, and DARK
+  /* ── the GHOST's rest alphas — :root.ml-stickghost, set by layout() in
+     landscape and in portrait while the gamepad page is hidden (maintainer
+     2026-08-05, two rounds). The cap always reads a step stronger than the well, and DARK
      carries both a good deal further — a faint grey ghost vanishes against
      dark terrain:
        light: well .15 (85% transparent), cap .25 (75%)
        dark:  well .40 (60% transparent), cap .50 (50%)
      Dark is BOTH the explicit choice and the OS default, exactly like the
      theme tokens (theme.ts deletes data-theme when following the OS), so
-     each dark rule needs its media twin. Portrait is fully opaque — the
-     stick sits on the solid HUD page there. ── */
-  :root.ml-land .ml-pad-well{opacity:.15}
-  :root.ml-land .ml-pad-top{opacity:.25}
-  :root[data-theme="dark"].ml-land .ml-pad-well{opacity:.4}
-  :root[data-theme="dark"].ml-land .ml-pad-top{opacity:.5}
+     each dark rule needs its media twin. On the gamepad page the stick is
+     fully opaque — it sits on the solid HUD there. ── */
+  :root.ml-stickghost .ml-pad-well{opacity:.15}
+  :root.ml-stickghost .ml-pad-top{opacity:.25}
+  :root[data-theme="dark"].ml-stickghost .ml-pad-well{opacity:.4}
+  :root[data-theme="dark"].ml-stickghost .ml-pad-top{opacity:.5}
   @media (prefers-color-scheme:dark){
-    :root:not([data-theme]).ml-land .ml-pad-well{opacity:.4}
-    :root:not([data-theme]).ml-land .ml-pad-top{opacity:.5}
+    :root:not([data-theme]).ml-stickghost .ml-pad-well{opacity:.4}
+    :root:not([data-theme]).ml-stickghost .ml-pad-top{opacity:.5}
   }
   /* IN USE both parts go fully visible, whatever their rest alpha. The
-     :root.ml-land prefix is LOAD-BEARING: the dark rest rules above carry an
+     :root.ml-stickghost prefix is LOAD-BEARING: the dark rest rules above carry an
      attribute selector, so a plain .ml-pad-stick.held .ml-pad-well loses
      the specificity race to them and the ghost stayed faint while held in
      dark mode (light mode won only by source order — measured, not
      theorised). */
-  :root.ml-land .ml-pad-stick.held .ml-pad-well,
-  :root.ml-land .ml-pad-stick.held .ml-pad-top{opacity:1}
+  :root.ml-stickghost .ml-pad-stick.held .ml-pad-well,
+  :root.ml-stickghost .ml-pad-stick.held .ml-pad-top{opacity:1}
   /* JUMP: a round wiki button */
   .ml-pad-pickup{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
     background:var(--surface);border:1px solid var(--border);box-shadow:var(--shadow);

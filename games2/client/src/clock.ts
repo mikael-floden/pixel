@@ -269,6 +269,11 @@ function mount() {
      golden-ratio split it computes. When a chat box is focused the phone
      keyboard covers this corner, so hud.ts lifts the pill (and the chat log)
      above the floated input via :root.ml-kb-up — hence the transition. */
+  /* --ml-stack-top: how far the corner stack (Wiki row + this pill) reaches
+     above the HUD rail — the pill's bottom offset plus its outer height. The
+     portrait ghost stick (gamepad.ts) parks one gap above it, so a taller
+     pill lifts the stick instead of sliding under it. */
+  :root{--ml-stack-top:calc(10px + var(--ml-stack-step, 44px) + ${AH * SCALE + 2}px)}
   .ml-clock{position:fixed;right:calc(var(--gv-right,0px) + 10px);
     bottom:calc(var(--hud-h, 38.2dvh) + 10px + var(--ml-stack-step, 44px));z-index:8;
     width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
