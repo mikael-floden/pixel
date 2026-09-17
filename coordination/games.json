@@ -497,12 +497,12 @@
   ],
   "updated_at": "2026-09-08T16:05:58+00:00",
   "health": "running",
-  "current": "THE BRAZIER LINE, PART 2 (maintainer 2026-09-17, on the shipped after-image): the right wall beside the inner corner is lit while the run beyond it sits in a phantom shadow. The march's HARD test reads the deck-inflated occlusion height, so under a cave lid EVERY floor sample is a hard hit and the skirt rule's protection is defeated — the corner column's bilinear ground skirt (0.2 weight = 8.8) then shadows the wall from a brazier that clears the corner. Fix: the hard test takes the two-span rule (a slab over the light is air; the GROUND column is the hard blocker), shader + twin; verify-shadowline gains the arm. files: client/src/nightlight.ts, scripts/verify-shadowline.mjs, docs/lighting.md. Part 1 shipped: see the last commit.",
+  "current": "TWO UNITS. (1) THE BRAZIER LINE, PART 2 — pushing once the gates finish: the light's own-trunk skip spares its piece only (never the terrain column beside it) and the march's hard test takes the two-span rule (a lid over the light is air). files: client/src/nightlight.ts, scripts/verify-shadowline.mjs, docs/lighting.md, CLAUDE.md. (2) NAV: 'the door is literally next to the player' (maintainer 2026-09-17, 299.3,199.1 into the house's south wall): the door-finder deflects toward the door at 165 ms, then rule 0's escape fires at 297 ms (no progress along the ask while sliding to the door) and routes west round the house. Fix: in the escape's no-progress branch a door within STEER_DOOR_RANGE wins over a route. files: shared/src/index.ts, server/test/wallcorner.test.ts (or a new doorfirst.test.ts), docs/movement.md, CLAUDE.md.",
   "consumes": [
     "characters",
     "tiles",
     "maps",
     "objects"
   ],
-  "updated": "2026-09-17T18:13:55+00:00"
+  "updated": "2026-09-17T18:49:56+00:00"
 }
