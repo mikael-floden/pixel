@@ -66,6 +66,32 @@ let jump = 0, jz = 0;
 for (let k = 1; k < occ.length; k++) { const d = Math.abs(occ[k] - occ[k - 1]); if (d > jump) { jump = d; jz = zs[k]; } }
 console.log(`twin: brazier occ up (205.99,207.5) z ${zs[0]}..${zs[zs.length - 1]}: ${occ.map((v) => v.toFixed(2)).join(" ")} — largest step ${jump.toFixed(2)} at z=${jz} (light z ${bz})`);
 if (!(jump < 0.15)) fail(`twin: the brazier's occlusion jumps ${jump.toFixed(2)} at z=${jz} — the march stops at the light's height`);
+
+// C. THE INNER CORNER OF THE RIGHT WALL IS IN THE CORNER COLUMN'S SHADOW, AND
+// THE WALL ONLY GETS LIGHTER AWAY FROM IT. The stone column at (207,204) stands
+// on the ray from the first ~0.3 cells of the +row face of (208,203) to the
+// brazier, but those samples fell inside the light's own-trunk skip (a one-cell
+// radius around the brazier's cell, meant for the fire's own piece) and the
+// strip at the corner read fully lit while a phantom band a cell out (every
+// floor sample under the lid counted as a hard hit, then the column's bilinear
+// ground skirt) sat in shadow — dark, bright, dark, bright along one wall
+// (his second mark, 2026-09-17: "the red area being fully lit up is the bug").
+// Read on the SHADER's light field (calibration 5) along the face at z ~5: the
+// CPU twin has no face push and does not track a face pixel's march.
+await page.evaluate(() => window.__ml.nightCal(0, 1, 5));
+await page.waitForTimeout(800);
+const png5 = PNG.sync.read(await page.screenshot());
+const lum5 = (x, y) => { const i = (y * png5.width + x) * 4; return 0.299 * png5.data[i] + 0.587 * png5.data[i + 1] + 0.114 * png5.data[i + 2]; };
+await page.evaluate(() => window.__ml.nightCal(0, 1, 0));
+for (const y of [480, 600]) {
+  const run = []; for (let x = 590; x <= 790; x += 10) run.push(lum5(x, y));
+  const peak = Math.max(...run);
+  const at = run.indexOf(peak);
+  console.log(`right wall from the corner, y=${y}: ${run.map((v) => v.toFixed(0)).join(" ")} — corner ${run[0].toFixed(0)}, peak ${peak.toFixed(0)} at +${at * 10}px`);
+  if (!(run[0] < 0.7 * peak)) fail(`y=${y}: the corner strip (${run[0].toFixed(0)}) is not in the column's shadow (peak ${peak.toFixed(0)})`);
+  for (let k = 1; k <= at; k++) if (run[k] < run[k - 1] - 8) fail(`y=${y}: the wall gets DARKER away from the corner at +${k * 10}px (${run[k - 1].toFixed(0)} -> ${run[k].toFixed(0)})`);
+  for (let k = at + 1; k < run.length; k++) if (run[k] > run[k - 1] + 8) fail(`y=${y}: a second bright band at +${k * 10}px (${run[k - 1].toFixed(0)} -> ${run[k].toFixed(0)}) — the lid phantom`);
+}
 if (errs.length) fail(`page errors: ${errs.join(" | ")}`);
 await browser.close();
 console.log(process.exitCode ? "verify-shadowline: FAIL" : "verify-shadowline: ALL OK");

@@ -35,7 +35,9 @@ for (const [c, r, what] of SPOTS) {
   await page.evaluate(([c, r]) => window.__ml.teleport(c, r), [c, r]);
   // The cut-away's crossfade must have landed: the twin is gated on the ease.
   let ok = false;
-  for (let i = 0; i < 40; i++) { await page.waitForTimeout(500); const s = await page.evaluate(() => window.__ml.indoor()); if (s.indoor && s.mix >= 0.999 && !s.pending === false) { ok = true; break; } }
+  // The harness renders his geometry at ~1.7 fps (measured, SwiftShader), and the
+  // crossfade is eased per frame: it lands in ~27 s here, 0.35 s on a phone.
+  for (let i = 0; i < 90; i++) { await page.waitForTimeout(500); const s = await page.evaluate(() => window.__ml.indoor()); if (s.indoor && s.mix >= 0.999 && !s.pending === false) { ok = true; break; } }
   const d = await page.evaluate(([wc, wr, fc, fr]) => {
     const lum = (v) => (Array.isArray(v) ? 0.299 * v[0] + 0.587 * v[1] + 0.114 * v[2] : Number(v) || 0);
     const col = (cc, rr) => Array.from({ length: 30 }, (_, z) => +lum(window.__ml.lightAtCell(cc, rr, z)).toFixed(3));

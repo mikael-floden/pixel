@@ -421,6 +421,22 @@ float sceneryNearAt(vec2 cr) {
 // its texel centre, so the bilinear filter returns the cell's own value with
 // no neighbour blended in. The march's HARD test: does this cell itself stand
 // above the ray? (see skirtOcc)
+// THE HARD TEST TAKES THE TWO-SPAN RULE. heightAtHard is the occlusion
+// height, max(ground, deck): under a cave lid EVERY floor sample read as a
+// hard hit, the skirt law protected nothing indoors, and the corner column's
+// bilinear ground skirt (0.2 weight of a 24-storey column = 8.8) shadowed the
+// ice cave's right wall from a brazier that clears the corner — a phantom
+// band a cell out from the corner, beside a strip the trunk skip left lit
+// (maintainer 2026-09-17). A slab with the light UNDER it is open air; the
+// hard blocker is the GROUND column (groundAt: terrain + scenery share, so a
+// barrel under a roof still blocks). Twin: hardAt in lightAt.
+float heightAtHard(vec2 cr);
+float hardHeightAt(vec2 cr, float lz) {
+  float h = heightAtHard(cr);
+  float g = groundAt(cr);
+  return (h > g + 0.01 && lz <= h) ? g : h;
+}
+
 float heightAtHard(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
   return texture2D(uHeightL, (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z)).r * 255.0 / uHScale;
@@ -1283,6 +1299,11 @@ void main() {
         // the wall cell — a false dark notch along every base line.
         vec2 dp = p - pos;
         if (dot(dp, dp) < 0.56) continue;
+        // THE SHADOW'S OWN LIGHT HEIGHT (uLightExt.x = lp.z for every light that
+        // does not ask for another). Everything else on this ray — the
+        // attenuation above, skirtOcc's two-span deck rule below — keeps the
+        // REAL height: a deck still blocks by where the light physically is.
+        float hRay = mix(z, lsz, t) + 0.2;
         // THE LIGHT'S OWN NEAR FIELD, the mirror of the pixel's: a torch held
         // within half a cell of a tall column stands INSIDE that column's
         // bilinear skirt, and every ray's last samples — the ones nearest the
@@ -1295,12 +1316,14 @@ void main() {
         vec2 dl = p - lp.xy;
         if (dot(dl, dl) < ${LIGHT_NEAR_R2}) continue;
         if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
-        if (lShare > 0.0 && dot(p - lC, p - lC) < 1.0) continue;
-        // THE SHADOW'S OWN LIGHT HEIGHT (uLightExt.x = lp.z for every light that
-        // does not ask for another). Everything else on this ray — the
-        // attenuation above, skirtOcc's two-span deck rule below — keeps the
-        // REAL height: a deck still blocks by where the light physically is.
-        float hRay = mix(z, lsz, t) + 0.2;
+        // ...AND THE PIECE ONLY, NEVER THE STONE BESIDE IT: the radius reaches
+        // into the neighbouring cells, and a terrain column standing there is a
+        // real occluder — the ice cave's corner column at 207,204 sits on the
+        // ray from the inner corner of the right wall to the brazier one cell
+        // away, and the skip lit that strip while the wall beyond it was in
+        // shadow (maintainer 2026-09-17: "the red area being fully lit up is the
+        // bug"). Share-free ground read, so the skip still covers the fire.
+        if (lShare > 0.0 && dot(p - lC, p - lC) < 1.0 && groundTerrAt(p) <= hRay) continue;
         // A WALL MUST NOT SHADOW ITS OWN FOOT THROUGH ITS BILINEAR SKIRT.
         // The march reads the LINEAR height map so cast shadows get a
         // penumbra — and that same filter smears a wall's height half a cell
@@ -1349,7 +1372,7 @@ void main() {
         // in front of it. Unshadowed rays now cost two nearest fetches per
         // sample (the sample and the midpoint below) where they cost two
         // bilinear ones; shadowed samples cost up to four.
-        float hHard = heightAtHard(ps);
+        float hHard = hardHeightAt(ps, lp.z);
         bool hard = hHard < 90.0 && hHard > hRay;
         // A THIN WALL BETWEEN TWO SAMPLES IS STILL A HIT. Samples sit
         // dist/13 apart — 1.2 cells under a radius-16 hearth — so a one-cell
@@ -1361,10 +1384,11 @@ void main() {
           vec2 pm = 0.5 * (p + prevP);
           bool own = floor(pm.x) == floor(pos.x) && floor(pm.y) == floor(pos.y);
           if (ownShare > 0.0 && dot(pm - ownC, pm - ownC) < 1.0) own = true;
-          if (lShare > 0.0 && dot(pm - lC, pm - lC) < 1.0) own = true;
+          float hRayM = 0.5 * (hRay + prevHRay);
+          if (lShare > 0.0 && dot(pm - lC, pm - lC) < 1.0 && groundTerrAt(pm) <= hRayM) own = true;
           if (!own) {
-            float hm = heightAtHard(pm);
-            hard = hm < 90.0 && hm > 0.5 * (hRay + prevHRay);
+            float hm = hardHeightAt(pm, lp.z);
+            hard = hm < 90.0 && hm > hRayM;
           }
         }
         if (hard || prevHard) {
@@ -3773,6 +3797,24 @@ export class NightLights {
     const hAtSoft = soft2(this.hArr);
     // Twin of groundAtSoft: the ground column alone, deck excluded.
     const gAtSoft = soft2(this.gArr);
+    const gAt = (c: number, r: number) => {
+      const ci = Math.floor(c), ri = Math.floor(r);
+      return ci < 0 || ri < 0 || ci >= W || ri >= H ? 99 : this.gArr[ri * W + ci];
+    };
+    // Twin of hardHeightAt: a slab with the light under it is air for the
+    // hard test; the ground column (terrain + share) is the hard blocker.
+    const hardAt = (c: number, r: number, lz: number) => {
+      const h = hAt(c, r);
+      const g = gAt(c, r);
+      return h > g + 0.01 && lz <= h ? g : h;
+    };
+    // Twin of groundTerrAt: the ground column WITHOUT its scenery share.
+    const terrAt = (c: number, r: number) => {
+      const ci = Math.floor(c), ri = Math.floor(r);
+      if (ci < 0 || ri < 0 || ci >= W || ri >= H) return 99;
+      const i = ri * W + ci;
+      return this.gArr[i] - (this.hasSceneryShares ? this.sArrG[i] : 0);
+    };
     // Same clock as uAnimTime (scene.time.now): the shader's flicker and the
     // scenery-lit pipeline's are on it, and a copy beside a shaded piece must
     // breathe in phase with it (game.loop.getDuration lags by the boot).
@@ -3899,21 +3941,24 @@ export class NightLights {
           const py = row + dy * tt;
           if (Math.floor(px) === Math.floor(col) && Math.floor(py) === Math.floor(row)) continue;
           if ((px - col) * (px - col) + (py - row) * (py - row) < 0.56) continue; // near-field
+          const hRay = z + (lsz - z) * tt + 0.2;
           if ((px - L.col) * (px - L.col) + (py - L.row) * (py - L.row) < LIGHT_NEAR_R2) continue; // the light's near field (see FRAG)
           if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
-          if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0) continue; // the LIGHT's own trunk (a fire IS its piece)
-          const hRay = z + (lsz - z) * tt + 0.2;
-          const hHard = hAt(px, py);
+          // The LIGHT's own trunk (a fire IS its piece) — the piece only, never a
+          // terrain column standing above the ray in the cell beside it (see FRAG).
+          if (lShare > 0 && (px - lcx) * (px - lcx) + (py - lcy) * (py - lcy) < 1.0 && terrAt(px, py) <= hRay) continue;
+          const hHard = hardAt(px, py, L.z);
           let hard = hHard < 90 && hHard > hRay;
           if (!hard && prevOk) {
             // A thin wall between two samples is still a hit (see FRAG).
             const mx = 0.5 * (px + prevPx), my = 0.5 * (py + prevPy);
             let own = Math.floor(mx) === Math.floor(col) && Math.floor(my) === Math.floor(row);
             if (ownShare > 0 && (mx - ocx) * (mx - ocx) + (my - ocy) * (my - ocy) < 1.0) own = true;
-            if (lShare > 0 && (mx - lcx) * (mx - lcx) + (my - lcy) * (my - lcy) < 1.0) own = true;
+            const hRayM = 0.5 * (hRay + prevHRay);
+            if (lShare > 0 && (mx - lcx) * (mx - lcx) + (my - lcy) * (my - lcy) < 1.0 && terrAt(mx, my) <= hRayM) own = true;
             if (!own) {
-              const hm = hAt(mx, my);
-              hard = hm < 90 && hm > 0.5 * (hRay + prevHRay);
+              const hm = hardAt(mx, my, L.z);
+              hard = hm < 90 && hm > hRayM;
             }
           }
           if (hard || prevHard) {

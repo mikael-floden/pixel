@@ -371,7 +371,17 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   each segment is hard-tested too: samples sit dist/13 apart, 1.2 cells
   under a radius-16 hearth, and a one-cell house wall can fall between two
   (the bilinear reads caught it from either side; exact reads alone let the
-  light through). Cost: two nearest fetches per sample on an unshadowed ray
+  light through). THE HARD TEST TAKES THE TWO-SPAN RULE (`hardHeightAt`,
+  twin `hardAt`): the nearest read is the occlusion height, max(ground,
+  deck), so under a cave lid every floor sample was a hard hit and this law
+  protected nothing indoors — the corner column's bilinear ground skirt (0.2
+  weight of a 24-storey column = 8.8) shadowed the ice cave's right wall a
+  cell out from the corner, beside a corner strip the trunk skip left lit:
+  dark, bright, dark, bright along one wall (maintainer 2026-09-17). A slab
+  with the light under it is air; the hard blocker is the ground column,
+  share included (a barrel under a roof still blocks). Gate:
+  `verify-shadowline.mjs` arm C, on the shader's own field. Cost: two nearest
+  fetches per sample on an unshadowed ray
   where two bilinear ones were; up to four on a shadowed sample. `skirtOcc`
   holds the soft read, the deck two-span rule and the scenery hardness; the
   CPU twin `lightAt` mirrors the whole state machine. The sun march is
@@ -551,7 +561,21 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   THE SAME WAY (`lShare`,
   twin `lShare`): a fire IS its piece, and a share taller than the light
   (a lamp post's 2 levels vs a light at head height) would block its own
-  pool from the samples that land in its cell. By construction — the cave
+  pool from the samples that land in its cell. THE PIECE ONLY, NEVER THE
+  STONE BESIDE IT: the skip is a one-cell radius around the light's cell
+  centre, which reaches into the neighbouring cells, and a TERRAIN column
+  standing there is a real occluder — the ice cave's corner column at 207,204
+  sits on the ray from the inner corner of the right wall to the brazier one
+  cell away, and the skip lit that strip while the run beyond it was in
+  shadow (maintainer 2026-09-17, on the shipped shadow-line fix: "the red
+  area being fully lit up is the bug"). A sample inside the radius is skipped
+  only while its share-free ground (`groundTerrAt`, twin `terrAt`) is under
+  the ray. Rejected: dropping the lid from the hard test so the run beyond
+  the corner lights up — that removed the corner's whole penumbra, which he
+  had judged right ("the outer part already in shadow looks good"); the
+  flame has a size, and a wall beside a corner column is meant to go soft.
+  Gate: `verify-shadowline.mjs` arm C — the shadow starts AT the corner and
+  never darkens further along the wall. By construction — the cave
   braziers' fires sit above their 1-level share (own ring identical on/off);
   town emitters after: the one real town emitter, a bonfire at 443.5,364.5 with no share in its own cell, reads its pool 0.92x with shadows on - a uniform 8% from its OWN multi-cell footprint, outside the own-cell skip; a per-light exclusion radius needs a uniform slot (open). Trunk position is cell-quantised (one texel per cell): up
   to 0.5 cell from the drawn trunk, and the day pool keeps the patch's 0.35-

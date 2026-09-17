@@ -171,23 +171,23 @@ push, no PRs unless asked.
   shared math lives in `shared/` once; the client predicts the same grid.
 - Never weaken the collision probes to fix a wedge: `unstickFromSolids` is the
   escape, and the rescue never climbs — and it keeps `WALL_STANDOFF` (=
-  PLAYER_RADIUS) off any face the body cannot jump onto (the lateral probes
-  read solids only; a refused move wedges; `wallclear.test.ts`).
+  PLAYER_RADIUS) off any face the body cannot jump onto (lateral probes read
+  solids only; a refused move wedges; `wallclear.test.ts`).
 - A >2-cell position correction re-checks the indoor verdict but NEVER resets
   the doorway crossfade — only a room change does; its SPEED is a dial (1.00x
-  is his, and slower is the only instrument for a one-frame report).
+  is his; slower is the one instrument for a one-frame report).
 - A footprint and a body belong to the FLOOR they stand on (`lvl`); every
   query that knows the surface level passes it.
 - The nav avoids fall damage at any cost: ≥6 levels is not an edge, and the
-  walker never STEERS off a step it cannot undo either (a drop of more than a
-  jump below the route's own next level is not open); a fall bills on IMPACT
+  walker never STEERS off a step it cannot undo (a drop of more than a jump
+  below the route's own next level is not open); a fall bills on IMPACT
   (`fallPend`), drawn on the client's predicted frame (`fallhurt.ts`), and the
   slow FADES with the number.
-- Water is the player's sanctuary (no monster enters or is hit there) and is
-  as FLAT under the feet as in the art (`swimlevel.test.ts`).
+- Water is the player's sanctuary (no monster enters or is hit there), as
+  FLAT underfoot as in the art (`swimlevel.test.ts`).
 - The speed dial and the acceleration ramp ride PER INPUT (`InputMessage.sm`,
   `.ac`) and the SERVER clamps them; 1.1x and 0.17 s to full speed ARE HIS
-  (`playerspeed.ts`, `accel.ts`, `accelStep`).
+  (`playerspeed.ts`, `accel.ts`).
 - The stick "almost" snaps: `leanHeading` leans between the octants' run
   headings by his dial (0 snap, 1 continuous; 0.85 IS HIS); the grid-axis
   lock locks EXACT diagonals only; the bearing is games-ui's stick's
@@ -260,28 +260,28 @@ netcode; these are the invariants)
 - `uCam` is this frame's rectangle (`renderedWorldView`), never `worldView`.
 - The light slot ledger: 12 slots, 8 world, strict reservations, tenure not
   re-ranking; a light is a candidate when its POOL can touch the view
-  (`poolReachPx`); remote torches are never lights; a world light is a real
-  light at the campfire's peak; a sealed-room fire is indoor-only.
+  (`poolReachPx`); remote torches are never lights; a world light is real at
+  the campfire's peak; a sealed-room fire is indoor-only.
 - Scenery lights read the manifest `light` block as given (no radius cap) and
   cast shadows; scenery occludes like a prop, own cell = contact + directional
   core; the switches are pushed on the shader being BUILT.
-- The light passes render at half resolution by default (his eye first sees
-  25%), the glow field too; an overlay's RT ratio survives update().
+- The light passes and the glow field render at half resolution by default
+  (his eye first sees 25%); an overlay's RT ratio survives update().
 - Solid objects are art, not walls (no face band); a cave mouth is not a face.
-- The wall wash is per PIXEL (lateral to the pixel), wrap = his dial (0.7),
-  front gate fades over 2wu (a torch pressed to a wall must not dim it); the
-  LOS march never blends a wall's own height into its front skirt nor the
-  skirt the LIGHT stands in, a skirt sample counts only beside a HARD hit, and
-  every surface marches, above the light too (no shadow ends at the light's
-  height). Gates: `verify-wallwash.mjs`, `verify-wallfoot.mjs`,
-  `verify-shadowline.mjs`.
+- The wall wash is per PIXEL, wrap = his dial (0.7), front gate fades over
+  2wu (a torch pressed to a wall must not dim it); the LOS march never blends
+  a wall's own height into its front skirt nor the skirt the LIGHT stands in;
+  a skirt sample counts only beside a HARD hit (ground column; a lid is air);
+  the trunk skip spares the piece only; every surface marches, above the
+  light too (no shadow ends at the light's height). Gates:
+  `verify-wallwash.mjs`, `verify-wallfoot.mjs`, `verify-shadowline.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
-  load-bearing (equal sun and moon speed on the pill).
+  load-bearing (equal sun and moon speed).
 - Indoor ambient: dark 40%, lit 25%; hidden outline 20% (his).
 - MY ROOM IS A VOLUME: the room test takes a HEIGHT — the deck over the
   SAMPLE'S OWN column (`roomCeilAt`; no deck, no line), never the one under
   my feet (`verify-cavewall.mjs`); over my own roof its lights and halo are
-  blocked outright, on `occ` (all the scenery pipeline reads).
+  blocked outright, on `occ`, which scenery reads.
 
 **UI and mobile** (`docs/ui.md`, `UI_AGENT.md`)
 - Wiki-themed DOM HUD, golden split, ONE 10 px edge margin; pixel art scales
