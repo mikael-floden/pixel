@@ -260,7 +260,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     ok("ambient header not built (ambient layer down) — look-match check skipped");
   }
 
-  // ── WHERE HIS THUMBS ARE. The portrait centres are the spots he marks in
+  // ── WHERE HIS THUMBS ARE. JUMP's portrait centre is the spot he marked in
   //    red on a device screenshot (2026-09-17: "I have placed two red cross
   //    where I think the new WALK and JUMP input center should be. My new
   //    location feels more where my thumbs are when holding the phone"), and
@@ -268,7 +268,13 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   //    happened to be, so any later edit could drift his marks silently.
   //    Asserted as a FRACTION of the page's own width, which is what the code
   //    positions by and what survives a different phone; ±3 css px, well
-  //    inside the ~2px his hand-drawn crosses measure to. ──
+  //    inside the ~2px his hand-drawn crosses measure to.
+  //    THE OTHER TWO ARE A RULE, NOT A MARK: the row reads balanced when the
+  //    two inner gaps match (2026-09-17: "the controls is now not in balance
+  //    and the MOVE controller should be somewhat placed more to the right"
+  //    — with margins 35.2/38.2 and gaps 40.1/23.5, the crowding was the
+  //    gaps). Both are checked, so a later size change that keeps the
+  //    fractions but breaks the rhythm still fails here. ──
   await page.evaluate(() => document.querySelector('[data-tab="gamepad"]')?.click());
   await page.waitForTimeout(350);
   const spots = await page.evaluate(() => {
@@ -282,7 +288,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     };
     return { W: page_?.clientWidth ?? 0, jump: mid(".ml-pad-jump"), pick: mid(".ml-pad-pickup"), stick: mid(".ml-pad-stick") };
   });
-  const WANT = { jump: 0.19, pick: 0.465, stick: 0.75 };
+  const WANT = { jump: 0.19, pick: 0.454, stick: 0.771 };
   if (!spots.jump || !spots.stick) fail("gamepad controls not mounted for the placement check");
   else {
     for (const k of ["jump", "pick", "stick"]) {
@@ -292,6 +298,20 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
       Math.abs(offCss) <= 3
         ? ok(`${k} centred on his mark (${(got.fx * 100).toFixed(1)}% of ${spots.W}px, ${offCss >= 0 ? "+" : ""}${offCss.toFixed(1)}px)`)
         : fail(`${k} sits at ${(got.fx * 100).toFixed(1)}% of the page, his mark is ${(WANT[k] * 100).toFixed(1)}% — ${offCss.toFixed(1)}css px off`);
+    }
+    // …the RHYTHM: the two inner gaps equal within 2.5 css px, and neither
+    // outer margin tighter than 26 — the two ways this row goes lopsided.
+    if (spots.jump && spots.pick && spots.stick) {
+      const ed = (v) => [v.fx * spots.W - v.w / 2, v.fx * spots.W + v.w / 2];
+      const [jl, jr] = ed(spots.jump), [pl, pr] = ed(spots.pick), [sl, sr] = ed(spots.stick);
+      const gapJP = pl - jr, gapPS = sl - pr, mL = jl, mR = spots.W - sr;
+      const g = `gaps ${gapJP.toFixed(1)}/${gapPS.toFixed(1)}, margins ${mL.toFixed(1)}/${mR.toFixed(1)}`;
+      Math.abs(gapJP - gapPS) <= 2.5
+        ? ok(`the two inner gaps are even (${g})`)
+        : fail(`the row is lopsided: ${g} — the inner gaps differ by ${Math.abs(gapJP - gapPS).toFixed(1)}css px`);
+      Math.min(mL, mR) >= 26
+        ? ok(`both outer margins clear of the edge (${mL.toFixed(1)}/${mR.toFixed(1)})`)
+        : fail(`a control crowds the screen edge: margins ${mL.toFixed(1)}/${mR.toFixed(1)}`);
     }
     // …and all three share ONE row: he moved them sideways, never up or down.
     const ys = [spots.jump, spots.pick, spots.stick].filter(Boolean).map((v) => v.cy);

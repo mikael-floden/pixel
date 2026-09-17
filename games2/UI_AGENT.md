@@ -198,7 +198,7 @@ from the games agent), #18 (title/landing screen).
   KNOW and can find in the image — the analog stick's 148px well (fit a
   circle to its blur disc), the clock pill's 80×32 — then convert.
 - **THE STICK AND JUMP SIT WHERE HIS THUMBS ARE, AND HE MARKS THE SPOT**
-  (`gamepad.ts` `STICK_FX` .75 / `PICK_FX` .465 / `JUMP_FX` .19 — fractions of
+  (`gamepad.ts` `STICK_FX` .771 / `PICK_FX` .454 / `JUMP_FX` .19 — fractions of
   the HUD page's width; left-handed mirrors each). Maintainer 2026-09-17, two
   red crosses on a device screenshot: "my new location feels more where my
   thumbs are when holding the phone" — both moved OUTWARD toward the edges he
@@ -207,11 +207,20 @@ from the games agent), #18 (title/landing screen).
   for once): the shipped controls and their labels are in the same image as the
   crosses, so the page width falls out of the two fractions already known
   (jump .25 and stick .705 at 98.1 and 276.6 css ⇒ 392.3 css), and every number
-  is a ratio inside one picture. PICK UP is unmarked and unmoved: .465 is within
-  half a pixel of the midpoint of the two new spots, so it still reads as
-  "between jump and the stick". Gated in `verify-gamepad` as a FRACTION of the
-  page (±3 css px), plus one shared centre row and the left-handed mirror —
-  nothing held these before, so any edit could drift his marks silently.
+  is a ratio inside one picture. JUMP keeps his cross; the other two follow one
+  RULE — **the row reads balanced when the two INNER GAPS are equal, not when
+  the outer margins are** (maintainer 2026-09-17: "the controls is now not in
+  balance and the MOVE controller should be somewhat placed more to the right").
+  Measured at 393 css the margins were already even at 35.2/38.2, while the gaps
+  were 40.1 (jump→pick) against 23.5 (pick→stick) — the stick looked shoved
+  against PICK UP, and the margins were never the thing he saw. .771/.454 give
+  35.8/36.1 at the <585w widths (79/57/120 css): the stick 8px right, PICK UP
+  4px left. The stick cannot go much further right — it is the WIDEST control,
+  its own margin (30.0) is the tightest number in the row, and one more nudge
+  buys an edge-margin asymmetry with a gap one. Gated in `verify-gamepad` as
+  FRACTIONS (±3 css px) **and as the rule** (gaps within 2.5px, no margin under
+  26), plus one shared centre row and the left-handed mirror — nothing held any
+  of this before, so an edit could drift his marks silently.
 - HUD geometry: `applyLayout()` publishes `--hud-h`/`--hud-h-inv` in REAL px
   (consumers parseFloat them — keyboard lift, chat anchors). The split must
   keep matching `#game`'s 61.8/38.2.

@@ -61,12 +61,21 @@ const CAP_VISUAL_FRAC = 0.65;
 // land within 0.7 css px of these fractions. The vertical did not move (his
 // crosses sit at 752.0 and 751.6 against the controls' own 753.2/755.4, i.e.
 // the same row) — he moved them sideways only.
-// PICK UP IS UNMARKED AND UNMOVED: .465 already sits within half a pixel of
-// the midpoint of the two new spots ((.19 + .75)/2 = .47), so it still reads
-// as "between jump and the stick", which is the only thing ever asked of it.
-const STICK_FX = 0.75;
+// JUMP stays on his cross; the other two follow ONE RULE — the row reads
+// balanced when the two INNER GAPS are equal (maintainer 2026-09-17: "the
+// controls is now not in balance and the MOVE controller should be somewhat
+// placed more to the right"). What was unbalanced was never the outer
+// margins: measured at 393 css they were 35.2 left and 38.2 right, while
+// the gaps were 40.1 (jump→pick) against 23.5 (pick→stick), so the stick
+// looked shoved against PICK UP. These fractions give 35.8 and 36.1 at the
+// <585w tier's widths (79 / 57 / 120 css), which moves the stick 8 css px
+// right and PICK UP 4 left. The stick cannot travel much further right: it
+// is the widest control and its own outer margin, 30.0, is already the
+// tightest number in the row — going on would trade this asymmetry for an
+// edge-margin one. verify-gamepad asserts the RULE, not just the numbers.
+const STICK_FX = 0.771;
 const JUMP_FX = 0.19;
-const PICK_FX = 0.465;
+const PICK_FX = 0.454;
 // LANDSCAPE ghost inset from the game view's corner, css px. The maintainer
 // marked the centre he wants in red on two device screenshots (2026-08-05):
 // ~257 DEVICE px in from the side edge AND from the bottom, "the margins
