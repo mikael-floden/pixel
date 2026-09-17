@@ -1,8 +1,8 @@
 {
   "domain": "games-ui",
-  "updated_at": "2026-09-17T16:57:00+00:00",
+  "updated_at": "2026-09-17T17:19:37+00:00",
   "health": "running",
-  "current": "idle \u2014 last shipped d51b3c759d: backpack drag-to-swap with live preview (client + server + gate); all nine claimed files released. Recent: d2494d69a4 light intensity default 0.30x, 42e79f9d07 map row chips only, f6fda9520d toggles collapse.",
+  "current": "CLAIM: backpack HOLD-TO-SELECT (maintainer 2026-09-17: press a slot without moving for ~0.25s and it selects itself, then the same gesture drags; a finger that moves early still scrolls). files: games2/client/src/hud.ts, games2/scripts/verify-bagswap.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
