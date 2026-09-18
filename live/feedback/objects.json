@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-09-18T01:56:59.096Z",
+  "updated_at": "2026-09-18T01:57:39.021Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -2214,9 +2214,10 @@
     },
     "scenery/cupboards_and_shelves/cupboard_010#lit_3#south": {
       "rating": 5,
-      "updated_at": "2026-08-16T18:54:08.126Z",
-      "status": "approved",
-      "art": "a34a5f9df5e61891"
+      "updated_at": "2026-09-18T01:57:18.228Z",
+      "status": "redo",
+      "art": "a34a5f9df5e61891",
+      "note": "Not enough frames!"
     },
     "scenery/cupboards_and_shelves/cupboard_010#lit_4#south": {
       "status": "approved",
@@ -30967,6 +30968,14 @@
       "updated_at": "2026-09-18T01:57:00.305Z",
       "status": "redo",
       "note": "not enough frames for an animation!"
+    },
+    "scenery/cupboards_and_shelves/cupboard_010#lit_3#south-east": {
+      "note": "Not enough frames!",
+      "updated_at": "2026-09-18T01:57:27.123Z"
+    },
+    "scenery/cupboards_and_shelves/cupboard_010#lit_3#south-west": {
+      "note": "Not enough frames!",
+      "updated_at": "2026-09-18T01:57:40.738Z"
     }
   }
 }
