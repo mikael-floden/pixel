@@ -16,6 +16,9 @@ import { gameAudio } from "../../composer/index";
 const DEPTH = 1_499_900; // sky band, above bats, below shooting stars
 const BASE_WEIGHT = 0.35;
 const STRIKE_EVERY_MS: [number, number] = [7_000, 26_000];
+/** No strike within this of the outdoor gain coming back — a strike on the
+ *  exit's landing frame reads as the fade flashing the house. */
+const EXIT_HOLD_MS = 4_000;
 const COLOR = 0xdbe2ff; // cold blue-white sheet light
 
 export function thunderFeature(): AmbientFeature {
@@ -26,6 +29,7 @@ export function thunderFeature(): AmbientFeature {
   // A strike is 2-3 alpha spikes over ~600 ms: (time-offset ms, peak alpha).
   let spikes: [number, number][] = [];
   let strikeT = -1; // ms since strike start; -1 = idle
+  let wasOut = true; // the outdoor gain stood above 0.5 last frame
   let seed = 29;
   const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
 
@@ -75,6 +79,14 @@ export function thunderFeature(): AmbientFeature {
         .setVisible(false);
     },
     update(ctx, dt) {
+      // NO STRIKE WITHIN EXIT_HOLD_MS OF STEPPING OUT (maintainer 2026-09-18:
+      // "the indoor to outdoor fade still ends with a flash"). The clock runs
+      // on indoors (the gain only hides the sheet), so a strike due while he
+      // stood inside landed the moment the gain rose after the exit and read
+      // as the fade flashing the house.
+      const out = ctx.outdoor > 0.5;
+      if (out && !wasOut && active) nextStrikeIn = Math.max(nextStrikeIn, EXIT_HOLD_MS);
+      wasOut = out;
       if (active) {
         nextStrikeIn -= dt;
         if (nextStrikeIn <= 0) {

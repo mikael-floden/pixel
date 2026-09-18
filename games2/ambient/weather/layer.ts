@@ -43,6 +43,8 @@ export class PrecipLayer {
   private cfg: Cfg | null = null;
   private shown = 0;
   private nextFlash = 0;
+  /** The outdoor gain stood above 0.5 last frame (see the lightning clock). */
+  private wasOut = true;
   private flashes = 0;
   private gain = 1;
   private rand = makeRand(1);
@@ -278,8 +280,16 @@ export class PrecipLayer {
 
     // Storm lightning: camera flash, occasionally double-striking, with the
     // composer's thunder roll in sync.
-    if (cfg.lightning && this.gain > 0.5 && scene.time.now >= this.nextFlash) {
-      if (this.nextFlash > 0) {
+    // NEVER ON THE FRAME THE GAIN COMES BACK (maintainer 2026-09-18, walking
+    // out of a house: "the indoor to outdoor fade still ends with a flash").
+    // This clock ran on while he stood inside, so the first frame the outdoor
+    // gain crossed 0.5 after an exit fired a strike — on that exact frame,
+    // every time. A gain that has just risen reschedules instead.
+    const gainUp = this.gain > 0.5;
+    const justOut = gainUp && !this.wasOut;
+    this.wasOut = gainUp;
+    if (cfg.lightning && gainUp && (scene.time.now >= this.nextFlash || justOut)) {
+      if (this.nextFlash > 0 && !justOut) {
         this.flashes++;
         const cam = scene.cameras.main;
         cam.flash(110, 255, 255, 245);
