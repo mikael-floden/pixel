@@ -315,3 +315,34 @@ parses it; worlds without one, or with `zones: []`, spawn nothing) — the old
 fake near-spawn debug rectangles are gone. Point-in-polygon + the `elev`
 surface rule above; the server roams monsters uniformly over the zone's spawn
 cells (`WorldRoom.ts`), staying inside the polygon at the zone's surface.
+
+## the_game — `pixel-maps3/spawns@1`, derived by the same doctrine
+
+**the_game's zones are DERIVED by `spawns.py` from the world as it stands**
+(maintainer 2026-09-18, five screenshots of one wood by the village packed
+with 24 zones' monsters while the north plateau and the north-east meadow had
+none: "Do you feel this is balanced? Can you please rebalance the game?").
+The ported island2 rectangles and the build's hand-drawn habitat rectangles
+are gone; `python3 maps2/pipeline/spawns.py the_game` writes the file and
+`--check the_game` gates it, and the build's `spawns()` step calls the same
+functions on the world in memory before recentre. The doctrine above binds
+unchanged — habitats, the difficulty gradient from the arrival point, the
+per-type budget, the crowding law, the water law, every roster monster
+present (`MUST_HAVE_ALL`) — through the `W3` adapter:
+- a pixel-maps3 ground reads as the doctrine's material (`GROUND_AS_MAT`):
+  grass → grass, light soil and dark mud → dirt, snow, ice, black rock →
+  dark, grey stone → stone, light beach → sand; the liquids (water, deep
+  water, LAVA) are the water set, so no zone contains a lava cell either;
+- every standing placement is a prop, the trees are the tall props the
+  `forest` mask reads (grass within `TREE_R` of a tree);
+- **the town is a sanctuary**: nothing within `TOWN_R` (12) cells of a house;
+- **a cave floor is the cave's** (`floor_is_base`): its ground is its own
+  (dark mud, ice, slime, rock) and belongs to no other habitat, its level is
+  the floor's, and every cave is somebody's home (`TOP_K_HAB` cave 16).
+(Measured 2026-09-18: 90 zones / 162 monsters, 30% of the land covered and
+one wood under 24 zones → 109 zones / 307 monsters, 42% covered, peak 0.050
+per cell everywhere, the wood at ~5 expected monsters within 8 cells instead
+of ~45, the plateau and the meadow at ~2 instead of 0, ten of the twelve
+caves with a cave monster of their own. The island2 loop's cave band was a
+hard-coded [0, 1]: every pixel-maps3 cave but the ported one failed the water
+law's dry mask silently — the band is read off the floor now.)

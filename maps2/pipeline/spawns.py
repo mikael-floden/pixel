@@ -60,8 +60,18 @@ sys.path.insert(0, _HERE)
 MAPS2 = os.path.dirname(_HERE)
 REPO = os.path.dirname(MAPS2)
 WORLDS = os.path.join(MAPS2, "worlds")
+WORLDS3 = os.path.join(MAPS2, "worlds3")     # pixel-maps3 worlds (the_game): world_dir() looks here first
 
 SCHEMA = "pixel-maps2/spawns@1"
+SCHEMA3 = "pixel-maps3/spawns@1"
+TOWN_R = 12             # THE TOWN IS A SANCTUARY (maintainer 2026-08-29, "like water"):
+                        # no habitat within this many cells of a house
+# pixel-maps3 grounds read as the habitat materials the doctrine names
+GROUND_AS_MAT = {"grass": "saturated_grass", "light_soil": "lightdark_dirt", "dark_mud": "lightdark_dirt",
+                 "snow": "regular_snow", "ice": "crystal_ice", "black_rock": "black_mountain",
+                 "grey_stone": "stone_mountain", "light_beach": "light_sand", "water": "clear_water",
+                 "deep_water": "deep_water", "lava": "lava", "slime": "slime",
+                 "parquet_floor": "paving", "brown_paving_stone": "paving", "grey_paving_stone": "paving"}
 BUILDER_OWNS = {"monster_demo"}     # writes its own explicit spawns.json
 # THE ONE MAP THE CROWDING LAW DOES NOT BIND. monster_demo is a display case —
 # one 5x5 pad per roster monster, two of each, so you can walk the rows and look
@@ -84,7 +94,7 @@ NO_SPAWN_WORLDS = {"prop_demo", "trans_demo", "glow_test", "occlusion_test",
 # back off the habitat threshold, then to a neighbouring habitat, if need be)
 # and the build ASSERTS full coverage — so a future terrain change that erases
 # a monster's habitat fails loudly instead of silently dropping the creature.
-MUST_HAVE_ALL = {"the_island2"}
+MUST_HAVE_ALL = {"the_island2", "the_game"}
 # Fallback habitat order when a monster's own habitat has no home on a
 # must-have world (land grounds first, then the wetter/edge ones).
 FALLBACK_HABS = ("grass", "dirt", "stone", "dark", "snow", "forest",
@@ -346,6 +356,7 @@ MON_TOTAL_MAX = 9                   # per-type ceiling
 MIN_ZONE = {"forest": ROOM_MIN}     # smallest component worth a zone (cells)
 MIN_ZONE_DEFAULT = 30
 TOP_K = 4                           # component cap per habitat (>= its members)
+TOP_K_HAB = {"cave": 16}            # every cave is somebody's home (the_game has twelve)
 TREE_R = 6                          # the woods a GROVE casts, not the shade of
                                     # one trunk. At 3 every one of the island's
                                     # 8 tall props was its own 7x7 island of
@@ -547,6 +558,85 @@ class W:
         if self.deck_kind.get((x, y)) == "cave":
             return self.surf(x, y)
         return self.base(x, y)
+
+
+class W3(W):
+    """A pixel-maps3 world (the_game) through the same surface: grounds read as
+    the doctrine's materials (GROUND_AS_MAT), liquids are the water set (lava
+    included — nothing spawns in lava), every standing placement is a prop,
+    the trees are the tall props the forest mask reads, and the cells within
+    TOWN_R of a house are the SANCTUARY no habitat covers."""
+
+    def __init__(self, name, doc=None):
+        if doc is None:
+            doc = json.load(open(os.path.join(WORLDS3, name, "world.json")))
+        self.name = name
+        size = doc["size"]
+        self.w, self.h = int(size["w"]), int(size["h"])
+        G = doc["grounds"]
+        self.mat = [[GROUND_AS_MAT.get(G[i], G[i]) for i in row] for row in doc["ground"]]
+        self.level = doc["level"]
+        self.water = {GROUND_AS_MAT.get(n, n) for n in doc.get("liquids", [])}
+        self.spawn = (int(doc["spawn"][0]), int(doc["spawn"][1]))
+        self.props, self.tall_props = set(), set()
+        flat = {}
+        for p in doc.get("scenery", []):
+            if p.get("z") is not None:
+                continue                                 # on a wall: no ground taken
+            piece = p["piece"]
+            if piece not in flat:
+                try:
+                    j = json.load(open(os.path.join(REPO, "scenery", piece, "scenery.json")))
+                    flat[piece] = j.get("collision") is False
+                except (OSError, ValueError):
+                    flat[piece] = False
+            if not flat[piece]:
+                self.props.add((int(p["x"]), int(p["y"])))
+            if piece.split("/")[0] in ("trees", "ancient_trees", "hanging_willows"):
+                self.tall_props.add((int(p["x"]), int(p["y"])))
+        self.paths = []
+        # a pixel-maps3 world's ground IS the base: a cave floor carries its
+        # own ground (dark mud, ice, slime, rock) and the lid's is in the deck
+        self.floor_is_base = True
+        self.deck, self.deck_thick, self.deck_kind = {}, {}, {}
+        self.cave_floor = set()
+        self.bridges = []
+        self.sanctuary = set()
+        for dk in doc.get("decks", []):
+            cells = [(c["x"], c["y"]) for c in dk["cells"]]
+            for c in cells:
+                if int(dk["level"]) > self.deck.get(c, -1):
+                    self.deck[c] = int(dk["level"])
+                    self.deck_thick[c] = int(dk.get("thickness", 1))
+                    self.deck_kind[c] = dk.get("kind", "deck")
+            if dk.get("kind") == "cave":
+                self.cave_floor.update(cells)
+            if dk.get("kind") == "bridge":
+                self.bridges.append((int(dk["level"]), sorted(cells)))
+            if dk.get("kind") == "roof":
+                for (x, y) in cells:
+                    for dx in range(-TOWN_R, TOWN_R + 1):
+                        for dy in range(-TOWN_R, TOWN_R + 1):
+                            self.sanctuary.add((x + dx, y + dy))
+
+
+    def hab_level(self, x, y):
+        """The ground here is the base's, cave floor included, so the level a
+        habitat means is the base level; a bridge still floats over it."""
+        return self.base(x, y)
+
+
+def world_dir(name):
+    d3 = os.path.join(WORLDS3, name)
+    return d3 if os.path.isfile(os.path.join(d3, "world.json")) else os.path.join(WORLDS, name)
+
+
+def load_world(name):
+    return W3(name) if world_dir(name).startswith(WORLDS3) else W(name)
+
+
+def schema_for(name):
+    return SCHEMA3 if world_dir(name).startswith(WORLDS3) else SCHEMA
 
 
 # -- mask -> simple polygon ---------------------------------------------------
@@ -1192,6 +1282,9 @@ def habitat_masks(w):
     land = {(x, y) for y in range(w.h) for x in range(w.w)
             if w.m(x, y) not in w.water and w.m(x, y) != ""}
     water = {(x, y) for y in range(w.h) for x in range(w.w) if w.m(x, y) in w.water}
+    land -= getattr(w, "sanctuary", set())        # the town is a sanctuary
+    if getattr(w, "floor_is_base", False):
+        land -= set(w.cave_floor)                  # a cave floor is the cave's, not the dirt's
     grass = {c for c in land if w.m(*c) == "saturated_grass"}
     near = set()
     for (px, py) in w.tall_props:
@@ -1217,7 +1310,7 @@ def habitat_masks(w):
         "stone": {c for c in land if w.m(*c) == "stone_mountain"},
         "sand": {c for c in land if w.m(*c) == "light_sand"},
         "shore": shore,
-        "cave": set(w.cave_floor),
+        "cave": set(w.cave_floor) - getattr(w, "sanctuary", set()),
     }
 
 
@@ -1248,7 +1341,7 @@ def zones_for(w):
         # Two homes per species' worth of components: the crowding law needs
         # somewhere to spread TO, and one component per member only works if
         # every member happens to want a different one.
-        kept = kept[:max(TOP_K, 2 * len(mem))]
+        kept = kept[:max(TOP_K_HAB.get(hab, TOP_K), 2 * len(mem))]
         if not kept:
             continue
         far = {}
@@ -1331,7 +1424,10 @@ def zones_for(w):
                 # Nightmule ended up 5 cells from the arrival point.
                 continue
             seen.add(j)
-            elev = [0, 1] if hab == "cave" else None
+            # the island2 cave floor was [0, 1]; a pixel-maps3 cave floor is at
+            # its own levels (a pit under a level-12 field at 6-9), so the
+            # band is read off the floor like any habitat's
+            elev = None if getattr(w, "floor_is_base", False) else ([0, 1] if hab == "cave" else None)
             # The polygon may not merely START beyond the floor — it may not
             # CONTAIN a cell inside it, or the game could roam a monster back
             # toward the newcomers. Same guarantee, same machinery as the water
@@ -1393,7 +1489,7 @@ def refresh(name):
     if name in BUILDER_OWNS:
         print(f"{name}: builder owns spawns.json — skipped")
         return
-    wpath = os.path.join(WORLDS, name, "world.json")
+    wpath = os.path.join(world_dir(name), "world.json")
     if not os.path.isfile(wpath):
         return
     if name in NO_SPAWN_WORLDS:                     # feature-test map: no monsters
@@ -1402,7 +1498,7 @@ def refresh(name):
                       separators=(",", ":"))
         print(f"{name}: 0 zones (feature-test map — no monsters)")
         return
-    w = W(name)
+    w = load_world(name)
     zones = balance_population(w, zones_for(w))
     given, stuck = enforce_density(w, zones)         # THE CROWDING LAW
     given -= topup_population(w, zones)              # ...and its refund
@@ -1423,8 +1519,8 @@ def refresh(name):
         z.pop("_cells", None)
         z.pop("_target", None)
         z.pop("_cap", None)
-    doc = {"schema": SCHEMA, "world": name, "zones": zones}
-    with open(os.path.join(WORLDS, name, "spawns.json"), "w") as f:
+    doc = {"schema": schema_for(name), "world": name, "zones": zones}
+    with open(os.path.join(world_dir(name), "spawns.json"), "w") as f:
         json.dump(doc, f, separators=(",", ":"))
     kinds = sorted({z["monster"] for z in zones})
     total = sum(z["num"] for z in zones)
@@ -1435,9 +1531,9 @@ def refresh(name):
 
 def validate_file(name):
     """Re-validate a shipped spawns.json against its world (used by builders)."""
-    w = W(name)
-    doc = json.load(open(os.path.join(WORLDS, name, "spawns.json")))
-    assert doc["schema"] == SCHEMA and doc["world"] == name
+    w = load_world(name)
+    doc = json.load(open(os.path.join(world_dir(name), "spawns.json")))
+    assert doc["schema"] in (SCHEMA, SCHEMA3) and doc["world"] == name
     ids = set(roster_ids())
     for z in doc["zones"]:
         assert z["monster"] in ids, f"{z['id']}: unknown monster {z['monster']}"
@@ -1460,7 +1556,7 @@ def check_all(names):
     bad = 0
     zones = mons = 0
     for name in names:
-        sp = os.path.join(WORLDS, name, "spawns.json")
+        sp = os.path.join(world_dir(name), "spawns.json")
         if not os.path.isfile(sp):
             print(f"  {name}: NO spawns.json")
             bad += 1
@@ -1483,8 +1579,8 @@ def check_all(names):
 
 def main():
     names = [a for a in sys.argv[1:] if not a.startswith("-")]
-    names = names or sorted(x for x in os.listdir(WORLDS)
-                            if os.path.isfile(os.path.join(WORLDS, x, "world.json")))
+    names = names or sorted({x for d in (WORLDS, WORLDS3) if os.path.isdir(d) for x in os.listdir(d)
+                             if os.path.isfile(os.path.join(d, x, "world.json"))})
     if "--check" in sys.argv:
         sys.exit(check_all(names))
     for name in names:

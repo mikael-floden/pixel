@@ -4647,90 +4647,27 @@ class Grow:
                                                     f"{len(p['entrances'])} mouths)" for p in places))]
 
     def spawns(self):
-        """Monsters SPREAD over the doubled land (maintainer 2026-08-29): the
-        tuned v2 zones translate verbatim (+OFF); the new land gets NEW zones
-        reusing the SAME cast by habitat — meadows the grass cast, the new
-        massif the mountain cast, the fens the bog cast, the new cave the
-        cave cast. The town, like water, is a sanctuary: no zones near it."""
-        src = json.load(open(os.path.join(
-            MAPS2, "source", "the_island2.spawns.json")))
-        ox, oy = OFF
-        zones = []
-        for z in src["zones"]:
-            zz = dict(z)
-            zz["area"] = [[x + ox, y + oy] for x, y in z["area"]]
-            zones.append(zz)
-        casts = {"grass": [], "mountain": [], "mud": [], "cave": []}
+        """spawns.json is DERIVED by spawns.py's doctrine (habitats, the
+        difficulty gradient from the arrival point, the per-type budget, the
+        crowding law, the water law, the town sanctuary) from the world as it
+        stands here, before recentre translates it with the other sidecars.
+        (The ported island2 rectangles piled 24 zones on one wood by the
+        village while 70% of the land had none - maintainer 2026-09-18, five
+        screenshots: "Do you feel this is balanced?")"""
+        import spawns
+        w = spawns.W3("the_game", self.doc)
+        zones = spawns.balance_population(w, spawns.zones_for(w))
+        spawns.enforce_density(w, zones)
+        spawns.topup_population(w, zones)
+        peak = spawns.assert_density(w, zones)
         for z in zones:
-            if z["id"].startswith("cave"):
-                casts["cave"].append(z["monster"])
-                continue
-            xs = [p[0] for p in z["area"]]
-            ys = [p[1] for p in z["area"]]
-            g = self.g(sum(xs) // len(xs), sum(ys) // len(ys))
-            if g in ("snow", "ice", "grey_stone", "black_rock"):
-                casts["mountain"].append(z["monster"])
-            elif g == "dark_mud":
-                casts["mud"].append(z["monster"])
-            else:
-                casts["grass"].append(z["monster"])
-
-        def rect(x0, y0, w, h):
-            return [[x0, y0], [x0 + w, y0], [x0 + w, y0 + h], [x0, y0 + h]]
-        tx0, ty0, TW, TH = self.town
-
-        def town_free(x, y):
-            return not (tx0 - 12 <= x <= tx0 + TW + 12
-                        and ty0 - 14 <= y <= ty0 + TH + 12)
-        spots = {"grass": [], "mountain": [], "mud": []}
-        for y in range(8, 300, 6):
-            for x in range(8, 300, 6):
-                g = self.g(x, y)
-                if not g or self.liquid(x, y) or not town_free(x, y):
-                    continue
-                z = self.lvl[y][x]
-                if g == "grass" and z <= 9:
-                    spots["grass"].append((x, y, [0, 9]))
-                elif g in ("snow", "grey_stone") and z >= 16:
-                    spots["mountain"].append((x, y, [16, 40]))
-                elif g == "dark_mud":
-                    # the riverbank strip is level 0-4; a mud FLAT above it
-                    # (the shelf under the massif) bands to its own level
-                    # (games2 re-banded n-mud-2 by hand to 9-11, 2026-09-09)
-                    spots["mud"].append((x, y, [0, 4] if z <= 4 else [z - 1, z + 1]))
-        new, ni = [], 0
-        for kind, lim in (("grass", 6), ("mountain", 4), ("mud", 2)):
-            cast = casts[kind] or casts["grass"]
-            picked = []
-            for (x, y, el) in spots[kind]:
-                if all(abs(x - a) + abs(y - b) > 26 for a, b, _ in picked):
-                    picked.append((x, y, el))
-                if len(picked) >= lim:
-                    break
-            for j, (x, y, el) in enumerate(picked):
-                new.append({"id": f"n-{kind}-{j + 1}",
-                            "monster": cast[(ni + j) % len(cast)],
-                            "area": rect(x - 7, y - 5, 14, 10),
-                            "elev": el, "num": 2})
-            ni += len(picked)
-        caves2 = [{(c["x"], c["y"]) for c in dk["cells"]}
-                  for dk in (getattr(self, "new_cave", None),) if dk]
-        caves2 += [set(s["floor"]) for s in getattr(self, "cave_sites", [])]
-        for j, fc in enumerate(caves2):
-            xs = [c[0] for c in fc]
-            ys = [c[1] for c in fc]
-            fl = min(self.lvl[c[1]][c[0]] for c in fc)
-            fh = max(self.lvl[c[1]][c[0]] for c in fc)
-            cast = casts["cave"] or ["masked_shadow_creature"]
-            new.append({"id": f"n-cave-{j + 1}", "monster": cast[j % len(cast)],
-                        "area": rect(min(xs) - 1, min(ys) - 1,
-                                     max(xs) - min(xs) + 2, max(ys) - min(ys) + 2),
-                        "elev": [fl, max(fl + 2, fh)], "num": 2})
-        out = {"schema": "pixel-maps3/spawns@1", "world": "the_game",
-               "zones": zones + new}
+            for k in ("_valid", "_cells", "_target", "_cap"):
+                z.pop(k, None)
+        out = {"schema": spawns.SCHEMA3, "world": "the_game", "zones": zones}
         json.dump(out, open(os.path.join(OUT, "spawns.json"), "w"),
                   separators=(",", ":"))
-        self.placed += [("spawn zones", f"{len(zones)} ported + {len(new)} new")]
+        self.placed += [("spawn zones", f"{len(zones)} derived, {sum(z['num'] for z in zones)} monsters, "
+                         f"peak {peak:.3f}/cell")]
 
     # -- the pier -------------------------------------------------------------
     def pier(self):

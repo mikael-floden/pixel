@@ -533,7 +533,12 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   draw among effects that cannot run together. The `world` zone carries foam,
   water and every other effect that finds its own object at 100. `--apply`,
   `--check` (also `world3grow.run`'s last step), `--page` (the review page).
-- `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
+- `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check`
+  gates. **the_game's spawn zones are derived here too** (`python3
+  maps2/pipeline/spawns.py the_game`; the build's `spawns()` calls the same
+  functions): habitats, the difficulty gradient, the per-type budget, the
+  crowding law, the water law, the town sanctuary, every cave a home
+  (`spec/SPAWNS.md` → the_game).
 - `sceneryscale.py` — the size the GAME draws scenery at.
 
 RETIRED 2026-09-09: the world@1/@2 pipeline (`tiles2lib`, `render2`,
