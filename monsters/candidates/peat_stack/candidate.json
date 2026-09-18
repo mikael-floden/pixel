@@ -8,10 +8,10 @@
     "dark_mud"
   ],
   "items": [],
-  "prompt": "Neat stack of cut black peat turves drying in a small tower, the bricks crumbling at the corners, pale dried grass roots showing along their edges, walking on the bottom two turves with a worn iron spade blade stuck into the top of the pile",
+  "prompt": "Squat compact stack of cut black peat turves drying in a low tower with all its edges tucked in, the bricks crumbling at the corners, pale dried grass roots showing along their edges, walking on the bottom two turves, a short worn spade blade laid flat across the top of the pile",
   "size": [
-    48,
-    48
+    64,
+    64
   ],
   "template_id": "bear",
   "directions": [
@@ -36,112 +36,107 @@
   },
   "sheet": "peat_stack/sheet.webp",
   "review": "pending",
-  "pixellab_id": "fd5df797-c708-448f-b190-7c865b7952e9",
-  "seed": 365555518,
-  "version": 2,
+  "pixellab_id": "59b1c0b8-d73a-47ba-a271-5daff3fa7657",
+  "seed": 1657724840,
+  "version": 3,
   "usage": null,
-  "generated_at": "2026-09-18T13:15:50+00:00",
-  "elapsed_s": 212.8,
+  "generated_at": "2026-09-18T13:36:43+00:00",
+  "elapsed_s": 489.4,
   "qa": {
     "status": "fail",
-    "min_run1": 0.715,
+    "min_run1": 0.692,
     "reasons": [
-      "south: content touches the canvas edge (clipped)",
       "south-east: content touches the canvas edge (clipped)",
-      "east: content touches the canvas edge (clipped)",
       "north-east: content touches the canvas edge (clipped)",
-      "north: content touches the canvas edge (clipped)",
-      "north-west: content touches the canvas edge (clipped)",
-      "west: content touches the canvas edge (clipped)",
       "south-west: content touches the canvas edge (clipped)"
     ],
     "directions": {
       "south": {
-        "run1": 0.761,
+        "run1": 0.692,
         "bbox": [
-          12,
-          0,
-          38,
-          46
+          4,
+          1,
+          60,
+          63
         ],
-        "fill": 0.519,
-        "touches_edge": true
+        "fill": 0.848,
+        "touches_edge": false
       },
-      "south-east": {
-        "run1": 0.795,
+      "west": {
+        "run1": 0.705,
         "bbox": [
-          11,
-          0,
-          36,
-          46
+          7,
+          6,
+          62,
+          61
         ],
-        "fill": 0.499,
-        "touches_edge": true
+        "fill": 0.739,
+        "touches_edge": false
       },
       "east": {
-        "run1": 0.749,
+        "run1": 0.729,
         "bbox": [
-          11,
-          0,
-          35,
-          47
+          5,
+          1,
+          61,
+          61
         ],
-        "fill": 0.49,
+        "fill": 0.82,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.702,
+        "bbox": [
+          4,
+          6,
+          57,
+          62
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.739,
+        "bbox": [
+          6,
+          0,
+          58,
+          62
+        ],
+        "fill": 0.787,
         "touches_edge": true
       },
       "north-east": {
-        "run1": 0.761,
+        "run1": 0.738,
         "bbox": [
-          10,
           0,
-          35,
-          47
+          4,
+          60,
+          61
         ],
-        "fill": 0.51,
-        "touches_edge": true
-      },
-      "north": {
-        "run1": 0.715,
-        "bbox": [
-          11,
-          0,
-          37,
-          46
-        ],
-        "fill": 0.519,
+        "fill": 0.835,
         "touches_edge": true
       },
       "north-west": {
-        "run1": 0.732,
+        "run1": 0.72,
         "bbox": [
-          14,
-          0,
-          36,
-          47
+          3,
+          4,
+          60,
+          63
         ],
-        "fill": 0.449,
-        "touches_edge": true
-      },
-      "west": {
-        "run1": 0.773,
-        "bbox": [
-          15,
-          0,
-          37,
-          47
-        ],
-        "fill": 0.449,
-        "touches_edge": true
+        "fill": 0.821,
+        "touches_edge": false
       },
       "south-west": {
-        "run1": 0.747,
+        "run1": 0.741,
         "bbox": [
-          14,
-          0,
-          34,
-          45
+          3,
+          5,
+          64,
+          63
         ],
-        "fill": 0.391,
+        "fill": 0.864,
         "touches_edge": true
       }
     }
