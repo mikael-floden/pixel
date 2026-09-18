@@ -17,20 +17,19 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "item/chest_open/chest_open__take01.ogg",
+  "file": "item/chest_open/chest_open__take02.ogg",
   "format": "ogg",
   "audio": {
-    "samples": 38922,
-    "duration_seconds": 0.811,
+    "samples": 32511,
+    "duration_seconds": 0.677,
     "sample_rate": 48000,
     "channels": 1,
     "bit_depth": 16,
-    "peak_dbfs": -1.0,
+    "peak_dbfs": -0.9,
     "requested_format": "mp3_44100_192",
     "delivered": "mp3"
   },
   "takes": [
-    "item/chest_open/chest_open__take01.ogg",
     "item/chest_open/chest_open__take02.ogg"
   ],
   "ai": {
@@ -65,29 +64,29 @@
   "schema": "audio-metadata/1",
   "asset_type": "sfx",
   "music": {
-    "tonal": true,
-    "root_midi": 87,
-    "note": "D#6",
-    "fundamental_hz": 1230.8,
-    "cents_off": -19,
-    "pitch_confidence": 0.604,
-    "max_shift_semitones": 3,
-    "scale_snap_replaces_jitter": true,
-    "tonality": "mixed",
-    "spectral_flatness": 0.033
+    "tonal": false,
+    "root_midi": null,
+    "note": null,
+    "fundamental_hz": null,
+    "cents_off": null,
+    "pitch_confidence": 0.214,
+    "max_shift_semitones": 0,
+    "scale_snap_replaces_jitter": false,
+    "tonality": "atonal",
+    "spectral_flatness": 0.071
   },
   "envelope": {
-    "duration_ms": 810.9,
-    "onset_ms": 1.3,
-    "peak_ms": 113.6,
-    "attack_ms": 112.3,
-    "peak_dbfs": -1.0,
-    "rms": 0.075,
-    "crest": 11.9
+    "duration_ms": 677.3,
+    "onset_ms": 1.2,
+    "peak_ms": 266.5,
+    "attack_ms": 265.2,
+    "peak_dbfs": -0.9,
+    "rms": 0.0443,
+    "crest": 20.3
   },
   "sync_points": [
     {
-      "t_ms": 113.6,
+      "t_ms": 266.5,
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
@@ -95,8 +94,8 @@
   "delivery": {
     "formats": {
       "ogg": {
-        "file": "item/chest_open/chest_open__take01.ogg",
-        "bytes": 15063,
+        "file": "item/chest_open/chest_open__take02.ogg",
+        "bytes": 14927,
         "codec": "libvorbis"
       }
     },

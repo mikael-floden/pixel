@@ -17,7 +17,7 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "movement/footstep_stone/footstep_stone__take01.ogg",
+  "file": "movement/footstep_stone/footstep_stone__take02.ogg",
   "format": "ogg",
   "audio": {
     "samples": 23875,
@@ -25,12 +25,11 @@
     "sample_rate": 48000,
     "channels": 1,
     "bit_depth": 16,
-    "peak_dbfs": -1.0,
+    "peak_dbfs": -0.9,
     "requested_format": "mp3_44100_192",
     "delivered": "mp3"
   },
   "takes": [
-    "movement/footstep_stone/footstep_stone__take01.ogg",
     "movement/footstep_stone/footstep_stone__take02.ogg"
   ],
   "ai": {
@@ -71,24 +70,24 @@
     "note": null,
     "fundamental_hz": null,
     "cents_off": null,
-    "pitch_confidence": 0.184,
+    "pitch_confidence": 0.232,
     "max_shift_semitones": 0,
     "scale_snap_replaces_jitter": false,
     "tonality": "atonal",
-    "spectral_flatness": 0.065
+    "spectral_flatness": 0.089
   },
   "envelope": {
     "duration_ms": 497.4,
-    "onset_ms": 2.0,
-    "peak_ms": 19.5,
-    "attack_ms": 17.5,
-    "peak_dbfs": -1.0,
-    "rms": 0.0397,
-    "crest": 22.5
+    "onset_ms": 1.5,
+    "peak_ms": 15.0,
+    "attack_ms": 13.5,
+    "peak_dbfs": -0.9,
+    "rms": 0.0279,
+    "crest": 32.2
   },
   "sync_points": [
     {
-      "t_ms": 19.5,
+      "t_ms": 15.0,
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
@@ -96,8 +95,8 @@
   "delivery": {
     "formats": {
       "ogg": {
-        "file": "movement/footstep_stone/footstep_stone__take01.ogg",
-        "bytes": 12125,
+        "file": "movement/footstep_stone/footstep_stone__take02.ogg",
+        "bytes": 11003,
         "codec": "libvorbis"
       }
     },

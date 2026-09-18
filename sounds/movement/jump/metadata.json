@@ -16,7 +16,7 @@
   "license": "CC0-1.0",
   "status": "complete",
   "quality": "aaa",
-  "file": "movement/jump/jump__take01.ogg",
+  "file": "movement/jump/jump__take02.ogg",
   "format": "ogg",
   "audio": {
     "samples": 23875,
@@ -24,12 +24,11 @@
     "sample_rate": 48000,
     "channels": 1,
     "bit_depth": 16,
-    "peak_dbfs": -1.0,
+    "peak_dbfs": -0.9,
     "requested_format": "mp3_44100_192",
     "delivered": "mp3"
   },
   "takes": [
-    "movement/jump/jump__take01.ogg",
     "movement/jump/jump__take02.ogg"
   ],
   "ai": {
@@ -73,20 +72,20 @@
     "max_shift_semitones": 0,
     "scale_snap_replaces_jitter": false,
     "tonality": "atonal",
-    "spectral_flatness": 0.026
+    "spectral_flatness": 0.029
   },
   "envelope": {
     "duration_ms": 497.4,
-    "onset_ms": 0.2,
-    "peak_ms": 3.9,
-    "attack_ms": 3.6,
-    "peak_dbfs": -1.0,
-    "rms": 0.1549,
-    "crest": 5.8
+    "onset_ms": 1.4,
+    "peak_ms": 51.0,
+    "attack_ms": 49.7,
+    "peak_dbfs": -0.9,
+    "rms": 0.2182,
+    "crest": 4.1
   },
   "sync_points": [
     {
-      "t_ms": 3.9,
+      "t_ms": 51.0,
       "name": "transient",
       "note": "main attack \u2014 measured; safe sync/trigger point"
     }
@@ -94,8 +93,8 @@
   "delivery": {
     "formats": {
       "ogg": {
-        "file": "movement/jump/jump__take01.ogg",
-        "bytes": 9993,
+        "file": "movement/jump/jump__take02.ogg",
+        "bytes": 10231,
         "codec": "libvorbis"
       }
     },
