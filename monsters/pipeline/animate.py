@@ -823,6 +823,54 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries, groups=groups, counts=counts, rungs=rungs)
 
 
+def _iso(t):
+    """Parse an ISO-8601 stamp whether it ends in Z or +00:00. String compare is
+    NOT safe here: the records write `+00:00` and the wiki writes `Z`, and
+    `'+' < 'Z'`, so a same-second regeneration compared as text reads as OLDER
+    than the verdict and the note survives (that is the bug that let his own
+    words sit under art that no longer existed)."""
+    if not t:
+        return None
+    try:
+        return datetime.fromisoformat(str(t).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+
+
+def clear_verdict(cid, slot, direction, reason="regenerated"):
+    """HIS REDO DIES WITH THE ART IT JUDGED — IMMEDIATELY, not at the end of the
+    sweep (maintainer 2026-09-18: "I press redo with a comment ... the new state
+    that will take its place should CLEAN the state and comment", "I don't want
+    to see redo marked with an OLD comment on my data! Ever!").
+
+    Called the moment a direction lands, before the next one starts, so the
+    window where the wiki can show a redo note over fresh art is zero. An
+    APPROVAL is never touched: that is his pick and it has to outlive the review.
+    """
+    try:
+        doc = json.load(open(FEEDBACK))
+    except (FileNotFoundError, ValueError):
+        return 0
+    entries = doc.get("entries") or {}
+    gone = 0
+    for d in {direction} | {m for m, src in MIRRORED.items() if src == direction}:
+        key = f"monsters/{cid}#{slot}#{d}"
+        v = entries.get(key)
+        if v and (v.get("status") or "").lower() in ("redo", "rejected"):
+            entries.pop(key)
+            gone += 1
+    if gone:
+        doc["entries"] = entries
+        doc["updated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+        tmp = FEEDBACK + ".tmp"
+        with open(tmp, "w") as f:
+            json.dump(doc, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+        os.replace(tmp, FEEDBACK)
+    return gone
+
+
+
 def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None, groups=None, counts=None, rungs=None):
     """Download the LAST take of each direction from PixelLab, align it to the
     base canvas, QA, save, mirror. Used after generation and by `fetch`.
@@ -874,6 +922,8 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
                    "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
         rec["directions"][d] = qa
         out[d] = qa
+        # his verdict dies with the art it judged, in the same breath
+        clear_verdict(cid, state, d)
         if verbose:
             print(f"  {cid:16s} {state} {d:11s} v{version} {qa['status']:4s} step={qa.get('step_mean')} drift={qa.get('drift')} loop={qa.get('loop')} {qa['reasons']}", flush=True)
     # mirrors follow their source
@@ -1169,7 +1219,7 @@ def cmd_review(args):
                 continue
             st = (v.get("status") or "").lower()
             note = (v.get("note") or "").strip()
-            made, said = q.get("generated_at"), v.get("updated_at")
+            made, said = _iso(q.get("generated_at")), _iso(v.get("updated_at"))
             if made and said and made > said:
                 # already acted on: this direction was regenerated AFTER he
                 # wrote the note, so re-applying it would fail fresh art for a
@@ -1281,9 +1331,9 @@ def cmd_prune_feedback(args):
             if man and not os.path.isdir(anim_dir(cid, slot, d)):
                 drop.append((key, "gone", v.get("updated_at") or ""))
             continue
-        made, said = q.get("generated_at"), v.get("updated_at")
-        if made and said and made > said:          # both ISO-8601 UTC
-            drop.append((key, made, said))
+        made, said = _iso(q.get("generated_at")), _iso(v.get("updated_at"))
+        if made and said and made > said:
+            drop.append((key, q.get("generated_at"), v.get("updated_at")))
     for key, made, said in drop:
         entries.pop(key, None)
         print(f"  pruned {key}  (judged {said[:19]}, regenerated {made[:19]})")
