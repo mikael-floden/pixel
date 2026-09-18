@@ -59,19 +59,33 @@ const cam = await page.evaluate(() => window.__ml.camView());
 const sc = png.width / cam.w;
 const toScreen = (wx, wy) => [Math.round((wx - cam.x) * sc), Math.round((wy - cam.y) * sc)];
 const luma = (x, y) => { if (x < 0 || y < 0 || x >= png.width || y >= png.height) return NaN; const i = (y * png.width + x) * 4; return 0.299 * png.data[i] + 0.587 * png.data[i + 1] + 0.114 * png.data[i + 2]; };
-let checked = 0, darker = 0;
+let checked = 0, darker = 0, tooDark = 0, thin = 0;
 for (const s of built) {
-  // The middle contact point, read a hair below the footline (the blob's pad reaches the ground in front).
+  /* ON THE BAND, NOT BELOW IT. The contact shadow is the silhouette dropped
+   * CONTACT_DROP (2) texels — `points` records that row — plus a small blur, so
+   * it is a few texels thick. This read used to sit 2 px LOWER, which was right
+   * for the 6-18 px ellipses of v3 and lands outside a v4 band: measured
+   * 2026-09-18, the same pieces read 6% darker at +2 px and 22-34% on the band
+   * itself. A GATE MUST SAMPLE WHAT THE LAW DRAWS.
+   * ...AND IT MUST BE THIN, which is the other half of his verdict ("way off
+   * and to big"): 8 px below the contact the ground is back to its own value. */
   const p = s.points[Math.floor(s.points.length / 2)];
-  const [sx, sy] = toScreen(p.x, p.y + 2);
+  const [sx, sy] = toScreen(p.x, p.y);
   const at = luma(sx, sy);
+  const below = luma(...toScreen(p.x, p.y + 8));
   const side = Math.max(luma(sx + 40, sy + 10), luma(sx - 40, sy + 10));
   if (!Number.isFinite(at) || !Number.isFinite(side)) continue;
+  // A patch of near-black ground cannot answer "is this darker": the ratio is
+  // noise at luma 2 (barrels/barrel_016 read 2 against 2 at Night).
+  if (side < 8) { tooDark++; console.log(`${s.piece}: skipped — the ground beside it is already black (luma ${side.toFixed(0)})`); continue; }
   checked++;
   if (at < side * 0.92) darker++;
-  console.log(`${s.piece}: contact ${at.toFixed(0)} vs beside ${side.toFixed(0)} (${((1 - at / side) * 100).toFixed(0)}% darker)`);
+  if (Number.isFinite(below) && below >= side * 0.92) thin++;
+  console.log(`${s.piece}: contact ${at.toFixed(0)} vs beside ${side.toFixed(0)} (${((1 - at / side) * 100).toFixed(0)}% darker), 8px below ${Number.isFinite(below) ? below.toFixed(0) : "n/a"}`);
 }
+if (tooDark) console.log(`(${tooDark} piece(s) unmeasurable: the ground beside them is black)`);
 if (checked && darker < Math.ceil(checked * 0.6)) fail(`${darker}/${checked} pieces read darker at their contact than beside it (want 60%)`);
+if (checked && thin < Math.ceil(checked * 0.6)) fail(`${thin}/${checked} pieces are back to the ground's own value 8px below the contact — the band must be thin, not a blob (want 60%)`);
 // 3. THE ROOF TAKES NONE OF IT: outside the hearth house the furniture's
 // stamps lie under the roof; the field is gated on the piece's floor height,
 // so the roof's light must not change between the dial at 0 and at 1.
