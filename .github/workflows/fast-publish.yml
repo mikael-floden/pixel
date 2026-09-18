@@ -59,6 +59,18 @@ jobs:
         with:
           fetch-depth: 2 # HEAD~1 must exist: the lane check diffs against it
 
+      # AN IDENTITY BEFORE ANY GIT WRITE, not just before the commit. Creating
+      # the store branch uses `git commit-tree`, which refuses without one
+      # ("fatal: empty ident name ... not allowed") — so the branch-creation
+      # path died on the first run that ever reached it, with the command
+      # substitution collapsing to `git branch bundle-store ''`. Runs 1 and 2
+      # never got that far, which is exactly why a first-run-only path has to be
+      # set up unconditionally rather than next to its first obvious use.
+      - name: Git identity
+        run: |
+          git config --global user.name "Claude"
+          git config --global user.email "noreply@anthropic.com"
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -189,8 +201,6 @@ jobs:
         working-directory: ${{ runner.temp }}/store
         run: |
           set -euo pipefail
-          git config user.name "Claude"
-          git config user.email "noreply@anthropic.com"
           git add bundle
           # NOTHING TO COMMIT IS A DEFECT HERE, not a no-op: the publisher just
           # reported that it wrote blobs, a manifest and a pointer. `|| exit 0`
