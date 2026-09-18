@@ -1,0 +1,141 @@
+{
+  "id": "mud_newt",
+  "name": "Mudnewt",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It breathes the bog through its gills and the bog has been breathing back. It is bigger every year.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Big pale bog newt with dark olive mottling over soft translucent skin, three pairs of feathery scarlet external gills behind its head, stubby splayed toes, a flattened swimming tail curled beside it and milky lidless eyes",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mud_newt/rotations/south.webp",
+    "south-east": "mud_newt/rotations/south-east.webp",
+    "east": "mud_newt/rotations/east.webp",
+    "north-east": "mud_newt/rotations/north-east.webp",
+    "north": "mud_newt/rotations/north.webp",
+    "north-west": "mud_newt/rotations/north-west.webp",
+    "west": "mud_newt/rotations/west.webp",
+    "south-west": "mud_newt/rotations/south-west.webp"
+  },
+  "sheet": "mud_newt/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "455decb4-ac5e-42d3-9058-563fbd2613be",
+  "seed": 1081477508,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:59:01+00:00",
+  "elapsed_s": 185.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.741,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.813,
+        "bbox": [
+          3,
+          3,
+          43,
+          44
+        ],
+        "fill": 0.712,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.79,
+        "bbox": [
+          3,
+          4,
+          46,
+          43
+        ],
+        "fill": 0.728,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.789,
+        "bbox": [
+          2,
+          3,
+          45,
+          42
+        ],
+        "fill": 0.728,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.741,
+        "bbox": [
+          6,
+          5,
+          40,
+          41
+        ],
+        "fill": 0.531,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.823,
+        "bbox": [
+          3,
+          3,
+          42,
+          44
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.779,
+        "bbox": [
+          3,
+          3,
+          41,
+          43
+        ],
+        "fill": 0.66,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.817,
+        "bbox": [
+          4,
+          3,
+          46,
+          43
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.839,
+        "bbox": [
+          5,
+          3,
+          44,
+          44
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      }
+    }
+  }
+}

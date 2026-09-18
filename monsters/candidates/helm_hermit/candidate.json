@@ -1,0 +1,141 @@
+{
+  "id": "helm_hermit",
+  "name": "Helmcrab",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It chose the helmet for the fit, not the history. Something else wore it out of the sea.",
+  "biome": [
+    "light_beach",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Hermit crab that has taken a rusted iron helmet for a shell, its soft spotted abdomen curled up inside the dome, one big pale claw blocking the eye slot, jointed legs braced underneath and stalked eyes raised over the brow of the helm",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "helm_hermit/rotations/south.webp",
+    "south-east": "helm_hermit/rotations/south-east.webp",
+    "east": "helm_hermit/rotations/east.webp",
+    "north-east": "helm_hermit/rotations/north-east.webp",
+    "north": "helm_hermit/rotations/north.webp",
+    "north-west": "helm_hermit/rotations/north-west.webp",
+    "west": "helm_hermit/rotations/west.webp",
+    "south-west": "helm_hermit/rotations/south-west.webp"
+  },
+  "sheet": "helm_hermit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7befeed4-44b6-416d-8158-c065abab84df",
+  "seed": 1123117816,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:57:18+00:00",
+  "elapsed_s": 202.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.683,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.733,
+        "bbox": [
+          3,
+          2,
+          45,
+          45
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.728,
+        "bbox": [
+          3,
+          1,
+          44,
+          45
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.73,
+        "bbox": [
+          4,
+          1,
+          44,
+          45
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.683,
+        "bbox": [
+          4,
+          3,
+          45,
+          46
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.788,
+        "bbox": [
+          5,
+          2,
+          44,
+          46
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.727,
+        "bbox": [
+          5,
+          2,
+          43,
+          46
+        ],
+        "fill": 0.726,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.734,
+        "bbox": [
+          6,
+          1,
+          44,
+          46
+        ],
+        "fill": 0.742,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.788,
+        "bbox": [
+          4,
+          2,
+          43,
+          46
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      }
+    }
+  }
+}

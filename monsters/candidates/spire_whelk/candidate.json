@@ -1,0 +1,141 @@
+{
+  "id": "spire_whelk",
+  "name": "Whelkspire",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It drills the shell of anything slower than itself, which is most things. It takes a whole day and it does not hurry.",
+  "biome": [
+    "light_beach",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Large knobbed whelk shell carried on a thick muscular grey foot, the spire chalk-white and drilled with old boreholes, a horny brown operculum hanging beside the mouth like a shield and two short eye stalks out over the rim",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "spire_whelk/rotations/south.webp",
+    "south-east": "spire_whelk/rotations/south-east.webp",
+    "east": "spire_whelk/rotations/east.webp",
+    "north-east": "spire_whelk/rotations/north-east.webp",
+    "north": "spire_whelk/rotations/north.webp",
+    "north-west": "spire_whelk/rotations/north-west.webp",
+    "west": "spire_whelk/rotations/west.webp",
+    "south-west": "spire_whelk/rotations/south-west.webp"
+  },
+  "sheet": "spire_whelk/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "656a8523-d4d2-469b-892e-c89f86eb4f3b",
+  "seed": 59129669,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:56:48+00:00",
+  "elapsed_s": 199.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.729,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.729,
+        "bbox": [
+          22,
+          4,
+          78,
+          92
+        ],
+        "fill": 0.535,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.766,
+        "bbox": [
+          25,
+          4,
+          72,
+          91
+        ],
+        "fill": 0.444,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.777,
+        "bbox": [
+          24,
+          4,
+          71,
+          91
+        ],
+        "fill": 0.444,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.754,
+        "bbox": [
+          18,
+          7,
+          75,
+          90
+        ],
+        "fill": 0.513,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.821,
+        "bbox": [
+          25,
+          4,
+          77,
+          92
+        ],
+        "fill": 0.497,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.774,
+        "bbox": [
+          26,
+          6,
+          69,
+          91
+        ],
+        "fill": 0.397,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.77,
+        "bbox": [
+          20,
+          7,
+          71,
+          91
+        ],
+        "fill": 0.465,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.826,
+        "bbox": [
+          27,
+          4,
+          70,
+          92
+        ],
+        "fill": 0.411,
+        "touches_edge": false
+      }
+    }
+  }
+}
