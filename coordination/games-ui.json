@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "PUSHED 07bc1b1711 (the record button is the HP/EP card's FULL WIDTH — his plate 5-sliced, not squashed: caps keep the screws, two plain columns carry the extra width, lamp+knob centred at 1:1. Admin-only, two faces, ml-record event. Sound only because col10==col11 and col35==col36 in both faces — the gate re-proves it against the shipped bakes). No files in flight.",
+  "current": "CLAIM: the record button FREEZES THE FRAME (maintainer 2026-09-18: 'printscreen the entire page/game and freeze the game / only show the printscreen as a freezed frame when you press the red button… not jpeg encoded, I want the freezed image lossless'). New module client/src/freezeframe.ts listening to the ml-record event: Phaser renderer.snapshot (PNG, lossless) over the game view + gamefreeze's sleep. files: games2/client/src/freezeframe.ts (new), games2/client/src/hud.ts (one import), games2/scripts/verify-freezeframe.mjs (new), games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
