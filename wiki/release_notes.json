@@ -1,9 +1,22 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T16:50:32.190Z",
- "head": "12adb727c",
+ "generated_at": "2026-09-18T17:02:33.689Z",
+ "head": "e1e156b20",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "e1e156b20",
+   "at": "2026-09-18T16:50:33+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki+ci: his words — every agent has a github agent",
+   "agent": null,
+   "dirs": [
+    ".github",
+    "live",
+    "wiki"
+   ],
+   "files": 13
+  },
   {
    "sha": "12adb727c",
    "at": "2026-09-18T16:44:53+00:00",
@@ -549,17 +562,6 @@
     "monsters"
    ],
    "files": 722
-  },
-  {
-   "sha": "531d413a1",
-   "at": "2026-09-18T16:55:19+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
   }
  ]
 }

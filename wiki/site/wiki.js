@@ -3664,9 +3664,8 @@ const SECTIONS = {
   releases:   { label: "Release Notes", noun: "commits",    icon: "notes",      count: (d) => d.counts.releases, adminOnly: true },
   // THE FLEET, LIVE (maintainer 2026-09-18: "how do I know if the agent is
   // making progress?"). Admin-only like the two above — the boards are the
-  // factory floor. No icon of its own yet: drop wiki/site/icons/agents.webp in
-  // and add `icon: "agents"` here.
-  agents:     { label: "Agents",        noun: "boards",     count: (d) => d.counts.agents, adminOnly: true },
+  // factory floor. His own 48x48, drawn for this section the same day.
+  agents:     { label: "Agents",        noun: "boards",     icon: "agents", count: (d) => d.counts.agents, adminOnly: true },
 };
 // ONE list, read by both the nav (renderNav) and the Overview tiles
 // (viewHome) — so the two can never disagree about the order.
@@ -4333,15 +4332,86 @@ function viewHome() {
    * The controls carry their own tooltips where they are actually used. */
   return h("div", {},
     h("h1", {}, "Nangijala Wiki"),
-    h("p", { class: "muted" }, state.admin
+    h("p", { class: "muted home-intro" }, state.admin
       ? "Everything the art and audio agents have made for the game — browse it, rate it, approve or remove it, and tune gameplay. Saves commit to live/ on main and stream straight into the running game."
       : "Every creature, hero, sound and song of Nangijala — the living encyclopedia of the world, always as fresh as the game you just played."),
-    h("div", { class: "stat-tiles" }, ...tiles.map(([slug, n, noun]) =>
-      h("a", { class: "stat-tile", href: `#/${slug}` },
-        sectionIcon(slug, 96),
-        h("div", { class: "n" }, label(slug)),
-        h("div", { class: "l" }, `${n} ${noun}`)))),
+    homeTiles(tiles),
   );
+}
+/* THE WHOLE FRONT DOOR ON ONE SCREEN (maintainer 2026-09-18: "Can you make the
+ * wiki overview/start fit all sections even for the admin ... so both admin and
+ * users don't have to scroll and can see all sections directly"). An admin has
+ * twelve sections, a player ten, and the tiles were a fixed 96px icon in a
+ * fixed 148px column — which scrolled on a phone for both.
+ *
+ * MEASURED, NOT COMPUTED. The tiles are laid out and the real height is read;
+ * if it overflows, the next layout is tried. The ladder is icon size FIRST
+ * (96 → 48) and columns second, because the icons are his 48x48 pixel art and
+ * may only be drawn at WHOLE multiples of 48 — never resampled (the sectionIcon
+ * law). A narrow column then shrinks the name a step so "Sound Effects" stays
+ * on one line instead of buying a taller row.
+ *
+ * If nothing fits — a landscape phone, a browser with a huge font — the page
+ * scrolls, which is the honest failure: the art never leaves its 48px grid. */
+const HOME_GAP = 10;
+function homeTiles(tiles) {
+  const grid = h("div", { class: "stat-tiles" }, ...tiles.map(([slug, n, noun]) =>
+    h("a", { class: "stat-tile", href: `#/${slug}` },
+      sectionIcon(slug, 96),
+      h("div", { class: "n" }, label(slug)),
+      h("div", { class: "l" }, `${n} ${noun}`))));
+  const fit = () => fitHome(grid);
+  requestAnimationFrame(fit);
+  window.addEventListener("resize", fit);
+  // The column reserves 130px under every page on a phone — room for the save
+  // bar over a review queue. The front door has nothing to save, and that
+  // reserve is the difference between the last row being on screen and not.
+  $("#content")?.classList.add("fit-home");
+  activePlayers.push({ destroy: () => {
+    window.removeEventListener("resize", fit);
+    $("#content")?.classList.remove("fit-home");
+  } });
+  return grid;
+}
+function fitHome(grid) {
+  if (!grid?.isConnected || !grid.clientWidth) return;
+  const setIcon = (px) => {
+    grid.style.setProperty("--home-icon", `${px}px`);
+    for (const img of grid.querySelectorAll(".sect-icon")) { img.width = px; img.height = px; }
+  };
+  // The column's own bottom padding is part of the page, so it is part of the
+  // budget — reading it is what turned a layout that "fit" into one that did.
+  const col = grid.closest("#content");
+  const pad = col ? parseFloat(getComputedStyle(col).paddingBottom) || 0 : 0;
+  const room = () => window.innerHeight - grid.getBoundingClientRect().top - pad - 4;
+  const intro = $(".home-intro");
+  const wide = Math.max(2, Math.min(6, Math.floor((grid.clientWidth + HOME_GAP) / (104 + HOME_GAP))));
+  const narrow = grid.clientWidth < 600;
+  // WHAT IS GIVEN UP, IN ORDER. The icon first (96 → 48: whole multiples of 48
+  // only, never resampled), then the type one step, then the intro sentence —
+  // the one thing on the front door that is not a door — and only when all of
+  // that has failed does a phone take a fourth column, where a tile is 82px
+  // and "Parameters" fills it edge to edge.
+  for (const cap of narrow ? [3, 4] : [wide]) {
+    for (const tight of [false, true]) {
+      if (intro) intro.hidden = tight;
+      for (const [icon, small] of [[96, false], [48, false], [48, true]]) {
+        setIcon(icon);
+        grid.classList.toggle("small-type", small);
+        for (let c = 2; c <= cap; c++) {
+          grid.style.setProperty("--home-cols", String(c));
+          if (grid.getBoundingClientRect().height <= room()) {
+            grid.dataset.fit = `${icon}px/${c}col${small ? "/small" : ""}${tight ? "/no-intro" : ""}`;
+            return;
+          }
+        }
+      }
+    }
+  }
+  // Nothing fits — a landscape phone, or a browser with a huge font. The page
+  // scrolls, which is the honest failure: the art never leaves its 48px grid.
+  if (intro) intro.hidden = false;
+  grid.dataset.fit = `48px/${narrow ? 4 : wide}col/small (scrolls)`;
 }
 
 /* --- monsters --- */

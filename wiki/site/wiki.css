@@ -1038,15 +1038,30 @@ dialog:not(.sfx-picker) input {
 .sect-head { display: flex; align-items: center; gap: 13px; margin: 0 0 4px; }
 .sect-head h1 { margin: 0; }
 
-.stat-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(148px, 1fr)); gap: 10px; margin: 16px 0; }
+/* THE WHOLE FRONT DOOR ON ONE SCREEN (maintainer 2026-09-18: "make the wiki
+   overview/start fit all sections ... so both admin and users don't have to
+   scroll and can see all sections directly"). The column count and the icon
+   size are chosen by fitHome() from the height the screen really has — the
+   grid cannot do it alone, because the icons may only be drawn at whole
+   multiples of 48 and a fluid `auto-fill` would resample them. */
+.stat-tiles { display: grid; grid-template-columns: repeat(var(--home-cols, 2), minmax(0, 1fr)); gap: 10px; margin: 12px 0; }
 .stat-tile {
   background: var(--surface); border: 1px solid var(--border); border-radius: 12px;
-  padding: 16px 14px 14px;
+  padding: 12px 8px 10px;
   display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px;
+  justify-content: center; min-width: 0;
 }
-.stat-tile .sect-icon { margin-bottom: 8px; }
+.stat-tile .sect-icon { margin-bottom: 6px; }
 .stat-tile .n { font-family: var(--serif); font-size: 19px; font-weight: 600; line-height: 1.25; }
 .stat-tile .l { color: var(--muted); font-size: 12.5px; font-variant-numeric: tabular-nums; }
+/* The last step before the page is allowed to scroll: a narrower column keeps
+   "Sound Effects" on one line instead of buying every row a second one. */
+/* The front door has nothing to save, so it does not reserve the save bar's
+   130px — that reserve is the difference between the last row being on screen
+   and not (maintainer 2026-09-18). Any other page keeps it. */
+#content.fit-home { padding-bottom: 16px; }
+.stat-tiles.small-type .n { font-size: 15px; }
+.stat-tiles.small-type .l { font-size: 11.5px; }
 a.stat-tile { color: var(--ink); }
 a.stat-tile:hover { text-decoration: none; border-color: var(--border-strong); }
 

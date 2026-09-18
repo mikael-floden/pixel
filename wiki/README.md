@@ -70,6 +70,30 @@ its unfinished gate is holding a working fix hostage to paperwork.
 landed without being asked. Both halves — ship instantly, notify instantly —
 are one law.)
 
+## The Overview fits the screen — both faces
+
+Maintainer 2026-09-18: *"Can you make the wiki overview/start fit all sections
+even for the admin ... so both admin and users don't have to scroll and can see
+all sections directly."* An admin has eleven sections, a player eight, and the
+tiles were a fixed 96px icon in a fixed 148px column — which scrolled on a phone
+for both.
+
+- **`fitHome()` MEASURES, it does not compute.** The tiles are laid out and the
+  real height is read against the room the screen has; if it overflows, the next
+  layout is tried. Arithmetic over the stylesheet cannot know that "Sound
+  Effects" wrapped.
+- **What is given up, in order:** the icon (96 → 48 — whole multiples of 48
+  only, never resampled, the `sectionIcon` law), then the type one step, then
+  the intro sentence (the one thing on the front door that is not a door), and
+  only after all of that may a phone take a fourth column — where a tile is 82px
+  and "Parameters" fills it edge to edge. Nothing fits at all → the page
+  scrolls, which is the honest failure; the art never leaves its 48px grid.
+- **The column's own bottom padding is part of the budget.** `#content` reserves
+  130px on a phone for the save bar; reading that is what turned a layout that
+  "fit" into one that did. The front door has nothing to save, so
+  `#content.fit-home` drops the reserve while the Overview is mounted.
+- Gate: `check-routes.mjs` asserts `#/` scrolls 0px as player AND as admin.
+
 ## Sections: names and icons
 
 `SECTIONS` in `wiki.js` is the ONE table of every section's player-facing

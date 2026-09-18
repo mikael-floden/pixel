@@ -73,6 +73,21 @@ for (const admin of [false, true]) {
   for (const r of ROUTES) {
     await p.goto(W + r, { waitUntil: "load" });
     await p.waitForTimeout(2200);
+    // THE FRONT DOOR FITS THE SCREEN, for both audiences (maintainer
+    // 2026-09-18: "make the wiki overview/start fit all sections even for the
+    // admin ... so both admin and users don't have to scroll and can see all
+    // sections directly"). The admin has two sections more than a player, and
+    // fitHome pays for them in icon size, type size and the intro line.
+    if (r === "#/") {
+      const home = await p.evaluate(() => ({
+        tiles: document.querySelectorAll(".stat-tile").length,
+        fit: document.querySelector(".stat-tiles")?.dataset.fit ?? "",
+        over: Math.round(document.documentElement.scrollHeight - document.documentElement.clientHeight),
+      }));
+      console.log(`  ${admin ? "Game Master" : "player     "}: #/ — ${home.tiles} sections, ${home.fit}, ${home.over}px past the screen`);
+      if (home.over > 1) fails.push(`${admin ? "admin" : "player"}: the Overview scrolls ${home.over}px (${home.tiles} sections at ${home.fit})`);
+      if (!home.tiles) fails.push(`${admin ? "admin" : "player"}: the Overview has no section tiles`);
+    }
     if (r === READONLY_ROUTE) {
       const controls = await p.evaluate(() => document.querySelectorAll("#content table.tune input, #content table.tune select, #content table.tune button").length);
       const rows = await p.evaluate(() => document.querySelectorAll("#content table.tune tbody tr").length);
