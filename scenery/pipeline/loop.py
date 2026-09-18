@@ -82,19 +82,25 @@ def commit_push(message, push=True):
     _git("add", "-A", ".")
     _git("add", "--", "../coordination/scenery.json", check=False)
     _git("add", "--", "../wiki/first_seen.json", check=False)
-    status = _git("status", "--porcelain", "--", ".",
-                  "../coordination/scenery.json", "../wiki/first_seen.json").stdout.strip()
+    # His consumed verdicts leave with the art they judged (ghosts.sweep
+    # rewrites live/feedback/objects.json): left out, the delete commit
+    # shipped and the cleared chips stayed dirty in the tree (2026-09-18).
+    _git("add", "--", "../live/feedback/objects.json", check=False)
+    status = _git("status", "--porcelain", "--", ".", "../coordination/scenery.json",
+                  "../wiki/first_seen.json", "../live/feedback/objects.json").stdout.strip()
     if not status:
         return False
     _git("commit", "-m", message)
     if push:
-        branch = _current_branch()
+        # MAIN, ALWAYS. The repo law is "push to main"; pushing the checked-out
+        # branch name sent a delete to a stale session branch and was refused
+        # non-fast-forward while main never saw it (2026-09-18, tree_070).
         for attempt in range(4):
-            r = _git("push", "-u", "origin", branch, check=False)
+            r = _git("push", "-u", "origin", "HEAD:main", check=False)
             if r.returncode == 0:
                 break
-            _git("fetch", "origin", branch, check=False)
-            _git("rebase", f"origin/{branch}", check=False)
+            _git("fetch", "origin", "main", check=False)
+            _git("rebase", "origin/main", check=False)
             time.sleep(2 ** (attempt + 1))
         else:
             print("  ! push failed after retries:", r.stderr[:200])
@@ -102,14 +108,14 @@ def commit_push(message, push=True):
 
 
 def push_only():
-    """Push whatever is already committed (rebase-and-retry backoff)."""
-    branch = _current_branch()
+    """Push whatever is already committed to MAIN (rebase-and-retry backoff);
+    the checked-out branch name is never the target (see commit_push)."""
     for attempt in range(4):
-        r = _git("push", "-u", "origin", branch, check=False)
+        r = _git("push", "-u", "origin", "HEAD:main", check=False)
         if r.returncode == 0:
             return True
-        _git("fetch", "origin", branch, check=False)
-        _git("rebase", f"origin/{branch}", check=False)
+        _git("fetch", "origin", "main", check=False)
+        _git("rebase", "origin/main", check=False)
         time.sleep(2 ** (attempt + 1))
     print("  ! push failed after retries:", r.stderr[:200])
     return False

@@ -140,7 +140,7 @@
                 "hearths/hearth_900/animations/flame/south-west/03.webp",
                 "hearths/hearth_900/animations/flame/south-west/04.webp"
               ],
-              "strip": "hearths/hearth_900/animations/flame__south-west.72c625b5.webp",
+              "strip": "hearths/hearth_900/animations/flame__south-west.d7290882.webp",
               "light_frames": [
                 {
                   "intensity": 0.5,
@@ -148,29 +148,29 @@
                   "dy": 22.9
                 },
                 {
-                  "intensity": 1.5,
-                  "dx": -7.9,
-                  "dy": 13.6
+                  "intensity": 1.187,
+                  "dx": -7.2,
+                  "dy": 18.6
                 },
                 {
-                  "intensity": 1.5,
-                  "dx": -7.9,
-                  "dy": 13.5
+                  "intensity": 1.185,
+                  "dx": -7.2,
+                  "dy": 18.6
                 },
                 {
-                  "intensity": 0.868,
-                  "dx": -8.8,
-                  "dy": 20.4
+                  "intensity": 1.19,
+                  "dx": -7.3,
+                  "dy": 18.6
                 },
                 {
-                  "intensity": 0.5,
-                  "dx": -4.5,
-                  "dy": 22.3
+                  "intensity": 1.189,
+                  "dx": -7.3,
+                  "dy": 18.6
                 }
               ]
             }
           },
-          "generated_at": "2026-09-15T18:28:21+00:00",
+          "generated_at": "2026-09-18T07:51:19+00:00",
           "light_frames": [
             {
               "intensity": 0.882,
@@ -208,7 +208,7 @@
           "strip": "hearths/hearth_900/animations/flame__south.674cfdb1.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0044
+            "base_outline": 0.0177
           }
         }
       },
@@ -228,39 +228,45 @@
       "animations": {
         "flame": {
           "group_id": "40bef894-90cb-4cf6-bbc1-b6c9e9b4c152",
-          "description": "Animate the flame only. Nothing else moves.",
+          "description": "This is the same picture in every frame. only. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
           "directions": {
             "south": {
-              "frames": 4,
+              "frames": 5,
               "frame_paths": [
                 "hearths/hearth_900/lit_2/animations/flame/south/00.webp",
                 "hearths/hearth_900/lit_2/animations/flame/south/01.webp",
                 "hearths/hearth_900/lit_2/animations/flame/south/02.webp",
-                "hearths/hearth_900/lit_2/animations/flame/south/03.webp"
+                "hearths/hearth_900/lit_2/animations/flame/south/03.webp",
+                "hearths/hearth_900/lit_2/animations/flame/south/04.webp"
               ],
-              "strip": "hearths/hearth_900/lit_2/animations/flame__south.340f052c.webp",
+              "strip": "hearths/hearth_900/lit_2/animations/flame__south.137679b9.webp",
               "light_frames": [
                 {
-                  "intensity": 1.036,
+                  "intensity": 1.058,
                   "dx": 3.7,
                   "dy": 18.7
                 },
                 {
-                  "intensity": 1.134,
+                  "intensity": 1.158,
                   "dx": 3.0,
                   "dy": 17.9
                 },
                 {
-                  "intensity": 1.034,
+                  "intensity": 1.056,
                   "dx": 3.2,
                   "dy": 18.3
                 },
                 {
-                  "intensity": 0.796,
+                  "intensity": 0.916,
+                  "dx": 3.9,
+                  "dy": 17.9
+                },
+                {
+                  "intensity": 0.812,
                   "dx": 3.9,
                   "dy": 17.8
                 }
@@ -313,7 +319,7 @@
                 "hearths/hearth_900/lit_2/animations/flame/south-west/03.webp",
                 "hearths/hearth_900/lit_2/animations/flame/south-west/04.webp"
               ],
-              "strip": "hearths/hearth_900/lit_2/animations/flame__south-west.fe2c1a85.webp",
+              "strip": "hearths/hearth_900/lit_2/animations/flame__south-west.114c375f.webp",
               "light_frames": [
                 {
                   "intensity": 0.5,
@@ -321,29 +327,29 @@
                   "dy": 17.4
                 },
                 {
-                  "intensity": 1.203,
-                  "dx": -6.9,
-                  "dy": 20.5
+                  "intensity": 1.027,
+                  "dx": -5.4,
+                  "dy": 20.4
                 },
                 {
-                  "intensity": 1.153,
-                  "dx": -7.1,
-                  "dy": 20.5
+                  "intensity": 1.272,
+                  "dx": -6.8,
+                  "dy": 20.1
                 },
                 {
-                  "intensity": 1.169,
-                  "dx": -7.0,
-                  "dy": 20.3
+                  "intensity": 1.241,
+                  "dx": -6.5,
+                  "dy": 19.9
                 },
                 {
-                  "intensity": 1.25,
-                  "dx": -6.6,
-                  "dy": 20.0
+                  "intensity": 1.194,
+                  "dx": -6.5,
+                  "dy": 19.9
                 }
               ]
             }
           },
-          "generated_at": "2026-09-15T18:14:04+00:00",
+          "generated_at": "2026-09-18T07:51:15+00:00",
           "light_frames": [
             {
               "intensity": 1.036,
@@ -370,9 +376,10 @@
             "hearths/hearth_900/lit_2/animations/flame/south/00.webp",
             "hearths/hearth_900/lit_2/animations/flame/south/01.webp",
             "hearths/hearth_900/lit_2/animations/flame/south/02.webp",
-            "hearths/hearth_900/lit_2/animations/flame/south/03.webp"
+            "hearths/hearth_900/lit_2/animations/flame/south/03.webp",
+            "hearths/hearth_900/lit_2/animations/flame/south/04.webp"
           ],
-          "strip": "hearths/hearth_900/lit_2/animations/flame__south.340f052c.webp",
+          "strip": "hearths/hearth_900/lit_2/animations/flame__south.137679b9.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0029
@@ -486,37 +493,37 @@
                 "hearths/hearth_900/lit_4/animations/flame/south-west/03.webp",
                 "hearths/hearth_900/lit_4/animations/flame/south-west/04.webp"
               ],
-              "strip": "hearths/hearth_900/lit_4/animations/flame__south-west.002f494e.webp",
+              "strip": "hearths/hearth_900/lit_4/animations/flame__south-west.91276100.webp",
               "light_frames": [
                 {
-                  "intensity": 0.926,
+                  "intensity": 1.208,
                   "dx": -1.0,
                   "dy": 20.2
                 },
                 {
-                  "intensity": 1.007,
+                  "intensity": 1.198,
                   "dx": 0.1,
                   "dy": 20.9
                 },
                 {
-                  "intensity": 1.004,
-                  "dx": 0.7,
-                  "dy": 21.0
+                  "intensity": 0.942,
+                  "dx": -1.1,
+                  "dy": 23.9
                 },
                 {
-                  "intensity": 1.061,
-                  "dx": 1.9,
-                  "dy": 20.4
+                  "intensity": 0.809,
+                  "dx": 0.1,
+                  "dy": 25.3
                 },
                 {
-                  "intensity": 1.002,
-                  "dx": 1.9,
-                  "dy": 20.3
+                  "intensity": 0.843,
+                  "dx": 0.4,
+                  "dy": 28.1
                 }
               ]
             }
           },
-          "generated_at": "2026-09-15T18:13:37+00:00",
+          "generated_at": "2026-09-18T07:51:28+00:00",
           "light_frames": [
             {
               "intensity": 0.5,
