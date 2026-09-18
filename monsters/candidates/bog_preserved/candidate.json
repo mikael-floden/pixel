@@ -36,111 +36,106 @@
   },
   "sheet": "bog_preserved/sheet.webp",
   "review": "pending",
-  "pixellab_id": "0cd67e12-e05b-468c-801a-e216571ba115",
-  "seed": 632578020,
-  "version": 1,
+  "pixellab_id": "5cbd1042-0ca4-47cd-9b68-12fd5b090424",
+  "seed": 1019022942,
+  "version": 2,
   "usage": null,
-  "generated_at": "2026-09-18T12:11:29+00:00",
-  "elapsed_s": 175.5,
+  "generated_at": "2026-09-18T13:18:44+00:00",
+  "elapsed_s": 171.4,
   "qa": {
     "status": "fail",
-    "min_run1": 0.673,
+    "min_run1": 0.683,
     "reasons": [
-      "south-east: content touches the canvas edge (clipped)",
-      "east: content touches the canvas edge (clipped)",
-      "north-east: content touches the canvas edge (clipped)",
-      "north-west: content touches the canvas edge (clipped)",
-      "west: content touches the canvas edge (clipped)",
-      "south-west: content touches the canvas edge (clipped)"
+      "north-west: content touches the canvas edge (clipped)"
     ],
     "directions": {
       "south": {
-        "run1": 0.704,
+        "run1": 0.714,
         "bbox": [
-          24,
-          1,
-          87,
-          110
-        ],
-        "fill": 0.547,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.786,
-        "bbox": [
-          30,
-          2,
-          82,
-          112
-        ],
-        "fill": 0.456,
-        "touches_edge": true
-      },
-      "east": {
-        "run1": 0.753,
-        "bbox": [
-          36,
-          0,
-          81,
-          111
-        ],
-        "fill": 0.398,
-        "touches_edge": true
-      },
-      "north-east": {
-        "run1": 0.69,
-        "bbox": [
-          29,
-          0,
-          79,
+          27,
+          3,
+          84,
           109
         ],
-        "fill": 0.434,
-        "touches_edge": true
+        "fill": 0.482,
+        "touches_edge": false
       },
-      "north": {
-        "run1": 0.673,
+      "west": {
+        "run1": 0.732,
         "bbox": [
-          26,
-          1,
-          85,
-          108
+          36,
+          3,
+          95,
+          110
         ],
         "fill": 0.503,
         "touches_edge": false
       },
-      "north-west": {
-        "run1": 0.686,
+      "east": {
+        "run1": 0.754,
         "bbox": [
-          32,
-          0,
-          82,
-          109
+          18,
+          3,
+          76,
+          110
         ],
-        "fill": 0.434,
-        "touches_edge": true
+        "fill": 0.495,
+        "touches_edge": false
       },
-      "west": {
-        "run1": 0.748,
+      "north": {
+        "run1": 0.683,
         "bbox": [
-          29,
-          0,
-          74,
+          28,
+          3,
+          83,
           111
         ],
-        "fill": 0.398,
+        "fill": 0.474,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.781,
+        "bbox": [
+          28,
+          4,
+          80,
+          111
+        ],
+        "fill": 0.444,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.717,
+        "bbox": [
+          20,
+          2,
+          77,
+          108
+        ],
+        "fill": 0.482,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.715,
+        "bbox": [
+          32,
+          2,
+          80,
+          112
+        ],
+        "fill": 0.421,
         "touches_edge": true
       },
       "south-west": {
-        "run1": 0.782,
+        "run1": 0.781,
         "bbox": [
-          31,
-          2,
-          82,
-          112
+          33,
+          4,
+          93,
+          111
         ],
-        "fill": 0.447,
-        "touches_edge": true
+        "fill": 0.512,
+        "touches_edge": false
       }
     }
   }
