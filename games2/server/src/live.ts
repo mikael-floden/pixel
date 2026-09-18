@@ -485,6 +485,49 @@ async function ghCommitDelta(rel: string, key: string, delta: Record<string, unk
   }
 }
 
+/* THE SAVE STARTS THE DOMAIN'S GITHUB AGENT (maintainer 2026-09-18: a review he
+ * commits should be picked up at once, not at the domain agent's next run).
+ *
+ * IT IS DISPATCHED FROM HERE, not from a push trigger, because
+ * `anthropics/claude-code-action@v1` REFUSES the push event —
+ * "Unsupported event type: push", measured on two of his reviews and again on a
+ * probe that overrode GITHUB_EVENT_NAME (the action reads the event from the
+ * payload file, so the override changes nothing). `workflow_dispatch` is an
+ * event it accepts, and this server is already holding a GitHub token and a
+ * commit that just landed — so the same save that writes the verdict starts the
+ * agent, with no push trigger, no detect job and no second runner in between.
+ *
+ * FIRE AND FORGET: the save is already committed when this runs, so a failed
+ * dispatch must never fail the save or delay his response. It logs and moves on.
+ * The token needs Actions: read and write; without it this is a 403 in the log
+ * and reviews simply wait for the domain agent again. */
+const AGENT_DOMAIN: Record<string, string> = {
+  // The feedback FILE is not the directory: objects.json is the scenery
+  // domain's, characters.json is characters2's.
+  objects: "scenery", characters: "characters2", monsters: "monsters",
+  tiles: "tiles", items: "items", lore: "lore", sounds: "sounds", music: "music",
+  // Not woken: bindings (an <event>#<sound> pair, not a domain) and the
+  // composer files (games2/composer is one corner of a directory six agents
+  // share).
+};
+async function startGithubAgent(rel: string): Promise<void> {
+  const m = /^feedback\/([a-z0-9_]+)\.json$/.exec(rel);
+  const domain = m ? AGENT_DOMAIN[m[1]] : undefined;
+  if (!domain || !ghToken()) return;
+  try {
+    const res = await fetch(`${GH_API}/repos/${REPO}/actions/workflows/github-agents.yml/dispatches`, {
+      method: "POST",
+      headers: ghHeaders(),
+      body: JSON.stringify({ ref: BRANCH, inputs: { domain, dry_run: "false" } }),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!res.ok) console.warn(`[live] ${domain}-github-agent not started: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
+    else console.log(`[live] ${domain}-github-agent started for live/${rel}`);
+  } catch (err) {
+    console.warn(`[live] ${domain}-github-agent not started:`, (err as Error).message);
+  }
+}
+
 // Apply a per-entry delta {id: value|null} to a COPY of the given doc.
 function applyDelta(key: string, cur: Doc, delta: Record<string, unknown>): Doc {
   const next: Doc = JSON.parse(JSON.stringify(cur));
@@ -647,6 +690,9 @@ export function registerLiveRoutes(app: express.Application): void {
       docs.set(file, merged);
       fetchedAt = new Date().toISOString();
       if (file.startsWith("tuning/")) notifyTuning();
+      // Not awaited: his verdict is already committed, and the agent's start is
+      // not something he should wait on a phone for.
+      if (file.startsWith("feedback/")) void startGithubAgent(rel);
     };
     const job = commitChain.then(run, run);
     commitChain = job.then(() => undefined, () => undefined);
