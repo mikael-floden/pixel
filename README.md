@@ -59,6 +59,21 @@ and in `scenery/viewer_data.json`:
 facings — the windows (south-east / south / south-west) and the legacy
 8-direction pieces — where a flip would put the art on the wrong wall.
 
+## Your github agent
+
+Every domain has one: a fresh Claude session GitHub starts for it when the Game
+Master reviews something in that domain
+(`.github/workflows/github-agents-sweep.yml` every 5 minutes; a session is
+`github-agent-run.yml`). It stands in for the domain agent for ONE unit of work,
+claims on `coordination/<domain>-github-agent.json`, and is bound by
+`live/docs/review-contract.md` — act on the verdict, clear the entry with the
+art, leave an account.
+
+What this means for a domain agent: **your directory can have a third writer**,
+so read that board too before you claim, and treat a verdict it claimed as
+consumed. Reasoning, traps and why it is a schedule rather than a push:
+`live/docs/github-agents.md`.
+
 ## How it deploys
 
 `games2/Dockerfile` builds one image (client + art + Colyseus WebSocket

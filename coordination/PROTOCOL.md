@@ -56,6 +56,14 @@ every verdict keyed on it; and afterwards no key may name a path, state or
 direction that is not on disk (`node wiki/tools/check-dangling.mjs` counts the
 ones that do). Binding on every agent, its assistant and its github agent.
 
+**Your domain has a THIRD writer: your github agent.** Within ~5 minutes of a
+review landing, GitHub starts a fresh session for that domain
+(`.github/workflows/github-agents-sweep.yml`) which takes ONE unit of work and
+claims it on `coordination/<domain>-github-agent.json`. Read that board with
+your partner's, and treat what it claims as consumed — the same rule as "Two
+writers per directory", with one more name on it. Details:
+`live/docs/github-agents.md`.
+
 RETIRED 2026-07-14: the first generation (`characters/`, `maps/`, `games/`,
 old `tiles/`) — history in git. The `tiles/` name was later reused for
 Tiles 3.0.
