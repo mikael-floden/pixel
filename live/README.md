@@ -415,3 +415,9 @@ The laws around the flow:
   and rebases are clean).
 - Nothing in `live/` is generated at build time — it is durable state. Don't
   regenerate or bulk-rewrite these files.
+- **A verdict is an event.** The wiki's admin save is a commit to `main`
+  (`live: admin update — feedback/<domain>.json`), so a domain agent can be
+  woken by it instead of waiting for its next run. Recipe, and the laws that
+  keep a woken session from becoming an unclaimed second writer:
+  `live/docs/verdict-wake.md`. The wake changes latency only — every agent
+  still reads its feedback file at run start.
