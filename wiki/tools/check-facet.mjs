@@ -371,6 +371,21 @@ for (const scheme of ["light", "dark"]) {
   const no = await chip();
   ok(!/✕/.test(await tp.evaluate(() => [...document.querySelectorAll(".facet-head .fb-row button")].map((x) => x.textContent).join(" "))),
     `${scheme}: one animation cannot be REMOVED — the row is approve + redo`);
+  /* PRESSED IS SOLID (maintainer 2026-09-18: "Is the redo button pressed or
+     unpressed"). A verdict that has been given is a filled block of its own
+     colour; an untaken one is an outline on the page's surface. Measured, not
+     eyeballed: the two must not share a background. */
+  const press = await tp.evaluate(() => {
+    const bs = [...document.querySelectorAll(".facet-head .verdict button")];
+    const on = bs.find((b) => /redo|approved|rejected/.test(b.className));
+    const off = bs.find((b) => b !== on);
+    const bg = (el) => getComputedStyle(el).backgroundColor;
+    const lum = (c) => { const [r, g, b] = c.match(/\d+/g).map(Number).map((v) => { const x = v / 255; return x <= 0.03928 ? x / 12.92 : ((x + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
+    const ratio = (a, b) => { const [x, y] = [lum(a), lum(b)].sort((p, q) => q - p); return (x + 0.05) / (y + 0.05); };
+    return { on: bg(on), off: bg(off), ratio: +ratio(bg(on), bg(off)).toFixed(2), label: on.textContent.trim() };
+  });
+  console.log(`${scheme}: pressed ${press.label} ${press.on} vs unpressed ${press.off} — ${press.ratio}:1`);
+  ok(press.ratio >= 1.6, `${scheme}: a pressed verdict is a solid block, an unpressed one is not (${press.ratio}:1 between them)`);
   ok(/judged-redo/.test(no.cls) && /judged-redo/.test(no.dirCls), `${scheme}: a redo shows on the state as well as the direction (${no.title})`);
   ok(contrast(no.color, no.bg) >= 3, `${scheme}: and it is legible too (contrast ${contrast(no.color, no.bg).toFixed(1)}:1)`);
   ok(no.color !== plain.color && one.dirColor !== plain.color, `${scheme}: judged and unjudged really are different colours`);

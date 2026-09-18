@@ -73,28 +73,31 @@ versions). In the end we will only have a single attack animation ofc."*)
 - In the end only one survives: the agent promotes a take into the state and
   deletes the rest, and the version row disappears on its own.
 
-## Selected is a RING. A verdict is a COLOUR.
+## Pressed is SOLID. Selected is a neutral fill. Colour is the verdict.
 
-Two channels, never one (maintainer 2026-09-18: *"When I select a direction we
-have one color for selected and one color for 'the state here has been
-rejected'. The this is selected has the same color as 'this state has been
-rejected'. This is so confusing to me! ... Use the color as an inwards fade so
-we both can select something and mark the border as approved/rejected. Or use
-an inward faded white ... I just need to understand what is what!"*)
+Three things have to be readable at once on a phone, and each gets its own
+channel (maintainer 2026-09-18: *"Is the redo button pressed or unpressed. I
+feel you made something ugly that doesn't follow the CSS that is still hard to
+understand!"* — of an inset ring I tried first; and before it, *"the this is
+selected has the same color as this state has been rejected"*).
 
-- **Selection is an inward fade and a ring** — `--sel-ring` / `--sel-fade`, the
-  theme's own contrast (white on the dark theme, ink on the light one). It
-  carries no meaning, so it stacks on top of a verdict instead of competing
-  with it, and the same ring answers "is this button pressed" on approve,
-  remove and redo.
-- **A verdict is a colour**: green approved, red removed, amber to be redone —
-  the chip's text in a `.seg`, the chip's BORDER in the direction pad. Nothing
-  else may take the border there.
-- Selection used to wear `--accent`, a warm red-orange two shades from
-  `--bad`: the chip he was standing on read as a rejected one, and a
-  selected-AND-rejected chip had no way to say the second thing. Every
-  selected control now uses the ring — the state row, the version row, the
-  direction pad, the filter chips, the zoom and speed rows.
+- **A verdict that has been GIVEN is a solid block of its own colour** —
+  `--good` / `--bad` / `--accent` filled, `--on-solid` ink on top (white on the
+  light theme, the page's near-black on the dark one, since those hues invert
+  between themes). It is the shape `.primary-btn` already uses for Commit, so
+  it is the stylesheet's own word for "this is the live choice". An untaken
+  verdict stays an outline. Measured by the gate: at least 1.6:1 between the
+  two backgrounds, never a soft tint that dies in daylight.
+- **The chip he is standing on is a filled NEUTRAL** — `--border-strong`, bold
+  ink, no hue at all. Selection used to wear `--accent`, a warm red-orange two
+  shades from `--bad`, so the chip he was on read as a rejected one.
+- **Colour still means the verdict** on that chip: green approved, red removed,
+  amber to be redone — the text in a `.seg`, the BORDER in the direction pad,
+  which selection must never touch (`.dirpad button.on` sets no border-color;
+  it is declared after the `judged-*` rules and would win).
+- Rejected: an inset ring for "selected" (2026-09-18). It read as a focus
+  outline, matched nothing else in the stylesheet, and still left "pressed"
+  ambiguous — he said so within the hour.
 
 ## One animation is REDONE, never removed
 
