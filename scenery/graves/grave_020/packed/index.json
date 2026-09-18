@@ -1,7 +1,107 @@
 {
  "files": {
-  "graves/grave_020/animations/motion/00.webp": {
-   "file": "animations/motion/00.79014320.webp",
+  "graves/grave_020/animations/motion/south-east/00.webp": {
+   "file": "animations/motion/south-east/00.bae187f4.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "3afc33a2",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south-east/01.webp": {
+   "file": "animations/motion/south-east/01.8afc9e59.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "69359ebb",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south-east/02.webp": {
+   "file": "animations/motion/south-east/02.b87c1c67.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "bd0b0677",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south-east/03.webp": {
+   "file": "animations/motion/south-east/03.e0c6f66c.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "18ea69ec",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south-east/04.webp": {
+   "file": "animations/motion/south-east/04.b4b3c14a.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "318d15f1",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south-west/00.webp": {
+   "file": "animations/motion/south-west/00.f39f0c1d.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "e3bab037",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south-west/01.webp": {
+   "file": "animations/motion/south-west/01.484129ee.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "3e7a66b6",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south-west/02.webp": {
+   "file": "animations/motion/south-west/02.56c5a7c0.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "798308a4",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south-west/03.webp": {
+   "file": "animations/motion/south-west/03.11c03100.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "c43582ce",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south-west/04.webp": {
+   "file": "animations/motion/south-west/04.75680d94.webp",
+   "h": 55,
+   "ox": 7,
+   "oy": 5,
+   "src": "12eb126e",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 51
+  },
+  "graves/grave_020/animations/motion/south/00.webp": {
+   "file": "animations/motion/south/00.79014320.webp",
    "h": 55,
    "ox": 7,
    "oy": 5,
@@ -10,8 +110,8 @@
    "srcW": 64,
    "w": 51
   },
-  "graves/grave_020/animations/motion/01.webp": {
-   "file": "animations/motion/01.c5f736e4.webp",
+  "graves/grave_020/animations/motion/south/01.webp": {
+   "file": "animations/motion/south/01.c5f736e4.webp",
    "h": 55,
    "ox": 7,
    "oy": 5,
@@ -20,8 +120,8 @@
    "srcW": 64,
    "w": 51
   },
-  "graves/grave_020/animations/motion/02.webp": {
-   "file": "animations/motion/02.6a7268a0.webp",
+  "graves/grave_020/animations/motion/south/02.webp": {
+   "file": "animations/motion/south/02.6a7268a0.webp",
    "h": 55,
    "ox": 7,
    "oy": 5,
@@ -30,8 +130,8 @@
    "srcW": 64,
    "w": 51
   },
-  "graves/grave_020/animations/motion/03.webp": {
-   "file": "animations/motion/03.2fc918b1.webp",
+  "graves/grave_020/animations/motion/south/03.webp": {
+   "file": "animations/motion/south/03.2fc918b1.webp",
    "h": 55,
    "ox": 7,
    "oy": 5,
@@ -40,8 +140,8 @@
    "srcW": 64,
    "w": 51
   },
-  "graves/grave_020/animations/motion/04.webp": {
-   "file": "animations/motion/04.7f225f62.webp",
+  "graves/grave_020/animations/motion/south/04.webp": {
+   "file": "animations/motion/south/04.7f225f62.webp",
    "h": 55,
    "ox": 7,
    "oy": 5,
@@ -295,7 +395,6 @@
    "h": 55,
    "ox": 7,
    "oy": 5,
-   "prev": "rotations/south-east.300cf39a.webp",
    "src": "3afc33a2",
    "srcH": 64,
    "srcW": 64,
@@ -306,7 +405,6 @@
    "h": 55,
    "ox": 7,
    "oy": 5,
-   "prev": "rotations/south-west.ff2a4597.webp",
    "src": "e3bab037",
    "srcH": 64,
    "srcW": 64,
@@ -317,7 +415,6 @@
    "h": 55,
    "ox": 7,
    "oy": 5,
-   "prev": "sprite.27a09afd.webp",
    "src": "80969749",
    "srcH": 64,
    "srcW": 64,

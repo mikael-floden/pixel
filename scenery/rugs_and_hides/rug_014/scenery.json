@@ -130,21 +130,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/animations/motion/south/00.webp",
+                "rugs_and_hides/rug_014/animations/motion/south/01.webp",
+                "rugs_and_hides/rug_014/animations/motion/south/02.webp",
+                "rugs_and_hides/rug_014/animations/motion/south/03.webp",
+                "rugs_and_hides/rug_014/animations/motion/south/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/animations/motion__south.e2ece1e6.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/animations/motion/south-east/00.webp",
+                "rugs_and_hides/rug_014/animations/motion/south-east/01.webp",
+                "rugs_and_hides/rug_014/animations/motion/south-east/02.webp",
+                "rugs_and_hides/rug_014/animations/motion/south-east/03.webp",
+                "rugs_and_hides/rug_014/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/animations/motion__south-east.5000f984.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/animations/motion/south-west/00.webp",
+                "rugs_and_hides/rug_014/animations/motion/south-west/01.webp",
+                "rugs_and_hides/rug_014/animations/motion/south-west/02.webp",
+                "rugs_and_hides/rug_014/animations/motion/south-west/03.webp",
+                "rugs_and_hides/rug_014/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/animations/motion__south-west.3bc9c887.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:01:24+00:00",
           "frame_paths": [
-            "rugs_and_hides/rug_014/animations/motion/00.webp",
-            "rugs_and_hides/rug_014/animations/motion/01.webp",
-            "rugs_and_hides/rug_014/animations/motion/02.webp",
-            "rugs_and_hides/rug_014/animations/motion/03.webp",
-            "rugs_and_hides/rug_014/animations/motion/04.webp"
+            "rugs_and_hides/rug_014/animations/motion/south/00.webp",
+            "rugs_and_hides/rug_014/animations/motion/south/01.webp",
+            "rugs_and_hides/rug_014/animations/motion/south/02.webp",
+            "rugs_and_hides/rug_014/animations/motion/south/03.webp",
+            "rugs_and_hides/rug_014/animations/motion/south/04.webp"
           ],
           "strip": "rugs_and_hides/rug_014/animations/motion__south.e2ece1e6.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:42:39+00:00",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.2075
+            "base_outline": 0.2151
           }
         }
       }
@@ -170,18 +202,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/00.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/01.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/02.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/03.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_4/animations/motion__south.1fc687f7.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-east/00.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-east/01.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-east/02.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-east/03.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_4/animations/motion__south-east.63d13b4a.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-west/00.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-west/01.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-west/02.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-west/03.webp",
+                "rugs_and_hides/rug_014/not_lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_4/animations/motion__south-west.7176d411.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:02:30+00:00",
           "frame_paths": [
-            "rugs_and_hides/rug_014/not_lit_4/animations/motion/00.webp",
-            "rugs_and_hides/rug_014/not_lit_4/animations/motion/01.webp",
-            "rugs_and_hides/rug_014/not_lit_4/animations/motion/02.webp",
-            "rugs_and_hides/rug_014/not_lit_4/animations/motion/03.webp",
-            "rugs_and_hides/rug_014/not_lit_4/animations/motion/04.webp"
+            "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/00.webp",
+            "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/01.webp",
+            "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/02.webp",
+            "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/03.webp",
+            "rugs_and_hides/rug_014/not_lit_4/animations/motion/south/04.webp"
           ],
           "strip": "rugs_and_hides/rug_014/not_lit_4/animations/motion__south.1fc687f7.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:44:05+00:00",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.3026
@@ -210,21 +274,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/00.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/01.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/02.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/03.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_5/animations/motion__south.a7555089.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-east/00.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-east/01.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-east/02.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-east/03.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_5/animations/motion__south-east.15b977b5.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-west/00.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-west/01.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-west/02.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-west/03.webp",
+                "rugs_and_hides/rug_014/not_lit_5/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_5/animations/motion__south-west.51262ab7.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:02:32+00:00",
           "frame_paths": [
-            "rugs_and_hides/rug_014/not_lit_5/animations/motion/00.webp",
-            "rugs_and_hides/rug_014/not_lit_5/animations/motion/01.webp",
-            "rugs_and_hides/rug_014/not_lit_5/animations/motion/02.webp",
-            "rugs_and_hides/rug_014/not_lit_5/animations/motion/03.webp",
-            "rugs_and_hides/rug_014/not_lit_5/animations/motion/04.webp"
+            "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/00.webp",
+            "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/01.webp",
+            "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/02.webp",
+            "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/03.webp",
+            "rugs_and_hides/rug_014/not_lit_5/animations/motion/south/04.webp"
           ],
           "strip": "rugs_and_hides/rug_014/not_lit_5/animations/motion__south.a7555089.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:44:04+00:00",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1921
+            "base_outline": 0.3368
           }
         }
       }
@@ -250,21 +346,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/00.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/01.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/02.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/03.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_6/animations/motion__south.e2e6d9c1.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-east/00.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-east/01.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-east/02.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-east/03.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_6/animations/motion__south-east.01e1e45b.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-west/00.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-west/01.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-west/02.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-west/03.webp",
+                "rugs_and_hides/rug_014/not_lit_6/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_6/animations/motion__south-west.ffefdb02.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:03:00+00:00",
           "frame_paths": [
-            "rugs_and_hides/rug_014/not_lit_6/animations/motion/00.webp",
-            "rugs_and_hides/rug_014/not_lit_6/animations/motion/01.webp",
-            "rugs_and_hides/rug_014/not_lit_6/animations/motion/02.webp",
-            "rugs_and_hides/rug_014/not_lit_6/animations/motion/03.webp",
-            "rugs_and_hides/rug_014/not_lit_6/animations/motion/04.webp"
+            "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/00.webp",
+            "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/01.webp",
+            "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/02.webp",
+            "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/03.webp",
+            "rugs_and_hides/rug_014/not_lit_6/animations/motion/south/04.webp"
           ],
           "strip": "rugs_and_hides/rug_014/not_lit_6/animations/motion__south.e2e6d9c1.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:44:36+00:00",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.2795
+            "base_outline": 0.3222
           }
         }
       }

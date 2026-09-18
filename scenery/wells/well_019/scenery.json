@@ -418,21 +418,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_019/animations/motion/south/00.webp",
+                "wells/well_019/animations/motion/south/01.webp",
+                "wells/well_019/animations/motion/south/02.webp",
+                "wells/well_019/animations/motion/south/03.webp",
+                "wells/well_019/animations/motion/south/04.webp"
+              ],
+              "strip": "wells/well_019/animations/motion__south.25bfe6aa.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_019/animations/motion/south-east/00.webp",
+                "wells/well_019/animations/motion/south-east/01.webp",
+                "wells/well_019/animations/motion/south-east/02.webp",
+                "wells/well_019/animations/motion/south-east/03.webp",
+                "wells/well_019/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wells/well_019/animations/motion__south-east.878ff1f1.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_019/animations/motion/south-west/00.webp",
+                "wells/well_019/animations/motion/south-west/01.webp",
+                "wells/well_019/animations/motion/south-west/02.webp",
+                "wells/well_019/animations/motion/south-west/03.webp",
+                "wells/well_019/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wells/well_019/animations/motion__south-west.650d20fc.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:30:51+00:00",
           "frame_paths": [
-            "wells/well_019/animations/motion/00.webp",
-            "wells/well_019/animations/motion/01.webp",
-            "wells/well_019/animations/motion/02.webp",
-            "wells/well_019/animations/motion/03.webp",
-            "wells/well_019/animations/motion/04.webp"
+            "wells/well_019/animations/motion/south/00.webp",
+            "wells/well_019/animations/motion/south/01.webp",
+            "wells/well_019/animations/motion/south/02.webp",
+            "wells/well_019/animations/motion/south/03.webp",
+            "wells/well_019/animations/motion/south/04.webp"
           ],
           "strip": "wells/well_019/animations/motion__south.25bfe6aa.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:25:31+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.6247
           }
         }
       }
@@ -457,21 +489,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_019/not_lit_2/animations/motion/south/00.webp",
+                "wells/well_019/not_lit_2/animations/motion/south/01.webp",
+                "wells/well_019/not_lit_2/animations/motion/south/02.webp",
+                "wells/well_019/not_lit_2/animations/motion/south/03.webp",
+                "wells/well_019/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "wells/well_019/not_lit_2/animations/motion__south.852f7500.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_019/not_lit_2/animations/motion/south-east/00.webp",
+                "wells/well_019/not_lit_2/animations/motion/south-east/01.webp",
+                "wells/well_019/not_lit_2/animations/motion/south-east/02.webp",
+                "wells/well_019/not_lit_2/animations/motion/south-east/03.webp",
+                "wells/well_019/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wells/well_019/not_lit_2/animations/motion__south-east.6263b578.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_019/not_lit_2/animations/motion/south-west/00.webp",
+                "wells/well_019/not_lit_2/animations/motion/south-west/01.webp",
+                "wells/well_019/not_lit_2/animations/motion/south-west/02.webp",
+                "wells/well_019/not_lit_2/animations/motion/south-west/03.webp",
+                "wells/well_019/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wells/well_019/not_lit_2/animations/motion__south-west.dc9e031f.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:31:05+00:00",
           "frame_paths": [
-            "wells/well_019/not_lit_2/animations/motion/00.webp",
-            "wells/well_019/not_lit_2/animations/motion/01.webp",
-            "wells/well_019/not_lit_2/animations/motion/02.webp",
-            "wells/well_019/not_lit_2/animations/motion/03.webp",
-            "wells/well_019/not_lit_2/animations/motion/04.webp"
+            "wells/well_019/not_lit_2/animations/motion/south/00.webp",
+            "wells/well_019/not_lit_2/animations/motion/south/01.webp",
+            "wells/well_019/not_lit_2/animations/motion/south/02.webp",
+            "wells/well_019/not_lit_2/animations/motion/south/03.webp",
+            "wells/well_019/not_lit_2/animations/motion/south/04.webp"
           ],
           "strip": "wells/well_019/not_lit_2/animations/motion__south.852f7500.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:26:29+00:00",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1543
+            "base_outline": 0.6278
           }
         }
       }
@@ -496,21 +560,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_019/not_lit_3/animations/motion/south/00.webp",
+                "wells/well_019/not_lit_3/animations/motion/south/01.webp",
+                "wells/well_019/not_lit_3/animations/motion/south/02.webp",
+                "wells/well_019/not_lit_3/animations/motion/south/03.webp",
+                "wells/well_019/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "wells/well_019/not_lit_3/animations/motion__south.6e156832.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_019/not_lit_3/animations/motion/south-east/00.webp",
+                "wells/well_019/not_lit_3/animations/motion/south-east/01.webp",
+                "wells/well_019/not_lit_3/animations/motion/south-east/02.webp",
+                "wells/well_019/not_lit_3/animations/motion/south-east/03.webp",
+                "wells/well_019/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wells/well_019/not_lit_3/animations/motion__south-east.8c0af34b.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_019/not_lit_3/animations/motion/south-west/00.webp",
+                "wells/well_019/not_lit_3/animations/motion/south-west/01.webp",
+                "wells/well_019/not_lit_3/animations/motion/south-west/02.webp",
+                "wells/well_019/not_lit_3/animations/motion/south-west/03.webp",
+                "wells/well_019/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wells/well_019/not_lit_3/animations/motion__south-west.23bfef97.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:32:12+00:00",
           "frame_paths": [
-            "wells/well_019/not_lit_3/animations/motion/00.webp",
-            "wells/well_019/not_lit_3/animations/motion/01.webp",
-            "wells/well_019/not_lit_3/animations/motion/02.webp",
-            "wells/well_019/not_lit_3/animations/motion/03.webp",
-            "wells/well_019/not_lit_3/animations/motion/04.webp"
+            "wells/well_019/not_lit_3/animations/motion/south/00.webp",
+            "wells/well_019/not_lit_3/animations/motion/south/01.webp",
+            "wells/well_019/not_lit_3/animations/motion/south/02.webp",
+            "wells/well_019/not_lit_3/animations/motion/south/03.webp",
+            "wells/well_019/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "wells/well_019/not_lit_3/animations/motion__south.6e156832.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:26:25+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0333
+            "base_outline": 0.6506
           }
         }
       }

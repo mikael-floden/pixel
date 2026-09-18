@@ -240,22 +240,123 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "torch_posts/torch_post_013/lit_2/animations/motion/00.webp",
-            "torch_posts/torch_post_013/lit_2/animations/motion/01.webp",
-            "torch_posts/torch_post_013/lit_2/animations/motion/02.webp",
-            "torch_posts/torch_post_013/lit_2/animations/motion/03.webp",
-            "torch_posts/torch_post_013/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "torch_posts/torch_post_013/lit_2/animations/motion__south.a38e9174.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:07:55+00:00",
-          "review": "ANIMATION_PROBABLY_BAD",
-          "review_metrics": {
-            "base_outline": 0.2632
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_013/lit_2/animations/motion/south/00.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south/01.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south/02.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south/03.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_013/lit_2/animations/motion__south.a38e9174.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -0.7,
+                  "dy": -3.6
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.5,
+                  "dy": -20.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.1,
+                  "dy": -18.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -1.0,
+                  "dy": 9.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -1.5,
+                  "dy": -8.2
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-east/00.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-east/01.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-east/02.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-east/03.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_013/lit_2/animations/motion__south-east.9144e6b3.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 4.2,
+                  "dy": -7.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 3.2,
+                  "dy": -8.2
+                },
+                {
+                  "intensity": 1.438,
+                  "dx": 6.3,
+                  "dy": -18.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 7.3,
+                  "dy": -17.2
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 8.3,
+                  "dy": -17.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-west/00.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-west/01.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-west/02.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-west/03.webp",
+                "torch_posts/torch_post_013/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_013/lit_2/animations/motion__south-west.9569aa2e.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 1.6,
+                  "dy": 4.2
+                },
+                {
+                  "intensity": 1.259,
+                  "dx": -8.1,
+                  "dy": -18.3
+                },
+                {
+                  "intensity": 1.464,
+                  "dx": -7.3,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -3.9,
+                  "dy": -10.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -11.0,
+                  "dy": -20.0
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T10:11:25+00:00",
           "light_frames": [
             {
               "intensity": 0.5,
@@ -282,7 +383,19 @@
               "dx": -1.5,
               "dy": -8.2
             }
-          ]
+          ],
+          "frame_paths": [
+            "torch_posts/torch_post_013/lit_2/animations/motion/south/00.webp",
+            "torch_posts/torch_post_013/lit_2/animations/motion/south/01.webp",
+            "torch_posts/torch_post_013/lit_2/animations/motion/south/02.webp",
+            "torch_posts/torch_post_013/lit_2/animations/motion/south/03.webp",
+            "torch_posts/torch_post_013/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_013/lit_2/animations/motion__south.a38e9174.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.8148
+          }
         }
       }
     },

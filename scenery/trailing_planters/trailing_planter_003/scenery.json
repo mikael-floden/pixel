@@ -203,18 +203,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/00.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/01.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/02.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/03.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "trailing_planters/trailing_planter_003/not_lit_3/animations/motion__south.a6721155.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-east/00.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-east/01.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-east/02.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-east/03.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "trailing_planters/trailing_planter_003/not_lit_3/animations/motion__south-east.c7cf5f43.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-west/00.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-west/01.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-west/02.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-west/03.webp",
+                "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "trailing_planters/trailing_planter_003/not_lit_3/animations/motion__south-west.a6bbe263.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:13:30+00:00",
           "frame_paths": [
-            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/00.webp",
-            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/01.webp",
-            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/02.webp",
-            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/03.webp",
-            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/04.webp"
+            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/00.webp",
+            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/01.webp",
+            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/02.webp",
+            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/03.webp",
+            "trailing_planters/trailing_planter_003/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "trailing_planters/trailing_planter_003/not_lit_3/animations/motion__south.a6721155.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:08:29+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0275
@@ -242,21 +274,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/00.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/01.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/02.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/03.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "trailing_planters/trailing_planter_003/not_lit_4/animations/motion__south.37bc425d.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-east/00.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-east/01.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-east/02.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-east/03.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "trailing_planters/trailing_planter_003/not_lit_4/animations/motion__south-east.449a59ab.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-west/00.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-west/01.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-west/02.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-west/03.webp",
+                "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "trailing_planters/trailing_planter_003/not_lit_4/animations/motion__south-west.46336d00.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:13:20+00:00",
           "frame_paths": [
-            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/00.webp",
-            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/01.webp",
-            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/02.webp",
-            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/03.webp",
-            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/04.webp"
+            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/00.webp",
+            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/01.webp",
+            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/02.webp",
+            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/03.webp",
+            "trailing_planters/trailing_planter_003/not_lit_4/animations/motion/south/04.webp"
           ],
           "strip": "trailing_planters/trailing_planter_003/not_lit_4/animations/motion__south.37bc425d.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:08:44+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.1918
           }
         }
       }

@@ -201,21 +201,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/00.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/01.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/02.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/03.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion__south.0e2d5a62.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-east/00.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-east/01.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-east/02.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-east/03.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion__south-east.704cc970.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-west/00.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-west/01.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-west/02.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-west/03.webp",
+                "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion__south-west.40323c0a.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:49:35+00:00",
           "frame_paths": [
-            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/00.webp",
-            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/01.webp",
-            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/02.webp",
-            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/03.webp",
-            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/04.webp"
+            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/00.webp",
+            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/01.webp",
+            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/02.webp",
+            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/03.webp",
+            "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "hanging_baskets/hanging_basket_005/not_lit_3/animations/motion__south.0e2d5a62.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:26:34+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.5667
           }
         }
       }

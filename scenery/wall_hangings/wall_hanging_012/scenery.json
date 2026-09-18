@@ -58,21 +58,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_012/animations/motion/south/00.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south/01.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south/02.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south/03.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_012/animations/motion__south.be69af33.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_012/animations/motion/south-east/00.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south-east/01.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south-east/02.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south-east/03.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_012/animations/motion__south-east.419934d9.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_012/animations/motion/south-west/00.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south-west/01.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south-west/02.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south-west/03.webp",
+                "wall_hangings/wall_hanging_012/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_012/animations/motion__south-west.4c2e8de2.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:14:45+00:00",
           "frame_paths": [
-            "wall_hangings/wall_hanging_012/animations/motion/00.webp",
-            "wall_hangings/wall_hanging_012/animations/motion/01.webp",
-            "wall_hangings/wall_hanging_012/animations/motion/02.webp",
-            "wall_hangings/wall_hanging_012/animations/motion/03.webp",
-            "wall_hangings/wall_hanging_012/animations/motion/04.webp"
+            "wall_hangings/wall_hanging_012/animations/motion/south/00.webp",
+            "wall_hangings/wall_hanging_012/animations/motion/south/01.webp",
+            "wall_hangings/wall_hanging_012/animations/motion/south/02.webp",
+            "wall_hangings/wall_hanging_012/animations/motion/south/03.webp",
+            "wall_hangings/wall_hanging_012/animations/motion/south/04.webp"
           ],
           "strip": "wall_hangings/wall_hanging_012/animations/motion__south.be69af33.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:09:44+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.6609
           }
         }
       }
@@ -171,18 +203,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/00.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/01.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/02.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/03.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_012/not_lit_5/animations/motion__south.3bd6696a.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-east/00.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-east/01.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-east/02.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-east/03.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_012/not_lit_5/animations/motion__south-east.7032af16.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-west/00.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-west/01.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-west/02.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-west/03.webp",
+                "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_012/not_lit_5/animations/motion__south-west.75925b40.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:15:31+00:00",
           "frame_paths": [
-            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/00.webp",
-            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/01.webp",
-            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/02.webp",
-            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/03.webp",
-            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/04.webp"
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/00.webp",
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/01.webp",
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/02.webp",
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/03.webp",
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/south/04.webp"
           ],
           "strip": "wall_hangings/wall_hanging_012/not_lit_5/animations/motion__south.3bd6696a.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:11:25+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0

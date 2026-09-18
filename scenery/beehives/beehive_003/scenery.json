@@ -309,21 +309,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "beehives/beehive_003/not_lit_2/animations/motion/south/00.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south/01.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south/02.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south/03.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "beehives/beehive_003/not_lit_2/animations/motion__south.f9c6c681.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "beehives/beehive_003/not_lit_2/animations/motion/south-east/00.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south-east/01.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south-east/02.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south-east/03.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "beehives/beehive_003/not_lit_2/animations/motion__south-east.d7af5118.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "beehives/beehive_003/not_lit_2/animations/motion/south-west/00.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south-west/01.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south-west/02.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south-west/03.webp",
+                "beehives/beehive_003/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "beehives/beehive_003/not_lit_2/animations/motion__south-west.a3810d59.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:33:16+00:00",
           "frame_paths": [
-            "beehives/beehive_003/not_lit_2/animations/motion/00.webp",
-            "beehives/beehive_003/not_lit_2/animations/motion/01.webp",
-            "beehives/beehive_003/not_lit_2/animations/motion/02.webp",
-            "beehives/beehive_003/not_lit_2/animations/motion/03.webp",
-            "beehives/beehive_003/not_lit_2/animations/motion/04.webp"
+            "beehives/beehive_003/not_lit_2/animations/motion/south/00.webp",
+            "beehives/beehive_003/not_lit_2/animations/motion/south/01.webp",
+            "beehives/beehive_003/not_lit_2/animations/motion/south/02.webp",
+            "beehives/beehive_003/not_lit_2/animations/motion/south/03.webp",
+            "beehives/beehive_003/not_lit_2/animations/motion/south/04.webp"
           ],
           "strip": "beehives/beehive_003/not_lit_2/animations/motion__south.f9c6c681.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T07:56:31+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.0435
           }
         }
       }
@@ -348,18 +380,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "beehives/beehive_003/not_lit_3/animations/motion/south/00.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south/01.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south/02.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south/03.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "beehives/beehive_003/not_lit_3/animations/motion__south.86853a58.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "beehives/beehive_003/not_lit_3/animations/motion/south-east/00.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south-east/01.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south-east/02.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south-east/03.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "beehives/beehive_003/not_lit_3/animations/motion__south-east.b716973f.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "beehives/beehive_003/not_lit_3/animations/motion/south-west/00.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south-west/01.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south-west/02.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south-west/03.webp",
+                "beehives/beehive_003/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "beehives/beehive_003/not_lit_3/animations/motion__south-west.9544641a.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:33:42+00:00",
           "frame_paths": [
-            "beehives/beehive_003/not_lit_3/animations/motion/00.webp",
-            "beehives/beehive_003/not_lit_3/animations/motion/01.webp",
-            "beehives/beehive_003/not_lit_3/animations/motion/02.webp",
-            "beehives/beehive_003/not_lit_3/animations/motion/03.webp",
-            "beehives/beehive_003/not_lit_3/animations/motion/04.webp"
+            "beehives/beehive_003/not_lit_3/animations/motion/south/00.webp",
+            "beehives/beehive_003/not_lit_3/animations/motion/south/01.webp",
+            "beehives/beehive_003/not_lit_3/animations/motion/south/02.webp",
+            "beehives/beehive_003/not_lit_3/animations/motion/south/03.webp",
+            "beehives/beehive_003/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "beehives/beehive_003/not_lit_3/animations/motion__south.86853a58.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T07:56:59+00:00",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.1465

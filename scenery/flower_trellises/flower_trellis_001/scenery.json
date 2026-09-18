@@ -57,21 +57,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/animations/motion/south/00.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south/01.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south/02.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south/03.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/animations/motion__south.2b46b674.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/animations/motion/south-east/00.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south-east/01.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south-east/02.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south-east/03.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south-east/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/animations/motion__south-east.fb5f448b.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/animations/motion/south-west/00.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south-west/01.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south-west/02.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south-west/03.webp",
+                "flower_trellises/flower_trellis_001/animations/motion/south-west/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/animations/motion__south-west.46086674.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:46:32+00:00",
           "frame_paths": [
-            "flower_trellises/flower_trellis_001/animations/motion/00.webp",
-            "flower_trellises/flower_trellis_001/animations/motion/01.webp",
-            "flower_trellises/flower_trellis_001/animations/motion/02.webp",
-            "flower_trellises/flower_trellis_001/animations/motion/03.webp",
-            "flower_trellises/flower_trellis_001/animations/motion/04.webp"
+            "flower_trellises/flower_trellis_001/animations/motion/south/00.webp",
+            "flower_trellises/flower_trellis_001/animations/motion/south/01.webp",
+            "flower_trellises/flower_trellis_001/animations/motion/south/02.webp",
+            "flower_trellises/flower_trellis_001/animations/motion/south/03.webp",
+            "flower_trellises/flower_trellis_001/animations/motion/south/04.webp"
           ],
           "strip": "flower_trellises/flower_trellis_001/animations/motion__south.2b46b674.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:22:56+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.025
           }
         }
       }
@@ -240,21 +272,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_4/animations/motion__south.d0a726e3.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-east/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-east/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-east/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-east/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_4/animations/motion__south-east.d0bcc1e8.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-west/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-west/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-west/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-west/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_4/animations/motion__south-west.e6c21e06.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:46:14+00:00",
           "frame_paths": [
-            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/00.webp",
-            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/01.webp",
-            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/02.webp",
-            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/03.webp",
-            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/04.webp"
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/00.webp",
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/01.webp",
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/02.webp",
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/03.webp",
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/south/04.webp"
           ],
           "strip": "flower_trellises/flower_trellis_001/not_lit_4/animations/motion__south.d0a726e3.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:22:30+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.009
           }
         }
       }
@@ -280,21 +344,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_5/animations/motion__south.684d32c6.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-east/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-east/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-east/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-east/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-east/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_5/animations/motion__south-east.f7d5afb2.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-west/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-west/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-west/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-west/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south-west/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_5/animations/motion__south-west.05a4f615.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:47:19+00:00",
           "frame_paths": [
-            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/00.webp",
-            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/01.webp",
-            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/02.webp",
-            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/03.webp",
-            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/04.webp"
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/00.webp",
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/01.webp",
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/02.webp",
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/03.webp",
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/south/04.webp"
           ],
           "strip": "flower_trellises/flower_trellis_001/not_lit_5/animations/motion__south.684d32c6.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:22:57+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0577
+            "base_outline": 0.1469
           }
         }
       }

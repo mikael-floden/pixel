@@ -597,22 +597,123 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/00.webp",
-            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/01.webp",
-            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/02.webp",
-            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/03.webp",
-            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "sheaf_poles/sheaf_pole_002/lit_4/animations/motion__south.1f91c3f8.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:48:00+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0133
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/00.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/01.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/02.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/03.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/lit_4/animations/motion__south.1f91c3f8.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.146,
+                  "dx": 0.8,
+                  "dy": -17.3
+                },
+                {
+                  "intensity": 1.045,
+                  "dx": 0.9,
+                  "dy": -16.5
+                },
+                {
+                  "intensity": 0.991,
+                  "dx": 0.7,
+                  "dy": -16.0
+                },
+                {
+                  "intensity": 0.89,
+                  "dx": 0.9,
+                  "dy": -15.9
+                },
+                {
+                  "intensity": 0.927,
+                  "dx": 0.7,
+                  "dy": -15.8
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-east/00.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-east/01.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-east/02.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-east/03.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/lit_4/animations/motion__south-east.e7ca629b.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.082,
+                  "dx": 7.6,
+                  "dy": -18.3
+                },
+                {
+                  "intensity": 1.034,
+                  "dx": 7.2,
+                  "dy": -16.7
+                },
+                {
+                  "intensity": 0.997,
+                  "dx": 7.1,
+                  "dy": -15.1
+                },
+                {
+                  "intensity": 0.948,
+                  "dx": 6.9,
+                  "dy": -13.5
+                },
+                {
+                  "intensity": 0.938,
+                  "dx": 6.9,
+                  "dy": -14.4
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-west/00.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-west/01.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-west/02.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-west/03.webp",
+                "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/lit_4/animations/motion__south-west.cc74bbf5.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.015,
+                  "dx": -5.6,
+                  "dy": -18.3
+                },
+                {
+                  "intensity": 1.005,
+                  "dx": -4.4,
+                  "dy": -17.2
+                },
+                {
+                  "intensity": 0.98,
+                  "dx": -4.5,
+                  "dy": -14.8
+                },
+                {
+                  "intensity": 0.984,
+                  "dx": -4.5,
+                  "dy": -16.3
+                },
+                {
+                  "intensity": 1.015,
+                  "dx": -5.3,
+                  "dy": -17.6
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T10:06:10+00:00",
           "light_frames": [
             {
               "intensity": 1.146,
@@ -639,7 +740,19 @@
               "dx": 0.7,
               "dy": -15.8
             }
-          ]
+          ],
+          "frame_paths": [
+            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/00.webp",
+            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/01.webp",
+            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/02.webp",
+            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/03.webp",
+            "sheaf_poles/sheaf_pole_002/lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "sheaf_poles/sheaf_pole_002/lit_4/animations/motion__south.1f91c3f8.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 1.0227
+          }
         }
       }
     }

@@ -70,21 +70,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/00.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/01.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/02.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/03.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_004/not_lit_2/animations/motion__south.3a27144e.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-east/00.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-east/01.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-east/02.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-east/03.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_004/not_lit_2/animations/motion__south-east.e698bd1c.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-west/00.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-west/01.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-west/02.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-west/03.webp",
+                "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_004/not_lit_2/animations/motion__south-west.d0a6d7ab.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:57:42+00:00",
           "frame_paths": [
-            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/00.webp",
-            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/01.webp",
-            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/02.webp",
-            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/03.webp",
-            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/04.webp"
+            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/00.webp",
+            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/01.webp",
+            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/02.webp",
+            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/03.webp",
+            "lantern_stands/lantern_stand_004/not_lit_2/animations/motion/south/04.webp"
           ],
           "strip": "lantern_stands/lantern_stand_004/not_lit_2/animations/motion__south.3a27144e.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:32:52+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.0087
           }
         }
       }

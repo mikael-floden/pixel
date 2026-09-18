@@ -702,38 +702,288 @@
    "srcW": 128,
    "w": 87
   },
-  "charcoal_kilns/charcoal_kiln_002/not_lit_2/rotations/south-east.webp": {
-   "file": "not_lit_2/rotations/south-east.3645e2dd.webp",
-   "h": 109,
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/00.webp": {
+   "file": "not_lit_2/animations/motion/south-east/00.a3adb575.webp",
+   "h": 128,
    "ox": 21,
-   "oy": 19,
+   "oy": 0,
+   "src": "15a053ad",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/01.webp": {
+   "file": "not_lit_2/animations/motion/south-east/01.43ad49d3.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "b36a2282",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/02.webp": {
+   "file": "not_lit_2/animations/motion/south-east/02.782b4c61.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "eac62bf5",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/03.webp": {
+   "file": "not_lit_2/animations/motion/south-east/03.bf4ddf01.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "148bcf8c",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/04.webp": {
+   "file": "not_lit_2/animations/motion/south-east/04.9634b90b.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "fc8d2e4d",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/00.webp": {
+   "file": "not_lit_2/animations/motion/south-west/00.1af08a99.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "40798a74",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/01.webp": {
+   "file": "not_lit_2/animations/motion/south-west/01.f53302cf.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "6616eedf",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/02.webp": {
+   "file": "not_lit_2/animations/motion/south-west/02.f0016f76.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "53842e3d",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/03.webp": {
+   "file": "not_lit_2/animations/motion/south-west/03.9d0f2b94.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "1acde3c4",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/04.webp": {
+   "file": "not_lit_2/animations/motion/south-west/04.47441839.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "73edcff1",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/00.webp": {
+   "file": "not_lit_2/animations/motion/south/00.e629f545.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "68436eea",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/01.webp": {
+   "file": "not_lit_2/animations/motion/south/01.ac4c5124.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "85a733bb",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/02.webp": {
+   "file": "not_lit_2/animations/motion/south/02.ddf0dcad.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "ef53ed86",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/03.webp": {
+   "file": "not_lit_2/animations/motion/south/03.f8c31f78.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "deb84ebb",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/04.webp": {
+   "file": "not_lit_2/animations/motion/south/04.50362e1a.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "ba4df41b",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 88
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_2/rotations/south-east.webp": {
+   "file": "not_lit_2/rotations/south-east.a3adb575.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
    "src": "15a053ad",
    "srcH": 128,
    "srcW": 128,
    "w": 88
   },
   "charcoal_kilns/charcoal_kiln_002/not_lit_2/rotations/south-west.webp": {
-   "file": "not_lit_2/rotations/south-west.24820db3.webp",
-   "h": 109,
+   "file": "not_lit_2/rotations/south-west.1af08a99.webp",
+   "h": 128,
    "ox": 21,
-   "oy": 19,
+   "oy": 0,
    "src": "40798a74",
    "srcH": 128,
    "srcW": 128,
    "w": 88
   },
   "charcoal_kilns/charcoal_kiln_002/not_lit_2/sprite.webp": {
-   "file": "not_lit_2/sprite.65ea6bca.webp",
-   "h": 109,
+   "file": "not_lit_2/sprite.e629f545.webp",
+   "h": 128,
    "ox": 21,
-   "oy": 19,
+   "oy": 0,
    "src": "68436eea",
    "srcH": 128,
    "srcW": 128,
    "w": 88
   },
-  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/00.webp": {
-   "file": "not_lit_3/animations/motion/00.5d229043.webp",
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/00.webp": {
+   "file": "not_lit_3/animations/motion/south-east/00.e368e8b3.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "8c87fc01",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/01.webp": {
+   "file": "not_lit_3/animations/motion/south-east/01.36e94d0b.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "3d2a2b5f",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/02.webp": {
+   "file": "not_lit_3/animations/motion/south-east/02.222696b3.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "8e876ac1",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/03.webp": {
+   "file": "not_lit_3/animations/motion/south-east/03.ce96b79f.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "63e9e8c3",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/04.webp": {
+   "file": "not_lit_3/animations/motion/south-east/04.5617964b.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "ce79c7f4",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/00.webp": {
+   "file": "not_lit_3/animations/motion/south-west/00.9b693a89.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "e3902c2a",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/01.webp": {
+   "file": "not_lit_3/animations/motion/south-west/01.9e71dd8a.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "6458bc9b",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/02.webp": {
+   "file": "not_lit_3/animations/motion/south-west/02.b568cbaa.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "b65fd8cd",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/03.webp": {
+   "file": "not_lit_3/animations/motion/south-west/03.2be3ebad.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "e9495566",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/04.webp": {
+   "file": "not_lit_3/animations/motion/south-west/04.d2b12996.webp",
+   "h": 128,
+   "ox": 21,
+   "oy": 0,
+   "src": "20e13746",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 87
+  },
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/00.webp": {
+   "file": "not_lit_3/animations/motion/south/00.5d229043.webp",
    "h": 128,
    "ox": 21,
    "oy": 0,
@@ -742,8 +992,8 @@
    "srcW": 128,
    "w": 87
   },
-  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/01.webp": {
-   "file": "not_lit_3/animations/motion/01.4ad1e5de.webp",
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/01.webp": {
+   "file": "not_lit_3/animations/motion/south/01.4ad1e5de.webp",
    "h": 128,
    "ox": 21,
    "oy": 0,
@@ -752,8 +1002,8 @@
    "srcW": 128,
    "w": 87
   },
-  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/02.webp": {
-   "file": "not_lit_3/animations/motion/02.457ee7df.webp",
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/02.webp": {
+   "file": "not_lit_3/animations/motion/south/02.457ee7df.webp",
    "h": 128,
    "ox": 21,
    "oy": 0,
@@ -762,8 +1012,8 @@
    "srcW": 128,
    "w": 87
   },
-  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/03.webp": {
-   "file": "not_lit_3/animations/motion/03.5821138c.webp",
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/03.webp": {
+   "file": "not_lit_3/animations/motion/south/03.5821138c.webp",
    "h": 128,
    "ox": 21,
    "oy": 0,
@@ -772,8 +1022,8 @@
    "srcW": 128,
    "w": 87
   },
-  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/04.webp": {
-   "file": "not_lit_3/animations/motion/04.6038da4b.webp",
+  "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/04.webp": {
+   "file": "not_lit_3/animations/motion/south/04.6038da4b.webp",
    "h": 128,
    "ox": 21,
    "oy": 0,

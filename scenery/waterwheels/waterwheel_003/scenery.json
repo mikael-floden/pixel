@@ -143,21 +143,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/00.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/01.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/02.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/03.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/not_lit_2/animations/motion__south.ad8b8b24.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-east/00.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-east/01.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-east/02.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-east/03.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/not_lit_2/animations/motion__south-east.103a0e79.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-west/00.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-west/01.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-west/02.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-west/03.webp",
+                "waterwheels/waterwheel_003/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/not_lit_2/animations/motion__south-west.1628e449.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:20:15+00:00",
           "frame_paths": [
-            "waterwheels/waterwheel_003/not_lit_2/animations/motion/00.webp",
-            "waterwheels/waterwheel_003/not_lit_2/animations/motion/01.webp",
-            "waterwheels/waterwheel_003/not_lit_2/animations/motion/02.webp",
-            "waterwheels/waterwheel_003/not_lit_2/animations/motion/03.webp",
-            "waterwheels/waterwheel_003/not_lit_2/animations/motion/04.webp"
+            "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/00.webp",
+            "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/01.webp",
+            "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/02.webp",
+            "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/03.webp",
+            "waterwheels/waterwheel_003/not_lit_2/animations/motion/south/04.webp"
           ],
           "strip": "waterwheels/waterwheel_003/not_lit_2/animations/motion__south.ad8b8b24.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:16:11+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0472
+            "base_outline": 0.0677
           }
         }
       }
@@ -182,21 +214,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/00.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/01.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/02.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/03.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/not_lit_3/animations/motion__south.c4cd56dd.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-east/00.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-east/01.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-east/02.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-east/03.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/not_lit_3/animations/motion__south-east.5b32796d.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-west/00.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-west/01.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-west/02.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-west/03.webp",
+                "waterwheels/waterwheel_003/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/not_lit_3/animations/motion__south-west.01fcf6c8.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:20:19+00:00",
           "frame_paths": [
-            "waterwheels/waterwheel_003/not_lit_3/animations/motion/00.webp",
-            "waterwheels/waterwheel_003/not_lit_3/animations/motion/01.webp",
-            "waterwheels/waterwheel_003/not_lit_3/animations/motion/02.webp",
-            "waterwheels/waterwheel_003/not_lit_3/animations/motion/03.webp",
-            "waterwheels/waterwheel_003/not_lit_3/animations/motion/04.webp"
+            "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/00.webp",
+            "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/01.webp",
+            "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/02.webp",
+            "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/03.webp",
+            "waterwheels/waterwheel_003/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "waterwheels/waterwheel_003/not_lit_3/animations/motion__south.c4cd56dd.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:16:11+00:00",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1143
+            "base_outline": 0.1752
           }
         }
       }
@@ -221,21 +285,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/00.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/01.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/02.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/03.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/not_lit_4/animations/motion__south.0a2d7910.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-east/00.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-east/01.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-east/02.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-east/03.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/not_lit_4/animations/motion__south-east.d7f4616a.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-west/00.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-west/01.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-west/02.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-west/03.webp",
+                "waterwheels/waterwheel_003/not_lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "waterwheels/waterwheel_003/not_lit_4/animations/motion__south-west.09f07be2.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:20:27+00:00",
           "frame_paths": [
-            "waterwheels/waterwheel_003/not_lit_4/animations/motion/00.webp",
-            "waterwheels/waterwheel_003/not_lit_4/animations/motion/01.webp",
-            "waterwheels/waterwheel_003/not_lit_4/animations/motion/02.webp",
-            "waterwheels/waterwheel_003/not_lit_4/animations/motion/03.webp",
-            "waterwheels/waterwheel_003/not_lit_4/animations/motion/04.webp"
+            "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/00.webp",
+            "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/01.webp",
+            "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/02.webp",
+            "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/03.webp",
+            "waterwheels/waterwheel_003/not_lit_4/animations/motion/south/04.webp"
           ],
           "strip": "waterwheels/waterwheel_003/not_lit_4/animations/motion__south.0a2d7910.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:16:18+00:00",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1469
+            "base_outline": 0.3327
           }
         }
       }

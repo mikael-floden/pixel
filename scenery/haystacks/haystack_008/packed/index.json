@@ -150,251 +150,554 @@
    "srcW": 128,
    "w": 111
   },
-  "haystacks/haystack_008/lit_2/animations/motion/00.webp": {
-   "file": "lit_2/animations/motion/00.06c1c501.webp",
-   "h": 117,
-   "ox": 11,
-   "oy": 11,
-   "src": "21eb8d42",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 107
-  },
-  "haystacks/haystack_008/lit_2/animations/motion/01.webp": {
-   "file": "lit_2/animations/motion/01.42c02646.webp",
-   "h": 117,
-   "ox": 11,
-   "oy": 11,
-   "src": "869d9ac3",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 107
-  },
-  "haystacks/haystack_008/lit_2/animations/motion/02.webp": {
-   "file": "lit_2/animations/motion/02.b6e7a195.webp",
-   "h": 117,
-   "ox": 11,
-   "oy": 11,
-   "src": "36d91c49",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 107
-  },
-  "haystacks/haystack_008/lit_2/animations/motion/03.webp": {
-   "file": "lit_2/animations/motion/03.ea0ebb57.webp",
-   "h": 117,
-   "ox": 11,
-   "oy": 11,
-   "src": "a074b037",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 107
-  },
-  "haystacks/haystack_008/lit_2/animations/motion/04.webp": {
-   "file": "lit_2/animations/motion/04.2b4a2a58.webp",
-   "h": 117,
-   "ox": 11,
-   "oy": 11,
-   "src": "eba0fd48",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 107
-  },
-  "haystacks/haystack_008/lit_2/rotations/south-east.webp": {
-   "file": "lit_2/rotations/south-east.b1434eb0.webp",
-   "h": 117,
-   "ox": 11,
-   "oy": 11,
+  "haystacks/haystack_008/lit_2/animations/motion/south-east/00.webp": {
+   "file": "lit_2/animations/motion/south-east/00.b014d0e2.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
    "src": "4755ea8c",
    "srcH": 128,
    "srcW": 128,
-   "w": 107
+   "w": 111
   },
-  "haystacks/haystack_008/lit_2/rotations/south-west.webp": {
-   "file": "lit_2/rotations/south-west.1369a280.webp",
-   "h": 117,
-   "ox": 11,
-   "oy": 11,
+  "haystacks/haystack_008/lit_2/animations/motion/south-east/01.webp": {
+   "file": "lit_2/animations/motion/south-east/01.93182fb9.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
+   "src": "a5443221",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_2/animations/motion/south-east/02.webp": {
+   "file": "lit_2/animations/motion/south-east/02.75e1a10c.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
+   "src": "41d51078",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_2/animations/motion/south-east/03.webp": {
+   "file": "lit_2/animations/motion/south-east/03.7d1bbcad.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
+   "src": "5e27c02e",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_2/animations/motion/south-east/04.webp": {
+   "file": "lit_2/animations/motion/south-east/04.b81458cf.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
+   "src": "b19d17d0",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_2/animations/motion/south-west/00.webp": {
+   "file": "lit_2/animations/motion/south-west/00.0ec42042.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
    "src": "b4d4fe0d",
    "srcH": 128,
    "srcW": 128,
-   "w": 107
+   "w": 111
   },
-  "haystacks/haystack_008/lit_2/sprite.webp": {
-   "file": "lit_2/sprite.06c1c501.webp",
-   "h": 117,
-   "ox": 11,
-   "oy": 11,
+  "haystacks/haystack_008/lit_2/animations/motion/south-west/01.webp": {
+   "file": "lit_2/animations/motion/south-west/01.8fbbc62a.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
+   "src": "f115f256",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_2/animations/motion/south-west/02.webp": {
+   "file": "lit_2/animations/motion/south-west/02.70110e51.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
+   "src": "9438fd5f",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_2/animations/motion/south-west/03.webp": {
+   "file": "lit_2/animations/motion/south-west/03.97928cab.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
+   "src": "f0482a4b",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_2/animations/motion/south-west/04.webp": {
+   "file": "lit_2/animations/motion/south-west/04.de28b5d8.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
+   "src": "7f70fcb2",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_2/animations/motion/south/00.webp": {
+   "file": "lit_2/animations/motion/south/00.e728eb99.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
    "src": "21eb8d42",
    "srcH": 128,
    "srcW": 128,
-   "w": 107
+   "w": 111
   },
-  "haystacks/haystack_008/lit_3/animations/motion/00.webp": {
-   "file": "lit_3/animations/motion/00.59b553a0.webp",
-   "h": 114,
+  "haystacks/haystack_008/lit_2/animations/motion/south/01.webp": {
+   "file": "lit_2/animations/motion/south/01.ea7fea73.webp",
+   "h": 128,
    "ox": 9,
-   "oy": 8,
-   "src": "1355058f",
+   "oy": 0,
+   "src": "869d9ac3",
    "srcH": 128,
    "srcW": 128,
-   "w": 110
+   "w": 111
   },
-  "haystacks/haystack_008/lit_3/animations/motion/01.webp": {
-   "file": "lit_3/animations/motion/01.292db0ee.webp",
-   "h": 114,
+  "haystacks/haystack_008/lit_2/animations/motion/south/02.webp": {
+   "file": "lit_2/animations/motion/south/02.c795f11b.webp",
+   "h": 128,
    "ox": 9,
-   "oy": 8,
-   "src": "5506aae2",
+   "oy": 0,
+   "src": "36d91c49",
    "srcH": 128,
    "srcW": 128,
-   "w": 110
+   "w": 111
   },
-  "haystacks/haystack_008/lit_3/animations/motion/02.webp": {
-   "file": "lit_3/animations/motion/02.d1fe7886.webp",
-   "h": 114,
+  "haystacks/haystack_008/lit_2/animations/motion/south/03.webp": {
+   "file": "lit_2/animations/motion/south/03.4cd54207.webp",
+   "h": 128,
    "ox": 9,
-   "oy": 8,
-   "src": "8919b12b",
+   "oy": 0,
+   "src": "a074b037",
    "srcH": 128,
    "srcW": 128,
-   "w": 110
+   "w": 111
   },
-  "haystacks/haystack_008/lit_3/animations/motion/03.webp": {
-   "file": "lit_3/animations/motion/03.bbaa7c39.webp",
-   "h": 114,
+  "haystacks/haystack_008/lit_2/animations/motion/south/04.webp": {
+   "file": "lit_2/animations/motion/south/04.611526cf.webp",
+   "h": 128,
    "ox": 9,
-   "oy": 8,
-   "src": "7c65ac91",
+   "oy": 0,
+   "src": "eba0fd48",
    "srcH": 128,
    "srcW": 128,
-   "w": 110
+   "w": 111
   },
-  "haystacks/haystack_008/lit_3/animations/motion/04.webp": {
-   "file": "lit_3/animations/motion/04.1339b39f.webp",
-   "h": 114,
+  "haystacks/haystack_008/lit_2/rotations/south-east.webp": {
+   "file": "lit_2/rotations/south-east.b014d0e2.webp",
+   "h": 128,
    "ox": 9,
-   "oy": 8,
-   "src": "43b019b2",
+   "oy": 0,
+   "prev": "lit_2/rotations/south-east.b1434eb0.webp",
+   "src": "4755ea8c",
    "srcH": 128,
    "srcW": 128,
-   "w": 110
+   "w": 111
   },
-  "haystacks/haystack_008/lit_3/rotations/south-east.webp": {
-   "file": "lit_3/rotations/south-east.292e845b.webp",
-   "h": 114,
+  "haystacks/haystack_008/lit_2/rotations/south-west.webp": {
+   "file": "lit_2/rotations/south-west.0ec42042.webp",
+   "h": 128,
    "ox": 9,
-   "oy": 8,
-   "prev": "lit_3/rotations/south-east.bfd66baf.webp",
+   "oy": 0,
+   "prev": "lit_2/rotations/south-west.1369a280.webp",
+   "src": "b4d4fe0d",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_2/sprite.webp": {
+   "file": "lit_2/sprite.e728eb99.webp",
+   "h": 128,
+   "ox": 9,
+   "oy": 0,
+   "prev": "lit_2/sprite.06c1c501.webp",
+   "src": "21eb8d42",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 111
+  },
+  "haystacks/haystack_008/lit_3/animations/motion/south-east/00.webp": {
+   "file": "lit_3/animations/motion/south-east/00.63775987.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
    "src": "f85480ea",
    "srcH": 128,
    "srcW": 128,
-   "w": 110
+   "w": 114
   },
-  "haystacks/haystack_008/lit_3/rotations/south-west.webp": {
-   "file": "lit_3/rotations/south-west.3c9d4916.webp",
-   "h": 114,
-   "ox": 9,
-   "oy": 8,
-   "prev": "lit_3/rotations/south-west.47afc6b4.webp",
+  "haystacks/haystack_008/lit_3/animations/motion/south-east/01.webp": {
+   "file": "lit_3/animations/motion/south-east/01.6d104021.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "5dcd52f6",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_3/animations/motion/south-east/02.webp": {
+   "file": "lit_3/animations/motion/south-east/02.abeb4038.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "7877055d",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_3/animations/motion/south-east/03.webp": {
+   "file": "lit_3/animations/motion/south-east/03.3176e965.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "39c912b4",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_3/animations/motion/south-east/04.webp": {
+   "file": "lit_3/animations/motion/south-east/04.beebe0c0.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "ab056f30",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_3/animations/motion/south-west/00.webp": {
+   "file": "lit_3/animations/motion/south-west/00.817d4cb0.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
    "src": "55e51115",
    "srcH": 128,
    "srcW": 128,
-   "w": 110
+   "w": 114
   },
-  "haystacks/haystack_008/lit_3/sprite.webp": {
-   "file": "lit_3/sprite.59b553a0.webp",
-   "h": 114,
-   "ox": 9,
-   "oy": 8,
-   "prev": "lit_3/sprite.bb4ccd89.webp",
+  "haystacks/haystack_008/lit_3/animations/motion/south-west/01.webp": {
+   "file": "lit_3/animations/motion/south-west/01.d01808c8.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "2be88d55",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_3/animations/motion/south-west/02.webp": {
+   "file": "lit_3/animations/motion/south-west/02.d5d95f34.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "22a5c026",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_3/animations/motion/south-west/03.webp": {
+   "file": "lit_3/animations/motion/south-west/03.5c354124.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "b22a2559",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_3/animations/motion/south-west/04.webp": {
+   "file": "lit_3/animations/motion/south-west/04.cfbf9448.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "3dbb4590",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_3/animations/motion/south/00.webp": {
+   "file": "lit_3/animations/motion/south/00.40bc3d89.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
    "src": "1355058f",
    "srcH": 128,
    "srcW": 128,
-   "w": 110
+   "w": 114
   },
-  "haystacks/haystack_008/lit_4/animations/motion/00.webp": {
-   "file": "lit_4/animations/motion/00.22872dd1.webp",
-   "h": 110,
-   "ox": 11,
-   "oy": 12,
-   "src": "8f41101a",
+  "haystacks/haystack_008/lit_3/animations/motion/south/01.webp": {
+   "file": "lit_3/animations/motion/south/01.14e115d9.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "5506aae2",
    "srcH": 128,
    "srcW": 128,
-   "w": 108
+   "w": 114
   },
-  "haystacks/haystack_008/lit_4/animations/motion/01.webp": {
-   "file": "lit_4/animations/motion/01.5df21506.webp",
-   "h": 110,
-   "ox": 11,
-   "oy": 12,
-   "src": "f9cb24ff",
+  "haystacks/haystack_008/lit_3/animations/motion/south/02.webp": {
+   "file": "lit_3/animations/motion/south/02.81dda1b3.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "8919b12b",
    "srcH": 128,
    "srcW": 128,
-   "w": 108
+   "w": 114
   },
-  "haystacks/haystack_008/lit_4/animations/motion/02.webp": {
-   "file": "lit_4/animations/motion/02.60e439fe.webp",
-   "h": 110,
-   "ox": 11,
-   "oy": 12,
-   "src": "bb38fc0f",
+  "haystacks/haystack_008/lit_3/animations/motion/south/03.webp": {
+   "file": "lit_3/animations/motion/south/03.ece526ec.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "7c65ac91",
    "srcH": 128,
    "srcW": 128,
-   "w": 108
+   "w": 114
   },
-  "haystacks/haystack_008/lit_4/animations/motion/03.webp": {
-   "file": "lit_4/animations/motion/03.86982413.webp",
-   "h": 110,
-   "ox": 11,
-   "oy": 12,
-   "src": "d28ad358",
+  "haystacks/haystack_008/lit_3/animations/motion/south/04.webp": {
+   "file": "lit_3/animations/motion/south/04.3dd74172.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "src": "43b019b2",
    "srcH": 128,
    "srcW": 128,
-   "w": 108
+   "w": 114
   },
-  "haystacks/haystack_008/lit_4/animations/motion/04.webp": {
-   "file": "lit_4/animations/motion/04.638ebe04.webp",
-   "h": 110,
-   "ox": 11,
-   "oy": 12,
-   "src": "d9580427",
+  "haystacks/haystack_008/lit_3/rotations/south-east.webp": {
+   "file": "lit_3/rotations/south-east.63775987.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "prev": "lit_3/rotations/south-east.292e845b.webp",
+   "src": "f85480ea",
    "srcH": 128,
    "srcW": 128,
-   "w": 108
+   "w": 114
   },
-  "haystacks/haystack_008/lit_4/rotations/south-east.webp": {
-   "file": "lit_4/rotations/south-east.9b053864.webp",
-   "h": 110,
-   "ox": 11,
-   "oy": 12,
-   "prev": "lit_4/rotations/south-east.3aa7d684.webp",
+  "haystacks/haystack_008/lit_3/rotations/south-west.webp": {
+   "file": "lit_3/rotations/south-west.817d4cb0.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "prev": "lit_3/rotations/south-west.3c9d4916.webp",
+   "src": "55e51115",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_3/sprite.webp": {
+   "file": "lit_3/sprite.40bc3d89.webp",
+   "h": 118,
+   "ox": 7,
+   "oy": 5,
+   "prev": "lit_3/sprite.59b553a0.webp",
+   "src": "1355058f",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 114
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south-east/00.webp": {
+   "file": "lit_4/animations/motion/south-east/00.3fe0568e.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
    "src": "511bbd30",
    "srcH": 128,
    "srcW": 128,
-   "w": 108
+   "w": 109
   },
-  "haystacks/haystack_008/lit_4/rotations/south-west.webp": {
-   "file": "lit_4/rotations/south-west.042fe245.webp",
-   "h": 110,
-   "ox": 11,
-   "oy": 12,
-   "prev": "lit_4/rotations/south-west.23d97e59.webp",
+  "haystacks/haystack_008/lit_4/animations/motion/south-east/01.webp": {
+   "file": "lit_4/animations/motion/south-east/01.314799c6.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "41a1e82a",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south-east/02.webp": {
+   "file": "lit_4/animations/motion/south-east/02.9940aa8e.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "5f1c029c",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south-east/03.webp": {
+   "file": "lit_4/animations/motion/south-east/03.441cfb51.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "1d00a067",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south-east/04.webp": {
+   "file": "lit_4/animations/motion/south-east/04.30c00b4a.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "d142d4e1",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south-west/00.webp": {
+   "file": "lit_4/animations/motion/south-west/00.f57c2a81.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
    "src": "ac526c94",
    "srcH": 128,
    "srcW": 128,
-   "w": 108
+   "w": 109
   },
-  "haystacks/haystack_008/lit_4/sprite.webp": {
-   "file": "lit_4/sprite.22872dd1.webp",
-   "h": 110,
-   "ox": 11,
-   "oy": 12,
-   "prev": "lit_4/sprite.266211de.webp",
+  "haystacks/haystack_008/lit_4/animations/motion/south-west/01.webp": {
+   "file": "lit_4/animations/motion/south-west/01.0901b9bf.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "c96604a3",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south-west/02.webp": {
+   "file": "lit_4/animations/motion/south-west/02.3feafb2b.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "42919dd1",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south-west/03.webp": {
+   "file": "lit_4/animations/motion/south-west/03.e9bc0502.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "1ea54731",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south-west/04.webp": {
+   "file": "lit_4/animations/motion/south-west/04.043fd312.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "f4bfe911",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south/00.webp": {
+   "file": "lit_4/animations/motion/south/00.dc0a500a.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
    "src": "8f41101a",
    "srcH": 128,
    "srcW": 128,
-   "w": 108
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south/01.webp": {
+   "file": "lit_4/animations/motion/south/01.df488109.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "f9cb24ff",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south/02.webp": {
+   "file": "lit_4/animations/motion/south/02.e98c9bec.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "bb38fc0f",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south/03.webp": {
+   "file": "lit_4/animations/motion/south/03.43a1f1dc.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "d28ad358",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/animations/motion/south/04.webp": {
+   "file": "lit_4/animations/motion/south/04.602500ea.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "src": "d9580427",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/rotations/south-east.webp": {
+   "file": "lit_4/rotations/south-east.3fe0568e.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "prev": "lit_4/rotations/south-east.9b053864.webp",
+   "src": "511bbd30",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/rotations/south-west.webp": {
+   "file": "lit_4/rotations/south-west.f57c2a81.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "prev": "lit_4/rotations/south-west.042fe245.webp",
+   "src": "ac526c94",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
+  },
+  "haystacks/haystack_008/lit_4/sprite.webp": {
+   "file": "lit_4/sprite.dc0a500a.webp",
+   "h": 112,
+   "ox": 10,
+   "oy": 10,
+   "prev": "lit_4/sprite.22872dd1.webp",
+   "src": "8f41101a",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 109
   },
   "haystacks/haystack_008/not_lit_1/rotations/south-east.webp": {
    "file": "not_lit_1/rotations/south-east.bc2af674.webp",

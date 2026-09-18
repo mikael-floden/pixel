@@ -660,6 +660,64 @@
         "south-east": "charcoal_kilns/charcoal_kiln_002/not_lit_2/rotations/south-east.webp",
         "south-west": "charcoal_kilns/charcoal_kiln_002/not_lit_2/rotations/south-west.webp",
         "south": "charcoal_kilns/charcoal_kiln_002/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "ae9635e1-b297-4377-8c0a-e8b0677487f6",
+          "description": "This is the same picture in every frame. ONLY one thin thread of smoke rises from the top of the dome and fades. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/00.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/01.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/02.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/03.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion__south.18b231b2.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/00.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/01.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/02.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/03.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion__south-east.39e3b7bd.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/00.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/01.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/02.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/03.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion__south-west.60f8b03b.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:36:56+00:00",
+          "frame_paths": [
+            "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/00.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/01.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/02.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/03.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "charcoal_kilns/charcoal_kiln_002/not_lit_2/animations/motion__south.18b231b2.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.001
+          }
+        }
       }
     },
     "NOT_LIT_3": {
@@ -683,21 +741,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/00.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/01.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/02.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/03.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion__south.d4812b6a.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/00.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/01.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/02.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/03.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion__south-east.4a2aabd7.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/00.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/01.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/02.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/03.webp",
+                "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion__south-west.3afeafa1.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:37:52+00:00",
           "frame_paths": [
-            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/00.webp",
-            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/01.webp",
-            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/02.webp",
-            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/03.webp",
-            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/04.webp"
+            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/00.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/01.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/02.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/03.webp",
+            "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "charcoal_kilns/charcoal_kiln_002/not_lit_3/animations/motion__south.d4812b6a.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:05:25+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.0107
           }
         }
       }

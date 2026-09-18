@@ -58,21 +58,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/animations/motion/south/00.webp",
+                "rope_swings/rope_swing_002/animations/motion/south/01.webp",
+                "rope_swings/rope_swing_002/animations/motion/south/02.webp",
+                "rope_swings/rope_swing_002/animations/motion/south/03.webp",
+                "rope_swings/rope_swing_002/animations/motion/south/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/animations/motion__south.5ed8ee52.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/animations/motion/south-east/00.webp",
+                "rope_swings/rope_swing_002/animations/motion/south-east/01.webp",
+                "rope_swings/rope_swing_002/animations/motion/south-east/02.webp",
+                "rope_swings/rope_swing_002/animations/motion/south-east/03.webp",
+                "rope_swings/rope_swing_002/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/animations/motion__south-east.11c0622f.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/animations/motion/south-west/00.webp",
+                "rope_swings/rope_swing_002/animations/motion/south-west/01.webp",
+                "rope_swings/rope_swing_002/animations/motion/south-west/02.webp",
+                "rope_swings/rope_swing_002/animations/motion/south-west/03.webp",
+                "rope_swings/rope_swing_002/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/animations/motion__south-west.d4a3482e.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:01:30+00:00",
           "frame_paths": [
-            "rope_swings/rope_swing_002/animations/motion/00.webp",
-            "rope_swings/rope_swing_002/animations/motion/01.webp",
-            "rope_swings/rope_swing_002/animations/motion/02.webp",
-            "rope_swings/rope_swing_002/animations/motion/03.webp",
-            "rope_swings/rope_swing_002/animations/motion/04.webp"
+            "rope_swings/rope_swing_002/animations/motion/south/00.webp",
+            "rope_swings/rope_swing_002/animations/motion/south/01.webp",
+            "rope_swings/rope_swing_002/animations/motion/south/02.webp",
+            "rope_swings/rope_swing_002/animations/motion/south/03.webp",
+            "rope_swings/rope_swing_002/animations/motion/south/04.webp"
           ],
           "strip": "rope_swings/rope_swing_002/animations/motion__south.5ed8ee52.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:43:01+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.0117
           }
         }
       }

@@ -309,18 +309,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south/00.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south/01.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south/02.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south/03.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/not_lit_2/animations/motion__south.3fcd59db.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-east/00.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-east/01.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-east/02.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-east/03.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/not_lit_2/animations/motion__south-east.1a650573.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-west/00.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-west/01.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-west/02.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-west/03.webp",
+                "water_pumps/water_pump_001/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/not_lit_2/animations/motion__south-west.dc298ba3.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:18:31+00:00",
           "frame_paths": [
-            "water_pumps/water_pump_001/not_lit_2/animations/motion/00.webp",
-            "water_pumps/water_pump_001/not_lit_2/animations/motion/01.webp",
-            "water_pumps/water_pump_001/not_lit_2/animations/motion/02.webp",
-            "water_pumps/water_pump_001/not_lit_2/animations/motion/03.webp",
-            "water_pumps/water_pump_001/not_lit_2/animations/motion/04.webp"
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/south/00.webp",
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/south/01.webp",
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/south/02.webp",
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/south/03.webp",
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/south/04.webp"
           ],
           "strip": "water_pumps/water_pump_001/not_lit_2/animations/motion__south.3fcd59db.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:14:47+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0
@@ -348,18 +380,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south/00.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south/01.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south/02.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south/03.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/not_lit_3/animations/motion__south.1d49f94e.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-east/00.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-east/01.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-east/02.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-east/03.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/not_lit_3/animations/motion__south-east.8801faf0.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-west/00.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-west/01.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-west/02.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-west/03.webp",
+                "water_pumps/water_pump_001/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/not_lit_3/animations/motion__south-west.9e0b6cba.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:18:42+00:00",
           "frame_paths": [
-            "water_pumps/water_pump_001/not_lit_3/animations/motion/00.webp",
-            "water_pumps/water_pump_001/not_lit_3/animations/motion/01.webp",
-            "water_pumps/water_pump_001/not_lit_3/animations/motion/02.webp",
-            "water_pumps/water_pump_001/not_lit_3/animations/motion/03.webp",
-            "water_pumps/water_pump_001/not_lit_3/animations/motion/04.webp"
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/south/00.webp",
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/south/01.webp",
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/south/02.webp",
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/south/03.webp",
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "water_pumps/water_pump_001/not_lit_3/animations/motion__south.1d49f94e.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:14:43+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0
@@ -387,18 +451,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south/00.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south/01.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south/02.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south/03.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/not_lit_4/animations/motion__south.fe0a23a1.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-east/00.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-east/01.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-east/02.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-east/03.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/not_lit_4/animations/motion__south-east.ea429b74.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-west/00.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-west/01.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-west/02.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-west/03.webp",
+                "water_pumps/water_pump_001/not_lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "water_pumps/water_pump_001/not_lit_4/animations/motion__south-west.c9217953.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:18:51+00:00",
           "frame_paths": [
-            "water_pumps/water_pump_001/not_lit_4/animations/motion/00.webp",
-            "water_pumps/water_pump_001/not_lit_4/animations/motion/01.webp",
-            "water_pumps/water_pump_001/not_lit_4/animations/motion/02.webp",
-            "water_pumps/water_pump_001/not_lit_4/animations/motion/03.webp",
-            "water_pumps/water_pump_001/not_lit_4/animations/motion/04.webp"
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/south/00.webp",
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/south/01.webp",
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/south/02.webp",
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/south/03.webp",
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/south/04.webp"
           ],
           "strip": "water_pumps/water_pump_001/not_lit_4/animations/motion__south.fe0a23a1.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:15:26+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0

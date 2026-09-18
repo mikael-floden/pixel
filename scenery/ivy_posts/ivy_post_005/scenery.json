@@ -308,21 +308,42 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/00.webp",
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/01.webp",
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/02.webp",
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/03.webp",
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_005/not_lit_3/animations/motion__south.ee599841.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-west/00.webp",
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-west/01.webp",
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-west/02.webp",
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-west/03.webp",
+                "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_005/not_lit_3/animations/motion__south-west.3e1f9f23.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:54:58+00:00",
           "frame_paths": [
-            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/00.webp",
-            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/01.webp",
-            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/02.webp",
-            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/03.webp",
-            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/04.webp"
+            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/00.webp",
+            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/01.webp",
+            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/02.webp",
+            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/03.webp",
+            "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "ivy_posts/ivy_post_005/not_lit_3/animations/motion__south.ee599841.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:29:32+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.016
+            "base_outline": 0.0171
           }
         }
       }

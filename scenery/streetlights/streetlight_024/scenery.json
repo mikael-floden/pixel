@@ -58,22 +58,123 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "streetlights/streetlight_024/animations/motion/00.webp",
-            "streetlights/streetlight_024/animations/motion/01.webp",
-            "streetlights/streetlight_024/animations/motion/02.webp",
-            "streetlights/streetlight_024/animations/motion/03.webp",
-            "streetlights/streetlight_024/animations/motion/04.webp"
-          ],
-          "strip": "streetlights/streetlight_024/animations/motion__south.4d8b9414.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:02:19+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0152
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "streetlights/streetlight_024/animations/motion/south/00.webp",
+                "streetlights/streetlight_024/animations/motion/south/01.webp",
+                "streetlights/streetlight_024/animations/motion/south/02.webp",
+                "streetlights/streetlight_024/animations/motion/south/03.webp",
+                "streetlights/streetlight_024/animations/motion/south/04.webp"
+              ],
+              "strip": "streetlights/streetlight_024/animations/motion__south.4d8b9414.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.409,
+                  "dx": -0.1,
+                  "dy": -31.7
+                },
+                {
+                  "intensity": 0.864,
+                  "dx": 0.6,
+                  "dy": -31.5
+                },
+                {
+                  "intensity": 0.893,
+                  "dx": 0.1,
+                  "dy": -34.2
+                },
+                {
+                  "intensity": 0.915,
+                  "dx": -1.9,
+                  "dy": -44.2
+                },
+                {
+                  "intensity": 0.92,
+                  "dx": -1.7,
+                  "dy": -44.0
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "streetlights/streetlight_024/animations/motion/south-east/00.webp",
+                "streetlights/streetlight_024/animations/motion/south-east/01.webp",
+                "streetlights/streetlight_024/animations/motion/south-east/02.webp",
+                "streetlights/streetlight_024/animations/motion/south-east/03.webp",
+                "streetlights/streetlight_024/animations/motion/south-east/04.webp"
+              ],
+              "strip": "streetlights/streetlight_024/animations/motion__south-east.7a10f1ae.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -1.2,
+                  "dy": -31.1
+                },
+                {
+                  "intensity": 1.126,
+                  "dx": -0.3,
+                  "dy": 0.1
+                },
+                {
+                  "intensity": 1.163,
+                  "dx": -0.2,
+                  "dy": 0.2
+                },
+                {
+                  "intensity": 1.122,
+                  "dx": -0.5,
+                  "dy": 1.7
+                },
+                {
+                  "intensity": 1.135,
+                  "dx": -0.6,
+                  "dy": 2.4
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "streetlights/streetlight_024/animations/motion/south-west/00.webp",
+                "streetlights/streetlight_024/animations/motion/south-west/01.webp",
+                "streetlights/streetlight_024/animations/motion/south-west/02.webp",
+                "streetlights/streetlight_024/animations/motion/south-west/03.webp",
+                "streetlights/streetlight_024/animations/motion/south-west/04.webp"
+              ],
+              "strip": "streetlights/streetlight_024/animations/motion__south-west.c8241fa1.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.994,
+                  "dx": -2.0,
+                  "dy": -31.1
+                },
+                {
+                  "intensity": 1.004,
+                  "dx": -2.1,
+                  "dy": -30.1
+                },
+                {
+                  "intensity": 1.005,
+                  "dx": -2.0,
+                  "dy": -30.1
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": -2.0,
+                  "dy": -30.0
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": -2.0,
+                  "dy": -30.0
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T10:10:13+00:00",
           "light_frames": [
             {
               "intensity": 1.409,
@@ -100,7 +201,19 @@
               "dx": -1.7,
               "dy": -44.0
             }
-          ]
+          ],
+          "frame_paths": [
+            "streetlights/streetlight_024/animations/motion/south/00.webp",
+            "streetlights/streetlight_024/animations/motion/south/01.webp",
+            "streetlights/streetlight_024/animations/motion/south/02.webp",
+            "streetlights/streetlight_024/animations/motion/south/03.webp",
+            "streetlights/streetlight_024/animations/motion/south/04.webp"
+          ],
+          "strip": "streetlights/streetlight_024/animations/motion__south.4d8b9414.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.089
+          }
         }
       }
     },

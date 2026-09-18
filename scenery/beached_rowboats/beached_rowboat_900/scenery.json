@@ -59,22 +59,123 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "beached_rowboats/beached_rowboat_900/animations/motion/00.webp",
-            "beached_rowboats/beached_rowboat_900/animations/motion/01.webp",
-            "beached_rowboats/beached_rowboat_900/animations/motion/02.webp",
-            "beached_rowboats/beached_rowboat_900/animations/motion/03.webp",
-            "beached_rowboats/beached_rowboat_900/animations/motion/04.webp"
-          ],
-          "strip": "beached_rowboats/beached_rowboat_900/animations/motion__south.d98b26aa.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T07:53:42+00:00",
-          "review": "ANIMATION_PROBABLY_BAD",
-          "review_metrics": {
-            "base_outline": 0.1187
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_900/animations/motion/south/00.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south/01.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south/02.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south/03.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_900/animations/motion__south.d98b26aa.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.98,
+                  "dx": 0.9,
+                  "dy": 22.2
+                },
+                {
+                  "intensity": 1.037,
+                  "dx": 1.0,
+                  "dy": 22.2
+                },
+                {
+                  "intensity": 0.98,
+                  "dx": 1.0,
+                  "dy": 22.6
+                },
+                {
+                  "intensity": 1.037,
+                  "dx": 1.0,
+                  "dy": 21.3
+                },
+                {
+                  "intensity": 0.966,
+                  "dx": 1.1,
+                  "dy": 21.4
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-east/00.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-east/01.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-east/02.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-east/03.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-east/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_900/animations/motion__south-east.a6e06811.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.9,
+                  "dx": -41.8,
+                  "dy": 15.0
+                },
+                {
+                  "intensity": 1.07,
+                  "dx": -42.6,
+                  "dy": 14.4
+                },
+                {
+                  "intensity": 1.03,
+                  "dx": -42.2,
+                  "dy": 13.5
+                },
+                {
+                  "intensity": 0.994,
+                  "dx": -42.4,
+                  "dy": 13.0
+                },
+                {
+                  "intensity": 1.007,
+                  "dx": -42.6,
+                  "dy": 11.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-west/00.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-west/01.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-west/02.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-west/03.webp",
+                "beached_rowboats/beached_rowboat_900/animations/motion/south-west/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_900/animations/motion__south-west.f83e45e9.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.902,
+                  "dx": -40.7,
+                  "dy": 15.5
+                },
+                {
+                  "intensity": 0.946,
+                  "dx": -40.7,
+                  "dy": 14.5
+                },
+                {
+                  "intensity": 1.011,
+                  "dx": -40.9,
+                  "dy": 13.6
+                },
+                {
+                  "intensity": 1.209,
+                  "dx": -38.3,
+                  "dy": 11.9
+                },
+                {
+                  "intensity": 0.932,
+                  "dx": -41.4,
+                  "dy": 16.5
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T09:32:12+00:00",
           "light_frames": [
             {
               "intensity": 0.98,
@@ -101,7 +202,19 @@
               "dx": 1.1,
               "dy": 21.4
             }
-          ]
+          ],
+          "frame_paths": [
+            "beached_rowboats/beached_rowboat_900/animations/motion/south/00.webp",
+            "beached_rowboats/beached_rowboat_900/animations/motion/south/01.webp",
+            "beached_rowboats/beached_rowboat_900/animations/motion/south/02.webp",
+            "beached_rowboats/beached_rowboat_900/animations/motion/south/03.webp",
+            "beached_rowboats/beached_rowboat_900/animations/motion/south/04.webp"
+          ],
+          "strip": "beached_rowboats/beached_rowboat_900/animations/motion__south.d98b26aa.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.2825
+          }
         }
       }
     },

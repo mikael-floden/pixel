@@ -43,7 +43,60 @@
     "LIT_1": {
       "sprite": "cup_fungi/cup_fungus_002/sprite.webp",
       "pixellab_object_id": "bb130c61-7029-4e4a-9a8b-aa6820262e4f",
-      "generated_at": "2026-08-13T04:48:56+00:00"
+      "generated_at": "2026-08-13T04:48:56+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "32ff42a3-8670-4337-9eda-e2dd0e35c81f",
+          "description": "This is the same picture in every frame. ONLY the outermost edge of the gold centres of the cup fungi changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cup_fungi/cup_fungus_002/animations/motion/00.webp",
+            "cup_fungi/cup_fungus_002/animations/motion/01.webp",
+            "cup_fungi/cup_fungus_002/animations/motion/02.webp",
+            "cup_fungi/cup_fungus_002/animations/motion/03.webp",
+            "cup_fungi/cup_fungus_002/animations/motion/04.webp"
+          ],
+          "strip": "cup_fungi/cup_fungus_002/animations/motion__south.972b48f4.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:29:52+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.755,
+              "dx": 0.4,
+              "dy": -4.1
+            },
+            {
+              "intensity": 1.253,
+              "dx": 0.2,
+              "dy": -4.1
+            },
+            {
+              "intensity": 1.113,
+              "dx": 0.1,
+              "dy": -4.0
+            },
+            {
+              "intensity": 1.232,
+              "dx": 0.2,
+              "dy": -4.1
+            },
+            {
+              "intensity": 0.646,
+              "dx": 0.5,
+              "dy": -4.2
+            }
+          ]
+        }
+      }
     },
     "LIT_2": {
       "sprite": "cup_fungi/cup_fungus_002/lit_2/sprite.webp",

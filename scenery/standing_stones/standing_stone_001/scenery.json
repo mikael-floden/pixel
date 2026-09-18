@@ -129,21 +129,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/00.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/01.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/02.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/03.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "standing_stones/standing_stone_001/not_lit_2/animations/motion__south.9772bb7d.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-east/00.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-east/01.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-east/02.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-east/03.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "standing_stones/standing_stone_001/not_lit_2/animations/motion__south-east.c8befd7f.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-west/00.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-west/01.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-west/02.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-west/03.webp",
+                "standing_stones/standing_stone_001/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "standing_stones/standing_stone_001/not_lit_2/animations/motion__south-west.40a4b45f.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:07:18+00:00",
           "frame_paths": [
-            "standing_stones/standing_stone_001/not_lit_2/animations/motion/00.webp",
-            "standing_stones/standing_stone_001/not_lit_2/animations/motion/01.webp",
-            "standing_stones/standing_stone_001/not_lit_2/animations/motion/02.webp",
-            "standing_stones/standing_stone_001/not_lit_2/animations/motion/03.webp",
-            "standing_stones/standing_stone_001/not_lit_2/animations/motion/04.webp"
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/00.webp",
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/01.webp",
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/02.webp",
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/03.webp",
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/south/04.webp"
           ],
           "strip": "standing_stones/standing_stone_001/not_lit_2/animations/motion__south.9772bb7d.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:52:58+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.1123
           }
         }
       }
@@ -168,21 +200,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/00.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/01.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/02.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/03.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "standing_stones/standing_stone_001/not_lit_3/animations/motion__south.b240f3b1.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-east/00.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-east/01.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-east/02.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-east/03.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "standing_stones/standing_stone_001/not_lit_3/animations/motion__south-east.b727a305.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-west/00.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-west/01.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-west/02.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-west/03.webp",
+                "standing_stones/standing_stone_001/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "standing_stones/standing_stone_001/not_lit_3/animations/motion__south-west.4d88c9b7.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:08:35+00:00",
           "frame_paths": [
-            "standing_stones/standing_stone_001/not_lit_3/animations/motion/00.webp",
-            "standing_stones/standing_stone_001/not_lit_3/animations/motion/01.webp",
-            "standing_stones/standing_stone_001/not_lit_3/animations/motion/02.webp",
-            "standing_stones/standing_stone_001/not_lit_3/animations/motion/03.webp",
-            "standing_stones/standing_stone_001/not_lit_3/animations/motion/04.webp"
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/00.webp",
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/01.webp",
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/02.webp",
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/03.webp",
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "standing_stones/standing_stone_001/not_lit_3/animations/motion__south.b240f3b1.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:53:54+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.001
           }
         }
       }
@@ -207,18 +271,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/00.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/01.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/02.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/03.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "standing_stones/standing_stone_001/not_lit_4/animations/motion__south.07db91be.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-east/00.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-east/01.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-east/02.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-east/03.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "standing_stones/standing_stone_001/not_lit_4/animations/motion__south-east.5d16ca23.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-west/00.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-west/01.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-west/02.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-west/03.webp",
+                "standing_stones/standing_stone_001/not_lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "standing_stones/standing_stone_001/not_lit_4/animations/motion__south-west.77ec295f.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:08:23+00:00",
           "frame_paths": [
-            "standing_stones/standing_stone_001/not_lit_4/animations/motion/00.webp",
-            "standing_stones/standing_stone_001/not_lit_4/animations/motion/01.webp",
-            "standing_stones/standing_stone_001/not_lit_4/animations/motion/02.webp",
-            "standing_stones/standing_stone_001/not_lit_4/animations/motion/03.webp",
-            "standing_stones/standing_stone_001/not_lit_4/animations/motion/04.webp"
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/00.webp",
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/01.webp",
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/02.webp",
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/03.webp",
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/south/04.webp"
           ],
           "strip": "standing_stones/standing_stone_001/not_lit_4/animations/motion__south.07db91be.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:54:23+00:00",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.2894

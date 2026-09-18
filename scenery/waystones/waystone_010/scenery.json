@@ -58,21 +58,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_010/animations/motion/south/00.webp",
+                "waystones/waystone_010/animations/motion/south/01.webp",
+                "waystones/waystone_010/animations/motion/south/02.webp",
+                "waystones/waystone_010/animations/motion/south/03.webp",
+                "waystones/waystone_010/animations/motion/south/04.webp"
+              ],
+              "strip": "waystones/waystone_010/animations/motion__south.53b0f636.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_010/animations/motion/south-east/00.webp",
+                "waystones/waystone_010/animations/motion/south-east/01.webp",
+                "waystones/waystone_010/animations/motion/south-east/02.webp",
+                "waystones/waystone_010/animations/motion/south-east/03.webp",
+                "waystones/waystone_010/animations/motion/south-east/04.webp"
+              ],
+              "strip": "waystones/waystone_010/animations/motion__south-east.fb7da9ab.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_010/animations/motion/south-west/00.webp",
+                "waystones/waystone_010/animations/motion/south-west/01.webp",
+                "waystones/waystone_010/animations/motion/south-west/02.webp",
+                "waystones/waystone_010/animations/motion/south-west/03.webp",
+                "waystones/waystone_010/animations/motion/south-west/04.webp"
+              ],
+              "strip": "waystones/waystone_010/animations/motion__south-west.6301349d.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:22:55+00:00",
           "frame_paths": [
-            "waystones/waystone_010/animations/motion/00.webp",
-            "waystones/waystone_010/animations/motion/01.webp",
-            "waystones/waystone_010/animations/motion/02.webp",
-            "waystones/waystone_010/animations/motion/03.webp",
-            "waystones/waystone_010/animations/motion/04.webp"
+            "waystones/waystone_010/animations/motion/south/00.webp",
+            "waystones/waystone_010/animations/motion/south/01.webp",
+            "waystones/waystone_010/animations/motion/south/02.webp",
+            "waystones/waystone_010/animations/motion/south/03.webp",
+            "waystones/waystone_010/animations/motion/south/04.webp"
           ],
           "strip": "waystones/waystone_010/animations/motion__south.53b0f636.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:18:19+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.0446
           }
         }
       }
@@ -171,18 +203,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_010/not_lit_5/animations/motion/south/00.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south/01.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south/02.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south/03.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south/04.webp"
+              ],
+              "strip": "waystones/waystone_010/not_lit_5/animations/motion__south.1aedb49a.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_010/not_lit_5/animations/motion/south-east/00.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south-east/01.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south-east/02.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south-east/03.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south-east/04.webp"
+              ],
+              "strip": "waystones/waystone_010/not_lit_5/animations/motion__south-east.7aacbe73.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_010/not_lit_5/animations/motion/south-west/00.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south-west/01.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south-west/02.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south-west/03.webp",
+                "waystones/waystone_010/not_lit_5/animations/motion/south-west/04.webp"
+              ],
+              "strip": "waystones/waystone_010/not_lit_5/animations/motion__south-west.6f6e5134.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:23:38+00:00",
           "frame_paths": [
-            "waystones/waystone_010/not_lit_5/animations/motion/00.webp",
-            "waystones/waystone_010/not_lit_5/animations/motion/01.webp",
-            "waystones/waystone_010/not_lit_5/animations/motion/02.webp",
-            "waystones/waystone_010/not_lit_5/animations/motion/03.webp",
-            "waystones/waystone_010/not_lit_5/animations/motion/04.webp"
+            "waystones/waystone_010/not_lit_5/animations/motion/south/00.webp",
+            "waystones/waystone_010/not_lit_5/animations/motion/south/01.webp",
+            "waystones/waystone_010/not_lit_5/animations/motion/south/02.webp",
+            "waystones/waystone_010/not_lit_5/animations/motion/south/03.webp",
+            "waystones/waystone_010/not_lit_5/animations/motion/south/04.webp"
           ],
           "strip": "waystones/waystone_010/not_lit_5/animations/motion__south.1aedb49a.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:18:50+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0
@@ -211,18 +275,50 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_010/not_lit_6/animations/motion/south/00.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south/01.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south/02.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south/03.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south/04.webp"
+              ],
+              "strip": "waystones/waystone_010/not_lit_6/animations/motion__south.70804eb7.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_010/not_lit_6/animations/motion/south-east/00.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south-east/01.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south-east/02.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south-east/03.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south-east/04.webp"
+              ],
+              "strip": "waystones/waystone_010/not_lit_6/animations/motion__south-east.42938d01.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_010/not_lit_6/animations/motion/south-west/00.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south-west/01.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south-west/02.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south-west/03.webp",
+                "waystones/waystone_010/not_lit_6/animations/motion/south-west/04.webp"
+              ],
+              "strip": "waystones/waystone_010/not_lit_6/animations/motion__south-west.e863cecf.webp"
+            }
+          },
+          "generated_at": "2026-09-18T10:23:22+00:00",
           "frame_paths": [
-            "waystones/waystone_010/not_lit_6/animations/motion/00.webp",
-            "waystones/waystone_010/not_lit_6/animations/motion/01.webp",
-            "waystones/waystone_010/not_lit_6/animations/motion/02.webp",
-            "waystones/waystone_010/not_lit_6/animations/motion/03.webp",
-            "waystones/waystone_010/not_lit_6/animations/motion/04.webp"
+            "waystones/waystone_010/not_lit_6/animations/motion/south/00.webp",
+            "waystones/waystone_010/not_lit_6/animations/motion/south/01.webp",
+            "waystones/waystone_010/not_lit_6/animations/motion/south/02.webp",
+            "waystones/waystone_010/not_lit_6/animations/motion/south/03.webp",
+            "waystones/waystone_010/not_lit_6/animations/motion/south/04.webp"
           ],
           "strip": "waystones/waystone_010/not_lit_6/animations/motion__south.70804eb7.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T09:19:24+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0

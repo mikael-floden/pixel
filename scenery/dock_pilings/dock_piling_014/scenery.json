@@ -58,22 +58,123 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "dock_pilings/dock_piling_014/animations/motion/00.webp",
-            "dock_pilings/dock_piling_014/animations/motion/01.webp",
-            "dock_pilings/dock_piling_014/animations/motion/02.webp",
-            "dock_pilings/dock_piling_014/animations/motion/03.webp",
-            "dock_pilings/dock_piling_014/animations/motion/04.webp"
-          ],
-          "strip": "dock_pilings/dock_piling_014/animations/motion__south.d7a6e4cb.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:11:15+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0861
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/animations/motion/south/00.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south/01.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south/02.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south/03.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/animations/motion__south.d7a6e4cb.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.377,
+                  "dx": -2.0,
+                  "dy": -7.1
+                },
+                {
+                  "intensity": 1.016,
+                  "dx": -2.0,
+                  "dy": -7.4
+                },
+                {
+                  "intensity": 0.676,
+                  "dx": -2.0,
+                  "dy": -7.5
+                },
+                {
+                  "intensity": 0.708,
+                  "dx": -2.1,
+                  "dy": -8.6
+                },
+                {
+                  "intensity": 1.224,
+                  "dx": -2.1,
+                  "dy": -8.3
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/animations/motion/south-east/00.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south-east/01.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south-east/02.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south-east/03.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south-east/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/animations/motion__south-east.7e2fad76.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 4.7,
+                  "dy": -6.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.7,
+                  "dy": -6.6
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 3.1,
+                  "dy": -0.2
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 4.8,
+                  "dy": -2.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.7,
+                  "dy": -6.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/animations/motion/south-west/00.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south-west/01.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south-west/02.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south-west/03.webp",
+                "dock_pilings/dock_piling_014/animations/motion/south-west/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/animations/motion__south-west.4bb59d80.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": -5.6,
+                  "dy": -6.3
+                },
+                {
+                  "intensity": 0.506,
+                  "dx": -6.0,
+                  "dy": -6.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -5.7,
+                  "dy": -6.1
+                },
+                {
+                  "intensity": 1.474,
+                  "dx": -5.5,
+                  "dy": -6.1
+                },
+                {
+                  "intensity": 1.494,
+                  "dx": -5.7,
+                  "dy": -5.5
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T09:39:10+00:00",
           "light_frames": [
             {
               "intensity": 1.377,
@@ -100,7 +201,19 @@
               "dx": -2.1,
               "dy": -8.3
             }
-          ]
+          ],
+          "frame_paths": [
+            "dock_pilings/dock_piling_014/animations/motion/south/00.webp",
+            "dock_pilings/dock_piling_014/animations/motion/south/01.webp",
+            "dock_pilings/dock_piling_014/animations/motion/south/02.webp",
+            "dock_pilings/dock_piling_014/animations/motion/south/03.webp",
+            "dock_pilings/dock_piling_014/animations/motion/south/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_014/animations/motion__south.d7a6e4cb.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0861
+          }
         }
       }
     },

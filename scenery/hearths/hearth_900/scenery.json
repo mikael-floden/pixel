@@ -668,21 +668,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_900/not_lit_2/animations/motion/south/00.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south/01.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south/02.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south/03.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "hearths/hearth_900/not_lit_2/animations/motion__south.5782b992.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_900/not_lit_2/animations/motion/south-east/00.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south-east/01.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south-east/02.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south-east/03.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_900/not_lit_2/animations/motion__south-east.0bc55ae3.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_900/not_lit_2/animations/motion/south-west/00.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south-west/01.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south-west/02.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south-west/03.webp",
+                "hearths/hearth_900/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_900/not_lit_2/animations/motion__south-west.52653d1b.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:52:24+00:00",
           "frame_paths": [
-            "hearths/hearth_900/not_lit_2/animations/motion/00.webp",
-            "hearths/hearth_900/not_lit_2/animations/motion/01.webp",
-            "hearths/hearth_900/not_lit_2/animations/motion/02.webp",
-            "hearths/hearth_900/not_lit_2/animations/motion/03.webp",
-            "hearths/hearth_900/not_lit_2/animations/motion/04.webp"
+            "hearths/hearth_900/not_lit_2/animations/motion/south/00.webp",
+            "hearths/hearth_900/not_lit_2/animations/motion/south/01.webp",
+            "hearths/hearth_900/not_lit_2/animations/motion/south/02.webp",
+            "hearths/hearth_900/not_lit_2/animations/motion/south/03.webp",
+            "hearths/hearth_900/not_lit_2/animations/motion/south/04.webp"
           ],
           "strip": "hearths/hearth_900/not_lit_2/animations/motion__south.5782b992.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:29:00+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0046
+            "base_outline": 0.1607
           }
         }
       }
@@ -708,21 +740,53 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_900/not_lit_3/animations/motion/south/00.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south/01.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south/02.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south/03.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "hearths/hearth_900/not_lit_3/animations/motion__south.f5f4f051.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_900/not_lit_3/animations/motion/south-east/00.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south-east/01.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south-east/02.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south-east/03.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_900/not_lit_3/animations/motion__south-east.e6e03db0.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_900/not_lit_3/animations/motion/south-west/00.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south-west/01.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south-west/02.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south-west/03.webp",
+                "hearths/hearth_900/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_900/not_lit_3/animations/motion__south-west.5f2fab70.webp"
+            }
+          },
+          "generated_at": "2026-09-18T09:52:42+00:00",
           "frame_paths": [
-            "hearths/hearth_900/not_lit_3/animations/motion/00.webp",
-            "hearths/hearth_900/not_lit_3/animations/motion/01.webp",
-            "hearths/hearth_900/not_lit_3/animations/motion/02.webp",
-            "hearths/hearth_900/not_lit_3/animations/motion/03.webp",
-            "hearths/hearth_900/not_lit_3/animations/motion/04.webp"
+            "hearths/hearth_900/not_lit_3/animations/motion/south/00.webp",
+            "hearths/hearth_900/not_lit_3/animations/motion/south/01.webp",
+            "hearths/hearth_900/not_lit_3/animations/motion/south/02.webp",
+            "hearths/hearth_900/not_lit_3/animations/motion/south/03.webp",
+            "hearths/hearth_900/not_lit_3/animations/motion/south/04.webp"
           ],
           "strip": "hearths/hearth_900/not_lit_3/animations/motion__south.f5f4f051.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-09-18T08:29:09+00:00",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.0607
           }
         }
       }
