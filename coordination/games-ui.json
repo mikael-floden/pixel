@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: revert the Enter World fullscreen request (rejected on his phone: Chrome's toast, letterbox stayed) and paint the cutout band on the select screen too. files: games2/client/src/select.ts, games2/scripts/verify-select.mjs, games2/UI_AGENT.md",
+  "current": "PUSHED 924d5e398b (fullscreen request reverted — rejected on his phone; the cutout band now on the select screen too) and f21c230f0a (ambient NONE mode, persisted). No files in flight.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
