@@ -265,17 +265,17 @@ netcode; these are the invariants)
 - Scenery lights read the manifest `light` block as given (no radius cap) and
   cast shadows; scenery occludes like a prop, own cell = contact + directional
   core; the switches are pushed on the shader being BUILT.
-- The light passes and the glow field render at half resolution by default
-  (his eye first sees 25%); an overlay's RT ratio survives update().
+- The light passes and the glow field render at half resolution; an
+  overlay's RT ratio survives update().
 - Solid objects are art, not walls (no face band); a cave mouth is no face.
 - The wall wash is per PIXEL, wrap his dial (0.7), front gate fades over 2wu
   (a pressed torch must not dim); the LOS march never blends a wall's own
   height into its front skirt nor the skirt the LIGHT stands in; a
   skirt sample counts only beside a HARD hit, two-span (a lid over the light
   is air); a fire in a piece is an AREA source (edge rays); the trunk
-  skip spares share cells; every surface marches, above a light too.
-  Gates:
-  `verify-wallwash.mjs`, `verify-wallfoot.mjs`, `verify-shadowline.mjs`.
+  skip spares share cells; every surface marches, above a light too; a top
+  takes nothing from a light under it (`TOP_UNDER_FADE`); gates
+  `verify-{wallwash,wallfoot,shadowline}.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
   load-bearing (equal sun and moon speed).
 - Indoor ambient: dark 40%, lit 25%; hidden outline 20% (his).

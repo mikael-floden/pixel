@@ -16,7 +16,10 @@
 //  D. the TORCH beside a wall at 203.4,220.9: the pool reaches the wall and a
 //     wall in full view is lit flat (the hard test takes the two-span rule —
 //     under a lid the floor is not a hard hit, so no neighbour's skirt shades
-//     a ray that runs beside it).
+//     a ray that runs beside it);
+//  E. the ROOF from the street at 300.4,198.6 (the CPU twin): a top surface
+//     takes nothing from a point light under its plane — the torch at z 0.55
+//     adds nothing to the roof's cells at z 6 while it lights the street.
 // Needs the dev stack (npm run dev). PORT overrides vite's port.
 import { chromium } from "playwright-core";
 import { PNG } from "pngjs";
@@ -110,7 +113,12 @@ for (const y of [480, 600]) {
 await page.evaluate(() => window.__ml.teleport(203.4, 220.9));
 await page.waitForFunction(() => { const e = document.getElementById("ml-loading"); return !e || !e.isConnected || getComputedStyle(e).display === "none" || Number(getComputedStyle(e).opacity) === 0; }, null, { timeout: 90000 });
 // The cut-away's crossfade must land (~27 s at the harness's ~1.7 fps).
-for (let i = 0; i < 90; i++) { await page.waitForTimeout(500); const st = await page.evaluate(() => window.__ml.indoor()); if (st.indoor && st.mix >= 0.999) break; }
+// WAIT FOR THE STATE, NOT A TIME. Phaser hands a frame slower than 1000/fps.min
+// (200 ms) the TARGET delta of 16.7 ms, so at the harness's 1-2 fps the 0.45 s
+// roll needs ~190 frames — two to three minutes, not the 45 s this loop
+// waited before (2026-09-18: the cave arms read the unlanded lid as a hard hit).
+for (let i = 0; i < 200; i++) { await page.waitForTimeout(2000); const st = await page.evaluate(() => window.__ml.indoor()); if (st.indoor && st.mix >= 0.999) break; }
+console.log("landed:", JSON.stringify(await page.evaluate(() => { const s = window.__ml.indoor(); return { indoor: s.indoor, mix: s.mix, mask: s.mask }; })));
 await page.evaluate(() => window.__ml.timeOfDay("Day", true));
 await page.evaluate(() => window.__ml.torch?.(true));
 await page.waitForTimeout(4000);
@@ -129,6 +137,52 @@ for (const y of [500, 600]) {
   console.log(`right wall face at y=${y}, x 700..780: ${face.map((v) => v.toFixed(0)).join(" ")} — max/min ${ratio.toFixed(2)}`);
   if (!(ratio <= 1.3)) fail(`y=${y}: the wall in full view of the torch wears a shadow (max/min ${ratio.toFixed(2)}, want ≤ 1.3)`);
 }
+// E. THE ROOF FROM THE STREET (maintainer 2026-09-17, 300.4,198.6 at Night,
+// after walking out of the hearth house: "renders the roof of a light it
+// doesn't have once the fade is over"). The torch he carries out lit the roof
+// he had just left: a roof pixel's rays to a torch below run through its own
+// slab (air under a light) and clear the wall column near the eaves, and a
+// ground/deck pixel had no Lambert gate (faces have one). Measured on the twin:
+// +0.10 luma on the roof's south cells at z 6 from a torch at z 0.55. Law: a
+// top surface takes nothing from a light under its plane (TOP_UNDER_FADE).
+await page.evaluate(() => window.__ml.teleport(300.4, 198.6));
+await page.waitForFunction(() => { const e = document.getElementById("ml-loading"); return !e || !e.isConnected || getComputedStyle(e).display === "none" || Number(getComputedStyle(e).opacity) === 0; }, null, { timeout: 90000 });
+// The arms above stood INSIDE the ice cave; its room mask outlives the
+// teleport by the light roll, and the twin darkens everything outside that
+// room while it lasts. Wait for the release (mix 0, no mask) before reading.
+for (let i = 0; i < 120; i++) { const st = await page.evaluate(() => window.__ml.indoor()); if (!st.indoor && st.mix === 0 && !st.mask) break; await page.waitForTimeout(500); }
+console.log("arm E indoor state:", JSON.stringify(await page.evaluate(() => { const s = window.__ml.indoor(); return { indoor: s.indoor, mix: s.mix, mask: s.mask }; })));
+// The server clock patches phaseT every frame at x1 and overwrites a pin
+// within a frame or two — freeze it first, then pin, and wait for the pin to
+// hold (the first run of arm E read a roof lit +0.100 under a phase that was
+// not Night at all).
+for (let a = 0; a < 6; a++) {
+  await page.evaluate(() => window.__ml.timeSpeed(0));
+  await page.waitForTimeout(500);
+  await page.evaluate(() => window.__ml.timeOfDay("Night", true));
+  await page.waitForTimeout(1200);
+  const tod = await page.evaluate(() => window.__ml.timeOfDay());
+  if (tod && tod.name === "Night" && Math.abs(tod.phaseT - 0.5) < 0.05) break;
+}
+const roofCells = [[300.5, 195.5, 6], [300.5, 197.5, 6], [302.5, 197.5, 6]];
+const readE = async () => page.evaluate((cells) => ({
+  roof: cells.map(([c, r, z]) => window.__ml.lightAt(c, r, z)),
+  street: window.__ml.lightAt(300.5, 199.5, 0),
+}), roofCells);
+await page.evaluate(() => window.__ml.torch?.(false));
+await page.waitForTimeout(2500);
+const offE = await readE();
+await page.evaluate(() => window.__ml.torch?.(true));
+await page.waitForTimeout(2500);
+const onE = await readE();
+const lumaE = (v) => 0.299 * v[0] + 0.587 * v[1] + 0.114 * v[2];
+console.log(`street luma torch off/on: ${lumaE(offE.street).toFixed(3)} / ${lumaE(onE.street).toFixed(3)}`);
+if (!(lumaE(onE.street) - lumaE(offE.street) >= 0.15)) fail(`the torch does not light the street it stands on (${lumaE(offE.street).toFixed(3)} -> ${lumaE(onE.street).toFixed(3)})`);
+roofCells.forEach(([c, r, z], i) => {
+  const d = lumaE(onE.roof[i]) - lumaE(offE.roof[i]);
+  console.log(`roof ${c},${r} z${z}: torch off ${lumaE(offE.roof[i]).toFixed(3)} on ${lumaE(onE.roof[i]).toFixed(3)} (+${d.toFixed(3)})`);
+  if (!(d <= 0.01)) fail(`the torch in the street lights the roof at ${c},${r} (+${d.toFixed(3)} luma, want ≤ 0.01)`);
+});
 if (errs.length) fail(`page errors: ${errs.join(" | ")}`);
 await browser.close();
 console.log(process.exitCode ? "verify-shadowline: FAIL" : "verify-shadowline: ALL OK");

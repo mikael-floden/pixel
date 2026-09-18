@@ -223,6 +223,14 @@ const BOWL_FOOT_SHADE = 0.8;
 const BOWL_FOOT_R = 0.75;
 // The edge rays' shade: the darkest single factor up to EDGE_ONCE_NEAR cells
 // from the light, the compounded product from EDGE_ONCE_FAR (see the march).
+/** A top surface takes a point light in full up to TOP_UNDER_FREE levels
+ *  above it (a one-level step beside the torch keeps its light: measured, the
+ *  torch pool beside the ice cave's wall lost 11% when the fade began at the
+ *  light's own height) and none from TOP_UNDER_FADE levels above it (a roof
+ *  or a two-storey wall top from the street): the shader's
+ *  smoothstep(-TOP_UNDER_FADE, -TOP_UNDER_FREE, lp.z - z). */
+const TOP_UNDER_FREE = 1.0;
+const TOP_UNDER_FADE = 2.5;
 const EDGE_ONCE_NEAR = 1.2;
 const EDGE_ONCE_FAR = 2.2;
 // ...AND THE DISC SITS AT THE PIECE'S CELL CENTRE (`lC`), not at the light's
@@ -1330,6 +1338,20 @@ void main() {
     float dist = sqrt(dot(d2, d2) + dzl * dzl);
     float att = clamp(1.0 - dist / radius, 0.0, 1.0);
     att *= att;
+    // A TOP SURFACE TAKES NOTHING FROM A LIGHT UNDER ITS OWN PLANE. Faces have
+    // their Lambert gate below; a ground/deck pixel had none, and the march
+    // could not supply one: a roof pixel's rays to a torch in the street run
+    // through its own slab (air under a light, hardHeightAt) and clear the
+    // wall column by a hair near the eaves, so the player's torch lit the
+    // roof of the house he had just left, three cells of it, from below
+    // (maintainer 2026-09-17, 300.4,198.6 at Night: "renders the roof of a
+    // light it doesn't have once the fade is over"; measured: +0.1 luma on
+    // the roof's south cells at z 6 from a torch at z 0.55). Free up to
+    // ${TOP_UNDER_FREE} level above the light (a one-level step beside the torch keeps
+    // its light: the flame has a size and the ground bounces), none from
+    // ${TOP_UNDER_FADE} levels up (a roof, a two-storey wall top). Glow pools are
+    // ambience and exempt, like the face gate.
+    if (!isFace && uLightPos[i].w > 0.0) att *= smoothstep(-${TOP_UNDER_FADE.toFixed(2)}, -${TOP_UNDER_FREE.toFixed(2)}, lp.z - z);
     // INDOORS, A PIXEL OUTSIDE MY ROOM THAT SITS ABOVE THE LIGHT TAKES NONE OF
     // IT. Surfaces above a light skip the LOS march below (the billboard
     // rule), so the neighbour's roof at level 8 took the radius-16 hearth
@@ -4132,6 +4154,10 @@ export class NightLights {
       const blockK =
         1 - Math.max(overMyRoom, Math.max(this.indoor ? 1 : 0, this.indoorMix) * (1 - hit)) * (z >= L.z - 0.05 ? 1 : 0);
       att *= blockK;
+      // Twin of the shader's top-surface rule: a GROUND sample takes nothing
+      // from a light more than TOP_UNDER_FREE..TOP_UNDER_FADE levels under its
+      // plane. An object's side faces the light, so a body or a lit copy is exempt.
+      if (!isObj && L.radius > 0) att *= smoothStep01(-TOP_UNDER_FADE, -TOP_UNDER_FREE, L.z - z);
       // A lit copy's crown reaches nearer the light than its axis: its
       // occlusion is marched whenever the light is within reach of the volume.
       const wantOcc = parts !== undefined && dist < radius + SCN_CROWN_REACH;

@@ -381,6 +381,27 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   skirt as a triangle (maintainer 2026-09-17, 203.4,220.9, marked on the
   calibration render; measured on his screen: the pool at 56% of its start
   one sample out, a 1.75 max/min across a face two cells from the torch).
+  A TOP SURFACE TAKES NOTHING FROM A LIGHT WELL UNDER ITS PLANE
+  (`TOP_UNDER_FREE` 1.0 / `TOP_UNDER_FADE` 2.5: full up to one level above
+  the light, none from 2.5 levels above it; faces keep their own Lambert
+  gate, glow pools and objects are exempt. Not from the light's own height:
+  a floor one level up beside the torch is lit in play — the ice cave's
+  torch pool beside its wall lost 11% with the fade starting at 0). The march
+  cannot supply this: a roof pixel's rays to a torch in the street run
+  through its own slab — air under a light — and clear the wall column by a
+  hair near the eaves, so the torch he carried out lit three cells of the
+  roof he had just left, from below (maintainer 2026-09-17, 300.4,198.6 at
+  Night, "renders the roof of a light it doesn't have once the fade is
+  over"; measured on the twin: +0.10 luma on the roof's south cells at z 6
+  from a torch at z 0.55, the roof identical with the torch off — the fade
+  itself lands clean: the hearth leaves the ledger, its stamp and the room
+  mask in the landing frame, per-frame framebuffer + scene traces at his
+  geometry). THE "LAST FRAME FLASHES THE HOUSE" IS NOT THE FADE: it is the
+  ambient thunder episode's sheet lightning (`games2/ambient/thunder/`),
+  gated by the outdoor gain, so a strike due while he stood inside lands the
+  moment the gain rises after the landing (measured: every forced strike is
+  one frame at +35% mean luma, the exact signature of the walk-out flashes;
+  posted to games-ambient 2026-09-18).
   AND A FIRE IN A PIECE IS AN AREA SOURCE. The march's two EDGE rays (offset
   ±`SOURCE_R_SHARE`·t across the centre ray, 1 cell at the light's end,
   ground column only, `edgeShare`) find the columns that clear the centre by
