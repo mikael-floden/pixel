@@ -1,0 +1,141 @@
+{
+  "id": "grass_adder",
+  "name": "Grassfang",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It fell with the grass it was lying in. It has not noticed the difference and it bites on the same terms as before.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Thick-bodied adder coiled on itself with its flat wedge head raised, olive-brown scales carrying a hard black zigzag down the spine, vertical slit pupils in copper eyes, a forked black tongue out and the last coil of its tail drawn in tight against the body",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "grass_adder/rotations/south.webp",
+    "south-east": "grass_adder/rotations/south-east.webp",
+    "east": "grass_adder/rotations/east.webp",
+    "north-east": "grass_adder/rotations/north-east.webp",
+    "north": "grass_adder/rotations/north.webp",
+    "north-west": "grass_adder/rotations/north-west.webp",
+    "west": "grass_adder/rotations/west.webp",
+    "south-west": "grass_adder/rotations/south-west.webp"
+  },
+  "sheet": "grass_adder/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a55c7e11-bc5f-47d5-890e-7d91593700cc",
+  "seed": 1742707441,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:48:11+00:00",
+  "elapsed_s": 248.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.772,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.772,
+        "bbox": [
+          2,
+          10,
+          86,
+          82
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.813,
+        "bbox": [
+          7,
+          5,
+          86,
+          83
+        ],
+        "fill": 0.796,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.825,
+        "bbox": [
+          3,
+          5,
+          84,
+          81
+        ],
+        "fill": 0.795,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.802,
+        "bbox": [
+          4,
+          10,
+          84,
+          81
+        ],
+        "fill": 0.733,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.827,
+        "bbox": [
+          2,
+          7,
+          85,
+          79
+        ],
+        "fill": 0.772,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.779,
+        "bbox": [
+          4,
+          7,
+          75,
+          81
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.793,
+        "bbox": [
+          5,
+          7,
+          86,
+          79
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.828,
+        "bbox": [
+          8,
+          7,
+          86,
+          83
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      }
+    }
+  }
+}

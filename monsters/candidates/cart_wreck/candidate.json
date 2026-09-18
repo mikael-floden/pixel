@@ -1,0 +1,141 @@
+{
+  "id": "cart_wreck",
+  "name": "Cartwrack",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It was pulled most of the way and left in sight of the fire. It is doing the last part on its own.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Broken two-wheeled handcart standing up on its own shafts like legs, one wheel stripped of its spokes and the other sunk to the hub, a split load bed still roped over with tarred black canvas, harness straps hanging heavy and trailing from the bed",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cart_wreck/rotations/south.webp",
+    "south-east": "cart_wreck/rotations/south-east.webp",
+    "east": "cart_wreck/rotations/east.webp",
+    "north-east": "cart_wreck/rotations/north-east.webp",
+    "north": "cart_wreck/rotations/north.webp",
+    "north-west": "cart_wreck/rotations/north-west.webp",
+    "west": "cart_wreck/rotations/west.webp",
+    "south-west": "cart_wreck/rotations/south-west.webp"
+  },
+  "sheet": "cart_wreck/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fc30f3ae-75f6-438b-aa71-4c5e15f793db",
+  "seed": 1293194483,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:49:45+00:00",
+  "elapsed_s": 167.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.698,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.698,
+        "bbox": [
+          7,
+          9,
+          103,
+          104
+        ],
+        "fill": 0.727,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.766,
+        "bbox": [
+          9,
+          11,
+          105,
+          101
+        ],
+        "fill": 0.689,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.763,
+        "bbox": [
+          17,
+          11,
+          99,
+          99
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.733,
+        "bbox": [
+          11,
+          12,
+          100,
+          90
+        ],
+        "fill": 0.553,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.78,
+        "bbox": [
+          7,
+          11,
+          104,
+          98
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.763,
+        "bbox": [
+          10,
+          8,
+          98,
+          97
+        ],
+        "fill": 0.624,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.776,
+        "bbox": [
+          9,
+          8,
+          106,
+          94
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.765,
+        "bbox": [
+          11,
+          11,
+          104,
+          105
+        ],
+        "fill": 0.697,
+        "touches_edge": false
+      }
+    }
+  }
+}
