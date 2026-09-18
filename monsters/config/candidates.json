@@ -838,24 +838,6 @@
       "lore": "It was carried into the mine and came back alone. The light it gives leads only one way."
     },
     {
-      "id": "seed_husk",
-      "name": "Huskling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 48,
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Small seed-pod creature with a hard ridged brown husk for a body split open at the front, two pale green eyes glowing inside the split, a single dark green shoot rising from its top, and short knotted root legs.",
-      "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet.",
-      "attack_action": "Headbutt - Rocks back, then rams forward hard with its hard husk",
-      "attack_extreme": "Husk Burst - The husk splits open with a crack and hurls itself forward, seeds and splinters flying",
-      "die_action": "Death - The husk cracks open and crumbles into a small pile of dry husk pieces, then fades away"
-    },
-    {
       "id": "stone_imp",
       "name": "Grimimp",
       "tier": "evil",
@@ -4426,6 +4408,34 @@
       "versions_tried": 2,
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-18T14:29:24+00:00"
+    }
+  ],
+  "graduated": [
+    {
+      "id": "seed_husk",
+      "name": "Huskling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 48,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Small seed-pod creature with a hard ridged brown husk for a body split open at the front, two pale green eyes glowing inside the split, a single dark green shoot rising from its top, and short knotted root legs.",
+      "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet.",
+      "attack_action": "Headbutt - Rocks back, then rams forward hard with its hard husk",
+      "attack_extreme": "Husk Burst - The husk splits open with a crack and hurls itself forward, seeds and splinters flying",
+      "die_action": "Death - The husk cracks open and crumbles into a small pile of dry husk pieces, then fades away",
+      "graduated_at": "2026-09-18T14:33:53+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
     }
   ]
 }

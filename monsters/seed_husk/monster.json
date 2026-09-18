@@ -1,0 +1,820 @@
+{
+  "id": "seed_husk",
+  "name": "Huskling",
+  "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "b195e0b5-746c-4b79-89a5-315da0bca909",
+    "url": "https://www.pixellab.ai/create-character/b195e0b5-746c-4b79-89a5-315da0bca909",
+    "prompt": "Small seed-pod creature with a hard ridged brown husk for a body split open at the front, two pale green eyes glowing inside the split, a single dark green shoot rising from its top, and short knotted root legs, calm serious expression, clean deliberate creature design, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 56,
+    "height": 48
+  },
+  "native_size": {
+    "width": 48,
+    "height": 48
+  },
+  "pad": {
+    "x": 4,
+    "y": 0
+  },
+  "sprite": "seed_husk/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "seed_husk/rotations/south.webp",
+    "west": "seed_husk/rotations/west.webp",
+    "east": "seed_husk/rotations/east.webp",
+    "north": "seed_husk/rotations/north.webp",
+    "south-east": "seed_husk/rotations/south-east.webp",
+    "north-east": "seed_husk/rotations/north-east.webp",
+    "north-west": "seed_husk/rotations/north-west.webp",
+    "south-west": "seed_husk/rotations/south-west.webp"
+  },
+  "animations": {
+    "custom_angry_combat_idle_frustrated": {
+      "group_id": "7eeed519-dfb8-4d9e-884c-925f2df03497",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_angry_combat_idle_frustrated__east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/east/00.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/east/01.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/east/02.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/east/03.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:18 GMT",
+          "src_frames": 5,
+          "sub": "ecd3d889-fc96-4bce-9283-0021fab3f5d8"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_angry_combat_idle_frustrated__north.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north/00.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north/01.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north/02.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north/03.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:19 GMT",
+          "src_frames": 5,
+          "sub": "83c7b4e9-6c1d-4565-8016-5a0ef9e7bfd5"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_angry_combat_idle_frustrated__north-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north-east/00.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north-east/01.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north-east/02.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north-east/03.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:20 GMT",
+          "src_frames": 5,
+          "sub": "7ce198a6-e5f7-4d72-83d3-75ade71ba065"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_angry_combat_idle_frustrated__south.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south/00.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south/01.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south/02.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south/03.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:21 GMT",
+          "src_frames": 5,
+          "sub": "dbca1cdb-bdcc-49dd-bdfd-5560398b9fd4"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_angry_combat_idle_frustrated__south-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south-east/00.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south-east/01.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south-east/02.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south-east/03.webp",
+            "seed_husk/animations/custom_angry_combat_idle_frustrated/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:22 GMT",
+          "src_frames": 5,
+          "sub": "38a468f5-7c4e-4348-81d5-2f1e6f2c3d13"
+        }
+      }
+    },
+    "custom_calm_still_idle_breathing_ver": {
+      "group_id": "c08e1567-57a5-4aca-9ba3-98d2f4bba8c3",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_calm_still_idle_breathing_ver__east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/east/00.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/east/01.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/east/02.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/east/03.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:23 GMT",
+          "src_frames": 5,
+          "sub": "8dcdedeb-c987-4901-a7c2-8ca24a0e44df"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_calm_still_idle_breathing_ver__north.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north/00.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north/01.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north/02.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north/03.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:24 GMT",
+          "src_frames": 5,
+          "sub": "860923c4-d000-44d5-9d6a-eded1f6c847c"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_calm_still_idle_breathing_ver__north-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north-east/00.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north-east/01.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north-east/02.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north-east/03.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:25 GMT",
+          "src_frames": 5,
+          "sub": "47908e2a-1965-4707-a899-a3a44b1ee112"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_calm_still_idle_breathing_ver__south.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south/00.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south/01.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south/02.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south/03.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:26 GMT",
+          "src_frames": 5,
+          "sub": "7b1bbd74-09d2-49d0-a203-72653d47d645"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "seed_husk/animations/custom_calm_still_idle_breathing_ver__south-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south-east/00.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south-east/01.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south-east/02.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south-east/03.webp",
+            "seed_husk/animations/custom_calm_still_idle_breathing_ver/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:27 GMT",
+          "src_frames": 5,
+          "sub": "0626680a-e5ed-44db-a5cf-818f4c3d20c3"
+        }
+      }
+    },
+    "die": {
+      "group_id": "3f7cc101-839d-4c7f-84ef-567e83fdd9a5",
+      "source_name": "custom-Death - The husk cracks open and crumbles into a s",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "seed_husk/animations/die__east.webp",
+          "frame_paths": [
+            "seed_husk/animations/die/east/00.webp",
+            "seed_husk/animations/die/east/01.webp",
+            "seed_husk/animations/die/east/02.webp",
+            "seed_husk/animations/die/east/03.webp",
+            "seed_husk/animations/die/east/04.webp",
+            "seed_husk/animations/die/east/05.webp",
+            "seed_husk/animations/die/east/06.webp",
+            "seed_husk/animations/die/east/07.webp",
+            "seed_husk/animations/die/east/08.webp",
+            "seed_husk/animations/die/east/09.webp",
+            "seed_husk/animations/die/east/10.webp",
+            "seed_husk/animations/die/east/11.webp",
+            "seed_husk/animations/die/east/12.webp",
+            "seed_husk/animations/die/east/13.webp",
+            "seed_husk/animations/die/east/14.webp",
+            "seed_husk/animations/die/east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:28 GMT",
+          "src_frames": 16,
+          "sub": "893bbd51-4fce-42c3-9c93-caeee6e67b29"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "seed_husk/animations/die__north.webp",
+          "frame_paths": [
+            "seed_husk/animations/die/north/00.webp",
+            "seed_husk/animations/die/north/01.webp",
+            "seed_husk/animations/die/north/02.webp",
+            "seed_husk/animations/die/north/03.webp",
+            "seed_husk/animations/die/north/04.webp",
+            "seed_husk/animations/die/north/05.webp",
+            "seed_husk/animations/die/north/06.webp",
+            "seed_husk/animations/die/north/07.webp",
+            "seed_husk/animations/die/north/08.webp",
+            "seed_husk/animations/die/north/09.webp",
+            "seed_husk/animations/die/north/10.webp",
+            "seed_husk/animations/die/north/11.webp",
+            "seed_husk/animations/die/north/12.webp",
+            "seed_husk/animations/die/north/13.webp",
+            "seed_husk/animations/die/north/14.webp",
+            "seed_husk/animations/die/north/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:30 GMT",
+          "src_frames": 16,
+          "sub": "a4ab5511-d2f8-43b6-b364-eeeebc152268"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "seed_husk/animations/die__north-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/die/north-east/00.webp",
+            "seed_husk/animations/die/north-east/01.webp",
+            "seed_husk/animations/die/north-east/02.webp",
+            "seed_husk/animations/die/north-east/03.webp",
+            "seed_husk/animations/die/north-east/04.webp",
+            "seed_husk/animations/die/north-east/05.webp",
+            "seed_husk/animations/die/north-east/06.webp",
+            "seed_husk/animations/die/north-east/07.webp",
+            "seed_husk/animations/die/north-east/08.webp",
+            "seed_husk/animations/die/north-east/09.webp",
+            "seed_husk/animations/die/north-east/10.webp",
+            "seed_husk/animations/die/north-east/11.webp",
+            "seed_husk/animations/die/north-east/12.webp",
+            "seed_husk/animations/die/north-east/13.webp",
+            "seed_husk/animations/die/north-east/14.webp",
+            "seed_husk/animations/die/north-east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:32 GMT",
+          "src_frames": 16,
+          "sub": "1dfaf5b8-21f2-4a53-a789-f53e554e85c3"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "seed_husk/animations/die__south.webp",
+          "frame_paths": [
+            "seed_husk/animations/die/south/00.webp",
+            "seed_husk/animations/die/south/01.webp",
+            "seed_husk/animations/die/south/02.webp",
+            "seed_husk/animations/die/south/03.webp",
+            "seed_husk/animations/die/south/04.webp",
+            "seed_husk/animations/die/south/05.webp",
+            "seed_husk/animations/die/south/06.webp",
+            "seed_husk/animations/die/south/07.webp",
+            "seed_husk/animations/die/south/08.webp",
+            "seed_husk/animations/die/south/09.webp",
+            "seed_husk/animations/die/south/10.webp",
+            "seed_husk/animations/die/south/11.webp",
+            "seed_husk/animations/die/south/12.webp",
+            "seed_husk/animations/die/south/13.webp",
+            "seed_husk/animations/die/south/14.webp",
+            "seed_husk/animations/die/south/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:34 GMT",
+          "src_frames": 16,
+          "sub": "525e9ea6-c317-4080-bd10-f6b1bcc4bf4f"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "seed_husk/animations/die__south-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/die/south-east/00.webp",
+            "seed_husk/animations/die/south-east/01.webp",
+            "seed_husk/animations/die/south-east/02.webp",
+            "seed_husk/animations/die/south-east/03.webp",
+            "seed_husk/animations/die/south-east/04.webp",
+            "seed_husk/animations/die/south-east/05.webp",
+            "seed_husk/animations/die/south-east/06.webp",
+            "seed_husk/animations/die/south-east/07.webp",
+            "seed_husk/animations/die/south-east/08.webp",
+            "seed_husk/animations/die/south-east/09.webp",
+            "seed_husk/animations/die/south-east/10.webp",
+            "seed_husk/animations/die/south-east/11.webp",
+            "seed_husk/animations/die/south-east/12.webp",
+            "seed_husk/animations/die/south-east/13.webp",
+            "seed_husk/animations/die/south-east/14.webp",
+            "seed_husk/animations/die/south-east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:36 GMT",
+          "src_frames": 16,
+          "sub": "32a5f1b1-c328-4bdd-9c4d-7a3847c8d4d9"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "b5ea6f07-ffa9-40cd-b3c6-142d7df809a5",
+      "source_name": "custom-Headbutt - Pulls back slightly",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "seed_husk/animations/attack__east.webp",
+          "frame_paths": [
+            "seed_husk/animations/attack/east/00.webp",
+            "seed_husk/animations/attack/east/01.webp",
+            "seed_husk/animations/attack/east/02.webp",
+            "seed_husk/animations/attack/east/03.webp",
+            "seed_husk/animations/attack/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:38 GMT",
+          "src_frames": 5,
+          "sub": "59b82cc2-7cee-4e24-b548-cc5f96c08d6d"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "seed_husk/animations/attack__north.webp",
+          "frame_paths": [
+            "seed_husk/animations/attack/north/00.webp",
+            "seed_husk/animations/attack/north/01.webp",
+            "seed_husk/animations/attack/north/02.webp",
+            "seed_husk/animations/attack/north/03.webp",
+            "seed_husk/animations/attack/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:39 GMT",
+          "src_frames": 5,
+          "sub": "2d9ae2a6-d880-4847-8f9a-1249be26f8b7"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "seed_husk/animations/attack__north-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/attack/north-east/00.webp",
+            "seed_husk/animations/attack/north-east/01.webp",
+            "seed_husk/animations/attack/north-east/02.webp",
+            "seed_husk/animations/attack/north-east/03.webp",
+            "seed_husk/animations/attack/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:40 GMT",
+          "src_frames": 5,
+          "sub": "72483e7a-57c8-4d4f-81b3-f90e1322006c"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "seed_husk/animations/attack__south.webp",
+          "frame_paths": [
+            "seed_husk/animations/attack/south/00.webp",
+            "seed_husk/animations/attack/south/01.webp",
+            "seed_husk/animations/attack/south/02.webp",
+            "seed_husk/animations/attack/south/03.webp",
+            "seed_husk/animations/attack/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:42 GMT",
+          "src_frames": 5,
+          "sub": "20720748-1e65-4eda-a1f0-0e752e81c455"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "seed_husk/animations/attack__south-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/attack/south-east/00.webp",
+            "seed_husk/animations/attack/south-east/01.webp",
+            "seed_husk/animations/attack/south-east/02.webp",
+            "seed_husk/animations/attack/south-east/03.webp",
+            "seed_husk/animations/attack/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:43 GMT",
+          "src_frames": 5,
+          "sub": "c3c6a361-9bf9-4a24-b522-a3dda1dc0b42"
+        }
+      }
+    },
+    "custom_husk_burst_the_husk_splits_o": {
+      "group_id": "56336114-8d66-4472-8371-79a8a5a80934",
+      "source_name": "custom-Husk Burst - The husk splits o",
+      "directions": {
+        "north": {
+          "frames": 7,
+          "strip": "seed_husk/animations/custom_husk_burst_the_husk_splits_o__north.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/north/00.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/north/01.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/north/02.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/north/03.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/north/04.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/north/05.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:45 GMT",
+          "src_frames": 7,
+          "sub": "9b133b51-3be9-43ce-8a7e-4ae4cb748ece"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "seed_husk/animations/custom_husk_burst_the_husk_splits_o__south-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/south-east/00.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/south-east/01.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/south-east/02.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/south-east/03.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/south-east/04.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/south-east/05.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_o/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:46 GMT",
+          "src_frames": 7,
+          "sub": "ea2146f1-f53d-4be5-81ae-9ae0f90a5d39"
+        }
+      }
+    },
+    "custom_husk_burst_the_husk_splits_open_w": {
+      "group_id": "eee96ad3-8bed-47d0-b679-111b605b164b",
+      "source_name": "custom-Husk Burst - The husk splits open with a crack and",
+      "directions": {
+        "south": {
+          "frames": 16,
+          "strip": "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w__south.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/00.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/01.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/02.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/03.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/04.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/05.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/06.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/07.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/08.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/09.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/10.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/11.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/12.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/13.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/14.webp",
+            "seed_husk/animations/custom_husk_burst_the_husk_splits_open_w/south/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:47 GMT",
+          "src_frames": 16,
+          "sub": "f1636d3b-164d-4a77-8832-f17ff8b035a6"
+        }
+      }
+    },
+    "custom_lunge_attack_throws_its_whol": {
+      "group_id": "547c9fc1-a002-42c8-bed6-c5fb58e15d2d",
+      "source_name": "custom-Lunge Attack - Throws its whol",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "seed_husk/animations/custom_lunge_attack_throws_its_whol__east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/east/00.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/east/01.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/east/02.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/east/03.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/east/04.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/east/05.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:50 GMT",
+          "src_frames": 7,
+          "sub": "3c18e69d-4e6f-4564-8c5a-d0b99885ae2c"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "seed_husk/animations/custom_lunge_attack_throws_its_whol__north-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/north-east/00.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/north-east/01.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/north-east/02.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/north-east/03.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/north-east/04.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/north-east/05.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whol/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:51 GMT",
+          "src_frames": 7,
+          "sub": "b4009261-70d2-4eea-9cb9-7dc3353d6e8f"
+        }
+      }
+    },
+    "custom_lunge_attack_throws_its_whole_bod": {
+      "group_id": "9c4c2e27-2e43-490e-8c51-a50f8d4469eb",
+      "source_name": "custom-Lunge Attack - Throws its whole body forward in on",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod__east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/00.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/01.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/02.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/03.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/04.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/05.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/06.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/07.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/08.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/09.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/10.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/11.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/12.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/13.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/14.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:52 GMT",
+          "src_frames": 16,
+          "sub": "fa729548-d52c-454d-858b-5f03835a7e95"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod__north.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/00.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/01.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/02.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/03.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/04.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/05.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/06.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/07.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/08.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/09.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/10.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/11.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/12.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/13.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/14.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:55 GMT",
+          "src_frames": 16,
+          "sub": "18f85691-65bf-4570-ab4f-947ef36ccb03"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod__north-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/00.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/01.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/02.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/03.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/04.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/05.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/06.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/07.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/08.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/09.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/10.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/11.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/12.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/13.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/14.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/north-east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:56 GMT",
+          "src_frames": 16,
+          "sub": "4a2f48e5-9b13-427f-986c-2099714abe1e"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod__south-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/00.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/01.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/02.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/03.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/04.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/05.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/06.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/07.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/08.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/09.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/10.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/11.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/12.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/13.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/14.webp",
+            "seed_husk/animations/custom_lunge_attack_throws_its_whole_bod/south-east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:32:58 GMT",
+          "src_frames": 16,
+          "sub": "56fdf0ff-d9cd-4485-a9d5-db7309fb3fef"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "0ddcb288-b46b-44a5-9816-b27ef00f3ce2",
+      "source_name": "custom-hops forward and rams with its",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "seed_husk/animations/walk__east.webp",
+          "frame_paths": [
+            "seed_husk/animations/walk/east/00.webp",
+            "seed_husk/animations/walk/east/01.webp",
+            "seed_husk/animations/walk/east/02.webp",
+            "seed_husk/animations/walk/east/03.webp",
+            "seed_husk/animations/walk/east/04.webp",
+            "seed_husk/animations/walk/east/05.webp",
+            "seed_husk/animations/walk/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:00 GMT",
+          "src_frames": 7,
+          "sub": "46ddca30-be51-4ec5-b090-1d376ab6f7ef"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "seed_husk/animations/walk__north.webp",
+          "frame_paths": [
+            "seed_husk/animations/walk/north/00.webp",
+            "seed_husk/animations/walk/north/01.webp",
+            "seed_husk/animations/walk/north/02.webp",
+            "seed_husk/animations/walk/north/03.webp",
+            "seed_husk/animations/walk/north/04.webp",
+            "seed_husk/animations/walk/north/05.webp",
+            "seed_husk/animations/walk/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:01 GMT",
+          "src_frames": 7,
+          "sub": "355685aa-2661-4477-86c2-fcff6dfadc9b"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "seed_husk/animations/walk__north-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/walk/north-east/00.webp",
+            "seed_husk/animations/walk/north-east/01.webp",
+            "seed_husk/animations/walk/north-east/02.webp",
+            "seed_husk/animations/walk/north-east/03.webp",
+            "seed_husk/animations/walk/north-east/04.webp",
+            "seed_husk/animations/walk/north-east/05.webp",
+            "seed_husk/animations/walk/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:03 GMT",
+          "src_frames": 7,
+          "sub": "74cc11fc-f95a-421d-b700-f6c64e06d526"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "seed_husk/animations/walk__south.webp",
+          "frame_paths": [
+            "seed_husk/animations/walk/south/00.webp",
+            "seed_husk/animations/walk/south/01.webp",
+            "seed_husk/animations/walk/south/02.webp",
+            "seed_husk/animations/walk/south/03.webp",
+            "seed_husk/animations/walk/south/04.webp",
+            "seed_husk/animations/walk/south/05.webp",
+            "seed_husk/animations/walk/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:04 GMT",
+          "src_frames": 7,
+          "sub": "14b1527e-fd31-4aa3-ba4f-a75e37eb6a80"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "seed_husk/animations/walk__south-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/walk/south-east/00.webp",
+            "seed_husk/animations/walk/south-east/01.webp",
+            "seed_husk/animations/walk/south-east/02.webp",
+            "seed_husk/animations/walk/south-east/03.webp",
+            "seed_husk/animations/walk/south-east/04.webp",
+            "seed_husk/animations/walk/south-east/05.webp",
+            "seed_husk/animations/walk/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:06 GMT",
+          "src_frames": 7,
+          "sub": "b2dd167c-2a40-4a37-b0d0-4fc20fc102e6"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "6bf3f2c4-e40c-4011-8546-95bdf1dfc34c",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "seed_husk/animations/idle__east.webp",
+          "frame_paths": [
+            "seed_husk/animations/idle/east/00.webp",
+            "seed_husk/animations/idle/east/01.webp",
+            "seed_husk/animations/idle/east/02.webp",
+            "seed_husk/animations/idle/east/03.webp",
+            "seed_husk/animations/idle/east/04.webp",
+            "seed_husk/animations/idle/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:07 GMT",
+          "src_frames": 6,
+          "sub": "a124a615-094d-4f23-95d8-ccbea7c6da39"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "seed_husk/animations/idle__north.webp",
+          "frame_paths": [
+            "seed_husk/animations/idle/north/00.webp",
+            "seed_husk/animations/idle/north/01.webp",
+            "seed_husk/animations/idle/north/02.webp",
+            "seed_husk/animations/idle/north/03.webp",
+            "seed_husk/animations/idle/north/04.webp",
+            "seed_husk/animations/idle/north/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:08 GMT",
+          "src_frames": 6,
+          "sub": "fad63338-83eb-4e68-addf-ed05502e5e3e"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "seed_husk/animations/idle__north-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/idle/north-east/00.webp",
+            "seed_husk/animations/idle/north-east/01.webp",
+            "seed_husk/animations/idle/north-east/02.webp",
+            "seed_husk/animations/idle/north-east/03.webp",
+            "seed_husk/animations/idle/north-east/04.webp",
+            "seed_husk/animations/idle/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:09 GMT",
+          "src_frames": 6,
+          "sub": "aefb26e6-cb5e-41c1-98e4-df61345ea133"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "seed_husk/animations/idle__south.webp",
+          "frame_paths": [
+            "seed_husk/animations/idle/south/00.webp",
+            "seed_husk/animations/idle/south/01.webp",
+            "seed_husk/animations/idle/south/02.webp",
+            "seed_husk/animations/idle/south/03.webp",
+            "seed_husk/animations/idle/south/04.webp",
+            "seed_husk/animations/idle/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:11 GMT",
+          "src_frames": 6,
+          "sub": "013535e5-50c7-4e91-a792-c0efad95ec90"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "seed_husk/animations/idle__south-east.webp",
+          "frame_paths": [
+            "seed_husk/animations/idle/south-east/00.webp",
+            "seed_husk/animations/idle/south-east/01.webp",
+            "seed_husk/animations/idle/south-east/02.webp",
+            "seed_husk/animations/idle/south-east/03.webp",
+            "seed_husk/animations/idle/south-east/04.webp",
+            "seed_husk/animations/idle/south-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:33:13 GMT",
+          "src_frames": 6,
+          "sub": "ba1b0608-e6c8-469b-9359-adff111db91b"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "idle",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      48,
+      48
+    ],
+    "pad": [
+      4,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "custom_husk_burst_the_husk_splits_o",
+        "dir": "south-east",
+        "frame": 5,
+        "side": "right",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 3,
+        "ext": 2
+      }
+    ]
+  }
+}

@@ -277,6 +277,19 @@
       "lore": "A snow-packed blob with a frozen grin. It spits ice spikes, and melts to slush when its winter finally ends."
     },
     {
+      "id": "seed_husk",
+      "kind": "character",
+      "pixellab_id": "b195e0b5-746c-4b79-89a5-315da0bca909",
+      "name": "Huskling",
+      "lore": "It fell from a tree nobody has found. Where it roots, the ground goes hard and the crops go quiet.",
+      "renames": {
+        "custom-walk loop, full walk cycle in ": "idle",
+        "custom-Death - The husk cracks open and crumbles into a s": "die",
+        "custom-Headbutt - Pulls back slightly": "attack",
+        "custom-hops forward and rams with its": "walk"
+      }
+    },
+    {
       "id": "gray_brute",
       "kind": "character",
       "pixellab_id": "20c9597b-ebc9-42e3-b9ee-aaab69674b89",
