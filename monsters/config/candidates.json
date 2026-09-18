@@ -119,25 +119,6 @@
       "die_action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away"
     },
     {
-      "id": "ghoul",
-      "name": "Gravemaw",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 104,
-      "biome": [
-        "grey_paving_stone",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Hunched fantasy ghoul shown full body from head to feet, pale grey mottled skin stretched over a bony frame, a wide mouth of needle teeth, sunken white eyes, long clawed fingers, and rags of a burial shroud.",
-      "lore": "It eats what the graves give up and waits for more. Its patience is only hunger, drawn out.",
-      "attack_action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
-      "claws": true,
-      "attack_extreme": "Frenzy - The ghoul throws itself forward, both clawed arms thrown wide, raking wildly",
-      "die_action": "Death - Faints, crumples to the ground on its side and fades away"
-    },
-    {
       "id": "fire_elemental",
       "name": "Flarewisp",
       "tier": "mid",
@@ -4453,6 +4434,33 @@
       "attack_extreme": "Overhead Crush - The troll heaves the stone club far over its head and smashes it into the ground, rock shards flying",
       "die_action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
       "graduated_at": "2026-09-18T14:52:46+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "ghoul",
+      "name": "Gravemaw",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 104,
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Hunched fantasy ghoul shown full body from head to feet, pale grey mottled skin stretched over a bony frame, a wide mouth of needle teeth, sunken white eyes, long clawed fingers, and rags of a burial shroud.",
+      "lore": "It eats what the graves give up and waits for more. Its patience is only hunger, drawn out.",
+      "attack_action": "Double Claw - Rakes forward with both claws in two fast alternating swipes",
+      "claws": true,
+      "attack_extreme": "Frenzy - The ghoul throws itself forward, both clawed arms thrown wide, raking wildly",
+      "die_action": "Death - Faints, crumples to the ground on its side and fades away",
+      "graduated_at": "2026-09-18T14:54:14+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",
