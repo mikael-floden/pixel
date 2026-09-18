@@ -76,24 +76,29 @@ Claude reading its first file:
   `github-agent-run.yml`. The matching domain starts immediately; the others are
   never created, so they cost nothing and do not even appear in the run.
   Independent jobs, so two domains still run side by side.
-- **`github.event.commits` IS EMPTY ON THIS REPO'S PUSHES — never test it.**
-  Measured by the selftest on a one-commit, one-file push (2026-09-18 19:57:51Z):
-  `toJSON(github.event.commits.*.modified)` printed `[]` and
-  `join(github.event.commits.*.modified)` printed nothing at all. Any `if` over
-  `commits.*` is therefore false ALWAYS, whatever the push contained. It cost a
-  real review — c15246bbc6, 19:48:54Z, one commit modifying exactly
-  `live/feedback/objects.json`: the workflow's `paths:` filter matched so the RUN
-  existed, and every job inside it skipped.
+- **THE PUSH PAYLOAD HERE CARRIES NO FILE LISTS — a job `if` cannot test a
+  path.** Measured by the selftest on a one-commit, one-file push (2026-09-18
+  20:02Z): `toJSON(github.event.commits)` holds the commit's author, id, tree and
+  message and has NO `added`/`modified`/`removed` key at all;
+  `github.event.head_commit.modified` is `null`; `commits.*.modified` resolves to
+  `[]`, so `join()` of it is empty and `toJSON()` of it is `[]`. Any `if` over a
+  changed path is false ALWAYS, whatever the push contained. It cost a real
+  review — c15246bbc6, 19:48:54Z, one commit modifying exactly
+  `live/feedback/objects.json`: the run existed and every job inside it skipped.
+  The workflow-level `paths:` filter is unaffected — GitHub evaluates that
+  server-side against the real diff, which is why the run was created at all.
 - **A WRONG `if` IS SILENT, which is why it survived two rehearsals.** A skipped
   job writes no log and no reason, so the Actions list shows a run sitting
   against his review with nothing anywhere saying which term was false. The
   rehearsals could not have caught it either: a `workflow_dispatch` has no
   commits, so the term was never evaluated.
 - **THE COMMIT MESSAGE IS THE TRIGGER.** The wiki server writes
-  `live: admin update — feedback/<file>.json`, which NAMES the file it saved —
-  exact, always present, and independent of a payload field that turns out to be
-  empty. `head_commit` is populated when `commits` is not. The `toJSON` test is
-  kept behind it only as a second chance, and is expected to contribute nothing.
+  `live: admin update — feedback/<file>.json`, which NAMES the file it saved, and
+  messages ARE in the payload. Each job tests `head_commit.message` first and
+  `toJSON(commits.*.message)` second — the latter catches a save that is not the
+  head commit of its push. Both forms are proven against real payloads by the
+  selftest's `message_form` and `messages_form` jobs; the path forms are kept
+  there, failing, as the record.
 - **An `if:` whose expression contains `": "` must be quoted or in a `>-` block.**
   A plain YAML scalar ends at the first `: `, so
   `if: contains(x, 'live: admin update')` is not a parse error you will enjoy

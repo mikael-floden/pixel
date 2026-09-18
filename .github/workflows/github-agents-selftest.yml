@@ -38,6 +38,14 @@ jobs:
     steps:
       - run: echo "head_commit.message MATCHED" >> "$GITHUB_STEP_SUMMARY"
 
+  # The second chance: the same marker, looked for across EVERY commit message in
+  # the push rather than only the head one.
+  messages_form:
+    if: "contains(toJSON(github.event.commits.*.message), 'selftest-marker: feedback/objects.json')"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "toJSON(commits.*.message) MATCHED" >> "$GITHUB_STEP_SUMMARY"
+
   # And what each one actually produces, so the next surprise is read, not guessed.
   payload:
     runs-on: ubuntu-latest

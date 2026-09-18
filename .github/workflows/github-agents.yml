@@ -32,20 +32,26 @@ name: github agents
 # feedback/OBJECTS.json, whose domain on disk is scenery/; characters.json is
 # characters2/. The mapping is the `if` of each job, where it reads at a glance.
 #
-# HOW THE `if` READS THE PAYLOAD, AND THE ONE WAY IT MUST NOT. `commits.*.modified`
-# is an array OF ARRAYS — one list of paths per commit — and `join()` does not
-# flatten it: the nested lists do not become their paths, so
-# `contains(join(commits.*.modified), 'live/feedback/objects.json')` is false for
-# a push that modified exactly that file. It cost a real review (c15246bbc6,
-# 19:48:54Z: one commit, one file, message 'live: admin update —
-# feedback/objects.json'): the workflow's own `paths:` filter matched, the run
-# was created, and every job in it skipped. `toJSON()` serialises the nesting and
-# is the form that works.
+# THE PAYLOAD HERE CARRIES NO FILE LISTS — TEST THE MESSAGE. Measured by
+# github-agents-selftest.yml on a one-commit, one-file push (2026-09-18 20:02Z):
+# `commits` is present with the commit's author, id and message, and NO
+# `added`/`modified`/`removed` on it at all; `head_commit.modified` is `null` and
+# `commits.*.modified` resolves to `[]`. Any `if` over a changed PATH is
+# therefore false always, whatever the push contained — and it cost a real review
+# (c15246bbc6, 19:48:54Z, one commit modifying exactly live/feedback/objects.json:
+# the workflow's own `paths:` filter matched, the run was created, and every job
+# in it skipped). The `paths:` filter above works because GitHub evaluates it
+# server-side against the real diff; a job `if` only gets the payload.
 #
-# And because the message the wiki writes NAMES the file it saved, that is the
-# first test — it is exact, it cannot be confused by a push that carries other
-# commits, and it does not depend on the payload's shape at all. The toJSON test
-# stays behind it for the push where his save is not the head commit.
+# What IS in the payload is every commit's MESSAGE, and the wiki server writes
+# `live: admin update — feedback/<file>.json`, naming the file it saved. So each
+# job tests that message: on `head_commit` first, and over every commit in the
+# push as the second chance for a save that is not the head commit. Both are
+# proven against real payloads by the selftest (`message_form`, `messages_form`).
+#
+# A SKIPPED JOB IS SILENT — it writes no log and no reason, which is why this
+# survived two rehearsals: a `workflow_dispatch` has no commits, so the term was
+# never evaluated. Verify a trigger change against a real push, never by reading.
 #
 # NOT WOKEN BY: bindings.json (an <event>#<sound> review, not a domain) and
 # composer/composer-music (games2/composer is one corner of a directory six
@@ -95,9 +101,10 @@ jobs:
   monsters:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && startsWith(github.event.head_commit.message, 'live: admin update')
-      && (contains(github.event.head_commit.message, 'feedback/monsters.json')
-          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/monsters.json'))
+      && ((startsWith(github.event.head_commit.message, 'live: admin update')
+           && contains(github.event.head_commit.message, 'feedback/monsters.json'))
+          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
+              && contains(toJSON(github.event.commits.*.message), 'feedback/monsters.json')))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: monsters }
     secrets: inherit
@@ -105,9 +112,10 @@ jobs:
   scenery:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && startsWith(github.event.head_commit.message, 'live: admin update')
-      && (contains(github.event.head_commit.message, 'feedback/objects.json')
-          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/objects.json'))
+      && ((startsWith(github.event.head_commit.message, 'live: admin update')
+           && contains(github.event.head_commit.message, 'feedback/objects.json'))
+          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
+              && contains(toJSON(github.event.commits.*.message), 'feedback/objects.json')))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: scenery }
     secrets: inherit
@@ -115,9 +123,10 @@ jobs:
   characters2:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && startsWith(github.event.head_commit.message, 'live: admin update')
-      && (contains(github.event.head_commit.message, 'feedback/characters.json')
-          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/characters.json'))
+      && ((startsWith(github.event.head_commit.message, 'live: admin update')
+           && contains(github.event.head_commit.message, 'feedback/characters.json'))
+          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
+              && contains(toJSON(github.event.commits.*.message), 'feedback/characters.json')))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: characters2 }
     secrets: inherit
@@ -125,9 +134,10 @@ jobs:
   tiles:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && startsWith(github.event.head_commit.message, 'live: admin update')
-      && (contains(github.event.head_commit.message, 'feedback/tiles.json')
-          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/tiles.json'))
+      && ((startsWith(github.event.head_commit.message, 'live: admin update')
+           && contains(github.event.head_commit.message, 'feedback/tiles.json'))
+          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
+              && contains(toJSON(github.event.commits.*.message), 'feedback/tiles.json')))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: tiles }
     secrets: inherit
@@ -135,9 +145,10 @@ jobs:
   items:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && startsWith(github.event.head_commit.message, 'live: admin update')
-      && (contains(github.event.head_commit.message, 'feedback/items.json')
-          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/items.json'))
+      && ((startsWith(github.event.head_commit.message, 'live: admin update')
+           && contains(github.event.head_commit.message, 'feedback/items.json'))
+          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
+              && contains(toJSON(github.event.commits.*.message), 'feedback/items.json')))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: items }
     secrets: inherit
@@ -145,9 +156,10 @@ jobs:
   lore:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && startsWith(github.event.head_commit.message, 'live: admin update')
-      && (contains(github.event.head_commit.message, 'feedback/lore.json')
-          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/lore.json'))
+      && ((startsWith(github.event.head_commit.message, 'live: admin update')
+           && contains(github.event.head_commit.message, 'feedback/lore.json'))
+          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
+              && contains(toJSON(github.event.commits.*.message), 'feedback/lore.json')))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: lore }
     secrets: inherit
@@ -155,9 +167,10 @@ jobs:
   sounds:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && startsWith(github.event.head_commit.message, 'live: admin update')
-      && (contains(github.event.head_commit.message, 'feedback/sounds.json')
-          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/sounds.json'))
+      && ((startsWith(github.event.head_commit.message, 'live: admin update')
+           && contains(github.event.head_commit.message, 'feedback/sounds.json'))
+          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
+              && contains(toJSON(github.event.commits.*.message), 'feedback/sounds.json')))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: sounds }
     secrets: inherit
@@ -165,9 +178,10 @@ jobs:
   music:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && startsWith(github.event.head_commit.message, 'live: admin update')
-      && (contains(github.event.head_commit.message, 'feedback/music.json')
-          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/music.json'))
+      && ((startsWith(github.event.head_commit.message, 'live: admin update')
+           && contains(github.event.head_commit.message, 'feedback/music.json'))
+          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
+              && contains(toJSON(github.event.commits.*.message), 'feedback/music.json')))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: music }
     secrets: inherit
