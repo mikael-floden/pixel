@@ -1,0 +1,12 @@
+{
+  "domain": "sounds-github-agent",
+  "updated_at": "2026-09-18T23:31:19+00:00",
+  "health": "running",
+  "current": "acting on the wiki review in live/feedback/sounds.json: 58 rejected takes -> delete the recordings, repoint/rebuild the manifests, rebuild viewer_data.json, clear the 58 rejected entries (the 18 approved and 3 rating-only entries stay). files: live/feedback/sounds.json, sounds/viewer_data.json, sounds/ui/coin_pickup/**, sounds/ui/gem_pickup/**, sounds/ui/error_buzz/**, sounds/ui/item_get/**, sounds/ui/menu_select/**, sounds/tool/pickaxe_hit/**, sounds/tool/hoe_till/**, sounds/tool/axe_chop/**, sounds/tool/watering_can/**, sounds/tool/sword_swing/**, sounds/combat/enemy_defeat/**, sounds/combat/explosion/**, sounds/combat/magic_cast/**, sounds/feedback/quest_complete/**, sounds/feedback/level_up/**, sounds/item/eat_food/**, sounds/item/chest_close/**, sounds/item/key_unlock/**, sounds/ambience/cave_drips/**, sounds/ambience/forest/**, sounds/ambience/wind/**, sounds/ambience/fire_crackle/**, sounds/ambience/crickets_night/**, sounds/ambience/rain/**, sounds/ambience/thunder_rumble/**, sounds/movement/footstep_sand/**, sounds/movement/footstep_wood/**, sounds/item/chest_open/metadata.json, sounds/movement/footstep_snow/metadata.json, sounds/movement/footstep_stone/metadata.json, sounds/movement/jump/metadata.json, sounds/ui/notification/metadata.json (+ the rejected take files under those five)",
+  "progress": {},
+  "budget_remaining": null,
+  "notes": [
+    "stand-in for the sounds agent, started by the review that landed on live/feedback/sounds.json (79 entries, all written 2026-08-05/06). coordination/sounds.json is idle since 2026-07-17 and names no file; there is no coordination/sounds-assistant.json \u2014 nothing was claimed, nothing acked."
+  ],
+  "requests": []
+}
