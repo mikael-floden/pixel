@@ -16,6 +16,7 @@ import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
 import { mountTheme } from "./theme";
 import { registerGame } from "./gamefreeze";
+import { openUpdateNotes } from "./updatenote";
 import { mountAmbient } from "../../ambient/index";
 import { gameAudio } from "../../composer/index";
 
@@ -204,7 +205,10 @@ function showUpdateBanner(sha: string) {
   // abbreviated hash (what's referenced in dev chat), so the two are
   // comparable at a glance.
   // Wording is maintainer-fixed: JUST "New version out <hash>" — no arrow,
-  // no "tap to reload" (2026-07-17). Tapping still reloads.
+  // no "tap to reload" (2026-07-17). Tapping opens the RELEASE NOTES for this
+  // deploy (updatenote.ts, games-ui, maintainer 2026-09-18: "I want it to list
+  // everything that has changed from the version I'm currently at to the
+  // version I'm about to get") and that dialog's primary button reloads.
   el.textContent = `New version out ${sha.slice(0, 9)}`;
   // Non-selectable on purpose (belt and braces with the global rule): a long
   // press used to text-select the hash and pop Chrome's search sheet mid-game.
@@ -229,7 +233,7 @@ function showUpdateBanner(sha: string) {
     "box-shadow:var(--shadow, 0 4px 16px rgba(0,0,0,.2));" +
     "white-space:nowrap;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;" +
     "-webkit-tap-highlight-color:transparent";
-  el.addEventListener("click", () => location.reload());
+  el.addEventListener("click", () => openUpdateNotes(sha));
   document.body.appendChild(el);
 }
 

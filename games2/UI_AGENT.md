@@ -267,6 +267,40 @@ from the games agent), #18 (title/landing screen).
   His verdict on the whole portrait layout — top-right stack, corner ghost,
   three-row rail — on seeing it (2026-09-18): "Wow! This is perfect!" Do not
   re-litigate any of the three without his word.
+- **THE UPDATE POPUP LISTS WHAT CHANGED, AND THE LIST IS THE WIKI'S**
+  (`updatenote.ts`, maintainer 2026-09-18: "I want it to list everything that
+  has changed from the version I'm currently at to the version I'm about to
+  get. See wiki release notes for inspiration … make it look nice! Yes this
+  dialog will be bigger but that's OK"). `wiki/lib/releases.mjs` already
+  publishes the last 50 commits ENDING AT THE BUILD BEING SERVED
+  (`wiki/release_notes.json`, `pixel-wiki-releases@1`, regenerated into the
+  build context by the deploy — wiki/README.md), and `wiki/` ships in the game
+  image, so the old client fetches that deploy's own list from
+  `/assets/wiki/release_notes.json` and the range is a SLICE of it: head down
+  to (not including) this build's sha, compared on the shorter prefix because
+  git abbreviates. **Never re-derive a changelog here** — a wiki-side change to
+  how a commit is attributed must show up in the game with no edit on this
+  side. `cache: "no-store"`: the static mount sets maxAge 1h and a cached copy
+  describes the deploy before last.
+  THE WIKI'S ROWS MADE READABLE is the whole design difference: the wiki is
+  deliberately raw (2026-09-13, ADMIN-ONLY), here they are grouped by day, the
+  area is a coloured chip (agent, else first dir — hue derived from the name,
+  so no palette to maintain), the chip's own token is stripped off the front of
+  the subject when it repeats it, and adjacent identical subjects collapse to
+  `×N`. NOTHING IS FILTERED — he asked for everything, so a `live:` admin
+  commit is a row like any other. A build older than the 50-commit window says
+  so ("the most recent ones") instead of implying the list is the whole range.
+  THE TOAST IS UNCHANGED and still the quiet FYI of 2026-08-05 — deploys land
+  many times an hour, so the dialog opens on TAP, never by itself; its wording
+  stays maintainer-fixed ("New version out <hash>", 2026-07-17) and
+  `verify-bootversion`'s regex with it. z 110, above the z-100 toast that opens
+  it. `main.ts` is the games agent's file: the hook is the one allowed
+  mechanical line (the click handler), announced on the board.
+  `verify-updatenotes` routes a fixture document and asserts the range (nothing
+  from before your build), the grouping, the collapse, the hit test over a
+  z-100 layer, all three dismissals, the outside-window case, that a MISSING
+  file still opens the dialog with a working reload, and that Update now
+  actually reloads.
 - **THE CUTOUT BAND IS ON EVERY SCREEN, AND THE APP NEVER REQUESTS FULLSCREEN**
   (maintainer 2026-09-18: "fake a black border so the game always looks the
   same! Even in character select this time!"). His shell letterboxes the

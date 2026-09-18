@@ -1,0 +1,375 @@
+// WHAT CHANGED BETWEEN YOUR BUILD AND THE SERVED ONE — the update popup's
+// release notes (maintainer 2026-09-18: "when the game shows a popup with a new
+// version being available I want it to list everything that has changed from
+// the version I'm currently at to the version I'm about to get. See wiki
+// release notes for inspiration … Think about the UI/UX and make it look nice!
+// Yes this dialog/modal will be bigger but that's OK").
+//
+// THE DATA IS THE WIKI'S, NOT A SECOND COPY. `wiki/lib/releases.mjs` already
+// publishes the last 50 commits ending at the build being served —
+// `wiki/release_notes.json`, schema `pixel-wiki-releases@1`, regenerated into
+// the build context by the deploy (wiki/README.md "Release Notes") and served
+// from the image at /assets/wiki/release_notes.json. So the file the OLD client
+// fetches from the NEW server is that deploy's own list, and the range is a
+// SLICE of it: from its head down to (not including) the sha this build is
+// running. Nothing here re-derives a changelog, and a wiki-side change to how a
+// commit is attributed shows up in the game with no edit on this side.
+// `cache: "no-store"` because the static mount sets maxAge 1h — a cached copy
+// would describe the deploy before last.
+//
+// IT IS THE WIKI'S ADMIN LIST MADE READABLE, which is the "inspiration" part:
+// the wiki shows raw rows on purpose (maintainer 2026-09-13: "no curation, no
+// versions, no grouping by feature" — ADMIN-ONLY). Here the same rows are
+// grouped by DAY, the area is a coloured chip instead of a column, the chip's
+// own token is stripped off the front of the subject so it is not said twice,
+// and a run of identical subjects collapses to a count. NOTHING IS FILTERED —
+// he asked for everything, so a `live:` admin commit is a row like any other.
+//
+// THE TOAST IS UNCHANGED (main.ts showUpdateBanner): its wording is
+// maintainer-fixed ("New version out <hash>", 2026-07-17) and it stays the
+// quiet FYI he asked for in 2026-08-05 — deploys land many times an hour and a
+// modal that opened itself over the world every time would be the opposite of
+// quiet. Tapping it opens this dialog; the dialog's primary button reloads, so
+// the update is still two taps from anywhere.
+import { gameUrl } from "./staging";
+
+/** One row of `pixel-wiki-releases@1`. */
+interface ReleaseCommit {
+  sha: string;
+  at: string;
+  author: string;
+  subject: string;
+  /** The agent the wiki attributed it to, or null when no signal answered. */
+  agent: string | null;
+  /** The top-level folders the commit touched — the fact the wiki shows when
+   *  no agent can be named (a folder never names an agent). */
+  dirs: string[];
+  files: number;
+}
+
+interface ReleaseDoc {
+  head: string;
+  commits: ReleaseCommit[];
+}
+
+const NOTES_URL = "/assets/wiki/release_notes.json";
+const CSS_ID = "ml-updatenote-css";
+
+/** The wiki's published list, or null if it is not there (a deploy whose
+ *  context had no git, an older image, an offline phone). The dialog must open
+ *  and the reload must work either way — the notes are the nice-to-have. */
+async function loadNotes(): Promise<ReleaseDoc | null> {
+  try {
+    const res = await fetch(gameUrl(NOTES_URL), { cache: "no-store" });
+    if (!res.ok) return null;
+    const doc = (await res.json()) as { head?: unknown; commits?: unknown };
+    if (!Array.isArray(doc.commits)) return null;
+    const commits = (doc.commits as Record<string, unknown>[])
+      .filter((c) => c && typeof c.sha === "string" && typeof c.subject === "string")
+      .map<ReleaseCommit>((c) => ({
+        sha: String(c.sha),
+        at: typeof c.at === "string" ? c.at : "",
+        author: typeof c.author === "string" ? c.author : "",
+        subject: String(c.subject),
+        agent: typeof c.agent === "string" ? c.agent : null,
+        dirs: Array.isArray(c.dirs) ? (c.dirs as unknown[]).filter((d): d is string => typeof d === "string") : [],
+        files: typeof c.files === "number" ? c.files : 0,
+      }));
+    return { head: typeof doc.head === "string" ? doc.head : "", commits };
+  } catch {
+    return null;
+  }
+}
+
+/** Git abbreviates to whatever length is unambiguous, so the file's shas, the
+ *  badge's 9 chars and /version's full hash are all the same commit at
+ *  different lengths — compare on the shorter one, never for equality. */
+function sameSha(a: string, b: string): boolean {
+  const n = Math.min(a.length, b.length);
+  return n >= 7 && a.slice(0, n) === b.slice(0, n);
+}
+
+/** The commits between the running build and the served one, newest first.
+ *  `truncated` = this build is further back than the wiki's 50-commit window
+ *  (or is not in it at all), so the list is what is known, not the whole range
+ *  — said out loud rather than quietly implied. */
+export function sliceSince(doc: ReleaseDoc, mySha: string): { rows: ReleaseCommit[]; truncated: boolean } {
+  const i = doc.commits.findIndex((c) => sameSha(c.sha, mySha));
+  if (i < 0) return { rows: doc.commits, truncated: doc.commits.length > 0 };
+  return { rows: doc.commits.slice(0, i), truncated: false };
+}
+
+/** The area a row belongs to: the agent the wiki named, else the folder it
+ *  touched, else the repo. One label, because the chip is a glance, not a
+ *  report. */
+function areaOf(c: ReleaseCommit): string {
+  return c.agent || c.dirs[0] || "repo";
+}
+
+/** A stable hue per area, so `games2` is the same colour on every visit and
+ *  two areas in one day read apart without a palette to maintain. */
+function areaHue(area: string): number {
+  let h = 0;
+  for (let i = 0; i < area.length; i++) h = (h * 31 + area.charCodeAt(i)) >>> 0;
+  return h % 360;
+}
+
+/** Drop the leading `token:` the commit subject opens with WHEN that token is
+ *  the thing the chip already says ("games2: the thumb row balances…" beside a
+ *  games2 chip). Anything else is left exactly as written — a subject is the
+ *  author's sentence, and a generic strip would eat the first word of one that
+ *  simply starts with a colon-ish phrase. */
+export function cleanSubject(c: ReleaseCommit): string {
+  const m = /^([A-Za-z0-9][\w-]*)(?:\s+(?:board|agent))?:\s*(.+)$/s.exec(c.subject);
+  if (!m) return c.subject;
+  const token = m[1].toLowerCase();
+  const known = [areaOf(c), ...c.dirs, c.agent ?? ""]
+    .filter(Boolean)
+    .map((s) => s.toLowerCase())
+    .flatMap((s) => [s, s.replace(/-assistant$/, ""), s.replace(/\d+$/, "")]);
+  return known.includes(token) ? m[2] : c.subject;
+}
+
+/** Adjacent rows with the same area AND the same cleaned subject become one
+ *  row with a count — three identical `live: admin update` commits in a row are
+ *  one thing that happened three times, and printing them out is noise he has
+ *  to scroll past. */
+interface Row {
+  area: string;
+  text: string;
+  at: string;
+  sha: string;
+  count: number;
+}
+function collapse(rows: ReleaseCommit[]): Row[] {
+  const out: Row[] = [];
+  for (const c of rows) {
+    const area = areaOf(c);
+    const text = cleanSubject(c);
+    const last = out[out.length - 1];
+    if (last && last.area === area && last.text === text) last.count++;
+    else out.push({ area, text, at: c.at, sha: c.sha, count: 1 });
+  }
+  return out;
+}
+
+const dayMs = 86_400_000;
+/** "Today" / "Yesterday" / "Thu 18 Sep" — the header a changelog is read by. */
+function dayLabel(iso: string): string {
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "";
+  const midnight = (x: Date) => new Date(x.getFullYear(), x.getMonth(), x.getDate()).getTime();
+  const days = Math.round((midnight(new Date()) - midnight(d)) / dayMs);
+  if (days === 0) return "Today";
+  if (days === 1) return "Yesterday";
+  return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+}
+const timeLabel = (iso: string) => {
+  const d = new Date(iso);
+  return Number.isNaN(d.getTime()) ? "" : d.toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit" });
+};
+
+function styleOnce() {
+  if (document.getElementById(CSS_ID)) return;
+  const st = document.createElement("style");
+  st.id = CSS_ID;
+  // The drop-quantity dialog's recipe (hud.ts .ml-qty) — a blurred backdrop
+  // and a wiki card on the shared tokens — but z 110: the toast that opens it
+  // is z 100 and must not sit over its own dialog. The card is the tall one he
+  // approved ("yes this dialog will be bigger but that's OK"): it takes the
+  // height it can get and scrolls the LIST only, so the title and the buttons
+  // stay put while fifty rows move under them.
+  st.textContent = `
+  .ml-upd-back{position:fixed;inset:0;z-index:110;display:flex;align-items:center;justify-content:center;
+    padding:16px;box-sizing:border-box;background:rgba(0,0,0,.5);
+    backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  .ml-upd{width:min(460px,100%);max-height:min(720px,calc(100dvh - 32px));display:flex;flex-direction:column;
+    box-sizing:border-box;background:var(--bg);color:var(--ink);
+    border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);
+    font:14px/1.45 var(--sans);overflow:hidden}
+  .ml-upd *{box-sizing:border-box}
+  .ml-upd-head{flex:none;padding:16px 16px 12px;border-bottom:1px solid var(--border)}
+  .ml-upd-title{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+  .ml-upd-title h2{margin:0;font:700 17px/1.2 var(--sans)}
+  .ml-upd-sha{font:600 11px/1 var(--mono, ui-monospace, monospace);letter-spacing:.06em;color:var(--muted);
+    background:var(--surface-2);border:1px solid var(--border);border-radius:6px;padding:4px 6px}
+  .ml-upd-sub{margin-top:6px;color:var(--muted);font-size:12.5px}
+  /* The area summary: what this update is MADE OF, before you read a row of
+     it. Informational only — nothing here is tappable, so nothing invites a
+     tap that does nothing. */
+  .ml-upd-areas{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
+  .ml-upd-areas span{font:600 11px/1 var(--sans);padding:4px 7px;border-radius:6px;white-space:nowrap}
+  .ml-upd-list{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 16px 12px}
+  .ml-upd-day{position:sticky;top:0;z-index:1;background:var(--bg);
+    padding:12px 0 6px;color:var(--muted);
+    font:600 11px/1.2 var(--sans);letter-spacing:.09em;text-transform:uppercase}
+  .ml-upd-row{display:flex;gap:9px;padding:7px 0;border-top:1px solid var(--border)}
+  .ml-upd-day + .ml-upd-row{border-top:none}
+  .ml-upd-chip{flex:none;align-self:flex-start;max-width:112px;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;font:600 11px/1.45 var(--sans);padding:2px 7px;border-radius:6px}
+  .ml-upd-body{min-width:0;flex:1 1 auto}
+  .ml-upd-subj{overflow-wrap:anywhere}
+  .ml-upd-x{color:var(--muted);font-weight:700;font-size:12px}
+  .ml-upd-meta{margin-top:2px;color:var(--muted);font:11px/1.3 var(--mono, ui-monospace, monospace)}
+  .ml-upd-note{padding:10px 0 2px;color:var(--muted);font-size:12.5px;text-align:center}
+  .ml-upd-foot{flex:none;display:grid;grid-template-columns:1fr 1.4fr;gap:8px;
+    padding:12px 16px calc(12px + var(--ml-safe-bottom, 0px));border-top:1px solid var(--border)}
+  .ml-upd-btn{min-height:44px;padding:8px 12px;border-radius:10px;cursor:pointer;
+    font:600 14px var(--sans);background:var(--surface);color:var(--ink);border:1px solid var(--border);
+    -webkit-tap-highlight-color:transparent;user-select:none}
+  .ml-upd-btn:active{transform:translateY(1px)}
+  /* The primary is the accent PLATE the HUD uses for a chosen thing, not a new
+     colour: reloading is the expected action, and "Later" beside it is the
+     plain surface. */
+  .ml-upd-btn.go{background:var(--accent-soft);border-color:var(--accent);color:var(--accent-ink)}`;
+  document.head.appendChild(st);
+}
+
+let open: HTMLElement | null = null;
+
+/** Close the dialog if it is open (idempotent). */
+export function closeUpdateNotes(): void {
+  open?.remove();
+  open = null;
+}
+
+const chipStyle = (area: string) =>
+  `background:color-mix(in srgb, hsl(${areaHue(area)} 70% 50%) 20%, transparent);` +
+  `border:1px solid color-mix(in srgb, hsl(${areaHue(area)} 70% 50%) 45%, transparent);color:var(--ink)`;
+
+/**
+ * Open the release notes for the served build. `mySha` defaults to this
+ * build's own stamp, which is what the toast wants; the gate passes its own.
+ * Never throws and never waits for the notes to open — the card appears at
+ * once and fills in, because the button that reloads has to be reachable even
+ * when the file is missing.
+ */
+export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
+  closeUpdateNotes();
+  styleOnce();
+  const mine = mySha ?? ((import.meta.env.VITE_GIT_SHA as string | undefined) || "dev");
+  const back = document.createElement("div");
+  back.className = "ml-upd-back";
+  const card = document.createElement("div");
+  card.className = "ml-upd";
+  card.setAttribute("role", "dialog");
+  card.setAttribute("aria-label", "New version");
+
+  const head = document.createElement("div");
+  head.className = "ml-upd-head";
+  // The TITLE repeats the toast's maintainer-fixed sentence, so the thing he
+  // tapped and the thing that opened are plainly the same thing.
+  head.innerHTML =
+    `<div class="ml-upd-title"><h2>New version out</h2>` +
+    `<span class="ml-upd-sha">${newSha.slice(0, 9)}</span></div>` +
+    `<div class="ml-upd-sub">Loading what changed…</div>` +
+    `<div class="ml-upd-areas"></div>`;
+  const sub = head.querySelector(".ml-upd-sub") as HTMLElement;
+  const areas = head.querySelector(".ml-upd-areas") as HTMLElement;
+
+  const list = document.createElement("div");
+  list.className = "ml-upd-list";
+
+  const foot = document.createElement("div");
+  foot.className = "ml-upd-foot";
+  const later = document.createElement("button");
+  later.type = "button";
+  later.className = "ml-upd-btn";
+  later.textContent = "Later";
+  later.addEventListener("click", closeUpdateNotes);
+  const go = document.createElement("button");
+  go.type = "button";
+  go.className = "ml-upd-btn go";
+  go.textContent = "Update now";
+  go.addEventListener("click", () => location.reload());
+  foot.append(later, go);
+
+  card.append(head, list, foot);
+  back.appendChild(card);
+  back.addEventListener("click", (e) => {
+    if (e.target === back) closeUpdateNotes();
+  });
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key !== "Escape") return;
+    closeUpdateNotes();
+    window.removeEventListener("keydown", onKey);
+  };
+  window.addEventListener("keydown", onKey);
+  document.body.appendChild(back);
+  open = back;
+
+  void loadNotes().then((doc) => {
+    if (open !== back) return; // closed while it loaded
+    if (!doc || !doc.commits.length) {
+      sub.textContent = `Your build is ${mine.slice(0, 9)}. The change list is not published for this deploy.`;
+      return;
+    }
+    const { rows, truncated } = sliceSince(doc, mine);
+    if (!rows.length) {
+      sub.textContent = `Your build is ${mine.slice(0, 9)} — nothing listed between it and this one.`;
+      return;
+    }
+    const n = rows.length;
+    sub.textContent =
+      `${n} change${n === 1 ? "" : "s"} since your build ${mine.slice(0, 9)}` +
+      (truncated ? " — the most recent ones" : "");
+    // area summary, most changes first
+    const byArea = new Map<string, number>();
+    for (const c of rows) byArea.set(areaOf(c), (byArea.get(areaOf(c)) ?? 0) + 1);
+    for (const [area, count] of [...byArea].sort((a, b) => b[1] - a[1])) {
+      const s = document.createElement("span");
+      s.style.cssText = chipStyle(area);
+      s.textContent = `${area} ${count}`;
+      areas.appendChild(s);
+    }
+    let day = "";
+    for (const r of collapse(rows)) {
+      const d = dayLabel(r.at);
+      if (d && d !== day) {
+        day = d;
+        const h = document.createElement("div");
+        h.className = "ml-upd-day";
+        h.textContent = d;
+        list.appendChild(h);
+      }
+      const row = document.createElement("div");
+      row.className = "ml-upd-row";
+      row.dataset.area = r.area;
+      const chip = document.createElement("span");
+      chip.className = "ml-upd-chip";
+      chip.style.cssText = chipStyle(r.area);
+      chip.textContent = r.area;
+      const body = document.createElement("div");
+      body.className = "ml-upd-body";
+      const subj = document.createElement("div");
+      subj.className = "ml-upd-subj";
+      subj.textContent = r.text;
+      if (r.count > 1) {
+        const x = document.createElement("span");
+        x.className = "ml-upd-x";
+        x.textContent = ` ×${r.count}`;
+        subj.appendChild(x);
+      }
+      const meta = document.createElement("div");
+      meta.className = "ml-upd-meta";
+      meta.textContent = `${timeLabel(r.at)} · ${r.sha.slice(0, 9)}`;
+      body.append(subj, meta);
+      row.append(chip, body);
+      list.appendChild(row);
+    }
+    if (truncated) {
+      const note = document.createElement("div");
+      note.className = "ml-upd-note";
+      note.textContent = "…and earlier changes your build is behind.";
+      list.appendChild(note);
+    }
+  });
+  return back;
+}
+
+// The probe surface this module owns (the pattern __mlAmbient / __mlSelect /
+// __mlMapLayers use), so the gate can open the dialog without a real deploy.
+(window as unknown as { __mlUpdateNotes?: unknown }).__mlUpdateNotes = {
+  open: openUpdateNotes,
+  close: closeUpdateNotes,
+};
