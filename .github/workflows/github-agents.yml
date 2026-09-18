@@ -62,51 +62,40 @@ on:
         type: boolean
         default: true
 
-# TWO GATES, BECAUSE WAITING AND WORKING WANT OPPOSITE RULES. A run that is
-# waiting has done nothing and SHOULD die when a newer verdict arrives; a run
-# that is generating must never be killed. One workflow-level group could only
-# have one of those, so each job carries its own.
+# NO WAITING AT ALL (maintainer 2026-09-18: "So this is just an artificial
+# sleep?!? Remove it completely! I dont care if we get several github agents in
+# parallell! It's all about latency!").
+#
+# There was a `debounce` job here: every save slept 2 minutes in a
+# cancel-in-progress group, so a review sitting collapsed into ONE session that
+# started after he stopped. It cost one session per sitting and bought two
+# minutes of latency on every verdict. Gone. A verdict now starts a session in
+# about 27 seconds, which is the runner, the sparse checkout and the CLI install.
+#
+# What replaces it is nothing — and nothing is needed, because the work group
+# below already holds the only rule that matters: ONE session per domain at a
+# time. Sessions for DIFFERENT domains do run in parallel (their groups differ);
+# two in the same domain would be two writers in one directory, which is the
+# collision PROTOCOL exists to prevent, and no amount of latency is worth it.
+# While one runs, the next verdict's run waits in that group, and GitHub keeps
+# only the NEWEST waiting run — so a burst still ends in one catch-up session
+# rather than a queue of ten.
 jobs:
-  # ONE SITTING, ONE SESSION (maintainer 2026-09-18: "When I review I usually
-  # press commit a lot of times ... It would be dumb to create a new agent for
-  # each commit"). He reviews in bursts and every save is its own commit, so the
-  # first commit of a sitting would otherwise start a session that reads a third
-  # of the verdicts he is about to write.
-  #
-  # cancel-in-progress HERE, and only here: each new push cancels the previous
-  # wait, so exactly one run — the last commit's — survives to do the work, and
-  # it reads the file after he has stopped. A dispatched run skips the wait.
-  debounce:
-    if: >-
-      github.event_name == 'workflow_dispatch'
-      || (startsWith(github.event.head_commit.message, 'live: admin update')
-          && vars.GITHUB_AGENTS != 'off')
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    concurrency:
-      group: github-agents-wait
-      cancel-in-progress: true
-    steps:
-      # TWO MINUTES, not four (maintainer 2026-09-18: "if we can get the agent
-      # up and running fast it will feel live/realtime"). It is the one delay
-      # left that is deliberate: long enough that a review sitting collapses
-      # into one session, short enough to feel like an answer.
-      - if: github.event_name == 'push'
-        run: sleep 120
-
   # WHICH DOMAINS DID HE REVIEW? Asked of the GitHub API, NOT of a clone
   # (measured 2026-09-18: checking out the repo just to read a log cost 82s of
   # a run whose whole point is to start fast). One request per feedback file —
   # "has this path been touched in the last 30 minutes" — which is eight cheap
   # calls answered in about a second, and no working tree at all.
   #
-  # THIRTY MINUTES, not this push's diff: the debounce collapses a sitting into
-  # one surviving run whose own before..after is a single commit, so a diff
-  # would miss every earlier save of the same sitting.
+  # THIRTY MINUTES, not this push's diff: a run can be superseded while it
+  # works, and the session that finally runs must see the whole sitting, not
+  # the one commit its own run happened to carry.
   #
-  # It runs BESIDE the wait, not after it — nothing it reads changes while the
-  # debounce sleeps, and the agent job needs both.
   detect:
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (startsWith(github.event.head_commit.message, 'live: admin update')
+          && vars.GITHUB_AGENTS != 'off')
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
@@ -156,7 +145,7 @@ jobs:
           echo "domains=$json" >> "$GITHUB_OUTPUT"
 
   agent:
-    needs: [debounce, detect]
+    needs: detect
     # The job's name is what the Actions run lists, so it reads as the agent he
     # is thinking of rather than as a workflow step.
     name: ${{ matrix.domain }}-github-agent
@@ -175,7 +164,7 @@ jobs:
       fail-fast: false
       matrix:
         domain: ${{ fromJson(needs.detect.outputs.domains) }}
-    # QUEUE, NEVER CANCEL — the opposite of the wait above. A run here may be
+    # QUEUE, NEVER CANCEL. A run here may be
     # halfway through a generation, and killing it loses art already paid for;
     # a later sitting waits its turn. Per DOMAIN, so a scenery review never
     # queues behind a monsters generation.

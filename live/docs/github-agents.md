@@ -37,24 +37,23 @@ reviewed domain runs Claude in a fresh checkout as `<agent>-github-agent`.
 
 ## Why it starts when it starts (measured 2026-09-18)
 
-The first green run, end to end: 7s debounce, **82s** for the detect job to
-CHECK OUT THE REPO just to read a log, **171s** for the agent's own checkout,
-7s pip, and only then Claude — 4m45s from the push, plus the debounce wait.
-Maintainer: *"if we can get the agent up and running fast it will feel
-live/realtime"*. What was done about it, in order of what it cost:
+The first green run, end to end: **82s** for the detect job to CHECK OUT THE
+REPO just to read a log, **171s** for the agent's own checkout, 7s pip, and only
+then Claude — 4m45s, on top of a 2-4 minute artificial wait. Maintainer: *"if we
+can get the agent up and running fast it will feel live/realtime"*, and of the
+wait, *"Remove it completely!"*. It is now **~27 seconds** from the push to
+Claude reading its first file:
 
-- **The detect job no longer clones at all.** It asks the API "has this
-  feedback file been touched in the last 30 minutes", one cheap call per file.
-- **It runs BESIDE the wait, not after it** — nothing it reads changes while
-  the debounce sleeps.
+- **The detect job does not clone at all.** It asks the API "has this feedback
+  file been touched in the last 30 minutes", one cheap call per file: 3s.
 - **The agent's checkout is partial AND sparse**: `filter: blob:none`,
   `fetch-depth: 50`, and a cone of its own domain plus `coordination/`,
   `live/`, `wiki/lib`, `games2/scripts` (the root always comes with cone mode,
-  so CLAUDE.md and requirements.txt are there). It can widen it itself with
-  `git sparse-checkout add`, which the prompt tells it.
-- **The debounce is 2 minutes, not 4.** The one delay left that is deliberate:
-  long enough to collapse a review sitting into one session, short enough to
-  feel like an answer.
+  so CLAUDE.md and requirements.txt are there): 8s, from 171s. It can widen the
+  cone itself with `git sparse-checkout add`, which the prompt tells it.
+- **Nothing waits.** The `debounce` job is gone — see the law below.
+- What is left is the floor: runner start, that checkout, pip, and the CLI
+  install inside the action.
 
 
 **THE FEEDBACK FILE IS NOT THE DIRECTORY.** He reviews scenery and the wiki
@@ -98,15 +97,22 @@ decided first.
 - **Only the maintainer's saves wake it.** Filtering on the server's commit
   message is what keeps the agent from being woken by its own verdict-clearing
   commit to the same file.
-- **Two gates, because waiting and working want opposite rules.** A review is a
-  BURST — every save is its own commit (maintainer: *"When I review I usually
-  press commit a lot of times... It would be dumb to create a new agent for each
-  commit"*). So the `debounce` job waits 4 minutes with
-  `cancel-in-progress: true` and each new push kills the previous wait: exactly
-  one run, the last commit's, survives to do the work and it reads the file
-  after he has stopped. The work job's own group is `cancel-in-progress: false`
-  — a run there may be mid-generation, and killing it loses art already paid
-  for. A dispatched run skips the wait.
+- **NOTHING WAITS** (maintainer 2026-09-18: *"So this is just an artificial
+  sleep?!? Remove it completely! I dont care if we get several github agents in
+  parallell! It's all about latency!"*). A `debounce` job used to sleep 2-4
+  minutes in a cancel-in-progress group so a whole review sitting became ONE
+  session that started after he stopped. It bought one session per sitting and
+  cost that wait on every verdict. Removed.
+- **What makes that safe is the WORK group, not a timer**: one session per
+  DOMAIN at a time (`github-agent-<domain>`, `cancel-in-progress: false` — a run
+  there may be mid-generation, and killing it loses art already paid for).
+  Different domains run in parallel; two sessions in the same domain would be
+  two writers in one directory, which is the collision PROTOCOL exists to
+  prevent, and no amount of latency is worth it.
+- **A burst still ends in one catch-up session.** While a session runs, the next
+  verdict's run waits in that group and GitHub keeps only the NEWEST waiting
+  run; that session reads the FILE rather than its own commit, so it sees every
+  verdict of the sitting.
 
 ## What it CANNOT do
 
