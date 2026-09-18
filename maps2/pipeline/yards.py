@@ -9,8 +9,9 @@ the house not just be a boring square."*
 
 EVERY CHOICE IS A POOL DRAWN PER HOUSE (his meta-law: a nudge, never an if):
   the APRON     none 30 / the doorstep 25 / the front 20 / a ring 20 / wide 5,
-                in brown or grey paving - the street's own material seven
-                times in ten when a street is near, else a coin;
+                in brown or grey paving - the house's own material (brown
+                round wood, grey round stone) seven times in ten, else the
+                street's seven in ten when a street is near, else a coin;
   the PATH      from the doorstep to the nearest road or street within
                 PATH_MAX steps on the house's own level (BFS over dry ground,
                 round other houses, their doorsteps and every footprint),
@@ -57,6 +58,9 @@ RING = 3                       # the yard: cells within this of the house
 APRON = ((None, 30), ("step", 25), ("front", 20), ("ring", 20), ("wide", 5))
 MATERIAL = (("brown_paving_stone", 50), ("grey_paving_stone", 50))
 STREET_WINS = 0.7              # a street nearby: its material, seven in ten
+OWN_WINS = 0.7                 # the house's own material, seven in ten
+WALL_PAVING = {"parquet_floor": "brown_paving_stone", "brown_paving_stone": "brown_paving_stone",
+               "grey_paving_stone": "grey_paving_stone", "grey_stone": "grey_paving_stone"}
 WALK_WHEN_NO_ROAD = 0.6
 WALK_LEN = (3, 6)
 GARDEN = 0.5
@@ -75,6 +79,7 @@ BARE = ("snow", "ice", "black_rock", "grey_stone", "lava", "slime")
 PAVE_ON = ("grass", "dark_mud", "light_soil")
 ROAD = ("light_soil",)
 PAVING = ("brown_paving_stone", "grey_paving_stone")
+STREET_MIN = 40                # a paving component bigger than this is a street
 
 
 def _rng(seed):
@@ -296,7 +301,27 @@ class Yards:
         self.log.append(report)
         return report
 
+    def _wall_side(self, h):
+        """What the house's walls are built of (world.json walls[].side)."""
+        cells = h["cells"]
+        votes = {}
+        for w in self.doc.get("walls", []):
+            if w.get("kind") == "cliff":
+                continue
+            n = sum(1 for c in w["cells"] if (c["x"], c["y"]) in cells)
+            if n:
+                votes[w.get("side")] = votes.get(w.get("side"), 0) + n
+        return max(votes, key=votes.get) if votes else None
+
     def _material(self, h, rnd):
+        """Brown paving round a wooden house, grey round a stone one, seven
+        times in ten (maintainer 2026-09-18: "if a house has been built in
+        brown/wood I think brown paving stone looks better ... the goal is
+        variation"); else the street's material seven in ten; else a coin."""
+        side = self._wall_side(h)
+        own = WALL_PAVING.get(side)
+        if own and rnd() < OWN_WINS:
+            return own
         x0, y0, x1, y1 = h["bbox"]
         near = {}
         for y in range(y0 - 6, y1 + 7):
@@ -504,6 +529,45 @@ class Yards:
         report["yard"] = [p.split("/")[0] for p in placed]
 
 
+def recolour(world_dir, write=True):
+    """Re-draw the MATERIAL of the aprons and paths already laid (the yard
+    pieces stay): every paving component of at most STREET_MIN cells within
+    the yard ring of a house takes the material the rule draws for that house
+    now. A street is bigger than that and is never touched."""
+    path = os.path.join(world_dir, "world.json")
+    doc = json.load(open(path))
+    Y = Yards(doc)
+    n = 0
+    for h in Y.houses:
+        x0, y0, x1, y1 = h["bbox"]
+        rnd = _rng(f"yard|{x0}|{y0}|{x1}|{y1}")
+        mat = Y._material(h, rnd)
+        level = Y.lvl[h["step"][1]][h["step"][0]]
+        seen = set()
+        for c in Y._ring(h, RING, level, grounds=PAVING):
+            if c in seen:
+                continue
+            comp, q = {c}, deque([c])
+            while q:
+                cx, cy = q.popleft()
+                for nx, ny in ((cx + 1, cy), (cx - 1, cy), (cx, cy + 1), (cx, cy - 1)):
+                    if (nx, ny) not in comp and Y.ground(nx, ny) in PAVING and (nx, ny) not in Y.house_cells:
+                        comp.add((nx, ny)); q.append((nx, ny))
+                if len(comp) > STREET_MIN:
+                    break
+            seen |= comp
+            if len(comp) > STREET_MIN:
+                continue
+            for (x, y) in comp:
+                if Y.ground(x, y) != mat:
+                    Y.paint(x, y, mat); n += 1
+        print(f"  house {h['bbox']}: {Y._wall_side(h)} walls -> {mat}")
+    print(f"{world_dir}: {n} paving cells recoloured")
+    if write and n:
+        json.dump(doc, open(path, "w"), separators=(",", ":"))
+    return n
+
+
 def apply(world_dir, write=True):
     path = os.path.join(world_dir, "world.json")
     doc = json.load(open(path))
@@ -526,7 +590,11 @@ def main():
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument("--apply", action="store_true")
     g.add_argument("--dry-run", action="store_true")
+    g.add_argument("--recolour", action="store_true", help="re-draw the material of the aprons and paths laid")
     a = ap.parse_args()
+    if a.recolour:
+        recolour(a.world_dir)
+        return
     apply(a.world_dir, write=a.apply)
 
 

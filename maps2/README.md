@@ -12,6 +12,25 @@ the same remit, for the units this agent is not in. It reads this board first,
 never touches a file named there as in flight, and names every file it touches
 on its own board (the games-assistant pattern, maintainer decision).
 
+## Everything is a weight (maintainer law, 2026-09-18)
+
+**Every choice this domain makes is a POOL with weights, never an if.** A
+maintainer verdict on taste ("brown paving looks better round a wooden
+house", "centre the carpet", "paving round the house") is a NUDGE to a
+weight, and the docs write it as one: "seven times in ten", never "always".
+Maintainer: *"this is not a hard rule, just a better default! If you change
+your script to always do what I say the entire world will look the same and
+that would destroy the game ... Creating hard rules is anti what the game is
+about!"* and, so he never has to write that disclaimer again: *"Can't you
+write in your rules everything should be a %/weight."* This section is that
+rule. The corollary he asked for: **open up for the unlikely.** A cave may
+be a slime cave, a lava cave, a rock cave, dark mud and slime, ice and lava —
+any combination; a house may have grass on its roof or stand in snow with
+black rock for a floor; the pool only has to make the thing MOSTLY make sense
+(a house is still a house). The only hard rules are the ones that keep the
+game playable or honest: reachability, the footprint law, the cache law, a
+rug never touching a wall, a placement resolving to art that exists.
+
 ## The change page — filled in AFTER every push to main (maintainer law, 2026-09-12)
 
 **Push first, page after — never the other way round.** Maintainer: *"From
