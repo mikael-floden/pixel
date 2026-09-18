@@ -623,7 +623,9 @@ test("a level-0 boundary covers the plate silhouette, with no palette wall in it
     const rreg = fx.man.get(rk as string)!.getSourceImage() as { pix: Uint8ClampedArray };
     let rOpaque = 0;
     for (let i = 0; i < SHEETS.fw * SHEETS.fh; i++) if (rreg.pix[i * 4 + 3] > 0) rOpaque++;
-    assert.equal(rOpaque, 924, "a raised boundary stays top-face-only — the cap's own art is the wall");
+    // 924 top-face texels plus the one-row margin every top-face-only raster
+    // carries (2026-09-18) — never the wall band.
+    assert.equal(rOpaque, 988, "a raised boundary is its top face plus the margin row — the cap's own art is the wall");
     checked++;
   }
   assert.ok(checked >= 8, `${checked} boundary cases`);
@@ -832,7 +834,16 @@ test("a level-0 transition tile covers the full plate silhouette", { skip }, () 
 
   const raised = T.boundary({ ...base, topOnly: true });
   assert.ok(raised);
-  assert.equal(opaque(raised), topN, "a raised transition tile stays top-face-only — the cap's own art is the wall");
+  // The margin row: one more texel per column under the top face's bottom
+  // pixel (2026-09-18, the jitter along a raised transition's lower edges).
+  let marginN = 0;
+  for (let x = 0; x < SHEETS.fw; x++) {
+    let bottom = -1;
+    for (let y = 0; y < SHEETS.fh; y++) if (SHEETS.libTop[y * SHEETS.fw + x]) bottom = y;
+    if (bottom >= 0 && bottom + 1 < SHEETS.fh) marginN++;
+  }
+  assert.ok(marginN > 0 && marginN < topN);
+  assert.equal(opaque(raised), topN + marginN, "a raised transition tile is its top face plus the one-row margin — never the wall band");
 
   assert.notEqual(flat, raised, "two different pictures must never share one texture key");
 });

@@ -288,7 +288,21 @@ export function buildBoundaryPixels(
   seam: boolean,
 ): Pixels {
   const out = composeBoundary(sheets, b.maskFrame as number, a, bb, { seam });
-  return b.topOnly ? topFaceOnly(sheets, out, { margin: !!b.noWall }) : capWallToSurface(sheets, out);
+  /* EVERY RAISED TRANSITION TILE CARRIES THE MARGIN ROW, not only a liquid's
+   * (maintainer 2026-09-18, the sand path and the terrace at 252,236 and
+   * 270,257: "When I almost stand still the transition tile/boundary tile
+   * starts jittering at the bottom-left and bottom-right edge ... you need
+   * to expand in order to get rid of the jitter!"). A top-face-only raster
+   * interlocks with the tile in front at ONE row of slack (topFaceOnly's
+   * note), and the ground pass re-issues a raised cell's transition as an
+   * occluder sprite over the ground texture: any single texel the front
+   * tile's 2:1 staircase leaves uncovered along the diamond's lower edges
+   * is a dash of the cap course under it, and at his zoom it comes and goes
+   * with the camera's phase. The row is a copy of each column's own bottom
+   * surface pixel — never the wall — so where the front tile covers it, it
+   * is invisible, and where nothing does, the surface is one pixel deeper.
+   * The lid grew a pixel for the same seam (tiles3draw `lid`). */
+  return b.topOnly ? topFaceOnly(sheets, out, { margin: true }) : capWallToSurface(sheets, out);
 }
 
 /** A PLATE RASTER FROM ITS DECODED SOURCE — the conform when the resolver asked
@@ -896,10 +910,12 @@ export function boundaryKey(
    * — so they must never share a key. (Cache safety is absolute here: two
    * pictures under one name is the one bug this repo does not survive.)
    *
-   * `noWall` rides for the same reason and no other: it adds the margin row, so
-   * a top-face-only raster with it is 988 texels and one without is 924. Two
-   * pictures, two names. */
-  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top" : ""}${noWall ? "|m" : ""}`;
+   * Every top-face-only raster carries the margin row since 2026-09-18 (988
+   * texels; `buildBoundaryPixels`), so `|top` names that picture — the
+   * `|m` suffix that once told a liquid's margin apart is folded in, and
+   * `noWall` no longer changes the picture or the name. */
+  void noWall;
+  return `t3x:${frame}|${idA}|${idB}${seam ? "" : "|noseam"}${topOnly ? "|top|m" : ""}`;
 }
 
 /** A painted liquid diamond, keyed by the colour that IS its content. */

@@ -177,8 +177,17 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   cover a plate's; `capWallToSurface` then makes it free, repainting the band
   from each column's own bottom top-face texel so even a peeking texel is the
   surface's own colour. A RAISED boundary stays top-face-only (the cap's own
-  x-over-y art is the wall) — a different picture, so `boundaryKey` carries
-  `topOnly`; two rasters under one key is the cache failure this repo forbids.
+  x-over-y art is the wall) PLUS THE ONE-ROW MARGIN every top-face-only raster
+  carries since 2026-09-18 (988 texels; `topFaceOnly` margin, each column's
+  own bottom surface pixel copied one row down, never the wall): the raised
+  cell's transition is re-issued as an occluder sprite over the ground texture
+  with zero slack against the tile in front, and any texel the front tile's
+  2:1 staircase leaves uncovered along the lower edges was a dash of the cap
+  course that came and went with the camera's phase (maintainer: "when I
+  almost stand still the transition tile starts jittering at the bottom-left
+  and bottom-right edge ... you need to expand"). A different picture, so
+  `boundaryKey` carries `|top|m`; two rasters under one key is the cache
+  failure this repo forbids.
   Gated by `server/test/tiles3draw.test.ts` #6b/#6c, which hold both halves at
   once: the band EXISTS (footprint parity, no hole) and carries NONE of either
   ground's palette wall colour (no dark course).
