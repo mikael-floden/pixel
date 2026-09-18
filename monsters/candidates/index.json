@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:29:11+00:00",
+  "generated_at": "2026-09-18T12:33:09+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 156,
+  "count": 160,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -19764,6 +19764,261 @@
       "generated_at": "2026-09-18T12:29:11+00:00"
     },
     {
+      "id": "cornice",
+      "name": "Snowlip",
+      "tier": "mid",
+      "lore": "It is the piece of the ridge that was about to fall. It has been about to fall for a long time now.",
+      "biome": [
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "75eb2fc8-2c6c-40b9-90fa-bc0c1865199d",
+      "version": 1,
+      "sheet": "cornice/sheet.webp",
+      "rotations": {
+        "south": "cornice/rotations/south.webp",
+        "south-east": "cornice/rotations/south-east.webp",
+        "east": "cornice/rotations/east.webp",
+        "north-east": "cornice/rotations/north-east.webp",
+        "north": "cornice/rotations/north.webp",
+        "north-west": "cornice/rotations/north-west.webp",
+        "west": "cornice/rotations/west.webp",
+        "south-west": "cornice/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.681,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.715,
+            "bbox": [
+              24,
+              6,
+              87,
+              106
+            ],
+            "fill": 0.502,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.732,
+            "bbox": [
+              34,
+              7,
+              84,
+              107
+            ],
+            "fill": 0.399,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.759,
+            "bbox": [
+              27,
+              7,
+              75,
+              107
+            ],
+            "fill": 0.383,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.681,
+            "bbox": [
+              25,
+              7,
+              87,
+              105
+            ],
+            "fill": 0.484,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.822,
+            "bbox": [
+              27,
+              6,
+              83,
+              107
+            ],
+            "fill": 0.451,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.687,
+            "bbox": [
+              27,
+              6,
+              85,
+              106
+            ],
+            "fill": 0.462,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.717,
+            "bbox": [
+              28,
+              8,
+              85,
+              106
+            ],
+            "fill": 0.445,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.803,
+            "bbox": [
+              29,
+              6,
+              85,
+              107
+            ],
+            "fill": 0.451,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:31:09+00:00"
+    },
+    {
+      "id": "hoarfrost",
+      "name": "Rimebeard",
+      "tier": "mid",
+      "lore": "It grew out of one night of cold on something that was already dead. Warm breath takes pieces off it.",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "fdc1b6b5-8796-4890-aa34-69c0e980cdca",
+      "version": 1,
+      "sheet": "hoarfrost/sheet.webp",
+      "rotations": {
+        "south": "hoarfrost/rotations/south.webp",
+        "south-east": "hoarfrost/rotations/south-east.webp",
+        "east": "hoarfrost/rotations/east.webp",
+        "north-east": "hoarfrost/rotations/north-east.webp",
+        "north": "hoarfrost/rotations/north.webp",
+        "north-west": "hoarfrost/rotations/north-west.webp",
+        "west": "hoarfrost/rotations/west.webp",
+        "south-west": "hoarfrost/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.776,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.776,
+            "bbox": [
+              10,
+              3,
+              85,
+              93
+            ],
+            "fill": 0.732,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.845,
+            "bbox": [
+              33,
+              3,
+              63,
+              94
+            ],
+            "fill": 0.296,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.855,
+            "bbox": [
+              31,
+              3,
+              61,
+              94
+            ],
+            "fill": 0.296,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.795,
+            "bbox": [
+              11,
+              2,
+              84,
+              91
+            ],
+            "fill": 0.705,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.848,
+            "bbox": [
+              16,
+              3,
+              80,
+              94
+            ],
+            "fill": 0.632,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.805,
+            "bbox": [
+              18,
+              2,
+              80,
+              92
+            ],
+            "fill": 0.605,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.798,
+            "bbox": [
+              16,
+              2,
+              76,
+              92
+            ],
+            "fill": 0.586,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.843,
+            "bbox": [
+              15,
+              3,
+              80,
+              94
+            ],
+            "fill": 0.642,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:31:03+00:00"
+    },
+    {
       "id": "broken_sledge",
       "name": "Sledgeback",
       "tier": "mid",
@@ -19893,6 +20148,260 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:26:26+00:00"
+    },
+    {
+      "id": "pack_ice",
+      "name": "Pressridge",
+      "tier": "mid",
+      "lore": "Two sheets of ice pushed until one had to go up. The grinding noise it makes is the same noise it made before it stood.",
+      "biome": [
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        120,
+        120
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "930f3729-27b9-4f68-94d4-85ed0c3cf293",
+      "version": 1,
+      "sheet": "pack_ice/sheet.webp",
+      "rotations": {
+        "south": "pack_ice/rotations/south.webp",
+        "south-east": "pack_ice/rotations/south-east.webp",
+        "east": "pack_ice/rotations/east.webp",
+        "north-east": "pack_ice/rotations/north-east.webp",
+        "north": "pack_ice/rotations/north.webp",
+        "north-west": "pack_ice/rotations/north-west.webp",
+        "west": "pack_ice/rotations/west.webp",
+        "south-west": "pack_ice/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.627,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.627,
+            "bbox": [
+              12,
+              4,
+              107,
+              114
+            ],
+            "fill": 0.726,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.733,
+            "bbox": [
+              38,
+              4,
+              80,
+              117
+            ],
+            "fill": 0.33,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.755,
+            "bbox": [
+              32,
+              4,
+              88,
+              117
+            ],
+            "fill": 0.439,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.696,
+            "bbox": [
+              16,
+              3,
+              102,
+              114
+            ],
+            "fill": 0.663,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.775,
+            "bbox": [
+              18,
+              4,
+              101,
+              116
+            ],
+            "fill": 0.646,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.732,
+            "bbox": [
+              24,
+              4,
+              91,
+              115
+            ],
+            "fill": 0.516,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.727,
+            "bbox": [
+              24,
+              4,
+              96,
+              115
+            ],
+            "fill": 0.555,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.78,
+            "bbox": [
+              22,
+              4,
+              99,
+              116
+            ],
+            "fill": 0.599,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:33:09+00:00"
+    },
+    {
+      "id": "frost_mask",
+      "name": "Icemask",
+      "tier": "evil",
+      "lore": "It breathes and there is nothing in it to breathe. It stands where the path is easiest and waits to be followed.",
+      "biome": [
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "449d0485-d4e5-414a-a98a-3fefbe0e6fa3",
+      "version": 1,
+      "sheet": "frost_mask/sheet.webp",
+      "rotations": {
+        "south": "frost_mask/rotations/south.webp",
+        "south-east": "frost_mask/rotations/south-east.webp",
+        "east": "frost_mask/rotations/east.webp",
+        "north-east": "frost_mask/rotations/north-east.webp",
+        "north": "frost_mask/rotations/north.webp",
+        "north-west": "frost_mask/rotations/north-west.webp",
+        "west": "frost_mask/rotations/west.webp",
+        "south-west": "frost_mask/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.756,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.763,
+            "bbox": [
+              23,
+              6,
+              89,
+              106
+            ],
+            "fill": 0.526,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.786,
+            "bbox": [
+              37,
+              7,
+              75,
+              107
+            ],
+            "fill": 0.303,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.803,
+            "bbox": [
+              36,
+              7,
+              75,
+              107
+            ],
+            "fill": 0.311,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.756,
+            "bbox": [
+              23,
+              4,
+              89,
+              103
+            ],
+            "fill": 0.521,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.84,
+            "bbox": [
+              29,
+              6,
+              86,
+              107
+            ],
+            "fill": 0.459,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.759,
+            "bbox": [
+              30,
+              6,
+              85,
+              106
+            ],
+            "fill": 0.438,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.765,
+            "bbox": [
+              27,
+              6,
+              82,
+              106
+            ],
+            "fill": 0.438,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.816,
+            "bbox": [
+              26,
+              6,
+              84,
+              107
+            ],
+            "fill": 0.467,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:30:40+00:00"
     },
     {
       "id": "first_mask",

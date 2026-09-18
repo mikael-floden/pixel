@@ -1,0 +1,141 @@
+{
+  "id": "hoarfrost",
+  "name": "Rimebeard",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It grew out of one night of cold on something that was already dead. Warm breath takes pieces off it.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Figure grown entirely of hoarfrost needles over a dead branch armature, feathery white crystal spines standing out from thin black wood, glittering facets across it, and a hollow dark space where the frost has not filled in",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hoarfrost/rotations/south.webp",
+    "south-east": "hoarfrost/rotations/south-east.webp",
+    "east": "hoarfrost/rotations/east.webp",
+    "north-east": "hoarfrost/rotations/north-east.webp",
+    "north": "hoarfrost/rotations/north.webp",
+    "north-west": "hoarfrost/rotations/north-west.webp",
+    "west": "hoarfrost/rotations/west.webp",
+    "south-west": "hoarfrost/rotations/south-west.webp"
+  },
+  "sheet": "hoarfrost/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fdc1b6b5-8796-4890-aa34-69c0e980cdca",
+  "seed": 963574803,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:31:03+00:00",
+  "elapsed_s": 178.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.776,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.776,
+        "bbox": [
+          10,
+          3,
+          85,
+          93
+        ],
+        "fill": 0.732,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.845,
+        "bbox": [
+          33,
+          3,
+          63,
+          94
+        ],
+        "fill": 0.296,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.855,
+        "bbox": [
+          31,
+          3,
+          61,
+          94
+        ],
+        "fill": 0.296,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.795,
+        "bbox": [
+          11,
+          2,
+          84,
+          91
+        ],
+        "fill": 0.705,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.848,
+        "bbox": [
+          16,
+          3,
+          80,
+          94
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.805,
+        "bbox": [
+          18,
+          2,
+          80,
+          92
+        ],
+        "fill": 0.605,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.798,
+        "bbox": [
+          16,
+          2,
+          76,
+          92
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.843,
+        "bbox": [
+          15,
+          3,
+          80,
+          94
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      }
+    }
+  }
+}

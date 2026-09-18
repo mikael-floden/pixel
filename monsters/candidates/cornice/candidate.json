@@ -1,0 +1,140 @@
+{
+  "id": "cornice",
+  "name": "Snowlip",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It is the piece of the ridge that was about to fall. It has been about to fall for a long time now.",
+  "biome": [
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Slab of wind-packed snow standing on end with a curled overhanging lip at the top, deep blue shadow under the curl, a hard crust of rime along its windward face and fine spindrift pouring continuously off its edge",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cornice/rotations/south.webp",
+    "south-east": "cornice/rotations/south-east.webp",
+    "east": "cornice/rotations/east.webp",
+    "north-east": "cornice/rotations/north-east.webp",
+    "north": "cornice/rotations/north.webp",
+    "north-west": "cornice/rotations/north-west.webp",
+    "west": "cornice/rotations/west.webp",
+    "south-west": "cornice/rotations/south-west.webp"
+  },
+  "sheet": "cornice/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "75eb2fc8-2c6c-40b9-90fa-bc0c1865199d",
+  "seed": 329962007,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:31:09+00:00",
+  "elapsed_s": 289.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.681,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.715,
+        "bbox": [
+          24,
+          6,
+          87,
+          106
+        ],
+        "fill": 0.502,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.732,
+        "bbox": [
+          34,
+          7,
+          84,
+          107
+        ],
+        "fill": 0.399,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.759,
+        "bbox": [
+          27,
+          7,
+          75,
+          107
+        ],
+        "fill": 0.383,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.681,
+        "bbox": [
+          25,
+          7,
+          87,
+          105
+        ],
+        "fill": 0.484,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.822,
+        "bbox": [
+          27,
+          6,
+          83,
+          107
+        ],
+        "fill": 0.451,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.687,
+        "bbox": [
+          27,
+          6,
+          85,
+          106
+        ],
+        "fill": 0.462,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.717,
+        "bbox": [
+          28,
+          8,
+          85,
+          106
+        ],
+        "fill": 0.445,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.803,
+        "bbox": [
+          29,
+          6,
+          85,
+          107
+        ],
+        "fill": 0.451,
+        "touches_edge": false
+      }
+    }
+  }
+}
