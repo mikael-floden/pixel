@@ -50,12 +50,22 @@ const wj = join(REPO, "maps2", "worlds3", WORLD, "world.json");
 if (!existsSync(wj)) die(`${wj} is missing (a maps3 world is required)`);
 const doc = JSON.parse(readFileSync(wj, "utf8"));
 const trunc = (v) => Math.trunc(v);
+/* A HOUSE, AND ONLY A CAVE IF THE WORLD HAS NO FURNISHED HOUSE. Both kinds are
+ * roofed decks and "most furniture" used to decide between them, which handed
+ * this gate — whose subject is "the furniture of a house" — a CAVE at level 36
+ * with 14 pieces once maps2 furnished the caves (2026-09-18). Three of its arms
+ * then measured something they were not written for: a cave places no piece off
+ * south, so the per-facing rule had nothing to read, and its on-lid piece is a
+ * mountain top that never draws from a street. Kind first, furniture second. */
 let house = null;
-for (const d of doc.decks ?? []) {
-  if (d.kind !== "roof" && d.kind !== "cave") continue;
-  const cells = new Set((d.cells ?? []).map((c) => `${c.x ?? c.col},${c.y ?? c.row}`));
-  const furniture = (doc.scenery ?? []).filter((p) => cells.has(`${trunc(p.x)},${trunc(p.y)}`));
-  if (!house || furniture.length > house.furniture.length) house = { d, cells, furniture };
+for (const pass of ["roof", "cave"]) {
+  for (const d of doc.decks ?? []) {
+    if (d.kind !== pass) continue;
+    const cells = new Set((d.cells ?? []).map((c) => `${c.x ?? c.col},${c.y ?? c.row}`));
+    const furniture = (doc.scenery ?? []).filter((p) => cells.has(`${trunc(p.x)},${trunc(p.y)}`));
+    if (!house || furniture.length > house.furniture.length) house = { d, cells, furniture };
+  }
+  if (house && house.furniture.length >= 3) break;
 }
 if (!house || house.furniture.length < 3) die("no roofed deck on this world holds furniture — nothing to verify");
 // THE FREEST FLOOR CELL, not the middle one: since 2026-09-09 maps2 stands
@@ -78,9 +88,13 @@ if (!stand) die("the furnished room has no free floor cell to stand on");
 // that deck's top — the chimney class. Biggest such room, so it has floor to
 // stand on; null on a world that stands nothing on a roof (the arm then says so
 // instead of passing silently).
+/* ...and the same preference for the lid arm: a chimney on a house roof is
+ * what "on the lid" means here, and it is visible from the street, which the
+ * arm's walk requires. A cave's mountain top is only the fallback. */
 let lid = null;
+for (const pass of ["roof", "cave"]) {
 for (const d of doc.decks ?? []) {
-  if (d.kind !== "roof" && d.kind !== "cave") continue;
+  if (d.kind !== pass) continue;
   const cells = new Set((d.cells ?? []).map((c) => `${c.x ?? c.col},${c.y ?? c.row}`));
   const furniture = (doc.scenery ?? []).filter((p) => cells.has(`${trunc(p.x)},${trunc(p.y)}`));
   const onLid = furniture.filter((p) => typeof p.z === "number" && p.z >= (d.level ?? 0) - 1e-9);
@@ -88,6 +102,8 @@ for (const d of doc.decks ?? []) {
   // The placement INDEX is what the scene keys a lit copy on (`place`).
   const onLidIdx = onLid.map((p) => (doc.scenery ?? []).indexOf(p));
   if (!lid || cells.size > lid.cells.size) lid = { d, cells, furniture, onLid, onLidIdx };
+}
+  if (lid) break;
 }
 const lidStand = lid ? standIn(lid) : null;
 const spawn0 = doc.spawn ?? [Math.round(doc.size.w / 2), Math.round(doc.size.h / 2)];
@@ -252,7 +268,17 @@ for (const d of drawn) {
 }
 console.log(`  drawn pieces measured: ${fitN} (${fitTurned} turned), worst foot ${fitWorst.toFixed(2)} px off its anchor`);
 check(fitN > 5, `the room draws pieces to measure (${fitN})`);
-check(fitTurned > 0, `at least one of them is TURNED — the facing this rule is about (${fitTurned})`);
+/* A TURNED PIECE IS THE WORLD'S TO OFFER, AND THE DISTINCTION MATTERS. This
+ * rule is about the per-facing anchor, so it needs a piece whose placement asks
+ * for a facing other than south. Whether the ROOM HAS one is world data (maps2
+ * places the furniture and re-places it: this room held only south facings
+ * after the yard refit, 2026-09-18, and the gate read that as a failure of the
+ * renderer); whether a turned piece the room HAS is actually DRAWN is ours, and
+ * still a failure. So: the world's own count decides between a skip and a
+ * check. */
+const roomTurned = house.furniture.filter((p) => p.dir && p.dir !== "south").length;
+if (!roomTurned) console.log(`  SKIP the turned-facing rule — this room places no piece off south (${house.furniture.length} pieces, all south)`);
+else check(fitTurned > 0, `at least one of the ${roomTurned} turned piece(s) this room places is DRAWN (${fitTurned})`);
 check(
   fitWorst <= 1.5,
   `every facing stands its south still's foot on the placement anchor — worst ${fitWorst.toFixed(2)} px (${fitWho})`,
