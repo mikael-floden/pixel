@@ -515,3 +515,36 @@ test("the IMAGE wins against a generation published from an earlier commit, and 
     rmSync(root, { recursive: true, force: true });
   }
 });
+
+test("a standing refusal is said ONCE, not once a minute forever", async () => {
+  // The 60 s belt re-reads the pointer for the life of the process, so a
+  // generation refused for a reason that cannot change until the STORE changes
+  // wrote the same line every minute — measured in production: one stale
+  // generation filled this 40-line ring and evicted every useful entry, and
+  // that ring is what /api/bundle shows a phone.
+  const root = mkdtempSync(join(tmpdir(), "bs-"));
+  const prev = process.env.GIT_COMMIT_TS;
+  try {
+    process.env.GIT_COMMIT_TS = "2000";
+    const s6 = store(root);
+    writeGen(root, "older", GEN_A);
+    writePointer(root, { seq: 1, current: "older", retained: [], commit_ts: 1000 });
+
+    for (let i = 0; i < 5; i++) await s6.refresh(true);
+    const said = s6.log.filter((l) => l.includes("older")).length;
+    assert.equal(said, 1, `five refreshes, one line (got ${said})`);
+    assert.equal(s6.current, null);
+
+    // a NEW pointer is news even when it is refused for the same reason
+    writeGen(root, "older2", GEN_B);
+    writePointer(root, { seq: 2, current: "older2", retained: [], commit_ts: 1500 });
+    await s6.refresh(true);
+    await s6.refresh(true);
+    assert.equal(s6.log.filter((l) => l.includes("older2")).length, 1, "the new pointer speaks once");
+    assert.equal(s6.log.filter((l) => l.includes("older")).length >= 2, true, "and the first line is still there");
+  } finally {
+    if (prev === undefined) delete process.env.GIT_COMMIT_TS;
+    else process.env.GIT_COMMIT_TS = prev;
+    rmSync(root, { recursive: true, force: true });
+  }
+});

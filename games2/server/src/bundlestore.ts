@@ -303,6 +303,20 @@ export class BundleStore {
     return hash ? this.blobs.get(hash) ?? null : null;
   }
 
+  /** A refusal that cannot change until the STORE does must be said once.
+   *  The 60 s belt re-reads the pointer forever, so a generation refused for a
+   *  standing reason — older than this image, a corrupt blob, a fall-through
+   *  mismatch — logged once a minute for as long as it sat there. Measured: one
+   *  stale generation wrote the same line 40+ times and evicted every useful
+   *  entry from this 40-line ring, which is the log a phone reads through
+   *  /api/bundle. Keyed on the pointer, so a NEW pointer always speaks up. */
+  private noteOnce(key: string, msg: string) {
+    if (this.lastSaid === key) return;
+    this.lastSaid = key;
+    this.note(msg);
+  }
+  private lastSaid = "";
+
   private note(msg: string) {
     this.log.push(`${new Date().toISOString()} ${msg}`);
     if (this.log.length > 40) this.log.shift();
@@ -380,13 +394,15 @@ export class BundleStore {
     if (typeof next.commit_ts === "number" && next.commit_ts > 0) {
       const mine = Number(process.env.GIT_COMMIT_TS || 0);
       if (!mine) {
-        this.note(
+        this.noteOnce(
+          `${next.current}@${next.seq}:nots`,
           `generation ${next.current} names a commit time but this image does not (GIT_COMMIT_TS unset) — refusing, cannot order the two lanes`,
         );
         return;
       }
       if (next.commit_ts <= mine) {
-        this.note(
+        this.noteOnce(
+          `${next.current}@${next.seq}:order`,
           `refused ${next.current}: published from a commit at or before this image (${next.commit_ts} <= ${mine}) — the image is newer and stays`,
         );
         return;
@@ -404,6 +420,7 @@ export class BundleStore {
     const from = this.ptr?.current;
     this.ptr = next;
     this.servedIds = [next.current, ...this.servedIds.filter((i) => i !== next.current)].slice(0, SERVED_WINDOW);
+    this.lastSaid = ""; // a flip is news; let the next standing refusal speak once more
     this.evict();
     this.note(
       `serving ${next.current}${from ? ` (was ${from})` : ""}, ${this.gens.size} generation(s), ` +
