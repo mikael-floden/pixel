@@ -650,7 +650,7 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   first non-cave deck with a ground over that cell (the roof: rock over ice
   → rock on the lowered ice walls), else the wall's own rock; `cutSide` holds
   it so the runtime never re-derives it. Over that plate the Settings dial
-  "Lowered wall top darkening" (0..100%, default 50; `setCutLidDark`,
+  "Lowered wall top darkening" (0..100%, default 33 — his 2026-09-18 call after 50; `setCutLidDark`,
   `Tiles3Textures.lid`) scales the colour — 0% is the roof as it is, 100%
   black — as its own `@lidNN` texture key, never a rewrite of the plate's,
   and a change repaints through `reResolve`. THE LID IS GROWN BY ONE PIXEL

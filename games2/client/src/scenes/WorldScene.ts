@@ -8214,7 +8214,10 @@ export class WorldScene extends Phaser.Scene {
             // The base sprite's alpha and its lit copy's (the copy draws above
             // the darkness overlay; below 1 the darkened base shows through).
             alpha: +img.alpha.toFixed(3),
-            copyAlpha: (() => { const lo = this.litOccluders.find((o) => (o.img as unknown as { __place?: number }).__place === i || o.place === i); return lo ? +lo.img.alpha.toFixed(3) : null; })(),
+            copy: (() => {
+              const lo = this.litOccluders.find((o) => (o.img as unknown as { __place?: number }).__place === i || o.place === i);
+              return lo ? { alpha: +lo.img.alpha.toFixed(3), visible: lo.img.visible, depth: lo.img.depth, tint: lo.img.tintTopLeft.toString(16), pipeline: lo.img.pipeline?.name ?? null, shaped: !!lo.shape?.tex, emission: !!lo.emission, cropped: lo.img.isCropped } : null;
+            })(),
           });
         }
         return out;
@@ -22602,7 +22605,18 @@ export class WorldScene extends Phaser.Scene {
       if (r.meta) r.meta.drawDepth = d.depth; // the anchor line in `depth` stays put
       if (r.lo) {
         r.lo.pd = d.depth;
-        r.lo.cover = d.coverY ?? Infinity;
+        /* A ROOFED PIECE TAKES NO COVER LINE. Its roof (and the walls that
+         * stand over it) are what the rule finds covering it, and outdoors
+         * that is right — but the piece is handled by roofedFade there
+         * (alpha 0 with its roof), and INDOORS the same line survived: the
+         * lit copy was cropped to nothing and what showed was the base
+         * sprite under the darkness overlay, taking the wall's AO band and
+         * the light field over the fireplace's own art (maintainer
+         * 2026-09-18, the hearths at 331.8,233.6 and 299.3,193.5: "the
+         * indoor scenery still feels darkened by the shadow ... the shadow
+         * from the wall getting through the object"). Measured: cover 8452
+         * over a copy whose top is 8507, visible false. */
+        r.lo.cover = r.lo.roofed ? Infinity : (d.coverY ?? Infinity);
         r.lo.img.setDepth(litDepth(d.depth));
         r.lo.fog?.setDepth(litDepth(d.depth));
       }

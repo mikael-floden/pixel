@@ -38,6 +38,15 @@ const built = rep.stamps.filter((s) => s.built && s.points.length);
 console.log(`contact stamps: ${rep.stamps.length} registered, ${built.length} built (${rep.stat.built} built / ${rep.stat.failed} failed / ${rep.stat.empty} empty), dial ${rep.ao}`);
 console.log("pieces:", built.map((s) => `${s.piece}(${s.points.length})`).join(", "));
 if (built.length < 3) fail(`fewer than 3 pieces carry a built contact stamp (${built.length})`);
+// 1b. EVERY ROOFED PIECE'S LIT COPY IS DRAWN INDOORS (docs/lighting.md, "a
+// roofed piece's lit copy takes no cover line"): a hidden copy leaves the
+// base sprite under the darkness overlay, wearing the wall's AO band.
+{
+  const copies = await page.evaluate(() => (window.__ml.sceneryLitCopy?.() ?? []).filter((c) => c.roofed));
+  const hidden = copies.filter((c) => !c.vis || c.alpha < 0.99);
+  console.log(`roofed lit copies: ${copies.length}, hidden ${hidden.length}`);
+  if (copies.length && hidden.length) fail(`roofed pieces with a hidden lit copy indoors: ${hidden.map((c) => `${c.place}(cover ${c.cover})`).join(", ")}`);
+}
 // 2. THE FIELD: calibration 5 is the raw light field, opaque.
 await page.evaluate(() => window.__ml.nightCal(0, 1, 5));
 await page.waitForTimeout(1500);

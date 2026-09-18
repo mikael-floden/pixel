@@ -742,6 +742,21 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   shadows behind it (like the ambient occlusion at the wall)" (maintainer,
   three reports). The seam AO is a strip of floor; bodies keep it (a body
   tucked against a wall darkens with the ground it stands on).
+- **A ROOFED PIECE'S LIT COPY TAKES NO COVER LINE** (`r.lo.cover = Infinity`
+  for `lo.roofed` in the scenery rebuild, 2026-09-18). The depth rule finds
+  the roof and the walls standing over indoor furniture and hands back a
+  crop line above the piece; outdoors that is moot (roofedFade holds the
+  copy at alpha 0 with its roof) but INDOORS the line survived, the copy was
+  cropped to nothing (`sceneryLitCopy`: cover 8452 over a copy at 8507,
+  visible false) and what showed was the BASE sprite under the darkness
+  overlay — the wall's AO band and the light field painted over the
+  fireplace's own art, its left half dark and its opening dim. That was the
+  whole "darkened by the shadows behind it" report, on top of the seam-AO
+  tint above; the maintainer's guess was exact ("the shadow from the wall
+  getting through the object"). The seam-AO exemption and the red-shadow
+  switch could not show it: neither touches a copy that is not drawn.
+  `verify-contact` asserts every roofed piece's copy is visible once landed
+  indoors.
 - **SCENERY IS LIT PER PIXEL** (`scenerylit.ts` pipeline + `scenerylight.ts`
   shape maps; maintainer 2026-09-05: walking around a tree with the torch must
   light different parts of it). The lit copy keeps the flat tint for the

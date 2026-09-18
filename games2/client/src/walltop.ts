@@ -7,13 +7,13 @@
 //
 // The material is the resolver's (tiles3.ts, Tiles3Cell.cutCap: the roof deck's
 // ground over the wall, else the rock the wall is cut through); this dial is
-// the darkening painted over that lid, 0..100%, 50 his opening number. A
+// the darkening painted over that lid, 0..100%, 33 his number (2026-09-18, after 50). A
 // change repaints the cut cells (WorldScene polls it with the other dials).
 import { makeDial } from "./dial";
 
 export const WALL_TOP_DARK_MIN = 0;
 export const WALL_TOP_DARK_MAX = 100;
-export const WALL_TOP_DARK_DEFAULT = 50;
+export const WALL_TOP_DARK_DEFAULT = 33;
 
 const dial = makeDial({
   key: "ml-wall-top-dark",
@@ -23,7 +23,7 @@ const dial = makeDial({
   decimals: 0,
   label: "Lowered wall top darkening",
   text: (v) => (v <= 0 ? "0% (the roof as it is)" : v >= 100 ? "100% (black)" : `${Math.round(v)}%${Math.round(v) === WALL_TOP_DARK_DEFAULT ? " (default)" : ""}`),
-  resetTitle: "back to 50% darker",
+  resetTitle: "back to 33% darker",
 });
 
 /** 0..1: how much darker a lowered wall's top is painted than the roof material. */
