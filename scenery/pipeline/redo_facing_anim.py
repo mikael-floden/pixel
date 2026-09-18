@@ -337,7 +337,10 @@ def one(client, rel, state, name, dirs, prompt):
             return (rel, state, name, len(made), f"ok but {','.join(short)} did not come back")
         return (rel, state, name, len(made), "ok")
     except PixelLabError as e:
-        return (rel, state, name, 0, f"FAILED: {str(e)[:110]}")
+        # The status matters: "failed after 5 retries" alone hid that the 33
+        # refusals of 2026-09-18 were throttling (a direct POST to one of the
+        # "always refused" objects returned 200 a minute later), not the object.
+        return (rel, state, name, 0, f"FAILED: {str(e)[:260]}")
     except Exception as e:                  # noqa: BLE001
         return (rel, state, name, 0, f"ERROR: {type(e).__name__}: {str(e)[:220]}")
 
