@@ -767,6 +767,42 @@ which is the highest lid of the ported cave and the lowest chamber of a cave
 that steps down under a field; keyed on the lid's level alone, every lid of
 a pit dungeon was "deepest".
 
+### the north caves — bigger, and each one its own kind
+
+**Three more pit caves lie on the north side of the island, planned by the
+same planner as every cave, from BIGGER pools, and each with a THEME drawn
+from a pool** (maintainer 2026-09-18: "one cave is a slime cave, lava cave,
+rock cave, dark_mud and slime, ice and lava cave ... open up for the
+unlikely ... 3 more caves on the N side and this time they should be bigger
+and feel different"). `maps2/pipeline/newcaves.py` holds the pools and digs
+them both ways: `dig_north` runs in the build after `dungeons`, and
+`--apply <world_dir>` digs the same caves into a world that ships, in place,
+through the shell navfit and yards build. The north is the game's north — the
+low x+y corner — as a land quantile (`NORTH_SHARE` 0.40), not the span, so
+the islets do not stretch it. BIGGER IS A WEIGHT: the big pools (five to
+seven rooms, six to eight cells across, two or three lanes) for the first
+half of the plans, the generator's own pools after, so the north gets its
+three caves rather than two big ones and a hole. THE THEMES (weights): slime
+3 (dark mud, slime pools, black rock), lava 2 (a black-rock floor, lava
+pools), ice and lava 2, mud and slime 2, bare rock 2, ice 1, mud 1 — no two
+of one dig alike. A pool is a blob deep in a room with a rim of floor round
+it (`_pool_blob`, ring 1), so the way through a room is never cut, and the
+site audit proves every floor cell reachable. Floors take their theme AFTER
+`caves()` has widened and iced them; braziers stand on every themed floor
+but lava. NOT regenerated in place: the cliff palette records
+(`cliff_faces` comes back different from a shipped world — measured), so a
+pit dug in place draws the default wall palette. Everything else follows as
+for any cave: the lids wear the field, scree, grooming, places.json (Pit VI
+onward), spawns.json (a cave zone each), ambient.json, the minimap. A cave's
+torches and the first brazier of each hall OUTRANK the wild's glow round it,
+as `lights()` ranks them (caves at step 3, road lamps at 5, the glow after):
+in a full window a crystal, shrine, waystone or road lamp goes dark for them
+(UNLIGHT_MAX 3 per cave light; a piece with no NOT_LIT state stays as it is).
+(Measured on the_game 2026-09-18: Pit VI rock 247 cells / 6 rooms at (270,78),
+Pit VII ice and lava 127 cells / 4 rooms at (98,248), Pit VIII mud and slime
+74 cells / 2 rooms at (234,93); 26 lights placed, 8 lit, 11 glows darkened,
+worst window 8/8, 0 traps.)
+
 ### windows and hangings — scenery ON a wall, not in front of it
 
 **`z` is the placement's height up the wall, in STOREYS.** A placement's feet

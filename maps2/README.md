@@ -499,6 +499,11 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   successor for a re-rolled slot. (Without it: chimney_002 stood dangling
   three days, cupboard_004 in August longer — the game tombstones the 404
   and draws nothing, render3 dies mid-render, games2's gate goes red.)
+- `newcaves.py` — **the north caves: bigger, themed** (maintainer
+  2026-09-18): the same planner as every cave from bigger pools, a theme
+  from a pool (slime, lava, ice and lava, mud and slime, rock, ice, mud),
+  dug in the build after `dungeons` and, with `--apply <world_dir>`, into
+  the shipped world in place (`spec/WORLD3.md` → the north caves).
 - `yards.py` — **somebody lives here** (maintainer 2026-09-18): the paving
   apron, the way from the door to the road, the garden plot and the household
   pieces round every house, drawn from pools per house and judged by the

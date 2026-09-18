@@ -1320,7 +1320,8 @@ class Grow:
         stair = {c for run in d["stairs"] for c in run}
         odd = [(c, self.g(*c)) for c in lid
                if (pit and (self.lvl[c[1]][c[0]] >= S or self.lvl[c[1]][c[0]] < S - d["head"] - self.CAVE_DOWN_MAX))
-               or (self.g(*c) not in ("dark_mud", "slime", "ice") and c not in stair)]
+               or (self.g(*c) not in ("dark_mud", "slime", "ice", "black_rock", "grey_stone", "lava")
+                   and c not in stair)]          # a themed floor (newcaves.THEMES) is cave floor too
         assert not odd, ("lid cells that are not cave floor", odd[:8])
         assert len(set(cells.values())) >= 2, "a flat cave"
         for top, foot in d["ledges"]:
@@ -4568,7 +4569,9 @@ class Grow:
     CAVE_NAMES = (("the_cave", "The Cave"), ("cave_2", "Cave II"), ("cave_3", "Cave III"),
                   ("cave_4", "Cave IV"), ("cave_5", "Cave V"), ("cave_6", "Cave VI"))
     PIT_NAMES = (("pit_1", "Pit I"), ("pit_2", "Pit II"), ("pit_3", "Pit III"),
-                 ("pit_4", "Pit IV"), ("pit_5", "Pit V"), ("pit_6", "Pit VI"))
+                 ("pit_4", "Pit IV"), ("pit_5", "Pit V"), ("pit_6", "Pit VI"),
+                 ("pit_7", "Pit VII"), ("pit_8", "Pit VIII"), ("pit_9", "Pit IX"),
+                 ("pit_10", "Pit X"))
 
     def places(self):
         """places.json: every cave complex as a place - id, name, kind 'cave',
@@ -5824,7 +5827,9 @@ class Grow:
                     continue
                 step = max(1, len(edge) // 3)
                 for i, (c, sd) in enumerate(edge[::step][:3]):
-                    n += self._put_flush(bz[i % len(bz)], c, sd, ("dark_mud", "ice", "slime"))
+                    if self.g(*c) == "lava":
+                        continue                  # a brazier does not stand in lava
+                    n += self._put_flush(bz[i % len(bz)], c, sd, ("dark_mud", "ice", "slime", "black_rock", "grey_stone"))
         self.placed += [("cave braziers", n)]
 
     # -- village + roads ------------------------------------------------------
@@ -8288,6 +8293,18 @@ class Grow:
         assert not fakes, ("placements whose look disagrees with lit", len(fakes), fakes[:5])
 
 
+    def dig_north(self):
+        """THREE BIGGER, THEMED CAVES ON THE NORTH SIDE (maintainer 2026-09-18;
+        newcaves.py holds the pools and digs the same caves into a world that
+        ships)."""
+        import newcaves
+        newcaves.dig_north(self, newcaves.N_NORTH, log=lambda m: self.placed.append(("north cave", m)))
+
+    def cave_themes(self):
+        import newcaves
+        newcaves.paint_themes(self, [s for s in getattr(self, "cave_sites", []) if s.get("new")],
+                              log=lambda m: self.placed.append(("cave theme", m)))
+
     def resolve_audit(self):
         """EVERY PLACEMENT RESOLVES (maintainer 2026-09-17, to scenery and
         maps2: removed art must leave the game without anyone waiting). The
@@ -8311,7 +8328,7 @@ class Grow:
                      # LAYER in the format — flagged; the isthmus road is
                      # the crossing, each massif keeps its own dungeon.
                      self.town_ground, self.i2_cave, self.dungeon, self.mountain_caves,
-                     self.dungeons, self.caves,
+                     self.dungeons, self.dig_north, self.caves, self.cave_themes,
                      self.i2_road, self.i2_systems, self.groom, self._reindex,
                      self.archipelago, self.pier, self.houses, self.town,
                      self.mountain_back, self.wild, self.terrace_grounds, self.dungeon_field, self.lava,
