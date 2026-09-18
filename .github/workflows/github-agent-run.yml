@@ -187,6 +187,15 @@ jobs:
               • Deliberate in proportion to what is at stake. Deleting art, spending
                 PixelLab credit or touching a partner's file deserves thought; clearing
                 a verdict and pushing does not.
+              • PUSH THE MOMENT THE UNIT IS DONE AND THE CHECKS PASS (maintainer
+                2026-09-18: "fulfill the request as fast as possible and push to main as
+                fast as possible and not spend time that is not needed. We are running
+                fast in this project"). Do not hold finished work back to bundle it with
+                more, and do not re-verify what the domain's own checks already verified.
+                Pushed work is work he can see; unpushed work dies with this runner.
+              • The only thing you may take real time over is work that genuinely takes
+                it — a generation the verdict asks for, a pipeline that runs for minutes.
+                Everything around it is overhead: keep it to seconds.
 
             TAKE THE SHAPE OF THAT AGENT. Read, in this order, before deciding anything:
               1. CLAUDE.md — the law of the repo.
