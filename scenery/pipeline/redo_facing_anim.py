@@ -60,7 +60,13 @@ _LOCKS = defaultdict(threading.Lock)
 
 # A note that asks for LESS MOVEMENT, not for more frames. His own words on the
 # hearths: "Less motion on non fire", "Less extreme franes".
-LESS_MOTION = re.compile(r"less\s+(motion|extreme)|only\s+the\s+fire|not\s+only\s+the\s+fire", re.I)
+LESS_MOTION = re.compile(
+    r"less\s+(motion|extreme)|only\s+(\w+\s+)?(fire|light|flame)|not\s+only\s+the\s+fire"
+    r"|too?\s+much\s+(movement|motion|colou?r)|doesn'?t\s+glow|too?\s+shiny", re.I)
+# His 2026-09-18 notes, verbatim, that the old pattern read as a plain extend:
+# "Only light should change!", "To much movement that is not the fire",
+# "To much color change! This flower doesn't glow!", "To Shiny". Every one is
+# a brief for LESS, and an extend would have carried the wording he rejected.
 # ...and one that says the facing has no clip at all.
 NO_CLIP = re.compile(r"not enough frames|only one|one frame|no animation", re.I)
 # THE WORDING THAT MEASURES 0.0, not the one that sounds like it should work.
@@ -177,7 +183,11 @@ def from_feedback():
     out = []
     for (rel, state, name), dirs in sorted(want.items()):
         joined = " | ".join(notes.get((rel, state, name, d), "") for d in sorted(dirs))
-        prompt = STILL_PROMPT.get(name) if LESS_MOTION.search(joined) else None
+        # A note asking for LESS is briefed with the clip's OWN subject (or
+        # his per-clip brief), never the generic flame: "This flower doesn't
+        # glow!" on an unlit flower stand is a brief about petals, not fire.
+        a = _clip(factory.read_manifest(rel) or {}, state, name) or {}
+        prompt = (clip_prompts().get(f"{rel}#{state}#{name}") or brief_for(a, name)) if LESS_MOTION.search(joined) else None
         out.append((rel, state, name, sorted(dirs), prompt, joined.strip(" |")))
     return out
 
@@ -228,7 +238,12 @@ def flagged_bad(variant=0):
                     continue
                 if not a.get("group_id") or not e.get("pixellab_object_id"):
                     continue
-                dirs = sorted(_have_dirs(a)) or ["south"]
+                # EVERY FACING THE STATE SHIPS, not only the ones the clip has:
+                # a facing PixelLab dropped (2 of 3 came back) was never asked
+                # for again by any later pass, and five stood as stills for a
+                # day (2026-09-18, "1 frame is not an animation!").
+                ships = {d for d in (e.get("rotations") or {}) if d in ALL3}
+                dirs = sorted(_have_dirs(a) | ships | {"south"})
                 m = a.get("review_metrics") or {}
                 # THE BRIEF MUST NAME THE PIECE'S OWN MOVING THING. The 09-15
                 # round sent STILL_PROMPT ("ONLY the flame flickers") to a barrel
