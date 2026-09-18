@@ -247,6 +247,21 @@ from the games agent), #18 (title/landing screen).
   rest and held, the synthesized W from a northward drag (keys, not distance —
   the phone-dpr frame loop is starved in the harness), and that the gamepad
   page takes the stick back.
+- **THE PORTRAIT HUD IS EXACTLY THREE BACKPACK ROWS TALL** (maintainer
+  2026-09-18: "aim for the backpack only having exact 3 row slots (not the
+  ~3.66 we have today)… A player should feel 3 rows fit exactly and the space
+  to the top and bottom is even. Lowering the UI this much will also lower the
+  thumbstick and make it easier to play in portrait (that's the goal!)").
+  `hud.ts portraitHudHeight`: `--hud-h` = 1px rule + tab row (rect) + page
+  padding-top + `BAG_ROWS_SHOWN`(3) slots + 2 gaps + the same padding + the
+  safe-area inset, capped at half the screen; the slot is derived from the
+  width (the page has no rect behind another tab) and every other term is read
+  from the live CSS, so the compact @media tier and any restyle move the rail
+  with them — never copy those numbers into JS. The page padding is EVEN
+  (10/10, compact 8/8, + safe inset). It replaced the golden 38.2% split in
+  portrait only; landscape keeps its 38.2vw side column. Measured 393×851:
+  325 → 311, rows at 628/702/777, 10.2px above and below. `verify-chat` and
+  `verify-landscape` assert the law computed the same way from the live CSS.
 - **PORTRAIT CORNER STACK IS TOP-RIGHT: the Wiki/🔍 row directly under the XP
   chip, the time-of-day pill one `--ml-stack-step` under the ROW** (maintainer
   2026-09-17, arrows on a screenshot: "wiki + search to be top right and listed
