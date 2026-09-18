@@ -180,29 +180,29 @@
           "brief": "L3",
           "light_frames": [
             {
-              "intensity": 1.087,
+              "intensity": 1.037,
               "dx": 0.7,
               "dy": -5.6
             },
             {
-              "intensity": 1.067,
-              "dx": 0.6,
-              "dy": -5.6
+              "intensity": 1.01,
+              "dx": 0.5,
+              "dy": -7.0
             },
             {
-              "intensity": 1.059,
+              "intensity": 0.919,
               "dx": 0.4,
+              "dy": -4.2
+            },
+            {
+              "intensity": 1.01,
+              "dx": 0.1,
               "dy": -5.4
             },
             {
-              "intensity": 0.98,
-              "dx": 0.1,
-              "dy": -6.0
-            },
-            {
-              "intensity": 0.806,
-              "dx": 0.8,
-              "dy": -7.5
+              "intensity": 1.023,
+              "dx": 0.2,
+              "dy": -5.0
             }
           ],
           "frame_paths": [
@@ -453,9 +453,20 @@
                 "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion/south-west/04.webp"
               ],
               "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion__south-west.c25cbfd5.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion/south-east/00.webp",
+                "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion/south-east/01.webp",
+                "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion/south-east/02.webp",
+                "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion/south-east/03.webp",
+                "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion__south-east.ce35b102.webp"
             }
           },
-          "generated_at": "2026-09-18T03:35:24+00:00",
+          "generated_at": "2026-09-18T07:41:35+00:00",
           "brief": "C26",
           "frame_paths": [
             "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion/south/00.webp",
@@ -464,11 +475,11 @@
             "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion/south/03.webp",
             "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion/south/04.webp"
           ],
+          "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion__south.ba2daaeb.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0526
-          },
-          "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_2/animations/motion__south.ba2daaeb.webp"
+          }
         }
       }
     },

@@ -68,6 +68,7 @@
                 "streetlights/streetlight_034/animations/flame/south/03.webp",
                 "streetlights/streetlight_034/animations/flame/south/04.webp"
               ],
+              "strip": "streetlights/streetlight_034/animations/flame__south.a523183d.webp",
               "light_frames": [
                 {
                   "intensity": 0.83,
@@ -94,8 +95,7 @@
                   "dx": 5.8,
                   "dy": -2.3
                 }
-              ],
-              "strip": "streetlights/streetlight_034/animations/flame__south.a523183d.webp"
+              ]
             },
             "south-east": {
               "frames": 5,
@@ -106,6 +106,7 @@
                 "streetlights/streetlight_034/animations/flame/south-east/03.webp",
                 "streetlights/streetlight_034/animations/flame/south-east/04.webp"
               ],
+              "strip": "streetlights/streetlight_034/animations/flame__south-east.6dd43bcd.webp",
               "light_frames": [
                 {
                   "intensity": 0.937,
@@ -132,11 +133,48 @@
                   "dx": 9.6,
                   "dy": -2.4
                 }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "streetlights/streetlight_034/animations/flame/south-west/00.webp",
+                "streetlights/streetlight_034/animations/flame/south-west/01.webp",
+                "streetlights/streetlight_034/animations/flame/south-west/02.webp",
+                "streetlights/streetlight_034/animations/flame/south-west/03.webp",
+                "streetlights/streetlight_034/animations/flame/south-west/04.webp"
               ],
-              "strip": "streetlights/streetlight_034/animations/flame__south-east.6dd43bcd.webp"
+              "strip": "streetlights/streetlight_034/animations/flame__south-west.e40989b2.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.694,
+                  "dx": -10.4,
+                  "dy": -1.0
+                },
+                {
+                  "intensity": 1.018,
+                  "dx": -3.5,
+                  "dy": -4.3
+                },
+                {
+                  "intensity": 1.223,
+                  "dx": 0.4,
+                  "dy": -3.7
+                },
+                {
+                  "intensity": 1.113,
+                  "dx": 2.7,
+                  "dy": -4.3
+                },
+                {
+                  "intensity": 0.951,
+                  "dx": 3.7,
+                  "dy": -5.1
+                }
+              ]
             }
           },
-          "generated_at": "2026-09-18T03:43:28+00:00",
+          "generated_at": "2026-09-18T07:41:38+00:00",
           "light_frames": [
             {
               "intensity": 0.83,
