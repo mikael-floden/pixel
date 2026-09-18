@@ -80,6 +80,8 @@ PAVE_ON = ("grass", "dark_mud", "light_soil")
 ROAD = ("light_soil",)
 PAVING = ("brown_paving_stone", "grey_paving_stone")
 STREET_MIN = 40                # a paving component bigger than this is a street
+WALL_GAP = 0.3                 # cells of ground a yard piece keeps from a house wall
+YARD_GROUPS = tuple(g for g, _ in YARD_POOL) + tuple(g for g, _ in GARDEN_POOL)
 
 
 def _rng(seed):
@@ -238,9 +240,10 @@ class Yards:
                and heal._ok_state(piece, s, None)]
         return sts[int(rnd() * len(sts)) % len(sts)] if sts else None
 
-    def place(self, piece, x, y, rnd, level):
+    def place(self, piece, x, y, rnd, level, keep=None):
         """One yard piece, judged where it stands by the generator's own law;
-        appended to the world and claiming its ground when it passes."""
+        appended to the world and claiming its ground when it passes. `keep`
+        is an existing placement whose state and flip are kept."""
         import heal
         g = self.g
         cx, cy = int(x), int(y)
@@ -248,8 +251,11 @@ class Yards:
                 or (cx, cy) in self.occupied or (cx, cy) in self.path_cells:
             return False
         meta = heal._meta(piece) or {}
-        hflip = meta.get("must_be_imbplemented_with_random_hflip") is not False and rnd() < 0.5
-        state = self._state(piece, rnd)
+        if keep is not None:
+            hflip, state = bool(keep.get("hflip")), keep.get("state")
+        else:
+            hflip = meta.get("must_be_imbplemented_with_random_hflip") is not False and rnd() < 0.5
+            state = self._state(piece, rnd)
         probe = {"piece": piece, "x": x, "y": y, "hflip": hflip, "state": state, "dir": None}
         sh = g._fp_shape(probe)
         if sh:
@@ -265,15 +271,34 @@ class Yards:
             return False
         if not g._footprint_ok(wx, wy, R, HY, flush=False, flat=flat):
             return False
+        if not flat and not self.wall_clear(wx, wy, R, HY):
+            return False
         p = {"piece": piece, "x": round(x, 4), "y": round(y, 4)}
         if hflip:
             p["hflip"] = True
         if state:
             p["state"] = state
+        if keep is not None and keep.get("lit"):
+            p["lit"] = True
         self.doc["scenery"].append(p)
         if not flat:
             g._fp_add(wx, wy, R, HY)
         self.occupied.add((int(x), int(y)))
+        return True
+
+    def wall_clear(self, wx, wy, R, HY):
+        """A yard piece keeps WALL_GAP of ground between its footprint and any
+        house wall (maintainer 2026-09-18, a woodpile against the village
+        house: "You have placed scenery that collides with the house") — the
+        footprint law lets a piece stand within its margin of a wall, which is
+        right for furniture and wrong for a woodpile outside."""
+        hx, hy = R + WALL_GAP, (R if HY is None else HY) + WALL_GAP
+        for yy in range(int(wy - hy) - 1, int(wy + hy) + 2):
+            for xx in range(int(wx - hx) - 1, int(wx + hx) + 2):
+                if (xx, yy) not in self.house_cells:
+                    continue
+                if xx + 1 > wx - hx and xx < wx + hx and yy + 1 > wy - hy and yy < wy + hy:
+                    return False
         return True
 
     # -- one house ------------------------------------------------------------
@@ -568,6 +593,54 @@ def recolour(world_dir, write=True):
     return n
 
 
+def refit(world_dir, write=True):
+    """RE-JUDGE EVERY YARD PIECE WITH TODAY'S HITBOXES (he tunes them in the
+    wiki; live/tuning/scenery_hitbox.json is read fresh): a piece of a yard
+    group within the ring of a house is taken out, and put back where it
+    stood only if the footprint law and the wall gap allow it there now;
+    else it slides to the nearest clear spot of its yard, else it goes."""
+    path = os.path.join(world_dir, "world.json")
+    doc = json.load(open(path))
+    houses = _houses(doc)
+    near = set()
+    for h in houses:
+        x0, y0, x1, y1 = h["bbox"]
+        for y in range(y0 - RING - 1, y1 + RING + 2):
+            for x in range(x0 - RING - 1, x1 + RING + 2):
+                near.add((x, y))
+    mine = [p for p in doc["scenery"] if p["piece"].split("/")[0] in YARD_GROUPS
+            and p.get("z") is None and (int(p["x"]), int(p["y"])) in near]
+    ids = {id(p) for p in mine}
+    doc["scenery"] = [p for p in doc["scenery"] if id(p) not in ids]
+    Y = Yards(doc)
+    kept = moved = dropped = 0
+    for p in sorted(mine, key=lambda p: (p["x"] + p["y"], p["piece"])):
+        h = min(houses, key=lambda h: max(h["bbox"][0] - p["x"], p["x"] - h["bbox"][2],
+                                          h["bbox"][1] - p["y"], p["y"] - h["bbox"][3]))
+        level = Y.lvl[int(p["y"])][int(p["x"])]
+        Y.path_cells = set()
+        rnd = _rng(f"refit|{p['x']}|{p['y']}")
+        if Y.place(p["piece"], p["x"], p["y"], rnd, level, keep=p):
+            kept += 1
+            continue
+        spots = sorted([c for c in Y._ring(h, RING, level, grounds=None)
+                        if c not in Y.no_place and c not in Y.doorsteps and c not in Y.occupied],
+                       key=lambda c: (c[0] + 0.5 - p["x"]) ** 2 + (c[1] + 0.5 - p["y"]) ** 2)
+        for c in spots[:16]:
+            if Y.place(p["piece"], c[0] + 0.5, c[1] + 0.5, rnd, level, keep=p):
+                moved += 1
+                q = doc["scenery"][-1]
+                print(f"  MOVED   {p['piece']} ({p['x']}, {p['y']}) -> ({q['x']}, {q['y']})")
+                break
+        else:
+            dropped += 1
+            print(f"  DROPPED {p['piece']} at ({p['x']}, {p['y']}): no clear spot in its yard")
+    print(f"{world_dir}: {len(mine)} yard pieces re-judged: {kept} stand, {moved} moved, {dropped} dropped")
+    if write:
+        json.dump(doc, open(path, "w"), separators=(",", ":"))
+    return moved, dropped
+
+
 def apply(world_dir, write=True):
     path = os.path.join(world_dir, "world.json")
     doc = json.load(open(path))
@@ -591,9 +664,13 @@ def main():
     g.add_argument("--apply", action="store_true")
     g.add_argument("--dry-run", action="store_true")
     g.add_argument("--recolour", action="store_true", help="re-draw the material of the aprons and paths laid")
+    g.add_argument("--refit", action="store_true", help="re-judge every yard piece with today's hitboxes")
     a = ap.parse_args()
     if a.recolour:
         recolour(a.world_dir)
+        return
+    if a.refit:
+        refit(a.world_dir)
         return
     apply(a.world_dir, write=a.apply)
 
