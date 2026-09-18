@@ -1,0 +1,140 @@
+{
+  "id": "obsidian_shard",
+  "name": "Glasscut",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Every part of it is an edge. It has never had to learn to swing anything.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Standing body of black volcanic glass blades fused at the base, every edge a razor with a curved conchoidal fracture, the surfaces mirror bright, deep red heat light visible in the cracks and a crown of broken shards at its top",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "obsidian_shard/rotations/south.webp",
+    "south-east": "obsidian_shard/rotations/south-east.webp",
+    "east": "obsidian_shard/rotations/east.webp",
+    "north-east": "obsidian_shard/rotations/north-east.webp",
+    "north": "obsidian_shard/rotations/north.webp",
+    "north-west": "obsidian_shard/rotations/north-west.webp",
+    "west": "obsidian_shard/rotations/west.webp",
+    "south-west": "obsidian_shard/rotations/south-west.webp"
+  },
+  "sheet": "obsidian_shard/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "573da4c4-6b1c-4264-8236-5d6f781aa20e",
+  "seed": 282250506,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:47:26+00:00",
+  "elapsed_s": 221.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.773,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.773,
+        "bbox": [
+          16,
+          4,
+          88,
+          100
+        ],
+        "fill": 0.639,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.842,
+        "bbox": [
+          37,
+          4,
+          66,
+          101
+        ],
+        "fill": 0.26,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.86,
+        "bbox": [
+          39,
+          4,
+          67,
+          101
+        ],
+        "fill": 0.251,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.796,
+        "bbox": [
+          15,
+          4,
+          89,
+          99
+        ],
+        "fill": 0.65,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.853,
+        "bbox": [
+          23,
+          3,
+          83,
+          102
+        ],
+        "fill": 0.549,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.82,
+        "bbox": [
+          23,
+          3,
+          79,
+          100
+        ],
+        "fill": 0.502,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.826,
+        "bbox": [
+          27,
+          3,
+          79,
+          100
+        ],
+        "fill": 0.466,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.85,
+        "bbox": [
+          21,
+          3,
+          84,
+          102
+        ],
+        "fill": 0.577,
+        "touches_edge": false
+      }
+    }
+  }
+}

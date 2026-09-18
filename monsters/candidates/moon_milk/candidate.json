@@ -1,0 +1,140 @@
+{
+  "id": "moon_milk",
+  "name": "Moonmilk",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It takes a print from anything that touches it and keeps it. Some of the prints on it are very small.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Body of soft white cave moonmilk, a wet paste like wet chalk holding a hunched shape, finger marks pressed into its surface where something touched it, thick drips hanging off its underside and a cold pale sheen",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "moon_milk/rotations/south.webp",
+    "south-east": "moon_milk/rotations/south-east.webp",
+    "east": "moon_milk/rotations/east.webp",
+    "north-east": "moon_milk/rotations/north-east.webp",
+    "north": "moon_milk/rotations/north.webp",
+    "north-west": "moon_milk/rotations/north-west.webp",
+    "west": "moon_milk/rotations/west.webp",
+    "south-west": "moon_milk/rotations/south-west.webp"
+  },
+  "sheet": "moon_milk/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "42d520d2-02da-4a5f-a938-efd017aaad7d",
+  "seed": 1115097635,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:47:14+00:00",
+  "elapsed_s": 182.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.725,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.725,
+        "bbox": [
+          10,
+          6,
+          84,
+          92
+        ],
+        "fill": 0.691,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.786,
+        "bbox": [
+          11,
+          5,
+          82,
+          92
+        ],
+        "fill": 0.67,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.811,
+        "bbox": [
+          15,
+          6,
+          83,
+          92
+        ],
+        "fill": 0.635,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.776,
+        "bbox": [
+          13,
+          6,
+          81,
+          91
+        ],
+        "fill": 0.627,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.843,
+        "bbox": [
+          22,
+          5,
+          73,
+          90
+        ],
+        "fill": 0.47,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.785,
+        "bbox": [
+          11,
+          5,
+          86,
+          92
+        ],
+        "fill": 0.708,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.787,
+        "bbox": [
+          21,
+          5,
+          75,
+          90
+        ],
+        "fill": 0.498,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.792,
+        "bbox": [
+          8,
+          5,
+          84,
+          91
+        ],
+        "fill": 0.709,
+        "touches_edge": false
+      }
+    }
+  }
+}
