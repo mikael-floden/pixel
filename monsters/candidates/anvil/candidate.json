@@ -1,0 +1,141 @@
+{
+  "id": "anvil",
+  "name": "Anvilhorn",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It took every blow in the settlement for years. It has started returning them.",
+  "biome": [
+    "brown_paving_stone",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Blacksmith anvil standing on two squat iron legs, the face scarred and polished bright from use, a broken pair of tongs fused to its side, the horn chipped, and a fine scale of black forge flake shed around its feet",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "anvil/rotations/south.webp",
+    "south-east": "anvil/rotations/south-east.webp",
+    "east": "anvil/rotations/east.webp",
+    "north-east": "anvil/rotations/north-east.webp",
+    "north": "anvil/rotations/north.webp",
+    "north-west": "anvil/rotations/north-west.webp",
+    "west": "anvil/rotations/west.webp",
+    "south-west": "anvil/rotations/south-west.webp"
+  },
+  "sheet": "anvil/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "bf938aab-c921-49f7-911d-c12b90003010",
+  "seed": 453264803,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T13:03:17+00:00",
+  "elapsed_s": 179.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.725,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.725,
+        "bbox": [
+          11,
+          4,
+          92,
+          91
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.76,
+        "bbox": [
+          15,
+          6,
+          79,
+          91
+        ],
+        "fill": 0.59,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.736,
+        "bbox": [
+          25,
+          2,
+          76,
+          86
+        ],
+        "fill": 0.465,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.729,
+        "bbox": [
+          5,
+          6,
+          84,
+          89
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.783,
+        "bbox": [
+          16,
+          4,
+          85,
+          93
+        ],
+        "fill": 0.666,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.739,
+        "bbox": [
+          16,
+          3,
+          84,
+          90
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.747,
+        "bbox": [
+          12,
+          6,
+          78,
+          85
+        ],
+        "fill": 0.566,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.775,
+        "bbox": [
+          11,
+          5,
+          80,
+          93
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      }
+    }
+  }
+}

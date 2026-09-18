@@ -1,0 +1,140 @@
+{
+  "id": "hole_mouth",
+  "name": "Holemaw",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The hole under the mountain, standing up. It is new, and the oldest here say the worst part is who it has to be.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Enormous hunched mass of cave rock in a body shape, with a perfectly round black opening where a face should be, smooth smiling masks fused into its shoulders and back like scales, and both stone hands cupped open and empty in front of it",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hole_mouth/rotations/south.webp",
+    "south-east": "hole_mouth/rotations/south-east.webp",
+    "east": "hole_mouth/rotations/east.webp",
+    "north-east": "hole_mouth/rotations/north-east.webp",
+    "north": "hole_mouth/rotations/north.webp",
+    "north-west": "hole_mouth/rotations/north-west.webp",
+    "west": "hole_mouth/rotations/west.webp",
+    "south-west": "hole_mouth/rotations/south-west.webp"
+  },
+  "sheet": "hole_mouth/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c77f63a6-6b55-4165-ba82-a7c0275f45f5",
+  "seed": 1607584607,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T13:03:54+00:00",
+  "elapsed_s": 167.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.612,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.612,
+        "bbox": [
+          19,
+          17,
+          217,
+          223
+        ],
+        "fill": 0.708,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.658,
+        "bbox": [
+          70,
+          17,
+          167,
+          226
+        ],
+        "fill": 0.352,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.665,
+        "bbox": [
+          68,
+          17,
+          178,
+          225
+        ],
+        "fill": 0.397,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.619,
+        "bbox": [
+          28,
+          16,
+          212,
+          220
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.676,
+        "bbox": [
+          47,
+          17,
+          218,
+          226
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.638,
+        "bbox": [
+          54,
+          17,
+          209,
+          223
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.625,
+        "bbox": [
+          24,
+          17,
+          186,
+          224
+        ],
+        "fill": 0.582,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.671,
+        "bbox": [
+          22,
+          17,
+          187,
+          226
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      }
+    }
+  }
+}
