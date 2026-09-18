@@ -673,6 +673,51 @@
      ]
     }
    ]
+  },
+  {
+   "date": "2026-09-18",
+   "commit": "7a815c041a",
+   "before": "646044f027",
+   "title": "A rug never touches a wall — 4 of 8 did, slid clear (nothing else on the map moved)",
+   "changes": [
+    {
+     "name": "The bear rug in the village house, off the wall",
+     "what": "You were standing on it at 308.0,228.7 with its top corner drawn over the cut-away wall to the west. A rug is flat: it stamps no footprint, so the wall test never saw it, and its art lies up-screen of its anchor by its whole height, so a rug one cell from a wall reached it. It slid half a cell east and a quarter south; same rug, same light.",
+     "cell": [
+      308,
+      229
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "The rug in the town house by the hearth",
+     "what": "Its top edge lay against the north wall; moved a quarter cell south-west, still under the middle of the room.",
+     "cell": [
+      99,
+      175
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "The rug in the town's second house",
+     "what": "Its top corner reached the wall behind it; moved a quarter cell, clear on all sides.",
+     "cell": [
+      116,
+      187
+     ],
+     "roofcut": true
+    },
+    {
+     "name": "The rug in the southern cottage",
+     "what": "Same fault, same fix: a quarter cell down the room, clear of the wall.",
+     "cell": [
+      251,
+      304
+     ],
+     "roofcut": true
+    }
+   ],
+   "artifact": "https://claude.ai/artifact/3P7T7h1VdyDiX4G4wwMob3"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
