@@ -1469,6 +1469,13 @@ const IN_WALL = 2; // the building itself: any solid cell of the enclosure
  * The BASE is what moved, so the debris' 3x and the grade's 1.5x keep the
  * ratios he approved; do not slow those instead. */
 const INDOOR_TAU = 0.45;
+/** The most wall clock one ease step may bill (ms). A frame longer than this —
+ *  a tab wakeup, a long GC, the flip's own repaint — advances the blend by no
+ *  more than this much, so a stall cannot carry the crossing across a whole
+ *  curve in one step (the shape of the one-frame pops he reports). Three of
+ *  his worst measured flip frames (490 ms) would otherwise be a third of the
+ *  roll each. */
+const INDOOR_STEP_CAP_MS = 60;
 // The transition's two speeds, as multiples of the eased indoor mix. The
 // GEOMETRY crossfade (debris) runs hot — hiding the repaint seams is its whole
 // job, and they hide better the less time they get (maintainer: 2× was not
@@ -17408,6 +17415,10 @@ export class WorldScene extends Phaser.Scene {
    *  a jump of the mix that no roll can produce, and the one thing a per-frame
    *  trace cannot otherwise tell from a very fast fade. */
   private indoorSnaps = 0;
+  /** The roll's own clock (performance.now at the last ease; 0 = never eased).
+   *  See easeIndoorMix: the crossing advances on wall clock, not on Phaser's
+   *  clamped frame delta. */
+  private indoorMixAt = 0;
   private winScene: Array<Record<string, unknown>> | null = null;
   private winAt: [number, number, number?] | null = null;
   private roomLitAt = 0;
@@ -18171,7 +18182,24 @@ export class WorldScene extends Phaser.Scene {
     // tuned crossing and everything downstream — the debris' 3x curves, the
     // grade's 1.5x, the landing — stretches with it, because all three are
     // functions of the mix and not of the clock.
-    const k = 1 - Math.exp(-((this.game.loop.delta / 1000) * doorFadeSpeed()) / INDOOR_TAU);
+    //
+    // THE ROLL IS WALL CLOCK, NOT `game.loop.delta`. Phaser's delta is
+    // smoothed and clamped: a starved frame is handed the TARGET delta
+    // (16.7 ms) however long it really took, so the crossing advanced per
+    // FRAME rather than per second and its duration became a function of the
+    // frame rate. Measured with a rAF counter (scripts/_fadewatch): 238 frames
+    // in 36 s at 6-7 fps and the blend was still climbing at 0.964 — a 2.4 s
+    // crossing stretched past half a minute. His phone renders the indoor flip
+    // at 150-490 ms a frame (docs/perf.md), which is exactly when the crossing
+    // he is watching turns into a crawl, and the longer each frame is the more
+    // of the roll lands in one step — the shape of "it lasts for only a single
+    // frame". Capped at INDOOR_STEP_CAP_MS so a tab wakeup or a long GC pause
+    // cannot teleport the blend across the curve in one step.
+    const now = performance.now();
+    const raw = this.indoorMixAt === 0 ? this.game.loop.delta : now - this.indoorMixAt;
+    this.indoorMixAt = now;
+    const stepMs = Math.max(0, Math.min(INDOOR_STEP_CAP_MS, raw));
+    const k = 1 - Math.exp(-((stepMs / 1000) * doorFadeSpeed()) / INDOOR_TAU);
     this.indoorMix += (to - this.indoorMix) * k;
     if (Math.abs(this.indoorMix - to) < 0.005) this.indoorMix = to;
     // QA PIN (__ml.indoorMixPin): parks the blend anywhere in (0,1) so a
