@@ -171,12 +171,22 @@ async function reloadIfBehindAtBoot(): Promise<void> {
     if (!sha || sha === "dev" || sha === mine) return;
     const key = "ml-boot-reload-at";
     let last = 0;
+    let canRemember = true;
     try {
       last = Number(sessionStorage.getItem(key) || 0);
     } catch {
-      /* no storage — one reload is still bounded by bootReloadOpen */
+      canRemember = false;
     }
-    if (!bootReloadOpen || Date.now() - last < 60_000) {
+    // NO STORAGE, NO RELOAD — BANNER ONLY. The old comment here said "one
+    // reload is still bounded by bootReloadOpen", and that is wrong:
+    // `bootReloadOpen` is a module-level flag, so it is `true` again on every
+    // load and bounds one reload PER LOAD, not per tab. Where sessionStorage
+    // throws (private mode, blocked site data, an embedded webview) the 60 s
+    // stamp cannot persist either, so the page reloads, comes back, decides it
+    // is behind again, and reloads forever — measured on an identity mismatch
+    // at 114 loads in 12 s. The banner still tells him a build is out, in his
+    // own wording, and costs one tap.
+    if (!canRemember || !bootReloadOpen || Date.now() - last < 60_000) {
       showUpdateBanner(sha);
       return;
     }
@@ -184,7 +194,10 @@ async function reloadIfBehindAtBoot(): Promise<void> {
       sessionStorage.setItem(key, String(Date.now()));
       if (rejoin) sessionStorage.setItem("ml-rejoin", "1");
     } catch {
-      /* no storage */
+      // Lost the write after the read worked: do NOT reload unmarked, or the
+      // next load has nothing to stop it doing the same again.
+      showUpdateBanner(sha);
+      return;
     }
     console.log(`[nangijala] build ${mine.slice(0, 9)} is behind the served ${sha.slice(0, 9)} — reloading`);
     location.reload();
