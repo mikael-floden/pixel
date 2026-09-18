@@ -61,6 +61,16 @@ export class Toggles {
     return this.mode === "manual" ? [...this.enabled] : [];
   }
 
+  /** ZONE CONTROL (his Settings switch): on = the server's per-zone set
+   *  drives everything; off = the old free client behaviour. */
+  zoneControl(on?: boolean): boolean {
+    if (on !== undefined) {
+      this.director.zoneControl = on;
+      if (this.mode === "auto") this.director.force(null); // re-apply for the new source
+    }
+    return this.director.zoneControl;
+  }
+
   /** Switch AUTO on (director drives, manual set cleared) or off (manual). */
   setAuto(on: boolean): void {
     this.mode = on ? "auto" : "manual";

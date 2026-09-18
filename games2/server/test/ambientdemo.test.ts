@@ -8,7 +8,8 @@ import { createServer } from "http";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
-import { ROOM_NAME, DEFAULT_TIME_IDX, TIME_PHASE_COUNT, WEATHER_COUNT } from "@nangijala/shared";
+import { ROOM_NAME, DEFAULT_TIME_IDX, TIME_PHASE_COUNT } from "@nangijala/shared";
+import { isCompatibleSet, unpackAmbient } from "../../ambient/runtime/matrix.js";
 import { WorldRoom, resetWorldClocks } from "../src/rooms/WorldRoom.js";
 
 beforeEach(() => resetWorldClocks());
@@ -33,7 +34,9 @@ async function waitFor(cond: () => boolean, timeout = 3000): Promise<void> {
   }
 }
 
-test("timeofday/weather {v} jump the shared world state directly", async () => {
+// Since 2026-09-18 weather is the room's ACTIVE AMBIENT SET (state.ambient),
+// not an index — the "ambient" message with a {set} is the direct jump.
+test("timeofday {v} and ambient {set} jump the shared world state directly", async () => {
   const port = 2983; // unique per test file — 2984+ are taken (aurora..sync)
   const gameServer = new Server({
     transport: new WebSocketTransport({ server: createServer() }),
@@ -59,17 +62,18 @@ test("timeofday/weather {v} jump the shared world state directly", async () => {
     await waitFor(() => r1.state.timeIdx === 0 && r2.state.timeIdx === 0);
     assert.equal(r1.state.phaseT, 0.5);
 
-    // Jump to a cloudy sky (1) — a direct set, not a cycle.
-    r1.send("weather", { v: 1 });
-    await waitFor(() => r1.state.weather === 1 && r2.state.weather === 1);
-    // Setting the SAME value again is a no-op, not a cycle.
-    r1.send("weather", { v: 1 });
+    // Jump to a cloudy sky — a direct set, both clients see it.
+    r1.send("ambient", { set: ["cloudy"] });
+    await waitFor(() => r1.state.ambient === "cloudy" && r2.state.ambient === "cloudy");
+    // Setting the SAME set again is a no-op, not a re-roll.
+    r1.send("ambient", { set: ["cloudy"] });
     await new Promise((r) => setTimeout(r, 150));
-    assert.equal(r2.state.weather, 1);
+    assert.equal(r2.state.ambient, "cloudy");
 
-    // Out-of-range / non-integer v falls back to the legacy cycle.
-    r1.send("weather", { v: 99 });
-    await waitFor(() => r2.state.weather === 2 % WEATHER_COUNT);
+    // No set at all = a re-roll: shared by both, and always a set the
+    // compatibility matrix allows.
+    r1.send("ambient", {});
+    await waitFor(() => r1.state.ambient === r2.state.ambient && isCompatibleSet(unpackAmbient(r2.state.ambient)));
     r1.send("timeofday", { v: 1.5 });
     await waitFor(() => r2.state.timeIdx === 1); // Night -> cycle +1
     assert.notEqual(DEFAULT_TIME_IDX, 0); // guard: the jump above was a real move

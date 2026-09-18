@@ -157,6 +157,9 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         demoButton.sync();
         return toggles.getMode();
       },
+      // ZONE CONTROL: server-driven per zone (true) or the free client
+      // lottery (false). No arg reads.
+      zoneControl: (on?: boolean) => toggles.zoneControl(on),
       // Can two effects run together? (symmetric)
       compatible: (a: string, b: string) => toggles.compatible(a, b),
       // Bird DENSITY ratio (0.1×–10× of today's amount): no arg reads, a number

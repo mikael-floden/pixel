@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { isRough } from "../runtime/env";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { findGround, groundSoundAt, landableAt, playerAt } from "../runtime/ground";
 import { SPECIES, Species, bodyColour, darkPairs, pickSpecies } from "./species";
@@ -265,8 +266,8 @@ export function butterfliesFeature(): AmbientFeature {
   /** Day, warm, still. Never a butterfly at night, in rain, or in moving air.
    *  Indices 6+ are storm, snow and wind — the gnats' rule, and for the same
    *  reason: a creature this light does not choose to be out in it. */
-  const weight = (env: { sun: number; rain: number; weather: number }): number => {
-    if (env.weather >= 6) return 0;
+  const weight = (env: { sun: number; rain: number; active: ReadonlySet<string> }): number => {
+    if (isRough(env)) return 0; // storm, snow, wind — nothing small hangs in it
     const day = Math.max(0, Math.min(1, (env.sun - 0.25) / 0.45));
     const wet = 1 - Math.min(1, env.rain * 1.6);
     return day * Math.max(0, wet);
@@ -412,7 +413,7 @@ export function butterfliesFeature(): AmbientFeature {
         gain,
         suppressed,
         forced,
-        weight: +weight({ sun: 1, rain: 0, weather: 0 }).toFixed(2),
+        weight: +weight({ sun: 1, rain: 0, active: new Set<string>() }).toFixed(2),
         count: flits.length,
         ...stats,
         all: flits.map((f) => ({

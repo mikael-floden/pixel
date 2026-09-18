@@ -88,8 +88,6 @@ import {
   RUN_SPEED,
   DEFAULT_TIME_IDX,
   TIME_PHASE_SECONDS,
-  WEATHER_NAMES,
-  WEATHER_COUNT,
   parseSpawns,
   type SpawnZone,
   unarmedClip,
@@ -179,6 +177,7 @@ import { joinWorld } from "../net";
 import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
 import { ChatUI } from "../chat";
 import { Gloom, easeGloom, newGloom, snapGloom } from "../../../ambient/weather/gloom";
+import { LEGACY_INDEX, packAmbient, unpackAmbient } from "../../../ambient/runtime/matrix";
 import { Footsteps } from "../footsteps";
 import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
@@ -2791,7 +2790,7 @@ export class WorldScene extends Phaser.Scene {
         sceneryStamps: this.sceneryStamps.length,
         emissive: this.emissiveSources.length,
         torch: this.torchOn,
-        weather: WEATHER_NAMES[this.weatherIdx % WEATHER_NAMES.length] ?? null,
+        ambient: packAmbient(this.ambientActive) || null,
         gpu: this.gpuString(),
         backing: `${this.game.renderer.width}x${this.game.renderer.height}`,
       },
@@ -4213,7 +4212,11 @@ export class WorldScene extends Phaser.Scene {
   private curSun: [number, number, number, number] = sunVec(DEFAULT_TIME_IDX);
   // Weather layer (server-owned like timeIdx): cloud cover eases toward the
   // target over a few seconds — clouds roll in, they don't blink in.
-  private weatherIdx = 0;
+  /** THE ACTIVE AMBIENT SET, the server's (state.ambient): which ambient
+   *  effects are on in this room right now, weather included — weather is
+   *  ordinary effects since 2026-09-18, there is no weather index. Ambient
+   *  reads it through __ml.ambientActive(); the gloom below grades on it. */
+  private ambientActive = new Set<string>();
   private gloom: Gloom = newGloom();
   private footsteps?: Footsteps;
   private timeFrozen = true; // synced mirror of WorldState.frozen (switch state)
@@ -4718,11 +4721,6 @@ export class WorldScene extends Phaser.Scene {
           act: () => this.room?.send("timespeed", {}),
           get: () => this.timeSpeed === 0,
           state: () => (this.timeSpeed === 0 ? "frozen" : `x${this.timeSpeed}`),
-        },
-        {
-          label: "weather",
-          act: () => this.room?.send("weather"),
-          state: () => WEATHER_NAMES[this.weatherIdx % WEATHER_NAMES.length],
         },
         // Audio (composer agent): master sound + music, persisted switches.
         { label: "sound", act: () => gameAudio.toggleSound(), get: () => gameAudio.soundEnabled },
@@ -5638,20 +5636,27 @@ export class WorldScene extends Phaser.Scene {
       sunInfo: () => ({ sun: [...this.curSun], phase: TIME_PHASES[this.timeIdx].name, t: this.timeT }),
       // Weather probes: info + LOCAL force (headless QA without the server).
       weatherInfo: () => ({
-        idx: this.weatherIdx,
-        name: WEATHER_NAMES[this.weatherIdx],
+        active: [...this.ambientActive].sort(),
         cloud: this.gloom.cloud,
         mist: this.gloom.mist,
         precipDim: this.gloom.dim,
       }),
+      // The server's active ambient set for this room (ambient's input).
+      ambientActive: () => [...this.ambientActive].sort(),
+      // Force the ROOM's set on the server (QA/gates; every client sees it).
+      worldAmbient: (set?: string[]) => this.room?.send("ambient", set ? { set } : {}),
+      /* LEGACY SHIM, LOCAL ONLY: 17 gates still say `__ml.weather(idx)` with
+       * the old WEATHER_NAMES index. It maps that index onto the set the
+       * weather meant (ambient/runtime/matrix.ts LEGACY_INDEX) on THIS client
+       * and snaps the gloom — it does not touch the server. Reading back gives
+       * the index whose set matches, else -1. */
       weather: (idx?: number, instant = true) => {
         if (idx !== undefined) {
-          this.weatherIdx = idx % WEATHER_COUNT;
-          if (instant) {
-            snapGloom(this.gloom, this.weatherIdx);
-          }
+          this.ambientActive = new Set(LEGACY_INDEX[((idx % LEGACY_INDEX.length) + LEGACY_INDEX.length) % LEGACY_INDEX.length]);
+          if (instant) snapGloom(this.gloom, this.ambientActive);
         }
-        return this.weatherIdx;
+        const packed = packAmbient(this.ambientActive);
+        return LEGACY_INDEX.findIndex((row) => packAmbient(row) === packed);
       },
       cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.gloom.cloud, this.curSun[3]) ?? 1,
       mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.gloom.mist) ?? 0,
@@ -9020,15 +9025,14 @@ export class WorldScene extends Phaser.Scene {
       else if (on) this.chat.addLog("—", "Northern lights dance over Nangijala.");
       firstAuroraSync = false;
     });
-    let firstWeatherSync = true;
-    $(room.state).listen("weather", (idx: number) => {
-      this.weatherIdx = idx % WEATHER_COUNT;
-      this.hud?.refreshSettings(); // the weather button prints the state
-      if (firstWeatherSync) {
-        snapGloom(this.gloom, this.weatherIdx); // no roll-in on join
+    let firstAmbientSync = true;
+    $(room.state).listen("ambient", (packed: string) => {
+      this.ambientActive = unpackAmbient(packed);
+      if (firstAmbientSync) {
+        snapGloom(this.gloom, this.ambientActive); // no roll-in on join
       }
-      else this.chat.addLog("—", `Weather: ${WEATHER_NAMES[this.weatherIdx]}`);
-      firstWeatherSync = false;
+      else this.chat.addLog("—", `Ambient: ${packed || "clear"}`);
+      firstAmbientSync = false;
     });
     $(room.state).players.onAdd((player: any, id: string) => {
       this.addAvatar(id, player);
@@ -12933,16 +12937,17 @@ export class WorldScene extends Phaser.Scene {
 
     // World mood → composer: sun strength drives day/night beds + the music's
     // night dip; swimming muffles the whole mix (underwater insert).
-    // Name-matched (not index) so weather-list reordering can't break audio.
-    const wn = WEATHER_NAMES[this.weatherIdx % WEATHER_NAMES.length] as string;
+    // Read off the server's active ambient SET (weather is ordinary effects
+    // since 2026-09-18): the names are stable ids, so no index can drift.
+    const on = this.ambientActive;
     gameAudio.setEnv({
       sun: this.curSun[3],
       cloud: this.gloom.cloud,
       mist: this.gloom.mist,
-      rain: wn === "Drizzle" ? 0.35 : wn === "Rain" ? 0.7 : wn === "Heavy rain" || wn === "Storm" ? 1 : 0,
-      storm: wn === "Storm",
-      snow: wn === "Snowing",
-      windy: wn === "Windy",
+      rain: on.has("heavyrain") || on.has("storm") ? 1 : on.has("rain") ? 0.7 : on.has("drizzle") ? 0.35 : 0,
+      storm: on.has("storm"),
+      snow: on.has("snow"),
+      windy: on.has("windy"),
     });
     gameAudio.setUnderwater(!!state.players.get(myId)?.swimming);
 
@@ -14100,7 +14105,7 @@ export class WorldScene extends Phaser.Scene {
       // Weather: ease the cloud cover toward the synced target (~4s roll),
       // and grey the sky a touch while cloudy — "the sky is not perfect
       // blue" — before handing the ambient to the shader + CPU twin.
-      easeGloom(this.gloom, this.weatherIdx, this.game.loop.delta);
+      easeGloom(this.gloom, this.ambientActive, this.game.loop.delta);
       // the same ~4s roll the gloom uses, kept here for the aurora below
       const ca = 1 - Math.exp(-(this.game.loop.delta / 1000) / 4);
       this.ps();

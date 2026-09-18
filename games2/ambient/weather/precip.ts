@@ -143,7 +143,13 @@ export function makeRand(seed = 1): () => number {
   };
 }
 
-/* THE EXCLUSION RULE LIVES HERE, not in the Phaser feature, so it is the same
+import { WEATHER_UNIVERSE, conflictsOf } from "../runtime/matrix";
+
+/* THE EXCLUSION RULE IS THE MATRIX (matrix.ts), applied here over the whole
+ * weather universe — the eight weather effects plus thunder — so a feature's
+ * `conflicts` and the server's roller read the same rule.
+ *
+ * (Was: "each conflicts with the other five." That was the flat first cut, so it is the same
  * object the features are built from AND the thing the unit test can read
  * without dragging Phaser and the composer into node. `weather.ts` maps these
  * straight onto its AmbientFeatures — the descriptor IS the source of truth
@@ -161,7 +167,7 @@ export function weatherDescriptors(): WeatherDescriptor[] {
   return PRECIP.map((cfg) => ({
     name: cfg.name,
     idx: cfg.idx,
-    conflicts: PRECIP.filter((o) => o.name !== cfg.name).map((o) => o.name),
+    conflicts: conflictsOf(cfg.name, WEATHER_UNIVERSE),
     cfg,
   }));
 }

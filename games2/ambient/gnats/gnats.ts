@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { isRough } from "../runtime/env";
 import { AmbientCtx, AmbientEnv, AmbientFeature } from "../runtime/types";
 import { findGround, paintPixels } from "../runtime/ground";
 
@@ -148,7 +149,7 @@ interface Column {
  * back to the sun's own low band so the effect degrades instead of vanishing. */
 function duskGain(env: AmbientEnv): number {
   if (env.rain > 0.05) return 0;
-  if (env.weather >= 6) return 0; // storm, snow, wind — the air is moving
+  if (isRough(env)) return 0; // storm, snow, wind — nothing small hangs in it
   const known = env.phase === "Evening" || env.phase === "Morning" || env.phase === "Day" || env.phase === "Night";
   const base = known
     ? env.phase === "Evening"

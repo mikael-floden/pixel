@@ -514,8 +514,9 @@ everything — the goal is many at once). The runtime makes it symmetric
 | `fireflies` ⟷ `pollen` | day vs night floating motes |
 
 `water`, `thunder`, `sandstorm`, `leaves` are compatible with everything.
-THE SIX WEATHERS ARE THE ONE FULLY-EXCLUSIVE GROUP: each lists the other
-five, so at most one sheet can ever be on.
+WEATHER'S CONFLICTS ARE THE MATRIX (`runtime/matrix.ts`): precipitation one
+at a time; thunder with any rain but never snow; mist never in wind, heavy
+rain, storm or snow; windy never with storm; cloudy with anything.
 (Rain "one-at-a-time" is the games agent's WEATHER system — a single index —
 not an ambient toggle.)
 
@@ -561,12 +562,14 @@ controller (AUTO / NONE / solo-each).
 | `dragonflies/` | field | THE WATERLINE IN SUMMER, and the deliberate OPPOSITE of the butterflies above it: still, then a straight line at speed, then still again. It HOVERS on one point (a pixel of jitter, never a drift), DARTS in a linear segment that ends DEAD (easing the ends turns it into a bee), and PERCHES on a reed with its wings still OUT — a butterfly folds its wings at rest and a dragonfly never does, which at four pixels is the whole difference. The wings are a BLUR, not frames: at 400 beats a second there is no pose to draw | The maps2 agent's waterline pieces in view (`reed_beds`, `cattail_clumps`, `water_lily_clumps` — 124 placed), read by category from the display list; outdoors, by DAY, gone in rain and gone in wind |
 | `bats/` | episode | Night colony wheeling: boids in any direction (top-down), erratic jinking, scattering near the player (no landing) | base 1.0; day ×0.01 |
 | `birds/` | episode | Living day flock: boids over the world, landing on dry ground to peck, flushing near the player | base 1.0; night ×0.05 |
-| `weather/` (drizzle) | field | Fine rain: short soft streaks, a light drift left, ripples where each drop lands | Weather 3 |
-| `weather/` (rain) | field | Rain proper — longer streaks, harder slant, ground ripples | Weather 4 |
-| `weather/` (heavyrain) | field | A downpour: twice the count, longer and faster | Weather 5 |
-| `weather/` (storm) | field | The downpour plus a shared wind GUST every streak leans by, and camera-flash lightning with the composer's thunder in sync | Weather 6 |
-| `weather/` (snow) | field | Flakes that sway, SETTLE on the ground for a few seconds, then melt and fall again — and melt on contact with water instead of lying on it | Weather 7 |
-| `weather/` (windy) | field | Tumbling autumn debris streaming mostly sideways, with faint anime motion-lines racing ahead of it on the gust | Weather 8 |
+| `weather/` (cloudy) | field | No particles: cloud cover alone, the sky greyed toward its own mean (gloom) | The server's active set names `cloudy` |
+| `weather/` (mist) | field | No particles: the mist banks (nightlight's mist field) up | The server's active set names `mist` — never under wind, heavy rain, storm or snow (the matrix) |
+| `weather/` (drizzle) | field | Fine rain: short soft streaks, a light drift left, ripples where each drop lands | The server's active set names `drizzle` (or the row is forced on) |
+| `weather/` (rain) | field | Rain proper — longer streaks, harder slant, ground ripples | The server's active set names `rain` (or the row is forced on) |
+| `weather/` (heavyrain) | field | A downpour: twice the count, longer and faster | The server's active set names `heavyrain` (or the row is forced on) |
+| `weather/` (storm) | field | The downpour plus a shared wind GUST every streak leans by, and camera-flash lightning with the composer's thunder in sync | The server's active set names `storm` (or the row is forced on) |
+| `weather/` (snow) | field | Flakes that sway, SETTLE on the ground for a few seconds, then melt and fall again — and melt on contact with water instead of lying on it | The server's active set names `snow` (or the row is forced on) |
+| `weather/` (windy) | field | Tumbling autumn debris streaming mostly sideways, with faint anime motion-lines racing ahead of it on the gust | The server's active set names `windy` (or the row is forced on) |
 | `thunder/` | episode | Distant sheet lightning beyond the horizon | base 0.35 × (1 + rain + night); cloud/mist as weak proxies |
 | `sandstorm/` | episode | Warm dust veil + wind-driven sand streaks | base 0.6 × **sand** (only rolls while the player stands on sandy ground) × dryness |
 | `leaves/` | episode | Autumn leaves spiralling down, tumbling edge-on | base 0.5 × (0.6 + 0.4·cloud); prefers Evening |
@@ -621,30 +624,54 @@ flock wheels through the ceiling.
   indoor tap lands where the finger is), so **every indoor placement asks the
   picker**, and `flatWith`/`findGround` stay outdoor tools until someone
   teaches them the cut.
-- **WEATHER IS AMBIENT'S, AND IT IS SIX FEATURES SHARING ONE SHEET**
-  (maintainer 2026-09-17: "That should have always been an ambient effect …
-  I give you full rights to change the game so you have full control over the
-  whether effects!"). `client/src/weatherfx.ts` is gone; `weather/` holds a
-  pure model (`precip.ts`), one pooled Phaser layer (`layer.ts`) and a factory
-  that registers **drizzle, rain, heavyrain, storm, snow, windy**. He chose one
-  row per type, so each is its own Settings toggle.
-  THE RAIN TYPES CANNOT OVERLAP, TWICE OVER: structurally in AUTO (each gates
-  on `env.weather === its index` and the world has ONE index), and by
-  `conflicts` in MANUAL — which is the half that needed saying, because manual
-  mode lets a player force effects on by hand and nothing else would stop snow
-  and heavy rain running together.
-  ONE POOL, NOT SIX: only one weather can draw. Every feature's `update` runs
-  every frame in ARRAY ORDER (`runtime/mount.ts`), so each writes its request
-  and THE LAST ONE CREATED resolves and steps the layer exactly once — no
-  frame of latency, no double-step. Preserve that if they are re-registered.
+- **EVERY AMBIENT EFFECT IS SWITCHED ON BY THE SERVER, PER ZONE — AND WEATHER
+  IS AN ORDINARY EFFECT** (maintainer 2026-09-18: "All ambient effects will be
+  controlled by the server in order to maintain the % of time that ambient
+  effect should be active in a zone ... Weather is an ambient effect like
+  every other ambient effect except it has more criteria for what other
+  weather effects it can run side by side with"). There is NO weather index
+  any more: `WorldState.ambient` is the room's ACTIVE SET (sorted,
+  comma-joined effect names), rolled by `WorldRoom.rollAmbientSet` every
+  `EPISODE_S` (4–9 min) from a per-zone weight table through the matrix, and
+  carried on the clock doc so every zone room of a world shows the same sky.
+  One default zone = the whole map (`DEFAULT_ZONE`) until the maps2 agent's
+  areas land, at which point that table becomes the zone's row. The client
+  reads it as `__ml.ambientActive()` → `env.active`; a feature is on iff its
+  name is in the set (or its row was forced for a test). Fields keep their
+  world gates on top — a set that names `fireflies` at noon is still noon.
+  The director APPLIES the set to the episodes (several may run: thunder
+  under rain) and its lottery is parked; `__mlAmbient.zoneControl(false)` is
+  his Settings switch back to the free client roll.
+  WEATHER IS EIGHT FEATURES PLUS THUNDER: cloudy, mist (gloom-only rows),
+  drizzle, rain, heavyrain, storm, snow, windy — sharing ONE pooled sheet
+  (`weather/layer.ts`), because at most one precipitation can be on. Every
+  feature's `update` runs every frame in ARRAY ORDER, so each writes its
+  request and THE LAST ONE CREATED resolves and steps the layer exactly once.
+  THE MATRIX (`runtime/matrix.ts`, pure, imported by the SERVER and by the
+  features — it lives in `runtime/` because features may not import each
+  other) is both locks at once: the server never rolls an incompatible set,
+  and the Settings switches grey on it in manual mode. Its reasons are
+  physical and each is his to overrule: thunder never with snow; mist only in
+  still damp air (cloud, drizzle, rain); windy not with mist or with a storm
+  that has its own gusts; precipitation one at a time.
+  THE ROLLER DROPS THE EXTRA, NEVER THE PRECIPITATION: a zone that rolled
+  heavy rain gets heavy rain and only loses the mist that cannot lie in it.
+  Weights are SHARES OF TIME (a 12% rain rains 12% of rolls; 0 never); the
+  roll is deterministic per roll-time so a room recycle does not change the
+  weather.
   DEPTH IS A DELIBERATE EXCEPTION: the sheet stays at 899_500 (splashes
   899_490), BELOW the darkness overlay and NOT in the 900_000.x band, because
   that is what makes rain dim with the night, take torchlight, and leave a
   character reading in FRONT of it.
+  THE OLD RING IS A LOCAL SHIM ONLY: 17 gates say `__ml.weather(idx)`; it
+  maps the old index onto the set that weather meant (`LEGACY_INDEX`) on THIS
+  client and never touches the server. `__ml.worldAmbient(names)` is the
+  server-side force for gates and QA.
 - **WEATHER'S GRIP ON THE LIGHT IS A PURE FUNCTION THE RENDERER CALLS, NOT A
-  FEATURE'S OUTPUT.** `weather/gloom.ts` owns the cloud/dim/mist tables and
-  their ~4 s ease — ambient's numbers now — but `WorldScene` IMPORTS and calls
-  it. It must never read them off a registered feature: those three feed
+  FEATURE'S OUTPUT.** `weather/gloom.ts` owns the cloud/dim/mist tables, keyed by
+  ACTIVE EFFECT NAME (several at once take the strongest of each term, so
+  cloud under rain is the rain's cloud, not a sum), and their ~4 s ease —
+  ambient's numbers now — but `WorldScene` IMPORTS and calls it. It must never read them off a registered feature: those three feed
   `ambOut`, the NIGHT SHADER's ambient, so a player switching the Rain effect
   off in Settings would BRIGHTEN THE WORLD mid-storm. World lighting may not
   depend on an optional cosmetic subsystem. The test reproduces WorldScene's

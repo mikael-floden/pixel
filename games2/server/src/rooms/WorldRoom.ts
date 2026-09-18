@@ -73,7 +73,6 @@ import {
   TIME_PHASE_COUNT,
   TIME_PHASE_SECONDS,
   TIME_SPEEDS,
-  WEATHER_COUNT,
   parseSpawns,
   buildZoneRuntimes,
   nearestZoneCell,
@@ -139,6 +138,7 @@ import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning, sceneryHitboxOverrides } from "../live.js";
 import { AccountRecord, AccountStore, accountStore, resolveAccount } from "../account/store.js";
 import type { ZoneGrid, Rect, ZoneCfg } from "@nangijala/shared";
+import { DEFAULT_ZONE, EPISODE_S, compatible, packAmbient, rollAmbient } from "../../../ambient/runtime/matrix.js";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
@@ -154,7 +154,8 @@ interface WorldClock {
   phaseT: number;
   frozen: boolean;
   timeSpeed: number;
-  weather: number;
+  ambient: string;          // the active ambient set (ambient/weather/matrix.ts)
+  nextAmbientAt: number | null; // when the set re-rolls
   aurora: boolean;
   nextPhaseAt: number | null;
   origin?: string; // the room that wrote it (a room skips its own publish)
@@ -553,13 +554,33 @@ export class WorldRoom extends Room<WorldState> {
 
   /** Mirror the clock into the per-world registry so the NEXT room for this
    * world (rooms recycle constantly) resumes instead of resetting. */
+  /** When the active ambient set re-rolls (bus-shared like the clock). */
+  private nextAmbientAt: number | null = null;
+
+  /** Re-roll the room's active ambient set from its zone's weights. One zone
+   *  = the whole map today (DEFAULT_ZONE); when the maps2 agent's areas land
+   *  this reads the row for this room's zone instead. `force` rolls now;
+   *  otherwise only once the episode is up. Deterministic per roll time so
+   *  every zone room of the world lands on the same set (the clock doc is
+   *  shared over the bus and applyClock adopts it). */
+  private rollAmbientSet(force = false): boolean {
+    const now = Date.now();
+    if (!force && this.nextAmbientAt !== null && now < this.nextAmbientAt) return false;
+    let seed = (now / 1000) | 0;
+    const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 0xffffffff; };
+    this.state.ambient = packAmbient(rollAmbient(DEFAULT_ZONE, rnd));
+    this.nextAmbientAt = now + (EPISODE_S[0] + rnd() * (EPISODE_S[1] - EPISODE_S[0])) * 1000;
+    return true;
+  }
+
   private saveClock() {
     const doc: WorldClock = {
       timeIdx: this.state.timeIdx,
       phaseT: this.state.phaseT,
       frozen: this.state.frozen,
       timeSpeed: this.state.timeSpeed,
-      weather: this.state.weather,
+      ambient: this.state.ambient,
+      nextAmbientAt: this.nextAmbientAt,
       aurora: this.state.aurora,
       nextPhaseAt: this.nextPhaseAt,
       origin: this.roomId,
@@ -579,7 +600,8 @@ export class WorldRoom extends Room<WorldState> {
     this.state.phaseT = doc.phaseT;
     this.state.frozen = doc.frozen;
     this.state.timeSpeed = doc.timeSpeed ?? (doc.frozen ? 0 : 1);
-    this.state.weather = doc.weather;
+    this.state.ambient = doc.ambient ?? "";
+    this.nextAmbientAt = doc.nextAmbientAt ?? null;
     this.state.aurora = doc.aurora;
     this.nextPhaseAt = doc.nextPhaseAt;
   }
@@ -1045,7 +1067,8 @@ export class WorldRoom extends Room<WorldState> {
       this.state.phaseT = saved.phaseT;
       this.state.frozen = saved.frozen;
       this.state.timeSpeed = saved.timeSpeed ?? (saved.frozen ? 0 : 1);
-      this.state.weather = saved.weather;
+      this.state.ambient = saved.ambient ?? "";
+      this.nextAmbientAt = saved.nextAmbientAt ?? null;
       this.state.aurora = saved.aurora;
       this.nextPhaseAt = saved.nextPhaseAt;
       let guard = 0;
@@ -1061,17 +1084,27 @@ export class WorldRoom extends Room<WorldState> {
       }
       this.saveClock();
     } else {
+      this.rollAmbientSet(true); // a fresh world starts with a rolled set, not a blank sky
       this.scheduleTimeOfDay();
     }
     this.scheduleWildStar();
 
-    // Weather is the second world-state layer, same contract.
-    this.onMessage("weather", (client, message: { v?: number }) => {
-      const v = message?.v;
-      this.state.weather =
-        typeof v === "number" && Number.isInteger(v) && v >= 0 && v < WEATHER_COUNT
-          ? v
-          : (this.state.weather + 1) % WEATHER_COUNT;
+    /* AMBIENT IS SERVER-OWNED, PER ZONE (maintainer 2026-09-18). A room's
+     * active set is rolled by `rollAmbientSet` on an episode cadence; this
+     * message is the QA/gate hook that FORCES a set (and parks the roller
+     * until the next episode), the way `timeofday` forces the clock. An
+     * omitted or unknown set re-rolls at once. Only names the matrix knows
+     * are accepted; an incompatible set is filtered through it. */
+    this.onMessage("ambient", (client, message: { set?: string[] }) => {
+      const names = Array.isArray(message?.set) ? message.set.filter((n) => typeof n === "string") : null;
+      if (names) {
+        const kept: string[] = [];
+        for (const n of names) if (kept.every((k) => compatible(k, n))) kept.push(n);
+        this.state.ambient = packAmbient(kept);
+        this.nextAmbientAt = Date.now() + EPISODE_S[1] * 1000;
+      } else {
+        this.rollAmbientSet(true);
+      }
       this.saveClock();
     });
 
@@ -1534,6 +1567,10 @@ export class WorldRoom extends Room<WorldState> {
     // Chess seating scan at ~4Hz (20Hz sim / 5) — distance math over a
     // handful of boards; the manager is quiet when nothing is happening.
     if (this.chess && ++this.chessTick >= 5) { this.chessTick = 0; this.chess.tick(); }
+    // Ambient episode: re-roll the active set once its window is up
+    // (rollAmbientSet is a no-op until then; the clock doc carries the result
+    // to every zone room of the world).
+    if (this.rollAmbientSet()) this.saveClock();
     // World clock: phase deadline checked here (see nextPhaseAt note); the
     // synced phaseT sweeps continuously between rollovers.
     if (this.nextPhaseAt !== null) {

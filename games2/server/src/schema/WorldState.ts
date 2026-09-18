@@ -391,7 +391,11 @@ export class WorldState extends Schema {
   declare pq: number;
   declare timeIdx: number; // shared time-of-day phase (server-owned)
   declare phaseT: number; // continuous progress 0..1 through the phase (clock hand/sun sweep smoothly)
-  declare weather: number; // shared weather layer (server-owned; 0 = clear)
+  /** THE ACTIVE AMBIENT SET (maintainer 2026-09-18): sorted, comma-joined
+   *  names of the ambient effects the server has switched on for this room —
+   *  weather included, it is ordinary effects now. Rolled by WorldRoom from
+   *  the zone's weights through ambient/runtime/matrix.ts; "" = nothing on. */
+  declare ambient: string;
   declare aurora: boolean; // aurora night: northern lights over the world
   declare frozen: boolean; // timeSpeed === 0 mirror (kept for the switch/UI)
   declare timeSpeed: number; // world-clock speed multiplier (TIME_SPEEDS)
@@ -412,7 +416,7 @@ export class WorldState extends Schema {
     this.pq = 2;
     this.timeIdx = DEFAULT_TIME_IDX;
     this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
-    this.weather = 0;
+    this.ambient = "";
     this.aurora = false;
     // The day/night cycle RUNS BY ITSELF at x1 (maintainer 2026-07-31: "make
     // the time tick at normal x1 speed by default — I have to press the button
@@ -441,7 +445,7 @@ defineTypes(WorldState, {
   pq: "number",
   timeIdx: "number",
   phaseT: "number",
-  weather: "number",
+  ambient: "string",
   aurora: "boolean",
   frozen: "boolean",
   timeSpeed: "number",

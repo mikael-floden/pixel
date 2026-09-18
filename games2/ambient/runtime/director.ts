@@ -16,7 +16,10 @@ export class Director {
   private episodes: AmbientFeature[];
   private active: AmbientFeature | null = null;
   private lastPhase = "";
-  private lastWeather = -1;
+  private lastActive = "";
+  /** Zone control ON = the server's set drives the episodes and the lottery
+   *  is parked; OFF = the old free client lottery (his Settings switch). */
+  zoneControl = true;
   private lastWeights: Record<string, number> = {};
   private lastEnv: AmbientEnv | null = null;
   private pin: DirectorPin = null;
@@ -30,10 +33,13 @@ export class Director {
    * transitions are tracked but never rolled — the pin owns the stage. */
   tick(env: AmbientEnv) {
     this.lastEnv = env;
-    if (env.phase === this.lastPhase && env.weather === this.lastWeather) return;
+    const packed = [...env.active].sort().join(",");
+    if (env.phase === this.lastPhase && packed === this.lastActive) return;
     this.lastPhase = env.phase;
-    this.lastWeather = env.weather;
-    if (this.pin === null) this.reroll(env);
+    this.lastActive = packed;
+    if (this.pin !== null) return;
+    if (this.zoneControl) this.applySet(env.active);
+    else this.reroll(env);
   }
 
   /** Demo-mode pin (the settings ambient button). null resumes auto and
@@ -47,7 +53,23 @@ export class Director {
     this.setActive(pin === "quiet" ? null : pin);
   }
 
+  /** SERVER-DRIVEN: every episode named in the set is on, every other is
+   *  off. Several may run at once here (thunder under rain) — the matrix on
+   *  the server already kept the set compatible. */
+  private applySet(active: ReadonlySet<string>) {
+    for (const f of this.episodes) {
+      const want = active.has(f.name);
+      const is = this.active === f || this.on.has(f);
+      if (want && !is) { f.setActive!(true); this.on.add(f); }
+      else if (!want && is) { f.setActive!(false); this.on.delete(f); }
+    }
+    this.active = null;
+  }
+  private on = new Set<AmbientFeature>();
+
   private setActive(pick: AmbientFeature | null) {
+    for (const f of this.on) if (f !== pick) f.setActive!(false);
+    this.on.clear();
     if (pick === this.active) return;
     this.active?.setActive!(false); // fades out gracefully, never hard-cuts
     pick?.setActive!(true);
@@ -77,10 +99,11 @@ export class Director {
 
   debug() {
     return {
-      active: this.active?.name ?? null,
+      active: this.active?.name ?? ([...this.on].map((f) => f.name).join(",") || null),
       pinned: this.pin === null ? null : this.pin === "quiet" ? "quiet" : this.pin.name,
       phase: this.lastPhase,
-      weather: this.lastWeather,
+      set: this.lastActive,
+      zoneControl: this.zoneControl,
       weights: { ...this.lastWeights, quiet: QUIET_WEIGHT },
     };
   }

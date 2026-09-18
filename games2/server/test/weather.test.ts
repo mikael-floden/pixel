@@ -4,7 +4,8 @@ import { createServer } from "http";
 import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
-import { ROOM_NAME, WEATHER_COUNT } from "@nangijala/shared";
+import { ROOM_NAME } from "@nangijala/shared";
+import { isCompatibleSet, unpackAmbient } from "../../ambient/runtime/matrix.js";
 import { WorldRoom, resetWorldClocks } from "../src/rooms/WorldRoom.js";
 
 // The per-world clock registry outlives rooms BY DESIGN; tests in one file
@@ -31,7 +32,11 @@ async function waitFor(cond: () => boolean, timeout = 3000): Promise<void> {
   }
 }
 
-test("weather is server-owned world state every client sees", async () => {
+// SINCE 2026-09-18 the field is `ambient` — the room's ACTIVE AMBIENT SET,
+// weather included (weather is ordinary ambient effects now). The intent of
+// this test is unchanged: server-owned, every client sees the same value, one
+// client can change it and the other sees the change.
+test("the ambient set is server-owned world state every client sees", async () => {
   const port = 2987;
   const gameServer = new Server({
     transport: new WebSocketTransport({ server: createServer() }),
@@ -46,15 +51,22 @@ test("weather is server-owned world state every client sees", async () => {
     const r2 = await c2.joinOrCreate(ROOM_NAME, { name: "B", character: "char_b" });
     await waitFor(() => r1.state.players.size === 2 && r2.state.players.size === 2);
 
-    // Default: clear sky for everyone.
-    assert.equal(r1.state.weather, 0);
-    assert.equal(r2.state.weather, 0);
+    // A fresh world ROLLS a set (not a blank sky); both clients hold the
+    // same one, and whatever it is, it is a set the matrix allows.
+    await waitFor(() => typeof r1.state.ambient === "string" && r1.state.ambient === r2.state.ambient);
+    assert.ok(isCompatibleSet(unpackAmbient(r1.state.ambient)), `rolled ${r1.state.ambient}`);
 
-    // One client changes the weather; both see it, and it wraps.
-    r1.send("weather");
-    await waitFor(() => r1.state.weather === 1 && r2.state.weather === 1);
-    for (let i = 1; i < WEATHER_COUNT; i++) r2.send("weather");
-    await waitFor(() => r1.state.weather === 0 && r2.state.weather === 0, 4000);
+    // One client forces a set; both see it.
+    r1.send("ambient", { set: ["rain", "thunder"] });
+    await waitFor(() => r1.state.ambient === "rain,thunder" && r2.state.ambient === "rain,thunder");
+
+    // An incompatible ask is filtered through the matrix, never applied raw.
+    r2.send("ambient", { set: ["snow", "rain", "mist"] });
+    await waitFor(() => r1.state.ambient === "snow" && r2.state.ambient === "snow", 4000);
+
+    // No set = re-roll: still shared, still compatible.
+    r1.send("ambient", {});
+    await waitFor(() => r1.state.ambient === r2.state.ambient && isCompatibleSet(unpackAmbient(r1.state.ambient)), 4000);
 
     await r1.leave();
     await r2.leave();

@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { isRough } from "../runtime/env";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { SceneryPiece, sceneryInView } from "../runtime/scenery";
 import { MAX_SAT, saturation } from "../runtime/palette";
@@ -196,8 +197,8 @@ export function dragonfliesFeature(): AmbientFeature {
   };
 
   /** Day, warm, still. */
-  const weight = (env: { sun: number; rain: number; weather: number }): number => {
-    if (env.weather >= 6) return 0; // storm, snow, wind — nothing hovers in it
+  const weight = (env: { sun: number; rain: number; active: ReadonlySet<string> }): number => {
+    if (isRough(env)) return 0; // storm, snow, wind — nothing small hangs in it
     const day = Math.max(0, Math.min(1, (env.sun - 0.22) / 0.4));
     return day * Math.max(0, 1 - Math.min(1, env.rain * 1.8));
   };
@@ -305,7 +306,7 @@ export function dragonfliesFeature(): AmbientFeature {
         gain,
         suppressed,
         forced,
-        weight: +weight({ sun: 1, rain: 0, weather: 0 }).toFixed(2),
+        weight: +weight({ sun: 1, rain: 0, active: new Set<string>() }).toFixed(2),
         count: flies.length,
         ...stats,
         maxSat: MAX_SAT,

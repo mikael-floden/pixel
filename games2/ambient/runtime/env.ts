@@ -44,6 +44,12 @@ export function sampleEnv(prev?: AmbientEnv, cx?: number, cy?: number): AmbientE
     /* probe drifted — keep previous/default */
   }
   try {
+    const act = (ml.ambientActive as undefined | (() => string[]))?.();
+    env.active = new Set(Array.isArray(act) ? act.filter((n) => typeof n === "string") : []);
+  } catch {
+    env.active = new Set();
+  }
+  try {
     const w = (
       ml.weatherInfo as undefined
       | (() => { idx: number; name: string; cloud: number; mist?: number; precip?: { shown?: number } | null })
@@ -51,12 +57,12 @@ export function sampleEnv(prev?: AmbientEnv, cx?: number, cy?: number): AmbientE
     if (w) {
       if (typeof w.cloud === "number") env.cloud = clamp01(w.cloud);
       if (typeof w.mist === "number") env.mist = clamp01(w.mist);
-      if (typeof w.idx === "number") env.weather = w.idx;
-      if (typeof w.name === "string") env.weatherName = w.name;
       // Rain-splash intensity: rain KINDS only (not snow/wind), ramped with
       // the games agent's live drop count so splashes appear as the rain
       // rolls in, not before.
-      const kind = RAIN_INTENSITY[w.name] ?? 0;
+      // the strongest rain KIND in the active set (names are stable ids)
+      let kind = 0;
+      for (const n of env.active) kind = Math.max(kind, RAIN_INTENSITY[n] ?? 0);
       // The DRAWN density comes from ambient's own weather layer now, not
       // from the game (ambient owns weather since 2026-09-17) — see
       // runtime/precipstate.ts for why the seam lives in runtime/.
@@ -80,15 +86,22 @@ const clamp01 = (v: number) => Math.min(1, Math.max(0, v));
 // Rain-splash intensity per RAIN weather name (games agent's WEATHER_NAMES).
 // Snow / Windy are precipitation but not rain → no splashes.
 const RAIN_INTENSITY: Record<string, number> = {
-  Drizzle: 0.35,
-  Rain: 0.65,
-  "Heavy rain": 1.0,
-  Storm: 1.0,
+  drizzle: 0.35,
+  rain: 0.7,
+  heavyrain: 1,
+  storm: 1,
 };
 
 /** Is the current weather a rainy/stormy one? Matches by NAME so thunder's
  * ×2 and the rainbow's rain weight pick up the games agent's rain weathers
  * (Drizzle/Rain/Heavy rain/Storm) automatically. */
 export function isRainy(env: AmbientEnv): boolean {
-  return /drizzle|rain|storm|thunder|shower/i.test(env.weatherName);
+  for (const n of env.active) if (n === "thunder" || (RAIN_INTENSITY[n] ?? 0) > 0) return true;
+  return false;
+}
+
+/** ROUGH AIR — storm, snow or wind is on. What `env.weather >= 6` used to
+ *  mean: nothing small hovers, flutters or hangs in it. */
+export function isRough(env: { active: ReadonlySet<string> }): boolean {
+  return env.active.has("storm") || env.active.has("snow") || env.active.has("windy");
 }

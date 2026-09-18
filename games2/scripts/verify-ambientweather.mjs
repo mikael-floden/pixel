@@ -7,7 +7,11 @@
 //      density ease left a storm raining 160 drops on a clear sky, RISING;
 //   3. the MANUAL lock actually refuses — two rain types can never be
 //      switched on together by hand (the half `conflicts` exists for);
-//   4. the sheet obeys the roof: no rain indoors.
+//   4. the sheet obeys the roof: no rain indoors;
+//   5. THE SERVER OWNS IT (maintainer 2026-09-18): forcing the ROOM's set on
+//      the server reaches this client as its active set and draws — thunder
+//      under rain together, snow alone — and zone control off/on hands the
+//      stage to the client lottery and back.
 //
 //   node scripts/verify-weather.mjs      (needs the dev stack on :5173)
 import { chromium } from "playwright-core";
@@ -26,7 +30,8 @@ const GAME_URL = process.env.GAME_URL || "http://localhost:5173/";
 let failed = false;
 const fail = (m) => { console.error("FAIL:", m); failed = true; };
 
-const WX = ["drizzle", "rain", "heavyrain", "storm", "snow", "windy"];
+const WX = ["cloudy", "mist", "drizzle", "rain", "heavyrain", "storm", "snow", "windy"];
+const SHEETS = ["drizzle", "rain", "heavyrain", "storm", "snow", "windy"];
 /** index -> [feature, cloud, dim] straight out of ambient/weather/gloom.ts. */
 const CASES = [
   [3, "drizzle", 0.35, 0.05],
@@ -72,7 +77,7 @@ for (const [idx, want, cloud, dim] of CASES) {
     }
     const wi = window.__ml.weatherInfo();
     return { out, cloud: +wi.cloud.toFixed(3), dim: +wi.precipDim.toFixed(3) };
-  }, WX);
+  }, SHEETS);
   const drawing = Object.entries(r.out).filter(([, v]) => v > 0);
   console.log(`weather ${idx}: drawing [${drawing.map(([k, v]) => `${k}:${v}`).join(", ") || "nothing"}] cloud ${r.cloud} dim ${r.dim}`);
   if (drawing.length > 1) fail(`weather ${idx} has ${drawing.length} sheets up at once: ${drawing.map(([k]) => k).join(" + ")}`);
@@ -83,10 +88,44 @@ for (const [idx, want, cloud, dim] of CASES) {
   if (Math.abs(r.dim - dim) > 0.02) fail(`weather ${idx}: precip dim ${r.dim}, expected ${dim}`);
 }
 
+/* ---- 5. the SERVER owns the set --------------------------------------------- */
+const srv = await page.evaluate(async () => {
+  window.__mlAmbient.auto(true);
+  window.__mlAmbient.zoneControl(true);
+  window.__ml.worldAmbient(["rain", "thunder"]);
+  await new Promise((r) => setTimeout(r, 7000));
+  const act = window.__ml.ambientActive();
+  const rain = window.__mlAmbient.debug("rain");
+  const th = window.__mlAmbient.debug("thunder");
+  const dir = window.__mlAmbient.director?.() ?? null;
+  window.__ml.worldAmbient(["snow"]);
+  await new Promise((r) => setTimeout(r, 7000));
+  const act2 = window.__ml.ambientActive();
+  const snow = window.__mlAmbient.debug("snow");
+  const rain2 = window.__mlAmbient.debug("rain");
+  // hand the stage back to the client lottery, then to the server again
+  window.__mlAmbient.zoneControl(false);
+  await new Promise((r) => setTimeout(r, 1500));
+  const free = window.__mlAmbient.zoneControl();
+  window.__mlAmbient.zoneControl(true);
+  await new Promise((r) => setTimeout(r, 1500));
+  const back = window.__mlAmbient.zoneControl();
+  return { act, rainDrawn: rain?.drawn ?? 0, thunderOn: !!(th && (th.active ?? th.on ?? th.gain > 0)), act2, snowDrawn: snow?.drawn ?? 0, rainAfter: rain2?.drawn ?? 0, free, back, dir };
+});
+console.log(`server: forced [rain,thunder] -> client active [${srv.act}] rain drawn ${srv.rainDrawn} thunder on ${srv.thunderOn}; forced [snow] -> [${srv.act2}] snow ${srv.snowDrawn} rain ${srv.rainAfter}; zoneControl off=${srv.free} on=${srv.back}`);
+if (!(srv.act.includes("rain") && srv.act.includes("thunder"))) fail("the server's forced set did not reach the client");
+if (srv.rainDrawn <= 0) fail("rain was in the server's set but drew nothing");
+if (!srv.thunderOn) fail("thunder was in the server's set but the episode did not start");
+if (!(srv.act2.length === 1 && srv.act2[0] === "snow")) fail(`forcing [snow] left the client at [${srv.act2}]`);
+if (srv.snowDrawn <= 0 || srv.rainAfter > 0) fail(`after [snow]: snow ${srv.snowDrawn}, rain ${srv.rainAfter}`);
+if (srv.free !== false || srv.back !== true) fail("zoneControl did not toggle");
+await page.evaluate(() => window.__ml.worldAmbient([])); // clear the room for the arms below
+await page.waitForTimeout(5000);
+
 /* ---- 3. MANUAL refuses a second rain type -------------------------------- */
 const lock = await page.evaluate((names) => {
-  const A = names[1]; // rain
-  const B = names[4]; // snow
+  const A = "rain";
+  const B = "snow";
   window.__mlAmbient.setEnabled(A, true);
   const second = window.__mlAmbient.setEnabled(B, true);
   const eff = window.__mlAmbient.effects();

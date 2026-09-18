@@ -13,10 +13,12 @@ export interface AmbientEnv {
   cloud: number;
   /** 0..1 mist density (weather 2). */
   mist: number;
-  /** Weather index into the game's WEATHER_NAMES (0 = clear). */
-  weather: number;
   /** Weather display name ("Clear sky" | "Cloudy at times" | "Mist" | …). */
-  weatherName: string;
+  /** THE SERVER'S ACTIVE AMBIENT SET for this room (maintainer 2026-09-18):
+   *  which effects are on right now, weather included — weather is ordinary
+   *  effects, there is no index. Empty = a clear sky with nothing forced.
+   *  Read from __ml.ambientActive(); absent probe = empty. */
+  active: ReadonlySet<string>;
   /** Current phase name ("Night" | "Morning" | "Day" | "Evening"), best-effort. */
   phase: string;
   /** 0..1 aurora intensity (rolls in on some nights). */
@@ -141,8 +143,7 @@ export function defaultEnv(): AmbientEnv {
     night: 0,
     cloud: 0,
     mist: 0,
-    weather: 0,
-    weatherName: "Clear sky",
+    active: new Set<string>(),
     phase: "Day",
     aurora: 0,
     sand: 0,

@@ -1,5 +1,6 @@
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { PRECIP, Cfg, weatherDescriptors } from "./precip";
+import { WEATHER_UNIVERSE, conflictsOf } from "../runtime/matrix";
 import { PrecipLayer } from "./layer";
 
 /* WEATHER IS AMBIENT (maintainer 2026-09-17: "That should have always been an
@@ -57,7 +58,9 @@ export function weatherFeatures(): AmbientFeature[] {
       // WANTED when the world says so, or when a player forced this row on.
       // `outdoor` is the charter's gate — weather does not fall through a roof
       // the game has cut away.
-      const wants = !suppressed.has(cfg.name) && (forced.has(cfg.name) || ctx.env.weather === cfg.idx);
+      // THE SERVER SAYS (maintainer 2026-09-18): on iff this effect is in the
+      // room's active set — or a player forced the row on to test it.
+      const wants = !suppressed.has(cfg.name) && (forced.has(cfg.name) || ctx.env.active.has(cfg.name));
       // `outdoor` is the charter's gate and the one behaviour this port ADDS:
       // weatherfx.ts drew the sheet through a roof the game had cut away.
       const g = wants ? ctx.outdoor : 0;
@@ -95,5 +98,20 @@ export function weatherFeatures(): AmbientFeature[] {
     dispose() { if (isResolver) layer.dispose(); },
   });
 
-  return PRECIP.map((cfg, i) => make(cfg, i === PRECIP.length - 1));
+  /* CLOUDY and MIST are weather with no particles: their whole effect is the
+   * gloom (weather/gloom.ts reads the active set directly), so the feature is
+   * a row — it exists so he can see and test them like every other effect,
+   * and so the matrix can forbid mist under wind. */
+  const gloomOnly = (name: string): AmbientFeature => ({
+    name,
+    conflicts: conflictsOf(name, WEATHER_UNIVERSE),
+    init() {},
+    update() {},
+    setForced(on: boolean) { if (on) forced.add(name); else forced.delete(name); },
+    setSuppressed(on: boolean) { if (on) suppressed.add(name); else suppressed.delete(name); },
+    debug() { return { gain: 0, drawn: 0, all: [], gloomOnly: true, conflicts: conflictsOf(name, WEATHER_UNIVERSE) }; },
+    dispose() {},
+  });
+
+  return [gloomOnly("cloudy"), gloomOnly("mist"), ...PRECIP.map((cfg, i) => make(cfg, i === PRECIP.length - 1))];
 }
