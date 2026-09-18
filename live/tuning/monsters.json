@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-18T09:28:28.180Z",
+  "updated_at": "2026-09-18T14:52:14.010Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -109,7 +109,61 @@
           "item": "smooth_black_egg",
           "chance": 0.16
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 15.75,
+        "ry": 9.25,
+        "offsets": {
+          "angry_v1#south": {
+            "ax": -0.26,
+            "ay": 10.72
+          },
+          "angry_v1#east": {
+            "ax": -0.52,
+            "ay": 12.82
+          },
+          "angry_v1#south-east": {
+            "ax": -0.49,
+            "ay": 12.36
+          },
+          "angry_v1#north-east": {
+            "ax": 0.28,
+            "ay": 11.18
+          },
+          "idle#south": {
+            "ax": -0.08,
+            "ay": 10.67
+          },
+          "idle#south-east": {
+            "ax": -1.3,
+            "ay": 11.34
+          },
+          "idle#east": {
+            "ax": -0.34,
+            "ay": 13.23
+          },
+          "idle#north-east": {
+            "ax": -1.17,
+            "ay": 11.39
+          },
+          "idle#north": {
+            "ax": -0.38,
+            "ay": 10.74
+          },
+          "idle#north-west": {
+            "ax": 0.2,
+            "ay": 11.31
+          },
+          "idle#west": {
+            "ax": 0,
+            "ay": 11.76
+          },
+          "idle#south-west": {
+            "ax": 0.55,
+            "ay": 12.44
+          }
+        }
+      }
     },
     "basilisk": {
       "level": 16,
