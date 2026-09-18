@@ -1,0 +1,141 @@
+{
+  "id": "bog_oak",
+  "name": "Bogoak",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Five thousand years under the water made it harder than the axes that felled it. It remembers being a wood.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Black bog oak trunk hauled upright out of the peat, the wood iron-hard and split down its length, a spread root mass for feet, water pouring from every crack, a broken cart axle grown through its side and no leaves anywhere on it",
+  "size": [
+    136,
+    136
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bog_oak/rotations/south.webp",
+    "south-east": "bog_oak/rotations/south-east.webp",
+    "east": "bog_oak/rotations/east.webp",
+    "north-east": "bog_oak/rotations/north-east.webp",
+    "north": "bog_oak/rotations/north.webp",
+    "north-west": "bog_oak/rotations/north-west.webp",
+    "west": "bog_oak/rotations/west.webp",
+    "south-west": "bog_oak/rotations/south-west.webp"
+  },
+  "sheet": "bog_oak/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b1ae784f-ad78-4535-b21e-418b10ff0f68",
+  "seed": 174190542,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:05:08+00:00",
+  "elapsed_s": 168.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.639,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.639,
+        "bbox": [
+          18,
+          6,
+          119,
+          130
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.736,
+        "bbox": [
+          17,
+          6,
+          115,
+          131
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.75,
+        "bbox": [
+          23,
+          6,
+          119,
+          131
+        ],
+        "fill": 0.649,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.729,
+        "bbox": [
+          17,
+          6,
+          119,
+          128
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.758,
+        "bbox": [
+          23,
+          6,
+          116,
+          132
+        ],
+        "fill": 0.634,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.741,
+        "bbox": [
+          23,
+          6,
+          119,
+          132
+        ],
+        "fill": 0.654,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.741,
+        "bbox": [
+          23,
+          6,
+          113,
+          132
+        ],
+        "fill": 0.613,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.758,
+        "bbox": [
+          20,
+          6,
+          115,
+          132
+        ],
+        "fill": 0.647,
+        "touches_edge": false
+      }
+    }
+  }
+}

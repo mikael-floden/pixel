@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:02:20+00:00",
+  "generated_at": "2026-09-18T12:05:08+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 126,
+  "count": 130,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -15794,6 +15794,136 @@
       "generated_at": "2026-09-18T12:00:19+00:00"
     },
     {
+      "id": "peat_stack",
+      "name": "Turfstack",
+      "tier": "cute",
+      "lore": "Stacked to dry by somebody who meant to come back for it. It has done its own drying and it is ready to be burned.",
+      "biome": [
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "17883809-70bf-48dc-84f8-bf11c7b019c5",
+      "version": 1,
+      "sheet": "peat_stack/sheet.webp",
+      "rotations": {
+        "south": "peat_stack/rotations/south.webp",
+        "south-east": "peat_stack/rotations/south-east.webp",
+        "east": "peat_stack/rotations/east.webp",
+        "north-east": "peat_stack/rotations/north-east.webp",
+        "north": "peat_stack/rotations/north.webp",
+        "north-west": "peat_stack/rotations/north-west.webp",
+        "west": "peat_stack/rotations/west.webp",
+        "south-west": "peat_stack/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.716,
+        "reasons": [
+          "south: content touches the canvas edge (clipped)",
+          "south-east: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.775,
+            "bbox": [
+              11,
+              0,
+              36,
+              47
+            ],
+            "fill": 0.51,
+            "touches_edge": true
+          },
+          "west": {
+            "run1": 0.736,
+            "bbox": [
+              11,
+              6,
+              37,
+              47
+            ],
+            "fill": 0.463,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.745,
+            "bbox": [
+              11,
+              3,
+              36,
+              46
+            ],
+            "fill": 0.467,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.72,
+            "bbox": [
+              12,
+              5,
+              35,
+              46
+            ],
+            "fill": 0.409,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.766,
+            "bbox": [
+              13,
+              0,
+              36,
+              47
+            ],
+            "fill": 0.469,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.729,
+            "bbox": [
+              11,
+              6,
+              36,
+              47
+            ],
+            "fill": 0.445,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.716,
+            "bbox": [
+              11,
+              6,
+              34,
+              47
+            ],
+            "fill": 0.409,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.718,
+            "bbox": [
+              12,
+              3,
+              37,
+              46
+            ],
+            "fill": 0.467,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:05:03+00:00"
+    },
+    {
       "id": "mud_newt",
       "name": "Mudnewt",
       "tier": "cute",
@@ -15922,6 +16052,262 @@
       "generated_at": "2026-09-18T11:59:01+00:00"
     },
     {
+      "id": "reed_bundle",
+      "name": "Reedsheaf",
+      "tier": "mid",
+      "lore": "Cut for a roof that was never thatched. It stands in the shallows in the shape of the man who cut it.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "ae6555c7-2226-4e47-8cfd-a73c2f101503",
+      "version": 1,
+      "sheet": "reed_bundle/sheet.webp",
+      "rotations": {
+        "south": "reed_bundle/rotations/south.webp",
+        "south-east": "reed_bundle/rotations/south-east.webp",
+        "east": "reed_bundle/rotations/east.webp",
+        "north-east": "reed_bundle/rotations/north-east.webp",
+        "north": "reed_bundle/rotations/north.webp",
+        "north-west": "reed_bundle/rotations/north-west.webp",
+        "west": "reed_bundle/rotations/west.webp",
+        "south-west": "reed_bundle/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.76,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.76,
+            "bbox": [
+              18,
+              3,
+              85,
+              101
+            ],
+            "fill": 0.607,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.812,
+            "bbox": [
+              21,
+              3,
+              80,
+              101
+            ],
+            "fill": 0.535,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.809,
+            "bbox": [
+              23,
+              3,
+              82,
+              101
+            ],
+            "fill": 0.535,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.8,
+            "bbox": [
+              18,
+              3,
+              85,
+              101
+            ],
+            "fill": 0.607,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.836,
+            "bbox": [
+              20,
+              2,
+              82,
+              101
+            ],
+            "fill": 0.567,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.829,
+            "bbox": [
+              22,
+              5,
+              81,
+              101
+            ],
+            "fill": 0.524,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.833,
+            "bbox": [
+              21,
+              5,
+              81,
+              101
+            ],
+            "fill": 0.533,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.83,
+            "bbox": [
+              20,
+              3,
+              82,
+              101
+            ],
+            "fill": 0.562,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:04:24+00:00"
+    },
+    {
+      "id": "pitcher_plant",
+      "name": "Pitchergut",
+      "tier": "mid",
+      "lore": "It drinks whatever falls in, and it has learned what falls in most. It leans toward warmth.",
+      "biome": [
+        "dark_mud",
+        "slime"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "739145bb-3e1c-4d71-ae6e-b5ddb6282c1e",
+      "version": 1,
+      "sheet": "pitcher_plant/sheet.webp",
+      "rotations": {
+        "south": "pitcher_plant/rotations/south.webp",
+        "south-east": "pitcher_plant/rotations/south-east.webp",
+        "east": "pitcher_plant/rotations/east.webp",
+        "north-east": "pitcher_plant/rotations/north-east.webp",
+        "north": "pitcher_plant/rotations/north.webp",
+        "north-west": "pitcher_plant/rotations/north-west.webp",
+        "west": "pitcher_plant/rotations/west.webp",
+        "south-west": "pitcher_plant/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.754,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.754,
+            "bbox": [
+              7,
+              3,
+              89,
+              92
+            ],
+            "fill": 0.792,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.783,
+            "bbox": [
+              18,
+              3,
+              79,
+              92
+            ],
+            "fill": 0.589,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.795,
+            "bbox": [
+              17,
+              3,
+              78,
+              92
+            ],
+            "fill": 0.589,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.769,
+            "bbox": [
+              6,
+              3,
+              89,
+              93
+            ],
+            "fill": 0.811,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.804,
+            "bbox": [
+              17,
+              4,
+              82,
+              92
+            ],
+            "fill": 0.621,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.786,
+            "bbox": [
+              15,
+              3,
+              81,
+              93
+            ],
+            "fill": 0.645,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.782,
+            "bbox": [
+              16,
+              3,
+              79,
+              93
+            ],
+            "fill": 0.615,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.8,
+            "bbox": [
+              15,
+              4,
+              80,
+              93
+            ],
+            "fill": 0.628,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:03:46+00:00"
+    },
+    {
       "id": "sphagnum",
       "name": "Mirequilt",
       "tier": "mid",
@@ -16048,6 +16434,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:02:20+00:00"
+    },
+    {
+      "id": "bog_oak",
+      "name": "Bogoak",
+      "tier": "evil",
+      "lore": "Five thousand years under the water made it harder than the axes that felled it. It remembers being a wood.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        136,
+        136
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "b1ae784f-ad78-4535-b21e-418b10ff0f68",
+      "version": 1,
+      "sheet": "bog_oak/sheet.webp",
+      "rotations": {
+        "south": "bog_oak/rotations/south.webp",
+        "south-east": "bog_oak/rotations/south-east.webp",
+        "east": "bog_oak/rotations/east.webp",
+        "north-east": "bog_oak/rotations/north-east.webp",
+        "north": "bog_oak/rotations/north.webp",
+        "north-west": "bog_oak/rotations/north-west.webp",
+        "west": "bog_oak/rotations/west.webp",
+        "south-west": "bog_oak/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.639,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.639,
+            "bbox": [
+              18,
+              6,
+              119,
+              130
+            ],
+            "fill": 0.677,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.736,
+            "bbox": [
+              17,
+              6,
+              115,
+              131
+            ],
+            "fill": 0.662,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.75,
+            "bbox": [
+              23,
+              6,
+              119,
+              131
+            ],
+            "fill": 0.649,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.729,
+            "bbox": [
+              17,
+              6,
+              119,
+              128
+            ],
+            "fill": 0.673,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.758,
+            "bbox": [
+              23,
+              6,
+              116,
+              132
+            ],
+            "fill": 0.634,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.741,
+            "bbox": [
+              23,
+              6,
+              119,
+              132
+            ],
+            "fill": 0.654,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.741,
+            "bbox": [
+              23,
+              6,
+              113,
+              132
+            ],
+            "fill": 0.613,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.758,
+            "bbox": [
+              20,
+              6,
+              115,
+              132
+            ],
+            "fill": 0.647,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:05:08+00:00"
     },
     {
       "id": "first_mask",

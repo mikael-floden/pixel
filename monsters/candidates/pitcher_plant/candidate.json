@@ -1,0 +1,141 @@
+{
+  "id": "pitcher_plant",
+  "name": "Pitchergut",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It drinks whatever falls in, and it has learned what falls in most. It leans toward warmth.",
+  "biome": [
+    "dark_mud",
+    "slime"
+  ],
+  "items": [],
+  "prompt": "Cluster of fat carnivorous pitcher plants grown from one thick root foot, each trumpet veined deep maroon over green with a hooded lid raised, slick wet rims, drowned flies floating in the fluid inside and fine stiff hairs down the throats",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "pitcher_plant/rotations/south.webp",
+    "south-east": "pitcher_plant/rotations/south-east.webp",
+    "east": "pitcher_plant/rotations/east.webp",
+    "north-east": "pitcher_plant/rotations/north-east.webp",
+    "north": "pitcher_plant/rotations/north.webp",
+    "north-west": "pitcher_plant/rotations/north-west.webp",
+    "west": "pitcher_plant/rotations/west.webp",
+    "south-west": "pitcher_plant/rotations/south-west.webp"
+  },
+  "sheet": "pitcher_plant/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "739145bb-3e1c-4d71-ae6e-b5ddb6282c1e",
+  "seed": 1998057621,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:03:46+00:00",
+  "elapsed_s": 207.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.754,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.754,
+        "bbox": [
+          7,
+          3,
+          89,
+          92
+        ],
+        "fill": 0.792,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.783,
+        "bbox": [
+          18,
+          3,
+          79,
+          92
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.795,
+        "bbox": [
+          17,
+          3,
+          78,
+          92
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.769,
+        "bbox": [
+          6,
+          3,
+          89,
+          93
+        ],
+        "fill": 0.811,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.804,
+        "bbox": [
+          17,
+          4,
+          82,
+          92
+        ],
+        "fill": 0.621,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.786,
+        "bbox": [
+          15,
+          3,
+          81,
+          93
+        ],
+        "fill": 0.645,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.782,
+        "bbox": [
+          16,
+          3,
+          79,
+          93
+        ],
+        "fill": 0.615,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.8,
+        "bbox": [
+          15,
+          4,
+          80,
+          93
+        ],
+        "fill": 0.628,
+        "touches_edge": false
+      }
+    }
+  }
+}
