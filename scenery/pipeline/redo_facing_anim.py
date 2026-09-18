@@ -92,10 +92,30 @@ def _have_dirs(a):
     the current one is {direction: {frames, frame_paths}}."""
     d = (a or {}).get("directions")
     if isinstance(d, dict):
-        return {k for k, v in d.items() if (v or {}).get("frames")}
+        # ONE FRAME IS NOT A CLIP. The wiki draws the still for such a facing
+        # and he reads it as "an animation with only 1 frame" (2026-09-18).
+        return {k for k, v in d.items() if (v or {}).get("frames", 0) >= 2}
     if isinstance(d, list):
         return set(d)
     return set()
+
+
+SUBJECT_RE = re.compile(r"\bONLY\b[^.]*\.", re.I)
+
+
+def brief_for(a, name):
+    """The brief for a clip: config/redo_prompts.json if he or I wrote one,
+    else the clip's OWN subject — the 'ONLY the ... .' sentence of its
+    existing description — set into the wording that measured 0.0 on
+    hearth_001 LIT_3 (name no material that must hold still; everything else
+    copied from the first frame pixel for pixel). A generic flame brief is the
+    last resort: sent to a barrel of water, a skull and a bush on 09-15 it
+    measured 0.16-0.81, and the same wording with the right subject 0.003."""
+    m = SUBJECT_RE.search((a or {}).get("description") or "")
+    if m:
+        subject = m.group(0).strip()
+        return FLAME_BRIEF.replace("ONLY the flame flickers.", subject, 1)
+    return STILL_PROMPT.get(name, STILL_PROMPT["flame"])
 
 
 def _state_key(man, st):
@@ -156,7 +176,12 @@ def missing():
                     continue
                 gap = sorted(ships - _have_dirs(a))
                 if gap:
-                    out.append((rel, state, name, gap, None, "no clip on that facing"))
+                    # NOT an extend with the group's carried wording: the new
+                    # facing is briefed like a redo, with the clip's own subject
+                    # in the wording that holds a piece still, so the second
+                    # pass he ordered ("if not, regenerate") is the exception.
+                    prompt = clip_prompts().get(f"{rel}#{state}#{name}") or brief_for(a, name)
+                    out.append((rel, state, name, gap, prompt, "no clip on that facing"))
     return out
 
 
@@ -187,7 +212,7 @@ def flagged_bad():
                 # ripple — 0.16-0.81 on the outline rule, wording notwithstanding.
                 # config/redo_prompts.json carries the per-clip subject; the
                 # generic flame brief is the fallback, not the rule.
-                prompt = clip_prompts().get(f"{rel}#{state}#{name}") or STILL_PROMPT.get(name, STILL_PROMPT["flame"])
+                prompt = clip_prompts().get(f"{rel}#{state}#{name}") or brief_for(a, name)
                 out.append((rel, state, name, dirs, prompt,
                             f"outline {m.get('base_outline', m.get('base'))} of 0.10"))
     return out

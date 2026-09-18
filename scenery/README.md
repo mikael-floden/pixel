@@ -689,6 +689,17 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   selector; `--rounds N` re-selects only the still-PROBABLY_BAD targets after
   each finish (maintainer 2026-09-17: "give them 2 new rounds if they need
   it") and prints what is still over the line at the end.
+- **Every animated piece ships a clip on every facing it ships** — south,
+  south-east and south-west; a facing with fewer than two frames IS missing
+  (the wiki draws the still for it, and he reads that as "an animation with
+  only 1 frame" — maintainer 2026-09-18: "I will not continue to give you this
+  feedback! ... generate animations so all animated scenery has SE, S and SW").
+  `redo_facing_anim.py --missing` is the sweep, `--rounds 2` the second pass
+  he ordered on whatever still moves more than the light. A new facing is
+  briefed like a redo — `brief_for()`: the clip's own "ONLY the ... ." subject
+  in the wording that measured 0.0 — never an extend that carries the group's
+  old wording. (Measured 2026-09-18 before the sweep: 160 clips short of 313
+  facings, all SE/SW, no south missing, ~$11 a pass.)
 - **Removed art is published, not just deleted: `scenery/retired.json`**
   (`scenery/retired@1`; `pipeline/retired.py`, republished by every
   `viewer_build.build()`, `--check` gates it against the retirement records).
