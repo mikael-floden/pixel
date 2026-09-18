@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:20:42+00:00",
+  "generated_at": "2026-09-18T12:24:21+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 147,
+  "count": 151,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -18614,6 +18614,389 @@
       "generated_at": "2026-09-18T12:16:54+00:00"
     },
     {
+      "id": "wind_thorn",
+      "name": "Windthorn",
+      "tier": "mid",
+      "lore": "Every rag on it was tied by somebody asking for something. It has been keeping count.",
+      "biome": [
+        "grey_stone",
+        "grass"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "ca273086-816b-4054-b3ac-b30e867820b0",
+      "version": 1,
+      "sheet": "wind_thorn/sheet.webp",
+      "rotations": {
+        "south": "wind_thorn/rotations/south.webp",
+        "south-east": "wind_thorn/rotations/south-east.webp",
+        "east": "wind_thorn/rotations/east.webp",
+        "north-east": "wind_thorn/rotations/north-east.webp",
+        "north": "wind_thorn/rotations/north.webp",
+        "north-west": "wind_thorn/rotations/north-west.webp",
+        "west": "wind_thorn/rotations/west.webp",
+        "south-west": "wind_thorn/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.801,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.801,
+            "bbox": [
+              20,
+              2,
+              92,
+              110
+            ],
+            "fill": 0.62,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.829,
+            "bbox": [
+              32,
+              3,
+              79,
+              110
+            ],
+            "fill": 0.401,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.833,
+            "bbox": [
+              31,
+              3,
+              78,
+              110
+            ],
+            "fill": 0.401,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.806,
+            "bbox": [
+              19,
+              6,
+              92,
+              110
+            ],
+            "fill": 0.605,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.836,
+            "bbox": [
+              21,
+              2,
+              87,
+              110
+            ],
+            "fill": 0.568,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.809,
+            "bbox": [
+              24,
+              6,
+              83,
+              109
+            ],
+            "fill": 0.484,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.809,
+            "bbox": [
+              24,
+              6,
+              89,
+              109
+            ],
+            "fill": 0.534,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.83,
+            "bbox": [
+              30,
+              3,
+              89,
+              110
+            ],
+            "fill": 0.503,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:23:04+00:00"
+    },
+    {
+      "id": "spring_head",
+      "name": "Wellhead",
+      "tier": "evil",
+      "lore": "The coins were put in by people who wanted something. It has been holding up its end and it is owed.",
+      "biome": [
+        "grey_stone",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "755aba83-d89b-463d-a1f5-c3cc68d65ecc",
+      "version": 1,
+      "sheet": "spring_head/sheet.webp",
+      "rotations": {
+        "south": "spring_head/rotations/south.webp",
+        "south-east": "spring_head/rotations/south-east.webp",
+        "east": "spring_head/rotations/east.webp",
+        "north-east": "spring_head/rotations/north-east.webp",
+        "north": "spring_head/rotations/north.webp",
+        "north-west": "spring_head/rotations/north-west.webp",
+        "west": "spring_head/rotations/west.webp",
+        "south-west": "spring_head/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.754,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.755,
+            "bbox": [
+              25,
+              5,
+              93,
+              107
+            ],
+            "fill": 0.553,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.758,
+            "bbox": [
+              26,
+              7,
+              85,
+              107
+            ],
+            "fill": 0.47,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.759,
+            "bbox": [
+              25,
+              7,
+              90,
+              107
+            ],
+            "fill": 0.518,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.754,
+            "bbox": [
+              16,
+              7,
+              86,
+              107
+            ],
+            "fill": 0.558,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.77,
+            "bbox": [
+              24,
+              6,
+              98,
+              107
+            ],
+            "fill": 0.596,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.758,
+            "bbox": [
+              26,
+              6,
+              85,
+              107
+            ],
+            "fill": 0.475,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.76,
+            "bbox": [
+              13,
+              6,
+              85,
+              107
+            ],
+            "fill": 0.58,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.789,
+            "bbox": [
+              25,
+              6,
+              84,
+              107
+            ],
+            "fill": 0.475,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:22:02+00:00"
+    },
+    {
+      "id": "fossil_slab",
+      "name": "Boneshale",
+      "tier": "evil",
+      "lore": "It was a shape before this was stone. The stone is the only part of it that is still here.",
+      "biome": [
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        120,
+        120
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "5a4f570b-4cda-4fa5-a606-a6c29c3784e4",
+      "version": 1,
+      "sheet": "fossil_slab/sheet.webp",
+      "rotations": {
+        "south": "fossil_slab/rotations/south.webp",
+        "south-east": "fossil_slab/rotations/south-east.webp",
+        "east": "fossil_slab/rotations/east.webp",
+        "north-east": "fossil_slab/rotations/north-east.webp",
+        "north": "fossil_slab/rotations/north.webp",
+        "north-west": "fossil_slab/rotations/north-west.webp",
+        "west": "fossil_slab/rotations/west.webp",
+        "south-west": "fossil_slab/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.626,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.626,
+            "bbox": [
+              7,
+              5,
+              112,
+              112
+            ],
+            "fill": 0.78,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.744,
+            "bbox": [
+              14,
+              5,
+              100,
+              116
+            ],
+            "fill": 0.663,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.739,
+            "bbox": [
+              20,
+              7,
+              105,
+              115
+            ],
+            "fill": 0.637,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.703,
+            "bbox": [
+              17,
+              8,
+              101,
+              112
+            ],
+            "fill": 0.607,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.774,
+            "bbox": [
+              11,
+              5,
+              103,
+              114
+            ],
+            "fill": 0.696,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.76,
+            "bbox": [
+              10,
+              11,
+              109,
+              115
+            ],
+            "fill": 0.715,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.774,
+            "bbox": [
+              11,
+              5,
+              109,
+              115
+            ],
+            "fill": 0.749,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.778,
+            "bbox": [
+              15,
+              7,
+              112,
+              115
+            ],
+            "fill": 0.728,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:24:21+00:00"
+    },
+    {
       "id": "carved_face",
       "name": "Rockface",
       "tier": "evil",
@@ -18740,6 +19123,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:20:34+00:00"
+    },
+    {
+      "id": "ice_mossball",
+      "name": "Rollmoss",
+      "tier": "cute",
+      "lore": "It rolls a little each day and the moss grows even because of it. Nothing is inside but the stone it started on.",
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "35439939-be7b-4078-8c90-975713b8b3dd",
+      "version": 1,
+      "sheet": "ice_mossball/sheet.webp",
+      "rotations": {
+        "south": "ice_mossball/rotations/south.webp",
+        "south-east": "ice_mossball/rotations/south-east.webp",
+        "east": "ice_mossball/rotations/east.webp",
+        "north-east": "ice_mossball/rotations/north-east.webp",
+        "north": "ice_mossball/rotations/north.webp",
+        "north-west": "ice_mossball/rotations/north-west.webp",
+        "west": "ice_mossball/rotations/west.webp",
+        "south-west": "ice_mossball/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.697,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.773,
+            "bbox": [
+              2,
+              5,
+              38,
+              37
+            ],
+            "fill": 0.72,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.724,
+            "bbox": [
+              4,
+              3,
+              39,
+              38
+            ],
+            "fill": 0.766,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.718,
+            "bbox": [
+              1,
+              3,
+              36,
+              38
+            ],
+            "fill": 0.766,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.697,
+            "bbox": [
+              4,
+              4,
+              37,
+              37
+            ],
+            "fill": 0.681,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.798,
+            "bbox": [
+              2,
+              4,
+              38,
+              37
+            ],
+            "fill": 0.743,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.759,
+            "bbox": [
+              2,
+              3,
+              35,
+              37
+            ],
+            "fill": 0.701,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.749,
+            "bbox": [
+              5,
+              3,
+              38,
+              37
+            ],
+            "fill": 0.701,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.78,
+            "bbox": [
+              2,
+              4,
+              39,
+              37
+            ],
+            "fill": 0.763,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:23:18+00:00"
     },
     {
       "id": "first_mask",

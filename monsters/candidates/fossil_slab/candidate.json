@@ -1,0 +1,140 @@
+{
+  "id": "fossil_slab",
+  "name": "Boneshale",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It was a shape before this was stone. The stone is the only part of it that is still here.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Upright slab of grey layered shale with a fossil skeleton weathering out of it, the pale stone bones standing proud of the surface in a curled sleeping shape, the slab cracked along its bedding planes and rock dust falling where the bones flex",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fossil_slab/rotations/south.webp",
+    "south-east": "fossil_slab/rotations/south-east.webp",
+    "east": "fossil_slab/rotations/east.webp",
+    "north-east": "fossil_slab/rotations/north-east.webp",
+    "north": "fossil_slab/rotations/north.webp",
+    "north-west": "fossil_slab/rotations/north-west.webp",
+    "west": "fossil_slab/rotations/west.webp",
+    "south-west": "fossil_slab/rotations/south-west.webp"
+  },
+  "sheet": "fossil_slab/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5a4f570b-4cda-4fa5-a606-a6c29c3784e4",
+  "seed": 891073355,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:24:21+00:00",
+  "elapsed_s": 219.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.626,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.626,
+        "bbox": [
+          7,
+          5,
+          112,
+          112
+        ],
+        "fill": 0.78,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.744,
+        "bbox": [
+          14,
+          5,
+          100,
+          116
+        ],
+        "fill": 0.663,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.739,
+        "bbox": [
+          20,
+          7,
+          105,
+          115
+        ],
+        "fill": 0.637,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.703,
+        "bbox": [
+          17,
+          8,
+          101,
+          112
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.774,
+        "bbox": [
+          11,
+          5,
+          103,
+          114
+        ],
+        "fill": 0.696,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.76,
+        "bbox": [
+          10,
+          11,
+          109,
+          115
+        ],
+        "fill": 0.715,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.774,
+        "bbox": [
+          11,
+          5,
+          109,
+          115
+        ],
+        "fill": 0.749,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.778,
+        "bbox": [
+          15,
+          7,
+          112,
+          115
+        ],
+        "fill": 0.728,
+        "touches_edge": false
+      }
+    }
+  }
+}

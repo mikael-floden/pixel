@@ -1,0 +1,141 @@
+{
+  "id": "ice_mossball",
+  "name": "Rollmoss",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It rolls a little each day and the moss grows even because of it. Nothing is inside but the stone it started on.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Ball of dense green and grey moss grown completely around a small stone, rolling on the ice, white frost rimed across its underside, a few pale grass blades sticking out of the fur and dark meltwater at its base",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ice_mossball/rotations/south.webp",
+    "south-east": "ice_mossball/rotations/south-east.webp",
+    "east": "ice_mossball/rotations/east.webp",
+    "north-east": "ice_mossball/rotations/north-east.webp",
+    "north": "ice_mossball/rotations/north.webp",
+    "north-west": "ice_mossball/rotations/north-west.webp",
+    "west": "ice_mossball/rotations/west.webp",
+    "south-west": "ice_mossball/rotations/south-west.webp"
+  },
+  "sheet": "ice_mossball/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "35439939-be7b-4078-8c90-975713b8b3dd",
+  "seed": 1840863168,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:23:18+00:00",
+  "elapsed_s": 163.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.697,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.773,
+        "bbox": [
+          2,
+          5,
+          38,
+          37
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.724,
+        "bbox": [
+          4,
+          3,
+          39,
+          38
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.718,
+        "bbox": [
+          1,
+          3,
+          36,
+          38
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.697,
+        "bbox": [
+          4,
+          4,
+          37,
+          37
+        ],
+        "fill": 0.681,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.798,
+        "bbox": [
+          2,
+          4,
+          38,
+          37
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.759,
+        "bbox": [
+          2,
+          3,
+          35,
+          37
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.749,
+        "bbox": [
+          5,
+          3,
+          38,
+          37
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.78,
+        "bbox": [
+          2,
+          4,
+          39,
+          37
+        ],
+        "fill": 0.763,
+        "touches_edge": false
+      }
+    }
+  }
+}
