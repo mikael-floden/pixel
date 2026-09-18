@@ -103,19 +103,41 @@ def _have_dirs(a):
 SUBJECT_RE = re.compile(r"\bONLY\b[^.]*\.", re.I)
 
 
-def brief_for(a, name):
+# A SECOND PASS MUST ASK DIFFERENTLY. The endpoint takes no seed (422
+# extra_forbidden, probed 2026-09-18) and the same description returns the
+# same frames: pass 2 of the facing sweep "redid" 81 clips and changed zero
+# bytes ($1.46 for 81 clips where pass 1 cost $8 for 325), and barrel_007
+# measured an identical 0.8091 on both of its "rounds". So each round has its
+# own wording — same subject, different sentence — and a round's brief is the
+# template for that round.
+STILL_TEMPLATES = (
+    FLAME_BRIEF,                                   # round 1: the hearth_001 LIT_3 wording
+    ("A completely still picture, identical in every frame, except for one thing. "
+     "ONLY the flame flickers. Every other pixel of every frame is the exact pixel of "
+     "the first frame: nothing else drifts, breathes, sways, bends, brightens or "
+     "darkens, nothing is redrawn, nothing appears or disappears, and no outline "
+     "moves by even one pixel. The last frame is the first frame again."),
+    ("Five frames of one unchanging picture. The single moving thing: ONLY the flame "
+     "flickers, inside its own outline, never larger, never smaller, never elsewhere. "
+     "Everything around it is frozen — copied from frame one exactly, pixel for pixel, "
+     "the same colours, the same edges, the same shapes, the same positions — and the "
+     "final frame equals the first so the loop closes."),
+)
+
+
+def brief_for(a, name, variant=0):
     """The brief for a clip: config/redo_prompts.json if he or I wrote one,
     else the clip's OWN subject — the 'ONLY the ... .' sentence of its
-    existing description — set into the wording that measured 0.0 on
-    hearth_001 LIT_3 (name no material that must hold still; everything else
-    copied from the first frame pixel for pixel). A generic flame brief is the
-    last resort: sent to a barrel of water, a skull and a bush on 09-15 it
-    measured 0.16-0.81, and the same wording with the right subject 0.003."""
+    existing description — set into round `variant`'s template (name no
+    material that must hold still; everything else copied from the first
+    frame pixel for pixel). A generic flame brief is the last resort: sent to
+    a barrel of water, a skull and a bush on 09-15 it measured 0.16-0.81, and
+    the same wording with the right subject 0.003."""
+    template = STILL_TEMPLATES[variant % len(STILL_TEMPLATES)]
     m = SUBJECT_RE.search((a or {}).get("description") or "")
     if m:
-        subject = m.group(0).strip()
-        return FLAME_BRIEF.replace("ONLY the flame flickers.", subject, 1)
-    return STILL_PROMPT.get(name, STILL_PROMPT["flame"])
+        return template.replace("ONLY the flame flickers.", m.group(0).strip(), 1)
+    return template
 
 
 def _state_key(man, st):
@@ -185,9 +207,11 @@ def missing():
     return out
 
 
-def flagged_bad():
+def flagged_bad(variant=0):
     """[(rel, state, anim, dirs, prompt, why)] — every clip THIS DOMAIN already
-    calls ANIMATION_PROBABLY_BAD, redone on every facing it has.
+    calls ANIMATION_PROBABLY_BAD, redone on every facing it has, briefed with
+    round `variant`'s wording (a repeat of the last wording returns the last
+    frames — see STILL_TEMPLATES).
 
     His second complaint needs no reporting either: anim_review.py already
     measures exactly it — "as soon as the root moves it looks wrong" — as the
@@ -212,7 +236,7 @@ def flagged_bad():
                 # ripple — 0.16-0.81 on the outline rule, wording notwithstanding.
                 # config/redo_prompts.json carries the per-clip subject; the
                 # generic flame brief is the fallback, not the rule.
-                prompt = clip_prompts().get(f"{rel}#{state}#{name}") or brief_for(a, name)
+                prompt = clip_prompts().get(f"{rel}#{state}#{name}") or brief_for(a, name, variant)
                 out.append((rel, state, name, dirs, prompt,
                             f"outline {m.get('base_outline', m.get('base'))} of 0.10"))
     return out
@@ -315,7 +339,7 @@ def one(client, rel, state, name, dirs, prompt):
     except PixelLabError as e:
         return (rel, state, name, 0, f"FAILED: {str(e)[:110]}")
     except Exception as e:                  # noqa: BLE001
-        return (rel, state, name, 0, f"ERROR: {type(e).__name__}: {str(e)[:100]}")
+        return (rel, state, name, 0, f"ERROR: {type(e).__name__}: {str(e)[:220]}")
 
 
 def main():
@@ -332,11 +356,14 @@ def main():
     ap.add_argument("--rounds", type=int, default=1,
                     help="after each round, redo again only the clips still over the outline line (maintainer 2026-09-17: "
                          "'give them 2 new rounds if they need it')")
+    ap.add_argument("--variant", type=int, default=0,
+                    help="which STILL_TEMPLATES wording the first round uses (later rounds advance it); "
+                         "a pass that repeats the clip's current wording regenerates nothing")
     args = ap.parse_args()
 
     def select():
         todo = (from_feedback() if args.from_feedback
-                else flagged_bad() if args.bad else missing())
+                else flagged_bad(args.variant) if args.bad else missing())
         if args.only:
             keep = set(args.only.split(","))
             todo = [t for t in todo if f"{t[0]}#{t[1]}#{t[2]}" in keep]
@@ -368,11 +395,14 @@ def main():
             # A LATER ROUND REDOES ONLY WHAT THE LAST ONE LEFT OVER THE LINE:
             # finish_clips has just re-measured every redone clip, so the
             # PROBABLY_BAD set is current, and only the original targets count.
-            todo = [t for t in flagged_bad() if f"{t[0]}#{t[1]}#{t[2]}" in targets]
+            # ...AND ASKS IN NEW WORDS: the endpoint has no seed, so the same
+            # description returns the same frames (pass 2 of the 09-18 sweep
+            # changed zero bytes). Each round advances the template.
+            todo = [t for t in flagged_bad(args.variant + rnd - 1) if f"{t[0]}#{t[1]}#{t[2]}" in targets]
             if not todo:
                 print(f"\nround {rnd}: nothing left over the line")
                 break
-            print(f"\nround {rnd}: {len(todo)} clip(s) still over the line")
+            print(f"\nround {rnd}: {len(todo)} clip(s) still over the line — wording variant {(args.variant + rnd - 1) % len(STILL_TEMPLATES)}")
         ok, done = 0, []
         with ThreadPoolExecutor(max_workers=PARALLEL) as pool:
             futs = [pool.submit(one, client, r, s, n, d, p) for r, s, n, d, p, _ in todo]
