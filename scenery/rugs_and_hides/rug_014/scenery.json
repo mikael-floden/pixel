@@ -55,7 +55,7 @@
       "animations": {
         "motion": {
           "group_id": "6dbfff5d-3386-4da8-95aa-e8dcd6d56ad8",
-          "description": "This is the same picture in every frame. ONLY the loose fringe strands along the top and bottom edges stir. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the loose fringe strands along the top and bottom edges stir. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -70,7 +70,7 @@
                 "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/03.webp",
                 "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/04.webp"
               ],
-              "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.a0a01325.webp"
+              "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.45ded416.webp"
             },
             "south-east": {
               "frames": 5,
@@ -81,7 +81,7 @@
                 "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-east/03.webp",
                 "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-east/04.webp"
               ],
-              "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south-east.3e472269.webp"
+              "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south-east.b8fa3937.webp"
             },
             "south-west": {
               "frames": 5,
@@ -95,7 +95,7 @@
               "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south-west.8e54b55c.webp"
             }
           },
-          "generated_at": "2026-09-18T03:27:22+00:00",
+          "generated_at": "2026-09-18T04:49:14+00:00",
           "brief": "X65",
           "frame_paths": [
             "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/00.webp",
@@ -104,10 +104,10 @@
             "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/03.webp",
             "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/04.webp"
           ],
-          "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.a0a01325.webp",
+          "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.45ded416.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.266
+            "base_outline": 0.2161
           }
         }
       }

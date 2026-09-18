@@ -19746,29 +19746,29 @@
               "brief": "Z49",
               "light_frames": [
                 {
-                  "intensity": 0.526,
+                  "intensity": 0.884,
                   "dx": 2.2,
                   "dy": -2.9
                 },
                 {
-                  "intensity": 1.263,
-                  "dx": 0.5,
-                  "dy": -0.8
+                  "intensity": 0.73,
+                  "dx": 2.2,
+                  "dy": -4.4
                 },
                 {
-                  "intensity": 1.268,
-                  "dx": -0.2,
-                  "dy": -0.9
+                  "intensity": 1.019,
+                  "dx": -2.4,
+                  "dy": -4.6
                 },
                 {
-                  "intensity": 1.251,
-                  "dx": -0.9,
-                  "dy": -2.5
+                  "intensity": 1.333,
+                  "dx": -0.7,
+                  "dy": 0.2
                 },
                 {
-                  "intensity": 0.692,
-                  "dx": -0.8,
-                  "dy": -1.6
+                  "intensity": 1.034,
+                  "dx": -2.2,
+                  "dy": 3.5
                 }
               ],
               "frame_paths": [
@@ -21516,29 +21516,29 @@
               "brief": "Z50",
               "light_frames": [
                 {
-                  "intensity": 1.128,
+                  "intensity": 1.5,
                   "dx": 0.4,
                   "dy": -7.9
                 },
                 {
-                  "intensity": 1.234,
-                  "dx": 0.5,
-                  "dy": -5.7
+                  "intensity": 0.606,
+                  "dx": 0.2,
+                  "dy": -5.5
                 },
                 {
-                  "intensity": 0.5,
-                  "dx": 0.7,
-                  "dy": 4.6
+                  "intensity": 0.568,
+                  "dx": 1.2,
+                  "dy": -6.8
                 },
                 {
-                  "intensity": 1.479,
-                  "dx": 1.7,
-                  "dy": 3.1
+                  "intensity": 0.995,
+                  "dx": 1.2,
+                  "dy": -4.6
                 },
                 {
-                  "intensity": 0.681,
-                  "dx": 0.9,
-                  "dy": -10.9
+                  "intensity": 0.843,
+                  "dx": 1.3,
+                  "dy": -9.9
                 }
               ],
               "frame_paths": [
@@ -49644,29 +49644,29 @@
               "brief": "B13",
               "light_frames": [
                 {
-                  "intensity": 1.48,
+                  "intensity": 1.063,
                   "dx": 1.1,
                   "dy": -23.5
                 },
                 {
-                  "intensity": 1.204,
-                  "dx": 1.4,
-                  "dy": -22.2
+                  "intensity": 1.5,
+                  "dx": 0.3,
+                  "dy": -17.7
                 },
                 {
-                  "intensity": 0.855,
-                  "dx": 1.2,
-                  "dy": -18.8
+                  "intensity": 1.5,
+                  "dx": 0.0,
+                  "dy": -16.0
                 },
                 {
-                  "intensity": 0.693,
-                  "dx": 1.7,
-                  "dy": -17.4
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": -21.0
                 },
                 {
-                  "intensity": 0.768,
-                  "dx": 1.6,
-                  "dy": -18.8
+                  "intensity": 0.5,
+                  "dx": 0.4,
+                  "dy": -19.5
                 }
               ],
               "frame_paths": [
@@ -56650,29 +56650,29 @@
               "brief": "A16",
               "light_frames": [
                 {
-                  "intensity": 1.316,
+                  "intensity": 1.018,
                   "dx": 1.2,
                   "dy": -9.6
                 },
                 {
-                  "intensity": 0.913,
-                  "dx": 1.6,
-                  "dy": -14.7
+                  "intensity": 1.5,
+                  "dx": 1.4,
+                  "dy": -16.5
                 },
                 {
-                  "intensity": 0.894,
-                  "dx": 0.5,
-                  "dy": -18.4
+                  "intensity": 0.838,
+                  "dx": 0.6,
+                  "dy": -16.6
                 },
                 {
-                  "intensity": 0.907,
-                  "dx": 0.2,
-                  "dy": -16.4
+                  "intensity": 0.542,
+                  "dx": 3.9,
+                  "dy": -25.7
                 },
                 {
-                  "intensity": 0.97,
-                  "dx": 0.2,
-                  "dy": -14.3
+                  "intensity": 0.5,
+                  "dx": -2.7,
+                  "dy": -0.9
                 }
               ],
               "frame_paths": [
@@ -66341,7 +66341,7 @@
           "animations": {
             "motion": {
               "group_id": "e2f192d8-81c8-4a1f-bcef-5db6c2f541b1",
-              "description": "This is the same picture in every frame. ONLY the gold crystals in the gravel change. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "description": "A completely still picture, identical in every frame, except for one thing. ONLY the gold crystals in the gravel change. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -66356,32 +66356,32 @@
                     "gravel_piles/gravel_pile_002/lit_4/animations/motion/south/03.webp",
                     "gravel_piles/gravel_pile_002/lit_4/animations/motion/south/04.webp"
                   ],
-                  "strip": "gravel_piles/gravel_pile_002/lit_4/animations/motion__south.c4e465d0.webp",
+                  "strip": "gravel_piles/gravel_pile_002/lit_4/animations/motion__south.d0de7234.webp",
                   "light_frames": [
                     {
-                      "intensity": 0.73,
+                      "intensity": 0.542,
                       "dx": 3.7,
                       "dy": -10.7
                     },
                     {
-                      "intensity": 1.332,
-                      "dx": 2.0,
-                      "dy": -8.8
+                      "intensity": 1.35,
+                      "dx": 1.4,
+                      "dy": -8.1
                     },
                     {
-                      "intensity": 1.375,
-                      "dx": 1.5,
-                      "dy": -9.0
-                    },
-                    {
-                      "intensity": 0.822,
-                      "dx": 3.8,
-                      "dy": -12.8
-                    },
-                    {
-                      "intensity": 0.74,
+                      "intensity": 0.864,
                       "dx": 3.6,
-                      "dy": -11.9
+                      "dy": -4.3
+                    },
+                    {
+                      "intensity": 1.5,
+                      "dx": 1.0,
+                      "dy": -4.2
+                    },
+                    {
+                      "intensity": 0.73,
+                      "dx": 3.7,
+                      "dy": -13.0
                     }
                   ]
                 },
@@ -66462,7 +66462,7 @@
                   ]
                 }
               },
-              "generated_at": "2026-09-18T02:51:06+00:00",
+              "generated_at": "2026-09-18T04:49:09+00:00",
               "brief": "J46",
               "light_frames": [
                 {
@@ -66498,7 +66498,7 @@
                 "gravel_piles/gravel_pile_002/lit_4/animations/motion/south/03.webp",
                 "gravel_piles/gravel_pile_002/lit_4/animations/motion/south/04.webp"
               ],
-              "strip": "gravel_piles/gravel_pile_002/lit_4/animations/motion__south.c4e465d0.webp",
+              "strip": "gravel_piles/gravel_pile_002/lit_4/animations/motion__south.d0de7234.webp",
               "review": "ANIMATION_PROBABLY_BAD",
               "review_metrics": {
                 "base_outline": 0.566
@@ -85603,7 +85603,7 @@
           "animations": {
             "motion": {
               "group_id": "5f72431c-356a-47f7-9857-8f36e60b49f1",
-              "description": "This is the same picture in every frame. ONLY the light inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "description": "A completely still picture, identical in every frame, except for one thing. ONLY the light inside the lantern flickers. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -85724,7 +85724,7 @@
                   ]
                 }
               },
-              "generated_at": "2026-09-18T03:06:38+00:00",
+              "generated_at": "2026-09-18T04:49:08+00:00",
               "brief": "G5",
               "light_frames": [
                 {
@@ -89588,7 +89588,7 @@
           "animations": {
             "motion": {
               "group_id": "b8a5d2cd-d40d-4b56-aed8-feb1e080022a",
-              "description": "This is the same picture in every frame. ONLY the light inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "description": "A completely still picture, identical in every frame, except for one thing. ONLY the light inside the lantern flickers. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -89603,32 +89603,32 @@
                     "lantern_posts/lantern_post_020/lit_3/animations/motion/south/03.webp",
                     "lantern_posts/lantern_post_020/lit_3/animations/motion/south/04.webp"
                   ],
-                  "strip": "lantern_posts/lantern_post_020/lit_3/animations/motion__south.6342f14f.webp",
+                  "strip": "lantern_posts/lantern_post_020/lit_3/animations/motion__south.fdbb726f.webp",
                   "light_frames": [
                     {
-                      "intensity": 1.0,
+                      "intensity": 1.5,
                       "dx": -0.2,
                       "dy": 6.1
                     },
                     {
-                      "intensity": 1.0,
-                      "dx": -0.2,
-                      "dy": 6.1
+                      "intensity": 0.5,
+                      "dx": -0.3,
+                      "dy": 5.5
                     },
                     {
-                      "intensity": 1.0,
-                      "dx": -0.2,
-                      "dy": 7.1
+                      "intensity": 0.5,
+                      "dx": -0.3,
+                      "dy": 5.5
                     },
                     {
-                      "intensity": 1.0,
-                      "dx": -0.2,
-                      "dy": 7.1
+                      "intensity": 0.5,
+                      "dx": -0.3,
+                      "dy": 5.5
                     },
                     {
-                      "intensity": 1.0,
-                      "dx": -0.2,
-                      "dy": 7.1
+                      "intensity": 1.5,
+                      "dx": -0.4,
+                      "dy": 5.0
                     }
                   ]
                 },
@@ -89709,7 +89709,7 @@
                   ]
                 }
               },
-              "generated_at": "2026-09-18T03:10:09+00:00",
+              "generated_at": "2026-09-18T04:49:10+00:00",
               "brief": "C11",
               "light_frames": [
                 {
@@ -89745,10 +89745,10 @@
                 "lantern_posts/lantern_post_020/lit_3/animations/motion/south/03.webp",
                 "lantern_posts/lantern_post_020/lit_3/animations/motion/south/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_020/lit_3/animations/motion__south.6342f14f.webp",
+              "strip": "lantern_posts/lantern_post_020/lit_3/animations/motion__south.fdbb726f.webp",
               "review": "ANIMATION_PROBABLY_BAD",
               "review_metrics": {
-                "base_outline": 0.2708
+                "base_outline": 0.2377
               }
             }
           },
@@ -90942,29 +90942,29 @@
               "brief": "T2",
               "light_frames": [
                 {
-                  "intensity": 1.123,
+                  "intensity": 0.5,
                   "dx": -1.0,
                   "dy": 17.0
                 },
                 {
-                  "intensity": 0.992,
-                  "dx": 0.4,
-                  "dy": 15.7
-                },
-                {
-                  "intensity": 0.939,
+                  "intensity": 1.5,
                   "dx": 0.7,
-                  "dy": 16.4
+                  "dy": 21.8
                 },
                 {
-                  "intensity": 0.92,
-                  "dx": 0.1,
-                  "dy": 17.3
+                  "intensity": 1.5,
+                  "dx": 0.8,
+                  "dy": 21.3
                 },
                 {
-                  "intensity": 1.026,
-                  "dx": -1.1,
-                  "dy": 17.9
+                  "intensity": 0.5,
+                  "dx": 5.3,
+                  "dy": 17.5
+                },
+                {
+                  "intensity": 1.22,
+                  "dx": -0.1,
+                  "dy": 20.8
                 }
               ],
               "frame_paths": [
@@ -92221,7 +92221,7 @@
           "animations": {
             "motion": {
               "group_id": "dab1d01f-f7b3-4288-a0cc-ee5ba9c0bca8",
-              "description": "This is the same picture in every frame. ONLY the flame inside the hanging lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "description": "A completely still picture, identical in every frame, except for one thing. ONLY the flame inside the hanging lantern flickers. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -92342,7 +92342,7 @@
                   ]
                 }
               },
-              "generated_at": "2026-09-18T03:15:37+00:00",
+              "generated_at": "2026-09-18T04:49:09+00:00",
               "brief": "G4",
               "light_frames": [
                 {
@@ -93252,7 +93252,7 @@
           "animations": {
             "motion": {
               "group_id": "4ded9f96-f1dc-4399-b972-96e26a6e0f6e",
-              "description": "This is the same picture in every frame. ONLY the cloth roof moves, sagging and lifting a few pixels as if in a faint draught. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "description": "A completely still picture, identical in every frame, except for one thing. ONLY the cloth roof moves, sagging and lifting a few pixels as if in a faint draught. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -93267,7 +93267,7 @@
                     "market_stalls/market_stall_001/animations/motion/south/03.webp",
                     "market_stalls/market_stall_001/animations/motion/south/04.webp"
                   ],
-                  "strip": "market_stalls/market_stall_001/animations/motion__south.a0cb0110.webp"
+                  "strip": "market_stalls/market_stall_001/animations/motion__south.4b0fd9f5.webp"
                 },
                 "south-east": {
                   "frames": 5,
@@ -93292,7 +93292,7 @@
                   "strip": "market_stalls/market_stall_001/animations/motion__south-west.1e6cf602.webp"
                 }
               },
-              "generated_at": "2026-09-18T03:17:32+00:00",
+              "generated_at": "2026-09-18T04:49:12+00:00",
               "brief": "C2",
               "frame_paths": [
                 "market_stalls/market_stall_001/animations/motion/south/00.webp",
@@ -93301,7 +93301,7 @@
                 "market_stalls/market_stall_001/animations/motion/south/03.webp",
                 "market_stalls/market_stall_001/animations/motion/south/04.webp"
               ],
-              "strip": "market_stalls/market_stall_001/animations/motion__south.a0cb0110.webp",
+              "strip": "market_stalls/market_stall_001/animations/motion__south.4b0fd9f5.webp",
               "review": "ANIMATION_PROBABLY_BAD",
               "review_metrics": {
                 "base_outline": 0.1121
@@ -104785,7 +104785,7 @@
           "animations": {
             "motion": {
               "group_id": "6dbfff5d-3386-4da8-95aa-e8dcd6d56ad8",
-              "description": "This is the same picture in every frame. ONLY the loose fringe strands along the top and bottom edges stir. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "description": "A completely still picture, identical in every frame, except for one thing. ONLY the loose fringe strands along the top and bottom edges stir. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -104800,7 +104800,7 @@
                     "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/03.webp",
                     "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/04.webp"
                   ],
-                  "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.a0a01325.webp"
+                  "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.45ded416.webp"
                 },
                 "south-east": {
                   "frames": 5,
@@ -104811,7 +104811,7 @@
                     "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-east/03.webp",
                     "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-east/04.webp"
                   ],
-                  "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south-east.3e472269.webp"
+                  "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south-east.b8fa3937.webp"
                 },
                 "south-west": {
                   "frames": 5,
@@ -104825,7 +104825,7 @@
                   "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south-west.8e54b55c.webp"
                 }
               },
-              "generated_at": "2026-09-18T03:27:22+00:00",
+              "generated_at": "2026-09-18T04:49:14+00:00",
               "brief": "X65",
               "frame_paths": [
                 "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/00.webp",
@@ -104834,10 +104834,10 @@
                 "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/03.webp",
                 "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/04.webp"
               ],
-              "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.a0a01325.webp",
+              "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.45ded416.webp",
               "review": "ANIMATION_PROBABLY_BAD",
               "review_metrics": {
-                "base_outline": 0.266
+                "base_outline": 0.2161
               }
             }
           },
@@ -112150,7 +112150,7 @@
           "animations": {
             "motion": {
               "group_id": "e2d67c0c-0855-4e0b-8532-b222b468a0a8",
-              "description": "This is the same picture in every frame. only, pulsing slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+              "description": "A completely still picture, identical in every frame, except for one thing. only, pulsing slowly. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
               "mode": "v3",
               "frame_count": 5,
               "generated_frames": 4,
@@ -112165,32 +112165,32 @@
                     "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/south/03.webp",
                     "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/south/04.webp"
                   ],
-                  "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__south.a67be1f1.webp",
+                  "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__south.d19e2d6d.webp",
                   "light_frames": [
                     {
-                      "intensity": 1.087,
+                      "intensity": 1.037,
                       "dx": 0.7,
                       "dy": -5.6
                     },
                     {
-                      "intensity": 1.067,
-                      "dx": 0.6,
-                      "dy": -5.6
+                      "intensity": 1.01,
+                      "dx": 0.5,
+                      "dy": -7.0
                     },
                     {
-                      "intensity": 1.059,
+                      "intensity": 0.919,
                       "dx": 0.4,
+                      "dy": -4.2
+                    },
+                    {
+                      "intensity": 1.01,
+                      "dx": 0.1,
                       "dy": -5.4
                     },
                     {
-                      "intensity": 0.98,
-                      "dx": 0.1,
-                      "dy": -6.0
-                    },
-                    {
-                      "intensity": 0.806,
-                      "dx": 0.8,
-                      "dy": -7.5
+                      "intensity": 1.023,
+                      "dx": 0.2,
+                      "dy": -5.0
                     }
                   ]
                 },
@@ -112271,7 +112271,7 @@
                   ]
                 }
               },
-              "generated_at": "2026-09-18T03:33:07+00:00",
+              "generated_at": "2026-09-18T04:49:13+00:00",
               "brief": "L3",
               "light_frames": [
                 {
@@ -112307,7 +112307,7 @@
                 "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/south/03.webp",
                 "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/south/04.webp"
               ],
-              "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__south.a67be1f1.webp",
+              "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__south.d19e2d6d.webp",
               "review": "ANIMATION_PROBABLY_BAD",
               "review_metrics": {
                 "base_outline": 0.5474
@@ -122543,29 +122543,29 @@
               "brief": "Y6",
               "light_frames": [
                 {
-                  "intensity": 1.38,
+                  "intensity": 1.294,
                   "dx": -0.6,
                   "dy": 16.7
                 },
                 {
-                  "intensity": 1.264,
-                  "dx": -0.7,
-                  "dy": 16.5
-                },
-                {
-                  "intensity": 1.25,
+                  "intensity": 0.578,
                   "dx": -0.5,
-                  "dy": 16.1
+                  "dy": 4.5
                 },
                 {
-                  "intensity": 0.557,
-                  "dx": -0.6,
-                  "dy": 4.9
+                  "intensity": 1.016,
+                  "dx": -0.5,
+                  "dy": 14.5
                 },
                 {
-                  "intensity": 0.548,
-                  "dx": -0.7,
-                  "dy": 4.6
+                  "intensity": 1.266,
+                  "dx": -0.8,
+                  "dy": 14.0
+                },
+                {
+                  "intensity": 0.845,
+                  "dx": -0.3,
+                  "dy": 4.0
                 }
               ],
               "frame_paths": [
@@ -138616,29 +138616,29 @@
               "brief": "Y7",
               "light_frames": [
                 {
-                  "intensity": 1.152,
+                  "intensity": 0.922,
                   "dx": -0.9,
                   "dy": -19.8
                 },
                 {
-                  "intensity": 1.132,
-                  "dx": -0.8,
-                  "dy": -19.9
+                  "intensity": 1.171,
+                  "dx": -0.7,
+                  "dy": -20.1
                 },
                 {
-                  "intensity": 1.132,
+                  "intensity": 1.246,
                   "dx": -0.9,
-                  "dy": -20.7
+                  "dy": -20.2
                 },
                 {
-                  "intensity": 0.825,
-                  "dx": -1.3,
-                  "dy": -19.4
+                  "intensity": 1.125,
+                  "dx": -0.7,
+                  "dy": -19.0
                 },
                 {
-                  "intensity": 0.76,
-                  "dx": -1.8,
-                  "dy": -18.2
+                  "intensity": 0.535,
+                  "dx": -0.7,
+                  "dy": -16.6
                 }
               ],
               "frame_paths": [
@@ -139288,29 +139288,29 @@
               "brief": "G9",
               "light_frames": [
                 {
-                  "intensity": 0.916,
+                  "intensity": 0.5,
                   "dx": 0.2,
                   "dy": -11.6
                 },
                 {
                   "intensity": 0.5,
-                  "dx": -1.5,
-                  "dy": -9.9
+                  "dx": -0.5,
+                  "dy": -6.3
                 },
                 {
                   "intensity": 1.5,
-                  "dx": 2.3,
-                  "dy": -4.0
+                  "dx": -1.2,
+                  "dy": -19.4
                 },
                 {
-                  "intensity": 0.5,
-                  "dx": 1.1,
-                  "dy": 8.7
+                  "intensity": 1.06,
+                  "dx": -1.7,
+                  "dy": -16.5
                 },
                 {
-                  "intensity": 1.324,
-                  "dx": 2.6,
-                  "dy": 5.7
+                  "intensity": 0.633,
+                  "dx": 0.3,
+                  "dy": -15.7
                 }
               ],
               "frame_paths": [
@@ -191907,29 +191907,29 @@
               "brief": "Z14",
               "light_frames": [
                 {
-                  "intensity": 1.5,
+                  "intensity": 0.939,
                   "dx": -3.4,
                   "dy": -13.8
                 },
                 {
-                  "intensity": 1.5,
-                  "dx": -3.6,
-                  "dy": -12.0
+                  "intensity": 0.971,
+                  "dx": -4.1,
+                  "dy": -12.8
                 },
                 {
-                  "intensity": 0.696,
-                  "dx": 1.2,
-                  "dy": -21.2
+                  "intensity": 1.161,
+                  "dx": -2.0,
+                  "dy": -9.5
                 },
                 {
-                  "intensity": 0.52,
-                  "dx": 0.5,
-                  "dy": -22.2
+                  "intensity": 1.133,
+                  "dx": -1.7,
+                  "dy": -9.2
                 },
                 {
-                  "intensity": 0.5,
-                  "dx": 1.2,
-                  "dy": -22.5
+                  "intensity": 0.795,
+                  "dx": -3.1,
+                  "dy": -13.2
                 }
               ],
               "frame_paths": [

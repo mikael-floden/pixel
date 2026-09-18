@@ -55,7 +55,7 @@
       "animations": {
         "motion": {
           "group_id": "e2d67c0c-0855-4e0b-8532-b222b468a0a8",
-          "description": "This is the same picture in every frame. only, pulsing slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. only, pulsing slowly. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -70,32 +70,32 @@
                 "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/south/03.webp",
                 "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/south/04.webp"
               ],
-              "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__south.a67be1f1.webp",
+              "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__south.d19e2d6d.webp",
               "light_frames": [
                 {
-                  "intensity": 1.087,
+                  "intensity": 1.037,
                   "dx": 0.7,
                   "dy": -5.6
                 },
                 {
-                  "intensity": 1.067,
-                  "dx": 0.6,
-                  "dy": -5.6
+                  "intensity": 1.01,
+                  "dx": 0.5,
+                  "dy": -7.0
                 },
                 {
-                  "intensity": 1.059,
+                  "intensity": 0.919,
                   "dx": 0.4,
+                  "dy": -4.2
+                },
+                {
+                  "intensity": 1.01,
+                  "dx": 0.1,
                   "dy": -5.4
                 },
                 {
-                  "intensity": 0.98,
-                  "dx": 0.1,
-                  "dy": -6.0
-                },
-                {
-                  "intensity": 0.806,
-                  "dx": 0.8,
-                  "dy": -7.5
+                  "intensity": 1.023,
+                  "dx": 0.2,
+                  "dy": -5.0
                 }
               ]
             },
@@ -176,7 +176,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T03:33:07+00:00",
+          "generated_at": "2026-09-18T04:49:13+00:00",
           "brief": "L3",
           "light_frames": [
             {
@@ -212,7 +212,7 @@
             "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/south/03.webp",
             "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion/south/04.webp"
           ],
-          "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__south.a67be1f1.webp",
+          "strip": "soulstone_plinths/soulstone_plinth_001/lit_1/animations/motion__south.d19e2d6d.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.5474

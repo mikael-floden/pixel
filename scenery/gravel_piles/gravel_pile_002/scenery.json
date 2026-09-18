@@ -425,7 +425,7 @@
       "animations": {
         "motion": {
           "group_id": "e2f192d8-81c8-4a1f-bcef-5db6c2f541b1",
-          "description": "This is the same picture in every frame. ONLY the gold crystals in the gravel change. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the gold crystals in the gravel change. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -440,32 +440,32 @@
                 "gravel_piles/gravel_pile_002/lit_4/animations/motion/south/03.webp",
                 "gravel_piles/gravel_pile_002/lit_4/animations/motion/south/04.webp"
               ],
-              "strip": "gravel_piles/gravel_pile_002/lit_4/animations/motion__south.c4e465d0.webp",
+              "strip": "gravel_piles/gravel_pile_002/lit_4/animations/motion__south.d0de7234.webp",
               "light_frames": [
                 {
-                  "intensity": 0.73,
+                  "intensity": 0.542,
                   "dx": 3.7,
                   "dy": -10.7
                 },
                 {
-                  "intensity": 1.332,
-                  "dx": 2.0,
-                  "dy": -8.8
+                  "intensity": 1.35,
+                  "dx": 1.4,
+                  "dy": -8.1
                 },
                 {
-                  "intensity": 1.375,
-                  "dx": 1.5,
-                  "dy": -9.0
-                },
-                {
-                  "intensity": 0.822,
-                  "dx": 3.8,
-                  "dy": -12.8
-                },
-                {
-                  "intensity": 0.74,
+                  "intensity": 0.864,
                   "dx": 3.6,
-                  "dy": -11.9
+                  "dy": -4.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 1.0,
+                  "dy": -4.2
+                },
+                {
+                  "intensity": 0.73,
+                  "dx": 3.7,
+                  "dy": -13.0
                 }
               ]
             },
@@ -546,7 +546,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T02:51:06+00:00",
+          "generated_at": "2026-09-18T04:49:09+00:00",
           "brief": "J46",
           "light_frames": [
             {
@@ -582,7 +582,7 @@
             "gravel_piles/gravel_pile_002/lit_4/animations/motion/south/03.webp",
             "gravel_piles/gravel_pile_002/lit_4/animations/motion/south/04.webp"
           ],
-          "strip": "gravel_piles/gravel_pile_002/lit_4/animations/motion__south.c4e465d0.webp",
+          "strip": "gravel_piles/gravel_pile_002/lit_4/animations/motion__south.d0de7234.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.566
