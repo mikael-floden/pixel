@@ -134,6 +134,12 @@ jobs:
     timeout-minutes: 90     # a generation pass; the loop stops itself on budget
     permissions:
       contents: write       # it pushes the work and its board claim to main
+      # THE ACTION MINTS ITS GITHUB APP TOKEN FROM AN OIDC TOKEN, and a job
+      # cannot request one without this. Measured on the first rehearsal: three
+      # retries of "Unable to get ACTIONS_ID_TOKEN_REQUEST_URL" and the run
+      # died before Claude ever started — it reads as an auth failure, and is
+      # not one.
+      id-token: write
     strategy:
       fail-fast: false
       matrix:

@@ -82,12 +82,20 @@ for both.
   real height is read against the room the screen has; if it overflows, the next
   layout is tried. Arithmetic over the stylesheet cannot know that "Sound
   Effects" wrapped.
+- **TWO COLUMNS IS THE PHONE LAYOUT** (maintainer 2026-09-18: *"I still liked 2
+  columns / row on my phone"*), so a third is what is given up LAST. Eleven
+  sections in two columns is six rows, which only fit when the tile lies on its
+  side — `.row-tiles`, icon beside the words instead of above them, same markup.
 - **What is given up, in order:** the icon (96 → 48 — whole multiples of 48
   only, never resampled, the `sectionIcon` law), then the type one step, then
-  the intro sentence (the one thing on the front door that is not a door), and
-  only after all of that may a phone take a fourth column — where a tile is 82px
-  and "Parameters" fills it edge to edge. Nothing fits at all → the page
-  scrolls, which is the honest failure; the art never leaves its 48px grid.
+  the intro sentence (the one thing on the front door that is not a door), then
+  the tile on its side, and only then a third column. Nothing fits at all → the
+  page scrolls, which is the honest failure; the art never leaves its 48px grid.
+- **A phone is the VIEWPORT, not the column.** A desktop's content column is
+  narrow too (the sidebar takes 240px), and measuring the column made an 820px
+  desktop walk the phone ladder and land on two columns of 48px art. A wide
+  screen tries its columns from the widest DOWN: the whole door in two rows at
+  96px.
 - **The column's own bottom padding is part of the budget.** `#content` reserves
   130px on a phone for the save bar; reading that is what turned a layout that
   "fit" into one that did. The front door has nothing to save, so

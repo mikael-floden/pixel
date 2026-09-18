@@ -1060,6 +1060,18 @@ dialog:not(.sfx-picker) input {
    130px — that reserve is the difference between the last row being on screen
    and not (maintainer 2026-09-18). Any other page keeps it. */
 #content.fit-home { padding-bottom: 16px; }
+/* TWO COLUMNS IS THE PHONE LAYOUT HE WANTS (maintainer 2026-09-18: "I still
+   liked 2 columns / row on my phone"), and eleven sections in two columns is
+   six rows — which only fit when the icon stands BESIDE the words instead of
+   above them. Same tile, same art, laid on its side: a grid, so the markup is
+   unchanged and the icon spans both text lines. */
+.stat-tiles.row-tiles .stat-tile {
+  display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center;
+  column-gap: 10px; row-gap: 0; text-align: left; padding: 8px 10px;
+}
+.stat-tiles.row-tiles .stat-tile .sect-icon { grid-row: 1 / 3; margin-bottom: 0; }
+.stat-tiles.row-tiles .stat-tile .n,
+.stat-tiles.row-tiles .stat-tile .l { grid-column: 2; }
 .stat-tiles.small-type .n { font-size: 15px; }
 .stat-tiles.small-type .l { font-size: 11.5px; }
 a.stat-tile { color: var(--ink); }

@@ -4386,24 +4386,45 @@ function fitHome(grid) {
   const room = () => window.innerHeight - grid.getBoundingClientRect().top - pad - 4;
   const intro = $(".home-intro");
   const wide = Math.max(2, Math.min(6, Math.floor((grid.clientWidth + HOME_GAP) / (104 + HOME_GAP))));
-  const narrow = grid.clientWidth < 600;
-  // WHAT IS GIVEN UP, IN ORDER. The icon first (96 → 48: whole multiples of 48
-  // only, never resampled), then the type one step, then the intro sentence —
-  // the one thing on the front door that is not a door — and only when all of
-  // that has failed does a phone take a fourth column, where a tile is 82px
-  // and "Parameters" fills it edge to edge.
-  for (const cap of narrow ? [3, 4] : [wide]) {
+  // THE PHONE IS THE VIEWPORT, not the column: a desktop's column is narrow too
+  // (the sidebar takes 240px of it), and measuring the column made a 820px
+  // desktop take the phone's two-column ladder.
+  const narrow = window.innerWidth < 600;
+  /* WHAT IS GIVEN UP, IN ORDER — and on a phone TWO COLUMNS is given up last
+   * (maintainer 2026-09-18: "I still liked 2 columns / row on my phone").
+   * The icon first (96 → 48: whole multiples of 48 only, never resampled),
+   * then the type one step, then the intro sentence — the one thing on the
+   * front door that is not a door — and then the tile lies on its SIDE, icon
+   * beside the words, which is what makes eleven sections fit six rows of two.
+   * Only when even that overflows does a phone take a third column. */
+  const layouts = [];
+  for (const rows of [false, true]) {
     for (const tight of [false, true]) {
-      if (intro) intro.hidden = tight;
       for (const [icon, small] of [[96, false], [48, false], [48, true]]) {
-        setIcon(icon);
-        grid.classList.toggle("small-type", small);
-        for (let c = 2; c <= cap; c++) {
-          grid.style.setProperty("--home-cols", String(c));
-          if (grid.getBoundingClientRect().height <= room()) {
-            grid.dataset.fit = `${icon}px/${c}col${small ? "/small" : ""}${tight ? "/no-intro" : ""}`;
-            return;
-          }
+        layouts.push({ icon, small, tight, rows });
+      }
+    }
+  }
+  /* A PHONE WIDENS ONLY AS A LAST RESORT, A DESKTOP IMMEDIATELY. On a phone
+   * the ladder above is walked at two columns first and a third is bought only
+   * when nothing else fits; on a wide screen the widest row is the best row —
+   * it keeps the 96px art and puts the whole door in two rows — so the columns
+   * are tried from the widest down. */
+  const caps = narrow ? [2, 3, 4] : [wide];
+  const cols = (cap) => (narrow
+    ? Array.from({ length: cap - 1 }, (_, i) => i + 2)
+    : Array.from({ length: cap - 1 }, (_, i) => cap - i));
+  for (const cap of caps) {
+    for (const L of layouts) {
+      if (intro) intro.hidden = L.tight;
+      setIcon(L.icon);
+      grid.classList.toggle("small-type", L.small);
+      grid.classList.toggle("row-tiles", L.rows);
+      for (const c of cols(cap)) {
+        grid.style.setProperty("--home-cols", String(c));
+        if (grid.getBoundingClientRect().height <= room()) {
+          grid.dataset.fit = `${L.icon}px/${c}col${L.small ? "/small" : ""}${L.rows ? "/side" : ""}${L.tight ? "/no-intro" : ""}`;
+          return;
         }
       }
     }
@@ -4411,6 +4432,7 @@ function fitHome(grid) {
   // Nothing fits — a landscape phone, or a browser with a huge font. The page
   // scrolls, which is the honest failure: the art never leaves its 48px grid.
   if (intro) intro.hidden = false;
+  grid.classList.remove("row-tiles");
   grid.dataset.fit = `48px/${narrow ? 4 : wide}col/small (scrolls)`;
 }
 
