@@ -489,6 +489,16 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   thick, so a face is only usable where the cell behind it is floor
   (`spec/WORLD3.md` → a window needs a room behind it). `--apply <world_dir>`
   slides the windows of a world that already ships.
+- `ambient.py` — **AMBIENT ZONES: every ambient effect belongs to a place,
+  with a share** (maintainer 2026-09-18; `spec/AMBIENT.md`). Writes
+  `worlds3/<world>/ambient.json`: zones as spawns@1 polygons read off the
+  terrain (sea quarters, shore, dunes, lakes, marsh, meadows, woods, pasture,
+  massif, summits, lava, caves, towns, slime, islets) plus five hand-placed
+  weather provinces, each with `effects: {name: share 1..100}` — how often
+  the SERVER should have that effect on there; overlapping zones weight the
+  draw among effects that cannot run together. The `world` zone carries foam,
+  water and every other effect that finds its own object at 100. `--apply`,
+  `--check` (also `world3grow.run`'s last step), `--page` (the review page).
 - `spawns.py` / `npcs.py` / `places.py` — the sidecar derivers + `--check` gates.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 

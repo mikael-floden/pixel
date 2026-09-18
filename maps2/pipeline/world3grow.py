@@ -8323,6 +8323,12 @@ class Grow:
             self.doc["scenery"], [(sx + 0.5, sy + 0.5, self.BONFIRE_R)])
         json.dump(self.doc, open(os.path.join(OUT, "world.json"), "w"),
                   separators=(",", ":"))
+        # AMBIENT ZONES are read off the finished world (spec/AMBIENT.md): the
+        # sidecar follows the world it describes, gated like the others.
+        import ambient
+        adoc = ambient.build(OUT)
+        json.dump(adoc, open(os.path.join(OUT, "ambient.json"), "w"), separators=(",", ":"))
+        ambient.check(OUT, adoc)
         print(f"the_game grown: {NEW}x{NEW}, {len(self.doc['scenery'])} scenery "
               f"({nlit} lit, worst window {worst}/8), "
               f"{len(self.doc['decks'])} decks, {self.fail} placements dropped")
