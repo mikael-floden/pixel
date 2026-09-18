@@ -66,30 +66,129 @@
       "animations": {
         "motion": {
           "group_id": "095b6c5f-c311-4a07-968c-ac0ebc99c8d0",
-          "description": "This is the same picture in every frame. ONLY the gold sun mark on the post brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the gold sun mark on the post brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "dock_pilings/dock_piling_014/lit_2/animations/motion/00.webp",
-            "dock_pilings/dock_piling_014/lit_2/animations/motion/01.webp",
-            "dock_pilings/dock_piling_014/lit_2/animations/motion/02.webp",
-            "dock_pilings/dock_piling_014/lit_2/animations/motion/03.webp",
-            "dock_pilings/dock_piling_014/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "dock_pilings/dock_piling_014/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:35:39+00:00",
-          "brief": "H21",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "rigid",
-            "base": 0.0123,
-            "still": 0.888
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south/00.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south/01.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south/02.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south/03.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_2/animations/motion__south.52bae8dc.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.47,
+                  "dx": -3.1,
+                  "dy": -0.5
+                },
+                {
+                  "intensity": 0.96,
+                  "dx": -4.0,
+                  "dy": 3.9
+                },
+                {
+                  "intensity": 0.931,
+                  "dx": -3.5,
+                  "dy": 3.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -7.0,
+                  "dy": 22.4
+                },
+                {
+                  "intensity": 1.306,
+                  "dx": -3.1,
+                  "dy": 0.6
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-east/00.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-east/01.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-east/02.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-east/03.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_2/animations/motion__south-east.2726c61c.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 3.9,
+                  "dy": -2.3
+                },
+                {
+                  "intensity": 0.632,
+                  "dx": 0.4,
+                  "dy": 11.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -0.4,
+                  "dy": 22.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.9,
+                  "dy": 15.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 1.7,
+                  "dy": 22.3
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-west/00.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-west/01.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-west/02.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-west/03.webp",
+                "dock_pilings/dock_piling_014/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_2/animations/motion__south-west.1714cd0f.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.918,
+                  "dx": -6.0,
+                  "dy": -7.1
+                },
+                {
+                  "intensity": 1.074,
+                  "dx": -5.6,
+                  "dy": -7.1
+                },
+                {
+                  "intensity": 1.092,
+                  "dx": -5.3,
+                  "dy": -6.9
+                },
+                {
+                  "intensity": 1.122,
+                  "dx": -5.3,
+                  "dy": -7.0
+                },
+                {
+                  "intensity": 0.795,
+                  "dx": -6.0,
+                  "dy": -6.8
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:34:22+00:00",
+          "brief": "H21",
           "light_frames": [
             {
               "intensity": 1.47,
@@ -116,7 +215,19 @@
               "dx": -3.1,
               "dy": 0.6
             }
-          ]
+          ],
+          "frame_paths": [
+            "dock_pilings/dock_piling_014/lit_2/animations/motion/south/00.webp",
+            "dock_pilings/dock_piling_014/lit_2/animations/motion/south/01.webp",
+            "dock_pilings/dock_piling_014/lit_2/animations/motion/south/02.webp",
+            "dock_pilings/dock_piling_014/lit_2/animations/motion/south/03.webp",
+            "dock_pilings/dock_piling_014/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_014/lit_2/animations/motion__south.52bae8dc.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },
@@ -135,28 +246,129 @@
       "animations": {
         "motion": {
           "group_id": "b8de9bd8-c918-4f81-a6f0-036769049acd",
-          "description": "This is the same picture in every frame. ONLY the gold runes on the posts brighten a little and return. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the gold runes on the posts brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "dock_pilings/dock_piling_014/lit_3/animations/motion/00.webp",
-            "dock_pilings/dock_piling_014/lit_3/animations/motion/01.webp",
-            "dock_pilings/dock_piling_014/lit_3/animations/motion/02.webp",
-            "dock_pilings/dock_piling_014/lit_3/animations/motion/03.webp",
-            "dock_pilings/dock_piling_014/lit_3/animations/motion/04.webp"
-          ],
-          "strip": "dock_pilings/dock_piling_014/lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:35:34+00:00",
-          "brief": "H20",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south/00.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south/01.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south/02.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south/03.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_3/animations/motion__south.cb665e1c.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.042,
+                  "dx": -1.8,
+                  "dy": -6.8
+                },
+                {
+                  "intensity": 1.046,
+                  "dx": -1.8,
+                  "dy": -8.1
+                },
+                {
+                  "intensity": 1.046,
+                  "dx": -1.8,
+                  "dy": -8.1
+                },
+                {
+                  "intensity": 1.044,
+                  "dx": -1.8,
+                  "dy": -8.1
+                },
+                {
+                  "intensity": 0.823,
+                  "dx": -2.0,
+                  "dy": -7.9
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-east/00.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-east/01.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-east/02.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-east/03.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_3/animations/motion__south-east.452547e2.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.817,
+                  "dx": 4.8,
+                  "dy": -7.3
+                },
+                {
+                  "intensity": 1.111,
+                  "dx": 5.0,
+                  "dy": -6.5
+                },
+                {
+                  "intensity": 1.112,
+                  "dx": 5.3,
+                  "dy": -6.7
+                },
+                {
+                  "intensity": 1.112,
+                  "dx": 5.3,
+                  "dy": -6.7
+                },
+                {
+                  "intensity": 0.848,
+                  "dx": 4.9,
+                  "dy": -7.1
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-west/00.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-west/01.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-west/02.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-west/03.webp",
+                "dock_pilings/dock_piling_014/lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_3/animations/motion__south-west.b1503cd9.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.877,
+                  "dx": -7.3,
+                  "dy": -7.0
+                },
+                {
+                  "intensity": 0.879,
+                  "dx": -7.3,
+                  "dy": -7.1
+                },
+                {
+                  "intensity": 0.992,
+                  "dx": -6.3,
+                  "dy": -12.3
+                },
+                {
+                  "intensity": 1.014,
+                  "dx": -6.1,
+                  "dy": -12.6
+                },
+                {
+                  "intensity": 1.238,
+                  "dx": -5.6,
+                  "dy": -15.2
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:35:24+00:00",
+          "brief": "H20",
           "light_frames": [
             {
               "intensity": 1.042,
@@ -183,7 +395,19 @@
               "dx": -2.0,
               "dy": -7.9
             }
-          ]
+          ],
+          "frame_paths": [
+            "dock_pilings/dock_piling_014/lit_3/animations/motion/south/00.webp",
+            "dock_pilings/dock_piling_014/lit_3/animations/motion/south/01.webp",
+            "dock_pilings/dock_piling_014/lit_3/animations/motion/south/02.webp",
+            "dock_pilings/dock_piling_014/lit_3/animations/motion/south/03.webp",
+            "dock_pilings/dock_piling_014/lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_014/lit_3/animations/motion__south.cb665e1c.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0187
+          }
         }
       }
     },
@@ -202,28 +426,129 @@
       "animations": {
         "motion": {
           "group_id": "8852b189-af05-4779-8829-99d33c47b313",
-          "description": "This is an almost completely still picture. ONLY the outermost edge of the gold sunburst on the post changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The gold sunburst on the post is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the gold it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the outermost edge of the gold sunburst on the post changes: a few pixels along that edge shift very slightly in brightness and shift straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "dock_pilings/dock_piling_014/lit_4/animations/motion/00.webp",
-            "dock_pilings/dock_piling_014/lit_4/animations/motion/01.webp",
-            "dock_pilings/dock_piling_014/lit_4/animations/motion/02.webp",
-            "dock_pilings/dock_piling_014/lit_4/animations/motion/03.webp",
-            "dock_pilings/dock_piling_014/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "dock_pilings/dock_piling_014/lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T10:29:51+00:00",
-          "brief": "J45",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south/00.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south/01.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south/02.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south/03.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_4/animations/motion__south.5dde5f05.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.142,
+                  "dx": -0.9,
+                  "dy": -4.4
+                },
+                {
+                  "intensity": 1.128,
+                  "dx": -0.9,
+                  "dy": -6.9
+                },
+                {
+                  "intensity": 1.06,
+                  "dx": -1.1,
+                  "dy": -7.2
+                },
+                {
+                  "intensity": 0.976,
+                  "dx": -1.2,
+                  "dy": -5.7
+                },
+                {
+                  "intensity": 0.694,
+                  "dx": -1.4,
+                  "dy": -4.5
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-east/00.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-east/01.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-east/02.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-east/03.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_4/animations/motion__south-east.a40864e0.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.341,
+                  "dx": 4.3,
+                  "dy": -4.5
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 3.6,
+                  "dy": -5.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 3.8,
+                  "dy": -5.9
+                },
+                {
+                  "intensity": 1.056,
+                  "dx": 3.2,
+                  "dy": -6.6
+                },
+                {
+                  "intensity": 0.619,
+                  "dx": 4.4,
+                  "dy": -6.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-west/00.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-west/01.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-west/02.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-west/03.webp",
+                "dock_pilings/dock_piling_014/lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "dock_pilings/dock_piling_014/lit_4/animations/motion__south-west.932892ac.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": -5.6,
+                  "dy": -7.0
+                },
+                {
+                  "intensity": 0.503,
+                  "dx": -3.3,
+                  "dy": -5.4
+                },
+                {
+                  "intensity": 0.947,
+                  "dx": -2.8,
+                  "dy": -20.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -4.4,
+                  "dy": -8.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -4.0,
+                  "dy": -10.4
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:35:32+00:00",
+          "brief": "J45",
           "light_frames": [
             {
               "intensity": 1.142,
@@ -250,7 +575,19 @@
               "dx": -1.4,
               "dy": -4.5
             }
-          ]
+          ],
+          "frame_paths": [
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/south/00.webp",
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/south/01.webp",
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/south/02.webp",
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/south/03.webp",
+            "dock_pilings/dock_piling_014/lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_014/lit_4/animations/motion__south.5dde5f05.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },

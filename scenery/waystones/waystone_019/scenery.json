@@ -56,28 +56,129 @@
       "animations": {
         "motion": {
           "group_id": "9db9cc41-5533-46ab-8ee0-f53e0da585d4",
-          "description": "This is the same picture in every frame. ONLY the glowing tree carving on the stone brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the glowing tree carving on the stone brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "waystones/waystone_019/lit_1/animations/motion/00.webp",
-            "waystones/waystone_019/lit_1/animations/motion/01.webp",
-            "waystones/waystone_019/lit_1/animations/motion/02.webp",
-            "waystones/waystone_019/lit_1/animations/motion/03.webp",
-            "waystones/waystone_019/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "waystones/waystone_019/lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T17:56:25+00:00",
-          "brief": "A29",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_019/lit_1/animations/motion/south/00.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south/01.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south/02.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south/03.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "waystones/waystone_019/lit_1/animations/motion__south.1b904731.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": -0.3,
+                  "dy": 15.2
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.6,
+                  "dy": 11.3
+                },
+                {
+                  "intensity": 1.287,
+                  "dx": -0.5,
+                  "dy": 5.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -3.1,
+                  "dy": 17.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -4.0,
+                  "dy": 1.0
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_019/lit_1/animations/motion/south-east/00.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south-east/01.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south-east/02.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south-east/03.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "waystones/waystone_019/lit_1/animations/motion__south-east.f41f41d1.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.24,
+                  "dx": -0.9,
+                  "dy": 16.1
+                },
+                {
+                  "intensity": 0.962,
+                  "dx": -2.0,
+                  "dy": 14.1
+                },
+                {
+                  "intensity": 0.582,
+                  "dx": -2.3,
+                  "dy": 17.4
+                },
+                {
+                  "intensity": 1.113,
+                  "dx": 3.7,
+                  "dy": -1.7
+                },
+                {
+                  "intensity": 1.104,
+                  "dx": 3.8,
+                  "dy": -2.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_019/lit_1/animations/motion/south-west/00.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south-west/01.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south-west/02.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south-west/03.webp",
+                "waystones/waystone_019/lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "waystones/waystone_019/lit_1/animations/motion__south-west.d960fec1.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.489,
+                  "dx": -0.5,
+                  "dy": 16.1
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -1.4,
+                  "dy": 9.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -2.2,
+                  "dy": 7.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -2.2,
+                  "dy": 7.9
+                },
+                {
+                  "intensity": 1.186,
+                  "dx": -4.8,
+                  "dy": -1.8
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T04:15:40+00:00",
+          "brief": "A29",
           "light_frames": [
             {
               "intensity": 1.5,
@@ -104,7 +205,19 @@
               "dx": -4.0,
               "dy": 1.0
             }
-          ]
+          ],
+          "frame_paths": [
+            "waystones/waystone_019/lit_1/animations/motion/south/00.webp",
+            "waystones/waystone_019/lit_1/animations/motion/south/01.webp",
+            "waystones/waystone_019/lit_1/animations/motion/south/02.webp",
+            "waystones/waystone_019/lit_1/animations/motion/south/03.webp",
+            "waystones/waystone_019/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "waystones/waystone_019/lit_1/animations/motion__south.1b904731.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.1
+          }
         }
       }
     },
@@ -123,28 +236,129 @@
       "animations": {
         "motion": {
           "group_id": "f1ff05bf-b088-4e1d-bba6-8739124e28c4",
-          "description": "This is an almost completely still picture. ONLY the amber handprint on the stone changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same amber as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the amber handprint on the stone changes: it brightens by the smallest amount that is still visible, then returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "waystones/waystone_019/lit_2/animations/motion/00.webp",
-            "waystones/waystone_019/lit_2/animations/motion/01.webp",
-            "waystones/waystone_019/lit_2/animations/motion/02.webp",
-            "waystones/waystone_019/lit_2/animations/motion/03.webp",
-            "waystones/waystone_019/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "waystones/waystone_019/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:59:02+00:00",
-          "brief": "H38",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_019/lit_2/animations/motion/south/00.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south/01.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south/02.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south/03.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "waystones/waystone_019/lit_2/animations/motion__south.d8fe8228.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.872,
+                  "dx": -0.3,
+                  "dy": 7.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -5.9,
+                  "dy": 6.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.6,
+                  "dy": 7.5
+                },
+                {
+                  "intensity": 0.879,
+                  "dx": -0.2,
+                  "dy": 7.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -1.7,
+                  "dy": 7.1
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_019/lit_2/animations/motion/south-east/00.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south-east/01.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south-east/02.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south-east/03.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "waystones/waystone_019/lit_2/animations/motion__south-east.639b74e3.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.569,
+                  "dx": 4.0,
+                  "dy": 7.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 3.5,
+                  "dy": 5.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.4,
+                  "dy": -0.5
+                },
+                {
+                  "intensity": 0.554,
+                  "dx": 4.0,
+                  "dy": 7.8
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.0,
+                  "dy": 5.1
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "waystones/waystone_019/lit_2/animations/motion/south-west/00.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south-west/01.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south-west/02.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south-west/03.webp",
+                "waystones/waystone_019/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "waystones/waystone_019/lit_2/animations/motion__south-west.7bad532f.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -5.2,
+                  "dy": 7.4
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -4.4,
+                  "dy": 3.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -4.5,
+                  "dy": 4.5
+                },
+                {
+                  "intensity": 0.926,
+                  "dx": -4.0,
+                  "dy": 5.8
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -5.3,
+                  "dy": 7.7
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T04:15:55+00:00",
+          "brief": "H38",
           "light_frames": [
             {
               "intensity": 0.872,
@@ -171,7 +385,19 @@
               "dx": -1.7,
               "dy": 7.1
             }
-          ]
+          ],
+          "frame_paths": [
+            "waystones/waystone_019/lit_2/animations/motion/south/00.webp",
+            "waystones/waystone_019/lit_2/animations/motion/south/01.webp",
+            "waystones/waystone_019/lit_2/animations/motion/south/02.webp",
+            "waystones/waystone_019/lit_2/animations/motion/south/03.webp",
+            "waystones/waystone_019/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "waystones/waystone_019/lit_2/animations/motion__south.d8fe8228.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },

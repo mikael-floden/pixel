@@ -66,30 +66,129 @@
       "animations": {
         "motion": {
           "group_id": "bd223867-09ae-43a4-bfc1-331cfe5e9a57",
-          "description": "This is the same picture in every frame. ONLY the flame at the top of the torch flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the flame at the top of the torch flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "torch_posts/torch_post_022/lit_2/animations/motion/00.webp",
-            "torch_posts/torch_post_022/lit_2/animations/motion/01.webp",
-            "torch_posts/torch_post_022/lit_2/animations/motion/02.webp",
-            "torch_posts/torch_post_022/lit_2/animations/motion/03.webp",
-            "torch_posts/torch_post_022/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "torch_posts/torch_post_022/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T17:52:58+00:00",
-          "brief": "A1",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0,
-            "still": 0.875
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_022/lit_2/animations/motion/south/00.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south/01.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south/02.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south/03.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_022/lit_2/animations/motion__south.2d8d466b.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.106,
+                  "dx": -0.7,
+                  "dy": -18.0
+                },
+                {
+                  "intensity": 0.977,
+                  "dx": -0.4,
+                  "dy": -16.9
+                },
+                {
+                  "intensity": 0.917,
+                  "dx": -0.2,
+                  "dy": -16.5
+                },
+                {
+                  "intensity": 0.974,
+                  "dx": -0.0,
+                  "dy": -17.1
+                },
+                {
+                  "intensity": 1.025,
+                  "dx": 0.0,
+                  "dy": -17.6
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-east/00.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-east/01.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-east/02.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-east/03.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_022/lit_2/animations/motion__south-east.906bbf46.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.049,
+                  "dx": 1.2,
+                  "dy": -17.8
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": 1.1,
+                  "dy": -17.2
+                },
+                {
+                  "intensity": 0.96,
+                  "dx": 0.9,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": 1.0,
+                  "dy": -17.1
+                },
+                {
+                  "intensity": 0.992,
+                  "dx": 1.1,
+                  "dy": -17.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-west/00.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-west/01.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-west/02.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-west/03.webp",
+                "torch_posts/torch_post_022/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_022/lit_2/animations/motion__south-west.dab6854a.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.063,
+                  "dx": -2.1,
+                  "dy": -18.3
+                },
+                {
+                  "intensity": 0.962,
+                  "dx": -2.1,
+                  "dy": -17.9
+                },
+                {
+                  "intensity": 0.917,
+                  "dx": -2.1,
+                  "dy": -17.5
+                },
+                {
+                  "intensity": 1.014,
+                  "dx": -2.1,
+                  "dy": -18.0
+                },
+                {
+                  "intensity": 1.044,
+                  "dx": -2.2,
+                  "dy": -18.3
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:52:52+00:00",
+          "brief": "A1",
           "light_frames": [
             {
               "intensity": 1.106,
@@ -116,7 +215,19 @@
               "dx": 0.0,
               "dy": -17.6
             }
-          ]
+          ],
+          "frame_paths": [
+            "torch_posts/torch_post_022/lit_2/animations/motion/south/00.webp",
+            "torch_posts/torch_post_022/lit_2/animations/motion/south/01.webp",
+            "torch_posts/torch_post_022/lit_2/animations/motion/south/02.webp",
+            "torch_posts/torch_post_022/lit_2/animations/motion/south/03.webp",
+            "torch_posts/torch_post_022/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_022/lit_2/animations/motion__south.2d8d466b.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0769
+          }
         }
       }
     },
@@ -135,30 +246,129 @@
       "animations": {
         "motion": {
           "group_id": "0969f715-7bfa-4f2c-8ebb-58e774af2c2f",
-          "description": "This is the same picture in every frame. ONLY the flame at the top of the torch flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the flame at the top of the torch flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "torch_posts/torch_post_022/lit_3/animations/motion/00.webp",
-            "torch_posts/torch_post_022/lit_3/animations/motion/01.webp",
-            "torch_posts/torch_post_022/lit_3/animations/motion/02.webp",
-            "torch_posts/torch_post_022/lit_3/animations/motion/03.webp",
-            "torch_posts/torch_post_022/lit_3/animations/motion/04.webp"
-          ],
-          "strip": "torch_posts/torch_post_022/lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T18:32:49+00:00",
-          "brief": "B5",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0,
-            "still": 0.828
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_022/lit_3/animations/motion/south/00.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south/01.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south/02.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south/03.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_022/lit_3/animations/motion__south.0725415a.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.181,
+                  "dx": -0.5,
+                  "dy": -17.7
+                },
+                {
+                  "intensity": 0.983,
+                  "dx": -0.6,
+                  "dy": -16.2
+                },
+                {
+                  "intensity": 0.851,
+                  "dx": -0.5,
+                  "dy": -14.8
+                },
+                {
+                  "intensity": 0.921,
+                  "dx": -0.4,
+                  "dy": -15.5
+                },
+                {
+                  "intensity": 1.063,
+                  "dx": -0.5,
+                  "dy": -16.7
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-east/00.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-east/01.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-east/02.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-east/03.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_022/lit_3/animations/motion__south-east.1b0b4fc9.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.22,
+                  "dx": -0.1,
+                  "dy": -18.9
+                },
+                {
+                  "intensity": 1.034,
+                  "dx": -0.1,
+                  "dy": -17.1
+                },
+                {
+                  "intensity": 0.903,
+                  "dx": 0.1,
+                  "dy": -16.3
+                },
+                {
+                  "intensity": 1.088,
+                  "dx": -0.1,
+                  "dy": -17.7
+                },
+                {
+                  "intensity": 0.755,
+                  "dx": 0.1,
+                  "dy": -15.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-west/00.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-west/01.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-west/02.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-west/03.webp",
+                "torch_posts/torch_post_022/lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_022/lit_3/animations/motion__south-west.aae04e91.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.118,
+                  "dx": -1.5,
+                  "dy": -17.2
+                },
+                {
+                  "intensity": 1.039,
+                  "dx": -1.6,
+                  "dy": -16.1
+                },
+                {
+                  "intensity": 0.954,
+                  "dx": -1.8,
+                  "dy": -14.4
+                },
+                {
+                  "intensity": 1.005,
+                  "dx": -1.3,
+                  "dy": -15.4
+                },
+                {
+                  "intensity": 0.884,
+                  "dx": -1.6,
+                  "dy": -15.9
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:53:26+00:00",
+          "brief": "B5",
           "light_frames": [
             {
               "intensity": 1.181,
@@ -185,7 +395,19 @@
               "dx": -0.5,
               "dy": -16.7
             }
-          ]
+          ],
+          "frame_paths": [
+            "torch_posts/torch_post_022/lit_3/animations/motion/south/00.webp",
+            "torch_posts/torch_post_022/lit_3/animations/motion/south/01.webp",
+            "torch_posts/torch_post_022/lit_3/animations/motion/south/02.webp",
+            "torch_posts/torch_post_022/lit_3/animations/motion/south/03.webp",
+            "torch_posts/torch_post_022/lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_022/lit_3/animations/motion__south.0725415a.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },
@@ -204,30 +426,129 @@
       "animations": {
         "motion": {
           "group_id": "cea18bc9-b63d-4b5e-b039-6799ad4e0760",
-          "description": "This is an almost completely still picture. ONLY the outermost edge of the orange molten bowl at the top of the torch changes: a few pixels along that edge shift very slightly in brightness and shift straight back. The orange molten bowl at the top of the torch is fully visible and exactly as easy to read in every single frame, including the last -- it never fades, never dims, never vanishes and is never swallowed by glare. Its inside stays exactly the orange it is in the first frame and never turns pale or white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the outermost edge of the orange molten bowl at the top of the torch changes: a few pixels along that edge shift very slightly in brightness and shift straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "torch_posts/torch_post_022/lit_4/animations/motion/00.webp",
-            "torch_posts/torch_post_022/lit_4/animations/motion/01.webp",
-            "torch_posts/torch_post_022/lit_4/animations/motion/02.webp",
-            "torch_posts/torch_post_022/lit_4/animations/motion/03.webp",
-            "torch_posts/torch_post_022/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "torch_posts/torch_post_022/lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T10:32:36+00:00",
-          "brief": "H43",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0,
-            "still": 0.809
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_022/lit_4/animations/motion/south/00.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south/01.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south/02.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south/03.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_022/lit_4/animations/motion__south.62ce092d.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.713,
+                  "dx": -0.6,
+                  "dy": -12.6
+                },
+                {
+                  "intensity": 1.223,
+                  "dx": -0.6,
+                  "dy": -15.5
+                },
+                {
+                  "intensity": 1.092,
+                  "dx": -0.6,
+                  "dy": -14.6
+                },
+                {
+                  "intensity": 1.284,
+                  "dx": -0.6,
+                  "dy": -15.8
+                },
+                {
+                  "intensity": 0.688,
+                  "dx": -0.6,
+                  "dy": -12.6
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-east/00.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-east/01.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-east/02.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-east/03.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_022/lit_4/animations/motion__south-east.5c300b88.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.69,
+                  "dx": 1.4,
+                  "dy": -14.4
+                },
+                {
+                  "intensity": 0.734,
+                  "dx": 1.0,
+                  "dy": -14.7
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 0.2,
+                  "dy": -18.8
+                },
+                {
+                  "intensity": 1.25,
+                  "dx": 0.4,
+                  "dy": -17.5
+                },
+                {
+                  "intensity": 0.684,
+                  "dx": 1.1,
+                  "dy": -14.3
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-west/00.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-west/01.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-west/02.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-west/03.webp",
+                "torch_posts/torch_post_022/lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_022/lit_4/animations/motion__south-west.f0c61a64.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.882,
+                  "dx": -2.1,
+                  "dy": -13.7
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.9,
+                  "dy": -16.4
+                },
+                {
+                  "intensity": 0.56,
+                  "dx": -2.4,
+                  "dy": -9.5
+                },
+                {
+                  "intensity": 0.713,
+                  "dx": -2.3,
+                  "dy": -11.7
+                },
+                {
+                  "intensity": 0.924,
+                  "dx": -2.0,
+                  "dy": -13.9
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:53:53+00:00",
+          "brief": "H43",
           "light_frames": [
             {
               "intensity": 0.713,
@@ -254,7 +575,19 @@
               "dx": -0.6,
               "dy": -12.6
             }
-          ]
+          ],
+          "frame_paths": [
+            "torch_posts/torch_post_022/lit_4/animations/motion/south/00.webp",
+            "torch_posts/torch_post_022/lit_4/animations/motion/south/01.webp",
+            "torch_posts/torch_post_022/lit_4/animations/motion/south/02.webp",
+            "torch_posts/torch_post_022/lit_4/animations/motion/south/03.webp",
+            "torch_posts/torch_post_022/lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_022/lit_4/animations/motion__south.62ce092d.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },

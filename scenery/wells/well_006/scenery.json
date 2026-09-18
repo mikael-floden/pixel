@@ -81,27 +81,59 @@
       "animations": {
         "motion": {
           "group_id": "b8d92fed-029e-4ec6-a755-a7eaee44b03e",
-          "description": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "wells/well_006/not_lit_5/animations/motion/00.webp",
-            "wells/well_006/not_lit_5/animations/motion/01.webp",
-            "wells/well_006/not_lit_5/animations/motion/02.webp",
-            "wells/well_006/not_lit_5/animations/motion/03.webp",
-            "wells/well_006/not_lit_5/animations/motion/04.webp"
-          ],
-          "strip": "wells/well_006/not_lit_5/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T11:16:48+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_006/not_lit_5/animations/motion/south/00.webp",
+                "wells/well_006/not_lit_5/animations/motion/south/01.webp",
+                "wells/well_006/not_lit_5/animations/motion/south/02.webp",
+                "wells/well_006/not_lit_5/animations/motion/south/03.webp",
+                "wells/well_006/not_lit_5/animations/motion/south/04.webp"
+              ],
+              "strip": "wells/well_006/not_lit_5/animations/motion__south.a62f9f38.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_006/not_lit_5/animations/motion/south-east/00.webp",
+                "wells/well_006/not_lit_5/animations/motion/south-east/01.webp",
+                "wells/well_006/not_lit_5/animations/motion/south-east/02.webp",
+                "wells/well_006/not_lit_5/animations/motion/south-east/03.webp",
+                "wells/well_006/not_lit_5/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wells/well_006/not_lit_5/animations/motion__south-east.1376f38d.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_006/not_lit_5/animations/motion/south-west/00.webp",
+                "wells/well_006/not_lit_5/animations/motion/south-west/01.webp",
+                "wells/well_006/not_lit_5/animations/motion/south-west/02.webp",
+                "wells/well_006/not_lit_5/animations/motion/south-west/03.webp",
+                "wells/well_006/not_lit_5/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wells/well_006/not_lit_5/animations/motion__south-west.d948f78e.webp"
+            }
+          },
+          "generated_at": "2026-09-18T04:18:08+00:00",
           "brief": "M1",
+          "frame_paths": [
+            "wells/well_006/not_lit_5/animations/motion/south/00.webp",
+            "wells/well_006/not_lit_5/animations/motion/south/01.webp",
+            "wells/well_006/not_lit_5/animations/motion/south/02.webp",
+            "wells/well_006/not_lit_5/animations/motion/south/03.webp",
+            "wells/well_006/not_lit_5/animations/motion/south/04.webp"
+          ],
+          "strip": "wells/well_006/not_lit_5/animations/motion__south.a62f9f38.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0011
+            "base_outline": 0.0676
           }
         }
       }
@@ -122,29 +154,59 @@
       "animations": {
         "motion": {
           "group_id": "f1d6b126-1265-4120-85f4-019a3cbcdf35",
-          "description": "This is an almost completely still picture. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is clearly visible in every single frame and never disappears. It is only MOVED, never redrawn: every line, edge and colour of it is copied from the first frame exactly, and it is displaced as one solid piece. Nothing in the picture lights up or begins to glow at any point: there is no light source here and none appears. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "wells/well_006/not_lit_6/animations/motion/00.webp",
-            "wells/well_006/not_lit_6/animations/motion/01.webp",
-            "wells/well_006/not_lit_6/animations/motion/02.webp",
-            "wells/well_006/not_lit_6/animations/motion/03.webp",
-            "wells/well_006/not_lit_6/animations/motion/04.webp"
-          ],
-          "strip": "wells/well_006/not_lit_6/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T11:16:32+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_006/not_lit_6/animations/motion/south/00.webp",
+                "wells/well_006/not_lit_6/animations/motion/south/01.webp",
+                "wells/well_006/not_lit_6/animations/motion/south/02.webp",
+                "wells/well_006/not_lit_6/animations/motion/south/03.webp",
+                "wells/well_006/not_lit_6/animations/motion/south/04.webp"
+              ],
+              "strip": "wells/well_006/not_lit_6/animations/motion__south.e47aa6d2.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_006/not_lit_6/animations/motion/south-east/00.webp",
+                "wells/well_006/not_lit_6/animations/motion/south-east/01.webp",
+                "wells/well_006/not_lit_6/animations/motion/south-east/02.webp",
+                "wells/well_006/not_lit_6/animations/motion/south-east/03.webp",
+                "wells/well_006/not_lit_6/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wells/well_006/not_lit_6/animations/motion__south-east.d25d3853.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_006/not_lit_6/animations/motion/south-west/00.webp",
+                "wells/well_006/not_lit_6/animations/motion/south-west/01.webp",
+                "wells/well_006/not_lit_6/animations/motion/south-west/02.webp",
+                "wells/well_006/not_lit_6/animations/motion/south-west/03.webp",
+                "wells/well_006/not_lit_6/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wells/well_006/not_lit_6/animations/motion__south-west.f93f41de.webp"
+            }
+          },
+          "generated_at": "2026-09-18T04:19:13+00:00",
           "brief": "M2",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "frame_paths": [
+            "wells/well_006/not_lit_6/animations/motion/south/00.webp",
+            "wells/well_006/not_lit_6/animations/motion/south/01.webp",
+            "wells/well_006/not_lit_6/animations/motion/south/02.webp",
+            "wells/well_006/not_lit_6/animations/motion/south/03.webp",
+            "wells/well_006/not_lit_6/animations/motion/south/04.webp"
+          ],
+          "strip": "wells/well_006/not_lit_6/animations/motion__south.e47aa6d2.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "class": "water",
-            "base": 0.0124,
-            "still": 0.93
+            "base_outline": 0.1057
           }
         }
       }

@@ -55,29 +55,59 @@
       "animations": {
         "motion": {
           "group_id": "6dbfff5d-3386-4da8-95aa-e8dcd6d56ad8",
-          "description": "This is the same picture in every frame. ONLY the loose fringe strands along the top and bottom edges stir. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the loose fringe strands along the top and bottom edges stir. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "rugs_and_hides/rug_014/not_lit_1/animations/motion/00.webp",
-            "rugs_and_hides/rug_014/not_lit_1/animations/motion/01.webp",
-            "rugs_and_hides/rug_014/not_lit_1/animations/motion/02.webp",
-            "rugs_and_hides/rug_014/not_lit_1/animations/motion/03.webp",
-            "rugs_and_hides/rug_014/not_lit_1/animations/motion/04.webp"
-          ],
-          "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:05:30+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/00.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/01.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/02.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/03.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.a0a01325.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-east/00.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-east/01.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-east/02.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-east/03.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south-east.3e472269.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-west/00.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-west/01.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-west/02.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-west/03.webp",
+                "rugs_and_hides/rug_014/not_lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south-west.8e54b55c.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:27:22+00:00",
           "brief": "X65",
+          "frame_paths": [
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/00.webp",
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/01.webp",
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/02.webp",
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/03.webp",
+            "rugs_and_hides/rug_014/not_lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "rugs_and_hides/rug_014/not_lit_1/animations/motion__south.a0a01325.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "class": "rigid",
-            "base": 0.268,
-            "still": 0.886
+            "base_outline": 0.266
           }
         }
       }

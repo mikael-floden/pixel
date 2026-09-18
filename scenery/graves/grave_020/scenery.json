@@ -65,28 +65,129 @@
       "animations": {
         "motion": {
           "group_id": "c3b88c59-4206-4f63-a3d2-3ef5c43761df",
-          "description": "This is an almost completely still picture. ONLY the small gold light at the foot of the stone changes. Its brightness lifts very slightly and comes straight back: no more than a few pixels change anywhere in the whole picture. At its brightest it is still exactly the same gold as in the first frame -- never pale, never white, never any other colour. It never fades, never vanishes, never spreads and never changes shape. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the small gold light at the foot of the stone changes. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "graves/grave_020/lit_2/animations/motion/00.webp",
-            "graves/grave_020/lit_2/animations/motion/01.webp",
-            "graves/grave_020/lit_2/animations/motion/02.webp",
-            "graves/grave_020/lit_2/animations/motion/03.webp",
-            "graves/grave_020/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "graves/grave_020/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T10:09:11+00:00",
-          "brief": "J40",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "graves/grave_020/lit_2/animations/motion/south/00.webp",
+                "graves/grave_020/lit_2/animations/motion/south/01.webp",
+                "graves/grave_020/lit_2/animations/motion/south/02.webp",
+                "graves/grave_020/lit_2/animations/motion/south/03.webp",
+                "graves/grave_020/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "graves/grave_020/lit_2/animations/motion__south.d53a40f4.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.287,
+                  "dx": 8.0,
+                  "dy": 11.3
+                },
+                {
+                  "intensity": 0.965,
+                  "dx": 8.9,
+                  "dy": 13.1
+                },
+                {
+                  "intensity": 0.945,
+                  "dx": 8.8,
+                  "dy": 13.0
+                },
+                {
+                  "intensity": 0.835,
+                  "dx": 8.7,
+                  "dy": 12.1
+                },
+                {
+                  "intensity": 0.969,
+                  "dx": 8.8,
+                  "dy": 12.7
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "graves/grave_020/lit_2/animations/motion/south-east/00.webp",
+                "graves/grave_020/lit_2/animations/motion/south-east/01.webp",
+                "graves/grave_020/lit_2/animations/motion/south-east/02.webp",
+                "graves/grave_020/lit_2/animations/motion/south-east/03.webp",
+                "graves/grave_020/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "graves/grave_020/lit_2/animations/motion__south-east.d882f496.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 11.9,
+                  "dy": 8.4
+                },
+                {
+                  "intensity": 1.414,
+                  "dx": 12.5,
+                  "dy": 8.7
+                },
+                {
+                  "intensity": 1.23,
+                  "dx": 13.1,
+                  "dy": 8.3
+                },
+                {
+                  "intensity": 0.52,
+                  "dx": 15.7,
+                  "dy": 13.1
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 15.5,
+                  "dy": 13.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "graves/grave_020/lit_2/animations/motion/south-west/00.webp",
+                "graves/grave_020/lit_2/animations/motion/south-west/01.webp",
+                "graves/grave_020/lit_2/animations/motion/south-west/02.webp",
+                "graves/grave_020/lit_2/animations/motion/south-west/03.webp",
+                "graves/grave_020/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "graves/grave_020/lit_2/animations/motion__south-west.f2f4642c.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.012,
+                  "dx": 1.6,
+                  "dy": 14.5
+                },
+                {
+                  "intensity": 1.062,
+                  "dx": 1.8,
+                  "dy": 13.7
+                },
+                {
+                  "intensity": 1.084,
+                  "dx": 1.6,
+                  "dy": 13.3
+                },
+                {
+                  "intensity": 0.97,
+                  "dx": 2.1,
+                  "dy": 13.6
+                },
+                {
+                  "intensity": 0.872,
+                  "dx": 2.0,
+                  "dy": 13.2
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:53:04+00:00",
+          "brief": "J40",
           "light_frames": [
             {
               "intensity": 1.287,
@@ -113,7 +214,19 @@
               "dx": 8.8,
               "dy": 12.7
             }
-          ]
+          ],
+          "frame_paths": [
+            "graves/grave_020/lit_2/animations/motion/south/00.webp",
+            "graves/grave_020/lit_2/animations/motion/south/01.webp",
+            "graves/grave_020/lit_2/animations/motion/south/02.webp",
+            "graves/grave_020/lit_2/animations/motion/south/03.webp",
+            "graves/grave_020/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "graves/grave_020/lit_2/animations/motion__south.d53a40f4.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0042
+          }
         }
       }
     },

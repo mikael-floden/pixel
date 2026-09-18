@@ -52,28 +52,129 @@
       "animations": {
         "motion": {
           "group_id": "bbf1c8b9-208b-4e40-bf55-4ef183f03214",
-          "description": "Animate the hanging fish only, swaying gently. Nothing else moves.",
+          "description": "This is the same picture in every frame. only, swaying gently. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "fish_drying_racks/fish_drying_rack_002/animations/motion/00.webp",
-            "fish_drying_racks/fish_drying_rack_002/animations/motion/01.webp",
-            "fish_drying_racks/fish_drying_rack_002/animations/motion/02.webp",
-            "fish_drying_racks/fish_drying_rack_002/animations/motion/03.webp",
-            "fish_drying_racks/fish_drying_rack_002/animations/motion/04.webp"
-          ],
-          "strip": "fish_drying_racks/fish_drying_rack_002/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T08:35:34+00:00",
-          "brief": "C4",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0074
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/animations/motion__south.a7f90ede.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 22.6,
+                  "dy": -11.4
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 22.2,
+                  "dy": -12.1
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 22.9,
+                  "dy": -10.6
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 22.6,
+                  "dy": -11.4
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 22.6,
+                  "dy": -11.4
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-east/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-east/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-east/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-east/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-east/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/animations/motion__south-east.e1476fd1.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 16.5,
+                  "dy": -16.6
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 17.7,
+                  "dy": -11.2
+                },
+                {
+                  "intensity": 0.902,
+                  "dx": 20.7,
+                  "dy": -15.7
+                },
+                {
+                  "intensity": 1.272,
+                  "dx": 16.8,
+                  "dy": -17.0
+                },
+                {
+                  "intensity": 0.627,
+                  "dx": 10.7,
+                  "dy": -22.6
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-west/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-west/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-west/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-west/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/animations/motion/south-west/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/animations/motion__south-west.cec611a7.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -18.5,
+                  "dy": -19.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -18.0,
+                  "dy": -18.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -18.5,
+                  "dy": -19.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -18.5,
+                  "dy": -19.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -19.0,
+                  "dy": -20.0
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:38:37+00:00",
+          "brief": "C4",
           "light_frames": [
             {
               "intensity": 0.5,
@@ -100,7 +201,19 @@
               "dx": 22.6,
               "dy": -11.4
             }
-          ]
+          ],
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/south/00.webp",
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/south/01.webp",
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/south/02.webp",
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/south/03.webp",
+            "fish_drying_racks/fish_drying_rack_002/animations/motion/south/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_002/animations/motion__south.a7f90ede.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0074
+          }
         }
       }
     },
@@ -119,28 +232,129 @@
       "animations": {
         "motion": {
           "group_id": "09c17d61-768f-4e69-a610-68f7eb79fe88",
-          "description": "This is the same picture in every frame. ONLY the hanging strips move, swaying, and the flame in the lantern flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the hanging strips move, swaying, and the flame in the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/00.webp",
-            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/01.webp",
-            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/02.webp",
-            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/03.webp",
-            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:16:25+00:00",
-          "brief": "Y20",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0037
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion__south.12e424b5.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 23.5,
+                  "dy": -6.0
+                },
+                {
+                  "intensity": 0.551,
+                  "dx": 31.0,
+                  "dy": -9.5
+                },
+                {
+                  "intensity": 0.55,
+                  "dx": 31.0,
+                  "dy": -9.5
+                },
+                {
+                  "intensity": 0.551,
+                  "dx": 31.0,
+                  "dy": -9.5
+                },
+                {
+                  "intensity": 0.672,
+                  "dx": 31.2,
+                  "dy": -9.2
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-east/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-east/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-east/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-east/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion__south-east.d9f99154.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.296,
+                  "dx": 20.7,
+                  "dy": -13.3
+                },
+                {
+                  "intensity": 1.224,
+                  "dx": 19.9,
+                  "dy": -11.8
+                },
+                {
+                  "intensity": 0.62,
+                  "dx": 21.4,
+                  "dy": -13.1
+                },
+                {
+                  "intensity": 0.915,
+                  "dx": 17.4,
+                  "dy": -12.6
+                },
+                {
+                  "intensity": 0.944,
+                  "dx": 21.0,
+                  "dy": -15.1
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-west/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-west/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-west/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-west/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion__south-west.50001c94.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -15.2,
+                  "dy": -11.8
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -16.8,
+                  "dy": -13.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -15.3,
+                  "dy": -13.7
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -11.7,
+                  "dy": -9.8
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -12.5,
+                  "dy": -10.3
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:38:47+00:00",
+          "brief": "Y20",
           "light_frames": [
             {
               "intensity": 1.5,
@@ -167,7 +381,19 @@
               "dx": 31.2,
               "dy": -9.2
             }
-          ]
+          ],
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/00.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/01.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/02.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/03.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_002/lit_2/animations/motion__south.12e424b5.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0037
+          }
         }
       }
     },
@@ -186,28 +412,129 @@
       "animations": {
         "motion": {
           "group_id": "84cd2df7-f558-49de-850b-3101202bd831",
-          "description": "This is the same picture in every frame. ONLY the hanging fish swing and the flame in the lantern flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the hanging fish swing and the flame in the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/00.webp",
-            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/01.webp",
-            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/02.webp",
-            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/03.webp",
-            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/04.webp"
-          ],
-          "strip": "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:56:16+00:00",
-          "brief": "Z21",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0019
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion__south.62808350.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.922,
+                  "dx": -27.9,
+                  "dy": -11.0
+                },
+                {
+                  "intensity": 1.047,
+                  "dx": -27.8,
+                  "dy": -11.1
+                },
+                {
+                  "intensity": 1.054,
+                  "dx": -27.8,
+                  "dy": -11.1
+                },
+                {
+                  "intensity": 1.054,
+                  "dx": -27.8,
+                  "dy": -11.1
+                },
+                {
+                  "intensity": 0.922,
+                  "dx": -28.0,
+                  "dy": -11.3
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-east/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-east/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-east/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-east/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion__south-east.5f383285.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.193,
+                  "dx": 20.9,
+                  "dy": -17.8
+                },
+                {
+                  "intensity": 1.475,
+                  "dx": 21.0,
+                  "dy": -18.0
+                },
+                {
+                  "intensity": 1.193,
+                  "dx": 20.9,
+                  "dy": -18.8
+                },
+                {
+                  "intensity": 1.139,
+                  "dx": 21.2,
+                  "dy": -18.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 21.0,
+                  "dy": -18.3
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-west/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-west/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-west/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-west/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion__south-west.b761dea4.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.129,
+                  "dx": 24.1,
+                  "dy": 2.3
+                },
+                {
+                  "intensity": 0.968,
+                  "dx": 23.0,
+                  "dy": 2.0
+                },
+                {
+                  "intensity": 0.968,
+                  "dx": 23.0,
+                  "dy": 2.0
+                },
+                {
+                  "intensity": 0.968,
+                  "dx": 23.0,
+                  "dy": 2.0
+                },
+                {
+                  "intensity": 0.968,
+                  "dx": 23.0,
+                  "dy": 2.0
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:39:28+00:00",
+          "brief": "Z21",
           "light_frames": [
             {
               "intensity": 0.922,
@@ -234,7 +561,19 @@
               "dx": -28.0,
               "dy": -11.3
             }
-          ]
+          ],
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/00.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/01.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/02.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/03.webp",
+            "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_002/lit_3/animations/motion__south.62808350.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0033
+          }
         }
       }
     },
@@ -253,29 +592,59 @@
       "animations": {
         "motion": {
           "group_id": "c9a5222c-842f-44c1-bcfe-537c2b353cac",
-          "description": "This is the same picture in every frame. ONLY the three hanging fish swing a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the three hanging fish swing a little to one side and back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/00.webp",
-            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/01.webp",
-            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/02.webp",
-            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/03.webp",
-            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/04.webp"
-          ],
-          "strip": "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T18:05:32+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion__south.fe18a006.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-east/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-east/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-east/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-east/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion__south-east.1a2ad1ad.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-west/00.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-west/01.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-west/02.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-west/03.webp",
+                "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion__south-west.fde8e284.webp"
+            }
+          },
+          "generated_at": "2026-09-18T02:39:07+00:00",
           "brief": "A15",
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/00.webp",
+            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/01.webp",
+            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/02.webp",
+            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/03.webp",
+            "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_002/not_lit_1/animations/motion__south.fe18a006.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "class": "fire",
-            "base": 0.0093,
-            "still": 0.748
+            "base_outline": 0.0162
           }
         }
       }

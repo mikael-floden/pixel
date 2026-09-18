@@ -55,28 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "4fd779b8-f468-4a80-b622-dcad6c08dfdd",
-          "description": "This is the same picture in every frame. ONLY the warm light in the doorway brightens a little and returns. Nothing in the picture may change size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "description": "This is the same picture in every frame. ONLY the warm light in the doorway brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/00.webp",
-            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/01.webp",
-            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/02.webp",
-            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/03.webp",
-            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "wayside_shrines/wayside_shrine_015/lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T14:25:34+00:00",
-          "brief": "U7",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0886
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/00.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/01.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/02.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/03.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_015/lit_1/animations/motion__south.50a35e6b.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.112,
+                  "dx": 11.1,
+                  "dy": 16.4
+                },
+                {
+                  "intensity": 0.835,
+                  "dx": 10.3,
+                  "dy": 17.5
+                },
+                {
+                  "intensity": 0.818,
+                  "dx": 10.3,
+                  "dy": 17.4
+                },
+                {
+                  "intensity": 1.133,
+                  "dx": 10.4,
+                  "dy": 17.0
+                },
+                {
+                  "intensity": 1.101,
+                  "dx": 10.5,
+                  "dy": 17.3
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-east/00.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-east/01.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-east/02.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-east/03.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_015/lit_1/animations/motion__south-east.1ee7d3c9.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.963,
+                  "dx": 10.5,
+                  "dy": 15.9
+                },
+                {
+                  "intensity": 1.087,
+                  "dx": 10.2,
+                  "dy": 13.8
+                },
+                {
+                  "intensity": 0.814,
+                  "dx": 9.8,
+                  "dy": 14.4
+                },
+                {
+                  "intensity": 1.203,
+                  "dx": 10.3,
+                  "dy": 13.5
+                },
+                {
+                  "intensity": 0.933,
+                  "dx": 10.6,
+                  "dy": 16.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-west/00.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-west/01.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-west/02.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-west/03.webp",
+                "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_015/lit_1/animations/motion__south-west.92a4afb9.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.996,
+                  "dx": -11.6,
+                  "dy": 15.8
+                },
+                {
+                  "intensity": 1.008,
+                  "dx": -11.6,
+                  "dy": 15.8
+                },
+                {
+                  "intensity": 1.016,
+                  "dx": -11.6,
+                  "dy": 15.8
+                },
+                {
+                  "intensity": 0.996,
+                  "dx": -11.6,
+                  "dy": 15.8
+                },
+                {
+                  "intensity": 0.983,
+                  "dx": -11.7,
+                  "dy": 15.9
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T04:10:39+00:00",
+          "brief": "U7",
           "light_frames": [
             {
               "intensity": 1.112,
@@ -103,7 +204,19 @@
               "dx": 10.5,
               "dy": 17.3
             }
-          ]
+          ],
+          "frame_paths": [
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/00.webp",
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/01.webp",
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/02.webp",
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/03.webp",
+            "wayside_shrines/wayside_shrine_015/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "wayside_shrines/wayside_shrine_015/lit_1/animations/motion__south.50a35e6b.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0946
+          }
         }
       }
     },

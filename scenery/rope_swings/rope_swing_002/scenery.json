@@ -67,29 +67,59 @@
       "animations": {
         "motion": {
           "group_id": "5a4616c0-070b-41e8-85c2-0f97e75a6cca",
-          "description": "This is the same picture in every frame. ONLY the hanging bench moves, swinging. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "description": "This is the same picture in every frame. ONLY the hanging bench moves, swinging. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "rope_swings/rope_swing_002/not_lit_4/animations/motion/00.webp",
-            "rope_swings/rope_swing_002/not_lit_4/animations/motion/01.webp",
-            "rope_swings/rope_swing_002/not_lit_4/animations/motion/02.webp",
-            "rope_swings/rope_swing_002/not_lit_4/animations/motion/03.webp",
-            "rope_swings/rope_swing_002/not_lit_4/animations/motion/04.webp"
-          ],
-          "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T15:37:02+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/00.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/01.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/02.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/03.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__south.83cfcf84.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-east/00.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-east/01.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-east/02.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-east/03.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__south-east.a98f57ab.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-west/00.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-west/01.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-west/02.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-west/03.webp",
+                "rope_swings/rope_swing_002/not_lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__south-west.962140a0.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:24:55+00:00",
           "brief": "X21",
+          "frame_paths": [
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/00.webp",
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/01.webp",
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/02.webp",
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/03.webp",
+            "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__south.83cfcf84.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "class": "rigid",
-            "base": 0.17,
-            "still": 0.517
+            "base_outline": 0.1133
           }
         }
       }
@@ -110,27 +140,59 @@
       "animations": {
         "motion": {
           "group_id": "1d566457-e58c-4671-a280-686f6f8c0f31",
-          "description": "This is the same picture in every frame. ONLY the hanging bench swings a little to one side and back. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the hanging bench swings a little to one side and back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "rope_swings/rope_swing_002/not_lit_5/animations/motion/00.webp",
-            "rope_swings/rope_swing_002/not_lit_5/animations/motion/01.webp",
-            "rope_swings/rope_swing_002/not_lit_5/animations/motion/02.webp",
-            "rope_swings/rope_swing_002/not_lit_5/animations/motion/03.webp",
-            "rope_swings/rope_swing_002/not_lit_5/animations/motion/04.webp"
-          ],
-          "strip": "rope_swings/rope_swing_002/not_lit_5/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:47:12+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/00.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/01.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/02.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/03.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_5/animations/motion__south.63acf34c.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-east/00.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-east/01.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-east/02.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-east/03.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_5/animations/motion__south-east.61d5263e.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-west/00.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-west/01.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-west/02.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-west/03.webp",
+                "rope_swings/rope_swing_002/not_lit_5/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_5/animations/motion__south-west.4d580dc0.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:25:54+00:00",
           "brief": "Y22",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "frame_paths": [
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/00.webp",
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/01.webp",
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/02.webp",
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/03.webp",
+            "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/04.webp"
+          ],
+          "strip": "rope_swings/rope_swing_002/not_lit_5/animations/motion__south.63acf34c.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.1053
           }
         }
       }
@@ -151,27 +213,59 @@
       "animations": {
         "motion": {
           "group_id": "82a6664b-ecaa-4d2d-a49d-abbf5d835300",
-          "description": "This is the same picture in every frame. ONLY the hanging seat swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the hanging seat swings. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "rope_swings/rope_swing_002/not_lit_6/animations/motion/00.webp",
-            "rope_swings/rope_swing_002/not_lit_6/animations/motion/01.webp",
-            "rope_swings/rope_swing_002/not_lit_6/animations/motion/02.webp",
-            "rope_swings/rope_swing_002/not_lit_6/animations/motion/03.webp",
-            "rope_swings/rope_swing_002/not_lit_6/animations/motion/04.webp"
-          ],
-          "strip": "rope_swings/rope_swing_002/not_lit_6/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:56:48+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/00.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/01.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/02.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/03.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_6/animations/motion__south.a7acc953.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-east/00.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-east/01.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-east/02.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-east/03.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_6/animations/motion__south-east.32365630.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-west/00.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-west/01.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-west/02.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-west/03.webp",
+                "rope_swings/rope_swing_002/not_lit_6/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rope_swings/rope_swing_002/not_lit_6/animations/motion__south-west.4d3761bd.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:25:22+00:00",
           "brief": "Z22",
+          "frame_paths": [
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/00.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/01.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/02.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/03.webp",
+            "rope_swings/rope_swing_002/not_lit_6/animations/motion/south/04.webp"
+          ],
+          "strip": "rope_swings/rope_swing_002/not_lit_6/animations/motion__south.a7acc953.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.0203
           }
         }
       }

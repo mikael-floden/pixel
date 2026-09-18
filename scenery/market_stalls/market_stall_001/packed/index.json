@@ -1,294 +1,703 @@
 {
  "files": {
-  "market_stalls/market_stall_001/animations/motion/00.webp": {
-   "file": "animations/motion/00.0b88e090.webp",
-   "h": 107,
+  "market_stalls/market_stall_001/animations/motion/south-east/00.webp": {
+   "file": "animations/motion/south-east/00.a69a078f.webp",
+   "h": 110,
    "ox": 17,
-   "oy": 13,
+   "oy": 10,
+   "src": "876716ea",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south-east/01.webp": {
+   "file": "animations/motion/south-east/01.e9c6a704.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
+   "src": "3627ca51",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south-east/02.webp": {
+   "file": "animations/motion/south-east/02.bdd84323.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
+   "src": "27ee376c",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south-east/03.webp": {
+   "file": "animations/motion/south-east/03.0e28c603.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
+   "src": "9248eff4",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south-east/04.webp": {
+   "file": "animations/motion/south-east/04.56b86937.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
+   "src": "c48fcb62",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south-west/00.webp": {
+   "file": "animations/motion/south-west/00.9187bcbe.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
+   "src": "7a211fae",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south-west/01.webp": {
+   "file": "animations/motion/south-west/01.f6abd9fa.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
+   "src": "3abfc6c3",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south-west/02.webp": {
+   "file": "animations/motion/south-west/02.af0d4bb5.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
+   "src": "aa26b3bc",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south-west/03.webp": {
+   "file": "animations/motion/south-west/03.b5f1c4a0.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
+   "src": "062047a5",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south-west/04.webp": {
+   "file": "animations/motion/south-west/04.e1ef8ce1.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
+   "src": "a485a9f6",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 96
+  },
+  "market_stalls/market_stall_001/animations/motion/south/00.webp": {
+   "file": "animations/motion/south/00.2bacf205.webp",
+   "h": 110,
+   "ox": 17,
+   "oy": 10,
    "src": "a57dce15",
    "srcH": 128,
    "srcW": 128,
    "w": 96
   },
-  "market_stalls/market_stall_001/animations/motion/01.webp": {
-   "file": "animations/motion/01.bfdf6e6a.webp",
-   "h": 107,
+  "market_stalls/market_stall_001/animations/motion/south/01.webp": {
+   "file": "animations/motion/south/01.26745d97.webp",
+   "h": 110,
    "ox": 17,
-   "oy": 13,
+   "oy": 10,
    "src": "a12eab0d",
    "srcH": 128,
    "srcW": 128,
    "w": 96
   },
-  "market_stalls/market_stall_001/animations/motion/02.webp": {
-   "file": "animations/motion/02.67b961fa.webp",
-   "h": 107,
+  "market_stalls/market_stall_001/animations/motion/south/02.webp": {
+   "file": "animations/motion/south/02.0d58a702.webp",
+   "h": 110,
    "ox": 17,
-   "oy": 13,
+   "oy": 10,
    "src": "788c44ed",
    "srcH": 128,
    "srcW": 128,
    "w": 96
   },
-  "market_stalls/market_stall_001/animations/motion/03.webp": {
-   "file": "animations/motion/03.e7927174.webp",
-   "h": 107,
+  "market_stalls/market_stall_001/animations/motion/south/03.webp": {
+   "file": "animations/motion/south/03.e74ce30c.webp",
+   "h": 110,
    "ox": 17,
-   "oy": 13,
+   "oy": 10,
    "src": "e2f3214e",
    "srcH": 128,
    "srcW": 128,
    "w": 96
   },
-  "market_stalls/market_stall_001/animations/motion/04.webp": {
-   "file": "animations/motion/04.2a998508.webp",
-   "h": 107,
+  "market_stalls/market_stall_001/animations/motion/south/04.webp": {
+   "file": "animations/motion/south/04.687a1c91.webp",
+   "h": 110,
    "ox": 17,
-   "oy": 13,
+   "oy": 10,
    "src": "795c0d65",
    "srcH": 128,
    "srcW": 128,
    "w": 96
   },
-  "market_stalls/market_stall_001/lit_2/animations/motion/00.webp": {
-   "file": "lit_2/animations/motion/00.7807485d.webp",
-   "h": 107,
-   "ox": 17,
-   "oy": 13,
-   "src": "c9bfba4f",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 96
-  },
-  "market_stalls/market_stall_001/lit_2/animations/motion/01.webp": {
-   "file": "lit_2/animations/motion/01.0e0e2298.webp",
-   "h": 107,
-   "ox": 17,
-   "oy": 13,
-   "src": "dad4da67",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 96
-  },
-  "market_stalls/market_stall_001/lit_2/animations/motion/02.webp": {
-   "file": "lit_2/animations/motion/02.e781380a.webp",
-   "h": 107,
-   "ox": 17,
-   "oy": 13,
-   "src": "9ffb5e1f",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 96
-  },
-  "market_stalls/market_stall_001/lit_2/animations/motion/03.webp": {
-   "file": "lit_2/animations/motion/03.b67bb88c.webp",
-   "h": 107,
-   "ox": 17,
-   "oy": 13,
-   "src": "4b217a5f",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 96
-  },
-  "market_stalls/market_stall_001/lit_2/animations/motion/04.webp": {
-   "file": "lit_2/animations/motion/04.eae7044e.webp",
-   "h": 107,
-   "ox": 17,
-   "oy": 13,
-   "src": "6baa3edb",
-   "srcH": 128,
-   "srcW": 128,
-   "w": 96
-  },
-  "market_stalls/market_stall_001/lit_2/rotations/south-east.webp": {
-   "file": "lit_2/rotations/south-east.beffb9a0.webp",
-   "h": 107,
-   "ox": 17,
-   "oy": 13,
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-east/00.webp": {
+   "file": "lit_2/animations/motion/south-east/00.d94c3d3e.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
    "src": "b1d204f6",
    "srcH": 128,
    "srcW": 128,
-   "w": 96
+   "w": 97
   },
-  "market_stalls/market_stall_001/lit_2/rotations/south-west.webp": {
-   "file": "lit_2/rotations/south-west.d4dc50aa.webp",
-   "h": 107,
-   "ox": 17,
-   "oy": 13,
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-east/01.webp": {
+   "file": "lit_2/animations/motion/south-east/01.7eb39ff5.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "4c786266",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-east/02.webp": {
+   "file": "lit_2/animations/motion/south-east/02.2e6e8459.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "ef39cb20",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-east/03.webp": {
+   "file": "lit_2/animations/motion/south-east/03.dc40e2a8.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "079d08f1",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-east/04.webp": {
+   "file": "lit_2/animations/motion/south-east/04.265593e0.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "7da42f4a",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-west/00.webp": {
+   "file": "lit_2/animations/motion/south-west/00.22e2200e.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
    "src": "758e2543",
    "srcH": 128,
    "srcW": 128,
-   "w": 96
+   "w": 97
   },
-  "market_stalls/market_stall_001/lit_2/sprite.webp": {
-   "file": "lit_2/sprite.7807485d.webp",
-   "h": 107,
-   "ox": 17,
-   "oy": 13,
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-west/01.webp": {
+   "file": "lit_2/animations/motion/south-west/01.4d48621a.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "b40015a6",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-west/02.webp": {
+   "file": "lit_2/animations/motion/south-west/02.d568122e.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "c5d5b654",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-west/03.webp": {
+   "file": "lit_2/animations/motion/south-west/03.b7b26c92.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "036db082",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/lit_2/animations/motion/south-west/04.webp": {
+   "file": "lit_2/animations/motion/south-west/04.7a716b3a.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "636b35af",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/lit_2/animations/motion/south/00.webp": {
+   "file": "lit_2/animations/motion/south/00.87a43ccf.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
    "src": "c9bfba4f",
    "srcH": 128,
    "srcW": 128,
-   "w": 96
+   "w": 97
   },
-  "market_stalls/market_stall_001/not_lit_2/animations/motion/00.webp": {
-   "file": "not_lit_2/animations/motion/00.44d39eb1.webp",
-   "h": 107,
-   "ox": 15,
-   "oy": 13,
-   "src": "daf38c7a",
+  "market_stalls/market_stall_001/lit_2/animations/motion/south/01.webp": {
+   "file": "lit_2/animations/motion/south/01.302632df.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "dad4da67",
    "srcH": 128,
    "srcW": 128,
-   "w": 100
+   "w": 97
   },
-  "market_stalls/market_stall_001/not_lit_2/animations/motion/01.webp": {
-   "file": "not_lit_2/animations/motion/01.2ded5e33.webp",
-   "h": 107,
-   "ox": 15,
-   "oy": 13,
-   "src": "0af7c4c9",
+  "market_stalls/market_stall_001/lit_2/animations/motion/south/02.webp": {
+   "file": "lit_2/animations/motion/south/02.1ac9da72.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "9ffb5e1f",
    "srcH": 128,
    "srcW": 128,
-   "w": 100
+   "w": 97
   },
-  "market_stalls/market_stall_001/not_lit_2/animations/motion/02.webp": {
-   "file": "not_lit_2/animations/motion/02.b0c55f2b.webp",
-   "h": 107,
-   "ox": 15,
-   "oy": 13,
-   "src": "53a523a7",
+  "market_stalls/market_stall_001/lit_2/animations/motion/south/03.webp": {
+   "file": "lit_2/animations/motion/south/03.e907027b.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "4b217a5f",
    "srcH": 128,
    "srcW": 128,
-   "w": 100
+   "w": 97
   },
-  "market_stalls/market_stall_001/not_lit_2/animations/motion/03.webp": {
-   "file": "not_lit_2/animations/motion/03.6743b1ba.webp",
-   "h": 107,
-   "ox": 15,
-   "oy": 13,
-   "src": "4dc67b88",
+  "market_stalls/market_stall_001/lit_2/animations/motion/south/04.webp": {
+   "file": "lit_2/animations/motion/south/04.f2336afa.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "src": "6baa3edb",
    "srcH": 128,
    "srcW": 128,
-   "w": 100
+   "w": 97
   },
-  "market_stalls/market_stall_001/not_lit_2/animations/motion/04.webp": {
-   "file": "not_lit_2/animations/motion/04.af9f9743.webp",
-   "h": 107,
-   "ox": 15,
-   "oy": 13,
-   "src": "ce938337",
+  "market_stalls/market_stall_001/lit_2/rotations/south-east.webp": {
+   "file": "lit_2/rotations/south-east.d94c3d3e.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "prev": "lit_2/rotations/south-east.beffb9a0.webp",
+   "src": "b1d204f6",
    "srcH": 128,
    "srcW": 128,
-   "w": 100
+   "w": 97
   },
-  "market_stalls/market_stall_001/not_lit_2/rotations/south-east.webp": {
-   "file": "not_lit_2/rotations/south-east.86d8b98e.webp",
-   "h": 107,
-   "ox": 15,
-   "oy": 13,
+  "market_stalls/market_stall_001/lit_2/rotations/south-west.webp": {
+   "file": "lit_2/rotations/south-west.22e2200e.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "prev": "lit_2/rotations/south-west.d4dc50aa.webp",
+   "src": "758e2543",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/lit_2/sprite.webp": {
+   "file": "lit_2/sprite.87a43ccf.webp",
+   "h": 109,
+   "ox": 16,
+   "oy": 11,
+   "prev": "lit_2/sprite.7807485d.webp",
+   "src": "c9bfba4f",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 97
+  },
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/00.webp": {
+   "file": "not_lit_2/animations/motion/south-east/00.4b318d1e.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
    "src": "d93575b9",
    "srcH": 128,
    "srcW": 128,
-   "w": 100
+   "w": 102
   },
-  "market_stalls/market_stall_001/not_lit_2/rotations/south-west.webp": {
-   "file": "not_lit_2/rotations/south-west.b541e221.webp",
-   "h": 107,
-   "ox": 15,
-   "oy": 13,
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/01.webp": {
+   "file": "not_lit_2/animations/motion/south-east/01.17eb0505.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "3cbb6a53",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/02.webp": {
+   "file": "not_lit_2/animations/motion/south-east/02.ddf6f4a3.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "0594566f",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/03.webp": {
+   "file": "not_lit_2/animations/motion/south-east/03.f5157a2c.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "6de1d80d",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/04.webp": {
+   "file": "not_lit_2/animations/motion/south-east/04.9057b041.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "8b5dae62",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/00.webp": {
+   "file": "not_lit_2/animations/motion/south-west/00.03d853fc.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
    "src": "7d42a9cc",
    "srcH": 128,
    "srcW": 128,
-   "w": 100
+   "w": 102
   },
-  "market_stalls/market_stall_001/not_lit_2/sprite.webp": {
-   "file": "not_lit_2/sprite.44d39eb1.webp",
-   "h": 107,
-   "ox": 15,
-   "oy": 13,
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/01.webp": {
+   "file": "not_lit_2/animations/motion/south-west/01.1e10b33d.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "b5104e0e",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/02.webp": {
+   "file": "not_lit_2/animations/motion/south-west/02.95af2730.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "ee919fdd",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/03.webp": {
+   "file": "not_lit_2/animations/motion/south-west/03.b47bb802.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "7de5ef27",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/04.webp": {
+   "file": "not_lit_2/animations/motion/south-west/04.3d549121.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "cc21eb66",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south/00.webp": {
+   "file": "not_lit_2/animations/motion/south/00.e5b84370.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
    "src": "daf38c7a",
    "srcH": 128,
    "srcW": 128,
-   "w": 100
+   "w": 102
   },
-  "market_stalls/market_stall_001/not_lit_3/animations/motion/00.webp": {
-   "file": "not_lit_3/animations/motion/00.38cbe38a.webp",
-   "h": 113,
-   "ox": 14,
-   "oy": 9,
-   "src": "6f83a902",
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south/01.webp": {
+   "file": "not_lit_2/animations/motion/south/01.e0f94aef.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "0af7c4c9",
    "srcH": 128,
    "srcW": 128,
    "w": 102
   },
-  "market_stalls/market_stall_001/not_lit_3/animations/motion/01.webp": {
-   "file": "not_lit_3/animations/motion/01.0e62275a.webp",
-   "h": 113,
-   "ox": 14,
-   "oy": 9,
-   "src": "691f20dd",
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south/02.webp": {
+   "file": "not_lit_2/animations/motion/south/02.cabd20c1.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "53a523a7",
    "srcH": 128,
    "srcW": 128,
    "w": 102
   },
-  "market_stalls/market_stall_001/not_lit_3/animations/motion/02.webp": {
-   "file": "not_lit_3/animations/motion/02.9eebcba5.webp",
-   "h": 113,
-   "ox": 14,
-   "oy": 9,
-   "src": "74f6f8f0",
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south/03.webp": {
+   "file": "not_lit_2/animations/motion/south/03.bd17233d.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "4dc67b88",
    "srcH": 128,
    "srcW": 128,
    "w": 102
   },
-  "market_stalls/market_stall_001/not_lit_3/animations/motion/03.webp": {
-   "file": "not_lit_3/animations/motion/03.5138d3e7.webp",
-   "h": 113,
-   "ox": 14,
-   "oy": 9,
-   "src": "2cf870ba",
+  "market_stalls/market_stall_001/not_lit_2/animations/motion/south/04.webp": {
+   "file": "not_lit_2/animations/motion/south/04.e32de7a9.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "src": "ce938337",
    "srcH": 128,
    "srcW": 128,
    "w": 102
   },
-  "market_stalls/market_stall_001/not_lit_3/animations/motion/04.webp": {
-   "file": "not_lit_3/animations/motion/04.b23a10b3.webp",
-   "h": 113,
-   "ox": 14,
-   "oy": 9,
-   "src": "a6e79f1f",
+  "market_stalls/market_stall_001/not_lit_2/rotations/south-east.webp": {
+   "file": "not_lit_2/rotations/south-east.4b318d1e.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "prev": "not_lit_2/rotations/south-east.86d8b98e.webp",
+   "src": "d93575b9",
    "srcH": 128,
    "srcW": 128,
    "w": 102
   },
-  "market_stalls/market_stall_001/not_lit_3/rotations/south-east.webp": {
-   "file": "not_lit_3/rotations/south-east.372aaad1.webp",
-   "h": 113,
-   "ox": 14,
-   "oy": 9,
+  "market_stalls/market_stall_001/not_lit_2/rotations/south-west.webp": {
+   "file": "not_lit_2/rotations/south-west.03d853fc.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "prev": "not_lit_2/rotations/south-west.b541e221.webp",
+   "src": "7d42a9cc",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_2/sprite.webp": {
+   "file": "not_lit_2/sprite.e5b84370.webp",
+   "h": 109,
+   "ox": 13,
+   "oy": 11,
+   "prev": "not_lit_2/sprite.44d39eb1.webp",
+   "src": "daf38c7a",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 102
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/00.webp": {
+   "file": "not_lit_3/animations/motion/south-east/00.a5af6ca1.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
    "src": "7a76a31f",
    "srcH": 128,
    "srcW": 128,
-   "w": 102
+   "w": 104
   },
-  "market_stalls/market_stall_001/not_lit_3/rotations/south-west.webp": {
-   "file": "not_lit_3/rotations/south-west.7be77c55.webp",
-   "h": 113,
-   "ox": 14,
-   "oy": 9,
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/01.webp": {
+   "file": "not_lit_3/animations/motion/south-east/01.6d3138ec.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "eb4818a9",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/02.webp": {
+   "file": "not_lit_3/animations/motion/south-east/02.b3b93755.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "d2993676",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/03.webp": {
+   "file": "not_lit_3/animations/motion/south-east/03.f3ccfba7.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "e8e54787",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/04.webp": {
+   "file": "not_lit_3/animations/motion/south-east/04.f74a89bf.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "f67045ab",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/00.webp": {
+   "file": "not_lit_3/animations/motion/south-west/00.a6a3fc89.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
    "src": "9c5032a3",
    "srcH": 128,
    "srcW": 128,
-   "w": 102
+   "w": 104
   },
-  "market_stalls/market_stall_001/not_lit_3/sprite.webp": {
-   "file": "not_lit_3/sprite.38cbe38a.webp",
-   "h": 113,
-   "ox": 14,
-   "oy": 9,
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/01.webp": {
+   "file": "not_lit_3/animations/motion/south-west/01.b5cf77e7.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "2529f7ce",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/02.webp": {
+   "file": "not_lit_3/animations/motion/south-west/02.3a059247.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "882d8b83",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/03.webp": {
+   "file": "not_lit_3/animations/motion/south-west/03.31332cd7.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "73e9730b",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/04.webp": {
+   "file": "not_lit_3/animations/motion/south-west/04.bf8a985c.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "b9038c33",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south/00.webp": {
+   "file": "not_lit_3/animations/motion/south/00.73a5ec78.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
    "src": "6f83a902",
    "srcH": 128,
    "srcW": 128,
-   "w": 102
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south/01.webp": {
+   "file": "not_lit_3/animations/motion/south/01.eedd44fe.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "691f20dd",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south/02.webp": {
+   "file": "not_lit_3/animations/motion/south/02.04d477f4.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "74f6f8f0",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south/03.webp": {
+   "file": "not_lit_3/animations/motion/south/03.1f6ee286.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "2cf870ba",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/animations/motion/south/04.webp": {
+   "file": "not_lit_3/animations/motion/south/04.e0bf39b1.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "src": "a6e79f1f",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/rotations/south-east.webp": {
+   "file": "not_lit_3/rotations/south-east.a5af6ca1.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "prev": "not_lit_3/rotations/south-east.372aaad1.webp",
+   "src": "7a76a31f",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/rotations/south-west.webp": {
+   "file": "not_lit_3/rotations/south-west.a6a3fc89.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "prev": "not_lit_3/rotations/south-west.7be77c55.webp",
+   "src": "9c5032a3",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
+  },
+  "market_stalls/market_stall_001/not_lit_3/sprite.webp": {
+   "file": "not_lit_3/sprite.73a5ec78.webp",
+   "h": 116,
+   "ox": 12,
+   "oy": 6,
+   "prev": "not_lit_3/sprite.38cbe38a.webp",
+   "src": "6f83a902",
+   "srcH": 128,
+   "srcW": 128,
+   "w": 104
   },
   "market_stalls/market_stall_001/not_lit_4/rotations/south-east.webp": {
    "file": "not_lit_4/rotations/south-east.42602877.webp",
@@ -321,30 +730,33 @@
    "w": 96
   },
   "market_stalls/market_stall_001/rotations/south-east.webp": {
-   "file": "rotations/south-east.03f1c448.webp",
-   "h": 107,
+   "file": "rotations/south-east.a69a078f.webp",
+   "h": 110,
    "ox": 17,
-   "oy": 13,
+   "oy": 10,
+   "prev": "rotations/south-east.03f1c448.webp",
    "src": "876716ea",
    "srcH": 128,
    "srcW": 128,
    "w": 96
   },
   "market_stalls/market_stall_001/rotations/south-west.webp": {
-   "file": "rotations/south-west.8a2ae3f5.webp",
-   "h": 107,
+   "file": "rotations/south-west.9187bcbe.webp",
+   "h": 110,
    "ox": 17,
-   "oy": 13,
+   "oy": 10,
+   "prev": "rotations/south-west.8a2ae3f5.webp",
    "src": "7a211fae",
    "srcH": 128,
    "srcW": 128,
    "w": 96
   },
   "market_stalls/market_stall_001/sprite.webp": {
-   "file": "sprite.0b88e090.webp",
-   "h": 107,
+   "file": "sprite.2bacf205.webp",
+   "h": 110,
    "ox": 17,
-   "oy": 13,
+   "oy": 10,
+   "prev": "sprite.0b88e090.webp",
    "src": "a57dce15",
    "srcH": 128,
    "srcW": 128,

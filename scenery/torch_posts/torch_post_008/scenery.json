@@ -47,7 +47,7 @@
       "animations": {
         "flame": {
           "group_id": "f1c16102-d6ce-4067-bb3d-64ef545e112d",
-          "description": "Animate the flame only",
+          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -62,6 +62,7 @@
                 "torch_posts/torch_post_008/animations/flame/south/03.webp",
                 "torch_posts/torch_post_008/animations/flame/south/04.webp"
               ],
+              "strip": "torch_posts/torch_post_008/animations/flame__south.398e8d96.webp",
               "light_frames": [
                 {
                   "intensity": 1.068,
@@ -99,6 +100,7 @@
                 "torch_posts/torch_post_008/animations/flame/south-east/03.webp",
                 "torch_posts/torch_post_008/animations/flame/south-east/04.webp"
               ],
+              "strip": "torch_posts/torch_post_008/animations/flame__south-east.cec60f86.webp",
               "light_frames": [
                 {
                   "intensity": 0.851,
@@ -126,23 +128,47 @@
                   "dy": -16.1
                 }
               ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "torch_posts/torch_post_008/animations/flame/south-west/00.webp",
+                "torch_posts/torch_post_008/animations/flame/south-west/01.webp",
+                "torch_posts/torch_post_008/animations/flame/south-west/02.webp",
+                "torch_posts/torch_post_008/animations/flame/south-west/03.webp",
+                "torch_posts/torch_post_008/animations/flame/south-west/04.webp"
+              ],
+              "strip": "torch_posts/torch_post_008/animations/flame__south-west.27a6cf28.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.686,
+                  "dx": 19.5,
+                  "dy": -16.0
+                },
+                {
+                  "intensity": 0.645,
+                  "dx": 19.3,
+                  "dy": -18.3
+                },
+                {
+                  "intensity": 0.599,
+                  "dx": 17.4,
+                  "dy": -19.4
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 11.7,
+                  "dy": -10.0
+                },
+                {
+                  "intensity": 1.441,
+                  "dx": 9.2,
+                  "dy": -5.5
+                }
+              ]
             }
           },
-          "generated_at": "2026-08-29T08:31:41+00:00",
-          "review": "ANIMATION_PROBABLY_BAD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.4257,
-            "still": 0.273
-          },
-          "frame_paths": [
-            "torch_posts/torch_post_008/animations/flame/south/00.webp",
-            "torch_posts/torch_post_008/animations/flame/south/01.webp",
-            "torch_posts/torch_post_008/animations/flame/south/02.webp",
-            "torch_posts/torch_post_008/animations/flame/south/03.webp",
-            "torch_posts/torch_post_008/animations/flame/south/04.webp"
-          ],
-          "strip": "torch_posts/torch_post_008/animations/flame__south.webp",
+          "generated_at": "2026-09-18T03:48:31+00:00",
           "light_frames": [
             {
               "intensity": 1.068,
@@ -169,7 +195,19 @@
               "dx": 0.6,
               "dy": -21.5
             }
-          ]
+          ],
+          "frame_paths": [
+            "torch_posts/torch_post_008/animations/flame/south/00.webp",
+            "torch_posts/torch_post_008/animations/flame/south/01.webp",
+            "torch_posts/torch_post_008/animations/flame/south/02.webp",
+            "torch_posts/torch_post_008/animations/flame/south/03.webp",
+            "torch_posts/torch_post_008/animations/flame/south/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_008/animations/flame__south.398e8d96.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1188
+          }
         }
       },
       "rotations": {

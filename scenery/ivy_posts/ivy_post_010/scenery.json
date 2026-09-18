@@ -65,30 +65,129 @@
       "animations": {
         "motion": {
           "group_id": "ba4fa92a-6e96-4fab-8bfe-028d784ea87d",
-          "description": "This is the same picture in every frame. ONLY the green rune on the post brightens a little and returns. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the green rune on the post brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "ivy_posts/ivy_post_010/lit_3/animations/motion/00.webp",
-            "ivy_posts/ivy_post_010/lit_3/animations/motion/01.webp",
-            "ivy_posts/ivy_post_010/lit_3/animations/motion/02.webp",
-            "ivy_posts/ivy_post_010/lit_3/animations/motion/03.webp",
-            "ivy_posts/ivy_post_010/lit_3/animations/motion/04.webp"
-          ],
-          "strip": "ivy_posts/ivy_post_010/lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:17:42+00:00",
-          "brief": "Y34",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "foliage",
-            "base": 0.0787,
-            "still": 0.773
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south/00.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south/01.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south/02.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south/03.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_010/lit_3/animations/motion__south.517c8348.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.119,
+                  "dx": -1.1,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 0.957,
+                  "dx": -1.1,
+                  "dy": -17.5
+                },
+                {
+                  "intensity": 0.983,
+                  "dx": -0.9,
+                  "dy": -18.6
+                },
+                {
+                  "intensity": 0.953,
+                  "dx": -1.7,
+                  "dy": -18.3
+                },
+                {
+                  "intensity": 0.987,
+                  "dx": -1.2,
+                  "dy": -17.6
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-east/00.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-east/01.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-east/02.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-east/03.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_010/lit_3/animations/motion__south-east.b0baac7e.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.795,
+                  "dx": 0.9,
+                  "dy": -18.6
+                },
+                {
+                  "intensity": 1.016,
+                  "dx": 1.9,
+                  "dy": -22.6
+                },
+                {
+                  "intensity": 1.066,
+                  "dx": 1.6,
+                  "dy": -23.7
+                },
+                {
+                  "intensity": 1.073,
+                  "dx": 1.6,
+                  "dy": -23.9
+                },
+                {
+                  "intensity": 1.051,
+                  "dx": 1.7,
+                  "dy": -23.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-west/00.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-west/01.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-west/02.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-west/03.webp",
+                "ivy_posts/ivy_post_010/lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_010/lit_3/animations/motion__south-west.cfb9770d.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.718,
+                  "dx": -2.0,
+                  "dy": -21.1
+                },
+                {
+                  "intensity": 1.042,
+                  "dx": -3.2,
+                  "dy": -15.9
+                },
+                {
+                  "intensity": 1.09,
+                  "dx": -3.3,
+                  "dy": -16.7
+                },
+                {
+                  "intensity": 1.071,
+                  "dx": -3.1,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 1.08,
+                  "dx": -3.1,
+                  "dy": -16.9
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:02:16+00:00",
+          "brief": "Y34",
           "light_frames": [
             {
               "intensity": 1.119,
@@ -115,7 +214,19 @@
               "dx": -1.2,
               "dy": -17.6
             }
-          ]
+          ],
+          "frame_paths": [
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/south/00.webp",
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/south/01.webp",
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/south/02.webp",
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/south/03.webp",
+            "ivy_posts/ivy_post_010/lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "ivy_posts/ivy_post_010/lit_3/animations/motion__south.517c8348.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0118
+          }
         }
       }
     },
@@ -134,30 +245,129 @@
       "animations": {
         "motion": {
           "group_id": "0e48fb0f-b3ab-4bfc-bbd4-c62e003fc14c",
-          "description": "This is the same picture in every frame. ONLY the green light on the crystal brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end, never dimmer at the end than the start. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the green light on the crystal brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "ivy_posts/ivy_post_010/lit_4/animations/motion/00.webp",
-            "ivy_posts/ivy_post_010/lit_4/animations/motion/01.webp",
-            "ivy_posts/ivy_post_010/lit_4/animations/motion/02.webp",
-            "ivy_posts/ivy_post_010/lit_4/animations/motion/03.webp",
-            "ivy_posts/ivy_post_010/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "ivy_posts/ivy_post_010/lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T19:19:14+00:00",
-          "brief": "D46",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "foliage",
-            "base": 0.0406,
-            "still": 0.727
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south/00.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south/01.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south/02.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south/03.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_010/lit_4/animations/motion__south.4f127a83.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 1.9,
+                  "dy": -7.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 1.5,
+                  "dy": -2.9
+                },
+                {
+                  "intensity": 1.057,
+                  "dx": -0.1,
+                  "dy": 4.8
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 1.1,
+                  "dy": -2.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 1.1,
+                  "dy": -2.0
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-east/00.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-east/01.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-east/02.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-east/03.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_010/lit_4/animations/motion__south-east.94cc1b92.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.952,
+                  "dx": 6.2,
+                  "dy": -11.5
+                },
+                {
+                  "intensity": 0.815,
+                  "dx": 6.6,
+                  "dy": 6.6
+                },
+                {
+                  "intensity": 1.068,
+                  "dx": 7.9,
+                  "dy": 4.6
+                },
+                {
+                  "intensity": 1.048,
+                  "dx": 7.6,
+                  "dy": 2.6
+                },
+                {
+                  "intensity": 1.117,
+                  "dx": 7.5,
+                  "dy": 2.6
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-west/00.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-west/01.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-west/02.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-west/03.webp",
+                "ivy_posts/ivy_post_010/lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "ivy_posts/ivy_post_010/lit_4/animations/motion__south-west.10950251.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.619,
+                  "dx": -5.1,
+                  "dy": -13.8
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -3.0,
+                  "dy": -6.5
+                },
+                {
+                  "intensity": 1.057,
+                  "dx": -7.7,
+                  "dy": 5.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -6.3,
+                  "dy": 5.2
+                },
+                {
+                  "intensity": 1.376,
+                  "dx": -6.3,
+                  "dy": 5.2
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:02:37+00:00",
+          "brief": "D46",
           "light_frames": [
             {
               "intensity": 1.5,
@@ -184,7 +394,19 @@
               "dx": 1.1,
               "dy": -2.0
             }
-          ]
+          ],
+          "frame_paths": [
+            "ivy_posts/ivy_post_010/lit_4/animations/motion/south/00.webp",
+            "ivy_posts/ivy_post_010/lit_4/animations/motion/south/01.webp",
+            "ivy_posts/ivy_post_010/lit_4/animations/motion/south/02.webp",
+            "ivy_posts/ivy_post_010/lit_4/animations/motion/south/03.webp",
+            "ivy_posts/ivy_post_010/lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "ivy_posts/ivy_post_010/lit_4/animations/motion__south.4f127a83.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0813
+          }
         }
       }
     },

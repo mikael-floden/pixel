@@ -70,63 +70,139 @@
                 "barrels/barrel_007/lit_2/animations/motion/south/03.webp",
                 "barrels/barrel_007/lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "barrels/barrel_007/lit_2/animations/motion__south.c7bea707.webp",
+              "strip": "barrels/barrel_007/lit_2/animations/motion__south.988b1a88.webp",
               "light_frames": [
                 {
-                  "intensity": 1.5,
+                  "intensity": 0.718,
                   "dx": -0.6,
                   "dy": -15.9
                 },
                 {
-                  "intensity": 1.317,
+                  "intensity": 0.757,
                   "dx": -0.5,
-                  "dy": -15.7
+                  "dy": -16.3
                 },
                 {
-                  "intensity": 1.5,
-                  "dx": -0.5,
+                  "intensity": 0.887,
+                  "dx": -0.4,
                   "dy": -16.2
                 },
                 {
-                  "intensity": 0.5,
+                  "intensity": 1.234,
                   "dx": -0.5,
-                  "dy": -15.9
+                  "dy": -16.1
                 },
                 {
-                  "intensity": 0.5,
+                  "intensity": 1.404,
+                  "dx": -0.6,
+                  "dy": -16.3
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "barrels/barrel_007/lit_2/animations/motion/south-east/00.webp",
+                "barrels/barrel_007/lit_2/animations/motion/south-east/01.webp",
+                "barrels/barrel_007/lit_2/animations/motion/south-east/02.webp",
+                "barrels/barrel_007/lit_2/animations/motion/south-east/03.webp",
+                "barrels/barrel_007/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "barrels/barrel_007/lit_2/animations/motion__south-east.00b01625.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.627,
                   "dx": -0.5,
-                  "dy": -15.9
+                  "dy": -16.5
+                },
+                {
+                  "intensity": 0.639,
+                  "dx": -0.5,
+                  "dy": -15.1
+                },
+                {
+                  "intensity": 0.976,
+                  "dx": -0.8,
+                  "dy": -15.4
+                },
+                {
+                  "intensity": 1.326,
+                  "dx": -1.1,
+                  "dy": -14.9
+                },
+                {
+                  "intensity": 1.433,
+                  "dx": -1.0,
+                  "dy": -15.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "barrels/barrel_007/lit_2/animations/motion/south-west/00.webp",
+                "barrels/barrel_007/lit_2/animations/motion/south-west/01.webp",
+                "barrels/barrel_007/lit_2/animations/motion/south-west/02.webp",
+                "barrels/barrel_007/lit_2/animations/motion/south-west/03.webp",
+                "barrels/barrel_007/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "barrels/barrel_007/lit_2/animations/motion__south-west.1ba4fab8.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.549,
+                  "dx": -0.2,
+                  "dy": -16.4
+                },
+                {
+                  "intensity": 0.927,
+                  "dx": -0.0,
+                  "dy": -16.5
+                },
+                {
+                  "intensity": 1.139,
+                  "dx": 0.0,
+                  "dy": -16.2
+                },
+                {
+                  "intensity": 1.205,
+                  "dx": 0.1,
+                  "dy": -16.0
+                },
+                {
+                  "intensity": 1.179,
+                  "dx": 0.0,
+                  "dy": -16.0
                 }
               ]
             }
           },
-          "generated_at": "2026-09-17T16:17:46+00:00",
+          "generated_at": "2026-09-18T02:05:13+00:00",
           "brief": "H46",
           "light_frames": [
             {
-              "intensity": 1.5,
+              "intensity": 0.718,
               "dx": -0.6,
               "dy": -15.9
             },
             {
-              "intensity": 1.317,
+              "intensity": 0.757,
               "dx": -0.5,
-              "dy": -15.7
+              "dy": -16.3
             },
             {
-              "intensity": 1.5,
-              "dx": -0.5,
+              "intensity": 0.887,
+              "dx": -0.4,
               "dy": -16.2
             },
             {
-              "intensity": 0.5,
+              "intensity": 1.234,
               "dx": -0.5,
-              "dy": -15.9
+              "dy": -16.1
             },
             {
-              "intensity": 0.5,
-              "dx": -0.5,
-              "dy": -15.9
+              "intensity": 1.404,
+              "dx": -0.6,
+              "dy": -16.3
             }
           ],
           "frame_paths": [
@@ -136,7 +212,7 @@
             "barrels/barrel_007/lit_2/animations/motion/south/03.webp",
             "barrels/barrel_007/lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "barrels/barrel_007/lit_2/animations/motion__south.c7bea707.webp",
+          "strip": "barrels/barrel_007/lit_2/animations/motion__south.988b1a88.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.8091

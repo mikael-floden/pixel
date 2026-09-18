@@ -579,29 +579,59 @@
       "animations": {
         "motion": {
           "group_id": "5c8c7456-08e0-4c62-9798-c1ef7a551a70",
-          "description": "This is the same picture in every frame. ONLY the hanging pans swing a little to one side and back. The mover is only MOVED, never redrawn: its detail is copied from the first frame exactly -- every line, edge and colour, the same parts in the same places, displaced as one solid piece. Nothing anywhere changes brightness or colour; this is a movement only. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the hanging pans swing a little to one side and back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "hearths/hearth_900/not_lit_1/animations/motion/00.webp",
-            "hearths/hearth_900/not_lit_1/animations/motion/01.webp",
-            "hearths/hearth_900/not_lit_1/animations/motion/02.webp",
-            "hearths/hearth_900/not_lit_1/animations/motion/03.webp",
-            "hearths/hearth_900/not_lit_1/animations/motion/04.webp"
-          ],
-          "strip": "hearths/hearth_900/not_lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T19:03:12+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_900/not_lit_1/animations/motion/south/00.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south/01.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south/02.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south/03.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "hearths/hearth_900/not_lit_1/animations/motion__south.9b72baf7.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_900/not_lit_1/animations/motion/south-east/00.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south-east/01.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south-east/02.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south-east/03.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_900/not_lit_1/animations/motion__south-east.7573db3e.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_900/not_lit_1/animations/motion/south-west/00.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south-west/01.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south-west/02.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south-west/03.webp",
+                "hearths/hearth_900/not_lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_900/not_lit_1/animations/motion__south-west.13588067.webp"
+            }
+          },
+          "generated_at": "2026-09-18T02:59:46+00:00",
           "brief": "C21",
+          "frame_paths": [
+            "hearths/hearth_900/not_lit_1/animations/motion/south/00.webp",
+            "hearths/hearth_900/not_lit_1/animations/motion/south/01.webp",
+            "hearths/hearth_900/not_lit_1/animations/motion/south/02.webp",
+            "hearths/hearth_900/not_lit_1/animations/motion/south/03.webp",
+            "hearths/hearth_900/not_lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "hearths/hearth_900/not_lit_1/animations/motion__south.9b72baf7.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "class": "fire",
-            "base": 0.0454,
-            "still": 0.836
+            "base_outline": 0.0237
           }
         }
       }

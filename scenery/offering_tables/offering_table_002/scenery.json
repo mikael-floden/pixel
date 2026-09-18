@@ -55,30 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "5f61cff0-4df2-48f3-8188-9b3b0c3e24f0",
-          "description": "This is the same picture in every frame. ONLY the thread of steam above the pot rises and curls. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the thread of steam above the pot rises and curls. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "offering_tables/offering_table_002/lit_3/animations/motion/00.webp",
-            "offering_tables/offering_table_002/lit_3/animations/motion/01.webp",
-            "offering_tables/offering_table_002/lit_3/animations/motion/02.webp",
-            "offering_tables/offering_table_002/lit_3/animations/motion/03.webp",
-            "offering_tables/offering_table_002/lit_3/animations/motion/04.webp"
-          ],
-          "strip": "offering_tables/offering_table_002/lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T18:35:24+00:00",
-          "brief": "B50",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0,
-            "still": 0.883
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "offering_tables/offering_table_002/lit_3/animations/motion/south/00.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south/01.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south/02.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south/03.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "offering_tables/offering_table_002/lit_3/animations/motion__south.aff95eb7.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.944,
+                  "dx": 10.8,
+                  "dy": -14.3
+                },
+                {
+                  "intensity": 0.935,
+                  "dx": 10.8,
+                  "dy": -14.1
+                },
+                {
+                  "intensity": 1.072,
+                  "dx": 8.8,
+                  "dy": -13.7
+                },
+                {
+                  "intensity": 1.018,
+                  "dx": 9.2,
+                  "dy": -13.8
+                },
+                {
+                  "intensity": 1.031,
+                  "dx": 9.4,
+                  "dy": -13.7
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-east/00.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-east/01.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-east/02.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-east/03.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "offering_tables/offering_table_002/lit_3/animations/motion__south-east.f5b1370d.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.989,
+                  "dx": 3.4,
+                  "dy": -17.2
+                },
+                {
+                  "intensity": 0.899,
+                  "dx": 4.5,
+                  "dy": -17.3
+                },
+                {
+                  "intensity": 0.987,
+                  "dx": 3.0,
+                  "dy": -16.5
+                },
+                {
+                  "intensity": 1.042,
+                  "dx": 3.4,
+                  "dy": -17.2
+                },
+                {
+                  "intensity": 1.082,
+                  "dx": 3.6,
+                  "dy": -17.5
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-west/00.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-west/01.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-west/02.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-west/03.webp",
+                "offering_tables/offering_table_002/lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "offering_tables/offering_table_002/lit_3/animations/motion__south-west.271edfc1.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.85,
+                  "dx": 13.1,
+                  "dy": -8.5
+                },
+                {
+                  "intensity": 1.002,
+                  "dx": 12.3,
+                  "dy": -7.1
+                },
+                {
+                  "intensity": 0.964,
+                  "dx": 11.6,
+                  "dy": -7.3
+                },
+                {
+                  "intensity": 1.192,
+                  "dx": 11.2,
+                  "dy": -6.3
+                },
+                {
+                  "intensity": 0.992,
+                  "dx": 11.5,
+                  "dy": -7.3
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:19:36+00:00",
+          "brief": "B50",
           "light_frames": [
             {
               "intensity": 0.944,
@@ -105,7 +204,19 @@
               "dx": 9.4,
               "dy": -13.7
             }
-          ]
+          ],
+          "frame_paths": [
+            "offering_tables/offering_table_002/lit_3/animations/motion/south/00.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/south/01.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/south/02.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/south/03.webp",
+            "offering_tables/offering_table_002/lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "offering_tables/offering_table_002/lit_3/animations/motion__south.aff95eb7.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },

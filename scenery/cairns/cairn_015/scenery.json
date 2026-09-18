@@ -56,28 +56,129 @@
       "animations": {
         "motion": {
           "group_id": "0012a559-b0ec-4596-a356-5377805e3a4b",
-          "description": "This is the same picture in every frame. ONLY the glowing runes on the stones brighten a little and return. It is lit and clearly visible in every single frame, including the first. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the glowing runes on the stones brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "cairns/cairn_015/lit_1/animations/motion/00.webp",
-            "cairns/cairn_015/lit_1/animations/motion/01.webp",
-            "cairns/cairn_015/lit_1/animations/motion/02.webp",
-            "cairns/cairn_015/lit_1/animations/motion/03.webp",
-            "cairns/cairn_015/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "cairns/cairn_015/lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T17:57:28+00:00",
-          "brief": "A42",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0303
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "cairns/cairn_015/lit_1/animations/motion/south/00.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south/01.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south/02.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south/03.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "cairns/cairn_015/lit_1/animations/motion__south.d36fc3a0.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "cairns/cairn_015/lit_1/animations/motion/south-east/00.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south-east/01.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south-east/02.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south-east/03.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "cairns/cairn_015/lit_1/animations/motion__south-east.101324a9.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "cairns/cairn_015/lit_1/animations/motion/south-west/00.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south-west/01.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south-west/02.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south-west/03.webp",
+                "cairns/cairn_015/lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "cairns/cairn_015/lit_1/animations/motion__south-west.f58c30af.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:19:18+00:00",
+          "brief": "A42",
           "light_frames": [
             {
               "intensity": 0.5,
@@ -104,7 +205,19 @@
               "dx": 0.0,
               "dy": 0.0
             }
-          ]
+          ],
+          "frame_paths": [
+            "cairns/cairn_015/lit_1/animations/motion/south/00.webp",
+            "cairns/cairn_015/lit_1/animations/motion/south/01.webp",
+            "cairns/cairn_015/lit_1/animations/motion/south/02.webp",
+            "cairns/cairn_015/lit_1/animations/motion/south/03.webp",
+            "cairns/cairn_015/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "cairns/cairn_015/lit_1/animations/motion__south.d36fc3a0.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0303
+          }
         }
       }
     },
@@ -123,28 +236,129 @@
       "animations": {
         "motion": {
           "group_id": "c5261a44-2003-4434-a357-b00fa2fb056c",
-          "description": "This is the same picture in every frame. ONLY the white wisp around the stones drifts slowly around them. It is lit and clearly visible in every single frame, including the first. It only ever gets SLIGHTLY brighter: never white, never washed out, and it keeps its own colour at every single moment. It is at its brightest in the middle and back to exactly its first-frame brightness and colour at the end, never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the white wisp around the stones drifts slowly around them. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "cairns/cairn_015/lit_2/animations/motion/00.webp",
-            "cairns/cairn_015/lit_2/animations/motion/01.webp",
-            "cairns/cairn_015/lit_2/animations/motion/02.webp",
-            "cairns/cairn_015/lit_2/animations/motion/03.webp",
-            "cairns/cairn_015/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "cairns/cairn_015/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T18:33:25+00:00",
-          "brief": "B29",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "cairns/cairn_015/lit_2/animations/motion/south/00.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south/01.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south/02.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south/03.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "cairns/cairn_015/lit_2/animations/motion__south.9fa1e2ea.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.624,
+                  "dx": 1.2,
+                  "dy": 2.9
+                },
+                {
+                  "intensity": 1.245,
+                  "dx": -0.1,
+                  "dy": 2.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 7.3,
+                  "dy": -10.3
+                },
+                {
+                  "intensity": 1.157,
+                  "dx": -0.1,
+                  "dy": 2.7
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.8,
+                  "dy": 2.5
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "cairns/cairn_015/lit_2/animations/motion/south-east/00.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south-east/01.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south-east/02.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south-east/03.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "cairns/cairn_015/lit_2/animations/motion__south-east.00e96751.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 1.8,
+                  "dy": 2.0
+                },
+                {
+                  "intensity": 0.991,
+                  "dx": 1.6,
+                  "dy": 2.7
+                },
+                {
+                  "intensity": 1.236,
+                  "dx": 1.4,
+                  "dy": 2.2
+                },
+                {
+                  "intensity": 1.267,
+                  "dx": 1.5,
+                  "dy": 2.2
+                },
+                {
+                  "intensity": 1.116,
+                  "dx": 1.4,
+                  "dy": 2.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "cairns/cairn_015/lit_2/animations/motion/south-west/00.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south-west/01.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south-west/02.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south-west/03.webp",
+                "cairns/cairn_015/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "cairns/cairn_015/lit_2/animations/motion__south-west.c7f1ac0a.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.658,
+                  "dx": -3.0,
+                  "dy": 2.3
+                },
+                {
+                  "intensity": 1.202,
+                  "dx": -4.3,
+                  "dy": 1.0
+                },
+                {
+                  "intensity": 1.316,
+                  "dx": -7.5,
+                  "dy": 1.8
+                },
+                {
+                  "intensity": 0.964,
+                  "dx": -3.6,
+                  "dy": -5.1
+                },
+                {
+                  "intensity": 0.86,
+                  "dx": -4.0,
+                  "dy": -8.0
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:20:16+00:00",
+          "brief": "B29",
           "light_frames": [
             {
               "intensity": 0.624,
@@ -171,7 +385,19 @@
               "dx": -0.8,
               "dy": 2.5
             }
-          ]
+          ],
+          "frame_paths": [
+            "cairns/cairn_015/lit_2/animations/motion/south/00.webp",
+            "cairns/cairn_015/lit_2/animations/motion/south/01.webp",
+            "cairns/cairn_015/lit_2/animations/motion/south/02.webp",
+            "cairns/cairn_015/lit_2/animations/motion/south/03.webp",
+            "cairns/cairn_015/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "cairns/cairn_015/lit_2/animations/motion__south.9fa1e2ea.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },

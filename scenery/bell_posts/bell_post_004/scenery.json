@@ -52,30 +52,129 @@
       "animations": {
         "motion": {
           "group_id": "a991dcd3-b090-4c74-bba5-ae065070ba33",
-          "description": "Animate the bell only, rocking slowly. Nothing else moves.",
+          "description": "This is the same picture in every frame. only, rocking slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "bell_posts/bell_post_004/animations/motion/00.webp",
-            "bell_posts/bell_post_004/animations/motion/01.webp",
-            "bell_posts/bell_post_004/animations/motion/02.webp",
-            "bell_posts/bell_post_004/animations/motion/03.webp",
-            "bell_posts/bell_post_004/animations/motion/04.webp"
-          ],
-          "strip": "bell_posts/bell_post_004/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T08:36:25+00:00",
-          "brief": "C7",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0024,
-            "still": 0.772
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/animations/motion/south/00.webp",
+                "bell_posts/bell_post_004/animations/motion/south/01.webp",
+                "bell_posts/bell_post_004/animations/motion/south/02.webp",
+                "bell_posts/bell_post_004/animations/motion/south/03.webp",
+                "bell_posts/bell_post_004/animations/motion/south/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/animations/motion__south.2b5fa1b4.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.971,
+                  "dx": 11.7,
+                  "dy": -19.0
+                },
+                {
+                  "intensity": 0.975,
+                  "dx": 13.6,
+                  "dy": -18.5
+                },
+                {
+                  "intensity": 1.002,
+                  "dx": 14.0,
+                  "dy": -18.2
+                },
+                {
+                  "intensity": 1.037,
+                  "dx": 9.8,
+                  "dy": -18.2
+                },
+                {
+                  "intensity": 1.015,
+                  "dx": 10.3,
+                  "dy": -18.8
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/animations/motion/south-east/00.webp",
+                "bell_posts/bell_post_004/animations/motion/south-east/01.webp",
+                "bell_posts/bell_post_004/animations/motion/south-east/02.webp",
+                "bell_posts/bell_post_004/animations/motion/south-east/03.webp",
+                "bell_posts/bell_post_004/animations/motion/south-east/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/animations/motion__south-east.c92e89d7.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.033,
+                  "dx": 14.2,
+                  "dy": -21.7
+                },
+                {
+                  "intensity": 1.076,
+                  "dx": 13.1,
+                  "dy": -20.9
+                },
+                {
+                  "intensity": 0.94,
+                  "dx": 12.7,
+                  "dy": -21.7
+                },
+                {
+                  "intensity": 0.893,
+                  "dx": 11.0,
+                  "dy": -21.1
+                },
+                {
+                  "intensity": 1.057,
+                  "dx": 10.2,
+                  "dy": -20.4
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/animations/motion/south-west/00.webp",
+                "bell_posts/bell_post_004/animations/motion/south-west/01.webp",
+                "bell_posts/bell_post_004/animations/motion/south-west/02.webp",
+                "bell_posts/bell_post_004/animations/motion/south-west/03.webp",
+                "bell_posts/bell_post_004/animations/motion/south-west/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/animations/motion__south-west.00c7edd7.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.846,
+                  "dx": 7.5,
+                  "dy": -10.5
+                },
+                {
+                  "intensity": 1.022,
+                  "dx": 7.7,
+                  "dy": -9.5
+                },
+                {
+                  "intensity": 0.988,
+                  "dx": 7.8,
+                  "dy": -8.8
+                },
+                {
+                  "intensity": 1.097,
+                  "dx": 8.0,
+                  "dy": -9.5
+                },
+                {
+                  "intensity": 1.047,
+                  "dx": 8.1,
+                  "dy": -10.0
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:10:20+00:00",
+          "brief": "C7",
           "light_frames": [
             {
               "intensity": 0.971,
@@ -102,7 +201,19 @@
               "dx": 10.3,
               "dy": -18.8
             }
-          ]
+          ],
+          "frame_paths": [
+            "bell_posts/bell_post_004/animations/motion/south/00.webp",
+            "bell_posts/bell_post_004/animations/motion/south/01.webp",
+            "bell_posts/bell_post_004/animations/motion/south/02.webp",
+            "bell_posts/bell_post_004/animations/motion/south/03.webp",
+            "bell_posts/bell_post_004/animations/motion/south/04.webp"
+          ],
+          "strip": "bell_posts/bell_post_004/animations/motion__south.2b5fa1b4.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },
@@ -121,28 +232,129 @@
       "animations": {
         "motion": {
           "group_id": "02bd36e2-738f-4f6f-9c10-f0d0bc0567b9",
-          "description": "This is the same picture in every frame. ONLY the hanging board and the two lanterns tilt, together, on their bracket. The movement must be so small it is barely visible \u2014 one or two pixels at most. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Everything else is frozen and pixel-for-pixel identical. Do not redraw anything else, and do not add or remove anything.",
+          "description": "This is the same picture in every frame. ONLY the hanging board and the two lanterns tilt, together, on their bracket. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "bell_posts/bell_post_004/lit_2/animations/motion/00.webp",
-            "bell_posts/bell_post_004/lit_2/animations/motion/01.webp",
-            "bell_posts/bell_post_004/lit_2/animations/motion/02.webp",
-            "bell_posts/bell_post_004/lit_2/animations/motion/03.webp",
-            "bell_posts/bell_post_004/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "bell_posts/bell_post_004/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T13:41:40+00:00",
-          "brief": "S1",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/lit_2/animations/motion/south/00.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south/01.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south/02.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south/03.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/lit_2/animations/motion__south.8dfc610c.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.101,
+                  "dx": 13.0,
+                  "dy": -10.1
+                },
+                {
+                  "intensity": 1.045,
+                  "dx": 13.8,
+                  "dy": -9.9
+                },
+                {
+                  "intensity": 0.807,
+                  "dx": 14.7,
+                  "dy": -9.8
+                },
+                {
+                  "intensity": 1.023,
+                  "dx": 14.1,
+                  "dy": -9.8
+                },
+                {
+                  "intensity": 1.024,
+                  "dx": 14.3,
+                  "dy": -9.5
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-east/00.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-east/01.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-east/02.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-east/03.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/lit_2/animations/motion__south-east.d1dc9bdf.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 17.1,
+                  "dy": -20.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 22.9,
+                  "dy": -23.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 22.9,
+                  "dy": -23.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 25.4,
+                  "dy": -24.0
+                },
+                {
+                  "intensity": 1.454,
+                  "dx": 26.1,
+                  "dy": -25.2
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-west/00.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-west/01.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-west/02.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-west/03.webp",
+                "bell_posts/bell_post_004/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/lit_2/animations/motion__south-west.8874a45a.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -17.0,
+                  "dy": -21.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 11.7,
+                  "dy": -10.2
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 10.9,
+                  "dy": -10.6
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -24.1,
+                  "dy": -24.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -26.3,
+                  "dy": -22.4
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:10:47+00:00",
+          "brief": "S1",
           "light_frames": [
             {
               "intensity": 1.101,
@@ -169,7 +381,19 @@
               "dx": 14.3,
               "dy": -9.5
             }
-          ]
+          ],
+          "frame_paths": [
+            "bell_posts/bell_post_004/lit_2/animations/motion/south/00.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/south/01.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/south/02.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/south/03.webp",
+            "bell_posts/bell_post_004/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "bell_posts/bell_post_004/lit_2/animations/motion__south.8dfc610c.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0049
+          }
         }
       }
     },
@@ -188,30 +412,129 @@
       "animations": {
         "motion": {
           "group_id": "17fc23d9-98eb-48f1-8ef4-0df7c2236bc4",
-          "description": "This is the same picture in every frame. ONLY the hanging bell and the hanging lantern move, swinging. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the hanging bell and the hanging lantern move, swinging. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "bell_posts/bell_post_004/lit_4/animations/motion/00.webp",
-            "bell_posts/bell_post_004/lit_4/animations/motion/01.webp",
-            "bell_posts/bell_post_004/lit_4/animations/motion/02.webp",
-            "bell_posts/bell_post_004/lit_4/animations/motion/03.webp",
-            "bell_posts/bell_post_004/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "bell_posts/bell_post_004/lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:17:06+00:00",
-          "brief": "Y23",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0069,
-            "still": 0.774
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/lit_4/animations/motion/south/00.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south/01.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south/02.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south/03.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/lit_4/animations/motion__south.f470dbc0.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.08,
+                  "dx": 26.4,
+                  "dy": -4.5
+                },
+                {
+                  "intensity": 1.019,
+                  "dx": 26.6,
+                  "dy": -5.1
+                },
+                {
+                  "intensity": 0.988,
+                  "dx": 26.4,
+                  "dy": -5.1
+                },
+                {
+                  "intensity": 0.957,
+                  "dx": 25.4,
+                  "dy": -5.2
+                },
+                {
+                  "intensity": 0.957,
+                  "dx": 24.5,
+                  "dy": -5.0
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-east/00.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-east/01.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-east/02.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-east/03.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/lit_4/animations/motion__south-east.98b10899.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 18.6,
+                  "dy": -6.1
+                },
+                {
+                  "intensity": 1.043,
+                  "dx": 21.2,
+                  "dy": -11.4
+                },
+                {
+                  "intensity": 1.189,
+                  "dx": 21.8,
+                  "dy": -12.1
+                },
+                {
+                  "intensity": 1.083,
+                  "dx": 22.1,
+                  "dy": -11.2
+                },
+                {
+                  "intensity": 1.408,
+                  "dx": 21.3,
+                  "dy": -12.6
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-west/00.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-west/01.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-west/02.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-west/03.webp",
+                "bell_posts/bell_post_004/lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/lit_4/animations/motion__south-west.5539ccce.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.303,
+                  "dx": -18.6,
+                  "dy": -7.4
+                },
+                {
+                  "intensity": 0.861,
+                  "dx": -16.5,
+                  "dy": -3.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -6.0,
+                  "dy": 5.4
+                },
+                {
+                  "intensity": 0.92,
+                  "dx": -14.6,
+                  "dy": -3.9
+                },
+                {
+                  "intensity": 1.424,
+                  "dx": -18.1,
+                  "dy": -8.1
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:11:47+00:00",
+          "brief": "Y23",
           "light_frames": [
             {
               "intensity": 1.08,
@@ -238,7 +561,19 @@
               "dx": 24.5,
               "dy": -5.0
             }
-          ]
+          ],
+          "frame_paths": [
+            "bell_posts/bell_post_004/lit_4/animations/motion/south/00.webp",
+            "bell_posts/bell_post_004/lit_4/animations/motion/south/01.webp",
+            "bell_posts/bell_post_004/lit_4/animations/motion/south/02.webp",
+            "bell_posts/bell_post_004/lit_4/animations/motion/south/03.webp",
+            "bell_posts/bell_post_004/lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "bell_posts/bell_post_004/lit_4/animations/motion__south.f470dbc0.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },
@@ -257,29 +592,59 @@
       "animations": {
         "motion": {
           "group_id": "1fed67db-0905-420e-b6b0-f2b3906a61ff",
-          "description": "This is the same picture in every frame. ONLY the hanging bell and the hanging lantern swing. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the hanging bell and the hanging lantern swing. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "bell_posts/bell_post_004/not_lit_1/animations/motion/00.webp",
-            "bell_posts/bell_post_004/not_lit_1/animations/motion/01.webp",
-            "bell_posts/bell_post_004/not_lit_1/animations/motion/02.webp",
-            "bell_posts/bell_post_004/not_lit_1/animations/motion/03.webp",
-            "bell_posts/bell_post_004/not_lit_1/animations/motion/04.webp"
-          ],
-          "strip": "bell_posts/bell_post_004/not_lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:57:16+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south/00.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south/01.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south/02.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south/03.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/not_lit_1/animations/motion__south.ba288c4f.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-east/00.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-east/01.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-east/02.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-east/03.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/not_lit_1/animations/motion__south-east.dc27daac.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-west/00.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-west/01.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-west/02.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-west/03.webp",
+                "bell_posts/bell_post_004/not_lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "bell_posts/bell_post_004/not_lit_1/animations/motion__south-west.3928ec24.webp"
+            }
+          },
+          "generated_at": "2026-09-18T02:11:24+00:00",
           "brief": "Z26",
+          "frame_paths": [
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/south/00.webp",
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/south/01.webp",
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/south/02.webp",
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/south/03.webp",
+            "bell_posts/bell_post_004/not_lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "bell_posts/bell_post_004/not_lit_1/animations/motion__south.ba288c4f.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "class": "fire",
-            "base": 0.0048,
-            "still": 0.613
+            "base_outline": 0.0152
           }
         }
       }

@@ -66,30 +66,129 @@
       "animations": {
         "motion": {
           "group_id": "28110133-9562-42e9-a71d-9bfab9be66bb",
-          "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "wells/well_014/lit_2/animations/motion/00.webp",
-            "wells/well_014/lit_2/animations/motion/01.webp",
-            "wells/well_014/lit_2/animations/motion/02.webp",
-            "wells/well_014/lit_2/animations/motion/03.webp",
-            "wells/well_014/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "wells/well_014/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:58:16+00:00",
-          "brief": "Z40",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "water",
-            "base": 0.0331,
-            "still": 0.83
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_014/lit_2/animations/motion/south/00.webp",
+                "wells/well_014/lit_2/animations/motion/south/01.webp",
+                "wells/well_014/lit_2/animations/motion/south/02.webp",
+                "wells/well_014/lit_2/animations/motion/south/03.webp",
+                "wells/well_014/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "wells/well_014/lit_2/animations/motion__south.782acd60.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.946,
+                  "dx": 0.1,
+                  "dy": 18.3
+                },
+                {
+                  "intensity": 1.024,
+                  "dx": -0.2,
+                  "dy": 18.1
+                },
+                {
+                  "intensity": 1.018,
+                  "dx": 0.1,
+                  "dy": 18.2
+                },
+                {
+                  "intensity": 1.005,
+                  "dx": -0.4,
+                  "dy": 18.2
+                },
+                {
+                  "intensity": 1.006,
+                  "dx": -0.1,
+                  "dy": 18.1
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_014/lit_2/animations/motion/south-east/00.webp",
+                "wells/well_014/lit_2/animations/motion/south-east/01.webp",
+                "wells/well_014/lit_2/animations/motion/south-east/02.webp",
+                "wells/well_014/lit_2/animations/motion/south-east/03.webp",
+                "wells/well_014/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wells/well_014/lit_2/animations/motion__south-east.58f48568.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -0.5,
+                  "dy": 18.7
+                },
+                {
+                  "intensity": 1.048,
+                  "dx": -3.2,
+                  "dy": 16.1
+                },
+                {
+                  "intensity": 1.037,
+                  "dx": -2.9,
+                  "dy": 15.9
+                },
+                {
+                  "intensity": 1.26,
+                  "dx": -2.4,
+                  "dy": 16.8
+                },
+                {
+                  "intensity": 1.283,
+                  "dx": -2.4,
+                  "dy": 16.9
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_014/lit_2/animations/motion/south-west/00.webp",
+                "wells/well_014/lit_2/animations/motion/south-west/01.webp",
+                "wells/well_014/lit_2/animations/motion/south-west/02.webp",
+                "wells/well_014/lit_2/animations/motion/south-west/03.webp",
+                "wells/well_014/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wells/well_014/lit_2/animations/motion__south-west.b0b0fd36.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.558,
+                  "dx": 0.3,
+                  "dy": 18.7
+                },
+                {
+                  "intensity": 0.9,
+                  "dx": 1.0,
+                  "dy": 18.2
+                },
+                {
+                  "intensity": 1.276,
+                  "dx": 1.5,
+                  "dy": 18.5
+                },
+                {
+                  "intensity": 1.246,
+                  "dx": 1.2,
+                  "dy": 19.4
+                },
+                {
+                  "intensity": 1.02,
+                  "dx": 0.9,
+                  "dy": 20.1
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T04:21:49+00:00",
+          "brief": "Z40",
           "light_frames": [
             {
               "intensity": 0.946,
@@ -116,7 +215,19 @@
               "dx": -0.1,
               "dy": 18.1
             }
-          ]
+          ],
+          "frame_paths": [
+            "wells/well_014/lit_2/animations/motion/south/00.webp",
+            "wells/well_014/lit_2/animations/motion/south/01.webp",
+            "wells/well_014/lit_2/animations/motion/south/02.webp",
+            "wells/well_014/lit_2/animations/motion/south/03.webp",
+            "wells/well_014/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "wells/well_014/lit_2/animations/motion__south.782acd60.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0144
+          }
         }
       }
     },
@@ -135,30 +246,129 @@
       "animations": {
         "motion": {
           "group_id": "42f19675-c4c2-4754-a98e-11c1a3675531",
-          "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. It is lit and clearly visible in every single frame, including the first. It is at its brightest in the MIDDLE of the animation and back to exactly its first-frame brightness and colour at the end. It never fades out and is never dimmer at the end than at the start. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the glowing water inside the well brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "wells/well_014/lit_3/animations/motion/00.webp",
-            "wells/well_014/lit_3/animations/motion/01.webp",
-            "wells/well_014/lit_3/animations/motion/02.webp",
-            "wells/well_014/lit_3/animations/motion/03.webp",
-            "wells/well_014/lit_3/animations/motion/04.webp"
-          ],
-          "strip": "wells/well_014/lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T17:57:43+00:00",
-          "brief": "A47",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "water",
-            "base": 0.0494,
-            "still": 0.805
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_014/lit_3/animations/motion/south/00.webp",
+                "wells/well_014/lit_3/animations/motion/south/01.webp",
+                "wells/well_014/lit_3/animations/motion/south/02.webp",
+                "wells/well_014/lit_3/animations/motion/south/03.webp",
+                "wells/well_014/lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "wells/well_014/lit_3/animations/motion__south.1aff7532.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -3.0,
+                  "dy": 20.8
+                },
+                {
+                  "intensity": 0.568,
+                  "dx": -2.7,
+                  "dy": 20.6
+                },
+                {
+                  "intensity": 1.273,
+                  "dx": -0.6,
+                  "dy": 21.2
+                },
+                {
+                  "intensity": 1.384,
+                  "dx": -0.3,
+                  "dy": 21.2
+                },
+                {
+                  "intensity": 1.412,
+                  "dx": 0.2,
+                  "dy": 21.1
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_014/lit_3/animations/motion/south-east/00.webp",
+                "wells/well_014/lit_3/animations/motion/south-east/01.webp",
+                "wells/well_014/lit_3/animations/motion/south-east/02.webp",
+                "wells/well_014/lit_3/animations/motion/south-east/03.webp",
+                "wells/well_014/lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wells/well_014/lit_3/animations/motion__south-east.6d3cf639.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 20.6
+                },
+                {
+                  "intensity": 0.551,
+                  "dx": -22.8,
+                  "dy": -28.9
+                },
+                {
+                  "intensity": 0.906,
+                  "dx": -24.2,
+                  "dy": -32.6
+                },
+                {
+                  "intensity": 1.495,
+                  "dx": -16.5,
+                  "dy": -6.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -9.6,
+                  "dy": 20.6
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wells/well_014/lit_3/animations/motion/south-west/00.webp",
+                "wells/well_014/lit_3/animations/motion/south-west/01.webp",
+                "wells/well_014/lit_3/animations/motion/south-west/02.webp",
+                "wells/well_014/lit_3/animations/motion/south-west/03.webp",
+                "wells/well_014/lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wells/well_014/lit_3/animations/motion__south-west.8cd39b2c.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -1.2,
+                  "dy": 20.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 19.9
+                },
+                {
+                  "intensity": 0.553,
+                  "dx": 1.9,
+                  "dy": 7.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 5.7,
+                  "dy": 1.5
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 5.1,
+                  "dy": 2.2
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T04:22:36+00:00",
+          "brief": "A47",
           "light_frames": [
             {
               "intensity": 0.5,
@@ -185,7 +395,19 @@
               "dx": 0.2,
               "dy": 21.1
             }
-          ]
+          ],
+          "frame_paths": [
+            "wells/well_014/lit_3/animations/motion/south/00.webp",
+            "wells/well_014/lit_3/animations/motion/south/01.webp",
+            "wells/well_014/lit_3/animations/motion/south/02.webp",
+            "wells/well_014/lit_3/animations/motion/south/03.webp",
+            "wells/well_014/lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "wells/well_014/lit_3/animations/motion__south.1aff7532.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0071
+          }
         }
       }
     }

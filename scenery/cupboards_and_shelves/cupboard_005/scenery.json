@@ -55,28 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "ba9e723a-7261-4024-bc03-fe13aab479fd",
-          "description": "This is an almost completely still picture. ONLY the orange light in the crack between the cupboard doors changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same orange as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the orange light in the crack between the cupboard doors changes: it brightens by the smallest amount that is still visible, then returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/00.webp",
-            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/01.webp",
-            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/02.webp",
-            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/03.webp",
-            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "cupboards_and_shelves/cupboard_005/lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:57:07+00:00",
-          "brief": "H19",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/00.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/01.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/02.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/03.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "cupboards_and_shelves/cupboard_005/lit_1/animations/motion__south.9ba92bc0.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.734,
+                  "dx": 0.5,
+                  "dy": 6.6
+                },
+                {
+                  "intensity": 1.12,
+                  "dx": 0.4,
+                  "dy": 6.0
+                },
+                {
+                  "intensity": 1.471,
+                  "dx": 0.2,
+                  "dy": 6.3
+                },
+                {
+                  "intensity": 0.991,
+                  "dx": 0.1,
+                  "dy": 6.0
+                },
+                {
+                  "intensity": 0.684,
+                  "dx": 0.2,
+                  "dy": 6.0
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-east/00.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-east/01.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-east/02.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-east/03.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "cupboards_and_shelves/cupboard_005/lit_1/animations/motion__south-east.834d0cef.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.089,
+                  "dx": 11.3,
+                  "dy": 5.6
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 13.9,
+                  "dy": 2.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 13.5,
+                  "dy": -1.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 8.4,
+                  "dy": -10.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.7,
+                  "dy": -7.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-west/00.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-west/01.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-west/02.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-west/03.webp",
+                "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "cupboards_and_shelves/cupboard_005/lit_1/animations/motion__south-west.558ae63f.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": -15.2,
+                  "dy": 3.5
+                },
+                {
+                  "intensity": 1.067,
+                  "dx": -16.9,
+                  "dy": -0.7
+                },
+                {
+                  "intensity": 0.665,
+                  "dx": -18.6,
+                  "dy": -6.2
+                },
+                {
+                  "intensity": 0.677,
+                  "dx": -18.5,
+                  "dy": -6.3
+                },
+                {
+                  "intensity": 0.681,
+                  "dx": -18.5,
+                  "dy": -6.4
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:31:28+00:00",
+          "brief": "H19",
           "light_frames": [
             {
               "intensity": 0.734,
@@ -103,7 +204,19 @@
               "dx": 0.2,
               "dy": 6.0
             }
-          ]
+          ],
+          "frame_paths": [
+            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/00.webp",
+            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/01.webp",
+            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/02.webp",
+            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/03.webp",
+            "cupboards_and_shelves/cupboard_005/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "cupboards_and_shelves/cupboard_005/lit_1/animations/motion__south.9ba92bc0.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0174
+          }
         }
       }
     },

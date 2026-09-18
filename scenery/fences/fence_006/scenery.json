@@ -65,28 +65,129 @@
       "animations": {
         "motion": {
           "group_id": "e9e50c9b-ebab-4ab6-ba1c-68cb29b2ade9",
-          "description": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern at the end of the fence shifts, by one pixel. No more than a few pixels change anywhere in the whole picture. The body of the flame keeps exactly the shape, size and position it has in the first frame and stays amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern at the end of the fence shifts, by one pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "fences/fence_006/lit_2/animations/motion/00.webp",
-            "fences/fence_006/lit_2/animations/motion/01.webp",
-            "fences/fence_006/lit_2/animations/motion/02.webp",
-            "fences/fence_006/lit_2/animations/motion/03.webp",
-            "fences/fence_006/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "fences/fence_006/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T10:20:52+00:00",
-          "brief": "H10",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "fences/fence_006/lit_2/animations/motion/south/00.webp",
+                "fences/fence_006/lit_2/animations/motion/south/01.webp",
+                "fences/fence_006/lit_2/animations/motion/south/02.webp",
+                "fences/fence_006/lit_2/animations/motion/south/03.webp",
+                "fences/fence_006/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "fences/fence_006/lit_2/animations/motion__south.092a4332.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.092,
+                  "dx": 55.5,
+                  "dy": 3.4
+                },
+                {
+                  "intensity": 0.972,
+                  "dx": 55.4,
+                  "dy": 3.0
+                },
+                {
+                  "intensity": 0.965,
+                  "dx": 55.4,
+                  "dy": 3.0
+                },
+                {
+                  "intensity": 0.988,
+                  "dx": 55.5,
+                  "dy": 3.2
+                },
+                {
+                  "intensity": 0.983,
+                  "dx": 55.5,
+                  "dy": 3.1
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "fences/fence_006/lit_2/animations/motion/south-east/00.webp",
+                "fences/fence_006/lit_2/animations/motion/south-east/01.webp",
+                "fences/fence_006/lit_2/animations/motion/south-east/02.webp",
+                "fences/fence_006/lit_2/animations/motion/south-east/03.webp",
+                "fences/fence_006/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "fences/fence_006/lit_2/animations/motion__south-east.edc25457.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.719,
+                  "dx": -41.1,
+                  "dy": 27.4
+                },
+                {
+                  "intensity": 0.825,
+                  "dx": -40.5,
+                  "dy": 27.4
+                },
+                {
+                  "intensity": 1.353,
+                  "dx": -12.0,
+                  "dy": -0.8
+                },
+                {
+                  "intensity": 0.737,
+                  "dx": 15.7,
+                  "dy": -27.1
+                },
+                {
+                  "intensity": 1.366,
+                  "dx": -5.9,
+                  "dy": -7.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "fences/fence_006/lit_2/animations/motion/south-west/00.webp",
+                "fences/fence_006/lit_2/animations/motion/south-west/01.webp",
+                "fences/fence_006/lit_2/animations/motion/south-west/02.webp",
+                "fences/fence_006/lit_2/animations/motion/south-west/03.webp",
+                "fences/fence_006/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "fences/fence_006/lit_2/animations/motion__south-west.9672c62f.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 41.6,
+                  "dy": 27.4
+                },
+                {
+                  "intensity": 0.879,
+                  "dx": 20.1,
+                  "dy": 12.5
+                },
+                {
+                  "intensity": 1.107,
+                  "dx": 16.6,
+                  "dy": 10.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 17.1,
+                  "dy": 8.5
+                },
+                {
+                  "intensity": 1.4,
+                  "dx": 21.7,
+                  "dy": 12.1
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:36:53+00:00",
+          "brief": "H10",
           "light_frames": [
             {
               "intensity": 1.092,
@@ -113,7 +214,19 @@
               "dx": 55.5,
               "dy": 3.1
             }
-          ]
+          ],
+          "frame_paths": [
+            "fences/fence_006/lit_2/animations/motion/south/00.webp",
+            "fences/fence_006/lit_2/animations/motion/south/01.webp",
+            "fences/fence_006/lit_2/animations/motion/south/02.webp",
+            "fences/fence_006/lit_2/animations/motion/south/03.webp",
+            "fences/fence_006/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "fences/fence_006/lit_2/animations/motion__south.092a4332.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0037
+          }
         }
       }
     },
@@ -132,30 +245,129 @@
       "animations": {
         "motion": {
           "group_id": "d3c347d3-74bb-4536-bef1-f0b365193fda",
-          "description": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern hung at the end of the fence shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position they have in the first frame and stay amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern hung at the end of the fence shifts, by one or two pixels. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "fences/fence_006/lit_3/animations/motion/00.webp",
-            "fences/fence_006/lit_3/animations/motion/01.webp",
-            "fences/fence_006/lit_3/animations/motion/02.webp",
-            "fences/fence_006/lit_3/animations/motion/03.webp",
-            "fences/fence_006/lit_3/animations/motion/04.webp"
-          ],
-          "strip": "fences/fence_006/lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:57:22+00:00",
-          "brief": "H11",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0737,
-            "still": 0.92
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "fences/fence_006/lit_3/animations/motion/south/00.webp",
+                "fences/fence_006/lit_3/animations/motion/south/01.webp",
+                "fences/fence_006/lit_3/animations/motion/south/02.webp",
+                "fences/fence_006/lit_3/animations/motion/south/03.webp",
+                "fences/fence_006/lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "fences/fence_006/lit_3/animations/motion__south.f98feaa2.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.788,
+                  "dx": -40.0,
+                  "dy": 11.8
+                },
+                {
+                  "intensity": 0.955,
+                  "dx": -40.2,
+                  "dy": 12.5
+                },
+                {
+                  "intensity": 1.03,
+                  "dx": -40.0,
+                  "dy": 12.6
+                },
+                {
+                  "intensity": 1.117,
+                  "dx": -40.1,
+                  "dy": 12.5
+                },
+                {
+                  "intensity": 1.11,
+                  "dx": -40.1,
+                  "dy": 12.5
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "fences/fence_006/lit_3/animations/motion/south-east/00.webp",
+                "fences/fence_006/lit_3/animations/motion/south-east/01.webp",
+                "fences/fence_006/lit_3/animations/motion/south-east/02.webp",
+                "fences/fence_006/lit_3/animations/motion/south-east/03.webp",
+                "fences/fence_006/lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "fences/fence_006/lit_3/animations/motion__south-east.118831f8.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.004,
+                  "dx": -13.0,
+                  "dy": 31.0
+                },
+                {
+                  "intensity": 0.85,
+                  "dx": -13.1,
+                  "dy": 31.8
+                },
+                {
+                  "intensity": 1.057,
+                  "dx": -13.0,
+                  "dy": 33.8
+                },
+                {
+                  "intensity": 0.984,
+                  "dx": -13.2,
+                  "dy": 32.7
+                },
+                {
+                  "intensity": 1.105,
+                  "dx": -13.0,
+                  "dy": 30.9
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "fences/fence_006/lit_3/animations/motion/south-west/00.webp",
+                "fences/fence_006/lit_3/animations/motion/south-west/01.webp",
+                "fences/fence_006/lit_3/animations/motion/south-west/02.webp",
+                "fences/fence_006/lit_3/animations/motion/south-west/03.webp",
+                "fences/fence_006/lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "fences/fence_006/lit_3/animations/motion__south-west.d06b2f87.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": 0.0
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:37:26+00:00",
+          "brief": "H11",
           "light_frames": [
             {
               "intensity": 0.788,
@@ -182,7 +394,19 @@
               "dx": -40.1,
               "dy": 12.5
             }
-          ]
+          ],
+          "frame_paths": [
+            "fences/fence_006/lit_3/animations/motion/south/00.webp",
+            "fences/fence_006/lit_3/animations/motion/south/01.webp",
+            "fences/fence_006/lit_3/animations/motion/south/02.webp",
+            "fences/fence_006/lit_3/animations/motion/south/03.webp",
+            "fences/fence_006/lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "fences/fence_006/lit_3/animations/motion__south.f98feaa2.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1681
+          }
         }
       }
     }

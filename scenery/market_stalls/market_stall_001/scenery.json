@@ -55,30 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "fe61bcb0-f320-4ac0-9817-58e5afb3b0c9",
-          "description": "This is the same picture in every frame. ONLY the glowing crystals on the counter brighten a little and return. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the glowing crystals on the counter brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "market_stalls/market_stall_001/lit_2/animations/motion/00.webp",
-            "market_stalls/market_stall_001/lit_2/animations/motion/01.webp",
-            "market_stalls/market_stall_001/lit_2/animations/motion/02.webp",
-            "market_stalls/market_stall_001/lit_2/animations/motion/03.webp",
-            "market_stalls/market_stall_001/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "market_stalls/market_stall_001/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:17:16+00:00",
-          "brief": "Y29",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0711,
-            "still": 0.684
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/lit_2/animations/motion/south/00.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south/01.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south/02.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south/03.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/lit_2/animations/motion__south.21f4744c.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.062,
+                  "dx": 0.8,
+                  "dy": -16.5
+                },
+                {
+                  "intensity": 1.099,
+                  "dx": 1.2,
+                  "dy": -15.8
+                },
+                {
+                  "intensity": 0.997,
+                  "dx": 2.7,
+                  "dy": -19.8
+                },
+                {
+                  "intensity": 0.889,
+                  "dx": 1.2,
+                  "dy": -24.1
+                },
+                {
+                  "intensity": 0.952,
+                  "dx": 2.1,
+                  "dy": -21.7
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-east/00.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-east/01.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-east/02.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-east/03.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/lit_2/animations/motion__south-east.d288cbe9.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.959,
+                  "dx": 3.1,
+                  "dy": -17.5
+                },
+                {
+                  "intensity": 1.227,
+                  "dx": 5.6,
+                  "dy": -9.4
+                },
+                {
+                  "intensity": 1.242,
+                  "dx": 5.4,
+                  "dy": -10.3
+                },
+                {
+                  "intensity": 0.839,
+                  "dx": 2.0,
+                  "dy": -21.9
+                },
+                {
+                  "intensity": 0.734,
+                  "dx": 0.0,
+                  "dy": -25.9
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-west/00.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-west/01.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-west/02.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-west/03.webp",
+                "market_stalls/market_stall_001/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/lit_2/animations/motion__south-west.34365aee.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.927,
+                  "dx": -0.7,
+                  "dy": -17.3
+                },
+                {
+                  "intensity": 1.131,
+                  "dx": -5.2,
+                  "dy": -11.9
+                },
+                {
+                  "intensity": 1.223,
+                  "dx": -7.6,
+                  "dy": -10.5
+                },
+                {
+                  "intensity": 0.835,
+                  "dx": -0.6,
+                  "dy": -21.2
+                },
+                {
+                  "intensity": 0.884,
+                  "dx": -1.4,
+                  "dy": -19.7
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:16:58+00:00",
+          "brief": "Y29",
           "light_frames": [
             {
               "intensity": 1.062,
@@ -105,7 +204,19 @@
               "dx": 2.1,
               "dy": -21.7
             }
-          ]
+          ],
+          "frame_paths": [
+            "market_stalls/market_stall_001/lit_2/animations/motion/south/00.webp",
+            "market_stalls/market_stall_001/lit_2/animations/motion/south/01.webp",
+            "market_stalls/market_stall_001/lit_2/animations/motion/south/02.webp",
+            "market_stalls/market_stall_001/lit_2/animations/motion/south/03.webp",
+            "market_stalls/market_stall_001/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/lit_2/animations/motion__south.21f4744c.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0012
+          }
         }
       }
     },
@@ -121,29 +232,59 @@
       "animations": {
         "motion": {
           "group_id": "4ded9f96-f1dc-4399-b972-96e26a6e0f6e",
-          "description": "This is the same picture in every frame. ONLY the cloth roof moves, sagging and lifting a few pixels as if in a faint draught. Do not redraw anything else, and do not add or remove anything.",
+          "description": "This is the same picture in every frame. ONLY the cloth roof moves, sagging and lifting a few pixels as if in a faint draught. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "market_stalls/market_stall_001/animations/motion/00.webp",
-            "market_stalls/market_stall_001/animations/motion/01.webp",
-            "market_stalls/market_stall_001/animations/motion/02.webp",
-            "market_stalls/market_stall_001/animations/motion/03.webp",
-            "market_stalls/market_stall_001/animations/motion/04.webp"
-          ],
-          "strip": "market_stalls/market_stall_001/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T10:33:46+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/animations/motion/south/00.webp",
+                "market_stalls/market_stall_001/animations/motion/south/01.webp",
+                "market_stalls/market_stall_001/animations/motion/south/02.webp",
+                "market_stalls/market_stall_001/animations/motion/south/03.webp",
+                "market_stalls/market_stall_001/animations/motion/south/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/animations/motion__south.a0cb0110.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/animations/motion/south-east/00.webp",
+                "market_stalls/market_stall_001/animations/motion/south-east/01.webp",
+                "market_stalls/market_stall_001/animations/motion/south-east/02.webp",
+                "market_stalls/market_stall_001/animations/motion/south-east/03.webp",
+                "market_stalls/market_stall_001/animations/motion/south-east/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/animations/motion__south-east.b3ac398d.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/animations/motion/south-west/00.webp",
+                "market_stalls/market_stall_001/animations/motion/south-west/01.webp",
+                "market_stalls/market_stall_001/animations/motion/south-west/02.webp",
+                "market_stalls/market_stall_001/animations/motion/south-west/03.webp",
+                "market_stalls/market_stall_001/animations/motion/south-west/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/animations/motion__south-west.1e6cf602.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:17:32+00:00",
           "brief": "C2",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "frame_paths": [
+            "market_stalls/market_stall_001/animations/motion/south/00.webp",
+            "market_stalls/market_stall_001/animations/motion/south/01.webp",
+            "market_stalls/market_stall_001/animations/motion/south/02.webp",
+            "market_stalls/market_stall_001/animations/motion/south/03.webp",
+            "market_stalls/market_stall_001/animations/motion/south/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/animations/motion__south.a0cb0110.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "class": "fire",
-            "base": 0.0,
-            "still": 0.871
+            "base_outline": 0.1121
           }
         }
       }
@@ -163,29 +304,59 @@
       "animations": {
         "motion": {
           "group_id": "941fe59e-b854-4f39-badf-f35631eec4dd",
-          "description": "This is the same picture in every frame. ONLY the cloth roof at the very top moves: a clearly visible ripple travels along it from one side to the other, so its lower edge lifts and falls. The movement is easy to see. Everything below the cloth roof is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the cloth roof at the very top moves: a clearly visible ripple travels along it from one side to the other, so its lower edge lifts and falls. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "market_stalls/market_stall_001/not_lit_2/animations/motion/00.webp",
-            "market_stalls/market_stall_001/not_lit_2/animations/motion/01.webp",
-            "market_stalls/market_stall_001/not_lit_2/animations/motion/02.webp",
-            "market_stalls/market_stall_001/not_lit_2/animations/motion/03.webp",
-            "market_stalls/market_stall_001/not_lit_2/animations/motion/04.webp"
-          ],
-          "strip": "market_stalls/market_stall_001/not_lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T17:17:23+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south/00.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south/01.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south/02.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south/03.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/not_lit_2/animations/motion__south.db0705fe.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/00.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/01.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/02.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/03.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/not_lit_2/animations/motion__south-east.d141983b.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/00.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/01.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/02.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/03.webp",
+                "market_stalls/market_stall_001/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/not_lit_2/animations/motion__south-west.e2549311.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:16:51+00:00",
           "brief": "Z45",
+          "frame_paths": [
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/south/00.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/south/01.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/south/02.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/south/03.webp",
+            "market_stalls/market_stall_001/not_lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/not_lit_2/animations/motion__south.db0705fe.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "class": "fire",
-            "base": 0.0294,
-            "still": 0.875
+            "base_outline": 0.0
           }
         }
       }
@@ -205,27 +376,59 @@
       "animations": {
         "motion": {
           "group_id": "7782439c-f6fc-4836-a37b-0d7f6bd12122",
-          "description": "This is the same picture in every frame. ONLY the striped cloth roof at the very top moves: a clearly visible ripple travels along it, so its lower edge lifts and falls. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the striped cloth roof at the very top moves: a clearly visible ripple travels along it, so its lower edge lifts and falls. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "market_stalls/market_stall_001/not_lit_3/animations/motion/00.webp",
-            "market_stalls/market_stall_001/not_lit_3/animations/motion/01.webp",
-            "market_stalls/market_stall_001/not_lit_3/animations/motion/02.webp",
-            "market_stalls/market_stall_001/not_lit_3/animations/motion/03.webp",
-            "market_stalls/market_stall_001/not_lit_3/animations/motion/04.webp"
-          ],
-          "strip": "market_stalls/market_stall_001/not_lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T17:57:36+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south/00.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south/01.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south/02.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south/03.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/not_lit_3/animations/motion__south.667c92f7.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/00.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/01.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/02.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/03.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/not_lit_3/animations/motion__south-east.25e62d13.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/00.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/01.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/02.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/03.webp",
+                "market_stalls/market_stall_001/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "market_stalls/market_stall_001/not_lit_3/animations/motion__south-west.242babb9.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:17:38+00:00",
           "brief": "A48",
+          "frame_paths": [
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/south/00.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/south/01.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/south/02.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/south/03.webp",
+            "market_stalls/market_stall_001/not_lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "market_stalls/market_stall_001/not_lit_3/animations/motion__south.667c92f7.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.0037
           }
         }
       }

@@ -379,7 +379,11 @@ def main():
             for f in as_completed(futs):
                 rel, state, name, n, how = f.result()
                 ok += how == "ok"
-                if how == "ok":
+                # ANY FACING THAT LANDED NEEDS FINISHING. A clip that came back
+                # 2 of 3 has new frames under its stable names and stale or no
+                # strips; skipping it left 3 clips unfinished, the gate red and
+                # the second pass unrun (2026-09-18 sweep, 5 of 330).
+                if n > 0:
                     done.append(f"{rel}#{state}#{name}")
                 print(f"  {'=' if how == 'ok' else '!'} {rel} {state} {name}: {n} direction(s) {how}")
         print(f"\n{ok}/{len(todo)} clip(s) redone")

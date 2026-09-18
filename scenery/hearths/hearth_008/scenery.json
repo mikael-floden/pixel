@@ -588,29 +588,59 @@
       "animations": {
         "motion": {
           "group_id": "77e734d3-a36a-46f0-977e-20a14bfc1e2e",
-          "description": "This is the same picture in every frame. ONLY the bundles lying on the mantel shift. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the bundles lying on the mantel shift. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "hearths/hearth_008/not_lit_1/animations/motion/00.webp",
-            "hearths/hearth_008/not_lit_1/animations/motion/01.webp",
-            "hearths/hearth_008/not_lit_1/animations/motion/02.webp",
-            "hearths/hearth_008/not_lit_1/animations/motion/03.webp",
-            "hearths/hearth_008/not_lit_1/animations/motion/04.webp"
-          ],
-          "strip": "hearths/hearth_008/not_lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:06:43+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_008/not_lit_1/animations/motion/south/00.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south/01.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south/02.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south/03.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "hearths/hearth_008/not_lit_1/animations/motion__south.26dbb9ed.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_008/not_lit_1/animations/motion/south-east/00.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south-east/01.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south-east/02.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south-east/03.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "hearths/hearth_008/not_lit_1/animations/motion__south-east.fd26147c.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "hearths/hearth_008/not_lit_1/animations/motion/south-west/00.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south-west/01.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south-west/02.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south-west/03.webp",
+                "hearths/hearth_008/not_lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "hearths/hearth_008/not_lit_1/animations/motion__south-west.f4babe6d.webp"
+            }
+          },
+          "generated_at": "2026-09-18T02:59:04+00:00",
           "brief": "X25",
+          "frame_paths": [
+            "hearths/hearth_008/not_lit_1/animations/motion/south/00.webp",
+            "hearths/hearth_008/not_lit_1/animations/motion/south/01.webp",
+            "hearths/hearth_008/not_lit_1/animations/motion/south/02.webp",
+            "hearths/hearth_008/not_lit_1/animations/motion/south/03.webp",
+            "hearths/hearth_008/not_lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "hearths/hearth_008/not_lit_1/animations/motion__south.26dbb9ed.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "class": "fire",
-            "base": 0.0404,
-            "still": 0.835
+            "base_outline": 0.014
           }
         }
       }

@@ -55,28 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "d8a740b2-c9df-4c47-b4a1-233d2441d873",
-          "description": "This is the same picture in every frame. ONLY the glowing seep at the foot of the barrel brightens and dims, very slowly. Do not redraw anything else, and do not add or remove anything.",
+          "description": "This is the same picture in every frame. ONLY the glowing seep at the foot of the barrel brightens and dims, very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "barrels/barrel_001/lit_2/animations/motion/00.webp",
-            "barrels/barrel_001/lit_2/animations/motion/01.webp",
-            "barrels/barrel_001/lit_2/animations/motion/02.webp",
-            "barrels/barrel_001/lit_2/animations/motion/03.webp",
-            "barrels/barrel_001/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "barrels/barrel_001/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T11:49:35+00:00",
-          "brief": "Q6",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0685
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "barrels/barrel_001/lit_2/animations/motion/south/00.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south/01.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south/02.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south/03.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "barrels/barrel_001/lit_2/animations/motion__south.f0aa3427.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.429,
+                  "dx": 6.9,
+                  "dy": 19.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -2.6,
+                  "dy": 18.1
+                },
+                {
+                  "intensity": 0.939,
+                  "dx": -4.9,
+                  "dy": 8.4
+                },
+                {
+                  "intensity": 0.614,
+                  "dx": 0.0,
+                  "dy": -27.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -0.1,
+                  "dy": 4.8
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "barrels/barrel_001/lit_2/animations/motion/south-east/00.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south-east/01.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south-east/02.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south-east/03.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "barrels/barrel_001/lit_2/animations/motion__south-east.3ef6efdf.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.702,
+                  "dx": -6.4,
+                  "dy": 18.5
+                },
+                {
+                  "intensity": 0.585,
+                  "dx": -6.5,
+                  "dy": 18.6
+                },
+                {
+                  "intensity": 1.442,
+                  "dx": -2.7,
+                  "dy": -5.4
+                },
+                {
+                  "intensity": 1.148,
+                  "dx": -1.1,
+                  "dy": -16.3
+                },
+                {
+                  "intensity": 1.123,
+                  "dx": -0.6,
+                  "dy": -19.4
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "barrels/barrel_001/lit_2/animations/motion/south-west/00.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south-west/01.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south-west/02.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south-west/03.webp",
+                "barrels/barrel_001/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "barrels/barrel_001/lit_2/animations/motion__south-west.911a39f6.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 6.8,
+                  "dy": 18.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 0.9,
+                  "dy": 14.6
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 0.2,
+                  "dy": 14.3
+                },
+                {
+                  "intensity": 1.003,
+                  "dx": -1.5,
+                  "dy": 17.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -5.3,
+                  "dy": 20.8
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:05:22+00:00",
+          "brief": "Q6",
           "light_frames": [
             {
               "intensity": 1.429,
@@ -103,7 +204,19 @@
               "dx": -0.1,
               "dy": 4.8
             }
-          ]
+          ],
+          "frame_paths": [
+            "barrels/barrel_001/lit_2/animations/motion/south/00.webp",
+            "barrels/barrel_001/lit_2/animations/motion/south/01.webp",
+            "barrels/barrel_001/lit_2/animations/motion/south/02.webp",
+            "barrels/barrel_001/lit_2/animations/motion/south/03.webp",
+            "barrels/barrel_001/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "barrels/barrel_001/lit_2/animations/motion__south.f0aa3427.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.125
+          }
         }
       }
     },

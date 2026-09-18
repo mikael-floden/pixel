@@ -65,28 +65,129 @@
       "animations": {
         "motion": {
           "group_id": "7431b2a8-f523-4778-aac6-5a06468e4a75",
-          "description": "This is the same picture in every frame. ONLY the jet of water from the gargoyle's mouth runs downward. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "description": "This is the same picture in every frame. ONLY the jet of water from the gargoyle's mouth runs downward. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "stone_fountains/stone_fountain_004/lit_2/animations/motion/00.webp",
-            "stone_fountains/stone_fountain_004/lit_2/animations/motion/01.webp",
-            "stone_fountains/stone_fountain_004/lit_2/animations/motion/02.webp",
-            "stone_fountains/stone_fountain_004/lit_2/animations/motion/03.webp",
-            "stone_fountains/stone_fountain_004/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "stone_fountains/stone_fountain_004/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T15:39:29+00:00",
-          "brief": "X50",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/00.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/01.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/02.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/03.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "stone_fountains/stone_fountain_004/lit_2/animations/motion__south.70558b13.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.963,
+                  "dx": -0.4,
+                  "dy": 6.4
+                },
+                {
+                  "intensity": 0.993,
+                  "dx": -0.5,
+                  "dy": 7.9
+                },
+                {
+                  "intensity": 0.707,
+                  "dx": -0.3,
+                  "dy": 7.8
+                },
+                {
+                  "intensity": 0.978,
+                  "dx": -0.4,
+                  "dy": 14.7
+                },
+                {
+                  "intensity": 1.359,
+                  "dx": 0.1,
+                  "dy": 7.7
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-east/00.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-east/01.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-east/02.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-east/03.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "stone_fountains/stone_fountain_004/lit_2/animations/motion__south-east.db33ee3f.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 8.2,
+                  "dy": 6.4
+                },
+                {
+                  "intensity": 1.177,
+                  "dx": 8.5,
+                  "dy": 6.4
+                },
+                {
+                  "intensity": 1.165,
+                  "dx": 8.4,
+                  "dy": 6.5
+                },
+                {
+                  "intensity": 1.167,
+                  "dx": 8.4,
+                  "dy": 6.5
+                },
+                {
+                  "intensity": 1.16,
+                  "dx": 8.4,
+                  "dy": 6.6
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-west/00.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-west/01.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-west/02.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-west/03.webp",
+                "stone_fountains/stone_fountain_004/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "stone_fountains/stone_fountain_004/lit_2/animations/motion__south-west.31d29e9b.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": -7.4,
+                  "dy": 6.7
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -8.5,
+                  "dy": 6.8
+                },
+                {
+                  "intensity": 1.09,
+                  "dx": -8.2,
+                  "dy": 7.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -8.1,
+                  "dy": 9.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -5.9,
+                  "dy": 10.2
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:38:08+00:00",
+          "brief": "X50",
           "light_frames": [
             {
               "intensity": 0.963,
@@ -113,7 +214,19 @@
               "dx": 0.1,
               "dy": 7.7
             }
-          ]
+          ],
+          "frame_paths": [
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/00.webp",
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/01.webp",
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/02.webp",
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/03.webp",
+            "stone_fountains/stone_fountain_004/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "stone_fountains/stone_fountain_004/lit_2/animations/motion__south.70558b13.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0015
+          }
         }
       }
     },
@@ -132,30 +245,129 @@
       "animations": {
         "motion": {
           "group_id": "cc010f2b-bdd3-47f2-abfe-82a823222a09",
-          "description": "This is the same picture in every frame. ONLY the water pouring from the fountain runs downward. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the water pouring from the fountain runs downward. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "stone_fountains/stone_fountain_004/lit_4/animations/motion/00.webp",
-            "stone_fountains/stone_fountain_004/lit_4/animations/motion/01.webp",
-            "stone_fountains/stone_fountain_004/lit_4/animations/motion/02.webp",
-            "stone_fountains/stone_fountain_004/lit_4/animations/motion/03.webp",
-            "stone_fountains/stone_fountain_004/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "stone_fountains/stone_fountain_004/lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:18:24+00:00",
-          "brief": "Y41",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "water",
-            "base": 0.0007,
-            "still": 0.894
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/00.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/01.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/02.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/03.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "stone_fountains/stone_fountain_004/lit_4/animations/motion__south.b1c69384.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.956,
+                  "dx": 0.1,
+                  "dy": -34.0
+                },
+                {
+                  "intensity": 1.115,
+                  "dx": -0.2,
+                  "dy": -26.5
+                },
+                {
+                  "intensity": 1.026,
+                  "dx": -0.8,
+                  "dy": -29.4
+                },
+                {
+                  "intensity": 1.024,
+                  "dx": -0.5,
+                  "dy": -27.9
+                },
+                {
+                  "intensity": 0.879,
+                  "dx": -0.6,
+                  "dy": -31.5
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-east/00.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-east/01.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-east/02.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-east/03.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "stone_fountains/stone_fountain_004/lit_4/animations/motion__south-east.bc31e33e.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.91,
+                  "dx": 3.4,
+                  "dy": -26.9
+                },
+                {
+                  "intensity": 0.958,
+                  "dx": 5.1,
+                  "dy": -30.4
+                },
+                {
+                  "intensity": 1.058,
+                  "dx": 4.8,
+                  "dy": -28.7
+                },
+                {
+                  "intensity": 1.049,
+                  "dx": 4.9,
+                  "dy": -28.9
+                },
+                {
+                  "intensity": 1.024,
+                  "dx": 4.7,
+                  "dy": -29.8
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-west/00.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-west/01.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-west/02.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-west/03.webp",
+                "stone_fountains/stone_fountain_004/lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "stone_fountains/stone_fountain_004/lit_4/animations/motion__south-west.9ddb9b62.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.723,
+                  "dx": -0.8,
+                  "dy": -26.3
+                },
+                {
+                  "intensity": 1.089,
+                  "dx": 0.0,
+                  "dy": -18.6
+                },
+                {
+                  "intensity": 1.052,
+                  "dx": -0.9,
+                  "dy": -17.7
+                },
+                {
+                  "intensity": 1.058,
+                  "dx": -1.6,
+                  "dy": -17.8
+                },
+                {
+                  "intensity": 1.077,
+                  "dx": -1.0,
+                  "dy": -16.6
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:38:37+00:00",
+          "brief": "Y41",
           "light_frames": [
             {
               "intensity": 0.956,
@@ -182,7 +394,19 @@
               "dx": -0.6,
               "dy": -31.5
             }
-          ]
+          ],
+          "frame_paths": [
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/00.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/01.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/02.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/03.webp",
+            "stone_fountains/stone_fountain_004/lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "stone_fountains/stone_fountain_004/lit_4/animations/motion__south.b1c69384.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     }

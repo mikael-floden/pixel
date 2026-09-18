@@ -53,7 +53,7 @@
       "animations": {
         "flame": {
           "group_id": "d6f1c70c-d70f-4285-95eb-b99ae75e625a",
-          "description": "Animate the flame only",
+          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -94,7 +94,8 @@
                   "dx": 5.8,
                   "dy": -2.3
                 }
-              ]
+              ],
+              "strip": "streetlights/streetlight_034/animations/flame__south.a523183d.webp"
             },
             "south-east": {
               "frames": 5,
@@ -131,24 +132,11 @@
                   "dx": 9.6,
                   "dy": -2.4
                 }
-              ]
+              ],
+              "strip": "streetlights/streetlight_034/animations/flame__south-east.6dd43bcd.webp"
             }
           },
-          "generated_at": "2026-08-29T08:29:27+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0,
-            "still": 0.581
-          },
-          "frame_paths": [
-            "streetlights/streetlight_034/animations/flame/south/00.webp",
-            "streetlights/streetlight_034/animations/flame/south/01.webp",
-            "streetlights/streetlight_034/animations/flame/south/02.webp",
-            "streetlights/streetlight_034/animations/flame/south/03.webp",
-            "streetlights/streetlight_034/animations/flame/south/04.webp"
-          ],
-          "strip": "streetlights/streetlight_034/animations/flame__south.webp",
+          "generated_at": "2026-09-18T03:43:28+00:00",
           "light_frames": [
             {
               "intensity": 0.83,
@@ -175,7 +163,19 @@
               "dx": 5.8,
               "dy": -2.3
             }
-          ]
+          ],
+          "frame_paths": [
+            "streetlights/streetlight_034/animations/flame/south/00.webp",
+            "streetlights/streetlight_034/animations/flame/south/01.webp",
+            "streetlights/streetlight_034/animations/flame/south/02.webp",
+            "streetlights/streetlight_034/animations/flame/south/03.webp",
+            "streetlights/streetlight_034/animations/flame/south/04.webp"
+          ],
+          "strip": "streetlights/streetlight_034/animations/flame__south.a523183d.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       },
       "rotations": {

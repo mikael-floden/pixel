@@ -67,28 +67,129 @@
       "animations": {
         "motion": {
           "group_id": "d01c3c3c-82a7-41e9-a910-7423bc115e35",
-          "description": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern at the bow of the boat shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position they have in the first frame and stay amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern at the bow of the boat shifts, by one or two pixels. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/00.webp",
-            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/01.webp",
-            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/02.webp",
-            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/03.webp",
-            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "beached_rowboats/beached_rowboat_900/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:57:56+00:00",
-          "brief": "H17",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.075
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/00.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/01.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/02.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/03.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_900/lit_2/animations/motion__south.ff5964ae.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.578,
+                  "dx": 1.1,
+                  "dy": -7.3
+                },
+                {
+                  "intensity": 1.077,
+                  "dx": 0.5,
+                  "dy": -28.2
+                },
+                {
+                  "intensity": 1.093,
+                  "dx": 0.6,
+                  "dy": -28.7
+                },
+                {
+                  "intensity": 1.097,
+                  "dx": 1.0,
+                  "dy": -30.5
+                },
+                {
+                  "intensity": 1.156,
+                  "dx": 0.9,
+                  "dy": -34.4
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-east/00.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-east/01.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-east/02.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-east/03.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_900/lit_2/animations/motion__south-east.1df1ccb2.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -13.1,
+                  "dy": 0.6
+                },
+                {
+                  "intensity": 0.822,
+                  "dx": 16.0,
+                  "dy": -21.9
+                },
+                {
+                  "intensity": 1.009,
+                  "dx": 14.8,
+                  "dy": -21.3
+                },
+                {
+                  "intensity": 1.132,
+                  "dx": 18.1,
+                  "dy": -19.7
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 26.2,
+                  "dy": -25.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-west/00.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-west/01.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-west/02.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-west/03.webp",
+                "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_900/lit_2/animations/motion__south-west.518918f6.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 10.1,
+                  "dy": -18.6
+                },
+                {
+                  "intensity": 1.482,
+                  "dx": 42.8,
+                  "dy": -39.3
+                },
+                {
+                  "intensity": 1.149,
+                  "dx": 43.2,
+                  "dy": -38.7
+                },
+                {
+                  "intensity": 1.125,
+                  "dx": 43.2,
+                  "dy": -38.5
+                },
+                {
+                  "intensity": 1.172,
+                  "dx": 43.4,
+                  "dy": -38.9
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:05:38+00:00",
+          "brief": "H17",
           "light_frames": [
             {
               "intensity": 0.578,
@@ -115,7 +216,19 @@
               "dx": 0.9,
               "dy": -34.4
             }
-          ]
+          ],
+          "frame_paths": [
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/00.webp",
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/01.webp",
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/02.webp",
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/03.webp",
+            "beached_rowboats/beached_rowboat_900/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "beached_rowboats/beached_rowboat_900/lit_2/animations/motion__south.ff5964ae.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0962
+          }
         }
       }
     },
@@ -134,28 +247,129 @@
       "animations": {
         "motion": {
           "group_id": "dcedbca1-1d26-409f-9196-404c938b9a82",
-          "description": "This is an almost completely still picture. ONLY the very tip of the small flame in the lantern inside the boat shifts, by one or two pixels. The body of the flame keeps exactly the shape, size and position they have in the first frame and stay amber the whole time -- never pale, never white. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern inside the boat shifts, by one or two pixels. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/00.webp",
-            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/01.webp",
-            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/02.webp",
-            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/03.webp",
-            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:57:55+00:00",
-          "brief": "H16",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0396
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/00.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/01.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/02.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/03.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south.e183d494.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.68,
+                  "dx": 1.0,
+                  "dy": 4.3
+                },
+                {
+                  "intensity": 0.877,
+                  "dx": 0.9,
+                  "dy": 1.1
+                },
+                {
+                  "intensity": 1.116,
+                  "dx": 0.9,
+                  "dy": -1.2
+                },
+                {
+                  "intensity": 1.108,
+                  "dx": 0.7,
+                  "dy": -0.1
+                },
+                {
+                  "intensity": 1.217,
+                  "dx": 0.8,
+                  "dy": 0.8
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-east/00.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-east/01.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-east/02.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-east/03.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south-east.611c475f.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -44.2,
+                  "dy": 11.5
+                },
+                {
+                  "intensity": 1.105,
+                  "dx": -44.3,
+                  "dy": 12.3
+                },
+                {
+                  "intensity": 1.29,
+                  "dx": -44.4,
+                  "dy": 11.8
+                },
+                {
+                  "intensity": 1.332,
+                  "dx": -44.5,
+                  "dy": 11.9
+                },
+                {
+                  "intensity": 1.214,
+                  "dx": -44.9,
+                  "dy": 12.9
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-west/00.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-west/01.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-west/02.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-west/03.webp",
+                "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south-west.9999f93f.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -23.8,
+                  "dy": 6.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -42.8,
+                  "dy": 12.4
+                },
+                {
+                  "intensity": 1.256,
+                  "dx": -39.2,
+                  "dy": 13.6
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -37.3,
+                  "dy": 12.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -34.6,
+                  "dy": 10.9
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:06:47+00:00",
+          "brief": "H16",
           "light_frames": [
             {
               "intensity": 0.68,
@@ -182,7 +396,19 @@
               "dx": 0.8,
               "dy": 0.8
             }
-          ]
+          ],
+          "frame_paths": [
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/00.webp",
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/01.webp",
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/02.webp",
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/03.webp",
+            "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south.e183d494.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1817
+          }
         }
       }
     },

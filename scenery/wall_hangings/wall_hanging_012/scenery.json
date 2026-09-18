@@ -67,29 +67,59 @@
       "animations": {
         "motion": {
           "group_id": "8381b9f1-e82a-4214-981c-366fc54e0566",
-          "description": "This is the same picture in every frame. ONLY the bundles hanging from the rail swing. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the bundles hanging from the rail swing. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/00.webp",
-            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/01.webp",
-            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/02.webp",
-            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/03.webp",
-            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/04.webp"
-          ],
-          "strip": "wall_hangings/wall_hanging_012/not_lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:06:01+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/00.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/01.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/02.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/03.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_012/not_lit_4/animations/motion__south.8fa904d9.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-east/00.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-east/01.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-east/02.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-east/03.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_012/not_lit_4/animations/motion__south-east.66f51456.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-west/00.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-west/01.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-west/02.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-west/03.webp",
+                "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wall_hangings/wall_hanging_012/not_lit_4/animations/motion__south-west.cd8cdcb8.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:56:06+00:00",
           "brief": "X23",
+          "frame_paths": [
+            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/00.webp",
+            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/01.webp",
+            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/02.webp",
+            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/03.webp",
+            "wall_hangings/wall_hanging_012/not_lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "wall_hangings/wall_hanging_012/not_lit_4/animations/motion__south.8fa904d9.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "class": "fire",
-            "base": 0.0676,
-            "still": 0.615
+            "base_outline": 0.0
           }
         }
       }

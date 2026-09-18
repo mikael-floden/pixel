@@ -55,30 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "8919b715-0aa4-4cf4-bd98-948fbed93919",
-          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "story_posts/story_post_013/lit_2/animations/motion/00.webp",
-            "story_posts/story_post_013/lit_2/animations/motion/01.webp",
-            "story_posts/story_post_013/lit_2/animations/motion/02.webp",
-            "story_posts/story_post_013/lit_2/animations/motion/03.webp",
-            "story_posts/story_post_013/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "story_posts/story_post_013/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T17:52:58+00:00",
-          "brief": "A5",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0521,
-            "still": 0.842
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "story_posts/story_post_013/lit_2/animations/motion/south/00.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south/01.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south/02.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south/03.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "story_posts/story_post_013/lit_2/animations/motion__south.1776a4aa.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.086,
+                  "dx": -0.5,
+                  "dy": -4.3
+                },
+                {
+                  "intensity": 0.957,
+                  "dx": -0.6,
+                  "dy": -5.2
+                },
+                {
+                  "intensity": 0.957,
+                  "dx": -0.6,
+                  "dy": -5.2
+                },
+                {
+                  "intensity": 1.0,
+                  "dx": -0.7,
+                  "dy": -5.2
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": -0.7,
+                  "dy": -5.2
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "story_posts/story_post_013/lit_2/animations/motion/south-east/00.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south-east/01.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south-east/02.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south-east/03.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "story_posts/story_post_013/lit_2/animations/motion__south-east.5f807881.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.025,
+                  "dx": 7.9,
+                  "dy": -2.6
+                },
+                {
+                  "intensity": 0.944,
+                  "dx": 7.8,
+                  "dy": -1.5
+                },
+                {
+                  "intensity": 1.003,
+                  "dx": 7.8,
+                  "dy": -0.6
+                },
+                {
+                  "intensity": 1.038,
+                  "dx": 7.7,
+                  "dy": -2.6
+                },
+                {
+                  "intensity": 0.991,
+                  "dx": 7.8,
+                  "dy": -2.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "story_posts/story_post_013/lit_2/animations/motion/south-west/00.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south-west/01.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south-west/02.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south-west/03.webp",
+                "story_posts/story_post_013/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "story_posts/story_post_013/lit_2/animations/motion__south-west.cf313df6.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.028,
+                  "dx": -8.5,
+                  "dy": -2.6
+                },
+                {
+                  "intensity": 0.904,
+                  "dx": -8.7,
+                  "dy": -1.6
+                },
+                {
+                  "intensity": 0.926,
+                  "dx": -8.7,
+                  "dy": -1.6
+                },
+                {
+                  "intensity": 1.071,
+                  "dx": -8.6,
+                  "dy": -2.6
+                },
+                {
+                  "intensity": 1.071,
+                  "dx": -8.6,
+                  "dy": -2.6
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:40:43+00:00",
+          "brief": "A5",
           "light_frames": [
             {
               "intensity": 1.086,
@@ -105,7 +204,19 @@
               "dx": -0.7,
               "dy": -5.2
             }
-          ]
+          ],
+          "frame_paths": [
+            "story_posts/story_post_013/lit_2/animations/motion/south/00.webp",
+            "story_posts/story_post_013/lit_2/animations/motion/south/01.webp",
+            "story_posts/story_post_013/lit_2/animations/motion/south/02.webp",
+            "story_posts/story_post_013/lit_2/animations/motion/south/03.webp",
+            "story_posts/story_post_013/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "story_posts/story_post_013/lit_2/animations/motion__south.1776a4aa.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.24
+          }
         }
       }
     },

@@ -72,25 +72,124 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "house_clutter/clutter_900/lit_2/animations/motion/00.webp",
-            "house_clutter/clutter_900/lit_2/animations/motion/01.webp",
-            "house_clutter/clutter_900/lit_2/animations/motion/02.webp",
-            "house_clutter/clutter_900/lit_2/animations/motion/03.webp",
-            "house_clutter/clutter_900/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "house_clutter/clutter_900/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T19:01:49+00:00",
-          "brief": "C4",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0488,
-            "still": 0.772
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "house_clutter/clutter_900/lit_2/animations/motion/south/00.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south/01.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south/02.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south/03.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "house_clutter/clutter_900/lit_2/animations/motion__south.3816f259.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.956,
+                  "dx": -6.0,
+                  "dy": -6.9
+                },
+                {
+                  "intensity": 0.973,
+                  "dx": -6.1,
+                  "dy": -7.6
+                },
+                {
+                  "intensity": 1.001,
+                  "dx": -6.1,
+                  "dy": -7.7
+                },
+                {
+                  "intensity": 1.063,
+                  "dx": -6.2,
+                  "dy": -7.8
+                },
+                {
+                  "intensity": 1.008,
+                  "dx": -6.2,
+                  "dy": -7.3
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "house_clutter/clutter_900/lit_2/animations/motion/south-east/00.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south-east/01.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south-east/02.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south-east/03.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "house_clutter/clutter_900/lit_2/animations/motion__south-east.4ec3915d.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.244,
+                  "dx": 9.5,
+                  "dy": -8.5
+                },
+                {
+                  "intensity": 1.329,
+                  "dx": 9.6,
+                  "dy": -8.7
+                },
+                {
+                  "intensity": 1.363,
+                  "dx": 9.6,
+                  "dy": -9.6
+                },
+                {
+                  "intensity": 0.922,
+                  "dx": 8.7,
+                  "dy": -8.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -6.5,
+                  "dy": -5.1
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "house_clutter/clutter_900/lit_2/animations/motion/south-west/00.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south-west/01.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south-west/02.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south-west/03.webp",
+                "house_clutter/clutter_900/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "house_clutter/clutter_900/lit_2/animations/motion__south-west.02e381f4.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.831,
+                  "dx": -11.4,
+                  "dy": -8.5
+                },
+                {
+                  "intensity": 1.072,
+                  "dx": -11.5,
+                  "dy": -8.4
+                },
+                {
+                  "intensity": 1.044,
+                  "dx": -11.5,
+                  "dy": -8.8
+                },
+                {
+                  "intensity": 1.177,
+                  "dx": -11.6,
+                  "dy": -7.9
+                },
+                {
+                  "intensity": 0.876,
+                  "dx": -10.7,
+                  "dy": -7.7
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:00:17+00:00",
+          "brief": "C4",
           "light_frames": [
             {
               "intensity": 0.956,
@@ -117,7 +216,19 @@
               "dx": -6.2,
               "dy": -7.3
             }
-          ]
+          ],
+          "frame_paths": [
+            "house_clutter/clutter_900/lit_2/animations/motion/south/00.webp",
+            "house_clutter/clutter_900/lit_2/animations/motion/south/01.webp",
+            "house_clutter/clutter_900/lit_2/animations/motion/south/02.webp",
+            "house_clutter/clutter_900/lit_2/animations/motion/south/03.webp",
+            "house_clutter/clutter_900/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "house_clutter/clutter_900/lit_2/animations/motion__south.3816f259.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },
@@ -141,23 +252,124 @@
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "house_clutter/clutter_900/lit_3/animations/motion/00.webp",
-            "house_clutter/clutter_900/lit_3/animations/motion/01.webp",
-            "house_clutter/clutter_900/lit_3/animations/motion/02.webp",
-            "house_clutter/clutter_900/lit_3/animations/motion/03.webp",
-            "house_clutter/clutter_900/lit_3/animations/motion/04.webp"
-          ],
-          "strip": "house_clutter/clutter_900/lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T19:14:58+00:00",
-          "brief": "D1",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "house_clutter/clutter_900/lit_3/animations/motion/south/00.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south/01.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south/02.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south/03.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "house_clutter/clutter_900/lit_3/animations/motion__south.9eef8295.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.993,
+                  "dx": 0.6,
+                  "dy": -1.2
+                },
+                {
+                  "intensity": 1.01,
+                  "dx": -0.0,
+                  "dy": -1.2
+                },
+                {
+                  "intensity": 1.024,
+                  "dx": -0.7,
+                  "dy": -1.5
+                },
+                {
+                  "intensity": 1.013,
+                  "dx": -0.6,
+                  "dy": -1.5
+                },
+                {
+                  "intensity": 0.961,
+                  "dx": -0.2,
+                  "dy": -1.4
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "house_clutter/clutter_900/lit_3/animations/motion/south-east/00.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south-east/01.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south-east/02.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south-east/03.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "house_clutter/clutter_900/lit_3/animations/motion__south-east.8253ee9c.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.016,
+                  "dx": -1.6,
+                  "dy": -7.8
+                },
+                {
+                  "intensity": 1.0,
+                  "dx": -1.6,
+                  "dy": -7.8
+                },
+                {
+                  "intensity": 1.006,
+                  "dx": -1.6,
+                  "dy": -7.9
+                },
+                {
+                  "intensity": 1.025,
+                  "dx": -1.6,
+                  "dy": -7.8
+                },
+                {
+                  "intensity": 0.955,
+                  "dx": -1.6,
+                  "dy": -8.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "house_clutter/clutter_900/lit_3/animations/motion/south-west/00.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south-west/01.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south-west/02.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south-west/03.webp",
+                "house_clutter/clutter_900/lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "house_clutter/clutter_900/lit_3/animations/motion__south-west.481b0c59.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.994,
+                  "dx": 0.5,
+                  "dy": -7.7
+                },
+                {
+                  "intensity": 0.99,
+                  "dx": 0.7,
+                  "dy": -7.9
+                },
+                {
+                  "intensity": 1.001,
+                  "dx": 0.6,
+                  "dy": -7.5
+                },
+                {
+                  "intensity": 1.003,
+                  "dx": 0.6,
+                  "dy": -7.5
+                },
+                {
+                  "intensity": 1.012,
+                  "dx": 0.7,
+                  "dy": -7.5
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:01:08+00:00",
+          "brief": "D1",
           "light_frames": [
             {
               "intensity": 0.993,
@@ -184,7 +396,19 @@
               "dx": -0.2,
               "dy": -1.4
             }
-          ]
+          ],
+          "frame_paths": [
+            "house_clutter/clutter_900/lit_3/animations/motion/south/00.webp",
+            "house_clutter/clutter_900/lit_3/animations/motion/south/01.webp",
+            "house_clutter/clutter_900/lit_3/animations/motion/south/02.webp",
+            "house_clutter/clutter_900/lit_3/animations/motion/south/03.webp",
+            "house_clutter/clutter_900/lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "house_clutter/clutter_900/lit_3/animations/motion__south.9eef8295.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },
@@ -203,30 +427,129 @@
       "animations": {
         "motion": {
           "group_id": "784d739e-9f2a-42df-a760-aed1b73b66cb",
-          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "house_clutter/clutter_900/lit_4/animations/motion/00.webp",
-            "house_clutter/clutter_900/lit_4/animations/motion/01.webp",
-            "house_clutter/clutter_900/lit_4/animations/motion/02.webp",
-            "house_clutter/clutter_900/lit_4/animations/motion/03.webp",
-            "house_clutter/clutter_900/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "house_clutter/clutter_900/lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:34:59+00:00",
-          "brief": "H13",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0022,
-            "still": 0.969
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "house_clutter/clutter_900/lit_4/animations/motion/south/00.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south/01.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south/02.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south/03.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "house_clutter/clutter_900/lit_4/animations/motion__south.3d2b84fa.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.096,
+                  "dx": -18.5,
+                  "dy": -0.6
+                },
+                {
+                  "intensity": 1.122,
+                  "dx": -18.6,
+                  "dy": -0.7
+                },
+                {
+                  "intensity": 0.95,
+                  "dx": -18.4,
+                  "dy": -0.8
+                },
+                {
+                  "intensity": 0.887,
+                  "dx": -18.5,
+                  "dy": -0.8
+                },
+                {
+                  "intensity": 0.945,
+                  "dx": -18.5,
+                  "dy": -0.8
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "house_clutter/clutter_900/lit_4/animations/motion/south-east/00.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south-east/01.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south-east/02.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south-east/03.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "house_clutter/clutter_900/lit_4/animations/motion__south-east.379c200d.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.018,
+                  "dx": -13.2,
+                  "dy": 3.4
+                },
+                {
+                  "intensity": 0.862,
+                  "dx": -7.5,
+                  "dy": 6.4
+                },
+                {
+                  "intensity": 0.856,
+                  "dx": -8.5,
+                  "dy": 6.3
+                },
+                {
+                  "intensity": 0.805,
+                  "dx": -8.1,
+                  "dy": 7.0
+                },
+                {
+                  "intensity": 1.459,
+                  "dx": -14.2,
+                  "dy": 1.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "house_clutter/clutter_900/lit_4/animations/motion/south-west/00.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south-west/01.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south-west/02.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south-west/03.webp",
+                "house_clutter/clutter_900/lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "house_clutter/clutter_900/lit_4/animations/motion__south-west.f6dcfc84.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.313,
+                  "dx": -12.7,
+                  "dy": -7.9
+                },
+                {
+                  "intensity": 1.077,
+                  "dx": -12.0,
+                  "dy": -7.2
+                },
+                {
+                  "intensity": 1.077,
+                  "dx": -12.0,
+                  "dy": -7.3
+                },
+                {
+                  "intensity": 1.245,
+                  "dx": -12.4,
+                  "dy": -7.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -10.5,
+                  "dy": -4.8
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:01:29+00:00",
+          "brief": "H13",
           "light_frames": [
             {
               "intensity": 1.096,
@@ -253,7 +576,19 @@
               "dx": -18.5,
               "dy": -0.8
             }
-          ]
+          ],
+          "frame_paths": [
+            "house_clutter/clutter_900/lit_4/animations/motion/south/00.webp",
+            "house_clutter/clutter_900/lit_4/animations/motion/south/01.webp",
+            "house_clutter/clutter_900/lit_4/animations/motion/south/02.webp",
+            "house_clutter/clutter_900/lit_4/animations/motion/south/03.webp",
+            "house_clutter/clutter_900/lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "house_clutter/clutter_900/lit_4/animations/motion__south.3d2b84fa.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     }

@@ -53,27 +53,59 @@
       "animations": {
         "motion": {
           "group_id": "b599df16-10f0-4a22-a21d-9a364865f19c",
-          "description": "Animate the flower heads only, nodding gently. Nothing else moves.",
+          "description": "This is the same picture in every frame. only, nodding gently. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "flower_stands/flower_stand_002/animations/motion/00.webp",
-            "flower_stands/flower_stand_002/animations/motion/01.webp",
-            "flower_stands/flower_stand_002/animations/motion/02.webp",
-            "flower_stands/flower_stand_002/animations/motion/03.webp",
-            "flower_stands/flower_stand_002/animations/motion/04.webp"
-          ],
-          "strip": "flower_stands/flower_stand_002/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T08:37:15+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_stands/flower_stand_002/animations/motion/south/00.webp",
+                "flower_stands/flower_stand_002/animations/motion/south/01.webp",
+                "flower_stands/flower_stand_002/animations/motion/south/02.webp",
+                "flower_stands/flower_stand_002/animations/motion/south/03.webp",
+                "flower_stands/flower_stand_002/animations/motion/south/04.webp"
+              ],
+              "strip": "flower_stands/flower_stand_002/animations/motion__south.73256f77.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_stands/flower_stand_002/animations/motion/south-east/00.webp",
+                "flower_stands/flower_stand_002/animations/motion/south-east/01.webp",
+                "flower_stands/flower_stand_002/animations/motion/south-east/02.webp",
+                "flower_stands/flower_stand_002/animations/motion/south-east/03.webp",
+                "flower_stands/flower_stand_002/animations/motion/south-east/04.webp"
+              ],
+              "strip": "flower_stands/flower_stand_002/animations/motion__south-east.989c9a65.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_stands/flower_stand_002/animations/motion/south-west/00.webp",
+                "flower_stands/flower_stand_002/animations/motion/south-west/01.webp",
+                "flower_stands/flower_stand_002/animations/motion/south-west/02.webp",
+                "flower_stands/flower_stand_002/animations/motion/south-west/03.webp",
+                "flower_stands/flower_stand_002/animations/motion/south-west/04.webp"
+              ],
+              "strip": "flower_stands/flower_stand_002/animations/motion__south-west.ce632944.webp"
+            }
+          },
+          "generated_at": "2026-09-18T02:47:23+00:00",
           "brief": "G8",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "frame_paths": [
+            "flower_stands/flower_stand_002/animations/motion/south/00.webp",
+            "flower_stands/flower_stand_002/animations/motion/south/01.webp",
+            "flower_stands/flower_stand_002/animations/motion/south/02.webp",
+            "flower_stands/flower_stand_002/animations/motion/south/03.webp",
+            "flower_stands/flower_stand_002/animations/motion/south/04.webp"
+          ],
+          "strip": "flower_stands/flower_stand_002/animations/motion__south.73256f77.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0037
+            "base_outline": 0.1494
           }
         }
       }
@@ -94,27 +126,59 @@
       "animations": {
         "motion": {
           "group_id": "c36bc37d-7ce2-45e3-9318-46a619443ba4",
-          "description": "This is the same picture in every frame. ONLY the foxglove spikes move, each nodding by a single pixel. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the foxglove spikes move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "flower_stands/flower_stand_002/not_lit_4/animations/motion/00.webp",
-            "flower_stands/flower_stand_002/not_lit_4/animations/motion/01.webp",
-            "flower_stands/flower_stand_002/not_lit_4/animations/motion/02.webp",
-            "flower_stands/flower_stand_002/not_lit_4/animations/motion/03.webp",
-            "flower_stands/flower_stand_002/not_lit_4/animations/motion/04.webp"
-          ],
-          "strip": "flower_stands/flower_stand_002/not_lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:19:05+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/00.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/01.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/02.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/03.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "flower_stands/flower_stand_002/not_lit_4/animations/motion__south.94f148fd.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-east/00.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-east/01.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-east/02.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-east/03.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "flower_stands/flower_stand_002/not_lit_4/animations/motion__south-east.65c4e5fd.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-west/00.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-west/01.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-west/02.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-west/03.webp",
+                "flower_stands/flower_stand_002/not_lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "flower_stands/flower_stand_002/not_lit_4/animations/motion__south-west.547ca465.webp"
+            }
+          },
+          "generated_at": "2026-09-18T02:47:14+00:00",
           "brief": "Y44",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "frame_paths": [
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/00.webp",
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/01.webp",
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/02.webp",
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/03.webp",
+            "flower_stands/flower_stand_002/not_lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "flower_stands/flower_stand_002/not_lit_4/animations/motion__south.94f148fd.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0632
+            "base_outline": 0.1781
           }
         }
       }

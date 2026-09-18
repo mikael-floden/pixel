@@ -425,30 +425,129 @@
       "animations": {
         "motion": {
           "group_id": "2dd940eb-58e0-4760-93fc-3813cca91574",
-          "description": "This is the same picture in every frame. ONLY the small flame under the cauldron flickers. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "description": "This is the same picture in every frame. ONLY the small flame under the cauldron flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "flame_niches/flame_niche_005/lit_4/animations/motion/00.webp",
-            "flame_niches/flame_niche_005/lit_4/animations/motion/01.webp",
-            "flame_niches/flame_niche_005/lit_4/animations/motion/02.webp",
-            "flame_niches/flame_niche_005/lit_4/animations/motion/03.webp",
-            "flame_niches/flame_niche_005/lit_4/animations/motion/04.webp"
-          ],
-          "strip": "flame_niches/flame_niche_005/lit_4/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T15:35:27+00:00",
-          "brief": "X4",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.0152,
-            "still": 0.978
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south/00.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south/01.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south/02.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south/03.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_005/lit_4/animations/motion__south.ca6cc0b3.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.034,
+                  "dx": 3.1,
+                  "dy": 7.3
+                },
+                {
+                  "intensity": 0.937,
+                  "dx": 3.0,
+                  "dy": 7.8
+                },
+                {
+                  "intensity": 1.004,
+                  "dx": 3.0,
+                  "dy": 6.9
+                },
+                {
+                  "intensity": 1.034,
+                  "dx": 2.9,
+                  "dy": 6.3
+                },
+                {
+                  "intensity": 0.991,
+                  "dx": 3.1,
+                  "dy": 6.4
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-east/00.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-east/01.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-east/02.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-east/03.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-east/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_005/lit_4/animations/motion__south-east.32d43723.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.114,
+                  "dx": 8.3,
+                  "dy": 14.4
+                },
+                {
+                  "intensity": 0.99,
+                  "dx": 6.6,
+                  "dy": 11.9
+                },
+                {
+                  "intensity": 1.058,
+                  "dx": 6.4,
+                  "dy": 11.0
+                },
+                {
+                  "intensity": 0.987,
+                  "dx": 6.6,
+                  "dy": 11.4
+                },
+                {
+                  "intensity": 0.85,
+                  "dx": 6.4,
+                  "dy": 11.9
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-west/00.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-west/01.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-west/02.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-west/03.webp",
+                "flame_niches/flame_niche_005/lit_4/animations/motion/south-west/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_005/lit_4/animations/motion__south-west.eb12c39e.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.993,
+                  "dx": -4.6,
+                  "dy": 13.4
+                },
+                {
+                  "intensity": 0.865,
+                  "dx": -3.6,
+                  "dy": 10.8
+                },
+                {
+                  "intensity": 1.03,
+                  "dx": -3.4,
+                  "dy": 11.8
+                },
+                {
+                  "intensity": 1.079,
+                  "dx": -3.1,
+                  "dy": 9.8
+                },
+                {
+                  "intensity": 1.034,
+                  "dx": -3.7,
+                  "dy": 11.4
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:43:49+00:00",
+          "brief": "X4",
           "light_frames": [
             {
               "intensity": 1.034,
@@ -475,7 +574,19 @@
               "dx": 3.1,
               "dy": 6.4
             }
-          ]
+          ],
+          "frame_paths": [
+            "flame_niches/flame_niche_005/lit_4/animations/motion/south/00.webp",
+            "flame_niches/flame_niche_005/lit_4/animations/motion/south/01.webp",
+            "flame_niches/flame_niche_005/lit_4/animations/motion/south/02.webp",
+            "flame_niches/flame_niche_005/lit_4/animations/motion/south/03.webp",
+            "flame_niches/flame_niche_005/lit_4/animations/motion/south/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_005/lit_4/animations/motion__south.ca6cc0b3.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0256
+          }
         }
       }
     },
@@ -495,30 +606,129 @@
       "animations": {
         "motion": {
           "group_id": "18edaed4-a8c3-44da-9d0c-b65718eb9745",
-          "description": "This is the same picture in every frame. ONLY the fire in the small bowl flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the fire in the small bowl flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "flame_niches/flame_niche_005/lit_5/animations/motion/00.webp",
-            "flame_niches/flame_niche_005/lit_5/animations/motion/01.webp",
-            "flame_niches/flame_niche_005/lit_5/animations/motion/02.webp",
-            "flame_niches/flame_niche_005/lit_5/animations/motion/03.webp",
-            "flame_niches/flame_niche_005/lit_5/animations/motion/04.webp"
-          ],
-          "strip": "flame_niches/flame_niche_005/lit_5/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T17:52:59+00:00",
-          "brief": "A4",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.032,
-            "still": 0.929
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south/00.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south/01.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south/02.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south/03.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_005/lit_5/animations/motion__south.a8bcd056.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.889,
+                  "dx": 1.0,
+                  "dy": 17.6
+                },
+                {
+                  "intensity": 1.285,
+                  "dx": 0.6,
+                  "dy": 16.7
+                },
+                {
+                  "intensity": 0.916,
+                  "dx": 0.5,
+                  "dy": 15.8
+                },
+                {
+                  "intensity": 0.965,
+                  "dx": 0.7,
+                  "dy": 17.5
+                },
+                {
+                  "intensity": 0.944,
+                  "dx": 0.5,
+                  "dy": 18.4
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-east/00.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-east/01.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-east/02.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-east/03.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-east/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_005/lit_5/animations/motion__south-east.fb16f5f3.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.992,
+                  "dx": 7.7,
+                  "dy": 14.9
+                },
+                {
+                  "intensity": 1.031,
+                  "dx": 8.1,
+                  "dy": 15.9
+                },
+                {
+                  "intensity": 1.009,
+                  "dx": 8.3,
+                  "dy": 16.9
+                },
+                {
+                  "intensity": 0.986,
+                  "dx": 8.1,
+                  "dy": 17.2
+                },
+                {
+                  "intensity": 0.981,
+                  "dx": 8.1,
+                  "dy": 17.3
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-west/00.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-west/01.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-west/02.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-west/03.webp",
+                "flame_niches/flame_niche_005/lit_5/animations/motion/south-west/04.webp"
+              ],
+              "strip": "flame_niches/flame_niche_005/lit_5/animations/motion__south-west.adbe51ad.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.168,
+                  "dx": -5.8,
+                  "dy": 15.3
+                },
+                {
+                  "intensity": 0.847,
+                  "dx": -6.0,
+                  "dy": 17.8
+                },
+                {
+                  "intensity": 0.843,
+                  "dx": -6.0,
+                  "dy": 17.8
+                },
+                {
+                  "intensity": 1.17,
+                  "dx": -5.8,
+                  "dy": 16.9
+                },
+                {
+                  "intensity": 0.972,
+                  "dx": -6.0,
+                  "dy": 15.2
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:44:15+00:00",
+          "brief": "A4",
           "light_frames": [
             {
               "intensity": 0.889,
@@ -545,7 +755,19 @@
               "dx": 0.5,
               "dy": 18.4
             }
-          ]
+          ],
+          "frame_paths": [
+            "flame_niches/flame_niche_005/lit_5/animations/motion/south/00.webp",
+            "flame_niches/flame_niche_005/lit_5/animations/motion/south/01.webp",
+            "flame_niches/flame_niche_005/lit_5/animations/motion/south/02.webp",
+            "flame_niches/flame_niche_005/lit_5/animations/motion/south/03.webp",
+            "flame_niches/flame_niche_005/lit_5/animations/motion/south/04.webp"
+          ],
+          "strip": "flame_niches/flame_niche_005/lit_5/animations/motion__south.a8bcd056.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },

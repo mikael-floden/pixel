@@ -67,28 +67,129 @@
       "animations": {
         "motion": {
           "group_id": "81097af2-2195-4feb-bbcd-5235a55f8764",
-          "description": "This is the same picture in every frame. ONLY the hanging lantern swings a little to one side and back, and the flame burning inside it flickers. The flame is lit and clearly visible in every single frame, including the first. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the hanging lantern swings a little to one side and back, and the flame burning inside it flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "lantern_stands/lantern_stand_014/lit_5/animations/motion/00.webp",
-            "lantern_stands/lantern_stand_014/lit_5/animations/motion/01.webp",
-            "lantern_stands/lantern_stand_014/lit_5/animations/motion/02.webp",
-            "lantern_stands/lantern_stand_014/lit_5/animations/motion/03.webp",
-            "lantern_stands/lantern_stand_014/lit_5/animations/motion/04.webp"
-          ],
-          "strip": "lantern_stands/lantern_stand_014/lit_5/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:47:12+00:00",
-          "brief": "Y24",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0276
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/00.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/01.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/02.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/03.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_014/lit_5/animations/motion__south.28a975a1.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.298,
+                  "dx": -0.4,
+                  "dy": 8.5
+                },
+                {
+                  "intensity": 0.863,
+                  "dx": -0.4,
+                  "dy": -10.8
+                },
+                {
+                  "intensity": 0.644,
+                  "dx": -0.4,
+                  "dy": -15.7
+                },
+                {
+                  "intensity": 1.1,
+                  "dx": -0.6,
+                  "dy": -7.0
+                },
+                {
+                  "intensity": 1.096,
+                  "dx": -0.3,
+                  "dy": -5.8
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-east/00.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-east/01.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-east/02.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-east/03.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-east/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_014/lit_5/animations/motion__south-east.ee113475.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 18.7,
+                  "dy": 4.7
+                },
+                {
+                  "intensity": 1.024,
+                  "dx": 19.7,
+                  "dy": -12.3
+                },
+                {
+                  "intensity": 0.685,
+                  "dx": 20.9,
+                  "dy": -11.3
+                },
+                {
+                  "intensity": 0.787,
+                  "dx": 21.7,
+                  "dy": -13.0
+                },
+                {
+                  "intensity": 0.735,
+                  "dx": 22.4,
+                  "dy": -12.5
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-west/00.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-west/01.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-west/02.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-west/03.webp",
+                "lantern_stands/lantern_stand_014/lit_5/animations/motion/south-west/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_014/lit_5/animations/motion__south-west.6901b7cb.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -18.8,
+                  "dy": 5.4
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -9.5,
+                  "dy": 2.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -9.6,
+                  "dy": 2.0
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -14.7,
+                  "dy": -2.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -16.5,
+                  "dy": 3.7
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:14:16+00:00",
+          "brief": "Y24",
           "light_frames": [
             {
               "intensity": 1.298,
@@ -115,7 +216,19 @@
               "dx": -0.3,
               "dy": -5.8
             }
-          ]
+          ],
+          "frame_paths": [
+            "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/00.webp",
+            "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/01.webp",
+            "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/02.webp",
+            "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/03.webp",
+            "lantern_stands/lantern_stand_014/lit_5/animations/motion/south/04.webp"
+          ],
+          "strip": "lantern_stands/lantern_stand_014/lit_5/animations/motion__south.28a975a1.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0276
+          }
         }
       }
     },
@@ -134,27 +247,59 @@
       "animations": {
         "motion": {
           "group_id": "433390c2-e149-430d-a055-e32edd76c15b",
-          "description": "This is the same picture in every frame. ONLY the hanging jar swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the hanging jar swings. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/00.webp",
-            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/01.webp",
-            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/02.webp",
-            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/03.webp",
-            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/04.webp"
-          ],
-          "strip": "lantern_stands/lantern_stand_014/not_lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:56:57+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/00.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/01.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/02.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/03.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_014/not_lit_1/animations/motion__south.a5906353.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-east/00.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-east/01.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-east/02.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-east/03.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_014/not_lit_1/animations/motion__south-east.5bab08f0.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-west/00.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-west/01.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-west/02.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-west/03.webp",
+                "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "lantern_stands/lantern_stand_014/not_lit_1/animations/motion__south-west.a5f08790.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:14:41+00:00",
           "brief": "Z25",
+          "frame_paths": [
+            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/00.webp",
+            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/01.webp",
+            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/02.webp",
+            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/03.webp",
+            "lantern_stands/lantern_stand_014/not_lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "lantern_stands/lantern_stand_014/not_lit_1/animations/motion__south.a5906353.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.018
           }
         }
       }

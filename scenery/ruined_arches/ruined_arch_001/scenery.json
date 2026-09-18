@@ -55,28 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "9d6495f4-48e4-4a41-8622-93981b06314b",
-          "description": "This is an almost completely still picture. ONLY the white light in the mortar of the arch changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same white as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the white light in the mortar of the arch changes: it brightens by the smallest amount that is still visible, then returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "ruined_arches/ruined_arch_001/lit_1/animations/motion/00.webp",
-            "ruined_arches/ruined_arch_001/lit_1/animations/motion/01.webp",
-            "ruined_arches/ruined_arch_001/lit_1/animations/motion/02.webp",
-            "ruined_arches/ruined_arch_001/lit_1/animations/motion/03.webp",
-            "ruined_arches/ruined_arch_001/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "ruined_arches/ruined_arch_001/lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:57:50+00:00",
-          "brief": "H32",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0062
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/00.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/01.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/02.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/03.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "ruined_arches/ruined_arch_001/lit_1/animations/motion__south.d2e518b4.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 5.8,
+                  "dy": 17.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -2.5,
+                  "dy": 32.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 1.9,
+                  "dy": 31.6
+                },
+                {
+                  "intensity": 0.599,
+                  "dx": 5.4,
+                  "dy": 22.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 8.2,
+                  "dy": 21.9
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-east/00.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-east/01.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-east/02.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-east/03.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "ruined_arches/ruined_arch_001/lit_1/animations/motion__south-east.b4dd1f1c.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 3.4,
+                  "dy": -14.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 1.4,
+                  "dy": -2.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -0.7,
+                  "dy": -1.6
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -2.4,
+                  "dy": 13.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -3.3,
+                  "dy": 10.8
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-west/00.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-west/01.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-west/02.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-west/03.webp",
+                "ruined_arches/ruined_arch_001/lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "ruined_arches/ruined_arch_001/lit_1/animations/motion__south-west.f8d19fd2.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.578,
+                  "dx": 1.6,
+                  "dy": 7.5
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -7.5,
+                  "dy": 6.6
+                },
+                {
+                  "intensity": 0.882,
+                  "dx": -4.9,
+                  "dy": -5.9
+                },
+                {
+                  "intensity": 1.443,
+                  "dx": 5.9,
+                  "dy": -14.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -6.2,
+                  "dy": -3.5
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:26:34+00:00",
+          "brief": "H32",
           "light_frames": [
             {
               "intensity": 0.5,
@@ -103,7 +204,19 @@
               "dx": 8.2,
               "dy": 21.9
             }
-          ]
+          ],
+          "frame_paths": [
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/00.webp",
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/01.webp",
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/02.webp",
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/03.webp",
+            "ruined_arches/ruined_arch_001/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "ruined_arches/ruined_arch_001/lit_1/animations/motion__south.d2e518b4.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0062
+          }
         }
       }
     },
@@ -122,28 +235,129 @@
       "animations": {
         "motion": {
           "group_id": "412c8490-9599-44d6-9f44-c6dcd7219eed",
-          "description": "This is an almost completely still picture. ONLY the green-cyan surface inside the arch changes: it brightens by the smallest amount that is still visible, then returns. At their brightest it must still look exactly the same green-cyan as in the first frame -- never pale, never white, never any other colour. It stays exactly the same size and shape; it never grows and never spreads. Nothing is added or removed anywhere, and nothing changes size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the green-cyan surface inside the arch changes: it brightens by the smallest amount that is still visible, then returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "ruined_arches/ruined_arch_001/lit_2/animations/motion/00.webp",
-            "ruined_arches/ruined_arch_001/lit_2/animations/motion/01.webp",
-            "ruined_arches/ruined_arch_001/lit_2/animations/motion/02.webp",
-            "ruined_arches/ruined_arch_001/lit_2/animations/motion/03.webp",
-            "ruined_arches/ruined_arch_001/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "ruined_arches/ruined_arch_001/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:58:25+00:00",
-          "brief": "H33",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0212
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/00.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/01.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/02.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/03.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "ruined_arches/ruined_arch_001/lit_2/animations/motion__south.3053934d.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.414,
+                  "dx": 0.3,
+                  "dy": 21.6
+                },
+                {
+                  "intensity": 0.842,
+                  "dx": 2.0,
+                  "dy": 21.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 0.1,
+                  "dy": 17.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -3.0,
+                  "dy": 33.6
+                },
+                {
+                  "intensity": 0.667,
+                  "dx": -0.0,
+                  "dy": 25.8
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-east/00.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-east/01.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-east/02.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-east/03.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "ruined_arches/ruined_arch_001/lit_2/animations/motion__south-east.7bf39ff6.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.72,
+                  "dx": 3.2,
+                  "dy": 17.6
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 7.2,
+                  "dy": 14.4
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 6.0,
+                  "dy": 16.7
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.3,
+                  "dy": 12.1
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 4.4,
+                  "dy": 19.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-west/00.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-west/01.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-west/02.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-west/03.webp",
+                "ruined_arches/ruined_arch_001/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "ruined_arches/ruined_arch_001/lit_2/animations/motion__south-west.dd132065.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.848,
+                  "dx": -1.9,
+                  "dy": 20.6
+                },
+                {
+                  "intensity": 1.139,
+                  "dx": -2.7,
+                  "dy": 19.6
+                },
+                {
+                  "intensity": 1.013,
+                  "dx": -3.4,
+                  "dy": 19.4
+                },
+                {
+                  "intensity": 0.989,
+                  "dx": -2.2,
+                  "dy": 20.1
+                },
+                {
+                  "intensity": 1.011,
+                  "dx": -1.1,
+                  "dy": 24.1
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:27:02+00:00",
+          "brief": "H33",
           "light_frames": [
             {
               "intensity": 1.414,
@@ -170,7 +384,19 @@
               "dx": -0.0,
               "dy": 25.8
             }
-          ]
+          ],
+          "frame_paths": [
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/00.webp",
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/01.webp",
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/02.webp",
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/03.webp",
+            "ruined_arches/ruined_arch_001/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "ruined_arches/ruined_arch_001/lit_2/animations/motion__south.3053934d.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0783
+          }
         }
       }
     },

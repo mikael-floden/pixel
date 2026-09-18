@@ -65,29 +65,59 @@
       "animations": {
         "motion": {
           "group_id": "26ab9da2-f1fb-43cf-b455-7ce3818292ec",
-          "description": "This is the same picture in every frame. ONLY the white blossoms move, each nodding by a single pixel. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "description": "This is the same picture in every frame. ONLY the white blossoms move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/00.webp",
-            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/01.webp",
-            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/02.webp",
-            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/03.webp",
-            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/04.webp"
-          ],
-          "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T15:41:48+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__south.904e1c57.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-east/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-east/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-east/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-east/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__south-east.1a9ed133.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-west/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-west/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-west/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-west/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__south-west.a7d4e7c3.webp"
+            }
+          },
+          "generated_at": "2026-09-18T02:49:41+00:00",
           "brief": "X61",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "frame_paths": [
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/00.webp",
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/01.webp",
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/02.webp",
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/03.webp",
+            "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__south.904e1c57.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "class": "foliage",
-            "base": 0.0198,
-            "still": 0.605
+            "base_outline": 0.3
           }
         }
       }
@@ -107,24 +137,56 @@
       "animations": {
         "motion": {
           "group_id": "da4222ef-ca88-4def-b8bc-2c28d53cdf76",
-          "description": "This is the same picture in every frame. ONLY the flowers on the trellis move, each nodding by a single pixel. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the flowers on the trellis move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/00.webp",
-            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/01.webp",
-            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/02.webp",
-            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/03.webp",
-            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/04.webp"
-          ],
-          "strip": "flower_trellises/flower_trellis_001/not_lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:18:33+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_3/animations/motion__south.94dbf84b.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-east/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-east/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-east/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-east/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_3/animations/motion__south-east.63bf8960.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-west/00.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-west/01.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-west/02.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-west/03.webp",
+                "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "flower_trellises/flower_trellis_001/not_lit_3/animations/motion__south-west.347f7fc9.webp"
+            }
+          },
+          "generated_at": "2026-09-18T02:49:20+00:00",
           "brief": "Y43",
+          "frame_paths": [
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/00.webp",
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/01.webp",
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/02.webp",
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/03.webp",
+            "flower_trellises/flower_trellis_001/not_lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "flower_trellises/flower_trellis_001/not_lit_3/animations/motion__south.94dbf84b.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0981

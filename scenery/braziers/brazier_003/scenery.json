@@ -50,7 +50,7 @@
       "animations": {
         "flame": {
           "group_id": "45c20e6b-8997-4e3e-a1b5-3a1863462321",
-          "description": "Animate the flame only",
+          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -65,7 +65,7 @@
                 "braziers/brazier_003/lit_2/animations/flame/south/03.webp",
                 "braziers/brazier_003/lit_2/animations/flame/south/04.webp"
               ],
-              "strip": "braziers/brazier_003/lit_2/animations/flame__south.webp",
+              "strip": "braziers/brazier_003/lit_2/animations/flame__south.8cf0bdb2.webp",
               "light_frames": [
                 {
                   "intensity": 1.5,
@@ -103,7 +103,7 @@
                 "braziers/brazier_003/lit_2/animations/flame/south-east/03.webp",
                 "braziers/brazier_003/lit_2/animations/flame/south-east/04.webp"
               ],
-              "strip": "braziers/brazier_003/lit_2/animations/flame__south-east.webp",
+              "strip": "braziers/brazier_003/lit_2/animations/flame__south-east.cf5d47ff.webp",
               "light_frames": [
                 {
                   "intensity": 1.164,
@@ -131,21 +131,47 @@
                   "dy": -4.5
                 }
               ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "braziers/brazier_003/lit_2/animations/flame/south-west/00.webp",
+                "braziers/brazier_003/lit_2/animations/flame/south-west/01.webp",
+                "braziers/brazier_003/lit_2/animations/flame/south-west/02.webp",
+                "braziers/brazier_003/lit_2/animations/flame/south-west/03.webp",
+                "braziers/brazier_003/lit_2/animations/flame/south-west/04.webp"
+              ],
+              "strip": "braziers/brazier_003/lit_2/animations/flame__south-west.0214d78b.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 0.3,
+                  "dy": -9.1
+                },
+                {
+                  "intensity": 0.67,
+                  "dx": -1.1,
+                  "dy": -9.2
+                },
+                {
+                  "intensity": 0.67,
+                  "dx": -3.5,
+                  "dy": -8.8
+                },
+                {
+                  "intensity": 0.923,
+                  "dx": 0.8,
+                  "dy": -10.5
+                },
+                {
+                  "intensity": 0.996,
+                  "dx": 2.8,
+                  "dy": -6.8
+                }
+              ]
             }
           },
-          "generated_at": "2026-08-29T08:10:24+00:00",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0283
-          },
-          "frame_paths": [
-            "braziers/brazier_003/lit_2/animations/flame/south/00.webp",
-            "braziers/brazier_003/lit_2/animations/flame/south/01.webp",
-            "braziers/brazier_003/lit_2/animations/flame/south/02.webp",
-            "braziers/brazier_003/lit_2/animations/flame/south/03.webp",
-            "braziers/brazier_003/lit_2/animations/flame/south/04.webp"
-          ],
-          "strip": "braziers/brazier_003/lit_2/animations/flame__south.webp",
+          "generated_at": "2026-09-18T02:12:39+00:00",
           "light_frames": [
             {
               "intensity": 1.5,
@@ -172,7 +198,19 @@
               "dx": 0.7,
               "dy": -5.4
             }
-          ]
+          ],
+          "frame_paths": [
+            "braziers/brazier_003/lit_2/animations/flame/south/00.webp",
+            "braziers/brazier_003/lit_2/animations/flame/south/01.webp",
+            "braziers/brazier_003/lit_2/animations/flame/south/02.webp",
+            "braziers/brazier_003/lit_2/animations/flame/south/03.webp",
+            "braziers/brazier_003/lit_2/animations/flame/south/04.webp"
+          ],
+          "strip": "braziers/brazier_003/lit_2/animations/flame__south.8cf0bdb2.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0283
+          }
         }
       },
       "rotations": {

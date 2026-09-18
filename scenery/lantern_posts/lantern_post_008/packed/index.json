@@ -1,167 +1,473 @@
 {
  "files": {
-  "lantern_posts/lantern_post_008/lit_2/animations/motion/00.webp": {
-   "file": "lit_2/animations/motion/00.3bbf5f70.webp",
-   "h": 80,
-   "ox": 23,
-   "oy": 10,
-   "src": "2e15ad80",
-   "srcH": 96,
-   "srcW": 96,
-   "w": 57
-  },
-  "lantern_posts/lantern_post_008/lit_2/animations/motion/01.webp": {
-   "file": "lit_2/animations/motion/01.9fbf484c.webp",
-   "h": 80,
-   "ox": 23,
-   "oy": 10,
-   "src": "2ca57df2",
-   "srcH": 96,
-   "srcW": 96,
-   "w": 57
-  },
-  "lantern_posts/lantern_post_008/lit_2/animations/motion/02.webp": {
-   "file": "lit_2/animations/motion/02.4fda3842.webp",
-   "h": 80,
-   "ox": 23,
-   "oy": 10,
-   "src": "d58b176b",
-   "srcH": 96,
-   "srcW": 96,
-   "w": 57
-  },
-  "lantern_posts/lantern_post_008/lit_2/animations/motion/03.webp": {
-   "file": "lit_2/animations/motion/03.1358acba.webp",
-   "h": 80,
-   "ox": 23,
-   "oy": 10,
-   "src": "7b15eca8",
-   "srcH": 96,
-   "srcW": 96,
-   "w": 57
-  },
-  "lantern_posts/lantern_post_008/lit_2/animations/motion/04.webp": {
-   "file": "lit_2/animations/motion/04.0a0c398f.webp",
-   "h": 80,
-   "ox": 23,
-   "oy": 10,
-   "src": "6a93549a",
-   "srcH": 96,
-   "srcW": 96,
-   "w": 57
-  },
-  "lantern_posts/lantern_post_008/lit_2/rotations/south-east.webp": {
-   "file": "lit_2/rotations/south-east.6eb18a7a.webp",
-   "h": 80,
-   "ox": 23,
-   "oy": 10,
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-east/00.webp": {
+   "file": "lit_2/animations/motion/south-east/00.adaa693a.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
    "src": "57d5196b",
    "srcH": 96,
    "srcW": 96,
-   "w": 57
+   "w": 58
   },
-  "lantern_posts/lantern_post_008/lit_2/rotations/south-west.webp": {
-   "file": "lit_2/rotations/south-west.f48f3655.webp",
-   "h": 80,
-   "ox": 23,
-   "oy": 10,
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-east/01.webp": {
+   "file": "lit_2/animations/motion/south-east/01.14ff06b0.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "754582b4",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-east/02.webp": {
+   "file": "lit_2/animations/motion/south-east/02.d3906f3b.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "09e56f66",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-east/03.webp": {
+   "file": "lit_2/animations/motion/south-east/03.998b0584.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "f23e666b",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-east/04.webp": {
+   "file": "lit_2/animations/motion/south-east/04.5cbc9477.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "6a85db6d",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-west/00.webp": {
+   "file": "lit_2/animations/motion/south-west/00.ea801709.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
    "src": "c5b36222",
    "srcH": 96,
    "srcW": 96,
-   "w": 57
+   "w": 58
   },
-  "lantern_posts/lantern_post_008/lit_2/sprite.webp": {
-   "file": "lit_2/sprite.3bbf5f70.webp",
-   "h": 80,
-   "ox": 23,
-   "oy": 10,
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-west/01.webp": {
+   "file": "lit_2/animations/motion/south-west/01.62e393da.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "40784286",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-west/02.webp": {
+   "file": "lit_2/animations/motion/south-west/02.6dc3756e.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "aa50e7d6",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-west/03.webp": {
+   "file": "lit_2/animations/motion/south-west/03.a0b73caa.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "939339e0",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south-west/04.webp": {
+   "file": "lit_2/animations/motion/south-west/04.a73336f2.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "8034db44",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south/00.webp": {
+   "file": "lit_2/animations/motion/south/00.7b32410a.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
    "src": "2e15ad80",
    "srcH": 96,
    "srcW": 96,
-   "w": 57
+   "w": 58
   },
-  "lantern_posts/lantern_post_008/lit_3/animations/motion/00.webp": {
-   "file": "lit_3/animations/motion/00.a0f01069.webp",
-   "h": 80,
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south/01.webp": {
+   "file": "lit_2/animations/motion/south/01.1300ffba.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "2ca57df2",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south/02.webp": {
+   "file": "lit_2/animations/motion/south/02.eb359e90.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "d58b176b",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south/03.webp": {
+   "file": "lit_2/animations/motion/south/03.3169edc3.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "7b15eca8",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/animations/motion/south/04.webp": {
+   "file": "lit_2/animations/motion/south/04.874377e2.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "src": "6a93549a",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/rotations/south-east.webp": {
+   "file": "lit_2/rotations/south-east.adaa693a.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "prev": "lit_2/rotations/south-east.6eb18a7a.webp",
+   "src": "57d5196b",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/rotations/south-west.webp": {
+   "file": "lit_2/rotations/south-west.ea801709.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "prev": "lit_2/rotations/south-west.f48f3655.webp",
+   "src": "c5b36222",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_2/sprite.webp": {
+   "file": "lit_2/sprite.7b32410a.webp",
+   "h": 81,
+   "ox": 22,
+   "oy": 9,
+   "prev": "lit_2/sprite.3bbf5f70.webp",
+   "src": "2e15ad80",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 58
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-east/00.webp": {
+   "file": "lit_3/animations/motion/south-east/00.84650295.webp",
+   "h": 84,
    "ox": 23,
-   "oy": 10,
+   "oy": 6,
+   "src": "eddc471a",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-east/01.webp": {
+   "file": "lit_3/animations/motion/south-east/01.89de5450.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
+   "src": "c7077d86",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-east/02.webp": {
+   "file": "lit_3/animations/motion/south-east/02.a5194b2d.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
+   "src": "af5686ed",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-east/03.webp": {
+   "file": "lit_3/animations/motion/south-east/03.ccfbaf5a.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
+   "src": "ce02a162",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-east/04.webp": {
+   "file": "lit_3/animations/motion/south-east/04.74154712.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
+   "src": "5fb4f958",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-west/00.webp": {
+   "file": "lit_3/animations/motion/south-west/00.e30501ef.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
+   "src": "7affd050",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-west/01.webp": {
+   "file": "lit_3/animations/motion/south-west/01.b15454a2.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
+   "src": "9683e1d5",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-west/02.webp": {
+   "file": "lit_3/animations/motion/south-west/02.8762cc38.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
+   "src": "7607a515",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-west/03.webp": {
+   "file": "lit_3/animations/motion/south-west/03.27e05595.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
+   "src": "9a4f9be5",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south-west/04.webp": {
+   "file": "lit_3/animations/motion/south-west/04.b8f404ff.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
+   "src": "7585ea1b",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 51
+  },
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south/00.webp": {
+   "file": "lit_3/animations/motion/south/00.1600dc50.webp",
+   "h": 84,
+   "ox": 23,
+   "oy": 6,
    "src": "35612443",
    "srcH": 96,
    "srcW": 96,
    "w": 51
   },
-  "lantern_posts/lantern_post_008/lit_3/animations/motion/01.webp": {
-   "file": "lit_3/animations/motion/01.43b8b643.webp",
-   "h": 80,
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south/01.webp": {
+   "file": "lit_3/animations/motion/south/01.fe541721.webp",
+   "h": 84,
    "ox": 23,
-   "oy": 10,
+   "oy": 6,
    "src": "b305162e",
    "srcH": 96,
    "srcW": 96,
    "w": 51
   },
-  "lantern_posts/lantern_post_008/lit_3/animations/motion/02.webp": {
-   "file": "lit_3/animations/motion/02.993e1af0.webp",
-   "h": 80,
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south/02.webp": {
+   "file": "lit_3/animations/motion/south/02.29800a89.webp",
+   "h": 84,
    "ox": 23,
-   "oy": 10,
+   "oy": 6,
    "src": "2832c3c8",
    "srcH": 96,
    "srcW": 96,
    "w": 51
   },
-  "lantern_posts/lantern_post_008/lit_3/animations/motion/03.webp": {
-   "file": "lit_3/animations/motion/03.878bb9ef.webp",
-   "h": 80,
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south/03.webp": {
+   "file": "lit_3/animations/motion/south/03.cdd1a7ca.webp",
+   "h": 84,
    "ox": 23,
-   "oy": 10,
+   "oy": 6,
    "src": "4264ab9a",
    "srcH": 96,
    "srcW": 96,
    "w": 51
   },
-  "lantern_posts/lantern_post_008/lit_3/animations/motion/04.webp": {
-   "file": "lit_3/animations/motion/04.f24c001b.webp",
-   "h": 80,
+  "lantern_posts/lantern_post_008/lit_3/animations/motion/south/04.webp": {
+   "file": "lit_3/animations/motion/south/04.c8c3103e.webp",
+   "h": 84,
    "ox": 23,
-   "oy": 10,
+   "oy": 6,
    "src": "b6ed3bab",
    "srcH": 96,
    "srcW": 96,
    "w": 51
   },
   "lantern_posts/lantern_post_008/lit_3/rotations/south-east.webp": {
-   "file": "lit_3/rotations/south-east.e46c8cc2.webp",
-   "h": 80,
+   "file": "lit_3/rotations/south-east.84650295.webp",
+   "h": 84,
    "ox": 23,
-   "oy": 10,
+   "oy": 6,
+   "prev": "lit_3/rotations/south-east.e46c8cc2.webp",
    "src": "eddc471a",
    "srcH": 96,
    "srcW": 96,
    "w": 51
   },
   "lantern_posts/lantern_post_008/lit_3/rotations/south-west.webp": {
-   "file": "lit_3/rotations/south-west.d71baf61.webp",
-   "h": 80,
+   "file": "lit_3/rotations/south-west.e30501ef.webp",
+   "h": 84,
    "ox": 23,
-   "oy": 10,
+   "oy": 6,
+   "prev": "lit_3/rotations/south-west.d71baf61.webp",
    "src": "7affd050",
    "srcH": 96,
    "srcW": 96,
    "w": 51
   },
   "lantern_posts/lantern_post_008/lit_3/sprite.webp": {
-   "file": "lit_3/sprite.a0f01069.webp",
-   "h": 80,
+   "file": "lit_3/sprite.1600dc50.webp",
+   "h": 84,
    "ox": 23,
-   "oy": 10,
+   "oy": 6,
+   "prev": "lit_3/sprite.a0f01069.webp",
    "src": "35612443",
    "srcH": 96,
    "srcW": 96,
    "w": 51
   },
-  "lantern_posts/lantern_post_008/lit_4/animations/motion/00.webp": {
-   "file": "lit_4/animations/motion/00.c3bacd8e.webp",
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-east/00.webp": {
+   "file": "lit_4/animations/motion/south-east/00.6aec134d.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "a1afe94a",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-east/01.webp": {
+   "file": "lit_4/animations/motion/south-east/01.03a45214.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "0096483f",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-east/02.webp": {
+   "file": "lit_4/animations/motion/south-east/02.25472fab.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "18d912ab",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-east/03.webp": {
+   "file": "lit_4/animations/motion/south-east/03.63ee6b42.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "5b1720e9",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-east/04.webp": {
+   "file": "lit_4/animations/motion/south-east/04.e4660dc7.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "95fef74e",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-west/00.webp": {
+   "file": "lit_4/animations/motion/south-west/00.a00e7148.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "fffec294",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-west/01.webp": {
+   "file": "lit_4/animations/motion/south-west/01.c3893e9f.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "6fd54ea9",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-west/02.webp": {
+   "file": "lit_4/animations/motion/south-west/02.fbca5ca2.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "9a94053c",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-west/03.webp": {
+   "file": "lit_4/animations/motion/south-west/03.3a8955a9.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "92c40f8c",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south-west/04.webp": {
+   "file": "lit_4/animations/motion/south-west/04.1fe6f820.webp",
+   "h": 80,
+   "ox": 26,
+   "oy": 9,
+   "src": "1cff13b7",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 46
+  },
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south/00.webp": {
+   "file": "lit_4/animations/motion/south/00.c3bacd8e.webp",
    "h": 80,
    "ox": 26,
    "oy": 9,
@@ -170,8 +476,8 @@
    "srcW": 96,
    "w": 46
   },
-  "lantern_posts/lantern_post_008/lit_4/animations/motion/01.webp": {
-   "file": "lit_4/animations/motion/01.b30f1a4f.webp",
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south/01.webp": {
+   "file": "lit_4/animations/motion/south/01.b30f1a4f.webp",
    "h": 80,
    "ox": 26,
    "oy": 9,
@@ -180,8 +486,8 @@
    "srcW": 96,
    "w": 46
   },
-  "lantern_posts/lantern_post_008/lit_4/animations/motion/02.webp": {
-   "file": "lit_4/animations/motion/02.ef1be731.webp",
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south/02.webp": {
+   "file": "lit_4/animations/motion/south/02.ef1be731.webp",
    "h": 80,
    "ox": 26,
    "oy": 9,
@@ -190,8 +496,8 @@
    "srcW": 96,
    "w": 46
   },
-  "lantern_posts/lantern_post_008/lit_4/animations/motion/03.webp": {
-   "file": "lit_4/animations/motion/03.44ebe9db.webp",
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south/03.webp": {
+   "file": "lit_4/animations/motion/south/03.44ebe9db.webp",
    "h": 80,
    "ox": 26,
    "oy": 9,
@@ -200,8 +506,8 @@
    "srcW": 96,
    "w": 46
   },
-  "lantern_posts/lantern_post_008/lit_4/animations/motion/04.webp": {
-   "file": "lit_4/animations/motion/04.a1a9ea58.webp",
+  "lantern_posts/lantern_post_008/lit_4/animations/motion/south/04.webp": {
+   "file": "lit_4/animations/motion/south/04.a1a9ea58.webp",
    "h": 80,
    "ox": 26,
    "oy": 9,

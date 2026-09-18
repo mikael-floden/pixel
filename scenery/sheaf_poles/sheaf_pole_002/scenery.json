@@ -52,28 +52,129 @@
       "animations": {
         "motion": {
           "group_id": "9f4b9a53-836d-4846-86f2-1b2c59ca56d0",
-          "description": "Animate the grain heads only, nodding gently. Nothing else moves.",
+          "description": "This is the same picture in every frame. only, nodding gently. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "sheaf_poles/sheaf_pole_002/animations/motion/00.webp",
-            "sheaf_poles/sheaf_pole_002/animations/motion/01.webp",
-            "sheaf_poles/sheaf_pole_002/animations/motion/02.webp",
-            "sheaf_poles/sheaf_pole_002/animations/motion/03.webp",
-            "sheaf_poles/sheaf_pole_002/animations/motion/04.webp"
-          ],
-          "strip": "sheaf_poles/sheaf_pole_002/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T08:36:49+00:00",
-          "brief": "C11",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/animations/motion/south/00.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south/01.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south/02.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south/03.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/animations/motion__south.27d5b752.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.481,
+                  "dx": 3.8,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 0.966,
+                  "dx": 2.7,
+                  "dy": -14.0
+                },
+                {
+                  "intensity": 0.932,
+                  "dx": 2.5,
+                  "dy": -13.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 5.5,
+                  "dy": -16.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 7.0,
+                  "dy": -14.1
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-east/00.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-east/01.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-east/02.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-east/03.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-east/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/animations/motion__south-east.33433bb5.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.393,
+                  "dx": 9.1,
+                  "dy": -14.9
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 8.2,
+                  "dy": -15.4
+                },
+                {
+                  "intensity": 1.219,
+                  "dx": 5.5,
+                  "dy": -16.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 9.5,
+                  "dy": -20.1
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 10.8,
+                  "dy": -20.9
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-west/00.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-west/01.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-west/02.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-west/03.webp",
+                "sheaf_poles/sheaf_pole_002/animations/motion/south-west/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/animations/motion__south-west.5fa47195.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.011,
+                  "dx": -6.2,
+                  "dy": -14.3
+                },
+                {
+                  "intensity": 0.994,
+                  "dx": -5.8,
+                  "dy": -14.4
+                },
+                {
+                  "intensity": 0.986,
+                  "dx": -6.0,
+                  "dy": -15.0
+                },
+                {
+                  "intensity": 1.022,
+                  "dx": -6.0,
+                  "dy": -16.1
+                },
+                {
+                  "intensity": 0.987,
+                  "dx": -6.0,
+                  "dy": -16.2
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:31:08+00:00",
+          "brief": "C11",
           "light_frames": [
             {
               "intensity": 1.481,
@@ -100,7 +201,19 @@
               "dx": 7.0,
               "dy": -14.1
             }
-          ]
+          ],
+          "frame_paths": [
+            "sheaf_poles/sheaf_pole_002/animations/motion/south/00.webp",
+            "sheaf_poles/sheaf_pole_002/animations/motion/south/01.webp",
+            "sheaf_poles/sheaf_pole_002/animations/motion/south/02.webp",
+            "sheaf_poles/sheaf_pole_002/animations/motion/south/03.webp",
+            "sheaf_poles/sheaf_pole_002/animations/motion/south/04.webp"
+          ],
+          "strip": "sheaf_poles/sheaf_pole_002/animations/motion__south.27d5b752.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.871
+          }
         }
       }
     },
@@ -119,30 +232,129 @@
       "animations": {
         "motion": {
           "group_id": "69720a02-2905-4c2e-bd2c-f9be95d5e427",
-          "description": "This is the same picture in every frame. ONLY the lit centre of the straw sun brightens a little and returns. It is lit and clearly visible in every frame, including the first. It gets only SLIGHTLY brighter -- never white, never washed out -- and keeps its own colour throughout: brightest in the middle, back to its first-frame brightness at the end. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Every object stays the same kind of thing it is in the first frame and keeps its own colour: nothing turns into anything else. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the lit centre of the straw sun brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/00.webp",
-            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/01.webp",
-            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/02.webp",
-            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/03.webp",
-            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "sheaf_poles/sheaf_pole_002/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:39:19+00:00",
-          "brief": "H50",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "foliage",
-            "base": 0.0345,
-            "still": 0.71
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/00.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/01.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/02.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/03.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/lit_2/animations/motion__south.24af94a8.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.962,
+                  "dx": 1.5,
+                  "dy": -17.7
+                },
+                {
+                  "intensity": 0.992,
+                  "dx": 1.6,
+                  "dy": -18.0
+                },
+                {
+                  "intensity": 1.022,
+                  "dx": 1.6,
+                  "dy": -17.9
+                },
+                {
+                  "intensity": 1.028,
+                  "dx": 1.7,
+                  "dy": -18.0
+                },
+                {
+                  "intensity": 0.996,
+                  "dx": 1.5,
+                  "dy": -17.6
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-east/00.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-east/01.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-east/02.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-east/03.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/lit_2/animations/motion__south-east.53b1d6d9.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.389,
+                  "dx": 10.7,
+                  "dy": -15.5
+                },
+                {
+                  "intensity": 1.061,
+                  "dx": 8.3,
+                  "dy": -11.5
+                },
+                {
+                  "intensity": 1.034,
+                  "dx": 7.8,
+                  "dy": -11.2
+                },
+                {
+                  "intensity": 0.648,
+                  "dx": 8.3,
+                  "dy": -12.0
+                },
+                {
+                  "intensity": 0.869,
+                  "dx": 10.6,
+                  "dy": -15.7
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-west/00.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-west/01.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-west/02.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-west/03.webp",
+                "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/lit_2/animations/motion__south-west.7416ae4b.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.0,
+                  "dx": -8.7,
+                  "dy": -15.5
+                },
+                {
+                  "intensity": 1.071,
+                  "dx": -9.2,
+                  "dy": -15.2
+                },
+                {
+                  "intensity": 1.048,
+                  "dx": -8.4,
+                  "dy": -15.7
+                },
+                {
+                  "intensity": 0.959,
+                  "dx": -7.6,
+                  "dy": -16.1
+                },
+                {
+                  "intensity": 0.921,
+                  "dx": -8.6,
+                  "dy": -16.1
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:31:56+00:00",
+          "brief": "H50",
           "light_frames": [
             {
               "intensity": 0.962,
@@ -169,7 +381,19 @@
               "dx": 1.5,
               "dy": -17.6
             }
-          ]
+          ],
+          "frame_paths": [
+            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/00.webp",
+            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/01.webp",
+            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/02.webp",
+            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/03.webp",
+            "sheaf_poles/sheaf_pole_002/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "sheaf_poles/sheaf_pole_002/lit_2/animations/motion__south.24af94a8.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.2143
+          }
         }
       }
     },
@@ -188,30 +412,129 @@
       "animations": {
         "motion": {
           "group_id": "c3694943-9b2e-482d-8bee-66bc2b88a3f7",
-          "description": "This is the same picture in every frame. ONLY the two small flames at the top flicker. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its brightness shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "This is the same picture in every frame. ONLY the two small flames at the top flicker. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/00.webp",
-            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/01.webp",
-            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/02.webp",
-            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/03.webp",
-            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/04.webp"
-          ],
-          "strip": "sheaf_poles/sheaf_pole_002/lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-30T09:34:24+00:00",
-          "brief": "H7",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "class": "foliage",
-            "base": 0.0,
-            "still": 0.418
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/00.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/01.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/02.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/03.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/lit_3/animations/motion__south.b00c3a39.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.014,
+                  "dx": 5.1,
+                  "dy": -21.3
+                },
+                {
+                  "intensity": 1.021,
+                  "dx": 5.1,
+                  "dy": -21.7
+                },
+                {
+                  "intensity": 0.932,
+                  "dx": 5.1,
+                  "dy": -20.2
+                },
+                {
+                  "intensity": 1.068,
+                  "dx": 5.0,
+                  "dy": -18.8
+                },
+                {
+                  "intensity": 0.965,
+                  "dx": 5.2,
+                  "dy": -20.2
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-east/00.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-east/01.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-east/02.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-east/03.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/lit_3/animations/motion__south-east.7c7c5d5d.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": 12.8,
+                  "dy": -20.4
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 13.7,
+                  "dy": -21.7
+                },
+                {
+                  "intensity": 0.963,
+                  "dx": 13.5,
+                  "dy": -20.1
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 11.9,
+                  "dy": -17.6
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 13.5,
+                  "dy": -20.0
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-west/00.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-west/01.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-west/02.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-west/03.webp",
+                "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "sheaf_poles/sheaf_pole_002/lit_3/animations/motion__south-west.aa985205.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.007,
+                  "dx": -9.3,
+                  "dy": -18.4
+                },
+                {
+                  "intensity": 1.216,
+                  "dx": -10.5,
+                  "dy": -20.5
+                },
+                {
+                  "intensity": 0.962,
+                  "dx": -11.6,
+                  "dy": -18.4
+                },
+                {
+                  "intensity": 1.013,
+                  "dx": -8.3,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 0.801,
+                  "dx": -7.8,
+                  "dy": -16.3
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:32:18+00:00",
+          "brief": "H7",
           "light_frames": [
             {
               "intensity": 1.014,
@@ -238,7 +561,19 @@
               "dx": 5.2,
               "dy": -20.2
             }
-          ]
+          ],
+          "frame_paths": [
+            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/00.webp",
+            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/01.webp",
+            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/02.webp",
+            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/03.webp",
+            "sheaf_poles/sheaf_pole_002/lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "sheaf_poles/sheaf_pole_002/lit_3/animations/motion__south.b00c3a39.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.3167
+          }
         }
       }
     },

@@ -65,29 +65,59 @@
       "animations": {
         "motion": {
           "group_id": "a3bd38fc-7c94-460d-825a-ecf93671bb79",
-          "description": "This is the same picture in every frame. ONLY the candle flame inside the shrine flickers. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the candle flame inside the shrine flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/00.webp",
-            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/01.webp",
-            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/02.webp",
-            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/03.webp",
-            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/04.webp"
-          ],
-          "strip": "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:14:28+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/00.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/01.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/02.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/03.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion__south.a04452d6.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-east/00.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-east/01.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-east/02.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-east/03.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion__south-east.706c4981.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-west/00.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-west/01.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-west/02.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-west/03.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion__south-west.09d7581f.webp"
+            }
+          },
+          "generated_at": "2026-09-18T04:09:06+00:00",
           "brief": "Y5",
+          "frame_paths": [
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/00.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/01.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/02.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/03.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "wayside_shrines/wayside_shrine_011/not_lit_2/animations/motion__south.a04452d6.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "class": "fire",
-            "base": 0.0076,
-            "still": 0.987
+            "base_outline": 0.033
           }
         }
       }
@@ -107,27 +137,59 @@
       "animations": {
         "motion": {
           "group_id": "46235504-c649-4b8b-95cc-956c419adcf4",
-          "description": "This is the same picture in every frame. ONLY the candle flame inside the shrine flickers. It is lit and clearly visible in every single frame, including the first. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the candle flame inside the shrine flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/00.webp",
-            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/01.webp",
-            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/02.webp",
-            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/03.webp",
-            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/04.webp"
-          ],
-          "strip": "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:55:16+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/00.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/01.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/02.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/03.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion__south.d5b0e5e3.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-east/00.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-east/01.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-east/02.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-east/03.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion__south-east.9ac663b1.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-west/00.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-west/01.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-west/02.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-west/03.webp",
+                "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion__south-west.2adfb7b2.webp"
+            }
+          },
+          "generated_at": "2026-09-18T04:09:49+00:00",
           "brief": "Z11",
+          "frame_paths": [
+            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/00.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/01.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/02.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/03.webp",
+            "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "wayside_shrines/wayside_shrine_011/not_lit_3/animations/motion__south.d5b0e5e3.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.0
+            "base_outline": 0.0123
           }
         }
       }

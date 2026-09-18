@@ -55,28 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "36fb2222-e6b4-481b-846f-2684ddd6c455",
-          "description": "This is the same picture in every frame. ONLY the blue sparks arcing between the two rods jump and change shape. Nothing else moves, bends or leans, and nothing changes size, shape or position. The last frame must return to exactly how the first frame looks, so the loop joins. Nothing may become darker than it is in the first frame. Do not redraw anything else, and do not add or remove anything.",
+          "description": "This is the same picture in every frame. ONLY the blue sparks arcing between the two rods jump and change shape. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "rusted_machines/rusted_machine_001/lit_1/animations/motion/00.webp",
-            "rusted_machines/rusted_machine_001/lit_1/animations/motion/01.webp",
-            "rusted_machines/rusted_machine_001/lit_1/animations/motion/02.webp",
-            "rusted_machines/rusted_machine_001/lit_1/animations/motion/03.webp",
-            "rusted_machines/rusted_machine_001/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "rusted_machines/rusted_machine_001/lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T15:38:25+00:00",
-          "brief": "X41",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0187
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/00.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/01.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/02.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/03.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "rusted_machines/rusted_machine_001/lit_1/animations/motion__south.2dd8845c.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.773,
+                  "dx": -0.9,
+                  "dy": -41.5
+                },
+                {
+                  "intensity": 1.045,
+                  "dx": 0.4,
+                  "dy": -41.9
+                },
+                {
+                  "intensity": 1.104,
+                  "dx": 1.8,
+                  "dy": -41.2
+                },
+                {
+                  "intensity": 1.096,
+                  "dx": 2.4,
+                  "dy": -40.9
+                },
+                {
+                  "intensity": 0.982,
+                  "dx": -1.5,
+                  "dy": -40.0
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-east/00.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-east/01.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-east/02.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-east/03.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rusted_machines/rusted_machine_001/lit_1/animations/motion__south-east.d96cb125.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.703,
+                  "dx": 2.8,
+                  "dy": -45.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 5.3,
+                  "dy": -44.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 8.5,
+                  "dy": -45.0
+                },
+                {
+                  "intensity": 0.728,
+                  "dx": 11.8,
+                  "dy": -43.5
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 17.4,
+                  "dy": -38.5
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-west/00.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-west/01.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-west/02.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-west/03.webp",
+                "rusted_machines/rusted_machine_001/lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rusted_machines/rusted_machine_001/lit_1/animations/motion__south-west.a7f47113.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.868,
+                  "dx": -4.1,
+                  "dy": -46.7
+                },
+                {
+                  "intensity": 1.173,
+                  "dx": -4.9,
+                  "dy": -45.8
+                },
+                {
+                  "intensity": 1.116,
+                  "dx": -6.0,
+                  "dy": -46.1
+                },
+                {
+                  "intensity": 0.994,
+                  "dx": -5.6,
+                  "dy": -46.4
+                },
+                {
+                  "intensity": 0.848,
+                  "dx": -4.8,
+                  "dy": -46.7
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T03:27:06+00:00",
+          "brief": "X41",
           "light_frames": [
             {
               "intensity": 0.773,
@@ -103,7 +204,19 @@
               "dx": -1.5,
               "dy": -40.0
             }
-          ]
+          ],
+          "frame_paths": [
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/00.webp",
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/01.webp",
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/02.webp",
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/03.webp",
+            "rusted_machines/rusted_machine_001/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "rusted_machines/rusted_machine_001/lit_1/animations/motion__south.2dd8845c.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0376
+          }
         }
       }
     },
@@ -300,27 +413,59 @@
       "animations": {
         "motion": {
           "group_id": "8ede2e6e-7210-4b2e-becd-5ce48dff5ce3",
-          "description": "Animate the flywheel only, turning very slowly. Nothing else moves.",
+          "description": "This is the same picture in every frame. only, turning very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "rusted_machines/rusted_machine_001/animations/motion/00.webp",
-            "rusted_machines/rusted_machine_001/animations/motion/01.webp",
-            "rusted_machines/rusted_machine_001/animations/motion/02.webp",
-            "rusted_machines/rusted_machine_001/animations/motion/03.webp",
-            "rusted_machines/rusted_machine_001/animations/motion/04.webp"
-          ],
-          "strip": "rusted_machines/rusted_machine_001/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T08:39:23+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/animations/motion/south/00.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south/01.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south/02.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south/03.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south/04.webp"
+              ],
+              "strip": "rusted_machines/rusted_machine_001/animations/motion__south.1f0a6e9c.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/animations/motion/south-east/00.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south-east/01.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south-east/02.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south-east/03.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south-east/04.webp"
+              ],
+              "strip": "rusted_machines/rusted_machine_001/animations/motion__south-east.392e4a41.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "rusted_machines/rusted_machine_001/animations/motion/south-west/00.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south-west/01.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south-west/02.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south-west/03.webp",
+                "rusted_machines/rusted_machine_001/animations/motion/south-west/04.webp"
+              ],
+              "strip": "rusted_machines/rusted_machine_001/animations/motion__south-west.0fdf6c56.webp"
+            }
+          },
+          "generated_at": "2026-09-18T03:28:53+00:00",
           "brief": "M2",
-          "review": "ANIMATION_PROBABLY_GOOD",
+          "frame_paths": [
+            "rusted_machines/rusted_machine_001/animations/motion/south/00.webp",
+            "rusted_machines/rusted_machine_001/animations/motion/south/01.webp",
+            "rusted_machines/rusted_machine_001/animations/motion/south/02.webp",
+            "rusted_machines/rusted_machine_001/animations/motion/south/03.webp",
+            "rusted_machines/rusted_machine_001/animations/motion/south/04.webp"
+          ],
+          "strip": "rusted_machines/rusted_machine_001/animations/motion__south.1f0a6e9c.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.0062
+            "base_outline": 0.155
           }
         }
       }

@@ -55,28 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "04686716-408e-4852-84e7-93e26cf24596",
-          "description": "This is the same picture in every frame. ONLY the washing hanging on the line moves, swaying. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the washing hanging on the line moves, swaying. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "washing_lines/washing_line_011/lit_1/animations/motion/00.webp",
-            "washing_lines/washing_line_011/lit_1/animations/motion/01.webp",
-            "washing_lines/washing_line_011/lit_1/animations/motion/02.webp",
-            "washing_lines/washing_line_011/lit_1/animations/motion/03.webp",
-            "washing_lines/washing_line_011/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "washing_lines/washing_line_011/lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:16:09+00:00",
-          "brief": "Y16",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/lit_1/animations/motion/south/00.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south/01.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south/02.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south/03.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/lit_1/animations/motion__south.3b4de4dc.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.027,
+                  "dx": -10.9,
+                  "dy": -3.4
+                },
+                {
+                  "intensity": 0.992,
+                  "dx": -10.5,
+                  "dy": -3.9
+                },
+                {
+                  "intensity": 0.981,
+                  "dx": -10.3,
+                  "dy": -5.5
+                },
+                {
+                  "intensity": 0.985,
+                  "dx": -10.5,
+                  "dy": -5.4
+                },
+                {
+                  "intensity": 1.015,
+                  "dx": -10.7,
+                  "dy": -4.7
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-east/00.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-east/01.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-east/02.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-east/03.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/lit_1/animations/motion__south-east.0406ee7d.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.01,
+                  "dx": 0.5,
+                  "dy": -6.4
+                },
+                {
+                  "intensity": 1.01,
+                  "dx": 0.8,
+                  "dy": -6.2
+                },
+                {
+                  "intensity": 1.041,
+                  "dx": -0.3,
+                  "dy": -7.1
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": -1.9,
+                  "dy": -7.4
+                },
+                {
+                  "intensity": 0.94,
+                  "dx": -2.2,
+                  "dy": -6.1
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-west/00.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-west/01.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-west/02.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-west/03.webp",
+                "washing_lines/washing_line_011/lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/lit_1/animations/motion__south-west.3132b628.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -3.2,
+                  "dy": -3.4
+                },
+                {
+                  "intensity": 0.971,
+                  "dx": 5.4,
+                  "dy": -6.9
+                },
+                {
+                  "intensity": 1.371,
+                  "dx": 4.6,
+                  "dy": -3.3
+                },
+                {
+                  "intensity": 1.297,
+                  "dx": 4.9,
+                  "dy": -3.8
+                },
+                {
+                  "intensity": 0.95,
+                  "dx": 5.8,
+                  "dy": -6.2
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T04:03:31+00:00",
+          "brief": "Y16",
           "light_frames": [
             {
               "intensity": 1.027,
@@ -103,7 +204,19 @@
               "dx": -10.7,
               "dy": -4.7
             }
-          ]
+          ],
+          "frame_paths": [
+            "washing_lines/washing_line_011/lit_1/animations/motion/south/00.webp",
+            "washing_lines/washing_line_011/lit_1/animations/motion/south/01.webp",
+            "washing_lines/washing_line_011/lit_1/animations/motion/south/02.webp",
+            "washing_lines/washing_line_011/lit_1/animations/motion/south/03.webp",
+            "washing_lines/washing_line_011/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "washing_lines/washing_line_011/lit_1/animations/motion__south.3b4de4dc.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
         }
       }
     },
@@ -122,30 +235,129 @@
       "animations": {
         "motion": {
           "group_id": "35b63aa5-fb70-4ef3-99f0-5abd042b0e8a",
-          "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings and the small glowing beads brighten a little and return. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings and the small glowing beads brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "washing_lines/washing_line_011/lit_2/animations/motion/00.webp",
-            "washing_lines/washing_line_011/lit_2/animations/motion/01.webp",
-            "washing_lines/washing_line_011/lit_2/animations/motion/02.webp",
-            "washing_lines/washing_line_011/lit_2/animations/motion/03.webp",
-            "washing_lines/washing_line_011/lit_2/animations/motion/04.webp"
-          ],
-          "strip": "washing_lines/washing_line_011/lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:55:43+00:00",
-          "brief": "Z14",
-          "review": "ANIMATION_PROBABLY_BAD",
-          "review_metrics": {
-            "class": "fire",
-            "base": 0.135,
-            "still": 0.24
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/lit_2/animations/motion/south/00.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south/01.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south/02.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south/03.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/lit_2/animations/motion__south.26788a65.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.5,
+                  "dx": -3.4,
+                  "dy": -13.8
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -3.6,
+                  "dy": -12.0
+                },
+                {
+                  "intensity": 0.696,
+                  "dx": 1.2,
+                  "dy": -21.2
+                },
+                {
+                  "intensity": 0.52,
+                  "dx": 0.5,
+                  "dy": -22.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 1.2,
+                  "dy": -22.5
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-east/00.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-east/01.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-east/02.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-east/03.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/lit_2/animations/motion__south-east.215fbf65.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.167,
+                  "dx": -9.1,
+                  "dy": -18.2
+                },
+                {
+                  "intensity": 0.988,
+                  "dx": -10.1,
+                  "dy": -18.9
+                },
+                {
+                  "intensity": 0.985,
+                  "dx": -9.8,
+                  "dy": -20.0
+                },
+                {
+                  "intensity": 0.897,
+                  "dx": -10.3,
+                  "dy": -21.2
+                },
+                {
+                  "intensity": 0.964,
+                  "dx": -9.8,
+                  "dy": -20.1
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-west/00.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-west/01.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-west/02.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-west/03.webp",
+                "washing_lines/washing_line_011/lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/lit_2/animations/motion__south-west.f1141e36.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.842,
+                  "dx": 0.6,
+                  "dy": -16.8
+                },
+                {
+                  "intensity": 0.998,
+                  "dx": -1.6,
+                  "dy": -11.7
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -2.2,
+                  "dy": -1.7
+                },
+                {
+                  "intensity": 0.807,
+                  "dx": 0.3,
+                  "dy": -14.8
+                },
+                {
+                  "intensity": 0.521,
+                  "dx": 8.5,
+                  "dy": -23.3
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T04:04:00+00:00",
+          "brief": "Z14",
           "light_frames": [
             {
               "intensity": 1.5,
@@ -172,7 +384,19 @@
               "dx": 1.2,
               "dy": -22.5
             }
-          ]
+          ],
+          "frame_paths": [
+            "washing_lines/washing_line_011/lit_2/animations/motion/south/00.webp",
+            "washing_lines/washing_line_011/lit_2/animations/motion/south/01.webp",
+            "washing_lines/washing_line_011/lit_2/animations/motion/south/02.webp",
+            "washing_lines/washing_line_011/lit_2/animations/motion/south/03.webp",
+            "washing_lines/washing_line_011/lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "washing_lines/washing_line_011/lit_2/animations/motion__south.26788a65.webp",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1245
+          }
         }
       }
     },
@@ -201,24 +425,56 @@
       "animations": {
         "motion": {
           "group_id": "a2762e74-e0cd-4429-97d6-3e83644c3626",
-          "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings. It moves as one solid piece and keeps exactly the same shape, size and colours the whole time it moves. It is never redrawn, never reshaped and never changes its outline. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "washing_lines/washing_line_011/not_lit_2/animations/motion/00.webp",
-            "washing_lines/washing_line_011/not_lit_2/animations/motion/01.webp",
-            "washing_lines/washing_line_011/not_lit_2/animations/motion/02.webp",
-            "washing_lines/washing_line_011/not_lit_2/animations/motion/03.webp",
-            "washing_lines/washing_line_011/not_lit_2/animations/motion/04.webp"
-          ],
-          "strip": "washing_lines/washing_line_011/not_lit_2/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T17:54:47+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south/00.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south/01.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south/02.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south/03.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/not_lit_2/animations/motion__south.63e20589.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-east/00.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-east/01.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-east/02.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-east/03.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-east/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/not_lit_2/animations/motion__south-east.93e4fb99.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-west/00.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-west/01.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-west/02.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-west/03.webp",
+                "washing_lines/washing_line_011/not_lit_2/animations/motion/south-west/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/not_lit_2/animations/motion__south-west.e6afa575.webp"
+            }
+          },
+          "generated_at": "2026-09-18T04:04:30+00:00",
           "brief": "A22",
+          "frame_paths": [
+            "washing_lines/washing_line_011/not_lit_2/animations/motion/south/00.webp",
+            "washing_lines/washing_line_011/not_lit_2/animations/motion/south/01.webp",
+            "washing_lines/washing_line_011/not_lit_2/animations/motion/south/02.webp",
+            "washing_lines/washing_line_011/not_lit_2/animations/motion/south/03.webp",
+            "washing_lines/washing_line_011/not_lit_2/animations/motion/south/04.webp"
+          ],
+          "strip": "washing_lines/washing_line_011/not_lit_2/animations/motion__south.63e20589.webp",
           "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
             "base_outline": 0.0174
@@ -241,29 +497,59 @@
       "animations": {
         "motion": {
           "group_id": "7c8180f7-8e3a-4e13-8732-3f1b4650dc19",
-          "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings a little to one side and back. The thing that moves is only MOVED, never redrawn: its own detail is copied from the first frame exactly -- every line, every edge, every colour, the same number of parts in the same places. It is displaced as one solid piece and nothing about it is reshaped. Nothing anywhere changes brightness or colour at any point; this is a movement only. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins.",
+          "description": "This is the same picture in every frame. ONLY the washing hanging on the line swings a little to one side and back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "washing_lines/washing_line_011/not_lit_3/animations/motion/00.webp",
-            "washing_lines/washing_line_011/not_lit_3/animations/motion/01.webp",
-            "washing_lines/washing_line_011/not_lit_3/animations/motion/02.webp",
-            "washing_lines/washing_line_011/not_lit_3/animations/motion/03.webp",
-            "washing_lines/washing_line_011/not_lit_3/animations/motion/04.webp"
-          ],
-          "strip": "washing_lines/washing_line_011/not_lit_3/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T18:33:00+00:00",
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south/00.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south/01.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south/02.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south/03.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/not_lit_3/animations/motion__south.de719f6b.webp"
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-east/00.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-east/01.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-east/02.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-east/03.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-east/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/not_lit_3/animations/motion__south-east.588db8f4.webp"
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-west/00.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-west/01.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-west/02.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-west/03.webp",
+                "washing_lines/washing_line_011/not_lit_3/animations/motion/south-west/04.webp"
+              ],
+              "strip": "washing_lines/washing_line_011/not_lit_3/animations/motion__south-west.c6f24b27.webp"
+            }
+          },
+          "generated_at": "2026-09-18T04:04:59+00:00",
           "brief": "B14",
+          "frame_paths": [
+            "washing_lines/washing_line_011/not_lit_3/animations/motion/south/00.webp",
+            "washing_lines/washing_line_011/not_lit_3/animations/motion/south/01.webp",
+            "washing_lines/washing_line_011/not_lit_3/animations/motion/south/02.webp",
+            "washing_lines/washing_line_011/not_lit_3/animations/motion/south/03.webp",
+            "washing_lines/washing_line_011/not_lit_3/animations/motion/south/04.webp"
+          ],
+          "strip": "washing_lines/washing_line_011/not_lit_3/animations/motion__south.de719f6b.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "class": "fire",
-            "base": 0.3563,
-            "still": 0.531
+            "base_outline": 0.2036
           }
         }
       }

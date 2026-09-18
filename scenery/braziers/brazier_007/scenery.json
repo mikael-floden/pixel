@@ -55,28 +55,129 @@
       "animations": {
         "motion": {
           "group_id": "3cfb0c81-21c9-4449-8194-fb304a7bd036",
-          "description": "This is the same picture in every frame. ONLY the magenta crystals in the bowl brighten a little and return. Everything else in the picture is copied from the first frame exactly, pixel for pixel, unchanged in shape, size, position and colour. No outline anywhere is redrawn. The last frame matches the first frame exactly, so the loop joins. Nothing anywhere becomes darker, lighter or a different colour except the one thing named above.",
+          "description": "This is the same picture in every frame. ONLY the magenta crystals in the bowl brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
           "keep_first_frame": true,
-          "frame_paths": [
-            "braziers/brazier_007/lit_1/animations/motion/00.webp",
-            "braziers/brazier_007/lit_1/animations/motion/01.webp",
-            "braziers/brazier_007/lit_1/animations/motion/02.webp",
-            "braziers/brazier_007/lit_1/animations/motion/03.webp",
-            "braziers/brazier_007/lit_1/animations/motion/04.webp"
-          ],
-          "strip": "braziers/brazier_007/lit_1/animations/motion__strip.webp",
-          "directions": [
-            "south"
-          ],
-          "generated_at": "2026-08-29T16:18:05+00:00",
-          "brief": "Y36",
-          "review": "ANIMATION_PROBABLY_GOOD",
-          "review_metrics": {
-            "base_outline": 0.0625
+          "directions": {
+            "south": {
+              "frames": 5,
+              "frame_paths": [
+                "braziers/brazier_007/lit_1/animations/motion/south/00.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south/01.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south/02.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south/03.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south/04.webp"
+              ],
+              "strip": "braziers/brazier_007/lit_1/animations/motion__south.a9976e8e.webp",
+              "light_frames": [
+                {
+                  "intensity": 1.14,
+                  "dx": -0.3,
+                  "dy": -7.2
+                },
+                {
+                  "intensity": 0.944,
+                  "dx": 0.5,
+                  "dy": -8.4
+                },
+                {
+                  "intensity": 0.919,
+                  "dx": 0.1,
+                  "dy": -8.3
+                },
+                {
+                  "intensity": 0.999,
+                  "dx": 0.1,
+                  "dy": -8.3
+                },
+                {
+                  "intensity": 0.998,
+                  "dx": -0.6,
+                  "dy": -8.2
+                }
+              ]
+            },
+            "south-east": {
+              "frames": 5,
+              "frame_paths": [
+                "braziers/brazier_007/lit_1/animations/motion/south-east/00.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south-east/01.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south-east/02.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south-east/03.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south-east/04.webp"
+              ],
+              "strip": "braziers/brazier_007/lit_1/animations/motion__south-east.752c923c.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": -1.2,
+                  "dy": -6.8
+                },
+                {
+                  "intensity": 1.472,
+                  "dx": 0.1,
+                  "dy": -11.3
+                },
+                {
+                  "intensity": 1.316,
+                  "dx": -0.2,
+                  "dy": -11.4
+                },
+                {
+                  "intensity": 1.332,
+                  "dx": 0.1,
+                  "dy": -11.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": -0.9,
+                  "dy": -10.3
+                }
+              ]
+            },
+            "south-west": {
+              "frames": 5,
+              "frame_paths": [
+                "braziers/brazier_007/lit_1/animations/motion/south-west/00.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south-west/01.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south-west/02.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south-west/03.webp",
+                "braziers/brazier_007/lit_1/animations/motion/south-west/04.webp"
+              ],
+              "strip": "braziers/brazier_007/lit_1/animations/motion__south-west.6ea3e8a5.webp",
+              "light_frames": [
+                {
+                  "intensity": 0.5,
+                  "dx": 0.7,
+                  "dy": -7.5
+                },
+                {
+                  "intensity": 0.755,
+                  "dx": 1.5,
+                  "dy": -7.6
+                },
+                {
+                  "intensity": 1.221,
+                  "dx": 0.7,
+                  "dy": -7.5
+                },
+                {
+                  "intensity": 1.23,
+                  "dx": 0.6,
+                  "dy": -7.0
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 2.0,
+                  "dy": -3.3
+                }
+              ]
+            }
           },
+          "generated_at": "2026-09-18T02:14:08+00:00",
+          "brief": "Y36",
           "light_frames": [
             {
               "intensity": 1.14,
@@ -103,7 +204,19 @@
               "dx": -0.6,
               "dy": -8.2
             }
-          ]
+          ],
+          "frame_paths": [
+            "braziers/brazier_007/lit_1/animations/motion/south/00.webp",
+            "braziers/brazier_007/lit_1/animations/motion/south/01.webp",
+            "braziers/brazier_007/lit_1/animations/motion/south/02.webp",
+            "braziers/brazier_007/lit_1/animations/motion/south/03.webp",
+            "braziers/brazier_007/lit_1/animations/motion/south/04.webp"
+          ],
+          "strip": "braziers/brazier_007/lit_1/animations/motion__south.a9976e8e.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0625
+          }
         }
       }
     },
