@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-18T12:11:06.002Z",
+  "updated_at": "2026-09-18T12:14:40.195Z",
   "entries": {
     "monsters/candidates/lava_slug": {
       "status": "approved",
@@ -2427,6 +2427,198 @@
     "monsters/goblin_shaman": {
       "status": "rejected",
       "updated_at": "2026-09-18T12:11:04.189Z"
+    },
+    "monsters/cobra#walk#south": {
+      "status": "redo",
+      "art": "097d484ace0186da",
+      "updated_at": "2026-09-18T12:12:00.366Z",
+      "note": "Doesn't look like a snake walk at all!"
+    },
+    "monsters/cobra#walk#south-east": {
+      "note": "Doesn't look like a snake walk at all!",
+      "updated_at": "2026-09-18T12:12:02.184Z",
+      "status": "redo",
+      "art": "502ca458c5873e07"
+    },
+    "monsters/cobra#walk#east": {
+      "note": "Doesn't look like a snake walk at all!",
+      "updated_at": "2026-09-18T12:12:04.795Z",
+      "status": "redo",
+      "art": "3b69fd41064754fd"
+    },
+    "monsters/cobra#walk#north-east": {
+      "note": "Doesn't look like a snake walk at all!",
+      "updated_at": "2026-09-18T12:12:07.368Z",
+      "status": "redo",
+      "art": "105e2de02da60eb9"
+    },
+    "monsters/cobra#angry_v1#north-east": {
+      "updated_at": "2026-09-18T12:12:59.278Z",
+      "art": "9e079b9ab2326d0c",
+      "status": "approved",
+      "rating": 3
+    },
+    "monsters/cobra#walk#north": {
+      "note": "Doesn't look like a snake walk at all!",
+      "updated_at": "2026-09-18T12:12:22.127Z",
+      "status": "redo",
+      "art": "6835688260c1020f"
+    },
+    "monsters/cobra#walk#north-west": {
+      "note": "Doesn't look like a snake walk at all!",
+      "updated_at": "2026-09-18T12:12:24.724Z",
+      "status": "redo",
+      "art": "37a67d0b846ccf19"
+    },
+    "monsters/cobra#walk#west": {
+      "note": "Doesn't look like a snake walk at all!",
+      "updated_at": "2026-09-18T12:12:33.903Z",
+      "status": "redo",
+      "art": "54c9f61ef2f0adbc"
+    },
+    "monsters/cobra#walk#south-west": {
+      "note": "Doesn't look like a snake walk at all!",
+      "updated_at": "2026-09-18T12:12:30.027Z",
+      "status": "redo",
+      "art": "afbf8d4176c3b7ca"
+    },
+    "monsters/cobra#angry_v1#south": {
+      "status": "approved",
+      "art": "b533aa57a9ba5518",
+      "updated_at": "2026-09-18T12:13:02.105Z",
+      "rating": 3
+    },
+    "monsters/cobra#angry_v1#south-east": {
+      "status": "approved",
+      "art": "e57358cca253278d",
+      "updated_at": "2026-09-18T12:13:01.310Z",
+      "rating": 3
+    },
+    "monsters/cobra#angry_v1#east": {
+      "status": "approved",
+      "art": "420c6e485c7e17ee",
+      "updated_at": "2026-09-18T12:13:00.394Z",
+      "rating": 3
+    },
+    "monsters/cobra#angry_v1#north": {
+      "rating": 3,
+      "status": "approved",
+      "art": "8974bc6709e3818b",
+      "updated_at": "2026-09-18T12:13:03.376Z"
+    },
+    "monsters/cobra#angry_v1#north-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "d563fb12264f6019",
+      "updated_at": "2026-09-18T12:13:04.469Z"
+    },
+    "monsters/cobra#attack_v3#north-west": {
+      "rating": 3,
+      "status": "redo",
+      "art": "0a555e291e29d2e6",
+      "updated_at": "2026-09-18T12:13:50.454Z",
+      "note": "Not NW"
+    },
+    "monsters/cobra#angry_v1#west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "3fd12b8a0570f616",
+      "updated_at": "2026-09-18T12:13:13.070Z"
+    },
+    "monsters/cobra#angry_v1#south-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "5d665a648f644f25",
+      "updated_at": "2026-09-18T12:13:14.537Z"
+    },
+    "monsters/cobra#attack_v3#south": {
+      "rating": 3,
+      "status": "approved",
+      "art": "7198ea0cb701158e",
+      "updated_at": "2026-09-18T12:13:22.682Z"
+    },
+    "monsters/cobra#attack_v3#south-east": {
+      "status": "redo",
+      "art": "c8da2fd3961931be",
+      "updated_at": "2026-09-18T12:13:26.400Z"
+    },
+    "monsters/cobra#attack_v3#east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "182210b3bf99abc7",
+      "updated_at": "2026-09-18T12:13:29.322Z"
+    },
+    "monsters/cobra#attack_v3#north-east": {
+      "art": "7a3304fea333f54f",
+      "updated_at": "2026-09-18T12:13:59.897Z",
+      "status": "redo",
+      "note": "Not NE"
+    },
+    "monsters/cobra#attack_v3#north": {
+      "rating": 3,
+      "status": "approved",
+      "art": "f088e21cca2be73c",
+      "updated_at": "2026-09-18T12:13:37.449Z"
+    },
+    "monsters/cobra#attack_v3#west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "69ba9bdc0439dec8",
+      "updated_at": "2026-09-18T12:14:01.957Z"
+    },
+    "monsters/cobra#attack_v3#south-west": {
+      "status": "redo",
+      "art": "31957a77e6b24837",
+      "updated_at": "2026-09-18T12:14:20.336Z",
+      "note": "Lame bite"
+    },
+    "monsters/cobra#die_v1#south": {
+      "rating": 3,
+      "status": "approved",
+      "art": "fb866a19d174fbe4",
+      "updated_at": "2026-09-18T12:14:23.420Z"
+    },
+    "monsters/cobra#die_v1#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "ee8e116c8de8e026",
+      "updated_at": "2026-09-18T12:14:25.556Z"
+    },
+    "monsters/cobra#die_v1#east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "2a9a730a55acf7aa",
+      "updated_at": "2026-09-18T12:14:27.619Z"
+    },
+    "monsters/cobra#die_v1#north-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "328802f21eef6d75",
+      "updated_at": "2026-09-18T12:14:29.410Z"
+    },
+    "monsters/cobra#die_v1#north": {
+      "rating": 3,
+      "status": "approved",
+      "art": "41b5e5dc39b6dbc2",
+      "updated_at": "2026-09-18T12:14:31.293Z"
+    },
+    "monsters/cobra#die_v1#north-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "2a1edaee637aa2b6",
+      "updated_at": "2026-09-18T12:14:33.601Z"
+    },
+    "monsters/cobra#die_v1#west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "36a92f8ab7f0d473",
+      "updated_at": "2026-09-18T12:14:35.979Z"
+    },
+    "monsters/cobra#die_v1#south-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "d264d0f969f3caad",
+      "updated_at": "2026-09-18T12:14:37.437Z"
     }
   }
 }
