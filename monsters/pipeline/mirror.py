@@ -177,8 +177,20 @@ def _save_strip(frames, path):
 
 def _key_for(name, renames, taken):
     """Canonical on-disk key for a PixelLab animation name: the roster rename if
-    present, else a slug; de-duped with _2, _3… if two animations collide."""
-    key = renames.get(name) or _slug(name)[:40] or "anim"
+    present, else a slug; de-duped with _2, _3… if two animations collide.
+
+    A rename is NEVER de-duped. Two PixelLab animations can legitimately be the
+    same state: the escalation ladder re-asks a stubborn direction in different
+    words, and v3 names a clip after its action text, so one attack can live
+    under three or four names with a few directions each. Splitting those into
+    `attack`, `attack_2`, `attack_3` shipped a monster with 1/8 attack
+    directions (measured on the first graduation). Same target = one state,
+    directions merged; only auto-slugged keys de-dupe."""
+    mapped = renames.get(name)
+    if mapped:
+        taken.add(mapped)
+        return mapped
+    key = _slug(name)[:40] or "anim"
     base, n = key, 1
     while key in taken:
         n += 1
@@ -291,11 +303,42 @@ def mirror(client, mid, kind, pixellab_id, renames=None, name=None, detail=None,
                 print(f"  !! {key}: downloads failed entirely — keeping previous mirror")
                 anims[key] = prev_anims[key]
             continue
-        anims[key] = {
-            "group_id": g.get("group_id"),
-            "source_name": g["name"],
-            "directions": saved,
-        }
+        # FILL THE MIRRORED HALF OF THE COMPASS. A monster born in the
+        # candidates pipeline has only the five generated facings on PixelLab
+        # (south, south-east, east, north-east, north) because "a good SE is
+        # also a good SW" — the other three were mirrored on disk and he
+        # approved them mirrored. Without this a graduated monster ships 5/8
+        # and the game has no west half. A monster authored with all eight in
+        # the PixelLab UI already has them and nothing here fires.
+        for dst, src in (("south-west", "south-east"), ("west", "east"),
+                         ("north-west", "north-east")):
+            if dst in saved or src not in frames_by_dir:
+                continue
+            frames = [f.transpose(Image.FLIP_LEFT_RIGHT) for f in frames_by_dir[src]]
+            fdir = os.path.join(mdir, "animations", key, dst)
+            _save_frames(frames, fdir)
+            strip = os.path.join(mdir, "animations", f"{key}__{dst}{ART_EXT}")
+            _save_strip(frames, strip)
+            saved[dst] = {
+                "frames": len(frames),
+                "strip": _rel(strip),
+                "frame_paths": [_rel(os.path.join(fdir, f"{i:02d}{ART_EXT}"))
+                                for i in range(len(frames))],
+                "mirrored_from": src,
+            }
+            frames_by_dir[dst] = frames
+        if key in anims:                      # same state, another take's words
+            merged = dict(anims[key]["directions"])
+            merged.update(saved)
+            anims[key]["directions"] = merged
+            anims[key]["source_name"] = f'{anims[key]["source_name"]} + {g["name"]}'
+            saved = merged
+        else:
+            anims[key] = {
+                "group_id": g.get("group_id"),
+                "source_name": g["name"],
+                "directions": saved,
+            }
         dirs_n = len(saved)
         print(f"  {key}: {dirs_n} dir(s) "
               f"x{sorted({v['frames'] for v in saved.values()})} frames  "
