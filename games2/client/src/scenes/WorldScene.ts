@@ -178,7 +178,10 @@ import { joinWorld } from "../net";
 import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
 import { ChatUI } from "../chat";
 import { Gloom, easeGloom, newGloom, snapGloom } from "../../../ambient/weather/gloom";
-import { LEGACY_INDEX, packAmbient, unpackAmbient } from "@nangijala/shared";
+import {
+  LEGACY_INDEX, packAmbient, unpackAmbient, WEATHER_UNIVERSE,
+  type AmbientZoneDoc, parseAmbientZones, unpackZoneTable, resolveAmbientAt, zonesAt,
+} from "@nangijala/shared";
 import { Footsteps } from "../footsteps";
 import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
@@ -4219,6 +4222,22 @@ export class WorldScene extends Phaser.Scene {
    *  ordinary effects since 2026-09-18, there is no weather index. Ambient
    *  reads it through __ml.ambientActive(); the gloom below grades on it. */
   private ambientActive = new Set<string>();
+  /* ZONE AMBIENT (maintainer 2026-09-18, shared/src/ambientzones.ts): the
+   * server's ZONE TABLE (state.ambientZones — what is on in every maps2
+   * ambient zone for its current ten-minute window) resolved at the cell
+   * under MY player is `ambientActive`; the room's own `state.ambient` is
+   * the sky only while the server FORCED it (a gate, the demo button) or
+   * when the world ships no zones. The doc is fetched with the world; until
+   * it lands the room set stands. Re-resolved when the table changes and
+   * when my cell changes (the polygon test runs per cell, not per frame). */
+  private ambientZoneDoc: AmbientZoneDoc | null = null;
+  private ambientZoneTable = new Map<string, string>();
+  private ambientRoomSet = new Set<string>();
+  private ambientForced = false;
+  private ambientCellKey = "";
+  private ambientSynced = false; // first resolvable sync landed (gloom snaps, no roll-in)
+  private ambientDocPending = true; // ambient.json fetch in flight
+  private ambientPinned = false; // __ml.weather(idx) holds a LOCAL set (gates); worldAmbient releases
   private gloom: Gloom = newGloom();
   private footsteps?: Footsteps;
   private timeFrozen = true; // synced mirror of WorldState.frozen (switch state)
@@ -4262,6 +4281,21 @@ export class WorldScene extends Phaser.Scene {
       this.places = p;
       this.indoorDirty = true; // re-answer "where am I" on the next frame
     });
+    // The maps2 ambient zones, the same way: a world without them is normal
+    // (the room's rolled sky stands), so nothing waits on the fetch.
+    fetch(gameUrl(worldFileUrl(this.worldName, "ambient.json")))
+      .then((r) => (r.ok ? r.json() : null))
+      .then((j) => {
+        this.ambientZoneDoc = parseAmbientZones(j);
+        this.ambientDocPending = false;
+        this.ambientCellKey = "";
+        this.applyAmbient();
+      })
+      .catch(() => {
+        this.ambientZoneDoc = null;
+        this.ambientDocPending = false;
+        this.applyAmbient();
+      });
     if (this.world) {
       // The world's extent in world units (grid×CELL_WU) — per-world, so any
       // size renders/collides right (see shared: WORLD_WIDTH is only a default).
@@ -5650,10 +5684,33 @@ export class WorldScene extends Phaser.Scene {
         mist: this.gloom.mist,
         precipDim: this.gloom.dim,
       }),
-      // The server's active ambient set for this room (ambient's input).
+      // The active ambient set HERE (ambient's input): the zone table
+      // resolved at my cell, or the room's forced/zoneless sky.
       ambientActive: () => [...this.ambientActive].sort(),
+      // The zone machinery behind it: the zones under me, their windows'
+      // sets, whether the server forced a sky, and the table's size.
+      ambientZonesInfo: () => {
+        const me = this.myId ? this.avatars.get(this.myId) : undefined;
+        const col = me ? Math.floor(me.fx / CELL_WU) : -1;
+        const row = me ? Math.floor(me.fy / CELL_WU) : -1;
+        const lvl = me ? Math.round(this.litLevelOf(me)) : 0;
+        const here = this.ambientZoneDoc && me ? zonesAt(this.ambientZoneDoc, col, row, lvl) : [];
+        return {
+          doc: !!this.ambientZoneDoc,
+          zones: this.ambientZoneDoc?.zones.length ?? 0,
+          table: this.ambientZoneTable.size,
+          forced: this.ambientForced,
+          room: [...this.ambientRoomSet].sort(),
+          cell: { col, row, lvl },
+          here: here.map((z) => ({ id: z.id, set: this.ambientZoneTable.get(z.id) ?? null, effects: z.effects })),
+          active: [...this.ambientActive].sort(),
+        };
+      },
       // Force the ROOM's set on the server (QA/gates; every client sees it).
-      worldAmbient: (set?: string[]) => this.room?.send("ambient", set ? { set } : {}),
+      worldAmbient: (set?: string[]) => {
+        this.ambientPinned = false;
+        this.room?.send("ambient", set ? { set } : {});
+      },
       /* LEGACY SHIM, LOCAL ONLY: 17 gates still say `__ml.weather(idx)` with
        * the old WEATHER_NAMES index. It maps that index onto the set the
        * weather meant (shared/src/ambient.ts LEGACY_INDEX) on THIS client
@@ -5662,6 +5719,7 @@ export class WorldScene extends Phaser.Scene {
       weather: (idx?: number, instant = true) => {
         if (idx !== undefined) {
           this.ambientActive = new Set(LEGACY_INDEX[((idx % LEGACY_INDEX.length) + LEGACY_INDEX.length) % LEGACY_INDEX.length]);
+          this.ambientPinned = true; // the zone table turns every few seconds; a gate's set must hold
           if (instant) snapGloom(this.gloom, this.ambientActive);
         }
         const packed = packAmbient(this.ambientActive);
@@ -9041,14 +9099,19 @@ export class WorldScene extends Phaser.Scene {
       else if (on) this.chat.addLog("—", "Northern lights dance over Nangijala.");
       firstAuroraSync = false;
     });
-    let firstAmbientSync = true;
+    this.ambientSynced = false;
     $(room.state).listen("ambient", (packed: string) => {
-      this.ambientActive = unpackAmbient(packed);
-      if (firstAmbientSync) {
-        snapGloom(this.gloom, this.ambientActive); // no roll-in on join
-      }
-      else this.chat.addLog("—", `Ambient: ${packed || "clear"}`);
-      firstAmbientSync = false;
+      this.ambientRoomSet = unpackAmbient(packed);
+      this.applyAmbient();
+    });
+    $(room.state).listen("ambientForced", (on: boolean) => {
+      this.ambientForced = !!on;
+      this.applyAmbient();
+    });
+    $(room.state).listen("ambientZones", (packed: string) => {
+      this.ambientZoneTable = unpackZoneTable(packed);
+      this.ambientCellKey = "";
+      this.applyAmbient();
     });
     $(room.state).players.onAdd((player: any, id: string) => {
       this.addAvatar(id, player);
@@ -14121,6 +14184,7 @@ export class WorldScene extends Phaser.Scene {
       // Weather: ease the cloud cover toward the synced target (~4s roll),
       // and grey the sky a touch while cloudy — "the sky is not perfect
       // blue" — before handing the ambient to the shader + CPU twin.
+      this.applyAmbientHere(); // my cell moved into another zone? (per cell, cheap)
       easeGloom(this.gloom, this.ambientActive, this.game.loop.delta);
       // the same ~4s roll the gloom uses, kept here for the aurora below
       const ca = 1 - Math.exp(-(this.game.loop.delta / 1000) / 4);
@@ -16125,6 +16189,53 @@ export class WorldScene extends Phaser.Scene {
    * the pool's own raised edges and the swimmer renders shaded in full daylight
    * (maintainer 2026-07-25 — only bit ELEVATED pools; a sea's sunk elev clamps to
    * 0 = its own surface). So float swimmers sample at the pool surface `surfLevel`. */
+  /** Re-resolve the active set when MY CELL changed (zone mode only). */
+  private applyAmbientHere() {
+    if (this.ambientForced || !this.ambientZoneDoc || this.ambientZoneTable.size === 0) return;
+    const me = this.myId ? this.avatars.get(this.myId) : undefined;
+    if (!me) return;
+    const key = `${Math.floor(me.fx / CELL_WU)},${Math.floor(me.fy / CELL_WU)},${Math.round(this.litLevelOf(me))}`;
+    if (key === this.ambientCellKey) return;
+    this.applyAmbient();
+  }
+
+  /** THE ACTIVE SET: forced or zoneless → the room's sky; else the zone
+   *  table at my cell. Snaps the gloom on the first sync (no roll-in on
+   *  join) and logs a WEATHER change to chat — a crab zone entered is not
+   *  news, rain starting is. */
+  private applyAmbient() {
+    if (this.ambientPinned) return;
+    let next: Set<string>;
+    const me = this.myId ? this.avatars.get(this.myId) : undefined;
+    const doc = this.ambientZoneDoc;
+    const roomSky = this.ambientForced || !doc || this.ambientZoneTable.size === 0;
+    if (roomSky || !doc || !me) {
+      next = new Set(this.ambientRoomSet);
+      if (!me) this.ambientCellKey = "";
+    } else {
+      const col = Math.floor(me.fx / CELL_WU);
+      const row = Math.floor(me.fy / CELL_WU);
+      const lvl = Math.round(this.litLevelOf(me));
+      this.ambientCellKey = `${col},${row},${lvl}`;
+      next = new Set(resolveAmbientAt(doc, this.ambientZoneTable, col, row, lvl));
+    }
+    const before = packAmbient(this.ambientActive);
+    const after = packAmbient(next);
+    this.ambientActive = next;
+    if (!this.ambientSynced) {
+      snapGloom(this.gloom, this.ambientActive);
+      // synced once the answer is the real one: the doc is in (or absent)
+      // and either the room's sky rules or my cell could be resolved
+      if (!this.ambientDocPending && (roomSky || me)) this.ambientSynced = true;
+      return;
+    }
+    if (before === after) return;
+    const weather = (s: string) => unpackAmbient(s);
+    const wb = [...weather(before)].filter((n) => WEATHER_UNIVERSE.includes(n)).join(",");
+    const wa = [...weather(after)].filter((n) => WEATHER_UNIVERSE.includes(n)).join(",");
+    if (wb !== wa) this.chat.addLog("—", `Weather: ${wa || "clear"}`);
+  }
+
   private litLevelOf(a: BodyVisual): number {
     if (a.swimming && a.surfLevel !== undefined) return a.surfLevel;
     return Math.max(0, a.elev / this.geom.lh);

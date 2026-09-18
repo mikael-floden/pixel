@@ -132,6 +132,7 @@ import {
   INV_MAX_SLOTS,
   swapInvEntries,
   DEFAULT_ZONE, EPISODE_S, compatible, packAmbient, rollAmbient,
+  AmbientZoneDoc, ambientTableAt, packZoneTable, parseAmbientZones,
 } from "@nangijala/shared";
 import { WorldState, Player, Monster, MonsterArea, GroundItem, OWNER_VIEW_TAG } from "../schema/WorldState.js";
 import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
@@ -154,8 +155,9 @@ interface WorldClock {
   phaseT: number;
   frozen: boolean;
   timeSpeed: number;
-  ambient: string;          // the active ambient set (ambient/weather/matrix.ts)
-  nextAmbientAt: number | null; // when the set re-rolls
+  ambient: string;          // the room's sky: a forced override, or the roll of a world with no zones
+  ambientForced: boolean;   // `ambient` is a forced override (the "ambient" {set} message)
+  nextAmbientAt: number | null; // when the override lapses / the zoneless sky re-rolls
   aurora: boolean;
   nextPhaseAt: number | null;
   origin?: string; // the room that wrote it (a room skips its own publish)
@@ -557,18 +559,43 @@ export class WorldRoom extends Room<WorldState> {
   /** When the active ambient set re-rolls (bus-shared like the clock). */
   private nextAmbientAt: number | null = null;
 
-  /** Re-roll the room's active ambient set from its zone's weights. One zone
-   *  = the whole map today (DEFAULT_ZONE); when the maps2 agent's areas land
-   *  this reads the row for this room's zone instead. `force` rolls now;
-   *  otherwise only once the episode is up. Deterministic per roll time so
-   *  every zone room of the world lands on the same set (the clock doc is
-   *  shared over the bus and applyClock adopts it). */
+  /** The world's ambient zones (maps2 ambient.json via readWorldDoc); null =
+   *  the world ships none, and the room rolls one sky from DEFAULT_ZONE. */
+  private ambientZones: AmbientZoneDoc | null = null;
+
+  /** THE ZONE TABLE — what is on in every ambient zone for the current
+   *  windows (shared/src/ambientzones.ts). A pure function of the clock:
+   *  every zone room of the world computes the same string for the same
+   *  second, so it is never published or persisted. Called every tick; the
+   *  state only changes when a zone's window turned (~every 7 s world-wide,
+   *  each zone holding ~10 min). */
+  private refreshAmbientZones(nowMs = Date.now()) {
+    if (!this.ambientZones) return;
+    const packed = packZoneTable(ambientTableAt(this.ambientZones, nowMs));
+    if (packed !== this.state.ambientZones) this.state.ambientZones = packed;
+  }
+
+  /** The room's OWN sky, `state.ambient`: while an override is forced it
+   *  lapses once the episode is up (back to the zones); a world with NO zones
+   *  keeps the old whole-map roll from DEFAULT_ZONE on the episode cadence.
+   *  `force` rolls now. Deterministic per roll time so every zone room of the
+   *  world lands on the same set (the clock doc is shared over the bus and
+   *  applyClock adopts it). */
   private rollAmbientSet(force = false): boolean {
     const now = Date.now();
     if (!force && this.nextAmbientAt !== null && now < this.nextAmbientAt) return false;
+    if (this.ambientZones) {
+      // zones rule: an override lapses, nothing else to roll
+      if (!this.state.ambientForced && this.state.ambient === "" && !force) { this.nextAmbientAt = null; return false; }
+      this.state.ambient = "";
+      this.state.ambientForced = false;
+      this.nextAmbientAt = null;
+      return true;
+    }
     let seed = (now / 1000) | 0;
     const rnd = () => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 0xffffffff; };
     this.state.ambient = packAmbient(rollAmbient(DEFAULT_ZONE, rnd));
+    this.state.ambientForced = false;
     this.nextAmbientAt = now + (EPISODE_S[0] + rnd() * (EPISODE_S[1] - EPISODE_S[0])) * 1000;
     return true;
   }
@@ -580,6 +607,7 @@ export class WorldRoom extends Room<WorldState> {
       frozen: this.state.frozen,
       timeSpeed: this.state.timeSpeed,
       ambient: this.state.ambient,
+      ambientForced: this.state.ambientForced,
       nextAmbientAt: this.nextAmbientAt,
       aurora: this.state.aurora,
       nextPhaseAt: this.nextPhaseAt,
@@ -601,6 +629,7 @@ export class WorldRoom extends Room<WorldState> {
     this.state.frozen = doc.frozen;
     this.state.timeSpeed = doc.timeSpeed ?? (doc.frozen ? 0 : 1);
     this.state.ambient = doc.ambient ?? "";
+    this.state.ambientForced = !!doc.ambientForced;
     this.nextAmbientAt = doc.nextAmbientAt ?? null;
     this.state.aurora = doc.aurora;
     this.nextPhaseAt = doc.nextPhaseAt;
@@ -668,12 +697,14 @@ export class WorldRoom extends Room<WorldState> {
       // resolved against the grid: which cells are truly standable/swimmable
       // at each zone's elev band. No grid (open world) → no monsters.
       this.zones = this.terrain ? await loadSpawnZones(world, this.terrain) : [];
+      this.ambientZones = await loadAmbientZones(world);
       // A world absent from disk was STAGED (fetched from the repo) — say so,
       // with the two facts that decide whether the join is playable.
       if (!WORLD_ROOTS.some((r) => existsSync(join(assetsRoot(), r, world))))
         console.log(`[staging] world "${world}": terrain=${!!this.terrain} zones=${this.zones.length}`);
     }
     this.setState(new WorldState());
+    this.refreshAmbientZones(); // the table before the first client, not the first tick
     this.state.ox = this.posOx;
     this.state.oy = this.posOy;
     this.state.pq = this.posQ;
@@ -1068,6 +1099,7 @@ export class WorldRoom extends Room<WorldState> {
       this.state.frozen = saved.frozen;
       this.state.timeSpeed = saved.timeSpeed ?? (saved.frozen ? 0 : 1);
       this.state.ambient = saved.ambient ?? "";
+      this.state.ambientForced = !!saved.ambientForced;
       this.nextAmbientAt = saved.nextAmbientAt ?? null;
       this.state.aurora = saved.aurora;
       this.nextPhaseAt = saved.nextPhaseAt;
@@ -1089,18 +1121,20 @@ export class WorldRoom extends Room<WorldState> {
     }
     this.scheduleWildStar();
 
-    /* AMBIENT IS SERVER-OWNED, PER ZONE (maintainer 2026-09-18). A room's
-     * active set is rolled by `rollAmbientSet` on an episode cadence; this
-     * message is the QA/gate hook that FORCES a set (and parks the roller
-     * until the next episode), the way `timeofday` forces the clock. An
-     * omitted or unknown set re-rolls at once. Only names the matrix knows
-     * are accepted; an incompatible set is filtered through it. */
+    /* AMBIENT IS SERVER-OWNED, PER ZONE (maintainer 2026-09-18): the zone
+     * table (`refreshAmbientZones`) is what the world shows. This message is
+     * the QA/gate hook that FORCES one set on the whole world for an episode
+     * (`ambientForced`; the demo button, verify-ambientweather), the way
+     * `timeofday` forces the clock. An omitted set ends the override at once
+     * (a world with no zones re-rolls its sky). An incompatible set is
+     * filtered through the matrix. */
     this.onMessage("ambient", (client, message: { set?: string[] }) => {
       const names = Array.isArray(message?.set) ? message.set.filter((n) => typeof n === "string") : null;
       if (names) {
         const kept: string[] = [];
         for (const n of names) if (kept.every((k) => compatible(k, n))) kept.push(n);
         this.state.ambient = packAmbient(kept);
+        this.state.ambientForced = true;
         this.nextAmbientAt = Date.now() + EPISODE_S[1] * 1000;
       } else {
         this.rollAmbientSet(true);
@@ -1571,6 +1605,7 @@ export class WorldRoom extends Room<WorldState> {
     // (rollAmbientSet is a no-op until then; the clock doc carries the result
     // to every zone room of the world).
     if (this.rollAmbientSet()) this.saveClock();
+    this.refreshAmbientZones();
     // World clock: phase deadline checked here (see nextPhaseAt note); the
     // synced phaseT sweeps continuously between rollovers.
     if (this.nextPhaseAt !== null) {
@@ -3671,6 +3706,20 @@ function tieBreakAngle(id: string): number {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) | 0;
   return ((h >>> 0) % 360) * (Math.PI / 180);
+}
+
+/** Load the maps2 AMBIENT zones for a world (ambient.json, pixel-maps3/
+ * ambient@1). Missing or malformed → null: the room falls back to one rolled
+ * sky for the whole world (rollAmbientSet), as before zones existed. */
+async function loadAmbientZones(name: string): Promise<AmbientZoneDoc | null> {
+  try {
+    const doc = parseAmbientZones(await readWorldDoc(name, "ambient.json"));
+    if (doc && doc.zones.length === 0) return null;
+    return doc;
+  } catch (e) {
+    console.warn(`[ambient] failed to load ambient.json for ${name}:`, (e as Error).message);
+    return null;
+  }
 }
 
 /** Load the maps2 spawn zones for a world (worlds/<name>/spawns.json,

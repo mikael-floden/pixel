@@ -175,8 +175,12 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
 
 ## Weather (server-owned world state, layer 2)
 
-- WorldState.weather (shared WEATHER_NAMES/COUNT; 0 Clear, 1 Cloudy, 2 Mist)
-  cycles via the "weather" message; cloud cover EASES ~4s. The shader's
+- WEATHER IS ORDINARY AMBIENT, ON PER ZONE (2026-09-18): there is no weather
+  index. The server's zone table (`docs/ambient-zones.md`) resolved at the
+  player's cell is the active SET (`ambientActive`, `__ml.ambientActive()`);
+  cloudy/mist/drizzle/rain/heavyrain/storm/snow/windy/thunder are names in
+  it, and `ambient/weather/gloom.ts` grades the set to a cloud cover and a
+  flat gloom that EASE ~4s (`easeGloom`; snapped on join). The shader's
   uCloud (DECLARED in the uniforms config) drives a WORLD-ANCHORED 2-octave
   value-noise field (wavelength ~550 world px) drifting on fixed wind
   (~42/23 px/s via uAnimTime), shading ambient (depth 0.45×cover, muted by
@@ -189,11 +193,13 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   ~0.002 rad up there and the lattices decorrelate (avatar tint out of sync
   with the drawn shade) — headless SwiftShader computes sin precisely, so QA
   screenshots never catch it.
-- Probes: `__ml.weatherInfo()`, `__ml.weather(idx, instant)` (local force),
-  `__ml.cloudAt(wx,wy)`. Regressions: scripts/verify-weather.mjs +
-  weather.test.ts.
-- **PRECIPITATION (weathers 3-8)** — Drizzle/Rain/Heavy rain/Storm/Snowing/
-  Windy (client/src/weatherfx.ts): a manually-pooled particle layer in WORLD
+- Probes: `__ml.weatherInfo()`, `__ml.weather(idx, instant)` (the old ring
+  as a LOCAL pin — LEGACY_INDEX; the zone table would overwrite it within
+  seconds otherwise), `__ml.worldAmbient(set)` (forces the server's sky for
+  every client; releases the pin), `__ml.cloudAt(wx,wy)`. Regressions:
+  scripts/verify-ambientweather.mjs + ambientweather.test.ts.
+- **PRECIPITATION** — drizzle/rain/heavyrain/storm/snow/windy
+  (ambient/weather/precip.ts, games-ambient's): a manually-pooled particle layer in WORLD
   space at depth 899_500 (above world art, BELOW the night overlay — drops
   dim with night and take torch light — below the lit copies). Drops RECYCLE
   inside the camera view (+margin): constant density however the camera
@@ -205,13 +211,13 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   `__ml.waterAtScreen`). Windy
   is leaf debris (three autumn tints, per-leaf surge + curl arcs) + faint
   motion-line wisps at 2.3× gust. Each state brings overcast (WEATHER_CLOUD)
-  and flat gloom (WEATHER_DIM → eased curPrecipDim in ambEff) — both applied
-  instantly on join and by `__ml.weather(idx, true)` (WeatherFX.snap()).
+  and flat gloom (CLOUD_OF / DIM_OF in gloom.ts) — both applied
+  instantly on join and by `__ml.weather(idx, true)`.
   HEADLESS QA at big viewports must use instant (the eased path assumes a
   live frame loop), and starvation stretches the 110ms lightning flash across
   seconds — a "stuck" white wash that does NOT happen at real frame rates.
   Probes: precip/precipDim in `__ml.weatherInfo()`.
-- **MIST (weather 2)** — creepy ground fog, part of the world (maintainer):
+- **MIST** — creepy ground fog, part of the world (maintainer):
   a SECOND shader pass (MIST_FRAG) in nightlight.ts — the multiply light
   field can only darken; fog must COVER — rendering to its own RT composited
   NORMAL at depth 1_000_000, above the light overlay AND the lit copies (fog

@@ -396,6 +396,16 @@ export class WorldState extends Schema {
    *  weather included, it is ordinary effects now. Rolled by WorldRoom from
    *  the zone's weights through shared/src/ambient.ts; "" = nothing on. */
   declare ambient: string;
+  /** Is `ambient` a FORCED override (the "ambient" {set} message: QA gates,
+   *  the demo button)? While true it is the sky for every client of the
+   *  world; false = the zone table below is, and `ambient` is "". */
+  declare ambientForced: boolean;
+  /** THE ZONE TABLE (maps2 ambient.json, shared/src/ambientzones.ts): packed
+   *  "zoneId=a,b;zoneId2=;..." of what is on in every ambient zone of the
+   *  world for the current ten-minute windows. A client resolves the cell
+   *  under its player through resolveAmbientAt; "" = the world has no zones
+   *  (then `ambient` is the room's rolled sky, as before). */
+  declare ambientZones: string;
   declare aurora: boolean; // aurora night: northern lights over the world
   declare frozen: boolean; // timeSpeed === 0 mirror (kept for the switch/UI)
   declare timeSpeed: number; // world-clock speed multiplier (TIME_SPEEDS)
@@ -417,6 +427,8 @@ export class WorldState extends Schema {
     this.timeIdx = DEFAULT_TIME_IDX;
     this.phaseT = 0.5; // mid-phase: the exact "characteristic" look of the phase
     this.ambient = "";
+    this.ambientForced = false;
+    this.ambientZones = "";
     this.aurora = false;
     // The day/night cycle RUNS BY ITSELF at x1 (maintainer 2026-07-31: "make
     // the time tick at normal x1 speed by default — I have to press the button
@@ -446,6 +458,8 @@ defineTypes(WorldState, {
   timeIdx: "number",
   phaseT: "number",
   ambient: "string",
+  ambientForced: "boolean",
+  ambientZones: "string",
   aurora: "boolean",
   frozen: "boolean",
   timeSpeed: "number",
