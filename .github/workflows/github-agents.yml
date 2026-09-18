@@ -64,6 +64,15 @@ on:
         type: boolean
         default: true
 
+# A CALLED WORKFLOW CANNOT GRANT ITSELF MORE THAN ITS CALLER HAS. The session
+# needs `contents: write` to push and `id-token: write` to mint its GitHub App
+# token; declaring them inside github-agent-run.yml is not enough, and the run
+# dies at startup with no job ever created (measured: run 12, startup_failure,
+# seconds after the dispatch). So the caller grants them here.
+permissions:
+  contents: write
+  id-token: write
+
 jobs:
   # HIS SAVES ONLY. The wiki server stamps every admin save with this message;
   # an agent clearing verdicts writes the same file with its own message, and
