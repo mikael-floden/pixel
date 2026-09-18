@@ -1,7 +1,18 @@
-// THE MAP TAB'S LAYER ROW — small chips above the minimap, one per thing the
-// map can draw over it (maintainer 2026-09-10: "at the top of the Map tab ...
-// small buttons that can be pressed to draw different things on the map. In
-// the future this will be features like quests, dungeons, party members").
+// THE MAP TAB'S LAYERS — things the map can draw over the minimap (maintainer
+// 2026-09-10: "at the top of the Map tab ... small buttons that can be pressed
+// to draw different things on the map. In the future this will be features
+// like quests, dungeons, party members").
+//
+// ONE "layers" BUTTON AND A MULTI-SELECT DIALOG, not a chip per layer
+// (maintainer 2026-09-18, with the ambient-zone layers coming — one per
+// effect: "There will be so many pills so I think a multi-select dropdown or
+// modal/dialog is better to select what ambient-effect zones to display. Just
+// make the UX good!"). The button names the count of layers on; the dialog
+// lists every offered layer in two groups — MAP (zones, dungeons) and AMBIENT
+// ZONES (one row per effect maps2 has placed) — with all/none per group, and
+// the map behind it redraws as you tick, so you see what you are choosing.
+// A layer that has nothing behind it (`has`) is hidden, and a group with no
+// rows is hidden with it.
 //
 // It started with the TECHNICAL layer, `zones`, so a boundary bug can be told
 // apart from any other bug by looking: the rectangle each zone room owns, the
@@ -12,15 +23,22 @@
 // A CHIP IS OFFERED ONLY WHEN THERE IS SOMETHING BEHIND IT (`Layer.has`) — a
 // world with no dungeons shows no dungeons button.
 //
-// INJECTED FROM OUTSIDE, because games-ui owns hud.ts (UI_AGENT.md) and this
-// is the games agent's data. Same pattern the ambient agent's settings button
-// uses (ambient/runtime/hudbutton.ts): find the page in the DOM, add to it,
-// and re-add when the HudBar has thrown everything away — it rebuilds itself
-// on a rejoin. `ensureMapLayers()` is idempotent and is polled from the scene.
+// INJECTED FROM OUTSIDE, because games-ui owns hud.ts (UI_AGENT.md); the
+// zones/dungeons DATA is the games agent's, the chooser and the ambient-zones
+// layer are games-ui's (2026-09-18). Same pattern the ambient agent's settings
+// button uses (ambient/runtime/hudbutton.ts): find the page in the DOM, add to
+// it, and re-add when the HudBar has thrown everything away — it rebuilds
+// itself on a rejoin. `ensureMapLayers()` is idempotent and is polled from
+// the scene.
 //
-// ADDING A LAYER is one entry in LAYERS: an id, a label, and a draw function
-// handed the projection and an SVG to fill. Nothing else changes — the chip
-// row, the persistence and the redraw are generic.
+// ADDING A LAYER is one entry in LAYERS: an id, a label, a group and a draw
+// function handed the projection and an SVG to fill. Nothing else changes —
+// the dialog, the persistence and the redraw are generic. The AMBIENT-ZONE
+// layers are not entries at all: they are derived from maps2's
+// ambient_zones.json (schema pixel-maps2/ambient-zones@1, proposed to maps2
+// 2026-09-18: zones[{id, effect, pct, rects:[[x0,y0,x1,y1]…]}], world cells,
+// x1/y1 exclusive like the zone rooms) — one layer per effect, drawn as
+// parallelograms whose fill deepens with pct. Missing file = no group.
 //
 // NO EXPLAINING TEXT IN THE MAP VIEW (maintainer 2026-09-14: "I don't like the
 // explaining text in the map view when toggling a pill/layer. Should be no
@@ -35,9 +53,12 @@ import {
   type PlaceMark,
   loadMinimapMeta,
   loadPlaceMarks,
+  worldFileUrl,
 } from "./maps";
+import { gameUrl } from "./staging";
 
 const ROW_CLS = "ml-maplayers";
+const DLG_CLS = "ml-layers";
 const SVG_CLS = "ml-maplayer-svg";
 const MARK_CLS = "ml-maplayer-marks";
 const KEY = "ml-map-layers"; // which layers are on, comma separated
@@ -68,9 +89,13 @@ export interface LayerCtx {
   pin: (col: number, row: number, text: string) => void;
 }
 
+type LayerGroup = "map" | "ambient";
+const GROUP_LABEL: Record<LayerGroup, string> = { map: "Map", ambient: "Ambient zones" };
+
 interface Layer {
   id: string;
   label: string;
+  group: LayerGroup;
   /** Offer the chip only when there is something behind it. A world with no
    *  dungeons must not show a dungeons button that draws nothing — the same
    *  graceful-degradation rule the ambient checklist follows (no rows, no
@@ -108,6 +133,7 @@ const LAYERS: Layer[] = [
   {
     id: "zones",
     label: "zones",
+    group: "map",
     draw: (ctx) => {
       const z = ml()?.zones?.();
       if (!z) return;
@@ -160,6 +186,7 @@ const LAYERS: Layer[] = [
     // `pin` — so this layer answers "where are they", not "which is which".
     id: "dungeons",
     label: "dungeons",
+    group: "map",
     has: () => caves().length > 0,
     draw: (ctx) => {
       for (const c of caves()) ctx.pin(c.at[0], c.at[1], c.name);
@@ -167,13 +194,103 @@ const LAYERS: Layer[] = [
   },
 ];
 
+/* -- ambient zones (maps2's ambient_zones.json) ----------------------------- */
+
+interface AmbientZone {
+  id: string;
+  effect: string;
+  /** How often the effect is active here, 0–100; 100 = always. */
+  pct: number;
+  /** World-cell rectangles, x1/y1 exclusive. */
+  rects: [number, number, number, number][];
+}
+
+/** maps2's placed ambient zones for a world, or [] when the file is not
+ *  published yet (or malformed — a bad entry is dropped, never thrown). */
+async function loadAmbientZones(world: string): Promise<AmbientZone[]> {
+  try {
+    const res = await fetch(gameUrl(worldFileUrl(world, "ambient_zones.json")));
+    if (!res.ok) return [];
+    const doc = (await res.json()) as { zones?: unknown };
+    if (!Array.isArray(doc.zones)) return [];
+    const out: AmbientZone[] = [];
+    for (const z of doc.zones as Record<string, unknown>[]) {
+      if (!z || typeof z.effect !== "string") continue;
+      const rects = (Array.isArray(z.rects) ? z.rects : [])
+        .filter((r): r is number[] => Array.isArray(r) && r.length === 4 && r.every((n) => typeof n === "number"))
+        .map((r) => [r[0], r[1], r[2], r[3]] as [number, number, number, number]);
+      if (!rects.length) continue;
+      const pct = typeof z.pct === "number" ? Math.max(0, Math.min(100, z.pct)) : 100;
+      out.push({ id: typeof z.id === "string" ? z.id : `${z.effect}-${out.length}`, effect: z.effect, pct, rects });
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
+/** A stable hue per effect name, so "rain" is the same colour every visit
+ *  and two effects sharing a coast read apart. */
+function effectHue(effect: string): number {
+  let h = 0;
+  for (let i = 0; i < effect.length; i++) h = (h * 31 + effect.charCodeAt(i)) >>> 0;
+  return h % 360;
+}
+
+let ambientFor = ""; // which world `ambientZones` belongs to
+let ambientZones: AmbientZone[] = [];
+let ambientLayerCache: { key: string; layers: Layer[] } = { key: "", layers: [] };
+
+/** One layer per effect maps2 has placed, in first-seen order. Derived (and
+ *  memoised) from the loaded zones, so the dialog and the redraw see new
+ *  effects the moment the file lands. */
+function ambientLayers(): Layer[] {
+  const key = ambientZones.map((z) => z.effect).join(",");
+  if (key === ambientLayerCache.key) return ambientLayerCache.layers;
+  const effects = [...new Set(ambientZones.map((z) => z.effect))];
+  const layers = effects.map<Layer>((effect) => ({
+    id: `ambient:${effect}`,
+    label: effect,
+    group: "ambient",
+    has: () => ambientZones.some((z) => z.effect === effect),
+    draw: (ctx) => {
+      const hue = effectHue(effect);
+      for (const z of ambientZones) {
+        if (z.effect !== effect) continue;
+        // The fill DEEPENS with how often the effect is active: 100% reads
+        // as a solid wash, a rare 10% as a tint — the pct is on the map
+        // without a number over it (no text over the map, the law above).
+        const alpha = 0.1 + 0.3 * (z.pct / 100);
+        for (const [x0, y0, x1, y1] of z.rects) {
+          ctx.svg.appendChild(
+            ctx.el("path", {
+              d: quad(ctx, x0, y0, x1, y1),
+              fill: `hsla(${hue},70%,60%,${alpha.toFixed(3)})`,
+              stroke: `hsla(${hue},70%,70%,0.9)`,
+              "stroke-width": 0.35,
+              "vector-effect": "non-scaling-stroke",
+            }),
+          );
+        }
+      }
+    },
+  }));
+  ambientLayerCache = { key, layers };
+  return layers;
+}
+
+/** Every layer that exists right now: the fixed ones, then the ambient ones. */
+const allLayers = (): Layer[] => [...LAYERS, ...ambientLayers()];
+
 /* -- state ------------------------------------------------------------------ */
 
 function readOn(): Set<string> {
   try {
     const raw = localStorage.getItem(KEY);
-    if (!raw) return new Set();
-    return new Set(raw.split(",").filter((id) => LAYERS.some((l) => l.id === id)));
+    // Ids are kept even when their layer is not loaded YET (the ambient ones
+    // arrive with the world's file); an id nothing answers to simply draws
+    // nothing and is not offered.
+    return new Set(raw ? raw.split(",").filter(Boolean) : []);
   } catch {
     return new Set(); // private mode / storage disabled
   }
@@ -194,7 +311,8 @@ let metaFor = ""; // which world `meta` belongs to
 let meta: MinimapMeta | null = null;
 let placesFor = ""; // which world `places` belongs to
 let places: PlaceMark[] = [];
-const chips = new Map<string, HTMLElement>();
+let openBtn: HTMLButtonElement | null = null;
+let dialog: HTMLElement | null = null;
 
 /** The named caves of the loaded world, in the order maps2 published them. */
 const caves = (): PlaceMark[] => places.filter((p) => p.kind === "cave");
@@ -215,6 +333,27 @@ function styleOnce() {
   .${ROW_CLS}{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;
     width:100%;padding:6px 8px 0;box-sizing:border-box}
   .${ROW_CLS} .ml-plate-btn{min-height:30px;padding:4px 10px;font-size:12px;border-radius:8px}
+  /* THE CHOOSER: the drop-quantity dialog's recipe (hud.ts .ml-qty) — a
+     blurred backdrop over everything and a wiki card, centred; the card
+     scrolls when the ambient list outgrows a phone. Rows are the Settings
+     checklist's own recipe (.ml-plate-btn + .ml-amb-check), so ticking a
+     layer here looks exactly like ticking an effect there. */
+  .${DLG_CLS}-back{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.5);
+    backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  .${DLG_CLS}{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    width:min(360px,calc(100vw - 32px));max-height:calc(100dvh - 48px);overflow-y:auto;
+    box-sizing:border-box;display:flex;flex-direction:column;gap:8px;padding:14px;
+    background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:14px;
+    box-shadow:var(--shadow);font:14px/1.45 var(--sans)}
+  .${DLG_CLS} *{box-sizing:border-box}
+  .${DLG_CLS}-h{display:flex;align-items:center;gap:6px;margin-top:6px;
+    color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase}
+  .${DLG_CLS}-h .ml-plate-btn{min-height:26px;padding:2px 9px;font-size:11px;border-radius:7px;
+    text-transform:none;letter-spacing:0;font-weight:600}
+  .${DLG_CLS}-h .ml-plate-btn:first-of-type{margin-left:auto}
+  .${DLG_CLS} .ml-layer-row{justify-content:flex-start;gap:12px;text-align:left;white-space:nowrap;
+    min-height:40px;padding:6px 12px}
+  .${DLG_CLS}-done{margin-top:6px}
   /* CLIPPED TO THE IMAGE BOX, both of them. A zone rectangle covers water and
      the render is CROPPED to the island, so the outer zones project OUTSIDE
      the image — with overflow visible their lines and their numbers escaped
@@ -239,29 +378,119 @@ function styleOnce() {
   document.head.appendChild(st);
 }
 
+/** Flip one layer and redraw now, not on the next move. */
+function setLayer(id: string, want: boolean) {
+  if (want) on.add(id);
+  else on.delete(id);
+  writeOn(on);
+  sig = "";
+  syncButton();
+}
+
+/** The layers the dialog offers: every layer whose `has` says there is
+ *  something behind it, in group order. */
+const offered = (): Layer[] => allLayers().filter((l) => (l.has ? l.has() : true));
+
+function closeDialog() {
+  dialog?.remove();
+  dialog = null;
+}
+
+/** THE CHOOSER. Rebuilt on every open from what exists right now, so an
+ *  ambient file that landed since the last open is simply there. Ticks apply
+ *  immediately (the map behind the backdrop redraws); the backdrop, Escape
+ *  and Done close it. */
+function openDialog() {
+  closeDialog();
+  const back = document.createElement("div");
+  back.className = `${DLG_CLS}-back`;
+  const card = document.createElement("div");
+  card.className = DLG_CLS;
+  card.setAttribute("role", "dialog");
+  const rows: { id: string; btn: HTMLButtonElement; box: HTMLElement }[] = [];
+  const paint = () => {
+    for (const r of rows) {
+      r.btn.classList.toggle("on", on.has(r.id));
+      r.box.classList.toggle("on", on.has(r.id));
+    }
+  };
+  const groups: LayerGroup[] = ["map", "ambient"];
+  for (const g of groups) {
+    const layers = offered().filter((l) => l.group === g);
+    if (!layers.length) continue;
+    const h = document.createElement("div");
+    h.className = `${DLG_CLS}-h`;
+    const name = document.createElement("span");
+    name.textContent = GROUP_LABEL[g];
+    h.appendChild(name);
+    // all / none per group — with a dozen ambient effects, one tap each way
+    for (const [label, want] of [
+      ["all", true],
+      ["none", false],
+    ] as const) {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "ml-plate-btn";
+      b.textContent = label;
+      b.addEventListener("click", () => {
+        for (const l of layers) setLayer(l.id, want);
+        paint();
+        ensureMapLayers();
+      });
+      h.appendChild(b);
+    }
+    card.appendChild(h);
+    for (const l of layers) {
+      const btn = document.createElement("button");
+      btn.type = "button";
+      btn.className = "ml-plate-btn ml-layer-row";
+      btn.dataset.layer = l.id;
+      const box = document.createElement("span");
+      box.className = "ml-amb-check";
+      box.setAttribute("aria-hidden", "true");
+      const t = document.createElement("span");
+      t.textContent = l.label;
+      btn.append(box, t);
+      btn.addEventListener("click", () => {
+        setLayer(l.id, !on.has(l.id));
+        paint();
+        ensureMapLayers();
+      });
+      card.appendChild(btn);
+      rows.push({ id: l.id, btn, box });
+    }
+  }
+  const done = document.createElement("button");
+  done.type = "button";
+  done.className = `ml-plate-btn ${DLG_CLS}-done`;
+  done.textContent = "Done";
+  done.addEventListener("click", closeDialog);
+  card.appendChild(done);
+  back.appendChild(card);
+  back.addEventListener("click", (e) => {
+    if (e.target === back) closeDialog();
+  });
+  const onKey = (e: KeyboardEvent) => {
+    if (e.key === "Escape") {
+      closeDialog();
+      window.removeEventListener("keydown", onKey);
+    }
+  };
+  window.addEventListener("keydown", onKey);
+  paint();
+  document.body.appendChild(back);
+  dialog = back;
+}
+
 function build(page: HTMLElement, frame: HTMLElement) {
   styleOnce();
   row = document.createElement("div");
   row.className = ROW_CLS;
-  for (const l of LAYERS) {
-    const b = document.createElement("button");
-    b.className = "ml-plate-btn";
-    b.type = "button";
-    const t = document.createElement("span");
-    t.textContent = l.label;
-    b.appendChild(t);
-    const paint = () => b.classList.toggle("on", on.has(l.id));
-    b.addEventListener("click", () => {
-      if (on.has(l.id)) on.delete(l.id);
-      else on.add(l.id);
-      writeOn(on);
-      paint();
-      sig = ""; // redraw now, not on the next move
-    });
-    paint();
-    row.appendChild(b);
-    chips.set(l.id, b);
-  }
+  openBtn = document.createElement("button");
+  openBtn.className = "ml-plate-btn";
+  openBtn.type = "button";
+  openBtn.addEventListener("click", openDialog);
+  row.appendChild(openBtn);
   // ABOVE the map, which is what "at the top of the Map tab" means; the page's
   // first child is the .ml-map wrapper.
   page.insertBefore(row, page.firstChild);
@@ -271,17 +500,17 @@ function build(page: HTMLElement, frame: HTMLElement) {
   marks = document.createElement("div");
   marks.className = MARK_CLS;
   frame.appendChild(marks);
-  syncChips();
+  syncButton();
 }
 
-/** Hide the chip for a layer that has nothing behind it in this world. The
- *  chip row is built once and the data arrives later, so this runs again each
- *  time a world's data lands. */
-function syncChips() {
-  for (const l of LAYERS) {
-    const b = chips.get(l.id);
-    if (b) b.hidden = l.has ? !l.has() : false;
-  }
+/** The button names how many OFFERED layers are on ("layers · 2"), so the
+ *  state is readable without opening the dialog; an id nothing answers to
+ *  (an ambient layer of a world that has none) is not counted. */
+function syncButton() {
+  if (!openBtn) return;
+  const n = offered().filter((l) => on.has(l.id)).length;
+  openBtn.textContent = n ? `layers · ${n}` : "layers";
+  openBtn.classList.toggle("on", n > 0);
 }
 
 /** Idempotent: keep one live chip row + overlay on the Map page, and redraw the
@@ -294,6 +523,7 @@ export function ensureMapLayers() {
     row?.remove();
     svg?.remove();
     marks?.remove();
+    closeDialog();
     build(page, frame);
   }
   if (!svg) return;
@@ -310,7 +540,19 @@ export function ensureMapLayers() {
       if (placesFor === forWorld) {
         places = list;
         sig = "";
-        syncChips();
+        syncButton();
+      }
+    });
+  }
+  if (feed.world !== ambientFor) {
+    ambientFor = feed.world;
+    ambientZones = [];
+    const forWorld = feed.world;
+    void loadAmbientZones(forWorld).then((list) => {
+      if (ambientFor === forWorld) {
+        ambientZones = list;
+        sig = "";
+        syncButton();
       }
     });
   }
@@ -326,7 +568,7 @@ export function ensureMapLayers() {
     });
   }
   const z = on.has("zones") ? ml()?.zones?.() : null;
-  const next = `${feed.world}|${[...on].join(",")}|${z ? `${z.here}:${z.cols}x${z.rows}` : ""}|${meta ? 1 : 0}|${places.length}`;
+  const next = `${feed.world}|${[...on].join(",")}|${z ? `${z.here}:${z.cols}x${z.rows}` : ""}|${meta ? 1 : 0}|${places.length}|${ambientZones.length}`;
   if (next === sig) return;
   sig = next;
   svg.textContent = "";
@@ -390,20 +632,29 @@ export function ensureMapLayers() {
       marks.appendChild(b);
     },
   };
-  for (const l of LAYERS) if (on.has(l.id)) l.draw(ctx);
+  for (const l of allLayers()) if (on.has(l.id)) l.draw(ctx);
 }
 
 /** QA/probe: which layers are on; with an argument, set one. */
 export function mapLayers(id?: string, want?: boolean): string[] {
-  if (id && LAYERS.some((l) => l.id === id)) {
-    const to = want === undefined ? !on.has(id) : want;
-    if (to) on.add(id);
-    else on.delete(id);
-    writeOn(on);
-    sig = "";
+  if (id && allLayers().some((l) => l.id === id)) {
+    setLayer(id, want === undefined ? !on.has(id) : want);
     ensureMapLayers();
-    const b = row?.querySelectorAll<HTMLElement>(".ml-plate-btn")[LAYERS.findIndex((l) => l.id === id)];
-    b?.classList.toggle("on", to);
   }
   return [...on];
 }
+
+/** QA/probe: the layers the chooser offers right now (id, group, on). */
+export function mapLayerList(): { id: string; group: LayerGroup; on: boolean }[] {
+  return offered().map((l) => ({ id: l.id, group: l.group, on: on.has(l.id) }));
+}
+
+// The probe surface this module OWNS — `window.__ml.mapLayers` is the scene's
+// wiring (games agent) and stays; the chooser's own list/set/open live here,
+// the way ambient publishes __mlAmbient and the select screen __mlSelect.
+(window as unknown as { __mlMapLayers?: unknown }).__mlMapLayers = {
+  list: mapLayerList,
+  set: mapLayers,
+  open: () => openDialog(),
+  close: () => closeDialog(),
+};

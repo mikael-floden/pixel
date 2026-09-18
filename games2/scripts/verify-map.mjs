@@ -22,6 +22,7 @@ import { chromium } from "playwright-core";
 
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
+const OUT = process.env.OUT || "/tmp";
 const MAX_MAP_W = 2400;
 const TOL = 0.015; // 1.5% of the frame
 
@@ -157,20 +158,18 @@ try {
     // maps agent: the map should "display/show all dungeons" once the caves
     // being dug are done). Two halves, and the run proves both.
     //
-    // A: no places.json yet → the chip must NOT be offered. A button that
-    // draws nothing is worse than no button, and this is the state the world
-    // is in today, so it is the one that would ship unnoticed.
-    const chip = () =>
-      page.evaluate(() => {
-        const b = [...document.querySelectorAll(".ml-maplayers .ml-plate-btn")].find(
-          (x) => x.textContent.trim() === "dungeons",
-        );
-        return b ? { hidden: !!b.hidden } : null;
-      });
-    const before = await chip();
-    if (!before) fail("no dungeons chip in the Map tab's layer row at all");
-    else if (before.hidden) ok("dungeons chip stays hidden while the world publishes no caves");
-    else ok("dungeons chip is offered — this world already publishes caves");
+    // A: no places.json yet → the layer must NOT be offered. A row that
+    // draws nothing is worse than no row, and this is the state the world
+    // is in today, so it is the one that would ship unnoticed. The layers
+    // live in the CHOOSER now (maintainer 2026-09-18: one "layers" button
+    // and a multi-select dialog, because the ambient-zone layers are one per
+    // effect); `mapLayerList()` is what the dialog is built from.
+    const offered = () => page.evaluate(() => window.__mlMapLayers?.list() ?? null);
+    const before = await offered();
+    if (!before) fail("no __mlMapLayers probe — the chooser's data is not exposed");
+    else if (!before.some((l) => l.id === "zones")) fail(`the chooser offers no zones layer: ${JSON.stringify(before)}`);
+    else if (!before.some((l) => l.id === "dungeons")) ok("dungeons layer stays unoffered while the world publishes no caves");
+    else ok("dungeons layer is offered — this world already publishes caves");
 
     // B: with a cave published, the pin lands where maps2 says that cell
     // lands. GROUND TRUTH IS THE SAME WORKED SAMPLE THE DOT IS JUDGED BY —
@@ -203,6 +202,24 @@ try {
         ];
         await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(doc) });
       });
+      // …and an AMBIENT ZONE the same way (maintainer 2026-09-18: ambient
+      // effects tied to zones maps2 places; the map tab shows them as layers,
+      // one per effect). The fixture is the proposed pixel-maps2/ambient-
+      // zones@1 shape — rain at 50% over a 5x5 block around the worked cell —
+      // so the whole path (file → derived layer → dialog group → drawn
+      // parallelogram) is proven before maps2 publishes anything.
+      await page.route("**/ambient_zones.json*", async (route) => {
+        const [cx, cy] = s0.cell;
+        await route.fulfill({
+          status: 200,
+          contentType: "application/json",
+          body: JSON.stringify({
+            schema: "pixel-maps2/ambient-zones@1",
+            world: feed.world,
+            zones: [{ id: "gate_rain", effect: "rain", pct: 50, rects: [[cx - 2, cy - 2, cx + 3, cy + 3]] }],
+          }),
+        });
+      });
       // the loader reads places once per world, so the fixture needs a fresh page
       await page.reload({ waitUntil: "load" });
       await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
@@ -215,13 +232,51 @@ try {
         return i && i.naturalWidth > 0;
       }, null, { timeout: 20000 });
       let after = null;
-      for (let i = 0; i < 40 && !(after && !after.hidden); i++) {
+      const hasLayer = (list, id) => Array.isArray(list) && list.some((l) => l.id === id);
+      for (let i = 0; i < 40 && !(hasLayer(after, "dungeons") && hasLayer(after, "ambient:rain")); i++) {
         await page.waitForTimeout(200);
-        after = await chip();
+        after = await offered();
       }
-      after && !after.hidden
-        ? ok("dungeons chip appears once a cave is published")
-        : fail("a cave is published and the dungeons chip is still not offered");
+      hasLayer(after, "dungeons")
+        ? ok("dungeons layer is offered once a cave is published")
+        : fail("a cave is published and the dungeons layer is still not offered");
+      // THE AMBIENT-ZONE LAYER: derived from the file, grouped "ambient",
+      // drawn as a tinted parallelogram once on, listed under its own group
+      // in the chooser.
+      const rainRow = Array.isArray(after) && after.find((l) => l.id === "ambient:rain");
+      rainRow && rainRow.group === "ambient"
+        ? ok("ambient_zones.json yields an ambient:rain layer in the ambient group")
+        : fail(`no ambient:rain layer from the fixture: ${JSON.stringify(after)}`);
+      if (rainRow) {
+        await page.evaluate(() => window.__ml.mapLayers("ambient:rain", true));
+        let wash = null;
+        for (let i = 0; i < 20 && !wash; i++) {
+          await page.waitForTimeout(150);
+          wash = await page.evaluate(() => {
+            const p = [...document.querySelectorAll(".ml-maplayer-svg path")].find((e) => (e.getAttribute("fill") || "").startsWith("hsla("));
+            if (!p) return null;
+            const b = p.getBoundingClientRect(), f = document.querySelector(".ml-map-frame").getBoundingClientRect();
+            return { fill: p.getAttribute("fill"), w: Math.round(b.width), h: Math.round(b.height), inside: b.left >= f.left - 1 && b.right <= f.right + 1 && b.top >= f.top - 1 && b.bottom <= f.bottom + 1 };
+          });
+        }
+        wash && wash.w > 2 && wash.h > 2 && wash.inside
+          ? ok(`the rain zone draws as a tinted parallelogram inside the map (${wash.w}x${wash.h}px, ${wash.fill})`)
+          : fail(`rain zone not drawn: ${JSON.stringify(wash)}`);
+        const marksText = await page.evaluate(() => document.querySelector(".ml-maplayer-marks")?.textContent.trim() ?? "");
+        marksText === "" ? ok("no text over the map for the zone (its pct is the fill's depth)") : fail(`zone layer wrote text over the map: "${marksText}"`);
+        await page.evaluate(() => document.querySelector(".ml-maplayers .ml-plate-btn").click());
+        await page.waitForTimeout(150);
+        const grp = await page.evaluate(() => ({
+          groups: [...document.querySelectorAll(".ml-layers .ml-layers-h span")].map((e) => e.textContent.trim()),
+          rain: !!document.querySelector('.ml-layers [data-layer="ambient:rain"]'),
+        }));
+        grp.groups.includes("Ambient zones") && grp.rain
+          ? ok(`the chooser shows the Ambient zones group with rain (${grp.groups.join(" / ")})`)
+          : fail(`chooser groups ${JSON.stringify(grp)}`);
+        await page.screenshot({ path: `${OUT}/map-layers-dialog.png` });
+        await page.evaluate(() => document.querySelector(".ml-layers-done")?.click());
+        await page.evaluate(() => window.__ml.mapLayers("ambient:rain", false));
+      }
       await page.evaluate(() => window.__ml.mapLayers("dungeons", true));
       let pins = [];
       for (let i = 0; i < 40 && !pins.length; i++) {
@@ -243,9 +298,9 @@ try {
         });
       }
       // NO EXPLAINING TEXT IN THE MAP VIEW AT ALL (maintainer 2026-09-14): the
-      // chips name themselves and nothing else on this page is allowed to
-      // talk. The whole layer row's text must be the chip labels, nothing
-      // more — a caption under them is what he asked to be rid of.
+      // button names itself and nothing else on this page is allowed to
+      // talk. The whole layer row's text must be its button, nothing more —
+      // a caption under it is what he asked to be rid of.
       const rowText = await page.evaluate(() => {
         const row = document.querySelector(".ml-maplayers");
         if (!row) return null;
@@ -254,8 +309,44 @@ try {
       });
       if (!rowText) fail("no layer row on the Map page");
       else if (rowText.all !== rowText.chips.join(""))
-        fail(`the Map tab's layer row says more than its chips (${JSON.stringify(rowText.all)}) — no explaining text on this page`);
-      else ok(`the layer row is chips only (${rowText.chips.join(", ")})`);
+        fail(`the Map tab's layer row says more than its button (${JSON.stringify(rowText.all)}) — no explaining text on this page`);
+      else ok(`the layer row is the button only (${rowText.chips.join(", ")})`);
+      // THE CHOOSER (maintainer 2026-09-18): the button opens a dialog listing
+      // the offered layers by group; a tick applies at once (the map behind
+      // redraws), all/none per group, Done closes. The count on the button is
+      // the number of offered layers on.
+      await page.evaluate(() => document.querySelector(".ml-maplayers .ml-plate-btn").click());
+      await page.waitForTimeout(150);
+      const dlg = await page.evaluate(() => {
+        const card = document.querySelector(".ml-layers");
+        if (!card) return null;
+        return {
+          groups: [...card.querySelectorAll(".ml-layers-h span")].map((e) => e.textContent.trim()),
+          rows: [...card.querySelectorAll("[data-layer]")].map((b) => ({ id: b.dataset.layer, on: b.classList.contains("on"), label: b.textContent.trim() })),
+          text: card.textContent.trim(),
+        };
+      });
+      if (!dlg) fail("the layers button opened no dialog");
+      else {
+        dlg.groups[0] === "Map" && dlg.rows.some((r) => r.id === "zones") && dlg.rows.some((r) => r.id === "dungeons")
+          ? ok(`chooser lists the Map group with zones + dungeons (${dlg.rows.map((r) => r.id).join(", ")})`)
+          : fail(`chooser contents: ${JSON.stringify(dlg)}`);
+        const wasOn = await page.evaluate(() => window.__ml.mapLayers().includes("zones"));
+        await page.evaluate(() => document.querySelector('.ml-layers [data-layer="zones"]').click());
+        await page.waitForTimeout(120);
+        const nowOn = await page.evaluate(() => window.__ml.mapLayers().includes("zones"));
+        const btnText = await page.evaluate(() => document.querySelector(".ml-maplayers .ml-plate-btn").textContent.trim());
+        nowOn !== wasOn ? ok(`ticking zones in the chooser flips the layer (${wasOn} -> ${nowOn}); button reads "${btnText}"`) : fail(`ticking zones did nothing (${wasOn} -> ${nowOn})`);
+        /^layers( · \d+)?$/.test(btnText) && (nowOn ? /· \d+/.test(btnText) : true)
+          ? ok("the button carries the count of layers on")
+          : fail(`button text "${btnText}" — want "layers · N"`);
+        await page.evaluate(() => document.querySelector('.ml-layers [data-layer="zones"]').click()); // restore
+        await page.evaluate(() => document.querySelector(".ml-layers-done").click());
+        await page.waitForTimeout(100);
+        (await page.evaluate(() => !document.querySelector(".ml-layers")))
+          ? ok("Done closes the chooser")
+          : fail("the chooser stayed open after Done");
+      }
 
       const inked = pins.filter((p) => p.text);
       inked.length

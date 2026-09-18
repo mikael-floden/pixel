@@ -90,7 +90,7 @@ type AmbientEffect = {
   name: string;
   kind: "field" | "episode";
   conflicts: string[];
-  on: boolean; // running right now (AUTO: director/field; MANUAL: enabled)
+  on: boolean; // running right now (ZONE BASED = auto: the world; FORCED = manual: enabled)
   enabled: boolean; // manually switched on
   blocked: string | null; // the enabled effect that forbids switching this on
 };
@@ -467,7 +467,10 @@ export class HudBar {
   private ambSection: HTMLElement | null = null;
   private ambList: HTMLElement | null = null;
   private ambRows = new Map<string, { el: HTMLButtonElement; img: HTMLElement; label: HTMLElement }>();
-  private ambAuto: { el: HTMLButtonElement; img: HTMLElement } | null = null;
+  /** The two-way mode switch: ZONE BASED (the world decides — the server per
+   *  zone once that runtime lands, the director until then) vs FORCED (he sees
+   *  exactly what he picked). Maintainer 2026-09-18. */
+  private ambMode: { zone: HTMLButtonElement; forced: HTMLButtonElement } | null = null;
   private ambBuilt = false;
   // Map tab: minimap <img> + a red "you are here" dot, driven by a rAF loop
   // that reads window.__ml.minimap() while the tab is visible.
@@ -729,9 +732,30 @@ export class HudBar {
     if (effects.length === 0) return; // controller up but not ready — retry
     this.ambBuilt = true;
     if (this.ambSection) this.ambSection.style.display = ""; // reveal now it has rows
-    // AUTO first (the living-world default: director rolls, fields self-gate),
-    // then one row per effect in registry order.
-    this.ambAuto = this.ambRow(null, "Auto");
+    // THE MODE SWITCH first (maintainer 2026-09-18: "the settings should
+    // instead of checkboxes have a switch for 'forced ambient effect' / 'zone
+    // based ambient effects'. If you select forced the zone based system is
+    // disabled and I will see the effect I have selected — a way for me to
+    // test a new ambient effect without running to the zone"), then one row
+    // per effect in registry order. Zone based rides __mlAmbient.auto(true):
+    // today that is the director, and games-ambient makes it "follow the
+    // server's zone" when that runtime lands — the seam is theirs, the switch
+    // is ours. The rows stay live in both modes: they SHOW what runs, and a
+    // tap in zone mode takes forced control of exactly that scene.
+    const mode = mk("div", "ml-amb-mode");
+    const zone = mk("button", "ml-plate-btn") as HTMLButtonElement;
+    zone.type = "button";
+    zone.textContent = "Zone based";
+    const forced = mk("button", "ml-plate-btn") as HTMLButtonElement;
+    forced.type = "button";
+    forced.textContent = "Forced";
+    zone.addEventListener("click", () => this.setAmbientMode(true));
+    forced.addEventListener("click", () => this.setAmbientMode(false));
+    pressFx(zone);
+    pressFx(forced);
+    mode.append(zone, forced);
+    this.ambList!.appendChild(mode);
+    this.ambMode = { zone, forced };
     for (const e of effects) this.ambRow(e.name, capWords(e.name));
     // Bird-density slider — scales BOTH bird flocks 0.1×–10× (maintainer
     // 2026-07-25). Only when the ambient layer exposes birdDensity (older
@@ -745,11 +769,10 @@ export class HudBar {
     this.refreshAmbient();
   }
 
-  /** A checkbox row (wiki-style row button + CSS checkbox + label).
-   * name=null → the AUTO row. Returns its element refs for state updates. */
-  private ambRow(name: string | null, label: string) {
+  /** A checkbox row (wiki-style row button + CSS checkbox + label) for one
+   * effect. Returns its element refs for state updates. */
+  private ambRow(name: string, label: string) {
     const b = mk("button", "ml-plate-btn ml-amb-row") as HTMLButtonElement;
-    if (name === null) b.classList.add("ml-amb-auto");
     const img = mk("span", "ml-amb-check");
     img.setAttribute("aria-hidden", "true");
     const t = mk("span", "ml-amb-label");
@@ -759,39 +782,52 @@ export class HudBar {
     pressFx(b);
     this.ambList!.appendChild(b);
     const refs = { el: b, img, label: t };
-    if (name !== null) this.ambRows.set(name, refs);
+    this.ambRows.set(name, refs);
     return refs;
   }
 
-  /** Handle a row tap. AUTO toggles director mode; an effect toggles itself
-   * (enabling refused when an incompatible effect is active). Tapping an
-   * effect while in AUTO takes manual control while PRESERVING the scene the
-   * director is currently showing, so only the tapped effect changes. */
-  private onAmbient(name: string | null) {
+  /** The switch. ZONE BASED hands the scene back to the world (auto). FORCED
+   * takes control while PRESERVING the scene showing right now — switching to
+   * manual empties the set, so what was running is re-enabled — and from
+   * there each row toggles just itself. */
+  private setAmbientMode(zone: boolean) {
     const api = ambientApi();
     if (!api) return;
-    if (name === null) {
-      const mode = ambSafe(() => api.auto(), "manual");
-      ambSafe(() => api.auto(mode !== "auto"), "manual");
+    const mode = ambSafe(() => api.auto(), "manual");
+    if (zone) {
+      if (mode !== "auto") ambSafe(() => api.auto(true), "manual");
+    } else if (mode === "auto") {
+      const running = ambSafe(() => api.effects(), [] as AmbientEffect[]).filter((e) => e.on).map((e) => e.name);
+      ambSafe(() => api.auto(false), "manual"); // → manual, empty set
+      for (const r of running) ambSafe(() => api.setEnabled(r, true), null);
+    }
+    this.refreshAmbient();
+  }
+
+  /** Handle an effect row tap: the effect toggles itself (enabling refused
+   * when an incompatible effect is active). A tap while ZONE BASED flips the
+   * switch to FORCED while PRESERVING the scene the world is showing, so only
+   * the tapped effect changes. */
+  private onAmbient(name: string) {
+    const api = ambientApi();
+    if (!api) return;
+    const effects = ambSafe(() => api.effects(), [] as AmbientEffect[]);
+    const cur = effects.find((e) => e.name === name);
+    if (cur?.blocked) return this.refreshAmbient(); // can't enable — no-op
+    const mode = ambSafe(() => api.auto(), "manual");
+    if (mode === "auto") {
+      const running = effects.filter((e) => e.on).map((e) => e.name);
+      const wasOn = !!cur?.on;
+      ambSafe(() => api.auto(false), "manual"); // → manual, empty set
+      // Apply the TAP first (guaranteed — the set is empty, nothing blocks
+      // it), THEN re-seed the rest of the scene the world was showing so only
+      // the tapped effect changed. Any seeded effect that conflicts with the
+      // tap is silently refused (dropped) — e.g. tapping fireflies during the
+      // day drops the running pollen (its day/night opposite).
+      if (!wasOn) ambSafe(() => api.setEnabled(name, true), null);
+      for (const r of running) if (r !== name) ambSafe(() => api.setEnabled(r, true), null);
     } else {
-      const effects = ambSafe(() => api.effects(), [] as AmbientEffect[]);
-      const cur = effects.find((e) => e.name === name);
-      if (cur?.blocked) return this.refreshAmbient(); // can't enable — no-op
-      const mode = ambSafe(() => api.auto(), "manual");
-      if (mode === "auto") {
-        const running = effects.filter((e) => e.on).map((e) => e.name);
-        const wasOn = !!cur?.on;
-        ambSafe(() => api.auto(false), "manual"); // → manual, empty set
-        // Apply the TAP first (guaranteed — the set is empty, nothing blocks
-        // it), THEN re-seed the rest of the scene the director was showing so
-        // only the tapped effect changed. Any seeded effect that conflicts
-        // with the tap is silently refused (dropped) — e.g. tapping fireflies
-        // during the day drops the running pollen (its day/night opposite).
-        if (!wasOn) ambSafe(() => api.setEnabled(name, true), null);
-        for (const r of running) if (r !== name) ambSafe(() => api.setEnabled(r, true), null);
-      } else {
-        ambSafe(() => api.toggle(name), null);
-      }
+      ambSafe(() => api.toggle(name), null);
     }
     this.refreshAmbient();
   }
@@ -800,10 +836,9 @@ export class HudBar {
     const api = ambientApi();
     if (!api || !this.ambBuilt) return;
     const mode = ambSafe(() => api.auto(), "manual");
-    if (this.ambAuto) {
-      const on = mode === "auto";
-      this.ambAuto.el.classList.toggle("on", on);
-      setCheck(this.ambAuto.img, on);
+    if (this.ambMode) {
+      this.ambMode.zone.classList.toggle("on", mode === "auto");
+      this.ambMode.forced.classList.toggle("on", mode !== "auto");
     }
     for (const e of ambSafe(() => api.effects(), [] as AmbientEffect[])) {
       const row = this.ambRows.get(e.name);
@@ -1101,7 +1136,8 @@ export class HudBar {
       }),
     );
 
-    // Ambient-effect checklist: one checkbox row per effect (+ an AUTO row).
+    // Ambient-effect checklist: the zone-based/forced switch + one checkbox
+    // row per effect (tickAmbient).
     // Rows are built lazily once window.__mlAmbient is up (tickAmbient); the
     // whole section stays hidden until then, so an absent/failed ambient layer
     // shows no empty header (graceful degradation — the ambient charter's rule).
@@ -2506,6 +2542,7 @@ function injectStyles() {
     color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;
     text-transform:uppercase;text-align:center}
   .ml-amb-list{display:flex;flex-direction:column;gap:8px;width:100%}
+  .ml-amb-mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
   .ml-amb-row{justify-content:flex-start;gap:12px;text-align:left;white-space:nowrap}
   .ml-amb-row.blocked{opacity:.5}
   .ml-amb-label{overflow:hidden;text-overflow:ellipsis}

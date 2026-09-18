@@ -267,6 +267,40 @@ from the games agent), #18 (title/landing screen).
   His verdict on the whole portrait layout — top-right stack, corner ghost,
   three-row rail — on seeing it (2026-09-18): "Wow! This is perfect!" Do not
   re-litigate any of the three without his word.
+- **AMBIENT EFFECTS: A ZONE-BASED / FORCED SWITCH, NOT AN AUTO ROW** (maintainer
+  2026-09-18, the ambient-zones plan: effects become tied to zones maps2
+  places, decided by the server per zone; "the settings should instead of
+  checkboxes have a switch for 'forced ambient effect' / 'zone based ambient
+  effects'. If you select forced the zone based system is disabled and I will
+  see the effect I have selected — a way for me to test a new ambient effect
+  without running to the zone"). `hud.ts tickAmbient`: `.ml-amb-mode`, two
+  `.ml-plate-btn`s "Zone based" | "Forced", driven through
+  `__mlAmbient.auto(on)` — auto === zone based (the director today, "follow
+  the server" when games-ambient lands the runtime; the seam is theirs, posted
+  2026-09-18), manual === forced. FORCED preserves the scene showing at the
+  flip (manual empties the set, so what ran is re-enabled), then each row
+  toggles itself; a row tap while zone based flips to forced the same way.
+  The effect rows are unchanged (`.ml-amb-row`; a dozen ambient gates find
+  effects by them — never rename).
+- **MAP TAB LAYERS: ONE "layers" BUTTON + A MULTI-SELECT DIALOG, grouped Map /
+  Ambient zones** (maintainer 2026-09-18: "there will be so many pills so I
+  think a multi-select dropdown or modal/dialog is better … just make the UX
+  good!"). `maplayers.ts`: the button reads "layers · N" (N = offered layers
+  on); the dialog (`.ml-layers`, the drop-quantity card's recipe, z 70) is
+  rebuilt on every open from `offered()` — every layer whose `has()` is true —
+  with all/none per group; a tick applies at once and the map behind redraws;
+  backdrop, Escape and Done close. The AMBIENT-ZONE layers are DERIVED, one per
+  effect, from maps2's `ambient_zones.json` (schema `pixel-maps2/ambient-
+  zones@1`, proposed to maps2 2026-09-18: `zones[{id, effect, pct,
+  rects:[[x0,y0,x1,y1]…]}]`, world cells, x1/y1 exclusive; effect ids = the
+  ambient registry names) — parallelograms in a per-effect hue whose fill
+  deepens with pct, no text over the map; file missing = no group. Probes:
+  `__ml.mapLayers(id?, want?)` (the scene's wiring, unchanged) and the
+  module's own `window.__mlMapLayers` { list, set, open, close } — what the
+  dialog offers. `verify-map` opens the dialog, ticks zones, reads the count,
+  closes with Done. maplayers.ts is the games agent's file for the zones and
+  dungeons DATA; the chooser and the ambient layer are ours (claimed and
+  posted 2026-09-18).
 - **PORTRAIT CORNER STACK IS TOP-RIGHT: the Wiki/🔍 row directly under the XP
   chip, the time-of-day pill one `--ml-stack-step` under the ROW** (maintainer
   2026-09-17, arrows on a screenshot: "wiki + search to be top right and listed
