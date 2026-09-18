@@ -1049,7 +1049,13 @@ void main() {
   // The face's attenuation anchor is its EXACT point on the wall plane
   // (0.99 keeps floor() in the owning cell): the old per-cell centroid made
   // brightness jump at every face/ground boundary (knife edges at wall bases).
-  bool isFace = (Ha < 90.0 && Ha - z > 0.05 && Hg - z > 0.05);
+  // A DECK'S SIDE IS A FACE TOO. Hg is the GROUND column (never a deck), so
+  // a bridge's side — z between the water and the slab's top — read as a
+  // ground pixel hanging in the air and took the torch on the deck with no
+  // Lambert gate: the far side of the bridge, facing away from the player,
+  // lit (maintainer 2026-09-18, 282.6,246.3 at Night). The water under the
+  // span resolves to the water itself (z == Hg) and stays ground.
+  bool isFace = (Ha < 90.0 && Ha - z > 0.05 && (Hg - z > 0.05 || (Ha > Hg + 0.01 && z > Hg + 0.05)));
   vec2 baseF = floor(cell);
   float uf = u - (baseF.x - baseF.y);   // pixel left/right of front corner
   float pickR = smoothstep(-0.2, 0.2, uf);
@@ -1383,6 +1389,14 @@ void main() {
     // ${TOP_UNDER_FADE} levels up (a roof, a two-storey wall top). Glow pools are
     // ambience and exempt, like the face gate.
     if (!isFace && uLightPos[i].w > 0.0) att *= smoothstep(-${TOP_UNDER_FADE.toFixed(2)}, -${TOP_UNDER_FREE.toFixed(2)}, lp.z - z);
+    // UNDER A SLAB THE LIGHT STANDS ON, THERE IS NO LINE. The water under a
+    // bridge is a cell whose surface (Ha, the slab) stands over its ground
+    // (Hg, the water); a torch on the deck lit it because every sample of
+    // its near-vertical ray fell in the pixel's or the light's near field
+    // (maintainer 2026-09-18, 282.6,246.3: "lights up the water under the
+    // bridge"). A ground pixel under its own cell's slab, with the light at
+    // or above that slab, takes nothing from it — before any march.
+    if (!isFace && uLightPos[i].w > 0.0 && Ha > Hg + 0.01 && z < Ha - 0.05 && lp.z > Ha - 0.3) continue;
     // INDOORS, A PIXEL OUTSIDE MY ROOM THAT SITS ABOVE THE LIGHT TAKES NONE OF
     // IT. Surfaces above a light skip the LOS march below (the billboard
     // rule), so the neighbour's roof at level 8 took the radius-16 hearth
@@ -4233,6 +4247,13 @@ export class NightLights {
       // from a light more than TOP_UNDER_FREE..TOP_UNDER_FADE levels under its
       // plane. An object's side faces the light, so a body or a lit copy is exempt.
       if (!isObj && L.radius > 0) att *= smoothStep01(-TOP_UNDER_FADE, -TOP_UNDER_FREE, L.z - z);
+      // Twin of the shader's under-a-slab rule: a ground sample under its
+      // own cell's slab, with the light at or above that slab, takes nothing.
+      if (!isObj && L.radius > 0) {
+        const hh0 = hAt(col, row);
+        const hg0 = gAt(col, row);
+        if (hh0 > hg0 + 0.01 && z < hh0 - 0.05 && L.z > hh0 - 0.3) continue;
+      }
       // A lit copy's crown reaches nearer the light than its axis: its
       // occlusion is marched whenever the light is within reach of the volume.
       const wantOcc = parts !== undefined && dist < radius + SCN_CROWN_REACH;

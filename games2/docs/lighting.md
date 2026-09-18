@@ -381,6 +381,18 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   skirt as a triangle (maintainer 2026-09-17, 203.4,220.9, marked on the
   calibration render; measured on his screen: the pool at 56% of its start
   one sample out, a 1.75 max/min across a face two cells from the torch).
+  A DECK'S SIDE IS A FACE, AND UNDER A SLAB THE LIGHT STANDS ON THERE IS NO
+  LINE (2026-09-18, maintainer at 282.6,246.3 on a bridge at Night with the
+  torch: "lights up the water under the bridge and also the side of the
+  bridge that ... points away from the player's torch"). `isFace` read the
+  GROUND column (never a deck), so a bridge's side — z between the water and
+  the slab's top — was a ground pixel hanging in the air with no Lambert
+  gate; it is a face now (`Ha > Hg` and `z > Hg`), so the torch on the deck
+  stands behind its plane and it stays dark. The water under the span is a
+  ground pixel under its own cell's slab: every sample of its near-vertical
+  ray fell in the pixel's or the light's near field, so the march never saw
+  the deck; a ground pixel under its cell's slab with the light at or above
+  that slab takes nothing from it, before any march (shader + twin).
   A TOP SURFACE TAKES NOTHING FROM A LIGHT WELL UNDER ITS PLANE
   (`TOP_UNDER_FREE` 1.0 / `TOP_UNDER_FADE` 2.5: full up to one level above
   the light, none from 2.5 levels above it; faces keep their own Lambert
