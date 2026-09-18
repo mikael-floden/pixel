@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-18T14:37:09.188Z",
+  "updated_at": "2026-09-18T14:38:30.381Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -6749,6 +6749,66 @@
       "rating": 1,
       "art": "232ec24ca10761cc",
       "updated_at": "2026-09-18T14:37:04.895Z"
+    },
+    "monsters/spider_queen#attack_v3#north-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "ffe07b560afa5b59",
+      "updated_at": "2026-09-18T14:37:22.296Z"
+    },
+    "monsters/spider_queen#attack_v3#north-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "d37c8e55fee4da63",
+      "updated_at": "2026-09-18T14:37:23.838Z"
+    },
+    "monsters/spider_queen#die_v1#south-east": {
+      "art": "da6958e9e44f82fe",
+      "updated_at": "2026-09-18T14:37:34.723Z",
+      "status": "approved",
+      "rating": 1
+    },
+    "monsters/spider_queen#die_v1#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "14545c48181ab877",
+      "updated_at": "2026-09-18T14:37:45.157Z"
+    },
+    "monsters/spider_queen#die_v1#south": {
+      "art": "86724f7ba1c7420e",
+      "updated_at": "2026-09-18T14:38:01.222Z",
+      "note": "Calmer",
+      "status": "redo"
+    },
+    "monsters/spider_queen#die_v1#east": {
+      "note": "Calmer",
+      "updated_at": "2026-09-18T14:38:07.442Z",
+      "status": "redo",
+      "art": "89314b0f30244292"
+    },
+    "monsters/spider_queen#die_v1#north-east": {
+      "note": "Calmer",
+      "updated_at": "2026-09-18T14:38:11.358Z",
+      "status": "redo",
+      "art": "884953ef8a59dd26"
+    },
+    "monsters/spider_queen#die_v1#north": {
+      "status": "approved",
+      "rating": 1,
+      "art": "e0050cbe5bae65fb",
+      "updated_at": "2026-09-18T14:38:16.389Z"
+    },
+    "monsters/spider_queen#die_v1#north-west": {
+      "note": "Calmer",
+      "updated_at": "2026-09-18T14:38:22.940Z",
+      "status": "redo",
+      "art": "a32a8e13fea4d0ac"
+    },
+    "monsters/spider_queen#die_v1#west": {
+      "status": "redo",
+      "art": "4a825882e7760340",
+      "updated_at": "2026-09-18T14:38:29.411Z",
+      "note": "Calmer"
     }
   }
 }
