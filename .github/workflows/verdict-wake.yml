@@ -49,27 +49,51 @@ on:
         type: boolean
         default: true
 
-# QUEUE, NEVER CANCEL. A run may be halfway through a PixelLab generation, so a
-# newer verdict must not kill it. GitHub keeps one running + one pending per
-# group and drops older pendings, which is exactly the debounce a review burst
-# needs: a stream of saves collapses into one follow-up run that sees them all.
-concurrency:
-  group: verdict-wake-monsters
-  cancel-in-progress: false
-
+# TWO GATES, BECAUSE WAITING AND WORKING WANT OPPOSITE RULES. A run that is
+# waiting has done nothing and SHOULD die when a newer verdict arrives; a run
+# that is generating must never be killed. One workflow-level group could only
+# have one of those, so each job carries its own.
 jobs:
+  # ONE SITTING, ONE SESSION (maintainer 2026-09-18: "When I review I usually
+  # press commit a lot of times ... It would be dumb to create a new agent for
+  # each commit"). He reviews in bursts and every save is its own commit, so the
+  # first commit of a sitting would otherwise start a session that reads a third
+  # of the verdicts he is about to write.
+  #
+  # cancel-in-progress HERE, and only here: each new push cancels the previous
+  # wait, so exactly one run — the last commit's — survives to do the work, and
+  # it reads the file after he has stopped. A dispatched run skips the wait; a
+  # smoke test should answer immediately.
+  debounce:
+    if: >-
+      github.event_name == 'workflow_dispatch'
+      || (startsWith(github.event.head_commit.message, 'live: admin update')
+          && vars.VERDICT_WAKE != 'off')
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    concurrency:
+      group: verdict-wake-monsters-wait
+      cancel-in-progress: true
+    steps:
+      - if: github.event_name == 'push'
+        run: sleep 240
+
   monsters:
+    needs: debounce
     # ONLY HIS SAVES. The wiki server stamps every admin save with this exact
     # message; the monsters agent clears verdicts through the SAME file with its
     # own message, and waking on that would wake the agent with its own
     # footprints — a loop that terminates but pays for a session each lap.
-    if: >-
-      startsWith(github.event.head_commit.message, 'live: admin update')
-      && vars.VERDICT_WAKE != 'off'
     runs-on: ubuntu-latest
     timeout-minutes: 90     # a generation pass; the loop stops itself on budget
     permissions:
       contents: write       # it pushes the work and its board claim to main
+    # QUEUE, NEVER CANCEL — the opposite of the wait above. A run here may be
+    # halfway through a PixelLab generation, and killing it loses art already
+    # paid for; a later sitting simply waits its turn.
+    concurrency:
+      group: verdict-wake-monsters-run
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
         with:

@@ -121,8 +121,25 @@ jobs:
 - **Only the maintainer's saves wake it.** Filtering on the server's commit
   message is what keeps the agent from being woken by its own verdict-clearing
   commit to the same file.
-- **Queue, never cancel.** Cancelling a run mid-generation loses the PixelLab
-  work already paid for; the queue is also the debounce for a review burst.
+- **Two gates, because waiting and working want opposite rules.** A review is a
+  BURST — every save is its own commit (maintainer: *"When I review I usually
+  press commit a lot of times... It would be dumb to create a new agent for each
+  commit"*). So the `debounce` job waits 4 minutes with
+  `cancel-in-progress: true` and each new push kills the previous wait: exactly
+  one run, the last commit's, survives to do the work and it reads the file
+  after he has stopped. The work job's own group is `cancel-in-progress: false`
+  — a run there may be mid-generation, and killing it loses art already paid
+  for. A dispatched run skips the wait.
+
+## What it CANNOT do
+
+**Wake a session you are already chatting with.** A GitHub push has no path into
+a live conversation: a session is reachable by a schedule bound to it (cron,
+hourly at best) or by you typing in it. So an immediate wake is always a FRESH
+session — a fresh clone, no memory of your conversations, gone when the runner
+is. That is the trade: seconds and a stand-in, or your own agent with its
+context at its next run. The boards are what keep the two from colliding — the
+stand-in claims its unit, and the agent you talk to sees it consumed.
 
 ## What it does NOT replace
 
