@@ -101,9 +101,13 @@ jobs:
     outputs:
       domains: ${{ steps.pick.outputs.domains }}
     steps:
+      # A PARTIAL CLONE, NOT A FULL ONE. This job only reads the commit LOG of
+      # the last half hour: `blob:none` fetches the graph and downloads a file's
+      # contents only if something opens one, which nothing here does.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          filter: blob:none
       - id: pick
         env:
           EVENT: ${{ github.event_name }}
@@ -152,9 +156,23 @@ jobs:
       group: github-agent-${{ matrix.domain }}
       cancel-in-progress: false
     steps:
+      # CLAUDE STARTS AS SOON AS POSSIBLE (maintainer 2026-09-18: "We need to
+      # make this faster! I want claude to start working immediately if
+      # possible!"). Measured on the rehearsal before this line: 2m51s of the
+      # run was `actions/checkout` pulling the WHOLE history of a repo whose
+      # weight is binary art.
+      #
+      # `filter: blob:none` is a partial clone: the full commit graph arrives,
+      # and a file's contents are fetched only when something actually opens it
+      # — which for an agent is its own domain, not eleven domains' history.
+      # `fetch-depth: 50` keeps enough history for the rebase before its push
+      # (main moves a handful of commits an hour, and the merge base is always
+      # within them). NOT depth 1: a rebase cannot find the merge base there and
+      # fails in a way that reads like a conflict.
       - uses: actions/checkout@v4
         with:
-          fetch-depth: 0    # it rebases on origin/main before pushing
+          fetch-depth: 50
+          filter: blob:none
 
       - uses: actions/setup-python@v5
         with:
