@@ -250,8 +250,18 @@ let fitN = 0;
 let fitTurned = 0;
 let fitWorst = 0;
 let fitWho = "";
+let hung = 0;
 for (const d of drawn) {
   if (!d.crop || !d.south || !d.canvas) continue;
+  /* A PIECE THAT HANGS ON A WALL IS EXEMPT, by the rule itself (games2/
+   * CLAUDE.md): "a facing draws through the STATE's SOUTH still's canvas
+   * (anchorBox) at the PIECE's base scale — ONLY where a footprint is stamped.
+   * A piece with `z` hangs on a wall, stamps none, and keeps its own art's
+   * foot: the height HE tuned". So its foot is NOT the placement anchor and
+   * never was; measuring it here read the tuned hanging height as a renderer
+   * fault (wall_hangings/wall_hanging_017, 8.92 px, 2026-09-18). `place` is the
+   * index into the world doc's scenery list, which is where `z` lives. */
+  if (typeof (doc.scenery ?? [])[d.place]?.z === "number") { hung++; continue; }
   const [sx, sy, sw, sh] = d.crop;
   const [x, y, w, h] = d.box;
   const kx = w / sw;
@@ -267,7 +277,10 @@ for (const d of drawn) {
   fitN++;
   if (d.turned) fitTurned++;
 }
-console.log(`  drawn pieces measured: ${fitN} (${fitTurned} turned), worst foot ${fitWorst.toFixed(2)} px off its anchor`);
+console.log(
+  `  drawn pieces measured: ${fitN} (${fitTurned} turned), worst foot ${fitWorst.toFixed(2)} px off its anchor` +
+    `; ${hung} wall-hung piece(s) exempt (they stamp no footprint and keep their own art's foot)`,
+);
 check(fitN > 5, `the room draws pieces to measure (${fitN})`);
 /* A TURNED PIECE IS THE WORLD'S TO OFFER, AND THE DISTINCTION MATTERS. This
  * rule is about the per-facing anchor, so it needs a piece whose placement asks
