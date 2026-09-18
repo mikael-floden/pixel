@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-18T14:42:35.505Z",
+  "updated_at": "2026-09-18T14:43:59.806Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -1997,10 +1997,10 @@
       "rating": 3
     },
     "monsters/cobra#walk#south-west": {
-      "note": "Doesn't look like a snake walk at all!",
-      "updated_at": "2026-09-18T12:12:30.027Z",
-      "status": "redo",
-      "art": "afbf8d4176c3b7ca"
+      "updated_at": "2026-09-18T14:43:28.457Z",
+      "status": "approved",
+      "art": "afbf8d4176c3b7ca",
+      "rating": 3
     },
     "monsters/cobra#angry_v1#south": {
       "status": "approved",
@@ -6948,6 +6948,119 @@
       "art": "4111a7ff8b1d9c7f",
       "updated_at": "2026-09-18T14:42:34.830Z",
       "note": "The attack renders outside and must be copied over in postprocess"
+    },
+    "monsters/cobra#walk#south": {
+      "rating": 3,
+      "status": "approved",
+      "art": "68d08714712502da",
+      "updated_at": "2026-09-18T14:42:51.089Z"
+    },
+    "monsters/cobra#walk#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "ad528db28e14262e",
+      "updated_at": "2026-09-18T14:42:53.719Z"
+    },
+    "monsters/cobra#walk#east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "920e274f7ab2fe52",
+      "updated_at": "2026-09-18T14:42:55.449Z"
+    },
+    "monsters/cobra#walk#north-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "4300640f3787b0d1",
+      "updated_at": "2026-09-18T14:42:57.277Z"
+    },
+    "monsters/cobra#walk#north": {
+      "status": "redo",
+      "art": "8babaf7fc11d7612",
+      "updated_at": "2026-09-18T14:43:01.808Z"
+    },
+    "monsters/cobra#walk#north-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "79d1cac6b21eb159",
+      "updated_at": "2026-09-18T14:43:08.018Z"
+    },
+    "monsters/cobra#walk#west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "b688859518b1b02c",
+      "updated_at": "2026-09-18T14:43:11.799Z"
+    },
+    "monsters/cobra#attack_v3#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "ab1085a92377cba6",
+      "updated_at": "2026-09-18T14:43:33.451Z"
+    },
+    "monsters/cobra#attack_v3#north-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "cded19e47fbfd3fe",
+      "updated_at": "2026-09-18T14:43:36.055Z"
+    },
+    "monsters/cobra#attack_v3#north-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "245b6a3b43dc9759",
+      "updated_at": "2026-09-18T14:43:37.951Z"
+    },
+    "monsters/cobra#attack_v3#south-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "1114f68e89642b16",
+      "updated_at": "2026-09-18T14:43:39.911Z"
+    },
+    "monsters/cobra#idle#south": {
+      "rating": 3,
+      "status": "approved",
+      "art": "ef0ef838a3995534",
+      "updated_at": "2026-09-18T14:43:43.489Z"
+    },
+    "monsters/cobra#idle#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "3f5de90ac00f3084",
+      "updated_at": "2026-09-18T14:43:45.345Z"
+    },
+    "monsters/cobra#idle#east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "9a6ca0a2fc29d3ee",
+      "updated_at": "2026-09-18T14:43:47.391Z"
+    },
+    "monsters/cobra#idle#north-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "2a2bdf6135c70082",
+      "updated_at": "2026-09-18T14:43:49.185Z"
+    },
+    "monsters/cobra#idle#north": {
+      "rating": 3,
+      "status": "approved",
+      "art": "4ed47dfa32df09d9",
+      "updated_at": "2026-09-18T14:43:50.799Z"
+    },
+    "monsters/cobra#idle#north-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "af1ea9d29a452c73",
+      "updated_at": "2026-09-18T14:43:52.306Z"
+    },
+    "monsters/cobra#idle#west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "1e185418e5b59b8a",
+      "updated_at": "2026-09-18T14:43:53.859Z"
+    },
+    "monsters/cobra#idle#south-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "87a3a9dbf35a55ea",
+      "updated_at": "2026-09-18T14:43:55.440Z"
     }
   }
 }
