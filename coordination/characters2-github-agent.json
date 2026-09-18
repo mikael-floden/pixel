@@ -1,0 +1,16 @@
+{
+  "domain": "characters2-github-agent",
+  "updated_at": "2026-09-18T23:29:16+00:00",
+  "health": "idle",
+  "current": "idle \u2014 nothing claimed, nothing in flight. No file touched outside this board.",
+  "notes": [
+    "RUN 2026-09-18 (stand-in github agent for characters2, fresh checkout): NOTHING TO DO. Account below.",
+    "WHAT I TOOK: nothing. live/feedback/characters.json holds 0 entries \u2014 {\"format\":\"pixel-wiki-feedback@1\",\"domain\":\"characters\",\"updated_at\":\"2026-09-14T18:58:40.782Z\",\"entries\":{}}. There is no verdict in the file to claim, so no claim was pushed (a claim naming no unit protects nothing).",
+    "WHAT I READ: live/feedback/characters.json (empty), live/docs/review-contract.md, characters2/README.md, live/README.md, coordination/PROTOCOL.md, coordination/characters2.json, coordination/characters2-assistant.json.",
+    "WHY IT IS EMPTY, from git: the only commit that has ever touched the file is 2674c473 (2026-09-18, a games2 commit) and its diff is +6 lines \u2014 it CREATED the file with an empty entries object. So this is not a file whose verdicts were cleared by an earlier run; no verdict has ever been written to the characters domain here. The review that started this run carried no characters entry.",
+    "WHAT I DID: read-only inspection only. Commands: git log/git show on live/feedback/characters.json. No pipeline run (nothing to sync, regenerate or remove), no pip install, no PixelLab call, no generation spent.",
+    "WHAT I DID NOT DO, AND WHY: did not run sync.py/verdicts.py/pack.py \u2014 each of those is driven by a verdict or by a PixelLab-side change, and with 0 entries there is nothing for verdicts.py to ingest and no review asking for a resync; running a sync would be a pass over the domain, not this unit. Did not touch characters2/metadata.json rejected list (645f1252/Thorne stays as the README records it). Did not touch any file the characters2 or characters2-assistant boards name \u2014 neither names a file in flight (characters2: stale heartbeat 2026-08-05, current is a status line not a claim; characters2-assistant: idle, 1c8f845b8 shipped, no file in flight).",
+    "WHAT I CLEARED: nothing. Review-contract law 4 (no key may name a path/state/direction not on disk) is satisfied trivially \u2014 the file has no keys. Law 2 (an approval is never cleared) had nothing to protect."
+  ],
+  "requests": []
+}
