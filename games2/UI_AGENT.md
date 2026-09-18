@@ -267,6 +267,28 @@ from the games agent), #18 (title/landing screen).
   His verdict on the whole portrait layout — top-right stack, corner ghost,
   three-row rail — on seeing it (2026-09-18): "Wow! This is perfect!" Do not
   re-litigate any of the three without his word.
+- **THE RED BUTTON FREEZES THE WORLD ON A LOSSLESS FRAME OF IT**
+  (`freezeframe.ts`, maintainer 2026-09-18: "printscreen the entire page/game
+  and freeze the game / only show the printscreen as a 'freezed frame' when you
+  press the red button? … Not jpeg encoded. I want the freezed image
+  lossless"). **Never pass a `type` to `renderer.snapshot`** — its default is
+  `image/png`, PNG is the lossless one, and `image/jpeg` is one argument away
+  from being the bug he ruled out; `verify-freezeframe` proves it on the PNG
+  SIGNATURE in the captured bytes, not on the argument we think we passed.
+  **CAPTURE, THEN FREEZE** — a snapshot is scheduled for after the current
+  frame renders because `gl.readPixels` must run before the compositor takes
+  the drawing buffer (no `preserveDrawingBuffer` on this canvas), so sleeping
+  the loop first means no next frame and a callback that never fires. The
+  failure mode is a perfectly transparent image of exactly the right size, so
+  the gate decodes the picture and proves the world is IN it (lit samples,
+  distinct colours) — dimensions alone would pass a blank read. The freeze is
+  `gamefreeze.ts`'s sleep (the wiki drawer's), never a second mechanism. The
+  picture covers the GAME CANVAS at z 3, `pointer-events:none`; the DOM HUD
+  stays live because the button that ends the freeze is in it, and a rotation
+  releases it rather than stretch a picture of the old shape over the new one.
+  It LISTENS to `ml-record` and knows nothing about the button; a capture that
+  cannot happen puts the button back rather than leave it lit over a world that
+  never stopped (gated — the one failure that would lie to him).
 - **THE RECORD BUTTON IS ADMIN-ONLY AND ANCHORED OFF THE CARD'S OWN VARS**
   (`recbtn.ts` + `admin.ts`, maintainer 2026-09-18: "I want this button under
   the HP/EP card. Also right aligned with the same distance/linespace to the

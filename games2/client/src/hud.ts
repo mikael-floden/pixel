@@ -22,6 +22,8 @@ import { mountBars } from "./bars";
 import { mountWikiButton } from "./wikibtn";
 import { mountWikiNearButton } from "./wikinear";
 import { mountRecordButton } from "./recbtn";
+// the record button's behaviour: it listens for "ml-record" (freezeframe.ts)
+import "./freezeframe";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
 import {
