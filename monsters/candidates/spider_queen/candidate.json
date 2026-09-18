@@ -1594,7 +1594,7 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.2999,
           "step_max": 0.5024,
           "drift": 30.93,
@@ -1614,6 +1614,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: Calmer",
             "manual: seen from above a spider on her back keeps the base's outline — eyeballed, she rolls over and ends belly-up with the legs curled, a real death"
           ],
           "sub": "35c2ceeb-8eaa-45a6-bf2a-d8fc0f5f44f0",
@@ -1630,7 +1631,8 @@
           "unwrapped": null,
           "tries": 1,
           "generated_at": "2026-09-13T03:55:02+00:00",
-          "manual": true
+          "manual": true,
+          "maintainer": "Calmer"
         },
         "south-east": {
           "status": "warn",
@@ -1672,7 +1674,7 @@
           "manual": true
         },
         "east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.4205,
           "step_max": 0.5315,
           "drift": 27.77,
@@ -1692,6 +1694,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: Calmer",
             "ends near the base (0.49) — eyeball it"
           ],
           "sub": "5f2e5733-249c-4ed4-8915-ea6fed27b8a4",
@@ -1707,10 +1710,11 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-13T03:55:06+00:00"
+          "generated_at": "2026-09-13T03:55:06+00:00",
+          "maintainer": "Calmer"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.4772,
           "step_max": 0.6362,
           "drift": 31.63,
@@ -1729,7 +1733,9 @@
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Calmer"
+          ],
           "sub": "e824a98a-a563-4ef0-84f1-d29318cdf72f",
           "group": "19f20b37-efa2-4749-a073-6d6eccd68b6c",
           "takes": 1,
@@ -1743,7 +1749,8 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-13T03:55:07+00:00"
+          "generated_at": "2026-09-13T03:55:07+00:00",
+          "maintainer": "Calmer"
         },
         "north": {
           "status": "pass",
@@ -1782,7 +1789,7 @@
           "generated_at": "2026-09-13T03:55:08+00:00"
         },
         "west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.4205,
           "step_max": 0.5315,
           "drift": 27.77,
@@ -1802,6 +1809,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: Calmer",
             "ends near the base (0.49) — eyeball it"
           ],
           "sub": "5f2e5733-249c-4ed4-8915-ea6fed27b8a4",
@@ -1818,10 +1826,11 @@
           "unwrapped": null,
           "tries": 1,
           "generated_at": "2026-09-13T03:55:06+00:00",
-          "source": "east"
+          "source": "east",
+          "maintainer": "Calmer"
         },
         "north-west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.4772,
           "step_max": 0.6362,
           "drift": 31.63,
@@ -1840,7 +1849,9 @@
             240,
             240
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Calmer"
+          ],
           "sub": "e824a98a-a563-4ef0-84f1-d29318cdf72f",
           "group": "19f20b37-efa2-4749-a073-6d6eccd68b6c",
           "takes": 1,
@@ -1855,7 +1866,8 @@
           "unwrapped": null,
           "tries": 1,
           "generated_at": "2026-09-13T03:55:07+00:00",
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "Calmer"
         },
         "south-west": {
           "status": "warn",

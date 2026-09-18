@@ -1237,7 +1237,7 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.3175,
           "step_max": 0.4936,
           "drift": 6.23,
@@ -1256,7 +1256,9 @@
             96,
             96
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Poor color and wings still outside frame!"
+          ],
           "sub": "0ac376ce-f740-45d2-9d64-9acc18d4cae8",
           "group": "61845716-7a47-4e4e-b5d0-7d453b88e151",
           "takes": 1,
@@ -1270,7 +1272,8 @@
           "rung": 1,
           "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-18T14:05:41+00:00"
+          "generated_at": "2026-09-18T14:05:41+00:00",
+          "maintainer": "Poor color and wings still outside frame!"
         },
         "south-east": {
           "status": "pass",

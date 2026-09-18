@@ -1399,7 +1399,7 @@
           "generated_at": "2026-09-18T14:20:23+00:00"
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.082,
           "step_max": 0.2879,
           "drift": 5.31,
@@ -1419,6 +1419,7 @@
             64
           ],
           "reasons": [
+            "HE says redo: Should shoot laser forward",
             "some bright effect pixels (0.37) — eyeball it"
           ],
           "sub": "3fc15cc8-6dfb-49b5-ad20-53d6c367a0cd",
@@ -1434,10 +1435,11 @@
           "rung": 4,
           "unwrapped": null,
           "tries": 5,
-          "generated_at": "2026-09-18T14:20:24+00:00"
+          "generated_at": "2026-09-18T14:20:24+00:00",
+          "maintainer": "Should shoot laser forward"
         },
         "north": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.056,
           "step_max": 0.3131,
           "drift": 4.4,
@@ -1457,6 +1459,7 @@
             64
           ],
           "reasons": [
+            "HE says redo: Should shoot laser forward",
             "motion 0.056 outside the calm band 0.08–0.9 — eyeball it",
             "shallow strike: reach 0.24 — eyeball it"
           ],
@@ -1473,7 +1476,8 @@
           "rung": 4,
           "unwrapped": null,
           "tries": 4,
-          "generated_at": "2026-09-18T14:20:26+00:00"
+          "generated_at": "2026-09-18T14:20:26+00:00",
+          "maintainer": "Should shoot laser forward"
         },
         "west": {
           "status": "warn",
@@ -1553,7 +1557,7 @@
           "source": "south-east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.082,
           "step_max": 0.2879,
           "drift": 5.31,
@@ -1573,6 +1577,7 @@
             64
           ],
           "reasons": [
+            "HE says redo: Should shoot laser forward",
             "some bright effect pixels (0.37) — eyeball it"
           ],
           "sub": "3fc15cc8-6dfb-49b5-ad20-53d6c367a0cd",
@@ -1589,7 +1594,8 @@
           "unwrapped": null,
           "tries": 5,
           "generated_at": "2026-09-18T14:20:24+00:00",
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "Should shoot laser forward"
         }
       },
       "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",

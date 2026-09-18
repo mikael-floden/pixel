@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T15:04:05+00:00",
+  "generated_at": "2026-09-18T15:45:59+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -151,7 +151,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T17:38:33+00:00"
+      "generated_at": "2026-09-09T17:38:33+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "ember_king",
@@ -281,7 +286,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T17:43:57+00:00"
+      "generated_at": "2026-09-09T17:43:57+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "angry": "angry_v1",
+          "attack": "attack_v3",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: walk"
+      }
     },
     {
       "id": "hollow_knight",
@@ -410,7 +425,12 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T17:37:23+00:00"
+      "generated_at": "2026-09-09T17:37:23+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "pebble_crab",
@@ -541,7 +561,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:02:13+00:00"
+      "generated_at": "2026-09-09T18:02:13+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: attack"
+      }
     },
     {
       "id": "skeleton_archer",
@@ -669,7 +699,16 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:18:47+00:00"
+      "generated_at": "2026-09-09T18:18:47+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1"
+        },
+        "blocking": "not fully approved: attack, die"
+      }
     },
     {
       "id": "fire_elemental",
@@ -797,7 +836,12 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:20:52+00:00"
+      "generated_at": "2026-09-09T18:20:52+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "lizard_warrior",
@@ -925,7 +969,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:29:41+00:00"
+      "generated_at": "2026-09-09T18:29:41+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: attack"
+      }
     },
     {
       "id": "werewolf",
@@ -1053,7 +1107,16 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:26:46+00:00"
+      "generated_at": "2026-09-09T18:26:46+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: angry, attack"
+      }
     },
     {
       "id": "gargoyle",
@@ -1181,7 +1244,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T18:27:54+00:00"
+      "generated_at": "2026-09-09T18:27:54+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "basilisk",
@@ -1309,7 +1377,16 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:32:29+00:00"
+      "generated_at": "2026-09-09T18:32:29+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: angry, attack"
+      }
     },
     {
       "id": "lava_toad",
@@ -1436,7 +1513,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T18:39:52+00:00"
+      "generated_at": "2026-09-09T18:39:52+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "mummy",
@@ -1564,7 +1646,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:36:29+00:00"
+      "generated_at": "2026-09-09T18:36:29+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: attack"
+      }
     },
     {
       "id": "cobra",
@@ -1692,7 +1784,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:39:13+00:00"
+      "generated_at": "2026-09-09T18:39:13+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "angry": "angry_v1",
+          "attack": "attack_v3",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: walk"
+      }
     },
     {
       "id": "fox_spirit",
@@ -1820,7 +1922,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T18:38:42+00:00"
+      "generated_at": "2026-09-09T18:38:42+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "eye_bat",
@@ -1948,7 +2055,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:41:50+00:00"
+      "generated_at": "2026-09-09T18:41:50+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: attack"
+      }
     },
     {
       "id": "rock_mite",
@@ -2076,7 +2193,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:44:32+00:00"
+      "generated_at": "2026-09-09T18:44:32+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "angry": "angry_v1",
+          "attack": "attack_v3",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: walk"
+      }
     },
     {
       "id": "spider_queen",
@@ -2204,7 +2331,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:46:48+00:00"
+      "generated_at": "2026-09-09T18:46:48+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1",
+          "attack": "attack_v3"
+        },
+        "blocking": "not fully approved: die"
+      }
     },
     {
       "id": "crystal_titan",
@@ -2332,7 +2469,16 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:50:15+00:00"
+      "generated_at": "2026-09-09T18:50:15+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1"
+        },
+        "blocking": "not fully approved: attack, die"
+      }
     },
     {
       "id": "fawn_spirit",
@@ -2460,7 +2606,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T18:53:22+00:00"
+      "generated_at": "2026-09-09T18:53:22+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "ember_kit",
@@ -2588,7 +2739,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T18:54:39+00:00"
+      "generated_at": "2026-09-09T18:54:39+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "marsh_heron",
@@ -2716,7 +2872,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:00:32+00:00"
+      "generated_at": "2026-09-09T19:00:32+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "turtle_hatchling",
@@ -2844,7 +3005,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T18:56:11+00:00"
+      "generated_at": "2026-09-09T18:56:11+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: attack"
+      }
     },
     {
       "id": "sand_kit",
@@ -2971,7 +3142,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T18:58:00+00:00"
+      "generated_at": "2026-09-09T18:58:00+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "ice_sprite",
@@ -3099,7 +3275,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T19:02:42+00:00"
+      "generated_at": "2026-09-09T19:02:42+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1",
+          "die": "die_v1"
+        },
+        "blocking": "HIS pick, two full takes — attack: attack_v1, attack_v3"
+      }
     },
     {
       "id": "ash_hatchling",
@@ -3227,7 +3413,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T19:01:54+00:00"
+      "generated_at": "2026-09-09T19:01:54+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: attack"
+      }
     },
     {
       "id": "cave_bear",
@@ -3355,7 +3551,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T18:58:23+00:00"
+      "generated_at": "2026-09-09T18:58:23+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "vulture",
@@ -3483,7 +3684,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T19:04:35+00:00"
+      "generated_at": "2026-09-09T19:04:35+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "angry": "angry_v1",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: attack"
+      }
     },
     {
       "id": "wolverine",
@@ -3611,7 +3822,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:04:45+00:00"
+      "generated_at": "2026-09-09T19:04:45+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "frost_yak",
@@ -3739,7 +3955,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:09:07+00:00"
+      "generated_at": "2026-09-09T19:09:07+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "orc_warrior",
@@ -3867,7 +4088,17 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T19:08:50+00:00"
+      "generated_at": "2026-09-09T19:08:50+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "attack": "attack_v3",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: angry"
+      }
     },
     {
       "id": "black_knight",
@@ -3995,7 +4226,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:08:37+00:00"
+      "generated_at": "2026-09-09T19:08:37+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "naga",
@@ -4123,7 +4359,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:09:44+00:00"
+      "generated_at": "2026-09-09T19:09:44+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "minotaur",
@@ -4251,7 +4492,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:16:34+00:00"
+      "generated_at": "2026-09-09T19:16:34+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "bridge_troll",
@@ -4379,7 +4625,16 @@
       },
       "review": "approved",
       "notes": null,
-      "generated_at": "2026-09-09T19:11:40+00:00"
+      "generated_at": "2026-09-09T19:11:40+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {
+          "idle": "idle",
+          "walk": "walk",
+          "die": "die_v1"
+        },
+        "blocking": "not fully approved: angry, attack"
+      }
     },
     {
       "id": "wild_bull",
@@ -4507,7 +4762,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:15:00+00:00"
+      "generated_at": "2026-09-09T19:15:00+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "sand_scorpling",
@@ -4634,7 +4894,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:12:14+00:00"
+      "generated_at": "2026-09-09T19:12:14+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "lantern_wraith",
@@ -4762,7 +5027,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:17:21+00:00"
+      "generated_at": "2026-09-09T19:17:21+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "stone_imp",
@@ -4890,7 +5160,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:23:25+00:00"
+      "generated_at": "2026-09-09T19:23:25+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "ant_lion",
@@ -5018,7 +5293,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T18:38:03+00:00"
+      "generated_at": "2026-09-09T18:38:03+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "mountain_ram",
@@ -5146,7 +5426,12 @@
       },
       "review": "not_picked",
       "notes": null,
-      "generated_at": "2026-09-09T19:05:29+00:00"
+      "generated_at": "2026-09-09T19:05:29+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "burr_kin",
@@ -5273,7 +5558,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T11:44:01+00:00"
+      "generated_at": "2026-09-18T11:44:01+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "thorn_knot",
@@ -5401,7 +5691,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T11:52:09+00:00"
+      "generated_at": "2026-09-18T11:52:09+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "shore_urchin",
@@ -5528,7 +5823,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T11:53:28+00:00"
+      "generated_at": "2026-09-18T11:53:28+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "helm_hermit",
@@ -5656,7 +5956,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T11:57:18+00:00"
+      "generated_at": "2026-09-18T11:57:18+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "driftwood_heap",
@@ -5783,7 +6088,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T11:52:42+00:00"
+      "generated_at": "2026-09-18T11:52:42+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "spire_whelk",
@@ -5911,7 +6221,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T11:56:48+00:00"
+      "generated_at": "2026-09-18T11:56:48+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "peat_hand",
@@ -6038,7 +6353,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:00:19+00:00"
+      "generated_at": "2026-09-18T12:00:19+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "peat_stack",
@@ -6165,7 +6485,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T13:49:22+00:00"
+      "generated_at": "2026-09-18T13:49:22+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "mud_newt",
@@ -6293,7 +6618,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T11:59:01+00:00"
+      "generated_at": "2026-09-18T11:59:01+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "pitcher_plant",
@@ -6421,7 +6751,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:03:46+00:00"
+      "generated_at": "2026-09-18T12:03:46+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "withy_man",
@@ -6548,7 +6883,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:11:59+00:00"
+      "generated_at": "2026-09-18T12:11:59+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "quag_maw",
@@ -6676,7 +7016,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:14:37+00:00"
+      "generated_at": "2026-09-18T12:14:37+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "scree_slide",
@@ -6804,7 +7149,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:17:46+00:00"
+      "generated_at": "2026-09-18T12:17:46+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "flint_nodule",
@@ -6932,7 +7282,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:13:04+00:00"
+      "generated_at": "2026-09-18T12:13:04+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "crag_millipede",
@@ -7060,7 +7415,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:18:17+00:00"
+      "generated_at": "2026-09-18T12:18:17+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "quern_stone",
@@ -7188,7 +7548,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:16:54+00:00"
+      "generated_at": "2026-09-18T12:16:54+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "fossil_slab",
@@ -7315,7 +7680,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:24:21+00:00"
+      "generated_at": "2026-09-18T12:24:21+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "carved_face",
@@ -7443,7 +7813,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:20:34+00:00"
+      "generated_at": "2026-09-18T12:20:34+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "snow_grouse",
@@ -7570,7 +7945,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:29:11+00:00"
+      "generated_at": "2026-09-18T12:29:11+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "cornice",
@@ -7697,7 +8077,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:31:09+00:00"
+      "generated_at": "2026-09-18T12:31:09+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "hoarfrost",
@@ -7825,7 +8210,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:31:03+00:00"
+      "generated_at": "2026-09-18T12:31:03+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "thaw_wake",
@@ -7953,7 +8343,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:38:44+00:00"
+      "generated_at": "2026-09-18T12:38:44+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "moraine",
@@ -8081,7 +8476,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:34:13+00:00"
+      "generated_at": "2026-09-18T12:34:13+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "ice_fall",
@@ -8209,7 +8609,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:38:57+00:00"
+      "generated_at": "2026-09-18T12:38:57+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "pumice",
@@ -8337,7 +8742,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:43:44+00:00"
+      "generated_at": "2026-09-18T12:43:44+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "basalt_column",
@@ -8464,7 +8874,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T13:28:08+00:00"
+      "generated_at": "2026-09-18T13:28:08+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "ash_fall",
@@ -8591,7 +9006,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:36:52+00:00"
+      "generated_at": "2026-09-18T12:36:52+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "ember_mask",
@@ -8719,7 +9139,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:40:30+00:00"
+      "generated_at": "2026-09-18T12:40:30+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "fissure",
@@ -8847,7 +9272,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:45:51+00:00"
+      "generated_at": "2026-09-18T12:45:51+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "blind_newt",
@@ -8974,7 +9404,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:44:08+00:00"
+      "generated_at": "2026-09-18T12:44:08+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "flowstone",
@@ -9101,7 +9536,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:54:28+00:00"
+      "generated_at": "2026-09-18T12:54:28+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "moon_milk",
@@ -9228,7 +9668,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:47:14+00:00"
+      "generated_at": "2026-09-18T12:47:14+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "sinter_terrace",
@@ -9356,7 +9801,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:53:49+00:00"
+      "generated_at": "2026-09-18T12:53:49+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "good_guest",
@@ -9484,7 +9934,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:56:34+00:00"
+      "generated_at": "2026-09-18T12:56:34+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
     },
     {
       "id": "face_wall",
@@ -9611,7 +10066,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:57:05+00:00"
+      "generated_at": "2026-09-18T12:57:05+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "thinning",
@@ -9739,7 +10199,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T13:01:06+00:00"
+      "generated_at": "2026-09-18T13:01:06+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "the_listener",
@@ -9866,7 +10331,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:53:43+00:00"
+      "generated_at": "2026-09-18T12:53:43+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     },
     {
       "id": "hole_mouth",
@@ -9993,7 +10463,12 @@
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T13:03:54+00:00"
+      "generated_at": "2026-09-18T13:03:54+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
     }
   ]
 }

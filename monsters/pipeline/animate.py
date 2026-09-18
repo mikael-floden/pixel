@@ -245,7 +245,10 @@ MAX_TRIES = 10          # "keep retrying maybe 10 times before you give up the e
 TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow strike", "outside the calm band",
               "still standing", "barely falls")
 TOO_MUCH = ("too much", "drifts", "walks across", "slides across", "wrapped around",
-            "outside the frame", "out of frame", "outside the screen", "goes outside")
+            "outside the frame", "out of frame", "outside the screen", "goes outside",
+            # his own words on a review, which are what actually reach this list
+            "calmer", "too wild", "too big", "too violent", "less movement",
+            "still outside")
 
 
 def rung_for(prev_rung, reasons):

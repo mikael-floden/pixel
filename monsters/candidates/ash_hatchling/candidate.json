@@ -1362,7 +1362,7 @@
           "rung": 2
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1569,
           "step_max": 0.5489,
           "drift": 4.27,
@@ -1382,6 +1382,7 @@
             42
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.25 — eyeball it",
             "6 px of travel — eyeball it",
             "canvas grown by 1 px a side to hold the motion"
@@ -1399,10 +1400,11 @@
           "rung": 5,
           "unwrapped": 1,
           "tries": 5,
-          "generated_at": "2026-09-18T14:08:43+00:00"
+          "generated_at": "2026-09-18T14:08:43+00:00",
+          "maintainer": "redo"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1449,
           "step_max": 0.4985,
           "drift": 3.64,
@@ -1421,7 +1423,9 @@
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "9e80345e-723a-4550-81d3-f4390b775465",
           "group": "483c0be3-f1e5-4321-952c-eee042f67bcb",
           "takes": 1,
@@ -1435,7 +1439,8 @@
           "rung": 5,
           "unwrapped": null,
           "tries": 5,
-          "generated_at": "2026-09-18T14:08:44+00:00"
+          "generated_at": "2026-09-18T14:08:44+00:00",
+          "maintainer": "redo"
         },
         "south-west": {
           "status": "pass",
@@ -1475,7 +1480,7 @@
           "source": "south-east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1569,
           "step_max": 0.5489,
           "drift": 4.27,
@@ -1495,6 +1500,7 @@
             42
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.25 — eyeball it",
             "6 px of travel — eyeball it",
             "canvas grown by 1 px a side to hold the motion"
@@ -1513,7 +1519,8 @@
           "unwrapped": 1,
           "tries": 5,
           "generated_at": "2026-09-18T14:08:43+00:00",
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "redo"
         },
         "west": {
           "status": "warn",

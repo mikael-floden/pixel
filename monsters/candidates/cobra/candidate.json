@@ -339,7 +339,7 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.1009,
           "step_max": 0.1256,
           "drift": 4.11,
@@ -359,7 +359,7 @@
             88
           ],
           "reasons": [
-            "last→first hand-off is 2.7× a normal step — the loop hitches"
+            "HE approved it"
           ],
           "sub": "64fb6339-c7f1-4c39-99df-102519111ce1",
           "group": "e62a6c9e-a890-470e-b3f6-66a0bc3e23d7",
@@ -374,10 +374,11 @@
           "rung": 2,
           "unwrapped": null,
           "tries": 2,
-          "generated_at": "2026-09-18T14:30:58+00:00"
+          "generated_at": "2026-09-18T14:30:58+00:00",
+          "maintainer": "approved"
         },
         "south-east": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0494,
           "step_max": 0.0618,
           "drift": 2.03,
@@ -397,7 +398,7 @@
             88
           ],
           "reasons": [
-            "last→first hand-off is 3.6× a normal step — the loop hitches"
+            "HE approved it"
           ],
           "sub": "b1d6a45a-50d7-4a01-b070-bec9f7479098",
           "group": "413adb44-3198-49d3-affe-9022af66a64e",
@@ -412,7 +413,8 @@
           "rung": 1,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-18T14:30:58+00:00"
+          "generated_at": "2026-09-18T14:30:58+00:00",
+          "maintainer": "approved"
         },
         "east": {
           "status": "pass",
@@ -487,7 +489,7 @@
           "generated_at": "2026-09-18T13:21:22+00:00"
         },
         "north": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0339,
           "step_max": 0.0453,
           "drift": 0.81,
@@ -507,6 +509,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: redo",
             "motion 0.034 outside the calm band 0.04000000000000001–0.4 — eyeball it"
           ],
           "sub": "e79f7dc1-0f20-442a-bbbc-c9ec52606c28",
@@ -522,10 +525,11 @@
           "rung": 1,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-18T13:21:23+00:00"
+          "generated_at": "2026-09-18T13:21:23+00:00",
+          "maintainer": "redo"
         },
         "south-west": {
-          "status": "fail",
+          "status": "warn",
           "step_mean": 0.0809,
           "step_max": 0.1051,
           "drift": 1.68,
@@ -539,7 +543,7 @@
             88
           ],
           "reasons": [
-            "reworded: creature-specific walk, ladder reset"
+            "HE approved it"
           ],
           "sub": "9faea9c5-4ea4-4681-bc75-da7352c7f40c",
           "group": "9255a4fe-6e9e-4355-ac73-e25e1c381ba5",
@@ -548,7 +552,7 @@
           "mirrored": true,
           "generated_at": "2026-09-09T21:23:29+00:00",
           "source": "south-east",
-          "maintainer": "Doesn't look like a snake walk at all!",
+          "maintainer": "approved",
           "rolls": 0,
           "tries": 0,
           "rung": 0,
