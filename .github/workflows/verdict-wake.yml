@@ -1,0 +1,113 @@
+name: verdict wake
+
+# A REVIEW IS AN EVENT, NOT A THING THAT WAITS FOR THE NEXT AGENT RUN
+# (maintainer 2026-09-18: "I want to wake up an agent when a wiki review is
+# committed to process it immediately without me having to tell the agent" —
+# and, on the hourly-Routine alternative, "Latency is very very important").
+#
+# THE EVENT ALREADY EXISTS: the wiki's admin save is committed to main by the
+# game server itself — games2/server/src/live.ts `ghCommitDelta`, one commit per
+# save, message `live: admin update — feedback/<domain>.json`. This workflow is
+# only the last hop: that push starts a Claude session in the repo that takes
+# the new verdicts. Without it a verdict sits until the domain agent's next run
+# reads the file (PROTOCOL rule 4), which can be hours.
+#
+# THE REASONING, THE REJECTED ALTERNATIVES AND THE SETUP: live/docs/verdict-wake.md.
+#
+# MONSTERS ONLY, on purpose. It is the domain where the latency costs something
+# real: a redo verdict is a generation that cannot start until someone reads it.
+# Add a domain by adding its feedback file to `paths` AND giving it its own job —
+# never one session acting across domains, because that session is a second
+# writer in both.
+#
+# THE SESSION IS A THIRD WRITER IN monsters/, after the monsters agent and its
+# assistant, so the prompt binds it to PROTOCOL's "Two writers per directory":
+# read both boards, treat a claimed or acked verdict as CONSUMED, and claim on
+# its own board (coordination/monsters-wake.json) BEFORE editing anything.
+# Without that, two writers regenerate the same monster and PixelLab is paid
+# twice for one file.
+#
+# KILL SWITCH WITHOUT SETUP: it runs unless the repo variable VERDICT_WAKE is
+# set to "off" (Settings → Secrets and variables → Actions → Variables). Nothing
+# to configure for the normal path — the same "derive, don't ask" rule the
+# backup workflow learned the hard way.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "live/feedback/monsters.json"
+
+# QUEUE, NEVER CANCEL. A run may be halfway through a PixelLab generation, so a
+# newer verdict must not kill it. GitHub keeps one running + one pending per
+# group and drops older pendings, which is exactly the debounce a review burst
+# needs: a stream of saves collapses into one follow-up run that sees them all.
+concurrency:
+  group: verdict-wake-monsters
+  cancel-in-progress: false
+
+jobs:
+  monsters:
+    # ONLY HIS SAVES. The wiki server stamps every admin save with this exact
+    # message; the monsters agent clears verdicts through the SAME file with its
+    # own message, and waking on that would wake the agent with its own
+    # footprints — a loop that terminates but pays for a session each lap.
+    if: >-
+      startsWith(github.event.head_commit.message, 'live: admin update')
+      && vars.VERDICT_WAKE != 'off'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90     # a generation pass; the loop stops itself on budget
+    permissions:
+      contents: write       # it pushes the work and its board claim to main
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0    # it rebases on origin/main before pushing
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+
+      - uses: anthropics/claude-code-action@v1
+        env:
+          # The domain's generator needs the key exactly as the scheduled art
+          # workflows do; without it the session can read verdicts but not act
+          # on the ones that need new art.
+          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+        with:
+          # Whichever of the two auth secrets this repo holds; the empty one is
+          # ignored, so the app's OAuth token and a plain API key both work.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          claude_args: "--max-turns 120"
+          prompt: |
+            A wiki review just landed on main: the Game Master committed verdicts to
+            live/feedback/monsters.json. You are standing in for the monsters agent for
+            this one unit of work, in a fresh checkout with no memory of earlier runs.
+
+            Read first, in this order: CLAUDE.md (the law of the repo),
+            coordination/PROTOCOL.md (its "Two writers per directory" section is binding
+            on you), monsters/README.md (the authority on what each verdict means), and
+            live/README.md (the feedback contract).
+
+            Then:
+            1. Read coordination/monsters.json and coordination/monsters-assistant.json.
+               A verdict either board has claimed or acked is CONSUMED — leave it alone.
+               If either board's `current` names a file you would touch, that unit is not
+               yours; a collision goes to the original agent.
+            2. Take only the verdicts in live/feedback/monsters.json that nobody has
+               claimed and that the art on disk does not yet reflect. Derive that from the
+               filesystem, never from the verdict count.
+            3. Claim them on coordination/monsters-wake.json — your own board, same schema
+               as the others: the unit and EVERY file you will touch — and push that claim
+               BEFORE you do any work. A claim that ships with the work protects nothing.
+            4. Do what the verdicts ask (monsters/README.md is the authority), run the
+               domain's checks, `git fetch && git rebase origin/main`, re-run the checks if
+               main moved under monsters/, push to main, then release the claim with what
+               shipped.
+
+            If PixelLab credits are low, stop cleanly and say so on your board rather than
+            half-generating. If nothing is left unconsumed, write one line saying so and
+            exit without committing — an empty run is the correct outcome when the agent
+            got there first.
