@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:33:09+00:00",
+  "generated_at": "2026-09-18T12:36:52+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 160,
+  "count": 165,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -20277,6 +20277,261 @@
       "generated_at": "2026-09-18T12:33:09+00:00"
     },
     {
+      "id": "glacier_ice",
+      "name": "Icecore",
+      "tier": "mid",
+      "lore": "Everything inside it fell in a very long time ago. It is thawing from the middle out.",
+      "biome": [
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "dd5af713-d26f-467a-9e28-98fb3d3f7e9a",
+      "version": 1,
+      "sheet": "glacier_ice/sheet.webp",
+      "rotations": {
+        "south": "glacier_ice/rotations/south.webp",
+        "south-east": "glacier_ice/rotations/south-east.webp",
+        "east": "glacier_ice/rotations/east.webp",
+        "north-east": "glacier_ice/rotations/north-east.webp",
+        "north": "glacier_ice/rotations/north.webp",
+        "north-west": "glacier_ice/rotations/north-west.webp",
+        "west": "glacier_ice/rotations/west.webp",
+        "south-west": "glacier_ice/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.654,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.654,
+            "bbox": [
+              16,
+              6,
+              88,
+              92
+            ],
+            "fill": 0.572,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.743,
+            "bbox": [
+              21,
+              9,
+              80,
+              98
+            ],
+            "fill": 0.485,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.74,
+            "bbox": [
+              23,
+              9,
+              82,
+              98
+            ],
+            "fill": 0.485,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.661,
+            "bbox": [
+              16,
+              10,
+              87,
+              92
+            ],
+            "fill": 0.538,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.752,
+            "bbox": [
+              20,
+              7,
+              82,
+              96
+            ],
+            "fill": 0.51,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.733,
+            "bbox": [
+              19,
+              11,
+              80,
+              96
+            ],
+            "fill": 0.479,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.731,
+            "bbox": [
+              22,
+              11,
+              83,
+              96
+            ],
+            "fill": 0.479,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.754,
+            "bbox": [
+              21,
+              7,
+              83,
+              96
+            ],
+            "fill": 0.51,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:35:40+00:00"
+    },
+    {
+      "id": "treeline_pine",
+      "name": "Windpine",
+      "tier": "mid",
+      "lore": "It grew for two hundred years into the same wind. It leans the same way even indoors.",
+      "biome": [
+        "snow",
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "0afccddd-68d4-4e1c-9bc0-20eecc03aab8",
+      "version": 1,
+      "sheet": "treeline_pine/sheet.webp",
+      "rotations": {
+        "south": "treeline_pine/rotations/south.webp",
+        "south-east": "treeline_pine/rotations/south-east.webp",
+        "east": "treeline_pine/rotations/east.webp",
+        "north-east": "treeline_pine/rotations/north-east.webp",
+        "north": "treeline_pine/rotations/north.webp",
+        "north-west": "treeline_pine/rotations/north-west.webp",
+        "west": "treeline_pine/rotations/west.webp",
+        "south-west": "treeline_pine/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.716,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.716,
+            "bbox": [
+              10,
+              3,
+              117,
+              124
+            ],
+            "fill": 0.79,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.794,
+            "bbox": [
+              29,
+              3,
+              97,
+              123
+            ],
+            "fill": 0.498,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.802,
+            "bbox": [
+              24,
+              3,
+              98,
+              123
+            ],
+            "fill": 0.542,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.772,
+            "bbox": [
+              10,
+              3,
+              118,
+              123
+            ],
+            "fill": 0.791,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.822,
+            "bbox": [
+              8,
+              4,
+              100,
+              124
+            ],
+            "fill": 0.674,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.799,
+            "bbox": [
+              14,
+              3,
+              98,
+              122
+            ],
+            "fill": 0.61,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.802,
+            "bbox": [
+              26,
+              3,
+              117,
+              123
+            ],
+            "fill": 0.667,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.831,
+            "bbox": [
+              28,
+              4,
+              118,
+              124
+            ],
+            "fill": 0.659,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:34:04+00:00"
+    },
+    {
       "id": "frost_mask",
       "name": "Icemask",
       "tier": "evil",
@@ -20402,6 +20657,395 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:30:40+00:00"
+    },
+    {
+      "id": "frozen_tent",
+      "name": "Canvashusk",
+      "tier": "evil",
+      "lore": "It was pitched in a bad place by somebody who knew better. The shape it holds is not a shape anybody is still in.",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "2a8bdf50-5d8e-4152-ba89-463ca2073141",
+      "version": 1,
+      "sheet": "frozen_tent/sheet.webp",
+      "rotations": {
+        "south": "frozen_tent/rotations/south.webp",
+        "south-east": "frozen_tent/rotations/south-east.webp",
+        "east": "frozen_tent/rotations/east.webp",
+        "north-east": "frozen_tent/rotations/north-east.webp",
+        "north": "frozen_tent/rotations/north.webp",
+        "north-west": "frozen_tent/rotations/north-west.webp",
+        "west": "frozen_tent/rotations/west.webp",
+        "south-west": "frozen_tent/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.741,
+        "reasons": [
+          "south: content touches the canvas edge (clipped)",
+          "west: content touches the canvas edge (clipped)",
+          "east: content touches the canvas edge (clipped)",
+          "south-east: content touches the canvas edge (clipped)",
+          "north-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.749,
+            "bbox": [
+              0,
+              3,
+              108,
+              107
+            ],
+            "fill": 0.895,
+            "touches_edge": true
+          },
+          "west": {
+            "run1": 0.753,
+            "bbox": [
+              13,
+              3,
+              112,
+              108
+            ],
+            "fill": 0.829,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.762,
+            "bbox": [
+              0,
+              3,
+              100,
+              108
+            ],
+            "fill": 0.837,
+            "touches_edge": true
+          },
+          "north": {
+            "run1": 0.741,
+            "bbox": [
+              10,
+              3,
+              105,
+              109
+            ],
+            "fill": 0.803,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.81,
+            "bbox": [
+              0,
+              4,
+              105,
+              108
+            ],
+            "fill": 0.871,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.771,
+            "bbox": [
+              7,
+              3,
+              101,
+              110
+            ],
+            "fill": 0.802,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.764,
+            "bbox": [
+              13,
+              3,
+              112,
+              108
+            ],
+            "fill": 0.829,
+            "touches_edge": true
+          },
+          "south-west": {
+            "run1": 0.793,
+            "bbox": [
+              10,
+              4,
+              108,
+              108
+            ],
+            "fill": 0.812,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:36:03+00:00"
+    },
+    {
+      "id": "moraine",
+      "name": "Moraine",
+      "tier": "boss",
+      "lore": "The ice pushed it ahead of itself for a thousand years and then let go. It is still going in the same direction.",
+      "biome": [
+        "ice",
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        232,
+        232
+      ],
+      "template_id": "bear",
+      "scale": "big",
+      "pixellab_id": "40f56f87-367b-4405-b98c-364ce22ca644",
+      "version": 1,
+      "sheet": "moraine/sheet.webp",
+      "rotations": {
+        "south": "moraine/rotations/south.webp",
+        "south-east": "moraine/rotations/south-east.webp",
+        "east": "moraine/rotations/east.webp",
+        "north-east": "moraine/rotations/north-east.webp",
+        "north": "moraine/rotations/north.webp",
+        "north-west": "moraine/rotations/north-west.webp",
+        "west": "moraine/rotations/west.webp",
+        "south-west": "moraine/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.598,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.598,
+            "bbox": [
+              43,
+              10,
+              184,
+              222
+            ],
+            "fill": 0.555,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.696,
+            "bbox": [
+              86,
+              12,
+              144,
+              226
+            ],
+            "fill": 0.231,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.71,
+            "bbox": [
+              72,
+              7,
+              147,
+              226
+            ],
+            "fill": 0.305,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.641,
+            "bbox": [
+              48,
+              10,
+              180,
+              219
+            ],
+            "fill": 0.513,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.697,
+            "bbox": [
+              49,
+              7,
+              176,
+              225
+            ],
+            "fill": 0.514,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.65,
+            "bbox": [
+              59,
+              6,
+              171,
+              223
+            ],
+            "fill": 0.452,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.642,
+            "bbox": [
+              55,
+              12,
+              174,
+              222
+            ],
+            "fill": 0.464,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.687,
+            "bbox": [
+              57,
+              12,
+              173,
+              225
+            ],
+            "fill": 0.459,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:34:13+00:00"
+    },
+    {
+      "id": "ash_fall",
+      "name": "Ashfall",
+      "tier": "mid",
+      "lore": "It settled over everything that was there in one afternoon. The prints in it are not of anything that is still here.",
+      "biome": [
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "7b174c67-abdc-4f17-9eb3-9eda10bd22e3",
+      "version": 1,
+      "sheet": "ash_fall/sheet.webp",
+      "rotations": {
+        "south": "ash_fall/rotations/south.webp",
+        "south-east": "ash_fall/rotations/south-east.webp",
+        "east": "ash_fall/rotations/east.webp",
+        "north-east": "ash_fall/rotations/north-east.webp",
+        "north": "ash_fall/rotations/north.webp",
+        "north-west": "ash_fall/rotations/north-west.webp",
+        "west": "ash_fall/rotations/west.webp",
+        "south-west": "ash_fall/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.705,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.705,
+            "bbox": [
+              20,
+              2,
+              90,
+              92
+            ],
+            "fill": 0.684,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.778,
+            "bbox": [
+              11,
+              2,
+              71,
+              94
+            ],
+            "fill": 0.599,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.792,
+            "bbox": [
+              25,
+              2,
+              85,
+              94
+            ],
+            "fill": 0.599,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.733,
+            "bbox": [
+              19,
+              3,
+              77,
+              91
+            ],
+            "fill": 0.554,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.794,
+            "bbox": [
+              24,
+              1,
+              84,
+              95
+            ],
+            "fill": 0.612,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.76,
+            "bbox": [
+              24,
+              3,
+              83,
+              93
+            ],
+            "fill": 0.576,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.749,
+            "bbox": [
+              13,
+              1,
+              72,
+              93
+            ],
+            "fill": 0.589,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.81,
+            "bbox": [
+              15,
+              2,
+              72,
+              95
+            ],
+            "fill": 0.575,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:36:52+00:00"
     },
     {
       "id": "first_mask",

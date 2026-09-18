@@ -1,0 +1,141 @@
+{
+  "id": "moraine",
+  "name": "Moraine",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The ice pushed it ahead of itself for a thousand years and then let go. It is still going in the same direction.",
+  "biome": [
+    "ice",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Vast ridge of glacial rubble risen into a hulking body, mixed boulders, grit and dirty grey ice compacted together, a house-sized granite erratic riding on one shoulder, brown meltwater streaming out of its base",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "moraine/rotations/south.webp",
+    "south-east": "moraine/rotations/south-east.webp",
+    "east": "moraine/rotations/east.webp",
+    "north-east": "moraine/rotations/north-east.webp",
+    "north": "moraine/rotations/north.webp",
+    "north-west": "moraine/rotations/north-west.webp",
+    "west": "moraine/rotations/west.webp",
+    "south-west": "moraine/rotations/south-west.webp"
+  },
+  "sheet": "moraine/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "40f56f87-367b-4405-b98c-364ce22ca644",
+  "seed": 62609148,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:34:13+00:00",
+  "elapsed_s": 213.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.598,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.598,
+        "bbox": [
+          43,
+          10,
+          184,
+          222
+        ],
+        "fill": 0.555,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.696,
+        "bbox": [
+          86,
+          12,
+          144,
+          226
+        ],
+        "fill": 0.231,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.71,
+        "bbox": [
+          72,
+          7,
+          147,
+          226
+        ],
+        "fill": 0.305,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.641,
+        "bbox": [
+          48,
+          10,
+          180,
+          219
+        ],
+        "fill": 0.513,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.697,
+        "bbox": [
+          49,
+          7,
+          176,
+          225
+        ],
+        "fill": 0.514,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.65,
+        "bbox": [
+          59,
+          6,
+          171,
+          223
+        ],
+        "fill": 0.452,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.642,
+        "bbox": [
+          55,
+          12,
+          174,
+          222
+        ],
+        "fill": 0.464,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.687,
+        "bbox": [
+          57,
+          12,
+          173,
+          225
+        ],
+        "fill": 0.459,
+        "touches_edge": false
+      }
+    }
+  }
+}

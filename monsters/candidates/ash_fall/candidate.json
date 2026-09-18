@@ -1,0 +1,140 @@
+{
+  "id": "ash_fall",
+  "name": "Ashfall",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It settled over everything that was there in one afternoon. The prints in it are not of anything that is still here.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Standing drift of warm grey volcanic ash holding a crouched shape, the surface smooth and floury, and pressed into its flank the clean printed impressions of leaves, a bird and a hand left by things that fell in it",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ash_fall/rotations/south.webp",
+    "south-east": "ash_fall/rotations/south-east.webp",
+    "east": "ash_fall/rotations/east.webp",
+    "north-east": "ash_fall/rotations/north-east.webp",
+    "north": "ash_fall/rotations/north.webp",
+    "north-west": "ash_fall/rotations/north-west.webp",
+    "west": "ash_fall/rotations/west.webp",
+    "south-west": "ash_fall/rotations/south-west.webp"
+  },
+  "sheet": "ash_fall/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7b174c67-abdc-4f17-9eb3-9eda10bd22e3",
+  "seed": 195415426,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:36:52+00:00",
+  "elapsed_s": 158.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.705,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.705,
+        "bbox": [
+          20,
+          2,
+          90,
+          92
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.778,
+        "bbox": [
+          11,
+          2,
+          71,
+          94
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.792,
+        "bbox": [
+          25,
+          2,
+          85,
+          94
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.733,
+        "bbox": [
+          19,
+          3,
+          77,
+          91
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.794,
+        "bbox": [
+          24,
+          1,
+          84,
+          95
+        ],
+        "fill": 0.612,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.76,
+        "bbox": [
+          24,
+          3,
+          83,
+          93
+        ],
+        "fill": 0.576,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.749,
+        "bbox": [
+          13,
+          1,
+          72,
+          93
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.81,
+        "bbox": [
+          15,
+          2,
+          72,
+          95
+        ],
+        "fill": 0.575,
+        "touches_edge": false
+      }
+    }
+  }
+}
