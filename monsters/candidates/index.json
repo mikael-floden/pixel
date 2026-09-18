@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T13:23:39+00:00",
+  "generated_at": "2026-09-18T13:25:00+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 160,
+  "count": 161,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -10815,12 +10815,12 @@
         "min_run1": 0.715,
         "reasons": [
           "south: content touches the canvas edge (clipped)",
-          "west: content touches the canvas edge (clipped)",
-          "east: content touches the canvas edge (clipped)",
-          "north: content touches the canvas edge (clipped)",
           "south-east: content touches the canvas edge (clipped)",
+          "east: content touches the canvas edge (clipped)",
           "north-east: content touches the canvas edge (clipped)",
+          "north: content touches the canvas edge (clipped)",
           "north-west: content touches the canvas edge (clipped)",
+          "west: content touches the canvas edge (clipped)",
           "south-west: content touches the canvas edge (clipped)"
         ],
         "directions": {
@@ -10830,39 +10830,6 @@
               12,
               0,
               38,
-              46
-            ],
-            "fill": 0.519,
-            "touches_edge": true
-          },
-          "west": {
-            "run1": 0.773,
-            "bbox": [
-              15,
-              0,
-              37,
-              47
-            ],
-            "fill": 0.449,
-            "touches_edge": true
-          },
-          "east": {
-            "run1": 0.749,
-            "bbox": [
-              11,
-              0,
-              35,
-              47
-            ],
-            "fill": 0.49,
-            "touches_edge": true
-          },
-          "north": {
-            "run1": 0.715,
-            "bbox": [
-              11,
-              0,
-              37,
               46
             ],
             "fill": 0.519,
@@ -10879,6 +10846,17 @@
             "fill": 0.499,
             "touches_edge": true
           },
+          "east": {
+            "run1": 0.749,
+            "bbox": [
+              11,
+              0,
+              35,
+              47
+            ],
+            "fill": 0.49,
+            "touches_edge": true
+          },
           "north-east": {
             "run1": 0.761,
             "bbox": [
@@ -10890,12 +10868,34 @@
             "fill": 0.51,
             "touches_edge": true
           },
+          "north": {
+            "run1": 0.715,
+            "bbox": [
+              11,
+              0,
+              37,
+              46
+            ],
+            "fill": 0.519,
+            "touches_edge": true
+          },
           "north-west": {
             "run1": 0.732,
             "bbox": [
               14,
               0,
               36,
+              47
+            ],
+            "fill": 0.449,
+            "touches_edge": true
+          },
+          "west": {
+            "run1": 0.773,
+            "bbox": [
+              15,
+              0,
+              37,
               47
             ],
             "fill": 0.449,
@@ -11859,15 +11859,15 @@
             "fill": 0.482,
             "touches_edge": false
           },
-          "west": {
-            "run1": 0.732,
+          "south-east": {
+            "run1": 0.781,
             "bbox": [
-              36,
-              3,
-              95,
-              110
+              28,
+              4,
+              80,
+              111
             ],
-            "fill": 0.503,
+            "fill": 0.444,
             "touches_edge": false
           },
           "east": {
@@ -11881,28 +11881,6 @@
             "fill": 0.495,
             "touches_edge": false
           },
-          "north": {
-            "run1": 0.683,
-            "bbox": [
-              28,
-              3,
-              83,
-              111
-            ],
-            "fill": 0.474,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.781,
-            "bbox": [
-              28,
-              4,
-              80,
-              111
-            ],
-            "fill": 0.444,
-            "touches_edge": false
-          },
           "north-east": {
             "run1": 0.717,
             "bbox": [
@@ -11912,6 +11890,17 @@
               108
             ],
             "fill": 0.482,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.683,
+            "bbox": [
+              28,
+              3,
+              83,
+              111
+            ],
+            "fill": 0.474,
             "touches_edge": false
           },
           "north-west": {
@@ -11924,6 +11913,17 @@
             ],
             "fill": 0.421,
             "touches_edge": true
+          },
+          "west": {
+            "run1": 0.732,
+            "bbox": [
+              36,
+              3,
+              95,
+              110
+            ],
+            "fill": 0.503,
+            "touches_edge": false
           },
           "south-west": {
             "run1": 0.781,
@@ -15040,8 +15040,8 @@
         "status": "fail",
         "min_run1": 0.772,
         "reasons": [
-          "north: content touches the canvas edge (clipped)",
-          "south-east: content touches the canvas edge (clipped)"
+          "south-east: content touches the canvas edge (clipped)",
+          "north: content touches the canvas edge (clipped)"
         ],
         "directions": {
           "south": {
@@ -15055,16 +15055,16 @@
             "fill": 0.852,
             "touches_edge": false
           },
-          "west": {
-            "run1": 0.787,
+          "south-east": {
+            "run1": 0.849,
             "bbox": [
-              10,
+              1,
               7,
-              94,
+              104,
               100
             ],
-            "fill": 0.722,
-            "touches_edge": false
+            "fill": 0.886,
+            "touches_edge": true
           },
           "east": {
             "run1": 0.815,
@@ -15075,6 +15075,17 @@
               97
             ],
             "fill": 0.766,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.813,
+            "bbox": [
+              3,
+              4,
+              91,
+              99
+            ],
+            "fill": 0.773,
             "touches_edge": false
           },
           "north": {
@@ -15088,28 +15099,6 @@
             "fill": 0.834,
             "touches_edge": true
           },
-          "south-east": {
-            "run1": 0.849,
-            "bbox": [
-              1,
-              7,
-              104,
-              100
-            ],
-            "fill": 0.886,
-            "touches_edge": true
-          },
-          "north-east": {
-            "run1": 0.813,
-            "bbox": [
-              3,
-              4,
-              91,
-              99
-            ],
-            "fill": 0.773,
-            "touches_edge": false
-          },
           "north-west": {
             "run1": 0.8,
             "bbox": [
@@ -15119,6 +15108,17 @@
               102
             ],
             "fill": 0.888,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.787,
+            "bbox": [
+              10,
+              7,
+              94,
+              100
+            ],
+            "fill": 0.722,
             "touches_edge": false
           },
           "south-west": {
@@ -15646,6 +15646,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:30:40+00:00"
+    },
+    {
+      "id": "frozen_tent",
+      "name": "Canvashusk",
+      "tier": "evil",
+      "lore": "It was pitched in a bad place by somebody who knew better. The shape it holds is not a shape anybody is still in.",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "be3f75cc-1827-4d94-b2f6-c61adeea0747",
+      "version": 2,
+      "sheet": "frozen_tent/sheet.webp",
+      "rotations": {
+        "south": "frozen_tent/rotations/south.webp",
+        "south-east": "frozen_tent/rotations/south-east.webp",
+        "east": "frozen_tent/rotations/east.webp",
+        "north-east": "frozen_tent/rotations/north-east.webp",
+        "north": "frozen_tent/rotations/north.webp",
+        "north-west": "frozen_tent/rotations/north-west.webp",
+        "west": "frozen_tent/rotations/west.webp",
+        "south-west": "frozen_tent/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.648,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.709,
+            "bbox": [
+              3,
+              12,
+              109,
+              99
+            ],
+            "fill": 0.735,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.828,
+            "bbox": [
+              10,
+              12,
+              104,
+              99
+            ],
+            "fill": 0.652,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.768,
+            "bbox": [
+              8,
+              12,
+              108,
+              100
+            ],
+            "fill": 0.702,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.712,
+            "bbox": [
+              3,
+              11,
+              99,
+              100
+            ],
+            "fill": 0.681,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.648,
+            "bbox": [
+              12,
+              11,
+              103,
+              100
+            ],
+            "fill": 0.646,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.719,
+            "bbox": [
+              10,
+              12,
+              101,
+              104
+            ],
+            "fill": 0.667,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.657,
+            "bbox": [
+              11,
+              11,
+              102,
+              100
+            ],
+            "fill": 0.646,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.75,
+            "bbox": [
+              9,
+              12,
+              111,
+              100
+            ],
+            "fill": 0.716,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T13:24:28+00:00"
     },
     {
       "id": "avalanche",

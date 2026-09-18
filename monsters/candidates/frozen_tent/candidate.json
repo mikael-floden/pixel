@@ -1,0 +1,141 @@
+{
+  "id": "frozen_tent",
+  "name": "Canvashusk",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It was pitched in a bad place by somebody who knew better. The shape it holds is not a shape anybody is still in.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Frozen canvas tent standing with its poles snapped and splayed, the stiff ice-glazed cloth holding a person shape inside it, the flap open on a smiling mask of frost, and guy ropes dragging rigid behind it through the snow",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "frozen_tent/rotations/south.webp",
+    "south-east": "frozen_tent/rotations/south-east.webp",
+    "east": "frozen_tent/rotations/east.webp",
+    "north-east": "frozen_tent/rotations/north-east.webp",
+    "north": "frozen_tent/rotations/north.webp",
+    "north-west": "frozen_tent/rotations/north-west.webp",
+    "west": "frozen_tent/rotations/west.webp",
+    "south-west": "frozen_tent/rotations/south-west.webp"
+  },
+  "sheet": "frozen_tent/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "be3f75cc-1827-4d94-b2f6-c61adeea0747",
+  "seed": 203522673,
+  "version": 2,
+  "usage": null,
+  "generated_at": "2026-09-18T13:24:28+00:00",
+  "elapsed_s": 188.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.648,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.709,
+        "bbox": [
+          3,
+          12,
+          109,
+          99
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.828,
+        "bbox": [
+          10,
+          12,
+          104,
+          99
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.768,
+        "bbox": [
+          8,
+          12,
+          108,
+          100
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.712,
+        "bbox": [
+          3,
+          11,
+          99,
+          100
+        ],
+        "fill": 0.681,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.648,
+        "bbox": [
+          12,
+          11,
+          103,
+          100
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.719,
+        "bbox": [
+          10,
+          12,
+          101,
+          104
+        ],
+        "fill": 0.667,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.657,
+        "bbox": [
+          11,
+          11,
+          102,
+          100
+        ],
+        "fill": 0.646,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.75,
+        "bbox": [
+          9,
+          12,
+          111,
+          100
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      }
+    }
+  }
+}
