@@ -823,36 +823,6 @@
       "lore": "It hides in boots and bedrolls. The sting is small; the fever it brings is not."
     },
     {
-      "id": "iron_rhino",
-      "name": "Ironhorn",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "bear",
-      "size": 240,
-      "biome": [
-        "light_soil",
-        "grey_stone"
-      ],
-      "items": [],
-      "prompt": "Colossal armored rhinoceros beast with realistic proportions, thick grey hide plated like riveted iron, a single massive curved horn of dark iron, a smaller horn behind it, small deep-set eyes, heavy pillar legs and three-toed feet.",
-      "lore": "Siege engines were built to imitate it and none have matched it. When it charges, the wall is the softer thing."
-    },
-    {
-      "id": "chest_mimic",
-      "name": "Hoardmaw",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 96,
-      "biome": [
-        "parquet_floor",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Ancient treasure chest mimic, a heavy iron-bound oak chest with a dark weathered lid raised just enough to show a black maw lined with long thin needle teeth, two narrow glowing amber eyes deep under the lid, gold coins fused into the wood, and four thick clawed legs of dark wood.",
-      "lore": "It has waited in the vault longer than the vault has had a door. It does not lure; it is simply there, and patient."
-    },
-    {
       "id": "lantern_wraith",
       "name": "Palewick",
       "tier": "evil",
@@ -931,21 +901,6 @@
       "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won."
     },
     {
-      "id": "waystone_walker",
-      "name": "Waystone",
-      "tier": "cute",
-      "template_id": "bear",
-      "size": 48,
-      "scale": "small",
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "prompt": "Squat carved granite roadstone with a rounded weathered top, worn spiral and line marks cut deep into its face and packed with grey-green lichen, a faded painted hand pointing off to one side, standing on two short thick stone feet with grass and soil still gripped around them",
-      "lore": "It points the way the road went before the last Turn. Nobody has told it, and it goes on pointing.",
-      "items": []
-    },
-    {
       "id": "burr_kin",
       "name": "Burrkin",
       "tier": "cute",
@@ -957,110 +912,6 @@
       ],
       "prompt": "Tight round ball of dried burdock burrs and grass seed heads matted into a body, hooked bristles standing out all over it, two small black eyes deep inside the tangle, short woody root legs underneath, with loose straw and a scrap of torn wool caught in the hooks",
       "lore": "It catches on everything that passes and keeps a thread of it. None of it is worth anything and it will not put any of it down.",
-      "items": []
-    },
-    {
-      "id": "boot_pair",
-      "name": "Wanderboot",
-      "tier": "cute",
-      "template_id": "mannequin",
-      "size": 56,
-      "scale": "small",
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "prompt": "Pair of heavy brown leather travelling boots laced together at the tops and standing upright with nobody in them, worn hobnailed soles, dried mud caked to the ankles, the leather cracked across the toes and polished pale at the heels, the cuffs gaping open on nothing",
-      "lore": "Somebody walked a very long way in these and does not need them now. The walking is the part that got up.",
-      "items": []
-    },
-    {
-      "id": "rocking_horse",
-      "name": "Woodmare",
-      "tier": "cute",
-      "template_id": "horse",
-      "size": 72,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "parquet_floor"
-      ],
-      "prompt": "Child's wooden rocking horse with cracked dapple-grey paint flaking off the carved body, a stiff real horsehair mane and tail, a leather bridle gone green with age, curved wooden rockers for feet and a saddle worn pale in the middle",
-      "lore": "Someone rode it before they were tall and remembered it long after. It rocks whether or not the ground is level.",
-      "items": []
-    },
-    {
-      "id": "hay_binding",
-      "name": "Twinebale",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "prompt": "Rectangular bale of dry golden hay bound with two tight twists of baling twine cutting deep into its sides, loose straw bristling from every edge, a broken rusted sickle blade still driven into the top of it, chaff and grass seed sifting from underneath",
-      "lore": "Cut, bound, and never carried in. The binding is the only thing holding its shape and it does not like being touched.",
-      "items": []
-    },
-    {
-      "id": "grass_adder",
-      "name": "Grassfang",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 88,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "prompt": "Thick-bodied adder coiled on itself with its flat wedge head raised, olive-brown scales carrying a hard black zigzag down the spine, vertical slit pupils in copper eyes, a forked black tongue out and the last coil of its tail drawn in tight against the body",
-      "lore": "It fell with the grass it was lying in. It has not noticed the difference and it bites on the same terms as before.",
-      "items": []
-    },
-    {
-      "id": "yard_cockerel",
-      "name": "Spurcomb",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "prompt": "Big farmyard cockerel standing square with its wings clamped tight to its body, iridescent black-green sickle tail feathers curled down close behind it, a torn red comb and wattles, heavy scaled yellow legs with long sharp spurs and a hard hooked beak",
-      "lore": "It ran a yard once and has not stopped running one. Everything that walks past is trespassing.",
-      "items": []
-    },
-    {
-      "id": "skep_hive",
-      "name": "Skepmother",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 88,
-      "scale": "standard",
-      "biome": [
-        "grass"
-      ],
-      "prompt": "Domed straw beehive skep woven in coiled rope work, standing on four short legs of pale wax and comb, the mouth of it open on dark honeycomb, live bees crawling over the braid, and old honey running down one side in a black glaze",
-      "lore": "The swarm remembers the keeper better than the keeper remembered the swarm. It still comes to smoke and it still stings.",
-      "items": []
-    },
-    {
-      "id": "fingerpost",
-      "name": "Fingerpost",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "prompt": "Weathered wooden fingerpost with a thick square post for a body and three short blunt arm boards held close and pointing different ways, the painted place names worn back to bare grain, a ball finial on top and clods of earth still gripped by its buried foot",
-      "lore": "Three names on it, all of them gone. It steps into the road ahead of travellers and waits to be read.",
       "items": []
     },
     {
@@ -1076,66 +927,6 @@
       ],
       "prompt": "Rolled knot of dead bramble and grey winter grass wound into a dense round body bristling with black thorn hooks, an abandoned bird nest packed into a hollow at the front with three cold speckled eggs still in it, short whipping runners for limbs",
       "lore": "The nest was left before the bramble grew around it. It keeps the eggs warm out of habit and there is nothing inside them.",
-      "items": []
-    },
-    {
-      "id": "cart_wreck",
-      "name": "Cartwrack",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "prompt": "Broken two-wheeled handcart standing up on its own shafts like legs, one wheel stripped of its spokes and the other sunk to the hub, a split load bed still roped over with tarred black canvas, harness straps hanging heavy and trailing from the bed",
-      "lore": "It was pulled most of the way and left in sight of the fire. It is doing the last part on its own.",
-      "items": []
-    },
-    {
-      "id": "coat_heap",
-      "name": "Coatheap",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "brown_paving_stone"
-      ],
-      "prompt": "Standing heap of layered old coats, oilskin over wool over a child jacket, every one buttoned up and shaped like a stooped person, the top collar gaping open on empty dark air, sleeves hanging heavy and the hems dragging in the grass",
-      "lore": "Everything anybody left on the grass, worn at once by nothing. It stands where a fire used to be lit.",
-      "items": []
-    },
-    {
-      "id": "cold_hearth",
-      "name": "Deadfire",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "brown_paving_stone"
-      ],
-      "prompt": "Crouching shape built out of a cold fire, a cage of charred branch ends and packed grey ash over a ring of scorched hearthstones, cracked burnt wood for limbs, fine ash sifting from its joints and one live orange ember still glowing deep in its chest",
-      "lore": "A fire nobody kept long enough. What was left of it has gone looking for company.",
-      "items": []
-    },
-    {
-      "id": "chess_piece",
-      "name": "Boardknight",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "grass",
-        "parquet_floor"
-      ],
-      "prompt": "Man-sized carved dark stone chess knight, a stylised horse head on a heavy round base, one ear snapped clean off, the stone polished black where hands have gripped it, deep chisel facets cut down the mane and a chipped corner on the base",
-      "lore": "It only moves the way it is allowed to move. It always arrives from the direction nobody was watching.",
       "items": []
     },
     {
@@ -1182,21 +973,6 @@
       "items": []
     },
     {
-      "id": "tide_wrack",
-      "name": "Wrackmound",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "light_beach",
-        "dark_mud"
-      ],
-      "prompt": "Mound of black bladderwrack and kelp ribbons heaped into a low crawling shape, air bladders popping wetly along its back, ribbons of weed dragging behind it, small crabs and sandhoppers living in the folds and brown water draining out of it",
-      "lore": "A tide line that got up and kept the line with it. The crabs in it have never known anything else.",
-      "items": []
-    },
-    {
       "id": "spire_whelk",
       "name": "Whelkspire",
       "tier": "mid",
@@ -1209,49 +985,6 @@
       ],
       "prompt": "Large knobbed whelk shell carried on a thick muscular grey foot, the spire chalk-white and drilled with old boreholes, a horny brown operculum hanging beside the mouth like a shield and two short eye stalks out over the rim",
       "lore": "It drills the shell of anything slower than itself, which is most things. It takes a whole day and it does not hurry.",
-      "items": []
-    },
-    {
-      "id": "net_tangle",
-      "name": "Netsnarl",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "light_beach"
-      ],
-      "prompt": "Balled mass of tarred fishing net drawn into a crouching body, round cork floats knotted through it like blind eyes, the catch still tangled inside it with fish bones and a cracked buoy and a single boot showing, salt dried white along every cord",
-      "lore": "It kept fishing after the boat stopped coming. What it catches, it keeps inside itself.",
-      "items": []
-    },
-    {
-      "id": "salt_coat",
-      "name": "Saltcoat",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "light_beach"
-      ],
-      "prompt": "Empty yellow oilskin coat and sou wester standing upright, the oilcloth stiff and salt-crusted and streaked with green, cuffs hanging open with seawater still running out of them, and a smooth smiling face of dried white salt set back in the hood",
-      "lore": "It came up the beach with the wrack. It is polite, and it walks you toward the water while it talks.",
-      "items": []
-    },
-    {
-      "id": "old_turtle",
-      "name": "Hullshell",
-      "tier": "boss",
-      "template_id": "bear",
-      "size": 224,
-      "scale": "big",
-      "biome": [
-        "light_beach",
-        "grey_stone"
-      ],
-      "prompt": "Enormous ancient sea turtle hauled out on the sand, its shell like a cracked boat hull crusted with barnacles and darkened by an old tide mark, heavy scarred flippers dug in underneath, a hooked beak and small salt-rimmed eyes under a wrinkled brow",
-      "lore": "It was old before it fell and it has not hurried since. The beach it sleeps on was a different shape last Turn.",
       "items": []
     },
     {
@@ -1298,21 +1031,6 @@
       "items": []
     },
     {
-      "id": "reed_bundle",
-      "name": "Reedsheaf",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "prompt": "Standing sheaf of cut reeds bound at the waist with twisted sedge rope, the stems golden and split at the tops, dark waterweed hanging from it in ropes, bog water running out of the bundle and one heron leg bone tangled in the binding",
-      "lore": "Cut for a roof that was never thatched. It stands in the shallows in the shape of the man who cut it.",
-      "items": []
-    },
-    {
       "id": "pitcher_plant",
       "name": "Pitchergut",
       "tier": "mid",
@@ -1325,109 +1043,6 @@
       ],
       "prompt": "Cluster of fat carnivorous pitcher plants grown from one thick root foot, each trumpet veined deep maroon over green with a hooded lid raised, slick wet rims, drowned flies floating in the fluid inside and fine stiff hairs down the throats",
       "lore": "It drinks whatever falls in, and it has learned what falls in most. It leans toward warmth.",
-      "items": []
-    },
-    {
-      "id": "fen_goose",
-      "name": "Fengoose",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "dark_mud",
-        "grass"
-      ],
-      "prompt": "Heavy grey fen goose with its wings clamped tight to its body and its neck stretched low and level, beak open on a black serrated tongue, orange webbed feet sunk in the mud and muddy water beading on its back feathers",
-      "lore": "It owns the water it is standing in and the ground it can see. It gives one warning and the warning is loud.",
-      "items": []
-    },
-    {
-      "id": "sphagnum",
-      "name": "Mirequilt",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "dark_mud",
-        "grass"
-      ],
-      "prompt": "Crawling carpet of deep sphagnum moss risen into a low humped body, red and gold and green cushions across its back, water squeezing out of it at every step, and half-swallowed things showing through the moss, a boot, a cart rib, a shed antler",
-      "lore": "The bog keeps everything and this is how it carries it. Nothing in it has finished sinking yet.",
-      "items": []
-    },
-    {
-      "id": "bog_iron",
-      "name": "Ironscab",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "dark_mud"
-      ],
-      "prompt": "Lumpen heavy body of bog iron, knobbed orange-red nodules of rusted ore crusted together over black peat, seams of rust weeping brown water down its sides, a dense low stance and old reed stems baked into the crust",
-      "lore": "The bog makes iron slowly out of water and time. Somebody used to dig this out and beat it flat.",
-      "items": []
-    },
-    {
-      "id": "sunken_bell",
-      "name": "Mirebell",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "prompt": "Great bronze bell risen out of the peat and standing on its rim, thick verdigris over the bronze with a cast inscription still legible under it, the iron clapper hanging inside like a tongue, black mud pouring steadily from its mouth",
-      "lore": "It went into the bog with the cart that was carrying it. Nobody has rung it since, and it has started ringing itself.",
-      "items": []
-    },
-    {
-      "id": "bog_preserved",
-      "name": "Tanhide",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 128,
-      "scale": "standard",
-      "biome": [
-        "dark_mud"
-      ],
-      "prompt": "Body preserved by the peat standing compact with both arms folded tight against its chest, leathery dark-brown skin drawn over the bones, hair stained fox-red and matted flat to the skull, a twisted withy cord knotted at the throat, eyelids tanned shut and the jaw fallen open",
-      "lore": "The bog kept the outside perfectly and let the rest go. It is the oldest thing on its feet here.",
-      "items": []
-    },
-    {
-      "id": "bog_oak",
-      "name": "Bogoak",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 136,
-      "scale": "standard",
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "prompt": "Black bog oak trunk hauled upright out of the peat, the wood iron-hard and split down its length, a spread root mass for feet, water pouring from every crack, a broken cart axle grown through its side and no leaves anywhere on it",
-      "lore": "Five thousand years under the water made it harder than the axes that felled it. It remembers being a wood.",
-      "items": []
-    },
-    {
-      "id": "tar_seep",
-      "name": "Tarseep",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "slime",
-        "dark_mud"
-      ],
-      "prompt": "Crouching shape of black tar risen from a seep, its surface glossy and slowly bubbling, feathers and small bones and a bird wing stuck fast in its back, thin strings of pitch drawing between its limbs as it moves",
-      "lore": "It takes whatever lands on it and it never lets anything go. The things in its back are still in the positions they landed in.",
       "items": []
     },
     {
@@ -1457,50 +1072,6 @@
       ],
       "prompt": "Low hunched body of peat and black water with a wide round sinkhole opening in its front like a mouth, broken reed stems standing in the rim like teeth, water draining steadily inward and down, wet mud sliding off its back",
       "lore": "The ground opens where it walks and closes behind it. What it takes goes down further than the bog does.",
-      "items": []
-    },
-    {
-      "id": "mill_wheel",
-      "name": "Millwheel",
-      "tier": "boss",
-      "template_id": "mannequin",
-      "size": 224,
-      "scale": "big",
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "prompt": "Great wooden mill water wheel torn off its axle and standing on its rim, the paddle boards splintered and black with weed, the iron banding rusted through, the axle beam still run through its hub like a spine, water pouring off every paddle",
-      "lore": "It was carried here whole by somebody who hated the sight of it. It still turns, and it still has nothing to grind.",
-      "items": []
-    },
-    {
-      "id": "mud_eel",
-      "name": "Fenwyrm",
-      "tier": "boss",
-      "template_id": "bear",
-      "size": 232,
-      "scale": "big",
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "prompt": "Enormous eel hauled half out of the mud and coiled back on itself, slick olive-black hide mottled with yellow, a blunt heavy head with a hinged jaw full of backward teeth, small deep-set eyes and gill slits flaring behind them",
-      "lore": "It has been in the bog longer than the bog has been a bog. It comes up for whatever is standing on the bank.",
-      "items": []
-    },
-    {
-      "id": "lichen_stone",
-      "name": "Lichenhide",
-      "tier": "cute",
-      "template_id": "bear",
-      "size": 48,
-      "scale": "small",
-      "biome": [
-        "grey_stone"
-      ],
-      "prompt": "Rounded grey boulder crusted all over in orange, yellow and pale green map lichen, two short stumpy stone legs underneath, a shallow chip knocked out of one side showing clean grey rock, and old moss packed around its base",
-      "lore": "A hundred years of lichen on something that moves. It moves that slowly.",
       "items": []
     },
     {
@@ -1534,21 +1105,6 @@
       "items": []
     },
     {
-      "id": "crag_falcon",
-      "name": "Hoodhawk",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "grey_stone",
-        "snow"
-      ],
-      "prompt": "Large falcon hunched low with its wings folded tight to its body, slate-grey back, a barred cream breast, black moustache stripes under fierce dark eyes, yellow scaled feet with black talons and a leather falconer hood half torn from its head",
-      "lore": "Someone flew it once, and the hood is all that is left of them. It has never quite got the rest of it off.",
-      "items": []
-    },
-    {
       "id": "crag_millipede",
       "name": "Platecurl",
       "tier": "mid",
@@ -1564,20 +1120,6 @@
       "items": []
     },
     {
-      "id": "slate_stack",
-      "name": "Slatespine",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "grey_stone"
-      ],
-      "prompt": "Standing stack of roofing slates, grey-blue and split, the edges sharp as blades and fanned along its back like a spine, rusted nails still through the peg holes, green moss in the gaps and slate dust falling as it shifts",
-      "lore": "The roof came off in a Turn and the slates stayed together. They have not found anything else to cover.",
-      "items": []
-    },
-    {
       "id": "quern_stone",
       "name": "Quernjaw",
       "tier": "mid",
@@ -1590,36 +1132,6 @@
       ],
       "prompt": "Pair of round grinding quern stones set one on the other and standing on a squat base, the upper stone turning slowly against the lower like a jaw, a broken wooden handle stub in its rim, fine white grain dust caught in the cut grooves",
       "lore": "It ground for a household that is not there. It goes on turning and it is not particular about what goes in.",
-      "items": []
-    },
-    {
-      "id": "wind_thorn",
-      "name": "Windthorn",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "grey_stone",
-        "grass"
-      ],
-      "prompt": "Wind-bent hawthorn walking on its own roots, all its short branches combed hard to one side, grey bark split and knotted, clusters of red haws hanging like beads, and faded rags and ribbons tied along its limbs by travellers",
-      "lore": "Every rag on it was tied by somebody asking for something. It has been keeping count.",
-      "items": []
-    },
-    {
-      "id": "spring_head",
-      "name": "Wellhead",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "grey_stone",
-        "grey_paving_stone"
-      ],
-      "prompt": "Stone well head risen on its own footing, a round drum of mortared blocks brimming with black water that spills constantly over the rim, a rope and an iron-bound bucket wound around it like an arm, and gold coins glinting in the water",
-      "lore": "The coins were put in by people who wanted something. It has been holding up its end and it is owed.",
       "items": []
     },
     {
@@ -1649,66 +1161,6 @@
       ],
       "prompt": "Boulder with a heavy face carved into one side by an old hand, deep brow, chiselled eyes, a mouth cut straight and wide, the tool marks still crisp and packed with moss, and the rest of the stone left completely unshaped",
       "lore": "Somebody cut a face into it to be looked at by. Only the face moves, the rest is still a rock.",
-      "items": []
-    },
-    {
-      "id": "hollow_pack",
-      "name": "Packhusk",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "grey_stone",
-        "snow"
-      ],
-      "prompt": "Traveller pack frame and bedroll standing upright with nothing carrying it, the straps buckled closed on empty air, a tin cup and a pot hanging motionless from the frame, and a smiling pale wooden mask lashed to the top where a head would ride",
-      "lore": "It keeps to the road and it keeps a good pace. It has been going up for a long time.",
-      "items": []
-    },
-    {
-      "id": "standing_stone",
-      "name": "Stonemoot",
-      "tier": "boss",
-      "template_id": "mannequin",
-      "size": 232,
-      "scale": "big",
-      "biome": [
-        "grey_stone",
-        "grass"
-      ],
-      "prompt": "Lone standing stone risen onto a blunt foot of its own rock, a tall weathered slab of grey granite carved with worn spiral marks, one face cupped with a shallow hollow where offerings were left, lichen crusted along its windward edge",
-      "lore": "It was stood up by people who are not remembered, for a reason that is not either. Things were left in the hollow and things were taken out.",
-      "items": []
-    },
-    {
-      "id": "rock_wyrm",
-      "name": "Greywyrm",
-      "tier": "boss",
-      "template_id": "bear",
-      "size": 232,
-      "scale": "big",
-      "biome": [
-        "grey_stone",
-        "black_rock"
-      ],
-      "prompt": "Massive legless wyrm coiled on the rock, its hide made of overlapping granite-grey scales crusted with lichen, a blunt heavy head with a jaw seam running back past the eyes, eyes like wet quartz and its tail drawn tight against its body",
-      "lore": "It has been part of the mountain road shape for as long as the road has had one. Carts used to be routed around it.",
-      "items": []
-    },
-    {
-      "id": "ice_mossball",
-      "name": "Rollmoss",
-      "tier": "cute",
-      "template_id": "bear",
-      "size": 40,
-      "scale": "small",
-      "biome": [
-        "ice",
-        "snow"
-      ],
-      "prompt": "Ball of dense green and grey moss grown completely around a small stone, rolling on the ice, white frost rimed across its underside, a few pale grass blades sticking out of the fur and dark meltwater at its base",
-      "lore": "It rolls a little each day and the moss grows even because of it. Nothing is inside but the stone it started on.",
       "items": []
     },
     {
@@ -1752,91 +1204,6 @@
       ],
       "prompt": "Figure grown entirely of hoarfrost needles over a dead branch armature, feathery white crystal spines standing out from thin black wood, glittering facets across it, and a hollow dark space where the frost has not filled in",
       "lore": "It grew out of one night of cold on something that was already dead. Warm breath takes pieces off it.",
-      "items": []
-    },
-    {
-      "id": "broken_sledge",
-      "name": "Sledgeback",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 128,
-      "scale": "standard",
-      "biome": [
-        "snow"
-      ],
-      "prompt": "Compact overturned wooden sledge walking on short steel-shod runners held close under it, the slatted bed split down the middle, frozen canvas lashed tight over a load that has not been unpacked, stiff leather harness traces coiled up onto the bed rather than trailing",
-      "lore": "It was hauled up and left when the hauling stopped. The load has not been looked at since.",
-      "items": []
-    },
-    {
-      "id": "pack_ice",
-      "name": "Pressridge",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 120,
-      "scale": "standard",
-      "biome": [
-        "ice"
-      ],
-      "prompt": "Ridge of broken pack ice shoved up into a standing mass, thick blue-white plates tilted and grinding against one another, black water showing in the cracks between them and a crust of snow packed into the joins",
-      "lore": "Two sheets of ice pushed until one had to go up. The grinding noise it makes is the same noise it made before it stood.",
-      "items": []
-    },
-    {
-      "id": "glacier_ice",
-      "name": "Icecore",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "ice"
-      ],
-      "prompt": "Block of ancient glacier ice on two short legs, deep blue and banded with trapped bubble layers, a pine cone and a dark pebble frozen near its centre, meltwater running down its sides and the surface polished smooth",
-      "lore": "Everything inside it fell in a very long time ago. It is thawing from the middle out.",
-      "items": []
-    },
-    {
-      "id": "treeline_pine",
-      "name": "Windpine",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 128,
-      "scale": "standard",
-      "biome": [
-        "snow",
-        "grey_stone"
-      ],
-      "prompt": "Stunted wind-twisted pine from the treeline walking on its root plate, the trunk corkscrewed and half stripped to bare silver wood, dark needles only on its sheltered side, glazed ice on the bark and one dead top snapped off",
-      "lore": "It grew for two hundred years into the same wind. It leans the same way even indoors.",
-      "items": []
-    },
-    {
-      "id": "frost_mask",
-      "name": "Icemask",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "snow"
-      ],
-      "prompt": "Figure of packed snow and frozen cloth standing straight, layers of stiff frosted wool wrapped around a hollow body, and a smooth smiling mask of clear ice set into its face with breath steaming slowly out of the eye holes",
-      "lore": "It breathes and there is nothing in it to breathe. It stands where the path is easiest and waits to be followed.",
-      "items": []
-    },
-    {
-      "id": "avalanche",
-      "name": "Slabfall",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 136,
-      "scale": "standard",
-      "biome": [
-        "snow"
-      ],
-      "prompt": "Standing wall of tumbling slab snow held together in a hunched body, blocks of hard windslab breaking off its shoulders, splintered spruce trunks driven through it, and a dark hollow low in its front where a face would be",
-      "lore": "It came off the face in nine seconds and it has not settled since. It is quiet until it is not.",
       "items": []
     },
     {
@@ -1928,49 +1295,6 @@
       "items": []
     },
     {
-      "id": "vent_worm",
-      "name": "Ventworm",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "prompt": "Thick armoured tube worm coiled on hot rock, its chalky white shell ribbed in tight rings, a blood-red feathered plume spread from the open end, no eyes anywhere on it and heat shimmer rising off its coils",
-      "lore": "It lives off the heat itself and has never needed light. Where it is, the rock is too hot to stand on.",
-      "items": []
-    },
-    {
-      "id": "obsidian_shard",
-      "name": "Glasscut",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "black_rock"
-      ],
-      "prompt": "Standing body of black volcanic glass blades fused at the base, every edge a razor with a curved conchoidal fracture, the surfaces mirror bright, deep red heat light visible in the cracks and a crown of broken shards at its top",
-      "lore": "Every part of it is an edge. It has never had to learn to swing anything.",
-      "items": []
-    },
-    {
-      "id": "sulphur_mound",
-      "name": "Brimstone",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "lava"
-      ],
-      "prompt": "Crusted mound of bright yellow sulphur, needle crystals bearded around its steaming vents, sour smoke leaking constantly from its sides, orange staining down its flanks and one guttering blue flame standing on its shoulder",
-      "lore": "The smell reaches further than it does. Things that live near it stopped smelling anything years ago.",
-      "items": []
-    },
-    {
       "id": "ember_mask",
       "name": "Cindermask",
       "tier": "evil",
@@ -2001,34 +1325,6 @@
       "items": []
     },
     {
-      "id": "cave_pearl",
-      "name": "Cavepearl",
-      "tier": "cute",
-      "template_id": "bear",
-      "size": 40,
-      "scale": "small",
-      "biome": [
-        "black_rock"
-      ],
-      "prompt": "Smooth polished cave pearl the size of an apple, banded cream and translucent calcite, rolling on three tiny stone feet, wet and gleaming, with a ring of smaller unmoving pearls left behind it in the pool",
-      "lore": "It was turned smooth by dripping water over a thousand years and it is still turning. The others in the pool are its earlier attempts.",
-      "items": []
-    },
-    {
-      "id": "stalagmite",
-      "name": "Dripstone",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "black_rock"
-      ],
-      "prompt": "Stalagmite risen off the cave floor, banded orange and cream flowstone layers over a thick tapered body, stubby limbs of poured calcite, water dripping steadily onto its crown from above and running down it in sheets",
-      "lore": "It grew one drop at a time and it has not changed the habit. Everything it does takes the same amount of patience.",
-      "items": []
-    },
-    {
       "id": "blind_newt",
       "name": "Whitegill",
       "tier": "cute",
@@ -2040,21 +1336,6 @@
       ],
       "prompt": "Blind cave salamander with translucent pink-white skin showing the organs faintly underneath, three pairs of feathery scarlet gills behind the head, a long flattened tail curled beside it, thin pale legs and two blank covered eye spots",
       "lore": "It has never needed eyes and it does not have them. It knows the shape of the water it is in perfectly.",
-      "items": []
-    },
-    {
-      "id": "gypsum_flower",
-      "name": "Gypsumkin",
-      "tier": "cute",
-      "template_id": "bear",
-      "size": 48,
-      "scale": "small",
-      "biome": [
-        "black_rock",
-        "grey_stone"
-      ],
-      "prompt": "Curl of white gypsum crystal grown into a small flowering shape, translucent mineral petals fanning out from a thick base, fine needle fibres at the edges, moving very slowly on a foot of the same white stone",
-      "lore": "It grew out of the wall where no water ever ran. Touching it takes a piece off and the piece does not grow back.",
       "items": []
     },
     {
@@ -2072,21 +1353,6 @@
       "items": []
     },
     {
-      "id": "roost_bat",
-      "name": "Foldwing",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "black_rock",
-        "grey_stone"
-      ],
-      "prompt": "Large bat hanging upright with its wings wrapped completely around itself like a folded cloak, only a blunt foxlike face and two tall ridged ears showing above the fold, hooked black feet gripping and dense dark fur at the shoulders",
-      "lore": "It keeps everything inside the wings until it does not. The ears are working the whole time.",
-      "items": []
-    },
-    {
       "id": "moon_milk",
       "name": "Moonmilk",
       "tier": "evil",
@@ -2098,21 +1364,6 @@
       ],
       "prompt": "Body of soft white cave moonmilk, a wet paste like wet chalk holding a hunched shape, finger marks pressed into its surface where something touched it, thick drips hanging off its underside and a cold pale sheen",
       "lore": "It takes a print from anything that touches it and keeps it. Some of the prints on it are very small.",
-      "items": []
-    },
-    {
-      "id": "first_mask",
-      "name": "Firstmask",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "black_rock",
-        "grey_stone"
-      ],
-      "prompt": "Person-shaped hollow of plain grey cloth standing straight, sleeves and hem hanging empty and still, and one smooth featureless smiling mask of pale wood fixed where the face would be",
-      "lore": "The simplest thing the cave makes. It is always facing you and it has never once hurried.",
       "items": []
     },
     {
@@ -2131,20 +1382,6 @@
       "items": []
     },
     {
-      "id": "sump_water",
-      "name": "Sumpcrawl",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "black_rock"
-      ],
-      "prompt": "Crawling mass of black cave water holding a low body shape, fine silt suspended and swirling inside it, and held motionless in its middle a dented lamp, a coil of rope and a scatter of small bones, all visible through the water",
-      "lore": "The sump gave up its shape but not its contents. It has been carrying that lamp for a long time.",
-      "items": []
-    },
-    {
       "id": "good_guest",
       "name": "Goodguest",
       "tier": "evil",
@@ -2157,20 +1394,6 @@
       ],
       "prompt": "Hollow figure in a clean host apron and long coat, hands folded neatly in front of it, head inclined in a slight bow, a smiling mask of pale wood for a face, and one arm extended to the side as if showing the way",
       "lore": "It steps aside to let you go first, every time. Hearn said it asked politely, and he is the only one who came back up.",
-      "items": []
-    },
-    {
-      "id": "mask_bearer",
-      "name": "Maskbearer",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "black_rock"
-      ],
-      "prompt": "Hollow figure in a dark coat wearing one smooth smiling mask, holding out a second identical mask in both hands at chest height as an offer, the empty cuffs of its sleeves showing nothing inside them",
-      "lore": "It has one already. The one it is holding is the right size for you.",
       "items": []
     },
     {
@@ -2203,21 +1426,6 @@
       "items": []
     },
     {
-      "id": "mask_table",
-      "name": "Masktable",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 128,
-      "scale": "standard",
-      "biome": [
-        "parquet_floor",
-        "black_rock"
-      ],
-      "prompt": "Heavy dark wooden table standing on four carved legs like a beast, eleven smooth smiling masks laid out in a row across its top facing up, the wood scarred and waxed, and its legs lifting one at a time as it steps",
-      "lore": "Eleven masks, one face, laid out for people who are not here yet. It sets them out again if they are moved.",
-      "items": []
-    },
-    {
       "id": "the_listener",
       "name": "Listener",
       "tier": "evil",
@@ -2229,20 +1437,6 @@
       ],
       "prompt": "Tall hollow figure in heavy grey cloth with no mask at all, its head a smooth blank oval, both hands raised and cupped behind where ears would be, leaning forward slightly",
       "lore": "It has no face because it is not for being looked at. It leans in when you speak and it does not miss anything.",
-      "items": []
-    },
-    {
-      "id": "hollow_host",
-      "name": "Maskfather",
-      "tier": "boss",
-      "template_id": "mannequin",
-      "size": 232,
-      "scale": "big",
-      "biome": [
-        "black_rock"
-      ],
-      "prompt": "Tall hollow figure in a long clean dark coat, a smooth smiling mask of pale wood, a stack of blank unfinished masks carried under one arm and a finished mask held out in its free hand, the coat hanging on nothing",
-      "lore": "It is the one that sets the table. The blank ones under its arm have not been assigned yet.",
       "items": []
     },
     {
@@ -2258,138 +1452,6 @@
       "prompt": "Enormous hunched mass of cave rock in a body shape, with a perfectly round black opening where a face should be, smooth smiling masks fused into its shoulders and back like scales, and both stone hands cupped open and empty in front of it",
       "lore": "The hole under the mountain, standing up. It is new, and the oldest here say the worst part is who it has to be.",
       "items": []
-    },
-    {
-      "id": "letter_box",
-      "name": "Deadletter",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "grey_paving_stone",
-        "brown_paving_stone"
-      ],
-      "prompt": "Cast iron pillar letter box walking on a heavy round base, paint blistered dark red over rust, the collection plate blank, and undelivered letters packed so tight in the slot that they are spilling out and jammed down its sides",
-      "lore": "Everything posted in it is still in it. The names on the letters are of people who are here.",
-      "items": []
-    },
-    {
-      "id": "iron_stove",
-      "name": "Ironstove",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "parquet_floor",
-        "brown_paving_stone"
-      ],
-      "prompt": "Cast iron stove walking on four clawed feet, its fire door hanging open on cold grey ash, a stub of flue pipe on top, a blackened kettle still standing on the hot plate and scorch marks fanned up its back",
-      "lore": "It went out when the house emptied and it has not been lit since. The kettle on it has never been taken off.",
-      "items": []
-    },
-    {
-      "id": "anvil",
-      "name": "Anvilhorn",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 96,
-      "scale": "standard",
-      "biome": [
-        "brown_paving_stone",
-        "grey_paving_stone"
-      ],
-      "prompt": "Blacksmith anvil standing on two squat iron legs, the face scarred and polished bright from use, a broken pair of tongs fused to its side, the horn chipped, and a fine scale of black forge flake shed around its feet",
-      "lore": "It took every blow in the settlement for years. It has started returning them.",
-      "items": []
-    },
-    {
-      "id": "forgotten_statue",
-      "name": "Plinthstep",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 128,
-      "scale": "standard",
-      "biome": [
-        "grey_paving_stone"
-      ],
-      "prompt": "Carved stone figure of a person stepping off its plinth with the broken plinth still stuck to its feet, robes cut in deep folds, the hands finely detailed and the face weathered completely smooth, the base inscription rubbed out",
-      "lore": "It was put up for somebody. Nobody left can read the base and nobody left knows who.",
-      "items": []
-    },
-    {
-      "id": "empty_chair",
-      "name": "Emptychair",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 104,
-      "scale": "standard",
-      "biome": [
-        "parquet_floor"
-      ],
-      "prompt": "Heavy wooden dining chair standing upright on four turned legs, the rush seat worn through in the middle, a folded wool coat hung over its back and a single smooth smiling mask resting face up on the seat",
-      "lore": "One chair from a long table, still set for somebody. It follows the person who sat in it.",
-      "items": []
-    },
-    {
-      "id": "standing_mirror",
-      "name": "Mirrorface",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "parquet_floor"
-      ],
-      "prompt": "Tall standing mirror in a dark carved frame walking on its two stand feet, the glass foxed and black spotted with age, and a pale smiling face showing in the glass turned slightly away",
-      "lore": "It shows a face and it is not the face of whoever is in front of it. It does not move when you do.",
-      "items": []
-    },
-    {
-      "id": "orphan_door",
-      "name": "Doorward",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "grey_paving_stone",
-        "parquet_floor"
-      ],
-      "prompt": "House door still hung in its frame and standing alone with no house around it, panelled oak gone grey, iron hinges and a black latch, the keyhole dark, and the frame footing torn away with rubble still gripped in it",
-      "lore": "The house went in a Turn and the door stayed. There is knocking on the other side of it.",
-      "items": []
-    },
-    {
-      "id": "long_clock",
-      "name": "Stoppedclock",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 128,
-      "scale": "standard",
-      "biome": [
-        "parquet_floor"
-      ],
-      "prompt": "Longcase clock walking on its plinth, dark polished case with a glass door fogged from inside, the brass hands stopped, a smooth smiling face painted on the dial where the numerals should be, and the pendulum still swinging",
-      "lore": "It stopped at a time nobody can place and it is still swinging. In here that is not a contradiction.",
-      "items": []
-    },
-    {
-      "id": "frozen_tent",
-      "name": "Canvashusk",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "snow",
-        "ice"
-      ],
-      "prompt": "Frozen canvas tent standing with its poles snapped and splayed, the stiff ice-glazed cloth holding a person shape inside it, the flap open on a smiling mask of frost, and guy ropes dragging rigid behind it through the snow",
-      "lore": "It was pitched in a bad place by somebody who knew better. The shape it holds is not a shape anybody is still in.",
-      "items": [],
-      "versions_tried": 1
     }
   ],
   "retired": [
@@ -4235,6 +3297,1135 @@
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-18T13:44:37+00:00",
       "versions_tried": 1
+    },
+    {
+      "id": "iron_rhino",
+      "name": "Ironhorn",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "bear",
+      "size": 240,
+      "biome": [
+        "light_soil",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Colossal armored rhinoceros beast with realistic proportions, thick grey hide plated like riveted iron, a single massive curved horn of dark iron, a smaller horn behind it, small deep-set eyes, heavy pillar legs and three-toed feet.",
+      "lore": "Siege engines were built to imitate it and none have matched it. When it charges, the wall is the softer thing.",
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:52+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "chest_mimic",
+      "name": "Hoardmaw",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Ancient treasure chest mimic, a heavy iron-bound oak chest with a dark weathered lid raised just enough to show a black maw lined with long thin needle teeth, two narrow glowing amber eyes deep under the lid, gold coins fused into the wood, and four thick clawed legs of dark wood.",
+      "lore": "It has waited in the vault longer than the vault has had a door. It does not lure; it is simply there, and patient.",
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:52+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "waystone_walker",
+      "name": "Waystone",
+      "tier": "cute",
+      "template_id": "bear",
+      "size": 48,
+      "scale": "small",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Squat carved granite roadstone with a rounded weathered top, worn spiral and line marks cut deep into its face and packed with grey-green lichen, a faded painted hand pointing off to one side, standing on two short thick stone feet with grass and soil still gripped around them",
+      "lore": "It points the way the road went before the last Turn. Nobody has told it, and it goes on pointing.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:53+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "boot_pair",
+      "name": "Wanderboot",
+      "tier": "cute",
+      "template_id": "mannequin",
+      "size": 56,
+      "scale": "small",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Pair of heavy brown leather travelling boots laced together at the tops and standing upright with nobody in them, worn hobnailed soles, dried mud caked to the ankles, the leather cracked across the toes and polished pale at the heels, the cuffs gaping open on nothing",
+      "lore": "Somebody walked a very long way in these and does not need them now. The walking is the part that got up.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:53+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "rocking_horse",
+      "name": "Woodmare",
+      "tier": "cute",
+      "template_id": "horse",
+      "size": 72,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "parquet_floor"
+      ],
+      "prompt": "Child's wooden rocking horse with cracked dapple-grey paint flaking off the carved body, a stiff real horsehair mane and tail, a leather bridle gone green with age, curved wooden rockers for feet and a saddle worn pale in the middle",
+      "lore": "Someone rode it before they were tall and remembered it long after. It rocks whether or not the ground is level.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:53+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "hay_binding",
+      "name": "Twinebale",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Rectangular bale of dry golden hay bound with two tight twists of baling twine cutting deep into its sides, loose straw bristling from every edge, a broken rusted sickle blade still driven into the top of it, chaff and grass seed sifting from underneath",
+      "lore": "Cut, bound, and never carried in. The binding is the only thing holding its shape and it does not like being touched.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:54+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "grass_adder",
+      "name": "Grassfang",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 88,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Thick-bodied adder coiled on itself with its flat wedge head raised, olive-brown scales carrying a hard black zigzag down the spine, vertical slit pupils in copper eyes, a forked black tongue out and the last coil of its tail drawn in tight against the body",
+      "lore": "It fell with the grass it was lying in. It has not noticed the difference and it bites on the same terms as before.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:54+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "yard_cockerel",
+      "name": "Spurcomb",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Big farmyard cockerel standing square with its wings clamped tight to its body, iridescent black-green sickle tail feathers curled down close behind it, a torn red comb and wattles, heavy scaled yellow legs with long sharp spurs and a hard hooked beak",
+      "lore": "It ran a yard once and has not stopped running one. Everything that walks past is trespassing.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:54+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "skep_hive",
+      "name": "Skepmother",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 88,
+      "scale": "standard",
+      "biome": [
+        "grass"
+      ],
+      "prompt": "Domed straw beehive skep woven in coiled rope work, standing on four short legs of pale wax and comb, the mouth of it open on dark honeycomb, live bees crawling over the braid, and old honey running down one side in a black glaze",
+      "lore": "The swarm remembers the keeper better than the keeper remembered the swarm. It still comes to smoke and it still stings.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:55+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "fingerpost",
+      "name": "Fingerpost",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Weathered wooden fingerpost with a thick square post for a body and three short blunt arm boards held close and pointing different ways, the painted place names worn back to bare grain, a ball finial on top and clods of earth still gripped by its buried foot",
+      "lore": "Three names on it, all of them gone. It steps into the road ahead of travellers and waits to be read.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:55+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "cart_wreck",
+      "name": "Cartwrack",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Broken two-wheeled handcart standing up on its own shafts like legs, one wheel stripped of its spokes and the other sunk to the hub, a split load bed still roped over with tarred black canvas, harness straps hanging heavy and trailing from the bed",
+      "lore": "It was pulled most of the way and left in sight of the fire. It is doing the last part on its own.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:55+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "coat_heap",
+      "name": "Coatheap",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "brown_paving_stone"
+      ],
+      "prompt": "Standing heap of layered old coats, oilskin over wool over a child jacket, every one buttoned up and shaped like a stooped person, the top collar gaping open on empty dark air, sleeves hanging heavy and the hems dragging in the grass",
+      "lore": "Everything anybody left on the grass, worn at once by nothing. It stands where a fire used to be lit.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:56+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "cold_hearth",
+      "name": "Deadfire",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "brown_paving_stone"
+      ],
+      "prompt": "Crouching shape built out of a cold fire, a cage of charred branch ends and packed grey ash over a ring of scorched hearthstones, cracked burnt wood for limbs, fine ash sifting from its joints and one live orange ember still glowing deep in its chest",
+      "lore": "A fire nobody kept long enough. What was left of it has gone looking for company.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:56+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "chess_piece",
+      "name": "Boardknight",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "grass",
+        "parquet_floor"
+      ],
+      "prompt": "Man-sized carved dark stone chess knight, a stylised horse head on a heavy round base, one ear snapped clean off, the stone polished black where hands have gripped it, deep chisel facets cut down the mane and a chipped corner on the base",
+      "lore": "It only moves the way it is allowed to move. It always arrives from the direction nobody was watching.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:56+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "tide_wrack",
+      "name": "Wrackmound",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "light_beach",
+        "dark_mud"
+      ],
+      "prompt": "Mound of black bladderwrack and kelp ribbons heaped into a low crawling shape, air bladders popping wetly along its back, ribbons of weed dragging behind it, small crabs and sandhoppers living in the folds and brown water draining out of it",
+      "lore": "A tide line that got up and kept the line with it. The crabs in it have never known anything else.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:57+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "net_tangle",
+      "name": "Netsnarl",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Balled mass of tarred fishing net drawn into a crouching body, round cork floats knotted through it like blind eyes, the catch still tangled inside it with fish bones and a cracked buoy and a single boot showing, salt dried white along every cord",
+      "lore": "It kept fishing after the boat stopped coming. What it catches, it keeps inside itself.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:57+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "salt_coat",
+      "name": "Saltcoat",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "light_beach"
+      ],
+      "prompt": "Empty yellow oilskin coat and sou wester standing upright, the oilcloth stiff and salt-crusted and streaked with green, cuffs hanging open with seawater still running out of them, and a smooth smiling face of dried white salt set back in the hood",
+      "lore": "It came up the beach with the wrack. It is polite, and it walks you toward the water while it talks.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:57+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "old_turtle",
+      "name": "Hullshell",
+      "tier": "boss",
+      "template_id": "bear",
+      "size": 224,
+      "scale": "big",
+      "biome": [
+        "light_beach",
+        "grey_stone"
+      ],
+      "prompt": "Enormous ancient sea turtle hauled out on the sand, its shell like a cracked boat hull crusted with barnacles and darkened by an old tide mark, heavy scarred flippers dug in underneath, a hooked beak and small salt-rimmed eyes under a wrinkled brow",
+      "lore": "It was old before it fell and it has not hurried since. The beach it sleeps on was a different shape last Turn.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:58+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "reed_bundle",
+      "name": "Reedsheaf",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Standing sheaf of cut reeds bound at the waist with twisted sedge rope, the stems golden and split at the tops, dark waterweed hanging from it in ropes, bog water running out of the bundle and one heron leg bone tangled in the binding",
+      "lore": "Cut for a roof that was never thatched. It stands in the shallows in the shape of the man who cut it.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:58+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "fen_goose",
+      "name": "Fengoose",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "dark_mud",
+        "grass"
+      ],
+      "prompt": "Heavy grey fen goose with its wings clamped tight to its body and its neck stretched low and level, beak open on a black serrated tongue, orange webbed feet sunk in the mud and muddy water beading on its back feathers",
+      "lore": "It owns the water it is standing in and the ground it can see. It gives one warning and the warning is loud.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:59+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "sphagnum",
+      "name": "Mirequilt",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "dark_mud",
+        "grass"
+      ],
+      "prompt": "Crawling carpet of deep sphagnum moss risen into a low humped body, red and gold and green cushions across its back, water squeezing out of it at every step, and half-swallowed things showing through the moss, a boot, a cart rib, a shed antler",
+      "lore": "The bog keeps everything and this is how it carries it. Nothing in it has finished sinking yet.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:59+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "bog_iron",
+      "name": "Ironscab",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "dark_mud"
+      ],
+      "prompt": "Lumpen heavy body of bog iron, knobbed orange-red nodules of rusted ore crusted together over black peat, seams of rust weeping brown water down its sides, a dense low stance and old reed stems baked into the crust",
+      "lore": "The bog makes iron slowly out of water and time. Somebody used to dig this out and beat it flat.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:28:59+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "sunken_bell",
+      "name": "Mirebell",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Great bronze bell risen out of the peat and standing on its rim, thick verdigris over the bronze with a cast inscription still legible under it, the iron clapper hanging inside like a tongue, black mud pouring steadily from its mouth",
+      "lore": "It went into the bog with the cart that was carrying it. Nobody has rung it since, and it has started ringing itself.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:00+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "bog_preserved",
+      "name": "Tanhide",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 128,
+      "scale": "standard",
+      "biome": [
+        "dark_mud"
+      ],
+      "prompt": "Body preserved by the peat standing compact with both arms folded tight against its chest, leathery dark-brown skin drawn over the bones, hair stained fox-red and matted flat to the skull, a twisted withy cord knotted at the throat, eyelids tanned shut and the jaw fallen open",
+      "lore": "The bog kept the outside perfectly and let the rest go. It is the oldest thing on its feet here.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:00+00:00",
+      "versions_tried": 3
+    },
+    {
+      "id": "bog_oak",
+      "name": "Bogoak",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 136,
+      "scale": "standard",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Black bog oak trunk hauled upright out of the peat, the wood iron-hard and split down its length, a spread root mass for feet, water pouring from every crack, a broken cart axle grown through its side and no leaves anywhere on it",
+      "lore": "Five thousand years under the water made it harder than the axes that felled it. It remembers being a wood.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:00+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "tar_seep",
+      "name": "Tarseep",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "slime",
+        "dark_mud"
+      ],
+      "prompt": "Crouching shape of black tar risen from a seep, its surface glossy and slowly bubbling, feathers and small bones and a bird wing stuck fast in its back, thin strings of pitch drawing between its limbs as it moves",
+      "lore": "It takes whatever lands on it and it never lets anything go. The things in its back are still in the positions they landed in.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:01+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "mill_wheel",
+      "name": "Millwheel",
+      "tier": "boss",
+      "template_id": "mannequin",
+      "size": 224,
+      "scale": "big",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Great wooden mill water wheel torn off its axle and standing on its rim, the paddle boards splintered and black with weed, the iron banding rusted through, the axle beam still run through its hub like a spine, water pouring off every paddle",
+      "lore": "It was carried here whole by somebody who hated the sight of it. It still turns, and it still has nothing to grind.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:01+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "mud_eel",
+      "name": "Fenwyrm",
+      "tier": "boss",
+      "template_id": "bear",
+      "size": 232,
+      "scale": "big",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Enormous eel hauled half out of the mud and coiled back on itself, slick olive-black hide mottled with yellow, a blunt heavy head with a hinged jaw full of backward teeth, small deep-set eyes and gill slits flaring behind them",
+      "lore": "It has been in the bog longer than the bog has been a bog. It comes up for whatever is standing on the bank.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:01+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "lichen_stone",
+      "name": "Lichenhide",
+      "tier": "cute",
+      "template_id": "bear",
+      "size": 48,
+      "scale": "small",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Rounded grey boulder crusted all over in orange, yellow and pale green map lichen, two short stumpy stone legs underneath, a shallow chip knocked out of one side showing clean grey rock, and old moss packed around its base",
+      "lore": "A hundred years of lichen on something that moves. It moves that slowly.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:02+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "crag_falcon",
+      "name": "Hoodhawk",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "grey_stone",
+        "snow"
+      ],
+      "prompt": "Large falcon hunched low with its wings folded tight to its body, slate-grey back, a barred cream breast, black moustache stripes under fierce dark eyes, yellow scaled feet with black talons and a leather falconer hood half torn from its head",
+      "lore": "Someone flew it once, and the hood is all that is left of them. It has never quite got the rest of it off.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:02+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "slate_stack",
+      "name": "Slatespine",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Standing stack of roofing slates, grey-blue and split, the edges sharp as blades and fanned along its back like a spine, rusted nails still through the peg holes, green moss in the gaps and slate dust falling as it shifts",
+      "lore": "The roof came off in a Turn and the slates stayed together. They have not found anything else to cover.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:02+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "wind_thorn",
+      "name": "Windthorn",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "grey_stone",
+        "grass"
+      ],
+      "prompt": "Wind-bent hawthorn walking on its own roots, all its short branches combed hard to one side, grey bark split and knotted, clusters of red haws hanging like beads, and faded rags and ribbons tied along its limbs by travellers",
+      "lore": "Every rag on it was tied by somebody asking for something. It has been keeping count.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:03+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "spring_head",
+      "name": "Wellhead",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "grey_stone",
+        "grey_paving_stone"
+      ],
+      "prompt": "Stone well head risen on its own footing, a round drum of mortared blocks brimming with black water that spills constantly over the rim, a rope and an iron-bound bucket wound around it like an arm, and gold coins glinting in the water",
+      "lore": "The coins were put in by people who wanted something. It has been holding up its end and it is owed.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:04+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "hollow_pack",
+      "name": "Packhusk",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "grey_stone",
+        "snow"
+      ],
+      "prompt": "Traveller pack frame and bedroll standing upright with nothing carrying it, the straps buckled closed on empty air, a tin cup and a pot hanging motionless from the frame, and a smiling pale wooden mask lashed to the top where a head would ride",
+      "lore": "It keeps to the road and it keeps a good pace. It has been going up for a long time.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:04+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "standing_stone",
+      "name": "Stonemoot",
+      "tier": "boss",
+      "template_id": "mannequin",
+      "size": 232,
+      "scale": "big",
+      "biome": [
+        "grey_stone",
+        "grass"
+      ],
+      "prompt": "Lone standing stone risen onto a blunt foot of its own rock, a tall weathered slab of grey granite carved with worn spiral marks, one face cupped with a shallow hollow where offerings were left, lichen crusted along its windward edge",
+      "lore": "It was stood up by people who are not remembered, for a reason that is not either. Things were left in the hollow and things were taken out.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:05+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "rock_wyrm",
+      "name": "Greywyrm",
+      "tier": "boss",
+      "template_id": "bear",
+      "size": 232,
+      "scale": "big",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "prompt": "Massive legless wyrm coiled on the rock, its hide made of overlapping granite-grey scales crusted with lichen, a blunt heavy head with a jaw seam running back past the eyes, eyes like wet quartz and its tail drawn tight against its body",
+      "lore": "It has been part of the mountain road shape for as long as the road has had one. Carts used to be routed around it.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:05+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "ice_mossball",
+      "name": "Rollmoss",
+      "tier": "cute",
+      "template_id": "bear",
+      "size": 40,
+      "scale": "small",
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "prompt": "Ball of dense green and grey moss grown completely around a small stone, rolling on the ice, white frost rimed across its underside, a few pale grass blades sticking out of the fur and dark meltwater at its base",
+      "lore": "It rolls a little each day and the moss grows even because of it. Nothing is inside but the stone it started on.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:07+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "broken_sledge",
+      "name": "Sledgeback",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 128,
+      "scale": "standard",
+      "biome": [
+        "snow"
+      ],
+      "prompt": "Compact overturned wooden sledge walking on short steel-shod runners held close under it, the slatted bed split down the middle, frozen canvas lashed tight over a load that has not been unpacked, stiff leather harness traces coiled up onto the bed rather than trailing",
+      "lore": "It was hauled up and left when the hauling stopped. The load has not been looked at since.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:07+00:00",
+      "versions_tried": 3
+    },
+    {
+      "id": "pack_ice",
+      "name": "Pressridge",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 120,
+      "scale": "standard",
+      "biome": [
+        "ice"
+      ],
+      "prompt": "Ridge of broken pack ice shoved up into a standing mass, thick blue-white plates tilted and grinding against one another, black water showing in the cracks between them and a crust of snow packed into the joins",
+      "lore": "Two sheets of ice pushed until one had to go up. The grinding noise it makes is the same noise it made before it stood.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:08+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "glacier_ice",
+      "name": "Icecore",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "ice"
+      ],
+      "prompt": "Block of ancient glacier ice on two short legs, deep blue and banded with trapped bubble layers, a pine cone and a dark pebble frozen near its centre, meltwater running down its sides and the surface polished smooth",
+      "lore": "Everything inside it fell in a very long time ago. It is thawing from the middle out.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:08+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "treeline_pine",
+      "name": "Windpine",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 128,
+      "scale": "standard",
+      "biome": [
+        "snow",
+        "grey_stone"
+      ],
+      "prompt": "Stunted wind-twisted pine from the treeline walking on its root plate, the trunk corkscrewed and half stripped to bare silver wood, dark needles only on its sheltered side, glazed ice on the bark and one dead top snapped off",
+      "lore": "It grew for two hundred years into the same wind. It leans the same way even indoors.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:09+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "frost_mask",
+      "name": "Icemask",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "snow"
+      ],
+      "prompt": "Figure of packed snow and frozen cloth standing straight, layers of stiff frosted wool wrapped around a hollow body, and a smooth smiling mask of clear ice set into its face with breath steaming slowly out of the eye holes",
+      "lore": "It breathes and there is nothing in it to breathe. It stands where the path is easiest and waits to be followed.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:09+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "avalanche",
+      "name": "Slabfall",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 136,
+      "scale": "standard",
+      "biome": [
+        "snow"
+      ],
+      "prompt": "Standing wall of tumbling slab snow held together in a hunched body, blocks of hard windslab breaking off its shoulders, splintered spruce trunks driven through it, and a dark hollow low in its front where a face would be",
+      "lore": "It came off the face in nine seconds and it has not settled since. It is quiet until it is not.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:09+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "vent_worm",
+      "name": "Ventworm",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "prompt": "Thick armoured tube worm coiled on hot rock, its chalky white shell ribbed in tight rings, a blood-red feathered plume spread from the open end, no eyes anywhere on it and heat shimmer rising off its coils",
+      "lore": "It lives off the heat itself and has never needed light. Where it is, the rock is too hot to stand on.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:10+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "obsidian_shard",
+      "name": "Glasscut",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Standing body of black volcanic glass blades fused at the base, every edge a razor with a curved conchoidal fracture, the surfaces mirror bright, deep red heat light visible in the cracks and a crown of broken shards at its top",
+      "lore": "Every part of it is an edge. It has never had to learn to swing anything.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:10+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "sulphur_mound",
+      "name": "Brimstone",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "lava"
+      ],
+      "prompt": "Crusted mound of bright yellow sulphur, needle crystals bearded around its steaming vents, sour smoke leaking constantly from its sides, orange staining down its flanks and one guttering blue flame standing on its shoulder",
+      "lore": "The smell reaches further than it does. Things that live near it stopped smelling anything years ago.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:11+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "cave_pearl",
+      "name": "Cavepearl",
+      "tier": "cute",
+      "template_id": "bear",
+      "size": 40,
+      "scale": "small",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Smooth polished cave pearl the size of an apple, banded cream and translucent calcite, rolling on three tiny stone feet, wet and gleaming, with a ring of smaller unmoving pearls left behind it in the pool",
+      "lore": "It was turned smooth by dripping water over a thousand years and it is still turning. The others in the pool are its earlier attempts.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:12+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "stalagmite",
+      "name": "Dripstone",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Stalagmite risen off the cave floor, banded orange and cream flowstone layers over a thick tapered body, stubby limbs of poured calcite, water dripping steadily onto its crown from above and running down it in sheets",
+      "lore": "It grew one drop at a time and it has not changed the habit. Everything it does takes the same amount of patience.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:12+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "gypsum_flower",
+      "name": "Gypsumkin",
+      "tier": "cute",
+      "template_id": "bear",
+      "size": 48,
+      "scale": "small",
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "prompt": "Curl of white gypsum crystal grown into a small flowering shape, translucent mineral petals fanning out from a thick base, fine needle fibres at the edges, moving very slowly on a foot of the same white stone",
+      "lore": "It grew out of the wall where no water ever ran. Touching it takes a piece off and the piece does not grow back.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:14+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "roost_bat",
+      "name": "Foldwing",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "prompt": "Large bat hanging upright with its wings wrapped completely around itself like a folded cloak, only a blunt foxlike face and two tall ridged ears showing above the fold, hooked black feet gripping and dense dark fur at the shoulders",
+      "lore": "It keeps everything inside the wings until it does not. The ears are working the whole time.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:15+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "first_mask",
+      "name": "Firstmask",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "prompt": "Person-shaped hollow of plain grey cloth standing straight, sleeves and hem hanging empty and still, and one smooth featureless smiling mask of pale wood fixed where the face would be",
+      "lore": "The simplest thing the cave makes. It is always facing you and it has never once hurried.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:16+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "sump_water",
+      "name": "Sumpcrawl",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Crawling mass of black cave water holding a low body shape, fine silt suspended and swirling inside it, and held motionless in its middle a dented lamp, a coil of rope and a scatter of small bones, all visible through the water",
+      "lore": "The sump gave up its shape but not its contents. It has been carrying that lamp for a long time.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:17+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "mask_bearer",
+      "name": "Maskbearer",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Hollow figure in a dark coat wearing one smooth smiling mask, holding out a second identical mask in both hands at chest height as an offer, the empty cuffs of its sleeves showing nothing inside them",
+      "lore": "It has one already. The one it is holding is the right size for you.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:17+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "mask_table",
+      "name": "Masktable",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 128,
+      "scale": "standard",
+      "biome": [
+        "parquet_floor",
+        "black_rock"
+      ],
+      "prompt": "Heavy dark wooden table standing on four carved legs like a beast, eleven smooth smiling masks laid out in a row across its top facing up, the wood scarred and waxed, and its legs lifting one at a time as it steps",
+      "lore": "Eleven masks, one face, laid out for people who are not here yet. It sets them out again if they are moved.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:18+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "hollow_host",
+      "name": "Maskfather",
+      "tier": "boss",
+      "template_id": "mannequin",
+      "size": 232,
+      "scale": "big",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Tall hollow figure in a long clean dark coat, a smooth smiling mask of pale wood, a stack of blank unfinished masks carried under one arm and a finished mask held out in its free hand, the coat hanging on nothing",
+      "lore": "It is the one that sets the table. The blank ones under its arm have not been assigned yet.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:18+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "letter_box",
+      "name": "Deadletter",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "grey_paving_stone",
+        "brown_paving_stone"
+      ],
+      "prompt": "Cast iron pillar letter box walking on a heavy round base, paint blistered dark red over rust, the collection plate blank, and undelivered letters packed so tight in the slot that they are spilling out and jammed down its sides",
+      "lore": "Everything posted in it is still in it. The names on the letters are of people who are here.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:19+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "iron_stove",
+      "name": "Ironstove",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "parquet_floor",
+        "brown_paving_stone"
+      ],
+      "prompt": "Cast iron stove walking on four clawed feet, its fire door hanging open on cold grey ash, a stub of flue pipe on top, a blackened kettle still standing on the hot plate and scorch marks fanned up its back",
+      "lore": "It went out when the house emptied and it has not been lit since. The kettle on it has never been taken off.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:21+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "anvil",
+      "name": "Anvilhorn",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 96,
+      "scale": "standard",
+      "biome": [
+        "brown_paving_stone",
+        "grey_paving_stone"
+      ],
+      "prompt": "Blacksmith anvil standing on two squat iron legs, the face scarred and polished bright from use, a broken pair of tongs fused to its side, the horn chipped, and a fine scale of black forge flake shed around its feet",
+      "lore": "It took every blow in the settlement for years. It has started returning them.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:21+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "forgotten_statue",
+      "name": "Plinthstep",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 128,
+      "scale": "standard",
+      "biome": [
+        "grey_paving_stone"
+      ],
+      "prompt": "Carved stone figure of a person stepping off its plinth with the broken plinth still stuck to its feet, robes cut in deep folds, the hands finely detailed and the face weathered completely smooth, the base inscription rubbed out",
+      "lore": "It was put up for somebody. Nobody left can read the base and nobody left knows who.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:21+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "empty_chair",
+      "name": "Emptychair",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 104,
+      "scale": "standard",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Heavy wooden dining chair standing upright on four turned legs, the rush seat worn through in the middle, a folded wool coat hung over its back and a single smooth smiling mask resting face up on the seat",
+      "lore": "One chair from a long table, still set for somebody. It follows the person who sat in it.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:22+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "standing_mirror",
+      "name": "Mirrorface",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Tall standing mirror in a dark carved frame walking on its two stand feet, the glass foxed and black spotted with age, and a pale smiling face showing in the glass turned slightly away",
+      "lore": "It shows a face and it is not the face of whoever is in front of it. It does not move when you do.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:23+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "orphan_door",
+      "name": "Doorward",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "grey_paving_stone",
+        "parquet_floor"
+      ],
+      "prompt": "House door still hung in its frame and standing alone with no house around it, panelled oak gone grey, iron hinges and a black latch, the keyhole dark, and the frame footing torn away with rubble still gripped in it",
+      "lore": "The house went in a Turn and the door stayed. There is knocking on the other side of it.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:23+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "long_clock",
+      "name": "Stoppedclock",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 128,
+      "scale": "standard",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Longcase clock walking on its plinth, dark polished case with a glass door fogged from inside, the brass hands stopped, a smooth smiling face painted on the dial where the numerals should be, and the pendulum still swinging",
+      "lore": "It stopped at a time nobody can place and it is still swinging. In here that is not a contradiction.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:24+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "frozen_tent",
+      "name": "Canvashusk",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Frozen canvas tent standing with its poles snapped and splayed, the stiff ice-glazed cloth holding a person shape inside it, the flap open on a smiling mask of frost, and guy ropes dragging rigid behind it through the snow",
+      "lore": "It was pitched in a bad place by somebody who knew better. The shape it holds is not a shape anybody is still in.",
+      "items": [],
+      "versions_tried": 2,
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T14:29:24+00:00"
     }
   ]
 }
