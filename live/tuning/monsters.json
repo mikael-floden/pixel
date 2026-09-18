@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-18T14:52:14.010Z",
+  "updated_at": "2026-09-18T14:53:33.406Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -5435,7 +5435,45 @@
           "item": "tan_down_feather",
           "chance": 0.32
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 26,
+        "ry": 10,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.67,
+            "ay": 38.66
+          },
+          "idle#east": {
+            "ax": 0.97,
+            "ay": 37.32
+          },
+          "idle#south-east": {
+            "ax": 1.86,
+            "ay": 37.54
+          },
+          "idle#north-east": {
+            "ax": -1.23,
+            "ay": 35.27
+          },
+          "idle#north": {
+            "ax": -0.97,
+            "ay": 32.22
+          },
+          "idle#west": {
+            "ax": -1.22,
+            "ay": 36.07
+          },
+          "idle#south-west": {
+            "ax": -1.51,
+            "ay": 37.62
+          },
+          "walk#north": {
+            "ax": -2.61,
+            "ay": 34.13
+          }
+        }
+      }
     },
     "war_elephant": {
       "level": 20,
