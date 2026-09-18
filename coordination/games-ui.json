@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "PUSHED 026ca5e17d (the update popup lists what changed: updatenote.ts builds the dialog from the wiki's own published release_notes.json, sliced head→my build sha, grouped by day with area chips; ONE module on document.body at z 110, so the character select and the running game get the same dialog; the toast's wording and quiet-FYI behaviour untouched — it opens on tap). NOT MINE, reported to games: npm test is red on main with 6 tiles3/render3 PARITY failures, reproduced with my tree stashed. No files in flight.",
+  "current": "CLAIM: the RECORD BUTTON (maintainer 2026-09-18, his own PixelLab export): a two-state button under the HP/EP card, right-aligned to that card's right edge with the project's 10px gap; press toggles to the lit/pressed face (red = recording). Functionality to be bound later. Art through the established bake path (ui-src source of record -> exact 2x -> /ui2). NOT touching bars.ts: my wrapper measures .ml-bars-l with its own ResizeObserver. files: games2/client/ui-src/icon-record{,-on}-src.png (new), games2/client/public/ui2/icon-record{,-on}.webp (new), games2/scripts/bake-corner-icons.py, games2/client/src/recbtn.ts (new), games2/client/src/hud.ts (one mount line), games2/scripts/verify-recbtn.mjs (new), games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
