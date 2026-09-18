@@ -1,0 +1,141 @@
+{
+  "id": "fen_goose",
+  "name": "Fengoose",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It owns the water it is standing in and the ground it can see. It gives one warning and the warning is loud.",
+  "biome": [
+    "dark_mud",
+    "grass"
+  ],
+  "items": [],
+  "prompt": "Heavy grey fen goose with its wings clamped tight to its body and its neck stretched low and level, beak open on a black serrated tongue, orange webbed feet sunk in the mud and muddy water beading on its back feathers",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "fen_goose/rotations/south.webp",
+    "south-east": "fen_goose/rotations/south-east.webp",
+    "east": "fen_goose/rotations/east.webp",
+    "north-east": "fen_goose/rotations/north-east.webp",
+    "north": "fen_goose/rotations/north.webp",
+    "north-west": "fen_goose/rotations/north-west.webp",
+    "west": "fen_goose/rotations/west.webp",
+    "south-west": "fen_goose/rotations/south-west.webp"
+  },
+  "sheet": "fen_goose/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0bf47a93-7bd9-4184-8ee8-e3838b040c62",
+  "seed": 306414746,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:08:33+00:00",
+  "elapsed_s": 210.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.721,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.722,
+        "bbox": [
+          15,
+          3,
+          81,
+          90
+        ],
+        "fill": 0.623,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.749,
+        "bbox": [
+          8,
+          4,
+          88,
+          92
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.747,
+        "bbox": [
+          8,
+          4,
+          88,
+          92
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.721,
+        "bbox": [
+          11,
+          3,
+          86,
+          94
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.772,
+        "bbox": [
+          10,
+          4,
+          79,
+          92
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.748,
+        "bbox": [
+          11,
+          3,
+          84,
+          94
+        ],
+        "fill": 0.721,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.759,
+        "bbox": [
+          10,
+          3,
+          87,
+          94
+        ],
+        "fill": 0.76,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.763,
+        "bbox": [
+          18,
+          4,
+          85,
+          91
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:05:08+00:00",
+  "generated_at": "2026-09-18T12:08:33+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 130,
+  "count": 133,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -16308,6 +16308,134 @@
       "generated_at": "2026-09-18T12:03:46+00:00"
     },
     {
+      "id": "fen_goose",
+      "name": "Fengoose",
+      "tier": "mid",
+      "lore": "It owns the water it is standing in and the ground it can see. It gives one warning and the warning is loud.",
+      "biome": [
+        "dark_mud",
+        "grass"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "0bf47a93-7bd9-4184-8ee8-e3838b040c62",
+      "version": 1,
+      "sheet": "fen_goose/sheet.webp",
+      "rotations": {
+        "south": "fen_goose/rotations/south.webp",
+        "south-east": "fen_goose/rotations/south-east.webp",
+        "east": "fen_goose/rotations/east.webp",
+        "north-east": "fen_goose/rotations/north-east.webp",
+        "north": "fen_goose/rotations/north.webp",
+        "north-west": "fen_goose/rotations/north-west.webp",
+        "west": "fen_goose/rotations/west.webp",
+        "south-west": "fen_goose/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.721,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.722,
+            "bbox": [
+              15,
+              3,
+              81,
+              90
+            ],
+            "fill": 0.623,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.749,
+            "bbox": [
+              8,
+              4,
+              88,
+              92
+            ],
+            "fill": 0.764,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.747,
+            "bbox": [
+              8,
+              4,
+              88,
+              92
+            ],
+            "fill": 0.764,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.721,
+            "bbox": [
+              11,
+              3,
+              86,
+              94
+            ],
+            "fill": 0.741,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.772,
+            "bbox": [
+              10,
+              4,
+              79,
+              92
+            ],
+            "fill": 0.659,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.748,
+            "bbox": [
+              11,
+              3,
+              84,
+              94
+            ],
+            "fill": 0.721,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.759,
+            "bbox": [
+              10,
+              3,
+              87,
+              94
+            ],
+            "fill": 0.76,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.763,
+            "bbox": [
+              18,
+              4,
+              85,
+              91
+            ],
+            "fill": 0.632,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:08:33+00:00"
+    },
+    {
       "id": "sphagnum",
       "name": "Mirequilt",
       "tier": "mid",
@@ -16434,6 +16562,261 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:02:20+00:00"
+    },
+    {
+      "id": "bog_iron",
+      "name": "Ironscab",
+      "tier": "mid",
+      "lore": "The bog makes iron slowly out of water and time. Somebody used to dig this out and beat it flat.",
+      "biome": [
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "fe2f6e52-cbfd-4388-84d5-ce3860acc07c",
+      "version": 1,
+      "sheet": "bog_iron/sheet.webp",
+      "rotations": {
+        "south": "bog_iron/rotations/south.webp",
+        "south-east": "bog_iron/rotations/south-east.webp",
+        "east": "bog_iron/rotations/east.webp",
+        "north-east": "bog_iron/rotations/north-east.webp",
+        "north": "bog_iron/rotations/north.webp",
+        "north-west": "bog_iron/rotations/north-west.webp",
+        "west": "bog_iron/rotations/west.webp",
+        "south-west": "bog_iron/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.694,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.694,
+            "bbox": [
+              6,
+              4,
+              98,
+              100
+            ],
+            "fill": 0.817,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.764,
+            "bbox": [
+              31,
+              4,
+              90,
+              100
+            ],
+            "fill": 0.524,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.784,
+            "bbox": [
+              14,
+              4,
+              73,
+              100
+            ],
+            "fill": 0.524,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.717,
+            "bbox": [
+              9,
+              4,
+              95,
+              99
+            ],
+            "fill": 0.755,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.8,
+            "bbox": [
+              11,
+              5,
+              91,
+              101
+            ],
+            "fill": 0.71,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.765,
+            "bbox": [
+              17,
+              4,
+              84,
+              100
+            ],
+            "fill": 0.595,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.754,
+            "bbox": [
+              15,
+              4,
+              86,
+              100
+            ],
+            "fill": 0.63,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.815,
+            "bbox": [
+              15,
+              4,
+              92,
+              101
+            ],
+            "fill": 0.691,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:07:30+00:00"
+    },
+    {
+      "id": "sunken_bell",
+      "name": "Mirebell",
+      "tier": "evil",
+      "lore": "It went into the bog with the cart that was carrying it. Nobody has rung it since, and it has started ringing itself.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "0e4a8f3c-0094-4fbd-8e75-addc1f0d988c",
+      "version": 1,
+      "sheet": "sunken_bell/sheet.webp",
+      "rotations": {
+        "south": "sunken_bell/rotations/south.webp",
+        "south-east": "sunken_bell/rotations/south-east.webp",
+        "east": "sunken_bell/rotations/east.webp",
+        "north-east": "sunken_bell/rotations/north-east.webp",
+        "north": "sunken_bell/rotations/north.webp",
+        "north-west": "sunken_bell/rotations/north-west.webp",
+        "west": "sunken_bell/rotations/west.webp",
+        "south-west": "sunken_bell/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.605,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.605,
+            "bbox": [
+              13,
+              3,
+              98,
+              109
+            ],
+            "fill": 0.718,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.643,
+            "bbox": [
+              14,
+              3,
+              96,
+              110
+            ],
+            "fill": 0.699,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.659,
+            "bbox": [
+              15,
+              3,
+              97,
+              110
+            ],
+            "fill": 0.699,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.637,
+            "bbox": [
+              12,
+              3,
+              95,
+              109
+            ],
+            "fill": 0.701,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.685,
+            "bbox": [
+              15,
+              3,
+              96,
+              109
+            ],
+            "fill": 0.684,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.68,
+            "bbox": [
+              15,
+              3,
+              96,
+              109
+            ],
+            "fill": 0.684,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.671,
+            "bbox": [
+              15,
+              3,
+              97,
+              110
+            ],
+            "fill": 0.699,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.69,
+            "bbox": [
+              14,
+              3,
+              97,
+              109
+            ],
+            "fill": 0.701,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:07:19+00:00"
     },
     {
       "id": "bog_oak",
