@@ -204,7 +204,74 @@ async function palette() {
   }
 }
 
+// ── THE AMBIENT MODE SWITCH (maintainer 2026-09-18): Zone based | Forced |
+//    None, replacing the Auto row. None is manual with nothing ticked (every
+//    effect off — "handy when we debug something else"); a row tap from None
+//    or Zone reads as Forced with that tick; the switch reads the truth; and
+//    the mode SURVIVES A RELOAD (persisted by hud.ts — the controller keeps
+//    its own in memory only). ──
+async function ambientModes() {
+  const ctx = await browser.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
+  const page = await ctx.newPage();
+  const join = async () => {
+    await page.goto(`${BASE}/`, { waitUntil: "load" });
+    await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
+    await page.evaluate(() => window.__mlSelect.commit());
+    await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 90000 });
+    await page.waitForFunction(() => !document.querySelector("#ml-loading"), null, { timeout: 60000 });
+    await page.evaluate(() => document.querySelector('.ml-tab[data-tab="settings"]').click());
+    await page.waitForFunction(() => document.querySelectorAll(".ml-amb-mode .ml-plate-btn").length === 3 && document.querySelectorAll(".ml-amb-row").length > 0, null, { timeout: 30000 });
+  };
+  const state = () =>
+    page.evaluate(() => {
+      const btns = [...document.querySelectorAll(".ml-amb-mode .ml-plate-btn")].map((b) => ({ label: b.textContent.trim(), on: b.classList.contains("on") }));
+      const a = window.__mlAmbient;
+      return { btns, mode: a.auto(), enabled: a.effects().filter((e) => e.enabled).map((e) => e.name), running: a.effects().filter((e) => e.on).map((e) => e.name) };
+    });
+  const press = async (label) => {
+    await page.evaluate((l) => [...document.querySelectorAll(".ml-amb-mode .ml-plate-btn")].find((b) => b.textContent.trim() === l).click(), label);
+    await page.waitForTimeout(200);
+  };
+  try {
+    await join();
+    let s = await state();
+    s.btns.map((b) => b.label).join("|") === "Zone based|Forced|None"
+      ? ok("ambient switch reads Zone based | Forced | None")
+      : fail(`ambient switch buttons: ${JSON.stringify(s.btns)}`);
+    await press("None");
+    s = await state();
+    s.mode === "manual" && s.enabled.length === 0 && s.running.length === 0 && s.btns[2].on && !s.btns[0].on && !s.btns[1].on
+      ? ok("None: manual, nothing enabled, nothing running, None lit")
+      : fail(`after None: ${JSON.stringify(s)}`);
+    // a row tap from None = Forced with that one tick
+    const first = await page.evaluate(() => {
+      const r = [...document.querySelectorAll(".ml-amb-row")].find((x) => !x.classList.contains("blocked"));
+      r.click();
+      return r.querySelector(".ml-amb-label").textContent.trim().toLowerCase();
+    });
+    await page.waitForTimeout(200);
+    s = await state();
+    s.mode === "manual" && s.enabled.length === 1 && s.btns[1].on && !s.btns[2].on
+      ? ok(`a row tap from None reads as Forced with that tick (${first}: ${s.enabled.join(",")})`)
+      : fail(`after tapping ${first}: ${JSON.stringify(s)}`);
+    await press("Zone based");
+    s = await state();
+    s.mode === "auto" && s.btns[0].on ? ok("Zone based hands the scene back to the world (auto)") : fail(`after Zone based: ${JSON.stringify(s)}`);
+    await press("None");
+    // SURVIVES A RELOAD
+    await join();
+    s = await state();
+    s.mode === "manual" && s.enabled.length === 0 && s.btns[2].on
+      ? ok("None survives a reload (persisted, restored when the rows build)")
+      : fail(`after reload: ${JSON.stringify(s)}`);
+    await press("Zone based"); // leave the world as it was
+  } finally {
+    await ctx.close();
+  }
+}
+
 try {
+  await ambientModes();
   await palette();
   // the maintainer's desktop-site phone view (design width — the approved look)
   await check("desktop-site", { viewport: { width: 980, height: 2123 }, screen: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 2 });

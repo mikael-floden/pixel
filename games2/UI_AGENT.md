@@ -284,7 +284,7 @@ from the games agent), #18 (title/landing screen).
   world — with it, edge-to-edge shows only on the title screen; removing it is
   the games agent's call on his verdict (posted). `verify-select` asserts the
   call happens under an emulated installed mode and not in a tab.
-- **AMBIENT EFFECTS: A ZONE-BASED / FORCED SWITCH, NOT AN AUTO ROW** (maintainer
+- **AMBIENT EFFECTS: A ZONE-BASED / FORCED / NONE SWITCH, NOT AN AUTO ROW** (maintainer
   2026-09-18, the ambient-zones plan: effects become tied to zones maps2
   places, decided by the server per zone; "the settings should instead of
   checkboxes have a switch for 'forced ambient effect' / 'zone based ambient
@@ -297,8 +297,14 @@ from the games agent), #18 (title/landing screen).
   2026-09-18), manual === forced. FORCED preserves the scene showing at the
   flip (manual empties the set, so what ran is re-enabled), then each row
   toggles itself; a row tap while zone based flips to forced the same way.
-  The effect rows are unchanged (`.ml-amb-row`; a dozen ambient gates find
-  effects by them — never rename).
+  NONE (2026-09-18: "handy when we debug something else") is manual with
+  nothing ticked — every effect off; the switch READS the truth (auto = zone;
+  manual + a tick = forced; manual + no tick = none). PERSISTED in
+  `ml-amb-mode` {mode, on} and restored when the rows build, because the
+  controller keeps its mode in memory only (toggles.ts) and a debug NONE that
+  came back as the director on reload was no debug aid. The effect rows are
+  unchanged (`.ml-amb-row`; a dozen ambient gates find effects by them — never
+  rename).
 - **MAP TAB LAYERS: ONE "layers" BUTTON + A MULTI-SELECT DIALOG, grouped Map /
   Ambient zones** (maintainer 2026-09-18: "there will be so many pills so I
   think a multi-select dropdown or modal/dialog is better … just make the UX

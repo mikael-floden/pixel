@@ -112,6 +112,18 @@ function ambientApi(): AmbientApi | null {
   const a = (window as unknown as { __mlAmbient?: Partial<AmbientApi> }).__mlAmbient;
   return a && typeof a.effects === "function" ? (a as AmbientApi) : null;
 }
+const AMB_MODE_KEY = "ml-amb-mode";
+function readAmbientMode(): { mode: "zone" | "forced" | "none"; on: string[] } | null {
+  try {
+    const raw = localStorage.getItem(AMB_MODE_KEY);
+    if (!raw) return null;
+    const v = JSON.parse(raw) as { mode?: unknown; on?: unknown };
+    if (v.mode !== "zone" && v.mode !== "forced" && v.mode !== "none") return null;
+    return { mode: v.mode, on: Array.isArray(v.on) ? v.on.filter((n): n is string => typeof n === "string") : [] };
+  } catch {
+    return null;
+  }
+}
 function ambSafe<T>(fn: () => T, fallback: T): T {
   try {
     return fn();
@@ -470,7 +482,7 @@ export class HudBar {
   /** The two-way mode switch: ZONE BASED (the world decides — the server per
    *  zone once that runtime lands, the director until then) vs FORCED (he sees
    *  exactly what he picked). Maintainer 2026-09-18. */
-  private ambMode: { zone: HTMLButtonElement; forced: HTMLButtonElement } | null = null;
+  private ambMode: { zone: HTMLButtonElement; forced: HTMLButtonElement; none: HTMLButtonElement } | null = null;
   private ambBuilt = false;
   // Map tab: minimap <img> + a red "you are here" dot, driven by a rAF loop
   // that reads window.__ml.minimap() while the tab is visible.
@@ -740,22 +752,34 @@ export class HudBar {
     // per effect in registry order. Zone based rides __mlAmbient.auto(true):
     // today that is the director, and games-ambient makes it "follow the
     // server's zone" when that runtime lands — the seam is theirs, the switch
-    // is ours. The rows stay live in both modes: they SHOW what runs, and a
-    // tap in zone mode takes forced control of exactly that scene.
+    // is ours. NONE (maintainer 2026-09-18: "handy when we debug something
+    // else and that else will be easier to see/test") is forced with nothing
+    // ticked — every effect off. The rows stay live in every mode: they SHOW
+    // what runs, and a tap in zone or none takes forced control of exactly
+    // that scene plus the tap.
     const mode = mk("div", "ml-amb-mode");
-    const zone = mk("button", "ml-plate-btn") as HTMLButtonElement;
-    zone.type = "button";
-    zone.textContent = "Zone based";
-    const forced = mk("button", "ml-plate-btn") as HTMLButtonElement;
-    forced.type = "button";
-    forced.textContent = "Forced";
-    zone.addEventListener("click", () => this.setAmbientMode(true));
-    forced.addEventListener("click", () => this.setAmbientMode(false));
-    pressFx(zone);
-    pressFx(forced);
-    mode.append(zone, forced);
+    const btn = (label: string, on: () => void) => {
+      const b = mk("button", "ml-plate-btn") as HTMLButtonElement;
+      b.type = "button";
+      b.textContent = label;
+      b.addEventListener("click", on);
+      pressFx(b);
+      mode.appendChild(b);
+      return b;
+    };
+    const zone = btn("Zone based", () => this.setAmbientMode("zone"));
+    const forced = btn("Forced", () => this.setAmbientMode("forced"));
+    const none = btn("None", () => this.setAmbientMode("none"));
     this.ambList!.appendChild(mode);
-    this.ambMode = { zone, forced };
+    this.ambMode = { zone, forced, none };
+    // RESTORE the mode he left (the controller keeps its own in memory only,
+    // toggles.ts): a NONE picked to debug something must still be NONE after
+    // the reload that debugging usually involves. Forced restores its ticks.
+    const saved = readAmbientMode();
+    if (saved && saved.mode !== "zone") {
+      ambSafe(() => api.auto(false), "manual");
+      for (const n of saved.mode === "forced" ? saved.on : []) ambSafe(() => api.setEnabled(n, true), null);
+    }
     for (const e of effects) this.ambRow(e.name, capWords(e.name));
     // Bird-density slider — scales BOTH bird flocks 0.1×–10× (maintainer
     // 2026-07-25). Only when the ambient layer exposes birdDensity (older
@@ -789,19 +813,36 @@ export class HudBar {
   /** The switch. ZONE BASED hands the scene back to the world (auto). FORCED
    * takes control while PRESERVING the scene showing right now — switching to
    * manual empties the set, so what was running is re-enabled — and from
-   * there each row toggles just itself. */
-  private setAmbientMode(zone: boolean) {
+   * there each row toggles just itself. NONE is manual with the set left
+   * empty: everything off until a row is ticked (which reads as Forced). */
+  private setAmbientMode(want: "zone" | "forced" | "none") {
     const api = ambientApi();
     if (!api) return;
     const mode = ambSafe(() => api.auto(), "manual");
-    if (zone) {
+    if (want === "zone") {
       if (mode !== "auto") ambSafe(() => api.auto(true), "manual");
+    } else if (want === "none") {
+      const effects = ambSafe(() => api.effects(), [] as AmbientEffect[]);
+      if (mode === "auto") ambSafe(() => api.auto(false), "manual"); // → manual, empty set
+      else for (const e of effects) if (e.enabled) ambSafe(() => api.setEnabled(e.name, false), null);
     } else if (mode === "auto") {
       const running = ambSafe(() => api.effects(), [] as AmbientEffect[]).filter((e) => e.on).map((e) => e.name);
       ambSafe(() => api.auto(false), "manual"); // → manual, empty set
       for (const r of running) ambSafe(() => api.setEnabled(r, true), null);
     }
     this.refreshAmbient();
+    this.saveAmbientMode();
+  }
+
+  /** Persist the switch + the forced ticks (see the restore in tickAmbient). */
+  private saveAmbientMode() {
+    const api = ambientApi();
+    if (!api) return;
+    const mode = ambSafe(() => api.auto(), "manual");
+    const on = ambSafe(() => api.effects(), [] as AmbientEffect[]).filter((e) => e.enabled).map((e) => e.name);
+    try {
+      localStorage.setItem(AMB_MODE_KEY, JSON.stringify({ mode: mode === "auto" ? "zone" : on.length ? "forced" : "none", on }));
+    } catch {}
   }
 
   /** Handle an effect row tap: the effect toggles itself (enabling refused
@@ -830,17 +871,23 @@ export class HudBar {
       ambSafe(() => api.toggle(name), null);
     }
     this.refreshAmbient();
+    this.saveAmbientMode();
   }
 
   private refreshAmbient() {
     const api = ambientApi();
     if (!api || !this.ambBuilt) return;
     const mode = ambSafe(() => api.auto(), "manual");
+    const effects = ambSafe(() => api.effects(), [] as AmbientEffect[]);
     if (this.ambMode) {
+      // the switch READS the truth: auto = zone based; manual with something
+      // ticked = forced; manual with nothing ticked = none
+      const anyOn = effects.some((e) => e.enabled);
       this.ambMode.zone.classList.toggle("on", mode === "auto");
-      this.ambMode.forced.classList.toggle("on", mode !== "auto");
+      this.ambMode.forced.classList.toggle("on", mode !== "auto" && anyOn);
+      this.ambMode.none.classList.toggle("on", mode !== "auto" && !anyOn);
     }
-    for (const e of ambSafe(() => api.effects(), [] as AmbientEffect[])) {
+    for (const e of effects) {
       const row = this.ambRows.get(e.name);
       if (!row) continue;
       row.el.classList.toggle("on", e.on); // on → the cream "selected" plate
@@ -2542,7 +2589,7 @@ function injectStyles() {
     color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;
     text-transform:uppercase;text-align:center}
   .ml-amb-list{display:flex;flex-direction:column;gap:8px;width:100%}
-  .ml-amb-mode{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%}
+  .ml-amb-mode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
   .ml-amb-row{justify-content:flex-start;gap:12px;text-align:left;white-space:nowrap}
   .ml-amb-row.blocked{opacity:.5}
   .ml-amb-label{overflow:hidden;text-overflow:ellipsis}
