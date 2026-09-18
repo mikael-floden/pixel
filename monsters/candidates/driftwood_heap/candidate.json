@@ -1,0 +1,140 @@
+{
+  "id": "driftwood_heap",
+  "name": "Driftbone",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Everything the sea gave back, standing in the order it washed up. It does not go near the water.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Hunched body built of sea-smoothed driftwood limbs bleached grey-white and wedged together, knotted rope lashing the joints, crusts of barnacles and dried weed along its back, sand running steadily out of the gaps between the timbers",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "driftwood_heap/rotations/south.webp",
+    "south-east": "driftwood_heap/rotations/south-east.webp",
+    "east": "driftwood_heap/rotations/east.webp",
+    "north-east": "driftwood_heap/rotations/north-east.webp",
+    "north": "driftwood_heap/rotations/north.webp",
+    "north-west": "driftwood_heap/rotations/north-west.webp",
+    "west": "driftwood_heap/rotations/west.webp",
+    "south-west": "driftwood_heap/rotations/south-west.webp"
+  },
+  "sheet": "driftwood_heap/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "805c5737-dba0-4798-b062-4eb5dda82780",
+  "seed": 990588859,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:52:42+00:00",
+  "elapsed_s": 180.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.785,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.785,
+        "bbox": [
+          7,
+          3,
+          95,
+          100
+        ],
+        "fill": 0.789,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.854,
+        "bbox": [
+          16,
+          4,
+          85,
+          102
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.86,
+        "bbox": [
+          13,
+          4,
+          84,
+          102
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.83,
+        "bbox": [
+          9,
+          6,
+          95,
+          96
+        ],
+        "fill": 0.716,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.869,
+        "bbox": [
+          12,
+          3,
+          92,
+          101
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.859,
+        "bbox": [
+          17,
+          7,
+          83,
+          99
+        ],
+        "fill": 0.561,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.854,
+        "bbox": [
+          17,
+          9,
+          92,
+          99
+        ],
+        "fill": 0.624,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.868,
+        "bbox": [
+          16,
+          3,
+          88,
+          101
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      }
+    }
+  }
+}
