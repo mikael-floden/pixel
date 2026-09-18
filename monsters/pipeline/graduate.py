@@ -87,22 +87,34 @@ def eligible(cid, entries, verbose=False):
     return True, chosen, ""
 
 
-def _renames(client, man, chosen):
-    """PixelLab animation NAME -> state key, resolved through the group id each
-    direction recorded. Never guessed from the name: v3 stores a clip as
-    `custom-` + the first ~30 characters of the action text, so two states of
-    one monster can start identically."""
+def _slot_names(client, man, chosen):
+    """(renames, dead) — PixelLab animation NAME -> state for the chosen takes,
+    and the names of every OTHER animation on the character.
+
+    Matched by the ACTION TEXT, not by id: `normalized_animations` reports no
+    id for a character's clips (measured — every `group_id` came back empty, and
+    an id-keyed map silently mapped walk onto idle on the first graduation).
+    PixelLab names a v3 clip `custom-` + the first ~30 characters of the action
+    text, which is the same prefix rule the client already uses to find takes.
+    """
     detail = client.get_character(man["pixellab_id"])
-    by_id = {}
-    for g in client.normalized_animations("character", detail):
-        by_id[g.get("id")] = g.get("name")
-    out = {}
+    names = [g.get("name") for g in client.normalized_animations("character", detail) if g.get("name")]
+    anims = man.get("animations") or {}
+    renames, claimed = {}, set()
     for state, slot in chosen.items():
-        for d, q in ((man.get("animations") or {}).get(slot, {}).get("directions", {}).items()):
-            name = by_id.get(q.get("group"))
-            if name:
-                out[name] = state
-    return out
+        rec = anims.get(slot) or {}
+        acts = {rec.get("action")} | {q.get("action") for q in (rec.get("directions") or {}).values()}
+        for act in sorted((a for a in acts if a), key=len, reverse=True):
+            key = act.strip()[:28].lower()
+            for n in names:
+                if n in claimed:
+                    continue
+                body = n[len("custom-"):] if n.lower().startswith("custom-") else n
+                if body.strip()[:28].lower() == key:
+                    renames[n] = state
+                    claimed.add(n)
+    dead = [n for n in names if n not in claimed]
+    return renames, dead
 
 
 def graduate(cid, entries, client, apply=True, verbose=True):
@@ -117,7 +129,11 @@ def graduate(cid, entries, client, apply=True, verbose=True):
         print(f"  {cid}: ELIGIBLE — " + ", ".join(f"{s}={sl}" for s, sl in chosen.items()))
     if not apply:
         return True
-    renames = _renames(client, man, chosen)
+    renames, dead = _slot_names(client, man, chosen)
+    if len(renames) < len(chosen):
+        print(f"  {cid}: NOT graduated — only matched {sorted(set(renames.values()))} "
+              f"of {sorted(chosen)} by action text; fix before moving it")
+        return False
     roster = sync_mod.load_roster()
     if not any(m["id"] == cid for m in roster):
         roster.append({"id": cid, "kind": "character",
@@ -128,6 +144,26 @@ def graduate(cid, entries, client, apply=True, verbose=True):
         sync_mod.write_roster(roster)
         if verbose:
             print(f"  {cid}: roster entry pinned ({len(renames)} animation name(s) mapped)")
+    # the takes he did NOT pick go before the tag does: left on the character
+    # they mirror as extra half-filled states (the first graduation carried four
+    # of them, 1/8 and 2/8 directions each, straight into the game's manifest).
+    # BY GROUP ID, never by name: PixelLab generates each direction as its own
+    # group under the same name, so a delete by animation_type matches five
+    # groups at once and 409s (measured on the first graduation).
+    ndel = 0
+    for slot, rec in (man.get("animations") or {}).items():
+        if slot in set(chosen.values()):
+            continue
+        for d, q in (rec.get("directions") or {}).items():
+            if q.get("mirrored") or not q.get("group"):
+                continue
+            try:
+                client.delete_animation(man["pixellab_id"], group_id=q["group"], direction=d)
+                ndel += 1
+            except PixelLabError as e:
+                print(f"  {cid}: could not delete {slot}/{d}: {e}")
+    if verbose and ndel:
+        print(f"  {cid}: deleted {ndel} direction-take(s) from the takes he did not pick")
     client.set_character_tags(man["pixellab_id"], ["MONSTER"])
     if verbose:
         print(f"  {cid}: retagged MONSTER on PixelLab")

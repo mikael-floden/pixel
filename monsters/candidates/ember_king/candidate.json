@@ -341,32 +341,42 @@
       "directions": {
         "south": {
           "status": "fail",
-          "step_mean": 0.1411,
-          "step_max": 0.1729,
-          "drift": 6.21,
-          "loop": 0.2272,
-          "loop_ratio": 1.61,
-          "travel": 2.43,
-          "pin": 0.879,
-          "pad": 1,
+          "step_mean": 0.1892,
+          "step_max": 0.2063,
+          "drift": 4.82,
+          "loop": 0.5111,
+          "loop_ratio": 2.7,
+          "travel": 2.0,
+          "pin": 0.922,
+          "pad": 2,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.662,
+          "end_iou": null,
           "canvas": [
-            178,
-            178
+            180,
+            180
           ],
           "reasons": [
-            "reworded: creature-specific walk, ladder reset"
+            "last→first hand-off is 2.7× a normal step — the loop hitches",
+            "canvas grown by 2 px a side to hold the motion"
           ],
-          "sub": "fae5fb44-ce93-4230-9b48-d2485de07da4",
-          "group": "ee25a881-5812-4d9f-bfdd-82f22ec664c5",
+          "sub": "f913984e-918e-4260-a0b3-2eb30690da42",
+          "group": "98d0b9cf-4a02-44cb-9ac3-d39eabb6a9aa",
           "takes": 1,
-          "version": 1,
+          "version": 4,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:14:53+00:00",
-          "maintainer": "redo",
-          "rolls": 0,
-          "tries": 0,
-          "rung": 0,
-          "intensity": 0
+          "mode": "v3",
+          "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning, a big aggressive swing",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-18T14:34:15+00:00"
         },
         "south-east": {
           "status": "warn",
