@@ -317,24 +317,6 @@
       "die_action": "Death - Cracks apart into a small pile of loose pebbles on the ground and fades away"
     },
     {
-      "id": "frost_mite",
-      "name": "Rimemite",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 32,
-      "biome": [
-        "ice",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Tiny fantasy ice tick, a round body of frosted blue crystal with six small legs, two pale glowing eyes, and a few snowflakes clinging to its back.",
-      "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
-      "attack_action": "Bite - Hops forward and bites hard with its mandibles wide",
-      "attack_extreme": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide",
-      "die_action": "Death - Shatters into a scatter of small ice shards that melt away and vanish"
-    },
-    {
       "id": "spider_queen",
       "name": "Broodmother",
       "tier": "boss",
@@ -4477,6 +4459,32 @@
       "attack_extreme": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
       "die_action": "Death - Melts into a spreading puddle of black ink on the ground and fades away",
       "graduated_at": "2026-09-18T14:58:07+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "frost_mite",
+      "name": "Rimemite",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 32,
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Tiny fantasy ice tick, a round body of frosted blue crystal with six small legs, two pale glowing eyes, and a few snowflakes clinging to its back.",
+      "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
+      "attack_action": "Bite - Hops forward and bites hard with its mandibles wide",
+      "attack_extreme": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide",
+      "die_action": "Death - Shatters into a scatter of small ice shards that melt away and vanish",
+      "graduated_at": "2026-09-18T14:59:42+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

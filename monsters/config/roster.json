@@ -294,6 +294,23 @@
       }
     },
     {
+      "id": "frost_mite",
+      "kind": "character",
+      "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
+      "name": "Rimemite",
+      "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Lunge Attack - Throws its whol": "attack",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Ice Burst - The mite rears up ": "attack",
+        "custom-Ice Burst - The mite rears up and bursts forward i": "attack",
+        "custom-Death - Shatters into a scatter of small ice shard": "die"
+      }
+    },
+    {
       "id": "octopus",
       "kind": "character",
       "pixellab_id": "22734026-d7a4-48dc-9ccb-102f2bc8f77f",
@@ -906,20 +923,17 @@
       "lore": "A mountain of dark wool and ivory, calm until crowded. One sweep of those tusks clears a road."
     },
     {
-      "id": "frost_mite",
+      "id": "bog_titan",
       "kind": "character",
-      "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
-      "name": "Rimemite",
-      "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
+      "pixellab_id": "83b4bbfd-d8d1-40ca-8a91-08fb033241a3",
+      "name": "Fenfather",
+      "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
       "renames": {
         "custom-Calm still idle, breathing ver": "idle",
         "custom-walk loop, full walk cycle in ": "walk",
         "custom-Angry combat idle, frustrated ": "angry",
-        "custom-Lunge Attack - Throws its whol": "attack",
-        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
-        "custom-Ice Burst - The mite rears up ": "attack",
-        "custom-Ice Burst - The mite rears up and bursts forward i": "attack",
-        "custom-Death - Shatters into a scatter of small ice shard": "die"
+        "custom-Double Slam - Raises both arms high overhead and s": "attack",
+        "custom-Death - The green lamps go out": "die"
       }
     }
   ]

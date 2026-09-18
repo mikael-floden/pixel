@@ -1,0 +1,943 @@
+{
+  "id": "frost_mite",
+  "name": "Rimemite",
+  "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
+    "url": "https://www.pixellab.ai/create-character/2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
+    "prompt": "Tiny fantasy ice tick, a round body of frosted blue crystal with six small legs, two pale glowing eyes, and a few snowflakes clinging to its back, calm serious expression, clean deliberate creature design, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 32,
+    "height": 32
+  },
+  "native_size": {
+    "width": 32,
+    "height": 32
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "frost_mite/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "frost_mite/rotations/south.webp",
+    "west": "frost_mite/rotations/west.webp",
+    "east": "frost_mite/rotations/east.webp",
+    "north": "frost_mite/rotations/north.webp",
+    "south-east": "frost_mite/rotations/south-east.webp",
+    "north-east": "frost_mite/rotations/north-east.webp",
+    "north-west": "frost_mite/rotations/north-west.webp",
+    "south-west": "frost_mite/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "46a3ba45-378f-4ba2-bc6d-5de1dca56bb3",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "frost_mite/animations/angry__east.webp",
+          "frame_paths": [
+            "frost_mite/animations/angry/east/00.webp",
+            "frost_mite/animations/angry/east/01.webp",
+            "frost_mite/animations/angry/east/02.webp",
+            "frost_mite/animations/angry/east/03.webp",
+            "frost_mite/animations/angry/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:58:52 GMT",
+          "src_frames": 5,
+          "sub": "a376f518-9a71-4d34-b278-60b25ab5d86c"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "frost_mite/animations/angry__north.webp",
+          "frame_paths": [
+            "frost_mite/animations/angry/north/00.webp",
+            "frost_mite/animations/angry/north/01.webp",
+            "frost_mite/animations/angry/north/02.webp",
+            "frost_mite/animations/angry/north/03.webp",
+            "frost_mite/animations/angry/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:58:53 GMT",
+          "src_frames": 5,
+          "sub": "d296c07f-b389-47ac-ae62-6b0881ef4457"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "frost_mite/animations/angry__north-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/angry/north-east/00.webp",
+            "frost_mite/animations/angry/north-east/01.webp",
+            "frost_mite/animations/angry/north-east/02.webp",
+            "frost_mite/animations/angry/north-east/03.webp",
+            "frost_mite/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:58:54 GMT",
+          "src_frames": 5,
+          "sub": "c319c1ba-6589-4bd3-afbf-85e7c9230125"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "frost_mite/animations/angry__south.webp",
+          "frame_paths": [
+            "frost_mite/animations/angry/south/00.webp",
+            "frost_mite/animations/angry/south/01.webp",
+            "frost_mite/animations/angry/south/02.webp",
+            "frost_mite/animations/angry/south/03.webp",
+            "frost_mite/animations/angry/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:58:56 GMT",
+          "src_frames": 5,
+          "sub": "22f465ac-c53e-4c5a-836a-761bdaea364a"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "frost_mite/animations/angry__south-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/angry/south-east/00.webp",
+            "frost_mite/animations/angry/south-east/01.webp",
+            "frost_mite/animations/angry/south-east/02.webp",
+            "frost_mite/animations/angry/south-east/03.webp",
+            "frost_mite/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:58:57 GMT",
+          "src_frames": 5,
+          "sub": "62cf0194-cac1-4173-b959-94a113b67567"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "frost_mite/animations/angry__south-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/angry/south-west/00.webp",
+            "frost_mite/animations/angry/south-west/01.webp",
+            "frost_mite/animations/angry/south-west/02.webp",
+            "frost_mite/animations/angry/south-west/03.webp",
+            "frost_mite/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "frost_mite/animations/angry__west.webp",
+          "frame_paths": [
+            "frost_mite/animations/angry/west/00.webp",
+            "frost_mite/animations/angry/west/01.webp",
+            "frost_mite/animations/angry/west/02.webp",
+            "frost_mite/animations/angry/west/03.webp",
+            "frost_mite/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "frost_mite/animations/angry__north-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/angry/north-west/00.webp",
+            "frost_mite/animations/angry/north-west/01.webp",
+            "frost_mite/animations/angry/north-west/02.webp",
+            "frost_mite/animations/angry/north-west/03.webp",
+            "frost_mite/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "5a0f54f2-baa5-4d06-8225-71c213b62f5d",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "frost_mite/animations/idle__east.webp",
+          "frame_paths": [
+            "frost_mite/animations/idle/east/00.webp",
+            "frost_mite/animations/idle/east/01.webp",
+            "frost_mite/animations/idle/east/02.webp",
+            "frost_mite/animations/idle/east/03.webp",
+            "frost_mite/animations/idle/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:58:58 GMT",
+          "src_frames": 5,
+          "sub": "1ac88c02-6969-4215-a322-a56e211a5099"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "frost_mite/animations/idle__north.webp",
+          "frame_paths": [
+            "frost_mite/animations/idle/north/00.webp",
+            "frost_mite/animations/idle/north/01.webp",
+            "frost_mite/animations/idle/north/02.webp",
+            "frost_mite/animations/idle/north/03.webp",
+            "frost_mite/animations/idle/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:58:59 GMT",
+          "src_frames": 5,
+          "sub": "e7fa77f1-c963-479d-81bc-20da69adecee"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "frost_mite/animations/idle__north-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/idle/north-east/00.webp",
+            "frost_mite/animations/idle/north-east/01.webp",
+            "frost_mite/animations/idle/north-east/02.webp",
+            "frost_mite/animations/idle/north-east/03.webp",
+            "frost_mite/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:00 GMT",
+          "src_frames": 5,
+          "sub": "3e6d271b-5e14-47a0-9b29-f7895a737947"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "frost_mite/animations/idle__south.webp",
+          "frame_paths": [
+            "frost_mite/animations/idle/south/00.webp",
+            "frost_mite/animations/idle/south/01.webp",
+            "frost_mite/animations/idle/south/02.webp",
+            "frost_mite/animations/idle/south/03.webp",
+            "frost_mite/animations/idle/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:02 GMT",
+          "src_frames": 5,
+          "sub": "0dfeb2ac-36f1-4880-90e8-2a5079c6b919"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "frost_mite/animations/idle__south-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/idle/south-east/00.webp",
+            "frost_mite/animations/idle/south-east/01.webp",
+            "frost_mite/animations/idle/south-east/02.webp",
+            "frost_mite/animations/idle/south-east/03.webp",
+            "frost_mite/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:03 GMT",
+          "src_frames": 5,
+          "sub": "6404886d-66bd-4aaa-9509-316da5f5a73c"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "frost_mite/animations/idle__south-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/idle/south-west/00.webp",
+            "frost_mite/animations/idle/south-west/01.webp",
+            "frost_mite/animations/idle/south-west/02.webp",
+            "frost_mite/animations/idle/south-west/03.webp",
+            "frost_mite/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "frost_mite/animations/idle__west.webp",
+          "frame_paths": [
+            "frost_mite/animations/idle/west/00.webp",
+            "frost_mite/animations/idle/west/01.webp",
+            "frost_mite/animations/idle/west/02.webp",
+            "frost_mite/animations/idle/west/03.webp",
+            "frost_mite/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "frost_mite/animations/idle__north-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/idle/north-west/00.webp",
+            "frost_mite/animations/idle/north-west/01.webp",
+            "frost_mite/animations/idle/north-west/02.webp",
+            "frost_mite/animations/idle/north-west/03.webp",
+            "frost_mite/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "36018309-f132-4beb-ac4c-add0727b885d",
+      "source_name": "custom-Death - Shatters into a scatter of small ice shard",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "frost_mite/animations/die__east.webp",
+          "frame_paths": [
+            "frost_mite/animations/die/east/00.webp",
+            "frost_mite/animations/die/east/01.webp",
+            "frost_mite/animations/die/east/02.webp",
+            "frost_mite/animations/die/east/03.webp",
+            "frost_mite/animations/die/east/04.webp",
+            "frost_mite/animations/die/east/05.webp",
+            "frost_mite/animations/die/east/06.webp",
+            "frost_mite/animations/die/east/07.webp",
+            "frost_mite/animations/die/east/08.webp",
+            "frost_mite/animations/die/east/09.webp",
+            "frost_mite/animations/die/east/10.webp",
+            "frost_mite/animations/die/east/11.webp",
+            "frost_mite/animations/die/east/12.webp",
+            "frost_mite/animations/die/east/13.webp",
+            "frost_mite/animations/die/east/14.webp",
+            "frost_mite/animations/die/east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:05 GMT",
+          "src_frames": 16,
+          "sub": "445ea9b3-c015-49aa-9135-358afc07c9a5"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "frost_mite/animations/die__north.webp",
+          "frame_paths": [
+            "frost_mite/animations/die/north/00.webp",
+            "frost_mite/animations/die/north/01.webp",
+            "frost_mite/animations/die/north/02.webp",
+            "frost_mite/animations/die/north/03.webp",
+            "frost_mite/animations/die/north/04.webp",
+            "frost_mite/animations/die/north/05.webp",
+            "frost_mite/animations/die/north/06.webp",
+            "frost_mite/animations/die/north/07.webp",
+            "frost_mite/animations/die/north/08.webp",
+            "frost_mite/animations/die/north/09.webp",
+            "frost_mite/animations/die/north/10.webp",
+            "frost_mite/animations/die/north/11.webp",
+            "frost_mite/animations/die/north/12.webp",
+            "frost_mite/animations/die/north/13.webp",
+            "frost_mite/animations/die/north/14.webp",
+            "frost_mite/animations/die/north/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:08 GMT",
+          "src_frames": 16,
+          "sub": "4dbd493e-7f61-47a0-9f22-d8982d9675d9"
+        },
+        "north-east": {
+          "frames": 15,
+          "strip": "frost_mite/animations/die__north-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/die/north-east/00.webp",
+            "frost_mite/animations/die/north-east/01.webp",
+            "frost_mite/animations/die/north-east/02.webp",
+            "frost_mite/animations/die/north-east/03.webp",
+            "frost_mite/animations/die/north-east/04.webp",
+            "frost_mite/animations/die/north-east/05.webp",
+            "frost_mite/animations/die/north-east/06.webp",
+            "frost_mite/animations/die/north-east/07.webp",
+            "frost_mite/animations/die/north-east/08.webp",
+            "frost_mite/animations/die/north-east/09.webp",
+            "frost_mite/animations/die/north-east/10.webp",
+            "frost_mite/animations/die/north-east/11.webp",
+            "frost_mite/animations/die/north-east/12.webp",
+            "frost_mite/animations/die/north-east/13.webp",
+            "frost_mite/animations/die/north-east/14.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:11 GMT",
+          "src_frames": 16,
+          "sub": "8d6a90d5-7747-49c1-887e-3fcbae95c6b2"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "frost_mite/animations/die__south.webp",
+          "frame_paths": [
+            "frost_mite/animations/die/south/00.webp",
+            "frost_mite/animations/die/south/01.webp",
+            "frost_mite/animations/die/south/02.webp",
+            "frost_mite/animations/die/south/03.webp",
+            "frost_mite/animations/die/south/04.webp",
+            "frost_mite/animations/die/south/05.webp",
+            "frost_mite/animations/die/south/06.webp",
+            "frost_mite/animations/die/south/07.webp",
+            "frost_mite/animations/die/south/08.webp",
+            "frost_mite/animations/die/south/09.webp",
+            "frost_mite/animations/die/south/10.webp",
+            "frost_mite/animations/die/south/11.webp",
+            "frost_mite/animations/die/south/12.webp",
+            "frost_mite/animations/die/south/13.webp",
+            "frost_mite/animations/die/south/14.webp",
+            "frost_mite/animations/die/south/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:13 GMT",
+          "src_frames": 16,
+          "sub": "d21dc7b9-6507-4dd6-915b-5e1fd5e5ab7e"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "frost_mite/animations/die__south-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/die/south-east/00.webp",
+            "frost_mite/animations/die/south-east/01.webp",
+            "frost_mite/animations/die/south-east/02.webp",
+            "frost_mite/animations/die/south-east/03.webp",
+            "frost_mite/animations/die/south-east/04.webp",
+            "frost_mite/animations/die/south-east/05.webp",
+            "frost_mite/animations/die/south-east/06.webp",
+            "frost_mite/animations/die/south-east/07.webp",
+            "frost_mite/animations/die/south-east/08.webp",
+            "frost_mite/animations/die/south-east/09.webp",
+            "frost_mite/animations/die/south-east/10.webp",
+            "frost_mite/animations/die/south-east/11.webp",
+            "frost_mite/animations/die/south-east/12.webp",
+            "frost_mite/animations/die/south-east/13.webp",
+            "frost_mite/animations/die/south-east/14.webp",
+            "frost_mite/animations/die/south-east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:15 GMT",
+          "src_frames": 16,
+          "sub": "d4b39526-f93f-47dd-94b6-9f2216767f53"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "frost_mite/animations/die__south-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/die/south-west/00.webp",
+            "frost_mite/animations/die/south-west/01.webp",
+            "frost_mite/animations/die/south-west/02.webp",
+            "frost_mite/animations/die/south-west/03.webp",
+            "frost_mite/animations/die/south-west/04.webp",
+            "frost_mite/animations/die/south-west/05.webp",
+            "frost_mite/animations/die/south-west/06.webp",
+            "frost_mite/animations/die/south-west/07.webp",
+            "frost_mite/animations/die/south-west/08.webp",
+            "frost_mite/animations/die/south-west/09.webp",
+            "frost_mite/animations/die/south-west/10.webp",
+            "frost_mite/animations/die/south-west/11.webp",
+            "frost_mite/animations/die/south-west/12.webp",
+            "frost_mite/animations/die/south-west/13.webp",
+            "frost_mite/animations/die/south-west/14.webp",
+            "frost_mite/animations/die/south-west/15.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "frost_mite/animations/die__west.webp",
+          "frame_paths": [
+            "frost_mite/animations/die/west/00.webp",
+            "frost_mite/animations/die/west/01.webp",
+            "frost_mite/animations/die/west/02.webp",
+            "frost_mite/animations/die/west/03.webp",
+            "frost_mite/animations/die/west/04.webp",
+            "frost_mite/animations/die/west/05.webp",
+            "frost_mite/animations/die/west/06.webp",
+            "frost_mite/animations/die/west/07.webp",
+            "frost_mite/animations/die/west/08.webp",
+            "frost_mite/animations/die/west/09.webp",
+            "frost_mite/animations/die/west/10.webp",
+            "frost_mite/animations/die/west/11.webp",
+            "frost_mite/animations/die/west/12.webp",
+            "frost_mite/animations/die/west/13.webp",
+            "frost_mite/animations/die/west/14.webp",
+            "frost_mite/animations/die/west/15.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 15,
+          "strip": "frost_mite/animations/die__north-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/die/north-west/00.webp",
+            "frost_mite/animations/die/north-west/01.webp",
+            "frost_mite/animations/die/north-west/02.webp",
+            "frost_mite/animations/die/north-west/03.webp",
+            "frost_mite/animations/die/north-west/04.webp",
+            "frost_mite/animations/die/north-west/05.webp",
+            "frost_mite/animations/die/north-west/06.webp",
+            "frost_mite/animations/die/north-west/07.webp",
+            "frost_mite/animations/die/north-west/08.webp",
+            "frost_mite/animations/die/north-west/09.webp",
+            "frost_mite/animations/die/north-west/10.webp",
+            "frost_mite/animations/die/north-west/11.webp",
+            "frost_mite/animations/die/north-west/12.webp",
+            "frost_mite/animations/die/north-west/13.webp",
+            "frost_mite/animations/die/north-west/14.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "85b9f9db-58c5-403c-bafe-d17975307f26",
+      "source_name": "custom-Ice Burst - The mite rears up and bursts forward i + custom-Lunge Attack - Throws its whole body forward in on",
+      "directions": {
+        "south": {
+          "frames": 16,
+          "strip": "frost_mite/animations/attack__south.webp",
+          "frame_paths": [
+            "frost_mite/animations/attack/south/00.webp",
+            "frost_mite/animations/attack/south/01.webp",
+            "frost_mite/animations/attack/south/02.webp",
+            "frost_mite/animations/attack/south/03.webp",
+            "frost_mite/animations/attack/south/04.webp",
+            "frost_mite/animations/attack/south/05.webp",
+            "frost_mite/animations/attack/south/06.webp",
+            "frost_mite/animations/attack/south/07.webp",
+            "frost_mite/animations/attack/south/08.webp",
+            "frost_mite/animations/attack/south/09.webp",
+            "frost_mite/animations/attack/south/10.webp",
+            "frost_mite/animations/attack/south/11.webp",
+            "frost_mite/animations/attack/south/12.webp",
+            "frost_mite/animations/attack/south/13.webp",
+            "frost_mite/animations/attack/south/14.webp",
+            "frost_mite/animations/attack/south/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:17 GMT",
+          "src_frames": 16,
+          "sub": "7944d689-e306-42c8-970f-e9e81d2d8ee2"
+        },
+        "east": {
+          "frames": 16,
+          "strip": "frost_mite/animations/attack__east.webp",
+          "frame_paths": [
+            "frost_mite/animations/attack/east/00.webp",
+            "frost_mite/animations/attack/east/01.webp",
+            "frost_mite/animations/attack/east/02.webp",
+            "frost_mite/animations/attack/east/03.webp",
+            "frost_mite/animations/attack/east/04.webp",
+            "frost_mite/animations/attack/east/05.webp",
+            "frost_mite/animations/attack/east/06.webp",
+            "frost_mite/animations/attack/east/07.webp",
+            "frost_mite/animations/attack/east/08.webp",
+            "frost_mite/animations/attack/east/09.webp",
+            "frost_mite/animations/attack/east/10.webp",
+            "frost_mite/animations/attack/east/11.webp",
+            "frost_mite/animations/attack/east/12.webp",
+            "frost_mite/animations/attack/east/13.webp",
+            "frost_mite/animations/attack/east/14.webp",
+            "frost_mite/animations/attack/east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:19 GMT",
+          "src_frames": 16,
+          "sub": "5134fda7-0ffb-4c5a-ba2e-ae092e724451"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "frost_mite/animations/attack__north.webp",
+          "frame_paths": [
+            "frost_mite/animations/attack/north/00.webp",
+            "frost_mite/animations/attack/north/01.webp",
+            "frost_mite/animations/attack/north/02.webp",
+            "frost_mite/animations/attack/north/03.webp",
+            "frost_mite/animations/attack/north/04.webp",
+            "frost_mite/animations/attack/north/05.webp",
+            "frost_mite/animations/attack/north/06.webp",
+            "frost_mite/animations/attack/north/07.webp",
+            "frost_mite/animations/attack/north/08.webp",
+            "frost_mite/animations/attack/north/09.webp",
+            "frost_mite/animations/attack/north/10.webp",
+            "frost_mite/animations/attack/north/11.webp",
+            "frost_mite/animations/attack/north/12.webp",
+            "frost_mite/animations/attack/north/13.webp",
+            "frost_mite/animations/attack/north/14.webp",
+            "frost_mite/animations/attack/north/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:21 GMT",
+          "src_frames": 16,
+          "sub": "32a37d4a-42ea-4cfe-8af5-63cb5ba501bf"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "frost_mite/animations/attack__north-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/attack/north-east/00.webp",
+            "frost_mite/animations/attack/north-east/01.webp",
+            "frost_mite/animations/attack/north-east/02.webp",
+            "frost_mite/animations/attack/north-east/03.webp",
+            "frost_mite/animations/attack/north-east/04.webp",
+            "frost_mite/animations/attack/north-east/05.webp",
+            "frost_mite/animations/attack/north-east/06.webp",
+            "frost_mite/animations/attack/north-east/07.webp",
+            "frost_mite/animations/attack/north-east/08.webp",
+            "frost_mite/animations/attack/north-east/09.webp",
+            "frost_mite/animations/attack/north-east/10.webp",
+            "frost_mite/animations/attack/north-east/11.webp",
+            "frost_mite/animations/attack/north-east/12.webp",
+            "frost_mite/animations/attack/north-east/13.webp",
+            "frost_mite/animations/attack/north-east/14.webp",
+            "frost_mite/animations/attack/north-east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:23 GMT",
+          "src_frames": 16,
+          "sub": "f0283712-f855-464b-83e3-62fffd281f3f"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "frost_mite/animations/attack__south-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/attack/south-east/00.webp",
+            "frost_mite/animations/attack/south-east/01.webp",
+            "frost_mite/animations/attack/south-east/02.webp",
+            "frost_mite/animations/attack/south-east/03.webp",
+            "frost_mite/animations/attack/south-east/04.webp",
+            "frost_mite/animations/attack/south-east/05.webp",
+            "frost_mite/animations/attack/south-east/06.webp",
+            "frost_mite/animations/attack/south-east/07.webp",
+            "frost_mite/animations/attack/south-east/08.webp",
+            "frost_mite/animations/attack/south-east/09.webp",
+            "frost_mite/animations/attack/south-east/10.webp",
+            "frost_mite/animations/attack/south-east/11.webp",
+            "frost_mite/animations/attack/south-east/12.webp",
+            "frost_mite/animations/attack/south-east/13.webp",
+            "frost_mite/animations/attack/south-east/14.webp",
+            "frost_mite/animations/attack/south-east/15.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:25 GMT",
+          "src_frames": 16,
+          "sub": "c5ed6d02-9223-4ee8-a862-ee3d1a0cba89"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "frost_mite/animations/attack__south-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/attack/south-west/00.webp",
+            "frost_mite/animations/attack/south-west/01.webp",
+            "frost_mite/animations/attack/south-west/02.webp",
+            "frost_mite/animations/attack/south-west/03.webp",
+            "frost_mite/animations/attack/south-west/04.webp",
+            "frost_mite/animations/attack/south-west/05.webp",
+            "frost_mite/animations/attack/south-west/06.webp",
+            "frost_mite/animations/attack/south-west/07.webp",
+            "frost_mite/animations/attack/south-west/08.webp",
+            "frost_mite/animations/attack/south-west/09.webp",
+            "frost_mite/animations/attack/south-west/10.webp",
+            "frost_mite/animations/attack/south-west/11.webp",
+            "frost_mite/animations/attack/south-west/12.webp",
+            "frost_mite/animations/attack/south-west/13.webp",
+            "frost_mite/animations/attack/south-west/14.webp",
+            "frost_mite/animations/attack/south-west/15.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "frost_mite/animations/attack__west.webp",
+          "frame_paths": [
+            "frost_mite/animations/attack/west/00.webp",
+            "frost_mite/animations/attack/west/01.webp",
+            "frost_mite/animations/attack/west/02.webp",
+            "frost_mite/animations/attack/west/03.webp",
+            "frost_mite/animations/attack/west/04.webp",
+            "frost_mite/animations/attack/west/05.webp",
+            "frost_mite/animations/attack/west/06.webp",
+            "frost_mite/animations/attack/west/07.webp",
+            "frost_mite/animations/attack/west/08.webp",
+            "frost_mite/animations/attack/west/09.webp",
+            "frost_mite/animations/attack/west/10.webp",
+            "frost_mite/animations/attack/west/11.webp",
+            "frost_mite/animations/attack/west/12.webp",
+            "frost_mite/animations/attack/west/13.webp",
+            "frost_mite/animations/attack/west/14.webp",
+            "frost_mite/animations/attack/west/15.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "frost_mite/animations/attack__north-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/attack/north-west/00.webp",
+            "frost_mite/animations/attack/north-west/01.webp",
+            "frost_mite/animations/attack/north-west/02.webp",
+            "frost_mite/animations/attack/north-west/03.webp",
+            "frost_mite/animations/attack/north-west/04.webp",
+            "frost_mite/animations/attack/north-west/05.webp",
+            "frost_mite/animations/attack/north-west/06.webp",
+            "frost_mite/animations/attack/north-west/07.webp",
+            "frost_mite/animations/attack/north-west/08.webp",
+            "frost_mite/animations/attack/north-west/09.webp",
+            "frost_mite/animations/attack/north-west/10.webp",
+            "frost_mite/animations/attack/north-west/11.webp",
+            "frost_mite/animations/attack/north-west/12.webp",
+            "frost_mite/animations/attack/north-west/13.webp",
+            "frost_mite/animations/attack/north-west/14.webp",
+            "frost_mite/animations/attack/north-west/15.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_hops_forward_and_bites_with_it": {
+      "group_id": "db4a50a7-e027-430e-87cb-6899bde7e012",
+      "source_name": "custom-hops forward and bites with it",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "frost_mite/animations/custom_hops_forward_and_bites_with_it__east.webp",
+          "frame_paths": [
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/east/00.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/east/01.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/east/02.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/east/03.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/east/04.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/east/05.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:27 GMT",
+          "src_frames": 7,
+          "sub": "4a74c2d7-4724-49d4-adff-12ad06c21a55"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "frost_mite/animations/custom_hops_forward_and_bites_with_it__north.webp",
+          "frame_paths": [
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north/00.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north/01.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north/02.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north/03.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north/04.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north/05.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:28 GMT",
+          "src_frames": 7,
+          "sub": "9e18d69b-9757-448f-9e27-2dbb00507ad0"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "frost_mite/animations/custom_hops_forward_and_bites_with_it__north-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-east/00.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-east/01.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-east/02.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-east/03.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-east/04.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-east/05.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:29 GMT",
+          "src_frames": 7,
+          "sub": "d17e83b7-a8a1-442b-8d9e-32b2b3ecfe6a"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "frost_mite/animations/custom_hops_forward_and_bites_with_it__south.webp",
+          "frame_paths": [
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south/00.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south/01.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south/02.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south/03.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south/04.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south/05.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:31 GMT",
+          "src_frames": 7,
+          "sub": "06179997-156a-4c7a-9cd6-91787f723b10"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "frost_mite/animations/custom_hops_forward_and_bites_with_it__south-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-east/00.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-east/01.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-east/02.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-east/03.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-east/04.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-east/05.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:32 GMT",
+          "src_frames": 7,
+          "sub": "63ccc2fb-ea6e-4f06-8c01-d29f476a64b3"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "frost_mite/animations/custom_hops_forward_and_bites_with_it__south-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-west/00.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-west/01.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-west/02.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-west/03.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-west/04.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-west/05.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "frost_mite/animations/custom_hops_forward_and_bites_with_it__west.webp",
+          "frame_paths": [
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/west/00.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/west/01.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/west/02.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/west/03.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/west/04.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/west/05.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "frost_mite/animations/custom_hops_forward_and_bites_with_it__north-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-west/00.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-west/01.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-west/02.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-west/03.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-west/04.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-west/05.webp",
+            "frost_mite/animations/custom_hops_forward_and_bites_with_it/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "1f16c2f8-a4fc-424e-996e-b8d6292a7b81",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "frost_mite/animations/walk__east.webp",
+          "frame_paths": [
+            "frost_mite/animations/walk/east/00.webp",
+            "frost_mite/animations/walk/east/01.webp",
+            "frost_mite/animations/walk/east/02.webp",
+            "frost_mite/animations/walk/east/03.webp",
+            "frost_mite/animations/walk/east/04.webp",
+            "frost_mite/animations/walk/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:34 GMT",
+          "src_frames": 6,
+          "sub": "db38fec6-8a62-4338-a80d-6c0a8cf8382e"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "frost_mite/animations/walk__north.webp",
+          "frame_paths": [
+            "frost_mite/animations/walk/north/00.webp",
+            "frost_mite/animations/walk/north/01.webp",
+            "frost_mite/animations/walk/north/02.webp",
+            "frost_mite/animations/walk/north/03.webp",
+            "frost_mite/animations/walk/north/04.webp",
+            "frost_mite/animations/walk/north/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:35 GMT",
+          "src_frames": 6,
+          "sub": "36feac29-dc03-4762-ae4c-bb396cb5ffd9"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "frost_mite/animations/walk__north-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/walk/north-east/00.webp",
+            "frost_mite/animations/walk/north-east/01.webp",
+            "frost_mite/animations/walk/north-east/02.webp",
+            "frost_mite/animations/walk/north-east/03.webp",
+            "frost_mite/animations/walk/north-east/04.webp",
+            "frost_mite/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:37 GMT",
+          "src_frames": 6,
+          "sub": "d37028c2-c024-4da7-903d-65fcf2d4deaf"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "frost_mite/animations/walk__south.webp",
+          "frame_paths": [
+            "frost_mite/animations/walk/south/00.webp",
+            "frost_mite/animations/walk/south/01.webp",
+            "frost_mite/animations/walk/south/02.webp",
+            "frost_mite/animations/walk/south/03.webp",
+            "frost_mite/animations/walk/south/04.webp",
+            "frost_mite/animations/walk/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:38 GMT",
+          "src_frames": 6,
+          "sub": "4457d50f-d5a8-4df6-96df-16cf572fe6e5"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "frost_mite/animations/walk__south-east.webp",
+          "frame_paths": [
+            "frost_mite/animations/walk/south-east/00.webp",
+            "frost_mite/animations/walk/south-east/01.webp",
+            "frost_mite/animations/walk/south-east/02.webp",
+            "frost_mite/animations/walk/south-east/03.webp",
+            "frost_mite/animations/walk/south-east/04.webp",
+            "frost_mite/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:59:39 GMT",
+          "src_frames": 6,
+          "sub": "8aed0758-c64b-4e8d-8fbb-d2ec76a49227"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "frost_mite/animations/walk__south-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/walk/south-west/00.webp",
+            "frost_mite/animations/walk/south-west/01.webp",
+            "frost_mite/animations/walk/south-west/02.webp",
+            "frost_mite/animations/walk/south-west/03.webp",
+            "frost_mite/animations/walk/south-west/04.webp",
+            "frost_mite/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "frost_mite/animations/walk__west.webp",
+          "frame_paths": [
+            "frost_mite/animations/walk/west/00.webp",
+            "frost_mite/animations/walk/west/01.webp",
+            "frost_mite/animations/walk/west/02.webp",
+            "frost_mite/animations/walk/west/03.webp",
+            "frost_mite/animations/walk/west/04.webp",
+            "frost_mite/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "frost_mite/animations/walk__north-west.webp",
+          "frame_paths": [
+            "frost_mite/animations/walk/north-west/00.webp",
+            "frost_mite/animations/walk/north-west/01.webp",
+            "frost_mite/animations/walk/north-west/02.webp",
+            "frost_mite/animations/walk/north-west/03.webp",
+            "frost_mite/animations/walk/north-west/04.webp",
+            "frost_mite/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "die_trim": {
+      "north-east": {
+        "auto_dropped": [
+          14
+        ]
+      },
+      "north-west": {
+        "auto_dropped": [
+          14
+        ]
+      }
+    }
+  }
+}
