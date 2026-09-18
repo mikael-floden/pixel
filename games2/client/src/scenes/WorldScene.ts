@@ -3522,6 +3522,11 @@ export class WorldScene extends Phaser.Scene {
     fy: number;
     /** The room cell just inside the wall, for the glow. */
     inner: { col: number; row: number };
+    /** ROOFED: this piece hangs on a wall INSIDE a room, so it is only visible
+     *  while that room's roof is cut away and must ride the room's own fade,
+     *  not the cut's. An exterior window is NOT roofed — it is seen from the
+     *  street at all times. See sceneryWallFade. */
+    roofed: boolean;
     glow: number;
     glowAt: number;
   }[] = [];
@@ -17541,10 +17546,23 @@ export class WorldScene extends Phaser.Scene {
         }
       }
     }
-    const a = this.cutFade(z, fx, fy);
+    const a = this.sceneryWallFade(!!p.roofed, z, fx, fy);
     img.setAlpha(a);
     if (lo) lo.fade = a;
-    this.sceneryWalls.push({ place: p.i, piece: p.piece, img, lo, on, z, fx, fy, inner, glow: 0, glowAt: -Infinity });
+    this.sceneryWalls.push({
+      place: p.i,
+      piece: p.piece,
+      img,
+      lo,
+      on,
+      z,
+      fx,
+      fy,
+      inner,
+      roofed: !!p.roofed,
+      glow: 0,
+      glowAt: -Infinity,
+    });
     /* A REBUILT WINDOW IS LIT ON THE FRAME IT IS BUILT, not on the next one.
      * The base image takes its cut fade right here, but the ON overlay was created
      * at alpha 0 with the record's glow at 0, and only `stepSceneryWalls` filled
@@ -17613,9 +17631,34 @@ export class WorldScene extends Phaser.Scene {
   /** ONE wall piece's fade and, for a window, its ON overlay — the whole rule, in
    *  one place, so a record built mid-frame gets exactly what the per-frame pass
    *  would have given it. */
+  /** A WALL PIECE'S FADE, THE WHOLE RULE. A piece hanging on a wall INSIDE a
+   *  room is only visible while that room's roof is cut away, so it rides the
+   *  ROOM's fade exactly as the furniture beside it does. `cutFade` is the
+   *  other case — a piece ABOVE the cut, which goes with the roof — and for an
+   *  interior hanging it returns a literal 1, because the piece is BELOW the
+   *  cut and therefore "not cut away".
+   *
+   *  That literal 1 was the entry pop the maintainer reported: a roofed wall
+   *  piece was pushed into BOTH sceneryRoofedImgs and sceneryWalls, and the
+   *  wall pass runs last, so it overwrote the room's crossfade with 1 on every
+   *  frame. The base sprite stood at full opacity from the moment the debris
+   *  stopped hiding it (mix 1/3) while the light grade ran on to mix 2/3 — and
+   *  its LIT COPY, which reads roofedFade() * lo.fade, dissolved correctly
+   *  beside it, so the two visibly disagreed for the whole crossing. On the way
+   *  out it never dissolved at all: it was simply dropped at the landing
+   *  rebuild. Measured in the shipped world: all 18 interior wall hangings are
+   *  roofed AND onWall (places 26, 81, 88, 161, 169, 186, 206, 906, 914, 1171,
+   *  1181, 1241, 1251, 1274, 1278, 1309, 1310, 1328), two of them under the
+   *  meadow-house roof he names and two in the house at his night site. None of
+   *  the 40 windows is roofed (their anchor cell is the street), and the 10
+   *  chimneys are onDeck, so both keep exactly the behaviour they had. */
+  private sceneryWallFade(roofed: boolean, z: number, fx: number, fy: number): number {
+    return roofed ? this.roofedFade() : this.cutFade(z, fx, fy);
+  }
+
   private stepSceneryWall(w: (typeof this.sceneryWalls)[number]): void {
     const now = this.time.now;
-    const a = this.cutFade(w.z, w.fx, w.fy);
+    const a = this.sceneryWallFade(w.roofed, w.z, w.fx, w.fy);
     w.img.setAlpha(a);
     if (w.lo) w.lo.fade = a;
     if (w.on) {
@@ -22596,7 +22639,12 @@ export class WorldScene extends Phaser.Scene {
       // INDOOR FURNITURE FADES WITH THE ROOF IT STANDS UNDER (see roofedFade):
       // held apart here, and given the crossfade's alpha from the frame it is
       // built so a rebuild mid-transition continues the dissolve.
-      if (p.roofed) {
+      if (p.roofed && !onWall) {
+        // `!onWall` mirrors the cover record's guard below, and is load-bearing:
+        // a piece that is BOTH roofed and onWall was pushed here AND into
+        // sceneryWalls, and the wall pass runs last — so this crossfade was
+        // overwritten every frame. The wall pass now owns the whole rule for
+        // those pieces (sceneryWallFade) and gives them this same curve.
         img.setAlpha(this.roofedFade());
         this.sceneryRoofedImgs.push(img);
       } else if (onLid) {
