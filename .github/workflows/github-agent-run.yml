@@ -136,7 +136,22 @@ jobs:
           # desired!"). Pinned explicitly so a change of default never quietly
           # downgrades what acts on his reviews — the run log prints the model it
           # initialised with, which is how to check it rather than assume.
-          claude_args: "--model claude-opus-5 --max-turns 150"
+          # THE TOOLS IT NEEDS TO ACT. Found the hard way (2026-09-18): a session
+          # ran twice on a live rejected scenery state, verified the verdict
+          # against the art by hand and then reported "this runner denies python
+          # execution and all file writes" — pip, every scenery/pipeline command,
+          # board.py, even the Write of its own board. It could READ but not DO,
+          # and from the outside that looks exactly like an agent that decided
+          # not to bother.
+          #
+          # A domain's work IS its python pipeline, its board IS a file, and its
+          # push IS git — so Bash, the edit tools and acceptEdits are the job,
+          # not a convenience. The blast radius is one ephemeral runner with a
+          # sparse checkout and a token that can only push to this repo.
+          claude_args: >-
+            --model claude-opus-5 --max-turns 150
+            --permission-mode acceptEdits
+            --allowedTools Bash,Read,Write,Edit,MultiEdit,Glob,Grep,TodoWrite
           # Empty unless the cached binary ANSWERED --version in this job.
           path_to_claude_code_executable: ${{ steps.cliok.outputs.path }}
           # WHAT DID IT DO? The run's Step Summary is the one page he can read

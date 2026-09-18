@@ -168,6 +168,33 @@ Symptom to recognise: a 401 `Invalid bearer token` means the SECRET is not a
 token — an authorization code is what a token is minted from, and pasting the
 code produces exactly that error (2026-09-18).
 
+## The tools a session needs to ACT (2026-09-18, found the hard way)
+
+Twice, a session ran on a live rejected scenery state, read everything, verified
+the verdict against the art on disk — and shipped nothing. From the outside that
+is indistinguishable from an agent that decided not to bother. Its own report,
+once `show_full_output` was on, said otherwise:
+
+> *"This runner denies python execution and all file writes. Denied before
+> running: `pip install -r requirements.txt`, `python3 scenery/pipeline/prune.py
+> --dry-run`, `python3 coordination/board.py inbox scenery`, `python3 -c`,
+> `git sparse-checkout list`, and the Write of
+> `coordination/scenery-github-agent.json` itself. Only `python3 --version`
+> runs; read-only tools work — that is how everything above was verified."*
+
+The action starts Claude with a restricted tool set. A domain's work IS its
+python pipeline, its board IS a file and its push IS git, so
+`--allowedTools Bash,Read,Write,Edit,MultiEdit,Glob,Grep,TodoWrite` and
+`--permission-mode acceptEdits` are the job, not a convenience. The blast radius
+is one ephemeral runner with a sparse checkout and a token that can only push to
+this repo.
+
+**It also refused to half-do the work, correctly**: it would not hand-edit the
+three generated indices a delete rewrites (*"hand-editing a content-hashed index
+is exactly how this domain ships a cache bug"*), and it deliberately did NOT
+claim the verdict, because a claim it could not discharge would make the scenery
+agent skip his rejection. That is the accounting law working on its first run.
+
 ## What it CANNOT do
 
 **Wake a session you are already chatting with.** A GitHub push has no path into
