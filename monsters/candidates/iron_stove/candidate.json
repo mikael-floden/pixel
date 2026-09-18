@@ -1,0 +1,141 @@
+{
+  "id": "iron_stove",
+  "name": "Ironstove",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It went out when the house emptied and it has not been lit since. The kettle on it has never been taken off.",
+  "biome": [
+    "parquet_floor",
+    "brown_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Cast iron stove walking on four clawed feet, its fire door hanging open on cold grey ash, a stub of flue pipe on top, a blackened kettle still standing on the hot plate and scorch marks fanned up its back",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "iron_stove/rotations/south.webp",
+    "south-east": "iron_stove/rotations/south-east.webp",
+    "east": "iron_stove/rotations/east.webp",
+    "north-east": "iron_stove/rotations/north-east.webp",
+    "north": "iron_stove/rotations/north.webp",
+    "north-west": "iron_stove/rotations/north-west.webp",
+    "west": "iron_stove/rotations/west.webp",
+    "south-west": "iron_stove/rotations/south-west.webp"
+  },
+  "sheet": "iron_stove/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8db0bd92-6e4d-4bc6-9acb-533de15b05c9",
+  "seed": 1476207187,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:57:47+00:00",
+  "elapsed_s": 244.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.68,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.68,
+        "bbox": [
+          12,
+          7,
+          90,
+          100
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.745,
+        "bbox": [
+          24,
+          16,
+          80,
+          93
+        ],
+        "fill": 0.399,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.739,
+        "bbox": [
+          21,
+          8,
+          87,
+          100
+        ],
+        "fill": 0.561,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.714,
+        "bbox": [
+          27,
+          19,
+          92,
+          95
+        ],
+        "fill": 0.457,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.777,
+        "bbox": [
+          28,
+          6,
+          78,
+          96
+        ],
+        "fill": 0.416,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.752,
+        "bbox": [
+          19,
+          14,
+          85,
+          99
+        ],
+        "fill": 0.519,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.732,
+        "bbox": [
+          19,
+          19,
+          87,
+          99
+        ],
+        "fill": 0.503,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.776,
+        "bbox": [
+          12,
+          10,
+          89,
+          99
+        ],
+        "fill": 0.634,
+        "touches_edge": false
+      }
+    }
+  }
+}

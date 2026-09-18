@@ -1,0 +1,141 @@
+{
+  "id": "good_guest",
+  "name": "Goodguest",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It steps aside to let you go first, every time. Hearn said it asked politely, and he is the only one who came back up.",
+  "biome": [
+    "black_rock",
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Hollow figure in a clean host apron and long coat, hands folded neatly in front of it, head inclined in a slight bow, a smiling mask of pale wood for a face, and one arm extended to the side as if showing the way",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "good_guest/rotations/south.webp",
+    "south-east": "good_guest/rotations/south-east.webp",
+    "east": "good_guest/rotations/east.webp",
+    "north-east": "good_guest/rotations/north-east.webp",
+    "north": "good_guest/rotations/north.webp",
+    "north-west": "good_guest/rotations/north-west.webp",
+    "west": "good_guest/rotations/west.webp",
+    "south-west": "good_guest/rotations/south-west.webp"
+  },
+  "sheet": "good_guest/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "87915b1c-4244-4807-99a7-4141bcc65a22",
+  "seed": 2010577585,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:56:34+00:00",
+  "elapsed_s": 279.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.687,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.688,
+        "bbox": [
+          12,
+          4,
+          101,
+          109
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.748,
+        "bbox": [
+          31,
+          4,
+          84,
+          109
+        ],
+        "fill": 0.444,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.761,
+        "bbox": [
+          26,
+          4,
+          78,
+          109
+        ],
+        "fill": 0.435,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.687,
+        "bbox": [
+          9,
+          4,
+          94,
+          108
+        ],
+        "fill": 0.705,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.789,
+        "bbox": [
+          20,
+          4,
+          98,
+          110
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.718,
+        "bbox": [
+          24,
+          4,
+          80,
+          109
+        ],
+        "fill": 0.469,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.726,
+        "bbox": [
+          11,
+          4,
+          88,
+          109
+        ],
+        "fill": 0.645,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.781,
+        "bbox": [
+          29,
+          4,
+          81,
+          110
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      }
+    }
+  }
+}

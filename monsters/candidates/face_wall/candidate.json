@@ -1,0 +1,140 @@
+{
+  "id": "face_wall",
+  "name": "Facewall",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The faces come further out the longer you look at it. None of them are finished and all of them are the same one.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Slab of cave wall walking on two stone stubs, with human faces pushing out of the rock from inside it, all of them smiling, some fully formed and some only a brow or a mouth emerging, the stone stretched thin over them",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "face_wall/rotations/south.webp",
+    "south-east": "face_wall/rotations/south-east.webp",
+    "east": "face_wall/rotations/east.webp",
+    "north-east": "face_wall/rotations/north-east.webp",
+    "north": "face_wall/rotations/north.webp",
+    "north-west": "face_wall/rotations/north-west.webp",
+    "west": "face_wall/rotations/west.webp",
+    "south-west": "face_wall/rotations/south-west.webp"
+  },
+  "sheet": "face_wall/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4f989404-6656-4035-86d0-437770d82a8d",
+  "seed": 1271956012,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:57:05+00:00",
+  "elapsed_s": 195.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.758,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.758,
+        "bbox": [
+          24,
+          3,
+          104,
+          123
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.821,
+        "bbox": [
+          42,
+          3,
+          82,
+          125
+        ],
+        "fill": 0.298,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.841,
+        "bbox": [
+          40,
+          4,
+          86,
+          125
+        ],
+        "fill": 0.34,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.796,
+        "bbox": [
+          22,
+          2,
+          103,
+          122
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.859,
+        "bbox": [
+          24,
+          4,
+          102,
+          125
+        ],
+        "fill": 0.576,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.797,
+        "bbox": [
+          31,
+          2,
+          97,
+          124
+        ],
+        "fill": 0.491,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.785,
+        "bbox": [
+          26,
+          2,
+          99,
+          124
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.861,
+        "bbox": [
+          34,
+          3,
+          95,
+          118
+        ],
+        "fill": 0.428,
+        "touches_edge": false
+      }
+    }
+  }
+}
