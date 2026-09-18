@@ -4,7 +4,7 @@ This file loads on every games2 turn, so it holds ONLY the rules and where each
 subsystem's detail lives. **Measurements, traps and rejected approaches live in
 `games2/docs/<topic>.md` — open the one for the subsystem you touch; new detail
 goes THERE.** A rule here is one or two lines: the law, the reason in
-parentheses, the doc with the story. (300 KB was once paid per message.)
+parentheses, the doc with the story.
 
 ## What this is
 
@@ -24,18 +24,18 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 
 | doc | holds |
 |---|---|
-| `docs/shipping.md` | publish policy, curated image root, world tree, staging, WebP, `?h=` grant, brotli pin, loading order, deploy |
-| `docs/tiles3-rendering.md` | tiles3 resolver and draw ops, plates, transitions, seams, fades, decks, wall feet, render3 parity |
-| `docs/scenery.md` | sizing, hitboxes, animation, windows on walls, indoor furniture, flat pieces, fog silhouettes |
+| `docs/shipping.md` | publish policy, curated image root, world tree, staging, WebP, `?h=` grant, brotli, loading order, deploy |
+| `docs/tiles3-rendering.md` | tiles3 resolver, draw ops, plates, transitions, seams, fades, decks, wall feet, render3 parity |
+| `docs/scenery.md` | sizing, hitboxes, animation, wall windows, indoor furniture, flat pieces, fog silhouettes |
 | `docs/depth-sort.md` | occluder set, `depthrule.ts`, cover lines, lifts, drops |
-| `docs/perf.md` | ground render texture (scroll, slices, repaints, prefetch, compose), pooled occluders, capture pool, art queue, beacon |
+| `docs/perf.md` | ground RT (scroll, slices, repaints, prefetch, compose), pooled occluders, capture pool, art queue, beacon |
 | `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, dodge, swimming, gait, camera |
 | `docs/monsters-combat.md` | spawn zones, shadows, gait, brain, escape math, loot, backpack, levelling, death, NPCs |
-| `docs/lighting.md` | night shader and its CPU twins, light slots, scenery lights and shadows, depth fog, sun, time, weather, indoor ambient |
+| `docs/lighting.md` | night shader + CPU twins, light slots, scenery light and shadow, fog, sun, time, weather, indoor ambient |
 | `docs/ui.md` | wiki-themed HUD, chess, landscape and handedness, rotation, PWA, reconnect |
 | `docs/audio.md` | composer binding |
 | `docs/testing.md` | where a test belongs, browser gates, harness traps, device geometry |
-| `docs/backend.md`, `spec/ZONES.md` | one world for 10k: interest management, positions on the wire, bus, zone rooms, ghosts, hand-off, routing |
+| `docs/backend.md`, `spec/ZONES.md` | one world for 10k: interest, positions on the wire, bus, zone rooms, ghosts, hand-off, routing |
 | `INDOOR.md` | cut-away — READ IT before touching anything that draws, lights, picks or hides a cell indoors |
 | `SURFACES.md`, `spec/*.md`, `deploy/DEPLOY.md`, `loop/LOOP.md` | surfaces runbook, agent contracts, deploy, scheduled loop |
 
@@ -252,32 +252,33 @@ netcode; these are the invariants)
   slots, never an insert; the item id names the entry, not the slot.
 
 **Lighting** (`docs/lighting.md`)
-- Every twinned field (clouds, aurora, mist, sun, light) has an EXACT JS twin;
-  change both; hash noise with the integer chain, never `fract(sin(...))`;
-  no GLSL `pow()` on a base that can be negative (`glslpow.test.ts`).
+- Every twinned field has an EXACT JS twin; change both; hash noise with the
+  integer chain, never `fract(sin(...))`; no GLSL `pow()` on a negative base;
+  a whole number into GLSL via toFixed (`glslpow`/`glslfloat.test.ts`).
 - A pass that is "off" leaves the display list AND writes its strength
   uniform unconditionally.
 - `uCam` is this frame's rectangle (`renderedWorldView`), never `worldView`.
 - The light slot ledger: 12 slots, 8 world, strict reservations, tenure not
   re-ranking; a light is a candidate when its POOL can touch the view
-  (`poolReachPx`); remote torches are never lights; a world light is real at
-  the campfire's peak; a sealed-room fire is indoor-only.
+  (`poolReachPx`); remote torches are never lights; the campfire is real at
+  its peak; a sealed-room fire is indoor-only.
 - Scenery lights read the manifest `light` block as given (no radius cap) and
   cast shadows; scenery occludes like a prop, own cell = contact + directional
-  core; the switches are pushed on the shader being BUILT.
+  core; the switches are pushed on the shader being BUILT; a piece's ART
+  meets the ground with contact AO (`scenerycontact.ts`, `verify-contact.mjs`).
 - The light passes and the glow field render at half resolution; an
   overlay's RT ratio survives update().
 - Solid objects are art, not walls (no face band); a cave mouth is no face.
 - The wall wash is per PIXEL, wrap his dial (0.7), front gate fades over 2wu
   (a pressed torch must not dim); the LOS march never blends a wall's own
-  height into its front skirt nor the skirt the LIGHT stands in; a
-  skirt sample counts only beside a HARD hit, two-span (a lid over the light
-  is air); a fire in a piece is an AREA source (edge rays); the trunk
-  skip spares share cells; every surface marches, above a light too; a top
-  takes nothing from a light under it (`TOP_UNDER_FADE`); gates
+  height into its front skirt nor the skirt the LIGHT stands in; a skirt
+  sample counts only beside a HARD hit, two-span (a lid over the light is
+  air); a fire in a piece is an AREA source (edge rays); the trunk skip
+  spares share cells; every surface marches, above a light too; a top takes
+  nothing from a light well under it (`TOP_UNDER_FADE`); gates
   `verify-{wallwash,wallfoot,shadowline}.mjs`.
 - Day is sky + sun; the sun is the hand; DAY == NIGHT in the phase table is
-  load-bearing (equal sun and moon speed).
+  load-bearing (equal sun/moon speed).
 - Indoor ambient: dark 40%, lit 25%; hidden outline 20% (his).
 - MY ROOM IS A VOLUME: the room test takes a HEIGHT — the deck over the
   SAMPLE'S OWN column (`roomCeilAt`; no deck, no line), never the one under

@@ -163,6 +163,8 @@ import {
 } from "../nightlight";
 import { SceneryLitPipeline, SCENERY_LIT_PIPELINE, SCENERY_LIT_OCC, type SceneryLitShape } from "../scenerylit";
 import { ShapeMapBuilder, shapeMapKey, decodeShape, type ShapeHitbox, type ShapeScale } from "../scenerylight";
+import { buildContactStamp, contactStampKey, type ContactCut } from "../scenerycontact";
+import type { ContactStamp } from "../nightlight";
 import {
   reservedLights,
   WORLD_LIGHT_SLOTS,
@@ -3904,6 +3906,12 @@ export class WorldScene extends Phaser.Scene {
    *  not landed): dropped once the published hitboxes stamp, so a sprite does
    *  not keep two resident maps for the life of the page. */
   private shapeFallbackKeys = new Set<string>();
+  /** CONTACT STAMPS (scenerycontact.ts): one raster per (art, crop), built
+   *  from the art's pixels when they are resident, a few per frame; the
+   *  contact points beside it for the probe and the gate. */
+  private contactJobs = new Map<string, { artKey: string; cut: ContactCut }>();
+  private contactPoints = new Map<string, { x: number; y: number }[]>();
+  private contactStat = { built: 0, failed: 0, empty: 0, ms: 0 };
   private shapeStats = { built: 0, failed: 0, texels: 0, ms: 0, maxMs: 0 };
   private sceneryLitParts: LightParts = { base: [0, 0, 0], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1 };
   /** Per-frame JS cost of the feature (applyObjectLights' shaded branch + the
@@ -7237,6 +7245,30 @@ export class WorldScene extends Phaser.Scene {
       /** SCENERY LIGHT REPORT: pipeline state, lights fed, shape maps built /
        *  pending, per-frame CPU, and the first shaped pieces. */
       sceneryLightInfo: () => this.sceneryLightInfo(),
+      // CONTACT AO (scenerycontact.ts): the darkening at full coverage — his
+      // dial — and this frame's stamps with their contact points in SCREEN px
+      // (the gate reads the light field there and one blob out).
+      contactAo: (v?: number) => {
+        if (this.night && typeof v === "number") this.night.contactAo = Math.max(0, Math.min(1, v));
+        return this.night ? this.night.contactAo : null;
+      },
+      contactStamps: () => {
+        const out: Record<string, unknown>[] = [];
+        for (const img of this.sceneryImgs) {
+          const rec = img as unknown as { __ckey?: string; __csw?: number; __csh?: number; __place?: number };
+          if (!rec.__ckey || !rec.__csw || !rec.__csh) continue;
+          const pts = this.contactPoints.get(rec.__ckey);
+          const kx = img.displayWidth / rec.__csw;
+          const ky = img.displayHeight / rec.__csh;
+          const p = this.scenery?.placements.find((q) => q.i === rec.__place);
+          out.push({
+            place: rec.__place, piece: p?.piece ?? null, key: rec.__ckey, built: this.textures.exists(rec.__ckey),
+            x: img.x, y: img.y, w: img.displayWidth, h: img.displayHeight, flipX: img.flipX,
+            points: (pts ?? []).map((q) => ({ x: img.x + (img.flipX ? rec.__csw! - q.x : q.x) * kx, y: img.y + q.y * ky })),
+          });
+        }
+        return { ao: this.night?.contactAo ?? null, jobs: this.contactJobs.size, stat: { ...this.contactStat }, stamps: out };
+      },
       /** SCENERY LIGHT GATE: luma thirds/bands of a named piece's lit copy,
        *  read back from the framebuffer after the next render. */
       sceneryLightBox: (needle: string) => this.sceneryLightBox(needle),
@@ -14203,6 +14235,7 @@ export class WorldScene extends Phaser.Scene {
         playerZ,
         playerCol,
         playerRow,
+        this.contactStampsNow(),
       );
       this.pe("litPass");
     }
@@ -14251,6 +14284,7 @@ export class WorldScene extends Phaser.Scene {
      * reports only its own remainder and the next beacon run attributes it. */
     this.ps();
     if (this.shapeJobs.size) this.runShapeJobs(3);
+    if (this.contactJobs.size) this.runContactJobs(1);
     this.pe("litShapeJobs");
     this.ps();
     this.applyObjectLights();
@@ -21635,6 +21669,54 @@ export class WorldScene extends Phaser.Scene {
     this.sceneryLightStat.jobMs = performance.now() - t0;
   }
 
+  /** Build the pending contact stamps within a budget: the crop's pixels are
+   *  the same read the shape jobs make (resident art, else the worker). */
+  private runContactJobs(budgetMs: number): void {
+    const t0 = performance.now();
+    for (const [ck, job] of this.contactJobs) {
+      if (performance.now() - t0 > budgetMs) break;
+      if (this.textures.exists(ck)) {
+        this.contactJobs.delete(ck);
+        continue;
+      }
+      const px = this.texPixels(job.artKey);
+      if (!px) {
+        if (this.artQueue().pixelsPending(job.artKey)) continue; // decoding: next frame
+        this.contactJobs.delete(ck); // art not resident: no stamp
+        this.contactStat.failed++;
+        continue;
+      }
+      try {
+        const st = buildContactStamp(px, job.cut);
+        if (st) {
+          this.textures.addUint8Array(ck, st.data, st.w, st.h);
+          this.contactPoints.set(ck, st.points);
+          this.contactStat.built++;
+        } else this.contactStat.empty++;
+      } catch (err) {
+        console.warn(`[nangijala] contact stamp ${ck} failed:`, err);
+        this.contactStat.failed++;
+      }
+      this.contactJobs.delete(ck);
+    }
+    this.contactStat.ms += performance.now() - t0;
+  }
+
+  /** This frame's contact stamps: every drawn piece whose stamp is built, in
+   *  the crop's box made taller by the stamp's pad below the footline. */
+  private contactStampsNow(): ContactStamp[] {
+    const out: ContactStamp[] = [];
+    if (!this.night) return out;
+    for (const img of this.sceneryImgs) {
+      const rec = img as unknown as { __ckey?: string; __csw?: number; __csh?: number };
+      if (!rec.__ckey || !rec.__csh || !this.textures.exists(rec.__ckey)) continue;
+      const src = this.textures.get(rec.__ckey).source[0];
+      if (!src) continue;
+      out.push({ key: rec.__ckey, x: img.x, y: img.y, w: img.displayWidth, h: img.displayHeight * (src.height / rec.__csh), flipX: img.flipX });
+    }
+    return out;
+  }
+
   /** The `__ml.sceneryLightInfo()` report. */
   private sceneryLightInfo(): Record<string, unknown> {
     const p = this.sceneryLitPipe;
@@ -22205,6 +22287,19 @@ export class WorldScene extends Phaser.Scene {
       // object that already carries a per-piece frame name; the probe joins it
       // back to the placement and a gate does the anchor arithmetic itself.
       (img as unknown as { __place?: number }).__place = p.i;
+      // THE CONTACT STAMP (scenerycontact.ts): a floor piece and a wall piece
+      // touch no ground; everything else registers its crop for a stamp the
+      // night pass draws into its contact field.
+      {
+        const rec = img as unknown as { __ckey?: string; __csw?: number; __csh?: number };
+        if (!flat && !onWall) {
+          const ck = contactStampKey(key, fit);
+          rec.__ckey = ck;
+          rec.__csw = fit.sw;
+          rec.__csh = fit.sh;
+          if (!this.textures.exists(ck) && !this.contactJobs.has(ck)) this.contactJobs.set(ck, { artKey: key, cut: { sx: fit.sx, sy: fit.sy, sw: fit.sw, sh: fit.sh } });
+        } else rec.__ckey = undefined;
+      }
       this.sceneryImgs.push(
         img
           /* THE UNLIFTED PAINTER LINE AT THE ANCHOR — and NO cell-front `+dy`.

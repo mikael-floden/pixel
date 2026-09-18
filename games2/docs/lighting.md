@@ -651,6 +651,37 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   town emitters after: the one real town emitter, a bonfire at 443.5,364.5 with no share in its own cell, reads its pool 0.92x with shadows on - a uniform 8% from its OWN multi-cell footprint, outside the own-cell skip; a per-light exclusion radius needs a uniform slot (open). Trunk position is cell-quantised (one texel per cell): up
   to 0.5 cell from the drawn trunk, and the day pool keeps the patch's 0.35-
   cell tiers — both inherited from the approved prop look.
+- **CONTACT AO — WHERE A PIECE'S ART MEETS THE GROUND** (`client/src/scenerycontact.ts`,
+  the `uContact` field in nightlight.ts, `__ml.contactStamps()` /
+  `__ml.contactAo(v)`; gate `scripts/verify-contact.mjs`). Maintainer
+  2026-09-17 and again 2026-09-18 with eleven marked screenshots: "a scenery
+  object placed in the world doesn't look like it actually touches the
+  ground" — beds' feet, a table's LEGS only ("on a table only the table legs
+  hit the ground"), a barrel's base, a fireplace's base line, lamp posts,
+  rocks' whole base, cart wheels, a scarecrow's pole, a maypole's base. WHAT
+  TOUCHES THE GROUND IS THE SILHOUETTE'S BOTTOM, NOT THE HITBOX: per column
+  of the drawn crop the lowest opaque row; the footline is the lowest of
+  those, and a column is in contact when its own bottom sits within
+  `CONTACT_TOL_FRAC` (4% of the crop, 2..6 px) of the footline — a table's
+  legs reach it and the top's underside sits half a sprite higher, a bed's
+  posts stand a few px below its frame, a rock is opaque along its whole
+  base. Every contact column splats a soft ellipse (`CONTACT_R_FRAC` 6%,
+  squashed 0.55) at its bottom pixel into a black RGBA raster, coverage in
+  alpha, the crop's box plus a pad below the footline so the blob reaches
+  the ground IN FRONT of the piece. ONE RASTER PER (ART, CROP) under a
+  versioned content key (`s3ct:<art>@v1:<crop>`), built from the art's
+  resident pixels a few per frame (`runContactJobs`), never rewritten; two
+  placements of one crop share it. RENDERED INTO THE LIGHT FIELD: a
+  world-anchored render texture beside the glow field (unit 7, same window,
+  same half resolution, redrawn only when the camera or the drawn set moves),
+  sampled by the night pass and multiplied into the WHOLE light of a GROUND
+  pixel — faces are exempt (a wall behind a table is not its floor). No
+  sprite of its own, so no z-order rule of its own: it lies under every lit
+  copy like every other shadow (his rule: "This should render into the shadow
+  we already have and don't add new/more complexity"). `CONTACT_AO_DEFAULT`
+  0.5 is the darkening at full coverage — his dial. A floor piece and a wall
+  piece (flat, onWall) register no stamp. Rejected: the hitbox's bottom edge
+  as the contact line (a table's whole span darkened, legs and air alike).
 - **SCENERY IS LIT PER PIXEL** (`scenerylit.ts` pipeline + `scenerylight.ts`
   shape maps; maintainer 2026-09-05: walking around a tree with the torch must
   light different parts of it). The lit copy keeps the flat tint for the

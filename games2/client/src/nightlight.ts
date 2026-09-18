@@ -242,6 +242,22 @@ const EDGE_ONCE_FAR = 2.2;
 // alike, and the rubble a cell off the ray still hides none.
 /** The glow field's resolution divisor — see where glowRT is built. */
 const GLOW_FIELD_DIV = 2;
+/** Contact AO at full stamp coverage (scenerycontact.ts). A taste dial:
+ *  `__ml.contactAo(v)`. */
+export const CONTACT_AO_DEFAULT = 0.5;
+
+/** One drawn scenery piece's contact stamp for this frame: the stamp texture
+ *  (a black raster, coverage in alpha, built from the piece's crop) and the
+ *  box it is drawn in — the crop's box, taller by the stamp's pad below the
+ *  footline — in world px, mirrored like the art. */
+export interface ContactStamp {
+  key: string;
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  flipX: boolean;
+}
 /** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
 function smoothStep01(e0: number, e1: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
@@ -381,6 +397,9 @@ uniform float uHasProps;    // 0 when the world places no props: the prop-shadow
 uniform float uSceneryOn;   // 1 when scenery shares are stamped (maps3): own-cell skirt skip armed
 uniform float uPropGate;    // 1 when the ground map's G flags the sun patch's reach (sparse prop loop)
 uniform float uGlowFlip;    // render-target y orientation (calibrated numerically)
+uniform sampler2D uContact; // world-anchored CONTACT field: scenery meets the ground (scenerycontact.ts), alpha = coverage
+uniform float uContactOn;   // 1 when the contact field holds stamps (unbound sampler = unit 0!)
+uniform float uContactAo;   // the darkening at full coverage (his dial)
 
 // Bilinear height for the LOS march ONLY: blockers ramp in over ~a cell, so
 // cast-shadow edges get a natural penumbra instead of cell-quantized 1px
@@ -1727,6 +1746,19 @@ void main() {
   }
 
   light *= ao;
+  // CONTACT AO — where a scenery piece's ART meets the ground (maintainer
+  // 2026-09-17: "a scenery object placed in the world doesn't look like it
+  // actually touches the ground"). A world-anchored field beside the glow
+  // field, one soft blob per contact column of every drawn piece (a table's
+  // legs, a rock's whole base — scenerycontact.ts), sampled by screen
+  // position and multiplied into the WHOLE light of a GROUND pixel: the
+  // field lies under every lit copy, so no z-order of its own (his rule).
+  // Faces are exempt — a wall behind a table is not its floor.
+  if (uContactOn > 0.5 && !isFace) {
+    vec2 cuv = vec2((wx - uCam.x) / uCam.z, (wy - uCam.y) / uCam.w);
+    if (cuv.x > 0.0 && cuv.x < 1.0 && cuv.y > 0.0 && cuv.y < 1.0)
+      light *= 1.0 - uContactAo * texture2D(uContact, vec2(cuv.x, mix(cuv.y, 1.0 - cuv.y, uGlowFlip))).a;
+  }
 
   // THE CAVE SWALLOWS THE LIGHT. Everything a room shows you from OUTSIDE dims
   // with its depth from the opening — one exponential, so it is dark fast and
@@ -2583,6 +2615,13 @@ export class NightLights {
   private blockN = { x: 1, y: 1 };
   private skipOn = true;
   private glowKey = "";
+  private contactRT: Phaser.GameObjects.RenderTexture | null = null;
+  private contactKey = "";
+  private contactImg: Phaser.GameObjects.Image | null = null;
+  private contactSig = "";
+  private contactDirty = false;
+  /** The contact darkening at full coverage — his dial (`__ml.contactAo`). */
+  contactAo = CONTACT_AO_DEFAULT;
   private stampImg?: Phaser.GameObjects.Image;
   // Measured (off-centre stamp probe): this stack's RT samples straight, no
   // y-flip — same family of ground truth as fieldFlip above.
@@ -2741,6 +2780,8 @@ export class NightLights {
       uEmitN: { type: "1f", value: 0 },
       uGlowOn: { type: "1f", value: 0 },
       uGlowFlip: { type: "1f", value: 1 },
+      uContactOn: { type: "1f", value: 0 },
+      uContactAo: { type: "1f", value: CONTACT_AO_DEFAULT },
       uHScale: { type: "1f", value: 16 },
       // 1 while the local player is INDOORS — see heightAt(). Declared here
       // because an UNDECLARED uniform silently never syncs on real phone GPUs
@@ -2794,6 +2835,7 @@ export class NightLights {
       uHeightG: { type: "sampler2D", value: null },
       uEmit: { type: "sampler2D", value: null },
       uGlow: { type: "sampler2D", value: null },
+      uContact: { type: "sampler2D", value: null },
     });
     this.buildStampTexture();
     // Shader GameObjects can't blend directly — render the light field to a
@@ -3017,6 +3059,17 @@ export class NightLights {
     this.glowKey = `night-glow-${this.fieldCount}`;
     this.glowRT.saveTexture(this.glowKey);
     s.setSampler2D("uGlow", this.glowKey, 3);
+    // THE CONTACT FIELD, the glow field's sibling: same window, same
+    // half-resolution (soft blobs), redrawn only when the camera or the
+    // drawn set moves. Unit 7: 0 height, 1 linear, 2 emission, 3 glow,
+    // 4 room, 5 ground, 6 block max.
+    this.contactRT?.destroy();
+    if (this.contactKey && this.scene.textures.exists(this.contactKey)) this.scene.textures.remove(this.contactKey);
+    this.contactRT = this.scene.make.renderTexture({ width: gw, height: gh }, false);
+    this.contactKey = `night-contact-${this.fieldCount}`;
+    this.contactRT.saveTexture(this.contactKey);
+    this.contactSig = "";
+    s.setSampler2D("uContact", this.contactKey, 7);
     s.setUniform("uHasProps.value", this.propsFlag());
     // ON THE SHADER BEING BUILT, not `this.shader`: that is assigned below,
     // so pushing through it here landed on the previous shader (none, on the
@@ -4765,6 +4818,7 @@ export class NightLights {
     playerZ = 0,
     playerCol = 0,
     playerRow = 0,
+    contact: ContactStamp[] = [],
   ) {
     this.curLights = lights;
     this.curStamps = stamps;
@@ -4868,6 +4922,38 @@ export class NightLights {
       s.setUniform("uGlowFlip.value", this.glowFlip);
     } else {
       s.setUniform("uGlowOn.value", 0);
+    }
+    // THE CONTACT FIELD: every drawn piece's stamp in the crop's own box, so
+    // the blobs sit exactly under the art at any zoom (the glow's gscale).
+    // Redrawn only when the window or the set changed — a clear is a whole
+    // extra pass on a tiler, and the stamps do not animate.
+    if (this.contactRT) {
+      const rt = this.contactRT;
+      const gscale = rt.width / (wv.width * k);
+      let hash = 0;
+      for (const c of contact) hash = (hash * 31 + c.x * 7 + c.y * 13 + c.w + c.key.length) >>> 0;
+      const sig = `${camX.toFixed(1)},${camY.toFixed(1)},${gscale.toFixed(5)}|${contact.length}|${hash}`;
+      if (sig !== this.contactSig) {
+        this.contactSig = sig;
+        if (contact.length || this.contactDirty) rt.clear();
+        this.contactDirty = contact.length > 0;
+        if (contact.length) {
+          if (!this.contactImg) this.contactImg = this.scene.make.image({ key: contact[0].key, add: false }).setOrigin(0, 0);
+          const img = this.contactImg;
+          rt.beginDraw();
+          for (const c of contact) {
+            img.setTexture(c.key);
+            img.setFlipX(c.flipX);
+            img.setDisplaySize(c.w * gscale, c.h * gscale);
+            rt.batchDraw(img, (c.x - camX) * gscale, (c.y - camY) * gscale);
+          }
+          rt.endDraw();
+        }
+      }
+      s.setUniform("uContactOn.value", contact.length ? 1 : 0);
+      s.setUniform("uContactAo.value", this.contactAo);
+    } else {
+      s.setUniform("uContactOn.value", 0);
     }
     this.updGlowMs += performance.now() - tGlow0;
     s.setUniform("uFlip.value", this.fieldFlip);
