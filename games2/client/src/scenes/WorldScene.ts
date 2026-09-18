@@ -14882,10 +14882,7 @@ export class WorldScene extends Phaser.Scene {
     }
     for (const a of this.avatars.values()) {
       const l = this.syncLitCopy(a, on, a.baseTint);
-      if (!l) {
-        if (!on) a.foam?.clearTint(); // day: foam at full brightness
-        continue;
-      }
+      if (!l) continue;
       // Underwater clip: the lit copy follows the same shoulder-waterline mask
       // as the base sprite so the submerged body doesn't show above the night
       // overlay (composes with the wall crop inside syncLitCopy).
@@ -14897,17 +14894,8 @@ export class WorldScene extends Phaser.Scene {
         if (a.swimming && a.swimT > 0.001 && a.waterMask) a.fog.setMask(a.waterMask);
         else if (a.fog.mask) a.fog.clearMask();
       }
-      // Foam draws ABOVE the night overlay (like the lit copy), so tint its
-      // white crest by the same LOCAL light — otherwise it stays bright white
-      // at full night. Light-only (the texture already carries its colours), so
-      // it fades into the dark and warms up under a nearby torch, matching the
-      // character.
-      if (a.foam?.visible) {
-        const fr = Math.min(255, Math.round(255 * Math.min(1, l[0])));
-        const fg = Math.min(255, Math.round(255 * Math.min(1, l[1])));
-        const fb = Math.min(255, Math.round(255 * Math.min(1, l[2])));
-        a.foam.setTint((fr << 16) | (fg << 8) | fb);
-      }
+      // (The foam crest is under the night overlay since 2026-09-18 and takes
+      // the water's own light there — no tint of its own; see updateWaterClip.)
     }
     // Monsters ride the SAME lit-copy pipeline (plain white base tint), so
     // they answer the sun, clouds, night and torches exactly like players —
@@ -16546,10 +16534,19 @@ export class WorldScene extends Phaser.Scene {
       .setOrigin(sp.originX, sp.originY)
       .setScale(sp.scaleX, sp.scaleY)
       .setFlipX(sp.flipX)
-      // Above the night overlay (900_000) and lit avatar copies (litDepth
-      // ~900_001+) so the crest reads ON TOP of the body at the waterline;
-      // stays under the campfire light halos (900_005).
-      .setDepth(litDepth(sp.depth) + 2)
+      /* THE CREST IS WATER: it draws UNDER the night overlay, a hair above
+       * its own body's base sprite, and takes the light field the water
+       * around it takes. It used to sit above the overlay with the lit copies
+       * (900_001+), tinted by the BODY's light — and the body's light is the
+       * CPU twin over base terrain with its own torch in hand, so under a
+       * bridge deck, where the shader marches the slab as solid and keeps the
+       * water dark, the crest glowed white at the swimmer's waist in the
+       * middle of the deck's shadow (maintainer 2026-09-18, 281.9,246.0 at
+       * Night: "A bright spot in the middle of the shadow the TORCH cast!
+       * ... I love the shadow"). The lit copy is masked at the waterline, so
+       * the crest still reads below the body's lit half; by day nothing
+       * changes (the overlay is off). */
+      .setDepth(sp.depth + 0.01)
       .setVisible(true);
   }
 

@@ -950,8 +950,18 @@ clip, no tint.
   curve with straight baseline extensions. Uses `av.dispDir`.
 - FOAM (`foamTexture`): per-frame frame-space texture on the SAME curve — 1px
   white crest + 2px dark water per column, honouring the silhouette, faded
-  ends; tinted by local night light; animated by rocking the curve ±≤1px
-  (`FOAM_ANIM_MS`); light-only.
+  ends; animated by rocking the curve ±≤1px (`FOAM_ANIM_MS`); light-only.
+  THE CREST IS WATER: it draws UNDER the night overlay, a hair above its own
+  base sprite, and takes the water's light field (2026-09-18). It sat above
+  the overlay with the lit copies, tinted by the BODY's light — the CPU twin
+  over base terrain, own torch in hand — so under a bridge deck, where the
+  shader marches the slab as solid and keeps the water dark, it glowed white
+  at the swimmer's waist in the middle of the deck's shadow (maintainer at
+  281.9,246.0, Night: "A bright spot in the middle of the shadow the TORCH
+  cast!"). The lit copy is masked at the waterline, so the crest still reads
+  below the lit half; by day the overlay is off and nothing changes. (The
+  thin warm line along the deck's side at the waterline is the torch IN FRONT
+  of that face lighting it — kept.)
 - QA: `__ml.swimming/swimT/myDispDir/swimDebug` (swimDebug returns the clip
   line in SCREEN coords). Measure the clip AT REST — a mid-motion capture
   skews probe vs screenshot by a few frames and fakes an offset.
