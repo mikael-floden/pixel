@@ -1089,7 +1089,39 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   THE CEILING UNDER MY FEET. `roomCeilAt` (GLSL) / `ceilAt` (twin): the mask's
   B channel — `deckBot` of a roofed floor cell — read only where a slab really
   sits on the cell (the raw surface above the ground column), 0 elsewhere; a
-  column with no deck has no line and is lit as high as it is drawn. The CUT is
+  column with no deck has no line and is lit as high as it is drawn.
+  AN OBJECT'S VOLUME IS BOUNDED BY ITS COLUMN'S OWN TOP ANYWAY (`inMyRoom`'s
+  `isObj` arm, and `overMyRoom` with it). With no line, membership alone
+  answered "in my room AT ANY HEIGHT" — and that is exactly where a piece
+  standing on the roof samples its volume: his chimney (chimneys/chimney_004
+  on the 180-cell roof) samples 305.89,231.99, the house's own WALL column,
+  where the terrain stands at 6 and the deck stands at 6 too, so no slab
+  floats there and B is 0 BY DESIGN. Measured across the crossing: the tint it
+  is drawn with read 178% of its street value and the hearth fire directly
+  under it (z 1.5, d 0.0) reached it with occ 1.000 through a level-6 roof —
+  the same report, still open two fixes later (2026-09-14: "the chimney on the
+  roof still flashes in brightness when I walk in/out a house"). The bound is
+  `z > top + 0.001` on the column's RAW top (the surface map's R / `tArr`), not
+  the cut-lowered `heightAt`: the lowered-wall parapet belongs to the lid
+  rules and this must not reach into them. A FLAT room cell (top 0) keeps the
+  unbounded answer. `overMyRoom` takes the same bound, because the ease alone
+  is not enough here: it is `1 − indoorMix` at the roll's first frame, where
+  the boolean has not flipped yet — measured occ 0.987 — and the GLOW field's
+  gate is `overMyRoom < 0.5`, so the hearth's halo (a screen-space bloom with
+  no line of sight) kept 156% of the street in the tint until the block became
+  outright.
+  OBJECTS ONLY, which is why this bound has NO FRAGMENT TWIN: the fragment's
+  `roomAt` shades TERRAIN, and bounding it there took the room's own wall tops
+  out of the wall-top dial — measured, verify-walltop's darkened columns fell
+  from 230 to 12. A body or a lit copy is the same exemption `TOP_UNDER_FADE`
+  already makes ("an object's side faces the light"). Rejected (measured):
+  publishing a line from `ceilAt`'s own slab test instead — the ground column
+  carries the solid/prop BUMP, so the chimney reads 7.08 over a deck of 6, and
+  a line derived from it would give every prop on open ground a ceiling. That
+  bump is also why the outright block was NON-DETERMINISTIC before the bound:
+  with the piece's share registered `ceilAt` found no slab (0), without it the
+  same column read 6, so whether the roof blocked the hearth depended on what
+  had streamed in. The CUT is
   wrong for this: it is RAISED per column exactly where a stack stands (26
   raised cells at his house, up to 6), so a cut test answers "inside" for the
   one piece this is about. The scene's scalar `indoorCeil` (the underside under

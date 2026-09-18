@@ -4203,12 +4203,28 @@ export class NightLights {
    *  cut-away constrain it (the roof and its cone), and what cut does it
    *  carry. The instrument for "why is that thing lit like the room under
    *  it" (__ml.nightIndoor(col,row)). */
-  roomAtCell(col: number, row: number): { room: boolean; constrained: boolean; cut: number | null } {
+  roomAtCell(col: number, row: number): { room: boolean; constrained: boolean; cut: number | null; ceil: number; surf: number; grnd: number; base: number } {
     const idx = Math.floor(row) * this.world.width + Math.floor(col);
     return {
       room: this.roomCells.has(idx),
       constrained: this.roomCells.has(idx) || (this.roomCuts?.has(idx) ?? false),
       cut: this.roomCuts?.get(idx) ?? null,
+      // THIS COLUMN's ceiling, not the scalar under my feet (nightIndoor.ceil
+      // is that one): `overMyRoom` reads ceilAt HERE, and a piece's volume
+      // samples at its hitbox centre, which can be cells away from its
+      // placement — 0 means "no deck over this column", which is what turns
+      // the block off and roomAt's no-line branch on.
+      ceil: this.ceilAt(col, row),
+      // ...and the three columns the room test is made of, so "why is this
+      // lit like the room under it" is ONE probe call: `surf` is the drawn
+      // surface (terrain or deck) and the no-line bound inMyRoom applies,
+      // `grnd` the ground column WITH its solid/prop bump (a chimney reads
+      // 7.08 over a deck of 6 — the bump is why ceilAt finds no slab), `base`
+      // the real terrain (6 on a wall column, 0 over the room's floor, which
+      // is how a wall is told from a roofed floor cell).
+      surf: this.tArr[Math.floor(row) * this.world.width + Math.floor(col)],
+      grnd: this.gArr[Math.floor(row) * this.world.width + Math.floor(col)],
+      base: this.bArr[Math.floor(row) * this.world.width + Math.floor(col)],
     };
   }
 
@@ -4257,10 +4273,30 @@ export class NightLights {
    *  cave wall carries no deck, and that scalar lit it only up to the lid I
    *  happened to stand under — the wall's lit height followed my feet up the
    *  stairs (maintainer 2026-09-17). */
-  private inMyRoom(col: number, row: number, z: number): number {
+  /** ...AND AN OBJECT'S VOLUME IS BOUNDED BY ITS COLUMN'S OWN TOP. A column
+   *  with no deck has no ceiling line (`ceilAt` is 0 on a WALL by design — a
+   *  wall carries no slab, and reading B there lit the ice cave's 24-storey
+   *  walls to 9), so membership alone answered "in my room AT ANY HEIGHT" —
+   *  and that is exactly where a piece standing on the roof samples its
+   *  volume: his chimney's is 305.89,231.99, the house's own wall column
+   *  (terrain 6, deck 6). It took the interior grade (tint 178% of its street
+   *  value across the crossing) and the hearth fire directly under it was
+   *  never blocked (occ 1.000 through a level-6 roof) — 2026-09-14: "the
+   *  chimney on the roof still flashes in brightness when I walk in/out a
+   *  house".
+   *  OBJECTS ONLY (`isObj`), which is why this has no fragment twin: the
+   *  fragment's roomAt shades TERRAIN, and bounding it there took the room's
+   *  own wall tops out of the wall-top dial — measured, verify-walltop's
+   *  darkened columns fell from 230 to 12. A body or a lit copy is the same
+   *  exemption TOP_UNDER_FADE already makes. A flat room cell (top 0) keeps
+   *  the unbounded answer. */
+  private inMyRoom(col: number, row: number, z: number, isObj = false): number {
     if (!this.roomCellAt(col, row)) return 0;
     const c = this.ceilAt(col, row);
-    return c > 0 && z >= c ? 0 : 1;
+    if (c > 0) return z >= c ? 0 : 1;
+    if (!isObj) return 1;
+    const top = this.tArr[Math.floor(row) * this.world.width + Math.floor(col)] ?? 0;
+    return top > 0.5 && z > top + 0.001 ? 0 : 1;
   }
 
   /** The ceiling over ONE column — the twin of the fragment's roomCeilAt: the
@@ -4433,12 +4469,22 @@ export class NightLights {
     // and gated on the EASE rather than `indoor` for the same reason: the mask
     // has to outlive the boolean or stepping out gives the whole world the
     // interior's light for the length of the fade.
-    const hit = this.indoorMix > 0 ? this.inMyRoom(col, row, z) : 1;
+    const hit = this.indoorMix > 0 ? this.inMyRoom(col, row, z, isObj) : 1;
     // OVER MY OWN ROOF (the fragment's overMyRoom): my room's cell, at or above
     // its underside. The room's lights and its halo field are blocked here
     // outright — a roof is geometry, and the ease below belongs to the street.
+    // ...AND A COLUMN WITH NO LINE STILL HAS A TOP, for an OBJECT (inMyRoom):
+    // a wall carries no slab, so cz is 0 there, and the outright block never
+    // fired for the one piece it is about — nor did the GLOW gate below
+    // (`!overMyRoom`), so the hearth's halo, a screen-space bloom with no line
+    // of sight, still reached the chimney: measured 156% of its street tint
+    // with the bound alone, and occ 0.987 at the roll's first frame, where the
+    // ease is 1 - indoorMix and the boolean has not flipped yet. A roof is
+    // geometry at every frame of the crossing, so this is not eased.
     const cz = this.indoorMix > 0 ? this.ceilAt(col, row) : 0;
-    const overMyRoom = cz > 0 && z >= cz && this.roomConstrainedAt(col, row) ? 1 : 0;
+    const onTop =
+      isObj && this.indoorMix > 0 && cz <= 0 && this.roomCellAt(col, row) && !this.inMyRoom(col, row, z, true);
+    const overMyRoom = ((cz > 0 && z >= cz) || onTop) && this.roomConstrainedAt(col, row) ? 1 : 0;
     const inRoom = 1 + (hit - 1) * this.indoorMix;
     // TWIN of the fragment's two-grade `amb` mix: in-room rides curAmbient (the
     // blended one), outside fades between black and the OUTDOOR grade only.
