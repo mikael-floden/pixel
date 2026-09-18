@@ -1,0 +1,140 @@
+{
+  "id": "standing_mirror",
+  "name": "Mirrorface",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It shows a face and it is not the face of whoever is in front of it. It does not move when you do.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Tall standing mirror in a dark carved frame walking on its two stand feet, the glass foxed and black spotted with age, and a pale smiling face showing in the glass turned slightly away",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "standing_mirror/rotations/south.webp",
+    "south-east": "standing_mirror/rotations/south-east.webp",
+    "east": "standing_mirror/rotations/east.webp",
+    "north-east": "standing_mirror/rotations/north-east.webp",
+    "north": "standing_mirror/rotations/north.webp",
+    "north-west": "standing_mirror/rotations/north-west.webp",
+    "west": "standing_mirror/rotations/west.webp",
+    "south-west": "standing_mirror/rotations/south-west.webp"
+  },
+  "sheet": "standing_mirror/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fcccbc78-51ad-49c7-9217-9385433422b1",
+  "seed": 53451163,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T13:01:14+00:00",
+  "elapsed_s": 206.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.715,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.73,
+        "bbox": [
+          32,
+          5,
+          87,
+          104
+        ],
+        "fill": 0.434,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.736,
+        "bbox": [
+          36,
+          5,
+          78,
+          102
+        ],
+        "fill": 0.325,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.715,
+        "bbox": [
+          24,
+          5,
+          76,
+          101
+        ],
+        "fill": 0.398,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.716,
+        "bbox": [
+          20,
+          7,
+          80,
+          97
+        ],
+        "fill": 0.43,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.798,
+        "bbox": [
+          39,
+          5,
+          77,
+          102
+        ],
+        "fill": 0.294,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.734,
+        "bbox": [
+          19,
+          6,
+          81,
+          100
+        ],
+        "fill": 0.465,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.753,
+        "bbox": [
+          34,
+          6,
+          74,
+          101
+        ],
+        "fill": 0.303,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.806,
+        "bbox": [
+          32,
+          5,
+          95,
+          103
+        ],
+        "fill": 0.492,
+        "touches_edge": false
+      }
+    }
+  }
+}

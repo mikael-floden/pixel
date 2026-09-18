@@ -1,0 +1,140 @@
+{
+  "id": "hollow_host",
+  "name": "Maskfather",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It is the one that sets the table. The blank ones under its arm have not been assigned yet.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Tall hollow figure in a long clean dark coat, a smooth smiling mask of pale wood, a stack of blank unfinished masks carried under one arm and a finished mask held out in its free hand, the coat hanging on nothing",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hollow_host/rotations/south.webp",
+    "south-east": "hollow_host/rotations/south-east.webp",
+    "east": "hollow_host/rotations/east.webp",
+    "north-east": "hollow_host/rotations/north-east.webp",
+    "north": "hollow_host/rotations/north.webp",
+    "north-west": "hollow_host/rotations/north-west.webp",
+    "west": "hollow_host/rotations/west.webp",
+    "south-west": "hollow_host/rotations/south-west.webp"
+  },
+  "sheet": "hollow_host/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fd01263f-0843-4050-be22-5a024e3f998a",
+  "seed": 311525019,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T13:00:16+00:00",
+  "elapsed_s": 191.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.583,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.626,
+        "bbox": [
+          59,
+          10,
+          172,
+          222
+        ],
+        "fill": 0.445,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.631,
+        "bbox": [
+          86,
+          10,
+          141,
+          222
+        ],
+        "fill": 0.217,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.668,
+        "bbox": [
+          84,
+          10,
+          146,
+          223
+        ],
+        "fill": 0.245,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.595,
+        "bbox": [
+          58,
+          9,
+          165,
+          219
+        ],
+        "fill": 0.417,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.672,
+        "bbox": [
+          69,
+          10,
+          172,
+          223
+        ],
+        "fill": 0.408,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.583,
+        "bbox": [
+          75,
+          9,
+          161,
+          221
+        ],
+        "fill": 0.339,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.597,
+        "bbox": [
+          56,
+          9,
+          154,
+          221
+        ],
+        "fill": 0.386,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.652,
+        "bbox": [
+          66,
+          10,
+          154,
+          223
+        ],
+        "fill": 0.348,
+        "touches_edge": false
+      }
+    }
+  }
+}

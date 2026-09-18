@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:58:12+00:00",
+  "generated_at": "2026-09-18T13:01:14+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 189,
+  "count": 193,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -23983,6 +23983,262 @@
       "generated_at": "2026-09-18T12:57:05+00:00"
     },
     {
+      "id": "thinning",
+      "name": "Thinning",
+      "tier": "evil",
+      "lore": "It is most of the way to the Quiet and it has stopped going. Standing near it is cold in a way that is not temperature.",
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "8ef69edd-d7bd-4c87-9941-f9143d140d55",
+      "version": 1,
+      "sheet": "thinning/sheet.webp",
+      "rotations": {
+        "south": "thinning/rotations/south.webp",
+        "south-east": "thinning/rotations/south-east.webp",
+        "east": "thinning/rotations/east.webp",
+        "north-east": "thinning/rotations/north-east.webp",
+        "north": "thinning/rotations/north.webp",
+        "north-west": "thinning/rotations/north-west.webp",
+        "west": "thinning/rotations/west.webp",
+        "south-west": "thinning/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.707,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.707,
+            "bbox": [
+              19,
+              3,
+              91,
+              101
+            ],
+            "fill": 0.652,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.746,
+            "bbox": [
+              24,
+              3,
+              70,
+              101
+            ],
+            "fill": 0.417,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.791,
+            "bbox": [
+              33,
+              3,
+              91,
+              102
+            ],
+            "fill": 0.531,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.754,
+            "bbox": [
+              22,
+              3,
+              85,
+              100
+            ],
+            "fill": 0.565,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.803,
+            "bbox": [
+              24,
+              3,
+              93,
+              102
+            ],
+            "fill": 0.632,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.777,
+            "bbox": [
+              27,
+              3,
+              77,
+              101
+            ],
+            "fill": 0.453,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.751,
+            "bbox": [
+              18,
+              3,
+              86,
+              101
+            ],
+            "fill": 0.616,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.811,
+            "bbox": [
+              27,
+              3,
+              81,
+              102
+            ],
+            "fill": 0.494,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T13:01:06+00:00"
+    },
+    {
+      "id": "mask_table",
+      "name": "Masktable",
+      "tier": "evil",
+      "lore": "Eleven masks, one face, laid out for people who are not here yet. It sets them out again if they are moved.",
+      "biome": [
+        "parquet_floor",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "adbd7bc0-90aa-4fc3-8ea4-a957eb046cda",
+      "version": 1,
+      "sheet": "mask_table/sheet.webp",
+      "rotations": {
+        "south": "mask_table/rotations/south.webp",
+        "south-east": "mask_table/rotations/south-east.webp",
+        "east": "mask_table/rotations/east.webp",
+        "north-east": "mask_table/rotations/north-east.webp",
+        "north": "mask_table/rotations/north.webp",
+        "north-west": "mask_table/rotations/north-west.webp",
+        "west": "mask_table/rotations/west.webp",
+        "south-west": "mask_table/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.705,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.742,
+            "bbox": [
+              9,
+              7,
+              119,
+              121
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.735,
+            "bbox": [
+              23,
+              9,
+              99,
+              120
+            ],
+            "fill": 0.515,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.746,
+            "bbox": [
+              27,
+              9,
+              103,
+              120
+            ],
+            "fill": 0.515,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.705,
+            "bbox": [
+              9,
+              9,
+              119,
+              110
+            ],
+            "fill": 0.678,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.803,
+            "bbox": [
+              20,
+              8,
+              119,
+              123
+            ],
+            "fill": 0.695,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.725,
+            "bbox": [
+              13,
+              9,
+              119,
+              119
+            ],
+            "fill": 0.712,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.729,
+            "bbox": [
+              9,
+              9,
+              115,
+              119
+            ],
+            "fill": 0.712,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.797,
+            "bbox": [
+              8,
+              8,
+              107,
+              122
+            ],
+            "fill": 0.689,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:59:42+00:00"
+    },
+    {
       "id": "the_listener",
       "name": "Listener",
       "tier": "evil",
@@ -24108,6 +24364,133 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:53:43+00:00"
+    },
+    {
+      "id": "hollow_host",
+      "name": "Maskfather",
+      "tier": "boss",
+      "lore": "It is the one that sets the table. The blank ones under its arm have not been assigned yet.",
+      "biome": [
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        232,
+        232
+      ],
+      "template_id": "mannequin",
+      "scale": "big",
+      "pixellab_id": "fd01263f-0843-4050-be22-5a024e3f998a",
+      "version": 1,
+      "sheet": "hollow_host/sheet.webp",
+      "rotations": {
+        "south": "hollow_host/rotations/south.webp",
+        "south-east": "hollow_host/rotations/south-east.webp",
+        "east": "hollow_host/rotations/east.webp",
+        "north-east": "hollow_host/rotations/north-east.webp",
+        "north": "hollow_host/rotations/north.webp",
+        "north-west": "hollow_host/rotations/north-west.webp",
+        "west": "hollow_host/rotations/west.webp",
+        "south-west": "hollow_host/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.583,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.626,
+            "bbox": [
+              59,
+              10,
+              172,
+              222
+            ],
+            "fill": 0.445,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.631,
+            "bbox": [
+              86,
+              10,
+              141,
+              222
+            ],
+            "fill": 0.217,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.668,
+            "bbox": [
+              84,
+              10,
+              146,
+              223
+            ],
+            "fill": 0.245,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.595,
+            "bbox": [
+              58,
+              9,
+              165,
+              219
+            ],
+            "fill": 0.417,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.672,
+            "bbox": [
+              69,
+              10,
+              172,
+              223
+            ],
+            "fill": 0.408,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.583,
+            "bbox": [
+              75,
+              9,
+              161,
+              221
+            ],
+            "fill": 0.339,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.597,
+            "bbox": [
+              56,
+              9,
+              154,
+              221
+            ],
+            "fill": 0.386,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.652,
+            "bbox": [
+              66,
+              10,
+              154,
+              223
+            ],
+            "fill": 0.348,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T13:00:16+00:00"
     },
     {
       "id": "iron_stove",
@@ -24236,6 +24619,133 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:57:47+00:00"
+    },
+    {
+      "id": "standing_mirror",
+      "name": "Mirrorface",
+      "tier": "evil",
+      "lore": "It shows a face and it is not the face of whoever is in front of it. It does not move when you do.",
+      "biome": [
+        "parquet_floor"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "fcccbc78-51ad-49c7-9217-9385433422b1",
+      "version": 1,
+      "sheet": "standing_mirror/sheet.webp",
+      "rotations": {
+        "south": "standing_mirror/rotations/south.webp",
+        "south-east": "standing_mirror/rotations/south-east.webp",
+        "east": "standing_mirror/rotations/east.webp",
+        "north-east": "standing_mirror/rotations/north-east.webp",
+        "north": "standing_mirror/rotations/north.webp",
+        "north-west": "standing_mirror/rotations/north-west.webp",
+        "west": "standing_mirror/rotations/west.webp",
+        "south-west": "standing_mirror/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.715,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.73,
+            "bbox": [
+              32,
+              5,
+              87,
+              104
+            ],
+            "fill": 0.434,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.736,
+            "bbox": [
+              36,
+              5,
+              78,
+              102
+            ],
+            "fill": 0.325,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.715,
+            "bbox": [
+              24,
+              5,
+              76,
+              101
+            ],
+            "fill": 0.398,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.716,
+            "bbox": [
+              20,
+              7,
+              80,
+              97
+            ],
+            "fill": 0.43,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.798,
+            "bbox": [
+              39,
+              5,
+              77,
+              102
+            ],
+            "fill": 0.294,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.734,
+            "bbox": [
+              19,
+              6,
+              81,
+              100
+            ],
+            "fill": 0.465,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.753,
+            "bbox": [
+              34,
+              6,
+              74,
+              101
+            ],
+            "fill": 0.303,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.806,
+            "bbox": [
+              32,
+              5,
+              95,
+              103
+            ],
+            "fill": 0.492,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T13:01:14+00:00"
     }
   ]
 }
