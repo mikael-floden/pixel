@@ -48,6 +48,59 @@
         "south-east": "scarecrows/scarecrow_018/rotations/south-east.webp",
         "south-west": "scarecrows/scarecrow_018/rotations/south-west.webp",
         "south": "scarecrows/scarecrow_018/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "9334561b-224a-49f5-9931-d1531f8e6558",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "scarecrows/scarecrow_018/animations/motion/00.webp",
+            "scarecrows/scarecrow_018/animations/motion/01.webp",
+            "scarecrows/scarecrow_018/animations/motion/02.webp",
+            "scarecrows/scarecrow_018/animations/motion/03.webp",
+            "scarecrows/scarecrow_018/animations/motion/04.webp"
+          ],
+          "strip": "scarecrows/scarecrow_018/animations/motion__south.410bc746.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:46:10+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0656
+          },
+          "light_frames": [
+            {
+              "intensity": 1.436,
+              "dx": -15.6,
+              "dy": 6.2
+            },
+            {
+              "intensity": 1.111,
+              "dx": -17.3,
+              "dy": 4.1
+            },
+            {
+              "intensity": 0.549,
+              "dx": -14.4,
+              "dy": 8.4
+            },
+            {
+              "intensity": 0.99,
+              "dx": -14.5,
+              "dy": 6.4
+            },
+            {
+              "intensity": 0.914,
+              "dx": -20.0,
+              "dy": 6.0
+            }
+          ]
+        }
       }
     },
     "LIT_2": {
@@ -61,6 +114,59 @@
         "south-east": "scarecrows/scarecrow_018/lit_2/rotations/south-east.webp",
         "south-west": "scarecrows/scarecrow_018/lit_2/rotations/south-west.webp",
         "south": "scarecrows/scarecrow_018/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a8c626a4-8e3c-45e5-ac3d-57da5e7d5009",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "scarecrows/scarecrow_018/lit_2/animations/motion/00.webp",
+            "scarecrows/scarecrow_018/lit_2/animations/motion/01.webp",
+            "scarecrows/scarecrow_018/lit_2/animations/motion/02.webp",
+            "scarecrows/scarecrow_018/lit_2/animations/motion/03.webp",
+            "scarecrows/scarecrow_018/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "scarecrows/scarecrow_018/lit_2/animations/motion__south.ee60665d.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:46:20+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 4.0,
+              "dy": 8.0
+            },
+            {
+              "intensity": 1.089,
+              "dx": 0.1,
+              "dy": -7.8
+            },
+            {
+              "intensity": 1.263,
+              "dx": -0.2,
+              "dy": -6.7
+            },
+            {
+              "intensity": 1.285,
+              "dx": 0.0,
+              "dy": -6.9
+            },
+            {
+              "intensity": 1.276,
+              "dx": 0.1,
+              "dy": -6.8
+            }
+          ]
+        }
       }
     },
     "LIT_3": {
@@ -254,6 +360,59 @@
         "south-east": "scarecrows/scarecrow_018/lit_4/rotations/south-east.webp",
         "south-west": "scarecrows/scarecrow_018/lit_4/rotations/south-west.webp",
         "south": "scarecrows/scarecrow_018/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "9491e917-f67c-4f3b-808c-6f8f89a2d9c1",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "scarecrows/scarecrow_018/lit_4/animations/motion/00.webp",
+            "scarecrows/scarecrow_018/lit_4/animations/motion/01.webp",
+            "scarecrows/scarecrow_018/lit_4/animations/motion/02.webp",
+            "scarecrows/scarecrow_018/lit_4/animations/motion/03.webp",
+            "scarecrows/scarecrow_018/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "scarecrows/scarecrow_018/lit_4/animations/motion__south.6e13267d.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:47:09+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.043,
+              "dx": -5.5,
+              "dy": -0.3
+            },
+            {
+              "intensity": 0.789,
+              "dx": -5.5,
+              "dy": 0.9
+            },
+            {
+              "intensity": 1.109,
+              "dx": -11.0,
+              "dy": 2.3
+            },
+            {
+              "intensity": 1.029,
+              "dx": -12.8,
+              "dy": 2.9
+            },
+            {
+              "intensity": 1.029,
+              "dx": -12.8,
+              "dy": 2.9
+            }
+          ]
+        }
       }
     }
   },

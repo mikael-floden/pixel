@@ -171,7 +171,33 @@
     "NOT_LIT_1": {
       "sprite": "ferns/fern_001/sprite.webp",
       "pixellab_object_id": "8e8b6640-5c5f-4cad-b4b9-b546a00e08cd",
-      "generated_at": "2026-08-13T01:12:13+00:00"
+      "generated_at": "2026-08-13T01:12:13+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "7ff11cef-422a-48ee-8fa9-fae9e77a1939",
+          "description": "This is the same picture in every frame. ONLY the tips of the fronds move, each by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ferns/fern_001/animations/motion/00.webp",
+            "ferns/fern_001/animations/motion/01.webp",
+            "ferns/fern_001/animations/motion/02.webp",
+            "ferns/fern_001/animations/motion/03.webp",
+            "ferns/fern_001/animations/motion/04.webp"
+          ],
+          "strip": "ferns/fern_001/animations/motion__south.87732a1f.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:15:57+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "ferns/fern_001/not_lit_2/sprite.webp",
@@ -216,7 +242,33 @@
       "generated_at": "2026-08-16T12:02:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8231,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "motion": {
+          "group_id": "9624c044-1e26-494a-af4d-cb15414c8c3b",
+          "description": "This is the same picture in every frame. ONLY the tips of the fronds move, each by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ferns/fern_001/not_lit_3/animations/motion/00.webp",
+            "ferns/fern_001/not_lit_3/animations/motion/01.webp",
+            "ferns/fern_001/not_lit_3/animations/motion/02.webp",
+            "ferns/fern_001/not_lit_3/animations/motion/03.webp",
+            "ferns/fern_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "ferns/fern_001/not_lit_3/animations/motion__south.266939ce.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:15:49+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "ferns/fern_001/not_lit_4/sprite.webp",
@@ -224,7 +276,33 @@
       "generated_at": "2026-08-16T12:01:38+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7923,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "motion": {
+          "group_id": "1f401d43-baad-4782-9115-686bd34bf4c3",
+          "description": "This is the same picture in every frame. ONLY the tips of the fronds move, each by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ferns/fern_001/not_lit_4/animations/motion/00.webp",
+            "ferns/fern_001/not_lit_4/animations/motion/01.webp",
+            "ferns/fern_001/not_lit_4/animations/motion/02.webp",
+            "ferns/fern_001/not_lit_4/animations/motion/03.webp",
+            "ferns/fern_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "ferns/fern_001/not_lit_4/animations/motion__south.2229a247.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:16:54+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     }
   },
   "collision": true,

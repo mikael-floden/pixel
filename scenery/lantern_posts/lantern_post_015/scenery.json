@@ -410,6 +410,32 @@
         "south-east": "lantern_posts/lantern_post_015/rotations/south-east.webp",
         "south-west": "lantern_posts/lantern_post_015/rotations/south-west.webp",
         "south": "lantern_posts/lantern_post_015/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "dab0b01b-529a-40bb-b547-4cc6f3790998",
+          "description": "This is the same picture in every frame. ONLY the hanging lantern swings a little to one side and back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_posts/lantern_post_015/animations/motion/00.webp",
+            "lantern_posts/lantern_post_015/animations/motion/01.webp",
+            "lantern_posts/lantern_post_015/animations/motion/02.webp",
+            "lantern_posts/lantern_post_015/animations/motion/03.webp",
+            "lantern_posts/lantern_post_015/animations/motion/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_015/animations/motion__south.94f3f8be.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:31:06+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0519
+          }
+        }
       }
     },
     "NOT_LIT_2": {
@@ -567,6 +593,32 @@
         "south-east": "lantern_posts/lantern_post_015/not_lit_4/rotations/south-east.webp",
         "south-west": "lantern_posts/lantern_post_015/not_lit_4/rotations/south-west.webp",
         "south": "lantern_posts/lantern_post_015/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "c46fce1c-68cd-489c-a291-5cc115161fa1",
+          "description": "This is the same picture in every frame. ONLY the hanging lantern swings a little to one side and back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_posts/lantern_post_015/not_lit_4/animations/motion/00.webp",
+            "lantern_posts/lantern_post_015/not_lit_4/animations/motion/01.webp",
+            "lantern_posts/lantern_post_015/not_lit_4/animations/motion/02.webp",
+            "lantern_posts/lantern_post_015/not_lit_4/animations/motion/03.webp",
+            "lantern_posts/lantern_post_015/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_015/not_lit_4/animations/motion__south.fd22f5bb.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:31:50+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1386
+          }
+        }
       }
     }
   },

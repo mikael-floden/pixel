@@ -49,6 +49,59 @@
         "south-east": "streetlights/streetlight_024/rotations/south-east.webp",
         "south-west": "streetlights/streetlight_024/rotations/south-west.webp",
         "south": "streetlights/streetlight_024/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "051e9fcb-51ed-44e1-afa0-6012253ce531",
+          "description": "This is the same picture in every frame. ONLY the warm light inside the lamp glass brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "streetlights/streetlight_024/animations/motion/00.webp",
+            "streetlights/streetlight_024/animations/motion/01.webp",
+            "streetlights/streetlight_024/animations/motion/02.webp",
+            "streetlights/streetlight_024/animations/motion/03.webp",
+            "streetlights/streetlight_024/animations/motion/04.webp"
+          ],
+          "strip": "streetlights/streetlight_024/animations/motion__south.4d8b9414.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:02:19+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0152
+          },
+          "light_frames": [
+            {
+              "intensity": 1.409,
+              "dx": -0.1,
+              "dy": -31.7
+            },
+            {
+              "intensity": 0.864,
+              "dx": 0.6,
+              "dy": -31.5
+            },
+            {
+              "intensity": 0.893,
+              "dx": 0.1,
+              "dy": -34.2
+            },
+            {
+              "intensity": 0.915,
+              "dx": -1.9,
+              "dy": -44.2
+            },
+            {
+              "intensity": 0.92,
+              "dx": -1.7,
+              "dy": -44.0
+            }
+          ]
+        }
       }
     },
     "LIT_2": {

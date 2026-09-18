@@ -43,7 +43,60 @@
     "LIT_1": {
       "sprite": "bushes/bush_008/sprite.webp",
       "pixellab_object_id": "f5f452ee-fe85-4f66-8e64-abf087faf0f9",
-      "generated_at": "2026-08-13T21:42:07+00:00"
+      "generated_at": "2026-08-13T21:42:07+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "e120bd85-1e08-4992-9f44-047dc16f79e7",
+          "description": "This is the same picture in every frame. ONLY the small gold lights in the bushes brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bushes/bush_008/animations/motion/00.webp",
+            "bushes/bush_008/animations/motion/01.webp",
+            "bushes/bush_008/animations/motion/02.webp",
+            "bushes/bush_008/animations/motion/03.webp",
+            "bushes/bush_008/animations/motion/04.webp"
+          ],
+          "strip": "bushes/bush_008/animations/motion__south.6f20c727.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T07:58:10+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1445
+          },
+          "light_frames": [
+            {
+              "intensity": 1.028,
+              "dx": -7.0,
+              "dy": -8.8
+            },
+            {
+              "intensity": 0.939,
+              "dx": -6.6,
+              "dy": -7.5
+            },
+            {
+              "intensity": 0.5,
+              "dx": -3.2,
+              "dy": 3.0
+            },
+            {
+              "intensity": 1.177,
+              "dx": -3.8,
+              "dy": 0.5
+            },
+            {
+              "intensity": 1.434,
+              "dx": -6.1,
+              "dy": 0.4
+            }
+          ]
+        }
+      }
     },
     "LIT_2": {
       "sprite": "bushes/bush_008/lit_2/sprite.webp",
@@ -114,7 +167,59 @@
       "glow_concept": null,
       "difference_from_source": 0.7845,
       "glow_score": 0.0366,
-      "animations": {}
+      "animations": {
+        "motion": {
+          "group_id": "4b9bea85-c42d-42a7-b9c2-26c95ba34c4c",
+          "description": "This is the same picture in every frame. ONLY the small gold lights in the bushes brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bushes/bush_008/lit_3/animations/motion/00.webp",
+            "bushes/bush_008/lit_3/animations/motion/01.webp",
+            "bushes/bush_008/lit_3/animations/motion/02.webp",
+            "bushes/bush_008/lit_3/animations/motion/03.webp",
+            "bushes/bush_008/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "bushes/bush_008/lit_3/animations/motion__south.d842f5df.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T07:58:37+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0157
+          },
+          "light_frames": [
+            {
+              "intensity": 0.553,
+              "dx": 4.0,
+              "dy": -9.1
+            },
+            {
+              "intensity": 1.086,
+              "dx": -2.1,
+              "dy": -7.3
+            },
+            {
+              "intensity": 1.332,
+              "dx": -7.1,
+              "dy": -7.0
+            },
+            {
+              "intensity": 1.186,
+              "dx": -8.6,
+              "dy": -5.7
+            },
+            {
+              "intensity": 0.842,
+              "dx": -12.4,
+              "dy": -5.3
+            }
+          ]
+        }
+      }
     },
     "LIT_4": {
       "sprite": "bushes/bush_008/lit_4/sprite.webp",
@@ -122,7 +227,60 @@
       "generated_at": "2026-08-15T21:10:59+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6961,
-      "glow_score": 0.0309
+      "glow_score": 0.0309,
+      "animations": {
+        "motion": {
+          "group_id": "8e22f7ab-cdcf-4a8d-accd-4fc35f1de48d",
+          "description": "This is the same picture in every frame. ONLY the small gold lights in the bushes brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bushes/bush_008/lit_4/animations/motion/00.webp",
+            "bushes/bush_008/lit_4/animations/motion/01.webp",
+            "bushes/bush_008/lit_4/animations/motion/02.webp",
+            "bushes/bush_008/lit_4/animations/motion/03.webp",
+            "bushes/bush_008/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "bushes/bush_008/lit_4/animations/motion__south.fc811dd3.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T07:58:16+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0799
+          },
+          "light_frames": [
+            {
+              "intensity": 0.963,
+              "dx": -1.7,
+              "dy": -5.6
+            },
+            {
+              "intensity": 0.942,
+              "dx": 0.7,
+              "dy": -5.4
+            },
+            {
+              "intensity": 0.579,
+              "dx": 3.3,
+              "dy": 7.7
+            },
+            {
+              "intensity": 1.292,
+              "dx": -0.7,
+              "dy": -0.7
+            },
+            {
+              "intensity": 1.224,
+              "dx": 5.2,
+              "dy": -6.3
+            }
+          ]
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "bushes/bush_008/not_lit_1/sprite.webp",

@@ -1,5 +1,55 @@
 {
  "files": {
+  "bushes/bush_008/animations/motion/00.webp": {
+   "file": "animations/motion/00.2ad67eee.webp",
+   "h": 54,
+   "ox": 19,
+   "oy": 23,
+   "src": "26274891",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
+  "bushes/bush_008/animations/motion/01.webp": {
+   "file": "animations/motion/01.7f52c182.webp",
+   "h": 54,
+   "ox": 19,
+   "oy": 23,
+   "src": "7b56242e",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
+  "bushes/bush_008/animations/motion/02.webp": {
+   "file": "animations/motion/02.9e7369f5.webp",
+   "h": 54,
+   "ox": 19,
+   "oy": 23,
+   "src": "840fdde6",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
+  "bushes/bush_008/animations/motion/03.webp": {
+   "file": "animations/motion/03.5c90acec.webp",
+   "h": 54,
+   "ox": 19,
+   "oy": 23,
+   "src": "89d0cb50",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
+  "bushes/bush_008/animations/motion/04.webp": {
+   "file": "animations/motion/04.4fd30e2e.webp",
+   "h": 54,
+   "ox": 19,
+   "oy": 23,
+   "src": "19a18392",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
   "bushes/bush_008/lit_2/animations/motion/00.webp": {
    "file": "lit_2/animations/motion/00.5b1c5edb.webp",
    "h": 80,
@@ -60,21 +110,123 @@
    "srcW": 96,
    "w": 92
   },
-  "bushes/bush_008/lit_3/sprite.webp": {
-   "file": "lit_3/sprite.f2c935a6.webp",
-   "h": 53,
+  "bushes/bush_008/lit_3/animations/motion/00.webp": {
+   "file": "lit_3/animations/motion/00.e322351e.webp",
+   "h": 55,
    "ox": 19,
-   "oy": 24,
+   "oy": 22,
    "src": "61dfc239",
    "srcH": 96,
    "srcW": 96,
    "w": 60
   },
-  "bushes/bush_008/lit_4/sprite.webp": {
-   "file": "lit_4/sprite.f93fbb56.webp",
-   "h": 51,
+  "bushes/bush_008/lit_3/animations/motion/01.webp": {
+   "file": "lit_3/animations/motion/01.dd0c367c.webp",
+   "h": 55,
+   "ox": 19,
+   "oy": 22,
+   "src": "cb75f7fe",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
+  "bushes/bush_008/lit_3/animations/motion/02.webp": {
+   "file": "lit_3/animations/motion/02.4825825e.webp",
+   "h": 55,
+   "ox": 19,
+   "oy": 22,
+   "src": "6b52c901",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
+  "bushes/bush_008/lit_3/animations/motion/03.webp": {
+   "file": "lit_3/animations/motion/03.ea6e5c6c.webp",
+   "h": 55,
+   "ox": 19,
+   "oy": 22,
+   "src": "a6e446c8",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
+  "bushes/bush_008/lit_3/animations/motion/04.webp": {
+   "file": "lit_3/animations/motion/04.aa628876.webp",
+   "h": 55,
+   "ox": 19,
+   "oy": 22,
+   "src": "6d129524",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
+  "bushes/bush_008/lit_3/sprite.webp": {
+   "file": "lit_3/sprite.e322351e.webp",
+   "h": 55,
+   "ox": 19,
+   "oy": 22,
+   "prev": "lit_3/sprite.f2c935a6.webp",
+   "src": "61dfc239",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 60
+  },
+  "bushes/bush_008/lit_4/animations/motion/00.webp": {
+   "file": "lit_4/animations/motion/00.aec08d4c.webp",
+   "h": 52,
    "ox": 18,
-   "oy": 25,
+   "oy": 24,
+   "src": "4c7ce5e1",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 62
+  },
+  "bushes/bush_008/lit_4/animations/motion/01.webp": {
+   "file": "lit_4/animations/motion/01.fd9204fa.webp",
+   "h": 52,
+   "ox": 18,
+   "oy": 24,
+   "src": "64d9f94a",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 62
+  },
+  "bushes/bush_008/lit_4/animations/motion/02.webp": {
+   "file": "lit_4/animations/motion/02.0d1eb114.webp",
+   "h": 52,
+   "ox": 18,
+   "oy": 24,
+   "src": "7250ef53",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 62
+  },
+  "bushes/bush_008/lit_4/animations/motion/03.webp": {
+   "file": "lit_4/animations/motion/03.49d76625.webp",
+   "h": 52,
+   "ox": 18,
+   "oy": 24,
+   "src": "0e4fa481",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 62
+  },
+  "bushes/bush_008/lit_4/animations/motion/04.webp": {
+   "file": "lit_4/animations/motion/04.2972114a.webp",
+   "h": 52,
+   "ox": 18,
+   "oy": 24,
+   "src": "174fdfd9",
+   "srcH": 96,
+   "srcW": 96,
+   "w": 62
+  },
+  "bushes/bush_008/lit_4/sprite.webp": {
+   "file": "lit_4/sprite.aec08d4c.webp",
+   "h": 52,
+   "ox": 18,
+   "oy": 24,
+   "prev": "lit_4/sprite.f93fbb56.webp",
    "src": "4c7ce5e1",
    "srcH": 96,
    "srcW": 96,
@@ -101,10 +253,11 @@
    "w": 60
   },
   "bushes/bush_008/sprite.webp": {
-   "file": "sprite.611361c1.webp",
-   "h": 53,
+   "file": "sprite.2ad67eee.webp",
+   "h": 54,
    "ox": 19,
-   "oy": 24,
+   "oy": 23,
+   "prev": "sprite.611361c1.webp",
    "src": "26274891",
    "srcH": 96,
    "srcW": 96,

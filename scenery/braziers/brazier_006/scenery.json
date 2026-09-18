@@ -48,6 +48,59 @@
         "south-east": "braziers/brazier_006/rotations/south-east.webp",
         "south-west": "braziers/brazier_006/rotations/south-west.webp",
         "south": "braziers/brazier_006/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "68e7cb30-ad50-4120-8634-af9cab6e7089",
+          "description": "This is the same picture in every frame. ONLY the fire in the bowl flickers and the gold sparks above it drift upward. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "braziers/brazier_006/animations/motion/00.webp",
+            "braziers/brazier_006/animations/motion/01.webp",
+            "braziers/brazier_006/animations/motion/02.webp",
+            "braziers/brazier_006/animations/motion/03.webp",
+            "braziers/brazier_006/animations/motion/04.webp"
+          ],
+          "strip": "braziers/brazier_006/animations/motion__south.7defcd9f.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T07:56:44+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.911,
+              "dx": -0.7,
+              "dy": -5.2
+            },
+            {
+              "intensity": 1.071,
+              "dx": -0.6,
+              "dy": -6.0
+            },
+            {
+              "intensity": 1.01,
+              "dx": -0.5,
+              "dy": -5.7
+            },
+            {
+              "intensity": 1.0,
+              "dx": -0.2,
+              "dy": -5.8
+            },
+            {
+              "intensity": 1.008,
+              "dx": -0.2,
+              "dy": -5.5
+            }
+          ]
+        }
       }
     },
     "LIT_2": {

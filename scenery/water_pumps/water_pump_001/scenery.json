@@ -300,6 +300,32 @@
         "south-east": "water_pumps/water_pump_001/not_lit_2/rotations/south-east.webp",
         "south-west": "water_pumps/water_pump_001/not_lit_2/rotations/south-west.webp",
         "south": "water_pumps/water_pump_001/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "c64df165-727b-473e-b87b-f9b05f628508",
+          "description": "This is the same picture in every frame. only. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/00.webp",
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/01.webp",
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/02.webp",
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/03.webp",
+            "water_pumps/water_pump_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "water_pumps/water_pump_001/not_lit_2/animations/motion__south.3fcd59db.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:14:47+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_3": {
@@ -313,6 +339,32 @@
         "south-east": "water_pumps/water_pump_001/not_lit_3/rotations/south-east.webp",
         "south-west": "water_pumps/water_pump_001/not_lit_3/rotations/south-west.webp",
         "south": "water_pumps/water_pump_001/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "5036b0f7-fdd3-4cb3-9a9e-938cabda3d13",
+          "description": "This is the same picture in every frame. only. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/00.webp",
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/01.webp",
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/02.webp",
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/03.webp",
+            "water_pumps/water_pump_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "water_pumps/water_pump_001/not_lit_3/animations/motion__south.1d49f94e.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:14:43+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_4": {
@@ -326,6 +378,32 @@
         "south-east": "water_pumps/water_pump_001/not_lit_4/rotations/south-east.webp",
         "south-west": "water_pumps/water_pump_001/not_lit_4/rotations/south-west.webp",
         "south": "water_pumps/water_pump_001/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "cf369a75-4a51-4c25-9787-ee18ae2bed74",
+          "description": "This is the same picture in every frame. only. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/00.webp",
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/01.webp",
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/02.webp",
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/03.webp",
+            "water_pumps/water_pump_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "water_pumps/water_pump_001/not_lit_4/animations/motion__south.fe0a23a1.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:15:26+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     }
   },

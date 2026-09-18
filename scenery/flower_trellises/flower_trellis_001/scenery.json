@@ -48,6 +48,32 @@
         "south-west": "flower_trellises/flower_trellis_001/rotations/south-west.webp",
         "south": "flower_trellises/flower_trellis_001/sprite.webp",
         "south-east": "flower_trellises/flower_trellis_001/rotations/south-east.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "98052ffc-31a9-4a19-b5fb-1808ba29e771",
+          "description": "This is the same picture in every frame. ONLY the white blossoms move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_trellises/flower_trellis_001/animations/motion/00.webp",
+            "flower_trellises/flower_trellis_001/animations/motion/01.webp",
+            "flower_trellises/flower_trellis_001/animations/motion/02.webp",
+            "flower_trellises/flower_trellis_001/animations/motion/03.webp",
+            "flower_trellises/flower_trellis_001/animations/motion/04.webp"
+          ],
+          "strip": "flower_trellises/flower_trellis_001/animations/motion__south.2b46b674.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:22:56+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_2": {
@@ -205,6 +231,32 @@
         "south-east": "flower_trellises/flower_trellis_001/not_lit_4/rotations/south-east.webp",
         "south-west": "flower_trellises/flower_trellis_001/not_lit_4/rotations/south-west.webp",
         "south": "flower_trellises/flower_trellis_001/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "7da433dd-7177-48d7-99d2-ae381175bbd1",
+          "description": "This is the same picture in every frame. ONLY the white blossoms move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/00.webp",
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/01.webp",
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/02.webp",
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/03.webp",
+            "flower_trellises/flower_trellis_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "flower_trellises/flower_trellis_001/not_lit_4/animations/motion__south.d0a726e3.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:22:30+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_5": {
@@ -219,6 +271,32 @@
         "south-east": "flower_trellises/flower_trellis_001/not_lit_5/rotations/south-east.webp",
         "south-west": "flower_trellises/flower_trellis_001/not_lit_5/rotations/south-west.webp",
         "south": "flower_trellises/flower_trellis_001/not_lit_5/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "480244a5-8982-4ada-b735-adc5e95736fc",
+          "description": "This is the same picture in every frame. ONLY the white blossoms move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/00.webp",
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/01.webp",
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/02.webp",
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/03.webp",
+            "flower_trellises/flower_trellis_001/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "flower_trellises/flower_trellis_001/not_lit_5/animations/motion__south.684d32c6.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:22:57+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0577
+          }
+        }
       }
     }
   },

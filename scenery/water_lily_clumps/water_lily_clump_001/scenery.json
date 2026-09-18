@@ -144,7 +144,33 @@
       "generated_at": "2026-08-17T12:03:23+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7503,
-      "glow_score": 0.1418
+      "glow_score": 0.1418,
+      "animations": {
+        "motion": {
+          "group_id": "e5557a5c-8549-4407-884e-d99e76dc5516",
+          "description": "This is the same picture in every frame. ONLY the small flower at the centre moves, nodding very slightly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_lily_clumps/water_lily_clump_001/not_lit_2/animations/motion/00.webp",
+            "water_lily_clumps/water_lily_clump_001/not_lit_2/animations/motion/01.webp",
+            "water_lily_clumps/water_lily_clump_001/not_lit_2/animations/motion/02.webp",
+            "water_lily_clumps/water_lily_clump_001/not_lit_2/animations/motion/03.webp",
+            "water_lily_clumps/water_lily_clump_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "water_lily_clumps/water_lily_clump_001/not_lit_2/animations/motion__south.8d2ca95f.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:13:41+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.8846
+          }
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "water_lily_clumps/water_lily_clump_001/not_lit_3/sprite.webp",
@@ -152,7 +178,33 @@
       "generated_at": "2026-08-17T12:04:01+00:00",
       "glow_concept": null,
       "difference_from_source": 0.732,
-      "glow_score": 0.0286
+      "glow_score": 0.0286,
+      "animations": {
+        "motion": {
+          "group_id": "4fc78b99-79f3-46f1-858d-067e782c6c06",
+          "description": "This is the same picture in every frame. ONLY the small flower at the centre moves, nodding very slightly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_lily_clumps/water_lily_clump_001/not_lit_3/animations/motion/00.webp",
+            "water_lily_clumps/water_lily_clump_001/not_lit_3/animations/motion/01.webp",
+            "water_lily_clumps/water_lily_clump_001/not_lit_3/animations/motion/02.webp",
+            "water_lily_clumps/water_lily_clump_001/not_lit_3/animations/motion/03.webp",
+            "water_lily_clumps/water_lily_clump_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "water_lily_clumps/water_lily_clump_001/not_lit_3/animations/motion__south.988ad267.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:14:09+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.3061
+          }
+        }
+      }
     }
   },
   "collision": true,

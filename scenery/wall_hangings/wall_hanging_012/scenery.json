@@ -49,6 +49,32 @@
         "south-east": "wall_hangings/wall_hanging_012/rotations/south-east.webp",
         "south-west": "wall_hangings/wall_hanging_012/rotations/south-west.webp",
         "south": "wall_hangings/wall_hanging_012/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "023d4184-187c-4a91-9dad-4baf6d6a1b5b",
+          "description": "This is the same picture in every frame. ONLY the bundles hanging from the rail swing. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wall_hangings/wall_hanging_012/animations/motion/00.webp",
+            "wall_hangings/wall_hanging_012/animations/motion/01.webp",
+            "wall_hangings/wall_hanging_012/animations/motion/02.webp",
+            "wall_hangings/wall_hanging_012/animations/motion/03.webp",
+            "wall_hangings/wall_hanging_012/animations/motion/04.webp"
+          ],
+          "strip": "wall_hangings/wall_hanging_012/animations/motion__south.be69af33.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:09:44+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_4": {
@@ -136,6 +162,32 @@
         "south-east": "wall_hangings/wall_hanging_012/not_lit_5/rotations/south-east.webp",
         "south-west": "wall_hangings/wall_hanging_012/not_lit_5/rotations/south-west.webp",
         "south": "wall_hangings/wall_hanging_012/not_lit_5/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "aeeeb049-42b0-4c42-a8ab-a3da79091d46",
+          "description": "This is the same picture in every frame. ONLY the bundles hanging from the rail swing. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/00.webp",
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/01.webp",
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/02.webp",
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/03.webp",
+            "wall_hangings/wall_hanging_012/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "wall_hangings/wall_hanging_012/not_lit_5/animations/motion__south.3bd6696a.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:11:25+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     }
   },

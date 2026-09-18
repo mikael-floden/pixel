@@ -127,6 +127,32 @@
         "south-east": "washing_lines/washing_line_016/rotations/south-east.webp",
         "south-west": "washing_lines/washing_line_016/rotations/south-west.webp",
         "south": "washing_lines/washing_line_016/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "6d91dd21-dadb-4fd9-bb12-59005aeed8fb",
+          "description": "This is the same picture in every frame. ONLY the hanging cloth sways, very slightly, as if in a faint breeze: nothing shines, nothing brightens, no colour changes anywhere. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "washing_lines/washing_line_016/animations/motion/00.webp",
+            "washing_lines/washing_line_016/animations/motion/01.webp",
+            "washing_lines/washing_line_016/animations/motion/02.webp",
+            "washing_lines/washing_line_016/animations/motion/03.webp",
+            "washing_lines/washing_line_016/animations/motion/04.webp"
+          ],
+          "strip": "washing_lines/washing_line_016/animations/motion__south.c4bc559a.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:13:12+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     }
   },

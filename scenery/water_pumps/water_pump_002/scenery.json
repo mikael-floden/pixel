@@ -48,6 +48,59 @@
         "south-east": "water_pumps/water_pump_002/rotations/south-east.webp",
         "south-west": "water_pumps/water_pump_002/rotations/south-west.webp",
         "south": "water_pumps/water_pump_002/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "fc4e3db6-8f10-49a6-97e0-d0ec8587bf3f",
+          "description": "This is the same picture in every frame. ONLY the thin stream of water from the spout runs downward. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_pumps/water_pump_002/animations/motion/00.webp",
+            "water_pumps/water_pump_002/animations/motion/01.webp",
+            "water_pumps/water_pump_002/animations/motion/02.webp",
+            "water_pumps/water_pump_002/animations/motion/03.webp",
+            "water_pumps/water_pump_002/animations/motion/04.webp"
+          ],
+          "strip": "water_pumps/water_pump_002/animations/motion__south.7101f346.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:15:25+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.101,
+              "dx": -0.9,
+              "dy": 20.1
+            },
+            {
+              "intensity": 1.02,
+              "dx": -0.7,
+              "dy": 23.0
+            },
+            {
+              "intensity": 1.018,
+              "dx": -0.3,
+              "dy": 22.1
+            },
+            {
+              "intensity": 0.958,
+              "dx": -0.7,
+              "dy": 23.4
+            },
+            {
+              "intensity": 0.903,
+              "dx": -0.9,
+              "dy": 23.4
+            }
+          ]
+        }
       }
     },
     "LIT_2": {

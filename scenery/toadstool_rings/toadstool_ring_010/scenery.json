@@ -43,7 +43,60 @@
     "LIT_1": {
       "sprite": "toadstool_rings/toadstool_ring_010/sprite.webp",
       "pixellab_object_id": "711fbc50-2177-4317-bd41-d28aedd41ca1",
-      "generated_at": "2026-08-13T21:57:42+00:00"
+      "generated_at": "2026-08-13T21:57:42+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "bfa827b3-b08c-46f1-96aa-e05fc81a6de8",
+          "description": "This is the same picture in every frame. ONLY the light on the toadstools brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "toadstool_rings/toadstool_ring_010/animations/motion/00.webp",
+            "toadstool_rings/toadstool_ring_010/animations/motion/01.webp",
+            "toadstool_rings/toadstool_ring_010/animations/motion/02.webp",
+            "toadstool_rings/toadstool_ring_010/animations/motion/03.webp",
+            "toadstool_rings/toadstool_ring_010/animations/motion/04.webp"
+          ],
+          "strip": "toadstool_rings/toadstool_ring_010/animations/motion__south.e8f53d94.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:05:46+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.558,
+              "dx": 0.9,
+              "dy": 4.6
+            },
+            {
+              "intensity": 1.453,
+              "dx": 0.4,
+              "dy": -4.6
+            },
+            {
+              "intensity": 1.302,
+              "dx": -0.6,
+              "dy": -5.3
+            },
+            {
+              "intensity": 1.256,
+              "dx": -0.3,
+              "dy": -2.1
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.6,
+              "dy": 7.1
+            }
+          ]
+        }
+      }
     },
     "LIT_2": {
       "sprite": "toadstool_rings/toadstool_ring_010/lit_2/sprite.webp",
@@ -113,7 +166,60 @@
       "generated_at": "2026-08-17T11:01:00+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4284,
-      "glow_score": 0.1161
+      "glow_score": 0.1161,
+      "animations": {
+        "motion": {
+          "group_id": "b0cae8b6-7eb8-4e88-b4b2-bc923f4420b8",
+          "description": "This is the same picture in every frame. ONLY the light on the toadstools brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "toadstool_rings/toadstool_ring_010/lit_3/animations/motion/00.webp",
+            "toadstool_rings/toadstool_ring_010/lit_3/animations/motion/01.webp",
+            "toadstool_rings/toadstool_ring_010/lit_3/animations/motion/02.webp",
+            "toadstool_rings/toadstool_ring_010/lit_3/animations/motion/03.webp",
+            "toadstool_rings/toadstool_ring_010/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "toadstool_rings/toadstool_ring_010/lit_3/animations/motion__south.23a9572f.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:06:35+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.6,
+              "dy": 5.5
+            },
+            {
+              "intensity": 1.5,
+              "dx": 1.1,
+              "dy": 3.3
+            },
+            {
+              "intensity": 1.5,
+              "dx": 1.4,
+              "dy": 3.0
+            },
+            {
+              "intensity": 1.058,
+              "dx": -0.2,
+              "dy": -0.1
+            },
+            {
+              "intensity": 0.5,
+              "dx": 2.0,
+              "dy": -4.9
+            }
+          ]
+        }
+      }
     },
     "LIT_4": {
       "sprite": "toadstool_rings/toadstool_ring_010/lit_4/sprite.webp",
@@ -121,7 +227,60 @@
       "generated_at": "2026-08-17T11:02:24+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9334,
-      "glow_score": 0.0724
+      "glow_score": 0.0724,
+      "animations": {
+        "motion": {
+          "group_id": "440d0a4d-cb57-4003-9278-00cc93dec8b7",
+          "description": "This is the same picture in every frame. ONLY the light on the toadstools brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "toadstool_rings/toadstool_ring_010/lit_4/animations/motion/00.webp",
+            "toadstool_rings/toadstool_ring_010/lit_4/animations/motion/01.webp",
+            "toadstool_rings/toadstool_ring_010/lit_4/animations/motion/02.webp",
+            "toadstool_rings/toadstool_ring_010/lit_4/animations/motion/03.webp",
+            "toadstool_rings/toadstool_ring_010/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "toadstool_rings/toadstool_ring_010/lit_4/animations/motion__south.37c79015.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:06:39+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1799
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -1.4,
+              "dy": 2.2
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.0,
+              "dy": -1.0
+            },
+            {
+              "intensity": 1.066,
+              "dx": 0.3,
+              "dy": -1.8
+            },
+            {
+              "intensity": 1.5,
+              "dx": -0.1,
+              "dy": -2.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.7,
+              "dy": 10.2
+            }
+          ]
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "toadstool_rings/toadstool_ring_010/not_lit_1/sprite.webp",

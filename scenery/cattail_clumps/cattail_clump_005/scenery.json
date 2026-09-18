@@ -80,7 +80,33 @@
       "generated_at": "2026-08-15T21:59:16+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3596,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "motion": {
+          "group_id": "f8abf834-bf66-4d25-a925-70b4148ccddd",
+          "description": "This is the same picture in every frame. only, in a gentle breeze. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_005/not_lit_2/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_005/not_lit_2/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_005/not_lit_2/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_005/not_lit_2/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_005/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_005/not_lit_2/animations/motion__south.d1fa8b42.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:00:18+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "cattail_clumps/cattail_clump_005/not_lit_3/sprite.webp",
@@ -125,7 +151,33 @@
       "generated_at": "2026-08-15T21:59:48+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4089,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "motion": {
+          "group_id": "21e90c32-c682-4294-a777-4ff4dde22ab8",
+          "description": "This is the same picture in every frame. only, in a gentle breeze. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_005/not_lit_4/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_005/not_lit_4/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_005/not_lit_4/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_005/not_lit_4/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_005/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_005/not_lit_4/animations/motion__south.383a8307.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:00:31+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0021
+          }
+        }
+      }
     }
   },
   "collision": true,

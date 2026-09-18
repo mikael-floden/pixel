@@ -49,6 +49,59 @@
         "south-east": "wells/well_016/rotations/south-east.webp",
         "south-west": "wells/well_016/rotations/south-west.webp",
         "south": "wells/well_016/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "9a14b857-5c8c-4892-9ea2-2778e16bb12e",
+          "description": "This is the same picture in every frame. ONLY the flame inside the lantern flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_016/animations/motion/00.webp",
+            "wells/well_016/animations/motion/01.webp",
+            "wells/well_016/animations/motion/02.webp",
+            "wells/well_016/animations/motion/03.webp",
+            "wells/well_016/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_016/animations/motion__south.4950e4ce.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:25:49+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0255
+          },
+          "light_frames": [
+            {
+              "intensity": 0.853,
+              "dx": -8.7,
+              "dy": -33.2
+            },
+            {
+              "intensity": 1.107,
+              "dx": -6.9,
+              "dy": -29.5
+            },
+            {
+              "intensity": 1.231,
+              "dx": -6.1,
+              "dy": -26.5
+            },
+            {
+              "intensity": 0.909,
+              "dx": -7.7,
+              "dy": -33.0
+            },
+            {
+              "intensity": 0.9,
+              "dx": -7.4,
+              "dy": -30.7
+            }
+          ]
+        }
       }
     },
     "LIT_4": {

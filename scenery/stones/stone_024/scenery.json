@@ -44,7 +44,60 @@
     "LIT_1": {
       "sprite": "stones/stone_024/sprite.webp",
       "pixellab_object_id": "02ebf299-da89-4d24-abd6-ec1a9e06d40e",
-      "generated_at": "2026-08-14T01:38:16+00:00"
+      "generated_at": "2026-08-14T01:38:16+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "d7e3f4d5-034a-42e8-a639-a276cd8a932b",
+          "description": "This is the same picture in every frame. ONLY the orange spiral in the gap changes. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_024/animations/motion/00.webp",
+            "stones/stone_024/animations/motion/01.webp",
+            "stones/stone_024/animations/motion/02.webp",
+            "stones/stone_024/animations/motion/03.webp",
+            "stones/stone_024/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_024/animations/motion__south.d4d995c0.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:58:38+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0655
+          },
+          "light_frames": [
+            {
+              "intensity": 1.073,
+              "dx": 8.6,
+              "dy": 3.8
+            },
+            {
+              "intensity": 1.14,
+              "dx": 7.5,
+              "dy": 3.3
+            },
+            {
+              "intensity": 0.943,
+              "dx": 7.0,
+              "dy": 3.2
+            },
+            {
+              "intensity": 0.919,
+              "dx": 5.9,
+              "dy": 1.7
+            },
+            {
+              "intensity": 0.924,
+              "dx": 6.2,
+              "dy": 1.5
+            }
+          ]
+        }
+      }
     },
     "LIT_3": {
       "sprite": "stones/stone_024/lit_3/sprite.webp",

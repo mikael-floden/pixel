@@ -48,6 +48,59 @@
         "south-east": "dock_pilings/dock_piling_010/rotations/south-east.webp",
         "south-west": "dock_pilings/dock_piling_010/rotations/south-west.webp",
         "south": "dock_pilings/dock_piling_010/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "138859f7-0a0b-4606-b348-ca2e36e71aa3",
+          "description": "This is the same picture in every frame. ONLY the green light at the foot of the posts brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "dock_pilings/dock_piling_010/animations/motion/00.webp",
+            "dock_pilings/dock_piling_010/animations/motion/01.webp",
+            "dock_pilings/dock_piling_010/animations/motion/02.webp",
+            "dock_pilings/dock_piling_010/animations/motion/03.webp",
+            "dock_pilings/dock_piling_010/animations/motion/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_010/animations/motion__south.f2151c2e.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:10:16+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.351
+          },
+          "light_frames": [
+            {
+              "intensity": 1.073,
+              "dx": -1.1,
+              "dy": 19.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": -7.6,
+              "dy": 6.4
+            },
+            {
+              "intensity": 1.5,
+              "dx": -2.5,
+              "dy": 5.9
+            },
+            {
+              "intensity": 1.216,
+              "dx": -2.0,
+              "dy": 23.2
+            },
+            {
+              "intensity": 0.5,
+              "dx": -3.3,
+              "dy": 13.7
+            }
+          ]
+        }
       }
     },
     "LIT_4": {

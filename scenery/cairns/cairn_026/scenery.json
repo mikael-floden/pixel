@@ -49,6 +49,59 @@
         "south-east": "cairns/cairn_026/rotations/south-east.webp",
         "south-west": "cairns/cairn_026/rotations/south-west.webp",
         "south": "cairns/cairn_026/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "3a9e59f3-7a2b-4542-8a67-72d23ef00356",
+          "description": "This is the same picture in every frame. ONLY the orange-gold seam through the stones changes: it brightens by the smallest amount that is still visible, then returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cairns/cairn_026/animations/motion/00.webp",
+            "cairns/cairn_026/animations/motion/01.webp",
+            "cairns/cairn_026/animations/motion/02.webp",
+            "cairns/cairn_026/animations/motion/03.webp",
+            "cairns/cairn_026/animations/motion/04.webp"
+          ],
+          "strip": "cairns/cairn_026/animations/motion__south.a06ba01a.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:00:00+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.5208
+          },
+          "light_frames": [
+            {
+              "intensity": 0.576,
+              "dx": 1.6,
+              "dy": 8.5
+            },
+            {
+              "intensity": 1.1,
+              "dx": -1.1,
+              "dy": 8.6
+            },
+            {
+              "intensity": 1.122,
+              "dx": -1.4,
+              "dy": 8.5
+            },
+            {
+              "intensity": 1.124,
+              "dx": -1.5,
+              "dy": 8.7
+            },
+            {
+              "intensity": 1.077,
+              "dx": -1.5,
+              "dy": 8.1
+            }
+          ]
+        }
       }
     },
     "LIT_2": {

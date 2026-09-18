@@ -54,6 +54,59 @@
         "south-east": "cupboards_and_shelves/cupboard_010/rotations/south-east.webp",
         "south-west": "cupboards_and_shelves/cupboard_010/rotations/south-west.webp",
         "south": "cupboards_and_shelves/cupboard_010/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "20d7b049-2753-4919-99dc-43b8771643d8",
+          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern on the shelf shifts, by one pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cupboards_and_shelves/cupboard_010/animations/motion/00.webp",
+            "cupboards_and_shelves/cupboard_010/animations/motion/01.webp",
+            "cupboards_and_shelves/cupboard_010/animations/motion/02.webp",
+            "cupboards_and_shelves/cupboard_010/animations/motion/03.webp",
+            "cupboards_and_shelves/cupboard_010/animations/motion/04.webp"
+          ],
+          "strip": "cupboards_and_shelves/cupboard_010/animations/motion__south.60a9347c.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:08:14+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.405,
+              "dx": 10.0,
+              "dy": 1.0
+            },
+            {
+              "intensity": 1.386,
+              "dx": 9.8,
+              "dy": 0.2
+            },
+            {
+              "intensity": 1.06,
+              "dx": 7.2,
+              "dy": -3.4
+            },
+            {
+              "intensity": 0.587,
+              "dx": -1.9,
+              "dy": -14.0
+            },
+            {
+              "intensity": 0.562,
+              "dx": -2.9,
+              "dy": -14.7
+            }
+          ]
+        }
       }
     },
     "LIT_2": {
@@ -247,6 +300,59 @@
         "south-east": "cupboards_and_shelves/cupboard_010/lit_3/rotations/south-east.webp",
         "south-west": "cupboards_and_shelves/cupboard_010/lit_3/rotations/south-west.webp",
         "south": "cupboards_and_shelves/cupboard_010/lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "faa9cdcc-95aa-4c33-87cc-179881077d27",
+          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern on the shelf shifts, by one pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cupboards_and_shelves/cupboard_010/lit_3/animations/motion/00.webp",
+            "cupboards_and_shelves/cupboard_010/lit_3/animations/motion/01.webp",
+            "cupboards_and_shelves/cupboard_010/lit_3/animations/motion/02.webp",
+            "cupboards_and_shelves/cupboard_010/lit_3/animations/motion/03.webp",
+            "cupboards_and_shelves/cupboard_010/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "cupboards_and_shelves/cupboard_010/lit_3/animations/motion__south.361bd48e.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:08:30+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.8177
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 0.6,
+              "dy": 2.1
+            },
+            {
+              "intensity": 0.901,
+              "dx": 10.3,
+              "dy": -3.1
+            },
+            {
+              "intensity": 1.255,
+              "dx": 14.2,
+              "dy": -0.2
+            },
+            {
+              "intensity": 1.274,
+              "dx": 14.0,
+              "dy": -0.7
+            },
+            {
+              "intensity": 1.278,
+              "dx": 14.2,
+              "dy": -0.3
+            }
+          ]
+        }
       }
     },
     "LIT_4": {
@@ -260,6 +366,59 @@
         "south-east": "cupboards_and_shelves/cupboard_010/lit_4/rotations/south-east.webp",
         "south-west": "cupboards_and_shelves/cupboard_010/lit_4/rotations/south-west.webp",
         "south": "cupboards_and_shelves/cupboard_010/lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "be2403f9-305e-449e-a02f-339339e39ccc",
+          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern on the shelf shifts, by one pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cupboards_and_shelves/cupboard_010/lit_4/animations/motion/00.webp",
+            "cupboards_and_shelves/cupboard_010/lit_4/animations/motion/01.webp",
+            "cupboards_and_shelves/cupboard_010/lit_4/animations/motion/02.webp",
+            "cupboards_and_shelves/cupboard_010/lit_4/animations/motion/03.webp",
+            "cupboards_and_shelves/cupboard_010/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "cupboards_and_shelves/cupboard_010/lit_4/animations/motion__south.c2d76f7e.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:09:16+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": -10.7,
+              "dy": -1.8
+            },
+            {
+              "intensity": 1.418,
+              "dx": 3.5,
+              "dy": -20.0
+            },
+            {
+              "intensity": 1.284,
+              "dx": 4.2,
+              "dy": -22.0
+            },
+            {
+              "intensity": 1.205,
+              "dx": 3.9,
+              "dy": -19.7
+            },
+            {
+              "intensity": 0.942,
+              "dx": 6.1,
+              "dy": -20.0
+            }
+          ]
+        }
       }
     },
     "NOT_LIT_1": {

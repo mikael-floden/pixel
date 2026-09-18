@@ -48,7 +48,59 @@
       "difference_from_source": 0.9269,
       "glow_score": 0.1819,
       "generated_at": "2026-08-15T14:47:58+00:00",
-      "animations": {}
+      "animations": {
+        "motion": {
+          "group_id": "1a74b65c-5d78-49f0-8a74-be5a7f2af6c3",
+          "description": "This is the same picture in every frame. ONLY the cyan light at the foot of the stump brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/00.webp",
+            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/01.webp",
+            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/02.webp",
+            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/03.webp",
+            "driftwood_logs/driftwood_log_901/lit_1/animations/motion/04.webp"
+          ],
+          "strip": "driftwood_logs/driftwood_log_901/lit_1/animations/motion__south.54023319.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:13:27+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.6411
+          },
+          "light_frames": [
+            {
+              "intensity": 0.913,
+              "dx": -0.6,
+              "dy": 11.0
+            },
+            {
+              "intensity": 1.437,
+              "dx": 0.5,
+              "dy": 0.6
+            },
+            {
+              "intensity": 1.422,
+              "dx": 0.4,
+              "dy": -0.3
+            },
+            {
+              "intensity": 0.803,
+              "dx": 0.5,
+              "dy": -3.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.5,
+              "dy": -6.5
+            }
+          ]
+        }
+      }
     },
     "LIT_3": {
       "sprite": "driftwood_logs/driftwood_log_901/lit_3/sprite.webp",
@@ -120,7 +172,60 @@
       "generated_at": "2026-08-16T14:24:21+00:00",
       "glow_concept": "shipworm bore holes leaking pale light",
       "difference_from_source": 0.8316,
-      "glow_score": 0.0203
+      "glow_score": 0.0203,
+      "animations": {
+        "motion": {
+          "group_id": "e99ec088-3f15-4be4-a759-97f378b6ecb6",
+          "description": "This is the same picture in every frame. ONLY the cyan light at the foot of the stump brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "driftwood_logs/driftwood_log_901/lit_4/animations/motion/00.webp",
+            "driftwood_logs/driftwood_log_901/lit_4/animations/motion/01.webp",
+            "driftwood_logs/driftwood_log_901/lit_4/animations/motion/02.webp",
+            "driftwood_logs/driftwood_log_901/lit_4/animations/motion/03.webp",
+            "driftwood_logs/driftwood_log_901/lit_4/animations/motion/04.webp"
+          ],
+          "strip": "driftwood_logs/driftwood_log_901/lit_4/animations/motion__south.69993d8d.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:14:17+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0062
+          },
+          "light_frames": [
+            {
+              "intensity": 0.5,
+              "dx": 10.1,
+              "dy": -10.6
+            },
+            {
+              "intensity": 0.5,
+              "dx": 11.0,
+              "dy": 6.0
+            },
+            {
+              "intensity": 1.028,
+              "dx": 15.7,
+              "dy": -22.3
+            },
+            {
+              "intensity": 0.5,
+              "dx": 12.6,
+              "dy": -19.1
+            },
+            {
+              "intensity": 1.5,
+              "dx": 1.1,
+              "dy": -7.0
+            }
+          ]
+        }
+      }
     },
     "NOT_LIT_1": {
       "sprite": "driftwood_logs/driftwood_log_901/sprite.webp",

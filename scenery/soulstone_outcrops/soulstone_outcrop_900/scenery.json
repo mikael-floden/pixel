@@ -45,7 +45,60 @@
     "LIT_1": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_900/sprite.webp",
       "pixellab_object_id": "d63e1598-0c3e-40fa-a158-db40b7116046",
-      "generated_at": "2026-08-13T19:46:47+00:00"
+      "generated_at": "2026-08-13T19:46:47+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "69d5a92a-4383-4510-8dc5-79c87b1515cf",
+          "description": "This is the same picture in every frame. ONLY the bright veins across the rock brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_900/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_900/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_900/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_900/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_900/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_900/animations/motion__south.ce10f4f7.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:55:28+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0019
+          },
+          "light_frames": [
+            {
+              "intensity": 0.802,
+              "dx": -1.1,
+              "dy": 2.8
+            },
+            {
+              "intensity": 0.813,
+              "dx": -3.3,
+              "dy": 3.1
+            },
+            {
+              "intensity": 1.322,
+              "dx": -0.2,
+              "dy": 0.8
+            },
+            {
+              "intensity": 1.076,
+              "dx": -2.4,
+              "dy": 3.1
+            },
+            {
+              "intensity": 0.987,
+              "dx": -3.7,
+              "dy": 2.6
+            }
+          ]
+        }
+      }
     },
     "LIT_2": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_900/lit_2/sprite.webp",

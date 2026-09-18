@@ -44,7 +44,33 @@
       "sprite": "moss_clumps/moss_clump_012/sprite.webp",
       "pixellab_object_id": "cf4dbbc1-9582-4ddf-b3d5-ea0d73a446a8",
       "generated_at": "2026-08-13T23:13:19+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "animations": {
+        "motion": {
+          "group_id": "7b947513-6f27-4f3c-a485-bd55f868edb8",
+          "description": "This is the same picture in every frame. ONLY the green light in the moss brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "moss_clumps/moss_clump_012/animations/motion/00.webp",
+            "moss_clumps/moss_clump_012/animations/motion/01.webp",
+            "moss_clumps/moss_clump_012/animations/motion/02.webp",
+            "moss_clumps/moss_clump_012/animations/motion/03.webp",
+            "moss_clumps/moss_clump_012/animations/motion/04.webp"
+          ],
+          "strip": "moss_clumps/moss_clump_012/animations/motion__south.3fbd529f.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:35:11+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "moss_clumps/moss_clump_012/not_lit_4/sprite.webp",
@@ -91,7 +117,33 @@
       "glow_concept": null,
       "difference_from_source": 0.7776,
       "glow_score": 0.001,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "animations": {
+        "motion": {
+          "group_id": "60ef25dd-0770-4415-91cd-c16f5066447a",
+          "description": "This is the same picture in every frame. ONLY the green light in the moss brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "moss_clumps/moss_clump_012/not_lit_5/animations/motion/00.webp",
+            "moss_clumps/moss_clump_012/not_lit_5/animations/motion/01.webp",
+            "moss_clumps/moss_clump_012/not_lit_5/animations/motion/02.webp",
+            "moss_clumps/moss_clump_012/not_lit_5/animations/motion/03.webp",
+            "moss_clumps/moss_clump_012/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "moss_clumps/moss_clump_012/not_lit_5/animations/motion__south.64f4aec4.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:35:58+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0973
+          }
+        }
+      }
     },
     "NOT_LIT_6": {
       "sprite": "moss_clumps/moss_clump_012/not_lit_6/sprite.webp",
@@ -100,7 +152,33 @@
       "glow_concept": null,
       "difference_from_source": 0.5326,
       "glow_score": 0.0032,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "animations": {
+        "motion": {
+          "group_id": "fb6e6b6b-cfd9-44dd-aec1-23fbe112ae55",
+          "description": "This is the same picture in every frame. ONLY the green light in the moss brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "moss_clumps/moss_clump_012/not_lit_6/animations/motion/00.webp",
+            "moss_clumps/moss_clump_012/not_lit_6/animations/motion/01.webp",
+            "moss_clumps/moss_clump_012/not_lit_6/animations/motion/02.webp",
+            "moss_clumps/moss_clump_012/not_lit_6/animations/motion/03.webp",
+            "moss_clumps/moss_clump_012/not_lit_6/animations/motion/04.webp"
+          ],
+          "strip": "moss_clumps/moss_clump_012/not_lit_6/animations/motion__south.b97878bc.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:36:02+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     }
   },
   "collision": true,

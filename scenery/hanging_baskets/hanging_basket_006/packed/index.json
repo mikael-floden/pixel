@@ -1,5 +1,55 @@
 {
  "files": {
+  "hanging_baskets/hanging_basket_006/animations/motion/00.webp": {
+   "file": "animations/motion/00.4e01a606.webp",
+   "h": 59,
+   "ox": 4,
+   "oy": 3,
+   "src": "b4dcb229",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 57
+  },
+  "hanging_baskets/hanging_basket_006/animations/motion/01.webp": {
+   "file": "animations/motion/01.77648923.webp",
+   "h": 59,
+   "ox": 4,
+   "oy": 3,
+   "src": "2ec003bc",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 57
+  },
+  "hanging_baskets/hanging_basket_006/animations/motion/02.webp": {
+   "file": "animations/motion/02.9657dc95.webp",
+   "h": 59,
+   "ox": 4,
+   "oy": 3,
+   "src": "c3812f66",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 57
+  },
+  "hanging_baskets/hanging_basket_006/animations/motion/03.webp": {
+   "file": "animations/motion/03.3222ee47.webp",
+   "h": 59,
+   "ox": 4,
+   "oy": 3,
+   "src": "97ea0761",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 57
+  },
+  "hanging_baskets/hanging_basket_006/animations/motion/04.webp": {
+   "file": "animations/motion/04.4b4de5a9.webp",
+   "h": 59,
+   "ox": 4,
+   "oy": 3,
+   "src": "d4e02ad3",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 57
+  },
   "hanging_baskets/hanging_basket_006/lit_4/animations/motion/south-east/00.webp": {
    "file": "lit_4/animations/motion/south-east/00.7cc3fb5a.webp",
    "h": 61,
@@ -180,35 +230,88 @@
    "srcW": 64,
    "w": 54
   },
-  "hanging_baskets/hanging_basket_006/not_lit_1/rotations/south-east.webp": {
-   "file": "not_lit_1/rotations/south-east.4f69d85d.webp",
+  "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/00.webp": {
+   "file": "not_lit_1/animations/motion/00.18d93a24.webp",
    "h": 58,
-   "ox": 5,
-   "oy": 4,
-   "src": "a787608c",
-   "srcH": 64,
-   "srcW": 64,
-   "w": 55
-  },
-  "hanging_baskets/hanging_basket_006/not_lit_1/rotations/south-west.webp": {
-   "file": "not_lit_1/rotations/south-west.b460b206.webp",
-   "h": 58,
-   "ox": 5,
-   "oy": 4,
-   "src": "a7345c1f",
-   "srcH": 64,
-   "srcW": 64,
-   "w": 55
-  },
-  "hanging_baskets/hanging_basket_006/not_lit_1/sprite.webp": {
-   "file": "not_lit_1/sprite.e9667a53.webp",
-   "h": 58,
-   "ox": 5,
+   "ox": 3,
    "oy": 4,
    "src": "8782e4f9",
    "srcH": 64,
    "srcW": 64,
-   "w": 55
+   "w": 58
+  },
+  "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/01.webp": {
+   "file": "not_lit_1/animations/motion/01.70b73487.webp",
+   "h": 58,
+   "ox": 3,
+   "oy": 4,
+   "src": "5048758c",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 58
+  },
+  "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/02.webp": {
+   "file": "not_lit_1/animations/motion/02.f56e39fd.webp",
+   "h": 58,
+   "ox": 3,
+   "oy": 4,
+   "src": "bb213549",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 58
+  },
+  "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/03.webp": {
+   "file": "not_lit_1/animations/motion/03.629c6d90.webp",
+   "h": 58,
+   "ox": 3,
+   "oy": 4,
+   "src": "44b9b019",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 58
+  },
+  "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/04.webp": {
+   "file": "not_lit_1/animations/motion/04.7da3a02a.webp",
+   "h": 58,
+   "ox": 3,
+   "oy": 4,
+   "src": "97c5355f",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 58
+  },
+  "hanging_baskets/hanging_basket_006/not_lit_1/rotations/south-east.webp": {
+   "file": "not_lit_1/rotations/south-east.0505a3f4.webp",
+   "h": 58,
+   "ox": 3,
+   "oy": 4,
+   "prev": "not_lit_1/rotations/south-east.4f69d85d.webp",
+   "src": "a787608c",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 58
+  },
+  "hanging_baskets/hanging_basket_006/not_lit_1/rotations/south-west.webp": {
+   "file": "not_lit_1/rotations/south-west.4f24d763.webp",
+   "h": 58,
+   "ox": 3,
+   "oy": 4,
+   "prev": "not_lit_1/rotations/south-west.b460b206.webp",
+   "src": "a7345c1f",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 58
+  },
+  "hanging_baskets/hanging_basket_006/not_lit_1/sprite.webp": {
+   "file": "not_lit_1/sprite.18d93a24.webp",
+   "h": 58,
+   "ox": 3,
+   "oy": 4,
+   "prev": "not_lit_1/sprite.e9667a53.webp",
+   "src": "8782e4f9",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 58
   },
   "hanging_baskets/hanging_basket_006/not_lit_5/animations/motion/south-east/00.webp": {
    "file": "not_lit_5/animations/motion/south-east/00.0d21a5f3.webp",
@@ -395,34 +498,37 @@
    "w": 55
   },
   "hanging_baskets/hanging_basket_006/rotations/south-east.webp": {
-   "file": "rotations/south-east.bd8de09a.webp",
-   "h": 55,
-   "ox": 5,
-   "oy": 7,
+   "file": "rotations/south-east.8c6b5957.webp",
+   "h": 59,
+   "ox": 4,
+   "oy": 3,
+   "prev": "rotations/south-east.bd8de09a.webp",
    "src": "75afdb35",
    "srcH": 64,
    "srcW": 64,
-   "w": 55
+   "w": 57
   },
   "hanging_baskets/hanging_basket_006/rotations/south-west.webp": {
-   "file": "rotations/south-west.0be79868.webp",
-   "h": 55,
-   "ox": 5,
-   "oy": 7,
+   "file": "rotations/south-west.060189ff.webp",
+   "h": 59,
+   "ox": 4,
+   "oy": 3,
+   "prev": "rotations/south-west.0be79868.webp",
    "src": "c13f3e92",
    "srcH": 64,
    "srcW": 64,
-   "w": 55
+   "w": 57
   },
   "hanging_baskets/hanging_basket_006/sprite.webp": {
-   "file": "sprite.e10209d5.webp",
-   "h": 55,
-   "ox": 5,
-   "oy": 7,
+   "file": "sprite.4e01a606.webp",
+   "h": 59,
+   "ox": 4,
+   "oy": 3,
+   "prev": "sprite.e10209d5.webp",
    "src": "b4dcb229",
    "srcH": 64,
    "srcW": 64,
-   "w": 55
+   "w": 57
   }
  },
  "schema": "scenery-packed@1"

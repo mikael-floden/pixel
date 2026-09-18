@@ -43,7 +43,33 @@
     "NOT_LIT_1": {
       "sprite": "cattail_clumps/cattail_clump_007/sprite.webp",
       "pixellab_object_id": "b71ec19d-178c-483b-ab2c-09dcebb4bfb0",
-      "generated_at": "2026-08-13T14:08:26+00:00"
+      "generated_at": "2026-08-13T14:08:26+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "474755f1-7596-4037-9a8a-370500181f53",
+          "description": "This is the same picture in every frame. ONLY the purple irises move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_007/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_007/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_007/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_007/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_007/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_007/animations/motion__south.aaa5771b.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:01:00+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "cattail_clumps/cattail_clump_007/not_lit_2/sprite.webp",
@@ -88,7 +114,33 @@
       "generated_at": "2026-08-16T08:54:58+00:00",
       "glow_concept": null,
       "difference_from_source": 0.2643,
-      "glow_score": 0.0112
+      "glow_score": 0.0112,
+      "animations": {
+        "motion": {
+          "group_id": "a4b0e5a9-5158-4f8a-b044-9399273d7af1",
+          "description": "This is the same picture in every frame. ONLY the purple irises move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_007/not_lit_3/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_3/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_3/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_3/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_007/not_lit_3/animations/motion__south.8695b548.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:01:13+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "cattail_clumps/cattail_clump_007/not_lit_4/sprite.webp",
@@ -96,7 +148,33 @@
       "generated_at": "2026-08-16T08:51:25+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8154,
-      "glow_score": 0.0161
+      "glow_score": 0.0161,
+      "animations": {
+        "motion": {
+          "group_id": "1ee5376e-bccb-4c04-9f70-bf1c5897f52c",
+          "description": "This is the same picture in every frame. ONLY the purple irises move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cattail_clumps/cattail_clump_007/not_lit_4/animations/motion/00.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_4/animations/motion/01.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_4/animations/motion/02.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_4/animations/motion/03.webp",
+            "cattail_clumps/cattail_clump_007/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "cattail_clumps/cattail_clump_007/not_lit_4/animations/motion__south.732b3f5f.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:01:59+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     }
   },
   "collision": true,

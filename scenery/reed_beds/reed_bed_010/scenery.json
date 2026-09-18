@@ -44,7 +44,33 @@
       "sprite": "reed_beds/reed_bed_010/sprite.webp",
       "pixellab_object_id": "bab37b2c-e173-42f0-9cde-66e136cfa7ed",
       "generated_at": "2026-08-13T23:20:37+00:00",
-      "relit_from": "LIT_1"
+      "relit_from": "LIT_1",
+      "animations": {
+        "motion": {
+          "group_id": "b05e83b6-d235-4d4f-8114-94be08538f74",
+          "description": "This is the same picture in every frame. ONLY the cattail heads move, each leaning by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_010/animations/motion/00.webp",
+            "reed_beds/reed_bed_010/animations/motion/01.webp",
+            "reed_beds/reed_bed_010/animations/motion/02.webp",
+            "reed_beds/reed_bed_010/animations/motion/03.webp",
+            "reed_beds/reed_bed_010/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_010/animations/motion__south.937c50d6.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:41:27+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0727
+          }
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "reed_beds/reed_bed_010/not_lit_4/sprite.webp",
@@ -91,7 +117,33 @@
       "glow_concept": null,
       "difference_from_source": 0.4915,
       "glow_score": 0.0312,
-      "relit_from": "LIT_3"
+      "relit_from": "LIT_3",
+      "animations": {
+        "motion": {
+          "group_id": "f9c141e2-7714-4d07-a42a-4b520485f3c3",
+          "description": "This is the same picture in every frame. ONLY the cattail heads move, each leaning by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_010/not_lit_5/animations/motion/00.webp",
+            "reed_beds/reed_bed_010/not_lit_5/animations/motion/01.webp",
+            "reed_beds/reed_bed_010/not_lit_5/animations/motion/02.webp",
+            "reed_beds/reed_bed_010/not_lit_5/animations/motion/03.webp",
+            "reed_beds/reed_bed_010/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_010/not_lit_5/animations/motion__south.fb5f6eb4.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:42:04+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     },
     "NOT_LIT_6": {
       "sprite": "reed_beds/reed_bed_010/not_lit_6/sprite.webp",
@@ -100,7 +152,33 @@
       "glow_concept": null,
       "difference_from_source": 0.5539,
       "glow_score": 0.0006,
-      "relit_from": "LIT_4"
+      "relit_from": "LIT_4",
+      "animations": {
+        "motion": {
+          "group_id": "f76a1740-9e82-4a52-a248-8e78a0b63fa6",
+          "description": "This is the same picture in every frame. ONLY the cattail heads move, each leaning by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_010/not_lit_6/animations/motion/00.webp",
+            "reed_beds/reed_bed_010/not_lit_6/animations/motion/01.webp",
+            "reed_beds/reed_bed_010/not_lit_6/animations/motion/02.webp",
+            "reed_beds/reed_bed_010/not_lit_6/animations/motion/03.webp",
+            "reed_beds/reed_bed_010/not_lit_6/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_010/not_lit_6/animations/motion__south.5223589b.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:43:12+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     }
   },
   "collision": true,

@@ -49,6 +49,59 @@
         "south-east": "cauldron_camps/cauldron_camp_002/rotations/south-east.webp",
         "south-west": "cauldron_camps/cauldron_camp_002/rotations/south-west.webp",
         "south": "cauldron_camps/cauldron_camp_002/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "6f56286b-f64f-4ddf-8061-c6634a3dda34",
+          "description": "This is the same picture in every frame. ONLY the fire under the cauldron flickers and the green surface of the brew bubbles. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "cauldron_camps/cauldron_camp_002/animations/motion/00.webp",
+            "cauldron_camps/cauldron_camp_002/animations/motion/01.webp",
+            "cauldron_camps/cauldron_camp_002/animations/motion/02.webp",
+            "cauldron_camps/cauldron_camp_002/animations/motion/03.webp",
+            "cauldron_camps/cauldron_camp_002/animations/motion/04.webp"
+          ],
+          "strip": "cauldron_camps/cauldron_camp_002/animations/motion__south.c8f66a06.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:04:13+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.817,
+              "dx": -1.0,
+              "dy": -12.6
+            },
+            {
+              "intensity": 0.954,
+              "dx": -0.9,
+              "dy": -9.3
+            },
+            {
+              "intensity": 1.032,
+              "dx": -1.0,
+              "dy": -8.9
+            },
+            {
+              "intensity": 1.098,
+              "dx": -1.0,
+              "dy": -8.6
+            },
+            {
+              "intensity": 1.099,
+              "dx": -0.9,
+              "dy": -8.6
+            }
+          ]
+        }
       }
     },
     "LIT_2": {

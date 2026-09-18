@@ -656,6 +656,32 @@
         "south-east": "hearths/hearth_008/not_lit_2/rotations/south-east.webp",
         "south-west": "hearths/hearth_008/not_lit_2/rotations/south-west.webp",
         "south": "hearths/hearth_008/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a8b1ae16-71f9-4940-8035-f66f94d6cbda",
+          "description": "This is the same picture in every frame. ONLY the bundles lying on the mantel shift. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hearths/hearth_008/not_lit_2/animations/motion/00.webp",
+            "hearths/hearth_008/not_lit_2/animations/motion/01.webp",
+            "hearths/hearth_008/not_lit_2/animations/motion/02.webp",
+            "hearths/hearth_008/not_lit_2/animations/motion/03.webp",
+            "hearths/hearth_008/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "hearths/hearth_008/not_lit_2/animations/motion__south.60c559d7.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:28:18+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0026
+          }
+        }
       }
     }
   },

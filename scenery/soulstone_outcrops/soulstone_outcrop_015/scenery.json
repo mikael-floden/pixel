@@ -43,7 +43,33 @@
     "NOT_LIT_1": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_015/sprite.webp",
       "pixellab_object_id": "ad0a1960-bd29-4714-902c-5f53cce53a81",
-      "generated_at": "2026-08-13T23:03:30+00:00"
+      "generated_at": "2026-08-13T23:03:30+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "76b95ba5-0e27-4e55-9bc7-f5ff16b3e774",
+          "description": "This is the same picture in every frame. ONLY the white veins across the rock brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_015/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_015/animations/motion__south.2cdae3ba.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:49:15+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0443
+          }
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_015/not_lit_2/sprite.webp",
@@ -86,7 +112,33 @@
       "generated_at": "2026-08-16T21:04:43+00:00",
       "glow_concept": null,
       "difference_from_source": 0.9325,
-      "glow_score": 0.0971
+      "glow_score": 0.0971,
+      "animations": {
+        "motion": {
+          "group_id": "cda3c66b-ab75-497b-8599-83cac2424eab",
+          "description": "This is the same picture in every frame. ONLY the white veins across the rock brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_3/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_3/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_3/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_3/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_015/not_lit_3/animations/motion__south.d2cf038d.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:49:17+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "soulstone_outcrops/soulstone_outcrop_015/not_lit_4/sprite.webp",
@@ -94,7 +146,33 @@
       "generated_at": "2026-08-16T21:05:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6631,
-      "glow_score": 0.0684
+      "glow_score": 0.0684,
+      "animations": {
+        "motion": {
+          "group_id": "1d87e897-f65a-4f54-a3bd-db1ddff01ace",
+          "description": "This is the same picture in every frame. ONLY the white veins across the rock brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_4/animations/motion/00.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_4/animations/motion/01.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_4/animations/motion/02.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_4/animations/motion/03.webp",
+            "soulstone_outcrops/soulstone_outcrop_015/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "soulstone_outcrops/soulstone_outcrop_015/not_lit_4/animations/motion__south.4bb26f6f.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:49:21+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0034
+          }
+        }
+      }
     }
   },
   "collision": true,

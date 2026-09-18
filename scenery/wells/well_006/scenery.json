@@ -49,6 +49,32 @@
         "south-east": "wells/well_006/rotations/south-east.webp",
         "south-west": "wells/well_006/rotations/south-west.webp",
         "south": "wells/well_006/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "fe04f0d2-b8f8-4fa0-9194-627567d8a3ec",
+          "description": "This is the same picture in every frame. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_006/animations/motion/00.webp",
+            "wells/well_006/animations/motion/01.webp",
+            "wells/well_006/animations/motion/02.webp",
+            "wells/well_006/animations/motion/03.webp",
+            "wells/well_006/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_006/animations/motion__south.ab2d08aa.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:21:18+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0114
+          }
+        }
       }
     },
     "NOT_LIT_4": {
@@ -63,6 +89,32 @@
         "south-east": "wells/well_006/not_lit_4/rotations/south-east.webp",
         "south-west": "wells/well_006/not_lit_4/rotations/south-west.webp",
         "south": "wells/well_006/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "d4f4e00f-27d6-4ecf-8b67-89258d9044c1",
+          "description": "This is the same picture in every frame. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wells/well_006/not_lit_4/animations/motion/00.webp",
+            "wells/well_006/not_lit_4/animations/motion/01.webp",
+            "wells/well_006/not_lit_4/animations/motion/02.webp",
+            "wells/well_006/not_lit_4/animations/motion/03.webp",
+            "wells/well_006/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "wells/well_006/not_lit_4/animations/motion__south.76cbe3bf.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:21:04+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.17
+          }
+        }
       }
     },
     "NOT_LIT_5": {

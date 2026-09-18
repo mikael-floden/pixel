@@ -106,7 +106,33 @@
       "generated_at": "2026-08-16T14:24:01+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7593,
-      "glow_score": 0.1731
+      "glow_score": 0.1731,
+      "animations": {
+        "motion": {
+          "group_id": "1d909f7d-33ed-4fc6-a9ab-feac551a947b",
+          "description": "This is the same picture in every frame. ONLY one small highlight moves, sliding slowly across the crystals inside. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "geodes/geode_001/not_lit_2/animations/motion/00.webp",
+            "geodes/geode_001/not_lit_2/animations/motion/01.webp",
+            "geodes/geode_001/not_lit_2/animations/motion/02.webp",
+            "geodes/geode_001/not_lit_2/animations/motion/03.webp",
+            "geodes/geode_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "geodes/geode_001/not_lit_2/animations/motion__south.7cfa1241.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:23:12+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "geodes/geode_001/not_lit_3/sprite.webp",
@@ -149,7 +175,33 @@
       "generated_at": "2026-08-16T14:24:31+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7738,
-      "glow_score": 0.1439
+      "glow_score": 0.1439,
+      "animations": {
+        "motion": {
+          "group_id": "8ce04e41-23be-43af-8dbe-e6270b66347e",
+          "description": "This is the same picture in every frame. ONLY one small highlight moves, sliding slowly across the crystals inside. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "geodes/geode_001/not_lit_4/animations/motion/00.webp",
+            "geodes/geode_001/not_lit_4/animations/motion/01.webp",
+            "geodes/geode_001/not_lit_4/animations/motion/02.webp",
+            "geodes/geode_001/not_lit_4/animations/motion/03.webp",
+            "geodes/geode_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "geodes/geode_001/not_lit_4/animations/motion__south.7537f821.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:24:27+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0144
+          }
+        }
+      }
     }
   },
   "collision": true,

@@ -228,6 +228,32 @@
         "south-east": "fish_drying_racks/fish_drying_rack_005/rotations/south-east.webp",
         "south-west": "fish_drying_racks/fish_drying_rack_005/rotations/south-west.webp",
         "south": "fish_drying_racks/fish_drying_rack_005/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "688bc8b3-e5d5-4c5a-b547-4789f8416c95",
+          "description": "This is the same picture in every frame. ONLY each hanging fish turns very slightly where it hangs, by a single pixel, without leaving its own spot. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_005/animations/motion/00.webp",
+            "fish_drying_racks/fish_drying_rack_005/animations/motion/01.webp",
+            "fish_drying_racks/fish_drying_rack_005/animations/motion/02.webp",
+            "fish_drying_racks/fish_drying_rack_005/animations/motion/03.webp",
+            "fish_drying_racks/fish_drying_rack_005/animations/motion/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_005/animations/motion__south.dd35cfae.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:20:01+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.9108
+          }
+        }
       }
     },
     "NOT_LIT_2": {
@@ -386,7 +412,32 @@
         "south-west": "fish_drying_racks/fish_drying_rack_005/not_lit_4/rotations/south-west.webp",
         "south": "fish_drying_racks/fish_drying_rack_005/not_lit_4/sprite.webp"
       },
-      "animations": {}
+      "animations": {
+        "motion": {
+          "group_id": "f1a29f83-8c9e-4d49-9bd6-3011c35af23e",
+          "description": "This is the same picture in every frame. ONLY each hanging fish turns very slightly where it hangs, by a single pixel, without leaving its own spot. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fish_drying_racks/fish_drying_rack_005/not_lit_4/animations/motion/00.webp",
+            "fish_drying_racks/fish_drying_rack_005/not_lit_4/animations/motion/01.webp",
+            "fish_drying_racks/fish_drying_rack_005/not_lit_4/animations/motion/02.webp",
+            "fish_drying_racks/fish_drying_rack_005/not_lit_4/animations/motion/03.webp",
+            "fish_drying_racks/fish_drying_rack_005/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "fish_drying_racks/fish_drying_rack_005/not_lit_4/animations/motion__south.60095649.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:19:23+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.2193
+          }
+        }
+      }
     }
   },
   "collision": true,

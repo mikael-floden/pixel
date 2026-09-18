@@ -49,6 +49,32 @@
         "south-east": "flower_stands/flower_stand_015/rotations/south-east.webp",
         "south-west": "flower_stands/flower_stand_015/rotations/south-west.webp",
         "south": "flower_stands/flower_stand_015/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "f21c482f-cf6f-419f-990c-fa9373c4a50b",
+          "description": "This is the same picture in every frame. ONLY the flower heads sway, very slightly, as if in a faint breeze: no flower changes colour, nothing glows, nothing brightens or darkens anywhere. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_stands/flower_stand_015/animations/motion/00.webp",
+            "flower_stands/flower_stand_015/animations/motion/01.webp",
+            "flower_stands/flower_stand_015/animations/motion/02.webp",
+            "flower_stands/flower_stand_015/animations/motion/03.webp",
+            "flower_stands/flower_stand_015/animations/motion/04.webp"
+          ],
+          "strip": "flower_stands/flower_stand_015/animations/motion__south.edbbf56b.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:21:24+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0506
+          }
+        }
       }
     },
     "NOT_LIT_2": {
@@ -206,6 +232,32 @@
         "south-east": "flower_stands/flower_stand_015/not_lit_4/rotations/south-east.webp",
         "south-west": "flower_stands/flower_stand_015/not_lit_4/rotations/south-west.webp",
         "south": "flower_stands/flower_stand_015/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a88e8263-b135-4c10-aa20-7479a8c2256f",
+          "description": "This is the same picture in every frame. ONLY the flower heads sway, very slightly, as if in a faint breeze: no flower changes colour, nothing glows, nothing brightens or darkens anywhere. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_stands/flower_stand_015/not_lit_4/animations/motion/00.webp",
+            "flower_stands/flower_stand_015/not_lit_4/animations/motion/01.webp",
+            "flower_stands/flower_stand_015/not_lit_4/animations/motion/02.webp",
+            "flower_stands/flower_stand_015/not_lit_4/animations/motion/03.webp",
+            "flower_stands/flower_stand_015/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "flower_stands/flower_stand_015/not_lit_4/animations/motion__south.cb9e54f9.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:21:56+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0127
+          }
+        }
       }
     }
   },

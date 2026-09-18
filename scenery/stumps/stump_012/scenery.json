@@ -44,7 +44,60 @@
       "sprite": "stumps/stump_012/sprite.webp",
       "pixellab_object_id": "2dd24fca-86f0-4350-86c5-13d106887dad",
       "glow_score": 0.2079,
-      "generated_at": "2026-08-13T23:34:45+00:00"
+      "generated_at": "2026-08-13T23:34:45+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "dcdd0f37-4288-4a85-a926-2525f25cc1ff",
+          "description": "This is the same picture in every frame. ONLY the glowing mushrooms around the stump brighten a little and return. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_012/animations/motion/00.webp",
+            "stumps/stump_012/animations/motion/01.webp",
+            "stumps/stump_012/animations/motion/02.webp",
+            "stumps/stump_012/animations/motion/03.webp",
+            "stumps/stump_012/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_012/animations/motion__south.3449d2ec.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:04:09+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.037
+          },
+          "light_frames": [
+            {
+              "intensity": 1.5,
+              "dx": -0.9,
+              "dy": -6.3
+            },
+            {
+              "intensity": 0.756,
+              "dx": -1.2,
+              "dy": -9.6
+            },
+            {
+              "intensity": 0.749,
+              "dx": -1.2,
+              "dy": -9.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 1.2,
+              "dy": -13.3
+            },
+            {
+              "intensity": 1.33,
+              "dx": 0.3,
+              "dy": -8.8
+            }
+          ]
+        }
+      }
     },
     "LIT_2": {
       "sprite": "stumps/stump_012/lit_2/sprite.webp",

@@ -49,7 +49,60 @@
     "LIT_1": {
       "sprite": "stones/stone_054/sprite.webp",
       "pixellab_object_id": "1500007a-17ac-42f6-8553-430f5341d8ae",
-      "generated_at": "2026-08-15T18:11:51+00:00"
+      "generated_at": "2026-08-15T18:11:51+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "684abcff-a71f-4a9a-8a7c-c8199d735c97",
+          "description": "This is the same picture in every frame. ONLY the cyan gems in the rocks change. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_054/animations/motion/00.webp",
+            "stones/stone_054/animations/motion/01.webp",
+            "stones/stone_054/animations/motion/02.webp",
+            "stones/stone_054/animations/motion/03.webp",
+            "stones/stone_054/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_054/animations/motion__south.94fd6458.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:00:55+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0036
+          },
+          "light_frames": [
+            {
+              "intensity": 1.33,
+              "dx": -9.3,
+              "dy": 9.9
+            },
+            {
+              "intensity": 1.424,
+              "dx": -9.8,
+              "dy": 10.2
+            },
+            {
+              "intensity": 1.368,
+              "dx": -8.5,
+              "dy": 10.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 7.1,
+              "dy": 11.4
+            },
+            {
+              "intensity": 0.5,
+              "dx": 12.1,
+              "dy": 11.7
+            }
+          ]
+        }
+      }
     },
     "LIT_2": {
       "sprite": "stones/stone_054/lit_2/sprite.webp",

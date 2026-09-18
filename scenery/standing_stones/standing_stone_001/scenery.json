@@ -120,6 +120,32 @@
         "south-east": "standing_stones/standing_stone_001/not_lit_2/rotations/south-east.webp",
         "south-west": "standing_stones/standing_stone_001/not_lit_2/rotations/south-west.webp",
         "south": "standing_stones/standing_stone_001/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "0fc43f09-4237-43f8-ac8e-8042825fadd1",
+          "description": "This is the same picture in every frame. ONLY the light in the carved glyphs brightens and dims, very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/00.webp",
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/01.webp",
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/02.webp",
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/03.webp",
+            "standing_stones/standing_stone_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "standing_stones/standing_stone_001/not_lit_2/animations/motion__south.9772bb7d.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:52:58+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_3": {
@@ -133,6 +159,32 @@
         "south-east": "standing_stones/standing_stone_001/not_lit_3/rotations/south-east.webp",
         "south-west": "standing_stones/standing_stone_001/not_lit_3/rotations/south-west.webp",
         "south": "standing_stones/standing_stone_001/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "791f6f13-91da-4103-97cc-5335f400083e",
+          "description": "This is the same picture in every frame. ONLY the light in the carved glyphs brightens and dims, very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/00.webp",
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/01.webp",
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/02.webp",
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/03.webp",
+            "standing_stones/standing_stone_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "standing_stones/standing_stone_001/not_lit_3/animations/motion__south.b240f3b1.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:53:54+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_4": {
@@ -146,6 +198,32 @@
         "south-east": "standing_stones/standing_stone_001/not_lit_4/rotations/south-east.webp",
         "south-west": "standing_stones/standing_stone_001/not_lit_4/rotations/south-west.webp",
         "south": "standing_stones/standing_stone_001/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "e1c7fdbe-0b70-40ce-a6e1-f0b1d80cdcce",
+          "description": "This is the same picture in every frame. ONLY the light in the carved glyphs brightens and dims, very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/00.webp",
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/01.webp",
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/02.webp",
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/03.webp",
+            "standing_stones/standing_stone_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "standing_stones/standing_stone_001/not_lit_4/animations/motion__south.07db91be.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:54:23+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.2894
+          }
+        }
       }
     }
   },

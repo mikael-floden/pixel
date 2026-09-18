@@ -231,6 +231,32 @@
         "south-east": "hanging_baskets/hanging_basket_006/not_lit_1/rotations/south-east.webp",
         "south-west": "hanging_baskets/hanging_basket_006/not_lit_1/rotations/south-west.webp",
         "south": "hanging_baskets/hanging_basket_006/not_lit_1/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "205f49ae-2a42-4ec2-a6fe-0af58913d444",
+          "description": "This is the same picture in every frame. ONLY the trailing vines hanging below the basket swing. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/00.webp",
+            "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/01.webp",
+            "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/02.webp",
+            "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/03.webp",
+            "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion/04.webp"
+          ],
+          "strip": "hanging_baskets/hanging_basket_006/not_lit_1/animations/motion__south.28ed0bc1.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:26:58+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.04
+          }
+        }
       }
     },
     "NOT_LIT_3": {
@@ -242,6 +268,32 @@
         "south-east": "hanging_baskets/hanging_basket_006/rotations/south-east.webp",
         "south-west": "hanging_baskets/hanging_basket_006/rotations/south-west.webp",
         "south": "hanging_baskets/hanging_basket_006/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "98ab5923-96bc-4fe5-abe3-a5d87ceb8020",
+          "description": "This is the same picture in every frame. ONLY the trailing vines hanging below the basket swing. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "hanging_baskets/hanging_basket_006/animations/motion/00.webp",
+            "hanging_baskets/hanging_basket_006/animations/motion/01.webp",
+            "hanging_baskets/hanging_basket_006/animations/motion/02.webp",
+            "hanging_baskets/hanging_basket_006/animations/motion/03.webp",
+            "hanging_baskets/hanging_basket_006/animations/motion/04.webp"
+          ],
+          "strip": "hanging_baskets/hanging_basket_006/animations/motion__south.7c66aaf5.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:27:09+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1164
+          }
+        }
       }
     },
     "NOT_LIT_5": {

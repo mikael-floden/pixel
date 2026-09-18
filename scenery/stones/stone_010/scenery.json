@@ -42,7 +42,60 @@
     "LIT_1": {
       "sprite": "stones/stone_010/sprite.webp",
       "pixellab_object_id": "60cdd3fb-d189-4cdc-a1c6-4b9eff055b5e",
-      "generated_at": "2026-08-12T23:22:20+00:00"
+      "generated_at": "2026-08-12T23:22:20+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "845ed3b4-fb08-477c-bd1c-9e406407fa39",
+          "description": "This is the same picture in every frame. ONLY the molten light in the cracks brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stones/stone_010/animations/motion/00.webp",
+            "stones/stone_010/animations/motion/01.webp",
+            "stones/stone_010/animations/motion/02.webp",
+            "stones/stone_010/animations/motion/03.webp",
+            "stones/stone_010/animations/motion/04.webp"
+          ],
+          "strip": "stones/stone_010/animations/motion__south.8a3f06e0.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:56:29+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.822,
+              "dx": 2.1,
+              "dy": 4.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": -19.0,
+              "dy": 6.0
+            },
+            {
+              "intensity": 0.5,
+              "dx": -2.9,
+              "dy": 4.2
+            },
+            {
+              "intensity": 1.5,
+              "dx": 4.1,
+              "dy": 3.3
+            },
+            {
+              "intensity": 1.019,
+              "dx": 1.1,
+              "dy": 3.7
+            }
+          ]
+        }
+      }
     },
     "LIT_2": {
       "sprite": "stones/stone_010/lit_2/sprite.webp",

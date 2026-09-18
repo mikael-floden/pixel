@@ -1,5 +1,55 @@
 {
  "files": {
+  "ferns/fern_007/animations/motion/00.webp": {
+   "file": "animations/motion/00.c04de986.webp",
+   "h": 58,
+   "ox": 0,
+   "oy": 3,
+   "src": "88af8295",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 64
+  },
+  "ferns/fern_007/animations/motion/01.webp": {
+   "file": "animations/motion/01.a65d0d2b.webp",
+   "h": 58,
+   "ox": 0,
+   "oy": 3,
+   "src": "4f63b233",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 64
+  },
+  "ferns/fern_007/animations/motion/02.webp": {
+   "file": "animations/motion/02.5af3b601.webp",
+   "h": 58,
+   "ox": 0,
+   "oy": 3,
+   "src": "054f4178",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 64
+  },
+  "ferns/fern_007/animations/motion/03.webp": {
+   "file": "animations/motion/03.27172277.webp",
+   "h": 58,
+   "ox": 0,
+   "oy": 3,
+   "src": "51e86953",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 64
+  },
+  "ferns/fern_007/animations/motion/04.webp": {
+   "file": "animations/motion/04.c4070406.webp",
+   "h": 58,
+   "ox": 0,
+   "oy": 3,
+   "src": "0d0e8a8e",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 64
+  },
   "ferns/fern_007/lit_1/animations/flame/00.webp": {
    "file": "lit_1/animations/flame/00.32f8c49b.webp",
    "h": 61,
@@ -120,9 +170,9 @@
    "srcW": 64,
    "w": 64
   },
-  "ferns/fern_007/not_lit_4/sprite.webp": {
-   "file": "not_lit_4/sprite.9d9adce9.webp",
-   "h": 59,
+  "ferns/fern_007/not_lit_4/animations/motion/00.webp": {
+   "file": "not_lit_4/animations/motion/00.e05ce13e.webp",
+   "h": 60,
    "ox": 1,
    "oy": 2,
    "src": "99455e83",
@@ -130,15 +180,67 @@
    "srcW": 64,
    "w": 63
   },
+  "ferns/fern_007/not_lit_4/animations/motion/01.webp": {
+   "file": "not_lit_4/animations/motion/01.344e885e.webp",
+   "h": 60,
+   "ox": 1,
+   "oy": 2,
+   "src": "d516b619",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 63
+  },
+  "ferns/fern_007/not_lit_4/animations/motion/02.webp": {
+   "file": "not_lit_4/animations/motion/02.8f696970.webp",
+   "h": 60,
+   "ox": 1,
+   "oy": 2,
+   "src": "8ca1bbfa",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 63
+  },
+  "ferns/fern_007/not_lit_4/animations/motion/03.webp": {
+   "file": "not_lit_4/animations/motion/03.a78d342e.webp",
+   "h": 60,
+   "ox": 1,
+   "oy": 2,
+   "src": "d67c6716",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 63
+  },
+  "ferns/fern_007/not_lit_4/animations/motion/04.webp": {
+   "file": "not_lit_4/animations/motion/04.3e716417.webp",
+   "h": 60,
+   "ox": 1,
+   "oy": 2,
+   "src": "173e8467",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 63
+  },
+  "ferns/fern_007/not_lit_4/sprite.webp": {
+   "file": "not_lit_4/sprite.e05ce13e.webp",
+   "h": 60,
+   "ox": 1,
+   "oy": 2,
+   "prev": "not_lit_4/sprite.9d9adce9.webp",
+   "src": "99455e83",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 63
+  },
   "ferns/fern_007/sprite.webp": {
-   "file": "sprite.a971a9c4.webp",
-   "h": 56,
-   "ox": 2,
-   "oy": 5,
+   "file": "sprite.c04de986.webp",
+   "h": 58,
+   "ox": 0,
+   "oy": 3,
+   "prev": "sprite.a971a9c4.webp",
    "src": "88af8295",
    "srcH": 64,
    "srcW": 64,
-   "w": 61
+   "w": 64
   }
  },
  "schema": "scenery-packed@1"

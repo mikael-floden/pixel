@@ -49,6 +49,59 @@
         "south-east": "torch_posts/torch_post_014/rotations/south-east.webp",
         "south-west": "torch_posts/torch_post_014/rotations/south-west.webp",
         "south": "torch_posts/torch_post_014/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "e2e60795-d76e-4928-9e46-3af029cbe549",
+          "description": "This is the same picture in every frame. ONLY the five flames on the branches flicker. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "torch_posts/torch_post_014/animations/motion/00.webp",
+            "torch_posts/torch_post_014/animations/motion/01.webp",
+            "torch_posts/torch_post_014/animations/motion/02.webp",
+            "torch_posts/torch_post_014/animations/motion/03.webp",
+            "torch_posts/torch_post_014/animations/motion/04.webp"
+          ],
+          "strip": "torch_posts/torch_post_014/animations/motion__south.62743ec2.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:07:53+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.677,
+              "dx": -1.5,
+              "dy": -18.1
+            },
+            {
+              "intensity": 1.408,
+              "dx": 0.1,
+              "dy": -20.2
+            },
+            {
+              "intensity": 1.428,
+              "dx": 1.0,
+              "dy": -21.2
+            },
+            {
+              "intensity": 1.024,
+              "dx": -1.0,
+              "dy": -19.9
+            },
+            {
+              "intensity": 0.5,
+              "dx": 0.6,
+              "dy": -17.4
+            }
+          ]
+        }
       }
     },
     "LIT_2": {

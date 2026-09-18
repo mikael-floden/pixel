@@ -187,7 +187,33 @@
       "generated_at": "2026-08-15T21:06:30+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6744,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "motion": {
+          "group_id": "72967946-4d56-4c67-9eb1-31368bf26ee6",
+          "description": "This is the same picture in every frame. ONLY the leaves move, shivering very slightly in a faint breeze: no leaf shifts by more than a pixel or two, and the bush keeps exactly its outline. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bushes/bush_001/not_lit_3/animations/motion/00.webp",
+            "bushes/bush_001/not_lit_3/animations/motion/01.webp",
+            "bushes/bush_001/not_lit_3/animations/motion/02.webp",
+            "bushes/bush_001/not_lit_3/animations/motion/03.webp",
+            "bushes/bush_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "bushes/bush_001/not_lit_3/animations/motion__south.a8506859.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T07:56:57+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1761
+          }
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "bushes/bush_001/not_lit_4/sprite.webp",
@@ -195,7 +221,33 @@
       "generated_at": "2026-08-15T21:06:52+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4619,
-      "glow_score": 0.0015
+      "glow_score": 0.0015,
+      "animations": {
+        "motion": {
+          "group_id": "797531c8-394e-42c8-bb0e-585da505e668",
+          "description": "This is the same picture in every frame. ONLY the leaves move, shivering very slightly in a faint breeze: no leaf shifts by more than a pixel or two, and the bush keeps exactly its outline. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "bushes/bush_001/not_lit_4/animations/motion/00.webp",
+            "bushes/bush_001/not_lit_4/animations/motion/01.webp",
+            "bushes/bush_001/not_lit_4/animations/motion/02.webp",
+            "bushes/bush_001/not_lit_4/animations/motion/03.webp",
+            "bushes/bush_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "bushes/bush_001/not_lit_4/animations/motion__south.adf9edc3.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T07:57:48+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0909
+          }
+        }
+      }
     }
   },
   "collision": true,

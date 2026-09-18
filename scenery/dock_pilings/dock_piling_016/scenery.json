@@ -49,6 +49,59 @@
         "south-east": "dock_pilings/dock_piling_016/rotations/south-east.webp",
         "south-west": "dock_pilings/dock_piling_016/rotations/south-west.webp",
         "south": "dock_pilings/dock_piling_016/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "4d3d3328-dde8-42ba-af52-6fd040779221",
+          "description": "This is the same picture in every frame. ONLY the glowing waterline brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "dock_pilings/dock_piling_016/animations/motion/00.webp",
+            "dock_pilings/dock_piling_016/animations/motion/01.webp",
+            "dock_pilings/dock_piling_016/animations/motion/02.webp",
+            "dock_pilings/dock_piling_016/animations/motion/03.webp",
+            "dock_pilings/dock_piling_016/animations/motion/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_016/animations/motion__south.a02ad326.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:11:50+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.2906
+          },
+          "light_frames": [
+            {
+              "intensity": 0.711,
+              "dx": 8.8,
+              "dy": 9.7
+            },
+            {
+              "intensity": 1.059,
+              "dx": 5.9,
+              "dy": 12.9
+            },
+            {
+              "intensity": 1.112,
+              "dx": 5.9,
+              "dy": 11.9
+            },
+            {
+              "intensity": 1.126,
+              "dx": 6.0,
+              "dy": 11.1
+            },
+            {
+              "intensity": 0.991,
+              "dx": 6.3,
+              "dy": 9.5
+            }
+          ]
+        }
       }
     },
     "LIT_2": {
@@ -243,7 +296,59 @@
         "south-west": "dock_pilings/dock_piling_016/lit_3/rotations/south-west.webp",
         "south": "dock_pilings/dock_piling_016/lit_3/sprite.webp"
       },
-      "animations": {}
+      "animations": {
+        "motion": {
+          "group_id": "1bb88f61-2015-40c6-87c0-85f1719522ba",
+          "description": "This is the same picture in every frame. ONLY the glowing waterline brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "dock_pilings/dock_piling_016/lit_3/animations/motion/00.webp",
+            "dock_pilings/dock_piling_016/lit_3/animations/motion/01.webp",
+            "dock_pilings/dock_piling_016/lit_3/animations/motion/02.webp",
+            "dock_pilings/dock_piling_016/lit_3/animations/motion/03.webp",
+            "dock_pilings/dock_piling_016/lit_3/animations/motion/04.webp"
+          ],
+          "strip": "dock_pilings/dock_piling_016/lit_3/animations/motion__south.905662a0.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:12:58+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.5378
+          },
+          "light_frames": [
+            {
+              "intensity": 0.767,
+              "dx": -3.4,
+              "dy": 19.9
+            },
+            {
+              "intensity": 1.279,
+              "dx": -5.3,
+              "dy": 19.8
+            },
+            {
+              "intensity": 1.3,
+              "dx": -12.9,
+              "dy": 17.7
+            },
+            {
+              "intensity": 0.846,
+              "dx": -23.9,
+              "dy": 12.4
+            },
+            {
+              "intensity": 0.807,
+              "dx": -20.8,
+              "dy": 14.1
+            }
+          ]
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "dock_pilings/dock_piling_016/not_lit_3/sprite.webp",

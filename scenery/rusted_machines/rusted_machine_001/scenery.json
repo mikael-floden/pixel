@@ -481,6 +481,32 @@
         "south-east": "rusted_machines/rusted_machine_001/not_lit_2/rotations/south-east.webp",
         "south-west": "rusted_machines/rusted_machine_001/not_lit_2/rotations/south-west.webp",
         "south": "rusted_machines/rusted_machine_001/not_lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "50ab5f04-907f-4f4c-aa52-e944fba5c2fc",
+          "description": "This is the same picture in every frame. only, turning very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rusted_machines/rusted_machine_001/not_lit_2/animations/motion/00.webp",
+            "rusted_machines/rusted_machine_001/not_lit_2/animations/motion/01.webp",
+            "rusted_machines/rusted_machine_001/not_lit_2/animations/motion/02.webp",
+            "rusted_machines/rusted_machine_001/not_lit_2/animations/motion/03.webp",
+            "rusted_machines/rusted_machine_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "rusted_machines/rusted_machine_001/not_lit_2/animations/motion__south.624af801.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:44:42+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_3": {
@@ -494,6 +520,32 @@
         "south-east": "rusted_machines/rusted_machine_001/not_lit_3/rotations/south-east.webp",
         "south-west": "rusted_machines/rusted_machine_001/not_lit_3/rotations/south-west.webp",
         "south": "rusted_machines/rusted_machine_001/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "94437be7-ffc5-4126-958f-2ec26c5d263e",
+          "description": "This is the same picture in every frame. only, turning very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rusted_machines/rusted_machine_001/not_lit_3/animations/motion/00.webp",
+            "rusted_machines/rusted_machine_001/not_lit_3/animations/motion/01.webp",
+            "rusted_machines/rusted_machine_001/not_lit_3/animations/motion/02.webp",
+            "rusted_machines/rusted_machine_001/not_lit_3/animations/motion/03.webp",
+            "rusted_machines/rusted_machine_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "rusted_machines/rusted_machine_001/not_lit_3/animations/motion__south.fce56417.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:46:01+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1049
+          }
+        }
       }
     },
     "NOT_LIT_4": {
@@ -507,6 +559,32 @@
         "south-east": "rusted_machines/rusted_machine_001/not_lit_4/rotations/south-east.webp",
         "south-west": "rusted_machines/rusted_machine_001/not_lit_4/rotations/south-west.webp",
         "south": "rusted_machines/rusted_machine_001/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "556777f3-088c-46cc-85e6-845c337bab7e",
+          "description": "This is the same picture in every frame. only, turning very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "rusted_machines/rusted_machine_001/not_lit_4/animations/motion/00.webp",
+            "rusted_machines/rusted_machine_001/not_lit_4/animations/motion/01.webp",
+            "rusted_machines/rusted_machine_001/not_lit_4/animations/motion/02.webp",
+            "rusted_machines/rusted_machine_001/not_lit_4/animations/motion/03.webp",
+            "rusted_machines/rusted_machine_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "rusted_machines/rusted_machine_001/not_lit_4/animations/motion__south.1d9305f5.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:45:21+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1351
+          }
+        }
       }
     }
   },

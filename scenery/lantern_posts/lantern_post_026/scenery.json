@@ -49,6 +49,59 @@
         "south-east": "lantern_posts/lantern_post_026/rotations/south-east.webp",
         "south-west": "lantern_posts/lantern_post_026/rotations/south-west.webp",
         "south": "lantern_posts/lantern_post_026/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "05b503d0-ce07-4c17-a4b3-cfc2bf472dd6",
+          "description": "This is the same picture in every frame. ONLY the light behind the panel flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "lantern_posts/lantern_post_026/animations/motion/00.webp",
+            "lantern_posts/lantern_post_026/animations/motion/01.webp",
+            "lantern_posts/lantern_post_026/animations/motion/02.webp",
+            "lantern_posts/lantern_post_026/animations/motion/03.webp",
+            "lantern_posts/lantern_post_026/animations/motion/04.webp"
+          ],
+          "strip": "lantern_posts/lantern_post_026/animations/motion__south.b0322948.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:32:14+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 1.068,
+              "dx": -0.5,
+              "dy": -9.8
+            },
+            {
+              "intensity": 1.124,
+              "dx": -0.3,
+              "dy": -10.6
+            },
+            {
+              "intensity": 1.122,
+              "dx": -0.3,
+              "dy": -11.6
+            },
+            {
+              "intensity": 1.047,
+              "dx": -0.4,
+              "dy": -11.8
+            },
+            {
+              "intensity": 0.64,
+              "dx": -0.4,
+              "dy": -12.5
+            }
+          ]
+        }
       }
     },
     "LIT_2": {
@@ -191,29 +244,29 @@
           "brief": "D4",
           "light_frames": [
             {
-              "intensity": 0.93,
+              "intensity": 1.5,
               "dx": 0.3,
               "dy": -5.5
             },
             {
-              "intensity": 0.5,
-              "dx": -0.5,
-              "dy": -6.0
+              "intensity": 1.159,
+              "dx": -1.4,
+              "dy": -6.2
             },
             {
               "intensity": 0.5,
-              "dx": -0.5,
-              "dy": -6.0
+              "dx": -1.5,
+              "dy": -6.7
             },
             {
-              "intensity": 1.5,
-              "dx": -0.5,
-              "dy": -4.9
+              "intensity": 0.569,
+              "dx": -1.1,
+              "dy": -8.1
             },
             {
-              "intensity": 1.5,
-              "dx": -0.3,
-              "dy": -4.1
+              "intensity": 1.099,
+              "dx": -1.0,
+              "dy": -7.6
             }
           ],
           "frame_paths": [
@@ -371,29 +424,29 @@
           "brief": "H18",
           "light_frames": [
             {
-              "intensity": 1.5,
+              "intensity": 1.064,
               "dx": 0.5,
               "dy": -8.6
             },
             {
-              "intensity": 0.5,
-              "dx": 2.2,
-              "dy": -5.5
+              "intensity": 1.007,
+              "dx": 0.3,
+              "dy": -7.4
             },
             {
-              "intensity": 0.5,
-              "dx": 2.2,
-              "dy": -5.5
+              "intensity": 0.861,
+              "dx": 0.3,
+              "dy": -8.9
             },
             {
-              "intensity": 1.5,
-              "dx": 0.4,
-              "dy": -9.0
+              "intensity": 1.03,
+              "dx": 0.3,
+              "dy": -6.6
             },
             {
-              "intensity": 0.5,
-              "dx": 2.2,
-              "dy": -5.5
+              "intensity": 1.037,
+              "dx": 0.3,
+              "dy": -6.6
             }
           ],
           "frame_paths": [
@@ -551,29 +604,29 @@
           "brief": "G3",
           "light_frames": [
             {
-              "intensity": 1.5,
+              "intensity": 1.306,
               "dx": 0.0,
               "dy": -3.3
             },
             {
-              "intensity": 0.5,
-              "dx": 0.6,
-              "dy": 4.7
+              "intensity": 1.008,
+              "dx": -0.6,
+              "dy": -4.5
             },
             {
-              "intensity": 0.5,
-              "dx": -4.3,
-              "dy": 5.3
+              "intensity": 0.838,
+              "dx": -0.4,
+              "dy": -4.7
             },
             {
-              "intensity": 1.5,
-              "dx": -0.8,
-              "dy": -3.2
+              "intensity": 0.925,
+              "dx": -0.5,
+              "dy": -5.0
             },
             {
-              "intensity": 0.658,
-              "dx": -0.9,
-              "dy": -1.7
+              "intensity": 0.923,
+              "dx": -0.5,
+              "dy": -5.0
             }
           ],
           "frame_paths": [

@@ -231,6 +231,59 @@
         "south-east": "offering_tables/offering_table_001/lit_2/rotations/south-east.webp",
         "south-west": "offering_tables/offering_table_001/lit_2/rotations/south-west.webp",
         "south": "offering_tables/offering_table_001/lit_2/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "4d4e7ef3-f366-4e0e-9d2f-4479b4f75e54",
+          "description": "This is the same picture in every frame. ONLY the pale wisps above the table move, drifting slowly and fading. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "offering_tables/offering_table_001/lit_2/animations/motion/00.webp",
+            "offering_tables/offering_table_001/lit_2/animations/motion/01.webp",
+            "offering_tables/offering_table_001/lit_2/animations/motion/02.webp",
+            "offering_tables/offering_table_001/lit_2/animations/motion/03.webp",
+            "offering_tables/offering_table_001/lit_2/animations/motion/04.webp"
+          ],
+          "strip": "offering_tables/offering_table_001/lit_2/animations/motion__south.c07e2c18.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:38:34+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0806
+          },
+          "light_frames": [
+            {
+              "intensity": 0.98,
+              "dx": 0.4,
+              "dy": -4.3
+            },
+            {
+              "intensity": 1.021,
+              "dx": 1.2,
+              "dy": -4.1
+            },
+            {
+              "intensity": 1.008,
+              "dx": 1.2,
+              "dy": -3.7
+            },
+            {
+              "intensity": 0.999,
+              "dx": 1.2,
+              "dy": -3.7
+            },
+            {
+              "intensity": 0.992,
+              "dx": 1.2,
+              "dy": -3.5
+            }
+          ]
+        }
       }
     },
     "NOT_LIT_1": {

@@ -202,7 +202,33 @@
       "glow_concept": null,
       "difference_from_source": 0.4331,
       "glow_score": 0.0089,
-      "generated_at": "2026-08-15T16:13:33+00:00"
+      "generated_at": "2026-08-15T16:13:33+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "967df08b-04e1-4304-9b79-ee004aa4d372",
+          "description": "This is the same picture in every frame. ONLY the small growth on the cut face moves, stirring a pixel or two. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_001/not_lit_4/animations/motion/00.webp",
+            "stumps/stump_001/not_lit_4/animations/motion/01.webp",
+            "stumps/stump_001/not_lit_4/animations/motion/02.webp",
+            "stumps/stump_001/not_lit_4/animations/motion/03.webp",
+            "stumps/stump_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_001/not_lit_4/animations/motion__south.c170b230.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:03:09+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0469
+          }
+        }
+      }
     },
     "NOT_LIT_5": {
       "sprite": "stumps/stump_001/not_lit_5/sprite.webp",
@@ -210,7 +236,33 @@
       "generated_at": "2026-08-16T14:25:17+00:00",
       "glow_concept": null,
       "difference_from_source": 0.6992,
-      "glow_score": 0.0252
+      "glow_score": 0.0252,
+      "animations": {
+        "motion": {
+          "group_id": "6c929fe3-6154-4903-b62d-0c8f0cfcd8ce",
+          "description": "This is the same picture in every frame. ONLY the small growth on the cut face moves, stirring a pixel or two. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "stumps/stump_001/not_lit_5/animations/motion/00.webp",
+            "stumps/stump_001/not_lit_5/animations/motion/01.webp",
+            "stumps/stump_001/not_lit_5/animations/motion/02.webp",
+            "stumps/stump_001/not_lit_5/animations/motion/03.webp",
+            "stumps/stump_001/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "stumps/stump_001/not_lit_5/animations/motion__south.8988fdbc.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:03:06+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0263
+          }
+        }
+      }
     }
   },
   "generated_at": "2026-08-13T00:55:11+00:00",

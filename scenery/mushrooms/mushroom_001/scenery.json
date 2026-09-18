@@ -80,7 +80,33 @@
       "generated_at": "2026-08-16T19:24:32+00:00",
       "glow_concept": null,
       "difference_from_source": 0.7349,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "motion": {
+          "group_id": "a8b45079-08d1-42be-bdc4-3d6a0bf612b1",
+          "description": "This is the same picture in every frame. ONLY the caps move, nodding a pixel or two as if something passed by. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "mushrooms/mushroom_001/not_lit_2/animations/motion/00.webp",
+            "mushrooms/mushroom_001/not_lit_2/animations/motion/01.webp",
+            "mushrooms/mushroom_001/not_lit_2/animations/motion/02.webp",
+            "mushrooms/mushroom_001/not_lit_2/animations/motion/03.webp",
+            "mushrooms/mushroom_001/not_lit_2/animations/motion/04.webp"
+          ],
+          "strip": "mushrooms/mushroom_001/not_lit_2/animations/motion__south.a61d0804.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:37:22+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.3978
+          }
+        }
+      }
     },
     "NOT_LIT_3": {
       "sprite": "mushrooms/mushroom_001/not_lit_3/sprite.webp",
@@ -88,7 +114,33 @@
       "generated_at": "2026-08-16T18:06:14+00:00",
       "glow_concept": null,
       "difference_from_source": 0.8752,
-      "glow_score": 0.0
+      "glow_score": 0.0,
+      "animations": {
+        "motion": {
+          "group_id": "df590407-8110-4038-b855-c62cc870d2f6",
+          "description": "This is the same picture in every frame. ONLY the caps move, nodding a pixel or two as if something passed by. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "mushrooms/mushroom_001/not_lit_3/animations/motion/00.webp",
+            "mushrooms/mushroom_001/not_lit_3/animations/motion/01.webp",
+            "mushrooms/mushroom_001/not_lit_3/animations/motion/02.webp",
+            "mushrooms/mushroom_001/not_lit_3/animations/motion/03.webp",
+            "mushrooms/mushroom_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "mushrooms/mushroom_001/not_lit_3/animations/motion__south.d8bbc9a5.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:37:31+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.375
+          }
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "mushrooms/mushroom_001/not_lit_4/sprite.webp",
@@ -96,7 +148,33 @@
       "generated_at": "2026-08-16T18:05:47+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3835,
-      "glow_score": 0.0518
+      "glow_score": 0.0518,
+      "animations": {
+        "motion": {
+          "group_id": "b1a8830c-ac65-4a30-a053-21b92908e42c",
+          "description": "This is the same picture in every frame. ONLY the caps move, nodding a pixel or two as if something passed by. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "mushrooms/mushroom_001/not_lit_4/animations/motion/00.webp",
+            "mushrooms/mushroom_001/not_lit_4/animations/motion/01.webp",
+            "mushrooms/mushroom_001/not_lit_4/animations/motion/02.webp",
+            "mushrooms/mushroom_001/not_lit_4/animations/motion/03.webp",
+            "mushrooms/mushroom_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "mushrooms/mushroom_001/not_lit_4/animations/motion__south.ee0d9e49.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:37:18+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.2151
+          }
+        }
+      }
     },
     "NOT_LIT_5": {
       "sprite": "mushrooms/mushroom_001/not_lit_5/sprite.webp",

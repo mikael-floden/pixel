@@ -43,7 +43,60 @@
     "LIT_1": {
       "sprite": "water_lily_clumps/water_lily_clump_002/sprite.webp",
       "pixellab_object_id": "13678f32-9861-4104-944a-effd471e7728",
-      "generated_at": "2026-08-13T04:58:17+00:00"
+      "generated_at": "2026-08-13T04:58:17+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "337e2c2b-bdfd-4e4b-a436-afa6089eeb3d",
+          "description": "This is the same picture in every frame. ONLY the outermost edge of the two white flowers on the pads changes, and barely: a few pixels along that edge lift very slightly in brightness and drop straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "water_lily_clumps/water_lily_clump_002/animations/motion/00.webp",
+            "water_lily_clumps/water_lily_clump_002/animations/motion/01.webp",
+            "water_lily_clumps/water_lily_clump_002/animations/motion/02.webp",
+            "water_lily_clumps/water_lily_clump_002/animations/motion/03.webp",
+            "water_lily_clumps/water_lily_clump_002/animations/motion/04.webp"
+          ],
+          "strip": "water_lily_clumps/water_lily_clump_002/animations/motion__south.acf871e9.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:14:14+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1739
+          },
+          "light_frames": [
+            {
+              "intensity": 1.045,
+              "dx": 4.8,
+              "dy": -2.0
+            },
+            {
+              "intensity": 1.029,
+              "dx": 4.7,
+              "dy": -2.2
+            },
+            {
+              "intensity": 0.985,
+              "dx": 4.2,
+              "dy": -2.3
+            },
+            {
+              "intensity": 1.025,
+              "dx": 4.8,
+              "dy": -1.9
+            },
+            {
+              "intensity": 0.916,
+              "dx": 5.4,
+              "dy": -1.3
+            }
+          ]
+        }
+      }
     },
     "LIT_2": {
       "sprite": "water_lily_clumps/water_lily_clump_002/lit_2/sprite.webp",

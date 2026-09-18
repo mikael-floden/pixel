@@ -1,5 +1,55 @@
 {
  "files": {
+  "lantern_posts/lantern_post_015/animations/motion/00.webp": {
+   "file": "animations/motion/00.f9dda88b.webp",
+   "h": 54,
+   "ox": 20,
+   "oy": 5,
+   "src": "af619c37",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 27
+  },
+  "lantern_posts/lantern_post_015/animations/motion/01.webp": {
+   "file": "animations/motion/01.d327716e.webp",
+   "h": 54,
+   "ox": 20,
+   "oy": 5,
+   "src": "e378374c",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 27
+  },
+  "lantern_posts/lantern_post_015/animations/motion/02.webp": {
+   "file": "animations/motion/02.52a93125.webp",
+   "h": 54,
+   "ox": 20,
+   "oy": 5,
+   "src": "e982472e",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 27
+  },
+  "lantern_posts/lantern_post_015/animations/motion/03.webp": {
+   "file": "animations/motion/03.29f3b358.webp",
+   "h": 54,
+   "ox": 20,
+   "oy": 5,
+   "src": "09497aa0",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 27
+  },
+  "lantern_posts/lantern_post_015/animations/motion/04.webp": {
+   "file": "animations/motion/04.7f981923.webp",
+   "h": 54,
+   "ox": 20,
+   "oy": 5,
+   "src": "00423c3f",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 27
+  },
   "lantern_posts/lantern_post_015/lit_1/animations/motion/south-east/00.webp": {
    "file": "lit_1/animations/motion/south-east/00.80b3b617.webp",
    "h": 54,
@@ -738,35 +788,88 @@
    "srcW": 64,
    "w": 38
   },
-  "lantern_posts/lantern_post_015/not_lit_4/rotations/south-east.webp": {
-   "file": "not_lit_4/rotations/south-east.7c74d76d.webp",
+  "lantern_posts/lantern_post_015/not_lit_4/animations/motion/00.webp": {
+   "file": "not_lit_4/animations/motion/00.ba6f74da.webp",
    "h": 55,
-   "ox": 16,
-   "oy": 5,
-   "src": "4b84133f",
-   "srcH": 64,
-   "srcW": 64,
-   "w": 32
-  },
-  "lantern_posts/lantern_post_015/not_lit_4/rotations/south-west.webp": {
-   "file": "not_lit_4/rotations/south-west.92c5f0b5.webp",
-   "h": 55,
-   "ox": 16,
-   "oy": 5,
-   "src": "4cc2f820",
-   "srcH": 64,
-   "srcW": 64,
-   "w": 32
-  },
-  "lantern_posts/lantern_post_015/not_lit_4/sprite.webp": {
-   "file": "not_lit_4/sprite.670aee3c.webp",
-   "h": 55,
-   "ox": 16,
+   "ox": 15,
    "oy": 5,
    "src": "5c662dcb",
    "srcH": 64,
    "srcW": 64,
-   "w": 32
+   "w": 34
+  },
+  "lantern_posts/lantern_post_015/not_lit_4/animations/motion/01.webp": {
+   "file": "not_lit_4/animations/motion/01.8c604146.webp",
+   "h": 55,
+   "ox": 15,
+   "oy": 5,
+   "src": "b364a73d",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 34
+  },
+  "lantern_posts/lantern_post_015/not_lit_4/animations/motion/02.webp": {
+   "file": "not_lit_4/animations/motion/02.de9a200a.webp",
+   "h": 55,
+   "ox": 15,
+   "oy": 5,
+   "src": "611e748a",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 34
+  },
+  "lantern_posts/lantern_post_015/not_lit_4/animations/motion/03.webp": {
+   "file": "not_lit_4/animations/motion/03.41e33c90.webp",
+   "h": 55,
+   "ox": 15,
+   "oy": 5,
+   "src": "d20de786",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 34
+  },
+  "lantern_posts/lantern_post_015/not_lit_4/animations/motion/04.webp": {
+   "file": "not_lit_4/animations/motion/04.8f3ed523.webp",
+   "h": 55,
+   "ox": 15,
+   "oy": 5,
+   "src": "3007343d",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 34
+  },
+  "lantern_posts/lantern_post_015/not_lit_4/rotations/south-east.webp": {
+   "file": "not_lit_4/rotations/south-east.e23b204b.webp",
+   "h": 55,
+   "ox": 15,
+   "oy": 5,
+   "prev": "not_lit_4/rotations/south-east.7c74d76d.webp",
+   "src": "4b84133f",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 34
+  },
+  "lantern_posts/lantern_post_015/not_lit_4/rotations/south-west.webp": {
+   "file": "not_lit_4/rotations/south-west.7ddcbb75.webp",
+   "h": 55,
+   "ox": 15,
+   "oy": 5,
+   "prev": "not_lit_4/rotations/south-west.92c5f0b5.webp",
+   "src": "4cc2f820",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 34
+  },
+  "lantern_posts/lantern_post_015/not_lit_4/sprite.webp": {
+   "file": "not_lit_4/sprite.ba6f74da.webp",
+   "h": 55,
+   "ox": 15,
+   "oy": 5,
+   "prev": "not_lit_4/sprite.670aee3c.webp",
+   "src": "5c662dcb",
+   "srcH": 64,
+   "srcW": 64,
+   "w": 34
   },
   "lantern_posts/lantern_post_015/rotations/south-east.webp": {
    "file": "rotations/south-east.77ad0c64.webp",

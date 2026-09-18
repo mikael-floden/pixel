@@ -43,7 +43,60 @@
     "LIT_1": {
       "sprite": "beast_skulls/beast_skull_002/sprite.webp",
       "pixellab_object_id": "bdd81821-b7f9-4a9e-9805-164927de068c",
-      "generated_at": "2026-08-13T05:05:00+00:00"
+      "generated_at": "2026-08-13T05:05:00+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "9bcb3c9b-8b83-44f5-861f-f8ab11ddb6f9",
+          "description": "This is the same picture in every frame. ONLY the thin green line on the skull changes: it brightens by the smallest amount that is still visible, then returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "beast_skulls/beast_skull_002/animations/motion/00.webp",
+            "beast_skulls/beast_skull_002/animations/motion/01.webp",
+            "beast_skulls/beast_skull_002/animations/motion/02.webp",
+            "beast_skulls/beast_skull_002/animations/motion/03.webp",
+            "beast_skulls/beast_skull_002/animations/motion/04.webp"
+          ],
+          "strip": "beast_skulls/beast_skull_002/animations/motion__south.c18fab46.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T07:55:15+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0043
+          },
+          "light_frames": [
+            {
+              "intensity": 1.012,
+              "dx": 0.9,
+              "dy": 6.7
+            },
+            {
+              "intensity": 0.973,
+              "dx": -0.4,
+              "dy": 6.5
+            },
+            {
+              "intensity": 1.01,
+              "dx": -0.2,
+              "dy": 6.3
+            },
+            {
+              "intensity": 1.029,
+              "dx": 0.0,
+              "dy": 5.9
+            },
+            {
+              "intensity": 0.976,
+              "dx": 0.4,
+              "dy": 6.1
+            }
+          ]
+        }
+      }
     },
     "LIT_3": {
       "sprite": "beast_skulls/beast_skull_002/lit_3/sprite.webp",

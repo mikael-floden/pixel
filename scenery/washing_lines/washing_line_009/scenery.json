@@ -48,6 +48,32 @@
         "south-east": "washing_lines/washing_line_009/rotations/south-east.webp",
         "south-west": "washing_lines/washing_line_009/rotations/south-west.webp",
         "south": "washing_lines/washing_line_009/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "6e29b7ee-eab7-4e70-ae3e-d73093d7a527",
+          "description": "This is the same picture in every frame. ONLY the washing hanging on the line moves, swaying. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "washing_lines/washing_line_009/animations/motion/00.webp",
+            "washing_lines/washing_line_009/animations/motion/01.webp",
+            "washing_lines/washing_line_009/animations/motion/02.webp",
+            "washing_lines/washing_line_009/animations/motion/03.webp",
+            "washing_lines/washing_line_009/animations/motion/04.webp"
+          ],
+          "strip": "washing_lines/washing_line_009/animations/motion__south.5a783eba.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:11:56+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0381
+          }
+        }
       }
     },
     "NOT_LIT_2": {

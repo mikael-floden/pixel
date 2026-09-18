@@ -43,7 +43,33 @@
     "NOT_LIT_1": {
       "sprite": "reed_beds/reed_bed_007/sprite.webp",
       "pixellab_object_id": "a21686f2-2725-4083-bf66-6f2e0ff9aabc",
-      "generated_at": "2026-08-13T14:06:39+00:00"
+      "generated_at": "2026-08-13T14:06:39+00:00",
+      "animations": {
+        "motion": {
+          "group_id": "50c0b0c1-1643-4275-ab06-e166e01597e8",
+          "description": "This is the same picture in every frame. ONLY the feathery plume tops move, each leaning by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_007/animations/motion/00.webp",
+            "reed_beds/reed_bed_007/animations/motion/01.webp",
+            "reed_beds/reed_bed_007/animations/motion/02.webp",
+            "reed_beds/reed_bed_007/animations/motion/03.webp",
+            "reed_beds/reed_bed_007/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_007/animations/motion__south.9681dded.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:41:23+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.003
+          }
+        }
+      }
     },
     "NOT_LIT_2": {
       "sprite": "reed_beds/reed_bed_007/not_lit_2/sprite.webp",
@@ -88,7 +114,33 @@
       "generated_at": "2026-08-16T20:10:05+00:00",
       "glow_concept": null,
       "difference_from_source": 0.4874,
-      "glow_score": 0.2362
+      "glow_score": 0.2362,
+      "animations": {
+        "motion": {
+          "group_id": "a585d06c-6b7c-4e19-933d-10e2fd0bf082",
+          "description": "This is the same picture in every frame. ONLY the feathery plume tops move, each leaning by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "reed_beds/reed_bed_007/not_lit_4/animations/motion/00.webp",
+            "reed_beds/reed_bed_007/not_lit_4/animations/motion/01.webp",
+            "reed_beds/reed_bed_007/not_lit_4/animations/motion/02.webp",
+            "reed_beds/reed_bed_007/not_lit_4/animations/motion/03.webp",
+            "reed_beds/reed_bed_007/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "reed_beds/reed_bed_007/not_lit_4/animations/motion__south.ac9c373d.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:41:39+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0015
+          }
+        }
+      }
     }
   },
   "collision": true,

@@ -131,7 +131,33 @@
       "generated_at": "2026-08-16T14:34:11+00:00",
       "glow_concept": null,
       "difference_from_source": 0.3558,
-      "glow_score": 0.1795
+      "glow_score": 0.1795,
+      "animations": {
+        "motion": {
+          "group_id": "ef0ea482-6152-44df-b7ae-8ea8ad671bda",
+          "description": "This is the same picture in every frame. only, bending in a gentle breeze. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "grass_tufts/grass_tuft_001/not_lit_3/animations/motion/00.webp",
+            "grass_tufts/grass_tuft_001/not_lit_3/animations/motion/01.webp",
+            "grass_tufts/grass_tuft_001/not_lit_3/animations/motion/02.webp",
+            "grass_tufts/grass_tuft_001/not_lit_3/animations/motion/03.webp",
+            "grass_tufts/grass_tuft_001/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "grass_tufts/grass_tuft_001/not_lit_3/animations/motion__south.879f8a46.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:24:04+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.2809
+          }
+        }
+      }
     },
     "NOT_LIT_4": {
       "sprite": "grass_tufts/grass_tuft_001/not_lit_4/sprite.webp",
@@ -139,7 +165,33 @@
       "generated_at": "2026-08-16T14:37:17+00:00",
       "glow_concept": null,
       "difference_from_source": 0.5255,
-      "glow_score": 0.1667
+      "glow_score": 0.1667,
+      "animations": {
+        "motion": {
+          "group_id": "42802c3f-2083-43c5-98db-f41acf80794e",
+          "description": "This is the same picture in every frame. only, bending in a gentle breeze. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "grass_tufts/grass_tuft_001/not_lit_4/animations/motion/00.webp",
+            "grass_tufts/grass_tuft_001/not_lit_4/animations/motion/01.webp",
+            "grass_tufts/grass_tuft_001/not_lit_4/animations/motion/02.webp",
+            "grass_tufts/grass_tuft_001/not_lit_4/animations/motion/03.webp",
+            "grass_tufts/grass_tuft_001/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "grass_tufts/grass_tuft_001/not_lit_4/animations/motion__south.5b4275d6.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:24:30+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1667
+          }
+        }
+      }
     }
   },
   "collision": true,

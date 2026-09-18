@@ -48,6 +48,59 @@
         "south-east": "ivy_posts/ivy_post_010/rotations/south-east.webp",
         "south-west": "ivy_posts/ivy_post_010/rotations/south-west.webp",
         "south": "ivy_posts/ivy_post_010/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "a16e1b1d-aa23-466e-9e21-4abe99a20b01",
+          "description": "This is the same picture in every frame. ONLY the green rune on the post brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "ivy_posts/ivy_post_010/animations/motion/00.webp",
+            "ivy_posts/ivy_post_010/animations/motion/01.webp",
+            "ivy_posts/ivy_post_010/animations/motion/02.webp",
+            "ivy_posts/ivy_post_010/animations/motion/03.webp",
+            "ivy_posts/ivy_post_010/animations/motion/04.webp"
+          ],
+          "strip": "ivy_posts/ivy_post_010/animations/motion__south.d2f6e4e9.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:30:42+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0041
+          },
+          "light_frames": [
+            {
+              "intensity": 0.915,
+              "dx": 2.3,
+              "dy": -0.4
+            },
+            {
+              "intensity": 0.993,
+              "dx": 1.0,
+              "dy": 2.0
+            },
+            {
+              "intensity": 1.031,
+              "dx": 1.0,
+              "dy": 0.7
+            },
+            {
+              "intensity": 1.114,
+              "dx": 1.3,
+              "dy": 0.1
+            },
+            {
+              "intensity": 0.947,
+              "dx": 0.1,
+              "dy": -0.3
+            }
+          ]
+        }
       }
     },
     "LIT_3": {

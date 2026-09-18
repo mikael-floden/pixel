@@ -49,6 +49,32 @@
         "south-east": "waystones/waystone_010/rotations/south-east.webp",
         "south-west": "waystones/waystone_010/rotations/south-west.webp",
         "south": "waystones/waystone_010/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "3d71153a-95ef-4922-b0f0-66c7f0724b2d",
+          "description": "This is the same picture in every frame. ONLY the gold light on the mushrooms brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "waystones/waystone_010/animations/motion/00.webp",
+            "waystones/waystone_010/animations/motion/01.webp",
+            "waystones/waystone_010/animations/motion/02.webp",
+            "waystones/waystone_010/animations/motion/03.webp",
+            "waystones/waystone_010/animations/motion/04.webp"
+          ],
+          "strip": "waystones/waystone_010/animations/motion__south.53b0f636.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:18:19+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_4": {
@@ -136,6 +162,32 @@
         "south-east": "waystones/waystone_010/not_lit_5/rotations/south-east.webp",
         "south-west": "waystones/waystone_010/not_lit_5/rotations/south-west.webp",
         "south": "waystones/waystone_010/not_lit_5/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "67b2a2b4-8570-4456-9caf-f58f98b0daf4",
+          "description": "This is the same picture in every frame. ONLY the gold light on the mushrooms brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "waystones/waystone_010/not_lit_5/animations/motion/00.webp",
+            "waystones/waystone_010/not_lit_5/animations/motion/01.webp",
+            "waystones/waystone_010/not_lit_5/animations/motion/02.webp",
+            "waystones/waystone_010/not_lit_5/animations/motion/03.webp",
+            "waystones/waystone_010/not_lit_5/animations/motion/04.webp"
+          ],
+          "strip": "waystones/waystone_010/not_lit_5/animations/motion__south.1aedb49a.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:18:50+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     },
     "NOT_LIT_6": {
@@ -150,6 +202,32 @@
         "south-east": "waystones/waystone_010/not_lit_6/rotations/south-east.webp",
         "south-west": "waystones/waystone_010/not_lit_6/rotations/south-west.webp",
         "south": "waystones/waystone_010/not_lit_6/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "0454c9e0-b42e-4cb6-ae9f-85fdfbf54ef1",
+          "description": "This is the same picture in every frame. ONLY the gold light on the mushrooms brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "waystones/waystone_010/not_lit_6/animations/motion/00.webp",
+            "waystones/waystone_010/not_lit_6/animations/motion/01.webp",
+            "waystones/waystone_010/not_lit_6/animations/motion/02.webp",
+            "waystones/waystone_010/not_lit_6/animations/motion/03.webp",
+            "waystones/waystone_010/not_lit_6/animations/motion/04.webp"
+          ],
+          "strip": "waystones/waystone_010/not_lit_6/animations/motion__south.70804eb7.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:19:24+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          }
+        }
       }
     }
   },

@@ -228,6 +228,32 @@
         "south-east": "flower_stands/flower_stand_007/rotations/south-east.webp",
         "south-west": "flower_stands/flower_stand_007/rotations/south-west.webp",
         "south": "flower_stands/flower_stand_007/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "3f4c990f-b877-4642-bf6b-910341fa5831",
+          "description": "This is the same picture in every frame. ONLY the rose heads move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_stands/flower_stand_007/animations/motion/00.webp",
+            "flower_stands/flower_stand_007/animations/motion/01.webp",
+            "flower_stands/flower_stand_007/animations/motion/02.webp",
+            "flower_stands/flower_stand_007/animations/motion/03.webp",
+            "flower_stands/flower_stand_007/animations/motion/04.webp"
+          ],
+          "strip": "flower_stands/flower_stand_007/animations/motion__south.f1a89e6f.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:20:46+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0884
+          }
+        }
       }
     },
     "NOT_LIT_2": {
@@ -313,6 +339,32 @@
         "south-east": "flower_stands/flower_stand_007/not_lit_3/rotations/south-east.webp",
         "south-west": "flower_stands/flower_stand_007/not_lit_3/rotations/south-west.webp",
         "south": "flower_stands/flower_stand_007/not_lit_3/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "2a9dac29-b3fd-40e2-a575-52798a885651",
+          "description": "This is the same picture in every frame. ONLY the rose heads move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_stands/flower_stand_007/not_lit_3/animations/motion/00.webp",
+            "flower_stands/flower_stand_007/not_lit_3/animations/motion/01.webp",
+            "flower_stands/flower_stand_007/not_lit_3/animations/motion/02.webp",
+            "flower_stands/flower_stand_007/not_lit_3/animations/motion/03.webp",
+            "flower_stands/flower_stand_007/not_lit_3/animations/motion/04.webp"
+          ],
+          "strip": "flower_stands/flower_stand_007/not_lit_3/animations/motion__south.7b747aa9.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:21:28+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1645
+          }
+        }
       }
     },
     "NOT_LIT_4": {
@@ -326,6 +378,32 @@
         "south-east": "flower_stands/flower_stand_007/not_lit_4/rotations/south-east.webp",
         "south-west": "flower_stands/flower_stand_007/not_lit_4/rotations/south-west.webp",
         "south": "flower_stands/flower_stand_007/not_lit_4/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "61ab98df-83c4-4957-a135-bfc2c637fbbb",
+          "description": "This is the same picture in every frame. ONLY the rose heads move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "flower_stands/flower_stand_007/not_lit_4/animations/motion/00.webp",
+            "flower_stands/flower_stand_007/not_lit_4/animations/motion/01.webp",
+            "flower_stands/flower_stand_007/not_lit_4/animations/motion/02.webp",
+            "flower_stands/flower_stand_007/not_lit_4/animations/motion/03.webp",
+            "flower_stands/flower_stand_007/not_lit_4/animations/motion/04.webp"
+          ],
+          "strip": "flower_stands/flower_stand_007/not_lit_4/animations/motion__south.6327f378.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:21:38+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1826
+          }
+        }
       }
     }
   },

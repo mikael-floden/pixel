@@ -52,6 +52,59 @@
         "south-east": "wall_hangings/wall_hanging_017/lit_1/rotations/south-east.webp",
         "south-west": "wall_hangings/wall_hanging_017/lit_1/rotations/south-west.webp",
         "south": "wall_hangings/wall_hanging_017/lit_1/sprite.webp"
+      },
+      "animations": {
+        "flame": {
+          "group_id": "317a4fcf-9ecb-4bb5-84c5-395a482ee753",
+          "description": "This is the same picture in every frame. ONLY the flame flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "wall_hangings/wall_hanging_017/lit_1/animations/flame/00.webp",
+            "wall_hangings/wall_hanging_017/lit_1/animations/flame/01.webp",
+            "wall_hangings/wall_hanging_017/lit_1/animations/flame/02.webp",
+            "wall_hangings/wall_hanging_017/lit_1/animations/flame/03.webp",
+            "wall_hangings/wall_hanging_017/lit_1/animations/flame/04.webp"
+          ],
+          "strip": "wall_hangings/wall_hanging_017/lit_1/animations/flame__south.ac1a5302.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T09:10:56+00:00",
+          "review": "ANIMATION_PROBABLY_BAD",
+          "review_metrics": {
+            "base_outline": 0.1234
+          },
+          "light_frames": [
+            {
+              "intensity": 0.987,
+              "dx": 4.0,
+              "dy": 2.0
+            },
+            {
+              "intensity": 1.154,
+              "dx": 1.7,
+              "dy": 3.3
+            },
+            {
+              "intensity": 1.141,
+              "dx": 1.6,
+              "dy": 2.1
+            },
+            {
+              "intensity": 1.082,
+              "dx": 1.8,
+              "dy": 0.8
+            },
+            {
+              "intensity": 0.635,
+              "dx": 3.5,
+              "dy": 0.5
+            }
+          ]
+        }
       }
     },
     "LIT_2": {

@@ -48,6 +48,59 @@
         "south-east": "fences/fence_006/rotations/south-east.webp",
         "south-west": "fences/fence_006/rotations/south-west.webp",
         "south": "fences/fence_006/sprite.webp"
+      },
+      "animations": {
+        "motion": {
+          "group_id": "0b946825-6e64-4d9b-9d37-93ec65873a90",
+          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern at the end of the fence shifts, by one pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "mode": "v3",
+          "frame_count": 5,
+          "generated_frames": 4,
+          "keep_first_frame": true,
+          "frame_paths": [
+            "fences/fence_006/animations/motion/00.webp",
+            "fences/fence_006/animations/motion/01.webp",
+            "fences/fence_006/animations/motion/02.webp",
+            "fences/fence_006/animations/motion/03.webp",
+            "fences/fence_006/animations/motion/04.webp"
+          ],
+          "strip": "fences/fence_006/animations/motion__south.cc4fc62c.webp",
+          "directions": [
+            "south"
+          ],
+          "generated_at": "2026-09-18T08:15:17+00:00",
+          "review": "ANIMATION_PROBABLY_GOOD",
+          "review_metrics": {
+            "base_outline": 0.0
+          },
+          "light_frames": [
+            {
+              "intensity": 0.888,
+              "dx": 52.4,
+              "dy": 2.6
+            },
+            {
+              "intensity": 0.974,
+              "dx": 52.4,
+              "dy": 2.4
+            },
+            {
+              "intensity": 1.006,
+              "dx": 52.3,
+              "dy": 2.4
+            },
+            {
+              "intensity": 0.985,
+              "dx": 47.1,
+              "dy": 8.0
+            },
+            {
+              "intensity": 1.147,
+              "dx": 46.8,
+              "dy": 7.8
+            }
+          ]
+        }
       }
     },
     "LIT_2": {
