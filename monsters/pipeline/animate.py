@@ -790,6 +790,15 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
         n for d, n in frame_counts(cid, state).items()
         if d in GEN_DIRS and (rec.get("directions", {}).get(d, {}).get("status") in ("pass", "warn")))
     nf = keep.most_common(1)[0][0] - 1 if keep else frames_for(max(_prev) + 1 if _prev else 1, base_state(state))
+    # PIXELLAB ONLY TAKES AN EVEN FRAME COUNT, 4..16. Locking to the working
+    # directions' STORED count and subtracting the pinned base frame lands on an
+    # odd number whenever those clips came from PRO (16 stored -> 15 asked), and
+    # the call 422s on every roll forever — three rounds of Ashling's die burned
+    # that way, 2026-09-18, with his redo note still on the card. Clamp here,
+    # where the number is decided, not at the call site.
+    nf = max(4, min(16, int(nf)))
+    if nf % 2:
+        nf += 1
     for d in dirs:
         seed = seed_for(cid, state, d, version)
         pinned = spec["pin_end"] or pin
