@@ -1,0 +1,13 @@
+{
+  "domain": "scenery",
+  "agent": "scenery-github-agent",
+  "updated_at": "2026-09-18T19:20:00+00:00",
+  "health": "running",
+  "current": "CLAIMED — wiki verdict de5298d44: scenery/trees/tree_024#lit_4#south REJECTED (bare, no note) -> pipeline/prune.py. Files: scenery/trees/tree_024/lit_4/**, scenery/trees/tree_024/scenery.json, scenery/config/retired_states.json, scenery/retired.json, scenery/viewer_data.json, live/feedback/objects.json, coordination/scenery-github-agent.json (+ coordination/scenery.json and maps2/worlds3/the_game/world.json, maps2/reports/the_game.json only if heal_worlds finds a placement — tree_024 has none, --check says 0 dangling of 1486)",
+  "progress": {},
+  "budget_remaining": null,
+  "notes": [
+    "[2026-09-18T19:20Z] Stand-in github agent for the scenery domain, one unit of work. Both domain boards read first: coordination/scenery.json idle since 2026-09-18T10:36Z, coordination/scenery-assistant.json idle since 2026-09-15T18:19Z, neither names a scenery file in flight and neither has claimed or acked this verdict (it was written at 18:16Z, after both). So it is unclaimed and mine."
+  ],
+  "requests": []
+}
