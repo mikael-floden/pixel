@@ -282,10 +282,31 @@ verdict comes BEFORE the five states are spent on it.
   removed | all` with counts, "to judge" by default, newest first; the cards
   are the CREATURE SHOWCASE (below), same grid, same measured spans, same
   marks-on-the-art. `#/monsters/candidates/
-  <id>` — the 8 facings in MIRROR-PAIR order (S, N, E, W, SE, SW, NE, NW), so
-  the twin the generator gets wrong (a SE drawn as SW) is the next picture
-  down, or beside it when two fit. The verdict row sits UNDER the pictures,
-  where his thumb is after reading them. ‹ › walks the current chip's list.
+  <id>` — ONE window with the creature TURNING in it. The verdict row sits
+  UNDER the picture, where his thumb is after watching it. ‹ › walks the
+  current chip's list.
+- **THE PREVIEW IS ONE TURNING WINDOW** (maintainer 2026-09-18: *"I want just
+  one preview window with a rotating monster!"*). Eight stacked boxes were
+  eight scrolls per candidate and every facing was judged against a memory of
+  the one above it; a turn shows the whole rotation in one glance, which is
+  what a wrong facing shows up in. The mirror-pair layout (S|N, E|W, SE|SW,
+  NE|NW) is retired with them.
+  - `CAND_DIRS` is the COMPASS order — S SE E NE N NW W SW — so it turns one
+    way instead of jumping between mirror pairs.
+  - **Speeds 0.25× 0.5× 1× 2×**, per FACING not per revolution:
+    `CAND_SPIN_MS = 320` at 1× divided by the multiple, so 0.25× really is four
+    times slower on screen. Same four multiples the animation player has, and
+    the choice is REMEMBERED across candidates (`wiki-cand-spin`, `spinPref()`
+    / `rememberSpin()`) — *"If I press let's say 0.25x it should remember that
+    alternative when I go to another monster"*.
+  - **A direction button is the pause**: pressing one holds the turn on that
+    facing until a speed button starts it again. So the pad is both the control
+    and the read-out of where the turn is — one thing to look at, never two
+    that can disagree. The lit pad button and the caption (`S south · turning`
+    / `· paused`) always name the facing on screen.
+  - Every facing is in the DOM at once and the turn toggles a class. Swapping
+    one `<img>`'s `src` flashes the box empty for the whole first revolution —
+    a stutter exactly where the art is being judged.
 - **1× 2× 4×, 2× TO BEGIN WITH, AND IT REMEMBERS** (maintainer 2026-09-18:
   *"that 'same' option is confusing as hell. Let's just keep 1x, 2x and 4x and
   on all preview pages and make 2x the default and save what I change to in
@@ -301,7 +322,7 @@ verdict comes BEFORE the five states are spent on it.
     canvas in the set at the current zoom, capped at the column — so a 32px
     grub is 64px of art centred in the box a 240px warden fills. Magnifying
     grows the creature; a big design scrolls inside its box.
-- **The label sits UNDER its facing.** Floating it on the art covered a small
+- **The label sits UNDER the window.** Floating it on the art covered a small
   design completely, and the art is the thing being judged.
 - **ONE ZOOM FOR THE WHOLE GRID, and the card is what varies** (maintainer
   2026-09-10: "It's important when I scroll the candidates overview I can see

@@ -1992,18 +1992,23 @@ input[type="range"] { accent-color: var(--accent); }
 .cand-marks { display: flex; flex-wrap: wrap; gap: 6px; margin: 6px 0; min-height: 0; }
 .cand-judge { margin: 8px 0 12px; }
 .cand-hint { margin: 0 0 6px; }
-.cand-dirs { display: grid; grid-template-columns: repeat(var(--cand-cols, 2), var(--cand-w, 136px)); gap: 8px; justify-content: start; max-width: 100%; overflow-x: auto; padding-bottom: 8px; }
-.cand-dir { margin: 0; width: var(--cand-w, 136px); }
-/* THE BOX IS THE SAME ON EVERY DESIGN and the creature is centred in it, both
-   axes — true size then reads off the box (maintainer 2026-09-10: "I want to
-   see it in the true size always ... the preview bigger and centered"). */
-.cand-shot { width: var(--cand-w, 136px); height: var(--cand-w, 136px); border-radius: 8px; overflow: auto;
+/* ONE WINDOW, THE CREATURE TURNING IN IT (maintainer 2026-09-18). THE BOX IS
+   THE SAME ON EVERY DESIGN and the creature is centred in it, both axes — true
+   size then reads off the box (maintainer 2026-09-10: "I want to see it in the
+   true size always ... the preview bigger and centered"). */
+.cand-spin { margin: 0 0 8px; }
+.cand-stage { width: var(--cand-w, 136px); height: var(--cand-w, 136px); border-radius: 8px; overflow: auto;
   display: flex; align-items: safe center; justify-content: safe center; }
-.cand-dir img { display: block; image-rendering: pixelated; }
+/* Every facing is loaded and only one is shown: the turn is a class toggle, so
+   it never waits on a decode. `display: none` and not `visibility` — a hidden
+   facing must not stretch the scroll box a magnified one lives in. */
+.cand-frame { display: none; image-rendering: pixelated; }
+.cand-frame.on { display: block; }
 /* UNDER the art, never over it: a label floating on a 64px design covered the
    design (maintainer 2026-09-10). One line, and it is the art that is judged. */
-.cand-dir figcaption { margin-top: 4px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.cand-dir figcaption b { color: var(--ink); }
+.cand-facing { margin-top: 4px; font-size: 12px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cand-facing b { color: var(--ink); font-size: 14px; }
+.cand-pad { margin-bottom: 4px; }
 
 /* THE VERSION ROW — parallel takes of one state (live, try, v3). It sits under
    the state row and only exists while a state has more than one take. */

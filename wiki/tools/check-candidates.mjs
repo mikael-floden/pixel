@@ -10,10 +10,12 @@
  *   node wiki/tools/check-candidates.mjs
  * Asserts: the Creatures page carries the door with the unjudged count; the
  * list shows every candidate under "all" and only the unjudged under the
- * default chip; a candidate page shows all 8 facings as loaded images, two
- * per row; approve writes a verdict stamped with the candidate's version and
- * moves it out of "to judge"; redo and remove are on the row; a verdict
- * stamped with an OLDER version reads as "judge again". */
+ * default chip; a candidate page turns ONE window through all 8 facings, a
+ * direction button holds it there, a speed button starts it again and the
+ * speed is remembered for the next candidate; approve writes a verdict stamped
+ * with the candidate's version and moves it out of "to judge"; redo and remove
+ * are on the row; a verdict stamped with an OLDER version reads as "judge
+ * again". */
 import { createRequire } from "node:module";
 import { existsSync, readFileSync } from "node:fs";
 const { chromium } = createRequire(new URL("../../games2/package.json", import.meta.url))("playwright-core");
@@ -115,29 +117,37 @@ const cand = CANDS.find((c) => c.id === firstId);
 ok(!!cand, `the first card opens a candidate the registry knows (${firstId})`);
 await p.evaluate((id) => { location.hash = `#/monsters/candidates/${id}`; }, firstId);
 await p.waitForTimeout(2500);
+const shown = () => p.evaluate(() => {
+  const on = document.querySelector(".cand-frame.on");
+  return { dir: on?.dataset.dir ?? null,
+    lit: [...document.querySelectorAll(".cand-pad button.on")].map((b) => b.dataset.dir),
+    caption: document.querySelector(".cand-facing")?.textContent.trim() ?? "",
+    speed: [...document.querySelectorAll(".cand-speed button")].filter((b) => b.classList.contains("on")).map((b) => b.dataset.speed) };
+});
 const det = await p.evaluate(() => {
-  const imgs = [...document.querySelectorAll(".cand-dir img")];
-  const rows = new Set(imgs.map((i) => Math.round(i.getBoundingClientRect().top)));
+  const frames = [...document.querySelectorAll(".cand-frame")];
+  const imgs = frames.filter((f) => f.tagName === "IMG");
+  const stage = document.querySelector(".cand-stage");
+  const col = document.querySelector("#content"), ccs = col && getComputedStyle(col);
+  const on = document.querySelector(".cand-frame.on"), cap = document.querySelector(".cand-facing");
+  const ir = on?.getBoundingClientRect(), cr = cap?.getBoundingClientRect();
   return {
-    n: imgs.length, loaded: imgs.filter((i) => i.complete && i.naturalWidth > 0).length,
-    dirs: [...document.querySelectorAll(".cand-dir")].map((f) => f.dataset.dir),
-    rows: rows.size, w: imgs[0]?.getBoundingClientRect().width,
-    wide: document.documentElement.scrollWidth > document.documentElement.clientWidth
-      || (() => { const g = document.querySelector(".cand-dirs"); return g.scrollWidth > g.clientWidth; })(),
-    cols: getComputedStyle(document.querySelector(".cand-dirs")).getPropertyValue("--cand-cols").trim(),
+    n: frames.length, loaded: imgs.filter((i) => i.complete && i.naturalWidth > 0).length,
+    dirs: frames.map((f) => f.dataset.dir),
+    visible: frames.filter((f) => f.offsetParent !== null || f.getClientRects().length).length,
+    stages: document.querySelectorAll(".cand-stage").length,
+    pad: [...document.querySelectorAll(".cand-pad button")].map((b) => b.dataset.dir),
+    speeds: [...document.querySelectorAll(".cand-speed button")].map((b) => b.textContent.trim() + (b.classList.contains("on") ? "*" : "")),
+    wide: document.documentElement.scrollWidth > document.documentElement.clientWidth,
     // THE PICTURE IS NEVER SMALL AND THE LABEL IS NEVER ON IT (maintainer
     // 2026-09-10: "when I click on a monster the preview is so small the text
     // is covering the monster" — a 32px design was a 64px stamp under its own
     // caption).
-    shot: (() => {
-      const f = document.querySelector(".cand-dir"), img = f?.querySelector("img"), cap = f?.querySelector("figcaption");
-      const ir = img?.getBoundingClientRect(), cr = cap?.getBoundingClientRect();
-      const shot = f?.querySelector(".cand-shot"), col = document.querySelector("#content"), ccs = col && getComputedStyle(col);
-      return { w: Math.round(ir?.width ?? 0), over: !!(ir && cr) && !(cr.top >= ir.bottom - 0.5 || cr.bottom <= ir.top + 0.5), capH: Math.round(cr?.height ?? 0),
-        box: Math.round(shot?.getBoundingClientRect().width ?? 0),
-        room: col ? Math.round(col.clientWidth - parseFloat(ccs.paddingLeft) - parseFloat(ccs.paddingRight)) : 0,
-        z: Number(document.querySelector(".cand-zoom button.on")?.dataset.zoom ?? 0) };
-    })(),
+    shot: { w: Math.round(ir?.width ?? 0), over: !!(ir && cr) && !(cr.top >= ir.bottom - 0.5 || cr.bottom <= ir.top + 0.5),
+      capH: Math.round(cr?.height ?? 0),
+      box: Math.round(stage?.getBoundingClientRect().width ?? 0),
+      room: col ? Math.round(col.clientWidth - parseFloat(ccs.paddingLeft) - parseFloat(ccs.paddingRight)) : 0,
+      z: Number(document.querySelector(".cand-zoom button.on")?.dataset.zoom ?? 0) },
     zooms: [...document.querySelectorAll(".cand-zoom button")].map((b) => b.textContent.trim() + (b.classList.contains("on") ? "*" : "")),
     size: (() => { const t = document.querySelector("p.muted")?.textContent.match(/(\d+)px/); return t ? Number(t[1]) : 0; })(),
     buttons: [...document.querySelectorAll(".cand-judge .verdict button")].map((x) => x.textContent.trim()),
@@ -145,10 +155,14 @@ const det = await p.evaluate(() => {
   };
 });
 console.log("detail:", JSON.stringify(det));
-ok(det.n === 8 && det.loaded === 8, `all 8 facings are on the page and loaded (${det.loaded}/${det.n})`);
-ok(det.cols === "2" ? det.rows === 4 : det.rows === 8, `mirror pairs side by side when two fit, stacked when they don't (${det.cols} column(s), ${det.rows} rows, ${det.w}px each)`);
-ok(det.dirs.join(",") === "south,north,east,west,south-east,south-west,north-east,north-west", `in mirror-pair order (${det.dirs.join(" ")})`);
-ok(!det.wide, "the facings never poke past a 393px phone");
+// ONE WINDOW, ONE TURNING CREATURE (maintainer 2026-09-18: "I want just one
+// preview window with a rotating monster!").
+ok(det.stages === 1 && det.n === 8 && det.loaded === 8, `one window holds all 8 facings, loaded (${det.loaded}/${det.n} in ${det.stages} window(s))`);
+ok(det.visible === 1, `and exactly one of them is on screen at a time (${det.visible})`);
+ok(det.dirs.join(",") === "south,south-east,east,north-east,north,north-west,west,south-west", `in compass order, so it turns one way (${det.dirs.join(" ")})`);
+ok(det.pad.join(",") === det.dirs.join(","), `the pad names the same eight facings (${det.pad.length} buttons)`);
+ok(det.speeds.map((x) => x.replace("*", "")).join(" ") === "0.25× 0.5× 1× 2×", `the spin speeds are 0.25× 0.5× 1× 2× (${det.speeds.join(" ")})`);
+ok(!det.wide, "the preview never pokes past a 393px phone");
 // ONE ZOOM VOCABULARY, EVERYWHERE (maintainer 2026-09-18: "that 'same' option
 // is confusing as hell. Let's just keep 1x, 2x and 4x ... and make 2x the
 // default and save what I change to in localStorage").
@@ -159,6 +173,48 @@ ok(det.shot.box >= 200 && det.shot.box <= det.shot.room + 1,
 ok(det.shot.w === det.size * 2,
   `and the creature is drawn at that zoom, never fitted to its box (${det.size}px canvas → ${det.shot.w}px at 2×)`);
 ok(!det.shot.over && det.shot.capH > 0 && det.shot.capH < 30, `and its label sits UNDER the art, one line, never over it (${det.shot.capH}px)`);
+
+// IT TURNS BY ITSELF, and the pad says where the turn is. Two reads a second
+// apart at 2× must land on different facings, and the lit pad button must be
+// the facing on screen every time — the pad is the read-out, so it can never
+// disagree with the picture (one thing to look at, not two).
+await p.evaluate(() => [...document.querySelectorAll(".cand-speed button")].find((b) => b.dataset.speed === "2")?.click());
+const turns = [];
+for (let i = 0; i < 4; i++) { turns.push(await shown()); await p.waitForTimeout(260); }
+console.log("turning:", JSON.stringify(turns));
+ok(new Set(turns.map((t) => t.dir)).size >= 2, `the creature turns on its own (${turns.map((t) => t.dir).join(" → ")})`);
+ok(turns.every((t) => t.lit.length === 1 && t.lit[0] === t.dir), "and the lit direction button is always the facing on screen");
+ok(turns.every((t) => /turning/.test(t.caption)), `and the caption reads the facing and that it is turning (${turns[0].caption})`);
+
+// A DIRECTION BUTTON IS THE PAUSE (maintainer: "I can also press on a direction
+// and the rotation will pause on that direction until I press play ... again").
+await p.evaluate(() => [...document.querySelectorAll(".cand-pad button")].find((b) => b.dataset.dir === "west")?.click());
+await p.waitForTimeout(700);
+const held = await shown();
+console.log("held:", JSON.stringify(held));
+ok(held.dir === "west" && held.lit.join() === "west", `pressing W holds the turn on west (${held.dir})`);
+ok(/paused/.test(held.caption) && held.speed.length === 0, `and it reads as paused, with no speed running (${held.caption})`);
+const stillHeld = await (async () => { await p.waitForTimeout(800); return shown(); })();
+ok(stillHeld.dir === "west", "and it stays there — a hold is a hold, not a pause that expires");
+
+// ...until a speed button starts it again, and THAT SPEED IS REMEMBERED for the
+// next candidate (maintainer: "If I press let's say 0.25x it should remember
+// that alternative when I go to another monster").
+await p.evaluate(() => [...document.querySelectorAll(".cand-speed button")].find((b) => b.dataset.speed === "0.25")?.click());
+await p.waitForTimeout(200);
+const resumed = await shown();
+ok(/turning/.test(resumed.caption) && resumed.speed.join() === "0.25", `a speed button starts it again at that speed (${resumed.caption}, ${resumed.speed.join()})`);
+const other = CANDS.find((c) => c.id !== firstId)?.id ?? firstId;
+await p.evaluate((id) => { location.hash = `#/monsters/candidates/${id}`; }, other);
+await p.waitForTimeout(1200);
+const carried = await p.evaluate(() => ({
+  seg: [...document.querySelectorAll(".cand-speed button.on")].map((b) => b.dataset.speed),
+  stored: localStorage.getItem("wiki-cand-spin"),
+}));
+ok(carried.seg.join() === "0.25" && carried.stored === "0.25", `and the next candidate opens turning at 0.25× (${JSON.stringify(carried)})`);
+await p.evaluate(() => [...document.querySelectorAll(".cand-speed button")].find((b) => b.dataset.speed === "1")?.click());
+await p.evaluate((id) => { location.hash = `#/monsters/candidates/${id}`; }, firstId);
+await p.waitForTimeout(1200);
 ok(det.buttons.length === 3 && /approve/.test(det.buttons[0]) && /remove/.test(det.buttons[1]) && /redo/.test(det.buttons[2]), `approve / remove / redo on the row (${det.buttons.join(" | ")})`);
 if (shot) await p.screenshot({ path: `${shot}/cand-detail.png` });
 
@@ -196,8 +252,8 @@ for (const c of [small, big]) {
   await p.evaluate((id) => { localStorage.setItem("wiki-cand-zoom", "same"); location.hash = `#/monsters/candidates/${id}`; }, c.id);
   await p.waitForTimeout(1600);
   seen[c.id] = await p.evaluate(() => {
-    const f = document.querySelector(".cand-dir"), img = f.querySelector("img"), shot = f.querySelector(".cand-shot");
-    return { art: Math.round(img.getBoundingClientRect().width), box: Math.round(shot.getBoundingClientRect().width) };
+    const img = document.querySelector(".cand-frame.on"), stage = document.querySelector(".cand-stage");
+    return { art: Math.round(img.getBoundingClientRect().width), box: Math.round(stage.getBoundingClientRect().width) };
   });
 }
 console.log("true size:", JSON.stringify(seen));

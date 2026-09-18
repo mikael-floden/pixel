@@ -4912,12 +4912,39 @@ function viewMonsters() {
  *   redo     → same design, next seed (all 8 directions again)
  *   rejected → drop the design; the agent never continues it
  *
- * THE FACINGS SIT IN MIRROR PAIRS. Two columns — S|N, E|W, SE|SW, NE|NW — so
- * the twin the generator is most likely to get wrong (SE drawn as SW, his
- * scenery complaint) is side by side with its mirror, and two 136px sprites
- * still fit a 393px phone at 1×. */
+ * ONE WINDOW, ONE TURNING CREATURE (maintainer 2026-09-18: "I want just one
+ * preview window with a rotating monster ... I can also press on a direction and
+ * the rotation will pause on that direction until I press play again ... It
+ * should also be clear what direction I'm currently looking at when spinning").
+ *
+ * Eight boxes were eight scrolls per candidate, and a facing was judged against
+ * a memory of the one above it; one box that turns puts the whole rotation in
+ * one glance, which is what a wrong facing shows up in. THE ORDER IS THE
+ * COMPASS — S SE E NE N NW W SW — so the creature turns one way instead of
+ * jumping between mirror pairs (the old two-column layout, retired with it).
+ *
+ * A DIRECTION BUTTON IS THE PAUSE: pressing one stops the turn on that facing,
+ * pressing a speed starts it again. So the pad is both the pause control and
+ * the read-out of where the turn is — one thing to look at, never two that can
+ * disagree.
+ *
+ * Speed is per FACING, not per revolution: CAND_SPIN_MS at 1× divided by the
+ * multiple, so 0.25× really is four times slower than 1× on screen as well as
+ * on the button. Same four multiples the animation player has. */
 const CAND_FILTER_KEY = "wiki-cand-filter";
-const CAND_PAIRS = [["south", "north"], ["east", "west"], ["south-east", "south-west"], ["north-east", "north-west"]];
+const CAND_DIRS = ["south", "south-east", "east", "north-east", "north", "north-west", "west", "south-west"];
+const CAND_SPIN_MS = 320;            // one facing at 1× — a full turn in 2.6s
+const SPIN_SPEEDS = [0.25, 0.5, 1, 2];
+/* THE SPEED IS A PREFERENCE, NOT A PAGE STATE (maintainer: "If I press let's
+ * say 0.25x it should remember that alternative when I go to another monster")
+ * — the same contract as the zoom, so a review pace picked once survives the
+ * whole queue. */
+const SPIN_KEY = "wiki-cand-spin";
+const spinPref = () => {
+  try { const n = Number(localStorage.getItem(SPIN_KEY)); return SPIN_SPEEDS.includes(n) ? n : 1; }
+  catch { return 1; }
+};
+const rememberSpin = (n) => { try { localStorage.setItem(SPIN_KEY, String(n)); } catch { /* private mode */ } };
 const candidates = () => state.data.domains.monsterCandidates ?? [];
 const candById = (id) => candidates().find((c) => c.id === id) ?? null;
 const candFb = (c) => fb("monsters", c.path);
@@ -5117,6 +5144,85 @@ function viewCandidates() {
       ? (mode === "pending" ? "Every candidate has a verdict. Nothing left to judge." : "No candidate in this state.")
       : "The monsters agent has not generated a candidate yet."));
 }
+/** The candidate preview: ONE box, the creature turning inside it, and a pad
+ *  that is both the pause and the read-out of where the turn is.
+ *  `box` is the side of the window in CSS px, `z` the zoom the page is drawn
+ *  at — the creature is drawn at `z`, never fitted, and a magnified design
+ *  scrolls inside the window (the true-size law above). */
+function candSpinner(c, box, z) {
+  const size = c.size?.[0] ?? 128;
+  const stage = h("div", { class: "cand-stage checker" });
+  stage.style.setProperty("--cand-w", `${box}px`);
+  // EVERY FACING IS IN THE DOM AT ONCE and the turn only changes which one is
+  // shown. Swapping one <img>'s src flashes the box empty for the whole first
+  // revolution — a stutter exactly where he is judging the art.
+  const shots = CAND_DIRS.map((d) => {
+    const src = c.rotations[d];
+    const el = src
+      ? h("img", { class: "cand-frame", "data-dir": d, src: assetUrl(src), alt: `${c.name}, facing ${d}`,
+          width: Math.round(size * z), height: Math.round(size * z) })
+      : h("span", { class: "pill err cand-frame", "data-dir": d }, "missing");
+    stage.append(el);
+    return el;
+  });
+  const facing = h("div", { class: "cand-facing" });
+  const pad = h("span", { class: "dirpad cand-pad" });
+  const speedSeg = h("span", { class: "seg cand-speed", role: "radiogroup",
+    title: "How fast it turns — one facing every " + CAND_SPIN_MS + "ms at 1×. Kept for the next candidate." });
+  let at = 0, spinning = true, speed = spinPref(), acc = 0, last = 0, raf = 0;
+  const dirNow = () => CAND_DIRS[at];
+  function paint() {
+    shots.forEach((el, i) => el.classList.toggle("on", i === at));
+    const d = dirNow();
+    facing.replaceChildren(h("b", {}, DIR_LABEL[d] ?? d), " ", d.replace("-", " "),
+      // The transport says which of the two things is happening, in words: a
+      // pad button lit while the turn runs means "here now", lit while it is
+      // stopped means "held here".
+      h("span", { class: "muted cand-transport" }, spinning ? " · turning" : " · paused"));
+    [...pad.children].forEach((b) => {
+      const on = b.dataset.dir === d;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", on && !spinning ? "true" : "false");
+    });
+    [...speedSeg.children].forEach((b) => {
+      const on = spinning && Number(b.dataset.speed) === speed;
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-checked", on ? "true" : "false");
+    });
+  }
+  const hold = (i) => { at = i; spinning = false; paint(); };
+  const play = (sp) => { speed = sp; rememberSpin(sp); spinning = true; acc = 0; paint(); };
+  pad.append(...CAND_DIRS.map((d, i) => h("button", {
+    type: "button", "data-dir": d, title: `hold on ${d.replace("-", " ")}`,
+    onclick: () => hold(i) }, DIR_LABEL[d] ?? d)));
+  speedSeg.append(...SPIN_SPEEDS.map((sp) => h("button", {
+    type: "button", role: "radio", "data-speed": String(sp),
+    title: `turn at ${sp}× — ${Math.round(CAND_SPIN_MS / sp)}ms a facing`,
+    onclick: () => play(sp) }, `${sp}×`)));
+  function tick(t) {
+    raf = requestAnimationFrame(tick);
+    if (!spinning) { last = t; return; }
+    if (!last) last = t;
+    acc += t - last; last = t;
+    const ms = CAND_SPIN_MS / speed;
+    let moved = false;
+    while (acc >= ms) { acc -= ms; at = (at + 1) % CAND_DIRS.length; moved = true; }
+    if (moved) paint();
+  }
+  paint();
+  raf = requestAnimationFrame(tick);
+  const el = h("div", { class: "cand-spin" },
+    // The pad sits ABOVE the picture, as it does in the animation player, so
+    // the same thumb reaches the same control on both pages.
+    h("div", { class: "player-controls" }, pad),
+    stage,
+    facing,
+    h("div", { class: "card-sub lit-mode" }, h("span", { class: "muted lit-label" }, "Spin"), speedSeg));
+  // route() destroys every player before it renders the next view, so the turn
+  // cannot outlive its page.
+  activePlayers.push({ destroy: () => cancelAnimationFrame(raf) });
+  return { el };
+}
 function viewCandidate(id) {
   if (!state.admin) return viewCandidates();
   const c = candById(id);
@@ -5140,7 +5246,6 @@ function viewCandidate(id) {
    * an 11× monster bigger than the warden. Both lie about the size. */
   const col = $("#content"), cs = col ? getComputedStyle(col) : null;
   const room = col ? col.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight) : 341;
-  const gap = 8;
   // The biggest canvas in the whole set decides the box, so the box is the same
   // on every candidate page — not the biggest in the current filter, which
   // would resize the box as he changes chips.
@@ -5156,23 +5261,7 @@ function viewCandidate(id) {
   // scenery preview stage settled on, for the same reason (a box wider than the
   // screen slides its own content out of reach).
   const box = Math.round(Math.min(maxCanvas * z, room));
-  // Two boxes side by side when they fit (a desktop, or a magnified phone is
-  // one); past the column the strip scrolls sideways rather than shrinking.
-  const cols = 2 * box + gap <= room ? 2 : 1;
-  const grid = h("div", { class: "cand-dirs" });
-  grid.style.setProperty("--cand-w", `${box}px`);
-  grid.style.setProperty("--cand-cols", String(cols));
-  for (const pair of CAND_PAIRS) for (const d of pair) {
-    const src = c.rotations[d];
-    grid.append(h("figure", { class: "cand-dir", "data-dir": d },
-      // THE CREATURE IS CENTRED IN THE BOX, both axes — the box is a frame, not
-      // a diorama (the same rule the creature showcase settled on).
-      h("div", { class: "cand-shot checker" },
-        src ? h("img", { src: assetUrl(src), alt: `${c.name}, facing ${d}`, width: Math.round(size * z), height: Math.round(size * z) }) : h("span", { class: "pill err" }, "missing")),
-      // UNDER THE PICTURE, NEVER ON IT. A label floating on the art covered a
-      // small design completely, and it is the art he is judging.
-      h("figcaption", {}, h("b", {}, DIR_LABEL[d] ?? d), " ", d.replace("-", " "))));
-  }
+  const spinner = candSpinner(c, box, z);
   const zoomSeg = h("div", { class: "seg cand-zoom", role: "radiogroup",
     title: "How many screen pixels to a pixel of the art — kept for every preview page" },
     ...ZOOMS.map((n) => h("button", {
@@ -5188,10 +5277,10 @@ function viewCandidate(id) {
       c.items.length ? `drops ${c.items.join(", ")}` : null, c.qa?.minRun1 != null ? `density ${c.qa.minRun1}` : null].filter(Boolean).join(" · ")),
     h("div", { class: "cand-marks" }, ...candMarks(c)),
     h("div", { class: "card-sub lit-mode" }, h("span", { class: "muted lit-label" }, "Zoom"), zoomSeg),
-    grid,
-    // THE VERDICT COMES AFTER THE EIGHT PICTURES. He reads down through the
-    // pairs and judges at the bottom, where his thumb already is — buttons at
-    // the top would make every verdict a scroll back up.
+    spinner.el,
+    // THE VERDICT COMES AFTER THE PICTURE. He watches it turn and judges under
+    // it, where his thumb already is — buttons at the top would make every
+    // verdict a scroll back up.
     state.admin ? h("div", { class: "cand-judge" },
       h("p", { class: "muted cand-hint" }, "Every facing must BE its facing — a wrong direction cannot be fixed later. Approve = the agent generates all animations in all 8 directions. Redo = same design, next seed. Remove = drop it."),
       candFeedback(c)) : null,
