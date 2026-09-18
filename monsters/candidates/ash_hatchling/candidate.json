@@ -2326,15 +2326,15 @@
           "mode": "v3"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.1098,
-          "step_max": 0.1448,
-          "drift": 1.61,
+          "status": "pass",
+          "step_mean": 0.1275,
+          "step_max": 0.1524,
+          "drift": 2.13,
           "loop": 0.0,
           "loop_ratio": 0.0,
-          "travel": 0.48,
+          "travel": 0.18,
           "pin": 1.0,
-          "pad": 3,
+          "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
@@ -2342,27 +2342,24 @@
           "end_area": 1.0,
           "end_iou": null,
           "canvas": [
-            46,
-            46
+            40,
+            40
           ],
-          "reasons": [
-            "HE says redo: redo",
-            "canvas grown by 3 px a side to hold the motion"
-          ],
-          "sub": "2f8d496d-f150-4449-a402-ec9992ec1f15",
-          "group": "abc92f89-d3f1-4e06-a34e-957ac7a0532d",
+          "reasons": [],
+          "sub": "098f83cd-ae71-4dca-a62a-70ebc20bbb9b",
+          "group": "626d9725-052c-429f-9db0-9257b37216ca",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-18T09:09:48+00:00",
-          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "frames": 5,
-          "rung": 0,
           "mode": "v3",
-          "maintainer": "redo"
+          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in, more agitated: stomps, tosses its head, bigger movement",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 5,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-18T13:30:49+00:00"
         },
         "south-west": {
           "status": "pass",
