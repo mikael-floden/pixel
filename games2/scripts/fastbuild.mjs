@@ -36,16 +36,22 @@
 // serves a coherent older generation and never a mix.
 import { build } from "esbuild";
 import { createHash } from "node:crypto";
-import { writeFileSync, mkdirSync, rmSync, readFileSync, cpSync, existsSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { writeFileSync, mkdirSync, rmSync, readFileSync, readdirSync, cpSync, existsSync } from "node:fs";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const CLIENT = join(dirname(fileURLToPath(import.meta.url)), "..", "client");
 const WORKERS = ["artworker", "composeworker", "tiles3worker"];
 
 /** Build a complete, servable client into `outDir`. Returns what it emitted. */
-export async function fastBuild({ outDir, gitSha = "dev", serverUrl = "", clean = true } = {}) {
+export async function fastBuild({ outDir, gitSha = "dev", serverUrl = "", clean = true, sourcemap = false } = {}) {
   const t0 = performance.now();
+  // ABSOLUTE, resolved against the CALLER's cwd. `absWorkingDir` below is the
+  // client dir, so esbuild resolves a relative outdir against THAT while our
+  // own writes resolve against the process cwd — which put the bundle in one
+  // tree and esbuild's emitted images in another (client/client/dist), for 70
+  // silent 404s and a world that never started.
+  outDir = resolve(outDir);
   if (clean) rmSync(outDir, { recursive: true, force: true });
   mkdirSync(join(outDir, "assets"), { recursive: true });
 
@@ -110,15 +116,32 @@ export async function fastBuild({ outDir, gitSha = "dev", serverUrl = "", clean 
   const main = await build({
     ...common,
     entryPoints: ["src/main.ts"],
-    sourcemap: "external",
+    // NO SOURCEMAP BY DEFAULT, for two reasons that point the same way. It is
+    // 16.6 MB against the bundle's 2.5 MB — on a lane whose whole budget is
+    // seconds, the map is the upload. And esbuild names it after the ENTRY,
+    // `main.js.map`, a FIXED name: a mutable name in a content-addressed store
+    // is the one thing the cache law forbids outright. Ask for it explicitly
+    // (a local debug build) and it is hashed with the bundle below.
+    sourcemap: sourcemap ? "external" : false,
     plugins: [rewriteWorkerUrls],
   });
   const js = entryOf(main, "main");
   const bundle = `index-${hash(js.text)}.js`;
-  put(main.outputFiles.filter((f) => f !== js));
+  const map = main.outputFiles.find((f) => f.path.endsWith("main.js.map"));
+  put(main.outputFiles.filter((f) => f !== js && f !== map));
   writeFileSync(join(outDir, "assets", bundle), js.text);
+  if (map) writeFileSync(join(outDir, "assets", `${bundle}.map`), map.contents);
 
   // (3) index.html + public/
+  // ADMISSION CHECK, at the only place that can enforce it. A publish lane
+  // copies whatever is in assets/, so a fixed name emitted HERE becomes a
+  // mutable name in the store — and the gate downstream compares the manifest
+  // against the directory, which agrees with itself either way. Refuse it at
+  // birth instead: every emitted asset carries a hash, or the build fails.
+  const HASHED = /^[A-Za-z0-9_.-]+-[A-Za-z0-9]{8,}\.[a-z0-9]+$/;
+  const stray = readdirSync(join(outDir, "assets")).filter((n) => !HASHED.test(n));
+  if (stray.length) throw new Error(`fastbuild: un-hashed name(s) in assets/, which a content-addressed store must never hold: ${stray.join(", ")}`);
+
   const html = readFileSync(join(CLIENT, "index.html"), "utf8").replace("/src/main.ts", `/assets/${bundle}`);
   if (html.includes("/src/main.ts")) throw new Error("index.html entry was not rewritten — did the script tag change?");
   writeFileSync(join(outDir, "index.html"), html);
