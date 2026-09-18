@@ -24,7 +24,6 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 | doc | holds |
 |---|---|
 | `docs/shipping.md` | publish policy, image root, world tree, staging, WebP, `?h=` grant, brotli, load order |
-| `docs/fast-lane.md` | the no-image client lane: the six store laws, fall-through, the paid-for traps, the kill switch |
 | `docs/tiles3-rendering.md` | tiles3 resolver, draw ops, plates, transitions, seams, fades, decks, wall feet, parity |
 | `docs/scenery.md` | sizing, hitboxes, animation, wall windows, indoor furniture, flat pieces, fog |
 | `docs/depth-sort.md` | occluder set, `depthrule.ts`, cover lines, lifts, drops |
@@ -63,14 +62,6 @@ push, no PRs unless asked.
 - Every `/assets` URL carries its content hash; the server grants `immutable`
   only after verifying it against the bytes it serves. sw.js caches nothing.
   Brotli quality stays pinned at 4.
-- THE FAST LANE ships `client/src/**` + `index.html` with no image and no
-  rollout — NEVER art (two byte-sets under one `?v=<GIT_SHA>` URL for a year),
-  server/shared/config (a restart) or `client/public/**` (new code, old
-  catalogs — refused by fall-through hashes, not by convention). The image is
-  the floor and WINS A TIE: a generation at or before the image's own commit
-  time is refused, so a rollout is never overridden by an older client and a bad
-  publish is undone by the next deploy. `--remove-env-vars BUNDLE_STORE` is the
-  kill switch; both gates run BEFORE the publish. `docs/fast-lane.md`.
 
 **Rendering a maps3 world** (`docs/tiles3-rendering.md`)
 - ALL ART SHIPS PACKED — monster strips (union box), scenery (one box per

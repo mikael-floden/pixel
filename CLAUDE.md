@@ -199,6 +199,29 @@ NOT `sounds/**/*.wav`: five foley takes are wav-ONLY (their audible level did
 not survive opus) and one of them is assigned to an event, so a blanket glob
 there would 404 game content.
 
+**THE FAST LANE SHIPS CLIENT CODE WITH NO IMAGE AND NO ROLLOUT**
+(`.github/workflows/fast-publish.yml`, the running server reads published
+generations from a `bundle-store` branch). It carries `games2/client/src/**` and
+`games2/client/index.html` and NOTHING else, and the three prohibitions bind
+every domain, not just games2:
+- **NEVER art.** Art rides the container lane. `?v=<GIT_SHA>` earns an
+  `immutable` year from `cachepolicy.ts`, so changing art bytes while GIT_SHA is
+  fixed freezes two byte-sets under one URL — the unrecallable, project-deleting
+  bug this repo's cache law exists to prevent.
+- **NEVER server, `shared/` or config.** Adopting those means re-importing
+  modules in the process that owns the authoritative 20 Hz world: a restart.
+- **NEVER `client/public/**`.** A generation carries `index.html` + `assets/`;
+  the 43 `public/` files are answered by the IMAGE, so publishing one would run
+  new code against the image's old catalogs. Enforced by arithmetic, not by
+  convention: the publisher hashes every file it does NOT publish and the server
+  refuses a generation whose fall-through hashes disagree with what it serves.
+The image is the FLOOR and wins a tie — a generation at or before the image's
+own commit time is refused, so a rollout is never overridden by an older client
+and a bad publish is undone by the next deploy, which is the only recovery a
+phone has besides `--remove-env-vars BUNDLE_STORE`. Both gates run BEFORE the
+publish (a 3-second deploy of a bundle that does not start is a 3-second
+outage). Story, measurements and the 20 paid-for traps: `games2/docs/fast-lane.md`.
+
 **OFF-GITHUB BACKUP** (`.github/workflows/backup-gcs.yml`): weekly (Mondays)
 `git archive HEAD` zip (~291 MB, tracked files only — a working-tree tar
 would leak `.env`) to a GCS Nearline bucket, 30-day lifecycle ≈ 4 snapshots.
