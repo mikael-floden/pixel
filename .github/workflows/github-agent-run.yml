@@ -118,6 +118,11 @@ jobs:
           # the input here is his own verdicts and this repo, and the summary is
           # private to the repo.
           display_report: "true"
+          # TEMPORARY: the scenery session ran 8 minutes, reported success and
+          # changed nothing, with one rejected state waiting in the file. The
+          # SDK hides its own output, so the only way to learn what it decided
+          # is to let it print. Removed once that is known.
+          show_full_output: "true"
           prompt: |
             A wiki review just landed on main: the Game Master committed verdicts to
             live/feedback/${{ inputs.domain }}.json. You are standing in for the
