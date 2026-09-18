@@ -1774,12 +1774,20 @@
           "action": "Death - The ember glow goes out, it slumps down onto its side and fades away",
           "intensity": 0,
           "rolls": 2,
-          "frames": 16,
+          "frames": 14,
           "rung": 0,
           "unwrapped": null,
           "tries": 2,
           "generated_at": "2026-09-13T03:25:19+00:00",
-          "maintainer": "redo"
+          "maintainer": "redo",
+          "trimmed": {
+            "drop": [
+              11,
+              12
+            ],
+            "of": 16,
+            "reason": "too much flash at the end (his note, removed in post as he asked)"
+          }
         },
         "east": {
           "status": "pass",
@@ -1926,13 +1934,21 @@
           "action": "Death - The ember glow goes out, it slumps down onto its side and fades away",
           "intensity": 0,
           "rolls": 2,
-          "frames": 16,
+          "frames": 14,
           "rung": 0,
           "unwrapped": null,
           "tries": 2,
           "generated_at": "2026-09-13T03:25:19+00:00",
-          "source": "south-east",
-          "maintainer": "redo"
+          "maintainer": "redo",
+          "trimmed": {
+            "drop": [
+              11,
+              12
+            ],
+            "of": 16,
+            "reason": "too much flash at the end (his note, removed in post as he asked)"
+          },
+          "source": "south-east"
         },
         "north-west": {
           "status": "warn",
@@ -2045,9 +2061,7 @@
           "ash_hatchling/animations/die_v1/south-east/10.webp",
           "ash_hatchling/animations/die_v1/south-east/11.webp",
           "ash_hatchling/animations/die_v1/south-east/12.webp",
-          "ash_hatchling/animations/die_v1/south-east/13.webp",
-          "ash_hatchling/animations/die_v1/south-east/14.webp",
-          "ash_hatchling/animations/die_v1/south-east/15.webp"
+          "ash_hatchling/animations/die_v1/south-east/13.webp"
         ],
         "east": [
           "ash_hatchling/animations/die_v1/east/00.webp",
@@ -2117,9 +2131,7 @@
           "ash_hatchling/animations/die_v1/south-west/10.webp",
           "ash_hatchling/animations/die_v1/south-west/11.webp",
           "ash_hatchling/animations/die_v1/south-west/12.webp",
-          "ash_hatchling/animations/die_v1/south-west/13.webp",
-          "ash_hatchling/animations/die_v1/south-west/14.webp",
-          "ash_hatchling/animations/die_v1/south-west/15.webp"
+          "ash_hatchling/animations/die_v1/south-west/13.webp"
         ],
         "north-west": [
           "ash_hatchling/animations/die_v1/north-west/00.webp",

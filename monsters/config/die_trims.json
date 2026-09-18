@@ -1,5 +1,5 @@
 {
-  "_comment": "Human-adjudicated die-animation tail cuts (postprocess.py): frames where PixelLab replaced the fade-out with big off-animation clouds/mist (incl. follow-on garbage like tornado/revived-monster frames after the first cloud). drop = ORIGINAL frame indices to delete; guarded by sub (the direction's take id) + of (original frame count) \u2014 a regenerated animation no longer matches and gets re-reviewed instead of cut. Covers BOTH tail diseases: big off-animation clouds AND the monster coming back to life at the end of a die (dissolve-then-reappear). reviewed_ok silences the suspicious-tail flag for tails a human judged intentional.",
+  "_comment": "Human-adjudicated die-animation tail cuts (postprocess.py): frames where PixelLab replaced the fade-out with big off-animation clouds/mist (incl. follow-on garbage like tornado/revived-monster frames after the first cloud). drop = ORIGINAL frame indices to delete; guarded by sub (the direction's take id) + of (original frame count) — a regenerated animation no longer matches and gets re-reviewed instead of cut. Covers BOTH tail diseases: big off-animation clouds AND the monster coming back to life at the end of a die (dissolve-then-reappear). reviewed_ok silences the suspicious-tail flag for tails a human judged intentional.",
   "cuts": {
     "ice_crystal_golem/east": {
       "drop": [
@@ -412,6 +412,16 @@
       ],
       "sub": "8ddb74ec-d95e-43d7-9f49-96c774293744",
       "of": 16
+    },
+    "ash_hatchling/south-east": {
+      "drop": [
+        11,
+        12
+      ],
+      "sub": "85b80da1-c2b5-4095-bd4c-dfb46c97c489",
+      "of": 16,
+      "slot": "die_v1",
+      "reason": "too much flash at the end (his note, removed in post as he asked)"
     }
   },
   "reviewed_ok": []

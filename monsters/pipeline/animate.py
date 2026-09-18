@@ -1303,6 +1303,64 @@ def cmd_migrate_feedback(args):
     print(f"{n} verdict(s) followed their slot's rename")
 
 
+
+def cmd_trim(args):
+    """CUT FRAMES OUT OF A LANDED CLIP INSTEAD OF RE-ROLLING IT — his own
+    suggestion when the animation is right but its tail is not (maintainer
+    2026-09-18, on a die: "too much flash at the end (maybe you can remove this
+    in post)"). Cheaper than a generation and it keeps a take he already likes.
+
+    The cut is pinned in config/die_trims.json guarded by the direction's take
+    id and its ORIGINAL frame count, so a later regeneration does not inherit a
+    cut meant for different art — it gets re-reviewed instead. Mirrors follow
+    their source, the record is re-verdicted from disk, and his redo note is
+    cleared the same way a regeneration clears it.
+    """
+    drop = sorted({int(x) for x in args.drop.split(",")})
+    for cid in args.only.split(","):
+        man = cand.load_manifest(cid)
+        rec = (man.get("animations") or {}).get(args.state)
+        if not rec:
+            print(f"  {cid}: no {args.state}"); continue
+        for d in args.dirs.split(","):
+            p = anim_dir(cid, args.state, d)
+            files = sorted(f for f in os.listdir(p) if f.endswith(mirror.ART_EXT))
+            keep = [f for i, f in enumerate(files) if i not in drop]
+            if len(keep) == len(files):
+                print(f"  {cid} {d}: nothing to drop"); continue
+            frames = [Image.open(os.path.join(p, f)).convert("RGBA") for f in keep]
+            q = rec["directions"].get(d, {})
+            trims = {"cuts": {}}
+            if os.path.exists(cand_die_trims()):
+                trims = json.load(open(cand_die_trims()))
+            trims.setdefault("cuts", {})[f"{cid}/{d}"] = {
+                "drop": drop, "sub": q.get("sub"), "of": len(files),
+                "slot": args.state, "reason": args.reason}
+            save_frames(cid, args.state, d, frames)
+            q["frames"] = len(frames)
+            q["trimmed"] = {"drop": drop, "of": len(files), "reason": args.reason}
+            rec["directions"][d] = q
+            with open(cand_die_trims(), "w") as f:
+                json.dump(trims, f, indent=2, ensure_ascii=False); f.write("\n")
+            print(f"  {cid} {args.state} {d}: dropped {drop} of {len(files)} -> {len(frames)} frames")
+            for m, src in MIRRORED.items():
+                if src == d:
+                    fr = mirror_direction(cid, args.state, m)
+                    if fr:
+                        rec["directions"][m] = dict(q, mirrored=True, source=src)
+                        print(f"  {cid} {args.state} {m}: mirrored from {src}")
+            clear_verdict(cid, args.state, d)
+        rec["frame_paths"] = {d: [os.path.join(cid, "animations", args.state, d, f)
+                                  for f in sorted(os.listdir(anim_dir(cid, args.state, d)))
+                                  if f.endswith(mirror.ART_EXT)]
+                              for d in rec["directions"] if os.path.isdir(anim_dir(cid, args.state, d))}
+        write_manifest(cid, man)
+
+
+def cand_die_trims():
+    return os.path.join(cand.ROOT, "config", "die_trims.json")
+
+
 def cmd_prune_feedback(args):
     """Delete a redo verdict once the art it judged HAS BEEN REGENERATED. His
     note has done its job at that point and only misleads: he sees his own old
@@ -1548,6 +1606,13 @@ def main():
     pr.set_defaults(func=cmd_promote)
     mf = sub.add_parser("migrate-feedback", help="carry his verdicts across a slot rename")
     mf.set_defaults(func=cmd_migrate_feedback)
+    tr = sub.add_parser("trim", help="drop frames from a landed clip (his 'remove it in post') instead of re-rolling")
+    tr.add_argument("--only", required=True)
+    tr.add_argument("--state", required=True)
+    tr.add_argument("--dirs", required=True)
+    tr.add_argument("--drop", required=True, help="ORIGINAL frame indices, comma separated")
+    tr.add_argument("--reason", default="maintainer asked for it in the wiki")
+    tr.set_defaults(func=cmd_trim)
     pf = sub.add_parser("prune-feedback", help="drop his redo notes whose art has since been regenerated")
     pf.add_argument("--dry-run", action="store_true"); pf.set_defaults(func=cmd_prune_feedback)
     rv = sub.add_parser("review", help="apply HIS wiki verdicts to a slot (redo -> fail, with his note)")
