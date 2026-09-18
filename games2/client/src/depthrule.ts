@@ -63,6 +63,8 @@ export interface DepthCtx {
    *  outranked a player standing in front of it). Clamped to [dy, LIFT_MAX_PX]:
    *  one diagonal is the job the lift exists for. */
   liftMax?: number;
+  /** Take a cover line only from a column camera-nearer than the caller's own cell (roofed furniture). */
+  coverFrontOnly?: boolean;
   /** THE COVER COLUMN — the screen-x span that may CROP this caller's lit copy,
    *  narrower than the art box when the caller is wider than what it stands on.
    *  A tree's canopy is ~170 px across while its trunk stands on one cell, and
@@ -204,7 +206,22 @@ export function resolveDepthRule(ctx: DepthCtx, metas: Iterable<OccluderMeta>): 
       // The DEPTH decision keeps the whole art box — a piece in front must
       // still push this one back — but only something over the caller's OWN
       // COLUMN may set the crop line. See DepthCtx.cx0.
-      if (o.x1 >= (ctx.cx0 ?? ctx.sx0) && o.x0 <= (ctx.cx1 ?? ctx.sx1)) coverY = Math.min(coverY, o.y0);
+      // ...AND, FOR A ROOFED PIECE, ONLY A COLUMN CAMERA-NEARER THAN ITS OWN
+      // CELL (DepthCtx.coverFrontOnly): furniture stands against the room's
+      // walls with its footprint centre inside the wall's diamond, so the
+      // wall BEHIND a hearth read as blocking the ray to its feet and cropped
+      // its lit copy to nothing (the fireplace "darkened by the shadow",
+      // 2026-09-18). Dropping the cover line for every roofed piece instead
+      // uncropped the table beside a LOWERED front wall — its copy drew over
+      // the parapet it stands behind (maintainer, same day: "the table no
+      // longer renders behind the wall"). A wall in front covers; the wall
+      // behind never does.
+      if (
+        o.x1 >= (ctx.cx0 ?? ctx.sx0) &&
+        o.x0 <= (ctx.cx1 ?? ctx.sx1) &&
+        (!ctx.coverFrontOnly || o.col + o.row > Math.floor(ctx.colf) + Math.floor(ctx.rowf))
+      )
+        coverY = Math.min(coverY, o.y0);
     } else if (
       /* A NON-SOLID COLUMN LIFTS THE CALLER — unless it is HIGHER, NOT
        * STANDABLE AT THE CALLER'S LEVEL, and the caller is not camera-

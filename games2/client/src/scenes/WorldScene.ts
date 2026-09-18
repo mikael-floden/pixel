@@ -16271,7 +16271,7 @@ export class WorldScene extends Phaser.Scene {
    *  `occluderMeta` (bodies are not), and without it a tree reads itself as a
    *  solid covering itself and crops its own lit copy away. */
   private resolveDrawDepth(
-    v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number; cx0?: number; cx1?: number; liftMax?: number },
+    v: { sprite: Phaser.GameObjects.Image; lx: number; lyFlat: number; ly: number; fx: number; fy: number; cx0?: number; cx1?: number; liftMax?: number; coverFrontOnly?: boolean },
     lvl: number,
     self?: unknown,
   ): { depth: number; coverY: number | undefined } {
@@ -16293,7 +16293,7 @@ export class WorldScene extends Phaser.Scene {
       const sy0 = aTop + ab.y0 * b.sprite.scaleY - 4;
       const sy1 = aTop + ab.y1 * b.sprite.scaleY + 4;
       const r = resolveDepthRule(
-        { colf, rowf, lvl, lx: b.lx, ly: b.ly, lyFlat: b.lyFlat, sx0, sx1, sy0, sy1, lh: this.geom.lh, dy: this.geom.dy, self, cx0: b.cx0, cx1: b.cx1, liftMax: b.liftMax },
+        { colf, rowf, lvl, lx: b.lx, ly: b.ly, lyFlat: b.lyFlat, sx0, sx1, sy0, sy1, lh: this.geom.lh, dy: this.geom.dy, self, cx0: b.cx0, cx1: b.cx1, liftMax: b.liftMax, coverFrontOnly: b.coverFrontOnly },
         this.occluderMeta,
       );
       depth = r.depth;
@@ -22713,7 +22713,8 @@ export class WorldScene extends Phaser.Scene {
          * standing in front of it (maintainer 2026-09-14). Its art's bottom is
          * the last ground it actually covers. */
         { sprite: r.img, lx: r.hbX, lyFlat: r.hbDepth - 0.5, ly: r.hbY, fx: r.fx, fy: r.fy, cx0: r.meta?.x0, cx1: r.meta?.x1,
-          liftMax: r.meta?.ay1 !== undefined ? r.meta.ay1 - (r.hbDepth - 0.5) : undefined },
+          liftMax: r.meta?.ay1 !== undefined ? r.meta.ay1 - (r.hbDepth - 0.5) : undefined,
+          coverFrontOnly: !!r.lo?.roofed },
         r.lvl,
         r.meta,
       );
@@ -22721,18 +22722,10 @@ export class WorldScene extends Phaser.Scene {
       if (r.meta) r.meta.drawDepth = d.depth; // the anchor line in `depth` stays put
       if (r.lo) {
         r.lo.pd = d.depth;
-        /* A ROOFED PIECE TAKES NO COVER LINE. Its roof (and the walls that
-         * stand over it) are what the rule finds covering it, and outdoors
-         * that is right — but the piece is handled by roofedFade there
-         * (alpha 0 with its roof), and INDOORS the same line survived: the
-         * lit copy was cropped to nothing and what showed was the base
-         * sprite under the darkness overlay, taking the wall's AO band and
-         * the light field over the fireplace's own art (maintainer
-         * 2026-09-18, the hearths at 331.8,233.6 and 299.3,193.5: "the
-         * indoor scenery still feels darkened by the shadow ... the shadow
-         * from the wall getting through the object"). Measured: cover 8452
-         * over a copy whose top is 8507, visible false. */
-        r.lo.cover = r.lo.roofed ? Infinity : (d.coverY ?? Infinity);
+        /* A ROOFED PIECE TAKES A COVER LINE ONLY FROM A COLUMN IN FRONT OF IT
+         * (DepthCtx.coverFrontOnly): the wall it stands against never crops
+         * its copy, the lowered wall it stands behind does. */
+        r.lo.cover = d.coverY ?? Infinity;
         r.lo.img.setDepth(litDepth(d.depth));
         r.lo.fog?.setDepth(litDepth(d.depth));
       }
