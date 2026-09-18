@@ -1,0 +1,773 @@
+{
+  "id": "bog_titan",
+  "name": "Fenfather",
+  "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "83b4bbfd-d8d1-40ca-8a91-08fb033241a3",
+    "url": "https://www.pixellab.ai/create-character/83b4bbfd-d8d1-40ca-8a91-08fb033241a3",
+    "prompt": "Gigantic fantasy swamp titan shown full body from head to feet, a hulking body of black peat and tangled roots, reeds and moss growing on its shoulders, a face of two glowing green lamps in the mud, huge dripping arms, and legs like sunken tree trunks, grim menacing expression, dark fantasy, imposing, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 224,
+    "height": 224
+  },
+  "native_size": {
+    "width": 224,
+    "height": 224
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "bog_titan/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "bog_titan/rotations/south.webp",
+    "west": "bog_titan/rotations/west.webp",
+    "east": "bog_titan/rotations/east.webp",
+    "north": "bog_titan/rotations/north.webp",
+    "south-east": "bog_titan/rotations/south-east.webp",
+    "north-east": "bog_titan/rotations/north-east.webp",
+    "north-west": "bog_titan/rotations/north-west.webp",
+    "south-west": "bog_titan/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "40f8febd-e11d-4dbd-87e1-1e0dfe423395",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "bog_titan/animations/angry__east.webp",
+          "frame_paths": [
+            "bog_titan/animations/angry/east/00.webp",
+            "bog_titan/animations/angry/east/01.webp",
+            "bog_titan/animations/angry/east/02.webp",
+            "bog_titan/animations/angry/east/03.webp",
+            "bog_titan/animations/angry/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:11 GMT",
+          "src_frames": 5,
+          "sub": "7c12f3a7-c342-469c-810d-2668f7e5a39c"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "bog_titan/animations/angry__north.webp",
+          "frame_paths": [
+            "bog_titan/animations/angry/north/00.webp",
+            "bog_titan/animations/angry/north/01.webp",
+            "bog_titan/animations/angry/north/02.webp",
+            "bog_titan/animations/angry/north/03.webp",
+            "bog_titan/animations/angry/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:12 GMT",
+          "src_frames": 5,
+          "sub": "9785f47c-69fa-4a48-a766-d5325026ddf0"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "bog_titan/animations/angry__north-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/angry/north-east/00.webp",
+            "bog_titan/animations/angry/north-east/01.webp",
+            "bog_titan/animations/angry/north-east/02.webp",
+            "bog_titan/animations/angry/north-east/03.webp",
+            "bog_titan/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:13 GMT",
+          "src_frames": 5,
+          "sub": "4d57caa1-3e0f-4865-b33f-28140489a6b3"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "bog_titan/animations/angry__south.webp",
+          "frame_paths": [
+            "bog_titan/animations/angry/south/00.webp",
+            "bog_titan/animations/angry/south/01.webp",
+            "bog_titan/animations/angry/south/02.webp",
+            "bog_titan/animations/angry/south/03.webp",
+            "bog_titan/animations/angry/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:14 GMT",
+          "src_frames": 5,
+          "sub": "5294970b-8021-4a9c-9b81-b50d4bc07bee"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "bog_titan/animations/angry__south-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/angry/south-east/00.webp",
+            "bog_titan/animations/angry/south-east/01.webp",
+            "bog_titan/animations/angry/south-east/02.webp",
+            "bog_titan/animations/angry/south-east/03.webp",
+            "bog_titan/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:16 GMT",
+          "src_frames": 5,
+          "sub": "0c1a0b2b-fee1-4d3c-bf6b-b04e651960ef"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "bog_titan/animations/angry__south-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/angry/south-west/00.webp",
+            "bog_titan/animations/angry/south-west/01.webp",
+            "bog_titan/animations/angry/south-west/02.webp",
+            "bog_titan/animations/angry/south-west/03.webp",
+            "bog_titan/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "bog_titan/animations/angry__west.webp",
+          "frame_paths": [
+            "bog_titan/animations/angry/west/00.webp",
+            "bog_titan/animations/angry/west/01.webp",
+            "bog_titan/animations/angry/west/02.webp",
+            "bog_titan/animations/angry/west/03.webp",
+            "bog_titan/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "bog_titan/animations/angry__north-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/angry/north-west/00.webp",
+            "bog_titan/animations/angry/north-west/01.webp",
+            "bog_titan/animations/angry/north-west/02.webp",
+            "bog_titan/animations/angry/north-west/03.webp",
+            "bog_titan/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "9a48de8c-716a-4eb0-b6e1-af70e99bb5bc",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "bog_titan/animations/idle__east.webp",
+          "frame_paths": [
+            "bog_titan/animations/idle/east/00.webp",
+            "bog_titan/animations/idle/east/01.webp",
+            "bog_titan/animations/idle/east/02.webp",
+            "bog_titan/animations/idle/east/03.webp",
+            "bog_titan/animations/idle/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:17 GMT",
+          "src_frames": 5,
+          "sub": "35015c6f-2848-4840-a91b-36e536ee303c"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "bog_titan/animations/idle__north.webp",
+          "frame_paths": [
+            "bog_titan/animations/idle/north/00.webp",
+            "bog_titan/animations/idle/north/01.webp",
+            "bog_titan/animations/idle/north/02.webp",
+            "bog_titan/animations/idle/north/03.webp",
+            "bog_titan/animations/idle/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:18 GMT",
+          "src_frames": 5,
+          "sub": "4f6e9c35-e045-44b3-b82b-4bce1e20f077"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "bog_titan/animations/idle__north-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/idle/north-east/00.webp",
+            "bog_titan/animations/idle/north-east/01.webp",
+            "bog_titan/animations/idle/north-east/02.webp",
+            "bog_titan/animations/idle/north-east/03.webp",
+            "bog_titan/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:20 GMT",
+          "src_frames": 5,
+          "sub": "9aa43094-d283-4e18-98e9-0518a6921231"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "bog_titan/animations/idle__south.webp",
+          "frame_paths": [
+            "bog_titan/animations/idle/south/00.webp",
+            "bog_titan/animations/idle/south/01.webp",
+            "bog_titan/animations/idle/south/02.webp",
+            "bog_titan/animations/idle/south/03.webp",
+            "bog_titan/animations/idle/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:21 GMT",
+          "src_frames": 5,
+          "sub": "ae944878-b84f-47b5-82f4-ad4f814bc77c"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "bog_titan/animations/idle__south-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/idle/south-east/00.webp",
+            "bog_titan/animations/idle/south-east/01.webp",
+            "bog_titan/animations/idle/south-east/02.webp",
+            "bog_titan/animations/idle/south-east/03.webp",
+            "bog_titan/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:23 GMT",
+          "src_frames": 5,
+          "sub": "c23fd72b-46f6-46fd-bd9c-97c39395796e"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "bog_titan/animations/idle__south-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/idle/south-west/00.webp",
+            "bog_titan/animations/idle/south-west/01.webp",
+            "bog_titan/animations/idle/south-west/02.webp",
+            "bog_titan/animations/idle/south-west/03.webp",
+            "bog_titan/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "bog_titan/animations/idle__west.webp",
+          "frame_paths": [
+            "bog_titan/animations/idle/west/00.webp",
+            "bog_titan/animations/idle/west/01.webp",
+            "bog_titan/animations/idle/west/02.webp",
+            "bog_titan/animations/idle/west/03.webp",
+            "bog_titan/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "bog_titan/animations/idle__north-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/idle/north-west/00.webp",
+            "bog_titan/animations/idle/north-west/01.webp",
+            "bog_titan/animations/idle/north-west/02.webp",
+            "bog_titan/animations/idle/north-west/03.webp",
+            "bog_titan/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "46dab2b0-baff-4a22-a195-cf0474446231",
+      "source_name": "custom-Death - The green lamps go out",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "bog_titan/animations/die__east.webp",
+          "frame_paths": [
+            "bog_titan/animations/die/east/00.webp",
+            "bog_titan/animations/die/east/01.webp",
+            "bog_titan/animations/die/east/02.webp",
+            "bog_titan/animations/die/east/03.webp",
+            "bog_titan/animations/die/east/04.webp",
+            "bog_titan/animations/die/east/05.webp",
+            "bog_titan/animations/die/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:25 GMT",
+          "src_frames": 7,
+          "sub": "be0e1486-9310-4113-8654-5cc3ce7fec87"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "bog_titan/animations/die__north.webp",
+          "frame_paths": [
+            "bog_titan/animations/die/north/00.webp",
+            "bog_titan/animations/die/north/01.webp",
+            "bog_titan/animations/die/north/02.webp",
+            "bog_titan/animations/die/north/03.webp",
+            "bog_titan/animations/die/north/04.webp",
+            "bog_titan/animations/die/north/05.webp",
+            "bog_titan/animations/die/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:26 GMT",
+          "src_frames": 7,
+          "sub": "7c8ebb87-201c-4596-85d0-aa09ea69f024"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "bog_titan/animations/die__north-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/die/north-east/00.webp",
+            "bog_titan/animations/die/north-east/01.webp",
+            "bog_titan/animations/die/north-east/02.webp",
+            "bog_titan/animations/die/north-east/03.webp",
+            "bog_titan/animations/die/north-east/04.webp",
+            "bog_titan/animations/die/north-east/05.webp",
+            "bog_titan/animations/die/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:27 GMT",
+          "src_frames": 7,
+          "sub": "7d9bcdb6-3674-4476-b7a9-fb26df3f86a4"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "bog_titan/animations/die__south.webp",
+          "frame_paths": [
+            "bog_titan/animations/die/south/00.webp",
+            "bog_titan/animations/die/south/01.webp",
+            "bog_titan/animations/die/south/02.webp",
+            "bog_titan/animations/die/south/03.webp",
+            "bog_titan/animations/die/south/04.webp",
+            "bog_titan/animations/die/south/05.webp",
+            "bog_titan/animations/die/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:29 GMT",
+          "src_frames": 7,
+          "sub": "48388d23-4e74-4a7f-b5ca-fa6e84132e73"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "bog_titan/animations/die__south-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/die/south-east/00.webp",
+            "bog_titan/animations/die/south-east/01.webp",
+            "bog_titan/animations/die/south-east/02.webp",
+            "bog_titan/animations/die/south-east/03.webp",
+            "bog_titan/animations/die/south-east/04.webp",
+            "bog_titan/animations/die/south-east/05.webp",
+            "bog_titan/animations/die/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:30 GMT",
+          "src_frames": 7,
+          "sub": "34e72795-78dc-41eb-9c62-6400f38c2e96"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "bog_titan/animations/die__south-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/die/south-west/00.webp",
+            "bog_titan/animations/die/south-west/01.webp",
+            "bog_titan/animations/die/south-west/02.webp",
+            "bog_titan/animations/die/south-west/03.webp",
+            "bog_titan/animations/die/south-west/04.webp",
+            "bog_titan/animations/die/south-west/05.webp",
+            "bog_titan/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "bog_titan/animations/die__west.webp",
+          "frame_paths": [
+            "bog_titan/animations/die/west/00.webp",
+            "bog_titan/animations/die/west/01.webp",
+            "bog_titan/animations/die/west/02.webp",
+            "bog_titan/animations/die/west/03.webp",
+            "bog_titan/animations/die/west/04.webp",
+            "bog_titan/animations/die/west/05.webp",
+            "bog_titan/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "bog_titan/animations/die__north-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/die/north-west/00.webp",
+            "bog_titan/animations/die/north-west/01.webp",
+            "bog_titan/animations/die/north-west/02.webp",
+            "bog_titan/animations/die/north-west/03.webp",
+            "bog_titan/animations/die/north-west/04.webp",
+            "bog_titan/animations/die/north-west/05.webp",
+            "bog_titan/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "493e3b46-aee7-43cc-9eed-a36b5fc4d946",
+      "source_name": "custom-Double Slam - Raises both arms high overhead and s",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "bog_titan/animations/attack__east.webp",
+          "frame_paths": [
+            "bog_titan/animations/attack/east/00.webp",
+            "bog_titan/animations/attack/east/01.webp",
+            "bog_titan/animations/attack/east/02.webp",
+            "bog_titan/animations/attack/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:32 GMT",
+          "src_frames": 4,
+          "sub": "af138d43-d6f2-42d4-bcf1-226be3497574"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "bog_titan/animations/attack__north.webp",
+          "frame_paths": [
+            "bog_titan/animations/attack/north/00.webp",
+            "bog_titan/animations/attack/north/01.webp",
+            "bog_titan/animations/attack/north/02.webp",
+            "bog_titan/animations/attack/north/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:34 GMT",
+          "src_frames": 4,
+          "sub": "40153d79-bee1-413f-9ecc-ff2bda2f7f82"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "bog_titan/animations/attack__north-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/attack/north-east/00.webp",
+            "bog_titan/animations/attack/north-east/01.webp",
+            "bog_titan/animations/attack/north-east/02.webp",
+            "bog_titan/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:35 GMT",
+          "src_frames": 4,
+          "sub": "04e3fc46-1840-4945-bebb-f071b05ad651"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "bog_titan/animations/attack__south.webp",
+          "frame_paths": [
+            "bog_titan/animations/attack/south/00.webp",
+            "bog_titan/animations/attack/south/01.webp",
+            "bog_titan/animations/attack/south/02.webp",
+            "bog_titan/animations/attack/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:36 GMT",
+          "src_frames": 4,
+          "sub": "44b6f869-beb8-40d3-addb-c8245b54419a"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "bog_titan/animations/attack__south-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/attack/south-east/00.webp",
+            "bog_titan/animations/attack/south-east/01.webp",
+            "bog_titan/animations/attack/south-east/02.webp",
+            "bog_titan/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:38 GMT",
+          "src_frames": 4,
+          "sub": "de8780d9-74c3-462f-a28e-bf3ebdd080c4"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "bog_titan/animations/attack__south-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/attack/south-west/00.webp",
+            "bog_titan/animations/attack/south-west/01.webp",
+            "bog_titan/animations/attack/south-west/02.webp",
+            "bog_titan/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "bog_titan/animations/attack__west.webp",
+          "frame_paths": [
+            "bog_titan/animations/attack/west/00.webp",
+            "bog_titan/animations/attack/west/01.webp",
+            "bog_titan/animations/attack/west/02.webp",
+            "bog_titan/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "bog_titan/animations/attack__north-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/attack/north-west/00.webp",
+            "bog_titan/animations/attack/north-west/01.webp",
+            "bog_titan/animations/attack/north-west/02.webp",
+            "bog_titan/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_raises_both_dripping_arms_and": {
+      "group_id": "1494921a-6219-4c17-bb37-9f88522173ad",
+      "source_name": "custom-raises both dripping arms and ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "bog_titan/animations/custom_raises_both_dripping_arms_and__east.webp",
+          "frame_paths": [
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/east/00.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/east/01.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/east/02.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/east/03.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/east/04.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/east/05.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:39 GMT",
+          "src_frames": 7,
+          "sub": "e21e8e23-d908-48ef-9915-6e9bd4fdeb6f"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "bog_titan/animations/custom_raises_both_dripping_arms_and__north.webp",
+          "frame_paths": [
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north/00.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north/01.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north/02.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north/03.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north/04.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north/05.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:41 GMT",
+          "src_frames": 7,
+          "sub": "b6d832b2-3512-4c4f-9d76-9daa46f7ae26"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "bog_titan/animations/custom_raises_both_dripping_arms_and__north-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-east/00.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-east/01.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-east/02.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-east/03.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-east/04.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-east/05.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:42 GMT",
+          "src_frames": 7,
+          "sub": "42716428-e6e3-4f5c-a49e-6e1b0da03b11"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "bog_titan/animations/custom_raises_both_dripping_arms_and__south.webp",
+          "frame_paths": [
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south/00.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south/01.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south/02.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south/03.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south/04.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south/05.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:44 GMT",
+          "src_frames": 7,
+          "sub": "50f97fd0-4e04-4858-9d46-865d916910ad"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "bog_titan/animations/custom_raises_both_dripping_arms_and__south-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-east/00.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-east/01.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-east/02.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-east/03.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-east/04.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-east/05.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:47 GMT",
+          "src_frames": 7,
+          "sub": "98ab5d53-0402-467f-9e61-f1859f21a759"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "bog_titan/animations/custom_raises_both_dripping_arms_and__south-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-west/00.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-west/01.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-west/02.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-west/03.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-west/04.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-west/05.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "bog_titan/animations/custom_raises_both_dripping_arms_and__west.webp",
+          "frame_paths": [
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/west/00.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/west/01.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/west/02.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/west/03.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/west/04.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/west/05.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "bog_titan/animations/custom_raises_both_dripping_arms_and__north-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-west/00.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-west/01.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-west/02.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-west/03.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-west/04.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-west/05.webp",
+            "bog_titan/animations/custom_raises_both_dripping_arms_and/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "fe22bdbf-c1d0-4a8e-9209-9facf2a31b78",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "bog_titan/animations/walk__east.webp",
+          "frame_paths": [
+            "bog_titan/animations/walk/east/00.webp",
+            "bog_titan/animations/walk/east/01.webp",
+            "bog_titan/animations/walk/east/02.webp",
+            "bog_titan/animations/walk/east/03.webp",
+            "bog_titan/animations/walk/east/04.webp",
+            "bog_titan/animations/walk/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:49 GMT",
+          "src_frames": 6,
+          "sub": "e253ef5c-f47b-4896-a2f4-1090048a34fd"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "bog_titan/animations/walk__north.webp",
+          "frame_paths": [
+            "bog_titan/animations/walk/north/00.webp",
+            "bog_titan/animations/walk/north/01.webp",
+            "bog_titan/animations/walk/north/02.webp",
+            "bog_titan/animations/walk/north/03.webp",
+            "bog_titan/animations/walk/north/04.webp",
+            "bog_titan/animations/walk/north/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:50 GMT",
+          "src_frames": 6,
+          "sub": "c279b13b-eef3-45d3-a585-438315fa00a8"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "bog_titan/animations/walk__north-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/walk/north-east/00.webp",
+            "bog_titan/animations/walk/north-east/01.webp",
+            "bog_titan/animations/walk/north-east/02.webp",
+            "bog_titan/animations/walk/north-east/03.webp",
+            "bog_titan/animations/walk/north-east/04.webp",
+            "bog_titan/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:51 GMT",
+          "src_frames": 6,
+          "sub": "0120a716-b18a-49fa-99ae-8807f12f019e"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "bog_titan/animations/walk__south.webp",
+          "frame_paths": [
+            "bog_titan/animations/walk/south/00.webp",
+            "bog_titan/animations/walk/south/01.webp",
+            "bog_titan/animations/walk/south/02.webp",
+            "bog_titan/animations/walk/south/03.webp",
+            "bog_titan/animations/walk/south/04.webp",
+            "bog_titan/animations/walk/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:53 GMT",
+          "src_frames": 6,
+          "sub": "e6956bdb-c455-4c72-8d08-49691ffe1e11"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "bog_titan/animations/walk__south-east.webp",
+          "frame_paths": [
+            "bog_titan/animations/walk/south-east/00.webp",
+            "bog_titan/animations/walk/south-east/01.webp",
+            "bog_titan/animations/walk/south-east/02.webp",
+            "bog_titan/animations/walk/south-east/03.webp",
+            "bog_titan/animations/walk/south-east/04.webp",
+            "bog_titan/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:00:54 GMT",
+          "src_frames": 6,
+          "sub": "3ec3f6dc-bea5-471a-9b84-0d4fb456e0c8"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "bog_titan/animations/walk__south-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/walk/south-west/00.webp",
+            "bog_titan/animations/walk/south-west/01.webp",
+            "bog_titan/animations/walk/south-west/02.webp",
+            "bog_titan/animations/walk/south-west/03.webp",
+            "bog_titan/animations/walk/south-west/04.webp",
+            "bog_titan/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "bog_titan/animations/walk__west.webp",
+          "frame_paths": [
+            "bog_titan/animations/walk/west/00.webp",
+            "bog_titan/animations/walk/west/01.webp",
+            "bog_titan/animations/walk/west/02.webp",
+            "bog_titan/animations/walk/west/03.webp",
+            "bog_titan/animations/walk/west/04.webp",
+            "bog_titan/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "bog_titan/animations/walk__north-west.webp",
+          "frame_paths": [
+            "bog_titan/animations/walk/north-west/00.webp",
+            "bog_titan/animations/walk/north-west/01.webp",
+            "bog_titan/animations/walk/north-west/02.webp",
+            "bog_titan/animations/walk/north-west/03.webp",
+            "bog_titan/animations/walk/north-west/04.webp",
+            "bog_titan/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-walk loop, full walk cycle in ",
+      "key": "walk",
+      "direction": "south-east",
+      "takes": [
+        "e6dadb61-f888-42df-bdcf-64d5f780853f",
+        "3ec3f6dc-bea5-471a-9b84-0d4fb456e0c8"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

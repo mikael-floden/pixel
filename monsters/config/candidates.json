@@ -336,25 +336,6 @@
       "die_action": "Death - Her legs buckle and she rolls over onto her back, all eight legs curling up over her belly, then fades away"
     },
     {
-      "id": "bog_titan",
-      "name": "Fenfather",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "mannequin",
-      "size": 224,
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Gigantic fantasy swamp titan shown full body from head to feet, a hulking body of black peat and tangled roots, reeds and moss growing on its shoulders, a face of two glowing green lamps in the mud, huge dripping arms, and legs like sunken tree trunks.",
-      "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
-      "attack_action": "Double Slam - Raises both arms high overhead and slams them down together",
-      "claws": true,
-      "attack_extreme": "Mud Eruption - The titan hurls both arms down into the ground, mud and water erupting upward",
-      "die_action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away"
-    },
-    {
       "id": "crystal_titan",
       "name": "Prismfather",
       "tier": "boss",
@@ -4485,6 +4466,33 @@
       "attack_extreme": "Ice Burst - The mite rears up and bursts forward in a spray of ice shards, mandibles thrown wide",
       "die_action": "Death - Shatters into a scatter of small ice shards that melt away and vanish",
       "graduated_at": "2026-09-18T14:59:42+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "bog_titan",
+      "name": "Fenfather",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "mannequin",
+      "size": 224,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Gigantic fantasy swamp titan shown full body from head to feet, a hulking body of black peat and tangled roots, reeds and moss growing on its shoulders, a face of two glowing green lamps in the mud, huge dripping arms, and legs like sunken tree trunks.",
+      "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
+      "attack_action": "Double Slam - Raises both arms high overhead and slams them down together",
+      "claws": true,
+      "attack_extreme": "Mud Eruption - The titan hurls both arms down into the ground, mud and water erupting upward",
+      "die_action": "Death - The green lamps go out and the body slumps down into a heap of peat and roots on the ground, then fades away",
+      "graduated_at": "2026-09-18T15:01:47+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

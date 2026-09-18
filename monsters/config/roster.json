@@ -294,6 +294,20 @@
       }
     },
     {
+      "id": "bog_titan",
+      "kind": "character",
+      "pixellab_id": "83b4bbfd-d8d1-40ca-8a91-08fb033241a3",
+      "name": "Fenfather",
+      "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Double Slam - Raises both arms high overhead and s": "attack",
+        "custom-Death - The green lamps go out": "die"
+      }
+    },
+    {
       "id": "frost_mite",
       "kind": "character",
       "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
@@ -923,17 +937,17 @@
       "lore": "A mountain of dark wool and ivory, calm until crowded. One sweep of those tusks clears a road."
     },
     {
-      "id": "bog_titan",
+      "id": "cave_troll_boss",
       "kind": "character",
-      "pixellab_id": "83b4bbfd-d8d1-40ca-8a91-08fb033241a3",
-      "name": "Fenfather",
-      "lore": "The fen itself, when the fen stands up. Villages built on it are carried off when it turns.",
+      "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
+      "name": "Deepmaul",
+      "lore": "It has never seen the sun and hates it on principle. Anything with a torch gets the club first.",
       "renames": {
         "custom-Calm still idle, breathing ver": "idle",
         "custom-walk loop, full walk cycle in ": "walk",
         "custom-Angry combat idle, frustrated ": "angry",
-        "custom-Double Slam - Raises both arms high overhead and s": "attack",
-        "custom-Death - The green lamps go out": "die"
+        "custom-Club Smash - Heaves the stalactite club overhead a": "attack",
+        "custom-Death - Drops the club, sinks ": "die"
       }
     }
   ]
