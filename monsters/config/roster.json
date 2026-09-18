@@ -294,6 +294,34 @@
       }
     },
     {
+      "id": "elder_treant",
+      "kind": "character",
+      "pixellab_id": "8b10fb4b-a3a2-4510-9d56-2fabd851e20a",
+      "name": "Rootfather",
+      "lore": "Older than the road that was cut around it. It has forgiven the axe once, and says so, and will not do it twice.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Branch Smash - Swings one huge branch arm down in ": "attack",
+        "custom-Death - Topples over sideways ": "die"
+      }
+    },
+    {
+      "id": "tide_crab",
+      "kind": "character",
+      "pixellab_id": "2d53ec75-f35d-4226-b081-2c392864c29c",
+      "name": "Snapshell",
+      "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Claw Snap - Lunges forward and snaps its big claw ": "attack",
+        "custom-Death - The shell cracks open and the crab crumble": "die"
+      }
+    },
+    {
       "id": "gray_brute",
       "kind": "character",
       "pixellab_id": "20c9597b-ebc9-42e3-b9ee-aaab69674b89",

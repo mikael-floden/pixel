@@ -1,0 +1,857 @@
+{
+  "id": "tide_crab",
+  "name": "Snapshell",
+  "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "2d53ec75-f35d-4226-b081-2c392864c29c",
+    "url": "https://www.pixellab.ai/create-character/2d53ec75-f35d-4226-b081-2c392864c29c",
+    "prompt": "Large fantasy shore crab with a barnacle-crusted orange-red shell, one enormous curved pincer with a pale bone-white edge and a smaller pincer, six jointed legs with dark tips, stalked black eyes, and clumps of green seaweed and small sea shells stuck to its back.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 112,
+    "height": 112
+  },
+  "native_size": {
+    "width": 112,
+    "height": 112
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "tide_crab/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "tide_crab/rotations/south.webp",
+    "west": "tide_crab/rotations/west.webp",
+    "east": "tide_crab/rotations/east.webp",
+    "north": "tide_crab/rotations/north.webp",
+    "south-east": "tide_crab/rotations/south-east.webp",
+    "north-east": "tide_crab/rotations/north-east.webp",
+    "north-west": "tide_crab/rotations/north-west.webp",
+    "south-west": "tide_crab/rotations/south-west.webp"
+  },
+  "animations": {
+    "attack_left": {
+      "group_id": "2085dc2a-4430-454a-a156-a63478d4dfa1",
+      "source_name": "attack-left",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "tide_crab/animations/attack_left__east.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack_left/east/00.webp",
+            "tide_crab/animations/attack_left/east/01.webp",
+            "tide_crab/animations/attack_left/east/02.webp",
+            "tide_crab/animations/attack_left/east/03.webp",
+            "tide_crab/animations/attack_left/east/04.webp",
+            "tide_crab/animations/attack_left/east/05.webp",
+            "tide_crab/animations/attack_left/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:04 GMT",
+          "src_frames": 7,
+          "sub": "249c37a0-acb1-4dad-b1dd-edeeaea535f1"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "tide_crab/animations/attack_left__west.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack_left/west/00.webp",
+            "tide_crab/animations/attack_left/west/01.webp",
+            "tide_crab/animations/attack_left/west/02.webp",
+            "tide_crab/animations/attack_left/west/03.webp",
+            "tide_crab/animations/attack_left/west/04.webp",
+            "tide_crab/animations/attack_left/west/05.webp",
+            "tide_crab/animations/attack_left/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        }
+      }
+    },
+    "attack_right": {
+      "group_id": "ab6064d0-ae6d-4d5f-a617-b6adb7a5b469",
+      "source_name": "attack-right",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "tide_crab/animations/attack_right__east.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack_right/east/00.webp",
+            "tide_crab/animations/attack_right/east/01.webp",
+            "tide_crab/animations/attack_right/east/02.webp",
+            "tide_crab/animations/attack_right/east/03.webp",
+            "tide_crab/animations/attack_right/east/04.webp",
+            "tide_crab/animations/attack_right/east/05.webp",
+            "tide_crab/animations/attack_right/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:06 GMT",
+          "src_frames": 7,
+          "sub": "58069593-2298-4c6e-ae48-404cb37c0f4e"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "tide_crab/animations/attack_right__west.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack_right/west/00.webp",
+            "tide_crab/animations/attack_right/west/01.webp",
+            "tide_crab/animations/attack_right/west/02.webp",
+            "tide_crab/animations/attack_right/west/03.webp",
+            "tide_crab/animations/attack_right/west/04.webp",
+            "tide_crab/animations/attack_right/west/05.webp",
+            "tide_crab/animations/attack_right/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "b7ae7ec8-fb63-4419-a202-c8ac338b325f",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "tide_crab/animations/angry__east.webp",
+          "frame_paths": [
+            "tide_crab/animations/angry/east/00.webp",
+            "tide_crab/animations/angry/east/01.webp",
+            "tide_crab/animations/angry/east/02.webp",
+            "tide_crab/animations/angry/east/03.webp",
+            "tide_crab/animations/angry/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:07 GMT",
+          "src_frames": 5,
+          "sub": "06fdefb4-8f02-4839-8244-95344af02c23"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "tide_crab/animations/angry__north.webp",
+          "frame_paths": [
+            "tide_crab/animations/angry/north/00.webp",
+            "tide_crab/animations/angry/north/01.webp",
+            "tide_crab/animations/angry/north/02.webp",
+            "tide_crab/animations/angry/north/03.webp",
+            "tide_crab/animations/angry/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:09 GMT",
+          "src_frames": 5,
+          "sub": "11e54ffc-6453-4dce-8600-ecdf687a6581"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "tide_crab/animations/angry__north-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/angry/north-east/00.webp",
+            "tide_crab/animations/angry/north-east/01.webp",
+            "tide_crab/animations/angry/north-east/02.webp",
+            "tide_crab/animations/angry/north-east/03.webp",
+            "tide_crab/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:10 GMT",
+          "src_frames": 5,
+          "sub": "a9ca4f0c-de71-4b4f-9970-f23512936541"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "tide_crab/animations/angry__south.webp",
+          "frame_paths": [
+            "tide_crab/animations/angry/south/00.webp",
+            "tide_crab/animations/angry/south/01.webp",
+            "tide_crab/animations/angry/south/02.webp",
+            "tide_crab/animations/angry/south/03.webp",
+            "tide_crab/animations/angry/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:11 GMT",
+          "src_frames": 5,
+          "sub": "e4f50ae9-f897-414f-a329-cf01e9881e71"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "tide_crab/animations/angry__south-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/angry/south-east/00.webp",
+            "tide_crab/animations/angry/south-east/01.webp",
+            "tide_crab/animations/angry/south-east/02.webp",
+            "tide_crab/animations/angry/south-east/03.webp",
+            "tide_crab/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:12 GMT",
+          "src_frames": 5,
+          "sub": "83e54cb7-9bbc-4aa8-bbe9-240dab95f1ce"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "tide_crab/animations/angry__south-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/angry/south-west/00.webp",
+            "tide_crab/animations/angry/south-west/01.webp",
+            "tide_crab/animations/angry/south-west/02.webp",
+            "tide_crab/animations/angry/south-west/03.webp",
+            "tide_crab/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "tide_crab/animations/angry__west.webp",
+          "frame_paths": [
+            "tide_crab/animations/angry/west/00.webp",
+            "tide_crab/animations/angry/west/01.webp",
+            "tide_crab/animations/angry/west/02.webp",
+            "tide_crab/animations/angry/west/03.webp",
+            "tide_crab/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "tide_crab/animations/angry__north-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/angry/north-west/00.webp",
+            "tide_crab/animations/angry/north-west/01.webp",
+            "tide_crab/animations/angry/north-west/02.webp",
+            "tide_crab/animations/angry/north-west/03.webp",
+            "tide_crab/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "20b9533a-fafa-40c9-87ce-ffd2e2b8f9b2",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "tide_crab/animations/idle__east.webp",
+          "frame_paths": [
+            "tide_crab/animations/idle/east/00.webp",
+            "tide_crab/animations/idle/east/01.webp",
+            "tide_crab/animations/idle/east/02.webp",
+            "tide_crab/animations/idle/east/03.webp",
+            "tide_crab/animations/idle/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:13 GMT",
+          "src_frames": 5,
+          "sub": "71afc1ca-9d2a-43c1-9925-4cd86d4b8987"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "tide_crab/animations/idle__north.webp",
+          "frame_paths": [
+            "tide_crab/animations/idle/north/00.webp",
+            "tide_crab/animations/idle/north/01.webp",
+            "tide_crab/animations/idle/north/02.webp",
+            "tide_crab/animations/idle/north/03.webp",
+            "tide_crab/animations/idle/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:14 GMT",
+          "src_frames": 5,
+          "sub": "de6dfb4c-9763-4d42-98e2-0aa5ec6cdf63"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "tide_crab/animations/idle__north-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/idle/north-east/00.webp",
+            "tide_crab/animations/idle/north-east/01.webp",
+            "tide_crab/animations/idle/north-east/02.webp",
+            "tide_crab/animations/idle/north-east/03.webp",
+            "tide_crab/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:16 GMT",
+          "src_frames": 5,
+          "sub": "37fd8ead-9cca-4476-abdc-15a8441ac35e"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "tide_crab/animations/idle__south.webp",
+          "frame_paths": [
+            "tide_crab/animations/idle/south/00.webp",
+            "tide_crab/animations/idle/south/01.webp",
+            "tide_crab/animations/idle/south/02.webp",
+            "tide_crab/animations/idle/south/03.webp",
+            "tide_crab/animations/idle/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:17 GMT",
+          "src_frames": 5,
+          "sub": "3a4018fb-fae0-42d4-8b0a-4588621b39ce"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "tide_crab/animations/idle__south-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/idle/south-east/00.webp",
+            "tide_crab/animations/idle/south-east/01.webp",
+            "tide_crab/animations/idle/south-east/02.webp",
+            "tide_crab/animations/idle/south-east/03.webp",
+            "tide_crab/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:19 GMT",
+          "src_frames": 5,
+          "sub": "ad8edbe5-144e-450f-8460-eb2644b618a8"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "tide_crab/animations/idle__south-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/idle/south-west/00.webp",
+            "tide_crab/animations/idle/south-west/01.webp",
+            "tide_crab/animations/idle/south-west/02.webp",
+            "tide_crab/animations/idle/south-west/03.webp",
+            "tide_crab/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "tide_crab/animations/idle__west.webp",
+          "frame_paths": [
+            "tide_crab/animations/idle/west/00.webp",
+            "tide_crab/animations/idle/west/01.webp",
+            "tide_crab/animations/idle/west/02.webp",
+            "tide_crab/animations/idle/west/03.webp",
+            "tide_crab/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "tide_crab/animations/idle__north-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/idle/north-west/00.webp",
+            "tide_crab/animations/idle/north-west/01.webp",
+            "tide_crab/animations/idle/north-west/02.webp",
+            "tide_crab/animations/idle/north-west/03.webp",
+            "tide_crab/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "a52c1218-367c-47bf-b6ee-d48c0368abf3",
+      "source_name": "custom-Claw Snap - Lunges forward and snaps its big claw ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "tide_crab/animations/attack__east.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack/east/00.webp",
+            "tide_crab/animations/attack/east/01.webp",
+            "tide_crab/animations/attack/east/02.webp",
+            "tide_crab/animations/attack/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:20 GMT",
+          "src_frames": 4,
+          "sub": "a8c25af5-961c-42e1-a86c-63c36084fd67"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "tide_crab/animations/attack__north.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack/north/00.webp",
+            "tide_crab/animations/attack/north/01.webp",
+            "tide_crab/animations/attack/north/02.webp",
+            "tide_crab/animations/attack/north/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:21 GMT",
+          "src_frames": 4,
+          "sub": "1346010b-d947-4e16-9b86-1c4f75096866"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "tide_crab/animations/attack__north-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack/north-east/00.webp",
+            "tide_crab/animations/attack/north-east/01.webp",
+            "tide_crab/animations/attack/north-east/02.webp",
+            "tide_crab/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:22 GMT",
+          "src_frames": 4,
+          "sub": "7c3e18d7-267c-4c8c-bd7c-b8141c83794e"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "tide_crab/animations/attack__south.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack/south/00.webp",
+            "tide_crab/animations/attack/south/01.webp",
+            "tide_crab/animations/attack/south/02.webp",
+            "tide_crab/animations/attack/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:23 GMT",
+          "src_frames": 4,
+          "sub": "5ca63b0d-0e3b-4f0f-ad4b-344ad977016b"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "tide_crab/animations/attack__south-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack/south-east/00.webp",
+            "tide_crab/animations/attack/south-east/01.webp",
+            "tide_crab/animations/attack/south-east/02.webp",
+            "tide_crab/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:25 GMT",
+          "src_frames": 4,
+          "sub": "a5678642-8e55-469e-9499-b3a88585e9a7"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "tide_crab/animations/attack__south-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack/south-west/00.webp",
+            "tide_crab/animations/attack/south-west/01.webp",
+            "tide_crab/animations/attack/south-west/02.webp",
+            "tide_crab/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "tide_crab/animations/attack__west.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack/west/00.webp",
+            "tide_crab/animations/attack/west/01.webp",
+            "tide_crab/animations/attack/west/02.webp",
+            "tide_crab/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "tide_crab/animations/attack__north-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/attack/north-west/00.webp",
+            "tide_crab/animations/attack/north-west/01.webp",
+            "tide_crab/animations/attack/north-west/02.webp",
+            "tide_crab/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_claw_snap_lunges_slightly_fo": {
+      "group_id": "ff393ce2-a923-404c-87cc-2cd008b31dd7",
+      "source_name": "custom-Claw Snap - Lunges slightly fo",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_claw_snap_lunges_slightly_fo__east.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/east/00.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/east/01.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/east/02.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/east/03.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/east/04.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/east/05.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:26 GMT",
+          "src_frames": 7,
+          "sub": "bb9167cc-d4b7-447c-8277-97ef5fd3eb5e"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_claw_snap_lunges_slightly_fo__west.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/west/00.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/west/01.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/west/02.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/west/03.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/west/04.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/west/05.webp",
+            "tide_crab/animations/custom_claw_snap_lunges_slightly_fo/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "b968e0d8-aaf9-4d9f-92c5-361c0cdcddb8",
+      "source_name": "custom-Death - The shell cracks open and the crab crumble",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "tide_crab/animations/die__east.webp",
+          "frame_paths": [
+            "tide_crab/animations/die/east/00.webp",
+            "tide_crab/animations/die/east/01.webp",
+            "tide_crab/animations/die/east/02.webp",
+            "tide_crab/animations/die/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:28 GMT",
+          "src_frames": 4,
+          "sub": "e5a87473-575b-42d7-8ec6-aa879b2c2aaa"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "tide_crab/animations/die__north.webp",
+          "frame_paths": [
+            "tide_crab/animations/die/north/00.webp",
+            "tide_crab/animations/die/north/01.webp",
+            "tide_crab/animations/die/north/02.webp",
+            "tide_crab/animations/die/north/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:29 GMT",
+          "src_frames": 4,
+          "sub": "a155a9ea-7830-4514-8d03-9f9d036b63f6"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "tide_crab/animations/die__north-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/die/north-east/00.webp",
+            "tide_crab/animations/die/north-east/01.webp",
+            "tide_crab/animations/die/north-east/02.webp",
+            "tide_crab/animations/die/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:31 GMT",
+          "src_frames": 4,
+          "sub": "a6f759cc-b5c9-4502-a40a-52195fdce162"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "tide_crab/animations/die__south.webp",
+          "frame_paths": [
+            "tide_crab/animations/die/south/00.webp",
+            "tide_crab/animations/die/south/01.webp",
+            "tide_crab/animations/die/south/02.webp",
+            "tide_crab/animations/die/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:32 GMT",
+          "src_frames": 4,
+          "sub": "4cf68a82-98d5-4250-8bc3-e7770cf5c52f"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "tide_crab/animations/die__south-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/die/south-east/00.webp",
+            "tide_crab/animations/die/south-east/01.webp",
+            "tide_crab/animations/die/south-east/02.webp",
+            "tide_crab/animations/die/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:33 GMT",
+          "src_frames": 4,
+          "sub": "f7ebbdaa-bc78-4f06-a4fd-27c69e1e1821"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "tide_crab/animations/die__south-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/die/south-west/00.webp",
+            "tide_crab/animations/die/south-west/01.webp",
+            "tide_crab/animations/die/south-west/02.webp",
+            "tide_crab/animations/die/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "tide_crab/animations/die__west.webp",
+          "frame_paths": [
+            "tide_crab/animations/die/west/00.webp",
+            "tide_crab/animations/die/west/01.webp",
+            "tide_crab/animations/die/west/02.webp",
+            "tide_crab/animations/die/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "tide_crab/animations/die__north-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/die/north-west/00.webp",
+            "tide_crab/animations/die/north-west/01.webp",
+            "tide_crab/animations/die/north-west/02.webp",
+            "tide_crab/animations/die/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_snaps_forward_with_its_big_cla": {
+      "group_id": "7ef3d12f-137f-4696-9d74-b1a78b0d3d68",
+      "source_name": "custom-snaps forward with its big cla",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_snaps_forward_with_its_big_cla__east.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/east/00.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/east/01.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/east/02.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/east/03.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/east/04.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/east/05.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:35 GMT",
+          "src_frames": 7,
+          "sub": "4fbb39e3-599e-4f34-96f8-bfa098015a21"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_snaps_forward_with_its_big_cla__north.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north/00.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north/01.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north/02.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north/03.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north/04.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north/05.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:36 GMT",
+          "src_frames": 7,
+          "sub": "513eb3eb-0d38-49d0-88c8-348d67820634"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_snaps_forward_with_its_big_cla__north-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-east/00.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-east/01.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-east/02.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-east/03.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-east/04.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-east/05.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:37 GMT",
+          "src_frames": 7,
+          "sub": "623bb149-3783-4253-a72c-72e89e4edd7c"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_snaps_forward_with_its_big_cla__south.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south/00.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south/01.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south/02.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south/03.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south/04.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south/05.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:39 GMT",
+          "src_frames": 7,
+          "sub": "87437c76-7496-4d50-b2ec-b306ed47c98f"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_snaps_forward_with_its_big_cla__south-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-east/00.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-east/01.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-east/02.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-east/03.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-east/04.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-east/05.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:40 GMT",
+          "src_frames": 7,
+          "sub": "50670d65-8c82-4994-b28f-9b652dc027bb"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_snaps_forward_with_its_big_cla__south-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-west/00.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-west/01.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-west/02.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-west/03.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-west/04.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-west/05.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_snaps_forward_with_its_big_cla__west.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/west/00.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/west/01.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/west/02.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/west/03.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/west/04.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/west/05.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "tide_crab/animations/custom_snaps_forward_with_its_big_cla__north-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-west/00.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-west/01.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-west/02.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-west/03.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-west/04.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-west/05.webp",
+            "tide_crab/animations/custom_snaps_forward_with_its_big_cla/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "6e5d5204-5b31-41e9-840b-4146969b5cc7",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "tide_crab/animations/walk__east.webp",
+          "frame_paths": [
+            "tide_crab/animations/walk/east/00.webp",
+            "tide_crab/animations/walk/east/01.webp",
+            "tide_crab/animations/walk/east/02.webp",
+            "tide_crab/animations/walk/east/03.webp",
+            "tide_crab/animations/walk/east/04.webp",
+            "tide_crab/animations/walk/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:42 GMT",
+          "src_frames": 6,
+          "sub": "1a422330-81da-42a6-9efc-ad829edd1a76"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "tide_crab/animations/walk__north.webp",
+          "frame_paths": [
+            "tide_crab/animations/walk/north/00.webp",
+            "tide_crab/animations/walk/north/01.webp",
+            "tide_crab/animations/walk/north/02.webp",
+            "tide_crab/animations/walk/north/03.webp",
+            "tide_crab/animations/walk/north/04.webp",
+            "tide_crab/animations/walk/north/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:43 GMT",
+          "src_frames": 6,
+          "sub": "e744a571-af8d-4460-a0f2-a5095be05533"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "tide_crab/animations/walk__north-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/walk/north-east/00.webp",
+            "tide_crab/animations/walk/north-east/01.webp",
+            "tide_crab/animations/walk/north-east/02.webp",
+            "tide_crab/animations/walk/north-east/03.webp",
+            "tide_crab/animations/walk/north-east/04.webp",
+            "tide_crab/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:44 GMT",
+          "src_frames": 6,
+          "sub": "72fcd7f5-2057-480c-8d5d-65542c9d5925"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "tide_crab/animations/walk__south.webp",
+          "frame_paths": [
+            "tide_crab/animations/walk/south/00.webp",
+            "tide_crab/animations/walk/south/01.webp",
+            "tide_crab/animations/walk/south/02.webp",
+            "tide_crab/animations/walk/south/03.webp",
+            "tide_crab/animations/walk/south/04.webp",
+            "tide_crab/animations/walk/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:45 GMT",
+          "src_frames": 6,
+          "sub": "47a12943-0c9c-4d67-a3df-de3f68937cb2"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "tide_crab/animations/walk__south-east.webp",
+          "frame_paths": [
+            "tide_crab/animations/walk/south-east/00.webp",
+            "tide_crab/animations/walk/south-east/01.webp",
+            "tide_crab/animations/walk/south-east/02.webp",
+            "tide_crab/animations/walk/south-east/03.webp",
+            "tide_crab/animations/walk/south-east/04.webp",
+            "tide_crab/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:47:47 GMT",
+          "src_frames": 6,
+          "sub": "282ca0e0-7fa7-4cda-b5ef-9d745be29af6"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "tide_crab/animations/walk__south-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/walk/south-west/00.webp",
+            "tide_crab/animations/walk/south-west/01.webp",
+            "tide_crab/animations/walk/south-west/02.webp",
+            "tide_crab/animations/walk/south-west/03.webp",
+            "tide_crab/animations/walk/south-west/04.webp",
+            "tide_crab/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "tide_crab/animations/walk__west.webp",
+          "frame_paths": [
+            "tide_crab/animations/walk/west/00.webp",
+            "tide_crab/animations/walk/west/01.webp",
+            "tide_crab/animations/walk/west/02.webp",
+            "tide_crab/animations/walk/west/03.webp",
+            "tide_crab/animations/walk/west/04.webp",
+            "tide_crab/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "tide_crab/animations/walk__north-west.webp",
+          "frame_paths": [
+            "tide_crab/animations/walk/north-west/00.webp",
+            "tide_crab/animations/walk/north-west/01.webp",
+            "tide_crab/animations/walk/north-west/02.webp",
+            "tide_crab/animations/walk/north-west/03.webp",
+            "tide_crab/animations/walk/north-west/04.webp",
+            "tide_crab/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-Claw Snap - Lunges slightly fo",
+      "key": "custom_claw_snap_lunges_slightly_fo",
+      "direction": "east",
+      "takes": [
+        "fed9eac4-62bf-409c-81a3-28ed569eec9c",
+        "bb9167cc-d4b7-447c-8277-97ef5fd3eb5e"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

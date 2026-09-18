@@ -182,6 +182,78 @@ def graduate(cid, entries, client, apply=True, verbose=True):
     return True
 
 
+
+def drop_unapproved_takes(entries, client, apply=True, verbose=True, only=None):
+    """DELETE AN ATTEMPT HE NEVER APPROVED (maintainer 2026-09-18: "The
+    animation attempts that was never approved can be removed").
+
+    A slot is droppable when it is a NUMBERED attempt (`attack_v2`, never the
+    bare `attack`), another slot of the same state has approvals, and not one
+    of its own eight directions is approved. Frames go from disk, the takes go
+    from PixelLab by GROUP ID, the record loses the slot, and any redo or
+    rejected verdict left on it goes too — it judged art that no longer exists.
+    An attempt with even ONE approval is his and is never touched.
+    """
+    import re
+    dropped = 0
+    for design in list(cand.load_cfg()["candidates"]):
+        cid = design["id"]
+        if only and cid not in set(only):
+            continue
+        man = cand.load_manifest(cid)
+        anims = (man or {}).get("animations") or {}
+        if not anims:
+            continue
+        approved_states = set()
+        for slot in anims:
+            if any((entries.get(f"monsters/{cid}#{slot}#{d}") or {}).get("status") == "approved"
+                   for d in DIRS_8):
+                approved_states.add(_base(slot))
+        for slot in list(anims):
+            if not re.search(r"_v\d+$", slot):          # never the bare state
+                continue
+            if _base(slot) not in approved_states:       # nothing of this state is his yet
+                continue
+            if any((entries.get(f"monsters/{cid}#{slot}#{d}") or {}).get("status") == "approved"
+                   for d in DIRS_8):
+                continue                                  # he approved part of it
+            if verbose:
+                print(f"  {cid}: dropping unapproved attempt {slot}")
+            if not apply:
+                dropped += 1
+                continue
+            for d, q in (anims[slot].get("directions") or {}).items():
+                if q.get("group") and not q.get("mirrored"):
+                    try:
+                        client.delete_animation(man["pixellab_id"], group_id=q["group"], direction=d)
+                    except PixelLabError as e:
+                        print(f"    {slot}/{d}: {e}")
+                fdir = os.path.join(cand.cdir(cid), "animations", slot, d)
+                shutil.rmtree(fdir, ignore_errors=True)
+                strip = os.path.join(cand.cdir(cid), "animations", f"{slot}__{d}.webp")
+                if os.path.exists(strip):
+                    os.remove(strip)
+            shutil.rmtree(os.path.join(cand.cdir(cid), "animations", slot), ignore_errors=True)
+            anims.pop(slot, None)
+            with open(cand.manifest_path(cid), "w") as f:
+                json.dump(man, f, indent=2, ensure_ascii=False)
+                f.write("\n")
+            for d in DIRS_8:
+                entries.pop(f"monsters/{cid}#{slot}#{d}", None)
+            dropped += 1
+    if dropped and apply:
+        doc = json.load(open(cand.FEEDBACK))
+        doc["entries"] = entries
+        doc["updated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+        with open(cand.FEEDBACK, "w") as f:
+            json.dump(doc, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+        cand.rebuild_index(cand.load_cfg())
+    if verbose:
+        print(f"takes: {dropped} unapproved attempt(s) {'removed' if apply else 'ready to remove'}")
+    return dropped
+
+
 def run(apply=True, only=None, verbose=True):
     try:
         entries = json.load(open(cand.FEEDBACK))["entries"]
@@ -191,6 +263,7 @@ def run(apply=True, only=None, verbose=True):
     if only:
         ids = [i for i in ids if i in set(only)]
     client = PixelLabClient() if apply else None
+    drop_unapproved_takes(entries, client, apply=apply, verbose=verbose, only=only)
     n = 0
     for cid in ids:
         if not os.path.isdir(os.path.join(cand.cdir(cid), "animations")):

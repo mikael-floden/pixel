@@ -34,28 +34,6 @@
       "scale": "standard"
     },
     {
-      "id": "tide_crab",
-      "name": "Snapshell",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 112,
-      "biome": [
-        "light_beach",
-        "water"
-      ],
-      "items": [
-        "curved pincer",
-        "sea shells"
-      ],
-      "prompt": "Large fantasy shore crab with a barnacle-crusted orange-red shell, one enormous curved pincer with a pale bone-white edge and a smaller pincer, six jointed legs with dark tips, stalked black eyes, and clumps of green seaweed and small sea shells stuck to its back.",
-      "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go.",
-      "scale": "standard",
-      "attack_action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
-      "claws": true,
-      "attack_extreme": "Shell Burst - The crab's shell cracks open with a burst of force as it hurls both claws wide and slams them down, shards and spray flying",
-      "die_action": "Death - The shell cracks open and the crab crumbles into a scatter of broken shell pieces, then fades away"
-    },
-    {
       "id": "ember_king",
       "name": "Pyrelord",
       "tier": "boss",
@@ -4429,6 +4407,36 @@
       "attack_extreme": "Husk Burst - The husk splits open with a crack and hurls itself forward, seeds and splinters flying",
       "die_action": "Death - The husk cracks open and crumbles into a small pile of dry husk pieces, then fades away",
       "graduated_at": "2026-09-18T14:33:53+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "tide_crab",
+      "name": "Snapshell",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 112,
+      "biome": [
+        "light_beach",
+        "water"
+      ],
+      "items": [
+        "curved pincer",
+        "sea shells"
+      ],
+      "prompt": "Large fantasy shore crab with a barnacle-crusted orange-red shell, one enormous curved pincer with a pale bone-white edge and a smaller pincer, six jointed legs with dark tips, stalked black eyes, and clumps of green seaweed and small sea shells stuck to its back.",
+      "lore": "The tide brings it up and forgets to take it back. It holds the beach with one great claw and never learned to let go.",
+      "scale": "standard",
+      "attack_action": "Claw Snap - Lunges forward and snaps its big claw shut hard",
+      "claws": true,
+      "attack_extreme": "Shell Burst - The crab's shell cracks open with a burst of force as it hurls both claws wide and slams them down, shards and spray flying",
+      "die_action": "Death - The shell cracks open and the crab crumbles into a scatter of broken shell pieces, then fades away",
+      "graduated_at": "2026-09-18T14:48:05+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

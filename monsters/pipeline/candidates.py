@@ -215,6 +215,13 @@ def write_candidate(cid, design, rots, meta):
     return man
 
 
+def _feedback_entries():
+    try:
+        return json.load(open(FEEDBACK))["entries"]
+    except (FileNotFoundError, ValueError, KeyError):
+        return {}
+
+
 def rebuild_index(cfg):
     """monsters/candidates/index.json — what the wiki reads. Order follows the
     design file; only generated candidates appear."""
@@ -228,10 +235,26 @@ def rebuild_index(cfg):
                 if k in design:
                     man[k] = design[k]
             man.setdefault("scale", "standard")
-            items.append({k: man.get(k) for k in (
+            row = {k: man.get(k) for k in (
                 "id", "name", "tier", "lore", "biome", "items", "size", "template_id",
                 "scale", "pixellab_id", "version", "sheet", "rotations", "qa", "review", "notes",
-                "generated_at")})
+                "generated_at")}
+            # WHERE THIS DESIGN IS ON ITS WAY TO BEING A MONSTER, for the wiki
+            # to show (maintainer 2026-09-18: "If I have approved all animations
+            # and the monster the monster should be a real monster and not a
+            # candidate! ... Can you make the wiki show this state").
+            # `blocking` is the short human reason it is not one yet.
+            try:
+                import graduate as _grad
+                ok, chosen, why = _grad.eligible(design["id"], _feedback_entries())
+                row["graduation"] = {
+                    "state": "ready" if ok else "waiting",
+                    "takes": chosen,
+                    "blocking": why or None,
+                }
+            except Exception:
+                pass
+            items.append(row)
     os.makedirs(OUT, exist_ok=True)
     with open(INDEX, "w") as f:
         json.dump({
