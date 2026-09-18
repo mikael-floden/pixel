@@ -12,6 +12,7 @@ import { WorldRoom, sceneryBbox, zonesConfigFor, perfStats, DEFAULT_WORLD } from
 import { initLive, registerLiveRoutes, sceneryHitboxOverrides } from "./live.js";
 import { cacheControlFor } from "./cachepolicy.js";
 import { assetHash } from "./assethash.js";
+import { BundleStore, backendFromEnv, DOC } from "./bundlestore";
 
 // Encoder.BUFFER_SIZE is set in rooms/WorldRoom.ts (the room module), so a
 // test's own Server gets the same 64 KB as this one.
@@ -180,6 +181,38 @@ app.get("/asset-index.json", (_req, res) => {
   res.setHeader("Cache-Control", "no-cache").type("application/json").send(assetIndexJson);
 });
 
+// THE PUBLISHED CLIENT BUNDLE, if one is configured (bundlestore.ts). It takes
+// precedence over the image's own client/dist, and the image remains the floor:
+// nothing published, nothing readable, or anything refused by the store's laws
+// and this whole block is inert.
+const bundleBackend = backendFromEnv();
+const bundles = bundleBackend ? new BundleStore(bundleBackend) : null;
+if (bundles) {
+  console.log(`[nangijala] published client bundles from ${bundles.label}`);
+  void bundles.refresh();
+  // Pushed, not polled — the live-notify shape (a workflow step POSTs after a
+  // publish). The interval is the belt: an instance that missed a poke, or came
+  // up between two, converges without one.
+  setInterval(() => void bundles.refresh(), 60_000).unref();
+}
+
+/** Serve one file of a published generation. The ETag is the hash of THESE
+ *  bytes (bundlestore law 1): identical on every instance, so one validator can
+ *  never name two documents and a 304 can never freeze the wrong body. */
+function sendBundleFile(res: express.Response, file: { bytes: Buffer; hash: string; type: string }, immutable: boolean) {
+  res.setHeader("ETag", `"${file.hash}"`);
+  res.setHeader("Content-Type", file.type);
+  // A content-hashed asset can be cached forever BY CONSTRUCTION — the name is
+  // the hash of the bytes. The document is revalidated on every load, which is
+  // what makes a flip visible on a plain refresh.
+  res.setHeader("Cache-Control", immutable ? "public, max-age=31536000, immutable" : "no-cache");
+  if (res.req?.headers["if-none-match"] === `"${file.hash}"`) {
+    res.status(304).end();
+    return;
+  }
+  res.status(200).send(file.bytes);
+}
+
 if (serveClient) {
   for (const domain of ASSET_DOMAINS) {
     app.use(
@@ -187,13 +220,70 @@ if (serveClient) {
       express.static(join(ASSETS_ROOT, domain), { maxAge: "1h", setHeaders: setCacheHeaders }),
     );
   }
-  if (existsSync(clientDist)) {
-    app.use(express.static(clientDist, { setHeaders: setCacheHeaders }));
-    // SPA fallback for any non-API, non-asset route.
-    app.get(/^(?!\/(assets|health|matchmake|api)).*/, (_req, res) =>
-      res.sendFile(join(clientDist, "index.html"), { headers: { "Cache-Control": "no-cache" } }),
+
+  if (bundles) {
+    // WHICH GENERATION IS SERVING, for the gate and for a human on a phone.
+    app.get("/api/bundle", (_req, res) =>
+      res.setHeader("Cache-Control", "no-store").json({
+        store: bundles.label,
+        pointer: bundles.pointer,
+        generations: bundles.held,
+        serving: bundles.current?.id ?? null,
+        recent: bundles.log.slice(-8),
+      }),
     );
-    console.log(`[nangijala] serving built client from ${clientDist}, assets from ${ASSETS_ROOT}`);
+    // THE POKE, exactly like /api/live/refresh: unauthenticated because it only
+    // asks the server to re-read a store it already reads, it is idempotent, and
+    // a spurious call is a no-op. The publisher calls it after the pointer flip.
+    app.post("/api/bundle/refresh", async (_req, res) => {
+      await bundles.refresh();
+      res.setHeader("Cache-Control", "no-store").json({ serving: bundles.current?.id ?? null, pointer: bundles.pointer });
+    });
+
+    // A PUBLISHED ASSET IS SERVED BY NAME FROM ANY GENERATION THIS PROCESS HAS
+    // EVER HELD (law 4), which is what keeps a page from a previous generation
+    // working across a flip. Falls through to the image's static handler when
+    // the store has never seen the name.
+    app.get(/^\/assets\/[^/]+$/, (req, res, next) => {
+      const name = req.path.slice(1); // "assets/<file>"
+      const file = bundles.fileFor(name);
+      if (!file) return next();
+      sendBundleFile(res, file, true);
+    });
+  }
+
+  if (existsSync(clientDist) || bundles) {
+    // `index: false` IS LOAD-BEARING when a published bundle exists. Measured by
+    // verify-fastlane arm D: express.static answers "/" with its OWN
+    // index.html, and it is registered before the fallback, so the published
+    // document never won and every publish looked like a no-op while
+    // /api/bundle cheerfully reported the new generation. With the lane off the
+    // fallback below serves the same file, so behaviour is unchanged.
+    if (existsSync(clientDist)) {
+      app.use(express.static(clientDist, { index: false, setHeaders: setCacheHeaders }));
+    }
+    // A MISSING /assets PATH ANSWERS 404 WITH `no-store`. It used to answer with
+    // no Cache-Control at all, which leaves it to HEURISTIC FRESHNESS — and a
+    // phone may then REMEMBER a 404. A remembered 404 on a module script is a
+    // black page that survives a reload, which is the same wound as deleting a
+    // hashed name (root CLAUDE.md), arriving by a different road. Still a hard
+    // 404 and never HTML, so the .dockerignore diagnostic (present on GitHub,
+    // 404 in prod) reads exactly as before.
+    app.use("/assets", (_req, res) =>
+      res.status(404).setHeader("Cache-Control", "no-store").type("text/plain").send("not found\n"),
+    );
+    // SPA fallback for any non-API, non-asset route — the published document
+    // when there is one, the image's otherwise.
+    app.get(/^(?!\/(assets|health|matchmake|api)).*/, (_req, res) => {
+      const doc = bundles?.current?.files.get(DOC);
+      if (doc) return sendBundleFile(res, doc, false);
+      if (!existsSync(clientDist)) return res.status(503).type("text/plain").send("no client bundle\n");
+      res.sendFile(join(clientDist, "index.html"), { headers: { "Cache-Control": "no-cache" } });
+    });
+    console.log(
+      `[nangijala] serving built client from ${bundles?.current ? `${bundles.label} (${bundles.current.id})` : clientDist}` +
+        `, assets from ${ASSETS_ROOT}`,
+    );
   }
 }
 
@@ -224,8 +314,19 @@ async function warmZoneRooms() {
   console.log(`[zones] ${cfg.cols * cfg.rows} zone rooms of ${DEFAULT_WORLD} warm in ${Date.now() - t0} ms`);
 }
 
-gameServer
-  .listen(PORT)
+// THE FIRST STORE READ HAPPENS BEFORE WE ACCEPT TRAFFIC. Measured by
+// verify-fastlane arm B: /health went up while the pointer was still in flight,
+// so the first requests were answered from the image and /api/bundle reported
+// `serving: null` — a cold instance briefly serving the previous client on
+// every start. BOUNDED, because availability outranks freshness: if the store
+// is slow or unreachable we start anyway on the image bundle and converge on
+// the next poke or the 60 s belt.
+const firstRead = bundles
+  ? Promise.race([bundles.refresh(), new Promise<void>((r) => setTimeout(r, 5000).unref())]).catch(() => {})
+  : Promise.resolve();
+
+firstRead
+  .then(() => gameServer.listen(PORT))
   .then(() => {
     console.log(`[nangijala] world server listening on ws://localhost:${PORT}`);
     void warmZoneRooms();
