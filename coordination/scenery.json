@@ -1,8 +1,8 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-18T04:50:32.683377+00:00",
+  "updated_at": "2026-09-18T05:46:34.130022+00:00",
   "health": "idle",
-  "current": "idle \u2014 facing sweep closed (645 facings, 230 of 334 play); waiting on maps2; no file in scenery/ in flight",
+  "current": "IN FLIGHT \u2014 wire maps2's agreed heal flow into my deletes: scenery/pipeline/heal_worlds.py (new), scenery/pipeline/feedback.py, scenery/pipeline/prune.py, scenery/README.md. No world.json touched in this unit (heal runs only inside a future delete, under its own claim).",
   "progress": {
     "scenery_complete": 736,
     "scenery_target": 2146,
