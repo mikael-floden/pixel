@@ -30,7 +30,7 @@ import time
 import zlib
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from pixellab_client import PixelLabClient  # noqa: E402
+from pixellab_client import PixelLabClient, PixelLabError  # noqa: E402
 
 REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 OUT = os.path.join(REPO, "tiles", "transitions")
@@ -260,7 +260,19 @@ def recover(client=None, apply=True):
             for (wlo, wup, r), (a, b, rr) in list(want.items()):
                 if lo != wlo or up != wup:
                     continue
-                full = client._get(f"/tilesets/{row['id']}")
+                try:
+                    full = client._get(f"/tilesets/{row['id']}")
+                except PixelLabError as e:
+                    # 423 = "still being generated". One tileset mid-flight used to
+                    # abort the whole scan, which is the opposite of this function's
+                    # purpose: it exists so paid-for art is never paid for twice, and
+                    # the sets most likely to be mid-flight are exactly the ones a
+                    # stalled run is trying to recover. Skip it and keep going.
+                    # 423 still generating, 410 the generation failed outright -
+                    # neither is a reason to abandon the scan for every other set.
+                    if not any(c in str(e) for c in ("423", "410")):
+                        raise
+                    continue
                 meta = full.get("metadata") or {}
                 got = meta.get("raggedness")
                 if got is not None and abs(float(got) - r / 100.0) > 1e-6:

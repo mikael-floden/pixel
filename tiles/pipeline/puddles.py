@@ -147,11 +147,25 @@ def plan(only=None, pairs=None, levels=LEVELS):
 
 
 def is_complete(d):
-    return len(glob.glob(os.path.join(REPO, d, "tile_*.webp"))) == 16
+    """A sheet with a meta.json is DONE, whatever its tile count.
+
+    NOT "has 16 tiles": a tile the maintainer rejects is deleted from git by the review
+    pass, so a reviewed sheet holds fewer than 16 files and counting them reads it as an
+    unfinished run - which a re-run then regenerates OVER the survivors, new bytes under
+    a published `tile_NN.webp`. That happened once in the fades tree (2026-09-18, caught
+    one sheet in, 1,188 of 1,680 sheets were in range) and the two trees are the same
+    code. No puddle carries a verdict yet; this is the guard that keeps it that way.
+    """
+    return os.path.isfile(os.path.join(REPO, d, "meta.json"))
 
 
 def write_sheet(job, images, tile_id):
     d = os.path.join(REPO, job["dir"])
+    # NEVER WRITE INTO A SHEET THAT EXISTS - variety is a new directory, never new bytes
+    # under a published name. is_complete() already skips these; this makes it a rule.
+    if os.path.isfile(os.path.join(d, "meta.json")):
+        raise RuntimeError(f"{job['dir']} already exists - generate a new rep, never "
+                           f"rewrite a published sheet")
     os.makedirs(d, exist_ok=True)
     names = []
     for i, im in enumerate(images):
