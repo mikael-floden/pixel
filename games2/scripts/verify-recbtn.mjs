@@ -5,17 +5,12 @@
 // to red/recording").
 //
 // THE PLACEMENT IS ASSERTED AGAINST THE CARD ITSELF, never against literals:
-// the ask is BOTH edges flush ("right aligned", then "I meant also left aligned
-// same as the card") and "the same distance", so the gate compares the button's
-// two edges to the card's two edges and the gap under the card to the gap the
-// card keeps above itself. A hardcoded 10 would pass just as well on a build
-// where BOTH had drifted.
-//
-// AND THE SLICE PLAN IS CHECKED AGAINST THE SHIPPED ART. The plate is widened
-// by repeating two plain columns, which is only sound while col 10 == col 11
-// and col 35 == col 36 in both faces — a redrawn export could quietly break
-// that and the seams would show as a stripe. The gate reads the two /ui2 bakes
-// and re-proves it, so his next export fails here rather than on his phone.
+// the ask is LEFT-aligned (maintainer 2026-09-18: "I didn't want you to stretch
+// the button just left align it") at "the same distance", so the gate compares
+// the button's left edge to the card's left edge and the gap under the card to
+// the gap the card keeps above itself. A hardcoded 10 would pass just as well
+// on a build where BOTH had drifted. The WIDTH is asserted too: this button is
+// his 48x48 art and must never be stretched to the card again.
 //
 // AND THE STATE IS ASSERTED IN PIXELS. A class flip and an aria attribute
 // prove the code ran; they do not prove the lamp lit. The lit face carries
@@ -98,10 +93,13 @@ const geom = () =>
       gvLeft: parseFloat(cs.getPropertyValue("--gv-left")) || 0,
       pressed: btn?.getAttribute("aria-pressed"),
       onClass: btn?.classList.contains("on"),
-      canvas: (() => {
-        const c = btn?.querySelector("canvas");
-        return c ? { w: c.width, h: c.height, css: Math.round(c.getBoundingClientRect().width) } : null;
-      })(),
+      faces: [...btn.querySelectorAll("img")].map((i) => ({
+        cls: i.className,
+        w: i.naturalWidth,
+        h: i.naturalHeight,
+        css: Math.round(i.getBoundingClientRect().width),
+        vis: getComputedStyle(i).visibility,
+      })),
       state: window.__mlRecord?.on(),
     };
   });
@@ -112,12 +110,12 @@ const geom = () =>
   const g = await geom();
   if (!g.card || !g.btn) fail(`not mounted: card ${JSON.stringify(g.card)} btn ${JSON.stringify(g.btn)}`);
   else {
-    Math.abs(g.btn.r - g.card.r) <= 1 && Math.abs(g.btn.l - g.card.l) <= 1
-      ? ok(`BOTH edges flush with the HP/EP card (button ${g.btn.l.toFixed(0)}..${g.btn.r.toFixed(0)}, card ${g.card.l.toFixed(0)}..${g.card.r.toFixed(0)})`)
-      : fail(`button ${g.btn.l.toFixed(1)}..${g.btn.r.toFixed(1)} vs card ${g.card.l.toFixed(1)}..${g.card.r.toFixed(1)} — he asked for both edges`);
-    Math.abs(g.btn.h - 48) <= 1
-      ? ok(`it keeps the art's own height (${g.btn.h.toFixed(0)}px) however wide it gets`)
-      : fail(`button height ${g.btn.h.toFixed(1)} — the plate must not scale vertically`);
+    Math.abs(g.btn.l - g.card.l) <= 1
+      ? ok(`left-aligned with the HP/EP card (button left ${g.btn.l.toFixed(0)}, card left ${g.card.l.toFixed(0)})`)
+      : fail(`button left ${g.btn.l.toFixed(1)} vs card left ${g.card.l.toFixed(1)} — not left-aligned`);
+    Math.abs(g.btn.w - 48) <= 1 && Math.abs(g.btn.h - 48) <= 1
+      ? ok(`it is his art's own 48x48, never stretched to the card (${g.btn.w.toFixed(0)}x${g.btn.h.toFixed(0)})`)
+      : fail(`button ${g.btn.w.toFixed(1)}x${g.btn.h.toFixed(1)} — his 48x48 plate must not be scaled`);
     const gap = g.btn.t - g.card.b;
     const above = g.card.t - g.safeTop;
     Math.abs(gap - above) <= 1
@@ -132,54 +130,24 @@ const geom = () =>
   }
 }
 
-// ── 2. THE ART REALLY DECODED, and the SLICE PLAN still holds for it. A
-//       missing /ui2 file is an empty box, not an error (UI_AGENT.md); a
-//       redrawn export that moves the plain columns would show as a seam. ──
+// ── 2. BOTH FACES REALLY DECODED, at the authored grid (naturalWidth/2). A
+//       missing /ui2 file is an empty box, not an error (UI_AGENT.md). ──
 {
   const g = await geom();
-  g.canvas && g.canvas.w > 0 && g.canvas.h === 96
-    ? ok(`the plate is painted at 2x into a ${g.canvas.w}x${g.canvas.h} canvas shown at ${g.canvas.css}px wide`)
-    : fail(`canvas: ${JSON.stringify(g.canvas)}`);
-  const plan = await page.evaluate(() => window.__mlRecord.slices());
-  const seams = await page.evaluate(async (P) => {
-    const out = {};
-    for (const [k, url] of [["idle", "/ui2/icon-record.webp"], ["rec", "/ui2/icon-record-on.webp"]]) {
-      const img = new Image();
-      img.src = url;
-      await img.decode();
-      const c = document.createElement("canvas");
-      c.width = img.naturalWidth;
-      c.height = img.naturalHeight;
-      const g2 = c.getContext("2d");
-      g2.imageSmoothingEnabled = false;
-      g2.drawImage(img, 0, 0);
-      const S = img.naturalWidth / P.art;
-      const col = (x) => g2.getImageData(Math.round(x * S), 0, 1, c.height).data.toString();
-      out[k] = {
-        decoded: img.naturalWidth,
-        left: col(P.fillL) === col(P.fillL + 1),
-        right: col(P.fillR - 1) === col(P.fillR),
-      };
-    }
-    return out;
-  }, plan);
-  const okSeam = Object.values(seams).every((v) => v.decoded === 96 && v.left && v.right);
-  okSeam
-    ? ok(`the repeated columns are still identical in both bakes (${JSON.stringify(seams)})`)
-    : fail(`the slice plan no longer matches the art — seams would show: ${JSON.stringify(seams)}`);
+  const bad2 = g.faces.filter((f) => !f.w || f.w !== 96 || f.css !== 48);
+  bad2.length === 0 && g.faces.length === 2
+    ? ok(`both faces decoded 96x96 and render at 48px (${g.faces.map((f) => f.cls).join(", ")})`)
+    : fail(`faces: ${JSON.stringify(g.faces)} — want two, each naturalWidth 96 rendered at 48`);
 }
 
 // ── 3. THE PRESS TURNS IT RED. Class + aria + the probe, and then the PIXELS.
 {
-  // The centre slice carries the lamp and is CENTRED by construction (the two
-  // fillers split the extra width), so the crop follows the button's middle
-  // rather than its left edge. Still inside the plate, which is what keeps the
-  // world out of the count.
-  const LAMP_BOX = { w: 20, h: 31, dy: 2 };
+  // in the art's own 48px coordinates, which is also css px (rendered 1:1)
+  const LAMP_BOX = { dx: 6, dy: 2, w: 20, h: 31 };
   const shot = async (name) => {
     const g = await geom();
     const clip = {
-      x: Math.round((g.btn.l + g.btn.r) / 2 - LAMP_BOX.w / 2) - 4,
+      x: Math.floor(g.btn.l) + LAMP_BOX.dx,
       y: Math.floor(g.btn.t) + LAMP_BOX.dy,
       width: LAMP_BOX.w,
       height: LAMP_BOX.h,
@@ -208,7 +176,10 @@ const geom = () =>
   warmRec > warmIdle * 2
     ? ok(`and it LOOKS it: warm pixels ${warmIdle} -> ${warmRec} in the button's own crop`)
     : fail(`the lamp did not light: warm pixels ${warmIdle} -> ${warmRec}`);
-
+  const vis = after.faces.map((f) => `${f.cls}:${f.vis}`).join(" ");
+  /-on:visible/.test(vis) && /-off:hidden/.test(vis)
+    ? ok(`the lit face is the visible one (${vis})`)
+    : fail(`face visibility ${vis}`);
   // …and it goes back
   await page.evaluate(() => document.querySelector(".ml-rec").click());
   await page.waitForTimeout(150);
@@ -241,15 +212,15 @@ const geom = () =>
   const g = await geom();
   // the chips TRANSITION their left over .3s — the wait above outlasts it, and
   // the button rides the same var so it arrives with the card, not after it
-  Math.abs(g.btn.r - g.card.r) <= 1 && Math.abs(g.btn.l - g.card.l) <= 1 && Math.abs(g.btn.t - g.card.b - 10) <= 1
-    ? ok(`still the card's width after the landscape flip (${g.btn.l.toFixed(0)}..${g.btn.r.toFixed(0)} = card ${g.card.l.toFixed(0)}..${g.card.r.toFixed(0)})`)
+  Math.abs(g.btn.l - g.card.l) <= 1 && Math.abs(g.btn.t - g.card.b - 10) <= 1
+    ? ok(`still under the card's left edge after the landscape flip (left ${g.btn.l.toFixed(0)} = card ${g.card.l.toFixed(0)})`)
     : fail(`after rotating: button ${JSON.stringify(g.btn)} card ${JSON.stringify(g.card)}`);
   await page.setViewportSize({ width: 393, height: 851 });
   await page.waitForTimeout(900);
   const p = await geom();
-  Math.abs(p.btn.r - p.card.r) <= 1 && Math.abs(p.btn.l - p.card.l) <= 1
+  Math.abs(p.btn.l - p.card.l) <= 1
     ? ok("and back in portrait")
-    : fail(`back in portrait: button ${p.btn.l.toFixed(1)}..${p.btn.r.toFixed(1)} vs card ${p.card.l.toFixed(1)}..${p.card.r.toFixed(1)}`);
+    : fail(`back in portrait: button left ${p.btn.l.toFixed(1)} vs card left ${p.card.l.toFixed(1)}`);
   await page.screenshot({ path: `${OUT}/recbtn-hud.png` });
 }
 
