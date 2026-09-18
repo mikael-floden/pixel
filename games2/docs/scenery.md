@@ -256,8 +256,8 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
 - **AND WHAT STANDS ON THE ROOF GOES WITH THE ROOF** — a chimney. Its feet are
   on the deck's own top, so `buildPlacements` withholds `roofed` (it is not
   furniture: it must draw from the street) and flags `onDeck` instead
-  (`level + z >= deckAt(cell)`), and `rebuildScenery` fades it on the roof's own
-  debris curve while the cut has the roof open. **THE HEIGHT THAT ANSWERS "IS
+  (`level + z >= deckAt(cell)`), and `rebuildScenery` fades it on the room's
+  light curve (`aboveCutFade`) while the cut has the roof open. **THE HEIGHT THAT ANSWERS "IS
   IT ON THE LID" IS THE PIECE'S FEET, AND EVERY TEST IN THE REBUILD MUST ASK
   THE SAME ONE** (`feetLevel` / `onLid`, one pair of locals feeding the fade
   branch, the cover record and the lit copy). The cover record used to ask
@@ -366,12 +366,26 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   BEHIND its hitbox centre: a body 0.9 cells behind a signpost drew over it
   (body 11619.4 vs sign 11617.6). Measured after: behind the post the sign paints over the player (sign 11631.6 vs body 11619.9); in front of it the player paints over the sign (11647.9 vs 11631.6).
 
-- **INDOOR FURNITURE CROSSES WITH ITS ROOF** (`roofedFade()` = 1 −
-  `debrisAlpha()`, applied to the base sprite, its LIT COPY and its fog). A
-  roofed piece is still DRAWN on the old binary gate (`roofCutAwayAt`, held to
-  the end of the roll so the roof never returns over empty floor) — only its
-  OPACITY is now shared with the cut-away crossfade, as the exact complement of
-  the debris. Leaving, the roof fades in while the furniture fades out;
+- **INDOOR FURNITURE CROSSES WITH THE ROOM'S LIGHT** (`roofedFade()` =
+  `indoorGrade()`, and `aboveCutFade()` = 1 − it for what stands ON the lid;
+  applied to the base sprite, its LIT COPY and its fog). A roofed piece is
+  still DRAWN on the old binary gate (`roofCutAwayAt`, held to the end of the
+  roll so the roof never returns over empty floor) — only its OPACITY rides the
+  crossing. THE LIGHT'S CURVE, NOT THE DEBRIS' 3×: furniture and a chimney are
+  SUBJECTS of the crossing, the debris is the cover layer that hides the
+  repaint, and the two run at different rates, so on the debris' curve the
+  subjects finished a third of a roll before the room's light did. Measured on
+  the shipped build with the blend pinned (a pinned sweep of the blend,
+  `__ml.indoorMixPin` + `__ml.indoorFade` + `__ml.nightIndoor`): entering, the furniture was fully opaque at mix 0.40 against a
+  grade of 0.60 that did not land until 0.67; leaving, the roof-top pieces were
+  at 0.99 against a grade of 0.50 (maintainer 2026-09-18: "indoor scenery has
+  popped into full opacity before the fade is over" and "scenery on the roof
+  has popped into full opacity while the rest of the animation is still
+  fading"). On the grade the two land together to three decimals, in both
+  directions, and the debris keeps the 3× he tuned by eye. Bodies and walls
+  above the cut keep `cutFade` (the debris curve) — a monster must dissolve
+  with the ground it stands on, which is that layer.
+  Leaving, the roof fades in while the furniture fades out;
   entering, the furniture arrives as the roof dissolves. Before this a bed drew
   at full opacity ON TOP of the returning roof for the whole exit and then
   vanished in one frame (maintainer 2026-09-07: "they don't give a shit we are

@@ -14810,7 +14810,7 @@ export class WorldScene extends Phaser.Scene {
        * know the renderer might render the same tree in different passes
        * right?"). The copy and its fog take the alpha the base sprite has. */
       const rf =
-        (lo.roofed ? this.roofedFade() : lo.aboveCut ? this.debrisAlpha() : 1) * (lo.fade ?? 1);
+        (lo.roofed ? this.roofedFade() : lo.aboveCut ? this.aboveCutFade() : 1) * (lo.fade ?? 1);
       lo.img.setAlpha(rf);
       if (fa > 0.002) {
         if (!lo.fog) this.makeFogSilhouette(lo);
@@ -17451,8 +17451,23 @@ export class WorldScene extends Phaser.Scene {
       : Math.min(1, D * (1 - this.indoorMix));
   }
 
-  /** INDOOR FURNITURE'S OPACITY THROUGH THE CUT-AWAY CROSSFADE — the exact
-   *  complement of the debris (the roof art returning over it), so the two
+  /** INDOOR FURNITURE'S OPACITY THROUGH THE CUT-AWAY CROSSFADE — THE ROOM'S
+   *  OWN LIGHT CURVE (indoorGrade), not the debris' 3x one.
+   *
+   *  A piece of furniture is a SUBJECT of the crossing, not part of the cover
+   *  layer that hides the repaint, and the two curves are different speeds:
+   *  measured on the shipped build with the blend pinned (scripts/_xfade),
+   *  entering, the furniture was fully opaque at mix 0.40 while the light grade
+   *  was 0.60 and did not land until 0.67 — a third of the crossing with solid
+   *  furniture standing in a room that was still lit from outside (maintainer
+   *  2026-09-18: "indoor scenery has popped into full opacity before the fade
+   *  is over"). Leaving, the mirror: gone by mix 0.67 with the grade at 0.50.
+   *  On the grade it arrives exactly as the room's light arrives, in both
+   *  directions, and the DEBRIS keeps the 3x curve he tuned by eye — it is
+   *  cover, and seams hide better the less time they get.
+   *
+   *  WAS: the exact complement of the debris (the roof art returning over it),
+   *  so the two
    *  cross: as the roof fades IN the furniture fades OUT, and entering, the
    *  furniture arrives as the roof dissolves. Before this the pieces were a
    *  BINARY draw keyed on `roofCutAwayAt`, held all the way to the end of the
@@ -17689,7 +17704,15 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private roofedFade(): number {
-    const f = 1 - this.debrisAlpha();
+    const f = this.indoorGrade();
+    return f < 0 ? 0 : f > 1 ? 1 : f;
+  }
+
+  /** ...AND WHAT STANDS ON THE LID GOES THE WAY THE ROOF'S LIGHT GOES — the
+   *  complement of the furniture's curve, for the same reason (see roofedFade).
+   *  A chimney, a tree on a cave's mountain: subjects, not cover. */
+  private aboveCutFade(): number {
+    const f = 1 - this.indoorGrade();
     return f < 0 ? 0 : f > 1 ? 1 : f;
   }
 
@@ -18178,9 +18201,13 @@ export class WorldScene extends Phaser.Scene {
       const rf = this.roofedFade();
       for (const img of this.sceneryRoofedImgs) img.setAlpha(rf);
     }
-    // ...and what stood ON the roof goes the way the roof does.
+    // ...and what stood ON the roof goes the way the roof's LIGHT does (see
+    // aboveCutFade): on the debris' 3x curve it was fully opaque by mix ⅔ of
+    // an exit whose light ran to ⅓ — measured 0.99 against a grade of 0.50 —
+    // which is the pop he photographed ("scenery on the roof has popped into
+    // full opacity while the rest of the animation is still fading").
     if (this.sceneryAboveCutImgs.length) {
-      const af = this.debrisAlpha();
+      const af = this.aboveCutFade();
       for (const img of this.sceneryAboveCutImgs) img.setAlpha(af);
     }
     this.stepSceneryCover();
@@ -22549,7 +22576,7 @@ export class WorldScene extends Phaser.Scene {
         // at the flip frame and dissolving with the debris, so walking in and
         // out fades it away and back instead of popping it. Furniture cannot
         // reach here: it is `roofed` and took the branch above.
-        img.setAlpha(this.debrisAlpha());
+        img.setAlpha(this.aboveCutFade());
         this.sceneryAboveCutImgs.push(img);
       }
       // ...and everything else standing in the world is a candidate to fade
