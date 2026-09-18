@@ -111740,65 +111740,6 @@
           },
           "art_hash": "ca005f045c30fd9d"
         },
-        "LIT_3": {
-          "sprite": "owl_snags/owl_snag_002/lit_3/sprite.webp",
-          "pixellab_object_id": "0808f688-e87e-4a87-8f4c-82e12de7c65c",
-          "glow_concept": "small wisps circling the broken top",
-          "difference_from_source": 0.6886,
-          "glow_score": 0.1052,
-          "generated_at": "2026-08-15T15:57:53+00:00",
-          "animations": {
-            "wind": {
-              "group_id": "3e62b892-0038-4d01-96d7-3baaf92ff0eb",
-              "description": "Very very gentle wind. The tree is swinging back and forth with very very subtile movements. The leaves also feel very gentle movements.\n\nYou need to redraw the branches each frame in order to visualize the wind. You also need to redraw all leaves each frame to visualize that the leaves are moving.\n\nDon't just bounce the existing graphics up and down.",
-              "mode": "v3",
-              "frame_count": 5,
-              "generated_frames": 4,
-              "keep_first_frame": true,
-              "frame_paths": [
-                "owl_snags/owl_snag_002/lit_3/animations/wind/00.webp",
-                "owl_snags/owl_snag_002/lit_3/animations/wind/01.webp",
-                "owl_snags/owl_snag_002/lit_3/animations/wind/02.webp",
-                "owl_snags/owl_snag_002/lit_3/animations/wind/03.webp",
-                "owl_snags/owl_snag_002/lit_3/animations/wind/04.webp"
-              ],
-              "strip": "owl_snags/owl_snag_002/lit_3/animations/wind__strip.webp",
-              "generated_at": "2026-08-28T12:05:42+00:00",
-              "review": "ANIMATION_PROBABLY_GOOD",
-              "review_metrics": {
-                "base_outline": 0.0
-              },
-              "light_frames": [
-                {
-                  "intensity": 1.05,
-                  "dx": 0.8,
-                  "dy": -23.6
-                },
-                {
-                  "intensity": 0.921,
-                  "dx": 0.3,
-                  "dy": -21.4
-                },
-                {
-                  "intensity": 1.002,
-                  "dx": 1.3,
-                  "dy": -16.9
-                },
-                {
-                  "intensity": 1.017,
-                  "dx": 0.8,
-                  "dy": -17.8
-                },
-                {
-                  "intensity": 1.01,
-                  "dx": 0.5,
-                  "dy": -20.9
-                }
-              ]
-            }
-          },
-          "art_hash": "9e90e07fea2c2a91"
-        },
         "LIT_4": {
           "sprite": "owl_snags/owl_snag_002/sprite.webp",
           "pixellab_object_id": "2f59d2a7-923f-4745-8fd7-c96844b44dc1",
