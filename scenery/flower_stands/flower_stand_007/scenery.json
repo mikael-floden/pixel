@@ -245,7 +245,7 @@
       "animations": {
         "motion": {
           "group_id": "32c153fa-5ad6-4dd5-83c3-69e0a266a2a5",
-          "description": "This is the same picture in every frame. ONLY the rose heads move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the rose heads move, each nodding by a single pixel. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -260,7 +260,7 @@
                 "flower_stands/flower_stand_007/not_lit_2/animations/motion/south/03.webp",
                 "flower_stands/flower_stand_007/not_lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "flower_stands/flower_stand_007/not_lit_2/animations/motion__south.629c0b72.webp"
+              "strip": "flower_stands/flower_stand_007/not_lit_2/animations/motion__south.622ba46b.webp"
             },
             "south-east": {
               "frames": 5,
@@ -285,7 +285,7 @@
               "strip": "flower_stands/flower_stand_007/not_lit_2/animations/motion__south-west.d725f872.webp"
             }
           },
-          "generated_at": "2026-09-18T02:48:12+00:00",
+          "generated_at": "2026-09-18T04:46:03+00:00",
           "brief": "X55",
           "frame_paths": [
             "flower_stands/flower_stand_007/not_lit_2/animations/motion/south/00.webp",
@@ -294,7 +294,7 @@
             "flower_stands/flower_stand_007/not_lit_2/animations/motion/south/03.webp",
             "flower_stands/flower_stand_007/not_lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "flower_stands/flower_stand_007/not_lit_2/animations/motion__south.629c0b72.webp",
+          "strip": "flower_stands/flower_stand_007/not_lit_2/animations/motion__south.622ba46b.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.1795

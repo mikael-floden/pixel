@@ -56,7 +56,7 @@
       "animations": {
         "motion": {
           "group_id": "466ee331-5c14-4513-91dd-cbf633b811bb",
-          "description": "This is the same picture in every frame. ONLY the blue wisp at the top flickers. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the blue wisp at the top flickers. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -71,32 +71,32 @@
                 "dock_pilings/dock_piling_013/lit_2/animations/motion/south/03.webp",
                 "dock_pilings/dock_piling_013/lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "dock_pilings/dock_piling_013/lit_2/animations/motion__south.70622aae.webp",
+              "strip": "dock_pilings/dock_piling_013/lit_2/animations/motion__south.79dac933.webp",
               "light_frames": [
                 {
-                  "intensity": 1.48,
+                  "intensity": 1.063,
                   "dx": 1.1,
                   "dy": -23.5
                 },
                 {
-                  "intensity": 1.204,
-                  "dx": 1.4,
-                  "dy": -22.2
+                  "intensity": 1.5,
+                  "dx": 0.3,
+                  "dy": -17.7
                 },
                 {
-                  "intensity": 0.855,
-                  "dx": 1.2,
-                  "dy": -18.8
+                  "intensity": 1.5,
+                  "dx": 0.0,
+                  "dy": -16.0
                 },
                 {
-                  "intensity": 0.693,
-                  "dx": 1.7,
-                  "dy": -17.4
+                  "intensity": 0.5,
+                  "dx": 0.0,
+                  "dy": -21.0
                 },
                 {
-                  "intensity": 0.768,
-                  "dx": 1.6,
-                  "dy": -18.8
+                  "intensity": 0.5,
+                  "dx": 0.4,
+                  "dy": -19.5
                 }
               ]
             },
@@ -177,7 +177,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T02:35:00+00:00",
+          "generated_at": "2026-09-18T04:46:03+00:00",
           "brief": "B13",
           "light_frames": [
             {
@@ -213,10 +213,10 @@
             "dock_pilings/dock_piling_013/lit_2/animations/motion/south/03.webp",
             "dock_pilings/dock_piling_013/lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "dock_pilings/dock_piling_013/lit_2/animations/motion__south.70622aae.webp",
-          "review": "ANIMATION_PROBABLY_BAD",
+          "strip": "dock_pilings/dock_piling_013/lit_2/animations/motion__south.79dac933.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.427
+            "base_outline": 0.0297
           }
         }
       }

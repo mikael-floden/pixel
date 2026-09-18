@@ -154,7 +154,7 @@
       "animations": {
         "motion": {
           "group_id": "f1d6b126-1265-4120-85f4-019a3cbcdf35",
-          "description": "This is the same picture in every frame. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the bucket hanging over the shaft moves: it turns very slightly where it hangs, by a single pixel, and turns straight back. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -194,7 +194,7 @@
               "strip": "wells/well_006/not_lit_6/animations/motion__south-west.f93f41de.webp"
             }
           },
-          "generated_at": "2026-09-18T04:19:13+00:00",
+          "generated_at": "2026-09-18T04:47:18+00:00",
           "brief": "M2",
           "frame_paths": [
             "wells/well_006/not_lit_6/animations/motion/south/00.webp",
