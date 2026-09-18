@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: the record button FREEZES THE FRAME (maintainer 2026-09-18: 'printscreen the entire page/game and freeze the game / only show the printscreen as a freezed frame when you press the red button… not jpeg encoded, I want the freezed image lossless'). New module client/src/freezeframe.ts listening to the ml-record event: Phaser renderer.snapshot (PNG, lossless) over the game view + gamefreeze's sleep. files: games2/client/src/freezeframe.ts (new), games2/client/src/hud.ts (one import), games2/scripts/verify-freezeframe.mjs (new), games2/UI_AGENT.md",
+  "current": "PUSHED c819dcb8ed (the red button freezes the world on a LOSSLESS PNG frame of it: renderer.snapshot with no type argument, capture-then-freeze because readPixels must beat the compositor, gamefreeze's sleep, picture over the canvas only. verify-freezeframe proves the PNG signature in the bytes and that the capture is not a blank read). No files in flight.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
