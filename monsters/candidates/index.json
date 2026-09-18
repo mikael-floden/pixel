@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:12:00+00:00",
+  "generated_at": "2026-09-18T12:15:00+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 137,
+  "count": 140,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -17336,6 +17336,134 @@
       "generated_at": "2026-09-18T12:11:59+00:00"
     },
     {
+      "id": "quag_maw",
+      "name": "Quagmaw",
+      "tier": "evil",
+      "lore": "The ground opens where it walks and closes behind it. What it takes goes down further than the bog does.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "4c4966b8-f197-44a7-83cd-1ef8a7f28c71",
+      "version": 1,
+      "sheet": "quag_maw/sheet.webp",
+      "rotations": {
+        "south": "quag_maw/rotations/south.webp",
+        "south-east": "quag_maw/rotations/south-east.webp",
+        "east": "quag_maw/rotations/east.webp",
+        "north-east": "quag_maw/rotations/north-east.webp",
+        "north": "quag_maw/rotations/north.webp",
+        "north-west": "quag_maw/rotations/north-west.webp",
+        "west": "quag_maw/rotations/west.webp",
+        "south-west": "quag_maw/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.66,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.66,
+            "bbox": [
+              11,
+              4,
+              117,
+              121
+            ],
+            "fill": 0.757,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.717,
+            "bbox": [
+              18,
+              3,
+              120,
+              124
+            ],
+            "fill": 0.753,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.734,
+            "bbox": [
+              7,
+              3,
+              106,
+              124
+            ],
+            "fill": 0.731,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.671,
+            "bbox": [
+              11,
+              9,
+              116,
+              120
+            ],
+            "fill": 0.711,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.769,
+            "bbox": [
+              16,
+              3,
+              114,
+              122
+            ],
+            "fill": 0.712,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.73,
+            "bbox": [
+              21,
+              6,
+              107,
+              121
+            ],
+            "fill": 0.604,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.723,
+            "bbox": [
+              19,
+              5,
+              107,
+              121
+            ],
+            "fill": 0.623,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.776,
+            "bbox": [
+              14,
+              3,
+              113,
+              122
+            ],
+            "fill": 0.719,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:14:37+00:00"
+    },
+    {
       "id": "mill_wheel",
       "name": "Millwheel",
       "tier": "boss",
@@ -17462,6 +17590,261 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:09:02+00:00"
+    },
+    {
+      "id": "lichen_stone",
+      "name": "Lichenhide",
+      "tier": "cute",
+      "lore": "A hundred years of lichen on something that moves. It moves that slowly.",
+      "biome": [
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "b3e71c46-5dee-4def-8c54-ba07b3dddd54",
+      "version": 1,
+      "sheet": "lichen_stone/sheet.webp",
+      "rotations": {
+        "south": "lichen_stone/rotations/south.webp",
+        "south-east": "lichen_stone/rotations/south-east.webp",
+        "east": "lichen_stone/rotations/east.webp",
+        "north-east": "lichen_stone/rotations/north-east.webp",
+        "north": "lichen_stone/rotations/north.webp",
+        "north-west": "lichen_stone/rotations/north-west.webp",
+        "west": "lichen_stone/rotations/west.webp",
+        "south-west": "lichen_stone/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.584,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.653,
+            "bbox": [
+              6,
+              4,
+              42,
+              44
+            ],
+            "fill": 0.625,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.645,
+            "bbox": [
+              7,
+              3,
+              42,
+              44
+            ],
+            "fill": 0.623,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.636,
+            "bbox": [
+              6,
+              3,
+              41,
+              44
+            ],
+            "fill": 0.623,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.584,
+            "bbox": [
+              6,
+              4,
+              42,
+              43
+            ],
+            "fill": 0.609,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.695,
+            "bbox": [
+              7,
+              4,
+              41,
+              44
+            ],
+            "fill": 0.59,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.618,
+            "bbox": [
+              7,
+              4,
+              41,
+              45
+            ],
+            "fill": 0.605,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.651,
+            "bbox": [
+              7,
+              4,
+              41,
+              45
+            ],
+            "fill": 0.605,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.69,
+            "bbox": [
+              7,
+              4,
+              41,
+              44
+            ],
+            "fill": 0.59,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:15:00+00:00"
+    },
+    {
+      "id": "flint_nodule",
+      "name": "Flintjaw",
+      "tier": "mid",
+      "lore": "Somebody knapped a tool out of its face a long time ago. The edges it has now, it made itself.",
+      "biome": [
+        "grey_stone",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "223b4092-0d0e-4b98-83d2-dfd092fe8450",
+      "version": 1,
+      "sheet": "flint_nodule/sheet.webp",
+      "rotations": {
+        "south": "flint_nodule/rotations/south.webp",
+        "south-east": "flint_nodule/rotations/south-east.webp",
+        "east": "flint_nodule/rotations/east.webp",
+        "north-east": "flint_nodule/rotations/north-east.webp",
+        "north": "flint_nodule/rotations/north.webp",
+        "north-west": "flint_nodule/rotations/north-west.webp",
+        "west": "flint_nodule/rotations/west.webp",
+        "south-west": "flint_nodule/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.661,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.678,
+            "bbox": [
+              12,
+              2,
+              84,
+              93
+            ],
+            "fill": 0.711,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.726,
+            "bbox": [
+              28,
+              3,
+              65,
+              94
+            ],
+            "fill": 0.365,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.736,
+            "bbox": [
+              30,
+              3,
+              67,
+              94
+            ],
+            "fill": 0.365,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.661,
+            "bbox": [
+              15,
+              2,
+              80,
+              93
+            ],
+            "fill": 0.642,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.758,
+            "bbox": [
+              16,
+              3,
+              79,
+              94
+            ],
+            "fill": 0.622,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.684,
+            "bbox": [
+              18,
+              2,
+              75,
+              93
+            ],
+            "fill": 0.563,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.674,
+            "bbox": [
+              20,
+              2,
+              78,
+              93
+            ],
+            "fill": 0.573,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.771,
+            "bbox": [
+              16,
+              3,
+              79,
+              94
+            ],
+            "fill": 0.622,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:13:04+00:00"
     },
     {
       "id": "first_mask",

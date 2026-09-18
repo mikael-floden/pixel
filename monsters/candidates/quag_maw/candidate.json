@@ -1,0 +1,141 @@
+{
+  "id": "quag_maw",
+  "name": "Quagmaw",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The ground opens where it walks and closes behind it. What it takes goes down further than the bog does.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Low hunched body of peat and black water with a wide round sinkhole opening in its front like a mouth, broken reed stems standing in the rim like teeth, water draining steadily inward and down, wet mud sliding off its back",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "quag_maw/rotations/south.webp",
+    "south-east": "quag_maw/rotations/south-east.webp",
+    "east": "quag_maw/rotations/east.webp",
+    "north-east": "quag_maw/rotations/north-east.webp",
+    "north": "quag_maw/rotations/north.webp",
+    "north-west": "quag_maw/rotations/north-west.webp",
+    "west": "quag_maw/rotations/west.webp",
+    "south-west": "quag_maw/rotations/south-west.webp"
+  },
+  "sheet": "quag_maw/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "4c4966b8-f197-44a7-83cd-1ef8a7f28c71",
+  "seed": 1735897928,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:14:37+00:00",
+  "elapsed_s": 187.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.66,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.66,
+        "bbox": [
+          11,
+          4,
+          117,
+          121
+        ],
+        "fill": 0.757,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.717,
+        "bbox": [
+          18,
+          3,
+          120,
+          124
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.734,
+        "bbox": [
+          7,
+          3,
+          106,
+          124
+        ],
+        "fill": 0.731,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.671,
+        "bbox": [
+          11,
+          9,
+          116,
+          120
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.769,
+        "bbox": [
+          16,
+          3,
+          114,
+          122
+        ],
+        "fill": 0.712,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.73,
+        "bbox": [
+          21,
+          6,
+          107,
+          121
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.723,
+        "bbox": [
+          19,
+          5,
+          107,
+          121
+        ],
+        "fill": 0.623,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.776,
+        "bbox": [
+          14,
+          3,
+          113,
+          122
+        ],
+        "fill": 0.719,
+        "touches_edge": false
+      }
+    }
+  }
+}

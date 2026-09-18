@@ -1,0 +1,141 @@
+{
+  "id": "flint_nodule",
+  "name": "Flintjaw",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Somebody knapped a tool out of its face a long time ago. The edges it has now, it made itself.",
+  "biome": [
+    "grey_stone",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Body of grey flint split open down the front, the chalky white cortex on the outside and the glassy black core showing as a jagged mouth of knapped flakes, razor curved edges, and a crude hand axe shape worked into its brow",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "flint_nodule/rotations/south.webp",
+    "south-east": "flint_nodule/rotations/south-east.webp",
+    "east": "flint_nodule/rotations/east.webp",
+    "north-east": "flint_nodule/rotations/north-east.webp",
+    "north": "flint_nodule/rotations/north.webp",
+    "north-west": "flint_nodule/rotations/north-west.webp",
+    "west": "flint_nodule/rotations/west.webp",
+    "south-west": "flint_nodule/rotations/south-west.webp"
+  },
+  "sheet": "flint_nodule/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "223b4092-0d0e-4b98-83d2-dfd092fe8450",
+  "seed": 937369650,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:13:04+00:00",
+  "elapsed_s": 241.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.661,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.678,
+        "bbox": [
+          12,
+          2,
+          84,
+          93
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.726,
+        "bbox": [
+          28,
+          3,
+          65,
+          94
+        ],
+        "fill": 0.365,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.736,
+        "bbox": [
+          30,
+          3,
+          67,
+          94
+        ],
+        "fill": 0.365,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.661,
+        "bbox": [
+          15,
+          2,
+          80,
+          93
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.758,
+        "bbox": [
+          16,
+          3,
+          79,
+          94
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.684,
+        "bbox": [
+          18,
+          2,
+          75,
+          93
+        ],
+        "fill": 0.563,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.674,
+        "bbox": [
+          20,
+          2,
+          78,
+          93
+        ],
+        "fill": 0.573,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.771,
+        "bbox": [
+          16,
+          3,
+          79,
+          94
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      }
+    }
+  }
+}
