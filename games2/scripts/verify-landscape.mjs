@@ -125,7 +125,8 @@ try {
           const inner = Math.min(innerWidth - px(pcs.paddingLeft) - px(pcs.paddingRight), px(gcs.maxWidth) || Infinity);
           const cols = (gcs.gridTemplateColumns.match(/\d+(?=\s*,)/) || [5])[0] * 1;
           const slot = (inner - (cols - 1) * px(gcs.columnGap)) / cols;
-          return Math.round(1 + tab.getBoundingClientRect().height + 2 * px(pcs.paddingTop) + 3 * slot + 2 * px(gcs.rowGap) + px(getComputedStyle(document.documentElement).getPropertyValue("--ml-safe-bottom")));
+          const rows = Math.round(1 + tab.getBoundingClientRect().height + 2 * px(pcs.paddingTop) + 3 * slot + 2 * px(gcs.rowGap) + px(getComputedStyle(document.documentElement).getPropertyValue("--ml-safe-bottom")));
+          return Math.min(rows, Math.round(innerHeight * 0.382)); // never taller than the split it replaced
         })(),
 
         game: r("#game"),

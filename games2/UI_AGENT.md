@@ -254,7 +254,9 @@ from the games agent), #18 (title/landing screen).
   thumbstick and make it easier to play in portrait (that's the goal!)").
   `hud.ts portraitHudHeight`: `--hud-h` = 1px rule + tab row (rect) + page
   padding-top + `BAG_ROWS_SHOWN`(3) slots + 2 gaps + the same padding + the
-  safe-area inset, capped at half the screen; the slot is derived from the
+  safe-area inset, never taller than the golden split it replaced (a squat
+  window's three rows would climb past it; this only lowers the rail); the
+  slot is derived from the
   width (the page has no rect behind another tab) and every other term is read
   from the live CSS, so the compact @media tier and any restyle move the rail
   with them — never copy those numbers into JS. The page padding is EVEN

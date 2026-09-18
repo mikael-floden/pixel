@@ -367,8 +367,10 @@ const BAG_ROWS_SHOWN = 3;
  *  with them; the slot is derived from the width because the page is
  *  display:none behind another tab and has no rect to read. Before the HUD
  *  exists (first layout on the select screen) it is the old golden split,
- *  replaced the moment HudBar mounts and re-runs applyLayout. Capped at half
- *  the screen so a squat viewport can never hand the world less than half. */
+ *  replaced the moment HudBar mounts and re-runs applyLayout. NEVER TALLER
+ *  than the golden split it replaced: on a squat window three rows would
+ *  climb past it (350 of 320 at the harness's 480×320), and this change only
+ *  ever lowers the rail. */
 function portraitHudHeight(w: number, h: number): number {
   const golden = Math.round(h * 0.382);
   const tabrow = document.querySelector<HTMLElement>(".ml-tabrow");
@@ -390,7 +392,7 @@ function portraitHudHeight(w: number, h: number): number {
     (BAG_ROWS_SHOWN - 1) * px(gcs.rowGap) +
     padT +
     safeB;
-  return Math.min(Math.round(hud), Math.round(h * 0.5));
+  return Math.min(Math.round(hud), golden);
 }
 
 function applyLayout() {
