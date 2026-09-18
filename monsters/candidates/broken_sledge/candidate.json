@@ -1,0 +1,144 @@
+{
+  "id": "broken_sledge",
+  "name": "Sledgeback",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It was hauled up and left when the hauling stopped. The load has not been looked at since.",
+  "biome": [
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Overturned wooden sledge walking on its steel-shod runners, the slatted bed split down the middle, frozen canvas still lashed over a load that has not been unpacked, stiff leather harness traces trailing behind it",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "broken_sledge/rotations/south.webp",
+    "south-east": "broken_sledge/rotations/south-east.webp",
+    "east": "broken_sledge/rotations/east.webp",
+    "north-east": "broken_sledge/rotations/north-east.webp",
+    "north": "broken_sledge/rotations/north.webp",
+    "north-west": "broken_sledge/rotations/north-west.webp",
+    "west": "broken_sledge/rotations/west.webp",
+    "south-west": "broken_sledge/rotations/south-west.webp"
+  },
+  "sheet": "broken_sledge/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9a5ab71d-b7d3-468c-ad7f-7f481444931b",
+  "seed": 395566023,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:26:26+00:00",
+  "elapsed_s": 187.6,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.789,
+    "reasons": [
+      "west: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.789,
+        "bbox": [
+          10,
+          2,
+          98,
+          100
+        ],
+        "fill": 0.797,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.814,
+        "bbox": [
+          9,
+          0,
+          96,
+          96
+        ],
+        "fill": 0.772,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.84,
+        "bbox": [
+          11,
+          5,
+          91,
+          101
+        ],
+        "fill": 0.71,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.827,
+        "bbox": [
+          10,
+          0,
+          89,
+          98
+        ],
+        "fill": 0.716,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.847,
+        "bbox": [
+          28,
+          7,
+          81,
+          99
+        ],
+        "fill": 0.451,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.835,
+        "bbox": [
+          6,
+          1,
+          94,
+          94
+        ],
+        "fill": 0.757,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.845,
+        "bbox": [
+          22,
+          0,
+          80,
+          103
+        ],
+        "fill": 0.552,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.847,
+        "bbox": [
+          7,
+          1,
+          99,
+          96
+        ],
+        "fill": 0.808,
+        "touches_edge": false
+      }
+    }
+  }
+}

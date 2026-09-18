@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:24:21+00:00",
+  "generated_at": "2026-09-18T12:26:26+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 151,
+  "count": 154,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -19125,6 +19125,262 @@
       "generated_at": "2026-09-18T12:20:34+00:00"
     },
     {
+      "id": "hollow_pack",
+      "name": "Packhusk",
+      "tier": "evil",
+      "lore": "It keeps to the road and it keeps a good pace. It has been going up for a long time.",
+      "biome": [
+        "grey_stone",
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "6ff924dd-a1b5-40fd-ac8a-877f4a0f7af2",
+      "version": 1,
+      "sheet": "hollow_pack/sheet.webp",
+      "rotations": {
+        "south": "hollow_pack/rotations/south.webp",
+        "south-east": "hollow_pack/rotations/south-east.webp",
+        "east": "hollow_pack/rotations/east.webp",
+        "north-east": "hollow_pack/rotations/north-east.webp",
+        "north": "hollow_pack/rotations/north.webp",
+        "north-west": "hollow_pack/rotations/north-west.webp",
+        "west": "hollow_pack/rotations/west.webp",
+        "south-west": "hollow_pack/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.72,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.729,
+            "bbox": [
+              18,
+              2,
+              93,
+              102
+            ],
+            "fill": 0.693,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.76,
+            "bbox": [
+              32,
+              7,
+              85,
+              98
+            ],
+            "fill": 0.446,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.789,
+            "bbox": [
+              18,
+              3,
+              72,
+              103
+            ],
+            "fill": 0.499,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.72,
+            "bbox": [
+              13,
+              3,
+              88,
+              94
+            ],
+            "fill": 0.631,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.806,
+            "bbox": [
+              16,
+              2,
+              85,
+              100
+            ],
+            "fill": 0.625,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.784,
+            "bbox": [
+              16,
+              5,
+              87,
+              97
+            ],
+            "fill": 0.604,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.77,
+            "bbox": [
+              24,
+              3,
+              89,
+              94
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.801,
+            "bbox": [
+              20,
+              4,
+              90,
+              103
+            ],
+            "fill": 0.641,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:25:58+00:00"
+    },
+    {
+      "id": "standing_stone",
+      "name": "Stonemoot",
+      "tier": "boss",
+      "lore": "It was stood up by people who are not remembered, for a reason that is not either. Things were left in the hollow and things were taken out.",
+      "biome": [
+        "grey_stone",
+        "grass"
+      ],
+      "items": [],
+      "size": [
+        232,
+        232
+      ],
+      "template_id": "mannequin",
+      "scale": "big",
+      "pixellab_id": "60ed0e9f-1c72-4cd9-ad9e-40650929e4c3",
+      "version": 1,
+      "sheet": "standing_stone/sheet.webp",
+      "rotations": {
+        "south": "standing_stone/rotations/south.webp",
+        "south-east": "standing_stone/rotations/south-east.webp",
+        "east": "standing_stone/rotations/east.webp",
+        "north-east": "standing_stone/rotations/north-east.webp",
+        "north": "standing_stone/rotations/north.webp",
+        "north-west": "standing_stone/rotations/north-west.webp",
+        "west": "standing_stone/rotations/west.webp",
+        "south-west": "standing_stone/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.589,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.589,
+            "bbox": [
+              63,
+              9,
+              164,
+              222
+            ],
+            "fill": 0.4,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.655,
+            "bbox": [
+              58,
+              13,
+              158,
+              221
+            ],
+            "fill": 0.386,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.654,
+            "bbox": [
+              71,
+              11,
+              169,
+              222
+            ],
+            "fill": 0.384,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.635,
+            "bbox": [
+              64,
+              11,
+              164,
+              221
+            ],
+            "fill": 0.39,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.671,
+            "bbox": [
+              64,
+              9,
+              160,
+              223
+            ],
+            "fill": 0.382,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.653,
+            "bbox": [
+              63,
+              12,
+              164,
+              224
+            ],
+            "fill": 0.398,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.62,
+            "bbox": [
+              66,
+              14,
+              165,
+              224
+            ],
+            "fill": 0.386,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.661,
+            "bbox": [
+              62,
+              12,
+              164,
+              221
+            ],
+            "fill": 0.396,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:26:20+00:00"
+    },
+    {
       "id": "ice_mossball",
       "name": "Rollmoss",
       "tier": "cute",
@@ -19251,6 +19507,137 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:23:18+00:00"
+    },
+    {
+      "id": "broken_sledge",
+      "name": "Sledgeback",
+      "tier": "mid",
+      "lore": "It was hauled up and left when the hauling stopped. The load has not been looked at since.",
+      "biome": [
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "9a5ab71d-b7d3-468c-ad7f-7f481444931b",
+      "version": 1,
+      "sheet": "broken_sledge/sheet.webp",
+      "rotations": {
+        "south": "broken_sledge/rotations/south.webp",
+        "south-east": "broken_sledge/rotations/south-east.webp",
+        "east": "broken_sledge/rotations/east.webp",
+        "north-east": "broken_sledge/rotations/north-east.webp",
+        "north": "broken_sledge/rotations/north.webp",
+        "north-west": "broken_sledge/rotations/north-west.webp",
+        "west": "broken_sledge/rotations/west.webp",
+        "south-west": "broken_sledge/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.789,
+        "reasons": [
+          "west: content touches the canvas edge (clipped)",
+          "north: content touches the canvas edge (clipped)",
+          "north-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.789,
+            "bbox": [
+              10,
+              2,
+              98,
+              100
+            ],
+            "fill": 0.797,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.814,
+            "bbox": [
+              9,
+              0,
+              96,
+              96
+            ],
+            "fill": 0.772,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.84,
+            "bbox": [
+              11,
+              5,
+              91,
+              101
+            ],
+            "fill": 0.71,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.827,
+            "bbox": [
+              10,
+              0,
+              89,
+              98
+            ],
+            "fill": 0.716,
+            "touches_edge": true
+          },
+          "south-east": {
+            "run1": 0.847,
+            "bbox": [
+              28,
+              7,
+              81,
+              99
+            ],
+            "fill": 0.451,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.835,
+            "bbox": [
+              6,
+              1,
+              94,
+              94
+            ],
+            "fill": 0.757,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.845,
+            "bbox": [
+              22,
+              0,
+              80,
+              103
+            ],
+            "fill": 0.552,
+            "touches_edge": true
+          },
+          "south-west": {
+            "run1": 0.847,
+            "bbox": [
+              7,
+              1,
+              99,
+              96
+            ],
+            "fill": 0.808,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:26:26+00:00"
     },
     {
       "id": "first_mask",
