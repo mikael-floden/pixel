@@ -785,6 +785,33 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   stair/ramp tiles from the maps agent. If the tile "house format" changes,
   re-measure `MAP_GEOMETRY` and update `ISO_DX/ISO_DY`.
 
+  **THE PLAYER'S PUSH IS THE PLAYER'S UNTIL CORNERED** (`NAV_SLIDE_DEG_DEFAULT`
+  45, his "Nav slide angle" dial in `client/src/navslide.ts`, `slideCornered`;
+  maintainer 2026-09-18, running bottom-right into the hearth house's east
+  wall at 334.6,232.3: "the nav system kicks in and runs the character out
+  the door! This feels too extreme... let the player's input control the
+  character until the very end/corner... we need a threshold here for how
+  much the stick can diverge from perpendicular into the wall before the
+  player starts to find a route around"). Rule 0's no-progress window used
+  to plan on any stall; now a stick within the dial's degrees of a TERRAIN
+  wall's NORMAL plans nothing while the slide along the wall in the lean's
+  sense still moves — the tick slides the body by the component the wall
+  does not cancel, at the wall's rate, and a dead-square push just stands
+  pressing (never "cornered"). Cornered (the lean's way refused too) the
+  one-cell escape has it as before; past the angle the thumb leans along
+  the wall and the nav helps round in that direction, still one cell back at
+  most. THE DOOR-FINDER IS UNTOUCHED: a door sideways or ahead is "a path
+  that has opened" (his words) and it never looks behind the run, which is
+  where the route that ran him out went. So a lean AWAY from a door beyond
+  its reach now slides along the wall instead of being routed out
+  (`wallcorner.test.ts`, the far hold under the roof). Props and footprints
+  keep the tree rules.
+  Measured (`navslide.test.ts`): 3 s of (1,1) into that wall leaves the body
+  in the room, 21° off the normal; the same push at the dial's 0 walks out
+  the door. Rejected: gating on the wall LINE angle (the wall-assist
+  measure) — the maintainer's number is off the normal, "perpendicular into
+  the wall".
+
   **THE FOLLOWER'S HEADING HOLDS** (`FOLLOW_HOLD_DOT` 0.12, stepAutopilot;
   maintainer 2026-09-17, 333.0,235.1, tap-to-walk into the hearth house:
   "the player starts to jitter and change direction back and forth super

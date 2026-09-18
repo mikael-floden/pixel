@@ -3,8 +3,8 @@
 This file loads on every games2 turn, so it holds ONLY the rules and where each
 subsystem's detail lives. **Measurements, traps and rejected approaches live in
 `games2/docs/<topic>.md` — open the one for the subsystem you touch; new detail
-goes THERE.** A rule here is one or two lines: the law, the reason in
-parentheses, the doc with the story.
+goes THERE.** A rule here is one or two lines: the law, the reason, the doc
+with the story.
 
 ## What this is
 
@@ -194,22 +194,23 @@ push, no PRs unless asked.
 - A TERRAIN wall gets the honest walk (`wallcorner.test.ts`): within his
   "Wall assist angle" dial (10°) the run is straightened along it; past it the
   body slides at its screen speed times the WORLD cosine to the wall
-  (`slideShare`, 71% for a cardinal key; the thumb's windows only,
-  `InputMessage.route`) or stands, auto-jump hops; a door sideways or ahead
-  within 4 cells is a route, the shorter walk wins; a door sticks; the
-  tap follower holds its heading (`doorfirst.test.ts`). The sprite faces
-  its walk.
+  (`slideShare`; the thumb's windows only) or stands, auto-jump hops; a push
+  within his "Nav
+  slide angle" (45° off normal) plans nothing till cornered
+  (`navslide.test.ts`); a door sideways or ahead within 4 cells is a route,
+  the shorter walk wins; a door sticks; the tap follower holds its heading
+  (`doorfirst.test.ts`); the sprite faces its walk.
 - Scenery, props and open ground walk the heading AS IT IS; the tick's glide
-  slides them (a footprint is a PROP whatever the nav layer says); no hold,
-  detour or slide rule: the ESCAPE is the nav.
+  slides them (a footprint is a PROP whatever the nav layer says); the
+  ESCAPE is the nav.
 - Never-backwards is a rule, not an absolute: after his "Nav help after"
   dial (0.1 s) without progress AT A RATE, `walkHeading` commits to an escape
   that GETS ON — the goal, or the farthest point along the ask inside the
   corridor (`findPath` progress); one TILE back before it has got on
   (`routeRetreat`), walked first (`routeStallCell`), under its roof for a
   prop's only.
-- Walk or run follows the body's SCREEN speed (`gaitSpeed`, `gaitRunning`):
-  the run gait from 80% of the run, off below 74% (HIS).
+- Walk or run follows the body's SCREEN speed (`gaitSpeed`): the run gait
+  from 80% of the run, off below 74% (HIS).
 - A tap RUNS; the beacon is the pixel you touched and never moves to meet
   the walk (rejected twice); both readings of an ambiguous pixel route.
 - The body dodge is a manoeuvre: engage and hold on different thresholds

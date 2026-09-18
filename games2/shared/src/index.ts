@@ -4505,6 +4505,10 @@ export function walkHeading(
     heading?: { ax: number; ay: number };
     /** The wall-assist angle in screen degrees (his dial); absent = the default. */
     wallAssistDeg?: number;
+    /** The nav slide angle in screen degrees off the wall's normal (his
+     *  dial): within it a push into a terrain wall stays the player's until
+     *  cornered; absent = NAV_SLIDE_DEG_DEFAULT. */
+    navSlideDeg?: number;
     /** How long without progress before the escape is planned, ms (his "Nav
      *  help after" dial); absent = NAV_HELP_MS_DEFAULT. */
     stuckMs?: number;
@@ -4615,6 +4619,31 @@ export function walkHeading(
           // the first 400 ms of any run as "just steered to a door".)
           const seenAgo = hold.doorSeenMs ? opts.nowMs - hold.doorSeenMs : Infinity;
           const free = seenAgo <= DOOR_SEEN_MS && askHeadway(grid, x, y, ax, ay, opts.fromElev, opts.heading);
+          /* THE PLAYER'S PUSH IS THE PLAYER'S UNTIL CORNERED (maintainer
+           * 2026-09-18, the nav slide dial): a stick within navSlideDeg of a
+           * terrain wall's NORMAL gets no ESCAPE ROUTE while the slide along
+           * the wall in the lean's sense still moves — the tick's own slide is
+           * the answer, at the wall's rate; square on with no lateral at all
+           * (a keyboard diagonal is one world axis) it keeps pressing. The
+           * door-finder is untouched: a door sideways or ahead is "a path that
+           * has opened" (his words), and it never looks behind the run, which
+           * is where the route that ran him out the door went. Cornered (the
+           * lean's way refused too, or both axes refused) the escape has it as
+           * before. A prop or a footprint is not a wall: the tree rules keep
+           * their round-the-thing escape. */
+          let playerOwns = false;
+          if (!free && wall && !wall.prop) {
+            const slideDeg = opts.navSlideDeg ?? NAV_SLIDE_DEG_DEFAULT;
+            if (wall.tangent) {
+              const lw = screenToWorldVector(h.ax, h.ay);
+              const along = lw.x * wall.tangent.x + lw.y * wall.tangent.y;
+              const lean = Math.abs(along) < 1e-6 ? 0 : Math.sign(along);
+              // wallAngleDeg is 0..180 to the tangent's SENSE; the wall is a line.
+              const lineDeg = wallAngleDeg(h.ax, h.ay, wall.tangent.x, wall.tangent.y);
+              const offNormal = 90 - Math.min(lineDeg, 180 - lineDeg);
+              playerOwns = offNormal <= slideDeg + 1e-9 && !slideCornered(grid, x, y, wall.tangent, lean, opts.fromElev);
+            } else playerOwns = !(wall.refX && wall.refY) && slideDeg > 0;
+          }
           if (free) {
             hold.escapeWait = stuckMs;
           } else if (!opts.noDetour && (hold.doorMs ?? 0) > opts.nowMs) {
@@ -4644,7 +4673,7 @@ export function walkHeading(
             const lh = opts.heading ?? { ax, ay };
             const lw = screenToWorldVector(lh.ax, lh.ay);
             const side = ux * lw.y - uy * lw.x < -1e-9 ? -1 : 1;
-            const esc = startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev, side, !(wall && !wall.prop));
+            const esc = playerOwns ? null : startEscapeRoute(grid, x, y, ax, ay, opts.nowMs, opts.fromElev, side, !(wall && !wall.prop));
             /* A DOOR IN REACH IS A ROUTE TOO, AND THE SHORTER WALK WINS. Sliding
              * sideways to a doorway makes no progress along the ask, so this
              * window fired while the door-finder (rule 1) was already steering
@@ -4980,6 +5009,45 @@ function routeStallCell(
  *  one tile aside of the tile being run into, never a door two tiles back
  *  (maintainer 2026-09-13; see walkHeading rule 0). */
 export const ESCAPE_RETREAT_CELLS = 1;
+
+/** THE NAV SLIDE ANGLE — his Settings dial (maintainer 2026-09-18, running
+ *  bottom-right into the hearth house's east wall at 334.6,232.3: "the nav
+ *  system kicks in and runs the character out the door! This feels too
+ *  extreme... let the player's input control the character until the very
+ *  end/corner"). A stick pressed into a TERRAIN wall within this many degrees
+ *  of the wall's NORMAL is the player's: the tick slides the body by the
+ *  component the wall does not cancel, and nothing is planned until the slide
+ *  is CORNERED (the lean's way along the wall refused too) — then the escape
+ *  (one cell back at most) and the door-finder have it. Past the angle the
+ *  thumb is leaning along the wall and the nav helps round in that direction
+ *  as before. 45 is his opening number; 0 makes every push the nav's. */
+export const NAV_SLIDE_DEG_MIN = 0;
+export const NAV_SLIDE_DEG_MAX = 90;
+export const NAV_SLIDE_DEG_DEFAULT = 45;
+
+/** Is the slide along `tangent` in the lean's sense (`lean` = ±1) refused
+ *  too — the body cornered? A lean of 0 (dead square on the wall) is never
+ *  cornered: the player is pressing the wall and gets to keep pressing. */
+export function slideCornered(
+  grid: TerrainGrid,
+  x: number,
+  y: number,
+  tangent: { x: number; y: number },
+  lean: number,
+  elev?: number,
+): boolean {
+  if (lean === 0) return false;
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  const dt = 0.08;
+  const ge = elev === undefined ? undefined : () => elev;
+  const s = worldAxisToScreenInput(tangent.x * lean, tangent.y * lean);
+  const r = stepMovement(
+    x, y, s.ax, s.ay, false, dt,
+    ge ? makeBlockedElev(grid, walk, ge) : makeBlocked(grid, walk), 1, true, worldWidthOf(grid), worldHeightOf(grid),
+    makeSideBlocked(grid, walk, ge),
+  );
+  return Math.hypot(r.x - x, r.y - y) <= WALK_SPEED * dt * 0.35;
+}
 
 /** How many TILES against the ask a route reaches: over its points, the
  *  largest backwards step of the point's CELL from the body's cell along

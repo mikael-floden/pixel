@@ -116,6 +116,7 @@ import { ensureSpeedDial, playerSpeed } from "../playerspeed";
 import { ensureStickDial, ensureStickAngle, stickLean, stickHeading } from "../stickdir";
 import { ensureWallAssistDial, wallAssistDeg } from "../wallassist";
 import { ensureNavHelpDial, navHelpMs } from "../navhelp";
+import { ensureNavSlideDial, navSlideDeg } from "../navslide";
 import { ensureAccelDial, accelS } from "../accel";
 import { roomCoverFraction, coversRoom, type ScreenBox, type ScreenPt } from "../scenerycover";
 import { ensureWallWrapDial, wallWrap, setWallWrap } from "../wallwrap";
@@ -14978,6 +14979,7 @@ export class WorldScene extends Phaser.Scene {
             worldH: this.worldH,
             heading: stickVec ?? undefined,
             wallAssistDeg: wallAssistDeg(),
+            navSlideDeg: navSlideDeg(),
             stuckMs: navHelpMs(),
             speedFrac: this.rampEnd(), // accelerating out of rest is not stuck
           });
@@ -18063,6 +18065,7 @@ export class WorldScene extends Phaser.Scene {
       ensureStickAngle(); // (re)bind the bearing listeners on games-ui's stick
       ensureWallWrapDial(); // …and the night shader's wall light wrap
       ensureDoorFadeDial(); // …and how fast a doorway crossing fades (1.00 = his)
+      ensureNavSlideDial(); // …and how far off a wall's normal a push stays the player's before the nav helps
       if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way
     }
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The

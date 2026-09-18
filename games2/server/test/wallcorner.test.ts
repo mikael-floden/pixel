@@ -287,7 +287,14 @@ test("beside the door under the roof, a lean that drifts the body onto the door 
   for (const [col, row] of [[12.1, 11.4], [11.6, 10.9], [12.5, 12.1], [10.6, 11.6]] as const) {
     for (const deg of [-12, 0, 12]) {
       const r = hold(grid, col, row, -1, 1, 90, deg ? leanScreen(deg) : undefined);
-      assert.ok(r.row > BIG_DOOR.r + 1, `from (${col},${row}) lean ${deg}: out of the house in 3 s (row ${r.row.toFixed(2)})`);
+      // THE PLAYER'S PUSH IS THE PLAYER'S UNTIL CORNERED (maintainer
+      // 2026-09-18, the nav slide dial): from the far start with the lean
+      // AWAY from the door — beyond the door-finder's reach — the body slides
+      // along the wall the way the thumb leans instead of being routed out;
+      // it moves, it never stands. Every other hold still leaves by the door.
+      const leansAway = col === 12.5 && deg === -12;
+      if (leansAway) assert.ok(Math.abs(r.col - col) > 0.5, `from (${col},${row}) lean ${deg}: slides along the wall the way it leans (col ${r.col.toFixed(2)})`);
+      else assert.ok(r.row > BIG_DOOR.r + 1, `from (${col},${row}) lean ${deg}: out of the house in 3 s (row ${r.row.toFixed(2)})`);
       assert.ok(r.still < 6, `from (${col},${row}) lean ${deg}: never stands (${r.still} ticks still)`);
     }
   }
