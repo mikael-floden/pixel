@@ -24,6 +24,7 @@ import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
+import { ensureClientDist } from "./clientdist.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = join(ROOT, "..");
@@ -65,7 +66,7 @@ console.log(`[dropdepth] raised ${raised.c},${raised.r} at level ${raised.l}; fl
 // --- a prod server on the working tree
 const port = 2900 + Math.floor(Math.random() * 300);
 const origin = `http://127.0.0.1:${port}`;
-if (!existsSync(join(ROOT, "client", "dist", "index.html"))) die("client/dist is missing — run npm run build:client first");
+console.log(`[dropdepth] client/dist: ${ensureClientDist(ROOT, die, { tag: "dropdepth" })}`);
 const child = spawn(join(ROOT, "node_modules", ".bin", "tsx"), ["src/index.ts"], {
   cwd: join(ROOT, "server"), detached: true,
   env: { ...process.env, PORT: String(port), SERVE_CLIENT: "1", NODE_ENV: "production" },

@@ -20,13 +20,14 @@ import { existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
+import { ensureClientDist } from "./clientdist.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const args = Object.fromEntries(process.argv.slice(2).map((a) => { const m = a.match(/^--([^=]+)=?(.*)$/); return m ? [m[1], m[2] || true] : [a, true]; }));
 const WORLD = String(args.world ?? "the_game");
 const fails = [];
 const check = (ok, msg) => { console.log(`${ok ? "  ok  " : "  FAIL"} ${msg}`); if (!ok) fails.push(msg); };
-if (!existsSync(join(ROOT, "client", "dist", "index.html"))) { console.error("verify-collisionplane: CANNOT MEASURE — client/dist is missing (npm run build:client)"); process.exit(2); }
+console.log(`[collisionplane] client/dist: ${ensureClientDist(ROOT, (m) => { console.error(`verify-collisionplane: CANNOT MEASURE — ${m}`); process.exit(2); }, { tag: "collisionplane" })}`);
 
 const port = 2600 + Math.floor(Math.random() * 300);
 const origin = `http://127.0.0.1:${port}`;

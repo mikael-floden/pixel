@@ -102,11 +102,12 @@
 
 import { chromium } from "playwright-core";
 import { spawn } from "node:child_process";
-import { existsSync, statSync, readdirSync, appendFileSync, mkdirSync } from "node:fs";
+import { existsSync, appendFileSync, mkdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:net";
 import { execFileSync } from "node:child_process";
+import { ensureClientDist } from "./clientdist.mjs";
 
 const EXE = process.env.PW_CHROME || "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -151,51 +152,9 @@ const die = (msg) => {
 };
 
 // ---------------------------------------------------------------- build
-function newestMtime(dir, skip = /node_modules|\/dist(\/|$)/) {
-  let newest = 0;
-  const walk = (d) => {
-    let ents;
-    try {
-      ents = readdirSync(d, { withFileTypes: true });
-    } catch {
-      return;
-    }
-    for (const e of ents) {
-      const p = join(d, e.name);
-      if (skip.test(p)) continue;
-      if (e.isDirectory()) walk(p);
-      else {
-        const m = statSync(p).mtimeMs;
-        if (m > newest) newest = m;
-      }
-    }
-  };
-  walk(dir);
-  return newest;
-}
-
-function ensureBuild() {
-  const dist = join(ROOT, "client", "dist", "index.html");
-  if (args["no-build"]) {
-    if (!existsSync(dist)) die("--no-build but client/dist/index.html does not exist");
-    return "reused (--no-build)";
-  }
-  const distAt = existsSync(dist) ? statSync(dist).mtimeMs : 0;
-  const srcAt = Math.max(
-    newestMtime(join(ROOT, "client", "src")),
-    newestMtime(join(ROOT, "shared", "src")),
-    newestMtime(join(ROOT, "client", "public")),
-    statSync(join(ROOT, "client", "index.html")).mtimeMs,
-  );
-  if (distAt > srcAt) return "up to date";
-  console.log("[boottime] client/dist is stale — building (npm run build:client)…");
-  try {
-    execFileSync("npm", ["run", "build:client"], { cwd: ROOT, stdio: "inherit" });
-  } catch {
-    die("npm run build:client failed");
-  }
-  return "rebuilt";
-}
+// The freshness rule and the build itself are shared with every other gate
+// that serves the prebuilt bundle (scripts/clientdist.mjs).
+const ensureBuild = () => ensureClientDist(ROOT, die, { noBuild: !!args["no-build"], tag: "boottime" });
 
 // ---------------------------------------------------------------- server
 function freePort() {
