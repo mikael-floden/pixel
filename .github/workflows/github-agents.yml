@@ -185,12 +185,6 @@ jobs:
           # the input here is his own verdicts and this repo, and the summary is
           # private to the repo.
           display_report: "true"
-          # TEMPORARY, for one rehearsal: the SDK hides its output "for
-          # security", so an auth or model failure reads only as
-          # `is_error: true` with no message. This repo is private and the
-          # secrets are masked by Actions; remove it the moment the cause is
-          # known.
-          show_full_output: "true"
           prompt: |
             A wiki review just landed on main: the Game Master committed verdicts to
             live/feedback/${{ matrix.domain }}.json. You are standing in for the
