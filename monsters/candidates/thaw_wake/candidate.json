@@ -1,0 +1,141 @@
+{
+  "id": "thaw_wake",
+  "name": "Thawborn",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The thaw gives back what the snow was keeping, in one piece, walking. It comes down the mountain every year.",
+  "biome": [
+    "snow",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Crouching body of grey slush and meltwater holding its shape, everything the snow kept all winter suspended visible inside it, a mitten, a bootlace, small bones, a tin lid, and cold water running steadily out of its feet",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "thaw_wake/rotations/south.webp",
+    "south-east": "thaw_wake/rotations/south-east.webp",
+    "east": "thaw_wake/rotations/east.webp",
+    "north-east": "thaw_wake/rotations/north-east.webp",
+    "north": "thaw_wake/rotations/north.webp",
+    "north-west": "thaw_wake/rotations/north-west.webp",
+    "west": "thaw_wake/rotations/west.webp",
+    "south-west": "thaw_wake/rotations/south-west.webp"
+  },
+  "sheet": "thaw_wake/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "22cbb1eb-41a5-43b1-bcbd-fd6bc403af72",
+  "seed": 425059994,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:38:44+00:00",
+  "elapsed_s": 279.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.732,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.756,
+        "bbox": [
+          20,
+          4,
+          100,
+          115
+        ],
+        "fill": 0.617,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.77,
+        "bbox": [
+          17,
+          8,
+          88,
+          118
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.814,
+        "bbox": [
+          29,
+          8,
+          103,
+          118
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.732,
+        "bbox": [
+          22,
+          6,
+          98,
+          114
+        ],
+        "fill": 0.57,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.828,
+        "bbox": [
+          23,
+          5,
+          100,
+          117
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.769,
+        "bbox": [
+          30,
+          4,
+          101,
+          118
+        ],
+        "fill": 0.562,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.757,
+        "bbox": [
+          20,
+          4,
+          97,
+          116
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.827,
+        "bbox": [
+          20,
+          5,
+          90,
+          117
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      }
+    }
+  }
+}

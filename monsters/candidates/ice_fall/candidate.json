@@ -1,0 +1,141 @@
+{
+  "id": "ice_fall",
+  "name": "Icefall",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The water inside it never stopped. It is the loudest thing on the mountain and it only speaks in thaw.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Frozen waterfall risen off the cliff, fused columns of blue-white ice forming a heavy hunched body, running water still visible moving inside the ice, frozen spray standing out from its shoulders and a cracked hollow core",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ice_fall/rotations/south.webp",
+    "south-east": "ice_fall/rotations/south-east.webp",
+    "east": "ice_fall/rotations/east.webp",
+    "north-east": "ice_fall/rotations/north-east.webp",
+    "north": "ice_fall/rotations/north.webp",
+    "north-west": "ice_fall/rotations/north-west.webp",
+    "west": "ice_fall/rotations/west.webp",
+    "south-west": "ice_fall/rotations/south-west.webp"
+  },
+  "sheet": "ice_fall/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b05d3295-93cf-456b-83ff-28e5ee174dd5",
+  "seed": 1736919672,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:38:57+00:00",
+  "elapsed_s": 173.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.673,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.673,
+        "bbox": [
+          55,
+          9,
+          165,
+          213
+        ],
+        "fill": 0.447,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.777,
+        "bbox": [
+          87,
+          9,
+          138,
+          215
+        ],
+        "fill": 0.209,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.773,
+        "bbox": [
+          79,
+          9,
+          141,
+          215
+        ],
+        "fill": 0.255,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.724,
+        "bbox": [
+          61,
+          9,
+          163,
+          210
+        ],
+        "fill": 0.409,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.772,
+        "bbox": [
+          66,
+          9,
+          157,
+          215
+        ],
+        "fill": 0.374,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.727,
+        "bbox": [
+          72,
+          9,
+          148,
+          213
+        ],
+        "fill": 0.309,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.719,
+        "bbox": [
+          72,
+          9,
+          155,
+          212
+        ],
+        "fill": 0.336,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.763,
+        "bbox": [
+          68,
+          9,
+          155,
+          215
+        ],
+        "fill": 0.357,
+        "touches_edge": false
+      }
+    }
+  }
+}
