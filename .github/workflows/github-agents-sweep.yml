@@ -1,0 +1,114 @@
+name: github agents — sweep
+
+# THE PATH THAT NEEDS NOTHING GRANTED. Two ways to start a github agent have now
+# failed him in one evening: the push trigger (the action refuses that event
+# outright) and the wiki server's own dispatch (its GitHub token is refused when
+# it asks Actions to start a workflow — his review commits, and nothing runs).
+# Both need someone to fix something before a single review moves.
+#
+# A SCHEDULE NEEDS NOBODY. GitHub starts this itself, it is an event the action
+# accepts, and it reads the only two sources of truth there are: his review
+# commits, and what each github agent last wrote on its board. Every five
+# minutes it asks one question per domain — "is his newest review NEWER than the
+# last thing that domain's github agent said?" — and starts the ones where it is.
+#
+# SO IT CANNOT DOUBLE-RUN: the session writes its board at the end (the
+# accounting law), which makes the board newer than the review, which makes the
+# next sweep skip it. If the wiki server's dispatch starts working, that agent's
+# board is newer too, and this sweep goes quiet by itself — it is a safety net
+# that costs one small runner every five minutes and gets out of the way.
+#
+# LATENCY: up to five minutes plus GitHub's own scheduling lag, against ~20
+# seconds for a dispatch that works. That is the price of not needing anything
+# granted, and it is only the floor — the instant path stays the goal.
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  id-token: write
+
+jobs:
+  scan:
+    if: vars.GITHUB_AGENTS != 'off'
+    runs-on: ubuntu-latest
+    outputs:
+      domains: ${{ steps.pick.outputs.domains }}
+    steps:
+      # Enough history to see this week's reviews, none of the art.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 400
+          filter: blob:none
+          sparse-checkout: |
+            coordination
+            live
+      - id: pick
+        run: |
+          set -u
+          python3 - >> "$GITHUB_OUTPUT" <<'PY'
+          import json, subprocess, datetime
+
+          # The feedback FILE is not the directory: objects.json is scenery's.
+          DOMAIN = {"objects": "scenery", "characters": "characters2", "monsters": "monsters",
+                    "tiles": "tiles", "items": "items", "lore": "lore",
+                    "sounds": "sounds", "music": "music"}
+
+          def newest_review(path):
+              """When he last SAVED this file. His saves carry that exact message;
+              an agent clearing a verdict writes the same file with its own."""
+              out = subprocess.run(
+                  ["git", "log", "-1", "--format=%cI", "--grep=^live: admin update", "--", path],
+                  capture_output=True, text=True).stdout.strip()
+              return datetime.datetime.fromisoformat(out) if out else None
+
+          def board_said(domain):
+              """When that domain's github agent last spoke. A missing board is a
+              domain whose stand-in has never run — treat it as long ago."""
+              for name in (f"coordination/{domain}-github-agent.json",):
+                  try:
+                      with open(name) as fh:
+                          at = json.load(fh).get("updated_at")
+                  except OSError:
+                      continue
+                  if at:
+                      try:
+                          return datetime.datetime.fromisoformat(at.replace("Z", "+00:00"))
+                      except ValueError:
+                          return None
+              return None
+
+          # ONLY TODAY'S REVIEWS. This exists for "he reviewed and nothing
+          # started", not to re-open the back catalogue: an older verdict is the
+          # domain agent's business, which reads the whole file every run
+          # (PROTOCOL rule 4). Without this the first sweep would have started
+          # four sessions on reviews going back to the 14th.
+          WINDOW = datetime.timedelta(hours=24)
+          now = datetime.datetime.now(datetime.timezone.utc)
+
+          due = []
+          for name, domain in sorted(DOMAIN.items()):
+              review = newest_review(f"live/feedback/{name}.json")
+              if not review or now - review > WINDOW:
+                  continue
+              said = board_said(domain)
+              if said is None or review > said:
+                  due.append(domain)
+                  print(f"# {domain}: review {review.isoformat()} is newer than {said}", flush=True)
+          print(f"domains={json.dumps(due)}")
+          PY
+          echo "--- due: $(grep '^domains=' "$GITHUB_OUTPUT" | tail -1)"
+
+  agent:
+    needs: scan
+    if: needs.scan.outputs.domains != '[]' && needs.scan.outputs.domains != ''
+    strategy:
+      fail-fast: false
+      matrix:
+        domain: ${{ fromJSON(needs.scan.outputs.domains) }}
+    uses: ./.github/workflows/github-agent-run.yml
+    with:
+      domain: ${{ matrix.domain }}
+    secrets: inherit

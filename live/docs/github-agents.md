@@ -116,6 +116,26 @@ Claude reading its first file:
   design, so that route needs a PAT in the secrets before it can exist. That is
   why the wiki server — which already holds a token with repo write — is the one
   that dispatches.
+- **THE SWEEP IS THE PATH THAT NEEDS NOTHING GRANTED**
+  (`.github/workflows/github-agents-sweep.yml`, every 5 minutes). Two starts
+  failed him in one evening — the push trigger (the action refuses the event)
+  and the server's dispatch (its token is refused by Actions) — and both need
+  someone to fix something before a single review moves. A schedule needs
+  nobody: GitHub starts it, the action accepts the event, and it reads the only
+  two truths there are — his review commits, and what each github agent last
+  wrote on its board. A domain is due when his newest `live: admin update`
+  commit for its feedback file is NEWER than `coordination/<domain>-github-
+  agent.json`, and only within the last 24 h (older verdicts are the domain
+  agent's business, and without that window the first sweep would have started
+  four sessions on reviews going back to the 14th).
+- **It cannot double-run, and it goes quiet by itself.** The session writes its
+  board at the end (the accounting law), which makes the board newer than the
+  review, which makes the next sweep skip that domain. The same is true of any
+  other start: when the server's dispatch works, its agent's board is newer and
+  the sweep finds nothing. Cost: one small runner every five minutes. Latency:
+  up to five minutes plus GitHub's scheduling lag, against ~20 s for a dispatch
+  that works — the price of not needing anything granted, and a floor, not the
+  goal.
 - **The server's token needs Actions: read and write.** Without it the dispatch
   is a 403 in the server log (`<domain>-github-agent not started: HTTP 403`) and
   reviews wait for the domain agent exactly as they did before. It cannot fail
