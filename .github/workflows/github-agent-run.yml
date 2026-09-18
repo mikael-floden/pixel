@@ -99,16 +99,27 @@ jobs:
           # the ones that need new art.
           PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+          # OPUS 5 ON MAX, AND THINKING LIKE IT (maintainer 2026-09-18: "What
+          # Claude AI is running Opus 5 on MAX is desired!"). Three separate
+          # things, all set here so none of them can drift:
+          #   • the PLAN — the session authenticates with his Max subscription's
+          #     OAuth token below, not a pay-as-you-go API key;
+          #   • the MODEL — pinned in claude_args, never the default;
+          #   • the EFFORT — this. Claude Code reads MAX_THINKING_TOKENS as its
+          #     thinking budget; a session that judges art it has never seen and
+          #     decides what to delete is the last place to save on reasoning.
+          #     An unrecognised value is ignored, so this can only help.
+          MAX_THINKING_TOKENS: "31999"
         with:
           # Whichever of the two auth secrets this repo holds; the empty one is
           # ignored, so the app's OAuth token and a plain API key both work.
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           # ALWAYS THE STRONGEST MODEL (maintainer 2026-09-18: "Can we make sure
-          # to always run Opus 5"). A stand-in session judges art, reads five
-          # documents and touches a domain it has no memory of — the wrong place
-          # to save on reasoning. Pinned explicitly so a change of default never
-          # quietly downgrades what acts on his reviews.
+          # to always run Opus 5", "What Claude AI is running Opus 5 on MAX is
+          # desired!"). Pinned explicitly so a change of default never quietly
+          # downgrades what acts on his reviews — the run log prints the model it
+          # initialised with, which is how to check it rather than assume.
           claude_args: "--model claude-opus-5 --max-turns 150"
           # Empty on a cache miss, which is exactly what the action expects.
           path_to_claude_code_executable: ${{ steps.cli.outputs.cache-hit == 'true' && '~/.local/bin/claude' || '' }}

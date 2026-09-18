@@ -140,6 +140,27 @@ decided first.
   run; that session reads the FILE rather than its own commit, so it sees every
   verdict of the sitting.
 
+## Opus 5, on his Max plan, thinking hard
+
+Three separate things, and all three are set in `github-agent-run.yml` so none
+can drift (maintainer 2026-09-18: *"What Claude AI is running Opus 5 on MAX is
+desired!"*):
+
+- **The plan** — the session authenticates with `CLAUDE_CODE_OAUTH_TOKEN`, the
+  1-year token minted from his Max subscription. Not `ANTHROPIC_API_KEY`, which
+  would bill pay-as-you-go console credit. (The input for the key is still
+  passed and simply empty; whichever secret exists is used.)
+- **The model** — `--model claude-opus-5`, pinned, never the default. The run
+  log prints the model it initialised with; that is how to check rather than
+  assume.
+- **The effort** — `MAX_THINKING_TOKENS`. A session that judges art it has never
+  seen, in a domain it has no memory of, and decides what to delete, is the last
+  place to save on reasoning.
+
+Symptom to recognise: a 401 `Invalid bearer token` means the SECRET is not a
+token — an authorization code is what a token is minted from, and pasting the
+code produces exactly that error (2026-09-18).
+
 ## What it CANNOT do
 
 **Wake a session you are already chatting with.** A GitHub push has no path into
