@@ -22,6 +22,7 @@ import {
   ShapeMapBuilder,
   SHAPE_DEPTH_CELLS,
   SHAPE_ZW_ATT,
+  SHAPE_ZW_ATT_BELOW,
   SHAPE_AXIS_MIN,
   type ShapeHitbox,
   type ShapeScale,
@@ -217,8 +218,11 @@ test("scenerylight: the per-light term is the ground's attenuation (z weighted S
   // A torch held AT the axis: the direction floors at SHAPE_AXIS_MIN, every
   // side reads the wrap level instead of flipping on a sub-cell offset.
   near(shapeLightTerm(N, P, { x: 0.01, y: 0, z: 0.55, radius: 6 }, 0.5).lam, 0.5 - 0.5 * (0.01 / SHAPE_AXIS_MIN), 1e-9, "axis floor");
-  // The vertical weight: a light 5 levels up at the foot attenuates like a
-  // light 5·SHAPE_ZW_ATT cells away on the ground.
-  near(shapeLightTerm(N, P, { x: 0, y: 0, z: 5, radius: 6 }, 0.5).att, (1 - (5 * SHAPE_ZW_ATT) / 6) ** 2, 1e-9, "z weighted SHAPE_ZW_ATT");
+  // The vertical weight: a light 5 levels ABOVE the texel attenuates like a
+  // light 5·SHAPE_ZW_ATT_BELOW cells away on the ground (the texel is below
+  // it — a lamp on a cliff over a tree's foot, 2026-09-18), while a texel
+  // ABOVE the light (the crown over a torch) keeps SHAPE_ZW_ATT.
+  near(shapeLightTerm(N, P, { x: 0, y: 0, z: 5, radius: 6 }, 0.5).att, (1 - (5 * SHAPE_ZW_ATT_BELOW) / 6) ** 2, 1e-9, "z weighted SHAPE_ZW_ATT_BELOW under the light");
+  near(shapeLightTerm(N, { x: 0, y: 0, z: 5 }, { x: 0, y: 0, z: 0, radius: 6 }, 0.5).att, (1 - (5 * SHAPE_ZW_ATT) / 6) ** 2, 1e-9, "z weighted SHAPE_ZW_ATT above the light");
   assert.equal(shapeLightTerm(N, P, { x: 7, y: 0, z: 0, radius: 6 }, 0.5).att, 0, "beyond the radius");
 });

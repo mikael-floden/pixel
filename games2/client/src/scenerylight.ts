@@ -81,6 +81,16 @@ export const SHAPE_ZW = 0.6;
  *  lights the whole tree at 0.75× the flat tint, in front 1.25×), the foot
  *  texel is the ground's own (at P.z = 0 the term is 0.55·w either way). */
 export const SHAPE_ZW_ATT = 0.15;
+/** ...AND A LIGHT ABOVE THE TEXEL COUNTS ITS HEIGHT MORE (2026-09-18,
+ *  maintainer at 218.5,236.4: "the tall tree is influenced by the light on
+ *  top of the mountain the same regardless of the scenery Z (the top of the
+ *  tree is closer to the light than the bottom)"). 0.15 was chosen for a
+ *  torch at the FOOT of a crown, where the crown must stay in reach; for a
+ *  lamp on a cliff above the piece the foot is the far texel, and at 0.15
+ *  the whole tree read one distance. The vertical term is weighted
+ *  SHAPE_ZW_ATT where the texel is above the light and this where it is
+ *  below it (shader + shapeLightTerm). */
+export const SHAPE_ZW_ATT_BELOW = 0.45;
 /** The Lambert direction's horizontal length floor (cells): a torch held at
  *  the axis lights every side at the wrap level instead of flipping. */
 export const SHAPE_AXIS_MIN = 0.25;
@@ -431,7 +441,7 @@ export function shapeLightTerm(
   const dx = L.x - P.x;
   const dy = L.y - P.y;
   const dzl = L.z - P.z;
-  const dist = Math.hypot(dx, dy, dzl * SHAPE_ZW_ATT);
+  const dist = Math.hypot(dx, dy, dzl * (dzl > 0 ? SHAPE_ZW_ATT_BELOW : SHAPE_ZW_ATT));
   const r = Math.abs(L.radius);
   let att = clamp(1 - dist / r, 0, 1);
   att *= att;

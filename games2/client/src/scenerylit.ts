@@ -58,7 +58,7 @@
  */
 import Phaser from "phaser";
 import { MAX_SHADER_LIGHTS } from "./nightlight";
-import { SHAPE_DEPTH_CELLS, SHAPE_ZW_ATT } from "./scenerylight";
+import { SHAPE_DEPTH_CELLS, SHAPE_ZW_ATT, SHAPE_ZW_ATT_BELOW } from "./scenerylight";
 
 export const SCENERY_LIT_PIPELINE = "scenery-lit";
 /** Per-light occlusion slots carried per vertex — every ledger slot. */
@@ -152,6 +152,7 @@ varying vec4 vOccB;
 varying vec4 vOccC;
 const float SQ2I = 0.70710678;
 const float ZWA = ${SHAPE_ZW_ATT.toFixed(3)};
+const float ZWB = ${SHAPE_ZW_ATT_BELOW.toFixed(3)}; // the texel BELOW the light: its height counts more
 const float DEPTH = ${SHAPE_DEPTH_CELLS.toFixed(1)};
 
 float occAt(int i) {
@@ -189,7 +190,8 @@ void main () {
       vec4 lp = uLightPos[i];
       float radius = abs(lp.w);
       vec2 aXY = vec2(lp.x - lp.y, lp.x + lp.y) * SQ2I - fXY; // the light from the piece's axis
-      vec3 d = vec3(aXY - P.xy, (lp.z - fz - P.z) * ZWA);
+      float dzl = lp.z - fz - P.z;
+      vec3 d = vec3(aXY - P.xy, dzl * (dzl > 0.0 ? ZWB : ZWA));
       float dist = length(d);
       float att = clamp(1.0 - dist / radius, 0.0, 1.0);
       att *= att;
