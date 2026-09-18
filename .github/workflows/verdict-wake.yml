@@ -12,38 +12,39 @@ name: verdict wake
 # the new verdicts. Without it a verdict sits until the domain agent's next run
 # reads the file (PROTOCOL rule 4), which can be hours.
 #
-# THE REASONING, THE REJECTED ALTERNATIVES AND THE SETUP: live/docs/verdict-wake.md.
+# ONE SESSION PER DOMAIN, SHAPED BY THAT DOMAIN'S OWN DOCS (maintainer
+# 2026-09-18: "when I do a review on a monster and click redo that agent has to
+# know how to be the monster agent. And when I redo a scenery it should know how
+# to be a scenery agent"). The domain is derived from WHICH feedback file he
+# wrote, and the prompt sends the session to that domain's README for the art
+# and to live/docs/review-contract.md for the part no session may improvise:
+# clearing the verdict it acted on, so the wiki is never left showing his old
+# note over new art or a removed asset.
 #
-# MONSTERS ONLY, on purpose. It is the domain where the latency costs something
-# real: a redo verdict is a generation that cannot start until someone reads it.
-# Add a domain by adding its feedback file to `paths` AND giving it its own job —
-# never one session acting across domains, because that session is a second
-# writer in both.
-#
-# THE SESSION IS A THIRD WRITER IN monsters/, after the monsters agent and its
+# THE SESSION IS A THIRD WRITER in its domain, after the agent and its
 # assistant, so the prompt binds it to PROTOCOL's "Two writers per directory":
 # read both boards, treat a claimed or acked verdict as CONSUMED, and claim on
-# its own board (coordination/monsters-wake.json) BEFORE editing anything.
-# Without that, two writers regenerate the same monster and PixelLab is paid
-# twice for one file.
+# its own board (coordination/<domain>-wake.json) BEFORE editing anything.
 #
+# REASONING, REJECTED ALTERNATIVES, SETUP: live/docs/verdict-wake.md.
 # KILL SWITCH WITHOUT SETUP: it runs unless the repo variable VERDICT_WAKE is
-# set to "off" (Settings → Secrets and variables → Actions → Variables). Nothing
-# to configure for the normal path — the same "derive, don't ask" rule the
-# backup workflow learned the hard way.
+# set to "off" (Settings → Secrets and variables → Actions → Variables).
 
 on:
   push:
     branches: [main]
     paths:
-      - "live/feedback/monsters.json"
+      - "live/feedback/*.json"
   # A SMOKE TEST THAT COSTS NOTHING BUT THE SESSION: dispatching it with
   # dry_run left at "true" proves the whole path — auth secret, checkout,
-  # prompt, board reads — and the session is told to report what it WOULD do
-  # and exit without committing or generating. There is no other way to learn
-  # whether the auth secret exists short of a real verdict.
+  # prompt, board reads — and the session reports what it WOULD do and exits
+  # without committing or generating.
   workflow_dispatch:
     inputs:
+      domain:
+        description: "Which feedback file to rehearse against"
+        type: string
+        default: "monsters"
       dry_run:
         description: "Report what it would do and change nothing"
         type: boolean
@@ -62,8 +63,7 @@ jobs:
   #
   # cancel-in-progress HERE, and only here: each new push cancels the previous
   # wait, so exactly one run — the last commit's — survives to do the work, and
-  # it reads the file after he has stopped. A dispatched run skips the wait; a
-  # smoke test should answer immediately.
+  # it reads the file after he has stopped. A dispatched run skips the wait.
   debounce:
     if: >-
       github.event_name == 'workflow_dispatch'
@@ -72,27 +72,63 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
-      group: verdict-wake-monsters-wait
+      group: verdict-wake-wait
       cancel-in-progress: true
     steps:
       - if: github.event_name == 'push'
         run: sleep 240
 
-  monsters:
+  # WHICH DOMAINS DID HE REVIEW? Read from the COMMIT LOG of the last half hour,
+  # not from this push's diff: the debounce collapsed a sitting into one
+  # surviving run, and that run's own `before..after` is a single commit, so a
+  # diff would miss every earlier save of the same sitting.
+  detect:
     needs: debounce
-    # ONLY HIS SAVES. The wiki server stamps every admin save with this exact
-    # message; the monsters agent clears verdicts through the SAME file with its
-    # own message, and waking on that would wake the agent with its own
-    # footprints — a loop that terminates but pays for a session each lap.
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      domains: ${{ steps.pick.outputs.domains }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: pick
+        env:
+          EVENT: ${{ github.event_name }}
+          PICK: ${{ inputs.domain }}
+        run: |
+          set -euo pipefail
+          if [ "$EVENT" != "push" ]; then
+            printf 'domains=["%s"]\n' "${PICK:-monsters}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          names=$(git log --since="30 minutes ago" --name-only --pretty=format: \
+                    -- 'live/feedback/*.json' \
+                  | sed -n 's#^live/feedback/\(.*\)\.json$#\1#p' | sort -u)
+          # bindings.json is the composer's attachment review, not a domain
+          # directory; it has no agent of its own to stand in for.
+          names=$(printf '%s\n' "$names" | grep -vx 'bindings' || true)
+          json=$(printf '%s\n' "$names" | sed '/^$/d' | jq -R . | jq -sc .)
+          echo "reviewed: $json"
+          echo "domains=$json" >> "$GITHUB_OUTPUT"
+
+  wake:
+    needs: detect
+    if: needs.detect.outputs.domains != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 90     # a generation pass; the loop stops itself on budget
     permissions:
       contents: write       # it pushes the work and its board claim to main
+    strategy:
+      fail-fast: false
+      matrix:
+        domain: ${{ fromJson(needs.detect.outputs.domains) }}
     # QUEUE, NEVER CANCEL — the opposite of the wait above. A run here may be
-    # halfway through a PixelLab generation, and killing it loses art already
-    # paid for; a later sitting simply waits its turn.
+    # halfway through a generation, and killing it loses art already paid for;
+    # a later sitting waits its turn. Per DOMAIN, so a scenery review never
+    # queues behind a monsters generation.
     concurrency:
-      group: verdict-wake-monsters-run
+      group: verdict-wake-run-${{ matrix.domain }}
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
@@ -106,48 +142,62 @@ jobs:
 
       - uses: anthropics/claude-code-action@v1
         env:
-          # The domain's generator needs the key exactly as the scheduled art
-          # workflows do; without it the session can read verdicts but not act
-          # on the ones that need new art.
+          # The generating domains need their key exactly as the scheduled art
+          # workflows do; without it a session can read verdicts but not act on
+          # the ones that need new art.
           PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
         with:
           # Whichever of the two auth secrets this repo holds; the empty one is
           # ignored, so the app's OAuth token and a plain API key both work.
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          claude_args: "--max-turns 120"
+          claude_args: "--max-turns 150"
           prompt: |
             A wiki review just landed on main: the Game Master committed verdicts to
-            live/feedback/monsters.json. You are standing in for the monsters agent for
-            this one unit of work, in a fresh checkout with no memory of earlier runs.
+            live/feedback/${{ matrix.domain }}.json. You are standing in for the
+            ${{ matrix.domain }} agent for this one unit of work, in a fresh checkout with
+            no memory of earlier runs.
 
-            Read first, in this order: CLAUDE.md (the law of the repo),
-            coordination/PROTOCOL.md (its "Two writers per directory" section is binding
-            on you), monsters/README.md (the authority on what each verdict means), and
-            live/README.md (the feedback contract).
+            TAKE THE SHAPE OF THAT AGENT. Read, in this order, before deciding anything:
+              1. CLAUDE.md — the law of the repo.
+              2. coordination/PROTOCOL.md — "Two writers per directory" binds you.
+              3. live/docs/review-contract.md — HOW A REVIEW IS ACTED ON AND CLEANED UP.
+                 This is the part you must not improvise. Its short form: a verdict
+                 describes ONE generation of the art, so the entry dies as part of doing
+                 the work; an approval is never cleared; a removal removes the art, the
+                 index entry, the upstream record AND every verdict keyed on it, entity
+                 and facet alike; and when you are done, no key in the file may name a
+                 path, state or direction that is not on disk.
+              4. ${{ matrix.domain }}/README.md — the authority on the art: what approved,
+                 redo and removed MEAN here and which pipeline command does each.
+              5. live/README.md — the feedback file's schema and per-domain vocabulary.
 
             Then:
-            1. Read coordination/monsters.json and coordination/monsters-assistant.json.
-               A verdict either board has claimed or acked is CONSUMED — leave it alone.
-               If either board's `current` names a file you would touch, that unit is not
+            1. Read coordination/${{ matrix.domain }}.json and
+               coordination/${{ matrix.domain }}-assistant.json (whichever exist). A
+               verdict either board has claimed or acked is CONSUMED — leave it. If
+               either board's `current` names a file you would touch, that unit is not
                yours; a collision goes to the original agent.
-            2. Take only the verdicts in live/feedback/monsters.json that nobody has
-               claimed and that the art on disk does not yet reflect. Derive that from the
-               filesystem, never from the verdict count.
-            3. Claim them on coordination/monsters-wake.json — your own board, same schema
-               as the others: the unit and EVERY file you will touch — and push that claim
-               BEFORE you do any work. A claim that ships with the work protects nothing.
-            4. Do what the verdicts ask (monsters/README.md is the authority), run the
-               domain's checks, `git fetch && git rebase origin/main`, re-run the checks if
-               main moved under monsters/, push to main, then release the claim with what
-               shipped.
+            2. Take only the verdicts nobody has claimed and that the art on disk does
+               not yet reflect. Derive that from the filesystem, never from a count.
+            3. Claim them on coordination/${{ matrix.domain }}-wake.json — your own
+               board, same schema as the others: the unit and EVERY file you will touch
+               — and push that claim BEFORE any work. A claim that ships with the work
+               protects nothing.
+            4. Do the work with the domain's OWN pipeline commands rather than by hand
+               where it has them, clear each verdict as you act on it, run the domain's
+               checks, `git fetch && git rebase origin/main`, re-run the checks if main
+               moved under your domain, push to main, then release the claim saying what
+               shipped and which entries you cleared.
 
-            If PixelLab credits are low, stop cleanly and say so on your board rather than
-            half-generating. If nothing is left unconsumed, write one line saying so and
-            exit without committing — an empty run is the correct outcome when the agent
-            got there first.
+            Budget: if the generation credits are low, stop cleanly and say so on your
+            board rather than half-generating. If nothing is left unconsumed, write one
+            line saying so and exit without committing — an empty run is the correct
+            outcome when the agent got there first.
 
-            DRY RUN: ${{ inputs.dry_run }} — when that reads true, do steps 1 and 2 only,
-            then write what you WOULD do (each verdict, the files it would touch) and stop.
-            Change nothing, claim nothing, generate nothing, commit nothing. It is the
-            smoke test for this workflow, not a pass over the queue.
+            DRY RUN: ${{ inputs.dry_run }} — when that reads true, do the reading and
+            steps 1 and 2 only, then write what you WOULD do (each verdict, the files it
+            would touch, the entries it would clear) and stop. Change nothing, claim
+            nothing, generate nothing, commit nothing. It is the smoke test for this
+            workflow, not a pass over the queue.

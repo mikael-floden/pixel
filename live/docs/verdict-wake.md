@@ -105,13 +105,23 @@ jobs:
 
 ## The laws this encodes
 
-- **One job per domain, never one session across domains.** A session that
-  writes in two domains is a second writer in both. Add a domain by adding its
-  feedback file to `paths` AND giving it its own job.
-- **Monsters first, on purpose.** It is the domain where the latency costs
-  something real — a redo verdict is a generation that cannot start until
-  someone reads it. A domain whose verdict only needs reading at next run is not
-  worth a session per save.
+- **One session per domain, shaped by that domain's own docs** (maintainer
+  2026-09-18: *"when I do a review on a monster and click redo that agent has to
+  know how to be the monster agent. And when I redo a scenery it should know how
+  to be a scenery agent"*). The domain is DERIVED from which feedback file he
+  wrote — `detect` reads the commit log of the last 30 minutes, not this push's
+  diff, because the debounce collapsed a sitting into one surviving run whose
+  own `before..after` is a single commit. Each domain gets its own matrix job,
+  its own concurrency group and a prompt that sends it to
+  `<domain>/README.md`. Never one session across two domains: that session is a
+  second writer in both.
+- **The shape is two documents, not a prompt.** The prompt only says which
+  domain and in what order to read: `live/docs/review-contract.md` for how a
+  review is acted on and cleaned up (the part no session may improvise), the
+  domain's README for what the verdicts mean and which pipeline command does
+  each. Rules live in the repo where every agent reads them, not in YAML.
+- **`bindings.json` is skipped.** It is the composer's attachment review, not a
+  domain directory — there is no `bindings/` agent to stand in for.
 - **The woken session is a THIRD writer** in `monsters/`, after the agent and
   its assistant, so the prompt binds it to PROTOCOL's "Two writers per
   directory": read both boards, treat a claimed or acked verdict as consumed,
