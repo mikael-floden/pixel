@@ -296,13 +296,15 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   and with no pool there was no shadow to see (maintainer: "YOU REMOVED THE
   ENTIRE TORCH BRIDGE SHADOW ... The old code was better! We only had a small
   small bug where it was lit up in the middle of the shadow"). The bright
-  spot is still owed. Also rejected: a slab rule that blocks a pixel below
-  the light's own deck through the deck's cells — the torch stands on the
-  deck's last row, so no slab cell lies on those rays outside the light's
-  own near field (measured). Gate: `verify-bridgelight.mjs` (the deck top
-  lit, the water under it at the ambient). The QA probe
-  `__ml.teleport(col,row,elev)` lands the body ON a deck at `elev`; without
-  it the harness swam under the bridge he stood on.
+  spot was the near fields (below): a slab the light stands above is never
+  spared by them. Rejected with it: a slab rule OUTSIDE the near fields —
+  the torch stands on the deck's last row, so no slab cell lies on those
+  rays outside the near fields (measured, no change). Gate:
+  `verify-bridgelight.mjs` (the deck top lit, the water under it AND the
+  water a cell past the deck's edge at the ambient, from his spot). The QA
+  probe `__ml.teleport(col,row,elev)` lands the body ON a deck at `elev`;
+  without it the harness swam under the bridge he stood on (and a dev
+  server that has not restarted since the handler landed still swims).
 - **GLSL `pow()` NEVER SEES A BASE THAT CAN BE NEGATIVE** (gate:
   `server/test/glslpow.test.ts`, reads the fragment sources). The spec leaves
   `pow(x, y)` undefined for x < 0 and a phone GPU takes it literally, while
@@ -699,7 +701,17 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   of the torch and 1.00 a quarter cell further, the floor beside the feet 46
   → 58 luma once the samples within half a cell of the light are skipped. A
   wall that close is one the torch is pressed against, and its shadow is
-  still cast by the samples deeper inside it. What stays dark there is not
+  still cast by the samples deeper inside it. A SLAB THE LIGHT STANDS ABOVE
+  IS NEVER SPARED BY EITHER NEAR FIELD (shader + twin `lightAt`): both skips
+  are for phantom skirt heights, and a deck column whose top `hardHeightAt`
+  returns (the light above it) is a real blocker at exactly those distances
+  — the torch on the bridge, the water a cell past the deck's edge. The
+  spared samples were the only ones on such a ray that could see the slab,
+  so the water within ~1.25 cells of the torch took the pool in full: a
+  bright arc inside the slab's shadow (maintainer 2026-09-18, 281.8,245.9 on
+  the bridge at Night, circled on the light-only render: "the bright spot
+  has no line of sight to the TORCH"). Read only where the sample's column
+  has open air under it (`airTopAt`), so every other ray pays nothing. What stays dark there is not
   floor: a 1-level parapet's top face rises 15 px, a row step is 14, so the
   cut top of every wall cell covers half of each floor cell up-screen of it
   — the dark "ground" beside a wall under the cut-away is the wall's own top

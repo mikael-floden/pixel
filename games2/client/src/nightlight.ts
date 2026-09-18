@@ -1665,16 +1665,39 @@ void main() {
         // Applied ONCE per light, from the sample with the largest share —
         // multiplying per sample made the number of near-field samples show
         // as bands at the column's foot (his "small pixels still lit up").
+        // A SLAB THE LIGHT STANDS ABOVE IS NEVER SPARED BY A NEAR FIELD. Both
+        // skips exist for PHANTOM heights — a wall's bilinear skirt read from
+        // the floor beside it. A deck column whose slab the light stands
+        // above (hardHeightAt gives its top) is a real blocker at exactly
+        // these distances: the torch on the bridge, the water a cell past
+        // the deck's edge. The spared samples were the only ones on such a
+        // ray that could see the slab, so the water within ~1.25 cells of
+        // the torch took the pool in full — a bright arc inside the slab's
+        // shadow (maintainer 2026-09-18, 281.8,245.9 on the bridge at Night:
+        // "a small bug where it was lit up in the middle of the shadow"; a
+        // slab rule outside the near fields changes nothing, measured). Read
+        // only where the sample's column has open air under it (airTopAt),
+        // and only with the light ABOVE the column's top: under a cave lid or
+        // a roof the light stands below the slab, hardHeightAt gives the
+        // ground column, and that column keeps the near fields' skips exactly
+        // as outdoors (a mushroom's share beside a brazier is skirt, not slab).
+        bool slab = false;
         if (nearP || nearL) {
-          if (lR > 0.0) {
-            float hfN = edgeShare(pos, ps, sideL, lR * t, hRay, lC, lShare, lC, ownShare, ownC);
-            if (hfN > 0.0) {
-              float fN = mix(1.0, skirtOcc(ps, p, hRay, lp.z), hfN);
-              edgeProd *= fN;
-              edgeMin = min(edgeMin, fN);
-            }
+          if (airTopAt(ps) > 0.5 && lp.z > heightAtHard(ps)) {
+            float hS = hardHeightAt(ps, lp.z);
+            slab = hS < 90.0 && hS > hRay;
           }
-          continue;
+          if (!slab) {
+            if (lR > 0.0) {
+              float hfN = edgeShare(pos, ps, sideL, lR * t, hRay, lC, lShare, lC, ownShare, ownC);
+              if (hfN > 0.0) {
+                float fN = mix(1.0, skirtOcc(ps, p, hRay, lp.z), hfN);
+                edgeProd *= fN;
+                edgeMin = min(edgeMin, fN);
+              }
+            }
+            continue;
+          }
         }
         if (ownShare > 0.0 && dot(p - ownC, p - ownC) < 1.0) continue;
         // ...AND THE PIECE ONLY: a sample inside the radius is spared only when
@@ -2690,6 +2713,7 @@ export class NightLights {
   private upX = 1;
   private upY = 1;
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
+  private aArr!: Float32Array; // CPU slab underside (the surface map's airTopAt; 0 = no open air)
   private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
   private sArrH!: Float32Array; // CPU SCENERY share in the occlusion heights — setSceneryOccluders
   private sArrG!: Float32Array; // CPU SCENERY share in the ground column (trunk only)
@@ -3552,6 +3576,7 @@ export class NightLights {
     this.tArr = new Float32Array(w * h);
     this.bArr = new Float32Array(w * h);
     this.gArr = new Float32Array(w * h);
+    this.aArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
     this.pArr = new Float32Array(w * h);
     this.sArrH = new Float32Array(w * h);
@@ -3655,6 +3680,7 @@ export class NightLights {
         // high bridge's underside to a phantom lower one.
         const deckBot = deckH[r * w + c] > groundH + 0.01 ? deckBotH[r * w + c] : 0;
         const air = deckBot > groundH + 0.01 ? Math.min(127, Math.max(1, Math.round(deckBot))) : 0;
+        this.aArr[r * w + c] = air;
         img.data[i + 1] = (solid ? 128 : 0) + air;
         // B = self-emission palette index + 1 (see the shader's emitAt).
         // tile-emission@2 is per-VARIANT: a category's plain variants (grey
@@ -4299,7 +4325,13 @@ export class NightLights {
       const e = this.roomCuts.get(r * W + c);
       return e === undefined ? 99 : e;
     };
-    const hardAt = (c: number, r: number, lz: number) => {
+    // Twin of airTopAt: the slab's underside, 0 where the column has no open air.
+    const airAt = (c: number, r: number) => {
+      const ci = Math.floor(c), ri = Math.floor(r);
+      return ci < 0 || ri < 0 || ci >= W || ri >= H ? 0 : this.aArr[ri * W + ci];
+    };
+    const hardAt = (cf: number, rf: number, lz: number) => {
+      const c = Math.floor(cf), r = Math.floor(rf);
       const cut = drawnCut(c, r);
       const base = c < 0 || r < 0 || c >= W || r >= H ? 99 : this.bArr[r * W + c];
       const g0 = gAt(c, r);
@@ -4522,17 +4554,25 @@ export class NightLights {
           const nearP = (px - col) * (px - col) + (py - row) * (py - row) < 0.56; // near-field
           const hRay = z + (lsz - z) * tt + 0.2;
           const nearL = (px - L.col) * (px - L.col) + (py - L.row) * (py - L.row) < LIGHT_NEAR_R2; // the light's near field (see FRAG)
+          // A slab the light stands above is never spared by a near field (see FRAG).
+          let slab = false;
           if (nearP || nearL) {
-            // The near fields still run the edge rays, applied once (see FRAG).
-            if (lR > 0) {
-              const hfN = edgeShare(px, py, sideX, sideY, lR * tt, hRay, lcx, lcy, lShare, lcx, lcy, ownShare, ocx, ocy);
-              if (hfN > 0) {
-                const fN = 1 + (softOcc(px, py, hRay) - 1) * hfN;
-                edgeProd *= fN;
-                edgeMin = Math.min(edgeMin, fN);
-              }
+            if (airAt(px, py) > 0.5 && L.z > hAt(px, py)) {
+              const hS = hardAt(px, py, L.z);
+              slab = hS < 90 && hS > hRay;
             }
-            continue;
+            if (!slab) {
+              // The near fields still run the edge rays, applied once (see FRAG).
+              if (lR > 0) {
+                const hfN = edgeShare(px, py, sideX, sideY, lR * tt, hRay, lcx, lcy, lShare, lcx, lcy, ownShare, ocx, ocy);
+                if (hfN > 0) {
+                  const fN = 1 + (softOcc(px, py, hRay) - 1) * hfN;
+                  edgeProd *= fN;
+                  edgeMin = Math.min(edgeMin, fN);
+                }
+              }
+              continue;
+            }
           }
           if (ownShare > 0 && (px - ocx) * (px - ocx) + (py - ocy) * (py - ocy) < 1.0) continue; // own trunk's skirt
           // The LIGHT's own trunk (a fire IS its piece) — share cells only, never

@@ -49,5 +49,29 @@ const top = luma(d["283,245,4"].l);
 const top0 = luma(off["283,245,4"]);
 console.log(`deck top 283,245: luma torch off ${top0.toFixed(3)} / on ${top.toFixed(3)}`);
 if (!(top - top0 >= 0.15)) fail(`the deck top is not lit by the torch on it (+${(top - top0).toFixed(3)})`);
+// HIS SPOT: the torch-bearer put ON the deck at 281.8,245.9 (elev 4). The
+// water a cell past the deck's edge, in front and behind, is inside the
+// slab's shadow — the near fields spare no slab the light stands above
+// (docs/lighting.md; maintainer 2026-09-18: "the bright spot has no line of
+// sight to the TORCH"). Torch off first, then the torch's own delta.
+await page.evaluate(() => window.__ml.torch?.(false));
+await page.evaluate(() => window.__ml.teleport(281.8, 245.9, 4));
+await page.waitForTimeout(6000);
+const SPOTS = [[282.0, 247.2, 0], [281.8, 247.5, 0], [282.3, 247.1, 0], [281.8, 243.6, 0], [281.8, 243.0, 0]];
+const off2 = await page.evaluate((sp) => { const o = {}; for (const [c, r, z] of sp) o[`${c},${r},${z}`] = window.__ml.lightAt(c, r, z); return o; }, SPOTS);
+await page.evaluate(() => window.__ml.torch?.(true));
+await page.waitForTimeout(2500);
+const d2 = await page.evaluate((sp) => { const o = { me: window.__ml.me()?.elev, torch: window.__ml.lights()[0] }; for (const [c, r, z] of sp) o[`${c},${r},${z}`] = window.__ml.lightAt(c, r, z); o.top = window.__ml.lightAt(281.8, 245.9, 4); return o; }, SPOTS);
+console.log(`his spot: body at elev ${d2.me}, torch z ${d2.torch?.z}`);
+if (!(d2.me === 4 && d2.torch && d2.torch.z > 4)) fail(`the probe did not land the body on the deck (elev ${d2.me})`);
+for (const [c, r, z] of SPOTS) {
+  const k = `${c},${r},${z}`;
+  const l = luma(d2[k]), l0 = luma(off2[k]);
+  console.log(`water past the deck's edge ${k}: luma torch off ${l0.toFixed(3)} / on ${l.toFixed(3)} (+${(l - l0).toFixed(3)})`);
+  // The shadowed water keeps the march's 0.22 bounce floor (+0.03 luma here); the arc was +0.13.
+  if (!(l - l0 <= 0.045)) fail(`the torch on the deck lights the water past its edge at ${k} (+${(l - l0).toFixed(3)} luma) — the bright spot in the slab's shadow`);
+}
+console.log(`deck top under his feet: luma ${luma(d2.top).toFixed(3)}`);
+if (!(luma(d2.top) >= 0.4)) fail(`the deck top under the torch is not lit (${luma(d2.top).toFixed(3)})`);
 await browser.close();
 console.log(process.exitCode ? "verify-bridgelight: FAIL" : "verify-bridgelight: ALL OK");
