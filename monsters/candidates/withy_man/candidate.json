@@ -1,0 +1,140 @@
+{
+  "id": "withy_man",
+  "name": "Withyman",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Woven around nothing, on purpose, by somebody. It is the one thing here that was built rather than left.",
+  "biome": [
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Man-shaped cage woven from bog willow withies, the weave tight across the chest and loose at the limbs, packed inside with black mud and reed, and a smiling mask of stitched brown hide lashed to the top where a head should be",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "withy_man/rotations/south.webp",
+    "south-east": "withy_man/rotations/south-east.webp",
+    "east": "withy_man/rotations/east.webp",
+    "north-east": "withy_man/rotations/north-east.webp",
+    "north": "withy_man/rotations/north.webp",
+    "north-west": "withy_man/rotations/north-west.webp",
+    "west": "withy_man/rotations/west.webp",
+    "south-west": "withy_man/rotations/south-west.webp"
+  },
+  "sheet": "withy_man/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "45bf2d9a-5bd6-4fa7-a965-f608d8c7216c",
+  "seed": 881028951,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:11:59+00:00",
+  "elapsed_s": 279.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.763,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.763,
+        "bbox": [
+          21,
+          5,
+          98,
+          114
+        ],
+        "fill": 0.583,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.813,
+        "bbox": [
+          42,
+          6,
+          77,
+          115
+        ],
+        "fill": 0.265,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.805,
+        "bbox": [
+          42,
+          6,
+          78,
+          115
+        ],
+        "fill": 0.273,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.793,
+        "bbox": [
+          21,
+          4,
+          99,
+          112
+        ],
+        "fill": 0.585,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.83,
+        "bbox": [
+          27,
+          6,
+          94,
+          116
+        ],
+        "fill": 0.512,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.807,
+        "bbox": [
+          30,
+          4,
+          89,
+          114
+        ],
+        "fill": 0.451,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.802,
+        "bbox": [
+          31,
+          5,
+          89,
+          114
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.835,
+        "bbox": [
+          26,
+          6,
+          92,
+          116
+        ],
+        "fill": 0.504,
+        "touches_edge": false
+      }
+    }
+  }
+}
