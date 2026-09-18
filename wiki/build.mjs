@@ -3443,6 +3443,11 @@ const data = {
     lore: lore ?? [], world: worldCells ?? [],
     monsterCandidates,
   },
+  /* THE STATES A CREATURE OWES, in the monsters domain's own order — the wiki
+   * must not guess what "finished" means. A creature is COMPLETE when every one
+   * of these has a promoted take in all eight directions; one still being
+   * animated has its states only as versions waiting for a winner. */
+  monsterStates: Object.keys(readJson(join(ROOT, "monsters", "animation_map.json"))?.states ?? {}),
   // The tiles agent's own vocabulary and acceptance thresholds.
   worldMeta,
   // The suite/pool/phrase score, for the music bench (see buildBench).

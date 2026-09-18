@@ -97,9 +97,12 @@ const grid = await p.evaluate(() => {
 console.log("grid:", JSON.stringify(grid));
 ok(grid.zooms.length === 1 && Number(grid.zoom) > 0 && Number(grid.zoom) <= 2,
   `every card on the grid is drawn at ONE zoom, never above the game's 2× (${grid.zoom}×)`);
-const ratio = (a) => a.drawn[1] / a.raw[1];
-ok(Math.abs(ratio(grid.small) - ratio(grid.big)) < 0.001 && grid.big.drawn[1] > grid.small.drawn[1] * 2,
-  `so the biggest design really draws bigger than the smallest (${grid.small.raw.join("×")}→${grid.small.drawn.join("×")} vs ${grid.big.raw.join("×")}→${grid.big.drawn.join("×")})`);
+/* Both at the grid's own zoom, to the pixel it rounds to — a ratio comparison
+   fails on rounding alone once a design is a few hundred pixels tall. */
+const z = Number(grid.zoom);
+const atZoom = (a) => Math.abs(a.drawn[1] - a.raw[1] * z) <= 1;
+ok(atZoom(grid.small) && atZoom(grid.big) && grid.big.drawn[1] > grid.small.drawn[1] * 2,
+  `so the biggest design really draws bigger than the smallest, both at ${z}× (${grid.small.raw.join("×")}→${grid.small.drawn.join("×")} vs ${grid.big.raw.join("×")}→${grid.big.drawn.join("×")})`);
 ok((grid.spans["1x1"] ?? 0) > 0 && Object.keys(grid.spans).some((k) => k !== "1x1"),
   `and a bigger design claims more cells (${JSON.stringify(grid.spans)})`);
 ok(!grid.wide, "the overview never scrolls sideways on a 393px phone");

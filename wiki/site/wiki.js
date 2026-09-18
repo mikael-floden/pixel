@@ -4426,12 +4426,31 @@ const MONSTER_SHADOW_KEY = "wiki-monster-shadow";
  * "which creatures", the question every chip in THIS row answers — and the
  * shadow chips are the others. A filter also follows him onto a creature page,
  * which a sort could not: ‹ › then walks only what he filtered to. */
+/** Every state the domain names, each with a promoted take in all 8 directions. */
+const creatureComplete = (m) => {
+  const owed = state.data.monsterStates ?? [];
+  if (!owed.length) return !m.pending;   // an old registry: fall back to the flag
+  return owed.every((st) => Object.keys(m.animations?.[st]?.dirs ?? {}).length === 8);
+};
 const MONSTER_SHADOWS = {
   all: { label: "all", title: "Every creature", hit: () => true },
   making: {
     label: "in the making",
-    title: "Approved designs the monsters agent is still animating — their states arrive one at a time",
+    title: "Approved designs the monsters agent is still animating — every state is a set of versions until one is promoted",
     hit: (m) => !!m.pending,
+  },
+  /* AND THE OTHER HALF (maintainer 2026-09-18: "We have 'in the making' as a
+   * filter, but not complete!"). Complete is measured from the ART, not from a
+   * flag: every state the monsters domain names (`data.monsterStates` — idle,
+   * walk, angry, attack, die) has a PROMOTED take, in all eight directions.
+   * A creature still being animated has those states only as versions waiting
+   * for a winner, which is exactly what "not finished" means here. Today the
+   * split is 57 complete against 39 in the making, and it will move by itself
+   * as the agent promotes. */
+  done: {
+    label: "complete",
+    title: "Every state the game asks for — idle, walk, angry, attack, die — finished in all eight directions",
+    hit: (m) => creatureComplete(m),
   },
   none: {
     label: "no shadow",

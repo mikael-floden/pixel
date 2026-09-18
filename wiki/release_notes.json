@@ -1,421 +1,58 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T10:58:36.401Z",
- "head": "0a24e024c",
+ "generated_at": "2026-09-18T13:20:53.603Z",
+ "head": "54e9c6317",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
   {
-   "sha": "0a24e024c",
-   "at": "2026-09-18T12:43:49+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "f72df22c6",
-   "at": "2026-09-18T12:41:06+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "ceca4fcd1",
-   "at": "2026-09-18T10:36:13+00:00",
+   "sha": "54e9c6317",
+   "at": "2026-09-18T13:19:42+00:00",
    "author": "Claude",
-   "subject": "coordination: his 09-18 order closed; claim released",
-   "agent": "scenery",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b68a11bad",
-   "at": "2026-09-18T10:35:48+00:00",
-   "author": "Claude",
-   "subject": "scenery: ivy_post_005 NOT_LIT_3 south-east — the last facing the wiki could not resolve",
-   "agent": "scenery",
-   "dirs": [
-    "scenery"
-   ],
-   "files": 14
-  },
-  {
-   "sha": "7d06d07b2",
-   "at": "2026-09-18T10:33:55+00:00",
-   "author": "Claude",
-   "subject": "scenery: the new clips get their facings — 147 of 148, every state on every facing but one",
-   "agent": "scenery",
-   "dirs": [
-    "scenery"
-   ],
-   "files": 5172
-  },
-  {
-   "sha": "bfffc8703",
-   "at": "2026-09-18T10:20:57+00:00",
-   "author": "Claude",
-   "subject": "lighting: the torch's pool keeps its 0.6-per-level vertical term — the bridge shadow is back",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "38e910167",
-   "at": "2026-09-18T10:19:31+00:00",
-   "author": "Claude",
-   "subject": "maps2: the rebalance push logged with its change page",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "96ada1a8f",
-   "at": "2026-09-18T10:18:41+00:00",
-   "author": "Claude",
-   "subject": "maps2: the monsters rebalanced — the_game's spawn zones derived by the doctrine (habitats, gradient, budget, crowding law, water law, town sanctuary, caves at their own levels)",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 6
-  },
-  {
-   "sha": "6aae07c97",
-   "at": "2026-09-18T10:13:28+00:00",
-   "author": "Claude",
-   "subject": "board: claim the monster rebalance (spawns.py adapter, the_game spawns.json derived)",
-   "agent": "maps2",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "6e4affaab",
-   "at": "2026-09-18T10:00:16+00:00",
-   "author": "Claude",
-   "subject": "maps2: the north caves push logged with its change page",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "ec4f9447a",
-   "at": "2026-09-18T09:57:36+00:00",
-   "author": "pixel-scenery-bot",
-   "subject": "scenery: pack 3 placed piece(s) — the packed layer follows the worlds",
-   "agent": "scenery",
-   "dirs": [
-    "scenery"
-   ],
-   "files": 40
-  },
-  {
-   "sha": "0ec22eb0c",
-   "at": "2026-09-18T09:57:07+00:00",
-   "author": "Claude",
-   "subject": "maps2: three bigger, themed caves on the north side — Pit VI (rock), Pit VII (ice and lava), Pit VIII (mud and slime) — dug into the shipped world in place",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 10
-  },
-  {
-   "sha": "a06cf4404",
-   "at": "2026-09-18T09:40:41+00:00",
-   "author": "Claude",
-   "subject": "maps2: the yard refit logged with its change page; the wall gap in the spec",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "a6cdd84e6",
-   "at": "2026-09-18T09:39:29+00:00",
-   "author": "Claude",
-   "subject": "maps2: a yard piece keeps a gap from the house wall — 37 stepped back, 3 dropped, re-judged with today's hitboxes (yards --refit)",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "6620929ad",
-   "at": "2026-09-18T11:33:46+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "2f94e93e0",
-   "at": "2026-09-18T11:33:43+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/scenery_hitbox.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "d30462711",
-   "at": "2026-09-18T11:33:01+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "13ad44eb6",
-   "at": "2026-09-18T11:32:57+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/scenery_hitbox.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "4600d484a",
-   "at": "2026-09-18T11:32:14+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/scenery_hitbox.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c92e66203",
-   "at": "2026-09-18T11:32:11+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "9e8119bbe",
-   "at": "2026-09-18T09:31:40+00:00",
-   "author": "Claude",
-   "subject": "maps2: paving follows the house's own wall seven times in ten (95 cells recoloured in place); the law that everything is a weight",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "90a3f1e74",
-   "at": "2026-09-18T09:31:35+00:00",
-   "author": "Claude",
-   "subject": "board: claim three north caves + the weight law (newcaves.py, world/places/spawns/ambient in place)",
-   "agent": "maps2",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "859a06539",
-   "at": "2026-09-18T11:31:31+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b0f5f3838",
-   "at": "2026-09-18T11:31:21+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/scenery_hitbox.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b62391fd9",
-   "at": "2026-09-18T11:30:49+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "12e4b362b",
-   "at": "2026-09-18T11:30:41+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/scenery_hitbox.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "4828e84a4",
-   "at": "2026-09-18T11:28:31+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "ac5f95c64",
-   "at": "2026-09-18T11:28:28+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "273e235ad",
-   "at": "2026-09-18T09:27:46+00:00",
-   "author": "Claude",
-   "subject": "scenery: 242 never-animated states get their clip — south first; the facings follow",
-   "agent": "scenery",
-   "dirs": [
-    "scenery"
-   ],
-   "files": 3987
-  },
-  {
-   "sha": "93e360393",
-   "at": "2026-09-18T11:26:15+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b76199416",
-   "at": "2026-09-18T11:26:05+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "342a8e9f2",
-   "at": "2026-09-18T09:23:15+00:00",
-   "author": "Claude",
-   "subject": "monsters: angry_v1 requal + the Angry rules — the fifth state exists for all 39 (312/312, 0 fail, $5)",
+   "subject": "monsters: review ingest and redo landings",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 42
+   "files": 1
   },
   {
-   "sha": "0e839cdea",
-   "at": "2026-09-18T09:20:49+00:00",
+   "sha": "6b3dd2cff",
+   "at": "2026-09-18T13:18:56+00:00",
    "author": "Claude",
-   "subject": "monsters: angry_v1 round 1 landings",
+   "subject": "monsters: drop the 39 first-batch candidates he rejected in the wiki",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 540
+   "files": 11
   },
   {
-   "sha": "1efd9765b",
-   "at": "2026-09-18T09:12:12+00:00",
+   "sha": "870652675",
+   "at": "2026-09-18T13:17:33+00:00",
    "author": "Claude",
-   "subject": "monsters: angry_v1 checkpoint — 27 of 39 landed mid-round (1275 paths)",
+   "subject": "monsters: candidates v2 landings (161 candidate folders on disk)",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 1275
+   "files": 422
   },
   {
-   "sha": "d15aeff24",
-   "at": "2026-09-18T08:51:15+00:00",
+   "sha": "3c552beb5",
+   "at": "2026-09-18T13:14:27+00:00",
    "author": "Claude",
-   "subject": "monsters: the angry state — the idle recipe with the temper up (maintainer: 'Yes it reads as angry!')",
+   "subject": "monsters: candidates v2 landings (200 candidate folders on disk)",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 100
+   "files": 101
   },
   {
-   "sha": "0494a479d",
-   "at": "2026-09-18T08:37:47+00:00",
-   "author": "Claude",
-   "subject": "games2: the position label is one line — `col, row, level`, no world name",
-   "agent": "games",
-   "dirs": [
-    "games2"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "2c1f08b00",
-   "at": "2026-09-18T08:30:37+00:00",
-   "author": "Claude",
-   "subject": "lighting: the flame is not a searchlight — a torch on the bridge pools on nothing four levels below; the teleport probe lands on a deck",
-   "agent": "games",
-   "dirs": [
-    "games2"
-   ],
-   "files": 5
-  },
-  {
-   "sha": "9aac21af1",
-   "at": "2026-09-18T10:28:53+02:00",
+   "sha": "20f99caa7",
+   "at": "2026-09-18T15:13:42+02:00",
    "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
+   "subject": "live: admin update — feedback/tiles.json",
    "agent": null,
    "dirs": [
     "live"
@@ -423,30 +60,19 @@
    "files": 1
   },
   {
-   "sha": "b922683ef",
-   "at": "2026-09-18T08:27:26+00:00",
+   "sha": "7bbe01805",
+   "at": "2026-09-18T13:11:23+00:00",
    "author": "Claude",
-   "subject": "games-ui board: release",
-   "agent": "games-ui",
+   "subject": "monsters: candidates v2 round 1 landings",
+   "agent": "monsters",
    "dirs": [
-    "coordination"
+    "monsters"
    ],
-   "files": 1
+   "files": 11
   },
   {
-   "sha": "924d5e398",
-   "at": "2026-09-18T08:27:23+00:00",
-   "author": "Claude",
-   "subject": "games2: no fullscreen request, ever — and the cutout band is on the select screen too",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "fc593552d",
-   "at": "2026-09-18T10:27:15+02:00",
+   "sha": "5ed798edb",
+   "at": "2026-09-18T15:10:06+02:00",
    "author": "Mikael Flodén",
    "subject": "live: admin update — feedback/monsters.json",
    "agent": null,
@@ -456,103 +82,477 @@
    "files": 1
   },
   {
-   "sha": "bd4fed093",
-   "at": "2026-09-18T08:25:52+00:00",
+   "sha": "263cb58d3",
+   "at": "2026-09-18T13:08:18+00:00",
    "author": "Claude",
-   "subject": "games-ui board: claim the fullscreen revert + select-screen band; retract the band-removal request to games",
-   "agent": "games-ui",
+   "subject": "monsters: candidates v2 landings (199 candidate folders on disk)",
+   "agent": "monsters",
    "dirs": [
-    "coordination"
+    "monsters"
+   ],
+   "files": 31
+  },
+  {
+   "sha": "2d366e7b3",
+   "at": "2026-09-18T15:08:11+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
    ],
    "files": 1
   },
   {
-   "sha": "f21c230f0",
-   "at": "2026-09-18T08:24:50+00:00",
-   "author": "Claude",
-   "subject": "games2: a third ambient mode, NONE — every effect off, and it survives a reload",
-   "agent": "games2",
+   "sha": "ab66f7eee",
+   "at": "2026-09-18T15:06:42+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
    "dirs": [
-    "games2"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "88beaced8",
-   "at": "2026-09-18T08:19:04+00:00",
-   "author": "Claude",
-   "subject": "maps2: the yards push logged with its change page",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
+    "live"
    ],
    "files": 1
   },
   {
-   "sha": "4ec01be22",
-   "at": "2026-09-18T08:18:55+00:00",
-   "author": "pixel-scenery-bot",
-   "subject": "scenery: pack 7 placed piece(s) — the packed layer follows the worlds",
-   "agent": "scenery",
+   "sha": "9e89e8eae",
+   "at": "2026-09-18T15:06:20+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
    "dirs": [
-    "scenery"
-   ],
-   "files": 88
-  },
-  {
-   "sha": "867eab8c2",
-   "at": "2026-09-18T08:18:24+00:00",
-   "author": "Claude",
-   "subject": "maps2: somebody lives here — paving aprons, a way to the road, gardens and yards round every house (yards.py, in place)",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 6
-  },
-  {
-   "sha": "4ae08bb4f",
-   "at": "2026-09-18T08:15:02+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: claim the ambient NONE mode",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
+    "live"
    ],
    "files": 1
   },
   {
-   "sha": "6052c39f0",
-   "at": "2026-09-18T08:10:21+00:00",
+   "sha": "85b05cb44",
+   "at": "2026-09-18T13:05:09+00:00",
    "author": "Claude",
-   "subject": "board: claim the house yards unit (yards.py, world.json in place)",
-   "agent": "maps2",
+   "subject": "monsters: candidates v2 landings (196 candidate folders on disk)",
+   "agent": "monsters",
    "dirs": [
-    "coordination"
+    "monsters"
+   ],
+   "files": 31
+  },
+  {
+   "sha": "0ce8553e3",
+   "at": "2026-09-18T15:04:38+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
    ],
    "files": 1
   },
   {
-   "sha": "22cb627ca",
-   "at": "2026-09-18T08:08:08+00:00",
-   "author": "Claude",
-   "subject": "tiles3: every raised transition tile carries the one-row margin — the lower edges no longer jitter with the camera's phase",
-   "agent": "games",
+   "sha": "4a3dc7380",
+   "at": "2026-09-18T15:04:20+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
    "dirs": [
-    "games2"
-   ],
-   "files": 4
-  },
-  {
-   "sha": "7cec92903",
-   "at": "2026-09-18T08:07:06+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: release the fullscreen claim; the top-band verdict to games",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
+    "live"
    ],
    "files": 1
+  },
+  {
+   "sha": "0fdead29c",
+   "at": "2026-09-18T15:03:57+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "bfa2fec74",
+   "at": "2026-09-18T15:02:25+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "342983bc7",
+   "at": "2026-09-18T13:02:00+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (193 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 41
+  },
+  {
+   "sha": "43444dae1",
+   "at": "2026-09-18T15:00:51+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "9ef5b089b",
+   "at": "2026-09-18T14:59:21+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "514106053",
+   "at": "2026-09-18T12:58:52+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (189 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 41
+  },
+  {
+   "sha": "a74330f91",
+   "at": "2026-09-18T14:57:41+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "9d577aee6",
+   "at": "2026-09-18T14:56:06+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "3e6d90fd4",
+   "at": "2026-09-18T12:55:44+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (185 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 31
+  },
+  {
+   "sha": "bf96be2f7",
+   "at": "2026-09-18T14:54:26+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "0d4629795",
+   "at": "2026-09-18T14:52:48+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "d1de5702f",
+   "at": "2026-09-18T12:52:36+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (182 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 41
+  },
+  {
+   "sha": "35d8f5073",
+   "at": "2026-09-18T14:50:42+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "119be0c97",
+   "at": "2026-09-18T12:49:28+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (178 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 31
+  },
+  {
+   "sha": "e2c96df70",
+   "at": "2026-09-18T14:48:31+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ed47ead9f",
+   "at": "2026-09-18T12:46:20+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (175 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 41
+  },
+  {
+   "sha": "8f9e5f193",
+   "at": "2026-09-18T14:46:06+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "456601b3b",
+   "at": "2026-09-18T14:44:10+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "4556147ff",
+   "at": "2026-09-18T14:43:37+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "760834bc5",
+   "at": "2026-09-18T12:43:13+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (171 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 21
+  },
+  {
+   "sha": "c43359aaf",
+   "at": "2026-09-18T14:42:50+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ad040dde7",
+   "at": "2026-09-18T12:41:21+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (169 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 11
+  },
+  {
+   "sha": "94d257289",
+   "at": "2026-09-18T12:40:05+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (168 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 31
+  },
+  {
+   "sha": "ad84335f3",
+   "at": "2026-09-18T14:38:59+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8632806ee",
+   "at": "2026-09-18T14:38:47+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a184de928",
+   "at": "2026-09-18T14:38:06+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "76cfa8b87",
+   "at": "2026-09-18T12:36:56+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (165 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 51
+  },
+  {
+   "sha": "3a4fd7494",
+   "at": "2026-09-18T14:35:14+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "52dbfb47a",
+   "at": "2026-09-18T12:33:48+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (160 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 41
+  },
+  {
+   "sha": "1bcd67b96",
+   "at": "2026-09-18T14:33:37+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "032c8d68f",
+   "at": "2026-09-18T14:33:24+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c92cd5d14",
+   "at": "2026-09-18T12:30:40+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (156 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 21
+  },
+  {
+   "sha": "bd34a344e",
+   "at": "2026-09-18T12:27:33+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (154 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 31
+  },
+  {
+   "sha": "4f9e1489a",
+   "at": "2026-09-18T12:24:27+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (151 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 41
+  },
+  {
+   "sha": "74d0ffc49",
+   "at": "2026-09-18T12:21:21+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (147 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 31
+  },
+  {
+   "sha": "30a005cd1",
+   "at": "2026-09-18T12:21:21+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (144 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 41
   }
  ]
 }

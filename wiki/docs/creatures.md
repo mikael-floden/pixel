@@ -399,6 +399,16 @@ row called Light on an unlit state, a three-chip animation radio, no control
 smaller than the page's others).
 ## "Which ones have I already done?" — the shadow queue
 
+COMPLETE IS MEASURED FROM THE ART, never from a flag (maintainer 2026-09-18:
+"We have 'in the making' as a filter, but not complete!"). A creature is
+complete when every state the monsters domain names — `data.monsterStates`,
+published by `build.mjs` from `animation_map.json`: idle, walk, angry, attack,
+die — has a PROMOTED take in all eight directions. One still being animated has
+those states only as versions waiting for a winner, which is exactly what
+unfinished means here. Measured today: 57 complete against 39 in the making,
+and the split moves by itself as the agent promotes. NOT `!pending`: that is
+the same number today and would go on being right for the wrong reason.
+
 ONE FILTER ROW, ONE SORT ROW, and "in the making" belongs to the FILTER one
 (maintainer 2026-09-10: "If I press in the making you still say 'all 94'. With
 that filter it can't be 94."). It was a sort chip in the row above, so pressing
