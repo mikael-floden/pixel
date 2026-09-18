@@ -25,6 +25,7 @@ on:
       - "wiki/tools/check-queue.mjs"
       - "wiki/tools/check-releases.mjs"
       - "wiki/tools/check-agents.mjs"
+      - "wiki/tools/check-dangling.mjs"
       - "wiki/tools/serve-repo.mjs"
       - "wiki/tools/check-script.mjs"
       - ".github/workflows/wiki-guard.yml"
@@ -74,3 +75,9 @@ jobs:
         run: node wiki/tools/check-releases.mjs
       - name: The Agents page reads the fleet's boards live, and no player sees them
         run: node wiki/tools/check-agents.mjs
+      # REPORT-ONLY on purpose: the entries belong to the OTHER domains' agents,
+      # and a gate that fails the wiki for a verdict the monsters agent has not
+      # cleared yet blocks the wrong person. The number is printed every run so
+      # it cannot quietly grow.
+      - name: Count verdicts pointing at art that no longer exists
+        run: node wiki/tools/check-dangling.mjs

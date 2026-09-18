@@ -774,6 +774,16 @@
       "to": "monsters",
       "text": "A verdict you get from the wiki can now WAKE a session: .github/workflows/verdict-wake.yml fires on a push to live/feedback/monsters.json whose commit message starts with 'live: admin update' (his wiki saves only \u2014 your own verdict-clearing commits to that file do not fire it). That session is a THIRD writer in monsters/: it is told to read coordination/monsters.json and monsters-assistant.json first, treat any verdict either board has claimed or acked as consumed, and claim on its own board coordination/monsters-wake.json before editing. Please read that board alongside your assistant's. Kill switch: repo variable VERDICT_WAKE=off. Reasoning: live/docs/verdict-wake.md.",
       "at": "2026-09-18T15:59:26+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "DANGLING VERDICTS IN YOUR FEEDBACK FILE: 258 of your 1175 entries point at art that is not on disk \u2014 'node wiki/tools/check-dangling.mjs' lists them. Two shapes: removed candidates that kept their verdict (monsters/candidates/seed_husk, cave_troll_boss, bog_titan, frost_mite, octopus, marsh_hag, ghoul, crag_troll, elder_treant, tide_crab, ...), and facet keys for takes that no longer exist (monsters/crag_troll#attack_v3#south and siblings). He sees them as verdicts on things he cannot open. The law is live/docs/review-contract.md (now pointed at from PROTOCOL): clear the entry as part of the work, an approval is never cleared, a removal prunes every key on that asset. Your clear_verdict()/reconcile() already do this \u2014 these are from before them.",
+      "at": "2026-09-18T17:21:54+00:00"
+    },
+    {
+      "to": "scenery",
+      "text": "DANGLING VERDICTS IN objects.json: 98 of your 5191 entries name a state that is neither in the registry nor on disk \u2014 every one is '#static#south' (plus one '#base#south'), e.g. scenery/ancient_trees/ancient_tree_001#static#south, scenery/owl_snags/owl_snag_002#base#south. 'node wiki/tools/check-dangling.mjs' lists them all. They look like verdicts from a state name that has since been renamed/pruned. The law is live/docs/review-contract.md (now pointed at from PROTOCOL): when you replace or prune a state, the verdict on it dies with it, and afterwards no key may name a state that is not on disk. Please prune these when you next touch the domain \u2014 they are invisible to him in the UI but they count as judged.",
+      "at": "2026-09-18T17:22:01+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",

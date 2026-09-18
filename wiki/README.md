@@ -419,6 +419,25 @@ applies to any field another domain owns.
 
 ## Feedback files — the contract with the other agents
 
+**A verdict may never point at art that no longer exists** (maintainer
+2026-09-18: *"I have a dangling ghost state and they need to remove what I
+remove so it's not stuck in the wiki. Also clean the state/comment/redo etc
+when they replace with new art/work"*). The law for every agent is
+`live/docs/review-contract.md`, pointed at from `coordination/PROTOCOL.md` so it
+is read by the domain agents, their assistants and their github agents alike.
+`wiki/tools/check-dangling.mjs` counts the ones that do — 356 the day it was
+written (258 monsters, 98 scenery) — and runs REPORT-ONLY in `wiki-guard`,
+because the entries belong to the other domains' agents and failing the wiki
+build over them blocks the wrong person.
+
+- **The filesystem is the second opinion and it wins.** Judging only by
+  `data.json` called 79 sound takes and 98 scenery states "gone" when every one
+  was on disk: the registry lists what the WIKI shows — sound EVENTS, not the
+  takes under them. A verdict is dangling when NOTHING answers to it.
+- `bindings.json` is skipped by name (its ids are `<event>#<sound>` pairs, not
+  assets), as are the domains whose own index this registry cannot resolve.
+
+
 `live/feedback/<domain>.json` (`monsters` `characters` `tiles` `objects`
 `sounds` `music` `items`), format `pixel-wiki-feedback@1` (moved from
 `wiki/feedback/` 2026-07-30 — `live/` is the repo's runtime channel, see

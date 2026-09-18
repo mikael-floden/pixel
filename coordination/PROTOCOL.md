@@ -48,7 +48,13 @@ maintainer-authorized surgical edits announced on the board.
 `live/` is not an agent: the running game server reads it **straight from
 GitHub `main`** (tuning overrides + the maintainer's per-domain feedback).
 **Every art agent reads `live/feedback/<domain>.json` at run start and acts on
-the verdicts** — contract in `live/README.md`.
+the verdicts** — contract in `live/README.md`, and **how to act on one without
+leaving a ghost behind is `live/docs/review-contract.md`**: a verdict describes
+ONE generation of the art, so the entry dies as part of the work; an approval is
+never cleared; a removal takes the art, the index entry, the upstream record AND
+every verdict keyed on it; and afterwards no key may name a path, state or
+direction that is not on disk (`node wiki/tools/check-dangling.mjs` counts the
+ones that do). Binding on every agent, its assistant and its github agent.
 
 RETIRED 2026-07-14: the first generation (`characters/`, `maps/`, `games/`,
 old `tiles/`) — history in git. The `tiles/` name was later reused for
