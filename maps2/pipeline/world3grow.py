@@ -5495,12 +5495,24 @@ class Grow:
 
     def _lay_rug(self, cells, r, pk, on):
         """One rug, as near the middle as the room allows - in the rooms that
-        draw one at all."""
+        draw one at all. A RUG NEVER TOUCHES A WALL (maintainer 2026-09-18;
+        rugfit.py holds the test and moves a shipped world's rugs): its drawn
+        art, three cells tall up-screen of its anchor, must meet no wall
+        cell's cut-away and lie over this room's floor only, so each spot is
+        tried on the quarter-cell lattice before the footprint law sees it."""
+        import rugfit
         if r() >= self.RUG_IN_ROOM:
             return 0
+        piece = pk("rugs_and_hides")
+        floor = set(cells)
         for (x, y) in self._rug_spots(cells, r)[:16]:
-            if self.put(pk("rugs_and_hides"), x + 0.5, y + 0.5, on=on):
-                return 1
+            for ox, oy in ((0.5, 0.5), (0.5, 0.75), (0.75, 0.5), (0.75, 0.75),
+                           (0.25, 0.5), (0.5, 0.25), (0.25, 0.25)):
+                if not rugfit.clear(self, piece, x + ox, y + oy, floor):
+                    continue
+                if self.put(piece, x + ox, y + oy, on=on):
+                    return 1
+                break                        # occupied: the next cell, not the next offset
         return 0
 
     def interiors(self):

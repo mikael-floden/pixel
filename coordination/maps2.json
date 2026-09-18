@@ -1,7 +1,7 @@
 {
  "domain": "maps2",
  "health": "running",
- "current": "CLAIMED 2026-09-18: A RUG NEVER TOUCHES A WALL (his screenshot at 308.0,228.7, the bear rug at 307.67,229.66 against the room's wall). Files: maps2/pipeline/rugfit.py (new: the drawn rug must lie on floor only, clear of every wall cell's top and face; --check/--apply), maps2/pipeline/world3grow.py (_lay_rug uses the same test), maps2/worlds3/the_game/world.json (rugs moved in place, never a rebuild), spec/WORLD3.md (a paragraph), README.md (one bullet), reports/the_game.json.",
+ "current": "IDLE. Shipped: a rug never touches a wall (rugfit.py, _lay_rug, 4 rugs moved in place). Released every file.",
  "owner": "Map2 agent",
  "notes": [
   "the_island2 (islandworld2.py, n=200 seed=21): the HYBRID map. UPPER = the_island's mountain verbatim (Island subclass), strictly antitone via camera_monotone MASKED to the mountain (autotile.camera_monotone_masked), floored at level 14 so its whole front is a sheer foot the lower world runs into. LOWER = a genuine-relief MAZE (levels go up AND down — a strictly-antitone field can only make ONE connected lowest sheet, so a maze MUST use relief). Legal WITHOUT flattening it via the WALL-MATERIAL RULE: same-material toward-camera up-steps get their higher rim recoloured to a wall material (stone/obsidian, level-band parity so stacked cliffs never repeat a material) — Pass A `_wall_rim` (vectorised) + Pass B `_lip_cover` (iterated, MAT-ONLY so it can never undo connectivity or open a pit). Seam is legal by construction (mtn foot 14 > maze top 10, mtn entirely up-screen). Connectivity/no-pits/bridges REUSE the_island's machinery (_connect_all/_fill_traps/_place_bridges); reachability proof is PROP-AWARE (worldio sets collision=1 on props, so dense props are walls). All hard-asserted every build: occlusion==0, traps==0, maze_land>=1.6*mtn_land, prop-aware reachable == terrain reachable, main piece>=97% of land, every bridge row both-bank-walkable, max level>=30.",
@@ -336,5 +336,5 @@
    "at": "2026-09-18T03:10:21+00:00"
   }
  ],
- "updated_at": "2026-09-18T04:58:27.389981+00:00"
+ "updated_at": "2026-09-18T05:02:56.723900+00:00"
 }

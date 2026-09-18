@@ -480,6 +480,11 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   successor for a re-rolled slot. (Without it: chimney_002 stood dangling
   three days, cupboard_004 in August longer — the game tombstones the 404
   and draws nothing, render3 dies mid-render, games2's gate goes red.)
+- `rugfit.py` — **a rug never touches a wall** (maintainer 2026-09-18): its
+  drawn art against each wall cell's cut-away hexagon and its own room's
+  floor (`spec/WORLD3.md` → a rug never touches a wall). `--check`, `--apply
+  <world_dir>` slides a touching rug to the nearest clear quarter-cell spot;
+  `_lay_rug` asks the same test at build.
 - `hangfit.py` — a wall hanging is not hung behind the furniture, judged on
   the DRAWN art rather than the footprint (`spec/WORLD3.md` → a hanging is not
   hung behind the furniture). `--apply <world_dir>` slides the covered ones

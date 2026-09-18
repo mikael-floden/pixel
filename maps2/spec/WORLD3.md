@@ -993,6 +993,26 @@ is the SAME rule the build and the in-place pass use.
   `lights()` lights the indoor fires right after the plaza's lamps and before
   the rest of the town's, which is the build-side half of the same trade.
 
+### a rug never touches a wall
+
+**A rug's drawn art lies over its room's floor only and meets no wall cell's
+cut-away** (maintainer 2026-09-18, on the village house's bear rug drawn over
+the wall beside it: "The carpet should never intersect any wall! It's ok to
+place it under a furniture like a table etc, but it should not touch the
+wall!"). A rug is flat (`collision` false), stamps no footprint and so escaped
+the footprint law; its art is anchored bottom-centre at its point like every
+piece and lies UP-SCREEN of it by its whole drawn height — three cells of
+x+y for the bear — so a rug laid one cell from a wall reached it. The test
+(`rugfit.clear`, the same in `_lay_rug` and in `rugfit.py --apply` for a
+world that ships): the rug's rectangle (`_art_rect`, the game's size) against
+one convex hexagon per raised cell — its ground diamond swept up one storey
+(INDOOR_WALL_DEFAULT, 15 px) to the cut-away's top — and against the ground
+diamond of every cell that is not this room's floor; one pixel of contact
+counts. Spots are tried on a quarter-cell lattice, the middle still the
+weight; a rug that touches slides to the nearest clear spot and a room with
+none loses it. Under furniture is allowed: the scene draws a flat piece under
+whatever stands on it. (Measured on the_game: 4 of 8 rugs touched a wall.)
+
 ### scenery ON a roof — the chimney over the fire
 
 **A chimney is placed for every open fire indoors, at that fire's own `x`/`y`,
