@@ -23,6 +23,7 @@ import base64
 import io
 import json
 import os
+import re
 import sys
 import threading
 import time
@@ -80,7 +81,38 @@ def load_bases():
                                               f"{src}__over__{src}", "*", "meta.json")))
         if metas:
             bases[m] = json.load(open(metas[0]))["tile_id"]
+    if not bases:
+        bases = _bases_from_registry()
     return bases
+
+
+def _bases_from_registry():
+    """THE MATRIX IS A CACHE; tiles/generated.json IS THE MASTER COPY (restore.py says
+    so and proves it). tiles/matrix/ is gitignored, so on a fresh container load_bases()
+    found nothing and every new tileset would have been generated UNCONDITIONED - art in
+    PixelLab's own idea of "lush green grass" rather than beside the 284 sets already in
+    the tree. The registry records a tile_id and a purpose for everything ever paid for,
+    so the self-pair base of each material is recoverable without a download."""
+    reg = os.path.join(REPO, "tiles", "generated.json")
+    if not os.path.isfile(reg):
+        return {}
+    try:
+        items = json.load(open(reg))
+    except (OSError, ValueError):
+        return {}
+    items = items.get("items", items)
+    best = {}
+    for tid, v in items.items():
+        if not isinstance(v, dict):
+            continue
+        m = re.match(r"matrix:([a-z_]+)_over_([a-z_]+)$", str(v.get("purpose") or ""))
+        if not m or m.group(1) != m.group(2):
+            continue
+        mat, when = m.group(1), str(v.get("created") or "")
+        # the OLDEST generation, which is the sheet load_bases()'s sorted(glob)[0] picks
+        if mat not in best or when < best[mat][0]:
+            best[mat] = (when, tid)
+    return {k: v[1] for k, v in best.items()}
 
 
 def pairs():
@@ -301,9 +333,15 @@ if __name__ == "__main__":
     ap.add_argument("--concurrency", type=int, default=4)
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--pair", default=None)
+    ap.add_argument("--raggedness", type=int, nargs="*", default=None,
+                    help="override the raggedness ladder (default 5 11 17 23) - more "
+                         "steps is how ONE pair gets more sets, since the seed is "
+                         "derived from (pair, raggedness) and cannot be varied")
     ap.add_argument("--plan", action="store_true")
     ap.add_argument("--recover", action="store_true")
     a = ap.parse_args()
+    if a.raggedness:
+        globals()["RAGGEDNESS"] = list(a.raggedness)
     if a.recover:
         got = recover()
         print(f"recovered {len(got)} paid-for sets without generating")

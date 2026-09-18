@@ -133,11 +133,29 @@ def plan(only=None, pairs=None, phrasing=DEFAULT_PHRASING, reps=1):
 
 
 def is_complete(d):
-    return len(glob.glob(os.path.join(REPO, d, "tile_*.webp"))) == 16
+    """A sheet with a meta.json is DONE, whatever its tile count.
+
+    NOT "has 16 tiles" (measured 2026-09-18, caught one sheet in): a fade tile the
+    maintainer rejects is DELETED from git by the review pass, so 1,188 of the 1,680
+    sheets on disk hold fewer than 16 files. Counting tiles read every one of them as an
+    unfinished run, and a re-run then regenerated the sheet OVER the survivors - new
+    bytes under `tile_NN.webp`, a stable published name. That is the cache law's exact
+    prohibition, and worse here: his verdicts are keyed by that path, so an approval he
+    gave the old art would silently transfer to art he has never seen. A missing tile
+    means HE REMOVED IT, not that the sheet wants finishing.
+    """
+    return os.path.isfile(os.path.join(REPO, d, "meta.json"))
 
 
 def write_sheet(job, images, tile_id):
     d = os.path.join(REPO, job["dir"])
+    # NEVER WRITE INTO A SHEET THAT EXISTS. Variety comes from a new `rep`, which is a
+    # new directory; overwriting one is how published bytes change under a published
+    # name. is_complete() already skips these - this is the guard that makes it a rule
+    # rather than a convention, for any future caller that plans its own jobs.
+    if os.path.isfile(os.path.join(d, "meta.json")):
+        raise RuntimeError(f"{job['dir']} already exists - generate a new rep, never "
+                           f"rewrite a published sheet")
     os.makedirs(d, exist_ok=True)
     names = []
     for i, im in enumerate(images):
