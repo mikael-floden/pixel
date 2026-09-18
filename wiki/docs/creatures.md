@@ -249,24 +249,21 @@ verdict comes BEFORE the five states are spent on it.
   the twin the generator gets wrong (a SE drawn as SW) is the next picture
   down, or beside it when two fit. The verdict row sits UNDER the pictures,
   where his thumb is after reading them. ‹ › walks the current chip's list.
-- **TRUE SIZE ALWAYS — the BOX gets bigger, never the creature** (maintainer
-  2026-09-10, on a grub scaled 11× to fill the screen: "11x zoom? WTF. I want
-  to see it in the true size always! You just had todo the preview bigger and
-  centered the monster!"). One zoom for every candidate, from the same ladder
-  the overview uses — the largest of `2 · 1.5 · 1 · 0.75 · 0.5` at which the
-  LARGEST canvas in the whole set fits the measured column (1.5× on a 393px
-  phone) — and an IDENTICAL box on every design, its side that largest canvas
-  at that zoom. A 32px grub is then 48px of art centred in the 360px box a
-  240px warden fills edge to edge. Both per-design zooms are rejected and both
-  were shipped and rejected by him: a fixed 1×/2×/3× ladder made the grub a
-  64px stamp, and fitting each design to the column made it an 11× monster
-  bigger on screen than the warden. The chips are the CREATURE PAGE'S OWN — `same`
-  (default) `1×` `2×` `4×`, where "same" means there what it means here, every
-  design at one scale so sizes compare between pages (maintainer 2026-09-10:
-  "See how monsters is displayed on their details page. I think we have 1x 2x
-  or 4x"). The chip is remembered (`wiki-cand-zoom`), and the steps are an
-  ARRAY: integer-like object keys sort to the front and put "same" last. Magnifying grows the CREATURE, not the box: the box stops at the
-  column and a magnified big design scrolls inside it, the preview-stage rule.
+- **1× 2× 4×, 2× TO BEGIN WITH, AND IT REMEMBERS** (maintainer 2026-09-18:
+  *"that 'same' option is confusing as hell. Let's just keep 1x, 2x and 4x and
+  on all preview pages and make 2x the default and save what I change to in
+  localStorage. No more 'same' bullshit."*). `ZOOMS = [1, 2, 4]`, `zoomPref()`
+  and `rememberZoom()` are shared by every preview page — the creature viewer,
+  the scenery viewer and this one — so a zoom picked anywhere is the zoom the
+  next page opens at (`wiki-zoom`).
+  - "same" drew every piece at ONE shared scale so sizes compared between
+    pages, and the number behind it moved as the art grew: it was 2× and became
+    1× the day the designs got bigger, which is what made him ask what it meant.
+    A multiple of the art's own pixels cannot drift like that.
+  - The box on this page is still identical on every design — the largest
+    canvas in the set at the current zoom, capped at the column — so a 32px
+    grub is 64px of art centred in the box a 240px warden fills. Magnifying
+    grows the creature; a big design scrolls inside its box.
 - **The label sits UNDER its facing.** Floating it on the art covered a small
   design completely, and the art is the thing being judged.
 - **ONE ZOOM FOR THE WHOLE GRID, and the card is what varies** (maintainer
@@ -564,11 +561,16 @@ in 78×48 and 48×48 frames. Scaling by frame size therefore rendered them
 (maintainer 2026-07-30; the flaw shipped in the first version of the site).
 
 `build.mjs` measures the union of opaque pixels for every clip (decoding the
-WebP itself — `wiki/lib/webp-pixels.mjs`), and picks one `scale` for the
-whole roster (so the view a page OPENS on — idle facing south — fits a 300px
-stage). It folds the per-clip box in as `clip.bb` and publishes
-`data.artScale`; the viewer crops the padding and draws everyone at that one
-scale. Same creature ⇒ same size on screen; bigger creature ⇒ bigger.
+WebP itself — `wiki/lib/webp-pixels.mjs`) and folds the per-clip box in as
+`clip.bb`; the viewer crops that padding and draws at the reader's zoom.
+Same creature ⇒ same size on screen; bigger creature ⇒ bigger.
+
+The zoom is his: `1× 2× 4×`, 2× to begin with, remembered across every preview
+page (`wiki-zoom`) — see the zoom rule above. It replaced a "same" chip that
+drew everything at one computed `data.artScale`, which the build still
+publishes for the showcase grids; on a preview page that number moved as the
+art grew (2× one week, 1× the next) and meant nothing he could read
+(maintainer 2026-09-18).
 
 The crop is **per clip**, never per entity: a creature sits at different
 offsets in each direction, so an entity-wide union spans that drift and stops

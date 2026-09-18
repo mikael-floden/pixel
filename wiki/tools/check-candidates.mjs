@@ -133,7 +133,7 @@ const det = await p.evaluate(() => {
       return { w: Math.round(ir?.width ?? 0), over: !!(ir && cr) && !(cr.top >= ir.bottom - 0.5 || cr.bottom <= ir.top + 0.5), capH: Math.round(cr?.height ?? 0),
         box: Math.round(shot?.getBoundingClientRect().width ?? 0),
         room: col ? Math.round(col.clientWidth - parseFloat(ccs.paddingLeft) - parseFloat(ccs.paddingRight)) : 0,
-        z: Number(document.querySelector(".cand-zoom button.on")?.title.match(/at ([\d.]+)×/)?.[1] ?? 0) };
+        z: Number(document.querySelector(".cand-zoom button.on")?.dataset.zoom ?? 0) };
     })(),
     zooms: [...document.querySelectorAll(".cand-zoom button")].map((b) => b.textContent.trim() + (b.classList.contains("on") ? "*" : "")),
     size: (() => { const t = document.querySelector("p.muted")?.textContent.match(/(\d+)px/); return t ? Number(t[1]) : 0; })(),
@@ -146,12 +146,15 @@ ok(det.n === 8 && det.loaded === 8, `all 8 facings are on the page and loaded ($
 ok(det.cols === "2" ? det.rows === 4 : det.rows === 8, `mirror pairs side by side when two fit, stacked when they don't (${det.cols} column(s), ${det.rows} rows, ${det.w}px each)`);
 ok(det.dirs.join(",") === "south,north,east,west,south-east,south-west,north-east,north-west", `in mirror-pair order (${det.dirs.join(" ")})`);
 ok(!det.wide, "the facings never poke past a 393px phone");
-ok(det.zooms.map((x) => x.replace("*", "")).join(" ") === "same 1× 2× 4×",
-  `the zoom chips are the creature page's own — same 1× 2× 4×, "same" selected (${det.zooms.join(" ")})`);
+// ONE ZOOM VOCABULARY, EVERYWHERE (maintainer 2026-09-18: "that 'same' option
+// is confusing as hell. Let's just keep 1x, 2x and 4x ... and make 2x the
+// default and save what I change to in localStorage").
+ok(det.zooms.map((x) => x.replace("*", "")).join(" ") === "1× 2× 4×" && det.zooms.includes("2×*"),
+  `the zoom chips are 1× 2× 4× with 2× to begin with (${det.zooms.join(" ")})`);
 ok(det.shot.box >= 200 && det.shot.box <= det.shot.room + 1,
   `the facing box is big and never wider than the column (${det.shot.box}px in ${det.shot.room}px, zooms ${det.zooms.join(" ")})`);
-ok(Math.abs(det.shot.w / det.size - det.shot.z) < 0.001,
-  `and the creature is drawn at the page's ONE true zoom, never fitted to its box (${det.size}px canvas → ${det.shot.w}px at ${det.shot.z}×)`);
+ok(det.shot.w === det.size * 2,
+  `and the creature is drawn at that zoom, never fitted to its box (${det.size}px canvas → ${det.shot.w}px at 2×)`);
 ok(!det.shot.over && det.shot.capH > 0 && det.shot.capH < 30, `and its label sits UNDER the art, one line, never over it (${det.shot.capH}px)`);
 ok(det.buttons.length === 3 && /approve/.test(det.buttons[0]) && /remove/.test(det.buttons[1]) && /redo/.test(det.buttons[2]), `approve / remove / redo on the row (${det.buttons.join(" | ")})`);
 if (shot) await p.screenshot({ path: `${shot}/cand-detail.png` });
@@ -281,8 +284,11 @@ if (pend.length) {
   // versions (and review/rate all parallel versions)").
   const withTakes = DATA_M.find((m) => Object.values(m.animations ?? {}).some((a) => a.takeOf));
   if (withTakes) {
-    const slots = Object.entries(withTakes.animations).filter(([, a]) => a.takeOf);
-    const base = slots[0][1].takeOf;
+    // ONE state's takes — a creature can have versions of several states now
+    // (attack_v1..v3 AND die_v1), and the row under a state shows only its own.
+    const allSlots = Object.entries(withTakes.animations).filter(([, a]) => a.takeOf);
+    const base = allSlots[0][1].takeOf;
+    const slots = allSlots.filter(([, a]) => a.takeOf === base);
     // Page inside the in-the-making list: those are the creatures with takes,
     // and ‹ › walks the filter he is in.
     await p.evaluate(() => { location.hash = "#/monsters"; });

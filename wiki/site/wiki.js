@@ -1710,6 +1710,22 @@ const rememberViewerTake = (kind, label) => {
   if (!VIEWER_STATE_KINDS.has(kind)) return;
   try { localStorage.setItem(VIEWER_TAKE_KEY(kind), label); } catch { /* private mode */ }
 };
+/* 1× 2× 4×, 2× TO BEGIN WITH, AND IT REMEMBERS (maintainer 2026-09-18: "that
+ * 'same' option is confusing as hell. Let's just keep 1x, 2x and 4x and on all
+ * preview pages and make 2x the default and save what I change to in
+ * localStorage. No more 'same' bullshit.")
+ *
+ * "same" drew every piece at one shared scale so sizes compared between pages,
+ * and the number behind it moved as the art grew — it was 2× and became 1×,
+ * which is what made him ask. Three honest multiples of the art's own pixels
+ * instead, one preference across every preview page. */
+const ZOOM_KEY = "wiki-zoom";
+const ZOOMS = [1, 2, 4];
+const zoomPref = () => {
+  try { const n = Number(localStorage.getItem(ZOOM_KEY)); return ZOOMS.includes(n) ? n : 2; }
+  catch { return 2; }
+};
+const rememberZoom = (z) => { try { localStorage.setItem(ZOOM_KEY, String(z)); } catch { /* private mode */ } };
 function makePlayer(entity, kind, opts = {}) {
   const anims = entity.animations;
   const stateNames = Object.keys(anims);
@@ -1733,7 +1749,7 @@ function makePlayer(entity, kind, opts = {}) {
     : baseStates.includes("idle") ? "idle" : baseStates[0];
   let cur = {
     state: slotFor(openState, keptTake),
-    dir: "south", frame: 0, playing: true, speed: 1, zoom: 0 /* 0 = auto */,
+    dir: "south", frame: 0, playing: true, speed: 1, zoom: zoomPref(),
     shadow: kind === "monster",
     editShadow: false,
     editHit: false,
@@ -1991,10 +2007,11 @@ function makePlayer(entity, kind, opts = {}) {
   const overflowNote = h("p", { class: "stage-wide muted hidden" });
   function updateOverflowNote() {
     const over = stage.scrollWidth - stage.clientWidth;
-    const on = over > 2 && !cur.zoom;   // an explicit zoom choice is the reader's own
+    // Only worth saying when a SMALLER zoom would actually fit it.
+    const on = over > 2 && cur.zoom > 1;
     overflowNote.classList.toggle("hidden", !on);
     if (on) overflowNote.textContent =
-      `Wider than the screen at 2× — swipe the picture sideways to see it all, or tap 1× to fit ${Math.round(over)}px.`;
+      `Wider than the screen at ${cur.zoom}× — swipe the picture sideways to see it all, or drop a zoom to fit ${Math.round(over)}px.`;
   }
   // The union of every clip's content box — ONE box for the whole monster, so
   // the anchor-true layout below cannot move between animations or directions.
@@ -2038,7 +2055,7 @@ function makePlayer(entity, kind, opts = {}) {
   function draw() {
     const fw = clip?.fw ?? entity.frameW ?? 64, fh = clip?.fh ?? entity.frameH ?? 64;
     const bb = clip?.bb ?? [0, 0, fw, fh];   // content box in frame px
-    const s0 = cur.zoom || (state.data.artScale || 2);
+    const s0 = cur.zoom;
     const cw = Math.max(1, bb[2] - bb[0]), ch = Math.max(1, bb[3] - bb[1]);
     /* GAME-TRUE SIZE BESIDE THE MAN (games agent, 2026-09-02: "THE SCENERY
      * SIZE REFERENCE MISLED THE MAINTAINER INTO GENERATING SMALL BEDS — it
@@ -2497,9 +2514,15 @@ function makePlayer(entity, kind, opts = {}) {
   const step = (dn) => { cur.playing = false; playBtn.textContent = "▶"; cur.frame = ((cur.frame + dn) % (clip?.frames ?? 1) + (clip?.frames ?? 1)) % (clip?.frames ?? 1); draw(); };
   const speedSeg = h("span", { class: "seg" }, ...[0.25, 0.5, 1, 2].map((sp) =>
     h("button", { class: sp === 1 ? "on" : "", onclick: (e) => { cur.speed = sp; e.target.parentElement.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); } }, `${sp}×`)));
-  const zoomSeg = h("span", { class: "seg", title: "“same” draws every creature at one scale, so sizes are comparable between pages" },
-    ...[["same", 0], ["1×", 1], ["2×", 2], ["4×", 4]].map(([lbl, z], i) =>
-    h("button", { class: i === 0 ? "on" : "", onclick: (e) => { cur.zoom = z; e.target.parentElement.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); draw(); } }, lbl)));
+  const zoomSeg = h("span", { class: "seg", title: "How many screen pixels to a pixel of the art — kept for every preview page" },
+    ...ZOOMS.map((z) =>
+    h("button", { class: z === cur.zoom ? "on" : "", "data-zoom": String(z),
+      onclick: (e) => {
+        cur.zoom = z;
+        rememberZoom(z);
+        e.target.parentElement.querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target));
+        draw();
+      } }, `${z}×`)));
 
   // A STILL has nothing to transport. One state, one direction, one frame —
   // the shape a static scenery piece takes once the builder gives it a `still`
@@ -2611,7 +2634,7 @@ function makePlayer(entity, kind, opts = {}) {
       from: shadowAnchor(entity, cur.state, cur.dir),
       // Screen pixels -> frame pixels. The canvas draws at `s`, so dividing by
       // it is what makes the shadow move exactly as far as the thumb did.
-      k: 1 / (cur.zoom || (state.data.artScale || 2)),
+      k: 1 / cur.zoom,
     };
   });
   padEl.addEventListener("pointermove", (ev) => {
@@ -2733,7 +2756,7 @@ function makePlayer(entity, kind, opts = {}) {
     hitPad.setPointerCapture(ev.pointerId);
     hitPad.classList.add("held");
     const b = hitList()[hitSel];
-    hitDrag = { x: ev.clientX, y: ev.clientY, from: boxPos(b, cur.dir), k: 1 / (cur.zoom || (state.data.artScale || 2)) };
+    hitDrag = { x: ev.clientX, y: ev.clientY, from: boxPos(b, cur.dir), k: 1 / cur.zoom };
   });
   hitPad.addEventListener("pointermove", (ev) => {
     if (!hitDrag) return;
@@ -4857,7 +4880,6 @@ function viewMonsters() {
  * scenery complaint) is side by side with its mirror, and two 136px sprites
  * still fit a 393px phone at 1×. */
 const CAND_FILTER_KEY = "wiki-cand-filter";
-const CAND_ZOOM_KEY = "wiki-cand-zoom";
 const CAND_PAIRS = [["south", "north"], ["east", "west"], ["south-east", "south-west"], ["north-east", "north-west"]];
 const candidates = () => state.data.domains.monsterCandidates ?? [];
 const candById = (id) => candidates().find((c) => c.id === id) ?? null;
@@ -5086,21 +5108,12 @@ function viewCandidate(id) {
   // on every candidate page — not the biggest in the current filter, which
   // would resize the box as he changes chips.
   const maxCanvas = candidates().reduce((m, x) => Math.max(m, x.size?.[0] ?? 0), 0) || size;
-  // The game's own 2× if it fits, else the largest step down that does. Whole
-  // and half steps only: pixel art is never scaled by an arbitrary fraction.
-  const trueZ = CAND_ZOOMS.find((k) => maxCanvas * k <= room) ?? room / maxCanvas;
-  // THE SAME FOUR CHIPS THE CREATURE PAGE HAS (maintainer 2026-09-10: "See how
-  // monsters is displayed on their details page. I think we have 1x 2x or 4x"),
-  // with "same" meaning exactly what it means there — every design at one
-  // scale, so sizes are comparable between pages — and 1× / 2× / 4× the
-  // design's own pixels.
-  // An ARRAY, not an object: integer-like keys sort themselves to the front of
-  // an object, which put "same" last in the row.
-  const ZOOM_STEPS = [["same", trueZ], ["1", 1], ["2", 2], ["4", 4]];
-  const ZOOMS = Object.fromEntries(ZOOM_STEPS);
-  let mode = "same";
-  try { mode = ZOOMS[localStorage.getItem(CAND_ZOOM_KEY)] ? localStorage.getItem(CAND_ZOOM_KEY) : "same"; } catch { /* private mode */ }
-  const z = ZOOMS[mode];
+  // ONE ZOOM VOCABULARY, EVERYWHERE (maintainer 2026-09-18: "that 'same' option
+  // is confusing as hell. Let's just keep 1x, 2x and 4x and on all preview
+  // pages and make 2x the default and save what I change to in localStorage").
+  // Same three multiples the creature viewer has, same remembered preference,
+  // so a zoom picked on one page is the zoom the next page opens at.
+  const z = zoomPref();
   // The box never outgrows the column: magnifying grows the CREATURE inside it,
   // and a magnified big design scrolls INSIDE its box — the same rule the
   // scenery preview stage settled on, for the same reason (a box wider than the
@@ -5123,14 +5136,12 @@ function viewCandidate(id) {
       // small design completely, and it is the art he is judging.
       h("figcaption", {}, h("b", {}, DIR_LABEL[d] ?? d), " ", d.replace("-", " "))));
   }
-  const ZOOM_LABEL = { same: "same", "1": "1×", "2": "2×", "4": "4×" };
   const zoomSeg = h("div", { class: "seg cand-zoom", role: "radiogroup",
-    title: `“same” draws every design at one scale (${trueZ}× here), so sizes are comparable between pages` },
-    ...ZOOM_STEPS.map(([k]) => h("button", {
-      class: k === mode ? "on" : "", type: "button", "aria-checked": k === mode ? "true" : "false", role: "radio",
-      title: k === "same" ? `Every design at ${trueZ}× — a small one really is small` : `${k}× the design's own pixels`,
-      "data-zoom": k,
-      onclick: () => { try { localStorage.setItem(CAND_ZOOM_KEY, k); } catch { /* private mode */ } route(); } }, ZOOM_LABEL[k])));
+    title: "How many screen pixels to a pixel of the art — kept for every preview page" },
+    ...ZOOMS.map((n) => h("button", {
+      class: n === z ? "on" : "", type: "button", "aria-checked": n === z ? "true" : "false", role: "radio",
+      title: `${n}× the design's own pixels`, "data-zoom": String(n),
+      onclick: () => { rememberZoom(n); route(); } }, `${n}×`)));
   return h("div", {},
     crumbRow("#/monsters/candidates", "← Candidates", "monsters/candidates", walk, id),
     h("div", { class: "sect-head" }, sectionIcon("monsters"), h("h1", {}, c.name)),
