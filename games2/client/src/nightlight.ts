@@ -234,6 +234,14 @@ const BOWL_FOOT_R = 0.75;
  *  smoothstep(-TOP_UNDER_FADE, -TOP_UNDER_FREE, lp.z - z). */
 const TOP_UNDER_FREE = 1.0;
 const TOP_UNDER_FADE = 2.5;
+/** The pool's vertical term: `dist` folds (lightZ − z) × this. NEAR is the
+ *  number every light has always had; from FROM levels below the light it
+ *  ramps to FAR by TO, so a light high over the ground (a torch on a bridge)
+ *  does not pool on it while a lamp post or a terrace torch keep their pools. */
+const LIGHT_DROP_NEAR = 0.6;
+const LIGHT_DROP_FAR = 1.2;
+const LIGHT_DROP_FROM = 2.0;
+const LIGHT_DROP_TO = 4.0;
 /** How far down a wall's face the room's wall-top darkening (his dial) fades
  *  in, in levels below the column's summit: one storey. A face is lit as
  *  itself below that; at the summit it meets the darkened top exactly. */
@@ -1413,7 +1421,19 @@ void main() {
     // spotlight (the fire) can only cast a shadow on walls 2 levels above
     // itself"). SwiftShader squares it and shows nothing, which is why no
     // headless gate ever saw it; server/test/glslpow.test.ts reads the source.
-    float dzl = (lp.z - z) * 0.6;
+    // THE FLAME IS NOT A SEARCHLIGHT: the ground far BELOW a light drops out
+    // faster than the ground beside it. A torch on the bridge stands 4.55
+    // above the river, and at 0.6 per level its pool still reached the water
+    // four cells out — a lit crescent between the slab's shadow band and the
+    // pool's rim, "a bright spot in the middle of the shadow the TORCH cast"
+    // (maintainer 2026-09-18, standing on the bridge at 281.9,246.0 at Night;
+    // measured: the crescent goes with the torch). From LIGHT_DROP_FROM levels
+    // down the vertical term ramps to LIGHT_DROP_FAR per level by
+    // LIGHT_DROP_TO; a lamp post (1.5 above its street), a torch on a
+    // one-level terrace and everything at or above the light are untouched
+    // (the ramp starts at 2 levels), a torch 4.55 up reads 5.5 and the pool
+    // is gone. Twin: lightAt.
+    float dzl = (lp.z - z) * mix(${LIGHT_DROP_NEAR.toFixed(2)}, ${LIGHT_DROP_FAR.toFixed(2)}, smoothstep(${LIGHT_DROP_FROM.toFixed(2)}, ${LIGHT_DROP_TO.toFixed(2)}, lp.z - z));
     float dist = sqrt(dot(d2, d2) + dzl * dzl);
     float att = clamp(1.0 - dist / radius, 0.0, 1.0);
     att *= att;
@@ -4294,7 +4314,9 @@ export class NightLights {
       const dx = L.col - col;
       const dy = L.row - row;
       const radius = Math.abs(L.radius); // negative = shadow-free glow pool
-      const dist = Math.sqrt(dx * dx + dy * dy + Math.pow((L.z - z) * 0.6, 2));
+      // Twin of the fragment's dzl: the flame is not a searchlight (LIGHT_DROP_*).
+      const dzl = (L.z - z) * (LIGHT_DROP_NEAR + (LIGHT_DROP_FAR - LIGHT_DROP_NEAR) * smoothStep01(LIGHT_DROP_FROM, LIGHT_DROP_TO, L.z - z));
+      const dist = Math.sqrt(dx * dx + dy * dy + dzl * dzl);
       let att = Math.max(0, 1 - dist / radius);
       att *= att;
       /* Twin of the shader's above-the-light rule outside my room (see FRAG):

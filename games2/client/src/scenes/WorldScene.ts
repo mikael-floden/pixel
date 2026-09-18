@@ -6654,11 +6654,14 @@ export class WorldScene extends Phaser.Scene {
       // authoritative, so this asks the room to move the player; the camera
       // re-attaches and snaps onto the avatar. Reproduce a spot from a screenshot:
       //   __ml.teleport(114.9, 13.7)  // e.g. the_island2 peak
-      teleport: (col?: number, row?: number) => {
+      // `elev` (levels) lands the body on a SURFACE at that height — a bridge
+      // span, a roof — instead of the base terrain under it (the harness used
+      // to swim under the bridge the maintainer stood on).
+      teleport: (col?: number, row?: number, elev?: number) => {
         if (col === undefined || row === undefined) return null;
         this.camDetached = false;
         this.camChase.init = false; // snap the camera back onto the avatar
-        this.room?.send("teleport", { x: col * CELL_WU, y: row * CELL_WU });
+        this.room?.send("teleport", { x: col * CELL_WU, y: row * CELL_WU, ...(typeof elev === "number" ? { elev } : {}) });
         const cell = this.world?.rows[Math.floor(row)]?.[Math.floor(col)];
         return { col, row, sent: !!this.room, t: cell?.t ?? null, l: cell?.l ?? 0 };
       },

@@ -1036,7 +1036,7 @@ export class WorldRoom extends Room<WorldState> {
       m.nextMoveAt = Date.now() + 500;
     });
 
-    this.onMessage("teleport", (client, message: { x?: number; y?: number }) => {
+    this.onMessage("teleport", (client, message: { x?: number; y?: number; elev?: number }) => {
       const player = this.playerOf(client);
       if (!player || player.dead) return;
       const w = this.terrain ? this.terrain.width * CELL_WU : this.worldW;
@@ -1047,7 +1047,15 @@ export class WorldRoom extends Room<WorldState> {
       const ty = typeof message?.y === "number" && isFinite(message.y) ? message.y : player.y;
       player.x = clamp(tx, 0, w - 1);
       player.y = clamp(ty, 0, h - 1);
-      player.elev = this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0;
+      /* THE BASE TERRAIN'S LEVEL, unless the probe names a SURFACE: a bridge or
+       * a roof is a deck over that level, and a body put down at the base under
+       * it swims in the river instead of standing on the span (2026-09-18: the
+       * maintainer stood ON the bridge at 281.9,246.0 with his torch and the
+       * probe landed the harness in the water beneath it — "Why did you
+       * swim?"). `elev` is a QA hand: clamped, and it lands the body on that
+       * height; the movement tick's own deck rules keep it there or drop it. */
+      const te = typeof message?.elev === "number" && isFinite(message.elev) ? Math.max(0, Math.min(64, message.elev)) : null;
+      player.elev = te ?? (this.terrain ? levelAtWorld(this.terrain, player.x, player.y) : 0);
       player.inputQueue.length = 0;
       player.timeCredit = 0;
       player.jumpUntil = 0;

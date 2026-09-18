@@ -287,6 +287,25 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
 - Always-night per-pixel shader: MULTIPLY overlay; per-pixel surface resolve
   (cell + height) → point lights with attenuation, LOS cast shadows, Lambert
   face gating with penumbras at both ends of every wall band.
+- **THE FLAME IS NOT A SEARCHLIGHT** (`LIGHT_DROP_NEAR` 0.6 → `LIGHT_DROP_FAR`
+  1.2 per level, ramped over `LIGHT_DROP_FROM..TO` = 2..4 levels below the
+  light; twin in `lightAt`). The pool's distance folds the height difference
+  at 0.6 per level, and at that rate a torch on the bridge, 4.55 above the
+  river, still pooled on the water four cells out: a lit crescent between the
+  slab's shadow band and the pool's rim — "a bright spot in the middle of the
+  shadow the TORCH cast! ... I love the shadow" (maintainer 2026-09-18,
+  standing on the bridge at 281.9,246.0 at Night; the crescent goes with the
+  torch, measured). Ground far below a light now drops out faster: at 4.55
+  levels the term reads 5.5 and the pool is gone; a lamp post (1.5 above its
+  street), a torch on a one-level terrace, and every pixel at or above the
+  light (the ramp starts at two levels below) are untouched. Rejected: a
+  slab rule that blocks a pixel below the light's own deck through the deck's
+  cells — the torch stands on the deck's last row, so no slab cell lies on
+  those rays outside the light's own near field, and it did nothing
+  (measured). Gate: `verify-bridgelight.mjs` still holds (the deck top lit,
+  the water under it at the ambient). The QA probe `__ml.teleport(col,row,
+  elev)` lands the body ON a deck at `elev`; without it the harness swam
+  under the bridge he stood on.
 - **GLSL `pow()` NEVER SEES A BASE THAT CAN BE NEGATIVE** (gate:
   `server/test/glslpow.test.ts`, reads the fragment sources). The spec leaves
   `pow(x, y)` undefined for x < 0 and a phone GPU takes it literally, while
