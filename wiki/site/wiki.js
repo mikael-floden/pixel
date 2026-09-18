@@ -3648,7 +3648,11 @@ const SECTIONS = {
   world:      { label: "World",         noun: () => (state.admin ? "pairs" : "grounds"),
                 icon: "world",      count: (d) => d.counts.world },
   objects:    { label: "Scenery",       noun: "props",      icon: "objects",    count: (d) => d.counts.objects },
-  sounds:     { label: "Sound Effects", noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
+  // "Sound", not "Sound Effects", and "Releases", not "Release Notes"
+  // (maintainer 2026-09-18: "This makes all text a 1 line and not 2 lines!").
+  // Two of eleven tiles wrapped to a second line and bought every row in the
+  // grid that height — the shorter word is the whole section either way.
+  sounds:     { label: "Sound",         noun: "sounds",     icon: "sounds",     count: (d) => d.counts.sounds },
   music:      { label: "Music",         noun: "tracks",     icon: "music",      count: (d) => d.counts.music },
   items:      { label: "Items",         noun: "items",      icon: "items",      count: (d) => d.counts.items },
   // "tales", not "chapters": the section holds 9 chapters AND one people
@@ -3661,7 +3665,7 @@ const SECTIONS = {
   // WHAT HAS LANDED (maintainer 2026-09-13, and his own icon). Admin-only for
   // the same reason Parameters is: commit shas and agent names are the factory
   // floor, not the encyclopedia.
-  releases:   { label: "Release Notes", noun: "commits",    icon: "notes",      count: (d) => d.counts.releases, adminOnly: true },
+  releases:   { label: "Releases",      noun: "commits",    icon: "notes",      count: (d) => d.counts.releases, adminOnly: true },
   // THE FLEET, LIVE (maintainer 2026-09-18: "how do I know if the agent is
   // making progress?"). Admin-only like the two above — the boards are the
   // factory floor. His own 48x48, drawn for this section the same day.
@@ -4348,8 +4352,8 @@ function viewHome() {
  * if it overflows, the next layout is tried. The ladder is icon size FIRST
  * (96 → 48) and columns second, because the icons are his 48x48 pixel art and
  * may only be drawn at WHOLE multiples of 48 — never resampled (the sectionIcon
- * law). A narrow column then shrinks the name a step so "Sound Effects" stays
- * on one line instead of buying a taller row.
+ * law). A narrow column then shrinks the name a step so a long name stays on
+ * one line instead of buying a taller row.
  *
  * If nothing fits — a landscape phone, a browser with a huge font — the page
  * scrolls, which is the honest failure: the art never leaves its 48px grid. */

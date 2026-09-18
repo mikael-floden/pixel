@@ -104,6 +104,12 @@ for both.
 
 ## Sections: names and icons
 
+**"Sound", not "Sound Effects"; "Releases", not "Release Notes"** (maintainer
+2026-09-18: *"This makes all text a 1 line and not 2 lines!"*). Two of eleven
+tiles wrapped, and in a grid a wrapped name buys every row that height. The
+shorter word names the same section.
+
+
 `SECTIONS` in `wiki.js` is the ONE table of every section's player-facing
 name, icon and count noun. Route slugs stay as they are — they're URLs, and
 feedback ids are repo paths — but nothing user-visible says "monsters" or

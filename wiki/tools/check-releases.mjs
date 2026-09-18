@@ -49,7 +49,7 @@ await p.goto(`${W}#/releases`, { waitUntil: "load" });
 await p.waitForTimeout(2200);
 const asPlayer = await p.evaluate(() => ({
   rows: document.querySelectorAll(".rel-row").length,
-  nav: [...document.querySelectorAll("#nav a")].some((a) => /Release Notes/.test(a.textContent)),
+  nav: [...document.querySelectorAll("#nav a")].some((a) => /Releases/.test(a.textContent)),
   tiles: [...document.querySelectorAll(".stat-tile")].some((a) => /Release Notes/.test(a.textContent)),
   heading: document.querySelector("h1")?.textContent ?? "",
 }));

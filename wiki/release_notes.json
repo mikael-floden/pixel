@@ -1,9 +1,54 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T17:09:42.124Z",
- "head": "35d476def",
+ "generated_at": "2026-09-18T17:12:46.518Z",
+ "head": "c1401f4d1",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "c1401f4d1",
+   "at": "2026-09-18T17:11:51+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: two columns on a phone — the tile lies on its side to pay for it",
+   "agent": "wiki",
+   "dirs": [
+    ".github",
+    "wiki"
+   ],
+   "files": 7
+  },
+  {
+   "sha": "91f8038b4",
+   "at": "2026-09-18T17:09:38+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 9 (grass <-> light soil, reps 7+)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 87
+  },
+  {
+   "sha": "5693a9927",
+   "at": "2026-09-18T19:07:25+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "db29a011b",
+   "at": "2026-09-18T17:06:58+00:00",
+   "author": "Claude",
+   "subject": "movement: the acceleration default is 0.21 s (his)",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 4
+  },
   {
    "sha": "35d476def",
    "at": "2026-09-18T17:05:15+00:00",
@@ -518,50 +563,6 @@
     "wiki"
    ],
    "files": 2
-  },
-  {
-   "sha": "11a855482",
-   "at": "2026-09-18T14:58:44+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (81 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 647
-  },
-  {
-   "sha": "1ea60399e",
-   "at": "2026-09-18T14:58:11+00:00",
-   "author": "Claude",
-   "subject": "tiles: the road edge gets its fade art - 31 tiles to 251",
-   "agent": "tiles",
-   "dirs": [
-    "tiles"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "226a4de4f",
-   "at": "2026-09-18T14:58:11+00:00",
-   "author": "Claude",
-   "subject": "tiles: the final road-edge fade sheets, and the sheet list they belong to",
-   "agent": "tiles",
-   "dirs": [
-    "tiles"
-   ],
-   "files": 1116
-  },
-  {
-   "sha": "99219c4ad",
-   "at": "2026-09-18T14:57:53+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduation landings",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 1001
   }
  ]
 }
