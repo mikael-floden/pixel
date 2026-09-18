@@ -1,0 +1,141 @@
+{
+  "id": "pumice",
+  "name": "Pumicekin",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It came out of the mountain in the air, not the ground. It weighs almost nothing and it is nearly impossible to catch.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Small lump of pale grey pumice full of gas holes, so light it half hops with each step, two pinpricks of orange light glowing deep inside its pores, sharp broken edges and fine ash dust shaking loose from it",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "pumice/rotations/south.webp",
+    "south-east": "pumice/rotations/south-east.webp",
+    "east": "pumice/rotations/east.webp",
+    "north-east": "pumice/rotations/north-east.webp",
+    "north": "pumice/rotations/north.webp",
+    "north-west": "pumice/rotations/north-west.webp",
+    "west": "pumice/rotations/west.webp",
+    "south-west": "pumice/rotations/south-west.webp"
+  },
+  "sheet": "pumice/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0e00a793-03b4-4394-b76b-19cb4b760747",
+  "seed": 1689096088,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:43:44+00:00",
+  "elapsed_s": 247.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.701,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.771,
+        "bbox": [
+          4,
+          3,
+          44,
+          44
+        ],
+        "fill": 0.712,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.745,
+        "bbox": [
+          9,
+          3,
+          41,
+          45
+        ],
+        "fill": 0.583,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.764,
+        "bbox": [
+          7,
+          3,
+          39,
+          45
+        ],
+        "fill": 0.583,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.701,
+        "bbox": [
+          4,
+          4,
+          44,
+          44
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.789,
+        "bbox": [
+          6,
+          4,
+          42,
+          45
+        ],
+        "fill": 0.641,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.74,
+        "bbox": [
+          6,
+          4,
+          41,
+          45
+        ],
+        "fill": 0.623,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.744,
+        "bbox": [
+          8,
+          4,
+          42,
+          45
+        ],
+        "fill": 0.605,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.788,
+        "bbox": [
+          5,
+          4,
+          43,
+          45
+        ],
+        "fill": 0.676,
+        "touches_edge": false
+      }
+    }
+  }
+}

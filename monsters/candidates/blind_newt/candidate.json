@@ -1,0 +1,140 @@
+{
+  "id": "blind_newt",
+  "name": "Whitegill",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It has never needed eyes and it does not have them. It knows the shape of the water it is in perfectly.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Blind cave salamander with translucent pink-white skin showing the organs faintly underneath, three pairs of feathery scarlet gills behind the head, a long flattened tail curled beside it, thin pale legs and two blank covered eye spots",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "blind_newt/rotations/south.webp",
+    "south-east": "blind_newt/rotations/south-east.webp",
+    "east": "blind_newt/rotations/east.webp",
+    "north-east": "blind_newt/rotations/north-east.webp",
+    "north": "blind_newt/rotations/north.webp",
+    "north-west": "blind_newt/rotations/north-west.webp",
+    "west": "blind_newt/rotations/west.webp",
+    "south-west": "blind_newt/rotations/south-west.webp"
+  },
+  "sheet": "blind_newt/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1208a3d3-e678-4af3-8217-568d11b3e76e",
+  "seed": 149273067,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:44:08+00:00",
+  "elapsed_s": 217.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.647,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.731,
+        "bbox": [
+          2,
+          7,
+          46,
+          46
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.722,
+        "bbox": [
+          4,
+          3,
+          42,
+          46
+        ],
+        "fill": 0.709,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.72,
+        "bbox": [
+          6,
+          3,
+          44,
+          45
+        ],
+        "fill": 0.693,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.647,
+        "bbox": [
+          3,
+          3,
+          44,
+          45
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.76,
+        "bbox": [
+          3,
+          5,
+          46,
+          46
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.68,
+        "bbox": [
+          5,
+          3,
+          40,
+          46
+        ],
+        "fill": 0.653,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.68,
+        "bbox": [
+          2,
+          3,
+          43,
+          45
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.735,
+        "bbox": [
+          7,
+          5,
+          44,
+          46
+        ],
+        "fill": 0.658,
+        "touches_edge": false
+      }
+    }
+  }
+}

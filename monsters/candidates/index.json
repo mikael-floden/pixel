@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:42:21+00:00",
+  "generated_at": "2026-09-18T12:45:51+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 171,
+  "count": 175,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -21304,6 +21304,134 @@
       "generated_at": "2026-09-18T12:38:57+00:00"
     },
     {
+      "id": "pumice",
+      "name": "Pumicekin",
+      "tier": "cute",
+      "lore": "It came out of the mountain in the air, not the ground. It weighs almost nothing and it is nearly impossible to catch.",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "items": [],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "0e00a793-03b4-4394-b76b-19cb4b760747",
+      "version": 1,
+      "sheet": "pumice/sheet.webp",
+      "rotations": {
+        "south": "pumice/rotations/south.webp",
+        "south-east": "pumice/rotations/south-east.webp",
+        "east": "pumice/rotations/east.webp",
+        "north-east": "pumice/rotations/north-east.webp",
+        "north": "pumice/rotations/north.webp",
+        "north-west": "pumice/rotations/north-west.webp",
+        "west": "pumice/rotations/west.webp",
+        "south-west": "pumice/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.701,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.771,
+            "bbox": [
+              4,
+              3,
+              44,
+              44
+            ],
+            "fill": 0.712,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.745,
+            "bbox": [
+              9,
+              3,
+              41,
+              45
+            ],
+            "fill": 0.583,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.764,
+            "bbox": [
+              7,
+              3,
+              39,
+              45
+            ],
+            "fill": 0.583,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.701,
+            "bbox": [
+              4,
+              4,
+              44,
+              44
+            ],
+            "fill": 0.694,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.789,
+            "bbox": [
+              6,
+              4,
+              42,
+              45
+            ],
+            "fill": 0.641,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.74,
+            "bbox": [
+              6,
+              4,
+              41,
+              45
+            ],
+            "fill": 0.623,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.744,
+            "bbox": [
+              8,
+              4,
+              42,
+              45
+            ],
+            "fill": 0.605,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.788,
+            "bbox": [
+              5,
+              4,
+              43,
+              45
+            ],
+            "fill": 0.676,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:43:44+00:00"
+    },
+    {
       "id": "basalt_column",
       "name": "Basaltkin",
       "tier": "mid",
@@ -21689,6 +21817,133 @@
       "generated_at": "2026-09-18T12:41:54+00:00"
     },
     {
+      "id": "sulphur_mound",
+      "name": "Brimstone",
+      "tier": "evil",
+      "lore": "The smell reaches further than it does. Things that live near it stopped smelling anything years ago.",
+      "biome": [
+        "lava"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "738a3aa3-b803-4ea0-8660-c2cc9cd0df13",
+      "version": 1,
+      "sheet": "sulphur_mound/sheet.webp",
+      "rotations": {
+        "south": "sulphur_mound/rotations/south.webp",
+        "south-east": "sulphur_mound/rotations/south-east.webp",
+        "east": "sulphur_mound/rotations/east.webp",
+        "north-east": "sulphur_mound/rotations/north-east.webp",
+        "north": "sulphur_mound/rotations/north.webp",
+        "north-west": "sulphur_mound/rotations/north-west.webp",
+        "west": "sulphur_mound/rotations/west.webp",
+        "south-west": "sulphur_mound/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.688,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.723,
+            "bbox": [
+              12,
+              5,
+              91,
+              97
+            ],
+            "fill": 0.672,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.747,
+            "bbox": [
+              33,
+              5,
+              76,
+              101
+            ],
+            "fill": 0.382,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.758,
+            "bbox": [
+              28,
+              5,
+              71,
+              101
+            ],
+            "fill": 0.382,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.691,
+            "bbox": [
+              13,
+              5,
+              91,
+              97
+            ],
+            "fill": 0.663,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.78,
+            "bbox": [
+              24,
+              5,
+              83,
+              100
+            ],
+            "fill": 0.518,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.694,
+            "bbox": [
+              18,
+              5,
+              83,
+              99
+            ],
+            "fill": 0.565,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.688,
+            "bbox": [
+              23,
+              5,
+              84,
+              99
+            ],
+            "fill": 0.53,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.805,
+            "bbox": [
+              18,
+              5,
+              84,
+              99
+            ],
+            "fill": 0.574,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:45:30+00:00"
+    },
+    {
       "id": "ember_mask",
       "name": "Cindermask",
       "tier": "evil",
@@ -21815,6 +22070,261 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:40:30+00:00"
+    },
+    {
+      "id": "fissure",
+      "name": "Riftmaw",
+      "tier": "boss",
+      "lore": "The mountain opened here and the opening walked away. The crack in it has never closed and never widened.",
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        232,
+        232
+      ],
+      "template_id": "mannequin",
+      "scale": "big",
+      "pixellab_id": "5e76532a-a3b2-42ad-910a-81fec8323e89",
+      "version": 1,
+      "sheet": "fissure/sheet.webp",
+      "rotations": {
+        "south": "fissure/rotations/south.webp",
+        "south-east": "fissure/rotations/south-east.webp",
+        "east": "fissure/rotations/east.webp",
+        "north-east": "fissure/rotations/north-east.webp",
+        "north": "fissure/rotations/north.webp",
+        "north-west": "fissure/rotations/north-west.webp",
+        "west": "fissure/rotations/west.webp",
+        "south-west": "fissure/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.579,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.579,
+            "bbox": [
+              59,
+              18,
+              171,
+              219
+            ],
+            "fill": 0.418,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.652,
+            "bbox": [
+              86,
+              18,
+              148,
+              220
+            ],
+            "fill": 0.233,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.649,
+            "bbox": [
+              79,
+              17,
+              144,
+              219
+            ],
+            "fill": 0.244,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.604,
+            "bbox": [
+              62,
+              11,
+              169,
+              217
+            ],
+            "fill": 0.41,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.636,
+            "bbox": [
+              68,
+              17,
+              168,
+              221
+            ],
+            "fill": 0.379,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.601,
+            "bbox": [
+              68,
+              12,
+              162,
+              215
+            ],
+            "fill": 0.355,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.618,
+            "bbox": [
+              68,
+              12,
+              161,
+              216
+            ],
+            "fill": 0.352,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.627,
+            "bbox": [
+              60,
+              17,
+              164,
+              212
+            ],
+            "fill": 0.377,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:45:51+00:00"
+    },
+    {
+      "id": "blind_newt",
+      "name": "Whitegill",
+      "tier": "cute",
+      "lore": "It has never needed eyes and it does not have them. It knows the shape of the water it is in perfectly.",
+      "biome": [
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "1208a3d3-e678-4af3-8217-568d11b3e76e",
+      "version": 1,
+      "sheet": "blind_newt/sheet.webp",
+      "rotations": {
+        "south": "blind_newt/rotations/south.webp",
+        "south-east": "blind_newt/rotations/south-east.webp",
+        "east": "blind_newt/rotations/east.webp",
+        "north-east": "blind_newt/rotations/north-east.webp",
+        "north": "blind_newt/rotations/north.webp",
+        "north-west": "blind_newt/rotations/north-west.webp",
+        "west": "blind_newt/rotations/west.webp",
+        "south-west": "blind_newt/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.647,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.731,
+            "bbox": [
+              2,
+              7,
+              46,
+              46
+            ],
+            "fill": 0.745,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.722,
+            "bbox": [
+              4,
+              3,
+              42,
+              46
+            ],
+            "fill": 0.709,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.72,
+            "bbox": [
+              6,
+              3,
+              44,
+              45
+            ],
+            "fill": 0.693,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.647,
+            "bbox": [
+              3,
+              3,
+              44,
+              45
+            ],
+            "fill": 0.747,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.76,
+            "bbox": [
+              3,
+              5,
+              46,
+              46
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.68,
+            "bbox": [
+              5,
+              3,
+              40,
+              46
+            ],
+            "fill": 0.653,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.68,
+            "bbox": [
+              2,
+              3,
+              43,
+              45
+            ],
+            "fill": 0.747,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.735,
+            "bbox": [
+              7,
+              5,
+              44,
+              46
+            ],
+            "fill": 0.658,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:44:08+00:00"
     },
     {
       "id": "first_mask",
