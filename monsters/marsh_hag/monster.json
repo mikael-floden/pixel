@@ -1,0 +1,763 @@
+{
+  "id": "marsh_hag",
+  "name": "Hexcrone",
+  "lore": "She trades in wishes and collects in years. Every village has one story about her, and every story ends the same.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "2901a05b-9ba9-4fd2-9854-1c52f53192f4",
+    "url": "https://www.pixellab.ai/create-character/2901a05b-9ba9-4fd2-9854-1c52f53192f4",
+    "prompt": "Hunched fantasy swamp hag shown full body from head to feet, green-grey warty skin, a long crooked nose, wild grey hair with bones tied in it, a ragged patchwork shawl, a twisted staff hung with dead frogs held upright, and bare clawed feet, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 112,
+    "height": 112
+  },
+  "native_size": {
+    "width": 112,
+    "height": 112
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "marsh_hag/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "marsh_hag/rotations/south.webp",
+    "west": "marsh_hag/rotations/west.webp",
+    "east": "marsh_hag/rotations/east.webp",
+    "north": "marsh_hag/rotations/north.webp",
+    "south-east": "marsh_hag/rotations/south-east.webp",
+    "north-east": "marsh_hag/rotations/north-east.webp",
+    "north-west": "marsh_hag/rotations/north-west.webp",
+    "south-west": "marsh_hag/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "dc3fbd43-1e0f-49a1-bc9b-09000f894154",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/angry__east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/angry/east/00.webp",
+            "marsh_hag/animations/angry/east/01.webp",
+            "marsh_hag/animations/angry/east/02.webp",
+            "marsh_hag/animations/angry/east/03.webp",
+            "marsh_hag/animations/angry/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:54:59 GMT",
+          "src_frames": 5,
+          "sub": "b856288b-70bc-42c0-8506-f37abcef16fb"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/angry__north.webp",
+          "frame_paths": [
+            "marsh_hag/animations/angry/north/00.webp",
+            "marsh_hag/animations/angry/north/01.webp",
+            "marsh_hag/animations/angry/north/02.webp",
+            "marsh_hag/animations/angry/north/03.webp",
+            "marsh_hag/animations/angry/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:00 GMT",
+          "src_frames": 5,
+          "sub": "38384e4c-c861-4158-944c-01ec7dbbd0c8"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/angry__north-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/angry/north-east/00.webp",
+            "marsh_hag/animations/angry/north-east/01.webp",
+            "marsh_hag/animations/angry/north-east/02.webp",
+            "marsh_hag/animations/angry/north-east/03.webp",
+            "marsh_hag/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:01 GMT",
+          "src_frames": 5,
+          "sub": "2cb131a2-ca8d-4949-b23a-9dcbadefb819"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/angry__south.webp",
+          "frame_paths": [
+            "marsh_hag/animations/angry/south/00.webp",
+            "marsh_hag/animations/angry/south/01.webp",
+            "marsh_hag/animations/angry/south/02.webp",
+            "marsh_hag/animations/angry/south/03.webp",
+            "marsh_hag/animations/angry/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:02 GMT",
+          "src_frames": 5,
+          "sub": "cbcc616e-3d95-4a87-a8dd-cf916a93b615"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/angry__south-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/angry/south-east/00.webp",
+            "marsh_hag/animations/angry/south-east/01.webp",
+            "marsh_hag/animations/angry/south-east/02.webp",
+            "marsh_hag/animations/angry/south-east/03.webp",
+            "marsh_hag/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:03 GMT",
+          "src_frames": 5,
+          "sub": "36e11672-eeaa-4273-868c-a8eb0f8a3acb"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/angry__south-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/angry/south-west/00.webp",
+            "marsh_hag/animations/angry/south-west/01.webp",
+            "marsh_hag/animations/angry/south-west/02.webp",
+            "marsh_hag/animations/angry/south-west/03.webp",
+            "marsh_hag/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/angry__west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/angry/west/00.webp",
+            "marsh_hag/animations/angry/west/01.webp",
+            "marsh_hag/animations/angry/west/02.webp",
+            "marsh_hag/animations/angry/west/03.webp",
+            "marsh_hag/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/angry__north-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/angry/north-west/00.webp",
+            "marsh_hag/animations/angry/north-west/01.webp",
+            "marsh_hag/animations/angry/north-west/02.webp",
+            "marsh_hag/animations/angry/north-west/03.webp",
+            "marsh_hag/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "0dbafb94-49e0-4a54-b8a2-98687649a34b",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/idle__east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/idle/east/00.webp",
+            "marsh_hag/animations/idle/east/01.webp",
+            "marsh_hag/animations/idle/east/02.webp",
+            "marsh_hag/animations/idle/east/03.webp",
+            "marsh_hag/animations/idle/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:05 GMT",
+          "src_frames": 5,
+          "sub": "3e241615-74dd-4d91-b394-ff697e1ded9f"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/idle__north.webp",
+          "frame_paths": [
+            "marsh_hag/animations/idle/north/00.webp",
+            "marsh_hag/animations/idle/north/01.webp",
+            "marsh_hag/animations/idle/north/02.webp",
+            "marsh_hag/animations/idle/north/03.webp",
+            "marsh_hag/animations/idle/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:06 GMT",
+          "src_frames": 5,
+          "sub": "9339dae7-4dab-4306-ade3-9ccd7efd6bf9"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/idle__north-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/idle/north-east/00.webp",
+            "marsh_hag/animations/idle/north-east/01.webp",
+            "marsh_hag/animations/idle/north-east/02.webp",
+            "marsh_hag/animations/idle/north-east/03.webp",
+            "marsh_hag/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:07 GMT",
+          "src_frames": 5,
+          "sub": "9d321b07-28b5-4ae7-9fd2-28d78580f5ba"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/idle__south.webp",
+          "frame_paths": [
+            "marsh_hag/animations/idle/south/00.webp",
+            "marsh_hag/animations/idle/south/01.webp",
+            "marsh_hag/animations/idle/south/02.webp",
+            "marsh_hag/animations/idle/south/03.webp",
+            "marsh_hag/animations/idle/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:09 GMT",
+          "src_frames": 5,
+          "sub": "f45d2932-a7ff-4818-9ece-7aa1ef309fc4"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/idle__south-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/idle/south-east/00.webp",
+            "marsh_hag/animations/idle/south-east/01.webp",
+            "marsh_hag/animations/idle/south-east/02.webp",
+            "marsh_hag/animations/idle/south-east/03.webp",
+            "marsh_hag/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:10 GMT",
+          "src_frames": 5,
+          "sub": "feffbc71-6aa7-448b-919c-8f812332b532"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/idle__south-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/idle/south-west/00.webp",
+            "marsh_hag/animations/idle/south-west/01.webp",
+            "marsh_hag/animations/idle/south-west/02.webp",
+            "marsh_hag/animations/idle/south-west/03.webp",
+            "marsh_hag/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/idle__west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/idle/west/00.webp",
+            "marsh_hag/animations/idle/west/01.webp",
+            "marsh_hag/animations/idle/west/02.webp",
+            "marsh_hag/animations/idle/west/03.webp",
+            "marsh_hag/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "marsh_hag/animations/idle__north-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/idle/north-west/00.webp",
+            "marsh_hag/animations/idle/north-west/01.webp",
+            "marsh_hag/animations/idle/north-west/02.webp",
+            "marsh_hag/animations/idle/north-west/03.webp",
+            "marsh_hag/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "5eb0cb81-648f-49b1-b947-b9db59239f73",
+      "source_name": "custom-Death - Drops the staff, faint",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/die__east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/die/east/00.webp",
+            "marsh_hag/animations/die/east/01.webp",
+            "marsh_hag/animations/die/east/02.webp",
+            "marsh_hag/animations/die/east/03.webp",
+            "marsh_hag/animations/die/east/04.webp",
+            "marsh_hag/animations/die/east/05.webp",
+            "marsh_hag/animations/die/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:12 GMT",
+          "src_frames": 7,
+          "sub": "450a7e9f-b060-483a-9d17-859ad09d7454"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/die__north.webp",
+          "frame_paths": [
+            "marsh_hag/animations/die/north/00.webp",
+            "marsh_hag/animations/die/north/01.webp",
+            "marsh_hag/animations/die/north/02.webp",
+            "marsh_hag/animations/die/north/03.webp",
+            "marsh_hag/animations/die/north/04.webp",
+            "marsh_hag/animations/die/north/05.webp",
+            "marsh_hag/animations/die/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:13 GMT",
+          "src_frames": 7,
+          "sub": "6354a8f3-3c0d-4703-8521-1be7b30341f3"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/die__north-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/die/north-east/00.webp",
+            "marsh_hag/animations/die/north-east/01.webp",
+            "marsh_hag/animations/die/north-east/02.webp",
+            "marsh_hag/animations/die/north-east/03.webp",
+            "marsh_hag/animations/die/north-east/04.webp",
+            "marsh_hag/animations/die/north-east/05.webp",
+            "marsh_hag/animations/die/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:15 GMT",
+          "src_frames": 7,
+          "sub": "c2a159d9-5ced-41a9-b800-cefe099dba53"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/die__south.webp",
+          "frame_paths": [
+            "marsh_hag/animations/die/south/00.webp",
+            "marsh_hag/animations/die/south/01.webp",
+            "marsh_hag/animations/die/south/02.webp",
+            "marsh_hag/animations/die/south/03.webp",
+            "marsh_hag/animations/die/south/04.webp",
+            "marsh_hag/animations/die/south/05.webp",
+            "marsh_hag/animations/die/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:16 GMT",
+          "src_frames": 7,
+          "sub": "a4cb1c18-caa7-4b24-ae5e-274177c1e2e8"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/die__south-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/die/south-east/00.webp",
+            "marsh_hag/animations/die/south-east/01.webp",
+            "marsh_hag/animations/die/south-east/02.webp",
+            "marsh_hag/animations/die/south-east/03.webp",
+            "marsh_hag/animations/die/south-east/04.webp",
+            "marsh_hag/animations/die/south-east/05.webp",
+            "marsh_hag/animations/die/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:18 GMT",
+          "src_frames": 7,
+          "sub": "919c457c-f9d2-4dd1-a198-514873256697"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/die__south-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/die/south-west/00.webp",
+            "marsh_hag/animations/die/south-west/01.webp",
+            "marsh_hag/animations/die/south-west/02.webp",
+            "marsh_hag/animations/die/south-west/03.webp",
+            "marsh_hag/animations/die/south-west/04.webp",
+            "marsh_hag/animations/die/south-west/05.webp",
+            "marsh_hag/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/die__west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/die/west/00.webp",
+            "marsh_hag/animations/die/west/01.webp",
+            "marsh_hag/animations/die/west/02.webp",
+            "marsh_hag/animations/die/west/03.webp",
+            "marsh_hag/animations/die/west/04.webp",
+            "marsh_hag/animations/die/west/05.webp",
+            "marsh_hag/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/die__north-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/die/north-west/00.webp",
+            "marsh_hag/animations/die/north-west/01.webp",
+            "marsh_hag/animations/die/north-west/02.webp",
+            "marsh_hag/animations/die/north-west/03.webp",
+            "marsh_hag/animations/die/north-west/04.webp",
+            "marsh_hag/animations/die/north-west/05.webp",
+            "marsh_hag/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "531ad2f1-5048-4929-b8d5-93e9ceebe561",
+      "source_name": "custom-Staff Curse - Jabs the staff out and green swamp m",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "marsh_hag/animations/attack__east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/attack/east/00.webp",
+            "marsh_hag/animations/attack/east/01.webp",
+            "marsh_hag/animations/attack/east/02.webp",
+            "marsh_hag/animations/attack/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:19 GMT",
+          "src_frames": 4,
+          "sub": "26226f07-c85f-426a-a6ea-e53861dd1d87"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "marsh_hag/animations/attack__north.webp",
+          "frame_paths": [
+            "marsh_hag/animations/attack/north/00.webp",
+            "marsh_hag/animations/attack/north/01.webp",
+            "marsh_hag/animations/attack/north/02.webp",
+            "marsh_hag/animations/attack/north/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:20 GMT",
+          "src_frames": 4,
+          "sub": "2045da24-ca1b-407c-8763-88c76e01898f"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "marsh_hag/animations/attack__north-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/attack/north-east/00.webp",
+            "marsh_hag/animations/attack/north-east/01.webp",
+            "marsh_hag/animations/attack/north-east/02.webp",
+            "marsh_hag/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:21 GMT",
+          "src_frames": 4,
+          "sub": "d86c4a31-a5d0-4bd7-a980-7d408681f078"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "marsh_hag/animations/attack__south.webp",
+          "frame_paths": [
+            "marsh_hag/animations/attack/south/00.webp",
+            "marsh_hag/animations/attack/south/01.webp",
+            "marsh_hag/animations/attack/south/02.webp",
+            "marsh_hag/animations/attack/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 13:55:14 GMT",
+          "src_frames": 4,
+          "sub": "7143dd4d-fced-480a-8bc6-1fc7b8283fd5"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "marsh_hag/animations/attack__south-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/attack/south-east/00.webp",
+            "marsh_hag/animations/attack/south-east/01.webp",
+            "marsh_hag/animations/attack/south-east/02.webp",
+            "marsh_hag/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:22 GMT",
+          "src_frames": 4,
+          "sub": "3ab1d9c9-d586-41cd-a8e1-0eb42dd5d1e0"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "marsh_hag/animations/attack__south-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/attack/south-west/00.webp",
+            "marsh_hag/animations/attack/south-west/01.webp",
+            "marsh_hag/animations/attack/south-west/02.webp",
+            "marsh_hag/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "marsh_hag/animations/attack__west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/attack/west/00.webp",
+            "marsh_hag/animations/attack/west/01.webp",
+            "marsh_hag/animations/attack/west/02.webp",
+            "marsh_hag/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "marsh_hag/animations/attack__north-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/attack/north-west/00.webp",
+            "marsh_hag/animations/attack/north-west/01.webp",
+            "marsh_hag/animations/attack/north-west/02.webp",
+            "marsh_hag/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_raises_the_staff_and_jabs_it_f": {
+      "group_id": "97676fec-4d6f-41e4-a20d-6ba4c3df46f4",
+      "source_name": "custom-raises the staff and jabs it f",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f__east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/east/00.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/east/01.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/east/02.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/east/03.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/east/04.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/east/05.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:23 GMT",
+          "src_frames": 7,
+          "sub": "d1325afa-80dc-4919-b320-78fad42b25ad"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f__north.webp",
+          "frame_paths": [
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north/00.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north/01.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north/02.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north/03.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north/04.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north/05.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:25 GMT",
+          "src_frames": 7,
+          "sub": "3da2b349-bf40-4cff-bc75-a6ab13dbf000"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f__north-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-east/00.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-east/01.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-east/02.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-east/03.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-east/04.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-east/05.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:26 GMT",
+          "src_frames": 7,
+          "sub": "9e066680-8217-42b5-a2e0-f81bca9e4096"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f__south.webp",
+          "frame_paths": [
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south/00.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south/01.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south/02.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south/03.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south/04.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south/05.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:27 GMT",
+          "src_frames": 7,
+          "sub": "1772dfa3-24f5-4a4b-b0e1-48bf87aa97ef"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f__south-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-east/00.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-east/01.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-east/02.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-east/03.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-east/04.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-east/05.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:29 GMT",
+          "src_frames": 7,
+          "sub": "51255424-1eae-49ac-8fde-cac3853a7fac"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f__south-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-west/00.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-west/01.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-west/02.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-west/03.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-west/04.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-west/05.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f__west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/west/00.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/west/01.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/west/02.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/west/03.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/west/04.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/west/05.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f__north-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-west/00.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-west/01.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-west/02.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-west/03.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-west/04.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-west/05.webp",
+            "marsh_hag/animations/custom_raises_the_staff_and_jabs_it_f/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "5bc67fd4-00c9-464a-8634-321ef1797375",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "marsh_hag/animations/walk__east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/walk/east/00.webp",
+            "marsh_hag/animations/walk/east/01.webp",
+            "marsh_hag/animations/walk/east/02.webp",
+            "marsh_hag/animations/walk/east/03.webp",
+            "marsh_hag/animations/walk/east/04.webp",
+            "marsh_hag/animations/walk/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:31 GMT",
+          "src_frames": 6,
+          "sub": "4fcc4be9-b1a2-4894-b17d-4d984edb9a84"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "marsh_hag/animations/walk__north.webp",
+          "frame_paths": [
+            "marsh_hag/animations/walk/north/00.webp",
+            "marsh_hag/animations/walk/north/01.webp",
+            "marsh_hag/animations/walk/north/02.webp",
+            "marsh_hag/animations/walk/north/03.webp",
+            "marsh_hag/animations/walk/north/04.webp",
+            "marsh_hag/animations/walk/north/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:32 GMT",
+          "src_frames": 6,
+          "sub": "5d7e3364-7a43-4509-8368-2c19eedbd5c4"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "marsh_hag/animations/walk__north-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/walk/north-east/00.webp",
+            "marsh_hag/animations/walk/north-east/01.webp",
+            "marsh_hag/animations/walk/north-east/02.webp",
+            "marsh_hag/animations/walk/north-east/03.webp",
+            "marsh_hag/animations/walk/north-east/04.webp",
+            "marsh_hag/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:33 GMT",
+          "src_frames": 6,
+          "sub": "52330a8f-a885-492f-aff5-ef8b4660eab7"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "marsh_hag/animations/walk__south.webp",
+          "frame_paths": [
+            "marsh_hag/animations/walk/south/00.webp",
+            "marsh_hag/animations/walk/south/01.webp",
+            "marsh_hag/animations/walk/south/02.webp",
+            "marsh_hag/animations/walk/south/03.webp",
+            "marsh_hag/animations/walk/south/04.webp",
+            "marsh_hag/animations/walk/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:34 GMT",
+          "src_frames": 6,
+          "sub": "ee1368e3-2bf5-4378-987d-f648cdad0adf"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "marsh_hag/animations/walk__south-east.webp",
+          "frame_paths": [
+            "marsh_hag/animations/walk/south-east/00.webp",
+            "marsh_hag/animations/walk/south-east/01.webp",
+            "marsh_hag/animations/walk/south-east/02.webp",
+            "marsh_hag/animations/walk/south-east/03.webp",
+            "marsh_hag/animations/walk/south-east/04.webp",
+            "marsh_hag/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:55:36 GMT",
+          "src_frames": 6,
+          "sub": "3b4c5937-1754-4e46-8c64-a44109573231"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "marsh_hag/animations/walk__south-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/walk/south-west/00.webp",
+            "marsh_hag/animations/walk/south-west/01.webp",
+            "marsh_hag/animations/walk/south-west/02.webp",
+            "marsh_hag/animations/walk/south-west/03.webp",
+            "marsh_hag/animations/walk/south-west/04.webp",
+            "marsh_hag/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "marsh_hag/animations/walk__west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/walk/west/00.webp",
+            "marsh_hag/animations/walk/west/01.webp",
+            "marsh_hag/animations/walk/west/02.webp",
+            "marsh_hag/animations/walk/west/03.webp",
+            "marsh_hag/animations/walk/west/04.webp",
+            "marsh_hag/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "marsh_hag/animations/walk__north-west.webp",
+          "frame_paths": [
+            "marsh_hag/animations/walk/north-west/00.webp",
+            "marsh_hag/animations/walk/north-west/01.webp",
+            "marsh_hag/animations/walk/north-west/02.webp",
+            "marsh_hag/animations/walk/north-west/03.webp",
+            "marsh_hag/animations/walk/north-west/04.webp",
+            "marsh_hag/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}
