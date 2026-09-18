@@ -89,11 +89,13 @@ jobs:
           now = datetime.datetime.now(datetime.timezone.utc)
 
           due = []
+          NEWEST = {}
           for name, domain in sorted(DOMAIN.items()):
               review = newest_review(f"live/feedback/{name}.json")
               if not review or now - review > WINDOW:
                   continue
               said = board_said(domain)
+              NEWEST[domain] = review
               if said is None or review > said:
                   due.append(domain)
               # The reasoning goes to STDERR: this block's stdout IS
@@ -101,6 +103,15 @@ jobs:
               # ("Invalid format '# monsters: …'" — measured, first run).
               print(f"{domain}: review {review.isoformat()}, board {said}"
                     f" -> {'DUE' if domain in due else 'up to date'}", file=sys.stderr)
+          # AT MOST FOUR AT A TIME, newest review first. Domains run in parallel
+          # on purpose — that is his ask — but a morning where he reviewed eight
+          # of them should not open eight sessions in one minute; the rest are
+          # picked up five minutes later, and the sweep is a safety net, not a
+          # queue runner.
+          due.sort(key=lambda d: NEWEST[d], reverse=True)
+          if len(due) > 4:
+              print(f"holding {len(due) - 4} for the next sweep: {due[4:]}", file=sys.stderr)
+              due = due[:4]
           print(f"domains={json.dumps(due)}")
           PY
           echo "--- due: $(grep '^domains=' "$GITHUB_OUTPUT" | tail -1)"
