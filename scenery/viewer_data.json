@@ -4733,9 +4733,6 @@
       "sprite": "barrels/barrel_003/sprite.webp",
       "art_hash": "f3a1c3bc0741cc01",
       "type": "TOWN",
-      "placed": {
-        "NOT_LIT_3": 1
-      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -5015,7 +5012,7 @@
       "art_hash": "1ccaebfa51d67d25",
       "type": "TOWN",
       "placed": {
-        "NOT_LIT_1": 3,
+        "NOT_LIT_1": 2,
         "NOT_LIT_3": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
@@ -9567,7 +9564,7 @@
       "art_hash": "d48fa7e2c6fd6af7",
       "type": "NATURE",
       "placed": {
-        "NOT_LIT_1": 1,
+        "NOT_LIT_1": 3,
         "NOT_LIT_3": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
@@ -12753,8 +12750,8 @@
       "art_hash": "08487503098f6de2",
       "type": "TOWN",
       "placed": {
-        "NOT_LIT_2": 3,
         "NOT_LIT_5": 1,
+        "NOT_LIT_2": 3,
         "NOT_LIT_4": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
@@ -13606,11 +13603,12 @@
       "art_hash": "554ff84796f08262",
       "type": "TOWN",
       "placed": {
-        "NOT_LIT_4": 11,
-        "NOT_LIT_1": 9,
-        "NOT_LIT_3": 5,
+        "NOT_LIT_4": 13,
+        "NOT_LIT_1": 10,
+        "NOT_LIT_3": 7,
         "LIT_2": 2,
-        "LIT_1": 2
+        "LIT_1": 3,
+        "NOT_LIT_2": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -14209,11 +14207,11 @@
       "art_hash": "b1d81594873c7acf",
       "type": "TOWN",
       "placed": {
-        "NOT_LIT_2": 7,
+        "NOT_LIT_2": 8,
         "NOT_LIT_3": 8,
-        "NOT_LIT_4": 6,
+        "NOT_LIT_4": 8,
         "LIT_2": 5,
-        "NOT_LIT_1": 4
+        "NOT_LIT_1": 5
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -14519,10 +14517,10 @@
       "art_hash": "324754573a6d0c03",
       "type": "TOWN",
       "placed": {
-        "NOT_LIT_1": 14,
-        "NOT_LIT_2": 6,
+        "NOT_LIT_1": 18,
+        "NOT_LIT_2": 9,
         "LIT_2": 5,
-        "LIT_1": 4,
+        "LIT_1": 6,
         "LIT_4": 2,
         "LIT_3": 1
       },
@@ -47924,7 +47922,7 @@
       "art_hash": "cca35a355dfceead",
       "type": "NATURE",
       "placed": {
-        "NOT_LIT_5": 1,
+        "NOT_LIT_5": 2,
         "NOT_LIT_4": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
@@ -48044,7 +48042,8 @@
       "type": "NATURE",
       "placed": {
         "LIT_2": 1,
-        "LIT_1": 2
+        "LIT_1": 2,
+        "NOT_LIT_1": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -48275,6 +48274,9 @@
       "sprite": "crystals/crystal_010/sprite.webp",
       "art_hash": "f39c5e19344db09e",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -48373,7 +48375,8 @@
       "art_hash": "2d165f981c209c3a",
       "type": "NATURE",
       "placed": {
-        "LIT_2": 4,
+        "NOT_LIT_1": 3,
+        "LIT_2": 1,
         "NOT_LIT_3": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
@@ -48534,9 +48537,9 @@
       "art_hash": "09392efd668a72a8",
       "type": "NATURE",
       "placed": {
-        "LIT_4": 2,
+        "NOT_LIT_1": 2,
         "LIT_2": 1,
-        "NOT_LIT_1": 1
+        "LIT_4": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -48836,7 +48839,8 @@
       "art_hash": "cb0abdc5d1f87204",
       "type": "NATURE",
       "placed": {
-        "NOT_LIT_3": 1
+        "NOT_LIT_3": 2,
+        "NOT_LIT_5": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -48927,7 +48931,8 @@
       "type": "NATURE",
       "placed": {
         "LIT_1": 2,
-        "LIT_2": 2
+        "LIT_2": 1,
+        "NOT_LIT_1": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -49145,7 +49150,8 @@
       "type": "NATURE",
       "placed": {
         "NOT_LIT_3": 1,
-        "NOT_LIT_2": 1
+        "NOT_LIT_2": 1,
+        "NOT_LIT_4": 2
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -49427,8 +49433,8 @@
       "art_hash": "61724682c05aadcd",
       "type": "NATURE",
       "placed": {
-        "NOT_LIT_1": 4,
-        "NOT_LIT_2": 1
+        "NOT_LIT_1": 6,
+        "NOT_LIT_2": 2
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -60624,9 +60630,6 @@
       "sprite": "fish_drying_racks/fish_drying_rack_003/sprite.webp",
       "art_hash": "412a75a7be3a76a5",
       "type": "TOWN",
-      "placed": {
-        "NOT_LIT_3": 1
-      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "rect",
@@ -69391,6 +69394,9 @@
       "sprite": "frost_flowers/frost_flower_002/sprite.webp",
       "art_hash": "0ca5b09f81daed76",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -69630,6 +69636,9 @@
       "sprite": "frozen_springs/frozen_spring_002/sprite.webp",
       "art_hash": "4b0dbb596fd3c9da",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_6": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -70161,7 +70170,8 @@
       "art_hash": "989aaa46e0e56615",
       "type": "NATURE",
       "placed": {
-        "LIT_1": 6
+        "NOT_LIT_1": 1,
+        "LIT_1": 4
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -71414,7 +71424,8 @@
       "art_hash": "29b9a319dbf2a7e1",
       "type": "TOWN",
       "placed": {
-        "NOT_LIT_2": 1
+        "NOT_LIT_2": 1,
+        "NOT_LIT_1": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -90254,9 +90265,20 @@
                     "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-west/04.webp"
                   ],
                   "strip": "ivy_posts/ivy_post_005/not_lit_3/animations/motion__south-west.3e1f9f23.webp"
+                },
+                "south-east": {
+                  "frames": 5,
+                  "frame_paths": [
+                    "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-east/00.webp",
+                    "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-east/01.webp",
+                    "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-east/02.webp",
+                    "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-east/03.webp",
+                    "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south-east/04.webp"
+                  ],
+                  "strip": "ivy_posts/ivy_post_005/not_lit_3/animations/motion__south-east.445e503c.webp"
                 }
               },
-              "generated_at": "2026-09-18T09:54:58+00:00",
+              "generated_at": "2026-09-18T10:35:19+00:00",
               "frame_paths": [
                 "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/00.webp",
                 "ivy_posts/ivy_post_005/not_lit_3/animations/motion/south/01.webp",
@@ -90267,7 +90289,7 @@
               "strip": "ivy_posts/ivy_post_005/not_lit_3/animations/motion__south.ee599841.webp",
               "review": "ANIMATION_PROBABLY_GOOD",
               "review_metrics": {
-                "base_outline": 0.0171
+                "base_outline": 0.0209
               }
             }
           },
@@ -106036,6 +106058,9 @@
       "sprite": "mushrooms/mushroom_002/sprite.webp",
       "art_hash": "c53ebba1538ba29c",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_3": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -107102,7 +107127,7 @@
         "LIT_1": 2,
         "NOT_LIT_4": 1,
         "NOT_LIT_3": 1,
-        "NOT_LIT_1": 2
+        "NOT_LIT_1": 3
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -113127,7 +113152,7 @@
       "art_hash": "05779083a3bd90cf",
       "type": "NATURE",
       "placed": {
-        "LIT_1": 4
+        "LIT_1": 7
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -130228,6 +130253,9 @@
       "sprite": "stones/stone_026/sprite.webp",
       "art_hash": "457506752e1e552b",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_1": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -133985,6 +134013,9 @@
       "sprite": "stones/stone_049/sprite.webp",
       "art_hash": "16a8c36ab01c4d3f",
       "type": "NATURE",
+      "placed": {
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -149982,7 +150013,7 @@
       "art_hash": "1e7e55a828815e4f",
       "type": "TOWN",
       "placed": {
-        "LIT_2": 7,
+        "LIT_2": 10,
         "LIT_3": 3
       },
       "must_be_imbplemented_with_random_hflip": true,
@@ -153652,6 +153683,10 @@
       "sprite": "torch_posts/torch_post_012/sprite.webp",
       "art_hash": "8f9b7fb0691e019e",
       "type": "TOWN",
+      "placed": {
+        "LIT_1": 2,
+        "NOT_LIT_2": 1
+      },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
       "hitbox_shape": "ellipse",
@@ -209808,7 +209843,8 @@
       "art_hash": "d659966fc4ea3578",
       "type": "TOWN",
       "placed": {
-        "LIT_1": 6
+        "LIT_1": 5,
+        "NOT_LIT_2": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -210950,7 +210986,7 @@
       "art_hash": "c4b8915c8f26dff8",
       "type": "TOWN",
       "placed": {
-        "LIT_1": 1
+        "NOT_LIT_1": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -211253,7 +211289,7 @@
       "type": "TOWN",
       "placed": {
         "LIT_4": 1,
-        "LIT_2": 1
+        "NOT_LIT_1": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -211870,7 +211906,7 @@
       "type": "TOWN",
       "placed": {
         "LIT_1": 1,
-        "LIT_4": 1
+        "NOT_LIT_3": 1
       },
       "must_be_imbplemented_with_random_hflip": true,
       "collision": true,
@@ -212312,7 +212348,7 @@
       "art_hash": "49ea8d14223d345e",
       "type": "TOWN",
       "placed": {
-        "LIT_1": 1,
+        "NOT_LIT_1": 1,
         "NOT_LIT_2": 1,
         "LIT_4": 1
       },
