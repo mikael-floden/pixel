@@ -90,35 +90,6 @@ function isInstalled(): boolean {
   );
 }
 
-/** THE CUTOUT RE-LAYOUT (maintainer 2026-09-18: "sometimes when I tab into
- *  the game I can see the graphics all the way up to the edge of my phone. But
- *  when I restart the game the top is black … can we always get the entire
- *  screen?"). The manifest already runs the installed app fullscreen; what
- *  differs between his two launches is the CAMERA CUTOUT: his shell letterboxes
- *  it on a cold start and hands the app the whole screen after a task-switch,
- *  and no web API asks for edge-to-edge directly. Re-entering fullscreen from a
- *  user gesture makes the shell re-evaluate the window's cutout layout — the
- *  same thing the task-switch does — so the Enter World tap asks for it.
- *  INSTALLED ONLY: he does not want fullscreen in a browser tab. Everything
- *  along the top edge (stat chips, these corner buttons, the pill stack)
- *  already rides --ml-safe-top = env(safe-area-inset-top), which is live CSS,
- *  so the margin follows the inset the moment it changes (verify-safearea
- *  drives the flip). A refusal (no gesture, unsupported, already fullscreen)
- *  is silent — the game must never depend on the answer. */
-function enterFullscreenIfInstalled(): void {
-  if (!isInstalled() || document.fullscreenElement) return;
-  const el = document.documentElement as HTMLElement & {
-    requestFullscreen?: (o?: { navigationUI?: string }) => Promise<void> | void;
-    webkitRequestFullscreen?: () => void;
-  };
-  try {
-    const p = el.requestFullscreen ? el.requestFullscreen({ navigationUI: "hide" }) : el.webkitRequestFullscreen?.();
-    (p as Promise<void> | undefined)?.catch?.(() => {});
-  } catch {
-    /* refused — fine */
-  }
-}
-
 export function pickTagline(pool: readonly string[] = TAGLINES): string {
   let last = "";
   try {
@@ -411,7 +382,6 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     select(selected);
 
     function commit() {
-      enterFullscreenIfInstalled();
       const name = (nameInput.value.trim() || NAMES[selected % NAMES.length]).slice(0, 24);
       // NOT gated on showWorlds: with exactly one world the dropdown is
       // hidden but that world is still the one to join, so read the list
@@ -456,6 +426,21 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // "Install app" (PWA): shown only when the browser offers an install
     // prompt (main.ts stashes it in __mlInstall) and we're not already
     // running as an installed app.
+    // THE CUTOUT BAND, HERE TOO (maintainer 2026-09-18: "fake a black border so
+    // the game always looks the same! Even in character select this time!").
+    // His shell letterboxes the camera cutout on a cold launch and goes
+    // edge-to-edge after a task-switch; the world paints that strip black
+    // (#ml-safebar, index.html, z 9) so both launches look alike, but this
+    // overlay sits above it (z 10) and showed the forest up to the glass on
+    // one launch and a black strip on the other. Same strip, inside the
+    // overlay's own stacking context, above its art and title.
+    // REJECTED first (2026-09-18, tried on his phone): re-requesting
+    // fullscreen on the Enter World tap to make the shell re-lay out the
+    // cutout — Chrome answered with its "swipe from the top and press back to
+    // exit fullscreen" toast on every launch and the letterbox stayed.
+    const band = document.createElement("div");
+    band.className = "ml-safeband";
+    overlay.appendChild(band);
     const installBtn = overlay.querySelector("#ml-install") as HTMLButtonElement;
     // His own PixelLab download arrow (2026-09-13), replacing the ⤓ text
     // glyph — a font character is whatever the phone's vendor drew that year,
@@ -646,6 +631,8 @@ function injectStyles() {
      ALIGN with ENTER WORLD, and the button gets a tiny bit smaller). vw keeps
      both on the SAME reference — %-widths resolved against different
      containing blocks for the fixed button vs the flex panel and drifted. */
+  .ml-safeband{position:absolute;top:0;left:0;right:0;z-index:150;pointer-events:none;
+    height:env(safe-area-inset-top, 0px);background:#000}
   .ml-overlay{position:fixed;inset:0;z-index:10;display:flex;align-items:center;justify-content:center;
     overflow:auto;background:#0d101c;font:14px/1.45 var(--sans);color:var(--ink);
     --selw:min(400px, 100vw - 56px)}

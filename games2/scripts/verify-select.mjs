@@ -200,18 +200,39 @@ try {
     const m = await (await fetch("/characters.json")).json();
     return m.characters[idx].uid;
   });
-  // FULLSCREEN IS FOR THE INSTALLED APP ONLY (maintainer 2026-09-18: "I of
-  // course don't want fullscreen when the player uses the web browser"): a
-  // browser tab's Enter World must not ask for it. Spied, not observed — a
-  // headless tab would refuse anyway, which is not the same as not asking.
-  await page.evaluate(() => {
-    window.__fsCalls = [];
-    Element.prototype.requestFullscreen = function (o) { window.__fsCalls.push(o ?? null); return Promise.resolve(); };
-  });
+  // THE CUTOUT BAND ON THIS SCREEN TOO (maintainer 2026-09-18: "fake a black
+  // border so the game always looks the same! Even in character select").
+  // Driven through CDP's inset override, the only cutout this harness has:
+  // zero height without one; with a 55px top inset the band is exactly that,
+  // black, full width, and the corner buttons sit 12px under it.
+  {
+    const cdp = await ctx.newCDPSession(page);
+    const insets = async (top) => {
+      await cdp.send("Emulation.setSafeAreaInsetsOverride", {
+        insets: { top, topMax: top, bottom: 0, bottomMax: 0, left: 0, leftMax: 0, right: 0, rightMax: 0 },
+      });
+      await page.waitForTimeout(250);
+    };
+    const band = () =>
+      page.evaluate(() => {
+        const b = document.querySelector(".ml-overlay .ml-safeband");
+        if (!b) return null;
+        const r = b.getBoundingClientRect(), cs = getComputedStyle(b);
+        const wiki = document.querySelector("#ml-wiki").getBoundingClientRect(); // not the first .ml-corner: that is the hidden install button
+        return { h: Math.round(r.height), w: Math.round(r.width), top: Math.round(r.top), bg: cs.backgroundColor, wikiTop: Math.round(wiki.top), pe: cs.pointerEvents };
+      });
+    const b0 = await band();
+    if (!b0) throw new Error("no .ml-safeband on the select screen");
+    if (b0.h !== 0) throw new Error(`band is ${b0.h}px tall with no cutout — must be 0`);
+    await insets(55);
+    const b1 = await band();
+    if (b1.h !== 55 || b1.top !== 0 || b1.w < 390 || b1.bg !== "rgb(0, 0, 0)" || b1.pe !== "none")
+      throw new Error(`band under a 55px cutout: ${JSON.stringify(b1)} — want 55px tall, full width, black, no pointer events`);
+    if (Math.abs(b1.wikiTop - 67) > 2) throw new Error(`Wiki button top ${b1.wikiTop} under a 55px cutout — want 12 + 55 = 67`);
+    await insets(0);
+    console.log(`SAFEBAND OK — 0 without a cutout, ${b1.h}px black under one, Wiki at ${b1.wikiTop}`);
+  }
   await page.click("#ml-enter");
-  const tabCalls = await page.evaluate(() => window.__fsCalls.length);
-  if (tabCalls !== 0) throw new Error(`a browser tab asked for fullscreen ${tabCalls}x on Enter World`);
-  console.log("FULLSCREEN not requested in a browser tab");
 
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 20000 });
   await page.waitForTimeout(1500);
@@ -222,28 +243,6 @@ try {
   if (myChar !== chosenUid) throw new Error(`chosen ${chosenUid} but joined as ${myChar}`);
   console.log("SELECT OK");
 
-  // …and the INSTALLED app asks for it on the same tap (select.ts
-  // enterFullscreenIfInstalled): display-mode is emulated by patching
-  // matchMedia before the page's scripts run, and the request is spied.
-  {
-    const ictx = await browser.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true });
-    const ipage = await ictx.newPage();
-    await ipage.addInitScript(() => {
-      const real = window.matchMedia.bind(window);
-      window.matchMedia = (q) => (/display-mode:\s*(standalone|fullscreen)/.test(q) ? { matches: true, media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} } : real(q));
-      window.__fsCalls = [];
-      // the PROTOTYPE: at init-script time document.documentElement is still null
-      Element.prototype.requestFullscreen = function (o) { window.__fsCalls.push(o ?? null); return Promise.resolve(); };
-    });
-    await ipage.goto("http://localhost:5173/", { waitUntil: "load" });
-    await ipage.waitForFunction(() => window.__mlSelect && window.__mlSelect.count() >= 1, { timeout: 20000 });
-    await ipage.click("#ml-enter");
-    const calls = await ipage.evaluate(() => window.__fsCalls);
-    if (calls.length !== 1 || calls[0]?.navigationUI !== "hide")
-      throw new Error(`installed app: expected one requestFullscreen({navigationUI:"hide"}) on Enter World, got ${JSON.stringify(calls)}`);
-    console.log("FULLSCREEN requested once by the installed app (navigationUI: hide)");
-    await ictx.close();
-  }
 } finally {
   await browser.close();
 }
