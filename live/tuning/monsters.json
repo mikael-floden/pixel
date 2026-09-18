@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-18T14:53:33.406Z",
+  "updated_at": "2026-09-18T14:55:17.523Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -415,7 +415,45 @@
           "item": "mossy_driftwood_bundle",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 60.75,
+        "ry": 18.5,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.38,
+            "ay": 88.34
+          },
+          "idle#east": {
+            "ax": -0.63,
+            "ay": 86.18
+          },
+          "idle#south-east": {
+            "ax": -1.67,
+            "ay": 86.95
+          },
+          "idle#north-east": {
+            "ax": -1.5,
+            "ay": 86.93
+          },
+          "idle#north": {
+            "ax": -1.77,
+            "ay": 86.55
+          },
+          "idle#north-west": {
+            "ax": -0.67,
+            "ay": 86.99
+          },
+          "idle#west": {
+            "ax": -1.18,
+            "ay": 86.76
+          },
+          "idle#south-west": {
+            "ax": -0.29,
+            "ay": 87.12
+          }
+        }
+      }
     },
     "bridge_troll": {
       "level": 15,
