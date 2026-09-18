@@ -264,6 +264,9 @@ from the games agent), #18 (title/landing screen).
   portrait only; landscape keeps its 38.2vw side column. Measured 393×851:
   325 → 311, rows at 628/702/777, 10.2px above and below. `verify-chat` and
   `verify-landscape` assert the law computed the same way from the live CSS.
+  His verdict on the whole portrait layout — top-right stack, corner ghost,
+  three-row rail — on seeing it (2026-09-18): "Wow! This is perfect!" Do not
+  re-litigate any of the three without his word.
 - **PORTRAIT CORNER STACK IS TOP-RIGHT: the Wiki/🔍 row directly under the XP
   chip, the time-of-day pill one `--ml-stack-step` under the ROW** (maintainer
   2026-09-17, arrows on a screenshot: "wiki + search to be top right and listed
