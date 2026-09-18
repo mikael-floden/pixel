@@ -138,25 +138,6 @@
       "die_action": "Death - The flames gutter and shrink down to a dark ember on the ground, then go out and fade away"
     },
     {
-      "id": "marsh_hag",
-      "name": "Hexcrone",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 112,
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Hunched fantasy swamp hag shown full body from head to feet, green-grey warty skin, a long crooked nose, wild grey hair with bones tied in it, a ragged patchwork shawl, a twisted staff hung with dead frogs held upright, and bare clawed feet.",
-      "lore": "She trades in wishes and collects in years. Every village has one story about her, and every story ends the same.",
-      "attack_action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
-      "fx": true,
-      "attack_extreme": "Swamp Blast - The hag hurls the staff forward and a blast of green swamp magic erupts from it",
-      "die_action": "Death - Drops the staff, faints and falls to the ground, then fades away"
-    },
-    {
       "id": "lizard_warrior",
       "name": "Scaleblade",
       "tier": "mid",
@@ -4461,6 +4442,33 @@
       "attack_extreme": "Frenzy - The ghoul throws itself forward, both clawed arms thrown wide, raking wildly",
       "die_action": "Death - Faints, crumples to the ground on its side and fades away",
       "graduated_at": "2026-09-18T14:54:14+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "marsh_hag",
+      "name": "Hexcrone",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 112,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Hunched fantasy swamp hag shown full body from head to feet, green-grey warty skin, a long crooked nose, wild grey hair with bones tied in it, a ragged patchwork shawl, a twisted staff hung with dead frogs held upright, and bare clawed feet.",
+      "lore": "She trades in wishes and collects in years. Every village has one story about her, and every story ends the same.",
+      "attack_action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
+      "fx": true,
+      "attack_extreme": "Swamp Blast - The hag hurls the staff forward and a blast of green swamp magic erupts from it",
+      "die_action": "Death - Drops the staff, faints and falls to the ground, then fades away",
+      "graduated_at": "2026-09-18T14:55:54+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

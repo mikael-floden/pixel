@@ -1,0 +1,739 @@
+{
+  "id": "octopus",
+  "name": "Inkling",
+  "lore": "It has three hearts and holds a grudge in each. The ink is how it says goodbye.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "22734026-d7a4-48dc-9ccb-102f2bc8f77f",
+    "url": "https://www.pixellab.ai/create-character/22734026-d7a4-48dc-9ccb-102f2bc8f77f",
+    "prompt": "Fantasy octopus with a bulbous dark red mantle, eight thick tentacles coiled tightly beneath it, two large golden eyes with rectangular pupils, and a cloud of black ink drifting from under it, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 96,
+    "height": 96
+  },
+  "native_size": {
+    "width": 96,
+    "height": 96
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "octopus/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "octopus/rotations/south.webp",
+    "west": "octopus/rotations/west.webp",
+    "east": "octopus/rotations/east.webp",
+    "north": "octopus/rotations/north.webp",
+    "south-east": "octopus/rotations/south-east.webp",
+    "north-east": "octopus/rotations/north-east.webp",
+    "north-west": "octopus/rotations/north-west.webp",
+    "south-west": "octopus/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "ebdf041a-5a50-4a38-ab90-2753eb5cab74",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "octopus/animations/angry__east.webp",
+          "frame_paths": [
+            "octopus/animations/angry/east/00.webp",
+            "octopus/animations/angry/east/01.webp",
+            "octopus/animations/angry/east/02.webp",
+            "octopus/animations/angry/east/03.webp",
+            "octopus/animations/angry/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:15 GMT",
+          "src_frames": 5,
+          "sub": "be4174f1-45aa-49ae-8204-4b10f313c2df"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "octopus/animations/angry__north.webp",
+          "frame_paths": [
+            "octopus/animations/angry/north/00.webp",
+            "octopus/animations/angry/north/01.webp",
+            "octopus/animations/angry/north/02.webp",
+            "octopus/animations/angry/north/03.webp",
+            "octopus/animations/angry/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:16 GMT",
+          "src_frames": 5,
+          "sub": "8aa7c7ad-7063-4d53-891d-04a6703c59f5"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "octopus/animations/angry__north-east.webp",
+          "frame_paths": [
+            "octopus/animations/angry/north-east/00.webp",
+            "octopus/animations/angry/north-east/01.webp",
+            "octopus/animations/angry/north-east/02.webp",
+            "octopus/animations/angry/north-east/03.webp",
+            "octopus/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:16 GMT",
+          "src_frames": 5,
+          "sub": "97e26742-32fc-48a4-8eb5-1cb527b6dd80"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "octopus/animations/angry__south.webp",
+          "frame_paths": [
+            "octopus/animations/angry/south/00.webp",
+            "octopus/animations/angry/south/01.webp",
+            "octopus/animations/angry/south/02.webp",
+            "octopus/animations/angry/south/03.webp",
+            "octopus/animations/angry/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:17 GMT",
+          "src_frames": 5,
+          "sub": "7c40693f-cb75-4ddd-afe0-603ff067d19b"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "octopus/animations/angry__south-east.webp",
+          "frame_paths": [
+            "octopus/animations/angry/south-east/00.webp",
+            "octopus/animations/angry/south-east/01.webp",
+            "octopus/animations/angry/south-east/02.webp",
+            "octopus/animations/angry/south-east/03.webp",
+            "octopus/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 13:29:10 GMT",
+          "src_frames": 5,
+          "sub": "a68e2833-35c6-4c58-b6e9-02bdb98dd3a4"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "octopus/animations/angry__south-west.webp",
+          "frame_paths": [
+            "octopus/animations/angry/south-west/00.webp",
+            "octopus/animations/angry/south-west/01.webp",
+            "octopus/animations/angry/south-west/02.webp",
+            "octopus/animations/angry/south-west/03.webp",
+            "octopus/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "octopus/animations/angry__west.webp",
+          "frame_paths": [
+            "octopus/animations/angry/west/00.webp",
+            "octopus/animations/angry/west/01.webp",
+            "octopus/animations/angry/west/02.webp",
+            "octopus/animations/angry/west/03.webp",
+            "octopus/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "octopus/animations/angry__north-west.webp",
+          "frame_paths": [
+            "octopus/animations/angry/north-west/00.webp",
+            "octopus/animations/angry/north-west/01.webp",
+            "octopus/animations/angry/north-west/02.webp",
+            "octopus/animations/angry/north-west/03.webp",
+            "octopus/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "a47c67b7-6f1d-48ba-908d-d3818abf79aa",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "octopus/animations/idle__east.webp",
+          "frame_paths": [
+            "octopus/animations/idle/east/00.webp",
+            "octopus/animations/idle/east/01.webp",
+            "octopus/animations/idle/east/02.webp",
+            "octopus/animations/idle/east/03.webp",
+            "octopus/animations/idle/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:19 GMT",
+          "src_frames": 5,
+          "sub": "d9b5a0bd-b5d4-48fb-9aba-e7806804acde"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "octopus/animations/idle__north.webp",
+          "frame_paths": [
+            "octopus/animations/idle/north/00.webp",
+            "octopus/animations/idle/north/01.webp",
+            "octopus/animations/idle/north/02.webp",
+            "octopus/animations/idle/north/03.webp",
+            "octopus/animations/idle/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:21 GMT",
+          "src_frames": 5,
+          "sub": "5651b41a-9a20-4949-8e74-21ec3c9e7b22"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "octopus/animations/idle__north-east.webp",
+          "frame_paths": [
+            "octopus/animations/idle/north-east/00.webp",
+            "octopus/animations/idle/north-east/01.webp",
+            "octopus/animations/idle/north-east/02.webp",
+            "octopus/animations/idle/north-east/03.webp",
+            "octopus/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:22 GMT",
+          "src_frames": 5,
+          "sub": "95da925e-4a44-4fd4-8473-a7a74ff44476"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "octopus/animations/idle__south.webp",
+          "frame_paths": [
+            "octopus/animations/idle/south/00.webp",
+            "octopus/animations/idle/south/01.webp",
+            "octopus/animations/idle/south/02.webp",
+            "octopus/animations/idle/south/03.webp",
+            "octopus/animations/idle/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:24 GMT",
+          "src_frames": 5,
+          "sub": "6a8128af-f51d-4564-bb56-44686b44a4fe"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "octopus/animations/idle__south-east.webp",
+          "frame_paths": [
+            "octopus/animations/idle/south-east/00.webp",
+            "octopus/animations/idle/south-east/01.webp",
+            "octopus/animations/idle/south-east/02.webp",
+            "octopus/animations/idle/south-east/03.webp",
+            "octopus/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:26 GMT",
+          "src_frames": 5,
+          "sub": "9114b7b9-77f9-4898-b447-9f85a9967a07"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "octopus/animations/idle__south-west.webp",
+          "frame_paths": [
+            "octopus/animations/idle/south-west/00.webp",
+            "octopus/animations/idle/south-west/01.webp",
+            "octopus/animations/idle/south-west/02.webp",
+            "octopus/animations/idle/south-west/03.webp",
+            "octopus/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "octopus/animations/idle__west.webp",
+          "frame_paths": [
+            "octopus/animations/idle/west/00.webp",
+            "octopus/animations/idle/west/01.webp",
+            "octopus/animations/idle/west/02.webp",
+            "octopus/animations/idle/west/03.webp",
+            "octopus/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "octopus/animations/idle__north-west.webp",
+          "frame_paths": [
+            "octopus/animations/idle/north-west/00.webp",
+            "octopus/animations/idle/north-west/01.webp",
+            "octopus/animations/idle/north-west/02.webp",
+            "octopus/animations/idle/north-west/03.webp",
+            "octopus/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "22c5de3e-aec2-4d39-ace8-e206ffe33aaf",
+      "source_name": "custom-Death - Melts into a spreading puddle of black ink",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "octopus/animations/die__east.webp",
+          "frame_paths": [
+            "octopus/animations/die/east/00.webp",
+            "octopus/animations/die/east/01.webp",
+            "octopus/animations/die/east/02.webp",
+            "octopus/animations/die/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:27 GMT",
+          "src_frames": 4,
+          "sub": "3d90650b-52cd-4e3d-9c49-f1bf06360b06"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "octopus/animations/die__north.webp",
+          "frame_paths": [
+            "octopus/animations/die/north/00.webp",
+            "octopus/animations/die/north/01.webp",
+            "octopus/animations/die/north/02.webp",
+            "octopus/animations/die/north/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:28 GMT",
+          "src_frames": 4,
+          "sub": "e7687c06-d99d-46d2-bd3b-6ee6a9f98210"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "octopus/animations/die__north-east.webp",
+          "frame_paths": [
+            "octopus/animations/die/north-east/00.webp",
+            "octopus/animations/die/north-east/01.webp",
+            "octopus/animations/die/north-east/02.webp",
+            "octopus/animations/die/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:29 GMT",
+          "src_frames": 4,
+          "sub": "f9d86ca7-92f9-4073-bd2b-70c21a1c4d4f"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "octopus/animations/die__south.webp",
+          "frame_paths": [
+            "octopus/animations/die/south/00.webp",
+            "octopus/animations/die/south/01.webp",
+            "octopus/animations/die/south/02.webp",
+            "octopus/animations/die/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:30 GMT",
+          "src_frames": 4,
+          "sub": "d6075df3-e5fe-4161-b70f-543a2b33fda0"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "octopus/animations/die__south-east.webp",
+          "frame_paths": [
+            "octopus/animations/die/south-east/00.webp",
+            "octopus/animations/die/south-east/01.webp",
+            "octopus/animations/die/south-east/02.webp",
+            "octopus/animations/die/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:31 GMT",
+          "src_frames": 4,
+          "sub": "ed9f8992-4276-4ac8-9c2a-06653c346238"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "octopus/animations/die__south-west.webp",
+          "frame_paths": [
+            "octopus/animations/die/south-west/00.webp",
+            "octopus/animations/die/south-west/01.webp",
+            "octopus/animations/die/south-west/02.webp",
+            "octopus/animations/die/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "octopus/animations/die__west.webp",
+          "frame_paths": [
+            "octopus/animations/die/west/00.webp",
+            "octopus/animations/die/west/01.webp",
+            "octopus/animations/die/west/02.webp",
+            "octopus/animations/die/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "octopus/animations/die__north-west.webp",
+          "frame_paths": [
+            "octopus/animations/die/north-west/00.webp",
+            "octopus/animations/die/north-west/01.webp",
+            "octopus/animations/die/north-west/02.webp",
+            "octopus/animations/die/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "efc1da40-3f28-4553-b32b-d9b04fe3a7b1",
+      "source_name": "custom-Tentacle Lash - Rears up high and whips two tentac",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "octopus/animations/attack__east.webp",
+          "frame_paths": [
+            "octopus/animations/attack/east/00.webp",
+            "octopus/animations/attack/east/01.webp",
+            "octopus/animations/attack/east/02.webp",
+            "octopus/animations/attack/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:33 GMT",
+          "src_frames": 4,
+          "sub": "fb2f2d50-1acd-43e6-a6a9-309df11d2662"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "octopus/animations/attack__north.webp",
+          "frame_paths": [
+            "octopus/animations/attack/north/00.webp",
+            "octopus/animations/attack/north/01.webp",
+            "octopus/animations/attack/north/02.webp",
+            "octopus/animations/attack/north/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:34 GMT",
+          "src_frames": 4,
+          "sub": "21cb30ac-90be-4b71-92fd-b8774e87b335"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "octopus/animations/attack__north-east.webp",
+          "frame_paths": [
+            "octopus/animations/attack/north-east/00.webp",
+            "octopus/animations/attack/north-east/01.webp",
+            "octopus/animations/attack/north-east/02.webp",
+            "octopus/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:35 GMT",
+          "src_frames": 4,
+          "sub": "1f563a82-cb52-4acb-b2d1-c25dccdd3711"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "octopus/animations/attack__south.webp",
+          "frame_paths": [
+            "octopus/animations/attack/south/00.webp",
+            "octopus/animations/attack/south/01.webp",
+            "octopus/animations/attack/south/02.webp",
+            "octopus/animations/attack/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:36 GMT",
+          "src_frames": 4,
+          "sub": "66f770a3-ad29-4a3b-ad62-7c8c90597303"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "octopus/animations/attack__south-east.webp",
+          "frame_paths": [
+            "octopus/animations/attack/south-east/00.webp",
+            "octopus/animations/attack/south-east/01.webp",
+            "octopus/animations/attack/south-east/02.webp",
+            "octopus/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:37 GMT",
+          "src_frames": 4,
+          "sub": "54162dfd-97ee-4d6a-81f1-8347b065455a"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "octopus/animations/attack__south-west.webp",
+          "frame_paths": [
+            "octopus/animations/attack/south-west/00.webp",
+            "octopus/animations/attack/south-west/01.webp",
+            "octopus/animations/attack/south-west/02.webp",
+            "octopus/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "octopus/animations/attack__west.webp",
+          "frame_paths": [
+            "octopus/animations/attack/west/00.webp",
+            "octopus/animations/attack/west/01.webp",
+            "octopus/animations/attack/west/02.webp",
+            "octopus/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "octopus/animations/attack__north-west.webp",
+          "frame_paths": [
+            "octopus/animations/attack/north-west/00.webp",
+            "octopus/animations/attack/north-west/01.webp",
+            "octopus/animations/attack/north-west/02.webp",
+            "octopus/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "c5ca09b6-4f12-483a-ae18-14da92c73ba0",
+      "source_name": "custom-crawls forward on its tentacle",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "octopus/animations/walk__east.webp",
+          "frame_paths": [
+            "octopus/animations/walk/east/00.webp",
+            "octopus/animations/walk/east/01.webp",
+            "octopus/animations/walk/east/02.webp",
+            "octopus/animations/walk/east/03.webp",
+            "octopus/animations/walk/east/04.webp",
+            "octopus/animations/walk/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:39 GMT",
+          "src_frames": 6,
+          "sub": "feca75a3-540c-4279-bb76-f1a553275b4a"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "octopus/animations/walk__north.webp",
+          "frame_paths": [
+            "octopus/animations/walk/north/00.webp",
+            "octopus/animations/walk/north/01.webp",
+            "octopus/animations/walk/north/02.webp",
+            "octopus/animations/walk/north/03.webp",
+            "octopus/animations/walk/north/04.webp",
+            "octopus/animations/walk/north/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:40 GMT",
+          "src_frames": 6,
+          "sub": "5ed48b0b-8bff-4cce-b11a-cf0815bc146e"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "octopus/animations/walk__north-east.webp",
+          "frame_paths": [
+            "octopus/animations/walk/north-east/00.webp",
+            "octopus/animations/walk/north-east/01.webp",
+            "octopus/animations/walk/north-east/02.webp",
+            "octopus/animations/walk/north-east/03.webp",
+            "octopus/animations/walk/north-east/04.webp",
+            "octopus/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:41 GMT",
+          "src_frames": 6,
+          "sub": "3e6c7eaf-4eac-4a66-8007-2e284c39eb74"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "octopus/animations/walk__south.webp",
+          "frame_paths": [
+            "octopus/animations/walk/south/00.webp",
+            "octopus/animations/walk/south/01.webp",
+            "octopus/animations/walk/south/02.webp",
+            "octopus/animations/walk/south/03.webp",
+            "octopus/animations/walk/south/04.webp",
+            "octopus/animations/walk/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:43 GMT",
+          "src_frames": 6,
+          "sub": "3755854b-4ec3-475e-b8ce-aac0512fcb96"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "octopus/animations/walk__south-east.webp",
+          "frame_paths": [
+            "octopus/animations/walk/south-east/00.webp",
+            "octopus/animations/walk/south-east/01.webp",
+            "octopus/animations/walk/south-east/02.webp",
+            "octopus/animations/walk/south-east/03.webp",
+            "octopus/animations/walk/south-east/04.webp",
+            "octopus/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:44 GMT",
+          "src_frames": 6,
+          "sub": "3783f6d0-72e6-4659-b181-9487d9fad4c3"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "octopus/animations/walk__south-west.webp",
+          "frame_paths": [
+            "octopus/animations/walk/south-west/00.webp",
+            "octopus/animations/walk/south-west/01.webp",
+            "octopus/animations/walk/south-west/02.webp",
+            "octopus/animations/walk/south-west/03.webp",
+            "octopus/animations/walk/south-west/04.webp",
+            "octopus/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "octopus/animations/walk__west.webp",
+          "frame_paths": [
+            "octopus/animations/walk/west/00.webp",
+            "octopus/animations/walk/west/01.webp",
+            "octopus/animations/walk/west/02.webp",
+            "octopus/animations/walk/west/03.webp",
+            "octopus/animations/walk/west/04.webp",
+            "octopus/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "octopus/animations/walk__north-west.webp",
+          "frame_paths": [
+            "octopus/animations/walk/north-west/00.webp",
+            "octopus/animations/walk/north-west/01.webp",
+            "octopus/animations/walk/north-west/02.webp",
+            "octopus/animations/walk/north-west/03.webp",
+            "octopus/animations/walk/north-west/04.webp",
+            "octopus/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_whips_two_tentacles_forward_in": {
+      "group_id": "d463f817-c907-48cb-9d6e-c88977560f4e",
+      "source_name": "custom-whips two tentacles forward in",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "octopus/animations/custom_whips_two_tentacles_forward_in__east.webp",
+          "frame_paths": [
+            "octopus/animations/custom_whips_two_tentacles_forward_in/east/00.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/east/01.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/east/02.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/east/03.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/east/04.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/east/05.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:46 GMT",
+          "src_frames": 7,
+          "sub": "fafda5a9-ac33-4d7b-a4a8-de7eb9c9616e"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "octopus/animations/custom_whips_two_tentacles_forward_in__north.webp",
+          "frame_paths": [
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north/00.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north/01.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north/02.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north/03.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north/04.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north/05.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:47 GMT",
+          "src_frames": 7,
+          "sub": "9031df5d-e5ff-49d5-b45c-a24beb665ee7"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "octopus/animations/custom_whips_two_tentacles_forward_in__north-east.webp",
+          "frame_paths": [
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-east/00.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-east/01.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-east/02.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-east/03.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-east/04.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-east/05.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:48 GMT",
+          "src_frames": 7,
+          "sub": "1453f365-3fa1-40e8-b657-62d3efaf683d"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "octopus/animations/custom_whips_two_tentacles_forward_in__south.webp",
+          "frame_paths": [
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south/00.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south/01.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south/02.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south/03.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south/04.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south/05.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:50 GMT",
+          "src_frames": 7,
+          "sub": "64758c8d-0b4c-4a44-bb2d-6700a1410f4e"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "octopus/animations/custom_whips_two_tentacles_forward_in__south-east.webp",
+          "frame_paths": [
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-east/00.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-east/01.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-east/02.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-east/03.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-east/04.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-east/05.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:57:51 GMT",
+          "src_frames": 7,
+          "sub": "30acb913-c6b1-4d87-8f88-a25003265af8"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "octopus/animations/custom_whips_two_tentacles_forward_in__south-west.webp",
+          "frame_paths": [
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-west/00.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-west/01.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-west/02.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-west/03.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-west/04.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-west/05.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "octopus/animations/custom_whips_two_tentacles_forward_in__west.webp",
+          "frame_paths": [
+            "octopus/animations/custom_whips_two_tentacles_forward_in/west/00.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/west/01.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/west/02.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/west/03.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/west/04.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/west/05.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "octopus/animations/custom_whips_two_tentacles_forward_in__north-west.webp",
+          "frame_paths": [
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-west/00.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-west/01.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-west/02.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-west/03.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-west/04.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-west/05.webp",
+            "octopus/animations/custom_whips_two_tentacles_forward_in/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}
