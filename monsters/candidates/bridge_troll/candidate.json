@@ -1982,16 +1982,16 @@
     "angry_v1": {
       "directions": {
         "south": {
-          "status": "fail",
-          "step_mean": 0.1454,
-          "step_max": 0.1542,
-          "drift": 2.09,
+          "status": "pass",
+          "step_mean": 0.1311,
+          "step_max": 0.2208,
+          "drift": 0.45,
           "loop": 0.0001,
           "loop_ratio": 0.0,
-          "travel": 0.6,
+          "travel": 0.33,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.062,
+          "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
@@ -2001,23 +2001,21 @@
             136,
             136
           ],
-          "reasons": [
-            "HE says redo: redo"
-          ],
-          "sub": "07b8372d-b40b-40d0-b686-73ecebd13817",
-          "group": "db5239c8-8d95-472f-9ebc-d8c7abe61bfc",
+          "reasons": [],
+          "sub": "9589e836-dd31-4af0-86b9-341ae393fee7",
+          "group": "4502c0f9-b358-4efa-9e3f-c5aa41ac5013",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-18T09:16:25+00:00",
-          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in",
-          "tries": 1,
-          "rolls": 1,
-          "intensity": 0,
-          "frames": 5,
-          "rung": 0,
           "mode": "v3",
-          "maintainer": "redo"
+          "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in, more agitated: stomps, tosses its head, bigger movement",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 5,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-18T13:36:34+00:00"
         },
         "south-east": {
           "status": "pass",
