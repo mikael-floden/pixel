@@ -121,6 +121,14 @@ rewrote, or the index you regenerated. Every unit, in this order:
 6. **Push, then release the claim**: note what shipped (commit hash + the
    files) and set `current` to the next unit or to idle, so the partner's
    next run sees those files free.
+7. **A RUN THAT LEAVES NO ACCOUNT DID NOT HAPPEN** (maintainer 2026-09-18: *"they
+   must say what they did and why they did it like that and push it. Just so we
+   always know what they were thinking and why they acted like they did"*). The
+   account is four things on your board, PUSHED: what you took, what you did
+   (commands, what shipped, the sha), **what you did NOT do and why**, and what
+   you cleared. It binds a run that changed nothing just as hard — "nothing to
+   do" is a decision, and the most worth reading. A board push triggers no
+   deploy; a silent run costs the only record of the reasoning.
 
 Requests to the domain and `live/feedback/<domain>.json` verdicts are read by
 both of you and taken ONCE: whoever claims one on their board first has it,

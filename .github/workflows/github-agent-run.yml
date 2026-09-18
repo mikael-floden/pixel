@@ -176,19 +176,32 @@ jobs:
                checks, `git fetch && git rebase origin/main`, re-run the checks if main
                moved under your domain, push to main, then release the claim saying what
                shipped and which entries you cleared.
-            5. LEAVE THE BOARD HONEST. Your last write sets `health` to "idle" (or
-               "error", with what broke) and `updated_at` to now — never "running".
-               Your runner is destroyed when this job ends, so a board left claiming to
-               run describes a session that no longer exists, and the wiki has to guess
-               from a timestamp that it died.
+            5. LEAVE AN ACCOUNT, AND PUSH IT. A RUN THAT LEAVES NO ACCOUNT DID NOT
+               HAPPEN. Before you finish, write on your board and push it:
+                 • what you TOOK — the verdicts you claimed, by key;
+                 • what you DID — the commands you ran, what shipped, the sha;
+                 • what you did NOT do and WHY — a verdict left to the domain agent, a
+                   take you would not regenerate, a budget you stopped against;
+                 • what you CLEARED — every feedback entry you removed, by key.
+               Set `health` to "idle" (or "error", with what broke) and `updated_at` to
+               now — never "running": your runner is destroyed when this job ends, and a
+               board left claiming to run describes a session that no longer exists.
+
+            THIS BINDS A RUN THAT CHANGED NOTHING JUST AS HARD. "Nothing to do" is a
+            DECISION, and it is the one most worth reading: say what you read, what you
+            concluded and from which file, and PUSH that. Never end a session with an
+            unpushed board. It happened on 2026-09-18 — a session ran eight minutes on a
+            live rejected state, reported success, wrote nothing and pushed nothing, and
+            nobody can now tell whether it was right. A board push costs one commit to
+            coordination/ and triggers no deploy; a silent run costs the only record of
+            your reasoning.
 
             Budget: if the generation credits are low, stop cleanly and say so on your
-            board rather than half-generating. If nothing is left unconsumed, write one
-            line saying so and exit without committing — an empty run is the correct
-            outcome when the agent got there first.
+            board rather than half-generating.
 
             DRY RUN: ${{ inputs.dry_run }} — when that reads true, do the reading and
             steps 1 and 2 only, then write what you WOULD do (each verdict, the files it
-            would touch, the entries it would clear) and stop. Change nothing, claim
-            nothing, generate nothing, commit nothing. It is the smoke test for this
-            workflow, not a pass over the queue.
+            would touch, the entries it would clear) into your REPORT and stop. Change
+            nothing, claim nothing, generate nothing, commit nothing — a dry run is the
+            one case where the account stays in the report instead of the board. It is
+            the smoke test for this workflow, not a pass over the queue.

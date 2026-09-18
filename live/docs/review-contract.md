@@ -55,9 +55,24 @@ lands.
    image, so your change appears in the live wiki when the next deploy lands —
    do not hand-edit it (the wiki agent owns that file).
 
-8. **Say what you cleared.** One line in the commit message and on your board:
-   which verdicts you acted on and which entries you removed. He checks the
-   wiki from a phone; the diff is the only other record.
+8. **A RUN THAT LEAVES NO ACCOUNT DID NOT HAPPEN** (maintainer 2026-09-18: *"it
+   would be really good if you can write a law that they must say what they did
+   and why they did it like that and push it. Just so we always know what they
+   were thinking and why they acted like they did"*). Before your session ends,
+   write on your board — and PUSH it — four things:
+   - **what you took**: the verdicts you claimed, by key;
+   - **what you did**: the commands you ran and what shipped, with the sha;
+   - **what you did NOT do, and why**: a verdict you left for the domain agent,
+     a take you judged too risky to regenerate, a budget you stopped against;
+   - **what you cleared**: every feedback entry you removed, by key.
+
+   **This binds a run that changed nothing just as hard.** "Nothing to do" is a
+   DECISION and it is the one most worth reading: say what you read, what you
+   concluded and from which file, and push that. Measured 2026-09-18: a github
+   agent ran eight minutes on a live rejected state, reported success, wrote
+   nothing and pushed nothing — and there is no way, afterwards, to know whether
+   it was right. An empty push costs one commit to `coordination/`, which
+   triggers no deploy; a silent run costs the only record of the reasoning.
 
 ## The guards that exist, and why they are not an excuse
 
