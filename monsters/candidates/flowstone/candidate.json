@@ -1,0 +1,140 @@
+{
+  "id": "flowstone",
+  "name": "Flowstone",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It is the shape of water that ran down the same rock for ten thousand years. Now it walks and the water still runs down it.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Curtain of rippled flowstone folded like heavy cloth, banded amber and white, translucent at the thin edges where light gets through, standing on a poured base and wet all over with a slow film of water",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "flowstone/rotations/south.webp",
+    "south-east": "flowstone/rotations/south-east.webp",
+    "east": "flowstone/rotations/east.webp",
+    "north-east": "flowstone/rotations/north-east.webp",
+    "north": "flowstone/rotations/north.webp",
+    "north-west": "flowstone/rotations/north-west.webp",
+    "west": "flowstone/rotations/west.webp",
+    "south-west": "flowstone/rotations/south-west.webp"
+  },
+  "sheet": "flowstone/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8ea18b62-ea9e-4184-9343-9feacc3ca7b0",
+  "seed": 985486668,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:54:28+00:00",
+  "elapsed_s": 265.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.717,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.763,
+        "bbox": [
+          23,
+          4,
+          97,
+          116
+        ],
+        "fill": 0.576,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.768,
+        "bbox": [
+          25,
+          4,
+          97,
+          117
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.772,
+        "bbox": [
+          24,
+          4,
+          96,
+          116
+        ],
+        "fill": 0.56,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.717,
+        "bbox": [
+          24,
+          4,
+          95,
+          117
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.81,
+        "bbox": [
+          20,
+          4,
+          97,
+          116
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.744,
+        "bbox": [
+          20,
+          4,
+          100,
+          116
+        ],
+        "fill": 0.622,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.756,
+        "bbox": [
+          25,
+          4,
+          95,
+          116
+        ],
+        "fill": 0.544,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.803,
+        "bbox": [
+          23,
+          4,
+          96,
+          116
+        ],
+        "fill": 0.568,
+        "touches_edge": false
+      }
+    }
+  }
+}

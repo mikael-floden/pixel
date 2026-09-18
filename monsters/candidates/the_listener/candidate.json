@@ -1,0 +1,140 @@
+{
+  "id": "the_listener",
+  "name": "Listener",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It has no face because it is not for being looked at. It leans in when you speak and it does not miss anything.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Tall hollow figure in heavy grey cloth with no mask at all, its head a smooth blank oval, both hands raised and cupped behind where ears would be, leaning forward slightly",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "the_listener/rotations/south.webp",
+    "south-east": "the_listener/rotations/south-east.webp",
+    "east": "the_listener/rotations/east.webp",
+    "north-east": "the_listener/rotations/north-east.webp",
+    "north": "the_listener/rotations/north.webp",
+    "north-west": "the_listener/rotations/north-west.webp",
+    "west": "the_listener/rotations/west.webp",
+    "south-west": "the_listener/rotations/south-west.webp"
+  },
+  "sheet": "the_listener/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2169e4b2-024d-4c42-afd8-4235eeea7968",
+  "seed": 1436543350,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:53:43+00:00",
+  "elapsed_s": 162.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.668,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.669,
+        "bbox": [
+          23,
+          5,
+          89,
+          107
+        ],
+        "fill": 0.537,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.711,
+        "bbox": [
+          38,
+          6,
+          72,
+          108
+        ],
+        "fill": 0.276,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.723,
+        "bbox": [
+          39,
+          6,
+          75,
+          108
+        ],
+        "fill": 0.293,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.668,
+        "bbox": [
+          23,
+          4,
+          89,
+          104
+        ],
+        "fill": 0.526,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.751,
+        "bbox": [
+          31,
+          6,
+          86,
+          108
+        ],
+        "fill": 0.447,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.699,
+        "bbox": [
+          33,
+          5,
+          85,
+          107
+        ],
+        "fill": 0.423,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.71,
+        "bbox": [
+          27,
+          5,
+          79,
+          107
+        ],
+        "fill": 0.423,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.747,
+        "bbox": [
+          26,
+          6,
+          81,
+          108
+        ],
+        "fill": 0.447,
+        "touches_edge": false
+      }
+    }
+  }
+}
