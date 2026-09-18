@@ -32,8 +32,17 @@ try {
 
   const go = async ([c, r]) => page.evaluate(([c, r]) => { const m = window.__ml.me(); if (m?.dead) window.__ml.roomSend("respawn", {}); window.__ml.teleport(c, r); }, [c, r]);
   await go(INSIDE);
-  await page.waitForFunction(() => { const f = window.__ml.indoorFade(); return f.inside && f.mix >= 0.99; }, { timeout: 25000 })
-    .catch(() => fail(`the cut-away never landed at ${INSIDE}: ${JSON.stringify(page.evaluate(() => window.__ml.indoorFade()))}`));
+  // THE LANDING IS THE MIX'S INVISIBLE TAIL, AND THIS RIG RENDERS 6-7 fps.
+  // The blend rolls per FRAME (INDOOR_TAU 0.45 s against Phaser's 16.7 ms
+  // target delta, which a starved page still reports), so mix 0.99 is ~140
+  // frames: 2.4 s on his phone, 20-25 s here, plus the scenery streaming in
+  // behind it. At 25 s this gate timed out on a perfectly good build — and
+  // then crashed the run in its own error path, because the message
+  // stringified an unawaited page.evaluate and `fail` had already closed the
+  // browser (measured 2026-09-18: "Target page, context or browser has been
+  // closed", and the same tail made verify-cavewall red on two builds).
+  await page.waitForFunction(() => { const f = window.__ml.indoorFade(); return f.inside && f.mix >= 0.99; }, { timeout: 180000 })
+    .catch(async () => fail(`the cut-away never landed at ${INSIDE}: ${JSON.stringify(await page.evaluate(() => window.__ml.indoorFade()).catch(() => null))}`));
   // The scenery around the house streams in behind the live world; give the
   // rebuild a moment, then read a settled frame.
   await page.waitForTimeout(2500);
@@ -49,7 +58,7 @@ try {
   console.log(`scenery cover OK: ${fading.length} piece(s) over half the room faded out, ${kept.length} smaller piece(s) over it kept their silhouette`);
 
   await go(OUTSIDE);
-  await page.waitForFunction(() => { const f = window.__ml.indoorFade(); return !f.inside && f.mix <= 0.01; }, { timeout: 25000 })
+  await page.waitForFunction(() => { const f = window.__ml.indoorFade(); return !f.inside && f.mix <= 0.01; }, { timeout: 180000 })
     .catch(() => fail("never left the house"));
   await page.waitForTimeout(500);
   const back = await page.evaluate(() => window.__ml.sceneryCover(12));

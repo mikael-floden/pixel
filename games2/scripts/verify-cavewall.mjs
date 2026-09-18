@@ -37,7 +37,12 @@ for (const [c, r, what] of SPOTS) {
   let ok = false;
   // The harness renders his geometry at ~1.7 fps (measured, SwiftShader), and the
   // crossfade is eased per frame: it lands in ~27 s here, 0.35 s on a phone.
-  for (let i = 0; i < 90; i++) { await page.waitForTimeout(500); const s = await page.evaluate(() => window.__ml.indoor()); if (s.indoor && s.mix >= 0.999 && !s.pending === false) { ok = true; break; } }
+  // 240 x 500 ms, not 90: the blend's tail is ~140 FRAMES and this rig renders
+  // 6-7 fps, so mix 0.999 is 20-25 s of wall clock here against 2.4 s on his
+  // phone (measured 2026-09-18, scripts/_fadewatch: 238 frames in 36 s, mix
+  // 0.964 and still climbing). At 45 s this read as "the fade never landed" on
+  // builds where it lands fine.
+  for (let i = 0; i < 240; i++) { await page.waitForTimeout(500); const s = await page.evaluate(() => window.__ml.indoor()); if (s.indoor && s.mix >= 0.999 && !s.pending === false) { ok = true; break; } }
   const d = await page.evaluate(([wc, wr, fc, fr]) => {
     const lum = (v) => (Array.isArray(v) ? 0.299 * v[0] + 0.587 * v[1] + 0.114 * v[2] : Number(v) || 0);
     const col = (cc, rr) => Array.from({ length: 30 }, (_, z) => +lum(window.__ml.lightAtCell(cc, rr, z)).toFixed(3));
