@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "PUSHED c819dcb8ed (the red button freezes the world on a LOSSLESS PNG frame of it: renderer.snapshot with no type argument, capture-then-freeze because readPixels must beat the compositor, gamefreeze's sleep, picture over the canvas only. verify-freezeframe proves the PNG signature in the bytes and that the capture is not a blank read). No files in flight.",
+  "current": "CLAIM: the record button goes back to his 48x48 plate, LEFT-aligned with the HP/EP card (maintainer 2026-09-18: 'I didn't want you to stretch the button just left align it'). Reverting the 5-slice widening; the slicing is recorded as a rejected approach, not kept as dead code. files: games2/client/src/recbtn.ts, games2/scripts/verify-recbtn.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
