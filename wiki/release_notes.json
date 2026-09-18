@@ -1,9 +1,143 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T17:28:27.046Z",
- "head": "513647bd9",
+ "generated_at": "2026-09-18T18:09:36.626Z",
+ "head": "4bd2bae7b",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "4bd2bae7b",
+   "at": "2026-09-18T18:00:58+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: the github agent starts working sooner — a partial clone, not the whole history",
+   "agent": null,
+   "dirs": [
+    ".github"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "cc8b162c9",
+   "at": "2026-09-18T17:53:16+00:00",
+   "author": "Claude",
+   "subject": "tiles board: road-edge fades shipped",
+   "agent": "tiles",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "0ec3c563f",
+   "at": "2026-09-18T17:52:59+00:00",
+   "author": "Claude",
+   "subject": "fades: measure and publish the new road-edge tiles",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 1241
+  },
+  {
+   "sha": "bb92a4db6",
+   "at": "2026-09-18T17:49:16+00:00",
+   "author": "Claude",
+   "subject": "fades: paved road edge complete (grass <-> brown paving stone rep 2)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 138
+  },
+  {
+   "sha": "d98f12153",
+   "at": "2026-09-18T17:45:32+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: the github agent's failure has a name — 401 Invalid bearer token",
+   "agent": null,
+   "dirs": [
+    ".github"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "97fa727c7",
+   "at": "2026-09-18T17:37:29+00:00",
+   "author": "Claude",
+   "subject": "deploy: the curate COPYs are ordered by MEASURED churn, so an art push costs only its own domain",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8fdc1ec15",
+   "at": "2026-09-18T17:36:35+00:00",
+   "author": "Claude",
+   "subject": "fades: paved road edge, grass <-> brown paving stone rep 2 (cont.)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 19
+  },
+  {
+   "sha": "d1d493852",
+   "at": "2026-09-18T17:34:56+00:00",
+   "author": "Claude",
+   "subject": "gates: a piece that hangs on a wall is exempt from the anchor-box rule, by the rule itself",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "462e96c57",
+   "at": "2026-09-18T17:34:47+00:00",
+   "author": "Claude",
+   "subject": "fades: paved road edge, grass <-> brown paving stone rep 2",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 19
+  },
+  {
+   "sha": "a6b2058f4",
+   "at": "2026-09-18T17:33:11+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 11 (grass <-> light soil, reps 7-13 complete)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 172
+  },
+  {
+   "sha": "0073528ed",
+   "at": "2026-09-18T17:29:49+00:00",
+   "author": "Claude",
+   "subject": "camera: the zoom ease LANDS, so the floor stops shimmering under a standing player",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "00d391b6e",
+   "at": "2026-09-18T17:28:28+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: the Agents page could not see the fleet in production",
+   "agent": "wiki",
+   "dirs": [
+    "",
+    "games2",
+    "wiki"
+   ],
+   "files": 8
+  },
   {
    "sha": "513647bd9",
    "at": "2026-09-18T17:24:04+00:00",
@@ -430,138 +564,6 @@
    "agent": null,
    "dirs": [
     ".github"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "6325d78f6",
-   "at": "2026-09-18T15:55:43+00:00",
-   "author": "wiki-agent",
-   "subject": "live: the recipe for waking an agent on a committed review",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "32f17e39c",
-   "at": "2026-09-18T15:53:48+00:00",
-   "author": "Claude",
-   "subject": "fades: road-edge sheets, batch 1 (grass <-> light soil, reps 7+)",
-   "agent": null,
-   "dirs": [
-    "tiles"
-   ],
-   "files": 172
-  },
-  {
-   "sha": "d36406766",
-   "at": "2026-09-18T15:46:23+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduation landings",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 8
-  },
-  {
-   "sha": "e2bd1f7b4",
-   "at": "2026-09-18T15:36:19+00:00",
-   "author": "Claude",
-   "subject": "tiles board: claim the road-edge fade run (grass <-> light_soil, grass <-> brown paving)",
-   "agent": "tiles",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "919578752",
-   "at": "2026-09-18T15:20:33+00:00",
-   "author": "Claude",
-   "subject": "gates: the contact gate reads the band it is gating, and asserts that it is thin",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "59ccc055a",
-   "at": "2026-09-18T15:19:21+00:00",
-   "author": "Claude",
-   "subject": "gates: the indoor-scenery fixtures pick a HOUSE, and the turned-facing rule skips a world that offers no turned piece",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "a6292b02e",
-   "at": "2026-09-18T15:15:06+00:00",
-   "author": "Claude",
-   "subject": "games board: the crossfade pops and the fade's clock; the deploy at 5m05s; which gates are fixture drift",
-   "agent": "games",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "698961e6d",
-   "at": "2026-09-18T15:15:05+00:00",
-   "author": "Claude",
-   "subject": "games2: a leading underscore in scripts/ is a scratch probe, and the tree says so",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "4252ee410",
-   "at": "2026-09-18T15:15:05+00:00",
-   "author": "Claude",
-   "subject": "crossfade: the roll runs on wall clock, capped — the crossing is the same length on any frame rate",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "6935037c0",
-   "at": "2026-09-18T15:15:05+00:00",
-   "author": "Claude",
-   "subject": "crossfade: the furniture and the roof-top scenery ride the room's LIGHT, not the debris' 3x cover curve",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "5207fa1c9",
-   "at": "2026-09-18T15:15:04+00:00",
-   "author": "Claude",
-   "subject": "gates: the indoor blend's invisible tail is 140 frames, so the landing waits are sized in frames, not seconds",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "12dd3fee9",
-   "at": "2026-09-18T17:09:11+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/scenery_hitbox.json",
-   "agent": null,
-   "dirs": [
-    "live"
    ],
    "files": 1
   }

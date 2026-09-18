@@ -431,6 +431,25 @@ applies to any field another domain owns.
 
 ## Feedback files — the contract with the other agents
 
+**HIS THUMB DOES NOT MOVE BETWEEN TILES** (maintainer 2026-09-18, on the fade
+page: *"I want to not have to scroll between reviews. The next in line should
+appear and I can click approve/remove at the exact same screen location"*).
+`keepThumb(card)` measures the row he pressed and scrolls the page so the next
+unjudged card's `.fb-row` lands on that exact screen Y; `fadePinY` +
+`applyFadePin()` carry the same Y across the render that loads the next twelve.
+Measured: 15 verdicts in a row, worst drift 1px, across the boundary.
+
+- **Measured from the ROW, not the card**: cards differ in height (a typed note,
+  a wrapped title), so aligning card tops moves the buttons every time.
+- **`applyFadePin()` is called right after the in-page `route()`**, not in the
+  hashchange restore — a re-render from inside the page never goes through that
+  handler, which is why the first cut left the next buttons 453px down at every
+  twelfth tile.
+- **`.fade-pad` (60vh) while anything is unjudged**: a page cannot scroll past
+  its own end, so without air below, the last card can only sit near the bottom.
+- It re-applies for a second as the canvases settle; a single pass lands short.
+
+
 **A verdict may never point at art that no longer exists** (maintainer
 2026-09-18: *"I have a dangling ghost state and they need to remove what I
 remove so it's not stuck in the wiki. Also clean the state/comment/redo etc

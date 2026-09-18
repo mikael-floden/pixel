@@ -10493,6 +10493,57 @@ const transState = new Map();   // pair -> { set, seed }
 const fadeShown = new Map();    // unordered pair -> fade tiles shown (12 at a time)
 /** The fade list's order for the pair being visited: { key, keys, firstDone }. */
 let fadeOrder = { key: null, keys: [], firstDone: 0 };
+/* HIS THUMB DOES NOT MOVE BETWEEN TILES (maintainer 2026-09-18, on the fade
+ * page: "When I review a fade tile on this page I want to not have to scroll
+ * between reviews. The next in line should appear and I can click
+ * approve/remove at the exact same screen location").
+ *
+ * The rule the ground-details queue already follows, on the one other page
+ * where he judges a long list: the judged card stays where it is (the frozen
+ * order above is the whole point), and the PAGE moves so the next unjudged
+ * card's buttons land on the exact screen row his thumb just left.
+ *
+ * MEASURED FROM THE ROW HE PRESSED, not from the card: the cards differ in
+ * height (a note he typed, a wrapped title), so aligning card tops would put
+ * the buttons somewhere new every time. Instant, never smooth — a 300ms glide
+ * under a thumb that is already coming down is a mis-tap. */
+let fadePinY = null;
+function keepThumb(card) {
+  const row = card.querySelector(".fb-row");
+  if (!row) return;
+  const y = row.getBoundingClientRect().top;
+  let next = card.nextElementSibling;
+  while (next && !(next.classList?.contains("fade-tile") && !next.classList.contains("picked") && !next.classList.contains("dropped"))) {
+    next = next.nextElementSibling;
+  }
+  const nextRow = next?.querySelector(".fb-row");
+  if (nextRow) { window.scrollBy(0, Math.round(nextRow.getBoundingClientRect().top - y)); return; }
+  // Nothing unjudged left on screen: remember the height his thumb is at and
+  // let the caller load more — the pin is applied after that render, so the
+  // twelve-tile boundary is not a scroll either.
+  fadePinY = y;
+}
+/** Put the first unjudged card's buttons back under his thumb after a render
+ *  that loaded more tiles. Runs once, then forgets. */
+function applyFadePin() {
+  if (fadePinY == null) return;
+  const y = fadePinY; fadePinY = null;
+  /* RE-APPLIED WHILE THE PAGE SETTLES. Each fade tile draws an isometric scene
+   * into a canvas, and those land a frame or two after the render — measured:
+   * a single pass at the twelve-tile boundary put the next buttons 453px down,
+   * off the screen entirely, because the cards above were still growing. */
+  let tries = 0;
+  const put = () => {
+    const next = document.querySelector(".fade-tile:not(.picked):not(.dropped) .fb-row");
+    if (next) {
+      const d = Math.round(next.getBoundingClientRect().top - y);
+      if (Math.abs(d) > 1) window.scrollBy(0, d);
+    }
+    if (++tries < 4) setTimeout(put, 250);
+  };
+  requestAnimationFrame(put);
+}
+
 /* ---- FADE TILES: both grounds on ONE top (maintainer 2026-08-28) ---------
  * "This is tiles the map-agent can use to start warming up the player for a
  * new ground-type long before the transition happens. So this is tiles
@@ -11063,14 +11114,36 @@ function viewWorldTransition(pairId) {
               card.classList.toggle("dropped", st === "rejected");
             };
             paintCard();
-            card.append(feedbackRow("tiles", t.key, { onchange: () => { paintCard(); paintLeft(); } }));
+            card.append(feedbackRow("tiles", t.key, { onchange: () => {
+              paintCard(); paintLeft();
+              keepThumb(card);
+              // Out of loaded tiles with more to come: load them and let the
+              // pin put the next buttons under his thumb (auto-expand, the
+              // same ask as the ground queue's "show more once I'm at the
+              // bottom" — here it must not cost him a scroll either).
+              if (fadePinY != null && tiles2.length > shown) {
+                fadeShown.set(fkey, shown + 12); keepScrollY = window.scrollY;
+                route();
+                // Straight after THIS render, not in the hash handler: a
+                // re-render from inside the page never goes through it (route()
+                // is called directly), which is why the first cut left the next
+                // buttons 453px below the screen at every twelfth tile.
+                applyFadePin();
+              }
+            } }));
             return card;
           })(),
         ].filter(Boolean)),
         tiles2.length > shown ? h("button", {
           class: "ghost-btn", style: "margin-top:10px",
           onclick: () => { fadeShown.set(fkey, shown + 12); keepScrollY = window.scrollY; route(); },
-        }, `Show 12 more (${tiles2.length - shown} left)`) : null)];
+        }, `Show 12 more (${tiles2.length - shown} left)`) : null,
+        /* ROOM TO PUT THE LAST TILE UNDER HIS THUMB. A page cannot scroll past
+         * its own end, so without this the last unjudged card could only ever
+         * sit near the bottom of the screen — measured at the twelve-tile
+         * boundary: the next buttons landed 453px lower, off the screen. Half a
+         * screen of air, only while something is still unjudged. */
+        state.admin && left > 0 ? h("div", { class: "fade-pad" }) : null)];
     })() : []));
 }
 

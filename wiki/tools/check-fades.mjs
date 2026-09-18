@@ -467,6 +467,48 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
     `so every card on that set reports the difference instead of hiding it (min ${Math.min(...blue.dE)} dE)`);
   ok(blue.words.some((w) => /off/.test(w)), `and the pill says which way it is off (${blue.words.join(" | ")})`);
 }
+// ---- 9. HIS THUMB DOES NOT MOVE BETWEEN TILES ------------------------------
+// (maintainer 2026-09-18: "When I review a fade tile on this page I want to not
+// have to scroll between reviews. The next in line should appear and I can
+// click approve/remove at the exact same screen location".) Fifteen verdicts in
+// a row, ACROSS the twelve-tile boundary where the next page of tiles loads —
+// that boundary is where the first cut put the next buttons 453px down.
+{
+  const biggest = Object.entries(IDX.pairs).sort((a, b2) => b2[1].length - a[1].length)[0][0];
+  const cx = await b.newContext({ viewport: { width: 393, height: 800 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+  const pg = await cx.newPage();
+  await pg.route("**/api/wiki/me", (r) => r.fulfill({ status: 200, contentType: "application/json", body: '{"admin":true}' }));
+  await pg.addInitScript(() => { localStorage.setItem("wiki-admin-token", "gate"); localStorage.setItem("ml-staging-base", `${location.origin}/assets/`); });
+  await pg.goto(`${W}#/world/transition/${biggest}`, { waitUntil: "load" });
+  await pg.waitForTimeout(3500);
+  // A fresh queue for the test only: his real verdicts live in the same doc.
+  await pg.evaluate(() => { window.__wiki.state.feedback.tiles.entries = {}; window.__wiki.route(); });
+  await pg.waitForTimeout(2500);
+  const drifts = [];
+  for (let i = 0; i < 15; i++) {
+    const pressedAt = await pg.evaluate((first) => {
+      const card = document.querySelector(".fade-tile:not(.picked):not(.dropped)");
+      if (!card) return null;
+      if (first) card.scrollIntoView({ block: "center" });
+      const btn = [...card.querySelectorAll(".fb-row button")].find((x) => /approve/.test(x.textContent));
+      const y = Math.round(btn.getBoundingClientRect().top);
+      btn.click();
+      return y;
+    }, i === 0);
+    await pg.waitForTimeout(1400);
+    const nextAt = await pg.evaluate(() => {
+      const card = document.querySelector(".fade-tile:not(.picked):not(.dropped)");
+      const btn = card && [...card.querySelectorAll(".fb-row button")].find((x) => /approve/.test(x.textContent));
+      return btn ? Math.round(btn.getBoundingClientRect().top) : null;
+    });
+    if (pressedAt != null && nextAt != null) drifts.push(nextAt - pressedAt);
+  }
+  const worst = drifts.length ? Math.max(...drifts.map(Math.abs)) : null;
+  console.log("thumb drift:", JSON.stringify(drifts));
+  ok(drifts.length >= 13, `fifteen verdicts land without a scroll, past the twelve-tile boundary (${drifts.length} measured)`);
+  ok(worst != null && worst <= 2, `and approve never moves more than a pixel or two under his thumb (worst ${worst}px)`);
+  await cx.close();
+}
 await b.close();
 console.log(fails.length ? `\nFADE CHECKS FAILED (${fails.length})` : "\nALL FADE CHECKS PASSED");
 process.exit(fails.length ? 1 : 0);
