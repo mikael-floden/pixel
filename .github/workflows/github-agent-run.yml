@@ -111,6 +111,71 @@ jobs:
       # runner already ships python3, and the prompt tells the agent to install
       # the requirements itself the moment it actually reaches for a pipeline.
 
+      # HAND IT THE DIFF — DO NOT MAKE IT FIND ONE (measured 2026-09-18: of a
+      # 5m58s scenery run, 4m29s passed before the first claim, and the bulk of
+      # it was working out WHAT he had changed — reading a 5190-entry
+      # objects.json and comparing it against the art. The push payload already
+      # knows: `before` and `after` are two shas, and the changed keys are a
+      # `git show` of each side plus a dict compare. It costs under a second
+      # here and saves minutes there.)
+      #
+      # THIS IS ALSO WHERE THE FILE NAME IS RESOLVED. He reviews scenery and the
+      # wiki writes feedback/OBJECTS.json; characters2 is characters.json. The
+      # prompt used to name `live/feedback/<domain>.json`, which for scenery is
+      # a path that does not exist — the first real session had to work that out
+      # for itself and said so on its board.
+      #
+      # IT NEVER FAILS THE RUN: no before-image (a dispatch, a force-push, a
+      # first commit) just means the agent reads the file itself, as it did
+      # before this step existed.
+      - id: verdicts
+        continue-on-error: true
+        env:
+          DOMAIN: ${{ inputs.domain }}
+          BEFORE: ${{ github.event.before }}
+        run: |
+          set -u
+          {
+            echo "changed<<VERDICTS_EOF"
+            python3 - <<'PY'
+          import json, os, subprocess, sys
+          FILES = {"scenery": "objects", "characters2": "characters"}
+          name = FILES.get(os.environ["DOMAIN"], os.environ["DOMAIN"])
+          path = "live/feedback/%s.json" % name
+          def entries(rev):
+              try:
+                  blob = subprocess.run(["git", "show", "%s:%s" % (rev, path)],
+                                        capture_output=True, text=True, check=True).stdout
+                  return json.loads(blob).get("entries", {})
+              except Exception:
+                  return None
+          now = entries("HEAD")
+          before = os.environ.get("BEFORE", "")
+          old = entries(before) if before and set(before) != {"0"} else None
+          print("THE FILE IS %s" % path)
+          if now is None:
+              print("(this run could not read it — read it yourself)"); sys.exit(0)
+          if old is None:
+              print("(no before-image for this run — diff it yourself: it holds %d entries)" % len(now)); sys.exit(0)
+          moved = [k for k, v in now.items() if old.get(k) != v]
+          gone = [k for k in old if k not in now]
+          if not moved and not gone:
+              print("(no entry moved in this push — say so on your board and stop)"); sys.exit(0)
+          for k in sorted(moved)[:40]:
+              v = now[k] or {}
+              bits = [str(v.get("status", "?"))]
+              if v.get("rating") is not None: bits.append("rating %s" % v["rating"])
+              if v.get("note"): bits.append("note: %s" % v["note"])
+              was = (old.get(k) or {}).get("status")
+              print("  %s -> %s%s" % (k, ", ".join(bits), "   (was %s)" % was if was else "   (new)"))
+          for k in sorted(gone)[:40]:
+              print("  %s -> the entry itself is GONE from the file" % k)
+          rest = max(0, len(moved) - 40) + max(0, len(gone) - 40)
+          if rest: print("  (…and %d more — read the file)" % rest)
+          PY
+            echo "VERDICTS_EOF"
+          } >> "$GITHUB_OUTPUT"
+
       - uses: anthropics/claude-code-action@v1
         env:
           # The generating domains need their key exactly as the scheduled art
@@ -166,10 +231,20 @@ jobs:
           # is to let it print. Removed once that is known.
           show_full_output: "true"
           prompt: |
-            A wiki review just landed on main: the Game Master committed verdicts to
-            live/feedback/${{ inputs.domain }}.json. You are standing in for the
+            A wiki review just landed on main. You are standing in for the
             ${{ inputs.domain }} agent for this one unit of work, in a fresh checkout with
             no memory of earlier runs.
+
+            WHAT HE JUST CHANGED — ALREADY DIFFED FOR YOU. This is the entries that moved
+            in this push, and the name of the file they live in. You do not have to find
+            them; the file holds thousands of entries and only these are new:
+
+            ${{ steps.verdicts.outputs.changed }}
+
+            Trust that for WHAT MOVED and for nothing else. Whether the art on disk still
+            matches the verdict, what the verdict MEANS in this domain, and whether
+            someone already claimed it are all yours to establish — from the file, the
+            disk and the boards.
 
             PACE — HIS STANDING RULE, AND IT APPLIES TO YOU (maintainer: "Don't over
             think my tasks. If a task is easy and takes 5sec then do the task in 5sec",
@@ -197,23 +272,27 @@ jobs:
                 it — a generation the verdict asks for, a pipeline that runs for minutes.
                 Everything around it is overhead: keep it to seconds.
 
-            TAKE THE SHAPE OF THAT AGENT. Read, in this order, before deciding anything:
-              1. CLAUDE.md — the law of the repo.
-              2. coordination/PROTOCOL.md — "Two writers per directory" binds you.
-              3. live/docs/review-contract.md — HOW A REVIEW IS ACTED ON AND CLEANED UP.
+            TAKE THE SHAPE OF THAT AGENT. Read these before deciding anything — ALL FOUR
+            IN ONE MESSAGE, they do not depend on each other and reading them one after
+            another is three round-trips he waits through. (CLAUDE.md, the law of the
+            repo, is already in your context — the CLI loads it every turn. Do not open
+            it again.)
+              1. coordination/PROTOCOL.md — "Two writers per directory" binds you.
+              2. live/docs/review-contract.md — HOW A REVIEW IS ACTED ON AND CLEANED UP.
                  This is the part you must not improvise. Its short form: a verdict
                  describes ONE generation of the art, so the entry dies as part of doing
                  the work; an approval is never cleared; a removal removes the art, the
                  index entry, the upstream record AND every verdict keyed on it, entity
                  and facet alike; and when you are done, no key in the file may name a
                  path, state or direction that is not on disk.
-              4. ${{ inputs.domain }}/README.md — the authority on the art: what approved,
+              3. ${{ inputs.domain }}/README.md — the authority on the art: what approved,
                  redo and removed MEAN here and which pipeline command does each.
-              5. live/README.md — the feedback file's schema and per-domain vocabulary.
+              4. live/README.md — the feedback file's schema and per-domain vocabulary.
 
             Then:
             1. Read coordination/${{ inputs.domain }}.json and
-               coordination/${{ inputs.domain }}-assistant.json (whichever exist). A
+               coordination/${{ inputs.domain }}-assistant.json (whichever exist) — in the
+               SAME message as the four above; they are small and they are on disk. A
                verdict either board has claimed or acked is CONSUMED — leave it. If
                either board's `current` names a file you would touch, that unit is not
                yours; a collision goes to the original agent.
