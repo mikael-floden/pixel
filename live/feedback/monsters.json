@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-18T16:26:38Z",
+  "updated_at": "2026-09-18T17:07:24.641Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -6737,22 +6737,24 @@
       "updated_at": "2026-09-18T14:37:23.838Z"
     },
     "monsters/spider_queen#die_v1#south-east": {
-      "art": "da6958e9e44f82fe",
-      "updated_at": "2026-09-18T14:37:34.723Z",
-      "status": "approved",
-      "rating": 1
+      "art": "209a471e1a4ae636",
+      "updated_at": "2026-09-18T17:07:18.036Z",
+      "status": "redo",
+      "rating": 1,
+      "note": "I kinda want the spider to fade away or loose it's legs (whatever works best)"
     },
     "monsters/spider_queen#die_v1#south-west": {
-      "status": "approved",
-      "rating": 1,
+      "status": "redo",
       "art": "14545c48181ab877",
-      "updated_at": "2026-09-18T14:37:45.157Z"
+      "updated_at": "2026-09-18T17:06:56.734Z",
+      "note": "I kinda want the spider to fade away or loose it's legs (whatever works best)"
     },
     "monsters/spider_queen#die_v1#north": {
-      "status": "approved",
+      "status": "redo",
       "rating": 1,
-      "art": "e0050cbe5bae65fb",
-      "updated_at": "2026-09-18T14:38:16.389Z"
+      "art": "fdbeb9cd4acb1a58",
+      "updated_at": "2026-09-18T17:07:06.897Z",
+      "note": "I kinda want the spider to fade away or loose it's legs (whatever works best)"
     },
     "monsters/fire_elemental": {
       "status": "rejected",
@@ -7011,6 +7013,36 @@
       "status": "approved",
       "art": "c2c24b466ee25f67",
       "updated_at": "2026-09-18T14:44:21.249Z"
+    },
+    "monsters/spider_queen#die_v1#west": {
+      "art": "fa07f06f541d72dc",
+      "updated_at": "2026-09-18T17:06:59.239Z",
+      "status": "redo",
+      "note": "I kinda want the spider to fade away or loose it's legs (whatever works best)"
+    },
+    "monsters/spider_queen#die_v1#north-west": {
+      "status": "redo",
+      "art": "73e899f58a7876a0",
+      "updated_at": "2026-09-18T17:07:04.097Z",
+      "note": "I kinda want the spider to fade away or loose it's legs (whatever works best)"
+    },
+    "monsters/spider_queen#die_v1#north-east": {
+      "note": "I kinda want the spider to fade away or loose it's legs (whatever works best)",
+      "updated_at": "2026-09-18T17:07:09.689Z",
+      "status": "redo",
+      "art": "8a90e768b6046f4b"
+    },
+    "monsters/spider_queen#die_v1#east": {
+      "note": "I kinda want the spider to fade away or loose it's legs (whatever works best)",
+      "updated_at": "2026-09-18T17:07:12.746Z",
+      "status": "redo",
+      "art": "05ac656cae7f8f20"
+    },
+    "monsters/spider_queen#die_v1#south": {
+      "status": "redo",
+      "art": "5fe2238a0891de17",
+      "updated_at": "2026-09-18T17:07:24.156Z",
+      "note": "I kinda want the spider to fade away or loose it's legs (whatever works best)"
     }
   }
 }
