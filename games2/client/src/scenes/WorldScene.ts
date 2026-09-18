@@ -22468,28 +22468,33 @@ export class WorldScene extends Phaser.Scene {
            * falls back to the crop's bottom centre, in the builder. */
           const rectB = box0?.shape === "rect";
           const szoC = rectB ? box0?.size_by_dir?.[p.dir || "south"] : undefined;
-          /* IN THE CROP'S OWN SPACE, WHICH IS THE CANVAS'S — no pack offset.
-           * `fit.sx/sy` index the piece's texture the same way the draw anchor
-           * does (`art.canvas.w / 2 + ax - fit.sx`), so the box belongs in
-           * canvas coordinates and the builder subtracts the crop's origin
-           * itself. Subtracting the pack offset as well (which the lit copy's
-           * shape map does, because that map is built on the PACKED texels)
-           * put the footprint 40 texels left of a streetlight's 35-wide crop
-           * and the piece lost its contact entirely — measured at 304.3,232.9,
-           * 12 of 26 crops came back empty. */
+          /* IN THE TEXTURE'S OWN TEXELS — THE SAME SPACE THE DRAW CUTS IN.
+           * The builder reads the piece's resident PIXELS, and for packed art
+           * those are the packed sheet, which holds the canvas from (ox, oy):
+           * `addSceneryCut` maps the crop through `packedCut` for exactly that
+           * reason, so the stamp's crop and footprint must be mapped the same
+           * way or the builder reads a transparent corner of the sheet and the
+           * piece gets no contact at all. Measured at his hearth house
+           * (254.0,304.2) with the crop in canvas coordinates: 52 of 60 crops
+           * came back empty, including every state of stone_025 whose pack
+           * offset is not zero. The lit copy's shape map already lives in this
+           * space (`hb.cx -= pk.ox`), which is why it never had the bug. */
+          const pkc = this.sceneryPackOf(key);
+          const cr = pkc ? packedCut(pkc, fit.sx, fit.sy, fit.sw, fit.sh) : { x: fit.sx, y: fit.sy, w: fit.sw, h: fit.sh };
+          const cCut: ContactCut = { sx: cr.x, sy: cr.y, sw: cr.w, sh: cr.h };
           const foot: ContactFoot | undefined = box0
             ? {
-                cx: art.canvas.w / 2 + (hbPos?.ax ?? box0.ax),
-                cy: art.canvas.h / 2 + (hbPos?.ay ?? box0.ay),
+                cx: art.canvas.w / 2 + (hbPos?.ax ?? box0.ax) - (pkc?.ox ?? 0),
+                cy: art.canvas.h / 2 + (hbPos?.ay ?? box0.ay) - (pkc?.oy ?? 0),
                 rx: szoC && Number.isFinite(szoC.rx) ? szoC.rx : box0.rx,
                 ry: szoC && Number.isFinite(szoC.ry) ? szoC.ry : box0.ry,
               }
             : undefined;
-          const ck = contactStampKey(key, fit, foot);
+          const ck = contactStampKey(key, cCut, foot);
           rec.__ckey = ck;
           rec.__csw = fit.sw;
           rec.__csh = fit.sh;
-          if (!this.textures.exists(ck) && !this.contactJobs.has(ck)) this.contactJobs.set(ck, { artKey: key, cut: { sx: fit.sx, sy: fit.sy, sw: fit.sw, sh: fit.sh }, foot });
+          if (!this.textures.exists(ck) && !this.contactJobs.has(ck)) this.contactJobs.set(ck, { artKey: key, cut: cCut, foot });
         } else rec.__ckey = undefined;
       }
       this.sceneryImgs.push(
