@@ -1,8 +1,8 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-17T16:48:44.578038+00:00",
+  "updated_at": "2026-09-18T02:01:49.723090+00:00",
   "health": "idle",
-  "current": "idle \u2014 retirement records cleaned and gated (d7208b4c56); waiting on maps2; no file in scenery/ in flight",
+  "current": "IN FLIGHT (his order 2026-09-18: 'generate animations so all animated scenery has SE, S and SW animations; only the light moving; regenerate in a second pass if not') \u2014 scenery/pipeline/redo_facing_anim.py (1-frame facing counts as missing; second-pass brief derived from the clip's own subject), then a --missing --rounds 2 run over every animated piece: manifests/frames/strips/packed of every piece the run touches, scenery/viewer_data.json, scenery/README.md.",
   "progress": {
     "scenery_complete": 736,
     "scenery_target": 2146,
