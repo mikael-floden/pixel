@@ -1,56 +1,58 @@
 name: github agents
 
 # EVERY AGENT HAS A GITHUB AGENT (maintainer 2026-09-18: "every agent I have
-# also have a github agent. This is how I think about it" — and, on the words
-# this workflow used to use, "I feel this is insanely confusing"). So the thing
-# this starts is `<agent>-github-agent`: the monsters agent's github agent, the
-# scenery agent's github agent. Not a "wake", not a "verdict session".
+# also have a github agent. This is how I think about it"). A review he commits
+# starts that domain's github agent — a fresh session, shaped by that domain's
+# own docs, bound by live/docs/review-contract.md. Not a "wake", not a "verdict
+# session": "I feel this is insanely confusing".
 #
+# THE EVENT ALREADY EXISTS: the wiki's admin save is committed to main by the
+# game server itself — games2/server/src/live.ts `ghCommitDelta`, one commit per
+# save, message `live: admin update — feedback/<file>.json`. Without this
+# workflow a verdict sits until the domain agent's next run reads the file
+# (PROTOCOL rule 4), which can be hours.
+#
+# NOTHING IN FRONT OF THE WORK (maintainer 2026-09-18: "So this is just an
+# artificial sleep?!? Remove it completely!", then "we want them to be able to
+# run in parallel! But we also need lower latency ... think hard and we can get
+# the best of both worlds"). Both, like this:
+#
+#   • ONE JOB PER DOMAIN, each with a job-level `if` that reads the PUSH PAYLOAD
+#     — no detect job, no runner, no API call and no clone in front of the
+#     session. The domain whose feedback file was written starts at once; the
+#     others are never created, so they cost nothing and do not clutter the run.
+#     (The `detect` job this replaces cost ~5s of every start just to learn what
+#     the payload already said.)
+#   • They are independent jobs, so a scenery review and a monsters review run
+#     SIDE BY SIDE, each in its own concurrency group inside the reusable
+#     workflow.
+#   • Everything about HOW a session runs lives once, in github-agent-run.yml.
+#
+# THE FILE IS NOT THE DIRECTORY: he reviews scenery and the wiki writes
+# feedback/OBJECTS.json, whose domain on disk is scenery/; characters.json is
+# characters2/. The mapping is the `if` of each job, where it reads at a glance.
+#
+# NOT WOKEN BY: bindings.json (an <event>#<sound> review, not a domain) and
+# composer/composer-music (games2/composer is one corner of a directory six
+# agents share — a stand-in there needs the games2 split decided first).
+#
+# THE SESSION IS A THIRD WRITER in its domain, after the agent and its
+# assistant, so its prompt binds it to PROTOCOL's "Two writers per directory".
+#
+# REASONING, SETUP, MEASUREMENTS: live/docs/github-agents.md.
+# KILL SWITCH WITHOUT SETUP: repo variable GITHUB_AGENTS = "off".
+
 # The title in the Actions list is the first thing he reads on a phone, so it
 # names the review rather than repeating the workflow's own name.
 run-name: >-
   github agent — ${{ github.event_name == 'workflow_dispatch'
     && format('{0} (rehearsal)', inputs.domain) || github.event.head_commit.message }}
 
-# A REVIEW IS AN EVENT, NOT A THING THAT WAITS FOR THE NEXT AGENT RUN
-# (maintainer 2026-09-18: "I want to wake up an agent when a wiki review is
-# committed to process it immediately without me having to tell the agent" —
-# and, on the hourly-Routine alternative, "Latency is very very important").
-#
-# THE EVENT ALREADY EXISTS: the wiki's admin save is committed to main by the
-# game server itself — games2/server/src/live.ts `ghCommitDelta`, one commit per
-# save, message `live: admin update — feedback/<domain>.json`. This workflow is
-# only the last hop: that push starts a Claude session in the repo that takes
-# the new verdicts. Without it a verdict sits until the domain agent's next run
-# reads the file (PROTOCOL rule 4), which can be hours.
-#
-# ONE SESSION PER DOMAIN, SHAPED BY THAT DOMAIN'S OWN DOCS (maintainer
-# 2026-09-18: "when I do a review on a monster and click redo that agent has to
-# know how to be the monster agent. And when I redo a scenery it should know how
-# to be a scenery agent"). The domain is derived from WHICH feedback file he
-# wrote, and the prompt sends the session to that domain's README for the art
-# and to live/docs/review-contract.md for the part no session may improvise:
-# clearing the verdict it acted on, so the wiki is never left showing his old
-# note over new art or a removed asset.
-#
-# THE SESSION IS A THIRD WRITER in its domain, after the agent and its
-# assistant, so the prompt binds it to PROTOCOL's "Two writers per directory":
-# read both boards, treat a claimed or acked verdict as CONSUMED, and claim on
-# its own board (coordination/<agent>-github-agent.json) BEFORE editing anything.
-#
-# REASONING, REJECTED ALTERNATIVES, SETUP: live/docs/github-agents.md.
-# KILL SWITCH WITHOUT SETUP: it runs unless the repo variable GITHUB_AGENTS is
-# set to "off" (Settings → Secrets and variables → Actions → Variables).
-
 on:
   push:
     branches: [main]
     paths:
       - "live/feedback/*.json"
-  # A SMOKE TEST THAT COSTS NOTHING BUT THE SESSION: dispatching it with
-  # dry_run left at "true" proves the whole path — auth secret, checkout,
-  # prompt, board reads — and the session reports what it WOULD do and exits
-  # without committing or generating.
   workflow_dispatch:
     inputs:
       domain:
@@ -62,256 +64,88 @@ on:
         type: boolean
         default: true
 
-# NO WAITING AT ALL (maintainer 2026-09-18: "So this is just an artificial
-# sleep?!? Remove it completely! I dont care if we get several github agents in
-# parallell! It's all about latency!").
-#
-# There was a `debounce` job here: every save slept 2 minutes in a
-# cancel-in-progress group, so a review sitting collapsed into ONE session that
-# started after he stopped. It cost one session per sitting and bought two
-# minutes of latency on every verdict. Gone. A verdict now starts a session in
-# about 27 seconds, which is the runner, the sparse checkout and the CLI install.
-#
-# What replaces it is nothing — and nothing is needed, because the work group
-# below already holds the only rule that matters: ONE session per domain at a
-# time. Sessions for DIFFERENT domains do run in parallel (their groups differ);
-# two in the same domain would be two writers in one directory, which is the
-# collision PROTOCOL exists to prevent, and no amount of latency is worth it.
-# While one runs, the next verdict's run waits in that group, and GitHub keeps
-# only the NEWEST waiting run — so a burst still ends in one catch-up session
-# rather than a queue of ten.
 jobs:
-  # WHICH DOMAINS DID HE REVIEW? Asked of the GitHub API, NOT of a clone
-  # (measured 2026-09-18: checking out the repo just to read a log cost 82s of
-  # a run whose whole point is to start fast). One request per feedback file —
-  # "has this path been touched in the last 30 minutes" — which is eight cheap
-  # calls answered in about a second, and no working tree at all.
-  #
-  # THIRTY MINUTES, not this push's diff: a run can be superseded while it
-  # works, and the session that finally runs must see the whole sitting, not
-  # the one commit its own run happened to carry.
-  #
-  detect:
+  # HIS SAVES ONLY. The wiki server stamps every admin save with this message;
+  # an agent clearing verdicts writes the same file with its own message, and
+  # waking on that would wake the agent with its own footprints.
+  monsters:
     if: >-
-      github.event_name == 'workflow_dispatch'
-      || (startsWith(github.event.head_commit.message, 'live: admin update')
-          && vars.GITHUB_AGENTS != 'off')
-    runs-on: ubuntu-latest
-    timeout-minutes: 5
-    outputs:
-      domains: ${{ steps.pick.outputs.domains }}
-    steps:
-      - id: pick
-        env:
-          GH_TOKEN: ${{ github.token }}
-          EVENT: ${{ github.event_name }}
-          PICK: ${{ inputs.domain }}
-          REPO: ${{ github.repository }}
-        run: |
-          set -euo pipefail
-          if [ "$EVENT" != "push" ]; then
-            printf 'domains=["%s"]\n' "${PICK:-monsters}" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          since=$(date -u -d '30 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
-          out=""
-          # THE FILE IS NOT THE DIRECTORY. He reviews scenery and the wiki
-          # writes live/feedback/OBJECTS.json; the domain on disk is scenery/,
-          # and its agent is the scenery agent. Same for characters ->
-          # characters2. Without this map the job is named objects-github-agent
-          # and sent to read objects/README.md, which does not exist — found on
-          # his first real scenery review, 2026-09-18.
-          #
-          # Skipped, with the reason: bindings is an <event>#<sound> review, not
-          # a domain; composer and composer-music belong to games2/composer,
-          # which is one corner of a directory six agents share — a stand-in
-          # there needs the games2 split decided first.
-          domain_of() {
-            case "$1" in
-              objects) echo scenery ;;
-              characters) echo characters2 ;;
-              bindings|composer|composer-music) echo "" ;;
-              *) echo "$1" ;;
-            esac
-          }
-          for f in $(gh api "repos/$REPO/contents/live/feedback" --jq '.[].name' | sed 's/\.json$//'); do
-            d=$(domain_of "$f")
-            [ -n "$d" ] || continue
-            n=$(gh api "repos/$REPO/commits?path=live/feedback/$f.json&since=$since&per_page=1" --jq 'length')
-            [ "$n" -gt 0 ] && out="$out$d\n" || true
-          done
-          json=$(printf "$out" | sed '/^$/d' | jq -R . | jq -sc .)
-          echo "reviewed since $since: $json"
-          echo "domains=$json" >> "$GITHUB_OUTPUT"
+      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
+      && startsWith(github.event.head_commit.message, 'live: admin update')
+      && contains(join(github.event.commits.*.modified), 'live/feedback/monsters.json')
+    uses: ./.github/workflows/github-agent-run.yml
+    with: { domain: monsters }
+    secrets: inherit
 
-  agent:
-    needs: detect
-    # The job's name is what the Actions run lists, so it reads as the agent he
-    # is thinking of rather than as a workflow step.
-    name: ${{ matrix.domain }}-github-agent
-    if: needs.detect.outputs.domains != '[]'
-    runs-on: ubuntu-latest
-    timeout-minutes: 90     # a generation pass; the loop stops itself on budget
-    permissions:
-      contents: write       # it pushes the work and its board claim to main
-      # THE ACTION MINTS ITS GITHUB APP TOKEN FROM AN OIDC TOKEN, and a job
-      # cannot request one without this. Measured on the first rehearsal: three
-      # retries of "Unable to get ACTIONS_ID_TOKEN_REQUEST_URL" and the run
-      # died before Claude ever started — it reads as an auth failure, and is
-      # not one.
-      id-token: write
-    strategy:
-      fail-fast: false
-      matrix:
-        domain: ${{ fromJson(needs.detect.outputs.domains) }}
-    # QUEUE, NEVER CANCEL. A run here may be
-    # halfway through a generation, and killing it loses art already paid for;
-    # a later sitting waits its turn. Per DOMAIN, so a scenery review never
-    # queues behind a monsters generation.
-    concurrency:
-      group: github-agent-${{ matrix.domain }}
-      cancel-in-progress: false
-    steps:
-      # CLAUDE STARTS AS SOON AS POSSIBLE (maintainer 2026-09-18: "We need to
-      # make this faster! I want claude to start working immediately if
-      # possible!"). Measured on the rehearsal before this line: 2m51s of the
-      # run was `actions/checkout` pulling the WHOLE history of a repo whose
-      # weight is binary art.
-      #
-      # `filter: blob:none` is a partial clone: the full commit graph arrives,
-      # and a file's contents are fetched only when something actually opens it
-      # — which for an agent is its own domain, not eleven domains' history.
-      # `fetch-depth: 50` keeps enough history for the rebase before its push
-      # (main moves a handful of commits an hour, and the merge base is always
-      # within them). NOT depth 1: a rebase cannot find the merge base there and
-      # fails in a way that reads like a conflict.
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 50
-          filter: blob:none
-          # A SPARSE WORKING TREE: its own domain, the files every agent reads,
-          # and the shared scripts a pipeline calls — not eleven domains of art
-          # (measured: the full tree cost 171s before Claude read a line). Cone
-          # mode always includes the repo root, so CLAUDE.md and
-          # requirements.txt come with it. The agent can widen it itself
-          # (`git sparse-checkout add <dir>`), which the prompt says.
-          sparse-checkout: |
-            ${{ matrix.domain }}
-            coordination
-            live
+  scenery:
+    if: >-
+      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
+      && startsWith(github.event.head_commit.message, 'live: admin update')
+      && contains(join(github.event.commits.*.modified), 'live/feedback/objects.json')
+    uses: ./.github/workflows/github-agent-run.yml
+    with: { domain: scenery }
+    secrets: inherit
 
-      # THE CLI COMES FROM CACHE WHEN IT CAN. The action installs Claude Code on
-      # every run (~8s of a ~20s start). The binary is one file and the same for
-      # every run until the version in the key changes, so it is cached and
-      # handed to the action by path. A miss just means the action installs it
-      # the way it always did — the step below is `continue-on-error` so a cache
-      # hiccup can never be what stops a review being acted on.
-      - id: cli
-        continue-on-error: true
-        uses: actions/cache@v4
-        with:
-          path: ~/.local/bin/claude
-          key: claude-cli-2.1.276
+  characters2:
+    if: >-
+      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
+      && startsWith(github.event.head_commit.message, 'live: admin update')
+      && contains(join(github.event.commits.*.modified), 'live/feedback/characters.json')
+    uses: ./.github/workflows/github-agent-run.yml
+    with: { domain: characters2 }
+    secrets: inherit
 
-      # NO PYTHON SET-UP ON THE CRITICAL PATH (maintainer 2026-09-18: "Can we get
-      # the 27s down to 20s?"). setup-python + `pip install -r requirements.txt`
-      # cost 6s of every start, before Claude read a line — and a session that
-      # only clears a verdict or answers "nothing to do" never needs them. The
-      # runner already ships python3, and the prompt tells the agent to install
-      # the requirements itself the moment it actually reaches for a pipeline.
+  tiles:
+    if: >-
+      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
+      && startsWith(github.event.head_commit.message, 'live: admin update')
+      && contains(join(github.event.commits.*.modified), 'live/feedback/tiles.json')
+    uses: ./.github/workflows/github-agent-run.yml
+    with: { domain: tiles }
+    secrets: inherit
 
-      - uses: anthropics/claude-code-action@v1
-        env:
-          # The generating domains need their key exactly as the scheduled art
-          # workflows do; without it a session can read verdicts but not act on
-          # the ones that need new art.
-          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
-          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-        with:
-          # Whichever of the two auth secrets this repo holds; the empty one is
-          # ignored, so the app's OAuth token and a plain API key both work.
-          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          # ALWAYS THE STRONGEST MODEL (maintainer 2026-09-18: "Can we make sure
-          # to always run Opus 5"). A stand-in session judges art, reads five
-          # documents and touches a domain it has no memory of — the wrong place
-          # to save on reasoning. Pinned explicitly so a change of default never
-          # quietly downgrades what acts on his reviews.
-          claude_args: "--model claude-opus-5 --max-turns 150"
-          # Empty on a cache miss, which is exactly what the action expects.
-          path_to_claude_code_executable: ${{ steps.cli.outputs.cache-hit == 'true' && '~/.local/bin/claude' || '' }}
-          # WHAT DID IT DO? The run's Step Summary is the one page he can read
-          # on a phone from the Actions tab, so the report goes there. The
-          # input's warning is about Claude-authored text in a public summary;
-          # the input here is his own verdicts and this repo, and the summary is
-          # private to the repo.
-          display_report: "true"
-          prompt: |
-            A wiki review just landed on main: the Game Master committed verdicts to
-            live/feedback/${{ matrix.domain }}.json. You are standing in for the
-            ${{ matrix.domain }} agent for this one unit of work, in a fresh checkout with
-            no memory of earlier runs.
+  items:
+    if: >-
+      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
+      && startsWith(github.event.head_commit.message, 'live: admin update')
+      && contains(join(github.event.commits.*.modified), 'live/feedback/items.json')
+    uses: ./.github/workflows/github-agent-run.yml
+    with: { domain: items }
+    secrets: inherit
 
-            TAKE THE SHAPE OF THAT AGENT. Read, in this order, before deciding anything:
-              1. CLAUDE.md — the law of the repo.
-              2. coordination/PROTOCOL.md — "Two writers per directory" binds you.
-              3. live/docs/review-contract.md — HOW A REVIEW IS ACTED ON AND CLEANED UP.
-                 This is the part you must not improvise. Its short form: a verdict
-                 describes ONE generation of the art, so the entry dies as part of doing
-                 the work; an approval is never cleared; a removal removes the art, the
-                 index entry, the upstream record AND every verdict keyed on it, entity
-                 and facet alike; and when you are done, no key in the file may name a
-                 path, state or direction that is not on disk.
-              4. ${{ matrix.domain }}/README.md — the authority on the art: what approved,
-                 redo and removed MEAN here and which pipeline command does each.
-              5. live/README.md — the feedback file's schema and per-domain vocabulary.
+  lore:
+    if: >-
+      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
+      && startsWith(github.event.head_commit.message, 'live: admin update')
+      && contains(join(github.event.commits.*.modified), 'live/feedback/lore.json')
+    uses: ./.github/workflows/github-agent-run.yml
+    with: { domain: lore }
+    secrets: inherit
 
-            Then:
-            1. Read coordination/${{ matrix.domain }}.json and
-               coordination/${{ matrix.domain }}-assistant.json (whichever exist). A
-               verdict either board has claimed or acked is CONSUMED — leave it. If
-               either board's `current` names a file you would touch, that unit is not
-               yours; a collision goes to the original agent.
-            2. Take only the verdicts nobody has claimed and that the art on disk does
-               not yet reflect. Derive that from the filesystem, never from a count.
-            3. Claim them on coordination/${{ matrix.domain }}-github-agent.json — your own
-               board, same schema as the others: the unit and EVERY file you will touch
-               — and push that claim BEFORE any work. A claim that ships with the work
-               protects nothing. THAT EXACT FILENAME, ALWAYS: one board for every
-               stand-in this domain will ever have, overwritten by each. Never a board
-               per run, per session or per date — a new file each time would bury the
-               fleet under thousands of dead rows within a year, and the Agents page in
-               the wiki is read by a human.
-            Your working tree is SPARSE — your domain, coordination/ and live/, plus the
-            repo root. games2/scripts (to-webp.py and friends) and wiki/lib are NOT there
-            until you ask for them. If you need another directory, widen it
-            yourself with `git sparse-checkout add <dir>` rather than working around a
-            missing path.
+  sounds:
+    if: >-
+      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
+      && startsWith(github.event.head_commit.message, 'live: admin update')
+      && contains(join(github.event.commits.*.modified), 'live/feedback/sounds.json')
+    uses: ./.github/workflows/github-agent-run.yml
+    with: { domain: sounds }
+    secrets: inherit
 
-            The runner has python3 but NOT this repo's packages: run
-            `pip install -r requirements.txt` yourself before the first pipeline command
-            that needs them (it takes about 5 seconds). It is not done for you because
-            most of these sessions never run a pipeline at all, and every start pays for
-            it.
+  music:
+    if: >-
+      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
+      && startsWith(github.event.head_commit.message, 'live: admin update')
+      && contains(join(github.event.commits.*.modified), 'live/feedback/music.json')
+    uses: ./.github/workflows/github-agent-run.yml
+    with: { domain: music }
+    secrets: inherit
 
-            4. Do the work with the domain's OWN pipeline commands rather than by hand
-               where it has them, clear each verdict as you act on it, run the domain's
-               checks, `git fetch && git rebase origin/main`, re-run the checks if main
-               moved under your domain, push to main, then release the claim saying what
-               shipped and which entries you cleared.
-            5. LEAVE THE BOARD HONEST. Your last write sets `health` to "idle" (or
-               "error", with what broke) and `updated_at` to now — never "running".
-               Your runner is destroyed when this job ends, so a board left claiming to
-               run describes a session that no longer exists, and the wiki has to guess
-               from a timestamp that it died.
-
-            Budget: if the generation credits are low, stop cleanly and say so on your
-            board rather than half-generating. If nothing is left unconsumed, write one
-            line saying so and exit without committing — an empty run is the correct
-            outcome when the agent got there first.
-
-            DRY RUN: ${{ inputs.dry_run }} — when that reads true, do the reading and
-            steps 1 and 2 only, then write what you WOULD do (each verdict, the files it
-            would touch, the entries it would clear) and stop. Change nothing, claim
-            nothing, generate nothing, commit nothing. It is the smoke test for this
-            workflow, not a pass over the queue.
+  # The rehearsal path: any domain, dry by default, so the whole chain can be
+  # proven without a verdict and without touching anything.
+  rehearsal:
+    if: github.event_name == 'workflow_dispatch'
+    uses: ./.github/workflows/github-agent-run.yml
+    with:
+      domain: ${{ inputs.domain }}
+      dry_run: ${{ inputs.dry_run }}
+    secrets: inherit

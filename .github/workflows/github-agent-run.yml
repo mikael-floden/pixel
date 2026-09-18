@@ -1,0 +1,189 @@
+name: github agent
+
+# ONE GITHUB AGENT, FOR ONE DOMAIN. Called by github-agents.yml, which decides
+# WHICH domains a push touched; everything about HOW a session runs lives here,
+# in one copy, however many domains call it.
+#
+# It is a reusable workflow rather than a matrix because the caller has to be
+# able to start a domain's job WITHOUT a job in front of it computing the list
+# (maintainer 2026-09-18: parallel domains AND the lowest possible latency —
+# "think hard and we can get the best of both worlds"). A matrix needs that
+# list; a job-level `if` over the push payload does not.
+
+on:
+  workflow_call:
+    inputs:
+      domain:
+        required: true
+        type: string
+      dry_run:
+        required: false
+        default: false
+        type: boolean
+
+jobs:
+  agent:
+    # The job's name is what the Actions run lists, so it reads as the agent he
+    # is thinking of rather than as a workflow step.
+    name: ${{ inputs.domain }}-github-agent
+    runs-on: ubuntu-latest
+    timeout-minutes: 90     # a generation pass; the loop stops itself on budget
+    permissions:
+      contents: write       # it pushes the work and its board claim to main
+      # THE ACTION MINTS ITS GITHUB APP TOKEN FROM AN OIDC TOKEN, and a job
+      # cannot request one without this. Measured on the first rehearsal: three
+      # retries of "Unable to get ACTIONS_ID_TOKEN_REQUEST_URL" and the run
+      # died before Claude ever started — it reads as an auth failure, and is
+      # not one.
+      id-token: write
+    # QUEUE, NEVER CANCEL. A run here may be
+    # halfway through a generation, and killing it loses art already paid for;
+    # a later sitting waits its turn. Per DOMAIN, so a scenery review never
+    # queues behind a monsters generation.
+    concurrency:
+      group: github-agent-${{ inputs.domain }}
+      cancel-in-progress: false
+    steps:
+      # CLAUDE STARTS AS SOON AS POSSIBLE (maintainer 2026-09-18: "We need to
+      # make this faster! I want claude to start working immediately if
+      # possible!"). Measured on the rehearsal before this line: 2m51s of the
+      # run was `actions/checkout` pulling the WHOLE history of a repo whose
+      # weight is binary art.
+      #
+      # `filter: blob:none` is a partial clone: the full commit graph arrives,
+      # and a file's contents are fetched only when something actually opens it
+      # — which for an agent is its own domain, not eleven domains' history.
+      # `fetch-depth: 50` keeps enough history for the rebase before its push
+      # (main moves a handful of commits an hour, and the merge base is always
+      # within them). NOT depth 1: a rebase cannot find the merge base there and
+      # fails in a way that reads like a conflict.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 50
+          filter: blob:none
+          # A SPARSE WORKING TREE: its own domain, the files every agent reads,
+          # and the shared scripts a pipeline calls — not eleven domains of art
+          # (measured: the full tree cost 171s before Claude read a line). Cone
+          # mode always includes the repo root, so CLAUDE.md and
+          # requirements.txt come with it. The agent can widen it itself
+          # (`git sparse-checkout add <dir>`), which the prompt says.
+          sparse-checkout: |
+            ${{ inputs.domain }}
+            coordination
+            live
+
+      # THE CLI COMES FROM CACHE WHEN IT CAN. The action installs Claude Code on
+      # every run (~8s of a ~20s start). The binary is one file and the same for
+      # every run until the version in the key changes, so it is cached and
+      # handed to the action by path. A miss just means the action installs it
+      # the way it always did — the step below is `continue-on-error` so a cache
+      # hiccup can never be what stops a review being acted on.
+      - id: cli
+        continue-on-error: true
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/bin/claude
+          key: claude-cli-2.1.276
+
+      # NO PYTHON SET-UP ON THE CRITICAL PATH (maintainer 2026-09-18: "Can we get
+      # the 27s down to 20s?"). setup-python + `pip install -r requirements.txt`
+      # cost 6s of every start, before Claude read a line — and a session that
+      # only clears a verdict or answers "nothing to do" never needs them. The
+      # runner already ships python3, and the prompt tells the agent to install
+      # the requirements itself the moment it actually reaches for a pipeline.
+
+      - uses: anthropics/claude-code-action@v1
+        env:
+          # The generating domains need their key exactly as the scheduled art
+          # workflows do; without it a session can read verdicts but not act on
+          # the ones that need new art.
+          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+          ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
+        with:
+          # Whichever of the two auth secrets this repo holds; the empty one is
+          # ignored, so the app's OAuth token and a plain API key both work.
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          # ALWAYS THE STRONGEST MODEL (maintainer 2026-09-18: "Can we make sure
+          # to always run Opus 5"). A stand-in session judges art, reads five
+          # documents and touches a domain it has no memory of — the wrong place
+          # to save on reasoning. Pinned explicitly so a change of default never
+          # quietly downgrades what acts on his reviews.
+          claude_args: "--model claude-opus-5 --max-turns 150"
+          # Empty on a cache miss, which is exactly what the action expects.
+          path_to_claude_code_executable: ${{ steps.cli.outputs.cache-hit == 'true' && '~/.local/bin/claude' || '' }}
+          # WHAT DID IT DO? The run's Step Summary is the one page he can read
+          # on a phone from the Actions tab, so the report goes there. The
+          # input's warning is about Claude-authored text in a public summary;
+          # the input here is his own verdicts and this repo, and the summary is
+          # private to the repo.
+          display_report: "true"
+          prompt: |
+            A wiki review just landed on main: the Game Master committed verdicts to
+            live/feedback/${{ inputs.domain }}.json. You are standing in for the
+            ${{ inputs.domain }} agent for this one unit of work, in a fresh checkout with
+            no memory of earlier runs.
+
+            TAKE THE SHAPE OF THAT AGENT. Read, in this order, before deciding anything:
+              1. CLAUDE.md — the law of the repo.
+              2. coordination/PROTOCOL.md — "Two writers per directory" binds you.
+              3. live/docs/review-contract.md — HOW A REVIEW IS ACTED ON AND CLEANED UP.
+                 This is the part you must not improvise. Its short form: a verdict
+                 describes ONE generation of the art, so the entry dies as part of doing
+                 the work; an approval is never cleared; a removal removes the art, the
+                 index entry, the upstream record AND every verdict keyed on it, entity
+                 and facet alike; and when you are done, no key in the file may name a
+                 path, state or direction that is not on disk.
+              4. ${{ inputs.domain }}/README.md — the authority on the art: what approved,
+                 redo and removed MEAN here and which pipeline command does each.
+              5. live/README.md — the feedback file's schema and per-domain vocabulary.
+
+            Then:
+            1. Read coordination/${{ inputs.domain }}.json and
+               coordination/${{ inputs.domain }}-assistant.json (whichever exist). A
+               verdict either board has claimed or acked is CONSUMED — leave it. If
+               either board's `current` names a file you would touch, that unit is not
+               yours; a collision goes to the original agent.
+            2. Take only the verdicts nobody has claimed and that the art on disk does
+               not yet reflect. Derive that from the filesystem, never from a count.
+            3. Claim them on coordination/${{ inputs.domain }}-github-agent.json — your own
+               board, same schema as the others: the unit and EVERY file you will touch
+               — and push that claim BEFORE any work. A claim that ships with the work
+               protects nothing. THAT EXACT FILENAME, ALWAYS: one board for every
+               stand-in this domain will ever have, overwritten by each. Never a board
+               per run, per session or per date — a new file each time would bury the
+               fleet under thousands of dead rows within a year, and the Agents page in
+               the wiki is read by a human.
+            Your working tree is SPARSE — your domain, coordination/ and live/, plus the
+            repo root. games2/scripts (to-webp.py and friends) and wiki/lib are NOT there
+            until you ask for them. If you need another directory, widen it
+            yourself with `git sparse-checkout add <dir>` rather than working around a
+            missing path.
+
+            The runner has python3 but NOT this repo's packages: run
+            `pip install -r requirements.txt` yourself before the first pipeline command
+            that needs them (it takes about 5 seconds). It is not done for you because
+            most of these sessions never run a pipeline at all, and every start pays for
+            it.
+
+            4. Do the work with the domain's OWN pipeline commands rather than by hand
+               where it has them, clear each verdict as you act on it, run the domain's
+               checks, `git fetch && git rebase origin/main`, re-run the checks if main
+               moved under your domain, push to main, then release the claim saying what
+               shipped and which entries you cleared.
+            5. LEAVE THE BOARD HONEST. Your last write sets `health` to "idle" (or
+               "error", with what broke) and `updated_at` to now — never "running".
+               Your runner is destroyed when this job ends, so a board left claiming to
+               run describes a session that no longer exists, and the wiki has to guess
+               from a timestamp that it died.
+
+            Budget: if the generation credits are low, stop cleanly and say so on your
+            board rather than half-generating. If nothing is left unconsumed, write one
+            line saying so and exit without committing — an empty run is the correct
+            outcome when the agent got there first.
+
+            DRY RUN: ${{ inputs.dry_run }} — when that reads true, do the reading and
+            steps 1 and 2 only, then write what you WOULD do (each verdict, the files it
+            would touch, the entries it would clear) and stop. Change nothing, claim
+            nothing, generate nothing, commit nothing. It is the smoke test for this
+            workflow, not a pass over the queue.

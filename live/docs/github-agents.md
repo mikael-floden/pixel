@@ -66,10 +66,20 @@ Claude reading its first file:
 - **The cone is three directories**: the domain, `coordination/`, `live/`.
   `games2/scripts` and `wiki/lib` are not fetched until the agent asks, which
   the prompt tells it to do.
-- What is left is GitHub's own floor: a runner assigned twice (once for
-  `detect`, once for the agent) and the clone. Folding `detect` into the agent
-  job would save ~5s more and cost the per-domain matrix — a monsters and a
-  scenery review would stop running in parallel. Not taken.
+- **The `detect` job is gone too, and the parallelism stayed** (maintainer
+  2026-09-18: *"we want them to be able to run in parallel! But we also need
+  lower latency ... think hard and we can get the best of both worlds"*). A
+  matrix needs a list, and computing the list needed a job in front of the work
+  — ~5s of runner and API to learn what the push payload already said. So there
+  is no matrix: `github-agents.yml` declares ONE JOB PER DOMAIN, each with a
+  job-level `if` over `github.event.commits.*.modified`, and each calls the
+  reusable `github-agent-run.yml`. The matching domain starts immediately; the
+  others are never created, so they cost nothing and do not even appear in the
+  run. Independent jobs, so two domains still run side by side.
+- What is left is GitHub's own floor: one runner assignment and the clone.
+  Below that needs a self-hosted runner with a warm clone and the CLI already
+  installed (~3-5s to first token) — a machine to own and patch, which is a
+  different decision.
 
 
 **THE FEEDBACK FILE IS NOT THE DIRECTORY.** He reviews scenery and the wiki
