@@ -546,6 +546,14 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   the night field into per-cell plates ("chess pattern") — do not re-attempt
   attribution changes casually. The faint 1-2px contact edge under spans is
   the face-sliver attribution — known, subtle, needs a pixel-proven plan.
+  THE GROUND SIDE READS BOTH UP-SCREEN NEIGHBOURS, each against its own
+  edge (shader + twin, 2026-09-18): reading only the neighbour across the
+  nearer edge split every diamond down its middle — along a wall to the
+  north the half nearer the NE edge saw the wall and the other half read the
+  open cell to the west, a step at every tile along the wall foot
+  (maintainer, the hearth house's exterior walls in the light-only render:
+  "small glitches/sharp edges between tiles"). A wall behind either edge
+  traps light for the whole diamond, by its distance to that edge.
 - Heightmaps: the NEAREST surface map holds TERRAIN levels and drives resolve
   + wall-face classification; `world-heightmap-linear` (LINEAR) holds terrain
   + solid objects + scenery footprints and drives ONLY the LOS march. A cell's LEVEL packs into
@@ -564,7 +572,15 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   march and the sun's prop patch shade it with no shader change and R−G stays
   byte-exact (cliffs and depth fog untouched: fog hash identical on/off).
   Trunk = the footprint's cells at round(art px / 88) levels, clamped 1..3 (a
-  tree 2, a stone 1) — the compact soft pool props cast. NO CANOPY DISC
+  tree 2, a stone 1) — the compact soft pool props cast — SCALED BY THE
+  FOOTPRINT'S COVERAGE OF A CELL (`SCN_COVER_MIN` 0.1..1, an ellipse's or a
+  rect's area in cells; 2026-09-18): the trunk is stamped per CELL, so a lamp
+  post's few-px footprint blocked a torch like a cell-wide pillar and laid
+  two full dark cells behind it on the street (maintainer, 300.4,198.6 in
+  the light-only render: "tiles I feel should have no shadow"; measured:
+  occ 0.22 — the bounce floor — at 298,198 and 299,197). A post at 0.1-0.2
+  of a level stops only the rays at its foot; a barrel at ~0.45 the low
+  ones; a tree keeps most of its levels. NO CANOPY DISC
   (built, measured, removed): a block of crown cells drew a DIAMOND LATTICE
   under every tree by day — the patch then skipped a pixel's own cell, so each
   cell of a block shaded as its own saw-tooth. THE OWN CELL IS A CONTACT

@@ -205,6 +205,9 @@ const LIGHT_NEAR_R2 = 0.25;
 // fully, the rest fades — measured against the look he approved (2026-09-17,
 // 208.4,205.1): the strip beside the column fully dark out to ~0.7 cells,
 // lit at 0.9. A torch (no share) is a point.
+/** The least share of a cell a scenery footprint counts as, for its trunk's
+ *  blocker height (setSceneryOccluders). */
+const SCN_COVER_MIN = 0.1;
 const SOURCE_R_SHARE = 1.0;
 // ...AND ONLY A COLUMN THAT REALLY HIDES PART OF THE FIRE COUNTS. The reach
 // above is the LOOK (his approved strip); whether a column found by an edge
@@ -1098,11 +1101,20 @@ void main() {
     // air at seam height — neither creates a concave corner, and the deck-
     // inflated surface read stamped a static dark AO band on the water in
     // front of every bridge span (same at all times of day).
-    float hb = (vColLo >= vRowLo) ? baseTerrAt(bg + vec2(-0.5, 0.5)) : baseTerrAt(bg + vec2(0.5, -0.5));
-    if (hb < 90.0 && hb > z + 0.5) {
-      float dBase = max((v0 + z * kk - max(vColLo, vRowLo)) * uIsoA.w, 0.0);
-      ao = mix(0.72, 1.0, smoothstep(0.0, 6.0, dBase));
-    }
+    // BOTH up-screen neighbours, each against ITS OWN edge. Reading only the
+    // neighbour across the nearer edge split every diamond down its middle:
+    // along a wall to the north the half nearer the NE edge saw the wall and
+    // the half nearer the NW edge read the open cell to the west — a step at
+    // every tile along the wall foot (maintainer 2026-09-18, the hearth
+    // house's exterior walls in the light-only render: "small glitches/sharp
+    // edges between tiles"). A wall behind either edge traps light for the
+    // whole diamond, by its distance to that edge.
+    float vS0 = v0 + z * kk;
+    float hbC = baseTerrAt(bg + vec2(-0.5, 0.5));
+    float hbR = baseTerrAt(bg + vec2(0.5, -0.5));
+    float aoC = (hbC < 90.0 && hbC > z + 0.5) ? mix(0.72, 1.0, smoothstep(0.0, 6.0, max((vS0 - vColLo) * uIsoA.w, 0.0))) : 1.0;
+    float aoR = (hbR < 90.0 && hbR > z + 0.5) ? mix(0.72, 1.0, smoothstep(0.0, 6.0, max((vS0 - vRowLo) * uIsoA.w, 0.0))) : 1.0;
+    ao = min(aoC, aoR);
   }
 
   if (uTest > 5.5 && uTest < 6.5) {
@@ -3634,10 +3646,20 @@ export class NightLights {
         const cr = Math.floor(cy);
         if (cc < 0 || cr < 0 || cc >= W || cr >= Hh) continue;
         const artH = fp.artH[j];
-        const tb = Math.round(Math.max(1, Math.min(SCN_TRUNK_MAX, Math.round(artH / CHARACTER_BODY_PX))) * hs);
         const p = fp.p[j];
         const q = fp.q[j];
         const isRect = fp.rect[j] === 1;
+        // A THIN PIECE IS A LOW BLOCKER. The trunk is stamped per CELL, so a
+        // lamp post's few-px footprint blocked a torch like a cell-wide pillar
+        // and laid two full dark cells behind it on the street (maintainer
+        // 2026-09-18, 300.4,198.6 in the light-only render: "tiles I feel
+        // should have no shadow"). The blocker's height is scaled by the
+        // footprint's coverage of a cell (an ellipse's or a rect's area in
+        // cells, SCN_COVER_MIN..1): a post at 0.1-0.2 of a level stops only
+        // the rays at its foot, a barrel at ~0.45 the low ones, a tree's
+        // trunk keeps most of its levels.
+        const cover = Math.max(SCN_COVER_MIN, Math.min(1, isRect ? 4 * p * q : Math.PI * p * q));
+        const tb = Math.max(1, Math.round(Math.max(1, Math.min(SCN_TRUNK_MAX, Math.round(artH / CHARACTER_BODY_PX))) * cover * hs));
         const bump = (c: number, r: number) => {
           if (c < 0 || r < 0 || c >= W || r >= Hh) return;
           const i = r * W + c;
@@ -4387,11 +4409,16 @@ export class NightLights {
       const ri = Math.floor(row);
       const vColLo = 2 * ci - (col - row);
       const vRowLo = 2 * ri + (col - row);
-      const hb = vColLo >= vRowLo ? tAt(ci - 1, ri) : tAt(ci, ri - 1);
-      if (hb < 90 && hb > z + 0.5) {
-        const dBase = Math.max(0, (col + row - Math.max(vColLo, vRowLo)) * 15);
+      // Both up-screen neighbours, each against its own edge (the shader's
+      // rule: one neighbour split every diamond down its middle along a wall).
+      const band = (hb: number, vLo: number) => {
+        if (!(hb < 90 && hb > z + 0.5)) return 1;
+        const dBase = Math.max(0, (col + row - vLo) * 15);
         const t2 = Math.min(1, dBase / 6);
-        const ao = 0.72 + 0.28 * (t2 * t2 * (3 - 2 * t2));
+        return 0.72 + 0.28 * (t2 * t2 * (3 - 2 * t2));
+      };
+      const ao = Math.min(band(tAt(ci - 1, ri), vColLo), band(tAt(ci, ri - 1), vRowLo));
+      if (ao < 1) {
         for (let ch = 0; ch < 3; ch++) out[ch] *= ao;
         if (parts) {
           parts.ao = ao;
