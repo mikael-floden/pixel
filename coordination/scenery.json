@@ -1,8 +1,8 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-18T07:41:15.380239+00:00",
+  "updated_at": "2026-09-18T07:47:25.728008+00:00",
   "health": "idle",
-  "current": "IN FLIGHT (his order: 'Generate the missing animations immediately!') \u2014 the 5 facings PixelLab dropped in pass 1 and no pass re-asked for: beds/bed_002 LIT_3 SW, cairns/cairn_009 LIT_1 SE, soulstone_plinths/soulstone_plinth_001 NOT_LIT_2 SE, streetlights/streetlight_034 LIT_1 SW, torch_posts/torch_post_014 LIT_4 SE; those five manifests/frames/strips/packed + scenery/viewer_data.json; scenery/pipeline/redo_facing_anim.py.",
+  "current": "IN FLIGHT (his order 09-18: 'Generate the missing animations immediately!') \u2014 in this order, one commit each: (1) tools: scenery/pipeline/redo_facing_anim.py, animate_states.py (new), config/redo_prompts.json; (2) his rejections: trees/tree_070 deleted + 72 rejected states pruned, heal.py on maps2/worlds3/the_game/world.json (claimed inside the run); (3) his 12 redo verdicts (cupboard_010, flower_stand_015, hearth_900, lantern_post_026, lantern_stand_018, streetlight_024/034, washing_line_016); (4) 244 never-animated states of animated pieces (south, then --missing facings) \u2014 every manifest/frames/strips/packed those touch; scenery/viewer_data.json.",
   "progress": {
     "scenery_complete": 736,
     "scenery_target": 2146,
