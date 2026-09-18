@@ -736,6 +736,15 @@ function starsWidget(domain, id, onStars, glyph) {
  * variant/version"). A third verdict, status "redo": KEEP the piece and ask
  * the producing agent for another variant of it. Distinct from rejected
  * (= remove) and from the per-state "✕ redo", which regenerates ONE state. */
+/** "✕ remove" → "✕ removed": the same button, said as a fact rather than an
+ *  offer. Glyph kept, the verb given its -d (and "remove all" its plural). */
+function pastTense(label) {
+  return String(label)
+    .replace(/\bremove all\b/i, "removed all")
+    .replace(/\bremove\b/i, "removed")
+    .replace(/\breject\b/i, "rejected")
+    .replace(/\bunbind\b/i, "unbound");
+}
 function verdictWidget(domain, id, { onchange, onStarChange = onchange, reject = "✕ remove", rejectTitle = "Reject = the producing agent removes/replaces this on its next run", rejectedLabel = "slated for removal", rejectOnly = false, stamp = null, stale = false, redo = null } = {}) {
   if (!state.admin) {
     const st = fb(domain, id).status;
@@ -766,7 +775,14 @@ function verdictWidget(domain, id, { onchange, onStarChange = onchange, reject =
       // should give 1 star if no star has been given already"). An approved
       // piece is never left unrated, so the star filters and the review queue
       // see it; a rating he already gave is never overwritten.
-      rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", onclick: (e) => {
+      /* THE WORD IS THE ANSWER (maintainer 2026-09-18: "What is pressed/selected
+       * and what is not? ... what about the button? What does a fully red
+       * button mean?"). Colour says WHICH verdict a button carries and fill
+       * says it has been given — but a reader has to be told that rule before
+       * it helps, and he should not have to be. So the label itself changes
+       * tense: "✓ approve" is an offer, "✓ approved" is a state of the world.
+       * No colour theory required to read it. */
+      rejectOnly ? null : h("button", { class: st === "approved" ? "approved" : "", "aria-pressed": st === "approved" ? "true" : "false", onclick: (e) => {
         e.stopPropagation();
         const un = st === "approved";
         setFb(domain, id, un ? { status: null, rating: null }
@@ -774,7 +790,7 @@ function verdictWidget(domain, id, { onchange, onStarChange = onchange, reject =
         render();
         for (const el of fbPeers(domain, id, "stars")) el.__render?.();
         onchange?.();
-      } }, "✓ approve"),
+      } }, st === "approved" ? "✓ approved" : "✓ approve"),
       // REMOVE ALWAYS UNSTARS (maintainer 2026-09-03: "Remove should also
       // always 'unstar'"). Removing it is the last thing he will say about it,
       // so a rating left behind would outlive the thing it rated — and on the
@@ -786,16 +802,18 @@ function verdictWidget(domain, id, { onchange, onStarChange = onchange, reject =
       // rejected still shows its button, so an old removal can never be stuck
       // on a row that can no longer set one.
       reject === false && st !== "rejected" ? null
-      : h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, onclick: (e) => {
+      : h("button", { class: `reject-btn${st === "rejected" ? " rejected" : ""}`, title: rejectTitle, "aria-pressed": st === "rejected" ? "true" : "false", onclick: (e) => {
         e.stopPropagation();
         const on = st === "rejected";
         setFb(domain, id, on ? { status: null } : { status: "rejected", rating: null, ...(stamp ?? {}) });
         render();
         for (const el of fbPeers(domain, id, "stars")) el.__render?.();
         onchange?.();
-      } }, reject),
+      } }, st === "rejected" ? pastTense(reject) : reject),
       redo ? h("button", { class: `redo-btn${st === "redo" ? " redo" : ""}`, title: redo.title ?? "Keep this, and ask for another variant of it",
-        onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "redo" ? null : "redo", ...(stamp ?? {}) }); render(); onchange?.(); } }, redo.label ?? "↻ redo") : null,
+        "aria-pressed": st === "redo" ? "true" : "false",
+        onclick: (e) => { e.stopPropagation(); setFb(domain, id, { status: st === "redo" ? null : "redo", ...(stamp ?? {}) }); render(); onchange?.(); } },
+        st === "redo" ? (redo.doneText ?? "↻ redo asked") : (redo.label ?? "↻ redo")) : null,
       gone ? h("span", { class: "pill warn", title: "You judged this state before the art was regenerated, so the verdict is about a picture that no longer exists — judge the one on screen and it counts again." }, "regenerated since — judge again") : null,
     ].filter(Boolean));
   };

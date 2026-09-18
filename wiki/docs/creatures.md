@@ -81,6 +81,12 @@ feel you made something ugly that doesn't follow the CSS that is still hard to
 understand!"* — of an inset ring I tried first; and before it, *"the this is
 selected has the same color as this state has been rejected"*).
 
+- **THE WORD SAYS IT, not the colour.** A button that has been pressed changes
+  tense: "✓ approve" becomes "✓ approved", "✕ remove" becomes "✕ removed", "↻
+  redo" becomes "↻ redo asked" (maintainer 2026-09-18: *"What does a fully red
+  button mean?"* — a fair question, because colour is a rule a reader has to be
+  TOLD, while tense is not). `aria-pressed` carries the same fact for a screen
+  reader and for the gates.
 - **A verdict that has been GIVEN is a solid block of its own colour** —
   `--good` / `--bad` / `--accent` filled, `--on-solid` ink on top (white on the
   light theme, the page's near-black on the dark one, since those hues invert
@@ -95,6 +101,11 @@ selected has the same color as this state has been rejected"*).
   amber to be redone — the text in a `.seg`, the BORDER in the direction pad,
   which selection must never touch (`.dirpad button.on` sets no border-color;
   it is declared after the `judged-*` rules and would win).
+- The hue on a verdict button says WHICH verdict it is, never whether it was
+  given: remove wears `--bad` at rest by his own 2026-09-03 ask ("the CSS we
+  have closest to red that still follow the CSS styling"), so an unpressed
+  remove is a red outline and a pressed one is a red block with the word
+  "removed" in it.
 - Rejected: an inset ring for "selected" (2026-09-18). It read as a focus
   outline, matched nothing else in the stylesheet, and still left "pressed"
   ambiguous — he said so within the hour.

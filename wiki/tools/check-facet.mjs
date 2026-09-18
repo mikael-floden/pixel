@@ -386,6 +386,16 @@ for (const scheme of ["light", "dark"]) {
   });
   console.log(`${scheme}: pressed ${press.label} ${press.on} vs unpressed ${press.off} — ${press.ratio}:1`);
   ok(press.ratio >= 1.6, `${scheme}: a pressed verdict is a solid block, an unpressed one is not (${press.ratio}:1 between them)`);
+  /* AND THE WORD SAYS IT (maintainer 2026-09-18: "What does a fully red button
+     mean?"). Colour is a rule a reader has to be told; tense is not. */
+  const said = await tp.evaluate(() => {
+    const bs = [...document.querySelectorAll(".facet-head .verdict button")];
+    const on = bs.find((b) => b.getAttribute("aria-pressed") === "true");
+    const off = bs.find((b) => b !== on);
+    return { on: on?.textContent.trim(), off: off?.textContent.trim() };
+  });
+  ok(/ed\b|asked\b/.test(said.on ?? "") && !/ed\b|asked\b/.test(said.off ?? ""),
+    `${scheme}: the given verdict is written as a fact, the open one as an offer ("${said.on}" vs "${said.off}")`);
   ok(/judged-redo/.test(no.cls) && /judged-redo/.test(no.dirCls), `${scheme}: a redo shows on the state as well as the direction (${no.title})`);
   ok(contrast(no.color, no.bg) >= 3, `${scheme}: and it is legible too (contrast ${contrast(no.color, no.bg).toFixed(1)}:1)`);
   ok(no.color !== plain.color && one.dirColor !== plain.color, `${scheme}: judged and unjudged really are different colours`);
