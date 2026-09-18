@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T12:18:02+00:00",
+  "generated_at": "2026-09-18T12:20:42+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 144,
+  "count": 147,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -18231,6 +18231,261 @@
       "generated_at": "2026-09-18T12:18:02+00:00"
     },
     {
+      "id": "crag_millipede",
+      "name": "Platecurl",
+      "tier": "mid",
+      "lore": "It uncoils only to move and only to eat. Stone dust is most of its diet and it has worn grooves in the road.",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "e04c720a-bf18-4956-9027-a9fa84ae198c",
+      "version": 1,
+      "sheet": "crag_millipede/sheet.webp",
+      "rotations": {
+        "south": "crag_millipede/rotations/south.webp",
+        "south-east": "crag_millipede/rotations/south-east.webp",
+        "east": "crag_millipede/rotations/east.webp",
+        "north-east": "crag_millipede/rotations/north-east.webp",
+        "north": "crag_millipede/rotations/north.webp",
+        "north-west": "crag_millipede/rotations/north-west.webp",
+        "west": "crag_millipede/rotations/west.webp",
+        "south-west": "crag_millipede/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.59,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.59,
+            "bbox": [
+              3,
+              5,
+              92,
+              90
+            ],
+            "fill": 0.821,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.678,
+            "bbox": [
+              4,
+              12,
+              92,
+              91
+            ],
+            "fill": 0.754,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.691,
+            "bbox": [
+              4,
+              12,
+              92,
+              91
+            ],
+            "fill": 0.754,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.661,
+            "bbox": [
+              6,
+              5,
+              88,
+              85
+            ],
+            "fill": 0.712,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.72,
+            "bbox": [
+              4,
+              8,
+              91,
+              91
+            ],
+            "fill": 0.784,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.704,
+            "bbox": [
+              4,
+              14,
+              90,
+              91
+            ],
+            "fill": 0.719,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.707,
+            "bbox": [
+              5,
+              14,
+              90,
+              91
+            ],
+            "fill": 0.71,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.714,
+            "bbox": [
+              4,
+              7,
+              90,
+              91
+            ],
+            "fill": 0.784,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:18:17+00:00"
+    },
+    {
+      "id": "slate_stack",
+      "name": "Slatespine",
+      "tier": "mid",
+      "lore": "The roof came off in a Turn and the slates stayed together. They have not found anything else to cover.",
+      "biome": [
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "65eeb671-9b8c-4f85-8f1d-c98d28757cdf",
+      "version": 1,
+      "sheet": "slate_stack/sheet.webp",
+      "rotations": {
+        "south": "slate_stack/rotations/south.webp",
+        "south-east": "slate_stack/rotations/south-east.webp",
+        "east": "slate_stack/rotations/east.webp",
+        "north-east": "slate_stack/rotations/north-east.webp",
+        "north": "slate_stack/rotations/north.webp",
+        "north-west": "slate_stack/rotations/north-west.webp",
+        "west": "slate_stack/rotations/west.webp",
+        "south-west": "slate_stack/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.676,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.716,
+            "bbox": [
+              12,
+              2,
+              102,
+              110
+            ],
+            "fill": 0.775,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.724,
+            "bbox": [
+              19,
+              5,
+              98,
+              107
+            ],
+            "fill": 0.642,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.78,
+            "bbox": [
+              15,
+              2,
+              93,
+              111
+            ],
+            "fill": 0.678,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.676,
+            "bbox": [
+              9,
+              7,
+              94,
+              105
+            ],
+            "fill": 0.664,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.786,
+            "bbox": [
+              10,
+              2,
+              97,
+              108
+            ],
+            "fill": 0.735,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.742,
+            "bbox": [
+              15,
+              5,
+              87,
+              107
+            ],
+            "fill": 0.585,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.684,
+            "bbox": [
+              16,
+              6,
+              100,
+              104
+            ],
+            "fill": 0.656,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.774,
+            "bbox": [
+              23,
+              2,
+              91,
+              111
+            ],
+            "fill": 0.591,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:20:42+00:00"
+    },
+    {
       "id": "quern_stone",
       "name": "Quernjaw",
       "tier": "mid",
@@ -18357,6 +18612,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:16:54+00:00"
+    },
+    {
+      "id": "carved_face",
+      "name": "Rockface",
+      "tier": "evil",
+      "lore": "Somebody cut a face into it to be looked at by. Only the face moves, the rest is still a rock.",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "cc8a9688-2176-4acc-8269-7dc467f73bb3",
+      "version": 1,
+      "sheet": "carved_face/sheet.webp",
+      "rotations": {
+        "south": "carved_face/rotations/south.webp",
+        "south-east": "carved_face/rotations/south-east.webp",
+        "east": "carved_face/rotations/east.webp",
+        "north-east": "carved_face/rotations/north-east.webp",
+        "north": "carved_face/rotations/north.webp",
+        "north-west": "carved_face/rotations/north-west.webp",
+        "west": "carved_face/rotations/west.webp",
+        "south-west": "carved_face/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.62,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.62,
+            "bbox": [
+              8,
+              6,
+              120,
+              120
+            ],
+            "fill": 0.779,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.723,
+            "bbox": [
+              31,
+              6,
+              92,
+              123
+            ],
+            "fill": 0.436,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.737,
+            "bbox": [
+              35,
+              6,
+              95,
+              123
+            ],
+            "fill": 0.428,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.685,
+            "bbox": [
+              10,
+              5,
+              118,
+              120
+            ],
+            "fill": 0.758,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.762,
+            "bbox": [
+              16,
+              7,
+              110,
+              123
+            ],
+            "fill": 0.666,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.702,
+            "bbox": [
+              21,
+              5,
+              106,
+              122
+            ],
+            "fill": 0.607,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.707,
+            "bbox": [
+              23,
+              5,
+              106,
+              122
+            ],
+            "fill": 0.593,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.767,
+            "bbox": [
+              17,
+              6,
+              113,
+              123
+            ],
+            "fill": 0.686,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T12:20:34+00:00"
     },
     {
       "id": "first_mask",

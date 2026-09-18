@@ -1,0 +1,141 @@
+{
+  "id": "carved_face",
+  "name": "Rockface",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Somebody cut a face into it to be looked at by. Only the face moves, the rest is still a rock.",
+  "biome": [
+    "grey_stone",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Boulder with a heavy face carved into one side by an old hand, deep brow, chiselled eyes, a mouth cut straight and wide, the tool marks still crisp and packed with moss, and the rest of the stone left completely unshaped",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "carved_face/rotations/south.webp",
+    "south-east": "carved_face/rotations/south-east.webp",
+    "east": "carved_face/rotations/east.webp",
+    "north-east": "carved_face/rotations/north-east.webp",
+    "north": "carved_face/rotations/north.webp",
+    "north-west": "carved_face/rotations/north-west.webp",
+    "west": "carved_face/rotations/west.webp",
+    "south-west": "carved_face/rotations/south-west.webp"
+  },
+  "sheet": "carved_face/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "cc8a9688-2176-4acc-8269-7dc467f73bb3",
+  "seed": 1847638083,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:20:34+00:00",
+  "elapsed_s": 220.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.62,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.62,
+        "bbox": [
+          8,
+          6,
+          120,
+          120
+        ],
+        "fill": 0.779,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.723,
+        "bbox": [
+          31,
+          6,
+          92,
+          123
+        ],
+        "fill": 0.436,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.737,
+        "bbox": [
+          35,
+          6,
+          95,
+          123
+        ],
+        "fill": 0.428,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.685,
+        "bbox": [
+          10,
+          5,
+          118,
+          120
+        ],
+        "fill": 0.758,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.762,
+        "bbox": [
+          16,
+          7,
+          110,
+          123
+        ],
+        "fill": 0.666,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.702,
+        "bbox": [
+          21,
+          5,
+          106,
+          122
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.707,
+        "bbox": [
+          23,
+          5,
+          106,
+          122
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.767,
+        "bbox": [
+          17,
+          6,
+          113,
+          123
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      }
+    }
+  }
+}

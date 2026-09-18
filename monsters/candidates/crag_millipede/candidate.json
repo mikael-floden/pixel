@@ -1,0 +1,141 @@
+{
+  "id": "crag_millipede",
+  "name": "Platecurl",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It uncoils only to move and only to eat. Stone dust is most of its diet and it has worn grooves in the road.",
+  "biome": [
+    "grey_stone",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Armoured millipede coiled flat into a tight spiral, overlapping grey-black plated segments ridged down the back, dozens of short legs folded away underneath, short antennae tucked in and a hard blunt head plate at the centre of the coil",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "crag_millipede/rotations/south.webp",
+    "south-east": "crag_millipede/rotations/south-east.webp",
+    "east": "crag_millipede/rotations/east.webp",
+    "north-east": "crag_millipede/rotations/north-east.webp",
+    "north": "crag_millipede/rotations/north.webp",
+    "north-west": "crag_millipede/rotations/north-west.webp",
+    "west": "crag_millipede/rotations/west.webp",
+    "south-west": "crag_millipede/rotations/south-west.webp"
+  },
+  "sheet": "crag_millipede/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e04c720a-bf18-4956-9027-a9fa84ae198c",
+  "seed": 2070543388,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:18:17+00:00",
+  "elapsed_s": 196.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.59,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.59,
+        "bbox": [
+          3,
+          5,
+          92,
+          90
+        ],
+        "fill": 0.821,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.678,
+        "bbox": [
+          4,
+          12,
+          92,
+          91
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.691,
+        "bbox": [
+          4,
+          12,
+          92,
+          91
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.661,
+        "bbox": [
+          6,
+          5,
+          88,
+          85
+        ],
+        "fill": 0.712,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.72,
+        "bbox": [
+          4,
+          8,
+          91,
+          91
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.704,
+        "bbox": [
+          4,
+          14,
+          90,
+          91
+        ],
+        "fill": 0.719,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.707,
+        "bbox": [
+          5,
+          14,
+          90,
+          91
+        ],
+        "fill": 0.71,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.714,
+        "bbox": [
+          4,
+          7,
+          90,
+          91
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      }
+    }
+  }
+}
