@@ -187,7 +187,7 @@ import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { getHand, setHand } from "../controls";
 import { setLoadingProgress, hideLoading } from "../loading";
-import { cameraZoom } from "../camzoom";
+import { cameraZoom, zoomStep } from "../camzoom";
 import { fadeToBlack } from "../fade";
 import { applyUiZoom } from "../uiscale";
 import {
@@ -23342,9 +23342,11 @@ export class WorldScene extends Phaser.Scene {
       const k = Math.min(1, Math.max(0, (av.spdWu ?? 0) / CAM_ZOOM_REF_WU));
       const zTarget = base * (1 - CAM_ZOOM_OUT * k);
       const tau = zTarget < this.camChase.zoom ? CAM_ZOOM_TAU_OUT : CAM_ZOOM_TAU_IN;
-      const za = 1 - Math.exp(-dt / tau);
-      this.camChase.zoom += (zTarget - this.camChase.zoom) * za;
-      if (Math.abs(this.camChase.zoom - zTarget) < 0.0015) this.camChase.zoom = zTarget;
+      // THE EASE HAS TO ARRIVE (zoomStep, camzoom.ts): an exponential one does
+      // not, and its sub-pixel tail crawled the ground's nearest-neighbour
+      // sampling for seconds after the player stopped — the floor shimmering
+      // under a scenery piece that was standing still.
+      this.camChase.zoom = zoomStep(this.camChase.zoom, zTarget, dt, tau);
     }
     cam.setZoom(this.camChase.zoom);
     cam.centerOn(this.camChase.x, this.camChase.y);
