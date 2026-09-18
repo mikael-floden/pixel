@@ -1,0 +1,141 @@
+{
+  "id": "quern_stone",
+  "name": "Quernjaw",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It ground for a household that is not there. It goes on turning and it is not particular about what goes in.",
+  "biome": [
+    "grey_stone",
+    "brown_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Pair of round grinding quern stones set one on the other and standing on a squat base, the upper stone turning slowly against the lower like a jaw, a broken wooden handle stub in its rim, fine white grain dust caught in the cut grooves",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "quern_stone/rotations/south.webp",
+    "south-east": "quern_stone/rotations/south-east.webp",
+    "east": "quern_stone/rotations/east.webp",
+    "north-east": "quern_stone/rotations/north-east.webp",
+    "north": "quern_stone/rotations/north.webp",
+    "north-west": "quern_stone/rotations/north-west.webp",
+    "west": "quern_stone/rotations/west.webp",
+    "south-west": "quern_stone/rotations/south-west.webp"
+  },
+  "sheet": "quern_stone/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "355bd3f5-d564-47a9-bf5a-5e880b065b4c",
+  "seed": 496828920,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:16:54+00:00",
+  "elapsed_s": 229.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.661,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.661,
+        "bbox": [
+          6,
+          5,
+          90,
+          90
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.708,
+        "bbox": [
+          9,
+          6,
+          82,
+          90
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.722,
+        "bbox": [
+          10,
+          7,
+          90,
+          90
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.698,
+        "bbox": [
+          6,
+          5,
+          90,
+          87
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.758,
+        "bbox": [
+          11,
+          7,
+          90,
+          92
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.731,
+        "bbox": [
+          6,
+          4,
+          82,
+          88
+        ],
+        "fill": 0.693,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.735,
+        "bbox": [
+          6,
+          7,
+          90,
+          88
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.772,
+        "bbox": [
+          10,
+          4,
+          86,
+          92
+        ],
+        "fill": 0.726,
+        "touches_edge": false
+      }
+    }
+  }
+}

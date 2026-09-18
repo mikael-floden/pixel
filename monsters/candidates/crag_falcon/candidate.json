@@ -1,0 +1,141 @@
+{
+  "id": "crag_falcon",
+  "name": "Hoodhawk",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Someone flew it once, and the hood is all that is left of them. It has never quite got the rest of it off.",
+  "biome": [
+    "grey_stone",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Large falcon hunched low with its wings folded tight to its body, slate-grey back, a barred cream breast, black moustache stripes under fierce dark eyes, yellow scaled feet with black talons and a leather falconer hood half torn from its head",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "crag_falcon/rotations/south.webp",
+    "south-east": "crag_falcon/rotations/south-east.webp",
+    "east": "crag_falcon/rotations/east.webp",
+    "north-east": "crag_falcon/rotations/north-east.webp",
+    "north": "crag_falcon/rotations/north.webp",
+    "north-west": "crag_falcon/rotations/north-west.webp",
+    "west": "crag_falcon/rotations/west.webp",
+    "south-west": "crag_falcon/rotations/south-west.webp"
+  },
+  "sheet": "crag_falcon/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fde05f93-219d-4232-b3c1-4a8368d66910",
+  "seed": 1228585261,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:18:02+00:00",
+  "elapsed_s": 167.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.731,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.731,
+        "bbox": [
+          10,
+          2,
+          92,
+          94
+        ],
+        "fill": 0.819,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.789,
+        "bbox": [
+          10,
+          3,
+          87,
+          91
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.81,
+        "bbox": [
+          3,
+          6,
+          81,
+          95
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.773,
+        "bbox": [
+          14,
+          2,
+          79,
+          92
+        ],
+        "fill": 0.635,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.814,
+        "bbox": [
+          17,
+          6,
+          78,
+          93
+        ],
+        "fill": 0.576,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.794,
+        "bbox": [
+          4,
+          3,
+          83,
+          91
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.79,
+        "bbox": [
+          15,
+          3,
+          78,
+          95
+        ],
+        "fill": 0.629,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.817,
+        "bbox": [
+          8,
+          3,
+          92,
+          94
+        ],
+        "fill": 0.829,
+        "touches_edge": false
+      }
+    }
+  }
+}

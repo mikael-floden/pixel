@@ -1,0 +1,141 @@
+{
+  "id": "mud_eel",
+  "name": "Fenwyrm",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It has been in the bog longer than the bog has been a bog. It comes up for whatever is standing on the bank.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Enormous eel hauled half out of the mud and coiled back on itself, slick olive-black hide mottled with yellow, a blunt heavy head with a hinged jaw full of backward teeth, small deep-set eyes and gill slits flaring behind them",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mud_eel/rotations/south.webp",
+    "south-east": "mud_eel/rotations/south-east.webp",
+    "east": "mud_eel/rotations/east.webp",
+    "north-east": "mud_eel/rotations/north-east.webp",
+    "north": "mud_eel/rotations/north.webp",
+    "north-west": "mud_eel/rotations/north-west.webp",
+    "west": "mud_eel/rotations/west.webp",
+    "south-west": "mud_eel/rotations/south-west.webp"
+  },
+  "sheet": "mud_eel/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "e9335817-06e2-40d3-bc87-e364cbd395d3",
+  "seed": 96978512,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:15:14+00:00",
+  "elapsed_s": 210.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.571,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.571,
+        "bbox": [
+          27,
+          18,
+          206,
+          216
+        ],
+        "fill": 0.658,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.652,
+        "bbox": [
+          28,
+          20,
+          205,
+          219
+        ],
+        "fill": 0.654,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.646,
+        "bbox": [
+          26,
+          20,
+          205,
+          220
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.611,
+        "bbox": [
+          27,
+          14,
+          204,
+          220
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.658,
+        "bbox": [
+          24,
+          19,
+          203,
+          220
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.637,
+        "bbox": [
+          26,
+          18,
+          204,
+          220
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.621,
+        "bbox": [
+          26,
+          18,
+          205,
+          222
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.652,
+        "bbox": [
+          28,
+          18,
+          207,
+          220
+        ],
+        "fill": 0.672,
+        "touches_edge": false
+      }
+    }
+  }
+}

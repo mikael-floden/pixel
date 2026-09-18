@@ -1,0 +1,141 @@
+{
+  "id": "scree_slide",
+  "name": "Screeback",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "The slope it came off is still missing a piece. It rebuilds itself out of whatever is underfoot.",
+  "biome": [
+    "grey_stone",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Standing heap of loose grey scree, flat shards of shale stacked and sliding over one another, a shoulder line of larger slabs, grit pouring continuously from its joints and two dark gaps for eyes deep between the plates",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "scree_slide/rotations/south.webp",
+    "south-east": "scree_slide/rotations/south-east.webp",
+    "east": "scree_slide/rotations/east.webp",
+    "north-east": "scree_slide/rotations/north-east.webp",
+    "north": "scree_slide/rotations/north.webp",
+    "north-west": "scree_slide/rotations/north-west.webp",
+    "west": "scree_slide/rotations/west.webp",
+    "south-west": "scree_slide/rotations/south-west.webp"
+  },
+  "sheet": "scree_slide/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b65cf807-3c39-4aa1-bf98-f04bb8ede929",
+  "seed": 660913035,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:17:46+00:00",
+  "elapsed_s": 188.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.689,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.689,
+        "bbox": [
+          9,
+          5,
+          95,
+          98
+        ],
+        "fill": 0.739,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.768,
+        "bbox": [
+          13,
+          6,
+          91,
+          98
+        ],
+        "fill": 0.663,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.782,
+        "bbox": [
+          12,
+          6,
+          90,
+          98
+        ],
+        "fill": 0.663,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.731,
+        "bbox": [
+          9,
+          11,
+          95,
+          99
+        ],
+        "fill": 0.7,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.82,
+        "bbox": [
+          11,
+          6,
+          91,
+          99
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.776,
+        "bbox": [
+          12,
+          9,
+          93,
+          99
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.775,
+        "bbox": [
+          11,
+          9,
+          92,
+          99
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.82,
+        "bbox": [
+          13,
+          6,
+          93,
+          99
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      }
+    }
+  }
+}
