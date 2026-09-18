@@ -1,8 +1,8 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-18T07:47:25.728008+00:00",
+  "updated_at": "2026-09-18T07:47:38.506771+00:00",
   "health": "idle",
-  "current": "IN FLIGHT (his order 09-18: 'Generate the missing animations immediately!') \u2014 in this order, one commit each: (1) tools: scenery/pipeline/redo_facing_anim.py, animate_states.py (new), config/redo_prompts.json; (2) his rejections: trees/tree_070 deleted + 72 rejected states pruned, heal.py on maps2/worlds3/the_game/world.json (claimed inside the run); (3) his 12 redo verdicts (cupboard_010, flower_stand_015, hearth_900, lantern_post_026, lantern_stand_018, streetlight_024/034, washing_line_016); (4) 244 never-animated states of animated pieces (south, then --missing facings) \u2014 every manifest/frames/strips/packed those touch; scenery/viewer_data.json.",
+  "current": "IN FLIGHT \u2014 heal after a scenery delete: maps2/worlds3/<userWorlds>/world.json + maps2/reports/<w>.json (maps2's heal.py, the agreed flow); deleting: trees/tree_070",
   "progress": {
     "scenery_complete": 736,
     "scenery_target": 2146,
