@@ -56,7 +56,21 @@ const page = await p.evaluate(() => {
   };
 });
 console.log("agents:", JSON.stringify({ ...page, ids: page.ids.slice(0, 4), times: undefined }));
-ok(page.n > 0 && page.n <= BOARDS.length + BOARDS.length, `a card per board that answered (${page.n} of ${BOARDS.length} named)`);
+ok(page.n > 0 && page.n <= BOARDS.length * 2, `a card per board that answered and is still alive (${page.n} of ${BOARDS.length} named)`);
+// THE FLEET ONLY GROWS. The page opens on what spoke this week and folds the
+// rest away — never deletes them (maintainer 2026-09-18: "by time we will have
+// 9000 agents (mostly dead agents that did something a year ago)").
+const fold = await p.evaluate(async () => {
+  const btn = document.querySelector(".agent-more");
+  const before = document.querySelectorAll(".agent-card").length;
+  btn?.click();
+  await new Promise((r) => setTimeout(r, 1200));
+  return { label: btn?.textContent ?? "", before, after: document.querySelectorAll(".agent-card").length,
+    hide: document.querySelector(".agent-more")?.textContent ?? "" };
+});
+console.log("fold:", JSON.stringify(fold));
+ok(!fold.label || (fold.after > fold.before && /hide/.test(fold.hide)),
+  `the quiet boards are folded away and one tap opens them (${fold.before} → ${fold.after}, "${fold.label.trim()}")`);
 // READ LIVE, NOT FROM data.json — the registry carries names only, so a page
 // that rendered without fetching would have nothing to show.
 ok(!JSON.stringify(DATA).includes('"health"') || true, "the registry publishes names only; the boards are fetched");

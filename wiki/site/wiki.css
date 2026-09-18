@@ -2044,3 +2044,6 @@ input[type="range"] { accent-color: var(--accent); }
    catching the eye — the agent died, or its container went away under it. */
 .agent-card[data-health="quiet"] { border-color: var(--accent); }
 .agent-card[data-health="error"] { border-color: var(--bad); }
+/* The fold: everything quiet for over a week is one tap away, never deleted —
+   a retired agent's last words are the only record of why it stopped. */
+.agent-more { margin-top: 2px; }

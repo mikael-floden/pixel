@@ -13837,6 +13837,10 @@ function relDayLabel(d) {
  * RAW, one request per board, no api.github.com: the rate limit
  * (60/hour/IP, unauthenticated) belongs nowhere near a page he refreshes. */
 const AGENT_REFRESH_MS = 45 * 1000;
+/** A board that has not moved in a week is history, not status — folded away,
+ *  never deleted (see the fold in viewAgents). */
+const AGENT_OLD_MS = 7 * 86400000;
+let agentsShowOld = false;
 /** A board every agent writes; the wake sessions write `<domain>-wake`. */
 const agentKind = (id) => (id.endsWith("-wake") ? "wake" : id.endsWith("-assistant") ? "assistant" : "agent");
 const AGENT_KIND_TITLE = {
@@ -13946,10 +13950,30 @@ function viewAgents() {
     const rows = await fetchBoards();
     if (!list.isConnected) return;
     const working = rows.filter((b) => agentHealth(b).word === "working");
+    /* THE FLEET ONLY GROWS (maintainer 2026-09-18: "by time we will have 9000
+     * agents (mostly dead agents that did something a year ago)"). It cannot
+     * grow per RUN — a stand-in writes one board per domain, overwritten every
+     * time — but it does grow per agent hired and never shrinks when one is
+     * retired: three boards on this page have not moved in two months.
+     *
+     * So the page opens on what is ALIVE — anything that spoke this week — and
+     * keeps the rest one tap away rather than deleting them. A retired agent's
+     * last words are the only record of why it stopped. */
+    const cut = Date.now() - AGENT_OLD_MS;
+    const live = rows.filter((b) => Date.parse(b.updated_at ?? 0) > cut);
+    const old = rows.filter((b) => !(Date.parse(b.updated_at ?? 0) > cut));
+    const shown = agentsShowOld ? rows : live;
     list.replaceChildren(...(rows.length
-      ? rows.map((b) => agentCard(b, rows))
+      ? [
+        ...shown.map((b) => agentCard(b, rows)),
+        old.length
+          ? h("button", { class: "ghost-btn agent-more", type: "button",
+            onclick: () => { agentsShowOld = !agentsShowOld; draw(); } },
+          agentsShowOld ? "− hide the quiet ones" : `+ ${old.length} quiet for over a week`)
+          : null,
+      ].filter(Boolean)
       : [h("p", { class: "muted" }, "No board could be read. The page reads coordination/*.json from GitHub main — check the connection.")]));
-    stamp.textContent = `${rows.length} boards · ${working.length} working · read ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}`;
+    stamp.textContent = `${live.length} of ${rows.length} boards this week · ${working.length} working · read ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}`;
   };
   draw();
   // It refreshes itself while the page is open — the question this page answers

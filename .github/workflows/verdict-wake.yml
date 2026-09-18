@@ -201,12 +201,21 @@ jobs:
             3. Claim them on coordination/${{ matrix.domain }}-wake.json — your own
                board, same schema as the others: the unit and EVERY file you will touch
                — and push that claim BEFORE any work. A claim that ships with the work
-               protects nothing.
+               protects nothing. THAT EXACT FILENAME, ALWAYS: one board for every
+               stand-in this domain will ever have, overwritten by each. Never a board
+               per run, per session or per date — a new file each time would bury the
+               fleet under thousands of dead rows within a year, and the Agents page in
+               the wiki is read by a human.
             4. Do the work with the domain's OWN pipeline commands rather than by hand
                where it has them, clear each verdict as you act on it, run the domain's
                checks, `git fetch && git rebase origin/main`, re-run the checks if main
                moved under your domain, push to main, then release the claim saying what
                shipped and which entries you cleared.
+            5. LEAVE THE BOARD HONEST. Your last write sets `health` to "idle" (or
+               "error", with what broke) and `updated_at` to now — never "running".
+               Your runner is destroyed when this job ends, so a board left claiming to
+               run describes a session that no longer exists, and the wiki has to guess
+               from a timestamp that it died.
 
             Budget: if the generation credits are low, stop cleanly and say so on your
             board rather than half-generating. If nothing is left unconsumed, write one

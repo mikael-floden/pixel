@@ -1,9 +1,123 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T16:27:52.903Z",
- "head": "eeaa1125c",
+ "generated_at": "2026-09-18T16:35:42.691Z",
+ "head": "691b07ec8",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "691b07ec8",
+   "at": "2026-09-18T16:33:37+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: an Agents page — the fleet, live, where he already is",
+   "agent": "wiki",
+   "dirs": [
+    ".github",
+    "wiki"
+   ],
+   "files": 11
+  },
+  {
+   "sha": "68b64c54d",
+   "at": "2026-09-18T16:33:04+00:00",
+   "author": "Claude",
+   "subject": "monsters: batch-1 redo round 3 — his notes: calmer die, forward beam, still outside frame",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 7
+  },
+  {
+   "sha": "a677adfcf",
+   "at": "2026-09-18T16:30:50+00:00",
+   "author": "Claude",
+   "subject": "monsters: batch-1 redo round 2 — his notes: calmer die, forward beam, still outside frame",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 19
+  },
+  {
+   "sha": "8e3ce2427",
+   "at": "2026-09-18T16:28:51+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 33
+  },
+  {
+   "sha": "2646ef4be",
+   "at": "2026-09-18T16:27:52+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 4 (grass <-> light soil, reps 7+)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 172
+  },
+  {
+   "sha": "5d202df4e",
+   "at": "2026-09-18T16:26:42+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
+   "agent": "monsters",
+   "dirs": [
+    "live",
+    "monsters"
+   ],
+   "files": 51
+  },
+  {
+   "sha": "ad251c548",
+   "at": "2026-09-18T16:26:12+00:00",
+   "author": "Claude",
+   "subject": "monsters: batch-1 redo round 1 — his notes: calmer die, forward beam, still outside frame",
+   "agent": "monsters",
+   "dirs": [
+    "live",
+    "monsters"
+   ],
+   "files": 54
+  },
+  {
+   "sha": "b8953d32b",
+   "at": "2026-09-18T16:26:07+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (78 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 53
+  },
+  {
+   "sha": "e0ed0b149",
+   "at": "2026-09-18T16:22:36+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
+   "agent": "monsters",
+   "dirs": [
+    "live",
+    "monsters"
+   ],
+   "files": 8
+  },
+  {
+   "sha": "782301188",
+   "at": "2026-09-18T16:22:35+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (78 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 34
+  },
   {
    "sha": "eeaa1125c",
    "at": "2026-09-18T16:22:06+00:00",
@@ -445,116 +559,6 @@
     "monsters"
    ],
    "files": 405
-  },
-  {
-   "sha": "8d667d975",
-   "at": "2026-09-18T14:49:18+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (86 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 70
-  },
-  {
-   "sha": "0998c0fad",
-   "at": "2026-09-18T14:49:09+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduation landings (Rootfather and the rest mirroring in)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 114
-  },
-  {
-   "sha": "1937b2d1c",
-   "at": "2026-09-18T14:48:52+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduation landings",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 94
-  },
-  {
-   "sha": "f4d78c70f",
-   "at": "2026-09-18T14:48:34+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduate the fully-approved, drop the attempts he never approved, publish the state",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 472
-  },
-  {
-   "sha": "71c132ec1",
-   "at": "2026-09-18T16:44:24+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "5447d5ec9",
-   "at": "2026-09-18T16:44:00+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "29e9ff255",
-   "at": "2026-09-18T16:42:36+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "86385d36f",
-   "at": "2026-09-18T14:42:02+00:00",
-   "author": "Claude",
-   "subject": "lighting: the contact stamp's crop and footprint live in the packed texture's own texels",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "98685daeb",
-   "at": "2026-09-18T14:42:01+00:00",
-   "author": "Claude",
-   "subject": "deploy: the layer cache is written AFTER the rollout — about two minutes off every push-to-live",
-   "agent": null,
-   "dirs": [
-    ".github"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "1708ace19",
-   "at": "2026-09-18T14:42:01+00:00",
-   "author": "Claude",
-   "subject": "games board: the contact AO rebuilt to his recipe; the deploy's measured critical path; the five red lighting gates proven pre-existing",
-   "agent": "games",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
   }
  ]
 }

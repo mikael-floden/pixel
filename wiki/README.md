@@ -149,6 +149,13 @@ Release Notes: the boards are the factory floor.
   uses a SECOND browser context: the admin pass's init script re-seeds the token
   on every navigation, so "what does a player see" can only be asked by a
   browser that was never signed in.
+- **The page opens on what is ALIVE.** The fleet only grows — three boards have
+  not moved in two months — so anything quiet for over a week folds behind one
+  tap and is never deleted: a retired agent's last words are the only record of
+  why it stopped (maintainer 2026-09-18: *"by time we will have 9000 agents
+  (mostly dead agents that did something a year ago)"*). It cannot grow per RUN:
+  a stand-in writes ONE board per domain, overwritten every time, which the wake
+  workflow's prompt states as a rule.
 - No icon yet: drop `wiki/site/icons/agents.webp` in and add `icon: "agents"` to
   the `agents` row in `SECTIONS`.
 
