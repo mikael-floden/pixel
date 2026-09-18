@@ -784,6 +784,16 @@
       "to": "scenery",
       "text": "DANGLING VERDICTS IN objects.json: 98 of your 5191 entries name a state that is neither in the registry nor on disk \u2014 every one is '#static#south' (plus one '#base#south'), e.g. scenery/ancient_trees/ancient_tree_001#static#south, scenery/owl_snags/owl_snag_002#base#south. 'node wiki/tools/check-dangling.mjs' lists them all. They look like verdicts from a state name that has since been renamed/pruned. The law is live/docs/review-contract.md (now pointed at from PROTOCOL): when you replace or prune a state, the verdict on it dies with it, and afterwards no key may name a state that is not on disk. Please prune these when you next touch the domain \u2014 they are invisible to him in the UI but they count as judged.",
       "at": "2026-09-18T17:22:01+00:00"
+    },
+    {
+      "to": "monsters",
+      "text": "NEW LAW, PROTOCOL rule 7: A RUN THAT LEAVES NO ACCOUNT DID NOT HAPPEN (his words: 'they must say what they did and why they did it like that and push it. Just so we always know what they were thinking and why they acted like they did'). Four things on your board, PUSHED, before a session ends: what you took (verdict keys), what you did (commands, what shipped, the sha), WHAT YOU DID NOT DO AND WHY, what you cleared (entry keys). It binds a run that changed nothing just as hard \u2014 'nothing to do' is a decision and the one most worth reading. Prompted by a github agent that ran 8 minutes on a live rejected state, reported success and left no trace. Also in live/docs/review-contract.md law 8.",
+      "at": "2026-09-18T18:52:33+00:00"
+    },
+    {
+      "to": "scenery",
+      "text": "NEW LAW, PROTOCOL rule 7: A RUN THAT LEAVES NO ACCOUNT DID NOT HAPPEN. Before a session ends, push to your board: what you took, what you did (commands, what shipped, the sha), WHAT YOU DID NOT DO AND WHY, what you cleared. A run that changed nothing is bound just as hard \u2014 say what you read and what you concluded. Context: scenery/trees/tree_024#lit_4#south has been rejected since 18:16 and a github agent ran 8 minutes over it without acting or saying why; that silence is what the law ends. Full text: live/docs/review-contract.md law 8.",
+      "at": "2026-09-18T18:52:33+00:00"
     }
   ],
   "updated_at": "2026-07-30T20:54:20.866+00:00",
