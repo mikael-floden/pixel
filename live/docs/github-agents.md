@@ -57,12 +57,12 @@ Claude reading its first file:
   verdict or answers "nothing to do" never needs them. The runner ships python3;
   the prompt tells the agent to install the requirements itself the moment it
   reaches for a pipeline.
-- **The CLI is cached.** The action installs Claude Code on every run (~8s of a
-  ~20s start); the binary is one file, identical until the version in the cache
-  key changes, so it is restored and handed to the action by path. A miss just
-  means the action installs it as before — the cache step is
-  `continue-on-error`, so a cache hiccup can never be what stops a review being
-  acted on.
+- **The CLI is NOT cached, on purpose.** Caching the binary and handing the
+  action `path_to_claude_code_executable` saved ~8s and then killed a real
+  scenery review 5 seconds in: the cache reported a hit, the path held nothing,
+  and the run died with "Claude Code native binary not found ... errorClass:
+  executable_not_found" — a failure that looks nothing like its cause. Three
+  commits, one broken run, reverted. Let the action install it.
 - **The cone is three directories**: the domain, `coordination/`, `live/`.
   `games2/scripts` and `wiki/lib` are not fetched until the agent asks, which
   the prompt tells it to do.
