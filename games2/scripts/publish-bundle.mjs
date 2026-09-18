@@ -36,7 +36,7 @@
 // every page already open — measured once as holes through a live audition.
 import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync, statSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, writeFileSync, statSync } from "node:fs";
 import { dirname, join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fastBuild } from "./fastbuild.mjs";
@@ -65,7 +65,12 @@ function localStore(root) {
     async put(p, bytes) {
       const full = join(root, p);
       mkdirSync(dirname(full), { recursive: true });
-      writeFileSync(full, bytes);
+      // TEMP + RENAME, so a killed publish cannot leave a TRUNCATED object
+      // under a content-addressed name. rename(2) is atomic within a
+      // filesystem: the name either does not exist or holds all the bytes.
+      const tmp = `${full}.tmp.${process.pid}`;
+      writeFileSync(tmp, bytes);
+      renameSync(tmp, full);
     },
   };
 }
@@ -181,7 +186,16 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
   let skipped = 0;
   for (const [name, bytes] of Object.entries(bytesOf)) {
     const h = files[name];
-    if (await store.get(`blob/${h}`)) { skipped++; continue; }
+    // A PRESENCE TEST IS NOT AN INTEGRITY TEST. `blob/<h>` existing does not
+    // mean it holds the bytes that hash to h: an interrupted put leaves a
+    // truncated object under a name no later publish would ever rewrite, and
+    // the server re-hashes on load — so EVERY generation naming it is refused
+    // forever while the publisher keeps printing success and exiting 0.
+    // Measured: one 0-byte WORKER blob took the whole lane down, including
+    // generations published before the truncation, because blobs are shared.
+    const have = await store.get(`blob/${h}`);
+    if (have && hashBytes(have) === h) { skipped++; continue; }
+    if (have) console.log(`[publish] blob/${h} is ${have.length} B and does not hash to its name — re-uploading`);
     await store.put(`blob/${h}`, bytes);
     sent += bytes.length;
   }

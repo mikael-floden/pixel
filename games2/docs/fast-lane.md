@@ -134,10 +134,40 @@ deploy's own rollback guard against the change I had just made to `/version`.
 - **A container rollout could be silently overridden by an older generation**,
   and a bad publish could not be undone by any deploy — the image stopped being
   a floor the moment anything was published. Law 6 above.
-- **`/version`'s `sha` is now the CLIENT's identity, and the deploy's
-  anti-rollback guard was reading it** to decide whether an older rollout had
-  landed over a newer one. It reads `.image` now; measuring the image with a
-  field that can name a lane publish would have made it re-roll spuriously.
+- **`/version`'s `sha` is now the CLIENT's identity, and BOTH of the deploy's
+  rollout guards were reading it** as "the image production is running". The
+  pre-deploy one asks "is the live build already past this commit?" — with the
+  lane serving a newer client it reads that as "a descendant is already live"
+  and SKIPS the rollout, so every art push (container lane only) would have been
+  silently dropped for as long as the lane was ahead. Both read `.image` now.
+  This was the most serious defect of the whole batch and no review panel found
+  it; it came out of reading the deploy against the change I had just made.
+- **The blob skip was a presence test, not an integrity test.** `blob/<h>`
+  existing does not mean it holds bytes that hash to h: an interrupted put
+  leaves a truncated object under a name no later publish rewrites, and the
+  server re-hashes on load — so every generation naming it is refused FOREVER
+  while the publisher keeps printing success. Measured: one 0-byte worker blob
+  took the whole lane down, including generations published before the
+  truncation, because blobs are shared. The skip re-hashes now, and `put` is
+  temp+rename so a killed publish cannot leave a partial object at all.
+- **The gate launched Chromium from an absolute path that exists only in the dev
+  container**, so in CI it could only ever have failed and the lane could never
+  have published anything. It resolves a browser now (env, then any chromium
+  under `PLAYWRIGHT_BROWSERS_PATH`, then playwright's own install) and the
+  workflow installs and caches one.
+- **The publish was piped to `tee` with no `pipefail`**, so the step took tee's
+  exit status: a publish that THREW was reported as a successful one, after
+  which the poke waited for a generation that was never written.
+- **The commit step's `working-directory` did not exist.** The worktree was at
+  `../store`, a sibling of the checkout, and a step's `working-directory`
+  resolves inside `GITHUB_WORKSPACE`. It lives under `RUNNER_TEMP` now.
+- **A transient fetch failure looked like "no store yet".** `fetch ||
+  branch-from-empty-tree || true` hands the publisher an EMPTY store on a
+  network blip; it then starts `seq` at 1 and law 2 makes every running instance
+  refuse that generation and every later one. The remote is asked whether the
+  branch exists, and the two cases are handled apart.
+- **"Nothing to commit" was `|| exit 0`**, which hid the publisher reporting a
+  generation that never reached the store.
 
 ## FALL-THROUGH: the mixed generation is refused by arithmetic
 
@@ -198,8 +228,34 @@ is always the floor.
 - **A truly append-only blob map** — not implementable in 1 GiB, and it adds
   nothing over the window: both answer a miss, one of them after an OOM.
 
+## Verified, not assumed
+
+- `WIKI_GITHUB_TOKEN` IS on the live service, which is what decides whether the
+  lane is fast at all (the pointer read is the strongly-consistent contents API
+  with it, and a ~5-minute CDN without it). Probed live: `POST /api/perf`
+  answers `400 empty report`, not the `503 no token` it returns when the token
+  is absent.
+- vite's dist root IS `client/public` verbatim — 43 files, byte-identical — so
+  the fall-through check can pass at all.
+- `raw.githubusercontent.com` reads this repo unauthenticated in 0.4 s, so the
+  blob channel works without a token.
+
 ## Open
 
+- **An `/assets` miss never asks the store.** A name outside the process's
+  window 404s even when the bytes are still on the branch. With
+  `--max-instances 1` this is only reachable for a generation older than the
+  window, which is the documented contract; a name index in the store would
+  close it properly.
+- **No rollback from a phone.** A bad publish is undone by the next container
+  deploy (law 6) or by `--remove-env-vars BUNDLE_STORE`, but there is no
+  "serve the previous generation" button. The retained window makes it cheap to
+  add: a pointer write and a poke.
+- **A client-only push still runs the container deploy too**, so the image
+  catches up ~5 minutes later. Harmless and arguably right, but it is a
+  decision that should be written down rather than incidental.
+- **The store branch grows ~2.5 MB per publish** and the lane's own fetch pays
+  it. `--depth=1` bounds the fetch; the branch itself wants periodic pruning.
 - `VITE_GIT_SHA` is still baked into the bundle, so two builds of identical
   sources at different shas are different generations (no dedup across shas).
   Correct but wasteful; taking it out means the client reads its identity from

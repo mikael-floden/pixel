@@ -100,18 +100,57 @@ jobs:
       # bundle that does not start is a three-second outage, and he tests in
       # production from a phone. verify-fastbundle boots a real browser against
       # a real server and asserts BOOTS / JOINS / RENDERS / CLEAN.
+      # THE BROWSER THE GATE NEEDS. playwright-core ships none, and a runner has
+      # nothing at PLAYWRIGHT_BROWSERS_PATH — the gate hardcoded the dev
+      # container's own chromium path, so in CI it could only ever have failed
+      # and this lane could never have published anything. Cached because the
+      # download is ~30 s and this lane's whole purpose is being fast; the
+      # install step short-circuits on a cache hit. Same shape as wiki-guard.yml.
+      - name: Cache the browser
+        if: steps.lane.outputs.publish == 'true'
+        id: pwcache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-1.61.1-${{ runner.os }}
+      - name: Install chromium if it was not cached
+        if: steps.lane.outputs.publish == 'true' && steps.pwcache.outputs.cache-hit != 'true'
+        run: npx --yes playwright@1.61.1 install --with-deps chromium
+
       - name: Gate — the bundle boots, joins and renders
         if: steps.lane.outputs.publish == 'true'
         working-directory: games2
         run: node scripts/verify-fastbundle.mjs
 
+      # A TRANSIENT FETCH FAILURE MUST NOT LOOK LIKE "NO STORE YET". The first
+      # cut was `fetch || branch-from-empty-tree || true`, which on a network
+      # blip hands the publisher an EMPTY store: it then sees no pointer, starts
+      # seq at 1, and every running instance refuses that generation and every
+      # later one (LAW 2) until the seq climbs back past where it was. So ask
+      # the remote whether the branch exists, and treat the two cases apart.
+      #
+      # The worktree lives under RUNNER_TEMP, not `../store`: a step's
+      # `working-directory` resolves inside GITHUB_WORKSPACE, so a sibling of
+      # the checkout is not addressable from one and the commit step below
+      # failed on a directory that does not exist.
       - name: Fetch the store branch
         if: steps.lane.outputs.publish == 'true'
+        env:
+          STORE: ${{ runner.temp }}/store
         run: |
-          git fetch origin bundle-store:bundle-store --depth=1 2>/dev/null \
-            || git branch bundle-store $(git commit-tree $(git hash-object -t tree /dev/null) -m "bundle store") 2>/dev/null \
-            || true
-          git worktree add ../store bundle-store
+          set -euo pipefail
+          if git ls-remote --exit-code --heads origin bundle-store >/dev/null 2>&1; then
+            echo "the store branch exists — fetching it"
+            git fetch --depth=1 origin bundle-store:bundle-store
+          elif git ls-remote --heads origin >/dev/null 2>&1; then
+            echo "the store branch does not exist yet — creating it from an empty tree"
+            git branch bundle-store "$(git commit-tree "$(git hash-object -t tree /dev/null)" -m 'bundle store')"
+          else
+            echo "::error::cannot reach the remote to tell whether bundle-store exists; refusing to publish against an unknown store"
+            exit 1
+          fi
+          git worktree add "$STORE" bundle-store
+          echo "store worktree at $STORE"
 
       - name: Publish the generation
         id: pub
@@ -119,15 +158,20 @@ jobs:
         working-directory: games2
         env:
           GIT_SHA: ${{ github.sha }}
+          STORE: ${{ runner.temp }}/store
         run: |
           # THE COMMIT'S OWN TIMESTAMP orders this publish against the IMAGE
           # (games2/server/src/bundlestore.ts). Without it the server cannot
           # tell whether this client is newer than the one in the container, so
           # a publish from an earlier commit could override a later rollout.
           # %ct is the committer date and needs no history beyond HEAD.
+          # `pipefail`, because the publish is PIPED: without it the status is
+          # tee's and a publish that THROWS is reported as a successful one,
+          # after which the poke waits for a generation that was never written.
+          set -euo pipefail
           TS=$(git show -s --format=%ct HEAD)
           echo "publishing the client of $GIT_SHA, committed $TS"
-          node scripts/publish-bundle.mjs --store ../../store/bundle --sha "$GIT_SHA" --commit-ts "$TS" | tee /tmp/pub.log
+          node scripts/publish-bundle.mjs --store "$STORE/bundle" --sha "$GIT_SHA" --commit-ts "$TS" | tee /tmp/pub.log
           if grep -q "already current" /tmp/pub.log; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
@@ -142,17 +186,30 @@ jobs:
 
       - name: Commit and push it
         if: steps.pub.outputs.changed == 'true'
-        working-directory: store
+        working-directory: ${{ runner.temp }}/store
         run: |
+          set -euo pipefail
           git config user.name "Claude"
           git config user.email "noreply@anthropic.com"
           git add bundle
-          git commit -q -m "bundle: ${{ github.sha }}" || exit 0
+          # NOTHING TO COMMIT IS A DEFECT HERE, not a no-op: the publisher just
+          # reported that it wrote blobs, a manifest and a pointer. `|| exit 0`
+          # hid that and left the poke waiting for a generation nobody pushed.
+          if git diff --cached --quiet; then
+            echo "::error::the publisher reported a new generation but the store worktree has no changes"
+            exit 1
+          fi
+          git commit -q -m "bundle: ${{ github.sha }}"
           for i in 1 2 3 4; do
-            git push origin bundle-store && break
+            git push origin bundle-store && exit 0
             echo "push failed, retrying in $((2 ** i))s"; sleep $((2 ** i))
+            # A concurrent publisher is the only expected cause. Rebase onto it
+            # and try again; the blobs are content-addressed so they merge, and
+            # the pointer is the one file that can conflict.
             git fetch origin bundle-store && git rebase origin/bundle-store || true
           done
+          echo "::error::could not push the generation after 4 attempts"
+          exit 1
 
       # THE POKE, exactly like live-notify.yml: the server re-reads the pointer
       # and flips. Unauthenticated because it only asks for a re-read of public

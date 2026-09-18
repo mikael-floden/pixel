@@ -404,7 +404,17 @@ jobs:
           if [ "${{ github.event_name }}" != "push" ]; then
             echo "$GITHUB_EVENT_NAME is not a push — rolling out unconditionally"; exit 0
           fi
-          served=$( { [ -n "$url" ] && curl -fsS --max-time 30 --retry 2 "$url/version"; } 2>/dev/null | jq -r '.sha // empty' 2>/dev/null || true)
+          # `.image`, NOT `.sha` — THE WHOLE GUARD DEPENDS ON THIS. The comment
+          # above says `.sha` is "the GIT_SHA this same job bakes into the
+          # image", and that stopped being true when the fast lane started
+          # serving published client generations: `.sha` names the CLIENT, which
+          # can come from a LATER commit than the image. This guard then reads a
+          # lane publish as "a descendant is already live" and skips the
+          # rollout — so every art push (container lane only) would be silently
+          # dropped for as long as the lane was ahead. `.image` is the question
+          # actually being asked. `// .sha` covers a revision deployed before
+          # that field existed.
+          served=$( { [ -n "$url" ] && curl -fsS --max-time 30 --retry 2 "$url/version"; } 2>/dev/null | jq -r '.image // .sha // empty' 2>/dev/null || true)
           # A 40-hex sha or nothing. Asserted by SHAPE, not by counting
           # wildcards in a glob — the first cut of this line had 41 `?` and so
           # fell open on every real sha, which is a guard that only looks like

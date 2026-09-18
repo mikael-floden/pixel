@@ -40,7 +40,32 @@ import { fastBuild } from "./fastbuild.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const DIST = join(ROOT, "client", "dist");
-const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
+/** THE BROWSER, WHEREVER IT IS. This was a hardcoded
+ *  /opt/pw-browsers/chromium-1194/... — which exists in the dev container and
+ *  NOWHERE on a GitHub runner, so the gate could only ever have failed in CI
+ *  and the lane could never have published. Resolution order: an explicit
+ *  CHROME_EXE, then any chromium under PLAYWRIGHT_BROWSERS_PATH (the version
+ *  suffix moves with playwright), then playwright's own default, which is what
+ *  `playwright install chromium` provides on a runner (the wiki-guard workflow
+ *  is the precedent). */
+function findChrome() {
+  if (process.env.CHROME_EXE && existsSync(process.env.CHROME_EXE)) return process.env.CHROME_EXE;
+  const base = process.env.PLAYWRIGHT_BROWSERS_PATH || "/opt/pw-browsers";
+  try {
+    for (const d of readdirSync(base)) {
+      if (!d.startsWith("chromium")) continue;
+      for (const exe of ["chrome-linux/chrome", "chrome-linux/headless_shell"]) {
+        const full = join(base, d, exe);
+        if (existsSync(full)) return full;
+      }
+    }
+  } catch {
+    /* no such directory: fall through to playwright's default */
+  }
+  return undefined; // playwright resolves its own install
+}
+const EXE = findChrome();
+console.log(`[fastbundle] browser: ${EXE ?? "playwright's own install"}`);
 let bad = 0;
 const check = (ok, what) => {
   console.log(`  ${ok ? "ok  " : "FAIL"} ${what}`);
@@ -80,7 +105,10 @@ for (let t0 = Date.now(); ; ) {
   await new Promise((r) => setTimeout(r, 250));
 }
 
-const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox", "--disable-dev-shm-usage"] });
+const browser = await chromium.launch({
+  ...(EXE ? { executablePath: EXE } : {}),
+  args: ["--no-sandbox", "--disable-dev-shm-usage"],
+});
 const page = await (await browser.newContext({ viewport: { width: 480, height: 320 }, serviceWorkers: "block" })).newPage();
 const errs = [];
 const missing = [];

@@ -24,7 +24,7 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 | doc | holds |
 |---|---|
 | `docs/shipping.md` | publish policy, image root, world tree, staging, WebP, `?h=` grant, brotli, load order |
-| `docs/fast-lane.md` | the no-image client lane: the six store laws, fall-through, the 14 paid-for traps, the kill switch |
+| `docs/fast-lane.md` | the no-image client lane: the six store laws, fall-through, the paid-for traps, the kill switch |
 | `docs/tiles3-rendering.md` | tiles3 resolver, draw ops, plates, transitions, seams, fades, decks, wall feet, parity |
 | `docs/scenery.md` | sizing, hitboxes, animation, wall windows, indoor furniture, flat pieces, fog |
 | `docs/depth-sort.md` | occluder set, `depthrule.ts`, cover lines, lifts, drops |

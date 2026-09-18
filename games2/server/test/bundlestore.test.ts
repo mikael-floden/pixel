@@ -477,26 +477,30 @@ test("the IMAGE wins against a generation published from an earlier commit, and 
     process.env.GIT_COMMIT_TS = "1000";
     const s3 = store(root);
 
+    // read the getter through a local each time: assert.equal narrows its
+    // declared type to null, and TypeScript cannot know a getter changes
+    const idOf = (b: BundleStore): string | null => b.current?.id ?? null;
+
     writeGen(root, "older", GEN_A);
     writePointer(root, { seq: 1, current: "older", retained: [], commit_ts: 900 });
     await s3.refresh(true);
-    assert.equal(s3.current, null, "a client from before this image is refused");
+    assert.equal(idOf(s3), null, "a client from before this image is refused");
 
     writeGen(root, "tie", GEN_B);
     writePointer(root, { seq: 2, current: "tie", retained: [], commit_ts: 1000 });
     await s3.refresh(true);
-    assert.equal(s3.current, null, "and a tie goes to the image");
+    assert.equal(idOf(s3), null, "and a tie goes to the image");
 
     writeGen(root, "newer", { "index.html": "<html>N</html>", "assets/index-nnnnnnnn.js": "//N" });
     writePointer(root, { seq: 3, current: "newer", retained: [], commit_ts: 1001 });
     await s3.refresh(true);
-    assert.equal(s3.current?.id, "newer", "one second newer than the image IS adopted");
+    assert.equal(idOf(s3), "newer", "one second newer than the image IS adopted");
 
     // an image that cannot name its own time must not read as "newer"
     delete process.env.GIT_COMMIT_TS;
     const s4 = store(root);
     await s4.refresh(true);
-    assert.equal(s4.current, null, "an image with no commit time refuses a generation that names one");
+    assert.equal(idOf(s4), null, "an image with no commit time refuses a generation that names one");
 
     // and an UNSTAMPED generation is ordered on seq alone (local runs, tests)
     process.env.GIT_COMMIT_TS = "1000";
@@ -504,7 +508,7 @@ test("the IMAGE wins against a generation published from an earlier commit, and 
     writePointer(root, { seq: 4, current: "plain", retained: [] });
     const s5 = store(root);
     await s5.refresh(true);
-    assert.equal(s5.current?.id, "plain", "no commit_ts means unordered, not refused");
+    assert.equal(idOf(s5), "plain", "no commit_ts means unordered, not refused");
   } finally {
     if (prev === undefined) delete process.env.GIT_COMMIT_TS;
     else process.env.GIT_COMMIT_TS = prev;
