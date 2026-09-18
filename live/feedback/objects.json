@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-09-18T06:18:42.150Z",
+  "updated_at": "2026-09-18T06:24:48.766Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -23913,10 +23913,10 @@
       "art": "36c2eed9679ed48a"
     },
     "scenery/washing_lines/washing_line_016#not_lit_3#south": {
-      "rating": 3,
-      "updated_at": "2026-08-20T00:04:29.448Z",
-      "status": "approved",
-      "art": "c47593ebf0f3f9fe"
+      "updated_at": "2026-09-18T06:24:47.092Z",
+      "art": "c335ac7bb3282b48",
+      "status": "redo",
+      "note": "To Shiny"
     },
     "scenery/washing_lines/washing_line_016#not_lit_4#south": {
       "rating": 3,
@@ -24015,10 +24015,10 @@
       "art": "da969cc9823f607a"
     },
     "scenery/washing_lines/washing_line_016": {
-      "rating": 3,
-      "updated_at": "2026-08-20T01:03:28.091Z",
+      "updated_at": "2026-09-18T06:24:10.413Z",
       "status": "approved",
-      "art": "fbca8d3217cbf64d"
+      "art": "fbca8d3217cbf64d",
+      "rating": 3
     },
     "scenery/beacons/beacon_016": {
       "rating": 3,
@@ -30896,6 +30896,18 @@
     "scenery/cupboards_and_shelves/cupboard_010#lit_3#south-west": {
       "note": "Not enough frames!",
       "updated_at": "2026-09-18T01:57:40.738Z"
+    },
+    "scenery/washing_lines/washing_line_016#not_lit_3#south-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "9f60abbf8074e152",
+      "updated_at": "2026-09-18T06:24:14.479Z"
+    },
+    "scenery/washing_lines/washing_line_016#not_lit_3#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "3e756c1a112afc8f",
+      "updated_at": "2026-09-18T06:24:19.452Z"
     }
   }
 }
