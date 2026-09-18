@@ -1,7 +1,7 @@
 {
  "domain": "maps2",
  "health": "running",
- "current": "IDLE. Shipped: somebody lives here (yards.py; 11 houses dressed in place). Released every file.",
+ "current": "CLAIMED 2026-09-18: THREE BIGGER, STRANGER CAVES ON THE NORTH SIDE + the everything-is-a-weight law (his ask). Files: maps2/pipeline/newcaves.py (new: digs planned pit caves into the SHIPPED world in place with the generator's own planner, themed floors - slime, lava, ice, rock - as pools), world3grow.py (_audit_site accepts the themed floors; PIT_NAMES grows; the themes pool), yards.py (paving follows the house's wall, --recolour), maps2/worlds3/the_game/{world.json, places.json, spawns.json, ambient.json, minimap.*}, spec/WORLD3.md, README.md (the law at the top), reports/the_game.json.",
  "owner": "Map2 agent",
  "notes": [
   "the_island2 (islandworld2.py, n=200 seed=21): the HYBRID map. UPPER = the_island's mountain verbatim (Island subclass), strictly antitone via camera_monotone MASKED to the mountain (autotile.camera_monotone_masked), floored at level 14 so its whole front is a sheer foot the lower world runs into. LOWER = a genuine-relief MAZE (levels go up AND down — a strictly-antitone field can only make ONE connected lowest sheet, so a maze MUST use relief). Legal WITHOUT flattening it via the WALL-MATERIAL RULE: same-material toward-camera up-steps get their higher rim recoloured to a wall material (stone/obsidian, level-band parity so stacked cliffs never repeat a material) — Pass A `_wall_rim` (vectorised) + Pass B `_lip_cover` (iterated, MAT-ONLY so it can never undo connectivity or open a pit). Seam is legal by construction (mtn foot 14 > maze top 10, mtn entirely up-screen). Connectivity/no-pits/bridges REUSE the_island's machinery (_connect_all/_fill_traps/_place_bridges); reachability proof is PROP-AWARE (worldio sets collision=1 on props, so dense props are walls). All hard-asserted every build: occlusion==0, traps==0, maze_land>=1.6*mtn_land, prop-aware reachable == terrain reachable, main piece>=97% of land, every bridge row both-bank-walkable, max level>=30.",
@@ -336,5 +336,5 @@
    "at": "2026-09-18T03:10:21+00:00"
   }
  ],
- "updated_at": "2026-09-18T08:18:00.367485+00:00"
+ "updated_at": "2026-09-18T09:30:21.407891+00:00"
 }
