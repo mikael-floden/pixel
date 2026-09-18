@@ -14,8 +14,11 @@ import {
 test("rest to full speed in the dial's time, linearly; released, it falls at the same rate; 0 is today's instant law", () => {
   assert.equal(ACCEL_S_MIN, 0);
   assert.ok(ACCEL_S_MAX >= 1);
-  // "5x as slow as today", today being one frame: five frames of 33 ms.
-  assert.ok(Math.abs(ACCEL_S_DEFAULT - 5 * 0.033) < 0.01, `default ${ACCEL_S_DEFAULT} s is five frames`);
+  // HIS NUMBER, not the arithmetic it came from: "5x as slow as today" gave
+  // 0.17 (five frames of 33 ms) and he then tuned it by feel to 0.21
+  // (2026-09-18). A taste verdict is pinned exactly, so a later refactor that
+  // moves the dial has to come back through him.
+  assert.equal(ACCEL_S_DEFAULT, 0.21, `default ${ACCEL_S_DEFAULT} s is his tuned ramp`);
   let f = 0;
   const T = 5 * 0.033;
   const path: number[] = [];

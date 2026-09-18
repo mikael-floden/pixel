@@ -546,7 +546,8 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   from 0% to 100% on a single frame. Create a slider for this and make the new
   default 5x as slow as today"): the commanded speed rises linearly from rest
   over the dial's "time to full speed" — 0 is the instant law of before, the
-  default `ACCEL_S_DEFAULT` 0.17 s (five frames of 33 ms: today was one), the
+  default `ACCEL_S_DEFAULT` 0.21 s (HIS, tuned by feel 2026-09-18 up from the
+  0.17 that "5x as slow" arithmetic gave), the
   top a second — and falls at the same rate when the stick is released, so a
   press within a release's ramp resumes where it was while the body itself
   stops at once (no input, no move). The stop is not ramped: he asked for the

@@ -185,7 +185,7 @@ push, no PRs unless asked.
 - Water is the player's sanctuary (no monster enters or hits there), as FLAT
   underfoot as in the art (`swimlevel.test.ts`).
 - The speed dial and the acceleration ramp ride PER INPUT (`InputMessage.sm`,
-  `.ac`) and the SERVER clamps them; 1.1x and 0.17 s to full speed ARE HIS
+  `.ac`) and the SERVER clamps them; 1.1x and 0.21 s to full speed ARE HIS
   (`playerspeed.ts`, `accel.ts`).
 - The stick "almost" snaps: `leanHeading` leans between the octants' run
   headings by his dial (0 snap, 1 continuous; 0.85 IS HIS); the grid-axis

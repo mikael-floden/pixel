@@ -331,11 +331,12 @@ export const PLAYER_SPEED_DEFAULT = 1.1;
  *  from standing still to running fast is way way way too fast right now. It
  *  kinda feels like we go from 0% to 100% on a single frame. Create a slider
  *  for this and make the new default 5x as slow as today"). Today was one
- *  frame: the default is five frames of 33 ms, in hundredths; 0 is that
+ *  frame; the default he then tuned by feel to 0.21 s (maintainer 2026-09-18,
+ *  from the 0.17 that "5x as slow" arithmetic gave), in hundredths; 0 is that
  *  instant law, the top a full second. `client/src/accel.ts` is the dial. */
 export const ACCEL_S_MIN = 0;
 export const ACCEL_S_MAX = 1;
-export const ACCEL_S_DEFAULT = 0.17;
+export const ACCEL_S_DEFAULT = 0.21;
 /** One window of the ramp: the factor (0..1) at the window's END. A held input
  *  raises it linearly at 1/rampS per second (to 1 at once when rampS is 0); a
  *  released one lowers it at the same rate, so a press within the ramp of a
