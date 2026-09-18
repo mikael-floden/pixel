@@ -11,7 +11,7 @@
 # ships 2,644 files of which the game reads THREE. This stage computes the
 # reachable set from games2/config/publish.json and materialises ONLY that.
 #
-# Measured: 212.7 MB of art on disk → 57.4 MB in the image.
+# Measured 2026-09-18: 497.3 MB of art on disk → 235.6 MB curated into the image.
 #
 # It also filters everything downstream for free, which is the real reason it
 # is a stage and not a .dockerignore edit: the final image rebuilds every
@@ -77,12 +77,12 @@ RUN npm ci
 COPY --from=curate /shipped/ /assets/
 ENV ASSETS_ROOT=/assets
 
-COPY games2/ ./
-COPY --from=curate /src/games2/client/public/shipset.json client/public/shipset.json
-
-ARG GIT_SHA=dev
-ENV VITE_GIT_SHA=$GIT_SHA
-
+# /full IS AN ART-ONLY INPUT, so it sits ABOVE the game source and above
+# ENV VITE_GIT_SHA: it is the curate stage's own input tree and depends on
+# nothing in games2/. Below them it was rebuilt on EVERY push — the sha
+# changes every deploy, which invalidated this 29.7 s copy unconditionally
+# (measured 2026-09-18, run 4201: 147 of 220 BuildKit seconds went on
+# re-materialising art a one-file code push had not touched).
 # ---------------------------------------------------------- wiki registry ----
 # THE REGISTRY IS BUILT FROM THE FULL TREE, NOT THE CURATED ONE. The wiki is the
 # Game Master's REVIEW surface: it lists 57 creatures, 193 races and 797 scenery
@@ -109,6 +109,13 @@ ENV VITE_GIT_SHA=$GIT_SHA
 # "which root did it read" is the whole bug class here, and the old line's
 # answer (/assets, the curated one) was invisible at the call site.
 COPY --from=curate /src /full
+
+COPY games2/ ./
+COPY --from=curate /src/games2/client/public/shipset.json client/public/shipset.json
+
+ARG GIT_SHA=dev
+ENV VITE_GIT_SHA=$GIT_SHA
+
 # THE TILES3 ART CLOSURE of every published maps2/worlds3 world (the_game) —
 # computed HERE with the real resolver (TypeScript, so not in the curate stage)
 # from /full into /assets/tiles: every file the resolver names for every cell,
@@ -141,6 +148,21 @@ COPY games2/server/package.json server/
 COPY games2/client/package.json client/
 RUN npm ci --omit=dev && npm cache clean --force
 
+# ART BEFORE THE GAME SOURCE. These three depend only on the art domains, so
+# above server/, config/ and client/dist they stay CACHED through a code-only
+# deploy; below them, client/dist (stamped with this deploy's sha) invalidated
+# all three and re-materialised 235.6 MB every push (measured 2026-09-18:
+# 8.8 s + 1.4 s + 0.1 s). Their order AMONG THEMSELVES is load-bearing and
+# unchanged: curated art, then the tiles3 closure into it, then the index that
+# hashes the result.
+# Curated art. composer/ is deliberately ABSENT: 94 MB that only the wiki's
+# sound and music pages play, now fetched from the repo (wiki.js resolves
+# composer/** against the CDN), so no player carries it.
+COPY --from=curate /shipped/ /assets/
+# …the tiles3 closure the build stage resolved (see ship-tiles3 above)…
+COPY --from=build /assets/tiles/ /assets/tiles/
+COPY --from=build /assets/asset-index.json /assets/asset-index.json
+
 # The server runs TypeScript straight from source via tsx, so shared/ and
 # server/ ship as SOURCE — no build output to copy.
 COPY games2/shared/ shared/
@@ -153,13 +175,6 @@ COPY games2/server/ server/
 COPY games2/config/ config/
 # The built client bundle only — not client/src, not node_modules.
 COPY --from=build /app/client/dist client/dist
-# Curated art. composer/ is deliberately ABSENT: 94 MB that only the wiki's
-# sound and music pages play, now fetched from the repo (wiki.js resolves
-# composer/** against the CDN), so no player carries it.
-COPY --from=curate /shipped/ /assets/
-# …the tiles3 closure the build stage resolved (see ship-tiles3 above)…
-COPY --from=build /assets/tiles/ /assets/tiles/
-COPY --from=build /assets/asset-index.json /assets/asset-index.json
 # …AND THE WIKI REGISTRY BUILT FROM THIS DEPLOY'S OWN TREE (see the build stage:
 # it is built from /full, the whole repo, not from the curated art). The runtime
 # copies /assets from CURATE, so without this line that output is discarded on
