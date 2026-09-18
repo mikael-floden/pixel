@@ -54,7 +54,7 @@ on:
   workflow_dispatch:
     inputs:
       domain:
-        description: "Which feedback file to rehearse against"
+        description: "Which DOMAIN to rehearse against (scenery, monsters, tiles…)"
         type: string
         default: "monsters"
       dry_run:
@@ -126,11 +126,30 @@ jobs:
           fi
           since=$(date -u -d '30 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
           out=""
-          # bindings.json is the composer's attachment review, not a domain
-          # directory; it has no agent of its own to stand in for.
-          for f in $(gh api "repos/$REPO/contents/live/feedback" --jq '.[].name' | sed 's/\.json$//' | grep -vx bindings); do
+          # THE FILE IS NOT THE DIRECTORY. He reviews scenery and the wiki
+          # writes live/feedback/OBJECTS.json; the domain on disk is scenery/,
+          # and its agent is the scenery agent. Same for characters ->
+          # characters2. Without this map the job is named objects-github-agent
+          # and sent to read objects/README.md, which does not exist — found on
+          # his first real scenery review, 2026-09-18.
+          #
+          # Skipped, with the reason: bindings is an <event>#<sound> review, not
+          # a domain; composer and composer-music belong to games2/composer,
+          # which is one corner of a directory six agents share — a stand-in
+          # there needs the games2 split decided first.
+          domain_of() {
+            case "$1" in
+              objects) echo scenery ;;
+              characters) echo characters2 ;;
+              bindings|composer|composer-music) echo "" ;;
+              *) echo "$1" ;;
+            esac
+          }
+          for f in $(gh api "repos/$REPO/contents/live/feedback" --jq '.[].name' | sed 's/\.json$//'); do
+            d=$(domain_of "$f")
+            [ -n "$d" ] || continue
             n=$(gh api "repos/$REPO/commits?path=live/feedback/$f.json&since=$since&per_page=1" --jq 'length')
-            [ "$n" -gt 0 ] && out="$out$f\n" || true
+            [ "$n" -gt 0 ] && out="$out$d\n" || true
           done
           json=$(printf "$out" | sed '/^$/d' | jq -R . | jq -sc .)
           echo "reviewed since $since: $json"

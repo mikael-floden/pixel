@@ -56,6 +56,20 @@ live/realtime"*. What was done about it, in order of what it cost:
   long enough to collapse a review sitting into one session, short enough to
   feel like an answer.
 
+
+**THE FEEDBACK FILE IS NOT THE DIRECTORY.** He reviews scenery and the wiki
+writes `live/feedback/objects.json`; the domain on disk is `scenery/` and its
+agent is the scenery agent. Same for `characters.json` → `characters2/`. The
+`detect` job maps the file to the domain before naming anything — without it the
+job is called `objects-github-agent` and sent to read `objects/README.md`, which
+does not exist. Found on his first real scenery review (2026-09-18), on a run
+that fired correctly and would have confused the session it started.
+
+Skipped, with the reason: `bindings` is an `<event>#<sound>` review, not a
+domain; `composer` and `composer-music` belong to `games2/composer`, one corner
+of a directory six agents share — a stand-in there needs the games2 split
+decided first.
+
 ## The laws this encodes
 
 - **One github agent per domain, shaped by that domain's own docs** (maintainer
