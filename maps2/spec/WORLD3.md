@@ -1015,7 +1015,12 @@ bench, a well or a pump, a cart, a haystack, a hive, a fence, drying racks
 only with water within eight cells, two of a kind only for the piles and the
 fences. Every piece is judged where it stands by the footprint law at its
 nav-fit offset, never behind the roof (the build's own shadow rule), never
-on a doorstep or the path. A house on snow or rock keeps its bare ground, and
+on a doorstep or the path, and always with WALL_GAP (0.3 cell) of ground
+between its footprint and any house wall (maintainer 2026-09-18, a woodpile
+in the wall after a hitbox update: the footprint law's margin is right for
+furniture and wrong outside). `yards.py --refit` re-judges every yard piece
+with the hitboxes as tuned today — it stands, slides to the nearest clear
+spot of its yard, or goes. A house on snow or rock keeps its bare ground, and
 no painting may leave a natural-ground speck (drawn again, or not at all).
 `--apply` dresses the shipped world in place; the build runs the same pass
 after it writes world.json. (Measured on the_game: 11 houses, 229 cells

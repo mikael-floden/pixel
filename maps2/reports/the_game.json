@@ -881,6 +881,43 @@
     }
    ],
    "artifact": "https://claude.ai/artifact/4dLQsFvr4SHQH6EeRaCRYj"
+  },
+  {
+   "date": "2026-09-18",
+   "commit": "a6cdd84e6a",
+   "before": "9e8119bbea",
+   "title": "Yard pieces step back from the house walls (37 moved, 3 gone) after your hitbox update",
+   "changes": [
+    {
+     "name": "The village's big house: woodpile, pump, barrels and hive off the wall",
+     "what": "With the hitboxes as you tuned them today the woodpile and the pump stood in the wall. Every yard piece now keeps a third of a cell of ground from any house wall, and every one was re-judged: these stepped one cell out into the yard; the two chairs on the north side had no room and moved round to the east.",
+     "cell": [
+      305,
+      239
+     ],
+     "window": [
+      292,
+      220,
+      320,
+      246
+     ]
+    },
+    {
+     "name": "The village house by the spawn: the woodpile, the hive and the pump",
+     "what": "The same rule: one cell out from the wall, still by the door.",
+     "cell": [
+      333,
+      237
+     ],
+     "window": [
+      322,
+      224,
+      344,
+      244
+     ]
+    }
+   ],
+   "artifact": "https://claude.ai/artifact/94x1Q6sj79kNDSiFLJbCoR"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
