@@ -1,0 +1,141 @@
+{
+  "id": "vent_worm",
+  "name": "Ventworm",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It lives off the heat itself and has never needed light. Where it is, the rock is too hot to stand on.",
+  "biome": [
+    "lava",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Thick armoured tube worm coiled on hot rock, its chalky white shell ribbed in tight rings, a blood-red feathered plume spread from the open end, no eyes anywhere on it and heat shimmer rising off its coils",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "vent_worm/rotations/south.webp",
+    "south-east": "vent_worm/rotations/south-east.webp",
+    "east": "vent_worm/rotations/east.webp",
+    "north-east": "vent_worm/rotations/north-east.webp",
+    "north": "vent_worm/rotations/north.webp",
+    "north-west": "vent_worm/rotations/north-west.webp",
+    "west": "vent_worm/rotations/west.webp",
+    "south-west": "vent_worm/rotations/south-west.webp"
+  },
+  "sheet": "vent_worm/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "992cb01f-6b7a-41c7-986a-88ddb54c24b9",
+  "seed": 1681059366,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:41:54+00:00",
+  "elapsed_s": 177.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.752,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.752,
+        "bbox": [
+          10,
+          2,
+          85,
+          93
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.774,
+        "bbox": [
+          13,
+          3,
+          83,
+          93
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.782,
+        "bbox": [
+          13,
+          3,
+          82,
+          93
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.779,
+        "bbox": [
+          12,
+          4,
+          84,
+          93
+        ],
+        "fill": 0.695,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.807,
+        "bbox": [
+          13,
+          2,
+          83,
+          93
+        ],
+        "fill": 0.691,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.793,
+        "bbox": [
+          13,
+          5,
+          82,
+          93
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.785,
+        "bbox": [
+          14,
+          4,
+          83,
+          94
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.805,
+        "bbox": [
+          13,
+          2,
+          83,
+          93
+        ],
+        "fill": 0.691,
+        "touches_edge": false
+      }
+    }
+  }
+}

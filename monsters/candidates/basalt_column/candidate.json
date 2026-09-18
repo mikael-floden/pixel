@@ -1,0 +1,143 @@
+{
+  "id": "basalt_column",
+  "name": "Basaltkin",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It cooled into these shapes on its own, in straight lines, without being cut. The mountain does this and nobody knows why it is neat.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Body of fused hexagonal basalt columns, black and glassy on the facets, snapped off at different heights along its shoulders, the joints ringed with fine horizontal fracture lines and red heat glowing in the deepest cracks",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "basalt_column/rotations/south.webp",
+    "south-east": "basalt_column/rotations/south-east.webp",
+    "east": "basalt_column/rotations/east.webp",
+    "north-east": "basalt_column/rotations/north-east.webp",
+    "north": "basalt_column/rotations/north.webp",
+    "north-west": "basalt_column/rotations/north-west.webp",
+    "west": "basalt_column/rotations/west.webp",
+    "south-west": "basalt_column/rotations/south-west.webp"
+  },
+  "sheet": "basalt_column/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0f1caa12-1f82-4cfd-a817-1e4fc5ea9ca0",
+  "seed": 126356887,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:42:21+00:00",
+  "elapsed_s": 216.9,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.691,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.691,
+        "bbox": [
+          7,
+          3,
+          105,
+          109
+        ],
+        "fill": 0.828,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.771,
+        "bbox": [
+          34,
+          3,
+          81,
+          110
+        ],
+        "fill": 0.401,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.767,
+        "bbox": [
+          31,
+          3,
+          78,
+          109
+        ],
+        "fill": 0.397,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.727,
+        "bbox": [
+          12,
+          1,
+          100,
+          107
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.769,
+        "bbox": [
+          16,
+          4,
+          97,
+          112
+        ],
+        "fill": 0.697,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.73,
+        "bbox": [
+          21,
+          2,
+          93,
+          108
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.733,
+        "bbox": [
+          19,
+          2,
+          91,
+          108
+        ],
+        "fill": 0.608,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.775,
+        "bbox": [
+          14,
+          4,
+          96,
+          112
+        ],
+        "fill": 0.706,
+        "touches_edge": true
+      }
+    }
+  }
+}
