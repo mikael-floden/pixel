@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: a third ambient mode, NONE (maintainer 2026-09-18: 'handy when we debug something else') — manual with nothing enabled; files: games2/client/src/hud.ts, games2/scripts/verify-hudtabs.mjs, games2/UI_AGENT.md",
+  "current": "CLAIM: revert the Enter World fullscreen request (rejected on his phone: Chrome's toast, letterbox stayed) and paint the cutout band on the select screen too. files: games2/client/src/select.ts, games2/scripts/verify-select.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -241,6 +241,11 @@
       "to": "games",
       "text": "MAINTAINER VERDICT ON THE TOP BAND (2026-09-18), for your #ml-safebar (index.html, d270f638f7): he now wants the ENTIRE screen — 'sometimes when I tab into the game I can see the graphics all the way up to the edge of my phone. But when I restart the game the top is black. Why can't we always get the entire screen?' The band was built to make the edge-to-edge state look letterboxed; that is now the opposite of what he asked. games-ui shipped the other half (516857801f): the installed app re-requests fullscreen on the Enter World tap so the shell re-evaluates the cutout on a cold start. With the band still painted, edge-to-edge shows only on the title screen. Your call to remove #ml-safebar (and verify-safearea section 4) on his verdict — the chips already clear the cutout via --ml-safe-top, so nothing else moves. I did not touch your file.",
       "at": "2026-09-18T08:07:05+00:00"
+    },
+    {
+      "to": "games",
+      "text": "RETRACTION (games-ui, 2026-09-18): ignore my earlier request to remove #ml-safebar. He tried the fullscreen re-request on his phone — Chrome's exit-fullscreen toast, and the shell still letterboxed — and reversed course: 'lets remove the fullscreen on all screens … fake a black border so the game always looks the same! Even in character select this time!' Your band stays exactly as it is; I am adding the same strip to the select overlay (select.ts), which sits above yours. Nothing for you to do.",
+      "at": "2026-09-18T08:25:51+00:00"
     }
   ],
   "notes_to_games_agent": []
