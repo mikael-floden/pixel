@@ -918,6 +918,102 @@
     }
    ],
    "artifact": "https://claude.ai/artifact/94x1Q6sj79kNDSiFLJbCoR"
+  },
+  {
+   "date": "2026-09-18",
+   "commit": "0ec22eb0ce",
+   "before": "a6cdd84e6a",
+   "title": "Three bigger, themed caves on the north side: rock, ice and lava, mud and slime",
+   "changes": [
+    {
+     "name": "Pit VI, the rock cave: the pit in the field",
+     "what": "A bare rock cave, the biggest of the three: six rooms on a grey-stone floor under the north-east meadow, a pit stair down from the grass. Nothing grows in it and nothing pools; it is stone all the way. Four braziers and the rim torches burn. This is the field with the pit's stair and its torches, as you walk up to it.",
+     "cell": [
+      270,
+      78
+     ],
+     "window": [
+      250,
+      52,
+      289,
+      85
+     ]
+    },
+    {
+     "name": "Pit VI, the rock cave: the lid lifted",
+     "what": "The same cave with its lid lifted: the rooms, the floor's ground and its pools, the braziers. (In this still, a corridor that lies a storey above the rooms can be hidden behind the field's rock between them, with only its braziers showing over the grass; the game lowers every wall indoors, so you walk it in the open.)",
+     "cell": [
+      266,
+      69
+     ],
+     "window": [
+      250,
+      52,
+      289,
+      85
+     ],
+     "cutaway": true
+    },
+    {
+     "name": "Pit VII, the ice and lava cave: the pit in the field",
+     "what": "Four rooms on an ICE floor with pools of lava in them, under the north-west plateau. The pools lie deep in the rooms with a rim of floor round each, so every room is walked through; two of its lights burn - the plateau's glowing crystals and shrines gave up their window for them. This is the field with the pit's stair and its torches, as you walk up to it.",
+     "cell": [
+      98,
+      248
+     ],
+     "window": [
+      91,
+      230,
+      117,
+      262
+     ]
+    },
+    {
+     "name": "Pit VII, the ice and lava cave: the lid lifted",
+     "what": "The same cave with its lid lifted: the rooms, the floor's ground and its pools, the braziers. (In this still, a corridor that lies a storey above the rooms can be hidden behind the field's rock between them, with only its braziers showing over the grass; the game lowers every wall indoors, so you walk it in the open.)",
+     "cell": [
+      105,
+      245
+     ],
+     "window": [
+      91,
+      230,
+      117,
+      262
+     ],
+     "cutaway": true
+    },
+    {
+     "name": "Pit VIII, the mud and slime cave: the pit in the field",
+     "what": "Two rooms of dark mud with slime pools, under the mud field on the north slope. Small, wet and green; two lights burn. This is the field with the pit's stair and its torches, as you walk up to it.",
+     "cell": [
+      234,
+      93
+     ],
+     "window": [
+      225,
+      82,
+      253,
+      101
+     ]
+    },
+    {
+     "name": "Pit VIII, the mud and slime cave: the lid lifted",
+     "what": "The same cave with its lid lifted: the rooms, the floor's ground and its pools, the braziers. (In this still, a corridor that lies a storey above the rooms can be hidden behind the field's rock between them, with only its braziers showing over the grass; the game lowers every wall indoors, so you walk it in the open.)",
+     "cell": [
+      239,
+      91
+     ],
+     "window": [
+      225,
+      82,
+      253,
+      101
+     ],
+     "cutaway": true
+    }
+   ],
+   "artifact": "https://claude.ai/artifact/P8iZyN6N9m8mDiepGEajQF"
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
