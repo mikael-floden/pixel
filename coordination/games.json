@@ -507,7 +507,7 @@
   ],
   "updated_at": "2026-09-18T03:26:19+00:00",
   "health": "running",
-  "current": "SHIPPED today, live: the roof under a torch (92018fb9e2), no lightning on the exit frame (e21a5ed07a, ambient/ surgical), contact AO (80e735beca), Settings 'light only' (4a760741f4), the nav slide dial (ac5a49ae3f), wall-foot AO + thin blockers (09691d0fd8), the bridge (9b5b9dadd3), the fireplace's seam AO (4ccb36ad7a); pushed: the tree under a cliff lamp (cbe7672bac), lowered-wall seam slivers (b162fd96a7). NEXT, files claimed: (1) a lowered wall's top takes the ROOF's material with a darkening slider (#47) — tiles3draw.ts, NEW client/src/walltop.ts, WorldScene.ts (dial poll), docs/tiles3-rendering.md; (2) the chimney's sun shadow anchor (#37) — nightlight.ts setSceneryOccluders; (3) the two pre-existing gate failures (#45) — nightlight.ts, verify-wallwash.mjs, verify-shadowline.mjs.",
+  "current": "SHIPPED today, live: the roof under a torch (92018fb9e2), no lightning on the exit frame (e21a5ed07a, ambient/ surgical), contact AO (80e735beca), Settings 'light only' (4a760741f4), the nav slide dial (ac5a49ae3f), wall-foot AO + thin blockers (09691d0fd8), the bridge (9b5b9dadd3), the fireplace's seam AO (4ccb36ad7a), the tree under a cliff lamp (cbe7672bac), lowered-wall seam slivers (b162fd96a7); pushed: a lowered wall's top wears the ROOF's ground + Settings dial 'Lowered wall top darkening' 0..100%, default 50 (5472afa5f5, #47). NEXT, files claimed: (1) the chimney's sun shadow anchor (#37) — client/src/nightlight.ts setSceneryOccluders, docs/lighting.md; (2) the two pre-existing gate failures (#45) — nightlight.ts, scripts/verify-wallwash.mjs, scripts/verify-shadowline.mjs.",
   "consumes": [
     "characters",
     "tiles",
