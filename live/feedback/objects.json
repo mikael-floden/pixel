@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-09-15T18:03:31.683Z",
+  "updated_at": "2026-09-18T01:53:26.502Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -30802,33 +30802,38 @@
     },
     "scenery/hearths/hearth_001#lit_1#south-east": {
       "note": "Less motion on non fire",
-      "updated_at": "2026-09-15T18:00:59.385Z",
-      "status": "redo",
-      "art": "62c886a390ba4bc6"
+      "updated_at": "2026-09-18T01:52:47.298Z",
+      "status": "approved",
+      "art": "8dbaaa83d16d0ba9",
+      "rating": 3
     },
     "scenery/hearths/hearth_001#lit_2#south-west": {
       "note": "Less motion on non fire",
-      "updated_at": "2026-09-15T18:01:11.723Z",
-      "status": "redo",
-      "art": "a2cc7f73a24382b5"
+      "updated_at": "2026-09-18T01:53:08.423Z",
+      "status": "approved",
+      "art": "c9676d7903e63f62",
+      "rating": 3
     },
     "scenery/hearths/hearth_001#lit_2#south-east": {
       "note": "Less motion on non fire",
-      "updated_at": "2026-09-15T18:01:16.968Z",
-      "status": "redo",
-      "art": "a211c8ee47e623ac"
+      "updated_at": "2026-09-18T01:53:01.688Z",
+      "status": "approved",
+      "art": "8f44dd0af972700a",
+      "rating": 3
     },
     "scenery/hearths/hearth_001#lit_3#south-east": {
-      "status": "redo",
-      "art": "269e7b504ba2d74b",
-      "updated_at": "2026-09-15T18:01:37.986Z",
-      "note": "Not enough frames in the animation (only one)"
+      "status": "approved",
+      "art": "e04f06bdca2aff6a",
+      "updated_at": "2026-09-18T01:53:14.934Z",
+      "note": "Not enough frames in the animation (only one)",
+      "rating": 3
     },
     "scenery/hearths/hearth_001#lit_3#south-west": {
-      "status": "redo",
-      "art": "97fb6a4d329fcad5",
-      "updated_at": "2026-09-15T18:01:56.671Z",
-      "note": "Not enough frames in the animation (only one)"
+      "status": "approved",
+      "art": "c301e639bf51fd5f",
+      "updated_at": "2026-09-18T01:53:11.403Z",
+      "note": "Not enough frames in the animation (only one)",
+      "rating": 3
     },
     "scenery/hearths/hearth_900#lit_1#south-east": {
       "status": "redo",
@@ -30859,6 +30864,12 @@
       "art": "8d32d874691c056b",
       "updated_at": "2026-09-15T18:03:33.674Z",
       "note": "Not enough frames in the animation"
+    },
+    "scenery/hearths/hearth_001#lit_1#south-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "a1360b3bfdd7895a",
+      "updated_at": "2026-09-18T01:52:52.725Z"
     }
   }
 }
