@@ -210,26 +210,6 @@
       "die_action": "Death - Its legs give out, it collapses flat onto its belly with its head down and fades away"
     },
     {
-      "id": "octopus",
-      "name": "Inkling",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 96,
-      "biome": [
-        "water",
-        "deep_water"
-      ],
-      "items": [],
-      "prompt": "Fantasy octopus with a bulbous dark red mantle, eight thick tentacles coiled tightly beneath it, two large golden eyes with rectangular pupils, and a cloud of black ink drifting from under it.",
-      "lore": "It has three hearts and holds a grudge in each. The ink is how it says goodbye.",
-      "walk_action": "crawls forward on its tentacles in place, tentacles reaching and pulling in turn, mantle swaying slightly, seamless loop, no turning",
-      "walk_slow": true,
-      "attack_action": "Tentacle Lash - Rears up high and whips two tentacles forward",
-      "attack_extreme": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
-      "die_action": "Death - Melts into a spreading puddle of black ink on the ground and fades away"
-    },
-    {
       "id": "lava_toad",
       "name": "Magmatoad",
       "tier": "mid",
@@ -4469,6 +4449,34 @@
       "attack_extreme": "Swamp Blast - The hag hurls the staff forward and a blast of green swamp magic erupts from it",
       "die_action": "Death - Drops the staff, faints and falls to the ground, then fades away",
       "graduated_at": "2026-09-18T14:55:54+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "octopus",
+      "name": "Inkling",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "water",
+        "deep_water"
+      ],
+      "items": [],
+      "prompt": "Fantasy octopus with a bulbous dark red mantle, eight thick tentacles coiled tightly beneath it, two large golden eyes with rectangular pupils, and a cloud of black ink drifting from under it.",
+      "lore": "It has three hearts and holds a grudge in each. The ink is how it says goodbye.",
+      "walk_action": "crawls forward on its tentacles in place, tentacles reaching and pulling in turn, mantle swaying slightly, seamless loop, no turning",
+      "walk_slow": true,
+      "attack_action": "Tentacle Lash - Rears up high and whips two tentacles forward",
+      "attack_extreme": "Tentacle Storm - The octopus rears its whole mantle up and hurls every tentacle forward at once, water bursting out",
+      "die_action": "Death - Melts into a spreading puddle of black ink on the ground and fades away",
+      "graduated_at": "2026-09-18T14:58:07+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

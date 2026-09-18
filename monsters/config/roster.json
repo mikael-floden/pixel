@@ -904,6 +904,23 @@
         "custom-faints and fades away": "die"
       },
       "lore": "A mountain of dark wool and ivory, calm until crowded. One sweep of those tusks clears a road."
+    },
+    {
+      "id": "frost_mite",
+      "kind": "character",
+      "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",
+      "name": "Rimemite",
+      "lore": "It bites once and the bite never thaws. Snow-walkers check their boots every night for good reason.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Lunge Attack - Throws its whol": "attack",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Ice Burst - The mite rears up ": "attack",
+        "custom-Ice Burst - The mite rears up and bursts forward i": "attack",
+        "custom-Death - Shatters into a scatter of small ice shard": "die"
+      }
     }
   ]
 }

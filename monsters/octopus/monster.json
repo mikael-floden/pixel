@@ -13,7 +13,7 @@
     ]
   },
   "size": {
-    "width": 96,
+    "width": 108,
     "height": 96
   },
   "native_size": {
@@ -21,7 +21,7 @@
     "height": 96
   },
   "pad": {
-    "x": 0,
+    "x": 6,
     "y": 0
   },
   "sprite": "octopus/sprite.webp",
@@ -735,5 +735,47 @@
     "die": "die"
   },
   "unresolved_takes": [],
-  "synced_from_pixellab": true
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      96,
+      96
+    ],
+    "pad": [
+      6,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 0.958,
+        "strip_px": 62,
+        "ext": 4
+      },
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 21,
+        "ext": 1
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 21,
+        "ext": 1
+      }
+    ]
+  }
 }
