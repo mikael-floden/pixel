@@ -259,12 +259,12 @@ const openIt = async (mine = MY_SHA) => {
     hit.mid === "dialog" && hit.outside !== "CANVAS"
       ? ok(`it draws over the canvas and the HUD, and the backdrop swallows taps meant for the world (outside hits ${hit.outside})`)
       : fail(`in-game stacking: ${JSON.stringify(hit)}`);
+    await page.screenshot({ path: `${OUT}/updatenotes-ingame.png` }); // WITH it open — the artifact has to show what it is named for
     await page.evaluate(() => window.__mlUpdateNotes.close());
     const after = await page.evaluate(() => ({ me: !!window.__ml.me(), hud: !!document.querySelector(".ml-hud"), dlg: !!document.querySelector(".ml-upd-back") }));
     before.me && after.me && after.hud && !after.dlg
       ? ok("closing it leaves the game exactly as it was")
       : fail(`after closing in-game: ${JSON.stringify({ before, after })}`);
-    await page.screenshot({ path: `${OUT}/updatenotes-ingame.png` });
   }
 }
 
