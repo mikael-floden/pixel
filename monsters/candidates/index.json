@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T13:27:18+00:00",
+  "generated_at": "2026-09-18T13:29:10+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -16429,8 +16429,8 @@
       ],
       "template_id": "mannequin",
       "scale": "standard",
-      "pixellab_id": "0f1caa12-1f82-4cfd-a817-1e4fc5ea9ca0",
-      "version": 1,
+      "pixellab_id": "07b04ca4-1812-4fff-a4e5-af114f014665",
+      "version": 2,
       "sheet": "basalt_column/sheet.webp",
       "rotations": {
         "south": "basalt_column/rotations/south.webp",
@@ -16443,106 +16443,103 @@
         "south-west": "basalt_column/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.691,
-        "reasons": [
-          "south-east: content touches the canvas edge (clipped)",
-          "south-west: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.721,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.691,
+            "run1": 0.721,
             "bbox": [
-              7,
-              3,
-              105,
-              109
-            ],
-            "fill": 0.828,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.769,
-            "bbox": [
-              16,
+              19,
               4,
-              97,
-              112
-            ],
-            "fill": 0.697,
-            "touches_edge": true
-          },
-          "east": {
-            "run1": 0.767,
-            "bbox": [
-              31,
-              3,
-              78,
-              109
-            ],
-            "fill": 0.397,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.73,
-            "bbox": [
-              21,
-              2,
               93,
               108
             ],
-            "fill": 0.608,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.727,
-            "bbox": [
-              12,
-              1,
-              100,
-              107
-            ],
-            "fill": 0.744,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.733,
-            "bbox": [
-              19,
-              2,
-              91,
-              108
-            ],
-            "fill": 0.608,
+            "fill": 0.614,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.771,
+            "run1": 0.813,
             "bbox": [
-              34,
-              3,
-              81,
+              42,
+              4,
+              78,
               110
             ],
-            "fill": 0.401,
+            "fill": 0.304,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.812,
+            "bbox": [
+              34,
+              4,
+              71,
+              110
+            ],
+            "fill": 0.313,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.764,
+            "bbox": [
+              23,
+              4,
+              88,
+              107
+            ],
+            "fill": 0.534,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.821,
+            "bbox": [
+              23,
+              4,
+              86,
+              110
+            ],
+            "fill": 0.532,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.78,
+            "bbox": [
+              28,
+              4,
+              83,
+              108
+            ],
+            "fill": 0.456,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.775,
+            "bbox": [
+              28,
+              4,
+              84,
+              108
+            ],
+            "fill": 0.464,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.775,
+            "run1": 0.818,
             "bbox": [
-              14,
+              25,
               4,
-              96,
-              112
+              89,
+              110
             ],
-            "fill": 0.706,
-            "touches_edge": true
+            "fill": 0.541,
+            "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T12:42:21+00:00"
+      "generated_at": "2026-09-18T13:28:08+00:00"
     },
     {
       "id": "ash_fall",
