@@ -710,6 +710,13 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   0.5 is the darkening at full coverage — his dial. A floor piece and a wall
   piece (flat, onWall) register no stamp. Rejected: the hitbox's bottom edge
   as the contact line (a table's whole span darkened, legs and air alike).
+- **A SCENERY LIT COPY TAKES NO WALL-SEAM AO** (`lightAt(..., seamAo=false)`
+  from applyObjectLights, 2026-09-18): the copy is tinted once at its hitbox
+  centre, and a piece standing against a wall — the fireplace at 298.1,192.8
+  and 331.8,233.2 — took the seam's 0.72 over its whole art, "darkened by the
+  shadows behind it (like the ambient occlusion at the wall)" (maintainer,
+  three reports). The seam AO is a strip of floor; bodies keep it (a body
+  tucked against a wall darkens with the ground it stands on).
 - **SCENERY IS LIT PER PIXEL** (`scenerylit.ts` pipeline + `scenerylight.ts`
   shape maps; maintainer 2026-09-05: walking around a tree with the torch must
   light different parts of it). The lit copy keeps the flat tint for the

@@ -14741,7 +14741,10 @@ export class WorldScene extends Phaser.Scene {
         const t0 = performance.now();
         const sh = lo.shape;
         const parts = this.sceneryLitParts;
-        night!.lightAt(sh.fc, sh.fr, sh.fz + 0.5, true, lo.place !== undefined ? night!.sceneryExclR2(lo.place) : 0, parts);
+        // seamAo false: the wall's seam AO is a strip of floor, not a tint on
+        // the piece standing against it (the fireplace "darkened by the
+        // shadows behind it", maintainer 2026-09-18).
+        night!.lightAt(sh.fc, sh.fr, sh.fz + 0.5, true, lo.place !== undefined ? night!.sceneryExclR2(lo.place) : 0, parts, false, false);
         const ao = parts.ao;
         for (let i = 0; i < SCENERY_LIT_OCC; i++) sh.occ[i] = parts.occ[i] * ao;
         sh.sv = parts.sunF - 1 + 0.45 * night!.sunStrength;

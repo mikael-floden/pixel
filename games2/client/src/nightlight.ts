@@ -4077,7 +4077,7 @@ export class NightLights {
     return this.roomCells.has(idx) || (this.roomCuts?.has(idx) ?? false);
   }
 
-  lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts, groundContact = false): [number, number, number] {
+  lightAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0, parts?: LightParts, groundContact = false, seamAo = true): [number, number, number] {
     const W = this.world.width;
     const H = this.world.height;
     const hAt = (c: number, r: number) => {
@@ -4409,7 +4409,13 @@ export class NightLights {
     // terrain wall darkens toward the seam with the ground it stands on.
     // BASE terrain heights, like the shader's baseTerrAt: a bridge span
     // overhead is not a wall — swimmers next to it must not phantom-darken.
-    {
+    // NOT FOR A SCENERY LIT COPY (seamAo false): the copy is tinted ONCE at
+    // its hitbox centre, so a fireplace standing against the wall took the
+    // seam's 0.72 over its whole art — "darkened by the shadows behind it
+    // (like the ambient occlusion at the wall)" (maintainer 2026-09-17/18,
+    // 298.1,192.8 and 331.8,233.2). The seam is a strip of floor, not a
+    // tint on what stands there.
+    if (seamAo) {
       const W2 = this.world.width;
       const H2 = this.world.height;
       // Clamped to the cut-away indoors, for the same reason heightAt is: the
@@ -4518,7 +4524,9 @@ export class NightLights {
 
   /** lightAt packed as a Phaser tint (multiplier clamped to 1). */
   tintAt(col: number, row: number, z: number, isObj: boolean, selfR2 = 0): number {
-    const l = this.lightAt(col, row, z, isObj, selfR2);
+    // A scenery piece's flat tint (isObj) takes no wall-seam AO either — the
+    // seam is a strip of floor, not a tint on what stands against the wall.
+    const l = this.lightAt(col, row, z, isObj, selfR2, undefined, false, !isObj);
     const r = Math.min(255, Math.round(Math.min(1, l[0]) * 255));
     const g = Math.min(255, Math.round(Math.min(1, l[1]) * 255));
     const b = Math.min(255, Math.round(Math.min(1, l[2]) * 255));
