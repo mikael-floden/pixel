@@ -13,6 +13,9 @@ name: nangijala deploy
 #   layers are reused, not rebuilt — and unchanged layers are already in the
 #   registry, so a code-only deploy uploads megabytes, not ~500MB. (Classic
 #   `docker build` re-churned every layer digest via file mtimes.)
+# - The cache is IMPORTED before the build and EXPORTED after the rollout, in
+#   a `type=cacheonly` step at the end of the job: the export is for the next
+#   deploy and measured 95-132 s, all of it after the image was pushed.
 # - Dockerfile layers are ordered by change frequency (deps → art per domain →
 #   game source last); .dockerignore is an allowlist.
 
@@ -266,7 +269,29 @@ jobs:
 
       - uses: docker/setup-buildx-action@v3
 
+      # THE CACHE EXPORT IS NOT ON THE CRITICAL PATH — it is written AFTER the
+      # rollout, by the last step of this job.
+      #
+      # Measured on this repo (runs 4185/4186/4188/4190, three independent
+      # reads of the BuildKit logs): `cache-to: type=gha,mode=max` spent
+      # 95-132 s exporting layers to the GitHub cache, and every second of it
+      # ran after the image was already in Artifact Registry. It buys the NEXT
+      # deploy its warm layers and does nothing at all for this one, yet the
+      # rollout — and the maintainer, who tests in production from a phone —
+      # waited for it: 5 m 40 s of "Build & push" of which ~2 minutes was that
+      # export, against a 26 s rollout.
+      #
+      # So this step builds and pushes with the cache it can IMPORT, the
+      # rollout happens, and the export runs last from the builder's own local
+      # cache (nothing is rebuilt: every layer is still there, so the second
+      # invocation resolves the whole graph from cache and only writes it out).
+      # THE IMAGE IS UNAFFECTED: what deploys is the digest pushed here, and a
+      # build cache is content-addressed — BuildKit keys every layer on its
+      # parent chain, so a reused layer cannot predate its own inputs, and the
+      # asset index (built in a layer whose parent is the curated art) can
+      # never describe bytes older than itself.
       - name: Build & push image (layer-cached)
+        id: build
         uses: docker/build-push-action@v6
         with:
           context: .
@@ -279,7 +304,6 @@ jobs:
           build-args: |
             GIT_SHA=${{ needs.resolve.outputs.sha }}
           cache-from: type=gha
-          cache-to: type=gha,mode=max
 
       - name: Wait for the test gate
         env:
@@ -413,3 +437,24 @@ jobs:
         run: |
           gcloud run services describe "${{ vars.GCP_SERVICE }}" \
             --region "${{ vars.GCP_REGION }}" --format='value(status.url)'
+
+      # ...AND NOW THE LAYER CACHE FOR THE NEXT DEPLOY (see the build step).
+      # `type=cacheonly` writes no image: the builder still holds every layer
+      # from the build above, so this resolves from its local cache and spends
+      # its time only on the export. It runs whatever the rollout did, and it
+      # can never fail the deploy — a missed export costs the next build its
+      # warm layers, which is a slow build, not a wrong one.
+      - name: Write the layer cache for the next deploy
+        if: always()
+        continue-on-error: true
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: games2/Dockerfile
+          push: false
+          outputs: type=cacheonly
+          provenance: false
+          build-args: |
+            GIT_SHA=${{ needs.resolve.outputs.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
