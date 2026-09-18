@@ -484,6 +484,27 @@ deleted, never kept — the same rule he first gave for redo notes.
 
 ### His verdicts: read them, act, then DELETE the ones you acted on
 
+**A REDO OR A REMOVE DIES WITH THE ART IT JUDGED, IN THE SAME BREATH**
+(maintainer 2026-09-18: "I press redo with a comment or remove with a comment
+(but especially redo). The new state that will take its place should CLEAN the
+state and comment!" and "I don't want to see redo marked with an OLD comment on
+my data! Ever!").
+
+- `clear_verdict(cid, slot, direction)` runs **the moment a direction lands**,
+  inside `collect_state`, before the next direction starts — the verdict AND
+  his note go together, and the mirrors of that direction go with it. The
+  window where the wiki can show a redo note over fresh art is zero. The
+  end-of-sweep `prune-feedback` stays as the backstop for anything landed by
+  another path.
+- **An approval is never pruned.** That is his pick and it has to outlive the
+  review; only `redo` and `rejected` are cleared.
+- **Never compare the two timestamps as strings.** The records write
+  `+00:00` and the wiki writes `Z`, and `"+" < "Z"`, so a same-second
+  regeneration compares as OLDER than the verdict and the note survives —
+  which is how his own words kept appearing under art that no longer existed.
+  `_iso()` parses both and compares datetimes.
+
+
 Maintainer 2026-09-11, seeing his own redo note still sitting under a clip
 that had already been regenerated: "I can still see my old comment even when
 you have acted on it and generated a new animation. My comment is obsolete
