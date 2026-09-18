@@ -57,6 +57,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFG = os.path.join(ROOT, "config", "candidates.json")
 OUT = os.path.join(ROOT, "candidates")
 INDEX = os.path.join(OUT, "index.json")
+FEEDBACK = os.path.join(os.path.dirname(ROOT), "live", "feedback", "monsters.json")
 
 MAX_SIZE = 256          # v3 hard limit. Density holds through 184 and is a coin
                         # flip from ~236 (measured over the 57 shipped: Cragback 236
@@ -287,6 +288,8 @@ def generate_one(client, cfg, design, version, verbose=True):
 
 def cmd_generate(args):
     cfg = load_cfg()
+    if not args.redo:
+        reconcile(cfg, client=_client_or_none())
     only = set(args.only.split(",")) if args.only else None
     todo = []
     for design in cfg["candidates"]:
@@ -386,8 +389,88 @@ def cmd_status(args):
     print(f"\n{done}/{len(rows)} generated")
 
 
+def _client_or_none():
+    try:
+        return PixelLabClient()
+    except Exception:
+        return None
+
+
+# --- reconcile --------------------------------------------------------------
+
+def reconcile(cfg, client=None, apply=True, verbose=True):
+    """HIS REMOVALS ARE THE GROUND TRUTH, BOTH WAYS. Run before every command
+    that shows or generates candidates (maintainer 2026-09-18: "I have also
+    removed a lot of candidates I don't want to see more! No dangling states in
+    the wiki! ... This is something you always should check and act on").
+
+    Three ways a candidate can be removed, all reconciled here:
+      1. rejected in the wiki   -> `live/feedback/monsters.json` status rejected
+      2. untagged on PixelLab   -> MONSTER_CANDIDATE gone from the record
+      3. deleted on PixelLab    -> the record itself is gone
+    Each one retires the design, deletes the folder and the PixelLab record, and
+    rebuilds the index. THEN the verdict that caused it is deleted from the
+    feedback file: a verdict pointing at a candidate that no longer exists is a
+    dangling reference the wiki can still surface, and acted-on feedback is
+    deleted, never kept (his rule, first given for redo notes).
+    Returns (removed_ids, pruned_feedback_keys).
+    """
+    onDisk = {d for d in os.listdir(OUT) if os.path.isdir(os.path.join(OUT, d))}
+    fb = {}
+    if os.path.exists(FEEDBACK):
+        fb = json.load(open(FEEDBACK))
+    ent = fb.get("entries", {})
+
+    remove = set()
+    for k, v in ent.items():
+        if k.startswith("monsters/candidates/") and "#" not in k:
+            cid = k.split("/")[-1]
+            if v.get("status") == "rejected" and cid in onDisk:
+                remove.add(cid)
+
+    if client is not None:
+        try:
+            alive = {}
+            for it in client._list_all("characters"):
+                alive[it.get("id")] = [str(t).upper() for t in (it.get("tags") or [])]
+            for design in cfg["candidates"]:
+                man = load_manifest(design["id"])
+                pid = (man or {}).get("pixellab_id")
+                if not pid or design["id"] not in onDisk:
+                    continue
+                if pid not in alive or "MONSTER_CANDIDATE" not in alive[pid]:
+                    remove.add(design["id"])
+        except PixelLabError as e:
+            if verbose:
+                print(f"  (tag sweep skipped: {e})")
+
+    if remove and apply:
+        ns = argparse.Namespace(only=",".join(sorted(remove)),
+                                reason="removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically")
+        cmd_drop(ns)
+        cfg.clear(); cfg.update(load_cfg())
+        onDisk -= remove
+
+    pruned = [k for k in ent
+              if k.startswith("monsters/candidates/")
+              and k.split("#")[0].split("/")[-1] not in onDisk]
+    if pruned and apply:
+        for k in pruned:
+            ent.pop(k, None)
+        fb["entries"] = ent
+        fb["updated_at"] = datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+        with open(FEEDBACK, "w") as f:
+            json.dump(fb, f, indent=2, ensure_ascii=False)
+            f.write("\n")
+    if verbose:
+        print(f"reconcile: {len(remove)} candidate(s) removed, "
+              f"{len(pruned)} dangling verdict(s) pruned")
+    return sorted(remove), pruned
+
+
 def cmd_qa(args):
     cfg = load_cfg()
+    reconcile(cfg, client=_client_or_none())
     for design in cfg["candidates"]:
         man = load_manifest(design["id"])
         if not man:
@@ -403,6 +486,15 @@ def cmd_qa(args):
             f.write("\n")
         print(f"{design['id']:16s} qa={man['qa']['status']} run1={man['qa']['min_run1']} {man['qa']['reasons']}")
     rebuild_index(cfg)
+
+
+def cmd_reconcile(args):
+    cfg = load_cfg()
+    removed, pruned = reconcile(cfg, client=_client_or_none(), apply=not args.dry_run)
+    for r in removed:
+        print(f"  removed {r}")
+    for k in pruned:
+        print(f"  pruned verdict {k}")
 
 
 def main():
@@ -423,6 +515,9 @@ def main():
     d.set_defaults(func=cmd_drop)
     sub.add_parser("status").set_defaults(func=cmd_status)
     sub.add_parser("qa", help="re-run the machine checks from disk").set_defaults(func=cmd_qa)
+    pr = sub.add_parser("reconcile", help="act on his removals: rejected in the wiki or untagged/deleted on PixelLab -> retire, delete, prune the dangling verdicts")
+    pr.add_argument("--dry-run", action="store_true")
+    pr.set_defaults(func=cmd_reconcile)
     args = ap.parse_args()
     args.func(args)
 

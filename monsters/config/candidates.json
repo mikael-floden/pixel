@@ -2005,21 +2005,6 @@
       "items": []
     },
     {
-      "id": "frozen_tent",
-      "name": "Canvashusk",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 112,
-      "scale": "standard",
-      "biome": [
-        "snow",
-        "ice"
-      ],
-      "prompt": "Frozen canvas tent standing with its poles snapped and splayed, the stiff ice-glazed cloth holding a person shape inside it, the flap open on a smiling mask of frost, and guy ropes dragging rigid behind it through the snow",
-      "lore": "It was pitched in a bad place by somebody who knew better. The shape it holds is not a shape anybody is still in.",
-      "items": []
-    },
-    {
       "id": "avalanche",
       "name": "Slabfall",
       "tier": "evil",
@@ -4204,6 +4189,24 @@
       "lore": "It roots up the fields at night and charges whatever comes to stop it. The tusks are why the fields stay rooted.",
       "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
       "retired_at": "2026-09-18T13:15:51+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "frozen_tent",
+      "name": "Canvashusk",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 112,
+      "scale": "standard",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Frozen canvas tent standing with its poles snapped and splayed, the stiff ice-glazed cloth holding a person shape inside it, the flap open on a smiling mask of frost, and guy ropes dragging rigid behind it through the snow",
+      "lore": "It was pitched in a bad place by somebody who knew better. The shape it holds is not a shape anybody is still in.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T13:23:39+00:00",
       "versions_tried": 1
     }
   ]
