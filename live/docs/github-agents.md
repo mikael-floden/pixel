@@ -87,6 +87,15 @@ Claude reading its first file:
   `live/feedback/objects.json`: the run existed and every job inside it skipped.
   The workflow-level `paths:` filter is unaffected — GitHub evaluates that
   server-side against the real diff, which is why the run was created at all.
+- **THE ACTION REFUSES A PUSH: `Unsupported event type: push`.** Once the
+  condition was fixed, his next two reviews started the right job and died 30
+  seconds in on `anthropics/claude-code-action@v1` itself (runs 22 and 23,
+  2026-09-18). Every session that had ever worked here was a
+  `workflow_dispatch`, so nothing before this had exercised the action on the
+  event the whole design is built on. The selftest answers which way round it
+  (as-is vs `GITHUB_EVENT_NAME` overridden to a supported event); the
+  alternative is a re-dispatch hop, which costs another runner in front of his
+  review.
 - **A WRONG `if` IS SILENT, which is why it survived two rehearsals.** A skipped
   job writes no log and no reason, so the Actions list shows a run sitting
   against his review with nothing anywhere saying which term was false. The
