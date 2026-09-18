@@ -1,5 +1,11 @@
-/* (ambient/runtime — shared by features and the server; features may not
- * import each other, so this is not under weather/.)
+/* THIS LIVES IN shared/ AND NOWHERE ELSE — it is imported by the SERVER.
+ * The runtime image ships shared/, server/, config/ and client/dist only
+ * (games2/Dockerfile); ambient/ never reaches the container. The first cut
+ * put this under ambient/runtime/, CI passed on a full checkout, the image
+ * built, and Cloud Run refused the revision: the server died on
+ * MODULE_NOT_FOUND before it listened (deploy 4064, 2026-09-18). Anything
+ * the server needs from ambient goes here, and server/test/imageimports
+ * fails the suite on the next such import.
  *
  * WHICH AMBIENT EFFECTS MAY RUN TOGETHER, AND HOW OFTEN EACH SHOULD — the
  * pure data the SERVER rolls from and the client's toggles enforce.

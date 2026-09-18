@@ -514,7 +514,7 @@ everything — the goal is many at once). The runtime makes it symmetric
 | `fireflies` ⟷ `pollen` | day vs night floating motes |
 
 `water`, `thunder`, `sandstorm`, `leaves` are compatible with everything.
-WEATHER'S CONFLICTS ARE THE MATRIX (`runtime/matrix.ts`): precipitation one
+WEATHER'S CONFLICTS ARE THE MATRIX (`shared/src/ambient.ts`): precipitation one
 at a time; thunder with any rain but never snow; mist never in wind, heavy
 rain, storm or snow; windy never with storm; cloudy with anything.
 (Rain "one-at-a-time" is the games agent's WEATHER system — a single index —
@@ -647,9 +647,12 @@ flock wheels through the ceiling.
   (`weather/layer.ts`), because at most one precipitation can be on. Every
   feature's `update` runs every frame in ARRAY ORDER, so each writes its
   request and THE LAST ONE CREATED resolves and steps the layer exactly once.
-  THE MATRIX (`runtime/matrix.ts`, pure, imported by the SERVER and by the
-  features — it lives in `runtime/` because features may not import each
-  other) is both locks at once: the server never rolls an incompatible set,
+  THE MATRIX (`shared/src/ambient.ts`, pure, imported by the SERVER and by
+  the features — it lives in `shared/` because the runtime IMAGE ships
+  `shared/` + `server/` only and `ambient/` never reaches the container:
+  the first cut under `ambient/runtime/` passed CI on a full checkout and
+  Cloud Run refused the revision, the server dead on MODULE_NOT_FOUND
+  before it listened) is both locks at once: the server never rolls an incompatible set,
   and the Settings switches grey on it in manual mode. Its reasons are
   physical and each is his to overrule: thunder never with snow; mist only in
   still damp air (cloud, drizzle, rain); windy not with mist or with a storm

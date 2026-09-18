@@ -5,7 +5,7 @@ import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
 import { ROOM_NAME } from "@nangijala/shared";
-import { isCompatibleSet, unpackAmbient } from "../../ambient/runtime/matrix.js";
+import { isCompatibleSet, unpackAmbient } from "@nangijala/shared";
 import { WorldRoom, resetWorldClocks } from "../src/rooms/WorldRoom.js";
 
 // The per-world clock registry outlives rooms BY DESIGN; tests in one file

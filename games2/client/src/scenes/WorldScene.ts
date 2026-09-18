@@ -178,7 +178,7 @@ import { joinWorld } from "../net";
 import { bindLiveTuning, liveTuningSnapshot, monsterShadow, onLiveTuning } from "../live";
 import { ChatUI } from "../chat";
 import { Gloom, easeGloom, newGloom, snapGloom } from "../../../ambient/weather/gloom";
-import { LEGACY_INDEX, packAmbient, unpackAmbient } from "../../../ambient/runtime/matrix";
+import { LEGACY_INDEX, packAmbient, unpackAmbient } from "@nangijala/shared";
 import { Footsteps } from "../footsteps";
 import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
@@ -5656,7 +5656,7 @@ export class WorldScene extends Phaser.Scene {
       worldAmbient: (set?: string[]) => this.room?.send("ambient", set ? { set } : {}),
       /* LEGACY SHIM, LOCAL ONLY: 17 gates still say `__ml.weather(idx)` with
        * the old WEATHER_NAMES index. It maps that index onto the set the
-       * weather meant (ambient/runtime/matrix.ts LEGACY_INDEX) on THIS client
+       * weather meant (shared/src/ambient.ts LEGACY_INDEX) on THIS client
        * and snaps the gloom — it does not touch the server. Reading back gives
        * the index whose set matches, else -1. */
       weather: (idx?: number, instant = true) => {

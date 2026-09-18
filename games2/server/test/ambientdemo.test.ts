@@ -9,7 +9,7 @@ import { Server } from "@colyseus/core";
 import { WebSocketTransport } from "@colyseus/ws-transport";
 import { Client } from "colyseus.js";
 import { ROOM_NAME, DEFAULT_TIME_IDX, TIME_PHASE_COUNT } from "@nangijala/shared";
-import { isCompatibleSet, unpackAmbient } from "../../ambient/runtime/matrix.js";
+import { isCompatibleSet, unpackAmbient } from "@nangijala/shared";
 import { WorldRoom, resetWorldClocks } from "../src/rooms/WorldRoom.js";
 
 beforeEach(() => resetWorldClocks());

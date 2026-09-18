@@ -5424,6 +5424,7 @@ export function stepAutopilot(
 
 export * from "./monsters";
 export * from "./zones";
+export * from "./ambient";
 export * from "./worldunits";
 export * from "./combat";
 // indoor.ts — "am I under a roof, and is it a room?" (pure; reads TerrainGrid).

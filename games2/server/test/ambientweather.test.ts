@@ -6,7 +6,7 @@
 // Pinned here, because none of it is visible in a screenshot:
 //  1. THE MATRIX — which effects may share the sky — is symmetric, keeps
 //     precipitation one-at-a-time, and encodes the physical rules stated in
-//     runtime/matrix.ts (thunder never with snow, mist never in wind, ...).
+//     shared/src/ambient.ts (thunder never with snow, mist never in wind, ...).
 //  2. THE ROLLER never emits an incompatible set, honours the zone's weights
 //     as shares of time, and is deterministic for a given random stream —
 //     every zone room of a world must land on the same sky.
@@ -20,7 +20,7 @@ import assert from "node:assert/strict";
 import {
   DEFAULT_ZONE, EPISODE_S, LEGACY_INDEX, PRECIPITATION, WEATHER_EFFECTS, WEATHER_UNIVERSE,
   compatible, conflictsOf, isCompatibleSet, packAmbient, rollAmbient, unpackAmbient,
-} from "../../ambient/runtime/matrix.js";
+} from "@nangijala/shared";
 import { conflictClosure } from "../../ambient/runtime/types.js";
 import {
   CLOUD_OF, DIM_OF, GLOOM_SNAP, GLOOM_TAU_S, easeGloom, gloomTarget, newGloom, snapGloom,

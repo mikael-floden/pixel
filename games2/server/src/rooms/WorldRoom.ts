@@ -131,6 +131,7 @@ import {
   INV_MAX_STACK,
   INV_MAX_SLOTS,
   swapInvEntries,
+  DEFAULT_ZONE, EPISODE_S, compatible, packAmbient, rollAmbient,
 } from "@nangijala/shared";
 import { WorldState, Player, Monster, MonsterArea, GroundItem, OWNER_VIEW_TAG } from "../schema/WorldState.js";
 import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
@@ -138,7 +139,6 @@ import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning, sceneryHitboxOverrides } from "../live.js";
 import { AccountRecord, AccountStore, accountStore, resolveAccount } from "../account/store.js";
 import type { ZoneGrid, Rect, ZoneCfg } from "@nangijala/shared";
-import { DEFAULT_ZONE, EPISODE_S, compatible, packAmbient, rollAmbient } from "../../../ambient/runtime/matrix.js";
 import { existsSync, readFileSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";

@@ -1,6 +1,6 @@
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { PRECIP, Cfg, weatherDescriptors } from "./precip";
-import { WEATHER_UNIVERSE, conflictsOf } from "../runtime/matrix";
+import { WEATHER_UNIVERSE, conflictsOf } from "@nangijala/shared";
 import { PrecipLayer } from "./layer";
 
 /* WEATHER IS AMBIENT (maintainer 2026-09-17: "That should have always been an

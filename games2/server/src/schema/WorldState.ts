@@ -394,7 +394,7 @@ export class WorldState extends Schema {
   /** THE ACTIVE AMBIENT SET (maintainer 2026-09-18): sorted, comma-joined
    *  names of the ambient effects the server has switched on for this room —
    *  weather included, it is ordinary effects now. Rolled by WorldRoom from
-   *  the zone's weights through ambient/runtime/matrix.ts; "" = nothing on. */
+   *  the zone's weights through shared/src/ambient.ts; "" = nothing on. */
   declare ambient: string;
   declare aurora: boolean; // aurora night: northern lights over the world
   declare frozen: boolean; // timeSpeed === 0 mirror (kept for the switch/UI)

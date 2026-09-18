@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import { WEATHER_UNIVERSE, conflictsOf } from "../runtime/matrix";
+import { WEATHER_UNIVERSE, conflictsOf } from "@nangijala/shared";
 import { AmbientFeature, PHASE_NIGHT, WEATHER_CLOUDY } from "../runtime/types";
 import { isRainy } from "../runtime/env";
 import { gameAudio } from "../../composer/index";
@@ -57,7 +57,7 @@ export function thunderFeature(): AmbientFeature {
     name: "thunder",
     // Cloudy night is thunder's most-likely home until a real rain ships.
     preferred: { time: PHASE_NIGHT, weather: WEATHER_CLOUDY },
-    // never with snow (ambient/runtime/matrix.ts); fine under any rain
+    // never with snow (shared/src/ambient.ts); fine under any rain
     conflicts: conflictsOf("thunder", WEATHER_UNIVERSE),
     weight(env) {
       const rainMult = isRainy(env) ? 1 : 0.4 * env.cloud + 0.3 * env.mist;

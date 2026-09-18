@@ -143,7 +143,7 @@ export function makeRand(seed = 1): () => number {
   };
 }
 
-import { WEATHER_UNIVERSE, conflictsOf } from "../runtime/matrix";
+import { WEATHER_UNIVERSE, conflictsOf } from "@nangijala/shared";
 
 /* THE EXCLUSION RULE IS THE MATRIX (matrix.ts), applied here over the whole
  * weather universe — the eight weather effects plus thunder — so a feature's
