@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "PUSHED 76f4b13bb8 (ambient zones, UI half: Settings 'Zone based | Forced' switch on __mlAmbient.auto; Map tab 'layers · N' button + multi-select dialog grouped Map / Ambient zones; ambient-zone layers derived from maps2's ambient_zones.json per the proposed pixel-maps2/ambient-zones@1 — proven end-to-end with a routed fixture in verify-map). WAITING ON: maps2's answer/publish of ambient_zones.json (schema on their board), games-ambient on the auto()===zone seam, games for the server-driven runtime. No files in flight.",
+  "current": "CLAIM: installed-app fullscreen on Enter World (maintainer 2026-09-18: his shell letterboxes the camera cutout on a cold launch and goes edge-to-edge after a task-switch; re-entering fullscreen on the Enter World gesture should make the shell re-evaluate the cutout layout). Installed display modes only — never a browser tab. Top chips/corner buttons already ride --ml-safe-top live. files: games2/client/src/select.ts, games2/scripts/verify-select.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
