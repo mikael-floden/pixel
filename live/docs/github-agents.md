@@ -72,10 +72,29 @@ Claude reading its first file:
   matrix needs a list, and computing the list needed a job in front of the work
   — ~5s of runner and API to learn what the push payload already said. So there
   is no matrix: `github-agents.yml` declares ONE JOB PER DOMAIN, each with a
-  job-level `if` over `github.event.commits.*.modified`, and each calls the
-  reusable `github-agent-run.yml`. The matching domain starts immediately; the
-  others are never created, so they cost nothing and do not even appear in the
-  run. Independent jobs, so two domains still run side by side.
+  job-level `if` over the push payload, and each calls the reusable
+  `github-agent-run.yml`. The matching domain starts immediately; the others are
+  never created, so they cost nothing and do not even appear in the run.
+  Independent jobs, so two domains still run side by side.
+- **`join()` DOES NOT FLATTEN `commits.*.modified`, and a wrong `if` is
+  SILENT.** That expression is an array OF ARRAYS — one list of paths per commit
+  — so `contains(join(github.event.commits.*.modified), 'live/feedback/x.json')`
+  is false even for a push that modified exactly that file. Use `toJSON()`.
+  Measured on c15246bbc6 (2026-09-18 19:48:54Z, one commit, one file, message
+  `live: admin update — feedback/objects.json`): the workflow's `paths:` filter
+  matched so the RUN existed, and every job inside it skipped. That is the whole
+  failure mode — a skipped job writes no log, so the Actions list shows a run
+  against his review and nothing anywhere says which term was false.
+- **The first test is the COMMIT MESSAGE, not the payload.** The wiki server
+  writes `live: admin update — feedback/<file>.json`, which names the file it
+  saved: exact, independent of the payload's shape, and true whatever else rides
+  in the push. The `toJSON` test sits behind it for the push where his save is
+  not the head commit.
+- **`.github/workflows/github-agents-selftest.yml` proves it against a real
+  payload.** Three jobs on pushes under `live/docs/**` — one per expression form
+  plus a dump of what each produces — because the thing that broke twice cannot
+  be checked by reading it. Delete it once the fixed condition has started an
+  agent on one of his saves.
 - What is left is GitHub's own floor: one runner assignment and the clone.
   Below that needs a self-hosted runner with a warm clone and the CLI already
   installed (~3-5s to first token) — a machine to own and patch, which is a
@@ -85,10 +104,12 @@ Claude reading its first file:
 **THE FEEDBACK FILE IS NOT THE DIRECTORY.** He reviews scenery and the wiki
 writes `live/feedback/objects.json`; the domain on disk is `scenery/` and its
 agent is the scenery agent. Same for `characters.json` → `characters2/`. The
-`detect` job maps the file to the domain before naming anything — without it the
-job is called `objects-github-agent` and sent to read `objects/README.md`, which
-does not exist. Found on his first real scenery review (2026-09-18), on a run
-that fired correctly and would have confused the session it started.
+mapping lives in two places, both of which must carry it: the `if` of each job
+in `github-agents.yml` (which file starts which domain) and the `verdicts` step
+in `github-agent-run.yml` (which file the diff and the prompt name). The prompt
+used to say `live/feedback/<domain>.json` — a path that does not exist for
+scenery or characters2 — and the first real session had to work that out for
+itself, which it did, and said so on its board.
 
 Skipped, with the reason: `bindings` is an `<event>#<sound>` review, not a
 domain; `composer` and `composer-music` belong to `games2/composer`, one corner

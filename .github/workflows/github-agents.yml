@@ -32,6 +32,21 @@ name: github agents
 # feedback/OBJECTS.json, whose domain on disk is scenery/; characters.json is
 # characters2/. The mapping is the `if` of each job, where it reads at a glance.
 #
+# HOW THE `if` READS THE PAYLOAD, AND THE ONE WAY IT MUST NOT. `commits.*.modified`
+# is an array OF ARRAYS — one list of paths per commit — and `join()` does not
+# flatten it: the nested lists do not become their paths, so
+# `contains(join(commits.*.modified), 'live/feedback/objects.json')` is false for
+# a push that modified exactly that file. It cost a real review (c15246bbc6,
+# 19:48:54Z: one commit, one file, message 'live: admin update —
+# feedback/objects.json'): the workflow's own `paths:` filter matched, the run
+# was created, and every job in it skipped. `toJSON()` serialises the nesting and
+# is the form that works.
+#
+# And because the message the wiki writes NAMES the file it saved, that is the
+# first test — it is exact, it cannot be confused by a push that carries other
+# commits, and it does not depend on the payload's shape at all. The toJSON test
+# stays behind it for the push where his save is not the head commit.
+#
 # NOT WOKEN BY: bindings.json (an <event>#<sound> review, not a domain) and
 # composer/composer-music (games2/composer is one corner of a directory six
 # agents share — a stand-in there needs the games2 split decided first).
@@ -81,7 +96,8 @@ jobs:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
       && startsWith(github.event.head_commit.message, 'live: admin update')
-      && contains(join(github.event.commits.*.modified), 'live/feedback/monsters.json')
+      && (contains(github.event.head_commit.message, 'feedback/monsters.json')
+          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/monsters.json'))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: monsters }
     secrets: inherit
@@ -90,7 +106,8 @@ jobs:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
       && startsWith(github.event.head_commit.message, 'live: admin update')
-      && contains(join(github.event.commits.*.modified), 'live/feedback/objects.json')
+      && (contains(github.event.head_commit.message, 'feedback/objects.json')
+          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/objects.json'))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: scenery }
     secrets: inherit
@@ -99,7 +116,8 @@ jobs:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
       && startsWith(github.event.head_commit.message, 'live: admin update')
-      && contains(join(github.event.commits.*.modified), 'live/feedback/characters.json')
+      && (contains(github.event.head_commit.message, 'feedback/characters.json')
+          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/characters.json'))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: characters2 }
     secrets: inherit
@@ -108,7 +126,8 @@ jobs:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
       && startsWith(github.event.head_commit.message, 'live: admin update')
-      && contains(join(github.event.commits.*.modified), 'live/feedback/tiles.json')
+      && (contains(github.event.head_commit.message, 'feedback/tiles.json')
+          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/tiles.json'))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: tiles }
     secrets: inherit
@@ -117,7 +136,8 @@ jobs:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
       && startsWith(github.event.head_commit.message, 'live: admin update')
-      && contains(join(github.event.commits.*.modified), 'live/feedback/items.json')
+      && (contains(github.event.head_commit.message, 'feedback/items.json')
+          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/items.json'))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: items }
     secrets: inherit
@@ -126,7 +146,8 @@ jobs:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
       && startsWith(github.event.head_commit.message, 'live: admin update')
-      && contains(join(github.event.commits.*.modified), 'live/feedback/lore.json')
+      && (contains(github.event.head_commit.message, 'feedback/lore.json')
+          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/lore.json'))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: lore }
     secrets: inherit
@@ -135,7 +156,8 @@ jobs:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
       && startsWith(github.event.head_commit.message, 'live: admin update')
-      && contains(join(github.event.commits.*.modified), 'live/feedback/sounds.json')
+      && (contains(github.event.head_commit.message, 'feedback/sounds.json')
+          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/sounds.json'))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: sounds }
     secrets: inherit
@@ -144,7 +166,8 @@ jobs:
     if: >-
       github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
       && startsWith(github.event.head_commit.message, 'live: admin update')
-      && contains(join(github.event.commits.*.modified), 'live/feedback/music.json')
+      && (contains(github.event.head_commit.message, 'feedback/music.json')
+          || contains(toJSON(github.event.commits.*.modified), 'live/feedback/music.json'))
     uses: ./.github/workflows/github-agent-run.yml
     with: { domain: music }
     secrets: inherit

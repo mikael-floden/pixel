@@ -1,0 +1,45 @@
+name: github agents — payload selftest
+
+# WHY THIS EXISTS, AND WHEN TO DELETE IT. Two of his reviews were lost to a
+# job-level `if` that read the push payload wrongly, and nothing in a skipped
+# run says WHICH term was false — a skipped job has no log. This proves the
+# expression forms against a REAL push payload instead of by argument.
+#
+# It fires only on pushes under live/docs/**, so it never runs in front of a
+# review, and it is three jobs of a few seconds. Delete it once the fixed
+# condition in github-agents.yml has started an agent on one of his saves.
+on:
+  push:
+    branches: [main]
+    paths: ["live/docs/**"]
+
+jobs:
+  # The form that was in github-agents.yml and silently never matched.
+  join_form:
+    if: contains(join(github.event.commits.*.modified), 'live/docs/github-agents.md')
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "join(commits.*.modified) MATCHED" >> "$GITHUB_STEP_SUMMARY"
+
+  # The form that replaced it.
+  tojson_form:
+    if: contains(toJSON(github.event.commits.*.modified), 'live/docs/github-agents.md')
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "toJSON(commits.*.modified) MATCHED" >> "$GITHUB_STEP_SUMMARY"
+
+  # And what each one actually produces, so the next surprise is read, not guessed.
+  payload:
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          JOINED: ${{ join(github.event.commits.*.modified) }}
+          AS_JSON: ${{ toJSON(github.event.commits.*.modified) }}
+          HEAD_MSG: ${{ github.event.head_commit.message }}
+        run: |
+          {
+            echo "### what the push payload says"
+            echo "join(commits.*.modified) = \`$JOINED\`"
+            echo "toJSON(commits.*.modified) = \`$AS_JSON\`"
+            echo "head_commit.message = \`$HEAD_MSG\`"
+          } >> "$GITHUB_STEP_SUMMARY"
