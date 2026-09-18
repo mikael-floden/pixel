@@ -1,0 +1,141 @@
+{
+  "id": "coat_heap",
+  "name": "Coatheap",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Everything anybody left on the grass, worn at once by nothing. It stands where a fire used to be lit.",
+  "biome": [
+    "grass",
+    "brown_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Standing heap of layered old coats, oilskin over wool over a child jacket, every one buttoned up and shaped like a stooped person, the top collar gaping open on empty dark air, sleeves hanging heavy and the hems dragging in the grass",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "coat_heap/rotations/south.webp",
+    "south-east": "coat_heap/rotations/south-east.webp",
+    "east": "coat_heap/rotations/east.webp",
+    "north-east": "coat_heap/rotations/north-east.webp",
+    "north": "coat_heap/rotations/north.webp",
+    "north-west": "coat_heap/rotations/north-west.webp",
+    "west": "coat_heap/rotations/west.webp",
+    "south-west": "coat_heap/rotations/south-west.webp"
+  },
+  "sheet": "coat_heap/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9e77047b-3498-4fbc-900c-0219aed45f04",
+  "seed": 1444141714,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:53:55+00:00",
+  "elapsed_s": 311.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.672,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.739,
+        "bbox": [
+          18,
+          2,
+          78,
+          94
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.729,
+        "bbox": [
+          19,
+          3,
+          77,
+          94
+        ],
+        "fill": 0.573,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.767,
+        "bbox": [
+          19,
+          3,
+          77,
+          94
+        ],
+        "fill": 0.573,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.672,
+        "bbox": [
+          18,
+          2,
+          78,
+          94
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.773,
+        "bbox": [
+          20,
+          3,
+          77,
+          94
+        ],
+        "fill": 0.563,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.712,
+        "bbox": [
+          19,
+          3,
+          77,
+          94
+        ],
+        "fill": 0.573,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.687,
+        "bbox": [
+          19,
+          3,
+          77,
+          94
+        ],
+        "fill": 0.573,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.78,
+        "bbox": [
+          19,
+          2,
+          78,
+          94
+        ],
+        "fill": 0.589,
+        "touches_edge": false
+      }
+    }
+  }
+}

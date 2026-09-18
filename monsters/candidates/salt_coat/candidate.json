@@ -1,0 +1,140 @@
+{
+  "id": "salt_coat",
+  "name": "Saltcoat",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It came up the beach with the wrack. It is polite, and it walks you toward the water while it talks.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Empty yellow oilskin coat and sou wester standing upright, the oilcloth stiff and salt-crusted and streaked with green, cuffs hanging open with seawater still running out of them, and a smooth smiling face of dried white salt set back in the hood",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "salt_coat/rotations/south.webp",
+    "south-east": "salt_coat/rotations/south-east.webp",
+    "east": "salt_coat/rotations/east.webp",
+    "north-east": "salt_coat/rotations/north-east.webp",
+    "north": "salt_coat/rotations/north.webp",
+    "north-west": "salt_coat/rotations/north-west.webp",
+    "west": "salt_coat/rotations/west.webp",
+    "south-west": "salt_coat/rotations/south-west.webp"
+  },
+  "sheet": "salt_coat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f0a4b406-868e-4e5f-9680-4501b6ff6a1b",
+  "seed": 1367176979,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:55:56+00:00",
+  "elapsed_s": 193.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.703,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.736,
+        "bbox": [
+          22,
+          3,
+          82,
+          100
+        ],
+        "fill": 0.538,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.742,
+        "bbox": [
+          37,
+          3,
+          69,
+          101
+        ],
+        "fill": 0.29,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.764,
+        "bbox": [
+          33,
+          3,
+          66,
+          101
+        ],
+        "fill": 0.299,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.703,
+        "bbox": [
+          21,
+          3,
+          81,
+          99
+        ],
+        "fill": 0.533,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.798,
+        "bbox": [
+          27,
+          3,
+          77,
+          101
+        ],
+        "fill": 0.453,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.721,
+        "bbox": [
+          26,
+          3,
+          73,
+          100
+        ],
+        "fill": 0.422,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.719,
+        "bbox": [
+          28,
+          3,
+          76,
+          100
+        ],
+        "fill": 0.43,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.797,
+        "bbox": [
+          28,
+          3,
+          76,
+          101
+        ],
+        "fill": 0.435,
+        "touches_edge": false
+      }
+    }
+  }
+}

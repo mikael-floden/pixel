@@ -1,0 +1,141 @@
+{
+  "id": "chess_piece",
+  "name": "Boardknight",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It only moves the way it is allowed to move. It always arrives from the direction nobody was watching.",
+  "biome": [
+    "grass",
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Man-sized carved dark stone chess knight, a stylised horse head on a heavy round base, one ear snapped clean off, the stone polished black where hands have gripped it, deep chisel facets cut down the mane and a chipped corner on the base",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "chess_piece/rotations/south.webp",
+    "south-east": "chess_piece/rotations/south-east.webp",
+    "east": "chess_piece/rotations/east.webp",
+    "north-east": "chess_piece/rotations/north-east.webp",
+    "north": "chess_piece/rotations/north.webp",
+    "north-west": "chess_piece/rotations/north-west.webp",
+    "west": "chess_piece/rotations/west.webp",
+    "south-west": "chess_piece/rotations/south-west.webp"
+  },
+  "sheet": "chess_piece/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "542ae024-1f21-4480-a3fc-3bd82321d428",
+  "seed": 725219135,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:54:53+00:00",
+  "elapsed_s": 161.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.727,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.727,
+        "bbox": [
+          10,
+          3,
+          96,
+          100
+        ],
+        "fill": 0.771,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.769,
+        "bbox": [
+          22,
+          4,
+          89,
+          101
+        ],
+        "fill": 0.601,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.799,
+        "bbox": [
+          17,
+          4,
+          79,
+          103
+        ],
+        "fill": 0.567,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.73,
+        "bbox": [
+          7,
+          3,
+          96,
+          99
+        ],
+        "fill": 0.79,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.809,
+        "bbox": [
+          15,
+          5,
+          90,
+          103
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.778,
+        "bbox": [
+          7,
+          2,
+          96,
+          99
+        ],
+        "fill": 0.798,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.763,
+        "bbox": [
+          11,
+          3,
+          85,
+          99
+        ],
+        "fill": 0.657,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.813,
+        "bbox": [
+          7,
+          5,
+          92,
+          102
+        ],
+        "fill": 0.762,
+        "touches_edge": false
+      }
+    }
+  }
+}

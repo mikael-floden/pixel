@@ -1,0 +1,140 @@
+{
+  "id": "shore_urchin",
+  "name": "Urchling",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "The tide put it down and went away without it. It has been walking inland ever since, very slowly.",
+  "biome": [
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Round deep-purple sea urchin the size of a fist walking on the tips of its short blunt spines, a tight dome of overlapping plates underneath, pale tube feet reaching out between the spines and wet sand stuck across its underside",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "shore_urchin/rotations/south.webp",
+    "south-east": "shore_urchin/rotations/south-east.webp",
+    "east": "shore_urchin/rotations/east.webp",
+    "north-east": "shore_urchin/rotations/north-east.webp",
+    "north": "shore_urchin/rotations/north.webp",
+    "north-west": "shore_urchin/rotations/north-west.webp",
+    "west": "shore_urchin/rotations/west.webp",
+    "south-west": "shore_urchin/rotations/south-west.webp"
+  },
+  "sheet": "shore_urchin/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "fbb804bc-0ddb-4981-a2b0-28997e489312",
+  "seed": 859583914,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:53:28+00:00",
+  "elapsed_s": 222.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.727,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.817,
+        "bbox": [
+          1,
+          6,
+          39,
+          37
+        ],
+        "fill": 0.736,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.738,
+        "bbox": [
+          2,
+          4,
+          38,
+          35
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.733,
+        "bbox": [
+          2,
+          4,
+          38,
+          35
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.727,
+        "bbox": [
+          2,
+          3,
+          38,
+          34
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.784,
+        "bbox": [
+          3,
+          4,
+          37,
+          37
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.745,
+        "bbox": [
+          3,
+          4,
+          38,
+          35
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.746,
+        "bbox": [
+          2,
+          4,
+          37,
+          35
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.782,
+        "bbox": [
+          3,
+          4,
+          37,
+          37
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      }
+    }
+  }
+}
