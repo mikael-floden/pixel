@@ -261,3 +261,24 @@ test("LAW 1 — a generation that redefines a CONTENT-HASHED name is refused out
   assert.equal(s.fileFor("assets/index-aaaaaaaa.js")?.bytes.toString(), "//A", "and the name keeps its bytes");
   rmSync(root, { recursive: true, force: true });
 });
+
+test("the GitHub backend parses the spec the deploy sets, and only valid ones", () => {
+  const b = backendFromEnv({ BUNDLE_STORE: "github:mikael-floden/pixel@bundle-store/bundle" } as NodeJS.ProcessEnv);
+  assert.equal(b?.label, "github:mikael-floden/pixel@bundle-store/bundle");
+  // no prefix -> the default
+  assert.equal(
+    backendFromEnv({ BUNDLE_STORE: "github:o/r@br" } as NodeJS.ProcessEnv)?.label,
+    "github:o/r@br/bundle",
+  );
+  // no branch is not a store: better OFF (the image serves) than reading main
+  // by accident, which is a different tree from the one publishes go to.
+  assert.equal(backendFromEnv({ BUNDLE_STORE: "github:o/r" } as NodeJS.ProcessEnv), undefined);
+});
+
+test("a GitHub backend that cannot reach anything returns null, never throws", async () => {
+  // The contract the store depends on: unreachable is "keep what we have".
+  const { githubBackend } = await import("../src/bundlestore");
+  const b = githubBackend("this-owner-does-not-exist-9z/nope", "no-such-branch", "bundle");
+  assert.equal(await b.get("pointer.json"), null);
+  assert.deepEqual(await b.list("gen"), []);
+});

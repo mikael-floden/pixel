@@ -1,0 +1,157 @@
+# THE FAST LANE: ship CLIENT code without building a container or rolling out a
+# new Cloud Run revision. Push -> the running server serves the new bundle.
+#
+# The container path stays exactly as it is for everything else, and this
+# workflow deliberately does NOT cover it:
+#   - ART never gets a lane. Art touches the ?v=<GIT_SHA> -> immutable grant in
+#     games2/server/src/cachepolicy.ts; changing art bytes while GIT_SHA is
+#     fixed would freeze two different byte-sets under one URL for a year, and
+#     that is the unrecallable, project-deleting bug. Art rides the image.
+#   - SERVER / shared / config code cannot travel this way either: adopting it
+#     means re-importing modules in the process that owns the authoritative
+#     20 Hz world, i.e. a restart, i.e. a revision.
+#
+# WHY A BRANCH AND NOT A BUCKET. The server already reads live/** straight from
+# GitHub with no redeploy (games2/server/src/live.ts, measured 5-9 s
+# push-to-visible), so the channel is proven in production and needs no bucket,
+# no IAM and no Cloud Shell step from a phone-only maintainer. The generations
+# live on their OWN branch so main's history stays clean and the blobs never
+# enter the image's build context.
+#
+# ORDER IS THE SAFETY ARGUMENT (see games2/scripts/publish-bundle.mjs): every
+# blob lands under its content hash, then the manifest, then the pointer, and
+# only then the poke. A run interrupted anywhere leaves production untouched.
+name: fast-publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # ONLY THE MODULE GRAPH. Deliberately NOT games2/client/** — that would
+      # include client/public/**, and a published generation carries index.html
+      # plus assets/ and NOTHING ELSE. Measured: the dist root also holds 12
+      # entries and 4.6 MB the generation does not carry (monsters.json 885 KB,
+      # npcs.json 765 KB, ui2/ 1.04 MB, icons/ 698 KB, logo*.webp,
+      # characters.json, chess/, shipset.json, worlds.json, sw.js,
+      # manifest.webmanifest). Those fall through to the IMAGE, so publishing a
+      # public/** change would run new code against the image's OLD catalogs —
+      # a mixed generation, which is the one thing this whole design exists to
+      # make impossible. public/** is art-derived and belongs on the container
+      # lane.
+      - "games2/client/src/**"
+      - "games2/client/index.html"
+
+# Never two publishers at once: the pointer's seq is read-modify-write, so a
+# race could skip a generation. Not cancel-in-progress — a half-finished
+# publish should finish writing its blobs (they are content-addressed and
+# harmless) rather than be killed between them.
+concurrency:
+  group: fast-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to push the generation to its own branch
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # HEAD~1 must exist: the lane check diffs against it
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games2/package-lock.json
+
+      - name: Install (client deps only — the bundler and nothing else)
+        working-directory: games2
+        run: npm ci
+
+      # A PUSH THAT NEEDS A NEW SERVER MUST NOT PUBLISH ITS CLIENT FIRST. The
+      # path filter cannot see this: one push can touch client/src AND
+      # server/src, and then the fast lane would hand players a client in
+      # seconds that needs a server arriving five minutes later. The container
+      # lane carries such a push whole, as it does today.
+      - name: Lane check — client-only, or nothing
+        id: lane
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            RANGE="HEAD~1..HEAD"
+          else
+            git fetch --depth=1 origin "$BEFORE" 2>/dev/null || true
+            RANGE="$BEFORE..HEAD"
+          fi
+          CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || git diff --name-only HEAD~1..HEAD)
+          echo "$CHANGED" | sed 's/^/  /'
+          OUTSIDE=$(echo "$CHANGED" | grep -vE '^games2/client/(src/|index\.html)' | grep -vE '^(coordination/|live/)' || true)
+          if [ -n "$OUTSIDE" ]; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "NOT publishing: this push also changes files the fast lane cannot carry:"
+            echo "$OUTSIDE" | sed 's/^/  /'
+            { echo "**Not published to the fast lane** — this push also changes:"; echo '```'; echo "$OUTSIDE"; echo '```'; echo "The container lane carries it whole."; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # THE GATE RUNS BEFORE THE PUBLISH, NOT AFTER. A three-second deploy of a
+      # bundle that does not start is a three-second outage, and he tests in
+      # production from a phone. verify-fastbundle boots a real browser against
+      # a real server and asserts BOOTS / JOINS / RENDERS / CLEAN.
+      - name: Gate — the bundle boots, joins and renders
+        if: steps.lane.outputs.publish == 'true'
+        working-directory: games2
+        run: node scripts/verify-fastbundle.mjs
+
+      - name: Fetch the store branch
+        if: steps.lane.outputs.publish == 'true'
+        run: |
+          git fetch origin bundle-store:bundle-store --depth=1 2>/dev/null \
+            || git branch bundle-store $(git commit-tree $(git hash-object -t tree /dev/null) -m "bundle store") 2>/dev/null \
+            || true
+          git worktree add ../store bundle-store
+
+      - name: Publish the generation
+        id: pub
+        if: steps.lane.outputs.publish == 'true'
+        working-directory: games2
+        env:
+          GIT_SHA: ${{ github.sha }}
+        run: |
+          node scripts/publish-bundle.mjs --store ../../store/bundle --sha "$GIT_SHA" | tee /tmp/pub.log
+          grep -q "already current" /tmp/pub.log && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
+
+      - name: Commit and push it
+        if: steps.pub.outputs.changed == 'true'
+        working-directory: store
+        run: |
+          git config user.name "Claude"
+          git config user.email "noreply@anthropic.com"
+          git add bundle
+          git commit -q -m "bundle: ${{ github.sha }}" || exit 0
+          for i in 1 2 3 4; do
+            git push origin bundle-store && break
+            echo "push failed, retrying in $((2 ** i))s"; sleep $((2 ** i))
+            git fetch origin bundle-store && git rebase origin/bundle-store || true
+          done
+
+      # THE POKE, exactly like live-notify.yml: the server re-reads the pointer
+      # and flips. Unauthenticated because it only asks for a re-read of public
+      # data it already reads, and a spurious call is a no-op.
+      - name: Poke the game server
+        if: steps.pub.outputs.changed == 'true'
+        run: |
+          for i in 1 2 3 4 5; do
+            OUT=$(curl -fsS -X POST --max-time 20 https://nangijala.online/api/bundle/refresh || true)
+            echo "$OUT"
+            echo "$OUT" | grep -q "${{ github.sha }}" && break
+            echo "$OUT" | grep -q '"serving":"' && break
+            sleep 3
+          done
+          echo "Published \`${{ github.sha }}\` to the fast lane." >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Nothing to publish
+        if: steps.lane.outputs.publish == 'true' && steps.pub.outputs.changed != 'true'
+        run: echo "The bundle is byte-identical to the current generation — nothing published." >> "$GITHUB_STEP_SUMMARY"

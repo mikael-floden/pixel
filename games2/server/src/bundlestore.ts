@@ -154,6 +154,58 @@ export function gcsBackend(bucket: string, prefix = "bundle"): StoreBackend {
   };
 }
 
+export function githubBackend(repo: string, branch: string, prefix = "bundle"): StoreBackend {
+  // THE CHANNEL THIS REPO ALREADY RUNS IN PRODUCTION. live.ts has read live/**
+  // from raw.githubusercontent since 2026-08 with no redeploy, measured at 5-9 s
+  // push-to-visible, and it needs no bucket, no IAM and no console step from a
+  // phone-only maintainer.
+  //
+  // TWO THINGS IT MUST GET RIGHT, both learned from live.ts. raw sits behind a
+  // ~5-minute CDN, so a read that matters for FRESHNESS asks the contents API
+  // when a token is available (live.ts:293 does exactly this, for exactly this
+  // reason) — here that is the pointer. And a BLOB never needs that care: it is
+  // addressed by its own hash, so a stale CDN answer is either the right bytes
+  // or refused by the hash check in load().
+  const RAW = `https://raw.githubusercontent.com/${repo}/${branch}`;
+  const API = `https://api.github.com/repos/${repo}/contents`;
+  const token = () => process.env.WIKI_GITHUB_TOKEN || process.env.GITHUB_TOKEN || "";
+  return {
+    label: `github:${repo}@${branch}/${prefix}`,
+    async get(p) {
+      const path = `${prefix}/${p}`;
+      // The pointer is the one mutable name, so it is the one read that must
+      // not come from a 5-minute CDN.
+      const fresh = p === "pointer.json" && !!token();
+      try {
+        if (fresh) {
+          const r = await fetch(`${API}/${path}?ref=${encodeURIComponent(branch)}`, {
+            headers: {
+              authorization: `Bearer ${token()}`,
+              accept: "application/vnd.github.raw",
+              "cache-control": "no-cache",
+            },
+            signal: AbortSignal.timeout(8000),
+          });
+          if (r.ok) return Buffer.from(await r.arrayBuffer());
+          // fall through to raw: a missing token scope or a 403 must not make
+          // the lane unreadable, only staler.
+        }
+        const r = await fetch(`${RAW}/${path}`, {
+          headers: { "cache-control": "no-cache" },
+          signal: AbortSignal.timeout(12000),
+        });
+        if (!r.ok) return null;
+        return Buffer.from(await r.arrayBuffer());
+      } catch {
+        return null; // unreachable is "keep what we have", never a throw
+      }
+    },
+    async list() {
+      return []; // nothing needs listing: the pointer names what to load
+    },
+  };
+}
+
 /** Pick the backend from the environment. `undefined` = the lane is off. */
 export function backendFromEnv(env = process.env): StoreBackend | undefined {
   const spec = (env.BUNDLE_STORE || "").trim();
@@ -162,6 +214,16 @@ export function backendFromEnv(env = process.env): StoreBackend | undefined {
     const [, rest] = spec.split("gs://");
     const slash = rest.indexOf("/");
     return slash < 0 ? gcsBackend(rest) : gcsBackend(rest.slice(0, slash), rest.slice(slash + 1));
+  }
+  // github:owner/repo@branch[/prefix]
+  if (spec.startsWith("github:")) {
+    const rest = spec.slice("github:".length);
+    const at = rest.indexOf("@");
+    if (at < 0) return undefined;
+    const repo = rest.slice(0, at);
+    const after = rest.slice(at + 1);
+    const slash = after.indexOf("/");
+    return slash < 0 ? githubBackend(repo, after) : githubBackend(repo, after.slice(0, slash), after.slice(slash + 1));
   }
   return localBackend(spec);
 }
