@@ -8335,6 +8335,13 @@ class Grow:
             self.doc["scenery"], [(sx + 0.5, sy + 0.5, self.BONFIRE_R)])
         json.dump(self.doc, open(os.path.join(OUT, "world.json"), "w"),
                   separators=(",", ":"))
+        # THE YARDS (spec/WORLD3.md -> somebody lives here): the ground and the
+        # household round every house, drawn from pools per house, judged by
+        # the footprint law on the written world - the same pass that dresses
+        # the shipped world in place.
+        import yards
+        yards.apply(OUT, write=True)
+        self.doc = json.load(open(os.path.join(OUT, "world.json")))
         # AMBIENT ZONES are read off the finished world (spec/AMBIENT.md): the
         # sidecar follows the world it describes, gated like the others.
         import ambient

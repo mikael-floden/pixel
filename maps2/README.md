@@ -480,6 +480,11 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   successor for a re-rolled slot. (Without it: chimney_002 stood dangling
   three days, cupboard_004 in August longer — the game tombstones the 404
   and draws nothing, render3 dies mid-render, games2's gate goes red.)
+- `yards.py` — **somebody lives here** (maintainer 2026-09-18): the paving
+  apron, the way from the door to the road, the garden plot and the household
+  pieces round every house, drawn from pools per house and judged by the
+  footprint law (`spec/WORLD3.md` → somebody lives here). `--apply
+  <world_dir>` on the shipped world; the build runs it after world.json.
 - `rugfit.py` — **a rug never touches a wall** (maintainer 2026-09-18): its
   drawn art against each wall cell's cut-away hexagon and its own room's
   floor (`spec/WORLD3.md` → a rug never touches a wall). `--check`, `--apply

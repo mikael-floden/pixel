@@ -993,6 +993,34 @@ is the SAME rule the build and the in-place pass use.
   `lights()` lights the indoor fires right after the plaza's lamps and before
   the rest of the town's, which is the build-side half of the same trade.
 
+### somebody lives here — the ground and the yard round a house
+
+**A house is not a bare square: the ground round it and a household's things
+are drawn per house from pools** (maintainer 2026-09-18: "place brown or grey
+paving stone around the house (not a hard rule so don't do this 100%) and use
+paving stone to create a nice looking path/entrance to the house that maybe
+connects to a road ... You should think somebody lives here. A garden? Maybe
+they have wet cloth hanging in the wind."). `maps2/pipeline/yards.py`, per
+house, seeded by its own box: the APRON (none 30 / the doorstep 25 / the front
+20 / a ring 20 / wide 5) in brown or grey paving, the nearby street's own
+material seven times in ten; the PATH from the doorstep to the nearest road
+(light soil) or street (paving) within 18 steps on the house's level, round
+other houses, doorsteps and every footprint, two wide near a street three
+times in ten, and a short walk that ends in the grass six times in ten when
+no road is in reach; the GARDEN, half the houses, a plot beside the door's
+face — dark mud on grass, grass on the town's mud (a place brings its own
+ground) — with two to four bushes, flower stands, planters, hives or a
+scarecrow; the YARD, two to four of a washing line, a woodpile, barrels, a
+bench, a well or a pump, a cart, a haystack, a hive, a fence, drying racks
+only with water within eight cells, two of a kind only for the piles and the
+fences. Every piece is judged where it stands by the footprint law at its
+nav-fit offset, never behind the roof (the build's own shadow rule), never
+on a doorstep or the path. A house on snow or rock keeps its bare ground, and
+no painting may leave a natural-ground speck (drawn again, or not at all).
+`--apply` dresses the shipped world in place; the build runs the same pass
+after it writes world.json. (Measured on the_game: 11 houses, 229 cells
+painted, 38 pieces.)
+
 ### a rug never touches a wall
 
 **A rug's drawn art lies over its room's floor only and meets no wall cell's
