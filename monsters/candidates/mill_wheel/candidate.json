@@ -1,0 +1,141 @@
+{
+  "id": "mill_wheel",
+  "name": "Millwheel",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It was carried here whole by somebody who hated the sight of it. It still turns, and it still has nothing to grind.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Great wooden mill water wheel torn off its axle and standing on its rim, the paddle boards splintered and black with weed, the iron banding rusted through, the axle beam still run through its hub like a spine, water pouring off every paddle",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mill_wheel/rotations/south.webp",
+    "south-east": "mill_wheel/rotations/south-east.webp",
+    "east": "mill_wheel/rotations/east.webp",
+    "north-east": "mill_wheel/rotations/north-east.webp",
+    "north": "mill_wheel/rotations/north.webp",
+    "north-west": "mill_wheel/rotations/north-west.webp",
+    "west": "mill_wheel/rotations/west.webp",
+    "south-west": "mill_wheel/rotations/south-west.webp"
+  },
+  "sheet": "mill_wheel/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "cec605fc-d4ca-4792-bbbd-c37c247009de",
+  "seed": 675204853,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:09:02+00:00",
+  "elapsed_s": 233.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.607,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.607,
+        "bbox": [
+          38,
+          11,
+          190,
+          214
+        ],
+        "fill": 0.615,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.668,
+        "bbox": [
+          63,
+          10,
+          180,
+          209
+        ],
+        "fill": 0.464,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.684,
+        "bbox": [
+          33,
+          10,
+          177,
+          211
+        ],
+        "fill": 0.577,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.646,
+        "bbox": [
+          32,
+          11,
+          158,
+          201
+        ],
+        "fill": 0.477,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.683,
+        "bbox": [
+          34,
+          11,
+          187,
+          216
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.673,
+        "bbox": [
+          31,
+          12,
+          159,
+          206
+        ],
+        "fill": 0.495,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.644,
+        "bbox": [
+          64,
+          8,
+          144,
+          212
+        ],
+        "fill": 0.325,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.675,
+        "bbox": [
+          50,
+          13,
+          190,
+          209
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      }
+    }
+  }
+}
