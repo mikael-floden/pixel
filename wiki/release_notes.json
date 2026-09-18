@@ -1,563 +1,560 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T13:40:17.578Z",
- "head": "cfb1b6f4a",
+ "generated_at": "2026-09-18T14:58:52.505Z",
+ "head": "1ea60399e",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
   {
-   "sha": "cfb1b6f4a",
-   "at": "2026-09-18T13:36:44+00:00",
+   "sha": "1ea60399e",
+   "at": "2026-09-18T14:58:11+00:00",
    "author": "Claude",
-   "subject": "monsters: die_v1 redo round 1 from his review",
+   "subject": "tiles: the road edge gets its fade art - 31 tiles to 251",
+   "agent": "tiles",
+   "dirs": [
+    "tiles"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "226a4de4f",
+   "at": "2026-09-18T14:58:11+00:00",
+   "author": "Claude",
+   "subject": "tiles: the final road-edge fade sheets, and the sheet list they belong to",
+   "agent": "tiles",
+   "dirs": [
+    "tiles"
+   ],
+   "files": 1116
+  },
+  {
+   "sha": "99219c4ad",
+   "at": "2026-09-18T14:57:53+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 11
+   "files": 1001
   },
   {
-   "sha": "1bfb5ea16",
-   "at": "2026-09-18T13:36:35+00:00",
+   "sha": "0714d4962",
+   "at": "2026-09-18T14:55:46+00:00",
    "author": "Claude",
-   "subject": "monsters: angry_v1 redo round 1 from his review",
-   "agent": "monsters",
-   "dirs": [
-    "live",
-    "monsters"
-   ],
-   "files": 7
-  },
-  {
-   "sha": "d4fe99e57",
-   "at": "2026-09-18T13:36:00+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (161 candidate folders on disk)",
+   "subject": "monsters: graduation landings",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 11
+   "files": 50
   },
   {
-   "sha": "864a0c290",
-   "at": "2026-09-18T13:31:04+00:00",
+   "sha": "f4cdd83f2",
+   "at": "2026-09-18T14:55:35+00:00",
    "author": "Claude",
-   "subject": "monsters: angry_v1 redo landings from his review",
+   "subject": "monsters: candidates v2 landings (83 candidate folders on disk)",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 8
+   "files": 722
   },
   {
-   "sha": "244ab67c3",
-   "at": "2026-09-18T13:30:47+00:00",
-   "author": "wiki-agent",
-   "subject": "wiki: a \"complete\" creature filter, measured from the art",
-   "agent": "wiki",
+   "sha": "531d413a1",
+   "at": "2026-09-18T16:55:19+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
    "dirs": [
-    "wiki"
+    "live"
    ],
-   "files": 7
+   "files": 1
   },
   {
-   "sha": "8eb26a0fa",
-   "at": "2026-09-18T13:30:35+00:00",
+   "sha": "624c2b680",
+   "at": "2026-09-18T14:53:40+00:00",
    "author": "Claude",
-   "subject": "monsters: trim command — remove a bad tail in post instead of re-rolling, and clear his note with it",
+   "subject": "monsters: graduation landings",
    "agent": "monsters",
    "dirs": [
-    "live",
+    "monsters"
+   ],
+   "files": 528
+  },
+  {
+   "sha": "2a9a35c06",
+   "at": "2026-09-18T16:53:34+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c1aac0ad1",
+   "at": "2026-09-18T14:52:27+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (85 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 105
+  },
+  {
+   "sha": "4700f611e",
+   "at": "2026-09-18T16:52:14+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c786750f1",
+   "at": "2026-09-18T14:51:29+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 177
+  },
+  {
+   "sha": "2fc72a9fb",
+   "at": "2026-09-18T14:50:57+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 405
+  },
+  {
+   "sha": "8d667d975",
+   "at": "2026-09-18T14:49:18+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (86 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 70
+  },
+  {
+   "sha": "0998c0fad",
+   "at": "2026-09-18T14:49:09+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings (Rootfather and the rest mirroring in)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 114
+  },
+  {
+   "sha": "1937b2d1c",
+   "at": "2026-09-18T14:48:52+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 94
+  },
+  {
+   "sha": "f4d78c70f",
+   "at": "2026-09-18T14:48:34+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduate the fully-approved, drop the attempts he never approved, publish the state",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 472
+  },
+  {
+   "sha": "71c132ec1",
+   "at": "2026-09-18T16:44:24+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "5447d5ec9",
+   "at": "2026-09-18T16:44:00+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "29e9ff255",
+   "at": "2026-09-18T16:42:36+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "86385d36f",
+   "at": "2026-09-18T14:42:02+00:00",
+   "author": "Claude",
+   "subject": "lighting: the contact stamp's crop and footprint live in the packed texture's own texels",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "98685daeb",
+   "at": "2026-09-18T14:42:01+00:00",
+   "author": "Claude",
+   "subject": "deploy: the layer cache is written AFTER the rollout — about two minutes off every push-to-live",
+   "agent": null,
+   "dirs": [
+    ".github"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "1708ace19",
+   "at": "2026-09-18T14:42:01+00:00",
+   "author": "Claude",
+   "subject": "games board: the contact AO rebuilt to his recipe; the deploy's measured critical path; the five red lighting gates proven pre-existing",
+   "agent": "games",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "bb9393f2a",
+   "at": "2026-09-18T14:42:01+00:00",
+   "author": "Claude",
+   "subject": "lighting: the contact shadow is the silhouette dropped two texels, clipped to the hitbox, blurred — his recipe, pixel for pixel",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 5
+  },
+  {
+   "sha": "ba37fca74",
+   "at": "2026-09-18T14:41:19+00:00",
+   "author": "Claude",
+   "subject": "monsters: re-prune on his newer feedback copy",
+   "agent": "monsters",
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ee8f9013b",
+   "at": "2026-09-18T14:41:08+00:00",
+   "author": "Claude",
+   "subject": "monsters: a monster graduates by itself when he has approved all of it",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 67
+  },
+  {
+   "sha": "e06f86686",
+   "at": "2026-09-18T14:41:07+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (87 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 277
+  },
+  {
+   "sha": "5ceb7a0b6",
+   "at": "2026-09-18T14:41:07+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (87 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 301
+  },
+  {
+   "sha": "0f8083921",
+   "at": "2026-09-18T16:40:58+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a707bceae",
+   "at": "2026-09-18T16:39:01+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "41b2d8576",
+   "at": "2026-09-18T16:38:31+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "248d174bb",
+   "at": "2026-09-18T16:37:10+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ee5da8b61",
+   "at": "2026-09-18T14:34:05+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (87 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 936
+  },
+  {
+   "sha": "cd943ed7a",
+   "at": "2026-09-18T14:30:59+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (88 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
     "monsters"
    ],
    "files": 16
   },
   {
-   "sha": "03c2788a9",
-   "at": "2026-09-18T13:29:53+00:00",
+   "sha": "0986bbbe4",
+   "at": "2026-09-18T14:29:37+00:00",
    "author": "Claude",
-   "subject": "monsters: candidates v2 landings (161 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 21
-  },
-  {
-   "sha": "cc3960492",
-   "at": "2026-09-18T13:27:19+00:00",
-   "author": "Claude",
-   "subject": "monsters: prune the verdicts whose art was already regenerated",
+   "subject": "monsters: act on his second review — 64 removed, 59 approved stand",
    "agent": "monsters",
    "dirs": [
     "live",
     "monsters"
    ],
-   "files": 8
+   "files": 651
   },
   {
-   "sha": "0e51b86f7",
-   "at": "2026-09-18T13:26:54+00:00",
+   "sha": "e824f8e6d",
+   "at": "2026-09-18T14:27:42+00:00",
    "author": "Claude",
-   "subject": "monsters: a redo dies with the art it judged, in the same breath",
+   "subject": "monsters: creature-specific walk wording, and a narrow reword override",
    "agent": "monsters",
    "dirs": [
     "monsters"
+   ],
+   "files": 6
+  },
+  {
+   "sha": "63393bf1a",
+   "at": "2026-09-18T16:27:31+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
    ],
    "files": 1
   },
   {
-   "sha": "4d1e7dc04",
-   "at": "2026-09-18T13:26:47+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (161 candidate folders on disk)",
-   "agent": "monsters",
+   "sha": "c66d0b563",
+   "at": "2026-09-18T16:27:15+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
    "dirs": [
-    "monsters"
+    "live"
    ],
-   "files": 13
+   "files": 1
   },
   {
-   "sha": "28a6f5cdb",
-   "at": "2026-09-18T13:25:08+00:00",
+   "sha": "5b236b528",
+   "at": "2026-09-18T14:24:49+00:00",
    "author": "Claude",
-   "subject": "monsters: rebuild the index after reconcile (161 candidates, frozen_tent restored and passing)",
-   "agent": "monsters",
+   "subject": "tiles: the last of the road-edge fade sheets",
+   "agent": "tiles",
    "dirs": [
-    "monsters"
+    "tiles"
    ],
-   "files": 19
+   "files": 155
   },
   {
-   "sha": "1858dc8f5",
-   "at": "2026-09-18T13:24:25+00:00",
+   "sha": "465cde103",
+   "at": "2026-09-18T14:24:29+00:00",
    "author": "Claude",
-   "subject": "monsters: act on removals both ways, and prune the verdicts that caused them",
+   "subject": "monsters: attack_v3 redo round 2 - his flagged directions regenerated, notes cleared",
    "agent": "monsters",
    "dirs": [
     "live",
     "monsters"
    ],
-   "files": 4
+   "files": 37
   },
   {
-   "sha": "f7c07d439",
-   "at": "2026-09-18T13:23:40+00:00",
+   "sha": "7399bbd6c",
+   "at": "2026-09-18T14:23:47+00:00",
    "author": "Claude",
-   "subject": "monsters: candidates v2 landings (160 candidate folders on disk)",
+   "subject": "tiles: delete 82 transition sets in the wrong geometry, and make it impossible to write another",
+   "agent": "tiles",
+   "dirs": [
+    "tiles"
+   ],
+   "files": 1278
+  },
+  {
+   "sha": "81fedd096",
+   "at": "2026-09-18T14:23:21+00:00",
+   "author": "Claude",
+   "subject": "monsters: re-prune after resolving the feedback conflict with his copy",
+   "agent": "monsters",
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "7ba2568ee",
+   "at": "2026-09-18T14:23:10+00:00",
+   "author": "Claude",
+   "subject": "monsters: attack_v3 redo round 1 - his flagged directions regenerated, notes cleared",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 13
+   "files": 36
   },
   {
-   "sha": "40c73ec98",
-   "at": "2026-09-18T13:21:54+00:00",
+   "sha": "5afc5c547",
+   "at": "2026-09-18T14:22:25+00:00",
    "author": "Claude",
-   "subject": "monsters: walk redo round 3 from his review",
+   "subject": "monsters: candidates v2 landings (152 candidate folders on disk)",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 1
+   "files": 138
   },
   {
-   "sha": "1a0fd9912",
-   "at": "2026-09-18T13:21:42+00:00",
+   "sha": "71e432b60",
+   "at": "2026-09-18T14:22:25+00:00",
    "author": "Claude",
-   "subject": "monsters: walk redo round 2 from his review",
+   "subject": "monsters: candidates v2 landings (152 candidate folders on disk)",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 1
+   "files": 87
   },
   {
-   "sha": "808e44426",
-   "at": "2026-09-18T13:21:27+00:00",
-   "author": "Claude",
-   "subject": "monsters: walk redo round 1 from his review",
-   "agent": "monsters",
+   "sha": "3bfbf1e31",
+   "at": "2026-09-18T16:22:13+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
    "dirs": [
-    "live",
-    "monsters"
-   ],
-   "files": 62
-  },
-  {
-   "sha": "54e9c6317",
-   "at": "2026-09-18T13:19:42+00:00",
-   "author": "Claude",
-   "subject": "monsters: review ingest and redo landings",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
+    "live"
    ],
    "files": 1
   },
   {
-   "sha": "6b3dd2cff",
-   "at": "2026-09-18T13:18:56+00:00",
-   "author": "Claude",
-   "subject": "monsters: drop the 39 first-batch candidates he rejected in the wiki",
-   "agent": "monsters",
+   "sha": "49b689238",
+   "at": "2026-09-18T16:10:13+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
    "dirs": [
-    "monsters"
+    "live"
    ],
-   "files": 11
+   "files": 1
   },
   {
-   "sha": "870652675",
-   "at": "2026-09-18T13:17:33+00:00",
+   "sha": "82d35e8da",
+   "at": "2026-09-18T14:08:02+00:00",
    "author": "Claude",
-   "subject": "monsters: candidates v2 landings (161 candidate folders on disk)",
-   "agent": "monsters",
+   "subject": "tiles: more road fades and transition sets (slime~snow, ice~snow, black_rock pairs)",
+   "agent": "tiles",
    "dirs": [
-    "monsters"
+    "tiles"
    ],
-   "files": 422
+   "files": 394
   },
   {
-   "sha": "3c552beb5",
-   "at": "2026-09-18T13:14:27+00:00",
+   "sha": "14c117951",
+   "at": "2026-09-18T14:06:45+00:00",
    "author": "Claude",
-   "subject": "monsters: candidates v2 landings (200 candidate folders on disk)",
+   "subject": "monsters: candidates v2 landings (152 candidate folders on disk)",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 101
+   "files": 51
   },
   {
-   "sha": "20f99caa7",
-   "at": "2026-09-18T15:13:42+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/tiles.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "7bbe01805",
-   "at": "2026-09-18T13:11:23+00:00",
+   "sha": "e5b6a649f",
+   "at": "2026-09-18T14:03:39+00:00",
    "author": "Claude",
-   "subject": "monsters: candidates v2 round 1 landings",
+   "subject": "monsters: candidates v2 landings (152 candidate folders on disk)",
    "agent": "monsters",
    "dirs": [
     "monsters"
    ],
-   "files": 11
+   "files": 75
   },
   {
-   "sha": "5ed798edb",
-   "at": "2026-09-18T15:10:06+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "263cb58d3",
-   "at": "2026-09-18T13:08:18+00:00",
+   "sha": "bb6cf8240",
+   "at": "2026-09-18T14:00:46+00:00",
    "author": "Claude",
-   "subject": "monsters: candidates v2 landings (199 candidate folders on disk)",
+   "subject": "monsters: re-prune after taking his newer feedback copy",
    "agent": "monsters",
    "dirs": [
-    "monsters"
-   ],
-   "files": 31
-  },
-  {
-   "sha": "2d366e7b3",
-   "at": "2026-09-18T15:08:11+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
     "live"
    ],
    "files": 1
-  },
-  {
-   "sha": "ab66f7eee",
-   "at": "2026-09-18T15:06:42+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "9e89e8eae",
-   "at": "2026-09-18T15:06:20+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "85b05cb44",
-   "at": "2026-09-18T13:05:09+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (196 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 31
-  },
-  {
-   "sha": "0ce8553e3",
-   "at": "2026-09-18T15:04:38+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "4a3dc7380",
-   "at": "2026-09-18T15:04:20+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "0fdead29c",
-   "at": "2026-09-18T15:03:57+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "bfa2fec74",
-   "at": "2026-09-18T15:02:25+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "342983bc7",
-   "at": "2026-09-18T13:02:00+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (193 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 41
-  },
-  {
-   "sha": "43444dae1",
-   "at": "2026-09-18T15:00:51+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "9ef5b089b",
-   "at": "2026-09-18T14:59:21+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "514106053",
-   "at": "2026-09-18T12:58:52+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (189 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 41
-  },
-  {
-   "sha": "a74330f91",
-   "at": "2026-09-18T14:57:41+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "9d577aee6",
-   "at": "2026-09-18T14:56:06+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "3e6d90fd4",
-   "at": "2026-09-18T12:55:44+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (185 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 31
-  },
-  {
-   "sha": "bf96be2f7",
-   "at": "2026-09-18T14:54:26+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "0d4629795",
-   "at": "2026-09-18T14:52:48+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "d1de5702f",
-   "at": "2026-09-18T12:52:36+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (182 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 41
-  },
-  {
-   "sha": "35d8f5073",
-   "at": "2026-09-18T14:50:42+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "119be0c97",
-   "at": "2026-09-18T12:49:28+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (178 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 31
-  },
-  {
-   "sha": "e2c96df70",
-   "at": "2026-09-18T14:48:31+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "ed47ead9f",
-   "at": "2026-09-18T12:46:20+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (175 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 41
-  },
-  {
-   "sha": "8f9e5f193",
-   "at": "2026-09-18T14:46:06+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "456601b3b",
-   "at": "2026-09-18T14:44:10+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "4556147ff",
-   "at": "2026-09-18T14:43:37+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "760834bc5",
-   "at": "2026-09-18T12:43:13+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (171 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 21
   }
  ]
 }
