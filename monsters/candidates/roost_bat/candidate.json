@@ -1,0 +1,141 @@
+{
+  "id": "roost_bat",
+  "name": "Foldwing",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It keeps everything inside the wings until it does not. The ears are working the whole time.",
+  "biome": [
+    "black_rock",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Large bat hanging upright with its wings wrapped completely around itself like a folded cloak, only a blunt foxlike face and two tall ridged ears showing above the fold, hooked black feet gripping and dense dark fur at the shoulders",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "roost_bat/rotations/south.webp",
+    "south-east": "roost_bat/rotations/south-east.webp",
+    "east": "roost_bat/rotations/east.webp",
+    "north-east": "roost_bat/rotations/north-east.webp",
+    "north": "roost_bat/rotations/north.webp",
+    "north-west": "roost_bat/rotations/north-west.webp",
+    "west": "roost_bat/rotations/west.webp",
+    "south-west": "roost_bat/rotations/south-west.webp"
+  },
+  "sheet": "roost_bat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "02b0146a-04da-45e5-adf8-dd73fdc1fc1a",
+  "seed": 1622762568,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:51:55+00:00",
+  "elapsed_s": 179.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.693,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.712,
+        "bbox": [
+          8,
+          5,
+          88,
+          91
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.739,
+        "bbox": [
+          18,
+          3,
+          83,
+          94
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.74,
+        "bbox": [
+          12,
+          3,
+          76,
+          94
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.693,
+        "bbox": [
+          7,
+          5,
+          89,
+          93
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.774,
+        "bbox": [
+          14,
+          3,
+          81,
+          93
+        ],
+        "fill": 0.654,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.722,
+        "bbox": [
+          16,
+          4,
+          76,
+          91
+        ],
+        "fill": 0.566,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.711,
+        "bbox": [
+          21,
+          4,
+          79,
+          91
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.775,
+        "bbox": [
+          15,
+          3,
+          81,
+          93
+        ],
+        "fill": 0.645,
+        "touches_edge": false
+      }
+    }
+  }
+}

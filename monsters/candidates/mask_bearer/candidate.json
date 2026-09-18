@@ -1,0 +1,140 @@
+{
+  "id": "mask_bearer",
+  "name": "Maskbearer",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It has one already. The one it is holding is the right size for you.",
+  "biome": [
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Hollow figure in a dark coat wearing one smooth smiling mask, holding out a second identical mask in both hands at chest height as an offer, the empty cuffs of its sleeves showing nothing inside them",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mask_bearer/rotations/south.webp",
+    "south-east": "mask_bearer/rotations/south-east.webp",
+    "east": "mask_bearer/rotations/east.webp",
+    "north-east": "mask_bearer/rotations/north-east.webp",
+    "north": "mask_bearer/rotations/north.webp",
+    "north-west": "mask_bearer/rotations/north-west.webp",
+    "west": "mask_bearer/rotations/west.webp",
+    "south-west": "mask_bearer/rotations/south-west.webp"
+  },
+  "sheet": "mask_bearer/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "73c30c1c-2d42-4354-8a7a-5d602b0ae46c",
+  "seed": 1104271507,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:51:00+00:00",
+  "elapsed_s": 226.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.646,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.697,
+        "bbox": [
+          20,
+          3,
+          90,
+          108
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.719,
+        "bbox": [
+          22,
+          3,
+          77,
+          109
+        ],
+        "fill": 0.465,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.743,
+        "bbox": [
+          32,
+          3,
+          88,
+          109
+        ],
+        "fill": 0.473,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.646,
+        "bbox": [
+          21,
+          5,
+          89,
+          104
+        ],
+        "fill": 0.537,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.782,
+        "bbox": [
+          28,
+          4,
+          86,
+          109
+        ],
+        "fill": 0.485,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.701,
+        "bbox": [
+          29,
+          4,
+          89,
+          107
+        ],
+        "fill": 0.493,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.703,
+        "bbox": [
+          22,
+          3,
+          81,
+          107
+        ],
+        "fill": 0.489,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.779,
+        "bbox": [
+          24,
+          4,
+          80,
+          109
+        ],
+        "fill": 0.469,
+        "touches_edge": false
+      }
+    }
+  }
+}

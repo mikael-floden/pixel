@@ -1,0 +1,141 @@
+{
+  "id": "gypsum_flower",
+  "name": "Gypsumkin",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It grew out of the wall where no water ever ran. Touching it takes a piece off and the piece does not grow back.",
+  "biome": [
+    "black_rock",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Curl of white gypsum crystal grown into a small flowering shape, translucent mineral petals fanning out from a thick base, fine needle fibres at the edges, moving very slowly on a foot of the same white stone",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "gypsum_flower/rotations/south.webp",
+    "south-east": "gypsum_flower/rotations/south-east.webp",
+    "east": "gypsum_flower/rotations/east.webp",
+    "north-east": "gypsum_flower/rotations/north-east.webp",
+    "north": "gypsum_flower/rotations/north.webp",
+    "north-west": "gypsum_flower/rotations/north-west.webp",
+    "west": "gypsum_flower/rotations/west.webp",
+    "south-west": "gypsum_flower/rotations/south-west.webp"
+  },
+  "sheet": "gypsum_flower/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f40c7064-fa84-4887-8555-9978c18f33b9",
+  "seed": 143508220,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:49:45+00:00",
+  "elapsed_s": 232.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.784,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.816,
+        "bbox": [
+          4,
+          3,
+          44,
+          45
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.821,
+        "bbox": [
+          13,
+          3,
+          38,
+          45
+        ],
+        "fill": 0.456,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.811,
+        "bbox": [
+          10,
+          3,
+          36,
+          45
+        ],
+        "fill": 0.474,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.784,
+        "bbox": [
+          5,
+          3,
+          43,
+          45
+        ],
+        "fill": 0.693,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.815,
+        "bbox": [
+          7,
+          3,
+          42,
+          45
+        ],
+        "fill": 0.638,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.8,
+        "bbox": [
+          6,
+          3,
+          38,
+          45
+        ],
+        "fill": 0.583,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.801,
+        "bbox": [
+          10,
+          3,
+          41,
+          45
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.814,
+        "bbox": [
+          6,
+          3,
+          42,
+          45
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      }
+    }
+  }
+}
