@@ -87,49 +87,57 @@ jobs:
       group: github-agents-wait
       cancel-in-progress: true
     steps:
+      # TWO MINUTES, not four (maintainer 2026-09-18: "if we can get the agent
+      # up and running fast it will feel live/realtime"). It is the one delay
+      # left that is deliberate: long enough that a review sitting collapses
+      # into one session, short enough to feel like an answer.
       - if: github.event_name == 'push'
-        run: sleep 240
+        run: sleep 120
 
-  # WHICH DOMAINS DID HE REVIEW? Read from the COMMIT LOG of the last half hour,
-  # not from this push's diff: the debounce collapsed a sitting into one
-  # surviving run, and that run's own `before..after` is a single commit, so a
-  # diff would miss every earlier save of the same sitting.
+  # WHICH DOMAINS DID HE REVIEW? Asked of the GitHub API, NOT of a clone
+  # (measured 2026-09-18: checking out the repo just to read a log cost 82s of
+  # a run whose whole point is to start fast). One request per feedback file —
+  # "has this path been touched in the last 30 minutes" — which is eight cheap
+  # calls answered in about a second, and no working tree at all.
+  #
+  # THIRTY MINUTES, not this push's diff: the debounce collapses a sitting into
+  # one surviving run whose own before..after is a single commit, so a diff
+  # would miss every earlier save of the same sitting.
+  #
+  # It runs BESIDE the wait, not after it — nothing it reads changes while the
+  # debounce sleeps, and the agent job needs both.
   detect:
-    needs: debounce
     runs-on: ubuntu-latest
     timeout-minutes: 5
     outputs:
       domains: ${{ steps.pick.outputs.domains }}
     steps:
-      # A PARTIAL CLONE, NOT A FULL ONE. This job only reads the commit LOG of
-      # the last half hour: `blob:none` fetches the graph and downloads a file's
-      # contents only if something opens one, which nothing here does.
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          filter: blob:none
       - id: pick
         env:
+          GH_TOKEN: ${{ github.token }}
           EVENT: ${{ github.event_name }}
           PICK: ${{ inputs.domain }}
+          REPO: ${{ github.repository }}
         run: |
           set -euo pipefail
           if [ "$EVENT" != "push" ]; then
             printf 'domains=["%s"]\n' "${PICK:-monsters}" >> "$GITHUB_OUTPUT"
             exit 0
           fi
-          names=$(git log --since="30 minutes ago" --name-only --pretty=format: \
-                    -- 'live/feedback/*.json' \
-                  | sed -n 's#^live/feedback/\(.*\)\.json$#\1#p' | sort -u)
+          since=$(date -u -d '30 minutes ago' +%Y-%m-%dT%H:%M:%SZ)
+          out=""
           # bindings.json is the composer's attachment review, not a domain
           # directory; it has no agent of its own to stand in for.
-          names=$(printf '%s\n' "$names" | grep -vx 'bindings' || true)
-          json=$(printf '%s\n' "$names" | sed '/^$/d' | jq -R . | jq -sc .)
-          echo "reviewed: $json"
+          for f in $(gh api "repos/$REPO/contents/live/feedback" --jq '.[].name' | sed 's/\.json$//' | grep -vx bindings); do
+            n=$(gh api "repos/$REPO/commits?path=live/feedback/$f.json&since=$since&per_page=1" --jq 'length')
+            [ "$n" -gt 0 ] && out="$out$f\n" || true
+          done
+          json=$(printf "$out" | sed '/^$/d' | jq -R . | jq -sc .)
+          echo "reviewed since $since: $json"
           echo "domains=$json" >> "$GITHUB_OUTPUT"
 
   agent:
-    needs: detect
+    needs: [debounce, detect]
     # The job's name is what the Actions run lists, so it reads as the agent he
     # is thinking of rather than as a workflow step.
     name: ${{ matrix.domain }}-github-agent
@@ -173,6 +181,18 @@ jobs:
         with:
           fetch-depth: 50
           filter: blob:none
+          # A SPARSE WORKING TREE: its own domain, the files every agent reads,
+          # and the shared scripts a pipeline calls — not eleven domains of art
+          # (measured: the full tree cost 171s before Claude read a line). Cone
+          # mode always includes the repo root, so CLAUDE.md and
+          # requirements.txt come with it. The agent can widen it itself
+          # (`git sparse-checkout add <dir>`), which the prompt says.
+          sparse-checkout: |
+            ${{ matrix.domain }}
+            coordination
+            live
+            wiki/lib
+            games2/scripts
 
       - uses: actions/setup-python@v5
         with:
@@ -239,6 +259,11 @@ jobs:
                per run, per session or per date — a new file each time would bury the
                fleet under thousands of dead rows within a year, and the Agents page in
                the wiki is read by a human.
+            Your working tree is SPARSE — your domain, coordination/, live/, wiki/lib and
+            games2/scripts, plus the repo root. If you need another directory, widen it
+            yourself with `git sparse-checkout add <dir>` rather than working around a
+            missing path.
+
             4. Do the work with the domain's OWN pipeline commands rather than by hand
                where it has them, clear each verdict as you act on it, run the domain's
                checks, `git fetch && git rebase origin/main`, re-run the checks if main

@@ -34,6 +34,28 @@ is the wiki server's `live: admin update` waits four minutes, then one job per
 reviewed domain runs Claude in a fresh checkout as `<agent>-github-agent`.
 
 
+
+## Why it starts when it starts (measured 2026-09-18)
+
+The first green run, end to end: 7s debounce, **82s** for the detect job to
+CHECK OUT THE REPO just to read a log, **171s** for the agent's own checkout,
+7s pip, and only then Claude — 4m45s from the push, plus the debounce wait.
+Maintainer: *"if we can get the agent up and running fast it will feel
+live/realtime"*. What was done about it, in order of what it cost:
+
+- **The detect job no longer clones at all.** It asks the API "has this
+  feedback file been touched in the last 30 minutes", one cheap call per file.
+- **It runs BESIDE the wait, not after it** — nothing it reads changes while
+  the debounce sleeps.
+- **The agent's checkout is partial AND sparse**: `filter: blob:none`,
+  `fetch-depth: 50`, and a cone of its own domain plus `coordination/`,
+  `live/`, `wiki/lib`, `games2/scripts` (the root always comes with cone mode,
+  so CLAUDE.md and requirements.txt are there). It can widen it itself with
+  `git sparse-checkout add`, which the prompt tells it.
+- **The debounce is 2 minutes, not 4.** The one delay left that is deliberate:
+  long enough to collapse a review sitting into one session, short enough to
+  feel like an answer.
+
 ## The laws this encodes
 
 - **One github agent per domain, shaped by that domain's own docs** (maintainer
