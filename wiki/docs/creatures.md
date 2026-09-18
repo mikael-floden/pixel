@@ -73,6 +73,29 @@ versions). In the end we will only have a single attack animation ofc."*)
 - In the end only one survives: the agent promotes a take into the state and
   deletes the rest, and the version row disappears on its own.
 
+## Selected is a RING. A verdict is a COLOUR.
+
+Two channels, never one (maintainer 2026-09-18: *"When I select a direction we
+have one color for selected and one color for 'the state here has been
+rejected'. The this is selected has the same color as 'this state has been
+rejected'. This is so confusing to me! ... Use the color as an inwards fade so
+we both can select something and mark the border as approved/rejected. Or use
+an inward faded white ... I just need to understand what is what!"*)
+
+- **Selection is an inward fade and a ring** — `--sel-ring` / `--sel-fade`, the
+  theme's own contrast (white on the dark theme, ink on the light one). It
+  carries no meaning, so it stacks on top of a verdict instead of competing
+  with it, and the same ring answers "is this button pressed" on approve,
+  remove and redo.
+- **A verdict is a colour**: green approved, red removed, amber to be redone —
+  the chip's text in a `.seg`, the chip's BORDER in the direction pad. Nothing
+  else may take the border there.
+- Selection used to wear `--accent`, a warm red-orange two shades from
+  `--bad`: the chip he was standing on read as a rejected one, and a
+  selected-AND-rejected chip had no way to say the second thing. Every
+  selected control now uses the ring — the state row, the version row, the
+  direction pad, the filter chips, the zoom and speed rows.
+
 ## One animation is REDONE, never removed
 
 The per-animation row — one state in one direction, the unit the agent

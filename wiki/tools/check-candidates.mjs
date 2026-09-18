@@ -287,8 +287,13 @@ if (pend.length) {
     // ONE state's takes — a creature can have versions of several states now
     // (attack_v1..v3 AND die_v1), and the row under a state shows only its own.
     const allSlots = Object.entries(withTakes.animations).filter(([, a]) => a.takeOf);
-    const base = allSlots[0][1].takeOf;
-    const slots = allSlots.filter(([, a]) => a.takeOf === base);
+    /* A STATE WITH ONE TAKE HAS NO ROW — there is nothing to choose between,
+       and the agent leaves single trials around (angry_v1 alone) while it works.
+       So drive the state that actually has versions: the one with the most. */
+    const byState = new Map();
+    for (const e of allSlots) byState.set(e[1].takeOf, [...(byState.get(e[1].takeOf) ?? []), e]);
+    const [base, slots] = [...byState.entries()]
+      .sort((a, b) => b[1].length + (withTakes.animations[b[0]] ? 1 : 0) - (a[1].length + (withTakes.animations[a[0]] ? 1 : 0)))[0];
     // Page inside the in-the-making list: those are the creatures with takes,
     // and ‹ › walks the filter he is in.
     await p.evaluate(() => { location.hash = "#/monsters"; });

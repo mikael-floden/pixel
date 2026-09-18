@@ -1,14 +1,14 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T06:14:17.575Z",
- "head": "860879f23",
+ "generated_at": "2026-09-18T10:58:36.401Z",
+ "head": "0a24e024c",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
   {
-   "sha": "860879f23",
-   "at": "2026-09-18T08:06:06+02:00",
+   "sha": "0a24e024c",
+   "at": "2026-09-18T12:43:49+02:00",
    "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
+   "subject": "live: admin update — feedback/monsters.json",
    "agent": null,
    "dirs": [
     "live"
@@ -16,10 +16,10 @@
    "files": 1
   },
   {
-   "sha": "84e2f9aa1",
-   "at": "2026-09-18T08:01:14+02:00",
+   "sha": "f72df22c6",
+   "at": "2026-09-18T12:41:06+02:00",
    "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
+   "subject": "live: admin update — feedback/monsters.json",
    "agent": null,
    "dirs": [
     "live"
@@ -27,65 +27,10 @@
    "files": 1
   },
   {
-   "sha": "0702cf323",
-   "at": "2026-09-18T08:00:25+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8180f7b8f",
-   "at": "2026-09-18T07:58:49+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "a3ba495d1",
-   "at": "2026-09-18T05:57:54+00:00",
+   "sha": "ceca4fcd1",
+   "at": "2026-09-18T10:36:13+00:00",
    "author": "Claude",
-   "subject": "tiles3: the lid's outline is re-cut periodic, so lids join without a jack",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "226e49bd9",
-   "at": "2026-09-18T07:57:29+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "4f95618c9",
-   "at": "2026-09-18T07:54:21+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8212ed1a0",
-   "at": "2026-09-18T05:48:30+00:00",
-   "author": "Claude",
-   "subject": "coordination: heal flow wired; ack to maps2; claim released",
+   "subject": "coordination: his 09-18 order closed; claim released",
    "agent": "scenery",
    "dirs": [
     "coordination"
@@ -93,384 +38,109 @@
    "files": 1
   },
   {
-   "sha": "aea6885c0",
-   "at": "2026-09-18T05:48:27+00:00",
+   "sha": "b68a11bad",
+   "at": "2026-09-18T10:35:48+00:00",
    "author": "Claude",
-   "subject": "scenery: removed art leaves the world in the same commit — heal.py wired into every delete (agreed with maps2)",
+   "subject": "scenery: ivy_post_005 NOT_LIT_3 south-east — the last facing the wiki could not resolve",
    "agent": "scenery",
    "dirs": [
     "scenery"
    ],
-   "files": 4
+   "files": 14
   },
   {
-   "sha": "59be66245",
-   "at": "2026-09-18T05:46:34+00:00",
+   "sha": "7d06d07b2",
+   "at": "2026-09-18T10:33:55+00:00",
    "author": "Claude",
-   "subject": "coordination: claim — wire heal.py into the delete flow (agreed with maps2)",
-   "agent": "scenery",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "d15286b44",
-   "at": "2026-09-18T05:03:53+00:00",
-   "author": "Claude",
-   "subject": "maps2: the rug push logged with its change page",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "7a815c041",
-   "at": "2026-09-18T05:02:58+00:00",
-   "author": "Claude",
-   "subject": "maps2: a rug never touches a wall — 4 of 8 did; slid clear on the quarter-cell lattice (rugfit --apply, never a rebuild)",
-   "agent": "maps2",
-   "dirs": [
-    "maps2"
-   ],
-   "files": 6
-  },
-  {
-   "sha": "36f9017cd",
-   "at": "2026-09-18T04:58:27+00:00",
-   "author": "Claude",
-   "subject": "board: claim the rug-clear-of-walls unit (rugfit.py, _lay_rug, world.json in place)",
-   "agent": "maps2",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "5dfe509cb",
-   "at": "2026-09-18T04:50:33+00:00",
-   "author": "Claude",
-   "subject": "coordination: facing sweep closed; claim released",
-   "agent": "scenery",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8df51b03a",
-   "at": "2026-09-18T04:50:29+00:00",
-   "author": "Claude",
-   "subject": "scenery: the seven throttled clips get their second pass — all seven still move; the sweep is complete",
+   "subject": "scenery: the new clips get their facings — 147 of 148, every state on every facing but one",
    "agent": "scenery",
    "dirs": [
     "scenery"
    ],
-   "files": 76
+   "files": 5172
   },
   {
-   "sha": "5954a34ee",
-   "at": "2026-09-18T04:50:05+00:00",
+   "sha": "bfffc8703",
+   "at": "2026-09-18T10:20:57+00:00",
    "author": "Claude",
-   "subject": "board: #49 live, #55 pushed; the queue in order — hearth opening, zone ambient, two nav bugs, the bridge streak",
-   "agent": "games",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8b54e8824",
-   "at": "2026-09-18T04:49:41+00:00",
-   "author": "Claude",
-   "subject": "tiles3: the lowered wall's lid grows by a pixel on every side — no seam when darkened",
+   "subject": "lighting: the torch's pool keeps its 0.6-per-level vertical term — the bridge shadow is back",
    "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 4
-  },
-  {
-   "sha": "2e2e354f0",
-   "at": "2026-09-18T04:49:20+00:00",
-   "author": "Claude",
-   "subject": "coordination: sweep closing state; refusals are throttling",
-   "agent": "scenery",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "ba8876c4c",
-   "at": "2026-09-18T04:49:19+00:00",
-   "author": "Claude",
-   "subject": "scenery: a refusal shows its status — the five-retry failures were throttling, not the objects",
-   "agent": "scenery",
-   "dirs": [
-    "scenery"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "6480c502c",
-   "at": "2026-09-18T04:48:16+00:00",
-   "author": "Claude",
-   "subject": "scenery: the 27 refused clips get their second pass — 20 regenerated, 4 more hold still, 7 refused again",
-   "agent": "scenery",
-   "dirs": [
-    "scenery"
-   ],
-   "files": 275
-  },
-  {
-   "sha": "c822ccd14",
-   "at": "2026-09-18T04:46:09+00:00",
-   "author": "Claude",
-   "subject": "coordination: pass 2 shipped; the no-seed finding; 27 refused on retry",
-   "agent": "scenery",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "287a7d1a5",
-   "at": "2026-09-18T04:45:44+00:00",
-   "author": "Claude",
-   "subject": "scenery: the second pass, asked in new words — 10 more hold still, 81 keep moving, 27 refused and owed a retry",
-   "agent": "scenery",
-   "dirs": [
-    "scenery"
-   ],
-   "files": 1341
-  },
-  {
-   "sha": "98c8cdb3e",
-   "at": "2026-09-18T04:45:43+00:00",
-   "author": "Claude",
-   "subject": "scenery: a second pass must ask in new words — the endpoint has no seed and repeats itself",
-   "agent": "scenery",
-   "dirs": [
-    "scenery"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b1c4f3d8d",
-   "at": "2026-09-18T04:29:22+00:00",
-   "author": "Claude",
-   "subject": "lighting: contact AO follows the iso base line, at the piece's own floor, softer",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 6
-  },
-  {
-   "sha": "a7f9d0e0f",
-   "at": "2026-09-18T04:28:21+00:00",
-   "author": "Claude",
-   "subject": "coordination: pass 1 of the facing sweep shipped; pass 2 running",
-   "agent": "scenery",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "f2ad6ccad",
-   "at": "2026-09-18T04:27:54+00:00",
-   "author": "Claude",
-   "subject": "scenery: every animated piece now ships a clip on every facing — 645 facings generated, pass 1 of 2",
-   "agent": "scenery",
-   "dirs": [
-    "scenery"
-   ],
-   "files": 12887
-  },
-  {
-   "sha": "e8a32f4a2",
-   "at": "2026-09-18T04:10:47+00:00",
-   "author": "Claude",
-   "subject": "board: server-driven ambient is live — deploy 4066 through the Cloud Run step",
-   "agent": "games-ambient",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "13131cced",
-   "at": "2026-09-18T04:03:33+00:00",
-   "author": "Claude",
-   "subject": "board: deploy 4065 (games' tiles3 commit) failed on my import, not theirs",
-   "agent": "games-ambient",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "9bf03d3ab",
-   "at": "2026-09-18T04:02:48+00:00",
-   "author": "Claude",
-   "subject": "board: deploy 4064 died on an import the image cannot ship — the fix, the guard, the lessons",
-   "agent": "games-ambient",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "1a4c12b67",
-   "at": "2026-09-18T03:55:56+00:00",
-   "author": "Claude",
-   "subject": "ambient: the matrix moves to shared/ — the image never ships ambient/, and deploy 4064 died on it",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 13
-  },
-  {
-   "sha": "55b589581",
-   "at": "2026-09-18T03:46:51+00:00",
-   "author": "Claude",
-   "subject": "board: #47 pushed; #37 and #45 claimed next",
-   "agent": "games",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "5472afa5f",
-   "at": "2026-09-18T03:44:11+00:00",
-   "author": "Claude",
-   "subject": "tiles3: a lowered wall's top wears the roof's ground, darkened by a Settings dial",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 6
-  },
-  {
-   "sha": "2caf5d3e8",
-   "at": "2026-09-18T03:42:03+00:00",
-   "author": "Claude",
-   "subject": "board: server-driven ambient shipped; games' files returned; the zone table shape for maps2",
-   "agent": "games-ambient",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "45c12c2cb",
-   "at": "2026-09-18T03:38:40+00:00",
-   "author": "Claude",
-   "subject": "ambient: the server switches every effect on per zone — weather is an ordinary effect",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 21
-  },
-  {
-   "sha": "d4fff8501",
-   "at": "2026-09-18T03:26:42+00:00",
-   "author": "Claude",
-   "subject": "board: the field names the shell ate in the previous post",
-   "agent": "games-ambient",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "da99105e1",
-   "at": "2026-09-18T03:26:21+00:00",
-   "author": "Claude",
-   "subject": "board: ten units live or pushed today; the next three claimed",
-   "agent": "games",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "e6e253762",
-   "at": "2026-09-18T03:26:14+00:00",
-   "author": "Claude",
-   "subject": "board: claim server-driven ambient activation, weather as ordinary effects",
-   "agent": "games-ambient",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b162fd96a",
-   "at": "2026-09-18T03:25:42+00:00",
-   "author": "Claude",
-   "subject": "games2: the seam AO reads a lowered wall at its cut — no sliver at every tile edge along its top",
-   "agent": "games2",
    "dirs": [
     "games2"
    ],
    "files": 2
   },
   {
-   "sha": "cbe7672ba",
-   "at": "2026-09-18T03:25:42+00:00",
+   "sha": "38e910167",
+   "at": "2026-09-18T10:19:31+00:00",
    "author": "Claude",
-   "subject": "games2: a scenery texel under a light counts its height more — the tree by the mountain lamp",
-   "agent": "games2",
+   "subject": "maps2: the rebalance push logged with its change page",
+   "agent": "maps2",
    "dirs": [
-    "games2"
+    "maps2"
    ],
-   "files": 3
+   "files": 1
   },
   {
-   "sha": "cadd9c8d6",
-   "at": "2026-09-18T03:24:27+00:00",
+   "sha": "96ada1a8f",
+   "at": "2026-09-18T10:18:41+00:00",
    "author": "Claude",
-   "subject": "games-ui board: release the ambient-zones UI claim",
-   "agent": "games-ui",
+   "subject": "maps2: the monsters rebalanced — the_game's spawn zones derived by the doctrine (habitats, gradient, budget, crowding law, water law, town sanctuary, caves at their own levels)",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 6
+  },
+  {
+   "sha": "6aae07c97",
+   "at": "2026-09-18T10:13:28+00:00",
+   "author": "Claude",
+   "subject": "board: claim the monster rebalance (spawns.py adapter, the_game spawns.json derived)",
+   "agent": "maps2",
    "dirs": [
     "coordination"
    ],
    "files": 1
   },
   {
-   "sha": "76f4b13bb",
-   "at": "2026-09-18T03:24:24+00:00",
+   "sha": "6e4affaab",
+   "at": "2026-09-18T10:00:16+00:00",
    "author": "Claude",
-   "subject": "games2: ambient zones, the UI half — a zone-based/forced switch in Settings, and a layers chooser on the Map tab",
-   "agent": "games2",
+   "subject": "maps2: the north caves push logged with its change page",
+   "agent": "maps2",
    "dirs": [
-    "games2"
+    "maps2"
    ],
-   "files": 4
+   "files": 1
   },
   {
-   "sha": "4ccb36ad7",
-   "at": "2026-09-18T03:13:20+00:00",
-   "author": "Claude",
-   "subject": "games2: a scenery lit copy takes no wall-seam AO — the fireplace \"darkened by the shadows behind it\"",
-   "agent": "games2",
+   "sha": "ec4f9447a",
+   "at": "2026-09-18T09:57:36+00:00",
+   "author": "pixel-scenery-bot",
+   "subject": "scenery: pack 3 placed piece(s) — the packed layer follows the worlds",
+   "agent": "scenery",
    "dirs": [
-    "games2"
+    "scenery"
    ],
-   "files": 3
+   "files": 40
   },
   {
-   "sha": "646044f02",
-   "at": "2026-09-18T03:10:21+00:00",
+   "sha": "0ec22eb0c",
+   "at": "2026-09-18T09:57:07+00:00",
    "author": "Claude",
-   "subject": "maps2: the ambient zones push logged; the contract posted to games and games-ambient; claim released",
+   "subject": "maps2: three bigger, themed caves on the north side — Pit VI (rock), Pit VII (ice and lava), Pit VIII (mud and slime) — dug into the shipped world in place",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 10
+  },
+  {
+   "sha": "a06cf4404",
+   "at": "2026-09-18T09:40:41+00:00",
+   "author": "Claude",
+   "subject": "maps2: the yard refit logged with its change page; the wall gap in the spec",
    "agent": "maps2",
    "dirs": [
     "maps2"
@@ -478,32 +148,285 @@
    "files": 2
   },
   {
-   "sha": "699fea7e8",
-   "at": "2026-09-18T03:09:46+00:00",
+   "sha": "a6cdd84e6",
+   "at": "2026-09-18T09:39:29+00:00",
    "author": "Claude",
-   "subject": "maps2: ambient zones — every ambient effect belongs to a place, with a share (ambient.json, spec, page)",
+   "subject": "maps2: a yard piece keeps a gap from the house wall — 37 stepped back, 3 dropped, re-judged with today's hitboxes (yards --refit)",
    "agent": "maps2",
    "dirs": [
     "maps2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "6620929ad",
+   "at": "2026-09-18T11:33:46+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/objects.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "2f94e93e0",
+   "at": "2026-09-18T11:33:43+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/scenery_hitbox.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "d30462711",
+   "at": "2026-09-18T11:33:01+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/objects.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "13ad44eb6",
+   "at": "2026-09-18T11:32:57+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/scenery_hitbox.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "4600d484a",
+   "at": "2026-09-18T11:32:14+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/scenery_hitbox.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c92e66203",
+   "at": "2026-09-18T11:32:11+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/objects.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "9e8119bbe",
+   "at": "2026-09-18T09:31:40+00:00",
+   "author": "Claude",
+   "subject": "maps2: paving follows the house's own wall seven times in ten (95 cells recoloured in place); the law that everything is a weight",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "90a3f1e74",
+   "at": "2026-09-18T09:31:35+00:00",
+   "author": "Claude",
+   "subject": "board: claim three north caves + the weight law (newcaves.py, world/places/spawns/ambient in place)",
+   "agent": "maps2",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "859a06539",
+   "at": "2026-09-18T11:31:31+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/objects.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "b0f5f3838",
+   "at": "2026-09-18T11:31:21+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/scenery_hitbox.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "b62391fd9",
+   "at": "2026-09-18T11:30:49+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/objects.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "12e4b362b",
+   "at": "2026-09-18T11:30:41+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/scenery_hitbox.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "4828e84a4",
+   "at": "2026-09-18T11:28:31+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ac5f95c64",
+   "at": "2026-09-18T11:28:28+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "273e235ad",
+   "at": "2026-09-18T09:27:46+00:00",
+   "author": "Claude",
+   "subject": "scenery: 242 never-animated states get their clip — south first; the facings follow",
+   "agent": "scenery",
+   "dirs": [
+    "scenery"
+   ],
+   "files": 3987
+  },
+  {
+   "sha": "93e360393",
+   "at": "2026-09-18T11:26:15+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "b76199416",
+   "at": "2026-09-18T11:26:05+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "342a8e9f2",
+   "at": "2026-09-18T09:23:15+00:00",
+   "author": "Claude",
+   "subject": "monsters: angry_v1 requal + the Angry rules — the fifth state exists for all 39 (312/312, 0 fail, $5)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 42
+  },
+  {
+   "sha": "0e839cdea",
+   "at": "2026-09-18T09:20:49+00:00",
+   "author": "Claude",
+   "subject": "monsters: angry_v1 round 1 landings",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 540
+  },
+  {
+   "sha": "1efd9765b",
+   "at": "2026-09-18T09:12:12+00:00",
+   "author": "Claude",
+   "subject": "monsters: angry_v1 checkpoint — 27 of 39 landed mid-round (1275 paths)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 1275
+  },
+  {
+   "sha": "d15aeff24",
+   "at": "2026-09-18T08:51:15+00:00",
+   "author": "Claude",
+   "subject": "monsters: the angry state — the idle recipe with the temper up (maintainer: 'Yes it reads as angry!')",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 100
+  },
+  {
+   "sha": "0494a479d",
+   "at": "2026-09-18T08:37:47+00:00",
+   "author": "Claude",
+   "subject": "games2: the position label is one line — `col, row, level`, no world name",
+   "agent": "games",
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "2c1f08b00",
+   "at": "2026-09-18T08:30:37+00:00",
+   "author": "Claude",
+   "subject": "lighting: the flame is not a searchlight — a torch on the bridge pools on nothing four levels below; the teleport probe lands on a deck",
+   "agent": "games",
+   "dirs": [
+    "games2"
    ],
    "files": 5
   },
   {
-   "sha": "9b5b9dadd",
-   "at": "2026-09-18T03:08:32+00:00",
-   "author": "Claude",
-   "subject": "games2: a deck's side is a face, and under a slab the light stands on there is no line",
-   "agent": "games2",
+   "sha": "9aac21af1",
+   "at": "2026-09-18T10:28:53+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
    "dirs": [
-    "games2"
+    "live"
    ],
-   "files": 3
+   "files": 1
   },
   {
-   "sha": "4ccd8a260",
-   "at": "2026-09-18T03:04:35+00:00",
+   "sha": "b922683ef",
+   "at": "2026-09-18T08:27:26+00:00",
    "author": "Claude",
-   "subject": "games-ui board: claim the ambient-zones UI half; schema to maps2, seam to games-ambient, heads-up to games",
+   "subject": "games-ui board: release",
    "agent": "games-ui",
    "dirs": [
     "coordination"
@@ -511,10 +434,98 @@
    "files": 1
   },
   {
-   "sha": "b4215b916",
-   "at": "2026-09-18T02:58:58+00:00",
+   "sha": "924d5e398",
+   "at": "2026-09-18T08:27:23+00:00",
    "author": "Claude",
-   "subject": "board: claim the ambient zones unit (ambient.py, AMBIENT.md, ambient.json, one run step)",
+   "subject": "games2: no fullscreen request, ever — and the cutout band is on the select screen too",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "fc593552d",
+   "at": "2026-09-18T10:27:15+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "bd4fed093",
+   "at": "2026-09-18T08:25:52+00:00",
+   "author": "Claude",
+   "subject": "games-ui board: claim the fullscreen revert + select-screen band; retract the band-removal request to games",
+   "agent": "games-ui",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "f21c230f0",
+   "at": "2026-09-18T08:24:50+00:00",
+   "author": "Claude",
+   "subject": "games2: a third ambient mode, NONE — every effect off, and it survives a reload",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "88beaced8",
+   "at": "2026-09-18T08:19:04+00:00",
+   "author": "Claude",
+   "subject": "maps2: the yards push logged with its change page",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "4ec01be22",
+   "at": "2026-09-18T08:18:55+00:00",
+   "author": "pixel-scenery-bot",
+   "subject": "scenery: pack 7 placed piece(s) — the packed layer follows the worlds",
+   "agent": "scenery",
+   "dirs": [
+    "scenery"
+   ],
+   "files": 88
+  },
+  {
+   "sha": "867eab8c2",
+   "at": "2026-09-18T08:18:24+00:00",
+   "author": "Claude",
+   "subject": "maps2: somebody lives here — paving aprons, a way to the road, gardens and yards round every house (yards.py, in place)",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 6
+  },
+  {
+   "sha": "4ae08bb4f",
+   "at": "2026-09-18T08:15:02+00:00",
+   "author": "Claude",
+   "subject": "games-ui board: claim the ambient NONE mode",
+   "agent": "games-ui",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6052c39f0",
+   "at": "2026-09-18T08:10:21+00:00",
+   "author": "Claude",
+   "subject": "board: claim the house yards unit (yards.py, world.json in place)",
    "agent": "maps2",
    "dirs": [
     "coordination"
@@ -522,33 +533,22 @@
    "files": 1
   },
   {
-   "sha": "09691d0fd",
-   "at": "2026-09-18T02:57:50+00:00",
+   "sha": "22cb627ca",
+   "at": "2026-09-18T08:08:08+00:00",
    "author": "Claude",
-   "subject": "games2: the wall-foot AO reads both up-screen neighbours; a thin piece is a low blocker",
-   "agent": "games2",
+   "subject": "tiles3: every raised transition tile carries the one-row margin — the lower edges no longer jitter with the camera's phase",
+   "agent": "games",
    "dirs": [
     "games2"
    ],
-   "files": 2
+   "files": 4
   },
   {
-   "sha": "80d79d470",
-   "at": "2026-09-18T02:57:14+00:00",
+   "sha": "7cec92903",
+   "at": "2026-09-18T08:07:06+00:00",
    "author": "Claude",
-   "subject": "board: ambient zones — the catalogue for maps2 and the seam for games",
-   "agent": "games-ambient",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "7e719a400",
-   "at": "2026-09-18T02:48:41+00:00",
-   "author": "Claude",
-   "subject": "board: five units live today; the next seven claimed in his order",
-   "agent": "games",
+   "subject": "games-ui board: release the fullscreen claim; the top-band verdict to games",
+   "agent": "games-ui",
    "dirs": [
     "coordination"
    ],

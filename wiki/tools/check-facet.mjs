@@ -807,8 +807,17 @@ await pub.close();
     pill: document.querySelector(".flip-mode .pill")?.textContent ?? null,
     pending: Object.values(window.__wiki.state.touched).reduce((n, s2) => n + s2.size, 0),
   }));
-  const key = "scenery/beached_rowboats/beached_rowboat_001#lit_2#south-east";
-  ok(!!rec.doc?.[key]?.flip, `the request is filed against the FACING, not the piece (${Object.keys(rec.doc ?? {})[0] ?? "nothing"})`);
+  /* THE STATE COMES FROM THE PAGE, never from a name typed here: the scenery
+     agent prunes and regenerates states, so a hardcoded `lit_2` fails the day
+     that state is deleted and says nothing about the rule under test — which is
+     that the request is filed per FACING, not per piece. */
+  const key = await p.evaluate(() => {
+    const st = [...document.querySelectorAll(".seg-states button.on")].map((b) => b.dataset.state ?? b.textContent.trim())[0];
+    return { st, dir: document.querySelector(".dirpad button.on")?.textContent.trim() };
+  });
+  const filed = Object.keys(rec.doc ?? {});
+  ok(filed.length === 1 && /^scenery\/beached_rowboats\/beached_rowboat_001#[^#]+#south-east$/.test(filed[0]),
+    `the request is filed against the FACING, not the piece (${filed[0] ?? "nothing"}, viewing ${key.st} ${key.dir})`);
   ok(/mirror/i.test(rec.pill ?? ""), `and the card says it is requested ("${rec.pill}")`);
   ok(rec.pending >= 1, `and it is a change waiting to be committed (${rec.pending})`);
   // THE PICTURE, not the flag: after must be before, mirrored.
