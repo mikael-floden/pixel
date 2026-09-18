@@ -1,0 +1,779 @@
+{
+  "id": "cave_troll_boss",
+  "name": "Deepmaul",
+  "lore": "It has never seen the sun and hates it on principle. Anything with a torch gets the club first.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
+    "url": "https://www.pixellab.ai/create-character/47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
+    "prompt": "Gigantic fantasy cave troll shown full body from head to feet, pale hairless grey skin, tiny blind white eyes, an enormous underbite with broken tusks, a hunched back covered in fungus, huge knuckle-dragging arms, and a stalactite club resting on one shoulder, grim menacing expression, dark fantasy, imposing, no cartoon grin, no drop shadow on the ground.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 240,
+    "height": 240
+  },
+  "native_size": {
+    "width": 240,
+    "height": 240
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "cave_troll_boss/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "cave_troll_boss/rotations/south.webp",
+    "west": "cave_troll_boss/rotations/west.webp",
+    "east": "cave_troll_boss/rotations/east.webp",
+    "north": "cave_troll_boss/rotations/north.webp",
+    "south-east": "cave_troll_boss/rotations/south-east.webp",
+    "north-east": "cave_troll_boss/rotations/north-east.webp",
+    "north-west": "cave_troll_boss/rotations/north-west.webp",
+    "south-west": "cave_troll_boss/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "d330b306-b368-45cf-9ada-cc89f84f68bc",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/angry__east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/angry/east/00.webp",
+            "cave_troll_boss/animations/angry/east/01.webp",
+            "cave_troll_boss/animations/angry/east/02.webp",
+            "cave_troll_boss/animations/angry/east/03.webp",
+            "cave_troll_boss/animations/angry/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:19 GMT",
+          "src_frames": 5,
+          "sub": "f311a225-4fe7-4a83-a9d2-872586037b1f"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/angry__north.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/angry/north/00.webp",
+            "cave_troll_boss/animations/angry/north/01.webp",
+            "cave_troll_boss/animations/angry/north/02.webp",
+            "cave_troll_boss/animations/angry/north/03.webp",
+            "cave_troll_boss/animations/angry/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:20 GMT",
+          "src_frames": 5,
+          "sub": "5883d8a3-f2e2-45f0-963b-b7c47cf3b9bb"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/angry__north-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/angry/north-east/00.webp",
+            "cave_troll_boss/animations/angry/north-east/01.webp",
+            "cave_troll_boss/animations/angry/north-east/02.webp",
+            "cave_troll_boss/animations/angry/north-east/03.webp",
+            "cave_troll_boss/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:21 GMT",
+          "src_frames": 5,
+          "sub": "6d44afd8-9f72-497e-a64e-1360fcea0ef0"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/angry__south.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/angry/south/00.webp",
+            "cave_troll_boss/animations/angry/south/01.webp",
+            "cave_troll_boss/animations/angry/south/02.webp",
+            "cave_troll_boss/animations/angry/south/03.webp",
+            "cave_troll_boss/animations/angry/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:22 GMT",
+          "src_frames": 5,
+          "sub": "862ca2cf-72ec-4225-a063-97203ff1bd86"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/angry__south-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/angry/south-east/00.webp",
+            "cave_troll_boss/animations/angry/south-east/01.webp",
+            "cave_troll_boss/animations/angry/south-east/02.webp",
+            "cave_troll_boss/animations/angry/south-east/03.webp",
+            "cave_troll_boss/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:23 GMT",
+          "src_frames": 5,
+          "sub": "566e4b8e-d89c-4d2f-a0d1-2ae9229ef5df"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/angry__south-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/angry/south-west/00.webp",
+            "cave_troll_boss/animations/angry/south-west/01.webp",
+            "cave_troll_boss/animations/angry/south-west/02.webp",
+            "cave_troll_boss/animations/angry/south-west/03.webp",
+            "cave_troll_boss/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/angry__west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/angry/west/00.webp",
+            "cave_troll_boss/animations/angry/west/01.webp",
+            "cave_troll_boss/animations/angry/west/02.webp",
+            "cave_troll_boss/animations/angry/west/03.webp",
+            "cave_troll_boss/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/angry__north-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/angry/north-west/00.webp",
+            "cave_troll_boss/animations/angry/north-west/01.webp",
+            "cave_troll_boss/animations/angry/north-west/02.webp",
+            "cave_troll_boss/animations/angry/north-west/03.webp",
+            "cave_troll_boss/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "375e9d72-aa1f-42e2-af48-1027fd3b85b4",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/idle__east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/idle/east/00.webp",
+            "cave_troll_boss/animations/idle/east/01.webp",
+            "cave_troll_boss/animations/idle/east/02.webp",
+            "cave_troll_boss/animations/idle/east/03.webp",
+            "cave_troll_boss/animations/idle/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:25 GMT",
+          "src_frames": 5,
+          "sub": "b71d4958-2f3b-4f41-8a9b-24b6e75c7bbb"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/idle__north.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/idle/north/00.webp",
+            "cave_troll_boss/animations/idle/north/01.webp",
+            "cave_troll_boss/animations/idle/north/02.webp",
+            "cave_troll_boss/animations/idle/north/03.webp",
+            "cave_troll_boss/animations/idle/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:26 GMT",
+          "src_frames": 5,
+          "sub": "48182371-5505-4f30-8c6f-b83c6389549e"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/idle__north-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/idle/north-east/00.webp",
+            "cave_troll_boss/animations/idle/north-east/01.webp",
+            "cave_troll_boss/animations/idle/north-east/02.webp",
+            "cave_troll_boss/animations/idle/north-east/03.webp",
+            "cave_troll_boss/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:28 GMT",
+          "src_frames": 5,
+          "sub": "62cd4aad-d84a-4a82-a1e6-7e75d492d9ab"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/idle__south.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/idle/south/00.webp",
+            "cave_troll_boss/animations/idle/south/01.webp",
+            "cave_troll_boss/animations/idle/south/02.webp",
+            "cave_troll_boss/animations/idle/south/03.webp",
+            "cave_troll_boss/animations/idle/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:29 GMT",
+          "src_frames": 5,
+          "sub": "e013fa56-c443-45e0-97c8-eaf46a012018"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/idle__south-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/idle/south-east/00.webp",
+            "cave_troll_boss/animations/idle/south-east/01.webp",
+            "cave_troll_boss/animations/idle/south-east/02.webp",
+            "cave_troll_boss/animations/idle/south-east/03.webp",
+            "cave_troll_boss/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:30 GMT",
+          "src_frames": 5,
+          "sub": "77810f9d-1daa-4c39-b14d-276d25537aa2"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/idle__south-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/idle/south-west/00.webp",
+            "cave_troll_boss/animations/idle/south-west/01.webp",
+            "cave_troll_boss/animations/idle/south-west/02.webp",
+            "cave_troll_boss/animations/idle/south-west/03.webp",
+            "cave_troll_boss/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/idle__west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/idle/west/00.webp",
+            "cave_troll_boss/animations/idle/west/01.webp",
+            "cave_troll_boss/animations/idle/west/02.webp",
+            "cave_troll_boss/animations/idle/west/03.webp",
+            "cave_troll_boss/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/idle__north-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/idle/north-west/00.webp",
+            "cave_troll_boss/animations/idle/north-west/01.webp",
+            "cave_troll_boss/animations/idle/north-west/02.webp",
+            "cave_troll_boss/animations/idle/north-west/03.webp",
+            "cave_troll_boss/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "9c1beadc-bdb8-4583-b048-2140fe9c4e3d",
+      "source_name": "custom-Club Smash - Heaves the stalactite club overhead a",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "cave_troll_boss/animations/attack__east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/attack/east/00.webp",
+            "cave_troll_boss/animations/attack/east/01.webp",
+            "cave_troll_boss/animations/attack/east/02.webp",
+            "cave_troll_boss/animations/attack/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:32 GMT",
+          "src_frames": 4,
+          "sub": "d7715db6-5dde-49d1-aede-99972d753db8"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "cave_troll_boss/animations/attack__north.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/attack/north/00.webp",
+            "cave_troll_boss/animations/attack/north/01.webp",
+            "cave_troll_boss/animations/attack/north/02.webp",
+            "cave_troll_boss/animations/attack/north/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:33 GMT",
+          "src_frames": 4,
+          "sub": "42917c46-f40c-4d9d-aaba-4a340698cee6"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "cave_troll_boss/animations/attack__north-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/attack/north-east/00.webp",
+            "cave_troll_boss/animations/attack/north-east/01.webp",
+            "cave_troll_boss/animations/attack/north-east/02.webp",
+            "cave_troll_boss/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:34 GMT",
+          "src_frames": 4,
+          "sub": "ad10b54c-e5d5-4820-a523-b27db36233ee"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "cave_troll_boss/animations/attack__south.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/attack/south/00.webp",
+            "cave_troll_boss/animations/attack/south/01.webp",
+            "cave_troll_boss/animations/attack/south/02.webp",
+            "cave_troll_boss/animations/attack/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:35 GMT",
+          "src_frames": 4,
+          "sub": "7e8d72b4-9008-4c16-9e0c-2db87c31d529"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "cave_troll_boss/animations/attack__south-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/attack/south-east/00.webp",
+            "cave_troll_boss/animations/attack/south-east/01.webp",
+            "cave_troll_boss/animations/attack/south-east/02.webp",
+            "cave_troll_boss/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:37 GMT",
+          "src_frames": 4,
+          "sub": "0ecf20e7-c27a-466b-8216-c011960d27eb"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "cave_troll_boss/animations/attack__south-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/attack/south-west/00.webp",
+            "cave_troll_boss/animations/attack/south-west/01.webp",
+            "cave_troll_boss/animations/attack/south-west/02.webp",
+            "cave_troll_boss/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "cave_troll_boss/animations/attack__west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/attack/west/00.webp",
+            "cave_troll_boss/animations/attack/west/01.webp",
+            "cave_troll_boss/animations/attack/west/02.webp",
+            "cave_troll_boss/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "cave_troll_boss/animations/attack__north-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/attack/north-west/00.webp",
+            "cave_troll_boss/animations/attack/north-west/01.webp",
+            "cave_troll_boss/animations/attack/north-west/02.webp",
+            "cave_troll_boss/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_club_smash_raises_the_stalac": {
+      "group_id": "16d73a6a-eac3-4913-bf84-0394166b5ddc",
+      "source_name": "custom-Club Smash - Raises the stalac",
+      "directions": {
+        "north": {
+          "frames": 5,
+          "strip": "cave_troll_boss/animations/custom_club_smash_raises_the_stalac__north.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/custom_club_smash_raises_the_stalac/north/00.webp",
+            "cave_troll_boss/animations/custom_club_smash_raises_the_stalac/north/01.webp",
+            "cave_troll_boss/animations/custom_club_smash_raises_the_stalac/north/02.webp",
+            "cave_troll_boss/animations/custom_club_smash_raises_the_stalac/north/03.webp",
+            "cave_troll_boss/animations/custom_club_smash_raises_the_stalac/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:39 GMT",
+          "src_frames": 5,
+          "sub": "99d6530c-f8c4-4c84-a2cf-d44d45a34b6d"
+        }
+      }
+    },
+    "die": {
+      "group_id": "657108ba-4bbc-4130-8012-43a51ab6161e",
+      "source_name": "custom-Death - Drops the club, sinks ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/die__east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/die/east/00.webp",
+            "cave_troll_boss/animations/die/east/01.webp",
+            "cave_troll_boss/animations/die/east/02.webp",
+            "cave_troll_boss/animations/die/east/03.webp",
+            "cave_troll_boss/animations/die/east/04.webp",
+            "cave_troll_boss/animations/die/east/05.webp",
+            "cave_troll_boss/animations/die/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:40 GMT",
+          "src_frames": 7,
+          "sub": "db502031-1227-4d41-be1d-5662591b1799"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/die__north.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/die/north/00.webp",
+            "cave_troll_boss/animations/die/north/01.webp",
+            "cave_troll_boss/animations/die/north/02.webp",
+            "cave_troll_boss/animations/die/north/03.webp",
+            "cave_troll_boss/animations/die/north/04.webp",
+            "cave_troll_boss/animations/die/north/05.webp",
+            "cave_troll_boss/animations/die/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:42 GMT",
+          "src_frames": 7,
+          "sub": "fa06b8e0-d6d0-476c-998e-4dc4a98eb87c"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/die__north-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/die/north-east/00.webp",
+            "cave_troll_boss/animations/die/north-east/01.webp",
+            "cave_troll_boss/animations/die/north-east/02.webp",
+            "cave_troll_boss/animations/die/north-east/03.webp",
+            "cave_troll_boss/animations/die/north-east/04.webp",
+            "cave_troll_boss/animations/die/north-east/05.webp",
+            "cave_troll_boss/animations/die/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:43 GMT",
+          "src_frames": 7,
+          "sub": "ebff9a85-b7ba-492a-9f9b-8c474729fae5"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/die__south.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/die/south/00.webp",
+            "cave_troll_boss/animations/die/south/01.webp",
+            "cave_troll_boss/animations/die/south/02.webp",
+            "cave_troll_boss/animations/die/south/03.webp",
+            "cave_troll_boss/animations/die/south/04.webp",
+            "cave_troll_boss/animations/die/south/05.webp",
+            "cave_troll_boss/animations/die/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:45 GMT",
+          "src_frames": 7,
+          "sub": "9fc3e01b-4686-4719-a741-111b8459e7f6"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/die__south-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/die/south-east/00.webp",
+            "cave_troll_boss/animations/die/south-east/01.webp",
+            "cave_troll_boss/animations/die/south-east/02.webp",
+            "cave_troll_boss/animations/die/south-east/03.webp",
+            "cave_troll_boss/animations/die/south-east/04.webp",
+            "cave_troll_boss/animations/die/south-east/05.webp",
+            "cave_troll_boss/animations/die/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:48 GMT",
+          "src_frames": 7,
+          "sub": "c8fa6cae-9d79-4bcb-83d2-299d2ea0172c"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/die__south-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/die/south-west/00.webp",
+            "cave_troll_boss/animations/die/south-west/01.webp",
+            "cave_troll_boss/animations/die/south-west/02.webp",
+            "cave_troll_boss/animations/die/south-west/03.webp",
+            "cave_troll_boss/animations/die/south-west/04.webp",
+            "cave_troll_boss/animations/die/south-west/05.webp",
+            "cave_troll_boss/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/die__west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/die/west/00.webp",
+            "cave_troll_boss/animations/die/west/01.webp",
+            "cave_troll_boss/animations/die/west/02.webp",
+            "cave_troll_boss/animations/die/west/03.webp",
+            "cave_troll_boss/animations/die/west/04.webp",
+            "cave_troll_boss/animations/die/west/05.webp",
+            "cave_troll_boss/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/die__north-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/die/north-west/00.webp",
+            "cave_troll_boss/animations/die/north-west/01.webp",
+            "cave_troll_boss/animations/die/north-west/02.webp",
+            "cave_troll_boss/animations/die/north-west/03.webp",
+            "cave_troll_boss/animations/die/north-west/04.webp",
+            "cave_troll_boss/animations/die/north-west/05.webp",
+            "cave_troll_boss/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_raises_the_stalactite_club_ove": {
+      "group_id": "703ef3ae-649b-4edc-99bc-afbfe59f040b",
+      "source_name": "custom-raises the stalactite club ove",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove__east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/east/00.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/east/01.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/east/02.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/east/03.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/east/04.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/east/05.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:50 GMT",
+          "src_frames": 7,
+          "sub": "427e18bc-e6cb-43de-836b-e57dd3c82d75"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove__north.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north/00.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north/01.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north/02.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north/03.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north/04.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north/05.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:51 GMT",
+          "src_frames": 7,
+          "sub": "3bc2aa06-8840-42b9-ae54-5196eebb4032"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove__north-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-east/00.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-east/01.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-east/02.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-east/03.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-east/04.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-east/05.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:53 GMT",
+          "src_frames": 7,
+          "sub": "f4c41049-e916-41a8-b655-aebd6819dc9f"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove__south.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south/00.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south/01.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south/02.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south/03.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south/04.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south/05.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:55 GMT",
+          "src_frames": 7,
+          "sub": "6bd9af20-8f65-40f4-8440-b3c160b988e9"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove__south-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-east/00.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-east/01.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-east/02.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-east/03.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-east/04.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-east/05.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:56 GMT",
+          "src_frames": 7,
+          "sub": "7909f3f0-6384-41cd-b4f2-ed19f3255f3e"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove__south-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-west/00.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-west/01.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-west/02.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-west/03.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-west/04.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-west/05.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove__west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/west/00.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/west/01.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/west/02.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/west/03.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/west/04.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/west/05.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove__north-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-west/00.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-west/01.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-west/02.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-west/03.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-west/04.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-west/05.webp",
+            "cave_troll_boss/animations/custom_raises_the_stalactite_club_ove/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "15fcc1cc-8d2e-48eb-a839-be4a5730ff18",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/east/00.webp",
+            "cave_troll_boss/animations/walk/east/01.webp",
+            "cave_troll_boss/animations/walk/east/02.webp",
+            "cave_troll_boss/animations/walk/east/03.webp",
+            "cave_troll_boss/animations/walk/east/04.webp",
+            "cave_troll_boss/animations/walk/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:58 GMT",
+          "src_frames": 6,
+          "sub": "150137fa-ace7-47b4-8914-d86400cc1c6f"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__north-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/north-east/00.webp",
+            "cave_troll_boss/animations/walk/north-east/01.webp",
+            "cave_troll_boss/animations/walk/north-east/02.webp",
+            "cave_troll_boss/animations/walk/north-east/03.webp",
+            "cave_troll_boss/animations/walk/north-east/04.webp",
+            "cave_troll_boss/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:02:59 GMT",
+          "src_frames": 6,
+          "sub": "ad3b4c56-c63d-47c4-b033-b280adb9875b"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__south.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/south/00.webp",
+            "cave_troll_boss/animations/walk/south/01.webp",
+            "cave_troll_boss/animations/walk/south/02.webp",
+            "cave_troll_boss/animations/walk/south/03.webp",
+            "cave_troll_boss/animations/walk/south/04.webp",
+            "cave_troll_boss/animations/walk/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:03:01 GMT",
+          "src_frames": 6,
+          "sub": "6a347fae-1fe2-43dc-b30e-8e7ff720bf88"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__south-east.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/south-east/00.webp",
+            "cave_troll_boss/animations/walk/south-east/01.webp",
+            "cave_troll_boss/animations/walk/south-east/02.webp",
+            "cave_troll_boss/animations/walk/south-east/03.webp",
+            "cave_troll_boss/animations/walk/south-east/04.webp",
+            "cave_troll_boss/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 15:03:02 GMT",
+          "src_frames": 6,
+          "sub": "5ba3c119-9a94-44d3-943f-24bd47dcace6"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__south-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/south-west/00.webp",
+            "cave_troll_boss/animations/walk/south-west/01.webp",
+            "cave_troll_boss/animations/walk/south-west/02.webp",
+            "cave_troll_boss/animations/walk/south-west/03.webp",
+            "cave_troll_boss/animations/walk/south-west/04.webp",
+            "cave_troll_boss/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/west/00.webp",
+            "cave_troll_boss/animations/walk/west/01.webp",
+            "cave_troll_boss/animations/walk/west/02.webp",
+            "cave_troll_boss/animations/walk/west/03.webp",
+            "cave_troll_boss/animations/walk/west/04.webp",
+            "cave_troll_boss/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "cave_troll_boss/animations/walk__north-west.webp",
+          "frame_paths": [
+            "cave_troll_boss/animations/walk/north-west/00.webp",
+            "cave_troll_boss/animations/walk/north-west/01.webp",
+            "cave_troll_boss/animations/walk/north-west/02.webp",
+            "cave_troll_boss/animations/walk/north-west/03.webp",
+            "cave_troll_boss/animations/walk/north-west/04.webp",
+            "cave_troll_boss/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-walk loop, full walk cycle in ",
+      "key": "walk",
+      "direction": "south-east",
+      "takes": [
+        "233a16f5-e049-4f4b-a9c1-f72aabc8fa23",
+        "343d4511-9828-491b-91a8-fb187451cb54",
+        "5ba3c119-9a94-44d3-943f-24bd47dcace6"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

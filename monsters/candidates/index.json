@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T15:01:47+00:00",
+  "generated_at": "2026-09-18T15:04:05+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 79,
+  "count": 78,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -2333,134 +2333,6 @@
       "review": "approved",
       "notes": null,
       "generated_at": "2026-09-09T18:50:15+00:00"
-    },
-    {
-      "id": "cave_troll_boss",
-      "name": "Deepmaul",
-      "tier": "boss",
-      "lore": "It has never seen the sun and hates it on principle. Anything with a torch gets the club first.",
-      "biome": [
-        "black_rock",
-        "grey_stone"
-      ],
-      "items": [],
-      "size": [
-        240,
-        240
-      ],
-      "template_id": "mannequin",
-      "scale": "big",
-      "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
-      "version": 2,
-      "sheet": "cave_troll_boss/sheet.webp",
-      "rotations": {
-        "south": "cave_troll_boss/rotations/south.webp",
-        "south-east": "cave_troll_boss/rotations/south-east.webp",
-        "east": "cave_troll_boss/rotations/east.webp",
-        "north-east": "cave_troll_boss/rotations/north-east.webp",
-        "north": "cave_troll_boss/rotations/north.webp",
-        "north-west": "cave_troll_boss/rotations/north-west.webp",
-        "west": "cave_troll_boss/rotations/west.webp",
-        "south-west": "cave_troll_boss/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.575,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.575,
-            "bbox": [
-              19,
-              11,
-              213,
-              227
-            ],
-            "fill": 0.728,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.662,
-            "bbox": [
-              45,
-              11,
-              199,
-              230
-            ],
-            "fill": 0.586,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.659,
-            "bbox": [
-              79,
-              11,
-              170,
-              231
-            ],
-            "fill": 0.348,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.629,
-            "bbox": [
-              42,
-              11,
-              198,
-              227
-            ],
-            "fill": 0.585,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.611,
-            "bbox": [
-              28,
-              15,
-              220,
-              225
-            ],
-            "fill": 0.7,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.609,
-            "bbox": [
-              44,
-              19,
-              206,
-              227
-            ],
-            "fill": 0.585,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.649,
-            "bbox": [
-              70,
-              18,
-              165,
-              231
-            ],
-            "fill": 0.351,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.661,
-            "bbox": [
-              31,
-              15,
-              197,
-              231
-            ],
-            "fill": 0.623,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "approved",
-      "notes": null,
-      "generated_at": "2026-09-09T18:56:12+00:00"
     },
     {
       "id": "fawn_spirit",
