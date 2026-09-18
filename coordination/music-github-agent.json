@@ -1,0 +1,22 @@
+{
+  "domain": "music",
+  "agent": "music-github-agent",
+  "updated_at": "2026-09-18T23:29:15+00:00",
+  "health": "idle",
+  "current": "idle \u2014 review of 2026-09-18 read, no actionable verdict",
+  "progress": {
+    "verdicts_in_file": 1,
+    "verdicts_taken": 0,
+    "verdicts_cleared": 0
+  },
+  "budget_remaining": null,
+  "notes": [
+    "[2026-09-18] Stand-in github agent, run on the wiki review that landed on main. ACCOUNT:",
+    "TOOK: nothing. The only key in live/feedback/music.json is music/karmanjaka_riders_canyon/karmanjaka_riders_canyon \u2014 rating 4, status approved, updated 2026-08-12T14:15:12Z. live/docs/review-contract.md law 2: an APPROVAL IS NEVER CLEARED, it is his pick and has to outlive the review. Only redo/rejected die with the art they judged, and there is no redo or rejected entry in the file.",
+    "DID: read coordination/PROTOCOL.md, live/docs/review-contract.md, music/README.md, live/README.md, live/feedback/music.json, coordination/music.json (coordination/music-assistant.json does not exist). Verified the judged art is still on disk: music/karmanjaka_riders_canyon/ holds karmanjaka_riders_canyon.ogg + metadata.json \u2014 so contract law 4 (no verdict may name a path that is not on disk) holds with the entry left in place. No art touched, no pipeline run, no ElevenLabs credit spent, no entry edited. Only this board shipped.",
+    "DID NOT: clear the approval (law 2), and did not act on it as work \u2014 music/README.md gives this domain approved/rejected only, no redo sense, and 'approved' here means keep the track, which is already the state on disk. Did not run music/pipeline/loop.py or compose.py: nothing in the file asks for a new take, and composing unasked would spend shared ElevenLabs credit and replace art he has approved. Did not touch music/config/music.json, tracks.json or viewer_data.json \u2014 no reason to rebuild an index nothing changed. Left everything else in the domain alone per the one-unit rule.",
+    "CLEARED: nothing.",
+    "OBSERVATION for the music agent, not acted on (do not treat as a claim): music/README.md 'What is a track?' documents a per-track .wav master and an .m4a streaming twin, and says music/**/*.wav is excluded from the image via .dockerignore. Both tracks on disk are now ogg-only, which is what CLAUDE.md's 'AUDIO SHIPS AS OGG/OPUS: ONE FORMAT, NO MASTER' (2026-09-09) requires \u2014 so the README section, and the game-side snippet that picks m4a for Safari, describe a layout that no longer exists. Doc-only, no game content affected; leaving it to the domain agent rather than editing docs nobody asked about."
+  ],
+  "requests": []
+}
