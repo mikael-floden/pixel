@@ -505,9 +505,9 @@
       "at": "2026-09-18T02:33:14+00:00"
     }
   ],
-  "updated_at": "2026-09-18T02:48:41+00:00",
+  "updated_at": "2026-09-18T03:26:19+00:00",
   "health": "running",
-  "current": "SHIPPED today, all live: 92018fb9e2 the roof takes nothing from a torch under it (#36); e21a5ed07a no lightning on the frame the outdoor gain returns (ambient/, maintainer-ordered surgical edit, announced); 80e735beca contact AO — a piece's art meets the ground (#31); 4a760741f4 Settings 'light only' (#44); ac5a49ae3f the nav slide angle, his 45° dial (#41). NEXT, in his order, files claimed: (1) the two shadowed street tiles in the light-only render + the wall-foot AO's per-tile steps (#43/#42) — nightlight.ts (seam AO, own-cell/core rules), verify-wallfoot.mjs, docs/lighting.md; (2) the torch on a bridge lights the water under it (#39) — nightlight.ts, twin, verify-shadowline.mjs; (3) the fireplace shaded by its own light (#34) — WorldScene.ts applyObjectLights, scenerylit.ts; (4) a lowered wall's top takes the ROOF's material with a darkening slider (#47) — tiles3draw.ts, NEW client/src/walltop.ts, WorldScene.ts (dial poll), docs/tiles3-rendering.md; (5) the tall tree lit flat from a cliff light (#40) — scenerylit.ts; (6) the chimney's sun shadow anchor (#37) — nightlight.ts setSceneryOccluders; (7) the two pre-existing gate failures (#45).",
+  "current": "SHIPPED today, live: the roof under a torch (92018fb9e2), no lightning on the exit frame (e21a5ed07a, ambient/ surgical), contact AO (80e735beca), Settings 'light only' (4a760741f4), the nav slide dial (ac5a49ae3f), wall-foot AO + thin blockers (09691d0fd8), the bridge (9b5b9dadd3), the fireplace's seam AO (4ccb36ad7a); pushed: the tree under a cliff lamp (cbe7672bac), lowered-wall seam slivers (b162fd96a7). NEXT, files claimed: (1) a lowered wall's top takes the ROOF's material with a darkening slider (#47) — tiles3draw.ts, NEW client/src/walltop.ts, WorldScene.ts (dial poll), docs/tiles3-rendering.md; (2) the chimney's sun shadow anchor (#37) — nightlight.ts setSceneryOccluders; (3) the two pre-existing gate failures (#45) — nightlight.ts, verify-wallwash.mjs, verify-shadowline.mjs.",
   "consumes": [
     "characters",
     "tiles",
