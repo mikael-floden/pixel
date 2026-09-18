@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-scenery-lighting@1",
-  "updated_at": "2026-09-15T17:35:33.243Z",
+  "updated_at": "2026-09-18T20:11:27.341Z",
   "overrides": {
     "scenery/hearths/hearth_001#lit_1": {
       "color": "#d4412a",
@@ -45,6 +45,14 @@
       },
       "state": "lit_3",
       "updated_at": "2026-09-15T17:35:35.097Z"
+    },
+    "scenery/trees/tree_030#lit_1": {
+      "strength": 1,
+      "was": {
+        "strength": 0.12
+      },
+      "state": "lit_1",
+      "updated_at": "2026-09-18T20:11:10.492Z"
     }
   }
 }
