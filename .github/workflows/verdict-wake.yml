@@ -1,5 +1,11 @@
 name: verdict wake
 
+# The title in the Actions list is the first thing he reads on a phone, so it
+# names the review rather than repeating the workflow's own name.
+run-name: >-
+  verdict wake — ${{ github.event_name == 'workflow_dispatch'
+    && format('{0} (rehearsal)', inputs.domain) || github.event.head_commit.message }}
+
 # A REVIEW IS AN EVENT, NOT A THING THAT WAITS FOR THE NEXT AGENT RUN
 # (maintainer 2026-09-18: "I want to wake up an agent when a wiki review is
 # committed to process it immediately without me having to tell the agent" —
@@ -152,7 +158,18 @@ jobs:
           # ignored, so the app's OAuth token and a plain API key both work.
           claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          claude_args: "--max-turns 150"
+          # ALWAYS THE STRONGEST MODEL (maintainer 2026-09-18: "Can we make sure
+          # to always run Opus 5"). A stand-in session judges art, reads five
+          # documents and touches a domain it has no memory of — the wrong place
+          # to save on reasoning. Pinned explicitly so a change of default never
+          # quietly downgrades what acts on his reviews.
+          claude_args: "--model claude-opus-5 --max-turns 150"
+          # WHAT DID IT DO? The run's Step Summary is the one page he can read
+          # on a phone from the Actions tab, so the report goes there. The
+          # input's warning is about Claude-authored text in a public summary;
+          # the input here is his own verdicts and this repo, and the summary is
+          # private to the repo.
+          display_report: "true"
           prompt: |
             A wiki review just landed on main: the Game Master committed verdicts to
             live/feedback/${{ matrix.domain }}.json. You are standing in for the
