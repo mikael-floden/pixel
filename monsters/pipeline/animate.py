@@ -148,6 +148,33 @@ STATES = {
     # (every clip starts from the idle pose, as his do) and the end is FREE:
     # the game plays a die once into the 1.1 s corpse window and never comes
     # back, so nothing may pin the end.
+    # ANGRY loops between swings (games agent): an idle with the temper up. So it
+    # is the idle recipe he liked — frame 0 the base, end_frame the base, the
+    # loop closes by construction — with his own majority wording ("angry
+    # combat idle, frustrated", 41 of his 50) and a band from his 50 (east):
+    # step p10 0.06 / median 0.33 / p90 0.53, drift median 3.3 px, p90 7.3.
+    "angry": {
+        "action": ("Angry combat idle, frustrated - snarls and shifts its weight, tense "
+                   "and ready to strike, then settles back into the same pose it started in"),
+        "frames": 4,
+        "frame_ladder": [4, 4, 6, 4, 4, 6, 4, 4, 6, 4],
+        "pin_end": True,
+        "keep_first": True,
+        "band": {"step_pass": (0.050, 0.600), "step_warn": (0.030, 0.800),
+                 "drift_pass": 6.0, "drift_warn": 12.0, "loop_max": 0.10,
+                 "flash_record": True},
+        "amplify": [
+            "",
+            ", more agitated: stomps, tosses its head, bigger movement",
+            ", furious: the whole body heaving and jerking with rage, big motion",
+            ", enraged, thrashing violently in place",
+        ],
+        "calm": [
+            "",
+            ", subtle: only the head and the breathing move",
+            ", very calm, barely moving",
+        ],
+    },
     "die": {
         "action": "Death - Faints, collapses to the ground and fades away",
         # SIX frames, not the attack's four (A/B on Warmaul south, 2026-09-12):
