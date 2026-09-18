@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: the record button goes back to his 48x48 plate, LEFT-aligned with the HP/EP card (maintainer 2026-09-18: 'I didn't want you to stretch the button just left align it'). Reverting the 5-slice widening; the slicing is recorded as a rejected approach, not kept as dead code. files: games2/client/src/recbtn.ts, games2/scripts/verify-recbtn.mjs, games2/UI_AGENT.md",
+  "current": "PUSHED 0bf7e3f361 (the record button is his 48x48 plate again, LEFT-aligned with the HP/EP card — the full-width 5-slice is reverted and recorded as a rejected approach; the gate now asserts the SIZE as well as the edge). The freeze frame behind it is unchanged and green. No files in flight.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
