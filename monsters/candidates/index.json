@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T11:39:53+00:00",
+  "generated_at": "2026-09-18T11:46:57+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 102,
+  "count": 108,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -12983,6 +12983,773 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T11:37:23+00:00"
+    },
+    {
+      "id": "burr_kin",
+      "name": "Burrkin",
+      "tier": "cute",
+      "lore": "It catches on everything that passes and keeps a thread of it. None of it is worth anything and it will not put any of it down.",
+      "biome": [
+        "grass"
+      ],
+      "items": [],
+      "size": [
+        40,
+        40
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "3b26b088-c6ca-4d2f-84b3-103db8dbc418",
+      "version": 1,
+      "sheet": "burr_kin/sheet.webp",
+      "rotations": {
+        "south": "burr_kin/rotations/south.webp",
+        "south-east": "burr_kin/rotations/south-east.webp",
+        "east": "burr_kin/rotations/east.webp",
+        "north-east": "burr_kin/rotations/north-east.webp",
+        "north": "burr_kin/rotations/north.webp",
+        "north-west": "burr_kin/rotations/north-west.webp",
+        "west": "burr_kin/rotations/west.webp",
+        "south-west": "burr_kin/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.769,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.805,
+            "bbox": [
+              3,
+              2,
+              38,
+              37
+            ],
+            "fill": 0.766,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.778,
+            "bbox": [
+              5,
+              3,
+              36,
+              38
+            ],
+            "fill": 0.678,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.769,
+            "bbox": [
+              4,
+              2,
+              34,
+              38
+            ],
+            "fill": 0.675,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.788,
+            "bbox": [
+              2,
+              3,
+              38,
+              37
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.804,
+            "bbox": [
+              4,
+              2,
+              35,
+              38
+            ],
+            "fill": 0.698,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.79,
+            "bbox": [
+              3,
+              3,
+              35,
+              37
+            ],
+            "fill": 0.68,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.78,
+            "bbox": [
+              5,
+              2,
+              36,
+              37
+            ],
+            "fill": 0.678,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.799,
+            "bbox": [
+              5,
+              3,
+              36,
+              38
+            ],
+            "fill": 0.678,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T11:44:01+00:00"
+    },
+    {
+      "id": "boot_pair",
+      "name": "Wanderboot",
+      "tier": "cute",
+      "lore": "Somebody walked a very long way in these and does not need them now. The walking is the part that got up.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        56,
+        56
+      ],
+      "template_id": "mannequin",
+      "scale": "small",
+      "pixellab_id": "646be70b-acca-4cc9-abe9-ee0ce97e2ad1",
+      "version": 1,
+      "sheet": "boot_pair/sheet.webp",
+      "rotations": {
+        "south": "boot_pair/rotations/south.webp",
+        "south-east": "boot_pair/rotations/south-east.webp",
+        "east": "boot_pair/rotations/east.webp",
+        "north-east": "boot_pair/rotations/north-east.webp",
+        "north": "boot_pair/rotations/north.webp",
+        "north-west": "boot_pair/rotations/north-west.webp",
+        "west": "boot_pair/rotations/west.webp",
+        "south-west": "boot_pair/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.714,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.788,
+            "bbox": [
+              3,
+              3,
+              52,
+              53
+            ],
+            "fill": 0.781,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.748,
+            "bbox": [
+              6,
+              6,
+              46,
+              50
+            ],
+            "fill": 0.561,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.783,
+            "bbox": [
+              8,
+              4,
+              51,
+              51
+            ],
+            "fill": 0.644,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.714,
+            "bbox": [
+              6,
+              10,
+              49,
+              49
+            ],
+            "fill": 0.535,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.805,
+            "bbox": [
+              8,
+              4,
+              53,
+              52
+            ],
+            "fill": 0.689,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.77,
+            "bbox": [
+              6,
+              7,
+              52,
+              52
+            ],
+            "fill": 0.66,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.761,
+            "bbox": [
+              4,
+              7,
+              48,
+              52
+            ],
+            "fill": 0.631,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.802,
+            "bbox": [
+              4,
+              3,
+              49,
+              52
+            ],
+            "fill": 0.703,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T11:43:21+00:00"
+    },
+    {
+      "id": "rocking_horse",
+      "name": "Woodmare",
+      "tier": "cute",
+      "lore": "Someone rode it before they were tall and remembered it long after. It rocks whether or not the ground is level.",
+      "biome": [
+        "grass",
+        "parquet_floor"
+      ],
+      "items": [],
+      "size": [
+        72,
+        72
+      ],
+      "template_id": "horse",
+      "scale": "standard",
+      "pixellab_id": "be61c4cc-5f75-4bc3-bde8-c1d7a0b574c2",
+      "version": 1,
+      "sheet": "rocking_horse/sheet.webp",
+      "rotations": {
+        "south": "rocking_horse/rotations/south.webp",
+        "south-east": "rocking_horse/rotations/south-east.webp",
+        "east": "rocking_horse/rotations/east.webp",
+        "north-east": "rocking_horse/rotations/north-east.webp",
+        "north": "rocking_horse/rotations/north.webp",
+        "north-west": "rocking_horse/rotations/north-west.webp",
+        "west": "rocking_horse/rotations/west.webp",
+        "south-west": "rocking_horse/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.745,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.745,
+            "bbox": [
+              4,
+              5,
+              68,
+              66
+            ],
+            "fill": 0.753,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.774,
+            "bbox": [
+              11,
+              4,
+              64,
+              66
+            ],
+            "fill": 0.634,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.778,
+            "bbox": [
+              15,
+              6,
+              59,
+              65
+            ],
+            "fill": 0.501,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.783,
+            "bbox": [
+              3,
+              4,
+              65,
+              66
+            ],
+            "fill": 0.742,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.805,
+            "bbox": [
+              15,
+              7,
+              57,
+              66
+            ],
+            "fill": 0.478,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.796,
+            "bbox": [
+              5,
+              4,
+              65,
+              65
+            ],
+            "fill": 0.706,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.761,
+            "bbox": [
+              18,
+              5,
+              51,
+              65
+            ],
+            "fill": 0.382,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.793,
+            "bbox": [
+              7,
+              4,
+              67,
+              66
+            ],
+            "fill": 0.718,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T11:45:04+00:00"
+    },
+    {
+      "id": "hay_binding",
+      "name": "Twinebale",
+      "tier": "mid",
+      "lore": "Cut, bound, and never carried in. The binding is the only thing holding its shape and it does not like being touched.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "33b4eeeb-d9df-40b9-a855-e8d1467e8308",
+      "version": 1,
+      "sheet": "hay_binding/sheet.webp",
+      "rotations": {
+        "south": "hay_binding/rotations/south.webp",
+        "south-east": "hay_binding/rotations/south-east.webp",
+        "east": "hay_binding/rotations/east.webp",
+        "north-east": "hay_binding/rotations/north-east.webp",
+        "north": "hay_binding/rotations/north.webp",
+        "north-west": "hay_binding/rotations/north-west.webp",
+        "west": "hay_binding/rotations/west.webp",
+        "south-west": "hay_binding/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.77,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.77,
+            "bbox": [
+              9,
+              3,
+              87,
+              92
+            ],
+            "fill": 0.753,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.833,
+            "bbox": [
+              15,
+              7,
+              83,
+              94
+            ],
+            "fill": 0.642,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.837,
+            "bbox": [
+              13,
+              4,
+              82,
+              92
+            ],
+            "fill": 0.659,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.842,
+            "bbox": [
+              10,
+              5,
+              86,
+              93
+            ],
+            "fill": 0.726,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.86,
+            "bbox": [
+              12,
+              3,
+              86,
+              93
+            ],
+            "fill": 0.723,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.866,
+            "bbox": [
+              11,
+              5,
+              87,
+              91
+            ],
+            "fill": 0.709,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.857,
+            "bbox": [
+              9,
+              4,
+              82,
+              94
+            ],
+            "fill": 0.713,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.857,
+            "bbox": [
+              10,
+              4,
+              84,
+              94
+            ],
+            "fill": 0.723,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T11:43:32+00:00"
+    },
+    {
+      "id": "yard_cockerel",
+      "name": "Spurcomb",
+      "tier": "mid",
+      "lore": "It ran a yard once and has not stopped running one. Everything that walks past is trespassing.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "59824aec-b63d-46d6-b2c5-bcd6b00de184",
+      "version": 1,
+      "sheet": "yard_cockerel/sheet.webp",
+      "rotations": {
+        "south": "yard_cockerel/rotations/south.webp",
+        "south-east": "yard_cockerel/rotations/south-east.webp",
+        "east": "yard_cockerel/rotations/east.webp",
+        "north-east": "yard_cockerel/rotations/north-east.webp",
+        "north": "yard_cockerel/rotations/north.webp",
+        "north-west": "yard_cockerel/rotations/north-west.webp",
+        "west": "yard_cockerel/rotations/west.webp",
+        "south-west": "yard_cockerel/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.699,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.699,
+            "bbox": [
+              5,
+              5,
+              79,
+              93
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.766,
+            "bbox": [
+              18,
+              6,
+              91,
+              93
+            ],
+            "fill": 0.689,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.749,
+            "bbox": [
+              11,
+              2,
+              75,
+              88
+            ],
+            "fill": 0.597,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.748,
+            "bbox": [
+              23,
+              2,
+              80,
+              87
+            ],
+            "fill": 0.526,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.768,
+            "bbox": [
+              5,
+              3,
+              83,
+              92
+            ],
+            "fill": 0.753,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.769,
+            "bbox": [
+              30,
+              3,
+              68,
+              87
+            ],
+            "fill": 0.346,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.769,
+            "bbox": [
+              14,
+              3,
+              90,
+              91
+            ],
+            "fill": 0.726,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.776,
+            "bbox": [
+              28,
+              6,
+              68,
+              91
+            ],
+            "fill": 0.369,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T11:46:57+00:00"
+    },
+    {
+      "id": "fingerpost",
+      "name": "Fingerpost",
+      "tier": "mid",
+      "lore": "Three names on it, all of them gone. It steps into the road ahead of travellers and waits to be read.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "2b218421-0d38-41c6-9786-62c505e46c18",
+      "version": 1,
+      "sheet": "fingerpost/sheet.webp",
+      "rotations": {
+        "south": "fingerpost/rotations/south.webp",
+        "south-east": "fingerpost/rotations/south-east.webp",
+        "east": "fingerpost/rotations/east.webp",
+        "north-east": "fingerpost/rotations/north-east.webp",
+        "north": "fingerpost/rotations/north.webp",
+        "north-west": "fingerpost/rotations/north-west.webp",
+        "west": "fingerpost/rotations/west.webp",
+        "south-west": "fingerpost/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.676,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.676,
+            "bbox": [
+              18,
+              5,
+              85,
+              98
+            ],
+            "fill": 0.576,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.743,
+            "bbox": [
+              13,
+              5,
+              93,
+              98
+            ],
+            "fill": 0.688,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.746,
+            "bbox": [
+              12,
+              5,
+              91,
+              98
+            ],
+            "fill": 0.679,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.728,
+            "bbox": [
+              10,
+              5,
+              94,
+              98
+            ],
+            "fill": 0.722,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.722,
+            "bbox": [
+              11,
+              5,
+              94,
+              98
+            ],
+            "fill": 0.714,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.765,
+            "bbox": [
+              15,
+              5,
+              91,
+              99
+            ],
+            "fill": 0.661,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.748,
+            "bbox": [
+              14,
+              5,
+              88,
+              99
+            ],
+            "fill": 0.643,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.765,
+            "bbox": [
+              10,
+              5,
+              93,
+              98
+            ],
+            "fill": 0.714,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T11:46:35+00:00"
     },
     {
       "id": "first_mask",

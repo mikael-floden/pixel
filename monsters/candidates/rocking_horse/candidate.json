@@ -1,0 +1,141 @@
+{
+  "id": "rocking_horse",
+  "name": "Woodmare",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "Someone rode it before they were tall and remembered it long after. It rocks whether or not the ground is level.",
+  "biome": [
+    "grass",
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Child's wooden rocking horse with cracked dapple-grey paint flaking off the carved body, a stiff real horsehair mane and tail, a leather bridle gone green with age, curved wooden rockers for feet and a saddle worn pale in the middle",
+  "size": [
+    72,
+    72
+  ],
+  "template_id": "horse",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rocking_horse/rotations/south.webp",
+    "south-east": "rocking_horse/rotations/south-east.webp",
+    "east": "rocking_horse/rotations/east.webp",
+    "north-east": "rocking_horse/rotations/north-east.webp",
+    "north": "rocking_horse/rotations/north.webp",
+    "north-west": "rocking_horse/rotations/north-west.webp",
+    "west": "rocking_horse/rotations/west.webp",
+    "south-west": "rocking_horse/rotations/south-west.webp"
+  },
+  "sheet": "rocking_horse/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "be61c4cc-5f75-4bc3-bde8-c1d7a0b574c2",
+  "seed": 420734653,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:45:04+00:00",
+  "elapsed_s": 285.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.745,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.745,
+        "bbox": [
+          4,
+          5,
+          68,
+          66
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.774,
+        "bbox": [
+          11,
+          4,
+          64,
+          66
+        ],
+        "fill": 0.634,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.778,
+        "bbox": [
+          15,
+          6,
+          59,
+          65
+        ],
+        "fill": 0.501,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.783,
+        "bbox": [
+          3,
+          4,
+          65,
+          66
+        ],
+        "fill": 0.742,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.805,
+        "bbox": [
+          15,
+          7,
+          57,
+          66
+        ],
+        "fill": 0.478,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.796,
+        "bbox": [
+          5,
+          4,
+          65,
+          65
+        ],
+        "fill": 0.706,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.761,
+        "bbox": [
+          18,
+          5,
+          51,
+          65
+        ],
+        "fill": 0.382,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.793,
+        "bbox": [
+          7,
+          4,
+          67,
+          66
+        ],
+        "fill": 0.718,
+        "touches_edge": false
+      }
+    }
+  }
+}

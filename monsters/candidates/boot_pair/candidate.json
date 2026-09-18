@@ -1,0 +1,141 @@
+{
+  "id": "boot_pair",
+  "name": "Wanderboot",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Somebody walked a very long way in these and does not need them now. The walking is the part that got up.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Pair of heavy brown leather travelling boots laced together at the tops and standing upright with nobody in them, worn hobnailed soles, dried mud caked to the ankles, the leather cracked across the toes and polished pale at the heels, the cuffs gaping open on nothing",
+  "size": [
+    56,
+    56
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "boot_pair/rotations/south.webp",
+    "south-east": "boot_pair/rotations/south-east.webp",
+    "east": "boot_pair/rotations/east.webp",
+    "north-east": "boot_pair/rotations/north-east.webp",
+    "north": "boot_pair/rotations/north.webp",
+    "north-west": "boot_pair/rotations/north-west.webp",
+    "west": "boot_pair/rotations/west.webp",
+    "south-west": "boot_pair/rotations/south-west.webp"
+  },
+  "sheet": "boot_pair/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "646be70b-acca-4cc9-abe9-ee0ce97e2ad1",
+  "seed": 111588795,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:43:21+00:00",
+  "elapsed_s": 181.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.714,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.788,
+        "bbox": [
+          3,
+          3,
+          52,
+          53
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.748,
+        "bbox": [
+          6,
+          6,
+          46,
+          50
+        ],
+        "fill": 0.561,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.783,
+        "bbox": [
+          8,
+          4,
+          51,
+          51
+        ],
+        "fill": 0.644,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.714,
+        "bbox": [
+          6,
+          10,
+          49,
+          49
+        ],
+        "fill": 0.535,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.805,
+        "bbox": [
+          8,
+          4,
+          53,
+          52
+        ],
+        "fill": 0.689,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.77,
+        "bbox": [
+          6,
+          7,
+          52,
+          52
+        ],
+        "fill": 0.66,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.761,
+        "bbox": [
+          4,
+          7,
+          48,
+          52
+        ],
+        "fill": 0.631,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.802,
+        "bbox": [
+          4,
+          3,
+          49,
+          52
+        ],
+        "fill": 0.703,
+        "touches_edge": false
+      }
+    }
+  }
+}

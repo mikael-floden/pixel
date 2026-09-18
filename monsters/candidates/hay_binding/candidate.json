@@ -1,0 +1,141 @@
+{
+  "id": "hay_binding",
+  "name": "Twinebale",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Cut, bound, and never carried in. The binding is the only thing holding its shape and it does not like being touched.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Rectangular bale of dry golden hay bound with two tight twists of baling twine cutting deep into its sides, loose straw bristling from every edge, a broken rusted sickle blade still driven into the top of it, chaff and grass seed sifting from underneath",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hay_binding/rotations/south.webp",
+    "south-east": "hay_binding/rotations/south-east.webp",
+    "east": "hay_binding/rotations/east.webp",
+    "north-east": "hay_binding/rotations/north-east.webp",
+    "north": "hay_binding/rotations/north.webp",
+    "north-west": "hay_binding/rotations/north-west.webp",
+    "west": "hay_binding/rotations/west.webp",
+    "south-west": "hay_binding/rotations/south-west.webp"
+  },
+  "sheet": "hay_binding/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "33b4eeeb-d9df-40b9-a855-e8d1467e8308",
+  "seed": 1593484865,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:43:32+00:00",
+  "elapsed_s": 192.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.77,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.77,
+        "bbox": [
+          9,
+          3,
+          87,
+          92
+        ],
+        "fill": 0.753,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.833,
+        "bbox": [
+          15,
+          7,
+          83,
+          94
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.837,
+        "bbox": [
+          13,
+          4,
+          82,
+          92
+        ],
+        "fill": 0.659,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.842,
+        "bbox": [
+          10,
+          5,
+          86,
+          93
+        ],
+        "fill": 0.726,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.86,
+        "bbox": [
+          12,
+          3,
+          86,
+          93
+        ],
+        "fill": 0.723,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.866,
+        "bbox": [
+          11,
+          5,
+          87,
+          91
+        ],
+        "fill": 0.709,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.857,
+        "bbox": [
+          9,
+          4,
+          82,
+          94
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.857,
+        "bbox": [
+          10,
+          4,
+          84,
+          94
+        ],
+        "fill": 0.723,
+        "touches_edge": false
+      }
+    }
+  }
+}

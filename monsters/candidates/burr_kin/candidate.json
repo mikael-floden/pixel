@@ -1,0 +1,140 @@
+{
+  "id": "burr_kin",
+  "name": "Burrkin",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It catches on everything that passes and keeps a thread of it. None of it is worth anything and it will not put any of it down.",
+  "biome": [
+    "grass"
+  ],
+  "items": [],
+  "prompt": "Tight round ball of dried burdock burrs and grass seed heads matted into a body, hooked bristles standing out all over it, two small black eyes deep inside the tangle, short woody root legs underneath, with loose straw and a scrap of torn wool caught in the hooks",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "burr_kin/rotations/south.webp",
+    "south-east": "burr_kin/rotations/south-east.webp",
+    "east": "burr_kin/rotations/east.webp",
+    "north-east": "burr_kin/rotations/north-east.webp",
+    "north": "burr_kin/rotations/north.webp",
+    "north-west": "burr_kin/rotations/north-west.webp",
+    "west": "burr_kin/rotations/west.webp",
+    "south-west": "burr_kin/rotations/south-west.webp"
+  },
+  "sheet": "burr_kin/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3b26b088-c6ca-4d2f-84b3-103db8dbc418",
+  "seed": 978182320,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:44:01+00:00",
+  "elapsed_s": 222.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.769,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.805,
+        "bbox": [
+          3,
+          2,
+          38,
+          37
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.778,
+        "bbox": [
+          5,
+          3,
+          36,
+          38
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.769,
+        "bbox": [
+          4,
+          2,
+          34,
+          38
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.788,
+        "bbox": [
+          2,
+          3,
+          38,
+          37
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.804,
+        "bbox": [
+          4,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.79,
+        "bbox": [
+          3,
+          3,
+          35,
+          37
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.78,
+        "bbox": [
+          5,
+          2,
+          36,
+          37
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.799,
+        "bbox": [
+          5,
+          3,
+          36,
+          38
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      }
+    }
+  }
+}
