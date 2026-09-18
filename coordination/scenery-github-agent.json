@@ -1,13 +1,24 @@
 {
   "domain": "scenery",
   "agent": "scenery-github-agent",
-  "updated_at": "2026-09-18T19:20:00+00:00",
-  "health": "running",
-  "current": "CLAIMED — wiki verdict de5298d44: scenery/trees/tree_024#lit_4#south REJECTED (bare, no note) -> pipeline/prune.py. Files: scenery/trees/tree_024/lit_4/**, scenery/trees/tree_024/scenery.json, scenery/config/retired_states.json, scenery/retired.json, scenery/viewer_data.json, live/feedback/objects.json, coordination/scenery-github-agent.json (+ coordination/scenery.json and maps2/worlds3/the_game/world.json, maps2/reports/the_game.json only if heal_worlds finds a placement — tree_024 has none, --check says 0 dangling of 1486)",
-  "progress": {},
+  "updated_at": "2026-09-18T19:34:00+00:00",
+  "health": "idle",
+  "current": "idle — tree_024 LIT_4 pruned and pushed (129bcb608); no file in scenery/ in flight",
+  "progress": {
+    "verdicts_taken": 1,
+    "states_pruned": 1,
+    "feedback_entries_cleared": 1
+  },
   "budget_remaining": null,
   "notes": [
-    "[2026-09-18T19:20Z] Stand-in github agent for the scenery domain, one unit of work. Both domain boards read first: coordination/scenery.json idle since 2026-09-18T10:36Z, coordination/scenery-assistant.json idle since 2026-09-15T18:19Z, neither names a scenery file in flight and neither has claimed or acked this verdict (it was written at 18:16Z, after both). So it is unclaimed and mine."
+    "[2026-09-18T19:34Z] ACCOUNT — one unit, stand-in github agent for scenery.",
+    "WHAT I READ: his review landed as de5298d44 on live/feedback/objects.json (NOT live/feedback/scenery.json — that file does not exist; 'objects' is the wiki surface's shared data key, older than the scenery rename, scenery/README.md L181). The diff is one entry: scenery/trees/tree_024#lit_4#south went approved(3*) -> REJECTED at 2026-09-18T18:16:12Z, bare, no note, art stamp 0a5642755667fb63. Nothing else in the file moved.",
+    "WHAT I TOOK: scenery/trees/tree_024#lit_4#south (rejected). Unclaimed on both domain boards — coordination/scenery.json idle since 10:36Z, coordination/scenery-assistant.json idle since 09-15, both written BEFORE the verdict and neither naming a scenery file in flight. Claimed on this board and pushed first (154aa4f2b) before touching any art.",
+    "WHY PRUNE AND NOT REDO: a bare rejection is his deliberate fast path (README 'Wiki verdicts are standing orders'), the note is empty so REDO_RE does not fire, and generation is finished — prune.py is the command for a rejected STATE, feedback.py only handles piece-level keys. I verified the verdict is not a ghost before deleting anything: its stamped art 0a5642755667fb63 is byte-for-byte lit_4/animations/wind__strip.webp on disk, so it judges the art that was there. LIT_4 is not the anchor (piece sprite hashes 1ece69fbe155f626), so the piece keeps its card and its other 13 states, every one of them approved and untouched.",
+    "WHAT I DID: `python3 pipeline/prune.py --dry-run` (1 state), then `python3 pipeline/prune.py` — store delete + repo delete of scenery/trees/tree_024/lit_4/**, factory.retire_states so the scheduler never refills it, ghosts.sweep() cleared the verdict in the same run, retired.json (1209 pieces / 1141 states) and viewer_data.json republished, heal_worlds ran maps2's heal on the_game: 0 re-picked, 0 dropped, 1486 untouched (tree_024 is placed nowhere in the world). Gates after the prune: retired.py --check PASS, heal_worlds.py --check PASS (0 dangling of 1486), pack.py --check up to date. Rebased on origin/main (nothing had moved under scenery/ or the feedback file), pushed 129bcb608.",
+    "WHAT I CLEARED: scenery/trees/tree_024#lit_4#south — the one entry, removed by ghosts.sweep() inside the prune run, not afterwards. No other key in objects.json names tree_024/lit_4, entity or facet.",
+    "WHAT I DID NOT DO, AND WHY: (1) no replacement art generated — his 2026-08-17 rule is that a rejection from here on means the thing goes and nothing takes its place; prune records the retirement so the planner cannot quietly revert him. (2) Left every other verdict in the file alone — nothing else changed in his commit, and a sweep of the old queue is not this unit. (3) Did NOT touch the 13 approved verdicts on tree_024: an approval is never cleared (review-contract law 2). (4) Did not hand-edit wiki/site/data.json — it rebuilds from the tree in the deploy image (law 7). (5) heal_worlds.py claimed and released coordination/scenery.json by itself (its agreed flow with maps2, commit 7ed039216 then released to idle in 129bcb608) — that is the tool's own protocol, not me editing the scenery agent's board by hand; it was idle both before and after. (6) Widened the sparse checkout with maps2 + games2 so heal could run at all; no file in either was changed.",
+    "FOR THE DOMAIN AGENT, NOT ACTED ON: tree_024's card now shows 13 states where it showed 14, and LIT_4 was one of only three lit states on that tree (LIT_2, LIT_3 remain). Whether the piece wants a lit slot re-filled is a quota/goal question, i.e. yours, and it is not something a rejection authorises."
   ],
   "requests": []
 }
