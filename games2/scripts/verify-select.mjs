@@ -200,7 +200,18 @@ try {
     const m = await (await fetch("/characters.json")).json();
     return m.characters[idx].uid;
   });
+  // FULLSCREEN IS FOR THE INSTALLED APP ONLY (maintainer 2026-09-18: "I of
+  // course don't want fullscreen when the player uses the web browser"): a
+  // browser tab's Enter World must not ask for it. Spied, not observed — a
+  // headless tab would refuse anyway, which is not the same as not asking.
+  await page.evaluate(() => {
+    window.__fsCalls = [];
+    Element.prototype.requestFullscreen = function (o) { window.__fsCalls.push(o ?? null); return Promise.resolve(); };
+  });
   await page.click("#ml-enter");
+  const tabCalls = await page.evaluate(() => window.__fsCalls.length);
+  if (tabCalls !== 0) throw new Error(`a browser tab asked for fullscreen ${tabCalls}x on Enter World`);
+  console.log("FULLSCREEN not requested in a browser tab");
 
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, { timeout: 20000 });
   await page.waitForTimeout(1500);
@@ -210,6 +221,29 @@ try {
   console.log("RESULT " + JSON.stringify({ count, chosenUid, myChar }));
   if (myChar !== chosenUid) throw new Error(`chosen ${chosenUid} but joined as ${myChar}`);
   console.log("SELECT OK");
+
+  // …and the INSTALLED app asks for it on the same tap (select.ts
+  // enterFullscreenIfInstalled): display-mode is emulated by patching
+  // matchMedia before the page's scripts run, and the request is spied.
+  {
+    const ictx = await browser.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true });
+    const ipage = await ictx.newPage();
+    await ipage.addInitScript(() => {
+      const real = window.matchMedia.bind(window);
+      window.matchMedia = (q) => (/display-mode:\s*(standalone|fullscreen)/.test(q) ? { matches: true, media: q, addEventListener() {}, removeEventListener() {}, addListener() {}, removeListener() {} } : real(q));
+      window.__fsCalls = [];
+      // the PROTOTYPE: at init-script time document.documentElement is still null
+      Element.prototype.requestFullscreen = function (o) { window.__fsCalls.push(o ?? null); return Promise.resolve(); };
+    });
+    await ipage.goto("http://localhost:5173/", { waitUntil: "load" });
+    await ipage.waitForFunction(() => window.__mlSelect && window.__mlSelect.count() >= 1, { timeout: 20000 });
+    await ipage.click("#ml-enter");
+    const calls = await ipage.evaluate(() => window.__fsCalls);
+    if (calls.length !== 1 || calls[0]?.navigationUI !== "hide")
+      throw new Error(`installed app: expected one requestFullscreen({navigationUI:"hide"}) on Enter World, got ${JSON.stringify(calls)}`);
+    console.log("FULLSCREEN requested once by the installed app (navigationUI: hide)");
+    await ictx.close();
+  }
 } finally {
   await browser.close();
 }

@@ -267,6 +267,23 @@ from the games agent), #18 (title/landing screen).
   His verdict on the whole portrait layout — top-right stack, corner ghost,
   three-row rail — on seeing it (2026-09-18): "Wow! This is perfect!" Do not
   re-litigate any of the three without his word.
+- **THE INSTALLED APP ASKS FOR FULLSCREEN ON THE ENTER WORLD TAP — never a
+  browser tab** (`select.ts enterFullscreenIfInstalled`, maintainer 2026-09-18:
+  "sometimes when I tab into the game I can see the graphics all the way up to
+  the edge of my phone. But when I restart the game the top is black"). The
+  manifest already runs the installed app `display: fullscreen`; what flips is
+  the CAMERA CUTOUT — his shell letterboxes it on a cold start and goes
+  edge-to-edge after a task-switch, and no web API asks for edge-to-edge
+  directly. Re-entering fullscreen from a user gesture makes the shell
+  re-evaluate the cutout layout the way the task-switch does; the answer is
+  never depended on. Gated on `isInstalled()` (display-mode standalone /
+  fullscreen / minimal-ui). The top edge needs no code for the flip: chips,
+  corner buttons and the pill stack ride `--ml-safe-top` = live
+  `env(safe-area-inset-top)`. NOTE the in-game black band `#ml-safebar`
+  (index.html, games agent, 2026-09-13) still paints the inset black in the
+  world — with it, edge-to-edge shows only on the title screen; removing it is
+  the games agent's call on his verdict (posted). `verify-select` asserts the
+  call happens under an emulated installed mode and not in a tab.
 - **AMBIENT EFFECTS: A ZONE-BASED / FORCED SWITCH, NOT AN AUTO ROW** (maintainer
   2026-09-18, the ambient-zones plan: effects become tied to zones maps2
   places, decided by the server per zone; "the settings should instead of

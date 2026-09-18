@@ -82,6 +82,43 @@ const MAX_PX = PLATE.clearR - PLATE.clearL - PLATE.air * 2;
 export const TAGLINE_MIN_FIT = 0.94;
 
 /** The line for THIS load: random, but never a repeat of the last one. */
+/** Running as an INSTALLED app (home-screen WebAPK / iOS web app), by the
+ *  manifest's display mode — never a browser tab. */
+function isInstalled(): boolean {
+  return ["standalone", "fullscreen", "minimal-ui"].some(
+    (m) => window.matchMedia?.(`(display-mode: ${m})`).matches,
+  );
+}
+
+/** THE CUTOUT RE-LAYOUT (maintainer 2026-09-18: "sometimes when I tab into
+ *  the game I can see the graphics all the way up to the edge of my phone. But
+ *  when I restart the game the top is black … can we always get the entire
+ *  screen?"). The manifest already runs the installed app fullscreen; what
+ *  differs between his two launches is the CAMERA CUTOUT: his shell letterboxes
+ *  it on a cold start and hands the app the whole screen after a task-switch,
+ *  and no web API asks for edge-to-edge directly. Re-entering fullscreen from a
+ *  user gesture makes the shell re-evaluate the window's cutout layout — the
+ *  same thing the task-switch does — so the Enter World tap asks for it.
+ *  INSTALLED ONLY: he does not want fullscreen in a browser tab. Everything
+ *  along the top edge (stat chips, these corner buttons, the pill stack)
+ *  already rides --ml-safe-top = env(safe-area-inset-top), which is live CSS,
+ *  so the margin follows the inset the moment it changes (verify-safearea
+ *  drives the flip). A refusal (no gesture, unsupported, already fullscreen)
+ *  is silent — the game must never depend on the answer. */
+function enterFullscreenIfInstalled(): void {
+  if (!isInstalled() || document.fullscreenElement) return;
+  const el = document.documentElement as HTMLElement & {
+    requestFullscreen?: (o?: { navigationUI?: string }) => Promise<void> | void;
+    webkitRequestFullscreen?: () => void;
+  };
+  try {
+    const p = el.requestFullscreen ? el.requestFullscreen({ navigationUI: "hide" }) : el.webkitRequestFullscreen?.();
+    (p as Promise<void> | undefined)?.catch?.(() => {});
+  } catch {
+    /* refused — fine */
+  }
+}
+
 export function pickTagline(pool: readonly string[] = TAGLINES): string {
   let last = "";
   try {
@@ -374,6 +411,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     select(selected);
 
     function commit() {
+      enterFullscreenIfInstalled();
       const name = (nameInput.value.trim() || NAMES[selected % NAMES.length]).slice(0, 24);
       // NOT gated on showWorlds: with exactly one world the dropdown is
       // hidden but that world is still the one to join, so read the list
@@ -425,9 +463,7 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // through withV() (cache stamping), which a template string cannot call.
     (installBtn.querySelector(".ml-cicon-img") as HTMLImageElement).src = withV("/ui2/icon-install.webp");
     pressFx(installBtn);
-    const installed = ["standalone", "fullscreen", "minimal-ui"].some(
-      (m) => window.matchMedia?.(`(display-mode: ${m})`).matches,
-    );
+    const installed = isInstalled();
     const refreshInstall = () => {
       installBtn.hidden = installed || !(window as any).__mlInstall;
     };
