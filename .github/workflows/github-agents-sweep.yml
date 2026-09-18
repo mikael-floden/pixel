@@ -49,7 +49,7 @@ jobs:
         run: |
           set -u
           python3 - >> "$GITHUB_OUTPUT" <<'PY'
-          import json, subprocess, datetime
+          import json, subprocess, datetime, sys
 
           # The feedback FILE is not the directory: objects.json is scenery's.
           DOMAIN = {"objects": "scenery", "characters": "characters2", "monsters": "monsters",
@@ -96,7 +96,11 @@ jobs:
               said = board_said(domain)
               if said is None or review > said:
                   due.append(domain)
-                  print(f"# {domain}: review {review.isoformat()} is newer than {said}", flush=True)
+              # The reasoning goes to STDERR: this block's stdout IS
+              # $GITHUB_OUTPUT, and a line that is not `key=value` fails the step
+              # ("Invalid format '# monsters: …'" — measured, first run).
+              print(f"{domain}: review {review.isoformat()}, board {said}"
+                    f" -> {'DUE' if domain in due else 'up to date'}", file=sys.stderr)
           print(f"domains={json.dumps(due)}")
           PY
           echo "--- due: $(grep '^domains=' "$GITHUB_OUTPUT" | tail -1)"
