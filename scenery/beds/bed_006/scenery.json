@@ -78,7 +78,7 @@
       "animations": {
         "motion": {
           "group_id": "a9d01dfb-88aa-493c-90df-3a317e1206c1",
-          "description": "This is the same picture in every frame. ONLY the very tips of the two small lamp flames on the bedposts shift, by one or two pixels. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the very tips of the two small lamp flames on the bedposts shift, by one or two pixels. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -93,32 +93,32 @@
                 "beds/bed_006/lit_3/animations/motion/south/03.webp",
                 "beds/bed_006/lit_3/animations/motion/south/04.webp"
               ],
-              "strip": "beds/bed_006/lit_3/animations/motion__south.b8bc8bff.webp",
+              "strip": "beds/bed_006/lit_3/animations/motion__south.0e27ebd3.webp",
               "light_frames": [
                 {
-                  "intensity": 1.013,
+                  "intensity": 0.975,
                   "dx": 0.7,
                   "dy": -1.8
                 },
                 {
-                  "intensity": 1.009,
-                  "dx": 0.8,
+                  "intensity": 1.004,
+                  "dx": 0.0,
+                  "dy": -1.9
+                },
+                {
+                  "intensity": 1.005,
+                  "dx": 0.1,
+                  "dy": -1.9
+                },
+                {
+                  "intensity": 1.008,
+                  "dx": 0.0,
+                  "dy": -1.9
+                },
+                {
+                  "intensity": 1.008,
+                  "dx": 0.0,
                   "dy": -1.8
-                },
-                {
-                  "intensity": 0.991,
-                  "dx": 0.9,
-                  "dy": -1.4
-                },
-                {
-                  "intensity": 0.988,
-                  "dx": 0.8,
-                  "dy": -1.1
-                },
-                {
-                  "intensity": 0.999,
-                  "dx": 0.6,
-                  "dy": -1.3
                 }
               ]
             },
@@ -131,32 +131,32 @@
                 "beds/bed_006/lit_3/animations/motion/south-east/03.webp",
                 "beds/bed_006/lit_3/animations/motion/south-east/04.webp"
               ],
-              "strip": "beds/bed_006/lit_3/animations/motion__south-east.080106c8.webp",
+              "strip": "beds/bed_006/lit_3/animations/motion__south-east.d4668662.webp",
               "light_frames": [
                 {
-                  "intensity": 0.648,
+                  "intensity": 0.834,
                   "dx": -21.0,
                   "dy": 1.7
                 },
                 {
-                  "intensity": 0.929,
-                  "dx": -8.1,
-                  "dy": 10.4
+                  "intensity": 0.915,
+                  "dx": -24.6,
+                  "dy": 1.5
                 },
                 {
-                  "intensity": 0.923,
-                  "dx": -7.6,
-                  "dy": 10.5
+                  "intensity": 0.942,
+                  "dx": -25.1,
+                  "dy": 1.2
                 },
                 {
-                  "intensity": 0.909,
-                  "dx": -7.0,
-                  "dy": 10.8
+                  "intensity": 1.12,
+                  "dx": -27.5,
+                  "dy": -0.2
                 },
                 {
-                  "intensity": 1.5,
-                  "dx": -12.0,
-                  "dy": 7.8
+                  "intensity": 1.19,
+                  "dx": -28.7,
+                  "dy": -0.7
                 }
               ]
             },
@@ -169,37 +169,37 @@
                 "beds/bed_006/lit_3/animations/motion/south-west/03.webp",
                 "beds/bed_006/lit_3/animations/motion/south-west/04.webp"
               ],
-              "strip": "beds/bed_006/lit_3/animations/motion__south-west.378605dc.webp",
+              "strip": "beds/bed_006/lit_3/animations/motion__south-west.756cfcae.webp",
               "light_frames": [
                 {
-                  "intensity": 0.563,
+                  "intensity": 0.5,
                   "dx": 22.8,
                   "dy": 2.5
                 },
                 {
-                  "intensity": 0.646,
-                  "dx": 22.8,
-                  "dy": 2.0
+                  "intensity": 1.21,
+                  "dx": 10.5,
+                  "dy": 7.8
                 },
                 {
-                  "intensity": 1.5,
-                  "dx": 11.5,
-                  "dy": -0.8
+                  "intensity": 1.142,
+                  "dx": 4.2,
+                  "dy": 9.9
                 },
                 {
-                  "intensity": 1.432,
-                  "dx": 11.8,
-                  "dy": -0.8
+                  "intensity": 0.987,
+                  "dx": 3.0,
+                  "dy": 12.5
                 },
                 {
-                  "intensity": 0.815,
-                  "dx": 14.2,
-                  "dy": -6.5
+                  "intensity": 1.231,
+                  "dx": 8.5,
+                  "dy": 9.3
                 }
               ]
             }
           },
-          "generated_at": "2026-09-18T02:08:44+00:00",
+          "generated_at": "2026-09-18T04:38:24+00:00",
           "brief": "H14",
           "light_frames": [
             {
@@ -235,10 +235,10 @@
             "beds/bed_006/lit_3/animations/motion/south/03.webp",
             "beds/bed_006/lit_3/animations/motion/south/04.webp"
           ],
-          "strip": "beds/bed_006/lit_3/animations/motion__south.b8bc8bff.webp",
-          "review": "ANIMATION_PROBABLY_BAD",
+          "strip": "beds/bed_006/lit_3/animations/motion__south.0e27ebd3.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.1888
+            "base_outline": 0.0104
           }
         }
       }

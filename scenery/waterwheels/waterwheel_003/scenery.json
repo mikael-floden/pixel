@@ -66,7 +66,7 @@
       "animations": {
         "motion": {
           "group_id": "b6f54f41-9877-464c-9f22-ad213c55c929",
-          "description": "This is the same picture in every frame. only, turning slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. only, turning slowly. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -81,7 +81,7 @@
                 "waterwheels/waterwheel_003/animations/motion/south/03.webp",
                 "waterwheels/waterwheel_003/animations/motion/south/04.webp"
               ],
-              "strip": "waterwheels/waterwheel_003/animations/motion__south.2ebc5a2f.webp"
+              "strip": "waterwheels/waterwheel_003/animations/motion__south.0ee4b53c.webp"
             },
             "south-east": {
               "frames": 5,
@@ -106,7 +106,7 @@
               "strip": "waterwheels/waterwheel_003/animations/motion__south-west.1553ddd3.webp"
             }
           },
-          "generated_at": "2026-09-18T04:07:43+00:00",
+          "generated_at": "2026-09-18T04:44:09+00:00",
           "brief": "W1",
           "frame_paths": [
             "waterwheels/waterwheel_003/animations/motion/south/00.webp",
@@ -115,7 +115,7 @@
             "waterwheels/waterwheel_003/animations/motion/south/03.webp",
             "waterwheels/waterwheel_003/animations/motion/south/04.webp"
           ],
-          "strip": "waterwheels/waterwheel_003/animations/motion__south.2ebc5a2f.webp",
+          "strip": "waterwheels/waterwheel_003/animations/motion__south.0ee4b53c.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.1462

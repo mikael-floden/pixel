@@ -245,7 +245,7 @@
       "animations": {
         "motion": {
           "group_id": "d3c347d3-74bb-4536-bef1-f0b365193fda",
-          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern hung at the end of the fence shifts, by one or two pixels. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the very tip of the small flame in the lantern hung at the end of the fence shifts, by one or two pixels. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -260,32 +260,32 @@
                 "fences/fence_006/lit_3/animations/motion/south/03.webp",
                 "fences/fence_006/lit_3/animations/motion/south/04.webp"
               ],
-              "strip": "fences/fence_006/lit_3/animations/motion__south.f98feaa2.webp",
+              "strip": "fences/fence_006/lit_3/animations/motion__south.b750f433.webp",
               "light_frames": [
                 {
-                  "intensity": 0.788,
+                  "intensity": 0.786,
                   "dx": -40.0,
                   "dy": 11.8
                 },
                 {
-                  "intensity": 0.955,
+                  "intensity": 1.272,
+                  "dx": -39.9,
+                  "dy": 12.3
+                },
+                {
+                  "intensity": 1.084,
                   "dx": -40.2,
-                  "dy": 12.5
+                  "dy": 12.4
                 },
                 {
-                  "intensity": 1.03,
-                  "dx": -40.0,
-                  "dy": 12.6
+                  "intensity": 1.057,
+                  "dx": -39.9,
+                  "dy": 12.2
                 },
                 {
-                  "intensity": 1.117,
-                  "dx": -40.1,
-                  "dy": 12.5
-                },
-                {
-                  "intensity": 1.11,
-                  "dx": -40.1,
-                  "dy": 12.5
+                  "intensity": 0.8,
+                  "dx": -40.3,
+                  "dy": 11.7
                 }
               ]
             },
@@ -366,7 +366,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T02:37:26+00:00",
+          "generated_at": "2026-09-18T04:39:40+00:00",
           "brief": "H11",
           "light_frames": [
             {
@@ -402,7 +402,7 @@
             "fences/fence_006/lit_3/animations/motion/south/03.webp",
             "fences/fence_006/lit_3/animations/motion/south/04.webp"
           ],
-          "strip": "fences/fence_006/lit_3/animations/motion__south.f98feaa2.webp",
+          "strip": "fences/fence_006/lit_3/animations/motion__south.b750f433.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.1681

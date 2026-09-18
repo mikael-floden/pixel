@@ -413,7 +413,7 @@
       "animations": {
         "motion": {
           "group_id": "8ede2e6e-7210-4b2e-becd-5ce48dff5ce3",
-          "description": "This is the same picture in every frame. only, turning very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. only, turning very slowly. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -428,7 +428,7 @@
                 "rusted_machines/rusted_machine_001/animations/motion/south/03.webp",
                 "rusted_machines/rusted_machine_001/animations/motion/south/04.webp"
               ],
-              "strip": "rusted_machines/rusted_machine_001/animations/motion__south.1f0a6e9c.webp"
+              "strip": "rusted_machines/rusted_machine_001/animations/motion__south.3ffa4643.webp"
             },
             "south-east": {
               "frames": 5,
@@ -453,7 +453,7 @@
               "strip": "rusted_machines/rusted_machine_001/animations/motion__south-west.0fdf6c56.webp"
             }
           },
-          "generated_at": "2026-09-18T03:28:53+00:00",
+          "generated_at": "2026-09-18T04:41:59+00:00",
           "brief": "M2",
           "frame_paths": [
             "rusted_machines/rusted_machine_001/animations/motion/south/00.webp",
@@ -462,7 +462,7 @@
             "rusted_machines/rusted_machine_001/animations/motion/south/03.webp",
             "rusted_machines/rusted_machine_001/animations/motion/south/04.webp"
           ],
-          "strip": "rusted_machines/rusted_machine_001/animations/motion__south.1f0a6e9c.webp",
+          "strip": "rusted_machines/rusted_machine_001/animations/motion__south.3ffa4643.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.155

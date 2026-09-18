@@ -67,7 +67,7 @@
       "animations": {
         "motion": {
           "group_id": "5a4616c0-070b-41e8-85c2-0f97e75a6cca",
-          "description": "This is the same picture in every frame. ONLY the hanging bench moves, swinging. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the hanging bench moves, swinging. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -82,7 +82,7 @@
                 "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/03.webp",
                 "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/04.webp"
               ],
-              "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__south.83cfcf84.webp"
+              "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__south.e19a180e.webp"
             },
             "south-east": {
               "frames": 5,
@@ -107,7 +107,7 @@
               "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__south-west.962140a0.webp"
             }
           },
-          "generated_at": "2026-09-18T03:24:55+00:00",
+          "generated_at": "2026-09-18T04:41:54+00:00",
           "brief": "X21",
           "frame_paths": [
             "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/00.webp",
@@ -116,10 +116,10 @@
             "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/03.webp",
             "rope_swings/rope_swing_002/not_lit_4/animations/motion/south/04.webp"
           ],
-          "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__south.83cfcf84.webp",
+          "strip": "rope_swings/rope_swing_002/not_lit_4/animations/motion__south.e19a180e.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1133
+            "base_outline": 0.3067
           }
         }
       }
@@ -140,7 +140,7 @@
       "animations": {
         "motion": {
           "group_id": "1d566457-e58c-4671-a280-686f6f8c0f31",
-          "description": "This is the same picture in every frame. ONLY the hanging bench swings a little to one side and back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the hanging bench swings a little to one side and back. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -180,7 +180,7 @@
               "strip": "rope_swings/rope_swing_002/not_lit_5/animations/motion__south-west.4d580dc0.webp"
             }
           },
-          "generated_at": "2026-09-18T03:25:54+00:00",
+          "generated_at": "2026-09-18T04:41:55+00:00",
           "brief": "Y22",
           "frame_paths": [
             "rope_swings/rope_swing_002/not_lit_5/animations/motion/south/00.webp",

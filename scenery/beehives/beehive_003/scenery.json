@@ -55,7 +55,7 @@
       "animations": {
         "motion": {
           "group_id": "6554a0ac-0fb7-483b-baad-b072775d623b",
-          "description": "This is the same picture in every frame. ONLY two or three tiny dark specks move, drifting slowly in the air just outside the small opening at the base. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY two or three tiny dark specks move, drifting slowly in the air just outside the small opening at the base. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -108,32 +108,32 @@
                 "beehives/beehive_003/lit_1/animations/motion/south-east/03.webp",
                 "beehives/beehive_003/lit_1/animations/motion/south-east/04.webp"
               ],
-              "strip": "beehives/beehive_003/lit_1/animations/motion__south-east.958d77bd.webp",
+              "strip": "beehives/beehive_003/lit_1/animations/motion__south-east.32ad7b6a.webp",
               "light_frames": [
                 {
-                  "intensity": 0.993,
+                  "intensity": 1.004,
                   "dx": -0.5,
                   "dy": -6.5
                 },
                 {
-                  "intensity": 0.978,
-                  "dx": -0.5,
-                  "dy": -7.6
+                  "intensity": 0.984,
+                  "dx": -0.4,
+                  "dy": -7.4
                 },
                 {
-                  "intensity": 0.988,
-                  "dx": -0.3,
+                  "intensity": 1.022,
+                  "dx": -0.4,
                   "dy": -8.5
                 },
                 {
-                  "intensity": 1.012,
-                  "dx": -0.7,
-                  "dy": -10.0
+                  "intensity": 0.992,
+                  "dx": -0.4,
+                  "dy": -8.7
                 },
                 {
-                  "intensity": 1.029,
-                  "dx": -0.6,
-                  "dy": -8.8
+                  "intensity": 0.997,
+                  "dx": -0.5,
+                  "dy": -7.5
                 }
               ]
             },
@@ -146,37 +146,37 @@
                 "beehives/beehive_003/lit_1/animations/motion/south-west/03.webp",
                 "beehives/beehive_003/lit_1/animations/motion/south-west/04.webp"
               ],
-              "strip": "beehives/beehive_003/lit_1/animations/motion__south-west.30cdac51.webp",
+              "strip": "beehives/beehive_003/lit_1/animations/motion__south-west.eed948a1.webp",
               "light_frames": [
                 {
-                  "intensity": 0.928,
+                  "intensity": 1.0,
                   "dx": -0.4,
                   "dy": -6.5
                 },
                 {
-                  "intensity": 1.018,
+                  "intensity": 0.997,
+                  "dx": -0.4,
+                  "dy": -6.6
+                },
+                {
+                  "intensity": 0.999,
                   "dx": -0.5,
-                  "dy": -7.2
+                  "dy": -7.6
                 },
                 {
-                  "intensity": 1.036,
-                  "dx": -0.7,
-                  "dy": -8.0
+                  "intensity": 1.0,
+                  "dx": -0.5,
+                  "dy": -8.6
                 },
                 {
-                  "intensity": 1.015,
-                  "dx": 0.2,
-                  "dy": -7.5
-                },
-                {
-                  "intensity": 1.003,
-                  "dx": 0.5,
-                  "dy": -7.3
+                  "intensity": 1.004,
+                  "dx": -0.5,
+                  "dy": -8.6
                 }
               ]
             }
           },
-          "generated_at": "2026-09-18T02:09:36+00:00",
+          "generated_at": "2026-09-18T04:38:22+00:00",
           "brief": "T6",
           "light_frames": [
             {
@@ -215,7 +215,7 @@
           "strip": "beehives/beehive_003/lit_1/animations/motion__south.f63bbcdf.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.641
+            "base_outline": 0.5167
           }
         }
       }

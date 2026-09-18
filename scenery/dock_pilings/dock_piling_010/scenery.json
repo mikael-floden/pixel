@@ -65,7 +65,7 @@
       "animations": {
         "motion": {
           "group_id": "0efab003-1eee-420d-bd44-f7404451825c",
-          "description": "This is the same picture in every frame. ONLY the green light at the foot of the posts brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the green light at the foot of the posts brightens a little and returns. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -80,32 +80,32 @@
                 "dock_pilings/dock_piling_010/lit_4/animations/motion/south/03.webp",
                 "dock_pilings/dock_piling_010/lit_4/animations/motion/south/04.webp"
               ],
-              "strip": "dock_pilings/dock_piling_010/lit_4/animations/motion__south.8adf8eef.webp",
+              "strip": "dock_pilings/dock_piling_010/lit_4/animations/motion__south.76dc6436.webp",
               "light_frames": [
                 {
                   "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
+                  "dx": 1.0,
+                  "dy": 18.5
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": 19.0,
+                  "dy": 17.0
                 },
                 {
                   "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
+                  "dx": 1.0,
+                  "dy": 18.5
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -17.0,
+                  "dy": 20.0
                 },
                 {
                   "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
-                },
-                {
-                  "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
-                },
-                {
-                  "intensity": 0.5,
-                  "dx": 0.0,
-                  "dy": 0.0
+                  "dx": 1.0,
+                  "dy": 18.5
                 }
               ]
             },
@@ -186,7 +186,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T02:33:57+00:00",
+          "generated_at": "2026-09-18T04:39:31+00:00",
           "brief": "C40",
           "light_frames": [
             {
@@ -222,7 +222,7 @@
             "dock_pilings/dock_piling_010/lit_4/animations/motion/south/03.webp",
             "dock_pilings/dock_piling_010/lit_4/animations/motion/south/04.webp"
           ],
-          "strip": "dock_pilings/dock_piling_010/lit_4/animations/motion__south.8adf8eef.webp",
+          "strip": "dock_pilings/dock_piling_010/lit_4/animations/motion__south.76dc6436.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 1.1404

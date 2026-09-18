@@ -67,7 +67,7 @@
       "animations": {
         "motion": {
           "group_id": "380a45fb-ad12-473d-a8a3-946335c3897e",
-          "description": "This is the same picture in every frame. ONLY the gold light on the mushrooms brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the gold light on the mushrooms brightens a little and returns. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -82,7 +82,7 @@
                 "waystones/waystone_010/not_lit_4/animations/motion/south/03.webp",
                 "waystones/waystone_010/not_lit_4/animations/motion/south/04.webp"
               ],
-              "strip": "waystones/waystone_010/not_lit_4/animations/motion__south.b0432c66.webp"
+              "strip": "waystones/waystone_010/not_lit_4/animations/motion__south.ac8e7f3c.webp"
             },
             "south-east": {
               "frames": 5,
@@ -107,7 +107,7 @@
               "strip": "waystones/waystone_010/not_lit_4/animations/motion__south-west.4f965bed.webp"
             }
           },
-          "generated_at": "2026-09-18T04:13:45+00:00",
+          "generated_at": "2026-09-18T04:44:20+00:00",
           "brief": "D16",
           "frame_paths": [
             "waystones/waystone_010/not_lit_4/animations/motion/south/00.webp",
@@ -116,10 +116,10 @@
             "waystones/waystone_010/not_lit_4/animations/motion/south/03.webp",
             "waystones/waystone_010/not_lit_4/animations/motion/south/04.webp"
           ],
-          "strip": "waystones/waystone_010/not_lit_4/animations/motion__south.b0432c66.webp",
-          "review": "ANIMATION_PROBABLY_BAD",
+          "strip": "waystones/waystone_010/not_lit_4/animations/motion__south.ac8e7f3c.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.1685
+            "base_outline": 0.0112
           }
         }
       }

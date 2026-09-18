@@ -52,7 +52,7 @@
       "animations": {
         "motion": {
           "group_id": "bf74f3a3-7a51-4a72-be2b-c0c09f5744fc",
-          "description": "This is the same picture in every frame. ONLY the light in the carved glyphs brightens and dims, very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the light in the carved glyphs brightens and dims, very slowly. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -67,7 +67,7 @@
                 "standing_stones/standing_stone_001/animations/motion/south/03.webp",
                 "standing_stones/standing_stone_001/animations/motion/south/04.webp"
               ],
-              "strip": "standing_stones/standing_stone_001/animations/motion__south.810556bf.webp"
+              "strip": "standing_stones/standing_stone_001/animations/motion__south.47d91ac8.webp"
             },
             "south-east": {
               "frames": 5,
@@ -92,7 +92,7 @@
               "strip": "standing_stones/standing_stone_001/animations/motion__south-west.e9ae4816.webp"
             }
           },
-          "generated_at": "2026-09-18T03:35:17+00:00",
+          "generated_at": "2026-09-18T04:42:33+00:00",
           "brief": "Q9",
           "frame_paths": [
             "standing_stones/standing_stone_001/animations/motion/south/00.webp",
@@ -101,10 +101,10 @@
             "standing_stones/standing_stone_001/animations/motion/south/03.webp",
             "standing_stones/standing_stone_001/animations/motion/south/04.webp"
           ],
-          "strip": "standing_stones/standing_stone_001/animations/motion__south.810556bf.webp",
+          "strip": "standing_stones/standing_stone_001/animations/motion__south.47d91ac8.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1563
+            "base_outline": 0.1846
           }
         }
       }

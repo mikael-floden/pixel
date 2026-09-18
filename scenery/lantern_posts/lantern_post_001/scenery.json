@@ -216,7 +216,7 @@
         },
         "motion": {
           "group_id": "c8af6322-3ee0-49c8-a119-9d8942faf3bc",
-          "description": "This is the same picture in every frame. ONLY the small candle flame inside the lantern flickers, very gently. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the small candle flame inside the lantern flickers, very gently. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -337,7 +337,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T03:03:15+00:00",
+          "generated_at": "2026-09-18T04:40:55+00:00",
           "brief": "R24",
           "light_frames": [
             {
@@ -401,7 +401,7 @@
       "animations": {
         "motion": {
           "group_id": "29837675-0154-4c0a-9cc6-5dd84e424ddb",
-          "description": "This is the same picture in every frame. ONLY the green light inside the lantern brightens and dims, very slowly. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the green light inside the lantern brightens and dims, very slowly. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -416,32 +416,32 @@
                 "lantern_posts/lantern_post_001/lit_2/animations/motion/south/03.webp",
                 "lantern_posts/lantern_post_001/lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_001/lit_2/animations/motion__south.7271f894.webp",
+              "strip": "lantern_posts/lantern_post_001/lit_2/animations/motion__south.f7dc40df.webp",
               "light_frames": [
                 {
-                  "intensity": 1.365,
+                  "intensity": 1.314,
                   "dx": 0.7,
                   "dy": 8.7
                 },
                 {
-                  "intensity": 1.139,
-                  "dx": 0.9,
-                  "dy": 9.3
+                  "intensity": 1.26,
+                  "dx": 0.5,
+                  "dy": 9.2
                 },
                 {
-                  "intensity": 1.022,
-                  "dx": 0.8,
-                  "dy": 9.8
+                  "intensity": 0.958,
+                  "dx": 0.5,
+                  "dy": 9.7
                 },
                 {
-                  "intensity": 0.823,
-                  "dx": 0.3,
-                  "dy": 10.3
+                  "intensity": 0.832,
+                  "dx": 0.4,
+                  "dy": 9.9
                 },
                 {
-                  "intensity": 0.651,
-                  "dx": 0.3,
-                  "dy": 10.8
+                  "intensity": 0.637,
+                  "dx": 0.6,
+                  "dy": 9.9
                 }
               ]
             },
@@ -522,7 +522,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T03:04:06+00:00",
+          "generated_at": "2026-09-18T04:40:56+00:00",
           "brief": "S8",
           "light_frames": [
             {
@@ -558,7 +558,7 @@
             "lantern_posts/lantern_post_001/lit_2/animations/motion/south/03.webp",
             "lantern_posts/lantern_post_001/lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "lantern_posts/lantern_post_001/lit_2/animations/motion__south.7271f894.webp",
+          "strip": "lantern_posts/lantern_post_001/lit_2/animations/motion__south.f7dc40df.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.3889

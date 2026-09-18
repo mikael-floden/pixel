@@ -65,7 +65,7 @@
       "animations": {
         "motion": {
           "group_id": "26ab9da2-f1fb-43cf-b455-7ce3818292ec",
-          "description": "This is the same picture in every frame. ONLY the white blossoms move, each nodding by a single pixel. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the white blossoms move, each nodding by a single pixel. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -80,7 +80,7 @@
                 "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/03.webp",
                 "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__south.904e1c57.webp"
+              "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__south.de237401.webp"
             },
             "south-east": {
               "frames": 5,
@@ -105,7 +105,7 @@
               "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__south-west.a7d4e7c3.webp"
             }
           },
-          "generated_at": "2026-09-18T02:49:41+00:00",
+          "generated_at": "2026-09-18T04:40:23+00:00",
           "brief": "X61",
           "frame_paths": [
             "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/00.webp",
@@ -114,7 +114,7 @@
             "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/03.webp",
             "flower_trellises/flower_trellis_001/not_lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__south.904e1c57.webp",
+          "strip": "flower_trellises/flower_trellis_001/not_lit_2/animations/motion__south.de237401.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.3

@@ -427,7 +427,7 @@
       "animations": {
         "motion": {
           "group_id": "f3a2dd86-4cf4-490d-b69a-62810de7dd5d",
-          "description": "This is the same picture in every frame. ONLY the hanging lantern swings a little to one side and back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the hanging lantern swings a little to one side and back. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -442,7 +442,7 @@
                 "lantern_posts/lantern_post_015/not_lit_2/animations/motion/south/03.webp",
                 "lantern_posts/lantern_post_015/not_lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "lantern_posts/lantern_post_015/not_lit_2/animations/motion__south.82161e7d.webp"
+              "strip": "lantern_posts/lantern_post_015/not_lit_2/animations/motion__south.d67fabad.webp"
             },
             "south-east": {
               "frames": 5,
@@ -467,7 +467,7 @@
               "strip": "lantern_posts/lantern_post_015/not_lit_2/animations/motion__south-west.81311888.webp"
             }
           },
-          "generated_at": "2026-09-18T03:07:52+00:00",
+          "generated_at": "2026-09-18T04:40:59+00:00",
           "brief": "B20",
           "frame_paths": [
             "lantern_posts/lantern_post_015/not_lit_2/animations/motion/south/00.webp",
@@ -476,10 +476,10 @@
             "lantern_posts/lantern_post_015/not_lit_2/animations/motion/south/03.webp",
             "lantern_posts/lantern_post_015/not_lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "lantern_posts/lantern_post_015/not_lit_2/animations/motion__south.82161e7d.webp",
+          "strip": "lantern_posts/lantern_post_015/not_lit_2/animations/motion__south.d67fabad.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1656
+            "base_outline": 0.1489
           }
         }
       }
@@ -499,7 +499,7 @@
       "animations": {
         "motion": {
           "group_id": "cc5cb444-c6d8-49f1-9bf3-c93460d1a152",
-          "description": "This is the same picture in every frame. ONLY the hanging lantern swings a little to one side and back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the hanging lantern swings a little to one side and back. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -539,7 +539,7 @@
               "strip": "lantern_posts/lantern_post_015/not_lit_3/animations/motion__south-west.4c743f83.webp"
             }
           },
-          "generated_at": "2026-09-18T03:08:39+00:00",
+          "generated_at": "2026-09-18T04:40:58+00:00",
           "brief": "C18",
           "frame_paths": [
             "lantern_posts/lantern_post_015/not_lit_3/animations/motion/south/00.webp",

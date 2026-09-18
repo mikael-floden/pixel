@@ -235,7 +235,7 @@
       "animations": {
         "motion": {
           "group_id": "dfdeb52b-9ebe-4ca4-86e6-edd5f0e124fc",
-          "description": "This is the same picture in every frame. ONLY the cyan crystal brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the cyan crystal brightens a little and returns. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -250,32 +250,32 @@
                 "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/south/03.webp",
                 "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion__south.ecf693ad.webp",
+              "strip": "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion__south.60443f5e.webp",
               "light_frames": [
                 {
-                  "intensity": 1.038,
+                  "intensity": 0.935,
                   "dx": 0.5,
                   "dy": -1.5
                 },
                 {
-                  "intensity": 1.364,
-                  "dx": -0.5,
-                  "dy": 1.2
-                },
-                {
-                  "intensity": 1.5,
+                  "intensity": 0.884,
                   "dx": 0.0,
-                  "dy": 2.0
+                  "dy": -1.7
                 },
                 {
-                  "intensity": 0.57,
-                  "dx": 0.7,
-                  "dy": 7.0
+                  "intensity": 1.022,
+                  "dx": -0.0,
+                  "dy": -2.5
                 },
                 {
-                  "intensity": 0.5,
-                  "dx": 0.7,
-                  "dy": 1.3
+                  "intensity": 1.232,
+                  "dx": 0.6,
+                  "dy": -0.5
+                },
+                {
+                  "intensity": 0.928,
+                  "dx": 0.9,
+                  "dy": -1.3
                 }
               ]
             },
@@ -356,7 +356,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T03:33:56+00:00",
+          "generated_at": "2026-09-18T04:42:26+00:00",
           "brief": "Z27",
           "light_frames": [
             {
@@ -392,7 +392,7 @@
             "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/south/03.webp",
             "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion__south.ecf693ad.webp",
+          "strip": "soulstone_plinths/soulstone_plinth_001/lit_2/animations/motion__south.60443f5e.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.5966
@@ -487,7 +487,7 @@
       "animations": {
         "motion": {
           "group_id": "ec8fa5d1-68ff-422b-b5bf-5947726db0b1",
-          "description": "This is the same picture in every frame. ONLY the green light on the crystals brightens a little and returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the green light on the crystals brightens a little and returns. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -502,7 +502,7 @@
                 "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/south/03.webp",
                 "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/south/04.webp"
               ],
-              "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion__south.ff156f1c.webp"
+              "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion__south.d7a78515.webp"
             },
             "south-east": {
               "frames": 5,
@@ -527,7 +527,7 @@
               "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion__south-west.9622e21e.webp"
             }
           },
-          "generated_at": "2026-09-18T03:35:17+00:00",
+          "generated_at": "2026-09-18T04:42:29+00:00",
           "brief": "D38",
           "frame_paths": [
             "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/south/00.webp",
@@ -536,10 +536,10 @@
             "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/south/03.webp",
             "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion/south/04.webp"
           ],
-          "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion__south.ff156f1c.webp",
+          "strip": "soulstone_plinths/soulstone_plinth_001/not_lit_3/animations/motion__south.d7a78515.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 1.4343
+            "base_outline": 0.6316
           }
         }
       }

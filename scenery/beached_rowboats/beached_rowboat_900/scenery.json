@@ -247,7 +247,7 @@
       "animations": {
         "motion": {
           "group_id": "dcedbca1-1d26-409f-9196-404c938b9a82",
-          "description": "This is the same picture in every frame. ONLY the very tip of the small flame in the lantern inside the boat shifts, by one or two pixels. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the very tip of the small flame in the lantern inside the boat shifts, by one or two pixels. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -262,32 +262,32 @@
                 "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/03.webp",
                 "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/04.webp"
               ],
-              "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south.e183d494.webp",
+              "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south.825dc2bd.webp",
               "light_frames": [
                 {
-                  "intensity": 0.68,
+                  "intensity": 0.5,
                   "dx": 1.0,
                   "dy": 4.3
                 },
                 {
-                  "intensity": 0.877,
+                  "intensity": 0.5,
+                  "dx": 0.4,
+                  "dy": 3.9
+                },
+                {
+                  "intensity": 1.425,
                   "dx": 0.9,
-                  "dy": 1.1
+                  "dy": 15.5
                 },
                 {
-                  "intensity": 1.116,
+                  "intensity": 1.285,
                   "dx": 0.9,
-                  "dy": -1.2
+                  "dy": 16.0
                 },
                 {
-                  "intensity": 1.108,
-                  "dx": 0.7,
-                  "dy": -0.1
-                },
-                {
-                  "intensity": 1.217,
-                  "dx": 0.8,
-                  "dy": 0.8
+                  "intensity": 1.5,
+                  "dx": 1.0,
+                  "dy": 12.1
                 }
               ]
             },
@@ -300,7 +300,7 @@
                 "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-east/03.webp",
                 "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-east/04.webp"
               ],
-              "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south-east.611c475f.webp",
+              "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south-east.fb267cb0.webp",
               "light_frames": [
                 {
                   "intensity": 0.5,
@@ -308,24 +308,24 @@
                   "dy": 11.5
                 },
                 {
-                  "intensity": 1.105,
-                  "dx": -44.3,
-                  "dy": 12.3
+                  "intensity": 1.364,
+                  "dx": -36.3,
+                  "dy": 15.3
                 },
                 {
-                  "intensity": 1.29,
-                  "dx": -44.4,
-                  "dy": 11.8
+                  "intensity": 1.23,
+                  "dx": -27.5,
+                  "dy": 12.0
                 },
                 {
-                  "intensity": 1.332,
-                  "dx": -44.5,
-                  "dy": 11.9
+                  "intensity": 1.239,
+                  "dx": -26.2,
+                  "dy": 11.4
                 },
                 {
-                  "intensity": 1.214,
-                  "dx": -44.9,
-                  "dy": 12.9
+                  "intensity": 1.144,
+                  "dx": -25.3,
+                  "dy": 11.2
                 }
               ]
             },
@@ -338,7 +338,7 @@
                 "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-west/03.webp",
                 "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south-west/04.webp"
               ],
-              "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south-west.9999f93f.webp",
+              "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south-west.b077dc39.webp",
               "light_frames": [
                 {
                   "intensity": 0.5,
@@ -346,29 +346,29 @@
                   "dy": 6.2
                 },
                 {
-                  "intensity": 0.5,
-                  "dx": -42.8,
-                  "dy": 12.4
+                  "intensity": 0.513,
+                  "dx": -23.7,
+                  "dy": 5.3
                 },
                 {
-                  "intensity": 1.256,
-                  "dx": -39.2,
-                  "dy": 13.6
-                },
-                {
-                  "intensity": 1.5,
-                  "dx": -37.3,
-                  "dy": 12.3
+                  "intensity": 0.877,
+                  "dx": -29.0,
+                  "dy": 7.1
                 },
                 {
                   "intensity": 1.5,
-                  "dx": -34.6,
-                  "dy": 10.9
+                  "dx": -33.3,
+                  "dy": 8.3
+                },
+                {
+                  "intensity": 1.5,
+                  "dx": -35.4,
+                  "dy": 10.4
                 }
               ]
             }
           },
-          "generated_at": "2026-09-18T02:06:47+00:00",
+          "generated_at": "2026-09-18T04:38:17+00:00",
           "brief": "H16",
           "light_frames": [
             {
@@ -404,10 +404,10 @@
             "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/03.webp",
             "beached_rowboats/beached_rowboat_900/lit_4/animations/motion/south/04.webp"
           ],
-          "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south.e183d494.webp",
+          "strip": "beached_rowboats/beached_rowboat_900/lit_4/animations/motion__south.825dc2bd.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1817
+            "base_outline": 0.2923
           }
         }
       }

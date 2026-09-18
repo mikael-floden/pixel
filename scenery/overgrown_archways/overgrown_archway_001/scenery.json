@@ -232,7 +232,7 @@
       "animations": {
         "motion": {
           "group_id": "e845049a-4cba-4c66-997a-ac677c9760d9",
-          "description": "This is the same picture in every frame. only, swaying gently. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. only, swaying gently. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -247,7 +247,7 @@
                 "overgrown_archways/overgrown_archway_001/animations/motion/south/03.webp",
                 "overgrown_archways/overgrown_archway_001/animations/motion/south/04.webp"
               ],
-              "strip": "overgrown_archways/overgrown_archway_001/animations/motion__south.e1bbb706.webp"
+              "strip": "overgrown_archways/overgrown_archway_001/animations/motion__south.887f9cb1.webp"
             },
             "south-east": {
               "frames": 5,
@@ -272,7 +272,7 @@
               "strip": "overgrown_archways/overgrown_archway_001/animations/motion__south-west.b901a6f6.webp"
             }
           },
-          "generated_at": "2026-09-18T03:21:27+00:00",
+          "generated_at": "2026-09-18T04:41:41+00:00",
           "brief": "G11",
           "frame_paths": [
             "overgrown_archways/overgrown_archway_001/animations/motion/south/00.webp",
@@ -281,7 +281,7 @@
             "overgrown_archways/overgrown_archway_001/animations/motion/south/03.webp",
             "overgrown_archways/overgrown_archway_001/animations/motion/south/04.webp"
           ],
-          "strip": "overgrown_archways/overgrown_archway_001/animations/motion__south.e1bbb706.webp",
+          "strip": "overgrown_archways/overgrown_archway_001/animations/motion__south.887f9cb1.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.1195

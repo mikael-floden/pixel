@@ -232,7 +232,7 @@
       "animations": {
         "motion": {
           "group_id": "4592e227-cdd7-45ce-9350-26b66a54b341",
-          "description": "This is the same picture in every frame. ONLY the thin white smoke above the crown moves, climbing upward and thinning away. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the thin white smoke above the crown moves, climbing upward and thinning away. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -247,32 +247,32 @@
                 "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/south/03.webp",
                 "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/south/04.webp"
               ],
-              "strip": "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion__south.4605f585.webp",
+              "strip": "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion__south.e1a781df.webp",
               "light_frames": [
                 {
-                  "intensity": 0.829,
+                  "intensity": 1.5,
                   "dx": 10.5,
                   "dy": 36.9
                 },
                 {
-                  "intensity": 1.06,
+                  "intensity": 0.5,
+                  "dx": 7.6,
+                  "dy": 35.2
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 8.6,
+                  "dy": 38.9
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 8.5,
+                  "dy": 37.9
+                },
+                {
+                  "intensity": 1.5,
                   "dx": 10.7,
-                  "dy": 38.2
-                },
-                {
-                  "intensity": 1.121,
-                  "dx": 10.1,
-                  "dy": 41.0
-                },
-                {
-                  "intensity": 1.12,
-                  "dx": 10.2,
-                  "dy": 40.0
-                },
-                {
-                  "intensity": 0.871,
-                  "dx": 8.7,
-                  "dy": 41.7
+                  "dy": 39.4
                 }
               ]
             },
@@ -285,32 +285,32 @@
                 "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/south-east/03.webp",
                 "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/south-east/04.webp"
               ],
-              "strip": "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion__south-east.9414d604.webp",
+              "strip": "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion__south-east.db0f9a03.webp",
               "light_frames": [
                 {
-                  "intensity": 0.537,
+                  "intensity": 1.045,
                   "dx": -16.4,
                   "dy": 39.0
                 },
                 {
-                  "intensity": 0.605,
-                  "dx": -11.4,
-                  "dy": 2.2
+                  "intensity": 1.137,
+                  "dx": -17.1,
+                  "dy": 39.3
                 },
                 {
-                  "intensity": 1.486,
-                  "dx": 0.0,
-                  "dy": 23.1
+                  "intensity": 0.95,
+                  "dx": -22.6,
+                  "dy": 43.0
                 },
                 {
-                  "intensity": 1.5,
-                  "dx": -1.1,
-                  "dy": 23.4
+                  "intensity": 0.781,
+                  "dx": -29.1,
+                  "dy": 43.9
                 },
                 {
-                  "intensity": 0.862,
-                  "dx": -6.4,
-                  "dy": 25.4
+                  "intensity": 1.086,
+                  "dx": -17.5,
+                  "dy": 39.5
                 }
               ]
             },
@@ -323,7 +323,7 @@
                 "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/south-west/03.webp",
                 "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/south-west/04.webp"
               ],
-              "strip": "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion__south-west.b26af963.webp",
+              "strip": "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion__south-west.1d9f5c0c.webp",
               "light_frames": [
                 {
                   "intensity": 0.5,
@@ -332,28 +332,28 @@
                 },
                 {
                   "intensity": 0.5,
-                  "dx": 21.7,
-                  "dy": 21.6
+                  "dx": 30.7,
+                  "dy": 39.1
                 },
                 {
-                  "intensity": 1.264,
-                  "dx": 4.6,
-                  "dy": -13.6
+                  "intensity": 0.5,
+                  "dx": 30.7,
+                  "dy": 33.5
                 },
                 {
                   "intensity": 1.5,
-                  "dx": 2.5,
-                  "dy": -7.9
+                  "dx": 5.4,
+                  "dy": -6.5
                 },
                 {
-                  "intensity": 0.96,
-                  "dx": 7.8,
-                  "dy": -10.3
+                  "intensity": 1.5,
+                  "dx": 6.7,
+                  "dy": -4.2
                 }
               ]
             }
           },
-          "generated_at": "2026-09-18T02:29:40+00:00",
+          "generated_at": "2026-09-18T04:39:30+00:00",
           "brief": "R11",
           "light_frames": [
             {
@@ -389,10 +389,10 @@
             "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/south/03.webp",
             "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion/south/04.webp"
           ],
-          "strip": "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion__south.4605f585.webp",
-          "review": "ANIMATION_PROBABLY_BAD",
+          "strip": "charcoal_kilns/charcoal_kiln_002/lit_3/animations/motion__south.e1a781df.webp",
+          "review": "ANIMATION_PROBABLY_GOOD",
           "review_metrics": {
-            "base_outline": 0.133
+            "base_outline": 0.0829
           }
         }
       }

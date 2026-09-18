@@ -66,7 +66,7 @@
       "animations": {
         "motion": {
           "group_id": "040e150e-04c7-43a2-839f-5a7ceeb9a60c",
-          "description": "This is the same picture in every frame. ONLY the orange-gold seam through the stones changes: it brightens by the smallest amount that is still visible, then returns. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the orange-gold seam through the stones changes: it brightens by the smallest amount that is still visible, then returns. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -81,32 +81,32 @@
                 "cairns/cairn_026/lit_2/animations/motion/south/03.webp",
                 "cairns/cairn_026/lit_2/animations/motion/south/04.webp"
               ],
-              "strip": "cairns/cairn_026/lit_2/animations/motion__south.4331e4df.webp",
+              "strip": "cairns/cairn_026/lit_2/animations/motion__south.a11d378a.webp",
               "light_frames": [
                 {
-                  "intensity": 1.301,
+                  "intensity": 1.5,
                   "dx": 3.5,
                   "dy": 3.5
                 },
                 {
                   "intensity": 1.5,
-                  "dx": 3.6,
-                  "dy": 1.7
+                  "dx": 3.5,
+                  "dy": 3.5
                 },
                 {
                   "intensity": 1.5,
-                  "dx": 3.6,
-                  "dy": 1.6
-                },
-                {
-                  "intensity": 0.508,
-                  "dx": 6.2,
-                  "dy": 6.0
+                  "dx": 3.4,
+                  "dy": 2.8
                 },
                 {
                   "intensity": 0.5,
-                  "dx": 4.2,
-                  "dy": 3.2
+                  "dx": 3.4,
+                  "dy": 3.3
+                },
+                {
+                  "intensity": 0.5,
+                  "dx": 3.4,
+                  "dy": 3.3
                 }
               ]
             },
@@ -187,7 +187,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T02:24:34+00:00",
+          "generated_at": "2026-09-18T04:39:17+00:00",
           "brief": "H22",
           "light_frames": [
             {
@@ -223,7 +223,7 @@
             "cairns/cairn_026/lit_2/animations/motion/south/03.webp",
             "cairns/cairn_026/lit_2/animations/motion/south/04.webp"
           ],
-          "strip": "cairns/cairn_026/lit_2/animations/motion__south.4331e4df.webp",
+          "strip": "cairns/cairn_026/lit_2/animations/motion__south.a11d378a.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.4195
@@ -246,7 +246,7 @@
       "animations": {
         "motion": {
           "group_id": "f10a6720-6ea5-4c1f-bbd7-745c19a5a12d",
-          "description": "This is the same picture in every frame. ONLY the outermost edge of the small gold flames on the stones changes: a few pixels along that edge shift very slightly in brightness and shift straight back. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the outermost edge of the small gold flames on the stones changes: a few pixels along that edge shift very slightly in brightness and shift straight back. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -367,7 +367,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T02:24:38+00:00",
+          "generated_at": "2026-09-18T04:39:13+00:00",
           "brief": "J41",
           "light_frames": [
             {
@@ -426,7 +426,7 @@
       "animations": {
         "motion": {
           "group_id": "47399405-099e-4246-b980-9f3dbe74d6a1",
-          "description": "This is the same picture in every frame. ONLY the gold crack between the stones changes. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the gold crack between the stones changes. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -547,7 +547,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T02:26:08+00:00",
+          "generated_at": "2026-09-18T04:39:15+00:00",
           "brief": "J42",
           "light_frames": [
             {

@@ -55,7 +55,7 @@
       "animations": {
         "motion": {
           "group_id": "270f1aa0-81ec-4ff7-9549-f3325206076e",
-          "description": "This is the same picture in every frame. ONLY the hanging lantern moves, swinging very gently. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. ONLY the hanging lantern moves, swinging very gently. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -70,30 +70,30 @@
                 "scarecrows/scarecrow_005/lit_1/animations/motion/south/03.webp",
                 "scarecrows/scarecrow_005/lit_1/animations/motion/south/04.webp"
               ],
-              "strip": "scarecrows/scarecrow_005/lit_1/animations/motion__south.9096e70a.webp",
+              "strip": "scarecrows/scarecrow_005/lit_1/animations/motion__south.e8fb48d0.webp",
               "light_frames": [
                 {
-                  "intensity": 1.248,
+                  "intensity": 1.014,
                   "dx": 17.4,
                   "dy": -3.5
                 },
                 {
-                  "intensity": 0.562,
-                  "dx": 22.4,
-                  "dy": -1.5
+                  "intensity": 1.02,
+                  "dx": 17.8,
+                  "dy": -3.7
                 },
                 {
-                  "intensity": 0.804,
-                  "dx": 20.0,
-                  "dy": -1.0
+                  "intensity": 1.031,
+                  "dx": 18.0,
+                  "dy": -4.5
                 },
                 {
-                  "intensity": 1.107,
-                  "dx": 18.1,
-                  "dy": -3.5
+                  "intensity": 0.982,
+                  "dx": 18.2,
+                  "dy": -4.4
                 },
                 {
-                  "intensity": 1.279,
+                  "intensity": 0.952,
                   "dx": 17.1,
                   "dy": -4.8
                 }
@@ -176,7 +176,7 @@
               ]
             }
           },
-          "generated_at": "2026-09-18T03:29:06+00:00",
+          "generated_at": "2026-09-18T04:42:03+00:00",
           "brief": "S2",
           "light_frames": [
             {
@@ -212,7 +212,7 @@
             "scarecrows/scarecrow_005/lit_1/animations/motion/south/03.webp",
             "scarecrows/scarecrow_005/lit_1/animations/motion/south/04.webp"
           ],
-          "strip": "scarecrows/scarecrow_005/lit_1/animations/motion__south.9096e70a.webp",
+          "strip": "scarecrows/scarecrow_005/lit_1/animations/motion__south.e8fb48d0.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
             "base_outline": 0.2787
@@ -249,7 +249,7 @@
       "animations": {
         "motion": {
           "group_id": "8d8dc4e5-ea28-4b94-8b6d-694b0f25c8a8",
-          "description": "This is the same picture in every frame. only, flapping in a breeze. It is lit and clearly visible in every frame, including the first. It stays exactly the same size and shape in every frame: it never grows and never spreads, only its inner detail shifts. Nothing is added or removed anywhere: every object appears in every frame, the same number of them, in the same places, at the same size. Everything else is copied from the first frame exactly, pixel for pixel: same shape, size, position and colour, no outline redrawn. The last frame matches the first exactly.",
+          "description": "A completely still picture, identical in every frame, except for one thing. only, flapping in a breeze. Every other pixel of every frame is the exact pixel of the first frame: nothing else drifts, breathes, sways, bends, brightens or darkens, nothing is redrawn, nothing appears or disappears, and no outline moves by even one pixel. The last frame is the first frame again.",
           "mode": "v3",
           "frame_count": 5,
           "generated_frames": 4,
@@ -264,7 +264,7 @@
                 "scarecrows/scarecrow_005/animations/motion/south/03.webp",
                 "scarecrows/scarecrow_005/animations/motion/south/04.webp"
               ],
-              "strip": "scarecrows/scarecrow_005/animations/motion__south.16fe478d.webp"
+              "strip": "scarecrows/scarecrow_005/animations/motion__south.838f9468.webp"
             },
             "south-east": {
               "frames": 5,
@@ -289,7 +289,7 @@
               "strip": "scarecrows/scarecrow_005/animations/motion__south-west.617690c3.webp"
             }
           },
-          "generated_at": "2026-09-18T03:29:02+00:00",
+          "generated_at": "2026-09-18T04:42:17+00:00",
           "brief": "C3",
           "frame_paths": [
             "scarecrows/scarecrow_005/animations/motion/south/00.webp",
@@ -298,10 +298,10 @@
             "scarecrows/scarecrow_005/animations/motion/south/03.webp",
             "scarecrows/scarecrow_005/animations/motion/south/04.webp"
           ],
-          "strip": "scarecrows/scarecrow_005/animations/motion__south.16fe478d.webp",
+          "strip": "scarecrows/scarecrow_005/animations/motion__south.838f9468.webp",
           "review": "ANIMATION_PROBABLY_BAD",
           "review_metrics": {
-            "base_outline": 0.1481
+            "base_outline": 0.358
           }
         }
       }
