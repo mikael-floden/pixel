@@ -231,24 +231,42 @@ from the games agent), #18 (title/landing screen).
   and opening the gamepad page takes it back onto the page — one stick, never
   two. The root class `ml-stickghost` carries the ghost alphas (light .15/.25,
   dark .4/.5, 1/1 while held); it is NOT keyed on `ml-land` any more.
-  PORTRAIT PLACEMENT is a RULE, not a coordinate: the ghost is the next step of
-  the game view's bottom-right stack — Wiki row, clock pill, stick — the
-  stack's own 10px right margin and one 10px gap above the pill, anchored in
-  CSS to `--hud-h` + `--ml-stack-top` (clock.ts publishes the stack's reach, so
-  a taller pill lifts the stick instead of sliding under it). He drew a red
-  loop: measured inside his screenshot its centre was 78 css in from the right
-  and 118 above the HUD rail, but its lower third lay over the clock pill (top
-  at rail − 88), so the well is lifted to clear the pill rather than shifted
-  80px left out of his loop. Left-handed mirrors to the bottom-left over the
-  chat overlay (its lines are pointer-events:none). "Just make sure pressing on
-  the wiki or the search still works and this input triggers when you press on
-  this and nothing else" is the z-order, not a special case: 4 sits under the
-  chat overlay (5/6) and the Wiki/🔍/pill row (8), and only the well listens —
+  PORTRAIT PLACEMENT: the game view's bottom-right CORNER on the one 10px
+  margin (`PORT_GHOST_INSET`, anchored in CSS to `--hud-h` like the chat
+  overlay). That corner is free because the same day he moved the Wiki row and
+  the pill to the top (next law); a first cut parked the ghost ABOVE that
+  stack, 118 css up the screen, and he wanted it lower ("let's start here and
+  feel how it feels. If we need it even lower we will find more creative
+  solutions"). Left-handed mirrors to the bottom-left over the chat overlay
+  (its lines are pointer-events:none). "Just make sure pressing on the wiki or
+  the search still works and this input triggers when you press on this and
+  nothing else" is the z-order, not a special case: 4 sits under the chat
+  overlay (5/6) and the Wiki/🔍/pill row (8), and only the well listens —
   `verify-gamepad` hit-tests the well, the Wiki, the 🔍, the pill's spot and a
-  point beside/above the well (canvas), asserts the stack rule, the alphas at
+  point beside/above the well (canvas), asserts the corner rule, the alphas at
   rest and held, the synthesized W from a northward drag (keys, not distance —
   the phone-dpr frame loop is starved in the harness), and that the gamepad
   page takes the stick back.
+- **PORTRAIT CORNER STACK IS TOP-RIGHT: the Wiki/🔍 row directly under the XP
+  chip, the time-of-day pill one `--ml-stack-step` under the ROW** (maintainer
+  2026-09-17, arrows on a screenshot: "wiki + search to be top right and listed
+  right under the XP/level card… the time-of-day pill to also be top right but
+  under the wiki. This means the thumbstick can be lowered"). `wikibtn.ts`,
+  `wikinear.ts`, `clock.ts`: one `:root:not(.ml-land)` rule each, `top: safe-top
+  + --bars-r-h + 20px (+ step for the pill); bottom:auto` — the landscape
+  right-handed formula, so both top anchors agree. Three placements, one order
+  each (wikibtn.ts header): portrait row-then-pill under the chip; RIGHT-handed
+  landscape pill-then-row under the chip (his 2026-08-05/09-03 verdict on that
+  screen, not re-litigated — flip it only on his word); LEFT-handed landscape
+  keeps the bottom corner with the pill stepping up over the row. The keyboard
+  lift (`hud.ts :root.ml-kb-up`) still writes `bottom` on all three, but a
+  `bottom` on a top-anchored fixed box with a height is over-constrained and
+  ignored, so in portrait the lift moves only the chat log — `verify-chatpage`
+  asserts the row and the pill stay put; `verify-chat` asserts the row's right
+  gap is the chat's left gap and the pill hangs one step under the row;
+  `verify-landscape` asserts the portrait return. `chat.ts`'s `--ml-chatw` lane
+  (games agent's) still reserves the old row's width on the log's line; harmless,
+  posted to games.
 - HUD geometry: `applyLayout()` publishes `--hud-h`/`--hud-h-inv` in REAL px
   (consumers parseFloat them — keyboard lift, chat anchors). The split must
   keep matching `#game`'s 61.8/38.2.

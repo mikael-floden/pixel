@@ -89,23 +89,19 @@ const PICK_FX = 0.454;
 // 10px inset produces. The mark is therefore ~112 css px in, i.e. a 38px
 // corner inset — a 28px move, not the 10px a portrait-dpr reading suggested.
 const LAND_INSET = 38;
-// PORTRAIT GHOST (maintainer 2026-09-17, a red loop on a device screenshot:
-// "I want the same semi transparent control [in portrait]… we can't place it
-// at a perfect thumb location, but it's better to have it at a worse location
-// than not have this control at all"). Whenever the gamepad page is hidden
-// the stick floats over the game view as the NEXT STEP of its bottom-right
-// stack — Wiki row, clock pill, stick — the stack's own 10px right margin and
-// one 10px gap above the pill (clock.ts publishes the stack's reach as
-// --ml-stack-top, so a taller pill lifts the stick instead of sliding under
-// it). Measured inside his screenshot (2.748 device px per css px, the HUD
-// rail at 567.7 css): his loop centred 78 css in from the right and 118 above
-// the rail — but its lower third lay over the clock pill (top at rail − 88),
-// so the well is LIFTED to clear the pill rather than shifted 80px left out of
-// his loop, and the stack's margin puts the centre 8px right of his mark.
-// Opening the gamepad page takes the stick back onto it — one stick, never
-// two. Left-handed mirrors to the bottom-left over the chat overlay (its lines
-// are pointer-events:none, exactly as in landscape).
-const PORT_GHOST_GAP = 10;
+// PORTRAIT GHOST (maintainer 2026-09-17: "I want the same semi transparent
+// control [in portrait]… it's better to have it at a worse location than not
+// have this control at all"). Whenever the gamepad page is hidden the stick
+// floats in the game view's BOTTOM-RIGHT CORNER on the one 10px margin
+// everything keeps — the corner is free because the same day he moved the
+// Wiki row and the clock pill to the top-right under the XP chip ("this
+// means the thumbstick can be lowered… let's start here and feel how it
+// feels"; a first cut parked the ghost ABOVE that stack, 118 css up the
+// screen, and he wanted it lower). Anchored in CSS to --hud-h like the chat
+// overlay, so it rides the rail. Opening the gamepad page takes the stick
+// back onto it — one stick, never two. Left-handed mirrors to the bottom-left
+// over the chat overlay (its lines are pointer-events:none, as in landscape).
+const PORT_GHOST_INSET = 10;
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
 // keyboard player would.
@@ -292,7 +288,7 @@ export function mountGamepadStick(page: HTMLElement) {
     lastHand = leftHand;
     // GHOST = the stick floats over the game view instead of sitting on the
     // page: landscape on every tab, and portrait whenever the gamepad page is
-    // hidden (PORT_GHOST_GAP). The root class carries the ghost alphas.
+    // hidden (PORT_GHOST_INSET). The root class carries the ghost alphas.
     const ghost = land || !vis;
     document.documentElement.classList.toggle("ml-stickghost", ghost);
     if (land) {
@@ -341,19 +337,19 @@ export function mountGamepadStick(page: HTMLElement) {
       }
       walkLabel.style.display = "none"; // a floating label over world art is noise
     } else if (ghost) {
-      // PORTRAIT GHOST: the page is hidden, so the stick floats over the game
-      // view as the top of the corner stack (see PORT_GHOST_GAP) — anchored
-      // in CSS to --hud-h and --ml-stack-top like the Wiki row and the pill,
-      // so it rides with them. Same z 4 as landscape: under the chat overlay
-      // (5/6), the pill and the Wiki row (8), so "pressing on the wiki or the
-      // search still works" is the z-order, not a special case — and a press
-      // beside the well reaches the canvas, because only the well listens.
+      // PORTRAIT GHOST: the page is hidden, so the stick floats in the game
+      // view's bottom corner (PORT_GHOST_INSET), anchored in CSS to --hud-h
+      // like the chat overlay, so it rides the rail. Same z 4 as landscape:
+      // under the chat overlay (5/6) and the Wiki/🔍/pill row (8), so
+      // "pressing on the wiki or the search still works" is the z-order, not
+      // a special case — and a press beside the well reaches the canvas,
+      // because only the well listens.
       if (pad.parentElement !== document.body) document.body.append(padBlur, pad);
       pad.style.position = "fixed";
       pad.style.zIndex = "4";
       pad.style.left = pad.style.top = pad.style.right = "";
-      pad.style[leftHand ? "left" : "right"] = `calc(var(${leftHand ? "--gv-left" : "--gv-right"}, 0px) + 10px)`;
-      pad.style.bottom = `calc(var(--hud-h, 38.2dvh) + var(--ml-stack-top, 88px) + ${PORT_GHOST_GAP}px)`;
+      pad.style[leftHand ? "left" : "right"] = `calc(var(${leftHand ? "--gv-left" : "--gv-right"}, 0px) + ${PORT_GHOST_INSET}px)`;
+      pad.style.bottom = `calc(var(--hud-h, 38.2dvh) + ${PORT_GHOST_INSET}px)`;
       padBlur.style.display = "block";
       padBlur.style.width = padBlur.style.height = `${well}px`;
       for (const k of ["left", "top", "right", "bottom"] as const) padBlur.style[k] = pad.style[k];

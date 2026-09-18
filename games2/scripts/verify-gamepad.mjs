@@ -38,6 +38,15 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
 {
   const page = await joinWorld({ viewport: { width: 480, height: 320 } });
   await page.waitForTimeout(600);
+  // the keys the stick is HOLDING right now — recorded at window level, so a
+  // liveness check can read the input path itself instead of inferring it
+  // from distance moved (a wall after a long run zeroes that; measured twice
+  // 2026-09-17 as a flake in the beyond-max check)
+  await page.evaluate(() => {
+    window.__heldKeys = new Set();
+    window.addEventListener("keydown", (e) => window.__heldKeys.add(e.key), { capture: true });
+    window.addEventListener("keyup", (e) => window.__heldKeys.delete(e.key), { capture: true });
+  });
 
   // 1) sanity: Phaser accepts a SYNTHETIC key (the whole input path)
   const p0 = await pos(page);
@@ -106,7 +115,13 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     a = await pos(page);
     await page.waitForTimeout(600);
     b = await pos(page);
-    Math.hypot(b.x-a.x, b.y-a.y) > 3 ? ok("input alive beyond max offset") : fail("input died past max offset");
+    // alive = the run keys are still DOWN out there (the cap check above
+    // already showed the angle); the distance is reported, not asserted —
+    // the player may be against a wall after the E run
+    const farHeld = await page.evaluate(() => [...window.__heldKeys]);
+    farHeld.includes("d") && farHeld.includes("Shift")
+      ? ok(`input alive beyond max offset (holding ${farHeld.join("+")}, moved ${Math.hypot(b.x-a.x, b.y-a.y).toFixed(1)}wu)`)
+      : fail(`input died past max offset: holding ${JSON.stringify(farHeld)}`);
     // visual snap: a 100° park lands the cap at the SAME spot as 90° (S gate)
     await page.mouse.move(geom.cx - 21, geom.cy + 118, { steps: 2 });
     await page.waitForTimeout(250);
@@ -278,14 +293,15 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   // ── PORTRAIT GHOST (maintainer 2026-09-17: "I want the same semi
   //    transparent control [in portrait]… better to have it at a worse
   //    location than not have this control at all"). With the gamepad page
-  //    hidden the stick floats over the game view as the NEXT STEP of the
-  //    bottom-right stack — Wiki row, clock pill, stick: the stack's 10px
-  //    right margin, one 10px gap above the pill. "Just make sure pressing on
-  //    the wiki or the search still works and this input triggers when you
-  //    press on this and nothing else": hit-tested at every neighbour, and a
-  //    press beside or above the well must reach the canvas. The input path
-  //    is asserted on the synthesized KEYS, not on distance moved — the
-  //    phone-dpr frame loop is starved here (see joinWorld). ──
+  //    hidden the stick floats in the game view's BOTTOM-RIGHT CORNER on the
+  //    10px margin — free because the same day he moved the Wiki row and the
+  //    clock pill to the TOP-right under the XP chip (row first, pill one
+  //    step under it: "this means the thumbstick can be lowered"). "Just make
+  //    sure pressing on the wiki or the search still works and this input
+  //    triggers when you press on this and nothing else": hit-tested at every
+  //    neighbour, and a press beside or above the well must reach the canvas.
+  //    The input path is asserted on the synthesized KEYS, not on distance
+  //    moved — the phone-dpr frame loop is starved here (see joinWorld). ──
   await page.evaluate(() => document.querySelector('[data-tab="map"]')?.click());
   await page.waitForTimeout(400);
   const ghostGeom = () =>
@@ -307,7 +323,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
         if (e.tagName === "CANVAS") return "canvas";
         return e.className || e.tagName;
       };
-      const s = rr(".ml-pad-stick"), c = rr(".ml-clock"), w = rr(".ml-wikibtn"), n = rr(".ml-wikinear");
+      const s = rr(".ml-pad-stick"), c = rr(".ml-clock"), w = rr(".ml-wikibtn"), n = rr(".ml-wikinear"), xp = rr(".ml-bars-r");
       const cs = getComputedStyle(document.documentElement);
       return {
         parent: pad?.parentElement?.tagName,
@@ -316,7 +332,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
         blur: q(".ml-pad-blur") ? getComputedStyle(q(".ml-pad-blur")).display : null,
         tab: q(".ml-tab.sel")?.dataset.tab,
         hudTop: innerHeight - (parseFloat(cs.getPropertyValue("--hud-h")) || 0),
-        s, c, w, n,
+        s, c, w, n, xp,
         hits: s && {
           stick: hit(s.l + s.w / 2, s.t + s.h / 2),
           wiki: w && hit(w.l + w.w / 2, w.t + w.h / 2),
@@ -335,14 +351,22 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     ok(`portrait ghost floats over the game view on the ${gh.tab} tab (parented to <body>, ${gh.s.w.toFixed(0)}px)`);
     gh.ghostClass ? ok("ml-stickghost set while the page is hidden") : fail("ml-stickghost missing in portrait ghost mode");
     gh.blur === "block" ? ok("blur disc shown under the portrait ghost") : fail(`blur disc ${gh.blur} under the portrait ghost`);
-    // THE STACK RULE: right edge on the pill's, one 10px gap above it
-    Math.abs(393 - 10 - gh.s.r) <= 1.5 && gh.c && Math.abs(gh.s.r - gh.c.r) <= 1.5
-      ? ok(`ghost right edge on the stack's margin (r=${gh.s.r.toFixed(1)}, pill r=${gh.c.r.toFixed(1)})`)
-      : fail(`ghost right edge ${gh.s.r.toFixed(1)}, pill ${gh.c && gh.c.r.toFixed(1)} — want both at ${393 - 10}`);
-    gh.c && Math.abs(gh.c.t - gh.s.b - 10) <= 1.5
-      ? ok(`ghost parks one 10px gap above the clock pill (well b=${gh.s.b.toFixed(1)}, pill t=${gh.c.t.toFixed(1)})`)
-      : fail(`ghost/pill gap ${gh.c && (gh.c.t - gh.s.b).toFixed(1)}px, want 10`);
-    gh.s.b < gh.hudTop - 60 ? ok(`ghost clear of the HUD rail (b=${gh.s.b.toFixed(0)}, rail ${gh.hudTop.toFixed(0)})`) : fail(`ghost at b=${gh.s.b} against rail ${gh.hudTop}`);
+    // THE CORNER RULE: the one 10px margin to the right edge and to the rail
+    Math.abs(393 - 10 - gh.s.r) <= 1.5 && Math.abs(gh.hudTop - 10 - gh.s.b) <= 1.5
+      ? ok(`ghost in the bottom-right corner on the 10px margin (r=${gh.s.r.toFixed(1)}, b=${gh.s.b.toFixed(1)}, rail ${gh.hudTop.toFixed(0)})`)
+      : fail(`ghost r=${gh.s.r.toFixed(1)} b=${gh.s.b.toFixed(1)} — want r=${393 - 10}, b=${(gh.hudTop - 10).toFixed(0)}`);
+    // …which the Wiki row and the pill left for it: TOP-right, the row directly
+    // under the XP chip, the 🔍 beside it, the pill one step under the row.
+    gh.w && gh.xp && Math.abs(gh.w.t - gh.xp.b - 10) <= 2 && Math.abs(gh.w.r - gh.xp.r) <= 2
+      ? ok(`Wiki row directly under the XP chip (t=${gh.w.t.toFixed(0)} = chip b ${gh.xp.b.toFixed(0)} + 10, right edges ${gh.w.r.toFixed(0)}/${gh.xp.r.toFixed(0)})`)
+      : fail(`Wiki row ${JSON.stringify(gh.w)} not under the XP chip ${JSON.stringify(gh.xp)}`);
+    gh.n && gh.w && Math.abs(gh.n.t - gh.w.t) <= 1 && Math.abs(gh.w.l - gh.n.r - 10) <= 2
+      ? ok(`🔍 on the Wiki's line, 10px to its left (r=${gh.n.r.toFixed(0)}, wiki l=${gh.w.l.toFixed(0)})`)
+      : fail(`🔍 ${JSON.stringify(gh.n)} vs Wiki ${JSON.stringify(gh.w)}`);
+    gh.c && gh.w && Math.abs(gh.c.t - gh.w.b - 10) <= 2 && Math.abs(gh.c.r - gh.w.r) <= 2
+      ? ok(`clock pill one step under the Wiki row (t=${gh.c.t.toFixed(0)} = row b ${gh.w.b.toFixed(0)} + 10)`)
+      : fail(`pill ${JSON.stringify(gh.c)} not under the Wiki row ${JSON.stringify(gh.w)}`);
+    gh.c && gh.c.b < gh.s.t - 100 ? ok("the corner stack is out of the ghost's way") : fail(`pill b=${gh.c && gh.c.b} crowds the ghost t=${gh.s.t}`);
     // ONLY THE WELL FIRES; everything around it keeps its own press
     const h = gh.hits;
     h.stick === "stick" ? ok("a press on the well hits the stick") : fail(`well centre hits ${h.stick}`);

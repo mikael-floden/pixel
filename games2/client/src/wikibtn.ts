@@ -4,21 +4,26 @@
  * LIVES WITH the time-of-day pill — same size, same right edge, stacked on
  * the pill's open side, and riding every move the pill makes.
  *
- * The placement rule (maintainer 2026-09-03, on a screenshot: "I think it
- * looks better if the wiki+search is under the time-of-day pill — they should
- * swap y position"): the button row sits BELOW the pill in every placement.
- * At rest that means this row takes the corner anchor and the PILL steps up
- * over it; in right-handed landscape the pill is top-anchored under the XP
- * chip (its corner belongs to the thumb stick) and this row hangs one step
- * under it, which already read that way. The stack therefore has ONE order
- * everywhere — including over the phone keyboard, so nothing reorders on
- * screen when the keys come up. Every rule here is the pill's own rule ±
- * one PILL_STEP:
- * anchors, the right-handed landscape flip, and the keyboard lift all mirror
- * `.ml-clock` (clock.ts + hud.ts's `:root.ml-kb-up .ml-clock`), so wherever
- * the pill goes — including up over the phone keyboard — the button follows
- * at a constant 10px gap. If the pill's anchoring ever changes, change this
- * file in the same commit.
+ * WHERE THE ROW LIVES — three placements, one PILL_STEP between the row and
+ * the pill in each:
+ * - PORTRAIT (maintainer 2026-09-17, arrows on a screenshot: "wiki + search
+ *   to be top right and listed right under the XP/level card… the
+ *   time-of-day pill to also be top right but under the wiki. This means the
+ *   thumbstick can be lowered"): TOP-right, directly under the XP chip, the
+ *   pill one step under this row. The bottom corner is the portrait ghost
+ *   stick's (gamepad.ts). Top-anchored, so the keyboard lift below is
+ *   over-constrained and ignored — the row is nowhere near the keys.
+ * - RIGHT-HANDED LANDSCAPE (maintainer 2026-08-05 / 2026-09-03): top-right
+ *   too, but the PILL takes the spot under the chip and this row hangs one
+ *   step under it — his verdict on that screen, not re-litigated here.
+ * - LEFT-HANDED LANDSCAPE: the bottom corner is free (the stick is bottom-
+ *   left), so this row takes the corner anchor and the pill steps up over
+ *   it (2026-09-03: "the wiki+search is under the time-of-day pill"), and
+ *   the keyboard lift moves both by the same step.
+ * Every rule here is the pill's own rule ± one PILL_STEP: anchors, flips and
+ * the keyboard lift mirror `.ml-clock` (clock.ts + hud.ts's `:root.ml-kb-up
+ * .ml-clock`). If the pill's anchoring ever changes, change this file in the
+ * same commit.
  *
  * Unlike the pill it is a real BUTTON (the pill is pass-through): it opens
  * the wiki drawer (wikipanel.ts), which now remembers where in the wiki you
@@ -102,6 +107,11 @@ function injectStyles(): void {
      the button hangs one step BELOW it — the same reading as everywhere else. */
   :root.ml-land:not(.ml-lh) .ml-wikibtn{
     top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}
+  /* PORTRAIT: directly under the XP chip (chip bottom + the 10px margin —
+     --bars-r-h is its measured height, --ml-safe-top the cutout inset it
+     sits under), the pill one step below (clock.ts). See the header. */
+  :root:not(.ml-land) .ml-wikibtn{
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
   /* The keyboard lift: this row takes the line hud.ts clears above the keys,
      and the pill steps up over it exactly as it does at rest. */
   :root.ml-kb-up .ml-wikibtn{bottom:calc(var(--ml-inputlift) + 56px)}`;

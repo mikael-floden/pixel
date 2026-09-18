@@ -3,13 +3,12 @@
 // is plain CSS anchored in real px above --hud-h (published by hud.ts
 // applyLayout as round(innerHeight*0.382)). ONE MARGIN FOR EVERYTHING that
 // hugs an edge (maintainer 2026-07-31): 10px, the same as the stat chips at
-// the top and the Wiki row in the opposite bottom corner — which this gate
-// checks by comparing against that row itself, not a literal. The
-// time-of-day pill steps up OVER the row by the published --ml-stack-step
-// (maintainer 2026-09-03: "the wiki+search is under the time-of-day pill"),
-// so the log shares the ROW's line and the pill clears both — verify-chatpage
-// pins the same arrangement over the keyboard. The log only steps up
-// (ml-chat-typing) while the input box is open under it.
+// the top and the Wiki row — which this gate checks by comparing against
+// that row itself, not a literal. Since 2026-09-17 the row lives TOP-right
+// under the XP chip with the time-of-day pill one published --ml-stack-step
+// under it (the bottom corner is the portrait ghost stick's), so the log has
+// its bottom line to itself. The log only steps up (ml-chat-typing) while the
+// input box is open under it.
 // There is NO zoom compensation any more (--ml-uizoom is never written).
 import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
@@ -81,15 +80,15 @@ try {
       uizoom: getComputedStyle(root).getPropertyValue("--ml-uizoom").trim(),
       logPos: log ? getComputedStyle(log).position : null,
       logRect: log ? rectOf(log) : null,
-      // the Wiki row in the opposite corner — the shared margin's reference —
-      // and the pill one published step above it
+      // the Wiki row — the shared margin's reference — top-right, and the
+      // pill one published step under it
       wikiRect: wiki
         ? { rightGap: window.innerWidth - wiki.getBoundingClientRect().right,
-            bottomGap: window.innerHeight - wiki.getBoundingClientRect().bottom }
+            top: wiki.getBoundingClientRect().top }
         : null,
       clockRect: clock
         ? { rightGap: window.innerWidth - clock.getBoundingClientRect().right,
-            bottomGap: window.innerHeight - clock.getBoundingClientRect().bottom }
+            top: clock.getBoundingClientRect().top }
         : null,
       step: parseFloat(getComputedStyle(root).getPropertyValue("--ml-stack-step")),
       inputPos: input ? getComputedStyle(input).position : null,
@@ -120,20 +119,21 @@ try {
   if (!near(geo.inputRect.left, 10)) throw new Error(`chatinput left ${geo.inputRect.left} != 10px`);
   if (!near(geo.inputRect.bottomGap, geo.hudH + 10))
     throw new Error(`chatinput bottom gap ${geo.inputRect.bottomGap} != hud-h+10 (${geo.hudH + 10})`);
-  // The point of that number: the chat and the Wiki row sit on ONE margin,
-  // and the pill steps up over both by the step wikibtn.ts publishes.
+  // The point of that number: the chat and the Wiki row sit on ONE margin —
+  // the row's right gap is the chat's left gap — and the row itself is
+  // top-right under the XP chip with the pill one published step under it.
   if (!geo.wikiRect) throw new Error("no .ml-wikibtn to compare the chat's margin against");
-  if (!geo.clockRect) throw new Error("no .ml-clock above the Wiki row");
+  if (!geo.clockRect) throw new Error("no .ml-clock under the Wiki row");
   if (!(geo.step > 0)) throw new Error(`--ml-stack-step "${geo.step}" is not a published px height`);
   if (!near(geo.wikiRect.rightGap, geo.logRect.left))
     throw new Error(`chat left ${geo.logRect.left} != Wiki row right ${geo.wikiRect.rightGap}`);
-  if (!near(geo.wikiRect.bottomGap, geo.logRect.bottomGap))
-    throw new Error(`chat bottom ${geo.logRect.bottomGap} != Wiki row bottom ${geo.wikiRect.bottomGap}`);
+  if (!(geo.wikiRect.top < geo.innerH / 2))
+    throw new Error(`Wiki row at top ${geo.wikiRect.top} — in portrait it lives top-right under the XP chip`);
   if (!near(geo.clockRect.rightGap, geo.wikiRect.rightGap))
     throw new Error(`pill right ${geo.clockRect.rightGap} != Wiki row right ${geo.wikiRect.rightGap} — one right edge`);
-  if (!near(geo.clockRect.bottomGap, geo.logRect.bottomGap + geo.step))
-    throw new Error(`pill bottom ${geo.clockRect.bottomGap} != log bottom ${geo.logRect.bottomGap} + the ${geo.step}px stack step`);
-  console.log(`MARGIN OK — chat and the Wiki row share ${geo.wikiRect.rightGap}px to the edge; the pill steps ${geo.step}px up over them`);
+  if (!near(geo.clockRect.top, geo.wikiRect.top + geo.step))
+    throw new Error(`pill top ${geo.clockRect.top} != Wiki row top ${geo.wikiRect.top} + the ${geo.step}px stack step`);
+  console.log(`MARGIN OK — chat left and the Wiki row's right share ${geo.wikiRect.rightGap}px to the edge; the pill hangs ${geo.step}px under the row, top-right`);
   if (geo.lineCount < 1 || !geo.msgShown)
     throw new Error(`chat overlay log missing the message chip (lines=${geo.lineCount}, shown=${geo.msgShown})`);
   console.log("GEO OK");

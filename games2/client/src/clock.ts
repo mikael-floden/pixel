@@ -262,18 +262,15 @@ function mount() {
   if (root) return;
   const style = document.createElement("style");
   style.textContent = `
-  /* BOTTOM-RIGHT of the GAME VIEW (maintainer 2026-07-31), 10px from the
-     right edge — the same margin the XP chip keeps at the top, and the same
-     one the chat keeps on the left — and 10px above the HUD rail. --hud-h is
-     real px, published by hud.ts applyLayout; the fallback is the
-     golden-ratio split it computes. When a chat box is focused the phone
-     keyboard covers this corner, so hud.ts lifts the pill (and the chat log)
-     above the floated input via :root.ml-kb-up — hence the transition. */
-  /* --ml-stack-top: how far the corner stack (Wiki row + this pill) reaches
-     above the HUD rail — the pill's bottom offset plus its outer height. The
-     portrait ghost stick (gamepad.ts) parks one gap above it, so a taller
-     pill lifts the stick instead of sliding under it. */
-  :root{--ml-stack-top:calc(10px + var(--ml-stack-step, 44px) + ${AH * SCALE + 2}px)}
+  /* The REST rule — bottom-right of the game view, one --ml-stack-step above
+     the Wiki row, 10px from the right edge (the one margin everything keeps,
+     maintainer 2026-07-31) — now only survives in LEFT-handed landscape; the
+     two rules below re-anchor portrait and right-handed landscape to the
+     top. --hud-h is real px, published by hud.ts applyLayout; the fallback
+     is the golden-ratio split it computes. When a chat box is focused the
+     phone keyboard covers the bottom corners, so hud.ts lifts this pill (and
+     the chat log) above the floated input via :root.ml-kb-up — hence the
+     transition; top-anchored placements ignore that lift (over-constrained). */
   .ml-clock{position:fixed;right:calc(var(--gv-right,0px) + 10px);
     bottom:calc(var(--hud-h, 38.2dvh) + 10px + var(--ml-stack-step, 44px));z-index:8;
     width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
@@ -291,6 +288,13 @@ function mount() {
      there the stick is bottom-LEFT and the pill is nowhere near it. */
   :root.ml-land:not(.ml-lh) .ml-clock{
     top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
+  /* PORTRAIT (maintainer 2026-09-17: "the time-of-day pill to also be top
+     right but under the wiki"): the Wiki row takes the spot under the XP
+     chip (wikibtn.ts) and this pill hangs one step under the ROW — the
+     opposite order to right-handed landscape, his verdict on each screen.
+     The bottom corner it leaves is the portrait ghost stick's (gamepad.ts). */
+  :root:not(.ml-land) .ml-clock{
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + var(--ml-stack-step, 44px));bottom:auto}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);
   root = document.createElement("div");

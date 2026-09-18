@@ -477,9 +477,12 @@ try {
   g.padBlurCss && g.padBlurCss.display === "none"
     ? ok("blur disc hidden in portrait (the stick sits on the opaque HUD page)")
     : fail(`blur disc still shown in portrait: ${JSON.stringify(g.padBlurCss)}`);
-  Math.abs(g.vh - g.hudH - 10 - g.wikibtn.b) <= 2 && g.clock.b < g.wikibtn.t
-    ? ok(`portrait Wiki row back above the HUD rail (b=${g.wikibtn.b}), pill stacked over it (b=${g.clock.b})`)
-    : fail(`portrait clock ${JSON.stringify(g.clock)} / wikibtn ${JSON.stringify(g.wikibtn)}`);
+  // PORTRAIT (maintainer 2026-09-17): the Wiki row sits directly under the XP
+  // chip and the pill one step under the ROW — the bottom corner is the
+  // portrait ghost stick's (verify-gamepad).
+  Math.abs(g.wikibtn.t - g.barsR.b - 10) <= 2 && Math.abs(g.wikibtn.r - g.barsR.r) <= 2 && Math.abs(g.clock.t - g.wikibtn.b - 10) <= 2
+    ? ok(`portrait Wiki row under the XP chip (t=${g.wikibtn.t} = chip b ${g.barsR.b} + 10), pill one step under it (t=${g.clock.t})`)
+    : fail(`portrait clock ${JSON.stringify(g.clock)} / wikibtn ${JSON.stringify(g.wikibtn)} / chip ${JSON.stringify(g.barsR)}`);
   g = await geom();
   g.stickPos !== "fixed" && g.stick.l < 393 * 0.5
     ? ok(`left-handed portrait: stick on the page's LEFT (x ${g.stick.l}..${g.stick.r})`)

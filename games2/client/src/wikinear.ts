@@ -189,6 +189,9 @@ function injectStyles(): void {
   .ml-wikinear.press,.ml-wikinear:active{transform:scale(.96)}
   :root.ml-land:not(.ml-lh) .ml-wikinear{
     top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + ${STACK_STEP});bottom:auto}
+  /* PORTRAIT: the row sits directly under the XP chip (wikibtn.ts header). */
+  :root:not(.ml-land) .ml-wikinear{
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
   :root.ml-kb-up .ml-wikinear{bottom:calc(var(--ml-inputlift) + 56px)}`;
   document.head.appendChild(s);
 }
