@@ -1,0 +1,763 @@
+{
+  "id": "elder_treant",
+  "name": "Rootfather",
+  "lore": "Older than the road that was cut around it. It has forgiven the axe once, and says so, and will not do it twice.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "8b10fb4b-a3a2-4510-9d56-2fabd851e20a",
+    "url": "https://www.pixellab.ai/create-character/8b10fb4b-a3a2-4510-9d56-2fabd851e20a",
+    "prompt": "Enormous ancient fantasy treant shown full body from crown to roots, a thick gnarled oak trunk for a torso with a hollow glowing amber face, a wide crown of dense green leaves, two massive branch arms with clawed twig fingers, and two sturdy root-bundle legs planted on the ground.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 224,
+    "height": 224
+  },
+  "native_size": {
+    "width": 224,
+    "height": 224
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "elder_treant/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "elder_treant/rotations/south.webp",
+    "west": "elder_treant/rotations/west.webp",
+    "east": "elder_treant/rotations/east.webp",
+    "north": "elder_treant/rotations/north.webp",
+    "south-east": "elder_treant/rotations/south-east.webp",
+    "north-east": "elder_treant/rotations/north-east.webp",
+    "north-west": "elder_treant/rotations/north-west.webp",
+    "south-west": "elder_treant/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "11def3f2-086c-4205-bcda-f5a2e5518e7a",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "elder_treant/animations/angry__east.webp",
+          "frame_paths": [
+            "elder_treant/animations/angry/east/00.webp",
+            "elder_treant/animations/angry/east/01.webp",
+            "elder_treant/animations/angry/east/02.webp",
+            "elder_treant/animations/angry/east/03.webp",
+            "elder_treant/animations/angry/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:33 GMT",
+          "src_frames": 5,
+          "sub": "138aceeb-7029-4222-a74f-fa6be0530f62"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "elder_treant/animations/angry__north.webp",
+          "frame_paths": [
+            "elder_treant/animations/angry/north/00.webp",
+            "elder_treant/animations/angry/north/01.webp",
+            "elder_treant/animations/angry/north/02.webp",
+            "elder_treant/animations/angry/north/03.webp",
+            "elder_treant/animations/angry/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:35 GMT",
+          "src_frames": 5,
+          "sub": "17a43455-5871-4001-b731-2b407114b498"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "elder_treant/animations/angry__north-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/angry/north-east/00.webp",
+            "elder_treant/animations/angry/north-east/01.webp",
+            "elder_treant/animations/angry/north-east/02.webp",
+            "elder_treant/animations/angry/north-east/03.webp",
+            "elder_treant/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:36 GMT",
+          "src_frames": 5,
+          "sub": "0ada2d43-9249-4df6-8c0c-60025e132b4a"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "elder_treant/animations/angry__south.webp",
+          "frame_paths": [
+            "elder_treant/animations/angry/south/00.webp",
+            "elder_treant/animations/angry/south/01.webp",
+            "elder_treant/animations/angry/south/02.webp",
+            "elder_treant/animations/angry/south/03.webp",
+            "elder_treant/animations/angry/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:38 GMT",
+          "src_frames": 5,
+          "sub": "062bb7b2-6329-43db-b919-acb7ba4c1ea0"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "elder_treant/animations/angry__south-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/angry/south-east/00.webp",
+            "elder_treant/animations/angry/south-east/01.webp",
+            "elder_treant/animations/angry/south-east/02.webp",
+            "elder_treant/animations/angry/south-east/03.webp",
+            "elder_treant/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:39 GMT",
+          "src_frames": 5,
+          "sub": "437ab8ab-48a5-4f71-be0b-0b88c91b483e"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "elder_treant/animations/angry__south-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/angry/south-west/00.webp",
+            "elder_treant/animations/angry/south-west/01.webp",
+            "elder_treant/animations/angry/south-west/02.webp",
+            "elder_treant/animations/angry/south-west/03.webp",
+            "elder_treant/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "elder_treant/animations/angry__west.webp",
+          "frame_paths": [
+            "elder_treant/animations/angry/west/00.webp",
+            "elder_treant/animations/angry/west/01.webp",
+            "elder_treant/animations/angry/west/02.webp",
+            "elder_treant/animations/angry/west/03.webp",
+            "elder_treant/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "elder_treant/animations/angry__north-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/angry/north-west/00.webp",
+            "elder_treant/animations/angry/north-west/01.webp",
+            "elder_treant/animations/angry/north-west/02.webp",
+            "elder_treant/animations/angry/north-west/03.webp",
+            "elder_treant/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "10d1dd9a-fcb5-4921-8ff4-2b17500d00c6",
+      "source_name": "custom-Branch Smash - Swings one huge branch arm down in ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "elder_treant/animations/attack__east.webp",
+          "frame_paths": [
+            "elder_treant/animations/attack/east/00.webp",
+            "elder_treant/animations/attack/east/01.webp",
+            "elder_treant/animations/attack/east/02.webp",
+            "elder_treant/animations/attack/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:42 GMT",
+          "src_frames": 4,
+          "sub": "61cd914b-6b4a-4954-9882-6ddba8aa694b"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "elder_treant/animations/attack__north.webp",
+          "frame_paths": [
+            "elder_treant/animations/attack/north/00.webp",
+            "elder_treant/animations/attack/north/01.webp",
+            "elder_treant/animations/attack/north/02.webp",
+            "elder_treant/animations/attack/north/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:43 GMT",
+          "src_frames": 4,
+          "sub": "443e38ec-10d9-47d6-b7d4-07cb24ddea42"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "elder_treant/animations/attack__north-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/attack/north-east/00.webp",
+            "elder_treant/animations/attack/north-east/01.webp",
+            "elder_treant/animations/attack/north-east/02.webp",
+            "elder_treant/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:45 GMT",
+          "src_frames": 4,
+          "sub": "4027b426-1d9a-4d57-a747-b776556724c5"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "elder_treant/animations/attack__south.webp",
+          "frame_paths": [
+            "elder_treant/animations/attack/south/00.webp",
+            "elder_treant/animations/attack/south/01.webp",
+            "elder_treant/animations/attack/south/02.webp",
+            "elder_treant/animations/attack/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:46 GMT",
+          "src_frames": 4,
+          "sub": "35572336-72c7-487d-b58b-50d2c6f4273a"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "elder_treant/animations/attack__south-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/attack/south-east/00.webp",
+            "elder_treant/animations/attack/south-east/01.webp",
+            "elder_treant/animations/attack/south-east/02.webp",
+            "elder_treant/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:48 GMT",
+          "src_frames": 4,
+          "sub": "6a91a406-07d5-4b3c-bfa9-a2b71298efd3"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "elder_treant/animations/attack__south-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/attack/south-west/00.webp",
+            "elder_treant/animations/attack/south-west/01.webp",
+            "elder_treant/animations/attack/south-west/02.webp",
+            "elder_treant/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "elder_treant/animations/attack__west.webp",
+          "frame_paths": [
+            "elder_treant/animations/attack/west/00.webp",
+            "elder_treant/animations/attack/west/01.webp",
+            "elder_treant/animations/attack/west/02.webp",
+            "elder_treant/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "elder_treant/animations/attack__north-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/attack/north-west/00.webp",
+            "elder_treant/animations/attack/north-west/01.webp",
+            "elder_treant/animations/attack/north-west/02.webp",
+            "elder_treant/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "1d857d80-9c08-4c82-b2f5-18ab064b7401",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "elder_treant/animations/idle__east.webp",
+          "frame_paths": [
+            "elder_treant/animations/idle/east/00.webp",
+            "elder_treant/animations/idle/east/01.webp",
+            "elder_treant/animations/idle/east/02.webp",
+            "elder_treant/animations/idle/east/03.webp",
+            "elder_treant/animations/idle/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:50 GMT",
+          "src_frames": 5,
+          "sub": "72bb5520-0e4f-4b08-858f-6f962d8fc068"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "elder_treant/animations/idle__north.webp",
+          "frame_paths": [
+            "elder_treant/animations/idle/north/00.webp",
+            "elder_treant/animations/idle/north/01.webp",
+            "elder_treant/animations/idle/north/02.webp",
+            "elder_treant/animations/idle/north/03.webp",
+            "elder_treant/animations/idle/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:51 GMT",
+          "src_frames": 5,
+          "sub": "d4c1f34f-11e0-47b5-938e-a8d8d5f2c02e"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "elder_treant/animations/idle__north-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/idle/north-east/00.webp",
+            "elder_treant/animations/idle/north-east/01.webp",
+            "elder_treant/animations/idle/north-east/02.webp",
+            "elder_treant/animations/idle/north-east/03.webp",
+            "elder_treant/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:53 GMT",
+          "src_frames": 5,
+          "sub": "c0c91f01-ca71-452c-ae4d-5b3f773afea4"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "elder_treant/animations/idle__south.webp",
+          "frame_paths": [
+            "elder_treant/animations/idle/south/00.webp",
+            "elder_treant/animations/idle/south/01.webp",
+            "elder_treant/animations/idle/south/02.webp",
+            "elder_treant/animations/idle/south/03.webp",
+            "elder_treant/animations/idle/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:55 GMT",
+          "src_frames": 5,
+          "sub": "d3f44ba3-539e-4253-9aa4-fdfce1fb8769"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "elder_treant/animations/idle__south-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/idle/south-east/00.webp",
+            "elder_treant/animations/idle/south-east/01.webp",
+            "elder_treant/animations/idle/south-east/02.webp",
+            "elder_treant/animations/idle/south-east/03.webp",
+            "elder_treant/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:56 GMT",
+          "src_frames": 5,
+          "sub": "4de9885a-ee55-4b44-906b-a491d63584c8"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "elder_treant/animations/idle__south-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/idle/south-west/00.webp",
+            "elder_treant/animations/idle/south-west/01.webp",
+            "elder_treant/animations/idle/south-west/02.webp",
+            "elder_treant/animations/idle/south-west/03.webp",
+            "elder_treant/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "elder_treant/animations/idle__west.webp",
+          "frame_paths": [
+            "elder_treant/animations/idle/west/00.webp",
+            "elder_treant/animations/idle/west/01.webp",
+            "elder_treant/animations/idle/west/02.webp",
+            "elder_treant/animations/idle/west/03.webp",
+            "elder_treant/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "elder_treant/animations/idle__north-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/idle/north-west/00.webp",
+            "elder_treant/animations/idle/north-west/01.webp",
+            "elder_treant/animations/idle/north-west/02.webp",
+            "elder_treant/animations/idle/north-west/03.webp",
+            "elder_treant/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "94293d21-a544-4852-9744-b006bdda40fe",
+      "source_name": "custom-Death - Topples over sideways ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "elder_treant/animations/die__east.webp",
+          "frame_paths": [
+            "elder_treant/animations/die/east/00.webp",
+            "elder_treant/animations/die/east/01.webp",
+            "elder_treant/animations/die/east/02.webp",
+            "elder_treant/animations/die/east/03.webp",
+            "elder_treant/animations/die/east/04.webp",
+            "elder_treant/animations/die/east/05.webp",
+            "elder_treant/animations/die/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:48:58 GMT",
+          "src_frames": 7,
+          "sub": "b7f4088e-7beb-4202-89d3-bba8a208ef25"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "elder_treant/animations/die__north.webp",
+          "frame_paths": [
+            "elder_treant/animations/die/north/00.webp",
+            "elder_treant/animations/die/north/01.webp",
+            "elder_treant/animations/die/north/02.webp",
+            "elder_treant/animations/die/north/03.webp",
+            "elder_treant/animations/die/north/04.webp",
+            "elder_treant/animations/die/north/05.webp",
+            "elder_treant/animations/die/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:00 GMT",
+          "src_frames": 7,
+          "sub": "1a649fb8-062a-4baf-95e4-07effed72c19"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "elder_treant/animations/die__north-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/die/north-east/00.webp",
+            "elder_treant/animations/die/north-east/01.webp",
+            "elder_treant/animations/die/north-east/02.webp",
+            "elder_treant/animations/die/north-east/03.webp",
+            "elder_treant/animations/die/north-east/04.webp",
+            "elder_treant/animations/die/north-east/05.webp",
+            "elder_treant/animations/die/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:01 GMT",
+          "src_frames": 7,
+          "sub": "963c976d-cbef-4ac8-ad14-fd006a7004bb"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "elder_treant/animations/die__south.webp",
+          "frame_paths": [
+            "elder_treant/animations/die/south/00.webp",
+            "elder_treant/animations/die/south/01.webp",
+            "elder_treant/animations/die/south/02.webp",
+            "elder_treant/animations/die/south/03.webp",
+            "elder_treant/animations/die/south/04.webp",
+            "elder_treant/animations/die/south/05.webp",
+            "elder_treant/animations/die/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:03 GMT",
+          "src_frames": 7,
+          "sub": "5f5a9d06-6758-4bfc-9dc2-41d530c698a9"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "elder_treant/animations/die__south-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/die/south-east/00.webp",
+            "elder_treant/animations/die/south-east/01.webp",
+            "elder_treant/animations/die/south-east/02.webp",
+            "elder_treant/animations/die/south-east/03.webp",
+            "elder_treant/animations/die/south-east/04.webp",
+            "elder_treant/animations/die/south-east/05.webp",
+            "elder_treant/animations/die/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:05 GMT",
+          "src_frames": 7,
+          "sub": "96de69fb-d0ea-4587-9163-fe5c22fde9c2"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "elder_treant/animations/die__south-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/die/south-west/00.webp",
+            "elder_treant/animations/die/south-west/01.webp",
+            "elder_treant/animations/die/south-west/02.webp",
+            "elder_treant/animations/die/south-west/03.webp",
+            "elder_treant/animations/die/south-west/04.webp",
+            "elder_treant/animations/die/south-west/05.webp",
+            "elder_treant/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "elder_treant/animations/die__west.webp",
+          "frame_paths": [
+            "elder_treant/animations/die/west/00.webp",
+            "elder_treant/animations/die/west/01.webp",
+            "elder_treant/animations/die/west/02.webp",
+            "elder_treant/animations/die/west/03.webp",
+            "elder_treant/animations/die/west/04.webp",
+            "elder_treant/animations/die/west/05.webp",
+            "elder_treant/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "elder_treant/animations/die__north-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/die/north-west/00.webp",
+            "elder_treant/animations/die/north-west/01.webp",
+            "elder_treant/animations/die/north-west/02.webp",
+            "elder_treant/animations/die/north-west/03.webp",
+            "elder_treant/animations/die/north-west/04.webp",
+            "elder_treant/animations/die/north-west/05.webp",
+            "elder_treant/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_raises_one_huge_branch_arm_and": {
+      "group_id": "ee0a3f6d-5775-4df2-b979-48b059542d84",
+      "source_name": "custom-raises one huge branch arm and",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "elder_treant/animations/custom_raises_one_huge_branch_arm_and__east.webp",
+          "frame_paths": [
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/east/00.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/east/01.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/east/02.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/east/03.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/east/04.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/east/05.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:06 GMT",
+          "src_frames": 7,
+          "sub": "a687eec0-1cd9-4c56-87a0-d2eff7225957"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "elder_treant/animations/custom_raises_one_huge_branch_arm_and__north.webp",
+          "frame_paths": [
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north/00.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north/01.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north/02.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north/03.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north/04.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north/05.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:08 GMT",
+          "src_frames": 7,
+          "sub": "4b7571b5-ff16-481e-b092-6dceda367b22"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "elder_treant/animations/custom_raises_one_huge_branch_arm_and__north-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-east/00.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-east/01.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-east/02.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-east/03.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-east/04.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-east/05.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:09 GMT",
+          "src_frames": 7,
+          "sub": "77d39bff-aa81-41f1-84af-e6229fa892c3"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "elder_treant/animations/custom_raises_one_huge_branch_arm_and__south.webp",
+          "frame_paths": [
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south/00.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south/01.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south/02.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south/03.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south/04.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south/05.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:11 GMT",
+          "src_frames": 7,
+          "sub": "4fb18b17-7a6c-4908-ae50-8cf2360fce82"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "elder_treant/animations/custom_raises_one_huge_branch_arm_and__south-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-east/00.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-east/01.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-east/02.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-east/03.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-east/04.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-east/05.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:13 GMT",
+          "src_frames": 7,
+          "sub": "4b753297-6788-407e-a988-fcbf4a68e215"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "elder_treant/animations/custom_raises_one_huge_branch_arm_and__south-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-west/00.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-west/01.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-west/02.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-west/03.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-west/04.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-west/05.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "elder_treant/animations/custom_raises_one_huge_branch_arm_and__west.webp",
+          "frame_paths": [
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/west/00.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/west/01.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/west/02.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/west/03.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/west/04.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/west/05.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "elder_treant/animations/custom_raises_one_huge_branch_arm_and__north-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-west/00.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-west/01.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-west/02.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-west/03.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-west/04.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-west/05.webp",
+            "elder_treant/animations/custom_raises_one_huge_branch_arm_and/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "3e8701d3-b2e1-4a07-9895-e7c30fce73be",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "elder_treant/animations/walk__east.webp",
+          "frame_paths": [
+            "elder_treant/animations/walk/east/00.webp",
+            "elder_treant/animations/walk/east/01.webp",
+            "elder_treant/animations/walk/east/02.webp",
+            "elder_treant/animations/walk/east/03.webp",
+            "elder_treant/animations/walk/east/04.webp",
+            "elder_treant/animations/walk/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:14 GMT",
+          "src_frames": 6,
+          "sub": "c2f24dc3-e693-4bc8-9a4b-852d2b585d56"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "elder_treant/animations/walk__north.webp",
+          "frame_paths": [
+            "elder_treant/animations/walk/north/00.webp",
+            "elder_treant/animations/walk/north/01.webp",
+            "elder_treant/animations/walk/north/02.webp",
+            "elder_treant/animations/walk/north/03.webp",
+            "elder_treant/animations/walk/north/04.webp",
+            "elder_treant/animations/walk/north/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:16 GMT",
+          "src_frames": 6,
+          "sub": "bd5833b6-d7db-410c-b30a-234f85486928"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "elder_treant/animations/walk__north-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/walk/north-east/00.webp",
+            "elder_treant/animations/walk/north-east/01.webp",
+            "elder_treant/animations/walk/north-east/02.webp",
+            "elder_treant/animations/walk/north-east/03.webp",
+            "elder_treant/animations/walk/north-east/04.webp",
+            "elder_treant/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:18 GMT",
+          "src_frames": 6,
+          "sub": "a5b8ffe6-fe46-42f8-9e11-a5ae0fc4614a"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "elder_treant/animations/walk__south.webp",
+          "frame_paths": [
+            "elder_treant/animations/walk/south/00.webp",
+            "elder_treant/animations/walk/south/01.webp",
+            "elder_treant/animations/walk/south/02.webp",
+            "elder_treant/animations/walk/south/03.webp",
+            "elder_treant/animations/walk/south/04.webp",
+            "elder_treant/animations/walk/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:19 GMT",
+          "src_frames": 6,
+          "sub": "5327f991-de20-4927-ad7e-20d908b15c19"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "elder_treant/animations/walk__south-east.webp",
+          "frame_paths": [
+            "elder_treant/animations/walk/south-east/00.webp",
+            "elder_treant/animations/walk/south-east/01.webp",
+            "elder_treant/animations/walk/south-east/02.webp",
+            "elder_treant/animations/walk/south-east/03.webp",
+            "elder_treant/animations/walk/south-east/04.webp",
+            "elder_treant/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:49:21 GMT",
+          "src_frames": 6,
+          "sub": "83228f49-8995-49c1-871f-f38fbc6fbf76"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "elder_treant/animations/walk__south-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/walk/south-west/00.webp",
+            "elder_treant/animations/walk/south-west/01.webp",
+            "elder_treant/animations/walk/south-west/02.webp",
+            "elder_treant/animations/walk/south-west/03.webp",
+            "elder_treant/animations/walk/south-west/04.webp",
+            "elder_treant/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "elder_treant/animations/walk__west.webp",
+          "frame_paths": [
+            "elder_treant/animations/walk/west/00.webp",
+            "elder_treant/animations/walk/west/01.webp",
+            "elder_treant/animations/walk/west/02.webp",
+            "elder_treant/animations/walk/west/03.webp",
+            "elder_treant/animations/walk/west/04.webp",
+            "elder_treant/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "elder_treant/animations/walk__north-west.webp",
+          "frame_paths": [
+            "elder_treant/animations/walk/north-west/00.webp",
+            "elder_treant/animations/walk/north-west/01.webp",
+            "elder_treant/animations/walk/north-west/02.webp",
+            "elder_treant/animations/walk/north-west/03.webp",
+            "elder_treant/animations/walk/north-west/04.webp",
+            "elder_treant/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

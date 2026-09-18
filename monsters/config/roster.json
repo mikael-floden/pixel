@@ -294,6 +294,21 @@
       }
     },
     {
+      "id": "crag_troll",
+      "kind": "character",
+      "pixellab_id": "63fa36e3-414f-4476-91b8-9527ddd1a011",
+      "name": "Cragtroll",
+      "lore": "It sleeps as a hillside and wakes as a landslide. Travellers who camp on it are the reason it wakes.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Angry combat idle, frustrated - snarls and shifts ": "angry",
+        "custom-Club Smash - Raises the stone club overhead and sm": "attack",
+        "custom-Death - Drops the club, sinks ": "die"
+      }
+    },
+    {
       "id": "elder_treant",
       "kind": "character",
       "pixellab_id": "8b10fb4b-a3a2-4510-9d56-2fabd851e20a",

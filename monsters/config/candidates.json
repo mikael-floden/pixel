@@ -101,25 +101,6 @@
       "die_action": "Death - The pebble cracks in half and the crab shrivels into a small dark heap, then fades away"
     },
     {
-      "id": "elder_treant",
-      "name": "Rootfather",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "mannequin",
-      "size": 224,
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Enormous ancient fantasy treant shown full body from crown to roots, a thick gnarled oak trunk for a torso with a hollow glowing amber face, a wide crown of dense green leaves, two massive branch arms with clawed twig fingers, and two sturdy root-bundle legs planted on the ground.",
-      "lore": "Older than the road that was cut around it. It has forgiven the axe once, and says so, and will not do it twice.",
-      "attack_action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
-      "claws": true,
-      "attack_extreme": "Root Sweep - The treant swings both branch arms down in a huge arc, leaves and splinters bursting off",
-      "die_action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away"
-    },
-    {
       "id": "crag_troll",
       "name": "Cragtroll",
       "tier": "boss",
@@ -4437,6 +4418,33 @@
       "attack_extreme": "Shell Burst - The crab's shell cracks open with a burst of force as it hurls both claws wide and slams them down, shards and spray flying",
       "die_action": "Death - The shell cracks open and the crab crumbles into a scatter of broken shell pieces, then fades away",
       "graduated_at": "2026-09-18T14:48:05+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "elder_treant",
+      "name": "Rootfather",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "mannequin",
+      "size": 224,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Enormous ancient fantasy treant shown full body from crown to roots, a thick gnarled oak trunk for a torso with a hollow glowing amber face, a wide crown of dense green leaves, two massive branch arms with clawed twig fingers, and two sturdy root-bundle legs planted on the ground.",
+      "lore": "Older than the road that was cut around it. It has forgiven the axe once, and says so, and will not do it twice.",
+      "attack_action": "Branch Smash - Swings one huge branch arm down in a wide overhead smash",
+      "claws": true,
+      "attack_extreme": "Root Sweep - The treant swings both branch arms down in a huge arc, leaves and splinters bursting off",
+      "die_action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
+      "graduated_at": "2026-09-18T14:50:20+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",
