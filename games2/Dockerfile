@@ -32,21 +32,47 @@ WORKDIR /src
 # them above the art COPYs keeps this layer cached across art pushes.
 COPY games2/config/publish.json games2/config/publish.json
 COPY games2/scripts/shipset.mjs games2/scripts/shipset.mjs
-COPY scenery/ scenery/
+# ORDERED BY MEASURED CHURN, LEAST FIRST — the first COPY whose content changed
+# invalidates every COPY below it, so a domain's position is what it costs its
+# neighbours. Measured over 399 consecutive deploy pairs (2026-09-12..18): how
+# often each subtree's content differed from the previous build, and its size
+# in the build context.
+#
+#   sounds       0.0% (0/399)     7.8 MB     music   0.0% (0/399)   155.6 MB
+#   lore         0.3%             1.2 MB     items   0.5%             0.7 MB
+#   characters2  0.5%            18.1 MB     wiki    4.0%            12.4 MB
+#   tiles        4.8%           122.1 MB     maps2   8.3%             3.0 MB
+#   scenery     11.3%           187.4 MB     live   16.8%             7.3 MB
+#   monsters    27.3%            99.9 MB
+#
+# 163.4 MB of sounds + music has not changed ONCE in 400 deploys, and it used to
+# sit BELOW tiles — so every tiles push re-materialised it. monsters is the most
+# frequently pushed art domain (18.4 runs/day) and now sits last, where it
+# invalidates nothing but the shipset RUN.
+#
+# THE STRUCTURAL FACT THIS EXPLOITS: never more than ONE art domain changes per
+# deploy — 0 of those 399 pairs changed two or more (188 changed none, 211
+# exactly one). So with the list in churn order, an art push re-materialises its
+# own domain and whatever the shipset needs, and nothing else.
+COPY sounds/ sounds/
+COPY music/ music/
+COPY lore/ lore/
+COPY items/ items/
 COPY characters2/ characters2/
+COPY wiki/ wiki/
 # Tiles 3.0 — THE tile system (tiles2 deleted 2026-09-09). Only the reviewable
 # output is tracked; tiles/matrix is gitignored so the raw candidate sheets
 # never enter the build context. The image ships the resolver's exact closure
 # of the published world (ship-tiles3.ts below), never the whole domain.
 COPY tiles/ tiles/
 COPY maps2/ maps2/
-COPY sounds/ sounds/
-COPY music/ music/
-COPY monsters/ monsters/
-COPY items/ items/
-COPY lore/ lore/
-COPY wiki/ wiki/
+COPY scenery/ scenery/
+# live/ is the LIVE channel: the running server reads it from GitHub with no
+# redeploy, so the copy here is only the cold-start fallback — and it changes
+# 77x a day, the most of anything in the repo. Last but for monsters, so it
+# costs no art layer anything.
 COPY live/ live/
+COPY monsters/ monsters/
 # The boards, so the registry built here can list the fleet by name (the page
 # reads each board's CONTENTS live from main — see wiki/README.md "Agents").
 COPY coordination/ coordination/
