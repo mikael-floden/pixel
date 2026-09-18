@@ -1,0 +1,760 @@
+{
+  "id": "crag_troll",
+  "name": "Cragtroll",
+  "lore": "It sleeps as a hillside and wakes as a landslide. Travellers who camp on it are the reason it wakes.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "63fa36e3-414f-4476-91b8-9527ddd1a011",
+    "url": "https://www.pixellab.ai/create-character/63fa36e3-414f-4476-91b8-9527ddd1a011",
+    "prompt": "Hulking fantasy mountain troll shown full body from head to feet, thick warty grey-green skin, a heavy brow and underbite with two lower tusks, a broad hunched back with lichen and small boulders growing on it, huge hands dragging a rough stone club, and wide flat feet.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 232,
+    "height": 232
+  },
+  "native_size": {
+    "width": 232,
+    "height": 232
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "crag_troll/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "crag_troll/rotations/south.webp",
+    "west": "crag_troll/rotations/west.webp",
+    "east": "crag_troll/rotations/east.webp",
+    "north": "crag_troll/rotations/north.webp",
+    "south-east": "crag_troll/rotations/south-east.webp",
+    "north-east": "crag_troll/rotations/north-east.webp",
+    "north-west": "crag_troll/rotations/north-west.webp",
+    "south-west": "crag_troll/rotations/south-west.webp"
+  },
+  "animations": {
+    "cross_punch": {
+      "group_id": "20dc35ec-cd37-4041-af47-9221b2ef9970",
+      "source_name": "cross-punch",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "crag_troll/animations/cross_punch__east.webp",
+          "frame_paths": [
+            "crag_troll/animations/cross_punch/east/00.webp",
+            "crag_troll/animations/cross_punch/east/01.webp",
+            "crag_troll/animations/cross_punch/east/02.webp",
+            "crag_troll/animations/cross_punch/east/03.webp",
+            "crag_troll/animations/cross_punch/east/04.webp",
+            "crag_troll/animations/cross_punch/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:50:50 GMT",
+          "src_frames": 6,
+          "sub": "545f9176-fd3a-45fe-8ff5-15c353149da7"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "crag_troll/animations/cross_punch__west.webp",
+          "frame_paths": [
+            "crag_troll/animations/cross_punch/west/00.webp",
+            "crag_troll/animations/cross_punch/west/01.webp",
+            "crag_troll/animations/cross_punch/west/02.webp",
+            "crag_troll/animations/cross_punch/west/03.webp",
+            "crag_troll/animations/cross_punch/west/04.webp",
+            "crag_troll/animations/cross_punch/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "8f706937-f8b8-4c0f-8088-6c5c2c26e663",
+      "source_name": "custom-Angry combat idle, frustrated  + custom-Angry combat idle, frustrated - snarls and shifts ",
+      "directions": {
+        "north": {
+          "frames": 5,
+          "strip": "crag_troll/animations/angry__north.webp",
+          "frame_paths": [
+            "crag_troll/animations/angry/north/00.webp",
+            "crag_troll/animations/angry/north/01.webp",
+            "crag_troll/animations/angry/north/02.webp",
+            "crag_troll/animations/angry/north/03.webp",
+            "crag_troll/animations/angry/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 13:25:00 GMT",
+          "src_frames": 5,
+          "sub": "c335bc68-2aa7-467f-bd34-0b3f9697938e"
+        },
+        "east": {
+          "frames": 4,
+          "strip": "crag_troll/animations/angry__east.webp",
+          "frame_paths": [
+            "crag_troll/animations/angry/east/00.webp",
+            "crag_troll/animations/angry/east/01.webp",
+            "crag_troll/animations/angry/east/02.webp",
+            "crag_troll/animations/angry/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:50:53 GMT",
+          "src_frames": 4,
+          "sub": "d854e51a-babe-4720-8678-ad2aa0cca044"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "crag_troll/animations/angry__north-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/angry/north-east/00.webp",
+            "crag_troll/animations/angry/north-east/01.webp",
+            "crag_troll/animations/angry/north-east/02.webp",
+            "crag_troll/animations/angry/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:50:55 GMT",
+          "src_frames": 4,
+          "sub": "1d115cba-a306-418c-8fea-6add36d7e929"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "crag_troll/animations/angry__south.webp",
+          "frame_paths": [
+            "crag_troll/animations/angry/south/00.webp",
+            "crag_troll/animations/angry/south/01.webp",
+            "crag_troll/animations/angry/south/02.webp",
+            "crag_troll/animations/angry/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:50:56 GMT",
+          "src_frames": 4,
+          "sub": "86cb92bd-fa58-4cc9-af56-cb8134227c00"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "crag_troll/animations/angry__south-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/angry/south-east/00.webp",
+            "crag_troll/animations/angry/south-east/01.webp",
+            "crag_troll/animations/angry/south-east/02.webp",
+            "crag_troll/animations/angry/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:50:58 GMT",
+          "src_frames": 4,
+          "sub": "063ece94-42fb-4a15-b2b4-fc56f271490d"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "crag_troll/animations/angry__south-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/angry/south-west/00.webp",
+            "crag_troll/animations/angry/south-west/01.webp",
+            "crag_troll/animations/angry/south-west/02.webp",
+            "crag_troll/animations/angry/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "crag_troll/animations/angry__west.webp",
+          "frame_paths": [
+            "crag_troll/animations/angry/west/00.webp",
+            "crag_troll/animations/angry/west/01.webp",
+            "crag_troll/animations/angry/west/02.webp",
+            "crag_troll/animations/angry/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "crag_troll/animations/angry__north-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/angry/north-west/00.webp",
+            "crag_troll/animations/angry/north-west/01.webp",
+            "crag_troll/animations/angry/north-west/02.webp",
+            "crag_troll/animations/angry/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "1b9bea2f-eb8a-4927-a05f-2f562086be2b",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "crag_troll/animations/idle__east.webp",
+          "frame_paths": [
+            "crag_troll/animations/idle/east/00.webp",
+            "crag_troll/animations/idle/east/01.webp",
+            "crag_troll/animations/idle/east/02.webp",
+            "crag_troll/animations/idle/east/03.webp",
+            "crag_troll/animations/idle/east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:00 GMT",
+          "src_frames": 5,
+          "sub": "386caf78-626e-4dbc-b0e7-06df19db7353"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "crag_troll/animations/idle__north.webp",
+          "frame_paths": [
+            "crag_troll/animations/idle/north/00.webp",
+            "crag_troll/animations/idle/north/01.webp",
+            "crag_troll/animations/idle/north/02.webp",
+            "crag_troll/animations/idle/north/03.webp",
+            "crag_troll/animations/idle/north/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:01 GMT",
+          "src_frames": 5,
+          "sub": "bf085642-a4fa-4e23-94c6-3ba25313b965"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "crag_troll/animations/idle__north-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/idle/north-east/00.webp",
+            "crag_troll/animations/idle/north-east/01.webp",
+            "crag_troll/animations/idle/north-east/02.webp",
+            "crag_troll/animations/idle/north-east/03.webp",
+            "crag_troll/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:04 GMT",
+          "src_frames": 5,
+          "sub": "bc35f245-0777-42f1-bfc8-a7f9a297d706"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "crag_troll/animations/idle__south.webp",
+          "frame_paths": [
+            "crag_troll/animations/idle/south/00.webp",
+            "crag_troll/animations/idle/south/01.webp",
+            "crag_troll/animations/idle/south/02.webp",
+            "crag_troll/animations/idle/south/03.webp",
+            "crag_troll/animations/idle/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:06 GMT",
+          "src_frames": 5,
+          "sub": "d4f56718-b869-4fe1-bf44-380a1b928ade"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "crag_troll/animations/idle__south-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/idle/south-east/00.webp",
+            "crag_troll/animations/idle/south-east/01.webp",
+            "crag_troll/animations/idle/south-east/02.webp",
+            "crag_troll/animations/idle/south-east/03.webp",
+            "crag_troll/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:07 GMT",
+          "src_frames": 5,
+          "sub": "815c9407-de1f-4812-b0ee-e3e33a46e29d"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "crag_troll/animations/idle__south-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/idle/south-west/00.webp",
+            "crag_troll/animations/idle/south-west/01.webp",
+            "crag_troll/animations/idle/south-west/02.webp",
+            "crag_troll/animations/idle/south-west/03.webp",
+            "crag_troll/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "crag_troll/animations/idle__west.webp",
+          "frame_paths": [
+            "crag_troll/animations/idle/west/00.webp",
+            "crag_troll/animations/idle/west/01.webp",
+            "crag_troll/animations/idle/west/02.webp",
+            "crag_troll/animations/idle/west/03.webp",
+            "crag_troll/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "crag_troll/animations/idle__north-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/idle/north-west/00.webp",
+            "crag_troll/animations/idle/north-west/01.webp",
+            "crag_troll/animations/idle/north-west/02.webp",
+            "crag_troll/animations/idle/north-west/03.webp",
+            "crag_troll/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "6dc1f0db-8ae0-4db6-bd13-d3f8669f1d68",
+      "source_name": "custom-Club Smash - Raises the stone club overhead and sm",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "crag_troll/animations/attack__east.webp",
+          "frame_paths": [
+            "crag_troll/animations/attack/east/00.webp",
+            "crag_troll/animations/attack/east/01.webp",
+            "crag_troll/animations/attack/east/02.webp",
+            "crag_troll/animations/attack/east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:10 GMT",
+          "src_frames": 4,
+          "sub": "df161f64-6f69-4901-9040-6d9a8d742a80"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "crag_troll/animations/attack__north.webp",
+          "frame_paths": [
+            "crag_troll/animations/attack/north/00.webp",
+            "crag_troll/animations/attack/north/01.webp",
+            "crag_troll/animations/attack/north/02.webp",
+            "crag_troll/animations/attack/north/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:11 GMT",
+          "src_frames": 4,
+          "sub": "72b107ef-cddf-498c-a02b-541ff9f438f2"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "crag_troll/animations/attack__north-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/attack/north-east/00.webp",
+            "crag_troll/animations/attack/north-east/01.webp",
+            "crag_troll/animations/attack/north-east/02.webp",
+            "crag_troll/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:12 GMT",
+          "src_frames": 4,
+          "sub": "8f0c06fb-f7d4-421a-b00d-4280bf709ae6"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "crag_troll/animations/attack__south.webp",
+          "frame_paths": [
+            "crag_troll/animations/attack/south/00.webp",
+            "crag_troll/animations/attack/south/01.webp",
+            "crag_troll/animations/attack/south/02.webp",
+            "crag_troll/animations/attack/south/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:14 GMT",
+          "src_frames": 4,
+          "sub": "4e92761b-044b-4323-aa92-4b4803efa0aa"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "crag_troll/animations/attack__south-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/attack/south-east/00.webp",
+            "crag_troll/animations/attack/south-east/01.webp",
+            "crag_troll/animations/attack/south-east/02.webp",
+            "crag_troll/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:16 GMT",
+          "src_frames": 4,
+          "sub": "7254d1be-a17f-4efe-b18c-9153ecfb5d31"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "crag_troll/animations/attack__south-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/attack/south-west/00.webp",
+            "crag_troll/animations/attack/south-west/01.webp",
+            "crag_troll/animations/attack/south-west/02.webp",
+            "crag_troll/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "crag_troll/animations/attack__west.webp",
+          "frame_paths": [
+            "crag_troll/animations/attack/west/00.webp",
+            "crag_troll/animations/attack/west/01.webp",
+            "crag_troll/animations/attack/west/02.webp",
+            "crag_troll/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "crag_troll/animations/attack__north-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/attack/north-west/00.webp",
+            "crag_troll/animations/attack/north-west/01.webp",
+            "crag_troll/animations/attack/north-west/02.webp",
+            "crag_troll/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "a529ad7a-694f-4268-acf8-9975371cef05",
+      "source_name": "custom-Death - Drops the club, sinks ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "crag_troll/animations/die__east.webp",
+          "frame_paths": [
+            "crag_troll/animations/die/east/00.webp",
+            "crag_troll/animations/die/east/01.webp",
+            "crag_troll/animations/die/east/02.webp",
+            "crag_troll/animations/die/east/03.webp",
+            "crag_troll/animations/die/east/04.webp",
+            "crag_troll/animations/die/east/05.webp",
+            "crag_troll/animations/die/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:19 GMT",
+          "src_frames": 7,
+          "sub": "b87c24b2-9376-4ff7-b607-a20055d5cb87"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "crag_troll/animations/die__north.webp",
+          "frame_paths": [
+            "crag_troll/animations/die/north/00.webp",
+            "crag_troll/animations/die/north/01.webp",
+            "crag_troll/animations/die/north/02.webp",
+            "crag_troll/animations/die/north/03.webp",
+            "crag_troll/animations/die/north/04.webp",
+            "crag_troll/animations/die/north/05.webp",
+            "crag_troll/animations/die/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:21 GMT",
+          "src_frames": 7,
+          "sub": "c493612d-bf68-4261-b14e-ce61d52342cd"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "crag_troll/animations/die__north-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/die/north-east/00.webp",
+            "crag_troll/animations/die/north-east/01.webp",
+            "crag_troll/animations/die/north-east/02.webp",
+            "crag_troll/animations/die/north-east/03.webp",
+            "crag_troll/animations/die/north-east/04.webp",
+            "crag_troll/animations/die/north-east/05.webp",
+            "crag_troll/animations/die/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:22 GMT",
+          "src_frames": 7,
+          "sub": "b481306a-dcc9-4a50-82bb-b311e2eedc29"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "crag_troll/animations/die__south.webp",
+          "frame_paths": [
+            "crag_troll/animations/die/south/00.webp",
+            "crag_troll/animations/die/south/01.webp",
+            "crag_troll/animations/die/south/02.webp",
+            "crag_troll/animations/die/south/03.webp",
+            "crag_troll/animations/die/south/04.webp",
+            "crag_troll/animations/die/south/05.webp",
+            "crag_troll/animations/die/south/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:24 GMT",
+          "src_frames": 7,
+          "sub": "85b9bfd6-527f-49dc-a24c-b7db2a76aba3"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "crag_troll/animations/die__south-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/die/south-east/00.webp",
+            "crag_troll/animations/die/south-east/01.webp",
+            "crag_troll/animations/die/south-east/02.webp",
+            "crag_troll/animations/die/south-east/03.webp",
+            "crag_troll/animations/die/south-east/04.webp",
+            "crag_troll/animations/die/south-east/05.webp",
+            "crag_troll/animations/die/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:26 GMT",
+          "src_frames": 7,
+          "sub": "e9da31a8-47fe-4342-af11-02a8c7b0551b"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "crag_troll/animations/die__south-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/die/south-west/00.webp",
+            "crag_troll/animations/die/south-west/01.webp",
+            "crag_troll/animations/die/south-west/02.webp",
+            "crag_troll/animations/die/south-west/03.webp",
+            "crag_troll/animations/die/south-west/04.webp",
+            "crag_troll/animations/die/south-west/05.webp",
+            "crag_troll/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "crag_troll/animations/die__west.webp",
+          "frame_paths": [
+            "crag_troll/animations/die/west/00.webp",
+            "crag_troll/animations/die/west/01.webp",
+            "crag_troll/animations/die/west/02.webp",
+            "crag_troll/animations/die/west/03.webp",
+            "crag_troll/animations/die/west/04.webp",
+            "crag_troll/animations/die/west/05.webp",
+            "crag_troll/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "crag_troll/animations/die__north-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/die/north-west/00.webp",
+            "crag_troll/animations/die/north-west/01.webp",
+            "crag_troll/animations/die/north-west/02.webp",
+            "crag_troll/animations/die/north-west/03.webp",
+            "crag_troll/animations/die/north-west/04.webp",
+            "crag_troll/animations/die/north-west/05.webp",
+            "crag_troll/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_swings_the_stone_club_in_one_h": {
+      "group_id": "c3ab5396-cadc-41b3-8b68-f037b10b4968",
+      "source_name": "custom-swings the stone club in one h",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "crag_troll/animations/custom_swings_the_stone_club_in_one_h__east.webp",
+          "frame_paths": [
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/east/00.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/east/01.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/east/02.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/east/03.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/east/04.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/east/05.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:28 GMT",
+          "src_frames": 7,
+          "sub": "ab727860-b126-433b-b379-26b1f10d0cf6"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "crag_troll/animations/custom_swings_the_stone_club_in_one_h__north.webp",
+          "frame_paths": [
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north/00.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north/01.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north/02.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north/03.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north/04.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north/05.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:30 GMT",
+          "src_frames": 7,
+          "sub": "ab6057f9-ddaf-4c32-a9c7-34e821f5165f"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "crag_troll/animations/custom_swings_the_stone_club_in_one_h__north-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-east/00.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-east/01.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-east/02.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-east/03.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-east/04.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-east/05.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:32 GMT",
+          "src_frames": 7,
+          "sub": "9553d369-5246-4b6a-a1f8-930fd17233d2"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "crag_troll/animations/custom_swings_the_stone_club_in_one_h__south.webp",
+          "frame_paths": [
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south/00.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south/01.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south/02.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south/03.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south/04.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:34 GMT",
+          "src_frames": 5,
+          "sub": "e6bf3aa2-b24d-411d-ae53-f37305b5566d"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "crag_troll/animations/custom_swings_the_stone_club_in_one_h__south-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-east/00.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-east/01.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-east/02.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-east/03.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-east/04.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-east/05.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-east/06.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:36 GMT",
+          "src_frames": 7,
+          "sub": "1dafb029-4934-4c9b-9d20-56a5ac05d7a1"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "crag_troll/animations/custom_swings_the_stone_club_in_one_h__south-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-west/00.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-west/01.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-west/02.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-west/03.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-west/04.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-west/05.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "crag_troll/animations/custom_swings_the_stone_club_in_one_h__west.webp",
+          "frame_paths": [
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/west/00.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/west/01.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/west/02.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/west/03.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/west/04.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/west/05.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "crag_troll/animations/custom_swings_the_stone_club_in_one_h__north-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-west/00.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-west/01.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-west/02.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-west/03.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-west/04.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-west/05.webp",
+            "crag_troll/animations/custom_swings_the_stone_club_in_one_h/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "63049a6b-30ca-4b36-a5de-7851e57330a0",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "crag_troll/animations/walk__east.webp",
+          "frame_paths": [
+            "crag_troll/animations/walk/east/00.webp",
+            "crag_troll/animations/walk/east/01.webp",
+            "crag_troll/animations/walk/east/02.webp",
+            "crag_troll/animations/walk/east/03.webp",
+            "crag_troll/animations/walk/east/04.webp",
+            "crag_troll/animations/walk/east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:37 GMT",
+          "src_frames": 6,
+          "sub": "34c8ab0e-1e57-47f4-b63b-da47163fa0ba"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "crag_troll/animations/walk__north.webp",
+          "frame_paths": [
+            "crag_troll/animations/walk/north/00.webp",
+            "crag_troll/animations/walk/north/01.webp",
+            "crag_troll/animations/walk/north/02.webp",
+            "crag_troll/animations/walk/north/03.webp",
+            "crag_troll/animations/walk/north/04.webp",
+            "crag_troll/animations/walk/north/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:39 GMT",
+          "src_frames": 6,
+          "sub": "b314a2b0-6683-4bc9-ba65-7a8841f558f9"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "crag_troll/animations/walk__north-east.webp",
+          "frame_paths": [
+            "crag_troll/animations/walk/north-east/00.webp",
+            "crag_troll/animations/walk/north-east/01.webp",
+            "crag_troll/animations/walk/north-east/02.webp",
+            "crag_troll/animations/walk/north-east/03.webp",
+            "crag_troll/animations/walk/north-east/04.webp",
+            "crag_troll/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:41 GMT",
+          "src_frames": 6,
+          "sub": "853da555-0944-4b22-b435-d504fef82cbe"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "crag_troll/animations/walk__south.webp",
+          "frame_paths": [
+            "crag_troll/animations/walk/south/00.webp",
+            "crag_troll/animations/walk/south/01.webp",
+            "crag_troll/animations/walk/south/02.webp",
+            "crag_troll/animations/walk/south/03.webp",
+            "crag_troll/animations/walk/south/04.webp",
+            "crag_troll/animations/walk/south/05.webp"
+          ],
+          "lm": "Fri, 18 Sep 2026 14:51:42 GMT",
+          "src_frames": 6,
+          "sub": "54ed9c4e-9569-432d-9b40-0935650fd373"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "crag_troll/animations/walk__west.webp",
+          "frame_paths": [
+            "crag_troll/animations/walk/west/00.webp",
+            "crag_troll/animations/walk/west/01.webp",
+            "crag_troll/animations/walk/west/02.webp",
+            "crag_troll/animations/walk/west/03.webp",
+            "crag_troll/animations/walk/west/04.webp",
+            "crag_troll/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "crag_troll/animations/walk__north-west.webp",
+          "frame_paths": [
+            "crag_troll/animations/walk/north-west/00.webp",
+            "crag_troll/animations/walk/north-west/01.webp",
+            "crag_troll/animations/walk/north-west/02.webp",
+            "crag_troll/animations/walk/north-west/03.webp",
+            "crag_troll/animations/walk/north-west/04.webp",
+            "crag_troll/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}
