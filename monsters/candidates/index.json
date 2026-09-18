@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T13:47:34+00:00",
+  "generated_at": "2026-09-18T13:49:22+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -9642,8 +9642,8 @@
       ],
       "template_id": "bear",
       "scale": "small",
-      "pixellab_id": "59b1c0b8-d73a-47ba-a271-5daff3fa7657",
-      "version": 3,
+      "pixellab_id": "42e41b9e-e9eb-4a80-92e6-107cde911f8e",
+      "version": 4,
       "sheet": "peat_stack/sheet.webp",
       "rotations": {
         "south": "peat_stack/rotations/south.webp",
@@ -9656,107 +9656,103 @@
         "south-west": "peat_stack/rotations/south-west.webp"
       },
       "qa": {
-        "status": "fail",
-        "min_run1": 0.692,
-        "reasons": [
-          "south-east: content touches the canvas edge (clipped)",
-          "north-east: content touches the canvas edge (clipped)",
-          "south-west: content touches the canvas edge (clipped)"
-        ],
+        "status": "pass",
+        "min_run1": 0.68,
+        "reasons": [],
         "directions": {
           "south": {
-            "run1": 0.692,
+            "run1": 0.68,
             "bbox": [
-              4,
-              1,
-              60,
-              63
+              5,
+              2,
+              58,
+              60
             ],
-            "fill": 0.848,
+            "fill": 0.75,
             "touches_edge": false
           },
           "west": {
-            "run1": 0.705,
+            "run1": 0.719,
             "bbox": [
-              7,
-              6,
-              62,
+              9,
+              3,
+              57,
               61
             ],
-            "fill": 0.739,
+            "fill": 0.68,
             "touches_edge": false
           },
           "east": {
-            "run1": 0.729,
+            "run1": 0.721,
             "bbox": [
-              5,
-              1,
-              61,
+              6,
+              3,
+              52,
               61
             ],
-            "fill": 0.82,
+            "fill": 0.651,
             "touches_edge": false
           },
           "north": {
-            "run1": 0.702,
+            "run1": 0.697,
             "bbox": [
-              4,
               6,
-              57,
-              62
+              4,
+              58,
+              54
             ],
-            "fill": 0.725,
+            "fill": 0.635,
             "touches_edge": false
           },
           "south-east": {
-            "run1": 0.739,
+            "run1": 0.728,
             "bbox": [
-              6,
-              0,
-              58,
-              62
-            ],
-            "fill": 0.787,
-            "touches_edge": true
-          },
-          "north-east": {
-            "run1": 0.738,
-            "bbox": [
-              0,
-              4,
-              60,
+              8,
+              3,
+              56,
               61
             ],
-            "fill": 0.835,
-            "touches_edge": true
+            "fill": 0.68,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.723,
+            "bbox": [
+              6,
+              3,
+              59,
+              57
+            ],
+            "fill": 0.699,
+            "touches_edge": false
           },
           "north-west": {
-            "run1": 0.72,
+            "run1": 0.714,
             "bbox": [
-              3,
+              8,
               4,
-              60,
-              63
+              58,
+              56
             ],
-            "fill": 0.821,
+            "fill": 0.635,
             "touches_edge": false
           },
           "south-west": {
-            "run1": 0.741,
+            "run1": 0.737,
             "bbox": [
-              3,
-              5,
-              64,
-              63
+              6,
+              2,
+              56,
+              60
             ],
-            "fill": 0.864,
-            "touches_edge": true
+            "fill": 0.708,
+            "touches_edge": false
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T13:36:43+00:00"
+      "generated_at": "2026-09-18T13:49:22+00:00"
     },
     {
       "id": "mud_newt",
