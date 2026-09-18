@@ -2037,7 +2037,9 @@ input[type="range"] { accent-color: var(--accent); }
 .agent-name { font-weight: 700; }
 .agent-kind { text-transform: lowercase; }
 .agent-ago { margin-left: auto; font-size: 12px; white-space: nowrap; }
-.agent-current { font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.agent-current { font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; cursor: pointer;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 4; overflow: hidden; }
+.agent-current.open { -webkit-line-clamp: unset; overflow: visible; }
 .agent-line { font-size: 12px; margin-top: 4px; overflow-wrap: anywhere; }
 .agent-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; font-size: 12px; }
 /* A board that says "running" and has not moved for hours is the one row worth

@@ -127,16 +127,27 @@ Release Notes: the boards are the factory floor.
   (`data.agentBoards`, from every `coordination/*.json` that parses as a board)
   and the page fetches each one from the repo with a cache-buster — `raw`
   answers `max-age=300`, and "is it working now" cannot be five minutes old.
-- **A wake session's board appears without a deploy.** The page also probes
-  `<domain>-wake.json` for every agent it knows, so a stand-in that started
+- **A github agent's board appears without a deploy.** EVERY AGENT HAS A GITHUB
+  AGENT (maintainer 2026-09-18: *"every agent I have also have a github agent.
+  This is how I think about it"* — and of the older words, stand-in / wake /
+  verdict session, *"I feel this is insanely confusing"*). The page probes
+  `<agent>-github-agent.json` for every agent it knows, so one that started
   minutes ago has a card; a 404 is an answer, not an error.
 - **A board that says `running` and has not moved for 2 hours reads "quiet"**
   (`agentHealth`, exposed on `window.__wiki` so the gate drives the rule instead
   of waiting hours). That is the row worth catching the eye: the agent died, or
   its container went away under it. `error` borders red, `quiet` amber.
-- **The claim is printed in full**, never clamped: `current` names the unit AND
-  every file the agent holds, and the half that would be hidden is the half that
-  says whether two agents are about to collide.
+- **The names are the ones on his phone** (maintainer 2026-09-18: *"This is what
+  I have called all agents on my phone. This is the name I think they have"*).
+  The board file is named after the DIRECTORY — `monsters`, `maps2`, `games-ui`
+  — and `AGENT_NAMES` maps it to his session name: Monster-agent,
+  Map-agent, UI-agent, and `<name>-assistant agent` / `<name>-github agent` for
+  the other two kinds. An unknown id falls back to its own board name, so a new
+  agent appears rather than disappearing.
+- **Four lines of the claim, then a tap.** `current` names the unit AND every
+  file the agent holds — the games agent writes 2,000 characters of it, which
+  filled the screen with one card on a page whose job is "who is working, at a
+  glance". Clamped, never truncated: the tap target is the text itself.
 - **`progress` is free-form** — a sentence from one agent, `{features: 14}` from
   another — so it is rendered as words either way; `[object Object]` was the
   first thing on screen.
@@ -154,8 +165,8 @@ Release Notes: the boards are the factory floor.
   tap and is never deleted: a retired agent's last words are the only record of
   why it stopped (maintainer 2026-09-18: *"by time we will have 9000 agents
   (mostly dead agents that did something a year ago)"*). It cannot grow per RUN:
-  a stand-in writes ONE board per domain, overwritten every time, which the wake
-  workflow's prompt states as a rule.
+  a github agent writes ONE board for its domain, overwritten every time, which
+  `.github/workflows/github-agents.yml` states as a rule in its prompt.
 - No icon yet: drop `wiki/site/icons/agents.webp` in and add `icon: "agents"` to
   the `agents` row in `SECTIONS`.
 

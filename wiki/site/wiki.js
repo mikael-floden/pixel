@@ -13841,12 +13841,37 @@ const AGENT_REFRESH_MS = 45 * 1000;
  *  never deleted (see the fold in viewAgents). */
 const AGENT_OLD_MS = 7 * 86400000;
 let agentsShowOld = false;
-/** A board every agent writes; the wake sessions write `<domain>-wake`. */
-const agentKind = (id) => (id.endsWith("-wake") ? "wake" : id.endsWith("-assistant") ? "assistant" : "agent");
+/* EVERY AGENT HAS A GITHUB AGENT (maintainer 2026-09-18: "every agent I have
+ * also have a github agent. This is how I think about it", and of the words
+ * this page used before — stand-in, wake, verdict session — "I feel this is
+ * insanely confusing"). So there are three kinds of board and one vocabulary:
+ * the agent, its assistant, and its github agent — the one GitHub starts by
+ * itself when he reviews. `monsters-github-agent`, `scenery-github-agent`. */
+const agentKind = (id) => (id.endsWith("-github-agent") ? "github" : id.endsWith("-assistant") ? "assistant" : "agent");
+/* THE NAMES ARE THE ONES ON HIS PHONE. His sessions are called Monster-agent,
+ * Map-agent, UI-agent, Composer-agent — the board files are named after the
+ * DIRECTORY (monsters, maps2, games-ui, games-audio), and he should never have
+ * to translate. Unknown ids fall back to the id itself: a new agent shows up
+ * under its board name rather than disappearing. */
+const AGENT_NAMES = {
+  monsters: "Monster", scenery: "Scenery", maps2: "Map", maps: "Map", items: "Item",
+  characters2: "Character", tiles: "Tiles", tiles2: "Tiles 2.0", lore: "Lore",
+  games: "Game", games2: "Game", "games-ui": "UI", "games-perf": "Optimization",
+  "games-ambient": "Ambient", "games-audio": "Composer", sounds: "Sound", music: "Music",
+  wiki: "Wiki", account: "Account",
+};
+function agentLabel(id) {
+  const kind = agentKind(id);
+  const base = id.replace(/-github-agent$|-assistant$/, "");
+  const name = AGENT_NAMES[base] ?? titleish(base);
+  return kind === "assistant" ? `${name}-assistant agent`
+    : kind === "github" ? `${name}-github agent`
+      : `${name}-agent`;
+}
 const AGENT_KIND_TITLE = {
-  agent: "The domain's own agent",
-  assistant: "The agent's assistant — same directory, same tasks",
-  wake: "A stand-in started by one of your verdicts (.github/workflows/verdict-wake.yml)",
+  agent: "The agent that owns this part of the game",
+  assistant: "Its assistant — same folder, same tasks",
+  github: "Its github agent — GitHub starts this one by itself when you review something in this folder",
 };
 /** Health as the board states it, with the one thing the board cannot say:
  *  "running" that has not been touched for hours is not running. */
@@ -13869,12 +13894,12 @@ const agentAgo = (iso) => {
   if (s < 172800) return `${Math.round(s / 3600)} h ago`;
   return `${Math.round(s / 86400)} days ago`;
 };
-/** Every board named by the build, plus the wake board each domain may have
- *  grown since — a 404 is an answer ("no such session"), not an error. */
+/** Every board named by the build, plus the github agent each one may have
+ *  grown since — a 404 is an answer ("it has not run yet"), not an error. */
 function agentBoardNames() {
   const named = state.data.agentBoards ?? [];
-  const wakes = named.filter((n) => agentKind(n) === "agent").map((n) => `${n}-wake`);
-  return [...new Set([...named, ...wakes])];
+  const githubs = named.filter((n) => agentKind(n) === "agent").map((n) => `${n}-github-agent`);
+  return [...new Set([...named, ...githubs])];
 }
 async function fetchBoards() {
   const base = repoBase ?? stagingBase("main");
@@ -13923,14 +13948,20 @@ function agentCard(b, rows = []) {
   const repo = state.data.releases?.repo;
   return h("div", { class: "panel agent-card", "data-agent": b.id, "data-health": hp.word },
     h("div", { class: "agent-head" },
-      h("span", { class: "agent-name" }, b.id),
-      kind !== "agent" ? h("span", { class: "pill agent-kind", title: AGENT_KIND_TITLE[kind] }, kind) : null,
+      h("span", { class: "agent-name", title: `coordination/${b.id}.json` }, agentLabel(b.id)),
+      kind !== "agent" ? h("span", { class: "pill agent-kind", title: AGENT_KIND_TITLE[kind] }, kind === "github" ? "github agent" : kind) : null,
       h("span", { class: `pill ${hp.cls}`.trim(), title: `health: ${b.health ?? "—"}` }, hp.word),
       h("span", { class: "muted agent-ago", title: b.updated_at ?? "" }, agentAgo(b.updated_at))),
     // THE CLAIM IS THE ANSWER. PROTOCOL makes `current` name the unit AND every
     // file it touches, pushed before the work — so this line is what the agent
     // is doing right now, in its own words.
-    h("div", { class: "agent-current" }, b.current || "—"),
+    // FOUR LINES, THEN A TAP. The claim has to carry every file the agent
+    // holds, and some agents write 1,500 characters of it — one card filling
+    // the screen defeats a page whose job is "who is working, at a glance".
+    // Clamped, not truncated: the text is all there, one tap away, and the tap
+    // target is the text itself.
+    h("div", { class: "agent-current", title: "tap to read it all",
+      onclick: (e) => e.currentTarget.classList.toggle("open") }, b.current || "—"),
     b.progress ? h("div", { class: "muted agent-line" }, agentProgress(b.progress)) : null,
     b.budget_remaining ? h("div", { class: "muted agent-line" }, String(b.budget_remaining)) : null,
     h("div", { class: "agent-meta" },
@@ -13973,7 +14004,7 @@ function viewAgents() {
           : null,
       ].filter(Boolean)
       : [h("p", { class: "muted" }, "No board could be read. The page reads coordination/*.json from GitHub main — check the connection.")]));
-    stamp.textContent = `${live.length} of ${rows.length} boards this week · ${working.length} working · read ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}`;
+    stamp.textContent = `${working.length} working · ${live.length} active this week · read ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", hour12: false })}`;
   };
   draw();
   // It refreshes itself while the page is open — the question this page answers
@@ -13984,7 +14015,7 @@ function viewAgents() {
   return h("div", {},
     sectionHead("agents"),
     h("p", { class: "muted" },
-      "Every agent and every stand-in a verdict of yours woke, newest first. Each line is that agent's own claim — the unit it is on and the files it holds — read live from its board on main, not from this build."),
+      "Every agent you talk to, its assistant, and its github agent — the worker GitHub starts for it when you review something in its folder. The line under a name is what that agent says it is doing, in its own words."),
     h("div", { class: "card-sub lit-mode" },
       h("button", { class: "ghost-btn", type: "button", onclick: () => draw() }, "↻ refresh"),
       stamp),

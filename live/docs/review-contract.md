@@ -4,10 +4,11 @@ The wiki is the Game Master's review surface and `live/feedback/<domain>.json`
 is what he writes there. This file is the law for ACTING on those verdicts and
 for the state the wiki is left in afterwards. The art work itself is each
 domain's own business (`<domain>/README.md`); this is the part that is the same
-everywhere, and the part a stand-in session must not improvise.
+everywhere, and the part a github agent must not improvise.
 
-Written for any session acting on a review — the domain agent, its assistant, or
-the session `.github/workflows/verdict-wake.yml` wakes when a verdict lands.
+Written for anyone acting on a review — the domain agent, its assistant, or its
+GITHUB AGENT, the one `.github/workflows/github-agents.yml` starts when a review
+lands.
 
 ## The laws
 
@@ -45,7 +46,7 @@ the session `.github/workflows/verdict-wake.yml` wakes when a verdict lands.
    decision (PROTOCOL), and inventing a verdict puts words in his mouth.
 
 6. **A verdict is taken ONCE.** Claimed or acked on ANY board — the agent's, its
-   assistant's, the wake's — means consumed. Claim before you edit, per
+   assistant's, its github agent's — means consumed. Claim before you edit, per
    PROTOCOL's "Two writers per directory".
 
 7. **Rebuild what the wiki actually reads.** The domain's own index/manifest is

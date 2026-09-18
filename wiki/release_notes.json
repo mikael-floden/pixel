@@ -1,9 +1,76 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T16:35:42.691Z",
- "head": "691b07ec8",
+ "generated_at": "2026-09-18T16:50:32.190Z",
+ "head": "12adb727c",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "12adb727c",
+   "at": "2026-09-18T16:44:53+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 7 (grass <-> light soil, reps 7+)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 53
+  },
+  {
+   "sha": "995ae894f",
+   "at": "2026-09-18T16:44:17+00:00",
+   "author": "Claude",
+   "subject": "lighting: a piece standing on a roof is ON my room, not IN it — the chimney stops taking the hearth",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "da25d3f8f",
+   "at": "2026-09-18T16:44:17+00:00",
+   "author": "Claude",
+   "subject": "games board: the four gates that served a stale bundle, the deploy layer order, and #50's root cause",
+   "agent": "games",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "2089fcb1c",
+   "at": "2026-09-18T16:39:38+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 6 (grass <-> light soil, reps 7+)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 19
+  },
+  {
+   "sha": "fb72af845",
+   "at": "2026-09-18T16:39:20+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 5 (grass <-> light soil, reps 7+)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 104
+  },
+  {
+   "sha": "8063b8ac3",
+   "at": "2026-09-18T16:36:22+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: the Agents page opens on what is alive, and a stand-in keeps ONE board",
+   "agent": "wiki",
+   "dirs": [
+    ".github",
+    "wiki"
+   ],
+   "files": 9
+  },
   {
    "sha": "691b07ec8",
    "at": "2026-09-18T16:33:37+00:00",
@@ -493,72 +560,6 @@
     "live"
    ],
    "files": 1
-  },
-  {
-   "sha": "624c2b680",
-   "at": "2026-09-18T14:53:40+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduation landings",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 528
-  },
-  {
-   "sha": "2a9a35c06",
-   "at": "2026-09-18T16:53:34+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c1aac0ad1",
-   "at": "2026-09-18T14:52:27+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (85 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 105
-  },
-  {
-   "sha": "4700f611e",
-   "at": "2026-09-18T16:52:14+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c786750f1",
-   "at": "2026-09-18T14:51:29+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduation landings",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 177
-  },
-  {
-   "sha": "2fc72a9fb",
-   "at": "2026-09-18T14:50:57+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduation landings",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 405
   }
  ]
 }

@@ -1,9 +1,15 @@
-name: verdict wake
+name: github agents
 
+# EVERY AGENT HAS A GITHUB AGENT (maintainer 2026-09-18: "every agent I have
+# also have a github agent. This is how I think about it" — and, on the words
+# this workflow used to use, "I feel this is insanely confusing"). So the thing
+# this starts is `<agent>-github-agent`: the monsters agent's github agent, the
+# scenery agent's github agent. Not a "wake", not a "verdict session".
+#
 # The title in the Actions list is the first thing he reads on a phone, so it
 # names the review rather than repeating the workflow's own name.
 run-name: >-
-  verdict wake — ${{ github.event_name == 'workflow_dispatch'
+  github agent — ${{ github.event_name == 'workflow_dispatch'
     && format('{0} (rehearsal)', inputs.domain) || github.event.head_commit.message }}
 
 # A REVIEW IS AN EVENT, NOT A THING THAT WAITS FOR THE NEXT AGENT RUN
@@ -30,10 +36,10 @@ run-name: >-
 # THE SESSION IS A THIRD WRITER in its domain, after the agent and its
 # assistant, so the prompt binds it to PROTOCOL's "Two writers per directory":
 # read both boards, treat a claimed or acked verdict as CONSUMED, and claim on
-# its own board (coordination/<domain>-wake.json) BEFORE editing anything.
+# its own board (coordination/<agent>-github-agent.json) BEFORE editing anything.
 #
-# REASONING, REJECTED ALTERNATIVES, SETUP: live/docs/verdict-wake.md.
-# KILL SWITCH WITHOUT SETUP: it runs unless the repo variable VERDICT_WAKE is
+# REASONING, REJECTED ALTERNATIVES, SETUP: live/docs/github-agents.md.
+# KILL SWITCH WITHOUT SETUP: it runs unless the repo variable GITHUB_AGENTS is
 # set to "off" (Settings → Secrets and variables → Actions → Variables).
 
 on:
@@ -74,11 +80,11 @@ jobs:
     if: >-
       github.event_name == 'workflow_dispatch'
       || (startsWith(github.event.head_commit.message, 'live: admin update')
-          && vars.VERDICT_WAKE != 'off')
+          && vars.GITHUB_AGENTS != 'off')
     runs-on: ubuntu-latest
     timeout-minutes: 10
     concurrency:
-      group: verdict-wake-wait
+      group: github-agents-wait
       cancel-in-progress: true
     steps:
       - if: github.event_name == 'push'
@@ -118,8 +124,11 @@ jobs:
           echo "reviewed: $json"
           echo "domains=$json" >> "$GITHUB_OUTPUT"
 
-  wake:
+  agent:
     needs: detect
+    # The job's name is what the Actions run lists, so it reads as the agent he
+    # is thinking of rather than as a workflow step.
+    name: ${{ matrix.domain }}-github-agent
     if: needs.detect.outputs.domains != '[]'
     runs-on: ubuntu-latest
     timeout-minutes: 90     # a generation pass; the loop stops itself on budget
@@ -134,7 +143,7 @@ jobs:
     # a later sitting waits its turn. Per DOMAIN, so a scenery review never
     # queues behind a monsters generation.
     concurrency:
-      group: verdict-wake-run-${{ matrix.domain }}
+      group: github-agent-${{ matrix.domain }}
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
@@ -198,7 +207,7 @@ jobs:
                yours; a collision goes to the original agent.
             2. Take only the verdicts nobody has claimed and that the art on disk does
                not yet reflect. Derive that from the filesystem, never from a count.
-            3. Claim them on coordination/${{ matrix.domain }}-wake.json — your own
+            3. Claim them on coordination/${{ matrix.domain }}-github-agent.json — your own
                board, same schema as the others: the unit and EVERY file you will touch
                — and push that claim BEFORE any work. A claim that ships with the work
                protects nothing. THAT EXACT FILENAME, ALWAYS: one board for every

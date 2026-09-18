@@ -10,7 +10,9 @@
  * (not from data.json); each card carries the agent's own claim, its health and
  * how long ago it spoke; newest first; a board that says "running" but has not
  * moved for hours reads as quiet; refresh re-reads; and the section is in the
- * nav for an admin and absent for a player. */
+ * nav for an admin and absent for a player. The vocabulary is his: an agent,
+ * its assistant, and its GITHUB AGENT (maintainer 2026-09-18) — never wake,
+ * verdict session or stand-in. */
 import { createRequire } from "node:module";
 import { existsSync, readFileSync } from "node:fs";
 const { chromium } = createRequire(new URL("../../games2/package.json", import.meta.url))("playwright-core");
@@ -44,6 +46,7 @@ const page = await p.evaluate(() => {
   return {
     n: cards.length,
     ids: cards.map((c) => c.dataset.agent),
+    names: cards.map((c) => c.querySelector(".agent-name")?.textContent.trim()),
     health: cards.map((c) => c.dataset.health),
     ago: cards.map((c) => c.querySelector(".agent-ago")?.textContent.trim()),
     claims: cards.map((c) => (c.querySelector(".agent-current")?.textContent ?? "").trim().length),
@@ -75,6 +78,14 @@ ok(!fold.label || (fold.after > fold.before && /hide/.test(fold.hide)),
 // that rendered without fetching would have nothing to show.
 ok(!JSON.stringify(DATA).includes('"health"') || true, "the registry publishes names only; the boards are fetched");
 ok(page.claims.every((n) => n > 0), "every card shows that agent's own claim");
+// THE NAMES ARE THE ONES ON HIS PHONE (maintainer 2026-09-18: "This is what I
+// have called all agents on my phone. This is the name I think they have").
+// The board file is named after the directory; he never translates.
+const named = Object.fromEntries(page.ids.map((id, i) => [id, page.names[i]]));
+console.log("names:", JSON.stringify(named));
+ok(named.monsters === "Monster-agent" && named["maps2"] === "Map-agent" && named["games-ui"] === "UI-agent",
+  `a board is labelled the way he named that session (${named.monsters} · ${named.maps2} · ${named["games-ui"]})`);
+ok(!page.names.some((n) => /-wake|verdict/i.test(n ?? "")), "and nothing on the page calls it a wake or a verdict session");
 // The word is the board's own (`retired` is one an agent chose), so this
 // asserts there IS one on every card, not which vocabulary the fleet uses.
 ok(page.health.every((h) => /^[a-z-]+$/.test(h ?? "")),
@@ -82,10 +93,24 @@ ok(page.health.every((h) => /^[a-z-]+$/.test(h ?? "")),
 ok(page.ago.every((a) => /ago|never/.test(a ?? "")), `and how long ago it spoke (${page.ago[0]})`);
 const sorted = [...page.times].sort((a, b2) => b2 - a);
 ok(JSON.stringify(page.times) === JSON.stringify(sorted), "newest first");
-ok(/boards/.test(page.stamp) && /working/.test(page.stamp), `the header counts them and says when it read (${page.stamp})`);
+ok(/working/.test(page.stamp) && /active this week/.test(page.stamp), `the header counts them and says when it read (${page.stamp})`);
 ok(page.refresh, "there is a refresh button");
 ok(!page.wide, "nothing pokes past a 393px phone");
 if (shot) await p.screenshot({ path: `${shot}/agents.png`, fullPage: false });
+
+// A LONG CLAIM IS CLAMPED, NOT CUT: some agents write 1,500 characters and one
+// card would fill the screen, so four lines and a tap for the rest.
+const clamp = await p.evaluate(() => {
+  const el = [...document.querySelectorAll(".agent-current")].sort((a, b) => b.textContent.length - a.textContent.length)[0];
+  const shut = el.getBoundingClientRect().height;
+  el.click();
+  const open = el.getBoundingClientRect().height;
+  el.click();
+  return { chars: el.textContent.length, shut: Math.round(shut), open: Math.round(open), back: Math.round(el.getBoundingClientRect().height) };
+});
+console.log("clamp:", JSON.stringify(clamp));
+ok(clamp.chars < 200 || (clamp.open > clamp.shut && clamp.back === clamp.shut),
+  `the longest claim is four lines until it is tapped (${clamp.chars} chars: ${clamp.shut}px → ${clamp.open}px → ${clamp.back}px)`);
 
 // A BOARD THAT SAYS "running" AND HAS NOT MOVED IS NOT RUNNING. The agent died,
 // or its container went away under it — the one row worth catching the eye.

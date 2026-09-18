@@ -3386,9 +3386,9 @@ const data = {
   /* WHO IS IN THE FLEET — the NAMES only, never the contents (the Agents page
    * reads each board LIVE from GitHub main, because a board committed at deploy
    * time is exactly the thing that cannot answer "is it working right now").
-   * A board that appears between deploys — a wake session's
-   * `<domain>-wake.json` — is probed by the page from this list, so it shows up
-   * without waiting for a build. */
+   * A board that appears between deploys — an agent's github agent,
+   * `<agent>-github-agent.json` — is probed by the page from this list, so it
+   * shows up without waiting for a build. */
   agentBoards: boardNames(),
   directions: DIRS,
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
