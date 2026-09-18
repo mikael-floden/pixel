@@ -656,6 +656,23 @@
     }
    ],
    "artifact": "https://claude.ai/artifact/8sEyfm6QyGsxsq1QZ6Doxi"
+  },
+  {
+   "date": "2026-09-18",
+   "commit": "699fea7e8d",
+   "before": "66a67ddc89",
+   "title": "Ambient zones: every ambient effect belongs to a place, with a share (world.json unchanged)",
+   "artifact": "https://claude.ai/artifact/9HnyWY7GXBQcqgFvdeyoEk",
+   "changes": [
+    {
+     "name": "84 ambient zones over the island",
+     "what": "Nothing on the ground moved: this push adds ambient.json beside the world, the zones the server will drive. Every zone is read off the terrain (sea quarters, shore, dunes, lakes, marsh, meadows, woods, pasture, massif, summits, lava, caves, town, village, cottages, slime pools, islets) and five weather provinces are drawn by hand; each names its effects with a share, how often that effect should be on there. The zones page linked on this push shows every one over the minimap.",
+     "cell": [
+      333,
+      237
+     ]
+    }
+   ]
   }
  ],
  "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
