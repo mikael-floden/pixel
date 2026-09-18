@@ -653,13 +653,18 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   "Lowered wall top darkening" (0..100%, default 50; `setCutLidDark`,
   `Tiles3Textures.lid`) scales the colour — 0% is the roof as it is, 100%
   black — as its own `@lidNN` texture key, never a rewrite of the plate's,
-  and a change repaints through `reResolve`. THE LID IS GROWN BY ONE PIXEL ON
-  EVERY SIDE (each new pixel a copy of its nearest surface pixel): a top-face
-  plate has no slack sideways, and two lids met along their 2:1 edge with
-  alternate pixels of the floor between them — a dotted bright seam once the
-  lids were dark (his red marks at 331.8,233.6 and 205.6,217.5 at 70%: "you
-  can't leave a 1px seam like this"); the overlap closes it, and the row
-  under the diamond covers the course's flat top rim. Maintainer 2026-09-18: "same
+  and a change repaints through `reResolve`. THE LID IS GROWN BY ONE PIXEL
+  ON EVERY SIDE AND A SECOND UP AND RIGHT (each new pixel a copy of its
+  nearest surface pixel): a top-face plate has no slack sideways, and two
+  lids met along their 2:1 edge with alternate pixels of the floor between
+  them — a dotted bright seam once the lids were dark (his red marks at
+  331.8,233.6 and 205.6,217.5 at 70%: "you can't leave a 1px seam like
+  this"). The second step is his call (308.0,228.7 at 100%: "still 1px too
+  small so it jitters when I walk ... grow with 1px in up and right, not in
+  all 4 directions"): a 2:1 staircase's last uncovered pixel lies diagonally
+  outside the lid, and those two directions reach it without a second row
+  over the face below. The row under the diamond covers the course's flat
+  top rim. Maintainer 2026-09-18: "same
   material/ground type as the roof... I don't want plain black here"; an
   all-black lid shipped first and was retracted ("what we have today looks
   better") — the dial is the answer, not a fixed shade. Before: a cave room's

@@ -8211,6 +8211,10 @@ export class WorldScene extends Phaser.Scene {
             crop: name.startsWith("s3c:") ? name.slice(4).split(",").map(Number) : null,
             canvas: art ? [art.canvas.w, art.canvas.h] : null,
             south: south ? [south[0], south[1], south[2], south[3]] : null,
+            // The base sprite's alpha and its lit copy's (the copy draws above
+            // the darkness overlay; below 1 the darkened base shows through).
+            alpha: +img.alpha.toFixed(3),
+            copyAlpha: (() => { const lo = this.litOccluders.find((o) => (o.img as unknown as { __place?: number }).__place === i || o.place === i); return lo ? +lo.img.alpha.toFixed(3) : null; })(),
           });
         }
         return out;

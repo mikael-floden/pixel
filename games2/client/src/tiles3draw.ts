@@ -1685,7 +1685,8 @@ export class Tiles3Textures {
   }
 
   /** THE LID OF A LOWERED WALL: a composed plate grown by ONE PIXEL on every
-   *  side (each new pixel a copy of its nearest surface pixel) and darkened
+   *  side and a SECOND up and to the right (each new pixel a copy of its
+   *  nearest surface pixel) and darkened
    *  by his "Lowered wall top darkening" dial (2026-09-18), under a key
    *  carrying the percentage — its own content-addressed texture, never a
    *  rewrite of the plate's. Null while the plate itself is not built.
@@ -1695,9 +1696,14 @@ export class Tiles3Textures {
    *  of the FLOOR showing between them (his red marks at 331.8,233.6 and
    *  205.6,217.5 with the dial at 70%: "you can't leave a 1px seam like
    *  this"). At 0% the seam was the floor against the roof's own colour and
-   *  read as texture; darkened, it is a dotted line. One pixel of overlap
-   *  closes it in every direction, and the row below the diamond covers the
-   *  course's flat top rim the same way topFaceOnly's margin row does. */
+   *  read as texture; darkened, it is a dotted line. The second pixel up
+   *  and right is his (2026-09-18 at 308.0,228.7 at 100%: "still 1px too
+   *  small so it jitters when I walk ... grow with 1px in up and right, not
+   *  in all 4 directions") — a 2:1 staircase leaves its last uncovered pixel
+   *  diagonally outside the lid, and one more step in those two directions
+   *  reaches it without laying a second row over the face below. The row
+   *  below the diamond covers the course's flat top rim the same way
+   *  topFaceOnly's margin row does. */
   lid(key: string, dark: number): string | null {
     const pct = Math.round(Math.max(0, Math.min(1, dark)) * 100);
     const dkey = `${key}@lid${pct}`;
@@ -1707,32 +1713,79 @@ export class Tiles3Textures {
         const base = this.pix.get(key) ?? this.sourcePixels(key);
         if (!base) return null;
         const { w, h } = base;
-        const src = base.data;
-        const data = new Uint8ClampedArray(src.length);
         const k = 1 - pct / 100;
-        const put = (i: number, from: number) => {
-          data[i] = src[from] * k;
-          data[i + 1] = src[from + 1] * k;
-          data[i + 2] = src[from + 2] * k;
-          data[i + 3] = 255;
-        };
-        for (let y = 0; y < h; y++) {
-          for (let x = 0; x < w; x++) {
+        // A PERIODIC OUTLINE FIRST. The plate's diamond is 29 rows for a grid
+        // that steps 14, so where two lids meet, the corner row of one and
+        // the apex row of the next share a row: a 4px flat in a staircase of
+        // 2s and 3s — his "jack" at every join once the lids were one flat
+        // colour (2026-09-18, 308.4,228.7 at 100%). The lid's alpha is
+        // re-cut to top(x) = round(d * rise / half), d the column's distance
+        // from the apex, which continues EXACTLY into the neighbour's edge
+        // (round((t - half) * rise / half) + rise == round(t * rise / half)),
+        // so the union of lids is one straight staircase. A column's colour
+        // inside the new outline but outside the art's is its nearest opaque
+        // pixel in that column.
+        const half = w / 2;
+        const rise = Math.round(half * 0.4375); // 14 for a 64-wide plate
+        const cut = new Uint8ClampedArray(base.data.length);
+        for (let x = 0; x < w; x++) {
+          const d = x < half ? half - x : x - half;
+          const top = Math.floor((d * rise) / half + 0.5);
+          const bot = 2 * rise - top;
+          for (let y = top; y <= bot && y < h; y++) {
             const i = (y * w + x) * 4;
-            if (src[i + 3] > 0) {
-              put(i, i);
-              data[i + 3] = src[i + 3];
-              continue;
+            let from = -1;
+            if (base.data[i + 3] > 0) from = i;
+            else {
+              for (let dy = 1; dy < h && from < 0; dy++) {
+                const up = y - dy, dn = y + dy;
+                if (up >= 0 && base.data[(up * w + x) * 4 + 3] > 0) from = (up * w + x) * 4;
+                else if (dn < h && base.data[(dn * w + x) * 4 + 3] > 0) from = (dn * w + x) * 4;
+              }
             }
-            // Transparent: take the nearest opaque 4-neighbour's colour.
-            const n = [
-              x > 0 ? i - 4 : -1,
-              x + 1 < w ? i + 4 : -1,
-              y > 0 ? i - w * 4 : -1,
-              y + 1 < h ? i + w * 4 : -1,
-            ];
-            for (const j of n) if (j >= 0 && src[j + 3] > 0) { put(i, j); break; }
+            if (from < 0) continue;
+            cut[i] = base.data[from];
+            cut[i + 1] = base.data[from + 1];
+            cut[i + 2] = base.data[from + 2];
+            cut[i + 3] = 255;
           }
+        }
+        // Two growth passes over the undarkened raster (a grown pixel may
+        // seed the next), then the darkening: pass 0 in all four directions,
+        // pass 1 up and to the right only (a pixel takes the colour of the
+        // opaque neighbour below it or to its left).
+        let src: Uint8ClampedArray = cut;
+        for (let pass = 0; pass < 2; pass++) {
+          const grown = new Uint8ClampedArray(src.length);
+          grown.set(src);
+          for (let y = 0; y < h; y++) {
+            for (let x = 0; x < w; x++) {
+              const i = (y * w + x) * 4;
+              if (src[i + 3] > 0) continue;
+              // Transparent: take the nearest opaque neighbour's colour.
+              const n =
+                pass === 0
+                  ? [x > 0 ? i - 4 : -1, x + 1 < w ? i + 4 : -1, y > 0 ? i - w * 4 : -1, y + 1 < h ? i + w * 4 : -1]
+                  : [x > 0 ? i - 4 : -1, y + 1 < h ? i + w * 4 : -1];
+              for (const j of n) {
+                if (j >= 0 && src[j + 3] > 0) {
+                  grown[i] = src[j];
+                  grown[i + 1] = src[j + 1];
+                  grown[i + 2] = src[j + 2];
+                  grown[i + 3] = 255;
+                  break;
+                }
+              }
+            }
+          }
+          src = grown;
+        }
+        const data = new Uint8ClampedArray(src.length);
+        for (let i = 0; i < data.length; i += 4) {
+          data[i] = src[i] * k;
+          data[i + 1] = src[i + 1] * k;
+          data[i + 2] = src[i + 2] * k;
+          data[i + 3] = src[i + 3];
         }
         return { w, h, data };
       })
