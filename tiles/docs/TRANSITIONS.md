@@ -16,6 +16,16 @@ Generation runs on the maintainer's side (`transition_jobs.py --shell`): the bou
 controls live only on the session-authenticated endpoint. Retrieval is free and runs
 here (`transition_import.py`).
 
+**`transitions.py --run` IS NOT THAT PATH AND CANNOT BE.** It posts `/create-tileset` in
+`pro` mode, which returns **64x64 fully opaque top-down squares** - not the 64x46 iso
+plate every set here and every consumer of them requires (the 4-region partition, the
+silhouette, the wall columns at x=16/48). Measured 2026-09-18 after 46 sets were bought
+through it and written to the tree: not one was usable, and they were deleted again.
+`_write_set` now refuses any tile that is not 64x46, so the mistake costs nothing next
+time. A pair with no sets needs jobs on the session endpoint, not a run here. What the
+module IS still good for: `--recover`, which re-downloads sets the account was already
+billed for, free.
+
 ## The three rules for drawing them
 
 **Draw at DY=14.** Tiles 3.0's top diamond is 64x28. At a pitch of 15 every tile leaks

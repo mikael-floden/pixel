@@ -156,6 +156,9 @@ def _wang_id(t):
         return None
 
 
+ISO_SIZE = (64, 46)     # tiles/patterns/index.json geometry - THE library's tile
+
+
 def _write_set(a, b, r, tsid, tiles, usd, payload=None, recovered=False):
     """Writes a set's 16 tiles + meta.json. NEVER over an existing set: a published
     tile_NN.webp keeps its bytes, and a caller that wants different art asks for a
@@ -170,6 +173,21 @@ def _write_set(a, b, r, tsid, tiles, usd, payload=None, recovered=False):
         img = _decode(t)
         if img is None:
             continue
+        # THE GEOMETRY IS THE CONTRACT, AND THIS ENDPOINT DOES NOT HONOUR IT.
+        # Measured 2026-09-18, after 46 sets were bought and written: /create-tileset in
+        # `pro` mode returns 64x64 FULLY OPAQUE top-down squares, while every set in this
+        # tree and every consumer of it (transition_patterns' 4-region partition, the
+        # silhouette, the wall columns at x=16/48) is the 64x46 iso plate the SESSION
+        # endpoint returns for tile_type=isometric. The 284 usable sets all came in
+        # through transition_jobs/transition_import for exactly that reason, which the
+        # module docstring says and I did not check before spending. Wrong-shaped art is
+        # refused here rather than written, so no future run can fill the tree with
+        # tiles nothing can draw.
+        if img.size != ISO_SIZE:
+            raise RuntimeError(
+                f"{a}__to__{b} r{r:02d}: endpoint returned {img.size}, the library is "
+                f"{ISO_SIZE} (iso plate). This path generates top-down squares - use "
+                f"transition_jobs.py on the session endpoint for iso sets.")
         tid = _wang_id(t)
         if tid is None:
             continue
