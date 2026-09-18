@@ -114,6 +114,20 @@ try {
         gvL: parseFloat(cs.getPropertyValue("--gv-left")) || 0,
         gvR: parseFloat(cs.getPropertyValue("--gv-right")) || 0,
         hudH: parseFloat(cs.getPropertyValue("--hud-h")) || 0,
+        // THE PORTRAIT HUD IS EXACTLY THREE BACKPACK ROWS TALL (hud.ts
+        // portraitHudHeight, maintainer 2026-09-18): 1px rule + tab row + page
+        // padding + 3 slots + 2 gaps + the same padding + the safe inset.
+        threeRows: (() => {
+          const px = (v) => parseFloat(v) || 0;
+          const tab = document.querySelector(".ml-tabrow"), pg = document.querySelector('.ml-page[data-page="backpack"]'), grid = pg && pg.querySelector(".ml-slots");
+          if (!tab || !grid) return null;
+          const pcs = getComputedStyle(pg), gcs = getComputedStyle(grid);
+          const inner = Math.min(innerWidth - px(pcs.paddingLeft) - px(pcs.paddingRight), px(gcs.maxWidth) || Infinity);
+          const cols = (gcs.gridTemplateColumns.match(/\d+(?=\s*,)/) || [5])[0] * 1;
+          const slot = (inner - (cols - 1) * px(gcs.columnGap)) / cols;
+          return Math.round(1 + tab.getBoundingClientRect().height + 2 * px(pcs.paddingTop) + 3 * slot + 2 * px(gcs.rowGap) + px(getComputedStyle(document.documentElement).getPropertyValue("--ml-safe-bottom")));
+        })(),
+
         game: r("#game"),
         canvas: r("#game canvas"),
         hud: r(".ml-hud"),
@@ -469,9 +483,9 @@ try {
   await settle();
   g = await geom();
   !g.land ? ok("portrait drops ml-land") : fail("ml-land stuck in portrait");
-  Math.abs(g.hudH - Math.round(851 * 0.382)) <= 1
-    ? ok(`portrait split restored (--hud-h ${g.hudH}px)`)
-    : fail(`--hud-h ${g.hudH}`);
+  g.threeRows && Math.abs(g.hudH - g.threeRows) <= 1
+    ? ok(`portrait HUD restored at exactly three backpack rows (--hud-h ${g.hudH}px)`)
+    : fail(`--hud-h ${g.hudH}, three rows would be ${g.threeRows}`);
   g.hud.t > 500 && g.hud.w >= 390 ? ok("menu back at the bottom") : fail(`hud ${JSON.stringify(g.hud)}`);
   g.tabrow.w > g.tabrow.h ? ok("tab row horizontal again") : fail(`tabrow ${JSON.stringify(g.tabrow)}`);
   g.padBlurCss && g.padBlurCss.display === "none"

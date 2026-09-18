@@ -7,10 +7,12 @@
  * and dark mode as wiki/site/wiki.css, one localStorage["wiki-theme"] flips
  * both).
  *
- * Layout: the golden-ratio split survives (game view = top 61.8%, HUD =
- * bottom 38.2%) but is plain CSS now; applyLayout() publishes --hud-h /
- * --hud-h-inv in REAL px on :root so the keyboard lift and the chat overlay
- * keep their px math. Pointer events in the HUD still never reach Phaser.
+ * Layout: in portrait the HUD is EXACTLY THREE BACKPACK ROWS tall
+ * (portraitHudHeight, maintainer 2026-09-18 — it was the golden 38.2% split
+ * until then, ~3.66 rows, and he wanted the rail lower so the thumb stick
+ * sits lower); applyLayout() publishes --hud-h / --hud-h-inv in REAL px on
+ * :root so the keyboard lift and the chat overlay keep their px math.
+ * Pointer events in the HUD still never reach Phaser.
  * Nothing is zoom-compensated any more — like the wiki, the UI is plain
  * responsive CSS at any viewport width.
  */
@@ -337,8 +339,9 @@ function beginFlip() {
  * a px value (a raw "38.2dvh" string would read as 38.2).
  *
  * LANDSCAPE (maintainer 2026-08-05, in-game only, touch devices only): the
- * same golden-ratio split turned on its side — the game view keeps 61.8% of
- * the LONG axis and the menu takes the other 38.2% as a SIDE COLUMN. Which
+ * golden-ratio split turned on its side — the game view keeps 61.8% of the
+ * LONG axis and the menu takes the other 38.2% as a SIDE COLUMN (portrait
+ * left that ratio for the three-row height above). Which
  * side follows handedness (controls.ts): right-handed puts the menu LEFT so
  * the stick can live under the right thumb; left-handed mirrors. Everything
  * that anchors to the game view's edges reads the --gv-left/--gv-right px
@@ -346,6 +349,50 @@ function beginFlip() {
  * itself), so the whole chrome re-anchors from one function — and because
  * those consumers transition their anchor properties, the swap glides.
  * Desktop (no touch) keeps the portrait split at any aspect — unchanged. */
+/** The backpack grid's columns — the CSS repeat() and the height law below
+ *  read this one number. */
+const BAG_COLS = 5;
+/** THE PORTRAIT HUD IS EXACTLY THREE BACKPACK ROWS TALL (maintainer
+ *  2026-09-18: "aim for the backpack only having exact 3 row slots (not the
+ *  ~3.66 we have today)… 3 rows with enough line space at the bottom as we
+ *  have on the top. A player should feel 3 rows fit exactly and the space to
+ *  the top and bottom is even. Lowering the UI this much will also lower the
+ *  thumbstick and make it easier to play in portrait (that's the goal!)"). */
+const BAG_ROWS_SHOWN = 3;
+/** Portrait --hud-h in real px: the HUD's top rule, the tab row as rendered,
+ *  the page's top padding, BAG_ROWS_SHOWN slot rows with their gaps, the SAME
+ *  padding again, and the safe-area inset under it. Every term is READ from
+ *  the live CSS (tab row rect, page padding, grid gap/max-width) rather than
+ *  copied, so the compact @media tier and any later restyle move the rail
+ *  with them; the slot is derived from the width because the page is
+ *  display:none behind another tab and has no rect to read. Before the HUD
+ *  exists (first layout on the select screen) it is the old golden split,
+ *  replaced the moment HudBar mounts and re-runs applyLayout. Capped at half
+ *  the screen so a squat viewport can never hand the world less than half. */
+function portraitHudHeight(w: number, h: number): number {
+  const golden = Math.round(h * 0.382);
+  const tabrow = document.querySelector<HTMLElement>(".ml-tabrow");
+  const page = document.querySelector<HTMLElement>('.ml-page[data-page="backpack"]');
+  const grid = page?.querySelector<HTMLElement>(".ml-slots");
+  if (!tabrow || !page || !grid) return golden;
+  const px = (v: string) => parseFloat(v) || 0;
+  const pcs = getComputedStyle(page);
+  const gcs = getComputedStyle(grid);
+  const padT = px(pcs.paddingTop);
+  const inner = Math.min(w - px(pcs.paddingLeft) - px(pcs.paddingRight), px(gcs.maxWidth) || Infinity);
+  const slot = (inner - (BAG_COLS - 1) * px(gcs.columnGap)) / BAG_COLS;
+  const safeB = px(getComputedStyle(document.documentElement).getPropertyValue("--ml-safe-bottom"));
+  const hud =
+    1 /* .ml-hud border-top */ +
+    tabrow.getBoundingClientRect().height +
+    padT +
+    BAG_ROWS_SHOWN * slot +
+    (BAG_ROWS_SHOWN - 1) * px(gcs.rowGap) +
+    padT +
+    safeB;
+  return Math.min(Math.round(hud), Math.round(h * 0.5));
+}
+
 function applyLayout() {
   const root = document.documentElement;
   const w = window.innerWidth;
@@ -372,7 +419,7 @@ function applyLayout() {
     root.style.setProperty("--gv-left", `${left ? 0 : menuW}px`);
     root.style.setProperty("--gv-right", `${left ? menuW : 0}px`);
   } else {
-    const hudH = Math.round(h * 0.382);
+    const hudH = portraitHudHeight(w, h);
     root.style.setProperty("--menu-w", `0px`);
     root.style.setProperty("--hud-h", `${hudH}px`);
     root.style.setProperty("--hud-h-inv", `${h - hudH}px`);
@@ -495,6 +542,9 @@ export class HudBar {
     // holding a tab offers "download image" (maintainer, twice).
     hud.addEventListener("contextmenu", (e) => e.preventDefault());
     document.body.appendChild(hud);
+    // the portrait rail is MEASURED from these pages (portraitHudHeight), so
+    // publish it the moment they exist — mountPageFrame's call runs later
+    applyLayout();
     this.select("backpack");
     applyLayout(); // publish the px layout vars for the keyboard lift + chat
 
@@ -775,7 +825,7 @@ export class HudBar {
     // messages -> setInventory). 5-col grid, padded to at least 15 cells so
     // an empty pack still reads as the familiar wall of slots. A filled slot
     // DRAGS: pointer-captured ghost (the bird-density slider pattern);
-    // releasing over the game view (top 61.8%) asks the game to drop it
+    // releasing over the game view (above --hud-h) asks the game to drop it
     // there — releasing anywhere else snaps back.
     const bp = this.pages.get("backpack")!;
     this.invGrid = mk("div", "ml-slots");
@@ -2228,7 +2278,8 @@ function injectStyles() {
   mountTheme(); // shared wiki tokens + dark-mode sync — everything below uses them
   mountChatKeyboardLift();
   const css = `
-  /* ── shell: golden-ratio split, a plain 1px border where the frame was ── */
+  /* ── shell: the rail sits at --hud-h-inv (three backpack rows up from the
+     bottom in portrait), a plain 1px border where the frame was ── */
   .ml-hud{position:fixed;left:0;right:0;top:var(--hud-h-inv,61.8dvh);bottom:0;z-index:4;
     background:var(--bg);color:var(--ink);border-top:1px solid var(--border);
     font:14px/1.45 var(--sans);display:flex;flex-direction:column;box-sizing:border-box}
@@ -2315,7 +2366,7 @@ function injectStyles() {
   .ml-page{display:none;height:100%;overflow-y:auto;overflow-x:hidden;
     -webkit-overflow-scrolling:touch;flex-direction:column;align-items:center;
     justify-content:safe center;gap:12px;text-align:center;
-    padding:10px 16px calc(16px + var(--ml-safe-bottom, 0px));background:var(--bg)}
+    padding:10px 16px calc(10px + var(--ml-safe-bottom, 0px));background:var(--bg)}
   .ml-page.show{display:flex}
   /* gamepad page: the analog stick + jump button position absolutely inside it */
   .ml-page[data-page=gamepad]{position:relative;overflow:hidden}
@@ -2337,7 +2388,7 @@ function injectStyles() {
     text-align:center;padding:24px;line-height:1.5}
   .ml-map-empty[hidden]{display:none}
   /* ── backpack slots: wiki empty cells ── */
-  .ml-slots{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+  .ml-slots{display:grid;grid-template-columns:repeat(${BAG_COLS},1fr);gap:10px;
     width:100%;max-width:560px;margin:auto 0}
   /* A filled slot is a TAP TARGET until it is selected: no touch-action here,
      so a finger that moves scrolls the page instead of lifting the item
@@ -2603,7 +2654,7 @@ function injectStyles() {
     .ml-dials{gap:10px}
     .ml-tabrow{padding:8px 14px 8px}
     .ml-tab{height:48px}
-    .ml-page{gap:8px;padding:8px 14px calc(12px + var(--ml-safe-bottom, 0px))}
+    .ml-page{gap:8px;padding:8px 14px calc(8px + var(--ml-safe-bottom, 0px))}
     .ml-plate-btn{min-height:36px}
     .ml-set{gap:10px}
     .ml-amb-list{gap:6px}

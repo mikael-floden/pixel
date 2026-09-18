@@ -1,7 +1,8 @@
 // Verify chat: one client sends a message, another receives it as a bubble.
 // WIKI-STYLE UI (2026-07-30): the ChatUI overlay (.ml-chatlog/.ml-chatinput)
 // is plain CSS anchored in real px above --hud-h (published by hud.ts
-// applyLayout as round(innerHeight*0.382)). ONE MARGIN FOR EVERYTHING that
+// applyLayout: exactly three backpack rows tall in portrait, 2026-09-18). ONE
+// MARGIN FOR EVERYTHING that
 // hugs an edge (maintainer 2026-07-31): 10px, the same as the stat chips at
 // the top and the Wiki row — which this gate checks by comparing against
 // that row itself, not a literal. Since 2026-09-17 the row lives TOP-right
@@ -77,6 +78,20 @@ try {
       innerH: window.innerHeight,
       hudRaw,
       hudH,
+      // THE PORTRAIT HUD IS EXACTLY THREE BACKPACK ROWS TALL (hud.ts
+      // portraitHudHeight, maintainer 2026-09-18): 1px rule + tab row + page
+      // padding + 3 slots + 2 gaps + the same padding + the safe inset.
+      threeRows: (() => {
+        const px = (v) => parseFloat(v) || 0;
+        const tab = document.querySelector(".ml-tabrow"), pg = document.querySelector('.ml-page[data-page="backpack"]'), grid = pg && pg.querySelector(".ml-slots");
+        if (!tab || !grid) return null;
+        const pcs = getComputedStyle(pg), gcs = getComputedStyle(grid);
+        const inner = Math.min(innerWidth - px(pcs.paddingLeft) - px(pcs.paddingRight), px(gcs.maxWidth) || Infinity);
+        const cols = (gcs.gridTemplateColumns.match(/\d+(?=\s*,)/) || [5])[0] * 1;
+        const slot = (inner - (cols - 1) * px(gcs.columnGap)) / cols;
+        return Math.round(1 + tab.getBoundingClientRect().height + 2 * px(pcs.paddingTop) + 3 * slot + 2 * px(gcs.rowGap) + px(getComputedStyle(document.documentElement).getPropertyValue("--ml-safe-bottom")));
+      })(),
+
       uizoom: getComputedStyle(root).getPropertyValue("--ml-uizoom").trim(),
       logPos: log ? getComputedStyle(log).position : null,
       logRect: log ? rectOf(log) : null,
@@ -101,8 +116,8 @@ try {
 
   const near = (a, b, tol = 1) => a != null && Math.abs(a - b) <= tol;
   if (!/px$/.test(geo.hudRaw)) throw new Error(`--hud-h not real px: "${geo.hudRaw}"`);
-  if (!near(geo.hudH, Math.round(geo.innerH * 0.382)))
-    throw new Error(`--hud-h ${geo.hudH} != 38.2% of ${geo.innerH}`);
+  if (!near(geo.hudH, geo.threeRows))
+    throw new Error(`--hud-h ${geo.hudH} != three backpack rows (${geo.threeRows}) — hud.ts portraitHudHeight`);
   // NO zoom compensation in the chat overlay: chat.ts never reads
   // --ml-uizoom and the plain-px anchor equalities below prove it (a
   // compensating anchor would divide by the factor). NB the VARIABLE itself
