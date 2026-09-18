@@ -4759,6 +4759,24 @@ export class WorldScene extends Phaser.Scene {
           get: () => !!this.night && this.night.shadowDbg !== 0,
           state: () => ["on", "off", "red"][this.night?.shadowDbg ?? 0],
         },
+        /* LIGHT ONLY — the world as light and shadow, no textures (maintainer
+         * 2026-09-18: "add a settings option so I also can render the world in
+         * this 'shadow and light' only version/style... easy for me to find
+         * render/shadow/light issues that have nothing to do with texture").
+         * Calibration pattern 5: the night pass's own light field, composited
+         * opaque over everything; the lit copies hide with it (applyObjectLights
+         * reads testPattern < 3). Not remembered, like the shadows switch. */
+        {
+          label: "light only",
+          act: () => {
+            const n = this.night;
+            if (!n) return;
+            n.testPattern = n.testPattern === 5 ? 0 : 5;
+            this.chat.addLog("—", `light only: ${n.testPattern === 5 ? "on" : "off"}`);
+          },
+          get: () => !!this.night && this.night.testPattern === 5,
+          state: () => (this.night?.testPattern === 5 ? "on" : "off"),
+        },
         /* OVERLAYS — the same idea as the shadows switch, for the three
          * full-screen passes. The zigzag is NOT in the ground texture (exact
          * unlit palette census at his cell and zoom: zero wall-coloured

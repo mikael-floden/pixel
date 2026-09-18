@@ -820,6 +820,12 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   early-out uniform gets BOTH treatments: the guard is only as good as the last
   write, and the last write is only as good as not running at all.
 
+- **SETTINGS "LIGHT ONLY" RENDERS THE LIGHT FIELD ALONE** (maintainer
+  2026-09-18): calibration pattern 5 — the pass's own light and shadow,
+  composited opaque, no textures, lit copies hidden — behind a Settings
+  switch beside "shadows"/"overlays", so he can hunt light bugs on the phone
+  without a texture in the way. Not remembered across a reload. Probe:
+  `__ml.nightCal(0, 1, 5)`.
 - **THE LIGHT PASSES RENDER AT HALF RESOLUTION** (`LIGHT_SCALE_DEFAULT` 0.5,
   lightscale.ts), tuned by the "Light resolution" slider. It is the fraction of
   the canvas the three full-screen passes render at before a LINEAR upsample, so
