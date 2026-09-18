@@ -743,55 +743,78 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   town emitters after: the one real town emitter, a bonfire at 443.5,364.5 with no share in its own cell, reads its pool 0.92x with shadows on - a uniform 8% from its OWN multi-cell footprint, outside the own-cell skip; a per-light exclusion radius needs a uniform slot (open). Trunk position is cell-quantised (one texel per cell): up
   to 0.5 cell from the drawn trunk, and the day pool keeps the patch's 0.35-
   cell tiers — both inherited from the approved prop look.
-- **CONTACT AO — WHERE A PIECE'S ART MEETS THE GROUND, ALONG THE ISO GROUND
-  LINE, AT THE PIECE'S OWN FLOOR** (`client/src/scenerycontact.ts`, the
+- **CONTACT AO — THE SILHOUETTE DROPPED TWO TEXELS, MINUS THE ART, CLIPPED TO
+  THE FOOTPRINT, BLURRED, DARK** (`client/src/scenerycontact.ts`, the
   `uContact` field in nightlight.ts, `__ml.contactStamps()` /
-  `__ml.contactAo(v)`; gate `scripts/verify-contact.mjs`). Maintainer
-  2026-09-17 and 2026-09-18 with eleven marked screenshots: "a scenery object
-  placed in the world doesn't look like it actually touches the ground" —
-  beds' feet, a table's LEGS only, a barrel's base, a fireplace's base line,
-  lamp posts, rocks' whole base, cart wheels, a scarecrow's pole, a maypole's
-  base. WHAT TOUCHES THE GROUND IS THE SILHOUETTE'S BOTTOM ALONG THE ISO
-  GROUND LINE, NOT THE HITBOX: per column of the drawn crop the lowest opaque
-  row; the footline is the lowest of those; the ground line is the V through
-  the footline columns rising `CONTACT_ISO_SLOPE` 0.5 px per column away from
-  them (a box's base edges on the 2:1 grid), and a column is in contact when
-  its bottom sits within `CONTACT_TOL_FRAC` (4% of the crop, 2..6 px) of
-  that line — a bed's or a cupboard's whole base V, a table's legs (its top
-  sits half a sprite above the line), a rock's whole base, a tree's trunk.
-  (Before 2026-09-18 the test was against the ONE lowest point, so every iso
-  box wore a single blob at its front corner — his three red circles at
-  305.9,227.6, "totally misplaced".) The contact line is smoothed along the
-  base (a mean over `CONTACT_SMOOTH` 2 columns either side) and every contact
-  column splats a soft ellipse (`CONTACT_R_FRAC` 16% of the crop, 6..18 px,
-  squashed `CONTACT_SQUASH` 0.5, full coverage across `CONTACT_CORE` 35% of
-  the radius, then a smoothstep to the rim) at its bottom pixel into a WHITE
-  RGBA raster, coverage in alpha, the crop's box plus a pad below the
-  footline so the blob reaches the ground IN FRONT of the piece. A SHADOW,
-  NOT A DRAWN LINE: at 10% (5 px on a rock) the union of blobs was a thin
-  band whose darkest pixels traced every jaggy of the base outline, and in
-  the light-only render each rock wore a hand-drawn squiggle (maintainer
-  2026-09-18: "It looks as if you took my drawings"). ONE RASTER PER (ART,
-  CROP) under a versioned content key (`s3ct:<art>@v3:<crop>`),
-  built from the art's resident pixels a few per frame (`runContactJobs`),
-  never rewritten; two placements of one crop share it. RENDERED INTO THE
-  LIGHT FIELD: a world-anchored render texture beside the glow field (unit
-  7, same window, same half resolution, redrawn only when the camera or the
-  drawn set moves), each stamp drawn premultiplied with the piece's FLOOR
-  HEIGHT in its red tint (`CONTACT_Z_SCALE` 64 levels per unit); the night
-  pass reads r/a back as that height and multiplies the blob into the WHOLE
-  light of a GROUND pixel only within `CONTACT_Z_TOL` 0.6 of it — faces are
-  exempt (a wall behind a table is not its floor) and so is a ROOF drawn a
-  level or more over the furniture (his 2026-09-18: "when I walk out of a
-  house the ugly misplaced scenery ambient occlusion is placed on top of the
-  roof"); a piece faded out with its roof registers no stamp at all. No
-  sprite of its own, so no z-order rule of its own: it lies under every lit
-  copy like every other shadow (his rule: "This should render into the
-  shadow we already have and don't add new/more complexity").
-  `CONTACT_AO_DEFAULT` 0.5 is the darkening at full coverage — his dial. A
-  floor piece and a wall piece (flat, onWall) register no stamp. Rejected:
-  the hitbox's bottom edge as the contact line (a table's whole span
-  darkened, legs and air alike); the lowest point alone (one blob per box).
+  `__ml.contactAo(v)`; gate `scripts/verify-contact.mjs`, unit tests
+  `server/test/scenerycontact.test.ts`). Maintainer 2026-09-17 and -18 with
+  twelve marked screenshots: "a scenery object placed in the world doesn't
+  look like it actually touches the ground", then his recipe, which this is
+  built to the letter of: "You have the hitbox and you have the texture. Just
+  offset the texture and remove the pixels that overlap with texture. Remove
+  pixels not touching the ground (study the hitbox for perspective).
+  Smooth/blurr the remaining pixels and make them dark. Render pixel perfect."
+  So, per column of the drawn crop: take that column's OWN lowest opaque row
+  and mark the `CONTACT_DROP` 2 texels below it — the silhouette's outer lower
+  outline, with everything the art covers already gone. A column is ON THE
+  GROUND when its lowest row sits within `CONTACT_LINE_TOL` 4 texels above the
+  ISO BASE LINE — the V through the piece's own lowest texel, rising
+  `CONTACT_ISO_SLOPE` 0.5 per column (what a box on a 2:1 grid draws) — AND is
+  no higher than the published HITBOX's centre row (within
+  `CONTACT_EDGE_TOL_FRAC` 0.5 of its semi-axis, at least 4), AND lies inside
+  that box's horizontal span (grown `CONTACT_FOOT_MARGIN` 30%, at least 3
+  texels). Measured on his own room's pieces: the line fits a table's four
+  legs to within 1 texel (45/48/51/59 against 46/48.5/51/59) where the box's
+  front edge rejected two of them, and the box is what rejects a hearth's
+  mantel, which overhangs its base by half its width and so passes the line.
+  The remaining band is blurred (5 taps across, 3 down — the ground is
+  foreshortened) AFTER the art's texels were removed, so the soft edge climbs
+  a texel onto the piece's own base as well as onto the floor ("ambient
+  occlusion is visible both on the object and on the world/env when the object
+  is in contact"), normalised by a SOLID band's own response to that blur, and
+  written at `CONTACT_PEAK` 0.9 coverage into a WHITE RGBA raster (his dial
+  scales it; `CONTACT_AO_DEFAULT` 0.5). PIXEL PERFECT means the stamp is the
+  crop's own texel grid and the field it is drawn into is 1:1 WITH THE LIGHT
+  FIELD (not halved like the glow field: a two-texel band at half resolution
+  lands on one texel and the bilinear read smears it, which is the blur he
+  rejected). A box that does not overlap its crop is ignored in favour of the
+  crop's bottom centre — the fallback the lit copy uses for a piece with no
+  published box — because the answer must be a shadow under the piece, never
+  no shadow: the boxes are hand-placed per piece AND per facing, and the first
+  wiring handed the builder canvas coordinates minus the PACK offset, which
+  put a streetlight's footprint 40 texels left of its 35-wide crop and left 12
+  of 26 pieces with no contact at all. `fit.sx/sy` are canvas coordinates (the
+  draw anchor uses them that way); only the lit copy's shape map lives in
+  packed texels.
+  ONE RASTER PER (ART, CROP, FOOTPRINT) under a versioned content key
+  (`s3ct:<art>@v4:<crop>:<foot>`), built from the art's resident pixels a few
+  per frame (`runContactJobs`), never rewritten; two placements that agree on
+  all three share it. RENDERED INTO THE LIGHT FIELD: a world-anchored render
+  texture beside the glow field (unit 7, same window, redrawn only when the
+  camera or the drawn set moves), each stamp drawn premultiplied with the
+  piece's FLOOR HEIGHT in its red tint (`CONTACT_Z_SCALE` 64 levels per unit);
+  the night pass reads r/a back as that height and multiplies the band into the
+  WHOLE light of a GROUND pixel only within `CONTACT_Z_TOL` 0.6 of it — faces
+  are exempt (a wall behind a table is not its floor) and so is a ROOF drawn a
+  level or more over the furniture ("when I walk out of a house the ugly
+  misplaced scenery ambient occlusion is placed on top of the roof"); a piece
+  faded out with its roof registers no stamp at all. No sprite of its own, so
+  no z-order rule of its own: it lies under every lit copy like every other
+  shadow ("This should render into the shadow we already have and don't add
+  new/more complexity"). A floor piece and a wall piece (flat, onWall)
+  register no stamp.
+  REJECTED, each after he saw it: soft ellipses splatted along a smoothed
+  contact line (v3, 6..18 px wide, a cell out from the art — "You are way off
+  and to big"); the hitbox's bottom edge as the contact line (a table's whole
+  span darkened, legs and air alike); the single lowest point (one blob per
+  box, "totally misplaced"); testing only the texel `CONTACT_DROP` below each
+  art texel rather than each column's lowest (a band under every overhang with
+  a gap under it — a table's top, a bed's blanket edge, a rail); the
+  footprint's FRONT edge as the ceiling instead of its centre row (an
+  alpha-placed automatic box whose centre sits at its own base then rejects the
+  middle of its base line and the piece loses its contact); normalising a
+  stamp by its own maximum (the same piece read darker or lighter depending on
+  what else was in its crop, and a narrow leg as dark as a long base).
 - **A LIGHT ABOVE A TEXEL COUNTS ITS HEIGHT MORE** (`SHAPE_ZW_ATT_BELOW` 0.45
   beside `SHAPE_ZW_ATT` 0.15, scenerylit.ts + `shapeLightTerm`; 2026-09-18,
   maintainer at 218.5,236.4 by the mountain lamp: "the tall tree is

@@ -3284,13 +3284,20 @@ export class NightLights {
     this.glowKey = `night-glow-${this.fieldCount}`;
     this.glowRT.saveTexture(this.glowKey);
     s.setSampler2D("uGlow", this.glowKey, 3);
-    // THE CONTACT FIELD, the glow field's sibling: same window, same
-    // half-resolution (soft blobs), redrawn only when the camera or the
-    // drawn set moves. Unit 7: 0 height, 1 linear, 2 emission, 3 glow,
-    // 4 room, 5 ground, 6 block max.
+    // THE CONTACT FIELD, the glow field's sibling: same window, redrawn only
+    // when the camera or the drawn set moves. Unit 7: 0 height, 1 linear,
+    // 2 emission, 3 glow, 4 room, 5 ground, 6 block max.
+    // 1:1 WITH THE LIGHT FIELD, NOT HALVED LIKE THE GLOW. The contact band is
+    // the art's silhouette dropped CONTACT_DROP texels — two of them — so at
+    // the glow field's half resolution it lands on ONE texel and the bilinear
+    // read smears it into the blur the maintainer rejected (2026-09-18: "The
+    // effect must be placed just slightly under the real texture with pixel
+    // perfect placement ... Render pixel perfect"). The fill it costs is the
+    // sum of the drawn crops' own areas, not the screen (the clear is the only
+    // full-window pass), and the field is redrawn only on a changed signature.
     this.contactRT?.destroy();
     if (this.contactKey && this.scene.textures.exists(this.contactKey)) this.scene.textures.remove(this.contactKey);
-    this.contactRT = this.scene.make.renderTexture({ width: gw, height: gh }, false);
+    this.contactRT = this.scene.make.renderTexture({ width: Math.max(1, width), height: Math.max(1, height) }, false);
     this.contactKey = `night-contact-${this.fieldCount}`;
     this.contactRT.saveTexture(this.contactKey);
     this.contactSig = "";

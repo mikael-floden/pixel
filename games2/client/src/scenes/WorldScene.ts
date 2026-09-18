@@ -163,7 +163,7 @@ import {
 } from "../nightlight";
 import { SceneryLitPipeline, SCENERY_LIT_PIPELINE, SCENERY_LIT_OCC, type SceneryLitShape } from "../scenerylit";
 import { ShapeMapBuilder, shapeMapKey, decodeShape, type ShapeHitbox, type ShapeScale } from "../scenerylight";
-import { buildContactStamp, contactStampKey, type ContactCut } from "../scenerycontact";
+import { buildContactStamp, contactStampKey, type ContactCut, type ContactFoot } from "../scenerycontact";
 import type { ContactStamp } from "../nightlight";
 import {
   reservedLights,
@@ -3914,7 +3914,7 @@ export class WorldScene extends Phaser.Scene {
   /** CONTACT STAMPS (scenerycontact.ts): one raster per (art, crop), built
    *  from the art's pixels when they are resident, a few per frame; the
    *  contact points beside it for the probe and the gate. */
-  private contactJobs = new Map<string, { artKey: string; cut: ContactCut }>();
+  private contactJobs = new Map<string, { artKey: string; cut: ContactCut; foot?: ContactFoot }>();
   private contactPoints = new Map<string, { x: number; y: number }[]>();
   private contactStat = { built: 0, failed: 0, empty: 0, ms: 0 };
   private shapeStats = { built: 0, failed: 0, texels: 0, ms: 0, maxMs: 0 };
@@ -21849,7 +21849,7 @@ export class WorldScene extends Phaser.Scene {
         continue;
       }
       try {
-        const st = buildContactStamp(px, job.cut);
+        const st = buildContactStamp(px, job.cut, job.foot);
         if (st) {
           this.textures.addUint8Array(ck, st.data, st.w, st.h);
           this.contactPoints.set(ck, st.points);
@@ -22457,11 +22457,39 @@ export class WorldScene extends Phaser.Scene {
       {
         const rec = img as unknown as { __ckey?: string; __csw?: number; __csh?: number };
         if (!flat && !onWall) {
-          const ck = contactStampKey(key, fit);
+          /* THE FOOTPRINT THE BAND IS CLIPPED TO (scenerycontact.ts step 2):
+           * the piece's own collision hitbox, in the art's UNFLIPPED frame and
+           * in the packed texture's coordinates — the same quantity the lit
+           * copy's shape map is built from, so the two agree by construction.
+           * Without it the band follows the whole silhouette and a table's top,
+           * a lamp's head and a tree's canopy wear a shadow line in mid-air
+           * (maintainer 2026-09-18: "Remove pixels not touching the ground
+           * (study the hitbox for perspective)"). A piece with no published box
+           * falls back to the crop's bottom centre, in the builder. */
+          const rectB = box0?.shape === "rect";
+          const szoC = rectB ? box0?.size_by_dir?.[p.dir || "south"] : undefined;
+          /* IN THE CROP'S OWN SPACE, WHICH IS THE CANVAS'S — no pack offset.
+           * `fit.sx/sy` index the piece's texture the same way the draw anchor
+           * does (`art.canvas.w / 2 + ax - fit.sx`), so the box belongs in
+           * canvas coordinates and the builder subtracts the crop's origin
+           * itself. Subtracting the pack offset as well (which the lit copy's
+           * shape map does, because that map is built on the PACKED texels)
+           * put the footprint 40 texels left of a streetlight's 35-wide crop
+           * and the piece lost its contact entirely — measured at 304.3,232.9,
+           * 12 of 26 crops came back empty. */
+          const foot: ContactFoot | undefined = box0
+            ? {
+                cx: art.canvas.w / 2 + (hbPos?.ax ?? box0.ax),
+                cy: art.canvas.h / 2 + (hbPos?.ay ?? box0.ay),
+                rx: szoC && Number.isFinite(szoC.rx) ? szoC.rx : box0.rx,
+                ry: szoC && Number.isFinite(szoC.ry) ? szoC.ry : box0.ry,
+              }
+            : undefined;
+          const ck = contactStampKey(key, fit, foot);
           rec.__ckey = ck;
           rec.__csw = fit.sw;
           rec.__csh = fit.sh;
-          if (!this.textures.exists(ck) && !this.contactJobs.has(ck)) this.contactJobs.set(ck, { artKey: key, cut: { sx: fit.sx, sy: fit.sy, sw: fit.sw, sh: fit.sh } });
+          if (!this.textures.exists(ck) && !this.contactJobs.has(ck)) this.contactJobs.set(ck, { artKey: key, cut: { sx: fit.sx, sy: fit.sy, sw: fit.sw, sh: fit.sh }, foot });
         } else rec.__ckey = undefined;
       }
       this.sceneryImgs.push(

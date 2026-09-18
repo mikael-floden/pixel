@@ -1,10 +1,11 @@
 // CONTACT IS WHERE THE ART MEETS THE GROUND (client/src/scenerycontact.ts):
-// a table's LEGS, not the span between them; a rock's whole base. Maintainer
-// 2026-09-17, on the marked screenshots: "On a table only the table legs hit
-// the ground."
+// the silhouette dropped CONTACT_DROP texels minus the art, kept inside the
+// hitbox's footprint, blurred, dark. A table's LEGS, not the top between them
+// (maintainer 2026-09-17: "On a table only the table legs hit the ground");
+// a rock's whole base; a tree's trunk, never its canopy.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CONTACT_ISO_SLOPE, buildContactStamp, contactBottoms, contactStampKey } from "../../client/src/scenerycontact.js";
+import { CONTACT_DROP, CONTACT_PEAK, buildContactStamp, contactBottoms, contactStampKey } from "../../client/src/scenerycontact.js";
 
 function blank(w: number, h: number) {
   return { w, h, data: new Uint8ClampedArray(w * h * 4) };
@@ -13,8 +14,9 @@ function fill(px: { w: number; data: Uint8Array | Uint8ClampedArray }, x0: numbe
   for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) px.data[(y * px.w + x) * 4 + 3] = 255;
 }
 const alphaAt = (s: { w: number; data: Uint8Array | Uint8ClampedArray }, x: number, y: number) => s.data[(y * s.w + x) * 4 + 3];
+const PEAK = Math.round(255 * CONTACT_PEAK);
 
-test("a table: the legs touch, the span between them does not", () => {
+test("a table: the legs touch, the top between them does not", () => {
   const px = blank(64, 48);
   fill(px, 4, 10, 60, 16); // the top
   fill(px, 6, 16, 10, 40); // left leg
@@ -23,16 +25,18 @@ test("a table: the legs touch, the span between them does not", () => {
   const b = contactBottoms(px, cut);
   assert.equal(b[7], 39, "the leg's bottom");
   assert.equal(b[30], 15, "the top's underside between the legs");
-  const s = buildContactStamp(px, cut)!;
+  // The footprint: the legs' base, a cell wide, foreshortened.
+  const s = buildContactStamp(px, cut, { cx: 32, cy: 39, rx: 28, ry: 6 })!;
   assert.ok(s, "a stamp");
   assert.equal(s.footY, 39);
   assert.ok(s.points.every((p) => (p.x >= 6 && p.x < 10) || (p.x >= 54 && p.x < 58)), `contact columns are the legs only: ${JSON.stringify(s.points.map((p) => p.x))}`);
-  assert.ok(alphaAt(s, 7, 39) > 150, "dark under the left leg");
-  assert.ok(alphaAt(s, 55, 39) > 150, "dark under the right leg");
-  assert.equal(alphaAt(s, 30, 39), 0, "nothing under the span at the footline");
-  assert.ok(s.data.every((v, i) => i % 4 !== 3 || v <= 180), "never black: the peak coverage is capped");
-  assert.equal(alphaAt(s, 30, 15), 0, "nothing under the top's underside");
-  assert.ok(alphaAt(s, 7, 41) > 0, "the blob reaches the ground in front of the leg (the pad)");
+  assert.ok(alphaAt(s, 7, 40) > 150, "dark just under the left leg");
+  assert.ok(alphaAt(s, 55, 41) > 150, "dark just under the right leg");
+  assert.ok(alphaAt(s, 7, 39) > 40, "the blur climbs onto the leg's own base texel");
+  assert.equal(alphaAt(s, 30, 40), 0, "nothing under the span at the footline");
+  assert.equal(alphaAt(s, 30, 17), 0, "nothing under the top's underside — it hangs above the footprint");
+  assert.ok(s.data.every((v, i) => i % 4 !== 3 || v <= PEAK), "never black: the peak coverage is capped");
+  assert.equal(alphaAt(s, 7, 39 + CONTACT_DROP + 3), 0, "the band is thin: a few texels under the art, no further");
 });
 
 test("a rock: the whole base is in contact, the crown is not", () => {
@@ -43,66 +47,64 @@ test("a rock: the whole base is in contact, the crown is not", () => {
     if (dy <= 0 && dx * dx + dy * dy <= 1) px.data[(y * px.w + x) * 4 + 3] = 255;
   }
   const cut = { sx: 0, sy: 0, sw: 40, sh: 30 };
-  const s = buildContactStamp(px, cut)!;
-  assert.ok(s.points.length >= 36, `nearly every column touches (${s.points.length})`);
-  assert.ok(alphaAt(s, 20, 27) > 150, "dark under the middle of the base");
-  assert.ok(alphaAt(s, 2, 27) > 150, "dark under the base's end");
+  const s = buildContactStamp(px, cut, { cx: 20, cy: 27, rx: 19, ry: 5 })!;
+  assert.ok(s.points.length >= 34, `nearly every column touches (${s.points.length})`);
+  assert.ok(alphaAt(s, 20, 28) > 150, "dark under the middle of the base");
+  assert.ok(alphaAt(s, 4, 28) > 100, "dark under the base's end");
   assert.equal(alphaAt(s, 20, 5), 0, "the crown is not a contact");
+  assert.equal(alphaAt(s, 20, 20), 0, "nothing on the body");
 });
 
-test("an empty crop has no stamp; the key carries art, version and crop", () => {
+test("an empty crop has no stamp; the key carries art, version, crop and footprint", () => {
   assert.equal(buildContactStamp(blank(8, 8), { sx: 0, sy: 0, sw: 8, sh: 8 }), null);
-  assert.equal(contactStampKey("s3:barrels/barrel_001", { sx: 2, sy: 3, sw: 40, sh: 50 }), "s3ct:s3:barrels/barrel_001@v3:2,3,40,50");
+  assert.equal(contactStampKey("s3:barrels/barrel_001", { sx: 2, sy: 3, sw: 40, sh: 50 }), "s3ct:s3:barrels/barrel_001@v4:2,3,40,50");
+  assert.equal(contactStampKey("s3:barrels/barrel_001", { sx: 2, sy: 3, sw: 40, sh: 50 }, { cx: 22.123, cy: 50, rx: 10, ry: 5 }), "s3ct:s3:barrels/barrel_001@v4:2,3,40,50:22.12,50,10,5");
 });
 
 test("an iso box: the whole base V touches, not only the front corner", () => {
-  // A 2:1 diamond footprint 60 wide: the front corner at column 30 is the
+  // A 2:1 diamond footprint 60 wide: the front corner at column 32 is the
   // lowest point, both base edges climb half a px per column from it.
   const px = blank(64, 48);
   for (let x = 2; x < 62; x++) {
-    const bottom = 45 - Math.floor(Math.abs(x - 32) * CONTACT_ISO_SLOPE);
+    const bottom = 45 - Math.floor(Math.abs(x - 32) * 0.5);
     fill(px, x, 4, x + 1, bottom + 1);
   }
   const cut = { sx: 0, sy: 0, sw: 64, sh: 48 };
-  const s = buildContactStamp(px, cut)!;
+  const s = buildContactStamp(px, cut, { cx: 32, cy: 30, rx: 30, ry: 15 })!;
   assert.equal(s.footY, 45);
   assert.ok(s.points.length >= 58, `the whole base is in contact (${s.points.length} of 60 columns)`);
-  assert.ok(alphaAt(s, 4, 45 - 14) > 150, "dark under the left end of the base edge");
-  assert.ok(alphaAt(s, 59, 45 - 13) > 150, "dark under the right end of the base edge");
-  assert.ok(alphaAt(s, 32, 45) > 150, "dark under the front corner");
+  assert.ok(alphaAt(s, 4, 45 - 14 + 1) > 100, "dark under the left end of the base edge");
+  assert.ok(alphaAt(s, 59, 45 - 13 + 1) > 100, "dark under the right end of the base edge");
+  assert.ok(alphaAt(s, 32, 46) > 150, "dark under the front corner");
   assert.equal(alphaAt(s, 32, 20), 0, "nothing on the box's body");
 });
 
-test("a tree: the trunk touches, the canopy far above the ground line does not", () => {
+test("a tree: the trunk touches, the canopy far above the footprint does not", () => {
   const px = blank(64, 80);
   fill(px, 4, 4, 60, 40); // the canopy, a wide block
   fill(px, 29, 40, 35, 78); // the trunk
-  const s = buildContactStamp(px, { sx: 0, sy: 0, sw: 64, sh: 80 })!;
+  const s = buildContactStamp(px, { sx: 0, sy: 0, sw: 64, sh: 80 }, { cx: 32, cy: 77, rx: 6, ry: 3 })!;
   assert.equal(s.footY, 77);
   assert.ok(s.points.every((p) => p.x >= 29 && p.x < 35), `trunk columns only: ${JSON.stringify(s.points.map((p) => p.x))}`);
-  assert.equal(alphaAt(s, 10, 39), 0, "nothing under the canopy's underside");
+  assert.equal(alphaAt(s, 10, 41), 0, "nothing under the canopy's underside");
+  assert.ok(alphaAt(s, 32, 78) > 150, "dark under the trunk");
 });
 
-test("the stamp is white with the coverage in alpha (the draw tints it with the floor height)", () => {
+test("without a hitbox the crop's bottom centre is the footprint", () => {
   const px = blank(16, 16);
   fill(px, 4, 4, 12, 12);
   const s = buildContactStamp(px, { sx: 0, sy: 0, sw: 16, sh: 16 })!;
-  const i = (11 * s.w + 8) * 4;
-  assert.deepEqual([s.data[i], s.data[i + 1], s.data[i + 2]], [255, 255, 255]);
-  assert.ok(s.data[i + 3] > 150);
+  const i = (12 * s.w + 8) * 4;
+  assert.deepEqual([s.data[i], s.data[i + 1], s.data[i + 2]], [255, 255, 255], "white: the draw tints it with the floor height");
+  assert.ok(s.data[i + 3] > 150, "dark just under the block");
+  assert.equal(alphaAt(s, 8, 3), 0, "nothing over the top edge");
 });
 
-test("a short step in a base edge is bridged, a long one is not", () => {
-  // A flat base 60 wide with a 3-column notch cut 10 px up at columns 30..32
-  // (a hearth slab's step) and a 20-column bay cut 10 px up at 40..59.
-  const px = blank(64, 40);
-  for (let x = 2; x < 62; x++) {
-    const bottom = (x >= 30 && x < 33) || (x >= 40 && x < 60) ? 27 : 37;
-    fill(px, x, 4, x + 1, bottom + 1);
-  }
-  const s = buildContactStamp(px, { sx: 0, sy: 0, sw: 64, sh: 40 })!;
-  const xs = new Set(s.points.map((p) => p.x));
-  assert.ok(xs.has(31), "the notch is bridged");
-  assert.ok(!xs.has(50), "the bay is not");
-  assert.ok(alphaAt(s, 31, 37) > 100, "dark across the notch");
+test("the stamp is the crop's own texel grid with a short pad below", () => {
+  const px = blank(20, 10);
+  fill(px, 2, 2, 18, 9);
+  const s = buildContactStamp(px, { sx: 0, sy: 0, sw: 20, sh: 10 })!;
+  assert.equal(s.w, 20);
+  assert.equal(s.h, 10 + s.pad);
+  assert.ok(s.pad >= CONTACT_DROP && s.pad <= CONTACT_DROP + 2, `a pad of ${s.pad}`);
 });
