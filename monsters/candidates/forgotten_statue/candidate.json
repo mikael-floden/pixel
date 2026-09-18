@@ -1,0 +1,140 @@
+{
+  "id": "forgotten_statue",
+  "name": "Plinthstep",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It was put up for somebody. Nobody left can read the base and nobody left knows who.",
+  "biome": [
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Carved stone figure of a person stepping off its plinth with the broken plinth still stuck to its feet, robes cut in deep folds, the hands finely detailed and the face weathered completely smooth, the base inscription rubbed out",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "forgotten_statue/rotations/south.webp",
+    "south-east": "forgotten_statue/rotations/south-east.webp",
+    "east": "forgotten_statue/rotations/east.webp",
+    "north-east": "forgotten_statue/rotations/north-east.webp",
+    "north": "forgotten_statue/rotations/north.webp",
+    "north-west": "forgotten_statue/rotations/north-west.webp",
+    "west": "forgotten_statue/rotations/west.webp",
+    "south-west": "forgotten_statue/rotations/south-west.webp"
+  },
+  "sheet": "forgotten_statue/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "56fae7f7-43e5-433f-8fd9-df66d6a864ef",
+  "seed": 1281586833,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T13:08:03+00:00",
+  "elapsed_s": 248.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.727,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.728,
+        "bbox": [
+          22,
+          4,
+          106,
+          124
+        ],
+        "fill": 0.615,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.782,
+        "bbox": [
+          37,
+          4,
+          94,
+          124
+        ],
+        "fill": 0.417,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.803,
+        "bbox": [
+          32,
+          4,
+          89,
+          124
+        ],
+        "fill": 0.417,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.727,
+        "bbox": [
+          24,
+          4,
+          102,
+          123
+        ],
+        "fill": 0.567,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.813,
+        "bbox": [
+          26,
+          4,
+          98,
+          125
+        ],
+        "fill": 0.532,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.766,
+        "bbox": [
+          25,
+          4,
+          99,
+          125
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.759,
+        "bbox": [
+          28,
+          4,
+          102,
+          125
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.822,
+        "bbox": [
+          28,
+          4,
+          101,
+          125
+        ],
+        "fill": 0.539,
+        "touches_edge": false
+      }
+    }
+  }
+}

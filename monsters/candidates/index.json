@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T13:03:55+00:00",
+  "generated_at": "2026-09-18T13:08:03+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 196,
+  "count": 199,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -25004,6 +25004,260 @@
       "generated_at": "2026-09-18T13:03:17+00:00"
     },
     {
+      "id": "forgotten_statue",
+      "name": "Plinthstep",
+      "tier": "evil",
+      "lore": "It was put up for somebody. Nobody left can read the base and nobody left knows who.",
+      "biome": [
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "56fae7f7-43e5-433f-8fd9-df66d6a864ef",
+      "version": 1,
+      "sheet": "forgotten_statue/sheet.webp",
+      "rotations": {
+        "south": "forgotten_statue/rotations/south.webp",
+        "south-east": "forgotten_statue/rotations/south-east.webp",
+        "east": "forgotten_statue/rotations/east.webp",
+        "north-east": "forgotten_statue/rotations/north-east.webp",
+        "north": "forgotten_statue/rotations/north.webp",
+        "north-west": "forgotten_statue/rotations/north-west.webp",
+        "west": "forgotten_statue/rotations/west.webp",
+        "south-west": "forgotten_statue/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.727,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.728,
+            "bbox": [
+              22,
+              4,
+              106,
+              124
+            ],
+            "fill": 0.615,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.782,
+            "bbox": [
+              37,
+              4,
+              94,
+              124
+            ],
+            "fill": 0.417,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.803,
+            "bbox": [
+              32,
+              4,
+              89,
+              124
+            ],
+            "fill": 0.417,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.727,
+            "bbox": [
+              24,
+              4,
+              102,
+              123
+            ],
+            "fill": 0.567,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.813,
+            "bbox": [
+              26,
+              4,
+              98,
+              125
+            ],
+            "fill": 0.532,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.766,
+            "bbox": [
+              25,
+              4,
+              99,
+              125
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.759,
+            "bbox": [
+              28,
+              4,
+              102,
+              125
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.822,
+            "bbox": [
+              28,
+              4,
+              101,
+              125
+            ],
+            "fill": 0.539,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T13:08:03+00:00"
+    },
+    {
+      "id": "empty_chair",
+      "name": "Emptychair",
+      "tier": "evil",
+      "lore": "One chair from a long table, still set for somebody. It follows the person who sat in it.",
+      "biome": [
+        "parquet_floor"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "0d84e0c9-4149-4ec2-a7e4-426812769066",
+      "version": 1,
+      "sheet": "empty_chair/sheet.webp",
+      "rotations": {
+        "south": "empty_chair/rotations/south.webp",
+        "south-east": "empty_chair/rotations/south-east.webp",
+        "east": "empty_chair/rotations/east.webp",
+        "north-east": "empty_chair/rotations/north-east.webp",
+        "north": "empty_chair/rotations/north.webp",
+        "north-west": "empty_chair/rotations/north-west.webp",
+        "west": "empty_chair/rotations/west.webp",
+        "south-west": "empty_chair/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.567,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.694,
+            "bbox": [
+              12,
+              3,
+              86,
+              100
+            ],
+            "fill": 0.664,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.723,
+            "bbox": [
+              21,
+              3,
+              87,
+              100
+            ],
+            "fill": 0.592,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.651,
+            "bbox": [
+              14,
+              8,
+              86,
+              99
+            ],
+            "fill": 0.606,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.567,
+            "bbox": [
+              23,
+              16,
+              91,
+              99
+            ],
+            "fill": 0.522,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.744,
+            "bbox": [
+              20,
+              3,
+              82,
+              100
+            ],
+            "fill": 0.556,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.58,
+            "bbox": [
+              15,
+              16,
+              82,
+              99
+            ],
+            "fill": 0.514,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.688,
+            "bbox": [
+              18,
+              7,
+              88,
+              99
+            ],
+            "fill": 0.595,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.775,
+            "bbox": [
+              18,
+              3,
+              89,
+              101
+            ],
+            "fill": 0.643,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T13:06:28+00:00"
+    },
+    {
       "id": "standing_mirror",
       "name": "Mirrorface",
       "tier": "evil",
@@ -25129,6 +25383,134 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T13:01:14+00:00"
+    },
+    {
+      "id": "orphan_door",
+      "name": "Doorward",
+      "tier": "evil",
+      "lore": "The house went in a Turn and the door stayed. There is knocking on the other side of it.",
+      "biome": [
+        "grey_paving_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "6dc541e2-f99f-4398-830e-9b463201efda",
+      "version": 1,
+      "sheet": "orphan_door/sheet.webp",
+      "rotations": {
+        "south": "orphan_door/rotations/south.webp",
+        "south-east": "orphan_door/rotations/south-east.webp",
+        "east": "orphan_door/rotations/east.webp",
+        "north-east": "orphan_door/rotations/north-east.webp",
+        "north": "orphan_door/rotations/north.webp",
+        "north-west": "orphan_door/rotations/north-west.webp",
+        "west": "orphan_door/rotations/west.webp",
+        "south-west": "orphan_door/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.774,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.784,
+            "bbox": [
+              22,
+              5,
+              91,
+              104
+            ],
+            "fill": 0.545,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.774,
+            "bbox": [
+              39,
+              4,
+              71,
+              108
+            ],
+            "fill": 0.265,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.795,
+            "bbox": [
+              41,
+              4,
+              72,
+              108
+            ],
+            "fill": 0.257,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.792,
+            "bbox": [
+              21,
+              6,
+              91,
+              104
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.817,
+            "bbox": [
+              29,
+              5,
+              84,
+              106
+            ],
+            "fill": 0.443,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.807,
+            "bbox": [
+              27,
+              5,
+              79,
+              107
+            ],
+            "fill": 0.423,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.815,
+            "bbox": [
+              30,
+              5,
+              86,
+              107
+            ],
+            "fill": 0.455,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.829,
+            "bbox": [
+              29,
+              5,
+              83,
+              106
+            ],
+            "fill": 0.435,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T13:08:01+00:00"
     }
   ]
 }
