@@ -52,7 +52,7 @@ test("a rock: the whole base is in contact, the crown is not", () => {
 
 test("an empty crop has no stamp; the key carries art, version and crop", () => {
   assert.equal(buildContactStamp(blank(8, 8), { sx: 0, sy: 0, sw: 8, sh: 8 }), null);
-  assert.equal(contactStampKey("s3:barrels/barrel_001", { sx: 2, sy: 3, sw: 40, sh: 50 }), "s3ct:s3:barrels/barrel_001@v2:2,3,40,50");
+  assert.equal(contactStampKey("s3:barrels/barrel_001", { sx: 2, sy: 3, sw: 40, sh: 50 }), "s3ct:s3:barrels/barrel_001@v3:2,3,40,50");
 });
 
 test("an iso box: the whole base V touches, not only the front corner", () => {

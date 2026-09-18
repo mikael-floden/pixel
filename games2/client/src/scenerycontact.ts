@@ -38,7 +38,7 @@
  * Phaser): server/test/scenerycontact.test.ts runs it headless. */
 import type { ShapePixels } from "./scenerylight";
 
-export const CONTACT_VERSION = 2;
+export const CONTACT_VERSION = 3;
 /** Alpha a texel needs to count as art. */
 const CONTACT_ALPHA_MIN = 48;
 /** How far above the footline a column's bottom may sit and still touch,
@@ -52,10 +52,19 @@ export const CONTACT_ISO_SLOPE = 0.5;
 /** A column within this many px of the footline is a footline column — the
  *  base's own jaggies, not a rise. */
 const CONTACT_FOOT_JAG = 1;
-/** The blob's horizontal radius as a share of the crop's height (4..12 px),
- *  squashed to CONTACT_SQUASH vertically — the ground is foreshortened. */
-const CONTACT_R_FRAC = 0.1;
+/** The blob's horizontal radius as a share of the crop's height (6..18 px),
+ *  squashed to CONTACT_SQUASH vertically — the ground is foreshortened.
+ *  A SHADOW, NOT A DRAWN LINE: at 10% (5 px on a rock) the union of blobs
+ *  was a thin band whose darkest pixels traced the base outline's every
+ *  jaggy — in the light-only render it read as a hand-drawn squiggle under
+ *  each rock (maintainer 2026-09-18: "It looks as if you took my drawings").
+ *  Wider, with a flat core (CONTACT_CORE of the radius at full coverage) and
+ *  the contact line smoothed over CONTACT_SMOOTH columns, it is one soft
+ *  patch under the base. */
+const CONTACT_R_FRAC = 0.16;
 const CONTACT_SQUASH = 0.5;
+const CONTACT_CORE = 0.35;
+const CONTACT_SMOOTH = 2;
 /** Coverage at the contact pixel itself: the floor under a piece is darker,
  *  never black (maintainer 2026-09-18: "The idea is to make the floor
  *  darker, but not black! If it was black we could have added it to the
@@ -113,7 +122,7 @@ export function buildContactStamp(px: ShapePixels, cut: ContactCut): ContactStam
   for (let i = 0; i < bottoms.length; i++) if (bottoms[i] > footY) footY = bottoms[i];
   if (footY < 0) return null;
   const tol = clamp(Math.round(cut.sh * CONTACT_TOL_FRAC), 2, 6);
-  const r = clamp(Math.round(cut.sh * CONTACT_R_FRAC), 4, 12);
+  const r = clamp(Math.round(cut.sh * CONTACT_R_FRAC), 6, 18);
   const maxGap = clamp(Math.round(cut.sw * CONTACT_GAP_FRAC), 2, 8);
   const ry = Math.max(1, Math.round(r * CONTACT_SQUASH));
   const pad = ry * 2;
@@ -149,11 +158,24 @@ export function buildContactStamp(px: ShapePixels, cut: ContactCut): ContactStam
     for (let g = x; g < e; g++) contactY[g] = y0 + ((y1 - y0) * (g - x + 1)) / (e - x + 1);
     x = e;
   }
+  // The line is smoothed along the base (a mean over the contact columns
+  // within CONTACT_SMOOTH), so the outline's own jaggies do not imprint.
+  const lineY = new Float64Array(w).fill(-1);
   for (let x = 0; x < w; x++) {
     if (contactY[x] < 0) continue;
-    const b = Math.round(contactY[x]);
+    let sum = 0, n = 0;
+    for (let k = Math.max(0, x - CONTACT_SMOOTH); k <= Math.min(w - 1, x + CONTACT_SMOOTH); k++) {
+      if (contactY[k] < 0) continue;
+      sum += contactY[k];
+      n++;
+    }
+    lineY[x] = sum / n;
+  }
+  for (let x = 0; x < w; x++) {
+    if (lineY[x] < 0) continue;
+    const b = Math.round(lineY[x]);
     points.push({ x, y: b });
-    // A soft ellipse at the column's bottom: CONTACT_PEAK at the centre,
+    // A soft ellipse at the column's bottom: CONTACT_PEAK across the core,
     // gone at the rim, a smooth fall-off between.
     for (let yy = Math.max(0, b - ry); yy <= Math.min(h - 1, b + ry); yy++) {
       for (let xx = Math.max(0, x - r); xx <= Math.min(w - 1, x + r); xx++) {
@@ -161,7 +183,7 @@ export function buildContactStamp(px: ShapePixels, cut: ContactCut): ContactStam
         const dy = (yy - b) / (ry + 0.5);
         const d = Math.sqrt(dx * dx + dy * dy);
         if (d >= 1) continue;
-        const t = 1 - d;
+        const t = Math.min(1, (1 - d) / (1 - CONTACT_CORE));
         const a = Math.round(255 * CONTACT_PEAK * t * t * (3 - 2 * t));
         const i = (yy * w + xx) * 4;
         if (a > data[i + 3]) {

@@ -415,6 +415,25 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   ray fell in the pixel's or the light's near field, so the march never saw
   the deck; a ground pixel under its cell's slab with the light at or above
   that slab takes nothing from it, before any march (shader + twin).
+  AND THE SURFACE WALK SEES THROUGH THE AIR UNDER A SLAB (`airTopAt`: the
+  slab's underside, the shared grid's `deckBot`, in whole levels in the low
+  7 bits of the surface map's G beside the solid flag in bit 7; the walk in
+  the fragment). The walk stopped at a deck column's outline, so every pixel
+  under the slab's side down to the ground was that column's own FACE — and
+  with the face rule above, a swimmer's torch under the bridge lit none of
+  the water he swam in: the pixel was a face whose plane stood in front of
+  the flame (same day, 282.0,246.3: "the player's TORCH should be able to
+  light up the underside (but not the top of the bridge). Now the player's
+  TORCH has no effect at all"). A hit in the air band (above the ground
+  column, below the underside) falls through to the column's ground span
+  and past it to the columns nearer the camera — what the renderer draws:
+  the slab's thickness of face, then the water behind and below it. The
+  cave mountain (deck 24, underside 8) keeps its 16 levels of rock and opens
+  at the mouth; a slab with no thickness entry (underside = level) is a bare
+  top and its column reads whole. Whole levels, unscaled: a scaled byte would
+  have clamped a high bridge's underside to a phantom lower one. Gate:
+  `verify-bridgelight.mjs` (a torch ON the deck still leaves the water at
+  the ambient).
   A TOP SURFACE TAKES NOTHING FROM A LIGHT WELL UNDER ITS PLANE
   (`TOP_UNDER_FREE` 1.0 / `TOP_UNDER_FADE` 2.5: full up to one level above
   the light, none from 2.5 levels above it; faces keep their own Lambert
@@ -724,11 +743,18 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   sits half a sprite above the line), a rock's whole base, a tree's trunk.
   (Before 2026-09-18 the test was against the ONE lowest point, so every iso
   box wore a single blob at its front corner — his three red circles at
-  305.9,227.6, "totally misplaced".) Every contact column splats a soft
-  ellipse (`CONTACT_R_FRAC` 6%, squashed 0.55) at its bottom pixel into a
-  WHITE RGBA raster, coverage in alpha, the crop's box plus a pad below the
-  footline so the blob reaches the ground IN FRONT of the piece. ONE RASTER
-  PER (ART, CROP) under a versioned content key (`s3ct:<art>@v2:<crop>`),
+  305.9,227.6, "totally misplaced".) The contact line is smoothed along the
+  base (a mean over `CONTACT_SMOOTH` 2 columns either side) and every contact
+  column splats a soft ellipse (`CONTACT_R_FRAC` 16% of the crop, 6..18 px,
+  squashed `CONTACT_SQUASH` 0.5, full coverage across `CONTACT_CORE` 35% of
+  the radius, then a smoothstep to the rim) at its bottom pixel into a WHITE
+  RGBA raster, coverage in alpha, the crop's box plus a pad below the
+  footline so the blob reaches the ground IN FRONT of the piece. A SHADOW,
+  NOT A DRAWN LINE: at 10% (5 px on a rock) the union of blobs was a thin
+  band whose darkest pixels traced every jaggy of the base outline, and in
+  the light-only render each rock wore a hand-drawn squiggle (maintainer
+  2026-09-18: "It looks as if you took my drawings"). ONE RASTER PER (ART,
+  CROP) under a versioned content key (`s3ct:<art>@v3:<crop>`),
   built from the art's resident pixels a few per frame (`runContactJobs`),
   never rewritten; two placements of one crop share it. RENDERED INTO THE
   LIGHT FIELD: a world-anchored render texture beside the glow field (unit
@@ -792,7 +818,24 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   smoothstep over the last storey below its column's summit — the face
   carries the fade a top cannot; eased with the crossing (× uIndoorMix), so
   it fades in with the room. Twin: the top term in `lightAt` (a body never
-  stands on a face). Not a texture: the back walls' tops are the wall's own
+  stands on a face). ON THE ROOM'S OWN SIDE ONLY: a face takes the fade when
+  its front cell is my room's; the street side of a parapet wore it as a
+  shadow band under the lid (his light-only marks, 2026-09-18: "buggy
+  shadows on the outside wall (near the top of the tile)").
+  AND THE POINT-LIGHT MARCH READS THE WALLS AS DRAWN (`drawnCutAt`, the
+  mask's low half, in `hardHeightAt`, `skirtOcc` and `edgeShare`; twin
+  `drawnCut` in `lightAt`; plus the lid skip in the march: a sample in
+  another cut column of my room whose drawn top is no higher than a lid
+  pixel is the same parapet, skipped like the pixel's own cell, and a lid
+  takes no edge rays). The occlusion map holds the whole building on
+  purpose — the sun is blocked by a roof the cut-away does not paint — but
+  a hearth or a torch INSIDE the room is lit against the picture: a lowered
+  wall's undrawn storeys shadowed the back wall in a strip at the corner,
+  blotched the parapets in cell-shaped blocks wherever a lid pixel's ray to
+  the hearth crossed the next cell of its own wall, and a blob on the corner
+  lid (maintainer 2026-09-18, the hearth house at 332.8,233.0 and
+  303.3,194.8: "ugly/blocky/buggy shadow that appears on top of the lowered
+  wall", then "a buggy shadow in the corner"). The sun march is untouched. Not a texture: the back walls' tops are the wall's own
   dressed cap, one file per material, and a painted variant per dial value
   would be one more cache-hashed plate per wall set for a strip the light
   already owns. Measured (`verify-walltop.mjs`, an A/B of the dial at 0 and

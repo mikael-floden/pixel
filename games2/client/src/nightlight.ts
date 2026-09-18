@@ -522,9 +522,45 @@ float heightAtHard(vec2 cr) {
 // 203.4,220.9). A slab with the light UNDER it is open air; the hard blocker
 // is the GROUND column (groundAt: terrain + scenery share, so a barrel under
 // a roof still blocks). Twin: hardAt in lightAt.
+// THE DRAWN CUT of a column while the mask is up (99 = drawn whole): my
+// room's cells carry 128 + cut, the covering cone its cut alone, 127 is
+// unconstrained and 0 is no entry at all (roomConstrainedAt reads it so).
+// THE POINT-LIGHT MARCH READS THE WALLS AS DRAWN. The occlusion map holds the
+// whole building on purpose — the sun is blocked by a roof the cut-away does
+// not paint — but a torch or a hearth INSIDE the room is lit against the
+// picture: a lowered wall's undrawn upper storeys shadowed the back wall in a
+// strip at the corner, blotched the parapets and the corner lid (maintainer
+// 2026-09-18, the hearth house at 332.8,233.0: "ugly/blocky/buggy shadow",
+// then "buggy shadow in the corner"). Every blocker read of the point march
+// (hardHeightAt, skirtOcc, edgeShare) is clamped to the column's drawn cut;
+// the sun march is untouched. Twin: drawnCut in lightAt.
+float drawnCutAt(vec2 cr) {
+  if (uIndoorMix < 0.001 || uRoomOn < 0.5) return 99.0;
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  float rr = texture2D(uRoom, uv).r * 255.0;
+  float low = rr - step(127.5, rr) * 128.0;
+  return (rr < 0.5 || low > 126.5) ? 99.0 : low;
+}
+// THE CUT TAKES THE TERRAIN AND THE LID, NEVER WHAT STANDS ON THE FLOOR: a
+// floor cell of my room is drawn to its floor (cut = the floor level), but
+// the brazier's bowl, a barrel or the rubble column on it is drawn whole and
+// still blocks — clamping the whole column flattened the ice cave's corner
+// column to the floor and the run beyond it lost the strip he approved
+// (verify-shadowline, y=600). The bump (ground column minus base terrain:
+// prop, solid, scenery share) rides on the drawn terrain; the lid over it
+// goes with the cut.
+float cutGround(float base, float g, float cut) {
+  return cut < base ? min(base, cut) + max(0.0, g - base) : g;
+}
+float cutHeight(float base, float h, float g, float cut) {
+  return cut < base ? min(h, max(g, cut)) : h;
+}
 float hardHeightAt(vec2 cr, float lz) {
-  float h = heightAtHard(cr);
-  float g = groundAt(cr);
+  float cut = drawnCutAt(cr);
+  float base = baseTerrAt(cr);
+  float g = cutGround(base, groundAt(cr), cut);
+  float h = cutHeight(base, heightAtHard(cr), g, cut);
   return (h > g + 0.01 && lz <= h) ? g : h;
 }
 // Distance along the unit direction dir from p (outside) to the cell box c
@@ -566,8 +602,8 @@ float srcBlocked(vec2 P, vec2 L, float r, vec2 c) {
 float edgeShare(vec2 pos, vec2 ps, vec2 sideL, float e, float hRay, vec2 L, float lShare, vec2 lC, float ownShare, vec2 ownC) {
   vec2 q1 = ps + sideL * e;
   vec2 q2 = ps - sideL * e;
-  float e1 = groundAt(q1);
-  float e2 = groundAt(q2);
+  float e1 = cutGround(baseTerrAt(q1), groundAt(q1), drawnCutAt(q1));
+  float e2 = cutGround(baseTerrAt(q2), groundAt(q2), drawnCutAt(q2));
   if (floor(q1) == floor(pos)) e1 = 0.0;
   if (floor(q2) == floor(pos)) e2 = 0.0;
   if (lShare > 0.0 && dot(q1 - lC, q1 - lC) < 1.0 && sceneryShareAt(q1) > 0.01) e1 = 0.0;
@@ -601,8 +637,10 @@ float skirtOcc(vec2 ps, vec2 p, float hRay, float lz) {
   // slab is in the open air with it and must shine straight through.
   // (The sun march is deliberately untouched: it wants the deck to block,
   // and its cliff look is locked.)
-  float H = heightAtSoft(ps);
-  float hg = groundAtSoft(ps);
+  float cut = drawnCutAt(ps); // the walls as drawn (see drawnCutAt, cutGround)
+  float base = baseTerrAt(ps);
+  float hg = cutGround(base, groundAtSoft(ps), cut);
+  float H = cutHeight(base, heightAtSoft(ps), hg, cut);
   float blocker = (H > hg + 0.01 && lz <= H) ? hg : H;
   if (blocker < 90.0 && blocker > hRay) {
     float pen = clamp((blocker - hRay) * 1.5, 0.0, 1.0);
@@ -656,7 +694,9 @@ float groundTerrAt(vec2 cr) {
 // crippling every torch that lights it. This is the SURFACE resolve only.
 //
 // THE OCCLUSION MARCH (heightAtSoft / groundAtSoft / uHeightL) IS DELIBERATELY
-// NOT CLAMPED. The roof and the full wall are still physically there — the sun
+// NOT CLAMPED FOR THE SUN — the point-light march clamps its blocker reads to
+// the drawn cut (drawnCutAt: a light inside the room is lit against the
+// picture). The roof and the full wall are still physically there — the sun
 // really is blocked by a building whose top half we are choosing not to paint,
 // and a cut-away that let daylight in through its own missing roof would light
 // the room from above as you turned the dial. So: what the camera SEES is
@@ -864,11 +904,22 @@ float roomAt(vec2 cr, float z) {
   return c > 0.5 ? m * step(z, c - 0.001) : m;
 }
 
-// Solid-object flag (bush, boulder, tree...): G channel of the heightmap.
+// Solid-object flag (bush, boulder, tree...): bit 7 of the heightmap's G
+// (the low 7 bits are the slab underside, airTopAt).
 float objAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
   vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
-  return texture2D(uHeight, uv).g;
+  return step(127.5, texture2D(uHeight, uv).g * 255.0);
+}
+// THE SLAB'S UNDERSIDE (levels, whole; 0 = no open air under this column):
+// the deck level minus its drawn thickness, the low 7 bits of the heightmap's
+// G, written only where that underside stands above the ground column. The
+// surface walk lets a ray through the air between the two (see the walk).
+float airTopAt(vec2 cr) {
+  if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 0.0;
+  vec2 uv = (floor(cr) + 0.5) / vec2(uIsoB.y, uIsoB.z);
+  float g = texture2D(uHeight, uv).g * 255.0;
+  return g - 128.0 * step(127.5, g);
 }
 
 // Emission palette index + 1 (0 = the cell does not glow): B channel.
@@ -1030,9 +1081,32 @@ void main() {
       float vSurf = v0 + H * kk; // this column's top along the ray
       if (vSurf >= vLo - 0.0001) {
         float vHit = min(vHi, vSurf);
-        z = max((vHit - v0) / kk, 0.0);
-        cell = cr;
-        found = true;
+        float zh = max((vHit - v0) / kk, 0.0);
+        // THE AIR UNDER A SLAB IS SEEN THROUGH. A deck column is two solid
+        // spans — the ground up to its own top, the slab from its underside
+        // up — and the renderer draws exactly that: the slab's thickness of
+        // face, then whatever stands behind and below it (the water under a
+        // bridge, the cave floor through the mouth). Stopping at the column's
+        // outline made every pixel under the slab's side the slab's own FACE
+        // down to the ground, three levels of "wall" over open water, and a
+        // swimmer's torch under the bridge lit none of it: the pixel was a
+        // face whose plane stood in front of the flame (maintainer
+        // 2026-09-18, 282.0,246.3 at Night: "the player's TORCH should be
+        // able to light up the underside (but not the top of the bridge).
+        // Now the player's TORCH has no effect at all on the shadow under the
+        // bridge"). A hit in the air band falls through to this column's
+        // ground span, and past it to the columns nearer the camera. The cave
+        // mountain (deck 24, underside 8) keeps its 16 levels of rock and
+        // opens exactly at the mouth.
+        float db = airTopAt(cr);
+        float gH = groundAt(cr);
+        if (db > 0.5 && H > gH + 0.01 && zh < db - 0.01 && zh > gH + 0.01) {
+          if (v0 + gH * kk >= vLo - 0.0001) { z = gH; cell = cr; found = true; }
+        } else {
+          z = zh;
+          cell = cr;
+          found = true;
+        }
       }
     }
     vHi = vLo;
@@ -1332,6 +1406,9 @@ void main() {
   // has a doorway to see through. See the light loop and the uGlow block.
   float cz = roomCeilAt(cell);
   float overMyRoom = cz > 0.5 && z >= cz ? roomConstrainedAt(cell) : 0.0;
+  // A LID: a top pixel of MY room on a column the cut-away draws lower than
+  // it stands (the parapet of a lowered wall). See the lid skip in the march.
+  bool lid = !isFace && uIndoorMix > 0.001 && roomCellAt(cell) > 0.5 && baseTerrAt(cell) > z + 0.05;
   float inRoom = mix(1.0, r, uIndoorMix);
   if (uTest > 6.5 && uTest < 7.5) {
     // Calibration 7: THE THREE SWITCHES A POINT LIGHT FLIPS AT ITS OWN HEIGHT,
@@ -1382,7 +1459,13 @@ void main() {
   if (uLidDark > 0.001 && uIndoorMix > 0.001) {
     float mine = roomCellAt(cell);
     float top = (!isFace && z > uIndoorTop + 0.5) ? 1.0 : 0.0;
-    float fade = isFace ? smoothstep(Ha - ${LID_FADE_LEVELS.toFixed(2)}, Ha, z) : 0.0;
+    // ...ON THE ROOM'S OWN SIDE of the wall only: the face whose front cell
+    // is my room's. The street side of a parapet took the same fade and
+    // wore it as a shadow band under the lid (maintainer 2026-09-18, on the
+    // light-only render: "buggy shadows on the outside wall (near the top
+    // of the tile)").
+    float front = isFace ? roomCellAt(baseF + 0.5 + mix(vec2(0.0, 1.0), vec2(1.0, 0.0), step(0.5, pickR))) : 0.0;
+    float fade = isFace ? smoothstep(Ha - ${LID_FADE_LEVELS.toFixed(2)}, Ha, z) * front : 0.0;
     light *= 1.0 - uLidDark * uIndoorMix * mine * max(top, fade);
   }
   // AURORA NIGHTS: some nights the northern lights dance over Nangijala —
@@ -1495,7 +1578,9 @@ void main() {
     vec2 lC = floor(lp.xy) + 0.5;
     // The area source's edge rays: offset across the centre ray, growing from
     // 0 at the pixel to SOURCE_R_SHARE at the light (see the constant).
-    float lR = lShare > 0.0 ? ${SOURCE_R_SHARE.toFixed(2)} : 0.0;
+    // A LID TAKES NO EDGE RAYS: their columns are read whole (groundAt), and
+    // the lid's own wall is whole there — see the lid skip in the march.
+    float lR = lShare > 0.0 && !lid ? ${SOURCE_R_SHARE.toFixed(2)} : 0.0;
     vec2 dirL = lp.xy - pos;
     vec2 sideL = lR > 0.0 ? normalize(vec2(-dirL.y, dirL.x)) : vec2(0.0);
     float peakC = max(max(uLightCol[i].r, uLightCol[i].g), uLightCol[i].b);
@@ -1527,6 +1612,19 @@ void main() {
         // path than the ground pixel beside it — a light step at every base.
         vec2 p = mix(pos, lp.xy, t);
         if (floor(p.x) == floor(pos.x) && floor(p.y) == floor(pos.y)) continue;
+        // A LOWERED WALL'S TOP IS ONE PLANE. The march reads the occlusion
+        // map, which is deliberately not cut (the sun is blocked by the whole
+        // building), so a lid pixel's ray to the hearth ran through the NEXT
+        // cells of its own wall at their full height and they shadowed it —
+        // blocks of dark on the parapet wherever the ray's angle crossed a
+        // neighbour before it left the wall, cell-shaped and hard (maintainer
+        // 2026-09-18, the hearth house at 332.8,233.0 and 303.3,194.8: "ugly/
+        // blocky/buggy shadow that appears on top of the lowered wall"). A
+        // sample in another cut column of MY room whose drawn top is no
+        // higher than this lid is the same parapet, not a blocker: skipped
+        // like the pixel's own cell. Walls drawn taller (a neighbour room, the
+        // unconstrained street) still block.
+        if (lid && roomCellAt(p) > 0.5 && baseTerrAt(p) > z + 0.05 && heightAt(p) <= z + 0.05) continue;
         // Near-field skip: with the march anchored at the exact surface
         // point, a ground pixel AT a wall base gets its first sample inside
         // the wall cell — a false dark notch along every base line.
@@ -1678,6 +1776,7 @@ void main() {
         if (!hard && prevOk) {
           vec2 pm = 0.5 * (p + prevP);
           bool own = floor(pm.x) == floor(pos.x) && floor(pm.y) == floor(pos.y);
+          if (lid && roomCellAt(pm) > 0.5 && baseTerrAt(pm) > z + 0.05 && heightAt(pm) <= z + 0.05) own = true;
           if (ownShare > 0.0 && dot(pm - ownC, pm - ownC) < 1.0) own = true;
           if (lShare > 0.0 && dot(pm - lC, pm - lC) < 1.0 && sceneryShareAt(pm) > 0.01) own = true;
           if (!own) {
@@ -3476,11 +3575,18 @@ export class NightLights {
     // lit: the sun march starts at the resolved surface height (4), so neighbouring
     // level-4 cells never rise above it.
     const deckH = new Float32Array(w * h);
+    // The slab's underside, the shared grid's deckBot: level minus the drawn
+    // thickness (0 = a bare top slab reaches the ground it stands over).
+    const deckBotH = new Float32Array(w * h);
     for (const d of this.world.decks ?? []) {
+      const bot = Math.max(0, d.level - (d.thickness ?? 0));
       for (const cc of d.cells) {
         if (cc.col < 0 || cc.row < 0 || cc.col >= w || cc.row >= h) continue;
         const di = cc.row * w + cc.col;
-        if (d.level > deckH[di]) deckH[di] = d.level;
+        if (d.level > deckH[di]) {
+          deckH[di] = d.level;
+          deckBotH[di] = bot;
+        }
       }
     }
     // Levels are packed into a single 8-bit channel as level*hScale. The
@@ -3539,10 +3645,17 @@ export class NightLights {
         // packing expression as the surface R so non-deck cells stay
         // byte-identical to what heightAt would have returned.
         imgL.data[i + 2] = Math.min(255, cell.l * hScale);
-        // G flags solid OBJECTS (bush, boulder, tree…): they keep full LOS
-        // occlusion — the billboard compromise is for players, who can never
-        // stand on these cells.
-        img.data[i + 1] = solid ? 255 : 0;
+        // G: bit 7 flags solid OBJECTS (bush, boulder, tree…): they keep full
+        // LOS occlusion — the billboard compromise is for players, who can
+        // never stand on these cells. The low 7 bits carry the SLAB'S
+        // UNDERSIDE in whole levels where it stands above the ground column
+        // (airTopAt: the surface walk sees through the air under a bridge);
+        // 0 where there is no open air. Whole levels, unscaled — the shared
+        // grid's deckBot is an integer and a scaled byte would have clamped a
+        // high bridge's underside to a phantom lower one.
+        const deckBot = deckH[r * w + c] > groundH + 0.01 ? deckBotH[r * w + c] : 0;
+        const air = deckBot > groundH + 0.01 ? Math.min(127, Math.max(1, Math.round(deckBot))) : 0;
+        img.data[i + 1] = (solid ? 128 : 0) + air;
         // B = self-emission palette index + 1 (see the shader's emitAt).
         // tile-emission@2 is per-VARIANT: a category's plain variants (grey
         // basalt in the lava set…) must NOT inherit the molten floor — the
@@ -4180,9 +4293,20 @@ export class NightLights {
     };
     // Twin of hardHeightAt: a slab with the light under it is air for the
     // hard test; the ground column (terrain + share) is the hard blocker.
+    // ...and the walls AS DRAWN while the mask is up (twin of drawnCutAt).
+    const drawnCut = (c: number, r: number) => {
+      if (this.indoorMix < 0.001 || !this.roomCuts) return 99;
+      const e = this.roomCuts.get(r * W + c);
+      return e === undefined ? 99 : e;
+    };
     const hardAt = (c: number, r: number, lz: number) => {
-      const h = hAt(c, r);
-      const g = gAt(c, r);
+      const cut = drawnCut(c, r);
+      const base = c < 0 || r < 0 || c >= W || r >= H ? 99 : this.bArr[r * W + c];
+      const g0 = gAt(c, r);
+      // Twin of cutGround / cutHeight: the bump on the floor stays whole.
+      const g = cut < base ? Math.min(base, cut) + Math.max(0, g0 - base) : g0;
+      const h0 = hAt(c, r);
+      const h = cut < base ? Math.min(h0, Math.max(g, cut)) : h0;
       return h > g + 0.01 && lz <= h ? g : h;
     };
     // Twin of boxEntry: the distance along (dx,dy) from (px,py) to the cell box.
