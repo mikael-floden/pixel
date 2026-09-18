@@ -169,9 +169,14 @@ try {
 }
 await page.evaluate(() => window.__mlSelect.commit());
 
+// POLL AT 250 ms, NOT 5 s. This slept five seconds BEFORE its first look and
+// then every five after, so a world that joined and rendered at 1.2 s still
+// cost the lane 5 s and one landing at 5.1 s cost 10 — pure latency in the push
+// path, on the single step that dominates this lane's wall clock (23 s of a
+// ~60 s run). Same 120 s ceiling, 20x the resolution.
 let state = null;
-for (let i = 0; i < 24; i++) {
-  await page.waitForTimeout(5000);
+for (let i = 0; i < 480; i++) {
+  await page.waitForTimeout(250);
   state = await page.evaluate(() => {
     const t = (() => { try { return window.__ml.tiles3().drew.blits; } catch { return null; } })();
     return { ml: typeof window.__ml, players: window.__ml?.players?.() ?? null, blits: t };
