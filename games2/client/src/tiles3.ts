@@ -997,6 +997,9 @@ export interface Tiles3Cell {
    *  Looks weird"). The mountain top is untouched — it is still `ground`. */
   side?: string;
   cutCap?: FieldArt;
+  /** The ground the lid's plate is built for: the roof deck's ground where a
+   *  roof stands on the cell (2026-09-18), else the wall's own rock. */
+  cutSide?: string;
   /** A WALL'S FACE ENDS ON THIS CELL: `ul` when the (x-1, y) neighbour is
    *  higher, `ur` when (x, y-1) is, `uu` when (x-1, y-1) is — each the SIDE
    *  material that wall is drawn in (the same rule the wall cell itself uses to
@@ -2170,9 +2173,20 @@ export class Tiles3 {
           break;
         }
       }
-    if (lidSide !== null) {
-      cell.side = lidSide;
-      const lid = this.plateAt(lidSide, regionAt(lidSide, x, y), x, y).art;
+    /* THE LID IS THE ROOF'S MATERIAL WHERE A ROOF STANDS ON THE CELL
+     * (maintainer 2026-09-18: "the top of the lowered wall should be the same
+     * material/ground type as the roof. So if the roof is 'rock over ice' and
+     * the house walls are ice and we lower the ice walls... we should render
+     * rock on top of the lowered walls"). A house's roof deck covers its wall
+     * ring, so a cut wall's stump wears the deck's ground; a cave's lid is
+     * not a material (kind "cave") and a wall under no roof keeps its rock. */
+    const dis = this.decksOn(view, x, y);
+    const roof = dis ? view.decks[dis.find((di) => view.decks[di].kind !== "cave" && !!view.decks[di].ground) ?? -1] : undefined;
+    const lidGround = roof?.ground ?? lidSide;
+    if (lidGround !== null && lidGround !== undefined) {
+      cell.side = lidSide ?? lidGround;
+      cell.cutSide = lidGround;
+      const lid = this.plateAt(lidGround, regionAt(lidGround, x, y), x, y).art;
       cell.cutCap = { kind: lid.kind, path: lid.path, w: lid.w, h: lid.h, topOnly: true };
     }
 

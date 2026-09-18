@@ -641,12 +641,22 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   up-screen — onto the cave floor behind it, as a plain white band under the
   maintainer's feet at 267.9,157.8. Underlay skipped with it; the occluder's
   stump cap for a field keeps the plate anchor. Rule + reason: `INDOOR.md`.
-- **A STUMP'S LID IS THE ROCK IT IS CUT THROUGH** (`Tiles3Cell.side`/`cutCap`,
-  `cutLidKey`, 2026-09-09). Every raised cell carries its wall material and
-  that material's textured set plate (top face only); a column the cut-away
-  truncates draws that plate at the cut storey — in the ground texture over
-  the top course (`cellBlits`) and as the occluder cap (a field stump keeps its
-  plate anchor, a wall stump takes it over its course). Before: a cave room's
+- **A STUMP'S LID IS THE ROOF'S GROUND OVER IT, ELSE THE ROCK IT IS CUT
+  THROUGH — DARKENED BY HIS DIAL** (`Tiles3Cell.side`/`cutSide`/`cutCap`,
+  `cutLidKey`, `walltop.ts`, 2026-09-18). A column the cut-away truncates
+  draws a lid plate at the cut storey — in the ground texture over the top
+  course (`cellBlits`) and as the occluder cap (a field stump keeps its plate
+  anchor, a wall stump takes it over its course). The lid's MATERIAL is the
+  first non-cave deck with a ground over that cell (the roof: rock over ice
+  → rock on the lowered ice walls), else the wall's own rock; `cutSide` holds
+  it so the runtime never re-derives it. Over that plate the Settings dial
+  "Lowered wall top darkening" (0..100%, default 50; `setCutLidDark`,
+  `Tiles3Textures.darkened`) scales the colour — 0% is the roof as it is,
+  100% black — as its own `@dkNN` texture key, never a rewrite of the plate's,
+  and a change repaints through `reResolve`. Maintainer 2026-09-18: "same
+  material/ground type as the roof... I don't want plain black here"; an
+  all-black lid shipped first and was retracted ("what we have today looks
+  better") — the dial is the answer, not a fixed shade. Before: a cave room's
   near and side walls are fields (no face toward the camera) and their stumps
   wore the mountain's own snow and ice; a wall stump wore its course's one
   flat colour (maintainer 2026-09-09, five photographs in the cave at

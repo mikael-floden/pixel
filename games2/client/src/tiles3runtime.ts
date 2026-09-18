@@ -515,10 +515,19 @@ export function cellBlits(
  *  plate (Tiles3Cell.cutCap), or null while it streams or the cell has none.
  *  The occluder pass anchors it itself (a field stump keeps the plate anchor,
  *  slid to the cut; a wall stump takes it over its top course). */
+/** HOW MUCH DARKER A LOWERED WALL'S TOP IS PAINTED THAN ITS MATERIAL — his
+ *  Settings dial (walltop.ts), 0..1, set by the scene; a darkened plate is
+ *  its own composed texture under a key carrying the percentage. */
+let cutLidDark = 0;
+export function setCutLidDark(v: number): void {
+  cutLidDark = Math.max(0, Math.min(1, v));
+}
 export function cutLidKey(t3: Tiles3Textures, cell: Tiles3Cell): string | null {
   const art = cell.cutCap;
   if (!art || !cell.side || art.kind === "liquid") return null;
-  return t3.plate(art, cell.side);
+  const key = t3.plate(art, cell.cutSide ?? cell.side);
+  if (!key || cutLidDark <= 0.005) return key;
+  return t3.darkened(key, cutLidDark) ?? key;
 }
 
 /** Every repo-relative art file one resolved cell can draw — what the loader is

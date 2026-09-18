@@ -115,6 +115,7 @@ import { ensureStickDial, ensureStickAngle, stickLean, stickHeading } from "../s
 import { ensureWallAssistDial, wallAssistDeg } from "../wallassist";
 import { ensureNavHelpDial, navHelpMs } from "../navhelp";
 import { ensureNavSlideDial, navSlideDeg } from "../navslide";
+import { ensureWallTopDial, wallTopDark } from "../walltop";
 import { ensureAccelDial, accelS } from "../accel";
 import { roomCoverFraction, coversRoom, type ScreenBox, type ScreenPt } from "../scenerycover";
 import { ensureWallWrapDial, wallWrap, setWallWrap } from "../wallwrap";
@@ -241,6 +242,7 @@ import {
   cellArtPaths,
   cellBlits,
   cutLidKey as t3CutLidKey,
+  setCutLidDark as t3SetCutLidDark,
   boundaryArtPaths,
   deckArtPaths,
   docUrl,
@@ -5034,6 +5036,13 @@ export class WorldScene extends Phaser.Scene {
     // whoever resolves cells, so the resolver is rebuilt on both threads and
     // the ground repainted.
     window.addEventListener("ml-detail-rate", reResolve);
+    // The lowered wall top's darkening (walltop.ts): the lid's key changes
+    // with the percentage, so the ground is repainted the same way.
+    t3SetCutLidDark(wallTopDark());
+    window.addEventListener("ml-wall-top-dark", () => {
+      t3SetCutLidDark(wallTopDark());
+      reResolve();
+    });
 
     // Debug hooks for headless end-to-end verification.
     (window as any).__ml = {
@@ -18074,6 +18083,7 @@ export class WorldScene extends Phaser.Scene {
       ensureWallWrapDial(); // …and the night shader's wall light wrap
       ensureDoorFadeDial(); // …and how fast a doorway crossing fades (1.00 = his)
       ensureNavSlideDial(); // …and how far off a wall's normal a push stays the player's before the nav helps
+      ensureWallTopDial(); // …and how much darker a lowered wall's top is painted than the roof material
       if (this.zoneLinesOn && this.zoneLinesFor !== this.zone) this.drawZoneLines(); // the uphill-bias slider, injected the same way
     }
     // The room's LIGHT rules outlive the geometry by exactly one GRADE. The
