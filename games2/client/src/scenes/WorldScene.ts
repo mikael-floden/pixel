@@ -13636,9 +13636,11 @@ export class WorldScene extends Phaser.Scene {
             .setDepth(900_100);
         this.posLabel
           .setPosition(av.lx, av.ly + 4)
-          // World id on a 2nd line — so it's always obvious WHICH world you're on
-          // (worlds differ in scale: occlusion_test tops out at level 7, the_island 19).
-          .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}\n${this.worldName}`);
+          // One line: `col, row, level` — the level is the integer the body stands
+          // on (surface level while swimming), the same value lighting and the
+          // ambient zones resolve at. No world name: the game has ONE world
+          // (maintainer 2026-09-18).
+          .setText(`${(av.fx / CELL_WU).toFixed(1)}, ${(av.fy / CELL_WU).toFixed(1)}, ${Math.round(this.litLevelOf(av))}`);
       }
       if (av.bubble) {
         av.bubble.setPosition(av.lx, topY - 18).setVisible(outK > 0.01 && !overhead).setAlpha(outK * cutA); // goes with the body
