@@ -1,0 +1,140 @@
+{
+  "id": "peat_hand",
+  "name": "Peatling",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Cut out of the bank and never carried away. It puts itself back every time the water takes a piece.",
+  "biome": [
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Small squat figure packed together out of wet black peat and fine root hair, glossy with bog water, two pale flat stones set in for eyes, short thick arms held close and the straight cut marks of a turf spade still down its body",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "peat_hand/rotations/south.webp",
+    "south-east": "peat_hand/rotations/south-east.webp",
+    "east": "peat_hand/rotations/east.webp",
+    "north-east": "peat_hand/rotations/north-east.webp",
+    "north": "peat_hand/rotations/north.webp",
+    "north-west": "peat_hand/rotations/north-west.webp",
+    "west": "peat_hand/rotations/west.webp",
+    "south-west": "peat_hand/rotations/south-west.webp"
+  },
+  "sheet": "peat_hand/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "d2870e0f-7d05-4e94-a4a0-cd092a49ae45",
+  "seed": 159426581,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T12:00:19+00:00",
+  "elapsed_s": 210.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.59,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.679,
+        "bbox": [
+          3,
+          2,
+          45,
+          45
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.623,
+        "bbox": [
+          3,
+          3,
+          42,
+          45
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.65,
+        "bbox": [
+          5,
+          3,
+          40,
+          45
+        ],
+        "fill": 0.638,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.59,
+        "bbox": [
+          4,
+          3,
+          44,
+          44
+        ],
+        "fill": 0.712,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.712,
+        "bbox": [
+          4,
+          2,
+          43,
+          46
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.6,
+        "bbox": [
+          7,
+          2,
+          45,
+          45
+        ],
+        "fill": 0.709,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.595,
+        "bbox": [
+          8,
+          2,
+          41,
+          45
+        ],
+        "fill": 0.616,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.717,
+        "bbox": [
+          2,
+          2,
+          43,
+          45
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      }
+    }
+  }
+}
