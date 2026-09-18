@@ -710,8 +710,20 @@ state (or legacy `lights: LIGHTS_ON`) carries in its manifest:
   (maintainer 2026-09-17: "You need a way to directly remove/replace assets
   from the game when you have revoked/removed them"; cupboard_004 x2 in
   August, chimney_002 x2 from 09-14 — both sat red until someone else ran).
-  Consumers read this file, never `config/retired_*.json`. **A retirement
-  record means the art is DELETED** — `retired_ids.json` / `retired_states.json`
+  Consumers read this file, never `config/retired_*.json`.
+  **The world leaves removed art in the SAME commit as the delete** — the
+  flow agreed with maps2 (2026-09-17): `feedback.py` and `prune.py` end with
+  `heal_worlds.run()`, which claims `world.json` on our board (pushed first),
+  runs `maps2/pipeline/heal.py --apply` on every `userWorlds` world of
+  `games2/config/publish.json`, stages its `world.json` + `maps2/reports/<w>.json`
+  into the delete commit with heal's lines in the body, and releases. The rule
+  is maps2's, never ours (re-pick at the cell or drop and name); we skip the
+  heal when their board or their assistant's names `world.json` in flight
+  (the world tombstones harmlessly until the next delete) and post to maps2
+  only on a DROP or a traceback. `heal_worlds.py --check` gates it: every
+  published world resolves. (chimney_002 stood dangling three days waiting
+  for a maps2 run; that wait is what this ends.)
+  **A retirement record means the art is DELETED** — `retired_ids.json` / `retired_states.json`
   are facts about the art, never planner flags: an id with a manifest, or a
   state its manifest still carries, must not be on them (`retired.py --check`
   fails; `--clean` un-lists them). (2026-09-17: six live pieces were listed —

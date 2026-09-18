@@ -250,10 +250,18 @@ if __name__ == "__main__":
         # every one of its states' verdicts pointing at nothing.
         import ghosts
         ghosts.sweep()
-        viewer_build.build()
-        loop.commit_push(
-            f"scenery: remove {len(removed)} rejected piece(s) (wiki verdicts)",
-            push=not args.no_push)
+        viewer_build.build()            # republishes scenery/retired.json, which heal reads
+        # THE WORLD LEAVES THE ART BEHIND IN THE SAME COMMIT (maps2's heal.py,
+        # the flow agreed 2026-09-17): a placement of a deleted piece is
+        # re-picked at its own cell or dropped and named — never left dangling
+        # until someone's next run notices (chimney_002: three days).
+        import heal_worlds
+        healed = heal_worlds.run(removed)
+        heal_worlds.stage(healed["files"])
+        subject = (heal_worlds.subject(removed, [], healed)
+                   or f"scenery: remove {len(removed)} rejected piece(s) (wiki verdicts)")
+        body = "\n".join([f"removed: {', '.join(removed)}", ""] + healed["lines"])
+        loop.commit_push(f"{subject}\n\n{body}", push=not args.no_push)
     print(f"feedback: {len(removed)} piece(s) removed")
 
 

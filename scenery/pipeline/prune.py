@@ -216,8 +216,21 @@ def main():
     # stops them accumulating: 1,460 had piled up before this existed.
     import ghosts
     ghosts.sweep()
-    viewer_build.build()
+    viewer_build.build()            # republishes scenery/retired.json, which heal reads
+    # THE WORLD LEAVES THE ART BEHIND IN THE SAME COMMIT (maps2's heal.py, the
+    # flow agreed 2026-09-17): a placement drawn in a pruned state is re-picked
+    # at its own cell — another surviving state of the same piece — or dropped
+    # and named. prune does not commit; the files are staged and the subject
+    # printed for the commit that follows.
+    import heal_worlds
+    pruned = sorted({(rel, state) for rel, state, *_ in todo})
+    healed = heal_worlds.run([f"{rel}#{state}" for rel, state in pruned])
+    heal_worlds.stage(healed["files"])
+    subject = heal_worlds.subject([], pruned, healed)
     print(f"\npruned {n} state(s) — retired so nothing regenerates them")
+    if subject:
+        print(f"commit subject (agreed with maps2): {subject}")
+        print("staged for that commit: " + ", ".join(healed["files"]))
     return 0
 
 
