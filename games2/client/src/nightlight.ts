@@ -1676,16 +1676,18 @@ void main() {
         // shadow (maintainer 2026-09-18, 281.8,245.9 on the bridge at Night:
         // "a small bug where it was lit up in the middle of the shadow"; a
         // slab rule outside the near fields changes nothing, measured). Read
-        // only where the sample's column has open air under it (airTopAt),
-        // and only with the light ABOVE the column's top: under a cave lid or
-        // a roof the light stands below the slab, hardHeightAt gives the
-        // ground column, and that column keeps the near fields' skips exactly
-        // as outdoors (a mushroom's share beside a brazier is skirt, not slab).
+        // only where the sample's column carries a deck (its top above its
+        // ground column — a bridge, a roof of any thickness) with the light
+        // ABOVE that top: under a cave lid or a roof the light stands below
+        // the slab, hardHeightAt gives the ground column, and that column
+        // keeps the near fields' skips exactly as outdoors (a mushroom's
+        // share beside a brazier is skirt, not slab).
         bool slab = false;
         if (nearP || nearL) {
-          if (airTopAt(ps) > 0.5 && lp.z > heightAtHard(ps)) {
+          float hT = heightAtHard(ps);
+          if (hT < 90.0 && lp.z > hT && hT > groundAt(ps) + 0.01) {
             float hS = hardHeightAt(ps, lp.z);
-            slab = hS < 90.0 && hS > hRay;
+            slab = hS > hRay;
           }
           if (!slab) {
             if (lR > 0.0) {
@@ -2713,7 +2715,6 @@ export class NightLights {
   private upX = 1;
   private upY = 1;
   private hArr!: Float32Array; // CPU occlusion heights (terrain + solid objects)
-  private aArr!: Float32Array; // CPU slab underside (the surface map's airTopAt; 0 = no open air)
   private pArr!: Float32Array; // CPU prop share (props get their own shade patch)
   private sArrH!: Float32Array; // CPU SCENERY share in the occlusion heights — setSceneryOccluders
   private sArrG!: Float32Array; // CPU SCENERY share in the ground column (trunk only)
@@ -3576,7 +3577,6 @@ export class NightLights {
     this.tArr = new Float32Array(w * h);
     this.bArr = new Float32Array(w * h);
     this.gArr = new Float32Array(w * h);
-    this.aArr = new Float32Array(w * h);
     this.oArr = new Uint8Array(w * h);
     this.pArr = new Float32Array(w * h);
     this.sArrH = new Float32Array(w * h);
@@ -3677,10 +3677,16 @@ export class NightLights {
         // (airTopAt: the surface walk sees through the air under a bridge);
         // 0 where there is no open air. Whole levels, unscaled — the shared
         // grid's deckBot is an integer and a scaled byte would have clamped a
-        // high bridge's underside to a phantom lower one.
-        const deckBot = deckH[r * w + c] > groundH + 0.01 ? deckBotH[r * w + c] : 0;
-        const air = deckBot > groundH + 0.01 ? Math.min(127, Math.max(1, Math.round(deckBot))) : 0;
-        this.aArr[r * w + c] = air;
+        // high bridge's underside to a phantom lower one. OPEN AIR NEEDS AN
+        // UNDERSIDE BELOW THE TOP: a slab with no thickness entry (the house
+        // roofs — deck 6, underside 6) is a bare top and its column reads
+        // whole. Packed as air it made the walk see the dark room through
+        // every roof pixel a ray entered from the side (maintainer
+        // 2026-09-18, 307.4,237.0 at Day: "the house roof is completely
+        // destroyed").
+        const deckTop = deckH[r * w + c];
+        const deckBot = deckTop > groundH + 0.01 ? deckBotH[r * w + c] : 0;
+        const air = deckBot > groundH + 0.01 && deckBot < deckTop - 0.01 ? Math.min(127, Math.max(1, Math.round(deckBot))) : 0;
         img.data[i + 1] = (solid ? 128 : 0) + air;
         // B = self-emission palette index + 1 (see the shader's emitAt).
         // tile-emission@2 is per-VARIANT: a category's plain variants (grey
@@ -4325,11 +4331,6 @@ export class NightLights {
       const e = this.roomCuts.get(r * W + c);
       return e === undefined ? 99 : e;
     };
-    // Twin of airTopAt: the slab's underside, 0 where the column has no open air.
-    const airAt = (c: number, r: number) => {
-      const ci = Math.floor(c), ri = Math.floor(r);
-      return ci < 0 || ri < 0 || ci >= W || ri >= H ? 0 : this.aArr[ri * W + ci];
-    };
     const hardAt = (cf: number, rf: number, lz: number) => {
       const c = Math.floor(cf), r = Math.floor(rf);
       const cut = drawnCut(c, r);
@@ -4557,9 +4558,10 @@ export class NightLights {
           // A slab the light stands above is never spared by a near field (see FRAG).
           let slab = false;
           if (nearP || nearL) {
-            if (airAt(px, py) > 0.5 && L.z > hAt(px, py)) {
+            const hT = hAt(px, py);
+            if (hT < 90 && L.z > hT && hT > gAt(px, py) + 0.01) {
               const hS = hardAt(px, py, L.z);
-              slab = hS < 90 && hS > hRay;
+              slab = hS > hRay;
             }
             if (!slab) {
               // The near fields still run the edge rays, applied once (see FRAG).

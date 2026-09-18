@@ -432,8 +432,13 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   the slab's thickness of face, then the water behind and below it. The
   cave mountain (deck 24, underside 8) keeps its 16 levels of rock and opens
   at the mouth; a slab with no thickness entry (underside = level) is a bare
-  top and its column reads whole. Whole levels, unscaled: a scaled byte would
-  have clamped a high bridge's underside to a phantom lower one. Gate:
+  top and its column reads whole — THE PACKING MUST SAY SO (air only where
+  the underside is below the top): packed as air, every house roof (deck 6,
+  underside 6) was see-through for any ray entering it from the side and the
+  walk drew the dark room on the roof (maintainer 2026-09-18, 307.4,237.0 at
+  Day: "the house roof is completely destroyed"). Whole levels, unscaled: a
+  scaled byte would have clamped a high bridge's underside to a phantom
+  lower one. Gate:
   `verify-bridgelight.mjs` (a torch ON the deck still leaves the water at
   the ambient).
   A TOP SURFACE TAKES NOTHING FROM A LIGHT WELL UNDER ITS PLANE
@@ -711,7 +716,8 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   bright arc inside the slab's shadow (maintainer 2026-09-18, 281.8,245.9 on
   the bridge at Night, circled on the light-only render: "the bright spot
   has no line of sight to the TORCH"). Read only where the sample's column
-  has open air under it (`airTopAt`), so every other ray pays nothing. What stays dark there is not
+  carries a deck (its top above its ground column, a roof of any thickness
+  included) with the light above that top, so every other ray pays one read. What stays dark there is not
   floor: a 1-level parapet's top face rises 15 px, a row step is 14, so the
   cut top of every wall cell covers half of each floor cell up-screen of it
   — the dark "ground" beside a wall under the cut-away is the wall's own top
