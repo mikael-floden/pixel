@@ -101,26 +101,6 @@
       "die_action": "Death - The pebble cracks in half and the crab shrivels into a small dark heap, then fades away"
     },
     {
-      "id": "crag_troll",
-      "name": "Cragtroll",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "mannequin",
-      "size": 232,
-      "biome": [
-        "grey_stone",
-        "snow",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Hulking fantasy mountain troll shown full body from head to feet, thick warty grey-green skin, a heavy brow and underbite with two lower tusks, a broad hunched back with lichen and small boulders growing on it, huge hands dragging a rough stone club, and wide flat feet.",
-      "lore": "It sleeps as a hillside and wakes as a landslide. Travellers who camp on it are the reason it wakes.",
-      "attack_action": "Club Smash - Raises the stone club overhead and smashes it straight down",
-      "claws": true,
-      "attack_extreme": "Overhead Crush - The troll heaves the stone club far over its head and smashes it into the ground, rock shards flying",
-      "die_action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away"
-    },
-    {
       "id": "skeleton_archer",
       "name": "Marrowbolt",
       "tier": "evil",
@@ -4445,6 +4425,34 @@
       "attack_extreme": "Root Sweep - The treant swings both branch arms down in a huge arc, leaves and splinters bursting off",
       "die_action": "Death - Topples over sideways like a felled tree and lies still on the ground, then fades away",
       "graduated_at": "2026-09-18T14:50:20+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "crag_troll",
+      "name": "Cragtroll",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "mannequin",
+      "size": 232,
+      "biome": [
+        "grey_stone",
+        "snow",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Hulking fantasy mountain troll shown full body from head to feet, thick warty grey-green skin, a heavy brow and underbite with two lower tusks, a broad hunched back with lichen and small boulders growing on it, huge hands dragging a rough stone club, and wide flat feet.",
+      "lore": "It sleeps as a hillside and wakes as a landslide. Travellers who camp on it are the reason it wakes.",
+      "attack_action": "Club Smash - Raises the stone club overhead and smashes it straight down",
+      "claws": true,
+      "attack_extreme": "Overhead Crush - The troll heaves the stone club far over its head and smashes it into the ground, rock shards flying",
+      "die_action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
+      "graduated_at": "2026-09-18T14:52:46+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",
