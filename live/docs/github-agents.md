@@ -57,8 +57,19 @@ Claude reading its first file:
   verdict or answers "nothing to do" never needs them. The runner ships python3;
   the prompt tells the agent to install the requirements itself the moment it
   reaches for a pipeline.
-- What is left is the floor: runner start, that checkout, and the CLI install
-  inside the action.
+- **The CLI is cached.** The action installs Claude Code on every run (~8s of a
+  ~20s start); the binary is one file, identical until the version in the cache
+  key changes, so it is restored and handed to the action by path. A miss just
+  means the action installs it as before — the cache step is
+  `continue-on-error`, so a cache hiccup can never be what stops a review being
+  acted on.
+- **The cone is three directories**: the domain, `coordination/`, `live/`.
+  `games2/scripts` and `wiki/lib` are not fetched until the agent asks, which
+  the prompt tells it to do.
+- What is left is GitHub's own floor: a runner assigned twice (once for
+  `detect`, once for the agent) and the clone. Folding `detect` into the agent
+  job would save ~5s more and cost the per-domain matrix — a monsters and a
+  scenery review would stop running in parallel. Not taken.
 
 
 **THE FEEDBACK FILE IS NOT THE DIRECTORY.** He reviews scenery and the wiki
