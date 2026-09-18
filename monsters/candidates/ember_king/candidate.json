@@ -354,9 +354,7 @@
             178
           ],
           "reasons": [
-            "HE says redo: redo",
-            "drifts 6.2 px — eyeball it",
-            "canvas grown by 1 px a side to hold the motion"
+            "reworded: creature-specific walk, ladder reset"
           ],
           "sub": "fae5fb44-ce93-4230-9b48-d2485de07da4",
           "group": "ee25a881-5812-4d9f-bfdd-82f22ec664c5",
@@ -364,7 +362,11 @@
           "version": 1,
           "mirrored": false,
           "generated_at": "2026-09-09T21:14:53+00:00",
-          "maintainer": "redo"
+          "maintainer": "redo",
+          "rolls": 0,
+          "tries": 0,
+          "rung": 0,
+          "intensity": 0
         },
         "south-east": {
           "status": "warn",

@@ -75,7 +75,8 @@
       "claws": true,
       "fx": true,
       "attack_extreme": "Molten Crush - The king raises both burning fists overhead and smashes them down, embers bursting outward",
-      "die_action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away"
+      "die_action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away",
+      "walk_action": "Heavy slow stride loop, weight rolling from one foot to the other, shoulders rocking with each step, robes and embers swaying behind the movement, body stays centered, seamless loop whose last frame leads straight back into the first"
     },
     {
       "id": "hollow_knight",
@@ -373,7 +374,7 @@
       "items": [],
       "prompt": "Fantasy giant cobra coiled tightly on the ground with its upper body raised, black and gold scales, a wide flared hood marked with a pale eye pattern, glowing green eyes, and long dripping fangs.",
       "lore": "It sways so you will watch the hood. The bite comes from where you were not watching.",
-      "walk_action": "slithers forward in place, body undulating in a smooth S-curve, hood and head held raised and steady, seamless loop, no turning",
+      "walk_action": "Slithers forward in a smooth travelling S-curve, the whole body flowing through the same track, hood held up and head steady and level, no legs and no bobbing, seamless loop whose last frame leads straight back into the first",
       "walk_slow": true,
       "attack_action": "Strike - Coils its head back, then strikes forward with fangs bared",
       "attack_extreme": "Fang Lunge - The cobra throws its whole body forward off the ground, hood flared wide, fangs bared",
@@ -411,7 +412,8 @@
       "attack_action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",
       "fx": true,
       "attack_extreme": "Beam Burst - The eye flares wide open and fires a blinding beam, wings thrown wide",
-      "die_action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away"
+      "die_action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
+      "walk_action": "Hovering flight loop in place, wings beating steadily up and down, the body floating with a small even rise and fall, never touching the ground, seamless loop whose last frame leads straight back into the first"
     },
     {
       "id": "rock_mite",
@@ -427,7 +429,7 @@
       "items": [],
       "prompt": "Tiny fantasy stone bug, a round pebble-shaped body of grey rock with six tiny legs, two glowing orange eyes, and a crack of light along its back.",
       "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
-      "walk_action": "scuttles forward in place on its tiny legs, legs alternating quickly, body steady, seamless loop, no turning",
+      "walk_action": "Scuttling walk loop, many short stiff legs rippling along both sides in sequence, the shelled body held low and level and barely bobbing, seamless loop whose last frame leads straight back into the first",
       "walk_slow": true,
       "attack_action": "Headbutt - Rocks back, then rams forward hard with its stone body",
       "attack_extreme": "Stone Burst - The mite's rocky shell splits with a burst as it launches itself forward, stone shards flying",

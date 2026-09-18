@@ -960,7 +960,7 @@ def frame_counts(cid, slot):
     return out
 
 
-def needed_dirs(man, slot, redo=None):
+def needed_dirs(man, slot, redo=None, reword_dirs=False):
     rec = (man.get("animations") or {}).get(slot) or {"directions": {}}
     if redo:
         return list(redo)
@@ -979,7 +979,13 @@ def needed_dirs(man, slot, redo=None):
     # a changed action text means the clips on disk were made from other words
     # — regenerate the whole slot (the takes are keyed by that text). A state
     # is ONE take across all eight directions, never a mix of wordings.
-    if rec["directions"] and rec.get("action") and rec["action"] != state_action(man["id"], slot):
+    # `--reword-dirs` is the ONE exception and it is his: when he has flagged a
+    # single direction and the fix is different WORDS for that creature (a snake
+    # does not walk, an eye-bat does not walk), redoing all eight would throw
+    # away the seven he approved. Only the directions he flagged are re-asked,
+    # and each direction's record carries the words it was made with.
+    if (rec["directions"] and rec.get("action")
+            and rec["action"] != state_action(man["id"], slot) and not reword_dirs):
         return [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("action") in (None, rec["action"])] or list(GEN_DIRS)
     # a direction that has already been rolled MAX_TRIES times is not worth
     # another roll — the attack CONCEPT is wrong, not the dice (maintainer:
@@ -1018,13 +1024,14 @@ def cmd_state(args, state):
         # (all directions) in order to get a full 8 set that is valid")
         rec_now = (man.get("animations") or {}).get(state) or {}
         if (base_state(state) == state and rec_now.get("directions")
-                and rec_now.get("action") and rec_now["action"] != state_action(cid, state)):
+                and rec_now.get("action") and rec_now["action"] != state_action(cid, state)
+                and not getattr(args, "reword_dirs", False)):
             # the config asks for a DIFFERENT take on a state that already has
             # art. Rewriting the live state in place would leave it half old
             # wording, half new until the sweep finished — build it in the try
             # slot and promote it when every direction is there (maintainer).
             reworded.append(cid); continue
-        dirs = needed_dirs(man, state, redo)
+        dirs = needed_dirs(man, state, redo, getattr(args, 'reword_dirs', False))
         if dirs:
             plan.append((cid, dirs))
     if reworded:
@@ -1595,6 +1602,8 @@ def main():
         g.add_argument("--try", dest="use_try", action="store_true",
                        help="build the NEXT ATTEMPT at this state alongside the others (nothing in candidates is live; he picks)")
         g.add_argument("--slot", help="write to this slot exactly, e.g. attack_v3")
+        g.add_argument("--reword-dirs", dest="reword_dirs", action="store_true",
+                       help="re-ask ONLY the flagged directions with the creature's new wording, instead of rebuilding the whole state as a new take (use when he flagged one direction and the fix is different words for that creature)")
         g.add_argument("--pro", action="store_true", help="PRO mode for this run: no pins, its own frame count, the ladder restarts (the escape for a body v3 will not change)")
         g.set_defaults(func=lambda a, st=st: cmd_state(a, a.slot or (st + (TRY if a.use_try else ""))))
     r = sub.add_parser("redo"); r.add_argument("--state", default="idle"); r.add_argument("--only", required=True)
