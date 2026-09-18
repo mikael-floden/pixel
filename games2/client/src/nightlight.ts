@@ -1116,8 +1116,17 @@ void main() {
     // edges between tiles"). A wall behind either edge traps light for the
     // whole diamond, by its distance to that edge.
     float vS0 = v0 + z * kk;
-    float hbC = baseTerrAt(bg + vec2(-0.5, 0.5));
-    float hbR = baseTerrAt(bg + vec2(0.5, -0.5));
+    // CLAMPED TO THE CUT-AWAY INDOORS, like the twin's tAt: the base height
+    // of a lowered wall is the whole wall (6), the pixel on its top sits at
+    // the cut (1), so every neighbouring lowered-wall cell read as a higher
+    // wall behind and stamped the band along each tile edge — "a shadow
+    // between the tiles on the wall" (maintainer 2026-09-18, 254.0,304.2 in
+    // the light-only render). heightAt is the constrained cut indoors and
+    // never below the base outdoors (deck-safe through the min).
+    vec2 nC = bg + vec2(-0.5, 0.5);
+    vec2 nR = bg + vec2(0.5, -0.5);
+    float hbC = min(baseTerrAt(nC), heightAt(nC));
+    float hbR = min(baseTerrAt(nR), heightAt(nR));
     float aoC = (hbC < 90.0 && hbC > z + 0.5) ? mix(0.72, 1.0, smoothstep(0.0, 6.0, max((vS0 - vColLo) * uIsoA.w, 0.0))) : 1.0;
     float aoR = (hbR < 90.0 && hbR > z + 0.5) ? mix(0.72, 1.0, smoothstep(0.0, 6.0, max((vS0 - vRowLo) * uIsoA.w, 0.0))) : 1.0;
     ao = min(aoC, aoR);

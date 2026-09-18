@@ -565,7 +565,12 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   open cell to the west, a step at every tile along the wall foot
   (maintainer, the hearth house's exterior walls in the light-only render:
   "small glitches/sharp edges between tiles"). A wall behind either edge
-  traps light for the whole diamond, by its distance to that edge.
+  traps light for the whole diamond, by its distance to that edge. INDOORS
+  THE NEIGHBOUR IS READ AT THE CUT (`min(baseTerrAt, heightAt)`, the twin's
+  `tAt`): a lowered wall's base height is the whole wall, so every
+  neighbouring lowered-wall cell read as a higher wall behind the top of the
+  next one and stamped the band along each tile edge — "a shadow between the
+  tiles on the wall" (maintainer 2026-09-18, 254.0,304.2, light-only).
 - Heightmaps: the NEAREST surface map holds TERRAIN levels and drives resolve
   + wall-face classification; `world-heightmap-linear` (LINEAR) holds terrain
   + solid objects + scenery footprints and drives ONLY the LOS march. A cell's LEVEL packs into
@@ -710,6 +715,15 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   0.5 is the darkening at full coverage — his dial. A floor piece and a wall
   piece (flat, onWall) register no stamp. Rejected: the hitbox's bottom edge
   as the contact line (a table's whole span darkened, legs and air alike).
+- **A LIGHT ABOVE A TEXEL COUNTS ITS HEIGHT MORE** (`SHAPE_ZW_ATT_BELOW` 0.45
+  beside `SHAPE_ZW_ATT` 0.15, scenerylit.ts + `shapeLightTerm`; 2026-09-18,
+  maintainer at 218.5,236.4 by the mountain lamp: "the tall tree is
+  influenced by the light on top of the mountain the same regardless of the
+  scenery Z (the top of the tree is closer to the light than the bottom)").
+  0.15 is for a torch at a crown's foot, where the crown must stay in reach;
+  under a lamp on a cliff the foot is the far texel and at 0.15 the whole
+  tree read one distance. A texel below the light weights its height 0.45,
+  one above it 0.15.
 - **A SCENERY LIT COPY TAKES NO WALL-SEAM AO** (`lightAt(..., seamAo=false)`
   from applyObjectLights, 2026-09-18): the copy is tinted once at its hitbox
   centre, and a piece standing against a wall — the fireplace at 298.1,192.8
