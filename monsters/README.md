@@ -165,8 +165,8 @@ stray a killed worker leaves behind.
 
 `pipeline/animate.py` gives an APPROVED candidate its states, one state for
 all monsters before the next (maintainer 2026-09-09: "get good at one
-animation at a time"). Idle, walk and attack are done for the 39 picked;
-angry and die follow the same path. Every state: generate S, SE, E, NE, N;
+animation at a time"). All five are built for the 39 picked (idle, walk,
+`attack_v1..v3`, `die_v1`, `angry_v1`); he picks. Every state: generate S, SE, E, NE, N;
 mirror SW, W, NW; machine bands from the maintainer's own accepted clips;
 review on a published artifact page with the clips PLAYING.
 
@@ -420,6 +420,43 @@ nothing pins the end. The rules, measured on his own 57 shipped dies (east):
   `monsters/<id>#die_v1#<direction>`; `review --state die_v1` then
   `die --slot die_v1` re-roll exactly those (`--pro` for a body v3 will not
   change).
+
+### Angry — the idle recipe with the temper up: both ends pinned, FOUR frames
+
+Slot `angry_v1` on the 39 (2026-09-18; `animate.py angry --slot angry_v1`,
+resumable). The game plays angry as a LOOP in place of idle while the
+monster has a target, so it is the idle's contract with more motion, and the
+idle's recipe carries it: frame 0 the base (`keep_first`), `end_frame` the
+base, four generated frames (5 stored), v3 at ~$0.013 a direction. The
+maintainer judged the probe (Cragtroll, Tidecrab) "Yes it reads as angry!"
+before the sweep; a PRO A/B was started and killed unlanded — the cheap
+recipe was already what he wanted.
+- **The wording is his majority line**: 27 of his 50 shipped angries are
+  "Angry combat idle, frustrated". The action is that plus what the body
+  does ("snarls and shifts its weight, tense and ready to strike, then
+  settles back into the same pose it started in"); the closing clause is
+  what makes the pinned end a return and not a cut.
+- **Bands from his 50 shipped angries** (silhouette step median 0.33,
+  loop median 0.11, drift median 3.3 px): pass step 0.05–0.60 and drift
+  ≤ 6 px, warn to 0.80 / 12 px, loop must close at ≤ 0.10 (the pin makes it
+  0.0 by construction — a loop that does not close means the pin was
+  dropped). Flash is recorded, never gated; facing is not checked (a head
+  toss reads as a turn).
+- **The ladder is its own** (`amplify`: more agitated → furious, heaving →
+  thrashing; `calm`: only the head and the breathing → barely moving) and
+  the frame ladder walks 4, 4, 6 — six frames is the escape for a body four
+  frames cannot move, never the default (more frames is the attack lesson:
+  garbage). `--pro` is the escape for a body v3 will not move at all; it
+  was not needed.
+- **angry_v1 as it stands**: 39/39, 312 directions, 279 pass, 33 warn, 0
+  fail, every one first roll at rung 0 (185 generated + the 10-direction
+  probe; the rest mirrors). Step median 0.13 (his 0.33 — calmer than his,
+  by his own verdict on the probe), drift median 1.6 px, loop 0.0
+  everywhere. The 33 warns: 17 on the low side of the motion band, 16
+  drifting 6–11 px, 7 touching the canvas. Cost $5 (USD $43.40 → $38.64)
+  — a fifth of what PRO would have been. His verdicts come back as
+  `monsters/<id>#angry_v1#<direction>`; `review --state angry_v1` then
+  `angry --slot angry_v1` re-roll exactly those.
 
 ### His verdicts: read them, act, then DELETE the ones you acted on
 
