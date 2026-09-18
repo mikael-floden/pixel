@@ -458,6 +458,39 @@ recipe was already what he wanted.
   `monsters/<id>#angry_v1#<direction>`; `review --state angry_v1` then
   `angry --slot angry_v1` re-roll exactly those.
 
+### A monster GRADUATES BY ITSELF when he has approved all of it
+
+Maintainer 2026-09-18: "When all animations have been approved and the monster
+has been approved I want the monster to move to be a real monster
+automatically!" `pipeline/graduate.py`, run at the tail of every `reconcile`
+(so: before every generate and every qa).
+
+Eligible = the DESIGN approved, and every one of the five states has ONE take
+whose eight directions are all approved. Two full takes of a state is not a tie
+to break here — it is his pick, and the monster waits and says so.
+
+Then, in order: pin the roster entry FIRST (id = the candidate id, so his
+verdicts, the lore records and the wiki links survive the move — let sync
+discover it untagged and it invents an id from the prompt), delete the takes he
+did not pick, retag `MONSTER_CANDIDATE` -> `MONSTER`, `sync --only <id>`, and
+move the design to `config.graduated` (NOT `retired` — it was not rejected).
+
+Three traps, all paid for on the first graduation (seed_husk):
+- **Match takes by ACTION TEXT, never by id.** `normalized_animations` reports
+  no id for a character's clips, and an id-keyed map silently mapped walk onto
+  idle. v3 names a clip `custom-` + the first ~30 chars of the action text.
+- **Delete unpicked takes BY GROUP ID, never by name.** Each direction is its
+  own group under the same name, so a delete by name matches five groups and
+  409s. Left behind, they mirror as extra half-filled states.
+- **ONE state can be several PixelLab animations.** The ladder re-asks a
+  stubborn direction in different words, so an attack can live under four
+  names with a few directions each; `_key_for` no longer de-dupes a rename and
+  `mirror` merges the directions, or the monster ships with 1/8 attack.
+Plus: `mirror` fills south-west/west/north-west by flipping their counterparts
+when PixelLab has only the five generated facings — a candidate is born with
+five and he approved the other three as mirrors, so without it a graduated
+monster has no west half.
+
 ### A REMOVAL IS ACTED ON, BOTH WAYS — check it every run
 
 Maintainer 2026-09-18: "I have also removed a lot of candidates I don't want to

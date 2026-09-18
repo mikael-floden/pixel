@@ -480,6 +480,17 @@ def reconcile(cfg, client=None, apply=True, verbose=True, tags=False):
     if verbose:
         print(f"reconcile: {len(remove)} candidate(s) removed, "
               f"{len(pruned)} dangling verdict(s) pruned")
+    # AND THE OTHER DIRECTION: a candidate whose design and all five states he
+    # has approved stops being a candidate and becomes a monster, by itself
+    # (maintainer 2026-09-18: "When all animations have been approved and the
+    # monster has been approved I want the monster to move to be a real monster
+    # automatically!"). Import here — graduate imports this module.
+    if apply:
+        try:
+            import graduate as _grad
+            _grad.run(apply=True, verbose=verbose)
+        except Exception as e:                      # never block a generate on it
+            print(f"  (graduation skipped: {e})")
     return sorted(remove), pruned
 
 
