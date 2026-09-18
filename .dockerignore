@@ -52,6 +52,13 @@ music/**/*.wav
 !lore
 !wiki
 !live
+# THE AGENT BOARDS, for their NAMES only (~200 KB of JSON). The wiki's Agents
+# page reads each board live from main; the registry built inside the image
+# only has to know WHICH boards exist, and without this line it listed zero —
+# the page read "No board could be read" on his phone while every board
+# answered from raw (2026-09-18). The classic .dockerignore symptom, on a
+# directory nobody thought of as a domain.
+!coordination
 # ...but NOT the perf telemetry. The client beacon appends to
 # live/telemetry/perf.json every 30 s of play (99 commits in one day) and the
 # server WRITES it through the GitHub API and never reads it from disk; the

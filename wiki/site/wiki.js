@@ -14017,19 +14017,45 @@ const agentAgo = (iso) => {
   if (s < 172800) return `${Math.round(s / 3600)} h ago`;
   return `${Math.round(s / 86400)} days ago`;
 };
-/** Every board named by the build, plus the github agent each one may have
- *  grown since — a 404 is an answer ("it has not run yet"), not an error. */
-function agentBoardNames() {
-  const named = state.data.agentBoards ?? [];
+/* WHICH BOARDS EXIST — AND THE DEPLOYED REGISTRY CANNOT SAY (found live
+ * 2026-09-18: the page read "No board could be read" on his phone while every
+ * board answered from raw). `.dockerignore` is an allowlist of what reaches the
+ * image, `coordination/` is not on it, so the registry BUILT INSIDE THE IMAGE
+ * lists zero boards — correct for a build that cannot see the directory, fatal
+ * for a page whose whole content is that list.
+ *
+ * So the names are DISCOVERED at runtime, in this order, and the first answer
+ * wins: the directory listing from the GitHub API (one request per page, never
+ * on a timer — the 60/hour/IP limit belongs nowhere near a refresh loop), then
+ * the registry's own list (right locally, empty in the image), then the agents
+ * named by the release notes, which ARE built into the image from git.
+ * Whatever the source, the github-agent board of every agent is probed too. */
+let boardNameCache = null;
+async function agentBoardNames() {
+  if (boardNameCache) return boardNameCache;
+  const fromApi = await (async () => {
+    try {
+      const r = await fetch(`https://api.github.com/repos/${STAGING_REPO}/contents/coordination`);
+      if (!r.ok) return [];
+      const list = await r.json();
+      return (Array.isArray(list) ? list : [])
+        .filter((f) => f.name?.endsWith(".json"))
+        .map((f) => f.name.replace(/\.json$/, ""));
+    } catch { return []; }
+  })();
+  const fromRegistry = state.data.agentBoards ?? [];
+  const fromReleases = [...new Set((state.data.releases?.commits ?? []).map((c) => c.agent).filter(Boolean))];
+  const named = fromApi.length ? fromApi : (fromRegistry.length ? fromRegistry : fromReleases);
   const githubs = named.filter((n) => agentKind(n) === "agent").map((n) => `${n}-github-agent`);
-  return [...new Set([...named, ...githubs])];
+  boardNameCache = [...new Set([...named, ...githubs])];
+  return boardNameCache;
 }
 async function fetchBoards() {
   const base = repoBase ?? stagingBase("main");
   // The cache-buster is the point of the page: raw answers max-age=300, and
   // "is it working NOW" cannot be five minutes old.
   const bust = `?t=${Date.now()}`;
-  const out = await Promise.all(agentBoardNames().map(async (id) => {
+  const out = await Promise.all((await agentBoardNames()).map(async (id) => {
     try {
       const r = await fetch(new URL(`coordination/${id}.json${bust}`, base).href, { cache: "no-store" });
       if (!r.ok) return null;                       // 404: that session never existed
@@ -14992,6 +15018,9 @@ async function upgradeToStaging() {
     // not moved for hours is not running — so the gate drives the rule rather
     // than waiting hours for a real board to go stale.
     agentHealth,
+    // …and the name discovery's cache, so the gate can ask what happens when
+    // the registry lists no boards at all (which is what the image shipped).
+    resetBoardNames: () => { boardNameCache = null; },
     // The gone-verdict path, so a gate can ask it directly rather than
     // reconstructing a two-origin miss.
     probeGone,

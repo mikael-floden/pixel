@@ -1,9 +1,54 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T17:17:07.707Z",
- "head": "d6af16e85",
+ "generated_at": "2026-09-18T17:28:27.046Z",
+ "head": "513647bd9",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "513647bd9",
+   "at": "2026-09-18T17:24:04+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: show the github agent's output for one rehearsal",
+   "agent": null,
+   "dirs": [
+    ".github"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a41742704",
+   "at": "2026-09-18T17:22:22+00:00",
+   "author": "wiki-agent",
+   "subject": "live+wiki: the no-ghost rule is now law for every agent, and counted",
+   "agent": "wiki",
+   "dirs": [
+    ".github",
+    "wiki"
+   ],
+   "files": 5
+  },
+  {
+   "sha": "71a0ec8e7",
+   "at": "2026-09-18T17:19:23+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: the Overview fills the screen it fits in",
+   "agent": "wiki",
+   "dirs": [
+    "wiki"
+   ],
+   "files": 6
+  },
+  {
+   "sha": "3ed8ee57d",
+   "at": "2026-09-18T17:16:36+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 10 (grass <-> light soil, reps 7+)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 87
+  },
   {
    "sha": "d6af16e85",
    "at": "2026-09-18T17:14:10+00:00",
@@ -519,50 +564,6 @@
     "live"
    ],
    "files": 1
-  },
-  {
-   "sha": "a8c0ab265",
-   "at": "2026-09-18T15:04:11+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduation landings",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 433
-  },
-  {
-   "sha": "9189f1e98",
-   "at": "2026-09-18T15:01:53+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (79 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 418
-  },
-  {
-   "sha": "65a17a3c4",
-   "at": "2026-09-18T15:00:28+00:00",
-   "author": "Claude",
-   "subject": "board: the road edge art, the geometry lesson, the three cache bugs",
-   "agent": "tiles",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "65c2fb91c",
-   "at": "2026-09-18T15:00:03+00:00",
-   "author": "Claude",
-   "subject": "monsters: graduation landings",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 585
   }
  ]
 }

@@ -167,6 +167,18 @@ into `coordination/<agent>.json` as part of every unit of work (PROTOCOL's
 claim). `#/agents` is that, where he already is. ADMIN-ONLY, like Parameters and
 Release Notes: the boards are the factory floor.
 
+- **WHICH boards exist is discovered at RUNTIME, and that is not a nicety.**
+  Found live 2026-09-18: the page read *"No board could be read"* on his phone
+  while every board answered from raw. `.dockerignore` is an allowlist of what
+  reaches the image and `coordination/` was not on it, so the registry BUILT
+  INSIDE THE IMAGE listed zero boards — the classic .dockerignore symptom, on a
+  directory nobody thought of as a domain. Fixed in three places, as the law
+  says: `!coordination` in `.dockerignore`, `COPY coordination/` in the
+  Dockerfile, and the page no longer depends on either — it asks the GitHub API
+  for the directory listing (ONE request per page, never on a timer: the
+  60/hour/IP limit belongs nowhere near a refresh loop), then falls back to the
+  registry's list, then to the agents named by the release notes, which are
+  built into the image from git.
 - **The boards are read LIVE from `main`, never from `data.json`.** A board
   baked into the image answers "what was it doing when this build was made",
   which is the one question nobody asks. `build.mjs` publishes the NAMES

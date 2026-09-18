@@ -47,6 +47,9 @@ COPY items/ items/
 COPY lore/ lore/
 COPY wiki/ wiki/
 COPY live/ live/
+# The boards, so the registry built here can list the fleet by name (the page
+# reads each board's CONTENTS live from main — see wiki/README.md "Agents").
+COPY coordination/ coordination/
 # --check fails the BUILD on a reachable-but-missing file, which is the one
 # error that would otherwise become a silent 404 in production.
 # --write also emits the COMPACT shipset.json (digest + per-domain stats, ~2 KB)

@@ -98,6 +98,22 @@ ok(page.refresh, "there is a refresh button");
 ok(!page.wide, "nothing pokes past a 393px phone");
 if (shot) await p.screenshot({ path: `${shot}/agents.png`, fullPage: false });
 
+// AN EMPTY REGISTRY MUST STILL FIND THE FLEET. The image's own build could not
+// see coordination/ (it is not in the .dockerignore allowlist), so the deployed
+// registry listed zero boards and the page read "No board could be read" while
+// every board answered from raw. The allowlist is fixed; the page must ALSO
+// survive it, so the names fall back to the agents named by the release notes.
+const fallback = await p.evaluate(async () => {
+  window.__wiki.state.data.agentBoards = [];
+  window.__wiki.resetBoardNames();
+  location.hash = "#/monsters"; await new Promise((r) => setTimeout(r, 400));
+  location.hash = "#/agents"; await new Promise((r) => setTimeout(r, 2500));
+  return { cards: document.querySelectorAll(".agent-card").length,
+    releases: new Set((window.__wiki.state.data.releases?.commits ?? []).map((c) => c.agent).filter(Boolean)).size };
+});
+console.log("no-registry fallback:", JSON.stringify(fallback));
+ok(fallback.cards > 0, `with an empty registry the page still finds the fleet through the release notes (${fallback.cards} cards from ${fallback.releases} named agents)`);
+
 // A LONG CLAIM IS CLAMPED, NOT CUT: some agents write 1,500 characters and one
 // card would fill the screen, so four lines and a tap for the rest.
 const clamp = await p.evaluate(() => {
