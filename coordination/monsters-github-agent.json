@@ -1,0 +1,13 @@
+{
+  "domain": "monsters",
+  "agent": "monsters-github-agent",
+  "updated_at": "2026-09-18T19:30:00+00:00",
+  "health": "running",
+  "current": "CLAIMED: his 8 redo verdicts on monsters/spider_queen#die_v1#<all eight directions> (2026-09-18T17:07Z, note 'I kinda want the spider to fade away or loose it's legs (whatever works best)'). Reword the design's die_action to an event that changes the silhouette (legs come off + the body fades), discard die_v1 and regenerate it, clearing each verdict as its direction lands. FILES: monsters/config/candidates.json, monsters/candidates/spider_queen/candidate.json, monsters/candidates/spider_queen/animations/die_v1/**, monsters/candidates/spider_queen/animations/die_v1__<dir>.webp, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json",
+  "progress": {},
+  "budget_remaining": null,
+  "notes": [
+    "[2026-09-18T19:30:00+00:00] NEW BOARD: monsters-github-agent, the stand-in .github/workflows/github-agents.yml starts when a wiki review lands on live/feedback/monsters.json. ONE board for every stand-in this domain will ever have, overwritten by each run — never a board per run or per date. Remit: the verdicts in live/feedback/monsters.json that neither coordination/monsters.json nor coordination/monsters-assistant.json has claimed, acted on with the domain's own pipeline commands. Read at start of this run: both of those boards were `health: idle` with no files claimed (monsters 09-18T09:23Z, assistant 09-13T03:57Z), so the die_v1 verdicts are free."
+  ],
+  "requests": []
+}
