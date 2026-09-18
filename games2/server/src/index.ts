@@ -1,5 +1,5 @@
 import { createServer } from "http";
-import { existsSync, readFileSync } from "fs";
+import { existsSync, readFileSync, readdirSync, statSync } from "fs";
 import { dirname, join } from "path";
 import { fileURLToPath } from "url";
 import express from "express";
@@ -12,7 +12,7 @@ import { WorldRoom, sceneryBbox, zonesConfigFor, perfStats, DEFAULT_WORLD } from
 import { initLive, registerLiveRoutes, sceneryHitboxOverrides } from "./live.js";
 import { cacheControlFor } from "./cachepolicy.js";
 import { assetHash } from "./assethash.js";
-import { BundleStore, backendFromEnv, DOC } from "./bundlestore";
+import { BundleStore, backendFromEnv, DOC, hashBytes } from "./bundlestore";
 
 // Encoder.BUFFER_SIZE is set in rooms/WorldRoom.ts (the room module), so a
 // test's own Server gets the same 64 KB as this one.
@@ -113,8 +113,20 @@ app.get("/api/zones/:world", (req, res) =>
 // THE SERVER'S OWN LOAD NUMBERS (tick p50/p95/max per room, CPU of one core
 // since the last call, event-loop lag) — what scripts/loadbot.mjs reads.
 app.get("/api/stats", (_req, res) => res.setHeader("Cache-Control", "no-store").json(perfStats()));
+// `/version` NAMES THE CLIENT BEING SERVED, NOT THE IMAGE. The client compares
+// this against the sha baked into itself and RELOADS when they differ
+// (client/src/main.ts, reloadIfBehindAtBoot). A published generation served
+// under the image's older sha therefore made every load reload itself and then
+// sit under a false "New version out <the OLD sha>" banner, with the chime;
+// where storage is blocked the 60 s guard cannot persist either and the reload
+// is unbounded — measured 114 loads in 12 s. Four of six review panels found
+// this independently, and it is why the lane was not fired before it was fixed.
+// `image` stays available for the art stamp, which belongs to the IMAGE's sha
+// because art rides the container lane.
 app.get("/version", (_req, res) =>
-  res.setHeader("Cache-Control", "no-store").json({ sha: process.env.GIT_SHA || "dev" }),
+  res
+    .setHeader("Cache-Control", "no-store")
+    .json({ sha: bundles?.servedSha() || process.env.GIT_SHA || "dev", image: process.env.GIT_SHA || "dev" }),
 );
 
 // Production single-origin serving: built client + art assets on one host/port
@@ -186,14 +198,57 @@ app.get("/asset-index.json", (_req, res) => {
 // nothing published, nothing readable, or anything refused by the store's laws
 // and this whole block is inert.
 const bundleBackend = backendFromEnv();
-const bundles = bundleBackend ? new BundleStore(bundleBackend) : null;
+
+/** THE IMAGE'S OWN ROOT FILES, HASHED ONCE. The image is immutable for the life
+ *  of the process, so this is computed lazily and kept: it is the other half of
+ *  the mixed-generation guarantee (publish-bundle.mjs). `assets/` is skipped —
+ *  a generation carries its own — and so is index.html, which is
+ *  generation-addressed (bundlestore law 5). */
+let imageRootHashes: Map<string, string> | null = null;
+function imageFileHashes(): Map<string, string> {
+  if (imageRootHashes) return imageRootHashes;
+  const m = new Map<string, string>();
+  const walk = (dir: string, prefix: string) => {
+    for (const n of readdirSync(dir)) {
+      const full = join(dir, n);
+      const rel = prefix ? `${prefix}/${n}` : n;
+      if (statSync(full).isDirectory()) {
+        if (rel !== "assets") walk(full, rel);
+        continue;
+      }
+      if (rel === "index.html") continue;
+      m.set(rel, hashBytes(readFileSync(full)));
+    }
+  };
+  if (existsSync(clientDist)) walk(clientDist, "");
+  imageRootHashes = m;
+  return m;
+}
+
+const bundles = bundleBackend
+  ? new BundleStore(bundleBackend, (ft) => {
+      if (!existsSync(clientDist)) return []; // no image beside us: nothing to mix with
+      const have = imageFileHashes();
+      const bad: string[] = [];
+      for (const [rel, hash] of Object.entries(ft)) {
+        const mine = have.get(rel);
+        if (mine !== hash) bad.push(`${rel} (${mine ? `image ${mine}` : "absent from the image"} != ${hash})`);
+      }
+      return bad;
+    })
+  : null;
 if (bundles) {
   console.log(`[nangijala] published client bundles from ${bundles.label}`);
-  void bundles.refresh();
+  void bundles.refresh().catch(() => {});
   // Pushed, not polled — the live-notify shape (a workflow step POSTs after a
   // publish). The interval is the belt: an instance that missed a poke, or came
   // up between two, converges without one.
-  setInterval(() => void bundles.refresh(), 60_000).unref();
+  //
+  // The `.catch` is not decoration. refresh() is written never to reject, and
+  // this is the second belt on that: an unhandled rejection in a Colyseus
+  // process is handed to its graceful-shutdown path, which disposes every room
+  // and calls process.exit(1). A store hiccup must never cost the world.
+  setInterval(() => void bundles.refresh().catch(() => {}), 60_000).unref();
 }
 
 /** Serve one file of a published generation. The ETag is the hash of THESE
@@ -236,7 +291,7 @@ if (serveClient) {
     // asks the server to re-read a store it already reads, it is idempotent, and
     // a spurious call is a no-op. The publisher calls it after the pointer flip.
     app.post("/api/bundle/refresh", async (_req, res) => {
-      await bundles.refresh();
+      await bundles.refresh(true); // forced: a coalesced read may predate the flip
       res.setHeader("Cache-Control", "no-store").json({ serving: bundles.current?.id ?? null, pointer: bundles.pointer });
     });
 
@@ -252,6 +307,15 @@ if (serveClient) {
     });
   }
 
+  /** THE DOCUMENT, from whichever generation is serving: the published one when
+   *  the store holds it, the image's otherwise. Every route that answers with a
+   *  document goes through here — see "ONE ORIGIN, ONE DOCUMENT" below. */
+  const sendDocument = (res: express.Response) => {
+    const doc = bundles?.current?.files.get(DOC);
+    if (doc) return sendBundleFile(res, doc, false);
+    if (!existsSync(clientDist)) return res.status(503).type("text/plain").send("no client bundle\n");
+    res.sendFile(join(clientDist, "index.html"), { headers: { "Cache-Control": "no-cache" } });
+  };
   if (existsSync(clientDist) || bundles) {
     // `index: false` IS LOAD-BEARING when a published bundle exists. Measured by
     // verify-fastlane arm D: express.static answers "/" with its OWN
@@ -259,6 +323,14 @@ if (serveClient) {
     // document never won and every publish looked like a no-op while
     // /api/bundle cheerfully reported the new generation. With the lane off the
     // fallback below serves the same file, so behaviour is unchanged.
+    // ONE ORIGIN, ONE DOCUMENT. `/index.html` NAMES the file express.static
+    // holds, so `index: false` alone was not enough: with a generation
+    // published the origin answered the PUBLISHED document at `/` and the
+    // IMAGE's at `/index.html` — two different builds under one hostname,
+    // which is precisely the mixed-generation cache bug this design exists to
+    // make impossible. Three of the six review panels found it independently.
+    // Both paths now resolve through ONE function, registered BEFORE static.
+    app.get(["/", "/index.html"], (_req, res) => sendDocument(res));
     if (existsSync(clientDist)) {
       app.use(express.static(clientDist, { index: false, setHeaders: setCacheHeaders }));
     }
@@ -274,11 +346,16 @@ if (serveClient) {
     );
     // SPA fallback for any non-API, non-asset route — the published document
     // when there is one, the image's otherwise.
-    app.get(/^(?!\/(assets|health|matchmake|api)).*/, (_req, res) => {
-      const doc = bundles?.current?.files.get(DOC);
-      if (doc) return sendBundleFile(res, doc, false);
-      if (!existsSync(clientDist)) return res.status(503).type("text/plain").send("no client bundle\n");
-      res.sendFile(join(clientDist, "index.html"), { headers: { "Cache-Control": "no-cache" } });
+    // A PATH WITH A DATA EXTENSION IS NOT AN SPA ROUTE. Answering the document
+    // for /monsters.json hands a JSON fetch a 200 of text/html, which surfaces
+    // as a corrupt catalog rather than a missing file — the .dockerignore
+    // diagnostic (on GitHub, 404 in prod) depends on it reading as a 404.
+    const DATA = /\.(json|js|mjs|cjs|css|map|webp|png|jpg|jpeg|svg|ico|ogg|opus|wav|m4a|webmanifest|txt|xml|wasm)$/i;
+    app.get(/^(?!\/(assets|health|matchmake|api)).*/, (req, res) => {
+      if (DATA.test(req.path)) {
+        return res.status(404).setHeader("Cache-Control", "no-store").type("text/plain").send("not found\n");
+      }
+      sendDocument(res);
     });
     console.log(
       `[nangijala] serving built client from ${bundles?.current ? `${bundles.label} (${bundles.current.id})` : clientDist}` +

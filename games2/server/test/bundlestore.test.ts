@@ -282,3 +282,232 @@ test("a GitHub backend that cannot reach anything returns null, never throws", a
   assert.equal(await b.get("pointer.json"), null);
   assert.deepEqual(await b.list("gen"), []);
 });
+
+// ---------------------------------------------------------------------------
+// The defects six adversarial review panels found in this lane before it was
+// fired in production. Each test is the failure they described.
+// ---------------------------------------------------------------------------
+
+test("a backend that THROWS is 'keep what we have', never a rejection — an unhandled one exits the process", async () => {
+  // Colyseus hands an unhandled rejection to its graceful-shutdown path, which
+  // disposes every room and calls process.exit(1). A DNS hiccup reading a
+  // pointer must never cost the authoritative world.
+  const root = mkdtempSync(join(tmpdir(), "bs-"));
+  writeGen(root, "aaa", GEN_A);
+  writePointer(root, { seq: 1, current: "aaa", retained: [] });
+  const good = localBackend(root);
+  let boom = false;
+  const flaky = {
+    label: "flaky",
+    async get(p: string) {
+      if (boom) throw new Error("ECONNRESET, simulated");
+      return good.get(p);
+    },
+    async list(p: string) {
+      if (boom) throw new Error("ECONNRESET, simulated");
+      return good.list(p);
+    },
+  };
+  const s = new BundleStore(flaky);
+  await s.refresh();
+  assert.equal(s.current?.id, "aaa");
+
+  boom = true;
+  await assert.doesNotReject(() => s.refresh()); // the whole point
+  assert.equal(s.current?.id, "aaa", "a throwing backend leaves production exactly as it was");
+
+  // and a generation that throws PART WAY through must not flip either
+  boom = false;
+  writeGen(root, "bbb", GEN_B);
+  writePointer(root, { seq: 2, current: "bbb", retained: ["aaa"] });
+  boom = true;
+  await assert.doesNotReject(() => s.refresh(true));
+  assert.equal(s.current?.id, "aaa", "an unreadable NEW generation is not adopted");
+  boom = false;
+  await s.refresh(true);
+  assert.equal(s.current?.id, "bbb", "and it is adopted once the store is readable again");
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("the POKE forces a NEW read; a plain refresh reuses the one in flight", async () => {
+  // refresh() coalesces. A poke that joins a read taken BEFORE the publisher
+  // wrote the pointer answers 200 naming the OLD generation, and the publish
+  // then looks like a no-op until the 60 s belt comes round. The contract the
+  // fix adds, asserted directly: a forced refresh does not reuse an in-flight
+  // result, it reads again.
+  const root = mkdtempSync(join(tmpdir(), "bs-"));
+  writeGen(root, "aaa", GEN_A);
+  writePointer(root, { seq: 1, current: "aaa", retained: [] });
+  const good = localBackend(root);
+  let reads = 0;
+  let hold: Promise<void> | null = null;
+  const counting = {
+    label: "counting",
+    async get(path: string) {
+      if (path === "pointer.json") {
+        reads++;
+        if (hold) await hold;
+      }
+      return good.get(path);
+    },
+    list: (path: string) => good.list(path),
+  };
+  const s2 = new BundleStore(counting);
+  await s2.refresh();
+  assert.equal(s2.current?.id, "aaa");
+  assert.equal(reads, 1);
+
+  // block the next pointer read, start it, and let a plain and a forced
+  // refresh both arrive while it is stuck
+  let release!: () => void;
+  hold = new Promise<void>((r) => { release = r; });
+  const inflight = s2.refresh();
+  assert.equal(reads, 2, "the in-flight refresh has taken its read and is stuck on it");
+  const plain = s2.refresh(); // must JOIN: no new read
+  assert.equal(reads, 2, "a plain refresh reuses the read already in flight, it does not take its own");
+
+  hold = null;
+  release();
+  await inflight;
+  await plain;
+  assert.equal(reads, 2, "still two: the plain refresh added none");
+
+  // now publish, and poke
+  writeGen(root, "bbb", GEN_B);
+  writePointer(root, { seq: 2, current: "bbb", retained: ["aaa"] });
+  await s2.refresh(true);
+  assert.equal(reads, 3, "the forced refresh read the pointer AGAIN rather than reusing a result");
+  assert.equal(s2.current?.id, "bbb", "and saw the flip");
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("a generation whose DOCUMENT names a file it does not carry is refused, not served as a black page", async () => {
+  const root = mkdtempSync(join(tmpdir(), "bs-"));
+  writeGen(root, "aaa", GEN_A);
+  writePointer(root, { seq: 1, current: "aaa", retained: [] });
+  const s = store(root);
+  await s.refresh();
+  assert.equal(s.current?.id, "aaa");
+
+  // a document referencing a chunk absent from its own manifest passes every
+  // hash test there is — the file it would check simply is not listed
+  writeGen(root, "bad", {
+    "index.html": '<html><script type="module" src="/assets/index-missing0.js"></script></html>',
+    "assets/index-cccccccc.js": "//C",
+  });
+  writePointer(root, { seq: 2, current: "bad", retained: ["aaa"] });
+  await s.refresh(true);
+  assert.equal(s.current?.id, "aaa", "refused: it would have loaded, reported healthy and rendered nothing");
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("BYTES are evicted outside the window; NAMES are remembered, so law 1 stays absolute", async () => {
+  // Holding every generation forever is an OOM on --memory 1Gi
+  // --max-instances 1, and the world dies with the process.
+  const root = mkdtempSync(join(tmpdir(), "bs-"));
+  const s = store(root);
+  const ids: string[] = [];
+  for (let i = 1; i <= 6; i++) {
+    const id = `gen${i}`;
+    ids.push(id);
+    writeGen(root, id, { "index.html": `<html>${i}</html>`, [`assets/index-${String(i).repeat(8)}.js`]: `//${i}` });
+    writePointer(root, { seq: i, current: id, retained: ids.slice(0, -1).reverse().slice(0, 2) });
+    await s.refresh(true);
+    assert.equal(s.current?.id, id);
+  }
+  assert.ok(s.held <= 3, `the window is bounded (held ${s.held})`);
+  // the generation served immediately before the current one still resolves
+  assert.ok(s.fileFor("assets/index-55555555.js"), "the previous generation's chunk still resolves");
+  // one well past the window is a coherent MISS — never wrong bytes
+  assert.equal(s.fileFor("assets/index-11111111.js"), null, "a name past the window answers null, not other bytes");
+
+  // AND the name is still remembered, so a generation may not redefine it
+  writeGen(root, "evil", { "index.html": "<html>evil</html>" });
+  const evilManifest = JSON.parse(readFileSync(join(root, "gen", "evil", "manifest.json"), "utf8"));
+  evilManifest.files["assets/index-11111111.js"] = hashBytes(Buffer.from("//DIFFERENT"));
+  writeFileSync(join(root, "blob", evilManifest.files["assets/index-11111111.js"]), "//DIFFERENT");
+  writeFileSync(join(root, "gen", "evil", "manifest.json"), JSON.stringify(evilManifest));
+  writePointer(root, { seq: 99, current: "evil", retained: [] });
+  await s.refresh(true);
+  assert.notEqual(s.current?.id, "evil", "a hashed name that ever meant one thing can never come back meaning another");
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("a generation disagreeing with the image it falls through to is refused (mixed generation)", async () => {
+  const root = mkdtempSync(join(tmpdir(), "bs-"));
+  writeGen(root, "aaa", GEN_A);
+  writePointer(root, { seq: 1, current: "aaa", retained: [] });
+  const seen: Record<string, string>[] = [];
+  const s = new BundleStore(localBackend(root), (ft) => {
+    seen.push(ft);
+    return Object.keys(ft).filter((k) => ft[k] === "wrong");
+  });
+  await s.refresh();
+  assert.equal(s.current?.id, "aaa", "no fallthrough recorded: nothing to disagree with");
+
+  const m = JSON.parse(readFileSync(join(root, "gen", "aaa", "manifest.json"), "utf8"));
+  writeGen(root, "mix", GEN_B);
+  const m2 = JSON.parse(readFileSync(join(root, "gen", "mix", "manifest.json"), "utf8"));
+  m2.fallthrough = { "monsters.json": "wrong" };
+  writeFileSync(join(root, "gen", "mix", "manifest.json"), JSON.stringify(m2));
+  writePointer(root, { seq: 2, current: "mix", retained: ["aaa"] });
+  await s.refresh(true);
+  assert.equal(s.current?.id, "aaa", "new code against the image's OLD data is refused");
+
+  m2.fallthrough = { "monsters.json": "agreed" };
+  writeFileSync(join(root, "gen", "mix", "manifest.json"), JSON.stringify(m2));
+  writePointer(root, { seq: 3, current: "mix", retained: ["aaa"] });
+  await s.refresh(true);
+  assert.equal(s.current?.id, "mix", "and an agreeing one is adopted — the check is not simply refusing everything");
+  void m;
+  rmSync(root, { recursive: true, force: true });
+});
+
+test("the IMAGE wins against a generation published from an earlier commit, and a tie", async () => {
+  // `seq` orders publishes against EACH OTHER and says nothing about the
+  // image. A generation published from an earlier commit is perfectly
+  // monotonic, so without this guard a container rollout is silently
+  // overridden by an older client — a rollback nobody asked for, and a
+  // mismatched client/server pair. It is also what makes the image a FLOOR
+  // again: a bad publish is undone by the next container deploy, which is the
+  // only recovery a phone-only maintainer has.
+  const root = mkdtempSync(join(tmpdir(), "bs-"));
+  const prev = process.env.GIT_COMMIT_TS;
+  try {
+    process.env.GIT_COMMIT_TS = "1000";
+    const s3 = store(root);
+
+    writeGen(root, "older", GEN_A);
+    writePointer(root, { seq: 1, current: "older", retained: [], commit_ts: 900 });
+    await s3.refresh(true);
+    assert.equal(s3.current, null, "a client from before this image is refused");
+
+    writeGen(root, "tie", GEN_B);
+    writePointer(root, { seq: 2, current: "tie", retained: [], commit_ts: 1000 });
+    await s3.refresh(true);
+    assert.equal(s3.current, null, "and a tie goes to the image");
+
+    writeGen(root, "newer", { "index.html": "<html>N</html>", "assets/index-nnnnnnnn.js": "//N" });
+    writePointer(root, { seq: 3, current: "newer", retained: [], commit_ts: 1001 });
+    await s3.refresh(true);
+    assert.equal(s3.current?.id, "newer", "one second newer than the image IS adopted");
+
+    // an image that cannot name its own time must not read as "newer"
+    delete process.env.GIT_COMMIT_TS;
+    const s4 = store(root);
+    await s4.refresh(true);
+    assert.equal(s4.current, null, "an image with no commit time refuses a generation that names one");
+
+    // and an UNSTAMPED generation is ordered on seq alone (local runs, tests)
+    process.env.GIT_COMMIT_TS = "1000";
+    writeGen(root, "plain", { "index.html": "<html>P</html>", "assets/index-pppppppp.js": "//P" });
+    writePointer(root, { seq: 4, current: "plain", retained: [] });
+    const s5 = store(root);
+    await s5.refresh(true);
+    assert.equal(s5.current?.id, "plain", "no commit_ts means unordered, not refused");
+  } finally {
+    if (prev === undefined) delete process.env.GIT_COMMIT_TS;
+    else process.env.GIT_COMMIT_TS = prev;
+    rmSync(root, { recursive: true, force: true });
+  }
+});

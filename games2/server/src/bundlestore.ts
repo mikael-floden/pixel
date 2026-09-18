@@ -57,7 +57,16 @@ import { join, normalize } from "node:path";
 
 export type BundleFile = { bytes: Buffer; hash: string; type: string };
 export type Generation = { id: string; files: Map<string, BundleFile> };
-export type Pointer = { seq: number; current: string; retained: string[]; updated_at?: string; git_sha?: string };
+export type Pointer = {
+  seq: number;
+  current: string;
+  retained: string[];
+  updated_at?: string;
+  git_sha?: string;
+  /** The publishing commit's committer date, epoch seconds. THE ORDER OF THE
+   *  TWO LANES — see the ordering guard in doRefresh. */
+  commit_ts?: number;
+};
 
 const MIME: Record<string, string> = {
   ".html": "text/html; charset=utf-8",
@@ -76,6 +85,11 @@ const MIME: Record<string, string> = {
 export const mimeFor = (name: string) => MIME[name.slice(name.lastIndexOf("."))] ?? "application/octet-stream";
 /** The one generation-addressed name (law 5). */
 export const DOC = "index.html";
+/** How many generations THIS PROCESS SERVED are kept readable past a flip —
+ *  current + two back, matching the publisher's RETAIN. The root cache law asks
+ *  for current + one; the extra one costs a few MB and covers a page that was
+ *  loading across two quick publishes. */
+const SERVED_WINDOW = 3;
 export const hashBytes = (b: Buffer) => createHash("sha256").update(b).digest("hex").slice(0, 16);
 
 /** A place published generations are read from. A local directory is the
@@ -234,10 +248,25 @@ export class BundleStore {
   private blobs = new Map<string, BundleFile>();
   private gens = new Map<string, Map<string, string>>(); // id -> name -> hash
   private ptr: Pointer | null = null;
+  /** Generations THIS PROCESS actually flipped to, most recent first. The
+   *  pointer's `retained` is the PUBLISHER's list and can name generations this
+   *  instance refused or never read (a corrupt blob, a mixed fall-through, a
+   *  cold start); evicting on that list alone can therefore drop the generation
+   *  the open pages are actually running. What was served is what must keep
+   *  resolving, so eviction keeps the union of the two. */
+  private servedIds: string[] = [];
   private inflight: Promise<void> | null = null;
   readonly log: string[] = [];
 
-  constructor(private readonly backend: StoreBackend) {}
+  /** `verifyFallthrough` is the server half of the mixed-generation guarantee
+   *  (publish-bundle.mjs explains the publisher half). It is handed the
+   *  generation's recorded hashes for every file the generation does NOT carry
+   *  and returns the ones that disagree with the bytes this instance would
+   *  actually serve. Omitted in tests that have no image beside them. */
+  constructor(
+    private readonly backend: StoreBackend,
+    private readonly verifyFallthrough?: (fallthrough: Record<string, string>) => string[],
+  ) {}
 
   get label() { return this.backend.label; }
   get pointer() { return this.ptr; }
@@ -280,11 +309,39 @@ export class BundleStore {
     console.log(`[bundle] ${msg}`);
   }
 
-  /** Read the pointer and adopt what it names. Coalesced; never throws. */
-  async refresh(): Promise<void> {
-    if (this.inflight) return this.inflight;
-    this.inflight = this.doRefresh().finally(() => { this.inflight = null; });
+  /** Read the pointer and adopt what it names.
+   *
+   *  NEVER THROWS, and that is load-bearing rather than tidy. This runs from a
+   *  60 s interval and from an HTTP handler; an unhandled rejection in a
+   *  Colyseus process reaches its graceful-shutdown path, which ends in
+   *  `process.exit(1)`. A DNS hiccup reading a pointer would then drop every
+   *  player in the authoritative world. Every backend read is inside a catch,
+   *  here and in load().
+   *
+   *  `force` is for THE POKE. A plain refresh joins one already in flight, and
+   *  an in-flight read may have read the pointer BEFORE the publisher wrote it
+   *  — so the poke would answer 200 naming the old generation and the publish
+   *  would look like a no-op until the interval came round, up to 60 s later.
+   *  A forced refresh lets the in-flight read finish and then reads again. */
+  async refresh(force = false): Promise<void> {
+    if (this.inflight) {
+      if (!force) return this.inflight;
+      await this.inflight.catch(() => {});
+    }
+    this.inflight = this.doRefresh()
+      .catch((e) => this.note(`refresh failed, keeping what we have: ${String(e).slice(0, 160)}`))
+      .finally(() => { this.inflight = null; });
     return this.inflight;
+  }
+
+  /** The identity of the CLIENT being served: the sha the current generation
+   *  was built from, or null when the image's own bundle is serving. `/version`
+   *  answers with this, because the client compares it against the sha baked
+   *  into ITSELF — see the boot check in client/src/main.ts. */
+  servedSha(): string | null {
+    if (!this.ptr || !this.gens.has(this.ptr.current)) return null;
+    const s = (this.ptr.git_sha || "").trim();
+    return s && s !== "dev" ? s : null;
   }
 
   private async doRefresh(): Promise<void> {
@@ -307,6 +364,34 @@ export class BundleStore {
       if (next.seq < this.ptr.seq) this.note(`refused a pointer going backward (seq ${next.seq} < ${this.ptr.seq})`);
       return;
     }
+    // THE TWO LANES ARE ORDERED, AND THE IMAGE WINS A TIE. `seq` orders
+    // publishes against each other, and says nothing about this image: a
+    // generation published from an EARLIER commit is perfectly monotonic, so
+    // without this a container rollout is silently overridden by an older
+    // client — a rollback nobody asked for, and a mismatched client/server
+    // pair. It is also what makes the image a FLOOR again: a bad publish is
+    // undone by any later container deploy, which is the only recovery a
+    // phone-only maintainer has.
+    //
+    // STRICT ON PURPOSE: a generation that names a time is refused by an image
+    // that cannot name its own, because "cannot compare" must not read as
+    // "newer". That only happens on an image built before this guard existed,
+    // and the next container deploy clears it.
+    if (typeof next.commit_ts === "number" && next.commit_ts > 0) {
+      const mine = Number(process.env.GIT_COMMIT_TS || 0);
+      if (!mine) {
+        this.note(
+          `generation ${next.current} names a commit time but this image does not (GIT_COMMIT_TS unset) — refusing, cannot order the two lanes`,
+        );
+        return;
+      }
+      if (next.commit_ts <= mine) {
+        this.note(
+          `refused ${next.current}: published from a commit at or before this image (${next.commit_ts} <= ${mine}) — the image is newer and stays`,
+        );
+        return;
+      }
+    }
     // LAW 3: materialise the whole window BEFORE deciding anything.
     for (const id of [next.current, ...(next.retained ?? [])]) {
       if (this.gens.has(id)) continue;
@@ -318,16 +403,67 @@ export class BundleStore {
     }
     const from = this.ptr?.current;
     this.ptr = next;
+    this.servedIds = [next.current, ...this.servedIds.filter((i) => i !== next.current)].slice(0, SERVED_WINDOW);
+    this.evict();
     this.note(
       `serving ${next.current}${from ? ` (was ${from})` : ""}, ${this.gens.size} generation(s), ` +
         `${this.names.size} name(s), ${this.blobs.size} blob(s), seq ${next.seq}`,
     );
   }
 
+  /** BYTES ARE EVICTED; NAMES NEVER ARE.
+   *
+   *  The window (current + `retained`) is the guarantee the publisher and the
+   *  root cache law both state: a page loaded from a generation inside it keeps
+   *  resolving every chunk it names. Holding every generation FOREVER is not a
+   *  stronger guarantee — it is an OOM. The service runs `--memory 1Gi
+   *  --max-instances 1`, a generation is ~2.5 MB, and publishing often is the
+   *  entire point of this lane; the world dies with the process, so "keep
+   *  everything" trades a 404 on a very old chunk for dropping every player in
+   *  the game.
+   *
+   *  What is NOT evicted is the name -> hash map: ~100 bytes an entry, and it
+   *  is what keeps LAW 1 absolute for the life of the process. A hashed name
+   *  that ever meant one thing can never come back meaning another, even after
+   *  its bytes are gone. A name whose bytes have been evicted answers 404 with
+   *  `no-store` — a coherent miss that reloads, never a wrong file. */
+  private evict(): void {
+    if (!this.ptr) return;
+    const keep = new Set([this.ptr.current, ...(this.ptr.retained ?? []), ...this.servedIds]);
+    for (const id of [...this.gens.keys()]) if (!keep.has(id)) this.gens.delete(id);
+    const live = new Set<string>();
+    for (const m of this.gens.values()) for (const h of m.values()) live.add(h);
+    let freed = 0;
+    for (const [h, f] of [...this.blobs]) {
+      if (live.has(h)) continue;
+      freed += f.bytes.length;
+      this.blobs.delete(h);
+    }
+    if (freed) {
+      this.note(
+        `evicted ${(freed / 1e6).toFixed(2)} MB outside the window; ` +
+          `${this.gens.size} generation(s), ${this.blobs.size} blob(s), ${this.names.size} name(s) remembered`,
+      );
+    }
+  }
+
   private async load(id: string): Promise<boolean> {
+    try {
+      return await this.doLoad(id);
+    } catch (e) {
+      // A backend that THROWS (DNS, TLS, a 500 from the contents API) must read
+      // as "could not load this generation", never as a rejection escaping into
+      // the process. doRefresh treats false on the CURRENT generation as "do
+      // not flip", so a transient error leaves production exactly as it is.
+      this.note(`generation ${id} unreadable: ${String(e).slice(0, 140)}`);
+      return false;
+    }
+  }
+
+  private async doLoad(id: string): Promise<boolean> {
     const manifestRaw = await this.backend.get(`gen/${id}/manifest.json`);
     if (!manifestRaw) return false;
-    let manifest: { files: Record<string, string> };
+    let manifest: { files: Record<string, string>; fallthrough?: Record<string, string> };
     try {
       manifest = JSON.parse(manifestRaw.toString("utf8"));
     } catch {
@@ -357,6 +493,38 @@ export class BundleStore {
           return false;
         }
         this.blobs.set(hash, { bytes, hash: got, type: mimeFor(name) });
+      }
+    }
+    // A MIXED GENERATION IS REFUSED, BY ARITHMETIC. The generation carries
+    // index.html + assets/; every other file of the client is answered by the
+    // IMAGE, and the publisher recorded the hash it saw for each of them. If
+    // any disagrees with what this instance would serve, then adopting this
+    // generation would run new code against other bytes than it was built and
+    // gated against — new code, old catalogs. Refusing is always safe: the
+    // image keeps serving, whole and self-consistent, and the container lane
+    // delivers the pair together.
+    if (manifest.fallthrough && this.verifyFallthrough) {
+      const bad = this.verifyFallthrough(manifest.fallthrough);
+      if (bad.length) {
+        this.note(
+          `generation ${id} does not match the image it would fall through to — refusing (${bad.length} file(s): ${bad.slice(0, 3).join("; ")})`,
+        );
+        return false;
+      }
+    }
+    // THE DOCUMENT MAY NOT NAME A FILE THIS GENERATION DOES NOT CARRY. An
+    // index.html whose entry chunk is absent from its own manifest passes every
+    // other test here — the manifest's hash check cannot see a file that simply
+    // is not listed — then loads, reports healthy and renders a black page.
+    const docFile = this.blobs.get(manifest.files?.[DOC] ?? "");
+    if (docFile) {
+      const refs = [
+        ...docFile.bytes.toString("utf8").matchAll(/(?:src|href)\s*=\s*["']\/?(assets\/[^"']+)["']/g),
+      ].map((m) => m[1]);
+      const missing = refs.filter((r) => !(r in (manifest.files ?? {})));
+      if (missing.length) {
+        this.note(`generation ${id} document names ${missing.length} file(s) it does not carry (${missing[0]}) — refusing`);
+        return false;
       }
     }
     this.gens.set(id, new Map(entries));

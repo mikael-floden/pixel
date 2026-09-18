@@ -223,6 +223,13 @@ ENV ASSETS_ROOT=/assets
 
 ARG GIT_SHA=dev
 ENV GIT_SHA=$GIT_SHA
+# THE ORDER OF THE TWO LANES, baked into the image rather than set as a service
+# env var so it can never be mismatched with the GIT_SHA beside it. The server
+# refuses a published client generation older than the image it would fall
+# through to (games2/server/src/bundlestore.ts) — without it a container rollout
+# is silently overridden by a generation published from an earlier commit.
+ARG GIT_COMMIT_TS=0
+ENV GIT_COMMIT_TS=$GIT_COMMIT_TS
 ENV SERVE_CLIENT=1
 ENV PORT=8080
 EXPOSE 8080

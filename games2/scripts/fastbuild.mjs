@@ -36,8 +36,8 @@
 // serves a coherent older generation and never a mix.
 import { build } from "esbuild";
 import { createHash } from "node:crypto";
-import { writeFileSync, mkdirSync, rmSync, readFileSync, readdirSync, cpSync, existsSync } from "node:fs";
-import { dirname, join, resolve } from "node:path";
+import { writeFileSync, mkdirSync, rmSync, readFileSync, readdirSync, cpSync, existsSync, statSync } from "node:fs";
+import { dirname, join, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const CLIENT = join(dirname(fileURLToPath(import.meta.url)), "..", "client");
@@ -133,19 +133,36 @@ export async function fastBuild({ outDir, gitSha = "dev", serverUrl = "", clean 
   if (map) writeFileSync(join(outDir, "assets", `${bundle}.map`), map.contents);
 
   // (3) index.html + public/
-  // ADMISSION CHECK, at the only place that can enforce it. A publish lane
-  // copies whatever is in assets/, so a fixed name emitted HERE becomes a
-  // mutable name in the store — and the gate downstream compares the manifest
-  // against the directory, which agrees with itself either way. Refuse it at
-  // birth instead: every emitted asset carries a hash, or the build fails.
-  const HASHED = /^[A-Za-z0-9_.-]+-[A-Za-z0-9]{8,}\.[a-z0-9]+$/;
-  const stray = readdirSync(join(outDir, "assets")).filter((n) => !HASHED.test(n));
-  if (stray.length) throw new Error(`fastbuild: un-hashed name(s) in assets/, which a content-addressed store must never hold: ${stray.join(", ")}`);
-
   const html = readFileSync(join(CLIENT, "index.html"), "utf8").replace("/src/main.ts", `/assets/${bundle}`);
   if (html.includes("/src/main.ts")) throw new Error("index.html entry was not rewritten — did the script tag change?");
   writeFileSync(join(outDir, "index.html"), html);
   if (existsSync(join(CLIENT, "public"))) cpSync(join(CLIENT, "public"), outDir, { recursive: true });
+
+  // (4) ADMISSION CHECK, at the only place that can enforce it, and AFTER the
+  // public/ copy — it used to run before it and therefore guarded everything
+  // except the one source it cannot vouch for. A publish lane copies whatever
+  // is in assets/, so a fixed name landing there becomes a mutable name in a
+  // store whose every entry is granted `immutable` for a year; the gate
+  // downstream compares the manifest against the directory, which agrees with
+  // itself either way. Refuse it at birth instead.
+  //
+  // The name must end in `-<8+ hash chars>` before its extension, and the
+  // extension may be COMPOUND: `main-1a2b3c4d.js.map` is correctly hashed, and
+  // a single-extension pattern rejected it — which made sourcemap:true throw
+  // every time and turned an ordinary `logo.webp` in public/assets into an
+  // outage reported as a hash failure.
+  const HASHED = /-[A-Za-z0-9]{8,}(\.[A-Za-z0-9]+)+$/;
+  const stray = readdirSync(join(outDir, "assets"), { recursive: true })
+    .map((n) => String(n).split(sep).join("/"))
+    .filter((n) => statSync(join(outDir, "assets", n)).isFile())
+    .filter((n) => !HASHED.test(n));
+  if (stray.length) {
+    throw new Error(
+      `fastbuild: un-hashed name(s) under assets/, which a content-addressed store must never hold: ${stray.join(", ")}` +
+        `\n  Every file the store serves is granted immutable for a year, so a name that can be REWRITTEN is the` +
+        `\n  project-deleting cache bug. Give it a content hash, or keep it out of assets/.`,
+    );
+  }
 
   return { ms: Math.round(performance.now() - t0), bundle, workers: names, bytes: js.text.length };
 }

@@ -35,8 +35,9 @@
 // so keeping it can only ever serve identical bytes, while dropping one 404s
 // every page already open — measured once as holes through a live audition.
 import { createHash } from "node:crypto";
-import { mkdirSync, readFileSync, readdirSync, writeFileSync, statSync } from "node:fs";
-import { dirname, join } from "node:path";
+import { tmpdir } from "node:os";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, writeFileSync, statSync } from "node:fs";
+import { dirname, join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fastBuild } from "./fastbuild.mjs";
 
@@ -69,7 +70,7 @@ function localStore(root) {
   };
 }
 
-export async function publishBundle({ store, outDir, gitSha = "dev", dryRun = false }) {
+export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 0, dryRun = false }) {
   const t0 = performance.now();
   const built = await fastBuild({ outDir, gitSha });
 
@@ -84,10 +85,44 @@ export async function publishBundle({ store, outDir, gitSha = "dev", dryRun = fa
     files[name] = hashBytes(b);
   };
   add("index.html", join(outDir, "index.html"));
-  for (const n of readdirSync(join(outDir, "assets"))) {
-    const full = join(outDir, "assets", n);
-    if (statSync(full).isFile()) add(`assets/${n}`, full);
+  for (const n of readdirSync(join(outDir, "assets"), { recursive: true })) {
+    const rel = String(n).split(sep).join("/");
+    const full = join(outDir, "assets", rel);
+    if (statSync(full).isFile()) add(`assets/${rel}`, full);
   }
+
+  // THE FALL-THROUGH SET, AND WHY IT IS IN THE MANIFEST.
+  //
+  // A generation carries index.html + assets/ and NOTHING ELSE. The dist root
+  // also holds what client/public contributes — measured 12 entries and 4.6 MB
+  // on this client (monsters.json 885 KB, npcs.json 765 KB, ui2/, icons/,
+  // sw.js, the webmanifest, several catalogs) — and those are answered by the
+  // IMAGE. That is deliberate: they are art-derived and belong to the
+  // container lane, which is the only lane allowed to change bytes that the
+  // ?v=<GIT_SHA> grant freezes.
+  //
+  // But "the workflow's path filter keeps them in step" is a convention, and a
+  // convention is not a guarantee: widen that filter one day and the lane
+  // ships new code against the image's OLD catalogs — a mixed generation, the
+  // exact bug this design exists to make impossible. So the publisher HASHES
+  // every file it is not publishing and records it here, and the server
+  // refuses any generation whose fall-through hashes disagree with the bytes
+  // it would actually serve (bundlestore.ts, verifyFallthrough). The hole is
+  // closed by arithmetic instead of by everyone remembering.
+  const fallthrough = {};
+  const walk = (dir, prefix) => {
+    for (const n of readdirSync(dir)) {
+      const full = join(dir, n);
+      const rel = prefix ? `${prefix}/${n}` : n;
+      if (statSync(full).isDirectory()) {
+        if (rel !== "assets") walk(full, rel);
+        continue;
+      }
+      if (rel === "index.html") continue;
+      fallthrough[rel] = hashBytes(readFileSync(full));
+    }
+  };
+  walk(outDir, "");
 
   const id = createHash("sha256")
     .update(Object.keys(files).sort().map((n) => `${n}\0${files[n]}`).join("\n"))
@@ -96,14 +131,29 @@ export async function publishBundle({ store, outDir, gitSha = "dev", dryRun = fa
 
   const prevRaw = await store.get("pointer.json");
   let prev = null;
-  try {
-    prev = prevRaw ? JSON.parse(prevRaw.toString("utf8")) : null;
-  } catch {
-    prev = null; // an unreadable pointer is replaced, not trusted
+  if (prevRaw) {
+    // A POINTER THAT EXISTS AND WILL NOT PARSE ABORTS THE PUBLISH. Treating it
+    // as "no pointer" restarts seq at 1, and LAW 2 (monotonic) then makes every
+    // running instance refuse every future publish until the seq climbs back
+    // past where it was — the lane silently dead for as many publishes as it
+    // takes. Refusing to publish is loud, recoverable, and leaves production
+    // serving exactly what it serves now.
+    try {
+      prev = JSON.parse(prevRaw.toString("utf8"));
+    } catch (e) {
+      throw new Error(
+        `publish: pointer.json exists but does not parse (${String(e).slice(0, 120)}). ` +
+          `REFUSING to publish — writing a fresh pointer would reset seq to 1 and every running ` +
+          `instance would then refuse this and every later generation. Repair or delete it first.`,
+      );
+    }
+    if (typeof prev?.seq !== "number") {
+      throw new Error(`publish: pointer.json carries no numeric seq (${JSON.stringify(prev).slice(0, 120)}) — REFUSING, same reason.`);
+    }
   }
   if (prev?.current === id) {
     console.log(`[publish] generation ${id} is already current — nothing to publish (${built.ms} ms build)`);
-    return { id, published: false, ms: Math.round(performance.now() - t0), seq: prev.seq };
+    return { id, published: false, alreadyCurrent: true, ms: Math.round(performance.now() - t0), seq: prev.seq };
   }
 
   const retained = [prev?.current, ...(prev?.retained ?? [])].filter(Boolean).slice(0, RETAIN);
@@ -113,11 +163,17 @@ export async function publishBundle({ store, outDir, gitSha = "dev", dryRun = fa
     retained,
     updated_at: new Date().toISOString(),
     git_sha: gitSha,
+    // THE ORDER OF THE TWO LANES. The server refuses a generation published
+    // from a commit at or before the image it would fall through to, so a
+    // container rollout can never be overridden by an older client and a bad
+    // publish is undone by the next deploy. 0 means "unknown", which the
+    // server treats as unordered and adopts on seq alone (local runs, tests).
+    commit_ts: Number(commitTs) || 0,
   };
 
   if (dryRun) {
     console.log(`[publish] DRY RUN — would publish ${id} (${Object.keys(files).length} files), seq ${pointer.seq}`);
-    return { id, published: false, ms: Math.round(performance.now() - t0), seq: pointer.seq, pointer };
+    return { id, published: false, dryRun: true, alreadyCurrent: true, ms: Math.round(performance.now() - t0), seq: pointer.seq, pointer };
   }
 
   // 1) every byte, under its hash — and only the ones not already there
@@ -130,7 +186,7 @@ export async function publishBundle({ store, outDir, gitSha = "dev", dryRun = fa
     sent += bytes.length;
   }
   // 2) the manifest, which is what makes the generation readable at all
-  await store.put(`gen/${id}/manifest.json`, Buffer.from(JSON.stringify({ files }, null, 1)));
+  await store.put(`gen/${id}/manifest.json`, Buffer.from(JSON.stringify({ files, fallthrough }, null, 1)));
   // 3) and only now the pointer
   await store.put("pointer.json", Buffer.from(JSON.stringify(pointer, null, 1)));
 
@@ -147,20 +203,28 @@ export async function publishBundle({ store, outDir, gitSha = "dev", dryRun = fa
 if (import.meta.url === `file://${process.argv[1]}`) {
   const target = arg("store", process.env.BUNDLE_STORE || "");
   if (!target) {
-    console.error("usage: publish-bundle.mjs --store <dir|gs://bucket[/prefix]> [--sha <sha>] [--dry-run]");
+    console.error("usage: publish-bundle.mjs --store <dir|gs://bucket[/prefix]> [--sha <sha>] [--commit-ts <epoch>] [--dry-run]");
     process.exit(2);
   }
   if (target.startsWith("gs://")) {
     console.error("publish-bundle: the gs:// uploader is the CI step's job (it holds the credentials); pass a directory here");
     process.exit(2);
   }
+  // NOT client/dist BY DEFAULT. Building into the image's own directory leaves
+  // an esbuild bundle there that clientdist.mjs's freshness guard then declares
+  // up to date, so every later gate silently grades the fast bundle instead of
+  // the vite one it means to test. A publish is a store operation; it gets its
+  // own scratch directory unless told otherwise.
   const r = await publishBundle({
     store: localStore(target),
-    outDir: arg("out", join(ROOT, "client", "dist")),
+    outDir: arg("out", mkdtempSync(join(tmpdir(), "publish-bundle-"))),
     gitSha: arg("sha", process.env.GIT_SHA || "dev"),
+    commitTs: Number(arg("commit-ts", process.env.GIT_COMMIT_TS || 0)) || 0,
     dryRun: process.argv.includes("--dry-run"),
   });
-  process.exit(r.published || r.id ? 0 : 1);
+  // An honest exit code: `r.id` is always truthy, so the old expression was a
+  // constant 0 and CI could not tell a publish from a failure.
+  process.exit(r.published || r.alreadyCurrent ? 0 : 1);
 }
 
 export { localStore };

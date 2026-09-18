@@ -154,6 +154,90 @@ check(miss.status === 404, "H — a missing asset is a hard 404");
 check((miss.headers.get("cache-control") || "") === "no-store", "H — with no-store, so a phone cannot remember it");
 check(!(miss.headers.get("content-type") || "").includes("html"), "H — and never HTML");
 
+// ---------------------------------------------------------------- J..N: the
+// six defects six adversarial review panels found in this lane before it was
+// ever fired. Each arm is the exact failure they described.
+
+// J: ONE ORIGIN, ONE DOCUMENT. `/index.html` names the file express.static
+// holds, so the origin served the PUBLISHED document at `/` and the IMAGE's at
+// `/index.html` — two builds under one hostname (three panels, independently).
+const docSlash = await fetch(origin + "/");
+const docNamed = await fetch(origin + "/index.html");
+const bSlash = await docSlash.text();
+const bNamed = await docNamed.text();
+check(bSlash === bNamed, "J — `/` and `/index.html` are the SAME document, byte for byte");
+check(
+  docSlash.headers.get("etag") === docNamed.headers.get("etag"),
+  "J — and carry the same validator, so no cache can hold two of them",
+);
+
+// K: THE SERVED CLIENT'S IDENTITY. The client compares /version against the sha
+// baked into itself and reloads when they differ; under the image's older sha
+// every load reloaded itself forever (four panels, independently).
+const ver = await (await fetch(origin + "/version")).json();
+check(ver.sha === "genB", `K — /version names the sha of the generation being served (${ver.sha})`);
+check(!!ver.image && ver.image !== ver.sha, `K — and still reports the IMAGE's sha separately (${ver.image})`);
+
+// L: A MIXED GENERATION IS REFUSED. The generation carries index.html +
+// assets/; every other client file is answered by the image, and the publisher
+// records the hash it saw for each. Disagreement means new code against other
+// bytes than it was built and gated against.
+const genD = await publishBundle({ store: localStore(store), outDir: dist, gitSha: "genD" });
+const mPath = join(store, "gen", genD.id, "manifest.json");
+const mDoc = JSON.parse(readFileSync(mPath, "utf8"));
+const ftKey = Object.keys(mDoc.fallthrough ?? {})[0];
+check(!!ftKey, `L — the manifest records the fall-through set (${Object.keys(mDoc.fallthrough ?? {}).length} files)`);
+mDoc.fallthrough[ftKey] = "deadbeefdeadbeef";
+writeFileSync(mPath, JSON.stringify(mDoc));
+const afterMixed = await poke(origin);
+check(
+  afterMixed.serving !== genD.id,
+  `L — a generation disagreeing with the image it falls through to is REFUSED (${ftKey})`,
+);
+// AND a clean generation IS still adopted right after — without this the arm
+// above would also pass on a server that had simply stopped adopting anything.
+const genE = await publishBundle({ store: localStore(store), outDir: dist, gitSha: "genE" });
+const afterClean = await poke(origin);
+check(afterClean.serving === genE.id, `L — and a matching generation IS adopted (${afterClean.serving})`);
+
+// M: BYTES ARE EVICTED, NAMES ARE NOT. Holding every generation forever is an
+// OOM on a 1 GiB instance (three panels); the window is the guarantee, and a
+// name outside it must answer a coherent MISS, never wrong bytes.
+const info2 = await bundleInfo(origin);
+check(info2.generations <= 3, `M — the window is BOUNDED: ${info2.generations} generation(s) held, not every one ever seen`);
+// THE GENERATION THIS SERVER WAS SERVING A MOMENT AGO MUST STILL RESOLVE. genB
+// was served, then genC and genD were refused, then genE landed: evicting on
+// the pointer's `retained` alone drops genB, because the publisher's list names
+// the refused pair. What was SERVED is what open pages are running.
+const stillB = await fetch(`${origin}/assets/${genB.entry ?? ""}`);
+const manifestB = JSON.parse(readFileSync(join(store, "gen", genB.id, "manifest.json"), "utf8")).files;
+const entryB = Object.keys(manifestB).find((n) => /^assets\/index-/.test(n));
+const gotB = await fetch(`${origin}/${entryB}`);
+void stillB;
+check(gotB.status === 200, `M — the generation served BEFORE the current one still resolves (${entryB})`);
+check(
+  hashBytes ? hashBytes(Buffer.from(await gotB.arrayBuffer())) === manifestB[entryB] : true,
+  "M — byte for byte the bytes it always meant",
+);
+// and a name older than the window is a coherent MISS, never wrong bytes
+const oldChunk = await fetch(`${origin}/${entryA}`);
+if (oldChunk.status === 404) {
+  check((oldChunk.headers.get("cache-control") || "") === "no-store", "M — a name past the window is a no-store 404, never remembered");
+  check(!(oldChunk.headers.get("content-type") || "").includes("html"), "M — and never HTML");
+} else {
+  check(
+    hashBytes ? hashBytes(Buffer.from(await oldChunk.arrayBuffer())) === manifestA[entryA] : true,
+    "M — a name still inside the window serves EXACTLY the bytes it always meant",
+  );
+}
+
+// N: A DATA PATH IS NOT AN SPA ROUTE. Answering the document for a missing
+// /monsters.json hands a JSON fetch 200 text/html, which reads as a corrupt
+// catalog instead of a missing file.
+const missJson = await fetch(origin + "/no-such-catalog.json");
+check(missJson.status === 404, "N — a missing .json is a 404, not the document");
+check(!(missJson.headers.get("content-type") || "").includes("html"), "N — and never HTML");
+
 // I: a cold instance with an UNREACHABLE store still serves the image
 {
   const { origin: o2 } = startServer({ BUNDLE_STORE: join(store, "does-not-exist") });

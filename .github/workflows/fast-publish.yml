@@ -120,8 +120,25 @@ jobs:
         env:
           GIT_SHA: ${{ github.sha }}
         run: |
-          node scripts/publish-bundle.mjs --store ../../store/bundle --sha "$GIT_SHA" | tee /tmp/pub.log
-          grep -q "already current" /tmp/pub.log && echo "changed=false" >> "$GITHUB_OUTPUT" || echo "changed=true" >> "$GITHUB_OUTPUT"
+          # THE COMMIT'S OWN TIMESTAMP orders this publish against the IMAGE
+          # (games2/server/src/bundlestore.ts). Without it the server cannot
+          # tell whether this client is newer than the one in the container, so
+          # a publish from an earlier commit could override a later rollout.
+          # %ct is the committer date and needs no history beyond HEAD.
+          TS=$(git show -s --format=%ct HEAD)
+          echo "publishing the client of $GIT_SHA, committed $TS"
+          node scripts/publish-bundle.mjs --store ../../store/bundle --sha "$GIT_SHA" --commit-ts "$TS" | tee /tmp/pub.log
+          if grep -q "already current" /tmp/pub.log; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            # The generation id, so the poke below can wait for THIS generation
+            # rather than for "something is being served" — which is true of the
+            # PREVIOUS generation too and made a failed flip report success.
+            GEN=$(sed -n 's/^\[publish\] \([0-9a-f]\{16\}\) seq .*/\1/p' /tmp/pub.log | head -1)
+            echo "gen=$GEN" >> "$GITHUB_OUTPUT"
+            echo "published generation $GEN"
+          fi
 
       - name: Commit and push it
         if: steps.pub.outputs.changed == 'true'
@@ -142,15 +159,30 @@ jobs:
       # data it already reads, and a spurious call is a no-op.
       - name: Poke the game server
         if: steps.pub.outputs.changed == 'true'
+        env:
+          GEN: ${{ steps.pub.outputs.gen }}
         run: |
-          for i in 1 2 3 4 5; do
-            OUT=$(curl -fsS -X POST --max-time 20 https://nangijala.online/api/bundle/refresh || true)
-            echo "$OUT"
-            echo "$OUT" | grep -q "${{ github.sha }}" && break
-            echo "$OUT" | grep -q '"serving":"' && break
-            sleep 3
+          # RETRIES ARE EXPECTED, NOT A FAILURE MODE. The blobs are read from
+          # raw.githubusercontent, and a path pushed seconds ago can briefly
+          # 404 while it replicates; the server then keeps serving the old
+          # generation (it never flips to one it could not fully read) and the
+          # next poke picks it up. The 60 s belt in the server is the floor
+          # under this loop, so a lost poke costs a minute, never a deploy.
+          OK=""
+          for i in 1 2 3 4 5 6 7 8; do
+            OUT=$(curl -fsS -X POST --max-time 25 https://nangijala.online/api/bundle/refresh || true)
+            echo "attempt $i: $OUT"
+            if [ -n "$GEN" ] && echo "$OUT" | grep -q "\"serving\":\"$GEN\""; then OK="yes"; break; fi
+            sleep 4
           done
-          echo "Published \`${{ github.sha }}\` to the fast lane." >> "$GITHUB_STEP_SUMMARY"
+          if [ -n "$OK" ]; then
+            echo "### Live on the fast lane" >> "$GITHUB_STEP_SUMMARY"
+            echo "Generation \`$GEN\` from \`${{ github.sha }}\` is being served — no image, no rollout." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::the server has not adopted $GEN yet; its 60 s belt will pick it up"
+            echo "Published \`$GEN\`, but the server had not adopted it within the poke window." >> "$GITHUB_STEP_SUMMARY"
+            echo "Its 60 s refresh belt will adopt it; nothing is broken and the image is still the floor." >> "$GITHUB_STEP_SUMMARY"
+          fi
 
       - name: Nothing to publish
         if: steps.lane.outputs.publish == 'true' && steps.pub.outputs.changed != 'true'

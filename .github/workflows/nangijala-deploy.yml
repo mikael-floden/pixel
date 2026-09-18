@@ -117,14 +117,28 @@ jobs:
       contents: read
     outputs:
       sha: ${{ steps.rev.outputs.sha }}
+      ts: ${{ steps.rev.outputs.ts }}
     steps:
       - id: rev
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          sha=$(gh api "repos/${{ github.repository }}/commits/main" --jq .sha)
-          echo "deploying main @ $sha (run was created with ${{ github.sha }})"
+          json=$(gh api "repos/${{ github.repository }}/commits/main")
+          sha=$(printf '%s' "$json" | jq -r .sha)
+          # THE COMMIT'S OWN TIMESTAMP, as the ORDER of the two lanes. The fast
+          # lane can publish a client the image does not contain, so the server
+          # needs to know which of the two is NEWER — otherwise a container
+          # rollout is silently overridden by a generation published from an
+          # EARLIER commit, which is a rollback nobody asked for and a
+          # mismatched client/server pair. A commit count would need the full
+          # history (this checkout is depth 1 by design); the committer date
+          # comes free with the lookup above and is monotonic for pushes to
+          # main, which is the only way this repo writes history (no
+          # force-pushes — root CLAUDE.md).
+          ts=$(date -u -d "$(printf '%s' "$json" | jq -r .commit.committer.date)" +%s)
+          echo "deploying main @ $sha (committed $ts, run was created with ${{ github.sha }})"
           echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "ts=$ts" >> "$GITHUB_OUTPUT"
 
   # Quality gate — runs in parallel with the image build, so it adds ~no wall
   # time. Sparse checkout: only what typecheck + npm test actually read
@@ -303,6 +317,7 @@ jobs:
             ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}:latest
           build-args: |
             GIT_SHA=${{ needs.resolve.outputs.sha }}
+            GIT_COMMIT_TS=${{ needs.resolve.outputs.ts }}
           # THE LAYER CACHE LIVES IN ARTIFACT REGISTRY, NOT IN THE GHA CACHE.
           # The GHA cache is 10 GB per repo and LRU, and this repo writes ~12 GB
           # of new layer bytes a day (35.9 art-changing runs x 235.6 MB curated,
@@ -462,7 +477,14 @@ jobs:
           # newer commit always has the last word; nothing ever re-rolls over a
           # descendant, and a run re-rolls at most once.
           [ "${{ github.event_name }}" = "push" ] || exit 0
-          served=$( { [ -n "$URL" ] && curl -fsS --max-time 30 --retry 2 "$URL/version"; } 2>/dev/null | jq -r '.sha // empty' 2>/dev/null || true)
+          # `.image`, NOT `.sha`. Since the fast lane exists, /version's `sha`
+          # names the CLIENT being served, which may be a published generation
+          # from a commit this image does not contain — so comparing it against
+          # this rollout would make the guard re-roll over a lane publish. The
+          # guard is about which IMAGE is serving, and that is `.image`. The
+          # `// .sha` fallback covers a revision deployed before that field
+          # existed.
+          served=$( { [ -n "$URL" ] && curl -fsS --max-time 30 --retry 2 "$URL/version"; } 2>/dev/null | jq -r '.image // .sha // empty' 2>/dev/null || true)
           printf '%s' "$served" | grep -Eq '^[0-9a-f]{40}$' || exit 0
           [ "$served" != "$MINE" ] || exit 0
           st=$(gh api "repos/${{ github.repository }}/compare/$MINE...$served" --jq '.status' 2>/dev/null || true)
@@ -496,6 +518,7 @@ jobs:
           provenance: false
           build-args: |
             GIT_SHA=${{ needs.resolve.outputs.sha }}
+            GIT_COMMIT_TS=${{ needs.resolve.outputs.ts }}
           cache-from: |
             type=registry,ref=${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}-buildcache:main
             type=gha
