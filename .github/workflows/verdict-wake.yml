@@ -37,6 +37,17 @@ on:
     branches: [main]
     paths:
       - "live/feedback/monsters.json"
+  # A SMOKE TEST THAT COSTS NOTHING BUT THE SESSION: dispatching it with
+  # dry_run left at "true" proves the whole path — auth secret, checkout,
+  # prompt, board reads — and the session is told to report what it WOULD do
+  # and exit without committing or generating. There is no other way to learn
+  # whether the auth secret exists short of a real verdict.
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Report what it would do and change nothing"
+        type: boolean
+        default: true
 
 # QUEUE, NEVER CANCEL. A run may be halfway through a PixelLab generation, so a
 # newer verdict must not kill it. GitHub keeps one running + one pending per
@@ -111,3 +122,8 @@ jobs:
             half-generating. If nothing is left unconsumed, write one line saying so and
             exit without committing — an empty run is the correct outcome when the agent
             got there first.
+
+            DRY RUN: ${{ inputs.dry_run }} — when that reads true, do steps 1 and 2 only,
+            then write what you WOULD do (each verdict, the files it would touch) and stop.
+            Change nothing, claim nothing, generate nothing, commit nothing. It is the
+            smoke test for this workflow, not a pass over the queue.
