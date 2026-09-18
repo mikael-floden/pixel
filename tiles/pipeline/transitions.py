@@ -157,7 +157,13 @@ def _wang_id(t):
 
 
 def _write_set(a, b, r, tsid, tiles, usd, payload=None, recovered=False):
+    """Writes a set's 16 tiles + meta.json. NEVER over an existing set: a published
+    tile_NN.webp keeps its bytes, and a caller that wants different art asks for a
+    raggedness the tree does not have."""
     d = slug(a, b, r)
+    if os.path.isfile(os.path.join(d, "meta.json")):
+        raise RuntimeError(f"{a}__to__{b} r{r:02d} already exists - never rewrite a "
+                           f"published set")
     os.makedirs(d, exist_ok=True)
     index = {}
     for t in tiles:
@@ -192,6 +198,14 @@ def _write_set(a, b, r, tsid, tiles, usd, payload=None, recovered=False):
 def generate(client, a, b, r, bases, timeout=900):
     """One pair at one raggedness -> 16 webp tiles + meta.json. Returns usd spent."""
     d = slug(a, b, r)
+    # RE-CHECK ON THE WAY IN, NOT ONLY WHEN THE QUEUE WAS BUILT. run() lists its work
+    # once, so a set that arrives DURING the run - a --recover in another shell pulling
+    # down the same tileset, which is exactly what recovery is for - was regenerated
+    # anyway: billed twice, and the new bytes landed on published tile_NN.webp names.
+    # Measured 2026-09-18 on black_rock__to__grass r17. Existing art always wins.
+    if os.path.isfile(os.path.join(d, "meta.json")):
+        print(f"skip {a}__to__{b} r{r:02d}: already on disk", flush=True)
+        return 0.0
     os.makedirs(d, exist_ok=True)
     payload = {
         "lower_description": MATERIALS[a],
