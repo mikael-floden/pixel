@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T13:37:09+00:00",
+  "generated_at": "2026-09-18T13:41:42+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -11818,13 +11818,13 @@
       ],
       "items": [],
       "size": [
-        112,
-        112
+        128,
+        128
       ],
       "template_id": "mannequin",
       "scale": "standard",
-      "pixellab_id": "5cbd1042-0ca4-47cd-9b68-12fd5b090424",
-      "version": 2,
+      "pixellab_id": "a8513d86-3b6a-4b29-acca-04a0eb3f7f67",
+      "version": 3,
       "sheet": "bog_preserved/sheet.webp",
       "rotations": {
         "south": "bog_preserved/rotations/south.webp",
@@ -11838,104 +11838,111 @@
       },
       "qa": {
         "status": "fail",
-        "min_run1": 0.683,
+        "min_run1": 0.627,
         "reasons": [
-          "north-west: content touches the canvas edge (clipped)"
+          "south: content touches the canvas edge (clipped)",
+          "west: content touches the canvas edge (clipped)",
+          "east: content touches the canvas edge (clipped)",
+          "north: content touches the canvas edge (clipped)",
+          "south-east: content touches the canvas edge (clipped)",
+          "north-east: content touches the canvas edge (clipped)",
+          "north-west: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
         ],
         "directions": {
           "south": {
-            "run1": 0.714,
+            "run1": 0.703,
             "bbox": [
-              27,
-              3,
-              84,
-              109
-            ],
-            "fill": 0.482,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.781,
-            "bbox": [
-              28,
+              19,
               4,
-              80,
-              111
+              107,
+              128
             ],
-            "fill": 0.444,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.754,
-            "bbox": [
-              18,
-              3,
-              76,
-              110
-            ],
-            "fill": 0.495,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.717,
-            "bbox": [
-              20,
-              2,
-              77,
-              108
-            ],
-            "fill": 0.482,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.683,
-            "bbox": [
-              28,
-              3,
-              83,
-              111
-            ],
-            "fill": 0.474,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.715,
-            "bbox": [
-              32,
-              2,
-              80,
-              112
-            ],
-            "fill": 0.421,
+            "fill": 0.666,
             "touches_edge": true
           },
           "west": {
-            "run1": 0.732,
+            "run1": 0.768,
             "bbox": [
-              36,
-              3,
-              95,
-              110
+              32,
+              6,
+              91,
+              128
             ],
-            "fill": 0.503,
-            "touches_edge": false
+            "fill": 0.439,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.791,
+            "bbox": [
+              34,
+              6,
+              100,
+              128
+            ],
+            "fill": 0.491,
+            "touches_edge": true
+          },
+          "north": {
+            "run1": 0.627,
+            "bbox": [
+              21,
+              5,
+              106,
+              128
+            ],
+            "fill": 0.638,
+            "touches_edge": true
+          },
+          "south-east": {
+            "run1": 0.826,
+            "bbox": [
+              22,
+              5,
+              105,
+              128
+            ],
+            "fill": 0.623,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.709,
+            "bbox": [
+              27,
+              5,
+              102,
+              128
+            ],
+            "fill": 0.563,
+            "touches_edge": true
+          },
+          "north-west": {
+            "run1": 0.695,
+            "bbox": [
+              24,
+              5,
+              104,
+              128
+            ],
+            "fill": 0.601,
+            "touches_edge": true
           },
           "south-west": {
-            "run1": 0.781,
+            "run1": 0.824,
             "bbox": [
-              33,
-              4,
-              93,
-              111
+              23,
+              5,
+              105,
+              128
             ],
-            "fill": 0.512,
-            "touches_edge": false
+            "fill": 0.616,
+            "touches_edge": true
           }
         }
       },
       "review": "pending",
       "notes": null,
-      "generated_at": "2026-09-18T13:18:44+00:00"
+      "generated_at": "2026-09-18T13:41:42+00:00"
     },
     {
       "id": "bog_oak",
