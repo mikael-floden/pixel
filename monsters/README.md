@@ -458,6 +458,30 @@ recipe was already what he wanted.
   `monsters/<id>#angry_v1#<direction>`; `review --state angry_v1` then
   `angry --slot angry_v1` re-roll exactly those.
 
+### A REMOVAL IS ACTED ON, BOTH WAYS — check it every run
+
+Maintainer 2026-09-18: "I have also removed a lot of candidates I don't want to
+see more! No dangling states in the wiki! Clean up and get rid of them! This is
+something you always should check and act on!"
+
+`candidates.py reconcile` runs automatically at the head of `generate` and `qa`,
+and the same three removals are always acted on:
+- **Rejected in the wiki** (`live/feedback/monsters.json`, status `rejected` on
+  `monsters/candidates/<id>`) — the automatic path. Before this, only
+  `approved` was acted on and a rejected design sat in the wiki forever.
+- **Untagged on PixelLab** and **deleted on PixelLab** — `reconcile --tags`,
+  OPT-IN and never run while a generate or redo is in flight: a redo DELETES
+  the old record before the new one exists, so an automatic sweep reads a
+  mid-flight redo as a removal (paid for 2026-09-18 — frozen_tent was retired
+  40 seconds into its own redo and had to be restored by hand).
+
+Each removal deletes the PixelLab record and the folder, moves the design to
+`config.retired` with the reason, and rebuilds the index. **Then the verdict
+that caused it is deleted from the feedback file**: a verdict keyed on a
+candidate that no longer exists is a dangling reference the wiki can still
+surface, which is exactly what "no dangling states" means. Acted-on feedback is
+deleted, never kept — the same rule he first gave for redo notes.
+
 ### His verdicts: read them, act, then DELETE the ones you acted on
 
 Maintainer 2026-09-11, seeing his own redo note still sitting under a clip

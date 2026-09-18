@@ -398,7 +398,7 @@ def _client_or_none():
 
 # --- reconcile --------------------------------------------------------------
 
-def reconcile(cfg, client=None, apply=True, verbose=True):
+def reconcile(cfg, client=None, apply=True, verbose=True, tags=False):
     """HIS REMOVALS ARE THE GROUND TRUTH, BOTH WAYS. Run before every command
     that shows or generates candidates (maintainer 2026-09-18: "I have also
     removed a lot of candidates I don't want to see more! No dangling states in
@@ -428,7 +428,12 @@ def reconcile(cfg, client=None, apply=True, verbose=True):
             if v.get("status") == "rejected" and cid in onDisk:
                 remove.add(cid)
 
-    if client is not None:
+    # The tag sweep is OPT-IN (`reconcile --tags`). A candidate being redone has
+    # its old PixelLab record DELETED before the new one exists, so an automatic
+    # sweep reads a mid-flight redo as a removal and retires a live design
+    # (paid for 2026-09-18: frozen_tent, retired 40 seconds into its own redo).
+    # Rejection in the wiki is the automatic path and the one he asked for.
+    if tags and client is not None:
         try:
             alive = {}
             for it in client._list_all("characters"):
@@ -490,7 +495,8 @@ def cmd_qa(args):
 
 def cmd_reconcile(args):
     cfg = load_cfg()
-    removed, pruned = reconcile(cfg, client=_client_or_none(), apply=not args.dry_run)
+    removed, pruned = reconcile(cfg, client=_client_or_none(), apply=not args.dry_run,
+                                tags=getattr(args, 'tags', False))
     for r in removed:
         print(f"  removed {r}")
     for k in pruned:
@@ -517,6 +523,7 @@ def main():
     sub.add_parser("qa", help="re-run the machine checks from disk").set_defaults(func=cmd_qa)
     pr = sub.add_parser("reconcile", help="act on his removals: rejected in the wiki or untagged/deleted on PixelLab -> retire, delete, prune the dangling verdicts")
     pr.add_argument("--dry-run", action="store_true")
+    pr.add_argument("--tags", action="store_true", help="also sweep PixelLab tags (never run while a generate/redo is in flight)")
     pr.set_defaults(func=cmd_reconcile)
     args = ap.parse_args()
     args.func(args)
