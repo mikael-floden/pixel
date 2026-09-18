@@ -113,6 +113,13 @@ const page = await (await browser.newContext({ viewport: { width: 480, height: 3
 const errs = [];
 const missing = [];
 const workers = [];
+const console_ = [];
+page.on("console", (m) => { if (console_.length < 40) console_.push(`${m.type()}: ${m.text().slice(0, 160)}`); });
+// Its OWN array: `missing` is what the "nothing 404s" assertion reads, and an
+// aborted /asset-index.json (absent outside the image, and exempted there) is
+// diagnostic noise, not a failure. Mixing the two turned a passing arm red.
+const failed = [];
+page.on("requestfailed", (r) => failed.push(`${r.failure()?.errorText ?? "?"} ${r.url().slice(-56)}`));
 page.on("pageerror", (e) => errs.push(e.message.slice(0, 200)));
 page.on("response", (r) => {
   const u = r.url();
@@ -120,7 +127,46 @@ page.on("response", (r) => {
   if (/worker-[A-Za-z0-9]{8,}\.js$/.test(u)) workers.push(`${r.status()} ${u.split("/").pop()}`);
 });
 await page.goto(origin + "/", { waitUntil: "load" });
-await page.waitForFunction(() => !!window.__mlSelect, null, { timeout: 90_000 });
+
+// A GATE THAT TIMES OUT MUST SAY WHY. This wait used to throw playwright's bare
+// TimeoutError with an empty `log`, and the errors/404s collected above were
+// only printed AFTER it — so the first CI failure of this lane reported
+// "Timeout 90000ms exceeded" and nothing else, and the one question that
+// mattered (which fetch stalled the select screen?) was unanswerable from the
+// run. Everything known about the page is dumped here instead.
+try {
+  // 150 s, not 90: a GitHub runner is slower and colder than this container
+  // (the first CI run of this lane timed out here at exactly 90 s while the
+  // same gate passes locally), and a gate that fails on a slow box teaches
+  // nothing. If it is genuinely stuck the dump below says so either way.
+  await page.waitForFunction(() => !!window.__mlSelect, null, { timeout: 150_000 });
+} catch {
+  const diag = await page
+    .evaluate(() => ({
+      url: location.href,
+      title: document.title,
+      globals: {
+        __mlSelect: typeof window.__mlSelect,
+        __ml: typeof window.__ml,
+        Phaser: typeof window.Phaser,
+      },
+      overlay: !!document.querySelector("#ml-select, .ml-select"),
+      bodyChildren: [...document.body.children].map((e) => `${e.tagName.toLowerCase()}#${e.id || "-"}`).slice(0, 12),
+      loading: (document.querySelector("#ml-loading, .ml-loading")?.textContent ?? "").slice(0, 120),
+    }))
+    .catch((e) => ({ evaluateFailed: String(e).slice(0, 160) }));
+  console.error("FAIL: the select screen never installed __mlSelect within 90 s");
+  console.error(`  page: ${JSON.stringify(diag)}`);
+  console.error(`  page errors (${errs.length}):`);
+  for (const e of errs.slice(0, 12)) console.error(`    ${e}`);
+  console.error(`  4xx/5xx responses (${missing.length}):`);
+  for (const m of missing.slice(0, 20)) console.error(`    ${m}`);
+  console.error(`  requests that never completed (${failed.length}):`);
+  for (const f of failed.slice(0, 20)) console.error(`    ${f}`);
+  console.error(`  console (${console_.length}):`);
+  for (const c of console_.slice(0, 25)) console.error(`    ${c}`);
+  process.exit(1);
+}
 await page.evaluate(() => window.__mlSelect.commit());
 
 let state = null;
