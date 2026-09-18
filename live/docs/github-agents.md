@@ -153,9 +153,16 @@ desired!"*):
 - **The model** — `--model claude-opus-5`, pinned, never the default. The run
   log prints the model it initialised with; that is how to check rather than
   assume.
-- **The effort** — `MAX_THINKING_TOKENS`. A session that judges art it has never
-  seen, in a domain it has no memory of, and decides what to delete, is the last
-  place to save on reasoning.
+- **The pace** — an instruction, not a budget (maintainer 2026-09-18: *"Opus 5
+  can be fast if you tell Opus 5 to hurry up ... some instruction to try and
+  fulfill the request as fast as possible and not spend time if not needed is
+  the best approch"*). A forced `MAX_THINKING_TOKENS` floor was set for one
+  commit and taken out again: it makes the one-deletion case as slow as the hard
+  one. The prompt opens with a PACE rule instead — smallest correct thing then
+  stop, read for the rule not the document, no exploring or tidying, run the
+  domain's own command rather than re-deriving it, and deliberate in proportion
+  to what is at stake (deleting art or spending credit, yes; clearing a verdict,
+  no).
 
 Symptom to recognise: a 401 `Invalid bearer token` means the SECRET is not a
 token — an authorization code is what a token is minted from, and pasting the

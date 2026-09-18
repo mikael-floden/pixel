@@ -99,17 +99,14 @@ jobs:
           # the ones that need new art.
           PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
           ELEVENLABS_API_KEY: ${{ secrets.ELEVENLABS_API_KEY }}
-          # OPUS 5 ON MAX, AND THINKING LIKE IT (maintainer 2026-09-18: "What
-          # Claude AI is running Opus 5 on MAX is desired!"). Three separate
-          # things, all set here so none of them can drift:
-          #   • the PLAN — the session authenticates with his Max subscription's
-          #     OAuth token below, not a pay-as-you-go API key;
-          #   • the MODEL — pinned in claude_args, never the default;
-          #   • the EFFORT — this. Claude Code reads MAX_THINKING_TOKENS as its
-          #     thinking budget; a session that judges art it has never seen and
-          #     decides what to delete is the last place to save on reasoning.
-          #     An unrecognised value is ignored, so this can only help.
-          MAX_THINKING_TOKENS: "31999"
+          # NO FORCED THINKING BUDGET (maintainer 2026-09-18: "Opus 5 can be fast
+          # if you tell Opus 5 to hurry up ... some instruction to try and
+          # fulfill the request as fast as possible and not spend time if not
+          # needed is the best approch"). A floor under the thinking makes the
+          # one-deletion case as slow as the hard one; the PACE rule at the top
+          # of the prompt does the opposite and lets the model spend where it
+          # actually has to. MAX_THINKING_TOKENS was set here for one commit and
+          # taken out again on his call.
         with:
           # Whichever of the two auth secrets this repo holds; the empty one is
           # ignored, so the app's OAuth token and a plain API key both work.
@@ -139,6 +136,23 @@ jobs:
             live/feedback/${{ inputs.domain }}.json. You are standing in for the
             ${{ inputs.domain }} agent for this one unit of work, in a fresh checkout with
             no memory of earlier runs.
+
+            PACE — HIS STANDING RULE, AND IT APPLIES TO YOU (maintainer: "Don't over
+            think my tasks. If a task is easy and takes 5sec then do the task in 5sec",
+            and of this session: "Opus 5 can be fast if you tell Opus 5 to hurry up").
+            He is waiting on the other side of this. So:
+              • Do the smallest correct thing that satisfies the verdict, and stop. One
+                unit of work, not a pass over the domain.
+              • Read for the RULE you need, not the whole document. The five files below
+                are where the rules are, not a syllabus.
+              • Do not explore the repo, refactor, tidy, improve docs, or fix anything
+                nobody asked about — even if you can see it. Post it on your board and
+                leave it.
+              • Do not re-derive what a pipeline command already knows: run the domain's
+                own command rather than reasoning your way to the same result by hand.
+              • Deliberate in proportion to what is at stake. Deleting art, spending
+                PixelLab credit or touching a partner's file deserves thought; clearing
+                a verdict and pushing does not.
 
             TAKE THE SHAPE OF THAT AGENT. Read, in this order, before deciding anything:
               1. CLAUDE.md — the law of the repo.
