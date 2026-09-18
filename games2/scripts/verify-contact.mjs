@@ -44,8 +44,11 @@ await page.waitForTimeout(1500);
 const png = PNG.sync.read(await page.screenshot());
 await page.evaluate(() => window.__ml.nightCal(0, 1, 0));
 const cam = await page.evaluate(() => window.__ml.camView());
-// camView is the camera's WORLD rectangle; the screenshot spans it exactly.
-const toScreen = (wx, wy) => [Math.round((wx - cam.x) * (png.width / cam.w)), Math.round((wy - cam.y) * (png.height / cam.h))];
+// camView is the camera's WORLD rectangle; the screenshot's WIDTH spans it
+// exactly, and the same scale holds vertically — the page is taller than the
+// canvas (HUD, joystick), so png.height / cam.h is NOT the y scale.
+const sc = png.width / cam.w;
+const toScreen = (wx, wy) => [Math.round((wx - cam.x) * sc), Math.round((wy - cam.y) * sc)];
 const luma = (x, y) => { if (x < 0 || y < 0 || x >= png.width || y >= png.height) return NaN; const i = (y * png.width + x) * 4; return 0.299 * png.data[i] + 0.587 * png.data[i + 1] + 0.114 * png.data[i + 2]; };
 let checked = 0, darker = 0;
 for (const s of built) {
@@ -59,9 +62,43 @@ for (const s of built) {
   if (at < side * 0.92) darker++;
   console.log(`${s.piece}: contact ${at.toFixed(0)} vs beside ${side.toFixed(0)} (${((1 - at / side) * 100).toFixed(0)}% darker)`);
 }
-// (Diagnostic for now: the point-to-screen mapping is not yet trusted — a
-// contact that reads 0 luma is off the visible field, not a missing blob.)
-if (checked && darker < Math.ceil(checked * 0.6)) console.log(`note: ${darker}/${checked} pieces read darker at their contact than beside it`);
+if (checked && darker < Math.ceil(checked * 0.6)) fail(`${darker}/${checked} pieces read darker at their contact than beside it (want 60%)`);
+// 3. THE ROOF TAKES NONE OF IT: outside the hearth house the furniture's
+// stamps lie under the roof; the field is gated on the piece's floor height,
+// so the roof's light must not change between the dial at 0 and at 1.
+await page.evaluate(() => window.__ml.teleport(298.9, 198.4));
+await page.waitForTimeout(6000);
+for (let i = 0; i < 60; i++) { await page.waitForTimeout(2000); const st = await page.evaluate(() => window.__ml.indoor()); if (!st.indoor && st.mix <= 0.001) break; }
+await page.evaluate(() => window.__ml.nightCal(0, 1, 5));
+const boxLumas = async (ao) => {
+  await page.evaluate((v) => window.__ml.contactAo(v), ao);
+  await page.waitForTimeout(900);
+  const shot = PNG.sync.read(await page.screenshot());
+  const c = await page.evaluate(() => window.__ml.camView());
+  const k = shot.width / c.w;
+  // Every stamp the furniture under the roof would draw (registered, faded
+  // out with the roof): the mean luma over its screen box.
+  const rep2 = await page.evaluate(() => window.__ml.contactStamps());
+  const out = [];
+  for (const st of rep2.stamps.filter((q) => q.built && !q.visible)) {
+    const x0 = Math.round((st.x - c.x) * k), y0 = Math.round((st.y - c.y) * k), x1 = Math.round((st.x + st.w - c.x) * k), y1 = Math.round((st.y + st.h - c.y) * k);
+    let sum = 0, n = 0;
+    for (let y = Math.max(0, y0); y < Math.min(shot.height, y1); y += 2) for (let x = Math.max(0, x0); x < Math.min(shot.width, x1); x += 2) { const i = (y * shot.width + x) * 4; sum += 0.299 * shot.data[i] + 0.587 * shot.data[i + 1] + 0.114 * shot.data[i + 2]; n++; }
+    if (n > 50) out.push({ piece: st.piece, luma: sum / n });
+  }
+  return out;
+};
+const roofOff = await boxLumas(0), roofOn = await boxLumas(1);
+await page.evaluate(() => window.__ml.nightCal(0, 1, 0));
+await page.evaluate(() => window.__ml.contactAo(0.5));
+console.log(`roofed pieces: ${roofOff.length}`);
+let moved = 0;
+for (let i = 0; i < Math.min(roofOff.length, roofOn.length); i++) {
+  const d = Math.abs(roofOff[i].luma - roofOn[i].luma);
+  if (d > 1.5) { moved++; console.log(`  ${roofOff[i].piece}: ${roofOff[i].luma.toFixed(1)} -> ${roofOn[i].luma.toFixed(1)}`); }
+}
+if (roofOff.length < 2) console.log("note: fewer than 2 roofed pieces in view — the roof arm did not run");
+else if (moved) fail(`${moved} roofed piece(s) changed the roof's light with the contact dial`);
 if (errs.length) fail(`page errors: ${errs.join(" | ")}`);
 await browser.close();
 console.log(process.exitCode ? "verify-contact: FAIL" : "verify-contact: ALL OK");

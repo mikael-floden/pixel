@@ -684,37 +684,48 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   town emitters after: the one real town emitter, a bonfire at 443.5,364.5 with no share in its own cell, reads its pool 0.92x with shadows on - a uniform 8% from its OWN multi-cell footprint, outside the own-cell skip; a per-light exclusion radius needs a uniform slot (open). Trunk position is cell-quantised (one texel per cell): up
   to 0.5 cell from the drawn trunk, and the day pool keeps the patch's 0.35-
   cell tiers — both inherited from the approved prop look.
-- **CONTACT AO — WHERE A PIECE'S ART MEETS THE GROUND** (`client/src/scenerycontact.ts`,
-  the `uContact` field in nightlight.ts, `__ml.contactStamps()` /
+- **CONTACT AO — WHERE A PIECE'S ART MEETS THE GROUND, ALONG THE ISO GROUND
+  LINE, AT THE PIECE'S OWN FLOOR** (`client/src/scenerycontact.ts`, the
+  `uContact` field in nightlight.ts, `__ml.contactStamps()` /
   `__ml.contactAo(v)`; gate `scripts/verify-contact.mjs`). Maintainer
-  2026-09-17 and again 2026-09-18 with eleven marked screenshots: "a scenery
-  object placed in the world doesn't look like it actually touches the
-  ground" — beds' feet, a table's LEGS only ("on a table only the table legs
-  hit the ground"), a barrel's base, a fireplace's base line, lamp posts,
-  rocks' whole base, cart wheels, a scarecrow's pole, a maypole's base. WHAT
-  TOUCHES THE GROUND IS THE SILHOUETTE'S BOTTOM, NOT THE HITBOX: per column
-  of the drawn crop the lowest opaque row; the footline is the lowest of
-  those, and a column is in contact when its own bottom sits within
-  `CONTACT_TOL_FRAC` (4% of the crop, 2..6 px) of the footline — a table's
-  legs reach it and the top's underside sits half a sprite higher, a bed's
-  posts stand a few px below its frame, a rock is opaque along its whole
-  base. Every contact column splats a soft ellipse (`CONTACT_R_FRAC` 6%,
-  squashed 0.55) at its bottom pixel into a black RGBA raster, coverage in
-  alpha, the crop's box plus a pad below the footline so the blob reaches
-  the ground IN FRONT of the piece. ONE RASTER PER (ART, CROP) under a
-  versioned content key (`s3ct:<art>@v1:<crop>`), built from the art's
-  resident pixels a few per frame (`runContactJobs`), never rewritten; two
-  placements of one crop share it. RENDERED INTO THE LIGHT FIELD: a
-  world-anchored render texture beside the glow field (unit 7, same window,
-  same half resolution, redrawn only when the camera or the drawn set moves),
-  sampled by the night pass and multiplied into the WHOLE light of a GROUND
-  pixel — faces are exempt (a wall behind a table is not its floor). No
+  2026-09-17 and 2026-09-18 with eleven marked screenshots: "a scenery object
+  placed in the world doesn't look like it actually touches the ground" —
+  beds' feet, a table's LEGS only, a barrel's base, a fireplace's base line,
+  lamp posts, rocks' whole base, cart wheels, a scarecrow's pole, a maypole's
+  base. WHAT TOUCHES THE GROUND IS THE SILHOUETTE'S BOTTOM ALONG THE ISO
+  GROUND LINE, NOT THE HITBOX: per column of the drawn crop the lowest opaque
+  row; the footline is the lowest of those; the ground line is the V through
+  the footline columns rising `CONTACT_ISO_SLOPE` 0.5 px per column away from
+  them (a box's base edges on the 2:1 grid), and a column is in contact when
+  its bottom sits within `CONTACT_TOL_FRAC` (4% of the crop, 2..6 px) of
+  that line — a bed's or a cupboard's whole base V, a table's legs (its top
+  sits half a sprite above the line), a rock's whole base, a tree's trunk.
+  (Before 2026-09-18 the test was against the ONE lowest point, so every iso
+  box wore a single blob at its front corner — his three red circles at
+  305.9,227.6, "totally misplaced".) Every contact column splats a soft
+  ellipse (`CONTACT_R_FRAC` 6%, squashed 0.55) at its bottom pixel into a
+  WHITE RGBA raster, coverage in alpha, the crop's box plus a pad below the
+  footline so the blob reaches the ground IN FRONT of the piece. ONE RASTER
+  PER (ART, CROP) under a versioned content key (`s3ct:<art>@v2:<crop>`),
+  built from the art's resident pixels a few per frame (`runContactJobs`),
+  never rewritten; two placements of one crop share it. RENDERED INTO THE
+  LIGHT FIELD: a world-anchored render texture beside the glow field (unit
+  7, same window, same half resolution, redrawn only when the camera or the
+  drawn set moves), each stamp drawn premultiplied with the piece's FLOOR
+  HEIGHT in its red tint (`CONTACT_Z_SCALE` 64 levels per unit); the night
+  pass reads r/a back as that height and multiplies the blob into the WHOLE
+  light of a GROUND pixel only within `CONTACT_Z_TOL` 0.6 of it — faces are
+  exempt (a wall behind a table is not its floor) and so is a ROOF drawn a
+  level or more over the furniture (his 2026-09-18: "when I walk out of a
+  house the ugly misplaced scenery ambient occlusion is placed on top of the
+  roof"); a piece faded out with its roof registers no stamp at all. No
   sprite of its own, so no z-order rule of its own: it lies under every lit
-  copy like every other shadow (his rule: "This should render into the shadow
-  we already have and don't add new/more complexity"). `CONTACT_AO_DEFAULT`
-  0.5 is the darkening at full coverage — his dial. A floor piece and a wall
-  piece (flat, onWall) register no stamp. Rejected: the hitbox's bottom edge
-  as the contact line (a table's whole span darkened, legs and air alike).
+  copy like every other shadow (his rule: "This should render into the
+  shadow we already have and don't add new/more complexity").
+  `CONTACT_AO_DEFAULT` 0.5 is the darkening at full coverage — his dial. A
+  floor piece and a wall piece (flat, onWall) register no stamp. Rejected:
+  the hitbox's bottom edge as the contact line (a table's whole span
+  darkened, legs and air alike); the lowest point alone (one blob per box).
 - **A LIGHT ABOVE A TEXEL COUNTS ITS HEIGHT MORE** (`SHAPE_ZW_ATT_BELOW` 0.45
   beside `SHAPE_ZW_ATT` 0.15, scenerylit.ts + `shapeLightTerm`; 2026-09-18,
   maintainer at 218.5,236.4 by the mountain lamp: "the tall tree is

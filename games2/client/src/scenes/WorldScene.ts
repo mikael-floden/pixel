@@ -7296,7 +7296,7 @@ export class WorldScene extends Phaser.Scene {
           const p = this.scenery?.placements.find((q) => q.i === rec.__place);
           out.push({
             place: rec.__place, piece: p?.piece ?? null, key: rec.__ckey, built: this.textures.exists(rec.__ckey),
-            x: img.x, y: img.y, w: img.displayWidth, h: img.displayHeight, flipX: img.flipX,
+            x: img.x, y: img.y, w: img.displayWidth, h: img.displayHeight, flipX: img.flipX, z: (rec as { __cz?: number }).__cz ?? null, visible: img.visible && img.alpha > 0.02,
             points: (pts ?? []).map((q) => ({ x: img.x + (img.flipX ? rec.__csw! - q.x : q.x) * kx, y: img.y + q.y * ky })),
           });
         }
@@ -21747,11 +21747,13 @@ export class WorldScene extends Phaser.Scene {
     const out: ContactStamp[] = [];
     if (!this.night) return out;
     for (const img of this.sceneryImgs) {
-      const rec = img as unknown as { __ckey?: string; __csw?: number; __csh?: number };
+      const rec = img as unknown as { __ckey?: string; __csw?: number; __csh?: number; __cz?: number };
       if (!rec.__ckey || !rec.__csh || !this.textures.exists(rec.__ckey)) continue;
+      // A piece faded out (furniture under a closed roof) casts no contact.
+      if (!img.visible || img.alpha <= 0.02) continue;
       const src = this.textures.get(rec.__ckey).source[0];
       if (!src) continue;
-      out.push({ key: rec.__ckey, x: img.x, y: img.y, w: img.displayWidth, h: img.displayHeight * (src.height / rec.__csh), flipX: img.flipX });
+      out.push({ key: rec.__ckey, x: img.x, y: img.y, w: img.displayWidth, h: img.displayHeight * (src.height / rec.__csh), flipX: img.flipX, z: rec.__cz ?? 0 });
     }
     return out;
   }
@@ -22375,6 +22377,10 @@ export class WorldScene extends Phaser.Scene {
        * copy faded correctly — that test already read the feet — which is why
        * only the still was left standing. */
       const feetLevel = p.onDeck ? p.level + (p.z ?? 0) : p.level;
+      // The contact stamp's floor height (scenerycontact.ts): the night pass
+      // darkens ground at THIS height only, so the roof over a bed's blob
+      // takes nothing.
+      (img as unknown as { __cz?: number }).__cz = feetLevel;
       const onLid = this.sceneryAboveCutAt(p.cx, p.cy, feetLevel);
       // INDOOR FURNITURE FADES WITH THE ROOF IT STANDS UNDER (see roofedFade):
       // held apart here, and given the crossfade's alpha from the frame it is

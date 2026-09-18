@@ -260,7 +260,16 @@ export interface ContactStamp {
   w: number;
   h: number;
   flipX: boolean;
+  /** The piece's floor height (levels): the field darkens ground at this
+   *  height only. Carried in the draw's red tint, CONTACT_Z_SCALE levels
+   *  per unit. */
+  z: number;
 }
+/** Levels per unit of the contact field's red channel (8 bits: a quarter
+ *  level of resolution; a roof over a floor is a level or more away). */
+export const CONTACT_Z_SCALE = 64;
+/** A ground pixel this far (levels) from a stamp's floor takes none of it. */
+export const CONTACT_Z_TOL = 0.6;
 /** GLSL smoothstep, for the CPU twins of shader terms (e0 > e1 allowed, as in GLSL). */
 function smoothStep01(e0: number, e1: number, x: number): number {
   const t = Math.max(0, Math.min(1, (x - e0) / (e1 - e0)));
@@ -1789,10 +1798,22 @@ void main() {
   // position and multiplied into the WHOLE light of a GROUND pixel: the
   // field lies under every lit copy, so no z-order of its own (his rule).
   // Faces are exempt — a wall behind a table is not its floor.
+  // ...AND ONLY GROUND AT THE PIECE'S OWN FLOOR HEIGHT: the stamp is drawn
+  // premultiplied with its floor height in the red tint (CONTACT_Z_SCALE
+  // levels per unit), so r/a is that height; a roof drawn over a bed's blob
+  // is a level or more above it and takes nothing (maintainer 2026-09-18:
+  // "when I walk out of a house the ugly misplaced scenery ambient occlusion
+  // is placed on top of the roof").
   if (uContactOn > 0.5 && !isFace) {
     vec2 cuv = vec2((wx - uCam.x) / uCam.z, (wy - uCam.y) / uCam.w);
-    if (cuv.x > 0.0 && cuv.x < 1.0 && cuv.y > 0.0 && cuv.y < 1.0)
-      light *= 1.0 - uContactAo * texture2D(uContact, vec2(cuv.x, mix(cuv.y, 1.0 - cuv.y, uGlowFlip))).a;
+    if (cuv.x > 0.0 && cuv.x < 1.0 && cuv.y > 0.0 && cuv.y < 1.0) {
+      vec4 cs = texture2D(uContact, vec2(cuv.x, mix(cuv.y, 1.0 - cuv.y, uGlowFlip)));
+      if (cs.a > 0.004) {
+        float cz = (cs.r / cs.a) * ${CONTACT_Z_SCALE.toFixed(1)};
+        float same = 1.0 - smoothstep(${(CONTACT_Z_TOL * 0.6).toFixed(2)}, ${CONTACT_Z_TOL.toFixed(2)}, abs(cz - z));
+        light *= 1.0 - uContactAo * cs.a * same;
+      }
+    }
   }
 
   // THE CAVE SWALLOWS THE LIGHT. Everything a room shows you from OUTSIDE dims
@@ -4996,7 +5017,7 @@ export class NightLights {
       const rt = this.contactRT;
       const gscale = rt.width / (wv.width * k);
       let hash = 0;
-      for (const c of contact) hash = (hash * 31 + c.x * 7 + c.y * 13 + c.w + c.key.length) >>> 0;
+      for (const c of contact) hash = (hash * 31 + c.x * 7 + c.y * 13 + c.w + c.key.length + c.z * 101) >>> 0;
       const sig = `${camX.toFixed(1)},${camY.toFixed(1)},${gscale.toFixed(5)}|${contact.length}|${hash}`;
       if (sig !== this.contactSig) {
         this.contactSig = sig;
@@ -5009,6 +5030,9 @@ export class NightLights {
           for (const c of contact) {
             img.setTexture(c.key);
             img.setFlipX(c.flipX);
+            // The floor height rides in the red tint (the raster is white).
+            const zr = Math.max(0, Math.min(255, Math.round((c.z / CONTACT_Z_SCALE) * 255)));
+            img.setTint((zr << 16) | 0xffff);
             img.setDisplaySize(c.w * gscale, c.h * gscale);
             rt.batchDraw(img, (c.x - camX) * gscale, (c.y - camY) * gscale);
           }
