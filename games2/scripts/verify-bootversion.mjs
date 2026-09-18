@@ -49,9 +49,13 @@ async function scenario(name, served, expectReload, blockStorage = false) {
   // must then BANNER and never reload: its 60 s stamp cannot persist, and
   // `bootReloadOpen` is re-initialised by every load, so a reload here is
   // unbounded (measured 114 loads in 12 s on an identity mismatch).
+  // BOTH storages, because a real browser with site data blocked blocks both.
+  // Blocking only sessionStorage would let this arm pass on a client that still
+  // throws on the first localStorage read, which is a gate that lies.
   if (blockStorage) await page.addInitScript(()=>{
     const boom=()=>{throw new DOMException("blocked","SecurityError");};
     Object.defineProperty(window,"sessionStorage",{configurable:true,get:boom});
+    Object.defineProperty(window,"localStorage",{configurable:true,get:boom});
   });
   const t0 = Date.now();
   await page.goto(origin+"/",{waitUntil:"commit"});
@@ -70,18 +74,29 @@ async function scenario(name, served, expectReload, blockStorage = false) {
   // There is also no rejoin fast path with storage blocked, by construction:
   // that flag lives in sessionStorage too.
   let inWorld = false;
+  let atSelect = false;
   if (!blockStorage) {
     for (let i=0;i<720 && !inWorld;i++){ await sleep(250); try { inWorld = await page.evaluate(()=>!!window.__ml && window.__ml.players()>=1); } catch {} }
   } else {
-    await sleep(20_000); // long enough that a reload, if the guard failed, would have happened
+    // WITH BOTH STORAGES BLOCKED THE GAME MUST STILL BOOT TO THE SELECT SCREEN.
+    // It did not: the `ml-rejoin` read in main.ts's boot was the one session
+    // flag outside a try/catch, so the property access threw and the boot died
+    // with ZERO page errors and no overlay. There is legitimately no rejoin
+    // fast path and no remembered character here — both live in storage — so
+    // the select screen is the correct destination, not the world.
+    for (let i=0;i<160 && !atSelect;i++){ await sleep(250); try { atSelect = await page.evaluate(()=>!!window.__mlSelect); } catch {} }
   }
   const navType = await page.evaluate(()=>{ const e=performance.getEntriesByType("navigation")[0]; return e ? e.type : "?"; }).catch(()=>"?");
   const stamp = await page.evaluate(()=>sessionStorage.getItem("ml-boot-reload-at")).catch(()=>null);
   await sleep(8000); // long enough for a second reload to have happened if the guard were missing
   const navsAfter = navs.length;
   const banner = await page.evaluate(()=>{ const t=document.body.textContent||""; const m=t.match(/New version out ([0-9a-f]{9})/); return m ? m[1] : null; }).catch(()=>null);
-  console.log(`${name}: navigations ${navsAfter} (type ${navType}), ${blockStorage?"(world not asserted: see the comment)":`in world ${inWorld}`} after ${Math.round((Date.now()-t0)/1000)-8}s, boot-reload stamp ${stamp?"set":"none"}, banner ${banner ?? "none"}, errors ${errs.length}`);
-  if (!blockStorage && !inWorld) fail(`${name}: never reached the world (the rejoin fast path did not survive)`);
+  console.log(`${name}: navigations ${navsAfter} (type ${navType}), ${blockStorage?`at select ${atSelect}`:`in world ${inWorld}`} after ${Math.round((Date.now()-t0)/1000)-8}s, boot-reload stamp ${stamp?"set":"none"}, banner ${banner ?? "none"}, errors ${errs.length}`);
+  if (blockStorage) {
+    if (!atSelect) fail(`${name}: the game did not boot to the select screen with storage blocked`);
+  } else if (!inWorld) {
+    fail(`${name}: never reached the world (the rejoin fast path did not survive)`);
+  }
   if (expectReload) {
     if (navsAfter !== 2) fail(`${name}: ${navsAfter} main-frame navigations, wanted exactly 2 (one boot reload)`);
     if (navType !== "reload") fail(`${name}: the final document's navigation type is ${navType}, wanted reload`);
