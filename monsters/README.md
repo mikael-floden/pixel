@@ -466,18 +466,26 @@ something you always should check and act on!"
 
 `candidates.py reconcile` runs automatically at the head of `generate` and `qa`,
 and the same three removals are always acted on:
-- **Rejected in the wiki** (`live/feedback/monsters.json`, status `rejected` on
-  `monsters/candidates/<id>`) — the automatic path. Before this, only
-  `approved` was acted on and a rejected design sat in the wiki forever.
+- **Rejected in the wiki** — the automatic path, and **it is TWO keys for one
+  thing**: the candidate gallery writes `monsters/candidates/<id>` and the
+  creature page of a design being animated writes `monsters/<id>`, the same
+  design without the `candidates/` segment. Reading only the first left nine
+  removed creatures in the wiki with all five states on them (2026-09-18:
+  "Still a lot of monsters in the wiki I have already removed! Clean it up").
+  Match on `monsters/**` with no `#`, never on the candidates path alone.
+  Before this, only `approved` was acted on at all and a rejected design sat
+  in the wiki forever.
 - **Untagged on PixelLab** and **deleted on PixelLab** — `reconcile --tags`,
   OPT-IN and never run while a generate or redo is in flight: a redo DELETES
   the old record before the new one exists, so an automatic sweep reads a
   mid-flight redo as a removal (paid for 2026-09-18 — frozen_tent was retired
   40 seconds into its own redo and had to be restored by hand).
 
-Each removal deletes the PixelLab record and the folder, moves the design to
-`config.retired` with the reason, and rebuilds the index. **Then the verdict
-that caused it is deleted from the feedback file**: a verdict keyed on a
+Each removal deletes the PixelLab record and the folder — **with every
+animation on it**, however many states it had — moves the design to
+`config.retired` with the reason, and rebuilds the index. **Then EVERY verdict
+keyed on it is deleted from the feedback file**, the creature-level one and all
+`#state#direction` ones: a verdict keyed on a
 candidate that no longer exists is a dangling reference the wiki can still
 surface, which is exactly what "no dangling states" means. Acted-on feedback is
 deleted, never kept — the same rule he first gave for redo notes.

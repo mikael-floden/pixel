@@ -421,12 +421,21 @@ def reconcile(cfg, client=None, apply=True, verbose=True, tags=False):
         fb = json.load(open(FEEDBACK))
     ent = fb.get("entries", {})
 
+    # HE REMOVES FROM EITHER PAGE AND BOTH MEAN THE SAME THING. The candidate
+    # gallery writes `monsters/candidates/<id>`; the creature page of a design
+    # being animated writes `monsters/<id>` — the SAME design, one key without
+    # the `candidates/` segment. Reading only the first left nine removed
+    # creatures sitting in the wiki with all five states on them (2026-09-18:
+    # "Still a lot of monsters in the wiki I have already removed! Clean it up").
     remove = set()
     for k, v in ent.items():
-        if k.startswith("monsters/candidates/") and "#" not in k:
-            cid = k.split("/")[-1]
-            if v.get("status") == "rejected" and cid in onDisk:
-                remove.add(cid)
+        if "#" in k or not k.startswith("monsters/"):
+            continue
+        if v.get("status") != "rejected":
+            continue
+        cid = k.split("/")[-1]
+        if cid in onDisk:
+            remove.add(cid)
 
     # The tag sweep is OPT-IN (`reconcile --tags`). A candidate being redone has
     # its old PixelLab record DELETED before the new one exists, so an automatic
@@ -456,9 +465,10 @@ def reconcile(cfg, client=None, apply=True, verbose=True, tags=False):
         cfg.clear(); cfg.update(load_cfg())
         onDisk -= remove
 
+    known = onDisk | {m["id"] for m in json.load(open(os.path.join(ROOT, "config", "roster.json")))["monsters"]}
     pruned = [k for k in ent
-              if k.startswith("monsters/candidates/")
-              and k.split("#")[0].split("/")[-1] not in onDisk]
+              if k.startswith("monsters/")
+              and k.split("#")[0].split("/")[-1] not in known]
     if pruned and apply:
         for k in pruned:
             ent.pop(k, None)

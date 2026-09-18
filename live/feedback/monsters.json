@@ -1,20 +1,8 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-18T13:43:28Z",
+  "updated_at": "2026-09-18T13:44:37Z",
   "entries": {
-    "monsters/candidates/lava_slug": {
-      "status": "approved",
-      "rating": 1,
-      "version": 2,
-      "updated_at": "2026-09-10T09:48:45.128Z"
-    },
-    "monsters/candidates/ghost_hound": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-10T09:48:57.570Z"
-    },
     "monsters/candidates/seed_husk": {
       "status": "approved",
       "rating": 1,
@@ -63,12 +51,6 @@
       "version": 1,
       "updated_at": "2026-09-10T09:50:25.820Z"
     },
-    "monsters/candidates/glow_grub": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-10T09:50:29.035Z"
-    },
     "monsters/candidates/bog_titan": {
       "status": "approved",
       "rating": 1,
@@ -80,18 +62,6 @@
       "rating": 1,
       "version": 1,
       "updated_at": "2026-09-10T09:50:45.224Z"
-    },
-    "monsters/candidates/war_elephant": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-10T09:50:49.942Z"
-    },
-    "monsters/candidates/ember_drake": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-10T09:50:58.646Z"
     },
     "monsters/candidates/spider_queen": {
       "status": "approved",
@@ -159,12 +129,6 @@
       "version": 1,
       "updated_at": "2026-09-10T09:52:13.845Z"
     },
-    "monsters/candidates/water_elemental": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-10T09:52:17.347Z"
-    },
     "monsters/candidates/fire_elemental": {
       "status": "approved",
       "rating": 1,
@@ -183,23 +147,11 @@
       "version": 1,
       "updated_at": "2026-09-10T09:52:31.945Z"
     },
-    "monsters/candidates/goblin_shaman": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-10T09:52:38.512Z"
-    },
     "monsters/candidates/crag_troll": {
       "status": "approved",
       "rating": 1,
       "version": 1,
       "updated_at": "2026-09-10T09:52:43.697Z"
-    },
-    "monsters/candidates/moss_snail": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-10T09:52:47.729Z"
     },
     "monsters/candidates/elder_treant": {
       "status": "approved",
@@ -225,12 +177,6 @@
       "version": 1,
       "updated_at": "2026-09-10T09:53:21.603Z"
     },
-    "monsters/candidates/veil_wraith": {
-      "status": "approved",
-      "rating": 1,
-      "version": 1,
-      "updated_at": "2026-09-10T09:53:25.595Z"
-    },
     "monsters/candidates/hollow_knight": {
       "status": "approved",
       "rating": 1,
@@ -246,10 +192,6 @@
       "rating": 1,
       "status": "approved",
       "updated_at": "2026-09-10T18:54:35.096Z"
-    },
-    "monsters/water_elemental": {
-      "status": "rejected",
-      "updated_at": "2026-09-18T13:04:35.334Z"
     },
     "monsters/crag_troll#attack_v3#south": {
       "status": "approved",
@@ -444,12 +386,6 @@
       "art": "a3854f0fa4266555",
       "updated_at": "2026-09-10T18:51:09.528Z"
     },
-    "monsters/lava_slug#attack_v1#west": {
-      "rating": 1,
-      "status": "approved",
-      "art": "d1967de440b749e9",
-      "updated_at": "2026-09-10T18:53:50.244Z"
-    },
     "monsters/ember_king#attack_v1#south-west": {
       "art": "6c65e5bd8ae286d6",
       "updated_at": "2026-09-10T18:54:15.080Z",
@@ -468,53 +404,6 @@
       "art": "ad1906656b157568",
       "updated_at": "2026-09-10T18:54:36.116Z"
     },
-    "monsters/water_elemental#attack_v1#south": {
-      "rating": 1,
-      "status": "approved",
-      "art": "dd5761213d778b45",
-      "updated_at": "2026-09-10T18:55:01.864Z"
-    },
-    "monsters/water_elemental#attack_v1#south-east": {
-      "rating": 1,
-      "status": "approved",
-      "art": "f3291e5c28230e4b",
-      "updated_at": "2026-09-10T18:55:07.370Z"
-    },
-    "monsters/water_elemental#attack_v1#east": {
-      "rating": 1,
-      "status": "approved",
-      "art": "6627dd54d059d112",
-      "updated_at": "2026-09-10T18:55:10.923Z"
-    },
-    "monsters/water_elemental#attack_v1#north-east": {
-      "rating": 1,
-      "status": "approved",
-      "art": "34c87203afa5c131",
-      "updated_at": "2026-09-10T18:55:12.636Z"
-    },
-    "monsters/water_elemental#attack_v1#north": {
-      "status": "rejected",
-      "art": "708854efd711cfe9",
-      "updated_at": "2026-09-10T18:55:15.130Z"
-    },
-    "monsters/water_elemental#attack_v1#north-west": {
-      "rating": 1,
-      "status": "approved",
-      "art": "fda15455fcdaab88",
-      "updated_at": "2026-09-10T18:55:21.122Z"
-    },
-    "monsters/water_elemental#attack_v1#west": {
-      "rating": 1,
-      "status": "approved",
-      "art": "fedb3deb1c95250a",
-      "updated_at": "2026-09-10T18:55:24.818Z"
-    },
-    "monsters/water_elemental#attack_v1#south-west": {
-      "rating": 1,
-      "status": "approved",
-      "art": "8fc24345b598950b",
-      "updated_at": "2026-09-10T18:55:27.220Z"
-    },
     "monsters/ash_hatchling#attack_v1#south": {
       "rating": 1,
       "status": "approved",
@@ -526,18 +415,6 @@
       "rating": 1,
       "art": "336432cf03aa89c1",
       "updated_at": "2026-09-10T18:57:34.321Z"
-    },
-    "monsters/ember_drake#attack_v1#south-east": {
-      "rating": 1,
-      "status": "approved",
-      "art": "6a75db1e63f66335",
-      "updated_at": "2026-09-10T18:57:57.483Z"
-    },
-    "monsters/ember_drake#attack_v1#south-west": {
-      "rating": 1,
-      "status": "approved",
-      "art": "fbe3088d7c2c3fbf",
-      "updated_at": "2026-09-10T18:58:08.225Z"
     },
     "monsters/fire_elemental#attack_v1#south": {
       "rating": 1,
@@ -610,30 +487,6 @@
       "status": "approved",
       "art": "0fca74fb84e52fb3",
       "updated_at": "2026-09-10T18:59:32.497Z"
-    },
-    "monsters/lava_slug#attack_v1#south": {
-      "rating": 1,
-      "status": "approved",
-      "art": "40fac80246f480fc",
-      "updated_at": "2026-09-10T18:59:56.344Z"
-    },
-    "monsters/lava_slug#attack_v1#south-east": {
-      "rating": 1,
-      "status": "approved",
-      "art": "bd2eda0b5c8e988f",
-      "updated_at": "2026-09-10T18:59:58.715Z"
-    },
-    "monsters/lava_slug#attack_v1#east": {
-      "rating": 1,
-      "status": "approved",
-      "art": "f2c6b112e5811abc",
-      "updated_at": "2026-09-10T19:00:01.066Z"
-    },
-    "monsters/lava_slug#attack_v1#south-west": {
-      "rating": 1,
-      "status": "approved",
-      "art": "b97c9b612115abe9",
-      "updated_at": "2026-09-10T19:00:12.551Z"
     },
     "monsters/ember_king#attack_v1#south": {
       "rating": 1,
@@ -1356,10 +1209,6 @@
       "status": "approved",
       "updated_at": "2026-09-18T11:03:23.234Z"
     },
-    "monsters/ember_drake": {
-      "status": "rejected",
-      "updated_at": "2026-09-18T11:04:18.766Z"
-    },
     "monsters/bog_titan": {
       "rating": 3,
       "status": "approved",
@@ -1746,10 +1595,6 @@
     "monsters/eye_bat#attack_v3#south-west": {
       "note": "Attack renders outside frame to much",
       "updated_at": "2026-09-18T11:08:39.361Z"
-    },
-    "monsters/glow_grub": {
-      "status": "rejected",
-      "updated_at": "2026-09-18T11:08:59.253Z"
     },
     "monsters/ghoul#idle#south": {
       "rating": 3,
@@ -2221,10 +2066,6 @@
       "status": "approved",
       "art": "0cffd25851c2b5b5",
       "updated_at": "2026-09-18T12:10:50.945Z"
-    },
-    "monsters/goblin_shaman": {
-      "status": "rejected",
-      "updated_at": "2026-09-18T12:11:04.189Z"
     },
     "monsters/cobra#angry_v1#north-east": {
       "updated_at": "2026-09-18T12:12:59.278Z",
@@ -3227,14 +3068,6 @@
       "art": "505a278a850dc4cd",
       "updated_at": "2026-09-18T12:38:01.886Z"
     },
-    "monsters/war_elephant": {
-      "status": "rejected",
-      "updated_at": "2026-09-18T12:38:45.592Z"
-    },
-    "monsters/lava_slug": {
-      "status": "rejected",
-      "updated_at": "2026-09-18T12:38:57.389Z"
-    },
     "monsters/skeleton_archer#idle#south": {
       "rating": 3,
       "status": "approved",
@@ -3661,14 +3494,6 @@
       "rating": 1,
       "art": "6eba03edcd60d1ed",
       "updated_at": "2026-09-18T12:42:46.730Z"
-    },
-    "monsters/moss_snail": {
-      "status": "rejected",
-      "updated_at": "2026-09-18T12:43:34.880Z"
-    },
-    "monsters/ghost_hound": {
-      "status": "rejected",
-      "updated_at": "2026-09-18T12:44:08.040Z"
     },
     "monsters/rock_mite#idle#south": {
       "status": "approved",
@@ -6470,10 +6295,6 @@
       "status": "approved",
       "art": "6d2cc4e510fec473",
       "updated_at": "2026-09-18T13:06:16.533Z"
-    },
-    "monsters/veil_wraith": {
-      "status": "rejected",
-      "updated_at": "2026-09-18T13:06:40.245Z"
     },
     "monsters/orc_warrior#idle#south": {
       "status": "approved",
