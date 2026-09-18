@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-18T08:28:53.288Z",
+  "updated_at": "2026-09-18T09:28:28.180Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -471,7 +471,45 @@
           "item": "rough_brown_boulder",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 67,
+        "ry": 27.25,
+        "offsets": {
+          "idle#east": {
+            "ax": 3.52,
+            "ay": 93.32
+          },
+          "idle#south": {
+            "ax": 3.79,
+            "ay": 95.81
+          },
+          "idle#south-east": {
+            "ax": 3.42,
+            "ay": 91.7
+          },
+          "idle#north-east": {
+            "ax": 3.96,
+            "ay": 93.07
+          },
+          "idle#north": {
+            "ax": 2.71,
+            "ay": 92.76
+          },
+          "idle#north-west": {
+            "ax": 0.44,
+            "ay": 93.57
+          },
+          "idle#west": {
+            "ax": 2.35,
+            "ay": 93.22
+          },
+          "idle#south-west": {
+            "ax": 0.93,
+            "ay": 92.28
+          }
+        }
+      }
     },
     "chestnut_horse": {
       "max_hp": 95,
