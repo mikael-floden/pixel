@@ -14032,7 +14032,20 @@ function relDayLabel(d) {
  *
  * RAW, one request per board, no api.github.com: the rate limit
  * (60/hour/IP, unauthenticated) belongs nowhere near a page he refreshes. */
-const AGENT_REFRESH_MS = 45 * 1000;
+/* IT REFRESHES ITSELF, FAST BUT NOT EVERY SECOND (maintainer 2026-09-18: "Can
+ * you make this page auto refresh each sec? So I don't have to spam refresh?").
+ *
+ * Every round re-reads ~33 boards from raw.githubusercontent, so once a second
+ * is ~2,000 requests a minute from his phone — GitHub starts refusing, and a
+ * refused round is the "No board could be read" page he had this morning. Five
+ * seconds is 12 rounds a minute and loses nothing real: a board is written when
+ * an agent finishes a unit, which is minutes apart, and the ↻ button is still
+ * there for the moment he cannot wait five seconds.
+ *
+ * It also SKIPS a round while the tab is hidden (a phone in his pocket must not
+ * hold a poll open) and while the previous round is still in flight (on a slow
+ * connection the rounds would otherwise stack). */
+const AGENT_REFRESH_MS = 5 * 1000;
 /** A board that has not moved in a week is history, not status — folded away,
  *  never deleted (see the fold in viewAgents). */
 const AGENT_OLD_MS = 7 * 86400000;
@@ -14198,9 +14211,12 @@ function viewAgents() {
   if (!state.admin) return viewHome();
   const list = h("div", { class: "agent-list" }, h("p", { class: "muted" }, "Reading the boards…"));
   const stamp = h("span", { class: "muted" }, "");
-  let timer = null;
+  let timer = null, inFlight = false;
   const draw = async () => {
-    const rows = await fetchBoards();
+    if (inFlight) return;
+    inFlight = true;
+    let rows;
+    try { rows = await fetchBoards(); } finally { inFlight = false; }
     if (!list.isConnected) return;
     const working = rows.filter((b) => agentHealth(b).word === "working");
     /* THE FLEET ONLY GROWS (maintainer 2026-09-18: "by time we will have 9000
@@ -14226,14 +14242,20 @@ function viewAgents() {
           : null,
       ].filter(Boolean)
       : [h("p", { class: "muted" }, "No board could be read. The page reads coordination/*.json from GitHub main — check the connection.")]));
-    stamp.textContent = `${working.length} working · ${live.length} active this week · read ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", hour12: false })}`;
+    // Seconds in the stamp, because at this rate the minute alone would look
+    // frozen and he would tap ↻ anyway — which is the thing he asked to stop.
+    stamp.textContent = `${working.length} working · ${live.length} active this week · read ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}`;
   };
   draw();
   // It refreshes itself while the page is open — the question this page answers
   // is "right now", and a number that needs a pull to be true is a number he
   // has to distrust. route() destroys it on the way out.
-  timer = setInterval(draw, AGENT_REFRESH_MS);
-  activePlayers.push({ destroy: () => clearInterval(timer) });
+  timer = setInterval(() => { if (!document.hidden) draw(); }, AGENT_REFRESH_MS);
+  // …and catches up the moment he comes back to the tab, rather than making him
+  // wait out a round he could not see.
+  const onShow = () => { if (!document.hidden) draw(); };
+  document.addEventListener("visibilitychange", onShow);
+  activePlayers.push({ destroy: () => { clearInterval(timer); document.removeEventListener("visibilitychange", onShow); } });
   return h("div", {},
     sectionHead("agents"),
     h("p", { class: "muted" },

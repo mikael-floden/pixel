@@ -1,9 +1,42 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T18:09:36.626Z",
- "head": "4bd2bae7b",
+ "generated_at": "2026-09-18T18:18:43.867Z",
+ "head": "336388bb0",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "336388bb0",
+   "at": "2026-09-18T18:16:33+00:00",
+   "author": "Claude",
+   "subject": "deploy: fastbuild.mjs — the client bundles in ~1 s, which is what makes a sub-10s lane possible",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "de5298d44",
+   "at": "2026-09-18T20:16:15+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/objects.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a1eb0bfe7",
+   "at": "2026-09-18T18:13:54+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: reviewing fade tiles no longer costs a scroll",
+   "agent": "wiki",
+   "dirs": [
+    "wiki"
+   ],
+   "files": 7
+  },
   {
    "sha": "4bd2bae7b",
    "at": "2026-09-18T18:00:58+00:00",
@@ -533,39 +566,6 @@
     "tiles"
    ],
    "files": 155
-  },
-  {
-   "sha": "ec5e334b7",
-   "at": "2026-09-18T16:04:45+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: a dry-run dispatch for the verdict wake",
-   "agent": null,
-   "dirs": [
-    ".github"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "17e5c6927",
-   "at": "2026-09-18T16:01:39+00:00",
-   "author": "wiki-agent",
-   "subject": "coordination: tell monsters a verdict can now wake a third writer",
-   "agent": "wiki",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "6860106e5",
-   "at": "2026-09-18T15:59:09+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: wake the monsters agent the moment a review is committed",
-   "agent": null,
-   "dirs": [
-    ".github"
-   ],
-   "files": 1
   }
  ]
 }

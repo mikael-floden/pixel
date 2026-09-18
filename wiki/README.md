@@ -218,6 +218,15 @@ Release Notes: the boards are the factory floor.
   uses a SECOND browser context: the admin pass's init script re-seeds the token
   on every navigation, so "what does a player see" can only be asked by a
   browser that was never signed in.
+- **It re-reads itself every 5 seconds** (maintainer 2026-09-18: *"Can you make
+  this page auto refresh each sec? So I don't have to spam refresh?"*). NOT once
+  a second: a round re-reads ~33 boards from raw, so 1s is ~2,000 requests a
+  minute from his phone, GitHub starts refusing, and a refused round is the "No
+  board could be read" page. 5s is 12 rounds a minute and loses nothing — a
+  board is written when an agent finishes a unit, minutes apart. A round is
+  skipped while the tab is hidden and while the previous one is still in flight,
+  and a round fires the moment he comes back to the tab. The stamp carries
+  SECONDS, or it would look frozen and he would tap ↻ anyway.
 - **The page opens on what is ALIVE.** The fleet only grows — three boards have
   not moved in two months — so anything quiet for over a week folds behind one
   tap and is never deleted: a retired agent's last words are the only record of

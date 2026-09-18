@@ -151,6 +151,21 @@ await p.waitForTimeout(1500);
 const after = await p.evaluate(() => performance.getEntriesByType("resource").filter((r) => /coordination\//.test(r.name)).length);
 ok(after > before, `refresh fetches the boards again (${before} → ${after} board requests)`);
 
+// IT REFRESHES ITSELF (maintainer 2026-09-18: "Can you make this page auto
+// refresh each sec? So I don't have to spam refresh?"). Five seconds, not one:
+// a round re-reads every board, and once a second is ~2,000 requests a minute
+// from his phone — a refused round is the empty page. Asserted by watching the
+// stamp move on its own, with nothing touched.
+const auto = await p.evaluate(async () => {
+  const stamp = () => document.querySelector(".lit-mode .muted")?.textContent ?? "";
+  const first = stamp();
+  await new Promise((r) => setTimeout(r, 7000));
+  return { first, later: stamp() };
+});
+console.log("auto refresh:", JSON.stringify(auto));
+ok(auto.first !== auto.later && /read \d\d:\d\d:\d\d/.test(auto.later),
+  `the page re-reads the boards on its own, and the stamp says when ("${auto.later}")`);
+
 // ADMIN ONLY, like Parameters and Release Notes: the boards are the factory
 // floor, not the encyclopedia.
 // A SECOND CONTEXT, not a sign-out on this one: the admin page's own init
