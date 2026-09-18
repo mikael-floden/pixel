@@ -28,6 +28,16 @@ jobs:
     steps:
       - run: echo "toJSON(commits.*.modified) MATCHED" >> "$GITHUB_STEP_SUMMARY"
 
+  # The form the domain jobs actually lead with: the message the wiki writes names
+  # the file it saved. The marker below is put in a doc commit's message to fire it.
+  message_form:
+    # Double-quoted, because the marker contains ": " and a plain YAML scalar ends
+    # at the first one — the same hazard the domain jobs avoid by using a `>-` block.
+    if: "contains(github.event.head_commit.message, 'selftest-marker: feedback/objects.json')"
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "head_commit.message MATCHED" >> "$GITHUB_STEP_SUMMARY"
+
   # And what each one actually produces, so the next surprise is read, not guessed.
   payload:
     runs-on: ubuntu-latest
@@ -35,11 +45,15 @@ jobs:
       - env:
           JOINED: ${{ join(github.event.commits.*.modified) }}
           AS_JSON: ${{ toJSON(github.event.commits.*.modified) }}
+          COMMITS: ${{ toJSON(github.event.commits) }}
+          HEAD_FILES: ${{ toJSON(github.event.head_commit.modified) }}
           HEAD_MSG: ${{ github.event.head_commit.message }}
         run: |
           {
             echo "### what the push payload says"
             echo "join(commits.*.modified) = \`$JOINED\`"
             echo "toJSON(commits.*.modified) = \`$AS_JSON\`"
+            echo "toJSON(commits) = \`$COMMITS\`"
+            echo "toJSON(head_commit.modified) = \`$HEAD_FILES\`"
             echo "head_commit.message = \`$HEAD_MSG\`"
           } >> "$GITHUB_STEP_SUMMARY"
