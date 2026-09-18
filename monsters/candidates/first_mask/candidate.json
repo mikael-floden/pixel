@@ -1,0 +1,141 @@
+{
+  "id": "first_mask",
+  "name": "Firstmask",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "The simplest thing the cave makes. It is always facing you and it has never once hurried.",
+  "biome": [
+    "black_rock",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Person-shaped hollow of plain grey cloth standing straight, sleeves and hem hanging empty and still, and one smooth featureless smiling mask of pale wood fixed where the face would be",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "first_mask/rotations/south.webp",
+    "south-east": "first_mask/rotations/south-east.webp",
+    "east": "first_mask/rotations/east.webp",
+    "north-east": "first_mask/rotations/north-east.webp",
+    "north": "first_mask/rotations/north.webp",
+    "north-west": "first_mask/rotations/north-west.webp",
+    "west": "first_mask/rotations/west.webp",
+    "south-west": "first_mask/rotations/south-west.webp"
+  },
+  "sheet": "first_mask/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "6459cf3c-d4e7-4f96-bad5-e53f8319fc79",
+  "seed": 1950029385,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:39:53+00:00",
+  "elapsed_s": 150.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.657,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.657,
+        "bbox": [
+          22,
+          2,
+          82,
+          102
+        ],
+        "fill": 0.555,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.719,
+        "bbox": [
+          36,
+          4,
+          78,
+          103
+        ],
+        "fill": 0.384,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.729,
+        "bbox": [
+          25,
+          4,
+          68,
+          103
+        ],
+        "fill": 0.394,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.686,
+        "bbox": [
+          22,
+          2,
+          82,
+          103
+        ],
+        "fill": 0.56,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.785,
+        "bbox": [
+          23,
+          2,
+          77,
+          102
+        ],
+        "fill": 0.499,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.701,
+        "bbox": [
+          25,
+          3,
+          76,
+          103
+        ],
+        "fill": 0.472,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.696,
+        "bbox": [
+          28,
+          3,
+          78,
+          103
+        ],
+        "fill": 0.462,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.766,
+        "bbox": [
+          26,
+          2,
+          81,
+          102
+        ],
+        "fill": 0.509,
+        "touches_edge": false
+      }
+    }
+  }
+}

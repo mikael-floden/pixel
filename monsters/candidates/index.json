@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T09:21:34+00:00",
+  "generated_at": "2026-09-18T11:39:53+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 100,
+  "count": 102,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -12855,6 +12855,262 @@
       "review": "approved",
       "notes": null,
       "generated_at": "2026-09-09T19:20:53+00:00"
+    },
+    {
+      "id": "waystone_walker",
+      "name": "Waystone",
+      "tier": "cute",
+      "lore": "It points the way the road went before the last Turn. Nobody has told it, and it goes on pointing.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "9856e2f2-214d-48d8-90d7-5d509f0fd561",
+      "version": 1,
+      "sheet": "waystone_walker/sheet.webp",
+      "rotations": {
+        "south": "waystone_walker/rotations/south.webp",
+        "south-east": "waystone_walker/rotations/south-east.webp",
+        "east": "waystone_walker/rotations/east.webp",
+        "north-east": "waystone_walker/rotations/north-east.webp",
+        "north": "waystone_walker/rotations/north.webp",
+        "north-west": "waystone_walker/rotations/north-west.webp",
+        "west": "waystone_walker/rotations/west.webp",
+        "south-west": "waystone_walker/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.727,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.803,
+            "bbox": [
+              5,
+              3,
+              43,
+              45
+            ],
+            "fill": 0.693,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.769,
+            "bbox": [
+              7,
+              3,
+              44,
+              45
+            ],
+            "fill": 0.674,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.782,
+            "bbox": [
+              4,
+              3,
+              44,
+              45
+            ],
+            "fill": 0.729,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.727,
+            "bbox": [
+              4,
+              4,
+              43,
+              45
+            ],
+            "fill": 0.694,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.818,
+            "bbox": [
+              4,
+              3,
+              45,
+              45
+            ],
+            "fill": 0.747,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.755,
+            "bbox": [
+              4,
+              4,
+              40,
+              46
+            ],
+            "fill": 0.656,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.743,
+            "bbox": [
+              3,
+              3,
+              44,
+              46
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.809,
+            "bbox": [
+              8,
+              3,
+              44,
+              45
+            ],
+            "fill": 0.656,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T11:37:23+00:00"
+    },
+    {
+      "id": "first_mask",
+      "name": "Firstmask",
+      "tier": "evil",
+      "lore": "The simplest thing the cave makes. It is always facing you and it has never once hurried.",
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "6459cf3c-d4e7-4f96-bad5-e53f8319fc79",
+      "version": 1,
+      "sheet": "first_mask/sheet.webp",
+      "rotations": {
+        "south": "first_mask/rotations/south.webp",
+        "south-east": "first_mask/rotations/south-east.webp",
+        "east": "first_mask/rotations/east.webp",
+        "north-east": "first_mask/rotations/north-east.webp",
+        "north": "first_mask/rotations/north.webp",
+        "north-west": "first_mask/rotations/north-west.webp",
+        "west": "first_mask/rotations/west.webp",
+        "south-west": "first_mask/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.657,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.657,
+            "bbox": [
+              22,
+              2,
+              82,
+              102
+            ],
+            "fill": 0.555,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.719,
+            "bbox": [
+              36,
+              4,
+              78,
+              103
+            ],
+            "fill": 0.384,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.729,
+            "bbox": [
+              25,
+              4,
+              68,
+              103
+            ],
+            "fill": 0.394,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.686,
+            "bbox": [
+              22,
+              2,
+              82,
+              103
+            ],
+            "fill": 0.56,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.785,
+            "bbox": [
+              23,
+              2,
+              77,
+              102
+            ],
+            "fill": 0.499,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.701,
+            "bbox": [
+              25,
+              3,
+              76,
+              103
+            ],
+            "fill": 0.472,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.696,
+            "bbox": [
+              28,
+              3,
+              78,
+              103
+            ],
+            "fill": 0.462,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.766,
+            "bbox": [
+              26,
+              2,
+              81,
+              102
+            ],
+            "fill": 0.509,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-18T11:39:53+00:00"
     }
   ]
 }

@@ -1,0 +1,141 @@
+{
+  "id": "waystone_walker",
+  "name": "Waystone",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It points the way the road went before the last Turn. Nobody has told it, and it goes on pointing.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Squat carved granite roadstone with a rounded weathered top, worn spiral and line marks cut deep into its face and packed with grey-green lichen, a faded painted hand pointing off to one side, standing on two short thick stone feet with grass and soil still gripped around them",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "waystone_walker/rotations/south.webp",
+    "south-east": "waystone_walker/rotations/south-east.webp",
+    "east": "waystone_walker/rotations/east.webp",
+    "north-east": "waystone_walker/rotations/north-east.webp",
+    "north": "waystone_walker/rotations/north.webp",
+    "north-west": "waystone_walker/rotations/north-west.webp",
+    "west": "waystone_walker/rotations/west.webp",
+    "south-west": "waystone_walker/rotations/south-west.webp"
+  },
+  "sheet": "waystone_walker/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9856e2f2-214d-48d8-90d7-5d509f0fd561",
+  "seed": 1805144757,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-18T11:37:23+00:00",
+  "elapsed_s": 187.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.727,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.803,
+        "bbox": [
+          5,
+          3,
+          43,
+          45
+        ],
+        "fill": 0.693,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.769,
+        "bbox": [
+          7,
+          3,
+          44,
+          45
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.782,
+        "bbox": [
+          4,
+          3,
+          44,
+          45
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.727,
+        "bbox": [
+          4,
+          4,
+          43,
+          45
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.818,
+        "bbox": [
+          4,
+          3,
+          45,
+          45
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.755,
+        "bbox": [
+          4,
+          4,
+          40,
+          46
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.743,
+        "bbox": [
+          3,
+          3,
+          44,
+          46
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.809,
+        "bbox": [
+          8,
+          3,
+          44,
+          45
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      }
+    }
+  }
+}
