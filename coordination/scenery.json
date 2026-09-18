@@ -1,8 +1,8 @@
 {
   "domain": "scenery",
-  "updated_at": "2026-09-18T07:50:26.128122+00:00",
+  "updated_at": "2026-09-18T07:50:50.243067+00:00",
   "health": "idle",
-  "current": "IN FLIGHT \u2014 heal after a scenery delete: maps2/worlds3/<userWorlds>/world.json + maps2/reports/<w>.json (maps2's heal.py, the agreed flow); deleting: trees/tree_055#LIT_1, trees/tree_055#LIT_2, trees/tree_055#LIT_4, trees/tree_063#LIT_1, trees/tree_063#LIT_3, trees/tree_063#NOT_LIT_2, trees/tree_063#NOT_LIT_4, trees/tree_063#NOT_LIT_7",
+  "current": "IN FLIGHT (his order 09-18) \u2014 remaining: (3) his 12 redo verdicts via redo_facing_anim.py --from-feedback --variant 1; (4) 244 never-animated states via animate_states.py then --missing facings. Every manifest/frames/strips/packed those touch; scenery/viewer_data.json. No world.json in this part.",
   "progress": {
     "scenery_complete": 736,
     "scenery_target": 2146,
