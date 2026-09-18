@@ -151,7 +151,15 @@ jobs:
                   return None
           now = entries("HEAD")
           before = os.environ.get("BEFORE", "")
-          old = entries(before) if before and set(before) != {"0"} else None
+          if not before or set(before) == {"0"}:
+              # STARTED BY THE WIKI SERVER: there is no `before` sha on a
+              # dispatch, but the save that dispatched this IS the commit at
+              # HEAD — so its parent is the before-image. Only when HEAD really
+              # is one of his saves; anything else and the agent reads the file.
+              head_msg = subprocess.run(["git", "log", "-1", "--format=%s"],
+                                        capture_output=True, text=True).stdout.strip()
+              before = "HEAD~1" if head_msg.startswith("live: admin update") else ""
+          old = entries(before) if before else None
           print("THE FILE IS %s" % path)
           if now is None:
               print("(this run could not read it — read it yourself)"); sys.exit(0)

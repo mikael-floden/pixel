@@ -6,52 +6,37 @@ name: github agents
 # own docs, bound by live/docs/review-contract.md. Not a "wake", not a "verdict
 # session": "I feel this is insanely confusing".
 #
-# THE EVENT ALREADY EXISTS: the wiki's admin save is committed to main by the
-# game server itself — games2/server/src/live.ts `ghCommitDelta`, one commit per
-# save, message `live: admin update — feedback/<file>.json`. Without this
-# workflow a verdict sits until the domain agent's next run reads the file
-# (PROTOCOL rule 4), which can be hours.
+# WHO STARTS IT: THE WIKI SERVER, inside the same save that writes the verdict
+# (games2/server/src/live.ts `startGithubAgent`). It already holds a GitHub
+# token and has just committed the delta, so it POSTs a workflow_dispatch here
+# naming the domain — nothing between his tap and the runner: no trigger to
+# evaluate, no detect job, no API call of ours in front of the session. Without
+# it a verdict sits until the domain agent's next run reads the file (PROTOCOL
+# rule 4), which can be hours.
 #
-# NOTHING IN FRONT OF THE WORK (maintainer 2026-09-18: "So this is just an
-# artificial sleep?!? Remove it completely!", then "we want them to be able to
-# run in parallel! But we also need lower latency ... think hard and we can get
-# the best of both worlds"). Both, like this:
+# WHY NOT A PUSH TRIGGER, which this was built on first: the action refuses that
+# event — "Unsupported event type: push" — so the run was created, the right job
+# started, and it died 30 seconds in. It cost two of his reviews. Overriding
+# GITHUB_EVENT_NAME does not help: the action reads the event from the payload
+# file. workflow_dispatch is an event it accepts, and every session that has
+# ever worked here was one.
 #
-#   • ONE JOB PER DOMAIN, each with a job-level `if` that reads the PUSH PAYLOAD
-#     — no detect job, no runner, no API call and no clone in front of the
-#     session. The domain whose feedback file was written starts at once; the
-#     others are never created, so they cost nothing and do not clutter the run.
-#     (The `detect` job this replaces cost ~5s of every start just to learn what
-#     the payload already said.)
-#   • They are independent jobs, so a scenery review and a monsters review run
-#     SIDE BY SIDE, each in its own concurrency group inside the reusable
-#     workflow.
-#   • Everything about HOW a session runs lives once, in github-agent-run.yml.
+# TWO THINGS PAID FOR ON THE WAY, kept because they will be reached for again:
+#   • A job `if` cannot test a changed PATH on this repo. The push payload
+#     carries no file lists at all — `commits.*.modified` is `[]`,
+#     `head_commit.modified` is null — so any such condition is false always. A
+#     workflow-level `paths:` filter is unaffected, because GitHub evaluates
+#     that server-side against the real diff.
+#   • A skipped job is SILENT: no log, no reason, just a run that did nothing.
+#     That is why a wrong condition survived two rehearsals — a dispatch has no
+#     commits, so the term was never evaluated. Verify a trigger against a real
+#     event, never by reading it.
+# Both measured 2026-09-18; the numbers are in live/docs/github-agents.md.
 #
 # THE FILE IS NOT THE DIRECTORY: he reviews scenery and the wiki writes
 # feedback/OBJECTS.json, whose domain on disk is scenery/; characters.json is
-# characters2/. The mapping is the `if` of each job, where it reads at a glance.
-#
-# THE PAYLOAD HERE CARRIES NO FILE LISTS — TEST THE MESSAGE. Measured by
-# github-agents-selftest.yml on a one-commit, one-file push (2026-09-18 20:02Z):
-# `commits` is present with the commit's author, id and message, and NO
-# `added`/`modified`/`removed` on it at all; `head_commit.modified` is `null` and
-# `commits.*.modified` resolves to `[]`. Any `if` over a changed PATH is
-# therefore false always, whatever the push contained — and it cost a real review
-# (c15246bbc6, 19:48:54Z, one commit modifying exactly live/feedback/objects.json:
-# the workflow's own `paths:` filter matched, the run was created, and every job
-# in it skipped). The `paths:` filter above works because GitHub evaluates it
-# server-side against the real diff; a job `if` only gets the payload.
-#
-# What IS in the payload is every commit's MESSAGE, and the wiki server writes
-# `live: admin update — feedback/<file>.json`, naming the file it saved. So each
-# job tests that message: on `head_commit` first, and over every commit in the
-# push as the second chance for a save that is not the head commit. Both are
-# proven against real payloads by the selftest (`message_form`, `messages_form`).
-#
-# A SKIPPED JOB IS SILENT — it writes no log and no reason, which is why this
-# survived two rehearsals: a `workflow_dispatch` has no commits, so the term was
-# never evaluated. Verify a trigger change against a real push, never by reading.
+# characters2/. That mapping now lives in the server (AGENT_DOMAIN) and in the
+# `verdicts` step of github-agent-run.yml, which names the file for the prompt.
 #
 # NOT WOKEN BY: bindings.json (an <event>#<sound> review, not a domain) and
 # composer/composer-music (games2/composer is one corner of a directory six
@@ -66,14 +51,15 @@ name: github agents
 # The title in the Actions list is the first thing he reads on a phone, so it
 # names the review rather than repeating the workflow's own name.
 run-name: >-
-  github agent — ${{ github.event_name == 'workflow_dispatch'
-    && format('{0} (rehearsal)', inputs.domain) || github.event.head_commit.message }}
+  github agent — ${{ inputs.domain }}${{ inputs.dry_run && ' (rehearsal)' || '' }}
 
+# NO PUSH TRIGGER. `anthropics/claude-code-action@v1` refuses that event —
+# "Unsupported event type: push" — so a push-started run created the job and
+# died 30s in, which cost two of his reviews. The wiki server dispatches this
+# workflow itself in the same save that writes the verdict
+# (games2/server/src/live.ts `startGithubAgent`): no trigger to evaluate, no
+# detect job, and workflow_dispatch is the event the action accepts.
 on:
-  push:
-    branches: [main]
-    paths:
-      - "live/feedback/*.json"
   workflow_dispatch:
     inputs:
       domain:
@@ -83,7 +69,7 @@ on:
       dry_run:
         description: "Report what it would do and change nothing"
         type: boolean
-        default: true
+        default: false
 
 # A CALLED WORKFLOW CANNOT GRANT ITSELF MORE THAN ITS CALLER HAS. The session
 # needs `contents: write` to push and `id-token: write` to mint its GitHub App
@@ -95,101 +81,12 @@ permissions:
   id-token: write
 
 jobs:
-  # HIS SAVES ONLY. The wiki server stamps every admin save with this message;
-  # an agent clearing verdicts writes the same file with its own message, and
-  # waking on that would wake the agent with its own footprints.
-  monsters:
-    if: >-
-      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && ((startsWith(github.event.head_commit.message, 'live: admin update')
-           && contains(github.event.head_commit.message, 'feedback/monsters.json'))
-          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
-              && contains(toJSON(github.event.commits.*.message), 'feedback/monsters.json')))
-    uses: ./.github/workflows/github-agent-run.yml
-    with: { domain: monsters }
-    secrets: inherit
-
-  scenery:
-    if: >-
-      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && ((startsWith(github.event.head_commit.message, 'live: admin update')
-           && contains(github.event.head_commit.message, 'feedback/objects.json'))
-          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
-              && contains(toJSON(github.event.commits.*.message), 'feedback/objects.json')))
-    uses: ./.github/workflows/github-agent-run.yml
-    with: { domain: scenery }
-    secrets: inherit
-
-  characters2:
-    if: >-
-      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && ((startsWith(github.event.head_commit.message, 'live: admin update')
-           && contains(github.event.head_commit.message, 'feedback/characters.json'))
-          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
-              && contains(toJSON(github.event.commits.*.message), 'feedback/characters.json')))
-    uses: ./.github/workflows/github-agent-run.yml
-    with: { domain: characters2 }
-    secrets: inherit
-
-  tiles:
-    if: >-
-      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && ((startsWith(github.event.head_commit.message, 'live: admin update')
-           && contains(github.event.head_commit.message, 'feedback/tiles.json'))
-          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
-              && contains(toJSON(github.event.commits.*.message), 'feedback/tiles.json')))
-    uses: ./.github/workflows/github-agent-run.yml
-    with: { domain: tiles }
-    secrets: inherit
-
-  items:
-    if: >-
-      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && ((startsWith(github.event.head_commit.message, 'live: admin update')
-           && contains(github.event.head_commit.message, 'feedback/items.json'))
-          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
-              && contains(toJSON(github.event.commits.*.message), 'feedback/items.json')))
-    uses: ./.github/workflows/github-agent-run.yml
-    with: { domain: items }
-    secrets: inherit
-
-  lore:
-    if: >-
-      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && ((startsWith(github.event.head_commit.message, 'live: admin update')
-           && contains(github.event.head_commit.message, 'feedback/lore.json'))
-          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
-              && contains(toJSON(github.event.commits.*.message), 'feedback/lore.json')))
-    uses: ./.github/workflows/github-agent-run.yml
-    with: { domain: lore }
-    secrets: inherit
-
-  sounds:
-    if: >-
-      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && ((startsWith(github.event.head_commit.message, 'live: admin update')
-           && contains(github.event.head_commit.message, 'feedback/sounds.json'))
-          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
-              && contains(toJSON(github.event.commits.*.message), 'feedback/sounds.json')))
-    uses: ./.github/workflows/github-agent-run.yml
-    with: { domain: sounds }
-    secrets: inherit
-
-  music:
-    if: >-
-      github.event_name == 'push' && vars.GITHUB_AGENTS != 'off'
-      && ((startsWith(github.event.head_commit.message, 'live: admin update')
-           && contains(github.event.head_commit.message, 'feedback/music.json'))
-          || (contains(toJSON(github.event.commits.*.message), 'live: admin update')
-              && contains(toJSON(github.event.commits.*.message), 'feedback/music.json')))
-    uses: ./.github/workflows/github-agent-run.yml
-    with: { domain: music }
-    secrets: inherit
-
-  # The rehearsal path: any domain, dry by default, so the whole chain can be
-  # proven without a verdict and without touching anything.
-  rehearsal:
-    if: github.event_name == 'workflow_dispatch'
+  # ONE JOB, because the domain is an input now rather than something to work
+  # out from a payload. The 8 per-domain jobs this replaces each carried an `if`
+  # over the push event; with no push trigger they could only ever appear as
+  # eight skipped rows under every run.
+  agent:
+    if: vars.GITHUB_AGENTS != 'off'
     uses: ./.github/workflows/github-agent-run.yml
     with:
       domain: ${{ inputs.domain }}

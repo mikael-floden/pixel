@@ -87,15 +87,24 @@ Claude reading its first file:
   `live/feedback/objects.json`: the run existed and every job inside it skipped.
   The workflow-level `paths:` filter is unaffected — GitHub evaluates that
   server-side against the real diff, which is why the run was created at all.
-- **THE ACTION REFUSES A PUSH: `Unsupported event type: push`.** Once the
-  condition was fixed, his next two reviews started the right job and died 30
-  seconds in on `anthropics/claude-code-action@v1` itself (runs 22 and 23,
-  2026-09-18). Every session that had ever worked here was a
-  `workflow_dispatch`, so nothing before this had exercised the action on the
-  event the whole design is built on. The selftest answers which way round it
-  (as-is vs `GITHUB_EVENT_NAME` overridden to a supported event); the
-  alternative is a re-dispatch hop, which costs another runner in front of his
-  review.
+- **THE ACTION REFUSES A PUSH: `Unsupported event type: push`** — so the WIKI
+  SERVER dispatches the run instead. Once the condition was fixed, his next two
+  reviews started the right job and died 30 seconds in on
+  `anthropics/claude-code-action@v1` itself (runs 22 and 23, 2026-09-18). Every
+  session that had ever worked was a `workflow_dispatch`, so nothing had
+  exercised the action on the event the whole design was built on. Overriding
+  `GITHUB_EVENT_NAME` does not help — probed on a real push, same refusal,
+  because the action reads the event from the payload file. The fix is not a
+  re-dispatch hop (another runner in front of his review) but
+  `games2/server/src/live.ts` `startGithubAgent`: the save that commits the
+  verdict POSTs the dispatch itself, fire-and-forget, in the same breath. The
+  push trigger and the eight per-domain jobs are gone with it — with no push to
+  answer they could only ever have shown as eight skipped rows.
+- **The server's token needs Actions: read and write.** Without it the dispatch
+  is a 403 in the server log (`<domain>-github-agent not started: HTTP 403`) and
+  reviews wait for the domain agent exactly as they did before. It cannot fail
+  a save: the verdict is committed before the dispatch is attempted, and the
+  call is not awaited.
 - **A WRONG `if` IS SILENT, which is why it survived two rehearsals.** A skipped
   job writes no log and no reason, so the Actions list shows a run sitting
   against his review with nothing anywhere saying which term was false. The
@@ -106,8 +115,9 @@ Claude reading its first file:
   messages ARE in the payload. Each job tests `head_commit.message` first and
   `toJSON(commits.*.message)` second — the latter catches a save that is not the
   head commit of its push. Both forms are proven against real payloads by the
-  selftest's `message_form` and `messages_form` jobs; the path forms are kept
-  there, failing, as the record.
+  selftest's `message_form` and `messages_form` jobs (deleted once the push
+  trigger was — git history holds them). None of it is live: the trigger is a
+  dispatch now and carries the domain as an input.
 - **An `if:` whose expression contains `": "` must be quoted or in a `>-` block.**
   A plain YAML scalar ends at the first `: `, so
   `if: contains(x, 'live: admin update')` is not a parse error you will enjoy
