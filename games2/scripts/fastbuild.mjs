@@ -1,0 +1,140 @@
+#!/usr/bin/env node
+// THE FAST CLIENT BUILD — esbuild, for the publish lane that does not build an
+// image (docs/shipping.md). Measured 2026-09-18 on this client:
+//
+//     vite build            8.45 s   — and 8.45 s again for a ONE-LINE change,
+//                                      because rollup re-bundles all 250
+//                                      modules into one 2.82 MB file every time
+//     this script           1.13 s   — complete and servable: main, all three
+//                                      workers, public/, index.html
+//
+// That 7-second difference is the whole reason a sub-10s deploy is possible.
+// vite stays the dev server and the image's builder; this is the lane's bundler.
+//
+// THREE THINGS VITE DOES FOR FREE THAT THIS HAS TO DO ON PURPOSE:
+//
+// 1. WORKERS. `new Worker(new URL("./artworker.ts", import.meta.url))` is a
+//    vite idiom: it emits the worker as its own chunk and rewrites the URL.
+//    esbuild leaves the string alone, so the browser asks for a .ts file and
+//    gets nothing — silently, because a failed worker is not a page error. Each
+//    worker is therefore bundled first, named by its own content hash, and the
+//    specifier is rewritten in every .ts that mentions it.
+//
+// 2. `import.meta.env` AS AN OBJECT, not key by key. Defining
+//    `import.meta.env.VITE_GIT_SHA` alone leaves `import.meta.env` itself
+//    undefined, so the FIRST OTHER KEY throws — measured: "failed to join
+//    world: TypeError: Cannot read properties of undefined (reading
+//    'VITE_SERVER_URL')". Phaser had booted, the world had loaded, and the join
+//    died on one property read with zero page errors to show for it. The object
+//    form makes an unknown key undefined, which is what vite gives.
+//
+// 3. public/ is COPIED to the root, and index.html's dev entry (/src/main.ts)
+//    is rewritten to the emitted, content-hashed bundle.
+//
+// EVERY EMITTED NAME CARRIES ITS CONTENT HASH (cache law, root CLAUDE.md): a
+// rebuilt bundle is a NEW file, never a rewrite of a live one, so a stale cache
+// serves a coherent older generation and never a mix.
+import { build } from "esbuild";
+import { createHash } from "node:crypto";
+import { writeFileSync, mkdirSync, rmSync, readFileSync, cpSync, existsSync } from "node:fs";
+import { dirname, join } from "node:path";
+import { fileURLToPath } from "node:url";
+
+const CLIENT = join(dirname(fileURLToPath(import.meta.url)), "..", "client");
+const WORKERS = ["artworker", "composeworker", "tiles3worker"];
+
+/** Build a complete, servable client into `outDir`. Returns what it emitted. */
+export async function fastBuild({ outDir, gitSha = "dev", serverUrl = "", clean = true } = {}) {
+  const t0 = performance.now();
+  if (clean) rmSync(outDir, { recursive: true, force: true });
+  mkdirSync(join(outDir, "assets"), { recursive: true });
+
+  const common = {
+    absWorkingDir: CLIENT,
+    bundle: true,
+    format: "esm",
+    target: "es2020",
+    minify: true,
+    write: false,
+    logLevel: "error",
+    // See (2): the whole object, so an unknown key is undefined, not a throw.
+    define: {
+      "import.meta.env": JSON.stringify({
+        VITE_GIT_SHA: gitSha,
+        VITE_SERVER_URL: serverUrl,
+        MODE: "production",
+        BASE_URL: "/",
+        DEV: false,
+        PROD: true,
+        SSR: false,
+      }),
+    },
+    loader: { ".webp": "file", ".png": "file", ".svg": "file", ".mp3": "file", ".ogg": "file" },
+    outdir: outDir,
+    entryNames: "assets/[name]",
+    assetNames: "assets/[name]-[hash]",
+    publicPath: "/",
+  };
+
+  const put = (files) => {
+    for (const f of files) {
+      mkdirSync(dirname(f.path), { recursive: true });
+      writeFileSync(f.path, f.contents);
+    }
+  };
+  const hash = (text) => createHash("sha256").update(text).digest("hex").slice(0, 10);
+  const entryOf = (res, base) => res.outputFiles.find((f) => f.path.endsWith(`/${base}.js`));
+
+  // (1) the workers first — main's rewrite needs their final names.
+  const names = {};
+  const wres = await Promise.all(WORKERS.map((w) => build({ ...common, entryPoints: [`src/${w}.ts`] })));
+  wres.forEach((res, i) => {
+    const js = entryOf(res, WORKERS[i]);
+    names[WORKERS[i]] = `${WORKERS[i]}-${hash(js.text)}.js`;
+    put(res.outputFiles.filter((f) => f !== js)); // sourcemaps, emitted assets
+    writeFileSync(join(outDir, "assets", names[WORKERS[i]]), js.text);
+  });
+
+  const rewriteWorkerUrls = {
+    name: "worker-urls",
+    setup(b) {
+      b.onLoad({ filter: /\.ts$/ }, async (args) => {
+        const { readFile } = await import("node:fs/promises");
+        let text = await readFile(args.path, "utf8");
+        for (const w of WORKERS) text = text.split(`./${w}.ts`).join(`./${names[w]}`);
+        return { contents: text, loader: "ts" };
+      });
+    },
+  };
+
+  const main = await build({
+    ...common,
+    entryPoints: ["src/main.ts"],
+    sourcemap: "external",
+    plugins: [rewriteWorkerUrls],
+  });
+  const js = entryOf(main, "main");
+  const bundle = `index-${hash(js.text)}.js`;
+  put(main.outputFiles.filter((f) => f !== js));
+  writeFileSync(join(outDir, "assets", bundle), js.text);
+
+  // (3) index.html + public/
+  const html = readFileSync(join(CLIENT, "index.html"), "utf8").replace("/src/main.ts", `/assets/${bundle}`);
+  if (html.includes("/src/main.ts")) throw new Error("index.html entry was not rewritten — did the script tag change?");
+  writeFileSync(join(outDir, "index.html"), html);
+  if (existsSync(join(CLIENT, "public"))) cpSync(join(CLIENT, "public"), outDir, { recursive: true });
+
+  return { ms: Math.round(performance.now() - t0), bundle, workers: names, bytes: js.text.length };
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  const arg = (k, d) => {
+    const i = process.argv.indexOf(`--${k}`);
+    return i > 0 ? process.argv[i + 1] : d;
+  };
+  const out = arg("out", join(CLIENT, "dist"));
+  const r = await fastBuild({ outDir: out, gitSha: arg("sha", process.env.GIT_SHA || "dev"), serverUrl: arg("server-url", "") });
+  console.log(`[fastbuild] ${r.ms} ms -> ${out}`);
+  console.log(`[fastbuild]   assets/${r.bundle}  ${(r.bytes / 1e6).toFixed(2)} MB`);
+  for (const [w, n] of Object.entries(r.workers)) console.log(`[fastbuild]   assets/${n}`);
+}
