@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "objects",
-  "updated_at": "2026-09-18T07:25:16.444Z",
+  "updated_at": "2026-09-18T07:26:01.896Z",
   "entries": {
     "scenery/anchors/anchor_001": {
       "status": "approved",
@@ -30920,6 +30920,18 @@
       "art": "d1d889574e3b12bd",
       "updated_at": "2026-09-18T07:25:14.417Z",
       "note": "1 frame is not an animation!"
+    },
+    "scenery/lantern_stands/lantern_stand_018#lit_4#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "76461b629b0f67c3",
+      "updated_at": "2026-09-18T07:25:36.583Z"
+    },
+    "scenery/lantern_stands/lantern_stand_018#lit_4#south-west": {
+      "status": "redo",
+      "art": "5bb1ee362ebe02f0",
+      "updated_at": "2026-09-18T07:26:00.328Z",
+      "note": "To much movement! Only light should change!"
     }
   }
 }
