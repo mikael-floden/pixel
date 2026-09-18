@@ -47,3 +47,9 @@ client/public/shipset.json
 
 # Boot-timing instrument output (verify-boottime.mjs), one JSON line per run
 .boottime.json
+
+# SCRATCH PROBES (never committed): a leading underscore in scripts/ marks a
+# one-off instrument — a shot, a sweep, a trace written to answer one question
+# and kept only while the question is open. The repo law is that they never
+# land, so the tree says so rather than every run asking.
+scripts/_*
