@@ -28,6 +28,7 @@
  * join, never a normal one (shipped worlds resolve entirely from the image
  * and never enter this code path).
  */
+import { sessionGet, sessionSet } from "./sessionflag";
 
 const REPO = "mikael-floden/pixel";
 let base: string | null = null; // trailing slash; null = staging inactive
@@ -76,7 +77,7 @@ export async function resolveStagingBase(): Promise<string | null> {
     if (override) return override.endsWith("/") ? override : override + "/";
   } catch {}
   try {
-    const hit = sessionStorage.getItem("ml-staging-sha");
+    const hit = sessionGet("ml-staging-sha");
     if (hit) return `https://cdn.jsdelivr.net/gh/${REPO}@${hit}/`;
   } catch {}
   try {
@@ -86,7 +87,7 @@ export async function resolveStagingBase(): Promise<string | null> {
     const sha = ((await r.json()) as { sha?: string })?.sha;
     if (sha) {
       try {
-        sessionStorage.setItem("ml-staging-sha", sha);
+        sessionSet("ml-staging-sha", sha);
       } catch {}
       return `https://cdn.jsdelivr.net/gh/${REPO}@${sha}/`;
     }

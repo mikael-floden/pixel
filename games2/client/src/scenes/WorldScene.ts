@@ -301,6 +301,7 @@ import { sceneryAnimClass, scenerySleepMs, SCENERY_ANIM_FPS, type SceneryAnimCla
 import { lightAnimTune } from "../lightanim";
 import { boundLightFrame, easeLightFrame, atLightRest, LIGHT_FRAME_REST, type LightFrameState } from "../lightframe";
 import { sceneryAnimVerdict } from "../live";
+import { sessionRemove, sessionSet } from "../sessionflag";
 
 // Fallback loop rates when a state has no measured gaitFps. The jump clip is
 // NOT here: it plays once and its rate is derived per character in
@@ -12535,7 +12536,7 @@ export class WorldScene extends Phaser.Scene {
         if (++this.reconnectRetries >= 6) {
           // Persistent failure — a clean reload (with the select-skip flag)
           // is the last resort, not the first.
-          sessionStorage.setItem("ml-rejoin", "1");
+          sessionSet("ml-rejoin", "1");
           location.reload();
           return;
         }
@@ -14434,11 +14435,11 @@ export class WorldScene extends Phaser.Scene {
     this.unloading = true;
     try {
       localStorage.removeItem("ml-last-choice");
-      sessionStorage.removeItem("ml-rejoin");
+      sessionRemove("ml-rejoin");
       // tell the select screen we're arriving FROM the game: skip its
       // first-launch title beat and land the logo already at its final spot,
       // just fading in from black (select.ts reads + clears this flag).
-      sessionStorage.setItem("ml-from-game", "1");
+      sessionSet("ml-from-game", "1");
     } catch {}
     try {
       this.room?.leave();

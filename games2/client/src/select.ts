@@ -7,6 +7,7 @@ import { listenWikiNear } from "./wikinear";
 import { gameAudio } from "../../composer/index";
 import { withV } from "./assetver";
 import { drawPixelText, measurePixelText } from "./pixeltext";
+import { sessionGet, sessionRemove } from "./sessionflag";
 
 const NAMES = ["Ari", "Bex", "Cyl", "Dax", "Eir", "Fen", "Gio", "Hana", "Ivo", "Juno", "Kira", "Lio"];
 
@@ -241,8 +242,8 @@ export function chooseCharacter(manifest: Manifest, worlds: WorldInfo[] = []): P
     // unlocks WebAudio). commit()/__mlSelect bypass all of this.
     const fromGame = (() => {
       try {
-        const f = sessionStorage.getItem("ml-from-game") === "1";
-        sessionStorage.removeItem("ml-from-game");
+        const f = sessionGet("ml-from-game") === "1";
+        sessionRemove("ml-from-game");
         return f;
       } catch {
         return false;

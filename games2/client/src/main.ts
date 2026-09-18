@@ -19,6 +19,7 @@ import { registerGame } from "./gamefreeze";
 import { openUpdateNotes } from "./updatenote";
 import { mountAmbient } from "../../ambient/index";
 import { gameAudio } from "../../composer/index";
+import { sessionGet, sessionRemove, sessionSet } from "./sessionflag";
 
 // ---- PWA ----
 // Capture the browser's install prompt the moment it fires (often before any
@@ -158,25 +159,17 @@ let bootReloadOpen = true;
 async function reloadIfBehindAtBoot(): Promise<void> {
   const mine = (import.meta.env.VITE_GIT_SHA as string | undefined) || "dev";
   if (mine === "dev") return; // local dev: vite HMR handles it
-  let rejoin = false;
-  try {
-    rejoin = sessionStorage.getItem("ml-rejoin") === "1"; // read before boot() consumes it
-  } catch {
-    /* no storage */
-  }
+  const rejoin = sessionGet("ml-rejoin") === "1"; // read before boot() consumes it
   try {
     const res = await fetch("/version", { cache: "no-store" });
     if (!res.ok) return;
     const { sha } = (await res.json()) as { sha?: string };
     if (!sha || sha === "dev" || sha === mine) return;
     const key = "ml-boot-reload-at";
-    let last = 0;
-    let canRemember = true;
-    try {
-      last = Number(sessionStorage.getItem(key) || 0);
-    } catch {
-      canRemember = false;
-    }
+    const stamp = sessionGet(key);
+    const last = Number(stamp || 0);
+    const canRemember = sessionSet("ml-storage-probe", "1");
+    sessionRemove("ml-storage-probe");
     // NO STORAGE, NO RELOAD — BANNER ONLY. The old comment here said "one
     // reload is still bounded by bootReloadOpen", and that is wrong:
     // `bootReloadOpen` is a module-level flag, so it is `true` again on every
@@ -190,15 +183,13 @@ async function reloadIfBehindAtBoot(): Promise<void> {
       showUpdateBanner(sha);
       return;
     }
-    try {
-      sessionStorage.setItem(key, String(Date.now()));
-      if (rejoin) sessionStorage.setItem("ml-rejoin", "1");
-    } catch {
-      // Lost the write after the read worked: do NOT reload unmarked, or the
-      // next load has nothing to stop it doing the same again.
+    // Lost the write after the probe said it would work: do NOT reload
+    // unmarked, or the next load has nothing to stop it doing the same again.
+    if (!sessionSet(key, String(Date.now()))) {
       showUpdateBanner(sha);
       return;
     }
+    if (rejoin) sessionSet("ml-rejoin", "1");
     console.log(`[nangijala] build ${mine.slice(0, 9)} is behind the served ${sha.slice(0, 9)} — reloading`);
     location.reload();
   } catch {
@@ -323,8 +314,8 @@ async function boot() {
   // choice, so a phone coming back from background is in the world within
   // seconds (position restored server-side via the token store).
   let choice: Awaited<ReturnType<typeof chooseCharacter>> | null = null;
-  if (sessionStorage.getItem("ml-rejoin") === "1") {
-    sessionStorage.removeItem("ml-rejoin");
+  if (sessionGet("ml-rejoin") === "1") {
+    sessionRemove("ml-rejoin");
     try {
       const saved = JSON.parse(localStorage.getItem("ml-last-choice") || "null") as {
         world?: string;
