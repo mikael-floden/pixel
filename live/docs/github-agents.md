@@ -52,8 +52,13 @@ Claude reading its first file:
   so CLAUDE.md and requirements.txt are there): 8s, from 171s. It can widen the
   cone itself with `git sparse-checkout add`, which the prompt tells it.
 - **Nothing waits.** The `debounce` job is gone — see the law below.
-- What is left is the floor: runner start, that checkout, pip, and the CLI
-  install inside the action.
+- **Python is not set up for it.** `setup-python` + `pip install -r
+  requirements.txt` cost 6s of every start, and a session that only clears a
+  verdict or answers "nothing to do" never needs them. The runner ships python3;
+  the prompt tells the agent to install the requirements itself the moment it
+  reaches for a pipeline.
+- What is left is the floor: runner start, that checkout, and the CLI install
+  inside the action.
 
 
 **THE FEEDBACK FILE IS NOT THE DIRECTORY.** He reviews scenery and the wiki

@@ -202,10 +202,12 @@ jobs:
             wiki/lib
             games2/scripts
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-      - run: pip install -r requirements.txt
+      # NO PYTHON SET-UP ON THE CRITICAL PATH (maintainer 2026-09-18: "Can we get
+      # the 27s down to 20s?"). setup-python + `pip install -r requirements.txt`
+      # cost 6s of every start, before Claude read a line — and a session that
+      # only clears a verdict or answers "nothing to do" never needs them. The
+      # runner already ships python3, and the prompt tells the agent to install
+      # the requirements itself the moment it actually reaches for a pipeline.
 
       - uses: anthropics/claude-code-action@v1
         env:
@@ -271,6 +273,12 @@ jobs:
             games2/scripts, plus the repo root. If you need another directory, widen it
             yourself with `git sparse-checkout add <dir>` rather than working around a
             missing path.
+
+            The runner has python3 but NOT this repo's packages: run
+            `pip install -r requirements.txt` yourself before the first pipeline command
+            that needs them (it takes about 5 seconds). It is not done for you because
+            most of these sessions never run a pipeline at all, and every start pays for
+            it.
 
             4. Do the work with the domain's OWN pipeline commands rather than by hand
                where it has them, clear each verdict as you act on it, run the domain's
