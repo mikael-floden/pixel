@@ -21,6 +21,7 @@ import { mountGamepadStick } from "./gamepad";
 import { mountBars } from "./bars";
 import { mountWikiButton } from "./wikibtn";
 import { mountWikiNearButton } from "./wikinear";
+import { mountRecordButton } from "./recbtn";
 import { mountTheme, toggleTheme, currentTheme } from "./theme";
 import { getHand, toggleHand, handLabel } from "./controls";
 import {
@@ -220,6 +221,7 @@ export function mountPageFrame() {
   mountBars(); // HP/EP/XP + gold + level, over the top of the game view
   mountWikiButton(); // the wiki drawer's opener, stacked with the clock pill
   mountWikiNearButton(); // 🔍 what am I standing next to — left of the Wiki button
+  mountRecordButton(); // his record button, under the HP/EP card (recbtn.ts)
   document.getElementById("ml-pageframe")?.remove(); // ancient overlay, if any
   // In the WORLD now: landscape becomes a real layout instead of the
   // "rotate your phone" prompt (index.html hides #ml-rotate under this

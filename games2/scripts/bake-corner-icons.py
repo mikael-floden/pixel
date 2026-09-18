@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
-"""Bake the select screen's + game view's CORNER ICONS from the maintainer's
-own PixelLab exports.
+"""Bake the HUD's PIXELLAB ICONS from the maintainer's own exports — the
+select screen's and game view's corner icons, and the record button's two
+faces. (The name is the original four; the recipe was always "his export ->
+exact 2x -> /ui2" and that is what the entries below are.)
 
 Sources: client/ui-src/icon-<name>-src.png — the UNTOUCHED export is the pixel
 source of record (his reposted images accumulate JPEG artifacts, so the first
-upload is what we keep). Each is 24x24 with binary alpha. The bake is an EXACT
-2x nearest-neighbour upscale to client/public/ui2/icon-<name>.webp, which the
-runtime then sizes to naturalWidth/2 — that lands every icon on its authored
-grid at any screen density, and it is ONE rule shared with the tab icons
-rather than a hardcoded box per icon (UI_AGENT.md).
+upload is what we keep). Any size, binary alpha; the corner icons are 24x24
+and the record faces 48x48. The bake is an EXACT 2x nearest-neighbour upscale
+to client/public/ui2/icon-<name>.webp, which the runtime then sizes to
+naturalWidth/2 — that lands every icon on its authored grid at any screen
+density, and it is ONE rule shared with the tab icons rather than a hardcoded
+box per icon (UI_AGENT.md).
 
     python3 scripts/bake-corner-icons.py           # verify only, writes nothing
     python3 scripts/bake-corner-icons.py --write   # bake
@@ -30,6 +33,13 @@ THE TRANSFORMS, one line each:
                      box that reads as 2px of exactly the misalignment the box
                      exists to prevent. Pure integer translation, -2/+2.
   search   mirror  — the antique magnifying glass, flipped (maintainer's own).
+  record   none    — the record button's IDLE face: lamp dark, knob raised.
+  record-on none   — its RECORDING face: lamp lit with a halo, knob pressed
+                     (maintainer 2026-09-18: "if you press the button it
+                     should change state to red/recording"). Which export is
+                     which was MEASURED, not guessed from the file order: the
+                     lit face carries 88 warm pixels peaking at 188, the idle
+                     one 16 peaking at 98.
   install  none    — the gold download arrow (PixelLab prompt "Download",
                      2026-09-13: "the new download game icon on the character
                      select screen"). Its 18x21 ink sits 2px from the top and
@@ -49,7 +59,14 @@ from PIL import Image
 SRC = Path("client/ui-src")
 OUT = Path("client/public/ui2")
 # name -> transform: "none" | "mirror" | "centre"
-ICONS = {"wiki": "none", "theme": "centre", "search": "mirror", "install": "none"}
+ICONS = {
+    "wiki": "none",
+    "theme": "centre",
+    "search": "mirror",
+    "install": "none",
+    "record": "none",
+    "record-on": "none",
+}
 
 
 def mirror(im: Image.Image) -> Image.Image:
