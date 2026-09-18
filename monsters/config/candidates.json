@@ -119,25 +119,6 @@
       "die_action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away"
     },
     {
-      "id": "fire_elemental",
-      "name": "Flarewisp",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 96,
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Fantasy fire elemental shown full body from head to feet, a humanoid figure of living orange and yellow flame with a dark ember core, two blazing white eyes, arms tapering into licks of fire, and sparks drifting off its shoulders.",
-      "lore": "It burns because it is, not because it must. It follows travellers for the company and leaves them as ash.",
-      "attack_action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
-      "fx": true,
-      "attack_extreme": "Firestorm - The elemental throws both arms wide and erupts, flame bursting out in every direction",
-      "die_action": "Death - The flames gutter and shrink down to a dark ember on the ground, then go out and fade away"
-    },
-    {
       "id": "lizard_warrior",
       "name": "Scaleblade",
       "tier": "mid",
@@ -4233,6 +4214,28 @@
       "versions_tried": 2,
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-18T14:29:24+00:00"
+    },
+    {
+      "id": "fire_elemental",
+      "name": "Flarewisp",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Fantasy fire elemental shown full body from head to feet, a humanoid figure of living orange and yellow flame with a dark ember core, two blazing white eyes, arms tapering into licks of fire, and sparks drifting off its shoulders.",
+      "lore": "It burns because it is, not because it must. It follows travellers for the company and leaves them as ash.",
+      "attack_action": "Flame Burst - Throws both hands forward and hurls a burst of flame",
+      "fx": true,
+      "attack_extreme": "Firestorm - The elemental throws both arms wide and erupts, flame bursting out in every direction",
+      "die_action": "Death - The flames gutter and shrink down to a dark ember on the ground, then go out and fade away",
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-18T23:33:37+00:00",
+      "versions_tried": 1
     }
   ],
   "graduated": [
