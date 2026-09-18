@@ -1277,7 +1277,7 @@
           "rung": 1
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.462,
           "step_max": 0.5618,
           "drift": 5.44,
@@ -1295,6 +1295,7 @@
             136
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.20 — eyeball it"
           ],
           "sub": "be79a4d4-92f9-4730-8e53-981d32748714",
@@ -1308,7 +1309,8 @@
           "rolls": 2,
           "intensity": 0,
           "frames": 4,
-          "rung": 1
+          "rung": 1,
+          "maintainer": "redo"
         },
         "east": {
           "status": "warn",
@@ -1345,7 +1347,7 @@
           "rung": 0
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.4772,
           "step_max": 0.5318,
           "drift": 7.65,
@@ -1362,7 +1364,9 @@
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "143e346a-3484-47fd-bd16-23ba6b6e6c89",
           "group": "d640f0e8-924d-4bf3-8ebe-593c4724431d",
           "takes": 1,
@@ -1374,7 +1378,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "north": {
           "status": "warn",
@@ -1446,7 +1451,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.4772,
           "step_max": 0.5318,
           "drift": 7.65,
@@ -1463,7 +1468,9 @@
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "143e346a-3484-47fd-bd16-23ba6b6e6c89",
           "group": "d640f0e8-924d-4bf3-8ebe-593c4724431d",
           "takes": 1,
@@ -1476,10 +1483,11 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "redo"
         },
         "south-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.462,
           "step_max": 0.5618,
           "drift": 5.44,
@@ -1497,6 +1505,7 @@
             136
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.20 — eyeball it"
           ],
           "sub": "be79a4d4-92f9-4730-8e53-981d32748714",
@@ -1511,7 +1520,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 1,
-          "source": "south-east"
+          "source": "south-east",
+          "maintainer": "redo"
         }
       },
       "action": "Bite - Lunges forward with its jaws wide open and bites hard",
@@ -2095,7 +2105,7 @@
           "mode": "v3"
         },
         "north": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1652,
           "step_max": 0.252,
           "drift": 8.2,
@@ -2115,6 +2125,7 @@
             136
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 8.2 px — eyeball it"
           ],
           "sub": "60154476-d041-4035-89e1-f0922f098978",
@@ -2129,7 +2140,8 @@
           "intensity": 0,
           "frames": 5,
           "rung": 0,
-          "mode": "v3"
+          "mode": "v3",
+          "maintainer": "redo"
         },
         "south-west": {
           "status": "warn",

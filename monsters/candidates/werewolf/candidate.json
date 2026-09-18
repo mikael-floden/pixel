@@ -1322,7 +1322,7 @@
           "rung": 0
         },
         "east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.5579,
           "step_max": 0.6231,
           "drift": 12.93,
@@ -1340,6 +1340,7 @@
             128
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 12.9 px — eyeball it"
           ],
           "sub": "00f68b74-e46e-4a24-92ed-3181f6fdacef",
@@ -1353,7 +1354,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "north-east": {
           "status": "warn",
@@ -1457,7 +1459,7 @@
           "source": "south-east"
         },
         "west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.5579,
           "step_max": 0.6231,
           "drift": 12.93,
@@ -1475,6 +1477,7 @@
             128
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 12.9 px — eyeball it"
           ],
           "sub": "00f68b74-e46e-4a24-92ed-3181f6fdacef",
@@ -1489,7 +1492,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "east"
+          "source": "east",
+          "maintainer": "redo"
         },
         "north-west": {
           "status": "warn",
@@ -2073,7 +2077,7 @@
           "mode": "v3"
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.2884,
           "step_max": 0.4294,
           "drift": 9.41,
@@ -2093,6 +2097,7 @@
             128
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 9.4 px — eyeball it"
           ],
           "sub": "3d3318af-7ea1-4c13-b670-a32e8d06043a",
@@ -2107,7 +2112,8 @@
           "intensity": 0,
           "frames": 5,
           "rung": 0,
-          "mode": "v3"
+          "mode": "v3",
+          "maintainer": "redo"
         },
         "north": {
           "status": "pass",
@@ -2217,7 +2223,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.2884,
           "step_max": 0.4294,
           "drift": 9.41,
@@ -2237,6 +2243,7 @@
             128
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 9.4 px — eyeball it"
           ],
           "sub": "3d3318af-7ea1-4c13-b670-a32e8d06043a",
@@ -2252,7 +2259,8 @@
           "frames": 5,
           "rung": 0,
           "mode": "v3",
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "redo"
         }
       },
       "action": "Angry combat idle, frustrated - snarls and shifts its weight, tense and ready to strike, then settles back into the same pose it started in",

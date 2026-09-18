@@ -2136,7 +2136,7 @@
           "mode": "v3"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1039,
           "step_max": 0.1287,
           "drift": 4.25,
@@ -2155,7 +2155,9 @@
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: The hand appears behind his body"
+          ],
           "sub": "e3b0eef8-1636-4f03-8958-8b97b4b17897",
           "group": "2e0eacd4-d339-46ab-b512-84f4af0a9e2b",
           "takes": 1,
@@ -2168,7 +2170,8 @@
           "intensity": 0,
           "frames": 5,
           "rung": 0,
-          "mode": "v3"
+          "mode": "v3",
+          "maintainer": "The hand appears behind his body"
         },
         "south-west": {
           "status": "warn",

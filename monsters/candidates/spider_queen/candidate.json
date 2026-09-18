@@ -1348,7 +1348,7 @@
           "rung": 0
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.5539,
           "step_max": 0.6633,
           "drift": 27.64,
@@ -1366,6 +1366,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 27.6 px — eyeball it",
             "shallow strike: reach 0.24 — eyeball it"
           ],
@@ -1380,7 +1381,8 @@
           "rolls": 2,
           "intensity": 0,
           "frames": 4,
-          "rung": 1
+          "rung": 1,
+          "maintainer": "redo"
         },
         "north": {
           "status": "warn",
@@ -1487,7 +1489,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.5539,
           "step_max": 0.6633,
           "drift": 27.64,
@@ -1505,6 +1507,7 @@
             240
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 27.6 px — eyeball it",
             "shallow strike: reach 0.24 — eyeball it"
           ],
@@ -1520,7 +1523,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 1,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "redo"
         }
       },
       "action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs",

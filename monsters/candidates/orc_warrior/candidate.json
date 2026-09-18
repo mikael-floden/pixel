@@ -1927,7 +1927,7 @@
     "angry_v1": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1087,
           "step_max": 0.146,
           "drift": 1.84,
@@ -1946,7 +1946,9 @@
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "299f6f3f-4a6f-4678-a687-7f19cd39a693",
           "group": "29eea442-0255-4b62-8bbc-f5d994d8132c",
           "takes": 1,
@@ -1959,7 +1961,8 @@
           "intensity": 0,
           "frames": 5,
           "rung": 0,
-          "mode": "v3"
+          "mode": "v3",
+          "maintainer": "redo"
         },
         "south-east": {
           "status": "pass",
@@ -2067,7 +2070,7 @@
           "mode": "v3"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0932,
           "step_max": 0.1424,
           "drift": 3.76,
@@ -2086,7 +2089,9 @@
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "e0e6b1f0-95c6-42ae-8d06-6df42fa2bc4c",
           "group": "b13944f7-436e-41d8-90d6-4073ea4404c5",
           "takes": 1,
@@ -2099,7 +2104,8 @@
           "intensity": 0,
           "frames": 5,
           "rung": 0,
-          "mode": "v3"
+          "mode": "v3",
+          "maintainer": "redo"
         },
         "south-west": {
           "status": "pass",

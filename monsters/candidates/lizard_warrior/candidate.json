@@ -1310,7 +1310,7 @@
           "rung": 0
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.3032,
           "step_max": 0.4314,
           "drift": 5.49,
@@ -1327,7 +1327,9 @@
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "567a7030-3d04-4cbb-b951-b877fcb96019",
           "group": "96311eb4-4a01-432a-9f57-9e024dfb651a",
           "takes": 1,
@@ -1339,7 +1341,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "north-east": {
           "status": "pass",
@@ -1438,7 +1441,7 @@
           "source": "south-east"
         },
         "west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.3032,
           "step_max": 0.4314,
           "drift": 5.49,
@@ -1455,7 +1458,9 @@
             128,
             128
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "567a7030-3d04-4cbb-b951-b877fcb96019",
           "group": "96311eb4-4a01-432a-9f57-9e024dfb651a",
           "takes": 1,
@@ -1468,7 +1473,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "east"
+          "source": "east",
+          "maintainer": "redo"
         },
         "north-west": {
           "status": "pass",

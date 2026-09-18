@@ -1365,7 +1365,7 @@
           "rung": 0
         },
         "north": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.4978,
           "step_max": 0.5763,
           "drift": 6.11,
@@ -1383,6 +1383,7 @@
             112
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.28 — eyeball it"
           ],
           "sub": "a7bc5bcb-8644-4cdf-aad2-f441ec69b9af",
@@ -1396,7 +1397,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "south-west": {
           "status": "pass",

@@ -343,7 +343,7 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.2096,
           "step_max": 0.2501,
           "drift": 2.59,
@@ -356,13 +356,16 @@
             64,
             64
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Doesn't look like walk"
+          ],
           "sub": "3b92e065-4b0a-4092-8c39-3c81b2992f42",
           "group": "709c17aa-9573-40f1-abe9-c12fdb1d2880",
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:16:10+00:00"
+          "generated_at": "2026-09-09T21:16:10+00:00",
+          "maintainer": "Doesn't look like walk"
         },
         "south-east": {
           "status": "pass",
@@ -1272,7 +1275,7 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.2117,
           "step_max": 0.427,
           "drift": 6.41,
@@ -1290,6 +1293,7 @@
             64
           ],
           "reasons": [
+            "HE says redo: Attack renders outside frame to much",
             "some bright effect pixels (0.37) — eyeball it",
             "9 px of travel — eyeball it"
           ],
@@ -1304,10 +1308,11 @@
           "rolls": 4,
           "intensity": 0,
           "frames": 16,
-          "rung": 3
+          "rung": 3,
+          "maintainer": "Attack renders outside frame to much"
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0567,
           "step_max": 0.1629,
           "drift": 3.13,
@@ -1325,6 +1330,7 @@
             64
           ],
           "reasons": [
+            "HE says redo: Attack renders outside frame to much",
             "motion 0.057 outside the calm band 0.08–0.9 — eyeball it"
           ],
           "sub": "3e0e5fb7-1915-4fe4-a62c-a253afaca882",
@@ -1338,10 +1344,11 @@
           "rolls": 4,
           "intensity": 0,
           "frames": 16,
-          "rung": 3
+          "rung": 3,
+          "maintainer": "Attack renders outside frame to much"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.276,
           "step_max": 0.5071,
           "drift": 7.35,
@@ -1358,7 +1365,9 @@
             64,
             64
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Attack renders outside frame to much"
+          ],
           "sub": "a8f26d47-6a05-453d-b605-48aa8d02bb85",
           "group": "3fb3e0af-cccf-47fd-b05e-6b4db77ec5c0",
           "takes": 1,
@@ -1370,10 +1379,11 @@
           "rolls": 3,
           "intensity": 0,
           "frames": 16,
-          "rung": 2
+          "rung": 2,
+          "maintainer": "Attack renders outside frame to much"
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0689,
           "step_max": 0.237,
           "drift": 3.42,
@@ -1391,6 +1401,7 @@
             64
           ],
           "reasons": [
+            "HE says redo: Attack renders outside frame to much",
             "motion 0.069 outside the calm band 0.08–0.9 — eyeball it"
           ],
           "sub": "5c688c9b-1a8a-4252-b90b-21aabb2dc0bf",
@@ -1404,10 +1415,11 @@
           "rolls": 4,
           "intensity": 0,
           "frames": 16,
-          "rung": 3
+          "rung": 3,
+          "maintainer": "Attack renders outside frame to much"
         },
         "north": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1319,
           "step_max": 0.4448,
           "drift": 2.99,
@@ -1425,6 +1437,7 @@
             64
           ],
           "reasons": [
+            "HE says redo: Attack renders outside frame to much",
             "some bright effect pixels (0.43) — eyeball it"
           ],
           "sub": "0805e58b-223f-4831-82f6-eb393c075f10",
@@ -1438,10 +1451,11 @@
           "rolls": 3,
           "intensity": 0,
           "frames": 16,
-          "rung": 2
+          "rung": 2,
+          "maintainer": "Attack renders outside frame to much"
         },
         "west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.276,
           "step_max": 0.5071,
           "drift": 7.35,
@@ -1458,7 +1472,9 @@
             64,
             64
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Attack renders outside frame to much"
+          ],
           "sub": "a8f26d47-6a05-453d-b605-48aa8d02bb85",
           "group": "3fb3e0af-cccf-47fd-b05e-6b4db77ec5c0",
           "takes": 1,
@@ -1471,7 +1487,8 @@
           "intensity": 0,
           "frames": 16,
           "rung": 2,
-          "source": "east"
+          "source": "east",
+          "maintainer": "Attack renders outside frame to much"
         },
         "south-west": {
           "status": "warn",
@@ -1509,7 +1526,7 @@
           "source": "south-east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0689,
           "step_max": 0.237,
           "drift": 3.42,
@@ -1527,6 +1544,7 @@
             64
           ],
           "reasons": [
+            "HE says redo: Attack renders outside frame to much",
             "motion 0.069 outside the calm band 0.08–0.9 — eyeball it"
           ],
           "sub": "5c688c9b-1a8a-4252-b90b-21aabb2dc0bf",
@@ -1541,7 +1559,8 @@
           "intensity": 0,
           "frames": 16,
           "rung": 3,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "Attack renders outside frame to much"
         }
       },
       "action": "Eye Beam - Flares its pupil wide and fires a beam of light forward",

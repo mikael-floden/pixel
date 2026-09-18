@@ -1224,7 +1224,7 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.4568,
           "step_max": 0.5239,
           "drift": 4.98,
@@ -1242,6 +1242,7 @@
             150
           ],
           "reasons": [
+            "HE says redo: redo",
             "canvas grown by 19 px a side to hold the motion"
           ],
           "sub": "e0e841bb-d7a2-49ac-88fb-adb78f8e58c5",
@@ -1251,10 +1252,11 @@
           "generated_at": "2026-09-11T16:28:08+00:00",
           "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
           "rolls": 1,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "south-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.4678,
           "step_max": 0.5218,
           "drift": 8.18,
@@ -1272,6 +1274,7 @@
             152
           ],
           "reasons": [
+            "HE says redo: redo",
             "canvas grown by 20 px a side to hold the motion"
           ],
           "sub": "52c3ab5a-7bff-4784-8839-31b10e9d93f7",
@@ -1281,10 +1284,11 @@
           "generated_at": "2026-09-11T16:28:09+00:00",
           "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
           "rolls": 1,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.3426,
           "step_max": 0.4391,
           "drift": 4.01,
@@ -1301,7 +1305,9 @@
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "47099119-656c-4f30-87a9-27ada084e0d2",
           "group": "4fe72472-e05a-47ed-9157-db90140344e0",
           "takes": 1,
@@ -1313,10 +1319,11 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "north-east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.5376,
           "step_max": 0.648,
           "drift": 5.93,
@@ -1334,6 +1341,7 @@
             162
           ],
           "reasons": [
+            "HE says redo: redo",
             "canvas grown by 25 px a side to hold the motion"
           ],
           "sub": "480e6836-bb47-455d-9ecf-2d156b486ca0",
@@ -1343,10 +1351,11 @@
           "generated_at": "2026-09-11T16:28:10+00:00",
           "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",
           "rolls": 1,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.6193,
           "step_max": 0.8124,
           "drift": 6.19,
@@ -1363,7 +1372,9 @@
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "5972a1a3-79ba-4dad-a989-7a30bf65fd37",
           "group": "4fe72472-e05a-47ed-9157-db90140344e0",
           "takes": 1,
@@ -1375,10 +1386,11 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "south-west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.4678,
           "step_max": 0.5218,
           "drift": 8.18,
@@ -1396,6 +1408,7 @@
             152
           ],
           "reasons": [
+            "HE says redo: redo",
             "canvas grown by 20 px a side to hold the motion"
           ],
           "sub": "52c3ab5a-7bff-4784-8839-31b10e9d93f7",
@@ -1407,10 +1420,11 @@
           "rolls": 1,
           "rung": 0,
           "mirrored": true,
-          "source": "south-east"
+          "source": "south-east",
+          "maintainer": "redo"
         },
         "west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.3426,
           "step_max": 0.4391,
           "drift": 4.01,
@@ -1427,7 +1441,9 @@
             112,
             112
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "47099119-656c-4f30-87a9-27ada084e0d2",
           "group": "4fe72472-e05a-47ed-9157-db90140344e0",
           "takes": 1,
@@ -1440,10 +1456,11 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "east"
+          "source": "east",
+          "maintainer": "redo"
         },
         "north-west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.5376,
           "step_max": 0.648,
           "drift": 5.93,
@@ -1461,6 +1478,7 @@
             162
           ],
           "reasons": [
+            "HE says redo: redo",
             "canvas grown by 25 px a side to hold the motion"
           ],
           "sub": "480e6836-bb47-455d-9ecf-2d156b486ca0",
@@ -1472,7 +1490,8 @@
           "rolls": 1,
           "rung": 0,
           "mirrored": true,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "redo"
         }
       },
       "action": "Staff Curse - Jabs the staff out and green swamp magic bursts from the tip",

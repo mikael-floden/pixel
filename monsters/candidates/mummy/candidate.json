@@ -1333,7 +1333,7 @@
           "rung": 0
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.7818,
           "step_max": 0.8674,
           "drift": 13.08,
@@ -1351,6 +1351,7 @@
             104
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 13.1 px — eyeball it",
             "13 px of travel — eyeball it"
           ],
@@ -1365,7 +1366,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "north": {
           "status": "warn",
@@ -1470,7 +1472,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.7818,
           "step_max": 0.8674,
           "drift": 13.08,
@@ -1488,6 +1490,7 @@
             104
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 13.1 px — eyeball it",
             "13 px of travel — eyeball it"
           ],
@@ -1503,7 +1506,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "redo"
         }
       },
       "action": "Grasping Swipe - Lunges forward with both bandaged arms out in a grasping swipe",

@@ -1273,7 +1273,7 @@
           "rung": 2
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.211,
           "step_max": 0.5986,
           "drift": 2.9,
@@ -1291,6 +1291,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.18 — eyeball it"
           ],
           "sub": "f4dfabd3-936e-45f2-bfcd-17ce33a47aa9",
@@ -1304,10 +1305,11 @@
           "rolls": 4,
           "intensity": 0,
           "frames": 16,
-          "rung": 3
+          "rung": 3,
+          "maintainer": "redo"
         },
         "east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.2366,
           "step_max": 0.6422,
           "drift": 5.57,
@@ -1325,6 +1327,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.16 — eyeball it"
           ],
           "sub": "f5bf2979-8301-4cf6-a6e5-9fedefb44723",
@@ -1338,7 +1341,8 @@
           "rolls": 4,
           "intensity": 0,
           "frames": 16,
-          "rung": 3
+          "rung": 3,
+          "maintainer": "redo"
         },
         "north-east": {
           "status": "warn",
@@ -1444,7 +1448,7 @@
           "source": "north-east"
         },
         "south-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.211,
           "step_max": 0.5986,
           "drift": 2.9,
@@ -1462,6 +1466,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.18 — eyeball it"
           ],
           "sub": "f4dfabd3-936e-45f2-bfcd-17ce33a47aa9",
@@ -1476,10 +1481,11 @@
           "intensity": 0,
           "frames": 16,
           "rung": 3,
-          "source": "south-east"
+          "source": "south-east",
+          "maintainer": "redo"
         },
         "west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.2366,
           "step_max": 0.6422,
           "drift": 5.57,
@@ -1497,6 +1503,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.16 — eyeball it"
           ],
           "sub": "f5bf2979-8301-4cf6-a6e5-9fedefb44723",
@@ -1511,7 +1518,8 @@
           "intensity": 0,
           "frames": 16,
           "rung": 3,
-          "source": "east"
+          "source": "east",
+          "maintainer": "redo"
         }
       },
       "action": "Claw Pinch - Darts forward and snaps both small claws shut hard",

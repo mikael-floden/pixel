@@ -1343,7 +1343,7 @@
           "rung": 0
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.6864,
           "step_max": 0.7357,
           "drift": 7.72,
@@ -1360,7 +1360,9 @@
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "c155a9cb-bacf-4375-891e-48f58789a1e2",
           "group": "7cc09fa8-a77c-402e-80f5-794ea054f8d0",
           "takes": 1,
@@ -1372,7 +1374,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "north-east": {
           "status": "pass",
@@ -1472,7 +1475,7 @@
           "source": "south-east"
         },
         "west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.6864,
           "step_max": 0.7357,
           "drift": 7.72,
@@ -1489,7 +1492,9 @@
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "c155a9cb-bacf-4375-891e-48f58789a1e2",
           "group": "7cc09fa8-a77c-402e-80f5-794ea054f8d0",
           "takes": 1,
@@ -1502,7 +1507,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "east"
+          "source": "east",
+          "maintainer": "redo"
         },
         "north-west": {
           "status": "pass",
@@ -1976,7 +1982,7 @@
     "angry_v1": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1454,
           "step_max": 0.1542,
           "drift": 2.09,
@@ -1995,7 +2001,9 @@
             136,
             136
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "07b8372d-b40b-40d0-b686-73ecebd13817",
           "group": "db5239c8-8d95-472f-9ebc-d8c7abe61bfc",
           "takes": 1,
@@ -2008,7 +2016,8 @@
           "intensity": 0,
           "frames": 5,
           "rung": 0,
-          "mode": "v3"
+          "mode": "v3",
+          "maintainer": "redo"
         },
         "south-east": {
           "status": "pass",

@@ -56,61 +56,6 @@
       "die_action": "Death - The shell cracks open and the crab crumbles into a scatter of broken shell pieces, then fades away"
     },
     {
-      "id": "shell_roller",
-      "name": "Clankball",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 88,
-      "biome": [
-        "light_soil",
-        "grey_stone",
-        "lava"
-      ],
-      "items": [
-        "plated beetle"
-      ],
-      "prompt": "Round fantasy armored pill bug with a compact ball-shaped body of overlapping dark iron-gray plates riveted with copper studs, short stubby legs tucked beneath it, two glowing orange slit eyes at the front, small antennae, and hot orange light glowing between the plates.",
-      "lore": "It rolls down the scree at whatever moves. The smiths say its plates ring in a note they cannot forge.",
-      "scale": "standard"
-    },
-    {
-      "id": "silk_spider",
-      "name": "Silkmaw",
-      "tier": "evil",
-      "template_id": "bear",
-      "size": 136,
-      "biome": [
-        "dark_mud",
-        "black_rock"
-      ],
-      "items": [
-        "silk skein"
-      ],
-      "prompt": "Huge fantasy cave spider with a hairy black abdomen marked with a pale bone-white skull pattern, eight long jointed legs with dark red joints, a cluster of eight glowing red eyes, large dripping fangs, and thick strands of white silk trailing from its spinnerets.",
-      "lore": "It spins in the dark and waits for the dark to be crossed. The skull on its back is the last thing many travellers read.",
-      "scale": "standard"
-    },
-    {
-      "id": "root_forager",
-      "name": "Twineback",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 96,
-      "biome": [
-        "grass",
-        "dark_mud",
-        "light_soil"
-      ],
-      "items": [
-        "twine-tied herbs",
-        "twine-tied roots",
-        "twine-tied dried grass"
-      ],
-      "prompt": "Hunched fantasy forager bandit wearing a ragged moss-green hooded cloak over patched brown leather, face hidden in shadow except a crooked nose and two glinting eyes, a rusty sickle in one hand, twine-tied bundles of herbs, roots and dried grass strapped across the back, and muddy bare feet.",
-      "lore": "Not a monster, exactly. A man who took to the hedgerows and now takes from everyone who walks them.",
-      "scale": "standard"
-    },
-    {
       "id": "ember_king",
       "name": "Pyrelord",
       "tier": "boss",
@@ -131,38 +76,6 @@
       "fx": true,
       "attack_extreme": "Molten Crush - The king raises both burning fists overhead and smashes them down, embers bursting outward",
       "die_action": "Death - Sinks to its knees, the magma cracks and flames go dark, then it crumbles down onto the ground and fades away"
-    },
-    {
-      "id": "rime_yeti",
-      "name": "Rimehulk",
-      "tier": "boss",
-      "template_id": "mannequin",
-      "size": 160,
-      "biome": [
-        "snow",
-        "ice"
-      ],
-      "items": [
-        "ice soulstone"
-      ],
-      "prompt": "Hulking fantasy yeti with thick shaggy white fur crusted with ice, long powerful arms ending in blue-black claws, a broad ape-like face with a wide mouth of jagged icicle teeth, glowing pale blue eyes, icicles hanging from its chin and elbows, and a frost-blue underbelly.",
-      "lore": "The blizzard walks on two legs up there. Climbers hear it breathing through the snow long before the snow turns red.",
-      "scale": "standard"
-    },
-    {
-      "id": "bog_lurker",
-      "name": "Boglurk",
-      "tier": "mid",
-      "template_id": "bear",
-      "size": 136,
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Fantasy amphibian monster like a giant axolotl with slimy dark olive skin, feathery crimson external gills fanning from its head, a wide flat toothy grin, bulging yellow eyes, four webbed clawed limbs, a short tail curled tightly under its round body, and strands of slime and pond weed hanging from its body.",
-      "lore": "Only the gills show above the mud, red as flowers. Pick one and the rest of it comes up smiling.",
-      "scale": "standard"
     },
     {
       "id": "hollow_knight",
@@ -208,24 +121,6 @@
       "fx": true,
       "attack_extreme": "Soul Grasp - The wraith surges forward with both arms thrown wide, veil billowing out around it",
       "die_action": "Death - Sinks down, the veil and dress dissolving into mist that drifts apart and fades away"
-    },
-    {
-      "id": "storm_roc",
-      "name": "Stormroc",
-      "tier": "boss",
-      "template_id": "mannequin",
-      "size": 176,
-      "biome": [
-        "grey_stone",
-        "snow"
-      ],
-      "items": [
-        "bundle of bright plumes",
-        "rainbow tail plume"
-      ],
-      "prompt": "Enormous fantasy storm bird with dark slate-blue feathers edged in white lightning, a hooked steel-gray beak, blazing white eyes, wings raised high above its back crackling with electric arcs, no feathers hanging below its talons, long sharp talons, and a crest of feathers standing up like jagged lightning bolts.",
-      "lore": "It nests above the weather and hunts below it. Every thunderclap on the fells is a wingbeat somebody did not see.",
-      "scale": "standard"
     },
     {
       "id": "pebble_crab",
@@ -310,35 +205,6 @@
       "die_action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away"
     },
     {
-      "id": "sand_scorpion",
-      "name": "Duststing",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 104,
-      "biome": [
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Fantasy desert scorpion with a compact sand-yellow armored body, two thick pincers held close to its face, eight short legs, a segmented tail curled tightly over its back ending in a glowing red stinger, and small black eyes.",
-      "lore": "It sleeps under the dune and wakes under your boot. The sting comes first; the pincers only keep you still for it."
-    },
-    {
-      "id": "frost_fox",
-      "name": "Rimetail",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "dog",
-      "size": 96,
-      "biome": [
-        "snow",
-        "ice"
-      ],
-      "items": [],
-      "prompt": "Fantasy arctic fox with thick white fur tipped in pale blue, ice crystals growing from its ear tips, bright ice-blue eyes, a bushy tail wrapped around its body, and small frost patterns on its back.",
-      "lore": "It leaves no tracks and takes the warmth from a fire by sitting near it. Hunters call it the cold's own dog."
-    },
-    {
       "id": "lava_slug",
       "name": "Magmaslug",
       "tier": "mid",
@@ -357,36 +223,6 @@
       "fx": true,
       "attack_extreme": "Magma Eruption - The slug rears its front high and erupts, a gout of magma bursting forward",
       "die_action": "Death - Melts into a spreading puddle of lava that cools to dark rock and fades away"
-    },
-    {
-      "id": "bramble_boar",
-      "name": "Thornhog",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 120,
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Stocky fantasy wild boar with dark brown bristled hide, a thicket of thorny bramble vines growing across its back dotted with red berries, two yellowed tusks, small angry red eyes, and cloven hooves.",
-      "lore": "The hedge got up and charged. Its back is a bramble patch and the berries are the only thing that has ever calmed it."
-    },
-    {
-      "id": "goblin_scout",
-      "name": "Snaggle",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 96,
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Small fantasy goblin shown full body from head to feet, green warty skin, a large hooked nose, pointed ears, a patched leather cap, a ragged brown tunic, a rusty dagger in one hand and a lumpy loot sack in the other.",
-      "lore": "It takes what it can carry and runs. It is never alone; the rest of the warren is a whistle away."
     },
     {
       "id": "goblin_shaman",
@@ -426,21 +262,6 @@
       "die_action": "Death - The blue light in its eye sockets goes out and the bones collapse into a pile on the ground, then fade away"
     },
     {
-      "id": "zombie_farmer",
-      "name": "Rotwalker",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 96,
-      "biome": [
-        "light_soil",
-        "grass"
-      ],
-      "items": [],
-      "prompt": "Fantasy zombie farmer shown full body from head to feet, grey rotting skin, one milky eye, a torn straw hat, muddy overalls, a rusty pitchfork held upright, and a crow perched on its shoulder.",
-      "lore": "The field was his, then the plague was. He still turns the soil each morning; it is the only thing he remembers."
-    },
-    {
       "id": "ghoul",
       "name": "Gravemaw",
       "tier": "evil",
@@ -458,36 +279,6 @@
       "claws": true,
       "attack_extreme": "Frenzy - The ghoul throws itself forward, both clawed arms thrown wide, raking wildly",
       "die_action": "Death - Faints, crumples to the ground on its side and fades away"
-    },
-    {
-      "id": "owlbear",
-      "name": "Hootclaw",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 144,
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Fantasy owlbear with a massive brown bear body, thick shaggy fur, a great horned-owl head with huge yellow eyes and a hooked beak, tufted feather ears, and enormous clawed paws.",
-      "lore": "Half of it hunts by night and half by day, and they never agreed to sleep. It is always awake, and always hungry."
-    },
-    {
-      "id": "clockwork_knight",
-      "name": "Gearwarden",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 112,
-      "biome": [
-        "parquet_floor",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Fantasy clockwork automaton knight shown full body from head to feet, a body of tarnished brass plates and exposed spinning gears, a glowing amber lens for a single eye, a keyed windup crank on its back, a short sword held upright, and a round shield.",
-      "lore": "Wound once by a hand long dead, it has not run down. It guards a door that no longer has a room behind it."
     },
     {
       "id": "fire_elemental",
@@ -528,21 +319,6 @@
       "die_action": "Death - Loses its shape and collapses into a puddle of water on the ground, then evaporates and fades away"
     },
     {
-      "id": "lich",
-      "name": "Dreadmage",
-      "tier": "boss",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 128,
-      "biome": [
-        "grey_paving_stone",
-        "parquet_floor"
-      ],
-      "items": [],
-      "prompt": "Fantasy lich shown full body from head to feet, a skeletal figure in tattered black and purple robes trimmed with gold, a horned skull with glowing violet eyes, a jeweled crown, a gnarled staff topped with a floating violet crystal held upright, and a phylactery on a chain.",
-      "lore": "It refused death to finish its work. The work is finished. It has not stopped."
-    },
-    {
       "id": "marsh_hag",
       "name": "Hexcrone",
       "tier": "evil",
@@ -562,21 +338,6 @@
       "die_action": "Death - Drops the staff, faints and falls to the ground, then fades away"
     },
     {
-      "id": "bandit_brute",
-      "name": "Cudgel",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 112,
-      "biome": [
-        "grass",
-        "grey_stone"
-      ],
-      "items": [],
-      "prompt": "Big fantasy bandit brute shown full body from head to feet, a crude iron mask, a broad bare chest crossed with leather straps, a spiked wooden club resting on one shoulder, ragged trousers, and heavy boots.",
-      "lore": "Toll is whatever you carry. Refuse, and the club decides what you leave with."
-    },
-    {
       "id": "lizard_warrior",
       "name": "Scaleblade",
       "tier": "mid",
@@ -594,21 +355,6 @@
       "claws": true,
       "attack_extreme": "Spear Charge - The lizard hurls its whole body forward behind the spear in one committed charge",
       "die_action": "Death - Drops the spear and shield, faints and falls to the ground, then fades away"
-    },
-    {
-      "id": "wererat",
-      "name": "Skulkfang",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 104,
-      "biome": [
-        "grey_paving_stone",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Fantasy wererat shown full body from head to feet, a hunched ratman with mangy grey fur, a long pink tail wrapped around its feet, yellow teeth, beady red eyes, a stained butcher's apron, and a cleaver held in one hand.",
-      "lore": "It was a man when the moon was thin and forgot how when it filled. The apron is from its old trade; the cleaver is new."
     },
     {
       "id": "werewolf",
@@ -664,51 +410,6 @@
       "die_action": "Death - Its legs give out, it collapses flat onto its belly with its head down and fades away"
     },
     {
-      "id": "flytrap",
-      "name": "Snaptrap",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 96,
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Fantasy carnivorous plant monster shown full body from head to feet, a huge venus-flytrap head with red inner jaws and long interlocking teeth, a thick green stalk body, two leafy arms, and a bundle of writhing roots for legs.",
-      "lore": "Planted to keep the pests from the garden. It has grown past pests, and past the garden."
-    },
-    {
-      "id": "walrus",
-      "name": "Tuskbelly",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 128,
-      "biome": [
-        "ice",
-        "light_beach"
-      ],
-      "items": [],
-      "prompt": "Fat fantasy walrus with wrinkled brown-grey hide, two long icicle-white tusks, a bristly whiskered muzzle, small dark eyes, thick flippers, and frost crusted on its back.",
-      "lore": "Master of the ice shelf. The tusks settle every dispute over it, and there has never been a second one."
-    },
-    {
-      "id": "seal_pup",
-      "name": "Blubberling",
-      "tier": "cute",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 64,
-      "biome": [
-        "ice",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Small cute fantasy seal pup with fluffy white fur, huge dark wet eyes, a black button nose, tiny flippers, and a few snowflakes on its back.",
-      "lore": "Everyone who sees one wants to pick it up. Its mother is the reason nobody does it twice."
-    },
-    {
       "id": "octopus",
       "name": "Inkling",
       "tier": "mid",
@@ -729,36 +430,6 @@
       "die_action": "Death - Melts into a spreading puddle of black ink on the ground and fades away"
     },
     {
-      "id": "angler_walker",
-      "name": "Lurelight",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 96,
-      "biome": [
-        "deep_water",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Fantasy anglerfish monster walking on four stubby finned legs, a huge black head with a gaping mouth of long needle teeth, tiny pale eyes, and a glowing yellow lure dangling on a stalk from its forehead.",
-      "lore": "It crawled out of the deep for a brighter lure and found lanterns. It follows every light on the shore now."
-    },
-    {
-      "id": "magma_golem",
-      "name": "Slagfist",
-      "tier": "boss",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 144,
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Massive fantasy magma golem shown full body from head to feet, a body of black volcanic rock with glowing orange magma seams, two burning white eyes, huge fists of molten rock, and a molten glowing core visible in its chest.",
-      "lore": "The mountain's own fist. Where it strikes, the ground splits and the fire comes up."
-    },
-    {
       "id": "lava_toad",
       "name": "Magmatoad",
       "tier": "mid",
@@ -771,20 +442,6 @@
       "items": [],
       "prompt": "Fat fantasy toad of cooled black rock with glowing orange cracks, bulging ember eyes, a wide mouth breathing a wisp of smoke, and a hot glowing throat sac, no drop shadow on the ground.",
       "lore": "It basks in the lava as other toads bask on stone. Its croak carries sulphur and its bite carries fire."
-    },
-    {
-      "id": "jackal_warrior",
-      "name": "Duneblade",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 112,
-      "biome": [
-        "light_soil"
-      ],
-      "items": [],
-      "prompt": "Fantasy jackal-headed warrior shown full body from head to feet, black fur, a golden collar and armbands, a white linen kilt, a curved bronze khopesh sword held upright, and sandaled feet.",
-      "lore": "It guarded a tomb until the sand took the tomb. Now it guards the sand, and the sand keeps taking."
     },
     {
       "id": "mummy",
@@ -897,21 +554,6 @@
       "die_action": "Death - Shatters into a scatter of small ice shards that melt away and vanish"
     },
     {
-      "id": "hill_giant",
-      "name": "Hillfather",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "mannequin",
-      "size": 240,
-      "biome": [
-        "grass",
-        "grey_stone"
-      ],
-      "items": [],
-      "prompt": "Gigantic fantasy hill giant shown full body from head to feet, a huge lumpy body of tanned weathered skin, a heavy brow and broad flat nose, a beard of matted brown hair, a tunic of stitched hides, a whole uprooted tree held as a club resting on one shoulder, and enormous bare feet.",
-      "lore": "It takes sheep by the flock and villages by the roof. It has never had to learn to count higher."
-    },
-    {
       "id": "spider_queen",
       "name": "Broodmother",
       "tier": "boss",
@@ -929,51 +571,6 @@
       "claws": true,
       "attack_extreme": "Fang Plunge - The queen rears up to full height on her back legs and plunges down, fangs and front legs stabbing",
       "die_action": "Death - Her legs buckle and she rolls over onto her back, all eight legs curling up over her belly, then fades away"
-    },
-    {
-      "id": "rat_king",
-      "name": "Gnawlord",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "bear",
-      "size": 224,
-      "biome": [
-        "grey_paving_stone",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Gigantic fantasy rat king, a writhing mass of dozens of grey rats knotted together by their tails into one huge bristling body, hundreds of red eyes, a tarnished golden crown on the largest head, and yellow teeth everywhere.",
-      "lore": "Tails tied together by a curse, minds tied together by hunger. It thinks with a thousand small thoughts and all of them are teeth."
-    },
-    {
-      "id": "frost_giant",
-      "name": "Rimeking",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "mannequin",
-      "size": 240,
-      "biome": [
-        "ice",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Gigantic fantasy frost giant shown full body from head to feet, pale blue skin crusted with ice, a long white beard hung with icicles, a crown of jagged ice, furs and iron armor, a massive ice-bladed axe held upright, and huge boots.",
-      "lore": "The glacier's landlord. It comes down once a century to see what has grown on its land and remove it."
-    },
-    {
-      "id": "iron_golem",
-      "name": "Forgewarden",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "mannequin",
-      "size": 232,
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Gigantic fantasy iron golem shown full body from head to feet, a body of riveted black iron plates glowing orange at the seams, a furnace grate for a face with fire behind it, huge hammer-like fists, and heavy pistons in its legs venting steam.",
-      "lore": "Built to guard the forge and still guarding it, long after the forge went cold. It relights when anyone comes near."
     },
     {
       "id": "ember_drake",
@@ -994,21 +591,6 @@
       "fx": true,
       "attack_extreme": "Inferno Breath - The drake rears its head far back and unleashes a long roaring jet of fire, wings thrown wide",
       "die_action": "Death - The glow in its plates goes dark, it slumps down onto its side and fades away"
-    },
-    {
-      "id": "abyss_knight",
-      "name": "Voidplate",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "mannequin",
-      "size": 240,
-      "biome": [
-        "black_rock",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Gigantic fantasy demon knight shown full body from head to feet, towering black spiked plate armor, a horned great helm with a burning violet glow inside, a massive two-handed greatsword held upright with its tip raised well off the ground, a tattered dark cape, and violet fire licking from the joints.",
-      "lore": "Sworn to a throne beneath the floor of the world. It is the only knight the pit ever knighted, and it is enough."
     },
     {
       "id": "war_elephant",
@@ -1205,21 +787,6 @@
       "die_action": "Death - Shatters into a scatter of ice shards on the ground that melt away and vanish"
     },
     {
-      "id": "briar_hare",
-      "name": "Briarhare",
-      "tier": "mid",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Small fantasy hare whose brown fur is grown through with thorny bramble stems, long ears, dark wary eyes, powerful hind legs, and a few small red berries caught in the thorns.",
-      "lore": "It bolts through the hedges where nothing else can follow. The thorns are its own, and they draw blood."
-    },
-    {
       "id": "ash_hatchling",
       "name": "Ashling",
       "tier": "cute",
@@ -1253,51 +820,6 @@
       "items": [],
       "prompt": "Fantasy cave bear with pale hairless grey skin over heavy muscle, no eyes only smooth skin where eyes would be, a wide nose and long yellow fangs, enormous black claws, and pale fungus growing along its spine.",
       "lore": "It has never seen the sun and hunts without needing to. In the deep galleries it smells a torch before the torch is lit."
-    },
-    {
-      "id": "bog_viper",
-      "name": "Fenfang",
-      "tier": "mid",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 48,
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Small fantasy bog viper coiled tightly with its head raised, no ground beneath it, dark olive scales with black diamond markings, a pale belly, yellow slit eyes, and a forked tongue.",
-      "lore": "It lies in the shallows with only its eyes above the water. The bite is small, and the swelling is not."
-    },
-    {
-      "id": "dire_wolf",
-      "name": "Greyfang",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "dog",
-      "size": 120,
-      "biome": [
-        "grass",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Large adult dire wolf with realistic proportions, thick coarse grey fur darker along the spine, a heavy muzzle with bared yellow fangs, pale watchful eyes, scarred ears, powerful shoulders and large paws.",
-      "lore": "The pack's old leader, scarred from every winter it has outlived. It does not chase; it waits where the trail narrows."
-    },
-    {
-      "id": "hyena",
-      "name": "Boneback",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "dog",
-      "size": 104,
-      "biome": [
-        "light_soil",
-        "grass"
-      ],
-      "items": [],
-      "prompt": "Adult spotted hyena with realistic proportions, mottled tan fur with dark spots, a bristling black mane along the spine, a heavy skull and massive jaws, rounded ears and small amber eyes.",
-      "lore": "It follows the caravans a day behind and eats what they leave. When they leave nothing, it eats what they are."
     },
     {
       "id": "vulture",
@@ -1367,21 +889,6 @@
       "die_action": "Death - Drops the axe, faints and falls over backwards onto the ground, then fades away"
     },
     {
-      "id": "cultist",
-      "name": "Hexbrother",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 96,
-      "biome": [
-        "grey_paving_stone",
-        "parquet_floor"
-      ],
-      "items": [],
-      "prompt": "Hooded cultist shown full body from head to feet, realistic proportions, a long dark crimson robe with black sigils, the face hidden in the hood's shadow except a pale chin, a curved sacrificial dagger held low, and a bone amulet on a cord.",
-      "lore": "One of many, and all of them the same. What they worship is under the floor, and it is listening."
-    },
-    {
       "id": "black_knight",
       "name": "Duskplate",
       "tier": "evil",
@@ -1395,21 +902,6 @@
       "items": [],
       "prompt": "Fallen knight shown full body from head to feet, realistic proportions, black steel plate armor scored with old cuts, a closed great helm with a narrow slit, a tattered black surcoat with a defaced crest, a longsword held upright and a kite shield.",
       "lore": "He kept his oath after his lord broke it, and now the oath is all that is left of him."
-    },
-    {
-      "id": "plague_doctor",
-      "name": "Beakmask",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 104,
-      "biome": [
-        "grey_paving_stone",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Plague doctor shown full body from head to feet, realistic proportions, a long black waxed coat, a wide-brimmed black hat, a pale leather beaked mask with round glass eyes, gloved hands, and a wooden cane held upright.",
-      "lore": "It came to cure the lower town and stayed after the last patient. Nobody has seen what is under the mask."
     },
     {
       "id": "naga",
@@ -1505,21 +997,6 @@
       "lore": "Siege engines were built to imitate it and none have matched it. When it charges, the wall is the softer thing."
     },
     {
-      "id": "colossal_boar",
-      "name": "Tuskwarden",
-      "tier": "boss",
-      "scale": "big",
-      "template_id": "bear",
-      "size": 232,
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Colossal wild boar with realistic proportions, a mountainous body of dark bristled hide scarred by old spears, two enormous yellowed tusks, a heavy wedge-shaped head with small red eyes, and thick legs with cloven hooves.",
-      "lore": "Every hunt in the valley's history has failed against it. The spear shafts in its hide are the trophies."
-    },
-    {
       "id": "chest_mimic",
       "name": "Hoardmaw",
       "tier": "evil",
@@ -1550,36 +1027,6 @@
       "lore": "It was carried into the mine and came back alone. The light it gives leads only one way."
     },
     {
-      "id": "cave_bat",
-      "name": "Duskwing",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 88,
-      "biome": [
-        "black_rock",
-        "grey_stone"
-      ],
-      "items": [],
-      "prompt": "Large cave bat with realistic proportions, coarse dark grey fur, a wrinkled leaf-nosed face with small black eyes and long fangs, tall ribbed ears, and leathery wings folded tightly against its body.",
-      "lore": "The old galleries are theirs and they hunt in silence. The first warning is the wind of the wings."
-    },
-    {
-      "id": "great_owl",
-      "name": "Greyhorn",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 96,
-      "biome": [
-        "grass",
-        "grey_stone"
-      ],
-      "items": [],
-      "prompt": "Great horned owl standing upright shown full body from ear tufts to talons, realistic proportions, mottled grey-brown feathers, wings folded, tall dark ear tufts, huge unblinking amber eyes, a hooked beak and heavy feathered talons.",
-      "lore": "It watches the road from the dead oak and misses nothing. Small things that cross the moonlight do not cross back."
-    },
-    {
       "id": "seed_husk",
       "name": "Huskling",
       "tier": "cute",
@@ -1596,21 +1043,6 @@
       "attack_action": "Headbutt - Rocks back, then rams forward hard with its hard husk",
       "attack_extreme": "Husk Burst - The husk splits open with a crack and hurls itself forward, seeds and splinters flying",
       "die_action": "Death - The husk cracks open and crumbles into a small pile of dry husk pieces, then fades away"
-    },
-    {
-      "id": "black_ooze",
-      "name": "Pitchooze",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 80,
-      "biome": [
-        "slime",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Dark corrosive ooze, a heavy mound of glossy black slime with a rib cage and a rusted helm half-sunk inside it, sluggish drips smoking where they land, and two dim red points of light deep within.",
-      "lore": "It spread from a crack in the lower vault and has not stopped. What it swallows it keeps, and what it keeps it wears."
     },
     {
       "id": "stone_imp",
@@ -1643,21 +1075,6 @@
       "lore": "It digs the pit and lies beneath the floor of it. The sand slides, and whatever stood on the slope goes down to the jaws."
     },
     {
-      "id": "vampire_lord",
-      "name": "Nightthirst",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 112,
-      "biome": [
-        "parquet_floor",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Vampire lord shown full body from head to feet, realistic proportions, gaunt pale skin, slicked black hair, narrow crimson eyes, two long fangs behind thin lips, a high-collared black cloak lined in dark red, a black doublet with silver clasps, and long clawed fingers.",
-      "lore": "The manor on the ridge has had one master for three hundred years. He receives guests at dusk and none of them are seen leaving."
-    },
-    {
       "id": "mountain_ram",
       "name": "Cragram",
       "tier": "mid",
@@ -1671,21 +1088,6 @@
       "items": [],
       "prompt": "Mountain ram with realistic proportions, thick shaggy grey-white wool, huge curled horns of ridged brown bone, dark hooves, a proud bearded face with pale eyes, and small stones caught in its coat.",
       "lore": "It holds the high ledge against anything that climbs. The horns have broken shields, and the mountain has never won."
-    },
-    {
-      "id": "warthog",
-      "name": "Tuskrooter",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 104,
-      "biome": [
-        "light_soil",
-        "dark_mud"
-      ],
-      "items": [],
-      "prompt": "Warthog with realistic proportions, coarse grey-brown hide, a bristly dark mane along the spine, two curved yellow tusks, facial warts, small dark eyes, and a short tail held down.",
-      "lore": "It roots up the fields at night and charges whatever comes to stop it. The tusks are why the fields stay rooted."
     },
     {
       "id": "ghost_hound",
@@ -4087,6 +3489,721 @@
       "lore": "Written by a hand that would not stop. Anyone who reads it adds a page, and the last page is always theirs.",
       "retired": "the model gives a floating book boots and a cape, and it clipped SE/SW — a walking object is not the serious grimoire designed. Replaced by ghost_hound.",
       "retired_at": "2026-09-09T19:17:32+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "shell_roller",
+      "name": "Clankball",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 88,
+      "biome": [
+        "light_soil",
+        "grey_stone",
+        "lava"
+      ],
+      "items": [
+        "plated beetle"
+      ],
+      "prompt": "Round fantasy armored pill bug with a compact ball-shaped body of overlapping dark iron-gray plates riveted with copper studs, short stubby legs tucked beneath it, two glowing orange slit eyes at the front, small antennae, and hot orange light glowing between the plates.",
+      "lore": "It rolls down the scree at whatever moves. The smiths say its plates ring in a note they cannot forge.",
+      "scale": "standard",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:33+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "silk_spider",
+      "name": "Silkmaw",
+      "tier": "evil",
+      "template_id": "bear",
+      "size": 136,
+      "biome": [
+        "dark_mud",
+        "black_rock"
+      ],
+      "items": [
+        "silk skein"
+      ],
+      "prompt": "Huge fantasy cave spider with a hairy black abdomen marked with a pale bone-white skull pattern, eight long jointed legs with dark red joints, a cluster of eight glowing red eyes, large dripping fangs, and thick strands of white silk trailing from its spinnerets.",
+      "lore": "It spins in the dark and waits for the dark to be crossed. The skull on its back is the last thing many travellers read.",
+      "scale": "standard",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:34+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "root_forager",
+      "name": "Twineback",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "grass",
+        "dark_mud",
+        "light_soil"
+      ],
+      "items": [
+        "twine-tied herbs",
+        "twine-tied roots",
+        "twine-tied dried grass"
+      ],
+      "prompt": "Hunched fantasy forager bandit wearing a ragged moss-green hooded cloak over patched brown leather, face hidden in shadow except a crooked nose and two glinting eyes, a rusty sickle in one hand, twine-tied bundles of herbs, roots and dried grass strapped across the back, and muddy bare feet.",
+      "lore": "Not a monster, exactly. A man who took to the hedgerows and now takes from everyone who walks them.",
+      "scale": "standard",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:34+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "rime_yeti",
+      "name": "Rimehulk",
+      "tier": "boss",
+      "template_id": "mannequin",
+      "size": 160,
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [
+        "ice soulstone"
+      ],
+      "prompt": "Hulking fantasy yeti with thick shaggy white fur crusted with ice, long powerful arms ending in blue-black claws, a broad ape-like face with a wide mouth of jagged icicle teeth, glowing pale blue eyes, icicles hanging from its chin and elbows, and a frost-blue underbelly.",
+      "lore": "The blizzard walks on two legs up there. Climbers hear it breathing through the snow long before the snow turns red.",
+      "scale": "standard",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:35+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "bog_lurker",
+      "name": "Boglurk",
+      "tier": "mid",
+      "template_id": "bear",
+      "size": 136,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Fantasy amphibian monster like a giant axolotl with slimy dark olive skin, feathery crimson external gills fanning from its head, a wide flat toothy grin, bulging yellow eyes, four webbed clawed limbs, a short tail curled tightly under its round body, and strands of slime and pond weed hanging from its body.",
+      "lore": "Only the gills show above the mud, red as flowers. Pick one and the rest of it comes up smiling.",
+      "scale": "standard",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:35+00:00",
+      "versions_tried": 3
+    },
+    {
+      "id": "storm_roc",
+      "name": "Stormroc",
+      "tier": "boss",
+      "template_id": "mannequin",
+      "size": 176,
+      "biome": [
+        "grey_stone",
+        "snow"
+      ],
+      "items": [
+        "bundle of bright plumes",
+        "rainbow tail plume"
+      ],
+      "prompt": "Enormous fantasy storm bird with dark slate-blue feathers edged in white lightning, a hooked steel-gray beak, blazing white eyes, wings raised high above its back crackling with electric arcs, no feathers hanging below its talons, long sharp talons, and a crest of feathers standing up like jagged lightning bolts.",
+      "lore": "It nests above the weather and hunts below it. Every thunderclap on the fells is a wingbeat somebody did not see.",
+      "scale": "standard",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:35+00:00",
+      "versions_tried": 2
+    },
+    {
+      "id": "sand_scorpion",
+      "name": "Duststing",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 104,
+      "biome": [
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Fantasy desert scorpion with a compact sand-yellow armored body, two thick pincers held close to its face, eight short legs, a segmented tail curled tightly over its back ending in a glowing red stinger, and small black eyes.",
+      "lore": "It sleeps under the dune and wakes under your boot. The sting comes first; the pincers only keep you still for it.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:36+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "frost_fox",
+      "name": "Rimetail",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "dog",
+      "size": 96,
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "prompt": "Fantasy arctic fox with thick white fur tipped in pale blue, ice crystals growing from its ear tips, bright ice-blue eyes, a bushy tail wrapped around its body, and small frost patterns on its back.",
+      "lore": "It leaves no tracks and takes the warmth from a fire by sitting near it. Hunters call it the cold's own dog.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:36+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "bramble_boar",
+      "name": "Thornhog",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 120,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Stocky fantasy wild boar with dark brown bristled hide, a thicket of thorny bramble vines growing across its back dotted with red berries, two yellowed tusks, small angry red eyes, and cloven hooves.",
+      "lore": "The hedge got up and charged. Its back is a bramble patch and the berries are the only thing that has ever calmed it.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:37+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "goblin_scout",
+      "name": "Snaggle",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Small fantasy goblin shown full body from head to feet, green warty skin, a large hooked nose, pointed ears, a patched leather cap, a ragged brown tunic, a rusty dagger in one hand and a lumpy loot sack in the other.",
+      "lore": "It takes what it can carry and runs. It is never alone; the rest of the warren is a whistle away.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:37+00:00",
+      "versions_tried": 2
+    },
+    {
+      "id": "zombie_farmer",
+      "name": "Rotwalker",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "light_soil",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Fantasy zombie farmer shown full body from head to feet, grey rotting skin, one milky eye, a torn straw hat, muddy overalls, a rusty pitchfork held upright, and a crow perched on its shoulder.",
+      "lore": "The field was his, then the plague was. He still turns the soil each morning; it is the only thing he remembers.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:37+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "owlbear",
+      "name": "Hootclaw",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 144,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Fantasy owlbear with a massive brown bear body, thick shaggy fur, a great horned-owl head with huge yellow eyes and a hooked beak, tufted feather ears, and enormous clawed paws.",
+      "lore": "Half of it hunts by night and half by day, and they never agreed to sleep. It is always awake, and always hungry.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:38+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "clockwork_knight",
+      "name": "Gearwarden",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 112,
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Fantasy clockwork automaton knight shown full body from head to feet, a body of tarnished brass plates and exposed spinning gears, a glowing amber lens for a single eye, a keyed windup crank on its back, a short sword held upright, and a round shield.",
+      "lore": "Wound once by a hand long dead, it has not run down. It guards a door that no longer has a room behind it.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:38+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "lich",
+      "name": "Dreadmage",
+      "tier": "boss",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 128,
+      "biome": [
+        "grey_paving_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Fantasy lich shown full body from head to feet, a skeletal figure in tattered black and purple robes trimmed with gold, a horned skull with glowing violet eyes, a jeweled crown, a gnarled staff topped with a floating violet crystal held upright, and a phylactery on a chain.",
+      "lore": "It refused death to finish its work. The work is finished. It has not stopped.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:39+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "bandit_brute",
+      "name": "Cudgel",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 112,
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Big fantasy bandit brute shown full body from head to feet, a crude iron mask, a broad bare chest crossed with leather straps, a spiked wooden club resting on one shoulder, ragged trousers, and heavy boots.",
+      "lore": "Toll is whatever you carry. Refuse, and the club decides what you leave with.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:39+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "wererat",
+      "name": "Skulkfang",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 104,
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Fantasy wererat shown full body from head to feet, a hunched ratman with mangy grey fur, a long pink tail wrapped around its feet, yellow teeth, beady red eyes, a stained butcher's apron, and a cleaver held in one hand.",
+      "lore": "It was a man when the moon was thin and forgot how when it filled. The apron is from its old trade; the cleaver is new.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:39+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "flytrap",
+      "name": "Snaptrap",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Fantasy carnivorous plant monster shown full body from head to feet, a huge venus-flytrap head with red inner jaws and long interlocking teeth, a thick green stalk body, two leafy arms, and a bundle of writhing roots for legs.",
+      "lore": "Planted to keep the pests from the garden. It has grown past pests, and past the garden.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:40+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "walrus",
+      "name": "Tuskbelly",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 128,
+      "biome": [
+        "ice",
+        "light_beach"
+      ],
+      "items": [],
+      "prompt": "Fat fantasy walrus with wrinkled brown-grey hide, two long icicle-white tusks, a bristly whiskered muzzle, small dark eyes, thick flippers, and frost crusted on its back.",
+      "lore": "Master of the ice shelf. The tusks settle every dispute over it, and there has never been a second one.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:40+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "seal_pup",
+      "name": "Blubberling",
+      "tier": "cute",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 64,
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Small cute fantasy seal pup with fluffy white fur, huge dark wet eyes, a black button nose, tiny flippers, and a few snowflakes on its back.",
+      "lore": "Everyone who sees one wants to pick it up. Its mother is the reason nobody does it twice.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:40+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "angler_walker",
+      "name": "Lurelight",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 96,
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Fantasy anglerfish monster walking on four stubby finned legs, a huge black head with a gaping mouth of long needle teeth, tiny pale eyes, and a glowing yellow lure dangling on a stalk from its forehead.",
+      "lore": "It crawled out of the deep for a brighter lure and found lanterns. It follows every light on the shore now.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:41+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "magma_golem",
+      "name": "Slagfist",
+      "tier": "boss",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 144,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Massive fantasy magma golem shown full body from head to feet, a body of black volcanic rock with glowing orange magma seams, two burning white eyes, huge fists of molten rock, and a molten glowing core visible in its chest.",
+      "lore": "The mountain's own fist. Where it strikes, the ground splits and the fire comes up.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:42+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "jackal_warrior",
+      "name": "Duneblade",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 112,
+      "biome": [
+        "light_soil"
+      ],
+      "items": [],
+      "prompt": "Fantasy jackal-headed warrior shown full body from head to feet, black fur, a golden collar and armbands, a white linen kilt, a curved bronze khopesh sword held upright, and sandaled feet.",
+      "lore": "It guarded a tomb until the sand took the tomb. Now it guards the sand, and the sand keeps taking.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:42+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "hill_giant",
+      "name": "Hillfather",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "mannequin",
+      "size": 240,
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Gigantic fantasy hill giant shown full body from head to feet, a huge lumpy body of tanned weathered skin, a heavy brow and broad flat nose, a beard of matted brown hair, a tunic of stitched hides, a whole uprooted tree held as a club resting on one shoulder, and enormous bare feet.",
+      "lore": "It takes sheep by the flock and villages by the roof. It has never had to learn to count higher.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:42+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "rat_king",
+      "name": "Gnawlord",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "bear",
+      "size": 224,
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Gigantic fantasy rat king, a writhing mass of dozens of grey rats knotted together by their tails into one huge bristling body, hundreds of red eyes, a tarnished golden crown on the largest head, and yellow teeth everywhere.",
+      "lore": "Tails tied together by a curse, minds tied together by hunger. It thinks with a thousand small thoughts and all of them are teeth.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:43+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "frost_giant",
+      "name": "Rimeking",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "mannequin",
+      "size": 240,
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Gigantic fantasy frost giant shown full body from head to feet, pale blue skin crusted with ice, a long white beard hung with icicles, a crown of jagged ice, furs and iron armor, a massive ice-bladed axe held upright, and huge boots.",
+      "lore": "The glacier's landlord. It comes down once a century to see what has grown on its land and remove it.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:43+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "iron_golem",
+      "name": "Forgewarden",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "mannequin",
+      "size": 232,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Gigantic fantasy iron golem shown full body from head to feet, a body of riveted black iron plates glowing orange at the seams, a furnace grate for a face with fire behind it, huge hammer-like fists, and heavy pistons in its legs venting steam.",
+      "lore": "Built to guard the forge and still guarding it, long after the forge went cold. It relights when anyone comes near.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:44+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "abyss_knight",
+      "name": "Voidplate",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "mannequin",
+      "size": 240,
+      "biome": [
+        "black_rock",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Gigantic fantasy demon knight shown full body from head to feet, towering black spiked plate armor, a horned great helm with a burning violet glow inside, a massive two-handed greatsword held upright with its tip raised well off the ground, a tattered dark cape, and violet fire licking from the joints.",
+      "lore": "Sworn to a throne beneath the floor of the world. It is the only knight the pit ever knighted, and it is enough.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:44+00:00",
+      "versions_tried": 2
+    },
+    {
+      "id": "briar_hare",
+      "name": "Briarhare",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Small fantasy hare whose brown fur is grown through with thorny bramble stems, long ears, dark wary eyes, powerful hind legs, and a few small red berries caught in the thorns.",
+      "lore": "It bolts through the hedges where nothing else can follow. The thorns are its own, and they draw blood.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:44+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "bog_viper",
+      "name": "Fenfang",
+      "tier": "mid",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 48,
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Small fantasy bog viper coiled tightly with its head raised, no ground beneath it, dark olive scales with black diamond markings, a pale belly, yellow slit eyes, and a forked tongue.",
+      "lore": "It lies in the shallows with only its eyes above the water. The bite is small, and the swelling is not.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:45+00:00",
+      "versions_tried": 3
+    },
+    {
+      "id": "dire_wolf",
+      "name": "Greyfang",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "dog",
+      "size": 120,
+      "biome": [
+        "grass",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Large adult dire wolf with realistic proportions, thick coarse grey fur darker along the spine, a heavy muzzle with bared yellow fangs, pale watchful eyes, scarred ears, powerful shoulders and large paws.",
+      "lore": "The pack's old leader, scarred from every winter it has outlived. It does not chase; it waits where the trail narrows.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:45+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "hyena",
+      "name": "Boneback",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "dog",
+      "size": 104,
+      "biome": [
+        "light_soil",
+        "grass"
+      ],
+      "items": [],
+      "prompt": "Adult spotted hyena with realistic proportions, mottled tan fur with dark spots, a bristling black mane along the spine, a heavy skull and massive jaws, rounded ears and small amber eyes.",
+      "lore": "It follows the caravans a day behind and eats what they leave. When they leave nothing, it eats what they are.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:46+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "cultist",
+      "name": "Hexbrother",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "grey_paving_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Hooded cultist shown full body from head to feet, realistic proportions, a long dark crimson robe with black sigils, the face hidden in the hood's shadow except a pale chin, a curved sacrificial dagger held low, and a bone amulet on a cord.",
+      "lore": "One of many, and all of them the same. What they worship is under the floor, and it is listening.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:46+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "plague_doctor",
+      "name": "Beakmask",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 104,
+      "biome": [
+        "grey_paving_stone",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Plague doctor shown full body from head to feet, realistic proportions, a long black waxed coat, a wide-brimmed black hat, a pale leather beaked mask with round glass eyes, gloved hands, and a wooden cane held upright.",
+      "lore": "It came to cure the lower town and stayed after the last patient. Nobody has seen what is under the mask.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:47+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "colossal_boar",
+      "name": "Tuskwarden",
+      "tier": "boss",
+      "scale": "big",
+      "template_id": "bear",
+      "size": 232,
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Colossal wild boar with realistic proportions, a mountainous body of dark bristled hide scarred by old spears, two enormous yellowed tusks, a heavy wedge-shaped head with small red eyes, and thick legs with cloven hooves.",
+      "lore": "Every hunt in the valley's history has failed against it. The spear shafts in its hide are the trophies.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:47+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "cave_bat",
+      "name": "Duskwing",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 88,
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Large cave bat with realistic proportions, coarse dark grey fur, a wrinkled leaf-nosed face with small black eyes and long fangs, tall ribbed ears, and leathery wings folded tightly against its body.",
+      "lore": "The old galleries are theirs and they hunt in silence. The first warning is the wind of the wings.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:47+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "great_owl",
+      "name": "Greyhorn",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 96,
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Great horned owl standing upright shown full body from ear tufts to talons, realistic proportions, mottled grey-brown feathers, wings folded, tall dark ear tufts, huge unblinking amber eyes, a hooked beak and heavy feathered talons.",
+      "lore": "It watches the road from the dead oak and misses nothing. Small things that cross the moonlight do not cross back.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:48+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "black_ooze",
+      "name": "Pitchooze",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 80,
+      "biome": [
+        "slime",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Dark corrosive ooze, a heavy mound of glossy black slime with a rib cage and a rusted helm half-sunk inside it, sluggish drips smoking where they land, and two dim red points of light deep within.",
+      "lore": "It spread from a crack in the lower vault and has not stopped. What it swallows it keeps, and what it keeps it wears.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:49+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "vampire_lord",
+      "name": "Nightthirst",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 112,
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Vampire lord shown full body from head to feet, realistic proportions, gaunt pale skin, slicked black hair, narrow crimson eyes, two long fangs behind thin lips, a high-collared black cloak lined in dark red, a black doublet with silver clasps, and long clawed fingers.",
+      "lore": "The manor on the ridge has had one master for three hundred years. He receives guests at dusk and none of them are seen leaving.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:50+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "warthog",
+      "name": "Tuskrooter",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 104,
+      "biome": [
+        "light_soil",
+        "dark_mud"
+      ],
+      "items": [],
+      "prompt": "Warthog with realistic proportions, coarse grey-brown hide, a bristly dark mane along the spine, two curved yellow tusks, facial warts, small dark eyes, and a short tail held down.",
+      "lore": "It roots up the fields at night and charges whatever comes to stop it. The tusks are why the fields stay rooted.",
+      "retired": "maintainer rejected it in the wiki 2026-09-18 (first-batch review); removed from the candidate set so it no longer shows there",
+      "retired_at": "2026-09-18T13:15:51+00:00",
       "versions_tried": 1
     }
   ]

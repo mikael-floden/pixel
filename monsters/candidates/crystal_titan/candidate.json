@@ -1278,7 +1278,7 @@
           "rung": 0
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.3398,
           "step_max": 0.3548,
           "drift": 10.65,
@@ -1296,6 +1296,7 @@
             232
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.28 — eyeball it"
           ],
           "sub": "7319a8a5-9091-44c2-8546-fd586bc306e6",
@@ -1309,10 +1310,11 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.4687,
           "step_max": 0.6768,
           "drift": 12.09,
@@ -1329,7 +1331,9 @@
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "72a5b2b6-b19a-4b5e-b9bc-d8b0e3db5381",
           "group": "1e6201f0-b5a7-476e-a880-991e10d14b5d",
           "takes": 1,
@@ -1341,7 +1345,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "redo"
         },
         "north-east": {
           "status": "pass",
@@ -1410,7 +1415,7 @@
           "rung": 0
         },
         "south-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.3398,
           "step_max": 0.3548,
           "drift": 10.65,
@@ -1428,6 +1433,7 @@
             232
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.28 — eyeball it"
           ],
           "sub": "7319a8a5-9091-44c2-8546-fd586bc306e6",
@@ -1442,10 +1448,11 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "south-east"
+          "source": "south-east",
+          "maintainer": "redo"
         },
         "west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.4687,
           "step_max": 0.6768,
           "drift": 12.09,
@@ -1462,7 +1469,9 @@
             232,
             232
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "72a5b2b6-b19a-4b5e-b9bc-d8b0e3db5381",
           "group": "1e6201f0-b5a7-476e-a880-991e10d14b5d",
           "takes": 1,
@@ -1475,7 +1484,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "east"
+          "source": "east",
+          "maintainer": "redo"
         },
         "north-west": {
           "status": "pass",

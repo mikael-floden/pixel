@@ -339,7 +339,7 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0579,
           "step_max": 0.0975,
           "drift": 1.71,
@@ -352,16 +352,19 @@
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Doesn't look like a snake walk at all!"
+          ],
           "sub": "0e9785c2-5015-4803-9c5e-cd8aa36a8714",
           "group": "ab532b24-79d3-433d-acd6-ed91fba53811",
           "takes": 2,
           "version": 3,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:42:20+00:00"
+          "generated_at": "2026-09-09T21:42:20+00:00",
+          "maintainer": "Doesn't look like a snake walk at all!"
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0809,
           "step_max": 0.1051,
           "drift": 1.68,
@@ -375,6 +378,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: Doesn't look like a snake walk at all!",
             "last→first hand-off 2.5× a step — eyeball the loop"
           ],
           "sub": "9faea9c5-4ea4-4681-bc75-da7352c7f40c",
@@ -382,10 +386,11 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:23:29+00:00"
+          "generated_at": "2026-09-09T21:23:29+00:00",
+          "maintainer": "Doesn't look like a snake walk at all!"
         },
         "east": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0881,
           "step_max": 0.1037,
           "drift": 1.61,
@@ -398,16 +403,19 @@
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Doesn't look like a snake walk at all!"
+          ],
           "sub": "028f4f90-7a87-4a1a-88ef-097e43f4c2ea",
           "group": "44c0083d-6d7c-4130-9e37-c345bb3d4976",
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:23:29+00:00"
+          "generated_at": "2026-09-09T21:23:29+00:00",
+          "maintainer": "Doesn't look like a snake walk at all!"
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.054,
           "step_max": 0.0667,
           "drift": 1.19,
@@ -421,6 +429,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: Doesn't look like a snake walk at all!",
             "last→first hand-off 2.6× a step — eyeball the loop"
           ],
           "sub": "a5479356-8bc2-4b52-9496-edf3659be4fb",
@@ -428,10 +437,11 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:23:30+00:00"
+          "generated_at": "2026-09-09T21:23:30+00:00",
+          "maintainer": "Doesn't look like a snake walk at all!"
         },
         "north": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0325,
           "step_max": 0.0434,
           "drift": 1.07,
@@ -445,6 +455,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: Doesn't look like a snake walk at all!",
             "motion 0.033 outside the calm band 0.04000000000000001–0.4 — eyeball it",
             "last→first hand-off 2.2× a step — eyeball the loop"
           ],
@@ -453,10 +464,11 @@
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:23:30+00:00"
+          "generated_at": "2026-09-09T21:23:30+00:00",
+          "maintainer": "Doesn't look like a snake walk at all!"
         },
         "south-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0809,
           "step_max": 0.1051,
           "drift": 1.68,
@@ -470,6 +482,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: Doesn't look like a snake walk at all!",
             "last→first hand-off 2.5× a step — eyeball the loop"
           ],
           "sub": "9faea9c5-4ea4-4681-bc75-da7352c7f40c",
@@ -478,10 +491,11 @@
           "version": 2,
           "mirrored": true,
           "generated_at": "2026-09-09T21:23:29+00:00",
-          "source": "south-east"
+          "source": "south-east",
+          "maintainer": "Doesn't look like a snake walk at all!"
         },
         "west": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0881,
           "step_max": 0.1037,
           "drift": 1.61,
@@ -494,17 +508,20 @@
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Doesn't look like a snake walk at all!"
+          ],
           "sub": "028f4f90-7a87-4a1a-88ef-097e43f4c2ea",
           "group": "44c0083d-6d7c-4130-9e37-c345bb3d4976",
           "takes": 1,
           "version": 2,
           "mirrored": true,
           "generated_at": "2026-09-09T21:23:29+00:00",
-          "source": "east"
+          "source": "east",
+          "maintainer": "Doesn't look like a snake walk at all!"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.054,
           "step_max": 0.0667,
           "drift": 1.19,
@@ -518,6 +535,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: Doesn't look like a snake walk at all!",
             "last→first hand-off 2.6× a step — eyeball the loop"
           ],
           "sub": "a5479356-8bc2-4b52-9496-edf3659be4fb",
@@ -526,7 +544,8 @@
           "version": 2,
           "mirrored": true,
           "generated_at": "2026-09-09T21:23:30+00:00",
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "Doesn't look like a snake walk at all!"
         }
       },
       "action": "slithers forward in place, body undulating in a smooth S-curve, hood and head held raised and steady, seamless loop, no turning",
@@ -1317,7 +1336,7 @@
           "rung": 2
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1528,
           "step_max": 0.1624,
           "drift": 3.09,
@@ -1335,6 +1354,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: Lame bite",
             "shallow strike: reach 0.17 — eyeball it"
           ],
           "sub": "18e2c016-9c82-49d2-b0f3-d837e8f34e3e",
@@ -1348,7 +1368,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "Lame bite"
         },
         "east": {
           "status": "warn",
@@ -1385,7 +1406,7 @@
           "rung": 0
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.4146,
           "step_max": 0.5601,
           "drift": 2.88,
@@ -1403,6 +1424,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: Not NE",
             "shallow strike: reach 0.26 — eyeball it"
           ],
           "sub": "b54eba31-8db0-4d74-98b2-4f43221a6279",
@@ -1416,7 +1438,8 @@
           "rolls": 1,
           "intensity": 0,
           "frames": 4,
-          "rung": 0
+          "rung": 0,
+          "maintainer": "Not NE"
         },
         "north": {
           "status": "warn",
@@ -1453,7 +1476,7 @@
           "rung": 0
         },
         "south-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1528,
           "step_max": 0.1624,
           "drift": 3.09,
@@ -1471,6 +1494,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: Lame bite",
             "shallow strike: reach 0.17 — eyeball it"
           ],
           "sub": "18e2c016-9c82-49d2-b0f3-d837e8f34e3e",
@@ -1485,7 +1509,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "south-east"
+          "source": "south-east",
+          "maintainer": "Lame bite"
         },
         "west": {
           "status": "warn",
@@ -1523,7 +1548,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.4146,
           "step_max": 0.5601,
           "drift": 2.88,
@@ -1541,6 +1566,7 @@
             88
           ],
           "reasons": [
+            "HE says redo: Not NW",
             "shallow strike: reach 0.26 — eyeball it"
           ],
           "sub": "b54eba31-8db0-4d74-98b2-4f43221a6279",
@@ -1555,7 +1581,8 @@
           "intensity": 0,
           "frames": 4,
           "rung": 0,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "Not NW"
         }
       },
       "action": "Strike - Coils its head back, then strikes forward with fangs bared",

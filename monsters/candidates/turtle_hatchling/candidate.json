@@ -1338,7 +1338,7 @@
           "rung": 2
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.233,
           "step_max": 0.6231,
           "drift": 7.24,
@@ -1356,6 +1356,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.24 — eyeball it"
           ],
           "sub": "15799fc5-12e6-4f01-9330-ceae20183346",
@@ -1369,7 +1370,8 @@
           "rolls": 2,
           "intensity": 0,
           "frames": 16,
-          "rung": 2
+          "rung": 2,
+          "maintainer": "redo"
         },
         "north": {
           "status": "pass",
@@ -1474,7 +1476,7 @@
           "source": "east"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.233,
           "step_max": 0.6231,
           "drift": 7.24,
@@ -1492,6 +1494,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: redo",
             "shallow strike: reach 0.24 — eyeball it"
           ],
           "sub": "15799fc5-12e6-4f01-9330-ceae20183346",
@@ -1506,7 +1509,8 @@
           "intensity": 0,
           "frames": 16,
           "rung": 2,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "redo"
         }
       },
       "action": "Beak Snap - Stretches its neck right out and snaps its beak shut",

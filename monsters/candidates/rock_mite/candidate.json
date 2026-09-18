@@ -339,7 +339,7 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.0768,
           "step_max": 0.1084,
           "drift": 1.04,
@@ -352,13 +352,16 @@
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: redo"
+          ],
           "sub": "3690fe58-f3d3-43e5-9cdf-9db94a9f007a",
           "group": "465e05b3-6c55-4804-bb5c-1d50255e942d",
           "takes": 1,
           "version": 2,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:25:57+00:00"
+          "generated_at": "2026-09-09T21:25:57+00:00",
+          "maintainer": "redo"
         },
         "south-east": {
           "status": "pass",

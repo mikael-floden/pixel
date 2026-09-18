@@ -340,7 +340,7 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1411,
           "step_max": 0.1729,
           "drift": 6.21,
@@ -354,6 +354,7 @@
             178
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 6.2 px — eyeball it",
             "canvas grown by 1 px a side to hold the motion"
           ],
@@ -362,7 +363,8 @@
           "takes": 1,
           "version": 1,
           "mirrored": false,
-          "generated_at": "2026-09-09T21:14:53+00:00"
+          "generated_at": "2026-09-09T21:14:53+00:00",
+          "maintainer": "redo"
         },
         "south-east": {
           "status": "warn",

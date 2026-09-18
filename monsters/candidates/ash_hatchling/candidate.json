@@ -1253,7 +1253,7 @@
     "attack_v3": {
       "directions": {
         "south": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.0523,
           "step_max": 0.2684,
           "drift": 2.64,
@@ -1271,6 +1271,7 @@
             42
           ],
           "reasons": [
+            "HE says redo: Outside frame",
             "motion 0.052 outside the calm band 0.08–0.9 — eyeball it",
             "shallow strike: reach 0.20 — eyeball it",
             "canvas grown by 1 px a side to hold the motion"
@@ -1286,10 +1287,11 @@
           "rolls": 5,
           "intensity": 0,
           "frames": 16,
-          "rung": 4
+          "rung": 4,
+          "maintainer": "Outside frame"
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1763,
           "step_max": 0.3516,
           "drift": 3.73,
@@ -1307,6 +1309,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: Outside frame",
             "shallow strike: reach 0.20 — eyeball it"
           ],
           "sub": "78f4ffcd-53ee-4aff-b3aa-6eaec414b133",
@@ -1320,7 +1323,8 @@
           "rolls": 4,
           "intensity": 0,
           "frames": 16,
-          "rung": 3
+          "rung": 3,
+          "maintainer": "Outside frame"
         },
         "east": {
           "status": "warn",
@@ -1357,7 +1361,7 @@
           "rung": 2
         },
         "north-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.3188,
           "step_max": 0.6734,
           "drift": 5.71,
@@ -1375,6 +1379,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: Outside frame",
             "6 px of travel — eyeball it"
           ],
           "sub": "8cf83ded-55fc-4641-883a-5355627ddaf5",
@@ -1388,10 +1393,11 @@
           "rolls": 4,
           "intensity": 0,
           "frames": 16,
-          "rung": 3
+          "rung": 3,
+          "maintainer": "Outside frame"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.156,
           "step_max": 0.3852,
           "drift": 3.32,
@@ -1408,7 +1414,9 @@
             40,
             40
           ],
-          "reasons": [],
+          "reasons": [
+            "HE says redo: Outside frame"
+          ],
           "sub": "1279f2b3-9a45-4d0a-ad27-640c3ee43f8a",
           "group": "fcb38aae-f12d-40d9-9c3b-d7ecf4e2f3ef",
           "takes": 1,
@@ -1420,10 +1428,11 @@
           "rolls": 4,
           "intensity": 0,
           "frames": 16,
-          "rung": 3
+          "rung": 3,
+          "maintainer": "Outside frame"
         },
         "south-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1763,
           "step_max": 0.3516,
           "drift": 3.73,
@@ -1441,6 +1450,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: Outside frame",
             "shallow strike: reach 0.20 — eyeball it"
           ],
           "sub": "78f4ffcd-53ee-4aff-b3aa-6eaec414b133",
@@ -1455,10 +1465,11 @@
           "intensity": 0,
           "frames": 16,
           "rung": 3,
-          "source": "south-east"
+          "source": "south-east",
+          "maintainer": "Outside frame"
         },
         "north-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.3188,
           "step_max": 0.6734,
           "drift": 5.71,
@@ -1476,6 +1487,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: Outside frame",
             "6 px of travel — eyeball it"
           ],
           "sub": "8cf83ded-55fc-4641-883a-5355627ddaf5",
@@ -1490,7 +1502,8 @@
           "intensity": 0,
           "frames": 16,
           "rung": 3,
-          "source": "north-east"
+          "source": "north-east",
+          "maintainer": "Outside frame"
         },
         "west": {
           "status": "warn",
@@ -1689,7 +1702,7 @@
     "die_v1": {
       "directions": {
         "south": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.152,
           "step_max": 0.512,
           "drift": 21.81,
@@ -1709,6 +1722,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: Ni resurrection at the end",
             "drifts 21.8 px — eyeball it"
           ],
           "sub": "2404090b-f3f0-4c8e-abd1-71145ad3ade9",
@@ -1724,10 +1738,11 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 3,
-          "generated_at": "2026-09-13T03:25:18+00:00"
+          "generated_at": "2026-09-13T03:25:18+00:00",
+          "maintainer": "Ni resurrection at the end"
         },
         "south-east": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1521,
           "step_max": 0.75,
           "drift": 22.05,
@@ -1747,6 +1762,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 22.1 px — eyeball it"
           ],
           "sub": "85b80da1-c2b5-4095-bd4c-dfb46c97c489",
@@ -1762,7 +1778,8 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 2,
-          "generated_at": "2026-09-13T03:25:19+00:00"
+          "generated_at": "2026-09-13T03:25:19+00:00",
+          "maintainer": "redo"
         },
         "east": {
           "status": "pass",
@@ -1877,7 +1894,7 @@
           "generated_at": "2026-09-13T03:25:30+00:00"
         },
         "south-west": {
-          "status": "warn",
+          "status": "fail",
           "step_mean": 0.1521,
           "step_max": 0.75,
           "drift": 22.05,
@@ -1897,6 +1914,7 @@
             40
           ],
           "reasons": [
+            "HE says redo: redo",
             "drifts 22.1 px — eyeball it"
           ],
           "sub": "85b80da1-c2b5-4095-bd4c-dfb46c97c489",
@@ -1913,7 +1931,8 @@
           "unwrapped": null,
           "tries": 2,
           "generated_at": "2026-09-13T03:25:19+00:00",
-          "source": "south-east"
+          "source": "south-east",
+          "maintainer": "redo"
         },
         "north-west": {
           "status": "warn",
@@ -2295,7 +2314,7 @@
           "mode": "v3"
         },
         "north": {
-          "status": "pass",
+          "status": "fail",
           "step_mean": 0.1098,
           "step_max": 0.1448,
           "drift": 1.61,
@@ -2315,6 +2334,7 @@
             46
           ],
           "reasons": [
+            "HE says redo: redo",
             "canvas grown by 3 px a side to hold the motion"
           ],
           "sub": "2f8d496d-f150-4449-a402-ec9992ec1f15",
@@ -2329,7 +2349,8 @@
           "intensity": 0,
           "frames": 5,
           "rung": 0,
-          "mode": "v3"
+          "mode": "v3",
+          "maintainer": "redo"
         },
         "south-west": {
           "status": "pass",
