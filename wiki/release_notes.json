@@ -1,9 +1,20 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T17:12:46.518Z",
- "head": "c1401f4d1",
+ "generated_at": "2026-09-18T17:17:07.707Z",
+ "head": "d6af16e85",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "d6af16e85",
+   "at": "2026-09-18T17:14:10+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: Sound and Releases — every tile name on one line",
+   "agent": "wiki",
+   "dirs": [
+    "wiki"
+   ],
+   "files": 6
+  },
   {
    "sha": "c1401f4d1",
    "at": "2026-09-18T17:11:51+00:00",
@@ -552,17 +563,6 @@
     "monsters"
    ],
    "files": 585
-  },
-  {
-   "sha": "327d392be",
-   "at": "2026-09-18T14:59:07+00:00",
-   "author": "Claude",
-   "subject": "wiki registry rebuilt: the road-edge fade art is now reviewable",
-   "agent": null,
-   "dirs": [
-    "wiki"
-   ],
-   "files": 2
   }
  ]
 }

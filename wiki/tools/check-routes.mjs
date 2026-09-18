@@ -82,10 +82,19 @@ for (const admin of [false, true]) {
       const home = await p.evaluate(() => ({
         tiles: document.querySelectorAll(".stat-tile").length,
         fit: document.querySelector(".stat-tiles")?.dataset.fit ?? "",
+        rows: document.querySelector(".stat-tiles")?.dataset.rows ?? "",
         over: Math.round(document.documentElement.scrollHeight - document.documentElement.clientHeight),
+        // What is left under the tiles: the page should END near the bottom of
+        // the screen, not float at the top with a band of background under it.
+        spare: Math.round(window.innerHeight - document.querySelector(".stat-tiles").getBoundingClientRect().bottom),
       }));
-      console.log(`  ${admin ? "Game Master" : "player     "}: #/ — ${home.tiles} sections, ${home.fit}, ${home.over}px past the screen`);
+      console.log(`  ${admin ? "Game Master" : "player     "}: #/ — ${home.tiles} sections, ${home.fit}, rows ${home.rows}, ${home.over}px past the screen, ${home.spare}px spare`);
       if (home.over > 1) fails.push(`${admin ? "admin" : "player"}: the Overview scrolls ${home.over}px (${home.tiles} sections at ${home.fit})`);
+      // THE LEFTOVER GOES TO THE TILES (maintainer 2026-09-18: "try to take up
+      // the remaining vertical space (without creating a scrollbar)"). 60px is
+      // the column's own bottom padding plus a hair — more than that is a band
+      // of empty background he can see.
+      if (home.spare > 60) fails.push(`${admin ? "admin" : "player"}: the Overview leaves ${home.spare}px of empty screen under it`);
       if (!home.tiles) fails.push(`${admin ? "admin" : "player"}: the Overview has no section tiles`);
     }
     if (r === READONLY_ROUTE) {

@@ -4377,6 +4377,29 @@ function homeTiles(tiles) {
   } });
   return grid;
 }
+/* THE LEFTOVER GOES TO THE TILES (maintainer 2026-09-18: "try to take up the
+ * remaining vertical space (without creating a scrollbar)"). The fit above
+ * picks the layout; this hands the rows what is left over so the door fills the
+ * screen instead of floating at the top with a band of background under it.
+ *
+ * CAPPED at 1.75x the natural row: a desktop has hundreds of pixels spare, and
+ * a 96px icon centred in a 300px tile is not "filling the screen", it is a
+ * stretched card. Past the cap the space simply stays empty.
+ *
+ * It only ever GROWS rows, and only within the room fitHome already measured,
+ * so it can never be what puts a scrollbar on the page. */
+function fillHome(grid, cols, avail) {
+  const n = grid.children.length;
+  const rows = Math.ceil(n / cols);
+  if (!rows) return;
+  const natural = grid.getBoundingClientRect().height;
+  const gaps = HOME_GAP * (rows - 1);
+  const naturalRow = (natural - gaps) / rows;
+  const want = (avail - gaps) / rows;
+  const rowH = Math.min(want, naturalRow * 1.75);
+  if (rowH > naturalRow + 2) grid.style.gridAutoRows = `${Math.floor(rowH)}px`;
+  grid.dataset.rows = `${rows}x${Math.round(rowH)}px`;
+}
 function fitHome(grid) {
   if (!grid?.isConnected || !grid.clientWidth) return;
   const setIcon = (px) => {
@@ -4428,6 +4451,10 @@ function fitHome(grid) {
         grid.style.setProperty("--home-cols", String(c));
         if (grid.getBoundingClientRect().height <= room()) {
           grid.dataset.fit = `${L.icon}px/${c}col${L.small ? "/small" : ""}${L.rows ? "/side" : ""}${L.tight ? "/no-intro" : ""}`;
+          // A hair under the room, not exactly it: rounding in the row maths
+          // and the column's own trailing space put 5-8px on the page and a
+          // scrollbar with them (measured).
+          fillHome(grid, c, room() - 10);
           return;
         }
       }

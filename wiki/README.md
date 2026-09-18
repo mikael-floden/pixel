@@ -100,7 +100,15 @@ for both.
   130px on a phone for the save bar; reading that is what turned a layout that
   "fit" into one that did. The front door has nothing to save, so
   `#content.fit-home` drops the reserve while the Overview is mounted.
-- Gate: `check-routes.mjs` asserts `#/` scrolls 0px as player AND as admin.
+- **The leftover goes to the tiles** (maintainer 2026-09-18: *"try to take up
+  the remaining vertical space (without creating a scrollbar)"*). `fillHome()`
+  runs after the fit and grows the ROWS into the room that is left, capped at
+  1.75x their natural height — a 96px icon centred in a 300px tile is not
+  filling the screen, it is a stretched card — and it targets 10px under the
+  room, because rounding in the row maths put 5-8px and a scrollbar on the page.
+  Measured: admin 6 rows of 95px, player 4 of 153px, ~30px spare.
+- Gate: `check-routes.mjs` asserts `#/` scrolls 0px as player AND as admin, and
+  that no more than 60px of empty screen is left under the tiles.
 
 ## Sections: names and icons
 
