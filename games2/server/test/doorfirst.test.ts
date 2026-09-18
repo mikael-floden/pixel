@@ -29,6 +29,9 @@ import {
   CELL_WU,
   WALK_CLIMB,
   ISO_GEOMETRY_MAPS3,
+  DOOR_BESIDE_CELLS,
+  STICK_LEAN_DEFAULT,
+  leanHeading,
   type SlideMemo,
   type AutopilotTrip,
   type TerrainGrid,
@@ -154,6 +157,93 @@ test("the_game's house from 298.6,199.6: no heading jitter at the jamb (skipped 
   for (let i = 1; i < path.length; i++) if (path[i].ax !== path[i - 1].ax || path[i].ay !== path[i - 1].ay) changes++;
   assert.ok(changes <= 4, `the walked heading changed ${changes} times in 4 s on the way through the door (the jitter at the jamb)`);
   assertThroughTheDoor(path, "the_game from 298.6,199.6");
+});
+
+/* THE SLIDE TAKES THE DOOR BESIDE IT (maintainer 2026-09-18, 298.9,198.4:
+ * "I'm very very close to the door/entrance and still the player runs around
+ * the house to the left!"). Screen-UP into the south wall is 27 degrees off
+ * that wall's normal — inside his slide angle — so the push was the player's
+ * and the slide carried the body west along the whole wall and round the
+ * house: never stalled, so the door-finder never looked, and the door lay
+ * one cell AGAINST the lean, which the finder never takes. Now a push into a
+ * wall with a doorway within DOOR_BESIDE_CELLS behind the lean is a push
+ * through that doorway: the deflection is sideways AND forward, committed
+ * until the body's centre crosses the wall's line (releasing the moment the
+ * doorway opened ahead drifted the body back onto the jamb, two headings
+ * alternating every tick), then the player's own push walks on. The thumb
+ * is modelled as the client does it: the 8-way snap plus the finger's lean
+ * (leanHeading, STICK_LEAN_DEFAULT). */
+function holdThumb(grid: TerrainGrid, col: number, row: number, deg: number, ticks: number) {
+  const rad = (deg * Math.PI) / 180;
+  const ax = Math.round(Math.cos(rad));
+  const ay = Math.round(Math.sin(rad));
+  const heading = leanHeading(ax, ay, deg, STICK_LEAN_DEFAULT, ISO_GEOMETRY_MAPS3);
+  const walk = { maxClimb: WALK_CLIMB, canSwim: true };
+  let x = col * CELL_WU;
+  let y = row * CELL_WU;
+  let elev = levelAtWorld(grid, x, y);
+  let t = 0;
+  let trip: AutopilotTrip | null = null;
+  const memo: SlideMemo = { ax: 0, ay: 0 };
+  const ww = grid.width * CELL_WU;
+  const wh = grid.height * CELL_WU;
+  const path: { col: number; row: number; ax: number; ay: number }[] = [];
+  for (let i = 0; i < ticks; i++) {
+    t += 33;
+    const r = walkHeading(grid, x, y, ax, ay, memo, { nowMs: t, trip, fromElev: elev, worldW: ww, worldH: wh, heading });
+    trip = r.trip;
+    const wax = r.deflected ? r.ax : heading.ax;
+    const way = r.deflected ? r.ay : heading.ay;
+    const u = unstickFromSolids(grid, x, y, 80 * 0.033, undefined, elev);
+    x = u.x;
+    y = u.y;
+    const m = stepMovement(x, y, wax, way, true, 0.033, makeBlockedElev(grid, walk, () => elev), 1, true, ww, wh, makeSideBlocked(grid, walk, () => elev), { screenSlide: true });
+    x = m.x;
+    y = m.y;
+    elev = levelAtWorld(grid, x, y);
+    path.push({ col: x / CELL_WU, row: y / CELL_WU, ax: wax, ay: way });
+  }
+  return path;
+}
+
+test("screen-up into the south wall one cell west of the door: through the door, never round the house, and the push is the player's again inside", () => {
+  for (const [grid, what] of [[house(), "synthetic house"]] as [TerrainGrid, string][]) {
+    for (const deg of [-110, -90, -70]) {
+      const path = holdThumb(grid, 298.9, 198.4, deg, 60);
+      const inside = path.findIndex((p) => p.row < 197);
+      // (the way TO the door; inside, screen-up walks up-left by design)
+      const westMost = Math.min(...path.slice(0, inside < 0 ? path.length : inside).map((p) => p.col));
+      const end = path[path.length - 1];
+      const flips = reversals(path);
+      let changes = 0;
+      for (let i = 1; i < path.length; i++) if (path[i].ax !== path[i - 1].ax || path[i].ay !== path[i - 1].ay) changes++;
+      assert.ok(westMost > 298.5, `${what} ${deg}°: routed round the house — west to col ${westMost.toFixed(2)}`);
+      assert.ok(inside >= 0 && inside * 33 <= 1500, `${what} ${deg}°: not through the door within 1.5 s (${inside < 0 ? "never" : inside * 33 + " ms"})`);
+      assert.ok(flips <= 3 && changes <= 4, `${what} ${deg}°: the heading dithered (${flips} reversals, ${changes} changes)`);
+      // inside, the push is the player's: screen-up walks up-LEFT, not on east
+      assert.ok(end.col < 300.2 && end.row < 196.5, `${what} ${deg}°: the deflection outlived the doorway — rest at ${end.col.toFixed(2)},${end.row.toFixed(2)}`);
+    }
+  }
+  // Two cells west of the door the doorway is further than DOOR_BESIDE_CELLS behind
+  // the lean: the honest slide, west along the wall.
+  assert.ok(DOOR_BESIDE_CELLS < 2);
+  const far = holdThumb(house(), 297.9, 198.4, -90, 60);
+  assert.ok(Math.min(...far.map((p) => p.col)) < 297, "two cells from the door the slide is the player's own");
+  assert.equal(far.findIndex((p) => p.row < 197 && p.col > 299.5), -1, "and it does not go through the door");
+});
+
+test("the_game's house, screen-up from 298.9,198.4: through the door, not round the house (skipped without the world tree)", (t) => {
+  const file = join(process.cwd(), "..", "..", "maps2", "worlds3", "the_game", "world.json");
+  if (!existsSync(file)) return t.skip("no world tree in this checkout");
+  const world = parseWorld(JSON.parse(readFileSync(file, "utf8")));
+  const grid = buildTerrainGrid(world!.width, world!.height, world!.rows, world!.props, world!.decks);
+  stampSceneryCollision(grid, world!.scenery ?? [], sceneryBbox(), sceneryHitboxOverrides(), ISO_GEOMETRY_MAPS3);
+  const path = holdThumb(grid, 298.9, 198.4, -90, 60);
+  const inside = path.findIndex((p) => p.row < 197);
+  const westMost = Math.min(...path.slice(0, inside < 0 ? path.length : inside).map((p) => p.col));
+  assert.ok(westMost > 298.5, `routed round the house — west to col ${westMost.toFixed(2)}`);
+  assert.ok(inside >= 0 && inside * 33 <= 1500, `not through the door within 1.5 s (${inside < 0 ? "never" : inside * 33 + " ms"})`);
+  assert.ok(reversals(path) <= 3, `the heading dithered ${reversals(path)} times`);
 });
 
 test("the_game's house at 299.3,199.1 (skipped without the world tree)", (t) => {

@@ -10,10 +10,9 @@ reason, the doc with the story.
 
 The Nangijala client + server: TypeScript npm workspaces `shared/`, `server/`
 (Node + Colyseus, authoritative `WorldRoom`, 20 Hz tick, decorator-free
-schema, plain `tsx`), `client/` (Phaser 3 + colyseus.js, Vite; prediction and
+schema, `tsx`), `client/` (Phaser 3 + colyseus.js, Vite; prediction and
 reconciliation). Art is READ from the sibling domains (`characters2/`,
-`tiles/`, `maps2/`, `scenery/`) at `/assets/<domain>/…`, never copied or
-edited. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`.
+`tiles/`, `maps2/`, `scenery/`) at `/assets/<domain>/…`, never copied. ONE world, `the_game` (`maps2/worlds3`), ONE tile system, `tiles/`.
 Agents sharing `games2/`: this one (gameplay, netcode, world, rendering),
 games-ui (`UI_AGENT.md` splits the files), games-audio (`composer/`),
 games-ambient (`ambient/`), games-perf (frame time, the beacon), each
@@ -24,18 +23,18 @@ with an `<agent>-assistant` of the same remit and board. Work from `games2/`
 
 | doc | holds |
 |---|---|
-| `docs/shipping.md` | publish policy, image root, world tree, staging, WebP, `?h=` grant, brotli, load order, deploy |
-| `docs/tiles3-rendering.md` | tiles3 resolver, draw ops, plates, transitions, seams, fades, decks, wall feet, render3 parity |
-| `docs/scenery.md` | sizing, hitboxes, animation, wall windows, indoor furniture, flat pieces, fog silhouettes |
+| `docs/shipping.md` | publish policy, image root, world tree, staging, WebP, `?h=` grant, brotli, load order |
+| `docs/tiles3-rendering.md` | tiles3 resolver, draw ops, plates, transitions, seams, fades, decks, wall feet, parity |
+| `docs/scenery.md` | sizing, hitboxes, animation, wall windows, indoor furniture, flat pieces, fog |
 | `docs/depth-sort.md` | occluder set, `depthrule.ts`, cover lines, lifts, drops |
-| `docs/perf.md` | ground RT (scroll, slices, repaints, prefetch, compose), pooled occluders, capture pool, art queue, beacon |
+| `docs/perf.md` | ground RT (scroll, slices, repaints, prefetch, compose), pooled occluders, capture, art queue, beacon |
 | `docs/movement.md` | movement, decks, collision, steer assist, fall damage, tap/hold-to-move, dodge, swimming, gait, camera |
-| `docs/monsters-combat.md` | spawn zones, shadows, gait, brain, escape math, loot, backpack, levelling, death, NPCs |
+| `docs/monsters-combat.md` | spawn zones, shadows, gait, brain, escape, loot, backpack, levelling, death, NPCs |
 | `docs/lighting.md` | night shader + CPU twins, light slots, scenery light and shadow, fog, sun, time, weather, indoor ambient |
-| `docs/ui.md` | wiki-themed HUD, chess, landscape and handedness, rotation, PWA, reconnect |
+| `docs/ui.md` | wiki HUD, chess, landscape, handedness, rotation, PWA, reconnect |
 | `docs/audio.md` | composer binding |
-| `docs/testing.md` | where a test belongs, browser gates, harness traps, device geometry |
-| `docs/backend.md`, `spec/ZONES.md` | one world for 10k: interest, positions on the wire, bus, zone rooms, ghosts, hand-off, routing |
+| `docs/testing.md` | test homes, browser gates, harness traps, device geometry |
+| `docs/backend.md`, `spec/ZONES.md` | one world for 10k: interest, wire positions, bus, zone rooms, ghosts, hand-off, routing |
 | `INDOOR.md` | cut-away — READ IT before touching anything drawn, lit, picked or hidden indoors |
 | `SURFACES.md`, `spec/*.md`, `deploy/DEPLOY.md`, `loop/LOOP.md` | surfaces runbook, agent contracts, deploy, scheduled loop |
 
@@ -197,8 +196,9 @@ push, no PRs unless asked.
   (`slideShare`; thumb windows only) or stands, auto-jump hops; a push within
   his "Nav slide angle" (45° off normal) plans nothing till cornered
   (`navslide.test.ts`); a door sideways or ahead within 4 cells is a route,
-  the shorter walk wins; a door sticks; the tap follower holds its heading
-  (`doorfirst.test.ts`); the sprite faces its walk.
+  the shorter walk wins; a door sticks; a slide takes a doorway ≤1.5 cells
+  behind its lean unless a corner closes the lane (`doorfirst.test.ts`); the
+  tap follower holds its heading; the sprite faces its walk.
 - Scenery, props and open ground walk the heading AS IT IS; the tick's glide
   slides them (a footprint is a PROP whatever the nav layer says); the
   ESCAPE is the nav.

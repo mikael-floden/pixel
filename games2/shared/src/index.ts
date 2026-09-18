@@ -3019,7 +3019,12 @@ export function steerAssist(
   ax: number,
   ay: number,
   elev?: number,
-): { ax: number; ay: number; doorDist?: number } | null {
+  /** THE SLIDE'S DOOR HUNT (walkHeading rule 1): the body is sliding along a
+   *  terrain wall, not stalled, and asks only for a doorway beside it — the
+   *  stall gate is skipped, a prop is not its business, and a door may sit
+   *  `backCells` against the run. */
+  slide?: { backCells: number },
+): { ax: number; ay: number; doorDist?: number; doorBack?: boolean; gate?: { x: boolean; line: number; sgn: number } } | null {
   if (ax === 0 && ay === 0) return null;
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const worldW = worldWidthOf(grid);
@@ -3038,8 +3043,9 @@ export function steerAssist(
     stepMovement(x, y, iax, iay, false, dt, fwd, 1, true, worldW, worldH, side);
   const moved = (r: { x: number; y: number }) => Math.hypot(r.x - x, r.y - y);
   // Only assist a real STALL. A wall-slide (diagonal input with one free axis)
-  // still moves at ≥~0.7 of speed and must stay untouched.
-  if (moved(sim(ax, ay)) > WALK_SPEED * dt * 0.35) return null;
+  // still moves at ≥~0.7 of speed and must stay untouched — unless the slide
+  // itself asks for the doorway beside it.
+  if (!slide && moved(sim(ax, ay)) > WALK_SPEED * dt * 0.35) return null;
   const w = screenToWorldVector(ax, ay);
   const len = Math.hypot(w.x, w.y);
   if (len < 1e-6) return null;
@@ -3062,7 +3068,8 @@ export function steerAssist(
       break;
     }
   }
-  if (bc < 0) return steerAssistWall(grid, x, y, ax, ay, ux, uy, w, sim, moved, elev);
+  if (bc < 0) return steerAssistWall(grid, x, y, ax, ay, ux, uy, w, sim, moved, elev, slide);
+  if (slide) return null; // a prop ahead is the tree rules', not the slide's
   // Perpendicular axis relative to the DOMINANT world axis of the intent.
   const domX = Math.abs(w.x) >= Math.abs(w.y);
   const perp = domX ? { x: 0, y: 1 } : { x: 1, y: 0 };
@@ -3151,7 +3158,8 @@ function steerAssistWall(
   sim: (iax: number, iay: number) => { x: number; y: number },
   moved: (r: { x: number; y: number }) => number,
   elev?: number,
-): { ax: number; ay: number; doorDist: number } | null {
+  slide?: { backCells: number },
+): { ax: number; ay: number; doorDist: number; doorBack?: boolean; gate?: { x: boolean; line: number; sgn: number } } | null {
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   // The SURFACE level when the caller knows it: the base under a deck is the
   // cave, and every rock cell beside the lid then read as a wall to hunt a
@@ -3242,11 +3250,45 @@ function steerAssistWall(
          * the player away from where the stick pointed (maintainer 2026-09-13:
          * "the door is way too far away for doing a 'run backwards'
          * navigation"). Sideways is a dodge; the one backwards move there is
-         * is walkHeading's escape route, one cell at most. */
-        if (perp.x * sgn * ux + perp.y * sgn * uy < -1e-6) continue;
+         * is walkHeading's escape route, one cell at most. THE SLIDE'S HUNT
+         * (walkHeading rule 1, `slide`) looks ONLY behind the lean, for a real
+         * DOORWAY — a gap flanked by wall on both sides, never a wall's end —
+         * whose near edge is within `backCells` of the body: "the door is
+         * literally next to the player". It deflects sideways AND forward,
+         * so the body enters as it arrives instead of drifting back out. */
+        const against = perp.x * sgn * ux + perp.y * sgn * uy < -1e-6;
+        if (against !== !!slide) continue;
         // The candidate opening: the wall line's cell `dist` steps to the side.
         const oc = wc + perp.x * sgn * dist;
         const or_ = wr + perp.y * sgn * dist;
+        if (slide) {
+          const lat = perp.x ? x : y;
+          const edge = (((oc + 0.5) * CELL_WU - lat) * sgn) / CELL_WU - 0.5;
+          if (edge <= 0 || edge > slide.backCells) continue;
+          const isWall = (c: number, r: number) =>
+            c >= 0 && r >= 0 && c < grid.width && r < grid.height && grid.deck[r * grid.width + c] < 0 &&
+            grid.level[r * grid.width + c] - myLevel > JUMP_CLIMB + 1e-9;
+          if (!isWall(oc - perp.x, or_ - perp.y) || !isWall(oc + perp.x, or_ + perp.y)) continue;
+          /* NOT WHEN THE SLIDE IS ABOUT TO END ANYWAY: a lane ahead along
+           * the lean that closes within the same distance is his corner
+           * (2026-09-13, the spawn house held down: the door 0.7 cells
+           * behind first contact, the corner 1.3 ahead — "the door is way
+           * too far away for doing a 'run backwards' navigation"); the
+           * honest stop is right there and the door is two cells back from
+           * it. A wall that runs on (his house's south wall, 3 cells to
+           * the corner and round the house) has no stop to see. */
+          let open = true;
+          let ac = myC;
+          let ar = myR;
+          for (let k = 1; k <= Math.ceil(slide.backCells) && open; k++) {
+            const lc = myC - perp.x * sgn * k;
+            const lr = myR - perp.y * sgn * k;
+            open = passable(ac, ar, lc, lr);
+            ac = lc;
+            ar = lr;
+          }
+          if (!open) continue;
+        }
         // The lane the body slides through sits on MY side of the wall — check
         // it cell by cell up to the door's lateral offset. A door behind a
         // boulder (or past a gap in the floor) is not a door.
@@ -3278,7 +3320,8 @@ function steerAssistWall(
         // Deflect purely sideways, snapped to a real 8-way input — exactly the
         // prop assist's move. Re-evaluated every tick: the moment forward opens
         // (the doorway), the stall test stops firing and forward resumes.
-        const target = { x: perp.x * sgn, y: perp.y * sgn };
+        // (The slide's hunt deflects sideways AND forward, see above.)
+        const target = slide ? { x: perp.x * sgn + fwd.x, y: perp.y * sgn + fwd.y } : { x: perp.x * sgn, y: perp.y * sgn };
         let best: { ax: number; ay: number } | null = null;
         let bestDot = 0.5;
         for (const [cax, cay] of EIGHT_WAY) {
@@ -3292,6 +3335,13 @@ function steerAssistWall(
         }
         if (!best) continue;
         if (moved(sim(best.ax, best.ay)) < WALK_SPEED * 0.08 * 0.35) continue;
+        if (slide) {
+          const gateX = fwd.x !== 0;
+          return {
+            ...best, doorDist: dist, doorBack: true,
+            gate: { x: gateX, line: ((gateX ? oc : or_) + 0.5) * CELL_WU, sgn: gateX ? fwd.x : fwd.y },
+          };
+        }
         return { ...best, doorDist: dist };
       }
     }
@@ -4241,6 +4291,17 @@ export interface SlideMemo {
   /** When rule 1's door-finder last steered toward a door: a window that
    *  ends with the ask free right after that is a body at the doorway. */
   doorSeenMs?: number;
+  /** THE SLIDE'S DOOR (walkHeading rule 1): the committed deflection into
+   *  the doorway the slide was carrying the body away from, and the wall's
+   *  centre line along the forward axis (`doorGateX`: the axis is world x;
+   *  `doorGateSgn`: the forward sense) — the commitment holds until the
+   *  body's centre crosses that line, i.e. it is in the doorway and the jamb
+   *  now holds the push's own drift. */
+  doorAx?: number;
+  doorAy?: number;
+  doorGateX?: boolean;
+  doorGateLine?: number;
+  doorGateSgn?: number;
   askAy?: number;
   progRef?: number;
   progAt?: number;
@@ -4573,6 +4634,28 @@ export function walkHeading(
       hold.escapeWait = stuckMs;
       hold.doorMs = 0;
       hold.doorSeenMs = 0;
+      hold.doorAx = hold.doorAy = hold.doorGateLine = undefined;
+    }
+    /* THE SLIDE'S DOOR, COMMITTED (rule 1 below chose it): the deflection
+     * holds until the body's centre crosses the wall's centre line in the
+     * doorway — released the moment the doorway opened ahead (rule 0's door
+     * rule), the push's own drift took the body back onto the jamb and two
+     * headings alternated every tick; past the line the jamb holds that
+     * drift and the tick's slide along it walks the body in — or until the
+     * deflection itself is refused, or the commitment lapses. The window
+     * waits: a body walking to a door is not a body making no progress. */
+    if ((hold.doorMs ?? 0) > opts.nowMs && hold.doorAx !== undefined && hold.doorGateLine !== undefined) {
+      hold.progRef = p;
+      hold.progAt = opts.nowMs;
+      hold.escapeWait = stuckMs;
+      const pos = hold.doorGateX ? x : y;
+      if ((pos - hold.doorGateLine) * (hold.doorGateSgn ?? 1) < 0 && !bodyStalled(grid, x, y, hold.doorAx, hold.doorAy!, opts.fromElev)) {
+        hold.ax = 0;
+        hold.ay = 0;
+        return { ax: hold.doorAx, ay: hold.doorAy!, trip: null, deflected: true };
+      }
+      hold.doorMs = 0;
+      hold.doorAx = hold.doorAy = hold.doorGateLine = undefined;
     }
     if (trip && trip.committed) {
       /* A ROUTE THE BODY MAKES NO PROGRESS ON IS DROPPED — by the follower's
@@ -4742,6 +4825,38 @@ export function walkHeading(
         if (a.doorDist !== undefined) hold.doorSeenMs = opts.nowMs;
         return { ax: a.ax, ay: a.ay, trip: null, deflected: true };
       }
+    } else if (wall.tangent) {
+      /* A SLIDE TAKES THE DOOR BESIDE IT (maintainer 2026-09-18, 298.9,198.4
+       * at the hearth house, screen-up into its south wall one cell west of
+       * the door: "I'm very very close to the door/entrance and still the
+       * player runs around the house to the left"). Screen-up is 27 degrees
+       * off that wall's normal — inside his slide angle — so the push was
+       * the player's and the slide carried the body west, along the whole
+       * wall and round the house: never stalled, so the door-finder never
+       * looked, and the door lay one cell AGAINST the lean, which the finder
+       * never takes. A push INTO a wall with a doorway one cell away means
+       * the doorway: the slide hunts for a door within DOOR_BESIDE_CELLS,
+       * behind the lean (the slide reaches every door ahead of it by itself),
+       * deflects sideways AND forward, and COMMITS (rule 0's head): the
+       * push's own drift is away from the door, so releasing the moment the
+       * doorway opens ahead (rule 0's door rule) drifted the body back onto
+       * the jamb and the two headings alternated every tick — the deflection
+       * holds until the body's centre crosses the wall's line in the doorway,
+       * where the jamb holds that drift and the slide along it walks the body
+       * in. A run
+       * straightened along the wall (the assist angle, above) is not a push
+       * into it and passes every door. */
+      const a = steerAssist(grid, x, y, ax, ay, opts.fromElev, { backCells: DOOR_BESIDE_CELLS });
+      if (a?.doorBack && a.gate) {
+        hold.doorSeenMs = opts.nowMs;
+        hold.doorMs = opts.nowMs + DOOR_COMMIT_MS;
+        hold.doorAx = a.ax;
+        hold.doorAy = a.ay;
+        hold.doorGateX = a.gate.x;
+        hold.doorGateLine = a.gate.line;
+        hold.doorGateSgn = a.gate.sgn;
+        return { ax: a.ax, ay: a.ay, trip: null, deflected: true };
+      }
     }
   }
   /* 2. A footprint, a prop, or nothing at all: the heading as it is. The
@@ -4817,6 +4932,11 @@ export const ESCAPE_MIN_PROGRESS_CELLS = 2;
 /** How long a door, once chosen over a route, keeps the escape from planning:
  *  a door STEER_DOOR_RANGE cells along the wall is ~1.7 s of sideways walk. */
 export const DOOR_COMMIT_MS = 2500;
+/** How near a doorway behind the lean must be for a SLIDE along the wall to
+ *  take it: the body's centre to the doorway's near edge, in cells
+ *  (walkHeading rule 1). 1.5 = the body's own width and a half — "literally
+ *  next to the player" (his spot: 1.1); further back is the honest wall. */
+export const DOOR_BESIDE_CELLS = 1.5;
 /** How recently the door-finder must have steered for a window that ends with
  *  the ask FREE to plan nothing (the body is at the doorway: walk in). */
 export const DOOR_SEEN_MS = 400;

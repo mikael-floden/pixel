@@ -235,6 +235,36 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   `doorfirst.test.ts` — his house synthetic and the_game's own, from both
   sides of the door (through it inside 2.5 s, never west of the door), and
   the corner case where round the house is the shorter walk.
+  **A SLIDE TAKES THE DOORWAY BESIDE IT** (maintainer 2026-09-18, 298.9,198.4,
+  screen-up into the hearth house's south wall one cell west of its door: "I'm
+  very very close to the door/entrance and still the player runs around the
+  house to the left!"): screen-up is 27 degrees off that wall's normal, inside
+  his slide angle, so the push was the player's and the slide carried the body
+  west along the whole wall and round the house — never stalled, so the
+  door-finder never looked, and the door lay one cell AGAINST the lean, which
+  the finder never takes. Rule 1 now hunts, for a body sliding along a
+  terrain wall, a real DOORWAY (a gap flanked by wall on both sides, never a
+  wall's end) whose near edge is within `DOOR_BESIDE_CELLS` (1.5; his spot
+  1.1) behind the lean, and takes it — deflecting sideways AND forward, and
+  COMMITTED at rule 0's head until the body's centre crosses the wall's line:
+  released the moment the doorway opened ahead (the stalled door rule), the
+  push's own drift took the body back onto the jamb and the two headings
+  alternated every tick; past the line the jamb holds the drift and the slide
+  along it walks the body in, then the push is the player's again (up-left
+  inside, measured). NOT when the lane ahead along the lean closes within the
+  same distance: that is his 2026-09-13 corner (the spawn house held down,
+  the door 0.7 cells behind first contact and the corner 1.3 ahead — "the
+  door is way too far away for doing a 'run backwards' navigation"), where
+  the honest stop is in view and the door is two cells back from it. A run
+  straightened along the wall (the assist angle) is not a push into it and
+  passes every door; a door further along the lean is reached by the slide.
+  Measured (the thumb modelled as the client drives it, snap + lean): every
+  bearing from -120 to -70 degrees enters in 0.73-0.79 s with 20 deflected
+  ticks and no reversal; -60 to -40 (up-right, square on) as before in 0.53-
+  0.56 s; -130 and beyond (up-left, along the wall) slide west as the law
+  says. Gate: `doorfirst.test.ts` (synthetic house at three bearings, the
+  wall one cell further off untouched, the_game's own house) and
+  `wallcorner.test.ts` (his corner stays a corner).
   **AND THE DOOR STICKS, AND A FREE ASK AT THE DOORWAY PLANS NOTHING**
   (maintainer 2026-09-17, on the first cut: "when the player is at the
   corner just next to the entrance the player start to jitter and change
