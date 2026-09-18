@@ -210,51 +210,50 @@ push, no PRs unless asked.
   prop's only.
 - Walk or run follows the body's SCREEN speed (`gaitSpeed`): the run gait
   from 80% of the run, off below 74% (HIS).
-- A tap RUNS; the beacon is the pixel you touched and never moves to meet
-  the walk (rejected twice); both readings of an ambiguous pixel route.
+- A tap RUNS; the beacon is the pixel touched and never moves to meet the
+  walk (rejected twice); both readings of an ambiguous pixel route.
 - The body dodge is a manoeuvre: engage and hold on different thresholds
   (`MONSTER_DODGE_TIGHTEN` never reaches the hold); a waypoint someone stands
   on counts as arrived.
 - The ground under a point is its nearest CORNER's, not its cell's.
 
-**Backend for 10k** (`docs/backend.md`, `spec/ZONES.md` — the wire (`px/py`
-quarter units, `OWNER_VIEW_TAG`), the stable player key, the warm-room table,
-the view API and every trap in them live THERE, read before you touch the
-netcode; these are the invariants)
+**Backend for 10k** (`docs/backend.md`, `spec/ZONES.md` — the wire, the
+stable player key, the warm-room table, the view API and their traps live
+THERE; read before touching the netcode)
 - ONE world, never instances (maintainer). Zones are rooms
   (`config/zones.json`; no entry = one room), ONE per zone per process; a
   border is crossed by a HAND-OFF over the bus, and what a client sees across
-  it are GHOSTS in their own maps, so no server loop steps or fights one.
+  it are GHOSTS in their own maps, which no server loop steps or fights.
 - A client receives only what is within `INTEREST_WU` of itself (a `StateView`
-  per client); THE JOIN SNAPSHOT IS A WHOLE VIEW, which is what a crossing
-  binds on; gate `verify-zonehop.mjs`.
+  per client); THE JOIN SNAPSHOT IS A WHOLE VIEW, what a crossing binds on;
+  gate `verify-zonehop.mjs`.
 - `Encoder.BUFFER_SIZE` holds EVERY client's view section of one patch (2 MB):
   an overflow freezes clients silently, never errors. `loadbot.mjs` +
   `/api/stats` are the load instrument.
 - Rooms talk ONLY over `server/src/bus.ts` (ioredis when `REDIS_URL`, else
-  the in-process fake, same asynchronous contract). Writes are the Firestore
+  the in-process fake, same async contract). Writes are the Firestore
   bill: a save on leave, death, level-up and the dirty flush (a player who
   earned nothing is never written).
 
 **Monsters, combat** (`docs/monsters-combat.md`)
-- Spawn placement is maps2 data (`spawns.json`); no spawns → no monsters.
+- Spawn placement is maps2 data (`spawns.json`); no spawns, no monsters.
 - A zone cell is a SURFACE: a stray snaps back on ITS OWN LAYER
   (`nearestZoneCell`), never through the slab it stands on.
 - The tuned shadow beats everything art-measured: centre = position, size =
-  hit box, one size for all facings, via `monsterRadiusFor`.
-- `separationPush` stays squared-distance: broad-phase, never micro-tuning.
-- Passive by default; predators aggro; a provoked chase paces its victim, the
+  hit box, one size for every facing (`monsterRadiusFor`).
+- `separationPush` stays squared-distance: broad-phase, not micro-tuning.
+- Passive by default; predators aggro; a provoked chase paces its victim; the
   RUN-AWAY LINE is `ESCAPE_RADIUS_WU` 390 past the zone, the give-up IS the
   rejected step.
 - Monster stats come from live tuning (a content check, not truthiness);
-  nothing blocks the revive press, and the ask is retried.
+  nothing blocks the revive press; the ask retries.
 - Backpack ORDER is server state: a drag sends `invmove` — a SWAP of two filled
   slots, never an insert; the item id names the entry, not the slot.
 
 **Lighting** (`docs/lighting.md`)
 - Every twinned field has an EXACT JS twin; change both; hash noise with the
   integer chain, never `fract(sin(...))`; no GLSL `pow()` on a negative base;
-  a whole number into GLSL via toFixed (`glslpow`/`glslfloat.test.ts`).
+  a whole number into GLSL via toFixed (`glsl{pow,float}.test.ts`).
 - A pass that is "off" leaves the display list AND writes its strength
   uniform unconditionally.
 - `uCam` is this frame's rectangle (`renderedWorldView`), never `worldView`.
@@ -281,7 +280,9 @@ netcode; these are the invariants)
   load-bearing (equal sun/moon speed).
 - Ambient is on PER ZONE, server-decided (`docs/ambient-zones.md`): a zone
   rolls per 10-min window seeded by (id, window); the clock is the sync.
-- Indoor ambient: dark 40%, lit 25%; hidden outline 20% (his).
+- Indoor ambient: dark 40%, lit 25%; hidden outline 20% (his); the room's
+  wall tops wear the wall-top dial in the light, faces fade a storey into it
+  (`verify-walltop.mjs`).
 - MY ROOM IS A VOLUME: the room test takes a HEIGHT — the deck over the
   SAMPLE'S OWN column (`roomCeilAt`; no deck, no line), never the one under
   my feet (`verify-cavewall.mjs`); over my own roof its lights and halo are

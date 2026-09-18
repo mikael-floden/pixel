@@ -4483,6 +4483,7 @@ export class WorldScene extends Phaser.Scene {
     if (this.world && this.game.renderer.type === Phaser.WEBGL) {
       try {
         this.night = new NightLights(this, this.world, this.iso, this.maxLevel, this.emission);
+        this.night.setLidDark(wallTopDark()); // his wall-top dial darkens the room's wall tops in the light too
         /* `?nightcal=N` — the night pass's calibration pattern from the PHONE
          * (the same as `__ml.nightCal(0, 1, N)`): 4 faces/tops, 5 the light
          * field composited opaque, 6 a face pixel's own numbers, 7 the three
@@ -5073,8 +5074,10 @@ export class WorldScene extends Phaser.Scene {
     // The lowered wall top's darkening (walltop.ts): the lid's key changes
     // with the percentage, so the ground is repainted the same way.
     t3SetCutLidDark(wallTopDark());
+    this.night?.setLidDark(wallTopDark());
     window.addEventListener("ml-wall-top-dark", () => {
       t3SetCutLidDark(wallTopDark());
+      this.night?.setLidDark(wallTopDark());
       reResolve();
     });
 

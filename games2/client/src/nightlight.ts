@@ -234,6 +234,10 @@ const BOWL_FOOT_R = 0.75;
  *  smoothstep(-TOP_UNDER_FADE, -TOP_UNDER_FREE, lp.z - z). */
 const TOP_UNDER_FREE = 1.0;
 const TOP_UNDER_FADE = 2.5;
+/** How far down a wall's face the room's wall-top darkening (his dial) fades
+ *  in, in levels below the column's summit: one storey. A face is lit as
+ *  itself below that; at the summit it meets the darkened top exactly. */
+const LID_FADE_LEVELS = 1.0;
 const EDGE_ONCE_NEAR = 1.2;
 const EDGE_ONCE_FAR = 2.2;
 // ...AND THE DISC SITS AT THE PIECE'S CELL CENTRE (`lC`), not at the light's
@@ -397,6 +401,7 @@ uniform sampler2D uRoom;  // R: 128+cut where the cell is in MY room, 0 outside
 uniform float uCaveK;     // depth falloff — 0 disables the effect entirely
 uniform float uRoomOn;    // 1 when uRoom is bound (unbound sampler = unit 0!)
 uniform float uIndoorMix; // the EASED indoor blend — the outside fades to black
+uniform float uLidDark;   // his "Lowered wall top darkening" dial, 0..1: every wall top of MY room, the face fading into it
 uniform vec3 uAmbientOut; // the OUTDOOR grade — what a cell outside my room fades to
 uniform sampler2D uHeight;
 uniform sampler2D uHeightL; // occlusion heightmap, LINEAR-filtered (LOS march)
@@ -1353,6 +1358,25 @@ void main() {
   // costs a mix and changes nothing.
   vec3 amb = mix(uAmbientOut * (1.0 - uIndoorMix), uAmbient, r);
   vec3 light = amb * sunF * cloudF;
+  // EVERY WALL TOP OF MY ROOM WEARS THE DIAL, AND THE FACE FADES INTO IT
+  // (maintainer 2026-09-18, the hearth house at 332.5,232.8: "that darkening
+  // is too sharp and would also benefit from a bigger darkening top
+  // rect/tile ... They should have a nicer fade and be a bit bigger"). The
+  // lowered walls' lids are darkened in their texture (tiles3draw lid) and
+  // the uncut back walls' tops were not — the room's ambient, unlit by the
+  // hearth (a top takes nothing from a light well under it), a cold band
+  // over a warm face with a hard edge. Here the light itself darkens a top
+  // above the cut by the dial (the back walls; the lowered lids are already
+  // painted, their z is the cut) and, on every face of the room, the last
+  // LID_FADE_LEVELS below the column's summit ramp into it — the face
+  // carries the fade the top cannot. Eased with the crossing (uIndoorMix).
+  // Twin: the top term in lightAt (a body never stands on a face).
+  if (uLidDark > 0.001 && uIndoorMix > 0.001) {
+    float mine = roomCellAt(cell);
+    float top = (!isFace && z > uIndoorTop + 0.5) ? 1.0 : 0.0;
+    float fade = isFace ? smoothstep(Ha - ${LID_FADE_LEVELS.toFixed(2)}, Ha, z) : 0.0;
+    light *= 1.0 - uLidDark * uIndoorMix * mine * max(top, fade);
+  }
   // AURORA NIGHTS: some nights the northern lights dance over Nangijala —
   // slow drifting curtains of arctic green/violet ADDED to the ambient (the
   // ground and everyone standing on it glows with the sky), auto-fading as
@@ -2615,6 +2639,13 @@ export class NightLights {
    * the SURFACE resolve clamps; the occlusion march does not (the building is
    * still solid to the sun). See heightAt(). */
   indoorTop = 0;
+  /** His "Lowered wall top darkening" dial, 0..1 (walltop.ts): the light
+   *  darkens every wall top of MY room above the cut by this share and fades
+   *  the face into it (uLidDark; the lowered lids themselves are painted). */
+  lidDark = 0;
+  setLidDark(v: number): void {
+    this.lidDark = Math.max(0, Math.min(1, v));
+  }
   /** WorldScene.indoorCeil — MY ROOM's underside (deckBot) under my own cell.
    *  Published for probes only: the inside/outside line for a SAMPLE's height
    *  is the deck over the sample's OWN column (`ceilAt`, the mask's blue
@@ -2792,6 +2823,7 @@ export class NightLights {
       // The room gate (the uSun lesson: DECLARED or it never reaches a phone).
       uRoomOn: { type: "1f", value: 0 },
       uIndoorMix: { type: "1f", value: 0 },
+      uLidDark: { type: "1f", value: 0 },
       uHeight: { type: "sampler2D", value: null },
       uHBlock: { type: "sampler2D", value: null },
       uHBlockN: { type: "2f", value: { x: 1, y: 1 } },
@@ -2848,6 +2880,7 @@ export class NightLights {
       // real phone GPUs, where headless SwiftShader would never show it.
       uIndoorTop: { type: "1f", value: 0 },
       uIndoorMix: { type: "1f", value: 0 },
+      uLidDark: { type: "1f", value: 0 },
       // OFF (0) until the containment is right. The depth map and the multiply are
       // correct and tested; what is NOT solved is telling an INSIDE pixel from an
       // OUTSIDE one. Gating on the pixel's own cell fails because the mountain's
@@ -4236,10 +4269,17 @@ export class NightLights {
     const ao = this.indoorMix > 0 ? this.ambientOut : this.curAmbient;
     const k = 1 - this.indoorMix;
     const amb = (i: number) => this.curAmbient[i] * hit + ao[i] * k * (1 - hit);
+    // TWIN of the fragment's wall-top darkening (uLidDark): a sample on a top
+    // of my room above the cut is darker by the dial. (The face fade has no
+    // twin: a body never stands on a face.)
+    const lidK =
+      this.lidDark > 0 && this.indoorMix > 0 && z > this.indoorTop + 0.5 && this.roomCellAt(col, row)
+        ? 1 - this.lidDark * this.indoorMix
+        : 1;
     const out: [number, number, number] = [
-      amb(0) * sunF + aur[0] * inRoom,
-      amb(1) * sunF + aur[1] * inRoom,
-      amb(2) * sunF + aur[2] * inRoom,
+      amb(0) * sunF * lidK + aur[0] * inRoom,
+      amb(1) * sunF * lidK + aur[1] * inRoom,
+      amb(2) * sunF * lidK + aur[2] * inRoom,
     ];
     if (parts) {
       parts.base[0] = out[0];
@@ -5070,6 +5110,7 @@ export class NightLights {
     s.setUniform("uIndoor.value", this.indoor ? 1 : 0);
     s.setUniform("uIndoorTop.value", this.indoorTop);
     s.setUniform("uIndoorMix.value", this.indoorMix);
+    s.setUniform("uLidDark.value", this.lidDark);
     // Only now is roomAt allowed to darken anything: buildShader really bound
     // the sampler on THIS shader object. Until then it fails LIT (see roomAt).
     s.setUniform("uRoomOn.value", this.roomBound ? 1 : 0);

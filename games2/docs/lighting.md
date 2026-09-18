@@ -763,6 +763,27 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   switch could not show it: neither touches a copy that is not drawn.
   `verify-contact` asserts every roofed piece's copy is visible once landed
   indoors.
+- **EVERY WALL TOP OF MY ROOM WEARS THE WALL-TOP DIAL, AND THE FACE FADES
+  INTO IT** (`uLidDark`, `LID_FADE_LEVELS` 1.0; maintainer 2026-09-18 at the
+  hearth house, 332.5,232.8: "that darkening is too sharp and would also
+  benefit from a bigger darkening top rect/tile ... They should have a nicer
+  fade and be a bit bigger"). The lowered walls' lids are painted darker by
+  the dial (tiles3draw `lid`); the uncut back walls' tops were the room's own
+  ambient, unlit by the hearth (a top takes nothing from a light well under
+  it), a cold band over a warm face with a hard edge. The light now
+  multiplies a top above the cut (`!isFace && z > uIndoorTop + 0.5`, a cell
+  of my room) by 1 − dial, and every face of the room by 1 − dial ×
+  smoothstep over the last storey below its column's summit — the face
+  carries the fade a top cannot; eased with the crossing (× uIndoorMix), so
+  it fades in with the room. Twin: the top term in `lightAt` (a body never
+  stands on a face). Not a texture: the back walls' tops are the wall's own
+  dressed cap, one file per material, and a painted variant per dial value
+  would be one more cache-hashed plate per wall set for a strip the light
+  already owns. Measured (`verify-walltop.mjs`, an A/B of the dial at 0 and
+  33 on the light-only render): 38k pixels darkened, median ratio 0.667, and
+  under 226 of 231 darkened tops the ratio ramps back over ≥ 4 px (median
+  17 px) — no step. Known edge: a raised floor inside a room (a podium above
+  the cut) reads as a top and darkens; none ships.
 - **SCENERY IS LIT PER PIXEL** (`scenerylit.ts` pipeline + `scenerylight.ts`
   shape maps; maintainer 2026-09-05: walking around a tree with the torch must
   light different parts of it). The lit copy keeps the flat tint for the

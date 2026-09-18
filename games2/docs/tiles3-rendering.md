@@ -667,7 +667,10 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   top rim. Maintainer 2026-09-18: "same
   material/ground type as the roof... I don't want plain black here"; an
   all-black lid shipped first and was retracted ("what we have today looks
-  better") — the dial is the answer, not a fixed shade. Before: a cave room's
+  better") — the dial is the answer, not a fixed shade. The same dial darkens
+  the UNCUT back walls' tops in the light and fades every face of the room
+  into its top over a storey (`docs/lighting.md`, `verify-walltop.mjs`) — a
+  painted lid and a lit top read as one rim. Before: a cave room's
   near and side walls are fields (no face toward the camera) and their stumps
   wore the mountain's own snow and ice; a wall stump wore its course's one
   flat colour (maintainer 2026-09-09, five photographs in the cave at
