@@ -1684,29 +1684,57 @@ export class Tiles3Textures {
     return this.ensureHit(key) ?? this.ensure(key, () => this.platePixels(art, ground));
   }
 
-  /** A DARKENED COPY of a composed plate (a lowered wall's lid under his
-   *  "Lowered wall top darkening" dial, 2026-09-18): the same raster with its
-   *  colour scaled by 1 - dark, under a key carrying the percentage — its own
-   *  content-addressed texture, never a rewrite of the plate's. Null while
-   *  the plate itself is not built. */
-  darkened(key: string, dark: number): string | null {
+  /** THE LID OF A LOWERED WALL: a composed plate grown by ONE PIXEL on every
+   *  side (each new pixel a copy of its nearest surface pixel) and darkened
+   *  by his "Lowered wall top darkening" dial (2026-09-18), under a key
+   *  carrying the percentage — its own content-addressed texture, never a
+   *  rewrite of the plate's. Null while the plate itself is not built.
+   *
+   *  GROWN, because a top-face-only plate has no slack sideways: two
+   *  neighbouring lids meet along a 2:1 staircase edge with alternate pixels
+   *  of the FLOOR showing between them (his red marks at 331.8,233.6 and
+   *  205.6,217.5 with the dial at 70%: "you can't leave a 1px seam like
+   *  this"). At 0% the seam was the floor against the roof's own colour and
+   *  read as texture; darkened, it is a dotted line. One pixel of overlap
+   *  closes it in every direction, and the row below the diamond covers the
+   *  course's flat top rim the same way topFaceOnly's margin row does. */
+  lid(key: string, dark: number): string | null {
     const pct = Math.round(Math.max(0, Math.min(1, dark)) * 100);
-    if (pct <= 0) return key;
-    const dkey = `${key}@dk${pct}`;
+    const dkey = `${key}@lid${pct}`;
     return (
       this.ensureHit(dkey) ??
       this.ensure(dkey, () => {
         const base = this.pix.get(key) ?? this.sourcePixels(key);
         if (!base) return null;
-        const data = new Uint8ClampedArray(base.data.length);
+        const { w, h } = base;
+        const src = base.data;
+        const data = new Uint8ClampedArray(src.length);
         const k = 1 - pct / 100;
-        for (let i = 0; i < data.length; i += 4) {
-          data[i] = base.data[i] * k;
-          data[i + 1] = base.data[i + 1] * k;
-          data[i + 2] = base.data[i + 2] * k;
-          data[i + 3] = base.data[i + 3];
+        const put = (i: number, from: number) => {
+          data[i] = src[from] * k;
+          data[i + 1] = src[from + 1] * k;
+          data[i + 2] = src[from + 2] * k;
+          data[i + 3] = 255;
+        };
+        for (let y = 0; y < h; y++) {
+          for (let x = 0; x < w; x++) {
+            const i = (y * w + x) * 4;
+            if (src[i + 3] > 0) {
+              put(i, i);
+              data[i + 3] = src[i + 3];
+              continue;
+            }
+            // Transparent: take the nearest opaque 4-neighbour's colour.
+            const n = [
+              x > 0 ? i - 4 : -1,
+              x + 1 < w ? i + 4 : -1,
+              y > 0 ? i - w * 4 : -1,
+              y + 1 < h ? i + w * 4 : -1,
+            ];
+            for (const j of n) if (j >= 0 && src[j + 3] > 0) { put(i, j); break; }
+          }
         }
-        return { w: base.w, h: base.h, data };
+        return { w, h, data };
       })
     );
   }

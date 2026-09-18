@@ -317,6 +317,8 @@ test("a truncated wall column wears the side rock's plate at the cut; a whole co
   const t3 = {
     opsForCell: () => [whole],
     plate: (art: { path: string }, ground: string) => `plate:${ground}:${art.path}`,
+    // The lid is the plate grown by a pixel and darkened by the dial (0 here).
+    lid: (key: string, dark: number) => `${key}@lid${Math.round(dark * 100)}`,
   } as unknown as Tiles3Textures;
   const tex = { exists: () => true } as unknown as TextureManagerLike;
   const tile = (path: string) => ({ path, w: 64, h: 64 });
@@ -338,7 +340,7 @@ test("a truncated wall column wears the side rock's plate at the cut; a whole co
     [
       ["t2:s0", 1000, "wall"],
       ["t2:mid", 985, "wall"],
-      ["plate:grey_stone:grey.webp", 130, "surface"], // 100 + (985 - 955): two storeys down from the cap
+      ["plate:grey_stone:grey.webp@lid0", 130, "surface"], // 100 + (985 - 955): two storeys down from the cap
     ],
   );
   assert.deepEqual(cellBlits(t3, tex, cell, 3), [whole]);

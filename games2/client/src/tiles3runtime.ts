@@ -526,8 +526,8 @@ export function cutLidKey(t3: Tiles3Textures, cell: Tiles3Cell): string | null {
   const art = cell.cutCap;
   if (!art || !cell.side || art.kind === "liquid") return null;
   const key = t3.plate(art, cell.cutSide ?? cell.side);
-  if (!key || cutLidDark <= 0.005) return key;
-  return t3.darkened(key, cutLidDark) ?? key;
+  if (!key) return null;
+  return t3.lid(key, cutLidDark) ?? key;
 }
 
 /** Every repo-relative art file one resolved cell can draw — what the loader is

@@ -651,9 +651,15 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   → rock on the lowered ice walls), else the wall's own rock; `cutSide` holds
   it so the runtime never re-derives it. Over that plate the Settings dial
   "Lowered wall top darkening" (0..100%, default 50; `setCutLidDark`,
-  `Tiles3Textures.darkened`) scales the colour — 0% is the roof as it is,
-  100% black — as its own `@dkNN` texture key, never a rewrite of the plate's,
-  and a change repaints through `reResolve`. Maintainer 2026-09-18: "same
+  `Tiles3Textures.lid`) scales the colour — 0% is the roof as it is, 100%
+  black — as its own `@lidNN` texture key, never a rewrite of the plate's,
+  and a change repaints through `reResolve`. THE LID IS GROWN BY ONE PIXEL ON
+  EVERY SIDE (each new pixel a copy of its nearest surface pixel): a top-face
+  plate has no slack sideways, and two lids met along their 2:1 edge with
+  alternate pixels of the floor between them — a dotted bright seam once the
+  lids were dark (his red marks at 331.8,233.6 and 205.6,217.5 at 70%: "you
+  can't leave a 1px seam like this"); the overlap closes it, and the row
+  under the diamond covers the course's flat top rim. Maintainer 2026-09-18: "same
   material/ground type as the roof... I don't want plain black here"; an
   all-black lid shipped first and was retracted ("what we have today looks
   better") — the dial is the answer, not a fixed shade. Before: a cave room's
