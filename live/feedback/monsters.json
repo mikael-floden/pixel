@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-18T14:39:01.098Z",
+  "updated_at": "2026-09-18T14:40:57.575Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -1450,10 +1450,11 @@
       "updated_at": "2026-09-18T11:06:33.668Z"
     },
     "monsters/eye_bat#walk#south": {
-      "status": "redo",
+      "status": "approved",
       "art": "b7267858179d5d28",
-      "updated_at": "2026-09-18T11:06:57.612Z",
-      "note": "Doesn't look like walk"
+      "updated_at": "2026-09-18T14:39:10.932Z",
+      "note": "Doesn't look like walk",
+      "rating": 3
     },
     "monsters/eye_bat#walk#south-east": {
       "rating": 3,
@@ -1547,7 +1548,10 @@
     },
     "monsters/eye_bat#attack_v3#south-west": {
       "note": "Attack renders outside frame to much",
-      "updated_at": "2026-09-18T11:08:39.361Z"
+      "updated_at": "2026-09-18T14:40:39.709Z",
+      "rating": 3,
+      "status": "approved",
+      "art": "2b0d37e22fec75f1"
     },
     "monsters/ghoul#idle#south": {
       "rating": 3,
@@ -6813,6 +6817,96 @@
     "monsters/fire_elemental": {
       "status": "rejected",
       "updated_at": "2026-09-18T14:38:59.100Z"
+    },
+    "monsters/eye_bat#attack_v3#south": {
+      "rating": 3,
+      "status": "approved",
+      "art": "6fcd6c614f0d4072",
+      "updated_at": "2026-09-18T14:39:55.001Z"
+    },
+    "monsters/eye_bat#attack_v3#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "30c1ff0084a51d1d",
+      "updated_at": "2026-09-18T14:39:59.416Z"
+    },
+    "monsters/eye_bat#attack_v3#east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "923308ee08274fcf",
+      "updated_at": "2026-09-18T14:40:01.552Z"
+    },
+    "monsters/eye_bat#attack_v3#north-east": {
+      "status": "redo",
+      "art": "f2843f97d6c70d87",
+      "updated_at": "2026-09-18T14:40:26.212Z",
+      "note": "Should shoot laser forward"
+    },
+    "monsters/eye_bat#attack_v3#north": {
+      "note": "Should shoot laser forward",
+      "updated_at": "2026-09-18T14:40:29.892Z",
+      "status": "redo",
+      "art": "feb08b8387d653d3"
+    },
+    "monsters/eye_bat#attack_v3#north-west": {
+      "status": "redo",
+      "art": "18fd06ac397af624",
+      "updated_at": "2026-09-18T14:40:35.460Z",
+      "note": "Should shoot laser forward"
+    },
+    "monsters/eye_bat#attack_v3#west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "e57866c22d3e1cc0",
+      "updated_at": "2026-09-18T14:40:37.621Z"
+    },
+    "monsters/eye_bat#die_v1#south": {
+      "rating": 3,
+      "status": "approved",
+      "art": "7156b4cb761e8a1a",
+      "updated_at": "2026-09-18T14:40:44.523Z"
+    },
+    "monsters/eye_bat#die_v1#south-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "ceaefa0bc05f872f",
+      "updated_at": "2026-09-18T14:40:46.258Z"
+    },
+    "monsters/eye_bat#die_v1#east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "04524d54b92ec293",
+      "updated_at": "2026-09-18T14:40:47.905Z"
+    },
+    "monsters/eye_bat#die_v1#north-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "140a712a404690c4",
+      "updated_at": "2026-09-18T14:40:49.359Z"
+    },
+    "monsters/eye_bat#die_v1#north": {
+      "rating": 3,
+      "status": "approved",
+      "art": "4285a540fafa7c9e",
+      "updated_at": "2026-09-18T14:40:50.918Z"
+    },
+    "monsters/eye_bat#die_v1#north-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "42d84f2844c0260d",
+      "updated_at": "2026-09-18T14:40:52.463Z"
+    },
+    "monsters/eye_bat#die_v1#west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "b6ea20bb2f8a454c",
+      "updated_at": "2026-09-18T14:40:54.035Z"
+    },
+    "monsters/eye_bat#die_v1#south-west": {
+      "rating": 3,
+      "status": "approved",
+      "art": "d1d5a429d75c57a1",
+      "updated_at": "2026-09-18T14:40:55.773Z"
     }
   }
 }
