@@ -100,6 +100,17 @@ Claude reading its first file:
   verdict POSTs the dispatch itself, fire-and-forget, in the same breath. The
   push trigger and the eight per-domain jobs are gone with it — with no push to
   answer they could only ever have shown as eight skipped rows.
+- **CAN THE ACTION BE MADE TO RUN ON A PUSH? Probe in flight.** The event gate
+  is inside `anthropics/claude-code-action@v1`, which this repo does not own, so
+  the question is whether it can be handed an event it accepts:
+  `.github/workflows/github-agents-probe.yml` writes a synthetic
+  workflow_dispatch payload and points `GITHUB_EVENT_PATH` at it. Overriding
+  `GITHUB_EVENT_NAME` alone was already proven useless — the action reads the
+  file, not the env. If the payload works, the push trigger can come back and
+  the start stops depending on the wiki server's token; if it does not, the
+  remaining route is running the CLI directly instead of the action, which costs
+  the App token (a push made with the job's GITHUB_TOKEN triggers no downstream
+  workflow, so the deploy would have to be dispatched by hand).
 - **The server's token needs Actions: read and write.** Without it the dispatch
   is a 403 in the server log (`<domain>-github-agent not started: HTTP 403`) and
   reviews wait for the domain agent exactly as they did before. It cannot fail
