@@ -2080,3 +2080,9 @@ input[type="range"] { accent-color: var(--accent); }
 /* The air under the fade queue that lets the last unjudged card be scrolled up
    to where his thumb already is (see fadePinY). Only while work remains. */
 .fade-pad { height: 60vh; }
+
+/* The start channel on the Agents page: a refused dispatch is not a detail, it
+   is the reason nothing happened, so it reads as an error rather than as muted
+   chrome. */
+.agent-start { margin: 6px 0 10px; font-size: 13px; line-height: 1.45; }
+.agent-start-bad { color: var(--bad, #ff8a80); }

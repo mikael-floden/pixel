@@ -14207,10 +14207,44 @@ function agentCard(b, rows = []) {
           " ", agentAgo(last.at))
         : null));
 }
+/* CAN THE WIKI EVEN START ONE? A review commits and the server dispatches the
+ * github agent in the same breath — and when that dispatch is refused (the
+ * server's GitHub token cannot start workflows) the page looks EXACTLY like an
+ * agent that chose not to work. It cost an evening of reviews that started
+ * nothing. So the server keeps its last attempt and this shows it, with a
+ * button that makes a dry one on demand. */
+async function agentStartState(post) {
+  const res = await fetch(API("/api/wiki/agent-start"), {
+    method: post ? "POST" : "GET",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${adminToken()}` },
+    body: post ? JSON.stringify({ domain: "objects" }) : undefined,
+  });
+  if (!res.ok) throw new Error((await res.json().catch(() => ({}))).error ?? `HTTP ${res.status}`);
+  return res.json();
+}
+function agentStartLine(info) {
+  const last = info?.last;
+  if (!info?.token) return ["bad", "The server has no GitHub token — nothing can be started or saved."];
+  if (!last) return ["muted", "No start attempted yet on this server. Tap “test” to try one."];
+  const when = agentAgo(last.at);
+  if (last.ok) return ["ok", `Last start: ${last.domain} — accepted by GitHub, ${when}.`];
+  if (last.status === 403 || last.status === 404) {
+    return ["bad", `Last start: ${last.domain} — REFUSED (HTTP ${last.status}), ${when}. The server's GitHub token needs “Actions: read and write”; everything else about your review worked.`];
+  }
+  return ["bad", `Last start: ${last.domain} — failed (${last.status}), ${when}. ${last.detail ?? ""}`];
+}
+
 function viewAgents() {
   if (!state.admin) return viewHome();
   const list = h("div", { class: "agent-list" }, h("p", { class: "muted" }, "Reading the boards…"));
   const stamp = h("span", { class: "muted" }, "");
+  const startLine = h("p", { class: "muted agent-start" }, "Checking the start channel…");
+  const paintStart = (info) => {
+    const [kind, text] = agentStartLine(info);
+    startLine.className = `agent-start ${kind === "bad" ? "agent-start-bad" : "muted"}`;
+    startLine.textContent = text;
+  };
+  agentStartState(false).then(paintStart, (err) => { startLine.textContent = `Start channel unknown: ${err.message}`; });
   let timer = null, inFlight = false;
   const draw = async () => {
     if (inFlight) return;
@@ -14262,7 +14296,16 @@ function viewAgents() {
       "Every agent you talk to, its assistant, and its github agent — the worker GitHub starts for it when you review something in its folder. The line under a name is what that agent says it is doing, in its own words."),
     h("div", { class: "card-sub lit-mode" },
       h("button", { class: "ghost-btn", type: "button", onclick: () => draw() }, "↻ refresh"),
+      h("button", { class: "ghost-btn", type: "button",
+        onclick: (e) => {
+          const b = e.currentTarget; b.disabled = true; startLine.textContent = "Asking GitHub to start a dry run…";
+          agentStartState(true).then(
+            (info) => { paintStart(info); b.disabled = false; draw(); },
+            (err) => { startLine.textContent = `Start channel unknown: ${err.message}`; b.disabled = false; },
+          );
+        } }, "test start"),
       stamp),
+    startLine,
     list);
 }
 function viewReleases() {

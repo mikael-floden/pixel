@@ -510,20 +510,32 @@ const AGENT_DOMAIN: Record<string, string> = {
   // composer files (games2/composer is one corner of a directory six agents
   // share).
 };
-async function startGithubAgent(rel: string): Promise<void> {
+/* THE LAST ATTEMPT, KEPT IN MEMORY so the wiki can SHOW it. He works from a
+ * phone and cannot read the server log, and a dispatch that is refused looks
+ * exactly like an agent that decided not to start — which cost an evening. The
+ * Agents page reads this through /api/wiki/agent-start. */
+let lastAgentStart: { at: string; domain: string; ok: boolean; status: number | string; detail?: string } | null = null;
+export function lastGithubAgentStart(): typeof lastAgentStart { return lastAgentStart; }
+
+async function startGithubAgent(rel: string, dryRun = false): Promise<void> {
   const m = /^feedback\/([a-z0-9_]+)\.json$/.exec(rel);
   const domain = m ? AGENT_DOMAIN[m[1]] : undefined;
-  if (!domain || !ghToken()) return;
+  const at = new Date().toISOString();
+  if (!domain) return;
+  if (!ghToken()) { lastAgentStart = { at, domain: domain ?? "?", ok: false, status: "no token" }; return; }
   try {
     const res = await fetch(`${GH_API}/repos/${REPO}/actions/workflows/github-agents.yml/dispatches`, {
       method: "POST",
       headers: ghHeaders(),
-      body: JSON.stringify({ ref: BRANCH, inputs: { domain, dry_run: "false" } }),
+      body: JSON.stringify({ ref: BRANCH, inputs: { domain, dry_run: dryRun ? "true" : "false" } }),
       signal: AbortSignal.timeout(10000),
     });
-    if (!res.ok) console.warn(`[live] ${domain}-github-agent not started: HTTP ${res.status} ${(await res.text()).slice(0, 200)}`);
+    const detail = res.ok ? undefined : (await res.text()).slice(0, 300);
+    lastAgentStart = { at, domain, ok: res.ok, status: res.status, detail };
+    if (!res.ok) console.warn(`[live] ${domain}-github-agent not started: HTTP ${res.status} ${detail}`);
     else console.log(`[live] ${domain}-github-agent started for live/${rel}`);
   } catch (err) {
+    lastAgentStart = { at, domain, ok: false, status: "error", detail: (err as Error).message };
     console.warn(`[live] ${domain}-github-agent not started:`, (err as Error).message);
   }
 }
@@ -661,6 +673,24 @@ export function registerLiveRoutes(app: express.Application): void {
       return;
     }
     res.json({ token: signSession(Date.now() + SESSION_TTL_MS), expires_in_s: SESSION_TTL_MS / 1000 });
+  });
+
+  /* WHY THE AGENT DID OR DID NOT START, for the Agents page. Admin only: the
+   * detail is GitHub's own error text. GET reads the last attempt; POST makes
+   * one (dry, so it changes nothing) to test the channel without a review. */
+  app.get("/api/wiki/agent-start", (req, res) => {
+    if (!isAdmin(req)) { res.status(401).json({ error: "admin login required" }); return; }
+    res.json({ last: lastGithubAgentStart(), token: Boolean(ghToken()) });
+  });
+
+  app.post("/api/wiki/agent-start", (req, res) => {
+    if (!isAdmin(req)) { res.status(401).json({ error: "admin login required" }); return; }
+    const domain = String((req.body as { domain?: string } | undefined)?.domain ?? "objects");
+    const rel = `feedback/${domain}.json`;
+    startGithubAgent(rel, true).then(
+      () => res.json({ last: lastGithubAgentStart() }),
+      (err: Error) => res.status(502).json({ error: err.message }),
+    );
   });
 
   app.get("/api/wiki/me", (req, res) => {
