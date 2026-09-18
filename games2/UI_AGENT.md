@@ -281,9 +281,19 @@ from the games agent), #18 (title/landing screen).
   same check — offered this one 2026-09-18.)
   PLACEMENT: `left: --gv-left + 10`, `top: 10 + --ml-safe-top + --bars-l-h +
   10` — the card's own anchor plus its published height — and ONLY the width is
-  measured (bars.ts publishes no width var). The row is a flex box ending at
-  that width, so the button is right-aligned with the card whatever either is
-  wide, and the gap under the card is the 10px the card keeps above itself.
+  measured (bars.ts publishes no width var). It is the card's FULL WIDTH, both
+  edges flush (2026-09-18: "I meant also left aligned same as the card"), and
+  the gap under the card is the 10px the card keeps above itself.
+  **THE PLATE IS 5-SLICED TO GET WIDE, NEVER SCALED**: left cap (its screws) |
+  a plain column repeated | the centre (lamp + knob) | that column again |
+  right cap, painted into a canvas at the bake's 2x with
+  `imageSmoothingEnabled=false`. Only blank plate is added; every authored
+  pixel stays 1:1, and the height is always the art's 48. This is sound ONLY
+  because col 10 == col 11 and col 35 == col 36 in BOTH faces — measured, and
+  `verify-recbtn` re-proves it against the shipped bakes, so a redrawn export
+  fails there instead of showing a seam on his phone. He chose the full-width
+  bar after being told a literal scale would distort the art; the slicing is
+  how that choice is honoured without squashing it.
   **Do not place it from the card's rect**: `.ml-bars` transitions `left` over
   .3s, and a placement sampled on the landscape flip took the new WIDTH with the
   old LEFT (851x393: button at 10, card heading for 335). Both faces live in the

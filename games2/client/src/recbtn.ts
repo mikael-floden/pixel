@@ -20,10 +20,23 @@
 // at left 10 with the card already heading for 335. Off the same var it
 // animates with the card instead of chasing it.
 //
-// TWO FACES, BOTH IN THE DOM. The pressed/recording face is a second <img>
-// that is merely hidden, never a `src` swap: the first swap of an unloaded
-// image is a blank frame, and this button's whole job is to show its state
-// the instant it is pressed.
+// IT IS THE CARD'S FULL WIDTH, AND HIS 48x48 PLATE IS NOT SQUASHED TO GET
+// THERE (maintainer 2026-09-18: "I meant also left aligned same as the card" —
+// both edges flush, his choice when told a literal scale would distort it).
+// The plate is 5-SLICED instead: the left cap with its screws, a plain column
+// repeated, the centre with the lamp and the knob, the plain column again, the
+// right cap. MEASURED, not eyeballed — column 10 equals column 11 and column
+// 35 equals column 36 in BOTH faces, so those two columns are the only ones
+// that may be repeated and the seams are exact. Every authored pixel stays at
+// 1:1 and only blank plate is added, which is what a wide version of this
+// button would look like if he had drawn one.
+//
+// Painted into a CANVAS rather than composed from background layers: the
+// filler is ONE column, and a CSS background cannot repeat a sub-rect of an
+// image without a second asset cut from his art. drawImage with
+// imageSmoothingEnabled=false is the same nearest-neighbour rule the icons
+// follow, and both faces are decoded up front so a press repaints in the same
+// frame — no blank first frame from an unloaded image.
 //
 // ADMIN ONLY (maintainer 2026-09-18: "I want only the logged in admin to see
 // this button"). It mounts HIDDEN and is revealed only once the SERVER has
@@ -44,6 +57,13 @@ const BTN = "ml-rec";
 const CSS_ID = "ml-recbtn-css";
 /** The project's one edge margin — and the card's own distance to the top. */
 const GAP = 10;
+/** His canvas, and the height the button keeps however wide it gets. */
+const ART = 48;
+/** The 5 slices, in HIS 48px columns. capL | fill | centre | fill | capR —
+ *  `fill` is the single column each side may repeat, which is only sound
+ *  because col 10 == col 11 and col 35 == col 36 in BOTH faces (measured;
+ *  verify-recbtn re-checks it against the shipped art). */
+const SLICE = { capL: 11, fillL: 10, centre0: 11, centre1: 36, fillR: 36 };
 
 let wrap: HTMLElement | null = null;
 let btn: HTMLButtonElement | null = null;
@@ -71,15 +91,12 @@ function styleOnce() {
   /* hidden until the server says admin — never the other way round */
   .${WRAP}[hidden]{display:none}
   .${BTN}{pointer-events:auto;display:block;position:relative;padding:0;border:0;background:none;
-    cursor:pointer;line-height:0;-webkit-tap-highlight-color:transparent;
+    cursor:pointer;line-height:0;width:100%;-webkit-tap-highlight-color:transparent;
     user-select:none;-webkit-user-select:none;-webkit-touch-callout:none}
   /* His art IS the button — a plate with screws and a lamp — so it wears no
      surface, border or shadow of ours; chrome around it would be a second
      button drawn behind his. */
-  .${BTN} img{display:block;image-rendering:pixelated;-webkit-user-drag:none}
-  .${BTN} .${BTN}-on{position:absolute;left:0;top:0}
-  .${BTN}:not(.on) .${BTN}-on{visibility:hidden}
-  .${BTN}.on .${BTN}-off{visibility:hidden}
+  .${BTN} canvas{display:block;width:100%;height:${ART}px;image-rendering:pixelated}
   .${BTN}.press{transform:translateY(1px)}`;
   document.head.appendChild(st);
 }
@@ -92,25 +109,55 @@ function place() {
   const w = c.getBoundingClientRect().width;
   if (!w) return; // not laid out yet — the observer calls back
   wrap.style.width = `${Math.round(w)}px`;
+  paint();
 }
 
-/** The two faces, at their authored grid: the bakes are an exact 2x of his
- *  48x48 exports, so naturalWidth/2 renders them at 48 css px — the one /ui2
- *  rule the tab and corner icons already follow (UI_AGENT.md). */
-function face(cls: string, src: string): HTMLImageElement {
-  const img = document.createElement("img");
-  img.className = cls;
+/** The two faces. The bakes are an exact 2x of his 48x48 exports, so the
+ *  canvas backs at 2x and shows at 48 css px — the one /ui2 rule (UI_AGENT.md).
+ *  Both are decoded up front: a press must repaint in the same frame. */
+function face(src: string): HTMLImageElement {
+  const img = new Image();
   img.src = withV(src);
-  img.alt = "";
-  img.draggable = false;
-  const fit = () => {
-    if (!img.naturalWidth) return;
-    img.style.width = `${img.naturalWidth / 2}px`;
-    img.style.height = `${img.naturalHeight / 2}px`;
-  };
-  img.addEventListener("load", fit);
-  fit();
+  img.addEventListener("load", paint);
   return img;
+}
+let faceOff: HTMLImageElement | null = null;
+let faceOn: HTMLImageElement | null = null;
+let cv: HTMLCanvasElement | null = null;
+
+/** Draw the current face across the button's width: caps at 1:1, the two plain
+ *  columns carrying the extra. Nearest-neighbour, like every other pixel
+ *  surface here. A width under the art's own is simply the art. */
+function paint() {
+  const img = recording ? faceOn : faceOff;
+  if (!cv || !img || !img.naturalWidth) return;
+  const S = img.naturalWidth / ART; // the bake's scale (2)
+  const wCss = Math.max(ART, Math.round(cv.getBoundingClientRect().width) || ART);
+  const w = Math.round(wCss * S);
+  if (cv.width !== w || cv.height !== ART * S) {
+    cv.width = w;
+    cv.height = ART * S;
+  }
+  const g = cv.getContext("2d");
+  if (!g) return;
+  g.imageSmoothingEnabled = false;
+  g.clearRect(0, 0, cv.width, cv.height);
+  const capL = SLICE.capL * S;
+  const mid = (SLICE.centre1 - SLICE.centre0) * S;
+  const capR = (ART - SLICE.centre1) * S;
+  const extra = Math.max(0, w - (capL + mid + capR));
+  const left = Math.round(extra / 2);
+  const right = extra - left;
+  let x = 0;
+  g.drawImage(img, 0, 0, capL, cv.height, x, 0, capL, cv.height);
+  x += capL;
+  if (left) g.drawImage(img, SLICE.fillL * S, 0, S, cv.height, x, 0, left, cv.height);
+  x += left;
+  g.drawImage(img, SLICE.centre0 * S, 0, mid, cv.height, x, 0, mid, cv.height);
+  x += mid;
+  if (right) g.drawImage(img, SLICE.fillR * S, 0, S, cv.height, x, 0, right, cv.height);
+  x += right;
+  g.drawImage(img, SLICE.centre1 * S, 0, capR, cv.height, x, 0, capR, cv.height);
 }
 
 /** Whether the button is in its recording state. */
@@ -123,6 +170,7 @@ export function setRecording(on: boolean): void {
   btn?.classList.toggle("on", on);
   btn?.setAttribute("aria-pressed", String(on));
   btn?.setAttribute("title", on ? "Recording — tap to stop" : "Record");
+  paint();
   window.dispatchEvent(new CustomEvent("ml-record", { detail: { on } }));
 }
 
@@ -152,7 +200,12 @@ export function mountRecordButton(): void {
   btn = document.createElement("button");
   btn.className = BTN;
   btn.type = "button";
-  btn.append(face(`${BTN}-off`, "/ui2/icon-record.webp"), face(`${BTN}-on`, "/ui2/icon-record-on.webp"));
+  cv = document.createElement("canvas");
+  cv.width = ART * 2;
+  cv.height = ART * 2;
+  btn.appendChild(cv);
+  faceOff = face("/ui2/icon-record.webp");
+  faceOn = face("/ui2/icon-record-on.webp");
   // CSS :active is hover-only on mobile — the corner buttons' own press look.
   btn.addEventListener("pointerdown", () => btn?.classList.add("press"));
   for (const ev of ["pointerup", "pointercancel", "pointerleave"])
@@ -176,6 +229,8 @@ export function mountRecordButton(): void {
   on: isRecording,
   set: setRecording,
   el: () => btn,
+  /** QA: the slice plan, so the gate can re-check it against the shipped art. */
+  slices: () => ({ ...SLICE, art: ART }),
   /** Re-ask the server whether this session is the admin (see applyAdmin). */
   refresh: (force = true) => applyAdmin(force),
   shown: () => !!wrap && !wrap.hidden,
