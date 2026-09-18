@@ -2026,3 +2026,21 @@ input[type="range"] { accent-color: var(--accent); }
    which is the half a hand holding the phone already covers. `auto` rather
    than a flex end on the row, so the stars do not move with them. */
 .judge-right .verdict { margin-left: auto; }
+
+/* THE FLEET, LIVE (maintainer 2026-09-18: "how do I know if the agent is making
+   progress?"). One card per board, the claim in full: it names the files the
+   agent is holding, and a clamped claim would hide exactly the half that says
+   whether two agents are about to collide. */
+.agent-list { display: grid; gap: 8px; }
+.agent-card { padding: 10px 12px; }
+.agent-head { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; margin-bottom: 6px; }
+.agent-name { font-weight: 700; }
+.agent-kind { text-transform: lowercase; }
+.agent-ago { margin-left: auto; font-size: 12px; white-space: nowrap; }
+.agent-current { font-size: 13px; line-height: 1.45; overflow-wrap: anywhere; }
+.agent-line { font-size: 12px; margin-top: 4px; overflow-wrap: anywhere; }
+.agent-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-top: 6px; font-size: 12px; }
+/* A board that says "running" and has not moved for hours is the one row worth
+   catching the eye — the agent died, or its container went away under it. */
+.agent-card[data-health="quiet"] { border-color: var(--accent); }
+.agent-card[data-health="error"] { border-color: var(--bad); }

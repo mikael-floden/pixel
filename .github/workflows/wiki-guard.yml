@@ -24,6 +24,7 @@ on:
       - "wiki/tools/check-gone.mjs"
       - "wiki/tools/check-queue.mjs"
       - "wiki/tools/check-releases.mjs"
+      - "wiki/tools/check-agents.mjs"
       - "wiki/tools/serve-repo.mjs"
       - "wiki/tools/check-script.mjs"
       - ".github/workflows/wiki-guard.yml"
@@ -71,3 +72,5 @@ jobs:
         run: node wiki/tools/check-queue.mjs
       - name: Release Notes are the build's own commits, and no player sees them
         run: node wiki/tools/check-releases.mjs
+      - name: The Agents page reads the fleet's boards live, and no player sees them
+        run: node wiki/tools/check-agents.mjs

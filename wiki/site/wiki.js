@@ -3662,6 +3662,11 @@ const SECTIONS = {
   // the same reason Parameters is: commit shas and agent names are the factory
   // floor, not the encyclopedia.
   releases:   { label: "Release Notes", noun: "commits",    icon: "notes",      count: (d) => d.counts.releases, adminOnly: true },
+  // THE FLEET, LIVE (maintainer 2026-09-18: "how do I know if the agent is
+  // making progress?"). Admin-only like the two above — the boards are the
+  // factory floor. No icon of its own yet: drop wiki/site/icons/agents.webp in
+  // and add `icon: "agents"` here.
+  agents:     { label: "Agents",        noun: "boards",     count: (d) => d.counts.agents, adminOnly: true },
 };
 // ONE list, read by both the nav (renderNav) and the Overview tiles
 // (viewHome) — so the two can never disagree about the order.
@@ -3672,7 +3677,7 @@ const SECTIONS = {
 // "Tiles OLD" row — was deleted 2026-09-09; history in git.)
 // Release Notes sits with Parameters at the end: the two admin-only sections
 // are the machinery, and the sections a player reads keep the front.
-const SECTION_ORDER = ["characters", "monsters", "world", "objects", "sounds", "music", "items", "lore", "tuning", "releases"];
+const SECTION_ORDER = ["characters", "monsters", "world", "objects", "sounds", "music", "items", "lore", "tuning", "releases", "agents"];
 // A section's label may depend on who is reading (see `tiles` above).
 const label = (slug) => { const l = SECTIONS[slug]?.label; return (typeof l === "function" ? l() : l) ?? slug; };
 /** What a section counts, in the voice of whoever is reading — the Game Master
@@ -13811,6 +13816,156 @@ function relDayLabel(d) {
   if (days === 1) return "Yesterday";
   return d.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
 }
+/* ------------------------------------------------------------- the fleet */
+/* IS ANYTHING HAPPENING RIGHT NOW? (maintainer 2026-09-18, on the sessions a
+ * committed verdict wakes: "how do I see this agent and what it is doing? Will
+ * it pop up in my phone? How do I know if the agent is making progress?")
+ *
+ * A woken session is a GitHub Actions run — the Actions tab, on a phone, in an
+ * app he does not otherwise open. The fleet already writes what he wants to
+ * know: `coordination/<agent>.json` carries the claim ("current"), the health
+ * and the progress, and PROTOCOL makes writing it part of every unit of work.
+ * This page is that, in the app he already has open.
+ *
+ * READ LIVE FROM main, NEVER FROM data.json. A board baked into the image at
+ * deploy time answers "what was it doing when this build was made", which is
+ * the one question nobody is asking. The build publishes the NAMES
+ * (`data.agentBoards`); each board is fetched from the repo, and a wake
+ * session's board that appeared minutes ago is fetched by the same rule — so a
+ * new agent shows up without a deploy.
+ *
+ * RAW, one request per board, no api.github.com: the rate limit
+ * (60/hour/IP, unauthenticated) belongs nowhere near a page he refreshes. */
+const AGENT_REFRESH_MS = 45 * 1000;
+/** A board every agent writes; the wake sessions write `<domain>-wake`. */
+const agentKind = (id) => (id.endsWith("-wake") ? "wake" : id.endsWith("-assistant") ? "assistant" : "agent");
+const AGENT_KIND_TITLE = {
+  agent: "The domain's own agent",
+  assistant: "The agent's assistant — same directory, same tasks",
+  wake: "A stand-in started by one of your verdicts (.github/workflows/verdict-wake.yml)",
+};
+/** Health as the board states it, with the one thing the board cannot say:
+ *  "running" that has not been touched for hours is not running. */
+const AGENT_QUIET_MS = 2 * 60 * 60 * 1000;
+function agentHealth(b) {
+  const age = b.updated_at ? Date.now() - Date.parse(b.updated_at) : NaN;
+  const h = String(b.health ?? "").toLowerCase();
+  if (h === "error") return { cls: "err", word: "error" };
+  if (h === "running" && age > AGENT_QUIET_MS) return { cls: "warn", word: "quiet" };
+  if (h === "running") return { cls: "ok", word: "working" };
+  if (h === "idle") return { cls: "", word: "idle" };
+  return { cls: "", word: h || "unknown" };
+}
+const agentAgo = (iso) => {
+  const t = iso ? Date.parse(iso) : NaN;
+  if (!Number.isFinite(t)) return "never";
+  const s = Math.max(0, (Date.now() - t) / 1000);
+  if (s < 90) return `${Math.round(s)} s ago`;
+  if (s < 5400) return `${Math.round(s / 60)} min ago`;
+  if (s < 172800) return `${Math.round(s / 3600)} h ago`;
+  return `${Math.round(s / 86400)} days ago`;
+};
+/** Every board named by the build, plus the wake board each domain may have
+ *  grown since — a 404 is an answer ("no such session"), not an error. */
+function agentBoardNames() {
+  const named = state.data.agentBoards ?? [];
+  const wakes = named.filter((n) => agentKind(n) === "agent").map((n) => `${n}-wake`);
+  return [...new Set([...named, ...wakes])];
+}
+async function fetchBoards() {
+  const base = repoBase ?? stagingBase("main");
+  // The cache-buster is the point of the page: raw answers max-age=300, and
+  // "is it working NOW" cannot be five minutes old.
+  const bust = `?t=${Date.now()}`;
+  const out = await Promise.all(agentBoardNames().map(async (id) => {
+    try {
+      const r = await fetch(new URL(`coordination/${id}.json${bust}`, base).href, { cache: "no-store" });
+      if (!r.ok) return null;                       // 404: that session never existed
+      const b = await r.json();
+      return b && b.domain ? { id, ...b } : null;
+    } catch { return null; }                        // offline: the row simply is not there
+  }));
+  return out.filter(Boolean).sort((a, b) => Date.parse(b.updated_at ?? 0) - Date.parse(a.updated_at ?? 0));
+}
+/** The newest commit each agent pushed, from the release list this build was
+ *  made with — history, not "now", and labelled as such. */
+function agentLastCommit(id) {
+  const commits = state.data.releases?.commits ?? [];
+  return commits.find((c) => c.agent === id) ?? null;
+}
+/** A board's `progress` is free-form: monsters writes a sentence, games-ambient
+ *  writes {features: 14, fields: 9}. Both are his to read, so both are printed
+ *  as words — never as [object Object]. */
+const agentProgress = (v) => (v && typeof v === "object"
+  ? Object.entries(v).map(([k, n]) => `${k.replace(/_/g, " ")} ${n}`).join(" · ")
+  : String(v ?? ""));
+/** WHAT IS WAITING FOR THIS AGENT. A board's own `requests` are the asks it
+ *  SENT (board.py post writes to the sender's board), so its whole history says
+ *  nothing about whether anyone is waiting on it. The incoming ones live on the
+ *  OTHER boards — and this page holds them all — so they are counted here, and
+ *  only the recent ones: a request has no "handled" flag, an ack is a note, and
+ *  a two-month-old ask counted as pending would make every card look blocked. */
+const AGENT_ASK_WINDOW_MS = 7 * 86400000;
+function agentAsks(rows, id) {
+  const cut = Date.now() - AGENT_ASK_WINDOW_MS;
+  return rows.reduce((n, b) => n + (b.requests ?? []).filter((r) =>
+    r?.to === id && b.id !== id && Date.parse(r.at ?? 0) > cut).length, 0);
+}
+function agentCard(b, rows = []) {
+  const hp = agentHealth(b);
+  const kind = agentKind(b.id);
+  const last = agentLastCommit(b.id);
+  const reqs = agentAsks(rows, b.id);
+  const repo = state.data.releases?.repo;
+  return h("div", { class: "panel agent-card", "data-agent": b.id, "data-health": hp.word },
+    h("div", { class: "agent-head" },
+      h("span", { class: "agent-name" }, b.id),
+      kind !== "agent" ? h("span", { class: "pill agent-kind", title: AGENT_KIND_TITLE[kind] }, kind) : null,
+      h("span", { class: `pill ${hp.cls}`.trim(), title: `health: ${b.health ?? "—"}` }, hp.word),
+      h("span", { class: "muted agent-ago", title: b.updated_at ?? "" }, agentAgo(b.updated_at))),
+    // THE CLAIM IS THE ANSWER. PROTOCOL makes `current` name the unit AND every
+    // file it touches, pushed before the work — so this line is what the agent
+    // is doing right now, in its own words.
+    h("div", { class: "agent-current" }, b.current || "—"),
+    b.progress ? h("div", { class: "muted agent-line" }, agentProgress(b.progress)) : null,
+    b.budget_remaining ? h("div", { class: "muted agent-line" }, String(b.budget_remaining)) : null,
+    h("div", { class: "agent-meta" },
+      reqs ? h("span", { class: "pill", title: "Asks other agents posted to it in the last 7 days" }, reqs === 1 ? "1 ask this week" : `${reqs} asks this week`) : null,
+      last
+        ? h("span", { class: "muted" }, "last push in this build: ",
+          repo ? h("a", { class: "rel-sha", href: `${repo}/commit/${last.sha}`, target: "_blank", rel: "noopener" }, last.sha) : h("span", { class: "rel-sha" }, last.sha),
+          " ", agentAgo(last.at))
+        : null));
+}
+function viewAgents() {
+  if (!state.admin) return viewHome();
+  const list = h("div", { class: "agent-list" }, h("p", { class: "muted" }, "Reading the boards…"));
+  const stamp = h("span", { class: "muted" }, "");
+  let timer = null;
+  const draw = async () => {
+    const rows = await fetchBoards();
+    if (!list.isConnected) return;
+    const working = rows.filter((b) => agentHealth(b).word === "working");
+    list.replaceChildren(...(rows.length
+      ? rows.map((b) => agentCard(b, rows))
+      : [h("p", { class: "muted" }, "No board could be read. The page reads coordination/*.json from GitHub main — check the connection.")]));
+    stamp.textContent = `${rows.length} boards · ${working.length} working · read ${new Date().toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false })}`;
+  };
+  draw();
+  // It refreshes itself while the page is open — the question this page answers
+  // is "right now", and a number that needs a pull to be true is a number he
+  // has to distrust. route() destroys it on the way out.
+  timer = setInterval(draw, AGENT_REFRESH_MS);
+  activePlayers.push({ destroy: () => clearInterval(timer) });
+  return h("div", {},
+    sectionHead("agents"),
+    h("p", { class: "muted" },
+      "Every agent and every stand-in a verdict of yours woke, newest first. Each line is that agent's own claim — the unit it is on and the files it holds — read live from its board on main, not from this build."),
+    h("div", { class: "card-sub lit-mode" },
+      h("button", { class: "ghost-btn", type: "button", onclick: () => draw() }, "↻ refresh"),
+      stamp),
+    list);
+}
 function viewReleases() {
   const doc = state.data.releases ?? {};
   const commits = doc.commits ?? [];
@@ -14151,6 +14306,7 @@ function route() {
   }
   // Tuning is admin-only INCLUDING by direct link — players get the overview.
   else if (page === "tuning") view = state.admin ? viewTuning() : viewHome();
+  else if (page === "agents") view = viewAgents();
   else if (page === "releases") view = state.admin ? viewReleases() : viewHome();
   // #/bench was its own section for a day; keep the link alive as the tab.
   else if (page === "bench") { if (state.admin) musicTab = "dynamic"; view = state.admin ? viewMusic() : viewHome(); }
@@ -14654,6 +14810,10 @@ async function upgradeToStaging() {
   // Headless QA hook (mirrors the games2 __ml convention).
   window.__wiki = {
     state, route,
+    // The fleet page's one judgement — a board that claims "running" and has
+    // not moved for hours is not running — so the gate drives the rule rather
+    // than waiting hours for a real board to go stale.
+    agentHealth,
     // The gone-verdict path, so a gate can ask it directly rather than
     // reconstructing a two-origin miss.
     probeGone,

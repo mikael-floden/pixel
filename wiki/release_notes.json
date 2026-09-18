@@ -1,9 +1,319 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T14:58:52.505Z",
- "head": "1ea60399e",
+ "generated_at": "2026-09-18T16:27:52.903Z",
+ "head": "eeaa1125c",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "eeaa1125c",
+   "at": "2026-09-18T16:22:06+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: the wake runs Opus 5, and says what it did where he can read it",
+   "agent": null,
+   "dirs": [
+    ".github"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "1aa44dbdd",
+   "at": "2026-09-18T16:20:49+00:00",
+   "author": "wiki-agent",
+   "subject": "live: a woken session takes the shape of the reviewed domain, and cleans up after itself",
+   "agent": null,
+   "dirs": [
+    ".github",
+    "live"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "d820002f3",
+   "at": "2026-09-18T16:14:48+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: one review sitting wakes ONE session, not one per commit",
+   "agent": null,
+   "dirs": [
+    ".github",
+    "live"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "b00e70733",
+   "at": "2026-09-18T16:11:44+00:00",
+   "author": "Claude",
+   "subject": "deploy: the art layers sit ABOVE the per-push ones, so a code push stops rebuilding art",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "637df886a",
+   "at": "2026-09-18T16:11:25+00:00",
+   "author": "Claude",
+   "subject": "gates: a gate that serves the prebuilt bundle rebuilds it, or it measures another day's code",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 5
+  },
+  {
+   "sha": "c6c2b55c0",
+   "at": "2026-09-18T16:10:01+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 3 (grass <-> light soil, reps 7+)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 19
+  },
+  {
+   "sha": "dad8fcd25",
+   "at": "2026-09-18T16:09:04+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 2 (grass <-> light soil, reps 7+)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 155
+  },
+  {
+   "sha": "ec5e334b7",
+   "at": "2026-09-18T16:04:45+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: a dry-run dispatch for the verdict wake",
+   "agent": null,
+   "dirs": [
+    ".github"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "17e5c6927",
+   "at": "2026-09-18T16:01:39+00:00",
+   "author": "wiki-agent",
+   "subject": "coordination: tell monsters a verdict can now wake a third writer",
+   "agent": "wiki",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6860106e5",
+   "at": "2026-09-18T15:59:09+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: wake the monsters agent the moment a review is committed",
+   "agent": null,
+   "dirs": [
+    ".github"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6325d78f6",
+   "at": "2026-09-18T15:55:43+00:00",
+   "author": "wiki-agent",
+   "subject": "live: the recipe for waking an agent on a committed review",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "32f17e39c",
+   "at": "2026-09-18T15:53:48+00:00",
+   "author": "Claude",
+   "subject": "fades: road-edge sheets, batch 1 (grass <-> light soil, reps 7+)",
+   "agent": null,
+   "dirs": [
+    "tiles"
+   ],
+   "files": 172
+  },
+  {
+   "sha": "d36406766",
+   "at": "2026-09-18T15:46:23+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 8
+  },
+  {
+   "sha": "e2bd1f7b4",
+   "at": "2026-09-18T15:36:19+00:00",
+   "author": "Claude",
+   "subject": "tiles board: claim the road-edge fade run (grass <-> light_soil, grass <-> brown paving)",
+   "agent": "tiles",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "919578752",
+   "at": "2026-09-18T15:20:33+00:00",
+   "author": "Claude",
+   "subject": "gates: the contact gate reads the band it is gating, and asserts that it is thin",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "59ccc055a",
+   "at": "2026-09-18T15:19:21+00:00",
+   "author": "Claude",
+   "subject": "gates: the indoor-scenery fixtures pick a HOUSE, and the turned-facing rule skips a world that offers no turned piece",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a6292b02e",
+   "at": "2026-09-18T15:15:06+00:00",
+   "author": "Claude",
+   "subject": "games board: the crossfade pops and the fade's clock; the deploy at 5m05s; which gates are fixture drift",
+   "agent": "games",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "698961e6d",
+   "at": "2026-09-18T15:15:05+00:00",
+   "author": "Claude",
+   "subject": "games2: a leading underscore in scripts/ is a scratch probe, and the tree says so",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "4252ee410",
+   "at": "2026-09-18T15:15:05+00:00",
+   "author": "Claude",
+   "subject": "crossfade: the roll runs on wall clock, capped — the crossing is the same length on any frame rate",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6935037c0",
+   "at": "2026-09-18T15:15:05+00:00",
+   "author": "Claude",
+   "subject": "crossfade: the furniture and the roof-top scenery ride the room's LIGHT, not the debris' 3x cover curve",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "5207fa1c9",
+   "at": "2026-09-18T15:15:04+00:00",
+   "author": "Claude",
+   "subject": "gates: the indoor blend's invisible tail is 140 frames, so the landing waits are sized in frames, not seconds",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "12dd3fee9",
+   "at": "2026-09-18T17:09:11+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/scenery_hitbox.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a8c0ab265",
+   "at": "2026-09-18T15:04:11+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 433
+  },
+  {
+   "sha": "9189f1e98",
+   "at": "2026-09-18T15:01:53+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (79 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 418
+  },
+  {
+   "sha": "65a17a3c4",
+   "at": "2026-09-18T15:00:28+00:00",
+   "author": "Claude",
+   "subject": "board: the road edge art, the geometry lesson, the three cache bugs",
+   "agent": "tiles",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "65c2fb91c",
+   "at": "2026-09-18T15:00:03+00:00",
+   "author": "Claude",
+   "subject": "monsters: graduation landings",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 585
+  },
+  {
+   "sha": "327d392be",
+   "at": "2026-09-18T14:59:07+00:00",
+   "author": "Claude",
+   "subject": "wiki registry rebuilt: the road-edge fade art is now reviewable",
+   "agent": null,
+   "dirs": [
+    "wiki"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "11a855482",
+   "at": "2026-09-18T14:58:44+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidates v2 landings (81 candidate folders on disk)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 647
+  },
   {
    "sha": "1ea60399e",
    "at": "2026-09-18T14:58:11+00:00",
@@ -243,316 +553,6 @@
    "agent": "games",
    "dirs": [
     "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "bb9393f2a",
-   "at": "2026-09-18T14:42:01+00:00",
-   "author": "Claude",
-   "subject": "lighting: the contact shadow is the silhouette dropped two texels, clipped to the hitbox, blurred — his recipe, pixel for pixel",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 5
-  },
-  {
-   "sha": "ba37fca74",
-   "at": "2026-09-18T14:41:19+00:00",
-   "author": "Claude",
-   "subject": "monsters: re-prune on his newer feedback copy",
-   "agent": "monsters",
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "ee8f9013b",
-   "at": "2026-09-18T14:41:08+00:00",
-   "author": "Claude",
-   "subject": "monsters: a monster graduates by itself when he has approved all of it",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 67
-  },
-  {
-   "sha": "e06f86686",
-   "at": "2026-09-18T14:41:07+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (87 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 277
-  },
-  {
-   "sha": "5ceb7a0b6",
-   "at": "2026-09-18T14:41:07+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (87 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 301
-  },
-  {
-   "sha": "0f8083921",
-   "at": "2026-09-18T16:40:58+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "a707bceae",
-   "at": "2026-09-18T16:39:01+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "41b2d8576",
-   "at": "2026-09-18T16:38:31+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "248d174bb",
-   "at": "2026-09-18T16:37:10+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "ee5da8b61",
-   "at": "2026-09-18T14:34:05+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (87 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 936
-  },
-  {
-   "sha": "cd943ed7a",
-   "at": "2026-09-18T14:30:59+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (88 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 16
-  },
-  {
-   "sha": "0986bbbe4",
-   "at": "2026-09-18T14:29:37+00:00",
-   "author": "Claude",
-   "subject": "monsters: act on his second review — 64 removed, 59 approved stand",
-   "agent": "monsters",
-   "dirs": [
-    "live",
-    "monsters"
-   ],
-   "files": 651
-  },
-  {
-   "sha": "e824f8e6d",
-   "at": "2026-09-18T14:27:42+00:00",
-   "author": "Claude",
-   "subject": "monsters: creature-specific walk wording, and a narrow reword override",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 6
-  },
-  {
-   "sha": "63393bf1a",
-   "at": "2026-09-18T16:27:31+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c66d0b563",
-   "at": "2026-09-18T16:27:15+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "5b236b528",
-   "at": "2026-09-18T14:24:49+00:00",
-   "author": "Claude",
-   "subject": "tiles: the last of the road-edge fade sheets",
-   "agent": "tiles",
-   "dirs": [
-    "tiles"
-   ],
-   "files": 155
-  },
-  {
-   "sha": "465cde103",
-   "at": "2026-09-18T14:24:29+00:00",
-   "author": "Claude",
-   "subject": "monsters: attack_v3 redo round 2 - his flagged directions regenerated, notes cleared",
-   "agent": "monsters",
-   "dirs": [
-    "live",
-    "monsters"
-   ],
-   "files": 37
-  },
-  {
-   "sha": "7399bbd6c",
-   "at": "2026-09-18T14:23:47+00:00",
-   "author": "Claude",
-   "subject": "tiles: delete 82 transition sets in the wrong geometry, and make it impossible to write another",
-   "agent": "tiles",
-   "dirs": [
-    "tiles"
-   ],
-   "files": 1278
-  },
-  {
-   "sha": "81fedd096",
-   "at": "2026-09-18T14:23:21+00:00",
-   "author": "Claude",
-   "subject": "monsters: re-prune after resolving the feedback conflict with his copy",
-   "agent": "monsters",
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "7ba2568ee",
-   "at": "2026-09-18T14:23:10+00:00",
-   "author": "Claude",
-   "subject": "monsters: attack_v3 redo round 1 - his flagged directions regenerated, notes cleared",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 36
-  },
-  {
-   "sha": "5afc5c547",
-   "at": "2026-09-18T14:22:25+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (152 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 138
-  },
-  {
-   "sha": "71e432b60",
-   "at": "2026-09-18T14:22:25+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (152 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 87
-  },
-  {
-   "sha": "3bfbf1e31",
-   "at": "2026-09-18T16:22:13+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "49b689238",
-   "at": "2026-09-18T16:10:13+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "82d35e8da",
-   "at": "2026-09-18T14:08:02+00:00",
-   "author": "Claude",
-   "subject": "tiles: more road fades and transition sets (slime~snow, ice~snow, black_rock pairs)",
-   "agent": "tiles",
-   "dirs": [
-    "tiles"
-   ],
-   "files": 394
-  },
-  {
-   "sha": "14c117951",
-   "at": "2026-09-18T14:06:45+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (152 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 51
-  },
-  {
-   "sha": "e5b6a649f",
-   "at": "2026-09-18T14:03:39+00:00",
-   "author": "Claude",
-   "subject": "monsters: candidates v2 landings (152 candidate folders on disk)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 75
-  },
-  {
-   "sha": "bb6cf8240",
-   "at": "2026-09-18T14:00:46+00:00",
-   "author": "Claude",
-   "subject": "monsters: re-prune after taking his newer feedback copy",
-   "agent": "monsters",
-   "dirs": [
-    "live"
    ],
    "files": 1
   }

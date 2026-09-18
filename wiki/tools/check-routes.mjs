@@ -35,6 +35,9 @@ const ROUTES = [
   // Admin-only too: as a player this must render the Overview rather than a
   // dead page, which is exactly what this walk measures on both passes.
   "#/releases",
+  // The fleet, read live from the boards on main. Walked for the same reason:
+  // it must render for an admin and fall back to the Overview for a player.
+  "#/agents",
   ...[["objects", "objects"], ["monsters", "monsters"], ["items", "items"], ["characters", "characters"],
       // A new monster's 8-direction base, judged before it earns animations.
       ["monsterCandidates", "monsters/candidates"]]

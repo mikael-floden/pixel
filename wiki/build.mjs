@@ -52,6 +52,12 @@ const isDir = (p) => { try { return statSync(p).isDirectory(); } catch { return 
 const isFile = (p) => { try { return statSync(p).isFile(); } catch { return false; } };
 const listDirs = (p) => { try { return readdirSync(p).filter((n) => !n.startsWith(".") && !n.startsWith("_") && isDir(join(p, n))).sort(); } catch { return []; } };
 const listFiles = (p, re) => { try { return readdirSync(p).filter((n) => re.test(n)).sort(); } catch { return []; } };
+/** Every agent board in coordination/, by name. PROTOCOL.md and board.py are
+ *  not boards, and neither is anything that does not parse as one (a board has
+ *  a `domain`). Names only — see `agentBoards` in the payload. */
+const boardNames = () => listFiles(join(ROOT, "coordination"), /\.json$/)
+  .map((n) => n.replace(/\.json$/, ""))
+  .filter((n) => (readJson(join(ROOT, "coordination", `${n}.json`)) ?? {}).domain);
 
 /* --- image format: PNG or WebP, decided by what is ON DISK ------------------
    The art domains are converting to lossless WebP one at a time (~50% off the
@@ -3377,6 +3383,13 @@ const data = {
   // Release Notes section. `from` says whether this build read git or the
   // committed cache, and the page tells him which he is looking at.
   releases: releaseNotes,
+  /* WHO IS IN THE FLEET — the NAMES only, never the contents (the Agents page
+   * reads each board LIVE from GitHub main, because a board committed at deploy
+   * time is exactly the thing that cannot answer "is it working right now").
+   * A board that appears between deploys — a wake session's
+   * `<domain>-wake.json` — is probed by the page from this list, so it shows up
+   * without waiting for a build. */
+  agentBoards: boardNames(),
   directions: DIRS,
   // The game's iso projection (maps2/spec/WORLD_FORMAT.md): tile-instance
   // previews must compose cells with the REAL geometry or the seams lie.
@@ -3433,6 +3446,7 @@ const data = {
     // Chapters only — the admin surface; the start tile counts all tales.
     lore_chapters: lore?.filter((e) => Number.isInteger(e.chapter)).length ?? 0,
     releases: releaseNotes.commits.length,
+    agents: boardNames().length,
     constants: constants.length,
   },
   // Absent domains become empty lists — the site must render, not blank out,

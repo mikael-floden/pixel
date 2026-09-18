@@ -111,6 +111,47 @@ matches the source composited over the page background exactly (delta 0).
 Re-run that check if the icon sizes ever change — resampled pixel art is the
 one thing this project never ships.
 
+## Agents — the fleet, live, in the app he already has open
+
+Maintainer 2026-09-18, on the sessions a committed verdict wakes: *"How do I
+see this agent and what it is doing? Will it pop up in my phone? How do I know
+if the agent is making progress?"* The answer had been the GitHub Actions tab —
+an app he does not otherwise open — while the fleet already writes exactly that
+into `coordination/<agent>.json` as part of every unit of work (PROTOCOL's
+claim). `#/agents` is that, where he already is. ADMIN-ONLY, like Parameters and
+Release Notes: the boards are the factory floor.
+
+- **The boards are read LIVE from `main`, never from `data.json`.** A board
+  baked into the image answers "what was it doing when this build was made",
+  which is the one question nobody asks. `build.mjs` publishes the NAMES
+  (`data.agentBoards`, from every `coordination/*.json` that parses as a board)
+  and the page fetches each one from the repo with a cache-buster — `raw`
+  answers `max-age=300`, and "is it working now" cannot be five minutes old.
+- **A wake session's board appears without a deploy.** The page also probes
+  `<domain>-wake.json` for every agent it knows, so a stand-in that started
+  minutes ago has a card; a 404 is an answer, not an error.
+- **A board that says `running` and has not moved for 2 hours reads "quiet"**
+  (`agentHealth`, exposed on `window.__wiki` so the gate drives the rule instead
+  of waiting hours). That is the row worth catching the eye: the agent died, or
+  its container went away under it. `error` borders red, `quiet` amber.
+- **The claim is printed in full**, never clamped: `current` names the unit AND
+  every file the agent holds, and the half that would be hidden is the half that
+  says whether two agents are about to collide.
+- **`progress` is free-form** — a sentence from one agent, `{features: 14}` from
+  another — so it is rendered as words either way; `[object Object]` was the
+  first thing on screen.
+- **Asks are counted from the OTHER boards, last 7 days.** A board's own
+  `requests` are what it SENT (`board.py post` writes to the sender's board), so
+  its own list says nothing about who is waiting on it. There is no "handled"
+  flag — an ack is a note — so an unbounded count would show every card blocked
+  forever.
+- Gate: `wiki/tools/check-agents.mjs` (in `wiki-guard.yml`). The player pass
+  uses a SECOND browser context: the admin pass's init script re-seeds the token
+  on every navigation, so "what does a player see" can only be asked by a
+  browser that was never signed in.
+- No icon yet: drop `wiki/site/icons/agents.webp` in and add `icon: "agents"` to
+  the `agents` row in `SECTIONS`.
+
 ## Release Notes — the last 50 commits, and who pushed them
 
 Maintainer 2026-09-13: *"The release notes is not release notes at all. Its
