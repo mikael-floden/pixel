@@ -169,6 +169,15 @@ async function reloadIfBehindAtBoot(): Promise<void> {
     // ordinary case — nothing to reload — returns two lines down, so setting
     // the stamp after any of them would leave it unset on almost every boot.
     setImageSha(image);
+    // WHICH LANE SERVED THIS PAGE. `sha` is the generation being served and
+    // `image` is the container under it, so they differ EXACTLY when a fast-lane
+    // generation is live — one line that answers "did the lane work?" beside the
+    // build line, without reading /api/bundle. Not on the badge: its format and
+    // placement are his, and this is a developer's fact, not a player's.
+    console.log(
+      `[nangijala] served by the ${sha && image && sha !== image ? "FAST LANE" : "container"}` +
+        ` (served ${(sha || "?").slice(0, 9)}, image ${(image || "?").slice(0, 9)})`,
+    );
     if (!sha || sha === "dev" || sha === mine) return;
     const key = "ml-boot-reload-at";
     const stamp = sessionGet(key);
