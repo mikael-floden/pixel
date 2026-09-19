@@ -75,7 +75,7 @@ function localStore(root) {
   };
 }
 
-export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 0, dryRun = false }) {
+export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 0, dryRun = false, imageOrigin = "" }) {
   const t0 = performance.now();
   const built = await fastBuild({ outDir, gitSha });
 
@@ -109,25 +109,80 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
   // But "the workflow's path filter keeps them in step" is a convention, and a
   // convention is not a guarantee: widen that filter one day and the lane
   // ships new code against the image's OLD catalogs — a mixed generation, the
-  // exact bug this design exists to make impossible. So the publisher HASHES
-  // every file it is not publishing and records it here, and the server
-  // refuses any generation whose fall-through hashes disagree with the bytes
-  // it would actually serve (bundlestore.ts, verifyFallthrough). The hole is
-  // closed by arithmetic instead of by everyone remembering.
-  const fallthrough = {};
-  const walk = (dir, prefix) => {
-    for (const n of readdirSync(dir)) {
-      const full = join(dir, n);
-      const rel = prefix ? `${prefix}/${n}` : n;
-      if (statSync(full).isDirectory()) {
-        if (rel !== "assets") walk(full, rel);
-        continue;
-      }
-      if (rel === "index.html") continue;
-      fallthrough[rel] = hashBytes(readFileSync(full));
+  // exact bug this design exists to make impossible. So the generation records
+  // the hashes of every file it is NOT publishing, and the server refuses any
+  // generation whose fall-through hashes disagree with the bytes it would
+  // actually serve (bundlestore.ts, verifyFallthrough).
+  //
+  // WHERE THOSE HASHES COME FROM, AND WHY NOT FROM THIS TREE. Hashing the
+  // runner's own dist root was the first cut and it refused every generation
+  // ever published, which is why the lane had never served one (measured
+  // 2026-09-19 on generation 34cb856184e86f51: monsters.json differed from the
+  // image's and shipset.json was absent altogether, 42 entries against 43).
+  // The image's client/public is the OUTPUT of the art-curation pipeline —
+  // the Dockerfile runs `shipset.mjs --write` against the full art tree and the
+  // manifest step against that CURATED root — so a runner that only runs
+  // manifest.mjs over a plain checkout cannot reproduce it, and should not try:
+  // reproducing it IS the five minutes this lane exists to skip. The image is
+  // the only authority on what the image serves, so ask it
+  // (/api/bundle/fallthrough) and record THAT. The recorded set becomes true
+  // instead of a guess taken from the wrong tree.
+  //
+  // The guarantee this keeps: a generation is served ONLY by an image whose
+  // dist root is byte-identical to the one it was published against — change
+  // any of those files and every generation pinned to the old bytes is refused,
+  // which is the mixed-generation hole closed. What it does NOT claim: that the
+  // bundle was BUILT against those catalogs. That needs the art pipeline, and
+  // pretending otherwise would be the more dangerous lie.
+  //
+  // A FAILED READ IS A FAILED PUBLISH. Falling back to the local walk would
+  // silently restore the bug that refused every generation for a day, so it
+  // throws instead; the lane simply does not publish, and the container ships.
+  let fallthrough = {};
+  if (imageOrigin) {
+    const url = `${imageOrigin.replace(/\/+$/, "")}/api/bundle/fallthrough`;
+    let doc;
+    try {
+      const res = await fetch(url, { headers: { "cache-control": "no-store" } });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      doc = await res.json();
+    } catch (err) {
+      throw new Error(
+        `publish-bundle: could not read what the image serves (${url}: ${err.message}). ` +
+          `Refusing to publish a generation whose fall-through set would be a guess.`,
+      );
     }
-  };
-  walk(outDir, "");
+    if (!doc || typeof doc.files !== "object" || !doc.files || !Object.keys(doc.files).length)
+      throw new Error(`publish-bundle: ${url} answered no fall-through files; refusing to publish.`);
+    fallthrough = doc.files;
+    // An invariant, not a hope: the image's map excludes assets/ and
+    // index.html by construction, so a generation's own files can never appear
+    // in it. If one ever does, the two sides disagree about who owns a path
+    // and the generation must not be written.
+    const overlap = Object.keys(files).filter((n) => n in fallthrough);
+    if (overlap.length)
+      throw new Error(
+        `publish-bundle: ${overlap.length} path(s) are claimed by BOTH this generation and the image ` +
+          `(${overlap.slice(0, 3).join(", ")}); refusing to publish.`,
+      );
+    console.log(`[publish] fall-through: ${Object.keys(fallthrough).length} files, as the image at ${imageOrigin} serves them`);
+  } else {
+    // No origin given (tests, a local dry run): hash this tree. Correct for a
+    // fixture, and NEVER what production uses — see above.
+    const walk = (dir, prefix) => {
+      for (const n of readdirSync(dir)) {
+        const full = join(dir, n);
+        const rel = prefix ? `${prefix}/${n}` : n;
+        if (statSync(full).isDirectory()) {
+          if (rel !== "assets") walk(full, rel);
+          continue;
+        }
+        if (rel === "index.html") continue;
+        fallthrough[rel] = hashBytes(readFileSync(full));
+      }
+    };
+    walk(outDir, "");
+  }
 
   const id = createHash("sha256")
     .update(Object.keys(files).sort().map((n) => `${n}\0${files[n]}`).join("\n"))
@@ -234,6 +289,9 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     outDir: arg("out", mkdtempSync(join(tmpdir(), "publish-bundle-"))),
     gitSha: arg("sha", process.env.GIT_SHA || "dev"),
     commitTs: Number(arg("commit-ts", process.env.GIT_COMMIT_TS || 0)) || 0,
+    // The running game is the authority on its own dist root. Overridable for a
+    // staging origin; "" falls back to hashing this tree, which only a fixture wants.
+    imageOrigin: arg("image-origin", process.env.IMAGE_ORIGIN || "https://nangijala.online"),
     dryRun: process.argv.includes("--dry-run"),
   });
   // An honest exit code: `r.id` is always truthy, so the old expression was a

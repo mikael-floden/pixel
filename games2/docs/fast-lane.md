@@ -192,17 +192,41 @@ deploy's own rollback guard against the change I had just made to `/version`.
 
 ## FALL-THROUGH: the mixed generation is refused by arithmetic
 
-The publisher hashes every file it is NOT publishing (the 43 `public/` files) and
-records them in the manifest as `fallthrough`. The server hashes the image's own
-dist root once — the image is immutable for the life of the process — and
+A generation records the hashes of every file it is NOT publishing (the 43
+`public/` files) in its manifest as `fallthrough`. The server hashes the image's
+own dist root once — the image is immutable for the life of the process — and
 refuses any generation whose fall-through hashes disagree with what it would
-actually serve. Verified: vite's dist root IS `client/public` verbatim (43 files,
-byte-identical), so a matched pair is adopted and a mismatched one is refused.
+actually serve. A mismatch can only produce a refused publish, which is loud and
+leaves the image serving whole; it can never produce a mixed generation. That is
+what makes the `public/**` prohibition structural instead of a convention
+someone has to remember.
 
-This is what makes the `public/**` prohibition structural instead of a
-convention someone has to remember, and it is why widening the trigger later
-cannot produce a mixed generation — it can only produce a refused publish, which
-is loud and leaves the image serving whole.
+**THOSE HASHES COME FROM THE IMAGE (`GET /api/bundle/fallthrough`), NOT FROM THE
+RUNNER'S TREE.** Hashing its own dist root was the first cut, and it refused
+every generation ever published — which is the whole reason the lane went a day
+without ever serving one. The image's `client/public` is the OUTPUT of the
+art-curation pipeline: the Dockerfile runs `shipset.mjs --write` against the
+full art tree at `/src` and copies `shipset.json` in, and the manifest step runs
+against that CURATED root. A runner that only runs `manifest.mjs` over a plain
+checkout therefore produces different catalogs and no `shipset.json` at all, and
+reproducing them properly IS the five minutes this lane exists to skip.
+Measured 2026-09-19 against generation `34cb856184e86f51`: `monsters.json`
+differed (`022ce9a905134422` vs the committed `5dfd6d814237f0f3`) and
+`shipset.json` was absent entirely — 42 entries against the image's 43.
+
+So the image is asked, because the image is the only authority on what the image
+serves, and the recorded set is TRUE instead of a guess taken from the wrong
+tree. **A failed read is a failed publish**: falling back to the local walk
+would silently restore exactly the bug that refused everything, so the publisher
+throws and the container lane ships instead.
+
+What that guarantees: a generation is served ONLY by an image whose dist root is
+byte-identical to the one it was published against — change any of those files
+and every generation pinned to the old bytes is refused. What it does NOT claim:
+that the bundle was BUILT against those catalogs. That would need the art
+pipeline, and pretending otherwise would be the more dangerous lie. (Not the
+local walk — it cannot reproduce the image. Not skipping the check — that is the
+mixed generation this design exists to prevent.)
 
 ## Freshness
 
@@ -255,20 +279,30 @@ his call to make against these numbers, not an assumption to bury in a script.
 
 ## What has actually happened in production
 
-- The lane has published ONE generation (`0f605aff9a27679b`, seq 1): 22 blobs +
-  manifest + pointer, correct order, 42 fall-through hashes recorded.
-- It was REFUSED, correctly, by law 6 — a newer image had rolled out while the
-  run was re-running an old commit (`1789767049 <= 1789768191`). That is the
-  guard working, and it is unrepresentative: the publish landed ~18 minutes
-  after its commit because it was a re-run. In normal use the lane publishes ~1
-  minute after the commit, long before an image for any later commit exists.
-- **NO generation has yet been SERVED.** Every component is proven by a passing
-  CI run — lane check, gate, publish, branch write, poke, and the server's
-  ordering law — but a flip has not been observed. Until one is, "working" is a
-  claim about the parts.
-- DETERMINISM CONFIRMED ACROSS MACHINES, which the fall-through guarantee needs:
-  `characters.json` hashed `1b8b2f4c25538fc7` in CI, byte-identical to this
-  container. A generator that varied per machine would refuse every publish.
+- **NO generation had been SERVED for the lane's first day, and both reasons are
+  now fixed.** Measured end to end on push `819704f8b8` (02:13:20): the lane
+  published generation `34cb856184e86f51` at **+86s** (run created +5s, store
+  commit +86s, run done +134s after 8 fruitless pokes) and the fix reached
+  players at **+299s BY THE CONTAINER LANE** (`/version` sha == image).
+- CAUSE 1, the fall-through set the runner cannot reproduce — see FALL-THROUGH
+  above. The publisher now reads it from the image.
+- CAUSE 2, THE TIE: `refused 34cb856184e86f51 ... (1789783999 <= 1789783999)`.
+  Equal, because a client-only push triggers BOTH lanes on the SAME commit: the
+  container bakes `GIT_COMMIT_TS` from that commit, the lane publishes the
+  identical `commit_ts`, and law 6 gives a tie to the image. Not a rare race —
+  EVERY client-only push. It does not block the lane on its own (the OLD image
+  is older, so it adopts the generation at ~+90s and the container merely
+  re-serves the same code at +299s), but it wastes a five-minute build on every
+  client push. The deploy should take the same client-only check and skip.
+- WHY EIGHT SILENT POKES COST A DAY: the reason sat in `/api/bundle` the whole
+  time while the workflow printed one `::warning::` that read like replication
+  lag. The poke now reads the reason and fails the job on a named refusal.
+- The lane's REACH, measured over 14 days of `main` (2193 commits): 2.6% are
+  client-only, 55.8% need the container (57% of those touch art, 18% touch
+  server/`shared`), 40.6% are `coordination/`+`live/` and deploy nothing. A
+  further 279 commits touched client code but were bundled with something else,
+  so committing client changes alone would roughly quintuple the lane's reach.
+  The container lane's five minutes is the bigger prize.
 
 ## The kill switch
 

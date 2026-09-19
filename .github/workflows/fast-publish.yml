@@ -245,11 +245,24 @@ jobs:
           if [ -n "$OK" ]; then
             echo "### Live on the fast lane" >> "$GITHUB_STEP_SUMMARY"
             echo "Generation \`$GEN\` from \`${{ github.sha }}\` is being served — no image, no rollout." >> "$GITHUB_STEP_SUMMARY"
-          else
-            echo "::warning::the server has not adopted $GEN yet; its 60 s belt will pick it up"
-            echo "Published \`$GEN\`, but the server had not adopted it within the poke window." >> "$GITHUB_STEP_SUMMARY"
-            echo "Its 60 s refresh belt will adopt it; nothing is broken and the image is still the floor." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
           fi
+          # A REFUSAL IS A FAILED PUBLISH AND MUST SAY SO. Eight attempts used to
+          # end in one ::warning:: that read like replication lag, while the real
+          # reason sat in /api/bundle the whole time — that is how a lane that had
+          # NEVER served a generation kept reporting success for a day. So read
+          # the reason and separate the two cases: a named refusal is a defect
+          # (exit 1), anything else is the blobs still replicating and the 60 s
+          # belt's job.
+          STATE=$(curl -fsS --max-time 20 https://nangijala.online/api/bundle || echo '{}')
+          echo "$STATE"
+          { echo "**Published \`$GEN\`, but it is not being served.**"; echo '```'; echo "$STATE"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          if echo "$STATE" | grep -q "refused $GEN"; then
+            echo "::error::the server REFUSED $GEN — the reason is above, and it will not fix itself"
+            exit 1
+          fi
+          echo "::warning::the server has not adopted $GEN yet; its 60 s belt will pick it up"
+          echo "No refusal recorded, so the blobs are still replicating; the belt will adopt it." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Nothing to publish
         if: steps.lane.outputs.publish == 'true' && steps.pub.outputs.changed != 'true'

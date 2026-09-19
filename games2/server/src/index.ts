@@ -276,6 +276,34 @@ if (serveClient) {
     );
   }
 
+  // WHAT THIS IMAGE ACTUALLY SERVES UNDER THE DIST ROOT, so the publisher can
+  // stop guessing it. THE LANE CANNOT REPRODUCE THIS SET: the image's
+  // client/public is the OUTPUT of the art-curation pipeline (Dockerfile runs
+  // `shipset.mjs --write` against the full tree and the manifest step against
+  // the CURATED root), so a runner that only runs manifest.mjs over a plain
+  // checkout produces different catalogs and no shipset.json at all. Measured
+  // 2026-09-19 against generation 34cb856184e86f51: monsters.json differed and
+  // shipset.json was missing entirely, 42 entries against the image's 43 — so
+  // every generation was refused on fall-through, and the lane had never served
+  // one. The publisher now READS this and records it, which makes the recorded
+  // set TRUE instead of a guess computed from the wrong tree.
+  //
+  // What that still guarantees, and what it does not: a generation is served
+  // ONLY by an image whose dist root is byte-identical to the one it was
+  // published against — change any of these files and every generation pinned
+  // to the old bytes is refused. It does NOT prove the bundle was BUILT against
+  // these catalogs; that would need the art pipeline the lane exists to skip.
+  // Unauthenticated: it is a list of hashes of bytes this server already serves
+  // to anyone, and it is the same shape /api/bundle already publishes.
+  if (existsSync(clientDist)) {
+    app.get("/api/bundle/fallthrough", (_req, res) =>
+      res.setHeader("Cache-Control", "no-store").json({
+        git_sha: process.env.GIT_SHA || "dev",
+        files: Object.fromEntries(imageFileHashes()),
+      }),
+    );
+  }
+
   if (bundles) {
     // WHICH GENERATION IS SERVING, for the gate and for a human on a phone.
     app.get("/api/bundle", (_req, res) =>

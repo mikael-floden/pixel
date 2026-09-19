@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from "node:fs";
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { BundleStore, localBackend, backendFromEnv, hashBytes, mimeFor } from "../src/bundlestore";
@@ -546,5 +546,79 @@ test("a standing refusal is said ONCE, not once a minute forever", async () => {
     if (prev === undefined) delete process.env.GIT_COMMIT_TS;
     else process.env.GIT_COMMIT_TS = prev;
     rmSync(root, { recursive: true, force: true });
+  }
+});
+
+/* THE FALL-THROUGH SET COMES FROM THE IMAGE, AND A FAILED READ IS A FAILED
+ * PUBLISH. Hashing the runner's own dist root refused every generation ever
+ * published — the image's client/public is the art pipeline's output and a
+ * plain checkout cannot reproduce it (measured 2026-09-19 on generation
+ * 34cb856184e86f51: monsters.json differed, shipset.json was absent, 42
+ * entries against 43). The publisher now asks the running image. These two
+ * arms hold the part that is easy to regress by "helpfully" adding a
+ * fallback: the recorded set must be the IMAGE's, and an origin that cannot
+ * answer must stop the publish rather than quietly hash the wrong tree. */
+test("the publisher records the IMAGE's fall-through set, not its own tree's", async () => {
+  type Pub = {
+    publishBundle: (o: {
+      store: unknown; outDir: string; gitSha?: string; imageOrigin?: string;
+    }) => Promise<{ id: string; published: boolean; seq: number }>;
+    localStore: (root: string) => unknown;
+  };
+  const { publishBundle, localStore } = (await import(
+    new URL("../../scripts/publish-bundle.mjs", import.meta.url).href
+  )) as Pub;
+  const http = await import("node:http");
+
+  // An "image" that serves a set deliberately UNLIKE anything the local build
+  // produces, so a pass cannot be the local walk agreeing by luck.
+  const served = { "catalogs/only-the-image-has-this.json": "feedfacefeedface" };
+  const srv = http.createServer((_q, res) => {
+    res.setHeader("content-type", "application/json");
+    res.end(JSON.stringify({ git_sha: "imagesha", files: served }));
+  });
+  await new Promise<void>((ok) => srv.listen(0, "127.0.0.1", ok));
+  const port = (srv.address() as { port: number }).port;
+  const origin = `http://127.0.0.1:${port}`;
+  try {
+    const root = mkdtempSync(join(tmpdir(), "bs-ft-"));
+    const out = mkdtempSync(join(tmpdir(), "bs-ftdist-"));
+    const r = await publishBundle({ store: localStore(root), outDir: out, gitSha: "ft", imageOrigin: origin });
+    assert.ok(r.published);
+    const man = JSON.parse(
+      readFileSync(join(root, "gen", r.id, "manifest.json"), "utf8"),
+    ) as { fallthrough: Record<string, string> };
+    assert.deepEqual(man.fallthrough, served, "the manifest records what the image said it serves");
+  } finally {
+    await new Promise<void>((ok) => srv.close(() => ok()));
+  }
+});
+
+test("an image that cannot say what it serves stops the publish, and never falls back", async () => {
+  type Pub = {
+    publishBundle: (o: {
+      store: unknown; outDir: string; gitSha?: string; imageOrigin?: string;
+    }) => Promise<unknown>;
+    localStore: (root: string) => unknown;
+  };
+  const { publishBundle, localStore } = (await import(
+    new URL("../../scripts/publish-bundle.mjs", import.meta.url).href
+  )) as Pub;
+  const http = await import("node:http");
+  const srv = http.createServer((_q, res) => { res.statusCode = 503; res.end("nope"); });
+  await new Promise<void>((ok) => srv.listen(0, "127.0.0.1", ok));
+  const port = (srv.address() as { port: number }).port;
+  try {
+    const root = mkdtempSync(join(tmpdir(), "bs-ftbad-"));
+    const out = mkdtempSync(join(tmpdir(), "bs-ftbaddist-"));
+    await assert.rejects(
+      () => publishBundle({ store: localStore(root), outDir: out, gitSha: "ftbad", imageOrigin: `http://127.0.0.1:${port}` }),
+      /could not read what the image serves/,
+      "a 503 throws — the local walk is NOT a fallback",
+    );
+    // And nothing was written: a refused publish leaves the store untouched.
+    assert.ok(!existsSync(join(root, "pointer.json")), "no pointer was written");
+  } finally {
+    await new Promise<void>((ok) => srv.close(() => ok()));
   }
 });
