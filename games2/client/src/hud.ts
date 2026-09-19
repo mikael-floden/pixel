@@ -2400,6 +2400,44 @@ function injectStyles() {
      in four different injected sheets. */
   :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,:root.ml-noanim .ml-wikibtn,:root.ml-noanim .ml-wikinear,
   :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput{transition:none!important}
+  /* ── THE CHAT TAKES THE CORNER THE STICK DOES NOT — PORTRAIT ONLY
+     (maintainer 2026-09-19: "when the control is left handed … in portrait
+     mode it's hard to read the chat messages. Can we make the chat right
+     aligned for this mode? … The chat is still left aligned for right-handed
+     people and I'm only talking about portrait mode here").
+     In portrait the pill and the Wiki row live at the TOP right (clock.ts,
+     wikibtn.ts), so the game view's bottom corners belong to exactly two
+     things: the ghost stick and this log. Right-handed the stick is
+     bottom-RIGHT (gamepad.ts PORT_GHOST_INSET) and the log keeps its
+     bottom-LEFT home, untouched. Left-handed the stick mirrors onto the log,
+     so the log mirrors away from it — one rule, the same margin, and the
+     two never share a corner again.
+     THE LANE NEEDS NO CHANGE: --ml-chatw (chat.ts) is a MAX-WIDTH, so the
+     gap it holds open falls on the side the log is not anchored to — which
+     is the side the stick is on, in both hands. The mirror is therefore
+     purely which edge the box hangs from.
+     LANDSCAPE IS UNTOUCHED, by his word ("only … portrait mode here"): there
+     the HUD column takes a whole side and the corners are a different
+     argument. :not(.ml-land) says so rather than leaving it to luck.
+     IT LIVES HERE, NOT IN chat.ts: .ml-lh and --gv-* are this file's, this
+     sheet already reaches these two boxes for the rotation snap above, and
+     every handedness mirror in the client is then in ONE place. It cannot
+     lose a specificity race either — chat.ts anchors them on a bare class
+     (0,1,0) and these are (0,4,0)/(0,5,0) — which is the trap the ghost's
+     own rest alphas paid for once already (gamepad.ts). Posted to games.
+     THE CHIPS MOVE, THE TEXT DOES NOT: align-items flips so the bubbles hang
+     off the right edge, and that is all. text-align:right was tried and
+     dropped — a wrapped line would then be ragged down its LEFT edge, which
+     is the edge you read from, and readability is the whole request. ── */
+  :root.ml-lh:not(.ml-land) .ml-chatlog{
+    left:auto;right:calc(var(--gv-right,0px) + 10px);align-items:flex-end;
+    transition:bottom .15s ease-out,right .3s ease}
+  /* The in-world input follows its log — a box that opened on the far side
+     from the lines it writes would read as two different chats. Not while the
+     keyboard is up: there chat.ts floats it edge to edge (left AND right), and
+     that rule must keep winning. */
+  :root.ml-lh:not(.ml-land):not(.ml-kb-up) .ml-chatinput{
+    left:auto;right:calc(var(--gv-right,0px) + 10px)}
   /* the rotation veil: theme surface over the game view while the canvas
      re-fits (beginFlip). Fades on the compositor once the world is ready. */
   .ml-flip-veil{position:fixed;inset:0;z-index:3;background:var(--bg);

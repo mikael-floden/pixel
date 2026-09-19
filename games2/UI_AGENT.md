@@ -237,8 +237,9 @@ from the games agent), #18 (title/landing screen).
   the pill to the top (next law); a first cut parked the ghost ABOVE that
   stack, 118 css up the screen, and he wanted it lower ("let's start here and
   feel how it feels. If we need it even lower we will find more creative
-  solutions"). Left-handed mirrors to the bottom-left over the chat overlay
-  (its lines are pointer-events:none). "Just make sure pressing on the wiki or
+  solutions"). Left-handed mirrors to the bottom-left — and since 2026-09-19
+  the CHAT LOG MIRRORS AWAY FROM IT (next law), so the two never share a
+  corner. "Just make sure pressing on the wiki or
   the search still works and this input triggers when you press on this and
   nothing else" is the z-order, not a special case: 4 sits under the chat
   overlay (5/6) and the Wiki/🔍/pill row (8), and only the well listens —
@@ -247,6 +248,32 @@ from the games agent), #18 (title/landing screen).
   rest and held, the synthesized W from a northward drag (keys, not distance —
   the phone-dpr frame loop is starved in the harness), and that the gamepad
   page takes the stick back.
+- **THE CHAT TAKES THE CORNER THE STICK DOES NOT — PORTRAIT ONLY**
+  (maintainer 2026-09-19: "when the control is left handed on the screen in
+  portrait mode it's hard to read the chat messages. Can we make the chat right
+  aligned for this mode? … The chat is still left aligned for right-handed
+  people and I'm only talking about portrait mode here"). In portrait the pill
+  and the Wiki row live top-right, so the game view's two bottom corners belong
+  to the ghost stick and the chat log ALONE — and never to both. Right-handed
+  is untouched (stick bottom-right, log bottom-left, his default); left-handed
+  the log hangs off the RIGHT on the same 10px margin and `align-items` flips
+  so the bubbles hang off that edge. REJECTED: `text-align:right` — a wrapped
+  line would be ragged down its LEFT edge, the edge you read from, and
+  readability is the whole request. LANDSCAPE IS UNTOUCHED by his word,
+  spelled `:not(.ml-land)` rather than left to luck.
+  THE LANE NEEDS NO CHANGE: `--ml-chatw` is a MAX-WIDTH, so the gap it holds
+  open always falls on the side the log is not anchored to — which is the
+  stick's side in either hand.
+  IT LIVES IN `hud.ts`, NOT `chat.ts` (the games agent's): `.ml-lh` and
+  `--gv-*` are ours, this sheet already reaches `.ml-chatlog`/`.ml-chatinput`
+  for the rotation snap, and every handedness mirror in the client is then in
+  one place. No specificity race — theirs anchor on a bare class (0,1,0),
+  these are (0,4,0)/(0,5,0); posted to games, who may take it into `chat.ts`.
+  `verify-chat` asserts the RELATIONSHIP, not a side: the log and the stick
+  are measured in both hands and required to be on opposite sides (asserting
+  "right-handed ⇒ log left" alone passes on a build that moved the STICK), plus
+  the mirrored margin, the input following its log, the bubbles' own edge, and
+  that forcing `ml-land` drops the mirror.
 - **THE PORTRAIT HUD IS EXACTLY THREE BACKPACK ROWS TALL** (maintainer
   2026-09-18: "aim for the backpack only having exact 3 row slots (not the
   ~3.66 we have today)… A player should feel 3 rows fit exactly and the space

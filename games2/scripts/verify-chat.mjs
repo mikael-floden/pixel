@@ -187,6 +187,81 @@ try {
     throw new Error(`the collision legend printed ${toggles.legend} times — it is a reference, not an event`);
   console.log(`TOGGLE OK — six taps, ${toggles.state} state line, ${toggles.legend} legend (log went ${toggles.was} → ${toggles.lines.length} lines)`);
 
+  // ── THE CHAT TAKES THE CORNER THE STICK DOES NOT — PORTRAIT ONLY ──────
+  // Maintainer 2026-09-19: "when the control is left handed … in portrait
+  // mode it's hard to read the chat messages. Can we make the chat right
+  // aligned for this mode? … still left aligned for right-handed people and
+  // I'm only talking about portrait mode here."
+  //
+  // THE CLAIM IS THE RELATIONSHIP, NOT A SIDE: in portrait the pill and the
+  // Wiki row are top-right, so the game view's two bottom corners belong to
+  // the ghost stick and this log alone — and they must never be the SAME
+  // corner. So the stick is measured with the log in both hands and the two
+  // are required to be on opposite sides. Asserting "right-handed ⇒ log at
+  // left" alone would pass on a build that moved the STICK instead.
+  const sides = async (hand) => {
+    await p2.evaluate((h) => window.__ml.hand(h), hand);
+    await p2.waitForTimeout(400); // the anchors glide (left/right .3s)
+    return p2.evaluate(() => {
+      const W = window.innerWidth;
+      const gaps = (sel) => {
+        const el = document.querySelector(sel);
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return { l: Math.round(r.left), r: Math.round(W - r.right), w: Math.round(r.width) };
+      };
+      const input = document.querySelector(".ml-chatinput");
+      const prev = input.style.display;
+      input.style.display = "block";
+      const inp = gaps(".ml-chatinput");
+      input.style.display = prev;
+      return {
+        lh: document.documentElement.classList.contains("ml-lh"),
+        land: document.documentElement.classList.contains("ml-land"),
+        log: gaps(".ml-chatlog"),
+        line: gaps(".ml-chatlog .ml-chatline"),
+        input: inp,
+        stick: gaps(".ml-pad-stick"),
+      };
+    });
+  };
+  const R = await sides("right");
+  const L = await sides("left");
+  console.log("HANDS " + JSON.stringify({ R, L }));
+  if (R.land || L.land) throw new Error("this section is portrait's — .ml-land is set");
+  if (!L.lh || R.lh) throw new Error(`ml-lh did not follow __ml.hand (right=${R.lh}, left=${L.lh})`);
+  if (!R.stick || !L.stick) throw new Error("no .ml-pad-stick to place the chat against");
+  // right-handed: his default, and it must not have moved a pixel
+  if (!near(R.log.l, 10)) throw new Error(`right-handed chatlog left ${R.log.l} != 10 — the default moved`);
+  if (!(R.stick.r < R.stick.l)) throw new Error(`right-handed ghost stick is not in the RIGHT corner (${JSON.stringify(R.stick)})`);
+  // left-handed: the log mirrors, on the SAME margin, and the input with it
+  if (!near(L.log.r, 10)) throw new Error(`left-handed chatlog right gap ${L.log.r} != 10 — the mirrored margin is the one margin`);
+  if (!(L.log.l > L.log.r)) throw new Error(`left-handed chatlog still hangs off the left (${JSON.stringify(L.log)})`);
+  if (!near(L.input.r, 10)) throw new Error(`left-handed chatinput right gap ${L.input.r} != 10 — the box must follow its log`);
+  if (!(L.stick.l < L.stick.r)) throw new Error(`left-handed ghost stick is not in the LEFT corner (${JSON.stringify(L.stick)})`);
+  // …and the relationship itself, in both hands
+  for (const [name, g] of [["right", R], ["left", L]])
+    if (Math.sign(g.log.l - g.log.r) === Math.sign(g.stick.l - g.stick.r))
+      throw new Error(`${name}-handed: the chat log and the thumb stick share a corner — log ${JSON.stringify(g.log)}, stick ${JSON.stringify(g.stick)}`);
+  // the BUBBLES hang off the log's own edge, not just the box moving
+  if (!near(R.line.l, R.log.l)) throw new Error(`right-handed bubble left ${R.line.l} != log left ${R.log.l}`);
+  if (!near(L.line.r, L.log.r)) throw new Error(`left-handed bubble right ${L.line.r} != log right ${L.log.r} — align-items did not flip`);
+  // LANDSCAPE IS UNTOUCHED, by his word ("only … portrait"). The guard is
+  // `:not(.ml-land)` in the rule, so the class is what is tested: forced on
+  // for the read (applyLayout owns it and will take it back on the next
+  // resize), the log must fall straight back to its left anchor.
+  const landHeld = await p2.evaluate(() => {
+    document.documentElement.classList.add("ml-land");
+    const cs = getComputedStyle(document.querySelector(".ml-chatlog"));
+    const out = { left: cs.left, right: cs.right, align: cs.alignItems };
+    document.documentElement.classList.remove("ml-land");
+    return out;
+  });
+  if (landHeld.left === "auto" || landHeld.align === "flex-end")
+    throw new Error(`the mirror leaked into landscape: ${JSON.stringify(landHeld)}`);
+  await p2.evaluate(() => window.__ml.hand("right")); // leave his default set
+  console.log(`HANDS OK — right-handed log left ${R.log.l} / stick right ${R.stick.r}; left-handed log right ${L.log.r} / stick left ${L.stick.l}; landscape unmirrored`);
+
   await p2.screenshot({ path: `${OUT}/chat.png` });
   console.log("PASS");
 } finally {
