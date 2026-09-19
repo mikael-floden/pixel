@@ -58,6 +58,8 @@ import {
 import { gameUrl } from "./staging";
 
 const ROW_CLS = "ml-maplayers";
+const PILL_CLS = "ml-maplayer-pill";
+const SW_CLS = "ml-maplayer-sw";
 const DLG_CLS = "ml-layers";
 const SVG_CLS = "ml-maplayer-svg";
 const MARK_CLS = "ml-maplayer-marks";
@@ -92,10 +94,24 @@ export interface LayerCtx {
 type LayerGroup = "map" | "ambient";
 const GROUP_LABEL: Record<LayerGroup, string> = { map: "Map", ambient: "Ambient zones" };
 
+/** What the map paints a layer in — the legend pill's whole content.
+ *  `area` is a wash over ground, `pin` is a mark at a point; the SHAPE is
+ *  what the swatch copies, because two layers can share a hue but never a
+ *  shape, and shape survives a colour-blind eye and a 2-inch map (the same
+ *  reason the place pin is a diamond and "you are here" is a disc). */
+interface LayerMark {
+  color: string;
+  shape: "area" | "pin";
+}
+
 interface Layer {
   id: string;
   label: string;
   group: LayerGroup;
+  /** THE ONE PLACE A LAYER'S COLOUR IS WRITTEN. `draw` reads it too (or the
+   *  same constant), so the pill cannot drift from the map: a legend that
+   *  names a colour the map does not paint is worse than no legend. */
+  mark: () => LayerMark;
   /** Offer the chip only when there is something behind it. A world with no
    *  dungeons must not show a dungeons button that draws nothing — the same
    *  graceful-degradation rule the ambient checklist follows (no rows, no
@@ -129,11 +145,19 @@ function quad(ctx: LayerCtx, x0: number, y0: number, x1: number, y1: number): st
   return `M${p.map(([x, y]) => `${x.toFixed(3)},${y.toFixed(3)}`).join("L")}Z`;
 }
 
+/* The two fixed layers' colours, written ONCE and read by both the draw and
+   the legend. ZONE_LINE is the spawn overlay's blue — the same as the in-world
+   border, so the map and the world read as one legend. PIN_FILL is the place
+   pin's amber; the CSS below interpolates it rather than repeating it. */
+const ZONE_LINE = "rgba(143,214,255,0.95)";
+const PIN_FILL = "rgba(255,196,92,0.96)";
+
 const LAYERS: Layer[] = [
   {
     id: "zones",
     label: "zones",
     group: "map",
+    mark: () => ({ color: ZONE_LINE, shape: "area" }),
     draw: (ctx) => {
       const z = ml()?.zones?.();
       if (!z) return;
@@ -142,9 +166,10 @@ const LAYERS: Layer[] = [
         ctx.svg.appendChild(
           ctx.el("path", {
             d: quad(ctx, r.x0, r.y0, r.x1, r.y1),
-            // The spawn overlay's blue, the same as the in-world border.
+            // The spawn overlay's blue, the same as the in-world border —
+            // ZONE_LINE, which the legend pill wears too.
             fill: mine ? "rgba(143,214,255,0.13)" : "none",
-            stroke: mine ? "rgba(143,214,255,0.95)" : "rgba(255,255,255,0.5)",
+            stroke: mine ? ZONE_LINE : "rgba(255,255,255,0.5)",
             "stroke-width": mine ? 0.55 : 0.3,
             "vector-effect": "non-scaling-stroke",
           }),
@@ -187,6 +212,7 @@ const LAYERS: Layer[] = [
     id: "dungeons",
     label: "dungeons",
     group: "map",
+    mark: () => ({ color: PIN_FILL, shape: "pin" }),
     has: () => caves().length > 0,
     draw: (ctx) => {
       for (const c of caves()) ctx.pin(c.at[0], c.at[1], c.name);
@@ -229,13 +255,50 @@ async function loadAmbientZones(world: string): Promise<AmbientZone[]> {
   }
 }
 
-/** A stable hue per effect name, so "rain" is the same colour every visit
- *  and two effects sharing a coast read apart. */
-function effectHue(effect: string): number {
+/** The hue an effect WANTS: derived from its name, so "rain" prefers the same
+ *  colour every visit and in every world. */
+function effectSeed(effect: string): number {
   let h = 0;
   for (let i = 0; i < effect.length; i++) h = (h * 31 + effect.charCodeAt(i)) >>> 0;
-  return h % 360;
+  return h;
 }
+
+/** THE HUES THE LEGEND CAN ACTUALLY TELL APART. A name hash alone is stable
+ *  but collides — measured with six effects it gave rain and snow one amber
+ *  and fireflies and falling leaves one green, and a legend whose whole job is
+ *  "what colour is that wash?" is then worse than none.
+ *  So the wheel is SLOTTED: at least 12 slots (30° apart), more when there are
+ *  more effects, each effect taking the free slot nearest the one its name
+ *  asks for. Deterministic for a given set of effects, and it still honours
+ *  the name — a world whose effects do not collide gets exactly the hash's
+ *  answer. It moves only when maps2 adds or removes an effect, and the pills
+ *  are on screen saying so. */
+function hueTable(effects: string[]): Map<string, number> {
+  const slots = Math.max(12, Math.ceil(effects.length / 6) * 12);
+  const step = 360 / slots;
+  const taken = new Array<string | null>(slots).fill(null);
+  const out = new Map<string, number>();
+  for (const e of effects) {
+    const want = effectSeed(e) % slots;
+    // outward from the slot the name asks for: want, want±1, want±2 … The
+    // first free one wins; with more effects than slots the last of them share
+    // a hue, which is honest and is what more slots are for.
+    let at = want;
+    for (let d = 0; d <= slots; d++) {
+      const a = (want + d) % slots;
+      const b = (want - d + slots) % slots;
+      if (taken[a] === null) { at = a; break; }
+      if (taken[b] === null) { at = b; break; }
+    }
+    taken[at] = e;
+    out.set(e, Math.round(at * step));
+  }
+  return out;
+}
+
+let hues: Map<string, number> = new Map();
+/** The hue this effect is drawn and labelled in (see `hueTable`). */
+const effectHue = (effect: string): number => hues.get(effect) ?? effectSeed(effect) % 360;
 
 let ambientFor = ""; // which world `ambientZones` belongs to
 let ambientZones: AmbientZone[] = [];
@@ -248,10 +311,14 @@ function ambientLayers(): Layer[] {
   const key = ambientZones.map((z) => z.effect).join(",");
   if (key === ambientLayerCache.key) return ambientLayerCache.layers;
   const effects = [...new Set(ambientZones.map((z) => z.effect))];
+  hues = hueTable(effects); // one wheel for the whole set, so no two collide
   const layers = effects.map<Layer>((effect) => ({
     id: `ambient:${effect}`,
     label: effect,
     group: "ambient",
+    // The pill wears the hue at full strength; the map varies only the
+    // ALPHA with pct, so the two are the same colour by construction.
+    mark: () => ({ color: `hsl(${effectHue(effect)},70%,60%)`, shape: "area" }),
     has: () => ambientZones.some((z) => z.effect === effect),
     draw: (ctx) => {
       const hue = effectHue(effect);
@@ -317,6 +384,15 @@ let dialog: HTMLElement | null = null;
 /** The named caves of the loaded world, in the order maps2 published them. */
 const caves = (): PlaceMark[] => places.filter((p) => p.kind === "cave");
 
+/** The legend swatch: the layer's own colour in the layer's own shape. */
+function swatch(m: LayerMark): HTMLElement {
+  const sw = document.createElement("span");
+  sw.className = m.shape === "pin" ? `${SW_CLS} pin` : SW_CLS;
+  sw.style.background = m.color;
+  sw.setAttribute("aria-hidden", "true");
+  return sw;
+}
+
 const svgEl = (name: string, attrs: Record<string, string | number>): SVGElement => {
   const e = document.createElementNS("http://www.w3.org/2000/svg", name);
   for (const [k, v] of Object.entries(attrs)) e.setAttribute(k, String(v));
@@ -333,6 +409,24 @@ function styleOnce() {
   .${ROW_CLS}{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;
     width:100%;padding:6px 8px 0;box-sizing:border-box}
   .${ROW_CLS} .ml-plate-btn{min-height:30px;padding:4px 10px;font-size:12px;border-radius:8px}
+  /* THE LEGEND PILLS — one per layer that is ON, and only those (maintainer
+     2026-09-19: "Once something has been selected here I still think we
+     should have a pill for it so the user can see what color correspond to
+     what layer … so we don't have to [show] every ambient effect as a pill
+     for all users all the time"). Lighter than the button that opens the
+     chooser: the button is the control, these are the KEY to the picture.
+     Each is also its own off switch, which is the gesture the pills had
+     before the dialog existed. */
+  .${ROW_CLS} .${PILL_CLS}{display:inline-flex;align-items:center;gap:6px;
+    min-height:26px;padding:3px 9px 3px 7px;border-radius:999px;
+    background:var(--surface-2);border:1px solid var(--border);color:var(--muted);
+    font:600 11px/1.2 var(--sans);cursor:pointer;-webkit-tap-highlight-color:transparent}
+  .${ROW_CLS} .${PILL_CLS}:active{transform:translateY(1px)}
+  /* THE SWATCH IS THE POINT: the colour AND the shape the map draws, so the
+     pill answers "what is that wash?" and "what is that diamond?" alike. */
+  .${SW_CLS}{width:11px;height:11px;flex:none;border-radius:3px;
+    box-shadow:0 0 0 1px rgba(0,0,0,.45)}
+  .${SW_CLS}.pin{width:9px;height:9px;border-radius:2px;transform:rotate(45deg)}
   /* THE CHOOSER: the drop-quantity dialog's recipe (hud.ts .ml-qty) — a
      blurred backdrop over everything and a wiki card, centred; the card
      scrolls when the ambient list outgrows a phone. Rows are the Settings
@@ -346,13 +440,23 @@ function styleOnce() {
     background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:14px;
     box-shadow:var(--shadow);font:14px/1.45 var(--sans)}
   .${DLG_CLS} *{box-sizing:border-box}
-  .${DLG_CLS}-h{display:flex;align-items:center;gap:6px;margin-top:6px;
+  /* SECTIONS LIKE SETTINGS' (maintainer 2026-09-19: "You can have sections in
+     the dialog similar to the sections under settings"): the rule above the
+     heading is the whole recipe — .ml-amb-title in hud.ts is border-top +
+     12px + uppercase muted small-caps, and this is that, minus the rule on
+     the FIRST section, where a line under the card's own edge is noise. */
+  .${DLG_CLS}-h{display:flex;align-items:center;gap:6px;
+    border-top:1px solid var(--border);margin-top:6px;padding-top:12px;
     color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase}
+  .${DLG_CLS}-h:first-child{border-top:none;margin-top:0;padding-top:0}
   .${DLG_CLS}-h .ml-plate-btn{min-height:26px;padding:2px 9px;font-size:11px;border-radius:7px;
     text-transform:none;letter-spacing:0;font-weight:600}
   .${DLG_CLS}-h .ml-plate-btn:first-of-type{margin-left:auto}
-  .${DLG_CLS} .ml-layer-row{justify-content:flex-start;gap:12px;text-align:left;white-space:nowrap;
+  .${DLG_CLS} .ml-layer-row{justify-content:flex-start;gap:10px;text-align:left;white-space:nowrap;
     min-height:40px;padding:6px 12px}
+  /* the same swatch as the pill, so you can pick by colour in here and then
+     read that colour off the map without a second legend to learn */
+  .${DLG_CLS} .${SW_CLS}{margin-left:2px}
   .${DLG_CLS}-done{margin-top:6px}
   /* CLIPPED TO THE IMAGE BOX, both of them. A zone rectangle covers water and
      the render is CROPPED to the island, so the outer zones project OUTSIDE
@@ -372,7 +476,7 @@ function styleOnce() {
      is a no-op and the children position off the exact cell. */
   .${MARK_CLS} b.pin{width:0;height:0}
   .${MARK_CLS} b.pin s{position:absolute;left:-5px;top:-5px;width:10px;height:10px;
-    box-sizing:border-box;transform:rotate(45deg);background:rgba(255,196,92,0.96);
+    box-sizing:border-box;transform:rotate(45deg);background:${PIN_FILL};
     border:1.5px solid rgba(0,0,0,0.8);box-shadow:0 0 0 1px rgba(255,255,255,0.35)}
   .${MARK_CLS} b.pin s{text-decoration:none}`;
   document.head.appendChild(st);
@@ -450,7 +554,7 @@ function openDialog() {
       box.setAttribute("aria-hidden", "true");
       const t = document.createElement("span");
       t.textContent = l.label;
-      btn.append(box, t);
+      btn.append(box, swatch(l.mark()), t);
       btn.addEventListener("click", () => {
         setLayer(l.id, !on.has(l.id));
         paint();
@@ -505,12 +609,36 @@ function build(page: HTMLElement, frame: HTMLElement) {
 
 /** The button names how many OFFERED layers are on ("layers · 2"), so the
  *  state is readable without opening the dialog; an id nothing answers to
- *  (an ambient layer of a world that has none) is not counted. */
+ *  (an ambient layer of a world that has none) is not counted. Then the
+ *  LEGEND: one pill per layer that is on, in the chooser's own order, each
+ *  wearing the colour and shape the map paints it in. Rebuilt from `offered()`
+ *  every time, so a layer whose data has gone (a world without dungeons)
+ *  takes its pill with it and an ambient file that just landed brings one. */
 function syncButton() {
-  if (!openBtn) return;
-  const n = offered().filter((l) => on.has(l.id)).length;
-  openBtn.textContent = n ? `layers · ${n}` : "layers";
-  openBtn.classList.toggle("on", n > 0);
+  if (!openBtn || !row) return;
+  const live = offered().filter((l) => on.has(l.id));
+  openBtn.textContent = live.length ? `layers · ${live.length}` : "layers";
+  openBtn.classList.toggle("on", live.length > 0);
+  for (const old of row.querySelectorAll(`.${PILL_CLS}`)) old.remove();
+  for (const l of live) {
+    const pill = document.createElement("button");
+    pill.type = "button";
+    pill.className = PILL_CLS;
+    pill.dataset.layer = l.id;
+    // A pill is the layer's own off switch — the gesture the per-layer chips
+    // had before the chooser replaced them, and the shortest way back out of
+    // a layer you turned on to look at once.
+    pill.title = `hide ${l.label}`;
+    pill.setAttribute("aria-label", `hide ${l.label}`);
+    const name = document.createElement("span");
+    name.textContent = l.label;
+    pill.append(swatch(l.mark()), name);
+    pill.addEventListener("click", () => {
+      setLayer(l.id, false);
+      ensureMapLayers();
+    });
+    row.appendChild(pill);
+  }
 }
 
 /** Idempotent: keep one live chip row + overlay on the Map page, and redraw the

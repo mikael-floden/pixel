@@ -216,7 +216,18 @@ try {
           body: JSON.stringify({
             schema: "pixel-maps2/ambient-zones@1",
             world: feed.world,
-            zones: [{ id: "gate_rain", effect: "rain", pct: 50, rects: [[cx - 2, cy - 2, cx + 3, cy + 3]] }],
+            // FOUR EFFECTS, and not any four: rain/snow and
+            // fireflies/falling leaves are the two pairs whose NAME HASHES
+            // collided when the hue was the hash alone (measured 2026-09-19 —
+            // one amber and one green across the legend). They are the
+            // fixture so the de-collision below is tested on the case that
+            // actually failed, not on a case chosen to pass.
+            zones: [
+              { id: "gate_rain", effect: "rain", pct: 50, rects: [[cx - 2, cy - 2, cx + 3, cy + 3]] },
+              { id: "gate_snow", effect: "snow", pct: 30, rects: [[cx + 4, cy - 2, cx + 8, cy + 3]] },
+              { id: "gate_ff", effect: "fireflies", pct: 70, rects: [[cx - 2, cy + 4, cx + 3, cy + 8]] },
+              { id: "gate_leaves", effect: "falling leaves", pct: 20, rects: [[cx + 4, cy + 4, cx + 8, cy + 8]] },
+            ],
           }),
         });
       });
@@ -273,6 +284,44 @@ try {
         grp.groups.includes("Ambient zones") && grp.rain
           ? ok(`the chooser shows the Ambient zones group with rain (${grp.groups.join(" / ")})`)
           : fail(`chooser groups ${JSON.stringify(grp)}`);
+        // NO TWO EFFECTS MAY SHARE A SWATCH. The hue was the name's hash
+        // alone until 2026-09-19, which is stable and collides: with these
+        // four effects it gave rain and snow one amber and fireflies and
+        // falling leaves one green, and a legend whose whole job is "what
+        // colour is that wash?" is then worse than no legend. The wheel is
+        // slotted now; this is the measurement that says so.
+        // SEPARATION, NOT INEQUALITY — and that distinction is the whole
+        // assertion. The hash gave rain 36° and snow 35°, fireflies 147° and
+        // falling leaves 141°: four DIFFERENT colours by any === test, and two
+        // indistinguishable pairs on a phone. So the minimum pairwise HUE GAP
+        // is measured, against the wheel the slotting promises (>=12 slots,
+        // more as effects are added; 0.8 of a slot leaves room for rounding).
+        const sw = await page.evaluate(() => {
+          const hueOf = (css) => {
+            const [r, g, b] = css.match(/[\d.]+/g).slice(0, 3).map((n) => +n / 255);
+            const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
+            if (!d) return 0;
+            const h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
+            return (h * 60 + 360) % 360;
+          };
+          return [...document.querySelectorAll('.ml-layers [data-layer^="ambient:"]')].map((r) => ({
+            id: r.dataset.layer.slice(8),
+            color: getComputedStyle(r.querySelector(".ml-maplayer-sw")).backgroundColor,
+            hue: Math.round(hueOf(getComputedStyle(r.querySelector(".ml-maplayer-sw")).backgroundColor)),
+          }));
+        });
+        const slots = Math.max(12, Math.ceil(sw.length / 6) * 12);
+        const wantGap = (360 / slots) * 0.8;
+        let worst = { gap: 360, a: null, b: null };
+        for (let i = 0; i < sw.length; i++)
+          for (let j = i + 1; j < sw.length; j++) {
+            const d = Math.abs(sw[i].hue - sw[j].hue);
+            const gap = Math.min(d, 360 - d);
+            if (gap < worst.gap) worst = { gap, a: sw[i], b: sw[j] };
+          }
+        sw.length >= 4 && worst.gap >= wantGap
+          ? ok(`no two ambient effects share a colour — closest pair ${worst.a.id}/${worst.b.id} is ${worst.gap.toFixed(0)}° apart, want >=${wantGap.toFixed(0)}° (${sw.map((c) => `${c.id} ${c.hue}°`).join(", ")})`)
+          : fail(`two ambient effects are the same colour to the eye: ${worst.a?.id} ${worst.a?.hue}° vs ${worst.b?.id} ${worst.b?.hue}° — ${worst.gap.toFixed(1)}° apart, want >=${wantGap.toFixed(0)}° (${JSON.stringify(sw)})`);
         await page.screenshot({ path: `${OUT}/map-layers-dialog.png` });
         await page.evaluate(() => document.querySelector(".ml-layers-done")?.click());
         await page.evaluate(() => window.__ml.mapLayers("ambient:rain", false));
@@ -298,19 +347,21 @@ try {
         });
       }
       // NO EXPLAINING TEXT IN THE MAP VIEW AT ALL (maintainer 2026-09-14): the
-      // button names itself and nothing else on this page is allowed to
-      // talk. The whole layer row's text must be its button, nothing more —
-      // a caption under it is what he asked to be rid of.
+      // row is its CONTROLS and nothing else. What he asked to be rid of was
+      // the CAPTION that narrated each live layer's marks; the button and the
+      // legend pills (2026-09-19) are things you press, each carrying its own
+      // one-word name. So the law is still exact — the row's whole text must
+      // be its controls' text, and a caption would put a stray word in it.
       const rowText = await page.evaluate(() => {
         const row = document.querySelector(".ml-maplayers");
         if (!row) return null;
-        const chips = [...row.querySelectorAll(".ml-plate-btn")].map((b) => b.textContent.trim());
+        const chips = [...row.querySelectorAll(".ml-plate-btn, .ml-maplayer-pill")].map((b) => b.textContent.trim());
         return { all: row.textContent.trim(), chips };
       });
       if (!rowText) fail("no layer row on the Map page");
       else if (rowText.all !== rowText.chips.join(""))
-        fail(`the Map tab's layer row says more than its button (${JSON.stringify(rowText.all)}) — no explaining text on this page`);
-      else ok(`the layer row is the button only (${rowText.chips.join(", ")})`);
+        fail(`the Map tab's layer row says more than its controls (${JSON.stringify(rowText.all)}) — no explaining text on this page`);
+      else ok(`the layer row is its controls only (${rowText.chips.join(", ")})`);
       // THE CHOOSER (maintainer 2026-09-18): the button opens a dialog listing
       // the offered layers by group; a tick applies at once (the map behind
       // redraws), all/none per group, Done closes. The count on the button is
@@ -346,6 +397,136 @@ try {
         (await page.evaluate(() => !document.querySelector(".ml-layers")))
           ? ok("Done closes the chooser")
           : fail("the chooser stayed open after Done");
+      }
+
+      // ── THE LEGEND PILLS (maintainer 2026-09-19: "Once something has been
+      //    selected here I still think we should have a pill for it so the
+      //    user can see what color correspond to what layer … so we don't
+      //    have to [show] every ambient effect as a pill for all users all the
+      //    time"). Two claims, and the second is the one that rots: a pill
+      //    exists for exactly the layers that are ON, and its swatch is a
+      //    colour THE MAP ACTUALLY PAINTS. The second is asserted against the
+      //    drawn overlay rather than against the probe — a legend that agrees
+      //    with a constant it shares with nothing is no legend at all.
+      {
+        await page.evaluate(() => {
+          window.__ml.mapLayers("zones", true);
+          window.__ml.mapLayers("dungeons", true);
+        });
+        await page.waitForTimeout(400);
+        const legend = await page.evaluate(() => {
+          // normalise every colour through the engine, so an rgba() attribute
+          // and a computed rgb() string can be compared at all
+          const norm = (c) => {
+            const d = document.createElement("div");
+            d.style.color = c;
+            document.body.appendChild(d);
+            const out = getComputedStyle(d).color;
+            d.remove();
+            return out;
+          };
+          const row = document.querySelector(".ml-maplayers");
+          const pills = [...row.querySelectorAll(".ml-maplayer-pill")].map((p) => {
+            const sw = p.querySelector(".ml-maplayer-sw");
+            const cs = sw && getComputedStyle(sw);
+            return {
+              id: p.dataset.layer,
+              label: p.textContent.trim(),
+              swatch: cs ? norm(cs.backgroundColor) : null,
+              pinShape: !!sw && sw.classList.contains("pin"),
+              hint: p.getAttribute("aria-label") || "",
+            };
+          });
+          // every colour the overlay is painting right now
+          const painted = new Set();
+          for (const el of document.querySelectorAll(".ml-maplayer-svg path"))
+            for (const a of ["fill", "stroke"]) {
+              const v = el.getAttribute(a);
+              if (v && v !== "none") painted.add(norm(v));
+            }
+          const pin = document.querySelector(".ml-maplayer-marks b.pin s");
+          if (pin) painted.add(norm(getComputedStyle(pin).backgroundColor));
+          return { pills, painted: [...painted], on: window.__ml.mapLayers() };
+        });
+        const ids = legend.pills.map((p) => p.id);
+        ids.includes("zones") && ids.includes("dungeons")
+          ? ok(`a pill per layer that is on (${ids.join(", ")})`)
+          : fail(`pills ${JSON.stringify(ids)} for layers on ${JSON.stringify(legend.on)}`);
+        legend.pills.every((p) => legend.on.includes(p.id))
+          ? ok("…and no pill for a layer that is off — the whole point of the chooser")
+          : fail(`a pill without its layer: ${JSON.stringify(legend.pills.map((p) => p.id))} vs ${JSON.stringify(legend.on)}`);
+        // ANTI-DRIFT: the swatch is a colour the map is painting, not a guess
+        const orphan = legend.pills.filter((p) => !legend.painted.includes(p.swatch));
+        orphan.length === 0
+          ? ok(`every swatch is a colour the overlay actually paints (${legend.pills.map((p) => `${p.id} ${p.swatch}`).join(", ")})`)
+          : fail(`the legend claims a colour the map does not paint: ${JSON.stringify(orphan)} — painted ${JSON.stringify(legend.painted)}`);
+        // the SHAPE is part of the answer: the dungeons layer draws diamonds
+        const dung = legend.pills.find((p) => p.id === "dungeons");
+        dung && dung.pinShape
+          ? ok("the dungeons swatch is the pin's diamond, not a square — shape is what separates two layers of one hue")
+          : fail(`the dungeons pill's swatch shape: ${JSON.stringify(dung)}`);
+        legend.pills.every((p) => /^hide /.test(p.hint))
+          ? ok("each pill says it is its layer's off switch")
+          : fail(`a pill with no hint: ${JSON.stringify(legend.pills.map((p) => p.hint))}`);
+        // pressing the pill is the way out of a layer
+        await page.evaluate(() => document.querySelector('.ml-maplayer-pill[data-layer="dungeons"]').click());
+        await page.waitForTimeout(250);
+        const after = await page.evaluate(() => ({
+          on: window.__ml.mapLayers(),
+          pills: [...document.querySelectorAll(".ml-maplayer-pill")].map((p) => p.dataset.layer),
+          btn: document.querySelector(".ml-maplayers .ml-plate-btn").textContent.trim(),
+        }));
+        !after.on.includes("dungeons") && !after.pills.includes("dungeons")
+          ? ok(`pressing a pill turns its layer off and takes the pill with it (button now "${after.btn}")`)
+          : fail(`after pressing the dungeons pill: ${JSON.stringify(after)}`);
+        // …and put it back: the level-aware pin check further down needs this
+        // layer drawing. A gate that leaves state behind fails its neighbour.
+        await page.evaluate(() => window.__ml.mapLayers("dungeons", true));
+        await page.waitForTimeout(250);
+      }
+
+      // ── SECTIONS LIKE SETTINGS' (maintainer 2026-09-19: "You can have
+      //    sections in the dialog similar to the sections under settings").
+      //    The rule above the heading IS the Settings recipe (.ml-amb-title),
+      //    so it is compared against that element rather than to a literal —
+      //    restyle Settings and this follows or fails loudly. ──
+      {
+        await page.evaluate(() => document.querySelector(".ml-maplayers .ml-plate-btn").click());
+        await page.waitForTimeout(150);
+        const sect = await page.evaluate(() => {
+          const heads = [...document.querySelectorAll(".ml-layers-h")];
+          const cs = (e) => {
+            const g = getComputedStyle(e);
+            return { border: g.borderTopWidth, style: g.borderTopStyle, transform: g.textTransform, weight: g.fontWeight, tracking: g.letterSpacing };
+          };
+          const settings = document.querySelector(".ml-amb-title");
+          return {
+            heads: heads.map(cs),
+            names: heads.map((h) => h.querySelector("span").textContent.trim()),
+            settings: settings ? cs(settings) : null,
+            swatches: [...document.querySelectorAll(".ml-layers [data-layer] .ml-maplayer-sw")].length,
+            rows: [...document.querySelectorAll(".ml-layers [data-layer]")].length,
+          };
+        });
+        if (!sect.settings) fail("no .ml-amb-title in Settings to copy the section recipe from");
+        else if (!sect.heads.length) fail("the chooser has no section headings");
+        else {
+          const later = sect.heads.slice(1);
+          sect.heads[0].border === "0px"
+            ? ok("the first section has no rule above it — the card's own edge is the divider")
+            : fail(`the first section draws a ${sect.heads[0].border} rule under the card edge`);
+          later.every((h) => h.border === sect.settings.border && h.style === sect.settings.style)
+            ? ok(`every later section wears Settings' own divider (${sect.settings.border} ${sect.settings.style}; sections: ${sect.names.join(" / ")})`)
+            : fail(`section dividers ${JSON.stringify(later)} vs Settings' ${JSON.stringify(sect.settings)}`);
+          sect.heads.every((h) => h.transform === sect.settings.transform && h.weight === sect.settings.weight && h.tracking === sect.settings.tracking)
+            ? ok(`…and its lettering (${sect.settings.transform}, ${sect.settings.weight}, ${sect.settings.tracking})`)
+            : fail(`section lettering ${JSON.stringify(sect.heads)} vs Settings' ${JSON.stringify(sect.settings)}`);
+          sect.swatches === sect.rows && sect.rows > 0
+            ? ok(`every row in the chooser carries its layer's swatch (${sect.swatches}/${sect.rows}) — pick by colour, read it off the map`)
+            : fail(`${sect.swatches} swatches for ${sect.rows} rows`);
+        }
+        await page.screenshot({ path: `${OUT}/map-layers-sections.png` });
+        await page.evaluate(() => document.querySelector(".ml-layers-done")?.click());
       }
 
       const inked = pins.filter((p) => p.text);

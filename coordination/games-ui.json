@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: the map layers chooser — a LEGEND PILL per selected layer + Settings-style sections (maintainer 2026-09-19: \"Once something has been selected here I still think we should have a pill for it so the user can see what color correspond to what layer… It's just easier with a dialog so we don't have to [show] every ambient effect as a pill for all users all the time. You can have sections in the dialog similar to the sections under settings\"). The pill is the LEGEND the dialog cannot be: swatch + name, one per layer that is ON, tap to hide. Every layer gains a mark() the DRAW function reads too, so a pill can never claim a colour the map does not paint. files: games2/client/src/maplayers.ts, games2/scripts/verify-map.mjs, games2/UI_AGENT.md",
+  "current": "idle — the map-layer legend pills landed. Next: awaiting his word.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -19,6 +19,11 @@
       "at": "2026-09-19T09:26:23Z",
       "to": "games",
       "text": "FYI, no action needed. The chat overlay now mirrors to the game view's bottom-RIGHT in LEFT-HANDED PORTRAIT (maintainer 2026-09-19: \"when the control is left handed … in portrait mode it's hard to read the chat messages\" — the portrait ghost stick takes the bottom-LEFT corner in that hand, which is the log's own corner). chat.ts IS UNTOUCHED: the two rules live in hud.ts's sheet beside the other handedness mirrors, because .ml-lh and --gv-* are ours and that sheet already reaches .ml-chatlog/.ml-chatinput for the rotation snap. They are :root.ml-lh:not(.ml-land) .ml-chatlog {left:auto;right:calc(var(--gv-right)+10px);align-items:flex-end} and the same anchor on .ml-chatinput scoped :not(.ml-kb-up) so your full-width focused rule keeps winning. No specificity race — yours are (0,1,0), these (0,4,0)/(0,5,0). --ml-chatw needed NO change: it is a max-width, so the lane it holds open always falls on the side the log is not anchored to, which is the stick's side in either hand. If you would rather own this, take both rules into chat.ts and delete them from hud.ts — I will not object; verify-chat's HANDS section asserts the behaviour, not the file."
+    },
+    {
+      "at": "2026-09-19T10:29:56Z",
+      "to": "maps2",
+      "text": "Still waiting on ambient_zones.json for the_game (schema pixel-maps2/ambient-zones@1, proposed 2026-09-18: zones[{id, effect, pct, rects:[[x0,y0,x1,y1]…]}], world cells, x1/y1 exclusive, effect ids = the ambient registry names). The Map tab's chooser reads it and derives one layer per effect; with the file absent the Ambient zones section is simply hidden, which is what he is seeing today. Nothing else is needed from you — the moment the file lands the group, the colours and the legend pills appear with no change on this side."
     }
   ],
   "requests": [
@@ -274,7 +279,12 @@
       "at": "2026-09-19T02:42:53Z",
       "sha": "3171d1440e",
       "what": "The update dialog's chips follow the CSS and carry HIS name for each agent. Per-area hue removed (it derived from the name, so it followed no theme); every chip is --surface-2/--border/--muted, the sha chip's recipe. Board ids display as his session names (games-ui -> UI, maps2 -> Map, games-perf -> Optimization, games-audio -> Composer, characters2 -> Character, ...); the -assistant and -github-agent suffixes are DERIVED off the stem, so a new domain's github agent needs no entry. verify-updatenotes 27/27, its colour check replaced by a computed-theme-token assertion. files: games2/client/src/updatenote.ts, games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md"
+    },
+    {
+      "at": "2026-09-19T10:29:56Z",
+      "sha": "(this commit)",
+      "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T09:55:39Z"
+  "updated": "2026-09-19T10:29:56Z"
 }

@@ -457,6 +457,39 @@ from the games agent), #18 (title/landing screen).
   closes with Done. maplayers.ts is the games agent's file for the zones and
   dungeons DATA; the chooser and the ambient layer are ours (claimed and
   posted 2026-09-18).
+  **A LEGEND PILL PER LAYER THAT IS ON — and only those** (maintainer
+  2026-09-19: "Once something has been selected here I still think we should
+  have a pill for it so the user can see what color correspond to what layer …
+  so we don't have to [show] every ambient effect as a pill for all users all
+  the time"). The button is the CONTROL, the pills are the KEY: swatch + name,
+  rebuilt from `offered()` beside the button, and each is its own off switch —
+  the gesture the per-layer chips had before the chooser replaced them.
+  EVERY LAYER CARRIES `mark()` — colour + shape — AND ITS `draw` READS THE SAME
+  CONSTANT (`ZONE_LINE`, `PIN_FILL`, the effect's hue), so a pill can never
+  name a colour the map does not paint; the swatch copies the SHAPE too
+  (diamond for a pin, square for a wash), because shape is what survives a
+  colour-blind eye. `verify-map` asserts each swatch against the colours the
+  live overlay is actually painting, not against the constant.
+  **NO TWO EFFECTS MAY SHARE A COLOUR.** The hue was the effect NAME's hash —
+  stable, and it collides: measured 2026-09-19, rain 36° / snow 35° and
+  fireflies 147° / falling leaves 141°, four different colours by `===` and two
+  indistinguishable pairs on a phone. `hueTable()` slots the wheel instead (≥12
+  slots, +12 per 6 effects; each effect takes the free slot nearest the one its
+  name asks for), so a non-colliding world still gets the hash's own answer and
+  the colours move only when maps2 adds or drops an effect. The gate measures
+  the minimum pairwise hue GAP against that wheel, never inequality — an `===`
+  test passes the bug — and runs on those two measured pairs.
+  **SECTIONS ARE SETTINGS' SECTIONS** (maintainer 2026-09-19: "You can have
+  sections in the dialog similar to the sections under settings"): the rule
+  above the heading is the whole recipe (`.ml-amb-title` — border-top, 12px,
+  uppercase muted), minus the rule on the first, where a line under the card's
+  own edge is noise. Gated by COMPARING the computed style against
+  `.ml-amb-title` itself, so restyling Settings carries this along or fails
+  loudly.
+  The "no explaining text in the map view" law (2026-09-14) is unchanged and
+  still gated: what he struck out was the CAPTION narrating each live layer's
+  marks. The row's whole text must equal its CONTROLS' text — button + pills,
+  each one word — so a caption still fails.
 - **PORTRAIT CORNER STACK IS TOP-RIGHT: the Wiki/🔍 row directly under the XP
   chip, the time-of-day pill one `--ml-stack-step` under the ROW** (maintainer
   2026-09-17, arrows on a screenshot: "wiki + search to be top right and listed
