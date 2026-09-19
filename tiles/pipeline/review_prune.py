@@ -111,19 +111,33 @@ def names_in(text, names):
     return [n for n in names if re.search(re.escape(n) + r"(?!#)", text)]
 
 def live_statuses(fb, key):
-    """The statuses that still stand for a candidate: its #top and #wall faces, plus the
-    bare-key verdict from before faces existed (2026-08-21, one verdict per tile) ONLY
-    while no faced verdict is newer than it. Every candidate carries that legacy
-    approval; reading it beside a later #top rejection would keep every rejected tile."""
-    faced = {f: fb.get(f"{key}#{f}") for f in ("top", "wall")}
-    faced = {f: v for f, v in faced.items() if isinstance(v, dict) and v.get("status")}
-    sts = {v["status"] for v in faced.values()}
-    bare = fb.get(key)
-    if isinstance(bare, dict) and bare.get("status"):
-        newest = max((v.get("updated_at") or "" for v in faced.values()), default="")
-        if (bare.get("updated_at") or "") > newest:
-            sts.add(bare["status"])
+    """Every verdict that still stands for a candidate. A BARE KEY IS THE PAIR VERDICT
+    AND NEVER EXPIRES.
+
+    (Measured 2026-09-12, and it cost the maintainer three nights of work. This function
+    used to admit the bare verdict only while no #top/#wall verdict was NEWER, on the
+    theory that the pre-2026-08-21 bare key was a legacy duplicate that a later faced
+    verdict supersedes. It is not a duplicate. `key#top` asks "is this a good DETAIL to
+    stamp on open ground", the bare key asks "is this a good x-over-y PAIR tile" - two
+    different questions about two different parts of the same art, and the wiki's law
+    says so in both directions. Recency only resolves two answers to the SAME question.
+    Under the old rule his August pair approvals lost to his September top rejections and
+    2,234 tiles he had approved were deleted as "rejected on every face"; every one of
+    them was approved on its pair key and not one was rejected there. Restored in
+    ad5721ebe + the textured generations later. An approval on any axis is live until he
+    rejects THAT axis.)"""
+    sts = set()
+    for k in (key, f"{key}#top", f"{key}#wall"):
+        v = fb.get(k)
+        if isinstance(v, dict) and v.get("status"):
+            sts.add(v["status"])
     return sts
+
+
+def approvals(fb, key):
+    """The axes he approved, for the report and for the hard guard in plan()."""
+    return sorted(k[len(key):] or "#pair" for k in (key, f"{key}#top", f"{key}#wall")
+                  if isinstance(fb.get(k), dict) and fb[k].get("status") == "approved")
 
 
 def plan(prefix=None):
@@ -136,7 +150,12 @@ def plan(prefix=None):
             continue
         for e in c["candidates"]:
             sts = live_statuses(fb, e["key"])
-            if "rejected" not in sts or "approved" in sts:
+            # THE GUARD: an approval on ANY axis keeps the tile, full stop. `sts` already
+            # carries it; this is the second, unconditional read that makes the rule
+            # impossible to lose to a future refactor of live_statuses().
+            if approvals(fb, e["key"]):
+                continue
+            if "rejected" not in sts:
                 continue
             named = [e["key"]] + [e[f] for f in ("before", "after", "textured") if e.get(f)]
             hit = sorted(n for n, t in refs.items() if names_in(t, named))
