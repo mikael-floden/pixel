@@ -21,7 +21,10 @@
 //   J  a path that escapes     refused
 //   K  a lying art hash        refused, and the image keeps serving
 //   L  the byte cap            refused; the container lane carries that push
-//   M  a flip that drops art   the image's bytes serve again, no stale overlay
+//   M  an ART-LESS generation  overlays nothing — the server is generation-exact
+//   R  A CLIENT-LANE PUBLISH    CARRIES the live overlay forward, so a
+//                               browser-code push cannot empty it (a repaint
+//                               reverting and an ADDED file 404ing was real)
 //   N  the lane off            byte-identical to today, ?v grant included
 //   O  A ROLLBACK ONTO EVICTED ART  re-materialises it, and NEVER serves that
 //                              generation's client against the image's art
@@ -31,7 +34,7 @@
 //
 // Needs no cloud: the store is a local directory and the "image" is a small art
 // root handed to the server through ASSETS_ROOT.
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, mkdtempSync, readdirSync, readFileSync, rmSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
@@ -355,9 +358,9 @@ await tryGeneration("I — and so is sw.js", (m) => {
     Buffer.from(JSON.stringify({ seq: ++seq, current: id, retained: [okId], git_sha: "c".repeat(40), commit_ts: GEN_TS + seq })),
   );
   await poke(origin);
-  const now = await checkServing(origin, id, "M — the art-free generation is serving");
+  const now = await checkServing(origin, id, "M — a hand-written art-free generation is serving");
   const got = await cc(origin, "/assets/tiles/plates/grass.webp");
-  check(got.body === IMAGE_ART["tiles/plates/grass.webp"].toString(), "M — the IMAGE's art serves again, no stale overlay");
+  check(got.body === IMAGE_ART["tiles/plates/grass.webp"].toString(), "M — and overlays nothing: the server is generation-EXACT (arm R is what stops a real publish doing this)");
   check(now.overlay?.art === 0 && now.overlay?.bytes === 0, `M — nothing is held (${JSON.stringify(now.overlay)})`);
   const idx = await (await fetch(origin + "/asset-index.json")).json();
   check(idx.files["tiles/plates/grass.webp"] === h16(IMAGE_ART["tiles/plates/grass.webp"]), "M — and the index is the image's again");
@@ -417,6 +420,36 @@ await tryGeneration("I — and so is sw.js", (m) => {
   void before;
 }
 
+// ----------- R: A CLIENT-LANE PUBLISH MUST NOT EMPTY THE ART OVERLAY
+// THE DEFECT THIS ARM EXISTS FOR, reproduced against a real server before it
+// was fixed: an art push serves a repaint and a newly ADDED file; the next
+// BROWSER-CODE push carries no `art`, and because the server resolves the
+// overlay against the current generation alone, the repaint reverted to the
+// image's old pixels and the added file 404'd into a missing texture. games-ui
+// pushes land all day between art pushes, so that window is the common case,
+// not a corner. A generation now carries the COMPLETE overlay whichever lane
+// writes it (publish-bundle.mjs, carryOverlay) — for free, because the blobs
+// are content-addressed and already in the store.
+{
+  const s2 = localStore(store);
+  const before = await info(origin);
+  const art0 = before.overlay?.art ?? 0;
+  check(art0 > 0, `R — an art generation is serving first (${art0} file(s) overlaid)`);
+  const served = await cc(origin, "/assets/tiles/plates/grass.webp");
+  // A CLIENT-LANE publish: no `art`, exactly as fast-publish.yml runs it.
+  const client = await publishBundle({
+    store: s2, outDir: scratch, gitSha: "f".repeat(40), commitTs: GEN_TS + 700, imageOrigin: origin,
+  });
+  await poke(origin);
+  await checkServing(origin, client.id, "R — the browser-code generation is serving");
+  const after = await cc(origin, "/assets/tiles/plates/grass.webp");
+  check(after.body === served.body, "R — AND THE ART SURVIVED IT: the overlay was carried forward, not emptied");
+  const now = await info(origin);
+  check((now.overlay?.art ?? 0) === art0, `R — every overlaid file came with it (${now.overlay?.art} of ${art0})`);
+  const idx = await (await fetch(origin + "/asset-index.json")).json();
+  check(idx.files["tiles/plates/grass.webp"] === h16(Buffer.from(after.body)), "R — and the index still names what is served");
+}
+
 // ------------------------------------------------------------- P: the prune
 {
   const s2 = localStore(store);
@@ -464,23 +497,21 @@ await tryGeneration("I — and so is sw.js", (m) => {
 
 // ------------------- Q: the container must keep building on an art push
 {
-  // THE SAFETY NET THAT BOUNDS EVERYTHING ELSE. The art delta is measured
-  // against the IMAGE, so it grows while the image stands still; the container
-  // refreshing every few minutes is what keeps it near p50, bounds the
-  // server's memory, and lets law 6 undo a bad art generation automatically.
-  // nangijala-deploy.yml decides with its OWN copy of a path filter, and an
-  // implementer "fixing" it to match the art lane would silently remove all
-  // three of those. So the filter is asserted here rather than trusted.
-  const deploy = readFileSync(join(ROOT, "..", ".github", "workflows", "nangijala-deploy.yml"), "utf8");
-  const m = deploy.match(/outside=\$\(echo "\$files" \| ([^\n]*)\)/);
-  check(!!m, "Q — the deploy's lane filter is where this gate expects it");
-  if (m) {
-    const filter = m[1];
-    for (const dom of ["characters2", "tiles", "maps2", "scenery", "sounds", "music", "monsters", "items", "lore"]) {
-      check(!filter.includes(`${dom}/`), `Q — the deploy does NOT treat ${dom}/ as skippable, so an art push still builds an image`);
-    }
-    check(filter.includes("games2/client/"), "Q — it does still skip a browser-code-only push");
-  }
+  // THE SAFETY NET THAT BOUNDS EVERYTHING ELSE — the art delta is measured
+  // against the IMAGE, so the container refreshing every few minutes is what
+  // bounds the delta, bounds the server's memory, and lets law 6 undo a bad art
+  // generation automatically. All three die if `nangijala-deploy.yml` ever
+  // treats an art push as skippable.
+  //
+  // THIS ARM USED TO READ THE FILTER AS A STRING and assert it did not contain
+  // `"<domain>/"`. The canonical widening spells the set
+  // `^(characters2|tiles|…|lore)/`, which contains no such substring, so the
+  // arm passed straight through the exact edit it existed to catch. A filter is
+  // a program: check-deploy-filter.mjs RUNS it, against one probe path per
+  // domain, and is itself proven to go red on that widening.
+  const r = spawnSync(process.execPath, [join(ROOT, "scripts", "check-deploy-filter.mjs")], { encoding: "utf8" });
+  check(r.status === 0, "Q — every lane filter behaves as the lanes require (check-deploy-filter.mjs)");
+  if (r.status !== 0) console.log((r.stdout || "").split("\n").filter((l) => l.includes("FAIL")).join("\n"));
 }
 
 // -------------------------------------------------------------- N: lane off

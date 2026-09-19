@@ -203,7 +203,14 @@ there would 404 game content.
 running server reads published generations from a `bundle-store` branch, and a
 generation is the COMPLETE description of what sits on top of the image (client
 bundle + the generated catalogs + an art overlay). One pointer, one `seq`, one
-window, one set of laws.
+window, one set of laws — and **COMPLETE means whichever lane publishes it**: a
+browser-code push CARRIES the live art overlay forward (`carryOverlay`), because
+the server resolves the overlay against the current generation alone. Without
+it a games-ui push minutes after an art push reverted the repaint to the image's
+old pixels and 404'd any newly ADDED file into a missing texture. It costs
+nothing — the blobs are content-addressed and already in the store — and it
+fails CLOSED: a carried blob that is missing refuses the publish rather than
+drop live art.
 - `fast-publish.yml` carries **browser code**: `games2/client/src/**` and
   `games2/client/index.html`. Sparse checkout, measured **33 s** push-to-live.
 - `art-publish.yml` carries **ART** — the nine domains the game renders

@@ -434,6 +434,33 @@ deploy's own rollback guard against the change I had just made to `/version`.
   reason that was not in the code under test. The gate now prints the store's
   own `recent` lines on every disagreement, which is how the real refusals were
   read afterwards.
+- **THE CLIENT LANE EMPTIED THE ART OVERLAY, and I had written a test calling
+  that CORRECT.** The worst defect of the batch, because it was a design hole
+  rather than a slip. The server resolves the overlay against the current
+  generation alone — deliberate, and right: the served state must be a function
+  of ONE generation or nothing can say what is live. But a browser-code push
+  builds no art, so its generation carried none, and on the flip a repaint
+  reverted to the image's old pixels while a newly ADDED file 404'd into a
+  missing texture. games-ui pushes land all day between art pushes, so that is
+  the common case. Reproduced against a real server before and after the fix.
+  My unit test had asserted the consequence as a desirable property ("no stale
+  overlay survives the flip") and gate arm M said the same — I had reasoned
+  about the art lane in isolation and never asked what the CLIENT lane does to a
+  live overlay. A generation now carries the COMPLETE overlay whichever lane
+  writes it (`carryOverlay`): a map copy, zero uploaded bytes, and it fails
+  CLOSED — a missing carried blob refuses the publish rather than drop live art.
+  Arm R, and the test and arm M are re-framed to name where the guarantee
+  actually lives.
+- **THE FILTER GUARD WAS VACUOUS.** Arm Q asserted the deploy's filter did not
+  CONTAIN `"<domain>/"`. The canonical widening spells the art set
+  `^(characters2|tiles|…|lore)/`, which contains no such substring, so the arm
+  walked straight through the one edit it existed to catch — and that edit
+  removes the container from art pushes, which is what bounds the delta, the
+  server's memory and the automatic law-6 recovery all at once. A filter is a
+  program: `check-deploy-filter.mjs` EXECUTES all three lanes' filters against
+  probe paths, is proven to go red on that widening, and runs in
+  `nangijala-deploy.yml`'s `test` job — because `art-publish.yml`'s own `paths:`
+  never matches an edit to a workflow file.
 - **A ROLLBACK POINTED AT A GENERATION WHOSE OVERLAY BYTES WERE EVICTED, AND
   THE STORE SERVED IT ANYWAY.** The sharpest defect of the batch. Overlay bytes
   are kept for the CURRENT generation only, so a generation still inside the
@@ -799,10 +826,18 @@ is always the floor.
   on the next load. Identical to what a container art deploy does today, and
   the version banner already offers the reload.
 - **The store branch's HISTORY still grows**, even though its HEAD tree is now
-  pruned to the window: git keeps the deleted objects, so the repository grows
-  by roughly the art it publishes even as each run's `--depth=1` fetch stays
-  small. Bounded enough to ship; an occasional history rewrite of that branch
-  (which only machines write) is the eventual answer.
+  pruned to the window: a blob deleted from the tip stays reachable from the
+  branch's history, so the REMOTE keeps counting it and the repository grows at
+  roughly the rate the lane publishes — measured **0.60-0.67 GB / 11k-16k blobs
+  per 14 days (~45 MB/day)** of publishable art. Each run's `--depth=1` fetch
+  stays small, so the lane's own 45 s is safe for months; the pressure is
+  GitHub's advisory 5 GB, in the order of weeks. The fix is to make
+  `bundle-store` a SINGLE-COMMIT branch (commit with no parent,
+  `push --force-with-lease` against the tip this publish read, refusing rather
+  than forcing on a lease failure). Safe by construction — the server reads the
+  branch TIP and never a parent, and both gates fetch `--depth=1` — but it is a
+  force-push on a machine-owned branch, so it is the maintainer's call to make
+  rather than something to slip in.
 - **`monsters/config/candidates.json` and `maps2/.../overview_full.webp` were
   in the measured delta** because this tree was a few commits ahead of the
   image. Both are legitimately publishable; noted only so a future reader does

@@ -223,6 +223,9 @@ jobs:
             # the wiki's own.
             /wiki/tools/
             /wiki/site/wiki.js
+            # ...and the lane-filter guard reads the three workflow files whose
+            # path filters it EXECUTES. Without this it fails ENOENT.
+            /.github/workflows/
           sparse-checkout-cone-mode: false
       - uses: actions/setup-node@v4
         with:
@@ -241,6 +244,19 @@ jobs:
       # green. NOT `node --check`: Node 22 sees the export, decides the file is
       # a module and passes it. The check compiles it under classic-script
       # rules, which is what the <script> tag already committed to.
+      # THE LANE FILTERS MUST BEHAVE AS THE LANES REQUIRE, and this runs HERE
+      # rather than in art-publish.yml because that workflow's `paths:` never
+      # matches an edit to a workflow file — the one change that can break it.
+      # `test` runs on every push, unconditionally.
+      #
+      # It EXECUTES each filter against probe paths. The guard it replaces
+      # compared the filter as a STRING and was vacuous: the canonical widening
+      # spells the art set `^(characters2|tiles|…)/`, which contains no
+      # `characters2/` substring. Proven to go red on exactly that edit.
+      - name: The lane filters (an art push must still build an image)
+        working-directory: games2
+        run: node scripts/check-deploy-filter.mjs
+
       - name: wiki.js parses as a classic script
         run: node wiki/tools/check-script.mjs
       - run: npm test

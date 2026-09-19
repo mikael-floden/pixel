@@ -310,6 +310,65 @@ async function askTheImage(imageOrigin, path, what) {
   }
 }
 
+/** CARRY THE LIVE OVERLAY FORWARD — the law is that a generation describes the
+ *  COMPLETE overlay, whichever lane publishes it.
+ *
+ *  Without this the CLIENT lane silently empties the art overlay. Reproduced
+ *  against a real server: an art push serves a repaint and a newly ADDED file;
+ *  the next browser-code push carries no `art`, the server resolves the overlay
+ *  against the current generation only, and the repaint reverts to the image's
+ *  old pixels while the added file 404s into a missing texture. Art appearing
+ *  and then vanishing minutes later is worse than art arriving five minutes
+ *  late, and games-ui pushes land all day between art pushes.
+ *
+ *  It costs NOTHING to carry: the blobs are content-addressed and already in
+ *  the store, so this is a map copy and zero uploaded bytes.
+ *
+ *  THE SOURCE IS THE LAST PUBLISHED GENERATION, not the running server. Each
+ *  generation carries the accumulated overlay forward, so `prev.current`'s
+ *  manifest IS the current description — which makes the carry a pure function
+ *  of the store with no network dependency on a correctness-critical path. It
+ *  is also always the newest published INTENT: an art delta is computed against
+ *  the image, and law 6 refuses anything at or before the image, so a carried
+ *  entry can never be older than what the image already serves.
+ *
+ *  IT FAILS CLOSED. A carried blob that is missing, or a manifest that will not
+ *  read, THROWS — the publish refuses, the pointer never moves, and production
+ *  keeps the art it has. Silently dropping the overlay is the bug this exists
+ *  to prevent, so it is the one outcome not on offer. (The prune keeps the
+ *  window and `prev.current` is its head, so a missing carried blob means a
+ *  corrupt store, not an ordinary race.) */
+async function carryOverlay(store, prevId) {
+  if (!prevId) return { art: {}, root: {}, bytes: 0 };
+  const raw = await store.get(`gen/${prevId}/manifest.json`);
+  if (!raw)
+    throw new Error(
+      `publish-bundle: gen/${prevId}/manifest.json is unreadable, so the overlay it publishes cannot be carried ` +
+        `forward. Refusing — publishing without it would drop live art.`,
+    );
+  let man;
+  try {
+    man = JSON.parse(raw.toString("utf8"));
+  } catch (e) {
+    throw new Error(`publish-bundle: gen/${prevId}/manifest.json does not parse (${e.message}); refusing rather than drop live art.`);
+  }
+  const art = man.art ?? {};
+  const root = man.root ?? {};
+  let bytes = 0;
+  for (const [name, h] of [...Object.entries(art), ...Object.entries(root)]) {
+    const have = await store.get(`blob/${h}`);
+    if (!have || hashBytes(have) !== h)
+      throw new Error(
+        `publish-bundle: the overlay entry ${name} (${h}) carried from ${prevId} is ${have ? "corrupt" : "missing"} in the store. ` +
+          `Refusing — publishing without it would drop live art.`,
+      );
+    bytes += have.length;
+  }
+  const n = Object.keys(art).length + Object.keys(root).length;
+  if (n) console.log(`[publish] carrying ${Object.keys(art).length} art + ${Object.keys(root).length} dist-root file(s) forward from ${prevId} (${(bytes / 1e6).toFixed(2)} MB, already in the store)`);
+  return { art, root, bytes };
+}
+
 export async function publishBundle({
   store,
   outDir,
@@ -331,6 +390,10 @@ export async function publishBundle({
   // does not need to run manifest.mjs itself against the wrong root.
   const art = prebuilt || (artRoot ? await artBuild({ root: artRoot }) : null);
   const built = await fastBuild({ outDir, gitSha, manifest: !art });
+  // EARLY, because the overlay carry below reads the last published generation
+  // and the generation id must cover what it carries. A pure read; an
+  // unparseable pointer still aborts, exactly as before (see readPointer).
+  const prev = await readPointer(store);
 
   // Collect the files: index.html plus assets/. Names must be content-hashed
   // (fastbuild refuses otherwise) — index.html is the one mutable-by-nature
@@ -546,6 +609,23 @@ export async function publishBundle({
       console.log(`[publish] the image already serves this art — the generation carries the bundle alone`);
   }
 
+  // THE CLIENT LANE MUST NOT EMPTY THE ART OVERLAY. A generation describes the
+  // COMPLETE overlay, so a publish that builds no art carries the live one
+  // forward verbatim — see carryOverlay for the failure this prevents and why
+  // it costs nothing.
+  if (!art) {
+    const carried = await carryOverlay(store, prev?.current);
+    artFiles = carried.art;
+    artBytes = carried.bytes;
+    // A CARRIED dist-root entry has to LEAVE `fallthrough`, or the generation
+    // both publishes and pins that path and the server refuses it outright.
+    // Publishing is the correct side: the carried bytes are the newest
+    // published intent, and where the image has caught up they are byte-identical
+    // anyway.
+    for (const name of Object.keys(carried.root)) delete fallthrough[name];
+    root = { ...root, ...carried.root };
+  }
+
   // An invariant, not a hope: the image's map excludes assets/ and index.html
   // by construction, so a generation's own files can never appear in it. If one
   // ever does, the two sides disagree about who owns a path and the generation
@@ -570,6 +650,19 @@ export async function publishBundle({
   // second would report "already current" and publish nothing while the art sat
   // on the runner. Art and dist root are folded in under their own headings so
   // a path can never be mistaken for a different one in another space.
+  // THE CAPS COVER A CARRIED OVERLAY AS WELL. The check inside the `art` branch
+  // above only ever saw a freshly built delta, so a client-lane publish could
+  // carry an over-cap overlay forward and the server would refuse the
+  // generation after the runner had called it a success.
+  {
+    const n = Object.keys(artFiles).length + Object.keys(root).length;
+    if (n > ART_FILES_MAX || artBytes > ART_BYTES_MAX)
+      throw new Error(
+        `publish-bundle: the overlay is ${n} file(s) / ${(artBytes / 1e6).toFixed(1)} MB, over the lane's cap ` +
+          `(${ART_FILES_MAX} files / ${(ART_BYTES_MAX / 1e6).toFixed(0)} MB). The container lane carries this push.`,
+      );
+  }
+
   const idInput = [
     ...Object.keys(files).sort().map((n) => `f\0${n}\0${files[n]}`),
     ...Object.keys(root).sort().map((n) => `r\0${n}\0${root[n]}`),
@@ -577,7 +670,6 @@ export async function publishBundle({
   ].join("\n");
   const id = createHash("sha256").update(idInput).digest("hex").slice(0, 16);
 
-  const prev = await readPointer(store); // see readPointer: an unparseable pointer aborts
   if (prev?.current === id) {
     console.log(`[publish] generation ${id} is already current — nothing to publish (${built.ms} ms build)`);
     return { id, published: false, alreadyCurrent: true, ms: Math.round(performance.now() - t0), seq: prev.seq };
@@ -611,10 +703,20 @@ export async function publishBundle({
   // but an art delta can be tens of megabytes and there is no reason for the
   // publisher to hold it all at once when a blob that is already in the store
   // is never read at all.
+  // A CARRIED entry's bytes are in the STORE, not on this runner — those files
+  // were never built here. In practice the loop below skips them (the blob is
+  // present and re-hashes, which is the whole point of carrying), but the
+  // reader must be correct rather than merely unreached.
+  const fromTheStore = (name, h) => async () => {
+    const b = await store.get(`blob/${h}`);
+    if (!b) throw new Error(`publish-bundle: carried overlay entry ${name} (${h}) vanished from the store mid-publish`);
+    return b;
+  };
+  const onDisk = (full) => async () => readFileSync(full);
   const uploads = [
-    ...Object.entries(files).map(([name, h]) => [name, h, () => bytesOf[name]]),
-    ...Object.entries(root).map(([name, h]) => [name, h, () => readFileSync(join(outDir, name))]),
-    ...Object.entries(artFiles).map(([name, h]) => [name, h, () => readFileSync(join(art.root, name))]),
+    ...Object.entries(files).map(([name, h]) => [name, h, async () => bytesOf[name]]),
+    ...Object.entries(root).map(([name, h]) => [name, h, art ? onDisk(join(outDir, name)) : fromTheStore(name, h)]),
+    ...Object.entries(artFiles).map(([name, h]) => [name, h, art ? onDisk(join(art.root, name)) : fromTheStore(name, h)]),
   ];
   let sent = 0;
   let skipped = 0;
@@ -629,7 +731,7 @@ export async function publishBundle({
     const have = await store.get(`blob/${h}`);
     if (have && hashBytes(have) === h) { skipped++; continue; }
     if (have) console.log(`[publish] blob/${h} is ${have.length} B and does not hash to its name — re-uploading`);
-    const bytes = read();
+    const bytes = await read();
     // THE HASH IS RE-DERIVED FROM THE BYTES BEING SENT, never trusted from the
     // index that named them. artbuild hashed the curated root a few seconds
     // ago; if anything has touched a file since, the store would hold bytes

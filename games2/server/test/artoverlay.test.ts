@@ -171,7 +171,18 @@ test("a STRUCTURAL refusal is remembered per pointer, so the belt does not re-do
   rmSync(root, { recursive: true, force: true });
 });
 
-test("the overlay resolves against the CURRENT generation only, so a flip that drops art falls through to the image", async () => {
+test("the SERVER is generation-exact — an art-less generation overlays nothing, which is why the PUBLISHER must carry", async () => {
+  // READ THIS WITH publish-bundle.mjs's carryOverlay. The server resolving the
+  // overlay against the current generation alone is correct and deliberate:
+  // the served state must be a function of ONE generation, or nothing can say
+  // what is live. But I first wrote this test asserting the CONSEQUENCE as a
+  // desirable property ("no stale overlay survives the flip") — and the
+  // consequence is that a CLIENT-lane publish, which builds no art, empties
+  // the live overlay: a repaint reverts to the image's old pixels and a newly
+  // ADDED file 404s into a missing texture. Reproduced against a real server.
+  // The fix belongs in the publisher (a generation carries the COMPLETE
+  // overlay, whichever lane writes it), NOT here — so this test states the
+  // server's exactness and names where the guarantee actually lives.
   const root = fresh();
   writeGen(root, "g1", { art: { "tiles/plates/grass.webp": "GRASS v1" } });
   point(root, { seq: 1, current: "g1", retained: [] });
@@ -181,7 +192,7 @@ test("the overlay resolves against the CURRENT generation only, so a flip that d
   point(root, { seq: 2, current: "g2", retained: ["g1"] });
   await s.refresh();
   assert.equal(s.current?.id, "g2");
-  assert.equal(s.artFor("tiles/plates/grass.webp"), null, "no stale overlay survives the flip");
+  assert.equal(s.artFor("tiles/plates/grass.webp"), null, "an art-less generation overlays nothing — exact, and why the publisher carries");
   assert.equal(s.overlay.art, 0);
   assert.equal(s.overlay.bytes, 0, "and its bytes are gone — the cost is tens of MB on a 1 GiB instance");
   rmSync(root, { recursive: true, force: true });
