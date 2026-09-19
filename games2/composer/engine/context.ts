@@ -36,6 +36,12 @@ export class AudioGraph {
   private insert!: BiquadFilterNode;
   private readonly buses = new Map<BusName, GainNode>();
   private readonly busBase = new Map<BusName, number>();
+  /** THE PLAYER'S LEVEL per bus (0..1, default 1) — the Settings volume dials
+   * (maintainer 2026-09-19). It sits UNDER the mute: effective gain = base x
+   * level while unmuted, the mute floor while muted, so the switch and the
+   * dial never fight over one GainNode. */
+  private readonly busLevel = new Map<BusName, number>();
+  private readonly busMuted = new Set<BusName>();
   /** Music passes through this extra gain so ducking never fights the bus
    * fader or the user's music toggle. */
   readonly musicDuck: GainNode;
@@ -118,10 +124,30 @@ export class AudioGraph {
    * "sound" switch silences the EFFECT buses; music has its own switch). */
   setBusesMuted(names: BusName[], muted: boolean): void {
     for (const name of names) {
-      const g = this.buses.get(name);
-      const base = this.busBase.get(name) ?? 1;
-      g?.gain.setTargetAtTime(muted ? 0.0001 : base, this.now, 0.08);
+      if (muted) this.busMuted.add(name);
+      else this.busMuted.delete(name);
+      this.applyBus(name, 0.08);
     }
+  }
+
+  /** The player's level for these buses (0..1), kept under the mute. */
+  setBusLevel(names: BusName[], level: number): void {
+    const v = Math.max(0, Math.min(1, Number.isFinite(level) ? level : 1));
+    for (const name of names) {
+      this.busLevel.set(name, v);
+      this.applyBus(name, 0.05);
+    }
+  }
+
+  /** One bus's gain from its three parts: the catalog's base fader, the
+   * player's level, and the mute (which wins). */
+  private applyBus(name: BusName, tauS: number): void {
+    const g = this.buses.get(name);
+    if (!g) return;
+    const base = this.busBase.get(name) ?? 1;
+    const level = this.busLevel.get(name) ?? 1;
+    const target = this.busMuted.has(name) ? 0.0001 : Math.max(0.0001, base * level);
+    g.gain.setTargetAtTime(target, this.now, tauS);
   }
 
   /** Ease the full-mix lowpass toward a cutoff (Hz). 20000 = wide open. */

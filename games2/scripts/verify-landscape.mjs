@@ -549,9 +549,11 @@ try {
     : fail(`--hud-h ${g.hudH}, three rows would be ${g.threeRows}`);
   g.hud.t > 500 && g.hud.w >= 390 ? ok("menu back at the bottom") : fail(`hud ${JSON.stringify(g.hud)}`);
   g.tabrow.w > g.tabrow.h ? ok("tab row horizontal again") : fail(`tabrow ${JSON.stringify(g.tabrow)}`);
-  g.padBlurCss && g.padBlurCss.display === "none"
-    ? ok("blur disc hidden in portrait (the stick sits on the opaque HUD page)")
-    : fail(`blur disc still shown in portrait: ${JSON.stringify(g.padBlurCss)}`);
+  // the stick floats over the game view in portrait too (maintainer
+  // 2026-09-19), so its blur disc stays with it on every tab
+  g.padBlurCss && g.padBlurCss.display === "block"
+    ? ok("blur disc shown under the portrait stick (it floats over the game view on every tab)")
+    : fail(`blur disc not shown in portrait: ${JSON.stringify(g.padBlurCss)}`);
   // PORTRAIT: the Wiki ROW sits directly under the XP chip — it is as WIDE as
   // that chip since 2026-09-19, so it has to touch it — and the time-of-day
   // pill one step under the ROW. The bottom corner is the ghost stick's.
@@ -559,9 +561,9 @@ try {
     ? ok(`portrait Wiki row under the XP chip (t=${g.wikibtn.t} = chip b ${g.barsR.b} + 10), pill one step under it (t=${g.clock.t})`)
     : fail(`portrait clock ${JSON.stringify(g.clock)} / wikibtn ${JSON.stringify(g.wikibtn)} / chip ${JSON.stringify(g.barsR)}`);
   g = await geom();
-  g.stickPos !== "fixed" && g.stick.l < 393 * 0.5
-    ? ok(`left-handed portrait: stick on the page's LEFT (x ${g.stick.l}..${g.stick.r})`)
-    : fail(`stick ${JSON.stringify(g.stick)} pos=${g.stickPos}`);
+  g.stickPos === "fixed" && Math.abs(g.stick.l - 10) <= 1.5
+    ? ok(`left-handed portrait: the floating stick in the game view's bottom-LEFT corner (x ${g.stick.l}..${g.stick.r})`)
+    : fail(`stick ${JSON.stringify(g.stick)} pos=${g.stickPos} — want fixed at l=10`);
   g.jump.l > 393 * 0.5 ? ok("…and jump on the RIGHT") : fail(`jump ${JSON.stringify(g.jump)}`);
   await page.screenshot({ path: `${OUT}/portrait-lh.png` });
 

@@ -147,8 +147,10 @@ GROWS BY"); this holds the mechanics and the numbers.
   PixelLab set): General = display + account (theme, resolution, log out;
   later language, chat text size); Sound = audio (sound/music switches; SFX,
   music and ambience volume once the composer exposes per-bus levels);
-  Controls = the thumb (handedness; later stick placement, hold-to-select
-  delay, stick size); Dev = admin. Three player tabs plus Dev is the cap of
+  Controls = the thumb (handedness, left on the left; the stick's x/y
+  fine-tune; later hold-to-select delay, stick size); Dev = admin. Sound's
+  two volumes ride the composer's per-bus level (context.ts busLevel under
+  the mute), added 2026-09-19 with the audio agent's board idle and told. Three player tabs plus Dev is the cap of
   four; General carries display because a pixel-art phone game has too few
   graphics options for a tab of its own.
 
@@ -176,10 +178,13 @@ GROWS BY"); this holds the mechanics and the numbers.
 - ICONS ARE NOT ROTATED (the "icons rotate 90°" ask described the
   locked-page mental model; a sideways backpack is not a backpack) — the
   gate pins transform:none.
-- GAMEPAD: in landscape the stick is REPARENTED TO `<body>` — usable on
-  EVERY tab (a HUD rebuild clears strays) — floating in the game view's
-  bottom corner on the thumb's side (gamepad.ts LAND_INSET 38px, the centre
-  the maintainer marked on two device screenshots). **MEASURE A DEVICE
+- GAMEPAD: the stick is REPARENTED TO `<body>` in BOTH orientations — usable
+  on EVERY tab, the gamepad tab included since 2026-09-19 (a HUD rebuild
+  clears strays) — floating in the game view's bottom corner on the thumb's
+  side (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
+  marked on two device screenshots; PORT_GHOST_INSET 10px in portrait), plus
+  his fine-tune (controls.ts stickNudge, ± well/4 per axis, margin floored
+  at 0). The gamepad page itself holds jump and pick up only. **MEASURE A DEVICE
   SCREENSHOT'S SCALE, never assume the portrait DPR**: his phone is 393 css
   px portrait (dpr 2.75) but its LANDSCAPE viewport is ~988 css px = 2.28
   device px per css px — reading marks at 2.75 said "move 10px" when the

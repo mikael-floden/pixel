@@ -273,19 +273,36 @@ from the games agent), #18 (title/landing screen).
   FRACTIONS (±3 css px) **and as the rule** (gaps within 2.5px, no margin under
   26), plus one shared centre row and the left-handed mirror — nothing held any
   of this before, so an edit could drift his marks silently.
-- **THE STICK IS NEVER OUT OF REACH: a GHOST floats over the game view whenever
-  the gamepad page is not showing** — landscape on every tab (2026-08-05), and
-  since 2026-09-17 PORTRAIT too (maintainer: "I want the same semi transparent
-  control [in portrait]… we can't place it at a perfect thumb location, but it's
-  better to have it at a worse location than not have this control at all").
-  `gamepad.ts` `layout()`: `ghost = land || page hidden`; the ghost is the SAME
-  element reparented to `<body>` (`position:fixed`, z 4, blur disc under it),
-  and opening the gamepad page takes it back onto the page — one stick, never
-  two. The root class `ml-stickghost` carries the ghost alphas (light .15/.25,
-  dark .4/.5, 1/1 while held); it is NOT keyed on `ml-land` any more.
+- **THE STICK IS A GHOST OVER THE GAME VIEW, ALWAYS** — landscape on every tab
+  (2026-08-05), portrait whenever its page was hidden (2026-09-17: "I want the
+  same semi transparent control [in portrait]… it's better to have it at a
+  worse location than not have this control at all"), and since 2026-09-19 on
+  the gamepad tab too ("ONLY show the player analog thumbstick over the game
+  screen and not in the gamepad menu. We do this in landscape mode already …
+  also be visible on top of game view when the player select the gamepad").
+  `gamepad.ts` `layout()`: the stick is ONE element parented to `<body>`
+  (`position:fixed`, z 4, blur disc under it) in both branches; the page holds
+  jump and pick up alone, at his marks (`JUMP_FX` .19, `PICK_FX` .454, one
+  row). The root class `ml-stickghost` is always on and carries the ghost
+  alphas (light .15/.25, dark .4/.5, 1/1 while held).
   PORTRAIT PLACEMENT: the game view's bottom-right CORNER on the one 10px
   margin (`PORT_GHOST_INSET`, anchored in CSS to `--hud-h` like the chat
-  overlay). That corner is free because the same day he moved the Wiki row and
+  overlay, so it rides the rail and the open sub-tab strip).
+  THE FINE-TUNE (maintainer 2026-09-19: "a new control to be able to
+  fine-tune the analog stick location … ± half radius in player control …
+  margin 0 is the min so the stick can never be rendered outside of
+  screen/div"): `controls.ts stickNudge` — x/y in css px, screen space (+x
+  right, +y up), persisted, event `ml-stick`; `layout()` clamps each axis to
+  `stickNudgeMax()` = well/4 (30 on the phone, 37 at the big well) and FLOORS
+  the margin to the view's edge at 0, so toward a corner a nudge can only
+  spend the inset (10 portrait, 38 landscape) and away from it the half
+  radius is the whole range — one pair of numbers for both orientations. The
+  Controls sub-page's two dials ("Stick left / right", "Stick up / down")
+  drive it live (the stick is a ghost over the view while Settings is open),
+  and its Hand choice is LEFT-HANDED ON THE LEFT, right on the right (his
+  order). Gates: `verify-gamepad` (the corner with the page open, the nudge
+  and both floors, the stored-value clamp), `verify-subtabs` (the dials' round
+  trip), `verify-landscape` (the floating stick through rotations). That corner is free because the same day he moved the Wiki row and
   the pill to the top (next law); a first cut parked the ghost ABOVE that
   stack, 118 css up the screen, and he wanted it lower ("let's start here and
   feel how it feels. If we need it even lower we will find more creative
@@ -412,11 +429,15 @@ from the games agent), #18 (title/landing screen).
   90px otherwise). Icons are inline-SVG placeholders on
   currentColor until his 24x24 PixelLab set lands (then `img:` in the
   registry, natural/2). SETTINGS' FOUR: General (Theme choice, the adopted
-  Resolution dial, Log out), Sound (the scene's `sound`/`music` entries as
-  switch rows — `PLAYER_AUDIO` keys them by label; volume sliders the day the
-  composer publishes a per-bus level), Controls (the Hand choice), Dev = the
-  whole old page (the switch grid with its `.ml-hudbtn` hook, every dial,
-  the ambient checklist), hidden until the server says admin (`admin.ts`;
+  Resolution dial, Log out), Sound (two VOLUME dials — maintainer 2026-09-19:
+  "This should ofc be a slider/volume control" — on the composer's per-bus
+  level, `gameAudio.volume/setVolume("sound"|"music")`: "sound" is the
+  sfx+ui+ambience set its mute switch covers, held UNDER the mute in
+  `AudioGraph.setBusLevel` and persisted beside the switches; the scene's
+  on/off entries stay in Dev), Controls (the Hand choice and the stick's two
+  dials), Dev = the whole old page (the switch grid with its `.ml-hudbtn`
+  hook, every dial, the ambient checklist), hidden until the server says
+  admin (`admin.ts`;
   `__mlHud.admin(true)` re-asks, gates route `/api/wiki/me` like
   verify-recbtn). OUTSIDE INJECTORS ARE NOT TOLD: their hooks
   (`.ml-page[data-page=settings] .ml-set` / `.ml-dials`) are the Dev pane's,

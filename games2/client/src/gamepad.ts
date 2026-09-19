@@ -30,7 +30,7 @@
  */
 
 import { gameAudio } from "../../composer/index";
-import { getHand } from "./controls";
+import { getHand, stickNudge } from "./controls";
 
 // Full-gate travel is derived from the WELL since the wiki remake (maintainer
 // 2026-07-30: "you should be able to drag the thumbstick a longer distance" —
@@ -46,34 +46,20 @@ const SNAP_MS = 80; // the fast (not instant) glide between snap positions
 // the cap's centre moves less than the thumb; the input circle (dead zone,
 // run, full gate) is untouched.
 const CAP_VISUAL_FRAC = 0.65;
-// WHERE HIS THUMBS ARE. Portrait centres as a fraction of the HUD page's
-// width; left-handed mirrors each (1 - fx). He marks the spot in red on a
-// device screenshot and these are read off it — 2026-09-17, two crosses:
-// "I have placed two red cross where I think the new WALK and JUMP input
-// center should be. My new location feels more where my thumbs are when
-// holding the phone." Both moved OUTWARD, toward the edges he grips.
-// MEASURED IN HIS OWN SCREENSHOT rather than converted through a dpr (the
-// trap this file has paid for once — see UI_AGENT.md): the shipped controls
-// and their labels are in the same 1080px-wide image as the crosses, so the
-// page width comes out of the two known fractions (jump .25, stick .705 at
-// 98.1 and 276.6 css ⇒ 392.3 css of page) and every number below is a ratio
-// inside one picture. Jump 98.1 → 75.2 css, stick 276.6 → 294.6; his marks
-// land within 0.7 css px of these fractions. The vertical did not move (his
-// crosses sit at 752.0 and 751.6 against the controls' own 753.2/755.4, i.e.
-// the same row) — he moved them sideways only.
-// JUMP stays on his cross; the other two follow ONE RULE — the row reads
-// balanced when the two INNER GAPS are equal (maintainer 2026-09-17: "the
-// controls is now not in balance and the MOVE controller should be somewhat
-// placed more to the right"). What was unbalanced was never the outer
-// margins: measured at 393 css they were 35.2 left and 38.2 right, while
-// the gaps were 40.1 (jump→pick) against 23.5 (pick→stick), so the stick
-// looked shoved against PICK UP. These fractions give 35.8 and 36.1 at the
-// <585w tier's widths (79 / 57 / 120 css), which moves the stick 8 css px
-// right and PICK UP 4 left. The stick cannot travel much further right: it
-// is the widest control and its own outer margin, 30.0, is already the
-// tightest number in the row — going on would trade this asymmetry for an
-// edge-margin one. verify-gamepad asserts the RULE, not just the numbers.
-const STICK_FX = 0.771;
+// WHERE HIS THUMBS ARE. The two page buttons' centres as a fraction of the
+// HUD page's width; left-handed mirrors each (1 - fx). He marks the spot in
+// red on a device screenshot and these are read off it — 2026-09-17, two
+// crosses: "I have placed two red cross where I think the new WALK and JUMP
+// input center should be. My new location feels more where my thumbs are
+// when holding the phone." MEASURED IN HIS OWN SCREENSHOT rather than
+// converted through a dpr (the trap this file has paid for once — see
+// UI_AGENT.md): the shipped controls and their labels are in the same
+// 1080px-wide image as the crosses, so every number is a ratio inside one
+// picture; his marks land within 0.7 css px of these fractions. JUMP is on
+// his cross; PICK UP sits where the row's inner gaps were even while the
+// stick was still on the page (2026-09-17). The stick itself has no page
+// fraction any more: since 2026-09-19 it floats over the game view in
+// portrait too (PORT_GHOST_INSET), and the page keeps only these two.
 const JUMP_FX = 0.19;
 const PICK_FX = 0.454;
 // LANDSCAPE ghost inset from the game view's corner, css px. The maintainer
@@ -91,17 +77,33 @@ const PICK_FX = 0.454;
 const LAND_INSET = 38;
 // PORTRAIT GHOST (maintainer 2026-09-17: "I want the same semi transparent
 // control [in portrait]… it's better to have it at a worse location than not
-// have this control at all"). Whenever the gamepad page is hidden the stick
-// floats in the game view's BOTTOM-RIGHT CORNER on the one 10px margin
-// everything keeps — the corner is free because the same day he moved the
-// Wiki row and the clock pill to the top-right under the XP chip ("this
-// means the thumbstick can be lowered… let's start here and feel how it
-// feels"; a first cut parked the ghost ABOVE that stack, 118 css up the
-// screen, and he wanted it lower). Anchored in CSS to --hud-h like the chat
-// overlay, so it rides the rail. Opening the gamepad page takes the stick
-// back onto it — one stick, never two. Left-handed mirrors to the bottom-left
-// over the chat overlay (its lines are pointer-events:none, as in landscape).
+// have this control at all"; 2026-09-19: "ONLY show the player analog
+// thumbstick over the game screen and not in the gamepad menu. We do this in
+// landscape mode already … the analog thumbstick should then also be visible
+// on top of game view when the player select the gamepad"). In portrait the
+// stick ALWAYS floats in the game view's BOTTOM-RIGHT CORNER on the one 10px
+// margin everything keeps — on every tab, the gamepad tab included; the page
+// holds jump and pick up only. The corner is free because he moved the Wiki
+// row and the clock pill to the top-right under the XP chip ("this means the
+// thumbstick can be lowered"; a first cut parked the ghost ABOVE that stack,
+// 118 css up the screen, and he wanted it lower). Anchored in CSS to --hud-h
+// like the chat overlay, so it rides the rail — and the open sub-tab strip.
+// Left-handed mirrors to the bottom-left over the chat overlay (its lines are
+// pointer-events:none, as in landscape). One stick, never two.
 const PORT_GHOST_INSET = 10;
+
+/** The well's diameter for this viewport: the big 148 from 585 css px wide,
+ * 120 below it (his phone's portrait is 393). */
+export function stickWell(): number {
+  return window.innerWidth >= 585 ? 148 : 120;
+}
+/** How far the fine-tune (controls.ts stickNudge) may move the stick on each
+ * axis: ± HALF ITS RADIUS (maintainer 2026-09-19), i.e. 30 on the phone, 37 at
+ * the big well. The margin to the game view's edge is floored at 0 on top of
+ * this when layout() applies it. */
+export function stickNudgeMax(): number {
+  return Math.round(stickWell() / 4);
+}
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
 // keyboard player would.
@@ -133,7 +135,9 @@ function synthKey(kind: "keydown" | "keyup", k: string) {
   window.dispatchEvent(e);
 }
 
-/** Mount the stick into the gamepad page. Idempotent per page element. */
+/** Mount the stick — it floats over the game view in both orientations —
+ * and the page's own controls (jump, pick up) into the gamepad page.
+ * Idempotent per page element. */
 export function mountGamepadStick(page: HTMLElement) {
   injectStyles();
   // A HUD rebuild (rejoin) hands us a FRESH page element; the landscape stick
@@ -160,8 +164,8 @@ export function mountGamepadStick(page: HTMLElement) {
   // (a child or ::before can't escape it either; parent opacity applies to
   // the whole group). So the blur is a full-opacity, transparent disc pinned
   // under the stick (z 3 vs 4), carrying exactly the bars chips' blur(5px).
-  // Ghost modes only (landscape; portrait with the gamepad page hidden) — on
-  // the page the stick sits on the opaque HUD.
+  // The stick is a ghost over the world in both orientations, so the disc
+  // is always with it.
   const padBlur = mk("div", "ml-pad-blur");
   page.appendChild(padBlur);
 
@@ -195,9 +199,7 @@ export function mountGamepadStick(page: HTMLElement) {
   });
   const pickupLabel = mk("div", "ml-pad-label");
   pickupLabel.textContent = "Pick up";
-  const walkLabel = mk("div", "ml-pad-label");
-  walkLabel.textContent = "Walk";
-  page.append(jumpLabel, pickupLabel, walkLabel);
+  page.append(jumpLabel, pickupLabel);
 
   // ── ONE-TIME HELP (maintainer 2026-08-05): tell new players the stick side
   // is theirs to choose. An absolute overlay chip at the top of the page, so
@@ -220,9 +222,9 @@ export function mountGamepadStick(page: HTMLElement) {
     page.appendChild(help);
   }
 
-  // ── layout: sizes step with the FEEL tier; anchors keep the maintainer's
-  // marked spots (STICK_FX across, JUMP_FX for jump, both centred on
-  // one midline). ──
+  // ── layout: sizes step with the FEEL tier; the page buttons keep the
+  // maintainer's marked spots (JUMP_FX, PICK_FX, both centred on one
+  // midline); the stick floats in the game view's corner. ──
   let maxCss = 56; // full-gate travel in css px (well-derived; see layout)
   let well = 148; // well diameter, css px
   // the cap's VISUAL state: the ANGLE snaps to the active octant (-1 =
@@ -240,7 +242,7 @@ export function mountGamepadStick(page: HTMLElement) {
   // rotation reposition instantly.
   let lastHand: boolean | null = null;
   let animTimer = 0;
-  const controls = () => [pad, padBlur, jump, pickup, jumpLabel, pickupLabel, walkLabel];
+  const controls = () => [pad, padBlur, jump, pickup, jumpLabel, pickupLabel];
   const armAnim = () => {
     for (const el of controls()) el.classList.add("anim");
     window.clearTimeout(animTimer);
@@ -257,7 +259,7 @@ export function mountGamepadStick(page: HTMLElement) {
     top.style.transform = `translate(${dx}px, ${dy}px)`;
   };
   const layout = () => {
-    well = window.innerWidth >= 585 ? 148 : 120;
+    well = stickWell();
     // travel rides the well: full gate when the damped cap reaches the rim
     maxCss = Math.round(well * TRAVEL_FRAC);
     const cap = Math.round(well * 0.5);
@@ -270,13 +272,12 @@ export function mountGamepadStick(page: HTMLElement) {
     const padBot = parseFloat(cs.paddingBottom) || 0;
     const midY = padTop + (page.clientHeight - padTop - padBot) * 0.5;
     // HANDEDNESS (controls.ts): right-handed (default) keeps the maintainer's
-    // marked spots (STICK_FX / PICK_FX / JUMP_FX); left-handed mirrors all
-    // three. The stick side is the promise ("always on the right
+    // marked spots (JUMP_FX / PICK_FX) and the stick's corner; left-handed
+    // mirrors them. The stick side is the promise ("always on the right
     // / always on the left"), portrait and landscape alike. Pick up sits
-    // between jump and the stick, a size down so the jump stays the primary
-    // thumb target (games agent, 2026-08-05 — merged with handedness here).
+    // beside jump, a size down so the jump stays the primary thumb target
+    // (games agent, 2026-08-05 — merged with handedness here).
     const leftHand = getHand() === "left";
-    const stickFx = leftHand ? 1 - STICK_FX : STICK_FX;
     const jumpFx = leftHand ? 1 - JUMP_FX : JUMP_FX;
     const pickFx = leftHand ? 1 - PICK_FX : PICK_FX;
     const pickD = Math.round(jumpD * 0.72);
@@ -286,11 +287,23 @@ export function mountGamepadStick(page: HTMLElement) {
     const vis = page.clientWidth > 0;
     if (vis && lastHand !== null && leftHand !== lastHand) armAnim();
     lastHand = leftHand;
-    // GHOST = the stick floats over the game view instead of sitting on the
-    // page: landscape on every tab, and portrait whenever the gamepad page is
-    // hidden (PORT_GHOST_INSET). The root class carries the ghost alphas.
-    const ghost = land || !vis;
-    document.documentElement.classList.toggle("ml-stickghost", ghost);
+    // THE FINE-TUNE (maintainer 2026-09-19): an x/y nudge of up to ± half the
+    // radius, +x toward the right of the screen and +y up (controls.ts). The
+    // MARGIN to the game view's edge is floored at 0 on both axes, so the
+    // stick is never drawn outside it: toward the edge a nudge can only spend
+    // the inset (10 in portrait, 38 in landscape); away from it the half
+    // radius is the whole range.
+    const nMax = stickNudgeMax();
+    const nudge = stickNudge();
+    const nx = Math.max(-nMax, Math.min(nMax, nudge.x));
+    const ny = Math.max(-nMax, Math.min(nMax, nudge.y));
+    const sideInset = (inset: number) => Math.max(0, leftHand ? inset + nx : inset - nx);
+    const bottomInset = (inset: number) => Math.max(0, inset + ny);
+    // THE STICK IS A GHOST OVER THE GAME VIEW IN BOTH ORIENTATIONS, on every
+    // tab (maintainer 2026-09-19; landscape since 2026-08-05, portrait
+    // whenever the page was hidden since 2026-09-17). The root class carries
+    // the ghost alphas.
+    document.documentElement.classList.add("ml-stickghost");
     if (land) {
       // LANDSCAPE: the stick leaves the page ENTIRELY — reparented to <body>
       // so it shows on EVERY tab (maintainer 2026-08-05: "always display the
@@ -308,8 +321,8 @@ export function mountGamepadStick(page: HTMLElement) {
       pad.style.position = "fixed";
       pad.style.zIndex = "4";
       pad.style.right = pad.style.bottom = "";
-      pad.style.left = `${leftHand ? LAND_INSET : window.innerWidth - LAND_INSET - well}px`;
-      pad.style.top = `${window.innerHeight - LAND_INSET - well}px`;
+      pad.style.left = `${leftHand ? sideInset(LAND_INSET) : window.innerWidth - sideInset(LAND_INSET) - well}px`;
+      pad.style.top = `${window.innerHeight - bottomInset(LAND_INSET) - well}px`;
       // the blur disc rides exactly under it
       padBlur.style.display = "block";
       padBlur.style.width = padBlur.style.height = `${well}px`;
@@ -335,51 +348,37 @@ export function mountGamepadStick(page: HTMLElement) {
         jumpLabel.style.left = `${cx}px`;
         jumpLabel.style.top = `${Math.round(midY + gap / 2 - 10)}px`;
       }
-      walkLabel.style.display = "none"; // a floating label over world art is noise
-    } else if (ghost) {
-      // PORTRAIT GHOST: the page is hidden, so the stick floats in the game
-      // view's bottom corner (PORT_GHOST_INSET), anchored in CSS to --hud-h
-      // like the chat overlay, so it rides the rail. Same z 4 as landscape:
-      // under the chat overlay (5/6) and the Wiki/🔍/pill row (8), so
-      // "pressing on the wiki or the search still works" is the z-order, not
-      // a special case — and a press beside the well reaches the canvas,
-      // because only the well listens.
+    } else {
+      // PORTRAIT: the stick floats in the game view's bottom corner
+      // (PORT_GHOST_INSET) on EVERY tab, anchored in CSS to --hud-h like the
+      // chat overlay, so it rides the rail and the open sub-tab strip. Same
+      // z 4 as landscape: under the chat overlay (5/6) and the Wiki/🔍/pill
+      // row (8), so "pressing on the wiki or the search still works" is the
+      // z-order, not a special case — and a press beside the well reaches
+      // the canvas, because only the well listens.
       if (pad.parentElement !== document.body) document.body.append(padBlur, pad);
       pad.style.position = "fixed";
       pad.style.zIndex = "4";
       pad.style.left = pad.style.top = pad.style.right = "";
-      pad.style[leftHand ? "left" : "right"] = `calc(var(${leftHand ? "--gv-left" : "--gv-right"}, 0px) + ${PORT_GHOST_INSET}px)`;
-      pad.style.bottom = `calc(var(--hud-h, 38.2dvh) + ${PORT_GHOST_INSET}px)`;
+      pad.style[leftHand ? "left" : "right"] = `calc(var(${leftHand ? "--gv-left" : "--gv-right"}, 0px) + ${sideInset(PORT_GHOST_INSET)}px)`;
+      pad.style.bottom = `calc(var(--hud-h, 38.2dvh) + ${bottomInset(PORT_GHOST_INSET)}px)`;
       padBlur.style.display = "block";
       padBlur.style.width = padBlur.style.height = `${well}px`;
       for (const k of ["left", "top", "right", "bottom"] as const) padBlur.style[k] = pad.style[k];
-      walkLabel.style.display = "none";
-    } else {
-      // PORTRAIT PAGE: back into the page (absolute inside it), opaque.
-      if (pad.parentElement !== page) {
-        page.insertBefore(pad, page.firstChild);
-        page.insertBefore(padBlur, pad);
-      }
-      pad.style.position = "";
-      pad.style.zIndex = "";
-      pad.style.right = pad.style.bottom = "";
-      padBlur.style.display = "none"; // the page is opaque — nothing to blur
+      // JUMP and PICK UP stay on the page at his marks, one row, labels a
+      // fixed gap above the taller of the two. Page-relative writes only
+      // while the page is VISIBLE (display:none reads a 0 width).
       if (vis) {
-        pad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
-        pad.style.top = `${Math.round(midY - well / 2)}px`;
         jump.style.width = jump.style.height = `${jumpD}px`;
         jump.style.left = `${Math.round(page.clientWidth * jumpFx - jumpD / 2)}px`;
         jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
         pickup.style.width = pickup.style.height = `${pickD}px`;
         pickup.style.left = `${Math.round(page.clientWidth * pickFx - pickD / 2)}px`;
         pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
-        // labels share one row, floating a fixed gap above the taller control
-        const labelY = Math.round(midY - well / 2 - 10);
-        walkLabel.style.display = "";
+        const labelY = Math.round(midY - jumpD / 2 - 10);
         for (const [el, fx] of [
           [jumpLabel, jumpFx],
           [pickupLabel, pickFx],
-          [walkLabel, stickFx],
         ] as const) {
           el.style.left = `${Math.round(page.clientWidth * fx)}px`;
           el.style.top = `${labelY}px`;
@@ -398,6 +397,7 @@ export function mountGamepadStick(page: HTMLElement) {
   // Rotating with any non-gamepad tab open simply lost the stick.
   window.addEventListener("ml-layout", layout);
   window.addEventListener("ml-hand", layout);
+  window.addEventListener("ml-stick", layout); // the fine-tune moved (controls.ts)
   new ResizeObserver(layout).observe(page);
 
   // ── input ──
@@ -547,17 +547,17 @@ function injectStyles() {
   .ml-pad-top{position:absolute;border-radius:50%;pointer-events:none;box-sizing:border-box;
     background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow);
     transition:transform ${SNAP_MS}ms ease-out,opacity .25s ease}
-  /* ── the GHOST's rest alphas — :root.ml-stickghost, set by layout() in
-     landscape and in portrait while the gamepad page is hidden (maintainer
-     2026-08-05, two rounds). The cap always reads a step stronger than the well, and DARK
+  /* ── the GHOST's rest alphas — :root.ml-stickghost, set by layout(): the
+     stick is a ghost over the game view in both orientations on every tab
+     (maintainer 2026-08-05, two rounds; portrait too since 2026-09-19). The
+     cap always reads a step stronger than the well, and DARK
      carries both a good deal further — a faint grey ghost vanishes against
      dark terrain:
        light: well .15 (85% transparent), cap .25 (75%)
        dark:  well .40 (60% transparent), cap .50 (50%)
      Dark is BOTH the explicit choice and the OS default, exactly like the
      theme tokens (theme.ts deletes data-theme when following the OS), so
-     each dark rule needs its media twin. On the gamepad page the stick is
-     fully opaque — it sits on the solid HUD there. ── */
+     each dark rule needs its media twin. ── */
   :root.ml-stickghost .ml-pad-well{opacity:.15}
   :root.ml-stickghost .ml-pad-top{opacity:.25}
   :root[data-theme="dark"].ml-stickghost .ml-pad-well{opacity:.4}

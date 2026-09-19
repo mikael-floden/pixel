@@ -17,7 +17,7 @@
  * responsive CSS at any viewport width.
  */
 
-import { mountGamepadStick } from "./gamepad";
+import { mountGamepadStick, stickNudgeMax } from "./gamepad";
 import { mountBars } from "./bars";
 import { mountWikiButton } from "./wikibtn";
 import { mountWikiNearButton } from "./wikinear";
@@ -25,7 +25,7 @@ import { mountRecordButton } from "./recbtn";
 // the record button's behaviour: it listens for "ml-record" (freezeframe.ts)
 import "./freezeframe";
 import { mountTheme, currentTheme, setTheme } from "./theme";
-import { getHand, setHand } from "./controls";
+import { getHand, setHand, stickNudge, setStickNudge } from "./controls";
 import { isAdmin, forgetAdmin } from "./admin";
 import {
   indoorLight,
@@ -172,11 +172,9 @@ export interface HudActions {
    * (down = ON, up = OFF — maintainer); plain entries are one-shot buttons.
    * The entry with `hook` keeps the .ml-hudbtn class the e2e smoke clicks. */
   settings: {
-    /** The button's text. TWO LABELS ARE PLAYER SETTINGS and render on the
-     * Sound sub-page as switch rows instead of in the Dev grid: "sound" and
-     * "music" (each needs `get`). Every other entry is a dev control and lands
-     * in Dev, admin only — see SUBTABS. The interface is unchanged: which page
-     * an entry sits on is the HUD's side of the contract. */
+    /** The button's text. Every entry renders in the Dev sub-page's grid,
+     * admin only (SUBTABS); the player's pages are built from their own
+     * modules (theme.ts, controls.ts, the composer's volumes). */
     label: string;
     act: () => void;
     hook?: boolean;
@@ -1320,19 +1318,21 @@ export class HudBar {
     // full-row width every wide button in this column gets.
     gen.appendChild(plateButton("Log out", () => this.actions.onLogout()));
 
-    // SOUND — the two switches the scene offers: "sound" mutes the effect
-    // buses, "music" its own bus (games-audio's toggles, reached through the
-    // scene's settings list). Volume sliders join this page the day the
-    // composer publishes a per-bus level — requested on their board.
+    // SOUND — two VOLUMES (maintainer 2026-09-19: "This should ofc be a
+    // slider/volume control"): the effect buses (sfx, ui, ambience — the set
+    // the composer's sound switch mutes) and the music bus, 0..100%, held by
+    // the composer under its mute (gameAudio.volume / setVolume, persisted
+    // beside its switches). The scene's on/off entries stay in Dev, the
+    // admin's; voice actors and more join this page as they come.
     const snd = pane("sound");
-    snd.appendChild(sectionTitle("Audio", true));
-    const sndRows = mk("div", "ml-rows");
-    for (const t of this.actions.settings) {
-      const pretty = PLAYER_AUDIO[t.label];
-      if (!pretty || !t.get) continue;
-      sndRows.appendChild(this.switchRow(pretty, t.get, t.act, `ml-audio-${t.label}`));
-    }
-    snd.appendChild(sndRows);
+    snd.appendChild(sectionTitle("Volume", true));
+    const sndDials = mk("div", "ml-dials ml-dials-sound");
+    const pct = { snap: (p: number) => Math.round(p * 100) / 100 };
+    sndDials.append(
+      pctSlider("Sound effects", () => gameAudio.volume("sound"), (v) => gameAudio.setVolume("sound", v), 1, pct),
+      pctSlider("Music", () => gameAudio.volume("music"), (v) => gameAudio.setVolume("music", v), 1, pct),
+    );
+    snd.appendChild(sndDials);
 
     // CONTROLS — handedness (maintainer 2026-08-05): which side the analog
     // stick lives on, and in landscape which side the whole menu column
@@ -1340,23 +1340,51 @@ export class HudBar {
     // (applyLayout) and the gamepad.
     const ctl = pane("controls");
     ctl.appendChild(sectionTitle("Thumb stick", true));
+    // LEFT-HANDED ON THE LEFT, RIGHT-HANDED ON THE RIGHT (maintainer
+    // 2026-09-19) — the button sits on the side the stick will take.
     ctl.appendChild(
       this.choiceRow(
         "Hand",
         [
-          { label: "Right-handed", on: () => getHand() === "right", pick: () => setHand("right") },
           { label: "Left-handed", on: () => getHand() === "left", pick: () => setHand("left") },
+          { label: "Right-handed", on: () => getHand() === "right", pick: () => setHand("right") },
         ],
         "ml-handbtn", // stable hook for the landscape gate
       ),
     );
+    // THE FINE-TUNE (maintainer 2026-09-19): two dials, ± half the stick's
+    // radius each, the stick following live in the game view above (it is a
+    // ghost over the view while Settings is open). gamepad.ts floors the
+    // margin to the view's edge at 0, so the far end of a dial toward an
+    // edge is simply as far as the stick can go. Its own dial group: the
+    // one-block law is per sub-page and the injectors take the first group,
+    // which is Dev's.
+    const stickDials = mk("div", "ml-dials ml-dials-stick");
+    const nudgeDial = (label: string, axis: "x" | "y", word: [string, string]) => {
+      const span = () => 2 * stickNudgeMax();
+      const toP = (px: number) => 0.5 + px / span();
+      const toPx = (p: number) => Math.round((p - 0.5) * span());
+      return pctSlider(label, () => toP(stickNudge()[axis]), (p) => setStickNudge({ [axis]: toPx(p) }), 0.5, {
+        snap: (p) => toP(toPx(p)),
+        format: (p) => {
+          const px = toPx(p);
+          return px === 0 ? "0 px" : `${Math.abs(px)} px ${px > 0 ? word[1] : word[0]}`;
+        },
+      });
+    };
+    stickDials.append(
+      nudgeDial("Stick left / right", "x", ["left", "right"]),
+      nudgeDial("Stick up / down", "y", ["down", "up"]),
+    );
+    ctl.appendChild(stickDials);
     window.addEventListener("ml-hand", () => this.refreshSettings());
     // …and follow toggles from the WIKI side (its write → storage event →
     // theme.ts re-applies → "ml-theme") so the lit theme never goes stale.
     window.addEventListener("ml-theme", () => this.refreshSettings());
 
     // DEV — home of ALL the toggles mobile can't reach by keyboard: the
-    // games agent's button grid OVER the dial group OVER the ambient-effect
+    // games agent's button grid (every settings entry, the composer's mute
+    // switches included) OVER the dial group OVER the ambient-effect
     // checklist inside one scrolling column (.ml-set). With ~12 buttons + 8
     // effects it overflows a phone, so the page scrolls from the top (see
     // injectStyles: "safe center"). Admin only — the tab is hidden until the
@@ -1374,7 +1402,6 @@ export class HudBar {
     const wrap = mk("div", "ml-set");
     const row = mk("div", "ml-btnrow");
     for (const t of this.actions.settings) {
-      if (PLAYER_AUDIO[t.label] && t.get) continue; // rendered on Sound
       const b = plateButton(t.label, () => {
         t.act();
         this.refreshSettings();
@@ -2166,9 +2193,6 @@ function fmtTime(d: Date): string {
   return `${p2(d.getHours())}:${p2(d.getMinutes())}`;
 }
 
-/** The scene's settings entries that are PLAYER settings (by label), and the
- * text each gets on the Sound sub-page. Everything else is a dev control. */
-const PLAYER_AUDIO: Record<string, string> = { sound: "Sound effects", music: "Music" };
 /** Injected dials that are PLAYER settings (by the label they print) and so
  * live on General's Display section rather than in Dev. */
 const DISPLAY_DIALS = new Set(["Resolution"]);

@@ -494,10 +494,15 @@ export class GameAudio {
   };
 
   // User settings (persisted): master sound + music independently, plus the
-  // maintainer's ENFORCE UNMODIFIED AUDIO testing switch (pure).
+  // maintainer's ENFORCE UNMODIFIED AUDIO testing switch (pure), and the two
+  // VOLUMES (0..1) the Settings dials set (maintainer 2026-09-19: "This
+  // should ofc be a slider/volume control") — "sound" is the effect buses
+  // (sfx, ui, ambience: the set the sound switch mutes), "music" the music
+  // bus; the graph keeps each under its mute (AudioGraph.setBusLevel).
   private soundOn = true;
   private musicOn = true;
   private pureOn = false;
+  private vol: { sound: number; music: number } = { sound: 1, music: 1 };
 
   constructor() {
     try {
@@ -505,10 +510,13 @@ export class GameAudio {
         sound?: boolean;
         music?: boolean;
         pure?: boolean;
+        vol?: { sound?: unknown; music?: unknown };
       };
       this.soundOn = s.sound !== false;
       this.musicOn = s.music !== false;
       this.pureOn = s.pure === true;
+      const lvl = (v: unknown) => (typeof v === "number" && Number.isFinite(v) ? Math.max(0, Math.min(1, v)) : 1);
+      this.vol = { sound: lvl(s.vol?.sound), music: lvl(s.vol?.music) };
     } catch {}
   }
 
@@ -522,6 +530,7 @@ export class GameAudio {
       console.warn("[composer] WebAudio unavailable — game runs silent", e);
       return;
     }
+    this.applyVolumes(); // the persisted dials, before the first sound
     this.buffers = new BufferCache(this.graph.ctx);
     this.music = new MusicDirector(this.graph, this.buffers);
     this.beds = new ContextMusic(this.graph, this.buffers);
@@ -1565,6 +1574,23 @@ export class GameAudio {
     this.persist();
   }
 
+  /** The player's volume for "sound" (sfx + ui + ambience) or "music", 0..1. */
+  volume(kind: "sound" | "music"): number {
+    return this.vol[kind];
+  }
+
+  /** Set it (clamped 0..1), apply it under the mute, persist it. */
+  setVolume(kind: "sound" | "music", v: number): void {
+    this.vol[kind] = Math.max(0, Math.min(1, Number.isFinite(v) ? v : 1));
+    this.applyVolumes();
+    this.persist();
+  }
+
+  private applyVolumes(): void {
+    this.graph?.setBusLevel(["sfx", "ui", "ambience"], this.vol.sound);
+    this.graph?.setBusLevel(["music"], this.vol.music);
+  }
+
   toggleMusic(): void {
     this.musicOn = !this.musicOn;
     this.musicToggleFast = true;
@@ -1587,7 +1613,7 @@ export class GameAudio {
     try {
       localStorage.setItem(
         SETTINGS_KEY,
-        JSON.stringify({ sound: this.soundOn, music: this.musicOn, pure: this.pureOn }),
+        JSON.stringify({ sound: this.soundOn, music: this.musicOn, pure: this.pureOn, vol: this.vol }),
       );
     } catch {}
   }
@@ -1608,6 +1634,7 @@ export class GameAudio {
       sound: this.soundOn,
       musicOn: this.musicOn,
       pure: this.pureOn,
+      vol: { ...this.vol },
       foley: composerFoleySurfaces(),
       mode: this.mode,
       underwater: this.underwater,

@@ -16,12 +16,14 @@
 //    is asserted on the computed transitions and on the collapse having
 //    content to fold: the leaving page's chip row stays shown).
 //  - THE FOUR PAGES: General (Theme choice, the adopted Resolution dial, Log
-//    out), Sound (the scene's sound/music entries as switch rows), Controls
-//    (the Hand choice), Dev (the whole old page: the switch grid with its
-//    .ml-hudbtn hook, the dials, the ambient checklist) — Dev hidden until the
-//    server says admin, and a remembered Dev the server denies falls back.
+//    out), Sound (two volume dials on the composer's per-bus level), Controls
+//    (the Hand choice, left on the left, and the stick's two fine-tune dials),
+//    Dev (the whole old page: the switch grid with its .ml-hudbtn hook, the
+//    dials, the ambient checklist) — Dev hidden until the server says admin,
+//    and a remembered Dev the server denies falls back.
 //  - Every control is LIVE: Theme flips data-theme, Hand flips __ml.hand and
-//    the root's ml-lh, a Sound row flips the composer's switch.
+//    the root's ml-lh, a volume dial sets the composer's level, a stick dial
+//    moves the floating stick in the view.
 //  - LANDSCAPE: the strip sits at the top of the page column, inside it,
 //    icons only (labels display:none), --hud-h and --sub-h stay 0 and the
 //    column's width is untouched.
@@ -237,30 +239,79 @@ try {
     const devHidden = await page.evaluate(() => { const b = document.querySelector(".ml-hudbtn"); return b ? b.getBoundingClientRect().width : -1; });
     devHidden === 0 ? ok("the dev grid (.ml-hudbtn) is not painted for a player") : fail(`.ml-hudbtn width ${devHidden} on a player's Settings`);
 
-    // -- Sound: the scene's sound/music entries as live switch rows --
+    // -- Sound: two volume dials, live on the composer --
     await page.evaluate(() => window.__mlHud.sub("settings", "sound"));
     await page.waitForTimeout(150);
     const snd = await page.evaluate(() => {
-      const rows = [...document.querySelectorAll('.ml-sub[data-sub="sound"] .ml-switchrow')].map((r) => ({ t: r.querySelector(".ml-switch-label").textContent.trim(), on: r.querySelector(".ml-check").classList.contains("on"), w: r.getBoundingClientRect().width }));
+      const dials = [...document.querySelectorAll('.ml-sub[data-sub="sound"] .ml-dials .ml-amb-slider')].map((d) => ({
+        label: d.querySelector(".ml-amb-slider-label")?.textContent.trim(), val: d.querySelector(".ml-amb-slider-val")?.textContent.trim(),
+        def: !!d.querySelector(".ml-slider-def"), w: d.getBoundingClientRect().width }));
       const a = window.__ml.audio();
-      return { rows, sound: a.sound, music: a.musicOn, pages: document.querySelector(".ml-pages").getBoundingClientRect().top };
+      return { dials, vol: a.vol, pages: document.querySelector(".ml-pages").getBoundingClientRect().top };
     });
-    snd.rows.map((r) => r.t).join("|") === "Sound effects|Music" && snd.rows[0].on === snd.sound && snd.rows[1].on === snd.music && snd.rows.every((r) => r.w > 300)
-      ? ok(`Sound: Sound effects (${snd.sound ? "on" : "off"}) and Music (${snd.music ? "on" : "off"}) as full-width switch rows, reading the composer`)
+    snd.dials.map((d) => d.label).join("|") === "Sound effects|Music" && snd.dials.every((d) => d.val === "100%" && d.def && d.w > 300) && snd.vol && snd.vol.sound === 1 && snd.vol.music === 1
+      ? ok("Sound: Sound effects and Music as full-width volume dials at 100%, reading the composer")
       : fail(`Sound page: ${JSON.stringify(snd)}`);
     near(snd.pages, s.pages.t) ? ok("switching sub-tabs keeps the page where it is") : fail(`pages top ${s.pages.t} -> ${snd.pages} on a sub-tab switch`);
-    await click(page, '.ml-sub[data-sub="sound"] .ml-audio-sound');
-    await page.waitForTimeout(150);
-    const flipped = await page.evaluate(() => ({ a: window.__ml.audio().sound, on: document.querySelector('.ml-audio-sound .ml-check').classList.contains("on") }));
-    flipped.a === !snd.sound && flipped.on === flipped.a ? ok("a tap on Sound effects flips the composer's switch and the box") : fail(`after the tap: ${JSON.stringify(flipped)} (was ${snd.sound})`);
-    await click(page, '.ml-sub[data-sub="sound"] .ml-audio-sound');
-    await page.waitForTimeout(150);
+    const half = await page.evaluate(() => {
+      const row = [...document.querySelectorAll('.ml-sub[data-sub="sound"] .ml-amb-slider')].find((d) => d.querySelector(".ml-amb-slider-label")?.textContent.trim() === "Music");
+      const track = row.querySelector(".ml-slider");
+      const r = track.getBoundingClientRect();
+      const at = (type, x) => track.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 1, clientX: x, clientY: r.top + r.height / 2 }));
+      at("pointerdown", r.left + r.width / 2);
+      at("pointerup", r.left + r.width / 2);
+      return { val: row.querySelector(".ml-amb-slider-val")?.textContent.trim(), vol: window.__ml.audio().vol, stored: JSON.parse(localStorage.getItem("ml-audio") || "{}").vol };
+    });
+    half.val === "50%" && Math.abs(half.vol.music - 0.5) <= 0.01 && half.vol.sound === 1 && Math.abs((half.stored?.music ?? 0) - 0.5) <= 0.01
+      ? ok(`a tap at the middle of Music sets the composer's music level to 0.5 and persists it (${JSON.stringify(half.stored)})`)
+      : fail(`music dial: ${JSON.stringify(half)}`);
+    await page.evaluate(() => {
+      const row = [...document.querySelectorAll('.ml-sub[data-sub="sound"] .ml-amb-slider')].find((d) => d.querySelector(".ml-amb-slider-label")?.textContent.trim() === "Music");
+      row.querySelector(".ml-slider-def").click();
+    });
+    await page.waitForTimeout(100);
+    const restored = await page.evaluate(() => window.__ml.audio().vol.music);
+    restored === 1 ? ok("…and its default button restores 100%") : fail(`after default: music ${restored}`);
 
     // -- Controls: the Hand choice, live --
     await page.evaluate(() => window.__mlHud.sub("settings", "controls"));
     await page.waitForTimeout(150);
-    const hand0 = await page.evaluate(() => ({ hand: window.__ml.hand(), on: [...document.querySelectorAll(".ml-handbtn .ml-plate-btn")].find((b) => b.classList.contains("on"))?.textContent.trim() }));
+    const hand0 = await page.evaluate(() => ({ hand: window.__ml.hand(), on: [...document.querySelectorAll(".ml-handbtn .ml-plate-btn")].find((b) => b.classList.contains("on"))?.textContent.trim(),
+      order: [...document.querySelectorAll(".ml-handbtn .ml-plate-btn")].map((b) => b.textContent.trim()).join("|") }));
     hand0.hand === "right" && hand0.on === "Right-handed" ? ok("Controls: Right-handed lit for the default hand") : fail(`hand: ${JSON.stringify(hand0)}`);
+    // LEFT ON THE LEFT, RIGHT ON THE RIGHT (maintainer 2026-09-19)
+    hand0.order === "Left-handed|Right-handed" ? ok("Left-handed sits on the left, Right-handed on the right") : fail(`hand buttons in the order ${hand0.order}`);
+    // THE FINE-TUNE: two dials in the pane's own dial group, the stick
+    // following live in the view above (a ghost while Settings is open)
+    const dials = await page.evaluate(() => [...document.querySelectorAll('.ml-sub[data-sub="controls"] .ml-dials .ml-amb-slider')].map((d) => ({
+      label: d.querySelector(".ml-amb-slider-label")?.textContent.trim(), val: d.querySelector(".ml-amb-slider-val")?.textContent.trim(), def: !!d.querySelector(".ml-slider-def") })));
+    dials.map((d) => d.label).join("|") === "Stick left / right|Stick up / down" && dials.every((d) => d.val === "0 px" && d.def)
+      ? ok("Controls: the two stick dials, at 0 px, each with a default button")
+      : fail(`stick dials: ${JSON.stringify(dials)}`);
+    const stickRect = () => page.evaluate(() => { const r = document.querySelector(".ml-pad-stick").getBoundingClientRect(); return { r: r.right, b: r.bottom }; });
+    const s0 = await stickRect();
+    // a tap at the far right of the up/down track = +half radius = 30 px up
+    const moved = await page.evaluate(() => {
+      const row = [...document.querySelectorAll('.ml-sub[data-sub="controls"] .ml-amb-slider')].find((d) => d.querySelector(".ml-amb-slider-label")?.textContent.trim() === "Stick up / down");
+      const track = row.querySelector(".ml-slider");
+      const r = track.getBoundingClientRect();
+      const at = (type, x) => track.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 1, clientX: x, clientY: r.top + r.height / 2 }));
+      at("pointerdown", r.right - 1);
+      at("pointerup", r.right - 1);
+      return { val: row.querySelector(".ml-amb-slider-val")?.textContent.trim(), stored: localStorage.getItem("ml-stick-nudge") };
+    });
+    await page.waitForTimeout(150);
+    const s1 = await stickRect();
+    moved.val === "30 px up" && near(s1.b, s0.b - 30) && near(s1.r, s0.r)
+      ? ok(`dragging "Stick up / down" to its end lifts the stick 30 px in the view (${s0.b} -> ${s1.b}); stored ${moved.stored}`)
+      : fail(`stick dial: ${JSON.stringify({ moved, s0, s1 })}`);
+    await page.evaluate(() => {
+      const row = [...document.querySelectorAll('.ml-sub[data-sub="controls"] .ml-amb-slider')].find((d) => d.querySelector(".ml-amb-slider-label")?.textContent.trim() === "Stick up / down");
+      row.querySelector(".ml-slider-def").click();
+    });
+    await page.waitForTimeout(150);
+    const s2 = await stickRect();
+    near(s2.b, s0.b) ? ok("…and its default button puts the stick back") : fail(`after default: b ${s2.b} vs ${s0.b}`);
     await page.evaluate(() => [...document.querySelectorAll(".ml-handbtn .ml-plate-btn")].find((b) => b.textContent.trim() === "Left-handed").click());
     await page.waitForTimeout(400);
     const hand1 = await page.evaluate(() => ({ hand: window.__ml.hand(), lh: document.documentElement.classList.contains("ml-lh"), on: [...document.querySelectorAll(".ml-handbtn .ml-plate-btn")].find((b) => b.classList.contains("on"))?.textContent.trim() }));
@@ -306,8 +357,8 @@ try {
         gridL: btns[0]?.getBoundingClientRect().left, gridR: btns[2]?.getBoundingClientRect().right, paneL: pane.getBoundingClientRect().left, paneR: pane.getBoundingClientRect().right,
         audioInDev: btns.some((b) => /^(sound|music)\b/.test(b.textContent.trim())) };
     });
-    dev.sub === "dev" && dev.btns >= 10 && dev.painted === dev.btns && dev.hook && dev.dials >= 8 && dev.amb && !dev.audioInDev
-      ? ok(`Dev is the old page: ${dev.btns} switches (time-of-day hook painted), ${dev.dials} dials, the ambient section — and no sound/music twins`)
+    dev.sub === "dev" && dev.btns >= 10 && dev.painted === dev.btns && dev.hook && dev.dials >= 8 && dev.amb && dev.audioInDev
+      ? ok(`Dev is the old page: ${dev.btns} switches (time-of-day hook painted, the composer's mute switches among them), ${dev.dials} dials, the ambient section`)
       : fail(`Dev: ${JSON.stringify(dev)}`);
     near(dev.gridL, dev.paneL, 1.5) && near(dev.gridR, dev.paneR, 1.5)
       ? ok("the dev grid spans its column edge to edge")
