@@ -317,15 +317,79 @@ def top_face_only(surf):
     return im
 
 
-DETAIL_FREQ = 1 / 56.0        # "once in a while"; overridable per ground by
-                              # live/tuning/tile_details.json if the wiki ever
-                              # publishes a rate (read below, absent today)
+DETAIL_FREQ = 1 / 100.0       # HIS DIAL'S DEFAULT: one detail in every 100
+                              # field cells (games2 detailrate.ts
+                              # DETAIL_EVERY_DEFAULT, maintainer 2026-09-13, off
+                              # the live game). 1/56 was the rate the game rolled
+                              # before he had a slider, and this renderer kept it
+                              # for six days: in one 28x26 window it drew 13
+                              # details where the game draws 5 (maintainer
+                              # 2026-09-19: "on your image I can see Scenery
+                              # details I don't have in the game"). Overridable
+                              # per ground by live/tuning/tile_details.json if
+                              # the wiki ever publishes a rate (absent today).
 _DETAIL_RATE = {}
 try:
     _DETAIL_RATE = json.load(open(os.path.join(
         REPO, "live", "tuning", "tile_details.json"))).get("rate", {})
 except Exception:
     pass
+
+
+def slope_index(g, L, ground, x, y, zl):
+    """THE SLOPE BITMASK for one cell (the game's `slopeIndexAt`): the corner
+    bit is set when a cell touching that corner is HIGHER and made of the SAME
+    ground. Corner order is the Wang order - NW, NE, SW, SE - bit `8 >> i`."""
+    idx = 0
+    for bit, (cxx, cyy) in enumerate(((x, y), (x + 1, y),
+                                      (x, y + 1), (x + 1, y + 1))):
+        for ax, ay in ((cxx - 1, cyy - 1), (cxx, cyy - 1),
+                       (cxx - 1, cyy), (cxx, cyy)):
+            if L(ax, ay) > zl and g(ax, ay) == ground:
+                idx |= 8 >> bit
+                break
+    return idx
+
+
+def detail_roll(ground, x, y):
+    """THE DETAIL ROLL OF ONE CELL (the game's `detailRoll`): `u` against the
+    ground's rate, then the pick draw. None on the room floor, without a pool,
+    or when the roll fails. A pure function of (ground, x, y) and the rate, so
+    the game's three threads and this renderer agree on a cell AND on its
+    neighbours, which `detail_alone` needs."""
+    if ground == "parquet_floor":
+        return None
+    if not detail_pool(ground):
+        return None
+    rate = float(_DETAIL_RATE.get(ground, DETAIL_FREQ))
+    rd = _rng((x * 83492791) ^ (y * 2654435761) ^ 0xd47a)
+    u = rd()
+    return (u, rd()) if u < rate else None
+
+
+def detail_alone(g, L, x, y, u):
+    """NO TWO DETAILS TOUCHING (the game's `detailAlone`, maintainer 2026-09-13:
+    "a tile detail is a tile that doesn't look good repeated, but look very
+    good alone"). Among the raw winners of an 8-neighbourhood the SMALLEST roll
+    keeps its detail and every other yields - symmetric and order-free, so a
+    streaming window, a worker and this full sweep agree with no shared state.
+    A neighbour on a ramp never draws, so it never vetoes; a neighbour a fade
+    took still does."""
+    for dy in (-1, 0, 1):
+        for dx in (-1, 0, 1):
+            if not dx and not dy:
+                continue
+            nx, ny = x + dx, y + dy
+            gn = g(nx, ny)
+            if not gn:
+                continue
+            r = detail_roll(gn, nx, ny)
+            if not r or r[0] > u:
+                continue
+            if slope_index(g, L, gn, nx, ny, L(nx, ny)):
+                continue
+            return False
+    return True
 
 
 def detail_pool(ground):
@@ -1592,17 +1656,7 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                 # corner is higher and made of the same ground. This is what
                 # makes a path uphill read as a climb instead of a stack of
                 # flat diamonds (maintainer 2026-08-30).
-                sidx = 0
-                for bit, (cxx, cyy) in enumerate(((x, y), (x + 1, y),
-                                                  (x, y + 1), (x + 1, y + 1))):
-                    hi = False
-                    for ax, ay in ((cxx - 1, cyy - 1), (cxx, cyy - 1),
-                                   (cxx - 1, cyy), (cxx, cyy)):
-                        if L(ax, ay) > zl and g(ax, ay) == gr:
-                            hi = True
-                            break
-                    if hi:
-                        sidx |= 8 >> bit
+                sidx = slope_index(g, L, gr, x, y, zl)
                 if sidx:
                     sl = slope_tile(gr, sidx, x, y)
                     if sl is not None:
@@ -1667,15 +1721,16 @@ def render(doc, x0=0, y0=0, x1=None, y1=None, scale=1.0, log=print,
                 # DETAILS: once in a while, one of his top-approved tops -
                 # wherever no fade landed (a band cell whose roll failed
                 # included), never on the room floor (the game's rule: a
-                # parquet room is one floor, not a floor with pebbles).
-                if gr == "parquet_floor":
+                # parquet room is one floor, not a floor with pebbles),
+                # NEVER ON A RAMP (a slope cell keeps its graded tile) and
+                # NEVER TOUCHING ANOTHER (`detail_alone`) - the game's three
+                # clauses of 2026-09-13, at his 1-in-100 (`DETAIL_FREQ`).
+                if gr == "parquet_floor" or sidx:
                     return t
-                dp = detail_pool(gr)
-                if dp:
-                    rate = float(_DETAIL_RATE.get(gr, DETAIL_FREQ))
-                    rd = _rng((x * 83492791) ^ (y * 2654435761) ^ 0xd47a)
-                    if rd() < rate:
-                        return dp[int(rd() * len(dp)) % len(dp)]
+                roll = detail_roll(gr, x, y)
+                if roll and detail_alone(g, L, x, y, roll[0]):
+                    dp = detail_pool(gr)
+                    return dp[int(roll[1] * len(dp)) % len(dp)]
                 return t
 
             if gr in liq:
