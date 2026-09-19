@@ -176,6 +176,31 @@ await page.waitForFunction(() => document.querySelector(".ml-rec") && document.q
     ? ok(`…the same size the Wiki pill draws its own icon (${c.wikiShown}px)`)
     : fail(`icon ${c.shown[0]}px vs the Wiki button's ${c.wikiShown}px`);
   c.overflow <= 0 ? ok("the label and icon fit the pill without overflowing it") : fail(`the content overflows the pill by ${c.overflow}px`);
+  // THE BUG SITS CENTRED IN ITS CANVAS, not low (maintainer 2026-09-19: "I feel
+  // the Report bug should be lifted a couple of pixels to feel more vertically
+  // centered"). The export's ink was 6px from the top and 3 from the bottom;
+  // the bake's `centre` transform lifts it. Measured on the DECODED pixels, so
+  // a re-export that lands low fails here rather than looking slightly wrong
+  // forever — and an odd remainder is allowed to fall on the low side, which is
+  // what optical centring wants.
+  const ink = await page.evaluate(async () => {
+    const img = document.querySelector(".ml-rec img");
+    await img.decode();
+    const cv = document.createElement("canvas");
+    cv.width = img.naturalWidth;
+    cv.height = img.naturalHeight;
+    const g = cv.getContext("2d");
+    g.drawImage(img, 0, 0);
+    const d = g.getImageData(0, 0, cv.width, cv.height).data;
+    let top = -1, bottom = -1;
+    for (let y = 0; y < cv.height; y++)
+      for (let x = 0; x < cv.width; x++)
+        if (d[(y * cv.width + x) * 4 + 3] > 8) { if (top < 0) top = y; bottom = y; }
+    return { top, above: top, below: cv.height - 1 - bottom, h: cv.height };
+  });
+  ink.top >= 0 && ink.above <= ink.below && ink.below - ink.above <= 4
+    ? ok(`the bug is centred in its canvas, a hair high (${ink.above}px above, ${ink.below}px below, at the bake's 2x)`)
+    : fail(`the bug sits ${ink.above}px from the top and ${ink.below}px from the bottom of its canvas — it must not read low`);
   // the stamp is whatever withV() is giving the OTHER /ui2 icons this build —
   // a dev build stamps nothing, and that is not a bug; being the odd one out is
   const stamp = (u) => (u.split("?")[1] || "");

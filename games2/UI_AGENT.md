@@ -365,6 +365,16 @@ from the games agent), #18 (title/landing screen).
   RECORDING IS THE HOUSE `.on` TREATMENT (`--accent-soft` on `--accent`,
   `--accent-ink`), which IS the red he asked for on 2026-09-18 and re-themes
   with everything else; gated against the computed tokens, never a literal red.
+  THE BUG IS `centre`-BAKED, NOT CSS-NUDGED (maintainer 2026-09-19: "I feel the
+  Report bug should be lifted a couple of pixels to feel more vertically
+  centered"). His export's ink sits at y 6..21 of a 24px canvas — six above,
+  three below — and read low beside the label; `centre` in
+  `bake-corner-icons.py` computes exactly dy −2, dx 0 for it, so the fix is the
+  transform that already exists and is already asserted (pure integer
+  translation, same pixels, nothing clipped) rather than a magic `top:-2px` in
+  a stylesheet. `verify-recbtn` measures the DECODED pixels and requires the
+  ink's top gap ≤ its bottom gap, so a re-export that lands low fails instead
+  of looking slightly wrong for ever.
   RETIRED with the restyle: his 48x48 two-face plate, the lamp pixel-crop, the
   5-slice widening and the ResizeObserver that copied the card's width — a
   fixed-width pill needs none of them. The bakes stay on disk (his art;
