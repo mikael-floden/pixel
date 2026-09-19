@@ -1,9 +1,9 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-19T13:12:00+00:00",
-  "health": "idle",
-  "current": "idle — flowstone removal shipped (3d88174e9). No files claimed.",
+  "updated_at": "2026-09-19T12:59:15+00:00",
+  "health": "running",
+  "current": "his 3 attack_v3 redos on ash_hatchling (north 'The monster turn around in the attack', north-east + north-west 'The fire renders out of bound') — re-roll north and north-east (north-west is north-east's mirror and is produced by redoing its source) — files: monsters/candidates/ash_hatchling/candidate.json, monsters/candidates/ash_hatchling/animations/attack_v3/**, monsters/candidates/ash_hatchling/animations/attack_v3__*.webp, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json",
   "progress": {
     "candidates_index_count": 76,
     "verdicts_taken": 1,
