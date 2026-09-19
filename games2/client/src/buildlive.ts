@@ -16,7 +16,7 @@
  *  It never throws into the scene's message handler, and a message arriving
  *  before boot has registered anything is simply dropped: the minute poll is
  *  the belt under all of this and converges on its own. */
-let handler: ((sha: string) => void) | null = null;
+let handler: (() => void) | null = null;
 let socketUp = false;
 
 /** Set by WorldScene when the room's socket comes up and when it goes away.
@@ -32,8 +32,10 @@ export function buildSocketUp(): boolean {
   return socketUp;
 }
 
-/** Registered once, by main.ts, with what to do about a new build. */
-export function onBuildLive(cb: (sha: string) => void): void {
+/** Registered once, by main.ts, with what to do about a new build. It takes no
+ *  argument ON PURPOSE: the sha on the wire is a hint and the handler re-reads
+ *  /version anyway, so passing one would invite a caller to trust it. */
+export function onBuildLive(cb: () => void): void {
   handler = cb;
 }
 
@@ -45,8 +47,9 @@ export function buildLive(sha: unknown): void {
   // earlier version of this dropped any message it could not vouch for, which
   // would have made the one case that matters most — the bad build being taken
   // away — the one case nobody was told about.
+  void sha; // the wire value is deliberately unused — see above
   try {
-    handler?.(typeof sha === "string" ? sha : "");
+    handler?.();
   } catch {
     /* the news is never worth breaking the frame over */
   }
