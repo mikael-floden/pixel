@@ -58,22 +58,34 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     window.addEventListener("keyup", (e) => window.__heldKeys.delete(e.key), { capture: true });
   });
 
-  // 1) sanity: Phaser accepts a SYNTHETIC key (the whole input path)
-  const p0 = await pos(page);
-  await page.evaluate(() => {
-    const e = new KeyboardEvent("keydown", { key: "d", code: "KeyD", bubbles: true });
-    Object.defineProperty(e, "keyCode", { get: () => 68 });
-    window.dispatchEvent(e);
-  });
-  await page.waitForTimeout(700);
-  await page.evaluate(() => {
-    const e = new KeyboardEvent("keyup", { key: "d", code: "KeyD", bubbles: true });
-    Object.defineProperty(e, "keyCode", { get: () => 68 });
-    window.dispatchEvent(e);
-  });
-  const p1 = await pos(page);
-  const d0 = Math.hypot(p1.x - p0.x, p1.y - p0.y);
-  d0 > 3 ? ok(`synthetic keydown moves the player (${d0.toFixed(1)}wu)`) : fail(`synthetic key ignored (moved ${d0.toFixed(1)}wu)`);
+  // 1) sanity: Phaser accepts a SYNTHETIC key (the whole input path). ANY
+  //    direction proves it — the spawn can sit against a prop (measured
+  //    2026-09-19 on a fresh server: 'd' into a chess table moved 0.0wu twice
+  //    while the stick's east drag slid along it), so the first direction
+  //    that moves the player is the one that counts.
+  const press = async (key, code, keyCode, ms) => {
+    await page.evaluate(([k, c, kc]) => {
+      const e = new KeyboardEvent("keydown", { key: k, code: c, bubbles: true });
+      Object.defineProperty(e, "keyCode", { get: () => kc });
+      window.dispatchEvent(e);
+    }, [key, code, keyCode]);
+    await page.waitForTimeout(ms);
+    await page.evaluate(([k, c, kc]) => {
+      const e = new KeyboardEvent("keyup", { key: k, code: c, bubbles: true });
+      Object.defineProperty(e, "keyCode", { get: () => kc });
+      window.dispatchEvent(e);
+    }, [key, code, keyCode]);
+  };
+  let d0 = 0, dirTried = "";
+  for (const [key, code, keyCode] of [["d", "KeyD", 68], ["a", "KeyA", 65], ["w", "KeyW", 87], ["s", "KeyS", 83]]) {
+    const p0 = await pos(page);
+    await press(key, code, keyCode, 700);
+    const p1 = await pos(page);
+    d0 = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+    dirTried += key;
+    if (d0 > 3) break;
+  }
+  d0 > 3 ? ok(`synthetic keydown moves the player (${d0.toFixed(1)}wu, key ${dirTried.slice(-1)})`) : fail(`synthetic key ignored in every direction (${dirTried}, last moved ${d0.toFixed(1)}wu)`);
 
   // open the gamepad tab, find the stick
   await page.evaluate(() => document.querySelector('[data-tab="gamepad"]').click());
