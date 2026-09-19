@@ -328,3 +328,11 @@ test("the resolver's bill, the felt lag and the ambient rows reach the file — 
   const secs = Object.fromEntries(Array.from({ length: 40 }, (_, i) => [`s${i}`, i + 1]));
   assert.equal((perfReport({ sections: secs }, AT) as Record<string, any>).sections.s39, 40, "the sections cap is one short again");
 });
+
+test("the beacon's delivery ledger reaches the file — the run says what became of its posts", () => {
+  const r = perfReport(
+    { frames: { n: 60 }, beacon: { sent: 4, ok: 2, failed: 2, retried: 1, lastStatus: 502, lastError: "HTTP 502 PUT perf.json: HTTP 409", lastOkWin: 2, queued: 1 } },
+    AT,
+  ) as { beacon: Record<string, unknown> };
+  assert.deepEqual(r.beacon, { sent: 4, ok: 2, failed: 2, retried: 1, lastStatus: 502, lastError: "HTTP 502 PUT perf.json: HTTP 409", lastOkWin: 2, queued: 1 });
+});

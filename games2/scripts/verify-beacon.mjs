@@ -25,7 +25,21 @@ const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbo
 const page = await browser.newPage({ viewport: { width: 500, height: 900 } });
 page.on("pageerror", (e) => console.log("pageerror", e.message));
 let captured = null;
-await page.route("**/api/perf", async (route) => { captured = route.request().postDataJSON(); await route.fulfill({ status: 200, body: "{}" }); });
+// THE DELIVERY ARM (2026-09-19): the FIRST post is refused with a 502 — the
+// server's answer when the GitHub commit fails — and the client must post the
+// SAME window again, say so in its ledger, and tell /api/perf/fail. The old
+// post was fire-and-forget: refused once, the window was gone.
+const posts = [];
+const fails = [];
+await page.route("**/api/perf", async (route) => {
+  const body = route.request().postDataJSON();
+  posts.push(body);
+  console.log(`  post #${posts.length}: window ${body.run?.winIdx} (${body.run?.why}) attempt ${body.beacon?.attempt ?? "-"} at ${(performance.now() / 1000).toFixed(0)} s`);
+  if (posts.length === 1) { await route.fulfill({ status: 502, contentType: "application/json", body: '{"error":"PUT perf.json: HTTP 409"}' }); return; }
+  captured = body;
+  await route.fulfill({ status: 200, body: "{}" });
+});
+await page.route("**/api/perf/fail", async (route) => { fails.push(route.request().postData()); await route.fulfill({ status: 202, body: "{}" }); });
 await page.goto(`http://localhost:${PORT}/?perf=1#the_game`, { waitUntil: "load" });
 await page.waitForFunction(() => window.__mlSelect, null, { timeout: 120000 });
 await page.evaluate(() => window.__mlSelect.commit());
@@ -33,10 +47,16 @@ await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null
 await page.waitForFunction(() => !document.getElementById("ml-loading"), null, { timeout: 120000 });
 await page.evaluate(() => window.__ml.noAggro?.(true));
 // The beacon posts a window only after the body has MOVED (>= 2 cells): walk it.
-for (let i = 0; i < 8 && !captured; i++) { await page.evaluate((i) => window.__ml.teleport(261.8 - i * 2, 219.3), i); await page.waitForTimeout(6000); }
+for (let i = 0; i < 14 && !captured; i++) { await page.evaluate((i) => window.__ml.teleport(261.8 - i * 2, 219.3), i); await page.waitForTimeout(6000); }
 await page.waitForTimeout(3000);
 await browser.close();
-if (!captured) { fail("no POST to /api/perf was captured in 50 s"); process.exit(1); }
+if (!posts.length) { fail("no POST to /api/perf was made in 90 s"); process.exit(1); }
+if (!captured) { fail(`the first window was refused (502) and never posted again in 90 s — the outbox retry is gone (${posts.length} post(s) seen)`); process.exit(1); }
+if (captured.run?.winIdx !== posts[0].run?.winIdx) fail(`the retry carried window ${captured.run?.winIdx}, not the refused window ${posts[0].run?.winIdx}`);
+if (!captured.beacon || captured.beacon.failed < 1 || captured.beacon.lastStatus !== 502 || captured.beacon.attempt !== 2) fail(`the ledger does not say the first post failed with 502: ${JSON.stringify(captured.beacon)}`);
+if (!fails.length) fail("the refused post was not told to /api/perf/fail");
+else { let note = null; try { note = JSON.parse(fails[0]); } catch { fail("the /api/perf/fail note is not JSON"); } if (note && (note.status !== 502 || note.runId !== posts[0].run?.runId)) fail(`the fail note carries ${fails[0].slice(0, 120)}`); }
+console.log(`delivery: window ${posts[0].run?.winIdx} refused once, re-posted after ${posts.length - 1} attempt(s); ledger ${JSON.stringify(captured.beacon)}; fail notes ${fails.length}`);
 
 const dir = mkdtempSync(join(tmpdir(), "beacon-"));
 const bodyPath = join(dir, "body.json");
@@ -62,6 +82,8 @@ const MUST = {
   input: ["avail", "n", "slow", "delayP90", "durMax", "worst"],
   ambient: [],
   longWhy: ["n", "wait", "task", "gc", "taskMs", "waitIdleMs", "gcMb"],
+  // 2026-09-19: the client's own delivery ledger — a lost window is never silent again.
+  beacon: ["sent", "ok", "failed", "retried", "lastStatus", "lastError", "lastOkWin", "queued", "attempt"],
 };
 let ok = 0;
 for (const [block, keys] of Object.entries(MUST)) {

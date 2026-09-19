@@ -881,6 +881,10 @@ const OCC_STEP = 96;
  *  report covers several ground latches, short enough that a run into fresh
  *  terrain is not averaged away. */
 const PERF_BEACON_MS = 30_000;
+/** A window that failed to post is retried this many times (perfPost). */
+const PERF_POST_TRIES = 3;
+/** Windows waiting in the outbox; past this the oldest is dropped and reported. */
+const PERF_OUTBOX_MAX = 6;
 // Extra cull margin beyond OCC_STEP: one tile of art, plus room for the
 // biggest body art box that resolveBodyDepth can test against a column
 // (a mammoth spans ~190px) — a column that could still sort against an
@@ -932,13 +936,37 @@ const SCENERY_FLAT_DEPTH = -500_000;
 /** `?perf=1` arms the client perf beacon (remembered; `?perf=0` clears it).
  *  OFF for everyone else: it turns on the per-section timers and posts a
  *  report every PERF_BEACON_MS to /api/perf. See perfBeaconTick. */
+/** How long a remembered beacon stays armed with no window posted. His
+ *  first run on 2026-09-19 was lost to the switch: it had been ON since the
+ *  09-13 runs (nothing ever turned it off), so the tap he made to START
+ *  recording turned it OFF at 47 s and the whole map ran unrecorded. A
+ *  remembered switch now expires; the stamp is refreshed by every window
+ *  posted, so a long run never expires mid-way. */
+const PERF_REMEMBER_MS = 3 * 60 * 60 * 1000;
 function perfBeaconArmed(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("perf");
-    if (q === "1" || q === "0") localStorage.setItem("ml-perf-beacon", q);
-    return (localStorage.getItem("ml-perf-beacon") ?? "0") === "1";
+    if (q === "1" || q === "0") {
+      localStorage.setItem("ml-perf-beacon", q);
+      localStorage.setItem("ml-perf-beacon-at", String(Date.now()));
+    }
+    if ((localStorage.getItem("ml-perf-beacon") ?? "0") !== "1") return false;
+    const at = Number(localStorage.getItem("ml-perf-beacon-at") ?? 0);
+    if (!(Date.now() - at < PERF_REMEMBER_MS)) {
+      localStorage.setItem("ml-perf-beacon", "0");
+      return false;
+    }
+    return true;
   } catch {
     return false;
+  }
+}
+/** Refresh the remembered switch's stamp (armed, or a window posted). */
+function perfBeaconTouch(): void {
+  try {
+    localStorage.setItem("ml-perf-beacon-at", String(Date.now()));
+  } catch {
+    /* storage blocked: the switch still holds for this session */
   }
 }
 
@@ -2381,6 +2409,7 @@ export class WorldScene extends Phaser.Scene {
     this.perfLast = 0;
     try {
       localStorage.setItem("ml-perf-beacon", this.perfBeacon ? "1" : "0");
+      localStorage.setItem("ml-perf-beacon-at", String(Date.now()));
     } catch {
       /* storage blocked: the toggle still holds for this session */
     }
@@ -2594,6 +2623,7 @@ export class WorldScene extends Phaser.Scene {
       view: `${this.scale.width}x${this.scale.height}`,
       secs: +secs.toFixed(1),
       final,
+      beacon: null as Record<string, unknown> | null, // stamped by perfPost: what became of the posts before this one
       frames: { ...(snap.frames as Record<string, number>), ...hist, rafHz: rafHz(frameList) },
       sections: perFrame,
       // HEAP GROWTH BY SECTION, KB PER FRAME (the dozen largest) — the
@@ -2951,13 +2981,98 @@ export class WorldScene extends Phaser.Scene {
         }
       })(),
     };
-    // Fire and forget: a failed report must never disturb the frame it rode on.
-    void fetch("/api/perf", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-      keepalive: true,
-    }).catch(() => {});
+    this.perfPost(body, this.perfWinIdx, final);
+  }
+
+  /* THE POST, MADE TO ARRIVE (2026-09-19). His 20:52 run posted windows 1 and
+   * 2 and nothing after, and no page load on record had ever delivered a
+   * third: the old post was one keepalive fetch, fire and forget, its response
+   * never read, its failure swallowed — a window that did not arrive left no
+   * trace on either side. Now:
+   *  - a window goes into an OUTBOX and is posted from there, one at a time,
+   *    the next one 6 s after a success, 15 s after a failure; a failed window
+   *    is retried up to PERF_POST_TRIES times and stays AHEAD of newer ones
+   *    (the server's bucket allows the burst);
+   *  - a live page posts WITHOUT keepalive and READS the response: keepalive
+   *    is for a page that is going away, and a keepalive body counts against
+   *    the browser's in-flight budget until its response is consumed;
+   *  - the final flush of a HIDDEN page still goes at once with keepalive —
+   *    the pump's timer will not run while the page is frozen;
+   *  - every outcome lands in `perfLedger`, which every window carries as
+   *    `beacon`, and a failure is also told to the server on a second, tiny
+   *    channel (sendBeacon to /api/perf/fail) so the run says what went
+   *    wrong even when nothing else gets through. GET /api/perf/log on the
+   *    server shows both sides. */
+  /** The body as it goes on the wire: the ledger is stamped at POST time, so a
+   *  window posted again after a refusal carries that refusal (`attempt` > 1),
+   *  not the clean ledger of its first attempt. */
+  private perfWire(body: Record<string, unknown>, attempt: number): string {
+    body.beacon = { ...this.perfLedger, queued: this.perfOutbox.length, attempt };
+    return JSON.stringify(body);
+  }
+
+  private perfPost(body: Record<string, unknown>, win: number, final: boolean): void {
+    if (final && document.visibilityState === "hidden") {
+      this.perfLedger.sent++;
+      const text = this.perfWire(body, 1);
+      void fetch("/api/perf", { method: "POST", headers: { "Content-Type": "application/json" }, body: text, keepalive: true })
+        .then((r) => {
+          if (r.ok) this.perfLedger.ok++;
+          else this.perfFail(win, final, r.status, `HTTP ${r.status}`, text.length);
+        })
+        .catch((e) => this.perfFail(win, final, 0, String(e), text.length));
+      return;
+    }
+    this.perfOutbox.push({ body, win, final, tries: 0 });
+    if (this.perfOutbox.length > PERF_OUTBOX_MAX) {
+      const dropped = this.perfOutbox.shift()!;
+      this.perfFail(dropped.win, dropped.final, -1, "outbox full", 0);
+    }
+    this.perfPump();
+  }
+
+  private perfPump(): void {
+    if (this.perfPumping || !this.perfOutbox.length) return;
+    const item = this.perfOutbox[0];
+    this.perfPumping = true;
+    this.perfLedger.sent++;
+    if (item.tries > 0) this.perfLedger.retried++;
+    item.tries++;
+    const text = this.perfWire(item.body, item.tries);
+    const settle = (ok: boolean, status: number, err: string) => {
+      this.perfPumping = false;
+      if (ok) {
+        this.perfOutbox.shift();
+        this.perfLedger.ok++;
+        this.perfLedger.lastStatus = status;
+        this.perfLedger.lastOkWin = item.win;
+        perfBeaconTouch();
+      } else {
+        this.perfFail(item.win, item.final, status, err, text.length);
+        if (item.tries >= PERF_POST_TRIES) this.perfOutbox.shift();
+      }
+      if (this.perfOutbox.length) window.setTimeout(() => this.perfPump(), ok ? 6000 : 15000);
+    };
+    fetch("/api/perf", { method: "POST", headers: { "Content-Type": "application/json" }, body: text }).then(
+      async (r) => {
+        const t = await r.text().catch(() => "");
+        settle(r.ok, r.status, r.ok ? "" : `HTTP ${r.status} ${t.slice(0, 80)}`);
+      },
+      (e) => settle(false, 0, String(e).slice(0, 120)),
+    );
+  }
+
+  private perfFail(win: number, final: boolean, status: number, error: string, bytes: number): void {
+    this.perfLedger.failed++;
+    this.perfLedger.lastStatus = status;
+    this.perfLedger.lastError = error.slice(0, 120);
+    const note = JSON.stringify({ runId: this.perfRunId, win, final, status, error: error.slice(0, 200), bytes });
+    try {
+      // text/plain: the one type sendBeacon may carry without a preflight.
+      if (!navigator.sendBeacon?.("/api/perf/fail", new Blob([note], { type: "text/plain" }))) throw new Error("sendBeacon refused");
+    } catch {
+      void fetch("/api/perf/fail", { method: "POST", headers: { "Content-Type": "text/plain" }, body: note, keepalive: true }).catch(() => {});
+    }
   }
 
   /** THE GROUND TEXTURE, SAMPLED ON HIS DEVICE — the render half of the beacon.
@@ -3276,6 +3391,26 @@ export class WorldScene extends Phaser.Scene {
     this.perfPrevCtxRestores = this.ctxRestores;
     this.perfSnapResolve();
     this.perfPrevFadeTex = this.t3tex?.stats.builtFade ?? 0;
+    /* THE FIRST WINDOW STARTS HERE, NOT AT THE JOIN. The round trips, the
+     * patch count, the input entries, the long tasks and the effects' meter
+     * accumulated from the join; his 20:20 window read rtt p90 531 ms and
+     * 76 patches/s over 8 s of play because 38 s of boot were in them. */
+    this.perfRtt = [];
+    this.perfPatches = 0;
+    this.perfInputEntries = [];
+    this.perfLongTasks = [];
+    this.hitchSpans = [];
+    this.perfLongN = 0;
+    this.perfLongMs = 0;
+    this.perfMoveFrames = 0;
+    this.perfRunFrames = 0;
+    this.perfTravel = 0;
+    this.perfPrevPos = null;
+    try {
+      (window as unknown as { __mlAmbient?: { cost?: (reset?: boolean) => unknown } }).__mlAmbient?.cost?.(true);
+    } catch {
+      /* no ambient runtime mounted: the block reports empty */
+    }
   }
 
   /** THE SCENE'S EVENT LISTENERS, TIMED (2026-09-19). Phaser runs its own
@@ -3600,6 +3735,9 @@ export class WorldScene extends Phaser.Scene {
    * frame time when the browser lends its timer. */
   private perfRunId = Math.random().toString(16).slice(2, 10);
   private perfWinIdx = 0;
+  private perfOutbox: { body: Record<string, unknown>; win: number; final: boolean; tries: number }[] = [];
+  private perfPumping = false;
+  private perfLedger = { sent: 0, ok: 0, failed: 0, retried: 0, lastStatus: 0, lastError: "", lastOkWin: 0 };
   private perfPatches = 0;
   private perfRtt: number[] = [];
   private perfMoveFrames = 0;

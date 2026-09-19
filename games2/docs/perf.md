@@ -869,6 +869,58 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   with nothing of ours in the frame; the window's 2 long tasks (217 ms) match
   its two CPU-heavy frames, which already argues `wait` — this settles it per
   frame.
+- **THE BEACON DELIVERS EVERY WINDOW, AND THE RUN SAYS WHY WHEN ONE IS LOST**
+  (2026-09-19). His 20:52 run posted windows 1 and 2 and nothing after, and
+  no page load on record had ever delivered a third (14 loads, 26 reports:
+  never more than two posts each) — and nothing on either side could say
+  whether the posts were made, refused or lost in the commit, because the
+  post was one keepalive fetch, fire and forget, its response never read,
+  its failure swallowed. The rule now: a window goes into an OUTBOX
+  (`perfPost`/`perfPump`) and is posted from there one at a time, 6 s after
+  a success, 15 s after a failure, retried `PERF_POST_TRIES` (3) times and
+  kept AHEAD of newer windows (`PERF_OUTBOX_MAX` 6, the oldest dropped and
+  reported past that); a live page posts WITHOUT keepalive and READS the
+  response (keepalive is for a page that is going away, and a keepalive body
+  counts against the browser's 64 KiB in-flight budget until its response is
+  consumed); only the final flush of a HIDDEN page goes at once with
+  keepalive, because the pump's timer does not run in a frozen page. Every
+  outcome lands in the client's ledger, which every window carries as
+  `beacon` — `sent/ok/failed/retried/lastStatus/lastError/lastOkWin/queued`
+  and `attempt`, stamped at POST time (a retried window carries the refusal
+  that preceded it) — and a failure is also told to the server on a second,
+  tiny channel (`navigator.sendBeacon` to `/api/perf/fail`, text/plain: the
+  one type it may carry without a preflight). THE SERVER KEEPS THE LEDGER:
+  every `/api/perf` outcome (status, ms, bytes, run, window, the GitHub
+  error) and every fail note land in a ring served at `GET /api/perf/log`
+  (memory; `since` says when the container started) — `curl
+  https://nangijala.online/api/perf/log` after a run answers "did the posts
+  arrive, and what happened to each" without a phone console. The flat
+  `PERF_MIN_GAP_MS` is a TOKEN BUCKET (`PERF_BURST` 3, one back every 5 s):
+  the flat gap (20 s, then 5 s) ate the flush that followed a window, and
+  a retry now legitimately follows the next window within seconds. Two more
+  losses this run found: (1) THE FILE RESET AT 1 MB — the contents API
+  answers a file over 1 MB with `content: ""`, the handler parsed that as an
+  empty history and REWROTE the file with the one report in hand (2026-09-13,
+  at 1,078,993 bytes: every report before 02:02 gone in one commit);
+  `perfDocMerge` (pure, `perfdoc.test.ts`) now caps the file by BYTES
+  (`PERF_KEEP_BYTES` 800 KB, the oldest dropped first, the new report always
+  kept), writes one report per line without indentation (~30% smaller than
+  the indented form), and the read goes through `ghGetContents`, which
+  falls through to the blob API past 1 MB and THROWS on an unreadable base
+  rather than start from nothing. (2) THE REMEMBERED SWITCH — his first run
+  today: the beacon had been ON since the 09-13 runs (nothing turned it
+  off), so the tap he made to START recording turned it OFF at 47 s and the
+  whole map ran unrecorded (one 8.4 s flush, `winIdx` 1). A remembered
+  switch now expires after `PERF_REMEMBER_MS` (3 h) with no window posted
+  (`ml-perf-beacon-at`, refreshed by every post that gets through). And the
+  FIRST WINDOW STARTS AT ARMING: `perfArmBaselines` resets the round trips,
+  the patch count, the input entries, the long tasks and the effects' meter
+  (his 20:20 window read rtt p90 531 ms and 76 patches/s over 8 s of play
+  because 38 s of boot were in them). `perf-read.mjs` prints a `posts`
+  column (`ok/sent`, and the last failure). GATE: `verify-beacon.mjs`
+  refuses the first post with a 502 and requires the SAME window posted
+  again with `attempt` 2, a ledger saying `failed` 1 / `lastStatus` 502,
+  and a fail note — the old client posted window 2 next and never window 1.
 - **THE BEACON CARRIES THE WINDOW'S CONTEXT, THE ROUND TRIP, THE THROTTLING
   PROXY AND THE GPU'S CLOCK** (2026-09-11, prepared for the next optimisation
   task so a run answers on its own). Beside the sections and counts: `run`

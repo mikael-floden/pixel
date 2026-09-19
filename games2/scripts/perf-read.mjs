@@ -72,7 +72,7 @@ if (diff) {
 }
 
 console.log(`${rows.length} windows (file updated ${doc.updated_at})`);
-console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "res ms/us", "inp90/max", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops"].join(" | "));
+console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "res ms/us", "inp90/max", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops", "posts"].join(" | "));
 for (const r of rows) {
   const fr = r.frames ?? {};
   const over50 = fr.le100 !== undefined ? fr.le100 + fr.gt100 : "-";
@@ -84,6 +84,8 @@ for (const r of rows) {
     r.input ? (r.input.avail ? `${f(r.input.delayP90, 0)}/${f(r.input.durMax, 0)}` : "n/a") : "-",
     r.rtt ? `${f(r.rtt.p50, 0)}/${f(r.rtt.p90, 0)}` : "-", r.rtt ? f(r.rtt.patchHz, 0) : "-", r.cpu ? f(r.cpu.scoreMs) : "-",
     r.gpu ? (r.gpu.avail ? f(r.gpu.p50) : "n/a") : "-", r.heap ? f(r.heap.grewMbPerSec, 0) : "-", r.counts?.texturesAdded ?? "-", r.counts?.longN ?? "-", r.run ? r.run.hops : "-",
+    // the delivery ledger (2026-09-19): posts that got through / posts made before this window, and the last failure
+    r.beacon ? `${r.beacon.ok}/${r.beacon.sent}${r.beacon.failed ? ` FAIL ${r.beacon.failed} (${r.beacon.lastStatus} ${r.beacon.lastError || ""})` : ""}` : "-",
   ].join(" | "));
 }
 // The long-frame census, summed over the printed windows.

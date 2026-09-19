@@ -109,6 +109,11 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * one his "it lags when I tap" is about. `avail` first: a browser without
      * the API must never read as "no slow taps". */
     input: mixed(body.input, 12),
+    /* THE CLIENT'S OWN DELIVERY LEDGER (2026-09-19): what became of the posts
+     * before this one — sent/ok/failed/retried, the last status and error, the
+     * last window that got through, and how many wait in the outbox. A run
+     * that lost a window says so in the next window that arrives. */
+    beacon: mixed(body.beacon, 12),
     /* THE GPU'S OWN FRAME TIME (EXT_disjoint_timer_query_webgl2), with
      * `avail`/`reason` first: no numbers must never read as 0 ms. */
     gpu: mixed(body.gpu, 12),
@@ -243,4 +248,50 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     longWhere: nested(body.longWhere, 16, 6),
   };
   return report;
+}
+
+/** THE FILE THE REPORTS LAND IN, MERGED (pure, tested in perfdoc.test.ts).
+ *
+ *  The newest report is appended, the oldest dropped past `keep` reports —
+ *  and past `maxBytes` of TEXT, which is the cap that matters: the GitHub
+ *  contents API returns NO CONTENT for a file over 1 MB (the object media
+ *  type answers `content: ""`), and the handler that read it as an empty
+ *  document RESET THE HISTORY: at 1,078,993 bytes on 2026-09-13 every report
+ *  before 02:02 vanished in one commit. The reader falls through to the blob
+ *  API now (ghGetContents), and the cap keeps the file where one GET serves
+ *  it. One report per line, compact: a commit's diff is the report it added,
+ *  and the same 40 reports take ~30% fewer bytes than the indented form. */
+export function perfDocMerge(
+  cur: unknown,
+  report: Record<string, unknown>,
+  updatedAt: string,
+  keep = 40,
+  maxBytes = 800_000,
+): { doc: { format: string; _comment: string; updated_at: string; reports: unknown[] }; text: string; dropped: number } {
+  const prev = cur && typeof cur === "object" && Array.isArray((cur as { reports?: unknown[] }).reports) ? ((cur as { reports: unknown[] }).reports as unknown[]) : [];
+  let reports = [...prev, report].slice(-keep);
+  let dropped = prev.length + 1 - reports.length;
+  const render = () => {
+    const doc = {
+      format: "nangijala-client-perf@1",
+      _comment:
+        "PER-DEVICE FRAME TIMINGS, posted by the game client (the Settings perf switch, or ?perf=1) and committed " +
+        "here by the server. The maintainer plays on a phone and tests in production; the headless harness walks " +
+        "~1 cell per 24 s and never reaches the fresh-terrain code paths, so these are the only honest numbers for " +
+        "the paths that matter. Newest last; one report per line; the file keeps the most recent reports and stays " +
+        "under the contents API's 1 MB. Read it with scripts/perf-read.mjs.",
+      updated_at: updatedAt,
+      reports,
+    };
+    const head = JSON.stringify({ format: doc.format, _comment: doc._comment, updated_at: doc.updated_at });
+    const text = head.slice(0, -1) + ',"reports":[\n' + reports.map((r) => JSON.stringify(r)).join(",\n") + "\n]}\n";
+    return { doc, text };
+  };
+  let out = render();
+  while (out.text.length > maxBytes && reports.length > 1) {
+    reports = reports.slice(1);
+    dropped++;
+    out = render();
+  }
+  return { ...out, dropped };
 }

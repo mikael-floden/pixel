@@ -28,8 +28,8 @@
 import { createHash, createHmac, randomBytes, timingSafeEqual } from "crypto";
 import { readFileSync } from "fs";
 import { join } from "path";
-import type express from "express";
-import { perfReport } from "./perfreport.js";
+import express from "express";
+import { perfReport, perfDocMerge } from "./perfreport.js";
 
 const REPO = process.env.WIKI_REPO || "mikael-floden/pixel";
 const BRANCH = process.env.WIKI_BRANCH || "main";
@@ -400,16 +400,46 @@ function isAdmin(req: express.Request): boolean {
 // silently revert the agent's commit. The blob sha from the same GET makes
 // the PUT conditional — a mid-flight racing commit 409s and we re-merge.
 let commitChain: Promise<void> = Promise.resolve();
-/** Client perf telemetry: how many reports live/telemetry/perf.json keeps, and
- *  the floor between commits. One player on a phone, so this is about not
- *  writing a commit per frame, not about contention. */
+/** Client perf telemetry: how many reports live/telemetry/perf.json keeps
+ *  (and the byte cap that really bounds it — perfDocMerge), the posting
+ *  allowance, and the ledger of what became of every post. */
 const PERF_KEEP = 40;
-/* 5 s, not 20: the client only sends every 30 s by itself, so this gate is a
- * guard against a rogue client, not a throttle on the honest one — and at 20 s
- * it ATE the flush the client sends when the beacon is switched off, which is
- * the most interesting window there is. */
-const PERF_MIN_GAP_MS = 5_000;
-let lastPerfCommit = 0;
+const PERF_KEEP_BYTES = 800_000;
+/* A TOKEN BUCKET, NOT A FLAT GAP. The client posts a window every 30 s by
+ * itself — but a window that failed is RE-POSTED beside the next one, and the
+ * final flush may follow the last window within seconds: the flat 5 s gap
+ * (20 s before that) ATE exactly those. Three posts may arrive back to back;
+ * the bucket refills one every 5 s, so a rogue client still commits at most
+ * twelve a minute. */
+const PERF_BURST = 3;
+const PERF_REFILL_MS = 5_000;
+let perfTokens = PERF_BURST;
+let perfRefillAt = 0;
+function perfTakeToken(now: number): boolean {
+  if (!perfRefillAt) perfRefillAt = now;
+  const refill = Math.floor((now - perfRefillAt) / PERF_REFILL_MS);
+  if (refill > 0) {
+    perfTokens = Math.min(PERF_BURST, perfTokens + refill);
+    perfRefillAt += refill * PERF_REFILL_MS;
+  }
+  if (perfTokens <= 0) return false;
+  perfTokens--;
+  return true;
+}
+/** THE LEDGER (2026-09-19). His 20:52 run posted windows 1 and 2 and nothing
+ *  after, and no page load on record had ever delivered a third — and nothing
+ *  on either side could say whether the posts were made, refused, or lost in
+ *  the commit. Every /api/perf outcome and every /api/perf/fail note the
+ *  client sends lands here, newest last, and GET /api/perf/log serves it. It
+ *  is memory: a new container starts empty, which the `since` field says. */
+const PERF_LOG_KEEP = 200;
+type PerfLogEntry = { at: string; kind: "post" | "fail" | "log"; run?: string; win?: number; final?: boolean; bytes?: number; status: number; ms?: number; error?: string; dropped?: number };
+const perfLog: PerfLogEntry[] = [];
+const perfLogSince = new Date().toISOString();
+function perfLogPush(e: PerfLogEntry): void {
+  perfLog.push(e);
+  if (perfLog.length > PERF_LOG_KEEP) perfLog.splice(0, perfLog.length - PERF_LOG_KEEP);
+}
 
 function ghHeaders(): Record<string, string> {
   return {
@@ -607,43 +637,42 @@ export function registerLiveRoutes(app: express.Application): void {
    * per-session id the client makes up. */
   app.post("/api/perf", async (req, res) => {
     res.setHeader("Cache-Control", "no-store");
-    if (!ghToken()) { res.status(503).json({ error: "no token" }); return; }
     const now = Date.now();
-    if (now - lastPerfCommit < PERF_MIN_GAP_MS) { res.status(429).json({ error: "too soon" }); return; }
     const body = (req.body ?? {}) as Record<string, unknown>;
+    const run = (body.run ?? {}) as { runId?: unknown; winIdx?: unknown };
+    const entry: PerfLogEntry = {
+      at: new Date(now).toISOString(),
+      kind: "post",
+      run: typeof run.runId === "string" ? run.runId.slice(0, 16) : undefined,
+      win: typeof run.winIdx === "number" ? run.winIdx : undefined,
+      final: body.final === true,
+      bytes: Number(req.headers["content-length"]) || undefined,
+      status: 0,
+    };
+    const answer = (status: number, payload: Record<string, unknown>) => {
+      entry.status = status;
+      entry.ms = Date.now() - now;
+      if (status !== 200 && typeof payload.error === "string") entry.error = payload.error.slice(0, 200);
+      perfLogPush(entry);
+      res.status(status).json(payload);
+    };
+    if (!ghToken()) { answer(503, { error: "no token" }); return; }
+    if (!perfTakeToken(now)) { answer(429, { error: "too soon" }); return; }
     const report = perfReport(body, new Date(now).toISOString());
-    if (report.frames === null && report.sections === null) { res.status(400).json({ error: "empty report" }); return; }
-    lastPerfCommit = now;
+    if (report.frames === null && report.sections === null) { answer(400, { error: "empty report" }); return; }
     const id = `${report.at.replace(/[:.]/g, "-")}-${Math.random().toString(36).slice(2, 8)}`;
-    const run = async () => {
+    const run2 = async () => {
       const url = `${GH_API}/repos/${REPO}/contents/live/telemetry/perf.json`;
       for (let attempt = 0; ; attempt++) {
-        const got = await fetch(`${url}?ref=${BRANCH}`, { headers: ghHeaders(), signal: AbortSignal.timeout(15000) });
-        let cur: { reports?: unknown[] } = {};
-        let sha: string | undefined;
-        if (got.ok) {
-          const j = (await got.json()) as { content?: string; sha?: string };
-          sha = j.sha;
-          try { cur = JSON.parse(Buffer.from(j.content ?? "", "base64").toString("utf8")); } catch { cur = {}; }
-        } else if (got.status !== 404) {
-          throw new Error(`GET perf.json: HTTP ${got.status}`);
-        }
-        const reports = Array.isArray(cur.reports) ? cur.reports : [];
-        reports.push({ id, ...report });
-        const doc = {
-          format: "nangijala-client-perf@1",
-          _comment:
-            "PER-DEVICE FRAME TIMINGS, posted by the game client with ?perf=1 and committed here " +
-            "by the server. The maintainer plays on a phone and tests in production; the headless " +
-            "harness walks ~1 cell per 24 s and never reaches the fresh-terrain code paths, so these " +
-            "are the only honest numbers for the paths that matter. Newest last; the file keeps the " +
-            "most recent reports only.",
-          updated_at: new Date(now).toISOString(),
-          reports: reports.slice(-PERF_KEEP),
-        };
+        /* ghGetContents reads past the contents API's 1 MB (the blob endpoint)
+         * and THROWS on a file it cannot parse — the history is never reset
+         * to the one report in hand (2026-09-13: it was, at 1,078,993 bytes). */
+        const { doc: cur, sha } = await ghGetContents("telemetry/perf.json");
+        const merged = perfDocMerge(cur, { id, ...report }, new Date(now).toISOString(), PERF_KEEP, PERF_KEEP_BYTES);
+        entry.dropped = merged.dropped;
         const body2: Record<string, unknown> = {
           message: "live: client perf report",
-          content: Buffer.from(JSON.stringify(doc, null, 2) + "\n", "utf8").toString("base64"),
+          content: Buffer.from(merged.text, "utf8").toString("base64"),
           branch: BRANCH,
         };
         if (sha) body2.sha = sha;
@@ -653,10 +682,40 @@ export function registerLiveRoutes(app: express.Application): void {
         throw new Error(`PUT perf.json: HTTP ${put.status}`);
       }
     };
-    const job = commitChain.then(run, run);
+    const job = commitChain.then(run2, run2);
     commitChain = job.then(() => undefined, () => undefined);
-    try { await job; res.json({ ok: true, id }); }
-    catch (e) { res.status(502).json({ error: String((e as Error).message).slice(0, 200) }); }
+    try { await job; answer(200, { ok: true, id }); }
+    catch (e) { answer(502, { error: String((e as Error).message).slice(0, 200) }); }
+  });
+
+  /* THE CLIENT'S SIDE OF THE LEDGER: a post that failed on the phone
+   * (a rejected fetch, a status that was not 200) is reported here by
+   * navigator.sendBeacon — a few hundred bytes on a channel that cannot be
+   * what failed. Nothing is committed; it is read back through /api/perf/log. */
+  app.post("/api/perf/fail", express.text({ type: "*/*", limit: "8kb" }), (req, res) => {
+    res.setHeader("Cache-Control", "no-store");
+    let b: Record<string, unknown> = {};
+    try {
+      b = typeof req.body === "string" ? (JSON.parse(req.body) as Record<string, unknown>) : ((req.body ?? {}) as Record<string, unknown>);
+    } catch {
+      b = { error: String(req.body).slice(0, 200) };
+    }
+    perfLogPush({
+      at: new Date().toISOString(),
+      kind: "fail",
+      run: typeof b.runId === "string" ? b.runId.slice(0, 16) : undefined,
+      win: typeof b.win === "number" ? b.win : undefined,
+      final: b.final === true,
+      bytes: typeof b.bytes === "number" ? b.bytes : undefined,
+      status: typeof b.status === "number" ? b.status : 0,
+      error: typeof b.error === "string" ? b.error.slice(0, 200) : undefined,
+    });
+    res.status(202).json({ ok: true });
+  });
+
+  app.get("/api/perf/log", (_req, res) => {
+    res.setHeader("Cache-Control", "no-store");
+    res.json({ since: perfLogSince, tokens: perfTokens, n: perfLog.length, log: perfLog });
   });
 
   app.post("/api/live/refresh", (_req, res) => {

@@ -1,22 +1,12 @@
 {
  "domain": "games-assistant",
- "updated_at": "2026-09-19T21:24:39+00:00",
+ "updated_at": "2026-09-19T21:40:58+00:00",
  "health": "running",
  "current": {
-  "unit": "THE BEACON DELIVERS EVERY WINDOW — his 20:52 run posted windows 1 and 2 and nothing after, and no page load on record has ever delivered a third: the post is made resilient (no keepalive on a live page, the response read, a failed window retried with the next), self-diagnosing (each window carries its own delivery ledger; a failed post reports itself on a second tiny channel; the server keeps a ring of every outcome at GET /api/perf/log), and the file stops resetting at 1 MB (capped by bytes, read through the blob API). Also: the remembered switch expires (his first run today was the remembered-ON trap: the tap turned it OFF at 47 s), and the first window's rtt/patches/input/ambient are reset at arming.",
-  "since": "2026-09-19T21:24:39+00:00",
-  "files": [
-   "games2/client/src/scenes/WorldScene.ts",
-   "games2/server/src/live.ts",
-   "games2/server/src/perfreport.ts",
-   "games2/server/test/perfreport.test.ts",
-   "games2/server/test/perfdoc.test.ts",
-   "games2/scripts/verify-beacon.mjs",
-   "games2/scripts/perf-read.mjs",
-   "games2/docs/perf.md",
-   "coordination/games-assistant.json"
-  ],
-  "note": "WorldScene.ts: only the perf beacon members (perfBeaconSend/perfBeaconTick/perfArmBaselines/perfBeaconArmed/togglePerfBeacon and the new outbox). live.ts: only the /api/perf handler and its helpers. Nothing of games' art-lane claim (cachepolicy/bundlestore/index) is touched."
+  "unit": "SHIPPED — THE BEACON DELIVERS EVERY WINDOW, AND THE RUN SAYS WHY WHEN ONE IS LOST (maintainer 2026-09-19: 'WHAT?! Let me redo it! I was running around the entire map!' — his redo posted windows 1 and 2 and nothing after; no page load on record had ever delivered a third). A window is posted from an outbox with retries (no keepalive on a live page, the response read), every window carries its delivery ledger (`beacon`), a failed post reports itself to /api/perf/fail, GET /api/perf/log on the server shows every outcome; the file is capped by bytes (the 1 MB reset that wiped the history on 09-13 cannot recur); a remembered perf switch expires after 3 h (his first run today: the tap that was to start recording turned a six-day-old ON switch OFF at 47 s); the first window's rtt/patches/input/ambient start at arming. Gates: verify-beacon.mjs refuses the first post and requires the same window re-posted with its ledger (old client: fails three ways); perfdoc.test.ts (byte cap, never a reset); perfreport.test.ts (the ledger survives). Law: docs/perf.md 'THE BEACON DELIVERS EVERY WINDOW'; the games2/CLAUDE.md line is on games' board (file in flight there).",
+  "since": "2026-09-19T21:40:58+00:00",
+  "files": [],
+  "next": "read his next run with perf-read.mjs and curl nangijala.online/api/perf/log; the 'big improvement' candidates from the two windows that arrived are in the reply to him (the DPR 2.23 fill behind the 49 unattributed long frames — the resolution dial he already has; groundSlice 33 ms slices; the periodic major-GC freeze his 09-13 runs show, with the allocation sites now profiled: nightlight's lightAt chain 36% of garbage at rest, rebuildOccluders' Map iteration 11% walking)."
  },
  "progress": {
   "units_shipped": 42
@@ -307,7 +297,13 @@
    "to": "games",
    "text": "ONE LAW LINE FOR games2/CLAUDE.md (you name it in flight), under Movement beside the CAM_SNAP_DIST line: 'A respawn or a veiled teleport goes through the LOADING SCREEN, never an instant snap: the veil first, the ask once the black is up, the hold on the boot's own streaming predicate from the answer (a snap, the revive, or a grace), the same cinema out; the ring prefetch waits behind it; a plain __ml.teleport raises no veil (docs/movement.md, THE RELOCATION VEIL).' Shipped on the maintainer's 2026-09-19 ask; gates relocatehold.test.ts + verify-respawnveil.mjs (four phases, including a real death through dbgkill).",
    "at": "2026-09-19T19:23:09+00:00"
+  },
+  {
+   "to": "games",
+   "text": "games-assistant, one law line for games2/CLAUDE.md (you have it in flight, so it goes to your board, not the file): THE BEACON DELIVERS EVERY WINDOW, AND THE RUN SAYS WHY WHEN ONE IS LOST (2026-09-19): a window is posted from an outbox with retries, a live page never uses keepalive and reads the response, every window carries its delivery ledger (`beacon`), a failed post reports itself to /api/perf/fail, and GET /api/perf/log on the server shows every outcome; the file is capped by bytes (never reset at 1 MB again) and a remembered perf switch expires after 3 h. Pointer: docs/perf.md 'THE BEACON DELIVERS EVERY WINDOW'. Context: his 20:52 run posted windows 1-2 and nothing after, and no page load on record had ever delivered a third.",
+   "at": "2026-09-19T21:37:12+00:00"
   }
  ],
- "updated": "2026-09-19T19:23:09Z"
+ "updated": "2026-09-19T19:23:09Z",
+ "units_shipped": 43
 }
