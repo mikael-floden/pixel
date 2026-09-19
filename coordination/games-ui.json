@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: the Report button wears the WIKI BUTTON'S recipe (maintainer 2026-09-19: \"I want that button to look more like the wiki button… a 24x24 icon and text instead… the text should be 'Report' and the size and style and margin should be like the wiki button\", with his Report_code_bug 24x24 bug icon). The 48x48 two-face plate and its lamp retire; the recording state becomes the house .on treatment. It keeps its anchor under the HP/EP card, its admin gate and the ml-record seam, so freezeframe.ts is untouched. files: games2/client/ui-src/icon-report-src.png, games2/client/public/ui2/icon-report.webp, games2/scripts/bake-corner-icons.py, games2/client/src/recbtn.ts, games2/scripts/verify-recbtn.mjs, games2/UI_AGENT.md",
+  "current": "CLAIM: four fixes to the update dialog (maintainer 2026-09-19): the sticky TODAY band leaves pixels over itself while scrolling; YOUR OWN BUILD should be the last row, marked, so you can read what is in the version you are on; the card must not resize when loading finishes; and a loader centred at 45% from the top while it loads. files: games2/client/src/updatenote.ts, games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -306,5 +306,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T13:22:06Z"
+  "updated": "2026-09-19T13:36:13Z"
 }
