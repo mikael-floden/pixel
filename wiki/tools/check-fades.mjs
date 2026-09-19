@@ -389,6 +389,26 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   ok(!badSide.length, `and names the field its RIM belongs to (${badSide.length ? `${badSide[0][0]} says ${badSide[0][1]}` : `all ${r6.keys.length}`})`);
   ok(r6.dividers.some((t) => /sit in the .* field/.test(t)),
     `the page says out loud where the two blocks split (“${r6.dividers.find((t) => /sit in the/.test(t)) ?? "missing"}”)`);
+  /* AND THE NUMBER SITS NEXT TO THE THING IT DESCRIBES. He read the percentage
+   * as wrong twice in ten minutes — "it looks more like 50% 50%", "67% and 63%
+   * grass on the top/ground in my ass!" — and both times it was right to the
+   * byte. He was checking it against the FIELD, which is ~50/50 whatever tile
+   * stands in it. A number that cannot be checked against a picture is a
+   * number that reads as a lie, so every card carries its own tile. */
+  const sw = await p.evaluate(() => [...document.querySelectorAll(".fade-tile")].map((c) => ({
+    key: c.querySelector(".fade-key")?.title ?? null,
+    src: c.querySelector(".fade-swatch img")?.getAttribute("src") ?? null,
+    cap: c.querySelector(".fade-swatch-cap")?.textContent ?? "",
+    num: c.querySelector("b")?.textContent ?? "",
+    box: (() => { const r = c.querySelector(".fade-swatch")?.getBoundingClientRect(); return r ? Math.round(r.height) : 0; })(),
+  })));
+  const noSwatch = sw.filter((x) => !x.src || x.box < 40);
+  ok(!noSwatch.length, `every card shows the tile the number is about (${noSwatch.length ? noSwatch[0].key : `all ${sw.length}`})`);
+  const wrongArt = sw.filter((x) => x.src && x.key && !byKey.has(x.key) === false
+    && !x.src.endsWith(byKey.get(x.key).file.split("/").pop()));
+  ok(!wrongArt.length, `and it is that tile's OWN art, not a neighbour's (${wrongArt.length ? wrongArt[0].key : "all matched"})`);
+  const capMismatch = sw.filter((x) => x.cap && x.num && parseInt(x.cap.match(/(\d+)% of this/)?.[1] ?? "-1") !== parseInt(x.num));
+  ok(!capMismatch.length, `and the caption repeats that card's own number (${capMismatch.length ? capMismatch[0].cap : "all agree"})`);
   ok(r6.keys.slice(firstDone).join() === top2.join(), `and the reviewed block is exactly the two he judged, grass-descending (${r6.keys.slice(firstDone).map((k) => k.split("/").pop()).join(", ")})`);
   ok(/already reviewed/.test(r6.divider ?? ""), `the seam between the blocks is named (“${r6.divider}”)`);
   ok(r6.pill === `${MERGED.length - 2} to review first`, `and the panel says how many are left (${r6.pill})`);

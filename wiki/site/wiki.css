@@ -2106,3 +2106,23 @@ input[type="range"] { accent-color: var(--accent); }
    chrome. */
 .agent-start { margin: 6px 0 10px; font-size: 13px; line-height: 1.45; }
 .agent-start-bad { color: var(--bad, #ff8a80); }
+
+/* THE TILE, BESIDE ITS OWN NUMBER (maintainer 2026-09-19, having read the
+ * percentage as wrong twice in ten minutes: "both tiles say 90% grass, but it
+ * looks more like 50% 50%", then "67% and 63% grass on the top/ground in my
+ * ass!"). Both numbers were right to the byte. He was checking them against
+ * the FIELD — 36 cells of wandering edge, ~50/50 by construction — because
+ * that is the only picture the card offered, and the tile the number describes
+ * is one ~60px cell inside it. A number nobody can verify by eye reads as a
+ * lie. So the tile is shown alone, at 2x, cropped to the TOP FACE: the exact
+ * surface the percentage counts, and nothing else. */
+.fade-swatch-row { display: flex; align-items: center; gap: 10px; margin: 2px 0 8px; }
+.fade-swatch { width: 128px; height: 62px; flex: none; overflow: hidden; position: relative;
+  border-radius: 4px; background: var(--surface-2); }
+/* 2x of the 64x64 frame, slid up so rows 8-39 fill the box — the top diamond
+ * (rows 9-37) and nothing more. A little wall survives in the lower corners
+ * and cannot not: the diamond's widest row IS where the wall begins, so any
+ * rectangular crop holding the whole top face holds those two triangles too.
+ * They read as "this is a tile", and the caption says which surface counts. */
+.fade-swatch img { position: absolute; left: 0; top: -16px; width: 128px; height: 128px; image-rendering: pixelated; }
+.fade-swatch-cap { font-size: 12px; line-height: 1.35; }
