@@ -64,6 +64,7 @@ const SW_CLS = "ml-maplayer-sw";
 const DLG_CLS = "ml-layers";
 const SVG_CLS = "ml-maplayer-svg";
 const MARK_CLS = "ml-maplayer-marks";
+const PULSE_CLS = "ml-maplayer-pulse";
 const KEY = "ml-map-layers"; // which layers are on, comma separated
 
 /** What a layer gets: the live feed, the world→image projection (already in
@@ -73,7 +74,10 @@ export interface LayerCtx {
   feed: MinimapFeed;
   /** Cell (col,row) on the ground plane → [x%, y%]. */
   at: (col: number, row: number) => [number, number];
-  svg: SVGSVGElement;
+  /** Where this layer draws: its OWN <g> inside the overlay (data-layer=id),
+   *  so one layer's marks can be found — and pulsed — without touching the
+   *  others'. A layer only ever appends to it. */
+  svg: SVGElement;
   el: (name: string, attrs: Record<string, string | number>) => SVGElement;
   /** A TEXT MARK, as HTML rather than <text>. The svg is stretched to the
    *  image box (`preserveAspectRatio="none"`) so its percent coordinates are
@@ -373,15 +377,23 @@ function ambientLayers(): Layer[] {
     has: () => ambientZones.some((z) => effect in z.effects),
     draw: (ctx) => {
       const color = heldColor(`ambient:${effect}`) || PALETTE[0];
-      // `ambientZones` is sorted biggest-first, so a town draws over the
-      // province it sits in rather than under it.
+      // `ambientZones` is sorted biggest-first, so a small place draws over
+      // a large one rather than under it.
       for (const z of ambientZones) {
         const pct = z.effects[effect];
         if (pct === undefined) continue;
-        // The fill DEEPENS with how often the effect is active here: 100%
-        // reads as a wash, a rare 8% as a tint — the pct is on the map
-        // without a number over it (no text over the map, the law above).
-        const alpha = 0.1 + 0.3 * (pct / 100);
+        // A DOOR IS NOT DRAWN. maps2's zones (2026-09-19) leave a "door" of
+        // half a percent open on nearly every place — snow on the meadow,
+        // once in two hundred windows — so painting every share put a faint
+        // snow wash over the whole sea and most of the island, and "where is
+        // snow?" had no answer. The map answers where an effect LIVES: the
+        // place's signature (a wash) and its supports (a tint).
+        if (pct < 1) continue;
+        // The fill DEEPENS with how often the effect is active here: a
+        // signature at 90 reads as a wash, a support at 10 as a tint — the
+        // share is on the map without a number over it (no text over the
+        // map, the law above).
+        const alpha = 0.1 + 0.35 * (pct / 100);
         ctx.svg.appendChild(
           ctx.el("path", {
             d: poly(ctx, z.area),
@@ -496,12 +508,30 @@ function styleOnce() {
      layer here looks exactly like ticking an effect there. */
   .${DLG_CLS}-back{position:fixed;inset:0;z-index:70;background:rgba(0,0,0,.5);
     backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+  /* A HEIGHT THAT LOOKS GOOD, NOT THE TALLEST THE SCREEN ALLOWS (maintainer
+     2026-09-19: "the dialog should not be able to grow that insanely tall.
+     The user can scroll. Use a height that looks good instead"): the card
+     stops at 560px or two thirds of the screen, whichever is less, and the
+     LIST scrolls inside it under a fixed title and above a fixed Done — the
+     way out never scrolls away. */
   .${DLG_CLS}{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    width:min(360px,calc(100vw - 32px));max-height:calc(100dvh - 48px);overflow-y:auto;
-    box-sizing:border-box;display:flex;flex-direction:column;gap:8px;padding:14px;
+    width:min(400px,calc(100vw - 32px));max-height:min(560px,calc(100dvh - 96px));
+    box-sizing:border-box;display:flex;flex-direction:column;padding:0;overflow:hidden;
     background:var(--bg);color:var(--ink);border:1px solid var(--border);border-radius:14px;
     box-shadow:var(--shadow);font:14px/1.45 var(--sans)}
   .${DLG_CLS} *{box-sizing:border-box}
+  .${DLG_CLS}-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;
+    padding:14px 16px 10px;border-bottom:1px solid var(--border);flex:none}
+  .${DLG_CLS}-title b{font:700 16px/1.2 var(--sans);letter-spacing:.01em}
+  .${DLG_CLS}-body{flex:1 1 auto;min-height:0;overflow-y:auto;overscroll-behavior:contain;
+    display:flex;flex-direction:column;gap:8px;padding:10px 16px 12px;
+    box-shadow:inset 0 -14px 12px -12px rgba(0,0,0,.22)}
+  .${DLG_CLS}-foot{flex:none;padding:10px 16px 14px;border-top:1px solid var(--border)}
+  /* TWO COLUMNS: thirty-odd effects at one per line was a list you scrolled
+     through; two abreast is a table you scan (maintainer 2026-09-19: "Maybe
+     ambient zones can be displayed in two columns?"). Names are short, so
+     each cell keeps the whole row recipe — box, swatch, name. */
+  .${DLG_CLS}-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
   /* SECTIONS LIKE SETTINGS' (maintainer 2026-09-19: "You can have sections in
      the dialog similar to the sections under settings"): the rule above the
      heading is the whole recipe — .ml-amb-title in hud.ts is border-top +
@@ -510,21 +540,30 @@ function styleOnce() {
   .${DLG_CLS}-h{display:flex;align-items:center;gap:6px;
     border-top:1px solid var(--border);margin-top:6px;padding-top:12px;
     color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;text-transform:uppercase}
-  .${DLG_CLS}-h:first-child{border-top:none;margin-top:0;padding-top:0}
+  .${DLG_CLS}-body .${DLG_CLS}-h:first-child{border-top:none;margin-top:0;padding-top:2px}
   .${DLG_CLS}-h .ml-plate-btn{min-height:26px;padding:2px 9px;font-size:11px;border-radius:7px;
     text-transform:none;letter-spacing:0;font-weight:600}
   .${DLG_CLS}-h .ml-plate-btn:first-of-type{margin-left:auto}
-  .${DLG_CLS} .ml-layer-row{justify-content:flex-start;gap:10px;text-align:left;white-space:nowrap;
-    min-height:40px;padding:6px 12px}
+  .${DLG_CLS} .ml-layer-row{justify-content:flex-start;gap:9px;text-align:left;white-space:nowrap;
+    min-height:40px;padding:6px 10px;min-width:0}
+  .${DLG_CLS} .ml-layer-row>span:last-child{overflow:hidden;text-overflow:ellipsis;min-width:0}
   /* the same swatch as the pill, so you can pick by colour in here and then
      read that colour off the map without a second legend to learn */
   .${DLG_CLS} .${SW_CLS}{margin-left:2px}
-  .${DLG_CLS}-done{margin-top:6px}
-  /* the cap, stated once above Done — quiet until it bites, then it is the
-     line that explains why the next tap does nothing */
-  .${DLG_CLS}-cap{margin-top:8px;text-align:center;color:var(--muted);
-    font:600 11px/1.3 var(--sans)}
+  .${DLG_CLS}-done{margin:0;width:100%}
+  /* the cap, in the title's right-hand slot — quiet until it bites, then it
+     is the line that explains why the next tap does nothing */
+  .${DLG_CLS}-cap{color:var(--muted);font:600 11px/1.3 var(--sans);text-align:right}
   .${DLG_CLS}-cap.full{color:var(--accent-ink)}
+  /* THE PULSE: four beats of the layer's own marks (and its pill), then
+     exactly as before. Opacity, so a wash blinks and a pin blinks alike. */
+  @keyframes ml-maplayer-pulse{0%,100%{opacity:1}50%{opacity:.12}}
+  @keyframes ml-maplayer-ring{0%,100%{box-shadow:0 0 0 0 transparent}50%{box-shadow:0 0 0 3px var(--accent)}}
+  .${PULSE_CLS}{animation:ml-maplayer-pulse .55s ease-in-out 4}
+  .${PILL_CLS}.${PULSE_CLS}{animation:ml-maplayer-ring .55s ease-in-out 4}
+  @media (prefers-reduced-motion: reduce){
+    .${PULSE_CLS}{animation:ml-maplayer-pulse 1.6s ease-in-out 1}
+    .${PILL_CLS}.${PULSE_CLS}{animation:ml-maplayer-ring 1.6s ease-in-out 1}}
   /* a row that cannot be turned on while the cap is reached */
   .${DLG_CLS} .ml-layer-row.blocked{opacity:.45;cursor:default}
   /* a layer that is OFF holds no colour yet — an outline, not a wrong colour */
@@ -603,9 +642,19 @@ function openDialog() {
   const card = document.createElement("div");
   card.className = DLG_CLS;
   card.setAttribute("role", "dialog");
+  card.setAttribute("aria-label", "Map layers");
   const rows: { id: string; btn: HTMLButtonElement; box: HTMLElement; sw: HTMLElement }[] = [];
   const cap = document.createElement("div");
   cap.className = `${DLG_CLS}-cap`;
+  const title = document.createElement("div");
+  title.className = `${DLG_CLS}-title`;
+  const tb = document.createElement("b");
+  tb.textContent = "Map layers";
+  title.append(tb, cap);
+  card.appendChild(title);
+  const body = document.createElement("div");
+  body.className = `${DLG_CLS}-body`;
+  card.appendChild(body);
   const paint = () => {
     const left = roomLeft();
     for (const r of rows) {
@@ -622,7 +671,7 @@ function openDialog() {
       r.sw.style.background = c || "transparent";
       r.sw.classList.toggle("empty", !c);
     }
-    cap.textContent = left > 0 ? `${MAX_ON - left} of ${MAX_ON} layers` : `${MAX_ON} of ${MAX_ON} layers — turn one off to add another`;
+    cap.textContent = left > 0 ? `${MAX_ON - left} of ${MAX_ON}` : `${MAX_ON} of ${MAX_ON} — turn one off to add another`;
     cap.classList.toggle("full", left <= 0);
   };
   const groups: LayerGroup[] = ["map", "ambient"];
@@ -652,7 +701,10 @@ function openDialog() {
       });
       h.appendChild(b);
     }
-    card.appendChild(h);
+    body.appendChild(h);
+    const grid = document.createElement("div");
+    grid.className = `${DLG_CLS}-grid`;
+    body.appendChild(grid);
     for (const l of layers) {
       const btn = document.createElement("button");
       btn.type = "button";
@@ -670,17 +722,19 @@ function openDialog() {
         paint();
         ensureMapLayers();
       });
-      card.appendChild(btn);
+      grid.appendChild(btn);
       rows.push({ id: l.id, btn, box, sw });
     }
   }
-  card.appendChild(cap);
+  const foot = document.createElement("div");
+  foot.className = `${DLG_CLS}-foot`;
   const done = document.createElement("button");
   done.type = "button";
   done.className = `ml-plate-btn ${DLG_CLS}-done`;
   done.textContent = "Done";
   done.addEventListener("click", closeDialog);
-  card.appendChild(done);
+  foot.appendChild(done);
+  card.appendChild(foot);
   back.appendChild(card);
   back.addEventListener("click", (e) => {
     if (e.target === back) closeDialog();
@@ -739,18 +793,19 @@ function syncButton() {
     pill.type = "button";
     pill.className = PILL_CLS;
     pill.dataset.layer = l.id;
-    // A pill is the layer's own off switch — the gesture the per-layer chips
-    // had before the chooser replaced them, and the shortest way back out of
-    // a layer you turned on to look at once.
-    pill.title = `hide ${l.label}`;
-    pill.setAttribute("aria-label", `hide ${l.label}`);
+    // A TAP FINDS THE LAYER ON THE MAP (maintainer 2026-09-19: "If I go to
+    // the map-tab and press on a pill - I want that area to pulsate in order
+    // for me to find it better. I don't want to remove it. To remove it I
+    // will use the dialog."): the layer's marks and the pill itself pulse
+    // together, four beats, and nothing changes state. The pill was its own
+    // off switch before, which made the one gesture a legend invites — "which
+    // one is this?" — the one that destroyed what you were asking about.
+    pill.title = `find ${l.label} on the map`;
+    pill.setAttribute("aria-label", `find ${l.label} on the map`);
     const name = document.createElement("span");
     name.textContent = l.label;
     pill.append(swatch(l.mark()), name);
-    pill.addEventListener("click", () => {
-      setLayer(l.id, false);
-      ensureMapLayers();
-    });
+    pill.addEventListener("click", () => pulseLayer(l.id));
     row.appendChild(pill);
   }
   row.appendChild(openBtn); // last child = bottom-right (margin-left:auto)
@@ -818,6 +873,7 @@ export function ensureMapLayers() {
   if (marks) marks.textContent = "";
   if (!on.size) return;
   const at = (col: number, row2: number) => minimapCellPct(feed, meta, col, row2, 0);
+  let drawing = ""; // the layer whose marks are being made — every mark carries it
   const ctx: LayerCtx = {
     feed,
     at,
@@ -835,6 +891,7 @@ export function ensureMapLayers() {
       const y = Math.max(3, Math.min(97, py));
       const b = document.createElement("b");
       if (strong) b.className = "on";
+      b.dataset.layer = drawing;
       b.style.left = `${x.toFixed(3)}%`;
       b.style.top = `${y.toFixed(3)}%`;
       b.textContent = text;
@@ -859,6 +916,7 @@ export function ensureMapLayers() {
       if (px < 0 || px > 100 || py < 0 || py > 100) return;
       const b = document.createElement("b");
       b.className = "pin";
+      b.dataset.layer = drawing;
       b.style.left = `${px.toFixed(3)}%`;
       b.style.top = `${py.toFixed(3)}%`;
       // THE MARK IS THE WHOLE PIN — NO TEXT OVER THE MAP (maintainer
@@ -875,7 +933,33 @@ export function ensureMapLayers() {
       marks.appendChild(b);
     },
   };
-  for (const l of allLayers()) if (on.has(l.id)) l.draw(ctx);
+  for (const l of allLayers()) {
+    if (!on.has(l.id)) continue;
+    // ONE <g> PER LAYER, so a layer's marks can be pulsed as one thing.
+    const g = svgEl("g", { "data-layer": l.id });
+    svg.appendChild(g);
+    drawing = l.id;
+    l.draw({ ...ctx, svg: g });
+    drawing = "";
+  }
+}
+
+/** PULSE ONE LAYER — its wash or pins on the map and its own pill, four
+ *  beats, then exactly as before. Restarted on a second tap (the class comes
+ *  off and back on across a forced layout), so tapping twice finds it twice. */
+function pulseLayer(id: string) {
+  const sel = `[data-layer="${id}"]`;
+  const targets: Element[] = [
+    ...(svg?.querySelectorAll(sel) ?? []),
+    ...(marks?.querySelectorAll(sel) ?? []),
+    ...(row?.querySelectorAll(`.${PILL_CLS}${sel}`) ?? []),
+  ];
+  for (const t of targets) {
+    t.classList.remove(PULSE_CLS);
+    void (t as HTMLElement).offsetWidth;
+    t.classList.add(PULSE_CLS);
+    t.addEventListener("animationend", () => t.classList.remove(PULSE_CLS), { once: true });
+  }
 }
 
 /** QA/probe: which layers are on; with an argument, set one. */

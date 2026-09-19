@@ -644,15 +644,28 @@ from the games agent), #18 (title/landing screen).
   still names itself for a screen reader ("Choose layers (N on)"). The dialog (`.ml-layers`, the drop-quantity card's recipe, z 70) is
   rebuilt on every open from `offered()` — every layer whose `has()` is true —
   with all/none per group; a tick applies at once and the map behind redraws;
-  backdrop, Escape and Done close. The AMBIENT-ZONE layers are DERIVED, one per
+  backdrop, Escape and Done close. **IT HAS A HEIGHT THAT LOOKS GOOD, NOT THE
+  TALLEST THE SCREEN ALLOWS** (maintainer 2026-09-19: "the dialog should not
+  be able to grow that insanely tall. The user can scroll. Use a height that
+  looks good instead"): a 400px card capped at 560px or two thirds of the
+  screen, a fixed title row ("Map layers" + the "n of 10" cap) and a fixed Done
+  under a body that scrolls on its own, and the rows of every group in **two
+  columns** (`.ml-layers-grid`; "Maybe ambient zones can be displayed in two
+  columns?") — thirty effects one per line was a list you scroll, two abreast
+  is a table you scan. The AMBIENT-ZONE layers are DERIVED, one per
   effect, from **maps2's own `ambient.json`, schema `pixel-maps3/ambient@1`** —
   `{size, exclusive, zones:[{id, name, kind, area, cells, effects}]}` where
   `area` is a CLOSED POLYGON of world cells (coastlines run to 830 points, so
   every point is projected — `poly()`, never `quad()`) and `effects` is a MAP
-  of effect name → percent, so ONE zone carries MANY effects and a layer per
-  effect is derived across all 90 of them. Drawn biggest-zone-first (a town
-  over the province it sits in), fill deepening with that zone's pct, no text
-  over the map; file missing = no group.
+  of effect name → share, so ONE zone carries MANY effects and a layer per
+  effect is derived across all of them. Drawn biggest-zone-first (a small
+  place over the large one beside it), fill deepening with that zone's share,
+  no text over the map; file missing = no group. **A DOOR IS NOT DRAWN**: since
+  2026-09-19 a place carries one signature at 90, supports at 20 or under and
+  "doors" at 0.5 (the effect that should not happen there, once in two
+  hundred windows — `maps2/spec/AMBIENT.md`), and painting every share put a
+  faint snow wash over the whole sea; a share under 1 is skipped, so the map
+  answers where an effect LIVES.
   **THE PAID-FOR TRAP, 2026-09-19: this reader was written against
   `ambient_zones.json` / `pixel-maps2/ambient-zones@1` — a schema PROPOSED to
   maps2 and never adopted.** It fetched a name nothing publishes, 404'd, and
@@ -674,8 +687,16 @@ from the games agent), #18 (title/landing screen).
   have a pill for it so the user can see what color correspond to what layer …
   so we don't have to [show] every ambient effect as a pill for all users all
   the time"). The button is the CONTROL, the pills are the KEY: swatch + name,
-  rebuilt from `offered()` beside the button, and each is its own off switch —
-  the gesture the per-layer chips had before the chooser replaced them.
+  rebuilt from `offered()` beside the button. **A TAP ON A PILL FINDS THE
+  LAYER, IT NEVER REMOVES IT** (maintainer 2026-09-19: "If I go to the map-tab
+  and press on a pill - I want that area to pulsate in order for me to find it
+  better. I don't want to remove it. To remove it I will use the dialog."):
+  every layer draws into its own `<g data-layer>` and stamps its labels and
+  pins with the same id, so `pulseLayer` blinks that layer's marks and the
+  pill together, four beats (`.ml-maplayer-pulse`, opacity — a wash and a pin
+  blink alike; one slow fade under reduced motion) and changes nothing. The
+  pill used to be its own off switch, which made the one gesture a legend
+  invites — "which one is this?" — the one that destroyed what you asked about.
   EVERY LAYER CARRIES `mark()` — colour + shape — AND ITS `draw` READS THE SAME
   CONSTANT (`ZONE_LINE`, `PIN_FILL`, the effect's hue), so a pill can never
   name a colour the map does not paint; the swatch copies the SHAPE too
