@@ -1,8 +1,18 @@
 {
   "domain": "maps2-assistant",
-  "updated_at": "2026-09-19T18:35:01+00:00",
+  "updated_at": "2026-09-19T19:26:30+00:00",
   "health": "running",
-  "current": "IDLE. render3 draws the game's details (1 in 100, never on a ramp, never touching) - claim released. Owed: the cliff-foot vote in render3 after games settles it.",
+  "current": {
+    "unit": "CLAIM — AMBIENT ZONES: ONE SIGNATURE PER PLACE, ALMOST ALWAYS, WITH A DOOR (maintainer 2026-09-19: 'Why did you put an ambient snowing zone on grass? ... your defaults are bad ... The ambient effect should help the player to remember a place ... almost always ... always leave a small door open to something weird'). The 09-18 zones template every place of a kind with the same 5-10 effects at middling shares and lay five weather ellipses over the whole island (the mountain weather: 24,510 cells, 27% grass, snow 35), so every place blends and nothing is anyone's. Redo in ambient.py: no provinces; each zone one signature effect at ~90, a few supports <= 20 that never compete, and doors at 0.5 (one window in two hundred) for the weird thing; same-kind neighbours never share a signature. ambient.json re-derived with --apply, the review page republished as a NEW artifact, AMBIENT.md rewritten in place. world.json untouched.",
+    "since": "2026-09-19T19:26:30+00:00",
+    "files": [
+      "maps2/pipeline/ambient.py",
+      "maps2/worlds3/the_game/ambient.json",
+      "maps2/spec/AMBIENT.md",
+      "maps2/reports/the_game.json",
+      "coordination/maps2-assistant.json"
+    ]
+  },
   "progress": {
     "units_shipped": 14
   },
