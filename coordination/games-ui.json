@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "idle — the portrait chat mirror landed. Next: awaiting his word.",
+  "current": "CLAIM: the map layers chooser — a LEGEND PILL per selected layer + Settings-style sections (maintainer 2026-09-19: \"Once something has been selected here I still think we should have a pill for it so the user can see what color correspond to what layer… It's just easier with a dialog so we don't have to [show] every ambient effect as a pill for all users all the time. You can have sections in the dialog similar to the sections under settings\"). The pill is the LEGEND the dialog cannot be: swatch + name, one per layer that is ON, tap to hide. Every layer gains a mark() the DRAW function reads too, so a pill can never claim a colour the map does not paint. files: games2/client/src/maplayers.ts, games2/scripts/verify-map.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -276,5 +276,5 @@
       "what": "The update dialog's chips follow the CSS and carry HIS name for each agent. Per-area hue removed (it derived from the name, so it followed no theme); every chip is --surface-2/--border/--muted, the sha chip's recipe. Board ids display as his session names (games-ui -> UI, maps2 -> Map, games-perf -> Optimization, games-audio -> Composer, characters2 -> Character, ...); the -assistant and -github-agent suffixes are DERIVED off the stem, so a new domain's github agent needs no entry. verify-updatenotes 27/27, its colour check replaced by a computed-theme-token assertion. files: games2/client/src/updatenote.ts, games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md"
     }
   ],
-  "updated": "2026-09-19T09:26:23Z"
+  "updated": "2026-09-19T09:55:39Z"
 }
