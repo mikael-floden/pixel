@@ -1,16 +1,18 @@
 {
   "domain": "maps2-assistant",
-  "updated_at": "2026-09-19T19:26:30+00:00",
+  "updated_at": "2026-09-19T19:35:59+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIM — AMBIENT ZONES: ONE SIGNATURE PER PLACE, ALMOST ALWAYS, WITH A DOOR (maintainer 2026-09-19: 'Why did you put an ambient snowing zone on grass? ... your defaults are bad ... The ambient effect should help the player to remember a place ... almost always ... always leave a small door open to something weird'). The 09-18 zones template every place of a kind with the same 5-10 effects at middling shares and lay five weather ellipses over the whole island (the mountain weather: 24,510 cells, 27% grass, snow 35), so every place blends and nothing is anyone's. Redo in ambient.py: no provinces; each zone one signature effect at ~90, a few supports <= 20 that never compete, and doors at 0.5 (one window in two hundred) for the weird thing; same-kind neighbours never share a signature. ambient.json re-derived with --apply, the review page republished as a NEW artifact, AMBIENT.md rewritten in place. world.json untouched.",
+    "unit": "CLAIM — AMBIENT ZONES: ONE SIGNATURE PER PLACE, ALMOST ALWAYS, WITH A DOOR (maintainer 2026-09-19: 'Why did you put an ambient snowing zone on grass? ... your defaults are bad ... The ambient effect should help the player to remember a place ... almost always ... always leave a small door open to something weird'). The 09-18 zones template every place of a kind with the same 5-10 effects at middling shares and lay five weather ellipses over the whole island (the mountain weather: 24,510 cells, 27% grass, snow 35), so every place blends and nothing is anyone's. Redo in ambient.py: no provinces; each zone one signature effect at ~90, a few supports <= 20 that never compete, and doors at 0.5 (one window in two hundred) for the weird thing; same-kind neighbours never share a signature. ambient.json re-derived with --apply, the review page republished as a NEW artifact, AMBIENT.md rewritten in place. world.json untouched. || PLUS, HIS DIRECT ORDER 2026-09-19 (map tab, games2/client/src/maplayers.ts - the games agent's file, taken on his instruction to me, nobody has it in flight): tapping a legend pill PULSATES that layer's areas on the map instead of removing it (removal stays in the dialog); the chooser dialog gets a height that looks good with scrolling inside, and the ambient zones list goes two columns.",
     "since": "2026-09-19T19:26:30+00:00",
     "files": [
       "maps2/pipeline/ambient.py",
       "maps2/worlds3/the_game/ambient.json",
       "maps2/spec/AMBIENT.md",
       "maps2/reports/the_game.json",
-      "coordination/maps2-assistant.json"
+      "coordination/maps2-assistant.json",
+      "games2/client/src/maplayers.ts",
+      "games2/CLAUDE.md"
     ]
   },
   "progress": {
