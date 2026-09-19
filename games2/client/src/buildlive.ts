@@ -47,7 +47,11 @@ export function buildLive(sha: unknown): void {
   // earlier version of this dropped any message it could not vouch for, which
   // would have made the one case that matters most — the bad build being taken
   // away — the one case nobody was told about.
-  void sha; // the wire value is deliberately unused — see above
+  // Logged, never acted on. When a page does not take the banner it is either
+  // because it was never told or because /version disagreed, and those look
+  // identical from the outside; this separates them. The sha is printed as the
+  // SERVER'S CLAIM precisely because the handler goes and checks it.
+  console.log(`[nangijala] the server says a new build is live${typeof sha === "string" && sha ? ` (${sha.slice(0, 9)})` : ""} — checking /version`);
   try {
     handler?.();
   } catch {
