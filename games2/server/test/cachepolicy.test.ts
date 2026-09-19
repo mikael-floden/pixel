@@ -70,13 +70,53 @@ test("a sibling directory cannot pass as the bundle dir", () => {
   assert.equal(cc(join(CLIENT_DIST, "index-BhE6GoEV.js")), REVALIDATE);
 });
 
-test("the ?v art grant is unchanged: matching sha only, real deploys only", () => {
-  const tile = join(GAME_ROOT, "..", "tiles", "plates", "grass", "clean.webp");
-  assert.equal(cc(tile, SHA), IMMUTABLE, "?v matches this instance");
-  assert.equal(cc(tile, "deadbeef"), REVALIDATE, "rollout mismatch degrades, never freezes");
-  assert.equal(cc(tile, undefined), REVALIDATE, "unstamped art revalidates");
-  assert.equal(cc(tile, "dev", "dev"), REVALIDATE, "a dev build never grants a year");
-  assert.equal(cc(tile, "", ""), REVALIDATE, "an unset GIT_SHA never grants a year");
+test("the ?v grant for NON-ART: matching sha only, real deploys only", () => {
+  const pub = join(CLIENT_DIST, "logo.webp"); // client/public — the art lane never publishes it
+  assert.equal(cc(pub, SHA), IMMUTABLE, "?v matches this instance");
+  assert.equal(cc(pub, "deadbeef"), REVALIDATE, "rollout mismatch degrades, never freezes");
+  assert.equal(cc(pub, undefined), REVALIDATE, "unstamped revalidates");
+  assert.equal(cc(pub, "dev", "dev"), REVALIDATE, "a dev build never grants a year");
+  assert.equal(cc(pub, "", ""), REVALIDATE, "an unset GIT_SHA never grants a year");
+});
+
+test("ART IS NEVER FROZEN BY ?v — THE ART LANE'S WHOLE SAFETY ARGUMENT", () => {
+  // `?v=<sha>` promises "for this GIT_SHA these bytes are fixed". The art lane
+  // republishes art onto a RUNNING instance, so the pixels move while GIT_SHA
+  // stands still and that promise becomes one URL naming two byte-sets for a
+  // year — the unrecallable bug. Art earns its year through ?h alone, where the
+  // hash IS the bytes. Measured live before the change: /assets/items/
+  // abalone_shell_half/sprite.webp?v=b18bd137... answered
+  // `public, max-age=31536000, immutable`.
+  const art = join(GAME_ROOT, "..", "tiles", "plates", "grass", "clean.webp");
+  const asArt = (queryV?: unknown, gitSha = SHA) =>
+    cacheControlFor({ filePath: art, bundleDir: BUNDLE_DIR, gitSha, queryV, isArt: true });
+  assert.equal(asArt(SHA), REVALIDATE, "a matching ?v no longer freezes art");
+  assert.equal(asArt("deadbeef"), REVALIDATE);
+  assert.equal(asArt(undefined), REVALIDATE);
+  // ...and the SAME path with isArt unset keeps the old answer, so the flag is
+  // what decides and nothing else drifted.
+  assert.equal(cc(art, SHA), IMMUTABLE, "the rule itself is unchanged; only the caller's flag revokes it");
+});
+
+test("?h still grants a year to ART — that grant is arithmetic, not a promise", () => {
+  const art = join(GAME_ROOT, "..", "scenery", "trees", "oak.webp");
+  const real = "0123456789abcdef";
+  const asArt = (queryH: unknown, fileHash: () => string | null, queryV?: unknown) =>
+    cacheControlFor({ filePath: art, bundleDir: BUNDLE_DIR, gitSha: SHA, queryV, queryH, fileHash, isArt: true });
+  assert.equal(asArt(real, () => real), IMMUTABLE, "hash matches the served bytes → a year, art or not");
+  assert.equal(asArt("fedcba9876543210", () => real), REVALIDATE, "a stale hash never freezes new pixels");
+  assert.equal(asArt(real, () => real, SHA), IMMUTABLE, "?v being present neither helps nor hurts");
+  assert.equal(asArt("fedcba9876543210", () => real, SHA), REVALIDATE, "and a wrong ?h cannot fall back on ?v for art");
+});
+
+test("a hashed BUNDLE file keeps its grant even if a caller mislabels it art", () => {
+  // Rule (1) is tested first and is about a directory rollup owns, so an
+  // isArt=true that reached the bundle dir by mistake cannot cost the bundle
+  // its cache. Belt: the two are different mounts and cannot swap.
+  assert.equal(
+    cacheControlFor({ filePath: join(BUNDLE_DIR, "index-BhE6GoEV.js"), bundleDir: BUNDLE_DIR, gitSha: SHA, queryV: SHA, isArt: true }),
+    IMMUTABLE,
+  );
 });
 
 test("the ?h grant is verified against the SERVED BYTES, never against the index or the URL alone", () => {

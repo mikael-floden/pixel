@@ -300,16 +300,26 @@ pipeline.
   its URL across deploys and the browser never asks for it again, while a
   stale index can only earn a revalidated response, never a frozen wrong
   file (maintainer 2026-09-02: one uncached list of hashes, fetch only what
-  changed — and no cache bugs). `?v=<build sha>` (VITE_GIT_SHA) remains the
-  FALLBACK for whatever the index does not name — client/public art (UI,
-  icons), a staging world's CDN URLs, any boot where the index
-  failed — with the old rule: `immutable` only when v matches the server's
-  OWN GIT_SHA, else no-cache. sw.js caches nothing. The index is fetched
+  changed — and no cache bugs). `?v=<sha>` (the IMAGE's, learned from
+  `/version`) remains the FALLBACK for whatever the index does not name — a
+  staging world's CDN URLs, any boot where the index failed — and it grants
+  `immutable` only when v matches the server's OWN GIT_SHA.
+  **BUT NOT FOR ANYTHING THE ART LANE CAN REPUBLISH** (`isArt` in
+  `cachepolicy.ts`): the 13 `/assets/<domain>` mounts and the five generated
+  catalogs get NOTHING from `?v=`, because their bytes can change while
+  GIT_SHA stands still and `?v=<sha>` promises the opposite. Those earn a year
+  through `?h=` alone, where the hash IS the bytes. Costs nothing measurable —
+  the index names all 50,121 files under ASSETS_ROOT, so `?h=` carries every
+  one of them and `?v=` only ever covered the boot window and a failed index
+  read, which now revalidate. Everything else in client/public (`/ui2/*.webp`,
+  `/logo.webp`, `/icons/`, `/chess/`, `sw.js`) keeps the grant, and the lane
+  may never publish it. sw.js caches nothing. The index is fetched
   first of all in main.ts and awaited with the four boot catalogs (which
   are fetched in parallel — four serial awaits cost a round trip each).
   Gates: `cachepolicy.test.ts` (the ?h grant is verified against served
   bytes; malformed, stale and mismatched hashes never freeze; hashing is
-  lazy), `assethash.test.ts`, `assetver.test.ts`.
+  lazy; ART IS NEVER FROZEN BY ?v), `assethash.test.ts`, `assetver.test.ts`,
+  and `verify-artlane.mjs` arms A/C/N end to end against a real server.
 - **A PAGE BEHIND THE SITE RELOADS ITSELF AT BOOT** (`reloadIfBehindAtBoot`,
   main.ts, 2026-09-13). `index.html` is `no-cache`, but a phone can restore a
   tab from its cache without asking: his 21:50 load on 2026-09-12 was a 49 s

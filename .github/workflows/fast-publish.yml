@@ -238,7 +238,14 @@ jobs:
         working-directory: ${{ runner.temp }}/store
         run: |
           set -euo pipefail
-          git add bundle
+          # `-A`, so the PRUNE's deletions are staged too. Nothing deleted a
+          # blob until the art lane: `git add` carries every blob ever
+          # published in the branch's HEAD tree and `--depth=1` materialises
+          # that whole tree on every publish, which measured out at 1.50 GB of
+          # art per 14 days. publish-bundle.mjs prunes to the window after the
+          # pointer write; without `-A` the files vanish from disk and stay in
+          # the commit.
+          git add -A bundle
           # NOTHING TO COMMIT IS A DEFECT HERE, not a no-op: the publisher just
           # reported that it wrote blobs, a manifest and a pointer. `|| exit 0`
           # hid that and left the poke waiting for a generation nobody pushed.
@@ -380,7 +387,14 @@ jobs:
           git worktree add "$STORE" bundle-store
           node games2/scripts/publish-bundle.mjs --store "$STORE/bundle" --revert
           cd "$STORE"
-          git add bundle
+          # `-A`, so the PRUNE's deletions are staged too. Nothing deleted a
+          # blob until the art lane: `git add` carries every blob ever
+          # published in the branch's HEAD tree and `--depth=1` materialises
+          # that whole tree on every publish, which measured out at 1.50 GB of
+          # art per 14 days. publish-bundle.mjs prunes to the window after the
+          # pointer write; without `-A` the files vanish from disk and stay in
+          # the commit.
+          git add -A bundle
           if git diff --cached --quiet; then
             echo "::error::the rollback wrote no pointer change — production may still be on the bad generation"
             exit 1

@@ -1,15 +1,34 @@
-# The fast lane — shipping client code with no image and no rollout
+# The fast lanes — shipping client code AND ART with no image and no rollout
 
-A push that touches only `client/src/**` or `client/index.html` publishes a new
-client to the running server. No container build, no Cloud Run revision. The
-container lane is unchanged and carries everything else.
+Two lanes publish to the RUNNING server. A generation is the COMPLETE
+description of what sits on top of the image — client bundle + the generated
+catalogs + an art overlay — so there is ONE pointer, ONE `seq`, ONE window and
+ONE set of laws however a push arrives.
 
-    push -> fast-publish.yml -> bundle-store branch -> POST /api/bundle/refresh -> served
+| lane | carries | checkout | push -> live |
+|---|---|---|---|
+| `fast-publish.yml` | `client/src/**`, `client/index.html` | sparse (6 s) | **33 s** |
+| `art-publish.yml` | the nine art domains + the two tracked catalogs | full (24 s) | **~45 s** |
+| the container | everything else, and every art push as well | full | **5 m 00 s** |
 
-Pieces: `scripts/fastbuild.mjs` (esbuild), `scripts/publish-bundle.mjs` (the
-store writer), `server/src/bundlestore.ts` (the reader), `.github/workflows/fast-publish.yml`.
-Gates: `scripts/verify-fastbundle.mjs` (the bundle boots, joins, renders) and
-`scripts/verify-fastlane.mjs` (31 assertions: the channel cannot lie).
+    push -> {fast,art}-publish.yml -> bundle-store branch -> POST /api/bundle/refresh -> served
+
+Pieces: `scripts/fastbuild.mjs` (esbuild), `scripts/artbuild.mjs` (the
+Dockerfile's curation, on a runner), `scripts/publish-bundle.mjs` (the store
+writer and the delta), `server/src/bundlestore.ts` (the reader and the
+overlay), `server/src/cachepolicy.ts` (the one-year decision).
+Gates: `verify-fastbundle.mjs` (the bundle boots, joins, renders),
+`verify-fastlane.mjs` (the channel cannot lie about a bundle),
+`verify-artlane.mjs` (49 arms: it cannot lie about art either) and
+`verify-artlive.mjs` (the art actually reached players — run against
+production on every art publish).
+
+THE TWO LANES SHARE ONE CONCURRENCY GROUP (`fast-publish`), repository-wide,
+because the pointer's `seq` is read-modify-write and two publishers at once
+could skip a generation. A push touching both art and browser code triggers
+both workflows: fast-publish sees the art paths as OUTSIDE its set and stands
+down, and the art lane carries the push whole (it builds the client anyway —
+esbuild is 0.5 s).
 
 ## Why it exists
 
@@ -22,22 +41,187 @@ push-to-visible — so the lane is that proven channel carrying a bundle.
 
 ## What may NEVER travel this way
 
-- **ART.** Art touches the `?v=<GIT_SHA>` -> `immutable` grant in
-  `cachepolicy.ts`. Changing art bytes while `GIT_SHA` is fixed freezes two
-  different byte-sets under one URL for a year. That is the unrecallable,
-  project-deleting bug. Art rides the image. (I claimed once that "assets are
-  the easy half" — the review panel proved the opposite. Corrected.)
-- **SERVER / shared / config code.** Adopting it means re-importing modules in
-  the process that owns the authoritative 20 Hz world: a restart, i.e. a
-  revision.
-- **`client/public/**`.** A generation carries `index.html` + `assets/` and
-  nothing else. The dist root also holds 43 files from `public/` (measured: 4.6
-  MB — `monsters.json` 885 KB, `npcs.json` 765 KB, `ui2/`, `icons/`, `sw.js`,
-  the catalogs), answered by the IMAGE. Publishing a `public/**` change would
-  run new code against the image's old catalogs.
+- **SERVER / `shared/` / config / `games2/scripts/**`.** Adopting it means
+  re-importing modules in the process that owns the authoritative 20 Hz world:
+  a restart, i.e. a revision. The scripts ARE the curation, so a push that
+  edits them must be proven by a container build before its output is trusted.
+- **ANY `client/public` FILE OUTSIDE THE FIVE GENERATED CATALOGS**
+  (`PUBLISHABLE_ROOT`: characters.json, worlds.json, monsters.json, npcs.json,
+  shipset.json). Every other dist-root file is `?v=`-stamped BY THE CLIENT —
+  `withV("/ui2/icon-${t.id}.webp")` in hud.ts, `withV("/logo.webp")` in
+  select.ts — and measured live against image e697e384ec5811,
+  `/ui2/icon-map.webp?v=<sha>`, `/logo.webp?v=<sha>` and `/sw.js?v=<sha>` all
+  answer `immutable`. Republishing one would change bytes under a URL a browser
+  already holds frozen. The five that DO travel are the art pipeline's output,
+  are fetched UNSTAMPED (`fetch("/characters.json")`,
+  `fetch(gameUrl("/monsters.json"))`) so no browser has ever frozen one, and
+  are told not to earn a year either way.
+- **`wiki/` AND `live/`**, though both are mounted and served. The image builds
+  `wiki/release_notes.json` from GIT HISTORY inside the build ("the image has no
+  .git"); `live/**` already has its own no-redeploy channel that `live.ts` reads
+  straight from GitHub; and `live/telemetry/perf.json` is
+  `.dockerignore`-EXCLUDED, so it exists in the tree and deliberately not in the
+  image — publishing it would ship a file the image is specifically built
+  without. Measured: those are 3 of the 5 paths out of 50,121 where a runner's
+  curated root differs from the image's, and they are the only 3 that are not
+  art. All three fall through to the image, which is the right answer.
 
-The last one is enforced by arithmetic, not by the path filter alone: see
+Every one of them is enforced by ARITHMETIC rather than by the path filter: see
 FALL-THROUGH below.
+
+## THE ART LANE
+
+### The one rule that makes it possible
+
+`?v=<GIT_SHA>` USED TO GRANT ART A YEAR, and that is the only thing that ever
+stood between this repo and an art lane. The stamp promises "for this GIT_SHA
+these bytes are fixed" — true while art could only arrive in an image, and a
+lie the moment a lane repaints art on a running instance. One URL, two
+byte-sets, frozen for a year: the unrecallable bug.
+
+So `cacheControlFor` takes `isArt`, and `?v=` grants NOTHING when it is set.
+Art earns its year through `?h=<hash>` VERIFIED AGAINST THE BYTES BEING SENT,
+where the hash IS the content: new pixels are a new hash and a new URL, and the
+collision is not expressible. That is arithmetic, not a convention anyone has
+to remember.
+
+- **`isArt` IS SET BY THE CALLER, NEVER DERIVED FROM A PATH PREFIX.**
+  `ASSETS_ROOT` is `/assets` in the image and THE REPO ROOT in dev — where it
+  contains `client/dist` — so a prefix test would classify the bundle's own
+  public files as art locally and not in production. The one thing a cache rule
+  may never do is mean two things. The distinction is which mount answered: the
+  13 art mounts pass true, `client/dist` passes true only for the five
+  publishable catalogs.
+- **ALREADY-FROZEN URLS ARE CLOSED TOO.** The lane arrives IN AN IMAGE (server
+  code changed), so `GIT_SHA` changes with it; a page running the new bundle
+  stamps `?v=<new sha>` or `?h=`, which are different URLs from the frozen
+  `?v=<old sha>` ones, so those entries are never requested again.
+- **IT COSTS NOTHING MEASURABLE.** `/asset-index.json` names every one of the
+  50,121 files under ASSETS_ROOT, so `?h=` carries all of it; `?v=` for art
+  only ever covered the boot window and a failed index read, and both now
+  revalidate (304s) instead of freezing.
+
+### Reproducing the image's art root on a runner, in 9.3 s
+
+`scripts/artbuild.mjs` is the Dockerfile's curation in the Dockerfile's ORDER,
+and the order is the whole point — run it any other way and you get a root that
+looks right and is not.
+
+| step | ASSETS_ROOT | measured |
+|---|---|---|
+| `shipset.mjs --emit <root> --check --report --write` | THE FULL TREE | 2.6 s (hardlinks, 43,117 of 88,000 files) |
+| `manifest.mjs --force` | THE CURATED ROOT | 1.6 s |
+| `ship-tiles3.ts --root <tree> --out <root> --check` | — | 5.0 s (7,570 files, a pure `copyFileSync`) |
+| hash the finished root | — | 1.2 s single-threaded, 0.86 s on 4 workers |
+
+**THE SECOND STEP IS THE TRAP, and it is the same one that made the client lane
+refuse every generation for a day.** `manifest.mjs` against a plain checkout
+does NOT reproduce what the image serves, because the image builds the catalogs
+from the CURATED root. Against the curated root it reproduces production's
+`characters.json`, `monsters.json`, `npcs.json` and `worlds.json` BYTE FOR
+BYTE — `npcs.json` came out `8fc7205ae6daf870`, against a COMMITTED
+`npcs.json` of `62fde8b7e644b032`. **The committed catalog is not what ships**,
+which is why the lane republishes it from the curated root rather than from git.
+
+Only `shipset.json` differs, and only by its `generatedAt` timestamp — so the
+lane PUBLISHES that file instead of pinning it. A file whose bytes cannot be
+predicted must never be something a generation's admission depends on.
+
+**THE HASHING IS 1.2 s WARM AND 23.4 s COLD**, and the difference is I/O
+latency rather than sha256 (272 MB of sha256 is under a second), which is why
+it runs on a small pool of worker threads with an in-thread fallback.
+
+Measured against the live image's own index, the curated root reproduces
+**7,004/7,004 tiles, 19,037/19,037 scenery, 2,719/2,719 characters2** and all
+of sounds, music, items and lore identically. Five of 50,121 paths differ; the
+three that are not art are the `wiki/`+`live/` exclusions above.
+
+### The delta, and what a generation carries
+
+    manifest.json  { files, root?, art?, fallthrough, git_sha, commit_ts }
+
+- `files` — the client bundle, content-hashed, unchanged.
+- `art` — ASSETS_ROOT-relative, **exactly /asset-index.json's keys**, so the
+  served index is a MERGE and never a translation.
+- `root` — dist-root-relative, **exactly `fallthrough`'s keys**, which it
+  PARTITIONS: a dist-root file is published or pinned, never neither.
+- The delta is computed against `GET /api/bundle/artbase` — the IMAGE's own
+  index — and **NOT** against `/asset-index.json`, which is the MERGED document
+  and already carries a live generation's overlay. A publisher diffing against
+  that would produce a delta relative to the OVERLAY, and the next generation
+  would silently drop every file the previous one published: art appearing and
+  then vanishing, which is worse than art arriving five minutes late.
+- **THE GENERATION ID COVERS THE OVERLAY.** It was the bundle alone, which was
+  right while the bundle was all a generation carried — with an overlay, two art
+  publishes of one bundle would be the SAME id, so the second would report
+  "already current" and publish nothing while the art sat on the runner.
+- **THERE IS NO REMOVAL LIST**, and that is the same fail-safe direction
+  `shipset.mjs` states: shipping a spare file wastes bytes, dropping a reachable
+  one 404s in production. A deleted file keeps being served from the image until
+  the container lands, and nothing asks for it — it left the catalogs and the
+  index in the same commit. A removal list computed wrong 404s live art.
+
+### The overlay in the server
+
+- **ART NAMES ARE NOT APPEND-ONLY AND MUST NEVER ENTER `names`.** LAW 1 exists
+  for content-hashed bundle names, where a name and its bytes are the same fact.
+  `scenery/oak/south.webp` is a mutable name BY CONSTRUCTION — that is the whole
+  point — so the overlay resolves against the CURRENT generation only. In
+  `names` it would make the second art publish refuse itself forever.
+- The art route is `/assets/<domain>/<rest>` and needs the SECOND slash: the
+  bundle's own emits are `/assets/<one-segment>`, so the two namespaces are
+  structurally disjoint however a name is chosen. Registered BEFORE the 13
+  static mounts; a miss is one map lookup and `next()`.
+- `sendOverlayFile` goes through `cacheControlFor` rather than setting a header
+  itself — one place decides the year — with `filePath: ""` so the bundle-dir
+  rule cannot fire and `fileHash: () => file.hash`, the bytes in hand.
+- The ETag is the hash of THOSE bytes, so it differs from the weak size+mtime
+  validator `express.static` derives from the image's file: a browser holding
+  the image's version revalidates into the overlay instead of 304ing onto stale
+  bytes.
+- `/asset-index.json` is the image's document merged with the generation's
+  `art`, memoised on the serving generation (the 4.33 MB base is parsed once;
+  a flip re-stringifies, tens of milliseconds ONCE per publish).
+- **OVERLAY BYTES ARE KEPT FOR THE CURRENT GENERATION ONLY.** An overlay name
+  resolves against the current generation by definition, so a previous
+  generation's art can never be reached — holding it would be pure cost, and
+  the cost is tens of megabytes on a 1 GiB instance whose death takes the world.
+- **EVERY BYTE A LOAD BRINGS IN IS HANDED BACK ON A REFUSAL.** A generation
+  refused AFTER its blobs landed used to leave them resident until the next
+  successful flip called `evict()` — which is exactly the OOM the cap exists to
+  prevent, arriving by the back door.
+- **BLOBS ARE FETCHED ON A POOL OF 12, WITH ONE RETRY EACH.** Sequential was
+  fine for a bundle's 22 files; an art generation's p90 is 333 and a 0.4 s round
+  trip each would put 133 s between the publish and the flip — longer than the
+  60 s belt, so the next tick starts over and it never lands.
+
+### The caps, and what going over them means
+
+`ART_FILES_MAX` 6000, `ART_BYTES_MAX` 64 MB, enforced by BOTH halves — the
+publisher (so a push too big fails at the runner) and the server (as the bytes
+ARRIVE, never from a number the manifest declares: a cap that trusts the payload
+it is protecting against is not a cap).
+
+Over either one the lane STANDS DOWN and the container lane carries that push,
+which it is already building. Measured over 14 days of `main`, an art commit
+changes p50 **21 files / 0.73 MB**, p90 333 / 9.68 MB, p99 5,172 / 22.6 MB, max
+12,887 / 33.7 MB — so the caps admit essentially everything while bounding the
+worst case.
+
+### AN ART PUSH STILL BUILDS A CONTAINER, and that is load-bearing
+
+A generation's art is the delta against the IMAGE, so it grows for as long as
+the image stands still. Keeping the container lane on art pushes:
+- bounds the delta — and therefore the store branch and the server's memory —
+  to about five minutes of art commits instead of a day's worth;
+- makes LAW 6 undo a bad art generation AUTOMATICALLY when the image lands,
+  with nobody doing anything, which is the strongest recovery a phone-only
+  maintainer can have;
+- costs no wall-clock a person experiences, because the art is live at ~45 s.
+
+(The client-only skip stays as it is: a client push changes no art, so no delta
+grows and there is nothing to settle. Do not "fix" `nangijala-deploy.yml` by
+adding the art paths to its skip — the comment there says so.)
 
 ## The five laws of the store
 
@@ -190,6 +374,136 @@ deploy's own rollback guard against the change I had just made to `/version`.
   cannot change until the store does filled the 40-line ring `/api/bundle`
   shows a phone. Said once now, keyed on the pointer.
 
+### Traps the ART lane paid for
+
+- **THE `?v=` GRANT REACHES THE DIST ROOT TOO, and the client stamps it.** I
+  argued the catalogs were safe because they are fetched unstamped — true, and
+  incomplete: I had not RESTRICTED what `root` may publish. Measured live
+  against image e697e384ec5811, `/ui2/icon-map.webp?v=<sha>`,
+  `/logo.webp?v=<sha>` and `/sw.js?v=<sha>` all answer `immutable`, and
+  `hud.ts`/`select.ts` genuinely construct those URLs through `withV`. A
+  generation that republished one would change bytes under a frozen URL —
+  the same hazard as art, one level down. Now an explicit allowlist
+  (`PUBLISHABLE_ROOT`) in the store's admission AND in the cache policy, with
+  gate arms proving a ui2 icon and `sw.js` are refused. Found by the review
+  panel, not by me.
+- **THE DELTA MUST BE TAKEN AGAINST THE IMAGE, NOT AGAINST `/asset-index.json`.**
+  That document is the MERGED one, so with a generation live it already contains
+  that generation's overlay; a publisher diffing against it produces a delta
+  relative to the OVERLAY and the next generation silently drops everything the
+  previous one published. Art appearing and then vanishing. Hence
+  `/api/bundle/artbase`, which is the image's own index and nothing else.
+- **THE GENERATION ID WAS THE BUNDLE ALONE.** Two art publishes of one bundle
+  hashed to the same id, so the second reported "already current" and published
+  nothing while the art sat on the runner. The id now folds in `art` and `root`
+  under their own headings.
+- **SEQUENTIAL BLOB FETCH DOES NOT SCALE TO ART.** Fine for a bundle's 22
+  files; an art generation's p90 is 333, and 0.4 s each is 133 s between the
+  publish and the flip — longer than the 60 s belt, so the next tick starts over
+  and it NEVER lands. A pool of 12 with one retry each.
+- **A REFUSED GENERATION LEFT ITS BYTES RESIDENT.** Blobs land in the shared
+  map as they arrive, and `evict()` only runs on a successful flip — so an
+  oversized generation refused by the cap kept exactly the megabytes the cap
+  exists to prevent, until some later publish succeeded. Every byte a load
+  brings in is now handed back on any refusal.
+- **A DIST-ROOT FILE NAMED BY NEITHER MAP WAS SILENTLY UNPINNED.** Before the
+  overlay, `fallthrough` was the whole set by construction; with `root` able to
+  publish part of it, a file in neither would be served from the image with
+  nothing checking it. `verifyFallthrough` now takes the published set too and
+  refuses that case.
+- **THE CONTENT-TYPE WAS CACHED ON THE BLOB, NOT THE NAME.** Two files with
+  identical bytes share one blob, so the type was whichever name loaded first —
+  a 28-byte fully transparent `.webp` (a valid file, normal at the end of a fade)
+  and an empty `.json` would have traded `Content-Type`s. Derived per lookup now.
+- **`wiki/` AND `live/` LOOK LIKE ART AND ARE NOT REPRODUCIBLE.** Only found by
+  diffing the runner's curated index against the live image's per domain: the
+  image builds `wiki/release_notes.json` from git history, and
+  `live/telemetry/perf.json` is `.dockerignore`-excluded so it is in the tree
+  and deliberately NOT in the image. Publishing either would have shipped bytes
+  the image is specifically built without. They are skipped rather than
+  refused — `release_notes.json` differs on EVERY run, so refusing would have
+  killed the lane permanently.
+- **`isArt` FROM A PATH PREFIX WOULD HAVE MEANT TWO THINGS.** `ASSETS_ROOT` is
+  `/assets` in the image and THE REPO ROOT in dev, where it contains
+  `client/dist` — so `filePath.startsWith(assetsRoot)` classifies the bundle's
+  own public files as art locally and not in production. The caller says which
+  mount answered instead.
+- **The gate handed the server `BUNDLE_STORE=local:<dir>`** where
+  `backendFromEnv` wants the bare path, so every generation was refused with
+  NOTHING in the log and the first run of the new gate failed 20 arms for a
+  reason that was not in the code under test. The gate now prints the store's
+  own `recent` lines on every disagreement, which is how the real refusals were
+  read afterwards.
+- **A ROLLBACK POINTED AT A GENERATION WHOSE OVERLAY BYTES WERE EVICTED, AND
+  THE STORE SERVED IT ANYWAY.** The sharpest defect of the batch. Overlay bytes
+  are kept for the CURRENT generation only, so a generation still inside the
+  window has its NAMES and not its art — and a rollback points straight at one
+  of those. `doRefresh` skipped the load on a bare `gens.has(id)`, flipped, and
+  then resolved that generation's art to hashes whose bytes were gone: its
+  CLIENT served against the IMAGE's art and catalogs, with an asset index naming
+  bytes nobody held. That is the mixed generation the whole partition exists to
+  make unrepresentable, reached through the one path nobody had exercised
+  because the rollback has never fired in production. The test is now whether
+  every byte a generation names is in hand (`materialised`), not whether its
+  names are remembered — gate arm O, plus a unit test.
+- **NINE NEW REFUSALS DID NOT MATCH THE WORKFLOW'S GREP, so every art refusal
+  reported GREEN.** Both workflows decide "a defect, or still replicating?" by
+  looking for `refused <id>` in `/api/bundle`; the new refusals were phrased
+  `— refusing`, so a push would have shown a green check and a summary saying
+  the belt would adopt it while the art was never served. That is verbatim the
+  failure that cost this lane its first day. Every refusal now goes through one
+  `refuse(id, why)` helper, so a new one cannot be added in the wrong shape.
+- **A REFUSED GENERATION RE-DOWNLOADED THE WHOLE ART DELTA EVERY 60 SECONDS,
+  FOREVER.** A refusal does not advance `this.ptr`, so the belt re-read the same
+  pointer, found the generation absent from `gens`, and re-fetched everything
+  before refusing again for the identical reason — thousands of raw requests a
+  minute at the p99 delta, from the production egress IP. A STRUCTURAL refusal
+  is now remembered per pointer; an INCOMPLETE read deliberately is not, because
+  a blob still replicating is exactly what the belt exists to retry. That split
+  is why `doLoad` returns `ok | refused | incomplete` rather than a boolean.
+- **NOTHING EVER DELETED A BLOB.** `git add` carries every blob ever published
+  in the branch's HEAD tree and `--depth=1` materialises that whole tree on
+  EVERY publish (depth bounds history, not the tree). Measured: the distinct art
+  blobs 14 days of `main` would have written come to 86,952 objects and 1.50 GB
+  — so within about a week the fetch alone costs more than the five minutes this
+  lane exists to skip, and then the repository crosses GitHub's size limit. The
+  publisher prunes to the window after the pointer write, and the workflows
+  `git add -A` so the deletions are staged.
+- **AND THE FIRST PRUNE DELETED THE LIVE GENERATION'S BYTES.** It kept the
+  pointer's window — which is the PUBLISHER's list and can name generations this
+  instance REFUSED, so the generation actually being served can sit outside it
+  entirely. The server's own eviction learned this once already and keeps the
+  union of the window and what it served. The prune now ASKS the server
+  (`/api/bundle`), and a failed read prunes NOTHING — the same rule the
+  fall-through has, because a delete decided from a guess is the one mistake
+  here the next publish cannot undo. Caught by `verify-fastlane` arm M, which
+  exists for precisely this trap in its client-lane form.
+- **`.dockerignore` DOES NOT FILTER A GIT CHECKOUT**, so the runner's ship-set
+  closure is a strict SUPERSET of the image's: measured 11.73 MB in two files,
+  `maps2/worlds3/the_game/overview_full.webp` (10.95 MB) and
+  `live/telemetry/perf.json` (0.78 MB). Neither ever appears in the image's
+  base, so both would be "new" on EVERY art push forever — 11 MB of the 64 MB
+  cap each time — and it would make a file the image is deliberately built
+  WITHOUT fetchable from the running game. `artbuild.mjs` reads `.dockerignore`
+  rather than keeping a second list, with Docker's own semantics and the one
+  that matters: THE LAST MATCHING RULE WINS (a matcher asking "any exclude and
+  no re-include" gets `*` + `!tiles` + `music/**/*.wav` wrong three times over).
+  After it: 50,119 paths against the image's 50,119, zero on either side only,
+  and 3 differing of which the domain allowlist publishes exactly 1.
+- **THE RETRY HAD NO DELAY.** A freshly pushed raw path answers a CACHED
+  negative, so a back-to-back retry asks the same edge the same question and
+  buys nothing — and the art lane multiplies fresh paths by 15x over a bundle.
+  Three attempts now, 250 ms then 750 ms.
+- **THE AUDITION PAGES NEVER LOADED THE ASSET INDEX.** `#foley` returns from
+  `main.ts` BEFORE `loadAssetIndex()` and `#score` did not await it, so both
+  fell back to `?v=` — free while `?v=` still froze art, and 100% of their
+  caching once it does not. The maintainer's two QA tools would have
+  re-downloaded every take on every interaction. Both await it now.
+- **A cap tested against its production value proves nothing.** Arm L started
+  the server with a 150 KB / 40-file cap to exercise the mechanism, and asserts
+  the SHIPPED 64 MB / 6000 separately against the constants — a gate that only
+  ever sees a test value proves the code and not the policy.
+
 ## "BROWSER CODE ONLY" — what the lane check asks
 
 It asks what a push CHANGED, never who pushed it. The old label was
@@ -319,6 +633,20 @@ So ~8x, and the build was never the cost:
 | `raw` read of a fresh path | 0.4 s |
 | `live/**` channel, push -> visible | 5-9 s (the proven precedent) |
 
+THE ART LANE, measured 2026-09-19:
+
+| | |
+|---|---|
+| full checkout of the 1.7 GB tree on a runner | **24 s** (deploy run 4338) |
+| `shipset.mjs --emit` (hardlinks, 43,117 files / 246 MB) | 2.6 s |
+| `manifest.mjs` against the curated root | 1.6 s |
+| `ship-tiles3.ts` (7,570 files copied) | 5.0 s |
+| hashing the finished root (50,121 files / 272 MB) | 1.2 s warm, 0.86 s on 4 workers, **23.4 s cold** |
+| **the whole curation** | **9.3 s** |
+| the asset index document | 4.33 MB |
+| art delta per commit, 14 days of `main` (200 commits) | p50 **21 files / 0.73 MB**, p90 333 / 9.68 MB, p99 5,172 / 22.6 MB, max 12,887 / 33.7 MB |
+| the container lane for the same art push | **5 m 00 s** (13:45:51 -> 13:50:51), of which docker build+push 222 s and the rollout 22 s |
+
 **WHY IT IS NOT 10 SECONDS.** Two thirds of the remaining minute is checkout
 (25 s) and the boot gate (23 s), and neither has anything to do with building
 the bundle. Sub-10s means taking the gate OUT of the push path — publish, verify
@@ -386,9 +714,30 @@ is always the floor.
 - **`--set-env-vars` on the deploy** — it REPLACES the service's whole
   environment and would have silently dropped every variable set elsewhere.
   `--update-env-vars` merges.
-- **Serving art from the lane** — see "What may never travel this way".
 - **A truly append-only blob map** — not implementable in 1 GiB, and it adds
   nothing over the window: both answer a miss, one of them after an OOM.
+- **Widening `fast-publish.yml` to carry art** instead of a sibling workflow —
+  it would put the full checkout's 18 extra seconds in front of every BROWSER
+  code push, which is the one wait the maintainer actually sits through.
+- **A second pointer for art.** Two pointers can disagree, and the
+  disagreement that matters is the dangerous one: new catalogs naming art that
+  is not there, or art with no catalog entry. One generation cannot express that
+  state. An art push has to build the client anyway (0.5 s), so the "saving"
+  was never real.
+- **Deciding the delta from `git diff` instead of by hashing.** It is exact for
+  tracked files and silent when it is wrong: a file whose blob the lane failed
+  to publish falls through to the image's OLD bytes, so the art push simply
+  does not appear, with nothing said. Hashing the finished root costs 1.2 s and
+  cannot miss.
+- **Packing the art delta into one blob** to make materialisation a single
+  fetch. It would bound the request count regardless of file count, but it
+  destroys blob dedup — every publish re-uploads the whole delta — and the
+  bounded fetch pool plus dedup already gets a steady-state flip down to the
+  ~21 blobs that actually changed.
+- **An `art_removed` tombstone list** — see "there is no removal list" above.
+- **Revoking the `?v=` grant for the WHOLE dist root** rather than the five
+  publishable catalogs. It would cost every UI icon and both logos their cache
+  for nothing, since the lane has no reason to publish them.
 
 ## Verified, not assumed
 
@@ -401,6 +750,23 @@ is always the floor.
   the fall-through check can pass at all.
 - `raw.githubusercontent.com` reads this repo unauthenticated in 0.4 s, so the
   blob channel works without a token.
+- **A RUNNER CAN REPRODUCE THE IMAGE'S CURATED ART ROOT.** Run and compared
+  against the live image's own index: four of the five dist-root catalogs
+  byte-identical (the fifth differs only by a timestamp), 7,004/7,004 tiles,
+  19,037/19,037 scenery, 2,719/2,719 characters2, sounds/music/items/lore
+  identical. The locally computed hash of
+  `items/abalone_shell_half/sprite.webp` earned the `immutable` grant from
+  PRODUCTION, which is the strongest possible confirmation that the bytes match.
+- **`ship-tiles3.ts` is a pure copy** (`copyFileSync` only, no transform), so
+  its output is deterministic.
+- **There is no CDN in front of Cloud Run** — `/version` answers
+  `server: Google Frontend` with no `via`, `age` or `x-cache`, and the deploy
+  configures none. The only cache in the path is the browser's, which is
+  precisely why a wrong `immutable` is unrecallable.
+- **Every one of the 50,121 curated art paths** matches
+  `^[A-Za-z0-9][A-Za-z0-9._@/-]*$`; none holds `..`, a backslash, a space or a
+  non-ASCII byte; the deepest is 8 segments and 117 characters. That is what
+  `safeOverlayPath` is allowed to be as narrow as it is.
 
 ## Open
 
@@ -423,7 +789,21 @@ is always the floor.
   Correct but wasteful; taking it out means the client reads its identity from
   the served document instead. Five inline sites: `client/src/main.ts` (~:102,
   :125, :158), `client/src/assetver.ts:22`, `composer/engine/assetver.ts:40`.
-- The `?v=` art stamp uses the client's build sha, so a published generation
-  loses the `immutable` grant for `public/` art until the next image deploy.
-  Safe-fail (revalidation, 304s, since those bytes are unchanged) but it should
-  read `image` from `/version` and stamp with that.
+- **THE ROLLBACK HAS STILL NEVER FIRED IN PRODUCTION.** It is now gated in both
+  directions — `verify-artlane` arm O drives a real revert onto a generation
+  whose overlay bytes were evicted and proves its own art comes back — but no
+  RED GATE has ever triggered one for real. Both lanes depend on it, so it wants
+  a deliberate rehearsal rather than a first outing on an incident.
+- **An art push whose OPEN pages do not reload keeps the old textures.** Art is
+  loaded once into Phaser's texture cache, so a mid-session art publish appears
+  on the next load. Identical to what a container art deploy does today, and
+  the version banner already offers the reload.
+- **The store branch's HISTORY still grows**, even though its HEAD tree is now
+  pruned to the window: git keeps the deleted objects, so the repository grows
+  by roughly the art it publishes even as each run's `--depth=1` fetch stays
+  small. Bounded enough to ship; an occasional history rewrite of that branch
+  (which only machines write) is the eventual answer.
+- **`monsters/config/candidates.json` and `maps2/.../overview_full.webp` were
+  in the measured delta** because this tree was a few commits ahead of the
+  image. Both are legitimately publishable; noted only so a future reader does
+  not read them as noise.

@@ -36,13 +36,36 @@
 // every page already open — measured once as holes through a live audition.
 import { createHash } from "node:crypto";
 import { tmpdir } from "node:os";
-import { mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, writeFileSync, statSync } from "node:fs";
+import { mkdirSync, mkdtempSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync, statSync } from "node:fs";
 import { dirname, join, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 import { fastBuild } from "./fastbuild.mjs";
+import { artBuild } from "./artbuild.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
 const RETAIN = 2; // previous generations kept beside the current one
+/** THE SAME CAPS THE SERVER ENFORCES (bundlestore.ts), checked here so a push
+ *  too big for the lane fails at the runner instead of being published and then
+ *  refused. Going over is not an error condition: it means the container lane
+ *  carries that push, which it was doing anyway. */
+const ART_FILES_MAX = Number(process.env.ART_FILES_MAX || 6000);
+const ART_BYTES_MAX = Number(process.env.ART_BYTES_MAX || 64_000_000);
+/** THE ONLY DIST-ROOT FILES THE LANE MAY PUBLISH, and the server's
+ *  PUBLISHABLE_ROOT is the same list for the same reason: every OTHER
+ *  dist-root file earns a one-year `immutable` from `?v=<GIT_SHA>` (measured
+ *  live: /ui2/icon-map.webp?v=<sha>, /logo.webp?v=<sha>, /sw.js?v=<sha> all
+ *  answer it, and the client stamps those URLs through withV), so publishing
+ *  one would change bytes under a URL a browser has already frozen. These five
+ *  are the art pipeline's output, fetched unstamped, and never frozen. */
+const PUBLISHABLE_ROOT = new Set(["characters.json", "worlds.json", "monsters.json", "npcs.json", "shipset.json"]);
+/** THE ART DOMAINS THE LANE MAY PUBLISH — `ART_LANE_DOMAINS` in
+ *  server/src/bundlestore.ts states why wiki/ and live/ are not among them
+ *  (release_notes.json is built from git history inside the image; live/** has
+ *  its own no-redeploy channel; live/telemetry is .dockerignore-excluded). A
+ *  path outside these is SKIPPED, not refused: wiki/release_notes.json differs
+ *  on every single run, so refusing would kill the lane permanently, while
+ *  skipping falls it through to the image — which is the right answer. */
+const ART_LANE_DOMAINS = new Set(["characters2", "tiles", "maps2", "scenery", "sounds", "music", "monsters", "items", "lore"]);
 const hashBytes = (b) => createHash("sha256").update(b).digest("hex").slice(0, 16);
 
 const arg = (k, d) => {
@@ -72,7 +95,107 @@ function localStore(root) {
       writeFileSync(tmp, bytes);
       renameSync(tmp, full);
     },
+    async list(prefix) {
+      try {
+        return readdirSync(join(root, prefix));
+      } catch {
+        return [];
+      }
+    },
+    async del(p) {
+      try {
+        rmSync(join(root, p), { recursive: true, force: true });
+      } catch {
+        /* a blob already gone is the state we wanted */
+      }
+    },
   };
+}
+
+/** PRUNE THE STORE TO THE WINDOW — and this is not housekeeping, it is what
+ *  keeps the lane faster than the container it replaces.
+ *
+ *  Nothing ever deleted a blob. `git add` carries every blob ever published in
+ *  the branch's HEAD TREE, and `git fetch --depth=1` materialises that whole
+ *  tree on EVERY publish (depth bounds history, not the tree). Measured over 14
+ *  days of `main`, the distinct art blobs the lane would have written come to
+ *  86,952 objects and 1.50 GB — so within about a week the fetch alone costs
+ *  more than the five minutes this lane exists to skip, and then the repository
+ *  crosses GitHub's size limit.
+ *
+ *  WHAT IT KEEPS is exactly the documented guarantee and not a byte less: the
+ *  window (current + `retained`, i.e. current + 2). A page loaded from a
+ *  generation inside it keeps resolving every name it holds; beyond it a name
+ *  answers a `no-store` 404, which is a coherent miss that reloads. It is also
+ *  what a ROLLBACK needs — `retained[0]` is inside the window by construction,
+ *  so its bytes are always still here.
+ *
+ *  AFTER the pointer write, never before: the new window is what decides, and a
+ *  reader that still holds the old pointer either has its bytes already or
+ *  reads incompletely and keeps serving what it has. */
+async function pruneStore(store, pointer, imageOrigin) {
+  if (!store.list || !store.del) return { blobs: 0, gens: 0, bytes: 0 };
+  // THE POINTER'S WINDOW IS THE PUBLISHER'S LIST, AND IT IS NOT ENOUGH.
+  // `retained` can name generations the running instance REFUSED — a corrupt
+  // blob, a mixed fall-through, a cold start — so the generation it is ACTUALLY
+  // SERVING can sit outside the window entirely. The server's own eviction
+  // learned this the hard way and keeps the union of the window and what it
+  // served; a prune that deleted on the window alone would take the bytes out
+  // from under the live generation, and verify-fastlane arm M is the arm that
+  // says so. So the server is ASKED.
+  //
+  // AND A FAILED READ PRUNES NOTHING — the same rule as the fall-through, for
+  // the same reason: a delete decided from a guess is the one mistake here that
+  // cannot be undone by the next publish. No origin (a test, a local run) means
+  // no prune at all.
+  const window = [pointer.current, ...(pointer.retained ?? [])].filter(Boolean);
+  if (!imageOrigin) {
+    console.log(`[prune] no image origin — pruning NOTHING (cannot ask what is being served)`);
+    return { blobs: 0, gens: 0, bytes: 0, skipped: true };
+  }
+  try {
+    const res = await fetch(`${imageOrigin.replace(/\/+$/, "")}/api/bundle`, { headers: { "cache-control": "no-store" } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const live = await res.json();
+    for (const id of [live.serving, ...(live.held ?? [])]) if (id && !window.includes(id)) window.push(id);
+    console.log(`[prune] the server is serving ${live.serving || "the image"}; the keep set is ${window.length} generation(s)`);
+  } catch (err) {
+    console.log(`[prune] could not ask ${imageOrigin} what it is serving (${err.message}) — pruning NOTHING`);
+    return { blobs: 0, gens: 0, bytes: 0, skipped: true };
+  }
+  const keepBlobs = new Set();
+  for (const id of window) {
+    const raw = await store.get(`gen/${id}/manifest.json`);
+    if (!raw) {
+      // A manifest inside the window that cannot be read means the keep set
+      // would be WRONG, and a wrong keep set deletes bytes production needs.
+      // Prune nothing rather than guess.
+      console.log(`[prune] gen/${id}/manifest.json is unreadable — pruning NOTHING this run`);
+      return { blobs: 0, gens: 0, bytes: 0, skipped: true };
+    }
+    const m = JSON.parse(raw.toString("utf8"));
+    for (const map of [m.files, m.root, m.art]) for (const h of Object.values(map ?? {})) keepBlobs.add(h);
+  }
+  let blobs = 0;
+  let bytes = 0;
+  for (const name of await store.list("blob")) {
+    if (keepBlobs.has(name)) continue;
+    const had = await store.get(`blob/${name}`);
+    bytes += had?.length ?? 0;
+    await store.del(`blob/${name}`);
+    blobs++;
+  }
+  let gens = 0;
+  for (const id of await store.list("gen")) {
+    if (window.includes(id)) continue;
+    await store.del(`gen/${id}`);
+    gens++;
+  }
+  console.log(
+    `[prune] kept ${keepBlobs.size} blob(s) for ${window.length} generation(s) in the window; ` +
+      `removed ${blobs} blob(s) (${(bytes / 1e6).toFixed(2)} MB) and ${gens} manifest(s)`,
+  );
+  return { blobs, gens, bytes };
 }
 
 /** READ THE POINTER, OR REFUSE. A pointer that exists and will not parse aborts
@@ -158,12 +281,56 @@ export async function revertBundle({ store, dryRun = false }) {
   console.log(`[revert] ${prev.current || "the image"} -> ${to}, seq ${prev.seq} -> ${next.seq}`);
   if (dryRun) return { ...next, rolledBackFrom: prev.current, dryRun: true };
   await store.put("pointer.json", Buffer.from(JSON.stringify(next, null, 1)));
+  // NO PRUNE ON A ROLLBACK, deliberately. A rollback is the moment the window
+  // matters most and the moment least is known about what a running instance
+  // is mid-way through reading; the next ordinary publish prunes.
   return { ...next, rolledBackFrom: prev.current };
 }
 
-export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 0, dryRun = false, imageOrigin = "" }) {
+/** Read one JSON document from the running image, or FAIL THE PUBLISH.
+ *
+ *  Never a fallback to something computed locally. That was the first cut of
+ *  the dist-root fall-through and it refused every generation for a day, because
+ *  a runner cannot reproduce what the image serves by guessing — the image is
+ *  the only authority on the image. A failed read here simply means this push
+ *  goes by container, which is the lane it used to take anyway. */
+async function askTheImage(imageOrigin, path, what) {
+  const url = `${imageOrigin.replace(/\/+$/, "")}${path}`;
+  try {
+    const res = await fetch(url, { headers: { "cache-control": "no-store" } });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const doc = await res.json();
+    if (!doc || typeof doc !== "object") throw new Error("not an object");
+    return doc;
+  } catch (err) {
+    throw new Error(
+      `publish-bundle: could not read what the image serves — ${what} (${url}: ${err.message}). ` +
+        `Refusing to publish a generation whose fall-through set would be a guess.`,
+    );
+  }
+}
+
+export async function publishBundle({
+  store,
+  outDir,
+  gitSha = "dev",
+  commitTs = 0,
+  dryRun = false,
+  imageOrigin = "",
+  artRoot = "",
+  /** An ALREADY-CURATED art root ({root, files, count}), for a caller that has
+   *  run artbuild itself — the gate uses it with a three-file tree so it can
+   *  exercise the delta, the caps and the admission checks in a second instead
+   *  of curating 272 MB. `artRoot` is the ordinary path: curate, then publish. */
+  art: prebuilt = null,
+}) {
   const t0 = performance.now();
-  const built = await fastBuild({ outDir, gitSha });
+  // THE ART LANE'S FIRST STEP, when there is one: reproduce the curated art
+  // root the image serves, which is also what regenerates client/public's
+  // catalogs — so fastBuild's public/ copy picks up the CURATED versions and
+  // does not need to run manifest.mjs itself against the wrong root.
+  const art = prebuilt || (artRoot ? await artBuild({ root: artRoot }) : null);
+  const built = await fastBuild({ outDir, gitSha, manifest: !art });
 
   // Collect the files: index.html plus assets/. Names must be content-hashed
   // (fastbuild refuses otherwise) — index.html is the one mutable-by-nature
@@ -224,37 +391,40 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
   // A FAILED READ IS A FAILED PUBLISH. Falling back to the local walk would
   // silently restore the bug that refused every generation for a day, so it
   // throws instead; the lane simply does not publish, and the container ships.
+  // THE DIST ROOT IS PARTITIONED: `root` is what this generation PUBLISHES,
+  // `fallthrough` is what it PINS to the image. Before the art lane the first
+  // half was always empty — a generation carried index.html + assets/ and the
+  // 43 `public/` files were the image's, full stop. The art lane changes that
+  // for exactly the five GENERATED catalogs (characters.json, worlds.json,
+  // monsters.json, npcs.json, shipset.json), because those are the art
+  // pipeline's OUTPUT and must travel with the art that produced them: publish
+  // new monster art without monsters.json and the monster is invisible; publish
+  // the catalog without the art and it 404s.
+  //
+  // Everything else in the dist root stays pinned, and pinning is what makes
+  // the mixed generation unrepresentable: the server refuses any generation
+  // whose pinned hashes disagree with the bytes it would actually serve, and
+  // (since the overlay exists) any generation that leaves a dist-root file
+  // named by NEITHER map.
+  //
+  // WHERE THE HASHES COME FROM, AND WHY NOT FROM THIS TREE. Hashing the
+  // runner's own dist root was the first cut and it refused every generation
+  // ever published (measured 2026-09-19 on 34cb856184e86f51: monsters.json
+  // differed and shipset.json was absent, 42 entries against 43). The image is
+  // the only authority on what the image serves, so it is asked. What the ART
+  // lane adds is that the runner can now legitimately REPRODUCE those catalogs
+  // — artbuild.mjs runs the Dockerfile's curation in the Dockerfile's order and
+  // reproduces production's four manifests byte for byte — so it publishes the
+  // ones that differ instead of pinning a stale hash.
   let fallthrough = {};
-  if (imageOrigin) {
-    const url = `${imageOrigin.replace(/\/+$/, "")}/api/bundle/fallthrough`;
-    let doc;
-    try {
-      const res = await fetch(url, { headers: { "cache-control": "no-store" } });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      doc = await res.json();
-    } catch (err) {
-      throw new Error(
-        `publish-bundle: could not read what the image serves (${url}: ${err.message}). ` +
-          `Refusing to publish a generation whose fall-through set would be a guess.`,
-      );
-    }
-    if (!doc || typeof doc.files !== "object" || !doc.files || !Object.keys(doc.files).length)
-      throw new Error(`publish-bundle: ${url} answered no fall-through files; refusing to publish.`);
-    fallthrough = doc.files;
-    // An invariant, not a hope: the image's map excludes assets/ and
-    // index.html by construction, so a generation's own files can never appear
-    // in it. If one ever does, the two sides disagree about who owns a path
-    // and the generation must not be written.
-    const overlap = Object.keys(files).filter((n) => n in fallthrough);
-    if (overlap.length)
-      throw new Error(
-        `publish-bundle: ${overlap.length} path(s) are claimed by BOTH this generation and the image ` +
-          `(${overlap.slice(0, 3).join(", ")}); refusing to publish.`,
-      );
-    console.log(`[publish] fall-through: ${Object.keys(fallthrough).length} files, as the image at ${imageOrigin} serves them`);
-  } else {
-    // No origin given (tests, a local dry run): hash this tree. Correct for a
-    // fixture, and NEVER what production uses — see above.
+  let root = {};
+  let artFiles = {};
+  let artBytes = 0;
+
+  // The runner's own dist root, hashed: index.html and assets/ belong to the
+  // generation, everything else is a candidate for `root`.
+  const localRoot = {};
+  {
     const walk = (dir, prefix) => {
       for (const n of readdirSync(dir)) {
         const full = join(dir, n);
@@ -264,16 +434,148 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
           continue;
         }
         if (rel === "index.html") continue;
-        fallthrough[rel] = hashBytes(readFileSync(full));
+        localRoot[rel] = hashBytes(readFileSync(full));
       }
     };
     walk(outDir, "");
   }
 
-  const id = createHash("sha256")
-    .update(Object.keys(files).sort().map((n) => `${n}\0${files[n]}`).join("\n"))
-    .digest("hex")
-    .slice(0, 16);
+  if (imageOrigin) {
+    const doc = await askTheImage(imageOrigin, "/api/bundle/fallthrough", "the dist root it serves");
+    if (typeof doc.files !== "object" || !doc.files || !Object.keys(doc.files).length)
+      throw new Error(`publish-bundle: ${imageOrigin} answered no fall-through files; refusing to publish.`);
+    const imageRoot = doc.files;
+    if (art) {
+      // The art lane: publish what differs, pin the rest AT THE IMAGE'S HASH.
+      const cannot = [];
+      for (const [rel, h] of Object.entries(localRoot)) {
+        if (imageRoot[rel] === h) continue;
+        if (PUBLISHABLE_ROOT.has(rel)) root[rel] = h;
+        else cannot.push(rel);
+      }
+      // A DIST-ROOT FILE THIS LANE CANNOT EXPRESS STOPS THE PUBLISH. Pinning
+      // the image's hash instead would serve the OLD file beside the new
+      // bundle — new code against an icon it may have renamed, which is the
+      // mixed generation this whole mechanism exists to prevent. The container
+      // lane is already building this push; it carries it.
+      if (cannot.length)
+        throw new Error(
+          `publish-bundle: ${cannot.length} dist-root file(s) differ from the image and are not ones the lane may ` +
+            `publish (${cannot.slice(0, 4).join(", ")}). Every dist-root file outside the generated catalogs earns a ` +
+            `one-year grant from ?v=<GIT_SHA>, so changing its bytes on a running instance is unrecallable. ` +
+            `The container lane carries this push.`,
+        );
+      for (const [rel, h] of Object.entries(imageRoot)) if (!(rel in root)) fallthrough[rel] = h;
+    } else {
+      // The client lane, unchanged: the generation publishes none of the dist
+      // root and pins all of it.
+      fallthrough = imageRoot;
+    }
+    console.log(
+      `[publish] dist root: ${Object.keys(root).length} published, ${Object.keys(fallthrough).length} pinned to the image at ${imageOrigin}`,
+    );
+  } else {
+    // No origin given (tests, a local dry run): pin this tree. Correct for a
+    // fixture, and NEVER what production uses — see above.
+    fallthrough = localRoot;
+  }
+
+  // THE ART DELTA — every curated file whose bytes differ from the ones the
+  // image serves, plus every one the image does not have at all.
+  //
+  // Computed against /api/bundle/artbase, which is the IMAGE's own index, NOT
+  // /asset-index.json — that document is the MERGED one and already carries a
+  // live generation's overlay, so a delta taken from it would be a delta
+  // against the overlay and this generation would silently drop every file the
+  // previous one published. A generation is a COMPLETE description of what
+  // sits on top of the image.
+  //
+  // There is no removal list, deliberately, and it is the same fail-safe
+  // direction shipset.mjs states: shipping a spare file wastes bytes, dropping
+  // a reachable one 404s in production. A file deleted from the tree keeps
+  // being served from the image until the container lands minutes later, and
+  // nothing asks for it — it left the catalogs and the index in the same
+  // commit. A removal list computed wrong, by contrast, 404s live art.
+  if (art) {
+    if (!imageOrigin) throw new Error("publish-bundle: --art needs an image origin to compute the delta against");
+    const base = await askTheImage(imageOrigin, "/api/bundle/artbase", "the art it serves");
+    if (typeof base.files !== "object" || !base.files || !Object.keys(base.files).length)
+      throw new Error(
+        `publish-bundle: ${imageOrigin} named no art base. An image built before the art lane does not expose one — ` +
+          `the container lane carries this push.`,
+      );
+    let skipped = 0;
+    for (const [rel, h] of Object.entries(art.files)) {
+      if (base.files[rel] === h) continue;
+      if (!ART_LANE_DOMAINS.has(rel.slice(0, rel.indexOf("/")))) {
+        skipped++;
+        continue;
+      }
+      artFiles[rel] = h;
+    }
+    if (skipped) console.log(`[publish] ${skipped} changed path(s) outside the lane's domains fall through to the image`);
+    // NEW PATHS SAID OUT LOUD. A path the image's base does not name is either
+    // genuinely new art — the ordinary case — or a stowaway the image's build
+    // context excludes and a runner's checkout does not (artbuild's
+    // `.dockerignore` read exists for exactly that, and 11.73 MB of it was
+    // real). Printing them is what makes a stowaway loud instead of a silent
+    // 11 MB of every payload forever.
+    const added = Object.keys(artFiles).filter((rel) => !(rel in base.files));
+    if (added.length)
+      console.log(
+        `[publish] ${added.length} of them are NEW (absent from the image's base): ${added.slice(0, 6).join(", ")}` +
+          (added.length > 6 ? ` … +${added.length - 6}` : ""),
+      );
+    for (const rel of Object.keys(artFiles)) artBytes += statSync(join(art.root, rel)).size;
+    const n = Object.keys(artFiles).length;
+    console.log(
+      `[publish] art delta: ${n} of ${art.count} file(s), ${(artBytes / 1e6).toFixed(2)} MB, ` +
+        `against the image's ${Object.keys(base.files).length}-file base`,
+    );
+    // THE CAPS, HERE RATHER THAN AFTER THE UPLOAD. Over either one the lane
+    // stands down and the container carries that push — which it is already
+    // building, so nothing is lost but the seconds.
+    if (n + Object.keys(root).length > ART_FILES_MAX || artBytes > ART_BYTES_MAX) {
+      throw new Error(
+        `publish-bundle: this push overlays ${n + Object.keys(root).length} file(s) / ` +
+          `${(artBytes / 1e6).toFixed(1)} MB, over the lane's cap (${ART_FILES_MAX} files / ` +
+          `${(ART_BYTES_MAX / 1e6).toFixed(0)} MB). The container lane carries it.`,
+      );
+    }
+    if (!n && !Object.keys(root).length)
+      console.log(`[publish] the image already serves this art — the generation carries the bundle alone`);
+  }
+
+  // An invariant, not a hope: the image's map excludes assets/ and index.html
+  // by construction, so a generation's own files can never appear in it. If one
+  // ever does, the two sides disagree about who owns a path and the generation
+  // must not be written.
+  {
+    const overlap = Object.keys(files).filter((n) => n in fallthrough || n in root);
+    if (overlap.length)
+      throw new Error(
+        `publish-bundle: ${overlap.length} path(s) are claimed by BOTH the bundle and the dist root ` +
+          `(${overlap.slice(0, 3).join(", ")}); refusing to publish.`,
+      );
+    const both = Object.keys(root).filter((n) => n in fallthrough);
+    if (both.length)
+      throw new Error(
+        `publish-bundle: ${both.length} dist-root path(s) are both published and pinned (${both.slice(0, 3).join(", ")}); refusing.`,
+      );
+  }
+
+  // THE GENERATION ID IS EVERYTHING IT SERVES. It used to be the bundle alone,
+  // which was right while the bundle was all a generation carried — with an
+  // overlay it would make two art publishes of one bundle the SAME id, so the
+  // second would report "already current" and publish nothing while the art sat
+  // on the runner. Art and dist root are folded in under their own headings so
+  // a path can never be mistaken for a different one in another space.
+  const idInput = [
+    ...Object.keys(files).sort().map((n) => `f\0${n}\0${files[n]}`),
+    ...Object.keys(root).sort().map((n) => `r\0${n}\0${root[n]}`),
+    ...Object.keys(artFiles).sort().map((n) => `a\0${n}\0${artFiles[n]}`),
+  ].join("\n");
+  const id = createHash("sha256").update(idInput).digest("hex").slice(0, 16);
 
   const prev = await readPointer(store); // see readPointer: an unparseable pointer aborts
   if (prev?.current === id) {
@@ -297,15 +599,26 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
   };
 
   if (dryRun) {
-    console.log(`[publish] DRY RUN — would publish ${id} (${Object.keys(files).length} files), seq ${pointer.seq}`);
+    console.log(
+      `[publish] DRY RUN — would publish ${id}: ${Object.keys(files).length} bundle file(s), ` +
+        `${Object.keys(artFiles).length} art, ${Object.keys(root).length} dist-root, ${Object.keys(fallthrough).length} pinned, seq ${pointer.seq}`,
+    );
     return { id, published: false, dryRun: true, alreadyCurrent: true, ms: Math.round(performance.now() - t0), seq: pointer.seq, pointer };
   }
 
-  // 1) every byte, under its hash — and only the ones not already there
+  // 1) every byte, under its hash — and only the ones not already there.
+  // READ LAZILY for the overlay: the bundle is 2.5 MB and is already in hand,
+  // but an art delta can be tens of megabytes and there is no reason for the
+  // publisher to hold it all at once when a blob that is already in the store
+  // is never read at all.
+  const uploads = [
+    ...Object.entries(files).map(([name, h]) => [name, h, () => bytesOf[name]]),
+    ...Object.entries(root).map(([name, h]) => [name, h, () => readFileSync(join(outDir, name))]),
+    ...Object.entries(artFiles).map(([name, h]) => [name, h, () => readFileSync(join(art.root, name))]),
+  ];
   let sent = 0;
   let skipped = 0;
-  for (const [name, bytes] of Object.entries(bytesOf)) {
-    const h = files[name];
+  for (const [name, h, read] of uploads) {
     // A PRESENCE TEST IS NOT AN INTEGRITY TEST. `blob/<h>` existing does not
     // mean it holds the bytes that hash to h: an interrupted put leaves a
     // truncated object under a name no later publish would ever rewrite, and
@@ -316,6 +629,18 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
     const have = await store.get(`blob/${h}`);
     if (have && hashBytes(have) === h) { skipped++; continue; }
     if (have) console.log(`[publish] blob/${h} is ${have.length} B and does not hash to its name — re-uploading`);
+    const bytes = read();
+    // THE HASH IS RE-DERIVED FROM THE BYTES BEING SENT, never trusted from the
+    // index that named them. artbuild hashed the curated root a few seconds
+    // ago; if anything has touched a file since, the store would hold bytes
+    // under a name they do not hash to and the server would refuse every
+    // generation naming it, FOREVER, because blobs are shared. Measured once:
+    // one 0-byte worker blob took the whole lane down.
+    const real = hashBytes(bytes);
+    if (real !== h)
+      throw new Error(
+        `publish-bundle: ${name} hashes ${real} but was recorded as ${h} — the tree changed under the publish; refusing.`,
+      );
     await store.put(`blob/${h}`, bytes);
     sent += bytes.length;
   }
@@ -326,17 +651,28 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
   // a guessed commit_ts is the one field LAW 6 orders the two lanes by. With
   // it here, `revertBundle` reads the target's own stamp and writes a pointer
   // that is true.
-  await store.put(
-    `gen/${id}/manifest.json`,
-    Buffer.from(JSON.stringify({ files, fallthrough, git_sha: gitSha, commit_ts: commitTs }, null, 1)),
-  );
+  const manifest = { files, git_sha: gitSha, commit_ts: commitTs, fallthrough };
+  if (Object.keys(root).length) manifest.root = root;
+  if (Object.keys(artFiles).length) manifest.art = artFiles;
+  // THE OVERLAY'S WEIGHT, so the server can refuse an over-cap generation
+  // BEFORE downloading 64 MB of it. Never the cap itself — the server's running
+  // total during the fetch is, because a cap that trusts the payload it is
+  // protecting against is not a cap.
+  if (artBytes) manifest.art_bytes = artBytes;
+  await store.put(`gen/${id}/manifest.json`, Buffer.from(JSON.stringify(manifest, null, 1)));
   // 3) and only now the pointer
   await store.put("pointer.json", Buffer.from(JSON.stringify(pointer, null, 1)));
+  // 4) and only after THAT, drop what the new window does not name.
+  await pruneStore(store, pointer, imageOrigin);
 
   const ms = Math.round(performance.now() - t0);
+  const over = Object.keys(artFiles).length + Object.keys(root).length;
   console.log(
-    `[publish] ${id} seq ${pointer.seq}: ${Object.keys(files).length} files, ${(sent / 1e6).toFixed(2)} MB, ` +
-      `built in ${built.ms} ms, published in ${ms} ms -> ${store.label}` +
+    `[publish] ${id} seq ${pointer.seq}: ${Object.keys(files).length} bundle file(s)` +
+      (over ? ` + ${Object.keys(artFiles).length} art + ${Object.keys(root).length} dist-root` : "") +
+      `, ${(sent / 1e6).toFixed(2)} MB, built in ${built.ms} ms` +
+      (art?.ms ? ` (art curated in ${art.ms} ms)` : "") +
+      `, published in ${ms} ms -> ${store.label}` +
       (skipped ? `; ${skipped} blob(s) already present, not re-uploaded` : ""),
   );
   if (retained.length) console.log(`[publish] retaining ${retained.join(", ")}`);
@@ -346,7 +682,7 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const target = arg("store", process.env.BUNDLE_STORE || "");
   if (!target) {
-    console.error("usage: publish-bundle.mjs --store <dir> [--sha <sha>] [--commit-ts <epoch>] [--image-origin <url>] [--dry-run]\n   or: publish-bundle.mjs --store <dir> --revert   (roll back to the previous generation, or to the image)");
+    console.error("usage: publish-bundle.mjs --store <dir> [--sha <sha>] [--commit-ts <epoch>] [--image-origin <url>] [--art <curated root>] [--dry-run]\n   or: publish-bundle.mjs --store <dir> --revert   (roll back to the previous generation, or to the image)");
     process.exit(2);
   }
   if (target.startsWith("gs://")) {
@@ -373,6 +709,11 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     // The running game is the authority on its own dist root. Overridable for a
     // staging origin; "" falls back to hashing this tree, which only a fixture wants.
     imageOrigin: arg("image-origin", process.env.IMAGE_ORIGIN || "https://nangijala.online"),
+    // THE ART LANE. A directory to build the curated art root into; absent, the
+    // publish carries the bundle alone exactly as it always has. It is a
+    // scratch path and never a tree anyone keeps: artbuild hardlinks 43,117
+    // files into it and ship-tiles3 copies 7,570 more.
+    artRoot: arg("art", process.env.ART_ROOT || ""),
     dryRun: process.argv.includes("--dry-run"),
   });
   // An honest exit code: `r.id` is always truthy, so the old expression was a

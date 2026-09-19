@@ -1,0 +1,404 @@
+# THE ART LANE: ship ART to the RUNNING server — no container, no Cloud Run
+# revision. Push -> the game serves the new pixels.
+#
+# A SIBLING OF fast-publish.yml, NOT A WIDENING OF IT, deliberately. That
+# workflow is the proven 33-second path for a browser-code push and takes a
+# SPARSE checkout (6 s) because it needs no art; this one needs the whole
+# 1.7 GB tree (24 s measured) to curate it. Widening the other would have put
+# that 18 s in front of every client push, which is the one wait the maintainer
+# actually sits through ("I always sit and refresh the screen when the game code
+# is pushed"). So the two lanes are separate jobs with separate checkouts and
+# ONE SHARED CONCURRENCY GROUP, which is what keeps them from racing the
+# pointer's read-modify-write seq.
+#
+# A push that touches BOTH art and browser code triggers both: fast-publish's
+# own lane check sees the art paths as OUTSIDE its set and stands down, and this
+# one carries the push whole (it builds the client anyway — esbuild is 0.5 s).
+#
+# WHAT MAKES THIS SAFE, in one line: `?v=<GIT_SHA>` no longer grants `immutable`
+# to anything this lane can republish (games2/server/src/cachepolicy.ts,
+# `isArt`). Art earns its year only through `?h=<hash>` VERIFIED against the
+# bytes being sent, so new pixels are a new hash and a new URL, and one URL
+# naming two byte-sets is not expressible. The full argument, the caps and the
+# reproduction measurements: games2/docs/fast-lane.md.
+#
+# THE CONTAINER LANE STILL RUNS ON AN ART PUSH, and that is load-bearing rather
+# than left over. The image refreshing every few minutes is what keeps the art
+# delta — and therefore the store branch and the server's memory — near p50
+# (21 files / 0.73 MB) instead of growing all day; law 6 then makes the
+# container authoritative when it lands, so a bad art generation is undone
+# automatically within ~5 minutes with nobody doing anything. It costs no
+# wall-clock a person experiences: the art is already live at ~45 s.
+name: art-publish
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # THE NINE DOMAINS THE LANE MAY PUBLISH (ART_LANE_DOMAINS in
+      # server/src/bundlestore.ts). NOT wiki/ or live/: the image builds
+      # wiki/release_notes.json from git history, live/** already has its own
+      # no-redeploy channel, and live/telemetry is .dockerignore-excluded, so
+      # nothing in either can be faithfully reproduced here.
+      - "characters2/**"
+      - "tiles/**"
+      - "maps2/**"
+      - "scenery/**"
+      - "sounds/**"
+      - "music/**"
+      - "monsters/**"
+      - "items/**"
+      - "lore/**"
+      # The two TRACKED generated catalogs. They change on an art push, they are
+      # the art pipeline's output, and the lane republishes them from the
+      # curated root rather than from the committed copy — which is not what
+      # ships (measured: committed npcs.json 62fde8b7e644b032, the image serves
+      # 8fc7205ae6daf870). The other three are gitignored and generated.
+      - "games2/client/public/monsters.json"
+      - "games2/client/public/npcs.json"
+
+# ONE GROUP WITH fast-publish, repository-wide: the pointer's seq is
+# read-modify-write, so two publishers at once could skip a generation. Not
+# cancel-in-progress — a half-finished publish should finish writing its
+# content-addressed blobs (harmless) rather than be killed between them.
+concurrency:
+  group: fast-publish
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # to push the generation to its own branch
+    outputs:
+      gen: ${{ steps.pub.outputs.gen }}
+    steps:
+      # THE WHOLE TREE, because this lane's entire job is to reproduce the
+      # curated art root the image serves, and that reads every art domain.
+      # Measured on a runner: 24 s for 1.7 GB (deploy run 4338), against 222 s
+      # for the docker build it replaces.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2 # HEAD~1 must exist: the lane check diffs against it
+
+      # BEFORE ANY GIT WRITE, not just before the commit: creating the store
+      # branch uses `git commit-tree`, which refuses without an identity, and
+      # that is a first-run-only path nothing exercises until the day it matters.
+      - name: Git identity
+        run: |
+          git config --global user.name "Claude"
+          git config --global user.email "noreply@anthropic.com"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games2/package-lock.json
+
+      - name: Install
+        working-directory: games2
+        run: npm ci
+
+      # WHAT THIS LANE MAY CARRY. It asks what the push CHANGED, never who
+      # pushed it. Art, browser code and the two generated catalogs travel; the
+      # server's own program, `shared/`, config and the build scripts do not,
+      # because adopting those means re-importing modules in the process that
+      # owns the authoritative 20 Hz world — a restart. A change under
+      # games2/scripts/ is refused too: those scripts ARE the curation, so a
+      # push that edits them must be proven by a container build before its
+      # output is trusted.
+      #
+      # A PUSH THAT NEEDS A NEW SERVER MUST NOT PUBLISH ITS ART FIRST. The path
+      # filter cannot see this: one push can touch scenery/ AND server/src, and
+      # the lane would then hand players art in seconds that needs a server
+      # arriving five minutes later.
+      - name: Lane check — art and browser code only, or nothing
+        id: lane
+        run: |
+          BEFORE="${{ github.event.before }}"
+          if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            RANGE="HEAD~1..HEAD"
+          else
+            git fetch --depth=1 origin "$BEFORE" 2>/dev/null || true
+            RANGE="$BEFORE..HEAD"
+          fi
+          CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || git diff --name-only HEAD~1..HEAD)
+          echo "$CHANGED" | head -40 | sed 's/^/  /'
+          echo "  ($(echo "$CHANGED" | grep -c . ) path(s) changed)"
+          # Anchored at both ends, every one of them: `^games2/client/index\.html`
+          # without the `$` admits index.htmlx, which the IMAGE answers — the
+          # same defect this repo has now paid for in three separate filters.
+          OUTSIDE=$(echo "$CHANGED" \
+            | grep -vE '^(characters2|tiles|maps2|scenery|sounds|music|monsters|items|lore)/' \
+            | grep -vE '^games2/client/src/' \
+            | grep -vE '^games2/client/index\.html$' \
+            | grep -vE '^games2/client/public/(monsters|npcs)\.json$' \
+            | grep -vE '^(coordination/|live/)' || true)
+          if [ -n "$OUTSIDE" ]; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "NOT publishing: this push also changes files the art lane cannot carry:"
+            echo "$OUTSIDE" | sed 's/^/  /'
+            { echo "**Not published to the art lane** — this push also changes:"; echo '```'; echo "$OUTSIDE" | head -30; echo '```'; echo "The container lane carries it whole."; } >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      # A TRANSIENT FETCH FAILURE MUST NOT LOOK LIKE "NO STORE YET": handing the
+      # publisher an EMPTY store restarts seq at 1, and LAW 2 then makes every
+      # running instance refuse that generation and every later one. So ask the
+      # remote whether the branch exists and treat the two cases apart.
+      - name: Fetch the store branch
+        if: steps.lane.outputs.publish == 'true'
+        env:
+          STORE: ${{ runner.temp }}/store
+        run: |
+          set -euo pipefail
+          if git ls-remote --exit-code --heads origin bundle-store >/dev/null 2>&1; then
+            echo "the store branch exists — fetching it"
+            git fetch --depth=1 origin bundle-store:bundle-store
+          elif git ls-remote --heads origin >/dev/null 2>&1; then
+            echo "the store branch does not exist yet — creating it from an empty tree"
+            git branch bundle-store "$(git commit-tree "$(git hash-object -t tree /dev/null)" -m 'bundle store')"
+          else
+            echo "::error::cannot reach the remote to tell whether bundle-store exists; refusing to publish against an unknown store"
+            exit 1
+          fi
+          git worktree add "$STORE" bundle-store
+          echo "store worktree at $STORE"
+
+      # CURATE, DIFF, PUBLISH. artbuild.mjs runs the Dockerfile's curation in
+      # the Dockerfile's order (shipset --emit --write, manifest against the
+      # CURATED root, ship-tiles3, then hash) — measured 9.3 s for 50,121 files
+      # and 272 MB, reproducing production's four manifests byte for byte. The
+      # publisher then asks the IMAGE what art it serves
+      # (/api/bundle/artbase) and publishes only what differs.
+      - name: Publish the generation
+        id: pub
+        if: steps.lane.outputs.publish == 'true'
+        working-directory: games2
+        env:
+          GIT_SHA: ${{ github.sha }}
+          STORE: ${{ runner.temp }}/store
+          CURATED: ${{ runner.temp }}/curated
+          IMAGE_ORIGIN: https://nangijala.online
+        run: |
+          # `pipefail`, because the publish is PIPED: without it the status is
+          # tee's and a publish that THREW is reported as a successful one,
+          # after which the poke waits for a generation that was never written.
+          set -euo pipefail
+          # THE COMMIT'S OWN TIMESTAMP orders this publish against the IMAGE
+          # (bundlestore law 6). %ct needs no history beyond HEAD.
+          TS=$(git show -s --format=%ct HEAD)
+          echo "publishing the art of $GIT_SHA, committed $TS"
+          # A REFUSED PUBLISH IS NOT A FAILED RUN. The publisher throws, loudly
+          # and on purpose, when this push is over the lane's caps or changes a
+          # dist-root file the lane may not carry — and in both cases the
+          # container lane is already building the same push. So the step
+          # records "not published" and stays green; a genuine defect shows up
+          # in the poke below, which fails on a NAMED refusal.
+          if node scripts/publish-bundle.mjs --store "$STORE/bundle" --sha "$GIT_SHA" --commit-ts "$TS" --art "$CURATED" 2>&1 | tee /tmp/pub.log; then
+            :
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::the art lane stood down for this push; the container lane carries it"
+            { echo "**The art lane stood down.**"; echo '```'; tail -20 /tmp/pub.log; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          if grep -q "already current" /tmp/pub.log; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            GEN=$(sed -n 's/^\[publish\] \([0-9a-f]\{16\}\) seq .*/\1/p' /tmp/pub.log | head -1)
+            echo "gen=$GEN" >> "$GITHUB_OUTPUT"
+            echo "published generation $GEN"
+          fi
+
+      - name: Commit and push it
+        if: steps.pub.outputs.changed == 'true'
+        working-directory: ${{ runner.temp }}/store
+        run: |
+          set -euo pipefail
+          # `-A`, so the PRUNE's deletions are staged too. Nothing deleted a
+          # blob until the art lane: `git add` carries every blob ever
+          # published in the branch's HEAD tree and `--depth=1` materialises
+          # that whole tree on every publish, which measured out at 1.50 GB of
+          # art per 14 days. publish-bundle.mjs prunes to the window after the
+          # pointer write; without `-A` the files vanish from disk and stay in
+          # the commit.
+          git add -A bundle
+          # NOTHING TO COMMIT IS A DEFECT HERE, not a no-op: the publisher just
+          # reported that it wrote blobs, a manifest and a pointer.
+          if git diff --cached --quiet; then
+            echo "::error::the publisher reported a new generation but the store worktree has no changes"
+            exit 1
+          fi
+          git commit -q -m "bundle: art of ${{ github.sha }}"
+          pushed=""
+          for i in 1 2 3 4; do
+            git push origin bundle-store && { pushed=yes; break; }
+            echo "push failed, retrying in $((2 ** i))s"; sleep $((2 ** i))
+            # A concurrent publisher is the only expected cause. The blobs are
+            # content-addressed so they merge; the pointer is the one file that
+            # can conflict.
+            git fetch origin bundle-store && git rebase origin/bundle-store || true
+          done
+          if [ -z "$pushed" ]; then
+            echo "::error::could not push the generation after 4 attempts"
+            exit 1
+          fi
+
+      - name: Poke the game server
+        if: steps.pub.outputs.changed == 'true'
+        env:
+          GEN: ${{ steps.pub.outputs.gen }}
+        run: |
+          # RETRIES ARE EXPECTED. The blobs are read from raw.githubusercontent
+          # and a path pushed seconds ago can briefly 404 while it replicates;
+          # the server never flips to a generation it could not fully read, and
+          # its 60 s belt is the floor under this loop. An art generation is
+          # more blobs than a bundle, so it gets a longer loop.
+          OK=""
+          for i in $(seq 1 12); do
+            OUT=$(curl -fsS -X POST --max-time 30 https://nangijala.online/api/bundle/refresh || true)
+            echo "attempt $i: $OUT"
+            if [ -n "$GEN" ] && echo "$OUT" | grep -q "\"serving\":\"$GEN\""; then OK="yes"; break; fi
+            sleep 5
+          done
+          if [ -n "$OK" ]; then
+            echo "### The art is live" >> "$GITHUB_STEP_SUMMARY"
+            echo "Generation \`$GEN\` from \`${{ github.sha }}\` is being served — no image, no rollout." >> "$GITHUB_STEP_SUMMARY"
+            exit 0
+          fi
+          # A REFUSAL IS A FAILED PUBLISH AND MUST SAY SO. The reason sits in
+          # /api/bundle; that is how a lane which had NEVER served a generation
+          # reported success for a day.
+          STATE=$(curl -fsS --max-time 20 https://nangijala.online/api/bundle || echo '{}')
+          echo "$STATE"
+          { echo "**Published \`$GEN\`, but it is not being served.**"; echo '```'; echo "$STATE"; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+          if echo "$STATE" | grep -q "refused $GEN"; then
+            echo "::error::the server REFUSED $GEN — the reason is above, and it will not fix itself"
+            exit 1
+          fi
+          echo "::warning::the server has not adopted $GEN yet; its 60 s belt will pick it up"
+
+      - name: Nothing to publish
+        if: steps.lane.outputs.publish == 'true' && steps.pub.outputs.changed != 'true'
+        run: echo "Nothing was published for this push — see the log above." >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------- verify
+  # THE GATE, AFTER THE FACT, WITH A ROLLBACK BEHIND IT — the same bargain the
+  # client lane makes, for the same reason: the checkout and the browser are the
+  # larger half of the wait, and none of it belongs on the path a person sits
+  # through. The exposure is the seconds between a bad generation being served
+  # and this job finishing; the image is untouched throughout and is what a
+  # rollback falls back to.
+  verify:
+    needs: publish
+    if: always() && needs.publish.result == 'success' && needs.publish.outputs.gen != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # a rollback writes the pointer on the store branch
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1 # the gates read the tree, never the history
+
+      - name: Git identity
+        run: |
+          git config --global user.name "Claude"
+          git config --global user.email "noreply@anthropic.com"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games2/package-lock.json
+
+      - name: Install
+        working-directory: games2
+        run: npm ci
+
+      # The store, so verify-artlive can read the manifest of what was published
+      # rather than trust an output string for what the bytes should be.
+      - name: Fetch the store branch
+        run: |
+          git fetch --depth=1 origin bundle-store:bundle-store
+          git worktree add "${{ runner.temp }}/store" bundle-store
+
+      - name: Cache the browser
+        id: pwcache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-1.61.1-${{ runner.os }}
+      - name: Install chromium if it was not cached
+        if: steps.pwcache.outputs.cache-hit != 'true'
+        run: npx --yes playwright@1.61.1 install --with-deps chromium
+
+      - name: Gate — the channel cannot lie about art
+        id: gate
+        working-directory: games2
+        env:
+          IMAGE_ORIGIN: https://nangijala.online
+          STORE: ${{ runner.temp }}/store
+          GEN: ${{ needs.publish.outputs.gen }}
+        run: |
+          set -euo pipefail
+          # 1. THE MECHANISM, on a local server: the overlay serves, the grant
+          #    is verified, every malformed generation is refused, the lane off
+          #    is byte-identical. 49 arms.
+          node scripts/verify-artlane.mjs
+          # 2. THE SAME FOR THE BUNDLE, unchanged.
+          node scripts/verify-fastlane.mjs
+          # 3. AND THE ART ACTUALLY REACHED PLAYERS — the only claim the
+          #    maintainer can check from a phone. Including the one assertion
+          #    that must never regress: ?v=<the image's sha> cannot freeze
+          #    published art.
+          node scripts/verify-artlive.mjs --gen "$GEN" --store "$STORE/bundle"
+          # 4. AND THE PUBLISHED CLIENT STILL BOOTS, JOINS AND RENDERS.
+          node scripts/verify-fastbundle.mjs
+
+      # Everything below runs ONLY when the gate failed.
+      - name: Roll production back
+        if: failure() && steps.gate.outcome == 'failure'
+        env:
+          STORE: ${{ runner.temp }}/store
+        run: |
+          set -euo pipefail
+          node games2/scripts/publish-bundle.mjs --store "$STORE/bundle" --revert
+          cd "$STORE"
+          # `-A`, so the PRUNE's deletions are staged too. Nothing deleted a
+          # blob until the art lane: `git add` carries every blob ever
+          # published in the branch's HEAD tree and `--depth=1` materialises
+          # that whole tree on every publish, which measured out at 1.50 GB of
+          # art per 14 days. publish-bundle.mjs prunes to the window after the
+          # pointer write; without `-A` the files vanish from disk and stay in
+          # the commit.
+          git add -A bundle
+          if git diff --cached --quiet; then
+            echo "::error::the rollback wrote no pointer change — production may still be on the bad generation"
+            exit 1
+          fi
+          git commit -q -m "bundle: roll back ${{ needs.publish.outputs.gen }} (art gate failed)"
+          # A ROLLBACK THAT CANNOT BE PUSHED IS A ROLLBACK THAT DID NOT HAPPEN.
+          pushed=""
+          for i in 1 2 3 4; do
+            git push origin bundle-store && { pushed=yes; break; }
+            echo "push failed, retrying in $((2 ** i))s"; sleep $((2 ** i))
+            git fetch origin bundle-store && git rebase origin/bundle-store || true
+          done
+          if [ -z "$pushed" ]; then
+            echo "::error::could not push the rollback after 4 attempts — production is STILL on the failed generation ${{ needs.publish.outputs.gen }}"
+            exit 1
+          fi
+
+      - name: Poke the game server, so the rollback is live now
+        if: failure() && steps.gate.outcome == 'failure'
+        run: |
+          for i in 1 2 3 4 5 6; do
+            OUT=$(curl -fsS -X POST --max-time 25 https://nangijala.online/api/bundle/refresh || true)
+            echo "attempt $i: $OUT"
+            echo "$OUT" | grep -q "\"serving\":\"${{ needs.publish.outputs.gen }}\"" || break
+            sleep 4
+          done
+          { echo "### Rolled back"; echo "Generation \`${{ needs.publish.outputs.gen }}\` failed the art gate and production was rolled back."; } >> "$GITHUB_STEP_SUMMARY"

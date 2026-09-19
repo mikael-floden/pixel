@@ -1,6 +1,6 @@
 import { createServer } from "http";
 import { existsSync, readFileSync, readdirSync, statSync } from "fs";
-import { dirname, join } from "path";
+import { dirname, join, relative, sep } from "path";
 import { fileURLToPath } from "url";
 import express from "express";
 import compression from "compression";
@@ -12,7 +12,7 @@ import { WorldRoom, sceneryBbox, zonesConfigFor, perfStats, DEFAULT_WORLD } from
 import { initLive, registerLiveRoutes, sceneryHitboxOverrides } from "./live.js";
 import { cacheControlFor } from "./cachepolicy.js";
 import { assetHash } from "./assethash.js";
-import { BundleStore, backendFromEnv, DOC, hashBytes } from "./bundlestore";
+import { BundleStore, backendFromEnv, DOC, hashBytes, safeOverlayPath, PUBLISHABLE_ROOT, ART_LANE_DOMAINS } from "./bundlestore";
 
 // Encoder.BUFFER_SIZE is set in rooms/WorldRoom.ts (the room module), so a
 // test's own Server gets the same 64 KB as this one.
@@ -165,7 +165,7 @@ const GIT_SHA = (process.env.GIT_SHA || "").trim();
 // Vite's output directory. Nothing but rollup emits can land here — client/
 // public has no `assets/` folder — which is what lets the grant be safe.
 const BUNDLE_DIR = join(clientDist, "assets");
-function setCacheHeaders(res: express.Response, path: string) {
+function setCacheHeaders(res: express.Response, path: string, isArt: boolean) {
   res.setHeader(
     "Cache-Control",
     cacheControlFor({
@@ -174,10 +174,29 @@ function setCacheHeaders(res: express.Response, path: string) {
       gitSha: GIT_SHA,
       queryV: res.req?.query?.v,
       queryH: res.req?.query?.h,
+      isArt,
       fileHash: () => assetHash(path), // the bytes about to be served, never the index
     }),
   );
 }
+// WHICH MOUNT ANSWERED IS WHAT DECIDES `isArt`, not the path. ASSETS_ROOT is
+// the REPO ROOT in dev and therefore contains client/dist, so a prefix test
+// would classify the bundle's own public files as art locally and not in the
+// image — the one thing a cache rule may never do is mean two things. The two
+// call sites below are the whole distinction: the 13 art mounts can be
+// republished onto a running instance by the art lane, client/dist cannot.
+const artCacheHeaders = (res: express.Response, path: string) => setCacheHeaders(res, path, true);
+// AND THE FIVE GENERATED CATALOGS ARE ART TOO, wherever they are served from.
+// The lane may publish them (bundlestore's PUBLISHABLE_ROOT), so their bytes
+// can change while GIT_SHA stands still — and `?v=<sha>` freezes a dist-root
+// file for a year (measured live: /monsters.json?v=<sha> answered `immutable`).
+// Revoked here as well as on the overlay route, because the hazard is the
+// IMAGE's copy of the name: freeze it today from the image and a generation
+// that publishes it tomorrow is serving different bytes under a frozen URL.
+// Costs nothing — the client fetches all five unstamped, so none has ever been
+// frozen. Everything else in client/public keeps the grant it has always had.
+const distCacheHeaders = (res: express.Response, path: string) =>
+  setCacheHeaders(res, path, PUBLISHABLE_ROOT.has(relative(clientDist, path).split(sep).join("/")));
 
 // THE ASSET INDEX — one `no-cache` document naming the current content hash
 // of every file under ASSETS_ROOT (scripts/build-asset-index.mjs, run in the
@@ -188,9 +207,69 @@ function setCacheHeaders(res: express.Response, path: string) {
 // the client stamps `?v=<sha>` exactly as before.
 const ASSET_INDEX = process.env.ASSET_INDEX || join(ASSETS_ROOT, "asset-index.json");
 const assetIndexJson: string | null = existsSync(ASSET_INDEX) ? readFileSync(ASSET_INDEX, "utf8") : null;
+
+/** THE INDEX NAMES WHAT IS SERVED, NOT WHAT THE IMAGE HOLDS. With an art
+ *  generation live the two differ for exactly the files it overlays, so the
+ *  image's document is merged with the generation's art hashes before it goes
+ *  out. Getting this wrong is not dangerous — the server verifies `?h` against
+ *  the bytes, so a stale index can only ever lose a cache grant, never freeze a
+ *  wrong file — but it would cost every overlaid file its year, which is the
+ *  caching the index exists to buy.
+ *
+ *  Memoised on the serving generation: the base is parsed once (4.33 MB,
+ *  50,121 files) and a flip re-stringifies, which is tens of milliseconds ONCE
+ *  per publish rather than per request. `no-cache` as before, and express
+ *  derives the ETag from the body, so a flip changes the validator and a
+ *  browser holding the old index revalidates into the new one. */
+let assetIndexBase: { schema?: string; algo?: string; files: Record<string, string> } | null | undefined;
+let assetIndexMerged: { key: string; body: string } | null = null;
+function assetIndexBody(): string | null {
+  if (assetIndexJson === null) return null;
+  const art = bundles?.artHashes();
+  if (!art || art.size === 0) return assetIndexJson;
+  const key = `${bundles?.current?.id ?? ""}|${art.size}`;
+  if (assetIndexMerged?.key === key) return assetIndexMerged.body;
+  if (assetIndexBase === undefined) {
+    try {
+      assetIndexBase = JSON.parse(assetIndexJson);
+    } catch {
+      assetIndexBase = null;
+    }
+  }
+  if (!assetIndexBase?.files) return assetIndexJson; // unparseable: the image's own document, unchanged
+  const files: Record<string, string> = { ...assetIndexBase.files };
+  for (const [rel, h] of art) files[rel] = h;
+  const body = JSON.stringify({ ...assetIndexBase, files });
+  assetIndexMerged = { key, body };
+  return body;
+}
 app.get("/asset-index.json", (_req, res) => {
+  const body = assetIndexBody();
+  if (body === null) return res.status(404).setHeader("Cache-Control", "no-store").end();
+  res.setHeader("Cache-Control", "no-cache").type("application/json").send(body);
+});
+
+/** WHAT ART THIS IMAGE SERVES, as the image itself hashed it at build time —
+ *  the base the art lane computes its delta against.
+ *
+ *  NOT /asset-index.json, and the difference is the whole reason this exists:
+ *  that document is the MERGED one, so with a generation live it already
+ *  contains that generation's overlay. A publisher diffing against it would
+ *  produce a delta relative to the OVERLAY and the next generation would
+ *  silently drop every file the previous one published — art appearing and then
+ *  vanishing, which is worse than art arriving five minutes late. A generation
+ *  is a COMPLETE description of what sits on top of the image, so it is
+ *  computed against the image and nothing else.
+ *
+ *  Unauthenticated for the same reason /api/bundle/fallthrough is: it is a list
+ *  of hashes of bytes this server already hands to anyone who asks. */
+app.get("/api/bundle/artbase", (_req, res) => {
   if (assetIndexJson === null) return res.status(404).setHeader("Cache-Control", "no-store").end();
-  res.setHeader("Cache-Control", "no-cache").type("application/json").send(assetIndexJson);
+  res
+    .setHeader("Cache-Control", "no-store")
+    .setHeader("X-Image-Sha", process.env.GIT_SHA || "dev")
+    .type("application/json")
+    .send(assetIndexJson);
 });
 
 // THE PUBLISHED CLIENT BUNDLE, if one is configured (bundlestore.ts). It takes
@@ -226,16 +305,31 @@ function imageFileHashes(): Map<string, string> {
 }
 
 const bundles = bundleBackend
-  ? new BundleStore(bundleBackend, (ft) => {
-      if (!existsSync(clientDist)) return []; // no image beside us: nothing to mix with
-      const have = imageFileHashes();
-      const bad: string[] = [];
-      for (const [rel, hash] of Object.entries(ft)) {
-        const mine = have.get(rel);
-        if (mine !== hash) bad.push(`${rel} (${mine ? `image ${mine}` : "absent from the image"} != ${hash})`);
-      }
-      return bad;
-    })
+  ? new BundleStore(
+      bundleBackend,
+      (ft, published) => {
+        if (!existsSync(clientDist)) return []; // no image beside us: nothing to mix with
+        const have = imageFileHashes();
+        const bad: string[] = [];
+        for (const [rel, hash] of Object.entries(ft)) {
+          const mine = have.get(rel);
+          if (mine !== hash) bad.push(`${rel} (${mine ? `image ${mine}` : "absent from the image"} != ${hash})`);
+        }
+        // EVERY DIST-ROOT FILE IS EITHER PUBLISHED OR PINNED. Before the
+        // overlay, `fallthrough` was the whole set by construction; now a
+        // generation can publish some of it, and a file named by NEITHER map
+        // would be served from the image with nothing checking it — the
+        // unpinned hole the fall-through exists to close, reopened.
+        for (const rel of have.keys())
+          if (!(rel in ft) && !published.has(rel)) bad.push(`${rel} (neither published nor pinned by the generation)`);
+        return bad;
+      },
+      // NOT `ASSET_DOMAINS`: 13 domains are MOUNTED, 9 may be PUBLISHED. wiki
+      // and live are mounted and served and must never be overlaid — see
+      // ART_LANE_DOMAINS. One list, read by the store's admission and by the
+      // publisher, so the two halves cannot drift.
+      ART_LANE_DOMAINS,
+    )
   : null;
 if (bundles) {
   console.log(`[nangijala] published client bundles from ${bundles.label}`);
@@ -268,11 +362,78 @@ function sendBundleFile(res: express.Response, file: { bytes: Buffer; hash: stri
   res.status(200).send(file.bytes);
 }
 
+/** Serve one OVERLAY file — art, or a published dist-root catalog. The bytes
+ *  are the store's, so everything here is decided from the bytes in hand and
+ *  nothing is read off the disk the image shipped.
+ *
+ *  THE ONE GRANT IT CAN EARN IS `?h=` MATCHING ITS OWN HASH. It goes through
+ *  `cacheControlFor` rather than setting a header itself, because that function
+ *  is where the one-year decision lives and a second place to decide it is a
+ *  second place to get it wrong; `isArt` is what revokes the `?v=` grant these
+ *  bytes could never honour (cachepolicy.ts, outcome 3).
+ *
+ *  The ETag is the hash of THESE bytes, so it is identical on every instance
+ *  and can never name two documents — and it differs from the weak size+mtime
+ *  validator express.static derives from the image's file, so a browser holding
+ *  the image's version revalidates into the overlay's instead of 304ing onto
+ *  stale bytes. */
+function sendOverlayFile(res: express.Response, file: { bytes: Buffer; hash: string; type: string }) {
+  res.setHeader("ETag", `"${file.hash}"`);
+  res.setHeader("Content-Type", file.type);
+  res.setHeader(
+    "Cache-Control",
+    cacheControlFor({
+      filePath: "", // not a path on this disk: these bytes came from the store
+      bundleDir: BUNDLE_DIR,
+      gitSha: GIT_SHA,
+      queryV: res.req?.query?.v,
+      queryH: res.req?.query?.h,
+      isArt: true,
+      fileHash: () => file.hash,
+    }),
+  );
+  if (res.req?.headers["if-none-match"] === `"${file.hash}"`) {
+    res.status(304).end();
+    return;
+  }
+  res.status(200).send(file.bytes);
+}
+
+/** The overlay key a URL asks for, or null when the URL is not one an overlay
+ *  may answer. Decoded because express leaves `req.path` percent-encoded while
+ *  the store's keys are literal, then re-validated by the SAME predicate the
+ *  store admits manifests with — so a path the manifest could never name is a
+ *  path this can never look up. */
+function overlayKey(urlPath: string, strip: number): string | null {
+  let rel: string;
+  try {
+    rel = decodeURIComponent(urlPath.slice(strip));
+  } catch {
+    return null; // a malformed escape is not a file
+  }
+  return safeOverlayPath(rel) ? rel : null;
+}
+
 if (serveClient) {
+  // THE ART OVERLAY, REGISTERED BEFORE THE 13 STATIC MOUNTS — the whole art
+  // lane, from the server's side. A published generation's art answers here;
+  // everything else falls straight through to the image exactly as it always
+  // has, so with nothing published this middleware is one map miss per request.
+  // `/assets/<domain>/<rest>` needs the second slash: the bundle's own emits
+  // are `/assets/<one-segment>` and are answered further down, so the two
+  // namespaces cannot collide however a name is chosen.
+  if (bundles) {
+    app.get(/^\/assets\/[^/]+\/.+$/, (req, res, next) => {
+      const rel = overlayKey(req.path, "/assets/".length);
+      const file = rel ? bundles.artFor(rel) : null;
+      if (!file) return next();
+      sendOverlayFile(res, file);
+    });
+  }
   for (const domain of ASSET_DOMAINS) {
     app.use(
       `/assets/${domain}`,
-      express.static(join(ASSETS_ROOT, domain), { maxAge: "1h", setHeaders: setCacheHeaders }),
+      express.static(join(ASSETS_ROOT, domain), { maxAge: "1h", setHeaders: artCacheHeaders }),
     );
   }
 
@@ -312,6 +473,8 @@ if (serveClient) {
         pointer: bundles.pointer,
         generations: bundles.held,
         serving: bundles.current?.id ?? null,
+        // "IS MY ART LIVE?" — the one question a phone asks about this lane.
+        overlay: bundles.overlay,
         recent: bundles.log.slice(-8),
       }),
     );
@@ -359,8 +522,26 @@ if (serveClient) {
     // make impossible. Three of the six review panels found it independently.
     // Both paths now resolve through ONE function, registered BEFORE static.
     app.get(["/", "/index.html"], (_req, res) => sendDocument(res));
+    // THE PUBLISHED DIST-ROOT FILES — the generated catalogs (monsters.json,
+    // npcs.json, characters.json, worlds.json, shipset.json), which are the
+    // art pipeline's OUTPUT and therefore travel with the art that produced
+    // them. Before the image's own client/dist, so a generation's catalog wins
+    // over the one baked beside it; anything a generation does not publish is
+    // pinned by `fallthrough` and answered by the image, which is what keeps
+    // the pair consistent. Registered after the document route, and a
+    // generation may name neither `index.html` nor `assets/` (the store
+    // refuses that), so the bundle's own namespace is untouched.
+    if (bundles) {
+      app.use((req, res, next) => {
+        if (req.method !== "GET" && req.method !== "HEAD") return next();
+        const rel = overlayKey(req.path, 1);
+        const file = rel ? bundles.rootFor(rel) : null;
+        if (!file) return next();
+        sendOverlayFile(res, file);
+      });
+    }
     if (existsSync(clientDist)) {
-      app.use(express.static(clientDist, { index: false, setHeaders: setCacheHeaders }));
+      app.use(express.static(clientDist, { index: false, setHeaders: distCacheHeaders }));
     }
     // A MISSING /assets PATH ANSWERS 404 WITH `no-store`. It used to answer with
     // no Cache-Control at all, which leaves it to HEURISTIC FRESHNESS — and a

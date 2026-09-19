@@ -309,6 +309,14 @@ async function boot() {
   // Composer's audition page (/#foley): every generated foley candidate,
   // playable on the real deploy — the maintainer's ears close the QA loop.
   if (location.hash === "#foley") {
+    // THE INDEX FIRST, EVEN HERE. This route used to return before
+    // loadAssetIndex() below, so the audition pages never had one and every
+    // take fell back to `?v=`. That was free while `?v=` still froze art; with
+    // the art lane it grants nothing (cachepolicy.ts, `isArt`), so these two
+    // tools would have lost 100% of their caching and re-downloaded every take
+    // on every interaction. Awaited: a foley page is a list of audio URLs and
+    // it stamps them immediately.
+    await loadAssetIndex();
     const { mountFoleyAudition } = await import("../../composer/audition");
     void mountFoleyAudition();
     return;
@@ -321,6 +329,7 @@ async function boot() {
   // manifests below; it never blocks a boot on its own (404 → `?v` fallback).
   const assetIndexReady = loadAssetIndex();
   if (location.hash === "#score") {
+    await assetIndexReady; // same reason as #foley above
     const { mountScoreAudition } = await import("../../composer/scoreAudition");
     mountScoreAudition();
     return;

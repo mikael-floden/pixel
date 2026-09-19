@@ -23,11 +23,27 @@
  *     maintainer 2026-09-02: one uncached list of hashes, fetch only what
  *     changed; the earlier rejection of per-file hashes assumed the server
  *     could not verify them.)
- *  3. `immutable` — art requested with `?v=<this instance's GIT_SHA>`. The
- *     client stamps its own build sha for anything the index does not cover
- *     (client/public art, CDN URLs) and the art is baked into the SAME image,
- *     so for that one sha the bytes are fixed. A rollout mismatch (old
- *     instance, new sha) simply falls through to (4).
+ *  3. `immutable` — a NON-ART file requested with `?v=<this instance's
+ *     GIT_SHA>`. The client stamps its own build sha for anything the index
+ *     does not cover (client/public art, CDN URLs) and those bytes are baked
+ *     into the SAME image, so for that one sha they are fixed. A rollout
+ *     mismatch (old instance, new sha) simply falls through to (4).
+ *
+ *     **`isArt` REVOKES THIS GRANT, AND THAT IS WHAT MAKES THE ART LANE
+ *     POSSIBLE.** `?v=<sha>` promises "for this GIT_SHA these bytes are
+ *     fixed". The art lane publishes new art onto a RUNNING instance, so
+ *     GIT_SHA does not move when the pixels do, and the promise becomes a
+ *     lie — one URL, two byte-sets, frozen for a year. So art earns a year
+ *     through (2) alone, where the hash IS the bytes and a repaint is a new
+ *     URL by arithmetic. `isArt` is set by the CALLER — the 13
+ *     `/assets/<domain>` mounts pass true, `client/dist` passes false —
+ *     rather than derived from a path prefix, because ASSETS_ROOT CONTAINS
+ *     client/dist in dev (it is the repo root) and a prefix test would then
+ *     mean two different things in dev and in production.
+ *     Costs nothing measurable: /asset-index.json names every one of the
+ *     50,121 files under ASSETS_ROOT, so (2) carries all of it and (3) only
+ *     ever covered the boot window and a failed index read — both of which
+ *     now revalidate (304s) instead of freezing. See docs/fast-lane.md.
  *  4. `no-cache` — everything else. Revalidated on every load: cheap 304s,
  *     and a deploy is visible immediately.
  *
@@ -75,6 +91,11 @@ export interface CacheSubject {
   queryV: unknown;
   /** The request's `?h` value, if any. */
   queryH?: unknown;
+  /** True when this file is ART — something the art lane can republish onto a
+   *  running instance without GIT_SHA moving. Revokes the `?v` grant (3); (2)
+   *  is unaffected, because it verifies the hash against the bytes. Set by the
+   *  caller, never derived from the path: see the header. */
+  isArt?: boolean;
   /** The hash of the bytes about to be served, computed ONLY when a
    *  well-formed `?h` is present (lazy: most requests carry none). Null when
    *  the file cannot be hashed — then nothing is granted. */
@@ -85,6 +106,6 @@ export function cacheControlFor(s: CacheSubject): string {
   if (isHashedBundleFile(s.filePath, s.bundleDir)) return IMMUTABLE;
   if (typeof s.queryH === "string" && ASSET_HASH_RE.test(s.queryH) && s.fileHash && s.fileHash() === s.queryH)
     return IMMUTABLE;
-  if (s.gitSha && s.gitSha !== "dev" && s.queryV === s.gitSha) return IMMUTABLE;
+  if (!s.isArt && s.gitSha && s.gitSha !== "dev" && s.queryV === s.gitSha) return IMMUTABLE;
   return REVALIDATE;
 }

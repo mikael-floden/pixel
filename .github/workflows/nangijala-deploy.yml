@@ -148,6 +148,16 @@ jobs:
       # commit_ts, and law 6 gives a tie to the image, so the container ends up
       # re-serving byte-identical client code it waited five minutes to build.
       #
+      # AN ART PUSH DELIBERATELY STILL BUILDS AN IMAGE, and this filter is why
+      # — do not "fix" it by adding the art lane's paths. art-publish.yml
+      # serves new art on the running server in ~45 s, but a generation's art is
+      # the delta against the IMAGE, so it grows for as long as the image stands
+      # still. The container refreshing every few minutes is what keeps that
+      # delta near p50 (21 files / 0.73 MB) instead of a day's worth of art, and
+      # it is what makes law 6 undo a bad art generation automatically, with
+      # nobody doing anything. It costs no wall-clock a person experiences: the
+      # art is already live. See games2/docs/fast-lane.md, "the art lane".
+      #
       # THE ANSWER DEFAULTS TO "DEPLOY", and every uncertainty resolves that
       # way: no push range (workflow_dispatch, a new branch), an API that will
       # not answer, an empty file list, a truncated comparison. Skipping a

@@ -199,28 +199,68 @@ NOT `sounds/**/*.wav`: five foley takes are wav-ONLY (their audible level did
 not survive opus) and one of them is assigned to an event, so a blanket glob
 there would 404 game content.
 
-**THE FAST LANE SHIPS CLIENT CODE WITH NO IMAGE AND NO ROLLOUT**
-(`.github/workflows/fast-publish.yml`, the running server reads published
-generations from a `bundle-store` branch). It carries `games2/client/src/**` and
-`games2/client/index.html` and NOTHING else, and the three prohibitions bind
-every domain, not just games2:
-- **NEVER art.** Art rides the container lane. `?v=<GIT_SHA>` earns an
-  `immutable` year from `cachepolicy.ts`, so changing art bytes while GIT_SHA is
-  fixed freezes two byte-sets under one URL — the unrecallable, project-deleting
-  bug this repo's cache law exists to prevent.
-- **NEVER server, `shared/` or config.** Adopting those means re-importing
-  modules in the process that owns the authoritative 20 Hz world: a restart.
-- **NEVER `client/public/**`.** A generation carries `index.html` + `assets/`;
-  the 43 `public/` files are answered by the IMAGE, so publishing one would run
-  new code against the image's old catalogs. Enforced by arithmetic, not by
-  convention: the publisher hashes every file it does NOT publish and the server
-  refuses a generation whose fall-through hashes disagree with what it serves.
+**TWO LANES SHIP TO THE RUNNING SERVER WITH NO IMAGE AND NO ROLLOUT** — the
+running server reads published generations from a `bundle-store` branch, and a
+generation is the COMPLETE description of what sits on top of the image (client
+bundle + the generated catalogs + an art overlay). One pointer, one `seq`, one
+window, one set of laws.
+- `fast-publish.yml` carries **browser code**: `games2/client/src/**` and
+  `games2/client/index.html`. Sparse checkout, measured **33 s** push-to-live.
+- `art-publish.yml` carries **ART** — the nine domains the game renders
+  (`characters2 tiles maps2 scenery sounds music monsters items lore`) plus the
+  two tracked generated catalogs — by reproducing the image's curated art root
+  on the runner (`scripts/artbuild.mjs`: the Dockerfile's curation in the
+  Dockerfile's order, measured **9.3 s** for 50,121 files / 272 MB, byte-exact
+  against production's four manifests) and publishing only the delta against
+  the image. Full checkout, ~**45 s** against the container's **5 m 00 s**.
+
+**WHAT MAKES ART SAFE, and it is one rule: `?v=<GIT_SHA>` NO LONGER GRANTS
+`immutable` TO ANYTHING A LANE CAN REPUBLISH** (`isArt` in `cachepolicy.ts`).
+That stamp promises "for this GIT_SHA these bytes are fixed", and a lane that
+repaints art on a running instance breaks exactly that promise — one URL, two
+byte-sets, frozen for a year, the unrecallable bug. Art earns its year through
+`?h=<hash>` VERIFIED against the bytes being sent, so new pixels are a new hash
+and a new URL, and the collision is not expressible. Measured live before the
+change: `/assets/items/…/sprite.webp?v=<sha>`, `/monsters.json?v=<sha>`,
+`/ui2/icon-map.webp?v=<sha>` and `/sw.js?v=<sha>` all answered `immutable`.
+
+The prohibitions that remain, and they bind every domain:
+- **NEVER server, `shared/`, config or `games2/scripts/**`.** Adopting those
+  means re-importing modules in the process that owns the authoritative 20 Hz
+  world: a restart. The scripts ARE the curation, so a push that edits them must
+  be proven by a container build before its output is trusted.
+- **NEVER a `client/public` file outside the five GENERATED catalogs**
+  (`characters.json worlds.json monsters.json npcs.json shipset.json`,
+  `PUBLISHABLE_ROOT`). Every other dist-root file is `?v=`-stamped by the client
+  (`withV("/ui2/icon-…")`, `withV("/logo.webp")`) and therefore frozen;
+  republishing one would change bytes under a URL a browser already holds.
+- **NEVER `wiki/` or `live/`**, though both are mounted and served: the image
+  builds `wiki/release_notes.json` from git history ("the image has no .git"),
+  `live/**` already has its own no-redeploy channel, and `live/telemetry` is
+  `.dockerignore`-EXCLUDED — so nothing in either can be faithfully reproduced
+  on a runner. They fall through to the image, which is the right answer.
+Each is enforced by ARITHMETIC, not convention: every dist-root file is either
+PUBLISHED or PINNED at the image's hash, the server refuses a generation whose
+pinned hashes disagree with what it serves OR that leaves one named by neither,
+and every blob is re-hashed on load.
+
+**AN ART PUSH STILL BUILDS A CONTAINER, deliberately.** A generation's art is
+the delta against the IMAGE, so it grows while the image stands still; the
+container refreshing every few minutes keeps that delta near p50 (21 files /
+0.73 MB, measured over 14 days) instead of a day's worth, bounds the server's
+memory, and makes law 6 undo a bad art generation automatically within ~5
+minutes with nobody doing anything. It costs no wall-clock a person experiences.
+Caps (`ART_FILES_MAX` 6000, `ART_BYTES_MAX` 64 MB) are the belt: over either,
+the lane stands down and the container carries that push.
+
 The image is the FLOOR and wins a tie — a generation at or before the image's
-own commit time is refused, so a rollout is never overridden by an older client
-and a bad publish is undone by the next deploy, which is the only recovery a
-phone has besides `--remove-env-vars BUNDLE_STORE`. Both gates run BEFORE the
-publish (a 3-second deploy of a bundle that does not start is a 3-second
-outage). Story, measurements and the 20 paid-for traps: `games2/docs/fast-lane.md`.
+own commit time is refused, so a rollout is never overridden by an older
+publish, and a bad publish is undone by the next deploy, which is the only
+recovery a phone has besides `--remove-env-vars BUNDLE_STORE`. Both lanes
+publish FIRST and gate after, rolling production back on a red gate. Story,
+measurements and the 30 paid-for traps: `games2/docs/fast-lane.md`. Gates:
+`verify-fastlane.mjs`, `verify-artlane.mjs` (49 arms), `verify-artlive.mjs`
+(against production), `verify-fastbundle.mjs`.
 
 **OFF-GITHUB BACKUP** (`.github/workflows/backup-gcs.yml`): weekly (Mondays)
 `git archive HEAD` zip (~291 MB, tracked files only — a working-tree tar
