@@ -1,9 +1,109 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-19T02:54:29.707Z",
- "head": "8efd129cc",
+ "generated_at": "2026-09-19T03:27:34.483Z",
+ "head": "783fb4d54",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "783fb4d54",
+   "at": "2026-09-19T03:26:14+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki board: claim the restore of his 2,234 pair-approved tiles (tiles/review/**)",
+   "agent": "wiki",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "25041cde7",
+   "at": "2026-09-19T03:24:13+00:00",
+   "author": "wiki-agent",
+   "subject": "coordination: tell tiles that 3fefc0c2b6 deleted 2,234 PAIR-APPROVED tiles — and that git still has every one",
+   "agent": "wiki",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c5d9f16a8",
+   "at": "2026-09-19T03:18:10+00:00",
+   "author": "Claude",
+   "subject": "games2: fastbuild can take the image's dist root instead of regenerating it",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6a647f689",
+   "at": "2026-09-19T03:05:43+00:00",
+   "author": "Claude",
+   "subject": "fades: dark mud and grey stone pilot (lumps + piles, rep 2)",
+   "agent": "tiles",
+   "dirs": [
+    "tiles"
+   ],
+   "files": 265
+  },
+  {
+   "sha": "4959d9aa8",
+   "at": "2026-09-19T03:02:07+00:00",
+   "author": "claude[bot]",
+   "subject": "tiles github agent: the fade review was already applied — account only",
+   "agent": "tiles-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "0ad7271fc",
+   "at": "2026-09-19T02:57:23+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: the front door keeps the layout it chose, and lava/water wear their own ground",
+   "agent": "wiki",
+   "dirs": [
+    "wiki"
+   ],
+   "files": 5
+  },
+  {
+   "sha": "d85c5bcc5",
+   "at": "2026-09-19T02:56:56+00:00",
+   "author": "Claude",
+   "subject": "deploy: a client-only push builds no image",
+   "agent": "games",
+   "dirs": [
+    ".github",
+    "games2"
+   ],
+   "files": 4
+  },
+  {
+   "sha": "7931ca59c",
+   "at": "2026-09-19T02:53:18+00:00",
+   "author": "Claude",
+   "subject": "games2: say which lane served the page",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "065077423",
+   "at": "2026-09-19T02:50:57+00:00",
+   "author": "Claude",
+   "subject": "tiles board: claim the dark mud / grey stone fade pilot",
+   "agent": "tiles",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
   {
    "sha": "8efd129cc",
    "at": "2026-09-19T02:50:29+00:00",
@@ -461,106 +561,6 @@
     "wiki"
    ],
    "files": 7
-  },
-  {
-   "sha": "d5622105b",
-   "at": "2026-09-19T01:19:21+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "f7cdef2cd",
-   "at": "2026-09-19T00:51:14+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "d426ee767",
-   "at": "2026-09-18T22:47:46+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: the action's event gate cannot be fooled from outside — probe answered, removed",
-   "agent": null,
-   "dirs": [
-    ".github",
-    "live"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "ac6fe13d1",
-   "at": "2026-09-18T22:46:09+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: probe whether the action will run on a push given a dispatch payload",
-   "agent": null,
-   "dirs": [
-    ".github",
-    "live"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "6442434c0",
-   "at": "2026-09-18T22:44:18+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: the dispatch is the trigger now — no push, one job, the diff still handed over",
-   "agent": null,
-   "dirs": [
-    ".github",
-    "live"
-   ],
-   "files": 4
-  },
-  {
-   "sha": "319097157",
-   "at": "2026-09-18T22:41:50+00:00",
-   "author": "wiki-agent",
-   "subject": "wiki server: the save that writes a verdict starts the domain's github agent",
-   "agent": null,
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "26f7ccb02",
-   "at": "2026-09-18T22:38:02+00:00",
-   "author": "wiki-agent",
-   "subject": "docs: the action refuses a push — record it while the selftest answers it",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "2df5742b7",
-   "at": "2026-09-18T22:38:01+00:00",
-   "author": "wiki-agent",
-   "subject": "docs: touch live/docs to fire the selftest",
-   "agent": null,
-   "dirs": [],
-   "files": 0
-  },
-  {
-   "sha": "24d494c7b",
-   "at": "2026-09-18T22:38:01+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: does claude-code-action accept a push? two jobs, one real push, one answer",
-   "agent": null,
-   "dirs": [
-    ".github"
-   ],
-   "files": 1
   }
  ]
 }
