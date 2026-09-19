@@ -885,38 +885,71 @@ export type FieldArt =
 
 /** GROUND PEOPLE WALK ON. Nothing grows where feet keep coming (maintainer
  *  2026-09-19: "It looks really dumb when we have a big chunk of grass in the
- *  middle of the road. If people walk here grass can't grow here!"), so a
- *  GROWTH ground fades onto a trodden one on its EDGE CELL ONLY and always as
- *  the far end of the band — the sparsest tiles the pool has. Mud, sand or
- *  snow tracked onto a road is not growth and fades like anywhere else. The
+ *  middle of the road. If people walk here grass can't grow here!"), so on a
+ *  trodden field a GROWTH ground is `TRODDEN_DECAY` rarer for every ring past
+ *  the edge cell and tastes like the far end of the band — the sparsest tiles
+ *  the pool has, some blades at the edge of the soil. RARER, NEVER IMPOSSIBLE
+ *  (same day: "not creating hard rules to always allow for the unlikely to
+ *  happen"); the wall that skipped a growth ground past ring 1 is gone. When
+ *  the blade does not come up, the nearest ground that is NOT growth gets its
+ *  ordinary chance, so mud still tracks onto the middle of the road. The
  *  names live here because tiles/ground_types.json carries no such flag;
  *  measured on the_game, light_soil is road-shaped everywhere (1,353 of its
  *  1,780 cells are edge cells, 403 the middle of a 3-wide road, none past
  *  ring 4), and 873 of its edges are grass. */
 export const TRODDEN: ReadonlySet<string> = new Set(["light_soil", "grey_paving_stone", "brown_paving_stone"]);
 export const GROWS: ReadonlySet<string> = new Set(["grass"]);
+/** Per ring past the edge cell, how much rarer a growth ground is on a trodden
+ *  field: ten times. Measured on the_game at his dials: of 59 grass fades on
+ *  roads, 3 sit past the edge cell (ring 2, every one in the pool's sparsest
+ *  10-20% band — blades; the wall had none) and mud still reaches the middle
+ *  (30 non-growth fades at ring 2, 8 further, as before). */
+export const TRODDEN_DECAY = 0.1;
+/** HIS BRUSH — "the tiles with less than 10%": every fade tile at or under
+ *  this area share is one brush, all equally welcome. A denser tile counts by
+ *  what it PAINTS and is picked at brush/area of the rate ("you must know you
+ *  have to place 5x 10% grass to get the same amount"), so one 50% tile
+ *  stands where five 10% ones would and the other ground a cell lays down
+ *  does not depend on which came up. */
+export const FADE_BRUSH = 10;
+/** How far past the taste's centre a tile keeps a chance, as an e-fold in
+ *  pool spans: a tile a full span over the centre keeps e^-4 = 1.8% of a tile
+ *  on it, half a span over e^-2 = 13.5%. Never zero — the rare chunk exists:
+ *  measured at his dials over the_game, rings 3-4 wear 16 tiles at 40%+ of
+ *  their 1,153 fades (1 in 72; the ceiling allowed 0), rings 1-2 79 of 1,732;
+ *  54% of all fades stay under 10%. (0.35 put 21 chunks on the far rings and
+ *  0.2 three — a full span over would keep 0.7%, one every dozen screens.) */
+export const FADE_TAIL = 0.25;
 
 /** WHICH TILE OF A FADE POOL A CELL WEARS: the index of the pick for the LCG's
  *  second draw `v`. `pos` is 1 at the nearest ring and 1/reach at the far end;
  *  the target coverage is areaMin + span·pos^falloff (falloff > 1 keeps the
- *  dense tiles to the edge, < 1 spreads them) and the pool's own min/max is the
- *  scale, so a linear rescale of the areas changes nothing.
+ *  dense tiles to the edge, < 1 spreads them) and the pool's own min/max is
+ *  the scale, so a linear rescale of the areas changes nothing.
  *
- *  `paint` — THE GAME'S RULE (maintainer 2026-09-19, once the area numbers were
- *  honest: "mostly use the tiles with less than 10% grass when placing grass
- *  on sand. The tiles close to 50/50 should be used much much less. And when
- *  they do occur you must know you have to place 5x 10% grass to get the same
- *  amount of grass"). The target is a CEILING, not a centre: every tile at or
- *  under it is weighted by his stars times 1/area, so a 10% tile is picked
- *  five times as often as a 50% one and every allowed tile paints the same
- *  expected amount of the other ground; a tile over the ceiling falls off
- *  across half the span, as before. Measured at his dials over the_game: the
- *  edge ring's mean area 45.6% -> see docs/tiles3-rendering.md, and not one
- *  ring-1 fade was under 10% before this.
+ *  `paint` — THE GAME'S RULE: THE FADE IS A DENSITY, NOT A RULE (maintainer
+ *  2026-09-19: "It's about how much grass exist here per area and using
+ *  smaller % tiles usually looks better because they can be more spread out,
+ *  but it's all about not creating hard rules to always allow for the
+ *  unlikely to happen"; on the equal-paint rule this replaces: "I don't like
+ *  hard rules, you just need to know what % you paint with so you can make a
+ *  nice fade"). HOW MUCH of the other ground a cell gets is the placement's
+ *  gradient (amount x band position, in the resolver); this pick decides
+ *  which tile carries it, knowing what each one paints:
+ *  - the target is the taste's CENTRE, not a ceiling: every tile at or under
+ *    it is equally welcome, a tile past it thins on an exponential tail
+ *    (`FADE_TAIL`) and is never zero — a 50/50 chunk far out in the sand is
+ *    rare, not banned;
+ *  - a tile counts by what it paints against his brush (`FADE_BRUSH`): at or
+ *    under 10% it is the brush, denser it is picked at 10/area of the rate.
+ *  Measured at his dials over the_game -> docs/tiles3-rendering.md. Rejected:
+ *  1/area over the whole pool (a 2% tile 25x a 50% one: a rule, and the far
+ *  end could wear nothing but the sparsest tile); the half-span ceiling (a
+ *  wall: rings 3-4 had not one tile at 40%+ on the whole map).
  *
  *  `paint` false is render3's picture, pinned by the parity fixture: the
  *  weight peaks ON the target, so with falloff 4 every edge cell targets the
- *  densest tile in the pool — which is the 50/50 chunk he ruled out. */
+ *  densest tile in the pool — the 50/50 chunk he ruled out. */
 export function fadePick(pool: readonly FadePoolTile[], pos: number, falloff: number, v: number, paint: boolean): number {
   const areaMin = pool[0].area;
   const areaMax = pool[pool.length - 1].area;
@@ -925,7 +958,9 @@ export function fadePick(pool: readonly FadePoolTile[], pos: number, falloff: nu
   const wts = pool.map((t) => {
     const stars = 1.0 + 1.6 * t.rating;
     if (!paint) return stars * Math.max(0, 1.0 - Math.abs(t.area - target) / (span / 2));
-    return (stars / Math.max(1, t.area)) * Math.max(0, 1.0 - Math.max(0, t.area - target) / (span / 2));
+    const over = Math.max(0, t.area - target) / span;
+    const brush = t.area > FADE_BRUSH ? FADE_BRUSH / t.area : 1;
+    return stars * Math.exp(-over / FADE_TAIL) * brush;
   });
   let tot = 0;
   for (const w of wts) if (w > 0) tot += w;
@@ -944,7 +979,8 @@ export function fadePick(pool: readonly FadePoolTile[], pos: number, falloff: nu
 
 export interface FadePick {
   other: string;
-  /** Chebyshev ring at which the other ground was found: 1 or 2. */
+  /** Distance at which the other ground was found: max(Chebyshev ring, level
+   *  gap), 1 at the edge cell, at most the tune's reach (FADE_BAND untuned). */
   dist: number;
   /** `<field ground>|<other ground>`. */
   poolKey: string;
@@ -2785,22 +2821,28 @@ export class Tiles3 {
     const amount = tune ? tune.amount : 1;
     const falloff = tune ? tune.falloff : 1;
     const paint = !!tune?.paint;
-    /* A ROAD TAKES GRASS ON ITS EDGE CELL ONLY (TRODDEN/GROWS): past ring 1 a
-     * growth ground is not a candidate, so the scan walks on to the next
-     * ground — mud two cells out still tracks onto the middle of the road. */
+    /* GRASS DOES NOT GROW WHERE FEET KEEP COMING (TRODDEN/GROWS): past the edge
+     * cell a growth ground is `TRODDEN_DECAY` rarer per ring — never a wall —
+     * and when the blade does not come up, `alt`, the nearest ground that is
+     * not growth, gets its ordinary chance: mud two cells out still tracks
+     * onto the middle of the road. Off a trodden field `alt` is unused. */
     const trodden = paint && TRODDEN.has(gr);
     let near: [string, number] | null = null;
     let bestD = reach + 1;
+    let alt: [string, number] | null = null;
+    let altD = reach + 1;
     for (let dy = -reach; dy <= reach; dy++)
       for (let dx = -reach; dx <= reach; dx++) {
         /* `r >= bestD` is the ascending-ring loop's early-out, kept: d is never
-         * below r, and this runs on every cell of every window. */
+         * below r, and this runs on every cell of every window. A trodden
+         * field scans on to `altD`, which bounds `bestD` as well. */
+        const limit = trodden ? altD : bestD;
         const r = Math.max(Math.abs(dx), Math.abs(dy));
-        if (r === 0 || r >= bestD) continue;
+        if (r === 0 || r >= limit) continue;
         const og = g(x + dx, y + dy);
         if (!og || og === gr || view.isLiquid(og)) continue;
         const d = Math.max(r, Math.abs(L(x + dx, y + dy) - zl));
-        if (d >= bestD) continue;
+        if (d >= limit) continue;
         /* THE NEAREST NEIGHBOUR THIS GROUND CAN ACTUALLY FADE TOWARD. The scan
          * used to take the nearest DIFFERING ground and then ask for its pool,
          * so a neighbour the library publishes no approved pair for silently
@@ -2811,49 +2853,64 @@ export class Tiles3 {
          * of 5): 474.1 ms against 472.4 ms for the old scan — inside the run
          * spread, and the fix alone is worth 85 more level-0 fades. */
         if (!this.fadePool(gr, og).length) continue;
-        if (trodden && d > 1 && GROWS.has(og)) continue;
-        bestD = d;
-        near = [og, d];
+        if (d < bestD) {
+          bestD = d;
+          near = [og, d];
+        }
+        if (trodden && d < altD && !(d > 1 && GROWS.has(og))) {
+          altD = d;
+          alt = [og, d];
+        }
       }
     if (near) {
-      const pool = this.fadePool(gr, near[0]);
+      const rr = lcg((x * 73856093) ^ (y * 19349663));
+      /* A FADE IS A SCATTERED EVENT, NOT A COAT OF PAINT. Stamping the band
+       * solid put ONE tile on up to 1,357 cells — the repetition he ruled out.
+       * The probability falls off with distance from the switch. */
+      /* HOW MUCH of the other ground a cell gets is this gradient: linear in
+       * distance, 1 at the edge and 1/(reach+1) at the far end, and `amount`
+       * scales it — twice the value is twice the tiles, up to the lonely
+       * rule's ceiling. WHICH tile carries it is the pick below, and the pick
+       * knows what each tile paints (`fadePick`). */
+      const chance = (d: number): number => 0.45 * amount * ((reach + 1 - d) / (reach + 1));
+      const u = rr();
+      /* NO TWO FADES TOUCH EDGE-ON — his own rule, and the lattice he keeps
+       * photographing.
+       *
+       * A fade tile is PURE FIELD GROUND at its rim, with the scatter only in
+       * the middle: measured, the perimeter ring of the library top face runs
+       * up to 43.5 luma from the interior, and the rim's luma is exactly the
+       * field's palette top. One such tile is a warm-up patch and reads as
+       * one. TWO SIDE BY SIDE put their dark rims against each other, and a
+       * band of them draws a continuous dark line down the diamond edges —
+       * which is what he circles. Measured over the_game before this: of
+       * 2,182 fade cells, 991 (45.4%) touched another edge-on and 1,410
+       * (64.6%) touched one at all.
+       *
+       * He said it first, to the wiki (2026-08-28): "I also only want to see
+       * 1 tile near the center ... The 'fade' tiles are not meant to be
+       * repeated like that!"
+       *
+       * A cell keeps its fade only if its own draw is a STRICT LOCAL MINIMUM
+       * among its four edge neighbours. That makes edge-on adjacency
+       * impossible rather than unlikely — if A beats B then B cannot beat A —
+       * and it is four extra LCG draws, no band scan, and order-independent,
+       * so the resolver stays a pure function of the cell. */
+      const drawAt = (cx: number, cy: number): number => lcg((cx * 73856093) ^ (cy * 19349663))();
+      const lonely =
+        u < drawAt(x + 1, y) && u < drawAt(x - 1, y) && u < drawAt(x, y + 1) && u < drawAt(x, y - 1);
+      let to = near;
+      let fires = lonely && u <= chance(near[1]);
+      if (trodden && near[1] > 1 && GROWS.has(near[0])) {
+        fires = lonely && u <= chance(near[1]) * Math.pow(TRODDEN_DECAY, near[1] - 1);
+        if (!fires && alt) {
+          to = alt;
+          fires = lonely && u <= chance(alt[1]);
+        }
+      }
+      const pool = this.fadePool(gr, to[0]);
       if (pool.length) {
-        const rr = lcg((x * 73856093) ^ (y * 19349663));
-        /* A FADE IS A SCATTERED EVENT, NOT A COAT OF PAINT. Stamping the band
-         * solid put ONE tile on up to 1,357 cells — the repetition he ruled out.
-         * The probability falls off with distance from the switch. */
-        /* DENSITY is linear in distance: `bandPos` is 1 at the edge and falls
-         * to 1/(reach+1) at the far end, and `amount` scales it — twice the
-         * value is twice the tiles, up to the lonely rule's ceiling.
-         * COVERAGE is what `falloff` shapes — see the pick below. */
-        const bandPos = (reach + 1 - near[1]) / (reach + 1);
-        const u = rr();
-        /* NO TWO FADES TOUCH EDGE-ON — his own rule, and the lattice he keeps
-         * photographing.
-         *
-         * A fade tile is PURE FIELD GROUND at its rim, with the scatter only in
-         * the middle: measured, the perimeter ring of the library top face runs
-         * up to 43.5 luma from the interior, and the rim's luma is exactly the
-         * field's palette top. One such tile is a warm-up patch and reads as
-         * one. TWO SIDE BY SIDE put their dark rims against each other, and a
-         * band of them draws a continuous dark line down the diamond edges —
-         * which is what he circles. Measured over the_game before this: of
-         * 2,182 fade cells, 991 (45.4%) touched another edge-on and 1,410
-         * (64.6%) touched one at all.
-         *
-         * He said it first, to the wiki (2026-08-28): "I also only want to see
-         * 1 tile near the center ... The 'fade' tiles are not meant to be
-         * repeated like that!"
-         *
-         * A cell keeps its fade only if its own draw is a STRICT LOCAL MINIMUM
-         * among its four edge neighbours. That makes edge-on adjacency
-         * impossible rather than unlikely — if A beats B then B cannot beat A —
-         * and it is four extra LCG draws, no band scan, and order-independent,
-         * so the resolver stays a pure function of the cell. */
-        const drawAt = (cx: number, cy: number): number => lcg((cx * 73856093) ^ (cy * 19349663))();
-        const lonely =
-          u < drawAt(x + 1, y) && u < drawAt(x - 1, y) && u < drawAt(x, y + 1) && u < drawAt(x, y - 1);
-        if (lonely && u <= 0.45 * amount * bandPos) {
+        if (fires) {
           /* WHICH TILE: THE COVERAGE FOLLOWS THE DISTANCE, AND `falloff` IS ITS
            * CURVE (maintainer 2026-09-09: "fade tiles that has very much
            * light_soil on top of grass should be used at the tile that does
@@ -2864,20 +2921,14 @@ export class Tiles3 {
            * `pct/60` target never reached a tile and the pick was as good as
            * random. `pos` is 1 at the nearest ring (the transition tile itself
            * when the switch lets it wear one, ring 1 otherwise) and 1/reach at
-           * the far end; the target coverage is areaMin + span·pos^falloff —
-           * falloff > 1 keeps the dense tiles to the edge, < 1 spreads them.
-           * Weighted by his ratings and by closeness to the target over half the
-           * span, so the nearest tiles dominate and the far ones drop out.
-           * RELATIVE TO THE POOL'S OWN MIN/MAX, so reading the real area instead
-           * of the 0.49x placement score moved no coverage at all: target, span
-           * and every distance scale together. */
-          /* Grass on a road is ALWAYS the far end of the band: the sparsest
-           * tiles the pool has, some blades at the edge of the soil. */
-          const pos = trodden && GROWS.has(near[0]) ? 1 / Math.max(1, reach) : (reach + 1 - near[1]) / Math.max(1, reach);
+           * the far end. Grass on a road tastes like the far end of the band
+           * wherever it lands: the sparsest tiles the pool has, some blades at
+           * the edge of the soil — with the tail, not a wall (`fadePick`). */
+          const pos = trodden && GROWS.has(to[0]) ? 1 / Math.max(1, reach) : (reach + 1 - to[1]) / Math.max(1, reach);
           const v = rr();
           const pick = fadePick(pool, pos, falloff, v, paint);
           const t = pool[pick];
-          const fade: FadePick = { other: near[0], dist: near[1], poolKey: `${gr}|${near[0]}`, index: pick, u, v, file: t.file };
+          const fade: FadePick = { other: to[0], dist: to[1], poolKey: `${gr}|${to[0]}`, index: pick, u, v, file: t.file };
           /* THE FADE IS AN OVERLAY, NOT A REPLACEMENT — and this is the zigzag
            * he kept photographing after the art started shipping.
            *

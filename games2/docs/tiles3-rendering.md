@@ -219,47 +219,77 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   multiplies the placement probability linearly (0-4x; "twice the value means
   twice as much grass fade") — up to the ceiling of the lonely rule, which
   still forbids two fades edge-on; density is linear in distance. FALLOFF is
-  the COVERAGE curve (0.1-32, log dial): target = areaMin + span·pos^falloff,
-  the pool's densest tile at the nearest ring (pos 1) and its sparsest at the
-  far end (pos 1/reach), so >1 keeps the dense tiles to the transition
+  the TASTE curve (0.1-32, log dial): the centre of the pick's taste is
+  areaMin + span·pos^falloff — the whole pool welcome at the nearest ring
+  (pos 1), the sparsest tiles at the far end (pos 1/reach), the tail open
+  past it — so >1 keeps the dense tiles to the transition
   (maintainer 2026-09-09: "fade tiles that has very much light_soil on top of
   grass should be used at the tile that does the actual transition ... very
   little ... further away"). The pool keeps every approved tile from 1% of
   measured area up, with no ceiling.
-  **THE TARGET IS A CEILING AND THE PICK WEIGHS WHAT A TILE PAINTS**
+  **THE FADE IS A DENSITY, NOT A RULE — THE PICK KNOWS WHAT A TILE PAINTS**
   (`fadePick`, `paint` in the tune — maintainer 2026-09-19, once the area
   numbers were honest: "mostly use the tiles with less than 10% grass when
   placing grass on sand. The tiles close to 50/50 should be used much much
   less. And when they do occur you must know you have to place 5x 10% grass
-  to get the same amount of grass"): every tile at or under the ring's target
-  is weighted by his stars times 1/area, so a 10% tile is picked five times
-  as often as a 50% one and every allowed tile paints the same expected area;
-  a tile over the target falls off across half the span. Measured over
-  the_game at his dials, before -> after: 31% -> 63% of placed fades under
-  10%, 17% -> 2% at 40%+, the edge ring's mean area 45.6% -> 13.1% (before,
-  pos^falloff = 1 at ring 1 made every edge cell TARGET the densest tile and
-  the two-sided weight peaked on it: 61% of edge fades at 40%+, none under
-  10%). The paint per edge cell therefore dropped ~3.5x; AMOUNT is the lever
-  if the edge reads thin, and the lonely rule caps density at one cell in
-  five, so "five times as many sparse tiles" is not reachable without
-  relaxing it (untouched: his verdict). Gate: `server/test/fadepaint.test.ts`
-  (the 5x law as exact arithmetic, the world census at his dials, both red
-  on the old weighting). Under `paint` false — render3's picture, what the
-  parity fixture pins, never set by the game — the weight peaks ON the target.
-  **A ROAD WEARS GRASS ON ITS EDGE CELL ONLY, AND ONLY THE SPARSEST TILES**
-  (`TRODDEN` light_soil + the two pavings, `GROWS` grass; maintainer
-  2026-09-19: "It looks really dumb when we have a big chunk of grass in the
-  middle of the road. If people walk here grass can't grow here!"): past ring
-  1 a growth ground is not a candidate on a trodden field — the scan walks on,
-  so mud two cells out still tracks onto the middle — and on the edge cell the
-  pick is the far end of the band (target = the sparsest tile). Measured: 30
-  of the 89 grass fades on roads sat on the middle cell of a 3-wide road and
-  none was under 20%; now all 56 are edge cells, 52 of them the pool's
-  sparsest 10-20% (light_soil|grass has no tile under 11.6% — "a few blades"
-  does not exist in the library; the rule takes the sparsest it has). The
-  names live in tiles3.ts because tiles/ground_types.json carries no flag;
-  light_soil is road-shaped everywhere (1,353 of 1,780 cells are edge cells,
-  403 ring 2, none past ring 4).
+  to get the same amount of grass"; and on the equal-paint rule that shipped
+  first for it: "I guess that rule kinda works, but that was not what I said!
+  I was talking on 'grass density / area' ... I don't like hard rules, you
+  just need to know what % you paint with so you can make a nice fade! ...
+  using smaller % tiles usually looks better because they can be more spread
+  out, but it's all about not creating hard rules to always allow for the
+  unlikely to happen. Once this demo map is complete we will start on the
+  real map that is 50x this size! If you don't allow for rare things to
+  sometimes happen the entire world will look the same!"). HOW MUCH of the
+  other ground a cell gets is the placement gradient (AMOUNT x band position,
+  above); WHICH tile carries it is the pick, and the pick knows what each one
+  paints. Two parts, neither a wall: (1) the falloff target is the TASTE'S
+  CENTRE — every tile at or under it is equally welcome, and a tile past it
+  thins on an exponential tail, e-fold `FADE_TAIL` = 0.25 of the pool's span
+  (a full span over the centre keeps e^-4 = 1.8%, half a span e^-2 = 13.5%),
+  never zero; (2) HIS BRUSH `FADE_BRUSH` = 10: every tile at or under 10% is
+  one brush, a denser tile is picked at 10/area of the rate — one 50% tile
+  stands where five 10% ones would, so the grass a cell lays down is the
+  brush's whichever came up, and the rare chunk costs the density nothing.
+  Measured over the_game at his dials: 54% of placed fades under 10% (render3's
+  picture 31%), 3.3% at 40%+ (17.5%), the edge ring's mean area 15.7%
+  (45.6% — there pos^falloff = 1 made every edge cell TARGET the densest
+  tile: 61% of edge fades at 40%+, none under 10%); and the rare thing
+  exists: rings 3-4 wear 16 tiles at 40%+ of their 1,153 fades, 1 in 72,
+  where the ceiling allowed none (0.35 for the tail put 21 there, 0.2 three).
+  The lonely rule still caps density at one cell in five (untouched: his
+  verdict), and AMOUNT is the lever if the edge reads thin. REJECTED, both
+  shipped for a day: the target as a CEILING (a wall — not one tile at 40%+
+  on rings 3-4 of the whole map) and 1/area over the whole pool (a 2% tile
+  25x a 50% one: "each allowed tile paints the same" is a rule, and the far
+  end could wear nothing but the sparsest tile). Gate:
+  `server/test/fadepaint.test.ts` (the brush and the tail as exact arithmetic,
+  the world census at his dials; red on the ceiling, red on 1/area). Under
+  `paint` false — render3's picture, what the parity fixture pins, never set
+  by the game — the weight peaks ON the target.
+  **A ROAD KEEPS ITS GRASS AT THE EDGE: TEN TIMES HARDER PER RING, NEVER A
+  WALL** (`TRODDEN` light_soil + the two pavings, `GROWS` grass,
+  `TRODDEN_DECAY` = 0.1; maintainer 2026-09-19: "It looks really dumb when we
+  have a big chunk of grass in the middle of the road. If people walk here
+  grass can't grow here! ... maybe some blades of grass exist at the edge of
+  the road soil, but not a big chunk in the middle"): on a trodden field a
+  growth ground past the edge cell is placed at 0.1^(ring-1) of the ordinary
+  chance, and wherever it lands it tastes like the far end of the band (the
+  sparsest tiles the pool has, the tail still open). When the blade does not
+  come up, the nearest ground that is NOT growth (`alt` in the scan — mud,
+  sand, snow: tracked in, not grown) gets its ordinary chance at its own
+  distance, so mud two cells out still tracks onto the middle. Measured: 30 of
+  the 89 grass fades on roads sat on the middle cell of a 3-wide road under
+  render3's picture and none was under 20%; now 3 of 59 sit past the edge
+  cell, every one in the pool's sparsest 10-20% band (light_soil|grass has no
+  tile under 11.6% — "a few blades" does not exist in the library; the rule
+  takes the sparsest it has), 2 of the 56 edge cells wear a 40%+ tile (the
+  verge encroaching, rarely), and 38 non-growth fades still reach inward, as
+  many as before. Rejected: the `continue` that skipped a growth ground past
+  ring 1 (a wall: grass never left the edge cell). The names live in tiles3.ts
+  because tiles/ground_types.json carries no flag; light_soil is road-shaped
+  everywhere (1,353 of 1,780 cells are edge cells, 403 ring 2, none past
+  ring 4).
   ON TRANSITION lets `wangSurface` give a composed
   boundary cell a fade too ("a transition tile that is 50% sand and 50% grass
   can end up 75% grass") — drawn over the boundary by `overlayOps`, since the
