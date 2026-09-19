@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "idle — the Report bug is centred. Still waiting on games for ONE card width in both orientations (bars.ts .ml-bar-row 126/170 -> 148).",
+  "current": "CLAIM: the time-of-day pill takes the card's width WITHOUT being stretched (maintainer 2026-09-19: \"the pill is not aligned with the wiki in width… I love the pill today, we just need to make it a bit wider - but should still look as good as it looks today (what we have today is absolutely perfect!)… I think stretching the graphics will kinda destroy the sun and moon\"). Nothing is scaled: the scene is procedural per COLUMN, so AW becomes dynamic and the canvas simply gains columns at the same 2x pixel size — the orbs keep r=3.4 and his six hand-placed stars keep their exact coordinates. files: games2/client/src/clock.ts, games2/scripts/verify-wikibtn.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -321,5 +321,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T15:05:01Z"
+  "updated": "2026-09-19T15:11:20Z"
 }
