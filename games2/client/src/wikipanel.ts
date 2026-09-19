@@ -148,7 +148,18 @@ function ensureCss(): void {
      phone's light/dark setting — not a hard-coded cream. If --bg were ever
      missing the old fallback painted a light panel behind a dark wiki, which
      is the flash the maintainer reported from the other side (2026-08-15). */
-  .ml-wikipanel{position:absolute;top:0;left:0;height:100%;
+  /* THE SAME BLACK BAND THE GAME KEEPS (maintainer 2026-09-19: "The wiki
+     doesn't respect the black border at the top this game uses ... see how the
+     character select and game has solved this"). The shell paints #ml-safebar
+     at z 9 and the select screen paints .ml-safeband at z 150; this drawer is
+     z 5000, so it covered both and the wiki's own top row sat under the
+     cutout. The drawer therefore carries the band itself and starts below it —
+     one rule, same env() term, so a phone without a cutout loses nothing
+     (the inset is 0 and this collapses to what it was). */
+  .ml-wikiband{position:absolute;top:0;left:0;right:0;z-index:2;pointer-events:none;
+    height:env(safe-area-inset-top, 0px);background:#000}
+  .ml-wikipanel{position:absolute;top:env(safe-area-inset-top, 0px);left:0;
+    height:calc(100% - env(safe-area-inset-top, 0px));
     background:var(--bg, Canvas);box-shadow:6px 0 28px rgba(0,0,0,.45);
     transform:translateX(-102%);transition:transform ${ANIM_MS}ms cubic-bezier(.22,.61,.36,1);
     overflow:hidden}
@@ -174,7 +185,10 @@ function layout(panel: HTMLDivElement, frame: HTMLIFrameElement): void {
   panel.style.width = `${panelW}px`;
   // Lay the wiki out at physical size, scale back to fill the panel.
   frame.style.width = `${Math.ceil(panelW / f)}px`;
-  frame.style.height = `${Math.ceil(window.innerHeight / f)}px`;
+  // The panel starts below the cutout band, so the frame is that much shorter —
+  // read from the token theme.ts publishes rather than re-deriving env() here.
+  const safeTop = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ml-safe-top")) || 0;
+  frame.style.height = `${Math.ceil((window.innerHeight - safeTop) / f)}px`;
   frame.style.transform = f > 1 ? `scale(${f})` : "";
 }
 
@@ -209,7 +223,11 @@ export function openWikiPanel(opts: { hash?: string } = {}): HTMLIFrameElement |
   frame.title = "Nangijala Wiki";
   openFrame = frame;
   panel.appendChild(frame);
-  root.append(back, panel);
+  // The cutout band belongs to the drawer, not to the shell underneath it: at
+  // z 5000 this root covers the game's #ml-safebar, so it paints its own.
+  const band = document.createElement("div");
+  band.className = "ml-wikiband";
+  root.append(back, panel, band);
   document.body.appendChild(root);
 
   layout(panel, frame);
