@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM, INCLUDING ONE FILE THAT IS NOT MINE: games2/client/src/bars.ts. The gold row is 16px where a bar row is 28, so the XP card is shorter than the HP/EP card and everything anchored under them is off by that much (maintainer 2026-09-19: \"if we just fix the gold to display with the same high as EP everything will be aligned!\"). One CSS declaration, announced to games. Also: the update dialog opens at its content's size with the notes already fetched. files: games2/client/src/bars.ts, updatenote.ts, main.ts, scripts/verify-updatenotes.mjs, scripts/verify-recbtn.mjs, UI_AGENT.md",
+  "current": "CLAIM: pressing Update now FROM INSIDE THE GAME comes back into the world instead of the character select (maintainer 2026-09-19: \"It would be much smoother for the player to first reload the game of course, but then immediately get into loading the game. This will take me back to where I was so much faster\"). It reuses ml-rejoin, the flag WorldScene's recovery reload already sets and main.ts's fast path already consumes — no new state. files: games2/client/src/updatenote.ts, games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -321,5 +321,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T14:24:43Z"
+  "updated": "2026-09-19T14:41:04Z"
 }
