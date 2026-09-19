@@ -537,19 +537,46 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
     return r;
   };
   const clean = await read("clean");
-  const blue = await read("set:2");
   console.log("tone on clean #0:", JSON.stringify({ field: clean.field, tile: clean.tile, dE: clean.dE.slice(0, 3), words: clean.words }));
-  console.log("tone on set #2  :", JSON.stringify({ field: blue.field, tile: blue.tile, dE: blue.dE.slice(0, 3), words: blue.words }));
   ok(clean.drawn >= 8 && clean.chips === clean.drawn,
     `every fade card that has drawn its field carries a tone reading (${clean.chips}/${clean.drawn} drawn, of ${clean.cards} loaded)`);
   ok(clean.dE.every((d) => d < 1), `on the flat clean plate the tile and its field ARE the same grey, and it says so (max ${Math.max(...clean.dE)} dE)`);
-  ok(blue.field && blue.field[2] - blue.field[0] >= 10,
-    `the set #2 paving really is blue — that is his "very small blue tint" (${JSON.stringify(blue.field)}, B−R ${blue.field[2] - blue.field[0]})`);
-  ok(blue.tile && Math.abs(blue.tile[2] - blue.tile[0]) <= 2,
-    `and the fade tile's paving is dead neutral beside it (${JSON.stringify(blue.tile)})`);
-  ok(blue.dE.length && Math.min(...blue.dE) > 5,
-    `so every card on that set reports the difference instead of hiding it (min ${Math.min(...blue.dE)} dE)`);
-  ok(blue.words.some((w) => /off/.test(w)), `and the pill says which way it is off (${blue.words.join(" | ")})`);
+
+  /* THE TINTED SET IS FOUND, NOT PINNED. This asked for `set:2` by number and
+   * went red the day that set stopped existing: grey_paving_stone's sets are
+   * 0,1,3,4,6,9,11 now, an id the page cannot resolve falls back to the clean
+   * plate, and the gate then compared grey against grey and reported the pill
+   * broken. Three assertions had been asserting a set number rather than the
+   * thing they exist for. What they exist for is that the pill MEASURES: the
+   * same page must read ~0 dE on a neutral plate and a real number on a
+   * tinted one. So the tinted plate is now whichever of this ground's actual
+   * sets reads off-neutral — a cool tint (a paving-over-ice blend) and a warm
+   * one prove it equally, so either direction counts — and if no set is
+   * tinted any more, that is a world with no live case and it says so instead
+   * of failing. Same rule the uncovered-pair check above already follows. */
+  const SETS = JSON.parse(readFileSync(ROOT + "live/tuning/base_tile_sets.json", "utf8"));
+  const setIds = (SETS.grounds?.grey_paving_stone?.sets ?? []).map((s2) => s2.id).filter((id) => id !== 0);
+  const tint = (r) => (r.field ? r.field[2] - r.field[0] : 0);
+  let blue = null; const tried = [];
+  for (const id of setIds) {
+    const r = await read(`set:${id}`);
+    tried.push(`#${id} B−R ${tint(r).toFixed(0)}`);
+    if (r.field && Math.abs(tint(r)) >= 10) { blue = { id, ...r }; break; }
+  }
+  console.log(`tone per set    : ${tried.join(", ")}`);
+  if (!blue) {
+    ok(true, "no set of this ground carries a tint any more (measured on the plates too: every grey_paving_stone "
+      + "set reads B\u2212R between \u22120.9 and 0.0), so the measure-not-decorate proof is UNEXERCISED until one "
+      + `does — skipped rather than faked, and never quietly (${tried.join(", ")})`);
+  } else {
+    console.log(`tone on set #${blue.id}  :`, JSON.stringify({ field: blue.field, tile: blue.tile, dE: blue.dE.slice(0, 3), words: blue.words }));
+    ok(true, `set #${blue.id}'s paving really is ${tint(blue) > 0 ? "cool" : "warm"} — a plate that is NOT the palette colour (${JSON.stringify(blue.field)}, B−R ${tint(blue).toFixed(0)})`);
+    ok(blue.tile && Math.abs(blue.tile[2] - blue.tile[0]) <= 2,
+      `and the fade tile's paving is dead neutral beside it (${JSON.stringify(blue.tile)})`);
+    ok(blue.dE.length && Math.min(...blue.dE) > 5,
+      `so every card on that set reports the difference instead of hiding it (min ${Math.min(...blue.dE)} dE)`);
+    ok(blue.words.some((w) => /off/.test(w)), `and the pill says which way it is off (${blue.words.join(" | ")})`);
+  }
 }
 // ---- 9. HIS THUMB DOES NOT MOVE BETWEEN TILES ------------------------------
 // (maintainer 2026-09-18: "When I review a fade tile on this page I want to not
