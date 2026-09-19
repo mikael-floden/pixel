@@ -49,6 +49,7 @@ const DOC = {
     { sha: "bbbbbbbb2", at: noon(0, 12, 10), author: "Mikael Flodén", subject: "live: admin update — feedback/objects.json", agent: null, dirs: ["live"], files: 1 },
     { sha: "ccccccc33", at: noon(0, 12, 5), author: "Mikael Flodén", subject: "live: admin update — feedback/objects.json", agent: null, dirs: ["live"], files: 1 },
     { sha: "ddddddd44", at: noon(1, 12), author: "Claude", subject: "maps2: a span's new lane must land where the span lands", agent: "maps2", dirs: ["maps2"], files: 9 },
+    { sha: "ggggggg77", at: noon(1, 11, 30), author: "Claude", subject: "scenery-github-agent: a PR body names its own diff", agent: "scenery-github-agent", dirs: ["scenery"], files: 2 },
     // …everything from here down is what THIS build already has
     { sha: MY_SHA, at: noon(1, 11), author: "Claude", subject: "games: the build I am running", agent: "games", dirs: ["games2"], files: 2 },
     { sha: "fffffff66", at: noon(1, 10), author: "Claude", subject: "ambient: older still", agent: "ambient", dirs: ["games2"], files: 1 },
@@ -107,9 +108,9 @@ const openIt = async (mine = MY_SHA) => {
   if (!d) fail("the dialog did not open");
   else {
     d.shaChip === NEW_SHA ? ok(`the served build is named in the header (${d.shaChip})`) : fail(`sha chip "${d.shaChip}"`);
-    /4 changes since your build eeeeeee55/.test(d.sub)
+    /5 changes since your build eeeeeee55/.test(d.sub)
       ? ok(`the count is the range, not the file (${d.sub})`)
-      : fail(`subtitle "${d.sub}" — want "4 changes since your build eeeeeee55"`);
+      : fail(`subtitle "${d.sub}" — want "5 changes since your build eeeeeee55"`);
     // the two commits this build already has must not appear, by any part of them
     !/the build I am running|older still|fffffff66/.test(d.text)
       ? ok("nothing from before this build leaked into the list")
@@ -117,7 +118,7 @@ const openIt = async (mine = MY_SHA) => {
     // …and the newer ones all did
     const subjects = d.rows.map((r) => r.subj);
     subjects.some((s) => /thumb row balances/.test(s)) && subjects.some((s) => /span's new lane/.test(s))
-      ? ok(`every newer commit is listed (${d.rows.length} rows from 4 commits)`)
+      ? ok(`every newer commit is listed (${d.rows.length} rows from 5 commits)`)
       : fail(`rows: ${JSON.stringify(subjects)}`);
     d.note === "" ? ok("no truncation note when the build is inside the window") : fail(`unexpected note "${d.note}"`);
   }
@@ -131,33 +132,59 @@ const openIt = async (mine = MY_SHA) => {
     ? ok(`grouped by day, newest first (${d.days.join(" / ")})`)
     : fail(`day headers ${JSON.stringify(d.days)} — want Today then Yesterday`);
   const first = d.rows[0];
-  first.area === "games-ui" && first.subj === "the thumb row balances on its inner gaps"
-    ? ok(`the chip carries the area and the subject drops the token it repeats ("${first.subj}")`)
-    : fail(`first row ${JSON.stringify(first)}`);
-  const live = d.rows.find((r) => r.area === "live");
+  // HIS NAME FOR THE BOARD, not its filename (maintainer 2026-09-19).
+  first.area === "UI" && first.subj === "the thumb row balances on its inner gaps"
+    ? ok(`the chip carries HIS name for the agent, and the subject drops the token it repeats ("${first.area}" / "${first.subj}")`)
+    : fail(`first row ${JSON.stringify(first)} — want the area "UI"`);
+  const gh = d.rows.find((r) => /GitHub/.test(r.area));
+  gh && gh.area === "Scenery GitHub"
+    ? ok(`a <domain>-github-agent board reads as "${gh.area}" — the suffix is DERIVED, so the next one needs no entry`)
+    : fail(`the github agent's chip: ${JSON.stringify(gh)} — want "Scenery GitHub"`);
+  d.rows.some((r) => r.area === "Map") ? ok('maps2 reads as "Map"') : fail(`no "Map" chip in ${JSON.stringify(d.rows.map((r) => r.area))}`);
+  const live = d.rows.find((r) => r.area === "Live");
   live && /×2$/.test(live.subj) && /admin update/.test(live.subj)
     ? ok(`a repeated subject collapses to a count ("${live.subj}")`)
     : fail(`the two identical live commits did not collapse: ${JSON.stringify(d.rows)}`);
-  d.rows.length === 3
-    ? ok("4 commits render as 3 rows")
-    : fail(`${d.rows.length} rows from 4 commits with one duplicate pair`);
+  d.rows.length === 4
+    ? ok("5 commits render as 4 rows")
+    : fail(`${d.rows.length} rows from 5 commits with one duplicate pair`);
   /^\d{1,2}[:.]\d{2}.*aaaaaaaa1$/.test(first.meta.replace(/\s/g, " ").trim())
     ? ok(`each row carries its time and sha (${first.meta})`)
     : fail(`row meta "${first.meta}" — want "HH:MM · <sha>"`);
   const summary = d.areas.join(" ");
-  /live 2/.test(summary) && /games-ui 1/.test(summary) && /maps2 1/.test(summary)
-    ? ok(`the header summarises the areas, most first (${summary})`)
+  /Live 2/.test(summary) && /UI 1/.test(summary) && /Map 1/.test(summary)
+    ? ok(`the header summarises the areas by his names, most first (${summary})`)
     : fail(`area summary ${JSON.stringify(d.areas)}`);
-  // the areas are told apart by colour, and the colour is stable per area
-  const hues = await page.evaluate(() =>
-    [...document.querySelectorAll(".ml-upd-row")].map((r) => ({
-      area: r.dataset.area,
-      bg: getComputedStyle(r.querySelector(".ml-upd-chip")).backgroundColor,
-    })),
-  );
-  new Set(hues.map((h) => h.bg)).size === hues.length
-    ? ok("each area's chip has its own colour")
-    : fail(`chip colours repeat across areas: ${JSON.stringify(hues)}`);
+  // THE CHIPS FOLLOW THE CSS (maintainer 2026-09-19: "I don't like the pill
+  // colors (doesn't follow the CSS)"). Asserted against the THEME's own
+  // computed tokens, never literals: every chip — rows and summary — is
+  // --surface-2 on --border with --muted ink, the sha chip's own recipe. A
+  // re-introduced per-area palette fails here.
+  const paint = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const probe = (v) => {
+      const d = document.createElement("div");
+      d.style.color = cs.getPropertyValue(v).trim();
+      document.body.appendChild(d);
+      const c = getComputedStyle(d).color;
+      d.remove();
+      return c;
+    };
+    const want = { bg: probe("--surface-2"), fg: probe("--muted"), bd: probe("--border") };
+    const chips = [...document.querySelectorAll(".ml-upd-chip, .ml-upd-areas span")].map((e) => {
+      const g = getComputedStyle(e);
+      return { text: e.textContent, bg: g.backgroundColor, fg: g.color, bd: g.borderTopColor };
+    });
+    const sg = getComputedStyle(document.querySelector(".ml-upd-sha"));
+    return { want, chips, sha: { bg: sg.backgroundColor, fg: sg.color } };
+  });
+  const offPalette = paint.chips.filter((c) => c.bg !== paint.want.bg || c.fg !== paint.want.fg || c.bd !== paint.want.bd);
+  offPalette.length === 0 && paint.chips.length >= 6
+    ? ok(`all ${paint.chips.length} chips wear the theme's own tokens (${paint.want.bg} on ${paint.want.bd}, ${paint.want.fg} ink)`)
+    : fail(`${offPalette.length} chip(s) do not follow the CSS: ${JSON.stringify(offPalette.slice(0, 3))} — want ${JSON.stringify(paint.want)}`);
+  paint.sha.bg === paint.want.bg
+    ? ok("…the same recipe as the sha chip beside the title")
+    : fail(`the sha chip is ${paint.sha.bg}, the area chips ${paint.want.bg}`);
   d.cardH <= d.vh - 32
     ? ok(`the card fits the phone with the list scrolling inside it (${d.cardH} of ${d.vh})`)
     : fail(`card ${d.cardH}px on a ${d.vh}px viewport`);
@@ -218,7 +245,7 @@ const openIt = async (mine = MY_SHA) => {
 //       the list is the whole range ──
 {
   const d = await openIt("0000000ff");
-  d.rows.length === 5 && /the most recent ones/.test(d.sub) && /earlier changes/.test(d.note)
+  d.rows.length === 6 && /the most recent ones/.test(d.sub) && /earlier changes/.test(d.note)
     ? ok(`a build outside the window shows what is known and says so (${d.rows.length} rows)`)
     : fail(`outside-window case: sub "${d.sub}", note "${d.note}", ${d.rows.length} rows`);
   await page.evaluate(() => window.__mlUpdateNotes.close());
@@ -247,7 +274,7 @@ const openIt = async (mine = MY_SHA) => {
   const d = await openIt();
   if (!d) fail("the dialog did not open in the game");
   else {
-    /4 changes since your build/.test(d.sub) && d.rows.length === 3
+    /5 changes since your build/.test(d.sub) && d.rows.length === 4
       ? ok(`in the GAME the same dialog lists the same range (${d.rows.length} rows, "${d.sub}")`)
       : fail(`in-game contents differ from the select screen: sub "${d.sub}", ${d.rows.length} rows`);
     const hit = await page.evaluate(() => {

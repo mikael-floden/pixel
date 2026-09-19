@@ -17,6 +17,23 @@
 // `cache: "no-store"` because the static mount sets maxAge 1h — a cached copy
 // would describe the deploy before last.
 //
+// THE CHIPS WEAR THE THEME, NOT A PALETTE OF THEIR OWN (maintainer 2026-09-19:
+// "I don't like the pill colors (doesn't follow the CSS)"). They were a hue
+// derived from the area's name — twelve arbitrary colours over his beige/dark
+// tokens, which is exactly what a shared theme exists to prevent. One recipe
+// now, the same one the sha chip beside the title already used: --surface-2 on
+// --border with --muted ink. What tells two areas apart is the WORD.
+//
+// AND THE WORD IS HIS NAME FOR THE AGENT, not the board's filename. The wiki
+// attributes a commit to a `coordination/<agent>.json` (wiki/lib/releases.mjs),
+// so the raw ids are `games-ui`, `games-perf`, `maps2`, `characters2`,
+// `scenery-github-agent` — and he calls those UI, Optimization, Map, Character
+// and Scenery GitHub. AGENTS is that map, with the two suffixes derived rather
+// than listed (`-assistant`, `-github-agent`), so an agent hired tonight is
+// recognised the moment its board exists — the same rule the wiki's own roster
+// follows. An id with no entry is shown AS IT IS: a name we have not been told
+// is still a fact, and inventing a prettier one would hide which board pushed.
+//
 // IT IS THE WIKI'S ADMIN LIST MADE READABLE, which is the "inspiration" part:
 // the wiki shows raw rows on purpose (maintainer 2026-09-13: "no curation, no
 // versions, no grouping by feature" — ADMIN-ONLY). Here the same rows are
@@ -99,19 +116,58 @@ export function sliceSince(doc: ReleaseDoc, mySha: string): { rows: ReleaseCommi
   return { rows: doc.commits.slice(0, i), truncated: false };
 }
 
-/** The area a row belongs to: the agent the wiki named, else the folder it
- *  touched, else the repo. One label, because the chip is a glance, not a
- *  report. */
+/** The area a row belongs to, as the WIKI names it: the agent it attributed
+ *  the commit to, else the folder it touched, else the repo root. One value,
+ *  because the chip is a glance, not a report — and the RAW one, because
+ *  `cleanSubject` matches it against the subject's own prefix. */
 function areaOf(c: ReleaseCommit): string {
   return c.agent || c.dirs[0] || "repo";
 }
 
-/** A stable hue per area, so `games2` is the same colour on every visit and
- *  two areas in one day read apart without a palette to maintain. */
-function areaHue(area: string): number {
-  let h = 0;
-  for (let i = 0; i < area.length; i++) h = (h * 31 + area.charCodeAt(i)) >>> 0;
-  return h % 360;
+/** HIS NAMES for the boards and the domains (2026-09-19). Only the stems: the
+ *  `-assistant` and `-github-agent` suffixes are derived below, so a new board
+ *  of either kind needs no entry here. */
+const AGENTS: Record<string, string> = {
+  games: "Game",
+  games2: "Game",
+  "games-ui": "UI",
+  "games-ambient": "Ambient",
+  "games-perf": "Optimization",
+  "games-audio": "Composer",
+  maps: "Map",
+  maps2: "Map",
+  tiles: "Tiles",
+  tiles2: "Tiles",
+  monsters: "Monster",
+  scenery: "Scenery",
+  characters2: "Character",
+  items: "Item",
+  item: "Item",
+  lore: "Lore",
+  wiki: "Wiki",
+  account: "Account",
+  sounds: "Sound",
+  music: "Music",
+  live: "Live",
+  coordination: "Boards",
+  ".github": "CI",
+  repo: "Repo",
+};
+
+/** The chip's word: his name for the board, with the suffix its kind carries.
+ *  An unknown id is shown unchanged rather than guessed at. */
+export function areaLabel(id: string): string {
+  for (const [suffix, tail] of [
+    ["-github-agent", "GitHub"],
+    ["-github", "GitHub"],
+    ["-assistant", "assistant"],
+  ] as const) {
+    if (id.endsWith(suffix)) {
+      const stem = id.slice(0, -suffix.length);
+      return `${AGENTS[stem] ?? stem} ${tail}`;
+    }
+  }
+  return AGENTS[id] ?? id;
 }
 
 /** Drop the leading `token:` the commit subject opens with WHEN that token is
@@ -198,15 +254,19 @@ function styleOnce() {
      it. Informational only — nothing here is tappable, so nothing invites a
      tap that does nothing. */
   .ml-upd-areas{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
-  .ml-upd-areas span{font:600 11px/1 var(--sans);padding:4px 7px;border-radius:6px;white-space:nowrap}
+  .ml-upd-areas span{font:600 11px/1 var(--sans);padding:4px 7px;border-radius:6px;white-space:nowrap;
+    background:var(--surface-2);border:1px solid var(--border);color:var(--muted)}
   .ml-upd-list{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 16px 12px}
   .ml-upd-day{position:sticky;top:0;z-index:1;background:var(--bg);
     padding:12px 0 6px;color:var(--muted);
     font:600 11px/1.2 var(--sans);letter-spacing:.09em;text-transform:uppercase}
   .ml-upd-row{display:flex;gap:9px;padding:7px 0;border-top:1px solid var(--border)}
   .ml-upd-day + .ml-upd-row{border-top:none}
-  .ml-upd-chip{flex:none;align-self:flex-start;max-width:112px;overflow:hidden;text-overflow:ellipsis;
-    white-space:nowrap;font:600 11px/1.45 var(--sans);padding:2px 7px;border-radius:6px}
+  /* ONE recipe, the sha chip's — the theme's own surface, border and muted
+     ink. No per-area colour: the WORD is what tells them apart. */
+  .ml-upd-chip{flex:none;align-self:flex-start;max-width:120px;overflow:hidden;text-overflow:ellipsis;
+    white-space:nowrap;font:600 11px/1.45 var(--sans);padding:2px 7px;border-radius:6px;
+    background:var(--surface-2);border:1px solid var(--border);color:var(--muted)}
   .ml-upd-body{min-width:0;flex:1 1 auto}
   .ml-upd-subj{overflow-wrap:anywhere}
   .ml-upd-x{color:var(--muted);font-weight:700;font-size:12px}
@@ -232,10 +292,6 @@ export function closeUpdateNotes(): void {
   open?.remove();
   open = null;
 }
-
-const chipStyle = (area: string) =>
-  `background:color-mix(in srgb, hsl(${areaHue(area)} 70% 50%) 20%, transparent);` +
-  `border:1px solid color-mix(in srgb, hsl(${areaHue(area)} 70% 50%) 45%, transparent);color:var(--ink)`;
 
 /**
  * Open the release notes for the served build. `mySha` defaults to this
@@ -315,10 +371,12 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
       (truncated ? " — the most recent ones" : "");
     // area summary, most changes first
     const byArea = new Map<string, number>();
-    for (const c of rows) byArea.set(areaOf(c), (byArea.get(areaOf(c)) ?? 0) + 1);
-    for (const [area, count] of [...byArea].sort((a, b) => b[1] - a[1])) {
+    for (const c of rows) {
+      const k = areaLabel(areaOf(c));
+      byArea.set(k, (byArea.get(k) ?? 0) + 1);
+    }
+    for (const [area, count] of [...byArea].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))) {
       const s = document.createElement("span");
-      s.style.cssText = chipStyle(area);
       s.textContent = `${area} ${count}`;
       areas.appendChild(s);
     }
@@ -337,8 +395,7 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
       row.dataset.area = r.area;
       const chip = document.createElement("span");
       chip.className = "ml-upd-chip";
-      chip.style.cssText = chipStyle(r.area);
-      chip.textContent = r.area;
+      chip.textContent = areaLabel(r.area);
       const body = document.createElement("div");
       body.className = "ml-upd-body";
       const subj = document.createElement("div");

@@ -343,10 +343,24 @@ from the games agent), #18 (title/landing screen).
   describes the deploy before last.
   THE WIKI'S ROWS MADE READABLE is the whole design difference: the wiki is
   deliberately raw (2026-09-13, ADMIN-ONLY), here they are grouped by day, the
-  area is a coloured chip (agent, else first dir — hue derived from the name,
-  so no palette to maintain), the chip's own token is stripped off the front of
-  the subject when it repeats it, and adjacent identical subjects collapse to
-  `×N`. NOTHING IS FILTERED — he asked for everything, so a `live:` admin
+  area is a chip (agent, else first dir), the chip's own token is stripped off
+  the front of the subject when it repeats it, and adjacent identical subjects
+  collapse to `×N`.
+  **THE CHIPS WEAR THE THEME AND SAY HIS NAME FOR THE AGENT** (maintainer
+  2026-09-19: "I don't like the pill colors (doesn't follow the CSS). Here is a
+  list with how I named the agents"). REJECTED: a per-area hue derived from the
+  name — it needed no palette, which is exactly why it followed none of ours;
+  every chip is now `--surface-2` on `--border` with `--muted` ink, the sha
+  chip's own recipe, so the dialog re-themes with everything else and no new
+  colour is invented here. And the chip says what HE calls that agent in his
+  own session list — `games-ui` is **UI**, `maps2` is **Map**, `characters2` is
+  **Character**, `games-perf` is **Optimization**, `games-audio` is
+  **Composer** (`AGENTS` in `updatenote.ts`; the summary groups by the LABEL,
+  so two board files with one name count once). The `-assistant` and
+  `-github-agent` suffixes are DERIVED off the stem, so the next domain's
+  github agent reads as "Scenery GitHub" with no entry to add — only a new
+  DOMAIN needs one. The raw id stays the grouping key inside `areaOf()`
+  because the subject-prefix strip matches against it. NOTHING IS FILTERED — he asked for everything, so a `live:` admin
   commit is a row like any other. A build older than the 50-commit window says
   so ("the most recent ones") instead of implying the list is the whole range.
   THE TOAST IS UNCHANGED and still the quiet FYI of 2026-08-05 — deploys land
