@@ -56,7 +56,12 @@ const read = () => p.evaluate(() => ({
   rows: [...document.querySelectorAll(".fade-tile b")].map((x) => x.textContent.trim()),
   scenes: [...document.querySelectorAll(".fade-tile canvas")].filter((c) => c.width > 200).length,
   fb: document.querySelectorAll(".fade-tile .fb-row").length,
-  more: [...document.querySelectorAll("button")].map((x) => x.textContent.trim()).find((x) => /^Show 12 more/.test(x)) ?? null,
+  more: [...document.querySelectorAll("button")].map((x) => x.textContent.trim()).find((x) => /^Show \d+ more/.test(x)) ?? null,
+  stage: (() => { const st = document.querySelector(".fade-tile .iso-stage"); if (!st) return null;
+    const cs = getComputedStyle(st); const c = st.querySelector("canvas"); const r = st.getBoundingClientRect();
+    return { overflow: cs.overflowX, minH: Math.round(parseFloat(cs.minHeight) || 0), h: Math.round(r.height),
+      left: c ? Math.round(c.getBoundingClientRect().left - r.left) : null,
+      right: c ? Math.round(r.right - c.getBoundingClientRect().right) : null }; })(),
 }));
 
 /* HIS OWN VERDICTS MUST NOT BE WHAT THIS GATE MEASURES (2026-09-02): the fade
@@ -83,18 +88,48 @@ const g = await read();
 ok(!!g.panel && /most grass first/.test(g.panel), `the pair page grows a Fade tiles section, sorted for ITS first ground (${g.panel})`);
 ok(g.pill === String(MERGED.length),
   `the count is BOTH orientation halves merged — the index splits one pair across two keys (${g.pill} of ${MERGED.length})`);
-ok(g.rows.length === 12 && g.rows[0].startsWith(`${grassTop}% grass`),
-  `twelve at a time, the grass-heaviest of the whole merged pair first (${g.rows[0]})`);
-ok(g.scenes === 12 && g.fb === 12, `each shown tile gets a wandering-edge field and the standard verdict row (${g.scenes} scenes, ${g.fb} rows)`);
-ok(g.more === `Show 12 more (${MERGED.length - 12} left)`,
-  `and the rest wait behind a button — eighty eager fields is a hung phone (${g.more})`);
+/* FIFTY AT A TIME, AND THE FIELDS ARE DRAWN LAZILY (maintainer 2026-09-19: "I
+ * only see 12 images until it has to load more and loading more takes time!
+ * Can't you load 50 and load more in the bg so I can continue without
+ * interruption?"). Twelve was the right number while every card drew its field
+ * the moment it was built; a card off screen now costs a DOM node and nothing
+ * else, so the batch is 50 and the next 50 arrive from a sentinel below the
+ * last card. What must NOT change: the order, and that a phone is not asked to
+ * compose fifty isometric fields at once — which is what `scenes` measures. */
+const BATCH = Math.min(50, MERGED.length);
+ok(g.rows.length === BATCH && g.rows[0].startsWith(`${grassTop}% grass`),
+  `fifty at a time, the grass-heaviest of the whole merged pair first (${g.rows.length} rows, ${g.rows[0]})`);
+ok(g.fb === BATCH, `every shown tile gets the standard verdict row (${g.fb} rows)`);
+/* The panel sits below the pair's other sections, so nothing in it has drawn
+ * yet — which is the point: fifty cards cost nothing until he arrives. Scroll
+ * to it, as he does, and only the fields near the screen compose. */
+ok(g.scenes === 0, `nothing in the list draws while it is still below the fold (${g.scenes} drawn)`);
+await p.evaluate(() => document.querySelector(".fade-tile")?.scrollIntoView());
+await p.waitForTimeout(2500);
+const gs = await read();
+ok(gs.scenes > 0 && gs.scenes < BATCH,
+  `and once he is there, only the fields near his screen are composed — the rest wait for the scroll (${gs.scenes} of ${BATCH} drawn)`);
+/* AND AN UNDRAWN CARD STILL HOLDS ITS HEIGHT. Without that the whole list is
+ * weightless, the end sentinel is on screen at once, and every remaining batch
+ * is pulled in immediately — measured the day this went lazy. */
+ok(gs.stage?.minH >= 200 && gs.stage?.h >= 200,
+  `an undrawn card keeps the drawn card's height, so the list has honest length (min-height ${gs.stage?.minH}px)`);
+/* CENTRED AND CLIPPED EVENLY (maintainer 2026-09-19: "center the tiles in the
+ * preview and clip so it doesn't render outside and what is clipped is same on
+ * both sides"). The field is wider than a phone card by design; what he asked
+ * for is that the overhang is equal on both sides and cut, not spilled. */
+ok(gs.stage?.overflow === "hidden", `the field is clipped by the card, never spilling out of it (overflow: ${gs.stage?.overflow})`);
+ok(gs.stage && gs.stage.left !== null && Math.abs(gs.stage.left - gs.stage.right) <= 1,
+  `and it is centred, so what is cut off is the same on both sides (left ${gs.stage?.left}px vs right ${gs.stage?.right}px)`);
+ok(g.more === `Show 50 more (${MERGED.length - BATCH} left)`,
+  `the rest are a scroll away, with the button as the fallback (${g.more})`);
 
 // ---- 2. show more really shows more ---------------------------------------
-await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /^Show 12 more/.test(x.textContent))?.click());
+await p.evaluate(() => [...document.querySelectorAll("button")].find((x) => /^Show \d+ more/.test(x.textContent))?.click());
 await p.waitForTimeout(3500);
 const g2 = await read();
-ok(g2.rows.length === 24 && g2.rows[0] === g.rows[0],
-  `Show 12 more appends the next twelve without reshuffling the first (${g2.rows.length} rows)`);
+ok(g2.rows.length === Math.min(BATCH * 2, MERGED.length) && g2.rows[0] === g.rows[0],
+  `the next batch is APPENDED, with no re-render and no reshuffle of the first (${g2.rows.length} rows)`);
 const descOK = g2.rows.every((r, i) => i === 0 || parseInt(g2.rows[i - 1]) >= parseInt(r));
 ok(descOK, "and the visible order is monotonically grass-descending across the page break");
 
@@ -263,7 +298,7 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   // show everything so both blocks are on the page
   // To the END: 151 tiles is thirteen presses, and the seam sits at row 150.
   for (let i = 0; i < 24; i++) {
-    const more = await p.evaluate(() => { const b2 = [...document.querySelectorAll("button")].find((x) => /^Show 12 more/.test(x.textContent)); if (b2) { b2.click(); return true; } return false; });
+    const more = await p.evaluate(() => { const b2 = [...document.querySelectorAll("button")].find((x) => /^Show \d+ more/.test(x.textContent)); if (b2) { b2.click(); return true; } return false; });
     if (!more) break;
     await p.waitForTimeout(2200);
   }
@@ -411,6 +446,15 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   // agent looked at my review" means in practice.
   await p.evaluate(() => { location.hash = "#/world"; }); await p.waitForTimeout(900);
   await p.evaluate(() => { location.hash = "#/world/transition/grass__to__ice"; }); await p.waitForTimeout(4000);
+  /* HE HAS TO BE ABLE TO REACH IT. Coming back re-sorts, and a judged tile is
+   * by design at the END — behind every tile he still has to look at — so the
+   * list is grown until it is on the page, exactly as a scroll would. */
+  for (let i = 0; i < 4; i++) {
+    if (await p.evaluate(() => !!document.querySelector(".fade-tile.dropped"))) break;
+    const grew = await p.evaluate(() => { const b2 = [...document.querySelectorAll("button")].find((x) => /^Show \d+ more/.test(x.textContent)); if (b2) { b2.click(); return true; } return false; });
+    if (!grew) break;
+    await p.waitForTimeout(1200);
+  }
   const kept = await p.evaluate(() => {
     const c = [...document.querySelectorAll(".fade-tile")].find((x) => /dropped/.test(x.className));
     return c ? { key: c.querySelector(".fade-key")?.title ?? null, outline: getComputedStyle(c).outlineColor } : null;
@@ -442,11 +486,22 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
       localStorage.setItem("wiki-trans-sides", JSON.stringify({ grey_paving_stone: s, light_beach: s }));
     }, side);
     await pg.goto(`${W}#/world/transition/grey_paving_stone__to__light_beach`, { waitUntil: "load" });
-    await pg.waitForTimeout(11000);
+    await pg.waitForTimeout(6000);
+    /* SCROLLED, BECAUSE THE FIELDS ARE LAZY. A card composes its scene — and
+     * with it the tone reading — when it comes near the viewport, so a page
+     * that never moves has no chips to read. This walks the list the way a
+     * thumb does; what it then asserts is that every card that HAS been drawn
+     * carries a reading. */
+    await pg.evaluate(async () => {
+      for (let y = 0; y < 9000; y += 800) { window.scrollTo(0, y); await new Promise((r2) => setTimeout(r2, 150)); }
+      window.scrollTo(0, 0);
+    });
+    await pg.waitForTimeout(5000);
     const r = await pg.evaluate(() => {
       const t2 = (window.__wikiTone ?? []).filter((x) => x.tile);
       const chips = [...document.querySelectorAll(".tone-chip")];
-      return { cards: document.querySelectorAll(".fade-tile").length, chips: chips.length,
+      return { cards: document.querySelectorAll(".fade-tile").length,
+               drawn: document.querySelectorAll(".fade-tile canvas").length, chips: chips.length,
                dE: chips.map((x) => +x.dataset.de), words: [...new Set(chips.map((x) => x.textContent))].slice(0, 3),
                field: t2[0]?.field ?? null, tile: t2[0]?.tile ?? null };
     });
@@ -457,7 +512,8 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   const blue = await read("set:2");
   console.log("tone on clean #0:", JSON.stringify({ field: clean.field, tile: clean.tile, dE: clean.dE.slice(0, 3), words: clean.words }));
   console.log("tone on set #2  :", JSON.stringify({ field: blue.field, tile: blue.tile, dE: blue.dE.slice(0, 3), words: blue.words }));
-  ok(clean.chips > 0 && clean.chips === clean.cards, `every fade card carries a tone reading (${clean.chips}/${clean.cards})`);
+  ok(clean.drawn >= 8 && clean.chips === clean.drawn,
+    `every fade card that has drawn its field carries a tone reading (${clean.chips}/${clean.drawn} drawn, of ${clean.cards} loaded)`);
   ok(clean.dE.every((d) => d < 1), `on the flat clean plate the tile and its field ARE the same grey, and it says so (max ${Math.max(...clean.dE)} dE)`);
   ok(blue.field && blue.field[2] - blue.field[0] >= 10,
     `the set #2 paving really is blue — that is his "very small blue tint" (${JSON.stringify(blue.field)}, B−R ${blue.field[2] - blue.field[0]})`);

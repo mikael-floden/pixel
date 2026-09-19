@@ -1927,6 +1927,26 @@ input[type="range"] { accent-color: var(--accent); }
 /* ---- FADE TILES (maintainer 2026-08-28): one review block per tile — the
    share line, the wandering-edge field it sits in, the standard verdict row. */
 .fade-tile { border-top: 1px solid var(--border); padding-top: 10px; margin-top: 12px; }
+/* THE FIELD IS CENTRED AND CLIPPED EVENLY (maintainer 2026-09-19: "center the
+   tiles in the preview and clip so it doesn't render outside and what is
+   clipped is same on both sides"). The scene is a fixed 388px-wide isometric
+   field and a phone card is ~350px, so it always overhangs: left-aligned in a
+   plain block it spilled ONLY to the right, which is what he was looking at.
+   Flex-centred, an oversized child overflows equally both ways, and the hidden
+   overflow makes that a clean cut instead of a spill.
+
+   THE MIN-HEIGHT IS LOAD-BEARING, not cosmetic: a card draws its scene only
+   when it comes near the viewport, and an empty stage is 0px tall — fifty
+   weightless cards put the list's end sentinel on screen at once and pulled
+   every remaining batch in immediately. 250px is the drawn scene (208) plus
+   this stage's padding and the tone chip — measured drawn, to the pixel: a
+   reserve 2px short of the real thing put 4px of drift under his thumb, and
+   his rule there is that the buttons do not move. */
+.fade-tile .iso-stage {
+  display: flex; align-items: center; justify-content: center; flex-direction: column;
+  overflow: hidden; min-height: 252px;
+}
+.fade-tile .iso-stage canvas { flex: 0 0 auto; }
 .fade-key { font-size: 11.5px; overflow-wrap: anywhere; }
 
 /* ---- SLOPES (maintainer 2026-08-28): the walkable ramp cards ---- */

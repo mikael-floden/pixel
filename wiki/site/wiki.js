@@ -4367,12 +4367,17 @@ function homeTiles(tiles) {
   const fit = () => fitHome(grid);
   requestAnimationFrame(fit);
   window.addEventListener("resize", fit);
+  // …and once more when he comes back to the tab, since the resizes that
+  // arrived while it was hidden were ignored on purpose.
+  const onVisible = () => { if (!document.hidden) requestAnimationFrame(fit); };
+  document.addEventListener("visibilitychange", onVisible);
   // The column reserves 130px under every page on a phone — room for the save
   // bar over a review queue. The front door has nothing to save, and that
   // reserve is the difference between the last row being on screen and not.
   $("#content")?.classList.add("fit-home");
   activePlayers.push({ destroy: () => {
     window.removeEventListener("resize", fit);
+    document.removeEventListener("visibilitychange", onVisible);
     $("#content")?.classList.remove("fit-home");
   } });
   return grid;
@@ -4402,6 +4407,20 @@ function fillHome(grid, cols, avail) {
 }
 function fitHome(grid) {
   if (!grid?.isConnected || !grid.clientWidth) return;
+  /* A HIDDEN TAB MEASURES NOTHING HONEST. Android fires resize while the page
+   * is in the background (the URL bar, the app switcher), and a fit computed
+   * then is what he came back to. */
+  if (document.hidden) return;
+  /* UNDO THE LAST FILL BEFORE MEASURING — the ratchet that made the front door
+   * come back uglier every time he left the tab (maintainer 2026-09-19: "The
+   * overview looks different if I tab out and in again. This is Ugly").
+   * fillHome stretches the rows into the leftover room; leaving that stretch on
+   * the grid makes the NEXT fit read the stretched height as the layout's
+   * natural one, so the rung that fit a moment ago no longer does — and each
+   * pass gives up one more thing: the intro, then the upright tiles, then the
+   * fit itself. Measuring always starts from the unstretched grid. */
+  grid.style.gridAutoRows = "";
+  delete grid.dataset.rows;
   const setIcon = (px) => {
     grid.style.setProperty("--home-icon", `${px}px`);
     for (const img of grid.querySelectorAll(".sect-icon")) { img.width = px; img.height = px; }
@@ -8523,7 +8542,16 @@ function drawNear(el, work) {
     }
   }, { rootMargin: "800px 0px" });
   nearWork.set(el, work);
-  nearWatch.observe(el);
+  /* OBSERVED ONCE IT IS IN THE PAGE. A card is built before it is inserted, and
+   * observing a DETACHED element never delivers the first observation — so the
+   * cards that are already on screen wait for a scroll that never comes.
+   * Measured on the fade list the moment it went lazy: 50 cards, 0 canvases
+   * until the first flick. */
+  const arm = (tries = 0) => {
+    if (el.isConnected || tries > 30) nearWatch.observe(el);
+    else requestAnimationFrame(() => arm(tries + 1));
+  };
+  arm();
 }
 
 /** A transition set's tile path — derivable, never shipped (build.mjs ships
@@ -10490,7 +10518,12 @@ function viewWorldType(top) {
  * it as a 'demo page' and a way for me to see all content without running
  * around in the game. Make the page look good and ambitious.") ---- */
 const transState = new Map();   // pair -> { set, seed }
-const fadeShown = new Map();    // unordered pair -> fade tiles shown (12 at a time)
+const fadeShown = new Map();    // unordered pair -> fade tiles shown so far
+/* HOW MANY CARDS A BATCH ADDS. 50, not the 12 it was: a card off screen no
+ * longer draws anything (fadeScene is lazy), so a batch costs DOM and nothing
+ * else, and the next batch is appended from a sentinel below the last card
+ * before he ever reaches it. */
+const FADE_PAGE = 50;
 /** The fade list's order for the pair being visited: { key, keys, firstDone }. */
 let fadeOrder = { key: null, keys: [], firstDone: 0 };
 /* HIS THUMB DOES NOT MOVE BETWEEN TILES (maintainer 2026-09-18, on the fade
@@ -10845,7 +10878,15 @@ function fadeScene(a, b, tile) {
     fadeOnMinority: cells.filter((x, i) => x.img === dressed && grid[i].pure && !grid[i].isMaj).length,
     spot: spot ? { c: spot.c, r: spot.r, dist: +Math.hypot(spot.c - mid, spot.r - mid).toFixed(2) } : null,
   });
-  loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) => {
+  /* DRAWN WHEN IT IS NEARLY ON SCREEN, like the details queue's fields
+   * (maintainer 2026-09-19: "I only see 12 images until it has to load more
+   * and loading more takes time"). Every card composes a 36-cell field and
+   * reads pixels back for the tone chip; doing that for fifty cards at the
+   * moment the page renders is the lag he is describing, and almost all of it
+   * is for cards a phone screen never reaches. `drawNear` gives each field its
+   * work 800px out — early enough that a scroll never meets an empty box — and
+   * runs immediately where there is no observer (a gate's jsdom). */
+  drawNear(box, () => loadImages([...new Set(cells.map((x) => x.img).filter(Boolean))], (images) => {
     const iso = worldIso();
     const canvas = isoScene(cells.filter((x) => x.img), images, 1, 2, iso);
     box.replaceChildren(canvas);
@@ -10872,7 +10913,7 @@ function fadeScene(a, b, tile) {
     box.append(toneChip(tLab, fLab, majority));
     (window.__wikiTone ??= []).push({ key: tile.key, majority,
       tile: medianRgb(near), field: medianRgb(around.flat()) });
-  });
+  }));
   return box;
 }
 
@@ -11038,7 +11079,7 @@ function viewWorldTransition(pairId) {
        * is a hung phone. The count is shared by both directions of the pair
        * — the tiles are the same, only the order flips. */
       const fkey = [tr.a, tr.b].sort().join("|");
-      const shown = fadeShown.get(fkey) ?? 12;
+      let shownNow = fadeShown.get(fkey) ?? FADE_PAGE;
       /* WHAT IS LEFT TO REVIEW COMES FIRST (maintainer 2026-09-02: "the same
        * sorting, but unreviewed tiles should have a higher sort order. So
        * first comes the tiles I still have to approve/reject (sorted
@@ -11077,9 +11118,90 @@ function viewWorldTransition(pairId) {
         leftPill.textContent = n ? `${n} to review first` : "all reviewed";
       };
       paintLeft();
+      /* FIFTY AT A TIME, AND THE NEXT FIFTY ARRIVE BEHIND HIM (maintainer
+       * 2026-09-19: "I only see 12 images until it has to load more and
+       * loading more takes time! Can't you load 50 and load more in the bg so
+       * I can continue without interruption?").
+       *
+       * Twelve was right when every card drew its field the moment it was
+       * built — eighty of those up front hung a phone. Now a card off screen
+       * costs nothing (fadeScene draws 800px out), so the batch is a DOM cost
+       * only, and the reason for a small one is gone.
+       *
+       * AND NOTHING RE-RENDERS TO GROW. The old expansion called route(), which
+       * rebuilt the page under his thumb and is what "loading more takes time"
+       * felt like. New cards are appended to the list that is already there,
+       * from a sentinel 1200px below the last one — so the batch boundary is
+       * invisible: he scrolls, and there is simply more. Same pattern the
+       * ground-details queue already uses. */
+      const rowsFor = (t, i) => [
+        // The seam between the blocks, named — so a reviewed tile near the
+        // top is never mistaken for an unreviewed one.
+        i === fadeOrder.firstDone && fadeOrder.firstDone > 0 && i < ordered.length
+          ? h("div", { class: "fade-divider muted" }, "already reviewed — same order") : null,
+        /* THE CARD WEARS ITS VERDICT (maintainer 2026-09-03: "When I approved
+         * or rejected a tile before on the fade page — the card border
+         * became green/red"). Painted from the local doc, so it appears the
+         * instant he taps, queued or committed alike. */
+        (() => {
+          const card = h("div", { class: "fade-tile" },
+            h("div", { class: "player-controls" },
+              h("b", {}, `${Math.round(t.pctA)}% ${nameA.toLowerCase()} · ${Math.round(t.pctB)}% ${nameB.toLowerCase()}`),
+              h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
+            fadeScene(tr.a, tr.b, t));
+          const paintCard = () => {
+            const st = fb("tiles", t.key).status;
+            card.classList.toggle("reviewed", i >= fadeOrder.firstDone);
+            card.classList.toggle("picked", st === "approved");
+            card.classList.toggle("dropped", st === "rejected");
+          };
+          paintCard();
+          card.append(feedbackRow("tiles", t.key, { onchange: () => {
+            paintCard(); paintLeft();
+            keepThumb(card);
+            // Judged the last loaded card with more to come: pull the next
+            // batch in and put the buttons back under his thumb — still
+            // without a render.
+            if (fadePinY != null && shownNow < ordered.length) { appendMore(); applyFadePin(); }
+          } }));
+          return card;
+        })(),
+      ].filter(Boolean);
+
+      const list = h("div", { class: "fade-list" }, ...ordered.slice(0, shownNow).flatMap(rowsFor));
+      const endMark = h("div", { class: "fade-end" });
+      const moreBtn = h("button", { class: "ghost-btn", style: "margin-top:10px",
+        onclick: () => appendMore() });
+      const paintMore = () => {
+        const rest = ordered.length - shownNow;
+        moreBtn.hidden = rest <= 0;
+        moreBtn.textContent = rest > 0 ? `Show ${Math.min(FADE_PAGE, rest)} more (${rest} left)` : "";
+      };
+      const appendMore = () => {
+        const next = ordered.slice(shownNow, shownNow + FADE_PAGE);
+        if (!next.length) return;
+        const from = shownNow;
+        shownNow += next.length;
+        fadeShown.set(fkey, shownNow);
+        list.append(...next.flatMap((t, k) => rowsFor(t, from + k)));
+        paintMore();
+        watchEnd();
+      };
+      let endWatch = null;
+      const watchEnd = () => {
+        if (typeof IntersectionObserver !== "function" || shownNow >= ordered.length) { endWatch?.disconnect(); return; }
+        endWatch?.disconnect();
+        endWatch = new IntersectionObserver((entries) => {
+          if (entries.some((e) => e.isIntersecting)) appendMore();
+        }, { rootMargin: "1200px 0px" });
+        endWatch.observe(endMark);
+      };
+      paintMore();
+      watchEnd();
+
       // QA probe: the frozen order and the live count, for the gate.
       // (__wikiFades is the scene's cell audit array — a different probe.)
-      window.__wikiFadeOrder = { key: fadeOrder.key, firstDone: fadeOrder.firstDone, n: fadeOrder.keys.length, tiles: tiles2.length, left, shown };
+      window.__wikiFadeOrder = { key: fadeOrder.key, firstDone: fadeOrder.firstDone, n: fadeOrder.keys.length, tiles: tiles2.length, left, get shown() { return shownNow; } };
       return [h("div", { class: "panel" },
         h("div", { class: "panel-title" }, "Fade tiles",
           h("span", { class: "pill" }, `${tiles2.length}`),
@@ -11087,60 +11209,12 @@ function viewWorldTransition(pairId) {
           leftPill),
         h("p", { class: "muted" },
           `Both grounds on one top — what the map agent scatters to warm a player up for ${nameB.toLowerCase()} long before the boundary. Each sits in the wandering edge on the side it mostly is.`),
-        ...ordered.slice(0, shown).flatMap((t, i) => [
-          // The seam between the blocks, named — so a reviewed tile near the
-          // top is never mistaken for an unreviewed one.
-          i === fadeOrder.firstDone && fadeOrder.firstDone > 0 && i < ordered.length
-            ? h("div", { class: "fade-divider muted" }, "already reviewed — same order") : null,
-          /* THE CARD WEARS ITS VERDICT (maintainer 2026-09-03: "When I approved
-           * or rejected a tile before on the fade page — the card border
-           * became green/red. This made it easy for me to see what has been
-           * approved/rejected since the tile-agent looked at my review. A
-           * review in queue/just committed should have the card with a
-           * green/red border"). Same outline the world candidates already
-           * wear, painted from the local doc — so it appears the instant he
-           * taps, queued or committed alike, and it is still there when the
-           * page is reopened before the tiles agent has acted. */
-          (() => {
-            const card = h("div", { class: "fade-tile" },
-              h("div", { class: "player-controls" },
-                h("b", {}, `${Math.round(t.pctA)}% ${nameA.toLowerCase()} · ${Math.round(t.pctB)}% ${nameB.toLowerCase()}`),
-                h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
-              fadeScene(tr.a, tr.b, t));
-            const paintCard = () => {
-              const st = fb("tiles", t.key).status;
-              card.classList.toggle("reviewed", i >= fadeOrder.firstDone);
-              card.classList.toggle("picked", st === "approved");
-              card.classList.toggle("dropped", st === "rejected");
-            };
-            paintCard();
-            card.append(feedbackRow("tiles", t.key, { onchange: () => {
-              paintCard(); paintLeft();
-              keepThumb(card);
-              // Out of loaded tiles with more to come: load them and let the
-              // pin put the next buttons under his thumb (auto-expand, the
-              // same ask as the ground queue's "show more once I'm at the
-              // bottom" — here it must not cost him a scroll either).
-              if (fadePinY != null && tiles2.length > shown) {
-                fadeShown.set(fkey, shown + 12); keepScrollY = window.scrollY;
-                route();
-                // Straight after THIS render, not in the hash handler: a
-                // re-render from inside the page never goes through it (route()
-                // is called directly), which is why the first cut left the next
-                // buttons 453px below the screen at every twelfth tile.
-                applyFadePin();
-              }
-            } }));
-            return card;
-          })(),
-        ].filter(Boolean)),
-        tiles2.length > shown ? h("button", {
-          class: "ghost-btn", style: "margin-top:10px",
-          onclick: () => { fadeShown.set(fkey, shown + 12); keepScrollY = window.scrollY; route(); },
-        }, `Show 12 more (${tiles2.length - shown} left)`) : null,
+        list,
+        endMark,
+        moreBtn,
         /* ROOM TO PUT THE LAST TILE UNDER HIS THUMB. A page cannot scroll past
          * its own end, so without this the last unjudged card could only ever
-         * sit near the bottom of the screen — measured at the twelve-tile
+         * sit near the bottom of the screen — measured at the old twelve-tile
          * boundary: the next buttons landed 453px lower, off the screen. Half a
          * screen of air, only while something is still unjudged. */
         state.admin && left > 0 ? h("div", { class: "fade-pad" }) : null)];

@@ -1,9 +1,489 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-18T23:24:06.384Z",
- "head": "d426ee767",
+ "generated_at": "2026-09-19T02:50:28.433Z",
+ "head": "3d5c75584",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "3d5c75584",
+   "at": "2026-09-19T02:50:24+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: fifty fade tiles at a time, drawn lazily, centred and clipped — and the front door stops ratcheting",
+   "agent": "wiki",
+   "dirs": [
+    "wiki"
+   ],
+   "files": 7
+  },
+  {
+   "sha": "0ed2a2ef3",
+   "at": "2026-09-19T02:48:11+00:00",
+   "author": "Claude",
+   "subject": "fades: apply the review - 669 rejected tiles leave the index",
+   "agent": "tiles",
+   "dirs": [
+    "tiles"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "f1f2c613d",
+   "at": "2026-09-19T02:46:52+00:00",
+   "author": "Claude",
+   "subject": "tiles board: claim the fade review apply",
+   "agent": "tiles",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "610b91b21",
+   "at": "2026-09-19T02:46:37+00:00",
+   "author": "Claude",
+   "subject": "games2: the fall-through set comes from the IMAGE, so the lane can serve",
+   "agent": "games",
+   "dirs": [
+    ".github",
+    "games2"
+   ],
+   "files": 6
+  },
+  {
+   "sha": "18e48cb66",
+   "at": "2026-09-19T02:42:54+00:00",
+   "author": "Claude",
+   "subject": "coordination: games-ui releases the update-dialog chip claim",
+   "agent": "games-ui",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "3171d1440",
+   "at": "2026-09-19T02:42:26+00:00",
+   "author": "Claude",
+   "subject": "games2: the update dialog's chips wear the theme, and say HIS name for each agent",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "a4a4fe23a",
+   "at": "2026-09-19T04:28:34+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/tiles.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "0c80f2226",
+   "at": "2026-09-19T02:26:37+00:00",
+   "author": "Claude",
+   "subject": "games-ui board: claim the update dialog's chip redesign",
+   "agent": "games-ui",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "e4ef4285d",
+   "at": "2026-09-19T02:26:01+00:00",
+   "author": "Claude",
+   "subject": "coordination: why the fast lane has never served — the tie, and the fall-through set it cannot reproduce",
+   "agent": "games",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "95dec5115",
+   "at": "2026-09-19T04:18:57+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/tiles.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "7b4c6013c",
+   "at": "2026-09-19T04:17:50+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/tiles.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "414daebca",
+   "at": "2026-09-19T04:14:32+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/tiles.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "819704f8b",
+   "at": "2026-09-19T02:13:19+00:00",
+   "author": "Claude",
+   "subject": "games2: the ?v= stamp names the IMAGE, not the bundle",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "edeb291a8",
+   "at": "2026-09-19T02:11:55+00:00",
+   "author": "Claude",
+   "subject": "coordination: claim the ?v= image-sha stamp (assetver, main)",
+   "agent": "games",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "703ed1cd0",
+   "at": "2026-09-19T04:10:37+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/tiles.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "825f1f022",
+   "at": "2026-09-19T03:57:39+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/tiles.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "15b6b978e",
+   "at": "2026-09-18T23:40:32+00:00",
+   "author": "wiki-agent",
+   "subject": "docs: the github agent, in the two files every agent already reads",
+   "agent": null,
+   "dirs": [
+    ""
+   ],
+   "files": 2
+  },
+  {
+   "sha": "7d6cee287",
+   "at": "2026-09-18T23:40:12+00:00",
+   "author": "Claude",
+   "subject": "games2: the fast-lane gate polls the world at 250 ms, not 5 s",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "7b8165f0a",
+   "at": "2026-09-18T23:36:16+00:00",
+   "author": "claude[bot]",
+   "subject": "coordination: monsters-github-agent releases the claim — the account for this run",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "65d302dc8",
+   "at": "2026-09-18T23:35:47+00:00",
+   "author": "Claude",
+   "subject": "games2: a standing refusal is said once, and the lane doc carries measurements instead of projections",
+   "agent": "games",
+   "dirs": [
+    "games2"
+   ],
+   "files": 4
+  },
+  {
+   "sha": "17fee702c",
+   "at": "2026-09-18T23:35:08+00:00",
+   "author": "claude[bot]",
+   "subject": "monsters: act on his removal of fire_elemental, both ways",
+   "agent": "monsters",
+   "dirs": [
+    "live",
+    "monsters"
+   ],
+   "files": 2103
+  },
+  {
+   "sha": "9c49464c8",
+   "at": "2026-09-18T23:34:03+00:00",
+   "author": "claude[bot]",
+   "subject": "tiles: github agent account — the landed review was already consumed, nothing claimed",
+   "agent": "tiles-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "d2ff9d1cb",
+   "at": "2026-09-18T23:33:41+00:00",
+   "author": "claude[bot]",
+   "subject": "coordination: sounds-github-agent account — 58 rejected takes retired in 122e82038, 58 verdicts cleared",
+   "agent": "sounds-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "f6c3b8259",
+   "at": "2026-09-18T23:33:17+00:00",
+   "author": "claude[bot]",
+   "subject": "monsters: his spider_queen die_v1 redo — reworded to losing the legs, the old take retired",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "live",
+    "monsters"
+   ],
+   "files": 52
+  },
+  {
+   "sha": "122e82038",
+   "at": "2026-09-18T23:32:49+00:00",
+   "author": "claude[bot]",
+   "subject": "sounds: retire the 58 rejected takes — the recordings, the manifests and the verdicts",
+   "agent": "sounds",
+   "dirs": [
+    "live",
+    "sounds"
+   ],
+   "files": 92
+  },
+  {
+   "sha": "85ac7e751",
+   "at": "2026-09-18T23:31:38+00:00",
+   "author": "claude[bot]",
+   "subject": "sounds: claim the 58 rejected takes from the wiki review",
+   "agent": "sounds-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6115248bc",
+   "at": "2026-09-18T23:31:29+00:00",
+   "author": "claude[bot]",
+   "subject": "coordination: scenery-github-agent account — owl_snag_001 LIT_1 + LIT_3 pruned in aa0531738, both verdicts cleared",
+   "agent": "scenery-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c30b60932",
+   "at": "2026-09-19T01:31:22+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/objects.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "aa0531738",
+   "at": "2026-09-18T23:30:57+00:00",
+   "author": "claude[bot]",
+   "subject": "scenery: prune owl_snag_001 LIT_1 + LIT_3 — his rejections, and the verdicts die with the art",
+   "agent": "scenery",
+   "dirs": [
+    "live",
+    "scenery"
+   ],
+   "files": 20
+  },
+  {
+   "sha": "86d80c2f0",
+   "at": "2026-09-18T23:30:39+00:00",
+   "author": "claude[bot]",
+   "subject": "coordination: monsters-github-agent claims his spider_queen die_v1 redo (8 directions)",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a9a6a3620",
+   "at": "2026-09-18T23:30:31+00:00",
+   "author": "claude[bot]",
+   "subject": "coordination: claim world.json for heal after a scenery delete",
+   "agent": "scenery",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c0d755e28",
+   "at": "2026-09-18T23:30:25+00:00",
+   "author": "claude[bot]",
+   "subject": "coordination: scenery-github-agent also claims owl_snag_001 LIT_1 — rejected 20:11, still on disk, on no board",
+   "agent": "scenery-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "5d21b5529",
+   "at": "2026-09-18T23:29:45+00:00",
+   "author": "claude[bot]",
+   "subject": "coordination: scenery-github-agent claims owl_snag_001 LIT_3 — his facet rejection in d5622105b",
+   "agent": "scenery-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "3b7ef2afb",
+   "at": "2026-09-18T23:29:33+00:00",
+   "author": "claude[bot]",
+   "subject": "coordination: characters2 github agent — review carried no characters verdict",
+   "agent": "characters2-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "b1e3bb6b7",
+   "at": "2026-09-18T23:29:25+00:00",
+   "author": "claude[bot]",
+   "subject": "music: github agent account — review holds one approval, nothing to clear",
+   "agent": "music-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8d5117493",
+   "at": "2026-09-18T23:29:21+00:00",
+   "author": "claude[bot]",
+   "subject": "coordination: lore github agent — live/feedback/lore.json holds zero verdicts",
+   "agent": "lore-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "47dc77a9e",
+   "at": "2026-09-18T23:29:16+00:00",
+   "author": "claude[bot]",
+   "subject": "items: github agent account — no verdicts in live/feedback/items.json, nothing taken",
+   "agent": "items-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8d1639746",
+   "at": "2026-09-18T23:29:09+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: the sweep starts at most four domains at a time, newest review first",
+   "agent": null,
+   "dirs": [
+    ".github"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "2cc838621",
+   "at": "2026-09-18T23:27:55+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: the sweep's reasoning goes to stderr — its stdout IS $GITHUB_OUTPUT",
+   "agent": null,
+   "dirs": [
+    ".github"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "65bb61fd8",
+   "at": "2026-09-18T23:27:10+00:00",
+   "author": "wiki-agent",
+   "subject": "ci: a sweep that starts reviews without anything being granted",
+   "agent": null,
+   "dirs": [
+    ".github",
+    "live"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "120c41965",
+   "at": "2026-09-18T23:24:10+00:00",
+   "author": "wiki-agent",
+   "subject": "wiki: show whether the wiki can start a github agent at all, and a button to test it",
+   "agent": "wiki",
+   "dirs": [
+    "games2",
+    "wiki"
+   ],
+   "files": 7
+  },
+  {
+   "sha": "d5622105b",
+   "at": "2026-09-19T01:19:21+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/objects.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "f7cdef2cd",
+   "at": "2026-09-19T00:51:14+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/objects.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
   {
    "sha": "d426ee767",
    "at": "2026-09-18T22:47:46+00:00",
@@ -79,488 +559,6 @@
    "agent": null,
    "dirs": [
     ".github"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8203f06d4",
-   "at": "2026-09-18T22:37:07+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: release the left-alignment claim",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "0bf7e3f36",
-   "at": "2026-09-18T22:34:11+00:00",
-   "author": "Claude",
-   "subject": "games2: the record button is his 48x48 plate again, LEFT-aligned with the card",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "f590267d8",
-   "at": "2026-09-18T22:31:48+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: claim the record button's left alignment",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "6a5798653",
-   "at": "2026-09-19T00:30:20+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "d2d798280",
-   "at": "2026-09-18T21:49:51+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: release the freeze-frame claim",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c819dcb8e",
-   "at": "2026-09-18T21:49:47+00:00",
-   "author": "Claude",
-   "subject": "games2: the red button freezes the world on a lossless frame of it",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 4
-  },
-  {
-   "sha": "e9553b692",
-   "at": "2026-09-18T21:49:25+00:00",
-   "author": "Claude",
-   "subject": "deploy: the lane needs a git identity before it writes anything, not just before it commits",
-   "agent": null,
-   "dirs": [
-    ".github"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "f1b04e20a",
-   "at": "2026-09-18T21:46:14+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: claim the freeze-frame behind the record button",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "fb57e28eb",
-   "at": "2026-09-18T21:43:21+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: the record button is the card's full width",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "07bc1b171",
-   "at": "2026-09-18T21:42:20+00:00",
-   "author": "Claude",
-   "subject": "games2: the record button is the card's full width — his plate 5-sliced, not squashed",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "572907dce",
-   "at": "2026-09-18T21:30:49+00:00",
-   "author": "Claude",
-   "subject": "games2: the game boots with site data blocked — one guarded accessor for the session flags",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 5
-  },
-  {
-   "sha": "010485f2c",
-   "at": "2026-09-18T21:30:34+00:00",
-   "author": "Claude",
-   "subject": "games2: the boot-version gate blocks BOTH storages, and asserts the game still boots",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "5a5f8eac9",
-   "at": "2026-09-18T21:25:45+00:00",
-   "author": "Claude",
-   "subject": "games2: fastbuild runs the manifest step, which is why the fast lane could not boot in CI",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "e528878a9",
-   "at": "2026-09-18T21:17:42+00:00",
-   "author": "Claude",
-   "subject": "games2: a page that cannot remember a reload banners instead of reloading forever",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "666f9bf27",
-   "at": "2026-09-18T21:17:41+00:00",
-   "author": "Claude",
-   "subject": "games2: the boot-version gate blocks storage in a third arm, and finds its browser",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b61521e1c",
-   "at": "2026-09-18T21:05:46+00:00",
-   "author": "Claude",
-   "subject": "games2: the fast-lane gate says WHY it timed out, instead of \"Timeout 90000ms exceeded\"",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "07a593d7c",
-   "at": "2026-09-18T20:58:17+00:00",
-   "author": "Claude",
-   "subject": "games2: an interior wall hanging no longer stands at full opacity through the whole doorway crossfade",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "2bb518efc",
-   "at": "2026-09-18T20:57:00+00:00",
-   "author": "Claude",
-   "subject": "docs: the fast-lane law belongs in the root, because games2's law file is full",
-   "agent": null,
-   "dirs": [
-    "",
-    "games2"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "3f8f0a3a1",
-   "at": "2026-09-18T20:47:16+00:00",
-   "author": "Claude",
-   "subject": "deploy: the fast lane could never have published, and it would have stopped art shipping",
-   "agent": null,
-   "dirs": [
-    ".github",
-    "games2"
-   ],
-   "files": 7
-  },
-  {
-   "sha": "1d5518e30",
-   "at": "2026-09-18T20:39:30+00:00",
-   "author": "Claude",
-   "subject": "deploy: make the fast lane safe to fire — the image is the floor, and it wins a tie",
-   "agent": "games",
-   "dirs": [
-    ".github",
-    "games2"
-   ],
-   "files": 12
-  },
-  {
-   "sha": "ea875a4f1",
-   "at": "2026-09-18T22:11:30+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "5ee481914",
-   "at": "2026-09-18T22:11:27+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/scenery_lighting.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "964072ee9",
-   "at": "2026-09-18T20:06:32+00:00",
-   "author": "Claude",
-   "subject": "deploy: arm the fast lane — a client push publishes over GitHub and pokes the server, no image, no rollout",
-   "agent": null,
-   "dirs": [
-    ".github",
-    "games2"
-   ],
-   "files": 4
-  },
-  {
-   "sha": "240664a61",
-   "at": "2026-09-18T20:05:01+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: trigger on the message, not the path — selftest-marker: feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    ".github",
-    "live"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "f5332bab1",
-   "at": "2026-09-18T20:03:30+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: release the record-button claim; offer admin.ts to games",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "435b5b86e",
-   "at": "2026-09-18T20:03:26+00:00",
-   "author": "Claude",
-   "subject": "games2: his record button — admin only, under the HP/EP card, with its two faces",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 10
-  },
-  {
-   "sha": "b98b45770",
-   "at": "2026-09-18T20:02:31+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: the payload's commits array is EMPTY here — selftest-marker: feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    ".github",
-    "live"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "6ca26eca7",
-   "at": "2026-09-18T20:01:43+00:00",
-   "author": "claude[bot]",
-   "subject": "scenery-github-agent board: released — owl_snag_002 LIT_3 pruned, verdict cleared",
-   "agent": "scenery-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "bf45beac8",
-   "at": "2026-09-18T20:01:00+00:00",
-   "author": "claude[bot]",
-   "subject": "scenery: prune owl_snag_002 LIT_3 — his rejection, and the verdict dies with the art",
-   "agent": "scenery",
-   "dirs": [
-    "live",
-    "scenery"
-   ],
-   "files": 13
-  },
-  {
-   "sha": "acc93c617",
-   "at": "2026-09-18T19:59:35+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: claim world.json for heal after a scenery delete",
-   "agent": "scenery",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "9e55dddd9",
-   "at": "2026-09-18T19:59:13+00:00",
-   "author": "claude[bot]",
-   "subject": "scenery-github-agent board: claim the owl_snag_002 LIT_3 prune",
-   "agent": "scenery-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "2368334d3",
-   "at": "2026-09-18T19:57:33+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: the `if` never matched a real review — join() does not flatten commits.*.modified",
-   "agent": null,
-   "dirs": [
-    ".github",
-    "live"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "5747a1f96",
-   "at": "2026-09-18T19:51:01+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: claim the record button",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c15246bbc",
-   "at": "2026-09-18T21:48:51+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "574aa0495",
-   "at": "2026-09-18T19:23:53+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: hand the github agent the diff instead of making it find one",
-   "agent": null,
-   "dirs": [
-    ".github"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "fd1ef123c",
-   "at": "2026-09-18T19:21:10+00:00",
-   "author": "Claude",
-   "subject": "games2: the in-game update-notes screenshot is taken with the dialog OPEN",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "70768aec9",
-   "at": "2026-09-18T19:18:05+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: release the update-notes claim; parity red reported to games",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "2674c473e",
-   "at": "2026-09-18T19:18:05+00:00",
-   "author": "Claude",
-   "subject": "games2: the update popup lists what changed between your build and the served one",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 4
-  },
-  {
-   "sha": "2eaa26401",
-   "at": "2026-09-18T19:12:19+00:00",
-   "author": "claude[bot]",
-   "subject": "scenery board: account for the tree_024 LIT_4 prune (129bcb608), claim released",
-   "agent": "scenery-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "129bcb608",
-   "at": "2026-09-18T19:11:47+00:00",
-   "author": "claude[bot]",
-   "subject": "scenery: prune tree_024 LIT_4 — his rejection, and the verdict dies with the art",
-   "agent": "scenery",
-   "dirs": [
-    "live",
-    "scenery"
-   ],
-   "files": 13
-  },
-  {
-   "sha": "7ed039216",
-   "at": "2026-09-18T19:11:09+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: claim world.json for heal after a scenery delete",
-   "agent": "scenery",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "154aa4f2b",
-   "at": "2026-09-18T19:11:02+00:00",
-   "author": "claude[bot]",
-   "subject": "scenery board: claim tree_024#lit_4 rejection (wiki verdict de5298d44)",
-   "agent": "scenery-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "ad621bc17",
-   "at": "2026-09-18T19:07:07+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: claim the update-notes dialog; announce the main.ts hook-up",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
    ],
    "files": 1
   }
