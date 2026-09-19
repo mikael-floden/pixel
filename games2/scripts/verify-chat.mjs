@@ -6,9 +6,9 @@
 // hugs an edge (maintainer 2026-07-31): 10px, the same as the stat chips at
 // the top and the Wiki row — which this gate checks by comparing against
 // that row itself, not a literal. Since 2026-09-17 the row lives TOP-right
-// under the XP chip — the PILL since 2026-09-19, with the Wiki row one
-// published --ml-stack-step under IT (they were swapped on his word; the
-// bottom corner is the portrait ghost stick's), so the log has
+// under the XP chip — the WIKI ROW, which is as WIDE as that chip since
+// 2026-09-19, with the time-of-day pill one published --ml-stack-step under it
+// (the bottom corner is the portrait ghost stick's), so the log has
 // its bottom line to itself. The log only steps up (ml-chat-typing) while the
 // input box is open under it.
 // There is NO zoom compensation any more (--ml-uizoom is never written).
@@ -153,11 +153,11 @@ try {
   // swap y order for wiki and time-of-day pill?"). This is the reverse of
   // 2026-09-17 and supersedes it; asserted against the PUBLISHED step, so the
   // order is what is tested and not a pair of literals.
-  if (!near(geo.wikiRect.top, geo.clockRect.top + geo.step))
-    throw new Error(`Wiki row top ${geo.wikiRect.top} != pill top ${geo.clockRect.top} + the ${geo.step}px stack step — in portrait the PILL is under the chip and the row hangs under the pill`);
-  if (!(geo.clockRect.top < geo.wikiRect.top))
-    throw new Error(`the pill (${geo.clockRect.top}) is not above the Wiki row (${geo.wikiRect.top})`);
-  console.log(`MARGIN OK — chat left and the Wiki row's right share ${geo.wikiRect.rightGap}px to the edge; the pill is under the XP chip and the row hangs ${geo.step}px under the pill, top-right`);
+  if (!near(geo.clockRect.top, geo.wikiRect.top + geo.step))
+    throw new Error(`pill top ${geo.clockRect.top} != Wiki row top ${geo.wikiRect.top} + the ${geo.step}px stack step — the ROW is under the chip (it is as wide as it) and the pill hangs under the row`);
+  if (!(geo.wikiRect.top < geo.clockRect.top))
+    throw new Error(`the Wiki row (${geo.wikiRect.top}) is not above the pill (${geo.clockRect.top})`);
+  console.log(`MARGIN OK — chat left and the Wiki row's right share ${geo.wikiRect.rightGap}px to the edge; the row is under the XP chip and the pill hangs ${geo.step}px under it, top-right`);
   if (geo.lineCount < 1 || !geo.msgShown)
     throw new Error(`chat overlay log missing the message chip (lines=${geo.lineCount}, shown=${geo.msgShown})`);
   console.log("GEO OK");

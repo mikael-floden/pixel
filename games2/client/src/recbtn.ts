@@ -20,6 +20,15 @@
 // view's right edge, this one 10px from its left, both off the --gv-* vars, so
 // the pair sit at equal insets on their own sides.
 //
+// AND IT IS AS WIDE AS THE CARD ABOVE IT (maintainer 2026-09-19: "The Report
+// button should have the same size as the card over it so it aligns!").
+// --bars-l-w is the HP/EP card's MEASURED width, published by hud.ts's
+// applyLayout — the card's own width is a media query in bars.ts, the games
+// agent's file, so measuring it is what lets this follow any width they
+// choose without a change here. The -2px is this button's own 1px borders,
+// which sit outside a content-box width; without it the pill is two pixels
+// wider than the card and the eye catches it.
+//
 // RETIRED with the restyle: his 48x48 two-face plate (icon-record /
 // icon-record-on), the lamp that lit when recording, the 5-slice widening, and
 // the ResizeObserver that copied the HP/EP card's width — a fixed-width pill
@@ -63,7 +72,7 @@ function styleOnce() {
   st.textContent = `
   .${BTN}{position:fixed;left:calc(var(--gv-left,0px) + ${GAP}px);
     top:calc(${GAP}px + var(--ml-safe-top, 0px) + var(--bars-l-h, 78px) + ${GAP}px);
-    z-index:8;width:${PILL_W}px;height:${PILL_H}px;box-sizing:content-box;padding:0;
+    z-index:8;width:calc(var(--bars-l-w, ${PILL_W}px) - 2px);height:${PILL_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
     box-shadow:var(--shadow);cursor:pointer;
     display:flex;align-items:center;justify-content:center;gap:5px;

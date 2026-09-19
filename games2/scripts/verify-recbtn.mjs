@@ -86,9 +86,21 @@ await page.waitForFunction(() => document.querySelector(".ml-rec") && document.q
   diff.length === 0
     ? ok(`every shared property matches the live Wiki button (${Object.keys(same.wiki).length} checked: ${same.wiki.height} tall, ${same.wiki.radius} radius, ${same.wiki.font})`)
     : fail(`it does not look like the Wiki button — ${diff.map((k) => `${k}: ${same.rec[k]} vs ${same.wiki[k]}`).join("; ")}`);
-  same.recBox[0] === same.wikiBox[0] && same.recBox[1] === same.wikiBox[1]
-    ? ok(`…and it is the same size (${same.recBox.join("x")}px)`)
-    : fail(`box ${same.recBox.join("x")} vs the Wiki button's ${same.wikiBox.join("x")}`);
+  same.recBox[1] === same.wikiBox[1]
+    ? ok(`…and the same height (${same.recBox[1]}px)`)
+    : fail(`height ${same.recBox[1]} vs the Wiki button's ${same.wikiBox[1]}`);
+  // THE WIDTH IS THE CARD'S, NOT THE WIKI PILL'S (maintainer 2026-09-19: "The
+  // Report button should have the same size as the card over it so it
+  // aligns!"). Asserted against the card itself, in both orientations below,
+  // so whatever width bars.ts lands on this follows or fails.
+  const card = await page.evaluate(() => {
+    const r = document.querySelector(".ml-rec").getBoundingClientRect();
+    const c = document.querySelector(".ml-bars-l").getBoundingClientRect();
+    return { left: Math.round(r.left - c.left), right: Math.round(c.right - r.right), rw: Math.round(r.width), cw: Math.round(c.width) };
+  });
+  card.left === 0 && card.right === 0
+    ? ok(`it is exactly as wide as the HP/EP card above it, both edges flush (${card.rw}px)`)
+    : fail(`Report ${card.rw}px vs the card's ${card.cw}px — off by ${card.left}px left, ${card.right}px right`);
 }
 
 // ── 2. THE SAME MARGIN, MIRRORED, AND THE CARD'S OWN EDGE ─────────────────
@@ -195,11 +207,11 @@ await page.waitForFunction(() => document.querySelector(".ml-rec") && document.q
     const px = (v) => parseFloat(cs.getPropertyValue(v)) || 0;
     const r = document.querySelector(".ml-rec").getBoundingClientRect();
     const card = document.querySelector(".ml-bars-l").getBoundingClientRect();
-    return { gv: px("--gv-left"), left: Math.round(r.left), card: Math.round(card.left), land: document.documentElement.classList.contains("ml-land") };
+    return { gv: px("--gv-left"), left: Math.round(r.left), card: Math.round(card.left), wide: Math.round(r.width - card.width), land: document.documentElement.classList.contains("ml-land") };
   });
-  land.land && Math.abs(land.left - land.gv - 10) <= 1 && Math.abs(land.left - land.card) <= 1
-    ? ok(`in landscape it is still 10px inside the game view (x=${land.left}, --gv-left ${land.gv}) and still on the card's edge`)
-    : fail(`landscape placement: ${JSON.stringify(land)} — it must ride --gv-left, never a sampled rect`);
+  land.land && Math.abs(land.left - land.gv - 10) <= 1 && Math.abs(land.left - land.card) <= 1 && land.wide === 0
+    ? ok(`in landscape it is still 10px inside the game view (x=${land.left}, --gv-left ${land.gv}), on the card's edge, and still the card's width`)
+    : fail(`landscape placement: ${JSON.stringify(land)} — it must ride --gv-left and the card's width, never a sampled rect`);
   await page.setViewportSize({ width: 393, height: 851 });
   await page.waitForTimeout(700);
   await page.screenshot({ path: `${OUT}/recbtn-hud.png` });

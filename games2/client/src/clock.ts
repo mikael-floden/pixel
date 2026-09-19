@@ -287,18 +287,17 @@ function mount() {
      pill would climb back into the chip. Left-handed keeps the corner:
      there the stick is bottom-LEFT and the pill is nowhere near it. */
   :root.ml-land:not(.ml-lh) .ml-clock{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
-  /* PORTRAIT: THIS PILL IS DIRECTLY UNDER THE XP CHIP AND THE WIKI ROW HANGS
-     ONE STEP UNDER IT (maintainer 2026-09-19, arrows on a screenshot: "In
-     portrait mode. Can you swap y order for wiki and time-of-day pill?").
-     2026-09-17 had them the other way ("the time-of-day pill to also be top
-     right but under the wiki"); this SUPERSEDES that — same stack, same
-     margins, the two rows exchanged. Portrait and right-handed landscape now
-     read the same way round, which they did not before.
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + var(--ml-stack-step, 44px));bottom:auto}
+  /* PORTRAIT: THE WIKI ROW IS DIRECTLY UNDER THE XP CHIP AND THIS PILL HANGS
+     ONE STEP UNDER IT. Swapped to pill-first earlier on 2026-09-19 and back
+     the same day, with the reason: the row is now as WIDE as the card, and a
+     row that is the card's width has to touch the card ("This also means we
+     once again must place the wiki and search over the time-of-day pill").
+     Portrait and right-handed landscape read the same way round.
      The bottom corner this leaves is the portrait ghost stick's (gamepad.ts),
      and the chat log takes the corner the stick does not (hud.ts). */
   :root:not(.ml-land) .ml-clock{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + var(--ml-stack-step, 44px));bottom:auto}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);
   root = document.createElement("div");

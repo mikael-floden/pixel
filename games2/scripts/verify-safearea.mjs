@@ -140,17 +140,21 @@ try {
     return { r, c, w, n, step };
   };
   const s0 = await stack();
-  near(s0.c?.t - s0.r?.b, 10) ? ok(`landscape: the pill hangs 10px under the XP chip (chip bottom ${s0.r.b}, pill top ${s0.c.t})`) : fail(`landscape: pill top ${s0.c?.t} vs chip bottom ${s0.r?.b}, want a 10px gap`);
+  // THE ROW is what hangs 10px under the chip now (it is the chip's width); the
+  // pill is one step under the row (2026-09-19).
+  near(s0.w?.t - s0.r?.b, 10) ? ok(`landscape: the Wiki row hangs 10px under the XP chip (chip bottom ${s0.r.b}, row top ${s0.w.t})`) : fail(`landscape: row top ${s0.w?.t} vs chip bottom ${s0.r?.b}, want a 10px gap`);
   await insets(TOP, 0);
   await settle();
   const s1 = await stack();
   near(s1.r?.t, 10 + TOP) ? ok(`landscape: the XP chip steps down to ${s1.r.t}px`) : fail(`landscape: XP chip at ${s1.r?.t}, want ${10 + TOP}`);
-  near(s1.c?.t - s1.r?.b, 10)
-    ? ok(`landscape: the pill keeps its 10px under the moved chip (${s1.r.b} -> ${s1.c.t})`)
-    : fail(`landscape: pill top ${s1.c?.t} vs chip bottom ${s1.r?.b} under the cutout — the stack did not take the inset`);
-  near(s1.w?.t - s1.c?.t, s1.step) && near(s1.n?.t - s1.c?.t, s1.step)
-    ? ok(`landscape: Wiki and 🔍 stay one ${s1.step}px step under the pill`)
-    : fail(`landscape: Wiki ${s1.w?.t} / 🔍 ${s1.n?.t} vs pill ${s1.c?.t}, want +${s1.step}`);
+  near(s1.w?.t - s1.r?.b, 10)
+    ? ok(`landscape: the Wiki row keeps its 10px under the moved chip (${s1.r.b} -> ${s1.w.t})`)
+    : fail(`landscape: row top ${s1.w?.t} vs chip bottom ${s1.r?.b} under the cutout — the stack did not take the inset`);
+  // Since 2026-09-19 the ROW is the chip's width and sits directly under it,
+  // with the pill one step under the ROW — both screens, one order.
+  near(s1.c?.t - s1.w?.t, s1.step) && near(s1.w?.t, s1.n?.t)
+    ? ok(`landscape: the pill stays one ${s1.step}px step under the Wiki row, and 🔍 shares the row's line`)
+    : fail(`landscape: Wiki ${s1.w?.t} / 🔍 ${s1.n?.t} vs pill ${s1.c?.t}, want the pill at +${s1.step} and 🔍 level with Wiki`);
   await insets(0, 0);
   await page.setViewportSize({ width: 393, height: 851 });
   await settle();

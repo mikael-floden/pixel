@@ -173,9 +173,13 @@ function injectStyles(): void {
   injected = true;
   const s = document.createElement("style");
   s.textContent = `
-  /* The Wiki button's rules (wikibtn.ts), one STEP_X further from the right
-     edge, and a square — the pill's height on both sides. */
-  .ml-wikinear{position:fixed;right:calc(var(--gv-right,0px) + 10px + ${STEP_X}px);
+  /* The Wiki button's rules (wikibtn.ts), and a square — the pill's height on
+     both sides. ITS LEFT EDGE IS THE CARD'S LEFT EDGE (maintainer 2026-09-19:
+     "we want the search button to left align with the cards left edge and not
+     the wiki button"), so it is inset by the card's own width less its own
+     outer width: --bars-r-w - (34 + 10) + 10 = --bars-r-w - 24. The Wiki
+     button takes the remainder, which is what makes IT the one that grows. */
+  .ml-wikinear{position:fixed;right:calc(var(--gv-right,0px) + var(--bars-r-w, ${PILL_H + 2 + 10 + 80 + 2}px) - 24px);
     bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:8;
     width:${PILL_H}px;height:${PILL_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
@@ -188,12 +192,11 @@ function injectStyles(): void {
   .ml-wikinear-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikinear.press,.ml-wikinear:active{transform:scale(.96)}
   :root.ml-land:not(.ml-lh) .ml-wikinear{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + ${STACK_STEP});bottom:auto}
-  /* PORTRAIT: one step under the pill, which now takes the spot under the XP
-     chip (maintainer 2026-09-19 — the swap; wikibtn.ts header). This button
-     shares the row's line, so it moves with it, always. */
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
+  /* PORTRAIT: directly under the XP chip with the Wiki button — this shares
+     the row's line, so it moves with it, always (wikibtn.ts header). */
   :root:not(.ml-land) .ml-wikinear{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + ${STACK_STEP});bottom:auto}
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
   :root.ml-kb-up .ml-wikinear{bottom:calc(var(--ml-inputlift) + 56px)}`;
   document.head.appendChild(s);
 }

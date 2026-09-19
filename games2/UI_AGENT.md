@@ -564,16 +564,36 @@ from the games agent), #18 (title/landing screen).
   still gated: what he struck out was the CAPTION narrating each live layer's
   marks. The row's whole text must equal its CONTROLS' text — button + pills,
   each one word — so a caption still fails.
-- **PORTRAIT CORNER STACK IS TOP-RIGHT: the time-of-day PILL directly under
-  the XP chip, the Wiki/🔍 row one `--ml-stack-step` under the PILL**
-  (maintainer 2026-09-17 put the stack top-right — "wiki + search to be top
-  right and listed right under the XP/level card… the time-of-day pill to also
-  be top right but under the wiki. This means the thumbstick can be lowered" —
-  and 2026-09-19 swapped the two, arrows drawn on a screenshot: "In portrait
-  mode. Can you swap y order for wiki and time-of-day pill?". The later verdict
-  supersedes the earlier ORDER only; the stack, the margins and the freed
-  bottom corner are unchanged, and portrait now reads the same way round as
-  right-handed landscape, which it did not before). `wikibtn.ts`,
+- **THE CORNER CHROME IS AS WIDE AS THE CARD ABOVE IT** (maintainer
+  2026-09-19, marks drawn on a screenshot: "The Report button should have the
+  same size as the card over it so it aligns! The wiki button should also align
+  with the card over it! But the wiki button has to still be smaller because we
+  want the search button to left align with the cards left edge and not the
+  wiki button. But the wiki button should be wider and not the search button.
+  Spacing should be the same."). `hud.ts` publishes `--bars-l-w` / `--bars-r-w`
+  by MEASURING the two cards in `applyLayout` — bars.ts is the games agent's
+  and publishes only its heights, and measuring is what lets all of this follow
+  any width they choose with no change here. Then: the Report pill is
+  `--bars-l-w` wide (both edges flush with the HP/EP card); the 🔍 keeps its
+  32px square and takes the card's LEFT edge; the Wiki pill takes the
+  remainder, `--bars-r-w - 44 - 2`, so the row spans the XP card exactly with
+  the one 10px gap between them. Every `-2px` is a button's own borders, which
+  sit outside a content-box width. **ONE ORDER ON BOTH SCREENS: the row
+  directly under the chip, the pill one `--ml-stack-step` under the ROW** — "we
+  once again must place the wiki and search over the time-of-day pill", because
+  a row that is the card's width has to TOUCH the card or its alignment is
+  invisible. (This swapped to pill-first earlier the same day and back again
+  within the hour; the second verdict carries the reason, so it is the one that
+  stands.) LEFT-HANDED LANDSCAPE is the exception and is not a contradiction:
+  there the stack hangs off the screen's BOTTOM corner with no card above it,
+  so the row keeps the corner and the pill steps up over it —
+  `verify-wikibtn`'s `assertStack` takes the order as an argument rather than
+  pretending there is only one.
+  STILL OPEN, and NOT OURS: the cards are 148px wide in portrait and 192 in
+  landscape (`.ml-bar-row` 126/170 with a `min-width:700px` override in
+  `bars.ts`). He wants ONE width in both, between the two; posted to games
+  2026-09-19 with the exact line. Nothing here needs touching when they ship
+  it — the vars are measured. `wikibtn.ts`,
   `wikinear.ts`, `clock.ts`: one `:root:not(.ml-land)` rule each, `top: safe-top
   + --bars-r-h + 20px (+ step for the pill); bottom:auto` — the landscape
   right-handed formula, so both top anchors agree. Three placements, one order

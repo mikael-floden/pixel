@@ -312,11 +312,17 @@ try {
     ? ok(`HP chip at the game view's top-left (${g.barsL.l},${g.barsL.t})`)
     : fail(`left chip ${JSON.stringify(g.barsL)} want l=${menuW + 10}`);
   Math.abs(851 - 10 - g.barsR.r) <= 2 ? ok("XP chip at the top-right") : fail(`right chip ${JSON.stringify(g.barsR)}`);
-  // The pill leaves the thumb's corner in RIGHT-handed landscape and parks
-  // under the XP chip (maintainer 2026-08-05): right edges aligned, 10px gap.
-  Math.abs(g.clock.r - g.barsR.r) <= 2 && Math.abs(g.clock.t - g.barsR.b - 10) <= 2
-    ? ok(`clock pill sits under the XP chip (top ${g.clock.t} = chip bottom ${g.barsR.b} + 10, right edges ${g.clock.r}/${g.barsR.r})`)
-    : fail(`clock ${JSON.stringify(g.clock)} vs XP chip ${JSON.stringify(g.barsR)}`);
+  // The stack leaves the thumb's corner in RIGHT-handed landscape and parks
+  // under the XP chip (maintainer 2026-08-05). Since 2026-09-19 the WIKI ROW
+  // is the thing directly under it — it is as wide as the chip, so it has to
+  // touch it — and the pill is one step below the row. Right edges aligned
+  // throughout.
+  Math.abs(g.wikibtn.r - g.barsR.r) <= 2 && Math.abs(g.wikibtn.t - g.barsR.b - 10) <= 2
+    ? ok(`the Wiki row sits under the XP chip (top ${g.wikibtn.t} = chip bottom ${g.barsR.b} + 10, right edges ${g.wikibtn.r}/${g.barsR.r})`)
+    : fail(`wiki row ${JSON.stringify(g.wikibtn)} vs XP chip ${JSON.stringify(g.barsR)}`);
+  Math.abs(g.clock.r - g.barsR.r) <= 2 && g.clock.t > g.wikibtn.t
+    ? ok(`…and the pill below it, right edges still aligned (${g.clock.t} vs the row's ${g.wikibtn.t})`)
+    : fail(`clock ${JSON.stringify(g.clock)} vs the row ${JSON.stringify(g.wikibtn)}`);
   g.clock.b < g.vh - 100
     ? ok("…and is clear of the stick's bottom corner")
     : fail(`clock still low (b=${g.clock.b} of ${g.vh})`);
@@ -531,12 +537,11 @@ try {
   g.padBlurCss && g.padBlurCss.display === "none"
     ? ok("blur disc hidden in portrait (the stick sits on the opaque HUD page)")
     : fail(`blur disc still shown in portrait: ${JSON.stringify(g.padBlurCss)}`);
-  // PORTRAIT: the time-of-day PILL sits directly under the XP chip and the
-  // Wiki row one step under the PILL (maintainer 2026-09-17 put the stack
-  // top-right; 2026-09-19 swapped the two on his word). The bottom corner is
-  // the portrait ghost stick's (verify-gamepad).
-  Math.abs(g.clock.t - g.barsR.b - 10) <= 2 && Math.abs(g.clock.r - g.barsR.r) <= 2 && Math.abs(g.wikibtn.t - g.clock.b - 10) <= 2
-    ? ok(`portrait pill under the XP chip (t=${g.clock.t} = chip b ${g.barsR.b} + 10), Wiki row one step under it (t=${g.wikibtn.t})`)
+  // PORTRAIT: the Wiki ROW sits directly under the XP chip — it is as WIDE as
+  // that chip since 2026-09-19, so it has to touch it — and the time-of-day
+  // pill one step under the ROW. The bottom corner is the ghost stick's.
+  Math.abs(g.wikibtn.t - g.barsR.b - 10) <= 2 && Math.abs(g.wikibtn.r - g.barsR.r) <= 2 && Math.abs(g.clock.t - g.wikibtn.b - 10) <= 2
+    ? ok(`portrait Wiki row under the XP chip (t=${g.wikibtn.t} = chip b ${g.barsR.b} + 10), pill one step under it (t=${g.clock.t})`)
     : fail(`portrait clock ${JSON.stringify(g.clock)} / wikibtn ${JSON.stringify(g.wikibtn)} / chip ${JSON.stringify(g.barsR)}`);
   g = await geom();
   g.stickPos !== "fixed" && g.stick.l < 393 * 0.5

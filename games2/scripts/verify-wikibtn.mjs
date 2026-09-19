@@ -84,18 +84,34 @@ const near = (a, b, tol = 1.5) => Math.abs(a - b) <= tol;
  *  they should swap y position") — including over the keyboard, so nothing
  *  reorders on screen when the keys come up. There is no `side` any more:
  *  a parameter that only ever takes one value hides the invariant. */
-const assertStack = (g, label) => {
+/** `rowFirst` = the Wiki row is the one adjacent to the anchor, with the pill
+ *  below it. True wherever the stack hangs from the XP CARD (portrait and
+ *  right-handed landscape), because the row is as wide as that card and has to
+ *  touch it. FALSE in left-handed landscape, where the stack is anchored to the
+ *  screen's BOTTOM corner instead — there the row keeps the corner and the pill
+ *  steps up over it, which is the same rule read from the other end. */
+const assertStack = (g, label, rowFirst = true) => {
   if (!g.pill || !g.btn) return fail(`${label}: missing ${!g.pill ? "pill" : "button"}`);
-  near(g.btn.w, g.pill.w) && near(g.btn.h, g.pill.h)
-    ? ok(`${label}: button is pill-sized (${g.btn.w}x${g.btn.h} vs ${g.pill.w}x${g.pill.h})`)
-    : fail(`${label}: size mismatch — button ${g.btn.w}x${g.btn.h}, pill ${g.pill.w}x${g.pill.h}`);
+  // SINCE 2026-09-19 THE ROW IS THE XP CARD'S WIDTH and the Wiki button takes
+  // what the 🔍 and the gap leave of it, so it is no longer pill-sized — it is
+  // WIDER than the pill by construction ("the wiki button should be wider and
+  // not the search button"). Same height, same right edge, still.
+  near(g.btn.h, g.pill.h)
+    ? ok(`${label}: button is pill-high (${g.btn.h}px)`)
+    : fail(`${label}: height mismatch — button ${g.btn.h}, pill ${g.pill.h}`);
+  g.btn.w > g.pill.w
+    ? ok(`${label}: and wider than the pill, as the card's width demands (${g.btn.w} vs ${g.pill.w})`)
+    : fail(`${label}: the Wiki button (${g.btn.w}) is not wider than the pill (${g.pill.w})`);
   near(g.btn.r, g.pill.r)
     ? ok(`${label}: right edges aligned (${g.btn.r.toFixed(1)})`)
     : fail(`${label}: right edges differ (button ${g.btn.r}, pill ${g.pill.r})`);
-  const gap = g.btn.t - g.pill.b;
+  // …and the PILL is the one below now: the row has to touch the card it is
+  // as wide as ("we once again must place the wiki and search over the
+  // time-of-day pill").
+  const gap = rowFirst ? g.pill.t - g.btn.b : g.btn.t - g.pill.b;
   near(gap, 10, 2)
-    ? ok(`${label}: below the pill with the 10px gap (${gap.toFixed(1)})`)
-    : fail(`${label}: wanted the Wiki row 10px BELOW the pill, gap is ${gap.toFixed(1)} (btn ${g.btn.t.toFixed(0)}..${g.btn.b.toFixed(0)}, pill ${g.pill.t.toFixed(0)}..${g.pill.b.toFixed(0)})`);
+    ? ok(`${label}: ${rowFirst ? "the pill hangs 10px below the row" : "the row keeps the corner and the pill steps 10px up over it"} (${gap.toFixed(1)})`)
+    : fail(`${label}: wanted ${rowFirst ? "the pill 10px BELOW the Wiki row" : "the Wiki row 10px BELOW the pill"}, gap is ${gap.toFixed(1)} (btn ${g.btn.t.toFixed(0)}..${g.btn.b.toFixed(0)}, pill ${g.pill.t.toFixed(0)}..${g.pill.b.toFixed(0)})`);
 
   // The 🔍: a square the pill's height, on the Wiki button's own line, one
   // 10px gap to its LEFT — so the three read as one stack in every placement.
@@ -246,9 +262,9 @@ try {
   pillMoved <= 1 && btnMoved <= 1
     ? ok("keyboard lift: the top-anchored stack stays put (the lift moves the chat log, not the chip's corner)")
     : fail(`the keyboard lift moved the top-anchored stack (pill ${pillMoved.toFixed(0)}px, button ${btnMoved.toFixed(0)}px)`);
-  near(lifted.btn.t - lifted.pill.b, 10, 2)
-    ? ok("keyboard lift: the 10px gap survives, pill above the Wiki row")
-    : fail(`gap while lifted: ${(lifted.btn.t - lifted.pill.b).toFixed(1)}px (the stack must not reorder over the keys)`);
+  near(lifted.pill.t - lifted.btn.b, 10, 2)
+    ? ok("keyboard lift: the 10px gap survives, row above the pill")
+    : fail(`gap while lifted: ${(lifted.pill.t - lifted.btn.b).toFixed(1)}px (the stack must not reorder over the keys)`);
   near(lifted.near.b, lifted.btn.b, 2)
     ? ok("keyboard lift: 🔍 rides on the Wiki button's line")
     : fail(`keyboard lift left 🔍 behind (🔍 bottom ${lifted.near.b.toFixed(0)}, Wiki ${lifted.btn.b.toFixed(0)})`);
@@ -517,7 +533,7 @@ try {
   // ── 8. left-handed landscape: the pill keeps its corner, button ABOVE ──
   await page.evaluate(() => window.__ml.hand("left"));
   await page.waitForTimeout(800);
-  assertStack(await rects(), "left-handed landscape");
+  assertStack(await rects(), "left-handed landscape", false); // bottom-anchored: the row keeps the corner
   await page.evaluate(() => window.__ml.hand("right"));
 
   // ── 9. portrait return ─────────────────────────────────────────────────

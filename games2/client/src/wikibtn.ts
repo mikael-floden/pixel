@@ -37,6 +37,10 @@ import { withV } from "./assetver";
 // with a 1px border. The gate asserts this against the REAL pill's rect, so
 // a resized pill fails loudly instead of the two drifting apart.
 const PILL_W = 80;
+/** The 🔍 square beside it (wikinear.ts) and the one gap between them — the
+ *  row's other two terms, so this button can take the remainder of the card. */
+const NEAR_W = 34;
+const NEAR_GAP = 10;
 const PILL_H = 32;
 /** How far anything stacked ON TOP of this button has to clear it: its outer
  * height (2px of border) + the project's one 10px edge gap. Published as
@@ -90,9 +94,18 @@ function injectStyles(): void {
      right edge, same transitions — the two move as a stack. z 8 = the pill's
      layer; unlike it this one takes pointer events. */
   :root{--ml-stack-step:${PILL_STEP}px}
+  /* THE ROW IS THE CARD'S WIDTH, AND THIS BUTTON TAKES WHAT IS LEFT OF IT
+     (maintainer 2026-09-19: "the wiki button should also align with the card
+     over it… we want the search button to left align with the cards left edge
+     and not the wiki button. But the wiki button should be wider and not the
+     search button"). --bars-r-w is the XP card's measured width (hud.ts), NEAR_W
+     the 🔍 square and NEAR_GAP the one gap between them, so the two together
+     span exactly the card and the 🔍 lands on its left edge. The -2px is this
+     button's own borders, outside a content-box width. */
   .ml-wikibtn{position:fixed;right:calc(var(--gv-right,0px) + 10px);
     bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:8;
-    width:${PILL_W}px;height:${PILL_H}px;box-sizing:content-box;padding:0;
+    width:calc(var(--bars-r-w, ${PILL_W + 2 + NEAR_W + NEAR_GAP}px) - ${NEAR_W + NEAR_GAP}px - 2px);
+    height:${PILL_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
     box-shadow:var(--shadow);cursor:pointer;
     display:flex;align-items:center;justify-content:center;gap:5px;
@@ -103,21 +116,23 @@ function injectStyles(): void {
     -webkit-tap-highlight-color:transparent;user-select:none}
   .ml-wikibtn-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikibtn.press,.ml-wikibtn:active{transform:scale(.96)}
-  /* RIGHT-HANDED LANDSCAPE: the pill is top-anchored under the XP chip, so
-     the button hangs one step BELOW it — the same reading as everywhere else. */
+  /* RIGHT-HANDED LANDSCAPE: the same as portrait — this row directly under the
+     XP chip, the pill one step below it. ONE ORDER ON BOTH SCREENS since
+     2026-09-19, because the row has to TOUCH the card it is now as wide as. */
   :root.ml-land:not(.ml-lh) .ml-wikibtn{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}
-  /* PORTRAIT: THE PILL TAKES THE SPOT UNDER THE XP CHIP AND THIS ROW HANGS ONE
-     STEP BELOW IT (maintainer 2026-09-19, two arrows drawn on a screenshot:
-     "In portrait mode. Can you swap y order for wiki and time-of-day pill?").
-     Between 2026-09-17 and today it was the other way round; the anchor is the
-     same arithmetic either way — chip bottom + the 10px margin, --bars-r-h its
-     measured height, --ml-safe-top the cutout inset it sits under — and only
-     the ${PILL_STEP}px step moves from the pill (clock.ts) to this row.
-     LANDSCAPE IS UNCHANGED: right-handed keeps pill-then-row, his verdict on
-     that screen (2026-08-05/09-03), and it is not re-litigated by this. */
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
+  /* PORTRAIT: THIS ROW IS DIRECTLY UNDER THE XP CHIP AND THE PILL HANGS ONE
+     STEP BELOW IT. It was swapped to pill-first earlier on 2026-09-19 and
+     swapped BACK the same day, and the second verdict carries its reason:
+     "the wiki button should also align with the card over it… This also means
+     we once again must place the wiki and search over the time-of-day pill."
+     A row that is as wide as the card has to TOUCH the card, or the alignment
+     it was given is invisible. The anchor is the same arithmetic either way —
+     chip bottom + the 10px margin, --bars-r-h its measured height,
+     --ml-safe-top the cutout inset it sits under — and only the
+     ${PILL_STEP}px step moves between this row and the pill. */
   :root:not(.ml-land) .ml-wikibtn{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
   /* The keyboard lift: this row takes the line hud.ts clears above the keys,
      and the pill steps up over it exactly as it does at rest. */
   :root.ml-kb-up .ml-wikibtn{bottom:calc(var(--ml-inputlift) + 56px)}`;

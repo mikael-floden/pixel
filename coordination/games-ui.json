@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: the corner chrome ALIGNS WITH THE CARDS ABOVE IT (maintainer 2026-09-19, marks drawn on a screenshot): Report = the HP/EP card's width; the Wiki+search ROW = the XP card's width, with SEARCH left-aligned to the card's left edge and WIKI taking the extra width; the row goes back directly under the card with the pill below it; same in landscape. hud.ts publishes --bars-l-w/--bars-r-w and the three modules anchor off them in pure CSS. files: games2/client/src/hud.ts, wikibtn.ts, wikinear.ts, clock.ts, recbtn.ts, scripts/verify-wikibtn.mjs, verify-chat.mjs, verify-landscape.mjs, verify-recbtn.mjs, verify-safearea.mjs, UI_AGENT.md",
+  "current": "idle — the corner chrome aligns with the cards. Waiting on games for one card width in both modes (bars.ts .ml-bar-row 126/170 -> 148).",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -311,5 +311,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T13:44:06Z"
+  "updated": "2026-09-19T14:10:36Z"
 }

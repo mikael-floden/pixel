@@ -461,6 +461,17 @@ function applyLayout() {
   lastLandState = land;
   root.classList.toggle("ml-land", land);
   root.classList.toggle("ml-lh", left);
+  // THE TWO CARDS' WIDTHS, PUBLISHED (maintainer 2026-09-19: the Report button
+  // and the Wiki row must be as wide as the card above each of them). bars.ts
+  // is the games agent's and publishes only its HEIGHTS, so rather than ask
+  // them for a third and fourth var we MEASURE the two cards here — this
+  // function already runs on every resize, rotation and hand flip, which is
+  // exactly when a fixed-width card can change (its width is a media query).
+  // Consumers then anchor in pure CSS and no module needs an observer.
+  for (const [sel, v] of [[".ml-bars-l", "--bars-l-w"], [".ml-bars-r", "--bars-r-w"]] as const) {
+    const w = document.querySelector<HTMLElement>(sel)?.getBoundingClientRect().width;
+    if (w) root.style.setProperty(v, `${Math.round(w)}px`);
+  }
   if (land) {
     const menuW = landscapeMenuWidth(w, h);
     root.style.setProperty("--menu-w", `${menuW}px`);
