@@ -1,8 +1,8 @@
 {
  "domain": "wiki-assistant",
- "updated_at": "2026-09-19T15:33:21+00:00",
+ "updated_at": "2026-09-19T15:38:54+00:00",
  "health": "running",
- "current": "ANSWERING the maintainer on the fade page's % (no code claimed). Diagnosis below; the number is tiles/pipeline/fades_post.py's, so the fix is theirs to rule on. The wiki-side display change is offered, not taken.",
+ "current": "CLAIMED — wiki/site/wiki.js (fadeScene + fadeTilesFor) and wiki/tools/check-fades.mjs. Maintainer 2026-09-19: the fade page's % must not be what tells the game which side a tile sits on. It already isn't for the game (tiles3.ts:2035) or maps2 (render3.py:1195) — both read edge_ground by name. But wiki.js:10900 `const onA = tile.pctA >= 50` DOES infer placement from the number, so the review preview would draw 12.9% of tiles in the wrong field the day the number stops being the placement score. Cutting that dependency now: the preview reads edge_ground, and the gate asserts pct-majority == edge_ground on every published tile so the day that stops holding we hear about it. No-op on today's data (7,906 of 7,906 agree). The wiki agent is in tiles/review/** — no overlap.",
  "progress": {
   "units_shipped": 5
  },
