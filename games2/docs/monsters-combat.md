@@ -688,7 +688,9 @@ drives all of it: camera zooms to 3× on the body; a screen-space veil ramps to
   prompt is a DOM card (wiki theme) in SCREEN space at 40% of the game view
   (world-space text was magnified into a banner by the zoom); it ARMS the
   press — a tap during the fade is swallowed, and the server refuses one
-  before the clip ends.
+  before the clip ends. THE PRESS RAISES THE LOADING SCREEN FIRST and the ask
+  goes out once the black is up, so the snap to the spawn lands under the
+  veil (`docs/movement.md`, THE RELOCATION VEIL).
 - **NOTHING MAY BLOCK THE REVIVE PRESS, AND THE ASK IS RETRIED.** Being dead
   outranks every dialog, so the dead branch in `pointerdown` is checked BEFORE
   the `uiLocked` guard and the JUMP key asks too — behind the guard, ANY stale

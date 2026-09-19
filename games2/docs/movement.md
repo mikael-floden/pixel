@@ -1159,6 +1159,66 @@ clip, no tint.
     arrive AT THE BEACON, not at the tapped pixel (an earlier cut comparing
     (col+row) instead of screen Y passed against broken code).
 
+## The relocation veil (WorldScene.beginRelocation, `relocatehold.ts`)
+
+- **A RESPAWN GOES THROUGH THE LOADING SCREEN, NEVER AN INSTANT SNAP**
+  (maintainer 2026-09-19: "the player spawns so fast at the new location so
+  the graphics has not finished preparing the new ground and
+  scenery/animations ... When a player sees the inside tricks the engine
+  uses the entire illusion disappears! ... reuse the loading-screen we use
+  when going from the character-select screen to the world ... the loading
+  bar will progress much faster this time, but we will use the same fade
+  in/fade out"). The death press and the dev respawn button (and
+  `__ml.teleport(col,row,elev,true)`) raise the boot loading screen
+  (`loading.ts`, games-ui's, untouched — its staged cinema fade is the fade
+  he means), and the ask goes out only once the black is up
+  (`RELOCATE_VEIL_IN_MS` 450 > the overlay's 0.4 s fade: a body that moves
+  under a half-faded screen IS the snap the veil hides; WALL-CLOCK timers,
+  because Phaser clamps a slow frame's delta and 450 ms of scene time was 8 s
+  of wall time headless). THE ANSWER IS ONE OF THREE SIGNALS (`markArrival`):
+  my body's >2-cell snap, the revive itself for the death press (dying beside
+  the spawn moves the body under two cells, so no snap would ever come), or
+  `RELOCATE_ARRIVE_GRACE_MS` 1.5 s for a living respawn that lands where it
+  already stands; a snap after an earlier signal upgrades it and restarts the
+  paint count. From the arrival a 100 ms tick holds the screen until the
+  ground has painted since it (only when the body moved — any paint,
+  `groundEndDraw`: a small snap SCROLLS the ground in slices, which neither
+  full runs nor cell runs count; and a snap the texture's slack absorbs
+  paints nothing at all, so three frames of the latch count too — measured
+  headless, both read "never painted" and lifted on the hard deadline) AND
+  the boot hold's
+  own predicate (`streamingReady`: terrain loader idle, scenery manifests and
+  stills landed, no repaint owed — one method, both holds) has held for
+  `RELOCATE_SETTLE_MS` 800 (the boot's 1,200 guards the same need()/flush()
+  window; several passes at any frame rate), then `hideLoading()` — the same
+  cinema out. THE RING PREFETCH WAITS BEHIND THE VEIL as it waits behind the
+  boot screen: it reaches far past the window and its requests keep the
+  loader from reading idle (measured headless: with the ring on, the hold
+  never settled and lifted on its soft deadline). Behind the veil the frame-thread compose runs UNBOUNDED
+  (`streamingHeld`, as behind the boot screen); THE ART QUEUE KEEPS ITS
+  BYTE BUDGET — the mid-game queue carries every kind's fight art at the
+  back, and an unbounded tick uploaded that whole backlog in ONE frame
+  (measured headless: the frame after the press took 8 s and the server's
+  snap waited behind it); the stills the hold waits for ride near the top
+  of the queue and land inside the budget in well under a second. The bar
+  is the streaming stage's own counts (`streamingCounts`), monotonic. Deadlines: soft 12 s once the ground has
+  painted, hard 30 s, and 8 s with no snap at all (the server refused the
+  ask — the die clip still owed — or the socket died: the retry loop keeps
+  asking, the veil steps aside), each logged as a warning naming why. A
+  world that goes down under the veil (a resolver rebuild, a rejoin) hands
+  the overlay to its own hold. A plain `__ml.teleport` raises NO veil: every
+  gate teleports and screenshots, and a black overlay in those frames is a
+  false red. Gates: `server/test/relocatehold.test.ts` (the verdict as
+  arithmetic), `scripts/verify-respawnveil.mjs` against the dev stack (a
+  plain teleport shows nothing; a living respawn from far away: the veil is
+  up when the press returns, the body moves only after 400 ms, every
+  not-ready sample after the arrival is veiled, down on "ready" and never a
+  deadline, the cinema out runs; a REAL death far away through `dbgkill`
+  and the "Press to continue..." tap: the same, the revive under the veil,
+  no death node left; a living respawn AT the spawn: the grace answers
+  inside 2.5 s and the veil lifts on "ready"). NOT done: the fade lengths are `loading.ts`'s (games-ui);
+  a shorter cinema for a respawn is theirs to offer.
+
 ## Living camera (WorldScene.updateChaseCam)
 
 - The camera CHASES the player: exponential ease (CAM_TAU 0.3s, trail cap

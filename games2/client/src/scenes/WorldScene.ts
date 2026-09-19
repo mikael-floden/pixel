@@ -187,7 +187,8 @@ import { Footsteps } from "../footsteps";
 import { setClockTime, clockStar } from "../clock";
 import { HudBar, mountPageFrame } from "../hud";
 import { getHand, setHand } from "../controls";
-import { setLoadingProgress, hideLoading } from "../loading";
+import { setLoadingProgress, hideLoading, showLoading, loadingVisible } from "../loading";
+import { relocateVerdict, relocateProgress, RELOCATE_VEIL_IN_MS, RELOCATE_ARRIVE_GRACE_MS } from "../relocatehold";
 import { cameraZoom } from "../camzoom";
 import { fadeToBlack } from "../fade";
 import { applyUiZoom } from "../uiscale";
@@ -4032,6 +4033,10 @@ export class WorldScene extends Phaser.Scene {
   private groundRedrewThisFrame = false;
   /** Full ground paints, so a frame can tell one happened — see below. */
   private groundFullRuns = 0;
+  /** Ground paints of any kind since load (groundEndDraw) — a small snap
+   *  SCROLLS the ground in slices, which neither full runs nor cell runs
+   *  count (measured: a respawn a few cells off never read "painted"). */
+  private groundPaints = 0;
   private worldUp = false;
   /** When the boot hold's readiness condition first became true — see
    *  hideLoadingWhenTerrainIsUp. 0 while not ready. */
@@ -4257,6 +4262,27 @@ export class WorldScene extends Phaser.Scene {
   private hopMemo: HopMemo = { hop: null };
   private deferredAnimsKicked = false; // action-state frames background-load once, after join
   private selfDead = false; // mirror of my own Player.dead (freezes input sending)
+  /** THE RELOCATION VEIL, while it is up — see beginRelocation. `lastReady` /
+   *  `lastPainted` are the previous sample's inputs, published for the gate. */
+  private relocate: {
+    kind: "respawn" | "death" | "teleport";
+    askedAt: number;
+    /** When the answer landed (a snap, the revive, or the grace); 0 while waiting. */
+    arrivedAt: number;
+    /** The body moved >2 cells — a paint since the arrival is then required. */
+    snapped: boolean;
+    readySince: number;
+    paintsAtArrive: number;
+    /** Frames stepped since the arrival: the ground latch has run once these
+     *  pass, so a snap the texture's slack absorbed (no paint at all) does not
+     *  wait for a paint that will never come. */
+    frames: number;
+    shown: number;
+    lastReady: boolean;
+    lastPainted: boolean;
+    tick: Phaser.Time.TimerEvent | null;
+  } | null = null;
+  private relocateLast: { kind: string; why: string; askedAt: number; arrivedAt: number; snapped: boolean; liftedAt: number } | null = null;
   /** Deferred-batch bookkeeping for MY OWN character's clips — see animReady. */
   private myAnimDebug: { queued: number; left: number; at: number | null } | null = null;
   /** The death sequence, while it runs. `armed` = the push has landed and the
@@ -4968,7 +4994,9 @@ export class WorldScene extends Phaser.Scene {
         // Audio (composer agent): master sound + music, persisted switches.
         { label: "sound", act: () => gameAudio.toggleSound(), get: () => gameAudio.soundEnabled },
         { label: "music", act: () => gameAudio.toggleMusic(), get: () => gameAudio.musicEnabled },
-        { label: "respawn", act: () => this.room?.send("respawn") },
+        // The same veil the death press gets (maintainer 2026-09-19: "I rather
+        // ... use the same loading fix/solution when I press respawn").
+        { label: "respawn", act: () => this.respawnWithVeil() },
         { label: "torch", act: () => this.toggleTorch(), get: () => this.torchOn },
         // Monster spawn zones (maps2 spawns@1) — a DEBUG overlay, off by
         // default (maintainer 2026-07-30: "not visible by default").
@@ -6863,14 +6891,43 @@ export class WorldScene extends Phaser.Scene {
       // `elev` (levels) lands the body on a SURFACE at that height — a bridge
       // span, a roof — instead of the base terrain under it (the harness used
       // to swim under the bridge the maintainer stood on).
-      teleport: (col?: number, row?: number, elev?: number) => {
+      // `veil` raises the relocation veil first (the respawn's loading screen)
+      // and sends once the black is up. OFF by default: every gate teleports
+      // and screenshots, and a black overlay in those frames is a false red.
+      teleport: (col?: number, row?: number, elev?: number, veil = false) => {
         if (col === undefined || row === undefined) return null;
         this.camDetached = false;
         this.camChase.init = false; // snap the camera back onto the avatar
-        this.room?.send("teleport", { x: col * CELL_WU, y: row * CELL_WU, ...(typeof elev === "number" ? { elev } : {}) });
+        const send = () => this.room?.send("teleport", { x: col * CELL_WU, y: row * CELL_WU, ...(typeof elev === "number" ? { elev } : {}) });
+        if (veil && this.beginRelocation("teleport")) window.setTimeout(send, RELOCATE_VEIL_IN_MS); // wall clock — see askRevive
+        else send();
         const cell = this.world?.rows[Math.floor(row)]?.[Math.floor(col)];
         return { col, row, sent: !!this.room, t: cell?.t ?? null, l: cell?.l ?? 0 };
       },
+      // THE RESPAWN, the way the dev button does it: the veil, then the ask.
+      respawn: () => {
+        this.respawnWithVeil();
+        return { veil: !!this.relocate };
+      },
+      // THE RELOCATION VEIL'S STATE, for verify-respawnveil.mjs: what is up and
+      // why the last one came down (`ready` is the honest answer; a deadline
+      // is a fault to read).
+      relocate: () => ({
+        active: this.relocate
+          ? {
+              kind: this.relocate.kind,
+              askedAt: this.relocate.askedAt,
+              arrivedAt: this.relocate.arrivedAt,
+              snapped: this.relocate.snapped,
+              readySince: this.relocate.readySince,
+              ready: this.relocate.lastReady,
+              painted: this.relocate.lastPainted,
+              shown: this.relocate.shown,
+            }
+          : null,
+        last: this.relocateLast,
+        veil: loadingVisible(),
+      }),
       // Flicker QA: terrain occluder TOPS whose drawn diamond covers a ground
       // point (gx,gy), with their depth — i.e. what could sort in FRONT of a
       // critter shadow placed there. The top image is drawn at y0 = by - l*lh
@@ -13093,7 +13150,7 @@ export class WorldScene extends Phaser.Scene {
      * UNBUDGETED: it is behind the loading screen, nothing is being played
      * through it, and releasing the hold onto a window of hard edges is
      * exactly the pop-in the hold exists to prevent. */
-    this.t3tex?.armCompose(this.worldUp ? (this.composeMsOverride ?? GROUND_COMPOSE_MS) : Infinity);
+    this.t3tex?.armCompose(this.streamingHeld ? Infinity : (this.composeMsOverride ?? GROUND_COMPOSE_MS));
     // The coalesced streaming repaints — see requestRepaint / onTerrainBatch.
     if (this.repaintGroundPending) {
       this.repaintGroundPending = false;
@@ -13236,7 +13293,15 @@ export class WorldScene extends Phaser.Scene {
     // and the frame's texture creations are what it does, and they used to
     // land in the unattributed `gapBusy`.
     this.ps();
+    /* UNDER THE BYTE BUDGET ONCE THE WORLD IS UP — THE RELOCATION VEIL INCLUDED.
+     * The veil opens the compose budget (streamingHeld), not this one: the
+     * mid-game queue carries every kind's fight art at the back, and an
+     * unbounded tick uploads the whole backlog in ONE frame — measured
+     * headless, the frame after the respawn press took 8 s and the server's
+     * snap waited behind it. The stills the hold waits for ride near the top
+     * of the queue and land inside the budget in well under a second. */
     this.artQueue().tick(!this.worldUp); // streamed art becomes textures here, under the budget once the world is up
+    if (this.relocate?.arrivedAt) this.relocate.frames++; // the relocation veil counts frames since the answer
     this.pe("artTick");
     this.debrisWarm(); // the indoor crossfade's sprite pool, a few a frame
     if (!this.room) return;
@@ -13674,6 +13739,10 @@ export class WorldScene extends Phaser.Scene {
         // autopilot must never run the player back toward the pre-jump target
         // (maintainer: after respawn she ran straight back to the stale
         // tapped point and wedged again).
+        // THE RELOCATION VEIL'S ARRIVAL: the first snap of MY body after the
+        // ask is the server's answer, and the hold counts paints from here
+        // (an arrival the revive or the grace marked first is upgraded).
+        if (id === myId) this.markArrival(true);
         if (id === myId && (this.trip || this.holdPointerId !== null)) {
           this.clearMoveTarget();
           this.dropHold();
@@ -19816,6 +19885,7 @@ export class WorldScene extends Phaser.Scene {
    *  scripts/verify-groundbracket.mjs. Target GL row = RT y, the identity
    *  coverRaster rests on. `rect` null = whole (the full paint, the scroll). */
   private groundEndDraw(rt: Phaser.GameObjects.RenderTexture, rect: { x0: number; y0: number; x1: number; y1: number } | null): void {
+    this.groundPaints++; // EVERY ground paint ends here — full, cells, slices, scratch: the relocation veil's "painted since the arrival"
     const dt = rt.texture as Phaser.Textures.DynamicTexture;
     const renderer = this.game.renderer as Phaser.Renderer.WebGL.WebGLRenderer;
     const target = dt.renderTarget;
@@ -20638,7 +20708,12 @@ export class WorldScene extends Phaser.Scene {
   private t3prefetchStep(): void {
     const load = this.t3load;
     const t3 = this.t3;
-    if (!load || !t3 || !this.worldUp || this.t3ringAt >= this.t3ringQueue.length) return;
+    /* NOT BEHIND THE RELOCATION VEIL EITHER: the ring reaches far past the
+     * window, and its requests keep the loader from reading idle — the veil's
+     * hold waits for the WINDOW's art, exactly as the boot hold does with the
+     * ring not yet running (measured headless: with the ring on, a respawn's
+     * hold never settled and lifted on its soft deadline). */
+    if (!load || !t3 || !this.worldUp || this.relocate || this.t3ringAt >= this.t3ringQueue.length) return;
     const tex = this.ensureTiles3Textures();
     if (!tex) return; // no composer yet (the pattern sheets): nothing to ask for
     // Never stack the ring onto the frame that scrolled or painted a slice —
@@ -20790,7 +20865,6 @@ export class WorldScene extends Phaser.Scene {
       loop: true,
       callback: () => {
         const waited = performance.now() - t0;
-        const load = this.t3load;
         // PAINTED, not merely "nothing pending": a pass that drew zero blits
         // has requested nothing yet, so pending is legitimately 0 on the very
         // first frame and would release onto the same empty ground.
@@ -20808,14 +20882,8 @@ export class WorldScene extends Phaser.Scene {
          * is up. So the wait is: the first rebuild has run, no manifest is in
          * flight, nothing is queued, every still asked for has landed, and the
          * shared Phaser loader is quiet. */
-        const scenery =
-          this.sceneryRebuilds > 0 &&
-          this.sceneryQueue.length === 0 &&
-          this.sceneryArt.done >= this.sceneryArt.requested &&
-          (!this.sceneryPieces || this.sceneryPieces.idle) &&
-          !this.tiles3Loader().isLoading();
-        const ready =
-          this.groundPainted && (!load || load.idle) && scenery && !this.repaintGroundPending && !this.repaintOccPending;
+        const scenery = this.sceneryStreamed();
+        const ready = this.groundPainted && this.streamingReady();
         /* AND IT HAS TO STAY READY (maintainer 2026-09-03: "can you try to make
          * the loading a bit longer to make sure everything is loaded before we
          * start the game?").
@@ -20844,17 +20912,14 @@ export class WorldScene extends Phaser.Scene {
           /* REAL WORK, REAL BAR: terrain files plus scenery manifests plus the
            * sprite queue those manifests open, counted together — this stage is
            * most of a maps3 join and now owns most of the bar (0.40 -> 0.98). */
-          const t = load?.stats;
-          const sp = this.sceneryPieces?.stats;
           /* THREE COUNTS, ONE BAR: terrain files, scenery manifests, and the
            * scenery ART those manifests open — all per FILE now, so this stage
            * moves continuously instead of standing still until a batch lands.
            * The queue is in `want` because those files are known to be coming;
            * it empties into sceneryArt.requested, so the denominator does not
-           * lurch when a flush happens. */
-          const want =
-            (t?.requested ?? 0) + (sp?.requested ?? 0) + this.sceneryArt.requested + this.sceneryQueue.length;
-          const have = (t?.done ?? 0) + (sp ? sp.loaded + sp.failed : 0) + this.sceneryArt.done;
+           * lurch when a flush happens. The relocation veil reads the same
+           * counts (`streamingCounts`). */
+          const { want, have } = this.streamingCounts();
           const measured = want > 0 ? STREAM_BAR0 + (STREAM_BAR1 - STREAM_BAR0) * Math.min(1, have / want) : 0;
           /* AND A FLOOR THAT MOVES ON ITS OWN for the opening seconds, because
            * "requested" happens in one step and the first file lands whole
@@ -23487,8 +23552,28 @@ export class WorldScene extends Phaser.Scene {
   private askRevive() {
     const d = this.death;
     if (!d || !d.armed) return;
-    if (!d.askAt) d.askAt = this.time.now; // first ask — starts the patience clock
-    d.nextAsk = 0; // send on this frame
+    if (!d.askAt) {
+      d.askAt = this.time.now; // first ask — starts the patience clock
+      /* THE VEIL FIRST, THE ASK ONCE THE BLACK IS UP (maintainer 2026-09-19).
+       * The server answers a respawn with a snap to the spawn, and the frame
+       * that lands it used to show the new ground streaming in around the
+       * body. The loading screen goes up on the press; the first ask waits
+       * RELOCATE_VEIL_IN_MS so the snap lands under an opaque veil. A press
+       * the veil cannot take (the world not up, the screen already showing)
+       * asks at once, as before. */
+      if (this.beginRelocation("death")) {
+        // WALL CLOCK, not the scene's: Phaser clamps a slow frame's delta, so a
+        // scene-time delay stretches under a heavy frame (measured headless:
+        // 450 ms of scene time was 8 s of wall time) while the CSS fade that
+        // this waits for runs on wall time.
+        d.nextAsk = Infinity;
+        window.setTimeout(() => {
+          if (this.death) this.death.nextAsk = 0;
+        }, RELOCATE_VEIL_IN_MS);
+      } else d.nextAsk = 0;
+      return;
+    }
+    d.nextAsk = 0; // a repeated press: send on this frame
   }
 
   private stepDeath(now: number) {
@@ -23604,12 +23689,169 @@ export class WorldScene extends Phaser.Scene {
     const d = this.death;
     if (!d) return;
     this.death = null;
+    // THE REVIVE IS THE DEATH PRESS'S ANSWER — dying beside the spawn moves the
+    // body under two cells, so no snap would ever come (see markArrival).
+    this.markArrival(false);
     d.el?.remove();
     d.veil?.remove();
     gameAudio.setMode("overworld");
     this.camDetached = false;
     this.camChase.init = false; // snap back onto the living body
     this.cameras.main.setZoom(this.zoomFor());
+  }
+
+  /** THE FRAME-THREAD COMPOSE RUNS UNBUDGETED WHILE NOTHING IS BEING PLAYED
+   *  THROUGH IT: behind the boot screen, and behind the relocation veil. The
+   *  art queue's byte budget does NOT follow (see its tick): behind the veil
+   *  it would upload the whole mid-game backlog in one frame. */
+  private get streamingHeld(): boolean {
+    return !this.worldUp || !!this.relocate;
+  }
+
+  /** SCENERY HAS STREAMED: the first rebuild has run, no manifest is in flight,
+   *  nothing is queued, every still asked for has landed, and the shared Phaser
+   *  loader is quiet — the boot hold's own condition (see
+   *  hideLoadingWhenTerrainIsUp for why each term is there). */
+  private sceneryStreamed(): boolean {
+    return (
+      this.sceneryRebuilds > 0 &&
+      this.sceneryQueue.length === 0 &&
+      this.sceneryArt.done >= this.sceneryArt.requested &&
+      (!this.sceneryPieces || this.sceneryPieces.idle) &&
+      !this.tiles3Loader().isLoading()
+    );
+  }
+
+  /** THE STREAMING PREDICATE the boot hold and the relocation veil share: the
+   *  terrain loader idle, the scenery streamed, no repaint owed. Read it
+   *  CONTINUOUSLY for a settle, never once — `load.idle` has a window every
+   *  pass where art is owed and the loader reads idle (the boot hold's story). */
+  private streamingReady(): boolean {
+    const load = this.t3load;
+    return (!load || load.idle) && this.sceneryStreamed() && !this.repaintGroundPending && !this.repaintOccPending;
+  }
+
+  /** The streaming stage's counts, asked vs landed: terrain files, scenery
+   *  manifests, scenery stills (plus the queue those manifests open). */
+  private streamingCounts(): { want: number; have: number } {
+    const t = this.t3load?.stats;
+    const sp = this.sceneryPieces?.stats;
+    const want = (t?.requested ?? 0) + (sp?.requested ?? 0) + this.sceneryArt.requested + this.sceneryQueue.length;
+    const have = (t?.done ?? 0) + (sp ? sp.loaded + sp.failed : 0) + this.sceneryArt.done;
+    return { want, have };
+  }
+
+  /** THE RELOCATION VEIL (maintainer 2026-09-19: "When a player sees the inside
+   *  tricks the engine uses the entire illusion disappears! ... reuse the
+   *  loading-screen we use when going from the character-select screen to the
+   *  world ... the loading bar will progress much faster this time, but we
+   *  will use the same fade in/fade out"). A respawn or a veiled teleport
+   *  raises the boot loading screen (loading.ts, games-ui's: the same staged
+   *  cinema fade), the caller sends its ask once the black is up
+   *  (RELOCATE_VEIL_IN_MS), the server's snap of my body marks the arrival,
+   *  and a 100 ms tick holds the screen until the boot hold's own predicate
+   *  has held for RELOCATE_SETTLE_MS since a paint — then hideLoading(), the
+   *  same cinema out. Behind the veil the compose budget runs unbounded
+   *  (`streamingHeld`); the art queue keeps its byte budget (its tick says
+   *  why), and the stills it waits for land inside it. Deadlines
+   *  in relocatehold.ts; a page whose screen is already up (boot, rejoin)
+   *  declines, and the boot hold keeps the overlay. Returns whether the veil
+   *  is up, so a caller knows whether to wait before asking. */
+  private beginRelocation(kind: "respawn" | "death" | "teleport"): boolean {
+    if (this.relocate || !this.worldUp || loadingVisible() || this.unloading) return false;
+    showLoading(kind === "teleport" ? "Travelling…" : "Returning…");
+    this.relocate = {
+      kind,
+      askedAt: performance.now(),
+      arrivedAt: 0,
+      snapped: false,
+      readySince: 0,
+      paintsAtArrive: 0,
+      frames: 0,
+      shown: 0.03,
+      lastReady: false,
+      lastPainted: false,
+      tick: null,
+    };
+    this.relocate.tick = this.time.addEvent({ delay: 100, loop: true, callback: () => this.stepRelocation() });
+    return true;
+  }
+
+  private stepRelocation(): void {
+    const r = this.relocate;
+    if (!r) return;
+    // The world went down under us (a resolver rebuild, a rejoin): its own
+    // hold owns the overlay now and lifts it when the world is back.
+    if (!this.worldUp) {
+      this.endRelocation("rebuild", false);
+      return;
+    }
+    const now = performance.now();
+    // A living respawn or teleport that lands where the body already stands
+    // never snaps: after the grace the answer is taken as "already there".
+    if (!r.arrivedAt && r.kind !== "death" && now - r.askedAt >= RELOCATE_ARRIVE_GRACE_MS) this.markArrival(false);
+    // A paint since the arrival, when the body moved; nothing owed when it did not.
+    // A paint since the arrival when the body moved — or the latch has had its
+    // frames and asked for none (a small snap inside the texture's slack).
+    const painted = !!r.arrivedAt && (!r.snapped || this.groundPaints > r.paintsAtArrive || r.frames >= 3);
+    const ready = painted && this.streamingReady();
+    r.lastPainted = painted;
+    r.lastReady = ready;
+    const v = relocateVerdict({ now, askedAt: r.askedAt, arrivedAt: r.arrivedAt, painted, ready, readySince: r.readySince, unloading: this.unloading });
+    r.readySince = v.readySince;
+    if (!v.done) {
+      const { want, have } = this.streamingCounts();
+      r.shown = Math.max(r.shown, relocateProgress({ arrived: !!r.arrivedAt, want, have }));
+      setLoadingProgress(r.shown, "Streaming the world…");
+      return;
+    }
+    this.endRelocation(v.why, true);
+  }
+
+  private endRelocation(why: string, hide: boolean): void {
+    const r = this.relocate;
+    if (!r) return;
+    r.tick?.remove();
+    this.relocate = null;
+    const liftedAt = performance.now();
+    this.relocateLast = { kind: r.kind, why, askedAt: r.askedAt, arrivedAt: r.arrivedAt, snapped: r.snapped, liftedAt };
+    if (why !== "ready" && why !== "rebuild")
+      console.warn(`[nangijala] relocation veil lifted on "${why}" after ${Math.round(liftedAt - r.askedAt)} ms (answer ${r.arrivedAt ? Math.round(r.arrivedAt - r.askedAt) + " ms in" : "never came"})`);
+    if (hide) {
+      setLoadingProgress(1, "Ready");
+      hideLoading();
+    }
+  }
+
+  /** THE ANSWER HAS LANDED. Three signals, whichever comes first: my body's
+   *  >2-cell snap (`snapped` — a paint since it is then required), the revive
+   *  (the death press's own answer, whether or not the body moved), and the
+   *  grace for a living respawn that lands where it already stands. A snap
+   *  after an earlier signal UPGRADES the arrival: the paint counters restart
+   *  from the frame the body really moved. */
+  private markArrival(snapped: boolean): void {
+    const r = this.relocate;
+    if (!r || (r.arrivedAt && (!snapped || r.snapped))) return;
+    const now = performance.now();
+    if (!r.arrivedAt) r.arrivedAt = now;
+    if (snapped) {
+      r.snapped = true;
+      r.paintsAtArrive = this.groundPaints;
+      r.frames = 0;
+      r.readySince = 0; // the settle starts over: the window just changed
+    }
+  }
+
+  /** The dev respawn button and `__ml.respawn()`: the veil, then the ask once
+   *  the black is up; dead, it is the death press. */
+  private respawnWithVeil(): void {
+    if (this.selfDead) {
+      this.askRevive();
+      return;
+    }
+    const send = () => this.room?.send("respawn", {});
+    if (this.beginRelocation("respawn")) window.setTimeout(send, RELOCATE_VEIL_IN_MS); // wall clock — see askRevive
+    else send();
   }
 
   private updateChaseCam(deltaMs: number) {
