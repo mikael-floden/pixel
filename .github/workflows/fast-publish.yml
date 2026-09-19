@@ -81,12 +81,24 @@ jobs:
         working-directory: games2
         run: npm ci
 
+      # WHAT "BROWSER CODE ONLY" MEANS, because the old label ("client-only")
+      # was read — reasonably — as "only the client pushed" (maintainer
+      # 2026-09-19). In this repo the wiki BROWSER really does cause git
+      # commits: you tap a verdict and live/** changes, the browser initiating
+      # and the server committing with its own token (server/src/live.ts). So
+      # "client-only push" named a plausible feature rather than this check.
+      # It has nothing to do with WHO pushed. It asks what the push CHANGED:
+      # only the game code the browser runs, in which case the new file goes
+      # onto the already-running server and browsers fetch it from there — no
+      # image, no restart. Anything else (the server's own program, the art)
+      # lives inside the container and needs a new one.
+      #
       # A PUSH THAT NEEDS A NEW SERVER MUST NOT PUBLISH ITS CLIENT FIRST. The
       # path filter cannot see this: one push can touch client/src AND
       # server/src, and then the fast lane would hand players a client in
       # seconds that needs a server arriving five minutes later. The container
       # lane carries such a push whole, as it does today.
-      - name: Lane check — client-only, or nothing
+      - name: Lane check — browser code only, or nothing
         id: lane
         run: |
           BEFORE="${{ github.event.before }}"

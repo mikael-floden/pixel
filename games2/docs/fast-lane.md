@@ -190,6 +190,18 @@ deploy's own rollback guard against the change I had just made to `/version`.
   cannot change until the store does filled the 40-line ring `/api/bundle`
   shows a phone. Said once now, keyed on the pointer.
 
+## "BROWSER CODE ONLY" — what the lane check asks
+
+It asks what a push CHANGED, never who pushed it. The old label was
+"client-only", which reads as "only the client pushed" — and in this repo that
+names something real, because the wiki BROWSER does cause git commits (you tap a
+verdict, `live/**` changes; the browser initiates and the server commits with
+its own token, `server/src/live.ts`). Say it the way it works instead: **the
+lane carries a push that only changes the game code the browser runs. The new
+file goes onto the already-running server, and browsers fetch it from there** —
+no image, no restart, nobody disconnected. Anything else (the server's own
+program, the art) lives INSIDE the container and needs a new container.
+
 ## FALL-THROUGH: the mixed generation is refused by arithmetic
 
 A generation records the hashes of every file it is NOT publishing (the 43
