@@ -24,8 +24,9 @@ import { mountWikiNearButton } from "./wikinear";
 import { mountRecordButton } from "./recbtn";
 // the record button's behaviour: it listens for "ml-record" (freezeframe.ts)
 import "./freezeframe";
-import { mountTheme, toggleTheme, currentTheme } from "./theme";
-import { getHand, toggleHand, handLabel } from "./controls";
+import { mountTheme, currentTheme, setTheme } from "./theme";
+import { getHand, setHand } from "./controls";
+import { isAdmin, forgetAdmin } from "./admin";
 import {
   indoorLight,
   indoorLightLit,
@@ -171,6 +172,11 @@ export interface HudActions {
    * (down = ON, up = OFF — maintainer); plain entries are one-shot buttons.
    * The entry with `hook` keeps the .ml-hudbtn class the e2e smoke clicks. */
   settings: {
+    /** The button's text. TWO LABELS ARE PLAYER SETTINGS and render on the
+     * Sound sub-page as switch rows instead of in the Dev grid: "sound" and
+     * "music" (each needs `get`). Every other entry is a dev control and lands
+     * in Dev, admin only — see SUBTABS. The interface is unchanged: which page
+     * an entry sits on is the HUD's side of the contract. */
     label: string;
     act: () => void;
     hook?: boolean;
@@ -213,6 +219,47 @@ const TABS = [
   { id: "chat", label: "Chat" },
 ] as const;
 type TabId = (typeof TABS)[number]["id"];
+
+/* ── SUB-TABS (maintainer 2026-09-19: "a subsection in settings (a sub menu /
+ * sub tab system) … the subsection appears by sliding up the menu over it so
+ * the menu content area is just as big as the menu inner area we have today
+ * … in landscape ONLY use the icons and show the tabs at the top … at most 4
+ * … the last option should always be dev if the admin is logged in").
+ * A PAGE registers its sub-tabs here and gets a strip under the main tab row
+ * (portrait) or at the top of its column (landscape); its content is built
+ * into one .ml-sub pane per entry. GENERIC on purpose — "the Equipment option
+ * will also have a sub-section-system once we start building it" — so the
+ * next page is an entry here plus its panes, nothing else.
+ * ICONS: placeholders until his 24x24 PixelLab icons arrive (he draws them
+ * once the sections are agreed): inline SVG on currentColor, the same recipe
+ * as the drop dialog's steppers, so they follow both themes. When a bake
+ * lands, `img` names it (an exact 2x of the 24px export in /ui2, sized to
+ * natural/2 like every other icon) and the svg goes. */
+interface SubTab {
+  id: string;
+  label: string;
+  /** Inline SVG markup (24-unit viewBox, strokes on currentColor). */
+  svg?: string;
+  /** A /ui2 bake name (icon-<img>.webp) — an exact 2x of a 24x24 export. */
+  img?: string;
+  /** Shown only when the server says this session is the admin. */
+  admin?: boolean;
+}
+const SVG = (d: string) => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+const SUBTABS: Partial<Record<TabId, readonly SubTab[]>> = {
+  settings: [
+    // three sliders — the settings glyph every player knows
+    { id: "general", label: "General", svg: SVG('<path d="M4 6h16M4 12h16M4 18h16"/><circle cx="14" cy="6" r="2.2" fill="var(--bg)"/><circle cx="8" cy="12" r="2.2" fill="var(--bg)"/><circle cx="16" cy="18" r="2.2" fill="var(--bg)"/>') },
+    // a speaker with two waves
+    { id: "sound", label: "Sound", svg: SVG('<path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z"/><path d="M15.5 9.5a3.5 3.5 0 0 1 0 5"/><path d="M18 7a7 7 0 0 1 0 10"/>') },
+    // a gamepad
+    { id: "controls", label: "Controls", svg: SVG('<path d="M7 8h10a4 4 0 0 1 4 4v2.5a3.5 3.5 0 0 1-6.2 2.2L14 16h-4l-.8.7A3.5 3.5 0 0 1 3 14.5V12a4 4 0 0 1 4-4z"/><path d="M8 11v3M6.5 12.5h3"/><path d="M16.5 11.5h.01M18.5 13.5h.01"/>') },
+    // angle brackets — the dev's glyph; ADMIN ONLY, always last
+    { id: "dev", label: "Dev", admin: true, svg: SVG('<path d="M8 7l-5 5 5 5M16 7l5 5-5 5M13.5 5l-3 14"/>') },
+  ],
+};
+/** The one localStorage key per page for the sub-tab it was left on. */
+const subKey = (page: TabId) => `ml-subtab:${page}`;
 
 /** Mount the in-game chrome: theme tokens, layout vars, stat bars. The name
  * survives from the frame era (WorldScene calls it once at join) but there is
@@ -446,6 +493,21 @@ function landscapeMenuWidth(w: number, h: number): number {
   return Math.min(Math.round(content), golden);
 }
 
+/** THE OPEN SUB-TAB STRIP'S HEIGHT in portrait — 0 when no strip is open and
+ *  0 in landscape, where the strip lives INSIDE the column and costs the game
+ *  nothing. Measured from the strip's own content (the chip row keeps its
+ *  natural height inside the clipped wrap even while the wrap is mid-unfold),
+ *  never a copied number, so a restyle of the chips moves the rail with them.
+ *  It is ADDED to the rail AFTER portraitHudHeight's golden ceiling: the
+ *  ceiling bounds the three-row rail; the strip is the maintainer's explicit
+ *  "takes space from the game" and is not what the ceiling was written for. */
+function subStripHeight(land: boolean): number {
+  if (land) return 0;
+  const strip = document.querySelector<HTMLElement>(".ml-subrow.open");
+  const row = strip?.querySelector<HTMLElement>(".ml-subtabs.show");
+  return row ? Math.round(row.getBoundingClientRect().height) : 0;
+}
+
 function applyLayout() {
   const root = document.documentElement;
   const w = window.innerWidth;
@@ -475,6 +537,7 @@ function applyLayout() {
   if (land) {
     const menuW = landscapeMenuWidth(w, h);
     root.style.setProperty("--menu-w", `${menuW}px`);
+    root.style.setProperty("--sub-h", `0px`); // the strip is inside the column here
     // The game view runs the full height: consumers of --hud-h ("px above
     // the HUD rail") get 0 and land on the bottom edge, which is exactly
     // where the chat overlay and the clock pill belong in landscape.
@@ -483,8 +546,20 @@ function applyLayout() {
     root.style.setProperty("--gv-left", `${left ? 0 : menuW}px`);
     root.style.setProperty("--gv-right", `${left ? menuW : 0}px`);
   } else {
-    const hudH = portraitHudHeight(w, h);
+    // THE RAIL GROWS BY THE OPEN SUB-TAB STRIP, THE CANVAS DOES NOT
+    // (maintainer 2026-09-19: the sub-tabs "take space from the game by
+    // sliding the menu upwards"). --hud-h / --hud-h-inv are the HUD's REAL
+    // edge, so everything anchored above the rail — the chat log, the ghost
+    // stick, the fps badge, the drop dialog's centre — rides up with it
+    // untouched; #game alone adds --sub-h back (index.html) and keeps the
+    // three-row split, so opening Settings never resizes the canvas (a
+    // resize is a framebuffer realloc + a whole-world redraw, and it would
+    // fire per frame of the slide). The world under the strip is simply
+    // covered for as long as the strip is open.
+    const subH = subStripHeight(false);
+    const hudH = portraitHudHeight(w, h) + subH;
     root.style.setProperty("--menu-w", `0px`);
+    root.style.setProperty("--sub-h", `${subH}px`);
     root.style.setProperty("--hud-h", `${hudH}px`);
     root.style.setProperty("--hud-h-inv", `${h - hudH}px`);
     root.style.setProperty("--gv-left", `0px`);
@@ -517,6 +592,21 @@ export class HudBar {
   /** Close hook for the open drop-quantity dialog (null = none open). */
   private qtyClose: (() => void) | null = null;
   private tabs = new Map<TabId, HTMLButtonElement>();
+  private active: TabId = "backpack";
+  // ── sub-tabs (SUBTABS): ONE strip, shared; a chip row per page that has
+  //    sub-tabs; a pane per sub-tab inside that page ──
+  private subrow: HTMLElement | null = null;
+  private subRows = new Map<TabId, HTMLElement>();
+  private subBtns = new Map<string, HTMLButtonElement>(); // "page:sub"
+  private subPanes = new Map<string, HTMLElement>(); // "page:sub"
+  private subSel = new Map<TabId, string>();
+  /** Each sub-page's scroll position, kept across switches (Dev is long). */
+  private subScroll = new Map<string, number>();
+  private subAnimTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Player-page controls that re-read their state on refreshSettings. */
+  private refreshers: (() => void)[] = [];
+  /** Where the adopted display dials (Resolution) live: General's dial group. */
+  private displayDials: HTMLElement | null = null;
   private switches: [HTMLButtonElement, () => boolean][] = [];
   private stateful: [HTMLButtonElement, HudActions["settings"][number]][] = [];
   /** The dial group: EVERY slider on the Settings page, in one block in the
@@ -564,7 +654,17 @@ export class HudBar {
     document.querySelectorAll(".ml-qty-back").forEach((e) => e.remove());
     const hud = mk("div", "ml-hud");
     const tabRow = mk("div", "ml-tabrow");
+    // the strip sits between the tab row and the pages in portrait and at the
+    // top of the page column in landscape: one wrapper holds strip + pages so
+    // both orientations are the same DOM (.ml-body is what the landscape
+    // rules re-order beside the vertical tab strip)
+    const body = mk("div", "ml-body");
+    const subrow = mk("div", "ml-subrow");
+    const subwrap = mk("div", "ml-subwrap");
+    subrow.appendChild(subwrap);
     const pageWrap = mk("div", "ml-pages");
+    body.append(subrow, pageWrap);
+    this.subrow = subrow;
 
     for (const t of TABS) {
       const b = mk("button", "ml-tab") as HTMLButtonElement;
@@ -600,10 +700,59 @@ export class HudBar {
       page.dataset.page = t.id;
       pageWrap.appendChild(page);
       this.pages.set(t.id, page);
+
+      // this page's sub-tabs: a chip row in the shared strip + a pane each
+      const subs = SUBTABS[t.id];
+      if (subs) {
+        const row = mk("div", "ml-subtabs");
+        row.dataset.for = t.id;
+        const bar = mk("div", "ml-subbar");
+        row.appendChild(bar);
+        for (const s of subs) {
+          const b = mk("button", "ml-subtab") as HTMLButtonElement;
+          b.type = "button";
+          b.dataset.sub = s.id;
+          if (s.img) {
+            const ic = mk("img", "ml-subtab-icon") as HTMLImageElement;
+            ic.src = withV(`/ui2/icon-${s.img}.webp`);
+            ic.alt = "";
+            ic.draggable = false;
+            const fit = () => {
+              if (!ic.naturalWidth) return;
+              ic.style.width = `${ic.naturalWidth / 2}px`;
+              ic.style.height = `${ic.naturalHeight / 2}px`;
+            };
+            ic.addEventListener("load", fit);
+            fit();
+            b.appendChild(ic);
+          } else if (s.svg) {
+            b.insertAdjacentHTML("beforeend", s.svg);
+          }
+          const lab = mk("span", "ml-subtab-label");
+          lab.textContent = s.label;
+          b.appendChild(lab);
+          b.title = s.label;
+          b.setAttribute("aria-label", s.label);
+          if (s.admin) {
+            b.classList.add("ml-subtab-admin");
+            b.hidden = true; // hidden until the server says admin — never the other way round
+          }
+          b.addEventListener("click", () => this.selectSub(t.id, s.id));
+          pressFx(b);
+          bar.appendChild(b);
+          this.subBtns.set(`${t.id}:${s.id}`, b);
+          const pane = mk("div", "ml-sub");
+          pane.dataset.sub = s.id;
+          page.appendChild(pane);
+          this.subPanes.set(`${t.id}:${s.id}`, pane);
+        }
+        subwrap.appendChild(row);
+        this.subRows.set(t.id, row);
+      }
     }
     this.buildPages();
 
-    hud.append(tabRow, pageWrap);
+    hud.append(tabRow, body);
     // Android Chrome's long-press image detection hit-tests <img>s even
     // through pointer-events:none — suppress the context menu at the root or
     // holding a tab offers "download image" (maintainer, twice).
@@ -614,6 +763,20 @@ export class HudBar {
     applyLayout();
     this.select("backpack");
     applyLayout(); // publish the px layout vars for the keyboard lift + chat
+    void this.applyAdmin(); // …and reveal the admin-only sub-tabs for the admin
+    // The probe surface this module owns (the __mlRecord / __mlAmbient
+    // pattern): gates drive the sub-tabs and the admin reveal through it.
+    (window as unknown as { __mlHud?: unknown }).__mlHud = {
+      /** Which sub-tab `page` shows; with `id`, select it first. */
+      sub: (page: TabId, id?: string) => {
+        if (id) this.selectSub(page, id);
+        return this.subSel.get(page) ?? null;
+      },
+      /** The sub-tabs `page` offers right now (hidden admin ones excluded). */
+      subs: (page: TabId) => (SUBTABS[page] ?? []).filter((s) => !this.subBtns.get(`${page}:${s.id}`)?.hidden).map((s) => s.id),
+      /** Ask the server again whether this session is the admin. */
+      admin: (force = false) => this.applyAdmin(force),
+    };
 
     // Keep the ambient switches tracking live state while Settings is open
     // (director rolls, fields gate on time-of-day). Replaces any prior timer
@@ -623,8 +786,10 @@ export class HudBar {
   }
 
   private select(id: TabId) {
+    this.active = id;
     for (const [tid, b] of this.tabs) b.classList.toggle("sel", tid === id);
     for (const [tid, p] of this.pages) p.classList.toggle("show", tid === id);
+    this.syncSubrow(id);
     // Build/refresh the ambient switches the moment Settings is opened (don't
     // wait up to a poll interval).
     if (id === "settings") this.tickAmbient();
@@ -635,6 +800,100 @@ export class HudBar {
     // scrolled to the newest.
     this.chatShown = id === "chat";
     if (this.chatShown) this.renderChat(true);
+  }
+
+  // ── Sub-tabs ───────────────────────────────────────────────────────────
+  /** Show the active page's chip row and open or close the strip. THE PAGE
+   * NEVER MOVES: the strip unfolds (grid-template-rows 0fr → 1fr) over the
+   * same .25s ease as the rail's top slides up by the strip's height, so the
+   * page's top edge stays put frame for frame and only the tab row rises —
+   * "the subsection appears by sliding up the menu over it". Both start in
+   * this one task (the class here, --hud-h-inv in applyLayout), so they share
+   * a frame. The top transition is gated on ml-subanim for the slide only: a
+   * plain resize (the address bar) or a rotation still snaps, as before. */
+  private syncSubrow(id: TabId) {
+    const row = this.subRows.get(id);
+    // THE LEAVING PAGE'S CHIP ROW STAYS SHOWN THROUGH THE COLLAPSE: the wrap
+    // folds from 1fr to 0fr over the content's height, and a row switched to
+    // display:none at the first frame leaves it nothing to fold — the strip
+    // vanished in one frame while the rail was still sliding down, and the
+    // page edge jumped 61px (filmed). Closed, the row is clipped at 0fr and
+    // .ml-subrow.open is the truth; the row is swapped only when a page WITH
+    // sub-tabs opens.
+    if (row) for (const [tid, r] of this.subRows) r.classList.toggle("show", tid === id);
+    if (row) {
+      let want = this.subSel.get(id);
+      if (!want) {
+        try {
+          want = localStorage.getItem(subKey(id)) ?? undefined;
+        } catch {}
+      }
+      this.selectSub(id, want ?? SUBTABS[id]![0].id);
+    }
+    this.countChips();
+    const strip = this.subrow;
+    if (strip && strip.classList.contains("open") !== !!row) {
+      const root = document.documentElement;
+      root.classList.add("ml-subanim");
+      if (this.subAnimTimer) clearTimeout(this.subAnimTimer);
+      this.subAnimTimer = setTimeout(() => root.classList.remove("ml-subanim"), 320);
+      strip.classList.toggle("open", !!row);
+    }
+    applyLayout();
+  }
+
+  /** Stamp each bar with how many chips it shows (data-n): FOUR chips at
+   * 393px are 90px each, and "Controls" at the three-up type came out as
+   * "Contr…" on the admin's phone (measured), so the four-up bar takes its
+   * type and gaps one step down — in CSS, keyed on this count. */
+  private countChips() {
+    for (const row of this.subRows.values()) {
+      const bar = row.querySelector<HTMLElement>(".ml-subbar");
+      if (bar) bar.dataset.n = String([...bar.children].filter((b) => !(b as HTMLElement).hidden).length);
+    }
+  }
+
+  /** Select one of `page`'s sub-tabs: chip .sel, pane .show, the page's
+   * scroll position remembered per sub-page and restored, the choice kept in
+   * localStorage. A hidden (admin) sub-tab falls back to the first one. */
+  private selectSub(page: TabId, id: string) {
+    const subs = SUBTABS[page];
+    if (!subs) return;
+    const btn = this.subBtns.get(`${page}:${id}`);
+    if (!btn || btn.hidden) id = subs[0].id;
+    const pageEl = this.pages.get(page)!;
+    const prev = this.subSel.get(page);
+    if (prev && prev !== id) this.subScroll.set(`${page}:${prev}`, pageEl.scrollTop);
+    this.subSel.set(page, id);
+    for (const s of subs) {
+      this.subBtns.get(`${page}:${s.id}`)!.classList.toggle("sel", s.id === id);
+      this.subPanes.get(`${page}:${s.id}`)!.classList.toggle("show", s.id === id);
+    }
+    pageEl.scrollTop = this.subScroll.get(`${page}:${id}`) ?? 0;
+    try {
+      localStorage.setItem(subKey(page), id);
+    } catch {}
+  }
+
+  /** Ask the server whether this session is the admin and show or hide the
+   * admin-only sub-tabs on the answer (recbtn's rule: hidden until the server
+   * says yes). A remembered Dev the server now denies falls back to General;
+   * a remembered Dev the server now allows comes back. */
+  async applyAdmin(force = false): Promise<boolean> {
+    if (force) forgetAdmin();
+    const yes = await isAdmin();
+    if (!this.subrow?.isConnected) return yes; // a HUD rebuild replaced us while we asked
+    for (const b of this.subBtns.values()) if (b.classList.contains("ml-subtab-admin")) b.hidden = !yes;
+    this.countChips();
+    for (const [page, subs] of Object.entries(SUBTABS) as [TabId, readonly SubTab[]][]) {
+      if (!this.subRows.has(page)) continue;
+      let want = this.subSel.get(page);
+      try {
+        want = localStorage.getItem(subKey(page)) ?? want;
+      } catch {}
+      this.selectSub(page, want ?? subs[0].id);
+    }
+    return yes;
   }
 
   // ── Map tab ────────────────────────────────────────────────────────────
@@ -774,6 +1033,53 @@ export class HudBar {
     for (const [b, get] of this.switches) b.classList.toggle("on", !!get());
     for (const [b, entry] of this.stateful)
       (b.firstElementChild ?? b).textContent = `${entry.label}: ${entry.state!()}`;
+    for (const f of this.refreshers) f();
+  }
+
+  /** A SEGMENTED CHOICE — a label line over one plate button per option, the
+   * lit one being the current value (the ambient mode switch's recipe, which
+   * is how a two- or three-way setting reads on this page). */
+  private choiceRow(label: string, opts: { label: string; on: () => boolean; pick: () => void }[], cls = ""): HTMLElement {
+    const wrap = mk("div", `ml-choice${cls ? ` ${cls}` : ""}`);
+    const head = mk("div", "ml-choice-head");
+    head.textContent = label;
+    const grid = mk("div", "ml-choice-opts");
+    grid.style.gridTemplateColumns = `repeat(${opts.length},1fr)`;
+    for (const o of opts) {
+      const b = mk("button", "ml-plate-btn") as HTMLButtonElement;
+      b.type = "button";
+      const t = mk("span", "");
+      t.textContent = o.label;
+      b.appendChild(t);
+      b.addEventListener("click", () => {
+        o.pick();
+        this.refreshSettings();
+      });
+      pressFx(b);
+      grid.appendChild(b);
+      this.refreshers.push(() => b.classList.toggle("on", o.on()));
+    }
+    wrap.append(head, grid);
+    return wrap;
+  }
+
+  /** A SWITCH ROW — a full-width row button with a CSS checkbox and a label
+   * (the ambient checklist's recipe, on neutral class names). */
+  private switchRow(label: string, get: () => boolean, act: () => void, cls = ""): HTMLButtonElement {
+    const b = mk("button", `ml-plate-btn ml-switchrow${cls ? ` ${cls}` : ""}`) as HTMLButtonElement;
+    b.type = "button";
+    const box = mk("span", "ml-check");
+    box.setAttribute("aria-hidden", "true");
+    const t = mk("span", "ml-switch-label");
+    t.textContent = label;
+    b.append(box, t);
+    b.addEventListener("click", () => {
+      act();
+      this.refreshSettings();
+    });
+    pressFx(b);
+    this.refreshers.push(() => setCheck(box, !!get()));
+    return b;
   }
 
   // ── Ambient-effect switches ────────────────────────────────────────────
@@ -972,21 +1278,103 @@ export class HudBar {
     // Map page: the world's minimap with a live red player dot.
     this.buildMap();
 
-    // Settings: home of ALL the toggles mobile can't reach by keyboard. The
-    // page now stacks the games button grid OVER the ambient-effect checklist
-    // inside one scrolling column (.ml-set) — with ~12 buttons + 8 effects it
-    // overflows a phone, so .ml-page scrolls from the top (see injectStyles:
-    // "safe center").
+    // ── SETTINGS: FOUR SUB-PAGES (SUBTABS, maintainer 2026-09-19) ────────
+    // General | Sound | Controls for the player, Dev for the admin. DEV IS
+    // THE WHOLE PAGE AS IT WAS: the games agent's switch grid over the dial
+    // group over the ambient checklist ("what is displayed on this page is
+    // kinda what we have in settings today"). The player pages are built
+    // from this page's own recipes — section title, segmented choice, switch
+    // row, dial, wide button — so the four read as one surface.
     const st = this.pages.get("settings")!;
-    // Log out lives at the TOP of Settings now (maintainer 2026-07-23: moved off
-    // its own tab, which Chat replaced). As a direct child of the settings
-    // .ml-page it inherits the .ml-page>.ml-plate-btn WIDE full-row width — the
-    // same width its old page gave it. Still a deliberate two-step (open Settings
-    // then press), so a stray tap can't eject anyone.
-    st.appendChild(plateButton("Log out", () => this.actions.onLogout()));
+    const pane = (id: string) => this.subPanes.get(`settings:${id}`)!;
+
+    // GENERAL — display, then account.
+    const gen = pane("general");
+    gen.appendChild(sectionTitle("Display", true));
+    // THEME: the shared wiki/game dark-mode switch (maintainer 2026-07-30:
+    // "changing to dark theme will affect both the wiki and the in-game
+    // HUD"). Writes the same one localStorage key the wiki's ◐ toggle uses.
+    gen.appendChild(
+      this.choiceRow(
+        "Theme",
+        [
+          { label: "Light", on: () => currentTheme() === "light", pick: () => setTheme("light") },
+          { label: "Dark", on: () => currentTheme() === "dark", pick: () => setTheme("dark") },
+        ],
+        "ml-themebtn",
+      ),
+    );
+    // THE DISPLAY DIALS: the games agent's Resolution dial is a PLAYER
+    // setting and is adopted here from wherever its injector lands it — see
+    // the observer on the Dev dial group below.
+    // It wears .ml-dials too: EVERY SLIDER SITS IN ONE BLOCK is gated by the
+    // class of its parent (verify-smoke), and a sub-page's one block is that
+    // block. The DOM ORDER below keeps the injectors off it.
+    const displayDials = mk("div", "ml-dials ml-dials-display");
+    this.displayDials = displayDials;
+    gen.appendChild(displayDials);
+    gen.appendChild(sectionTitle("Account"));
+    // Log out (maintainer 2026-07-23: off its own tab, into Settings): still
+    // a deliberate two-step — open Settings, then press — so a stray tap
+    // can't eject anyone. A direct child of the pane, so it takes the wide
+    // full-row width every wide button in this column gets.
+    gen.appendChild(plateButton("Log out", () => this.actions.onLogout()));
+
+    // SOUND — the two switches the scene offers: "sound" mutes the effect
+    // buses, "music" its own bus (games-audio's toggles, reached through the
+    // scene's settings list). Volume sliders join this page the day the
+    // composer publishes a per-bus level — requested on their board.
+    const snd = pane("sound");
+    snd.appendChild(sectionTitle("Audio", true));
+    const sndRows = mk("div", "ml-rows");
+    for (const t of this.actions.settings) {
+      const pretty = PLAYER_AUDIO[t.label];
+      if (!pretty || !t.get) continue;
+      sndRows.appendChild(this.switchRow(pretty, t.get, t.act, `ml-audio-${t.label}`));
+    }
+    snd.appendChild(sndRows);
+
+    // CONTROLS — handedness (maintainer 2026-08-05): which side the analog
+    // stick lives on, and in landscape which side the whole menu column
+    // takes. controls.ts owns the state; "ml-hand" re-anchors the layout
+    // (applyLayout) and the gamepad.
+    const ctl = pane("controls");
+    ctl.appendChild(sectionTitle("Thumb stick", true));
+    ctl.appendChild(
+      this.choiceRow(
+        "Hand",
+        [
+          { label: "Right-handed", on: () => getHand() === "right", pick: () => setHand("right") },
+          { label: "Left-handed", on: () => getHand() === "left", pick: () => setHand("left") },
+        ],
+        "ml-handbtn", // stable hook for the landscape gate
+      ),
+    );
+    window.addEventListener("ml-hand", () => this.refreshSettings());
+    // …and follow toggles from the WIKI side (its write → storage event →
+    // theme.ts re-applies → "ml-theme") so the lit theme never goes stale.
+    window.addEventListener("ml-theme", () => this.refreshSettings());
+
+    // DEV — home of ALL the toggles mobile can't reach by keyboard: the
+    // games agent's button grid OVER the dial group OVER the ambient-effect
+    // checklist inside one scrolling column (.ml-set). With ~12 buttons + 8
+    // effects it overflows a phone, so the page scrolls from the top (see
+    // injectStyles: "safe center"). Admin only — the tab is hidden until the
+    // server says admin; the content stays built so the outside injectors
+    // (resdial, navbias, the ambient cycler…) find their hooks.
+    const dev = pane("dev");
+    // THE DEV PANE IS FIRST IN THE PAGE'S DOM (its chip stays last): outside
+    // injectors take the FIRST .ml-set / .ml-dials under the settings page
+    // (querySelector), and those hooks are Dev's — General's dial group wears
+    // .ml-dials as well (above), so it must come after or the ground-details
+    // dial and every future dev dial would land on the player's page. The
+    // panes' DOM order is invisible (one shows at a time); verify-subtabs
+    // pins it.
+    st.prepend(dev);
     const wrap = mk("div", "ml-set");
     const row = mk("div", "ml-btnrow");
     for (const t of this.actions.settings) {
+      if (PLAYER_AUDIO[t.label] && t.get) continue; // rendered on Sound
       const b = plateButton(t.label, () => {
         t.act();
         this.refreshSettings();
@@ -996,41 +1384,6 @@ export class HudBar {
       if (t.state) this.stateful.push([b, t]);
       row.appendChild(b);
     }
-    // THEME: the shared wiki/game dark-mode switch (maintainer 2026-07-30:
-    // "changing to dark theme will affect both the wiki and the in-game
-    // HUD"). Writes the same one localStorage key the wiki's ◐ toggle uses;
-    // the label prints its state like every other settings button.
-    const themeEntry: HudActions["settings"][number] = {
-      label: "theme",
-      act: () => toggleTheme(),
-      state: () => currentTheme(),
-    };
-    const themeBtn = plateButton("theme", () => {
-      themeEntry.act();
-      this.refreshSettings();
-    });
-    this.stateful.push([themeBtn, themeEntry]);
-    row.appendChild(themeBtn);
-    // CONTROLS: right-handed (default) or left-handed — which side the
-    // analog stick lives on, and in landscape which side the whole menu
-    // column takes (maintainer 2026-08-05). controls.ts owns the state; the
-    // "ml-hand" event re-anchors the layout (applyLayout) and the gamepad.
-    const handEntry: HudActions["settings"][number] = {
-      label: "controls",
-      act: () => toggleHand(),
-      state: () => handLabel(),
-    };
-    const handBtn = plateButton("controls", () => {
-      handEntry.act();
-      this.refreshSettings();
-    });
-    handBtn.classList.add("ml-handbtn"); // stable hook for the landscape gate
-    this.stateful.push([handBtn, handEntry]);
-    row.appendChild(handBtn);
-    window.addEventListener("ml-hand", () => this.refreshSettings());
-    // …and follow toggles from the WIKI side (its write → storage event →
-    // theme.ts re-applies → "ml-theme") so the printed state never goes stale.
-    window.addEventListener("ml-theme", () => this.refreshSettings());
     this.refreshSettings();
     wrap.appendChild(row);
     // The ambient agent injects its cycler button into this row from outside
@@ -1068,6 +1421,22 @@ export class HudBar {
         for (const n of r.addedNodes)
           if (n instanceof HTMLElement && n.classList.contains("ml-amb-slider")) adoptDial(dials, n);
     }).observe(wrap, { childList: true });
+    /* A PLAYER DIAL INJECTED INTO THE DEV GROUP MOVES TO GENERAL. The games
+     * agent's Resolution dial (resdial.ts) finds `.ml-dials` and lands here;
+     * since 2026-09-19 Resolution is a player setting ("what the end user
+     * might want to change: Resolution") and Dev is admin-only. The rule
+     * lives on the receiving side, like adoptDial's: the injector is told
+     * nothing and keeps working unchanged (its isConnected check still holds
+     * after the move); games has the sub-page hook on their board if they
+     * would rather target it directly. Keyed on the label the dial prints. */
+    new MutationObserver((recs) => {
+      for (const r of recs)
+        for (const n of r.addedNodes) {
+          if (!(n instanceof HTMLElement) || !n.classList.contains("ml-amb-slider")) continue;
+          const label = n.querySelector(".ml-amb-slider-label")?.textContent?.trim() ?? "";
+          if (DISPLAY_DIALS.has(label)) displayDials.appendChild(n);
+        }
+    }).observe(dials, { childList: true });
 
     // INDOOR LIGHT: the base ambient inside houses and caves (maintainer
     // 2026-08-06: "a slider on the settings page … 0% = BLACK, 100% = THE TILE
@@ -1247,7 +1616,7 @@ export class HudBar {
     wrap.appendChild(amb);
     this.ambSection = amb;
     this.ambList = list;
-    st.appendChild(wrap);
+    dev.appendChild(wrap);
 
     // Chat page: the persistent message history + a full-width input.
     this.buildChat();
@@ -1795,6 +2164,23 @@ function fmtDay(d: Date): string {
 /** Local wall-clock time, e.g. "14:27" — the per-message timestamp. */
 function fmtTime(d: Date): string {
   return `${p2(d.getHours())}:${p2(d.getMinutes())}`;
+}
+
+/** The scene's settings entries that are PLAYER settings (by label), and the
+ * text each gets on the Sound sub-page. Everything else is a dev control. */
+const PLAYER_AUDIO: Record<string, string> = { sound: "Sound effects", music: "Music" };
+/** Injected dials that are PLAYER settings (by the label they print) and so
+ * live on General's Display section rather than in Dev. */
+const DISPLAY_DIALS = new Set(["Resolution"]);
+
+/** A SECTION TITLE — the "Ambient effects" header's recipe (a rule above,
+ * 12px uppercase muted, shared CSS so the two cannot drift); `first` drops
+ * the rule where a line under the page's own top edge would be noise (the
+ * map chooser's law, UI_AGENT.md). */
+function sectionTitle(text: string, first = false): HTMLElement {
+  const t = mk("div", `ml-sec-title${first ? " first" : ""}`);
+  t.textContent = text;
+  return t;
 }
 
 function plateButton(label: string, onPress: () => void): HTMLButtonElement {
@@ -2437,6 +2823,58 @@ function injectStyles() {
      grid — JS sizes each img to naturalWidth/2 (the bakes are exact 2x of the
      hand-drawn art; a fixed square box distorted + fractionally scaled them) */
   .ml-tab-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  /* ── SUB-TAB STRIP (SUBTABS; maintainer 2026-09-19): between the tab row
+     and the pages. CLOSED it is a 0fr grid row; OPEN it is 1fr, and the
+     row's transition unfolds it over the same .25s ease the rail's top
+     slides up (:root.ml-subanim, set for the slide only), so the pages' top
+     edge never moves: the tab row rises, the strip appears under it, and the
+     game view gives back exactly the strip's height. The chip row keeps its
+     natural height inside the clipped wrap, which is what subStripHeight()
+     measures. A plain resize or a rotation still snaps, as before. ── */
+  .ml-body{flex:1 1 auto;min-height:0;display:flex;flex-direction:column}
+  .ml-subrow{flex:none;display:grid;grid-template-rows:0fr;transition:grid-template-rows .25s ease}
+  .ml-subrow.open{grid-template-rows:1fr}
+  .ml-subwrap{min-height:0;overflow:hidden}
+  :root.ml-subanim .ml-hud{transition:top .25s ease}
+  /* THE STRIP IS A BAND OF ITS OWN (maintainer 2026-09-19, on the first
+     screenshots: "a slight background color change behind the sub-section
+     buttons. Should be slightly darker in light theme and slightly brighter
+     in dark theme. Ofc follow the color palette"): --surface-2 is that step
+     in both themes by construction — the pressed/recessed tone, one L* step
+     below the ground in light (91.7 vs 95.0) and one above it in dark — so
+     the band reads as the second level under the tab row without a colour
+     of its own. The chip row wears the wiki's page-tab recipe on it
+     (wiki.css .pagetabs: one bordered box, a divider between muted
+     segments, the selected one accent-soft in ink) stretched to the tab
+     row's width on its 16px sides, and a 1px rule under it — the page
+     scrolls UNDER this strip too, and a clipped edge without a line read as
+     broken (2026-07-30). Chips are 30px, "25% less tall and still
+     clickable" (his words on the 40px first cut). */
+  .ml-subtabs{display:none;padding:8px 16px;background:var(--surface-2);border-bottom:1px solid var(--border)}
+  .ml-subtabs.show{display:block}
+  .ml-subbar{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;
+    background:var(--surface);border:1px solid var(--border);border-radius:9px;overflow:hidden}
+  .ml-subtab{display:flex;align-items:center;justify-content:center;gap:6px;min-width:0;
+    height:30px;padding:0 6px;background:transparent;color:var(--muted);border:none;border-radius:0;
+    font:600 13px/1.2 var(--sans);cursor:pointer;
+    touch-action:manipulation;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent;
+    user-select:none;-webkit-user-select:none}
+  .ml-subtab+.ml-subtab{border-left:1px solid var(--border)}
+  .ml-subtab:hover,.ml-subtab.press{background:var(--surface-2)}
+  .ml-subtab.sel{background:var(--accent-soft);color:var(--ink);font-weight:700}
+  .ml-subtab[hidden]{display:none}
+  /* placeholder glyphs: 20px strokes on currentColor (the drop dialog's
+     stepper recipe) until his 24x24 bakes replace them, sized natural/2 */
+  .ml-subtab svg{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;
+    stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .ml-subtab-icon{flex:none;image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
+  .ml-subtab-label{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  /* FOUR chips (the admin's Dev) take the type and the gaps one step down —
+     at 393px they are 90px each and "Controls" at 13px/600 came out as
+     "Contr…" (measured); at 12px with 4px sides and an 18px glyph the word
+     fits with room. Three chips keep the three-up size. */
+  .ml-subbar[data-n="4"] .ml-subtab{font-size:12px;gap:4px;padding:0 4px}
+  .ml-subbar[data-n="4"] .ml-subtab svg{width:18px;height:18px}
   /* rotation = SNAP (beginFlip holds ml-noanim through the whole flip):
      Chrome/the OS already animate the rotation itself, so any chrome
      animation on top reads as a broken double animation (maintainer round
@@ -2445,7 +2883,8 @@ function injectStyles() {
      else moves during a hand switch. !important — these transitions live
      in four different injected sheets. */
   :root.ml-noanim .ml-bars,:root.ml-noanim .ml-clock,:root.ml-noanim .ml-wikibtn,:root.ml-noanim .ml-wikinear,
-  :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput{transition:none!important}
+  :root.ml-noanim .ml-chatlog,:root.ml-noanim .ml-chatinput,
+  :root.ml-noanim .ml-hud,:root.ml-noanim .ml-subrow{transition:none!important}
   /* ── THE CHAT TAKES THE CORNER THE STICK DOES NOT — PORTRAIT ONLY
      (maintainer 2026-09-19: "when the control is left handed … in portrait
      mode it's hard to read the chat messages. Can we make the chat right
@@ -2518,7 +2957,15 @@ function injectStyles() {
      and only genuinely tiny phones drop back to 48. */
   :root.ml-land .ml-tab{flex:0 0 auto;width:100%;height:56px}
   @media (max-height:388px){ :root.ml-land .ml-tab{height:48px} }
-  :root.ml-land .ml-pages{order:1;min-width:0}
+  :root.ml-land .ml-body{order:1;min-width:0}
+  /* the sub-tabs in landscape: ICONS ONLY, at the top of the page column
+     (maintainer 2026-09-19: "ONLY use the icons and not the tab-text and
+     show the tabs at the top"), on the column's 8px sides; the strip slides
+     DOWN here (the same 0fr→1fr unfold, pushing the page) and costs the game
+     nothing — the rail math adds it in portrait only */
+  :root.ml-land .ml-subtabs{padding:8px}
+  :root.ml-land .ml-subtab{height:33px;padding:0}
+  :root.ml-land .ml-subtab-label{display:none}
   /* ONE MARGIN INSIDE THE COLUMN, AND IT IS THE GRID'S OWN GAP (maintainer
      2026-09-19, the two margins drawn in red on a screenshot: "the space here
      is more than between backpack slots. I want menu to be smaller so this
@@ -2688,23 +3135,41 @@ function injectStyles() {
   .ml-set{display:flex;flex-direction:column;align-items:stretch;gap:14px;
     width:100%;max-width:560px}
   .ml-btnrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
-  /* the wide Log out button at the top of Settings: a full row of the column */
-  .ml-page>.ml-plate-btn{width:100%;max-width:560px;flex:none}
+  /* a wide button (Log out) directly in a page or a sub-page: a full row of the column */
+  .ml-page>.ml-plate-btn,.ml-sub>.ml-plate-btn{width:100%;max-width:560px;flex:none}
+  /* ── sub-pages: one .ml-sub per sub-tab inside the page; the shown one is
+     the page's whole column (the page stays the scroller, so the safe-centre
+     rule and the scroll gutter hold on every sub-page alike) ── */
+  .ml-sub{display:none;flex-direction:column;align-items:stretch;gap:12px;width:100%;max-width:560px}
+  .ml-sub.show{display:flex}
+  /* a segmented choice (Theme, Hand): a label line over N plate buttons, the
+     lit one current — the ambient mode switch's recipe */
+  .ml-choice{display:flex;flex-direction:column;gap:6px;width:100%}
+  .ml-choice-head{font:600 13px/1.2 var(--sans);color:var(--ink);text-align:left;padding:0 2px}
+  .ml-choice-opts{display:grid;gap:8px}
+  /* switch rows (Sound effects, Music): the ambient checklist's row + box */
+  .ml-rows{display:flex;flex-direction:column;gap:8px;width:100%}
+  /* General's dial group: the adopted Resolution dial; folds away while empty */
+  .ml-dials-display{display:flex;flex-direction:column;gap:14px;width:100%}
+  .ml-dials-display:empty{display:none}
   /* ── ambient-effect checklist ── */
   .ml-amb{display:flex;flex-direction:column;gap:8px;width:100%}
-  .ml-amb-title{border-top:1px solid var(--border);padding-top:12px;
+  /* section titles: ONE recipe for the ambient header and every player-page
+     section (the map chooser's gate compares against .ml-amb-title) */
+  .ml-amb-title,.ml-sec-title{border-top:1px solid var(--border);padding-top:12px;
     color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.08em;
     text-transform:uppercase;text-align:center}
+  .ml-sec-title.first{border-top:none;padding-top:0}
   .ml-amb-list{display:flex;flex-direction:column;gap:8px;width:100%}
   .ml-amb-mode{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;width:100%}
-  .ml-amb-row{justify-content:flex-start;gap:12px;text-align:left;white-space:nowrap}
+  .ml-amb-row,.ml-switchrow{justify-content:flex-start;gap:12px;text-align:left;white-space:nowrap}
   .ml-amb-row.blocked{opacity:.5}
-  .ml-amb-label{overflow:hidden;text-overflow:ellipsis}
+  .ml-amb-label,.ml-switch-label{overflow:hidden;text-overflow:ellipsis}
   /* pure-CSS checkbox: accent fill + white tick when .on */
-  .ml-amb-check{width:18px;height:18px;flex:none;position:relative;
+  .ml-amb-check,.ml-check{width:18px;height:18px;flex:none;position:relative;
     background:var(--surface);border:1px solid var(--border-strong);border-radius:5px}
-  .ml-amb-check.on{background:var(--accent);border-color:var(--accent)}
-  .ml-amb-check.on::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
+  .ml-amb-check.on,.ml-check.on{background:var(--accent);border-color:var(--accent)}
+  .ml-amb-check.on::after,.ml-check.on::after{content:"";position:absolute;left:5px;top:1px;width:5px;height:10px;
     border:solid #fff;border-width:0 2px 2px 0;transform:rotate(45deg)}
   /* ── bird-density slider ── */
   /* EVERY SLIDER ROW LEAVES A SCROLL GUTTER DOWN THE RIGHT (maintainer
@@ -2840,6 +3305,8 @@ function injectStyles() {
     .ml-dials{gap:10px}
     .ml-tabrow{padding:8px 14px 8px}
     .ml-tab{height:48px}
+    .ml-subtabs{padding:6px 14px}
+    .ml-subtab{height:28px}
     .ml-page{gap:8px;padding:8px 14px calc(8px + var(--ml-safe-bottom, 0px))}
     .ml-plate-btn{min-height:36px}
     .ml-set{gap:10px}

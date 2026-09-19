@@ -22,17 +22,32 @@ let bad = false;
 const fail = (m) => { console.log("FAIL:", m); bad = true; };
 const ok = (m) => console.log("ok:", m);
 
-async function openHud(ctxOpts) {
+/** `overlayGone`: wait for the loading overlay to detach (the screenshot
+ *  pass needs it gone). The wide geometry-only pass does NOT: its rects read
+ *  through the overlay, and at 980x2123 on dsf 2 the software-GL first paint
+ *  outruns even the overlay's 60s failsafe on this harness (measured twice
+ *  2026-09-19, alone on the box), which is starvation, not layout. */
+async function openHud(ctxOpts, { overlayGone = true } = {}) {
   const page = await (await browser.newContext(ctxOpts)).newPage();
+  // THE SETTINGS GRID LIVES ON THE DEV SUB-TAB, ADMIN ONLY (2026-09-19):
+  // the server's answer is what admin.ts believes, so the route is the login
+  // (verify-recbtn's pattern).
+  await page.route("**/api/wiki/me", (route) =>
+    route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ admin: true }) }),
+  );
+  await page.addInitScript(() => localStorage.setItem("wiki-admin-token", "gate"));
   await page.goto(`${BASE}/`, { waitUntil: "load" });
-  await page.waitForSelector(".ml-ddhead", { timeout: 60_000 });
+  // the select screen is READY when its probe is up (every other gate's
+  // wait) — the world dropdown's header this used to wait for is not painted
+  // on a one-world select screen, and the game has ONE world since 2026-09-09
+  await page.waitForFunction(() => window.__mlSelect, null, { timeout: 60_000 });
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForSelector(".ml-slot", { timeout: 60_000 });
   // let the loading overlay finish its fade + remove() so real clicks land
   // (no frame compose / plate settle any more — those layers are gone).
   // 90s: the wide viewport starves headless GL and the overlay can ride its
   // 60s failsafe before hideLoading fires.
-  await page.waitForSelector("#ml-loading", { state: "detached", timeout: 90_000 });
+  if (overlayGone) await page.waitForSelector("#ml-loading", { state: "detached", timeout: 90_000 });
   await page.waitForTimeout(400);
   return page;
 }
@@ -46,6 +61,9 @@ async function openHud(ctxOpts) {
 async function measure(page) {
   await page.evaluate(() => document.querySelector('.ml-tab[data-tab="settings"]').click());
   await page.waitForTimeout(300);
+  // the button grid is the Dev sub-page's (hud.ts SUBTABS)
+  await page.evaluate(() => window.__mlHud.sub("settings", "dev"));
+  await page.waitForTimeout(200);
   return page.evaluate(() => {
     const r = (el) => el.getBoundingClientRect();
     const page_ = document.querySelector(".ml-page.show");
@@ -115,7 +133,11 @@ try {
     console.log(`shot ${OUT}/${name}.png`);
   };
   await shoot("backpack", "page-backpack");
-  await shoot("settings", "page-settings");
+  await shoot("settings", "page-settings"); // General, the player's first sub-tab
+  await page.evaluate(() => window.__mlHud.sub("settings", "dev"));
+  await page.waitForTimeout(400);
+  await page.screenshot({ path: `${OUT}/page-settings-dev.png`, clip: await page.locator(".ml-pages").boundingBox() });
+  console.log(`shot ${OUT}/page-settings-dev.png`);
   await shoot("chat", "page-chat");
   checkGeo("mobile-393", await measure(page));
   await page.context().close();
@@ -124,7 +146,7 @@ try {
   const wide = await openHud({
     viewport: { width: 980, height: 2123 }, screen: { width: 393, height: 851 },
     isMobile: true, hasTouch: true, deviceScaleFactor: 2,
-  });
+  }, { overlayGone: false });
   checkGeo("desktop-site-980", await measure(wide));
   await wide.context().close();
 } finally {

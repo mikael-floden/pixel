@@ -59,15 +59,20 @@ function apply(theme: string | null) {
   window.dispatchEvent(new CustomEvent("ml-theme", { detail: currentTheme() }));
 }
 
-/** Flip light↔dark, persist, and broadcast (game root + "ml-theme" event —
- * wikipanel mirrors it onto a live wiki iframe). */
-export function toggleTheme(): Theme {
-  const next: Theme = currentTheme() === "dark" ? "light" : "dark";
+/** Set the theme, persist, and broadcast (game root + "ml-theme" event —
+ * wikipanel mirrors it onto a live wiki iframe). The Settings "Theme" choice
+ * (hud.ts) picks a value; the select screen's ◐ button flips. */
+export function setTheme(next: Theme): Theme {
   try {
     localStorage.setItem(THEME_KEY, next);
   } catch {}
   apply(next);
   return next;
+}
+
+/** Flip light↔dark. */
+export function toggleTheme(): Theme {
+  return setTheme(currentTheme() === "dark" ? "light" : "dark");
 }
 
 let mounted = false;

@@ -97,10 +97,60 @@ match logic `server/src/chess.ts`; dialog `client/src/chessui.ts`; gate
   `--hud-h-inv`); bottom 38.2% (`--hud-h`) is the DOM HUD
   (`client/src/hud.ts`): 6 wiki-style tabs over pages. applyLayout()
   publishes --hud-h/--hud-h-inv in REAL px (consumers parseFloat). Settings
-  hosts the toggles + theme; the time-of-day button keeps the `.ml-hudbtn`
-  hook (smoke). `.ml-plate-btn` survives as a plain-CSS class — the ambient
+  is four sub-tabs (next section); its Dev sub-tab hosts the games agent's
+  toggles, and the time-of-day button keeps the `.ml-hudbtn` hook (smoke). `.ml-plate-btn` survives as a plain-CSS class — the ambient
   agent's cycler expects it. Pointer events in the HUD never reach Phaser —
   e2e taps stay in the top 61.8% (canvas centre y = VH*0.309).
+
+## Settings sub-tabs (the strip the rail grows by)
+
+The law is in `games2/UI_AGENT.md` ("A PAGE'S SUB-TABS ARE A STRIP THE RAIL
+GROWS BY"); this holds the mechanics and the numbers.
+
+- **Why the canvas is not resized.** `--hud-h` is the HUD's real edge, so a
+  resize-on-open would have been the honest choice — but `#game` follows
+  `--hud-h-inv` through main.ts's ResizeObserver, and a `scale.resize` is a
+  framebuffer realloc plus a whole-world redraw (traced ~2s per resize during
+  rotation); a 250ms slide would fire one per frame, and even one at the end
+  re-centres the world by half the strip under the player's eye. So `#game`
+  is `calc(var(--hud-h-inv) + var(--sub-h))`: the world keeps the three-row
+  split and the strip covers its bottom 49px while Settings is open. The
+  player is 25px below the visible centre for as long as a menu is open,
+  which nobody can see; the drop dialog centres on the visible view (it reads
+  `--hud-h`), which is right.
+- **Why the fold is `grid-template-rows` and not a measured height.** A
+  height transition needs the target in px and the strip's natural height is
+  only known once it is laid out; 0fr→1fr interpolates the wrap's height
+  linearly in the fr value with no number in CSS, and the rail's `top`
+  interpolates linearly in px, so under one easing the two sums cancel frame
+  for frame. The JS rail math still needs the number (`subStripHeight`
+  reads the chip row's rect — the row keeps its natural height inside the
+  clipped wrap even mid-fold).
+- **Why the leaving row stays shown.** Filmed with GL dropped: on close the
+  chip row switched to display:none in the same task that removed `.open`,
+  the wrap folded from a 0px content in one frame while `top` still had
+  250ms to run, and the page's top edge read 557 (up 61) for that frame.
+  `.ml-subrow.open` is the state; the row is only swapped when a page WITH
+  sub-tabs opens.
+- **Why the harness cannot film it.** rAF runs at ~300ms per frame here even
+  with the WebGL context dropped (`__ml.glLose`), and a driver round trip is
+  ~750ms, so every sample of a 250ms slide is its end state. The gate pins
+  the contract instead: both computed transitions (`top` /
+  `grid-template-rows`, `0.25s ease`), the rail's top snapping again without
+  `ml-subanim`, the row shown through the collapse, and both end states.
+- **The player pages' recipes are the page's own**: section title =
+  `.ml-amb-title` (shared selector, `.first` drops the rule), segmented
+  choice = the ambient mode switch (`.ml-choice`), switch row = the ambient
+  row + checkbox on neutral names (`.ml-switchrow` / `.ml-check`), dial =
+  `.ml-amb-slider`, wide button = `.ml-sub>.ml-plate-btn`.
+- **Sections proposed to the maintainer 2026-09-19** (icons pending his
+  PixelLab set): General = display + account (theme, resolution, log out;
+  later language, chat text size); Sound = audio (sound/music switches; SFX,
+  music and ambience volume once the composer exposes per-bus levels);
+  Controls = the thumb (handedness; later stick placement, hold-to-select
+  delay, stick size); Dev = admin. Three player tabs plus Dev is the cap of
+  four; General carries display because a pixel-art phone game has too few
+  graphics options for a tab of its own.
 
 ## Landscape, handedness, rotation (in-game only)
 

@@ -207,6 +207,17 @@ try {
     if (tabs.length !== 6) fail(`want 6 HUD tabs, got ${JSON.stringify(tabs)}`);
     await page.click('[data-tab="settings"]');
     await page.waitForTimeout(120);
+    // THE SWITCH GRID AND THE DIALS LIVE ON THE DEV SUB-TAB, ADMIN ONLY
+    // (hud.ts SUBTABS, 2026-09-19): the server's answer is what admin.ts
+    // believes, so the route is the login (verify-recbtn's pattern), and the
+    // HUD's probe opens Dev — hidden, the tracks below have no geometry.
+    await page.route("**/api/wiki/me", (route) =>
+      route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ admin: true }) }),
+    );
+    await page.evaluate(() => localStorage.setItem("wiki-admin-token", "gate"));
+    await page.evaluate(() => window.__mlHud.admin(true));
+    await page.evaluate(() => window.__mlHud.sub("settings", "dev"));
+    await page.waitForTimeout(120);
     const t0 = await page.evaluate(() => window.__ml.timeOfDay().name);
     // DOM click, not a pointer click: this harness viewport (480x320, kept
     // small for headless-GL health) squeezes the HUD to ~120px — the plate

@@ -159,7 +159,11 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `scripts/verify-safearea.mjs` (the cutout: the insets driven over CDP,
   the chips, the select corners and the landscape top chrome stepping down by
   the top inset, the pages' scroll end by the bottom one, and the plain
-  geometry back the moment the insets are 0).
+  geometry back the moment the insets are 0),
+  `scripts/verify-subtabs.mjs` (the Settings sub-tabs: the rail growing by
+  exactly the strip while the page and the canvas keep their geometry, the
+  lock-step slide by declaration, the four pages and their live controls,
+  the admin-only Dev, the landscape icons-only strip).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -372,6 +376,62 @@ from the games agent), #18 (title/landing screen).
   His verdict on the whole portrait layout — top-right stack, corner ghost,
   three-row rail — on seeing it (2026-09-18): "Wow! This is perfect!" Do not
   re-litigate any of the three without his word.
+- **A PAGE'S SUB-TABS ARE A STRIP THE RAIL GROWS BY, NEVER THE PAGE SHRINKS
+  BY** (maintainer 2026-09-19: "the subsection appears by sliding up the menu
+  over it so the menu content area is just as big as the menu inner area we
+  have today … in landscape ONLY use the icons and show the tabs at the top …
+  at most 4 … the last option should always be dev if the admin is logged
+  in"). `hud.ts SUBTABS` is the registry — a page lists up to four entries
+  and gets a chip row in the one shared strip (`.ml-subrow`, between the tab
+  row and the pages) and a `.ml-sub` pane per entry inside its page; the page
+  stays the scroller. Equipment gets its sub-tabs the same way, so nothing
+  here is Settings-only. PORTRAIT: `applyLayout` adds the open strip's
+  measured height (`--sub-h`, `subStripHeight`) to the three-row rail AFTER
+  the golden ceiling — `--hud-h`/`--hud-h-inv` are the HUD's real edge, so
+  the chat log, the ghost stick, the fps badge and the drop dialog ride up
+  untouched — and `#game` (index.html) adds `--sub-h` back, so the CANVAS
+  NEVER RESIZES for a menu (a resize is a framebuffer realloc plus a
+  whole-world redraw and would fire per frame of the slide); the world under
+  the strip is covered. THE SLIDE IS LOCK-STEP: the strip is a
+  `grid-template-rows` 0fr→1fr fold and the rail's `top` transitions under
+  `:root.ml-subanim` (set for the slide only — resizes and rotations still
+  snap, and `ml-noanim` covers both), both `.25s ease` from one style recalc,
+  so the page's top edge never moves; the LEAVING chip row stays `.show`
+  through the collapse or the fold has no content and the page jumps a frame
+  (filmed). `.ml-subrow.open` is the truth, not the row. LANDSCAPE: the strip
+  is the top of the page column (`.ml-body` = strip + pages, re-ordered beside
+  the vertical tab strip), icons only, `--sub-h` 0. THE STRIP IS A
+  `--surface-2` BAND (his, on the first screenshots: "slightly darker in
+  light theme and slightly brighter in dark theme. Ofc follow the color
+  palette" — that token is that step in both themes by construction) and THE
+  CHIPS are 30px ("25% less tall and still clickable", on the 40px first
+  cut; 33 in landscape, 28 on the compact tier), wearing the wiki's own
+  page-tab recipe (`wiki.css .pagetabs`: one bordered box, dividers, muted
+  segments, `.sel` accent-soft in ink) stretched to the tab row's width;
+  four chips take the type one step down (`data-n`, measured: "Contr…" at
+  90px otherwise). Icons are inline-SVG placeholders on
+  currentColor until his 24x24 PixelLab set lands (then `img:` in the
+  registry, natural/2). SETTINGS' FOUR: General (Theme choice, the adopted
+  Resolution dial, Log out), Sound (the scene's `sound`/`music` entries as
+  switch rows — `PLAYER_AUDIO` keys them by label; volume sliders the day the
+  composer publishes a per-bus level), Controls (the Hand choice), Dev = the
+  whole old page (the switch grid with its `.ml-hudbtn` hook, every dial,
+  the ambient checklist), hidden until the server says admin (`admin.ts`;
+  `__mlHud.admin(true)` re-asks, gates route `/api/wiki/me` like
+  verify-recbtn). OUTSIDE INJECTORS ARE NOT TOLD: their hooks
+  (`.ml-page[data-page=settings] .ml-set` / `.ml-dials`) are the Dev pane's,
+  so a new dev dial lands in Dev by default; a PLAYER dial is adopted into
+  General on the receiving side by the label it prints (`DISPLAY_DIALS`),
+  the way `adoptDial` already moves strays. THE DEV PANE IS FIRST IN THE
+  PAGE'S DOM (its chip stays last): the injectors take the FIRST hook by
+  `querySelector`, and General's dial group wears `.ml-dials` as well because
+  the one-block law is gated on the slider's PARENT class (verify-smoke) —
+  reorder the panes and every dev dial lands on the player's page. Measured
+  393×851: strip 49px, rail 311→360, page top 618 and height 233 in both
+  states, chips 120px three-up / 90px four-up; landscape strip 52px, chips
+  53px in the 314px column. Probe
+  `__mlHud.sub(page, id?)` / `.subs(page)` / `.admin(force?)`. Gate:
+  `scripts/verify-subtabs.mjs`; `qa-hudpages` opens Dev as the admin.
 - **THE RED BUTTON FREEZES THE WORLD ON A LOSSLESS FRAME OF IT**
   (`freezeframe.ts`, maintainer 2026-09-18: "printscreen the entire page/game
   and freeze the game / only show the printscreen as a 'freezed frame' when you
