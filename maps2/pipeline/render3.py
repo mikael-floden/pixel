@@ -1184,8 +1184,10 @@ def fade_pool(field_ground, other):
     """The REAL fade product (tiles/fades, tiles3/fade-tiles@1): top-only mix
     tiles placed BY EDGE_GROUND — the ground the tile's rim belongs to — never
     by area majority (maintainer ruling 2026-08-28: big rocks ON an ice sheet).
-    Returns [(file, other_pct)] usable inside a `field_ground` field next to
-    `other`, sorted by how much of the other ground shows."""
+    Returns [(file, other_area_pct)] usable inside a `field_ground` field
+    next to `other`, sorted by how much of the other ground shows — the
+    measured top-face area, which is what that sentence has always claimed
+    and what it now reports."""
     key = ("fadepool", field_ground, other)   # -> [(file, pct, rating)]
     if key in _set_cache:
         return _set_cache[key]
@@ -1205,17 +1207,30 @@ def fade_pool(field_ground, other):
             if fbe.get("status") != "approved":
                 continue
             rating = float(fbe.get("rating") or 0)
-            pct = t.get("pct", {}).get(other, 0)
+            # HOW MUCH OF THE OTHER GROUND ACTUALLY SHOWS — `area_pct`, the
+            # measured top-face share, NOT `pct`. `pct` is the producer's
+            # placement label: pct[edge] = 51 + 49*area_edge (fades_post), a
+            # formula built so the edge winner is always the majority, which
+            # makes pct[other] = 0.49 x the real area and never more than 49.
+            # Ordering by it is the same ordering — it is monotone in the area
+            # — but the NUMBER was never the share this function promises.
+            pct = t["area_pct"].get(other, 0)
             # honest mixes only: a 0% tile is the source set's own idea of a
-            # pure field (a lime square on our grass), a >60% one reads as the
-            # other ground with a rim — the maintainer's never-50/50 rule.
+            # pure field (a lime square on our grass).
             # THE FLOOR IS 1%, NOT 8 (the game's rule, maintainer 2026-09-09):
             # his falloff dial keeps the DENSE tiles to the transition and
             # wants the sparsest ones far out, and the 8% floor threw away
             # exactly the far-band tiles — the grass/light_soil pair tops out
-            # at 16%, so the old floor left it three tiles. tiles3.ts
-            # fadeTier and this pool are gated equal by the parity fixture.
-            if not (1 <= pct <= 55):
+            # at 16%, so the old floor left it three tiles.
+            # AND THERE IS NO CEILING. The old `<= 55` never fired, because
+            # pct[other] cannot exceed 49 by construction; ported onto the
+            # real area it would fire hard, and wrongly — an INVERTED tile
+            # (area majority rock, rim ice) is valid and places on ice, which
+            # is the maintainer's own 2026-08-28 ruling. Measured: 725 tiles
+            # across 120 of the 207 pools, two of them emptied — a hard edge
+            # in the world. With the floor alone every pool is identical to
+            # the one this function has always returned.
+            if pct < 1:
                 continue
             # palette sanity: the tile's own mean must sit near the pct-blend
             # of the two grounds' palette tops — one mis-corrected set ships a
