@@ -233,27 +233,35 @@ try {
     const first = g2.firstElementChild.getBoundingClientRect();
     return { cols, slotW: Math.round(first.width) };
   });
-  slots.cols === 2 && slots.slotW >= 55
-    ? ok(`backpack is 2 wide in landscape, slots still page-filling at ${slots.slotW}px`)
-    : fail(`backpack grid ${JSON.stringify(slots)}, want 2 columns of >=55px`);
-  // THE BACKPACK SCROLLS NOW, AND THAT IS THE TRADE HE TOOK: two columns give
-  // the third column's width back to the game, so more of the bag is below the
-  // fold. What must NOT happen is a SIDEWAYS scroll — the grid wider than the
-  // column it sits in is the bug this replaced the old no-scroll check with,
-  // and it is the one that would clip a slot rather than merely hide it.
+  slots.cols === 3 && slots.slotW >= 55
+    ? ok(`backpack is 3 wide in landscape, slots page-filling at ${slots.slotW}px`)
+    : fail(`backpack grid ${JSON.stringify(slots)}, want 3 columns of >=55px`);
+  // THE MARGIN BESIDE THE BAG IS THE BAG'S OWN GUTTER (maintainer 2026-09-19,
+  // both margins drawn in red on a screenshot: "the space here is more than
+  // between backpack slots. I want menu to be smaller so this area can be the
+  // same as the spacing between slots. THAT WAS ALL I WANTED"). This is the
+  // whole ask, so it is asserted as the relationship — side gap === column
+  // gap — and never as a number: change the grid's gap and this follows, or
+  // fails. A bag framed wider than its own gutters is the bug.
   const bp = await page.evaluate(() => {
     const pg = document.querySelector('.ml-page[data-page="backpack"]');
     const grid = pg.querySelector(".ml-slots");
+    const pr = pg.getBoundingClientRect(), gb = grid.getBoundingClientRect();
     return {
       overX: pg.scrollWidth - pg.clientWidth,
-      gridR: Math.round(grid.getBoundingClientRect().right),
-      pageR: Math.round(pg.getBoundingClientRect().right),
-      padR: parseFloat(getComputedStyle(pg).paddingRight) || 0,
+      gap: parseFloat(getComputedStyle(grid).columnGap) || 0,
+      left: Math.round(gb.left - pr.left),
+      right: Math.round(pr.right - gb.right),
     };
   });
-  bp.overX <= 0 && bp.gridR <= bp.pageR - bp.padR + 1
-    ? ok(`the grid fits its column with no sideways scroll (grid ends at ${bp.gridR}, column's inner edge ${Math.round(bp.pageR - bp.padR)})`)
-    : fail(`the backpack grid overflows its column: ${JSON.stringify(bp)}`);
+  Math.abs(bp.left - bp.gap) <= 1 && Math.abs(bp.right - bp.gap) <= 1
+    ? ok(`the space beside the bag is the bag's own gutter (${bp.left}px each side, slot gap ${bp.gap}px)`)
+    : fail(`the bag sits in a frame wider than its gutters: ${bp.left}/${bp.right}px sides vs a ${bp.gap}px slot gap`);
+  // …and it must not overflow SIDEWAYS, which would clip a slot rather than
+  // merely push it below the fold.
+  bp.overX <= 0
+    ? ok("no sideways scroll — the grid is inside its column")
+    : fail(`the backpack grid overflows its column by ${bp.overX}px`);
   // MAP at the portrait size (maintainer: "the map should look the same
   // size" — sized to the short viewport side, sides clipped evenly).
   await page.evaluate(() => document.querySelector('[data-tab="map"]').click());
@@ -523,11 +531,12 @@ try {
   g.padBlurCss && g.padBlurCss.display === "none"
     ? ok("blur disc hidden in portrait (the stick sits on the opaque HUD page)")
     : fail(`blur disc still shown in portrait: ${JSON.stringify(g.padBlurCss)}`);
-  // PORTRAIT (maintainer 2026-09-17): the Wiki row sits directly under the XP
-  // chip and the pill one step under the ROW — the bottom corner is the
-  // portrait ghost stick's (verify-gamepad).
-  Math.abs(g.wikibtn.t - g.barsR.b - 10) <= 2 && Math.abs(g.wikibtn.r - g.barsR.r) <= 2 && Math.abs(g.clock.t - g.wikibtn.b - 10) <= 2
-    ? ok(`portrait Wiki row under the XP chip (t=${g.wikibtn.t} = chip b ${g.barsR.b} + 10), pill one step under it (t=${g.clock.t})`)
+  // PORTRAIT: the time-of-day PILL sits directly under the XP chip and the
+  // Wiki row one step under the PILL (maintainer 2026-09-17 put the stack
+  // top-right; 2026-09-19 swapped the two on his word). The bottom corner is
+  // the portrait ghost stick's (verify-gamepad).
+  Math.abs(g.clock.t - g.barsR.b - 10) <= 2 && Math.abs(g.clock.r - g.barsR.r) <= 2 && Math.abs(g.wikibtn.t - g.clock.b - 10) <= 2
+    ? ok(`portrait pill under the XP chip (t=${g.clock.t} = chip b ${g.barsR.b} + 10), Wiki row one step under it (t=${g.wikibtn.t})`)
     : fail(`portrait clock ${JSON.stringify(g.clock)} / wikibtn ${JSON.stringify(g.wikibtn)} / chip ${JSON.stringify(g.barsR)}`);
   g = await geom();
   g.stickPos !== "fixed" && g.stick.l < 393 * 0.5

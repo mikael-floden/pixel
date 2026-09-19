@@ -2508,6 +2508,19 @@ function injectStyles() {
   :root.ml-land .ml-tab{flex:0 0 auto;width:100%;height:56px}
   @media (max-height:388px){ :root.ml-land .ml-tab{height:48px} }
   :root.ml-land .ml-pages{order:1;min-width:0}
+  /* ONE MARGIN INSIDE THE COLUMN, AND IT IS THE GRID'S OWN GAP (maintainer
+     2026-09-19, the two margins drawn in red on a screenshot: "the space here
+     is more than between backpack slots. I want menu to be smaller so this
+     area can be the same as the spacing between slots. THAT WAS ALL I
+     WANTED"). The short-viewport rule gives every page 14px sides and the
+     backpack grid gaps 8, so the bag sat in a frame wider than its own
+     gutters. 8px sides make the margin and the gutter one number, and
+     landscapeMenuWidth() reads the padding, so the COLUMN gives back exactly
+     the 12px the page stopped holding — measured 325 -> 314, which is the
+     "tiny tiny bit smaller" he asked for and 11px of game view.
+     PORTRAIT IS NOT TOUCHED: 16px sides against a 10px gap is his, unremarked
+     on the screen he uses most, and this is landscape's number only. */
+  :root.ml-land .ml-page{padding-left:8px;padding-right:8px}
   /* the settings grid drops to two columns in the narrow landscape column —
      three squeezed the labels into clipped fragments ("weathe…") */
   :root.ml-land .ml-btnrow{grid-template-columns:repeat(2,1fr)}
@@ -2524,8 +2537,8 @@ function injectStyles() {
      from 526 to 602. The backpack scrolls a little sooner, which is the
      trade he asked for. Grid width = 2 slots + 1 gap. The 320px cap keeps
      tablet columns from ballooning. */
-  :root.ml-land .ml-slots{grid-template-columns:repeat(2,1fr);
-    max-width:min(320px, calc((100dvh - 72px)*0.4 + 10px))}
+  :root.ml-land .ml-slots{grid-template-columns:repeat(3,1fr);
+    max-width:min(320px, var(--bag-grid-w, calc((100dvh - 72px)*0.6 + 20px)))}
   /* ── pages ── */
   .ml-pages{flex:1 1 auto;min-height:0;position:relative}
   /* 'safe center' keeps a short page centred but falls back to top-anchored the

@@ -283,18 +283,27 @@ from the games agent), #18 (title/landing screen).
   than the split would be a regression. It READS the grid's computed max-width
   rather than restating that height-derived formula, because two copies of it
   drift the first time either is tuned.
-  **AND THE BACKPACK IS TWO COLUMNS IN LANDSCAPE, NOT THREE.** Sizing to
-  content alone won nothing: measured at 851×393 the three-column grid wanted
-  212px and the golden split gave 325 — the cap bound exactly, which is why he
-  saw no change. The slot keeps its height-derived size (65px, unchanged, so
-  nothing got fiddlier to tap) and the third column's width goes to the GAME.
-  Measured: menu 325 → 251 (38.2% → 29.5%), game view 526 → 600; on a 740×360
-  phone the slots actually GREW (51 → 59), because the grid was being squeezed
-  by a column narrower than it wanted. The backpack scrolls sooner — that is
-  the trade, and `verify-landscape` no longer asserts "no scroll" but asserts
-  the thing that would really be a bug: no SIDEWAYS overflow, the grid inside
-  its column's inner edge. The width is gated against its PARTS, never a
-  literal, plus `< golden` so a future change that wins nothing fails loudly.
+  **AND THE MARGIN BESIDE THE BAG IS THE BAG'S OWN GUTTER** — which is the
+  whole ask, and all of it (maintainer 2026-09-19, both margins drawn in red on
+  a screenshot: "the space here is more than between backpack slots. I want
+  menu to be smaller so this area can be the same as the spacing between slots.
+  THAT WAS ALL I WANTED"). The short-viewport rule gave every page 14px sides
+  while the grid's gaps are 8, so the bag sat in a frame wider than its own
+  gutters; `:root.ml-land .ml-page` makes the sides 8px, and because
+  `landscapeMenuWidth()` READS the padding the column hands back exactly the
+  12px the page stopped holding. Measured at 851×393: menu 325 → 314, sides
+  8px = slot gap 8px, three columns kept, slot 65 → 66. Gated as the
+  RELATIONSHIP (side gap === column gap), never a number, plus `< golden` so a
+  change that wins nothing fails loudly. PORTRAIT IS NOT TOUCHED: 16px sides
+  against a 10px gap is his, unremarked on the screen he uses most.
+  **REJECTED, 2026-09-19, and do not re-attempt: TWO COLUMNS.** Asked for a
+  smaller menu I dropped the backpack to 2 columns and took the menu to 251 —
+  it also widened the game view by 74px, which visibly re-zoomed his world.
+  His verdict: "You fucked up the landscape mode! … I asked for making the menu
+  just a bit smaller so the spacing in the backpack looks better." THE LESSON
+  IS THE MEASUREMENT: the thing that looked wrong was never the column's width
+  in the abstract, it was ONE 6px difference between a margin and a gutter.
+  Measure what he circles before redesigning what he did not.
 - **THE PORTRAIT HUD IS EXACTLY THREE BACKPACK ROWS TALL** (maintainer
   2026-09-18: "aim for the backpack only having exact 3 row slots (not the
   ~3.66 we have today)… A player should feel 3 rows fit exactly and the space
