@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "idle — the update dialog's chips landed (3171d1440e). Next: awaiting his word; the rectangular/parallelogram scenery hitboxes (shared/src/index.ts SceneryHitboxDoc + stampSceneryCollision) remain unstarted and unclaimed.",
+  "current": "CLAIM: the chat overlay takes the corner the STICK DOES NOT — portrait only (maintainer 2026-09-19: \"when the control is left handed on the screen in portrait mode it's hard to read the chat messages… make the chat right aligned for this mode… still left aligned for right-handed people… only portrait\"). LEFT-handed portrait puts the ghost stick in the game view's bottom-LEFT corner (gamepad.ts PORT_GHOST_INSET), which is the chat log's own corner. The mirror lives in hud.ts's sheet with the other handedness mirrors (.ml-lh is mine, and hud.ts already styles .ml-chatlog/.ml-chatinput for the rotation snap) — chat.ts is NOT edited. files: games2/client/src/hud.ts, games2/scripts/verify-chat.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -271,5 +271,5 @@
       "what": "The update dialog's chips follow the CSS and carry HIS name for each agent. Per-area hue removed (it derived from the name, so it followed no theme); every chip is --surface-2/--border/--muted, the sha chip's recipe. Board ids display as his session names (games-ui -> UI, maps2 -> Map, games-perf -> Optimization, games-audio -> Composer, characters2 -> Character, ...); the -assistant and -github-agent suffixes are DERIVED off the stem, so a new domain's github agent needs no entry. verify-updatenotes 27/27, its colour check replaced by a computed-theme-token assertion. files: games2/client/src/updatenote.ts, games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md"
     }
   ],
-  "updated": "2026-09-19T02:42:53Z"
+  "updated": "2026-09-19T09:15:07Z"
 }
