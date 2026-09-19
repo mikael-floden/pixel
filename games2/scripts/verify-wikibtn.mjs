@@ -129,22 +129,25 @@ const assertStack = (g, label) => {
 // gate that reads the constant it is checking asserts nothing. These three
 // numbers ARE the record of what he approved; changing the pill's width
 // without changing this line is exactly the change that must go red.
-const AW = 40, SCALE = 2, EXT = 0.5;
+const AW = 40, SCALE = 2, EXT = 1 / 3;
 const wantPillW = (cardBox) => (AW + Math.round(((cardBox - 2) / SCALE - AW) * EXT)) * SCALE + 2;
 
 /** THE TIME-OF-DAY PILL, which is no longer part of the stack above.
- *  (maintainer 2026-09-19, on the full-width version shipped that morning: "I
- *  just feel the pill got a little bit to wide … just extend it 50% that
- *  additional width instead. This ofc means the pill will not align at the
- *  position it's currently at. So lets center the pill at the top instead
- *  (with same top margin).")
+ *  (maintainer 2026-09-19, over three rounds on one day: the card's full
+ *  width, then "just extend it 50% that additional width instead", then "that
+ *  turned out also be to much. Now I think you should have extended the pill
+ *  only 33%." Also: "This ofc means the pill will not align at the position
+ *  it's currently at. So lets center the pill at the top instead (with same
+ *  top margin)." EXT below is the share, and it is the only thing that moved
+ *  between the three — which is what this gate is asserting: the RULE, so
+ *  that a fourth verdict is one constant here and one in clock.ts.)
  *  Four readings, all RELATIONSHIPS: half the card's extra width, an exact 2x
  *  canvas, centred in the GAME VIEW, and the top margin it already had. */
 const assertPill = (g, label) => {
   if (!g.pill || !g.xp) return fail(`${label}: missing ${!g.pill ? "the pill" : "the XP card"}`);
   const want = wantPillW(g.card);
   near(g.pill.w, want, 1)
-    ? ok(`${label}: the pill takes half the card's extra width (${g.pill.w} against the card's ${g.card})`)
+    ? ok(`${label}: the pill takes ${EXT} of the card's extra width (${g.pill.w} against the card's ${g.card})`)
     : fail(`${label}: pill ${g.pill.w}, wanted ${want} — ${AW} art px plus ${EXT} of what the ${g.card}px card is wider`);
   // THE ONE THAT CANNOT BE FAKED BY A SCREENSHOT: the canvas's BACKING STORE
   // against its box. A pill widened by stretching fails this by construction.
@@ -182,7 +185,7 @@ const assertPill = (g, label) => {
   // IT TOUCHES NOTHING. A centred box is only honest if it clears the chrome
   // on BOTH sides at every width: the cards' own 10px row looks like the
   // emptiest place for it, but at 393px two 148px cards leave 77px between
-  // them and a 116px pill overlaps both. Measured, not reasoned about.
+  // them and even a 104px pill overlaps both. Measured, not reasoned about.
   const hits = Object.entries(g.others).filter(([, r]) =>
     r && g.pill.l < r.r && r.l < g.pill.r && g.pill.t < r.b && r.t < g.pill.b);
   hits.length === 0
@@ -612,7 +615,7 @@ try {
   // every reading there is what put the time-of-day pill in the middle of his
   // screen on 2026-09-19: the two cards fill the top row at 393 and the pill
   // drops below it, so the placement he asked for was never once executed.
-  // 495x1111 is read off his own screenshot rather than guessed — the 116px
+  // 495x1111 is read off his own screenshot rather than guessed — a 116px
   // pill spans 253 device px in a 1080-wide frame, so dpr 2.18 and a 495px
   // layout viewport. Keep BOTH: 393 is where the fallback row is exercised,
   // his is where the rule he actually asked for is.

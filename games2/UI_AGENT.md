@@ -45,14 +45,15 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
 - `client/src/clock.ts` — the day/night clock: the "Fern starfall" PILL, an
   art-pixel landscape painted into a canvas and shown at x2, CENTRED in the
   game view one `--ml-stack-step` under the Wiki row.
-  **IT TAKES HALF THE CARD'S EXTRA WIDTH, AND IT IS NEVER STRETCHED TO GET
-  THERE** (maintainer 2026-09-19, who asked for this nervously — "I love the
-  pill today, we just need to make it a bit wider … I think stretching the
-  graphics will kinda destroy the sun and moon" — then saw the full-card
-  version the same day: "I just feel the pill got a little bit to wide. Let's
-  try this instead … just extend it 50% that additional width instead").
+  **IT TAKES A THIRD OF THE CARD'S EXTRA WIDTH, AND IT IS NEVER STRETCHED TO
+  GET THERE** (maintainer 2026-09-19, who asked for this nervously — "I love
+  the pill today, we just need to make it a bit wider … I think stretching the
+  graphics will kinda destroy the sun and moon" — then tuned it twice in one
+  day: the full card was "a little bit to wide", half the extra "turned out
+  also be to much. Now I think you should have extended the pill only 33%").
+  ONE CONSTANT MOVED ACROSS ALL THREE ROUNDS, which is the point:
   `fitPill()` is the whole rule: `AW` (40) is the width the mock was approved
-  at, `EXT` (0.5) the share of the XP card's EXTRA width it takes, and `aw` is
+  at, `EXT` (1/3) the share of the XP card's EXTRA width it takes, and `aw` is
   what is drawn. The sum is done in WHOLE ART PIXELS in JS, not in `calc()`,
   because CSS cannot round and the halved width lands on odd css px (146 →
   113) which would hand the canvas a 1.98x scale. The box is then exactly
@@ -80,7 +81,7 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   between the two cards: "Ofc it should be placed here") — and it takes that
   line WHEN THE TWO CARDS LEAVE ROOM, which `fitPill` MEASURES: the view minus
   their two 10px margins and their two widths, against the pill plus the same
-  10px each side. His phone (~490px) leaves 173px for a 116px pill and gets
+  10px each side. His phone (495px) leaves 179px for a 104px pill and gets
   the top row; at 393px it leaves 77 and the pill would sit on an HP bar, so
   there it keeps the row under the Wiki row, free all the way across at every
   width. TWO ROWS, ONE MEASUREMENT — a first cut reasoned about the 393px case

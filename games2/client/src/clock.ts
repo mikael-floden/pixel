@@ -47,12 +47,13 @@ import { TIME_PHASE_SECONDS } from "@nangijala/shared";
 // glow melts its remaining corners into the sky. Don't re-tune these to save
 // a few pixels of screen — shrink SCALE instead.
 // AW IS THE WIDTH THE MOCK WAS APPROVED AT, and `aw` is what is actually
-// drawn. The pill grows with the XP card, but only HALF as far: on 2026-09-19
-// it first took the card's FULL width and the verdict came back the same day
-// — "I just feel the pill got a little bit to wide… just extend it 50% that
-// additional width instead". So EXT is the share of the card's extra width
-// this pill takes, and the rest of the file needs no other change, because
-// the width was never a literal: it is whatever `aw` says.
+// drawn. The pill grows with the XP card, but only a THIRD as far. It took
+// the card's FULL width on the morning of 2026-09-19, then half of the extra
+// ("I just feel the pill got a little bit to wide… just extend it 50% that
+// additional width instead"), then a third ("that turned out also be to much.
+// Now I think you should have extended the pill only 33%"). EXT is that share
+// and it is the ONLY thing those three rounds changed: the width was never a
+// literal anywhere in this file, it is whatever `aw` says.
 // NOTHING IS STRETCHED, and nothing can be: this scene is drawn COLUMN BY
 // COLUMN, so a wider pill is more sky and more hill at the SAME 2x pixel size.
 // The orbs keep r=3.4 and their glow, the hills keep their wavelength (they are
@@ -60,7 +61,7 @@ import { TIME_PHASE_SECONDS } from "@nangijala/shared";
 // six hand-placed stars keep their exact coordinates — see spotsFor().
 const AW = 40; // art pixels across, as approved
 let aw = AW; // …and as currently drawn
-const EXT = 0.5; // …of the card's extra width, in WHOLE art px (see fitPill)
+const EXT = 1 / 3; // …of the card's extra width, in WHOLE art px (see fitPill)
 const TOP_CLS = "on-top"; // set by fitPill when the two cards leave room for it
 const AH = 16; // art pixels down
 const SCALE = 2; // 1 art px = 2 css px
@@ -307,7 +308,7 @@ function mount() {
      first cut put it a third of the way down the screen over the player's
      head. It takes that line WHEN THE TWO CARDS LEAVE ROOM: fitPill measures
      the gap between them and needs the pill plus 10px each side. On his phone
-     (~490px) that gap is 173 for a 116px pill. At 393px it is 77 and the pill
+     (495px) that gap is 174 for a 104px pill. At 393px it is 77 and the pill
      would sit on top of an HP bar, so there it keeps the row it had before —
      one --ml-stack-step under the Wiki row, the first row that is free all
      the way across at every width. Two rows, one measurement, no guessing.
@@ -356,8 +357,8 @@ function mount() {
  * THE PILL'S WIDTH AND ITS CENTRE, BOTH IN WHOLE ART PIXELS — the one
  * function that stops this being a stretch.
  *
- * Width: AW plus EXT of whatever the XP card is wider than AW ("just extend
- * it 50% that additional width instead"). That extra is rounded to a WHOLE
+ * Width: AW plus EXT of whatever the XP card is wider than AW ("extended the
+ * pill only 33%"). That extra is rounded to a WHOLE
  * art pixel and the box is then exactly `aw * SCALE` css px, so one art pixel
  * is always exactly SCALE css px and the canvas's backing store can never
  * disagree with its box — a disagreement is precisely the smearing he was
@@ -394,7 +395,7 @@ function fitPill() {
   // only thing that can stop it is the gap between them, which is the view
   // minus their two margins and their two widths. It needs the pill plus the
   // same 10px margin on each side — anything less and the pill sits on top of
-  // an HP bar. Measured on his phone (~490px) the gap is 173 for a 116px
+  // an HP bar. Measured on his phone (495px) the gap is 174 for a 104px
   // pill; at 393px it is 77 and the pill drops to the row under the Wiki row,
   // which is free all the way across at every width.
   const free = window.innerWidth - gr - 10 - v("--bars-r-w", 0) - (gl + 10 + v("--bars-l-w", 0));
