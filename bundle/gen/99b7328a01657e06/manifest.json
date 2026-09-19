@@ -1,6 +1,6 @@
 {
  "files": {
-  "index.html": "8bdb7f48c149c6c2",
+  "index.html": "9df35add02b78a17",
   "assets/artworker-661fce3db7.js": "661fce3db7967344",
   "assets/composeworker-c8faf6d058.js": "c8faf6d05832465f",
   "assets/fly-7NCAHZ2X.webp": "b676eb013f1e963d",
@@ -12,7 +12,7 @@
   "assets/fly-W275LEDR.webp": "561e085999ee252a",
   "assets/fly-XANQ2PQ7.webp": "6356e3b6e41e8c25",
   "assets/fly-YPYMG4O3.webp": "c9a67f746d9f457a",
-  "assets/index-63d428d2d3.js": "63d428d2d3e66753",
+  "assets/index-e90df191bb.js": "e90df191bb8ec900",
   "assets/still-2I6DHTRM.webp": "de7f704b49e9aa00",
   "assets/still-H5PZSSF4.webp": "af27f10f077912b2",
   "assets/still-KGJ7S3HL.webp": "185d639d60ed7d5b",
@@ -23,6 +23,8 @@
   "assets/still-YHYMYXXT.webp": "629f4846084c221b",
   "assets/tiles3worker-77365d526a.js": "77365d526ac1012c"
  },
+ "git_sha": "31a688fde323ed40bcfe1b23ebb5ceec902484aa",
+ "commit_ts": 1789834225,
  "fallthrough": {
   "characters.json": "1b8b2f4c25538fc7",
   "chess/bb.webp": "8b70d137ceaa0f7a",
@@ -49,7 +51,6 @@
   "manifest.webmanifest": "24f0d8f39cc65104",
   "monsters.json": "5dfd6d814237f0f3",
   "npcs.json": "8fc7205ae6daf870",
-  "shipset.json": "9706b8a08c20a1e8",
   "sw.js": "9f52a1356e970126",
   "ui2/gold-icon.webp": "4809a420184bea18",
   "ui2/icon-backpack.webp": "9807f29cff14199b",
@@ -61,11 +62,19 @@
   "ui2/icon-map.webp": "33f76c6f4068f417",
   "ui2/icon-record-on.webp": "352ef8c573d02274",
   "ui2/icon-record.webp": "851e015ced1283a5",
+  "ui2/icon-report.webp": "863b0546bc0687ca",
   "ui2/icon-search.webp": "80ba9d009f364fe9",
   "ui2/icon-settings.webp": "3632eb61cb973af3",
   "ui2/icon-theme.webp": "290b5dac5af93c30",
   "ui2/icon-wiki.webp": "a340e349f6adf6d5",
   "ui2/select-bg.webp": "9862e815487f7f21",
   "worlds.json": "1322d6cc52854d70"
- }
+ },
+ "root": {
+  "shipset.json": "3405735b00d68383"
+ },
+ "art": {
+  "maps2/worlds3/the_game/minimap.webp": "b8b166c4fa731a96"
+ },
+ "art_bytes": 477198
 }
