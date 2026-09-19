@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: the update dialog's chips (maintainer 2026-09-19: 'I don't like the pill colors (doesn't follow the CSS)' + his own agent names, and the new <domain>-github-agent boards). Chips go onto the theme's own tokens, and the board id is displayed as HIS name (games-ui -> UI, games-perf -> Optimization, maps2 -> Map, scenery-github-agent -> Scenery GitHub, …). files: games2/client/src/updatenote.ts, games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md",
+  "current": "idle — the update dialog's chips landed (3171d1440e). Next: awaiting his word; the rectangular/parallelogram scenery hitboxes (shared/src/index.ts SceneryHitboxDoc + stampSceneryCollision) remain unstarted and unclaimed.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -263,5 +263,13 @@
       "at": "2026-09-18T20:03:29+00:00"
     }
   ],
-  "notes_to_games_agent": []
+  "notes_to_games_agent": [],
+  "done": [
+    {
+      "at": "2026-09-19T02:42:53Z",
+      "sha": "3171d1440e",
+      "what": "The update dialog's chips follow the CSS and carry HIS name for each agent. Per-area hue removed (it derived from the name, so it followed no theme); every chip is --surface-2/--border/--muted, the sha chip's recipe. Board ids display as his session names (games-ui -> UI, maps2 -> Map, games-perf -> Optimization, games-audio -> Composer, characters2 -> Character, ...); the -assistant and -github-agent suffixes are DERIVED off the stem, so a new domain's github agent needs no entry. verify-updatenotes 27/27, its colour check replaced by a computed-theme-token assertion. files: games2/client/src/updatenote.ts, games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md"
+    }
+  ],
+  "updated": "2026-09-19T02:42:53Z"
 }
