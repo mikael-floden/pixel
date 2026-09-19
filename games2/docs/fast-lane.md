@@ -231,6 +231,11 @@ and a red gate rolls production back.
   domains. The `verify` job still takes the whole tree — the gate renders the
   real world and genuinely needs it (measured: an empty `ASSETS_ROOT` hangs it
   past 400 s with no output).
+- TRAP: a sparse cone propagates into every worktree added from that checkout.
+  The store worktree's files landed outside `games2`/`live`, so `git add bundle`
+  staged nothing and the publish failed — `git sparse-checkout disable` in the
+  worktree. Found only because "nothing to commit" is an ERROR in that step
+  rather than a no-op; the alternative was reporting a publish nobody pushed.
 - What this buys, and what it costs: the exposure is the seconds between a bad
   generation being served and the gate finishing. The image is untouched
   throughout and is what a rollback falls back to.

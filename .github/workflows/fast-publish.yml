@@ -185,7 +185,18 @@ jobs:
             exit 1
           fi
           git worktree add "$STORE" bundle-store
-          echo "store worktree at $STORE"
+          # A SPARSE CONE PROPAGATES INTO EVERY WORKTREE ADDED FROM IT. This
+          # checkout is sparse (games2, live) so the bundle store's own files
+          # land OUTSIDE the cone, and `git add bundle` then refuses to stage
+          # them — "paths ... exist outside of your sparse-checkout definition,
+          # so will not be updated in the index" — which failed the first run
+          # after the publish job went sparse. The store branch is a few MB and
+          # shares nothing with the main tree, so the worktree gets no cone at
+          # all. Caught only because "nothing to commit is a defect here" is an
+          # error rather than a no-op: the alternative was reporting a publish
+          # nobody pushed.
+          git -C "$STORE" sparse-checkout disable
+          echo "store worktree at $STORE (full, no sparse cone)"
 
       - name: Publish the generation
         id: pub
