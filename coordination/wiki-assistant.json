@@ -1,8 +1,8 @@
 {
  "domain": "wiki-assistant",
- "updated_at": "2026-09-19T16:05:48+00:00",
+ "updated_at": "2026-09-19T16:22:47+00:00",
  "health": "running",
- "current": "CLAIM — the fade card tells the truth. Files: wiki/site/wiki.js (fadeTilesFor, fadeScene's caller, the card row), wiki/tools/check-fades.mjs, wiki/docs/ground.md. (1) The card's number becomes area_pct — what the picture IS — with a pill naming the field the tile sits in (edge_ground) and the rim's cleanliness (edge_contact). (2) The list sorts by SIDE first, then by that same area, with a named divider between the two blocks: the same visual order as today, computed from honest numbers instead of from a score, so it survives tiles-assistant's mixmeter change moving area_pct while pct stays frozen. (3) The gate stops pinning the schema string — tiles-assistant is publishing tiles3/fade-tiles@2 right now and check-fades.mjs:28 demands @1, so it would go red on their push. wiki.js never reads the schema, so the PAGE is safe either way. Not touching tiles/**: the wiki agent is in tiles/review/**, tiles-assistant in tiles/pipeline + tiles/fades.",
+ "current": "SHIPPED b7ce9490bc — the fade card shows area_pct (what the picture is) with a pill for edge_ground (where it can go) and edge_contact (how clean that rim is); the list sorts side then area with the seam named; the gate takes the tiles3/fade-tiles@* family instead of pinning @1. Gate green. Nothing claimed. The wiki side of the % split is complete — games2 and maps2 still read `pct`, which is correct and safe while tiles keeps it frozen.",
  "progress": {
   "units_shipped": 5
  },
