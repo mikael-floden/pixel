@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "PUSHED 0bf7e3f361 (the record button is his 48x48 plate again, LEFT-aligned with the HP/EP card — the full-width 5-slice is reverted and recorded as a rejected approach; the gate now asserts the SIZE as well as the edge). The freeze frame behind it is unchanged and green. No files in flight.",
+  "current": "CLAIM: the update dialog's chips (maintainer 2026-09-19: 'I don't like the pill colors (doesn't follow the CSS)' + his own agent names, and the new <domain>-github-agent boards). Chips go onto the theme's own tokens, and the board id is displayed as HIS name (games-ui -> UI, games-perf -> Optimization, maps2 -> Map, scenery-github-agent -> Scenery GitHub, …). files: games2/client/src/updatenote.ts, games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
