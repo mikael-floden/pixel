@@ -137,7 +137,7 @@ import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
 import { installGlFrameProbe, glFrameTake, glWindowTake, glFrameEmpty, type GlFrame } from "../glframe";
 import { installGpuTimer, gpuTimerTake } from "../gputimer";
-import { cpuScoreMs, frameHist, rafHz, quantiles } from "../perfextra";
+import { cpuScoreMs, frameHist, rafHz, quantiles, inputSummary } from "../perfextra";
 import { fadeTune, setFadeTune } from "../fadetune";
 import { ChessDialog, ChessMatchView } from "../chessui";
 import { gameUrl } from "../staging";
@@ -2037,7 +2037,7 @@ export class WorldScene extends Phaser.Scene {
    *  whose surface op did not draw. It used to be one per flat cell; if this
    *  climbs back toward `cells`, art is not landing and the pass is paying for
    *  the insurance again. */
-  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0 };
+  private t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: 0, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0, fades: 0 };
   /** The ground has drawn SOMETHING this world — sticky, because after a
    *  scroll t3stats counts only the exposed bands (which can be all void). */
   private groundPainted = false;
@@ -2367,6 +2367,8 @@ export class WorldScene extends Phaser.Scene {
     this.hitchOn = this.perfBeacon;
     if (this.perfBeacon) {
       this.perfHookRender();
+      this.perfHookScene();
+      this.perfHookInput();
       this.perfArmBaselines();
     }
     this.perfBeaconAt = 0;
@@ -2463,6 +2465,12 @@ export class WorldScene extends Phaser.Scene {
     this.perfPrevFullPaints = this.groundFullRuns;
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
+    // The resolver's, the ambient effects' and the fade textures' bills advance
+    // on the same rule: taken here, with the window, never at an early return.
+    const resolveBlock = this.perfResolveTake();
+    const ambientBlock = this.perfAmbientTake();
+    const fadeTexBuilt = Math.max(0, (this.t3tex?.stats.builtFade ?? 0) - this.perfPrevFadeTex);
+    this.perfPrevFadeTex = this.t3tex?.stats.builtFade ?? 0;
     const sec = snap.sections as Record<string, { totalMs?: number }> | undefined;
     const perFrame: Record<string, number> = {};
     const frames = (snap.frames as { n?: number } | undefined)?.n || 1;
@@ -2538,6 +2546,7 @@ export class WorldScene extends Phaser.Scene {
     this.perfLongN = 0;
     this.perfLongMs = 0;
     this.perfLongTasks = [];
+    this.perfInputEntries = [];
     this.hitchSpans = [];
     this.groundBlitPx = 0;
     this.perfOccSum = 0;
@@ -2612,6 +2621,21 @@ export class WorldScene extends Phaser.Scene {
         // budget", KB a frame) and the render resolution (1/r of the backing).
         sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${(1 / renderRes()).toFixed(1).replace(/\.0$/, "")}` : ""}${this.t3compose.stats.state === "ready" ? "/cw" : ""}`,
 
+        /* THE RUN'S OWN SETTINGS, so two runs compare (2026-09-19): the fade
+         * dials (the resolver's scan is (2·reach+1)² neighbours a cell and the
+         * fade count follows amount), the ambient mode the HUD stores
+         * (zone/forced/none, with the forced count) and which lane served the
+         * page — a fast-lane generation and the container differ in bundle
+         * while sharing one image. */
+        fade: (() => {
+          const f = fadeTune();
+          return `r${f.reach} a${f.amount} f${f.falloff}`;
+        })(),
+        ambient: this.perfAmbientMode(),
+        lane: (() => {
+          const a = assetIndexInfo();
+          return !a.imageSha ? "?" : a.buildSha === a.imageSha ? "container" : "fast";
+        })(),
         deviceMemoryGb: nav.deviceMemory ?? 0,
         connType: nav.connection?.effectiveType ?? "?",
         connRttHint: nav.connection?.rtt ?? -1,
@@ -2625,6 +2649,12 @@ export class WorldScene extends Phaser.Scene {
         reconnects: this.reconnectRetries,
       },
       cpu: { bench: "xorshift400k", scoreMs: cpuScoreMs() },
+      /* THE FELT LAG (Event Timing API, `inputSummary`): input delay and
+       * tap-to-paint duration quantiles for every input the browser answered
+       * later than 16 ms, the count over 100 ms and the worst one named.
+       * `avail` first — Safari has no `event` entries, and that is not "no
+       * slow taps". */
+      input: { avail: this.perfInputAvail, ...inputSummary(this.perfInputEntries) },
       gpu: gpuTimerTake(),
       counts: {
         ...(snap.counts as Record<string, number>),
@@ -2768,6 +2798,14 @@ export class WorldScene extends Phaser.Scene {
        * not far below workerMs the feature is not paying for itself, and
        * `state` says whether it ran at all on his device. */
       worker: { ...this.t3worker.stats, cores: navigator.hardwareConcurrency || 0 },
+      /* THE RESOLVER'S OWN BILL ON THIS THREAD (`perfResolveTake`): the worker
+       * has been off in every run he has sent, so every cell, boundary and
+       * deck was resolved inside groundSlice/prefetch/repaintCells with no
+       * line of its own — and the fade scan at his reach 4 reads 80
+       * neighbours a cell. */
+      resolve: resolveBlock,
+      // THE AMBIENT EFFECTS' OWN COST, per feature (`perfAmbientTake`).
+      ambient: ambientBlock,
       // THE COMPOSE WORKER, whole: its state, its counters and why it missed.
       compose: { ...this.t3compose.stats, workerMs: Math.round(this.t3compose.stats.workerMs), applyMs: +this.t3compose.stats.applyMs.toFixed(1) },
       /* EVERY ZONE CROSSING OF THIS WINDOW, from HIS device — the only place
@@ -2839,11 +2877,16 @@ export class WorldScene extends Phaser.Scene {
         flushes: this.t3paintFlushes,
         boundaries: this.t3stats.boundaries,
         underlays: this.t3stats.underlays,
+        fades: this.t3stats.fades, // cells drawn wearing a fade overlay this window
         composed: this.t3stats.composed,
         composeMs: +this.t3stats.composeMs.toFixed(1),
         dropped: this.t3tex?.droppedOps ?? -1,
         built: this.t3tex?.stats.built ?? -1,
         reused: this.t3tex?.stats.reused ?? -1,
+        /* FADE SCATTER TEXTURES BUILT THIS WINDOW — the mix's texture bill. A
+         * pick that welcomes the whole pool at the edge (2026-09-19) wears
+         * more distinct files, and each is one compose and one upload. */
+        fadeTex: fadeTexBuilt,
         seam: this.seamOn,
         transitionsOn: !this.noTransitions,
         /* THE SUB-BATCHES (see t3countBatches). `subPerBracket` is the number
@@ -3230,6 +3273,132 @@ export class WorldScene extends Phaser.Scene {
     this.perfPrevDrains = this.repaintStats.drains;
     this.perfPrevDeferred = this.repaintStats.drainsDeferred;
     this.perfPrevCtxRestores = this.ctxRestores;
+    this.perfSnapResolve();
+    this.perfPrevFadeTex = this.t3tex?.stats.builtFade ?? 0;
+  }
+
+  /** THE SCENE'S EVENT LISTENERS, TIMED (2026-09-19). Phaser runs its own
+   *  systems on PRE_UPDATE (the update list — every animated sprite's frame
+   *  step — the tweens, the timers) and the ambient effects mount on UPDATE
+   *  from outside (ambient/runtime/mount.ts), both before `update()` runs and
+   *  outside every section: in every run so far they were `other`. Wrapping
+   *  this scene's own emitter times the two emits whole, whatever order the
+   *  listeners registered in — `preUpdate` and `hooks`, through `pAdd` like
+   *  the renderer, so they land in `sections` and in the worst frames. */
+  private perfHookScene(): void {
+    if (this.perfSceneHooked) return;
+    this.perfSceneHooked = true;
+    const em = this.events as unknown as { emit: (event: string | symbol, ...args: unknown[]) => boolean };
+    const emit = em.emit.bind(this.events);
+    const PRE = Phaser.Scenes.Events.PRE_UPDATE;
+    const UPD = Phaser.Scenes.Events.UPDATE;
+    em.emit = (event: string | symbol, ...args: unknown[]): boolean => {
+      if (!this.perfOn || (event !== PRE && event !== UPD)) return emit(event, ...args);
+      const t0 = performance.now();
+      const r = emit(event, ...args);
+      this.pAdd(event === PRE ? "preUpdate" : "hooks", performance.now() - t0);
+      return r;
+    };
+  }
+
+  /** THE FELT LAG: every input event the browser answered later than 16 ms,
+   *  kept for `inputSummary` (Event Timing API; `durationThreshold` is the
+   *  API's floor). Chrome has it, Safari does not — `perfInputAvail` says. */
+  private perfHookInput(): void {
+    if (this.perfInputHooked) return;
+    this.perfInputHooked = true;
+    try {
+      const po = new PerformanceObserver((list) => {
+        if (!this.perfOn) return;
+        for (const e of list.getEntries() as PerformanceEventTiming[])
+          if (this.perfInputEntries.length < 512)
+            this.perfInputEntries.push({ name: e.name, startTime: e.startTime, processingStart: e.processingStart, duration: e.duration });
+      });
+      po.observe({ type: "event", durationThreshold: 16 } as PerformanceObserverInit);
+      this.perfInputAvail = PerformanceObserver.supportedEntryTypes?.includes("event") ?? true;
+    } catch {
+      this.perfInputAvail = false;
+    }
+  }
+
+  /** Snapshot the resolver's and the fade scan's cumulative counters — the
+   *  next report sends the deltas. Called with the other baselines, after a
+   *  report, and where the resolver is rebuilt (the fade dials), since a new
+   *  one restarts at zero. */
+  private perfSnapResolve(): void {
+    const b = this.t3?.bill;
+    if (b) this.perfPrevBill = { ...b };
+    const st = this.t3?.tiles.stats;
+    if (st) this.perfPrevFade = { scans: st.fadeScans, visits: st.fadeVisits, placed: st.fadesPlaced };
+  }
+
+  /** THE RESOLVER'S BILL FOR THIS WINDOW (tiles3runtime `bill`, tiles3
+   *  `stats`): cells, boundaries and decks resolved on this thread with their
+   *  summed ms (Chrome's clock is coarsened to 100 µs — the sum over thousands
+   *  of calls is the number, one call is noise), µs per cell, the fade scan's
+   *  cells, neighbour visits (80 a cell at his reach 4) and placements, and the
+   *  worker's state so "0 ms" cannot mean "somewhere else". A delta is never
+   *  negative: a rebuilt resolver re-snaps its baseline where it is built. */
+  private perfResolveTake(): Record<string, number | string> {
+    const b = this.t3?.bill ?? { cells: 0, cellMs: 0, boundaries: 0, boundaryMs: 0, decks: 0, deckMs: 0 };
+    const st = this.t3?.tiles.stats;
+    const p = this.perfPrevBill;
+    const q = this.perfPrevFade;
+    const d = (cur: number, prev: number) => Math.max(0, cur - prev);
+    const cells = d(b.cells, p.cells);
+    const cellMs = d(b.cellMs, p.cellMs);
+    const scans = d(st?.fadeScans ?? 0, q.scans);
+    const visits = d(st?.fadeVisits ?? 0, q.visits);
+    const out = {
+      cells,
+      ms: +cellMs.toFixed(1),
+      usPerCell: cells ? +((cellMs * 1000) / cells).toFixed(1) : 0,
+      boundaries: d(b.boundaries, p.boundaries),
+      boundaryMs: +d(b.boundaryMs, p.boundaryMs).toFixed(1),
+      decks: d(b.decks, p.decks),
+      deckMs: +d(b.deckMs, p.deckMs).toFixed(1),
+      fadeScans: scans,
+      fadeVisits: visits,
+      visitsPerScan: scans ? +(visits / scans).toFixed(1) : 0,
+      fades: d(st?.fadesPlaced ?? 0, q.placed),
+      worker: this.t3worker.stats.state,
+    };
+    this.perfSnapResolve();
+    return out;
+  }
+
+  /** THE AMBIENT EFFECTS' BILL, per feature (ambient/runtime/mount.ts
+   *  `__mlAmbient.cost`, read-and-reset per window — the probe the ambient
+   *  QA reads): mean ms a frame and the peak per effect, plus a `_` row with
+   *  the HUD's mode and what the director has on. They run on this scene's
+   *  UPDATE event, outside every section — the `hooks` section is their sum.
+   *  Absent when the ambient runtime is not mounted. */
+  private perfAmbientTake(): Record<string, Record<string, number | string>> | undefined {
+    type Probe = { cost?: (reset?: boolean) => Record<string, { ms: number; peak: number; frames: number }>; director?: () => { active?: string | null } };
+    const amb = (window as unknown as { __mlAmbient?: Probe }).__mlAmbient;
+    if (!amb) return undefined;
+    const out: Record<string, Record<string, number | string>> = {};
+    try {
+      const cost = amb.cost?.(true) ?? {};
+      for (const [k, v] of Object.entries(cost)) if (v.frames) out[k] = { ms: v.ms, peak: v.peak, frames: v.frames };
+      out._ = { mode: this.perfAmbientMode(), active: String(amb.director?.()?.active ?? "") };
+    } catch {
+      /* the probe is the ambient agent's; a broken arm reads as absent */
+    }
+    return Object.keys(out).length ? out : undefined;
+  }
+
+  /** The HUD's ambient mode as it stores it (hud.ts `AMB_MODE_KEY`, read only
+   *  here): `zone` (the server's roll), `forced:N` (his N effects), `none`. */
+  private perfAmbientMode(): string {
+    try {
+      const raw = localStorage.getItem("ml-amb-mode");
+      if (!raw) return "zone";
+      const v = JSON.parse(raw) as { mode?: string; on?: unknown[] };
+      return `${v.mode ?? "?"}${v.mode === "forced" && Array.isArray(v.on) ? `:${v.on.length}` : ""}`;
+    } catch {
+      return "?";
+    }
   }
 
   private perfHookRender(): void {
@@ -3459,6 +3628,17 @@ export class WorldScene extends Phaser.Scene {
   private perfDlSum = 0;
   private perfZoomSum = 0;
   private perfCountN = 0;
+  /* THE RESOLVER'S, THE FADE SCAN'S AND THE FADE TEXTURES' BASELINES — their
+   * counters are cumulative on the runtime, the resolver and the texture
+   * cache; the report sends the window's deltas (2026-09-19). */
+  private perfPrevBill = { cells: 0, cellMs: 0, boundaries: 0, boundaryMs: 0, decks: 0, deckMs: 0 };
+  private perfPrevFade = { scans: 0, visits: 0, placed: 0 };
+  private perfPrevFadeTex = 0;
+  private perfSceneHooked = false;
+  private perfInputHooked = false;
+  private perfInputAvail = false;
+  /** Event Timing entries over 16 ms this window — see `inputSummary`. */
+  private perfInputEntries: { name: string; startTime: number; processingStart: number; duration: number }[] = [];
   private perfPrevFullPaints = 0;
   private perfPrevCtxRestores = 0;
   /** Ground repaints forced by a context restore or a tab-in — see
@@ -4472,6 +4652,8 @@ export class WorldScene extends Phaser.Scene {
     if (this.perfBeacon) {
       this.hitchOn = true;
       this.perfHookRender();
+      this.perfHookScene();
+      this.perfHookInput();
       // The probes too (net, texture upload, capture, GL frame): a remembered
       // beacon otherwise carried no GL data for its first window.
       this.perfArmBaselines();
@@ -8055,6 +8237,8 @@ export class WorldScene extends Phaser.Scene {
           // missing — which is exactly what it did.
           if (on) {
             this.perfHookRender();
+            this.perfHookScene();
+            this.perfHookInput();
             this.perfArmBaselines();
           }
           this.perfAcc = {};
@@ -18902,6 +19086,7 @@ export class WorldScene extends Phaser.Scene {
     this.t3keepIdx = null;
     this.t3cells.clear(); // a new resolver: nothing cached against the old one may survive
     this.t3 = new Tiles3World({ view, tiles, frame: this.tiles3Frame(), patterns: data.patterns });
+    this.perfSnapResolve(); // a new resolver's counters start at zero
     this.t3regionMs = +(performance.now() - t0).toFixed(1);
     /* AND THE SAME RESOLVER ON ANOTHER CORE. Booted from the URLs THIS thread
      * would use, so staging's `/assets/**` -> CDN rewrite is applied once, here,
@@ -19551,7 +19736,7 @@ export class WorldScene extends Phaser.Scene {
       }
     }
     this.groundSliceStats.runs++;
-    this.t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0 };
+    this.t3stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0, fades: 0 };
     // The cache keeps the FULL window's cells, not the band's — the next step
     // wants the ~82% it already knows.
     if (this.groundCacheOn && this.t3keepIdx) this.t3pruneCache(this.t3keepIdx);
@@ -20779,7 +20964,7 @@ export class WorldScene extends Phaser.Scene {
     // Published BEFORE the passes and mutated in place: a gate reads these
     // counters to tell a correct dark frame from a black one, and an exception
     // mid-pass must leave what actually drew visible, not last frame's numbers.
-    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0 };
+    const stats = { cells: 0, blits: 0, boundaries: 0, decks: 0, scenery: this.t3stats.scenery, ms: 0, culled: 0, composed: 0, composeMs: 0, underlays: 0, fades: 0 };
     this.groundCulled = 0;
     const built0 = tex?.stats.built ?? 0;
     const buildMs0 = tex?.stats.buildMs ?? 0;
@@ -20812,6 +20997,7 @@ export class WorldScene extends Phaser.Scene {
       const cell = cellOf(col, row);
       if (!cell) continue;
       stats.cells++;
+      if (cell.fade) stats.fades++;
       needIdx = row * world.width + col;
       cellArtPaths(cell, need, !!mask); // the lid only while the cut is up
       // THE COMPOSED BOUNDARY — `mask ? plateB : plateA` under the published

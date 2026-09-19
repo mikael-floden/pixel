@@ -48,14 +48,19 @@ const rep = JSON.parse(out);
 // Every block the client sends, with the keys that must come through.
 const MUST = {
   frames: ["n", "p50", "p90", "p99", "max", "le17", "gt100", "mean", "rafHz"],
-  sections: ["render"],
+  // `preUpdate`/`hooks`: the scene's own event listeners (Phaser's systems, the ambient mount), 2026-09-19.
+  sections: ["render", "preUpdate", "hooks"],
   counts: ["occluders", "occMean", "dlMean", "litOccMean", "monActMean", "flushMean", "sceneryImgsMean", "glTexNew", "capSwitch", "longN"],
-  run: ["runId", "winIdx", "sinceLoadS", "visible", "zone", "hops", "moveFrac", "travelCells", "ua"],
+  run: ["runId", "winIdx", "sinceLoadS", "visible", "zone", "hops", "moveFrac", "travelCells", "ua", "fade", "ambient", "lane"],
   rtt: ["n", "p50", "p90", "max", "patches", "patchHz", "reconnects"],
   cpu: ["bench", "scoreMs"],
   gpu: ["avail", "reason", "n", "p50"],
   texFam: [], texUp: ["n", "installed"], net: [], worker: ["state"], heap: ["meanMb", "grewMbPerSec", "drops"],
-  lights: ["n", "gpu", "torch"], groundDrew: ["cells", "blits", "blitMpx", "scissor"], longBy: [], longWhere: [],
+  lights: ["n", "gpu", "torch"], groundDrew: ["cells", "blits", "blitMpx", "scissor", "fades", "fadeTex"], longBy: [], longWhere: [],
+  // 2026-09-19, for his run on the new code: the resolver's own bill, the felt lag, the ambient effects' meter.
+  resolve: ["cells", "ms", "usPerCell", "boundaries", "fadeScans", "fadeVisits", "fades", "worker"],
+  input: ["avail", "n", "slow", "delayP90", "durMax", "worst"],
+  ambient: [],
   longWhy: ["n", "wait", "task", "gc", "taskMs", "waitIdleMs", "gcMb"],
 };
 let ok = 0;

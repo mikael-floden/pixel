@@ -291,3 +291,40 @@ test("longWhy — why the long frames were long — survives the allowlist", () 
   assert.equal(r.longWhy.gcMb, 31);
   assert.equal(perfReport({ frames: { n: 1 } }, AT).longWhy, null);
 });
+
+test("the resolver's bill, the felt lag and the ambient rows reach the file — and the run's settings survive as strings", () => {
+  // 2026-09-19, before his run on six days of new code: the resolver has run
+  // on the frame thread in every run he has sent (worker off) with no line
+  // of its own, the ambient effects ride the scene's UPDATE event outside
+  // every section, and no report has ever said how late a tap was answered.
+  // Same allowlist, same trap: emitted AND named here, in one commit.
+  const r = perfReport(
+    {
+      run: { runId: "a", winIdx: 1, fade: "r4 a0.46 f4", ambient: "forced:2", lane: "fast" },
+      resolve: { cells: 1200, ms: 8.4, usPerCell: 7, boundaries: 300, boundaryMs: 1.2, decks: 4, deckMs: 0, fadeScans: 1100, fadeVisits: 80300, visitsPerScan: 73, fades: 41, worker: "off" },
+      input: { avail: true, n: 3, slow: 1, delayP50: 20, delayP90: 88, delayMax: 88, durP50: 40, durP90: 120, durMax: 120, worst: "pointerdown 120ms" },
+      ambient: { birds: { ms: 0.12, peak: 1.4, frames: 1500 }, _: { mode: "zone", active: "birds" } },
+      groundDrew: { cells: 10, fades: 3, fadeTex: 2 },
+    },
+    AT,
+  ) as Record<string, any>;
+  assert.equal(r.run.fade, "r4 a0.46 f4", "the fade dials are what the scan costs");
+  assert.equal(r.run.ambient, "forced:2");
+  assert.equal(r.run.lane, "fast");
+  assert.equal(r.resolve.cells, 1200);
+  assert.equal(r.resolve.fadeVisits, 80300);
+  assert.equal(r.resolve.worker, "off", "a string, so 0 ms cannot mean 'somewhere else'");
+  assert.equal(r.input.avail, true, "a boolean switch must survive as a boolean");
+  assert.equal(r.input.delayP90, 88);
+  assert.equal(r.input.worst, "pointerdown 120ms");
+  assert.equal(r.ambient.birds.peak, 1.4, "nested rows are records, not scalars");
+  assert.equal(r.ambient._.mode, "zone");
+  assert.equal(r.groundDrew.fades, 3);
+  assert.equal(r.groundDrew.fadeTex, 2);
+  assert.equal(perfReport({}, AT).resolve, null, "absent stays null");
+  assert.equal(perfReport({}, AT).input, null);
+  assert.equal(perfReport({}, AT).ambient, null);
+  // 36 sections arrive with `preUpdate` and `hooks`; the cap must keep the last ones.
+  const secs = Object.fromEntries(Array.from({ length: 40 }, (_, i) => [`s${i}`, i + 1]));
+  assert.equal((perfReport({ sections: secs }, AT) as Record<string, any>).sections.s39, 40, "the sections cap is one short again");
+});

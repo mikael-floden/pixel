@@ -726,6 +726,16 @@ export interface Tiles3Stats {
   unpublishedMasks: number;
   /** Distinct indoor rooms found by the floor fill. */
   rooms: number;
+  /** THE FADE SCAN'S BILL, cumulative — the perf beacon sends deltas per
+   *  window (`resolve.fadeScans/fadeVisits/fades`). `fadeScans` cells that ran
+   *  the neighbour scan, `fadeVisits` the neighbour cells it read (at most
+   *  (2·reach+1)²−1 each — 80 at the game's reach 4 against 24 at render3's
+   *  2; the early-out and a trodden field's alt scan move it), `fadesPlaced`
+   *  cells that took a tile. Counts, never timings: one cell is microseconds
+   *  and Chrome's clock is coarsened to 100 µs. */
+  fadeScans: number;
+  fadeVisits: number;
+  fadesPlaced: number;
 }
 
 /* -- the world the resolver reads ------------------------------------------- */
@@ -1218,6 +1228,9 @@ export class Tiles3 {
     unguardedSlopes: 0,
     unpublishedMasks: 0,
     rooms: 0,
+    fadeScans: 0,
+    fadeVisits: 0,
+    fadesPlaced: 0,
   };
 
   private data: Tiles3Data;
@@ -2831,6 +2844,7 @@ export class Tiles3 {
     let bestD = reach + 1;
     let alt: [string, number] | null = null;
     let altD = reach + 1;
+    this.stats.fadeScans++;
     for (let dy = -reach; dy <= reach; dy++)
       for (let dx = -reach; dx <= reach; dx++) {
         /* `r >= bestD` is the ascending-ring loop's early-out, kept: d is never
@@ -2839,6 +2853,7 @@ export class Tiles3 {
         const limit = trodden ? altD : bestD;
         const r = Math.max(Math.abs(dx), Math.abs(dy));
         if (r === 0 || r >= limit) continue;
+        this.stats.fadeVisits++;
         const og = g(x + dx, y + dy);
         if (!og || og === gr || view.isLiquid(og)) continue;
         const d = Math.max(r, Math.abs(L(x + dx, y + dy) - zl));
@@ -2928,6 +2943,7 @@ export class Tiles3 {
           const v = rr();
           const pick = fadePick(pool, pos, falloff, v, paint);
           const t = pool[pick];
+          this.stats.fadesPlaced++;
           const fade: FadePick = { other: to[0], dist: to[1], poolKey: `${gr}|${to[0]}`, index: pick, u, v, file: t.file };
           /* THE FADE IS AN OVERLAY, NOT A REPLACEMENT — and this is the zigzag
            * he kept photographing after the art started shipping.

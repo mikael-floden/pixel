@@ -1380,6 +1380,11 @@ export interface Tiles3TexturesOpts {
 export interface Tiles3TexturesStats {
   /** Compositions actually rasterised. */
   built: number;
+  /** Of those, fade scatters (`fadeKey`'s `t3d:` prefix): one per (file,
+   *  ground) the window wore for the first time — the fade mix's texture
+   *  bill, which a pick that spreads over more tiles raises. Cumulative; the
+   *  perf beacon sends the window's delta as `groundDrew.fadeTex`. */
+  builtFade: number;
   /** Milliseconds spent building (composing + uploading) — the streaming stall. */
   buildMs: number;
   /** Requests served by an already-registered texture. */
@@ -1416,7 +1421,7 @@ export interface Tiles3TexturesStats {
  * atlas bake.
  */
 export class Tiles3Textures {
-  readonly stats: Tiles3TexturesStats = { built: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0, builtBoundary: 0, deferred: 0, queued: 0, landed: 0, auditSame: 0, auditDiff: 0 };
+  readonly stats: Tiles3TexturesStats = { built: 0, builtFade: 0, buildMs: 0, reused: 0, live: 0, evicted: 0, missing: 0, builtBoundary: 0, deferred: 0, queued: 0, landed: 0, auditSame: 0, auditDiff: 0 };
   /** THE WORKER AUDIT — off unless `__ml.composeWorker({ audit: true })`: every
    *  raster the worker lands is composed again here and compared. */
   audit = false;
@@ -2179,6 +2184,7 @@ export class Tiles3Textures {
   private admit(key: string, t0: number): void {
     this.mine.set(key, true);
     this.stats.built++;
+    if (key.startsWith("t3d:")) this.stats.builtFade++;
     const ms = t0 && typeof performance !== "undefined" ? performance.now() - t0 : 0;
     this.stats.buildMs += ms;
     this.composeSpent += ms;

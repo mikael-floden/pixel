@@ -57,3 +57,47 @@ export function quantiles(samples: readonly number[]): { n: number; p50: number;
   const pick = (q: number) => (s.length ? +s[Math.min(s.length - 1, Math.floor(s.length * q))].toFixed(1) : 0);
   return { n: s.length, p50: pick(0.5), p90: pick(0.9), p99: pick(0.99), max: s.length ? +s[s.length - 1].toFixed(1) : 0 };
 }
+
+/** THE FELT LAG: one window's Event Timing entries, summarised. `delay` is
+ *  INPUT DELAY — from the touch or pointer event's hardware timestamp to the
+ *  moment its first handler ran, i.e. how long the main thread was busy (a
+ *  frame, a ground slice, a collection) when he tapped; `dur` is that plus the
+ *  handlers plus the next paint, the whole tap-to-pixel. `slow` counts events
+ *  of 100 ms or more, where a tap starts to feel late. The observer only
+ *  delivers entries over its 16 ms threshold, so `n` counts NOTICEABLE events,
+ *  not taps: a window with n 0 was a window where every tap was answered
+ *  inside a frame. */
+export function inputSummary(entries: readonly { name: string; startTime: number; processingStart: number; duration: number }[]): {
+  n: number;
+  slow: number;
+  delayP50: number;
+  delayP90: number;
+  delayMax: number;
+  durP50: number;
+  durP90: number;
+  durMax: number;
+  worst: string;
+} {
+  const delays = entries.map((e) => Math.max(0, e.processingStart - e.startTime));
+  const durs = entries.map((e) => e.duration);
+  const d = quantiles(delays);
+  const u = quantiles(durs);
+  let worst = "";
+  let worstMs = -1;
+  for (const e of entries)
+    if (e.duration > worstMs) {
+      worstMs = e.duration;
+      worst = `${e.name} ${e.duration.toFixed(0)}ms`;
+    }
+  return {
+    n: entries.length,
+    slow: durs.filter((x) => x >= 100).length,
+    delayP50: d.p50,
+    delayP90: d.p90,
+    delayMax: d.max,
+    durP50: u.p50,
+    durP90: u.p90,
+    durMax: u.max,
+    worst,
+  };
+}

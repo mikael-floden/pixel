@@ -905,6 +905,44 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   asserts every block survives `perfReport` — the eaten-field trap, made a
   test. Instruments: `client/src/gputimer.ts`, `client/src/perfextra.ts`
   (unit-tested in `server/test/perfextra.test.ts`).
+- **THE RESOLVER, THE SCENE'S LISTENERS, THE TAP AND THE RUN'S SETTINGS ARE
+  IN THE REPORT** (2026-09-19, before his optimisation run on the six days
+  of new code since the last one — "make sure all data you need is being
+  captured"). What the 09-13 runs could not say, and now can: `resolve` —
+  the ground resolver has run ON THE FRAME THREAD in every run he has sent
+  (`worker.state` off in all 23 windows) inside groundSlice/prefetch/
+  repaintCells with no line of its own; now cells, boundaries and decks
+  resolved this window with their summed ms and µs per cell (tiles3runtime
+  `bill`; Chrome coarsens `performance.now()` to 100 µs, so one call is
+  noise and the SUM over a window's thousands is the number, unbiased), the
+  fade scan's cells, neighbour visits and placements (tiles3 `stats` —
+  (2·reach+1)²−1 = 80 visits a cell at his reach 4 against 24 at render3's
+  2, plus a road's alt scan; the fade rule is the newest code in the
+  resolver) and the worker's state so 0 ms cannot mean "somewhere else";
+  `groundDrew.fades` (cells drawn wearing a fade) and `groundDrew.fadeTex`
+  (fade scatter textures built this window — a pick that welcomes the whole
+  pool at the edge wears more distinct files, each one compose and one
+  upload). Two sections that were `other` in every run: `preUpdate` (Phaser's
+  own systems on the scene's PRE_UPDATE — the update list stepping every
+  animated sprite, tweens, timers) and `hooks` (every listener on its UPDATE
+  event — the ambient effects mount there from outside,
+  `ambient/runtime/mount.ts`), timed by wrapping the scene's own emitter so
+  the listener order does not matter; and `ambient`, the effects' own meter
+  (`__mlAmbient.cost(true)`, the probe their QA reads): mean ms a frame and
+  the peak per effect, with a `_` row for the HUD's mode (zone/forced:N/
+  none) and the director's episode. `input` — THE FELT LAG (Event Timing
+  API, `inputSummary` in perfextra.ts): input delay (hardware timestamp to
+  first handler — how long the thread was busy when he tapped) and
+  tap-to-paint duration, p50/p90/max, events over 100 ms, the worst named;
+  entries under 16 ms never arrive, so `n` counts noticeable taps; `avail`
+  first, Safari has none. And `run.fade` (reach/amount/falloff — what the
+  scan costs), `run.ambient` and `run.lane` (fast lane or container: the
+  bundle differs while the image sha line reads the same), so two windows
+  are known to be comparable before their numbers are. `perf-read.mjs`
+  prints `res ms/us` and `inp90/max` per window, an ambient line, and
+  `--diff` carries all of them. Sections cap raised 40 → 64 (36 arrive).
+  Gates: `perfreport.test.ts` (each block survives, the cap keeps the last
+  section), `perfextra.test.ts` (the input summary as arithmetic).
 - **THE PERF BEACON'S SERVER SIDE IS AN ALLOWLIST** (`server/src/perfreport.ts`,
   `perfReport`, tested in `server/test/perfreport.test.ts`): `/api/perf`
   rebuilds the report field by field, so a block the client starts sending is

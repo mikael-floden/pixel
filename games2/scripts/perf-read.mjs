@@ -9,8 +9,13 @@
 // census. `--diff A B` sets two builds' window medians side by side, which is
 // the question every optimisation task starts with. `sim` is the Settings
 // "burst test" switch (WorldScene.burstTest: the CPU bursts skipped, the
-// frame rate the game would have once they are gone). Fields older windows do
-// not carry print as "-": a "-" is "not measured", never 0.
+// frame rate the game would have once they are gone). `res` is the resolver's
+// own ms on the frame thread this window and its µs per cell (2026-09-19; the
+// worker has been off in every run), `inp` the input delay p90 / the slowest
+// tap-to-paint (Event Timing; "n/a" where the browser has no such entries),
+// and the ambient line is the effects' mean ms a frame from their own meter.
+// Fields older windows do not carry print as "-": a "-" is "not measured",
+// never 0.
 import { readFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -51,6 +56,11 @@ if (diff) {
     ["cpu bench ms", (r) => r.cpu?.scoreMs], ["gpu p50", (r) => r.gpu?.avail ? r.gpu.p50 : null], ["gpu p90", (r) => r.gpu?.avail ? r.gpu.p90 : null],
     ["heap MB/s", (r) => r.heap?.grewMbPerSec], ["gc drops", (r) => r.heap?.drops], ["tex added", (r) => r.counts?.texturesAdded], ["glUpMb", (r) => r.counts?.glUpMb],
     ["longN", (r) => r.counts?.longN], ["occMean", (r) => r.counts?.occMean], ["dlMean", (r) => r.counts?.dlMean], ["zoomMean", (r) => r.zoomMean],
+    // 2026-09-19: the resolver's own line, the fade's draw-side bill, the scene's listeners, the felt lag.
+    ["resolve ms", (r) => r.resolve?.ms], ["us/cell", (r) => r.resolve?.usPerCell], ["fadeVisits", (r) => r.resolve?.fadeVisits], ["fades placed", (r) => r.resolve?.fades],
+    ["fades drawn", (r) => r.groundDrew?.fades], ["fadeTex built", (r) => r.groundDrew?.fadeTex],
+    ["preUpdate ms", (r) => r.sections?.preUpdate], ["hooks ms", (r) => r.sections?.hooks],
+    ["input p90 ms", (r) => (r.input?.avail ? r.input.delayP90 : null)], ["input slow", (r) => (r.input?.avail ? r.input.slow : null)],
   ];
   console.log("metric".padEnd(18), short(a).padStart(10), short(b).padStart(10), "   delta");
   for (const [name, g] of metrics) {
@@ -62,7 +72,7 @@ if (diff) {
 }
 
 console.log(`${rows.length} windows (file updated ${doc.updated_at})`);
-console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops"].join(" | "));
+console.log(["when", "build", "sim", "run/win", "where", "s", "do", "p50", "p90", "p99", "max", ">50", "Hz", "top sections (ms/frame)", "res ms/us", "inp90/max", "rtt50/90", "pHz", "cpu", "gpu50", "heap/s", "tex", "long", "hops"].join(" | "));
 for (const r of rows) {
   const fr = r.frames ?? {};
   const over50 = fr.le100 !== undefined ? fr.le100 + fr.gt100 : "-";
@@ -70,6 +80,8 @@ for (const r of rows) {
   console.log([
     (r.at ?? "").slice(5, 16), short(r.build), r.run?.sim || "-", r.run ? `${r.run.runId}/${r.run.winIdx}${r.run.why ? ":" + r.run.why : ""}` : "-", r.where ?? "-", f(r.secs, 0), doing,
     f(fr.p50), f(fr.p90), f(fr.p99), f(fr.max, 0), over50, fr.rafHz ?? "-", top(r.sections),
+    r.resolve ? `${f(r.resolve.ms, 0)}/${f(r.resolve.usPerCell, 0)}` : "-",
+    r.input ? (r.input.avail ? `${f(r.input.delayP90, 0)}/${f(r.input.durMax, 0)}` : "n/a") : "-",
     r.rtt ? `${f(r.rtt.p50, 0)}/${f(r.rtt.p90, 0)}` : "-", r.rtt ? f(r.rtt.patchHz, 0) : "-", r.cpu ? f(r.cpu.scoreMs) : "-",
     r.gpu ? (r.gpu.avail ? f(r.gpu.p50) : "n/a") : "-", r.heap ? f(r.heap.grewMbPerSec, 0) : "-", r.counts?.texturesAdded ?? "-", r.counts?.longN ?? "-", r.run ? r.run.hops : "-",
   ].join(" | "));
@@ -91,5 +103,17 @@ if (worst.length) {
   console.log("\nworst frames: ms | at | zoom | t(s into window) | sections | mode | tex | dl/occ");
   for (const w of worst) console.log(`  ${f(w.total, 0).padStart(5)} | ${String(w.at ?? "-").padStart(13)} | ${w.z ?? "-"} | ${w.t !== undefined ? (w.t / 1000).toFixed(1) : "-"} | ${Object.entries(w.sec ?? {}).sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, v]) => `${k} ${v}`).join(", ")} | ${w.mode ?? "-"} | ${w.tex ?? "-"} | ${w.dl ?? "-"}/${w.occ ?? "-"}`);
 }
+// THE AMBIENT EFFECTS' OWN METER, averaged over the printed windows that carry
+// it: mean ms a frame per effect (their `hooks` section is the sum), the peak
+// frame, and the mode the HUD had. An effect that is on and not here cost
+// nothing measurable.
+const amb = {};
+let ambMode = new Set();
+for (const r of rows) for (const [k, v] of Object.entries(r.ambient ?? {})) {
+  if (k === "_") { if (v.mode) ambMode.add(`${v.mode}${v.active ? "/" + v.active : ""}`); continue; }
+  const c = (amb[k] ??= { ms: 0, n: 0, peak: 0 }); c.ms += v.ms ?? 0; c.n++; c.peak = Math.max(c.peak, v.peak ?? 0);
+}
+const ae = Object.entries(amb).sort((a, b) => b[1].ms / b[1].n - a[1].ms / a[1].n).slice(0, 8);
+if (ae.length) console.log(`\nambient (ms/frame per effect, peak): ${ae.map(([k, v]) => `${k} ${(v.ms / v.n).toFixed(2)} (${v.peak.toFixed(1)})`).join("; ")}${ambMode.size ? `  — mode ${[...ambMode].join(", ")}` : ""}`);
 const gpuRe = rows.map((r) => r.gpu?.reason).filter(Boolean);
 if (gpuRe.length) console.log("gpu timer: " + [...new Set(gpuRe)].join(", "));

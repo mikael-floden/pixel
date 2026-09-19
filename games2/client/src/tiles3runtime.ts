@@ -135,9 +135,20 @@ export function viewFromParsed(w: ParsedLike, bounds?: Partial<Bounds>): World3V
 /** The resolver's decisions for ONE cell, ONE lattice corner or ONE deck cell.
  *  Every method here is a line-for-line port of the matching arm of
  *  `Tiles3.resolveWindow`, and the gate proves the two agree. */
+/** Node, a worker and the page all have `performance`; a host without it bills 0. */
+const now = typeof performance !== "undefined" ? () => performance.now() : () => 0;
+
 export class Tiles3World {
   readonly view: World3View;
   readonly tiles: Tiles3;
+  /** THE RESOLVER'S OWN BILL ON THIS THREAD, cumulative — the perf beacon
+   *  sends deltas per window (`resolve`). The resolver has run on the frame
+   *  thread in every run the maintainer has sent (worker.state "off"), inside
+   *  groundSlice/prefetch/repaintCells with no line of its own. Per-call
+   *  `performance.now()` pairs: Chrome coarsens the clock to 100 µs, so ONE
+   *  call's figure is noise and the SUM over a window's thousands of calls is
+   *  what to read (unbiased — a 5 µs call straddles a tick 5% of the time). */
+  readonly bill = { cells: 0, cellMs: 0, boundaries: 0, boundaryMs: 0, decks: 0, deckMs: 0 };
   readonly frame: Frame;
   /** THE WHOLE-WORLD REGION SCAN, AND NOTHING IN THE GAME READS IT.
    *
@@ -208,7 +219,11 @@ export class Tiles3World {
    *  WHOLE world (see the header), so `g` is clamped to `bounds` and never to a
    *  camera. */
   cell(x: number, y: number): Tiles3Cell | null {
-    return this.tiles.resolveCell(this.view, this.frame, this.gf, this.Lf, x, y);
+    const t0 = now();
+    const c = this.tiles.resolveCell(this.view, this.frame, this.gf, this.Lf, x, y);
+    this.bill.cells++;
+    this.bill.cellMs += now() - t0;
+    return c;
   }
 
   /** THE COMPOSED BOUNDARY this cell wears, for a draw pass that composes it in
@@ -216,7 +231,11 @@ export class Tiles3World {
   boundary(x: number, y: number): Tiles3Boundary | null {
     const b = this.bounds;
     if (x < b.x0 || y < b.y0 || x >= b.x1 || y >= b.y1) return null;
-    return this.tiles.boundaryAt(this.view, this.frame, this.gf, this.Lf, x, y)?.boundary ?? null;
+    const t0 = now();
+    const r = this.tiles.boundaryAt(this.view, this.frame, this.gf, this.Lf, x, y)?.boundary ?? null;
+    this.bill.boundaries++;
+    this.bill.boundaryMs += now() - t0;
+    return r;
   }
 
   /** The deck cells standing on one world cell, resolved. A world cell can carry
@@ -226,7 +245,11 @@ export class Tiles3World {
     if (!dis) return [];
     const b = this.bounds;
     if (x < b.x0 || x >= b.x1 || y < b.y0 || y >= b.y1) return [];
-    return dis.map((di) => this.tiles.deckCell(this.view, this.frame, this.view.decks[di], di, x, y));
+    const t0 = now();
+    const r = dis.map((di) => this.tiles.deckCell(this.view, this.frame, this.view.decks[di], di, x, y));
+    this.bill.decks++;
+    this.bill.deckMs += now() - t0;
+    return r;
   }
 }
 

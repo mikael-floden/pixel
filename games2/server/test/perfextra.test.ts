@@ -3,7 +3,7 @@
 // sample block carries, and the fixed benchmark that is the throttling proxy.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { cpuScoreMs, frameHist, rafHz, quantiles } from "../../client/src/perfextra";
+import { cpuScoreMs, frameHist, rafHz, quantiles, inputSummary } from "../../client/src/perfextra";
 
 test("the histogram buckets frames the way they are felt, and the mean is the mean", () => {
   const h = frameHist([10, 16.7, 17, 20, 34, 40, 50, 80, 100, 150, 1000]);
@@ -36,4 +36,19 @@ test("the cpu benchmark is fixed work that takes real, bounded time", () => {
     const ms = cpuScoreMs();
     assert.ok(ms > 0.02 && ms < 2000, `a run took ${ms} ms`);
   }
+});
+
+test("the input summary: delay is hardware-to-handler, duration is tap-to-paint, slow is 100 ms, the worst is named", () => {
+  const e = (name: string, startTime: number, processingStart: number, duration: number) => ({ name, startTime, processingStart, duration });
+  const s = inputSummary([e("pointerdown", 1000, 1020, 40), e("pointerup", 1100, 1105, 24), e("click", 2000, 2150, 180), e("keydown", 3000, 3000, 16)]);
+  assert.equal(s.n, 4);
+  assert.equal(s.slow, 1, "one event of 100 ms or more");
+  assert.equal(s.delayMax, 150, "the click waited 150 ms for the thread");
+  assert.equal(s.durMax, 180);
+  assert.equal(s.worst, "click 180ms");
+  assert.equal(s.delayP50, 20);
+  assert.equal(s.durP50, 40);
+  // A handler stamped before its event (clock skew) is a delay of 0, never negative.
+  assert.equal(inputSummary([e("pointerdown", 10, 5, 20)]).delayMax, 0);
+  assert.deepEqual(inputSummary([]), { n: 0, slow: 0, delayP50: 0, delayP90: 0, delayMax: 0, durP50: 0, durP90: 0, durMax: 0, worst: "" });
 });

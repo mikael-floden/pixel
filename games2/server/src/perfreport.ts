@@ -79,7 +79,9 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     /* 24, not 12: n/p50/p90/p99/max plus the histogram (le17..gt100, mean)
      * and rafHz — 12 keys exactly, which is the cap-one-short trap again. */
     frames: flat(body.frames, 24, 100000),
-    sections: flat(body.sections, 40, 100000),
+    /* 64, not 40: 36 sections arrive since `preUpdate`/`hooks` (2026-09-19),
+     * and `flat` keeps the first N in silence — the headroom is the point. */
+    sections: flat(body.sections, 64, 100000),
     // Heap growth by section, KB per frame (client perfAlloc) — who allocates.
     allocBy: flat(body.allocBy ?? {}, 12, 100000),
     /* 48, not 40: `flat` keeps the FIRST N entries and silently drops the rest,
@@ -101,6 +103,12 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * window where this went up and the game's sections did not is the phone
      * slowing down, not the game. */
     cpu: mixed(body.cpu, 8),
+    /* THE FELT LAG (Event Timing API, client perfextra.ts `inputSummary`):
+     * input delay and tap-to-paint duration quantiles, events over 100 ms and
+     * the worst one named — the number a frame histogram cannot give, and the
+     * one his "it lags when I tap" is about. `avail` first: a browser without
+     * the API must never read as "no slow taps". */
+    input: mixed(body.input, 12),
     /* THE GPU'S OWN FRAME TIME (EXT_disjoint_timer_query_webgl2), with
      * `avail`/`reason` first: no numbers must never read as 0 ms. */
     gpu: mixed(body.gpu, 12),
@@ -137,6 +145,18 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * as zero, which is indistinguishable from one that booted and was never
      * needed. */
     worker: mixed(body.worker, 16),
+    /* THE RESOLVER'S OWN BILL ON THE FRAME THREAD (2026-09-19): cells,
+     * boundaries and decks resolved this window with their summed ms, the
+     * fade scan's cells, neighbour visits and placements, and the cache held.
+     * The worker was off in every run he has sent, so this is where the
+     * resolver's time went — inside groundSlice/prefetch/repaintCells, with
+     * no line of its own — and the fade scan is (2·reach+1)² a cell. */
+    resolve: mixed(body.resolve, 16),
+    /* THE AMBIENT EFFECTS' OWN COST, per feature (ambient/runtime/mount.ts
+     * `cost`): one row per effect — mean ms a frame, the peak, frames — and a
+     * `_` row with the mode and what the director has on. NESTED, not mixed:
+     * the rows are records and `mixed` would flatten them to {}. */
+    ambient: nested(body.ambient, 24, 6),
     // The compose worker (client/src/composeclient.ts), state and miss reasons included.
     compose: mixed(body.compose, 16),
     // THE ZONE CROSSINGS of this window (WorldScene's `zone` block): hops and
