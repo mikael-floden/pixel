@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "idle — the ⧉ button and the 10-layer cap landed. Next: his PixelLab icon for the ⧉ button if he brings one.",
+  "current": "CLAIM: record the ⧉ verdict (maintainer 2026-09-19: \"That unicode button you used looks great! Keep that one instead!\") — the law currently says he may bring a PixelLab icon for it, which is now wrong and would invite the swap. files: games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -301,5 +301,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T11:19:05Z"
+  "updated": "2026-09-19T11:25:16Z"
 }
