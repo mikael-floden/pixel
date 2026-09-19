@@ -1,8 +1,8 @@
 {
  "domain": "wiki-assistant",
- "updated_at": "2026-09-19T16:22:47+00:00",
+ "updated_at": "2026-09-19T16:51:50+00:00",
  "health": "running",
- "current": "SHIPPED b7ce9490bc — the fade card shows area_pct (what the picture is) with a pill for edge_ground (where it can go) and edge_contact (how clean that rim is); the list sorts side then area with the seam named; the gate takes the tiles3/fade-tiles@* family instead of pinning @1. Gate green. Nothing claimed. The wiki side of the % split is complete — games2 and maps2 still read `pct`, which is correct and safe while tiles keeps it frozen.",
+ "current": "CLAIM — the fade card shows the TILE next to its own number. Files: wiki/site/wiki.js, wiki/site/wiki.css, wiki/tools/check-fades.mjs. Maintainer 2026-09-19, twice in ten minutes: 'both tiles say 90% grass, but it looks more like 50% 50%' and '67% and 63% grass on the top/ground in my ass!'. He is reading the number against the COMPOSED FIELD — 36 cells of wandering edge, which is ~50/50 by construction — while the number describes the ONE tile sitting in it at ~60px. Both numbers verified correct to the published bytes by two independent methods (nearest-palette classification of the shipped post/ webp, on the nominal diamond and on the measured top_face: 67.5 / 67.4 vs 67.2 published, 62.9 / 62.7 vs 62.9). The art is right and the measurement is right; the card is unverifiable by eye, which is my bug.",
  "progress": {
   "units_shipped": 5
  },
