@@ -1,12 +1,18 @@
 {
  "domain": "games-assistant",
- "updated_at": "2026-09-19T22:26:55+00:00",
+ "updated_at": "2026-09-19T22:55:38+00:00",
  "health": "running",
  "current": {
-  "unit": "SHIPPED — THE BEACON DELIVERS EVERY WINDOW, AND THE RUN SAYS WHY WHEN ONE IS LOST (maintainer 2026-09-19: 'WHAT?! Let me redo it! I was running around the entire map!' — his redo posted windows 1 and 2 and nothing after; no page load on record had ever delivered a third). A window is posted from an outbox with retries (no keepalive on a live page, the response read), every window carries its delivery ledger (`beacon`), a failed post reports itself to /api/perf/fail, GET /api/perf/log on the server shows every outcome; the file is capped by bytes (the 1 MB reset that wiped the history on 09-13 cannot recur); a remembered perf switch expires after 3 h (his first run today: the tap that was to start recording turned a six-day-old ON switch OFF at 47 s); the first window's rtt/patches/input/ambient start at arming. Gates: verify-beacon.mjs refuses the first post and requires the same window re-posted with its ledger (old client: fails three ways); perfdoc.test.ts (byte cap, never a reset); perfreport.test.ts (the ledger survives). Law: docs/perf.md 'THE BEACON DELIVERS EVERY WINDOW'; the games2/CLAUDE.md line is on games' board (file in flight there).",
-  "since": "2026-09-19T21:40:58+00:00",
-  "files": [],
-  "next": "VERDICT ON HIS 22:20 RUN (4 windows, 570 cells, every post delivered, ring 4/4 at 200): no low-hanging fruit introduced since 09-13 — p50 17-18 / p90 33 / p99 45-58 ms and 2-19 frames over 50 ms a window, the same profile as the 09-13 running windows; the new code costs ~1 ms a frame in total (resolver 160-515 ms a window = 0.5-1.7%, `hooks` 0.5 ms, litPass +0.3 ms); allocation by section equals 09-13 (324-496 MB a window vs 371-414) and NO gc frames in four windows, so the major-GC-freeze candidate is withdrawn as unproven on the current Chrome. What remains is the old list (unattributed GPU waits 61 of ~100 long frames, one repaintCells 110 ms, one groundSlice 132 ms, one 169 ms full redraw) plus one 1.75 s stall at 218.8,248.2 with the thread idle and no long task (browser/GPU, one-off). composeMissed 263-400 a window vs 164-239 on 09-13 is the one counter that grew (cells drawn before their composed art). Maintainer 2026-09-19: perf is parked; new features next."
+  "unit": "THE GPU CLOCK, AND A STANDING A/B — his 22:29 run: 36-45% of frames miss the 60 Hz deadline (17-34 ms) while running AND while standing in the town; 67 of the 96 recorded slow frames are GPU/compositor waits with 3-8 ms of JS. WebGL1 lends no timer query on his phone, so the beacon gets a gl.finish() clock (GPU ms a frame, opt-in with the beacon, 1 frame in 3) and per-pass brackets where cheap; stationary windows post again (the first four, so a standing A/B of the Settings switches — shadows, scenery lights, torch, the lighting pass, the resolution dial — lands); a Settings switch for the whole lighting pass (nightSkip) so he can A/B it.",
+  "since": "2026-09-19T22:55:38+00:00",
+  "files": [
+   "games2/client/src/gputimer.ts",
+   "games2/client/src/scenes/WorldScene.ts",
+   "games2/scripts/verify-beacon.mjs",
+   "games2/docs/perf.md",
+   "coordination/games-assistant.json"
+  ],
+  "note": "WorldScene.ts: the perf beacon members + one Settings entry. nightlight.ts is read, not edited."
  },
  "progress": {
   "units_shipped": 42
