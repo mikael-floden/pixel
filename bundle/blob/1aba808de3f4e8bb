@@ -70,7 +70,15 @@
          backpack/inventory to come). */
       :root { --hud-h: 38.2vh; --hud-h-inv: 61.8vh; }
       @supports (height: 1dvh) { :root { --hud-h: 38.2dvh; --hud-h-inv: 61.8dvh; } }
-      #game { width: 100vw; height: var(--hud-h-inv); touch-action: none; }
+      /* THE CANVAS KEEPS THE THREE-ROW SPLIT WHEN A SUB-TAB STRIP IS OPEN:
+         --hud-h-inv is the HUD's real top edge (it rises by the strip when
+         Settings opens, and everything anchored above the rail rides with
+         it), but the game view adds --sub-h back — a canvas resize is a
+         framebuffer realloc plus a whole-world redraw, and the strip's slide
+         would fire one per frame. The world under the strip is covered, not
+         resized (hud.ts applyLayout, 2026-09-19). 0 whenever no strip is open
+         and in landscape, so this is the plain split everywhere else. */
+      #game { width: 100vw; height: calc(var(--hud-h-inv) + var(--sub-h, 0px)); touch-action: none; }
       /* IN-GAME LANDSCAPE (hud.ts applyLayout sets .ml-land + the px vars):
          the split turns on its side — the menu is a --menu-w side column and
          the game view takes the rest at full height (--hud-h-inv is published
@@ -100,6 +108,6 @@
     <div id="ml-safebar"></div>
     <div id="game"></div>
     <div id="ml-rotate"><div>📱<br />Rotate your phone<small>The menus play upright — landscape unlocks once you enter the world</small></div></div>
-    <script type="module" src="/assets/index-e90df191bb.js"></script>
+    <script type="module" src="/assets/index-d4e5834659.js"></script>
   </body>
 </html>
