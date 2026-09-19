@@ -1313,6 +1313,257 @@
         "west": "spider_queen/animations/angry_v1__west.webp",
         "north-west": "spider_queen/animations/angry_v1__north-west.webp"
       }
+    },
+    "die_v1": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.2136,
+          "step_max": 0.349,
+          "drift": 5.72,
+          "loop": 0.4269,
+          "loop_ratio": 2.0,
+          "travel": 0.8,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.857,
+          "end_iou": 0.622,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "still standing: the last frame matches the base at 0.62 (his dies end under 0.60)"
+          ],
+          "sub": "d05d4884-301e-43e9-a9c7-54ef93643262",
+          "group": "089672e4-5f7b-4127-90f3-bf6dffc65e59",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - All eight legs snap off and drop away from her body, the bloated abdomen sinks flat to the ground and fades away to nothing",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-19T12:58:12+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.1311,
+          "step_max": 0.1714,
+          "drift": 1.92,
+          "loop": 0.2129,
+          "loop_ratio": 1.62,
+          "travel": 0.99,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.008,
+          "end_iou": 0.805,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "still standing: the last frame is only 0.21 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.81 (his dies end under 0.60)"
+          ],
+          "sub": "327d34d8-d854-4b72-a8af-68266afcca12",
+          "group": "8389b00c-ee12-42b4-aeb8-d49c08f1cdb5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - All eight legs snap off and drop away from her body, the bloated abdomen sinks flat to the ground and fades away to nothing",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-19T12:58:12+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.255,
+          "step_max": 0.3923,
+          "drift": 9.75,
+          "loop": 0.4182,
+          "loop_ratio": 1.64,
+          "travel": 1.91,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.997,
+          "end_iou": 0.649,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "still standing: the last frame matches the base at 0.65 (his dies end under 0.60)"
+          ],
+          "sub": "26f8f332-23e5-4e42-ba96-bc5094842d87",
+          "group": "987f6d70-86ab-43ba-8a8a-a049bd1effd7",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - All eight legs snap off and drop away from her body, the bloated abdomen sinks flat to the ground and fades away to nothing",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-19T12:58:13+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.1788,
+          "step_max": 0.2482,
+          "drift": 4.48,
+          "loop": 0.3329,
+          "loop_ratio": 1.86,
+          "travel": 2.19,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.936,
+          "end_iou": 0.7,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "barely falls: last vs first 0.33 — eyeball it",
+            "still standing: the last frame matches the base at 0.70 (his dies end under 0.60)"
+          ],
+          "sub": "30de5eff-e7be-44bb-ba8d-af80a6da4464",
+          "group": "90999c50-4e64-42b5-bea8-072a050acd87",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - All eight legs snap off and drop away from her body, the bloated abdomen sinks flat to the ground and fades away to nothing",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-19T12:58:14+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.2558,
+          "step_max": 0.3508,
+          "drift": 11.45,
+          "loop": 0.4622,
+          "loop_ratio": 1.81,
+          "travel": 0.72,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.002,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.942,
+          "end_iou": 0.616,
+          "canvas": [
+            240,
+            240
+          ],
+          "reasons": [
+            "still standing: the last frame matches the base at 0.62 (his dies end under 0.60)"
+          ],
+          "sub": "c14ef825-7f24-45c7-9df7-55dd320fe657",
+          "group": "e5b5066c-b455-4874-b5b8-e77f84eaaf7f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - All eight legs snap off and drop away from her body, the bloated abdomen sinks flat to the ground and fades away to nothing",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-19T12:58:14+00:00"
+        }
+      },
+      "action": "Death - All eight legs snap off and drop away from her body, the bloated abdomen sinks flat to the ground and fades away to nothing",
+      "frame_paths": {
+        "south": [
+          "spider_queen/animations/die_v1/south/00.webp",
+          "spider_queen/animations/die_v1/south/01.webp",
+          "spider_queen/animations/die_v1/south/02.webp",
+          "spider_queen/animations/die_v1/south/03.webp",
+          "spider_queen/animations/die_v1/south/04.webp",
+          "spider_queen/animations/die_v1/south/05.webp",
+          "spider_queen/animations/die_v1/south/06.webp"
+        ],
+        "south-east": [
+          "spider_queen/animations/die_v1/south-east/00.webp",
+          "spider_queen/animations/die_v1/south-east/01.webp",
+          "spider_queen/animations/die_v1/south-east/02.webp",
+          "spider_queen/animations/die_v1/south-east/03.webp",
+          "spider_queen/animations/die_v1/south-east/04.webp",
+          "spider_queen/animations/die_v1/south-east/05.webp",
+          "spider_queen/animations/die_v1/south-east/06.webp"
+        ],
+        "east": [
+          "spider_queen/animations/die_v1/east/00.webp",
+          "spider_queen/animations/die_v1/east/01.webp",
+          "spider_queen/animations/die_v1/east/02.webp",
+          "spider_queen/animations/die_v1/east/03.webp",
+          "spider_queen/animations/die_v1/east/04.webp",
+          "spider_queen/animations/die_v1/east/05.webp",
+          "spider_queen/animations/die_v1/east/06.webp"
+        ],
+        "north-east": [
+          "spider_queen/animations/die_v1/north-east/00.webp",
+          "spider_queen/animations/die_v1/north-east/01.webp",
+          "spider_queen/animations/die_v1/north-east/02.webp",
+          "spider_queen/animations/die_v1/north-east/03.webp",
+          "spider_queen/animations/die_v1/north-east/04.webp",
+          "spider_queen/animations/die_v1/north-east/05.webp",
+          "spider_queen/animations/die_v1/north-east/06.webp"
+        ],
+        "north": [
+          "spider_queen/animations/die_v1/north/00.webp",
+          "spider_queen/animations/die_v1/north/01.webp",
+          "spider_queen/animations/die_v1/north/02.webp",
+          "spider_queen/animations/die_v1/north/03.webp",
+          "spider_queen/animations/die_v1/north/04.webp",
+          "spider_queen/animations/die_v1/north/05.webp",
+          "spider_queen/animations/die_v1/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "spider_queen/animations/die_v1__south.webp",
+        "south-east": "spider_queen/animations/die_v1__south-east.webp",
+        "east": "spider_queen/animations/die_v1__east.webp",
+        "north-east": "spider_queen/animations/die_v1__north-east.webp",
+        "north": "spider_queen/animations/die_v1__north.webp"
+      }
     }
   }
 }
