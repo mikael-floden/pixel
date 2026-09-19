@@ -107,11 +107,17 @@ function injectStyles(): void {
      the button hangs one step BELOW it — the same reading as everywhere else. */
   :root.ml-land:not(.ml-lh) .ml-wikibtn{
     top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}
-  /* PORTRAIT: directly under the XP chip (chip bottom + the 10px margin —
-     --bars-r-h is its measured height, --ml-safe-top the cutout inset it
-     sits under), the pill one step below (clock.ts). See the header. */
+  /* PORTRAIT: THE PILL TAKES THE SPOT UNDER THE XP CHIP AND THIS ROW HANGS ONE
+     STEP BELOW IT (maintainer 2026-09-19, two arrows drawn on a screenshot:
+     "In portrait mode. Can you swap y order for wiki and time-of-day pill?").
+     Between 2026-09-17 and today it was the other way round; the anchor is the
+     same arithmetic either way — chip bottom + the 10px margin, --bars-r-h its
+     measured height, --ml-safe-top the cutout inset it sits under — and only
+     the ${PILL_STEP}px step moves from the pill (clock.ts) to this row.
+     LANDSCAPE IS UNCHANGED: right-handed keeps pill-then-row, his verdict on
+     that screen (2026-08-05/09-03), and it is not re-litigated by this. */
   :root:not(.ml-land) .ml-wikibtn{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + ${PILL_STEP}px);bottom:auto}
   /* The keyboard lift: this row takes the line hud.ts clears above the keys,
      and the pill steps up over it exactly as it does at rest. */
   :root.ml-kb-up .ml-wikibtn{bottom:calc(var(--ml-inputlift) + 56px)}`;

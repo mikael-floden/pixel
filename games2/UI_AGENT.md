@@ -546,11 +546,16 @@ from the games agent), #18 (title/landing screen).
   still gated: what he struck out was the CAPTION narrating each live layer's
   marks. The row's whole text must equal its CONTROLS' text — button + pills,
   each one word — so a caption still fails.
-- **PORTRAIT CORNER STACK IS TOP-RIGHT: the Wiki/🔍 row directly under the XP
-  chip, the time-of-day pill one `--ml-stack-step` under the ROW** (maintainer
-  2026-09-17, arrows on a screenshot: "wiki + search to be top right and listed
-  right under the XP/level card… the time-of-day pill to also be top right but
-  under the wiki. This means the thumbstick can be lowered"). `wikibtn.ts`,
+- **PORTRAIT CORNER STACK IS TOP-RIGHT: the time-of-day PILL directly under
+  the XP chip, the Wiki/🔍 row one `--ml-stack-step` under the PILL**
+  (maintainer 2026-09-17 put the stack top-right — "wiki + search to be top
+  right and listed right under the XP/level card… the time-of-day pill to also
+  be top right but under the wiki. This means the thumbstick can be lowered" —
+  and 2026-09-19 swapped the two, arrows drawn on a screenshot: "In portrait
+  mode. Can you swap y order for wiki and time-of-day pill?". The later verdict
+  supersedes the earlier ORDER only; the stack, the margins and the freed
+  bottom corner are unchanged, and portrait now reads the same way round as
+  right-handed landscape, which it did not before). `wikibtn.ts`,
   `wikinear.ts`, `clock.ts`: one `:root:not(.ml-land)` rule each, `top: safe-top
   + --bars-r-h + 20px (+ step for the pill); bottom:auto` — the landscape
   right-handed formula, so both top anchors agree. Three placements, one order
@@ -561,7 +566,10 @@ from the games agent), #18 (title/landing screen).
   lift (`hud.ts :root.ml-kb-up`) still writes `bottom` on all three, but a
   `bottom` on a top-anchored fixed box with a height is over-constrained and
   ignored, so in portrait the lift moves only the chat log — `verify-chatpage`
-  asserts the row and the pill stay put; `verify-chat` asserts the row's right
+  AND `verify-wikibtn` assert the row and the pill stay put (the latter still
+  demanded they RISE and had been red on main since the stack moved top-right
+  on 2026-09-17: two of our own gates contradicting each other, fixed
+  2026-09-19 in favour of the law); `verify-chat` asserts the row's right
   gap is the chat's left gap and the pill hangs one step under the row;
   `verify-landscape` asserts the portrait return. `chat.ts`'s `--ml-chatw` lane
   (games agent's) still reserves the old row's width on the log's line; harmless,

@@ -288,13 +288,17 @@ function mount() {
      there the stick is bottom-LEFT and the pill is nowhere near it. */
   :root.ml-land:not(.ml-lh) .ml-clock{
     top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
-  /* PORTRAIT (maintainer 2026-09-17: "the time-of-day pill to also be top
-     right but under the wiki"): the Wiki row takes the spot under the XP
-     chip (wikibtn.ts) and this pill hangs one step under the ROW — the
-     opposite order to right-handed landscape, his verdict on each screen.
-     The bottom corner it leaves is the portrait ghost stick's (gamepad.ts). */
+  /* PORTRAIT: THIS PILL IS DIRECTLY UNDER THE XP CHIP AND THE WIKI ROW HANGS
+     ONE STEP UNDER IT (maintainer 2026-09-19, arrows on a screenshot: "In
+     portrait mode. Can you swap y order for wiki and time-of-day pill?").
+     2026-09-17 had them the other way ("the time-of-day pill to also be top
+     right but under the wiki"); this SUPERSEDES that — same stack, same
+     margins, the two rows exchanged. Portrait and right-handed landscape now
+     read the same way round, which they did not before.
+     The bottom corner this leaves is the portrait ghost stick's (gamepad.ts),
+     and the chat log takes the corner the stick does not (hud.ts). */
   :root:not(.ml-land) .ml-clock{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + var(--ml-stack-step, 44px));bottom:auto}
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);
   root = document.createElement("div");

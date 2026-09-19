@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: PORTRAIT swaps the y order of the Wiki/🔍 row and the time-of-day pill (maintainer 2026-09-19, arrows drawn on a screenshot: \"In portrait mode. Can you swap y order for wiki and time-of-day pill?\") — the pill takes the spot under the XP chip and the row hangs one --ml-stack-step below it. Landscape is untouched: his 2026-08-05/09-03 verdict on that screen stands. files: games2/client/src/wikibtn.ts, games2/client/src/wikinear.ts, games2/client/src/clock.ts, games2/scripts/verify-chat.mjs, games2/UI_AGENT.md",
+  "current": "idle — the portrait pill/wiki swap landed. The ambient-button verdict is with games-ambient; awaiting his word.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -306,5 +306,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T11:57:36Z"
+  "updated": "2026-09-19T12:10:43Z"
 }

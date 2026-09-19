@@ -222,26 +222,32 @@ try {
       : fail(`${what} icon stamping differs from the tab icons: ${stamp(ico.src)} vs ${tabSrc ? stamp(tabSrc) : "no tab icon found"} — withV() missing?`);
   }
 
-  // ── 2. the keyboard ride: both lift, the gap survives ──────────────────
+  // ── 2. the keyboard ride: IN PORTRAIT THIS STACK DOES NOT MOVE ─────────
+  // This section used to require the stack to RISE with the keyboard, and it
+  // has been failing on main since 2026-09-17, when the corner stack moved to
+  // the TOP right: hud.ts's lift writes `bottom` on all three boxes, and a
+  // `bottom` on a TOP-anchored fixed box that has a height is over-constrained
+  // and ignored — so in portrait the lift moves the chat log and nothing else.
+  // That is the LAW (UI_AGENT.md) and `verify-chatpage` already asserts it
+  // from the other side; this gate was simply never updated with the anchor,
+  // so two of my own gates contradicted each other and this one lost.
+  // Asserted as the law now: the lift is applied, and the stack STAYS PUT,
+  // keeps its order and keeps its gap — a stack that jumped over the keys
+  // would be the regression, not one that sits still under the chip.
   const before = await rects();
-  // A TALL keyboard, so the movement is unambiguous. The rest anchor is
-  // above the 325px HUD and the lift anchor is inputlift+56, so a small
-  // inputlift moves the stack DOWN (120px read as "broke the stack" on the
-  // first run, with the two moving together perfectly) and 320px rises only
-  // 41px. What is under test is that they move AS ONE, whatever the size.
   await page.evaluate(() => {
     document.documentElement.style.setProperty("--ml-inputlift", "430px");
     document.documentElement.classList.add("ml-kb-up");
   });
   await page.waitForTimeout(400);
   const lifted = await rects();
-  const pillRose = before.pill.b - lifted.pill.b;
-  const btnRose = before.btn.b - lifted.btn.b;
-  pillRose > 60 && near(btnRose, pillRose, 2)
-    ? ok(`keyboard lift: the stack rides together (pill +${pillRose.toFixed(0)}px, button +${btnRose.toFixed(0)}px)`)
-    : fail(`keyboard lift broke the stack (pill rose ${pillRose.toFixed(0)}, button ${btnRose.toFixed(0)})`);
+  const pillMoved = Math.abs(before.pill.b - lifted.pill.b);
+  const btnMoved = Math.abs(before.btn.b - lifted.btn.b);
+  pillMoved <= 1 && btnMoved <= 1
+    ? ok("keyboard lift: the top-anchored stack stays put (the lift moves the chat log, not the chip's corner)")
+    : fail(`the keyboard lift moved the top-anchored stack (pill ${pillMoved.toFixed(0)}px, button ${btnMoved.toFixed(0)}px)`);
   near(lifted.btn.t - lifted.pill.b, 10, 2)
-    ? ok("keyboard lift: the 10px gap survives, in the same order")
+    ? ok("keyboard lift: the 10px gap survives, pill above the Wiki row")
     : fail(`gap while lifted: ${(lifted.btn.t - lifted.pill.b).toFixed(1)}px (the stack must not reorder over the keys)`);
   near(lifted.near.b, lifted.btn.b, 2)
     ? ok("keyboard lift: 🔍 rides on the Wiki button's line")
