@@ -98,7 +98,7 @@ jobs:
           fi
           CHANGED=$(git diff --name-only "$RANGE" 2>/dev/null || git diff --name-only HEAD~1..HEAD)
           echo "$CHANGED" | sed 's/^/  /'
-          OUTSIDE=$(echo "$CHANGED" | grep -vE '^games2/client/(src/|index\.html)' | grep -vE '^(coordination/|live/)' || true)
+          OUTSIDE=$(echo "$CHANGED" | grep -vE '^games2/client/(src/|index\.html$)' | grep -vE '^(coordination/|live/)' || true)
           if [ -n "$OUTSIDE" ]; then
             echo "publish=false" >> "$GITHUB_OUTPUT"
             echo "NOT publishing: this push also changes files the fast lane cannot carry:"

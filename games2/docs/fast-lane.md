@@ -294,6 +294,22 @@ his call to make against these numbers, not an assumption to bury in a script.
   is older, so it adopts the generation at ~+90s and the container merely
   re-serves the same code at +299s), but it wastes a five-minute build on every
   client push. The deploy should take the same client-only check and skip.
+- **A CLIENT-ONLY PUSH NO LONGER BUILDS AN IMAGE.** `nangijala-deploy.yml`'s
+  `resolve` job asks the compare API what the push changed and skips
+  `build-deploy` when every path is one `fast-publish.yml` admits. The verdict
+  DEFAULTS TO DEPLOYING and every uncertainty resolves that way — no push range
+  (a `workflow_dispatch`, a new branch), an API that will not answer, an empty
+  file list, a comparison at the API's 300-file ceiling — because a deploy
+  wrongly skipped strands art or a server change with no signal, which is far
+  worse than a wasted build. A skip is always recoverable by running the
+  workflow by hand. The `test` job still runs unconditionally: it is the only
+  thing that runs the 806-test suite on a client push, and it is parallel to the
+  build so it costs no wall time.
+- TRAP, PAID FOR IN BOTH LANE CHECKS AT ONCE: `^games2/client/(src/|index\.html)`
+  admits `index.htmlx` — the alternation had no end anchor, so the lane would
+  have carried a file the image answers. It is `index\.html$`. Same class as
+  `cachepolicy.ts`'s note that `.../dist/assetsX/` must never pass as
+  `.../dist/assets/`; a prefix test is not a path test.
 - WHY EIGHT SILENT POKES COST A DAY: the reason sat in `/api/bundle` the whole
   time while the workflow printed one `::warning::` that read like replication
   lag. The poke now reads the reason and fails the job on a named refusal.
