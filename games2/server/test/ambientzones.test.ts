@@ -222,10 +222,18 @@ test("maps2/worlds3/the_game/ambient.json parses whole and resolves at the heart
   assert.equal(table.size, doc.zones.length);
   const packed = packZoneTable(table);
   assert.ok(packed.length < 6000, `wire form ${packed.length} bytes`);
-  // the hearth house (299,198): a town cell under a province; foam/water come from the world zone
-  const here = zonesAt(doc, 299, 198, 0).map((z) => z.id);
-  assert.ok(here.includes("world"), here.join());
-  assert.ok(here.some((id) => id.startsWith("province-")), `a weather province covers the town: ${here.join()}`);
+  // the hearth house (299,198): ONE surface place besides the world (maps2's
+  // law of 2026-09-19 — a cell is one place, weather is a place's signature
+  // or a door, never a province), carrying one signature and a door;
+  // foam/water come from the world zone
+  const here = zonesAt(doc, 299, 198, 0);
+  const ids = here.map((z) => z.id);
+  assert.ok(ids.includes("world"), ids.join());
+  const places = here.filter((z) => z.id !== "world" && !z.elev);
+  assert.equal(places.length, 1, `one place at the hearth house: ${ids.join()}`);
+  const shares = Object.values(places[0].effects);
+  assert.equal(shares.filter((v) => v >= 85).length, 1, `one signature: ${JSON.stringify(places[0].effects)}`);
+  assert.ok(shares.some((v) => v === 0.5), `a door left open: ${JSON.stringify(places[0].effects)}`);
   const set = resolveAmbientAt(doc, table, 299, 198, 0);
   assert.ok(set.includes("foam") && set.includes("water"), set.join());
   assert.ok(isCompatibleSet(set), set.join("+"));
