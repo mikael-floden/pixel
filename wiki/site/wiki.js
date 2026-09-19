@@ -11304,19 +11304,6 @@ function viewWorldTransition(pairId) {
                   + " Where it goes is its edges, never its percentage.",
               }, clean ? `sits on ${sideName}` : `sits on ${sideName} · rim ${rim}% ${otherName}`),
               h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
-            /* AND THE TILE ITSELF, so the number can be checked against the
-             * thing it describes. The field below is a 6x6 wandering edge and
-             * is ~50/50 whatever tile stands in it; the tile is ONE cell in
-             * there, ~60px on a phone. He read the percentage as wrong twice
-             * in ten minutes off exactly that mismatch, and both times the
-             * number was right to the byte. Cropped to the top face because
-             * that is the surface the percentage counts — the wall is not in
-             * it and must not look like it is. */
-            h("div", { class: "fade-swatch-row" },
-              h("div", { class: "fade-swatch", title: "The tile on its own — the percentage above counts this top face, and nothing below it" },
-                h("img", { src: assetUrl(t.file), alt: "", loading: "lazy", decoding: "async" })),
-              h("div", { class: "muted fade-swatch-cap" },
-                `the tile alone · ${pa}% of this top face is ${nameA.toLowerCase()}`)),
             fadeScene(tr.a, tr.b, t));
           const paintCard = () => {
             const st = fb("tiles", t.key).status;
