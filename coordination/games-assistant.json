@@ -1,12 +1,12 @@
 {
  "domain": "games-assistant",
- "updated_at": "2026-09-19T21:40:58+00:00",
+ "updated_at": "2026-09-19T22:26:55+00:00",
  "health": "running",
  "current": {
   "unit": "SHIPPED — THE BEACON DELIVERS EVERY WINDOW, AND THE RUN SAYS WHY WHEN ONE IS LOST (maintainer 2026-09-19: 'WHAT?! Let me redo it! I was running around the entire map!' — his redo posted windows 1 and 2 and nothing after; no page load on record had ever delivered a third). A window is posted from an outbox with retries (no keepalive on a live page, the response read), every window carries its delivery ledger (`beacon`), a failed post reports itself to /api/perf/fail, GET /api/perf/log on the server shows every outcome; the file is capped by bytes (the 1 MB reset that wiped the history on 09-13 cannot recur); a remembered perf switch expires after 3 h (his first run today: the tap that was to start recording turned a six-day-old ON switch OFF at 47 s); the first window's rtt/patches/input/ambient start at arming. Gates: verify-beacon.mjs refuses the first post and requires the same window re-posted with its ledger (old client: fails three ways); perfdoc.test.ts (byte cap, never a reset); perfreport.test.ts (the ledger survives). Law: docs/perf.md 'THE BEACON DELIVERS EVERY WINDOW'; the games2/CLAUDE.md line is on games' board (file in flight there).",
   "since": "2026-09-19T21:40:58+00:00",
   "files": [],
-  "next": "read his next run with perf-read.mjs and curl nangijala.online/api/perf/log; the 'big improvement' candidates from the two windows that arrived are in the reply to him (the DPR 2.23 fill behind the 49 unattributed long frames — the resolution dial he already has; groundSlice 33 ms slices; the periodic major-GC freeze his 09-13 runs show, with the allocation sites now profiled: nightlight's lightAt chain 36% of garbage at rest, rebuildOccluders' Map iteration 11% walking)."
+  "next": "VERDICT ON HIS 22:20 RUN (4 windows, 570 cells, every post delivered, ring 4/4 at 200): no low-hanging fruit introduced since 09-13 — p50 17-18 / p90 33 / p99 45-58 ms and 2-19 frames over 50 ms a window, the same profile as the 09-13 running windows; the new code costs ~1 ms a frame in total (resolver 160-515 ms a window = 0.5-1.7%, `hooks` 0.5 ms, litPass +0.3 ms); allocation by section equals 09-13 (324-496 MB a window vs 371-414) and NO gc frames in four windows, so the major-GC-freeze candidate is withdrawn as unproven on the current Chrome. What remains is the old list (unattributed GPU waits 61 of ~100 long frames, one repaintCells 110 ms, one groundSlice 132 ms, one 169 ms full redraw) plus one 1.75 s stall at 218.8,248.2 with the thread idle and no long task (browser/GPU, one-off). composeMissed 263-400 a window vs 164-239 on 09-13 is the one counter that grew (cells drawn before their composed art). Maintainer 2026-09-19: perf is parked; new features next."
  },
  "progress": {
   "units_shipped": 42
