@@ -446,11 +446,24 @@ from the games agent), #18 (title/landing screen).
   rebuilt on every open from `offered()` — every layer whose `has()` is true —
   with all/none per group; a tick applies at once and the map behind redraws;
   backdrop, Escape and Done close. The AMBIENT-ZONE layers are DERIVED, one per
-  effect, from maps2's `ambient_zones.json` (schema `pixel-maps2/ambient-
-  zones@1`, proposed to maps2 2026-09-18: `zones[{id, effect, pct,
-  rects:[[x0,y0,x1,y1]…]}]`, world cells, x1/y1 exclusive; effect ids = the
-  ambient registry names) — parallelograms in a per-effect hue whose fill
-  deepens with pct, no text over the map; file missing = no group. Probes:
+  effect, from **maps2's own `ambient.json`, schema `pixel-maps3/ambient@1`** —
+  `{size, exclusive, zones:[{id, name, kind, area, cells, effects}]}` where
+  `area` is a CLOSED POLYGON of world cells (coastlines run to 830 points, so
+  every point is projected — `poly()`, never `quad()`) and `effects` is a MAP
+  of effect name → percent, so ONE zone carries MANY effects and a layer per
+  effect is derived across all 90 of them. Drawn biggest-zone-first (a town
+  over the province it sits in), fill deepening with that zone's pct, no text
+  over the map; file missing = no group.
+  **THE PAID-FOR TRAP, 2026-09-19: this reader was written against
+  `ambient_zones.json` / `pixel-maps2/ambient-zones@1` — a schema PROPOSED to
+  maps2 and never adopted.** It fetched a name nothing publishes, 404'd, and
+  the group was silently absent in production while `verify-map` passed green
+  against a FIXTURE OF THE PROPOSAL ("THIS IS A CRITICAL BUG! I AM ON YOUR NEW
+  VERSION AND IT DOESN'T COME UP!"). The gate now reads the REAL published file
+  out of the served tree and asserts its name, its schema and that EVERY effect
+  in it becomes a layer. **A fixture may stand in for data that is hard to
+  stage; it may never stand in for the producer's own published file** — then
+  the one thing the gate cannot see is the only thing that can break. Probes:
   `__ml.mapLayers(id?, want?)` (the scene's wiring, unchanged) and the
   module's own `window.__mlMapLayers` { list, set, open, close } — what the
   dialog offers. `verify-map` opens the dialog, ticks zones, reads the count,
@@ -471,14 +484,16 @@ from the games agent), #18 (title/landing screen).
   colour-blind eye. `verify-map` asserts each swatch against the colours the
   live overlay is actually painting, not against the constant.
   **NO TWO EFFECTS MAY SHARE A COLOUR.** The hue was the effect NAME's hash —
-  stable, and it collides: measured 2026-09-19, rain 36° / snow 35° and
-  fireflies 147° / falling leaves 141°, four different colours by `===` and two
-  indistinguishable pairs on a phone. `hueTable()` slots the wheel instead (≥12
-  slots, +12 per 6 effects; each effect takes the free slot nearest the one its
-  name asks for), so a non-colliding world still gets the hash's own answer and
-  the colours move only when maps2 adds or drops an effect. The gate measures
-  the minimum pairwise hue GAP against that wheel, never inequality — an `===`
-  test passes the bug — and runs on those two measured pairs.
+  stable, and it collides: over the 32 effects maps2 actually publishes it put
+  `ants` and `thunder` on the IDENTICAL pixel value, and rain/snow within one
+  degree. `hueTable()` is **12 hue slots × 3 saturation/lightness rings** = 36
+  places, each effect taking the free place nearest the slot its name asks for
+  (rings at that slot first, then along the wheel), so the hash still chooses
+  and only collisions are pushed aside. REJECTED: more slots — 32 effects on
+  one wheel is 5° apart, which is no legend at all. Measured over the real 32
+  the closest pair is 45 apart in RGB; the gate's floor is 30. It measures
+  SEPARATION, never inequality — an `===` test passes the bug, since 36° and
+  35° are two different colours and one colour to the eye.
   **SECTIONS ARE SETTINGS' SECTIONS** (maintainer 2026-09-19: "You can have
   sections in the dialog similar to the sections under settings"): the rule
   above the heading is the whole recipe (`.ml-amb-title` — border-top, 12px,

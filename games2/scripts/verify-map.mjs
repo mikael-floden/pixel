@@ -202,35 +202,17 @@ try {
         ];
         await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(doc) });
       });
-      // …and an AMBIENT ZONE the same way (maintainer 2026-09-18: ambient
-      // effects tied to zones maps2 places; the map tab shows them as layers,
-      // one per effect). The fixture is the proposed pixel-maps2/ambient-
-      // zones@1 shape — rain at 50% over a 5x5 block around the worked cell —
-      // so the whole path (file → derived layer → dialog group → drawn
-      // parallelogram) is proven before maps2 publishes anything.
-      await page.route("**/ambient_zones.json*", async (route) => {
-        const [cx, cy] = s0.cell;
-        await route.fulfill({
-          status: 200,
-          contentType: "application/json",
-          body: JSON.stringify({
-            schema: "pixel-maps2/ambient-zones@1",
-            world: feed.world,
-            // FOUR EFFECTS, and not any four: rain/snow and
-            // fireflies/falling leaves are the two pairs whose NAME HASHES
-            // collided when the hue was the hash alone (measured 2026-09-19 —
-            // one amber and one green across the legend). They are the
-            // fixture so the de-collision below is tested on the case that
-            // actually failed, not on a case chosen to pass.
-            zones: [
-              { id: "gate_rain", effect: "rain", pct: 50, rects: [[cx - 2, cy - 2, cx + 3, cy + 3]] },
-              { id: "gate_snow", effect: "snow", pct: 30, rects: [[cx + 4, cy - 2, cx + 8, cy + 3]] },
-              { id: "gate_ff", effect: "fireflies", pct: 70, rects: [[cx - 2, cy + 4, cx + 3, cy + 8]] },
-              { id: "gate_leaves", effect: "falling leaves", pct: 20, rects: [[cx + 4, cy + 4, cx + 8, cy + 8]] },
-            ],
-          }),
-        });
-      });
+      // NO AMBIENT FIXTURE. maps2 PUBLISHES `ambient.json`
+      // (pixel-maps3/ambient@1) and this gate reads THAT — the real 90 zones
+      // and 32 effects, out of the tree the dev server is serving. The first
+      // version of this section routed a fixture of a schema PROPOSED to maps2
+      // and never adopted (`ambient_zones.json`), so the whole path passed
+      // green here while production 404'd and the Ambient zones group was
+      // simply absent on his phone (maintainer 2026-09-19: "THIS IS A CRITICAL
+      // BUG! I AM ON YOUR NEW VERSION AND IT DOESN'T COME UP!"). A fixture may
+      // stand in for data that is HARD TO STAGE; it may never stand in for the
+      // producer's own published file, because then the one thing the gate
+      // cannot see is the only thing that broke.
       // the loader reads places once per world, so the fixture needs a fresh page
       await page.reload({ waitUntil: "load" });
       await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
@@ -242,89 +224,117 @@ try {
         const i = document.querySelector(".ml-map-frame img");
         return i && i.naturalWidth > 0;
       }, null, { timeout: 20000 });
+      // WHAT MAPS2 ACTUALLY PUBLISHES — fetched by the gate itself, so the
+      // name and the schema are asserted rather than assumed. A rename on
+      // their side turns this red instead of emptying the group in silence.
+      const amb = await page.evaluate(async (w) => {
+        const res = await fetch(`/assets/maps2/worlds3/${w}/ambient.json`);
+        if (!res.ok) return { status: res.status };
+        const doc = await res.json();
+        const effects = [...new Set((doc.zones || []).flatMap((z) => Object.keys(z.effects || {})))].sort();
+        return { status: 200, schema: doc.schema, zones: (doc.zones || []).length, effects };
+      }, feed.world);
+      amb.status === 200 && amb.schema === "pixel-maps3/ambient@1" && amb.zones > 0 && amb.effects.length > 0
+        ? ok(`maps2 publishes ambient.json (${amb.schema}, ${amb.zones} zones, ${amb.effects.length} effects)`)
+        : fail(`the ambient file this reader depends on is not there: ${JSON.stringify(amb).slice(0, 300)} — expected /assets/maps2/worlds3/${feed.world}/ambient.json, schema pixel-maps3/ambient@1`);
+      const someEffect = amb.effects?.[0];
       let after = null;
       const hasLayer = (list, id) => Array.isArray(list) && list.some((l) => l.id === id);
-      for (let i = 0; i < 40 && !(hasLayer(after, "dungeons") && hasLayer(after, "ambient:rain")); i++) {
+      for (let i = 0; i < 40 && !(hasLayer(after, "dungeons") && hasLayer(after, `ambient:${someEffect}`)); i++) {
         await page.waitForTimeout(200);
         after = await offered();
       }
       hasLayer(after, "dungeons")
         ? ok("dungeons layer is offered once a cave is published")
         : fail("a cave is published and the dungeons layer is still not offered");
+      // EVERY effect in the file becomes a layer — not just the one we looked
+      // for. A reader that drops effects would pass a spot check.
+      {
+        const got = (after || []).filter((l) => l.group === "ambient").map((l) => l.id.slice(8)).sort();
+        const missing = (amb.effects || []).filter((e) => !got.includes(e));
+        missing.length === 0 && got.length === (amb.effects || []).length
+          ? ok(`every one of the file's ${got.length} effects is offered as a layer`)
+          : fail(`${missing.length} effect(s) in ambient.json have no layer: ${missing.slice(0, 8).join(", ")} (offered ${got.length} of ${amb.effects?.length})`);
+      }
       // THE AMBIENT-ZONE LAYER: derived from the file, grouped "ambient",
       // drawn as a tinted parallelogram once on, listed under its own group
       // in the chooser.
-      const rainRow = Array.isArray(after) && after.find((l) => l.id === "ambient:rain");
+      // ONE EFFECT, PICKED FROM THE FILE, drawn on the map. `rain` by name if
+      // maps2 still places it, else whatever the file's first effect is — the
+      // gate must not hardcode content it does not own.
+      const pickEffect = (amb.effects || []).includes("rain") ? "rain" : someEffect;
+      const rainRow = Array.isArray(after) && after.find((l) => l.id === `ambient:${pickEffect}`);
       rainRow && rainRow.group === "ambient"
-        ? ok("ambient_zones.json yields an ambient:rain layer in the ambient group")
-        : fail(`no ambient:rain layer from the fixture: ${JSON.stringify(after)}`);
+        ? ok(`ambient.json yields an ambient:${pickEffect} layer in the ambient group`)
+        : fail(`no ambient:${pickEffect} layer from the published file: ${JSON.stringify((after || []).map((l) => l.id))}`);
       if (rainRow) {
-        await page.evaluate(() => window.__ml.mapLayers("ambient:rain", true));
+        await page.evaluate((e) => window.__ml.mapLayers(`ambient:${e}`, true), pickEffect);
         let wash = null;
         for (let i = 0; i < 20 && !wash; i++) {
           await page.waitForTimeout(150);
           wash = await page.evaluate(() => {
-            const p = [...document.querySelectorAll(".ml-maplayer-svg path")].find((e) => (e.getAttribute("fill") || "").startsWith("hsla("));
+            // maps2's areas are POLYGONS (coastlines run to 830 points), so
+            // the path is a long M…L…Z, never a four-corner quad.
+            const p = [...document.querySelectorAll(".ml-maplayer-svg path")].find((e) => e.getAttribute("fill-opacity"));
             if (!p) return null;
             const b = p.getBoundingClientRect(), f = document.querySelector(".ml-map-frame").getBoundingClientRect();
-            return { fill: p.getAttribute("fill"), w: Math.round(b.width), h: Math.round(b.height), inside: b.left >= f.left - 1 && b.right <= f.right + 1 && b.top >= f.top - 1 && b.bottom <= f.bottom + 1 };
+            const svg = document.querySelector(".ml-maplayer-svg");
+            const sb = svg.getBoundingClientRect(), cs = getComputedStyle(svg);
+            return {
+              fill: p.getAttribute("fill"), alpha: p.getAttribute("fill-opacity"),
+              pts: (p.getAttribute("d").match(/L/g) || []).length + 1,
+              w: Math.round(b.width), h: Math.round(b.height),
+              // it must LAND ON the map — a zone whose geometry also runs past
+              // the island is normal (the render is cropped to the island and
+              // the seas are not), which is exactly what the clip is for.
+              overlaps: b.right > f.left && b.left < f.right && b.bottom > f.top && b.top < f.bottom,
+              // …and the clip is the thing to assert: the layer box is the
+              // frame, and it hides what leaves it. Without this the outer
+              // zones' lines escaped over the game view (measured 2026-09-11).
+              clip: cs.overflow === "hidden" && Math.abs(sb.width - f.width) <= 1 && Math.abs(sb.height - f.height) <= 1 && Math.abs(sb.left - f.left) <= 1 && Math.abs(sb.top - f.top) <= 1,
+            };
           });
         }
-        wash && wash.w > 2 && wash.h > 2 && wash.inside
-          ? ok(`the rain zone draws as a tinted parallelogram inside the map (${wash.w}x${wash.h}px, ${wash.fill})`)
-          : fail(`rain zone not drawn: ${JSON.stringify(wash)}`);
+        wash && wash.w > 2 && wash.h > 2 && wash.overlaps && wash.pts >= 3
+          ? ok(`the ${pickEffect} zones draw as tinted polygons on the map (${wash.pts} points, ${wash.w}x${wash.h}px, ${wash.fill} at ${wash.alpha})`)
+          : fail(`${pickEffect} zones not drawn: ${JSON.stringify(wash)}`);
+        wash && wash.clip
+          ? ok("…and the layer box is the map frame with overflow hidden, so a sea zone running past the island crop is CLIPPED, not loose over the game view")
+          : fail(`the overlay is not clipped to the map frame: ${JSON.stringify(wash)}`);
         const marksText = await page.evaluate(() => document.querySelector(".ml-maplayer-marks")?.textContent.trim() ?? "");
         marksText === "" ? ok("no text over the map for the zone (its pct is the fill's depth)") : fail(`zone layer wrote text over the map: "${marksText}"`);
         await page.evaluate(() => document.querySelector(".ml-maplayers .ml-plate-btn").click());
         await page.waitForTimeout(150);
-        const grp = await page.evaluate(() => ({
-          groups: [...document.querySelectorAll(".ml-layers .ml-layers-h span")].map((e) => e.textContent.trim()),
-          rain: !!document.querySelector('.ml-layers [data-layer="ambient:rain"]'),
-        }));
+        const grp = await page.evaluate((e) => ({
+          groups: [...document.querySelectorAll(".ml-layers .ml-layers-h span")].map((x) => x.textContent.trim()),
+          rain: !!document.querySelector(`.ml-layers [data-layer="ambient:${e}"]`),
+        }), pickEffect);
         grp.groups.includes("Ambient zones") && grp.rain
-          ? ok(`the chooser shows the Ambient zones group with rain (${grp.groups.join(" / ")})`)
+          ? ok(`the chooser shows the Ambient zones group with ${pickEffect} (${grp.groups.join(" / ")})`)
           : fail(`chooser groups ${JSON.stringify(grp)}`);
-        // NO TWO EFFECTS MAY SHARE A SWATCH. The hue was the name's hash
-        // alone until 2026-09-19, which is stable and collides: with these
-        // four effects it gave rain and snow one amber and fireflies and
-        // falling leaves one green, and a legend whose whole job is "what
-        // colour is that wash?" is then worse than no legend. The wheel is
-        // slotted now; this is the measurement that says so.
-        // SEPARATION, NOT INEQUALITY — and that distinction is the whole
-        // assertion. The hash gave rain 36° and snow 35°, fireflies 147° and
-        // falling leaves 141°: four DIFFERENT colours by any === test, and two
-        // indistinguishable pairs on a phone. So the minimum pairwise HUE GAP
-        // is measured, against the wheel the slotting promises (>=12 slots,
-        // more as effects are added; 0.8 of a slot leaves room for rounding).
-        const sw = await page.evaluate(() => {
-          const hueOf = (css) => {
-            const [r, g, b] = css.match(/[\d.]+/g).slice(0, 3).map((n) => +n / 255);
-            const mx = Math.max(r, g, b), mn = Math.min(r, g, b), d = mx - mn;
-            if (!d) return 0;
-            const h = mx === r ? ((g - b) / d) % 6 : mx === g ? (b - r) / d + 2 : (r - g) / d + 4;
-            return (h * 60 + 360) % 360;
-          };
-          return [...document.querySelectorAll('.ml-layers [data-layer^="ambient:"]')].map((r) => ({
+        // NO TWO EFFECTS MAY SHARE A SWATCH — and SEPARATION, not inequality,
+        // is the test. Over the 32 effects maps2 publishes, the name-hash hue
+        // put `ants` and `thunder` on the identical pixel value and rain/snow
+        // within one degree: four different colours by any === check, two
+        // indistinguishable pairs on a phone. The wheel is 12 slots x 3
+        // saturation/lightness rings now; measured, the closest pair of the
+        // real 32 is 45 apart in RGB, so 30 is the floor with room to spare.
+        const MIN_RGB = 30;
+        const sw = await page.evaluate(() =>
+          [...document.querySelectorAll('.ml-layers [data-layer^="ambient:"]')].map((r) => ({
             id: r.dataset.layer.slice(8),
-            color: getComputedStyle(r.querySelector(".ml-maplayer-sw")).backgroundColor,
-            hue: Math.round(hueOf(getComputedStyle(r.querySelector(".ml-maplayer-sw")).backgroundColor)),
-          }));
-        });
-        const slots = Math.max(12, Math.ceil(sw.length / 6) * 12);
-        const wantGap = (360 / slots) * 0.8;
-        let worst = { gap: 360, a: null, b: null };
+            rgb: getComputedStyle(r.querySelector(".ml-maplayer-sw")).backgroundColor.match(/[\d.]+/g).slice(0, 3).map(Number),
+          })),
+        );
+        let worst = { d: 1e9, a: null, b: null };
         for (let i = 0; i < sw.length; i++)
           for (let j = i + 1; j < sw.length; j++) {
-            const d = Math.abs(sw[i].hue - sw[j].hue);
-            const gap = Math.min(d, 360 - d);
-            if (gap < worst.gap) worst = { gap, a: sw[i], b: sw[j] };
+            const d = Math.hypot(...sw[i].rgb.map((v, k) => v - sw[j].rgb[k]));
+            if (d < worst.d) worst = { d, a: sw[i], b: sw[j] };
           }
-        sw.length >= 4 && worst.gap >= wantGap
-          ? ok(`no two ambient effects share a colour — closest pair ${worst.a.id}/${worst.b.id} is ${worst.gap.toFixed(0)}° apart, want >=${wantGap.toFixed(0)}° (${sw.map((c) => `${c.id} ${c.hue}°`).join(", ")})`)
-          : fail(`two ambient effects are the same colour to the eye: ${worst.a?.id} ${worst.a?.hue}° vs ${worst.b?.id} ${worst.b?.hue}° — ${worst.gap.toFixed(1)}° apart, want >=${wantGap.toFixed(0)}° (${JSON.stringify(sw)})`);
-        await page.screenshot({ path: `${OUT}/map-layers-dialog.png` });
-        await page.evaluate(() => document.querySelector(".ml-layers-done")?.click());
-        await page.evaluate(() => window.__ml.mapLayers("ambient:rain", false));
+        sw.length >= 8 && worst.d >= MIN_RGB
+          ? ok(`all ${sw.length} ambient swatches are told apart — closest pair ${worst.a.id}/${worst.b.id} is ${worst.d.toFixed(0)} apart in RGB (floor ${MIN_RGB})`)
+          : fail(`two ambient effects look the same: ${worst.a?.id} ${JSON.stringify(worst.a?.rgb)} vs ${worst.b?.id} ${JSON.stringify(worst.b?.rgb)} — ${worst.d.toFixed(1)} apart, want >=${MIN_RGB} (${sw.length} effects)`);
       }
       await page.evaluate(() => window.__ml.mapLayers("dungeons", true));
       let pins = [];

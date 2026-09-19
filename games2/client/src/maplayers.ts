@@ -152,6 +152,12 @@ function quad(ctx: LayerCtx, x0: number, y0: number, x1: number, y1: number): st
 const ZONE_LINE = "rgba(143,214,255,0.95)";
 const PIN_FILL = "rgba(255,196,92,0.96)";
 
+/** A world-space POLYGON as an SVG path in image percent — maps2's ambient
+ *  areas are outlines, not boxes, so every point is projected. */
+function poly(ctx: LayerCtx, pts: [number, number][]): string {
+  return `M${pts.map(([cx, cy]) => { const [x, y] = ctx.at(cx, cy); return `${x.toFixed(3)},${y.toFixed(3)}`; }).join("L")}Z`;
+}
+
 const LAYERS: Layer[] = [
   {
     id: "zones",
@@ -220,36 +226,72 @@ const LAYERS: Layer[] = [
   },
 ];
 
-/* -- ambient zones (maps2's ambient_zones.json) ----------------------------- */
+/* -- ambient zones (maps2's OWN ambient.json) -------------------------------- */
 
+// THE FILE IS `ambient.json`, SCHEMA `pixel-maps3/ambient@1`, AND IT IS
+// MAPS2'S, NOT A SHAPE WE ASKED FOR. The first version of this reader was
+// written against `ambient_zones.json` — a schema proposed to maps2 on
+// 2026-09-18 and never adopted — so it fetched a name nothing publishes, got a
+// 404, and the Ambient zones group was silently absent in production while
+// every gate passed against a fixture of the proposed shape (maintainer
+// 2026-09-19: "THIS IS A CRITICAL BUG! I AM ON YOUR NEW VERSION AND IT DOESN'T
+// COME UP!"). THE LESSON, and it is the repo's own rule in a new place: a
+// consumer reads the producer's PUBLISHED file, and a fixture is a copy of
+// that file — never of a proposal. The gate now asserts the real name and
+// schema, so a reader pointed at a file nothing ships fails here.
+//
+// The real shape, per zone: an id, a NAME and a KIND (sea, marsh, town, cave,
+// … and one `world` zone covering everything), the `area` as a CLOSED POLYGON
+// of world cells — not rectangles; the coastlines run to 830 points — the
+// `cells` it covers, and `effects` as a MAP of effect name -> percent. So one
+// zone carries many effects, which is why a layer per effect is derived across
+// all of them rather than read off one field.
 interface AmbientZone {
   id: string;
-  effect: string;
-  /** How often the effect is active here, 0–100; 100 = always. */
-  pct: number;
-  /** World-cell rectangles, x1/y1 exclusive. */
-  rects: [number, number, number, number][];
+  name: string;
+  kind: string;
+  /** Closed polygon, world cells. */
+  area: [number, number][];
+  /** Cells covered — the draw order, biggest first, so a small zone stays
+   *  visible on top of the province it sits in. */
+  cells: number;
+  /** effect name -> how often it is active here, 0–100. */
+  effects: Record<string, number>;
 }
 
-/** maps2's placed ambient zones for a world, or [] when the file is not
- *  published yet (or malformed — a bad entry is dropped, never thrown). */
+/** maps2's ambient zones for a world, or [] when the file is missing or
+ *  malformed (a bad entry is dropped, never thrown — no zones, no group). */
 async function loadAmbientZones(world: string): Promise<AmbientZone[]> {
   try {
-    const res = await fetch(gameUrl(worldFileUrl(world, "ambient_zones.json")));
+    const res = await fetch(gameUrl(worldFileUrl(world, "ambient.json")));
     if (!res.ok) return [];
     const doc = (await res.json()) as { zones?: unknown };
     if (!Array.isArray(doc.zones)) return [];
     const out: AmbientZone[] = [];
     for (const z of doc.zones as Record<string, unknown>[]) {
-      if (!z || typeof z.effect !== "string") continue;
-      const rects = (Array.isArray(z.rects) ? z.rects : [])
-        .filter((r): r is number[] => Array.isArray(r) && r.length === 4 && r.every((n) => typeof n === "number"))
-        .map((r) => [r[0], r[1], r[2], r[3]] as [number, number, number, number]);
-      if (!rects.length) continue;
-      const pct = typeof z.pct === "number" ? Math.max(0, Math.min(100, z.pct)) : 100;
-      out.push({ id: typeof z.id === "string" ? z.id : `${z.effect}-${out.length}`, effect: z.effect, pct, rects });
+      if (!z || typeof z !== "object") continue;
+      const area = (Array.isArray(z.area) ? z.area : [])
+        .filter((p): p is number[] => Array.isArray(p) && p.length >= 2 && typeof p[0] === "number" && typeof p[1] === "number")
+        .map((p) => [p[0], p[1]] as [number, number]);
+      if (area.length < 3) continue; // not an area
+      const effects: Record<string, number> = {};
+      const raw = z.effects as Record<string, unknown> | undefined;
+      if (raw && typeof raw === "object")
+        for (const [k, v] of Object.entries(raw))
+          if (typeof v === "number") effects[k] = Math.max(0, Math.min(100, v));
+      if (!Object.keys(effects).length) continue; // a zone with no effects draws nothing
+      out.push({
+        id: typeof z.id === "string" ? z.id : `zone-${out.length}`,
+        name: typeof z.name === "string" ? z.name : "",
+        kind: typeof z.kind === "string" ? z.kind : "",
+        area,
+        cells: typeof z.cells === "number" ? z.cells : area.length,
+        effects,
+      });
     }
-    return out;
+    // biggest first: the world zone and the provinces lie UNDER the meadows
+    // and towns inside them, which is the only order that reads.
+    return out.sort((a, b) => b.cells - a.cells);
   } catch {
     return [];
   }
@@ -263,42 +305,56 @@ function effectSeed(effect: string): number {
   return h;
 }
 
-/** THE HUES THE LEGEND CAN ACTUALLY TELL APART. A name hash alone is stable
- *  but collides — measured with six effects it gave rain and snow one amber
- *  and fireflies and falling leaves one green, and a legend whose whole job is
- *  "what colour is that wash?" is then worse than none.
- *  So the wheel is SLOTTED: at least 12 slots (30° apart), more when there are
- *  more effects, each effect taking the free slot nearest the one its name
- *  asks for. Deterministic for a given set of effects, and it still honours
- *  the name — a world whose effects do not collide gets exactly the hash's
- *  answer. It moves only when maps2 adds or removes an effect, and the pills
- *  are on screen saying so. */
-function hueTable(effects: string[]): Map<string, number> {
-  const slots = Math.max(12, Math.ceil(effects.length / 6) * 12);
-  const step = 360 / slots;
-  const taken = new Array<string | null>(slots).fill(null);
-  const out = new Map<string, number>();
+/** THE COLOURS THE LEGEND CAN ACTUALLY TELL APART. A name hash alone is stable
+ *  and it COLLIDES: over the 32 effects maps2 publishes it puts `ants` and
+ *  `thunder` on the very same pixel value, and rain/snow and
+ *  fireflies/falling-leaves within a degree of each other. A legend whose one
+ *  job is "what colour is that wash?" is then worse than none.
+ *  THE WHEEL IS 12 SLOTS AND THREE RINGS — 36 places, all visibly apart. Each
+ *  effect takes the free place nearest the slot its NAME asks for, trying the
+ *  rings at that slot before moving along the wheel, so the hash still chooses
+ *  and only the collisions are pushed aside. The rings are a saturation AND
+ *  lightness pair, not a lightness alone: measured over the real 32, the worst
+ *  pair is 45 apart in RGB, where the hash gives 0. (Rejected: more slots —
+ *  32 effects on one wheel is 5° apart, which is no legend at all.)
+ *  Deterministic for a set of effects; it moves only when maps2 adds or drops
+ *  one, and the pills are on screen saying so. */
+const RINGS: [number, number][] = [
+  [70, 60], // the ordinary one
+  [88, 80], // pale
+  [52, 40], // deep
+];
+const HUE_SLOTS = 12;
+
+function hueTable(effects: string[]): Map<string, string> {
+  const taken = new Set<string>();
+  const out = new Map<string, string>();
+  const put = (e: string, slot: number, ring: number) => {
+    taken.add(`${slot}:${ring}`);
+    const [sat, light] = RINGS[ring];
+    out.set(e, `hsl(${Math.round((slot * 360) / HUE_SLOTS)},${sat}%,${light}%)`);
+  };
   for (const e of effects) {
-    const want = effectSeed(e) % slots;
-    // outward from the slot the name asks for: want, want±1, want±2 … The
-    // first free one wins; with more effects than slots the last of them share
-    // a hue, which is honest and is what more slots are for.
-    let at = want;
-    for (let d = 0; d <= slots; d++) {
-      const a = (want + d) % slots;
-      const b = (want - d + slots) % slots;
-      if (taken[a] === null) { at = a; break; }
-      if (taken[b] === null) { at = b; break; }
-    }
-    taken[at] = e;
-    out.set(e, Math.round(at * step));
+    const want = effectSeed(e) % HUE_SLOTS;
+    let placed = false;
+    for (let d = 0; d < HUE_SLOTS && !placed; d++)
+      for (const slot of d === 0 ? [want] : [(want + d) % HUE_SLOTS, (want - d + HUE_SLOTS) % HUE_SLOTS]) {
+        for (let r = 0; r < RINGS.length; r++)
+          if (!taken.has(`${slot}:${r}`)) {
+            put(e, slot, r);
+            placed = true;
+            break;
+          }
+        if (placed) break;
+      }
+    if (!placed) put(e, want, 0); // more than 36 effects — share, honestly
   }
   return out;
 }
 
-let hues: Map<string, number> = new Map();
-/** The hue this effect is drawn and labelled in (see `hueTable`). */
-const effectHue = (effect: string): number => hues.get(effect) ?? effectSeed(effect) % 360;
+let hues: Map<string, string> = new Map();
+/** The colour this effect is drawn and labelled in (see `hueTable`). */
+const effectColor = (effect: string): string => hues.get(effect) ?? `hsl(${effectSeed(effect) % 360},70%,60%)`;
 
 let ambientFor = ""; // which world `ambientZones` belongs to
 let ambientZones: AmbientZone[] = [];
@@ -308,37 +364,42 @@ let ambientLayerCache: { key: string; layers: Layer[] } = { key: "", layers: [] 
  *  memoised) from the loaded zones, so the dialog and the redraw see new
  *  effects the moment the file lands. */
 function ambientLayers(): Layer[] {
-  const key = ambientZones.map((z) => z.effect).join(",");
+  // ALPHABETICAL, not first-seen: there are 32 of them and the question is
+  // always "where is snow?", which is a lookup, not a tour.
+  const effects = [...new Set(ambientZones.flatMap((z) => Object.keys(z.effects)))].sort();
+  const key = effects.join(",");
   if (key === ambientLayerCache.key) return ambientLayerCache.layers;
-  const effects = [...new Set(ambientZones.map((z) => z.effect))];
   hues = hueTable(effects); // one wheel for the whole set, so no two collide
   const layers = effects.map<Layer>((effect) => ({
     id: `ambient:${effect}`,
     label: effect,
     group: "ambient",
-    // The pill wears the hue at full strength; the map varies only the
+    // The pill wears the colour at full strength; the map varies only the
     // ALPHA with pct, so the two are the same colour by construction.
-    mark: () => ({ color: `hsl(${effectHue(effect)},70%,60%)`, shape: "area" }),
-    has: () => ambientZones.some((z) => z.effect === effect),
+    mark: () => ({ color: effectColor(effect), shape: "area" }),
+    has: () => ambientZones.some((z) => effect in z.effects),
     draw: (ctx) => {
-      const hue = effectHue(effect);
+      const color = effectColor(effect);
+      // `ambientZones` is sorted biggest-first, so a town draws over the
+      // province it sits in rather than under it.
       for (const z of ambientZones) {
-        if (z.effect !== effect) continue;
-        // The fill DEEPENS with how often the effect is active: 100% reads
-        // as a solid wash, a rare 10% as a tint — the pct is on the map
+        const pct = z.effects[effect];
+        if (pct === undefined) continue;
+        // The fill DEEPENS with how often the effect is active here: 100%
+        // reads as a wash, a rare 8% as a tint — the pct is on the map
         // without a number over it (no text over the map, the law above).
-        const alpha = 0.1 + 0.3 * (z.pct / 100);
-        for (const [x0, y0, x1, y1] of z.rects) {
-          ctx.svg.appendChild(
-            ctx.el("path", {
-              d: quad(ctx, x0, y0, x1, y1),
-              fill: `hsla(${hue},70%,60%,${alpha.toFixed(3)})`,
-              stroke: `hsla(${hue},70%,70%,0.9)`,
-              "stroke-width": 0.35,
-              "vector-effect": "non-scaling-stroke",
-            }),
-          );
-        }
+        const alpha = 0.1 + 0.3 * (pct / 100);
+        ctx.svg.appendChild(
+          ctx.el("path", {
+            d: poly(ctx, z.area),
+            fill: color,
+            "fill-opacity": alpha.toFixed(3),
+            stroke: color,
+            "stroke-opacity": 0.9,
+            "stroke-width": 0.35,
+            "vector-effect": "non-scaling-stroke",
+          }),
+        );
       }
     },
   }));
