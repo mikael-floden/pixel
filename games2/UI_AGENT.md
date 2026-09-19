@@ -274,6 +274,27 @@ from the games agent), #18 (title/landing screen).
   "right-handed ⇒ log left" alone passes on a build that moved the STICK), plus
   the mirrored margin, the input following its log, the bubbles' own edge, and
   that forcing `ml-land` drops the mirror.
+- **THE LANDSCAPE MENU COLUMN IS AS WIDE AS WHAT IS IN IT** (maintainer
+  2026-09-19: "when holding the phone in landscape the menu area has not been
+  made smaller the way we did for portrait mode"). `landscapeMenuWidth()` is
+  `portraitHudHeight()` turned on its side: 1px border + the vertical tab strip
+  + the page's own padding + the backpack grid's own computed max-width,
+  `Math.min` with the golden 38.2vw, which stays the CEILING — a column wider
+  than the split would be a regression. It READS the grid's computed max-width
+  rather than restating that height-derived formula, because two copies of it
+  drift the first time either is tuned.
+  **AND THE BACKPACK IS TWO COLUMNS IN LANDSCAPE, NOT THREE.** Sizing to
+  content alone won nothing: measured at 851×393 the three-column grid wanted
+  212px and the golden split gave 325 — the cap bound exactly, which is why he
+  saw no change. The slot keeps its height-derived size (65px, unchanged, so
+  nothing got fiddlier to tap) and the third column's width goes to the GAME.
+  Measured: menu 325 → 251 (38.2% → 29.5%), game view 526 → 600; on a 740×360
+  phone the slots actually GREW (51 → 59), because the grid was being squeezed
+  by a column narrower than it wanted. The backpack scrolls sooner — that is
+  the trade, and `verify-landscape` no longer asserts "no scroll" but asserts
+  the thing that would really be a bug: no SIDEWAYS overflow, the grid inside
+  its column's inner edge. The width is gated against its PARTS, never a
+  literal, plus `< golden` so a future change that wins nothing fails loudly.
 - **THE PORTRAIT HUD IS EXACTLY THREE BACKPACK ROWS TALL** (maintainer
   2026-09-18: "aim for the backpack only having exact 3 row slots (not the
   ~3.66 we have today)… A player should feel 3 rows fit exactly and the space

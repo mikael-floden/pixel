@@ -176,12 +176,34 @@ try {
 
   // ---- 1. RIGHT-HANDED (default) landscape: menu LEFT, game RIGHT ----
   let g = await geom();
-  const menuW = Math.round(851 * 0.382);
+  const golden = Math.round(851 * 0.382);
   g.land && !g.lh ? ok("in-world landscape sets ml-land (right-handed default)") : fail(`classes: land=${g.land} lh=${g.lh}`);
   g.rotate === "none" ? ok("rotate prompt hidden in the world") : fail(`rotate prompt visible in-game (${g.rotate})`);
-  Math.abs(g.hud.w - menuW) <= 2 && g.hud.l === 0 && g.hud.h >= 390
-    ? ok(`menu is a full-height left column (${g.hud.w}px ≈ 38.2vw)`)
-    : fail(`menu column ${JSON.stringify(g.hud)}, want left, w≈${menuW}, full height`);
+  // THE COLUMN IS AS WIDE AS WHAT IS IN IT, NOT A FRACTION OF THE SCREEN
+  // (maintainer 2026-09-19: in landscape the menu "has not been made smaller
+  // the way we did for portrait mode"). Asserted the way portraitHudHeight is:
+  // against the PARTS — tab strip + the page's own padding + the backpack
+  // grid's own cap — so a change to any of them moves this number or fails
+  // here, and never against a literal. The golden 38.2% it replaced stays the
+  // CEILING, and the column must come in strictly under it or nothing was won.
+  const want = await page.evaluate(() => {
+    const px = (v) => parseFloat(v) || 0;
+    const pg = document.querySelector('.ml-page[data-page="backpack"]');
+    const pcs = getComputedStyle(pg);
+    return {
+      tab: Math.round(document.querySelector(".ml-tabrow").getBoundingClientRect().width),
+      padL: px(pcs.paddingLeft), padR: px(pcs.paddingRight),
+      grid: px(getComputedStyle(pg.querySelector(".ml-slots")).maxWidth),
+    };
+  });
+  const content = Math.round(1 + want.tab + want.padL + want.grid + want.padR);
+  Math.abs(g.hud.w - content) <= 2 && g.hud.l === 0 && g.hud.h >= 390
+    ? ok(`menu is a full-height left column sized to its content (${g.hud.w}px = 1 border + ${want.tab} tabs + ${want.padL + want.padR} padding + ${Math.round(want.grid)} grid)`)
+    : fail(`menu column ${JSON.stringify(g.hud)} vs its content ${content} (${JSON.stringify(want)})`);
+  g.hud.w < golden
+    ? ok(`…and it comes in under the golden split it replaced (${g.hud.w} < ${golden}, ${(100 * g.hud.w / 851).toFixed(1)}% of the screen, ${golden - g.hud.w}px back to the game)`)
+    : fail(`the menu is ${g.hud.w}px, the golden split is ${golden} — sizing to content won nothing`);
+  const menuW = g.hud.w;
   Math.abs(g.game.l - menuW) <= 2 && Math.abs(g.game.w - (851 - menuW)) <= 2
     ? ok(`game view fills the rest (${g.game.w}px from x=${g.game.l})`)
     : fail(`game view ${JSON.stringify(g.game)}`);
@@ -211,18 +233,27 @@ try {
     const first = g2.firstElementChild.getBoundingClientRect();
     return { cols, slotW: Math.round(first.width) };
   });
-  slots.cols === 3 && slots.slotW >= 55
-    ? ok(`backpack is 3 wide x 5 tall in landscape (slots ${slots.slotW}px)`)
-    : fail(`backpack grid ${JSON.stringify(slots)}, want 3 columns of >=55px`);
-  // …and every row FITS — no "ugly 1px scroll" (maintainer): the grid's
-  // width cap is height-derived, so the page never scrolls.
-  const bpScroll = await page.evaluate(() => {
+  slots.cols === 2 && slots.slotW >= 55
+    ? ok(`backpack is 2 wide in landscape, slots still page-filling at ${slots.slotW}px`)
+    : fail(`backpack grid ${JSON.stringify(slots)}, want 2 columns of >=55px`);
+  // THE BACKPACK SCROLLS NOW, AND THAT IS THE TRADE HE TOOK: two columns give
+  // the third column's width back to the game, so more of the bag is below the
+  // fold. What must NOT happen is a SIDEWAYS scroll — the grid wider than the
+  // column it sits in is the bug this replaced the old no-scroll check with,
+  // and it is the one that would clip a slot rather than merely hide it.
+  const bp = await page.evaluate(() => {
     const pg = document.querySelector('.ml-page[data-page="backpack"]');
-    return pg.scrollHeight - pg.clientHeight;
+    const grid = pg.querySelector(".ml-slots");
+    return {
+      overX: pg.scrollWidth - pg.clientWidth,
+      gridR: Math.round(grid.getBoundingClientRect().right),
+      pageR: Math.round(pg.getBoundingClientRect().right),
+      padR: parseFloat(getComputedStyle(pg).paddingRight) || 0,
+    };
   });
-  bpScroll <= 0
-    ? ok("backpack page has no scroll (grid height-fit)")
-    : fail(`backpack page scrolls by ${bpScroll}px`);
+  bp.overX <= 0 && bp.gridR <= bp.pageR - bp.padR + 1
+    ? ok(`the grid fits its column with no sideways scroll (grid ends at ${bp.gridR}, column's inner edge ${Math.round(bp.pageR - bp.padR)})`)
+    : fail(`the backpack grid overflows its column: ${JSON.stringify(bp)}`);
   // MAP at the portrait size (maintainer: "the map should look the same
   // size" — sized to the short viewport side, sides clipped evenly).
   await page.evaluate(() => document.querySelector('[data-tab="map"]').click());

@@ -411,6 +411,41 @@ function portraitHudHeight(w: number, h: number): number {
   return Math.min(Math.round(hud), golden);
 }
 
+/**
+ * THE LANDSCAPE MENU COLUMN IS AS WIDE AS WHAT IS IN IT — the same rule
+ * `portraitHudHeight` applies to the rail, turned on its side (maintainer
+ * 2026-09-19: "in landscape the menu area has not been made smaller the way
+ * we did for portrait mode"). The tab strip, the page's own padding and the
+ * backpack grid the CSS is about to lay out, and never more than the golden
+ * 38.2% it replaces — a column WIDER than the split would be a regression, so
+ * the golden value stays the ceiling exactly as it is the ceiling in portrait.
+ *
+ * It reads the grid's own computed max-width rather than restating that
+ * formula here: the CSS owns how wide the backpack wants to be, and two copies
+ * of that arithmetic would drift the first time either is tuned. Before the
+ * HUD exists there is nothing to measure and the golden value stands.
+ */
+function landscapeMenuWidth(w: number, h: number): number {
+  const golden = Math.round(w * 0.382);
+  const tabrow = document.querySelector<HTMLElement>(".ml-tabrow");
+  const page = document.querySelector<HTMLElement>('.ml-page[data-page="backpack"]');
+  const grid = page?.querySelector<HTMLElement>(".ml-slots");
+  if (!tabrow || !page || !grid) return golden;
+  const px = (v: string) => parseFloat(v) || 0;
+  const pcs = getComputedStyle(page);
+  // the grid's max-width is height-derived (see the .ml-land .ml-slots rule),
+  // so it is only known once the element is in the landscape layout
+  const gridW = px(getComputedStyle(grid).maxWidth);
+  if (!gridW) return golden;
+  const content =
+    1 /* .ml-hud border-right */ +
+    tabrow.getBoundingClientRect().width +
+    px(pcs.paddingLeft) +
+    gridW +
+    px(pcs.paddingRight);
+  return Math.min(Math.round(content), golden);
+}
+
 function applyLayout() {
   const root = document.documentElement;
   const w = window.innerWidth;
@@ -427,7 +462,7 @@ function applyLayout() {
   root.classList.toggle("ml-land", land);
   root.classList.toggle("ml-lh", left);
   if (land) {
-    const menuW = Math.round(w * 0.382);
+    const menuW = landscapeMenuWidth(w, h);
     root.style.setProperty("--menu-w", `${menuW}px`);
     // The game view runs the full height: consumers of --hud-h ("px above
     // the HUD rail") get 0 and land on the bottom edge, which is exactly
@@ -2477,14 +2512,20 @@ function injectStyles() {
      three squeezed the labels into clipped fragments ("weathe…") */
   :root.ml-land .ml-btnrow{grid-template-columns:repeat(2,1fr)}
   /* the backpack turns its grid on its side with the layout (maintainer
-     2026-08-05: rows & cols switch — 3 wide × 5 tall): five 1fr columns in
-     the narrow menu column made ~33px slots; three make them page-filling.
-     The width cap is HEIGHT-derived so all 5 rows always fit WITHOUT the
-     ugly 1px scroll (same maintainer, next round): slot = (100dvh − 72px)/5
-     — 72 = the page's 26px padding + 4×10px gaps + slack — and grid width =
-     3 slots + 2 gaps. The 320px cap keeps tablet columns from ballooning. */
-  :root.ml-land .ml-slots{grid-template-columns:repeat(3,1fr);
-    max-width:min(320px, calc((100dvh - 72px)*0.6 + 20px))}
+     2026-08-05: rows & cols switch): five 1fr columns in the narrow menu
+     column made ~33px slots, so the slot SIZE is HEIGHT-derived — slot =
+     (100dvh − 72px)/5, 72 = the page's 26px padding + 4×10px gaps + slack —
+     and the slots stay page-filling at any phone height.
+     TWO COLUMNS, NOT THREE (maintainer 2026-09-19: the landscape menu "has
+     not been made smaller the way we did for portrait mode"). The slot keeps
+     its height-derived size, so nothing got fiddlier to tap; the column gives
+     back the third column's width to the GAME, which is the whole point —
+     measured on his phone, 325px of menu became 249 and the game view went
+     from 526 to 602. The backpack scrolls a little sooner, which is the
+     trade he asked for. Grid width = 2 slots + 1 gap. The 320px cap keeps
+     tablet columns from ballooning. */
+  :root.ml-land .ml-slots{grid-template-columns:repeat(2,1fr);
+    max-width:min(320px, calc((100dvh - 72px)*0.4 + 10px))}
   /* ── pages ── */
   .ml-pages{flex:1 1 auto;min-height:0;position:relative}
   /* 'safe center' keeps a short page centred but falls back to top-anchored the
