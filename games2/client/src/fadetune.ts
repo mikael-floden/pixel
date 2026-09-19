@@ -27,18 +27,27 @@
  *  re-resolves the world on "ml-fade-tune". The defaults are the maintainer's
  *  picks (below); the resolver's own constants stay the parity fixtures'. */
 
+import { FADE_TUNE_GAME } from "./tiles3";
+
 export interface FadeTune {
   reach: number;
   amount: number;
   falloff: number;
   onBoundary: boolean;
+  /** THE GAME PICKS BY PAINT (tiles3 `fadePick`): the falloff target is a
+   *  ceiling and every tile under it is weighted 1/area, so a 10% tile is
+   *  placed five times as often as a 50% one (maintainer 2026-09-19). Always
+   *  true here; false is render3's parity picture and nothing in the game
+   *  sets it. */
+  paint: boolean;
 }
 
 /** THE MAINTAINER'S DEFAULTS (2026-09-09, tuned on the phone with the three
- *  sliders: "This is good fade defaults"): reach 4, amount 0.46x, falloff 4.
- *  The resolver's own constants (FADE_BAND 2, 1x, exponent 1) are what the
- *  render3 parity fixtures pin and are unchanged; the game hands it THESE. */
-export const FADE_TUNE_DEFAULT: FadeTune = { reach: 4, amount: 0.46, falloff: 4, onBoundary: false };
+ *  sliders: "This is good fade defaults"): reach 4, amount 0.46x, falloff 4,
+ *  and the paint rule on. The values live in tiles3.ts (`FADE_TUNE_GAME`, beside
+ *  the resolver's own constants that the render3 parity fixtures pin) so the
+ *  world census gate can read them without this module's DOM. */
+export const FADE_TUNE_DEFAULT: FadeTune = { ...FADE_TUNE_GAME };
 /* THE DIALS RUN WELL PAST THE DEFAULTS. He found his numbers with reach and
  * falloff both pinned at the old top of their tracks (4 cells, exp 4): "it was
  * hard to test because you limited the sliders enormously." A dial whose
@@ -64,6 +73,7 @@ function load(): FadeTune {
       amount: num(v.amount, FADE_TUNE_DEFAULT.amount, 0, FADE_AMOUNT_MAX),
       falloff: num(v.falloff, FADE_TUNE_DEFAULT.falloff, FADE_FALLOFF_MIN, FADE_FALLOFF_MAX),
       onBoundary: false,
+      paint: true,
     };
   } catch {
     return { ...FADE_TUNE_DEFAULT };
@@ -75,7 +85,7 @@ export function fadeTune(): FadeTune {
 }
 
 export function setFadeTune(patch: Partial<FadeTune>): void {
-  const next = { ...value, ...patch, onBoundary: false };
+  const next = { ...value, ...patch, onBoundary: false, paint: true };
   if (
     next.reach === value.reach &&
     next.amount === value.amount &&

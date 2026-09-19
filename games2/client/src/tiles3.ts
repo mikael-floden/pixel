@@ -64,6 +64,13 @@ export const DECK_CAP_CROP = TOP_Y + DY + 8;
  *  distance band from ring 1: the boundary tile rides the corner lattice ON TOP
  *  of the cell, so ring 1 is still the surface's to dress. */
 export const FADE_BAND = 2;
+/** THE MAINTAINER'S DIALS — what the game hands the resolver (`Tiles3Data.fadeTune`,
+ *  persisted by fadetune.ts), against the resolver's own constants (FADE_BAND 2,
+ *  amount 1, falloff 1, no paint rule), which are render3's picture and what the
+ *  parity fixture pins. Tuned on the phone 2026-09-09 ("This is good fade
+ *  defaults"); `paint` is the 2026-09-19 rule (`fadePick`) and is never off in
+ *  the game. DOM-free here so the world census gate can read them. */
+export const FADE_TUNE_GAME = { reach: 4, amount: 0.46, falloff: 4, onBoundary: false, paint: true };
 /** HOW FAR OFF THIS CELL'S PLANE A QUAD CORNER MAY STILL VOTE ON THE BOUNDARY,
  *  in storeys. The Wang quad is four cells of the FLAT grid, so without a limit
  *  a wall cap composes with the floor at its foot — measured on the_game, 36% of
@@ -665,7 +672,7 @@ export interface Tiles3Data {
    *  probability (1 = shipped), `falloff` = the exponent on the distance term
    *  (1 = shipped), `onBoundary` = a fade may sit on a composed transition tile
    *  (false = shipped). Absent, every one of these is the shipped picture. */
-  fadeTune?: { reach: number; amount: number; falloff: number; onBoundary: boolean };
+  fadeTune?: { reach: number; amount: number; falloff: number; onBoundary: boolean; paint?: boolean };
   /** A NATURE WALL'S FOOT IS A TRANSITION TILE (maintainer 2026-09-09: "When a
    *  nature wall (not a house, etc) intersect the ground we should make the
    *  ground a transition/boundary tile to make the connection look better").
@@ -875,6 +882,65 @@ export function columnY(f: Frame, x: number, y: number, storey: number): number 
 export type FieldArt =
   | { kind: "plate" | "conform" | "clean"; path: string; w: number; h: number; topOnly?: boolean }
   | { kind: "liquid"; topRGB: [number, number, number]; w: number; h: number; topOnly?: boolean };
+
+/** GROUND PEOPLE WALK ON. Nothing grows where feet keep coming (maintainer
+ *  2026-09-19: "It looks really dumb when we have a big chunk of grass in the
+ *  middle of the road. If people walk here grass can't grow here!"), so a
+ *  GROWTH ground fades onto a trodden one on its EDGE CELL ONLY and always as
+ *  the far end of the band — the sparsest tiles the pool has. Mud, sand or
+ *  snow tracked onto a road is not growth and fades like anywhere else. The
+ *  names live here because tiles/ground_types.json carries no such flag;
+ *  measured on the_game, light_soil is road-shaped everywhere (1,353 of its
+ *  1,780 cells are edge cells, 403 the middle of a 3-wide road, none past
+ *  ring 4), and 873 of its edges are grass. */
+export const TRODDEN: ReadonlySet<string> = new Set(["light_soil", "grey_paving_stone", "brown_paving_stone"]);
+export const GROWS: ReadonlySet<string> = new Set(["grass"]);
+
+/** WHICH TILE OF A FADE POOL A CELL WEARS: the index of the pick for the LCG's
+ *  second draw `v`. `pos` is 1 at the nearest ring and 1/reach at the far end;
+ *  the target coverage is areaMin + span·pos^falloff (falloff > 1 keeps the
+ *  dense tiles to the edge, < 1 spreads them) and the pool's own min/max is the
+ *  scale, so a linear rescale of the areas changes nothing.
+ *
+ *  `paint` — THE GAME'S RULE (maintainer 2026-09-19, once the area numbers were
+ *  honest: "mostly use the tiles with less than 10% grass when placing grass
+ *  on sand. The tiles close to 50/50 should be used much much less. And when
+ *  they do occur you must know you have to place 5x 10% grass to get the same
+ *  amount of grass"). The target is a CEILING, not a centre: every tile at or
+ *  under it is weighted by his stars times 1/area, so a 10% tile is picked
+ *  five times as often as a 50% one and every allowed tile paints the same
+ *  expected amount of the other ground; a tile over the ceiling falls off
+ *  across half the span, as before. Measured at his dials over the_game: the
+ *  edge ring's mean area 45.6% -> see docs/tiles3-rendering.md, and not one
+ *  ring-1 fade was under 10% before this.
+ *
+ *  `paint` false is render3's picture, pinned by the parity fixture: the
+ *  weight peaks ON the target, so with falloff 4 every edge cell targets the
+ *  densest tile in the pool — which is the 50/50 chunk he ruled out. */
+export function fadePick(pool: readonly FadePoolTile[], pos: number, falloff: number, v: number, paint: boolean): number {
+  const areaMin = pool[0].area;
+  const areaMax = pool[pool.length - 1].area;
+  const span = Math.max(1, areaMax - areaMin);
+  const target = areaMin + span * Math.pow(Math.min(1, pos), falloff);
+  const wts = pool.map((t) => {
+    const stars = 1.0 + 1.6 * t.rating;
+    if (!paint) return stars * Math.max(0, 1.0 - Math.abs(t.area - target) / (span / 2));
+    return (stars / Math.max(1, t.area)) * Math.max(0, 1.0 - Math.max(0, t.area - target) / (span / 2));
+  });
+  let tot = 0;
+  for (const w of wts) if (w > 0) tot += w;
+  if (!tot) tot = 1.0;
+  let acc = v * tot;
+  let pick = pool.length - 1;
+  for (let i = 0; i < wts.length; i++) {
+    acc -= Math.max(0, wts[i]);
+    if (acc <= 0) {
+      pick = i;
+      break;
+    }
+  }
+  return Math.max(0, pick);
+}
 
 export interface FadePick {
   other: string;
@@ -2718,6 +2784,11 @@ export class Tiles3 {
     const reach = tune ? tune.reach : FADE_BAND;
     const amount = tune ? tune.amount : 1;
     const falloff = tune ? tune.falloff : 1;
+    const paint = !!tune?.paint;
+    /* A ROAD TAKES GRASS ON ITS EDGE CELL ONLY (TRODDEN/GROWS): past ring 1 a
+     * growth ground is not a candidate, so the scan walks on to the next
+     * ground — mud two cells out still tracks onto the middle of the road. */
+    const trodden = paint && TRODDEN.has(gr);
     let near: [string, number] | null = null;
     let bestD = reach + 1;
     for (let dy = -reach; dy <= reach; dy++)
@@ -2740,6 +2811,7 @@ export class Tiles3 {
          * of 5): 474.1 ms against 472.4 ms for the old scan — inside the run
          * spread, and the fix alone is worth 85 more level-0 fades. */
         if (!this.fadePool(gr, og).length) continue;
+        if (trodden && d > 1 && GROWS.has(og)) continue;
         bestD = d;
         near = [og, d];
       }
@@ -2799,26 +2871,12 @@ export class Tiles3 {
            * RELATIVE TO THE POOL'S OWN MIN/MAX, so reading the real area instead
            * of the 0.49x placement score moved no coverage at all: target, span
            * and every distance scale together. */
-          const pos = (reach + 1 - near[1]) / Math.max(1, reach);
-          const areaMin = pool[0].area;
-          const areaMax = pool[pool.length - 1].area;
-          const span = Math.max(1, areaMax - areaMin);
-          const target = areaMin + span * Math.pow(Math.min(1, pos), falloff);
-          const wts = pool.map((t) => (1.0 + 1.6 * t.rating) * Math.max(0, 1.0 - Math.abs(t.area - target) / (span / 2)));
-          let tot = 0;
-          for (const w of wts) if (w > 0) tot += w;
-          if (!tot) tot = 1.0;
+          /* Grass on a road is ALWAYS the far end of the band: the sparsest
+           * tiles the pool has, some blades at the edge of the soil. */
+          const pos = trodden && GROWS.has(near[0]) ? 1 / Math.max(1, reach) : (reach + 1 - near[1]) / Math.max(1, reach);
           const v = rr();
-          let acc = v * tot;
-          let pick = pool.length - 1;
-          for (let i = 0; i < wts.length; i++) {
-            acc -= Math.max(0, wts[i]);
-            if (acc <= 0) {
-              pick = i;
-              break;
-            }
-          }
-          const t = pool[Math.max(0, pick)];
+          const pick = fadePick(pool, pos, falloff, v, paint);
+          const t = pool[pick];
           const fade: FadePick = { other: near[0], dist: near[1], poolKey: `${gr}|${near[0]}`, index: pick, u, v, file: t.file };
           /* THE FADE IS AN OVERLAY, NOT A REPLACEMENT — and this is the zigzag
            * he kept photographing after the art started shipping.

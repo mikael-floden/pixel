@@ -219,23 +219,57 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   multiplies the placement probability linearly (0-4x; "twice the value means
   twice as much grass fade") — up to the ceiling of the lonely rule, which
   still forbids two fades edge-on; density is linear in distance. FALLOFF is
-  the COVERAGE curve (0.1-32, log dial): the pool's densest tile (most of the
-  other ground on it)
-  is the target at the nearest ring and its sparsest at the far end, target =
-  areaMin + span·pos^falloff, so >1 keeps the dense tiles to the transition
+  the COVERAGE curve (0.1-32, log dial): target = areaMin + span·pos^falloff,
+  the pool's densest tile at the nearest ring (pos 1) and its sparsest at the
+  far end (pos 1/reach), so >1 keeps the dense tiles to the transition
   (maintainer 2026-09-09: "fade tiles that has very much light_soil on top of
   grass should be used at the tile that does the actual transition ... very
-  little ... further away"). The pool keeps every approved tile from 1% up —
-  the grass/light_soil pair tops out at 16%, and the old 8% floor threw away
-  its far-band tiles. ON TRANSITION lets `wangSurface` give a composed
+  little ... further away"). The pool keeps every approved tile from 1% of
+  measured area up, with no ceiling.
+  **THE TARGET IS A CEILING AND THE PICK WEIGHS WHAT A TILE PAINTS**
+  (`fadePick`, `paint` in the tune — maintainer 2026-09-19, once the area
+  numbers were honest: "mostly use the tiles with less than 10% grass when
+  placing grass on sand. The tiles close to 50/50 should be used much much
+  less. And when they do occur you must know you have to place 5x 10% grass
+  to get the same amount of grass"): every tile at or under the ring's target
+  is weighted by his stars times 1/area, so a 10% tile is picked five times
+  as often as a 50% one and every allowed tile paints the same expected area;
+  a tile over the target falls off across half the span. Measured over
+  the_game at his dials, before -> after: 31% -> 63% of placed fades under
+  10%, 17% -> 2% at 40%+, the edge ring's mean area 45.6% -> 13.1% (before,
+  pos^falloff = 1 at ring 1 made every edge cell TARGET the densest tile and
+  the two-sided weight peaked on it: 61% of edge fades at 40%+, none under
+  10%). The paint per edge cell therefore dropped ~3.5x; AMOUNT is the lever
+  if the edge reads thin, and the lonely rule caps density at one cell in
+  five, so "five times as many sparse tiles" is not reachable without
+  relaxing it (untouched: his verdict). Gate: `server/test/fadepaint.test.ts`
+  (the 5x law as exact arithmetic, the world census at his dials, both red
+  on the old weighting). Under `paint` false — render3's picture, what the
+  parity fixture pins, never set by the game — the weight peaks ON the target.
+  **A ROAD WEARS GRASS ON ITS EDGE CELL ONLY, AND ONLY THE SPARSEST TILES**
+  (`TRODDEN` light_soil + the two pavings, `GROWS` grass; maintainer
+  2026-09-19: "It looks really dumb when we have a big chunk of grass in the
+  middle of the road. If people walk here grass can't grow here!"): past ring
+  1 a growth ground is not a candidate on a trodden field — the scan walks on,
+  so mud two cells out still tracks onto the middle — and on the edge cell the
+  pick is the far end of the band (target = the sparsest tile). Measured: 30
+  of the 89 grass fades on roads sat on the middle cell of a 3-wide road and
+  none was under 20%; now all 56 are edge cells, 52 of them the pool's
+  sparsest 10-20% (light_soil|grass has no tile under 11.6% — "a few blades"
+  does not exist in the library; the rule takes the sparsest it has). The
+  names live in tiles3.ts because tiles/ground_types.json carries no flag;
+  light_soil is road-shaped everywhere (1,353 of 1,780 cells are edge cells,
+  403 ring 2, none past ring 4).
+  ON TRANSITION lets `wangSurface` give a composed
   boundary cell a fade too ("a transition tile that is 50% sand and 50% grass
   can end up 75% grass") — drawn over the boundary by `overlayOps`, since the
   ground pass draws the boundary INSTEAD of the cell's own ops. THE DEFAULTS
-  ARE HIS: reach 4, amount 0.46x, falloff exp 4 (2026-09-09, "This is good
-  fade defaults" — found with reach and falloff pinned at the old top of
-  their tracks, hence the wider dials: "you limited the sliders enormously").
-  The resolver's own constants (FADE_BAND 2, 1x, exp 1) are what the render3
-  parity fixtures pin; only the game's dial defaults moved.
+  ARE HIS (`FADE_TUNE_GAME` in tiles3.ts, DOM-free for the gate): reach 4,
+  amount 0.46x, falloff exp 4, paint on (2026-09-09, "This is good fade
+  defaults" — found with reach and falloff pinned at the old top of their
+  tracks, hence the wider dials: "you limited the sliders enormously"). The
+  resolver's own constants (FADE_BAND 2, 1x, exp 1, no paint rule) are what
+  the render3 parity fixtures pin; the game's picture is the tune's.
   How much of the other ground a fade tile actually paints is `area_pct` from
   tiles/fades/index.json, carried as `FadePoolTile.area` — the MEASURED
   top-face share, over a 1% floor with NO ceiling (tier 2 waives even the
