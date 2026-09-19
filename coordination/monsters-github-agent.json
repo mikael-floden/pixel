@@ -1,12 +1,17 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-19T13:05:00+00:00",
-  "health": "running",
-  "current": "CLAIM: his rejection of the candidate flowstone (live/feedback/monsters.json key 'monsters/candidates/flowstone', status rejected, 2026-09-19T12:55:40Z) — acting on it with `python monsters/pipeline/candidates.py reconcile`. Files: monsters/candidates/flowstone/** (deleted), monsters/candidates/index.json, monsters/config/candidates.json, live/feedback/monsters.json, coordination/monsters-github-agent.json. Neither coordination/monsters.json (idle, no files claimed) nor coordination/monsters-assistant.json (idle, no files claimed) has claimed it.",
-  "progress": {},
+  "updated_at": "2026-09-19T13:12:00+00:00",
+  "health": "idle",
+  "current": "idle — flowstone removal shipped (3d88174e9). No files claimed.",
+  "progress": {
+    "candidates_index_count": 76,
+    "verdicts_taken": 1,
+    "verdicts_cleared": 1
+  },
+  "budget_remaining": "untouched — this unit spent 0 generations (a removal deletes, it never generates)",
   "notes": [
-    "[2026-09-19T13:05:00+00:00] monsters github agent, started by the review that landed as 31ba4dc8 (live: admin update — feedback/monsters.json). One unit of work: the single verdict that moved, monsters/candidates/flowstone -> rejected. Per monsters/README.md a rejected candidate is a REMOVAL both ways — retire the design, delete the PixelLab record and the folder, rebuild the index, and prune every verdict keyed on it — and `candidates.py reconcile` is the domain's own command for exactly that."
+    "[2026-09-19T13:12:00+00:00] RUN ACCOUNT (github agent, started by 31ba4dc8 'live: admin update — feedback/monsters.json').\n\nTOOK: one verdict, live/feedback/monsters.json key 'monsters/candidates/flowstone' — status rejected, version 1, 2026-09-19T12:55:40Z. It was the only entry that moved in his push, the folder monsters/candidates/flowstone/ was still on disk with all 8 rotations + sheet, and neither coordination/monsters.json (idle since 2026-09-18, no files claimed) nor coordination/monsters-assistant.json (idle since 2026-09-13, no files claimed) had claimed or acked it. Claimed on this board and pushed the claim first (a98df7211).\n\nDID: `python monsters/pipeline/candidates.py reconcile` — the domain's own command for exactly this, since monsters/README.md makes a rejected candidate a REMOVAL both ways ('A REMOVAL IS ACTED ON, BOTH WAYS'). Dry-run first (1 candidate to remove, as expected), then for real with PIXELLAB_API_KEY set so the upstream record went too: design moved to config.retired with his reason, the PixelLab record and monsters/candidates/flowstone/ deleted (10 files), monsters/candidates/index.json rebuilt 77 -> 76. Shipped as 3d88174e9; origin/main had not moved under the domain at the rebase, so the checks did not need re-running.\n\nCLEARED: 'monsters/candidates/flowstone' — pruned by reconcile in the same run, so no verdict is left naming art that is not on disk (reconcile reported 1 pruned and re-scanned the whole file: 1160 entries -> 1159, every remaining key resolving to a candidate folder or a roster monster). No approval was touched — only the rejection died with the art it judged.\n\nDID NOT DO: nothing else in the domain. Reconcile's graduation tail ran as part of the command and moved 0 monsters — 19 designs read 'waiting', 18 of them on states he has not fully approved and ice_sprite on HIS pick (two full attack takes, attack_v1 and attack_v3); that is his call, not an agent's, and no promote/discard was run. `reconcile --tags` was NOT run (opt-in, and it retires a design that is mid-redo — the frozen_tent lesson). No PixelLab generations were spent; nothing on idle/walk/attack/die/angry slots, the roster, sync or pack was touched."
   ],
   "requests": []
 }
