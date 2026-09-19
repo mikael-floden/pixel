@@ -39,9 +39,14 @@ export function onBuildLive(cb: (sha: string) => void): void {
 
 /** Called by whoever hears the server say a new generation is being served. */
 export function buildLive(sha: unknown): void {
-  if (typeof sha !== "string" || !sha || sha === "dev") return;
+  // THE SHA IS A HINT, NOT THE DECISION. The handler re-reads /version, which
+  // is the authority, so anything here is only "go and look". It must not be
+  // filtered on the value: a ROLLBACK announces the image's sha, and an
+  // earlier version of this dropped any message it could not vouch for, which
+  // would have made the one case that matters most — the bad build being taken
+  // away — the one case nobody was told about.
   try {
-    handler?.(sha);
+    handler?.(typeof sha === "string" ? sha : "");
   } catch {
     /* the news is never worth breaking the frame over */
   }

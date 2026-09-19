@@ -413,7 +413,9 @@ export class BundleStore {
     // that cannot name its own, because "cannot compare" must not read as
     // "newer". That only happens on an image built before this guard existed,
     // and the next container deploy clears it.
-    if (typeof next.commit_ts === "number" && next.commit_ts > 0) {
+    // A serve-the-image pointer is never ordered against the image: it IS the
+    // image, so it can never override a rollout and must always be adoptable.
+    if (next.current && typeof next.commit_ts === "number" && next.commit_ts > 0) {
       const mine = Number(process.env.GIT_COMMIT_TS || 0);
       if (!mine) {
         this.noteOnce(
@@ -431,7 +433,17 @@ export class BundleStore {
       }
     }
     // LAW 3: materialise the whole window BEFORE deciding anything.
-    for (const id of [next.current, ...(next.retained ?? [])]) {
+    // An EMPTY `current` is the one exception, and it is deliberate: it means
+    // SERVE THE IMAGE. There is nothing to materialise, nothing to order
+    // against (the image cannot be older than itself), and `get current()`
+    // already answers null for an id the map does not hold — so the image
+    // serves whole, which is the safest thing this store can ever do. It is
+    // what an automatic rollback writes when the generation it would fall back
+    // to does not exist (the bad one was the first), and it is the kill switch
+    // that previously needed a laptop and `--remove-env-vars BUNDLE_STORE`.
+    // The seq still advances, so this is a normal forward step under LAW 2 and
+    // a later good publish simply supersedes it.
+    for (const id of next.current ? [next.current, ...(next.retained ?? [])] : (next.retained ?? [])) {
       if (this.gens.has(id)) continue;
       const ok = await this.load(id);
       if (!ok && id === next.current) {
@@ -445,7 +457,7 @@ export class BundleStore {
     this.lastSaid = ""; // a flip is news; let the next standing refusal speak once more
     this.evict();
     this.note(
-      `serving ${next.current}${from ? ` (was ${from})` : ""}, ${this.gens.size} generation(s), ` +
+      `serving ${next.current || "the image (no generation)"}${from ? ` (was ${from})` : ""}, ${this.gens.size} generation(s), ` +
         `${this.names.size} name(s), ${this.blobs.size} blob(s), seq ${next.seq}`,
     );
     // TELL THE OPEN PAGES, so a new build is news in a second instead of in up
@@ -458,7 +470,9 @@ export class BundleStore {
     // must never be told about a generation this store is not yet serving.
     // The poll stays as the belt: the select screen has no room, and a page
     // that missed the message still converges within the minute.
-    noteBundleServed(next.git_sha || "", next.current);
+    // A rollback to the image serves the IMAGE's sha, not the empty string the
+    // pointer carries — the announcement names what is actually being served.
+    noteBundleServed(next.current ? next.git_sha || "" : process.env.GIT_SHA || "", next.current);
   }
 
   /** BYTES ARE EVICTED; NAMES NEVER ARE.

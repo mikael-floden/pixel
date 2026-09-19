@@ -676,3 +676,105 @@ test("a throwing listener cannot break a flip", async () => {
     off();
   }
 });
+
+/* SERVE THE IMAGE, ON PURPOSE. An automatic rollback writes `current: ""` when
+ * the generation it would fall back to does not exist — and it is also the
+ * kill switch that previously needed a laptop and `--remove-env-vars
+ * BUNDLE_STORE`. It must be ADOPTED (so the seq advances and a later publish
+ * supersedes it), not refused like a generation that failed to load. */
+test('a pointer with an empty current serves the image, and is adopted rather than refused', async () => {
+  const root = mkdtempSync(join(tmpdir(), "bs-img-"));
+  writeGen(root, "aaa", GEN_A);
+  writePointer(root, { seq: 1, current: "aaa", retained: [] });
+  const s = store(root);
+  await s.refresh();
+  assert.equal(s.current?.id, "aaa");
+
+  writePointer(root, { seq: 2, current: "", retained: [], git_sha: "", commit_ts: 0 });
+  await s.refresh(true);
+  assert.equal(s.pointer?.seq, 2, "the rollback pointer was ADOPTED, not refused");
+  assert.equal(s.current, null, "and nothing is served, so the image serves whole");
+  assert.equal(s.servedSha(), null, "/version then answers with the image's own sha");
+
+  // Law 2 still holds forward: a later good publish supersedes the rollback.
+  writeGen(root, "bbb", GEN_B);
+  writePointer(root, { seq: 3, current: "bbb", retained: [] });
+  await s.refresh(true);
+  // Read through a helper: asserting `s.current === null` above narrows the
+  // getter to `never` for the rest of the block, and the later read is a fresh
+  // one after another refresh.
+  assert.equal((s as { current: { id: string } | null }).current?.id, "bbb", "a later generation supersedes a rollback normally");
+  rmSync(root, { recursive: true, force: true });
+});
+
+/* AND THE ORDERING GUARD MUST NOT BLOCK IT. Law 6 refuses a generation at or
+ * before the image's commit time. A rollback to the image IS the image, so it
+ * can never override a rollout and must always be adoptable — otherwise the
+ * one pointer that makes production safe is the one production refuses. */
+test("a rollback to the image is adopted even when the image is newer than everything", async () => {
+  const root = mkdtempSync(join(tmpdir(), "bs-imgord-"));
+  writeGen(root, "aaa", GEN_A);
+  writePointer(root, { seq: 1, current: "aaa", retained: [], commit_ts: 5000 });
+  const prev = process.env.GIT_COMMIT_TS;
+  process.env.GIT_COMMIT_TS = "9999"; // the image is much newer than any generation
+  try {
+    const s = store(root);
+    await s.refresh();
+    assert.equal(s.current, null, "the generation is refused — the image is newer (law 6)");
+
+    writePointer(root, { seq: 2, current: "", retained: [], commit_ts: 0 });
+    await s.refresh(true);
+    assert.equal(s.pointer?.seq, 2, "but the rollback to the image is adopted");
+    assert.equal(s.current, null);
+  } finally {
+    if (prev === undefined) delete process.env.GIT_COMMIT_TS;
+    else process.env.GIT_COMMIT_TS = prev;
+  }
+  rmSync(root, { recursive: true, force: true });
+});
+
+/* THE ROLLBACK THE GATE ACTUALLY RUNS, against a real store: publish two
+ * generations, roll back, and check the store serves the earlier one with the
+ * stamp taken from its OWN manifest rather than a guess. */
+test("revertBundle rolls production back to the previous generation, honestly stamped", async () => {
+  type Pub = {
+    publishBundle: (o: { store: unknown; outDir: string; gitSha?: string; commitTs?: number }) => Promise<{ id: string }>;
+    revertBundle: (o: { store: unknown }) => Promise<{ current: string; seq: number }>;
+    localStore: (root: string) => unknown;
+  };
+  const { publishBundle, revertBundle, localStore } = (await import(
+    new URL("../../scripts/publish-bundle.mjs", import.meta.url).href
+  )) as Pub;
+  const root = mkdtempSync(join(tmpdir(), "bs-rev-"));
+  const a = await publishBundle({
+    store: localStore(root), outDir: mkdtempSync(join(tmpdir(), "bs-revA-")), gitSha: "aaaaaaaaaa", commitTs: 1000,
+  });
+  await publishBundle({
+    store: localStore(root), outDir: mkdtempSync(join(tmpdir(), "bs-revB-")), gitSha: "bbbbbbbbbb", commitTs: 2000,
+  });
+  // The image must be OLDER than both generations, or law 6 refuses them and
+  // there is nothing to roll back from. Unset, the store refuses outright —
+  // it cannot order the two lanes — which is correct and not what this tests.
+  const prevTs = process.env.GIT_COMMIT_TS;
+  process.env.GIT_COMMIT_TS = "500";
+  try {
+  const s = store(root);
+  await s.refresh();
+  const idOf = (b: typeof s) => b.current?.id ?? null;
+  const served = idOf(s);
+  assert.ok(served, "the newest generation is serving");
+
+  const back = await revertBundle({ store: localStore(root) });
+  assert.equal(back.current, a.id, "rolled back to the generation that was serving before");
+  assert.notEqual(back.current, served, "which is not the one that was just published");
+  assert.equal(back.seq, 3, "and the seq went FORWARD — a rollback is not a rewind (law 2)");
+
+  await s.refresh(true);
+  assert.equal(idOf(s), a.id, "and the store now serves it");
+  assert.equal(s.servedSha(), "aaaaaaaaaa", "under the sha from its own manifest, not the pointer's old one");
+  } finally {
+    if (prevTs === undefined) delete process.env.GIT_COMMIT_TS;
+    else process.env.GIT_COMMIT_TS = prevTs;
+  }
+  rmSync(root, { recursive: true, force: true });
+});

@@ -75,6 +75,92 @@ function localStore(root) {
   };
 }
 
+/** READ THE POINTER, OR REFUSE. A pointer that exists and will not parse aborts
+ *  whatever was about to happen. Treating it as "no pointer" restarts seq at 1,
+ *  and LAW 2 (monotonic) then makes every running instance refuse every future
+ *  publish until the seq climbs back past where it was — the lane silently dead
+ *  for as many publishes as it takes. Refusing is loud, recoverable, and leaves
+ *  production serving exactly what it serves now. Shared by the publish and the
+ *  rollback so the law has one home. */
+async function readPointer(store) {
+  const raw = await store.get("pointer.json");
+  if (!raw) return null;
+  let prev;
+  try {
+    prev = JSON.parse(raw.toString("utf8"));
+  } catch (e) {
+    throw new Error(
+      `bundle store: pointer.json exists but does not parse (${String(e).slice(0, 120)}). ` +
+        `REFUSING — writing a fresh pointer would reset seq to 1 and every running instance ` +
+        `would then refuse this and every later generation. Repair or delete it first.`,
+    );
+  }
+  if (typeof prev?.seq !== "number")
+    throw new Error(`bundle store: pointer.json carries no numeric seq (${JSON.stringify(prev).slice(0, 120)}) — REFUSING, same reason.`);
+  return prev;
+}
+
+/** ROLL BACK TO THE PREVIOUS GENERATION, or to the image when there is none.
+ *
+ *  What a red gate runs after the lane has already published. The window the
+ *  publisher retains is exactly what makes this safe: `retained[0]` is the
+ *  generation that was serving a moment ago, its blobs are still in the store
+ *  (content-addressed names are never rewritten, root CLAUDE.md), and every
+ *  page that has it cached keeps rendering.
+ *
+ *  It writes a pointer that is TRUE, never one that is convenient: the target's
+ *  own git_sha and commit_ts come from its manifest. A generation published
+ *  before manifests carried them cannot be rolled back to honestly, so this
+ *  falls through to the image rather than inventing a stamp — LAW 6 orders the
+ *  two lanes by exactly that field.
+ *
+ *  `current: ""` means SERVE THE IMAGE (bundlestore.ts). That is the floor, it
+ *  is always safe, and it is what this does when there is no previous
+ *  generation or no honest stamp for it.
+ *
+ *  The seq always advances, so a rollback is an ordinary forward step under
+ *  LAW 2 and a later good publish simply supersedes it. */
+export async function revertBundle({ store, dryRun = false }) {
+  const prev = await readPointer(store);
+  if (!prev) throw new Error("revert-bundle: there is no pointer to roll back from");
+
+  const target = (prev.retained ?? [])[0] || "";
+  let gitSha = "";
+  let commitTs = 0;
+  let why = "no previous generation is retained";
+
+  if (target) {
+    try {
+      const raw = await store.get(`gen/${target}/manifest.json`);
+      const man = JSON.parse(raw.toString());
+      if (typeof man.git_sha === "string" && man.git_sha && typeof man.commit_ts === "number" && man.commit_ts > 0) {
+        gitSha = man.git_sha;
+        commitTs = man.commit_ts;
+        why = "";
+      } else {
+        why = `${target} predates self-stamped manifests, so its commit time cannot be known`;
+      }
+    } catch (err) {
+      why = `${target}'s manifest could not be read (${err.message})`;
+    }
+  }
+
+  const toImage = !gitSha;
+  const next = {
+    seq: prev.seq + 1,
+    current: toImage ? "" : target,
+    retained: toImage ? [] : (prev.retained ?? []).slice(1),
+    updated_at: new Date().toISOString(),
+    git_sha: gitSha,
+    commit_ts: commitTs,
+  };
+  const to = toImage ? `THE IMAGE (${why})` : `${target} (${gitSha.slice(0, 10)})`;
+  console.log(`[revert] ${prev.current || "the image"} -> ${to}, seq ${prev.seq} -> ${next.seq}`);
+  if (dryRun) return { ...next, rolledBackFrom: prev.current, dryRun: true };
+  await store.put("pointer.json", Buffer.from(JSON.stringify(next, null, 1)));
+  return { ...next, rolledBackFrom: prev.current };
+}
+
 export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 0, dryRun = false, imageOrigin = "" }) {
   const t0 = performance.now();
   const built = await fastBuild({ outDir, gitSha });
@@ -189,28 +275,7 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
     .digest("hex")
     .slice(0, 16);
 
-  const prevRaw = await store.get("pointer.json");
-  let prev = null;
-  if (prevRaw) {
-    // A POINTER THAT EXISTS AND WILL NOT PARSE ABORTS THE PUBLISH. Treating it
-    // as "no pointer" restarts seq at 1, and LAW 2 (monotonic) then makes every
-    // running instance refuse every future publish until the seq climbs back
-    // past where it was — the lane silently dead for as many publishes as it
-    // takes. Refusing to publish is loud, recoverable, and leaves production
-    // serving exactly what it serves now.
-    try {
-      prev = JSON.parse(prevRaw.toString("utf8"));
-    } catch (e) {
-      throw new Error(
-        `publish: pointer.json exists but does not parse (${String(e).slice(0, 120)}). ` +
-          `REFUSING to publish — writing a fresh pointer would reset seq to 1 and every running ` +
-          `instance would then refuse this and every later generation. Repair or delete it first.`,
-      );
-    }
-    if (typeof prev?.seq !== "number") {
-      throw new Error(`publish: pointer.json carries no numeric seq (${JSON.stringify(prev).slice(0, 120)}) — REFUSING, same reason.`);
-    }
-  }
+  const prev = await readPointer(store); // see readPointer: an unparseable pointer aborts
   if (prev?.current === id) {
     console.log(`[publish] generation ${id} is already current — nothing to publish (${built.ms} ms build)`);
     return { id, published: false, alreadyCurrent: true, ms: Math.round(performance.now() - t0), seq: prev.seq };
@@ -255,7 +320,16 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
     sent += bytes.length;
   }
   // 2) the manifest, which is what makes the generation readable at all
-  await store.put(`gen/${id}/manifest.json`, Buffer.from(JSON.stringify({ files, fallthrough }, null, 1)));
+  // THE GENERATION RECORDS ITS OWN IDENTITY. The pointer stamps only the
+  // CURRENT generation, so stepping back off it used to lose the git_sha and
+  // commit_ts the replacement pointer needs — a rollback could only guess, and
+  // a guessed commit_ts is the one field LAW 6 orders the two lanes by. With
+  // it here, `revertBundle` reads the target's own stamp and writes a pointer
+  // that is true.
+  await store.put(
+    `gen/${id}/manifest.json`,
+    Buffer.from(JSON.stringify({ files, fallthrough, git_sha: gitSha, commit_ts: commitTs }, null, 1)),
+  );
   // 3) and only now the pointer
   await store.put("pointer.json", Buffer.from(JSON.stringify(pointer, null, 1)));
 
@@ -272,12 +346,19 @@ export async function publishBundle({ store, outDir, gitSha = "dev", commitTs = 
 if (import.meta.url === `file://${process.argv[1]}`) {
   const target = arg("store", process.env.BUNDLE_STORE || "");
   if (!target) {
-    console.error("usage: publish-bundle.mjs --store <dir|gs://bucket[/prefix]> [--sha <sha>] [--commit-ts <epoch>] [--dry-run]");
+    console.error("usage: publish-bundle.mjs --store <dir> [--sha <sha>] [--commit-ts <epoch>] [--image-origin <url>] [--dry-run]\n   or: publish-bundle.mjs --store <dir> --revert   (roll back to the previous generation, or to the image)");
     process.exit(2);
   }
   if (target.startsWith("gs://")) {
     console.error("publish-bundle: the gs:// uploader is the CI step's job (it holds the credentials); pass a directory here");
     process.exit(2);
+  }
+  // --revert: what a red gate runs after the lane has already published. It
+  // builds nothing and needs no origin — it only rewrites the pointer.
+  if (process.argv.includes("--revert")) {
+    const back = await revertBundle({ store: localStore(target), dryRun: process.argv.includes("--dry-run") });
+    console.log(`[revert] pointer now seq ${back.seq}, current ${back.current || "(the image)"}`);
+    process.exit(0); // a top-level `if` block, not a function — there is nothing to return from
   }
   // NOT client/dist BY DEFAULT. Building into the image's own directory leaves
   // an esbuild bundle there that clientdist.mjs's freshness guard then declares

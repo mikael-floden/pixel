@@ -54,10 +54,29 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write # to push the generation to its own branch
+    # What `verify` gates, and what it rolls back if the gate is red. Empty
+    # when nothing was published (not a browser-code push, or the bundle was
+    # byte-identical), which is exactly when `verify` must not run.
+    outputs:
+      gen: ${{ steps.pub.outputs.gen }}
     steps:
+      # SPARSE: THIS JOB NEEDS NO ART. 28 s of the lane's 66 s was writing a
+      # 1.7 GB working tree to build a 2.5 MB bundle. The only reason art was
+      # ever needed here is manifest.mjs regenerating client/public's three
+      # generated catalogs by reading characters2/, maps2/worlds3/ and
+      # monsters/ — and those are the WRONG bytes anyway (the image's
+      # client/public is the art pipeline's output). fastbuild now takes them
+      # from the running image instead, hash-verified, so this checkout carries
+      # games2 and live and nothing else. The `verify` job below still takes the
+      # whole tree, because the gate renders the real world and genuinely needs
+      # it: measured, with an empty ASSETS_ROOT it hangs past 400 s.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 2 # HEAD~1 must exist: the lane check diffs against it
+          sparse-checkout: |
+            games2
+            live
+          sparse-checkout-cone-mode: true
 
       # AN IDENTITY BEFORE ANY GIT WRITE, not just before the commit. Creating
       # the store branch uses `git commit-tree`, which refuses without one
@@ -120,32 +139,24 @@ jobs:
             echo "publish=true" >> "$GITHUB_OUTPUT"
           fi
 
-      # THE GATE RUNS BEFORE THE PUBLISH, NOT AFTER. A three-second deploy of a
-      # bundle that does not start is a three-second outage, and he tests in
-      # production from a phone. verify-fastbundle boots a real browser against
-      # a real server and asserts BOOTS / JOINS / RENDERS / CLEAN.
+      # THE GATE RUNS AFTER THE PUBLISH NOW, in the `verify` job below, and a red
+      # one ROLLS PRODUCTION BACK. It used to run first, which was right while
+      # nothing could undo a bad generation; measured, it put 28 s of checkout
+      # and 14 s of browser in front of every publish — the larger half of the
+      # 66 s a person sits through (maintainer: "I always sit and refresh the
+      # screen when the game code is pushed"). The exposure that buys: the
+      # seconds between a bad generation being served and the gate finishing,
+      # against a rollback that is a pointer write and a poke. The image is
+      # untouched throughout and is what a rollback falls back to.
+      #
+      # The browser install stays in the OTHER job, so nothing in this one waits
+      # for chromium.
       # THE BROWSER THE GATE NEEDS. playwright-core ships none, and a runner has
       # nothing at PLAYWRIGHT_BROWSERS_PATH — the gate hardcoded the dev
       # container's own chromium path, so in CI it could only ever have failed
       # and this lane could never have published anything. Cached because the
       # download is ~30 s and this lane's whole purpose is being fast; the
       # install step short-circuits on a cache hit. Same shape as wiki-guard.yml.
-      - name: Cache the browser
-        if: steps.lane.outputs.publish == 'true'
-        id: pwcache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/ms-playwright
-          key: pw-chromium-1.61.1-${{ runner.os }}
-      - name: Install chromium if it was not cached
-        if: steps.lane.outputs.publish == 'true' && steps.pwcache.outputs.cache-hit != 'true'
-        run: npx --yes playwright@1.61.1 install --with-deps chromium
-
-      - name: Gate — the bundle boots, joins and renders
-        if: steps.lane.outputs.publish == 'true'
-        working-directory: games2
-        run: node scripts/verify-fastbundle.mjs
-
       # A TRANSIENT FETCH FAILURE MUST NOT LOOK LIKE "NO STORE YET". The first
       # cut was `fetch || branch-from-empty-tree || true`, which on a network
       # blip hands the publisher an EMPTY store: it then sees no pointer, starts
@@ -183,6 +194,9 @@ jobs:
         env:
           GIT_SHA: ${{ github.sha }}
           STORE: ${{ runner.temp }}/store
+          # With no art in this checkout, the generated catalogs come from the
+          # running image (hash-verified) rather than from manifest.mjs.
+          IMAGE_ORIGIN: https://nangijala.online
         run: |
           # THE COMMIT'S OWN TIMESTAMP orders this publish against the IMAGE
           # (games2/server/src/bundlestore.ts). Without it the server cannot
@@ -279,3 +293,110 @@ jobs:
       - name: Nothing to publish
         if: steps.lane.outputs.publish == 'true' && steps.pub.outputs.changed != 'true'
         run: echo "The bundle is byte-identical to the current generation — nothing published." >> "$GITHUB_STEP_SUMMARY"
+
+  # ---------------------------------------------------------------- verify
+  # THE GATE, AFTER THE FACT, WITH A ROLLBACK BEHIND IT. Publishing first is
+  # what took the lane from 66 s to the twenties; this job is the other half of
+  # that bargain and the only reason it is safe. It takes the WHOLE tree,
+  # because verify-fastbundle renders the real world (with an empty ASSETS_ROOT
+  # it hangs past 400 s), and none of that is on the path a person waits on.
+  #
+  # A RED GATE ROLLS PRODUCTION BACK: `publish-bundle.mjs --revert` points the
+  # store at the generation that was serving a moment ago — its blobs are still
+  # there, because a content-addressed name is never rewritten — or at THE IMAGE
+  # when there is no previous generation to name honestly. Then it pokes, so the
+  # rollback is live in about a second rather than within the 60 s belt.
+  #
+  # It runs even when the publish decided there was nothing to publish, and
+  # exits early in that case: gating a generation nobody wrote would roll back
+  # one that is fine.
+  verify:
+    needs: publish
+    if: always() && needs.publish.result == 'success' && needs.publish.outputs.gen != ''
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # a rollback writes the pointer on the store branch
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1 # the gate reads the tree, never the history
+
+      - name: Git identity
+        run: |
+          git config --global user.name "Claude"
+          git config --global user.email "noreply@anthropic.com"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: games2/package-lock.json
+
+      - name: Install
+        working-directory: games2
+        run: npm ci
+
+      - name: Cache the browser
+        id: pwcache
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-1.61.1-${{ runner.os }}
+      - name: Install chromium if it was not cached
+        if: steps.pwcache.outputs.cache-hit != 'true'
+        run: npx --yes playwright@1.61.1 install --with-deps chromium
+
+      - name: Gate — the published bundle boots, joins and renders
+        id: gate
+        working-directory: games2
+        env:
+          # The same dist root the publish used: the image's own catalogs,
+          # hash-verified, rather than a local regeneration of them.
+          IMAGE_ORIGIN: https://nangijala.online
+        run: node scripts/verify-fastbundle.mjs
+
+      # Everything below runs ONLY when the gate failed.
+      - name: Fetch the store branch
+        if: failure() && steps.gate.outcome == 'failure'
+        run: git fetch --depth=1 origin bundle-store:bundle-store
+
+      - name: Roll production back
+        if: failure() && steps.gate.outcome == 'failure'
+        env:
+          STORE: ${{ runner.temp }}/store
+        run: |
+          set -euo pipefail
+          git worktree add "$STORE" bundle-store
+          node games2/scripts/publish-bundle.mjs --store "$STORE/bundle" --revert
+          cd "$STORE"
+          git add bundle
+          if git diff --cached --quiet; then
+            echo "::error::the rollback wrote no pointer change — production may still be on the bad generation"
+            exit 1
+          fi
+          git commit -q -m "bundle: roll back ${{ needs.publish.outputs.gen }} (gate failed)"
+          # A ROLLBACK THAT CANNOT BE PUSHED IS A ROLLBACK THAT DID NOT HAPPEN.
+          # `&& break` inside a loop leaves the step green when every attempt
+          # failed — the same silent-success shape that once let this workflow
+          # report a publish nobody pushed. Say so and fail.
+          pushed=""
+          for i in 1 2 3 4; do
+            git push origin bundle-store && { pushed=yes; break; }
+            echo "push failed, retrying in $((2 ** i))s"; sleep $((2 ** i))
+            git fetch origin bundle-store && git rebase origin/bundle-store || true
+          done
+          if [ -z "$pushed" ]; then
+            echo "::error::could not push the rollback after 4 attempts — production is STILL on the failed generation ${{ needs.publish.outputs.gen }}"
+            exit 1
+          fi
+
+      - name: Poke the game server, so the rollback is live now
+        if: failure() && steps.gate.outcome == 'failure'
+        run: |
+          for i in 1 2 3 4 5 6; do
+            OUT=$(curl -fsS -X POST --max-time 25 https://nangijala.online/api/bundle/refresh || true)
+            echo "attempt $i: $OUT"
+            echo "$OUT" | grep -q "\"serving\":\"${{ needs.publish.outputs.gen }}\"" || break
+            sleep 4
+          done
+          { echo "### Rolled back"; echo "Generation \`${{ needs.publish.outputs.gen }}\` failed the gate and production was rolled back."; } >> "$GITHUB_STEP_SUMMARY"

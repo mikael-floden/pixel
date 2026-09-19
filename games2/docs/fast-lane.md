@@ -202,6 +202,39 @@ file goes onto the already-running server, and browsers fetch it from there** �
 no image, no restart, nobody disconnected. Anything else (the server's own
 program, the art) lives INSIDE the container and needs a new container.
 
+## PUBLISH FIRST, VERIFY AFTER, ROLL BACK ON RED
+
+The gate used to run in front of the publish, which was right while nothing
+could undo a bad generation. Measured, it put 28 s of checkout and 14 s of
+browser ahead of every publish — the larger half of the 66 s a person sits
+through. Now the `publish` job publishes and the `verify` job gates afterwards,
+and a red gate rolls production back.
+
+- **The rollback is a pointer write and a poke.** `publish-bundle.mjs --revert`
+  points the store at the generation that was serving a moment ago — its blobs
+  are still there, because a content-addressed name is never rewritten — then
+  pokes, so it is live in about a second rather than within the 60 s belt.
+- **`current: ""` means SERVE THE IMAGE**, and the store adopts it rather than
+  refusing it (the seq still advances, so a later publish supersedes it
+  normally, and law 6 never orders it against the image because it IS the
+  image). That is where a rollback goes when there is no previous generation,
+  and it is also the kill switch that used to need a laptop and
+  `--remove-env-vars BUNDLE_STORE`.
+- **A generation records its own `git_sha` and `commit_ts` in its manifest.**
+  The pointer stamps only the CURRENT one, so stepping back off it lost exactly
+  the field law 6 orders the two lanes by. A rollback reads the target's own
+  stamp; a generation published before manifests carried one falls through to
+  the image rather than being given an invented stamp.
+- **The publish job takes a SPARSE checkout** (`games2`, `live`) because it
+  needs no art: fastbuild takes client/public's generated catalogs from the
+  running image, hash-verified, instead of regenerating them from the art
+  domains. The `verify` job still takes the whole tree — the gate renders the
+  real world and genuinely needs it (measured: an empty `ASSETS_ROOT` hangs it
+  past 400 s with no output).
+- What this buys, and what it costs: the exposure is the seconds between a bad
+  generation being served and the gate finishing. The image is untouched
+  throughout and is what a rollback falls back to.
+
 ## FALL-THROUGH: the mixed generation is refused by arithmetic
 
 A generation records the hashes of every file it is NOT publishing (the 43
