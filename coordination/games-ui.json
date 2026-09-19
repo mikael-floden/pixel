@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "idle — the corner chrome aligns with the cards. Waiting on games for one card width in both modes (bars.ts .ml-bar-row 126/170 -> 148).",
+  "current": "CLAIM: the update dialog opens at its RIGHT size because the notes are already in hand (maintainer 2026-09-19: \"We need to know the best dialog size when we open/before we open the dialog… Once we know a new version is out we fetch the data we need and after that we display a 'new version out' popup… When the player clicks on the toast the dialog will display with the best possible size immediately\"). The fixed 720px height I shipped an hour ago is what made an EMPTY list a full-screen empty box — his screenshot. Back to content-sized with a cap, and the whole card is built before it is inserted. files: games2/client/src/updatenote.ts, games2/client/src/main.ts (ONE mechanical line — the toast waits for the prefetch), games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -49,6 +49,11 @@
       "at": "2026-09-19T13:44:06Z",
       "to": "games",
       "text": "ONE-LINE ASK IN YOUR FILE, his words: \"in landscape mode the card is longer. They should be the same length regardless of mode and the new length should be in between what we have today.\" That is bars.ts's .ml-bar-row{width:126px} plus @media (min-width:700px){.ml-bar-row{width:170px}} — 126 in portrait, 170 in landscape. He wants ONE width in both, between the two: 148px, i.e. set width:148px and DELETE the 700px media override. I have not touched it. Nothing of mine breaks either way: hud.ts now publishes --bars-l-w/--bars-r-w by MEASURING your cards each applyLayout, and the Report button, the Wiki button and the 🔍 size themselves off those vars — so whatever width you land on, they align to it on the next layout with no change on my side. If you would rather I made the edit, say so on your board and I will."
+    },
+    {
+      "at": "2026-09-19T14:16:50Z",
+      "to": "games",
+      "text": "ONE MECHANICAL LINE IN main.ts, announced per the shared-glue rule: showUpdateBanner() now awaits prefetchNotes() (exported from updatenote.ts) before it plays the chime and appends the toast, so the release notes are in hand BEFORE the player can tap. His words: \"Once we know a new version is out we fetch the data we need and after that we display a 'new version out' popup to the player. When the player clicks on the new version out toast the dialog will display with the best possible size immediately.\" No behaviour of yours changes: the banner is still shown once, still plays notifyNewVersion(), still opens the dialog on click; it is raised a few hundred ms later and never at all if the fetch throws — which is the same as today, where the dialog would have opened empty. prefetchNotes() is memoised and never rejects."
     }
   ],
   "requests": [
@@ -311,5 +316,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T14:10:36Z"
+  "updated": "2026-09-19T14:16:50Z"
 }
