@@ -315,14 +315,26 @@ try {
   // The stack leaves the thumb's corner in RIGHT-handed landscape and parks
   // under the XP chip (maintainer 2026-08-05). Since 2026-09-19 the WIKI ROW
   // is the thing directly under it — it is as wide as the chip, so it has to
-  // touch it — and the pill is one step below the row. Right edges aligned
-  // throughout.
+  // touch it — and the PILL is centred in the game view one step below the
+  // row, sharing an edge with nothing ("lets center the pill at the top
+  // instead (with same top margin)"). Its width is verify-wikibtn's subject;
+  // what belongs here is that the centre it takes is the GAME VIEW'S, not the
+  // window's — the landscape menu owns one side and this is the only gate
+  // that watches that boundary.
   Math.abs(g.wikibtn.r - g.barsR.r) <= 2 && Math.abs(g.wikibtn.t - g.barsR.b - 10) <= 2
     ? ok(`the Wiki row sits under the XP chip (top ${g.wikibtn.t} = chip bottom ${g.barsR.b} + 10, right edges ${g.wikibtn.r}/${g.barsR.r})`)
     : fail(`wiki row ${JSON.stringify(g.wikibtn)} vs XP chip ${JSON.stringify(g.barsR)}`);
-  Math.abs(g.clock.r - g.barsR.r) <= 2 && g.clock.t > g.wikibtn.t
-    ? ok(`…and the pill below it, right edges still aligned (${g.clock.t} vs the row's ${g.wikibtn.t})`)
-    : fail(`clock ${JSON.stringify(g.clock)} vs the row ${JSON.stringify(g.wikibtn)}`);
+  Math.abs((g.clock.l + g.clock.w / 2) - (menuW + (851 - menuW) / 2)) <= 2 && g.clock.t > g.wikibtn.t
+    ? ok(`…and the pill centred in the game view below it (centre ${(g.clock.l + g.clock.w / 2).toFixed(0)} of ${(menuW + (851 - menuW) / 2).toFixed(0)}, top ${g.clock.t} under the row's ${g.wikibtn.t})`)
+    : fail(`clock ${JSON.stringify(g.clock)} vs the game view ${menuW}..851 and the row ${JSON.stringify(g.wikibtn)}`);
+  // …and it clears the chips BY BEING A ROW BELOW THEM, not by fitting
+  // between them: at 851 the two 192px chips leave 133px of centre and the
+  // pill is 138 wide, so the cards' own row cannot hold it. This is the
+  // reading that says WHY the "same top margin" is the third row and not the
+  // first — it fails the day someone raises the pill to the chips' line.
+  g.clock.t >= g.barsL.b && g.clock.t >= g.barsR.b
+    ? ok(`…a full row below both chips (pill top ${g.clock.t}, chips end ${Math.max(g.barsL.b, g.barsR.b)})`)
+    : fail(`the centred pill is on the chips' own line and overlaps them: ${JSON.stringify(g.clock)} vs ${JSON.stringify(g.barsL)} / ${JSON.stringify(g.barsR)}`);
   g.clock.b < g.vh - 100
     ? ok("…and is clear of the stick's bottom corner")
     : fail(`clock still low (b=${g.clock.b} of ${g.vh})`);
@@ -512,14 +524,17 @@ try {
     ? ok(`stick in the bottom-LEFT corner (x=${g.stick.l}, b=${g.stick.b})`)
     : fail(`stick ${JSON.stringify(g.stick)}`);
   Math.abs(g.barsL.l - 10) <= 2 ? ok("HP chip back at screen-left (game view's corner)") : fail(`left chip ${JSON.stringify(g.barsL)}`);
-  // THE CORNER IS THE WIKI ROW'S, and the pill rides one step above it
-  // (maintainer 2026-09-03: "the wiki+search is under the time-of-day pill —
-  // they should swap y position"). Asserted as the corner + the RELATIVE
-  // stack, so the step lives in one place (wikibtn.ts's --ml-stack-step) and
-  // this gate cannot hold a stale copy of it.
-  Math.abs(851 - menuW - 10 - g.clock.r) <= 2 && Math.abs(g.vh - 10 - g.wikibtn.b) <= 2 && g.clock.b < g.wikibtn.t
-    ? ok(`left-handed: Wiki row back in the game view's bottom-right corner (b=${g.wikibtn.b}), pill above it (b=${g.clock.b})`)
-    : fail(`clock ${JSON.stringify(g.clock)} / wikibtn ${JSON.stringify(g.wikibtn)} want the row at b=${g.vh - 10}, r=${851 - menuW - 10}, pill above`);
+  // THE CORNER IS THE WIKI ROW'S. The pill used to ride one step above it
+  // here — the one placement where the stack hung off the BOTTOM — and since
+  // 2026-09-19 it does not: the pill is top-centred in every orientation and
+  // both hands, so this corner is the row's alone and the pill is checked
+  // against the game view, which has swapped sides.
+  Math.abs(851 - menuW - 10 - g.wikibtn.r) <= 2 && Math.abs(g.vh - 10 - g.wikibtn.b) <= 2
+    ? ok(`left-handed: Wiki row back in the game view's bottom-right corner (b=${g.wikibtn.b}, r=${g.wikibtn.r})`)
+    : fail(`wikibtn ${JSON.stringify(g.wikibtn)} want the corner at b=${g.vh - 10}, r=${851 - menuW - 10}`);
+  Math.abs((g.clock.l + g.clock.w / 2) - (851 - menuW) / 2) <= 2 && g.clock.t < g.vh / 2
+    ? ok(`left-handed: the pill follows the game view to the LEFT of the menu (centre ${(g.clock.l + g.clock.w / 2).toFixed(0)} of ${((851 - menuW) / 2).toFixed(0)})`)
+    : fail(`clock ${JSON.stringify(g.clock)} — want it centred in a game view that now runs 0..${851 - menuW}`);
   Math.abs(g.chatlog.l - 10) <= 2 ? ok("chat log at the game view's bottom-left") : fail(`chatlog ${JSON.stringify(g.chatlog)}`);
   await page.screenshot({ path: `${OUT}/landscape-lh.png` });
 
@@ -591,7 +606,10 @@ try {
   const flip = await page.evaluate(() => window.__flip);
   const pillFinal = await page.evaluate(() => {
     const r = document.querySelector(".ml-clock").getBoundingClientRect();
-    return { l: Math.round(r.left), r: Math.round(r.right) };
+    const cs = getComputedStyle(document.documentElement);
+    const v = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
+    return { l: Math.round(r.left), r: Math.round(r.right), mid: Math.round(r.left + r.width / 2),
+             gl: v("--gv-left"), gr: v("--gv-right") };
   });
   flip.transforms === 0 && flip.glides === 0
     ? ok("rotation snaps — no pin transform, no glide class on the chrome")
@@ -602,8 +620,8 @@ try {
   flip.veilSeen && flip.veilGone && !flip.timedOut
     ? ok("theme veil covered the flip and lifted after")
     : fail(`veil lifecycle wrong: ${JSON.stringify(flip)}`);
-  Math.abs(pillFinal.r - (851 - 10)) <= 2
-    ? ok(`…and the pill sits on the landscape anchor (right edge ${pillFinal.r})`)
+  Math.abs(pillFinal.mid - (pillFinal.gl + 851 - pillFinal.gr) / 2) <= 2
+    ? ok(`…and the pill sits on the landscape anchor (centre ${pillFinal.mid} of the ${pillFinal.gl}..${851 - pillFinal.gr} game view)`)
     : fail(`pill landed wrong: ${JSON.stringify(pillFinal)}`);
   // back to portrait for the next section (and let ITS flip finish too)
   await page.setViewportSize({ width: 393, height: 851 });
@@ -664,11 +682,13 @@ try {
     : fail(`chrome animated across the stages: ${JSON.stringify(flip2)}`);
   const pillStaged = await page.evaluate(() => {
     const r = document.querySelector(".ml-clock").getBoundingClientRect();
-    return Math.round(r.right);
+    const cs = getComputedStyle(document.documentElement);
+    const v = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
+    return { mid: Math.round(r.left + r.width / 2), want: Math.round((v("--gv-left") + 851 - v("--gv-right")) / 2) };
   });
-  Math.abs(pillStaged - (851 - 10)) <= 2
-    ? ok(`…and the pill sits on the TRUE final anchor (right edge ${pillStaged})`)
-    : fail(`staged rotation landed wrong: right edge ${pillStaged}`);
+  Math.abs(pillStaged.mid - pillStaged.want) <= 2
+    ? ok(`…and the pill sits on the TRUE final anchor (centre ${pillStaged.mid} of ${pillStaged.want})`)
+    : fail(`staged rotation landed wrong: ${JSON.stringify(pillStaged)}`);
   const after = await page.evaluate(() => ({
     cv: document.querySelector("#game canvas").width,
     gameW: document.getElementById("game").clientWidth,

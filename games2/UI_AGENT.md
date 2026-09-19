@@ -43,26 +43,44 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `wiki/site/wiki.css`, the light/dark choice (localStorage `wiki-theme`,
   shared with the wiki), and the `.ui-*` component recipes.
 - `client/src/clock.ts` — the day/night clock: the "Fern starfall" PILL, an
-  art-pixel landscape painted into a canvas and shown at x2, in the corner
-  stack under the Wiki row.
-  **IT IS AS WIDE AS THE CARD, AND IT IS NEVER STRETCHED TO GET THERE**
-  (maintainer 2026-09-19, who asked for this nervously: "I love the pill
-  today, we just need to make it a bit wider - but should still look as good as
-  it looks today (what we have today is absolutely perfect!) … I think
-  stretching the graphics will kinda destroy the sun and moon"). It cannot be
-  stretched, because the scene is drawn COLUMN BY COLUMN: `AW` (40) is the
-  width the mock was approved at, `aw` is what is drawn, and `fitWidth()` sets
-  it from the box's `clientWidth / SCALE` so one art pixel is always exactly 2
-  css px. A wider pill is MORE SKY AND MORE HILL — the orbs keep `R` 3.4 and
+  art-pixel landscape painted into a canvas and shown at x2, CENTRED in the
+  game view one `--ml-stack-step` under the Wiki row.
+  **IT TAKES HALF THE CARD'S EXTRA WIDTH, AND IT IS NEVER STRETCHED TO GET
+  THERE** (maintainer 2026-09-19, who asked for this nervously — "I love the
+  pill today, we just need to make it a bit wider … I think stretching the
+  graphics will kinda destroy the sun and moon" — then saw the full-card
+  version the same day: "I just feel the pill got a little bit to wide. Let's
+  try this instead … just extend it 50% that additional width instead").
+  `fitPill()` is the whole rule: `AW` (40) is the width the mock was approved
+  at, `EXT` (0.5) the share of the XP card's EXTRA width it takes, and `aw` is
+  what is drawn. The sum is done in WHOLE ART PIXELS in JS, not in `calc()`,
+  because CSS cannot round and the halved width lands on odd css px (146 →
+  113) which would hand the canvas a 1.98x scale. The box is then exactly
+  `aw * SCALE`, so one art pixel is always exactly 2 css px.
+  A wider pill is MORE SKY AND MORE HILL — the orbs keep `R` 3.4 and
   their glow, the hills keep their wavelength (`sin(x*f+o)` gives more of them,
   not longer ones), and `spotsFor()` keeps his six hand-placed stars at their
   exact coordinates and scatters the extra ones beyond x=40 at the same
   measured density (5.9 per 40 columns against the mock's 6), hashed off the
-  column so they never twinkle or crawl. `clientWidth`, NOT the bounding rect:
-  the box is content-box with a 1px border, and dividing the rect gave one art
-  column too many and a 1.973x canvas — the exact smear this exists to prevent,
-  caught by the gate. `verify-wikibtn` asserts the pill is the row's width AND
-  that the canvas is an exact 2x on both axes. The sun
+  column so they never twinkle or crawl. Read the card from `--bars-r-w`, NOT
+  from the pill's own rect: an earlier cut divided its bounding rect, got one
+  art column too many from the 1px border and rendered at 1.973x — the exact
+  smear this exists to prevent, caught by the gate.
+  **AND IT IS CENTRED, IN ONE RULE FOR BOTH ORIENTATIONS AND BOTH HANDS**
+  ("This ofc means the pill will not align at the position it's currently at.
+  So lets center the pill at the top instead (with same top margin)"): at half
+  the extension it shares an edge with nothing, so it left the Wiki stack
+  entirely — three placement rules, the `:root.ml-kb-up` lift and every
+  pill↔row assertion went with it. Centred on the GAME VIEW (`--gv-left` /
+  `--gv-right`), not the window, or the landscape menu would slide under it,
+  and the left edge is rounded to a whole css px because an even box in an odd
+  view lands on x.5 and shifts the nearest-neighbour grid.
+  NOT ON THE CARDS' OWN 10px ROW, which is where the centre looks emptiest:
+  at 393px two 148px cards leave 77px between them and a 116px pill overlaps
+  both (measured, first cut). "Same top margin" is the row it already had.
+  `verify-wikibtn`'s `assertPill` asserts all four — half-extension against the
+  MEASURED card, exact 2x on both axes, centred in the game view, same top
+  margin — plus that the pill's rect intersects no other chrome. The sun
   and the moon are two independent bodies, each crossing in 2/3 of a day at
   the same speed and sharing the sky at dawn and dusk, so it needs no
   hand-off animation and the server needs no time freeze. Driven only by
@@ -127,7 +145,7 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   remembered reading spot, the game-loop freeze while it is open, the
   🔍 button + its `wiki:near` contract, and that the 🔍 icon really decoded).
   `scripts/verify-safearea.mjs` (the cutout: the insets driven over CDP,
-  the chips, the select corners and the landscape pill stack stepping down by
+  the chips, the select corners and the landscape top chrome stepping down by
   the top inset, the pages' scroll end by the bottom one, and the plain
   geometry back the moment the insets are 0).
 - This file.
@@ -270,8 +288,8 @@ from the games agent), #18 (title/landing screen).
   (maintainer 2026-09-19: "when the control is left handed on the screen in
   portrait mode it's hard to read the chat messages. Can we make the chat right
   aligned for this mode? … The chat is still left aligned for right-handed
-  people and I'm only talking about portrait mode here"). In portrait the pill
-  and the Wiki row live top-right, so the game view's two bottom corners belong
+  people and I'm only talking about portrait mode here"). In portrait the Wiki
+  row lives top-right and the pill top-centre, so the two bottom corners belong
   to the ghost stick and the chat log ALONE — and never to both. Right-handed
   is untouched (stick bottom-right, log bottom-left, his default); left-handed
   the log hangs off the RIGHT on the same 10px margin and `align-items` flips
@@ -638,17 +656,19 @@ from the games agent), #18 (title/landing screen).
   32px square and takes the card's LEFT edge; the Wiki pill takes the
   remainder, `--bars-r-w - 44 - 2`, so the row spans the XP card exactly with
   the one 10px gap between them. Every `-2px` is a button's own borders, which
-  sit outside a content-box width. **ONE ORDER ON BOTH SCREENS: the row
-  directly under the chip, the pill one `--ml-stack-step` under the ROW** — "we
-  once again must place the wiki and search over the time-of-day pill", because
-  a row that is the card's width has to TOUCH the card or its alignment is
-  invisible. (This swapped to pill-first earlier the same day and back again
-  within the hour; the second verdict carries the reason, so it is the one that
-  stands.) LEFT-HANDED LANDSCAPE is the exception and is not a contradiction:
-  there the stack hangs off the screen's BOTTOM corner with no card above it,
-  so the row keeps the corner and the pill steps up over it —
-  `verify-wikibtn`'s `assertStack` takes the order as an argument rather than
-  pretending there is only one.
+  sit outside a content-box width. **THE ROW GOES DIRECTLY UNDER THE CHIP** —
+  "we once again must place the wiki and search over the time-of-day pill",
+  because a row that is the card's width has to TOUCH the card or its
+  alignment is invisible. (This swapped to pill-first earlier the same day and
+  back again within the hour; the second verdict carries the reason, so it is
+  the one that stands.) LEFT-HANDED LANDSCAPE keeps the screen's BOTTOM corner
+  for the row instead, because there the stick is bottom-left.
+  THE PILL IS NO LONGER PART OF THIS. It was the row's twin for six weeks —
+  same box, same right edge, one `--ml-stack-step` apart, in an order that
+  flipped with the anchor — and on 2026-09-19 it went to the view's centre and
+  took none of that with it. `assertStack` lost its `rowFirst` argument the
+  same day: a parameter that exists to describe a relationship outlives its
+  purpose the moment the relationship does.
   **AND THE TWO CARDS ARE THE SAME HEIGHT** (maintainer 2026-09-19, both card
   bottoms drawn on a screenshot: "the gold however is not as tall as EP so the
   two cards have different size. This makes all UI elements under the card

@@ -2817,27 +2817,20 @@ function injectStyles() {
     left:calc(var(--gv-left,0px) + 10px);right:calc(var(--gv-right,0px) + 10px);
     bottom:var(--ml-inputlift);
     box-shadow:var(--shadow);transition:bottom .15s ease-out}
-  /* The floated box takes the full width just above the keys, so EVERYTHING
-     else that lives on the bottom edge steps up over it: the on-screen chat
-     log (chat.ts) on the left and the time-of-day pill on the right. Both
-     land on the same line — the log's max-width already reserves the pill's
-     lane. :root outranks their own bottom rules whatever order the
-     stylesheets were injected in. */
   /* THE CHAT TEXT KEEPS THE LINE DIRECTLY ABOVE THE INPUT (maintainer
      2026-09-03: "why can't the text appear over the input field when the
      keyboard is opened? It appears correctly already when the keyboard is
-     not opened"). The pill's lift below is one --ml-stack-step above that
-     line, the step it keeps at rest, so the stack never reorders — but it
-     only MOVES anything in left-handed landscape now: in portrait and
-     right-handed landscape the Wiki row and the pill are top-anchored
-     (wikibtn.ts / clock.ts, 2026-09-17), nowhere near the keys, and a
-     'bottom' on a top-anchored fixed box is over-constrained and ignored.
-     An earlier cut lifted the log with the pill to preserve a "log and pill
-     on one line" reading — that rule was only ever about the pill being the
-     thing on the log's line, and honouring it pushed his chat a step off
-     the input for nothing. */
+     not opened"). The floated input takes the full width just above the
+     keys, so the log — the one remaining thing that lives on the bottom
+     edge — steps up over it; :root outranks its own bottom rule whatever
+     order the stylesheets were injected in.
+     THE PILL USED TO RIDE UP HERE TOO and no longer can: since 2026-09-19 it
+     is centred at the TOP of the view (clock.ts), and a 'bottom' on a
+     top-anchored fixed box with a height is over-constrained and ignored.
+     The rule was kept for a while after the pill first went top-right,
+     doing nothing in two of three placements; it is deleted rather than
+     left as a trap for whoever next reads it as live. */
   :root.ml-kb-up .ml-chatlog{bottom:calc(var(--ml-inputlift) + 56px)}
-  :root.ml-kb-up .ml-clock{bottom:calc(var(--ml-inputlift) + 56px + var(--ml-stack-step, 44px))}
   /* ── compact fits (icons stay at their authored 1x grid at every size) ── */
   @media (max-width:480px){
     .ml-btnrow{gap:6px}

@@ -17,12 +17,20 @@
 //   * they travel the same number of pixels per unit of world time
 //   * nothing jumps at a phase boundary or at the day's wrap
 //
-// WHERE IT SITS (maintainer 2026-09-03: "the wiki+search is under the
-// time-of-day pill"): the Wiki row takes the game view's bottom-right corner
-// anchor (10px in, 10px above the HUD rail) and the pill steps up over it by
-// --ml-stack-step, the row's own outer height + gap, PUBLISHED once by
-// wikibtn.ts and read by clock.ts — so this gate reads the same variable
-// rather than restating 44. Section 1 asserts that stack, not a bare 10.
+// WHERE IT SITS (maintainer 2026-09-19: "lets center the pill at the top
+// instead (with same top margin)"): CENTRED in the game view, one
+// --ml-stack-step under the Wiki row, which is itself under the XP chip. The
+// step is the row's own outer height + gap, PUBLISHED once by wikibtn.ts and
+// read by clock.ts — so this gate reads the same variable rather than
+// restating 44, and section 1 asserts that relationship, not a bare number.
+// THIS SECTION WAS RED ON MAIN, from 2026-09-17 until today: it still asserted
+// the game view's BOTTOM-RIGHT corner ("10px in, 10px above the HUD rail")
+// after the row and the pill had both moved to the top, and the first check
+// throws, so the ones behind it never ran to say so. Whatever this gate
+// asserts about placement has to be re-read whenever the pill moves — which
+// is the reason it now asserts as little of it as it can get away with: the
+// pill's own centre and its own step, nothing about the row's anchor, which is
+// verify-wikibtn's subject and is asserted there in every placement.
 //
 // Drives the REAL client headlessly against a dev stack.
 import { chromium } from "playwright-core";
@@ -30,7 +38,7 @@ import { chromium } from "playwright-core";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
 const OUT = process.env.OUT || "/tmp";
-const AW = 40; // art pixels across (clock.ts)
+const AW = 40; // the MOCK's width (clock.ts AW) — a floor, not the drawn width
 const AH = 16;
 const NIGHT = 0;
 const MORNING = 1;
@@ -93,9 +101,16 @@ try {
   await page.waitForTimeout(1000); // let any join-star streak (900ms) die out
 
   await page.evaluate(
-    ([AW, AH]) => {
+    ([AH]) => {
       const cv = document.querySelector(".ml-clock canvas");
       const c2 = cv.getContext("2d");
+      // THE PILL'S REAL WIDTH, read off the backing store. It was the mock's
+      // 40 until 2026-09-19, when the width started tracking the XP card
+      // (clock.ts AW + EXT); every reading below is in art-pixel coordinates
+      // and a stale 40 silently reads only the left 40 columns and puts the
+      // sun's "middle" a third of the way in.
+      const AW = cv.width;
+      window.__pillW = AW;
       const near = (p, i, hex, tol) => {
         const r = parseInt(hex.slice(1, 3), 16);
         const g = parseInt(hex.slice(3, 5), 16);
@@ -136,8 +151,9 @@ try {
         return s / n;
       };
     },
-    [AW, AH],
+    [AH],
   );
+  const PW = await page.evaluate(() => window.__pillW);
 
   const SUN = "#ffe08a";
   const MOON = "#f6f2e4";
@@ -152,8 +168,10 @@ try {
   };
   const diff = (a, b) => page.evaluate(([x, y]) => window.__pillDiff(x, y), [a, b]);
   const clip = await page.evaluate(() => {
+    // framed off the pill's OWN box — its width tracks the XP card and a fixed
+    // 140 stopped containing it the day it grew
     const r = document.querySelector(".ml-clock").getBoundingClientRect();
-    return { x: Math.max(0, r.left - 40), y: Math.max(0, r.top - 20), width: 140, height: 80 };
+    return { x: Math.max(0, r.left - 12), y: Math.max(0, r.top - 12), width: r.width + 24, height: r.height + 24 };
   });
   const shotClock = (name) => page.screenshot({ path: `${OUT}/${name}`, clip });
 
@@ -169,8 +187,12 @@ try {
       pe: cs.pointerEvents,
       right: r.right,
       bottom: r.bottom,
+      top: r.top,
+      mid: r.left + r.width / 2,
+      gl: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gv-left")) || 0,
+      gr: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--gv-right")) || 0,
       hudTop: document.querySelector(".ml-hud").getBoundingClientRect().top,
-      // the Wiki row under the pill, and the step the pill climbs over it
+      // the Wiki row ABOVE the pill, and the step between them
       wiki: document.querySelector(".ml-wikibtn")?.getBoundingClientRect() ?? null,
       step: parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ml-stack-step")),
       vw: innerWidth,
@@ -183,30 +205,36 @@ try {
     };
   });
   if (s.pos !== "fixed" || s.pe !== "none") fail(`pill not a fixed pass-through (${s.pos}/${s.pe})`);
-  // Bottom-right of the GAME VIEW: 10px in from the right edge (the margin
-  // the XP chip keeps at the top); the Wiki row holds the corner 10px above
-  // the HUD rail and the pill sits exactly one published step above it.
-  if (Math.abs(s.vw - s.right - 10) > 1) fail(`pill right margin ${s.vw - s.right}px, want 10`);
-  if (!s.wiki) fail("no .ml-wikibtn under the pill — the stack the pill is measured against is missing");
+  // CENTRED in the game view (portrait here, so the view is the window), and
+  // one published step under the Wiki row. 1px of tolerance: an even box in an
+  // odd view lands on x.5 and clock.ts rounds the left edge to a whole css px
+  // on purpose, because a half-pixel box under a pixelated canvas smears it.
+  if (Math.abs(s.mid - (s.gl + s.vw - s.gr) / 2) > 1)
+    fail(`pill centre ${s.mid}, game view centre ${(s.gl + s.vw - s.gr) / 2}`);
+  if (!s.wiki) fail("no .ml-wikibtn above the pill — the row the pill steps from is missing");
   if (!(s.step > 0)) fail(`--ml-stack-step "${s.step}" is not a published px height`);
-  if (Math.abs(s.hudTop - s.wiki.bottom - 10) > 1)
-    fail(`Wiki row sits ${s.hudTop - s.wiki.bottom}px above the HUD rail, want 10`);
-  if (Math.abs(s.vw - s.wiki.right - (s.vw - s.right)) > 1)
-    fail(`Wiki row right edge ${s.vw - s.wiki.right}px in, the pill's is ${s.vw - s.right} — one right edge`);
-  if (Math.abs(s.hudTop - s.bottom - (10 + s.step)) > 1)
-    fail(`pill sits ${s.hudTop - s.bottom}px above the HUD rail, want 10 + the ${s.step}px stack step`);
-  if (s.cw !== AW || s.ch !== AH) fail(`canvas backing store ${s.cw}x${s.ch}, want ${AW}x${AH} art px`);
-  if (Math.abs(s.rect.width - AW * 2) > 1 || Math.abs(s.rect.height - AH * 2) > 1)
-    fail(`canvas drawn ${s.rect.width}x${s.rect.height}, want ${AW * 2}x${AH * 2} (x2 exact)`);
+  if (Math.abs(s.top - s.wiki.top - s.step) > 1)
+    fail(`pill top ${s.top} != the Wiki row's ${s.wiki.top} + the published ${s.step}px step`);
+  // THE CANVAS IS AH TALL AND AT LEAST AW WIDE, AND DRAWN AT AN EXACT x2.
+  // The height is the mock's and always will be; the WIDTH tracks the XP card
+  // (clock.ts AW + EXT of the card's extra) and asserting a literal 40 here
+  // would make this gate go red on a change it has no opinion about. What it
+  // has an opinion about is the scale — every reading below this point is in
+  // ART-PIXEL coordinates read off the backing store, and they are only
+  // meaningful if one art px is exactly 2 css px.
+  if (s.ch !== AH) fail(`canvas backing store ${s.cw}x${s.ch}, want ${AH} art px tall`);
+  if (!(s.cw >= AW)) fail(`canvas ${s.cw} art px wide, never narrower than the ${AW}px mock`);
+  if (Math.abs(s.rect.width - s.cw * 2) > 1 || Math.abs(s.rect.height - s.ch * 2) > 1)
+    fail(`canvas ${s.cw}x${s.ch} art drawn at ${s.rect.width}x${s.rect.height}, want an exact x2 on both axes`);
   if (s.smooth !== "pixelated") fail(`image-rendering ${s.smooth}, want pixelated`);
   if (s.imgs !== 0) fail(`${s.imgs} <img> inside the pill — the art is painted, not loaded`);
   if (s.relics !== 0) fail(`${s.relics} half-dial relics (hand/face/hub) still in the DOM`);
-  console.log(`structure OK (${AW}x${AH} art px at x2, pixelated, one ${s.step}px step over the Wiki row in the game view's bottom-right)`);
+  console.log(`structure OK (${s.cw}x${s.ch} art px at x2, pixelated, centred one ${s.step}px step under the Wiki row)`);
 
   // ---- 2. NOON: the sun alone, at the apex, dead centre ----
   const noon = await both(DAY, 0.5);
   if (noon.sun.n < 8) fail(`noon: only ${noon.sun.n} sun px on the pill`);
-  if (Math.abs(noon.sun.x - AW / 2) > 3) fail(`noon sun at x=${noon.sun.x.toFixed(1)}, want the middle (~20)`);
+  if (Math.abs(noon.sun.x - PW / 2) > 3) fail(`noon sun at x=${noon.sun.x.toFixed(1)}, want the middle (~${(PW / 2).toFixed(0)})`);
   if (noon.sun.y > 4.5) fail(`noon sun at y=${noon.sun.y.toFixed(1)}, want the arc's apex`);
   if (noon.moon.n > 0) fail(`${noon.moon.n} moon px at noon — the moon is below the horizon all day`);
   const skyDay = await sky();
@@ -216,7 +244,7 @@ try {
   // ---- 3. MIDNIGHT: the moon alone, at the apex, and a dark sky ----
   const mid = await both(NIGHT, 0.5);
   if (mid.moon.n < 8) fail(`midnight: only ${mid.moon.n} moon px on the pill`);
-  if (Math.abs(mid.moon.x - AW / 2) > 3) fail(`midnight moon at x=${mid.moon.x.toFixed(1)}, want the middle`);
+  if (Math.abs(mid.moon.x - PW / 2) > 3) fail(`midnight moon at x=${mid.moon.x.toFixed(1)}, want the middle`);
   if (mid.moon.y > 4.5) fail(`midnight moon at y=${mid.moon.y.toFixed(1)}, want the arc's apex`);
   if (mid.sun.n > 0) fail(`${mid.sun.n} sun px at midnight — the sun must be below the hills`);
   const skyNight = await sky();
@@ -230,15 +258,15 @@ try {
   const morn = await both(MORNING, 0.5);
   if (morn.sun.n < 4 || morn.moon.n < 4)
     fail(`morning should show BOTH (sun ${morn.sun.n}px, moon ${morn.moon.n}px)`);
-  if (!(morn.sun.x < AW * 0.35)) fail(`morning sun at x=${morn.sun.x.toFixed(1)}, want the left end`);
-  if (!(morn.moon.x > AW * 0.65)) fail(`morning moon at x=${morn.moon.x.toFixed(1)}, want the right end`);
+  if (!(morn.sun.x < PW * 0.35)) fail(`morning sun at x=${morn.sun.x.toFixed(1)}, want the left end`);
+  if (!(morn.moon.x > PW * 0.65)) fail(`morning moon at x=${morn.moon.x.toFixed(1)}, want the right end`);
   await shotClock("clock-morning.png");
 
   const eve = await both(EVENING, 0.5);
   if (eve.sun.n < 4 || eve.moon.n < 4)
     fail(`evening should show BOTH (sun ${eve.sun.n}px, moon ${eve.moon.n}px)`);
-  if (!(eve.sun.x > AW * 0.65)) fail(`evening sun at x=${eve.sun.x.toFixed(1)}, want the right end`);
-  if (!(eve.moon.x < AW * 0.35)) fail(`evening moon at x=${eve.moon.x.toFixed(1)}, want the left end`);
+  if (!(eve.sun.x > PW * 0.65)) fail(`evening sun at x=${eve.sun.x.toFixed(1)}, want the right end`);
+  if (!(eve.moon.x < PW * 0.35)) fail(`evening moon at x=${eve.moon.x.toFixed(1)}, want the left end`);
   await shotClock("clock-evening.png");
   console.log(
     `two-body sky OK (morning sun ${morn.sun.x.toFixed(1)} / moon ${morn.moon.x.toFixed(1)}, ` +
@@ -255,7 +283,7 @@ try {
   const eveUp = await both(EVENING, 0.3);
   if (dayLate.moon.n > 0) fail(`the moon is up ${dayLate.moon.n}px while it is still day`);
   if (eveStart.moon.n < 1) fail("the moon has not started rising at the beginning of evening");
-  if (!(eveStart.moon.x < AW * 0.2)) fail(`the new moon rose at x=${eveStart.moon.x.toFixed(1)}, want the left edge`);
+  if (!(eveStart.moon.x < PW * 0.2)) fail(`the new moon rose at x=${eveStart.moon.x.toFixed(1)}, want the left edge`);
   if (!(eveUp.moon.n > eveStart.moon.n * 2)) fail(`the moon is not climbing (${eveStart.moon.n} -> ${eveUp.moon.n}px)`);
   if (!(eveUp.moon.y < eveStart.moon.y)) fail(`the moon sank (y ${eveStart.moon.y} -> ${eveUp.moon.y})`);
   console.log(

@@ -77,6 +77,7 @@ try {
     const lines = [...document.querySelectorAll(".ml-chatlog .ml-chatline")];
     return {
       innerH: window.innerHeight,
+      innerW: window.innerWidth,
       hudRaw,
       hudH,
       // THE PORTRAIT HUD IS EXACTLY THREE BACKPACK ROWS TALL (hud.ts
@@ -105,7 +106,8 @@ try {
         : null,
       clockRect: clock
         ? { rightGap: window.innerWidth - clock.getBoundingClientRect().right,
-            top: clock.getBoundingClientRect().top }
+            top: clock.getBoundingClientRect().top,
+            mid: clock.getBoundingClientRect().left + clock.getBoundingClientRect().width / 2 }
         : null,
       step: parseFloat(getComputedStyle(root).getPropertyValue("--ml-stack-step")),
       inputPos: input ? getComputedStyle(input).position : null,
@@ -140,24 +142,22 @@ try {
   // the row's right gap is the chat's left gap — and the row itself is
   // top-right under the XP chip with the pill one published step under it.
   if (!geo.wikiRect) throw new Error("no .ml-wikibtn to compare the chat's margin against");
-  if (!geo.clockRect) throw new Error("no .ml-clock under the Wiki row");
+  if (!geo.clockRect) throw new Error("no .ml-clock in the game view");
   if (!(geo.step > 0)) throw new Error(`--ml-stack-step "${geo.step}" is not a published px height`);
   if (!near(geo.wikiRect.rightGap, geo.logRect.left))
     throw new Error(`chat left ${geo.logRect.left} != Wiki row right ${geo.wikiRect.rightGap}`);
   if (!(geo.wikiRect.top < geo.innerH / 2))
     throw new Error(`Wiki row at top ${geo.wikiRect.top} — in portrait it lives top-right under the XP chip`);
-  if (!near(geo.clockRect.rightGap, geo.wikiRect.rightGap))
-    throw new Error(`pill right ${geo.clockRect.rightGap} != Wiki row right ${geo.wikiRect.rightGap} — one right edge`);
-  // THE PILL IS THE ONE UNDER THE CHIP, AND THE WIKI ROW HANGS UNDER IT
-  // (maintainer 2026-09-19, arrows on a screenshot: "In portrait mode. Can you
-  // swap y order for wiki and time-of-day pill?"). This is the reverse of
-  // 2026-09-17 and supersedes it; asserted against the PUBLISHED step, so the
-  // order is what is tested and not a pair of literals.
+  // THE PILL SHARES NO EDGE WITH THE ROW ANY MORE — it is CENTRED (maintainer
+  // 2026-09-19: "the pill will not align at the position it's currently at. So
+  // lets center the pill at the top instead (with same top margin)"). It keeps
+  // its row — one published step under the Wiki row — and what this gate cares
+  // about is that the chat's margin is unaffected by any of it.
+  if (!near(geo.clockRect.mid, geo.innerW / 2, 1))
+    throw new Error(`pill centre ${geo.clockRect.mid} != the view's ${geo.innerW / 2} — in portrait the game view is the whole window`);
   if (!near(geo.clockRect.top, geo.wikiRect.top + geo.step))
-    throw new Error(`pill top ${geo.clockRect.top} != Wiki row top ${geo.wikiRect.top} + the ${geo.step}px stack step — the ROW is under the chip (it is as wide as it) and the pill hangs under the row`);
-  if (!(geo.wikiRect.top < geo.clockRect.top))
-    throw new Error(`the Wiki row (${geo.wikiRect.top}) is not above the pill (${geo.clockRect.top})`);
-  console.log(`MARGIN OK — chat left and the Wiki row's right share ${geo.wikiRect.rightGap}px to the edge; the row is under the XP chip and the pill hangs ${geo.step}px under it, top-right`);
+    throw new Error(`pill top ${geo.clockRect.top} != Wiki row top ${geo.wikiRect.top} + the ${geo.step}px stack step — the pill kept the row it had`);
+  console.log(`MARGIN OK — chat left and the Wiki row's right share ${geo.wikiRect.rightGap}px to the edge; the row is under the XP chip and the pill is centred ${geo.step}px under it`);
   if (geo.lineCount < 1 || !geo.msgShown)
     throw new Error(`chat overlay log missing the message chip (lines=${geo.lineCount}, shown=${geo.msgShown})`);
   console.log("GEO OK");

@@ -4,18 +4,18 @@
 // was when the player closes the wiki and opens it again."
 //
 // What this pins, and why each check is shaped the way it is:
-//   1. SIZE AND STACK against the REAL pill's rect — never against the
-//      button's own constants, which would let the two drift apart the day
-//      the pill is resized.
-//   2. THE ROW SITS BELOW THE PILL, in every placement (maintainer
-//      2026-09-03: "the wiki+search is under the time-of-day pill — they
-//      should swap y position"). At rest the row takes the corner and the
-//      pill steps up over it; in right-handed landscape the pill is
-//      top-anchored under the XP chip (its corner belongs to the thumb
-//      stick) and the row hangs under it. Same over the keyboard — the
-//      stack must not reorder when the keys come up.
-//   3. The KEYBOARD RIDE: hud.ts lifts the pill over the phone keyboard via
-//      :root.ml-kb-up — the button must hold its 10px gap through the lift.
+//   1. THE ROW SPANS THE XP CARD it hangs under, and is pill-high — measured
+//      against the REAL card and the REAL pill, never against the button's
+//      own constants, which would let them drift apart the day either moves.
+//   2. THE TIME-OF-DAY PILL, which since 2026-09-19 is NOT in this stack:
+//      half the card's extra width, centred in the game view, same top
+//      margin (assertPill). It was the row's twin for six weeks — same box,
+//      same right edge, one --ml-stack-step apart, in an order that flipped
+//      with the anchor — and that is why this gate owns it: what used to be
+//      an invariant BETWEEN them is now two separate readings, and splitting
+//      them is the whole point of the change.
+//   3. The KEYBOARD RIDE: hud.ts lifts the chat over the phone keyboard via
+//      :root.ml-kb-up — the top-anchored row and pill must not move at all.
 //      The class+var are set directly (the real focus→lift path is
 //      verify-chatpage's subject); what this asserts is the CSS chain.
 //   4. THE FREEZE (maintainer 2026-08-13: "the wiki lags a bit when opened on
@@ -76,7 +76,15 @@ const rects = async () => {
         : null;
       const near_ = r(".ml-wikinear"), btn_ = r(".ml-wikibtn");
       const row = near_ && btn_ ? Math.round(btn_.r - near_.l) : null;
-      return JSON.stringify({ pill: r(".ml-clock"), btn: btn_, near: near_, art, row });
+      const cs = getComputedStyle(document.documentElement);
+      const v = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
+      return JSON.stringify({ pill: r(".ml-clock"), btn: btn_, near: near_, art, row,
+        // what the pill is sized and centred against
+        xp: r(".ml-bars-r"), card: Math.round(v("--bars-r-w")), step: v("--ml-stack-step"),
+        gl: v("--gv-left"), gr: v("--gv-right"), vw: window.innerWidth,
+        // everything a centred box has to clear
+        others: { "the HP/EP card": r(".ml-bars-l"), "the XP card": r(".ml-bars-r"),
+          "the Wiki button": btn_, "the search button": near_, "the Report button": r(".ml-recbtn") } });
     });
     if (now === prev) return JSON.parse(now);
     prev = now;
@@ -87,57 +95,26 @@ const rects = async () => {
 
 const near = (a, b, tol = 1.5) => Math.abs(a - b) <= tol;
 
-/** The stack invariant: same box, same right edge, and the Wiki row one 10px
- *  gap BELOW the pill. One reading in EVERY placement since the swap
- *  (maintainer 2026-09-03: "the wiki+search is under the time-of-day pill —
- *  they should swap y position") — including over the keyboard, so nothing
- *  reorders on screen when the keys come up. There is no `side` any more:
- *  a parameter that only ever takes one value hides the invariant. */
-/** `rowFirst` = the Wiki row is the one adjacent to the anchor, with the pill
- *  below it. True wherever the stack hangs from the XP CARD (portrait and
- *  right-handed landscape), because the row is as wide as that card and has to
- *  touch it. FALSE in left-handed landscape, where the stack is anchored to the
- *  screen's BOTTOM corner instead — there the row keeps the corner and the pill
- *  steps up over it, which is the same rule read from the other end. */
-const assertStack = (g, label, rowFirst = true) => {
+/** THE WIKI ROW: pill-high, and the 🔍 square one gap to its left, in every
+ *  placement. It used to assert a STACK — the row and the time-of-day pill
+ *  one --ml-stack-step apart, same box, same right edge, in an order that
+ *  flipped with the anchor. That ended on 2026-09-19: the pill stopped being
+ *  the card's width and moved to the view's centre (assertPill below), so the
+ *  two no longer touch and there is no order left to parameterise. */
+const assertStack = (g, label) => {
   if (!g.pill || !g.btn) return fail(`${label}: missing ${!g.pill ? "pill" : "button"}`);
   // SINCE 2026-09-19 THE ROW IS THE XP CARD'S WIDTH and the Wiki button takes
-  // what the 🔍 and the gap leave of it, so it is no longer pill-sized — it is
-  // WIDER than the pill by construction ("the wiki button should be wider and
-  // not the search button"). Same height, same right edge, still.
+  // what the 🔍 and the gap leave of it. Both it and the pill are still PILL_H
+  // tall — one shared height across the chrome — and that is what is asserted.
   near(g.btn.h, g.pill.h)
     ? ok(`${label}: button is pill-high (${g.btn.h}px)`)
     : fail(`${label}: height mismatch — button ${g.btn.h}, pill ${g.pill.h}`);
-  // (The Wiki button used to be compared to the PILL's width. Since 2026-09-19
-  //  they are both the card's width — the pill spans the whole row — so what
-  //  is asserted is that relationship, below, not a size ordering that no
-  //  longer means anything.)
-  near(g.btn.r, g.pill.r)
-    ? ok(`${label}: right edges aligned (${g.btn.r.toFixed(1)})`)
-    : fail(`${label}: right edges differ (button ${g.btn.r}, pill ${g.pill.r})`);
-  // THE PILL IS THE ROW'S WIDTH, AND IT IS NOT STRETCHED TO GET THERE
-  // (maintainer 2026-09-19: "the pill is not aligned with the wiki in width…
-  // I think stretching the graphics will kinda destroy the sun and moon"). The
-  // second half is the one that matters and it is exact: the canvas's BACKING
-  // STORE must be the rendered box divided by the art scale, so one art pixel
-  // is always 2 css px. A pill widened by stretching would fail this by
-  // construction, whatever it looked like in a screenshot.
-  near(g.pill.w, g.row, 2)
-    ? ok(`${label}: the pill is the Wiki row's width (${g.pill.w})`)
-    : fail(`${label}: pill ${g.pill.w} vs the row's ${g.row}`);
-  g.art && g.art.sx === 2 && g.art.sy === 2
-    ? ok(`${label}: and drawn 1 art px = 2 css px — more sky, not a stretch (${g.art.cw}x${g.art.ch} art in ${g.art.bw}x${g.art.bh})`)
-    : fail(`${label}: the pill's canvas is stretched — ${JSON.stringify(g.art)} (want an exact 2x on both axes)`);
-  // …and the PILL is the one below now: the row has to touch the card it is
-  // as wide as ("we once again must place the wiki and search over the
-  // time-of-day pill").
-  const gap = rowFirst ? g.pill.t - g.btn.b : g.btn.t - g.pill.b;
-  near(gap, 10, 2)
-    ? ok(`${label}: ${rowFirst ? "the pill hangs 10px below the row" : "the row keeps the corner and the pill steps 10px up over it"} (${gap.toFixed(1)})`)
-    : fail(`${label}: wanted ${rowFirst ? "the pill 10px BELOW the Wiki row" : "the Wiki row 10px BELOW the pill"}, gap is ${gap.toFixed(1)} (btn ${g.btn.t.toFixed(0)}..${g.btn.b.toFixed(0)}, pill ${g.pill.t.toFixed(0)}..${g.pill.b.toFixed(0)})`);
+  near(g.row, g.card, 2)
+    ? ok(`${label}: the row spans the XP card exactly (${g.row} vs ${g.card})`)
+    : fail(`${label}: the row is ${g.row} against a ${g.card}px card`);
 
   // The 🔍: a square the pill's height, on the Wiki button's own line, one
-  // 10px gap to its LEFT — so the three read as one stack in every placement.
+  // 10px gap to its LEFT — so the two read as one row in every placement.
   if (!g.near) return fail(`${label}: the 🔍 button is missing`);
   near(g.near.w, g.near.h) && near(g.near.h, g.btn.h)
     ? ok(`${label}: 🔍 is a pill-high square (${g.near.w}x${g.near.h})`)
@@ -145,6 +122,56 @@ const assertStack = (g, label, rowFirst = true) => {
   near(g.near.t, g.btn.t) && near(g.btn.l - g.near.r, 10, 2)
     ? ok(`${label}: 🔍 sits left of Wiki with the 10px gap (${(g.btn.l - g.near.r).toFixed(1)})`)
     : fail(`${label}: 🔍 off the Wiki line — top ${g.near.t.toFixed(0)} vs ${g.btn.t.toFixed(0)}, gap ${(g.btn.l - g.near.r).toFixed(1)}`);
+};
+
+// THE PILL'S WIDTH RULE, RESTATED — not imported from clock.ts, because a
+// gate that reads the constant it is checking asserts nothing. These three
+// numbers ARE the record of what he approved; changing the pill's width
+// without changing this line is exactly the change that must go red.
+const AW = 40, SCALE = 2, EXT = 0.5;
+const wantPillW = (cardBox) => (AW + Math.round(((cardBox - 2) / SCALE - AW) * EXT)) * SCALE + 2;
+
+/** THE TIME-OF-DAY PILL, which is no longer part of the stack above.
+ *  (maintainer 2026-09-19, on the full-width version shipped that morning: "I
+ *  just feel the pill got a little bit to wide … just extend it 50% that
+ *  additional width instead. This ofc means the pill will not align at the
+ *  position it's currently at. So lets center the pill at the top instead
+ *  (with same top margin).")
+ *  Four readings, all RELATIONSHIPS: half the card's extra width, an exact 2x
+ *  canvas, centred in the GAME VIEW, and the top margin it already had. */
+const assertPill = (g, label) => {
+  if (!g.pill || !g.xp) return fail(`${label}: missing ${!g.pill ? "the pill" : "the XP card"}`);
+  const want = wantPillW(g.card);
+  near(g.pill.w, want, 1)
+    ? ok(`${label}: the pill takes half the card's extra width (${g.pill.w} against the card's ${g.card})`)
+    : fail(`${label}: pill ${g.pill.w}, wanted ${want} — ${AW} art px plus ${EXT} of what the ${g.card}px card is wider`);
+  // THE ONE THAT CANNOT BE FAKED BY A SCREENSHOT: the canvas's BACKING STORE
+  // against its box. A pill widened by stretching fails this by construction.
+  g.art && g.art.sx === 2 && g.art.sy === 2
+    ? ok(`${label}: drawn 1 art px = 2 css px — more sky, not a stretch (${g.art.cw}x${g.art.ch} art in ${g.art.bw}x${g.art.bh})`)
+    : fail(`${label}: the pill's canvas is stretched — ${JSON.stringify(g.art)} (want an exact 2x on both axes)`);
+  // Centred in the GAME VIEW, not the window: in landscape the menu takes one
+  // side, and centring on the window would slide the pill under its edge.
+  // 1px of tolerance because an even box in an odd view lands on x.5 and the
+  // left edge is rounded to a whole css px (clock.ts fitPill) on purpose.
+  const mid = g.pill.l + g.pill.w / 2, want2 = (g.gl + g.vw - g.gr) / 2;
+  near(mid, want2, 1)
+    ? ok(`${label}: centred in the game view (${mid.toFixed(1)} against ${want2.toFixed(1)})`)
+    : fail(`${label}: pill centre ${mid.toFixed(1)}, game view centre ${want2.toFixed(1)}`);
+  // "with same top margin" — the row it already had: the XP card's bottom,
+  // the 10px margin, and one published stack step for the Wiki row between.
+  near(g.pill.t - g.xp.b, 10 + g.step, 2)
+    ? ok(`${label}: same top margin as before (XP card bottom + 10 + the ${g.step}px step)`)
+    : fail(`${label}: pill top ${g.pill.t.toFixed(0)} is ${(g.pill.t - g.xp.b).toFixed(0)}px under the XP card, wanted ${10 + g.step}`);
+  // IT TOUCHES NOTHING. A centred box is only honest if it clears the chrome
+  // on BOTH sides at every width: the cards' own 10px row looks like the
+  // emptiest place for it, but at 393px two 148px cards leave 77px between
+  // them and a 116px pill overlaps both. Measured, not reasoned about.
+  const hits = Object.entries(g.others).filter(([, r]) =>
+    r && g.pill.l < r.r && r.l < g.pill.r && g.pill.t < r.b && r.t < g.pill.b);
+  hits.length === 0
+    ? ok(`${label}: the pill clears every other piece of chrome`)
+    : fail(`${label}: the pill overlaps ${hits.map(([w]) => w).join(", ")} — ${JSON.stringify(g.pill)}`);
 };
 
 const frameSel = ".ml-wikipanel iframe";
@@ -215,7 +242,9 @@ try {
   await page.waitForFunction(() => !!document.querySelector(".ml-clock"), null, { timeout: 20000 });
 
   // ── 1. portrait: pill-sized, stacked ABOVE ─────────────────────────────
-  assertStack(await rects(), "portrait");
+  const g0 = await rects();
+  assertStack(g0, "portrait");
+  assertPill(g0, "portrait");
 
   // ── 1b. BOTH BUTTONS WEAR HIS OWN ART, and it actually arrived ─────────
   // (maintainer 2026-09-03: the PixelLab magnifying glass, flipped, and the
@@ -285,9 +314,7 @@ try {
   pillMoved <= 1 && btnMoved <= 1
     ? ok("keyboard lift: the top-anchored stack stays put (the lift moves the chat log, not the chip's corner)")
     : fail(`the keyboard lift moved the top-anchored stack (pill ${pillMoved.toFixed(0)}px, button ${btnMoved.toFixed(0)}px)`);
-  near(lifted.pill.t - lifted.btn.b, 10, 2)
-    ? ok("keyboard lift: the 10px gap survives, row above the pill")
-    : fail(`gap while lifted: ${(lifted.pill.t - lifted.btn.b).toFixed(1)}px (the stack must not reorder over the keys)`);
+  assertPill(lifted, "keyboard lift"); // …and the pill is untouched by it
   near(lifted.near.b, lifted.btn.b, 2)
     ? ok("keyboard lift: 🔍 rides on the Wiki button's line")
     : fail(`keyboard lift left 🔍 behind (🔍 bottom ${lifted.near.b.toFixed(0)}, Wiki ${lifted.btn.b.toFixed(0)})`);
@@ -551,12 +578,16 @@ try {
     null,
     { timeout: 15000 },
   );
-  assertStack(await rects(), "right-handed landscape");
+  const g7 = await rects();
+  assertStack(g7, "right-handed landscape");
+  assertPill(g7, "right-handed landscape");
 
   // ── 8. left-handed landscape: the pill keeps its corner, button ABOVE ──
   await page.evaluate(() => window.__ml.hand("left"));
   await page.waitForTimeout(800);
-  assertStack(await rects(), "left-handed landscape", false); // bottom-anchored: the row keeps the corner
+  const g8 = await rects();
+  assertStack(g8, "left-handed landscape"); // the row keeps the bottom corner here
+  assertPill(g8, "left-handed landscape"); // …the pill is top-centred in every placement
   await page.evaluate(() => window.__ml.hand("right"));
 
   // ── 9. portrait return ─────────────────────────────────────────────────
@@ -566,7 +597,9 @@ try {
     null,
     { timeout: 15000 },
   );
-  assertStack(await rects(), "portrait return");
+  const g9 = await rects();
+  assertStack(g9, "portrait return");
+  assertPill(g9, "portrait return");
 
   errors.length === 0 ? ok("no page errors") : fail(`page errors: ${errors.join(" | ")}`);
 } finally {

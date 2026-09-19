@@ -47,11 +47,12 @@ import { TIME_PHASE_SECONDS } from "@nangijala/shared";
 // glow melts its remaining corners into the sky. Don't re-tune these to save
 // a few pixels of screen — shrink SCALE instead.
 // AW IS THE WIDTH THE MOCK WAS APPROVED AT, and `aw` is what is actually
-// drawn: since 2026-09-19 the pill is as wide as the XP card above it, like
-// everything else in that corner (maintainer: "the pill is not aligned with the
-// wiki in width… we just need to make it a bit wider - but should still look as
-// good as it looks today (what we have today is absolutely perfect!) … I think
-// stretching the graphics will kinda destroy the sun and moon").
+// drawn. The pill grows with the XP card, but only HALF as far: on 2026-09-19
+// it first took the card's FULL width and the verdict came back the same day
+// — "I just feel the pill got a little bit to wide… just extend it 50% that
+// additional width instead". So EXT is the share of the card's extra width
+// this pill takes, and the rest of the file needs no other change, because
+// the width was never a literal: it is whatever `aw` says.
 // NOTHING IS STRETCHED, and nothing can be: this scene is drawn COLUMN BY
 // COLUMN, so a wider pill is more sky and more hill at the SAME 2x pixel size.
 // The orbs keep r=3.4 and their glow, the hills keep their wavelength (they are
@@ -59,6 +60,7 @@ import { TIME_PHASE_SECONDS } from "@nangijala/shared";
 // six hand-placed stars keep their exact coordinates — see spotsFor().
 const AW = 40; // art pixels across, as approved
 let aw = AW; // …and as currently drawn
+const EXT = 0.5; // …of the card's extra width, in WHOLE art px (see fitPill)
 const AH = 16; // art pixels down
 const SCALE = 2; // 1 art px = 2 css px
 const HOR = 10; // horizon row: where the orbs cross the hills
@@ -135,7 +137,7 @@ const LAYERS = [
 let root: HTMLDivElement | null = null;
 let ctx: CanvasRenderingContext2D | null = null;
 let img: ImageData | null = null;
-let cv: HTMLCanvasElement | null = null; // module-scope so fitWidth can rebuild it
+let cv: HTMLCanvasElement | null = null; // module-scope so fitPill can rebuild it
 let lastTau = 0;
 let starUntil = 0; // clockStar(): a transient extra streak
 
@@ -293,42 +295,34 @@ function mount() {
   if (root) return;
   const style = document.createElement("style");
   style.textContent = `
-  /* The REST rule — bottom-right of the game view, one --ml-stack-step above
-     the Wiki row, 10px from the right edge (the one margin everything keeps,
-     maintainer 2026-07-31) — now only survives in LEFT-handed landscape; the
-     two rules below re-anchor portrait and right-handed landscape to the
-     top. --hud-h is real px, published by hud.ts applyLayout; the fallback
-     is the golden-ratio split it computes. When a chat box is focused the
-     phone keyboard covers the bottom corners, so hud.ts lifts this pill (and
-     the chat log) above the floated input via :root.ml-kb-up — hence the
-     transition; top-anchored placements ignore that lift (over-constrained). */
-  .ml-clock{position:fixed;right:calc(var(--gv-right,0px) + 10px);
-    bottom:calc(var(--hud-h, 38.2dvh) + 10px + var(--ml-stack-step, 44px));z-index:8;
-    width:calc(var(--bars-r-w, ${AW * SCALE + 2}px) - 2px);height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
+  /* CENTRED IN THE GAME VIEW, KEEPING ITS OWN TOP MARGIN (maintainer
+     2026-09-19: "lets center the pill at the top instead (with same top
+     margin)"). It had to move: at half the extension it is no longer the XP
+     card's width, so the right edge it used to share with the card and the
+     Wiki row lines up with nothing, and a box that is nearly-but-not-quite
+     aligned reads as a mistake.
+     THE MARGIN IS THE ONE IT ALREADY HAD — the third row of top chrome, one
+     --ml-stack-step under the Wiki row, which is itself under the XP chip.
+     NOT the cards' own 10px row, though that is where the centre looks
+     emptiest: at 393px the two 148px cards leave 77px between them and a
+     116px pill overlaps both (measured). The row below them is the first one
+     that is free all the way across, at every width.
+     ONE RULE FOR EVERY ORIENTATION AND BOTH HANDS. It used to be three — a
+     bottom-right corner at rest plus two top-anchored overrides — because
+     the corner it wanted belonged to the thumb stick in landscape and to the
+     ghost stick in portrait. The centre of that row belongs to nothing in
+     any of them, so the special cases are gone, and with them the keyboard
+     lift: nothing down there can reach a box anchored to the top.
+     left and width are set from JS (fitPill) rather than calc()ed here,
+     because both have to land on WHOLE art pixels — CSS cannot round, and a
+     half-pixel box under a pixelated canvas is the smear this whole design
+     exists to avoid. What is here is the first-frame fallback. */
+  .ml-clock{position:fixed;
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + var(--ml-stack-step, 44px));
+    left:calc((100vw - ${AW * SCALE + 2}px) / 2);z-index:8;
+    width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
     pointer-events:none;box-sizing:content-box;
-    transition:bottom .15s ease-out,right .3s ease;
     border:1px solid var(--border-strong);box-shadow:var(--shadow)}
-  /* RIGHT-HANDED LANDSCAPE: the game view's bottom-right corner belongs to
-     the thumb stick, so the pill moves UP and parks directly under the XP
-     chip instead (maintainer 2026-08-05) — same right margin, so the two
-     right edges line up, and a 10px gap below the chip matching every other
-     margin. --bars-r-h is the chip's MEASURED height (bars.ts publishes it;
-     the fallback only covers the first frame), and the chip itself sits
-     under the cutout inset (--ml-safe-top), so the inset rides along or the
-     pill would climb back into the chip. Left-handed keeps the corner:
-     there the stick is bottom-LEFT and the pill is nowhere near it. */
-  :root.ml-land:not(.ml-lh) .ml-clock{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + var(--ml-stack-step, 44px));bottom:auto}
-  /* PORTRAIT: THE WIKI ROW IS DIRECTLY UNDER THE XP CHIP AND THIS PILL HANGS
-     ONE STEP UNDER IT. Swapped to pill-first earlier on 2026-09-19 and back
-     the same day, with the reason: the row is now as WIDE as the card, and a
-     row that is the card's width has to touch the card ("This also means we
-     once again must place the wiki and search over the time-of-day pill").
-     Portrait and right-handed landscape read the same way round.
-     The bottom corner this leaves is the portrait ghost stick's (gamepad.ts),
-     and the chat log takes the corner the stick does not (hud.ts). */
-  :root:not(.ml-land) .ml-clock{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + var(--ml-stack-step, 44px));bottom:auto}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);
   root = document.createElement("div");
@@ -337,33 +331,58 @@ function mount() {
   cv.width = aw;
   cv.height = AH;
   root.appendChild(cv);
-  document.body.appendChild(root);
   ctx = cv.getContext("2d");
   img = ctx?.createImageData(aw, AH) ?? null;
   paint(lastTau);
-  fitWidth();
+  // sized and centred BEFORE it is in the document: fitPill reads :root vars
+  // and the viewport, never this box, so it needs no layout — and the pill is
+  // therefore never painted once at the fallback width on its way to the real
+  // one.
+  fitPill();
+  document.body.appendChild(root);
   // the card's width is a media query, so it changes on exactly the events
   // hud.ts re-publishes it on
-  window.addEventListener("ml-layout", fitWidth);
-  window.addEventListener("resize", fitWidth);
+  window.addEventListener("ml-layout", fitPill);
+  window.addEventListener("resize", fitPill);
 }
 
 /**
- * TAKE THE PILL'S RENDERED WIDTH AND GIVE THE CANVAS THAT MANY COLUMNS — the
- * one line that stops this being a stretch. The box is sized in CSS off
- * --bars-r-w (the XP card's measured width); this reads what that came out as
- * and rebuilds the pixel buffer to match, so one art pixel is always exactly
- * SCALE css px. A canvas whose backing store disagreed with its box would be
- * precisely the smearing he was afraid of.
+ * THE PILL'S WIDTH AND ITS CENTRE, BOTH IN WHOLE ART PIXELS — the one
+ * function that stops this being a stretch.
+ *
+ * Width: AW plus EXT of whatever the XP card is wider than AW ("just extend
+ * it 50% that additional width instead"). That extra is rounded to a WHOLE
+ * art pixel and the box is then exactly `aw * SCALE` css px, so one art pixel
+ * is always exactly SCALE css px and the canvas's backing store can never
+ * disagree with its box — a disagreement is precisely the smearing he was
+ * afraid of. Doing the same sum in calc() would land on odd css px (146 -> 113)
+ * and hand the canvas a 1.98x scale.
+ *
+ * Centre: rounded to a whole css px for the same reason. A fixed box centred
+ * in an odd viewport lands on x.5 otherwise, which shifts the whole nearest-
+ * neighbour grid by half a pixel.
+ *
+ * Reads --bars-r-w / --gv-left / --gv-right off :root (hud.ts publishes all
+ * three in applyLayout) rather than its own rect: measuring a box you are
+ * about to resize is how you get a feedback loop, and the rect would include
+ * the 1px borders this content-box width does not.
  */
-function fitWidth() {
+function fitPill() {
   if (!root || !cv) return;
-  // clientWidth, NOT the bounding rect: the box is content-box with a 1px
-  // border, so the rect is 2px wider than the area the canvas fills. Dividing
-  // the rect gave one art column too many and the canvas came out at 1.973x —
-  // a smear of exactly the kind this whole change exists to avoid, and the
-  // gate caught it before he could.
-  const w = Math.max(AW, Math.round(root.clientWidth / SCALE));
+  const cs = getComputedStyle(document.documentElement);
+  const v = (name: string, dflt: number) => {
+    const n = parseFloat(cs.getPropertyValue(name));
+    return Number.isFinite(n) ? n : dflt;
+  };
+  // the card's CONTENT width in art px — --bars-r-w is its border-box rect
+  const card = Math.round((v("--bars-r-w", AW * SCALE + 2) - 2) / SCALE);
+  const w = Math.max(AW, AW + Math.round((card - AW) * EXT));
+  const box = w * SCALE;
+  const gl = v("--gv-left", 0);
+  const gr = v("--gv-right", 0);
+  // +2 for this box's own borders, which sit outside its content-box width
+  root.style.left = `${Math.round(gl + (window.innerWidth - gl - gr - box - 2) / 2)}px`;
+  root.style.width = `${box}px`;
   if (w === aw) return;
   aw = w;
   cv.width = aw;

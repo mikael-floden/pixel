@@ -1,29 +1,26 @@
 /**
  * The in-game WIKI BUTTON (maintainer 2026-08-13): the wiki drawer used to be
- * reachable only from the select screen; in the world it gets a button that
- * LIVES WITH the time-of-day pill — same size, same right edge, stacked on
- * the pill's open side, and riding every move the pill makes.
+ * reachable only from the select screen; in the world it gets a button in the
+ * chrome, sized and anchored off the XP card it hangs from.
  *
- * WHERE THE ROW LIVES — three placements, one PILL_STEP between the row and
- * the pill in each:
- * - PORTRAIT (maintainer 2026-09-17, arrows on a screenshot: "wiki + search
- *   to be top right and listed right under the XP/level card… the
- *   time-of-day pill to also be top right but under the wiki. This means the
- *   thumbstick can be lowered"): TOP-right, directly under the XP chip, the
- *   pill one step under this row. The bottom corner is the portrait ghost
- *   stick's (gamepad.ts). Top-anchored, so the keyboard lift below is
- *   over-constrained and ignored — the row is nowhere near the keys.
- * - RIGHT-HANDED LANDSCAPE (maintainer 2026-08-05 / 2026-09-03): top-right
- *   too, but the PILL takes the spot under the chip and this row hangs one
- *   step under it — his verdict on that screen, not re-litigated here.
+ * WHERE THE ROW LIVES — two placements:
+ * - PORTRAIT and RIGHT-HANDED LANDSCAPE: TOP-right, directly under the XP
+ *   chip, as wide as it (maintainer 2026-09-19: "the wiki button should also
+ *   align with the card over it"). A row as wide as the card has to TOUCH the
+ *   card, or the alignment it was given is invisible. Top-anchored, so the
+ *   keyboard lift below is over-constrained and ignored — the row is nowhere
+ *   near the keys. The bottom corner is the ghost stick's (gamepad.ts) in
+ *   portrait and the thumb stick's in landscape.
  * - LEFT-HANDED LANDSCAPE: the bottom corner is free (the stick is bottom-
- *   left), so this row takes the corner anchor and the pill steps up over
- *   it (2026-09-03: "the wiki+search is under the time-of-day pill"), and
- *   the keyboard lift moves both by the same step.
- * Every rule here is the pill's own rule ± one PILL_STEP: anchors, flips and
- * the keyboard lift mirror `.ml-clock` (clock.ts + hud.ts's `:root.ml-kb-up
- * .ml-clock`). If the pill's anchoring ever changes, change this file in the
- * same commit.
+ *   left), so this row takes the corner anchor, and the keyboard lift moves
+ *   it.
+ * IT USED TO BE THREE PLACEMENTS, EACH ONE THE TIME-OF-DAY PILL'S ± one
+ * PILL_STEP — the two were a stack that moved together, and this file mirrored
+ * clock.ts rule for rule. That ended on 2026-09-19 when the pill went to the
+ * TOP CENTRE of the view ("lets center the pill at the top instead"): the two
+ * no longer touch, and nothing here reads the pill's geometry. What survives
+ * of the stack is --ml-stack-step, still published here because it is the row
+ * HEIGHT other chrome steps by.
  *
  * Unlike the pill it is a real BUTTON (the pill is pass-through): it opens
  * the wiki drawer (wikipanel.ts), which now remembers where in the wiki you
@@ -90,9 +87,9 @@ function injectStyles(): void {
   injected = true;
   const s = document.createElement("style");
   s.textContent = `
-  /* One PILL_STEP up from the pill's own anchor (clock.ts .ml-clock), same
-     right edge, same transitions — the two move as a stack. z 8 = the pill's
-     layer; unlike it this one takes pointer events. */
+  /* THE STEP OTHER CHROME STACKS BY — this row's height plus the 10px margin
+     everything keeps. Published from here because this row is the thing that
+     defines it; read by anything that needs to sit a row away. */
   :root{--ml-stack-step:${PILL_STEP}px}
   /* THE ROW IS THE CARD'S WIDTH, AND THIS BUTTON TAKES WHAT IS LEFT OF IT
      (maintainer 2026-09-19: "the wiki button should also align with the card
@@ -116,25 +113,18 @@ function injectStyles(): void {
     -webkit-tap-highlight-color:transparent;user-select:none}
   .ml-wikibtn-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikibtn.press,.ml-wikibtn:active{transform:scale(.96)}
-  /* RIGHT-HANDED LANDSCAPE: the same as portrait — this row directly under the
-     XP chip, the pill one step below it. ONE ORDER ON BOTH SCREENS since
-     2026-09-19, because the row has to TOUCH the card it is now as wide as. */
+  /* RIGHT-HANDED LANDSCAPE: the same as portrait — this row directly under
+     the XP chip, because the row has to TOUCH the card it is as wide as. */
   :root.ml-land:not(.ml-lh) .ml-wikibtn{
     top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
-  /* PORTRAIT: THIS ROW IS DIRECTLY UNDER THE XP CHIP AND THE PILL HANGS ONE
-     STEP BELOW IT. It was swapped to pill-first earlier on 2026-09-19 and
-     swapped BACK the same day, and the second verdict carries its reason:
-     "the wiki button should also align with the card over it… This also means
-     we once again must place the wiki and search over the time-of-day pill."
-     A row that is as wide as the card has to TOUCH the card, or the alignment
-     it was given is invisible. The anchor is the same arithmetic either way —
-     chip bottom + the 10px margin, --bars-r-h its measured height,
-     --ml-safe-top the cutout inset it sits under — and only the
-     ${PILL_STEP}px step moves between this row and the pill. */
+  /* PORTRAIT: THE SAME ANCHOR — directly under the XP chip. Chip bottom + the
+     10px margin, --bars-r-h its measured height, --ml-safe-top the cutout
+     inset it sits under. The two orientations read the same way round, and
+     nothing hangs below this row any more. */
   :root:not(.ml-land) .ml-wikibtn{
     top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
-  /* The keyboard lift: this row takes the line hud.ts clears above the keys,
-     and the pill steps up over it exactly as it does at rest. */
+  /* The keyboard lift: this row takes the line hud.ts clears above the keys.
+     Only left-handed landscape is anchored low enough for it to apply. */
   :root.ml-kb-up .ml-wikibtn{bottom:calc(var(--ml-inputlift) + 56px)}`;
   document.head.appendChild(s);
 }
