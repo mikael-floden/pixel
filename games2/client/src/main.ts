@@ -6,7 +6,7 @@ import { loadManifest } from "./manifest";
 import { loadMonsterManifest } from "./monsterManifest";
 import { loadNpcManifest, loadNpcPlacement } from "./npcManifest";
 import { loadMonsterBootKinds } from "./monsterBoot";
-import { loadAssetIndex } from "./assetver";
+import { loadAssetIndex, setImageSha } from "./assetver";
 import { enterStaging, mergeStagingEntries, gameUrl } from "./staging";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
@@ -130,7 +130,8 @@ function watchForUpdates() {
     try {
       const res = await fetch("/version", { cache: "no-store" });
       if (!res.ok) return;
-      const { sha } = (await res.json()) as { sha: string };
+      const { sha, image } = (await res.json()) as { sha: string; image?: string };
+      setImageSha(image); // a rollout changes the image; the `?v=` stamp follows it
       if (sha && sha !== "dev" && sha !== mine) showUpdateBanner(sha);
     } catch {}
   };
@@ -163,7 +164,11 @@ async function reloadIfBehindAtBoot(): Promise<void> {
   try {
     const res = await fetch("/version", { cache: "no-store" });
     if (!res.ok) return;
-    const { sha } = (await res.json()) as { sha?: string };
+    const { sha, image } = (await res.json()) as { sha?: string; image?: string };
+    // BEFORE THE RETURNS BELOW. This read is the only one at boot, and the
+    // ordinary case — nothing to reload — returns two lines down, so setting
+    // the stamp after any of them would leave it unset on almost every boot.
+    setImageSha(image);
     if (!sha || sha === "dev" || sha === mine) return;
     const key = "ml-boot-reload-at";
     const stamp = sessionGet(key);

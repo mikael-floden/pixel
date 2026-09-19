@@ -8,11 +8,24 @@
  *  across deploys and is never requested again, and a stale index can only
  *  earn a revalidated response, never a frozen wrong file.
  *
- *  Fallback: `?v=<build sha>` — the pre-index scheme, kept for whatever the
- *  index does not name: client/public art (UI, atlases, icons), CDN URLs of a
+ *  Fallback: `?v=<sha>` — the pre-index scheme, kept for whatever the index
+ *  does not name: client/public art (UI, atlases, icons), CDN URLs of a
  *  staging world, or any boot where the index failed to load. Every deploy
  *  changes those URLs, which is exactly the re-download the index removes for
  *  everything under /assets.
+ *
+ *  THE SHA IN THAT FALLBACK IS THE IMAGE'S, NOT THIS BUNDLE'S. The server
+ *  grants `immutable` for `?v=` only when the value equals THE INSTANCE's
+ *  GIT_SHA (server/src/cachepolicy.ts), which is the container image's — and a
+ *  fast-lane generation is by construction built from a LATER commit than the
+ *  image it runs on (root CLAUDE.md: the image is the floor and wins a tie).
+ *  So a served generation stamping its own build sha matches nothing and drops
+ *  every one of those files to a revalidation on every boot, for as long as it
+ *  serves. The image's sha is also the CORRECT identity for those bytes: art
+ *  never rides the fast lane, so everything this fallback covers came out of
+ *  the image. Unset until the boot `/version` read lands (main.ts), and the
+ *  build sha stands in meanwhile — the pre-lane behaviour, which can only ever
+ *  lose caching, never freeze a wrong file.
  *
  *  Only URLs of the form `/assets/<path>` are looked up; the index keys are
  *  paths relative to the server's ASSETS_ROOT. The lookup is synchronous —
@@ -21,6 +34,18 @@
 const env = (import.meta as { env?: Record<string, string | undefined> }).env ?? {};
 const sha = (env.VITE_GIT_SHA || "").trim();
 const V = sha && sha !== "dev" ? sha : "";
+
+/** The serving INSTANCE's GIT_SHA, learned from `/version` at boot. See the
+ *  header: this, not `V`, is what earns the `?v=` grant. */
+let imageSha = "";
+
+/** Called by main.ts with `/version`'s `image`. Anything empty or "dev" leaves
+ *  the build-sha fallback in force rather than stamping a value the server
+ *  cannot match. */
+export function setImageSha(s: string | undefined | null): void {
+  const v = (s || "").trim();
+  imageSha = v && v !== "dev" ? v : "";
+}
 
 export const ASSET_INDEX_SCHEMA = "nangijala-asset-index@1";
 let index: Record<string, string> | null = null;
@@ -46,7 +71,8 @@ export function withV(url: string): string {
   const sep = url.includes("?") ? "&" : "?";
   const h = assetHashFor(url);
   if (h) return `${url}${sep}h=${h}`;
-  return V ? `${url}${sep}v=${V}` : url;
+  const v = imageSha || V;
+  return v ? `${url}${sep}v=${v}` : url;
 }
 
 /** Fetch /asset-index.json; never throws, never blocks a boot — a missing or
@@ -64,6 +90,13 @@ export async function loadAssetIndex(fetchImpl: typeof fetch = fetch): Promise<b
   }
 }
 
-export function assetIndexInfo(): { loaded: boolean; files: number; buildSha: string } {
-  return { loaded: !!index, files: index ? Object.keys(index).length : 0, buildSha: V || "dev" };
+export function assetIndexInfo(): { loaded: boolean; files: number; buildSha: string; imageSha: string } {
+  return {
+    loaded: !!index,
+    files: index ? Object.keys(index).length : 0,
+    buildSha: V || "dev",
+    // Differs from buildSha exactly when a fast-lane generation is serving,
+    // which is what makes it worth reporting to a probe.
+    imageSha: imageSha || "",
+  };
 }
