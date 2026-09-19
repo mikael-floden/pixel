@@ -312,29 +312,85 @@ try {
         grp.groups.includes("Ambient zones") && grp.rain
           ? ok(`the chooser shows the Ambient zones group with ${pickEffect} (${grp.groups.join(" / ")})`)
           : fail(`chooser groups ${JSON.stringify(grp)}`);
-        // NO TWO EFFECTS MAY SHARE A SWATCH — and SEPARATION, not inequality,
-        // is the test. Over the 32 effects maps2 publishes, the name-hash hue
-        // put `ants` and `thunder` on the identical pixel value and rain/snow
-        // within one degree: four different colours by any === check, two
-        // indistinguishable pairs on a phone. The wheel is 12 slots x 3
-        // saturation/lightness rings now; measured, the closest pair of the
-        // real 32 is 45 apart in RGB, so 30 is the floor with room to spare.
+        // AT MOST TEN LAYERS, AND TEN COLOURS NOBODY CAN CONFUSE (maintainer
+        // 2026-09-19: "add a max 10 layers limit so you don't need to come up
+        // with too many different colors"). The two are one claim: the cap is
+        // what lets the palette be ten hand-picked colours instead of a
+        // generated wheel, so the gate turns on as many as it is allowed and
+        // measures what they are actually wearing — including against the two
+        // FIXED marks, since a pill matching `dungeons` is just as wrong as
+        // two pills matching each other.
+        //
+        // SEPARATION, NOT INEQUALITY. The wheel this replaced put rain at 36°
+        // and snow at 35°: two different colours by any === test and one
+        // colour to the eye. Over maps2's real 32 it put `ants` and `thunder`
+        // on the identical pixel value.
         const MIN_RGB = 30;
-        const sw = await page.evaluate(() =>
-          [...document.querySelectorAll('.ml-layers [data-layer^="ambient:"]')].map((r) => ({
-            id: r.dataset.layer.slice(8),
-            rgb: getComputedStyle(r.querySelector(".ml-maplayer-sw")).backgroundColor.match(/[\d.]+/g).slice(0, 3).map(Number),
+        await page.evaluate(() => {
+          for (const l of window.__mlMapLayers.list()) window.__ml.mapLayers(l.id, false);
+        });
+        const filled = await page.evaluate(() => {
+          const offered = window.__mlMapLayers.list().map((l) => l.id);
+          for (const id of offered) window.__ml.mapLayers(id, true); // ask for all of them
+          return { on: window.__ml.mapLayers().filter((id) => offered.includes(id)), offered: offered.length };
+        });
+        filled.on.length === 10 && filled.offered > 10
+          ? ok(`asking for all ${filled.offered} layers leaves exactly 10 on — the cap holds`)
+          : fail(`${filled.on.length} layers on after asking for all ${filled.offered} — want the 10 cap`);
+        await page.waitForTimeout(400);
+        const worn = await page.evaluate(() =>
+          [...document.querySelectorAll(".ml-maplayer-pill")].map((p) => ({
+            id: p.dataset.layer,
+            rgb: getComputedStyle(p.querySelector(".ml-maplayer-sw")).backgroundColor.match(/[\d.]+/g).slice(0, 3).map(Number),
           })),
         );
         let worst = { d: 1e9, a: null, b: null };
-        for (let i = 0; i < sw.length; i++)
-          for (let j = i + 1; j < sw.length; j++) {
-            const d = Math.hypot(...sw[i].rgb.map((v, k) => v - sw[j].rgb[k]));
-            if (d < worst.d) worst = { d, a: sw[i], b: sw[j] };
+        for (let i = 0; i < worn.length; i++)
+          for (let j = i + 1; j < worn.length; j++) {
+            const d = Math.hypot(...worn[i].rgb.map((v, k) => v - worn[j].rgb[k]));
+            if (d < worst.d) worst = { d, a: worn[i], b: worn[j] };
           }
-        sw.length >= 8 && worst.d >= MIN_RGB
-          ? ok(`all ${sw.length} ambient swatches are told apart — closest pair ${worst.a.id}/${worst.b.id} is ${worst.d.toFixed(0)} apart in RGB (floor ${MIN_RGB})`)
-          : fail(`two ambient effects look the same: ${worst.a?.id} ${JSON.stringify(worst.a?.rgb)} vs ${worst.b?.id} ${JSON.stringify(worst.b?.rgb)} — ${worst.d.toFixed(1)} apart, want >=${MIN_RGB} (${sw.length} effects)`);
+        worn.length === 10 && worst.d >= MIN_RGB
+          ? ok(`all 10 live layers wear a colour of their own — closest pair ${worst.a.id}/${worst.b.id} is ${worst.d.toFixed(0)} apart in RGB (floor ${MIN_RGB})`)
+          : fail(`two live layers look the same: ${worst.a?.id} vs ${worst.b?.id}, ${worst.d.toFixed(1)} apart, want >=${MIN_RGB} (${worn.length} pills)`);
+        // …and the eleventh is REFUSED rather than silently dropped
+        const eleventh = await page.evaluate(() => {
+          const off = window.__mlMapLayers.list().find((l) => !l.on);
+          if (!off) return null;
+          const before = window.__ml.mapLayers().length;
+          window.__ml.mapLayers(off.id, true);
+          return { id: off.id, on: window.__ml.mapLayers().includes(off.id), before, after: window.__ml.mapLayers().length };
+        });
+        eleventh && !eleventh.on
+          ? ok(`the eleventh layer (${eleventh.id}) is refused, and the ten already on are untouched`)
+          : fail(`an eleventh layer went on: ${JSON.stringify(eleventh)}`);
+        // the dialog SAYS so rather than swallowing the tap
+        await page.evaluate(() => window.__mlMapLayers.open());
+        await page.waitForTimeout(200);
+        const capUi = await page.evaluate(() => {
+          const rows = [...document.querySelectorAll(".ml-layers [data-layer]")];
+          const offRows = rows.filter((r) => !r.classList.contains("on"));
+          return {
+            cap: document.querySelector(".ml-layers-cap")?.textContent.trim() ?? "",
+            full: !!document.querySelector(".ml-layers-cap.full"),
+            blocked: offRows.filter((r) => r.classList.contains("blocked") && r.disabled).length,
+            offRows: offRows.length,
+            emptySwatch: offRows.filter((r) => r.querySelector(".ml-maplayer-sw.empty")).length,
+          };
+        });
+        capUi.full && /10 of 10/.test(capUi.cap) && capUi.blocked === capUi.offRows && capUi.offRows > 0
+          ? ok(`at the cap every row that cannot go on is disabled and says why ("${capUi.cap}", ${capUi.blocked}/${capUi.offRows} rows)`)
+          : fail(`the cap is not visible in the chooser: ${JSON.stringify(capUi)}`);
+        capUi.emptySwatch === capUi.offRows
+          ? ok("a layer that is off shows an EMPTY swatch — a colour is only claimed once something wears it")
+          : fail(`${capUi.offRows - capUi.emptySwatch} off row(s) claim a colour they do not hold`);
+        await page.evaluate(() => window.__mlMapLayers.close());
+        // back to a clean slate for the sections below
+        await page.evaluate(() => {
+          for (const l of window.__mlMapLayers.list()) window.__ml.mapLayers(l.id, false);
+        });
+        await page.evaluate(() => document.querySelector(".ml-maplayers .ml-plate-btn").click());
+        await page.waitForTimeout(150);
       }
       await page.evaluate(() => window.__ml.mapLayers("dungeons", true));
       let pins = [];
@@ -398,9 +454,29 @@ try {
         const nowOn = await page.evaluate(() => window.__ml.mapLayers().includes("zones"));
         const btnText = await page.evaluate(() => document.querySelector(".ml-maplayers .ml-plate-btn").textContent.trim());
         nowOn !== wasOn ? ok(`ticking zones in the chooser flips the layer (${wasOn} -> ${nowOn}); button reads "${btnText}"`) : fail(`ticking zones did nothing (${wasOn} -> ${nowOn})`);
-        /^layers( · \d+)?$/.test(btnText) && (nowOn ? /· \d+/.test(btnText) : true)
-          ? ok("the button carries the count of layers on")
-          : fail(`button text "${btnText}" — want "layers · N"`);
+        // THE BUTTON IS A GLYPH IN THE CORNER (maintainer 2026-09-19: "can
+        // just be a small ⧉ icon at the bottom right corner in order to save
+        // space"). The count went with the words, so what is asserted is that
+        // it still NAMES itself for a screen reader and that it is the last
+        // thing in the row, furthest right and lowest — the corner.
+        const corner = await page.evaluate(() => {
+          const row = document.querySelector(".ml-maplayers");
+          const btn = row.querySelector(".ml-maplayer-open");
+          const b = btn.getBoundingClientRect();
+          const others = [...row.querySelectorAll(".ml-maplayer-pill")].map((p) => p.getBoundingClientRect());
+          return {
+            text: btn.textContent.trim(),
+            label: btn.getAttribute("aria-label") || btn.title || "",
+            last: row.lastElementChild === btn,
+            w: Math.round(b.width),
+            rightmost: others.every((o) => o.right <= b.right + 0.5),
+            lowest: others.every((o) => o.bottom <= b.bottom + 0.5),
+            pills: others.length,
+          };
+        });
+        corner.text === "⧉" && corner.last && corner.rightmost && corner.lowest && corner.w <= 34 && /layer/i.test(corner.label)
+          ? ok(`the chooser is a ${corner.w}px ⧉ in the row's bottom-right, after ${corner.pills} pill(s), and still names itself ("${corner.label}")`)
+          : fail(`the layers button is not the corner glyph: ${JSON.stringify(corner)}`);
         await page.evaluate(() => document.querySelector('.ml-layers [data-layer="zones"]').click()); // restore
         await page.evaluate(() => document.querySelector(".ml-layers-done").click());
         await page.waitForTimeout(100);

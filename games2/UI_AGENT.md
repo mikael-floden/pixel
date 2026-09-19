@@ -441,8 +441,14 @@ from the games agent), #18 (title/landing screen).
 - **MAP TAB LAYERS: ONE "layers" BUTTON + A MULTI-SELECT DIALOG, grouped Map /
   Ambient zones** (maintainer 2026-09-18: "there will be so many pills so I
   think a multi-select dropdown or modal/dialog is better … just make the UX
-  good!"). `maplayers.ts`: the button reads "layers · N" (N = offered layers
-  on); the dialog (`.ml-layers`, the drop-quantity card's recipe, z 70) is
+  good!"). `maplayers.ts`: the button is a **30px ⧉ glyph in the row's
+  BOTTOM-RIGHT** (maintainer 2026-09-19: "can just be a small ⧉ icon at the
+  bottom right corner in order to save space"; he may bring a PixelLab icon for
+  it later). It carries no count — the pills beside it ARE the count and say
+  WHICH — and it is the row's LAST child with margin-left:auto, which on a
+  wrapping row puts it at the right end of whatever line it lands on, so the
+  pills fill from the top-left and the button ends the flow in the corner. It
+  still names itself for a screen reader ("Choose layers (N on)"). The dialog (`.ml-layers`, the drop-quantity card's recipe, z 70) is
   rebuilt on every open from `offered()` — every layer whose `has()` is true —
   with all/none per group; a tick applies at once and the map behind redraws;
   backdrop, Escape and Done close. The AMBIENT-ZONE layers are DERIVED, one per
@@ -483,17 +489,27 @@ from the games agent), #18 (title/landing screen).
   (diamond for a pin, square for a wash), because shape is what survives a
   colour-blind eye. `verify-map` asserts each swatch against the colours the
   live overlay is actually painting, not against the constant.
-  **NO TWO EFFECTS MAY SHARE A COLOUR.** The hue was the effect NAME's hash —
-  stable, and it collides: over the 32 effects maps2 actually publishes it put
-  `ants` and `thunder` on the IDENTICAL pixel value, and rain/snow within one
-  degree. `hueTable()` is **12 hue slots × 3 saturation/lightness rings** = 36
-  places, each effect taking the free place nearest the slot its name asks for
-  (rings at that slot first, then along the wheel), so the hash still chooses
-  and only collisions are pushed aside. REJECTED: more slots — 32 effects on
-  one wheel is 5° apart, which is no legend at all. Measured over the real 32
-  the closest pair is 45 apart in RGB; the gate's floor is 30. It measures
-  SEPARATION, never inequality — an `===` test passes the bug, since 36° and
-  35° are two different colours and one colour to the eye.
+  **AT MOST 10 LAYERS ON, AND TEN HAND-PICKED COLOURS** (maintainer 2026-09-19:
+  "add a max 10 layers limit so you don't need to come up with too many
+  different colors"). A palette limit stated as a feature limit, and the right
+  way round — ten washes over one small map is already the most anyone can
+  read. `PALETTE` is Okabe–Ito's colour-blind-safe set (minus its yellow, too
+  near the dungeons amber) plus four picked to maximise the smallest gap: no
+  two are closer than **67 in RGB**, and that holds against the two FIXED marks
+  too (zones blue, dungeons amber), which never take a palette slot. A layer
+  takes the lowest FREE slot when switched on and gives it back when switched
+  off — never by position in the list, which would re-colour the whole legend
+  every time one is removed. A layer that is OFF wears an EMPTY outline: a
+  colour is only claimed once something wears it. At the cap the rows that
+  cannot go on are `disabled` and a line says why; `all` fills up to the cap
+  and stops; `setLayer` RETURNS whether the layer ended up on, and callers
+  repaint from the answer rather than from what they asked.
+  REJECTED, with its measurement, so it is not re-attempted: a GENERATED hue
+  wheel. Name-hash alone put rain at 36° and snow at 35° — two colours by
+  `===`, one to the eye — and over maps2's real 32 it put `ants` and `thunder`
+  on the identical pixel value. 12 slots × 3 rings fixed that at 45 apart;
+  ten by hand does 67, and the cap is what makes ten enough. The gate measures
+  SEPARATION, never inequality, over the layers actually ON.
   **SECTIONS ARE SETTINGS' SECTIONS** (maintainer 2026-09-19: "You can have
   sections in the dialog similar to the sections under settings"): the rule
   above the heading is the whole recipe (`.ml-amb-title` — border-top, 12px,

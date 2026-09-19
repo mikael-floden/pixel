@@ -58,6 +58,7 @@ import {
 import { gameUrl } from "./staging";
 
 const ROW_CLS = "ml-maplayers";
+const OPEN_CLS = "ml-maplayer-open";
 const PILL_CLS = "ml-maplayer-pill";
 const SW_CLS = "ml-maplayer-sw";
 const DLG_CLS = "ml-layers";
@@ -163,6 +164,9 @@ const LAYERS: Layer[] = [
     id: "zones",
     label: "zones",
     group: "map",
+    // ITS OWN IDENTITY, not a palette slot: this layer is one blue wherever it
+    // is drawn, in the world overlay as well (the palette above is measured
+    // against it, so nothing else can be mistaken for it).
     mark: () => ({ color: ZONE_LINE, shape: "area" }),
     draw: (ctx) => {
       const z = ml()?.zones?.();
@@ -297,64 +301,53 @@ async function loadAmbientZones(world: string): Promise<AmbientZone[]> {
   }
 }
 
-/** The hue an effect WANTS: derived from its name, so "rain" prefers the same
- *  colour every visit and in every world. */
-function effectSeed(effect: string): number {
-  let h = 0;
-  for (let i = 0; i < effect.length; i++) h = (h * 31 + effect.charCodeAt(i)) >>> 0;
-  return h;
-}
+/** AT MOST TEN LAYERS AT ONCE (maintainer 2026-09-19: "You can also add a max
+ *  10 layers limit so you don't need to come up with too many different
+ *  colors"). It is a PALETTE limit stated as a feature limit, and it is the
+ *  right way round: ten washes over one small map is already the most anyone
+ *  can read, and it retires a generated colour wheel for ten colours chosen by
+ *  hand. */
+const MAX_ON = 10;
 
-/** THE COLOURS THE LEGEND CAN ACTUALLY TELL APART. A name hash alone is stable
- *  and it COLLIDES: over the 32 effects maps2 publishes it puts `ants` and
- *  `thunder` on the very same pixel value, and rain/snow and
- *  fireflies/falling-leaves within a degree of each other. A legend whose one
- *  job is "what colour is that wash?" is then worse than none.
- *  THE WHEEL IS 12 SLOTS AND THREE RINGS — 36 places, all visibly apart. Each
- *  effect takes the free place nearest the slot its NAME asks for, trying the
- *  rings at that slot before moving along the wheel, so the hash still chooses
- *  and only the collisions are pushed aside. The rings are a saturation AND
- *  lightness pair, not a lightness alone: measured over the real 32, the worst
- *  pair is 45 apart in RGB, where the hash gives 0. (Rejected: more slots —
- *  32 effects on one wheel is 5° apart, which is no legend at all.)
- *  Deterministic for a set of effects; it moves only when maps2 adds or drops
- *  one, and the pills are on screen saying so. */
-const RINGS: [number, number][] = [
-  [70, 60], // the ordinary one
-  [88, 80], // pale
-  [52, 40], // deep
+/** THE TEN. Okabe–Ito's colour-blind-safe set (minus its yellow, which sat too
+ *  near the dungeons amber) plus four picked to maximise the smallest gap.
+ *  MEASURED: no two are closer than 67 in RGB, and that holds against the two
+ *  FIXED marks as well — the zones blue and the dungeons amber — so nothing on
+ *  this map can be confused with anything else on it. (The generated wheel
+ *  this replaces managed 45 at best, and its first version put `ants` and
+ *  `thunder` on the identical pixel value across maps2's 32 effects.) */
+const PALETTE = [
+  "#E69F00", // orange
+  "#56B4E9", // sky
+  "#009E73", // green
+  "#0072B2", // blue
+  "#D55E00", // vermillion
+  "#CC79A7", // orchid
+  "#6806E0", // violet
+  "#5DE006", // lime
+  "#E00668", // magenta
+  "#70EB7C", // mint
 ];
-const HUE_SLOTS = 12;
 
-function hueTable(effects: string[]): Map<string, string> {
-  const taken = new Set<string>();
-  const out = new Map<string, string>();
-  const put = (e: string, slot: number, ring: number) => {
-    taken.add(`${slot}:${ring}`);
-    const [sat, light] = RINGS[ring];
-    out.set(e, `hsl(${Math.round((slot * 360) / HUE_SLOTS)},${sat}%,${light}%)`);
-  };
-  for (const e of effects) {
-    const want = effectSeed(e) % HUE_SLOTS;
-    let placed = false;
-    for (let d = 0; d < HUE_SLOTS && !placed; d++)
-      for (const slot of d === 0 ? [want] : [(want + d) % HUE_SLOTS, (want - d + HUE_SLOTS) % HUE_SLOTS]) {
-        for (let r = 0; r < RINGS.length; r++)
-          if (!taken.has(`${slot}:${r}`)) {
-            put(e, slot, r);
-            placed = true;
-            break;
-          }
-        if (placed) break;
-      }
-    if (!placed) put(e, want, 0); // more than 36 effects — share, honestly
-  }
-  return out;
+/** Which colour each ON layer holds. A layer takes the lowest FREE slot when
+ *  it is switched on and gives it back when it is switched off, so the other
+ *  layers keep their colours while you add and remove — assigning by position
+ *  in the list instead would re-colour the whole legend every time one is
+ *  turned off, which is the one thing a legend must not do. */
+const held = new Map<string, string>();
+
+function takeColor(id: string): string {
+  const existing = held.get(id);
+  if (existing) return existing;
+  const used = new Set(held.values());
+  const free = PALETTE.find((c) => !used.has(c)) ?? PALETTE[held.size % PALETTE.length];
+  held.set(id, free);
+  return free;
 }
-
-let hues: Map<string, string> = new Map();
-/** The colour this effect is drawn and labelled in (see `hueTable`). */
-const effectColor = (effect: string): string => hues.get(effect) ?? `hsl(${effectSeed(effect) % 360},70%,60%)`;
+const dropColor = (id: string) => held.delete(id);
+/** The colour this layer is drawn and labelled in, or "" while it is off —
+ *  a colour is only meaningful once something is wearing it. */
+const heldColor = (id: string): string => held.get(id) ?? "";
 
 let ambientFor = ""; // which world `ambientZones` belongs to
 let ambientZones: AmbientZone[] = [];
@@ -369,17 +362,17 @@ function ambientLayers(): Layer[] {
   const effects = [...new Set(ambientZones.flatMap((z) => Object.keys(z.effects)))].sort();
   const key = effects.join(",");
   if (key === ambientLayerCache.key) return ambientLayerCache.layers;
-  hues = hueTable(effects); // one wheel for the whole set, so no two collide
   const layers = effects.map<Layer>((effect) => ({
     id: `ambient:${effect}`,
     label: effect,
     group: "ambient",
     // The pill wears the colour at full strength; the map varies only the
-    // ALPHA with pct, so the two are the same colour by construction.
-    mark: () => ({ color: effectColor(effect), shape: "area" }),
+    // ALPHA with pct, so the two are the same colour by construction. An
+    // effect that is OFF holds no colour — see `held`.
+    mark: () => ({ color: heldColor(`ambient:${effect}`), shape: "area" }),
     has: () => ambientZones.some((z) => effect in z.effects),
     draw: (ctx) => {
-      const color = effectColor(effect);
+      const color = heldColor(`ambient:${effect}`) || PALETTE[0];
       // `ambientZones` is sorted biggest-first, so a town draws over the
       // province it sits in rather than under it.
       for (const z of ambientZones) {
@@ -467,9 +460,17 @@ function styleOnce() {
   // Chips ride the shared button recipe (.ml-plate-btn is a pure-CSS class the
   // HUD keeps for exactly this kind of injection), only smaller.
   st.textContent = `
-  .${ROW_CLS}{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center;
+  .${ROW_CLS}{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:flex-start;
     width:100%;padding:6px 8px 0;box-sizing:border-box}
-  .${ROW_CLS} .ml-plate-btn{min-height:30px;padding:4px 10px;font-size:12px;border-radius:8px}
+  /* THE CHOOSER IS A GLYPH IN THE CORNER (maintainer 2026-09-19: "The 'layers
+     X' button can just be a small ⧉ icon at the bottom right corner in order
+     to save space"). The count went with the words and is no loss: the pills
+     beside it ARE the count, and they say which. A margin-left:auto on the
+     LAST item of a wrapping row puts it at the right end of whatever line it
+     lands on — so the pills fill from the top-left and the button ends the
+     flow in the bottom-right corner, which is what he asked for. */
+  .${ROW_CLS} .${OPEN_CLS}{margin-left:auto;min-height:30px;width:30px;padding:0;
+    font-size:15px;line-height:1;border-radius:8px;flex:none}
   /* THE LEGEND PILLS — one per layer that is ON, and only those (maintainer
      2026-09-19: "Once something has been selected here I still think we
      should have a pill for it so the user can see what color correspond to
@@ -519,6 +520,16 @@ function styleOnce() {
      read that colour off the map without a second legend to learn */
   .${DLG_CLS} .${SW_CLS}{margin-left:2px}
   .${DLG_CLS}-done{margin-top:6px}
+  /* the cap, stated once above Done — quiet until it bites, then it is the
+     line that explains why the next tap does nothing */
+  .${DLG_CLS}-cap{margin-top:8px;text-align:center;color:var(--muted);
+    font:600 11px/1.3 var(--sans)}
+  .${DLG_CLS}-cap.full{color:var(--accent-ink)}
+  /* a row that cannot be turned on while the cap is reached */
+  .${DLG_CLS} .ml-layer-row.blocked{opacity:.45;cursor:default}
+  /* a layer that is OFF holds no colour yet — an outline, not a wrong colour */
+  .${SW_CLS}.empty{background:transparent;box-shadow:none;
+    border:1px dashed var(--border-strong)}
   /* CLIPPED TO THE IMAGE BOX, both of them. A zone rectangle covers water and
      the render is CROPPED to the island, so the outer zones project OUTSIDE
      the image — with overflow visible their lines and their numbers escaped
@@ -543,14 +554,34 @@ function styleOnce() {
   document.head.appendChild(st);
 }
 
-/** Flip one layer and redraw now, not on the next move. */
-function setLayer(id: string, want: boolean) {
-  if (want) on.add(id);
-  else on.delete(id);
+/** How many layers may still be switched on. */
+const roomLeft = (): number => Math.max(0, MAX_ON - offered().filter((l) => on.has(l.id)).length);
+
+/**
+ * Flip one layer and redraw now, not on the next move. Returns whether the
+ * layer ENDED UP on — a request to switch on the eleventh is refused (MAX_ON),
+ * and the caller repaints from the answer rather than from what it asked for.
+ */
+function setLayer(id: string, want: boolean): boolean {
+  if (want) {
+    if (!on.has(id) && roomLeft() <= 0) return false;
+    on.add(id);
+    // Only the AMBIENT layers draw from the palette — zones and dungeons carry
+    // their own identities, so they must not burn a slot they never wear.
+    if (id.startsWith("ambient:")) takeColor(id);
+  } else {
+    on.delete(id);
+    dropColor(id);
+  }
   writeOn(on);
   sig = "";
   syncButton();
+  return on.has(id);
 }
+
+/** One layer's mark, by id — the dialog reads it for the fixed layers, whose
+ *  colour is their own rather than the palette's. */
+const markOf = (id: string): LayerMark | undefined => allLayers().find((l) => l.id === id)?.mark();
 
 /** The layers the dialog offers: every layer whose `has` says there is
  *  something behind it, in group order. */
@@ -572,12 +603,27 @@ function openDialog() {
   const card = document.createElement("div");
   card.className = DLG_CLS;
   card.setAttribute("role", "dialog");
-  const rows: { id: string; btn: HTMLButtonElement; box: HTMLElement }[] = [];
+  const rows: { id: string; btn: HTMLButtonElement; box: HTMLElement; sw: HTMLElement }[] = [];
+  const cap = document.createElement("div");
+  cap.className = `${DLG_CLS}-cap`;
   const paint = () => {
+    const left = roomLeft();
     for (const r of rows) {
-      r.btn.classList.toggle("on", on.has(r.id));
-      r.box.classList.toggle("on", on.has(r.id));
+      const isOn = on.has(r.id);
+      r.btn.classList.toggle("on", isOn);
+      r.box.classList.toggle("on", isOn);
+      // AT THE CAP, what you cannot turn on SAYS SO rather than ignoring the
+      // tap — a row that swallows a press reads as a broken row.
+      const blocked = !isOn && left <= 0;
+      r.btn.classList.toggle("blocked", blocked);
+      r.btn.disabled = blocked;
+      // the swatch is the colour it actually holds; empty while it is off
+      const c = r.id.startsWith("ambient:") ? heldColor(r.id) : markOf(r.id)?.color ?? "";
+      r.sw.style.background = c || "transparent";
+      r.sw.classList.toggle("empty", !c);
     }
+    cap.textContent = left > 0 ? `${MAX_ON - left} of ${MAX_ON} layers` : `${MAX_ON} of ${MAX_ON} layers — turn one off to add another`;
+    cap.classList.toggle("full", left <= 0);
   };
   const groups: LayerGroup[] = ["map", "ambient"];
   for (const g of groups) {
@@ -598,7 +644,9 @@ function openDialog() {
       b.className = "ml-plate-btn";
       b.textContent = label;
       b.addEventListener("click", () => {
-        for (const l of layers) setLayer(l.id, want);
+        // "all" fills UP TO the cap and then stops, in the order shown — it is
+        // a convenience, never a way past the limit.
+        for (const l of layers) if (!setLayer(l.id, want) && want) break;
         paint();
         ensureMapLayers();
       });
@@ -615,16 +663,18 @@ function openDialog() {
       box.setAttribute("aria-hidden", "true");
       const t = document.createElement("span");
       t.textContent = l.label;
-      btn.append(box, swatch(l.mark()), t);
+      const sw = swatch(l.mark());
+      btn.append(box, sw, t);
       btn.addEventListener("click", () => {
         setLayer(l.id, !on.has(l.id));
         paint();
         ensureMapLayers();
       });
       card.appendChild(btn);
-      rows.push({ id: l.id, btn, box });
+      rows.push({ id: l.id, btn, box, sw });
     }
   }
+  card.appendChild(cap);
   const done = document.createElement("button");
   done.type = "button";
   done.className = `ml-plate-btn ${DLG_CLS}-done`;
@@ -652,7 +702,7 @@ function build(page: HTMLElement, frame: HTMLElement) {
   row = document.createElement("div");
   row.className = ROW_CLS;
   openBtn = document.createElement("button");
-  openBtn.className = "ml-plate-btn";
+  openBtn.className = `ml-plate-btn ${OPEN_CLS}`;
   openBtn.type = "button";
   openBtn.addEventListener("click", openDialog);
   row.appendChild(openBtn);
@@ -678,7 +728,10 @@ function build(page: HTMLElement, frame: HTMLElement) {
 function syncButton() {
   if (!openBtn || !row) return;
   const live = offered().filter((l) => on.has(l.id));
-  openBtn.textContent = live.length ? `layers · ${live.length}` : "layers";
+  // ⧉ — "overlapping pages", the one glyph for layers. It carries no count:
+  // the pills beside it are the count, and they say WHICH.
+  openBtn.textContent = "⧉";
+  openBtn.title = openBtn.ariaLabel = live.length ? `Choose layers (${live.length} on)` : "Choose layers";
   openBtn.classList.toggle("on", live.length > 0);
   for (const old of row.querySelectorAll(`.${PILL_CLS}`)) old.remove();
   for (const l of live) {
@@ -700,6 +753,7 @@ function syncButton() {
     });
     row.appendChild(pill);
   }
+  row.appendChild(openBtn); // last child = bottom-right (margin-left:auto)
 }
 
 /** Idempotent: keep one live chip row + overlay on the Map page, and redraw the

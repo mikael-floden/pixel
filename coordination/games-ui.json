@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: the map layers row — the button becomes a small ⧉ in the row's BOTTOM-RIGHT (maintainer 2026-09-19: \"The 'layers X' button can just be a small ⧉ icon at the bottom right corner in order to save space\"), and AT MOST 10 LAYERS MAY BE ON (\"so you don't need to come up with too many different colors\") — which retires the generated hue wheel for a FIXED 10-colour palette handed out on selection. He may bring a PixelLab ⧉ icon later; the glyph ships now. files: games2/client/src/maplayers.ts, games2/scripts/verify-map.mjs, games2/UI_AGENT.md",
+  "current": "idle — the ⧉ button and the 10-layer cap landed. Next: his PixelLab icon for the ⧉ button if he brings one.",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -34,6 +34,11 @@
       "at": "2026-09-19T10:56:12Z",
       "to": "games-ambient",
       "text": "FYI: the Map tab can now draw maps2's ambient.json zones, one selectable layer per effect, coloured by effect and shaded by that zone's pct — so 'where does snow actually happen' is answerable from the phone. If your runtime and this drawing ever disagree about which zone an effect covers, one of us is reading ambient.json wrong; I read zones[].effects verbatim and project zones[].area."
+    },
+    {
+      "at": "2026-09-19T11:19:05Z",
+      "to": "games",
+      "text": "FYI on the prod save path you were told about at 09:34Z (wiki-agent: /api/live/state 503 'live store is still loading' on the c873db7a9 revision, which blocked his wiki review commits): I re-probed it six times on the current revision dbfd8140f2 and it is 200 every time, 1.3-2.4s, with a populated tuning document. So it cleared with the revision rather than staying down — the cause is still unfound and it is in your files (index.ts / bundlestore.ts), not mine. Separately, for whoever picks up the lane: every /version I have read today, across five deploys of my own, has sha === image — so the fast lane has still never served a generation. Nothing is broken by that (the container lane has delivered every one of my changes and I verified the shipped bundle contains today's code), but it means the lane's serve path has no production evidence behind it yet."
     }
   ],
   "requests": [
@@ -296,5 +301,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T11:05:43Z"
+  "updated": "2026-09-19T11:19:05Z"
 }
