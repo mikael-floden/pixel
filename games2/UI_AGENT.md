@@ -443,8 +443,12 @@ from the games agent), #18 (title/landing screen).
   think a multi-select dropdown or modal/dialog is better … just make the UX
   good!"). `maplayers.ts`: the button is a **30px ⧉ glyph in the row's
   BOTTOM-RIGHT** (maintainer 2026-09-19: "can just be a small ⧉ icon at the
-  bottom right corner in order to save space"; he may bring a PixelLab icon for
-  it later). It carries no count — the pills beside it ARE the count and say
+  bottom right corner in order to save space"). **THE GLYPH IS THE ANSWER, NOT
+  A PLACEHOLDER** — he offered to make a PixelLab icon for it and then settled
+  it himself on seeing it: "That unicode button you used looks great! Keep that
+  one instead!" (maintainer decision). So this is NOT a slot waiting for art:
+  do not swap it for an `/ui2` bake, and `verify-map` asserts the character
+  itself, so an `<img>` here fails the gate. It carries no count — the pills beside it ARE the count and say
   WHICH — and it is the row's LAST child with margin-left:auto, which on a
   wrapping row puts it at the right end of whatever line it lands on, so the
   pills fill from the top-left and the button ends the flow in the corner. It
