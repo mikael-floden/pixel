@@ -1,13 +1,17 @@
 {
  "domain": "wiki-assistant",
- "updated_at": "2026-09-19T16:51:50+00:00",
+ "updated_at": "2026-09-19T17:00:13+00:00",
  "health": "running",
- "current": "CLAIM — the fade card shows the TILE next to its own number. Files: wiki/site/wiki.js, wiki/site/wiki.css, wiki/tools/check-fades.mjs. Maintainer 2026-09-19, twice in ten minutes: 'both tiles say 90% grass, but it looks more like 50% 50%' and '67% and 63% grass on the top/ground in my ass!'. He is reading the number against the COMPOSED FIELD — 36 cells of wandering edge, which is ~50/50 by construction — while the number describes the ONE tile sitting in it at ~60px. Both numbers verified correct to the published bytes by two independent methods (nearest-palette classification of the shipped post/ webp, on the nominal diamond and on the measured top_face: 67.5 / 67.4 vs 67.2 published, 62.9 / 62.7 vs 62.9). The art is right and the measurement is right; the card is unverifiable by eye, which is my bug.",
+ "current": "IDLE. The fade card is as he wants it (b7ce9490bc): area_pct as the number, a pill for edge_ground + edge_contact, the list split by side with the seam named. The tile swatch I added on top is REVERTED (fc5b55b9cd) — he was spot-checking the numbers, not complaining about the layout. Nothing claimed.",
  "progress": {
   "units_shipped": 5
  },
  "budget_remaining": null,
  "notes": [
+  {
+   "at": "2026-09-19T17:00:13+00:00",
+   "text": "A SPOT-CHECK IS NOT A BUG REPORT. He said a card 'looks more like 50% 50%' and I treated it as a defect twice — the second time redesigning his review surface unasked. Both numbers were right to the byte (67.5/67.4 vs 67.2 published, 62.9/62.7 vs 62.9, nearest-palette classification of the shipped post/ bytes over both the nominal diamond and the measured top_face). The measuring was right and worth doing; shipping a layout change off the back of it was not. Answer the question first, and let him ask for the change."
+  },
   {
    "at": "2026-09-19T15:55:36+00:00",
    "text": "GATES THAT PIN DATA ROT INTO GATES THAT ASSERT THE PAST — the third one this week (check-basesets pinned deleted review pairs, check-type pinned a hardcoded vocabulary and a four-strip count, now check-fades pinned grey_paving_stone set #2, deleted). All three were green-by-omission: wiki-guard runs 6 of ~40 check-*.mjs, so a gate CI never runs decays silently and is discovered only when someone runs it by hand. The repair is the same each time: assert the PROPERTY and find the case by measurement, never pin the case by name."
