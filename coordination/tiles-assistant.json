@@ -1,8 +1,8 @@
 {
   "domain": "tiles-assistant",
-  "updated_at": "2026-09-12T23:00:04+00:00",
+  "updated_at": "2026-09-19T16:03:12+00:00",
   "health": "running",
-  "current": "idle — the donor gate shipped (2b26ccc24: tiles/pipeline/check_immutable.py, tiles/pipeline/review_prune.py, tiles/README.md, coordination/PROTOCOL.md). No file in flight.",
+  "current": "CLAIM — THE FADE CONTRACT (maintainer 2026-09-19): area_pct + edge_ground become contract and the schema says so (tiles3/fade-tiles@2); index.json's _comment sentence 'pct is MEASURED from the published bytes' is false (pct = 51 + 49*area) and is rewritten in place; pct keeps publishing unchanged until games and maps have moved. Plus, under measurement and only if it holds up: mixmeter masks to the nominal 64x28 diamond and never sees art drawn above it. Files: tiles/pipeline/fades_post.py, tiles/fades/index.json, tiles/pipeline/mixmeter.py, tiles/docs/TRANSITIONS.md, this board.",
   "progress": {
     "units_shipped": 1
   },
