@@ -49,6 +49,7 @@
 // quiet. Tapping it opens this dialog; the dialog's primary button reloads, so
 // the update is still two taps from anywhere.
 import { gameUrl } from "./staging";
+import { sessionSet } from "./sessionflag";
 
 /** One row of `pixel-wiki-releases@1`. */
 interface ReleaseCommit {
@@ -424,7 +425,25 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
   go.type = "button";
   go.className = "ml-upd-btn go";
   go.textContent = "Update now";
-  go.addEventListener("click", () => location.reload());
+  // UPDATING FROM INSIDE THE WORLD COMES BACK INTO THE WORLD (maintainer
+  // 2026-09-19: "If I'm inside the game and a new version is out. If I open the
+  // dialog and press upgrade the game restarts and I'm back at the
+  // title-screen/character select. It would be much smoother to first reload
+  // the game of course, but then immediately get into loading the game. This
+  // will take me back to where I was so much faster"). `ml-rejoin` is exactly
+  // that instruction and it already exists: WorldScene sets it before its
+  // dead-connection recovery reload, main.ts's fast path consumes it, skips the
+  // select screen, shows the loading overlay and re-enters with the remembered
+  // choice (ml-last-choice) — the server restores the position from the token
+  // store. So this adds no state and no second way of doing the same thing.
+  // ONLY FROM THE WORLD: the same dialog opens over the CHARACTER SELECT, and
+  // there the flag would skip the very screen he is standing on. `ml-ingame` is
+  // the root class main.ts sets when the game starts, so it is the question
+  // "am I in the world" asked of the thing that answers it.
+  go.addEventListener("click", () => {
+    if (document.documentElement.classList.contains("ml-ingame")) sessionSet("ml-rejoin", "1");
+    location.reload();
+  });
   foot.append(later, go);
 
   card.append(head, list, foot);

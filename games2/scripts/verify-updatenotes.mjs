@@ -420,8 +420,17 @@ const openIt = async (mine = MY_SHA) => {
   }
 }
 
-// ── 8. "Update now" RELOADS. Proven by a marker that cannot survive one. ──
+// ── 8. "Update now" RELOADS — and FROM THE WORLD IT COMES BACK INTO THE
+//       WORLD (maintainer 2026-09-19: "If I'm inside the game… press upgrade
+//       [and] the game restarts and I'm back at the title-screen/character
+//       select. It would be much smoother to first reload the game of course,
+//       but then immediately get into loading the game"). Asserted end to end,
+//       through a real reload, because the claim is about where you END UP —
+//       a test of the flag alone would pass on a build that set it and then
+//       ignored it. Section 7 left us in the world, which is the case. ──
 {
+  const inWorld = await page.evaluate(() => document.documentElement.classList.contains("ml-ingame"));
+  inWorld ? ok("…and we are in the world for the update test") : fail("section 8 expects to be in the world");
   await openIt();
   await page.evaluate(() => { window.__stillHere = true; });
   await page.evaluate(() => [...document.querySelectorAll(".ml-upd-btn")].find((b) => b.textContent.trim() === "Update now").click());
@@ -430,6 +439,47 @@ const openIt = async (mine = MY_SHA) => {
     .then(() => true)
     .catch(() => false);
   reloaded ? ok("Update now reloads the page") : fail("Update now did not reload");
+  // NOBODY COMMITS A CHARACTER HERE. If the world comes back, it came back on
+  // its own — the select screen was skipped.
+  const back = await page
+    .waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 120000 })
+    .then(() => true)
+    .catch(() => false);
+  const state = await page.evaluate(() => ({
+    ingame: document.documentElement.classList.contains("ml-ingame"),
+    select: !!document.querySelector(".ml-overlay"),
+    flag: sessionStorage.getItem("ml-rejoin"),
+  }));
+  back && state.ingame && !state.select
+    ? ok("…and it lands back IN THE WORLD, not on the character select — nothing committed a character")
+    : fail(`after the update reload: ${JSON.stringify({ back, ...state })}`);
+  state.flag === null
+    ? ok("…with the ml-rejoin flag consumed, so an ordinary later reload still shows the select screen")
+    : fail(`ml-rejoin is still "${state.flag}" after the fast path ran — the next manual reload would skip the select screen too`);
+}
+
+// ── 9. …AND FROM THE SELECT SCREEN IT DOES NOT. The same dialog opens over
+//       the character select; resuming there would skip the very screen he is
+//       standing on. A fresh page puts us back on it. ──
+{
+  await page.goto(`${BASE}/`, { waitUntil: "load" });
+  await page.waitForFunction(() => window.__mlUpdateNotes && window.__mlSelect, null, { timeout: 25000 });
+  await page.waitForTimeout(400);
+  await page.evaluate(([n, m]) => window.__mlUpdateNotes.open(n, m), [NEW_SHA, MY_SHA]);
+  await page.waitForTimeout(500);
+  await page.evaluate(() => { window.__stillHere = true; });
+  await page.evaluate(() => [...document.querySelectorAll(".ml-upd-btn")].find((b) => b.textContent.trim() === "Update now").click());
+  await page.waitForFunction(() => window.__mlUpdateNotes && !window.__stillHere, null, { timeout: 15000 }).catch(() => {});
+  await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
+  await page.waitForTimeout(800);
+  const after = await page.evaluate(() => ({
+    select: !!document.querySelector(".ml-overlay"),
+    ingame: document.documentElement.classList.contains("ml-ingame"),
+    flag: sessionStorage.getItem("ml-rejoin"),
+  }));
+  after.select && !after.ingame && after.flag === null
+    ? ok("updating from the character select comes back to the character select — the flag is never set there")
+    : fail(`after updating from the select screen: ${JSON.stringify(after)}`);
 }
 
 await browser.close();

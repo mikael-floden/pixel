@@ -412,6 +412,22 @@ from the games agent), #18 (title/landing screen).
   because the subject-prefix strip matches against it. NOTHING IS FILTERED — he asked for everything, so a `live:` admin
   commit is a row like any other. A build older than the 50-commit window says
   so ("the most recent ones") instead of implying the list is the whole range.
+  **UPDATING FROM INSIDE THE WORLD COMES BACK INTO THE WORLD** (maintainer
+  2026-09-19: "If I'm inside the game and a new version is out… press upgrade
+  [and] the game restarts and I'm back at the title-screen/character select. It
+  would be much smoother to first reload the game of course, but then
+  immediately get into loading the game. This will take me back to where I was
+  so much faster"). "Update now" sets `ml-rejoin` before reloading — the flag
+  WorldScene already sets before its dead-connection recovery reload and
+  main.ts's fast path already consumes: it skips the select screen, shows the
+  loading overlay and re-enters with `ml-last-choice`, the server restoring the
+  position from the token store. NO NEW STATE and no second way of doing the
+  same thing. ONLY FROM THE WORLD — the same dialog opens over the character
+  select, where the flag would skip the screen he is standing on; `ml-ingame`
+  (main.ts's own root class) is the question asked of the thing that answers
+  it. Gated END TO END in both directions, through real reloads, because the
+  claim is about where you end up: a test of the flag alone passes on a build
+  that sets it and then ignores it.
   THE TOAST IS UNCHANGED and still the quiet FYI of 2026-08-05 — deploys land
   many times an hour, so the dialog opens on TAP, never by itself; its wording
   stays maintainer-fixed ("New version out <hash>", 2026-07-17) and
