@@ -187,7 +187,16 @@ def from_feedback():
         # his per-clip brief), never the generic flame: "This flower doesn't
         # glow!" on an unlit flower stand is a brief about petals, not fire.
         a = _clip(factory.read_manifest(rel) or {}, state, name) or {}
-        prompt = (clip_prompts().get(f"{rel}#{state}#{name}") or brief_for(a, name)) if LESS_MOTION.search(joined) else None
+        # A REDO WITH NO NOTE IS STILL A REDO, AND AN EXTEND CANNOT DELIVER ONE:
+        # the endpoint has no seed, so re-sending the group's carried wording
+        # returns the same frames (measured on pass 2 of the 09-18 sweep, zero
+        # bytes changed) — the clip he sent back would come back identical and
+        # his verdict would still be standing. So a bare `redo` on a facing that
+        # ALREADY HAS a clip is briefed too; a note saying the facing has no clip
+        # at all (NO_CLIP) is a plain extend, since there is nothing to re-ask.
+        bare_redo = not joined.strip(" |") and bool(_have_dirs(a) & set(dirs))
+        prompt = ((clip_prompts().get(f"{rel}#{state}#{name}") or brief_for(a, name))
+                  if (LESS_MOTION.search(joined) or bare_redo) else None)
         out.append((rel, state, name, sorted(dirs), prompt, joined.strip(" |")))
     return out
 
