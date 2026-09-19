@@ -42,9 +42,27 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
 - `client/src/theme.ts` — the shared wiki theme: design tokens copied from
   `wiki/site/wiki.css`, the light/dark choice (localStorage `wiki-theme`,
   shared with the wiki), and the `.ui-*` component recipes.
-- `client/src/clock.ts` — the day/night clock: the "Fern starfall" PILL, a
-  40x16 art-pixel landscape painted into a canvas and shown at x2, parked at
-  the game view's bottom-right corner (chat.ts reserves its lane). The sun
+- `client/src/clock.ts` — the day/night clock: the "Fern starfall" PILL, an
+  art-pixel landscape painted into a canvas and shown at x2, in the corner
+  stack under the Wiki row.
+  **IT IS AS WIDE AS THE CARD, AND IT IS NEVER STRETCHED TO GET THERE**
+  (maintainer 2026-09-19, who asked for this nervously: "I love the pill
+  today, we just need to make it a bit wider - but should still look as good as
+  it looks today (what we have today is absolutely perfect!) … I think
+  stretching the graphics will kinda destroy the sun and moon"). It cannot be
+  stretched, because the scene is drawn COLUMN BY COLUMN: `AW` (40) is the
+  width the mock was approved at, `aw` is what is drawn, and `fitWidth()` sets
+  it from the box's `clientWidth / SCALE` so one art pixel is always exactly 2
+  css px. A wider pill is MORE SKY AND MORE HILL — the orbs keep `R` 3.4 and
+  their glow, the hills keep their wavelength (`sin(x*f+o)` gives more of them,
+  not longer ones), and `spotsFor()` keeps his six hand-placed stars at their
+  exact coordinates and scatters the extra ones beyond x=40 at the same
+  measured density (5.9 per 40 columns against the mock's 6), hashed off the
+  column so they never twinkle or crawl. `clientWidth`, NOT the bounding rect:
+  the box is content-box with a 1px border, and dividing the rect gave one art
+  column too many and a 1.973x canvas — the exact smear this exists to prevent,
+  caught by the gate. `verify-wikibtn` asserts the pill is the row's width AND
+  that the canvas is an exact 2x on both axes. The sun
   and the moon are two independent bodies, each crossing in 2/3 of a day at
   the same speed and sharing the sky at dawn and dusk, so it needs no
   hand-off animation and the server needs no time freeze. Driven only by

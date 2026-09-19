@@ -46,7 +46,19 @@ import { TIME_PHASE_SECONDS } from "@nangijala/shared";
 // barely-nicked corners; 3.4 is the 7x7 with real round shoulders, and the
 // glow melts its remaining corners into the sky. Don't re-tune these to save
 // a few pixels of screen — shrink SCALE instead.
-const AW = 40; // art pixels across
+// AW IS THE WIDTH THE MOCK WAS APPROVED AT, and `aw` is what is actually
+// drawn: since 2026-09-19 the pill is as wide as the XP card above it, like
+// everything else in that corner (maintainer: "the pill is not aligned with the
+// wiki in width… we just need to make it a bit wider - but should still look as
+// good as it looks today (what we have today is absolutely perfect!) … I think
+// stretching the graphics will kinda destroy the sun and moon").
+// NOTHING IS STRETCHED, and nothing can be: this scene is drawn COLUMN BY
+// COLUMN, so a wider pill is more sky and more hill at the SAME 2x pixel size.
+// The orbs keep r=3.4 and their glow, the hills keep their wavelength (they are
+// sin(x*f+o), so a wider canvas gets MORE of them, not longer ones), and his
+// six hand-placed stars keep their exact coordinates — see spotsFor().
+const AW = 40; // art pixels across, as approved
+let aw = AW; // …and as currently drawn
 const AH = 16; // art pixels down
 const SCALE = 2; // 1 art px = 2 css px
 const HOR = 10; // horizon row: where the orbs cross the hills
@@ -95,6 +107,24 @@ const STAR_C = hx("#f0f8f4"); // Storm's starfield
 const SPOTS: [number, number][] = [
   [3, 2], [9, 1], [15, 3], [22, 1], [28, 4], [34, 2],
 ];
+/** His six stars are the mock's and never move. A pill wider than the mock
+ *  gets more of them BEYOND x=40 at the same density (six over forty columns)
+ *  and in the same y band, chosen by a hash of the column so they are fixed
+ *  for a given width and can never twinkle or crawl. Memoised because paint()
+ *  runs on every frame. */
+let spotsCache: { w: number; spots: [number, number][] } = { w: AW, spots: SPOTS };
+function spotsFor(w: number): [number, number][] {
+  if (spotsCache.w === w) return spotsCache.spots;
+  const spots: [number, number][] = SPOTS.filter(([x]) => x < w);
+  for (let x = AW; x < w; x++) {
+    // FNV-ish on the column: deterministic, and neighbouring columns land in
+    // different buckets so the extra stars scatter like the originals.
+    const h = ((x * 2654435761) >>> 0) % 1000;
+    if (h < 150) spots.push([x, 1 + (h % 4)]); // 6/40 = 15% of columns, y 1..4
+  }
+  spotsCache = { w, spots };
+  return spots;
+}
 // Three paper planes: the first cut as peaks, the others as gentle waves.
 const LAYERS = [
   { b: 10, a: 1.6, f: 0.24, o: 0, peak: true },
@@ -105,6 +135,7 @@ const LAYERS = [
 let root: HTMLDivElement | null = null;
 let ctx: CanvasRenderingContext2D | null = null;
 let img: ImageData | null = null;
+let cv: HTMLCanvasElement | null = null; // module-scope so fitWidth can rebuild it
 let lastTau = 0;
 let starUntil = 0; // clockStar(): a transient extra streak
 
@@ -128,8 +159,8 @@ const nightness = (tau: number) =>
 function px(x: number, y: number, c: RGB, a = 255) {
   x |= 0;
   y |= 0;
-  if (!img || x < 0 || y < 0 || x >= AW || y >= AH) return;
-  const i = (y * AW + x) * 4;
+  if (!img || x < 0 || y < 0 || x >= aw || y >= AH) return;
+  const i = (y * aw + x) * 4;
   const d = img.data;
   if (a >= 255) {
     d[i] = c[0];
@@ -164,7 +195,7 @@ function ring(cx: number, cy: number, r: number, c: RGB, a = 255) {
  * ending on a hard step. Daylight-scaled, so a setting sun loses its glow. */
 function glow(cx: number, cy: number, r: number, c: RGB, s: number) {
   for (let y = Math.max(0, (cy - r) | 0); y <= Math.min(AH - 1, cy + r); y++)
-    for (let x = Math.max(0, (cx - r) | 0); x <= Math.min(AW - 1, cx + r); x++) {
+    for (let x = Math.max(0, (cx - r) | 0); x <= Math.min(aw - 1, cx + r); x++) {
       const d = Math.hypot(x - cx, y - cy);
       if (d > r) continue;
       px(x, y, c, (s * (1 - d / r) ** 2) | 0);
@@ -207,7 +238,7 @@ function crossing(tau: number, start: number, span: number): number {
  * position. Off-pill positions are skipped once even the glow can't reach. */
 function place(pos: number, draw: (x: number, y: number) => void) {
   if (pos < -0.3 || pos > 1.3) return;
-  draw(Math.round(pos * AW), Math.round(HOR - Math.sin(Math.PI * pos) * AMP));
+  draw(Math.round(pos * aw), Math.round(HOR - Math.sin(Math.PI * pos) * AMP));
 }
 
 function paint(tau: number) {
@@ -215,11 +246,11 @@ function paint(tau: number) {
   const pal = palAt(tau);
   const n = nightness(tau);
   const day = 1 - n;
-  for (let y = 0; y < AH; y++) for (let x = 0; x < AW; x++) px(x, y, pal[0]);
+  for (let y = 0; y < AH; y++) for (let x = 0; x < aw; x++) px(x, y, pal[0]);
 
   // stars + Storm's falling star (deterministic in tau — no per-frame noise)
   if (n > 0.05) {
-    for (const [x, y] of SPOTS) px(x, y, STAR_C, (n * 200) | 0);
+    for (const [x, y] of spotsFor(aw)) px(x, y, STAR_C, (n * 200) | 0);
     const ph = (tau * 4) % 1;
     if (n > 0.5 && ph < 0.22) streak(6 + ph * 90, 1 + ph * 22, n);
   }
@@ -240,7 +271,7 @@ function paint(tau: number) {
   LAYERS.forEach((L, i) => {
     const c = pal[i + 1];
     const edge = shade(c, 0.3);
-    for (let x = 0; x < AW; x++) {
+    for (let x = 0; x < aw; x++) {
       let h: number;
       if (L.peak) {
         const t = ((x * L.f + L.o) / Math.PI) % 2;
@@ -273,7 +304,7 @@ function mount() {
      transition; top-anchored placements ignore that lift (over-constrained). */
   .ml-clock{position:fixed;right:calc(var(--gv-right,0px) + 10px);
     bottom:calc(var(--hud-h, 38.2dvh) + 10px + var(--ml-stack-step, 44px));z-index:8;
-    width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
+    width:calc(var(--bars-r-w, ${AW * SCALE + 2}px) - 2px);height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
     pointer-events:none;box-sizing:content-box;
     transition:bottom .15s ease-out,right .3s ease;
     border:1px solid var(--border-strong);box-shadow:var(--shadow)}
@@ -302,13 +333,42 @@ function mount() {
   document.head.appendChild(style);
   root = document.createElement("div");
   root.className = "ml-clock";
-  const cv = document.createElement("canvas");
-  cv.width = AW;
+  cv = document.createElement("canvas");
+  cv.width = aw;
   cv.height = AH;
   root.appendChild(cv);
   document.body.appendChild(root);
   ctx = cv.getContext("2d");
-  img = ctx?.createImageData(AW, AH) ?? null;
+  img = ctx?.createImageData(aw, AH) ?? null;
+  paint(lastTau);
+  fitWidth();
+  // the card's width is a media query, so it changes on exactly the events
+  // hud.ts re-publishes it on
+  window.addEventListener("ml-layout", fitWidth);
+  window.addEventListener("resize", fitWidth);
+}
+
+/**
+ * TAKE THE PILL'S RENDERED WIDTH AND GIVE THE CANVAS THAT MANY COLUMNS — the
+ * one line that stops this being a stretch. The box is sized in CSS off
+ * --bars-r-w (the XP card's measured width); this reads what that came out as
+ * and rebuilds the pixel buffer to match, so one art pixel is always exactly
+ * SCALE css px. A canvas whose backing store disagreed with its box would be
+ * precisely the smearing he was afraid of.
+ */
+function fitWidth() {
+  if (!root || !cv) return;
+  // clientWidth, NOT the bounding rect: the box is content-box with a 1px
+  // border, so the rect is 2px wider than the area the canvas fills. Dividing
+  // the rect gave one art column too many and the canvas came out at 1.973x —
+  // a smear of exactly the kind this whole change exists to avoid, and the
+  // gate caught it before he could.
+  const w = Math.max(AW, Math.round(root.clientWidth / SCALE));
+  if (w === aw) return;
+  aw = w;
+  cv.width = aw;
+  ctx = cv.getContext("2d");
+  img = ctx?.createImageData(aw, AH) ?? null;
   paint(lastTau);
 }
 
@@ -342,6 +402,10 @@ export function dayFraction(u: number): number {
  * never disagree. There is no instant/animated distinction: the art is a pure
  * function of the cycle position, so a join, a phase skip and a per-frame tick
  * are all just "paint this tau". */
+// QA probe: drive the scene to any point in the cycle without waiting for the
+// world clock (the pill's look is reviewed at four times of day).
+(window as unknown as { __mlClockProbe?: (u: number) => void }).__mlClockProbe = (u: number) => setClockTime(u);
+
 export function setClockTime(u: number) {
   mount();
   lastTau = dayFraction(u);

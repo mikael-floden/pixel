@@ -67,7 +67,16 @@ const rects = async () => {
         const b = e.getBoundingClientRect();
         return { l: b.left, t: b.top, r: b.right, b: b.bottom, w: b.width, h: b.height };
       };
-      return JSON.stringify({ pill: r(".ml-clock"), btn: r(".ml-wikibtn"), near: r(".ml-wikinear") });
+      // the pill's art scale: its canvas's backing store against its box
+      const cv = document.querySelector(".ml-clock canvas");
+      const cb = cv && cv.getBoundingClientRect();
+      const art = cv
+        ? { cw: cv.width, ch: cv.height, bw: Math.round(cb.width), bh: Math.round(cb.height),
+            sx: +(cb.width / cv.width).toFixed(3), sy: +(cb.height / cv.height).toFixed(3) }
+        : null;
+      const near_ = r(".ml-wikinear"), btn_ = r(".ml-wikibtn");
+      const row = near_ && btn_ ? Math.round(btn_.r - near_.l) : null;
+      return JSON.stringify({ pill: r(".ml-clock"), btn: btn_, near: near_, art, row });
     });
     if (now === prev) return JSON.parse(now);
     prev = now;
@@ -99,12 +108,26 @@ const assertStack = (g, label, rowFirst = true) => {
   near(g.btn.h, g.pill.h)
     ? ok(`${label}: button is pill-high (${g.btn.h}px)`)
     : fail(`${label}: height mismatch — button ${g.btn.h}, pill ${g.pill.h}`);
-  g.btn.w > g.pill.w
-    ? ok(`${label}: and wider than the pill, as the card's width demands (${g.btn.w} vs ${g.pill.w})`)
-    : fail(`${label}: the Wiki button (${g.btn.w}) is not wider than the pill (${g.pill.w})`);
+  // (The Wiki button used to be compared to the PILL's width. Since 2026-09-19
+  //  they are both the card's width — the pill spans the whole row — so what
+  //  is asserted is that relationship, below, not a size ordering that no
+  //  longer means anything.)
   near(g.btn.r, g.pill.r)
     ? ok(`${label}: right edges aligned (${g.btn.r.toFixed(1)})`)
     : fail(`${label}: right edges differ (button ${g.btn.r}, pill ${g.pill.r})`);
+  // THE PILL IS THE ROW'S WIDTH, AND IT IS NOT STRETCHED TO GET THERE
+  // (maintainer 2026-09-19: "the pill is not aligned with the wiki in width…
+  // I think stretching the graphics will kinda destroy the sun and moon"). The
+  // second half is the one that matters and it is exact: the canvas's BACKING
+  // STORE must be the rendered box divided by the art scale, so one art pixel
+  // is always 2 css px. A pill widened by stretching would fail this by
+  // construction, whatever it looked like in a screenshot.
+  near(g.pill.w, g.row, 2)
+    ? ok(`${label}: the pill is the Wiki row's width (${g.pill.w})`)
+    : fail(`${label}: pill ${g.pill.w} vs the row's ${g.row}`);
+  g.art && g.art.sx === 2 && g.art.sy === 2
+    ? ok(`${label}: and drawn 1 art px = 2 css px — more sky, not a stretch (${g.art.cw}x${g.art.ch} art in ${g.art.bw}x${g.art.bh})`)
+    : fail(`${label}: the pill's canvas is stretched — ${JSON.stringify(g.art)} (want an exact 2x on both axes)`);
   // …and the PILL is the one below now: the row has to touch the card it is
   // as wide as ("we once again must place the wiki and search over the
   // time-of-day pill").
