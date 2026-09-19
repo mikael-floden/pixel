@@ -101,6 +101,28 @@ await page.waitForFunction(() => document.querySelector(".ml-rec") && document.q
   card.left === 0 && card.right === 0
     ? ok(`it is exactly as wide as the HP/EP card above it, both edges flush (${card.rw}px)`)
     : fail(`Report ${card.rw}px vs the card's ${card.cw}px — off by ${card.left}px left, ${card.right}px right`);
+  // THE TWO CARDS ARE THE SAME HEIGHT, or everything anchored under them is
+  // off by the difference (maintainer 2026-09-19: "the gold however is not as
+  // tall as EP so the two cards have different size. This makes all UI
+  // elements under the card un-aligned"). The gold row carries a min-height to
+  // make it so; this is what holds that number to a real bar row rather than
+  // letting it drift.
+  const cards = await page.evaluate(() => {
+    const l = document.querySelector(".ml-bars-l").getBoundingClientRect();
+    const r = document.querySelector(".ml-bars-r").getBoundingClientRect();
+    const cs = getComputedStyle(document.documentElement);
+    return {
+      lh: Math.round(l.height), rh: Math.round(r.height),
+      lt: Math.round(l.top), rt: Math.round(r.top),
+      varL: cs.getPropertyValue("--bars-l-h").trim(), varR: cs.getPropertyValue("--bars-r-h").trim(),
+    };
+  });
+  cards.lh === cards.rh && cards.lt === cards.rt
+    ? ok(`both stat cards are the same height and sit on the same line (${cards.lh}px at y=${cards.lt}), so what hangs under them lines up`)
+    : fail(`the cards differ: HP/EP ${cards.lh}px at ${cards.lt}, XP ${cards.rh}px at ${cards.rt} — everything anchored below inherits the gap`);
+  cards.varL === cards.varR
+    ? ok(`…and they publish one height (${cards.varL})`)
+    : fail(`--bars-l-h ${cards.varL} vs --bars-r-h ${cards.varR}`);
 }
 
 // ── 2. THE SAME MARGIN, MIRRORED, AND THE CARD'S OWN EDGE ─────────────────

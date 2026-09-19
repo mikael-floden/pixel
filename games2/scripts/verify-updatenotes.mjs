@@ -228,51 +228,48 @@ const openIt = async (mine = MY_SHA) => {
     ? ok(`the card fits the phone with the list scrolling inside it (${d.cardH} of ${d.vh})`)
     : fail(`card ${d.cardH}px on a ${d.vh}px viewport`);
 
-  // ── THE FOUR FIXES OF 2026-09-19 ──────────────────────────────────────
-  // (1) THE CARD DOES NOT RESIZE WHEN THE FETCH LANDS ("I hate dialogs that
-  //     suddenly changes size!"). Measured across the load, not asserted from
-  //     the CSS: the height while the spinner is up must equal the height with
-  //     fifty rows in it.
+  // ── THE CARD OPENS AT ITS FINAL SIZE, AND THE SIZE FITS THE LIST ──────
+  // Maintainer 2026-09-19, on a dialog that opened full-height and empty:
+  // "We need to know the best dialog size when we open/before we open the
+  // dialog… some versions with only a small number of changes can use a
+  // smaller dialog and some with lots of changes uses a taller dialog with
+  // scroll. The key here is we have the data already when we create the
+  // dialog." So two claims: it NEVER resizes after opening (measured across a
+  // second), and a SHORT list gets a SHORT card — the fixed height that
+  // preceded this satisfied the first and failed the second, which is how it
+  // reached his phone.
   {
-    let held = null;
-    await page.route("**/release_notes.json*", async (route) => {
-      await new Promise((r) => setTimeout(r, 1200)); // hold the fetch open
-      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(DOC) });
-    });
-    await page.evaluate(([n, m]) => window.__mlUpdateNotes.open(n, m), [NEW_SHA, MY_SHA]);
-    await page.waitForTimeout(300); // …and measure while it is still loading
-    held = await page.evaluate(() => {
+    await page.evaluate(() => window.__mlUpdateNotes.close());
+    await page.evaluate(() => window.__mlUpdateNotes.prefetch());
+    await page.waitForTimeout(400); // the notes land before the dialog is asked for
+    const big = await page.evaluate(async ([n, m]) => {
+      window.__mlUpdateNotes.open(n, m);
       const card = document.querySelector(".ml-upd");
-      const load = document.querySelector(".ml-upd-load");
-      const list = document.querySelector(".ml-upd-list");
-      if (!card || !load) return null;
-      const cb = card.getBoundingClientRect(), lb = load.getBoundingClientRect(), lib = list.getBoundingClientRect();
-      return {
-        h: Math.round(cb.height),
-        spinner: !!load.querySelector(".ml-upd-spin"),
-        // his ask: the loader's CENTRE at 45% down the list box
-        centrePct: +(((lb.top + lb.height / 2 - lib.top) / lib.height) * 100).toFixed(1),
-      };
-    });
-    held
-      ? ok(`a spinner holds the card while it loads (${held.h}px tall)`)
-      : fail("no loading state in the card");
-    if (held) {
-      Math.abs(held.centrePct - 45) <= 2
-        ? ok(`…centred at ${held.centrePct}% down the list — his optical centre, not the geometric one`)
-        : fail(`the loader sits at ${held.centrePct}% down the list, want 45%`);
-      await page.waitForFunction(() => !document.querySelector(".ml-upd-load"), null, { timeout: 8000 });
-      await page.waitForTimeout(200);
-      const after = await page.evaluate(() => Math.round(document.querySelector(".ml-upd").getBoundingClientRect().height));
-      after === held.h
-        ? ok(`…and the card is the SAME height once the rows land (${after}px, unmoved)`)
-        : fail(`the card jumped ${held.h} -> ${after}px when loading finished`);
-    }
-    await page.unroute("**/release_notes.json*");
-    await page.route("**/release_notes.json*", async (route) => {
-      if (!serveNotes) return route.fulfill({ status: 404, body: "" });
-      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(DOC) });
-    });
+      const at0 = Math.round(card.getBoundingClientRect().height);
+      await new Promise((r) => setTimeout(r, 900));
+      return { at0, at1: Math.round(card.getBoundingClientRect().height), loader: !!document.querySelector(".ml-upd-load"), rows: document.querySelectorAll(".ml-upd-list > .ml-upd-row").length };
+    }, [NEW_SHA, MY_SHA]);
+    big.at0 === big.at1 && !big.loader
+      ? ok(`the card opens at its final size — ${big.at0}px with ${big.rows} rows, unchanged a second later, and no loading state at all`)
+      : fail(`the card moved ${big.at0} -> ${big.at1}px or showed a loader (${JSON.stringify(big)})`);
+    // …and a list of ONE is not given the height of a list of fifty
+    await page.evaluate(() => window.__mlUpdateNotes.close());
+    const small = await page.evaluate(async ([n, m]) => {
+      window.__mlUpdateNotes.open(n, m);
+      const card = document.querySelector(".ml-upd");
+      const at0 = Math.round(card.getBoundingClientRect().height);
+      await new Promise((r) => setTimeout(r, 600));
+      return { at0, at1: Math.round(card.getBoundingClientRect().height), rows: document.querySelectorAll(".ml-upd-list > .ml-upd-row").length };
+    }, [NEW_SHA, "bbbbbbbb2"]); // my build = the 2nd newest, so ONE change
+    small.at0 === small.at1
+      ? ok(`a one-change list opens at its own size too (${small.at0}px, ${small.rows} row), and does not move`)
+      : fail(`the small card moved ${small.at0} -> ${small.at1}px`);
+    small.at0 < big.at0
+      ? ok(`…and it is SHORTER than the fifty-row card (${small.at0} < ${big.at0}px) — the size fits the list`)
+      : fail(`a ${small.rows}-row card is ${small.at0}px and a ${big.rows}-row card ${big.at0}px — the dialog is not sizing to its content`);
+    await page.evaluate(() => window.__mlUpdateNotes.close());
+    await page.evaluate(([n, m]) => window.__mlUpdateNotes.open(n, m), [NEW_SHA, MY_SHA]);
+    await page.waitForTimeout(300);
   }
   {
     const d2 = await dlg();
@@ -377,6 +374,9 @@ const openIt = async (mine = MY_SHA) => {
 // ── 6. NO NOTES, STILL AN UPDATE. The file is a nice-to-have; the reload is
 //       the point, and a deploy whose context had no git publishes no list. ──
 {
+  // the fetch is memoised for the page's life (one fetch per deploy), so a
+  // gate that wants the FIRST fetch to fail has to drop it first
+  await page.evaluate(() => window.__mlUpdateNotes.forget());
   serveNotes = false;
   const d = await openIt();
   d && d.buttons.includes("Update now") && d.buttons.includes("Later") && /not published/.test(d.sub)
@@ -390,6 +390,8 @@ const openIt = async (mine = MY_SHA) => {
 //       range, and close without touching the game under it. ──
 {
   serveNotes = true;
+  // …and drop the 404 answer with it, or every open below reuses it
+  await page.evaluate(() => window.__mlUpdateNotes.forget());
   await page.evaluate(() => window.__mlSelect.commit());
   await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 120000 });
   await page.waitForFunction(() => !document.querySelector("#ml-loading"), null, { timeout: 90000 });

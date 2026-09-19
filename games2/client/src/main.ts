@@ -17,7 +17,7 @@ import { MapPreviewScene } from "./scenes/MapPreviewScene";
 import { setLoadingProgress, showLoading } from "./loading";
 import { mountTheme } from "./theme";
 import { registerGame } from "./gamefreeze";
-import { openUpdateNotes } from "./updatenote";
+import { openUpdateNotes, prefetchNotes } from "./updatenote";
 import { mountAmbient } from "../../ambient/index";
 import { gameAudio } from "../../composer/index";
 import { sessionGet, sessionRemove, sessionSet } from "./sessionflag";
@@ -133,7 +133,7 @@ function watchForUpdates() {
       if (!res.ok) return;
       const { sha, image } = (await res.json()) as { sha: string; image?: string };
       setImageSha(image); // a rollout changes the image; the `?v=` stamp follows it
-      if (sha && sha !== "dev" && sha !== mine) showUpdateBanner(sha);
+      if (sha && sha !== "dev" && sha !== mine) void showUpdateBanner(sha);
     } catch {}
   };
   // THE INTERVAL FOLLOWS WHETHER ANYTHING ELSE IS LISTENING. In a world the
@@ -219,13 +219,13 @@ async function reloadIfBehindAtBoot(): Promise<void> {
     // at 114 loads in 12 s. The banner still tells him a build is out, in his
     // own wording, and costs one tap.
     if (!canRemember || !bootReloadOpen || Date.now() - last < 60_000) {
-      showUpdateBanner(sha);
+      void showUpdateBanner(sha);
       return;
     }
     // Lost the write after the probe said it would work: do NOT reload
     // unmarked, or the next load has nothing to stop it doing the same again.
     if (!sessionSet(key, String(Date.now()))) {
-      showUpdateBanner(sha);
+      void showUpdateBanner(sha);
       return;
     }
     if (rejoin) sessionSet("ml-rejoin", "1");
@@ -237,9 +237,18 @@ async function reloadIfBehindAtBoot(): Promise<void> {
 }
 
 let updateBannerShown = false;
-function showUpdateBanner(sha: string) {
+async function showUpdateBanner(sha: string) {
   if (updateBannerShown) return;
   updateBannerShown = true;
+  // THE NOTES ARE FETCHED BEFORE THE TOAST IS RAISED (games-ui, maintainer
+  // 2026-09-19: "Once we know a new version is out we fetch the data we need
+  // and after that we display a 'new version out' popup to the player. When
+  // the player clicks on the new version out toast the dialog will display
+  // with the best possible size immediately"). So the dialog is built whole
+  // and enters the document at its final size — there is nothing to load and
+  // nothing to resize. prefetchNotes() is memoised and never rejects, so the
+  // toast is at worst a few hundred ms later than it used to be.
+  await prefetchNotes();
   // A star-shimmer chime so a new build is AUDIBLE with the tab backgrounded
   // (maintainer 2026-07-19) — you hear the deploy land without watching.
   gameAudio.notifyNewVersion();

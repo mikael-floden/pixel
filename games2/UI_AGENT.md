@@ -418,6 +418,22 @@ from the games agent), #18 (title/landing screen).
   `verify-bootversion`'s regex with it. z 110, above the z-100 toast that opens
   it. `main.ts` is the games agent's file: the hook is the one allowed
   mechanical line (the click handler), announced on the board.
+  **THE CARD OPENS AT THE SIZE ITS CONTENT NEEDS, because the notes are already
+  in hand** (maintainer 2026-09-19: "We need to know the best dialog size when
+  we open/before we open the dialog… Once we know a new version is out we fetch
+  the data we need and after that we display a 'new version out' popup… When
+  the player clicks on the toast the dialog will display with the best possible
+  size immediately. This removed the loading completely because that has
+  already been done"). `prefetchNotes()` is memoised, never rejects, and
+  `main.ts` awaits it BEFORE raising the toast (the one mechanical line in the
+  shared glue, announced). `openUpdateNotes` then builds the whole card —
+  rows, summary, your own build — and inserts it filled, so there is no size to
+  change and no loading state to show. REJECTED, and it reached his phone: a
+  FIXED `height`. It answered "I hate dialogs that suddenly changes size" and
+  made two commits look like fifty and an EMPTY list a full-screen empty box.
+  `max-height` caps it; the prefetch is what stops it moving. The gate opens a
+  50-row list and a 1-row list and requires the second to be SHORTER, as well
+  as neither moving a pixel a second after opening.
   **FOUR FIXES, 2026-09-19, each his own sentence.** (a) THE DAY BAND left
   pixels over itself while scrolling: `-webkit-overflow-scrolling:touch` on the
   list — a no-op on every browser this game runs on — put the scroller on a
@@ -589,6 +605,16 @@ from the games agent), #18 (title/landing screen).
   so the row keeps the corner and the pill steps up over it —
   `verify-wikibtn`'s `assertStack` takes the order as an argument rather than
   pretending there is only one.
+  **AND THE TWO CARDS ARE THE SAME HEIGHT** (maintainer 2026-09-19, both card
+  bottoms drawn on a screenshot: "the gold however is not as tall as EP so the
+  two cards have different size. This makes all UI elements under the card
+  un-aligned"). The gold row was 16px against a bar row's 26.3, so the XP card
+  was short and everything anchored under it inherited the difference. ONE
+  declaration in `bars.ts` — the games agent's file, claimed and announced on
+  both boards — gives `.ml-gold-row` a `min-height` written from the bar row's
+  own three terms (10px border-box gauge + 2px number margin + 11px/1.3 line),
+  never a rounded literal. `verify-recbtn` asserts THE TWO CARDS ARE EQUAL in
+  height and top, so that number is held to a real bar row.
   STILL OPEN, and NOT OURS: the cards are 148px wide in portrait and 192 in
   landscape (`.ml-bar-row` 126/170 with a `min-width:700px` override in
   `bars.ts`). He wants ONE width in both, between the two; posted to games

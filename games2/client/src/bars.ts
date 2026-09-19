@@ -478,8 +478,22 @@ function injectStyles() {
   .ml-bar-numrow .ml-bar-num{margin-top:0}
   .ml-bar-level{font:600 11px/1.3 var(--sans);letter-spacing:.04em;
     color:var(--muted);white-space:nowrap;text-align:left}
-  /* Gold: amount then the nugget icon, both flush right */
-  .ml-gold-row{display:flex;justify-content:flex-end;align-items:center;gap:6px;width:100%}
+  /* Gold: amount then the nugget icon, both flush right.
+     …AND AS TALL AS A BAR ROW, so the two cards match (maintainer 2026-09-19,
+     both card bottoms drawn on a screenshot: "the gold however is not as tall
+     as EP so the two cards have different size. This makes all UI elements
+     under the card un-aligned. So if we just fix the gold to display with the
+     same high as EP everything will be aligned!"). The height is written from
+     THE SAME THREE TERMS a .ml-bar-row is built from, not as a rounded
+     literal: the 10px gauge (border-box, so its border is inside it), the 2px
+     .ml-bar-num margin, and that number's 11px/1.3 line — 26.3px, which is
+     what a bar row measures. And it is not left to be believed: verify-recbtn
+     asserts the two CARDS are the same height, so a change to the gauge or the
+     number fails there instead of quietly drifting the corner chrome that
+     hangs off --bars-l-h / --bars-r-h.
+     (games-ui edit in the games agent's file, announced on both boards.) */
+  .ml-gold-row{display:flex;justify-content:flex-end;align-items:center;gap:6px;width:100%;
+    min-height:calc(10px + 2px + 11px * 1.3)}
   .ml-gold-num{font:600 12px/1.2 var(--sans);color:var(--ink);
     font-variant-numeric:tabular-nums;white-space:nowrap}
   .ml-gold-icon{height:16px;width:auto;image-rendering:pixelated;

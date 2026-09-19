@@ -75,6 +75,37 @@ const CSS_ID = "ml-updatenote-css";
 /** The wiki's published list, or null if it is not there (a deploy whose
  *  context had no git, an older image, an offline phone). The dialog must open
  *  and the reload must work either way — the notes are the nice-to-have. */
+/** The fetch, started ONCE and remembered. */
+let notesPromise: Promise<ReleaseDoc | null> | null = null;
+/** The answer, once it is in hand — read synchronously when the card is built.
+ *  `notesDone` is separate because a FAILED fetch is also an answer (null). */
+let notesReady: ReleaseDoc | null = null;
+let notesDone = false;
+
+/**
+ * START THE FETCH BEFORE THE PLAYER CAN ASK FOR IT (maintainer 2026-09-19:
+ * "Once we know a new version is out we fetch the data we need and after that
+ * we display a 'new version out' popup to the player. When the player clicks
+ * on the new version out toast the dialog will display with the best possible
+ * size immediately… The key here is we have the data already when we create
+ * the dialog"). main.ts calls this the moment it learns a new build is served
+ * and raises the toast on the answer, so by the time the toast is tappable the
+ * list is known — and the card can be built whole, measured by its own
+ * content, and inserted at its final size. That is what removed the loading
+ * state rather than styling it.
+ * Memoised and never rejecting: a failed fetch resolves null and the dialog
+ * says so, exactly as it did when it fetched on open.
+ */
+export function prefetchNotes(): Promise<ReleaseDoc | null> {
+  if (!notesPromise)
+    notesPromise = loadNotes().then((d) => {
+      notesReady = d;
+      notesDone = true;
+      return d;
+    });
+  return notesPromise;
+}
+
 async function loadNotes(): Promise<ReleaseDoc | null> {
   try {
     const res = await fetch(gameUrl(NOTES_URL), { cache: "no-store" });
@@ -239,14 +270,17 @@ function styleOnce() {
   .ml-upd-back{position:fixed;inset:0;z-index:110;display:flex;align-items:center;justify-content:center;
     padding:16px;box-sizing:border-box;background:rgba(0,0,0,.5);
     backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
-  /* A FIXED SIZE, NEVER A GROWING ONE (maintainer 2026-09-19: "I hate dialogs
-     that suddenly changes size! This happens when loading is done. It's better
-     to have a fixed size the size it has once the changes has been loaded").
-     height, not max-height: the card opens at the size it will END at and
-     the list fills into it, so nothing under your thumb moves when the fetch
-     lands. The list is fifty commits deep in the ordinary case, so that end
-     size IS this maximum. */
-  .ml-upd{width:min(460px,100%);height:min(720px,calc(100dvh - 32px));display:flex;flex-direction:column;
+  /* IT OPENS AT THE SIZE ITS CONTENT NEEDS, and it never changes afterwards
+     (maintainer 2026-09-19: "We need to know the best dialog size when we
+     open/before we open the dialog… some versions with only a small number of
+     changes can use a smaller dialog and some with lots of changes uses a
+     taller dialog with scroll"). That is max-height, not height — a FIXED
+     height was the first answer to "I hate dialogs that suddenly changes size"
+     and it was the wrong one: it made two commits look like fifty, and an
+     EMPTY list a full-screen empty box. The size never jumps because the rows
+     are already in the card when it is inserted (prefetchNotes), not because
+     the box was nailed down. */
+  .ml-upd{width:min(460px,100%);max-height:min(720px,calc(100dvh - 32px));display:flex;flex-direction:column;
     box-sizing:border-box;background:var(--bg);color:var(--ink);
     border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);
     font:14px/1.45 var(--sans);overflow:hidden}
@@ -404,12 +438,14 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
     window.removeEventListener("keydown", onKey);
   };
   window.addEventListener("keydown", onKey);
-  document.body.appendChild(back);
-  open = back;
-
-  void loadNotes().then((doc) => {
-    if (open !== back) return; // closed while it loaded
-    loading.remove(); // every path below leaves the card the size it opened at
+  // THE CARD IS FILLED BEFORE IT IS INSERTED whenever the notes are already in
+  // hand — which is the ordinary case, because main.ts prefetches them before
+  // it raises the toast. Nothing is measured, nothing is animated: the card
+  // enters the document at its final size, so there is no size to change and
+  // no loading state to show. The `.then` below is the RACE path only (the
+  // dialog opened from a probe, or the fetch is still in the air), and it is
+  // the only path that ever shows the spinner.
+  const fill = (doc: ReleaseDoc | null) => {
     if (!doc || !doc.commits.length) {
       sub.textContent = `Your build is ${mine.slice(0, 9)}. The change list is not published for this deploy.`;
       return;
@@ -511,7 +547,22 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
       block.append(label, row);
       list.appendChild(block);
     }
-  });
+  };
+
+  if (notesDone) {
+    loading.remove();
+    fill(notesReady); // …and only THEN does the card meet the document
+    document.body.appendChild(back);
+    open = back;
+  } else {
+    document.body.appendChild(back);
+    open = back;
+    void prefetchNotes().then((doc) => {
+      if (open !== back) return; // closed while it loaded
+      loading.remove();
+      fill(doc);
+    });
+  }
   return back;
 }
 
@@ -519,5 +570,14 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
 // __mlMapLayers use), so the gate can open the dialog without a real deploy.
 (window as unknown as { __mlUpdateNotes?: unknown }).__mlUpdateNotes = {
   open: openUpdateNotes,
+  /** Start (or await) the notes fetch — what main.ts does before the toast. */
+  prefetch: prefetchNotes,
+  /** QA only: drop the memoised fetch so the next open asks again. The runtime
+   *  never does this — the notes are fetched once per page by design. */
+  forget: () => {
+    notesPromise = null;
+    notesReady = null;
+    notesDone = false;
+  },
   close: closeUpdateNotes,
 };
