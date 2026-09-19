@@ -883,6 +883,11 @@ const OCC_STEP = 96;
 const PERF_BEACON_MS = 30_000;
 /** A window that failed to post is retried this many times (perfPost). */
 const PERF_POST_TRIES = 3;
+/** Stationary, unremarkable windows that still post after the last move — a
+ *  standing A/B of the Settings switches needs them (2026-09-19); past this
+ *  many the beacon waits for movement or a bad window again, so a beacon
+ *  left on over an idle hour does not evict the runs before it. */
+const PERF_STILL_MAX = 6;
 /** Windows waiting in the outbox; past this the oldest is dropped and reported. */
 const PERF_OUTBOX_MAX = 6;
 // Extra cull margin beyond OCC_STEP: one tile of art, plus room for the
@@ -2475,7 +2480,11 @@ export class WorldScene extends Phaser.Scene {
       const srt = [...fs].sort((a, b) => a - b);
       bad = srt[Math.floor(srt.length * 0.9)] > 30;
     }
-    if (!final && !moved && !bad) return;
+    if (moved) this.perfStillPosted = 0;
+    if (!final && !moved && !bad) {
+      if (this.perfStillPosted >= PERF_STILL_MAX) return;
+      this.perfStillPosted++;
+    }
     let snap: Record<string, unknown> | null = null;
     try {
       snap = (window as unknown as { __ml?: { perf?: () => Record<string, unknown> } }).__ml?.perf?.() ?? null;
@@ -2647,7 +2656,7 @@ export class WorldScene extends Phaser.Scene {
         moveFrac,
         runFrac,
         travelCells,
-        why: final ? "flush" : moved ? "moved" : "bad", // why this window was sent at all
+        why: final ? "flush" : moved ? "moved" : bad ? "bad" : "still", // why this window was sent at all
         // The two dials under measurement: the upload budget (Settings "upload
         // budget", KB a frame) and the render resolution (1/r of the backing).
         sim: `up${this.artQueue().budgetKb || "free"}i${Math.round(ART_IDLE_SHARE * 100)}${renderRes() < 1 ? `/r${(1 / renderRes()).toFixed(1).replace(/\.0$/, "")}` : ""}${this.t3compose.stats.state === "ready" ? "/cw" : ""}`,
@@ -2872,6 +2881,7 @@ export class WorldScene extends Phaser.Scene {
        * uploaded, plus what could feed it. */
       lights: {
         ...(this.night?.lightBill() ?? {}),
+        pass: !!this.night?.active, // the "lighting pass" switch (Settings), for the standing A/B
         sceneryShares: !!this.night?.hasSceneryShares,
         sceneryShadows: !!this.night?.sceneryShadows,
         sceneryLight: this.sceneryLightOn,
@@ -3736,6 +3746,7 @@ export class WorldScene extends Phaser.Scene {
   private perfRunId = Math.random().toString(16).slice(2, 10);
   private perfWinIdx = 0;
   private perfOutbox: { body: Record<string, unknown>; win: number; final: boolean; tries: number }[] = [];
+  private perfStillPosted = 0;
   private perfPumping = false;
   private perfLedger = { sent: 0, ok: 0, failed: 0, retried: 0, lastStatus: 0, lastError: "", lastOkWin: 0 };
   private perfPatches = 0;
@@ -5240,6 +5251,20 @@ export class WorldScene extends Phaser.Scene {
           },
           get: () => this.sceneryLightsOn,
           state: () => (this.sceneryLightsOn ? `on (${this.sceneryLightSources.length})` : "off"),
+        },
+        /* THE WHOLE LIGHTING PASS, for the standing A/B (2026-09-19): the
+         * fields, the composite, every lit copy and contact shadow — off, the
+         * world draws flat. The beacon carries the state as `lights.pass`. */
+        {
+          label: "lighting pass",
+          act: () => {
+            const n = this.night;
+            if (!n) return;
+            n.setActive(!n.active);
+            this.chat.addLog("—", `lighting pass: ${n.active ? "on" : "OFF — the world draws flat; the beacon says so"}`);
+          },
+          get: () => !!this.night?.active,
+          state: () => (this.night?.active ? "on" : "off"),
         },
         /* THE TWO SUBTRACTION SWITCHES — "does it still stutter without X?".
          * Turning one OFF takes effect immediately, because that is the arm

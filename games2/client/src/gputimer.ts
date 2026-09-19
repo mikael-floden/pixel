@@ -41,6 +41,20 @@ let disjoint = 0;
 let skipped = 0;
 let reason = "not installed";
 let installed = false;
+/* THE FINISH CLOCK (2026-09-19). His phone's Chrome lends no timer query to a
+ * WebGL1 context, so every run so far carried gpu.avail=false — while 67 of
+ * the 96 slow frames of his 22:29 run were the thread idle, waiting for a
+ * frame the GPU had not finished. Where no query exists, one frame in
+ * FINISH_EVERY ends with gl.finish(): the wall time it blocks is the GPU
+ * work still outstanding at the end of that frame — near zero when the GPU
+ * keeps up, the GPU's own frame time when it does not. It serialises the
+ * CPU and the GPU for that frame, so it runs only while the beacon is armed
+ * and only on every third frame; the sampled frames read longer in the
+ * beacon's frame histogram by exactly what they waited. `method` says which
+ * clock a window's numbers came from. */
+const FINISH_EVERY = 3;
+let method = "none";
+let finishFrame = 0;
 
 const q = {
   create: (): WebGLQuery | null => (isGl2 ? (gl as WebGL2RenderingContext).createQuery() : ext!.createQueryEXT!()),
@@ -76,9 +90,26 @@ export function installGpuTimer(
     if (e && typeof e.beginQueryEXT === "function") isGl2 = false;
     else e = null;
   }
-  if (!e) { reason = isGl2 ? "no EXT_disjoint_timer_query_webgl2" : "webgl1: no EXT_disjoint_timer_query"; return; }
+  if (!e) {
+    gl = g;
+    method = "finish";
+    reason = "ok";
+    events.on(postRender, () => {
+      if (!gl || !armed || !armed()) return;
+      if (++finishFrame % FINISH_EVERY !== 0) { skipped++; return; }
+      const t0 = performance.now();
+      try {
+        gl.finish();
+      } catch {
+        return;
+      }
+      samples.push(performance.now() - t0);
+    });
+    return;
+  }
   gl = g;
   ext = e;
+  method = "query";
   reason = "ok";
   events.on(preRender, () => {
     if (!gl || !ext || !armed || !armed()) return;
@@ -133,6 +164,8 @@ export function gpuTimerTake(): Record<string, number | boolean | string> {
   const out = {
     avail: reason === "ok",
     reason,
+    method,
+    every: method === "finish" ? FINISH_EVERY : 1,
     n: s.length,
     p50: pick(0.5),
     p90: pick(0.9),

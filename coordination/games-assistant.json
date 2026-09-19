@@ -1,18 +1,13 @@
 {
  "domain": "games-assistant",
- "updated_at": "2026-09-19T22:55:38+00:00",
+ "updated_at": "2026-09-19T23:00:08+00:00",
  "health": "running",
  "current": {
-  "unit": "THE GPU CLOCK, AND A STANDING A/B — his 22:29 run: 36-45% of frames miss the 60 Hz deadline (17-34 ms) while running AND while standing in the town; 67 of the 96 recorded slow frames are GPU/compositor waits with 3-8 ms of JS. WebGL1 lends no timer query on his phone, so the beacon gets a gl.finish() clock (GPU ms a frame, opt-in with the beacon, 1 frame in 3) and per-pass brackets where cheap; stationary windows post again (the first four, so a standing A/B of the Settings switches — shadows, scenery lights, torch, the lighting pass, the resolution dial — lands); a Settings switch for the whole lighting pass (nightSkip) so he can A/B it.",
+  "unit": "SHIPPED — THE GPU CLOCK, AND A STANDING A/B — his 22:29 run: 36-45% of frames miss the 60 Hz deadline (17-34 ms) while running AND while standing in the town; 67 of the 96 recorded slow frames are GPU/compositor waits with 3-8 ms of JS. WebGL1 lends no timer query on his phone, so the beacon gets a gl.finish() clock (GPU ms a frame, opt-in with the beacon, 1 frame in 3) and per-pass brackets where cheap; stationary windows post again (the first four, so a standing A/B of the Settings switches — shadows, scenery lights, torch, the lighting pass, the resolution dial — lands); a Settings switch for the whole lighting pass (nightSkip) so he can A/B it.",
   "since": "2026-09-19T22:55:38+00:00",
-  "files": [
-   "games2/client/src/gputimer.ts",
-   "games2/client/src/scenes/WorldScene.ts",
-   "games2/scripts/verify-beacon.mjs",
-   "games2/docs/perf.md",
-   "coordination/games-assistant.json"
-  ],
-  "note": "WorldScene.ts: the perf beacon members + one Settings entry. nightlight.ts is read, not edited."
+  "files": [],
+  "note": "WorldScene.ts: the perf beacon members + one Settings entry. nightlight.ts is read, not edited.",
+  "next": "his standing A/B with the finish clock (docs/perf.md 'THE LAG WHILE RUNNING IS THE GPU'): read gpu.p50/p90 per switch window, name the GPU part, then optimise that part only."
  },
  "progress": {
   "units_shipped": 42
@@ -311,5 +306,5 @@
   }
  ],
  "updated": "2026-09-19T19:23:09Z",
- "units_shipped": 43
+ "units_shipped": 44
 }

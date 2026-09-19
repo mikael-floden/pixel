@@ -921,6 +921,38 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   refuses the first post with a 502 and requires the SAME window posted
   again with `attempt` 2, a ledger saying `failed` 1 / `lastStatus` 502,
   and a fail note — the old client posted window 2 next and never window 1.
+  A STATIONARY WINDOW POSTS AGAIN — the first `PERF_STILL_MAX` (6) after
+  the last move (`run.why` = `still`), so a standing A/B of the Settings
+  switches lands; past six the beacon waits for movement or a bad window,
+  so a beacon left on over an idle hour does not evict the runs before it.
+- **THE LAG WHILE RUNNING IS THE GPU, NOT THE FRAME'S JAVASCRIPT** (his
+  22:29 run on bc32342724, 507 cells, every window delivered): 36-45% of
+  frames miss the 60 Hz deadline by a little (17-34 ms; mean 17.7-19.2 ms,
+  p90 20-34) while running AND standing in the town, with only 10 frames
+  over 50 ms in 98 s — the felt lag is the uneven cadence, not the
+  hitches. Of the 96 slow frames recorded, 67 were the thread IDLE for
+  24-40 ms after 3-8 ms of our JavaScript, with no long task and no GC:
+  the compositor waiting for a frame the GPU had not finished; 26 were
+  the fresh-terrain CPU stack (one 102 ms ground slice, repaintCells 24,
+  rebuildOccluders 15, occWalkInc 10, render 16 in one frame); one a 149 MB
+  major GC (101 ms). The GPU waits cluster in the town and its approach
+  (39 of 67; all 24 recorded frames of the standing window at zoom 2 in the
+  evening) but the over-budget share is the same at the spawn by day with
+  no covered body (38%, the 20:20 window) — a cost that does not scale with
+  the sprite count. The candidates it must be split between, by the
+  counters: the lighting pass (3-5 shadow-marching lights at all times of
+  day — the torch is on by day too — three 544x734 fields a frame plus
+  the composite and 20-46 lit copies), the cover atlases (5-6 flushes a
+  frame while standing among the town's bodies, three brackets each — a
+  render-target switch is the dear thing on a tiled GPU), the ground
+  texture's blit and the sprites' overdraw (5-10 stacked a cell). The
+  software renderer cannot proxy a Mali (skipping the whole night pass
+  moved its frame 0%), so the split is measured ON THE PHONE: the finish
+  clock above, standing at one spot for 30 s per Settings switch —
+  baseline, `lighting pass` off, `shadows` off, `scenery lights` off, the
+  torch off, the resolution dial at 2/3 — each window naming its arm
+  (`lights.pass`, `lights.sceneryShadows`, `lights.torch`, `run.sim`'s
+  `/rN`). What that run names is what gets optimised; nothing before it.
 - **THE BEACON CARRIES THE WINDOW'S CONTEXT, THE ROUND TRIP, THE THROTTLING
   PROXY AND THE GPU'S CLOCK** (2026-09-11, prepared for the next optimisation
   task so a run answers on its own). Beside the sections and counts: `run`
@@ -931,10 +963,18 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   Hz tick, the one lag no CPU section can see — with `patches`/`patchHz`
   and `reconnects`); `cpu` (`xorshift400k` scoreMs: the same work every
   window, so a window where it rose while the sections did not is the phone
-  throttling, not the game); `gpu` (`EXT_disjoint_timer_query` — Phaser 3 is
-  WebGL1; the `_webgl2` form is tried first — frame time p50/p90/p99 when the
-  browser lends it, `avail`+`reason` first: "no numbers" is never 0 ms, and
-  headless Chromium withholds it); `frames` now
+  throttling, not the game); `gpu` (frame time p50/p90/p99 from
+  `EXT_disjoint_timer_query` where the browser lends it — Phaser 3 is WebGL1;
+  the `_webgl2` form is tried first — and otherwise from THE FINISH CLOCK
+  (2026-09-19, `gputimer.ts`): his phone's Chrome lends no query to WebGL1,
+  so every run before carried `avail: false`; now one frame in three ends
+  with `gl.finish()` while the beacon is armed, and the wall time it blocks
+  is the GPU work still outstanding at that frame's end — near zero when
+  the GPU keeps up, the GPU's own frame time when it does not. `method`
+  says `query` or `finish`, `every` the sampling stride; the sampled frames
+  read longer in the histogram by what they waited, which is the price of
+  a number where there was none. `avail`+`reason` first: "no numbers" is
+  never 0 ms); `frames` now
   carries the histogram (`le17/le34/le50/le100/gt100`, `mean`) and `rafHz`
   (the refresh read off the 15th-percentile interval — 60/90/120, or 30 when
   the browser throttled the tab); and the snapshot counts are promoted to

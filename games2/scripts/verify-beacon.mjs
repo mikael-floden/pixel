@@ -74,7 +74,7 @@ const MUST = {
   run: ["runId", "winIdx", "sinceLoadS", "visible", "zone", "hops", "moveFrac", "travelCells", "ua", "fade", "ambient", "lane"],
   rtt: ["n", "p50", "p90", "max", "patches", "patchHz", "reconnects"],
   cpu: ["bench", "scoreMs"],
-  gpu: ["avail", "reason", "n", "p50"],
+  gpu: ["avail", "reason", "method", "every", "n", "p50"],
   texFam: [], texUp: ["n", "installed"], net: [], worker: ["state"], heap: ["meanMb", "grewMbPerSec", "drops"],
   lights: ["n", "gpu", "torch"], groundDrew: ["cells", "blits", "blitMpx", "scissor", "fades", "fadeTex"], longBy: [], longWhere: [],
   // 2026-09-19, for his run on the new code: the resolver's own bill, the felt lag, the ambient effects' meter.
@@ -101,6 +101,12 @@ for (const [block, keys] of Object.entries(MUST)) {
 // A WORST-FRAME RECORD MUST ARRIVE WHOLE. It is JSON in a string with a
 // length cap, and the cap has twice cut off the tail — which is where the
 // evidence lives (`mode`, `ring`, `tex`, and now `at`/`z`/`t`).
+// THE GPU CLOCK (2026-09-19): headless Chromium lends no timer query either,
+// and until today that meant gpu.avail=false and no GPU number at all. The
+// finish clock must stand in: avail, method "finish", and samples taken.
+if (!rep.gpu?.avail || rep.gpu.method !== "finish") fail(`no GPU clock without a timer query: ${JSON.stringify(rep.gpu)}`);
+else if (!(rep.gpu.n > 0)) fail(`the finish clock took no samples: ${JSON.stringify(rep.gpu)}`);
+if (rep.lights && rep.lights.pass === undefined) fail("lights.pass (the lighting-pass switch) did not reach the file");
 const w0 = (rep.worst ?? [])[0];
 if (!w0) fail("no worst frame reached the file — the hitch recorder rides with the beacon");
 else {
