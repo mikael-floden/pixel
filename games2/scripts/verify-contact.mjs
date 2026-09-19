@@ -122,6 +122,12 @@ for (let i = 0; i < Math.min(roofOff.length, roofOn.length); i++) {
 }
 if (roofOff.length < 2) console.log("note: fewer than 2 roofed pieces in view — the roof arm did not run");
 else if (moved) fail(`${moved} roofed piece(s) changed the roof's light with the contact dial`);
+// 4. THE DAY FADE for outdoor scenery lights has its OWN session:
+// verify-scenerydayfade.mjs. It needs the giant mushroom at 154.1,320.3, and a
+// teleport there from this gate's hearth-house arms never streams the piece in
+// — measured, 40 s of polling and its contact stamp never appears, while a
+// session that boots straight to it has the stamp in ~10 s.
+
 if (errs.length) fail(`page errors: ${errs.join(" | ")}`);
 await browser.close();
 console.log(process.exitCode ? "verify-contact: FAIL" : "verify-contact: ALL OK");

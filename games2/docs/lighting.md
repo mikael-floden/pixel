@@ -1419,3 +1419,40 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   brightness being reflected in the window.") Remote torches own no light
   slot; the window is a sum, not the light field. Probe:
   `__ml.windowGlowDebug(place)` → floor, sources, bodies with distance, glow.
+
+## OUTDOOR SCENERY LIGHTS FADE OUT IN THE DAY
+
+A lit piece outdoors keeps no light at noon and comes back through the evening,
+on the TORCH'S OWN CURVE (`curTorchF`, so the two can never disagree about when
+it is day). Maintainer 2026-09-19: "the sun is usually so bright you can't have
+light like that outdoor. This is why we hid away the TORCH during the day."
+
+- **It was erasing its own contact shadow.** The giant mushroom at 154.1,320.3
+  (state `LIT_1`) measured **1.250** raw light at its foot against **0.793** on
+  open ground seven cells away, so the one cue that says a piece touches the
+  ground was being filled in by the piece. Its contact band read 16% darker
+  where indoor furniture reads 31%.
+- **The saturation was the real defect.** Above 1.0 the screen clips, so a
+  multiplicative AO (`light *= 1 - k`) darkens nothing until it has spent the
+  headroom getting back down to white. That is why it was visible in the
+  light-only render and not with the texture on. After the fade the foot reads
+  **0.918x** open ground by day — a shadow instead of a glow — and **3.269x** at
+  night, the light fully alive.
+- **UNDER COVER IS EXEMPT**, asked of the WORLD and not of my room: indoors the
+  sun is not what lights you, so a hearth keeps its light whatever the clock
+  says. It asks the ceiling over the light's own column (`night.ceilingOver`)
+  and only counts it when the light sits BELOW that deck — a lamp ON a roof is
+  outdoors and fades. (NOT `indoorOutside`: that means "outside MY room" and
+  returns false when I am outdoors with no mask at all, so every light would
+  read as sheltered and nothing would ever fade.)
+- **A FADE, NOT A SWITCH** (his: "But no popping!"). The factor is
+  `1 - dial*(1 - curTorchF)`, and `blendPhases` makes `torchF` linear in
+  (phase + phaseT): measured 0.020 largest step across 201 samples of a full
+  day. His dial is `__ml.sceneryDayFade(v)` — 1 takes them fully away at noon
+  (default), 0 restores the old always-on.
+- Gate: `verify-scenerydayfade.mjs`, its OWN session — a teleport to this piece
+  from verify-contact's hearth-house arms never streams it in (40 s of polling,
+  no contact stamp), while a session that boots straight there has it in ~10 s.
+  It samples a NEIGHBOURHOOD, min for the shadow and max for the light: the
+  band is thin and the sun rotates within a phase, so one fixed cell read 0.66
+  on one run and 1.07 on the next.

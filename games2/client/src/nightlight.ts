@@ -4307,6 +4307,17 @@ export class NightLights {
    *  test reads: the scalar under my feet (`indoorCeil`) lit a cave wall to
    *  the height of the lid I stood under and moved that line with every step
    *  (see roomAt). */
+  /** The ceiling over a column, for callers outside this class. The scenery
+   *  day fade asks it (WorldScene): a lit piece UNDER COVER keeps its light
+   *  when the sun comes up, because indoors the sun is not what lights it.
+   *  World-absolute — `setRoom` publishes the mask for the whole world, not
+   *  just my room — which is exactly why `indoorOutside` is the wrong test
+   *  there: that one answers "outside MY room" and returns false when I am
+   *  outdoors and there is no room mask at all. */
+  ceilingOver(col: number, row: number): number {
+    return this.ceilAt(col, row);
+  }
+
   private ceilAt(col: number, row: number): number {
     const d = this.roomImg?.data;
     if (!d) return 0;

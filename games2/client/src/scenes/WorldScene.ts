@@ -648,6 +648,12 @@ const LIGHT_RETIRE_MAX = 2;
 // pool sitting exactly on the view boundary must not flicker candidacy.
 const LIGHT_EXIT_PX = 96;
 // A world light candidate resolved from an emissive prop + emission.json.
+/** OUTDOOR SCENERY LIGHTS IN THE DAY — 1 takes them fully away at noon and
+ *  brings them up through the evening on the torch's own curve (maintainer
+ *  2026-09-19). 0 restores the behaviour where they burned through the sun and
+ *  filled in their own contact shadow. */
+const SCENERY_DAY_FADE_DEFAULT = 1;
+
 interface EmissiveSource {
   id: string; // "col,row" — matches the pool stamp's srcId
   col: number;
@@ -4263,6 +4269,10 @@ export class WorldScene extends Phaser.Scene {
   // dawn, 0 at full Day, riding the same 2.5s clock as the ambient grade so
   // flames melt away as daylight arrives and rekindle as it passes.
   private curTorchF = 1;
+  /** How much of an OUTDOOR scenery light the day takes away: 1 = gone at
+   *  noon (his), 0 = the pre-2026-09-19 behaviour where they burned through
+   *  the sun. Anything between scales the fade. `__ml.sceneryDayFade(v)`. */
+  private sceneryDayFade = SCENERY_DAY_FADE_DEFAULT;
   private timeFromTorchF = 1;
   private curAmbient: [number, number, number] = [...TIME_PHASES[DEFAULT_TIME_IDX].ambient];
 
@@ -7355,6 +7365,17 @@ export class WorldScene extends Phaser.Scene {
       },
       /** SCENERY LIGHT REPORT: pipeline state, lights fed, shape maps built /
        *  pending, per-frame CPU, and the first shaped pieces. */
+      /** His dial for how much of an outdoor scenery light the day takes away
+       *  (1 = gone at noon, 0 = the old always-on). Reports the value and the
+       *  factor in force right now, so a gate can tell the dial from the hour. */
+      sceneryDayFade: (v?: number) => {
+        if (typeof v === "number" && Number.isFinite(v)) this.sceneryDayFade = Math.max(0, Math.min(1, v));
+        return {
+          dial: this.sceneryDayFade,
+          torchF: +this.curTorchF.toFixed(3),
+          factor: +(1 - this.sceneryDayFade * (1 - this.curTorchF)).toFixed(3),
+        };
+      },
       sceneryLightInfo: () => this.sceneryLightInfo(),
       // CONTACT AO (scenerycontact.ts): the darkening at full coverage — his
       // dial — and this frame's stamps with their contact points in SCREEN px
@@ -14159,8 +14180,42 @@ export class WorldScene extends Phaser.Scene {
       // [8 WORLD SLOTS] — the campfire scenery + every emissive tile/prop in
       // range, as REAL lights at last. Overflow keeps the glow stamp.
       this.ps();
+      const worldFrom = sl.length; // everything pickWorldLights appends is a WORLD light
       this.pickWorldLights(sl, fireLit, this.game.loop.delta);
       this.pe("litPick");
+      // OUTDOOR SCENERY LIGHTS FADE OUT IN THE DAY, for the reason the torch
+      // already does (maintainer 2026-09-19: "the sun is usually so bright you
+      // can't have light like that outdoor. This is why we hid away the TORCH
+      // during the day"). A lit piece was also filling in its OWN contact
+      // shadow: measured at the giant mushroom (154.1,320.3, state LIT_1), raw
+      // light 1.250 at its base against 0.793 on open ground seven cells away,
+      // so the one cue that says it touches the ground was being erased by the
+      // thing that casts it — it read 16% darker where indoor furniture reads
+      // 31%.
+      //
+      // THE SAME CURVE AS THE TORCH (`curTorchF`), so the two can never
+      // disagree about when it is day, and it EASES with the time transition
+      // rather than switching: the lights come up through the evening the way
+      // they do in the world, and nothing pops. A light is dropped only once
+      // its contribution is below a hundredth, which is under a colour step.
+      //
+      // UNDER COVER IS EXEMPT, asked of the WORLD and not of my room: indoors
+      // the sun is not what lights you, so a hearth keeps its light whatever
+      // the clock says. `indoorOutside` cannot answer this — it means "outside
+      // MY room" and returns false when I am outdoors with no mask at all — so
+      // it asks the ceiling over the light's own column (`ceilingOver`), and
+      // only counts it when the light sits BELOW that deck. A lamp ON a roof
+      // is outdoors and fades with the rest.
+      if (this.night && this.sceneryDayFade > 0)
+        for (let i = sl.length - 1; i >= worldFrom; i--) {
+          const L = sl[i];
+          if (L === this.probeLight) continue; // the headless gate's instrument
+          const ceil = this.night.ceilingOver(L.col, L.row);
+          if (ceil > 0 && (L.z ?? 0) < ceil) continue; // under cover: the sun is not its light
+          const k = 1 - this.sceneryDayFade * (1 - this.curTorchF);
+          if (k <= 0.01) sl.splice(i, 1);
+          else if (k < 0.999) L.color = [L.color[0] * k, L.color[1] * k, L.color[2] * k];
+        }
       this.lastSlotInfo.total = sl.length;
       // LIGHT SOURCES OUTSIDE MY ROOM DO NOT REACH IT (maintainer 2026-08-07:
       // "point light from outside has to be turned off"). This became load
