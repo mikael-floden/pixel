@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <!-- viewport-fit=cover: draw under notches/rounded corners in the installed
+         app; user-scalable=no: pinch-zoom fights the game's own input. The soft
+         keyboard is handled in-game via virtualKeyboard.overlaysContent (hud.ts)
+         so it OVERLAYS the world+HUD without scrolling/resizing them — do NOT add
+         interactive-widget=resizes-visual here: it makes the browser scroll the
+         whole game up to reveal the focused chat box (maintainer). -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
+    <meta name="theme-color" content="#000000" />
+    <title>Nangijala</title>
+    <!-- PWA: installable on the Android home screen; starts fullscreen. -->
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <style>
+      /* touch-action pan-x pan-y: panning (list scrolling) stays allowed but
+         PINCH-ZOOM and double-tap-zoom are blocked — crucially this works
+         even under "Desktop site", where the viewport meta (incl.
+         user-scalable=no) is ignored. main.ts adds the JS belt-and-braces. */
+      html, body { margin: 0; height: 100%; background: #000; overflow: hidden;
+        overscroll-behavior: none; touch-action: pan-x pan-y; }
+      /* This is a game, not a document: no text selection anywhere (a long
+         press on Android selected UI text — e.g. the update toast's version
+         hash — and popped Chrome's "search results" sheet over the game).
+         Inputs keep normal text editing. */
+      body { user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+        -webkit-tap-highlight-color: transparent; }
+      input, textarea { user-select: text; -webkit-user-select: text; }
+      /* THE CAMERA BAND IS PAINTED, SO THE GAME LOOKS THE SAME EVERY LAUNCH
+         (maintainer 2026-09-13: "the players HP/EP/XP-bar/card is not at the
+         top … I then restarted the game and that fixed the issue", then the
+         trigger, from him: "It happens when I tab out and back in again!").
+         His shell letterboxes the camera cutout, and on a resume from the task
+         switcher it hands the app the whole screen instead — so the cutout
+         state flips mid-session, not just per launch. MEASURED on his two shots: the card does not move — its HP
+         bar is 198 vs 196 device px from the top of the GLASS — because the
+         chips clear the cutout through --ml-safe-top (theme.ts). What changes
+         is only what fills the 152 device px (55.3 css px) above it: the black
+         letterbox, or the live world. World up there reads as "the card is
+         floating", which is the report. So the band wears the same #000 the
+         shell's letterbox does — it is the phone's bezel either way — and the
+         two launches are pixel-alike. NOT the alternative (chips flush to the
+         glass at 10px): that is the layout the cutout inset exists to prevent,
+         and a top-corner camera hole then sits on the HP numbers.
+         Paint only, NO layout: nothing is inset, the canvas is not re-fitted,
+         and the golden split is untouched — the world still renders behind the
+         band, it is simply covered, exactly as the letterbox covers it.
+         Zero height (so zero paint) wherever there is no cutout or the shell
+         letterboxes it. LANDSCAPE is unaffected: the cutout is a left/right
+         inset there and the top one collapses. z 9 = over the world, the
+         rotation veil (3) and the chips (8); under the update toast (100), the
+         loading overlay (20) and the rotate prompt (1000), all of which are
+         full-screen chrome that should cover it. pointer-events:none so a tap
+         in the band still reaches the world. Gate: verify-safearea section 4. */
+      #ml-safebar { position: fixed; top: 0; left: 0; right: 0; z-index: 9;
+        height: env(safe-area-inset-top, 0px); background: #000;
+        pointer-events: none; }
+      /* dvh tracks the REAL visible height on mobile (address bar shown/hidden);
+         vh is the fallback for older browsers. touch-action here (NOT on body:
+         the select screen's lists still need touch scrolling) stops double-tap
+         zoom / pan gestures from fighting the game's tap-to-move.
+         GOLDEN-RATIO split: the game viewport is the top 61.8%, the bottom
+         38.2% is the HUD (client/src/hud.ts — framed tab row + content page;
+         backpack/inventory to come). */
+      :root { --hud-h: 38.2vh; --hud-h-inv: 61.8vh; }
+      @supports (height: 1dvh) { :root { --hud-h: 38.2dvh; --hud-h-inv: 61.8dvh; } }
+      #game { width: 100vw; height: var(--hud-h-inv); touch-action: none; }
+      /* IN-GAME LANDSCAPE (hud.ts applyLayout sets .ml-land + the px vars):
+         the split turns on its side — the menu is a --menu-w side column and
+         the game view takes the rest at full height (--hud-h-inv is published
+         as the full innerHeight then). --gv-left is the menu's width when the
+         menu sits on the LEFT (right-handed, the default) and 0 when it sits
+         on the right (left-handed), so this one margin places the view for
+         both. The canvas follows #game via main.ts's ResizeObserver. */
+      html.ml-land #game { width: calc(100vw - var(--menu-w, 38.2vw));
+        margin-left: var(--gv-left, 0px); }
+      canvas { display: block; image-rendering: pixelated; }
+      /* Portrait-only OUTSIDE the world: on the title/select/loading screens,
+         landscape on a small touch screen still gets the "rotate back"
+         prompt. Once in the world (hud.ts sets html.ml-ingame) the prompt
+         stays hidden — landscape is a real layout there since 2026-08-05.
+         Desktops/laptops (fine pointer) and tall tablets are unaffected. */
+      #ml-rotate { display: none; }
+      @media (orientation: landscape) and (pointer: coarse) and (max-height: 520px) {
+        #ml-rotate { display: flex; position: fixed; inset: 0; z-index: 1000;
+          align-items: center; justify-content: center; text-align: center;
+          background: #000; color: #e8e8f0; font: 600 20px system-ui, sans-serif; }
+        #ml-rotate small { display: block; margin-top: 8px; font: 400 13px system-ui, sans-serif; color: #9aa0bf; }
+      }
+      html.ml-ingame #ml-rotate { display: none !important; }
+    </style>
+  </head>
+  <body>
+    <div id="ml-safebar"></div>
+    <div id="game"></div>
+    <div id="ml-rotate"><div>📱<br />Rotate your phone<small>The menus play upright — landscape unlocks once you enter the world</small></div></div>
+    <script type="module" src="/assets/index-2aed6ff04a.js"></script>
+  </body>
+</html>
