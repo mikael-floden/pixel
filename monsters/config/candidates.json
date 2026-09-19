@@ -1127,20 +1127,6 @@
       "items": []
     },
     {
-      "id": "flowstone",
-      "name": "Flowstone",
-      "tier": "mid",
-      "template_id": "mannequin",
-      "size": 120,
-      "scale": "standard",
-      "biome": [
-        "black_rock"
-      ],
-      "prompt": "Curtain of rippled flowstone folded like heavy cloth, banded amber and white, translucent at the thin edges where light gets through, standing on a poured base and wet all over with a slow film of water",
-      "lore": "It is the shape of water that ran down the same rock for ten thousand years. Now it walks and the water still runs down it.",
-      "items": []
-    },
-    {
       "id": "moon_milk",
       "name": "Moonmilk",
       "tier": "evil",
@@ -4235,6 +4221,23 @@
       "die_action": "Death - The flames gutter and shrink down to a dark ember on the ground, then go out and fade away",
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-18T23:33:37+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "flowstone",
+      "name": "Flowstone",
+      "tier": "mid",
+      "template_id": "mannequin",
+      "size": 120,
+      "scale": "standard",
+      "biome": [
+        "black_rock"
+      ],
+      "prompt": "Curtain of rippled flowstone folded like heavy cloth, banded amber and white, translucent at the thin edges where light gets through, standing on a poured base and wet all over with a slow film of water",
+      "lore": "It is the shape of water that ran down the same rock for ten thousand years. Now it walks and the water still runs down it.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-19T12:56:51+00:00",
       "versions_tried": 1
     }
   ],

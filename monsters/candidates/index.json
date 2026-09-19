@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-18T23:34:04+00:00",
+  "generated_at": "2026-09-19T12:56:52+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 77,
+  "count": 76,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -9272,138 +9272,6 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-18T12:44:08+00:00",
-      "graduation": {
-        "state": "waiting",
-        "takes": {},
-        "blocking": "design not approved"
-      }
-    },
-    {
-      "id": "flowstone",
-      "name": "Flowstone",
-      "tier": "mid",
-      "lore": "It is the shape of water that ran down the same rock for ten thousand years. Now it walks and the water still runs down it.",
-      "biome": [
-        "black_rock"
-      ],
-      "items": [],
-      "size": [
-        120,
-        120
-      ],
-      "template_id": "mannequin",
-      "scale": "standard",
-      "pixellab_id": "8ea18b62-ea9e-4184-9343-9feacc3ca7b0",
-      "version": 1,
-      "sheet": "flowstone/sheet.webp",
-      "rotations": {
-        "south": "flowstone/rotations/south.webp",
-        "south-east": "flowstone/rotations/south-east.webp",
-        "east": "flowstone/rotations/east.webp",
-        "north-east": "flowstone/rotations/north-east.webp",
-        "north": "flowstone/rotations/north.webp",
-        "north-west": "flowstone/rotations/north-west.webp",
-        "west": "flowstone/rotations/west.webp",
-        "south-west": "flowstone/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.717,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.763,
-            "bbox": [
-              23,
-              4,
-              97,
-              116
-            ],
-            "fill": 0.576,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.81,
-            "bbox": [
-              20,
-              4,
-              97,
-              116
-            ],
-            "fill": 0.599,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.772,
-            "bbox": [
-              24,
-              4,
-              96,
-              116
-            ],
-            "fill": 0.56,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.744,
-            "bbox": [
-              20,
-              4,
-              100,
-              116
-            ],
-            "fill": 0.622,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.717,
-            "bbox": [
-              24,
-              4,
-              95,
-              117
-            ],
-            "fill": 0.557,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.756,
-            "bbox": [
-              25,
-              4,
-              95,
-              116
-            ],
-            "fill": 0.544,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.768,
-            "bbox": [
-              25,
-              4,
-              97,
-              117
-            ],
-            "fill": 0.565,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.803,
-            "bbox": [
-              23,
-              4,
-              96,
-              116
-            ],
-            "fill": 0.568,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-18T12:54:28+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},
