@@ -1,13 +1,21 @@
 {
  "domain": "games-assistant",
- "updated_at": "2026-09-19T23:00:08+00:00",
+ "updated_at": "2026-09-19T23:41:14+00:00",
  "health": "running",
  "current": {
-  "unit": "SHIPPED — THE GPU CLOCK, AND A STANDING A/B — his 22:29 run: 36-45% of frames miss the 60 Hz deadline (17-34 ms) while running AND while standing in the town; 67 of the 96 recorded slow frames are GPU/compositor waits with 3-8 ms of JS. WebGL1 lends no timer query on his phone, so the beacon gets a gl.finish() clock (GPU ms a frame, opt-in with the beacon, 1 frame in 3) and per-pass brackets where cheap; stationary windows post again (the first four, so a standing A/B of the Settings switches — shadows, scenery lights, torch, the lighting pass, the resolution dial — lands); a Settings switch for the whole lighting pass (nightSkip) so he can A/B it.",
-  "since": "2026-09-19T22:55:38+00:00",
-  "files": [],
-  "note": "WorldScene.ts: the perf beacon members + one Settings entry. nightlight.ts is read, not edited.",
-  "next": "his standing A/B with the finish clock (docs/perf.md 'THE LAG WHILE RUNNING IS THE GPU'): read gpu.p50/p90 per switch window, name the GPU part, then optimise that part only."
+  "unit": "SLOPES — a one-level rise is a walkable incline where its ground has a RAMP set; two levels stay a cliff and a jump (maintainer 2026-09-19: 'Think how Zelda - a link to the past created slopes Link could run upwards without needing to jump ... 1 level elevation diff will turn into slopes (where possible) and 2 level elevation diff will stay as is'). What exists: 225 slope sets are 4 px sub-storey bumps in the 64x46 plate frame (tiles3.ts: 'it cannot bridge a 17px storey'), so a one-level rise still draws a cliff face and the body pops up 15 px at the boundary; WALK_CLIMB is already 1 and JUMP_CLIMB 2. The engine side, built now against a synthetic storey-height set so his PixelLab generation drops straight in: a slope set whose `elevation` is a storey (>= 12 px) is a RAMP — the resolver masks corners that touch a cell exactly ONE level higher of the same ground, picks the ramp tile, and the draw blits its taller frame anchored on the plate's bottom row so the incline covers the higher cell's band; bump sets keep today's rule; the body's lift follows the incline (bilinear over the corner bits) so the climb is gradual. Gates: slopes.test.ts (the mask and the height as arithmetic), verify-slopes.mjs (a synthetic ramp set routed in headless: the cell wears the ramp, the lift takes intermediate values, a two-level rise stays a cliff).",
+  "since": "2026-09-19T23:41:14+00:00",
+  "files": [
+   "games2/client/src/tiles3.ts",
+   "games2/client/src/tiles3draw.ts",
+   "games2/client/src/scenes/WorldScene.ts",
+   "games2/server/test/slopes.test.ts",
+   "games2/scripts/verify-slopes.mjs",
+   "games2/docs/tiles3-rendering.md",
+   "games2/docs/movement.md",
+   "coordination/games-assistant.json"
+  ],
+  "note": "tiles/ is read only: the storey-height sets are the maintainer's PixelLab generation (transition_jobs.py --slope, elevation = 15) imported by the tiles pipeline; a request with the exact recipe goes to the tiles board. maps2 untouched: the mask is derived from the level grid, never authored."
  },
  "progress": {
   "units_shipped": 42
