@@ -2,6 +2,8 @@ import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { PRECIP, Cfg, weatherDescriptors } from "./precip";
 import { WEATHER_UNIVERSE, conflictsOf } from "@nangijala/shared";
 import { PrecipLayer } from "./layer";
+import { forceGloom } from "./gloom";
+import { gloomOnlyRow } from "./gloomrow";
 
 /* WEATHER IS AMBIENT (maintainer 2026-09-17: "That should have always been an
  * ambient effect ... I give you full rights to change the game so you have
@@ -75,7 +77,14 @@ export function weatherFeatures(): AmbientFeature[] {
       layer.setWeather(best?.cfg ?? null, best?.gain ?? 0);
       layer.step(ctx, dt);
     },
-    setForced(on: boolean) { if (on) forced.add(cfg.name); else forced.delete(cfg.name); },
+    // A FORCED ROW SHOWS ITS WHOLE EFFECT — the sheet here, and its grip on
+    // the light in gloom.ts, or a storm forced on to look at it falls out of
+    // a clear blue sky. Release goes to the gloom too; suppression does not
+    // (the light is never optional — see gloom.ts).
+    setForced(on: boolean) {
+      if (on) forced.add(cfg.name); else forced.delete(cfg.name);
+      forceGloom(cfg.name, on);
+    },
     setSuppressed(on: boolean) { if (on) suppressed.add(cfg.name); else suppressed.delete(cfg.name); },
     debug() {
       const info = layer.info();
@@ -95,23 +104,10 @@ export function weatherFeatures(): AmbientFeature[] {
         conflicts: others(cfg.name),
       };
     },
-    dispose() { if (isResolver) layer.dispose(); },
+    dispose() { forceGloom(cfg.name, false); if (isResolver) layer.dispose(); },
   });
 
-  /* CLOUDY and MIST are weather with no particles: their whole effect is the
-   * gloom (weather/gloom.ts reads the active set directly), so the feature is
-   * a row — it exists so he can see and test them like every other effect,
-   * and so the matrix can forbid mist under wind. */
-  const gloomOnly = (name: string): AmbientFeature => ({
-    name,
-    conflicts: conflictsOf(name, WEATHER_UNIVERSE),
-    init() {},
-    update() {},
-    setForced(on: boolean) { if (on) forced.add(name); else forced.delete(name); },
-    setSuppressed(on: boolean) { if (on) suppressed.add(name); else suppressed.delete(name); },
-    debug() { return { gain: 0, drawn: 0, all: [], gloomOnly: true, conflicts: conflictsOf(name, WEATHER_UNIVERSE) }; },
-    dispose() {},
-  });
-
-  return [gloomOnly("cloudy"), gloomOnly("mist"), ...PRECIP.map((cfg, i) => make(cfg, i === PRECIP.length - 1))];
+  // CLOUDY and MIST: weather with no particles — the row is pure, in
+  // gloomrow.ts, so the row the game registers is the row the test loads.
+  return [gloomOnlyRow("cloudy"), gloomOnlyRow("mist"), ...PRECIP.map((cfg, i) => make(cfg, i === PRECIP.length - 1))];
 }

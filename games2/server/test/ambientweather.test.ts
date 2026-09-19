@@ -23,8 +23,9 @@ import {
 } from "@nangijala/shared";
 import { conflictClosure } from "../../ambient/runtime/types.js";
 import {
-  CLOUD_OF, DIM_OF, GLOOM_SNAP, GLOOM_TAU_S, easeGloom, gloomTarget, newGloom, snapGloom,
+  CLOUD_OF, DIM_OF, GLOOM_SNAP, GLOOM_TAU_S, easeGloom, forceGloom, forcedGloom, gloomTarget, newGloom, snapGloom,
 } from "../../ambient/weather/gloom.js";
+import { gloomOnlyRow } from "../../ambient/weather/gloomrow.js";
 import {
   MAX_DROPS, PRECIP, REF_AREA, SNOW_MELTING, SNOW_RESTING, SNOW_WATER_MELT,
   areaScale, cfgByIdx, cfgByName, easeShown, gustAt, makeRand, snowLanding, splashAt,
@@ -188,6 +189,63 @@ test("easeGloom reproduces WorldScene's old inline roll, frame for frame, past t
   assert.notEqual(g.dim, 0.34, "dim must NOT snap — it multiplies the whole ambient");
   assert.equal(GLOOM_TAU_S, 4); assert.equal(GLOOM_SNAP, 0.005);
   assert.deepEqual(snapGloom(newGloom(), ["heavyrain"]), { cloud: 1, dim: 0.22, mist: 0 });
+});
+
+test("a row forced on in Settings reaches the gloom — and releasing it cannot brighten what the world rolled", () => {
+  // THE MAINTAINER'S MIST (2026-09-19). For two days the mist row's switch
+  // wrote a set only the precipitation features read, so flipping it did
+  // nothing — and no zone assigned it either, so nothing else could show it.
+  try {
+    assert.deepEqual(forcedGloom(), []);
+    assert.equal(gloomTarget([]).mist, 0, "nothing forced, nothing rolled: clear");
+    forceGloom("mist", true);
+    assert.equal(gloomTarget([]).mist, 1, "forced mist hazes a clear sky");
+    assert.deepEqual(snapGloom(newGloom(), []), { cloud: 0, dim: 0, mist: 1 }, "...on a join too");
+    const g = newGloom();
+    for (let f = 0; f < 2000; f++) easeGloom(g, [], 16); // 32 s: past 4*ln(1/0.005) = 21 s
+    assert.equal(g.mist, 1, "...and the ease reaches it");
+    // A UNION: the server's storm keeps its whole grade under a forced mist,
+    // and taking the force away leaves the storm exactly as it was.
+    assert.deepEqual(gloomTarget(["storm"]), { cloud: 1, dim: 0.34, mist: 1 });
+    forceGloom("mist", false);
+    assert.deepEqual(gloomTarget(["storm"]), { cloud: 1, dim: 0.34, mist: 0 }, "release removes only the force");
+    // a forced precipitation brings its sky with it — a storm forced on to
+    // look at it does not fall out of a clear blue sky
+    forceGloom("storm", true);
+    assert.deepEqual(gloomTarget([]), { cloud: 1, dim: 0.34, mist: 0 });
+    forceGloom("storm", false);
+    assert.deepEqual(forcedGloom(), []);
+  } finally {
+    for (const n of forcedGloom()) forceGloom(n, false);
+  }
+});
+
+test("the gloom-only rows do what their switches say, and report it", () => {
+  // THE ROW THE GAME REGISTERS (weather.ts builds cloudy and mist from this),
+  // loaded here as itself — the factory around it cannot be imported in node.
+  const mist = gloomOnlyRow("mist");
+  const cloudy = gloomOnlyRow("cloudy");
+  try {
+    assert.equal((mist.debug() as { gain: number }).gain, 0);
+    assert.ok(mist.conflicts!.includes("windy"), "the matrix still forbids mist under wind");
+    mist.setForced!(true);
+    assert.equal((mist.debug() as { gain: number }).gain, 1, "the row reports the force");
+    assert.equal(gloomTarget([]).mist, 1, "...and the gloom has it");
+    cloudy.setForced!(true);
+    assert.equal(gloomTarget([]).cloud, 1, "cloudy greys the sky when forced");
+    // suppression (manual mode, row off) is NOT passed to the gloom: the
+    // light is never optional. Only releasing the force clears it.
+    mist.setSuppressed!(true);
+    assert.equal(gloomTarget([]).mist, 1);
+    mist.setForced!(false);
+    cloudy.setForced!(false);
+    assert.deepEqual(gloomTarget([]), { cloud: 0, dim: 0, mist: 0 });
+    mist.setForced!(true);
+    mist.dispose();
+    assert.equal(gloomTarget([]).mist, 0, "a disposed row leaves no ghost haze");
+  } finally {
+    for (const n of forcedGloom()) forceGloom(n, false);
+  }
 });
 
 /* ---- 4. the old ring, for the gates --------------------------------------- */

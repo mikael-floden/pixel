@@ -643,7 +643,17 @@ flock wheels through the ceiling.
   under rain) and its lottery is parked; `__mlAmbient.zoneControl(false)` is
   his Settings switch back to the free client roll.
   WEATHER IS EIGHT FEATURES PLUS THUNDER: cloudy, mist (gloom-only rows),
-  drizzle, rain, heavyrain, storm, snow, windy — sharing ONE pooled sheet
+  drizzle, rain, heavyrain, storm, snow, windy — **EIGHT, and any vocabulary
+  that says six has lost the two that have no folder.** maps2's zone tables
+  were written from "ambient's feature folders plus the six weather rows"
+  and assigned 32 effects across 96 zones with `mist` and `cloudy` in NONE,
+  so the server never rolled either and the maintainer's favourite effect was
+  unreachable for two days with every counter reading normal (2026-09-19:
+  "the mist effect was created by me and is the best looking effect this game
+  has"). `server/test/ambientreach.test.ts` now derives the switchable set
+  (folders + `WEATHER_EFFECTS`) and fails the day any of it has no zone; a
+  known orphan is listed there WITH its request and the test fails again the
+  day the zone lands, so the list can only shrink. Sharing ONE pooled sheet
   (`weather/layer.ts`), because at most one precipitation can be on. Every
   feature's `update` runs every frame in ARRAY ORDER, so each writes its
   request and THE LAST ONE CREATED resolves and steps the layer exactly once.
@@ -677,7 +687,26 @@ flock wheels through the ceiling.
   ambient's numbers now — but `WorldScene` IMPORTS and calls it. It must never read them off a registered feature: those three feed
   `ambOut`, the NIGHT SHADER's ambient, so a player switching the Rain effect
   off in Settings would BRIGHTEN THE WORLD mid-storm. World lighting may not
-  depend on an optional cosmetic subsystem. The test reproduces WorldScene's
+  depend on an optional cosmetic subsystem.
+  **BUT A ROW SWITCHED ON MUST DO WHAT ITS SWITCH SAYS.** A forced row is
+  UNIONED into the grade (`forceGloom`, held in gloom.ts): forcing `mist` in
+  Settings hazes the screen, forcing `storm` brings the storm's sky with its
+  drops, and releasing a force removes only the force — the world's own roll
+  is untouched, so the law above still holds. For two days the gloom-only
+  rows' `setForced` wrote a set only the precipitation features read, and the
+  mist switch was wired to nothing: a Settings row that exists so he can
+  "see and test" an effect and cannot show it is worse than no row, because
+  it reads as the effect being broken. Suppression (manual mode, row off) is
+  deliberately NOT passed to the gloom, for the reason above. The row lives in
+  `weather/gloomrow.ts`, PURE, because `weather.ts`'s factory cannot be loaded
+  in node (its pooled layer imports Phaser and the composer's Vite globals) —
+  which is how a row wired to nothing sat untested for two days; and a test
+  that reaches into that factory drags the whole client into the SERVER
+  project's typecheck, where there is no DOM lib (`AudioNode` unknown in
+  `composer/`). `scripts/verify-mistrow.mjs` stands where he stands: manual
+  mode, everything off, flip `mist`, and watches `__ml.weatherInfo().mist` —
+  the scalar the night shader consumes — reach 1 while the server's set never
+  names it, then fall back on release; a pixel look on top. The test reproduces WorldScene's
   old inline ease frame for frame, and `dim` deliberately does NOT snap to
   target the way cloud and mist do (it multiplies the whole ambient; a snap
   there is a visible step in a dark scene).

@@ -48,14 +48,44 @@ export function newGloom(): Gloom {
   return { cloud: 0, dim: 0, mist: 0 };
 }
 
-/** What this active set grades to, with no easing — the join/teleport snap. */
+/* ROWS A PLAYER FORCED ON, unioned with the server's set by every grade below.
+ *
+ * A weather row switched on in Settings (manual mode) must show its WHOLE
+ * effect, and for `cloudy` and `mist` the gloom IS the whole effect: for two
+ * days their rows were switches wired to nothing — `setForced` wrote a set only
+ * the precipitation features read, while this module read the server's set
+ * alone — so the maintainer's favourite effect could not be seen at all
+ * (2026-09-19: "the mist effect was created by me and is the best looking
+ * effect this game has"; no zone assigned it either, see ambientreach.test).
+ *
+ * A UNION, so the law above still holds: switching a row OFF only removes the
+ * force, never what the server rolled — a Settings switch can still not
+ * brighten a storm the world is in. Held here and not passed in, because the
+ * caller is WorldScene and this stays ambient's to own. */
+const forced = new Set<string>();
+
+/** Force a weather row's grade on (Settings, manual mode) or release it. */
+export function forceGloom(name: string, on: boolean): void {
+  if (on) forced.add(name);
+  else forced.delete(name);
+}
+
+/** The forced rows, for the probe and the tests. */
+export function forcedGloom(): string[] {
+  return [...forced].sort();
+}
+
+/** What this active set grades to, with no easing — the join/teleport snap.
+ *  The forced rows are graded with it. */
 export function gloomTarget(active: Iterable<string>): Gloom {
   let cloud = 0, dim = 0, mist = 0;
-  for (const n of active) {
+  const grade = (n: string) => {
     cloud = Math.max(cloud, CLOUD_OF[n] ?? 0);
     dim = Math.max(dim, DIM_OF[n] ?? 0);
     if (n === MIST_EFFECT) mist = 1;
-  }
+  };
+  for (const n of active) grade(n);
+  for (const n of forced) grade(n);
   return { cloud, dim, mist };
 }
 
