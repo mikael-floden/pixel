@@ -1,8 +1,8 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-14T18:53:41+00:00",
+  "updated_at": "2026-09-19T17:50:23+00:00",
   "health": "running",
-  "current": "PUSHED d2c194559 (the drag ghost is the slot's art at the slot's size). ROOT-CAUSED but NOT MINE TO FIX: a dropped item is invisible above level 0 — WorldScene.addDrop hand-rolls its depth as the LIFTED screen y while resolveDrawDepth deliberately uses the FLAT one, so the cliff in front paints over it. Posted to games and games-assistant, who has client/src/scenes/WorldScene.ts in flight.",
+  "current": "CLAIMED (maintainer 2026-09-19, handed to me directly): SETTINGS SUB-TABS — a second row of up to 4 sub-tabs under the main tab row. Portrait: the strip unfolds under the tab row and the whole rail slides UP by exactly its height, so the page keeps the height it has today (the game view gives the space); landscape: icons only, at the top of the page column, sliding down. Sections: General (theme, resolution, log out) | Sound (sound/music switches; volume sliders once the composer has a volume API) | Controls (handedness) | Dev (admin only, = today's whole Settings page: the games agent's switch grid, every dial, the ambient checklist). The system is GENERIC (a page registers its sub-tabs) because Equipment gets one next. Placeholder inline-SVG icons until his 24x24 PixelLab icons arrive. Files: games2/client/src/hud.ts, games2/client/src/theme.ts (setTheme), games2/client/index.html (#game keeps the base split: one line, shared glue — announced here), games2/scripts/verify-subtabs.mjs (new), games2/scripts/qa-hudpages.mjs, games2/scripts/verify-safearea.mjs, games2/scripts/verify-hudtabs.mjs (if its Settings arm needs the Dev sub-tab), games2/UI_AGENT.md, games2/docs/ui.md, coordination/games-ui-assistant.json. NOT touched: the injectors (resdial/detaildial/dial/stickdir/accel/navhelp/navbias, ambient hudbutton) keep their hooks; they land in Dev by default and the HUD ADOPTS the Resolution dial into General on the receiving side.",
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
