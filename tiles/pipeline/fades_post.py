@@ -21,9 +21,9 @@ a fade label; fine art, wrong tree).
 THE OUTPUT IS THE WIKI'S SHAPE, posted by the wiki agent on the board before this data
 existed and adopted verbatim rather than negotiated:
 
-    tiles/fades/index.json     schema tiles3/fade-tiles@1
-    { schema, pairs: { "<a>__to__<b>": [ { key, file, pct: {"<a>": 62.5, "<b>": 37.5} },
-                                          ... ] } }
+    tiles/fades/index.json     schema tiles3/fade-tiles@2
+    { schema, pairs: { "<a>__to__<b>": [ { key, file, area_pct: {"<a>": 62.5, "<b>": 37.5},
+                                           edge_ground, pct, ... } ] } }
 
   - `key` is STABLE for the life of the art - the maintainer's verdicts ride
     live/feedback/tiles.json on it verbatim. It is derived from the sheet directory and
@@ -38,15 +38,18 @@ existed and adopted verbatim rather than negotiated:
     nothing else, so a verdict here can never reach a tile's other roles.
   - `file` is the full repo-relative path of the shipped bytes ("I never construct
     paths" - wiki). Content-hashed, immutable, current + one previous generation kept.
-  - `pct` both grounds by name, 0-100. Extra fields ride along and are ignored by the
-    wiki: edge_ground, edge_contact, phrasing, prompt.
+  - `area_pct` and `edge_ground` are CONTRACT (@2, 2026-09-19) and are never dropped:
+    area_pct is how much of the tile each ground covers, edge_ground is the ground it
+    places on. `pct` is the PLACEMENT SCORE, not an area share - see the index comment.
+    edge_contact, border_impurity, phrasing and prompt ride along.
 
 The raw generator listing lives in tiles/fades/sheets.json; this file owns index.json.
 The EDGE numbers are measured on the exact post/ bytes named in `file` (the border rule
 compares the band against the tile's own shipped background). The MIX is measured on the
 raw art, because the meter's prototypes were learned from raw generator output and
 alignment deliberately shifts the art off that distribution; alignment is a uniform
-shift, so the area each ground covers - which is what pct claims - is unchanged by it.
+shift, so the area each ground covers - which is what `area_pct` reports - is unchanged
+by it. `pct` reports no area at all: it is 51 + 49*area_edge, the placement score.
 """
 
 from __future__ import annotations
@@ -180,10 +183,27 @@ def analyse(sheet, i, name):
     #    tile. detail=True also hands back the meter's per-pixel map, which is what the
     #    two-sided alignment steers by.
     raw = Image.open(src)
-    mix = FM.mix_fraction(raw, a, b, detail=True)
+    # TWO MEASUREMENTS, ONE PER QUESTION (2026-09-19).
+    #  * THE EDGE FIGHT, THE GATES AND THE PUBLISHED BYTES stay on the NOMINAL diamond,
+    #    named explicitly here. A tall rock or ice block is drawn UPWARD, above that
+    #    shape, and those pixels land on the UPPER rim - which the maintainer's camera
+    #    ruling below says is not a witness ("if we could change the camera angle ALL
+    #    edges would have been ICE"). Letting the meter's own mask reach them rejected
+    #    105 tiles HE HAD ALREADY APPROVED on the MIN_RIM gate and re-cut half the
+    #    library's bytes (measured over all 7,906 listed tiles); a tile leaving this
+    #    index takes his verdict with it, which is the 772-verdict loop in apply_review.
+    #    The mask is also the SUPPORT of every feature window, so widening it moves the
+    #    posterior on the old pixels too - it is not only "which pixels are counted".
+    #  * AREA is the whole top face, the meter's own mask, because that is the question
+    #    area_pct answers: how much of the tile each ground covers. Masking area to the
+    #    nominal shape priced a tall feature as if it were not there.
+    alpha = np.array(raw.convert("RGBA"))[..., 3] > 0
+    mix = FM.mix_fraction(raw, a, b, detail=True, mask=FM.NOMINAL_DIAMOND & alpha)
     if mix is None or mix.get("uncertain"):
         return None, "uncertain"
     frac_b = float(mix["frac_b"])
+    whole = FM.mix_fraction(raw, a, b)
+    area_b = float(whole["frac_b"]) if whole and "frac_b" in whole else frac_b
 
     # 2. THE SIDE A TILE BELONGS ON IS ITS RIM, NOT ITS AREA MAJORITY. The maintainer's
     #    counter-example: big black rocks ON an ice sheet - rock wins the area, but the
@@ -287,7 +307,7 @@ def analyse(sheet, i, name):
     # construction, so placement can never land a tile on the wrong side again), and
     # his worked example lands exactly: area 49.5% ice with an ice rim -> 75% ice.
     # Integers summing to 100, so no label can ever read 51+50 again.
-    areaE = frac_b if edge_ground == b else 1.0 - frac_b
+    areaE = area_b if edge_ground == b else 1.0 - area_b
     pE = int(round(51.0 + 49.0 * areaE))
     pct = {edge_ground: pE, other: 100 - pE}
     return {
@@ -295,7 +315,7 @@ def analyse(sheet, i, name):
         "key": f'{sheet["dir"]}/{name[:-5]}',
         "file": os.path.relpath(shipped, REPO),
         "pct": pct,
-        "area_pct": {a: round(100 * (1.0 - frac_b), 1), b: round(100 * frac_b, 1)},
+        "area_pct": {a: round(100 * (1.0 - area_b), 1), b: round(100 * area_b, 1)},
         "edge_ground": edge_ground,
         "edge_contact": round(1.0 - rim_own_whole, 4),
         "border_impurity": m["border_impurity"],
@@ -483,7 +503,7 @@ def main():
         first = pk.split("__to__")[0]
         pairs[pk].sort(key=lambda e: -e["pct"][first])
     doc = {
-        "schema": "tiles3/fade-tiles@1",
+        "schema": "tiles3/fade-tiles@2",
         "kind": "fade_top_only", "use_for": "transition", "wall_is_meaningless": True,
         "_comment": [
             "VALID fade tiles only, per the maintainer's rules: never 50/50, both",
@@ -493,8 +513,22 @@ def main():
             "(big rocks ON an ice sheet - maintainer ruling 2026-08-28). edge_contact",
             "is the share of rim NOT the edge ground, 0 = fully clean; moderate contact",
             "is allowed (tall features have height).",
-            "pct is MEASURED from the published bytes named in `file`, never taken from",
-            "the prompt. `key` is stable for the life of the art; verdicts ride on it.",
+            "CONTRACT (@2): area_pct and edge_ground are load-bearing for the wiki",
+            "and the game and are NEVER dropped. area_pct is how much of the tile",
+            "each ground covers, measured per pixel on the raw art by the classifier",
+            "below - it is the number to print and the number to read.",
+            "pct IS NOT AN AREA SHARE and never was (it read as one for three weeks):",
+            "it is the PLACEMENT SCORE the maintainer asked for 2026-08-28 ('the",
+            "border is worth a lot') - the edge-fight winner starts at 51 and the",
+            "remaining 49 points scale with area, pct[edge] = 51 + 49*area_edge, so",
+            "the ground a tile sits on is always over 50 and placement can never land",
+            "a tile on the wrong side. It follows that pct[other] = 0.49 *",
+            "area_pct[other] (the formula's own constant; measured 0.49 across all",
+            "7,906 tiles) and that pct[other] never exceeds 49 - a consumer",
+            "filtering `pct <= 55` filters nothing.",
+            "pct KEEPS PUBLISHING UNCHANGED until games and maps have moved off it; it",
+            "is then renamed place_score or dropped (maintainer 2026-09-19).",
+            "`key` is stable for the life of the art; verdicts ride on it.",
             "Rejected tiles stay on disk (raw sheets are never deleted) but are not",
             "listed here and should not be shown.",
             "REVIEW IS HONOURED: a key marked rejected in live/feedback/tiles.json",

@@ -244,12 +244,23 @@ with height"), so `edge_contact` is published as a number and only a rim mostly 
 the minority rejects. Invalid tiles are omitted from the index, never deleted.
 
 **The consumer surface is the wiki's contract, adopted verbatim** (their board post,
-2026-08-28): `tiles/fades/index.json`, schema `tiles3/fade-tiles@1`,
-`pairs["<a>__to__<b>"] = [{key, file, pct: {"<a>": 62.5, "<b>": 37.5}}]`. `key` is stable
-for the life of the art (verdicts ride on it); `file` is the content-hashed post path,
-never constructed by a consumer; `pct` is per ground BY NAME, measured on the exact bytes
-in `file`. The raw generator listing is `tiles/fades/sheets.json`. Top-only art: the wall
-is meaningless, same as `tiles/tops`.
+2026-08-28): `tiles/fades/index.json`, schema `tiles3/fade-tiles@2`,
+`pairs["<a>__to__<b>"] = [{key, file, area_pct: {"<a>": 62.5, "<b>": 37.5}, edge_ground,
+pct, ...}]`. `key` is stable for the life of the art (verdicts ride on it); `file` is the
+content-hashed post path, never constructed by a consumer. The raw generator listing is
+`tiles/fades/sheets.json`. Top-only art: the wall is meaningless, same as `tiles/tops`.
+
+**`area_pct` is the area share; `pct` is not** (maintainer 2026-09-19, who had been
+reading pct as "how much of this tile is grass" since August). `area_pct` is per ground
+BY NAME, how much of the top face each one covers, measured per pixel on the raw art —
+the number to print and to read, and CONTRACT at `@2` alongside `edge_ground`: neither
+is ever dropped. `pct` is the PLACEMENT SCORE asked for on 2026-08-28 ("the border is
+worth a lot"): `pct[edge] = 51 + 49*area_edge`, so the ground a tile sits on always
+scores over 50 and placement cannot land it on the wrong side. Two consequences a
+consumer must know: `pct[other] = 0.49 * area_pct[other]` (measured 0.4898 across 7,906
+tiles), and `pct[other]` never exceeds 49 — a `pct <= 55` window filters nothing and a
+`pct > 55` pool is always empty. `pct` keeps publishing unchanged until games and maps
+have moved off it, then becomes `place_score` or goes.
 
 ## Superseded: the blend-tile ladder (`tiles/blends/`, kept on disk)
 

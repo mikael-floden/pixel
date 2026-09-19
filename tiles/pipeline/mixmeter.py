@@ -58,16 +58,25 @@ import sys
 import numpy as np
 from PIL import Image
 
+import transition_render as TR   # top_face: the rule lives there, never a second copy
+
 MODEL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "cache", "meter.npz")
 
 # ---------------------------------------------------------------- geometry ---------
 TILE = 64
 _yy, _xx = np.mgrid[0:TILE, 0:TILE]
 DIAMOND = (np.abs(_xx - 31.5) / 32.0 + np.abs(_yy - 23.0) / 14.6) <= 1.0
-# The nominal 64x28 top diamond, centred where every tiles3 tile puts it. Measured on
-# tops and puddles it agrees with transition_render.top_face to within 12 px; on blends
-# it drops the raised overhang some sheets draw ABOVE the diamond (up to 1096 px, and on
-# the black_rock/grey_stone p50 sheets that region is a white generation artefact).
+# The nominal 64x28 top diamond. It is NOT the default mask any more: a mask-less call
+# measures transition_render.top_face(alpha), the tile's OWN silhouette (2026-09-19).
+# The nominal shape is the right size in the right place - measured over the 3,489
+# published fade tiles that disagree with it, real half-height median 14.5 against 14.6
+# and widest row y=22.7 against 23 - but A TALL FEATURE IS DRAWN UPWARD, above it, and
+# masking to the nominal shape read a tall rock or ice block as if it were not there:
+# 44% of published fade tiles have real top face outside it, mean 2.6% of the face and
+# worst 41%, and 90% of those pixels sit above the diamond's centre. Kept for callers
+# that pass it explicitly and as the shape the silhouette is measured against; on blends
+# the region above it can be a white generation artefact (black_rock/grey_stone p50), so
+# a caller working on blends passes its own mask.
 
 # ---------------------------------------------------------------- tuned constants ---
 GAIN = 4.0          # temperature on the per-pixel log-odds (measured on train-sheet
@@ -176,7 +185,7 @@ def features(rgba, mask=None):
     """(H,W,35) local statistics, every window limited to `mask`."""
     a = np.asarray(rgba, int)
     if mask is None:
-        mask = DIAMOND & (a[..., 3] > 0)
+        mask = TR.top_face(a[..., 3] > 0)
     lab = srgb_to_lab(a[..., :3].astype(float))
     L, A, B = lab[..., 0], lab[..., 1], lab[..., 2]
     f = []

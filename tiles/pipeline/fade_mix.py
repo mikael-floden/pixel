@@ -7,6 +7,10 @@ from __future__ import annotations
 
 import mixmeter
 
+# The nominal 64x28 top face. The meter's own mask is the tile's WHOLE top face; this is
+# the shape the edge fight and the published alignment stay on - see fades_post.analyse.
+NOMINAL_DIAMOND = mixmeter.DIAMOND
+
 DESCRIPTION = (
     "region-arbitrated texture+colour meter (mixmeter.py, model cache/meter.npz): "
     "every ground described by prototype MIXTURES learned from tiles/tops (never the "
@@ -17,14 +21,17 @@ DESCRIPTION = (
 )
 
 
-def mix_fraction(image, ground_a, ground_b, detail=False):
+def mix_fraction(image, ground_a, ground_b, detail=False, mask=None):
     """-> {"frac_b": float in [0,1]} or {"uncertain": True} when the meter cannot say.
+
+    `mask` overrides the meter's own top-face mask, for a caller that must measure one
+    named region (fades_post holds the edge fight to NOMINAL_DIAMOND).
 
     With detail=True the result also carries "post" (per-pixel probability the pixel is
     ground B) and "mask" (the meter's top-face mask) - the segmentation the two-sided
     alignment steers by, from the same call that prices the mix."""
     try:
-        r = mixmeter.mix_fraction(image, ground_a, ground_b, detail=detail)
+        r = mixmeter.mix_fraction(image, ground_a, ground_b, mask=mask, detail=detail)
     except KeyError:
         return {"uncertain": True}
     if r is None:
