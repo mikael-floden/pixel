@@ -131,6 +131,7 @@ import {
   hurtSeekFrames,
 } from "../fallhurt";
 import { withV, assetIndexInfo } from "../assetver";
+import { buildLive } from "../buildlive";
 import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
@@ -9315,6 +9316,10 @@ export class WorldScene extends Phaser.Scene {
      * authority holding different footprints is precisely the divergence the
      * single collision endpoint exists to rule out. Refetch rather than trust a
      * payload: the endpoint is the authority's own copy. */
+    // A NEW BUILD IS LIVE. Relayed to buildlive.ts, which main.ts turned into
+    // the banner — the scene deliberately does not know what happens next, and
+    // nothing here reloads or interrupts a session in progress.
+    room.onMessage("build:live", (msg: { sha?: string }) => buildLive(msg?.sha));
     room.onMessage("scenery:collision", () => {
       void fetch("/api/scenery-collision")
         .then((r) => (r.ok ? r.json() : null))

@@ -242,6 +242,28 @@ export function backendFromEnv(env = process.env): StoreBackend | undefined {
   return localBackend(spec);
 }
 
+/** A FLIP IS NEWS. Listeners are module-level for the same reason
+ *  `onLiveChange` is: the rooms cannot reach the store instance, and the store
+ *  must not know what a room is. A throwing listener is swallowed — this runs
+ *  inside refresh(), and an unhandled rejection there reaches Colyseus's
+ *  graceful-shutdown path and exits the process. */
+const servedListeners = new Set<(sha: string, id: string) => void>();
+
+export function onBundleServed(cb: (sha: string, id: string) => void): () => void {
+  servedListeners.add(cb);
+  return () => servedListeners.delete(cb);
+}
+
+export function noteBundleServed(sha: string, id: string): void {
+  for (const cb of servedListeners) {
+    try {
+      cb(sha, id);
+    } catch {
+      /* a listener must never break a flip */
+    }
+  }
+}
+
 export class BundleStore {
   /** APPEND-ONLY (law 4): a name we have ever served keeps resolving. */
   private names = new Map<string, string>();
@@ -426,6 +448,17 @@ export class BundleStore {
       `serving ${next.current}${from ? ` (was ${from})` : ""}, ${this.gens.size} generation(s), ` +
         `${this.names.size} name(s), ${this.blobs.size} blob(s), seq ${next.seq}`,
     );
+    // TELL THE OPEN PAGES, so a new build is news in a second instead of in up
+    // to a minute. main.ts polls /version every 60 s and only ever OFFERS the
+    // banner (his rule), so the deploy landing and the banner appearing were
+    // two separate waits: 66 s to serve plus 0-60 s to notice, which is what
+    // makes a person sit and refresh. A flip is the exact moment the news
+    // exists, so say it here; WorldRoom broadcasts it over the socket already
+    // open. ANNOUNCED AFTER the flip and the log, never before — a listener
+    // must never be told about a generation this store is not yet serving.
+    // The poll stays as the belt: the select screen has no room, and a page
+    // that missed the message still converges within the minute.
+    noteBundleServed(next.git_sha || "", next.current);
   }
 
   /** BYTES ARE EVICTED; NAMES NEVER ARE.

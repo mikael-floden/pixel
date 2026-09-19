@@ -3,7 +3,7 @@ import assert from "node:assert/strict";
 import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
-import { BundleStore, localBackend, backendFromEnv, hashBytes, mimeFor } from "../src/bundlestore";
+import { BundleStore, localBackend, backendFromEnv, hashBytes, mimeFor, onBundleServed } from "../src/bundlestore";
 
 // A generation, written the way publish-bundle.mjs writes one: files first,
 // manifest second, pointer last.
@@ -620,5 +620,59 @@ test("an image that cannot say what it serves stops the publish, and never falls
     assert.ok(!existsSync(join(root, "pointer.json")), "no pointer was written");
   } finally {
     await new Promise<void>((ok) => srv.close(() => ok()));
+  }
+});
+
+/* A FLIP IS ANNOUNCED, A REFUSAL IS NOT. The client polls /version once a
+ * minute and only ever offers the banner, so a 66 s deploy could take another
+ * 60 s to be noticed — the second wait is what makes a person sit and refresh.
+ * WorldRoom relays this announcement over the socket already open. The part
+ * worth holding in a test is the NEGATIVE: a generation the store refused must
+ * announce nothing, or every open page would be told to expect code that is
+ * not being served. */
+test("a flip announces what is now serving; a refused generation announces nothing", async () => {
+  const seen: { sha: string; id: string }[] = [];
+  const off = onBundleServed((sha, id) => seen.push({ sha, id }));
+  try {
+    const root = mkdtempSync(join(tmpdir(), "bs-say-"));
+    writeGen(root, "aaa", GEN_A);
+    writePointer(root, { seq: 1, current: "aaa", retained: [], git_sha: "shaAAA" });
+    const s = store(root);
+    await s.refresh();
+    assert.equal(s.current?.id, "aaa");
+    assert.deepEqual(seen, [{ sha: "shaAAA", id: "aaa" }], "the adopted generation is announced once");
+
+    // A re-read that changes nothing is not news.
+    await s.refresh(true);
+    assert.equal(seen.length, 1, "an unchanged re-read announces nothing");
+
+    // A pointer naming a generation that was never written is REFUSED — and
+    // must stay silent, because nothing new is being served.
+    writePointer(root, { seq: 2, current: "ghost", retained: ["aaa"], git_sha: "shaGHOST" });
+    await s.refresh(true);
+    assert.equal(s.current?.id, "aaa", "the store keeps serving what it had");
+    assert.equal(seen.length, 1, "a refused generation announces nothing");
+    rmSync(root, { recursive: true, force: true });
+  } finally {
+    off();
+  }
+});
+
+test("a throwing listener cannot break a flip", async () => {
+  // This runs inside refresh(), and an unhandled rejection there reaches
+  // Colyseus's graceful-shutdown path and exits the process.
+  const off = onBundleServed(() => {
+    throw new Error("a listener misbehaving");
+  });
+  try {
+    const root = mkdtempSync(join(tmpdir(), "bs-throw-"));
+    writeGen(root, "aaa", GEN_A);
+    writePointer(root, { seq: 1, current: "aaa", retained: [] });
+    const s = store(root);
+    await s.refresh();
+    assert.equal(s.current?.id, "aaa", "the flip completed regardless");
+    rmSync(root, { recursive: true, force: true });
+  } finally {
+    off();
   }
 });

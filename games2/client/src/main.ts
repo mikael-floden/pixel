@@ -7,6 +7,7 @@ import { loadMonsterManifest } from "./monsterManifest";
 import { loadNpcManifest, loadNpcPlacement } from "./npcManifest";
 import { loadMonsterBootKinds } from "./monsterBoot";
 import { loadAssetIndex, setImageSha } from "./assetver";
+import { onBuildLive } from "./buildlive";
 import { enterStaging, mergeStagingEntries, gameUrl } from "./staging";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
@@ -136,6 +137,14 @@ function watchForUpdates() {
     } catch {}
   };
   setInterval(check, 60_000);
+  // AND THE SAME BANNER, WITHOUT WAITING FOR THE NEXT POLL. The server
+  // broadcasts `build:live` the moment the fast lane's store flips, so the news
+  // arrives in about a second rather than in up to sixty. `check` is reused
+  // rather than trusting the message's sha: it re-reads /version, which is the
+  // authority, so a stale or spoofed broadcast cannot raise a banner for a
+  // build that is not actually being served. The poll stays as the belt for
+  // pages with no room open, such as the select screen.
+  onBuildLive(() => void check());
 }
 
 /** THE BOOT CHECK AGAINST /version. A page restored from the phone's cache can

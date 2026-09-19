@@ -138,6 +138,7 @@ import { WorldState, Player, Monster, MonsterArea, GroundItem, OWNER_VIEW_TAG } 
 import { ChessManager, chessBoardsFor, ChessBoardCfg } from "../chess.js";
 import { monsterStatsFor, monsterRadiusFor, MonsterStats } from "../tuning.js";
 import { onLiveChange, liveTuning, sceneryHitboxOverrides } from "../live.js";
+import { onBundleServed } from "../bundlestore.js";
 import { AccountRecord, AccountStore, accountStore, resolveAccount } from "../account/store.js";
 import type { ZoneGrid, Rect, ZoneCfg } from "@nangijala/shared";
 import { existsSync, readFileSync } from "fs";
@@ -478,6 +479,7 @@ export class WorldRoom extends Room<WorldState> {
   // nothing to freeze. Time just flows.
   private worldName = ""; // set in onCreate; keys the worldClocks registry
   private offLive?: () => void; // unsubscribe from live-tuning pushes
+  private offBuild?: () => void; // unsubscribe from fast-lane flip pushes
 
   // Monsters (server-authoritative roaming). Per-zone cap override + a seedable
   // RNG so tests get deterministic spawns/roams. `monsterRng` defaults to
@@ -733,6 +735,15 @@ export class WorldRoom extends Room<WorldState> {
       this.broadcast("live:update", tuning);
       void this.restampSceneryFromLive();
     });
+    // A NEW BUILD IS NEWS ON THE SOCKET THAT IS ALREADY OPEN. The client's
+    // /version poll runs once a minute and only OFFERS the banner (his rule,
+    // and it stays), so a 66 s deploy could take another 60 s to be noticed —
+    // that second wait is what makes a person sit and refresh the page. The
+    // store announces the moment it flips; relay it. The client still decides
+    // what to do with it (banner only, never a reload under a live session),
+    // and the poll remains the belt for pages with no room, such as the
+    // select screen.
+    this.offBuild = onBundleServed((sha) => this.broadcast("build:live", { sha }));
     this.sceneryHbStamp = hitboxStamp();
     // Publish each zone's bounding box so clients can draw the debug overlay
     // (the true shape is a polygon; the bbox is plenty for a debug rect).
@@ -3452,6 +3463,7 @@ export class WorldRoom extends Room<WorldState> {
       zoneRooms.delete(zoneRoomKey(this.worldName, this.zoneId));
     if (this.starTimer) clearTimeout(this.starTimer);
     this.offLive?.();
+    this.offBuild?.();
     for (const off of this.unsubs) off();
     this.unsubs = [];
   }
