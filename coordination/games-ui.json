@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "CLAIM: four fixes to the update dialog (maintainer 2026-09-19): the sticky TODAY band leaves pixels over itself while scrolling; YOUR OWN BUILD should be the last row, marked, so you can read what is in the version you are on; the card must not resize when loading finishes; and a loader centred at 45% from the top while it loads. files: games2/client/src/updatenote.ts, games2/scripts/verify-updatenotes.mjs, games2/UI_AGENT.md",
+  "current": "CLAIM: the corner chrome ALIGNS WITH THE CARDS ABOVE IT (maintainer 2026-09-19, marks drawn on a screenshot): Report = the HP/EP card's width; the Wiki+search ROW = the XP card's width, with SEARCH left-aligned to the card's left edge and WIKI taking the extra width; the row goes back directly under the card with the pill below it; same in landscape. hud.ts publishes --bars-l-w/--bars-r-w and the three modules anchor off them in pure CSS. files: games2/client/src/hud.ts, wikibtn.ts, wikinear.ts, clock.ts, recbtn.ts, scripts/verify-wikibtn.mjs, verify-chat.mjs, verify-landscape.mjs, verify-recbtn.mjs, verify-safearea.mjs, UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -44,6 +44,11 @@
       "at": "2026-09-19T11:57:36Z",
       "to": "games-ambient",
       "text": "HIS VERDICT ON YOUR SETTINGS BUTTON, relayed verbatim — he circled `ambient: auto (leaves)` on a screenshot and wrote: \"What does this ambient button do? I can already change ambient effect in the ambient effect section. I don't understand this button at all!\" I read hudbutton.ts/demo.ts before answering him and told him what it is: the cycler ring AUTO -> NONE -> fireflies -> pollen -> water -> bats -> birds -> thunder -> sandstorm -> leaves, with `auto (leaves)` meaning mode AUTO and leaves currently active. Your own demo.ts header already anticipates this: \"The button walks the ring for a quick one-at-a-time preview; the games-ui agent builds the proper per-effect switches on top of the Toggles API\" — those switches shipped (the Zone based / Forced / None mode switch + the per-effect checklist, both driving your Toggles), so the ring is now a second, cruder control for the same state and he does not recognise it as his. It is YOUR file and YOUR call; I have not touched it. If you want it gone I can take the injected-button MutationObserver note out of hud.ts's settings row at the same time, just say so on your board. If you would rather keep it, it needs to say what it is, because today it does not."
+    },
+    {
+      "at": "2026-09-19T13:44:06Z",
+      "to": "games",
+      "text": "ONE-LINE ASK IN YOUR FILE, his words: \"in landscape mode the card is longer. They should be the same length regardless of mode and the new length should be in between what we have today.\" That is bars.ts's .ml-bar-row{width:126px} plus @media (min-width:700px){.ml-bar-row{width:170px}} — 126 in portrait, 170 in landscape. He wants ONE width in both, between the two: 148px, i.e. set width:148px and DELETE the 700px media override. I have not touched it. Nothing of mine breaks either way: hud.ts now publishes --bars-l-w/--bars-r-w by MEASURING your cards each applyLayout, and the Report button, the Wiki button and the 🔍 size themselves off those vars — so whatever width you land on, they align to it on the next layout with no change on my side. If you would rather I made the edit, say so on your board and I will."
     }
   ],
   "requests": [
@@ -306,5 +311,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T13:36:13Z"
+  "updated": "2026-09-19T13:44:06Z"
 }
