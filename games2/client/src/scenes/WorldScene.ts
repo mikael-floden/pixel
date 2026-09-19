@@ -131,7 +131,7 @@ import {
   hurtSeekFrames,
 } from "../fallhurt";
 import { withV, assetIndexInfo } from "../assetver";
-import { buildLive } from "../buildlive";
+import { buildLive, buildSocket } from "../buildlive";
 import { netPerfStart, netPerfTake } from "../netperf";
 import { installTexUploadProbe, texUploadTake } from "../texupload";
 import { installCaptureProbe, installCapturePool, captureTake } from "../capturepool";
@@ -9320,6 +9320,9 @@ export class WorldScene extends Phaser.Scene {
     // the banner — the scene deliberately does not know what happens next, and
     // nothing here reloads or interrupts a session in progress.
     room.onMessage("build:live", (msg: { sha?: string }) => buildLive(msg?.sha));
+    // This socket is now the fast path for build news, so main.ts's /version
+    // poll can drop back to its slow rate; onLeave below hands it back.
+    buildSocket(true);
     room.onMessage("scenery:collision", () => {
       void fetch("/api/scenery-collision")
         .then((r) => (r.ok ? r.json() : null))
@@ -9369,6 +9372,7 @@ export class WorldScene extends Phaser.Scene {
     // means the whole loading screen again). A real page unload fires
     // pagehide first and is left alone.
     room.onLeave(() => {
+      buildSocket(false); // nothing is carrying build news now — poll faster again
       if (this.unloading || this.room !== room) return;
       this.handleDrop();
     });

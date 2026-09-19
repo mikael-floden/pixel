@@ -7,7 +7,7 @@ import { loadMonsterManifest } from "./monsterManifest";
 import { loadNpcManifest, loadNpcPlacement } from "./npcManifest";
 import { loadMonsterBootKinds } from "./monsterBoot";
 import { loadAssetIndex, setImageSha } from "./assetver";
-import { onBuildLive } from "./buildlive";
+import { onBuildLive, buildSocketUp } from "./buildlive";
 import { enterStaging, mergeStagingEntries, gameUrl } from "./staging";
 import { withFallback } from "./placeholder";
 import { chooseCharacter } from "./select";
@@ -136,14 +136,30 @@ function watchForUpdates() {
       if (sha && sha !== "dev" && sha !== mine) showUpdateBanner(sha);
     } catch {}
   };
-  setInterval(check, 60_000);
-  // AND THE SAME BANNER, WITHOUT WAITING FOR THE NEXT POLL. The server
-  // broadcasts `build:live` the moment the fast lane's store flips, so the news
-  // arrives in about a second rather than in up to sixty. `check` is reused
-  // rather than trusting the message's sha: it re-reads /version, which is the
-  // authority, so a stale or spoofed broadcast cannot raise a banner for a
-  // build that is not actually being served. The poll stays as the belt for
-  // pages with no room open, such as the select screen.
+  // THE INTERVAL FOLLOWS WHETHER ANYTHING ELSE IS LISTENING. In a world the
+  // room's socket carries `build:live` the moment the store flips, so a poll
+  // adds nothing and stays at a minute. With NO socket — the select screen, the
+  // loading screen, a dropped connection — the poll is the only way to hear
+  // anything, and a minute of it is what makes a person refresh the page by
+  // hand. So poll every 5 s there instead. /version is ~110 bytes and
+  // `no-store`, and the fast rate stops the moment a world is joined, which is
+  // seconds later.
+  //
+  // setTimeout, not setInterval: the rate has to be re-decided after each
+  // check, and an interval cannot change its own period. Each tick schedules
+  // the next one and `check` never throws, so the chain cannot stop.
+  const SOCKET_IS_LISTENING = 60_000;
+  const NOTHING_IS_LISTENING = 5_000;
+  const tick = async () => {
+    await check();
+    setTimeout(() => void tick(), buildSocketUp() ? SOCKET_IS_LISTENING : NOTHING_IS_LISTENING);
+  };
+  setTimeout(() => void tick(), buildSocketUp() ? SOCKET_IS_LISTENING : NOTHING_IS_LISTENING);
+
+  // AND INSTANTLY, WHEN THERE IS A SOCKET. `check` is reused rather than
+  // trusting the message's sha: it re-reads /version, which is the authority,
+  // so a stale or spoofed broadcast cannot raise a banner for a build that is
+  // not actually being served.
   onBuildLive(() => void check());
 }
 

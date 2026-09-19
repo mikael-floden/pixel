@@ -17,6 +17,20 @@
  *  before boot has registered anything is simply dropped: the minute poll is
  *  the belt under all of this and converges on its own. */
 let handler: ((sha: string) => void) | null = null;
+let socketUp = false;
+
+/** Set by WorldScene when the room's socket comes up and when it goes away.
+ *  It is what lets the /version poll be SLOW while the socket is carrying the
+ *  news and FAST when nothing is: the select screen, the loading screen and a
+ *  dropped connection have no socket, and those are exactly the pages that
+ *  would otherwise sit up to a minute behind a deploy. */
+export function buildSocket(up: boolean): void {
+  socketUp = up;
+}
+
+export function buildSocketUp(): boolean {
+  return socketUp;
+}
 
 /** Registered once, by main.ts, with what to do about a new build. */
 export function onBuildLive(cb: (sha: string) => void): void {
