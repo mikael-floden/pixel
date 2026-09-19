@@ -10805,12 +10805,39 @@ function fadeTilesFor(a, b) {
      * nothing more: agrees on every published tile today (check-fades
      * asserts it), and it is what answers for an index that predates the
      * field. */
-    .map((t) => ({
-      key: t.key, file: t.file,
-      pctA: +t.pct[a], pctB: isFinite(t.pct[b]) ? +t.pct[b] : 100 - +t.pct[a],
-      edge: t.edge_ground === a || t.edge_ground === b ? t.edge_ground : null,
-    }))
-    .sort((x, y) => y.pctA - x.pctA);
+    .map((t) => {
+      const edge = t.edge_ground === a || t.edge_ground === b ? t.edge_ground : null;
+      /* THE NUMBER ON THE CARD IS THE AREA — what the picture IS (maintainer
+       * 2026-09-19: "I feel it's often very wrong and flips very suddenly from
+       * 90% x and 10% y to 90% y and 10% x"). It was showing `pct`, which is
+       * his 2026-08-28 PLACEMENT score — 51 points for owning the rim plus half
+       * the area — so the minority always read at half its true size, and the
+       * side that owned the rim always read as the majority whatever the
+       * picture showed. Measured over the published index: the label's majority
+       * was the opposite of the picture's on 1,000 of 7,774 tiles, worst case
+       * 57% ice on a tile 11.6% ice. `area_pct` is the measurement, published
+       * beside it all along. `pct` is the fallback for an index that predates
+       * it, and is never read as a side — see `edge` above. */
+      const ap = t.area_pct;
+      const areaA = isFinite(ap?.[a]) ? +ap[a] : +t.pct[a];
+      const areaB = isFinite(ap?.[b]) ? +ap[b] : (isFinite(ap?.[a]) ? 100 - +ap[a] : 100 - +t.pct[a]);
+      // How much of the rim is NOT the ground it sits on: 0 is a perfect seam.
+      const contact = isFinite(t.edge_contact) ? +t.edge_contact : null;
+      return { key: t.key, file: t.file, areaA, areaB, edge, contact,
+        pctA: +t.pct[a], pctB: isFinite(t.pct[b]) ? +t.pct[b] : 100 - +t.pct[a] };
+    })
+    /* SIDE FIRST, THEN THE AREA. The old sort was `pctA` descending, which by
+     * construction produced exactly this — every tile sitting on `a` scores
+     * above 50 and every tile sitting on `b` below it — so the shape of the
+     * page is unchanged. What changes is that it is now computed from the two
+     * fields it actually means, so it cannot drift when `pct` is frozen and
+     * `area_pct` moves (the tiles agent is re-measuring the top face). A tile
+     * with no `edge` sorts with the side its area favours, as it always did. */
+    .sort((x, y) => {
+      const sx = (x.edge ?? (x.areaA >= 50 ? a : b)) === a ? 0 : 1;
+      const sy = (y.edge ?? (y.areaA >= 50 ? a : b)) === a ? 0 : 1;
+      return sx - sy || y.areaA - x.areaA;
+    });
 }
 /* HOW MUCH OF A PAIR'S FADE REVIEW IS LEFT (maintainer 2026-09-02: "I have a
  * hard time knowing how much fade tiles I have left to review for a given
@@ -11220,19 +11247,62 @@ function viewWorldTransition(pairId) {
        * from a sentinel 1200px below the last one — so the batch boundary is
        * invisible: he scrolls, and there is simply more. Same pattern the
        * ground-details queue already uses. */
+      /* WHICH FIELD A TILE GOES IN — its own `edge_ground`, the ground its RIM
+       * belongs to, and the only thing that decides where it can sit without a
+       * hard edge (maintainer 2026-09-19: "It's very very important for the
+       * game to know if a tile has ice edges and seamlessly can be placed on
+       * ICE ... If the tile can/should be placed on ice vs grass has nothing to
+       * do with the % number"). An index without the field falls back to the
+       * area, which is the old guess and is never better than one. */
+      const sideOf = (t) => t.edge ?? (t.areaA >= 50 ? tr.a : tr.b);
       const rowsFor = (t, i) => [
         // The seam between the blocks, named — so a reviewed tile near the
         // top is never mistaken for an unreviewed one.
         i === fadeOrder.firstDone && fadeOrder.firstDone > 0 && i < ordered.length
           ? h("div", { class: "fade-divider muted" }, "already reviewed — same order") : null,
+        /* AND THE SEAM BETWEEN THE TWO FIELDS. The list has always been two
+         * blocks — everything that sits on this page's first ground, then
+         * everything that sits on the other — because the old sort was the
+         * placement score and the score put them that way. Nothing said so, so
+         * the numbers appeared to flip mid-list for no reason: the card above
+         * this line reads 54% grass and the one below reads 78% grass, and both
+         * are right, because they go in different fields. Saying it out loud is
+         * the whole difference between a jump and a bug. */
+        i > 0 && sideOf(ordered[i - 1]) !== sideOf(t)
+          ? h("div", { class: "fade-divider muted" },
+              `↓ these sit in the ${(sideOf(t) === tr.a ? nameA : nameB).toLowerCase()} field`) : null,
         /* THE CARD WEARS ITS VERDICT (maintainer 2026-09-03: "When I approved
          * or rejected a tile before on the fade page — the card border
          * became green/red"). Painted from the local doc, so it appears the
          * instant he taps, queued or committed alike. */
         (() => {
+          /* TWO FACTS, KEPT APART ON PURPOSE. The bold number is what the
+           * PICTURE is (area_pct, measured). The pill is where the tile can
+           * GO (edge_ground, its rim) and how clean that rim is
+           * (edge_contact — the share of the border that is not the field's
+           * own ground, 0 being a perfect seam). They are correlated and they
+           * are not the same thing, and one number pretending to be both is
+           * what made this page lie. */
+          const pa = Math.round(t.areaA);
+          const side = sideOf(t);
+          const sideName = (side === tr.a ? nameA : nameB).toLowerCase();
+          // Name the ground that is intruding, not a bare number: "rim 54%"
+          // reads as 54% of something and the phone shows no tooltip.
+          const otherName = (side === tr.a ? nameB : nameA).toLowerCase();
+          const rim = t.contact == null ? null : Math.round(100 * t.contact);
+          const clean = rim == null || rim <= 25;
           const card = h("div", { class: "fade-tile" },
             h("div", { class: "player-controls" },
-              h("b", {}, `${Math.round(t.pctA)}% ${nameA.toLowerCase()} · ${Math.round(t.pctB)}% ${nameB.toLowerCase()}`),
+              h("b", { title: "How much of the tile's top face each ground covers — measured on the art" },
+                `${pa}% ${nameA.toLowerCase()} · ${100 - pa}% ${nameB.toLowerCase()}`),
+              h("span", {
+                class: `pill ${clean ? "ok" : "warn"} fade-side`,
+                "data-side": side, "data-rim": rim == null ? "" : String(rim),
+                title: `This tile's RIM is ${sideName}, so it drops seamlessly into a ${sideName} field and nowhere else`
+                  + (rim == null ? "" : `. ${rim}% of that border is ${otherName} instead`
+                      + (clean ? " — a clean seam." : " — enough to show at the edge, so judge it in the field below."))
+                  + " Where it goes is its edges, never its percentage.",
+              }, clean ? `sits on ${sideName}` : `sits on ${sideName} · rim ${rim}% ${otherName}`),
               h("span", { class: "muted mono fade-key", title: t.key }, t.key.split("/").pop())),
             fadeScene(tr.a, tr.b, t));
           const paintCard = () => {

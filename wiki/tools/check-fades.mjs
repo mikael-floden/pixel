@@ -25,7 +25,12 @@ const D = JSON.parse(readFileSync(new URL("../site/data.json", import.meta.url),
 const grounds = (D.worldMeta?.groundTypes ?? []).map((g2) => g2.id);
 const covered = (a, b2) => IDX.pairs[`${a}__to__${b2}`] || IDX.pairs[`${b2}__to__${a}`];
 const nameOf = (id) => (D.worldMeta?.groundTypes ?? []).find((g2) => g2.id === id)?.name ?? id;
-ok(IDX.schema === "tiles3/fade-tiles@1", `the index speaks the posted contract (${IDX.schema})`);
+/* THE FAMILY, NOT THE VERSION. This pinned the exact string and would have gone red on
+ * tiles3/fade-tiles@2 — the bump that makes area_pct and edge_ground contract, which is the
+ * whole point. A gate that fails when the contract IMPROVES is a gate that teaches everyone
+ * to ignore it. The page never reads `schema` at all; what the wiki actually needs is asserted
+ * field by field below, which is the honest test of a contract. */
+ok(/^tiles3\/fade-tiles@\d+$/.test(IDX.schema ?? ""), `the index speaks the posted contract (${IDX.schema})`);
 const allTiles = Object.values(IDX.pairs).flat();
 ok(allTiles.every((t) => t.key && t.file && t.pct && Object.values(t.pct).every((v) => v >= 0 && v <= 100)
   && Math.abs(Object.values(t.pct).reduce((a, b) => a + b, 0) - 100) < 1),
@@ -65,8 +70,33 @@ ok(disagree.length === 0,
 const MERGED = [...(IDX.pairs["grass__to__ice"] ?? []), ...(IDX.pairs["ice__to__grass"] ?? [])];
 ok(MERGED.length > 12 && (IDX.pairs["grass__to__ice"] ?? []).length > 0 && (IDX.pairs["ice__to__grass"] ?? []).length > 0,
   `grass↔ice is published as two orientation halves (${(IDX.pairs["grass__to__ice"] ?? []).length}+${(IDX.pairs["ice__to__grass"] ?? []).length}=${MERGED.length}) — the merge is what there is to test`);
-const grassTop = Math.round(Math.max(...MERGED.map((t) => t.pct.grass)));
-const iceTop = Math.round(Math.max(...MERGED.map((t) => t.pct.ice)));
+/* THE ORDER THE PAGE MUST PRODUCE, from the two fields it means: the side a
+ * tile SITS on (edge_ground, its rim) first, then how much of this page's own
+ * ground the PICTURE shows (area_pct, measured). The old sort was `pct`
+ * descending, which produced exactly these two blocks by accident — the
+ * placement score puts every A-rim tile above 50 and every B-rim one below —
+ * so the shape of the page is unchanged and only its arithmetic is honest.
+ * Derived here rather than pinned so it holds while tiles keeps `pct` frozen
+ * and re-measures `area_pct`. */
+const areaOf = (t, gnd) => t.area_pct?.[gnd] ?? t.pct[gnd];
+const sideOf = (t) => t.edge_ground ?? (areaOf(t, "grass") >= 50 ? "grass" : "ice");
+const pageOrder = (first) => [...MERGED].sort((x, y) =>
+  (sideOf(x) === first ? 0 : 1) - (sideOf(y) === first ? 0 : 1) || areaOf(y, first) - areaOf(x, first));
+const desc = (a) => a.every((v, i) => i === 0 || a[i - 1] >= v);
+/* Descending WITHIN a side, each side appearing once — never one global run.
+ * The last grass-field tile shows less grass than the first ice-field one and
+ * both are right; a global descent would now be the wrong assertion, and
+ * passing it would mean the card had gone back to printing the score. */
+const blockOk = (pcts, sides) => {
+  const runs = []; let cur;
+  sides.forEach((sd, i) => { if (sd !== cur) { runs.push({ side: sd, v: [] }); cur = sd; } runs[runs.length - 1].v.push(pcts[i]); });
+  const seen = new Set();
+  for (const r of runs) { if (seen.has(r.side)) return false; seen.add(r.side); if (!desc(r.v)) return false; }
+  return true;
+};
+const runsOf = (sides) => sides.filter((sd, i) => i === 0 || sides[i - 1] !== sd).join(" then ");
+const grassTop = Math.round(areaOf(pageOrder("grass")[0], "grass"));
+const iceTop = Math.round(areaOf(pageOrder("ice")[0], "ice"));
 
 const b = await chromium.launch({ executablePath: process.env.CHROME ?? "/opt/pw-browsers/chromium-1194/chrome-linux/chrome" });
 const ctx = await b.newContext({ viewport: { width: 412, height: 900 }, isMobile: true, hasTouch: true });
@@ -82,6 +112,7 @@ const read = () => p.evaluate(() => ({
   pill: (() => { const t = [...document.querySelectorAll(".panel-title")].find((x) => /Fade tiles/.test(x.textContent)); return t ? t.querySelector(".pill")?.textContent.trim() : null; })(),
   panel: [...document.querySelectorAll(".panel-title")].map((x) => x.textContent.replace(/\s+/g, " ").trim()).find((x) => /Fade tiles/.test(x)) ?? null,
   rows: [...document.querySelectorAll(".fade-tile b")].map((x) => x.textContent.trim()),
+  sides: [...document.querySelectorAll(".fade-tile")].map((x) => x.querySelector(".fade-side")?.dataset.side ?? null),
   scenes: [...document.querySelectorAll(".fade-tile canvas")].filter((c) => c.width > 200).length,
   fb: document.querySelectorAll(".fade-tile .fb-row").length,
   more: [...document.querySelectorAll("button")].map((x) => x.textContent.trim()).find((x) => /^Show \d+ more/.test(x)) ?? null,
@@ -158,8 +189,9 @@ await p.waitForTimeout(3500);
 const g2 = await read();
 ok(g2.rows.length === Math.min(BATCH * 2, MERGED.length) && g2.rows[0] === g.rows[0],
   `the next batch is APPENDED, with no re-render and no reshuffle of the first (${g2.rows.length} rows)`);
-const descOK = g2.rows.every((r, i) => i === 0 || parseInt(g2.rows[i - 1]) >= parseInt(r));
-ok(descOK, "and the visible order is monotonically grass-descending across the page break");
+ok(blockOk(g2.rows.map((r) => parseInt(r)), g2.sides),
+  `and the visible order survives the page break — ${runsOf(g2.sides)}, the area descending inside each `
+  + `(${parseInt(g2.rows[0])}% → ${parseInt(g2.rows[g2.rows.length - 1])}% grass across the two)`);
 
 // ---- 3. the reversed page: same merged tiles, the other way up -------------
 await reopen("#/world/transition/ice__to__grass");
@@ -303,8 +335,9 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
  * approved/rejected is over the already reviewed tiles will come (again
  * individually sorted by %)." */
 {
-  const byGrass = [...MERGED].sort((a, b2) => b2.pct.grass - a.pct.grass);
-  const top2 = byGrass.slice(0, 2).map((x) => x.key);        // the two grass-heaviest get verdicts
+  const areaG = (t) => areaOf(t, "grass");
+  const byGrass = pageOrder("grass");
+  const top2 = byGrass.slice(0, 2).map((x) => x.key);        // the two the page would open on
   await p.goto(`${W}#/world`, { waitUntil: "load" });
   await p.waitForTimeout(800);
   await clearPairVerdicts();
@@ -318,8 +351,10 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   const rows = () => p.evaluate(() => ({
     pct: [...document.querySelectorAll(".fade-tile b")].map((x) => parseInt(x.textContent)),
     keys: [...document.querySelectorAll(".fade-tile .fade-key")].map((x) => x.title),
+    sides: [...document.querySelectorAll(".fade-tile")].map((x) => x.querySelector(".fade-side")?.dataset.side ?? null),
     reviewed: [...document.querySelectorAll(".fade-tile")].map((x) => x.classList.contains("reviewed")),
-    divider: document.querySelector(".fade-divider")?.textContent ?? null,
+    divider: [...document.querySelectorAll(".fade-divider")].map((x) => x.textContent).find((t) => /already reviewed/.test(t)) ?? null,
+    dividers: [...document.querySelectorAll(".fade-divider")].map((x) => x.textContent),
     pill: [...document.querySelectorAll(".panel-title .pill")].map((x) => x.textContent.trim()).find((x) => /to review first|all reviewed/.test(x)) ?? null,
     probe: window.__wikiFadeOrder ?? null,
   }));
@@ -334,11 +369,26 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   const firstDone = r6.reviewed.indexOf(true);
   ok(firstDone === MERGED.length - 2 && r6.reviewed.slice(firstDone).every(Boolean),
     `the two judged tiles sink below EVERY unreviewed one, however grass-heavy they are (reviewed block starts at row ${firstDone + 1} of ${r6.keys.length}; probe ${JSON.stringify(r6.probe)})`);
-  ok(!top2.includes(r6.keys[0]) && r6.pct[0] === Math.round(byGrass[2].pct.grass),
+  ok(!top2.includes(r6.keys[0]) && r6.pct[0] === Math.round(areaG(byGrass[2])),
     `so the page opens on the grass-heaviest tile still WAITING for a verdict (${r6.pct[0]}% grass)`);
-  const desc = (a) => a.every((v, i) => i === 0 || a[i - 1] >= v);
-  ok(desc(r6.pct.slice(0, firstDone)) && desc(r6.pct.slice(firstDone)),
-    `each block keeps the % order on its own (unreviewed ${r6.pct[0]}→${r6.pct[firstDone - 1]}, reviewed ${r6.pct[firstDone]}→${r6.pct[r6.pct.length - 1]})`);
+  ok(blockOk(r6.pct.slice(0, firstDone), r6.sides.slice(0, firstDone))
+     && blockOk(r6.pct.slice(firstDone), r6.sides.slice(firstDone)),
+    `each block runs side by side, the area descending inside each (unreviewed: ${runsOf(r6.sides.slice(0, firstDone))}; `
+    + `${r6.pct[0]}% → ${r6.pct[firstDone - 1]}% grass across the two)`);
+  /* THE NUMBER IS THE PICTURE, NOT THE PLACEMENT SCORE. Matched key by key
+   * against the index, so a revert to `pct` fails here rather than looking
+   * plausible — and it WOULD look plausible: the two agree on the side and
+   * differ only in the amount, which is exactly the bug he reported. */
+  const byKey = new Map(MERGED.map((t) => [t.key, t]));
+  const wrong = r6.keys.map((k, i) => [k, r6.pct[i]]).filter(([k, v]) => byKey.has(k) && v !== Math.round(areaG(byKey.get(k))));
+  ok(!wrong.length, `every card shows the MEASURED area of its own tile (${wrong.length ? `${wrong[0][0]} shows ${wrong[0][1]}%` : `all ${r6.keys.length}`})`);
+  const wouldDiffer = r6.keys.filter((k) => byKey.has(k) && Math.abs(Math.round(areaG(byKey.get(k))) - Math.round(byKey.get(k).pct.grass)) > 5);
+  ok(wouldDiffer.length > 0,
+    `and the placement score would have shown something else on ${wouldDiffer.length} of them — this assertion is live, not vacuous`);
+  const badSide = r6.keys.map((k, i) => [k, r6.sides[i]]).filter(([k, sd]) => byKey.has(k) && sd !== byKey.get(k).edge_ground);
+  ok(!badSide.length, `and names the field its RIM belongs to (${badSide.length ? `${badSide[0][0]} says ${badSide[0][1]}` : `all ${r6.keys.length}`})`);
+  ok(r6.dividers.some((t) => /sit in the .* field/.test(t)),
+    `the page says out loud where the two blocks split (“${r6.dividers.find((t) => /sit in the/.test(t)) ?? "missing"}”)`);
   ok(r6.keys.slice(firstDone).join() === top2.join(), `and the reviewed block is exactly the two he judged, grass-descending (${r6.keys.slice(firstDone).map((k) => k.split("/").pop()).join(", ")})`);
   ok(/already reviewed/.test(r6.divider ?? ""), `the seam between the blocks is named (“${r6.divider}”)`);
   ok(r6.pill === `${MERGED.length - 2} to review first`, `and the panel says how many are left (${r6.pill})`);
@@ -420,8 +470,10 @@ ok(errs.length === 0, `no page errors (${errs[0] ?? "none"})`);
   await p.evaluate(() => [...document.querySelectorAll('[data-bar="fade-order"] button')].find((x) => /most left first/.test(x.textContent))?.click());
   await p.waitForTimeout(2500);
   const r1 = await rows();
-  const desc = r1.every((r, i) => i === 0 || r1[i - 1].left >= r.left);
-  ok(desc && r1[r1.length - 1].left === 0, `"most left first" sorts by what is left, the finished pair last (${r1.map((r) => r.left).join(" ")})`);
+  // `descLeft`, not `desc` — the module now has a desc() helper, and shadowing
+  // it with a boolean here puts everything above this line in its dead zone.
+  const descLeft = r1.every((r, i) => i === 0 || r1[i - 1].left >= r.left);
+  ok(descLeft && r1[r1.length - 1].left === 0, `"most left first" sorts by what is left, the finished pair last (${r1.map((r) => r.left).join(" ")})`);
   // "to review": the finished pair is gone
   await p.evaluate(() => [...document.querySelectorAll('[data-bar="fade-order"] button')].find((x) => /to review/.test(x.textContent))?.click());
   await p.waitForTimeout(2500);

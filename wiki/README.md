@@ -438,6 +438,44 @@ and a sort order rather than a gate, and `check-type.mjs` reads the vocabulary
 out of the factory so a type added tomorrow is checked tomorrow. The same shape
 applies to any field another domain owns.
 
+### Two facts, two fields — the fade card
+
+**WHERE A TILE CAN GO AND WHAT IS IN THE PICTURE ARE DIFFERENT QUESTIONS, AND
+ONE NUMBER MAY NOT ANSWER BOTH** (maintainer 2026-09-19: *"If the tile
+can/should be placed on ice vs grass has nothing to do with the % number. Yes,
+they are correlated, but when the tile is close to 50% it's not for sure a
+higher grass % means it can be placed on grass. That is all about the edges and
+how it fades!"*).
+
+The card printed `pct`, which is his 2026-08-28 PLACEMENT score — 51 points for
+owning the rim plus half the area, so the side that owns the rim is always the
+"majority" whatever the art shows. Read as a description it is wrong by
+construction: the minority always reads at half its true size, and the label's
+majority was the opposite of the picture's on 1,000 of 7,774 published tiles
+(worst: 57% ice on a tile 11.6% ice). It also has a dead band in the middle, so
+the list appeared to flip for no reason — one card reads 78% grass and the next
+38% grass while having *more* grass, because they go in different fields.
+
+So the card carries three published fields and never conflates them:
+
+- **`area_pct`** — the bold number. What the top face IS, measured on the art.
+- **`edge_ground`** — the pill. The ground the RIM belongs to, which is the only
+  thing that decides where a tile drops in without a hard edge. The list sorts
+  by this FIRST and by `area_pct` second, with a named divider at the seam, so
+  the jump is explained instead of mysterious. `fadeScene` composes the field
+  from it too — it used to infer the side from `pctA >= 50`, which works only
+  while `pct` keeps meaning the score.
+- **`edge_contact`** — how much of that rim is *not* the field's own ground; 0 is
+  a perfect seam, and above 25% the pill turns warn and shows it.
+
+`pct` survives only as the fallback for an index that predates `area_pct`, and
+is never read as a side. `check-fades.mjs` holds the tripwire: every tile names
+its `edge_ground`, and the `pct` majority still agrees with it — the day that
+stops, the formula has moved and the gate says so before a tile is previewed,
+placed by maps2 or drawn by the game on the wrong ground. It asserts the schema
+FAMILY (`tiles3/fade-tiles@*`), never the version: a gate that fails when the
+contract improves is a gate everyone learns to ignore.
+
 ## Feedback files — the contract with the other agents
 
 **HIS THUMB DOES NOT MOVE BETWEEN TILES** (maintainer 2026-09-18, on the fade
