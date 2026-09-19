@@ -81,7 +81,10 @@ const dlg = () =>
       shaChip: back.querySelector(".ml-upd-sha")?.textContent?.trim() ?? "",
       areas: [...back.querySelectorAll(".ml-upd-areas span")].map((e) => e.textContent.trim()),
       days: [...back.querySelectorAll(".ml-upd-day")].map((e) => e.textContent.trim()),
-      rows: [...back.querySelectorAll(".ml-upd-row")].map((e) => ({
+      // DIRECT children of the list only: the "you are running" block holds a
+      // row too, and it is deliberately not one of the changes — every count,
+      // colour and range check below is about the changes.
+      rows: [...back.querySelectorAll(".ml-upd-list > .ml-upd-row")].map((e) => ({
         area: e.querySelector(".ml-upd-chip").textContent.trim(),
         subj: e.querySelector(".ml-upd-subj").textContent.trim(),
         meta: e.querySelector(".ml-upd-meta").textContent.trim(),
@@ -89,7 +92,41 @@ const dlg = () =>
       note: back.querySelector(".ml-upd-note")?.textContent?.trim() ?? "",
       buttons: [...back.querySelectorAll(".ml-upd-btn")].map((b) => b.textContent.trim()),
       text: back.textContent,
+      // …and the same for the text sweep that proves nothing older leaked in
+      listText: [...back.querySelectorAll(".ml-upd-list > .ml-upd-row, .ml-upd-list > .ml-upd-day")].map((e) => e.textContent).join(" "),
       cardH: Math.round(card.getBoundingClientRect().height),
+      // the four 2026-09-19 fixes
+      loading: !!back.querySelector(".ml-upd-load"),
+      mine: (() => {
+        const m = back.querySelector(".ml-upd-mine");
+        if (!m) return null;
+        const list = back.querySelector(".ml-upd-list");
+        const label = m.querySelector(".ml-upd-youre");
+        const row = m.querySelector(".ml-upd-row");
+        const cs = getComputedStyle(row);
+        return {
+          label: label?.textContent.trim() ?? "",
+          text: m.textContent.trim(),
+          last: list.lastElementChild === m,
+          bg: cs.backgroundColor, bd: cs.borderTopColor,
+          sha: m.querySelector(".ml-upd-meta")?.textContent.trim() ?? "",
+        };
+      })(),
+      dayBand: (() => {
+        const h = back.querySelector(".ml-upd-day");
+        if (!h) return null;
+        const list = back.querySelector(".ml-upd-list");
+        const cs = getComputedStyle(h), ls = getComputedStyle(list);
+        const hb = h.getBoundingClientRect(), lb = list.getBoundingClientRect();
+        return {
+          position: cs.position, z: cs.zIndex, bg: cs.backgroundColor,
+          // full bleed: the band must reach the list's own edges, not stop at
+          // its padding, or a row shows through the gutters as it scrolls past
+          left: Math.round(hb.left - lb.left), right: Math.round(lb.right - hb.right),
+          momentum: ls.webkitOverflowScrolling || "(unset)",
+          listBg: ls.backgroundColor,
+        };
+      })(),
       vh: window.innerHeight,
     };
   });
@@ -112,9 +149,9 @@ const openIt = async (mine = MY_SHA) => {
       ? ok(`the count is the range, not the file (${d.sub})`)
       : fail(`subtitle "${d.sub}" — want "5 changes since your build eeeeeee55"`);
     // the two commits this build already has must not appear, by any part of them
-    !/the build I am running|older still|fffffff66/.test(d.text)
-      ? ok("nothing from before this build leaked into the list")
-      : fail("a commit at or older than the running build is listed");
+    !/the build I am running|older still|fffffff66/.test(d.listText)
+      ? ok("nothing from before this build leaked into the CHANGES")
+      : fail("a commit at or older than the running build is listed as a change");
     // …and the newer ones all did
     const subjects = d.rows.map((r) => r.subj);
     subjects.some((s) => /thumb row balances/.test(s)) && subjects.some((s) => /span's new lane/.test(s))
@@ -171,7 +208,9 @@ const openIt = async (mine = MY_SHA) => {
       return c;
     };
     const want = { bg: probe("--surface-2"), fg: probe("--muted"), bd: probe("--border") };
-    const chips = [...document.querySelectorAll(".ml-upd-chip, .ml-upd-areas span")].map((e) => {
+    // the "you are running" block wears the accent ON PURPOSE — it is the one
+    // thing in here that is not a change, so it is not held to the chip recipe
+    const chips = [...document.querySelectorAll(".ml-upd-list > .ml-upd-row .ml-upd-chip, .ml-upd-areas span")].map((e) => {
       const g = getComputedStyle(e);
       return { text: e.textContent, bg: g.backgroundColor, fg: g.color, bd: g.borderTopColor };
     });
@@ -188,6 +227,90 @@ const openIt = async (mine = MY_SHA) => {
   d.cardH <= d.vh - 32
     ? ok(`the card fits the phone with the list scrolling inside it (${d.cardH} of ${d.vh})`)
     : fail(`card ${d.cardH}px on a ${d.vh}px viewport`);
+
+  // ── THE FOUR FIXES OF 2026-09-19 ──────────────────────────────────────
+  // (1) THE CARD DOES NOT RESIZE WHEN THE FETCH LANDS ("I hate dialogs that
+  //     suddenly changes size!"). Measured across the load, not asserted from
+  //     the CSS: the height while the spinner is up must equal the height with
+  //     fifty rows in it.
+  {
+    let held = null;
+    await page.route("**/release_notes.json*", async (route) => {
+      await new Promise((r) => setTimeout(r, 1200)); // hold the fetch open
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(DOC) });
+    });
+    await page.evaluate(([n, m]) => window.__mlUpdateNotes.open(n, m), [NEW_SHA, MY_SHA]);
+    await page.waitForTimeout(300); // …and measure while it is still loading
+    held = await page.evaluate(() => {
+      const card = document.querySelector(".ml-upd");
+      const load = document.querySelector(".ml-upd-load");
+      const list = document.querySelector(".ml-upd-list");
+      if (!card || !load) return null;
+      const cb = card.getBoundingClientRect(), lb = load.getBoundingClientRect(), lib = list.getBoundingClientRect();
+      return {
+        h: Math.round(cb.height),
+        spinner: !!load.querySelector(".ml-upd-spin"),
+        // his ask: the loader's CENTRE at 45% down the list box
+        centrePct: +(((lb.top + lb.height / 2 - lib.top) / lib.height) * 100).toFixed(1),
+      };
+    });
+    held
+      ? ok(`a spinner holds the card while it loads (${held.h}px tall)`)
+      : fail("no loading state in the card");
+    if (held) {
+      Math.abs(held.centrePct - 45) <= 2
+        ? ok(`…centred at ${held.centrePct}% down the list — his optical centre, not the geometric one`)
+        : fail(`the loader sits at ${held.centrePct}% down the list, want 45%`);
+      await page.waitForFunction(() => !document.querySelector(".ml-upd-load"), null, { timeout: 8000 });
+      await page.waitForTimeout(200);
+      const after = await page.evaluate(() => Math.round(document.querySelector(".ml-upd").getBoundingClientRect().height));
+      after === held.h
+        ? ok(`…and the card is the SAME height once the rows land (${after}px, unmoved)`)
+        : fail(`the card jumped ${held.h} -> ${after}px when loading finished`);
+    }
+    await page.unroute("**/release_notes.json*");
+    await page.route("**/release_notes.json*", async (route) => {
+      if (!serveNotes) return route.fulfill({ status: 404, body: "" });
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(DOC) });
+    });
+  }
+  {
+    const d2 = await dlg();
+    // (2) THE DAY BAND IS OPAQUE AND FULL-BLEED, and the scroller carries no
+    //     -webkit-overflow-scrolling, which is what painted rows over it.
+    const b = d2.dayBand;
+    if (!b) fail("no day heading to test");
+    else {
+      b.position === "sticky" && Number(b.z) >= 2
+        ? ok(`the day band is sticky above the rows (z ${b.z})`)
+        : fail(`day band position ${b.position}, z ${b.z}`);
+      b.left <= 0 && b.right <= 0
+        ? ok(`…and full-bleed, so nothing shows through the gutters (${b.left}/${b.right}px past the list's edges)`)
+        : fail(`the band stops ${b.left}px/${b.right}px inside the list — a row scrolling past shows in that gap`);
+      /rgba\(0, 0, 0, 0\)|transparent/.test(b.bg)
+        ? fail(`the day band is transparent (${b.bg}) — rows will read through it`)
+        : ok(`…and opaque (${b.bg})`);
+      b.momentum === "(unset)" || b.momentum === "auto"
+        ? ok("the list carries no -webkit-overflow-scrolling: that layer is what left pixels over the band")
+        : fail(`-webkit-overflow-scrolling is "${b.momentum}" — it composites the scroller and strands the sticky band`);
+    }
+    // (3) YOUR OWN BUILD IS THE LAST THING, AND MARKED.
+    const m = d2.mine;
+    if (!m) fail("no 'you are running' block for the build we are on");
+    else {
+      m.last ? ok("your own build is the LAST thing in the list") : fail("the 'you are running' block is not last");
+      /you are running/i.test(m.label)
+        ? ok(`…under its own label ("${m.label}"), so it cannot read as one of the new commits`)
+        : fail(`the block's label is "${m.label}"`);
+      m.sha.includes(MY_SHA.slice(0, 9))
+        ? ok(`…and it is MY build's own commit (${m.sha})`)
+        : fail(`the block names ${m.sha}, not my build ${MY_SHA}`);
+      const rowBg = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-upd-list .ml-upd-row")).backgroundColor);
+      m.bg !== rowBg
+        ? ok(`…and it is painted differently from every other row (${m.bg} vs ${rowBg})`)
+        : fail(`the 'you are running' row looks like an ordinary row (${m.bg})`);
+    }
+  }
   await page.screenshot({ path: `${OUT}/updatenotes.png` });
 }
 

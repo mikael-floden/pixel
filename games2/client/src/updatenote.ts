@@ -239,7 +239,14 @@ function styleOnce() {
   .ml-upd-back{position:fixed;inset:0;z-index:110;display:flex;align-items:center;justify-content:center;
     padding:16px;box-sizing:border-box;background:rgba(0,0,0,.5);
     backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
-  .ml-upd{width:min(460px,100%);max-height:min(720px,calc(100dvh - 32px));display:flex;flex-direction:column;
+  /* A FIXED SIZE, NEVER A GROWING ONE (maintainer 2026-09-19: "I hate dialogs
+     that suddenly changes size! This happens when loading is done. It's better
+     to have a fixed size the size it has once the changes has been loaded").
+     height, not max-height: the card opens at the size it will END at and
+     the list fills into it, so nothing under your thumb moves when the fetch
+     lands. The list is fifty commits deep in the ordinary case, so that end
+     size IS this maximum. */
+  .ml-upd{width:min(460px,100%);height:min(720px,calc(100dvh - 32px));display:flex;flex-direction:column;
     box-sizing:border-box;background:var(--bg);color:var(--ink);
     border:1px solid var(--border);border-radius:16px;box-shadow:var(--shadow);
     font:14px/1.45 var(--sans);overflow:hidden}
@@ -256,9 +263,22 @@ function styleOnce() {
   .ml-upd-areas{display:flex;flex-wrap:wrap;gap:5px;margin-top:10px}
   .ml-upd-areas span{font:600 11px/1 var(--sans);padding:4px 7px;border-radius:6px;white-space:nowrap;
     background:var(--surface-2);border:1px solid var(--border);color:var(--muted)}
-  .ml-upd-list{flex:1 1 auto;min-height:0;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:4px 16px 12px}
-  .ml-upd-day{position:sticky;top:0;z-index:1;background:var(--bg);
-    padding:12px 0 6px;color:var(--muted);
+  /* NO -webkit-overflow-scrolling:touch. It is a no-op on every browser this
+     game runs on (momentum scrolling has been the default since iOS 13) and it
+     is what left ROWS PAINTED OVER THE STICKY DAY BAND while scrolling
+     (maintainer 2026-09-19: "a buggy 'today' banner that leaves some pixels
+     over it so when I scroll I can see the pixels over that pinned heading").
+     It puts the scroller on its own compositor layer whose sticky child is not
+     repainted per frame; the trails are that layer, not a z-order bug. */
+  .ml-upd-list{flex:1 1 auto;min-height:0;overflow-y:auto;padding:4px 16px 12px;position:relative}
+  /* …and the band is FULL-BLEED and opaque: it used to be as wide as the
+     list's content box, so a row sliding under it showed in the 16px gutters.
+     Negative margins + matching padding take it edge to edge, z 2 keeps it
+     over every row, and the hairline under it is what makes it read as a band
+     rather than a word floating on the rows. */
+  .ml-upd-day{position:sticky;top:-4px;z-index:2;background:var(--bg);
+    margin:0 -16px;padding:12px 16px 6px;color:var(--muted);
+    box-shadow:0 1px 0 var(--border);
     font:600 11px/1.2 var(--sans);letter-spacing:.09em;text-transform:uppercase}
   .ml-upd-row{display:flex;gap:9px;padding:7px 0;border-top:1px solid var(--border)}
   .ml-upd-day + .ml-upd-row{border-top:none}
@@ -272,6 +292,32 @@ function styleOnce() {
   .ml-upd-x{color:var(--muted);font-weight:700;font-size:12px}
   .ml-upd-meta{margin-top:2px;color:var(--muted);font:11px/1.3 var(--mono, ui-monospace, monospace)}
   .ml-upd-note{padding:10px 0 2px;color:var(--muted);font-size:12.5px;text-align:center}
+  /* THE LOADER SITS SLIGHTLY ABOVE CENTRE (maintainer 2026-09-19: "during the
+     loading you display a loading animation in the center of the dialog.
+     Actually slightly over center usually looks better. Like 55% (45% from the
+     div top)"). Its CENTRE is at 45% of the list's height — optical centre,
+     which is where the eye expects the middle of a box to be. */
+  .ml-upd-load{position:absolute;left:0;right:0;top:45%;transform:translateY(-50%);
+    display:flex;flex-direction:column;align-items:center;gap:12px;pointer-events:none}
+  .ml-upd-spin{width:30px;height:30px;border-radius:50%;
+    border:3px solid var(--border);border-top-color:var(--accent);
+    animation:ml-upd-spin 820ms linear infinite}
+  .ml-upd-load span{color:var(--muted);font:600 12px/1.2 var(--sans);letter-spacing:.04em}
+  @keyframes ml-upd-spin{to{transform:rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.ml-upd-spin{animation-duration:2.4s}}
+  /* YOUR OWN BUILD, always last and never mistakable for one of the new ones
+     (maintainer 2026-09-19: "it has to be clear this is my version and not part
+     of the commit — so my commit should always be at the bottom and marked").
+     A rule above it ends the list, the row wears the accent rather than the
+     plain surface, and it carries a label instead of a day heading. */
+  .ml-upd-mine{margin-top:14px;padding-top:12px;border-top:2px solid var(--border-strong)}
+  .ml-upd-mine .ml-upd-row{border-top:none;background:var(--accent-soft);
+    border:1px solid var(--accent);border-radius:10px;padding:8px 10px}
+  .ml-upd-mine .ml-upd-chip{background:var(--bg);border-color:var(--accent);color:var(--accent-ink)}
+  .ml-upd-mine .ml-upd-subj{color:var(--ink)}
+  .ml-upd-youre{display:flex;align-items:center;gap:7px;padding:0 0 7px;
+    color:var(--accent-ink);font:700 11px/1.2 var(--sans);letter-spacing:.09em;text-transform:uppercase}
+  .ml-upd-youre::after{content:"";flex:1 1 auto;height:1px;background:var(--accent);opacity:.45}
   .ml-upd-foot{flex:none;display:grid;grid-template-columns:1fr 1.4fr;gap:8px;
     padding:12px 16px calc(12px + var(--ml-safe-bottom, 0px));border-top:1px solid var(--border)}
   .ml-upd-btn{min-height:44px;padding:8px 12px;border-radius:10px;cursor:pointer;
@@ -318,13 +364,20 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
   head.innerHTML =
     `<div class="ml-upd-title"><h2>New version out</h2>` +
     `<span class="ml-upd-sha">${newSha.slice(0, 9)}</span></div>` +
-    `<div class="ml-upd-sub">Loading what changed…</div>` +
+    `<div class="ml-upd-sub">&nbsp;</div>` +
     `<div class="ml-upd-areas"></div>`;
   const sub = head.querySelector(".ml-upd-sub") as HTMLElement;
   const areas = head.querySelector(".ml-upd-areas") as HTMLElement;
 
   const list = document.createElement("div");
   list.className = "ml-upd-list";
+  // THE CARD IS ALREADY ITS FINAL SIZE (the .ml-upd height rule), so this only
+  // has to say "working" — it is removed, not replaced, and nothing moves.
+  const loading = document.createElement("div");
+  loading.className = "ml-upd-load";
+  loading.innerHTML = '<div class="ml-upd-spin" aria-hidden="true"></div><span>Loading what changed…</span>';
+  loading.setAttribute("role", "status");
+  list.appendChild(loading);
 
   const foot = document.createElement("div");
   foot.className = "ml-upd-foot";
@@ -356,6 +409,7 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
 
   void loadNotes().then((doc) => {
     if (open !== back) return; // closed while it loaded
+    loading.remove(); // every path below leaves the card the size it opened at
     if (!doc || !doc.commits.length) {
       sub.textContent = `Your build is ${mine.slice(0, 9)}. The change list is not published for this deploy.`;
       return;
@@ -419,6 +473,43 @@ export function openUpdateNotes(newSha: string, mySha?: string): HTMLElement {
       note.className = "ml-upd-note";
       note.textContent = "…and earlier changes your build is behind.";
       list.appendChild(note);
+    }
+    // YOUR OWN BUILD, LAST AND MARKED (maintainer 2026-09-19: "it would also be
+    // nice to somehow highlight when I get to the bottom and see the current
+    // version. So I get everything new on top of it but I can also read what
+    // happened in my version, but it has to be clear this is my version and not
+    // part of the commit — so my commit should always be at the bottom and
+    // marked"). It is the document's own entry for the sha we are RUNNING, so
+    // it says what this build was; it is drawn outside the day groups, after a
+    // heavier rule and under its own label, because it is the floor of the
+    // list rather than another change in it. Absent from the window (a build
+    // older than the 50 the wiki publishes) = no block, never a guess.
+    const ownIdx = doc.commits.findIndex((c) => sameSha(c.sha, mine));
+    const own = ownIdx >= 0 ? doc.commits[ownIdx] : null;
+    if (own) {
+      const block = document.createElement("div");
+      block.className = "ml-upd-mine";
+      const label = document.createElement("div");
+      label.className = "ml-upd-youre";
+      label.textContent = "You are running";
+      const row = document.createElement("div");
+      row.className = "ml-upd-row";
+      row.dataset.area = areaOf(own);
+      const chip = document.createElement("span");
+      chip.className = "ml-upd-chip";
+      chip.textContent = areaLabel(areaOf(own));
+      const body = document.createElement("div");
+      body.className = "ml-upd-body";
+      const subj = document.createElement("div");
+      subj.className = "ml-upd-subj";
+      subj.textContent = cleanSubject(own);
+      const meta = document.createElement("div");
+      meta.className = "ml-upd-meta";
+      meta.textContent = `${dayLabel(own.at)} ${timeLabel(own.at)} · ${own.sha.slice(0, 9)}`;
+      body.append(subj, meta);
+      row.append(chip, body);
+      block.append(label, row);
+      list.appendChild(block);
     }
   });
   return back;

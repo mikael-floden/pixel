@@ -418,6 +418,23 @@ from the games agent), #18 (title/landing screen).
   `verify-bootversion`'s regex with it. z 110, above the z-100 toast that opens
   it. `main.ts` is the games agent's file: the hook is the one allowed
   mechanical line (the click handler), announced on the board.
+  **FOUR FIXES, 2026-09-19, each his own sentence.** (a) THE DAY BAND left
+  pixels over itself while scrolling: `-webkit-overflow-scrolling:touch` on the
+  list — a no-op on every browser this game runs on — put the scroller on a
+  compositor layer whose sticky child is not repainted per frame. Gone; the
+  band is also FULL-BLEED now (negative margins + matching padding), because it
+  used to stop at the list's content box and a row slid past showed in the 16px
+  gutters. (b) YOUR OWN BUILD is the last thing in the list, under a "You are
+  running" label, wearing the accent and a heavier rule above it — "it has to
+  be clear this is my version and not part of the commit". Absent from the
+  published window = no block, never a guess. (c) THE CARD NEVER RESIZES: the
+  height is `height`, not `max-height`, so it opens at the size it will end at
+  ("I hate dialogs that suddenly changes size!"). (d) A SPINNER holds it while
+  the fetch runs, its centre at 45% down the list — his optical centre, "like
+  55% (45% from the div top)". The gate measures the card's height DURING the
+  load and again after, and the loader's centre as a percentage; it scopes
+  every change-row assertion to `.ml-upd-list > .ml-upd-row`, because the
+  "you are running" block holds a row that is deliberately not a change.
   `verify-updatenotes` routes a fixture document and asserts the range (nothing
   from before your build), the grouping, the collapse, the hit test over a
   z-100 layer, all three dismissals, the outside-window case, that a MISSING
