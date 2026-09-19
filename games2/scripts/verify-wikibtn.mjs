@@ -80,7 +80,8 @@ const rects = async () => {
       const v = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
       return JSON.stringify({ pill: r(".ml-clock"), btn: btn_, near: near_, art, row,
         // what the pill is sized and centred against
-        xp: r(".ml-bars-r"), card: Math.round(v("--bars-r-w")), step: v("--ml-stack-step"),
+        xp: r(".ml-bars-r"), card: Math.round(v("--bars-r-w")), cardL: Math.round(v("--bars-l-w")),
+        step: v("--ml-stack-step"), onTop: document.querySelector(".ml-clock")?.classList.contains("on-top") ?? null,
         gl: v("--gv-left"), gr: v("--gv-right"), vw: window.innerWidth,
         // everything a centred box has to clear
         others: { "the HP/EP card": r(".ml-bars-l"), "the XP card": r(".ml-bars-r"),
@@ -158,11 +159,26 @@ const assertPill = (g, label) => {
   near(mid, want2, 1)
     ? ok(`${label}: centred in the game view (${mid.toFixed(1)} against ${want2.toFixed(1)})`)
     : fail(`${label}: pill centre ${mid.toFixed(1)}, game view centre ${want2.toFixed(1)}`);
-  // "with same top margin" — the row it already had: the XP card's bottom,
-  // the 10px margin, and one published stack step for the Wiki row between.
-  near(g.pill.t - g.xp.b, 10 + g.step, 2)
-    ? ok(`${label}: same top margin as before (XP card bottom + 10 + the ${g.step}px step)`)
-    : fail(`${label}: pill top ${g.pill.t.toFixed(0)} is ${(g.pill.t - g.xp.b).toFixed(0)}px under the XP card, wanted ${10 + g.step}`);
+  // TWO ROWS, ONE MEASUREMENT (maintainer 2026-09-19, a red box drawn in the
+  // gap between the two cards: "Ofc it should be placed here"). TOP CENTRE is
+  // the cards' own line, and the pill takes it WHEN THE TWO CARDS LEAVE ROOM
+  // — the pill plus the same 10px margin they keep. When they do not it drops
+  // to the row under the Wiki row, which is free all the way across at every
+  // width. The gate computes the SAME measurement the code does and asserts
+  // the row that follows from it, so it pins the rule and not one screen's
+  // answer to it: at 393px this reads the lower row, at his ~490px the upper.
+  const free = g.vw - g.gr - 10 - g.card - (g.gl + 10 + g.cardL);
+  const wantTop = free >= g.pill.w + 20;
+  wantTop === g.onTop
+    ? ok(`${label}: ${wantTop ? "the cards leave" : "the cards do not leave"} room (${free.toFixed(0)}px for a ${g.pill.w}px pill + 20), and the pill agrees`)
+    : fail(`${label}: ${free.toFixed(0)}px between the cards for a ${g.pill.w}px pill + 20, but on-top is ${g.onTop}`);
+  wantTop
+    ? near(g.pill.t, g.xp.t, 2)
+      ? ok(`${label}: TOP CENTRE — on the cards' own line (${g.pill.t.toFixed(0)} vs the card's ${g.xp.t.toFixed(0)})`)
+      : fail(`${label}: the cards leave room but the pill is at ${g.pill.t.toFixed(0)}, not their line ${g.xp.t.toFixed(0)}`)
+    : near(g.pill.t - g.xp.b, 10 + g.step, 2)
+      ? ok(`${label}: no room on the cards' line, so the row under the Wiki row (XP bottom + 10 + the ${g.step}px step)`)
+      : fail(`${label}: pill top ${g.pill.t.toFixed(0)} is ${(g.pill.t - g.xp.b).toFixed(0)}px under the XP card, wanted ${10 + g.step}`);
   // IT TOUCHES NOTHING. A centred box is only honest if it clears the chrome
   // on BOTH sides at every width: the cards' own 10px row looks like the
   // emptiest place for it, but at 393px two 148px cards leave 77px between
@@ -589,6 +605,30 @@ try {
   assertStack(g8, "left-handed landscape"); // the row keeps the bottom corner here
   assertPill(g8, "left-handed landscape"); // …the pill is top-centred in every placement
   await page.evaluate(() => window.__ml.hand("right"));
+
+  // ── 8b. HIS OWN PHONE — 495x1111, MEASURED, NOT ASSUMED ──────────────
+  // Every other reading in this gate is taken at 393x851. That is a real and
+  // common CSS viewport (iPhone 14/15, Pixel) but it is NOT HIS, and taking
+  // every reading there is what put the time-of-day pill in the middle of his
+  // screen on 2026-09-19: the two cards fill the top row at 393 and the pill
+  // drops below it, so the placement he asked for was never once executed.
+  // 495x1111 is read off his own screenshot rather than guessed — the 116px
+  // pill spans 253 device px in a 1080-wide frame, so dpr 2.18 and a 495px
+  // layout viewport. Keep BOTH: 393 is where the fallback row is exercised,
+  // his is where the rule he actually asked for is.
+  await page.evaluate(() => window.__ml.hand("right"));
+  await page.setViewportSize({ width: 495, height: 1111 });
+  await page.waitForFunction(
+    () => !document.documentElement.classList.contains("ml-land") && !document.querySelector(".ml-flip-veil"),
+    null,
+    { timeout: 15000 },
+  );
+  const g8b = await rects();
+  g8b.onTop === true
+    ? ok("his geometry: the pill takes the cards' own line")
+    : fail(`his geometry: the pill did NOT take the top row (${JSON.stringify(g8b.pill)}, ${g8b.card}px cards in a ${g8b.vw}px view)`);
+  assertStack(g8b, "his geometry");
+  assertPill(g8b, "his geometry");
 
   // ── 9. portrait return ─────────────────────────────────────────────────
   await page.setViewportSize({ width: 393, height: 851 });

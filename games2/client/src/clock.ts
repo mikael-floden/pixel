@@ -61,6 +61,7 @@ import { TIME_PHASE_SECONDS } from "@nangijala/shared";
 const AW = 40; // art pixels across, as approved
 let aw = AW; // …and as currently drawn
 const EXT = 0.5; // …of the card's extra width, in WHOLE art px (see fitPill)
+const TOP_CLS = "on-top"; // set by fitPill when the two cards leave room for it
 const AH = 16; // art pixels down
 const SCALE = 2; // 1 art px = 2 css px
 const HOR = 10; // horizon row: where the orbs cross the hills
@@ -301,12 +302,15 @@ function mount() {
      card's width, so the right edge it used to share with the card and the
      Wiki row lines up with nothing, and a box that is nearly-but-not-quite
      aligned reads as a mistake.
-     THE MARGIN IS THE ONE IT ALREADY HAD — the third row of top chrome, one
-     --ml-stack-step under the Wiki row, which is itself under the XP chip.
-     NOT the cards' own 10px row, though that is where the centre looks
-     emptiest: at 393px the two 148px cards leave 77px between them and a
-     116px pill overlaps both (measured). The row below them is the first one
-     that is free all the way across, at every width.
+     TOP CENTRE IS THE CARDS' OWN LINE, on their 10px margin — "WHY DID YOU
+     PLACE THE time-of-day pill in the center and not TOP center!!!", after a
+     first cut put it a third of the way down the screen over the player's
+     head. It takes that line WHEN THE TWO CARDS LEAVE ROOM: fitPill measures
+     the gap between them and needs the pill plus 10px each side. On his phone
+     (~490px) that gap is 173 for a 116px pill. At 393px it is 77 and the pill
+     would sit on top of an HP bar, so there it keeps the row it had before —
+     one --ml-stack-step under the Wiki row, the first row that is free all
+     the way across at every width. Two rows, one measurement, no guessing.
      ONE RULE FOR EVERY ORIENTATION AND BOTH HANDS. It used to be three — a
      bottom-right corner at rest plus two top-anchored overrides — because
      the corner it wanted belonged to the thumb stick in landscape and to the
@@ -323,6 +327,8 @@ function mount() {
     width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
     pointer-events:none;box-sizing:content-box;
     border:1px solid var(--border-strong);box-shadow:var(--shadow)}
+  /* the cards' own line — fitPill adds this class only when they leave room */
+  .ml-clock.${TOP_CLS}{top:calc(var(--ml-safe-top, 0px) + 10px)}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);
   root = document.createElement("div");
@@ -383,6 +389,16 @@ function fitPill() {
   // +2 for this box's own borders, which sit outside its content-box width
   root.style.left = `${Math.round(gl + (window.innerWidth - gl - gr - box - 2) / 2)}px`;
   root.style.width = `${box}px`;
+  // THE TOP ROW IF THE TWO CARDS LEAVE ROOM FOR IT, MEASURED, NOT ASSUMED.
+  // "Top center" is the cards' own line and that is where it belongs; the
+  // only thing that can stop it is the gap between them, which is the view
+  // minus their two margins and their two widths. It needs the pill plus the
+  // same 10px margin on each side — anything less and the pill sits on top of
+  // an HP bar. Measured on his phone (~490px) the gap is 173 for a 116px
+  // pill; at 393px it is 77 and the pill drops to the row under the Wiki row,
+  // which is free all the way across at every width.
+  const free = window.innerWidth - gr - 10 - v("--bars-r-w", 0) - (gl + 10 + v("--bars-l-w", 0));
+  root.classList.toggle(TOP_CLS, free >= box + 2 + 20);
   if (w === aw) return;
   aw = w;
   cv.width = aw;

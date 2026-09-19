@@ -75,12 +75,23 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `--gv-right`), not the window, or the landscape menu would slide under it,
   and the left edge is rounded to a whole css px because an even box in an odd
   view lands on x.5 and shifts the nearest-neighbour grid.
-  NOT ON THE CARDS' OWN 10px ROW, which is where the centre looks emptiest:
-  at 393px two 148px cards leave 77px between them and a 116px pill overlaps
-  both (measured, first cut). "Same top margin" is the row it already had.
-  `verify-wikibtn`'s `assertPill` asserts all four — half-extension against the
-  MEASURED card, exact 2x on both axes, centred in the game view, same top
-  margin — plus that the pill's rect intersects no other chrome. The sun
+  **TOP CENTRE IS THE CARDS' OWN LINE** ("WHY DID YOU PLACE THE time-of-day
+  pill in the center and not TOP center!!!", then a red box drawn in the gap
+  between the two cards: "Ofc it should be placed here") — and it takes that
+  line WHEN THE TWO CARDS LEAVE ROOM, which `fitPill` MEASURES: the view minus
+  their two 10px margins and their two widths, against the pill plus the same
+  10px each side. His phone (~490px) leaves 173px for a 116px pill and gets
+  the top row; at 393px it leaves 77 and the pill would sit on an HP bar, so
+  there it keeps the row under the Wiki row, free all the way across at every
+  width. TWO ROWS, ONE MEASUREMENT — a first cut reasoned about the 393px case
+  and put the pill a third of the way down HIS screen, over the player's head,
+  which is the whole argument for measuring the thing itself.
+  `verify-wikibtn`'s `assertPill` asserts all of it — half-extension against
+  the MEASURED card, exact 2x on both axes, centred in the game view, the row
+  that follows from the SAME measurement the code makes, and the pill's rect
+  intersecting no other chrome. Section 8b runs at 490x1078 on purpose: every
+  other reading is at 393x851, where the fallback row wins, so without it the
+  placement he asked for is never executed. The sun
   and the moon are two independent bodies, each crossing in 2/3 of a day at
   the same speed and sharing the sky at dawn and dusk, so it needs no
   hand-off animation and the server needs no time freeze. Driven only by

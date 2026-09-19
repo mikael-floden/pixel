@@ -155,9 +155,14 @@ try {
   // about is that the chat's margin is unaffected by any of it.
   if (!near(geo.clockRect.mid, geo.innerW / 2, 1))
     throw new Error(`pill centre ${geo.clockRect.mid} != the view's ${geo.innerW / 2} — in portrait the game view is the whole window`);
-  if (!near(geo.clockRect.top, geo.wikiRect.top + geo.step))
-    throw new Error(`pill top ${geo.clockRect.top} != Wiki row top ${geo.wikiRect.top} + the ${geo.step}px stack step — the pill kept the row it had`);
-  console.log(`MARGIN OK — chat left and the Wiki row's right share ${geo.wikiRect.rightGap}px to the edge; the row is under the XP chip and the pill is centred ${geo.step}px under it`);
+  // WHICH ROW the pill takes is verify-wikibtn's subject and not this gate's:
+  // it depends on whether the two cards leave room, so it is a different
+  // answer at 480px (this gate's view, where the pill is on the cards' line)
+  // than at 393. Asserting it from here meant two gates owning one rule and
+  // this one holding the stale copy — which is exactly what happened.
+  if (!(geo.clockRect.top < geo.innerH / 2))
+    throw new Error(`pill top ${geo.clockRect.top} — it belongs in the view's top half, whichever row it takes`);
+  console.log(`MARGIN OK — chat left and the Wiki row's right share ${geo.wikiRect.rightGap}px to the edge; the row is under the XP chip and the pill is centred at the top`);
   if (geo.lineCount < 1 || !geo.msgShown)
     throw new Error(`chat overlay log missing the message chip (lines=${geo.lineCount}, shown=${geo.msgShown})`);
   console.log("GEO OK");
