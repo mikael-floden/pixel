@@ -346,43 +346,35 @@ from the games agent), #18 (title/landing screen).
   It LISTENS to `ml-record` and knows nothing about the button; a capture that
   cannot happen puts the button back rather than leave it lit over a world that
   never stopped (gated — the one failure that would lie to him).
-- **THE RECORD BUTTON IS ADMIN-ONLY AND ANCHORED OFF THE CARD'S OWN VARS**
-  (`recbtn.ts` + `admin.ts`, maintainer 2026-09-18: "I want this button under
-  the HP/EP card. Also right aligned with the same distance/linespace to the
-  screen and top… if you press the button it should change state to
-  red/recording", then "I want only the logged in admin to see this button").
-  It mounts HIDDEN and is revealed only when the SERVER answers yes
-  (`/api/wiki/me` with the `wiki-admin-token`) — hidden first, shown on the
-  answer, never the other way round, so it cannot flash for a player. The token
-  is an HMAC only the server can check; `admin.ts` never reads its contents,
-  caches for the page's lifetime like the dev-world picker, and drops the cache
-  on a `storage` event. (`maps.ts`, the games agent's, has a private copy of the
-  same check — offered this one 2026-09-18.)
-  PLACEMENT: `left: --gv-left + 10`, `top: 10 + --ml-safe-top + --bars-l-h +
-  10` — the card's own anchor plus its published height — and ONLY the width is
-  measured (bars.ts publishes no width var). The row spans the card and the
-  button sits at its START, so the two LEFT EDGES line up (2026-09-18: "I
-  didn't want you to stretch the button just left align it"), and the gap under
-  the card is the 10px the card keeps above itself. **His 48x48 plate is never
-  scaled** — `verify-recbtn` asserts the size as well as the edge.
-  REJECTED, do not re-attempt without his word: a FULL-WIDTH plate. "Also left
-  aligned same as the card" was read as both edges flush and shipped 5-sliced
-  (caps kept, two plain columns repeated, lamp centred) — undistorted, and
-  still not what he meant.
-  **Do not place it from the card's rect**: `.ml-bars` transitions `left` over
-  .3s, and a placement sampled on the landscape flip took the new WIDTH with the
-  old LEFT (851x393: button at 10, card heading for 335). Both faces live in the
-  DOM and toggle by `visibility` — a `src` swap's first frame is blank. State
-  rides a `ml-record` event for whatever is bound to it next.
-  ART: his untouched 48x48 exports are the source of record in `ui-src/`,
-  through `bake-corner-icons.py` (two entries) to an exact 2x in `/ui2`,
-  rendered at naturalWidth/2. Which export was the LIT face was measured (88
-  warm px peaking 188 vs 16 peaking 98), not taken from the file order.
-  `verify-recbtn` gates BOTH directions of the admin check — a gate that only
-  proved the reveal would pass on a build that showed it to everybody — and
-  counts the lamp's pixels in the part of the plate OPAQUE IN BOTH FACES: the
-  whole-button crop was reading the world through his transparent corners (64
-  idle, 352 recording, 538 back at idle — a warmer scene, not a lit lamp).
+- **THE REPORT BUTTON WEARS THE WIKI BUTTON'S CLOTHES** (`recbtn.ts`,
+  maintainer 2026-09-19: "I want that button to look more like the wiki button.
+  This means it needs a 24x24 icon and text instead… the text should be
+  'Report' and the size and style and margin should be like the wiki button").
+  His bug icon at the /ui2 24px grid + the word Report, in the Wiki pill's
+  exact box: 80x32 content, 1px `--border-strong`, radius 7, `--shadow`, 76%-of
+  `--bg` over a 5px blur, 600 12px/.03em. THE MARGIN IS THE SAME 10px MIRRORED
+  — the Wiki pill 10px inside the game view's right edge, this one 10px inside
+  its left — and it keeps its anchor under the HP/EP card, sharing that card's
+  left edge and hanging the same 10px below it.
+  THE DECLARATIONS ARE WRITTEN OUT, NOT SHARED: the two modules are about
+  different things and one pill class would couple them, so `verify-recbtn`
+  compares this button's COMPUTED style against the LIVE `.ml-wikibtn` (18
+  properties) instead — restyle the Wiki button and this fails until it
+  follows. That comparison is what keeps the promise; a gate of literals would
+  have passed the day the pill changed.
+  RECORDING IS THE HOUSE `.on` TREATMENT (`--accent-soft` on `--accent`,
+  `--accent-ink`), which IS the red he asked for on 2026-09-18 and re-themes
+  with everything else; gated against the computed tokens, never a literal red.
+  RETIRED with the restyle: his 48x48 two-face plate, the lamp pixel-crop, the
+  5-slice widening and the ResizeObserver that copied the card's width — a
+  fixed-width pill needs none of them. The bakes stay on disk (his art;
+  `bake-corner-icons.py` proves every entry it lists) and nothing references
+  them. The `ml-record` seam is untouched, so `freezeframe.ts` never knew.
+  TWO GATE ASSUMPTIONS PAID FOR HERE: `offsetParent` is null for EVERY
+  `position:fixed` element, so it can never stand in for "is it painted" (the
+  box itself is the test); and a dev build stamps no `?v=`, so an icon's cache
+  stamp is asserted as a RELATIONSHIP with the other /ui2 icons, never as a
+  presence.
 - **THE UPDATE POPUP LISTS WHAT CHANGED, AND THE LIST IS THE WIKI'S**
   (`updatenote.ts`, maintainer 2026-09-18: "I want it to list everything that
   has changed from the version I'm currently at to the version I'm about to

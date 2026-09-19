@@ -1,33 +1,22 @@
-// QA: the RECORD BUTTON (client/src/recbtn.ts) — his own two-state PixelLab
-// button under the HP/EP card (maintainer 2026-09-18: "I want this button under
-// the HP/EP card. Also right aligned with the same distance/linespace to the
-// screen and top (the HP card). If you press the button it should change state
-// to red/recording").
+// QA: the REPORT BUTTON (client/src/recbtn.ts) — his bug icon and the word
+// "Report" in the Wiki button's clothes, under the HP/EP card (maintainer
+// 2026-09-19: "I want that button to look more like the wiki button. This
+// means it needs a 24x24 icon and text instead… the text should be 'Report'
+// and the size and style and margin should be like the wiki button").
 //
-// THE PLACEMENT IS ASSERTED AGAINST THE CARD ITSELF, never against literals:
-// the ask is LEFT-aligned (maintainer 2026-09-18: "I didn't want you to stretch
-// the button just left align it") at "the same distance", so the gate compares
-// the button's left edge to the card's left edge and the gap under the card to
-// the gap the card keeps above itself. A hardcoded 10 would pass just as well
-// on a build where BOTH had drifted. The WIDTH is asserted too: this button is
-// his 48x48 art and must never be stretched to the card again.
+// THE CENTRAL ASSERTION IS A COMPARISON, NOT A LIST OF NUMBERS. "Like the wiki
+// button" is only true relative to the Wiki button, so every shared property is
+// read off the LIVE .ml-wikibtn and required to match: restyle that one and
+// this gate fails until this one follows. A gate full of literals would have
+// passed the day the pill changed and left the two drifting.
 //
-// AND THE STATE IS ASSERTED IN PIXELS. A class flip and an aria attribute
-// prove the code ran; they do not prove the lamp lit. The lit face carries
-// several times the warm ink of the idle one, so the gate crops the button out
-// of a real screenshot before and after the press and counts red pixels — the
-// same reason /ui2 icons are gated on the DECODED bitmap (UI_AGENT.md): a
-// missing or unswapped face looks like a design choice in a screenshot.
-//
-// THE CROP IS THE PART OF THE PLATE THAT IS OPAQUE IN BOTH FACES, not the
-// whole button: his art has transparent corners, the WORLD shows through them,
-// and the world's own warmth moves (a torch, the sun). Measured through the
-// full button this read 64 idle, 352 recording and then 538 back at idle —
-// the third number is a warmer scene, not a lit lamp. LAMP_BOX is the largest
-// box opaque in both 48x48 faces (one stray transparent pixel inside it, in
-// his export, left exactly as he drew it), so what it counts is his ink.
+// What it also holds: the admin gate in BOTH directions (a gate that only
+// proved the reveal would pass on a build that showed it to everybody), that
+// the icon really DECODED at its authored 24px grid, that the label fits its
+// box, that the pressed state is the theme's own accent rather than a literal
+// red, and that the ml-record seam still fires — freezeframe.ts listens to it
+// and knows nothing about this file.
 import { chromium } from "playwright-core";
-import { PNG } from "pngjs";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
 const OUT = process.env.OUT || "/tmp";
@@ -44,20 +33,17 @@ await page.waitForFunction(() => window.__mlSelect, null, { timeout: 25000 });
 await page.evaluate(() => window.__mlSelect.commit());
 await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 120000 });
 await page.waitForFunction(() => !document.querySelector("#ml-loading"), null, { timeout: 90000 });
-await page.waitForFunction(() => document.querySelector(".ml-rec") && document.querySelector(".ml-bars-l"), null, { timeout: 30000 });
+await page.waitForFunction(() => document.querySelector(".ml-rec") && document.querySelector(".ml-bars-l") && document.querySelector(".ml-wikibtn"), null, { timeout: 30000 });
 
-// ── 0. ADMIN ONLY (maintainer 2026-09-18: "I want only the logged in admin to
-//       see this button"). This session holds no token, so the REAL server has
-//       answered no — the button is mounted but never shown. Then the admin
-//       answer is faked and it appears: both directions, because a gate that
-//       only proved the second one would pass on a build that showed it to
-//       everybody. ──
+// ── 0. ADMIN ONLY, both directions ─────────────────────────────────────────
 {
   await page.waitForTimeout(400); // let the boot-time ask settle
   const hidden = await page.evaluate(() => {
-    const w = document.querySelector(".ml-recwrap");
     const b = document.querySelector(".ml-rec");
-    return { present: !!w, hiddenAttr: w?.hidden, display: w ? getComputedStyle(w).display : null, painted: !!b?.offsetParent, shown: window.__mlRecord?.shown() };
+    // NB offsetParent is null for every position:fixed element, so it can
+    // never stand in for "painted" here — the box itself is the test.
+    const seen = (e) => !!e && getComputedStyle(e).display !== "none" && e.getBoundingClientRect().width > 0;
+    return { present: !!b, hiddenAttr: b?.hidden, display: b ? getComputedStyle(b).display : null, painted: seen(b), shown: window.__mlRecord?.shown() };
   });
   hidden.present && hidden.hiddenAttr === true && hidden.display === "none" && !hidden.painted && hidden.shown === false
     ? ok("a player never sees it: mounted, hidden, not painted (the real server said not-admin)")
@@ -67,160 +53,155 @@ await page.waitForFunction(() => document.querySelector(".ml-rec") && document.q
   );
   await page.evaluate(() => localStorage.setItem("wiki-admin-token", "gate"));
   const shown = await page.evaluate(() => window.__mlRecord.refresh(true));
-  await page.waitForTimeout(150);
-  const after = await page.evaluate(() => ({ hiddenAttr: document.querySelector(".ml-recwrap")?.hidden, painted: !!document.querySelector(".ml-rec")?.offsetParent }));
+  await page.waitForTimeout(200);
+  const after = await page.evaluate(() => {
+    const b = document.querySelector(".ml-rec");
+    return { hiddenAttr: b?.hidden, painted: !!b && getComputedStyle(b).display !== "none" && b.getBoundingClientRect().width > 0 };
+  });
   shown === true && after.hiddenAttr === false && after.painted
     ? ok("…and the admin does: the server's yes reveals it")
     : fail(`admin case: refresh returned ${shown}, ${JSON.stringify(after)}`);
 }
 
-const geom = () =>
-  page.evaluate(() => {
-    const r = (s) => {
-      const e = document.querySelector(s);
-      if (!e) return null;
-      const b = e.getBoundingClientRect();
-      return { l: b.left, t: b.top, r: b.right, b: b.bottom, w: b.width, h: b.height };
+// ── 1. IT IS THE WIKI PILL — measured against the Wiki pill ────────────────
+{
+  const same = await page.evaluate(() => {
+    const pick = (el) => {
+      const s = getComputedStyle(el);
+      return {
+        height: s.height, boxSizing: s.boxSizing, padding: s.padding,
+        borderWidth: s.borderTopWidth, borderStyle: s.borderTopStyle, borderColor: s.borderTopColor,
+        radius: s.borderTopLeftRadius, shadow: s.boxShadow, background: s.backgroundColor,
+        blur: s.backdropFilter || s.webkitBackdropFilter,
+        font: s.font, tracking: s.letterSpacing, color: s.color,
+        display: s.display, align: s.alignItems, justify: s.justifyContent, gap: s.columnGap,
+        z: s.zIndex,
+      };
     };
-    const btn = document.querySelector(".ml-rec");
+    const r = document.querySelector(".ml-rec"), w = document.querySelector(".ml-wikibtn");
+    const rb = r.getBoundingClientRect(), wb = w.getBoundingClientRect();
+    return { rec: pick(r), wiki: pick(w), recBox: [Math.round(rb.width), Math.round(rb.height)], wikiBox: [Math.round(wb.width), Math.round(wb.height)] };
+  });
+  const diff = Object.keys(same.wiki).filter((k) => same.rec[k] !== same.wiki[k]);
+  diff.length === 0
+    ? ok(`every shared property matches the live Wiki button (${Object.keys(same.wiki).length} checked: ${same.wiki.height} tall, ${same.wiki.radius} radius, ${same.wiki.font})`)
+    : fail(`it does not look like the Wiki button — ${diff.map((k) => `${k}: ${same.rec[k]} vs ${same.wiki[k]}`).join("; ")}`);
+  same.recBox[0] === same.wikiBox[0] && same.recBox[1] === same.wikiBox[1]
+    ? ok(`…and it is the same size (${same.recBox.join("x")}px)`)
+    : fail(`box ${same.recBox.join("x")} vs the Wiki button's ${same.wikiBox.join("x")}`);
+}
+
+// ── 2. THE SAME MARGIN, MIRRORED, AND THE CARD'S OWN EDGE ─────────────────
+{
+  const m = await page.evaluate(() => {
+    const r = document.querySelector(".ml-rec").getBoundingClientRect();
+    const w = document.querySelector(".ml-wikibtn").getBoundingClientRect();
+    const card = document.querySelector(".ml-bars-l").getBoundingClientRect();
     const cs = getComputedStyle(document.documentElement);
+    const px = (v) => parseFloat(cs.getPropertyValue(v)) || 0;
     return {
-      card: r(".ml-bars-l"),
-      btn: r(".ml-rec"),
-      wrap: r(".ml-recwrap"),
-      wrapPE: getComputedStyle(document.querySelector(".ml-recwrap")).pointerEvents,
-      safeTop: parseFloat(cs.getPropertyValue("--ml-safe-top")) || 0,
-      gvLeft: parseFloat(cs.getPropertyValue("--gv-left")) || 0,
-      pressed: btn?.getAttribute("aria-pressed"),
-      onClass: btn?.classList.contains("on"),
-      faces: [...btn.querySelectorAll("img")].map((i) => ({
-        cls: i.className,
-        w: i.naturalWidth,
-        h: i.naturalHeight,
-        css: Math.round(i.getBoundingClientRect().width),
-        vis: getComputedStyle(i).visibility,
-      })),
-      state: window.__mlRecord?.on(),
+      left: Math.round(r.left - px("--gv-left")),
+      wikiRight: Math.round(innerWidth - px("--gv-right") - w.right),
+      cardLeft: Math.round(card.left), recLeft: Math.round(r.left),
+      belowCard: Math.round(r.top - card.bottom),
     };
   });
-
-// ── 1. WHERE IT SITS: under the card, right edges flush, and the gap under the
-//       card equal to the gap the card keeps above itself ──
-{
-  const g = await geom();
-  if (!g.card || !g.btn) fail(`not mounted: card ${JSON.stringify(g.card)} btn ${JSON.stringify(g.btn)}`);
-  else {
-    Math.abs(g.btn.l - g.card.l) <= 1
-      ? ok(`left-aligned with the HP/EP card (button left ${g.btn.l.toFixed(0)}, card left ${g.card.l.toFixed(0)})`)
-      : fail(`button left ${g.btn.l.toFixed(1)} vs card left ${g.card.l.toFixed(1)} — not left-aligned`);
-    Math.abs(g.btn.w - 48) <= 1 && Math.abs(g.btn.h - 48) <= 1
-      ? ok(`it is his art's own 48x48, never stretched to the card (${g.btn.w.toFixed(0)}x${g.btn.h.toFixed(0)})`)
-      : fail(`button ${g.btn.w.toFixed(1)}x${g.btn.h.toFixed(1)} — his 48x48 plate must not be scaled`);
-    const gap = g.btn.t - g.card.b;
-    const above = g.card.t - g.safeTop;
-    Math.abs(gap - above) <= 1
-      ? ok(`the gap under the card is the card's own gap to the top (${gap.toFixed(0)}px each)`)
-      : fail(`gap under the card ${gap.toFixed(1)}px, card-to-top ${above.toFixed(1)}px — he asked for the same distance`);
-    Math.abs(g.card.l - (g.gvLeft + 10)) <= 1 && g.btn.t > g.card.b
-      ? ok(`it is UNDER the card, which keeps the shared 10px margin (card left ${g.card.l.toFixed(0)})`)
-      : fail(`card left ${g.card.l.toFixed(1)} (gv-left ${g.gvLeft}), button top ${g.btn.t.toFixed(1)} vs card bottom ${g.card.b.toFixed(1)}`);
-    g.wrapPE === "none"
-      ? ok("the placement row itself eats no taps (only the button does)")
-      : fail(`the wrapper takes pointer events (${g.wrapPE}) — it would swallow taps over the world`);
-  }
+  m.left === m.wikiRight
+    ? ok(`the same margin, mirrored: ${m.left}px inside the game view's left edge, the Wiki pill ${m.wikiRight}px inside its right`)
+    : fail(`margins differ: Report ${m.left}px from the left, Wiki ${m.wikiRight}px from the right`);
+  Math.abs(m.recLeft - m.cardLeft) <= 1
+    ? ok(`its left edge lines up with the HP/EP card's (${m.recLeft} vs ${m.cardLeft})`)
+    : fail(`Report at x=${m.recLeft}, the card at x=${m.cardLeft} — they must share an edge`);
+  m.belowCard === m.left
+    ? ok(`and it hangs the same ${m.belowCard}px under the card as it keeps to the edge`)
+    : fail(`gap under the card ${m.belowCard}px, edge margin ${m.left}px — one margin, everywhere`);
 }
 
-// ── 2. BOTH FACES REALLY DECODED, at the authored grid (naturalWidth/2). A
-//       missing /ui2 file is an empty box, not an error (UI_AGENT.md). ──
+// ── 3. HIS ICON, DECODED, AT ITS AUTHORED GRID; THE LABEL FITS ────────────
 {
-  const g = await geom();
-  const bad2 = g.faces.filter((f) => !f.w || f.w !== 96 || f.css !== 48);
-  bad2.length === 0 && g.faces.length === 2
-    ? ok(`both faces decoded 96x96 and render at 48px (${g.faces.map((f) => f.cls).join(", ")})`)
-    : fail(`faces: ${JSON.stringify(g.faces)} — want two, each naturalWidth 96 rendered at 48`);
-}
-
-// ── 3. THE PRESS TURNS IT RED. Class + aria + the probe, and then the PIXELS.
-{
-  // in the art's own 48px coordinates, which is also css px (rendered 1:1)
-  const LAMP_BOX = { dx: 6, dy: 2, w: 20, h: 31 };
-  const shot = async (name) => {
-    const g = await geom();
-    const clip = {
-      x: Math.floor(g.btn.l) + LAMP_BOX.dx,
-      y: Math.floor(g.btn.t) + LAMP_BOX.dy,
-      width: LAMP_BOX.w,
-      height: LAMP_BOX.h,
+  const c = await page.evaluate(() => {
+    const b = document.querySelector(".ml-rec");
+    const img = b.querySelector("img");
+    const wi = document.querySelector(".ml-wikibtn img");
+    return {
+      text: b.textContent.trim(),
+      nat: [img.naturalWidth, img.naturalHeight],
+      shown: [Math.round(img.getBoundingClientRect().width), Math.round(img.getBoundingClientRect().height)],
+      wikiShown: Math.round(wi.getBoundingClientRect().width),
+      src: img.getAttribute("src"),
+      wikiSrc: wi.getAttribute("src"),
+      overflow: Math.round(b.scrollWidth - b.clientWidth),
     };
-    const buf = await page.screenshot({ clip, path: `${OUT}/recbtn-${name}.png` });
-    const png = PNG.sync.read(buf);
-    let warm = 0;
-    for (let i = 0; i < png.data.length; i += 4) {
-      const [r, gg, b] = [png.data[i], png.data[i + 1], png.data[i + 2]];
-      if (r - (gg + b) / 2 > 40) warm++;
-    }
-    return warm;
-  };
-  const before = await geom();
-  before.state === false && before.onClass === false && before.pressed === "false"
-    ? ok("it starts idle (not recording)")
-    : fail(`initial state: ${JSON.stringify({ state: before.state, on: before.onClass, pressed: before.pressed })}`);
-  const warmIdle = await shot("idle");
+  });
+  c.text === "Report" ? ok('the label is "Report"') : fail(`label "${c.text}"`);
+  // the bake is an exact 2x of his 24x24 export and the runtime halves it
+  c.nat[0] === 48 && c.nat[1] === 48 && c.shown[0] === 24 && c.shown[1] === 24
+    ? ok(`his 24x24 bug decoded and drawn at its authored grid (bake ${c.nat.join("x")} → ${c.shown.join("x")}px)`)
+    : fail(`icon natural ${c.nat.join("x")}, drawn ${c.shown.join("x")} — want a 48x48 bake at 24px (a 0 means it never decoded)`);
+  c.shown[0] === c.wikiShown
+    ? ok(`…the same size the Wiki pill draws its own icon (${c.wikiShown}px)`)
+    : fail(`icon ${c.shown[0]}px vs the Wiki button's ${c.wikiShown}px`);
+  c.overflow <= 0 ? ok("the label and icon fit the pill without overflowing it") : fail(`the content overflows the pill by ${c.overflow}px`);
+  // the stamp is whatever withV() is giving the OTHER /ui2 icons this build —
+  // a dev build stamps nothing, and that is not a bug; being the odd one out is
+  const stamp = (u) => (u.split("?")[1] || "");
+  stamp(c.src) === stamp(c.wikiSrc)
+    ? ok(`the icon is cache-stamped exactly like the Wiki button's ("${stamp(c.src) || "(unstamped, as this build stamps nothing)"}")`)
+    : fail(`icon stamping differs from the Wiki button's: "${c.src}" vs "${c.wikiSrc}" — withV() missing?`);
+}
+
+// ── 4. PRESSED IS THE THEME'S ACCENT, NOT A LITERAL RED, AND IT FIRES ─────
+{
+  const probe = await page.evaluate(() => {
+    window.__gateRecEvents = [];
+    window.addEventListener("ml-record", (e) => window.__gateRecEvents.push(!!e.detail?.on));
+    const cs = getComputedStyle(document.documentElement);
+    const asColor = (v) => { const d = document.createElement("div"); d.style.color = cs.getPropertyValue(v).trim(); document.body.appendChild(d); const c = getComputedStyle(d).color; d.remove(); return c; };
+    return { soft: asColor("--accent-soft"), accent: asColor("--accent"), ink: asColor("--accent-ink") };
+  });
+  const rest = await page.evaluate(() => { const s = getComputedStyle(document.querySelector(".ml-rec")); return { bg: s.backgroundColor, bd: s.borderTopColor, fg: s.color }; });
   await page.evaluate(() => document.querySelector(".ml-rec").click());
-  await page.waitForTimeout(150);
-  const after = await geom();
-  after.state === true && after.onClass === true && after.pressed === "true"
+  await page.waitForTimeout(250);
+  const on = await page.evaluate(() => {
+    const s = getComputedStyle(document.querySelector(".ml-rec"));
+    return { bg: s.backgroundColor, bd: s.borderTopColor, fg: s.color, state: window.__mlRecord.on(), pressed: document.querySelector(".ml-rec").getAttribute("aria-pressed"), events: window.__gateRecEvents };
+  });
+  on.state === true && on.pressed === "true"
     ? ok("a press puts it in the recording state")
-    : fail(`after the press: ${JSON.stringify({ state: after.state, on: after.onClass, pressed: after.pressed })}`);
-  const warmRec = await shot("recording");
-  warmRec > warmIdle * 2
-    ? ok(`and it LOOKS it: warm pixels ${warmIdle} -> ${warmRec} in the button's own crop`)
-    : fail(`the lamp did not light: warm pixels ${warmIdle} -> ${warmRec}`);
-  const vis = after.faces.map((f) => `${f.cls}:${f.vis}`).join(" ");
-  /-on:visible/.test(vis) && /-off:hidden/.test(vis)
-    ? ok(`the lit face is the visible one (${vis})`)
-    : fail(`face visibility ${vis}`);
-  // …and it goes back
+    : fail(`after the press: ${JSON.stringify(on)}`);
+  on.bg === probe.soft && on.bd === probe.accent && on.fg === probe.ink
+    ? ok(`…wearing the theme's own accent (${probe.soft} on ${probe.accent}, ${probe.ink} ink) — his red, and it re-themes`)
+    : fail(`the on state is not the accent recipe: ${JSON.stringify(on)} vs ${JSON.stringify(probe)}`);
+  on.bg !== rest.bg && on.bd !== rest.bd
+    ? ok("…and it is visibly different from rest")
+    : fail(`rest ${JSON.stringify(rest)} and on ${JSON.stringify(on)} look the same`);
+  on.events.length >= 1 && on.events[on.events.length - 1] === true
+    ? ok("the ml-record seam fired (freezeframe.ts listens to this and nothing else)")
+    : fail(`no ml-record event: ${JSON.stringify(on.events)}`);
   await page.evaluate(() => document.querySelector(".ml-rec").click());
-  await page.waitForTimeout(150);
-  const back = await geom();
-  const warmBack = await shot("idle2");
-  back.state === false && warmBack < warmRec / 2
-    ? ok(`a second press returns it to idle (warm ${warmRec} -> ${warmBack})`)
-    : fail(`second press: state ${back.state}, warm ${warmBack} — not back under half of the lit ${warmRec}`);
-  // the seam whatever is bound to it later will listen on
-  const evt = await page.evaluate(async () => {
-    const seen = [];
-    const h = (e) => seen.push(e.detail?.on);
-    window.addEventListener("ml-record", h);
-    window.__mlRecord.set(true);
-    window.__mlRecord.set(false);
-    window.removeEventListener("ml-record", h);
-    return seen;
-  });
-  JSON.stringify(evt) === "[true,false]"
-    ? ok('it fires "ml-record" with its state, for the functionality to be bound later')
-    : fail(`ml-record events: ${JSON.stringify(evt)}`);
+  await page.waitForTimeout(250);
+  const off = await page.evaluate(() => ({ state: window.__mlRecord.on(), bg: getComputedStyle(document.querySelector(".ml-rec")).backgroundColor, events: window.__gateRecEvents }));
+  off.state === false && off.bg === rest.bg && off.events[off.events.length - 1] === false
+    ? ok("a second press puts it back, and says so")
+    : fail(`after the second press: ${JSON.stringify(off)}`);
 }
 
-// ── 4. IT STAYS ON THE CARD THROUGH A ROTATION. The chips move with the gv
-//       insets and the flip does not resize them, so a placement that only
-//       listened to a ResizeObserver would be left behind. ──
+// ── 5. IT RIDES THE GAME VIEW'S EDGE THROUGH THE LANDSCAPE FLIP ───────────
 {
   await page.setViewportSize({ width: 851, height: 393 });
-  await page.waitForTimeout(900);
-  const g = await geom();
-  // the chips TRANSITION their left over .3s — the wait above outlasts it, and
-  // the button rides the same var so it arrives with the card, not after it
-  Math.abs(g.btn.l - g.card.l) <= 1 && Math.abs(g.btn.t - g.card.b - 10) <= 1
-    ? ok(`still under the card's left edge after the landscape flip (left ${g.btn.l.toFixed(0)} = card ${g.card.l.toFixed(0)})`)
-    : fail(`after rotating: button ${JSON.stringify(g.btn)} card ${JSON.stringify(g.card)}`);
+  await page.waitForTimeout(900); // the flip's veil + the anchors' .3s glide
+  const land = await page.evaluate(() => {
+    const cs = getComputedStyle(document.documentElement);
+    const px = (v) => parseFloat(cs.getPropertyValue(v)) || 0;
+    const r = document.querySelector(".ml-rec").getBoundingClientRect();
+    const card = document.querySelector(".ml-bars-l").getBoundingClientRect();
+    return { gv: px("--gv-left"), left: Math.round(r.left), card: Math.round(card.left), land: document.documentElement.classList.contains("ml-land") };
+  });
+  land.land && Math.abs(land.left - land.gv - 10) <= 1 && Math.abs(land.left - land.card) <= 1
+    ? ok(`in landscape it is still 10px inside the game view (x=${land.left}, --gv-left ${land.gv}) and still on the card's edge`)
+    : fail(`landscape placement: ${JSON.stringify(land)} — it must ride --gv-left, never a sampled rect`);
   await page.setViewportSize({ width: 393, height: 851 });
-  await page.waitForTimeout(900);
-  const p = await geom();
-  Math.abs(p.btn.l - p.card.l) <= 1
-    ? ok("and back in portrait")
-    : fail(`back in portrait: button left ${p.btn.l.toFixed(1)} vs card left ${p.card.l.toFixed(1)}`);
+  await page.waitForTimeout(700);
   await page.screenshot({ path: `${OUT}/recbtn-hud.png` });
 }
 

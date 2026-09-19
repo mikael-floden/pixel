@@ -40,6 +40,13 @@ THE TRANSFORMS, one line each:
                      which was MEASURED, not guessed from the file order: the
                      lit face carries 88 warm pixels peaking at 188, the idle
                      one 16 peaking at 98.
+  report   none    — the bug (PixelLab prompt "Report code bug", 2026-09-19:
+                     the freeze button became a wiki-style pill, "a 24x24 icon
+                     and text instead"). 24x24 like the other corner icons,
+                     which is what let it join them; the 48x48 record/record-on
+                     plates below are RETIRED with the button they drew and are
+                     kept only because they are his art and this script proves
+                     the bake of every entry it lists.
   install  none    — the gold download arrow (PixelLab prompt "Download",
                      2026-09-13: "the new download game icon on the character
                      select screen"). Its 18x21 ink sits 2px from the top and
@@ -66,6 +73,7 @@ ICONS = {
     "install": "none",
     "record": "none",
     "record-on": "none",
+    "report": "none",
 }
 
 
