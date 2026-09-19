@@ -4358,24 +4358,49 @@ function viewHome() {
  * If nothing fits — a landscape phone, a browser with a huge font — the page
  * scrolls, which is the honest failure: the art never leaves its 48px grid. */
 const HOME_GAP = 10;
+/* THE RUNG THIS SCREEN ALREADY CHOSE — { w, h, L, c }. Kept so a later fit
+ * re-applies it instead of walking the ladder again on a viewport that is
+ * merely wobbling (see fitHome). Cleared when the page leaves. */
+let homeFit = null;
 function homeTiles(tiles) {
   const grid = h("div", { class: "stat-tiles" }, ...tiles.map(([slug, n, noun]) =>
     h("a", { class: "stat-tile", href: `#/${slug}` },
       sectionIcon(slug, 96),
       h("div", { class: "n" }, label(slug)),
       h("div", { class: "l" }, `${n} ${noun}`))));
-  const fit = () => fitHome(grid);
-  requestAnimationFrame(fit);
+  /* DEBOUNCED, BECAUSE A RESTORE IS A STORM OF WRONG NUMBERS (maintainer
+   * 2026-09-19, twice: "The overview looks different if I tab out and in
+   * again. This is Ugly" / "When I tab in and out the overview changes!").
+   * Coming back to a tab, Android reports a viewport that is still settling —
+   * the URL bar is animating, and innerWidth can even read wide enough to take
+   * the desktop branch for a frame, which is the 3-column page he saw. Fitting
+   * on any of those frames fits to a screen that does not exist yet. So the
+   * trigger waits for the numbers to stop moving, and fitHome itself keeps the
+   * rung it already chose unless the screen really changed. */
+  let timer = null, last = "";
+  const fit = () => {
+    clearTimeout(timer);
+    const settle = (tries = 0) => {
+      const now = `${window.innerWidth}x${window.innerHeight}`;
+      if (now !== last && tries < 12) { last = now; timer = setTimeout(() => settle(tries + 1), 120); return; }
+      fitHome(grid);
+    };
+    last = "";
+    settle();
+  };
+  requestAnimationFrame(() => fitHome(grid));
   window.addEventListener("resize", fit);
   // …and once more when he comes back to the tab, since the resizes that
   // arrived while it was hidden were ignored on purpose.
-  const onVisible = () => { if (!document.hidden) requestAnimationFrame(fit); };
+  const onVisible = () => { if (!document.hidden) fit(); };
   document.addEventListener("visibilitychange", onVisible);
   // The column reserves 130px under every page on a phone — room for the save
   // bar over a review queue. The front door has nothing to save, and that
   // reserve is the difference between the last row being on screen and not.
   $("#content")?.classList.add("fit-home");
   activePlayers.push({ destroy: () => {
+    clearTimeout(timer);
+    homeFit = null;
     window.removeEventListener("resize", fit);
     document.removeEventListener("visibilitychange", onVisible);
     $("#content")?.classList.remove("fit-home");
@@ -4421,6 +4446,14 @@ function fitHome(grid) {
    * fit itself. Measuring always starts from the unstretched grid. */
   grid.style.gridAutoRows = "";
   delete grid.dataset.rows;
+  /* THE RUNG IS STICKY. Once a layout has been chosen for a screen, a later fit
+   * re-applies THAT rung rather than walking the ladder again, unless the
+   * screen really changed — a different width, or a height that moved more than
+   * the URL bar's own 120px. Re-walking on every wobble is what made the front
+   * door a different page each time he came back to the tab; and the walk is
+   * still entered if the remembered rung no longer fits, so it can never leave
+   * the page scrolling. */
+  const screenW = window.innerWidth, screenH = window.innerHeight;
   const setIcon = (px) => {
     grid.style.setProperty("--home-icon", `${px}px`);
     for (const img of grid.querySelectorAll(".sect-icon")) { img.width = px; img.height = px; }
@@ -4431,6 +4464,23 @@ function fitHome(grid) {
   const pad = col ? parseFloat(getComputedStyle(col).paddingBottom) || 0 : 0;
   const room = () => window.innerHeight - grid.getBoundingClientRect().top - pad - 4;
   const intro = $(".home-intro");
+  const wear = (L, c) => {
+    if (intro) intro.hidden = L.tight;
+    setIcon(L.icon);
+    grid.classList.toggle("small-type", L.small);
+    grid.classList.toggle("row-tiles", L.rows);
+    grid.style.setProperty("--home-cols", String(c));
+  };
+  const tagOf = (L, c) => `${L.icon}px/${c}col${L.small ? "/small" : ""}${L.rows ? "/side" : ""}${L.tight ? "/no-intro" : ""}`;
+  if (homeFit && homeFit.w === screenW && Math.abs(homeFit.h - screenH) <= 120) {
+    wear(homeFit.L, homeFit.c);
+    if (grid.getBoundingClientRect().height <= room()) {
+      grid.dataset.fit = tagOf(homeFit.L, homeFit.c);
+      homeFit = { ...homeFit, h: screenH };
+      fillHome(grid, homeFit.c, room() - 10);
+      return;
+    }
+  }
   const wide = Math.max(2, Math.min(6, Math.floor((grid.clientWidth + HOME_GAP) / (104 + HOME_GAP))));
   // THE PHONE IS THE VIEWPORT, not the column: a desktop's column is narrow too
   // (the sidebar takes 240px of it), and measuring the column made a 820px
@@ -4469,7 +4519,8 @@ function fitHome(grid) {
       for (const c of cols(cap)) {
         grid.style.setProperty("--home-cols", String(c));
         if (grid.getBoundingClientRect().height <= room()) {
-          grid.dataset.fit = `${L.icon}px/${c}col${L.small ? "/small" : ""}${L.rows ? "/side" : ""}${L.tight ? "/no-intro" : ""}`;
+          grid.dataset.fit = tagOf(L, c);
+          homeFit = { w: screenW, h: screenH, L, c };
           // A hair under the room, not exactly it: rounding in the row maths
           // and the column's own trailing space put 5-8px on the page and a
           // scrollbar with them (measured).
@@ -4484,6 +4535,7 @@ function fitHome(grid) {
   if (intro) intro.hidden = false;
   grid.classList.remove("row-tiles");
   grid.dataset.fit = `48px/${narrow ? 4 : wide}col/small (scrolls)`;
+  homeFit = null;                       // nothing fit: never remember a failure
 }
 
 /* --- monsters --- */
@@ -9630,9 +9682,22 @@ function worldTypes() {
     // one — once he has picked, the pick is what this ground looks like.
     const self = t.pairs.find((p) => p.side === t.id);
     const faceOf = (p) => p && (p.candidates.find((c) => fb("tiles", c.key).status === "approved") ?? p.candidates[0]);
-    // No self pair generated yet: fall back to the best tile anywhere, so a
-    // type is never faceless while the agent is still filling the matrix.
+    /* NO SELF PAIR: ITS OWN CLEAN PLATE, NEVER A NEIGHBOUR'S TILE (maintainer
+     * 2026-09-19: "Why don't you show lava on lava and water on water in the
+     * overview?"). Lava and water have no lava-over-lava or water-over-water
+     * tile — the matrix has never had one — so the old fallback took the
+     * best-scoring tile from ANY pair and the card showed lava on GREY STONE
+     * and water on DARK MUD: the thumbnail advertised the neighbour, which is
+     * the exact bug the self-pair rule above exists to prevent.
+     *
+     * tiles/plates/<g>/clean.webp is the ground's own top on the ground's own
+     * wall (lava #fd5a02 over #a73211, water #4a98a1 over #2c727b), published
+     * for all 15 grounds. Flat rather than textured, and honest: everything in
+     * the picture is the type. The textured answer is a real self pair —
+     * asked of the tiles agent on their board. */
+    const plate = patternLib()?.plates[t.id]?.clean;
     t.face = faceOf(self)
+      ?? (plate ? { key: null, top: t.id, side: t.id, art: plate, raw: null, plate: true } : null)
       ?? t.pairs.flatMap((p) => p.candidates).sort((a, b) => (b.wallScore ?? 0) - (a.wallScore ?? 0))[0]
       ?? null;
     t.selfFaced = !!self;
