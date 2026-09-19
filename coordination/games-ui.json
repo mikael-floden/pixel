@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "idle — awaiting his word.",
+  "current": "CLAIM: the LANDSCAPE menu column is sized to its content, the way portrait's rail already is (maintainer 2026-09-19: \"in landscape the menu area has not been made smaller the way we did for portrait mode\"). landscapeMenuWidth() mirrors portraitHudHeight(): tab strip + page padding + the 3 backpack columns he kept, capped at the golden 38.2vw and never above it. The chrome is trimmed with it — the vertical tab strip is 84px for a 56px icon. files: games2/client/src/hud.ts, games2/scripts/verify-landscape.mjs, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -301,5 +301,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T11:25:37Z"
+  "updated": "2026-09-19T11:42:20Z"
 }
