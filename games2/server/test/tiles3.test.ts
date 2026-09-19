@@ -806,15 +806,15 @@ test("the detail, fade and slope pools are render3's pools", { skip: !!MISSING.l
   // happens on any surface that is not a fade or a boundary.
   assert.equal(F.invariants.detail_pool_reachable, true);
 
-  // A fade pool is APPROVED ONLY, in pct order, and carries his rating — the
+  // A fade pool is APPROVED ONLY, in AREA order, and carries his rating — the
   // rating is what weights the pick, so a pool that agrees on files and not on
   // ratings still draws a different tile.
   for (const w of F.windows)
     for (const [key, want] of Object.entries<any>(w.fade_pools)) {
       const [field, other] = key.split("|");
       assert.deepEqual(
-        t.fadePool(field, other).map((f) => [f.file, f.pct, f.rating]),
-        want.map(([i, pct, rating]: [number, number, number]) => [P[i], pct, rating]),
+        t.fadePool(field, other).map((f) => [f.file, f.area, f.rating]),
+        want.map(([i, area, rating]: [number, number, number]) => [P[i], area, rating]),
         `fade pool ${key}`,
       );
     }
@@ -839,6 +839,77 @@ test("the detail, fade and slope pools are render3's pools", { skip: !!MISSING.l
   for (const ground of Object.keys(load("tiles/ground_types.json").grounds))
     if (!F.invariants.slope_sets[ground])
       assert.equal(t.slopeTile(ground, 7, 100, 100), null, `${ground} drew an unapproved slope`);
+});
+
+/* WHAT THE POOL SORTS AND WEIGHTS BY IS THE MEASURED AREA — and `pct` in the
+ * index is NOT it. fades_post.py builds `pct[edge] = 51 + 49*area[edge]`: the rim
+ * wins 51 points outright, so a tile's own ground is the pct majority by
+ * construction and placement can never land it on the wrong side. What is left,
+ * `pct[other] = 0.49 x area[other]`, is a placement score on a 0..49 integer
+ * scale that the pool read as a percentage of the top face for as long as it has
+ * existed (maintainer 2026-09-19: "the pool ordering has always worked and the
+ * label has always lied" — ordering survived because the falloff ramp is
+ * relative to the pool's own min/max, so a linear rescale moves no coverage).
+ *
+ * The gate above proves the port and render3 agree. This one proves WHAT they
+ * agree on, because that fixture is regenerated from render3 and would follow it
+ * into a regression:
+ *   - every entry carries `area_pct[other]` off the published index;
+ *   - the pool is in ascending area order, which is the order the falloff
+ *     weighting expects;
+ *   - THERE IS NO CEILING. The old `<= 55` could not fire on a 0..49 score
+ *     (measured: pct[other] tops out at 43 over all 7,906 published tiles), and
+ *     porting it onto the real area cuts 728 approved tiles out of 119 of the
+ *     207 answering pools and empties 2 — an INVERTED tile (area majority rock,
+ *     rim ice) is valid and places on ice, his 2026-08-28 ruling, and
+ *     `edge_ground` is the thing that places it;
+ *   - the 1% floor is all that is left, and tier 2 is where it is waived. */
+test("a fade pool reads the measured area: ascending, floored at 1%, no ceiling", { skip: !!MISSING.length }, () => {
+  const { t } = build();
+  const idx = load("tiles/fades/index.json");
+  const byFile = new Map<string, any>();
+  for (const ts of Object.values<any[]>(idx.pairs ?? {})) for (const e of ts) byFile.set(e.file, e);
+
+  const ordered = new Set<string>();
+  for (const pk of Object.keys(idx.pairs ?? {})) {
+    const [a, b] = pk.split("__to__");
+    ordered.add(`${a}|${b}`);
+    ordered.add(`${b}|${a}`);
+  }
+  let answering = 0, inverted = 0, invertedPools = 0, tiles = 0;
+  for (const key of ordered) {
+    const [field, other] = key.split("|");
+    const pool = t.fadePool(field, other);
+    if (!pool.length) continue;
+    answering++;
+    let over = 0;
+    for (let i = 0; i < pool.length; i++) {
+      const p = pool[i], e = byFile.get(p.file);
+      assert.ok(e, `${key}: ${p.file} is not in tiles/fades/index.json`);
+      // THE AREA, not the score. This is the line the old read fails on.
+      assert.equal(p.area, e.area_pct?.[other], `${key}: ${p.file} carries the wrong number`);
+      // ...and the rim is still what places the tile, whatever the area says.
+      assert.equal(e.edge_ground, field, `${key}: ${p.file} placed by its area`);
+      if (p.tier !== 2) assert.ok(p.area >= 1, `${key}: ${p.file} is under the 1% floor`);
+      if (i) assert.ok(p.area >= pool[i - 1].area, `${key}: out of area order at ${i}`);
+      if (p.area > 55) over++;
+      tiles++;
+    }
+    inverted += over;
+    if (over) invertedPools++;
+  }
+  assert.ok(answering >= 200, `only ${answering} of ${ordered.size} ordered pairs answer`);
+  // A CEILING WOULD BITE, WHICH IS WHY THERE IS NONE: these are the tiles it
+  // would take (728 across 119 pools when this was written, and two pools have
+  // nothing else at all).
+  assert.ok(inverted > 0, `no pool carries a tile over 55% area — ${tiles} tiles seen`);
+  assert.ok(invertedPools > 0, `${inverted} over-55% tiles and no pool holds one`);
+  // ...and on the score it never could: pct[other] is 0.49 x area by
+  // construction, so no published tile can reach 55.
+  let maxScore = 0;
+  for (const e of byFile.values())
+    for (const [g, v] of Object.entries<number>(e.pct ?? {})) if (g !== e.edge_ground) maxScore = Math.max(maxScore, v);
+  assert.ok(maxScore < 50, `pct[other] reached ${maxScore}, so the old ceiling was live after all`);
 });
 
 /* -- the geometry the renderer will paste with ------------------------------ */

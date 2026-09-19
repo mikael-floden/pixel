@@ -1124,7 +1124,19 @@ def invariants(doc):
                            "never appeared anywhere.",
             "INDOOR_GROUNDS": sorted(R3.INDOOR_GROUNDS),
             "SIDE_ORDER": R3.SIDE_ORDER,
-            "fade_pct_window": [8, 55],
+            "fade_area_rule": "a fade pool reads area_pct[other] \u2014 the "
+                              "MEASURED top-face area share \u2014 floored at 1% "
+                              "with NO ceiling. `pct` is a PLACEMENT SCORE "
+                              "(51 + 49*area for the edge ground, leaving "
+                              "pct[other] = 0.49*area on a 0..49 scale), so "
+                              "the old [8, 55] window capped nothing: "
+                              "pct[other] tops out at 43 over all 7,906 "
+                              "published tiles. Ported onto the real area "
+                              "that ceiling cuts 728 approved tiles out of "
+                              "119 of the 207 answering pools and empties 2 "
+                              "\u2014 an inverted tile (area majority rock, rim "
+                              "ice) is valid and places on ice. edge_ground "
+                              "is what places a tile, never the number.",
             "lcg": "seed & 0xffffffff, then s = (s*1664525 + 1013904223) & "
                    "0xffffffff, value = s / 2**32. Fade seed (x*73856093) ^ "
                    "(y*19349663), detail seed (x*83492791) ^ (y*2654435761) — "

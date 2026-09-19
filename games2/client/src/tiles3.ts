@@ -497,7 +497,11 @@ export interface FadeTile {
    *  825 of the 3,575 tiles and an unjudged one is not a candidate either. */
   key?: string;
   edge_ground?: string;
+  /** THE PLACEMENT SCORE, NOT AN AREA: `51 + 49*area` for the edge ground, so
+   *  the rim's ground is the majority by construction. Read `area_pct`. */
   pct?: Record<string, number>;
+  /** The MEASURED top-face area share of each ground, 0..100 with a decimal. */
+  area_pct?: Record<string, number>;
 }
 /** tiles/fades/index.json — `tiles3/fade-tiles@1`. */
 export interface FadesDoc {
@@ -509,12 +513,15 @@ export interface FadesDoc {
 export interface FadePoolTile {
   file: string;
   key: string;
-  pct: number;
+  /** `area_pct[other]` off the index: the share of the top face the OTHER ground
+   *  actually paints, 0..100. Named for what it is — the pool used to carry the
+   *  `pct` placement score under this name and the weighting read it as an area. */
+  area: number;
   rating: number;
-  /** WHICH RULE LET THIS TILE IN. 1 = approved and inside the honest-mix
-   *  window (the only tier that has ever shipped); 2 = approved but outside the
-   *  window, taken ONLY because tier 1 was empty; 3 = listed-but-unjudged,
-   *  taken only when `provisionalFades` is on. A whole pool is one tier. */
+  /** WHICH RULE LET THIS TILE IN. 1 = approved and over the 1% floor (the only
+   *  tier that has ever shipped); 2 = approved, floor waived, taken ONLY because
+   *  tier 1 was empty; 3 = listed-but-unjudged, taken only when
+   *  `provisionalFades` is on. A whole pool is one tier. */
   tier: 1 | 2 | 3;
 }
 
@@ -1977,9 +1984,10 @@ export class Tiles3 {
    *  so an unjudged tile is not a candidate either; merely dropping the rejected
    *  ones still drew 151 tiles he had never seen.
    *
-   *  8..55% is the honest-mix window: a ~0% tile is the source set's own idea of
-   *  a pure field, a >60% one reads as the other ground with a rim, and 50/50 is
-   *  the maintainer's never rule. */
+   *  A tile is in on its MEASURED AREA (`area_pct`), over a 1% floor and with no
+   *  ceiling — `edge_ground` already guarantees the rim, so an area-majority-
+   *  other tile is a big rock on an ice sheet, not a mistake. `fadeTier` has the
+   *  measurement and why the old `pct` window could never fire. */
   fadePool(field: string, other: string): FadePoolTile[] {
     const key = `${field}|${other}`;
     let out = this.fadeCache.get(key);
@@ -2018,14 +2026,29 @@ export class Tiles3 {
   }
 
   /** ONE TIER of `fadePool`, built from the same two index keys and the same
-   *  edge_ground rule. `pct` is how much of `other` shows; 1..55 is the window
-   *  (a 0% tile is the source set's own idea of a pure field, a >60% one reads
-   *  as the other ground with a rim, and 50/50 is his never rule). THE LOW END
-   *  IS IN ON PURPOSE: a 1-2% tile is the far end of the band (maintainer
-   *  2026-09-09, the grass/light_soil pool: "tiles that has very little
-   *  light_soil over grass can be used further away" — the pair tops out at
-   *  16%, so an 8% floor threw away most of it). Sorted by pct, which is the
-   *  order the distance weighting expects. */
+   *  edge_ground rule, ordered by `area_pct[other]` — the MEASURED top-face area
+   *  share of the other ground, which is what "how much of it shows" means.
+   *
+   *  NOT `pct`: THAT IS A PLACEMENT SCORE AND THE NAME LIES (maintainer
+   *  2026-09-19). fades_post.py builds it as `pct[edge] = 51 + 49*area[edge]`
+   *  — the rim wins 51 points outright so the tile's own ground is always the
+   *  pct majority and placement can never land it on the wrong side — which
+   *  leaves `pct[other] = 0.49 x area[other]`, an integer on a 0..49 scale.
+   *  Measured over the 7,906 published tiles: pct[other] tops out at 43, so the
+   *  55 ceiling this pool used to carry could never fire once, while the real
+   *  area reaches 88.4. PORTING THAT CEILING ONTO THE AREA IS THE TRAP: it drops
+   *  728 tiles across 119 of the 207 answering pools and empties 2 outright.
+   *  There is no ceiling here for that reason and because the rim already
+   *  decides placement — an area-majority-other tile with a field rim is valid
+   *  by his own ruling (big rocks on an ice sheet), which is 12.6% of the
+   *  library. THE 1% FLOOR IS ALL THAT IS LEFT (a 0% tile is the source set's
+   *  own idea of a pure field), and tier 2 carries no bound at all.
+   *
+   *  Coverage is unchanged by the rescale: the falloff ramp is relative to the
+   *  pool's own min/max, so target and weights scale together. What moves is the
+   *  TIE-BREAK — pct rounded every tile onto 0..49 and the area carries a
+   *  decimal, so identical order survives on 8 of 207 pools. Same density,
+   *  sometimes a different tile of that density. */
   private fadeTier(field: string, other: string, tier: 1 | 2 | 3): FadePoolTile[] {
     const out: FadePoolTile[] = [];
     const pairs = this.data.fades?.pairs ?? {};
@@ -2037,14 +2060,15 @@ export class Tiles3 {
         /* A REJECTED TILE IS NEVER A CANDIDATE AT ANY TIER. */
         if (e?.status === "rejected") continue;
         if (tier === 3 ? e?.status === "approved" : e?.status !== "approved") continue;
-        const pct = t.pct?.[other] ?? 0;
-        if (tier !== 2 && !(pct >= 1 && pct <= 55)) continue;
-        if (tier === 2 && pct > 55) continue;
+        /* An index from before `area_pct` recovers it from the score rather than
+         * reading 0 and emptying the pool in silence: the formula inverts. */
+        const area = t.area_pct?.[other] ?? (t.pct?.[other] ?? 0) / 0.49;
+        if (tier !== 2 && area < 1) continue;
         if (this.data.fadeGuard && !this.data.fadeGuard(t.file, field, other)) continue;
-        out.push({ file: t.file, key: t.key ?? "", pct, rating: Number(e?.rating) || 0, tier });
+        out.push({ file: t.file, key: t.key ?? "", area, rating: Number(e?.rating) || 0, tier });
       }
     }
-    out.sort((a, b) => a.pct - b.pct);
+    out.sort((a, b) => a.area - b.area);
     return out;
   }
 
@@ -2764,20 +2788,23 @@ export class Tiles3 {
            * the actual transition and tiles that has very little light_soil
            * over grass can be used further away. The 'Fade falloff' slider
            * controls this behavior"). The pool's own range is the scale — the
-           * grass/light_soil pair runs 1-16%, so the old `pct/60` target never
-           * reached a tile and the pick was as good as random. `pos` is 1 at
-           * the nearest ring (the transition tile itself when the switch lets
-           * it wear one, ring 1 otherwise) and 1/reach at the far end; the
-           * target coverage is pctMin + span·pos^falloff — falloff > 1 keeps the
-           * dense tiles to the edge, < 1 spreads them. Weighted by his ratings
-           * and by closeness to the target over half the span, so the nearest
-           * tiles dominate and the far ones drop out. */
+           * grass/light_soil pair covers 2-47.5% of a top face, so the old
+           * `pct/60` target never reached a tile and the pick was as good as
+           * random. `pos` is 1 at the nearest ring (the transition tile itself
+           * when the switch lets it wear one, ring 1 otherwise) and 1/reach at
+           * the far end; the target coverage is areaMin + span·pos^falloff —
+           * falloff > 1 keeps the dense tiles to the edge, < 1 spreads them.
+           * Weighted by his ratings and by closeness to the target over half the
+           * span, so the nearest tiles dominate and the far ones drop out.
+           * RELATIVE TO THE POOL'S OWN MIN/MAX, so reading the real area instead
+           * of the 0.49x placement score moved no coverage at all: target, span
+           * and every distance scale together. */
           const pos = (reach + 1 - near[1]) / Math.max(1, reach);
-          const pctMin = pool[0].pct;
-          const pctMax = pool[pool.length - 1].pct;
-          const span = Math.max(1, pctMax - pctMin);
-          const target = pctMin + span * Math.pow(Math.min(1, pos), falloff);
-          const wts = pool.map((t) => (1.0 + 1.6 * t.rating) * Math.max(0, 1.0 - Math.abs(t.pct - target) / (span / 2)));
+          const areaMin = pool[0].area;
+          const areaMax = pool[pool.length - 1].area;
+          const span = Math.max(1, areaMax - areaMin);
+          const target = areaMin + span * Math.pow(Math.min(1, pos), falloff);
+          const wts = pool.map((t) => (1.0 + 1.6 * t.rating) * Math.max(0, 1.0 - Math.abs(t.area - target) / (span / 2)));
           let tot = 0;
           for (const w of wts) if (w > 0) tot += w;
           if (!tot) tot = 1.0;

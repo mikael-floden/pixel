@@ -222,7 +222,7 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   the COVERAGE curve (0.1-32, log dial): the pool's densest tile (most of the
   other ground on it)
   is the target at the nearest ring and its sparsest at the far end, target =
-  pctMin + span·pos^falloff, so >1 keeps the dense tiles to the transition
+  areaMin + span·pos^falloff, so >1 keeps the dense tiles to the transition
   (maintainer 2026-09-09: "fade tiles that has very much light_soil on top of
   grass should be used at the tile that does the actual transition ... very
   little ... further away"). The pool keeps every approved tile from 1% up —
@@ -236,9 +236,28 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   their tracks, hence the wider dials: "you limited the sliders enormously").
   The resolver's own constants (FADE_BAND 2, 1x, exp 1) are what the render3
   parity fixtures pin; only the game's dial defaults moved.
-  How much of the other ground a fade tile actually paints is `pct` on every
-  pool tile (from tiles/fades/index.json); exposing that per placement is
-  not built.
+  How much of the other ground a fade tile actually paints is `area_pct` from
+  tiles/fades/index.json, carried as `FadePoolTile.area` — the MEASURED
+  top-face share, over a 1% floor with NO ceiling (tier 2 waives even the
+  floor). NOT `pct`, WHICH IS A PLACEMENT SCORE: fades_post.py gives the rim's
+  ground 51 points outright plus 49x its area, so `pct[other]` is exactly
+  0.49x the area on a 0..49 integer scale, and the pool read it as a
+  percentage of the top face for as long as it existed (maintainer 2026-09-19:
+  "the pool ordering has always worked and the label has always lied" — the
+  ordering survived because the falloff ramp is relative to the pool's own
+  min/max, so a linear rescale moves no coverage; what moves is the TIE-BREAK,
+  identical order on 8 of 207 pools — same density, sometimes a different tile
+  of it). PORTING THE OLD `<= 55` CEILING ONTO THE AREA IS THE TRAP: on the
+  score it could never fire once (pct[other] tops out at 43 over all 7,906
+  published tiles), on the area it cuts 728 approved tiles out of 119 of the
+  207 answering pools and empties 2 outright — and an area-majority-other tile
+  with a field rim is VALID (big rocks on an ice sheet, his 2026-08-28 ruling,
+  12.6% of the library). `edge_ground` places a tile; the number never does.
+  render3's `fade_pool` took the same rule, so the parity fixture proves the
+  two agree and the pool gate beside it ("a fade pool reads the measured
+  area") proves what they agree ON — it is the one that fails if the fixture
+  follows render3 into a regression. Exposing the area per placement is not
+  built.
 - **A NATURE WALL'S FOOT IS A TRANSITION TILE, AND A DECK SLAB COMPOSES
   TRANSITIONS TOO** (`Tiles3Data.footBoundary` / `deckBoundary`, both always
   true — the switch that turned them off is gone, maintainer 2026-09-12; the
@@ -477,11 +496,12 @@ dressing). `this.maps3` gates every terrain branch (false only for a hand-built
   game, not the game to it, because every rule below is a maintainer verdict
   taken in the game). What is held equal, and where each lives in `tiles3.ts`:
   a region is the 24-cell chunk (`regionAt`); a fade pool keeps every approved
-  tile from 1% up (`fadePool`; the old 8% floor threw away the far-band tiles);
+  tile from 1% of measured AREA up, with no ceiling (`fadePool`; the old 8%
+  floor threw away the far-band tiles, and the old 55% ceiling read a score);
   the fade band is the nearest differing solid ground within reach at distance
   max(ring, |level diff|), only grounds with a pool, the lonely rule (no fade
   where a fade already draws on an edge neighbour), the target-coverage pick
-  `(1+1.6·rating)·max(0, 1−|pct−target|/(span/2))` with target = pctMin +
+  `(1+1.6·rating)·max(0, 1−|area−target|/(span/2))` with target = areaMin +
   span·pos^falloff — at the resolver's own constants FADE_BAND 2 / amount 1 /
   falloff 1 (the fixtures pin those; the game's dials are the maintainer's and
   differ); a detail rolls wherever no fade landed, never on parquet_floor,
