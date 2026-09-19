@@ -100,7 +100,7 @@ function injectStyles(): void {
      span exactly the card and the 🔍 lands on its left edge. The -2px is this
      button's own borders, outside a content-box width. */
   .ml-wikibtn{position:fixed;right:calc(var(--gv-right,0px) + 10px);
-    bottom:calc(var(--hud-h, 38.2dvh) + 10px);z-index:8;
+    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);z-index:8;
     width:calc(var(--bars-r-w, ${PILL_W + 2 + NEAR_W + NEAR_GAP}px) - ${NEAR_W + NEAR_GAP}px - 2px);
     height:${PILL_H}px;box-sizing:content-box;padding:0;
     border:1px solid var(--border-strong);border-radius:7px;
@@ -109,22 +109,18 @@ function injectStyles(): void {
     background:color-mix(in srgb, var(--bg) 76%, transparent);
     backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
     font:600 12px var(--sans);letter-spacing:.03em;color:var(--ink);
-    transition:bottom .15s ease-out,right .3s ease,top .3s ease;
+    transition:right .3s ease,top .3s ease;
     -webkit-tap-highlight-color:transparent;user-select:none}
   .ml-wikibtn-icon{image-rendering:pixelated;pointer-events:none;-webkit-user-drag:none}
   .ml-wikibtn.press,.ml-wikibtn:active{transform:scale(.96)}
-  /* RIGHT-HANDED LANDSCAPE: the same as portrait — this row directly under
-     the XP chip, because the row has to TOUCH the card it is as wide as. */
-  :root.ml-land:not(.ml-lh) .ml-wikibtn{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
-  /* PORTRAIT: THE SAME ANCHOR — directly under the XP chip. Chip bottom + the
-     10px margin, --bars-r-h its measured height, --ml-safe-top the cutout
-     inset it sits under. The two orientations read the same way round, and
-     nothing hangs below this row any more. */
-  :root:not(.ml-land) .ml-wikibtn{
-    top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px);bottom:auto}
-  /* The keyboard lift: this row takes the line hud.ts clears above the keys.
-     Only left-handed landscape is anchored low enough for it to apply. */
-  :root.ml-kb-up .ml-wikibtn{bottom:calc(var(--ml-inputlift) + 56px)}`;
+  /* ONE ANCHOR IN EVERY PLACEMENT: directly under the XP chip — chip bottom
+     (--ml-safe-top the cutout inset it sits under, --bars-r-h its measured
+     height) + the 10px margin — because the row has to TOUCH the card it is
+     as wide as. Both orientations, both hands: left-handed landscape was the
+     last placement to keep the game view's bottom corner instead (maintainer
+     2026-09-19: "Left-handed landscape mode has still not placed the
+     wiki+search under the XP-card"), and that corner holds no chrome since
+     the pill went top-centre. Nothing hangs below this row, so the keyboard
+     lift (.ml-kb-up) has nothing of it to lift. */`;
   document.head.appendChild(s);
 }

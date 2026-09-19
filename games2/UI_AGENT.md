@@ -780,8 +780,13 @@ from the games agent), #18 (title/landing screen).
   because a row that is the card's width has to TOUCH the card or its
   alignment is invisible. (This swapped to pill-first earlier the same day and
   back again within the hour; the second verdict carries the reason, so it is
-  the one that stands.) LEFT-HANDED LANDSCAPE keeps the screen's BOTTOM corner
-  for the row instead, because there the stick is bottom-left.
+  the one that stands.) EVERY PLACEMENT, BOTH HANDS: left-handed landscape
+  kept the game view's bottom corner for the row until 2026-09-19
+  (maintainer: "Left-handed landscape mode has still not placed the
+  wiki+search under the XP-card"); that corner holds no chrome since the pill
+  went top-centre, so `wikibtn.ts` / `wikinear.ts` carry ONE `top` anchor in
+  the base rule — no orientation or hand rule at all — and no corner is the
+  row's anywhere.
   THE PILL IS NO LONGER PART OF THIS. It was the row's twin for six weeks —
   same box, same right edge, one `--ml-stack-step` apart, in an order that
   flipped with the anchor — and on 2026-09-19 it went to the view's centre and
@@ -803,16 +808,14 @@ from the games agent), #18 (title/landing screen).
   `bars.ts`). He wants ONE width in both, between the two; posted to games
   2026-09-19 with the exact line. Nothing here needs touching when they ship
   it — the vars are measured. `wikibtn.ts`,
-  `wikinear.ts`, `clock.ts`: one `:root:not(.ml-land)` rule each, `top: safe-top
-  + --bars-r-h + 20px (+ step for the pill); bottom:auto` — the landscape
-  right-handed formula, so both top anchors agree. Three placements, one order
-  each (wikibtn.ts header): portrait row-then-pill under the chip; RIGHT-handed
-  landscape pill-then-row under the chip (his 2026-08-05/09-03 verdict on that
-  screen, not re-litigated — flip it only on his word); LEFT-handed landscape
-  keeps the bottom corner with the pill stepping up over the row. The keyboard
-  lift (`hud.ts :root.ml-kb-up`) still writes `bottom` on all three, but a
-  `bottom` on a top-anchored fixed box with a height is over-constrained and
-  ignored, so in portrait the lift moves only the chat log — `verify-chatpage`
+  `wikinear.ts`: `top: safe-top + --bars-r-h + 20px` in the base rule and no
+  `bottom` anywhere — one anchor for every placement since 2026-09-19: the
+  row directly under the chip in portrait and in landscape with either hand
+  (the left hand joined last, on his report), the pill top-centred and no
+  longer in the stack. The keyboard lift (`hud.ts :root.ml-kb-up`) writes
+  `bottom` on the chat log and the chat input only; the row's own lift rules
+  went with its last bottom anchor, so the keys move nothing of it —
+  `verify-chatpage`
   AND `verify-wikibtn` assert the row and the pill stay put (the latter still
   demanded they RISE and had been red on main since the stack moved top-right
   on 2026-09-17: two of our own gates contradicting each other, fixed
@@ -831,25 +834,16 @@ from the games agent), #18 (title/landing screen).
 - Suppress `contextmenu` on roots containing `<img>` (Android long-press).
 - Movement-timing e2e stays on small viewports (headless-GL starvation);
   UI screenshots use the real phone geometry — the two never mix.
-- **THE WIKI BUTTON LIVES WITH THE CLOCK PILL** (`wikibtn.ts`, maintainer
-  2026-08-13, placements from his three red-circled shots): pill-sized
-  (80x32+border), same right edge, and one 10px gap BELOW the pill in EVERY
-  placement (maintainer 2026-09-03, on a screenshot: "I think it looks better
-  if the wiki+search is under the time-of-day pill — they should swap y
-  position"). At rest the Wiki row takes the corner anchor and the PILL steps
-  up over it by `--ml-stack-step`; in right-handed landscape the pill is
-  top-anchored under the XP chip and the row hangs one step under it, which
-  already read that way. ONE order everywhere, including over the phone
-  keyboard — chrome that reorders when the keys come up reads as a bug.
+- **THE WIKI BUTTON** (`wikibtn.ts`, maintainer 2026-08-13, placements from
+  his three red-circled shots): pill-sized (80x32+border); since 2026-09-19
+  the row hangs under the XP chip in every placement and the pill is
+  top-centred (the row law above). ONE order everywhere, including over the
+  phone keyboard — chrome that reorders when the keys come up reads as a bug.
   THE STEP IS PUBLISHED, NOT COPIED: `--ml-stack-step` is declared once by
-  wikibtn.ts (it is that button's own outer height + the gap) and read by
-  clock.ts, wikinear.ts and hud.ts's keyboard lift. It was three hardcoded
-  44s before the swap, which is exactly the shape that desyncs. And the chat
-  log moves WITH the pill over the keyboard: "the log and the pill on one
-  line" is an approved 2026-07-31 arrangement that verify-chatpage pins. Every
-  rule mirrors `.ml-clock` plus one step, including the `:root.ml-kb-up`
-  keyboard lift, so the two always move as a stack; change the pill's
-  anchoring and this file changes in the same commit. It is in hud's
+  wikibtn.ts (that button's own outer height + the 10px gap) and read by
+  clock.ts (the pill's fallback row when the cards leave it no room at the
+  top), wikinear.ts and chat.ts (the log's width). It was three hardcoded
+  44s before, which is exactly the shape that desyncs. The button is in hud's
   `ml-noanim` list (rotation snaps). The drawer it opens REMEMBERS the
   reading spot (`wikipanel.ts`, the wiki agent's module, edited on the
   maintainer's ask + board note): {hash, scroll} in `ml-wiki-spot`, saved on

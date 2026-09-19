@@ -524,14 +524,14 @@ try {
     ? ok(`stick in the bottom-LEFT corner (x=${g.stick.l}, b=${g.stick.b})`)
     : fail(`stick ${JSON.stringify(g.stick)}`);
   Math.abs(g.barsL.l - 10) <= 2 ? ok("HP chip back at screen-left (game view's corner)") : fail(`left chip ${JSON.stringify(g.barsL)}`);
-  // THE CORNER IS THE WIKI ROW'S. The pill used to ride one step above it
-  // here — the one placement where the stack hung off the BOTTOM — and since
-  // 2026-09-19 it does not: the pill is top-centred in every orientation and
-  // both hands, so this corner is the row's alone and the pill is checked
+  // THE WIKI ROW HANGS UNDER THE XP CHIP HERE TOO (maintainer 2026-09-19:
+  // "Left-handed landscape mode has still not placed the wiki+search under
+  // the XP-card") — the last placement that kept the bottom corner. The pill
+  // is top-centred in every orientation and both hands, and is checked
   // against the game view, which has swapped sides.
-  Math.abs(851 - menuW - 10 - g.wikibtn.r) <= 2 && Math.abs(g.vh - 10 - g.wikibtn.b) <= 2
-    ? ok(`left-handed: Wiki row back in the game view's bottom-right corner (b=${g.wikibtn.b}, r=${g.wikibtn.r})`)
-    : fail(`wikibtn ${JSON.stringify(g.wikibtn)} want the corner at b=${g.vh - 10}, r=${851 - menuW - 10}`);
+  Math.abs(g.wikibtn.r - g.barsR.r) <= 2 && Math.abs(g.wikibtn.t - g.barsR.b - 10) <= 2
+    ? ok(`left-handed: Wiki row under the XP chip (top ${g.wikibtn.t} = chip bottom ${g.barsR.b} + 10, right edges ${g.wikibtn.r}/${g.barsR.r})`)
+    : fail(`left-handed wiki row ${JSON.stringify(g.wikibtn)} vs XP chip ${JSON.stringify(g.barsR)} — want it under the chip, not the corner`);
   Math.abs((g.clock.l + g.clock.w / 2) - (851 - menuW) / 2) <= 2 && g.clock.t < g.vh / 2
     ? ok(`left-handed: the pill follows the game view to the LEFT of the menu (centre ${(g.clock.l + g.clock.w / 2).toFixed(0)} of ${((851 - menuW) / 2).toFixed(0)})`)
     : fail(`clock ${JSON.stringify(g.clock)} — want it centred in a game view that now runs 0..${851 - menuW}`);

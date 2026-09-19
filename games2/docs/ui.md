@@ -170,11 +170,16 @@ GROWS BY"); this holds the mechanics and the numbers.
   `--hud-h` (0 in landscape), `--gv-left`/`--gv-right`. #game, the chips,
   the chat overlay and the pill anchor off the gv vars and TRANSITION their
   anchor property (handedness swaps glide; display swaps snap).
-- ONE exception to "corners stay corners": in RIGHT-handed landscape the
-  clock pill leaves the bottom-right corner (the thumb stick's) and parks
-  under the XP chip, right edges aligned, 10px below — reading
+- THE WIKI ROW (Wiki + 🔍) HANGS UNDER THE XP CHIP IN EVERY PLACEMENT — both
+  orientations, both hands — right edges aligned, 10px below, reading
   `--bars-r-h`, the chip's MEASURED height (bars.ts publishes it from a
-  ResizeObserver). Left-handed keeps the corner.
+  ResizeObserver). Left-handed landscape was the last placement to keep the
+  game view's bottom corner instead (maintainer 2026-09-19: "Left-handed
+  landscape mode has still not placed the wiki+search under the XP-card");
+  that corner holds no chrome since the pill went top-centre, so no
+  exception remains (wikibtn.ts / wikinear.ts: the `top` anchor sits in the
+  base rule; there is no orientation, hand or keyboard-lift rule to keep in
+  step with it).
 - ICONS ARE NOT ROTATED (the "icons rotate 90°" ask described the
   locked-page mental model; a sideways backpack is not a backpack) — the
   gate pins transform:none.

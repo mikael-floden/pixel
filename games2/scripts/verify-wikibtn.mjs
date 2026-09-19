@@ -601,12 +601,17 @@ try {
   assertStack(g7, "right-handed landscape");
   assertPill(g7, "right-handed landscape");
 
-  // ── 8. left-handed landscape: the pill keeps its corner, button ABOVE ──
+  // ── 8. left-handed landscape: the row under the XP chip here too (maintainer
+  //    2026-09-19: "Left-handed landscape mode has still not placed the
+  //    wiki+search under the XP-card"), the pill top-centred ──
   await page.evaluate(() => window.__ml.hand("left"));
   await page.waitForTimeout(800);
   const g8 = await rects();
-  assertStack(g8, "left-handed landscape"); // the row keeps the bottom corner here
+  assertStack(g8, "left-handed landscape");
   assertPill(g8, "left-handed landscape"); // …the pill is top-centred in every placement
+  g8.btn && g8.xp && near(g8.btn.t, g8.xp.b + 10, 2) && near(g8.btn.r, g8.xp.r, 2)
+    ? ok(`left-handed landscape: the row hangs under the XP chip (top ${g8.btn.t.toFixed(0)} = chip bottom ${g8.xp.b.toFixed(0)} + 10, right edges ${g8.btn.r.toFixed(0)}/${g8.xp.r.toFixed(0)})`)
+    : fail(`left-handed landscape: row ${JSON.stringify(g8.btn)} vs XP chip ${JSON.stringify(g8.xp)} — want it under the chip`);
   await page.evaluate(() => window.__ml.hand("right"));
 
   // ── 8b. HIS OWN PHONE — 495x1111, MEASURED, NOT ASSUMED ──────────────
