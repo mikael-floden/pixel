@@ -312,10 +312,63 @@ try {
     await page.waitForTimeout(150);
     const s2 = await stickRect();
     near(s2.b, s0.b) ? ok("…and its default button puts the stick back") : fail(`after default: b ${s2.b} vs ${s0.b}`);
+    // A DIAL'S RANGE IS THE EFFECTIVE RANGE (maintainer 2026-09-19, at "14 px
+    // right" with nothing happening): right-handed in portrait the stick's
+    // corner is on the right, so "Stick left / right" ends at 10 px right (the
+    // inset, margin 0) and 30 px left (the half radius); "Stick up / down"
+    // ends at 10 px down and 30 px up. Every end moves the stick.
+    const endOf = (label, side) => page.evaluate(([l, sd]) => {
+      const row = [...document.querySelectorAll('.ml-sub[data-sub="controls"] .ml-amb-slider')].find((d) => d.querySelector(".ml-amb-slider-label")?.textContent.trim() === l);
+      const track = row.querySelector(".ml-slider");
+      const r = track.getBoundingClientRect();
+      const x = sd === "right" ? r.right - 1 : r.left + 1;
+      const at = (type) => track.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 1, clientX: x, clientY: r.top + r.height / 2 }));
+      at("pointerdown"); at("pointerup");
+      return row.querySelector(".ml-amb-slider-val")?.textContent.trim();
+    }, [label, side]);
+    const xr = await endOf("Stick left / right", "right");
+    await page.waitForTimeout(120);
+    const sxr = await stickRect();
+    xr === "10 px right" && near(sxr.r, 393)
+      ? ok("the left/right dial ends at 10 px right — the inset — with the stick's margin at 0")
+      : fail(`left/right far right: "${xr}", stick r=${sxr.r}`);
+    const xl = await endOf("Stick left / right", "left");
+    await page.waitForTimeout(120);
+    const sxl = await stickRect();
+    xl === "30 px left" && near(sxl.r, s0.r - 30)
+      ? ok("…and at 30 px left — the half radius — with the stick 30 px in")
+      : fail(`left/right far left: "${xl}", stick r=${sxl.r} (was ${s0.r})`);
+    const yd = await endOf("Stick up / down", "left");
+    await page.waitForTimeout(120);
+    const syd = await stickRect();
+    yd === "10 px down" && near(syd.b, s0.b + 10)
+      ? ok("the up/down dial ends at 10 px down — the inset — with the stick on the rail")
+      : fail(`up/down far left: "${yd}", stick b=${syd.b} (was ${s0.b})`);
+    await page.evaluate(() => [...document.querySelectorAll('.ml-sub[data-sub="controls"] .ml-slider-def')].forEach((b) => b.click()));
+    await page.waitForTimeout(150);
+    const s3 = await stickRect();
+    near(s3.r, s0.r) && near(s3.b, s0.b) ? ok("both default buttons put the stick back in its corner") : fail(`after defaults: ${JSON.stringify(s3)} vs ${JSON.stringify(s0)}`);
     await page.evaluate(() => [...document.querySelectorAll(".ml-handbtn .ml-plate-btn")].find((b) => b.textContent.trim() === "Left-handed").click());
     await page.waitForTimeout(400);
     const hand1 = await page.evaluate(() => ({ hand: window.__ml.hand(), lh: document.documentElement.classList.contains("ml-lh"), on: [...document.querySelectorAll(".ml-handbtn .ml-plate-btn")].find((b) => b.classList.contains("on"))?.textContent.trim() }));
     hand1.hand === "left" && hand1.lh && hand1.on === "Left-handed" ? ok("Left-handed flips the hand, the root class and the lit button") : fail(`after Left-handed: ${JSON.stringify(hand1)}`);
+    // …and the left/right dial's range mirrors with the corner: its far right
+    // is now the half radius (30 px right), its far left the inset (10 px left)
+    const mirrored = await page.evaluate(() => {
+      const row = [...document.querySelectorAll('.ml-sub[data-sub="controls"] .ml-amb-slider')].find((d) => d.querySelector(".ml-amb-slider-label")?.textContent.trim() === "Stick left / right");
+      const track = row.querySelector(".ml-slider"), r = track.getBoundingClientRect();
+      const val = () => row.querySelector(".ml-amb-slider-val")?.textContent.trim();
+      const at = (type, x) => track.dispatchEvent(new PointerEvent(type, { bubbles: true, pointerId: 1, clientX: x, clientY: r.top + r.height / 2 }));
+      at("pointerdown", r.right - 1); at("pointerup", r.right - 1);
+      const right = val();
+      at("pointerdown", r.left + 1); at("pointerup", r.left + 1);
+      const left = val();
+      row.querySelector(".ml-slider-def").click();
+      return { right, left, after: val() };
+    });
+    mirrored.right === "30 px right" && mirrored.left === "10 px left" && mirrored.after === "0 px"
+      ? ok("left-handed, the left/right dial's range mirrors: 30 px right, 10 px left, default 0")
+      : fail(`left-handed dial range: ${JSON.stringify(mirrored)}`);
     await page.evaluate(() => [...document.querySelectorAll(".ml-handbtn .ml-plate-btn")].find((b) => b.textContent.trim() === "Right-handed").click());
     await page.waitForTimeout(400);
 

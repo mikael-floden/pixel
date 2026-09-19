@@ -17,7 +17,7 @@
  * responsive CSS at any viewport width.
  */
 
-import { mountGamepadStick, stickNudgeMax } from "./gamepad";
+import { mountGamepadStick, stickNudgeRange } from "./gamepad";
 import { mountBars } from "./bars";
 import { mountWikiButton } from "./wikibtn";
 import { mountWikiNearButton } from "./wikinear";
@@ -1352,30 +1352,42 @@ export class HudBar {
         "ml-handbtn", // stable hook for the landscape gate
       ),
     );
-    // THE FINE-TUNE (maintainer 2026-09-19): two dials, ± half the stick's
-    // radius each, the stick following live in the game view above (it is a
-    // ghost over the view while Settings is open). gamepad.ts floors the
-    // margin to the view's edge at 0, so the far end of a dial toward an
-    // edge is simply as far as the stick can go. Its own dial group: the
-    // one-block law is per sub-page and the injectors take the first group,
-    // which is Dev's.
+    // THE FINE-TUNE (maintainer 2026-09-19): two dials, the stick following
+    // live in the game view above (it is a ghost over the view while
+    // Settings is open). A DIAL'S RANGE IS THE EFFECTIVE RANGE (his, at
+    // "14 px right" with nothing happening: "Why is not the max/min values
+    // that actually have effect not also the slider limit?"): the half
+    // radius away from the stick's corner, only the inset toward it
+    // (gamepad.ts stickNudgeRange, the same numbers layout() clamps to), so
+    // the default sits off-centre and every end is a position that moves the
+    // stick. The range follows the hand (which side the corner is) and the
+    // orientation (the inset), so the dials are rebuilt when it changes.
+    // Its own dial group: the one-block law is per sub-page and the
+    // injectors take the first group, which is Dev's.
     const stickDials = mk("div", "ml-dials ml-dials-stick");
-    const nudgeDial = (label: string, axis: "x" | "y", word: [string, string]) => {
-      const span = () => 2 * stickNudgeMax();
-      const toP = (px: number) => 0.5 + px / span();
-      const toPx = (p: number) => Math.round((p - 0.5) * span());
-      return pctSlider(label, () => toP(stickNudge()[axis]), (p) => setStickNudge({ [axis]: toPx(p) }), 0.5, {
-        snap: (p) => toP(toPx(p)),
-        format: (p) => {
-          const px = toPx(p);
-          return px === 0 ? "0 px" : `${Math.abs(px)} px ${px > 0 ? word[1] : word[0]}`;
-        },
-      });
+    let builtRange = "";
+    const buildStickDials = () => {
+      const range = stickNudgeRange();
+      const key = JSON.stringify(range);
+      if (key === builtRange) return;
+      builtRange = key;
+      const dial = (label: string, axis: "x" | "y", word: [string, string]) => {
+        const [lo, hi] = range[axis];
+        const toP = (px: number) => (px - lo) / (hi - lo);
+        const toPx = (p: number) => Math.round(lo + p * (hi - lo));
+        return pctSlider(label, () => toP(stickNudge()[axis]), (p) => setStickNudge({ [axis]: toPx(p) }), toP(0), {
+          snap: (p) => toP(toPx(p)),
+          format: (p) => {
+            const px = toPx(p);
+            return px === 0 ? "0 px" : `${Math.abs(px)} px ${px > 0 ? word[1] : word[0]}`;
+          },
+        });
+      };
+      stickDials.replaceChildren(dial("Stick left / right", "x", ["left", "right"]), dial("Stick up / down", "y", ["down", "up"]));
     };
-    stickDials.append(
-      nudgeDial("Stick left / right", "x", ["left", "right"]),
-      nudgeDial("Stick up / down", "y", ["down", "up"]),
-    );
+    buildStickDials();
+    window.addEventListener("ml-hand", buildStickDials);
+    window.addEventListener("ml-layout", buildStickDials);
     ctl.appendChild(stickDials);
     window.addEventListener("ml-hand", () => this.refreshSettings());
     // …and follow toggles from the WIKI side (its write → storage event →

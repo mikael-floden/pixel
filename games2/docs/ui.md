@@ -183,8 +183,10 @@ GROWS BY"); this holds the mechanics and the numbers.
   clears strays) — floating in the game view's bottom corner on the thumb's
   side (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
   marked on two device screenshots; PORT_GHOST_INSET 10px in portrait), plus
-  his fine-tune (controls.ts stickNudge, ± well/4 per axis, margin floored
-  at 0). The gamepad page itself holds jump and pick up only. **MEASURE A DEVICE
+  his fine-tune (controls.ts stickNudge; gamepad.ts stickNudgeRange = well/4
+  away from the corner, the inset toward it, per hand and orientation — the
+  dials span exactly that, margin floored at 0 under it). The gamepad page
+  itself holds jump and pick up only. **MEASURE A DEVICE
   SCREENSHOT'S SCALE, never assume the portrait DPR**: his phone is 393 css
   px portrait (dpr 2.75) but its LANDSCAPE viewport is ~988 css px = 2.28
   device px per css px — reading marks at 2.75 said "move 10px" when the

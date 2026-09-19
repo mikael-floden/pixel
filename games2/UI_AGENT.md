@@ -292,15 +292,20 @@ from the games agent), #18 (title/landing screen).
   fine-tune the analog stick location … ± half radius in player control …
   margin 0 is the min so the stick can never be rendered outside of
   screen/div"): `controls.ts stickNudge` — x/y in css px, screen space (+x
-  right, +y up), persisted, event `ml-stick`; `layout()` clamps each axis to
-  `stickNudgeMax()` = well/4 (30 on the phone, 37 at the big well) and FLOORS
-  the margin to the view's edge at 0, so toward a corner a nudge can only
-  spend the inset (10 portrait, 38 landscape) and away from it the half
-  radius is the whole range — one pair of numbers for both orientations. The
-  Controls sub-page's two dials ("Stick left / right", "Stick up / down")
-  drive it live (the stick is a ghost over the view while Settings is open),
-  and its Hand choice is LEFT-HANDED ON THE LEFT, right on the right (his
-  order). Gates: `verify-gamepad` (the corner with the page open, the nudge
+  right, +y up), persisted, event `ml-stick`. A DIAL'S RANGE IS THE EFFECTIVE
+  RANGE (his, at "14 px right" with nothing happening: "Why is not the
+  max/min values that actually have effect not also the slider limit?"):
+  `stickNudgeRange()` is per axis the half radius (`well/4`: 30 on the phone,
+  37 at the big well) AWAY from the stick's corner and only the inset (10
+  portrait, 38 landscape) TOWARD it, following the hand (which side the
+  corner is) and the orientation — `layout()` clamps to those numbers and
+  floors the margin at 0 under them, and the Controls dials ("Stick left /
+  right", "Stick up / down") are built on them, default off-centre, rebuilt
+  when the range changes (`ml-hand`, `ml-layout`), so every end of a dial is
+  a position that moves the stick; one pair of stored numbers for both
+  orientations. The dials drive it live (the stick is a ghost over the view
+  while Settings is open), and the Hand choice is LEFT-HANDED ON THE LEFT,
+  right on the right (his order). Gates: `verify-gamepad` (the corner with the page open, the nudge
   and both floors, the stored-value clamp), `verify-subtabs` (the dials' round
   trip), `verify-landscape` (the floating stick through rotations). That corner is free because the same day he moved the Wiki row and
   the pill to the top (next law); a first cut parked the ghost ABOVE that

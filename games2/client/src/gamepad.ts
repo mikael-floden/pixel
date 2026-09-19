@@ -104,6 +104,22 @@ export function stickWell(): number {
 export function stickNudgeMax(): number {
   return Math.round(stickWell() / 4);
 }
+/** The fine-tune's EFFECTIVE range per axis, screen space (+x right, +y up),
+ * for the hand and the orientation in force: the half radius AWAY from the
+ * stick's corner, and TOWARD it only what the inset can give (10 portrait,
+ * 38 landscape) — so a dial's end is the last position that still moves the
+ * stick (maintainer 2026-09-19, at "14 px right" with nothing happening:
+ * "Why is not the max/min values that actually have effect not also the
+ * slider limit?"). layout() clamps to these same numbers, and the Controls
+ * dials are built on them. */
+export function stickNudgeRange(): { x: [number, number]; y: [number, number] } {
+  const half = stickNudgeMax();
+  const land = document.documentElement.classList.contains("ml-land");
+  const toward = Math.min(half, land ? LAND_INSET : PORT_GHOST_INSET);
+  const left = getHand() === "left";
+  // the corner is on the RIGHT for the right hand, so +x is toward it there
+  return { x: left ? [-toward, half] : [-half, toward], y: [-toward, half] };
+}
 // Octants counter-clockwise from screen-east with y DOWN → index = round(angle/45°)
 // mod 8 over atan2(dy,dx): E, SE, S, SW, W, NW, N, NE — each holds the keys a
 // keyboard player would.
@@ -287,16 +303,15 @@ export function mountGamepadStick(page: HTMLElement) {
     const vis = page.clientWidth > 0;
     if (vis && lastHand !== null && leftHand !== lastHand) armAnim();
     lastHand = leftHand;
-    // THE FINE-TUNE (maintainer 2026-09-19): an x/y nudge of up to ± half the
-    // radius, +x toward the right of the screen and +y up (controls.ts). The
-    // MARGIN to the game view's edge is floored at 0 on both axes, so the
-    // stick is never drawn outside it: toward the edge a nudge can only spend
-    // the inset (10 in portrait, 38 in landscape); away from it the half
-    // radius is the whole range.
-    const nMax = stickNudgeMax();
+    // THE FINE-TUNE (maintainer 2026-09-19): an x/y nudge, +x toward the
+    // right of the screen and +y up (controls.ts), clamped to its EFFECTIVE
+    // range (stickNudgeRange: the half radius away from the corner, the
+    // inset toward it). The margin floor below is the belt under it: the
+    // stick is never drawn outside the game view.
+    const range = stickNudgeRange();
     const nudge = stickNudge();
-    const nx = Math.max(-nMax, Math.min(nMax, nudge.x));
-    const ny = Math.max(-nMax, Math.min(nMax, nudge.y));
+    const nx = Math.max(range.x[0], Math.min(range.x[1], nudge.x));
+    const ny = Math.max(range.y[0], Math.min(range.y[1], nudge.y));
     const sideInset = (inset: number) => Math.max(0, leftHand ? inset + nx : inset - nx);
     const bottomInset = (inset: number) => Math.max(0, inset + ny);
     // THE STICK IS A GHOST OVER THE GAME VIEW IN BOTH ORIENTATIONS, on every
