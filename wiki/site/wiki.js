@@ -10791,7 +10791,25 @@ function fadeTilesFor(a, b) {
     .filter((t) => t && t.key && !seen.has(t.key) && seen.add(t.key));
   return list
     .filter((t) => t.file && t.pct && isFinite(t.pct[a]))
-    .map((t) => ({ key: t.key, file: t.file, pctA: +t.pct[a], pctB: isFinite(t.pct[b]) ? +t.pct[b] : 100 - +t.pct[a] }))
+    /* `edge` IS THE PLACEMENT FACT, AND IT IS CARRIED SEPARATELY FROM THE %
+     * (maintainer 2026-09-19: "It's very very important for the game to know
+     * if a tile has ice edges and seamlessly can be placed on ICE ... this
+     * information is critical and might have been 'encoded' into the old %
+     * number"). It was, here: the preview used to read the side off pctA,
+     * which works only while pct is his 51+49 placement score. The index has
+     * said it outright since 2026-08-28 — `edge_ground`, the ground the RIM
+     * belongs to — and the game (tiles3.ts fadeTier) and maps2 (render3
+     * fade_pool) have always read that field and never the number. Now this
+     * does too, so the % can stop being a placement signal without moving a
+     * single tile to the wrong field. The pct majority is the fallback and
+     * nothing more: agrees on every published tile today (check-fades
+     * asserts it), and it is what answers for an index that predates the
+     * field. */
+    .map((t) => ({
+      key: t.key, file: t.file,
+      pctA: +t.pct[a], pctB: isFinite(t.pct[b]) ? +t.pct[b] : 100 - +t.pct[a],
+      edge: t.edge_ground === a || t.edge_ground === b ? t.edge_ground : null,
+    }))
     .sort((x, y) => y.pctA - x.pctA);
 }
 /* HOW MUCH OF A PAIR'S FADE REVIEW IS LEFT (maintainer 2026-09-02: "I have a
@@ -10897,7 +10915,10 @@ function toneChip(tileLab, fieldLab, ground) {
 const FADE_PATTERN = "a12_s4";
 function fadeScene(a, b, tile) {
   const N = 6;
-  const onA = tile.pctA >= 50;
+  // WHICH FIELD THIS TILE SITS IN — the index's own `edge_ground`, never the
+  // percentage (see fadeTilesFor). The % is the fallback for an index that
+  // does not carry the field.
+  const onA = tile.edge ? tile.edge === a : tile.pctA >= 50;
   /* ONE EDGE FOR EVERY SCENE, held near the middle (maintainer 2026-08-28:
    * "you should not randomize the 'A wandering edge'. Keep it the same and
    * somewhat centered"). The seed is a constant, so every card on the page —

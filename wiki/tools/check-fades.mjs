@@ -33,6 +33,34 @@ ok(allTiles.every((t) => t.key && t.file && t.pct && Object.values(t.pct).every(
 const gone = allTiles.filter((t) => !existsSync(ROOT + t.file));
 ok(gone.length === 0, `every published file exists on disk (${gone.length ? gone[0].file : "all " + allTiles.length})`);
 
+/* ---- WHICH SIDE A TILE SITS ON IS ITS OWN FIELD, NOT THE PERCENTAGE -------
+ * (maintainer 2026-09-19: "It's very very important for the game to know if a
+ * tile has ice edges and seamlessly can be placed on ICE ... this information
+ * is critical and might have been 'encoded' into the old % number.")
+ *
+ * It was encoded there, and by construction: `pct` is his 51+49 placement
+ * score, so the pct majority IS edge_ground on every tile the pipeline can
+ * emit. That made "pctA >= 50" a working placement test and a trap — it
+ * survives only while pct keeps meaning that. The preview now reads
+ * edge_ground; these two assertions are what keep the trap shut.
+ *   1. every tile HAS the field, so nothing falls back to the number;
+ *   2. the field and the pct majority still agree — the day they stop, the
+ *      formula has changed and this gate says so BEFORE a tile is previewed,
+ *      placed by maps2 (render3 fade_pool) or drawn by the game (tiles3
+ *      fadeTier) on the wrong ground.
+ */
+const noEdge = allTiles.filter((t) => !t.edge_ground || !(t.edge_ground in t.pct));
+ok(noEdge.length === 0,
+  `every tile names the ground its RIM belongs to (${noEdge.length ? noEdge[0].key : "all " + allTiles.length} + edge_ground)`);
+const disagree = allTiles.filter((t) => t.edge_ground && t.edge_ground in t.pct
+  && Object.keys(t.pct).reduce((m, g2) => (t.pct[g2] > t.pct[m] ? g2 : m)) !== t.edge_ground);
+ok(disagree.length === 0,
+  disagree.length
+    ? `THE PCT MAJORITY NO LONGER MEANS PLACEMENT on ${disagree.length} tiles (e.g. ${disagree[0].key}: `
+      + `sits on ${disagree[0].edge_ground}, pct says ${JSON.stringify(disagree[0].pct)}) — anything still reading `
+      + "the number as a side is now wrong"
+    : `and the pct majority still agrees with it on all ${allTiles.length} — so the % may change meaning safely`);
+
 // The grass↔ice pair, merged the way the page must merge it.
 const MERGED = [...(IDX.pairs["grass__to__ice"] ?? []), ...(IDX.pairs["ice__to__grass"] ?? [])];
 ok(MERGED.length > 12 && (IDX.pairs["grass__to__ice"] ?? []).length > 0 && (IDX.pairs["ice__to__grass"] ?? []).length > 0,
