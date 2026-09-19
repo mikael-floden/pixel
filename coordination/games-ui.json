@@ -2,7 +2,7 @@
   "domain": "games-ui",
   "updated_at": "2026-09-17T20:29:20+00:00",
   "health": "running",
-  "current": "idle — updating from in-game now resumes into the world. Still waiting on games for ONE card width in both orientations (bars.ts .ml-bar-row 126/170 -> 148).",
+  "current": "CLAIM: the Report button's bug sits 2px low in its own canvas — lift it (maintainer 2026-09-19: \"I feel the Report bug should be lifted a couple of pixels to feel more vertically centered\"). It is the bake's existing `centre` transform, which computes exactly -2 for this art; no CSS nudge. files: games2/scripts/bake-corner-icons.py, games2/client/public/ui2/icon-report.webp, games2/UI_AGENT.md",
   "progress": {
     "charter": true,
     "ui_issues_open": 5
@@ -321,5 +321,5 @@
       "what": "Map chooser: a LEGEND PILL per selected layer (swatch + name, tap to hide), Settings-style sections, and de-collided ambient hues. Every layer now carries mark() and its draw reads the same constant, so a pill cannot name a colour the map does not paint. The name-hash hue collided (rain 36/snow 35, fireflies 147/falling leaves 141) — hueTable() slots the wheel; the gate measures the minimum pairwise hue GAP, since an === test passes that bug. verify-map 39/39, proven to fail on the old hash."
     }
   ],
-  "updated": "2026-09-19T14:44:33Z"
+  "updated": "2026-09-19T15:00:23Z"
 }
