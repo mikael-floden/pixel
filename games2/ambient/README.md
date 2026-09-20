@@ -394,6 +394,51 @@ per effect — his process).
   the packed table as the room sent it, whether the room's sky rules) and
   `__ml.projectCell(col, row, level)` (the ground projection every mark goes
   through). Ambient never re-derives the resolution or the projection.
+- **THE WEATHER SHEET IS ONE PER ROW, AND IT IS A SCREEN-SPACE CURTAIN DRAWN
+  WHERE THE FIELD UNDER IT IS ON** (`weather/layer.ts`, `weather/precip.ts`).
+  A view can hold two weathers across a boundary — 17 neighbouring zone pairs
+  carry different precipitation signatures (snow on the eastern summit beside
+  the western summit's storm; measured on maps2's tables) — so the one pooled
+  sheet that drew one weather is six sheets, each drawing where ITS weight is
+  on; a row with nothing in view steps an empty pool. The count is the FULL
+  view's and every drop is placed uniformly over the whole sheet; a faller's
+  landing is its start plus the wind's drift over one fall, the field is read
+  at both ends and, when they differ, five bisection reads find WHERE the fall
+  crosses the line (`placeFall`, 1/32 of the fall); it draws at `alpha x
+  fallWeight(...)`, a smooth step there (`FALL_RAMP_PX` 40 each side along
+  the fall), and over ground outside the zone it is stepped but not drawn.
+  So the density inside a zone is exactly a full sheet's, and the sheet thins
+  to nothing across the ramp and never cuts. (Rejected: placing by the
+  landing point with a coverage-scaled count — a screen-vertical fall is a
+  world DIAGONAL, 28 px down = one cell of col AND row, so most of each fall
+  near a boundary was over outside ground and the sheet there was 4x thinner
+  than a full one; three samples along the fall smeared the line over half
+  of it and a drop over my head 4 cells outside still drew at 0.13; reading
+  the field per drop per frame would be 8k memo lookups a frame on a phone.)
+  Leaves stream sideways and re-read the field by DISTANCE (`LEAF_REREAD_PX`
+  24 — a frame count overshot the ramp by four cells at headless frame
+  rates). A drop off the sheet sideways starts over, never wraps (a wrap
+  carried its weights over ground the field never read); a splash reads the
+  field where the drop HIT (the gust's change during one fall is not
+  predicted, ~30 px on a storm). A row is WANTED when `coverage.any` — its
+  zone is in view from outside — never when my cell says so; coverage is 48
+  field samples, read at the env cadence (`COVER_EVERY_MS` 100) and on a
+  table change, never per frame. The room's set still rules a zoneless world,
+  and a row FORCED on in Settings gets the whole view (the layer is handed no
+  field), or a forced snow would fall only inside the snow zones. `env.rain`
+  reads the heaviest sheet's DRAWN count (`runtime/precipstate.ts`; a sliver
+  of a zone in view is a few drops). The gloom (cloud, dim) still grades on
+  my cell: the sky is not a place. Gate `verify-weatherzone.mjs`: outside a
+  zone with precipitation on, every sampled drop is judged by the CELL under
+  where it is DRAWN (the edge is a diagonal on screen, so no x threshold) —
+  in or within the feather of the polygon, none over my head, the few past
+  the line faint; inside looking out, none past the feather. (A stand is not
+  disqualified by another zone's precipitation TRICKLE — maps2 gives nearly
+  every zone snow 0.5 / storm 0.5 — my landed cell is verified since a cliff
+  between the stand and the edge let the server move me onto the summit,
+  daylight is re-held after every relocation, and the sheet is read once its
+  pool reaches 90% of the target: the density ease advances at most 100 ms a
+  frame, minutes at headless frame rates.)
 - **THE OVERLAY** (`runtime/zonelines.ts`, Settings/dev "ambient zones",
   `__mlAmbient.zoneLines(on)`): every ambient polygon in the world in the
   zone-borders recipe he approved — a 2 px line sampled per cell so it climbs

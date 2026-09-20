@@ -12,10 +12,20 @@
  * the camera's area, so zooming does not thin the rain, and nothing has a
  * lifespan that could pop.
  *
- * THE SIX ARE MUTUALLY EXCLUSIVE BY CONSTRUCTION: each is keyed to one index
- * of the shared WEATHER_NAMES, and the world has exactly one weather index at
- * a time. The `conflicts` lists in weather.ts are the second lock, for MANUAL
- * mode, where a player could otherwise switch two on by hand.
+ * THE SIX ARE MUTUALLY EXCLUSIVE AT A POINT: the server never rolls two
+ * precipitations for one zone and the zone field resolves one owner per
+ * effect per cell (shared/ambientzones.ts). Two can share a VIEW across a
+ * zone boundary, which is why weather.ts runs one sheet per row. The
+ * `conflicts` lists in weather.ts are the second lock, for MANUAL mode, where
+ * a player could otherwise switch two on by hand.
+ *
+ * THE BOUNDARY (2026-09-20): the sheet is a SCREEN-SPACE CURTAIN, so "where
+ * it rains" is where drops are DRAWN. The count is the full view's, every
+ * drop is placed uniformly over the whole sheet, and it is drawn only where
+ * the zone field under it is on — the density inside a zone is exactly a
+ * full sheet's, and a drop over ground outside is stepped but not drawn.
+ * (Placing by the landing point with a coverage-scaled count thinned the
+ * sheet 4x at a boundary: most of each fall was over outside ground.)
  */
 
 /** A pooled particle's kind of life. */
@@ -87,10 +97,73 @@ export function areaScale(viewW: number, viewH: number): number {
   return Math.min(3, (viewW * viewH) / REF_AREA);
 }
 
-/** How many particles this weather wants for this view. */
+/** How many particles this weather wants for this view — the FULL view's,
+ *  whatever share of it the weather's zones cover (see the header). */
 export function targetCount(cfg: Cfg | null, viewW: number, viewH: number): number {
   return cfg ? cfg.count * areaScale(viewW, viewH) : 0;
 }
+
+/** WHERE A FALLING DROP STARTS AND LANDS, AND WHERE ITS FALL CROSSES THE
+ *  LINE. The start is uniform over the sheet's span; the landing is the start
+ *  plus the drift the wind gives one fall (`drift` = vx x fall time, signed).
+ *  The field is read at both ends, and when they differ the fall crosses the
+ *  boundary somewhere between: five bisection reads find WHERE (to 1/32 of
+ *  the fall) and fallWeight draws a smooth step there. A screen-vertical fall
+ *  is a world DIAGONAL (iso: 28 px down = one cell of col AND row), so one
+ *  fall crosses a dozen cells; three samples along it smeared the line over
+ *  half the fall (a drop over my head 4 cells outside still drew at 0.13),
+ *  and reading the field per drop per frame is 8k memo lookups a frame. */
+export function placeFall(
+  rand: () => number,
+  left: number,
+  span: number,
+  y0: number,
+  landY: number,
+  drift: number,
+  weightAt: (x: number, y: number) => number,
+): { x0: number; xl: number; w0: number; w: number; pc: number } {
+  const x0 = left + rand() * span;
+  const xl = x0 + drift;
+  const w0 = weightAt(x0, y0);
+  const w = weightAt(xl, landY);
+  let pc = 0.5;
+  if (Math.abs(w0 - w) > CROSS_MIN) {
+    const mid = (w0 + w) / 2;
+    const rising = w > w0;
+    let lo = 0;
+    let hi = 1;
+    for (let i = 0; i < 5; i++) {
+      const m = (lo + hi) / 2;
+      const v = weightAt(x0 + (xl - x0) * m, y0 + (landY - y0) * m);
+      if (rising ? v >= mid : v <= mid) hi = m; else lo = m;
+    }
+    pc = (lo + hi) / 2;
+  }
+  return { x0, xl, w0, w, pc };
+}
+
+/** Ends closer than this do not cross a line: the weight runs linearly. */
+export const CROSS_MIN = 0.1;
+/** Half the fade along a fall across the line, px of the fall's path: the
+ *  field's own ramp is ~1.5 cells each side, 42 px along a screen-vertical
+ *  fall. */
+export const FALL_RAMP_PX = 40;
+
+/** The drawn weight at fall progress `p` (0 start .. 1 landing): a smooth
+ *  step from the start weight to the landing weight around the crossing
+ *  `pc`, `half` the fade's half-width in progress units (FALL_RAMP_PX over
+ *  the fall's length); linear when the ends do not cross a line. */
+export function fallWeight(w0: number, w1: number, pc: number, half: number, p: number): number {
+  const q = p < 0 ? 0 : p > 1 ? 1 : p;
+  if (Math.abs(w1 - w0) <= CROSS_MIN) return w0 + (w1 - w0) * q;
+  const s = Math.min(1, Math.max(0, (q - pc + half) / (2 * half)));
+  return w0 + (w1 - w0) * s * s * (3 - 2 * s);
+}
+
+/** A streaming leaf re-reads the field after this much travel (px): eight
+ *  reads across the three-cell ramp, at any frame rate (a frame count
+ *  overshot the ramp by four cells at headless frame rates). */
+export const LEAF_REREAD_PX = 24;
 
 /** Ease the shown count toward the target on the weather roll. */
 export function easeShown(shown: number, target: number, dtMs: number): number {

@@ -28,9 +28,10 @@ import {
 import { gloomOnlyRow } from "../../ambient/weather/gloomrow.js";
 import {
   MAX_DROPS, PRECIP, REF_AREA, SNOW_MELTING, SNOW_RESTING, SNOW_WATER_MELT,
-  areaScale, cfgByIdx, cfgByName, easeShown, gustAt, makeRand, snowLanding, splashAt,
-  streakRot, targetCount, weatherDescriptors,
+  areaScale, cfgByIdx, cfgByName, easeShown, fallWeight, gustAt, makeRand, placeFall,
+  snowLanding, splashAt, streakRot, targetCount, weatherDescriptors,
 } from "../../ambient/weather/precip.js";
+import { precipShown, setPrecipShown } from "../../ambient/runtime/precipstate.js";
 
 const lcg = (seed: number) => () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 0xffffffff;
 
@@ -246,6 +247,73 @@ test("the gloom-only rows do what their switches say, and report it", () => {
   } finally {
     for (const n of forcedGloom()) forceGloom(n, false);
   }
+});
+
+/* ---- 3b. the boundary: where a drop is drawn ----------------------------- */
+
+test("a drop is placed uniformly over the sheet, lands where the wind takes it, and steps across the line where its fall crosses it", () => {
+  // the zone is x >= 500 with a 100 px ramp; a storm blows left 150 px in one fall
+  const weightAt = (x: number) => Math.max(0, Math.min(1, (x - 500) / 100));
+  const rnd = makeRand(11);
+  let inside = 0, outside = 0, fadeOut = 0;
+  for (let i = 0; i < 400; i++) {
+    const p = placeFall(rnd, 0, 1000, 0, 400, -150, weightAt);
+    assert.ok(p.x0 >= 0 && p.x0 <= 1000, `starts on the sheet (x0 ${p.x0.toFixed(0)})`);
+    assert.ok(Math.abs(p.xl - (p.x0 - 150)) < 1e-9, "lands the drift downwind of the start");
+    assert.ok(Math.abs(p.w - weightAt(p.xl)) < 1e-9 && Math.abs(p.w0 - weightAt(p.x0)) < 1e-9, "carries the field at both ends");
+    if (p.w0 > 0.98 && p.w > 0.98) inside++;
+    if (p.w0 < 0.02 && p.w < 0.02) outside++;
+    if (p.w0 > 0.5 && p.w < 0.02) {
+      fadeOut++;
+      // the crossing is where the field reaches the midway value between the ends
+      const xMid = 500 + ((p.w0 + p.w) / 2) * 100;
+      assert.ok(Math.abs(p.x0 + (p.xl - p.x0) * p.pc - xMid) < 150 / 32 + 1e-9, `crossing at ${(p.x0 - 150 * p.pc).toFixed(0)}, the field's midway at ${xMid.toFixed(0)}`);
+    }
+  }
+  // uniform over 0..1000 blown 150 left: a quarter start AND land inside (x0 >= 748), half start
+  // and land outside (x0 < 502), and the band between is blown out across the line — none lost
+  assert.ok(inside > 75 && inside < 130 && outside > 165 && outside < 235, `inside ${inside}, outside ${outside}`);
+  assert.ok(fadeOut > 15, `${fadeOut} drops blown out across the line`);
+  // an explicit fall: start at x 450 (weight 0), land at 700 (weight 1): the field's midway 0.5 is at x 550 -> pc 0.4
+  const one = placeFall(() => 0.45, 0, 1000, 0, 400, 250, weightAt);
+  assert.ok(Math.abs(one.xl - 700) < 1e-9 && Math.abs(one.x0 - 450) < 1e-9 && one.w0 === 0 && one.w === 1);
+  assert.ok(Math.abs(one.pc - 0.4) < 1 / 32, `pc ${one.pc}`);
+  // the step: the start weight before the crossing, the landing weight after, midway at it
+  const half = 40 / 250;
+  assert.equal(fallWeight(0, 1, 0.4, half, 0), 0);
+  assert.equal(fallWeight(0, 1, 0.4, half, 0.4 - half), 0);
+  assert.ok(Math.abs(fallWeight(0, 1, 0.4, half, 0.4) - 0.5) < 1e-9);
+  assert.equal(fallWeight(0, 1, 0.4, half, 0.4 + half), 1);
+  assert.equal(fallWeight(0, 1, 0.4, half, 1), 1);
+  assert.ok(fallWeight(0, 1, 0.4, half, 0.36) > 0.05 && fallWeight(0, 1, 0.4, half, 0.36) < 0.45, "a smooth rise, not a cliff");
+  // falling out: 1 -> 0.3 steps down at its crossing
+  assert.equal(fallWeight(1, 0.3, 0.7, half, 0.5), 1);
+  assert.ok(Math.abs(fallWeight(1, 0.3, 0.7, half, 1) - 0.3) < 1e-9);
+  // ends that do not cross a line run linearly; clamped progress
+  assert.ok(Math.abs(fallWeight(0.9, 1, 0.5, half, 0.5) - 0.95) < 1e-9);
+  assert.equal(fallWeight(0, 1, 0.4, half, -1), 0); assert.equal(fallWeight(0, 1, 0.4, half, 2), 1);
+  // no field: both ends 0, no crossing, nothing drawn
+  const none = placeFall(makeRand(3), 0, 1000, 0, 400, -150, () => 0);
+  assert.deepEqual([none.w, none.w0, none.pc], [0, 0, 0.5]);
+});
+
+test("the count is the FULL view's whatever share of it the zone covers — the curtain is drawn where the field is on", () => {
+  const rain = cfgByName("rain")!;
+  assert.equal(targetCount(rain, 520, 700), rain.count, "the reference view");
+  assert.equal(targetCount(rain, 1040, 700), rain.count * 2);
+  assert.equal(targetCount(null, 520, 700), 0);
+});
+
+test("six sheets publish their own density and the environment reads the heaviest", () => {
+  setPrecipShown("rain", 0); setPrecipShown("snow", 0);
+  assert.equal(precipShown(), 0);
+  setPrecipShown("rain", 30);
+  setPrecipShown("snow", 120);
+  assert.equal(precipShown(), 120, "the summit's snow, not the valley's rain");
+  setPrecipShown("snow", 0);
+  assert.equal(precipShown(), 30, "a sheet that stopped is not counted");
+  setPrecipShown("rain", 0);
+  assert.equal(precipShown(), 0);
 });
 
 /* ---- 4. the old ring, for the gates --------------------------------------- */
