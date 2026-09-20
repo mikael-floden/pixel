@@ -1,8 +1,21 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-20T12:25:19+00:00",
+  "updated_at": "2026-09-20T12:48:13+00:00",
   "health": "running",
-  "current": "idle — SHIPPED (maintainer 2026-09-20, Chat tab + keyboard: lag on open/close, the stick not lifted, the box too close to the keys): THE KEYBOARD ROUND. hud.ts: the floated box sits KB_GAP 20px above the keys; --ml-pad-floor publishes the chat log's line and the ghost stick (gamepad.ts, portrait bottom = max(rail anchor, floor)) takes it on the log's .15s ease-out both ways (.ml-kb-drop window); the lift's work floored (one root write per frame, never the same value twice, the rail floor from applyLayout's px); a keyboard-shaped resize is held while a box is lifted so no browser can resize the canvas for its keys; the Chat page appends an arriving line instead of rebuilding its list (43 ms per line at the cap, measured). verify-chatpage pins all of it. Honest limit: the harness cannot open a real keyboard; measured there, focus/blur add no canvas resize, no layout run and no viewport event — what is left on his phone is the browser's keyboard work plus the per-write DOM cost this round cut. NEXT on his list: his 24x24 icons for the four Settings sections (SUBTABS img: entries); voice actors and more on the Sound page as they come.",
+  "current": {
+    "unit": "CLAIMED (maintainer 2026-09-20, four Chat-tab screenshots: a black game view when the keyboard closes 'as if the game render engine restarts', the HUD region black while the keys animate up, the HUD correctly visible behind the keys on close): THE KEYBOARD NEVER LAYS OUT — (1) the drop no longer applies a held resize at once (that ran applyLayout on the still-shrunk viewport, resized #game and restarted the canvas: the black frame); a 700 ms settle window after the drop holds same-width resizes too, and at its end applyLayout runs only if the viewport differs from the one last laid out; (2) the lift reads the keyboard from where fixed positioning actually lands (a layout-viewport shrink lifts by 0, a visual-viewport shrink by the difference), so the box, the log and the stick sit above the keys on either kind of browser; (3) while a chat box is focused the viewport meta carries interactive-widget=overlays-content (restored after the settle), so a Chrome that honours it keeps the window full-size and the HUD stays painted behind the keys; (4) the stick's portrait bottom is --ml-pad-bottom with the rail anchor as its fallback, so under the lift it is the log's line and never the off-screen rail. verify-chatpage drives a real viewport shrink and grow around the lift and asserts no layout run, no canvas resize, the box 20px above the viewport bottom, and the meta toggle.",
+    "since": "2026-09-20T12:48:13+00:00",
+    "files": [
+      "games2/client/src/hud.ts",
+      "games2/client/src/gamepad.ts",
+      "games2/client/index.html",
+      "games2/scripts/verify-chatpage.mjs",
+      "games2/docs/ui.md",
+      "games2/UI_AGENT.md",
+      "coordination/games-ui-assistant.json"
+    ],
+    "note": "index.html: comment only (the viewport meta's note on interactive-widget; the value is toggled at runtime by hud.ts and the static content is unchanged) — shared glue, announced here. games-ui idle; games and games-assistant name none of these files."
+  },
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
