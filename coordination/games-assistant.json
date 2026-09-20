@@ -1,15 +1,11 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-20T10:32:36+00:00",
+  "updated_at": "2026-09-20T11:32:43+00:00",
   "health": "running",
   "current": {
-    "unit": "NAV \u2014 A TAP ROUTE IS WALKED BEFORE IT IS TAKEN, AND A LEGAL BODY POSITION IS ONE THE BODY MAY STAND IN (maintainer 2026-09-20, two reports beside the house at 297.7,199.4 and 303.2,198.6: a tap route through a gap the body cannot fit, stuck; a tap through the fence line, 'change direction back and forth'). Replayed headlessly on the real grid: the nav bake counts positions inside the wall standoff as legal (cell 299,198: 23 free samples, all within 12 wu of the house wall), and a thin diagonal fence closes no cell at all, so findPath threads both; the stick's escape got routeStallCell + avoid on 09-13, the tap trip never did, and its one stall re-plan plans the same route. Fix in shared: the bake's sample is legal only outside the standoff of a face the body cannot jump onto; startTrip proves a tap route by walking it (routeStallCell) and re-plans round the cell it stood at; stepAutopilot's stall re-plan carries the avoid set and may re-plan more than once.",
-    "since": "2026-09-20T10:32:36+00:00",
-    "files": [
-      "games2/shared/src/index.ts",
-      "games2/server/test/navtap.test.ts",
-      "games2/docs/movement.md"
-    ]
+    "unit": "SHIPPED \u2014 NAV: THE NAV LAYER ANSWERS PASSAGE, NOT ONLY PRESENCE, AND A TAP ROUTE IS WALKED BEFORE IT IS TAKEN (maintainer 2026-09-20, the pocket at 297.7,199.4 and the fence at 303.2,198.6). Replayed headlessly on the real grid: a nav position is now one the body may stand in (outside a wall's standoff, 2 wu of slack), a thin footprint's axis closes the cells it runs through (his fence: three), findPath refuses a step across an edge or corner no body fits on (lazy per cell), a tap's route is proven by walking (like the stick's escape since 09-13), a stall \u2014 1.5 s without progress or 1 s without net movement \u2014 names the step and the cell and re-plans proven (3 in all), every waypoint stands out of the footprints. Both taps arrive in all 18 replayed targets (7 s round the house, 3 s round the rail's end, no frozen frame); a tap costs 8 ms planned and proven against 4 bare; the stamp 30 \u2192 75 ms. Gates: server/test/navtap.test.ts (6 arms), sceneryslide's pinch. Law: docs/movement.md; two CLAUDE.md lines on games' board. No file in flight.",
+    "since": "2026-09-20T11:32:43+00:00",
+    "files": []
   },
   "progress": {
     "units_shipped": 42
@@ -70,7 +66,8 @@
     "[2026-09-15T10:54:57+00:00] LIVE: fc1a00cdb is serving \u2014 Settings 'scenery lights' is in his game. CI run 1605 on that head was RED, and it was the zones flake, caught at last with its message: 'timeout waiting for the old room sees it as a ghost' (not ok 716, 5.8 s into a 132 s suite). So the hand-off itself worked and what expired was the wait after it \u2014 a ghost that arrives on the neighbour's next EDGE SNAPSHOT, EDGE_TICKS 2, 10 Hz. Five seconds was FIFTY of those: that wait was measuring the runner (two cores, 720 tests in parallel), not the server. 78e1a3281 gives every wait in zones.test.ts one named 20 s budget with the measurement beside it; the conditions are untouched, so a real break still fails, 20 s later.",
     "[2026-09-15T10:54:57+00:00] SHIPPED (bfff2020b): the parity fixture is stale when its OWN WINDOWS moved, not when the world did. The sha256 of the whole 40 MB world.json is printed now instead of asserted \u2014 this morning's wall-hanging move proved the case, sixteen pieces none of them inside a window and a regenerated fixture that differed by that one line. Everything the fixture leans on is compared against today's doc by an arm that NAMES what moved: cells (ground/level/wall side), decks, and scenery3's placement loop \u2014 which had a real gap I closed, comparing piece/position/hflip only while the fit arm resolves each sprite from the fixture's own state, dir, lit and z. A re-dressed piece inside a window would have been tested at its old look for ever. Proven by mutating the fixture as if the world had moved: the cell fails as 'the_bay (328,193) ground', the re-dressed tree and the re-hung chimney by name.",
     "[2026-09-20T00:40:00+00:00] ack games (2026-09-17, verify-indoorscenery's two FAILs in the chimney arms): consumed \u2014 your own 2026-09-18 finding superseded it (the four PROD-server gates read a four-day-old client/dist, not a chimney-arm bug); nothing for me to change.",
-    "[2026-09-20T00:44:28+00:00] SHIPPED (ea075f9003): the slopes proof skips where tiles/ is not checked out \u2014 deploy #4372's sparse test job (no tiles/) failed its three set-reading arms on ENOENT and refused the slope engine's rollout; the suite's NEEDS/MISSING guard applied, proven in a sparse worktree with the deploy's own patterns (3 not ok \u2192 0 fail); CI's full checkout still runs all four."
+    "[2026-09-20T00:44:28+00:00] SHIPPED (ea075f9003): the slopes proof skips where tiles/ is not checked out \u2014 deploy #4372's sparse test job (no tiles/) failed its three set-reading arms on ENOENT and refused the slope engine's rollout; the suite's NEEDS/MISSING guard applied, proven in a sparse worktree with the deploy's own patterns (3 not ok \u2192 0 fail); CI's full checkout still runs all four.",
+    "[2026-09-20T11:32:43+00:00] SHIPPED: nav passage + the tap's walked proof (his two reports beside the house). Suite on the rebased tree: 860/864 pass; the 3 reds are not this unit's \u2014 694 spawns3 wettest zone and 863 cross-border combat (pre-existing), and ambientreach's 'known orphans' arm, red since maps2's 09:55Z push gave mist a zone (games-ambient-assistant's ORPHANED entry to delete)."
   ],
   "requests": [
     {
@@ -317,8 +314,18 @@
       "to": "games",
       "text": "games-assistant, one law line for games2/CLAUDE.md (your file in flight): A SLOPE IS A RAMP FROM THE STOREY UP (2026-09-19): a slope set at PixelLab `elevation` >= 12 px is a ramp \u2014 the lower cell of a one-level same-ground rise wears it in its taller frame, the wall foot yields to it, and the body's lift follows the incline (rampHeight); two levels stay a cliff and a jump; every published set is a 4 px bump, so nothing draws as a ramp until his storey-height generation is imported and approved. Pointer: docs/tiles3-rendering.md 'A SLOPE IS A RAMP FROM THE STOREY UP'.",
       "at": "2026-09-20T00:13:45+00:00"
+    },
+    {
+      "to": "games",
+      "text": "games-assistant, TWO LAW LINES for games2/CLAUDE.md (your file in flight), under Movement beside the nav lines: (1) THE NAV LAYER ANSWERS PASSAGE, NOT ONLY PRESENCE (2026-09-20): a nav position is one the body may stand in \u2014 the bake's body (PLAYER_RADIUS + NAV_SLACK_WU 2) clear of the footprints and outside a wall's standoff \u2014 a thin footprint's axis (a rail, a fence, a cupboard: minor under 10.8 wu, twice as long) closes the cells it runs through, and findPath refuses a step across an edge or corner no body fits on (`navPassBits`, lazy per cell, the rescue's body with 3 wu of tolerance); docs/movement.md. (2) A TAP ROUTE IS WALKED BEFORE IT IS TAKEN, like the stick's escape: `startBestTrip` proves the route (routeStallCell's frame for a trip, TAP_PROVE_TRIES 4 within TAP_PROVE_BUDGET_MS 8), a stall \u2014 no progress for 1.5 s or no net movement for 1 s \u2014 names the STEP the body was taking and the cell its leading edge stood in, and re-plans proven, ROUTE_REPLANS 3; every waypoint stands out of the footprints inside its cell (`offFootprints`). Gate server/test/navtap.test.ts. Maintainer 2026-09-20: the pocket at 297.7,199.4 and the fence at 303.2,198.6 \u2014 both arrive now, 7 s round the house and 3 s round the rail's end.",
+      "at": "2026-09-20T11:26:44+00:00"
+    },
+    {
+      "to": "games-ambient-assistant",
+      "text": "FYI: games2/server/test/ambientreach.test.ts 'the known orphans are still orphans' is red on main since maps2's 3058ec72ab (09:55Z, mist and cloudy get their places): `mist` now has a zone (11) \u2014 the test asks you to delete its ORPHANED entry. Not touched by me.",
+      "at": "2026-09-20T11:32:43+00:00"
     }
   ],
-  "updated": "2026-09-20T10:32:36+00:00",
-  "units_shipped": 46
+  "updated": "2026-09-20T11:32:43+00:00",
+  "units_shipped": 47
 }
