@@ -6,88 +6,6 @@
   "subtitle": "Every push to main that changed the_game, newest first. Tap a title to mark it, copy the marks, paste them to maps2. Coordinates are the ones the game shows under the player.",
   "pushes": [
     {
-      "date": "2026-09-20",
-      "commit": "3058ec72ab",
-      "before": "eba37734a0",
-      "title": "Mist and cloudy were never zone effects — now they have their places (world.json unchanged)",
-      "artifact": "https://claude.ai/artifact/FTyYiGAP2gkMKrf56tn5ET",
-      "changes": [
-        {
-          "name": "The tarn: mist",
-          "what": "The game lists eight weather rows and the generator had typed six, so mist and cloudy could not be placed anywhere. The roster now reads the game's own list. The mountain tarn is the misty one; the eastern marsh, the southern lake, a meadow piece and a green on the heath are the others.",
-          "cell": [
-            240,
-            128
-          ]
-        },
-        {
-          "name": "The southern massif: cloudy",
-          "what": "Overcast places: the southern massif under cloud, the western rocks, the north-eastern moor, the western summit's second piece. Cloudy runs with anything in the game's own rules; mist never with wind, heavy rain, storm or snow, which the server's matrix enforces.",
-          "cell": [
-            215,
-            192
-          ]
-        },
-        {
-          "name": "Mist as a door",
-          "what": "Once in two hundred windows mist comes down in the woods and on the lakes that do not have it as their signature - a door, not a rule.",
-          "cell": [
-            193,
-            195
-          ]
-        }
-      ]
-    },
-    {
-      "date": "2026-09-19",
-      "commit": "aba79f80d2",
-      "before": "af12dd5f78",
-      "title": "Every place has one ambient signature — almost always — and a door for the weird (world.json unchanged)",
-      "artifact": "https://claude.ai/artifact/G7QLZAsNr6MDryYCYU2DiQ",
-      "changes": [
-        {
-          "name": "No more weather provinces",
-          "what": "Five hand-drawn weather ellipses lay over the whole island and blended into every place under them; the one along the massif was a quarter grass and snowed a third of the time, which is the snow you stood in. They are gone. Weather is now a place's own signature or a rare door, never a blanket.",
-          "cell": [
-            200,
-            210
-          ]
-        },
-        {
-          "name": "The eastern meadow: butterflies",
-          "what": "Each place carries ONE effect at 90 - on nine ten-minute windows out of ten - a support or two at 20 or under that never compete with it, and two doors at one window in two hundred (snow and storm here) for the thing that should not happen. The biggest meadow is the butterfly meadow; its birds are the support.",
-          "cell": [
-            209,
-            134
-          ]
-        },
-        {
-          "name": "The village: rain, the town: birds",
-          "what": "Places of one kind take different signatures, the most iconic first: the town has the flocks, the village is where it always rains, the cottages are leaves, butterflies and drizzle. Two neighbouring places never share one.",
-          "cell": [
-            317,
-            231
-          ]
-        },
-        {
-          "name": "The southern dunes: sandstorm",
-          "what": "The Ocarina desert. The biggest sands are the sandstorm before any other place is; the shoal is the crab beach, Lighthouse Point storms, the standing stones flicker with thunder, the western marsh is the firefly marsh, the eastern summit snows and the western summit storms.",
-          "cell": [
-            321,
-            314
-          ]
-        },
-        {
-          "name": "One place per cell",
-          "what": "Surface zones no longer overlap: the most specific place takes its cells first (an islet before the dunes before a lake before the town before the marsh ... before the shore), scraps join the place beside them, and what the named kinds left - the sands under a cliff, the mud plateaus, the bare rocks - are places of their own now. 94 places, 0 cells under two. Caves keep their own levels under the mountain.",
-          "cell": [
-            273,
-            264
-          ]
-        }
-      ]
-    },
-    {
       "date": "2026-09-11 / 12",
       "commit": "329e27423d → 52f7a50bdf",
       "before": "d3f2329f0f",
@@ -1147,6 +1065,153 @@
         }
       ],
       "artifact": "https://claude.ai/artifact/67cmFabrs5cionbDHBHJMa"
+    },
+    {
+      "date": "2026-09-19",
+      "commit": "aba79f80d2",
+      "before": "af12dd5f78",
+      "title": "Every place has one ambient signature — almost always — and a door for the weird (world.json unchanged)",
+      "artifact": "https://claude.ai/artifact/G7QLZAsNr6MDryYCYU2DiQ",
+      "changes": [
+        {
+          "name": "No more weather provinces",
+          "what": "Five hand-drawn weather ellipses lay over the whole island and blended into every place under them; the one along the massif was a quarter grass and snowed a third of the time, which is the snow you stood in. They are gone. Weather is now a place's own signature or a rare door, never a blanket.",
+          "cell": [
+            200,
+            210
+          ]
+        },
+        {
+          "name": "The eastern meadow: butterflies",
+          "what": "Each place carries ONE effect at 90 - on nine ten-minute windows out of ten - a support or two at 20 or under that never compete with it, and two doors at one window in two hundred (snow and storm here) for the thing that should not happen. The biggest meadow is the butterfly meadow; its birds are the support.",
+          "cell": [
+            209,
+            134
+          ]
+        },
+        {
+          "name": "The village: rain, the town: birds",
+          "what": "Places of one kind take different signatures, the most iconic first: the town has the flocks, the village is where it always rains, the cottages are leaves, butterflies and drizzle. Two neighbouring places never share one.",
+          "cell": [
+            317,
+            231
+          ]
+        },
+        {
+          "name": "The southern dunes: sandstorm",
+          "what": "The Ocarina desert. The biggest sands are the sandstorm before any other place is; the shoal is the crab beach, Lighthouse Point storms, the standing stones flicker with thunder, the western marsh is the firefly marsh, the eastern summit snows and the western summit storms.",
+          "cell": [
+            321,
+            314
+          ]
+        },
+        {
+          "name": "One place per cell",
+          "what": "Surface zones no longer overlap: the most specific place takes its cells first (an islet before the dunes before a lake before the town before the marsh ... before the shore), scraps join the place beside them, and what the named kinds left - the sands under a cliff, the mud plateaus, the bare rocks - are places of their own now. 94 places, 0 cells under two. Caves keep their own levels under the mountain.",
+          "cell": [
+            273,
+            264
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-09-20",
+      "commit": "3058ec72ab",
+      "before": "eba37734a0",
+      "title": "Mist and cloudy were never zone effects — now they have their places (world.json unchanged)",
+      "artifact": "https://claude.ai/artifact/FTyYiGAP2gkMKrf56tn5ET",
+      "changes": [
+        {
+          "name": "The tarn: mist",
+          "what": "The game lists eight weather rows and the generator had typed six, so mist and cloudy could not be placed anywhere. The roster now reads the game's own list. The mountain tarn is the misty one; the eastern marsh, the southern lake, a meadow piece and a green on the heath are the others.",
+          "cell": [
+            240,
+            128
+          ]
+        },
+        {
+          "name": "The southern massif: cloudy",
+          "what": "Overcast places: the southern massif under cloud, the western rocks, the north-eastern moor, the western summit's second piece. Cloudy runs with anything in the game's own rules; mist never with wind, heavy rain, storm or snow, which the server's matrix enforces.",
+          "cell": [
+            215,
+            192
+          ]
+        },
+        {
+          "name": "Mist as a door",
+          "what": "Once in two hundred windows mist comes down in the woods and on the lakes that do not have it as their signature - a door, not a rule.",
+          "cell": [
+            193,
+            195
+          ]
+        }
+      ]
+    },
+    {
+      "date": "2026-09-20",
+      "commit": "ab62ddc271",
+      "before": "46cbce05d6",
+      "title": "A piece never cuts the way: 49 pieces slide out of lanes and off the aprons, nothing else moves",
+      "changes": [
+        {
+          "name": "The cottage lane, open",
+          "what": "A lantern post, a water pump, a barrel and a woodpile stood in a row across the two-cell lane between the door's apron and the terrace behind it. Each was lawful on its own - no wall, no doorway, no drop, its gap to its neighbours kept - and together they were a fence: they blocked no whole nav cell, and they stopped your body. The lantern stands by the signpost now, the pump and the barrel a cell back, the woodpile round the corner; the way top-left from the door is open along the whole front.",
+          "cell": [
+            299,
+            199
+          ],
+          "window": [
+            292,
+            193,
+            308,
+            205
+          ]
+        },
+        {
+          "name": "The apron round every house stays clear",
+          "what": "The paving ring against a house wall is one cell wide, so anything standing on it stands in the walkway. Fifteen yard pieces - barrels, beehives, pumps, woodpiles, a well, a chair - step half a cell or a cell off the aprons of the town and the village.",
+          "cell": [
+            301,
+            239
+          ],
+          "window": [
+            293,
+            232,
+            311,
+            246
+          ]
+        },
+        {
+          "name": "Trees that pinched a path",
+          "what": "Twenty-four trees slid half a cell where a body could not pass between them and the next trunk or the rock beside them. The test is the body's own collision walked a short way round every obstacle - pieces whose reaches touch count as one - and a way round the whole house does not count: that is the detour a player never finds. A wood of many trees is terrain and is left alone.",
+          "cell": [
+            189,
+            130
+          ],
+          "window": [
+            181,
+            122,
+            199,
+            138
+          ]
+        },
+        {
+          "name": "Two braziers in the caves",
+          "what": "Two cave braziers stood where the passage past them was a squeeze; each moved half a cell into its niche. No fire was removed anywhere - a fire carries its chimney and its light - and nothing indoors moved.",
+          "cell": [
+            276,
+            133
+          ],
+          "window": [
+            269,
+            127,
+            285,
+            141
+          ]
+        }
+      ],
+      "artifact": "https://claude.ai/artifact/9aLnKvfSaYSebV8h3ctjhE"
     }
   ],
   "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",

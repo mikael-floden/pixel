@@ -1,23 +1,8 @@
 {
   "domain": "maps2-assistant",
-  "updated_at": "2026-09-20T11:46:35+00:00",
+  "updated_at": "2026-09-20T12:15:23+00:00",
   "health": "running",
-  "current": {
-    "unit": "CLAIM — A PIECE NEVER CUTS THE WAY (maintainer 2026-09-20 at 300.7,198.2: 'When you place scenery, please try to think if you are blocking a critical path. I can't walk top-left here because you have placed so much stuff and blocked the only path'). A new in-place pass, pathfix.py: the game's own nav (navfit.nav_cells per piece, walls, levels) walked locally around every footprint; a piece whose footprint splits the walkable cells around it into groups that cannot reach each other within a short local walk is a corridor cut, and is slid to the nearest spot that keeps the footprint law and cuts nothing - never re-dressed, never rebuilt. The same test joins the footprint law so no future placement does it. world.json changes only by the pieces that move.",
-    "since": "2026-09-20T11:46:35+00:00",
-    "files": [
-      "maps2/pipeline/pathfix.py",
-      "maps2/pipeline/navfit.py",
-      "maps2/pipeline/world3grow.py",
-      "maps2/worlds3/the_game/world.json",
-      "maps2/worlds3/the_game/minimap.webp",
-      "maps2/worlds3/the_game/overview_full.webp",
-      "maps2/spec/WORLD3.md",
-      "maps2/README.md",
-      "maps2/reports/the_game.json",
-      "coordination/maps2-assistant.json"
-    ]
-  },
+  "current": "IDLE. pathfix shipped (ab62ddc271). Owed: the cliff-foot vote in render3 after games settles it.",
   "progress": {
     "units_shipped": 14
   },
@@ -46,7 +31,8 @@
     "[2026-09-19T18:25:13+00:00] DIAGNOSED, not a maps2 data fault (maintainer 2026-09-19, the hard green diamond at 272,264): the game's cliff-foot vote (footBoundary, always on since 2026-09-12) turns all four corners of that grass cell into light_soil, reads 'uniform' as 'nothing to compose' and draws the cell's own grass plate bare. 10 such cells world-wide, listed in the request to games. The 3-cell grass scrap at 271-272,263-264 is real data (one cell over SPECK_MAX=2, no scenery on it) and draws as a tuft in render3; dissolving it in place is OFFERED to the maintainer, not done - the cell would draw as sand under a correct vote anyway. OWED here: the foot vote in render3 wang_surface after games settles it (tiles3.ts claims render3 carries it; it does not).",
     "[2026-09-19T18:35:01+00:00] DONE: render3 details at his 1-in-100 with never-on-a-ramp and never-touching (slope_index, detail_roll, detail_alone). In his 28x26 window: 13 -> 5 details, the game's 5. World-wide: the game's 1,368 details all drawn, 30 extra explained (21 foot-vote boundaries, 9 cells the game never resolves). Minimap and overview re-rendered - the map tab was showing details the world does not have. WORLD3.md details row rewritten. Still owed: the cliff-foot vote in render3 once games settles its fallthrough; the 3-cell grass scrap at 271-272,263-264 stays unless the maintainer says dissolve.",
     "[2026-09-19T19:54:43+00:00] DONE aba79f80d2: AMBIENT ZONES REDONE ON HIS 2026-09-19 VERDICT. No provinces; surface zones cut by precedence so a cell is one place (94 places / 96 polygons, 0 under two; the sands, the moor and the heath are new catch-all kinds for the sixth of the land the ellipses used to cover); one signature at 90 per place from a per-kind palette (ground-fitted, kind-rotated, palette order kept, CAP 4 anywhere, neighbours never share), supports <= 20 outside the signature's exclusive group, doors at 0.5 (one window in 200). Page: https://claude.ai/artifact/G7QLZAsNr6MDryYCYU2DiQ (grouped per place). AMBIENT.md restated. games2/server/test/ambientzones.test.ts's real-doc test asked for a province over the hearth house - restated as one place/one signature/a door (his order; the deploy gate would have gone red otherwise). Snow signs ONE place, the eastern summit.",
-    "[2026-09-20T09:56:13+00:00] DONE 3058ec72ab: the roster reads WEATHER_EFFECTS from games2/shared/src/ambient.ts (eight rows) instead of a typed six - mist and cloudy are placed (5 places each), 34/34 effects, page https://claude.ai/artifact/FTyYiGAP2gkMKrf56tn5ET. Aurora and shooting stars are the clock's rolls, not zone names - asked games to register them so a place can own the northern lights."
+    "[2026-09-20T09:56:13+00:00] DONE 3058ec72ab: the roster reads WEATHER_EFFECTS from games2/shared/src/ambient.ts (eight rows) instead of a typed six - mist and cloudy are placed (5 places each), 34/34 effects, page https://claude.ai/artifact/FTyYiGAP2gkMKrf56tn5ET. Aurora and shooting stars are the clock's rolls, not zone names - asked games to register them so a place can own the northern lights.",
+    "[2026-09-20T12:15:23+00:00] DONE ab62ddc271: A PIECE NEVER CUTS THE WAY (maintainer 2026-09-20 at the south-eastern cottage). pathfix.py - the body's own collision (navfit.penetration at 4x4 points per cell + one sample of comfort), touching reaches as one obstacle, a 6-cell GEODESIC walk (a box test counted the walk round the whole house as the sides meeting), a nook behind a piece is not a way, a run of >5 pieces is terrain, the outdoor apron round a house is never stood on; a cut's cheapest member slides to the nearest lawful cut-free spot, refined to its nav-fit offset; never a fire or a room's furniture removed. 49 slides (24 trees, 15 yard pieces, 2 braziers...), longest 3.72 cells, 0 removed, 0 left; the lane open; gates green; minimap/overview re-rendered; last step of world3grow.run; law in WORLD3.md. The four lawful-alone pieces that fenced the lane blocked 0 nav cells - the nav-cell model could never have seen it."
   ],
   "requests": [
     {
