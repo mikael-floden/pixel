@@ -322,6 +322,21 @@
       }
     },
     {
+      "id": "rock_mite",
+      "kind": "character",
+      "pixellab_id": "f2dda240-a7d7-400c-9e64-64028e54e507",
+      "name": "Pebblemite",
+      "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-scuttles forward in place on i": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Stone Burst - The mite's rocky shell splits with a": "attack",
+        "custom-Death - Cracks apart into a small pile of loose pe": "die"
+      }
+    },
+    {
       "id": "frost_mite",
       "kind": "character",
       "pixellab_id": "2fcc0529-ebc2-4078-9ffb-48abac3fe1ad",

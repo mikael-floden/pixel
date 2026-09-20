@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-19T13:44:40+00:00",
+  "generated_at": "2026-09-20T13:24:58+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 76,
+  "count": 75,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -701,13 +701,15 @@
       "notes": null,
       "generated_at": "2026-09-09T18:18:47+00:00",
       "graduation": {
-        "state": "waiting",
+        "state": "ready",
         "takes": {
           "idle": "idle",
           "walk": "walk",
-          "angry": "angry_v1"
+          "angry": "angry_v1",
+          "attack": "attack_v3",
+          "die": "die_v1"
         },
-        "blocking": "not fully approved: attack, die"
+        "blocking": null
       }
     },
     {
@@ -976,13 +978,15 @@
       "notes": null,
       "generated_at": "2026-09-09T18:26:46+00:00",
       "graduation": {
-        "state": "waiting",
+        "state": "ready",
         "takes": {
           "idle": "idle",
           "walk": "walk",
+          "angry": "angry_v1",
+          "attack": "attack_v3",
           "die": "die_v1"
         },
-        "blocking": "not fully approved: angry, attack"
+        "blocking": null
       }
     },
     {
@@ -1932,144 +1936,6 @@
           "die": "die_v1"
         },
         "blocking": "not fully approved: attack"
-      }
-    },
-    {
-      "id": "rock_mite",
-      "name": "Pebblemite",
-      "tier": "cute",
-      "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
-      "biome": [
-        "grey_stone",
-        "black_rock"
-      ],
-      "items": [],
-      "size": [
-        40,
-        40
-      ],
-      "template_id": "bear",
-      "scale": "small",
-      "pixellab_id": "f2dda240-a7d7-400c-9e64-64028e54e507",
-      "version": 2,
-      "sheet": "rock_mite/sheet.webp",
-      "rotations": {
-        "south": "rock_mite/rotations/south.webp",
-        "south-east": "rock_mite/rotations/south-east.webp",
-        "east": "rock_mite/rotations/east.webp",
-        "north-east": "rock_mite/rotations/north-east.webp",
-        "north": "rock_mite/rotations/north.webp",
-        "north-west": "rock_mite/rotations/north-west.webp",
-        "west": "rock_mite/rotations/west.webp",
-        "south-west": "rock_mite/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.693,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.727,
-            "bbox": [
-              4,
-              7,
-              36,
-              33
-            ],
-            "fill": 0.52,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.743,
-            "bbox": [
-              6,
-              6,
-              36,
-              34
-            ],
-            "fill": 0.525,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.705,
-            "bbox": [
-              5,
-              6,
-              34,
-              33
-            ],
-            "fill": 0.489,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.722,
-            "bbox": [
-              6,
-              5,
-              34,
-              33
-            ],
-            "fill": 0.49,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.693,
-            "bbox": [
-              6,
-              5,
-              34,
-              32
-            ],
-            "fill": 0.472,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.716,
-            "bbox": [
-              6,
-              6,
-              34,
-              33
-            ],
-            "fill": 0.472,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.747,
-            "bbox": [
-              6,
-              6,
-              35,
-              33
-            ],
-            "fill": 0.489,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.737,
-            "bbox": [
-              4,
-              6,
-              34,
-              34
-            ],
-            "fill": 0.525,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "approved",
-      "notes": null,
-      "generated_at": "2026-09-09T18:44:32+00:00",
-      "graduation": {
-        "state": "waiting",
-        "takes": {
-          "idle": "idle",
-          "angry": "angry_v1",
-          "attack": "attack_v3",
-          "die": "die_v1"
-        },
-        "blocking": "not fully approved: walk"
       }
     },
     {
@@ -3553,14 +3419,15 @@
       "notes": null,
       "generated_at": "2026-09-09T19:04:35+00:00",
       "graduation": {
-        "state": "waiting",
+        "state": "ready",
         "takes": {
           "idle": "idle",
           "walk": "walk",
           "angry": "angry_v1",
+          "attack": "attack_v3",
           "die": "die_v1"
         },
-        "blocking": "not fully approved: attack"
+        "blocking": null
       }
     },
     {

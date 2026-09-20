@@ -278,26 +278,6 @@
       "walk_action": "Hovering flight loop in place, wings beating steadily up and down, the body floating with a small even rise and fall, never touching the ground, seamless loop whose last frame leads straight back into the first"
     },
     {
-      "id": "rock_mite",
-      "name": "Pebblemite",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "grey_stone",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Tiny fantasy stone bug, a round pebble-shaped body of grey rock with six tiny legs, two glowing orange eyes, and a crack of light along its back.",
-      "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
-      "walk_action": "Scuttling walk loop, many short stiff legs rippling along both sides in sequence, the shelled body held low and level and barely bobbing, seamless loop whose last frame leads straight back into the first",
-      "walk_slow": true,
-      "attack_action": "Headbutt - Rocks back, then rams forward hard with its stone body",
-      "attack_extreme": "Stone Burst - The mite's rocky shell splits with a burst as it launches itself forward, stone shards flying",
-      "die_action": "Death - Cracks apart into a small pile of loose pebbles on the ground and fades away"
-    },
-    {
       "id": "spider_queen",
       "name": "Broodmother",
       "tier": "boss",
@@ -4507,6 +4487,34 @@
       "attack_extreme": "Ground Smash - The troll hurls the stalactite club down into the ground with its whole weight, stone bursting up",
       "die_action": "Death - Drops the club, sinks to its knees and falls flat on its face, then fades away",
       "graduated_at": "2026-09-18T15:04:05+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "rock_mite",
+      "name": "Pebblemite",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Tiny fantasy stone bug, a round pebble-shaped body of grey rock with six tiny legs, two glowing orange eyes, and a crack of light along its back.",
+      "lore": "It is a pebble until it isn't. Cairns are made of them, and cairns move at night.",
+      "walk_action": "Scuttling walk loop, many short stiff legs rippling along both sides in sequence, the shelled body held low and level and barely bobbing, seamless loop whose last frame leads straight back into the first",
+      "walk_slow": true,
+      "attack_action": "Headbutt - Rocks back, then rams forward hard with its stone body",
+      "attack_extreme": "Stone Burst - The mite's rocky shell splits with a burst as it launches itself forward, stone shards flying",
+      "die_action": "Death - Cracks apart into a small pile of loose pebbles on the ground and fades away",
+      "graduated_at": "2026-09-20T13:24:58+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",
