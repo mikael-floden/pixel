@@ -1,11 +1,15 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-20T00:44:28+00:00",
+  "updated_at": "2026-09-20T10:32:36+00:00",
   "health": "running",
   "current": {
-    "unit": "SHIPPED \u2014 DEPLOY GATE \u2014 slopes.test.ts skips where tiles/ is not checked out (ea075f9003). Deploy #4372 (6cef6e31bf, the slope engine) went red: the deploy's test job sparse-checks-out games2 + characters2 + live and no tiles/, the three arms reading the real slope sets died on ENOENT, the rollout was refused and the engine never reached production. The suite's NEEDS/MISSING guard now skips those arms there (a sparse worktree with the deploy's patterns: 3 not ok before; 700 pass / 0 fail / 191 skipped after); CI's full checkout runs all four. The deploy of ea075f9003 carries the engine out; nothing draws as a ramp until his storey-height slope set is imported and approved (request to tiles pending). No file in flight.",
-    "since": "2026-09-20T00:44:28+00:00",
-    "files": []
+    "unit": "NAV \u2014 A TAP ROUTE IS WALKED BEFORE IT IS TAKEN, AND A LEGAL BODY POSITION IS ONE THE BODY MAY STAND IN (maintainer 2026-09-20, two reports beside the house at 297.7,199.4 and 303.2,198.6: a tap route through a gap the body cannot fit, stuck; a tap through the fence line, 'change direction back and forth'). Replayed headlessly on the real grid: the nav bake counts positions inside the wall standoff as legal (cell 299,198: 23 free samples, all within 12 wu of the house wall), and a thin diagonal fence closes no cell at all, so findPath threads both; the stick's escape got routeStallCell + avoid on 09-13, the tap trip never did, and its one stall re-plan plans the same route. Fix in shared: the bake's sample is legal only outside the standoff of a face the body cannot jump onto; startTrip proves a tap route by walking it (routeStallCell) and re-plans round the cell it stood at; stepAutopilot's stall re-plan carries the avoid set and may re-plan more than once.",
+    "since": "2026-09-20T10:32:36+00:00",
+    "files": [
+      "games2/shared/src/index.ts",
+      "games2/server/test/navtap.test.ts",
+      "games2/docs/movement.md"
+    ]
   },
   "progress": {
     "units_shipped": 42
@@ -315,6 +319,6 @@
       "at": "2026-09-20T00:13:45+00:00"
     }
   ],
-  "updated": "2026-09-20T00:44:28+00:00",
+  "updated": "2026-09-20T10:32:36+00:00",
   "units_shipped": 46
 }
