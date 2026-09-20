@@ -1,15 +1,16 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-20T15:37:20+00:00",
+  "updated_at": "2026-09-20T15:59:39+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED — HIS TWO REPORTS OF 2026-09-20 ON 49972dce62: (1) 'completely broken player torch' (251.4,284.6 at night, a wall face beside her black): the outer-face rule shipped in 4f0e775236 runs OUTDOORS too — roomAt answers 1 and roomCellAt 0 while no room is published, so EVERY wall face in the world became 'the outer face of my room' and lost every point light above the light's height and the whole glow field; gate it on the cell's own membership (mine × (1 − front), the wall-top fade's test), byte-identical outdoors. (2) 'the house still flashes red when I run out' (257.4,305.0 at NIGHT, the whole roof slab warm): the shipped gate measured the roof at day only; measure it at night with the blend pinned and fix what the measurement names. Gate: a night arm of verify-indoorscenery's exit fade (the torch on the outer face outdoors, the roof at the pins).",
+    "unit": "CLAIMED — HIS TWO REPORTS OF 2026-09-20 ON 49972dce62: (1) 'completely broken player torch' (251.4,284.6 at night, a wall face beside her black): the outer-face rule shipped in 4f0e775236 runs OUTDOORS too — roomAt answers 1 and roomCellAt 0 while no room is published, so EVERY wall face in the world became 'the outer face of my room' and lost every point light above the light's height and the whole glow field; gate it on the cell's own membership (mine × (1 − front), the wall-top fade's test), byte-identical outdoors. (2) 'the house still flashes red when I run out' (257.4,305.0 at NIGHT, the whole roof slab warm): the shipped gate measured the roof at day only; measure it at night with the blend pinned and fix what the measurement names. Gate: a night arm of verify-indoorscenery's exit fade (the torch on the outer face outdoors, the roof at the pins). MEASURED SO FAR (night, his house, the blend pinned at 0.85/0.7/0.55/0.4): the roof is CLEAN at every pin (1.03x the street's own fade ratio at 0.55), so his red roof is a TRANSIENT, and the code names it: a sealed fire whose gain hits 0.01 at the landing is deleted from tenure and the next frame's stamp map hands its POOL STAMP back at FULL alpha (the crossfade only runs for a holder) — a 16-cell warm halo in the glow field, with no line of sight and, the mask dropped the same frame, no overMyRoom to stop it on the roof. Tracing it per frame (winTrace at the roof cell) before fixing; the stamp will wear the sealed source's own gain (WorldScene.ts, the stampsDrawn map). OVERLAPS, read: games-ambient-assistant names nightlight.ts (the MIST_FRAG seam) and WorldScene.ts (one probe) — my hunks are the night FRAG's outer-face block and the stamp map, disjoint, a rebase merges; games-ui-assistant names docs/lighting.md — yielded, INDOOR.md carries the law and lighting.md's outer-face passage stays true for the fixed rule.",
     "since": "2026-09-20T15:37:20+00:00",
     "files": [
       "games2/client/src/nightlight.ts",
+      "games2/client/src/scenes/WorldScene.ts",
       "games2/scripts/verify-indoorscenery.mjs",
+      "games2/server/test/outerface.test.ts",
       "games2/INDOOR.md",
-      "games2/docs/lighting.md",
       "coordination/games-assistant.json"
     ]
   },
