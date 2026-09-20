@@ -1,8 +1,25 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-20T13:29:03+00:00",
+  "updated_at": "2026-09-20T13:29:04+00:00",
   "health": "running",
-  "current": "idle — SHIPPED (maintainer 2026-09-20, four Chat-tab screenshots: a black game view when the keys closed 'as if the game render engine restarts', the HUD region black while the keys animated up): THE KEYBOARD NEVER LAYS OUT. The black frame was my own drop-time applyLayout on the still-shrunk page (the previous round); now a same-width resize is held while a box is lifted and for a 700 ms settle window after the drop, and the drop lays out once at the window's end only if the viewport is not the one last laid out — a keyboard's close never leaves that. The lift measures the keys from where bottom:0 lands, so a page-resizing browser lifts by 0 (box 20px above the keys' top, the log and the stick on the line above) and a visual-viewport one by the difference; 250 ms grace before the estimate. While a chat box is focused the viewport meta carries interactive-widget=overlays-content (restored after the settle), so a Chrome that honours it keeps the window full-size and the HUD painted behind the keys — not verifiable from the harness. verify-chatpage drives a real page shrink and grow around the lift: no layout run, no canvas resize, the meta toggle. NEXT on his list: his 24x24 icons for the four Settings sections (SUBTABS img: entries); voice actors and more on the Sound page as they come.",
+  "current": {
+    "unit": "CLAIMED (maintainer 2026-09-20: 'once again place the time-of-day pill under the wiki button and make it the same size as the wiki button (same width as only the wiki button, not wiki + search). It doesn't look good when it's at the top'): THE PILL UNDER THE WIKI BUTTON, AS WIDE AS IT — clock.ts fitPill measures the Wiki button's box and draws floor(content/2) art columns at an exact 2x (never stretched: more sky and hill); the placement is one CSS rule on the row's own anchor (right = --gv-right + 10, top = the row's top + --ml-stack-step) for both orientations and both hands; the top-centre placement and the third-of-the-extra-width rule (2026-09-19) go. Gates re-pinned on the button, not the view's centre: verify-wikibtn assertPill (width/height/right edge/step/2x/no overlap in every placement incl. his 495x1111), verify-chat, verify-landscape (both hands, both rotation drives), verify-clockflip, verify-gamepad.",
+    "since": "2026-09-20T13:29:04+00:00",
+    "files": [
+      "games2/client/src/clock.ts",
+      "games2/client/src/wikibtn.ts",
+      "games2/scripts/verify-wikibtn.mjs",
+      "games2/scripts/verify-chat.mjs",
+      "games2/scripts/verify-landscape.mjs",
+      "games2/scripts/verify-clockflip.mjs",
+      "games2/scripts/verify-gamepad.mjs",
+      "games2/docs/ui.md",
+      "games2/docs/lighting.md",
+      "games2/UI_AGENT.md",
+      "coordination/games-ui-assistant.json"
+    ],
+    "note": "wikibtn.ts: comments only (the pill hangs under it; the dependency runs one way). games-ui's board is idle (its last unit was the pill's third-of-the-width round, which this supersedes on his word); games and games-assistant name none of these files."
+  },
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
