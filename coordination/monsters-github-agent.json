@@ -1,9 +1,9 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-19T13:05:58+00:00",
-  "health": "idle",
-  "current": "idle — ash_hatchling attack_v3 north/north-east/north-west redos shipped (845781a33). No files claimed.",
+  "updated_at": "2026-09-20T13:20:00+00:00",
+  "health": "running",
+  "current": "CLAIMED: his six die_v1 redos on spider_queen (Broodmother) — monsters/spider_queen#die_v1#{south,south-east,east,north-east,north,west}, note \"Try a promt that shrinks the the Broodmother into a small spider\". Plan: reword die_action in monsters/config/candidates.json to the shrink-into-a-small-spider death, discard the die_v1 slot for spider_queen (a reworded _vN slot must be discarded or it regenerates with the old text), regenerate with animate.py die --slot die_v1 --only spider_queen, clear each verdict as its direction lands. FILES: monsters/config/candidates.json, monsters/candidates/spider_queen/candidate.json, monsters/candidates/spider_queen/animations/die_v1/**, monsters/candidates/spider_queen/animations/die_v1__*.webp, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json",
   "progress": {
     "candidates_index_count": 76,
     "verdicts_taken": 3,
