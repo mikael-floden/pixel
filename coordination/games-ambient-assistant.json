@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient-assistant",
-  "updated_at": "2026-09-20T13:49:09+00:00",
+  "updated_at": "2026-09-20T13:52:22+00:00",
   "health": "working",
-  "current": "CLAIMED — ZONE BOUNDARIES UNIT 2: MIST AND CLOUDY AT THE BOUNDARY. Unit 1 shipped 578d47cb70 (the weather sheet). FILES IN FLIGHT: games2/ambient/weather/gloom.ts (cloud/dim/mist target eased by the player's FEATHERED weight — ctx.zone.weightAt at my feet — so the sky grades across the ramp instead of stepping at the cell), games2/ambient/weather/gloomrow.ts (the pure row reads the field), games2/client/src/nightlight.ts (the MIST_FRAG creeping fog takes a zone MASK: the fog's strength at a pixel is the field's mist weight there — additive seam, the JS twin __ml.mistAt follows), games2/server/test/ambientweather.test.ts, NEW games2/scripts/verify-mistzone.mjs, games2/ambient/README.md. Not touched: anything of games-ambient's; the partner's board says idle.",
+  "current": "CLAIMED — ZONE BOUNDARIES UNIT 2: MIST AND CLOUDY AT THE BOUNDARY. Unit 1 shipped 578d47cb70 (the weather sheet). FILES IN FLIGHT: games2/ambient/weather/gloom.ts (cloud/dim graded by each weather's FEATHERED weight at my feet — the sky grades across the ramp instead of stepping at the cell; the mist scalar is 'mist anywhere in view' and the MASK does space), games2/ambient/weather/gloomrow.ts, games2/ambient/runtime/zonefield.ts (a raster of the field over a rect), games2/ambient/runtime/mount.ts (publishes the gloom field and the mist mask each env tick), games2/client/src/nightlight.ts (ADDITIVE SEAM: MIST_FRAG takes a zone mask texture + rect + on-switch, multiplied into the density before the bands; the JS twin mistAt follows; pixel-identical with the mask off), games2/client/src/scenes/WorldScene.ts (one probe: __ml.mistMask), games2/server/test/ambientweather.test.ts, games2/server/test/zonefield.test.ts, NEW games2/scripts/verify-mistzone.mjs, games2/ambient/README.md. Not touched: anything of games-ambient's; the partner's board says idle.",
   "progress": {
     "units_shipped": 10,
     "effects": 5
