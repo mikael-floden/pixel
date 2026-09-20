@@ -450,9 +450,19 @@ per effect — his process).
   VIEW, so the banks are up while a mist zone is on screen, and WHERE they
   are is the mask: the mount rasterises the field's mist weight over the view
   plus a quarter's margin (32 x 20 bytes, 640 memo reads a tick, `__ml.mistMask`)
-  and the pass multiplies its density by it, read LINEAR between samples,
-  before the bands — the fog thins across the ramp band by band and never
-  cuts; the JS twin `mistAt` reads the same raster bilinearly (`maskAt`). A
+  and the pass multiplies its density by it, interpolated SMOOTHLY, before
+  the bands — the fog thins across the ramp band by band and never cuts; the
+  JS twin `mistAt` reads the same raster the same way (`maskAt`). THE MASK IS
+  INTERPOLATED BY HAND, four texels with the fractions through smoothstep,
+  and that is not decoration (maintainer 2026-09-20: "the mist on this image
+  looks so blocky and ugly"): the game is `pixelArt: true`, so every texture
+  defaults to NEAREST and a LINEAR filter asked for on a canvas re-uploaded
+  ten times a second does not survive — the mask was being read as hard
+  squares a cell across. Even filtered, plain bilinear is only C0 and the
+  density is POSTERIZED into five bands immediately after, so every band edge
+  kinked along the texel grid. Hand interpolation needs no sampler state and
+  is C1 at the borders, and the raster is 64 x 40 (half a cell a sample, not
+  a cell) so the bands follow the noise again. A
   forced mist covers the view (no mask). Null where zones do not rule: the
   room's set grades as it always did. TRAP: the banks pool on ground at level
   <= ~2 and nowhere else (MIST_FRAG's `pool`), so a mist zone on a summit, a

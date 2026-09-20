@@ -2260,9 +2260,39 @@ uniform vec3 uAmbient;    // current grade — mist dims with the night
 uniform float uMist;      // eased cover 0..1
 uniform float uFlip;
 uniform sampler2D uHeight;
-uniform sampler2D uMask;  // ambient's zone mask for the mist (a coarse raster of the field, LINEAR)
+uniform sampler2D uMask;  // ambient's zone mask for the mist (a coarse raster of the field)
 uniform vec4 uMaskRect;   // world x, y, w, h the mask covers
+uniform vec2 uMaskN;      // its size in texels
 uniform float uMaskOn;    // 1 = the density is multiplied by the mask; 0 = no mask bound (identical to before)
+
+/* READING THE MASK, AND WHY IT IS DONE BY HAND (maintainer 2026-09-20: "the
+ * mist on this image looks so blocky and ugly"). Two things made the zone
+ * mask show its own grid through his favourite effect:
+ *   - THE GAME IS pixelArt: true, so every texture defaults to NEAREST and
+ *     the LINEAR filter asked for on a canvas texture that is re-uploaded ten
+ *     times a second does not survive. The mask was being read as hard
+ *     squares one cell across.
+ *   - Even filtered, plain bilinear is only C0: its gradient jumps at every
+ *     texel border, and the density is POSTERIZED into five bands right
+ *     after, so each band edge kinked along the grid — straight segments and
+ *     corners where the fog should curl.
+ * So: four fetches, interpolated by hand, with the fractions run through
+ * smoothstep (C1 at the borders). No sampler state to get wrong, no kinks,
+ * and the band edges follow the noise again. The JS twin (maskAt) does
+ * exactly this arithmetic. */
+float maskField(vec2 w) {
+  vec2 t = clamp((w - uMaskRect.xy) / uMaskRect.zw * uMaskN - 0.5, vec2(0.0), uMaskN - 1.0);
+  vec2 i = floor(t);
+  vec2 f = t - i;
+  f = f * f * (3.0 - 2.0 * f);
+  vec2 uv0 = (i + 0.5) / uMaskN;
+  vec2 uv1 = (min(i + 1.0, uMaskN - 1.0) + 0.5) / uMaskN;
+  float a = texture2D(uMask, vec2(uv0.x, uv0.y)).r;
+  float b = texture2D(uMask, vec2(uv1.x, uv0.y)).r;
+  float c = texture2D(uMask, vec2(uv0.x, uv1.y)).r;
+  float e = texture2D(uMask, vec2(uv1.x, uv1.y)).r;
+  return mix(mix(a, b, f.x), mix(c, e, f.x), f.y);
+}
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
@@ -2371,10 +2401,11 @@ void main() {
   float pool = clamp(1.0 - (z - 0.4) * 0.5, 0.0, 1.0);
   float d = clamp(banks * roil * 1.55, 0.0, 1.0) * pool * uMist;
   // THE ZONE BOUNDARY (ambient's mask, 2026-09-20): the banks live where the
-  // mist's zone is — the field read bilinearly from a coarse raster, so the
-  // fog thins across the three-cell ramp, band by band, and never cuts. Twin:
-  // mistAt() -> maskAt(). With the mask off this line is a no-op.
-  if (uMaskOn > 0.5) d *= texture2D(uMask, (w - uMaskRect.xy) / uMaskRect.zw).r;
+  // mist's zone is — the field read SMOOTHLY from a coarse raster (maskField
+  // above; a nearest-sampled one showed its grid through the posterize), so
+  // the fog thins across the three-cell ramp, band by band, and never cuts.
+  // Twin: mistAt() -> maskAt(). With the mask off this line is a no-op.
+  if (uMaskOn > 0.5) d *= maskField(w);
   // Posterized bands = stylized pixel-art fog layers, capped so the ground
   // still ghosts through the thickest bank.
   float a = floor(d * 5.0 + 0.001) / 5.0 * 0.74;
@@ -3039,6 +3070,7 @@ export class NightLights {
       // ambient's zone mask (declared, the uSun lesson; off until a mask is bound)
       uMask: { type: "sampler2D", value: null },
       uMaskRect: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
+      uMaskN: { type: "2f", value: { x: 1, y: 1 } },
       uMaskOn: { type: "1f", value: 0 },
     });
     // Elevation depth-fog shader (declared uniforms only — the uSun lesson).
@@ -5574,6 +5606,7 @@ export class NightLights {
         m.setUniform("uMaskRect.value.y", mk.y);
         m.setUniform("uMaskRect.value.z", mk.w);
         m.setUniform("uMaskRect.value.w", mk.h);
+        m.setUniform("uMaskN.value", { x: this.mistMaskCols, y: this.mistMaskRows });
       }
     }
 
@@ -5667,8 +5700,10 @@ export class NightLights {
     this.mistMaskData = m.data;
   }
 
-  /** The mist mask at a world point — the twin of the shader's LINEAR read:
-   *  bilinear between texel centres, clamped at the edges. 1 without a mask. */
+  /** The mist mask at a world point — the EXACT twin of the shader's
+   *  `maskField`: four texels interpolated by hand with the fractions run
+   *  through smoothstep, clamped at the edges. 1 without a mask. Change both
+   *  together. */
   maskAt(wx: number, wy: number): number {
     const mk = this.mistMask;
     const d = this.mistMaskData;
@@ -5681,8 +5716,10 @@ export class NightLights {
     const y0 = Math.floor(fy);
     const x1 = Math.min(c - 1, x0 + 1);
     const y1 = Math.min(r - 1, y0 + 1);
-    const tx = fx - x0;
-    const ty = fy - y0;
+    const sx = fx - x0;
+    const sy = fy - y0;
+    const tx = sx * sx * (3 - 2 * sx);
+    const ty = sy * sy * (3 - 2 * sy);
     const at = (x: number, y: number) => d[y * c + x] / 255;
     return (at(x0, y0) * (1 - tx) + at(x1, y0) * tx) * (1 - ty) + (at(x0, y1) * (1 - tx) + at(x1, y1) * tx) * ty;
   }

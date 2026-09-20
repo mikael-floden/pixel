@@ -15,12 +15,15 @@ const SCENE_KEY = "world"; // WorldScene's key
 const ENV_SAMPLE_MS = 100; // mood changes are seconds-long fades; 10 Hz is plenty
 /** THE MIST MASK (unit 2 of the boundaries): the zone field's mist weight
  *  rasterised over the view plus a margin each env tick and handed to the
- *  game's mist pass (`__ml.mistMask`), which reads it bilinearly. 32 x 20 over
- *  a view and a quarter is half a cell per sample at 2x zoom, a cell at 1x —
- *  the ramp is three cells wide; the margin covers the camera's travel
- *  between ticks and the pass's render span. 640 memo reads a tick. */
-const MASK_COLS = 32;
-const MASK_ROWS = 20;
+ *  game's mist pass (`__ml.mistMask`), which interpolates it smoothly.
+ *  64 x 40 over a view and a quarter is about half a cell per sample, and the
+ *  ramp it has to draw is three cells wide; the margin covers the camera's
+ *  travel between ticks and the pass's render span. 2560 memo reads a tick,
+ *  ten times a second. (32 x 20 was a cell per sample and his mist came out
+ *  BLOCKY: the pass posterizes into five bands right after the mask, so a
+ *  coarse mask puts its own grid into every band edge.) */
+const MASK_COLS = 64;
+const MASK_ROWS = 40;
 const MASK_MARGIN = 0.25;
 
 /** Attach the ambient features to the world scene from the OUTSIDE: poll for
