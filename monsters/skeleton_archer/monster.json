@@ -1,0 +1,763 @@
+{
+  "id": "skeleton_archer",
+  "name": "Marrowbolt",
+  "lore": "It cannot see and does not miss. The arrows are older than the bow, and the bow is older than the wall.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "ae34b467-22ea-4d08-9461-f5d78f767353",
+    "url": "https://www.pixellab.ai/create-character/ae34b467-22ea-4d08-9461-f5d78f767353",
+    "prompt": "Fantasy skeleton archer shown full body from head to feet, yellowed bones, a cracked skull with glowing blue eye sockets, a tattered leather jerkin, a short unstrung bow held upright close against its body, and a quiver of black arrows on its back, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 112,
+    "height": 112
+  },
+  "native_size": {
+    "width": 112,
+    "height": 112
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "skeleton_archer/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "skeleton_archer/rotations/south.webp",
+    "west": "skeleton_archer/rotations/west.webp",
+    "east": "skeleton_archer/rotations/east.webp",
+    "north": "skeleton_archer/rotations/north.webp",
+    "south-east": "skeleton_archer/rotations/south-east.webp",
+    "north-east": "skeleton_archer/rotations/north-east.webp",
+    "north-west": "skeleton_archer/rotations/north-west.webp",
+    "south-west": "skeleton_archer/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "c6c64544-5448-4025-9c9e-260ed7d14837",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/angry__east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/angry/east/00.webp",
+            "skeleton_archer/animations/angry/east/01.webp",
+            "skeleton_archer/animations/angry/east/02.webp",
+            "skeleton_archer/animations/angry/east/03.webp",
+            "skeleton_archer/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:33 GMT",
+          "src_frames": 5,
+          "sub": "55c4cb38-8008-471f-86a2-7d77b2d48e7d"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/angry__north.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/angry/north/00.webp",
+            "skeleton_archer/animations/angry/north/01.webp",
+            "skeleton_archer/animations/angry/north/02.webp",
+            "skeleton_archer/animations/angry/north/03.webp",
+            "skeleton_archer/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:35 GMT",
+          "src_frames": 5,
+          "sub": "ab081aaf-32eb-406d-8b9a-15825d5f4a45"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/angry__north-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/angry/north-east/00.webp",
+            "skeleton_archer/animations/angry/north-east/01.webp",
+            "skeleton_archer/animations/angry/north-east/02.webp",
+            "skeleton_archer/animations/angry/north-east/03.webp",
+            "skeleton_archer/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:37 GMT",
+          "src_frames": 5,
+          "sub": "a442b427-18c1-4d62-9b82-fa02f77b7185"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/angry__south.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/angry/south/00.webp",
+            "skeleton_archer/animations/angry/south/01.webp",
+            "skeleton_archer/animations/angry/south/02.webp",
+            "skeleton_archer/animations/angry/south/03.webp",
+            "skeleton_archer/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:38 GMT",
+          "src_frames": 5,
+          "sub": "088deb1e-25be-48c6-9806-394b27386f0d"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/angry__south-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/angry/south-east/00.webp",
+            "skeleton_archer/animations/angry/south-east/01.webp",
+            "skeleton_archer/animations/angry/south-east/02.webp",
+            "skeleton_archer/animations/angry/south-east/03.webp",
+            "skeleton_archer/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:40 GMT",
+          "src_frames": 5,
+          "sub": "d6e24c33-bca3-47fe-9a03-409a31056554"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/angry__south-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/angry/south-west/00.webp",
+            "skeleton_archer/animations/angry/south-west/01.webp",
+            "skeleton_archer/animations/angry/south-west/02.webp",
+            "skeleton_archer/animations/angry/south-west/03.webp",
+            "skeleton_archer/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/angry__west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/angry/west/00.webp",
+            "skeleton_archer/animations/angry/west/01.webp",
+            "skeleton_archer/animations/angry/west/02.webp",
+            "skeleton_archer/animations/angry/west/03.webp",
+            "skeleton_archer/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/angry__north-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/angry/north-west/00.webp",
+            "skeleton_archer/animations/angry/north-west/01.webp",
+            "skeleton_archer/animations/angry/north-west/02.webp",
+            "skeleton_archer/animations/angry/north-west/03.webp",
+            "skeleton_archer/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "27461f24-c23e-491a-9194-49aa5d6925c8",
+      "source_name": "custom-Bow Shot - Draws the bowstring back to its cheek a",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "skeleton_archer/animations/attack__east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/attack/east/00.webp",
+            "skeleton_archer/animations/attack/east/01.webp",
+            "skeleton_archer/animations/attack/east/02.webp",
+            "skeleton_archer/animations/attack/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:42 GMT",
+          "src_frames": 4,
+          "sub": "80c6c88d-bd8d-4b73-9867-7fc9817e204f"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "skeleton_archer/animations/attack__north.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/attack/north/00.webp",
+            "skeleton_archer/animations/attack/north/01.webp",
+            "skeleton_archer/animations/attack/north/02.webp",
+            "skeleton_archer/animations/attack/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:43 GMT",
+          "src_frames": 4,
+          "sub": "228c0979-764e-4968-9a18-6b81b8efb10b"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "skeleton_archer/animations/attack__north-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/attack/north-east/00.webp",
+            "skeleton_archer/animations/attack/north-east/01.webp",
+            "skeleton_archer/animations/attack/north-east/02.webp",
+            "skeleton_archer/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:45 GMT",
+          "src_frames": 4,
+          "sub": "83837183-0e15-4a83-b3f7-d2c36e14d5f0"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "skeleton_archer/animations/attack__south.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/attack/south/00.webp",
+            "skeleton_archer/animations/attack/south/01.webp",
+            "skeleton_archer/animations/attack/south/02.webp",
+            "skeleton_archer/animations/attack/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:46 GMT",
+          "src_frames": 4,
+          "sub": "832ff53a-9d53-4b0c-ad37-1bb72c81c5d6"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "skeleton_archer/animations/attack__south-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/attack/south-east/00.webp",
+            "skeleton_archer/animations/attack/south-east/01.webp",
+            "skeleton_archer/animations/attack/south-east/02.webp",
+            "skeleton_archer/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:48 GMT",
+          "src_frames": 4,
+          "sub": "a681d00e-b0b0-4e60-ba74-c6655d50540e"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "skeleton_archer/animations/attack__south-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/attack/south-west/00.webp",
+            "skeleton_archer/animations/attack/south-west/01.webp",
+            "skeleton_archer/animations/attack/south-west/02.webp",
+            "skeleton_archer/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "skeleton_archer/animations/attack__west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/attack/west/00.webp",
+            "skeleton_archer/animations/attack/west/01.webp",
+            "skeleton_archer/animations/attack/west/02.webp",
+            "skeleton_archer/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "skeleton_archer/animations/attack__north-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/attack/north-west/00.webp",
+            "skeleton_archer/animations/attack/north-west/01.webp",
+            "skeleton_archer/animations/attack/north-west/02.webp",
+            "skeleton_archer/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "29d70821-ffe0-42c6-9caf-63edcb40506b",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/idle__east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/idle/east/00.webp",
+            "skeleton_archer/animations/idle/east/01.webp",
+            "skeleton_archer/animations/idle/east/02.webp",
+            "skeleton_archer/animations/idle/east/03.webp",
+            "skeleton_archer/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:49 GMT",
+          "src_frames": 5,
+          "sub": "df81d699-3563-4454-ad3c-c63c97a27450"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/idle__north.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/idle/north/00.webp",
+            "skeleton_archer/animations/idle/north/01.webp",
+            "skeleton_archer/animations/idle/north/02.webp",
+            "skeleton_archer/animations/idle/north/03.webp",
+            "skeleton_archer/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:51 GMT",
+          "src_frames": 5,
+          "sub": "dc87a9a4-3f09-4a49-9827-fbd78b5a70ef"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/idle__north-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/idle/north-east/00.webp",
+            "skeleton_archer/animations/idle/north-east/01.webp",
+            "skeleton_archer/animations/idle/north-east/02.webp",
+            "skeleton_archer/animations/idle/north-east/03.webp",
+            "skeleton_archer/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:53 GMT",
+          "src_frames": 5,
+          "sub": "819118e3-eec0-4bc0-a89f-c006023f3d90"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/idle__south.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/idle/south/00.webp",
+            "skeleton_archer/animations/idle/south/01.webp",
+            "skeleton_archer/animations/idle/south/02.webp",
+            "skeleton_archer/animations/idle/south/03.webp",
+            "skeleton_archer/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:54 GMT",
+          "src_frames": 5,
+          "sub": "d0a0c640-1e72-40f4-b89a-0b010cfb339c"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/idle__south-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/idle/south-east/00.webp",
+            "skeleton_archer/animations/idle/south-east/01.webp",
+            "skeleton_archer/animations/idle/south-east/02.webp",
+            "skeleton_archer/animations/idle/south-east/03.webp",
+            "skeleton_archer/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:56 GMT",
+          "src_frames": 5,
+          "sub": "6360152e-085b-43fb-9544-c6eefc03a82b"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/idle__south-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/idle/south-west/00.webp",
+            "skeleton_archer/animations/idle/south-west/01.webp",
+            "skeleton_archer/animations/idle/south-west/02.webp",
+            "skeleton_archer/animations/idle/south-west/03.webp",
+            "skeleton_archer/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/idle__west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/idle/west/00.webp",
+            "skeleton_archer/animations/idle/west/01.webp",
+            "skeleton_archer/animations/idle/west/02.webp",
+            "skeleton_archer/animations/idle/west/03.webp",
+            "skeleton_archer/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "skeleton_archer/animations/idle__north-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/idle/north-west/00.webp",
+            "skeleton_archer/animations/idle/north-west/01.webp",
+            "skeleton_archer/animations/idle/north-west/02.webp",
+            "skeleton_archer/animations/idle/north-west/03.webp",
+            "skeleton_archer/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "309d6c43-540a-4e68-8670-049de1d40ccc",
+      "source_name": "custom-Death - The blue light in its ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/die__east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/die/east/00.webp",
+            "skeleton_archer/animations/die/east/01.webp",
+            "skeleton_archer/animations/die/east/02.webp",
+            "skeleton_archer/animations/die/east/03.webp",
+            "skeleton_archer/animations/die/east/04.webp",
+            "skeleton_archer/animations/die/east/05.webp",
+            "skeleton_archer/animations/die/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:06:57 GMT",
+          "src_frames": 7,
+          "sub": "2a5172e4-5f78-4fc1-8f35-27b060fe6804"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/die__north.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/die/north/00.webp",
+            "skeleton_archer/animations/die/north/01.webp",
+            "skeleton_archer/animations/die/north/02.webp",
+            "skeleton_archer/animations/die/north/03.webp",
+            "skeleton_archer/animations/die/north/04.webp",
+            "skeleton_archer/animations/die/north/05.webp",
+            "skeleton_archer/animations/die/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:00 GMT",
+          "src_frames": 7,
+          "sub": "77431c80-5c7f-4f4e-a365-8ad77f4d8773"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/die__north-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/die/north-east/00.webp",
+            "skeleton_archer/animations/die/north-east/01.webp",
+            "skeleton_archer/animations/die/north-east/02.webp",
+            "skeleton_archer/animations/die/north-east/03.webp",
+            "skeleton_archer/animations/die/north-east/04.webp",
+            "skeleton_archer/animations/die/north-east/05.webp",
+            "skeleton_archer/animations/die/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:01 GMT",
+          "src_frames": 7,
+          "sub": "ff751bf2-ccfd-42de-aa88-c51796aae2e8"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/die__south.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/die/south/00.webp",
+            "skeleton_archer/animations/die/south/01.webp",
+            "skeleton_archer/animations/die/south/02.webp",
+            "skeleton_archer/animations/die/south/03.webp",
+            "skeleton_archer/animations/die/south/04.webp",
+            "skeleton_archer/animations/die/south/05.webp",
+            "skeleton_archer/animations/die/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:03 GMT",
+          "src_frames": 7,
+          "sub": "2d084ce6-ed5e-4613-b6cf-b012646b9d3f"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/die__south-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/die/south-east/00.webp",
+            "skeleton_archer/animations/die/south-east/01.webp",
+            "skeleton_archer/animations/die/south-east/02.webp",
+            "skeleton_archer/animations/die/south-east/03.webp",
+            "skeleton_archer/animations/die/south-east/04.webp",
+            "skeleton_archer/animations/die/south-east/05.webp",
+            "skeleton_archer/animations/die/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:04 GMT",
+          "src_frames": 7,
+          "sub": "09306580-0026-40bf-ae35-cec7b4b47bcf"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/die__south-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/die/south-west/00.webp",
+            "skeleton_archer/animations/die/south-west/01.webp",
+            "skeleton_archer/animations/die/south-west/02.webp",
+            "skeleton_archer/animations/die/south-west/03.webp",
+            "skeleton_archer/animations/die/south-west/04.webp",
+            "skeleton_archer/animations/die/south-west/05.webp",
+            "skeleton_archer/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/die__west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/die/west/00.webp",
+            "skeleton_archer/animations/die/west/01.webp",
+            "skeleton_archer/animations/die/west/02.webp",
+            "skeleton_archer/animations/die/west/03.webp",
+            "skeleton_archer/animations/die/west/04.webp",
+            "skeleton_archer/animations/die/west/05.webp",
+            "skeleton_archer/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/die__north-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/die/north-west/00.webp",
+            "skeleton_archer/animations/die/north-west/01.webp",
+            "skeleton_archer/animations/die/north-west/02.webp",
+            "skeleton_archer/animations/die/north-west/03.webp",
+            "skeleton_archer/animations/die/north-west/04.webp",
+            "skeleton_archer/animations/die/north-west/05.webp",
+            "skeleton_archer/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_draws_the_bow_holds_a_heartbe": {
+      "group_id": "eadf0caa-9cd7-4294-92d9-2cb31ecba6f9",
+      "source_name": "custom-draws the bow, holds a heartbe",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe__east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/east/00.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/east/01.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/east/02.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/east/03.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/east/04.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/east/05.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:06 GMT",
+          "src_frames": 7,
+          "sub": "5999ab89-b711-450e-ba53-3c704b5ce95e"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe__north.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north/00.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north/01.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north/02.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north/03.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north/04.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north/05.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:09 GMT",
+          "src_frames": 7,
+          "sub": "781564d5-ff7c-4cc2-807e-1b246fd18008"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe__north-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-east/00.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-east/01.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-east/02.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-east/03.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-east/04.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-east/05.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:10 GMT",
+          "src_frames": 7,
+          "sub": "b663a5db-575f-4373-883c-754aee15c9d2"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe__south.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south/00.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south/01.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south/02.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south/03.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south/04.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south/05.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:12 GMT",
+          "src_frames": 7,
+          "sub": "5f4bf56a-fa3d-40be-a724-49ef309978f9"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe__south-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-east/00.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-east/01.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-east/02.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-east/03.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-east/04.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-east/05.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:13 GMT",
+          "src_frames": 7,
+          "sub": "e919c8b5-79e9-4745-a244-87eb6211a3a5"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe__south-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-west/00.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-west/01.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-west/02.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-west/03.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-west/04.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-west/05.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe__west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/west/00.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/west/01.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/west/02.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/west/03.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/west/04.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/west/05.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe__north-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-west/00.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-west/01.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-west/02.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-west/03.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-west/04.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-west/05.webp",
+            "skeleton_archer/animations/custom_draws_the_bow_holds_a_heartbe/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "43a8abfb-7df3-4ad9-baea-e09b01fe214f",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "skeleton_archer/animations/walk__east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/walk/east/00.webp",
+            "skeleton_archer/animations/walk/east/01.webp",
+            "skeleton_archer/animations/walk/east/02.webp",
+            "skeleton_archer/animations/walk/east/03.webp",
+            "skeleton_archer/animations/walk/east/04.webp",
+            "skeleton_archer/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:15 GMT",
+          "src_frames": 6,
+          "sub": "7a55cb8c-4961-4bb0-9b1b-e23abdd96f6f"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "skeleton_archer/animations/walk__north.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/walk/north/00.webp",
+            "skeleton_archer/animations/walk/north/01.webp",
+            "skeleton_archer/animations/walk/north/02.webp",
+            "skeleton_archer/animations/walk/north/03.webp",
+            "skeleton_archer/animations/walk/north/04.webp",
+            "skeleton_archer/animations/walk/north/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:17 GMT",
+          "src_frames": 6,
+          "sub": "b058e823-a519-48e7-8c91-38729273ef8f"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "skeleton_archer/animations/walk__north-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/walk/north-east/00.webp",
+            "skeleton_archer/animations/walk/north-east/01.webp",
+            "skeleton_archer/animations/walk/north-east/02.webp",
+            "skeleton_archer/animations/walk/north-east/03.webp",
+            "skeleton_archer/animations/walk/north-east/04.webp",
+            "skeleton_archer/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:19 GMT",
+          "src_frames": 6,
+          "sub": "2c3e844d-8311-489f-af51-d12e10319c4e"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "skeleton_archer/animations/walk__south.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/walk/south/00.webp",
+            "skeleton_archer/animations/walk/south/01.webp",
+            "skeleton_archer/animations/walk/south/02.webp",
+            "skeleton_archer/animations/walk/south/03.webp",
+            "skeleton_archer/animations/walk/south/04.webp",
+            "skeleton_archer/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:20 GMT",
+          "src_frames": 6,
+          "sub": "3842e707-7c9f-455d-9db3-df65690e442f"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "skeleton_archer/animations/walk__south-east.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/walk/south-east/00.webp",
+            "skeleton_archer/animations/walk/south-east/01.webp",
+            "skeleton_archer/animations/walk/south-east/02.webp",
+            "skeleton_archer/animations/walk/south-east/03.webp",
+            "skeleton_archer/animations/walk/south-east/04.webp",
+            "skeleton_archer/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:07:21 GMT",
+          "src_frames": 6,
+          "sub": "2c9c03fb-9bf6-40ca-a2ae-530126a2df47"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "skeleton_archer/animations/walk__south-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/walk/south-west/00.webp",
+            "skeleton_archer/animations/walk/south-west/01.webp",
+            "skeleton_archer/animations/walk/south-west/02.webp",
+            "skeleton_archer/animations/walk/south-west/03.webp",
+            "skeleton_archer/animations/walk/south-west/04.webp",
+            "skeleton_archer/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "skeleton_archer/animations/walk__west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/walk/west/00.webp",
+            "skeleton_archer/animations/walk/west/01.webp",
+            "skeleton_archer/animations/walk/west/02.webp",
+            "skeleton_archer/animations/walk/west/03.webp",
+            "skeleton_archer/animations/walk/west/04.webp",
+            "skeleton_archer/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "skeleton_archer/animations/walk__north-west.webp",
+          "frame_paths": [
+            "skeleton_archer/animations/walk/north-west/00.webp",
+            "skeleton_archer/animations/walk/north-west/01.webp",
+            "skeleton_archer/animations/walk/north-west/02.webp",
+            "skeleton_archer/animations/walk/north-west/03.webp",
+            "skeleton_archer/animations/walk/north-west/04.webp",
+            "skeleton_archer/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

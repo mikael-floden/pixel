@@ -1,0 +1,763 @@
+{
+  "id": "mummy",
+  "name": "Wrapwarden",
+  "lore": "Its name was carved off the tomb, so it went looking for it. It checks every face and none of them fit.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "968db5e3-3077-4a39-b88a-811f7aa91eb0",
+    "url": "https://www.pixellab.ai/create-character/968db5e3-3077-4a39-b88a-811f7aa91eb0",
+    "prompt": "Fantasy mummy shown full body from head to feet, a shambling figure wrapped in yellowed stained linen bandages, some loose and trailing, glowing green eyes through the wrappings, a golden pectoral, and dust puffing off its shoulders, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 104,
+    "height": 104
+  },
+  "native_size": {
+    "width": 104,
+    "height": 104
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "mummy/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "mummy/rotations/south.webp",
+    "west": "mummy/rotations/west.webp",
+    "east": "mummy/rotations/east.webp",
+    "north": "mummy/rotations/north.webp",
+    "south-east": "mummy/rotations/south-east.webp",
+    "north-east": "mummy/rotations/north-east.webp",
+    "north-west": "mummy/rotations/north-west.webp",
+    "south-west": "mummy/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "3c0cf911-a489-45f6-abca-111dd17eafe0",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "mummy/animations/angry__east.webp",
+          "frame_paths": [
+            "mummy/animations/angry/east/00.webp",
+            "mummy/animations/angry/east/01.webp",
+            "mummy/animations/angry/east/02.webp",
+            "mummy/animations/angry/east/03.webp",
+            "mummy/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:24 GMT",
+          "src_frames": 5,
+          "sub": "f59bc678-4153-4cbe-a790-170fe1836b85"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "mummy/animations/angry__north.webp",
+          "frame_paths": [
+            "mummy/animations/angry/north/00.webp",
+            "mummy/animations/angry/north/01.webp",
+            "mummy/animations/angry/north/02.webp",
+            "mummy/animations/angry/north/03.webp",
+            "mummy/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:25 GMT",
+          "src_frames": 5,
+          "sub": "29a0a248-e92e-46e0-9478-593e3928b5e9"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "mummy/animations/angry__north-east.webp",
+          "frame_paths": [
+            "mummy/animations/angry/north-east/00.webp",
+            "mummy/animations/angry/north-east/01.webp",
+            "mummy/animations/angry/north-east/02.webp",
+            "mummy/animations/angry/north-east/03.webp",
+            "mummy/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:27 GMT",
+          "src_frames": 5,
+          "sub": "9ac58cb6-a5e2-4981-8746-34303776b888"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "mummy/animations/angry__south.webp",
+          "frame_paths": [
+            "mummy/animations/angry/south/00.webp",
+            "mummy/animations/angry/south/01.webp",
+            "mummy/animations/angry/south/02.webp",
+            "mummy/animations/angry/south/03.webp",
+            "mummy/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:29 GMT",
+          "src_frames": 5,
+          "sub": "0624eb08-0cff-4b17-b701-81fb0327fce0"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "mummy/animations/angry__south-east.webp",
+          "frame_paths": [
+            "mummy/animations/angry/south-east/00.webp",
+            "mummy/animations/angry/south-east/01.webp",
+            "mummy/animations/angry/south-east/02.webp",
+            "mummy/animations/angry/south-east/03.webp",
+            "mummy/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:30 GMT",
+          "src_frames": 5,
+          "sub": "d5a87bfd-4bc7-48c4-8fc6-c7ab261603d8"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "mummy/animations/angry__south-west.webp",
+          "frame_paths": [
+            "mummy/animations/angry/south-west/00.webp",
+            "mummy/animations/angry/south-west/01.webp",
+            "mummy/animations/angry/south-west/02.webp",
+            "mummy/animations/angry/south-west/03.webp",
+            "mummy/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "mummy/animations/angry__west.webp",
+          "frame_paths": [
+            "mummy/animations/angry/west/00.webp",
+            "mummy/animations/angry/west/01.webp",
+            "mummy/animations/angry/west/02.webp",
+            "mummy/animations/angry/west/03.webp",
+            "mummy/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "mummy/animations/angry__north-west.webp",
+          "frame_paths": [
+            "mummy/animations/angry/north-west/00.webp",
+            "mummy/animations/angry/north-west/01.webp",
+            "mummy/animations/angry/north-west/02.webp",
+            "mummy/animations/angry/north-west/03.webp",
+            "mummy/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "03cc5d27-0d54-47cf-bcb4-669e088a2924",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "mummy/animations/idle__east.webp",
+          "frame_paths": [
+            "mummy/animations/idle/east/00.webp",
+            "mummy/animations/idle/east/01.webp",
+            "mummy/animations/idle/east/02.webp",
+            "mummy/animations/idle/east/03.webp",
+            "mummy/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:31 GMT",
+          "src_frames": 5,
+          "sub": "19f500d7-8ec3-4031-b6de-46ea25264562"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "mummy/animations/idle__north.webp",
+          "frame_paths": [
+            "mummy/animations/idle/north/00.webp",
+            "mummy/animations/idle/north/01.webp",
+            "mummy/animations/idle/north/02.webp",
+            "mummy/animations/idle/north/03.webp",
+            "mummy/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:34 GMT",
+          "src_frames": 5,
+          "sub": "43abe401-cb41-4b5e-a4f3-86cf91ccda8d"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "mummy/animations/idle__north-east.webp",
+          "frame_paths": [
+            "mummy/animations/idle/north-east/00.webp",
+            "mummy/animations/idle/north-east/01.webp",
+            "mummy/animations/idle/north-east/02.webp",
+            "mummy/animations/idle/north-east/03.webp",
+            "mummy/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:36 GMT",
+          "src_frames": 5,
+          "sub": "3d4cfe08-79ee-433c-988b-5b8ac66a8a80"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "mummy/animations/idle__south.webp",
+          "frame_paths": [
+            "mummy/animations/idle/south/00.webp",
+            "mummy/animations/idle/south/01.webp",
+            "mummy/animations/idle/south/02.webp",
+            "mummy/animations/idle/south/03.webp",
+            "mummy/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:37 GMT",
+          "src_frames": 5,
+          "sub": "becbdfbf-bf9c-4378-92a8-e8d1a1217204"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "mummy/animations/idle__south-east.webp",
+          "frame_paths": [
+            "mummy/animations/idle/south-east/00.webp",
+            "mummy/animations/idle/south-east/01.webp",
+            "mummy/animations/idle/south-east/02.webp",
+            "mummy/animations/idle/south-east/03.webp",
+            "mummy/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:38 GMT",
+          "src_frames": 5,
+          "sub": "6cb79e62-44c8-4904-aa84-10e45566174c"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "mummy/animations/idle__south-west.webp",
+          "frame_paths": [
+            "mummy/animations/idle/south-west/00.webp",
+            "mummy/animations/idle/south-west/01.webp",
+            "mummy/animations/idle/south-west/02.webp",
+            "mummy/animations/idle/south-west/03.webp",
+            "mummy/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "mummy/animations/idle__west.webp",
+          "frame_paths": [
+            "mummy/animations/idle/west/00.webp",
+            "mummy/animations/idle/west/01.webp",
+            "mummy/animations/idle/west/02.webp",
+            "mummy/animations/idle/west/03.webp",
+            "mummy/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "mummy/animations/idle__north-west.webp",
+          "frame_paths": [
+            "mummy/animations/idle/north-west/00.webp",
+            "mummy/animations/idle/north-west/01.webp",
+            "mummy/animations/idle/north-west/02.webp",
+            "mummy/animations/idle/north-west/03.webp",
+            "mummy/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "55e52164-55f9-4baf-abfe-80051fd49573",
+      "source_name": "custom-Death - The green eyes go out ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "mummy/animations/die__east.webp",
+          "frame_paths": [
+            "mummy/animations/die/east/00.webp",
+            "mummy/animations/die/east/01.webp",
+            "mummy/animations/die/east/02.webp",
+            "mummy/animations/die/east/03.webp",
+            "mummy/animations/die/east/04.webp",
+            "mummy/animations/die/east/05.webp",
+            "mummy/animations/die/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:40 GMT",
+          "src_frames": 7,
+          "sub": "368ba220-d8ac-4701-989f-1d6451303466"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "mummy/animations/die__north.webp",
+          "frame_paths": [
+            "mummy/animations/die/north/00.webp",
+            "mummy/animations/die/north/01.webp",
+            "mummy/animations/die/north/02.webp",
+            "mummy/animations/die/north/03.webp",
+            "mummy/animations/die/north/04.webp",
+            "mummy/animations/die/north/05.webp",
+            "mummy/animations/die/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:41 GMT",
+          "src_frames": 7,
+          "sub": "50a0abee-7392-488d-83eb-af58e3213256"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "mummy/animations/die__north-east.webp",
+          "frame_paths": [
+            "mummy/animations/die/north-east/00.webp",
+            "mummy/animations/die/north-east/01.webp",
+            "mummy/animations/die/north-east/02.webp",
+            "mummy/animations/die/north-east/03.webp",
+            "mummy/animations/die/north-east/04.webp",
+            "mummy/animations/die/north-east/05.webp",
+            "mummy/animations/die/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:42 GMT",
+          "src_frames": 7,
+          "sub": "7ed2bda9-084c-4218-b612-a01f5f35befb"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "mummy/animations/die__south.webp",
+          "frame_paths": [
+            "mummy/animations/die/south/00.webp",
+            "mummy/animations/die/south/01.webp",
+            "mummy/animations/die/south/02.webp",
+            "mummy/animations/die/south/03.webp",
+            "mummy/animations/die/south/04.webp",
+            "mummy/animations/die/south/05.webp",
+            "mummy/animations/die/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:45 GMT",
+          "src_frames": 7,
+          "sub": "ae88b3c6-aad2-4f20-8776-78ad7bb20b6d"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "mummy/animations/die__south-east.webp",
+          "frame_paths": [
+            "mummy/animations/die/south-east/00.webp",
+            "mummy/animations/die/south-east/01.webp",
+            "mummy/animations/die/south-east/02.webp",
+            "mummy/animations/die/south-east/03.webp",
+            "mummy/animations/die/south-east/04.webp",
+            "mummy/animations/die/south-east/05.webp",
+            "mummy/animations/die/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:46 GMT",
+          "src_frames": 7,
+          "sub": "849bb6ad-428b-4fc5-bb6d-736b57d3421e"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "mummy/animations/die__south-west.webp",
+          "frame_paths": [
+            "mummy/animations/die/south-west/00.webp",
+            "mummy/animations/die/south-west/01.webp",
+            "mummy/animations/die/south-west/02.webp",
+            "mummy/animations/die/south-west/03.webp",
+            "mummy/animations/die/south-west/04.webp",
+            "mummy/animations/die/south-west/05.webp",
+            "mummy/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "mummy/animations/die__west.webp",
+          "frame_paths": [
+            "mummy/animations/die/west/00.webp",
+            "mummy/animations/die/west/01.webp",
+            "mummy/animations/die/west/02.webp",
+            "mummy/animations/die/west/03.webp",
+            "mummy/animations/die/west/04.webp",
+            "mummy/animations/die/west/05.webp",
+            "mummy/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "mummy/animations/die__north-west.webp",
+          "frame_paths": [
+            "mummy/animations/die/north-west/00.webp",
+            "mummy/animations/die/north-west/01.webp",
+            "mummy/animations/die/north-west/02.webp",
+            "mummy/animations/die/north-west/03.webp",
+            "mummy/animations/die/north-west/04.webp",
+            "mummy/animations/die/north-west/05.webp",
+            "mummy/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "2be5a1d8-c024-4e54-8488-bfbd4f103717",
+      "source_name": "custom-Grasping Swipe - Lunges forward with both bandaged",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "mummy/animations/attack__east.webp",
+          "frame_paths": [
+            "mummy/animations/attack/east/00.webp",
+            "mummy/animations/attack/east/01.webp",
+            "mummy/animations/attack/east/02.webp",
+            "mummy/animations/attack/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:48 GMT",
+          "src_frames": 4,
+          "sub": "0d71a1b8-2234-4b38-aced-67f929b6d86a"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "mummy/animations/attack__north.webp",
+          "frame_paths": [
+            "mummy/animations/attack/north/00.webp",
+            "mummy/animations/attack/north/01.webp",
+            "mummy/animations/attack/north/02.webp",
+            "mummy/animations/attack/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:50 GMT",
+          "src_frames": 4,
+          "sub": "c29e8449-5008-4ae4-b240-e0c70814f686"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "mummy/animations/attack__north-east.webp",
+          "frame_paths": [
+            "mummy/animations/attack/north-east/00.webp",
+            "mummy/animations/attack/north-east/01.webp",
+            "mummy/animations/attack/north-east/02.webp",
+            "mummy/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:51 GMT",
+          "src_frames": 4,
+          "sub": "ffefaa7b-d211-4c5f-8eed-18a6a89a61b1"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "mummy/animations/attack__south.webp",
+          "frame_paths": [
+            "mummy/animations/attack/south/00.webp",
+            "mummy/animations/attack/south/01.webp",
+            "mummy/animations/attack/south/02.webp",
+            "mummy/animations/attack/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:52 GMT",
+          "src_frames": 4,
+          "sub": "ddb515b7-04ff-422d-8da5-ee134c0764e9"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "mummy/animations/attack__south-east.webp",
+          "frame_paths": [
+            "mummy/animations/attack/south-east/00.webp",
+            "mummy/animations/attack/south-east/01.webp",
+            "mummy/animations/attack/south-east/02.webp",
+            "mummy/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:53 GMT",
+          "src_frames": 4,
+          "sub": "d08a3675-32ae-46af-a3e1-4985b145bb64"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "mummy/animations/attack__south-west.webp",
+          "frame_paths": [
+            "mummy/animations/attack/south-west/00.webp",
+            "mummy/animations/attack/south-west/01.webp",
+            "mummy/animations/attack/south-west/02.webp",
+            "mummy/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "mummy/animations/attack__west.webp",
+          "frame_paths": [
+            "mummy/animations/attack/west/00.webp",
+            "mummy/animations/attack/west/01.webp",
+            "mummy/animations/attack/west/02.webp",
+            "mummy/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "mummy/animations/attack__north-west.webp",
+          "frame_paths": [
+            "mummy/animations/attack/north-west/00.webp",
+            "mummy/animations/attack/north-west/01.webp",
+            "mummy/animations/attack/north-west/02.webp",
+            "mummy/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_lunges_forward_with_both_banda": {
+      "group_id": "66d8c4c4-3cdd-42ca-b511-b3674f08aeba",
+      "source_name": "custom-lunges forward with both banda",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "mummy/animations/custom_lunges_forward_with_both_banda__east.webp",
+          "frame_paths": [
+            "mummy/animations/custom_lunges_forward_with_both_banda/east/00.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/east/01.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/east/02.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/east/03.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/east/04.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/east/05.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:55 GMT",
+          "src_frames": 7,
+          "sub": "dca6f884-eccf-4a6e-8fe8-403b16802fc6"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "mummy/animations/custom_lunges_forward_with_both_banda__north.webp",
+          "frame_paths": [
+            "mummy/animations/custom_lunges_forward_with_both_banda/north/00.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north/01.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north/02.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north/03.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north/04.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north/05.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:56 GMT",
+          "src_frames": 7,
+          "sub": "20eea505-a488-4d71-9e60-a8a59ff78e92"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "mummy/animations/custom_lunges_forward_with_both_banda__north-east.webp",
+          "frame_paths": [
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-east/00.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-east/01.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-east/02.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-east/03.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-east/04.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-east/05.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:11:58 GMT",
+          "src_frames": 7,
+          "sub": "aa245428-3d72-48da-abd1-efb6e98677d2"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "mummy/animations/custom_lunges_forward_with_both_banda__south.webp",
+          "frame_paths": [
+            "mummy/animations/custom_lunges_forward_with_both_banda/south/00.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south/01.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south/02.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south/03.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south/04.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south/05.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:12:00 GMT",
+          "src_frames": 7,
+          "sub": "8688012c-f017-4065-8be6-00f5328e57fa"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "mummy/animations/custom_lunges_forward_with_both_banda__south-east.webp",
+          "frame_paths": [
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-east/00.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-east/01.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-east/02.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-east/03.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-east/04.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-east/05.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:12:01 GMT",
+          "src_frames": 7,
+          "sub": "ee6091dd-d9a4-42d0-a5f3-ce150e1e0642"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "mummy/animations/custom_lunges_forward_with_both_banda__south-west.webp",
+          "frame_paths": [
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-west/00.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-west/01.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-west/02.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-west/03.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-west/04.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-west/05.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "mummy/animations/custom_lunges_forward_with_both_banda__west.webp",
+          "frame_paths": [
+            "mummy/animations/custom_lunges_forward_with_both_banda/west/00.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/west/01.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/west/02.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/west/03.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/west/04.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/west/05.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "mummy/animations/custom_lunges_forward_with_both_banda__north-west.webp",
+          "frame_paths": [
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-west/00.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-west/01.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-west/02.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-west/03.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-west/04.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-west/05.webp",
+            "mummy/animations/custom_lunges_forward_with_both_banda/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "7b7e2c18-9859-46a5-a165-a027a59a3dea",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "mummy/animations/walk__east.webp",
+          "frame_paths": [
+            "mummy/animations/walk/east/00.webp",
+            "mummy/animations/walk/east/01.webp",
+            "mummy/animations/walk/east/02.webp",
+            "mummy/animations/walk/east/03.webp",
+            "mummy/animations/walk/east/04.webp",
+            "mummy/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:12:03 GMT",
+          "src_frames": 6,
+          "sub": "58f62e65-dd01-49f3-9a76-9e669fd6158c"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "mummy/animations/walk__north.webp",
+          "frame_paths": [
+            "mummy/animations/walk/north/00.webp",
+            "mummy/animations/walk/north/01.webp",
+            "mummy/animations/walk/north/02.webp",
+            "mummy/animations/walk/north/03.webp",
+            "mummy/animations/walk/north/04.webp",
+            "mummy/animations/walk/north/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:12:04 GMT",
+          "src_frames": 6,
+          "sub": "9e7a41e5-4cfd-462e-b1d2-1e291bf50ee6"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "mummy/animations/walk__north-east.webp",
+          "frame_paths": [
+            "mummy/animations/walk/north-east/00.webp",
+            "mummy/animations/walk/north-east/01.webp",
+            "mummy/animations/walk/north-east/02.webp",
+            "mummy/animations/walk/north-east/03.webp",
+            "mummy/animations/walk/north-east/04.webp",
+            "mummy/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:12:06 GMT",
+          "src_frames": 6,
+          "sub": "e3ee4770-2181-4c39-8be1-5896a1b6fa28"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "mummy/animations/walk__south.webp",
+          "frame_paths": [
+            "mummy/animations/walk/south/00.webp",
+            "mummy/animations/walk/south/01.webp",
+            "mummy/animations/walk/south/02.webp",
+            "mummy/animations/walk/south/03.webp",
+            "mummy/animations/walk/south/04.webp",
+            "mummy/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:12:07 GMT",
+          "src_frames": 6,
+          "sub": "4269d19f-c3e3-43c9-b701-280913a91554"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "mummy/animations/walk__south-east.webp",
+          "frame_paths": [
+            "mummy/animations/walk/south-east/00.webp",
+            "mummy/animations/walk/south-east/01.webp",
+            "mummy/animations/walk/south-east/02.webp",
+            "mummy/animations/walk/south-east/03.webp",
+            "mummy/animations/walk/south-east/04.webp",
+            "mummy/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:12:09 GMT",
+          "src_frames": 6,
+          "sub": "8ec9b19f-94da-4d9b-96a0-4a0585737311"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "mummy/animations/walk__south-west.webp",
+          "frame_paths": [
+            "mummy/animations/walk/south-west/00.webp",
+            "mummy/animations/walk/south-west/01.webp",
+            "mummy/animations/walk/south-west/02.webp",
+            "mummy/animations/walk/south-west/03.webp",
+            "mummy/animations/walk/south-west/04.webp",
+            "mummy/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "mummy/animations/walk__west.webp",
+          "frame_paths": [
+            "mummy/animations/walk/west/00.webp",
+            "mummy/animations/walk/west/01.webp",
+            "mummy/animations/walk/west/02.webp",
+            "mummy/animations/walk/west/03.webp",
+            "mummy/animations/walk/west/04.webp",
+            "mummy/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "mummy/animations/walk__north-west.webp",
+          "frame_paths": [
+            "mummy/animations/walk/north-west/00.webp",
+            "mummy/animations/walk/north-west/01.webp",
+            "mummy/animations/walk/north-west/02.webp",
+            "mummy/animations/walk/north-west/03.webp",
+            "mummy/animations/walk/north-west/04.webp",
+            "mummy/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

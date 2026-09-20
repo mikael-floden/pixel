@@ -1,0 +1,825 @@
+{
+  "id": "ember_king",
+  "name": "Pyrelord",
+  "lore": "The mountain's first king and its only one. Every eruption since has been his voice.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "e31ae5b5-a1eb-4692-afe3-aa6c4fae398f",
+    "url": "https://www.pixellab.ai/create-character/e31ae5b5-a1eb-4692-afe3-aa6c4fae398f",
+    "prompt": "Hulking fantasy fire demon lord shown full body from horns to feet, standing on thick clawed legs, with a body of black volcanic rock split by glowing orange magma cracks, a crown of jagged obsidian horns wreathed in flames, burning white-hot eyes, massive clawed hands, a molten glowing chain draped across its chest, and flames rising from its shoulders.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 240,
+    "height": 176
+  },
+  "native_size": {
+    "width": 176,
+    "height": 176
+  },
+  "pad": {
+    "x": 32,
+    "y": 0
+  },
+  "sprite": "ember_king/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "ember_king/rotations/south.webp",
+    "west": "ember_king/rotations/west.webp",
+    "east": "ember_king/rotations/east.webp",
+    "north": "ember_king/rotations/north.webp",
+    "south-east": "ember_king/rotations/south-east.webp",
+    "north-east": "ember_king/rotations/north-east.webp",
+    "north-west": "ember_king/rotations/north-west.webp",
+    "south-west": "ember_king/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "e84c0914-cf35-49a3-b8a6-b9450e1e770d",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "ember_king/animations/angry__east.webp",
+          "frame_paths": [
+            "ember_king/animations/angry/east/00.webp",
+            "ember_king/animations/angry/east/01.webp",
+            "ember_king/animations/angry/east/02.webp",
+            "ember_king/animations/angry/east/03.webp",
+            "ember_king/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:35 GMT",
+          "src_frames": 5,
+          "sub": "31aa956f-3462-4699-8e2d-6f6d811ef182"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "ember_king/animations/angry__north.webp",
+          "frame_paths": [
+            "ember_king/animations/angry/north/00.webp",
+            "ember_king/animations/angry/north/01.webp",
+            "ember_king/animations/angry/north/02.webp",
+            "ember_king/animations/angry/north/03.webp",
+            "ember_king/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:36 GMT",
+          "src_frames": 5,
+          "sub": "1698985b-9e73-4808-a3d3-d08d5b091b08"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "ember_king/animations/angry__north-east.webp",
+          "frame_paths": [
+            "ember_king/animations/angry/north-east/00.webp",
+            "ember_king/animations/angry/north-east/01.webp",
+            "ember_king/animations/angry/north-east/02.webp",
+            "ember_king/animations/angry/north-east/03.webp",
+            "ember_king/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:37 GMT",
+          "src_frames": 5,
+          "sub": "371d42b9-1edf-4fa4-b378-2cfbaa7a185b"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "ember_king/animations/angry__south.webp",
+          "frame_paths": [
+            "ember_king/animations/angry/south/00.webp",
+            "ember_king/animations/angry/south/01.webp",
+            "ember_king/animations/angry/south/02.webp",
+            "ember_king/animations/angry/south/03.webp",
+            "ember_king/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:39 GMT",
+          "src_frames": 5,
+          "sub": "3b62a3af-1064-4b13-bc53-31faad583e2b"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "ember_king/animations/angry__south-east.webp",
+          "frame_paths": [
+            "ember_king/animations/angry/south-east/00.webp",
+            "ember_king/animations/angry/south-east/01.webp",
+            "ember_king/animations/angry/south-east/02.webp",
+            "ember_king/animations/angry/south-east/03.webp",
+            "ember_king/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:40 GMT",
+          "src_frames": 5,
+          "sub": "b257f5a1-5b4b-4939-a64d-3c57b056efe2"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "ember_king/animations/angry__south-west.webp",
+          "frame_paths": [
+            "ember_king/animations/angry/south-west/00.webp",
+            "ember_king/animations/angry/south-west/01.webp",
+            "ember_king/animations/angry/south-west/02.webp",
+            "ember_king/animations/angry/south-west/03.webp",
+            "ember_king/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "ember_king/animations/angry__west.webp",
+          "frame_paths": [
+            "ember_king/animations/angry/west/00.webp",
+            "ember_king/animations/angry/west/01.webp",
+            "ember_king/animations/angry/west/02.webp",
+            "ember_king/animations/angry/west/03.webp",
+            "ember_king/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "ember_king/animations/angry__north-west.webp",
+          "frame_paths": [
+            "ember_king/animations/angry/north-west/00.webp",
+            "ember_king/animations/angry/north-west/01.webp",
+            "ember_king/animations/angry/north-west/02.webp",
+            "ember_king/animations/angry/north-west/03.webp",
+            "ember_king/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "c1ab4365-0e6c-4482-92fd-1dd2af4f880c",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "ember_king/animations/idle__east.webp",
+          "frame_paths": [
+            "ember_king/animations/idle/east/00.webp",
+            "ember_king/animations/idle/east/01.webp",
+            "ember_king/animations/idle/east/02.webp",
+            "ember_king/animations/idle/east/03.webp",
+            "ember_king/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:42 GMT",
+          "src_frames": 5,
+          "sub": "63391a0c-7963-4fa0-86c8-027c4c0eb518"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "ember_king/animations/idle__north.webp",
+          "frame_paths": [
+            "ember_king/animations/idle/north/00.webp",
+            "ember_king/animations/idle/north/01.webp",
+            "ember_king/animations/idle/north/02.webp",
+            "ember_king/animations/idle/north/03.webp",
+            "ember_king/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:44 GMT",
+          "src_frames": 5,
+          "sub": "dbbb84f2-2602-4e9a-a891-a41b70ea248d"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "ember_king/animations/idle__north-east.webp",
+          "frame_paths": [
+            "ember_king/animations/idle/north-east/00.webp",
+            "ember_king/animations/idle/north-east/01.webp",
+            "ember_king/animations/idle/north-east/02.webp",
+            "ember_king/animations/idle/north-east/03.webp",
+            "ember_king/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:47 GMT",
+          "src_frames": 5,
+          "sub": "7af9a872-b8b4-4eea-8032-241929d4338d"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "ember_king/animations/idle__south.webp",
+          "frame_paths": [
+            "ember_king/animations/idle/south/00.webp",
+            "ember_king/animations/idle/south/01.webp",
+            "ember_king/animations/idle/south/02.webp",
+            "ember_king/animations/idle/south/03.webp",
+            "ember_king/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:49 GMT",
+          "src_frames": 5,
+          "sub": "59c8856c-f103-455e-aedb-efce36e31c9f"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "ember_king/animations/idle__south-east.webp",
+          "frame_paths": [
+            "ember_king/animations/idle/south-east/00.webp",
+            "ember_king/animations/idle/south-east/01.webp",
+            "ember_king/animations/idle/south-east/02.webp",
+            "ember_king/animations/idle/south-east/03.webp",
+            "ember_king/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:50 GMT",
+          "src_frames": 5,
+          "sub": "a74ea878-8774-41f9-b7c0-f605431cc0d6"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "ember_king/animations/idle__south-west.webp",
+          "frame_paths": [
+            "ember_king/animations/idle/south-west/00.webp",
+            "ember_king/animations/idle/south-west/01.webp",
+            "ember_king/animations/idle/south-west/02.webp",
+            "ember_king/animations/idle/south-west/03.webp",
+            "ember_king/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "ember_king/animations/idle__west.webp",
+          "frame_paths": [
+            "ember_king/animations/idle/west/00.webp",
+            "ember_king/animations/idle/west/01.webp",
+            "ember_king/animations/idle/west/02.webp",
+            "ember_king/animations/idle/west/03.webp",
+            "ember_king/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "ember_king/animations/idle__north-west.webp",
+          "frame_paths": [
+            "ember_king/animations/idle/north-west/00.webp",
+            "ember_king/animations/idle/north-west/01.webp",
+            "ember_king/animations/idle/north-west/02.webp",
+            "ember_king/animations/idle/north-west/03.webp",
+            "ember_king/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "255e59f3-a67a-4e40-a687-6abae01b19b2",
+      "source_name": "custom-Claw Slam - Raises one massive clawed hand high an",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "ember_king/animations/attack__east.webp",
+          "frame_paths": [
+            "ember_king/animations/attack/east/00.webp",
+            "ember_king/animations/attack/east/01.webp",
+            "ember_king/animations/attack/east/02.webp",
+            "ember_king/animations/attack/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:52 GMT",
+          "src_frames": 4,
+          "sub": "a53d8b92-19d5-4b83-86f7-00b573c9668a"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "ember_king/animations/attack__north.webp",
+          "frame_paths": [
+            "ember_king/animations/attack/north/00.webp",
+            "ember_king/animations/attack/north/01.webp",
+            "ember_king/animations/attack/north/02.webp",
+            "ember_king/animations/attack/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:53 GMT",
+          "src_frames": 4,
+          "sub": "69491ea0-25b6-40af-be62-04c25080a92f"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "ember_king/animations/attack__north-east.webp",
+          "frame_paths": [
+            "ember_king/animations/attack/north-east/00.webp",
+            "ember_king/animations/attack/north-east/01.webp",
+            "ember_king/animations/attack/north-east/02.webp",
+            "ember_king/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:55 GMT",
+          "src_frames": 4,
+          "sub": "e60887f6-d2e4-4518-b27b-7b5332beebb3"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "ember_king/animations/attack__south.webp",
+          "frame_paths": [
+            "ember_king/animations/attack/south/00.webp",
+            "ember_king/animations/attack/south/01.webp",
+            "ember_king/animations/attack/south/02.webp",
+            "ember_king/animations/attack/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:56 GMT",
+          "src_frames": 4,
+          "sub": "5eacaa5b-ab5c-4a5c-974a-e943478f338e"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "ember_king/animations/attack__south-east.webp",
+          "frame_paths": [
+            "ember_king/animations/attack/south-east/00.webp",
+            "ember_king/animations/attack/south-east/01.webp",
+            "ember_king/animations/attack/south-east/02.webp",
+            "ember_king/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:58 GMT",
+          "src_frames": 4,
+          "sub": "78ac6d87-b324-4fb3-868c-906f1cf383d7"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "ember_king/animations/attack__south-west.webp",
+          "frame_paths": [
+            "ember_king/animations/attack/south-west/00.webp",
+            "ember_king/animations/attack/south-west/01.webp",
+            "ember_king/animations/attack/south-west/02.webp",
+            "ember_king/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "ember_king/animations/attack__west.webp",
+          "frame_paths": [
+            "ember_king/animations/attack/west/00.webp",
+            "ember_king/animations/attack/west/01.webp",
+            "ember_king/animations/attack/west/02.webp",
+            "ember_king/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "ember_king/animations/attack__north-west.webp",
+          "frame_paths": [
+            "ember_king/animations/attack/north-west/00.webp",
+            "ember_king/animations/attack/north-west/01.webp",
+            "ember_king/animations/attack/north-west/02.webp",
+            "ember_king/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "c67feae3-4631-41a6-b407-4a5918bccdff",
+      "source_name": "custom-Death - Sinks to its knees, th",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "ember_king/animations/die__east.webp",
+          "frame_paths": [
+            "ember_king/animations/die/east/00.webp",
+            "ember_king/animations/die/east/01.webp",
+            "ember_king/animations/die/east/02.webp",
+            "ember_king/animations/die/east/03.webp",
+            "ember_king/animations/die/east/04.webp",
+            "ember_king/animations/die/east/05.webp",
+            "ember_king/animations/die/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:04:59 GMT",
+          "src_frames": 7,
+          "sub": "62c27ef9-44fe-40ba-8d0f-9489b2622e9a"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "ember_king/animations/die__north.webp",
+          "frame_paths": [
+            "ember_king/animations/die/north/00.webp",
+            "ember_king/animations/die/north/01.webp",
+            "ember_king/animations/die/north/02.webp",
+            "ember_king/animations/die/north/03.webp",
+            "ember_king/animations/die/north/04.webp",
+            "ember_king/animations/die/north/05.webp",
+            "ember_king/animations/die/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:02 GMT",
+          "src_frames": 7,
+          "sub": "58895191-1824-4faa-88cd-bdf632e482e9"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "ember_king/animations/die__north-east.webp",
+          "frame_paths": [
+            "ember_king/animations/die/north-east/00.webp",
+            "ember_king/animations/die/north-east/01.webp",
+            "ember_king/animations/die/north-east/02.webp",
+            "ember_king/animations/die/north-east/03.webp",
+            "ember_king/animations/die/north-east/04.webp",
+            "ember_king/animations/die/north-east/05.webp",
+            "ember_king/animations/die/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:04 GMT",
+          "src_frames": 7,
+          "sub": "c3cfb70d-d119-46d2-8694-ec7a5f4f918a"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "ember_king/animations/die__south.webp",
+          "frame_paths": [
+            "ember_king/animations/die/south/00.webp",
+            "ember_king/animations/die/south/01.webp",
+            "ember_king/animations/die/south/02.webp",
+            "ember_king/animations/die/south/03.webp",
+            "ember_king/animations/die/south/04.webp",
+            "ember_king/animations/die/south/05.webp",
+            "ember_king/animations/die/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:07 GMT",
+          "src_frames": 7,
+          "sub": "9c32679a-3314-496f-9a82-78bc8e19a76c"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "ember_king/animations/die__south-east.webp",
+          "frame_paths": [
+            "ember_king/animations/die/south-east/00.webp",
+            "ember_king/animations/die/south-east/01.webp",
+            "ember_king/animations/die/south-east/02.webp",
+            "ember_king/animations/die/south-east/03.webp",
+            "ember_king/animations/die/south-east/04.webp",
+            "ember_king/animations/die/south-east/05.webp",
+            "ember_king/animations/die/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:09 GMT",
+          "src_frames": 7,
+          "sub": "f1c36af5-65a7-4c47-a4f7-bd4dc760035c"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "ember_king/animations/die__south-west.webp",
+          "frame_paths": [
+            "ember_king/animations/die/south-west/00.webp",
+            "ember_king/animations/die/south-west/01.webp",
+            "ember_king/animations/die/south-west/02.webp",
+            "ember_king/animations/die/south-west/03.webp",
+            "ember_king/animations/die/south-west/04.webp",
+            "ember_king/animations/die/south-west/05.webp",
+            "ember_king/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "ember_king/animations/die__west.webp",
+          "frame_paths": [
+            "ember_king/animations/die/west/00.webp",
+            "ember_king/animations/die/west/01.webp",
+            "ember_king/animations/die/west/02.webp",
+            "ember_king/animations/die/west/03.webp",
+            "ember_king/animations/die/west/04.webp",
+            "ember_king/animations/die/west/05.webp",
+            "ember_king/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "ember_king/animations/die__north-west.webp",
+          "frame_paths": [
+            "ember_king/animations/die/north-west/00.webp",
+            "ember_king/animations/die/north-west/01.webp",
+            "ember_king/animations/die/north-west/02.webp",
+            "ember_king/animations/die/north-west/03.webp",
+            "ember_king/animations/die/north-west/04.webp",
+            "ember_king/animations/die/north-west/05.webp",
+            "ember_king/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_raises_one_massive_clawed_hand": {
+      "group_id": "683cf8c8-5a1b-469a-9714-ce94caf2f894",
+      "source_name": "custom-raises one massive clawed hand",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "ember_king/animations/custom_raises_one_massive_clawed_hand__east.webp",
+          "frame_paths": [
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/east/00.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/east/01.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/east/02.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/east/03.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/east/04.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/east/05.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:11 GMT",
+          "src_frames": 7,
+          "sub": "8b91c80c-a2f5-4386-ae9c-2f0e6a494ea0"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "ember_king/animations/custom_raises_one_massive_clawed_hand__north.webp",
+          "frame_paths": [
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north/00.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north/01.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north/02.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north/03.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north/04.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north/05.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:13 GMT",
+          "src_frames": 7,
+          "sub": "acfce037-4d0e-401d-bc58-98e3155a540c"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "ember_king/animations/custom_raises_one_massive_clawed_hand__north-east.webp",
+          "frame_paths": [
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-east/00.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-east/01.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-east/02.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-east/03.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-east/04.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-east/05.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:14 GMT",
+          "src_frames": 7,
+          "sub": "a9fb90d4-19cb-4f0a-a585-d1b9cd91dc40"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "ember_king/animations/custom_raises_one_massive_clawed_hand__south.webp",
+          "frame_paths": [
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south/00.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south/01.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south/02.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south/03.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south/04.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south/05.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:16 GMT",
+          "src_frames": 7,
+          "sub": "4cc21908-6c83-48bb-af0d-99916c6b143c"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "ember_king/animations/custom_raises_one_massive_clawed_hand__south-east.webp",
+          "frame_paths": [
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-east/00.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-east/01.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-east/02.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-east/03.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-east/04.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-east/05.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:18 GMT",
+          "src_frames": 7,
+          "sub": "4f875d15-0eea-44d7-86e8-1187b80bc9a4"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "ember_king/animations/custom_raises_one_massive_clawed_hand__south-west.webp",
+          "frame_paths": [
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-west/00.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-west/01.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-west/02.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-west/03.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-west/04.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-west/05.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "ember_king/animations/custom_raises_one_massive_clawed_hand__west.webp",
+          "frame_paths": [
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/west/00.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/west/01.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/west/02.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/west/03.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/west/04.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/west/05.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "ember_king/animations/custom_raises_one_massive_clawed_hand__north-west.webp",
+          "frame_paths": [
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-west/00.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-west/01.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-west/02.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-west/03.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-west/04.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-west/05.webp",
+            "ember_king/animations/custom_raises_one_massive_clawed_hand/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "f2029a75-4f34-4997-876b-15c226f84652",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "ember_king/animations/walk__east.webp",
+          "frame_paths": [
+            "ember_king/animations/walk/east/00.webp",
+            "ember_king/animations/walk/east/01.webp",
+            "ember_king/animations/walk/east/02.webp",
+            "ember_king/animations/walk/east/03.webp",
+            "ember_king/animations/walk/east/04.webp",
+            "ember_king/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:20 GMT",
+          "src_frames": 6,
+          "sub": "21ed23de-f35a-4d1e-8d9b-c6220404e29f"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "ember_king/animations/walk__north.webp",
+          "frame_paths": [
+            "ember_king/animations/walk/north/00.webp",
+            "ember_king/animations/walk/north/01.webp",
+            "ember_king/animations/walk/north/02.webp",
+            "ember_king/animations/walk/north/03.webp",
+            "ember_king/animations/walk/north/04.webp",
+            "ember_king/animations/walk/north/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:21 GMT",
+          "src_frames": 6,
+          "sub": "d2a5b67e-ac82-4973-a037-cfbd3eb6435d"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "ember_king/animations/walk__north-east.webp",
+          "frame_paths": [
+            "ember_king/animations/walk/north-east/00.webp",
+            "ember_king/animations/walk/north-east/01.webp",
+            "ember_king/animations/walk/north-east/02.webp",
+            "ember_king/animations/walk/north-east/03.webp",
+            "ember_king/animations/walk/north-east/04.webp",
+            "ember_king/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:22 GMT",
+          "src_frames": 6,
+          "sub": "afb6d48a-82ec-49bb-a843-b4cf09015c91"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "ember_king/animations/walk__south.webp",
+          "frame_paths": [
+            "ember_king/animations/walk/south/00.webp",
+            "ember_king/animations/walk/south/01.webp",
+            "ember_king/animations/walk/south/02.webp",
+            "ember_king/animations/walk/south/03.webp",
+            "ember_king/animations/walk/south/04.webp",
+            "ember_king/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:24 GMT",
+          "src_frames": 6,
+          "sub": "f913984e-918e-4260-a0b3-2eb30690da42"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "ember_king/animations/walk__south-east.webp",
+          "frame_paths": [
+            "ember_king/animations/walk/south-east/00.webp",
+            "ember_king/animations/walk/south-east/01.webp",
+            "ember_king/animations/walk/south-east/02.webp",
+            "ember_king/animations/walk/south-east/03.webp",
+            "ember_king/animations/walk/south-east/04.webp",
+            "ember_king/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:05:26 GMT",
+          "src_frames": 6,
+          "sub": "e6208d2d-b8de-48ba-86f4-3cc516d3ec1f"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "ember_king/animations/walk__south-west.webp",
+          "frame_paths": [
+            "ember_king/animations/walk/south-west/00.webp",
+            "ember_king/animations/walk/south-west/01.webp",
+            "ember_king/animations/walk/south-west/02.webp",
+            "ember_king/animations/walk/south-west/03.webp",
+            "ember_king/animations/walk/south-west/04.webp",
+            "ember_king/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "ember_king/animations/walk__west.webp",
+          "frame_paths": [
+            "ember_king/animations/walk/west/00.webp",
+            "ember_king/animations/walk/west/01.webp",
+            "ember_king/animations/walk/west/02.webp",
+            "ember_king/animations/walk/west/03.webp",
+            "ember_king/animations/walk/west/04.webp",
+            "ember_king/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "ember_king/animations/walk__north-west.webp",
+          "frame_paths": [
+            "ember_king/animations/walk/north-west/00.webp",
+            "ember_king/animations/walk/north-west/01.webp",
+            "ember_king/animations/walk/north-west/02.webp",
+            "ember_king/animations/walk/north-west/03.webp",
+            "ember_king/animations/walk/north-west/04.webp",
+            "ember_king/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-Calm still idle, breathing ver",
+      "key": "idle",
+      "direction": "north-east",
+      "takes": [
+        "b6ee75c6-2d8a-4d22-8d13-ee89c128aa8f",
+        "7af9a872-b8b4-4eea-8032-241929d4338d"
+      ]
+    },
+    {
+      "animation": "custom-walk loop, full walk cycle in ",
+      "key": "walk",
+      "direction": "south-east",
+      "takes": [
+        "2535fe34-0e8e-4d99-9183-a83e142f05d6",
+        "6d8cac30-76e3-4728-b1d3-87409c028ceb",
+        "e6208d2d-b8de-48ba-86f4-3cc516d3ec1f"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      176,
+      176
+    ],
+    "pad": [
+      32,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "die",
+        "dir": "north",
+        "frame": 5,
+        "side": "right",
+        "target": 5,
+        "overlap": 1.0,
+        "strip_px": 124,
+        "ext": 24
+      },
+      {
+        "key": "die",
+        "dir": "north",
+        "frame": 6,
+        "side": "left",
+        "target": 6,
+        "overlap": 0.8,
+        "strip_px": 221,
+        "ext": 28
+      },
+      {
+        "key": "die",
+        "dir": "north",
+        "frame": 6,
+        "side": "right",
+        "target": 6,
+        "overlap": 1.0,
+        "strip_px": 247,
+        "ext": 30
+      }
+    ]
+  }
+}

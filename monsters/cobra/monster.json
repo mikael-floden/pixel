@@ -1,0 +1,777 @@
+{
+  "id": "cobra",
+  "name": "Hoodfang",
+  "lore": "It sways so you will watch the hood. The bite comes from where you were not watching.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "45be20e3-f240-458f-ab35-811670257508",
+    "url": "https://www.pixellab.ai/create-character/45be20e3-f240-458f-ab35-811670257508",
+    "prompt": "Fantasy giant cobra coiled tightly on the ground with its upper body raised, black and gold scales, a wide flared hood marked with a pale eye pattern, glowing green eyes, and long dripping fangs, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 88,
+    "height": 88
+  },
+  "native_size": {
+    "width": 88,
+    "height": 88
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "cobra/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "cobra/rotations/south.webp",
+    "west": "cobra/rotations/west.webp",
+    "east": "cobra/rotations/east.webp",
+    "north": "cobra/rotations/north.webp",
+    "south-east": "cobra/rotations/south-east.webp",
+    "north-east": "cobra/rotations/north-east.webp",
+    "north-west": "cobra/rotations/north-west.webp",
+    "south-west": "cobra/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "9dfaa9aa-5c91-4e53-8cfd-00ccdde59441",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "cobra/animations/angry__east.webp",
+          "frame_paths": [
+            "cobra/animations/angry/east/00.webp",
+            "cobra/animations/angry/east/01.webp",
+            "cobra/animations/angry/east/02.webp",
+            "cobra/animations/angry/east/03.webp",
+            "cobra/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:12:58 GMT",
+          "src_frames": 5,
+          "sub": "29ff389e-ab75-49a9-ab91-8ce71a3f5e73"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "cobra/animations/angry__north.webp",
+          "frame_paths": [
+            "cobra/animations/angry/north/00.webp",
+            "cobra/animations/angry/north/01.webp",
+            "cobra/animations/angry/north/02.webp",
+            "cobra/animations/angry/north/03.webp",
+            "cobra/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:12:59 GMT",
+          "src_frames": 5,
+          "sub": "1bff3f6a-1f91-4e59-a4df-c5156ec5f6d9"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "cobra/animations/angry__north-east.webp",
+          "frame_paths": [
+            "cobra/animations/angry/north-east/00.webp",
+            "cobra/animations/angry/north-east/01.webp",
+            "cobra/animations/angry/north-east/02.webp",
+            "cobra/animations/angry/north-east/03.webp",
+            "cobra/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:00 GMT",
+          "src_frames": 5,
+          "sub": "358a7008-8e62-4bc2-a1ff-139145ff321e"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "cobra/animations/angry__south.webp",
+          "frame_paths": [
+            "cobra/animations/angry/south/00.webp",
+            "cobra/animations/angry/south/01.webp",
+            "cobra/animations/angry/south/02.webp",
+            "cobra/animations/angry/south/03.webp",
+            "cobra/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:01 GMT",
+          "src_frames": 5,
+          "sub": "4481f7fc-7f63-4b3a-b87a-d4f28aa6702b"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "cobra/animations/angry__south-east.webp",
+          "frame_paths": [
+            "cobra/animations/angry/south-east/00.webp",
+            "cobra/animations/angry/south-east/01.webp",
+            "cobra/animations/angry/south-east/02.webp",
+            "cobra/animations/angry/south-east/03.webp",
+            "cobra/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:02 GMT",
+          "src_frames": 5,
+          "sub": "53186a20-ba22-4011-9eac-46ea33c3b4a4"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "cobra/animations/angry__south-west.webp",
+          "frame_paths": [
+            "cobra/animations/angry/south-west/00.webp",
+            "cobra/animations/angry/south-west/01.webp",
+            "cobra/animations/angry/south-west/02.webp",
+            "cobra/animations/angry/south-west/03.webp",
+            "cobra/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "cobra/animations/angry__west.webp",
+          "frame_paths": [
+            "cobra/animations/angry/west/00.webp",
+            "cobra/animations/angry/west/01.webp",
+            "cobra/animations/angry/west/02.webp",
+            "cobra/animations/angry/west/03.webp",
+            "cobra/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "cobra/animations/angry__north-west.webp",
+          "frame_paths": [
+            "cobra/animations/angry/north-west/00.webp",
+            "cobra/animations/angry/north-west/01.webp",
+            "cobra/animations/angry/north-west/02.webp",
+            "cobra/animations/angry/north-west/03.webp",
+            "cobra/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "0c87f634-8969-4cb6-909d-83e1cf0389ea",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "cobra/animations/idle__east.webp",
+          "frame_paths": [
+            "cobra/animations/idle/east/00.webp",
+            "cobra/animations/idle/east/01.webp",
+            "cobra/animations/idle/east/02.webp",
+            "cobra/animations/idle/east/03.webp",
+            "cobra/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:04 GMT",
+          "src_frames": 5,
+          "sub": "30fc6b47-4f26-4233-8dec-e2cb70371eff"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "cobra/animations/idle__north.webp",
+          "frame_paths": [
+            "cobra/animations/idle/north/00.webp",
+            "cobra/animations/idle/north/01.webp",
+            "cobra/animations/idle/north/02.webp",
+            "cobra/animations/idle/north/03.webp",
+            "cobra/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:05 GMT",
+          "src_frames": 5,
+          "sub": "b55e5108-279a-4a64-8d2a-b983a6650caa"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "cobra/animations/idle__north-east.webp",
+          "frame_paths": [
+            "cobra/animations/idle/north-east/00.webp",
+            "cobra/animations/idle/north-east/01.webp",
+            "cobra/animations/idle/north-east/02.webp",
+            "cobra/animations/idle/north-east/03.webp",
+            "cobra/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:06 GMT",
+          "src_frames": 5,
+          "sub": "41c662ac-75ae-412e-81dc-60ebd7e0b424"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "cobra/animations/idle__south.webp",
+          "frame_paths": [
+            "cobra/animations/idle/south/00.webp",
+            "cobra/animations/idle/south/01.webp",
+            "cobra/animations/idle/south/02.webp",
+            "cobra/animations/idle/south/03.webp",
+            "cobra/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:07 GMT",
+          "src_frames": 5,
+          "sub": "693a5f5b-1b40-440a-bec8-c6e4e2cdbf94"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "cobra/animations/idle__south-east.webp",
+          "frame_paths": [
+            "cobra/animations/idle/south-east/00.webp",
+            "cobra/animations/idle/south-east/01.webp",
+            "cobra/animations/idle/south-east/02.webp",
+            "cobra/animations/idle/south-east/03.webp",
+            "cobra/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:08 GMT",
+          "src_frames": 5,
+          "sub": "c8c8af49-cc48-4148-bbde-7103f0e0f62d"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "cobra/animations/idle__south-west.webp",
+          "frame_paths": [
+            "cobra/animations/idle/south-west/00.webp",
+            "cobra/animations/idle/south-west/01.webp",
+            "cobra/animations/idle/south-west/02.webp",
+            "cobra/animations/idle/south-west/03.webp",
+            "cobra/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "cobra/animations/idle__west.webp",
+          "frame_paths": [
+            "cobra/animations/idle/west/00.webp",
+            "cobra/animations/idle/west/01.webp",
+            "cobra/animations/idle/west/02.webp",
+            "cobra/animations/idle/west/03.webp",
+            "cobra/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "cobra/animations/idle__north-west.webp",
+          "frame_paths": [
+            "cobra/animations/idle/north-west/00.webp",
+            "cobra/animations/idle/north-west/01.webp",
+            "cobra/animations/idle/north-west/02.webp",
+            "cobra/animations/idle/north-west/03.webp",
+            "cobra/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "e5b22785-034e-40e5-8852-25e8e0c70f68",
+      "source_name": "custom-Death - The raised body drops ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "cobra/animations/die__east.webp",
+          "frame_paths": [
+            "cobra/animations/die/east/00.webp",
+            "cobra/animations/die/east/01.webp",
+            "cobra/animations/die/east/02.webp",
+            "cobra/animations/die/east/03.webp",
+            "cobra/animations/die/east/04.webp",
+            "cobra/animations/die/east/05.webp",
+            "cobra/animations/die/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:11 GMT",
+          "src_frames": 7,
+          "sub": "6aaacbef-f68d-4e72-8c5b-52a7eadbd478"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "cobra/animations/die__north.webp",
+          "frame_paths": [
+            "cobra/animations/die/north/00.webp",
+            "cobra/animations/die/north/01.webp",
+            "cobra/animations/die/north/02.webp",
+            "cobra/animations/die/north/03.webp",
+            "cobra/animations/die/north/04.webp",
+            "cobra/animations/die/north/05.webp",
+            "cobra/animations/die/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:12 GMT",
+          "src_frames": 7,
+          "sub": "b1ebbfbf-6382-4a48-803e-42cb8eefbf16"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "cobra/animations/die__north-east.webp",
+          "frame_paths": [
+            "cobra/animations/die/north-east/00.webp",
+            "cobra/animations/die/north-east/01.webp",
+            "cobra/animations/die/north-east/02.webp",
+            "cobra/animations/die/north-east/03.webp",
+            "cobra/animations/die/north-east/04.webp",
+            "cobra/animations/die/north-east/05.webp",
+            "cobra/animations/die/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:14 GMT",
+          "src_frames": 7,
+          "sub": "6dcf5309-2549-4ac3-a1aa-4aac6ad84b99"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "cobra/animations/die__south.webp",
+          "frame_paths": [
+            "cobra/animations/die/south/00.webp",
+            "cobra/animations/die/south/01.webp",
+            "cobra/animations/die/south/02.webp",
+            "cobra/animations/die/south/03.webp",
+            "cobra/animations/die/south/04.webp",
+            "cobra/animations/die/south/05.webp",
+            "cobra/animations/die/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:16 GMT",
+          "src_frames": 7,
+          "sub": "3e72a482-05bd-4c4b-8c43-5f73980746d2"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "cobra/animations/die__south-east.webp",
+          "frame_paths": [
+            "cobra/animations/die/south-east/00.webp",
+            "cobra/animations/die/south-east/01.webp",
+            "cobra/animations/die/south-east/02.webp",
+            "cobra/animations/die/south-east/03.webp",
+            "cobra/animations/die/south-east/04.webp",
+            "cobra/animations/die/south-east/05.webp",
+            "cobra/animations/die/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:17 GMT",
+          "src_frames": 7,
+          "sub": "8921261b-7c78-412b-a697-e47442333abc"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "cobra/animations/die__south-west.webp",
+          "frame_paths": [
+            "cobra/animations/die/south-west/00.webp",
+            "cobra/animations/die/south-west/01.webp",
+            "cobra/animations/die/south-west/02.webp",
+            "cobra/animations/die/south-west/03.webp",
+            "cobra/animations/die/south-west/04.webp",
+            "cobra/animations/die/south-west/05.webp",
+            "cobra/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "cobra/animations/die__west.webp",
+          "frame_paths": [
+            "cobra/animations/die/west/00.webp",
+            "cobra/animations/die/west/01.webp",
+            "cobra/animations/die/west/02.webp",
+            "cobra/animations/die/west/03.webp",
+            "cobra/animations/die/west/04.webp",
+            "cobra/animations/die/west/05.webp",
+            "cobra/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "cobra/animations/die__north-west.webp",
+          "frame_paths": [
+            "cobra/animations/die/north-west/00.webp",
+            "cobra/animations/die/north-west/01.webp",
+            "cobra/animations/die/north-west/02.webp",
+            "cobra/animations/die/north-west/03.webp",
+            "cobra/animations/die/north-west/04.webp",
+            "cobra/animations/die/north-west/05.webp",
+            "cobra/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "e62a6c9e-a890-470e-b3f6-66a0bc3e23d7",
+      "source_name": "custom-Lunge Attack - Throws its whol + custom-slithers forward in place, bod + custom-slithers forward in place, body undulating in a sm",
+      "directions": {
+        "south": {
+          "frames": 6,
+          "strip": "cobra/animations/walk__south.webp",
+          "frame_paths": [
+            "cobra/animations/walk/south/00.webp",
+            "cobra/animations/walk/south/01.webp",
+            "cobra/animations/walk/south/02.webp",
+            "cobra/animations/walk/south/03.webp",
+            "cobra/animations/walk/south/04.webp",
+            "cobra/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:18 GMT",
+          "src_frames": 6,
+          "sub": "64fb6339-c7f1-4c39-99df-102519111ce1"
+        },
+        "east": {
+          "frames": 6,
+          "strip": "cobra/animations/walk__east.webp",
+          "frame_paths": [
+            "cobra/animations/walk/east/00.webp",
+            "cobra/animations/walk/east/01.webp",
+            "cobra/animations/walk/east/02.webp",
+            "cobra/animations/walk/east/03.webp",
+            "cobra/animations/walk/east/04.webp",
+            "cobra/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:28 GMT",
+          "src_frames": 6,
+          "sub": "771f3307-959b-49db-870c-31219a0c5e7e"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "cobra/animations/walk__north-east.webp",
+          "frame_paths": [
+            "cobra/animations/walk/north-east/00.webp",
+            "cobra/animations/walk/north-east/01.webp",
+            "cobra/animations/walk/north-east/02.webp",
+            "cobra/animations/walk/north-east/03.webp",
+            "cobra/animations/walk/north-east/04.webp",
+            "cobra/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:30 GMT",
+          "src_frames": 6,
+          "sub": "a6f2c131-0468-4df2-aee6-101bf1ab89b2"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "cobra/animations/walk__west.webp",
+          "frame_paths": [
+            "cobra/animations/walk/west/00.webp",
+            "cobra/animations/walk/west/01.webp",
+            "cobra/animations/walk/west/02.webp",
+            "cobra/animations/walk/west/03.webp",
+            "cobra/animations/walk/west/04.webp",
+            "cobra/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "cobra/animations/walk__north-west.webp",
+          "frame_paths": [
+            "cobra/animations/walk/north-west/00.webp",
+            "cobra/animations/walk/north-west/01.webp",
+            "cobra/animations/walk/north-west/02.webp",
+            "cobra/animations/walk/north-west/03.webp",
+            "cobra/animations/walk/north-west/04.webp",
+            "cobra/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "cobra/animations/walk__north.webp",
+          "frame_paths": [
+            "cobra/animations/walk/north/00.webp",
+            "cobra/animations/walk/north/01.webp",
+            "cobra/animations/walk/north/02.webp",
+            "cobra/animations/walk/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 17:38:32 GMT",
+          "src_frames": 4,
+          "sub": "2c227ad0-4ebe-4882-a3f6-574edf28018a"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "cobra/animations/walk__south-east.webp",
+          "frame_paths": [
+            "cobra/animations/walk/south-east/00.webp",
+            "cobra/animations/walk/south-east/01.webp",
+            "cobra/animations/walk/south-east/02.webp",
+            "cobra/animations/walk/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 17:38:33 GMT",
+          "src_frames": 4,
+          "sub": "7de79981-e527-46d1-83a6-5b28adc1df51"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "cobra/animations/walk__south-west.webp",
+          "frame_paths": [
+            "cobra/animations/walk/south-west/00.webp",
+            "cobra/animations/walk/south-west/01.webp",
+            "cobra/animations/walk/south-west/02.webp",
+            "cobra/animations/walk/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "1369cec9-ddc1-4845-98b6-f472a7ae9535",
+      "source_name": "custom-Lunge Attack - Throws its whole body forward in on + custom-Strike - Coils its head back, then strikes forward",
+      "directions": {
+        "south": {
+          "frames": 4,
+          "strip": "cobra/animations/attack__south.webp",
+          "frame_paths": [
+            "cobra/animations/attack/south/00.webp",
+            "cobra/animations/attack/south/01.webp",
+            "cobra/animations/attack/south/02.webp",
+            "cobra/animations/attack/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:20 GMT",
+          "src_frames": 4,
+          "sub": "054d9561-38ad-480c-8ac9-cdd70441eafe"
+        },
+        "east": {
+          "frames": 4,
+          "strip": "cobra/animations/attack__east.webp",
+          "frame_paths": [
+            "cobra/animations/attack/east/00.webp",
+            "cobra/animations/attack/east/01.webp",
+            "cobra/animations/attack/east/02.webp",
+            "cobra/animations/attack/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:21 GMT",
+          "src_frames": 4,
+          "sub": "61600d54-edb1-4376-b6b4-44fed9b61241"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "cobra/animations/attack__north.webp",
+          "frame_paths": [
+            "cobra/animations/attack/north/00.webp",
+            "cobra/animations/attack/north/01.webp",
+            "cobra/animations/attack/north/02.webp",
+            "cobra/animations/attack/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:23 GMT",
+          "src_frames": 4,
+          "sub": "35ce48a9-ed02-4003-8529-d140a5a8034e"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "cobra/animations/attack__north-east.webp",
+          "frame_paths": [
+            "cobra/animations/attack/north-east/00.webp",
+            "cobra/animations/attack/north-east/01.webp",
+            "cobra/animations/attack/north-east/02.webp",
+            "cobra/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:24 GMT",
+          "src_frames": 4,
+          "sub": "9711ccab-6873-49b5-9733-6cf02f93608c"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "cobra/animations/attack__south-east.webp",
+          "frame_paths": [
+            "cobra/animations/attack/south-east/00.webp",
+            "cobra/animations/attack/south-east/01.webp",
+            "cobra/animations/attack/south-east/02.webp",
+            "cobra/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:26 GMT",
+          "src_frames": 4,
+          "sub": "31c5ad74-4e25-4c86-b47a-1dcddc458bc2"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "cobra/animations/attack__south-west.webp",
+          "frame_paths": [
+            "cobra/animations/attack/south-west/00.webp",
+            "cobra/animations/attack/south-west/01.webp",
+            "cobra/animations/attack/south-west/02.webp",
+            "cobra/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "cobra/animations/attack__west.webp",
+          "frame_paths": [
+            "cobra/animations/attack/west/00.webp",
+            "cobra/animations/attack/west/01.webp",
+            "cobra/animations/attack/west/02.webp",
+            "cobra/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "cobra/animations/attack__north-west.webp",
+          "frame_paths": [
+            "cobra/animations/attack/north-west/00.webp",
+            "cobra/animations/attack/north-west/01.webp",
+            "cobra/animations/attack/north-west/02.webp",
+            "cobra/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_strike_pulls_its_head_back": {
+      "group_id": "dfbada73-70d5-489e-8de9-735c3fb8132f",
+      "source_name": "custom-Strike - Pulls its head back, ",
+      "directions": {
+        "south": {
+          "frames": 5,
+          "strip": "cobra/animations/custom_strike_pulls_its_head_back__south.webp",
+          "frame_paths": [
+            "cobra/animations/custom_strike_pulls_its_head_back/south/00.webp",
+            "cobra/animations/custom_strike_pulls_its_head_back/south/01.webp",
+            "cobra/animations/custom_strike_pulls_its_head_back/south/02.webp",
+            "cobra/animations/custom_strike_pulls_its_head_back/south/03.webp",
+            "cobra/animations/custom_strike_pulls_its_head_back/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:27 GMT",
+          "src_frames": 5,
+          "sub": "14c61fad-3dfc-47a7-87c0-5205f0d57673"
+        }
+      }
+    },
+    "custom_strikes_forward_lightning_fast": {
+      "group_id": "9a2a705c-4627-4f07-80ab-ccdd8257d67a",
+      "source_name": "custom-strikes forward lightning-fast",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "cobra/animations/custom_strikes_forward_lightning_fast__east.webp",
+          "frame_paths": [
+            "cobra/animations/custom_strikes_forward_lightning_fast/east/00.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/east/01.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/east/02.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/east/03.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/east/04.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/east/05.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:31 GMT",
+          "src_frames": 7,
+          "sub": "7ec5f1f6-7aac-41dc-ab32-21fc4e06ecb0"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "cobra/animations/custom_strikes_forward_lightning_fast__north.webp",
+          "frame_paths": [
+            "cobra/animations/custom_strikes_forward_lightning_fast/north/00.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north/01.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north/02.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north/03.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north/04.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north/05.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:33 GMT",
+          "src_frames": 7,
+          "sub": "caeb4640-7dd3-47b5-83e3-a9066fb23dce"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "cobra/animations/custom_strikes_forward_lightning_fast__north-east.webp",
+          "frame_paths": [
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-east/00.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-east/01.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-east/02.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-east/03.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-east/04.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-east/05.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:35 GMT",
+          "src_frames": 7,
+          "sub": "58260f9f-7827-4d71-b5cf-a618437cdde1"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "cobra/animations/custom_strikes_forward_lightning_fast__south.webp",
+          "frame_paths": [
+            "cobra/animations/custom_strikes_forward_lightning_fast/south/00.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south/01.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south/02.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south/03.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south/04.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south/05.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:37 GMT",
+          "src_frames": 7,
+          "sub": "0c2a1555-b4dc-44f1-88cd-4040f9e6eb0c"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "cobra/animations/custom_strikes_forward_lightning_fast__south-east.webp",
+          "frame_paths": [
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-east/00.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-east/01.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-east/02.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-east/03.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-east/04.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-east/05.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:13:38 GMT",
+          "src_frames": 7,
+          "sub": "b540fd56-f73e-4623-a4fd-65d7209ab94f"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "cobra/animations/custom_strikes_forward_lightning_fast__south-west.webp",
+          "frame_paths": [
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-west/00.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-west/01.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-west/02.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-west/03.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-west/04.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-west/05.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "cobra/animations/custom_strikes_forward_lightning_fast__west.webp",
+          "frame_paths": [
+            "cobra/animations/custom_strikes_forward_lightning_fast/west/00.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/west/01.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/west/02.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/west/03.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/west/04.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/west/05.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "cobra/animations/custom_strikes_forward_lightning_fast__north-west.webp",
+          "frame_paths": [
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-west/00.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-west/01.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-west/02.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-west/03.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-west/04.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-west/05.webp",
+            "cobra/animations/custom_strikes_forward_lightning_fast/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

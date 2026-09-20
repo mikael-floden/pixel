@@ -1,0 +1,845 @@
+{
+  "id": "lizard_warrior",
+  "name": "Scaleblade",
+  "lore": "Its people ruled the marsh before the marsh drowned them. It still patrols the borders of a country that is gone.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "24ca34a9-e80c-4e6c-9b5f-8e13e09dd3c1",
+    "url": "https://www.pixellab.ai/create-character/24ca34a9-e80c-4e6c-9b5f-8e13e09dd3c1",
+    "prompt": "Fantasy lizardman warrior shown full body from head to feet, dark green scaled skin with a pale belly, a crested head with yellow slit eyes, a bone-and-hide shield, a jagged bronze spear held upright, and a short thick tail held close behind its legs, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 204,
+    "height": 128
+  },
+  "native_size": {
+    "width": 128,
+    "height": 128
+  },
+  "pad": {
+    "x": 38,
+    "y": 0
+  },
+  "sprite": "lizard_warrior/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "lizard_warrior/rotations/south.webp",
+    "west": "lizard_warrior/rotations/west.webp",
+    "east": "lizard_warrior/rotations/east.webp",
+    "north": "lizard_warrior/rotations/north.webp",
+    "south-east": "lizard_warrior/rotations/south-east.webp",
+    "north-east": "lizard_warrior/rotations/north-east.webp",
+    "north-west": "lizard_warrior/rotations/north-west.webp",
+    "south-west": "lizard_warrior/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "90ec915f-95dc-4bef-b940-f1075c5b8546",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/angry__east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/angry/east/00.webp",
+            "lizard_warrior/animations/angry/east/01.webp",
+            "lizard_warrior/animations/angry/east/02.webp",
+            "lizard_warrior/animations/angry/east/03.webp",
+            "lizard_warrior/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:01 GMT",
+          "src_frames": 5,
+          "sub": "33172145-efeb-43d4-8e47-0f046d3ee0e9"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/angry__north.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/angry/north/00.webp",
+            "lizard_warrior/animations/angry/north/01.webp",
+            "lizard_warrior/animations/angry/north/02.webp",
+            "lizard_warrior/animations/angry/north/03.webp",
+            "lizard_warrior/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:02 GMT",
+          "src_frames": 5,
+          "sub": "436421aa-0c3f-448b-97fe-d59c0b653aed"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/angry__north-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/angry/north-east/00.webp",
+            "lizard_warrior/animations/angry/north-east/01.webp",
+            "lizard_warrior/animations/angry/north-east/02.webp",
+            "lizard_warrior/animations/angry/north-east/03.webp",
+            "lizard_warrior/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:04 GMT",
+          "src_frames": 5,
+          "sub": "605fe69d-380f-48b4-a5d8-28b21c5605e1"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/angry__south.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/angry/south/00.webp",
+            "lizard_warrior/animations/angry/south/01.webp",
+            "lizard_warrior/animations/angry/south/02.webp",
+            "lizard_warrior/animations/angry/south/03.webp",
+            "lizard_warrior/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:06 GMT",
+          "src_frames": 5,
+          "sub": "f2650f21-2ec1-41d2-9a83-d6c60145dc09"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/angry__south-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/angry/south-east/00.webp",
+            "lizard_warrior/animations/angry/south-east/01.webp",
+            "lizard_warrior/animations/angry/south-east/02.webp",
+            "lizard_warrior/animations/angry/south-east/03.webp",
+            "lizard_warrior/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:07 GMT",
+          "src_frames": 5,
+          "sub": "072d2c92-701c-495d-bc90-82b9a9730b72"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/angry__south-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/angry/south-west/00.webp",
+            "lizard_warrior/animations/angry/south-west/01.webp",
+            "lizard_warrior/animations/angry/south-west/02.webp",
+            "lizard_warrior/animations/angry/south-west/03.webp",
+            "lizard_warrior/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/angry__west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/angry/west/00.webp",
+            "lizard_warrior/animations/angry/west/01.webp",
+            "lizard_warrior/animations/angry/west/02.webp",
+            "lizard_warrior/animations/angry/west/03.webp",
+            "lizard_warrior/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/angry__north-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/angry/north-west/00.webp",
+            "lizard_warrior/animations/angry/north-west/01.webp",
+            "lizard_warrior/animations/angry/north-west/02.webp",
+            "lizard_warrior/animations/angry/north-west/03.webp",
+            "lizard_warrior/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "95405b6a-d6b3-4e02-a978-62e8f82ed48c",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/idle__east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/idle/east/00.webp",
+            "lizard_warrior/animations/idle/east/01.webp",
+            "lizard_warrior/animations/idle/east/02.webp",
+            "lizard_warrior/animations/idle/east/03.webp",
+            "lizard_warrior/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:09 GMT",
+          "src_frames": 5,
+          "sub": "9d1a201b-364f-42fe-a675-044e2961685c"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/idle__north.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/idle/north/00.webp",
+            "lizard_warrior/animations/idle/north/01.webp",
+            "lizard_warrior/animations/idle/north/02.webp",
+            "lizard_warrior/animations/idle/north/03.webp",
+            "lizard_warrior/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:10 GMT",
+          "src_frames": 5,
+          "sub": "12f6ff0a-2137-4358-a6ce-976850d8fbcc"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/idle__north-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/idle/north-east/00.webp",
+            "lizard_warrior/animations/idle/north-east/01.webp",
+            "lizard_warrior/animations/idle/north-east/02.webp",
+            "lizard_warrior/animations/idle/north-east/03.webp",
+            "lizard_warrior/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:12 GMT",
+          "src_frames": 5,
+          "sub": "d48a7295-773a-44b6-a8d1-e562dceeb96f"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/idle__south.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/idle/south/00.webp",
+            "lizard_warrior/animations/idle/south/01.webp",
+            "lizard_warrior/animations/idle/south/02.webp",
+            "lizard_warrior/animations/idle/south/03.webp",
+            "lizard_warrior/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:13 GMT",
+          "src_frames": 5,
+          "sub": "96a66ef1-cb8b-43de-8bce-c5be136214d1"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/idle__south-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/idle/south-east/00.webp",
+            "lizard_warrior/animations/idle/south-east/01.webp",
+            "lizard_warrior/animations/idle/south-east/02.webp",
+            "lizard_warrior/animations/idle/south-east/03.webp",
+            "lizard_warrior/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:15 GMT",
+          "src_frames": 5,
+          "sub": "05ccb98a-e1f5-4085-8fdd-da18669a75bd"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/idle__south-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/idle/south-west/00.webp",
+            "lizard_warrior/animations/idle/south-west/01.webp",
+            "lizard_warrior/animations/idle/south-west/02.webp",
+            "lizard_warrior/animations/idle/south-west/03.webp",
+            "lizard_warrior/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/idle__west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/idle/west/00.webp",
+            "lizard_warrior/animations/idle/west/01.webp",
+            "lizard_warrior/animations/idle/west/02.webp",
+            "lizard_warrior/animations/idle/west/03.webp",
+            "lizard_warrior/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "lizard_warrior/animations/idle__north-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/idle/north-west/00.webp",
+            "lizard_warrior/animations/idle/north-west/01.webp",
+            "lizard_warrior/animations/idle/north-west/02.webp",
+            "lizard_warrior/animations/idle/north-west/03.webp",
+            "lizard_warrior/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "797ecf60-ca8a-4c32-bc54-17a51d5ab2ed",
+      "source_name": "custom-Death - Drops the spear and sh",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/die__east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/die/east/00.webp",
+            "lizard_warrior/animations/die/east/01.webp",
+            "lizard_warrior/animations/die/east/02.webp",
+            "lizard_warrior/animations/die/east/03.webp",
+            "lizard_warrior/animations/die/east/04.webp",
+            "lizard_warrior/animations/die/east/05.webp",
+            "lizard_warrior/animations/die/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:16 GMT",
+          "src_frames": 7,
+          "sub": "20f5b9bf-4890-4873-9508-c85cddfd2bf6"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/die__north.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/die/north/00.webp",
+            "lizard_warrior/animations/die/north/01.webp",
+            "lizard_warrior/animations/die/north/02.webp",
+            "lizard_warrior/animations/die/north/03.webp",
+            "lizard_warrior/animations/die/north/04.webp",
+            "lizard_warrior/animations/die/north/05.webp",
+            "lizard_warrior/animations/die/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:18 GMT",
+          "src_frames": 7,
+          "sub": "51d69b7e-4142-4738-967e-7eb75620f4cb"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/die__north-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/die/north-east/00.webp",
+            "lizard_warrior/animations/die/north-east/01.webp",
+            "lizard_warrior/animations/die/north-east/02.webp",
+            "lizard_warrior/animations/die/north-east/03.webp",
+            "lizard_warrior/animations/die/north-east/04.webp",
+            "lizard_warrior/animations/die/north-east/05.webp",
+            "lizard_warrior/animations/die/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:19 GMT",
+          "src_frames": 7,
+          "sub": "cb8409a8-18e9-4fd0-a4a3-cbde355e5399"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/die__south.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/die/south/00.webp",
+            "lizard_warrior/animations/die/south/01.webp",
+            "lizard_warrior/animations/die/south/02.webp",
+            "lizard_warrior/animations/die/south/03.webp",
+            "lizard_warrior/animations/die/south/04.webp",
+            "lizard_warrior/animations/die/south/05.webp",
+            "lizard_warrior/animations/die/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:21 GMT",
+          "src_frames": 7,
+          "sub": "da988438-7c05-4a21-8ca7-eca0ab0deec2"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/die__south-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/die/south-east/00.webp",
+            "lizard_warrior/animations/die/south-east/01.webp",
+            "lizard_warrior/animations/die/south-east/02.webp",
+            "lizard_warrior/animations/die/south-east/03.webp",
+            "lizard_warrior/animations/die/south-east/04.webp",
+            "lizard_warrior/animations/die/south-east/05.webp",
+            "lizard_warrior/animations/die/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:22 GMT",
+          "src_frames": 7,
+          "sub": "c4bb3158-419a-406e-ba8a-310920370d43"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/die__south-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/die/south-west/00.webp",
+            "lizard_warrior/animations/die/south-west/01.webp",
+            "lizard_warrior/animations/die/south-west/02.webp",
+            "lizard_warrior/animations/die/south-west/03.webp",
+            "lizard_warrior/animations/die/south-west/04.webp",
+            "lizard_warrior/animations/die/south-west/05.webp",
+            "lizard_warrior/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/die__west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/die/west/00.webp",
+            "lizard_warrior/animations/die/west/01.webp",
+            "lizard_warrior/animations/die/west/02.webp",
+            "lizard_warrior/animations/die/west/03.webp",
+            "lizard_warrior/animations/die/west/04.webp",
+            "lizard_warrior/animations/die/west/05.webp",
+            "lizard_warrior/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/die__north-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/die/north-west/00.webp",
+            "lizard_warrior/animations/die/north-west/01.webp",
+            "lizard_warrior/animations/die/north-west/02.webp",
+            "lizard_warrior/animations/die/north-west/03.webp",
+            "lizard_warrior/animations/die/north-west/04.webp",
+            "lizard_warrior/animations/die/north-west/05.webp",
+            "lizard_warrior/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "96311eb4-4a01-432a-9f57-9e024dfb651a",
+      "source_name": "custom-Spear Thrust - Lunges forward and drives the spear",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "lizard_warrior/animations/attack__east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/attack/east/00.webp",
+            "lizard_warrior/animations/attack/east/01.webp",
+            "lizard_warrior/animations/attack/east/02.webp",
+            "lizard_warrior/animations/attack/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:24 GMT",
+          "src_frames": 4,
+          "sub": "5e51d7cb-82c7-4875-910b-bf88e8f5b2de"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "lizard_warrior/animations/attack__north.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/attack/north/00.webp",
+            "lizard_warrior/animations/attack/north/01.webp",
+            "lizard_warrior/animations/attack/north/02.webp",
+            "lizard_warrior/animations/attack/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:26 GMT",
+          "src_frames": 4,
+          "sub": "da33e477-1e23-4ad9-8123-f31389273ed3"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "lizard_warrior/animations/attack__north-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/attack/north-east/00.webp",
+            "lizard_warrior/animations/attack/north-east/01.webp",
+            "lizard_warrior/animations/attack/north-east/02.webp",
+            "lizard_warrior/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:27 GMT",
+          "src_frames": 4,
+          "sub": "2fbd1c01-5449-4bbf-8875-412402896a6f"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "lizard_warrior/animations/attack__south.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/attack/south/00.webp",
+            "lizard_warrior/animations/attack/south/01.webp",
+            "lizard_warrior/animations/attack/south/02.webp",
+            "lizard_warrior/animations/attack/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:28 GMT",
+          "src_frames": 4,
+          "sub": "2eeb76c4-0ab2-465a-922f-466fc77be04c"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "lizard_warrior/animations/attack__south-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/attack/south-east/00.webp",
+            "lizard_warrior/animations/attack/south-east/01.webp",
+            "lizard_warrior/animations/attack/south-east/02.webp",
+            "lizard_warrior/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:30 GMT",
+          "src_frames": 4,
+          "sub": "286ca728-f903-4a42-a6ac-f32cecf2d7ce"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "lizard_warrior/animations/attack__south-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/attack/south-west/00.webp",
+            "lizard_warrior/animations/attack/south-west/01.webp",
+            "lizard_warrior/animations/attack/south-west/02.webp",
+            "lizard_warrior/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "lizard_warrior/animations/attack__west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/attack/west/00.webp",
+            "lizard_warrior/animations/attack/west/01.webp",
+            "lizard_warrior/animations/attack/west/02.webp",
+            "lizard_warrior/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "lizard_warrior/animations/attack__north-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/attack/north-west/00.webp",
+            "lizard_warrior/animations/attack/north-west/01.webp",
+            "lizard_warrior/animations/attack/north-west/02.webp",
+            "lizard_warrior/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_thrusts_the_spear_forward_in_o": {
+      "group_id": "8f4e09a5-8ee2-4a37-a073-6f00dce81b81",
+      "source_name": "custom-thrusts the spear forward in o",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o__east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/east/00.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/east/01.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/east/02.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/east/03.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/east/04.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/east/05.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:31 GMT",
+          "src_frames": 7,
+          "sub": "22c64bfa-af16-4099-9f54-3a7cb8f3c8cd"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o__north.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north/00.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north/01.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north/02.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north/03.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north/04.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north/05.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:33 GMT",
+          "src_frames": 7,
+          "sub": "a9e5e85c-3727-46f2-bfee-73a16bc6ba85"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o__north-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-east/00.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-east/01.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-east/02.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-east/03.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-east/04.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-east/05.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:34 GMT",
+          "src_frames": 7,
+          "sub": "fe2644e2-08d1-4a7a-83de-734055b54efe"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o__south.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south/00.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south/01.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south/02.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south/03.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south/04.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south/05.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:36 GMT",
+          "src_frames": 7,
+          "sub": "c26d6d47-4b3c-4801-8a4b-28e55383a37b"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o__south-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-east/00.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-east/01.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-east/02.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-east/03.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-east/04.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-east/05.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:37 GMT",
+          "src_frames": 7,
+          "sub": "24969d0b-44ed-46ec-8307-c9ce1f1befc8"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o__south-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-west/00.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-west/01.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-west/02.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-west/03.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-west/04.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-west/05.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o__west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/west/00.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/west/01.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/west/02.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/west/03.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/west/04.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/west/05.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o__north-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-west/00.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-west/01.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-west/02.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-west/03.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-west/04.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-west/05.webp",
+            "lizard_warrior/animations/custom_thrusts_the_spear_forward_in_o/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "57ba59ce-fdb2-434c-af84-f85b8abc5267",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "lizard_warrior/animations/walk__east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/walk/east/00.webp",
+            "lizard_warrior/animations/walk/east/01.webp",
+            "lizard_warrior/animations/walk/east/02.webp",
+            "lizard_warrior/animations/walk/east/03.webp",
+            "lizard_warrior/animations/walk/east/04.webp",
+            "lizard_warrior/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:39 GMT",
+          "src_frames": 6,
+          "sub": "ff1b3d57-6830-4d8a-91d0-39d242c7d6d5"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "lizard_warrior/animations/walk__north.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/walk/north/00.webp",
+            "lizard_warrior/animations/walk/north/01.webp",
+            "lizard_warrior/animations/walk/north/02.webp",
+            "lizard_warrior/animations/walk/north/03.webp",
+            "lizard_warrior/animations/walk/north/04.webp",
+            "lizard_warrior/animations/walk/north/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:40 GMT",
+          "src_frames": 6,
+          "sub": "0f59ffac-b8d8-4a6f-9dc8-8d39a40f145b"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "lizard_warrior/animations/walk__north-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/walk/north-east/00.webp",
+            "lizard_warrior/animations/walk/north-east/01.webp",
+            "lizard_warrior/animations/walk/north-east/02.webp",
+            "lizard_warrior/animations/walk/north-east/03.webp",
+            "lizard_warrior/animations/walk/north-east/04.webp",
+            "lizard_warrior/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:42 GMT",
+          "src_frames": 6,
+          "sub": "d225d0fd-a21f-444b-a3db-08735461de95"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "lizard_warrior/animations/walk__south.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/walk/south/00.webp",
+            "lizard_warrior/animations/walk/south/01.webp",
+            "lizard_warrior/animations/walk/south/02.webp",
+            "lizard_warrior/animations/walk/south/03.webp",
+            "lizard_warrior/animations/walk/south/04.webp",
+            "lizard_warrior/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:44 GMT",
+          "src_frames": 6,
+          "sub": "518de8fe-467c-4b59-8b75-b6376a744502"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "lizard_warrior/animations/walk__south-east.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/walk/south-east/00.webp",
+            "lizard_warrior/animations/walk/south-east/01.webp",
+            "lizard_warrior/animations/walk/south-east/02.webp",
+            "lizard_warrior/animations/walk/south-east/03.webp",
+            "lizard_warrior/animations/walk/south-east/04.webp",
+            "lizard_warrior/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:08:46 GMT",
+          "src_frames": 6,
+          "sub": "069fb853-0021-4298-bdfe-adb9422e999e"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "lizard_warrior/animations/walk__south-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/walk/south-west/00.webp",
+            "lizard_warrior/animations/walk/south-west/01.webp",
+            "lizard_warrior/animations/walk/south-west/02.webp",
+            "lizard_warrior/animations/walk/south-west/03.webp",
+            "lizard_warrior/animations/walk/south-west/04.webp",
+            "lizard_warrior/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "lizard_warrior/animations/walk__west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/walk/west/00.webp",
+            "lizard_warrior/animations/walk/west/01.webp",
+            "lizard_warrior/animations/walk/west/02.webp",
+            "lizard_warrior/animations/walk/west/03.webp",
+            "lizard_warrior/animations/walk/west/04.webp",
+            "lizard_warrior/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "lizard_warrior/animations/walk__north-west.webp",
+          "frame_paths": [
+            "lizard_warrior/animations/walk/north-west/00.webp",
+            "lizard_warrior/animations/walk/north-west/01.webp",
+            "lizard_warrior/animations/walk/north-west/02.webp",
+            "lizard_warrior/animations/walk/north-west/03.webp",
+            "lizard_warrior/animations/walk/north-west/04.webp",
+            "lizard_warrior/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-Calm still idle, breathing ver",
+      "key": "idle",
+      "direction": "north-east",
+      "takes": [
+        "f38099f8-04d1-44f9-8952-42a233a3fdf1",
+        "d48a7295-773a-44b6-a8d1-e562dceeb96f"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      128,
+      128
+    ],
+    "pad": [
+      38,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "south-east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 159,
+        "ext": 21
+      },
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 231,
+        "ext": 27
+      },
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 315,
+        "ext": 36
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 315,
+        "ext": 36
+      },
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 231,
+        "ext": 27
+      },
+      {
+        "key": "attack",
+        "dir": "south-west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 159,
+        "ext": 21
+      }
+    ]
+  }
+}

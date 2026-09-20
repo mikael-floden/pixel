@@ -1,0 +1,805 @@
+{
+  "id": "bridge_troll",
+  "name": "Tollkeeper",
+  "lore": "The bridge is older than the town and the troll is older than the bridge. The toll has never once been coin.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "c7255fb1-fd21-44b5-8b3d-baf0e51fb913",
+    "url": "https://www.pixellab.ai/create-character/c7255fb1-fd21-44b5-8b3d-baf0e51fb913",
+    "prompt": "River troll shown full body from head to feet, realistic proportions, mottled grey-green skin, a long hooked nose, small deep-set eyes, a hunched back, long arms with heavy knuckles, ragged trousers, and a rusted iron chain wrapped around one fist, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 162,
+    "height": 136
+  },
+  "native_size": {
+    "width": 136,
+    "height": 136
+  },
+  "pad": {
+    "x": 13,
+    "y": 0
+  },
+  "sprite": "bridge_troll/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "bridge_troll/rotations/south.webp",
+    "west": "bridge_troll/rotations/west.webp",
+    "east": "bridge_troll/rotations/east.webp",
+    "north": "bridge_troll/rotations/north.webp",
+    "south-east": "bridge_troll/rotations/south-east.webp",
+    "north-east": "bridge_troll/rotations/north-east.webp",
+    "north-west": "bridge_troll/rotations/north-west.webp",
+    "south-west": "bridge_troll/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "acaa046c-a853-4289-92a0-553cd0d6cc36",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/angry__east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/angry/east/00.webp",
+            "bridge_troll/animations/angry/east/01.webp",
+            "bridge_troll/animations/angry/east/02.webp",
+            "bridge_troll/animations/angry/east/03.webp",
+            "bridge_troll/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:30 GMT",
+          "src_frames": 5,
+          "sub": "d26506f4-04b7-472e-9a1c-685218976cf3"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/angry__north.webp",
+          "frame_paths": [
+            "bridge_troll/animations/angry/north/00.webp",
+            "bridge_troll/animations/angry/north/01.webp",
+            "bridge_troll/animations/angry/north/02.webp",
+            "bridge_troll/animations/angry/north/03.webp",
+            "bridge_troll/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:31 GMT",
+          "src_frames": 5,
+          "sub": "4ca19f11-05b2-4094-9294-fa7fefd40997"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/angry__north-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/angry/north-east/00.webp",
+            "bridge_troll/animations/angry/north-east/01.webp",
+            "bridge_troll/animations/angry/north-east/02.webp",
+            "bridge_troll/animations/angry/north-east/03.webp",
+            "bridge_troll/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:33 GMT",
+          "src_frames": 5,
+          "sub": "2d56e460-ae21-4aed-ba68-07a7989af4f5"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/angry__south.webp",
+          "frame_paths": [
+            "bridge_troll/animations/angry/south/00.webp",
+            "bridge_troll/animations/angry/south/01.webp",
+            "bridge_troll/animations/angry/south/02.webp",
+            "bridge_troll/animations/angry/south/03.webp",
+            "bridge_troll/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:34 GMT",
+          "src_frames": 5,
+          "sub": "9589e836-dd31-4af0-86b9-341ae393fee7"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/angry__south-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/angry/south-east/00.webp",
+            "bridge_troll/animations/angry/south-east/01.webp",
+            "bridge_troll/animations/angry/south-east/02.webp",
+            "bridge_troll/animations/angry/south-east/03.webp",
+            "bridge_troll/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:35 GMT",
+          "src_frames": 5,
+          "sub": "28422c11-dfee-416a-b768-4ef24f54a57f"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/angry__south-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/angry/south-west/00.webp",
+            "bridge_troll/animations/angry/south-west/01.webp",
+            "bridge_troll/animations/angry/south-west/02.webp",
+            "bridge_troll/animations/angry/south-west/03.webp",
+            "bridge_troll/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/angry__west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/angry/west/00.webp",
+            "bridge_troll/animations/angry/west/01.webp",
+            "bridge_troll/animations/angry/west/02.webp",
+            "bridge_troll/animations/angry/west/03.webp",
+            "bridge_troll/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/angry__north-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/angry/north-west/00.webp",
+            "bridge_troll/animations/angry/north-west/01.webp",
+            "bridge_troll/animations/angry/north-west/02.webp",
+            "bridge_troll/animations/angry/north-west/03.webp",
+            "bridge_troll/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "ec94b362-80f2-442d-ae46-0969fd8558ec",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/idle__east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/idle/east/00.webp",
+            "bridge_troll/animations/idle/east/01.webp",
+            "bridge_troll/animations/idle/east/02.webp",
+            "bridge_troll/animations/idle/east/03.webp",
+            "bridge_troll/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:37 GMT",
+          "src_frames": 5,
+          "sub": "89ae5278-1d59-4640-9b78-057c0e1213c4"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/idle__north.webp",
+          "frame_paths": [
+            "bridge_troll/animations/idle/north/00.webp",
+            "bridge_troll/animations/idle/north/01.webp",
+            "bridge_troll/animations/idle/north/02.webp",
+            "bridge_troll/animations/idle/north/03.webp",
+            "bridge_troll/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:38 GMT",
+          "src_frames": 5,
+          "sub": "21866e48-ba6a-4b24-885e-d1c5e648dbf4"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/idle__north-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/idle/north-east/00.webp",
+            "bridge_troll/animations/idle/north-east/01.webp",
+            "bridge_troll/animations/idle/north-east/02.webp",
+            "bridge_troll/animations/idle/north-east/03.webp",
+            "bridge_troll/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:41 GMT",
+          "src_frames": 5,
+          "sub": "0b3ce60b-9803-4f25-8063-da8096368787"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/idle__south.webp",
+          "frame_paths": [
+            "bridge_troll/animations/idle/south/00.webp",
+            "bridge_troll/animations/idle/south/01.webp",
+            "bridge_troll/animations/idle/south/02.webp",
+            "bridge_troll/animations/idle/south/03.webp",
+            "bridge_troll/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:43 GMT",
+          "src_frames": 5,
+          "sub": "d1eb5ad8-0592-4c97-ac6a-2187d810cecf"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/idle__south-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/idle/south-east/00.webp",
+            "bridge_troll/animations/idle/south-east/01.webp",
+            "bridge_troll/animations/idle/south-east/02.webp",
+            "bridge_troll/animations/idle/south-east/03.webp",
+            "bridge_troll/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:45 GMT",
+          "src_frames": 5,
+          "sub": "ff570aa0-a473-4e1a-8ebe-25d707744b8a"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/idle__south-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/idle/south-west/00.webp",
+            "bridge_troll/animations/idle/south-west/01.webp",
+            "bridge_troll/animations/idle/south-west/02.webp",
+            "bridge_troll/animations/idle/south-west/03.webp",
+            "bridge_troll/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/idle__west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/idle/west/00.webp",
+            "bridge_troll/animations/idle/west/01.webp",
+            "bridge_troll/animations/idle/west/02.webp",
+            "bridge_troll/animations/idle/west/03.webp",
+            "bridge_troll/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "bridge_troll/animations/idle__north-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/idle/north-west/00.webp",
+            "bridge_troll/animations/idle/north-west/01.webp",
+            "bridge_troll/animations/idle/north-west/02.webp",
+            "bridge_troll/animations/idle/north-west/03.webp",
+            "bridge_troll/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "962102a4-bc2a-419a-a924-bf8314a08840",
+      "source_name": "custom-Chain Lash - Whips the iron chain out forward in o",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "bridge_troll/animations/attack__east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/attack/east/00.webp",
+            "bridge_troll/animations/attack/east/01.webp",
+            "bridge_troll/animations/attack/east/02.webp",
+            "bridge_troll/animations/attack/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:46 GMT",
+          "src_frames": 4,
+          "sub": "911b53cb-2622-473e-b505-8a29f4883bcb"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "bridge_troll/animations/attack__north.webp",
+          "frame_paths": [
+            "bridge_troll/animations/attack/north/00.webp",
+            "bridge_troll/animations/attack/north/01.webp",
+            "bridge_troll/animations/attack/north/02.webp",
+            "bridge_troll/animations/attack/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:48 GMT",
+          "src_frames": 4,
+          "sub": "c6d31af2-6bc5-45ed-b87d-1bf8e495bb44"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "bridge_troll/animations/attack__north-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/attack/north-east/00.webp",
+            "bridge_troll/animations/attack/north-east/01.webp",
+            "bridge_troll/animations/attack/north-east/02.webp",
+            "bridge_troll/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:49 GMT",
+          "src_frames": 4,
+          "sub": "11f5bd89-26bb-4ca9-9214-a15a091714d3"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "bridge_troll/animations/attack__south.webp",
+          "frame_paths": [
+            "bridge_troll/animations/attack/south/00.webp",
+            "bridge_troll/animations/attack/south/01.webp",
+            "bridge_troll/animations/attack/south/02.webp",
+            "bridge_troll/animations/attack/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:50 GMT",
+          "src_frames": 4,
+          "sub": "7bd1c208-47b4-475c-9927-f6c01ccd593f"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "bridge_troll/animations/attack__south-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/attack/south-east/00.webp",
+            "bridge_troll/animations/attack/south-east/01.webp",
+            "bridge_troll/animations/attack/south-east/02.webp",
+            "bridge_troll/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:52 GMT",
+          "src_frames": 4,
+          "sub": "7560e72c-26e5-48ee-941e-05be320bb45e"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "bridge_troll/animations/attack__south-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/attack/south-west/00.webp",
+            "bridge_troll/animations/attack/south-west/01.webp",
+            "bridge_troll/animations/attack/south-west/02.webp",
+            "bridge_troll/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "bridge_troll/animations/attack__west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/attack/west/00.webp",
+            "bridge_troll/animations/attack/west/01.webp",
+            "bridge_troll/animations/attack/west/02.webp",
+            "bridge_troll/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "bridge_troll/animations/attack__north-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/attack/north-west/00.webp",
+            "bridge_troll/animations/attack/north-west/01.webp",
+            "bridge_troll/animations/attack/north-west/02.webp",
+            "bridge_troll/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "1fa1d98b-83d5-456c-8571-d667619ff2c1",
+      "source_name": "custom-Death - Faints, sinks to its k",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/die__east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/die/east/00.webp",
+            "bridge_troll/animations/die/east/01.webp",
+            "bridge_troll/animations/die/east/02.webp",
+            "bridge_troll/animations/die/east/03.webp",
+            "bridge_troll/animations/die/east/04.webp",
+            "bridge_troll/animations/die/east/05.webp",
+            "bridge_troll/animations/die/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:53 GMT",
+          "src_frames": 7,
+          "sub": "ab1839cc-0480-4fa9-9f69-3a77fe7e2e22"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/die__north.webp",
+          "frame_paths": [
+            "bridge_troll/animations/die/north/00.webp",
+            "bridge_troll/animations/die/north/01.webp",
+            "bridge_troll/animations/die/north/02.webp",
+            "bridge_troll/animations/die/north/03.webp",
+            "bridge_troll/animations/die/north/04.webp",
+            "bridge_troll/animations/die/north/05.webp",
+            "bridge_troll/animations/die/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:55 GMT",
+          "src_frames": 7,
+          "sub": "ac8f7794-8a36-44a8-80e4-72385b13789e"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/die__north-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/die/north-east/00.webp",
+            "bridge_troll/animations/die/north-east/01.webp",
+            "bridge_troll/animations/die/north-east/02.webp",
+            "bridge_troll/animations/die/north-east/03.webp",
+            "bridge_troll/animations/die/north-east/04.webp",
+            "bridge_troll/animations/die/north-east/05.webp",
+            "bridge_troll/animations/die/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:57 GMT",
+          "src_frames": 7,
+          "sub": "ab140ff6-4d76-493b-9ece-b1caf12a0084"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/die__south.webp",
+          "frame_paths": [
+            "bridge_troll/animations/die/south/00.webp",
+            "bridge_troll/animations/die/south/01.webp",
+            "bridge_troll/animations/die/south/02.webp",
+            "bridge_troll/animations/die/south/03.webp",
+            "bridge_troll/animations/die/south/04.webp",
+            "bridge_troll/animations/die/south/05.webp",
+            "bridge_troll/animations/die/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:20:58 GMT",
+          "src_frames": 7,
+          "sub": "988644fd-4004-4ed1-9add-67304abd894e"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/die__south-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/die/south-east/00.webp",
+            "bridge_troll/animations/die/south-east/01.webp",
+            "bridge_troll/animations/die/south-east/02.webp",
+            "bridge_troll/animations/die/south-east/03.webp",
+            "bridge_troll/animations/die/south-east/04.webp",
+            "bridge_troll/animations/die/south-east/05.webp",
+            "bridge_troll/animations/die/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:00 GMT",
+          "src_frames": 7,
+          "sub": "66366bac-8e65-475c-a2f1-429f61d98019"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/die__south-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/die/south-west/00.webp",
+            "bridge_troll/animations/die/south-west/01.webp",
+            "bridge_troll/animations/die/south-west/02.webp",
+            "bridge_troll/animations/die/south-west/03.webp",
+            "bridge_troll/animations/die/south-west/04.webp",
+            "bridge_troll/animations/die/south-west/05.webp",
+            "bridge_troll/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/die__west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/die/west/00.webp",
+            "bridge_troll/animations/die/west/01.webp",
+            "bridge_troll/animations/die/west/02.webp",
+            "bridge_troll/animations/die/west/03.webp",
+            "bridge_troll/animations/die/west/04.webp",
+            "bridge_troll/animations/die/west/05.webp",
+            "bridge_troll/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/die__north-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/die/north-west/00.webp",
+            "bridge_troll/animations/die/north-west/01.webp",
+            "bridge_troll/animations/die/north-west/02.webp",
+            "bridge_troll/animations/die/north-west/03.webp",
+            "bridge_troll/animations/die/north-west/04.webp",
+            "bridge_troll/animations/die/north-west/05.webp",
+            "bridge_troll/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "f3163380-8ab7-44c7-9ef9-c26541196347",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "bridge_troll/animations/walk__east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/walk/east/00.webp",
+            "bridge_troll/animations/walk/east/01.webp",
+            "bridge_troll/animations/walk/east/02.webp",
+            "bridge_troll/animations/walk/east/03.webp",
+            "bridge_troll/animations/walk/east/04.webp",
+            "bridge_troll/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:02 GMT",
+          "src_frames": 6,
+          "sub": "9ea99894-7703-498e-9c95-8e2469477e9a"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "bridge_troll/animations/walk__north.webp",
+          "frame_paths": [
+            "bridge_troll/animations/walk/north/00.webp",
+            "bridge_troll/animations/walk/north/01.webp",
+            "bridge_troll/animations/walk/north/02.webp",
+            "bridge_troll/animations/walk/north/03.webp",
+            "bridge_troll/animations/walk/north/04.webp",
+            "bridge_troll/animations/walk/north/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:04 GMT",
+          "src_frames": 6,
+          "sub": "42e3d8b2-e21a-48f7-bf30-a964e41d4450"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "bridge_troll/animations/walk__north-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/walk/north-east/00.webp",
+            "bridge_troll/animations/walk/north-east/01.webp",
+            "bridge_troll/animations/walk/north-east/02.webp",
+            "bridge_troll/animations/walk/north-east/03.webp",
+            "bridge_troll/animations/walk/north-east/04.webp",
+            "bridge_troll/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:06 GMT",
+          "src_frames": 6,
+          "sub": "d0f62a0d-1727-4711-b4f5-4ada095c9f6d"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "bridge_troll/animations/walk__south.webp",
+          "frame_paths": [
+            "bridge_troll/animations/walk/south/00.webp",
+            "bridge_troll/animations/walk/south/01.webp",
+            "bridge_troll/animations/walk/south/02.webp",
+            "bridge_troll/animations/walk/south/03.webp",
+            "bridge_troll/animations/walk/south/04.webp",
+            "bridge_troll/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:08 GMT",
+          "src_frames": 6,
+          "sub": "d7797796-690c-4191-b774-940c3d0b0caa"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "bridge_troll/animations/walk__south-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/walk/south-east/00.webp",
+            "bridge_troll/animations/walk/south-east/01.webp",
+            "bridge_troll/animations/walk/south-east/02.webp",
+            "bridge_troll/animations/walk/south-east/03.webp",
+            "bridge_troll/animations/walk/south-east/04.webp",
+            "bridge_troll/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:10 GMT",
+          "src_frames": 6,
+          "sub": "7755563f-d1f8-46fd-b701-bb460c3f4b8b"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "bridge_troll/animations/walk__south-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/walk/south-west/00.webp",
+            "bridge_troll/animations/walk/south-west/01.webp",
+            "bridge_troll/animations/walk/south-west/02.webp",
+            "bridge_troll/animations/walk/south-west/03.webp",
+            "bridge_troll/animations/walk/south-west/04.webp",
+            "bridge_troll/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "bridge_troll/animations/walk__west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/walk/west/00.webp",
+            "bridge_troll/animations/walk/west/01.webp",
+            "bridge_troll/animations/walk/west/02.webp",
+            "bridge_troll/animations/walk/west/03.webp",
+            "bridge_troll/animations/walk/west/04.webp",
+            "bridge_troll/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "bridge_troll/animations/walk__north-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/walk/north-west/00.webp",
+            "bridge_troll/animations/walk/north-west/01.webp",
+            "bridge_troll/animations/walk/north-west/02.webp",
+            "bridge_troll/animations/walk/north-west/03.webp",
+            "bridge_troll/animations/walk/north-west/04.webp",
+            "bridge_troll/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_whips_the_iron_chain_forward_i": {
+      "group_id": "f1711d2a-34a7-4c94-b3ea-c9a04d8ae214",
+      "source_name": "custom-whips the iron chain forward i",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/custom_whips_the_iron_chain_forward_i__east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/east/00.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/east/01.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/east/02.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/east/03.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/east/04.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/east/05.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:12 GMT",
+          "src_frames": 7,
+          "sub": "1464fe0f-a67e-4875-bf6c-b0068d43eb64"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/custom_whips_the_iron_chain_forward_i__north.webp",
+          "frame_paths": [
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north/00.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north/01.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north/02.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north/03.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north/04.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north/05.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:14 GMT",
+          "src_frames": 7,
+          "sub": "ba9c4973-b90b-4dbb-b3fa-bf80f5d7fe37"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/custom_whips_the_iron_chain_forward_i__north-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-east/00.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-east/01.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-east/02.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-east/03.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-east/04.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-east/05.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:15 GMT",
+          "src_frames": 7,
+          "sub": "7fc2b7e1-4397-4b85-8941-2cc7d302d242"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/custom_whips_the_iron_chain_forward_i__south.webp",
+          "frame_paths": [
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south/00.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south/01.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south/02.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south/03.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south/04.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south/05.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:16 GMT",
+          "src_frames": 7,
+          "sub": "e2fd67c3-a579-447c-818f-3368014c4ebf"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/custom_whips_the_iron_chain_forward_i__south-east.webp",
+          "frame_paths": [
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-east/00.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-east/01.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-east/02.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-east/03.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-east/04.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-east/05.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:21:18 GMT",
+          "src_frames": 7,
+          "sub": "fb3cf7e8-d5e0-41b9-8051-1b474968e7e3"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/custom_whips_the_iron_chain_forward_i__south-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-west/00.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-west/01.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-west/02.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-west/03.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-west/04.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-west/05.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/custom_whips_the_iron_chain_forward_i__west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/west/00.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/west/01.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/west/02.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/west/03.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/west/04.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/west/05.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "bridge_troll/animations/custom_whips_the_iron_chain_forward_i__north-west.webp",
+          "frame_paths": [
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-west/00.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-west/01.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-west/02.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-west/03.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-west/04.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-west/05.webp",
+            "bridge_troll/animations/custom_whips_the_iron_chain_forward_i/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-walk loop, full walk cycle in ",
+      "key": "walk",
+      "direction": "south",
+      "takes": [
+        "a6ee7436-bcad-4efb-b3a0-ed8d93506024",
+        "d7797796-690c-4191-b774-940c3d0b0caa"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      136,
+      136
+    ],
+    "pad": [
+      13,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "attack",
+        "dir": "north-east",
+        "frame": 3,
+        "side": "left",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 209,
+        "ext": 11
+      },
+      {
+        "key": "attack",
+        "dir": "north-west",
+        "frame": 3,
+        "side": "right",
+        "target": 2,
+        "overlap": 1.0,
+        "strip_px": 209,
+        "ext": 11
+      }
+    ]
+  }
+}

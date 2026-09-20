@@ -1,0 +1,809 @@
+{
+  "id": "werewolf",
+  "name": "Moonrend",
+  "lore": "It runs the ridge under every full moon and comes back fed. The village no longer asks what it ate.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "a0f58ca6-7f8f-4997-b98c-fbbd25de0e4a",
+    "url": "https://www.pixellab.ai/create-character/a0f58ca6-7f8f-4997-b98c-fbbd25de0e4a",
+    "prompt": "Fantasy werewolf shown full body from head to feet, a broad bipedal wolf with dark grey fur, a heavy muzzle of white fangs, glowing amber eyes, massive clawed hands, torn trousers, and a thick ruff of fur at the neck, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 128,
+    "height": 128
+  },
+  "native_size": {
+    "width": 128,
+    "height": 128
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "werewolf/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "werewolf/rotations/south.webp",
+    "west": "werewolf/rotations/west.webp",
+    "east": "werewolf/rotations/east.webp",
+    "north": "werewolf/rotations/north.webp",
+    "south-east": "werewolf/rotations/south-east.webp",
+    "north-east": "werewolf/rotations/north-east.webp",
+    "north-west": "werewolf/rotations/north-west.webp",
+    "south-west": "werewolf/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "5d85dfd2-a5f9-4606-a7cb-df702603f39e",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "werewolf/animations/angry__east.webp",
+          "frame_paths": [
+            "werewolf/animations/angry/east/00.webp",
+            "werewolf/animations/angry/east/01.webp",
+            "werewolf/animations/angry/east/02.webp",
+            "werewolf/animations/angry/east/03.webp",
+            "werewolf/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:43 GMT",
+          "src_frames": 5,
+          "sub": "6698244d-7a65-4293-a1ea-0a1e9c17c40c"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "werewolf/animations/angry__north.webp",
+          "frame_paths": [
+            "werewolf/animations/angry/north/00.webp",
+            "werewolf/animations/angry/north/01.webp",
+            "werewolf/animations/angry/north/02.webp",
+            "werewolf/animations/angry/north/03.webp",
+            "werewolf/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:45 GMT",
+          "src_frames": 5,
+          "sub": "fc821b95-2a46-4fdb-baf5-c8897aef95b1"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "werewolf/animations/angry__north-east.webp",
+          "frame_paths": [
+            "werewolf/animations/angry/north-east/00.webp",
+            "werewolf/animations/angry/north-east/01.webp",
+            "werewolf/animations/angry/north-east/02.webp",
+            "werewolf/animations/angry/north-east/03.webp",
+            "werewolf/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:46 GMT",
+          "src_frames": 5,
+          "sub": "674a57f6-8079-4fb1-b573-f427abb9dba1"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "werewolf/animations/angry__south.webp",
+          "frame_paths": [
+            "werewolf/animations/angry/south/00.webp",
+            "werewolf/animations/angry/south/01.webp",
+            "werewolf/animations/angry/south/02.webp",
+            "werewolf/animations/angry/south/03.webp",
+            "werewolf/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:48 GMT",
+          "src_frames": 5,
+          "sub": "7c4ff2ba-eb89-44fe-932c-38d3b50eb1c4"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "werewolf/animations/angry__south-east.webp",
+          "frame_paths": [
+            "werewolf/animations/angry/south-east/00.webp",
+            "werewolf/animations/angry/south-east/01.webp",
+            "werewolf/animations/angry/south-east/02.webp",
+            "werewolf/animations/angry/south-east/03.webp",
+            "werewolf/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:49 GMT",
+          "src_frames": 5,
+          "sub": "1238090d-94ad-403e-b09d-1e258723ad5d"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "werewolf/animations/angry__south-west.webp",
+          "frame_paths": [
+            "werewolf/animations/angry/south-west/00.webp",
+            "werewolf/animations/angry/south-west/01.webp",
+            "werewolf/animations/angry/south-west/02.webp",
+            "werewolf/animations/angry/south-west/03.webp",
+            "werewolf/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "werewolf/animations/angry__west.webp",
+          "frame_paths": [
+            "werewolf/animations/angry/west/00.webp",
+            "werewolf/animations/angry/west/01.webp",
+            "werewolf/animations/angry/west/02.webp",
+            "werewolf/animations/angry/west/03.webp",
+            "werewolf/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "werewolf/animations/angry__north-west.webp",
+          "frame_paths": [
+            "werewolf/animations/angry/north-west/00.webp",
+            "werewolf/animations/angry/north-west/01.webp",
+            "werewolf/animations/angry/north-west/02.webp",
+            "werewolf/animations/angry/north-west/03.webp",
+            "werewolf/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "2fee533b-264a-483a-a027-4da318d5abb1",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "werewolf/animations/idle__east.webp",
+          "frame_paths": [
+            "werewolf/animations/idle/east/00.webp",
+            "werewolf/animations/idle/east/01.webp",
+            "werewolf/animations/idle/east/02.webp",
+            "werewolf/animations/idle/east/03.webp",
+            "werewolf/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:51 GMT",
+          "src_frames": 5,
+          "sub": "9d80071d-22d0-40af-9639-ae1d87b368fb"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "werewolf/animations/idle__north.webp",
+          "frame_paths": [
+            "werewolf/animations/idle/north/00.webp",
+            "werewolf/animations/idle/north/01.webp",
+            "werewolf/animations/idle/north/02.webp",
+            "werewolf/animations/idle/north/03.webp",
+            "werewolf/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:53 GMT",
+          "src_frames": 5,
+          "sub": "ce12229f-04c8-4be0-952a-9d84bb999bda"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "werewolf/animations/idle__north-east.webp",
+          "frame_paths": [
+            "werewolf/animations/idle/north-east/00.webp",
+            "werewolf/animations/idle/north-east/01.webp",
+            "werewolf/animations/idle/north-east/02.webp",
+            "werewolf/animations/idle/north-east/03.webp",
+            "werewolf/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:54 GMT",
+          "src_frames": 5,
+          "sub": "eb36ae6e-1c91-487a-97ec-11f27baffa19"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "werewolf/animations/idle__south.webp",
+          "frame_paths": [
+            "werewolf/animations/idle/south/00.webp",
+            "werewolf/animations/idle/south/01.webp",
+            "werewolf/animations/idle/south/02.webp",
+            "werewolf/animations/idle/south/03.webp",
+            "werewolf/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:56 GMT",
+          "src_frames": 5,
+          "sub": "ef3222fb-9294-4617-b6d3-8fbffc66de8c"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "werewolf/animations/idle__south-east.webp",
+          "frame_paths": [
+            "werewolf/animations/idle/south-east/00.webp",
+            "werewolf/animations/idle/south-east/01.webp",
+            "werewolf/animations/idle/south-east/02.webp",
+            "werewolf/animations/idle/south-east/03.webp",
+            "werewolf/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:57 GMT",
+          "src_frames": 5,
+          "sub": "cf514bdf-5ad1-4e33-a263-347643c139ea"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "werewolf/animations/idle__south-west.webp",
+          "frame_paths": [
+            "werewolf/animations/idle/south-west/00.webp",
+            "werewolf/animations/idle/south-west/01.webp",
+            "werewolf/animations/idle/south-west/02.webp",
+            "werewolf/animations/idle/south-west/03.webp",
+            "werewolf/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "werewolf/animations/idle__west.webp",
+          "frame_paths": [
+            "werewolf/animations/idle/west/00.webp",
+            "werewolf/animations/idle/west/01.webp",
+            "werewolf/animations/idle/west/02.webp",
+            "werewolf/animations/idle/west/03.webp",
+            "werewolf/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "werewolf/animations/idle__north-west.webp",
+          "frame_paths": [
+            "werewolf/animations/idle/north-west/00.webp",
+            "werewolf/animations/idle/north-west/01.webp",
+            "werewolf/animations/idle/north-west/02.webp",
+            "werewolf/animations/idle/north-west/03.webp",
+            "werewolf/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "a0ce9767-b203-4984-9d1a-3a22d70cfab9",
+      "source_name": "custom-Claw Swipe - Rears up and swipes one clawed paw ha",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "werewolf/animations/attack__east.webp",
+          "frame_paths": [
+            "werewolf/animations/attack/east/00.webp",
+            "werewolf/animations/attack/east/01.webp",
+            "werewolf/animations/attack/east/02.webp",
+            "werewolf/animations/attack/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:09:58 GMT",
+          "src_frames": 4,
+          "sub": "1a8b86cb-d536-4883-913e-2617ecb5dfdf"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "werewolf/animations/attack__north.webp",
+          "frame_paths": [
+            "werewolf/animations/attack/north/00.webp",
+            "werewolf/animations/attack/north/01.webp",
+            "werewolf/animations/attack/north/02.webp",
+            "werewolf/animations/attack/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:00 GMT",
+          "src_frames": 4,
+          "sub": "3871183f-6cfc-4aee-adcb-5f9412303901"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "werewolf/animations/attack__north-east.webp",
+          "frame_paths": [
+            "werewolf/animations/attack/north-east/00.webp",
+            "werewolf/animations/attack/north-east/01.webp",
+            "werewolf/animations/attack/north-east/02.webp",
+            "werewolf/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:02 GMT",
+          "src_frames": 4,
+          "sub": "5d4c02c9-e26d-4fd8-ac05-238a072f6f4b"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "werewolf/animations/attack__south.webp",
+          "frame_paths": [
+            "werewolf/animations/attack/south/00.webp",
+            "werewolf/animations/attack/south/01.webp",
+            "werewolf/animations/attack/south/02.webp",
+            "werewolf/animations/attack/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:03 GMT",
+          "src_frames": 4,
+          "sub": "b0ecddef-be9f-48b1-8d25-967579ff2e75"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "werewolf/animations/attack__south-east.webp",
+          "frame_paths": [
+            "werewolf/animations/attack/south-east/00.webp",
+            "werewolf/animations/attack/south-east/01.webp",
+            "werewolf/animations/attack/south-east/02.webp",
+            "werewolf/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:05 GMT",
+          "src_frames": 4,
+          "sub": "99eb8ea6-3408-4559-99ed-9512b3ce3619"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "werewolf/animations/attack__south-west.webp",
+          "frame_paths": [
+            "werewolf/animations/attack/south-west/00.webp",
+            "werewolf/animations/attack/south-west/01.webp",
+            "werewolf/animations/attack/south-west/02.webp",
+            "werewolf/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "werewolf/animations/attack__west.webp",
+          "frame_paths": [
+            "werewolf/animations/attack/west/00.webp",
+            "werewolf/animations/attack/west/01.webp",
+            "werewolf/animations/attack/west/02.webp",
+            "werewolf/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "werewolf/animations/attack__north-west.webp",
+          "frame_paths": [
+            "werewolf/animations/attack/north-west/00.webp",
+            "werewolf/animations/attack/north-west/01.webp",
+            "werewolf/animations/attack/north-west/02.webp",
+            "werewolf/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "86330749-d606-46bb-872c-df6f966c3ea4",
+      "source_name": "custom-Death - Staggers, falls forwar",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "werewolf/animations/die__east.webp",
+          "frame_paths": [
+            "werewolf/animations/die/east/00.webp",
+            "werewolf/animations/die/east/01.webp",
+            "werewolf/animations/die/east/02.webp",
+            "werewolf/animations/die/east/03.webp",
+            "werewolf/animations/die/east/04.webp",
+            "werewolf/animations/die/east/05.webp",
+            "werewolf/animations/die/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:06 GMT",
+          "src_frames": 7,
+          "sub": "caf1d763-19c8-476e-b65f-b6146c346fbf"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "werewolf/animations/die__north.webp",
+          "frame_paths": [
+            "werewolf/animations/die/north/00.webp",
+            "werewolf/animations/die/north/01.webp",
+            "werewolf/animations/die/north/02.webp",
+            "werewolf/animations/die/north/03.webp",
+            "werewolf/animations/die/north/04.webp",
+            "werewolf/animations/die/north/05.webp",
+            "werewolf/animations/die/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:07 GMT",
+          "src_frames": 7,
+          "sub": "ea63eb8c-8cfc-49b8-852b-cfae84df1f1c"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "werewolf/animations/die__north-east.webp",
+          "frame_paths": [
+            "werewolf/animations/die/north-east/00.webp",
+            "werewolf/animations/die/north-east/01.webp",
+            "werewolf/animations/die/north-east/02.webp",
+            "werewolf/animations/die/north-east/03.webp",
+            "werewolf/animations/die/north-east/04.webp",
+            "werewolf/animations/die/north-east/05.webp",
+            "werewolf/animations/die/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:09 GMT",
+          "src_frames": 7,
+          "sub": "2490bc02-bb32-4a66-b895-f11be50dd01b"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "werewolf/animations/die__south.webp",
+          "frame_paths": [
+            "werewolf/animations/die/south/00.webp",
+            "werewolf/animations/die/south/01.webp",
+            "werewolf/animations/die/south/02.webp",
+            "werewolf/animations/die/south/03.webp",
+            "werewolf/animations/die/south/04.webp",
+            "werewolf/animations/die/south/05.webp",
+            "werewolf/animations/die/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:10 GMT",
+          "src_frames": 7,
+          "sub": "5f3cc0f1-d117-413c-b70a-60b3bdf8b8fe"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "werewolf/animations/die__south-east.webp",
+          "frame_paths": [
+            "werewolf/animations/die/south-east/00.webp",
+            "werewolf/animations/die/south-east/01.webp",
+            "werewolf/animations/die/south-east/02.webp",
+            "werewolf/animations/die/south-east/03.webp",
+            "werewolf/animations/die/south-east/04.webp",
+            "werewolf/animations/die/south-east/05.webp",
+            "werewolf/animations/die/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:12 GMT",
+          "src_frames": 7,
+          "sub": "870827c5-aaab-4db0-979b-d6612a95adb8"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "werewolf/animations/die__south-west.webp",
+          "frame_paths": [
+            "werewolf/animations/die/south-west/00.webp",
+            "werewolf/animations/die/south-west/01.webp",
+            "werewolf/animations/die/south-west/02.webp",
+            "werewolf/animations/die/south-west/03.webp",
+            "werewolf/animations/die/south-west/04.webp",
+            "werewolf/animations/die/south-west/05.webp",
+            "werewolf/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "werewolf/animations/die__west.webp",
+          "frame_paths": [
+            "werewolf/animations/die/west/00.webp",
+            "werewolf/animations/die/west/01.webp",
+            "werewolf/animations/die/west/02.webp",
+            "werewolf/animations/die/west/03.webp",
+            "werewolf/animations/die/west/04.webp",
+            "werewolf/animations/die/west/05.webp",
+            "werewolf/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "werewolf/animations/die__north-west.webp",
+          "frame_paths": [
+            "werewolf/animations/die/north-west/00.webp",
+            "werewolf/animations/die/north-west/01.webp",
+            "werewolf/animations/die/north-west/02.webp",
+            "werewolf/animations/die/north-west/03.webp",
+            "werewolf/animations/die/north-west/04.webp",
+            "werewolf/animations/die/north-west/05.webp",
+            "werewolf/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_lunges_forward_with_a_savage_t": {
+      "group_id": "06830260-fd27-4fc6-85c5-2dc425109979",
+      "source_name": "custom-lunges forward with a savage t",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "werewolf/animations/custom_lunges_forward_with_a_savage_t__east.webp",
+          "frame_paths": [
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/east/00.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/east/01.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/east/02.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/east/03.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/east/04.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/east/05.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:14 GMT",
+          "src_frames": 7,
+          "sub": "a0f38305-cdd8-4324-b0d6-5c5691b0a053"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "werewolf/animations/custom_lunges_forward_with_a_savage_t__north.webp",
+          "frame_paths": [
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north/00.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north/01.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north/02.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north/03.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north/04.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north/05.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:15 GMT",
+          "src_frames": 7,
+          "sub": "89990cd1-d159-4c5f-a5bc-efd985424d87"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "werewolf/animations/custom_lunges_forward_with_a_savage_t__north-east.webp",
+          "frame_paths": [
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-east/00.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-east/01.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-east/02.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-east/03.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-east/04.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-east/05.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:17 GMT",
+          "src_frames": 7,
+          "sub": "b129a8e3-8caa-40de-b36f-fbbe47b0da75"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "werewolf/animations/custom_lunges_forward_with_a_savage_t__south.webp",
+          "frame_paths": [
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south/00.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south/01.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south/02.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south/03.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south/04.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south/05.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:18 GMT",
+          "src_frames": 7,
+          "sub": "f8c55377-891b-401e-b920-9612d493e27f"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "werewolf/animations/custom_lunges_forward_with_a_savage_t__south-east.webp",
+          "frame_paths": [
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-east/00.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-east/01.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-east/02.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-east/03.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-east/04.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-east/05.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:20 GMT",
+          "src_frames": 7,
+          "sub": "1c673e54-d57c-431c-aa14-509ade3ba506"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "werewolf/animations/custom_lunges_forward_with_a_savage_t__south-west.webp",
+          "frame_paths": [
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-west/00.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-west/01.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-west/02.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-west/03.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-west/04.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-west/05.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "werewolf/animations/custom_lunges_forward_with_a_savage_t__west.webp",
+          "frame_paths": [
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/west/00.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/west/01.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/west/02.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/west/03.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/west/04.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/west/05.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "werewolf/animations/custom_lunges_forward_with_a_savage_t__north-west.webp",
+          "frame_paths": [
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-west/00.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-west/01.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-west/02.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-west/03.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-west/04.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-west/05.webp",
+            "werewolf/animations/custom_lunges_forward_with_a_savage_t/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "7699b4a5-073a-4deb-8e9b-61dd692dc23f",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "werewolf/animations/walk__east.webp",
+          "frame_paths": [
+            "werewolf/animations/walk/east/00.webp",
+            "werewolf/animations/walk/east/01.webp",
+            "werewolf/animations/walk/east/02.webp",
+            "werewolf/animations/walk/east/03.webp",
+            "werewolf/animations/walk/east/04.webp",
+            "werewolf/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:22 GMT",
+          "src_frames": 6,
+          "sub": "d925e3da-6ad4-4f16-b2ee-3d7f00966431"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "werewolf/animations/walk__north.webp",
+          "frame_paths": [
+            "werewolf/animations/walk/north/00.webp",
+            "werewolf/animations/walk/north/01.webp",
+            "werewolf/animations/walk/north/02.webp",
+            "werewolf/animations/walk/north/03.webp",
+            "werewolf/animations/walk/north/04.webp",
+            "werewolf/animations/walk/north/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:24 GMT",
+          "src_frames": 6,
+          "sub": "dc9c4042-bed5-4933-b613-c025df45f7f8"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "werewolf/animations/walk__north-east.webp",
+          "frame_paths": [
+            "werewolf/animations/walk/north-east/00.webp",
+            "werewolf/animations/walk/north-east/01.webp",
+            "werewolf/animations/walk/north-east/02.webp",
+            "werewolf/animations/walk/north-east/03.webp",
+            "werewolf/animations/walk/north-east/04.webp",
+            "werewolf/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:25 GMT",
+          "src_frames": 6,
+          "sub": "1b7d0963-5d03-4c0c-ab47-1a61e1bf92ba"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "werewolf/animations/walk__south.webp",
+          "frame_paths": [
+            "werewolf/animations/walk/south/00.webp",
+            "werewolf/animations/walk/south/01.webp",
+            "werewolf/animations/walk/south/02.webp",
+            "werewolf/animations/walk/south/03.webp",
+            "werewolf/animations/walk/south/04.webp",
+            "werewolf/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:27 GMT",
+          "src_frames": 6,
+          "sub": "826e9b6c-df27-4ba2-b20e-3568eb1d0249"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "werewolf/animations/walk__south-east.webp",
+          "frame_paths": [
+            "werewolf/animations/walk/south-east/00.webp",
+            "werewolf/animations/walk/south-east/01.webp",
+            "werewolf/animations/walk/south-east/02.webp",
+            "werewolf/animations/walk/south-east/03.webp",
+            "werewolf/animations/walk/south-east/04.webp",
+            "werewolf/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:29 GMT",
+          "src_frames": 6,
+          "sub": "276b15cd-11fd-499d-888b-9adc39bd969a"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "werewolf/animations/walk__south-west.webp",
+          "frame_paths": [
+            "werewolf/animations/walk/south-west/00.webp",
+            "werewolf/animations/walk/south-west/01.webp",
+            "werewolf/animations/walk/south-west/02.webp",
+            "werewolf/animations/walk/south-west/03.webp",
+            "werewolf/animations/walk/south-west/04.webp",
+            "werewolf/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "werewolf/animations/walk__west.webp",
+          "frame_paths": [
+            "werewolf/animations/walk/west/00.webp",
+            "werewolf/animations/walk/west/01.webp",
+            "werewolf/animations/walk/west/02.webp",
+            "werewolf/animations/walk/west/03.webp",
+            "werewolf/animations/walk/west/04.webp",
+            "werewolf/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "werewolf/animations/walk__north-west.webp",
+          "frame_paths": [
+            "werewolf/animations/walk/north-west/00.webp",
+            "werewolf/animations/walk/north-west/01.webp",
+            "werewolf/animations/walk/north-west/02.webp",
+            "werewolf/animations/walk/north-west/03.webp",
+            "werewolf/animations/walk/north-west/04.webp",
+            "werewolf/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "high_kick": {
+      "group_id": "c8f64f65-b023-47d4-83ef-933c555960ae",
+      "source_name": "high-kick",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "werewolf/animations/high_kick__east.webp",
+          "frame_paths": [
+            "werewolf/animations/high_kick/east/00.webp",
+            "werewolf/animations/high_kick/east/01.webp",
+            "werewolf/animations/high_kick/east/02.webp",
+            "werewolf/animations/high_kick/east/03.webp",
+            "werewolf/animations/high_kick/east/04.webp",
+            "werewolf/animations/high_kick/east/05.webp",
+            "werewolf/animations/high_kick/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:10:30 GMT",
+          "src_frames": 7,
+          "sub": "2b3ff97b-6023-49a3-b08e-35dc1fb824e1"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "werewolf/animations/high_kick__west.webp",
+          "frame_paths": [
+            "werewolf/animations/high_kick/west/00.webp",
+            "werewolf/animations/high_kick/west/01.webp",
+            "werewolf/animations/high_kick/west/02.webp",
+            "werewolf/animations/high_kick/west/03.webp",
+            "werewolf/animations/high_kick/west/04.webp",
+            "werewolf/animations/high_kick/west/05.webp",
+            "werewolf/animations/high_kick/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-walk loop, full walk cycle in ",
+      "key": "walk",
+      "direction": "south",
+      "takes": [
+        "ad0ea603-0b39-4dc2-bbcd-4f36d1890024",
+        "826e9b6c-df27-4ba2-b20e-3568eb1d0249"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}

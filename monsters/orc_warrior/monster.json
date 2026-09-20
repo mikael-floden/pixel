@@ -1,0 +1,843 @@
+{
+  "id": "orc_warrior",
+  "name": "Warmaul",
+  "lore": "It fights for whoever pays in iron and eats whoever does not. The axe has a name; it will not say it.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "d7067157-1e5b-409e-bb72-651036edd596",
+    "url": "https://www.pixellab.ai/create-character/d7067157-1e5b-409e-bb72-651036edd596",
+    "prompt": "Orc warrior shown full body from head to feet, realistic proportions, grey-green skin over heavy muscle, a jutting jaw with lower tusks, small red eyes under a heavy brow, crude iron shoulder plates and a hide kilt, and a notched battle axe held low at its side, grim menacing expression, dark fantasy, no cartoon grin, no drop shadow on the ground.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 128,
+    "height": 128
+  },
+  "native_size": {
+    "width": 128,
+    "height": 128
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "orc_warrior/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "orc_warrior/rotations/south.webp",
+    "west": "orc_warrior/rotations/west.webp",
+    "east": "orc_warrior/rotations/east.webp",
+    "north": "orc_warrior/rotations/north.webp",
+    "south-east": "orc_warrior/rotations/south-east.webp",
+    "north-east": "orc_warrior/rotations/north-east.webp",
+    "north-west": "orc_warrior/rotations/north-west.webp",
+    "south-west": "orc_warrior/rotations/south-west.webp"
+  },
+  "animations": {
+    "cross_punch": {
+      "group_id": "f162a8df-4fbe-428f-b07b-1b6c5158e015",
+      "source_name": "cross-punch",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/cross_punch__east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/cross_punch/east/00.webp",
+            "orc_warrior/animations/cross_punch/east/01.webp",
+            "orc_warrior/animations/cross_punch/east/02.webp",
+            "orc_warrior/animations/cross_punch/east/03.webp",
+            "orc_warrior/animations/cross_punch/east/04.webp",
+            "orc_warrior/animations/cross_punch/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:18:48 GMT",
+          "src_frames": 6,
+          "sub": "68b6ee68-4fd5-4cbb-956b-8b4306705207"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/cross_punch__west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/cross_punch/west/00.webp",
+            "orc_warrior/animations/cross_punch/west/01.webp",
+            "orc_warrior/animations/cross_punch/west/02.webp",
+            "orc_warrior/animations/cross_punch/west/03.webp",
+            "orc_warrior/animations/cross_punch/west/04.webp",
+            "orc_warrior/animations/cross_punch/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        }
+      }
+    },
+    "angry": {
+      "group_id": "4f5b198f-477b-4101-a5a1-9d117b0ce27e",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/angry__east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/angry/east/00.webp",
+            "orc_warrior/animations/angry/east/01.webp",
+            "orc_warrior/animations/angry/east/02.webp",
+            "orc_warrior/animations/angry/east/03.webp",
+            "orc_warrior/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:18:50 GMT",
+          "src_frames": 5,
+          "sub": "9abc027b-8e40-4a9a-8c29-a35ec2325580"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/angry__north.webp",
+          "frame_paths": [
+            "orc_warrior/animations/angry/north/00.webp",
+            "orc_warrior/animations/angry/north/01.webp",
+            "orc_warrior/animations/angry/north/02.webp",
+            "orc_warrior/animations/angry/north/03.webp",
+            "orc_warrior/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:18:52 GMT",
+          "src_frames": 5,
+          "sub": "18819bcf-156e-4ba8-b5e6-c990e7c3437e"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/angry__north-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/angry/north-east/00.webp",
+            "orc_warrior/animations/angry/north-east/01.webp",
+            "orc_warrior/animations/angry/north-east/02.webp",
+            "orc_warrior/animations/angry/north-east/03.webp",
+            "orc_warrior/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:18:53 GMT",
+          "src_frames": 5,
+          "sub": "1a7b2a76-ffd5-4250-bfc9-b03b01afe48b"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/angry__south.webp",
+          "frame_paths": [
+            "orc_warrior/animations/angry/south/00.webp",
+            "orc_warrior/animations/angry/south/01.webp",
+            "orc_warrior/animations/angry/south/02.webp",
+            "orc_warrior/animations/angry/south/03.webp",
+            "orc_warrior/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:18:54 GMT",
+          "src_frames": 5,
+          "sub": "82bcc453-8013-4499-b667-bef93d18f8e7"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/angry__south-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/angry/south-east/00.webp",
+            "orc_warrior/animations/angry/south-east/01.webp",
+            "orc_warrior/animations/angry/south-east/02.webp",
+            "orc_warrior/animations/angry/south-east/03.webp",
+            "orc_warrior/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:18:56 GMT",
+          "src_frames": 5,
+          "sub": "a78ddb70-05e0-4d46-9095-3eb35c679d1c"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/angry__south-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/angry/south-west/00.webp",
+            "orc_warrior/animations/angry/south-west/01.webp",
+            "orc_warrior/animations/angry/south-west/02.webp",
+            "orc_warrior/animations/angry/south-west/03.webp",
+            "orc_warrior/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/angry__west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/angry/west/00.webp",
+            "orc_warrior/animations/angry/west/01.webp",
+            "orc_warrior/animations/angry/west/02.webp",
+            "orc_warrior/animations/angry/west/03.webp",
+            "orc_warrior/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/angry__north-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/angry/north-west/00.webp",
+            "orc_warrior/animations/angry/north-west/01.webp",
+            "orc_warrior/animations/angry/north-west/02.webp",
+            "orc_warrior/animations/angry/north-west/03.webp",
+            "orc_warrior/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "92de18a4-5b38-4567-8aca-16faeca07e7c",
+      "source_name": "custom-Axe Cleave - Swings the battle axe across in one h",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "orc_warrior/animations/attack__east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/attack/east/00.webp",
+            "orc_warrior/animations/attack/east/01.webp",
+            "orc_warrior/animations/attack/east/02.webp",
+            "orc_warrior/animations/attack/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:18:58 GMT",
+          "src_frames": 4,
+          "sub": "cc13b620-3a03-4214-9068-8a7d7720f188"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "orc_warrior/animations/attack__north.webp",
+          "frame_paths": [
+            "orc_warrior/animations/attack/north/00.webp",
+            "orc_warrior/animations/attack/north/01.webp",
+            "orc_warrior/animations/attack/north/02.webp",
+            "orc_warrior/animations/attack/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:18:59 GMT",
+          "src_frames": 4,
+          "sub": "f6143f32-24f2-404a-8095-06c5ccf8a065"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "orc_warrior/animations/attack__north-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/attack/north-east/00.webp",
+            "orc_warrior/animations/attack/north-east/01.webp",
+            "orc_warrior/animations/attack/north-east/02.webp",
+            "orc_warrior/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:00 GMT",
+          "src_frames": 4,
+          "sub": "e8989cae-4c77-4ac8-b840-dfd8b38658f6"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "orc_warrior/animations/attack__south.webp",
+          "frame_paths": [
+            "orc_warrior/animations/attack/south/00.webp",
+            "orc_warrior/animations/attack/south/01.webp",
+            "orc_warrior/animations/attack/south/02.webp",
+            "orc_warrior/animations/attack/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:02 GMT",
+          "src_frames": 4,
+          "sub": "0e0623b8-0dd1-40e9-b810-ea1aa074d393"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "orc_warrior/animations/attack__south-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/attack/south-east/00.webp",
+            "orc_warrior/animations/attack/south-east/01.webp",
+            "orc_warrior/animations/attack/south-east/02.webp",
+            "orc_warrior/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:03 GMT",
+          "src_frames": 4,
+          "sub": "6efd57b7-3321-4303-8993-5558f705df77"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "orc_warrior/animations/attack__south-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/attack/south-west/00.webp",
+            "orc_warrior/animations/attack/south-west/01.webp",
+            "orc_warrior/animations/attack/south-west/02.webp",
+            "orc_warrior/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "orc_warrior/animations/attack__west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/attack/west/00.webp",
+            "orc_warrior/animations/attack/west/01.webp",
+            "orc_warrior/animations/attack/west/02.webp",
+            "orc_warrior/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "orc_warrior/animations/attack__north-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/attack/north-west/00.webp",
+            "orc_warrior/animations/attack/north-west/01.webp",
+            "orc_warrior/animations/attack/north-west/02.webp",
+            "orc_warrior/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "c9a07440-59ed-41ef-955c-1feae8102f44",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/idle__east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/idle/east/00.webp",
+            "orc_warrior/animations/idle/east/01.webp",
+            "orc_warrior/animations/idle/east/02.webp",
+            "orc_warrior/animations/idle/east/03.webp",
+            "orc_warrior/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:04 GMT",
+          "src_frames": 5,
+          "sub": "71569607-093a-4f14-9b5c-e4bcd7ae837c"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/idle__north.webp",
+          "frame_paths": [
+            "orc_warrior/animations/idle/north/00.webp",
+            "orc_warrior/animations/idle/north/01.webp",
+            "orc_warrior/animations/idle/north/02.webp",
+            "orc_warrior/animations/idle/north/03.webp",
+            "orc_warrior/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:05 GMT",
+          "src_frames": 5,
+          "sub": "b82e61e1-6ebb-4d8a-ad60-cb27998139e6"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/idle__north-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/idle/north-east/00.webp",
+            "orc_warrior/animations/idle/north-east/01.webp",
+            "orc_warrior/animations/idle/north-east/02.webp",
+            "orc_warrior/animations/idle/north-east/03.webp",
+            "orc_warrior/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:06 GMT",
+          "src_frames": 5,
+          "sub": "09d33f48-b390-4262-886a-ec64318b371c"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/idle__south.webp",
+          "frame_paths": [
+            "orc_warrior/animations/idle/south/00.webp",
+            "orc_warrior/animations/idle/south/01.webp",
+            "orc_warrior/animations/idle/south/02.webp",
+            "orc_warrior/animations/idle/south/03.webp",
+            "orc_warrior/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:08 GMT",
+          "src_frames": 5,
+          "sub": "00f923f6-952b-47aa-bd0a-5a08c22fb7b8"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/idle__south-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/idle/south-east/00.webp",
+            "orc_warrior/animations/idle/south-east/01.webp",
+            "orc_warrior/animations/idle/south-east/02.webp",
+            "orc_warrior/animations/idle/south-east/03.webp",
+            "orc_warrior/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:10 GMT",
+          "src_frames": 5,
+          "sub": "6c4c310f-cc12-4f82-9500-285eaa70cab7"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/idle__south-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/idle/south-west/00.webp",
+            "orc_warrior/animations/idle/south-west/01.webp",
+            "orc_warrior/animations/idle/south-west/02.webp",
+            "orc_warrior/animations/idle/south-west/03.webp",
+            "orc_warrior/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/idle__west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/idle/west/00.webp",
+            "orc_warrior/animations/idle/west/01.webp",
+            "orc_warrior/animations/idle/west/02.webp",
+            "orc_warrior/animations/idle/west/03.webp",
+            "orc_warrior/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "orc_warrior/animations/idle__north-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/idle/north-west/00.webp",
+            "orc_warrior/animations/idle/north-west/01.webp",
+            "orc_warrior/animations/idle/north-west/02.webp",
+            "orc_warrior/animations/idle/north-west/03.webp",
+            "orc_warrior/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "ed8d217c-50d5-400f-acf1-c282f0556cbe",
+      "source_name": "custom-Death - Drops the axe, faints ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/die__east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/die/east/00.webp",
+            "orc_warrior/animations/die/east/01.webp",
+            "orc_warrior/animations/die/east/02.webp",
+            "orc_warrior/animations/die/east/03.webp",
+            "orc_warrior/animations/die/east/04.webp",
+            "orc_warrior/animations/die/east/05.webp",
+            "orc_warrior/animations/die/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:11 GMT",
+          "src_frames": 7,
+          "sub": "18b3b4a2-4754-44e0-ba72-2d7ee0629cbe"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/die__north.webp",
+          "frame_paths": [
+            "orc_warrior/animations/die/north/00.webp",
+            "orc_warrior/animations/die/north/01.webp",
+            "orc_warrior/animations/die/north/02.webp",
+            "orc_warrior/animations/die/north/03.webp",
+            "orc_warrior/animations/die/north/04.webp",
+            "orc_warrior/animations/die/north/05.webp",
+            "orc_warrior/animations/die/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:13 GMT",
+          "src_frames": 7,
+          "sub": "7b35238b-56c8-4a3e-bc82-566f78ba1e05"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/die__north-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/die/north-east/00.webp",
+            "orc_warrior/animations/die/north-east/01.webp",
+            "orc_warrior/animations/die/north-east/02.webp",
+            "orc_warrior/animations/die/north-east/03.webp",
+            "orc_warrior/animations/die/north-east/04.webp",
+            "orc_warrior/animations/die/north-east/05.webp",
+            "orc_warrior/animations/die/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:14 GMT",
+          "src_frames": 7,
+          "sub": "c3db8a2f-106c-4e1a-ad66-35c8075c7d65"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/die__south.webp",
+          "frame_paths": [
+            "orc_warrior/animations/die/south/00.webp",
+            "orc_warrior/animations/die/south/01.webp",
+            "orc_warrior/animations/die/south/02.webp",
+            "orc_warrior/animations/die/south/03.webp",
+            "orc_warrior/animations/die/south/04.webp",
+            "orc_warrior/animations/die/south/05.webp",
+            "orc_warrior/animations/die/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:16 GMT",
+          "src_frames": 7,
+          "sub": "63fe1afe-60aa-4fc9-8e6c-603189e4e60d"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/die__south-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/die/south-east/00.webp",
+            "orc_warrior/animations/die/south-east/01.webp",
+            "orc_warrior/animations/die/south-east/02.webp",
+            "orc_warrior/animations/die/south-east/03.webp",
+            "orc_warrior/animations/die/south-east/04.webp",
+            "orc_warrior/animations/die/south-east/05.webp",
+            "orc_warrior/animations/die/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:18 GMT",
+          "src_frames": 7,
+          "sub": "af47dd0f-07fd-4cac-85bb-b6d13e716c21"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/die__south-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/die/south-west/00.webp",
+            "orc_warrior/animations/die/south-west/01.webp",
+            "orc_warrior/animations/die/south-west/02.webp",
+            "orc_warrior/animations/die/south-west/03.webp",
+            "orc_warrior/animations/die/south-west/04.webp",
+            "orc_warrior/animations/die/south-west/05.webp",
+            "orc_warrior/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/die__west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/die/west/00.webp",
+            "orc_warrior/animations/die/west/01.webp",
+            "orc_warrior/animations/die/west/02.webp",
+            "orc_warrior/animations/die/west/03.webp",
+            "orc_warrior/animations/die/west/04.webp",
+            "orc_warrior/animations/die/west/05.webp",
+            "orc_warrior/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/die__north-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/die/north-west/00.webp",
+            "orc_warrior/animations/die/north-west/01.webp",
+            "orc_warrior/animations/die/north-west/02.webp",
+            "orc_warrior/animations/die/north-west/03.webp",
+            "orc_warrior/animations/die/north-west/04.webp",
+            "orc_warrior/animations/die/north-west/05.webp",
+            "orc_warrior/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_swings_the_battle_axe_in_one_h": {
+      "group_id": "b20f27bf-55ee-4511-89f7-f152a055e8d5",
+      "source_name": "custom-swings the battle axe in one h",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h__east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/east/00.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/east/01.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/east/02.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/east/03.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/east/04.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/east/05.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:19 GMT",
+          "src_frames": 7,
+          "sub": "b420f61f-ab1d-4430-b003-45d36a489940"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h__north.webp",
+          "frame_paths": [
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north/00.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north/01.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north/02.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north/03.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north/04.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north/05.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:21 GMT",
+          "src_frames": 7,
+          "sub": "73858043-d89a-4e6c-a090-79c16a05f1a4"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h__north-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-east/00.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-east/01.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-east/02.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-east/03.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-east/04.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-east/05.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:23 GMT",
+          "src_frames": 7,
+          "sub": "c7d2f1f4-9146-4ecc-a56f-dc9e5698654a"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h__south.webp",
+          "frame_paths": [
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south/00.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south/01.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south/02.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south/03.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south/04.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south/05.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:24 GMT",
+          "src_frames": 7,
+          "sub": "103af854-a885-4cc4-be4a-7d40062b65df"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h__south-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-east/00.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-east/01.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-east/02.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-east/03.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-east/04.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-east/05.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:25 GMT",
+          "src_frames": 7,
+          "sub": "7148f943-2ce9-4a7d-87c6-fe398ce3e824"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h__south-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-west/00.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-west/01.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-west/02.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-west/03.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-west/04.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-west/05.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h__west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/west/00.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/west/01.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/west/02.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/west/03.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/west/04.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/west/05.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h__north-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-west/00.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-west/01.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-west/02.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-west/03.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-west/04.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-west/05.webp",
+            "orc_warrior/animations/custom_swings_the_battle_axe_in_one_h/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "020dd113-e516-42d0-89fb-10a9fbe9690d",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/walk__east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/walk/east/00.webp",
+            "orc_warrior/animations/walk/east/01.webp",
+            "orc_warrior/animations/walk/east/02.webp",
+            "orc_warrior/animations/walk/east/03.webp",
+            "orc_warrior/animations/walk/east/04.webp",
+            "orc_warrior/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:29 GMT",
+          "src_frames": 6,
+          "sub": "1c13d536-09e0-4e39-8d96-ec99cb032ff1"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/walk__north.webp",
+          "frame_paths": [
+            "orc_warrior/animations/walk/north/00.webp",
+            "orc_warrior/animations/walk/north/01.webp",
+            "orc_warrior/animations/walk/north/02.webp",
+            "orc_warrior/animations/walk/north/03.webp",
+            "orc_warrior/animations/walk/north/04.webp",
+            "orc_warrior/animations/walk/north/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:30 GMT",
+          "src_frames": 6,
+          "sub": "c0d68b9e-cdd0-4065-a4f9-8920d3f72802"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/walk__north-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/walk/north-east/00.webp",
+            "orc_warrior/animations/walk/north-east/01.webp",
+            "orc_warrior/animations/walk/north-east/02.webp",
+            "orc_warrior/animations/walk/north-east/03.webp",
+            "orc_warrior/animations/walk/north-east/04.webp",
+            "orc_warrior/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:31 GMT",
+          "src_frames": 6,
+          "sub": "8c669de1-b0fd-478a-a483-9687b4491ebf"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/walk__south.webp",
+          "frame_paths": [
+            "orc_warrior/animations/walk/south/00.webp",
+            "orc_warrior/animations/walk/south/01.webp",
+            "orc_warrior/animations/walk/south/02.webp",
+            "orc_warrior/animations/walk/south/03.webp",
+            "orc_warrior/animations/walk/south/04.webp",
+            "orc_warrior/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:33 GMT",
+          "src_frames": 6,
+          "sub": "534b9722-71ac-47f9-a9cc-068bcdb89aa9"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/walk__south-east.webp",
+          "frame_paths": [
+            "orc_warrior/animations/walk/south-east/00.webp",
+            "orc_warrior/animations/walk/south-east/01.webp",
+            "orc_warrior/animations/walk/south-east/02.webp",
+            "orc_warrior/animations/walk/south-east/03.webp",
+            "orc_warrior/animations/walk/south-east/04.webp",
+            "orc_warrior/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:19:34 GMT",
+          "src_frames": 6,
+          "sub": "ab9cab4b-2db5-41d0-8248-ccc3217f6efd"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/walk__south-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/walk/south-west/00.webp",
+            "orc_warrior/animations/walk/south-west/01.webp",
+            "orc_warrior/animations/walk/south-west/02.webp",
+            "orc_warrior/animations/walk/south-west/03.webp",
+            "orc_warrior/animations/walk/south-west/04.webp",
+            "orc_warrior/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/walk__west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/walk/west/00.webp",
+            "orc_warrior/animations/walk/west/01.webp",
+            "orc_warrior/animations/walk/west/02.webp",
+            "orc_warrior/animations/walk/west/03.webp",
+            "orc_warrior/animations/walk/west/04.webp",
+            "orc_warrior/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "orc_warrior/animations/walk__north-west.webp",
+          "frame_paths": [
+            "orc_warrior/animations/walk/north-west/00.webp",
+            "orc_warrior/animations/walk/north-west/01.webp",
+            "orc_warrior/animations/walk/north-west/02.webp",
+            "orc_warrior/animations/walk/north-west/03.webp",
+            "orc_warrior/animations/walk/north-west/04.webp",
+            "orc_warrior/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [
+    {
+      "animation": "custom-swings the battle axe in one h",
+      "key": "custom_swings_the_battle_axe_in_one_h",
+      "direction": "north-east",
+      "takes": [
+        "d54597dd-791e-4c5c-810d-603abfcc50a7",
+        "c7d2f1f4-9146-4ecc-a56f-dc9e5698654a"
+      ]
+    },
+    {
+      "animation": "custom-swings the battle axe in one h",
+      "key": "custom_swings_the_battle_axe_in_one_h",
+      "direction": "south-east",
+      "takes": [
+        "a54b937d-be14-4d7f-98a3-96dbb4c5171f",
+        "7148f943-2ce9-4a7d-87c6-fe398ce3e824"
+      ]
+    },
+    {
+      "animation": "custom-swings the battle axe in one h",
+      "key": "custom_swings_the_battle_axe_in_one_h",
+      "direction": "north",
+      "takes": [
+        "8f382e05-4bae-472d-9a2f-d0bcf1b62388",
+        "73858043-d89a-4e6c-a090-79c16a05f1a4"
+      ]
+    },
+    {
+      "animation": "custom-swings the battle axe in one h",
+      "key": "custom_swings_the_battle_axe_in_one_h",
+      "direction": "south",
+      "takes": [
+        "3a977bbb-98d2-4479-982b-49269e065da3",
+        "103af854-a885-4cc4-be4a-7d40062b65df"
+      ]
+    },
+    {
+      "animation": "custom-swings the battle axe in one h",
+      "key": "custom_swings_the_battle_axe_in_one_h",
+      "direction": "east",
+      "takes": [
+        "9b3a22ce-7a77-407d-a2d6-7dd332036726",
+        "b420f61f-ab1d-4430-b003-45d36a489940"
+      ]
+    }
+  ],
+  "synced_from_pixellab": true
+}
