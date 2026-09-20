@@ -140,6 +140,27 @@ test("a re-roll in ONE zone drops only the cells that zone holds — the rest of
   assert.equal(f.debug().pruned, 1, "one zone changed");
 });
 
+test("the raster is the field over a rectangle, row 0 at the top, 255 inside, 0 outside, the ramp between", () => {
+  const { f } = field({});
+  // 20 cells wide x 4 tall over the wet zone's west edge (col 10): cols 5..25, rows 12..16
+  const rect = { x: 5 * CELL_WU, y: 12 * CELL_WU, width: 20 * CELL_WU, height: 4 * CELL_WU };
+  const r = f.raster("rain", rect, 20, 4);
+  assert.equal(r.length, 80);
+  // sample centres: column i covers col 5 + i .. 6 + i, so i = 0..3 is well outside, 7.. is well inside
+  assert.equal(r[0], 0); assert.equal(r[3], 0);
+  assert.equal(r[8], 255); assert.equal(r[13], 255, "col 18.5: its 3x3 blur is all inside"); assert.equal(r[14], 170, "col 19.5: a third of its blur is past the east edge");
+  const ramp = [r[4], r[5], r[6], r[7]];
+  assert.ok(ramp.some((v) => v > 0 && v < 255), `middle values across the line: ${ramp.join(",")}`);
+  for (let i = 1; i <= 13; i++) assert.ok(r[i] >= r[i - 1], "monotone into the zone (the rect crosses the east edge past col 18.5)");
+  // every row reads the same across this flat band; a rect beyond the zone's east edge (col 20) falls back to 0
+  for (let j = 1; j < 4; j++) assert.equal(r[j * 20 + 8], 255);
+  const east = f.raster("rain", { x: 18 * CELL_WU, y: 12 * CELL_WU, width: 6 * CELL_WU, height: CELL_WU }, 6, 1);
+  assert.equal(east[0], 255); assert.equal(east[5], 0);
+  // unruled: all on
+  const { f: sky } = field({ roomSky: true });
+  assert.ok(sky.raster("rain", rect, 4, 2).every((v) => v === 255));
+});
+
 test("no zones, no boundary: the room's sky rules and every weight is 1", () => {
   const { f: none } = field({ doc: null });
   assert.ok(!none.ruled);

@@ -9,9 +9,19 @@ import { birdDensity, setBirdDensity } from "./density";
 import { OUTDOOR_FADE_MS, OutdoorGain, readIndoor } from "./outdoor";
 import { ZoneField, pickFromProbe, sourceFromProbe } from "./zonefield";
 import { ZoneLines } from "./zonelines";
+import { CLOUD_OF, MIST_EFFECT, forcedGloom, setGloomField } from "../weather/gloom";
 
 const SCENE_KEY = "world"; // WorldScene's key
 const ENV_SAMPLE_MS = 100; // mood changes are seconds-long fades; 10 Hz is plenty
+/** THE MIST MASK (unit 2 of the boundaries): the zone field's mist weight
+ *  rasterised over the view plus a margin each env tick and handed to the
+ *  game's mist pass (`__ml.mistMask`), which reads it bilinearly. 32 x 20 over
+ *  a view and a quarter is half a cell per sample at 2x zoom, a cell at 1x —
+ *  the ramp is three cells wide; the margin covers the camera's travel
+ *  between ticks and the pass's render span. 640 memo reads a tick. */
+const MASK_COLS = 32;
+const MASK_ROWS = 20;
+const MASK_MARGIN = 0.25;
 
 /** Attach the ambient features to the world scene from the OUTSIDE: poll for
  * the scene, ride its UPDATE event, add our own display objects. Zero edits
@@ -47,6 +57,30 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
     const demoButton = new DemoButton(demo);
     let inited = false;
     let envAge = ENV_SAMPLE_MS; // sample on the first tick
+    /* THE GLOOM READS THE FIELD (weather/gloom.ts): each weather's weight at
+     * my feet and the mist's cover of the view, published here every env tick
+     * with the mist's mask; null where zones do not rule, so the room's sky
+     * grades as it always did. A forced mist covers the view: no mask. */
+    const ml = () => (window as unknown as { __ml?: Record<string, (...a: never[]) => unknown> }).__ml;
+    const myFeet = (): { x: number; y: number } => {
+      const me = (ml()?.myScreen as undefined | (() => { sx: number; sy: number; zoom: number } | null))?.();
+      if (!me || !(me.zoom > 0)) return { x: ctx.view.centerX, y: ctx.view.centerY };
+      return { x: ctx.view.x + me.sx / me.zoom, y: ctx.view.y + me.sy / me.zoom };
+    };
+    const mistMask = (m: unknown) => (ml()?.mistMask as undefined | ((m: unknown) => unknown))?.(m);
+    const publishGloom = () => {
+      if (!zone.ruled) { setGloomField(null); mistMask(null); return; }
+      const feet = myFeet();
+      const at: Record<string, number> = {};
+      for (const n of Object.keys(CLOUD_OF)) at[n] = zone.weightAt(n, feet.x, feet.y);
+      const cov = zone.coverage(MIST_EFFECT, ctx.view);
+      setGloomField({ at, mistInView: cov.max });
+      if (forcedGloom().includes(MIST_EFFECT)) { mistMask(null); return; }
+      const mx = ctx.view.width * MASK_MARGIN;
+      const my = ctx.view.height * MASK_MARGIN;
+      const rect = { x: ctx.view.x - mx, y: ctx.view.y - my, width: ctx.view.width + 2 * mx, height: ctx.view.height + 2 * my };
+      mistMask({ x: rect.x, y: rect.y, w: rect.width, h: rect.height, cols: MASK_COLS, rows: MASK_ROWS, data: zone.raster(MIST_EFFECT, rect, MASK_COLS, MASK_ROWS) });
+    };
     const safe = (fn: () => void) => {
       try {
         fn();
@@ -75,6 +109,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         // The zone field re-reads the table on the same tick: a zone that
         // re-rolled drops its memos here, ten times a second, never per frame.
         safe(() => { zone.refresh(); });
+        safe(publishGloom);
         safe(() => director.tick(ctx.env));
         // The HudBar rebuilds on re-joins; keep the demo button alive/fresh.
         safe(() => demoButton.ensure());
@@ -113,6 +148,8 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       scene.events.off(Phaser.Scenes.Events.UPDATE, onUpdate);
       for (const f of features) safe(() => f.dispose());
       zoneLines.dispose();
+      setGloomField(null);
+      safe(() => { mistMask(null); });
     });
     // QA probe surface, mirroring the game's __ml idiom.
     (window as unknown as { __mlAmbient?: unknown }).__mlAmbient = {
@@ -131,6 +168,18 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         blurred: zone.blurred(name, col, row, lvl),
         active: [...zone.activeAt(col, row, lvl)].sort(),
       }),
+      /** The mist mask as the mount last published it (unit 2): the rect it
+       *  covers, its size and a few bytes, for gates. */
+      mistMask: () => {
+        if (!zone.ruled) return null;
+        const mx = ctx.view.width * MASK_MARGIN;
+        const my = ctx.view.height * MASK_MARGIN;
+        const rect = { x: ctx.view.x - mx, y: ctx.view.y - my, width: ctx.view.width + 2 * mx, height: ctx.view.height + 2 * my };
+        const data = zone.raster(MIST_EFFECT, rect, MASK_COLS, MASK_ROWS);
+        let on = 0;
+        for (const v of data) if (v > 0) on++;
+        return { ...rect, cols: MASK_COLS, rows: MASK_ROWS, on, forced: forcedGloom().includes(MIST_EFFECT) };
+      },
       /** Settings/dev "ambient zones": read with no argument, set with a
        *  boolean, "toggle" flips. */
       zoneLines: (on?: boolean | "toggle") => zoneLines.set(on === "toggle" ? !zoneLines.on : on),

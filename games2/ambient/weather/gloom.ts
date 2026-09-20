@@ -32,6 +32,8 @@ export const DIM_OF: Readonly<Record<string, number>> = {
 };
 /** The one effect that raises mist banks. */
 export const MIST_EFFECT = "mist";
+/** Every effect that grades the light — what the zone field is read for. */
+export const GRADED: readonly string[] = [...new Set([...Object.keys(CLOUD_OF), ...Object.keys(DIM_OF), MIST_EFFECT])];
 /** Seconds of the easing roll — the same ~4s the cloud cover always used. */
 export const GLOOM_TAU_S = 4;
 /** Closer than this to the target and cloud/mist SNAP, so a scalar the shader
@@ -75,16 +77,48 @@ export function forcedGloom(): string[] {
   return [...forced].sort();
 }
 
+/* WHERE THE SKY IS GRADED FROM, since 2026-09-20 (the zone boundaries): the
+ * ZONE FIELD, not my cell's set. Ambient's mount publishes it every env tick
+ * (runtime/mount.ts): each weather's FEATHERED weight at my feet — the
+ * three-cell ramp the field draws — so cloud and gloom grade across the line
+ * as I walk it instead of stepping at the cell, and how much of the VIEW the
+ * mist's zones hold, so the banks are up while the mist is anywhere on
+ * screen and the shader's zone MASK does the spatial part (nightlight.ts,
+ * MIST_FRAG uMask). Null where zones do not rule (no doc, a forced sky): the
+ * active set grades as it always did. The forced rows union in either case. */
+export interface GloomField {
+  /** Each weather effect's weight at MY FEET, 0..1 (the field's ramp). */
+  at: Readonly<Record<string, number>>;
+  /** The mist's largest weight anywhere in the VIEW, 0..1. */
+  mistInView: number;
+}
+let field: GloomField | null = null;
+
+/** Publish the field the grades read (ambient's mount), or null for "the
+ *  active set rules". */
+export function setGloomField(f: GloomField | null): void {
+  field = f;
+}
+
+/** The field in force, for the probe and the tests. */
+export function gloomField(): GloomField | null {
+  return field;
+}
+
 /** What this active set grades to, with no easing — the join/teleport snap.
- *  The forced rows are graded with it. */
+ *  With a field in force the set is not read: the field IS the set, weighted.
+ *  The forced rows are graded with it either way. */
 export function gloomTarget(active: Iterable<string>): Gloom {
   let cloud = 0, dim = 0, mist = 0;
-  const grade = (n: string) => {
-    cloud = Math.max(cloud, CLOUD_OF[n] ?? 0);
-    dim = Math.max(dim, DIM_OF[n] ?? 0);
-    if (n === MIST_EFFECT) mist = 1;
+  const grade = (n: string, w = 1) => {
+    const k = w < 0 ? 0 : w > 1 ? 1 : w; // a weight is 0..1, whatever a caller hands over
+    cloud = Math.max(cloud, (CLOUD_OF[n] ?? 0) * k);
+    dim = Math.max(dim, (DIM_OF[n] ?? 0) * k);
+    if (n === MIST_EFFECT) mist = Math.max(mist, k);
   };
-  for (const n of active) grade(n);
+  if (field) {
+    for (const n of GRADED) grade(n, n === MIST_EFFECT ? field.mistInView : field.at[n] ?? 0);
+  } else for (const n of active) grade(n);
   for (const n of forced) grade(n);
   return { cloud, dim, mist };
 }

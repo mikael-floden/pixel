@@ -67,7 +67,19 @@ for (const z of doc.zones) {
      * still requires the weight at my feet to be ~0) */
     const others = doc.zones.filter((o) => o !== z && o.kind !== "world" && inside(o.area, standCol + 0.5, r + 0.5));
     if (others.some((o) => Object.keys(o.effects).some((e) => PRECIP.includes(e) && o.effects[e] >= 5))) continue;
-    spots.push({ id: z.id, name: z.name, kind: z.kind, edgeCol: edge, standCol, row: r, rise: rise(standCol - 1, edge + 7, r), area: (x1 - x0) * (y1 - y0), poly: z.area });
+    /* THE INSIDE STAND is not "6 cells in": a small zone's other edge can be
+     * right there (6 cells into the southern sands 2 read weight 0.63). Walk
+     * in until the 5x5 around the cell is all inside — the field is then 1. */
+    let innerCol = -1;
+    for (let n = 3; n <= 14; n++) {
+      const c = edge + n;
+      if (!land(c, r)) continue;
+      let all = true;
+      for (let dr = -2; dr <= 2 && all; dr++) for (let dc = -2; dc <= 2; dc++) if (!inside(z.area, c + dc + 0.5, r + dr + 0.5)) { all = false; break; }
+      if (all) { innerCol = c; break; }
+    }
+    if (innerCol < 0) continue;
+    spots.push({ id: z.id, name: z.name, kind: z.kind, edgeCol: edge, innerCol, standCol, row: r, rise: rise(standCol - 1, edge + 7, r), area: (x1 - x0) * (y1 - y0), poly: z.area });
     break;
   }
 }
@@ -86,6 +98,30 @@ await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null
 await page.waitForFunction(() => window.__mlAmbient?.zone && document.querySelector(".ml-tab") && window.__ml.myScreen?.() !== null, null, { timeout: 60_000 });
 await page.evaluate(() => { window.__ml.timeSpeed(0); window.__ml.timeOfDay("Day", true); });
 await page.waitForTimeout(2500);
+
+/* THE WORLD CAN BE PINNED, AND THEN THERE ARE NO ZONES AT ALL. `__ml.worldAmbient(set)`
+ * forces the room's sky on the SERVER and the server persists it in the shared
+ * clock document (WorldRoom.saveClock) — it outlives the page, so one earlier
+ * gate that forced a weather leaves every later zone gate reading `ruled:false`
+ * (coverage {any:true, mean:1, n:0}) and standing "outside" a zone that is not
+ * there. Clear it here (an empty `ambient` message re-rolls, which drops the
+ * force where zones rule) and refuse to run unruled. Local stacks only — never
+ * clear a pin the maintainer set on a live server. */
+const unpin = async () => {
+  if (!/localhost|127\.0\.0\.1/.test(URL)) return page.evaluate(() => window.__mlAmbient.zone().ruled);
+  for (let i = 0; i < 12; i++) {
+    const ruled = await page.evaluate(() => window.__mlAmbient.zone().ruled);
+    if (ruled) return true;
+    await page.evaluate(() => window.__ml.worldAmbient());
+    await page.waitForTimeout(1500);
+  }
+  return page.evaluate(() => window.__mlAmbient.zone().ruled);
+};
+if (!(await unpin())) {
+  fail("the zone field is not ruled: the world's sky is pinned (an earlier gate's __ml.worldAmbient) or it has no ambient.json");
+  await browser.close();
+  process.exit(1);
+}
 
 /* HOLD THE PHASE. A local timeOfDay is overridden by the server's next world
  * time broadcast (measured by the chimney gate, 2026-09-13), and a relocation
@@ -191,7 +227,9 @@ else {
   if (!(out.gain > 0)) fail("the row is not running with its zone in view");
   if (!(out.drawn > 0)) fail("no drops drawn with the zone on screen — 'already raining on the other side' is not there");
   if (out.w.min <= 0) fail("a drop is drawn at weight 0");
-  if (out.n < 10) fail(`only ${out.n} drops sampled — not enough to judge`);
+  // drizzle is the sparsest sheet (90 at the reference area) and a small zone
+  // covers a third of the view: five correct drops is the honest floor here
+  if (out.n < 5) fail(`only ${out.n} drops sampled — not enough to judge`);
   if (out.n && out.over / out.n < 0.9) fail(`only ${out.over} of ${out.n} drops are drawn over the zone's ground (or faint just past it)`);
   if (out.overMe > 0) fail(`${out.overMe} drops fall over my head, outside the zone`);
   if (out.outMax > 0.6 || out.outMean > 0.35) fail(`drops drawn past the line are too strong (max ${out.outMax.toFixed(2)}, mean ${out.outMean.toFixed(2)}): the step is not fading`);
@@ -201,7 +239,7 @@ else {
 
   /* ---- inside, looking out ---- */
   const inn = await withTimeout(page.evaluate(async ({ p, settle, holdDay, fill }) => {
-    window.__ml.teleport(p.edgeCol + 6 + 0.5, p.row + 0.5);
+    window.__ml.teleport(p.innerCol + 0.5, p.row + 0.5);
     if (!(await (0, eval)(settle)())) return { skip: "did not settle" };
     const day = await (0, eval)(holdDay)();
     if (day.stuck) return { skip: "could not hold the clock at Day" };
@@ -211,17 +249,27 @@ else {
     const me = window.__ml.myScreen(); const v = window.__ml.camView();
     const here = window.__mlAmbient.zone(p.name, v.x + me.sx / me.zoom, v.y + me.sy / me.zoom);
     const inside = (area, x, y) => { let inn = false; for (let i = 0, j = area.length - 1; i < area.length; j = i++) { const [xi, yi] = area[i], [xj, yj] = area[j]; if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inn = !inn; } return inn; };
-    const near = (c, r) => { for (let dr = -2; dr <= 2; dr++) for (let dc = -2; dc <= 2; dc++) if (inside(p.poly, c + dc + 0.5, r + dr + 0.5)) return true; return false; };
-    let beyond = 0; // DRAWN over ground outside the zone, past the feather
-    for (const s of info.sample) { const at = window.__ml.pickAt(s.x, s.y); if (at && !near(Math.floor(at.x / 32), Math.floor(at.y / 32))) beyond++; }
-    return { here, gain: d.gain, cover: d.cover, drawn: info.drawn, w: info.w, n: info.sample.length, beyond };
+    const near = (c, r, reach) => { for (let dr = -reach; dr <= reach; dr++) for (let dc = -reach; dc <= reach; dc++) if (inside(p.poly, c + dc + 0.5, r + dr + 0.5)) return true; return false; };
+    /* PAST THE FEATHER nothing may be drawn; INSIDE it (2-4 cells: the
+     * field's ramp plus the drop's own crossing fade) a drop may still be
+     * drawn, faint — that is the soft line he asked for, not a leak. */
+    let beyond = 0, fringe = 0, fringeMax = 0;
+    for (const s of info.sample) {
+      const at = window.__ml.pickAt(s.x, s.y);
+      if (!at) continue;
+      const c = Math.floor(at.x / 32), r = Math.floor(at.y / 32);
+      if (!near(c, r, 4)) beyond++;
+      else if (!near(c, r, 2)) { fringe++; if (s.w > fringeMax) fringeMax = s.w; }
+    }
+    return { here, gain: d.gain, cover: d.cover, drawn: info.drawn, w: info.w, n: info.sample.length, beyond, fringe, fringeMax: +fringeMax.toFixed(3) };
   }, { p: picked, settle, holdDay, fill }), 150_000, "inside");
   say(`inside: ${JSON.stringify(inn)}`);
   if (inn.skip) fail(`inside: ${inn.skip}`);
   else {
-    if (!(inn.here > 0.9)) fail(`6 cells inside the weight at my feet is ${inn.here}`);
+    if (!(inn.here > 0.9)) fail(`deep inside the weight at my feet is ${inn.here}`);
     if (!(inn.drawn > 0)) fail("no drops inside the zone");
-    if (inn.n && inn.beyond / inn.n > 0.1) fail(`${inn.beyond} of ${inn.n} drops are drawn past the line while I look out`);
+    if (inn.beyond > 0) fail(`${inn.beyond} of ${inn.n} drops are drawn PAST THE FEATHER while I look out`);
+    if (inn.fringeMax > 0.35) fail(`a drop in the fringe draws at ${inn.fringeMax} while I look out — the line leaks instead of fading`);
     await page.waitForTimeout(500);
     await page.screenshot({ path: `${OUT}/weatherzone-inside-${picked.id}.png` });
     say(`picture: ${OUT}/weatherzone-inside-${picked.id}.png`);

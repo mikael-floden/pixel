@@ -2204,6 +2204,23 @@ const BLOCK_KEY = "world-heightmap-blockmax";
 
 const ROOM_KEY = "world-room-mask";
 const MIST_KEY = "mist-field";
+/** The zone field's mist mask (ambient's raster, unit 2 of the boundaries). */
+const MASK_KEY = "mist-zone-mask";
+
+/** AMBIENT'S MIST MASK: a coarse raster of the zone field's mist weight over
+ *  a world rect (row 0 at the top, 255 = on), which the mist pass multiplies
+ *  its density by so the banks live in the mist's zone and thin across its
+ *  ramp. Published by ambient's mount every env tick through `__ml.mistMask`;
+ *  null = no mask (zones do not rule, or the row is forced). */
+export interface MistMask {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  cols: number;
+  rows: number;
+  data: Uint8Array;
+}
 const DEPTHFOG_KEY = "depthfog-field";
 
 /** MIST weather (WorldState.weather === 2) — a creeping ground fog.
@@ -2243,6 +2260,9 @@ uniform vec3 uAmbient;    // current grade — mist dims with the night
 uniform float uMist;      // eased cover 0..1
 uniform float uFlip;
 uniform sampler2D uHeight;
+uniform sampler2D uMask;  // ambient's zone mask for the mist (a coarse raster of the field, LINEAR)
+uniform vec4 uMaskRect;   // world x, y, w, h the mask covers
+uniform float uMaskOn;    // 1 = the density is multiplied by the mask; 0 = no mask bound (identical to before)
 
 float heightAt(vec2 cr) {
   if (cr.x < 0.0 || cr.y < 0.0 || cr.x >= uIsoB.y || cr.y >= uIsoB.z) return 99.0;
@@ -2350,6 +2370,11 @@ void main() {
   // Hug the ground: full in the low (lakes/open fields), gone by ~2.5 levels.
   float pool = clamp(1.0 - (z - 0.4) * 0.5, 0.0, 1.0);
   float d = clamp(banks * roil * 1.55, 0.0, 1.0) * pool * uMist;
+  // THE ZONE BOUNDARY (ambient's mask, 2026-09-20): the banks live where the
+  // mist's zone is — the field read bilinearly from a coarse raster, so the
+  // fog thins across the three-cell ramp, band by band, and never cuts. Twin:
+  // mistAt() -> maskAt(). With the mask off this line is a no-op.
+  if (uMaskOn > 0.5) d *= texture2D(uMask, (w - uMaskRect.xy) / uMaskRect.zw).r;
   // Posterized bands = stylized pixel-art fog layers, capped so the ground
   // still ghosts through the thickest bank.
   float a = floor(d * 5.0 + 0.001) / 5.0 * 0.74;
@@ -3011,6 +3036,10 @@ export class NightLights {
       uHBlockN: { type: "2f", value: { x: 1, y: 1 } },
       uSkip: { type: "1f", value: 0 },
       uHasProps: { type: "1f", value: 0 },
+      // ambient's zone mask (declared, the uSun lesson; off until a mask is bound)
+      uMask: { type: "sampler2D", value: null },
+      uMaskRect: { type: "4f", value: { x: 0, y: 0, z: 1, w: 1 } },
+      uMaskOn: { type: "1f", value: 0 },
     });
     // Elevation depth-fog shader (declared uniforms only — the uSun lesson).
     this.depthFogBase = new Phaser.Display.BaseShader("depthfog-field", DEPTHFOG_FRAG, undefined, {
@@ -3247,6 +3276,8 @@ export class NightLights {
       s.setUniform("uHBlockN.value", { x: this.blockN.x, y: this.blockN.y });
       s.setUniform("uSkip.value", this.skipOn ? 1 : 0);
     } else s.setUniform("uSkip.value", 0);
+    // the zone mask is read only with its texture bound (uMaskOn is pushed per frame)
+    if (this.mistMaskTex && this.scene.textures.exists(MASK_KEY)) s.setSampler2D("uMask", MASK_KEY, 3);
     s.setRenderToTexture(key);
     if (ls !== 1) this.scene.textures.get(key).setFilter(Phaser.Textures.FilterMode.LINEAR);
     this.mistShader = s;
@@ -4090,6 +4121,13 @@ export class NightLights {
   private curCloud = 0;
   private curAurora = 0;
   private curMist = 0;
+  /** Ambient's zone mask for the mist (unit 2 of the boundaries) — the rect
+   *  it covers, its raster (the twin reads it) and its texture. */
+  private mistMask: { x: number; y: number; w: number; h: number } | null = null;
+  private mistMaskData: Uint8Array | null = null;
+  private mistMaskTex?: Phaser.Textures.CanvasTexture;
+  private mistMaskCols = 0;
+  private mistMaskRows = 0;
 
   /** EXACT JS twin of the shader's aurora curtains (additive RGB) — tints
    * the lit copies so characters glow with the sky. Change BOTH together. */
@@ -5527,6 +5565,16 @@ export class NightLights {
       m.setUniform("uAmbient.value.x", ambient[0]);
       m.setUniform("uAmbient.value.y", ambient[1]);
       m.setUniform("uAmbient.value.z", ambient[2]);
+      // ambient's zone mask: on only with a raster published AND its texture bound
+      const mk = this.mistMask;
+      const maskOn = mk && this.mistMaskTex && this.scene.textures.exists(MASK_KEY) ? 1 : 0;
+      m.setUniform("uMaskOn.value", maskOn);
+      if (mk && maskOn) {
+        m.setUniform("uMaskRect.value.x", mk.x);
+        m.setUniform("uMaskRect.value.y", mk.y);
+        m.setUniform("uMaskRect.value.z", mk.w);
+        m.setUniform("uMaskRect.value.w", mk.h);
+      }
     }
 
     // ELEVATION DEPTH-FOG overlay — same world window as the light field. Only
@@ -5578,9 +5626,70 @@ export class NightLights {
     this.updMs += performance.now() - tUpd0;
   }
 
+  /** THE ZONE BOUNDARY OF THE MIST (ambient's, 2026-09-20 — "the mist already
+   *  exists in that zone and I walk into it, and looks good at the boundary"):
+   *  take ambient's raster of the zone field's mist weight over a world rect
+   *  and upload it as a LINEAR texture the mist pass multiplies its density
+   *  by, so the banks live in the mist's zone and thin across its ramp. Null
+   *  = no mask (zones do not rule, or the row is forced in Settings): the
+   *  pass is then pixel-identical to before the mask existed (uMaskOn 0). The
+   *  canvas is (re)made at the raster's size and refreshed in place — a
+   *  32 x 20 upload ten times a second. */
+  setMistMask(m: MistMask | null): void {
+    if (!m || !(m.cols > 0) || !(m.rows > 0) || m.data.length < m.cols * m.rows) {
+      this.mistMask = null;
+      this.mistMaskData = null;
+      return;
+    }
+    if (!this.mistMaskTex || this.mistMaskCols !== m.cols || this.mistMaskRows !== m.rows) {
+      if (this.scene.textures.exists(MASK_KEY)) this.scene.textures.remove(MASK_KEY);
+      const t = this.scene.textures.createCanvas(MASK_KEY, m.cols, m.rows);
+      if (!t) return;
+      t.setFilter(Phaser.Textures.FilterMode.LINEAR);
+      this.mistMaskTex = t;
+      this.mistMaskCols = m.cols;
+      this.mistMaskRows = m.rows;
+      this.mistShader?.setSampler2D("uMask", MASK_KEY, 3);
+    }
+    const tex = this.mistMaskTex;
+    const img = tex.context.createImageData(m.cols, m.rows);
+    const px = img.data;
+    for (let i = 0, n = m.cols * m.rows; i < n; i++) {
+      const v = m.data[i];
+      px[i * 4] = v;
+      px[i * 4 + 1] = v;
+      px[i * 4 + 2] = v;
+      px[i * 4 + 3] = 255;
+    }
+    tex.context.putImageData(img, 0, 0);
+    tex.refresh();
+    this.mistMask = { x: m.x, y: m.y, w: m.w, h: m.h };
+    this.mistMaskData = m.data;
+  }
+
+  /** The mist mask at a world point — the twin of the shader's LINEAR read:
+   *  bilinear between texel centres, clamped at the edges. 1 without a mask. */
+  maskAt(wx: number, wy: number): number {
+    const mk = this.mistMask;
+    const d = this.mistMaskData;
+    if (!mk || !d) return 1;
+    const c = this.mistMaskCols;
+    const r = this.mistMaskRows;
+    const fx = Math.min(c - 1, Math.max(0, ((wx - mk.x) / mk.w) * c - 0.5));
+    const fy = Math.min(r - 1, Math.max(0, ((wy - mk.y) / mk.h) * r - 0.5));
+    const x0 = Math.floor(fx);
+    const y0 = Math.floor(fy);
+    const x1 = Math.min(c - 1, x0 + 1);
+    const y1 = Math.min(r - 1, y0 + 1);
+    const tx = fx - x0;
+    const ty = fy - y0;
+    const at = (x: number, y: number) => d[y * c + x] / 255;
+    return (at(x0, y0) * (1 - tx) + at(x1, y0) * tx) * (1 - ty) + (at(x0, y1) * (1 - tx) + at(x1, y1) * tx) * ty;
+  }
+
   /** EXACT JS twin of the shader's mist density at a WORLD point (probes +
    * QA) — change together with MIST_FRAG. Returns 0..1 opacity BEFORE the
-   * posterize/cap (the field's raw density). */
+   * posterize/cap (the field's raw density), the zone mask included. */
   mistAt(wx: number, wy: number, mist = this.curMist): number {
     if (mist <= 0.001 || !this.tArr) return 0;
     // ground-plane inverse projection (level-0 cell; probes sample flats)
@@ -5618,7 +5727,7 @@ export class NightLights {
     const p2x = wx * 0.0074 - t * 0.03, p2y = wy * 0.0074 + t * 0.048;
     const roil = 0.55 + 0.45 * noise(p2x, p2y);
     const pool = Math.min(1, Math.max(0, 1 - (z - 0.4) * 0.5));
-    return Math.min(1, banks * roil * 1.55) * pool * mist;
+    return Math.min(1, banks * roil * 1.55) * pool * mist * this.maskAt(wx, wy);
   }
 
   /** CPU DEPTH-FOG for a POINT already at grid (col,row) + level z — the

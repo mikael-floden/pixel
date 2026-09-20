@@ -248,6 +248,24 @@ export class ZoneField {
     return { any: max > 0.001, mean: n ? sum / n : 0, max, n };
   }
 
+  /** THE FIELD OVER A RECTANGLE, AS BYTES: `cols` x `rows` samples at the
+   *  centres of a grid over `rect` (iso px), row 0 at the top, 255 = fully
+   *  on. A shader multiplies its effect by this (the mist banks, unit 2 of
+   *  the boundaries), reading it bilinearly between samples, so the raster is
+   *  coarse — half a cell per sample is more than the three-cell ramp needs.
+   *  All 255 where zones do not rule. */
+  raster(name: string, rect: { x: number; y: number; width: number; height: number }, cols: number, rows: number): Uint8Array {
+    const out = new Uint8Array(cols * rows);
+    if (!this.ruled) { out.fill(255); return out; }
+    for (let j = 0; j < rows; j++)
+      for (let i = 0; i < cols; i++) {
+        const x = rect.x + rect.width * ((i + 0.5) / cols);
+        const y = rect.y + rect.height * ((j + 0.5) / rows);
+        out[j * cols + i] = Math.round(255 * this.weightAt(name, x, y));
+      }
+    return out;
+  }
+
   debug() {
     return {
       ruled: this.ruled,

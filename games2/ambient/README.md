@@ -439,6 +439,38 @@ per effect — his process).
   daylight is re-held after every relocation, and the sheet is read once its
   pool reaches 90% of the target: the density ease advances at most 100 ms a
   frame, minutes at headless frame rates.)
+- **THE SKY GRADES ON THE FIELD, AND THE MIST WEARS A ZONE MASK** (unit 2:
+  `weather/gloom.ts setGloomField`, `runtime/mount.ts publishGloom`,
+  `client/src/nightlight.ts setMistMask` — an additive seam in the games
+  agent's mist pass, pixel-identical with the mask off). Cloud and gloom are
+  graded by each weather's FEATHERED weight at my feet (the field's
+  three-cell ramp), never by my cell's set: the sky greys over three cells of
+  walking instead of stepping at the line, and the 4 s roll still rides on
+  top. The mist scalar (`uMist`) is the mist's largest weight anywhere in the
+  VIEW, so the banks are up while a mist zone is on screen, and WHERE they
+  are is the mask: the mount rasterises the field's mist weight over the view
+  plus a quarter's margin (32 x 20 bytes, 640 memo reads a tick, `__ml.mistMask`)
+  and the pass multiplies its density by it, read LINEAR between samples,
+  before the bands — the fog thins across the ramp band by band and never
+  cuts; the JS twin `mistAt` reads the same raster bilinearly (`maskAt`). A
+  forced mist covers the view (no mask). Null where zones do not rule: the
+  room's set grades as it always did. TRAP: the banks pool on ground at level
+  <= ~2 and nowhere else (MIST_FRAG's `pool`), so a mist zone on a summit, a
+  level-4 meadow or a level-12 lake shows nothing however the mask reads — of
+  the five 90-share mist zones only the south-eastern green (level 0) can show
+  it; the gate stands there. Gate `verify-mistzone.mjs`: outside the zone with
+  mist on, the scalar is up, the twin reads 0 over every outside cell and a
+  bank somewhere deep inside, the mask is whole inside and the field takes
+  middle values on the line; inside looking out, the same from the other
+  side; two pictures.
+- **A PINNED WORLD HAS NO ZONES AT ALL, AND IT OUTLIVES THE PAGE.**
+  `__ml.worldAmbient(set)` forces the room's sky on the SERVER, and the server
+  persists it in the shared clock document, so one gate that forces a weather
+  leaves every later zone gate reading `ruled:false` — coverage
+  `{any:true, mean:1, n:0}`, every point "inside", every stand refused. The
+  three zone gates clear the pin at boot (an empty `ambient` message re-rolls,
+  which drops the force where zones rule) and refuse to run unruled, on
+  localhost only: never clear a pin the maintainer set on a live server.
 - **THE OVERLAY** (`runtime/zonelines.ts`, Settings/dev "ambient zones",
   `__mlAmbient.zoneLines(on)`): every ambient polygon in the world in the
   zone-borders recipe he approved — a 2 px line sampled per cell so it climbs

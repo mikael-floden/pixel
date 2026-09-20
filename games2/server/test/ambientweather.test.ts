@@ -23,7 +23,8 @@ import {
 } from "@nangijala/shared";
 import { conflictClosure } from "../../ambient/runtime/types.js";
 import {
-  CLOUD_OF, DIM_OF, GLOOM_SNAP, GLOOM_TAU_S, easeGloom, forceGloom, forcedGloom, gloomTarget, newGloom, snapGloom,
+  CLOUD_OF, DIM_OF, GLOOM_SNAP, GLOOM_TAU_S, easeGloom, forceGloom, forcedGloom, gloomField, gloomTarget, newGloom,
+  setGloomField, snapGloom,
 } from "../../ambient/weather/gloom.js";
 import { gloomOnlyRow } from "../../ambient/weather/gloomrow.js";
 import {
@@ -190,6 +191,37 @@ test("easeGloom reproduces WorldScene's old inline roll, frame for frame, past t
   assert.notEqual(g.dim, 0.34, "dim must NOT snap — it multiplies the whole ambient");
   assert.equal(GLOOM_TAU_S, 4); assert.equal(GLOOM_SNAP, 0.005);
   assert.deepEqual(snapGloom(newGloom(), ["heavyrain"]), { cloud: 1, dim: 0.22, mist: 0 });
+});
+
+test("with the zone field in force the sky grades by each weather's weight at my feet and the mist by its cover of the view", () => {
+  // THE BOUNDARY (2026-09-20): my cell's set is a step; the field is the ramp.
+  try {
+    assert.equal(gloomField(), null);
+    setGloomField({ at: { cloudy: 0.5, rain: 0.25 }, mistInView: 0.3 });
+    const g = gloomTarget(["storm"]); // the active set is not read while the field rules
+    assert.equal(g.cloud, 0.5, "half way across the cloudy line: half the cover (rain's 0.7 x 0.25 loses)");
+    assert.ok(Math.abs(g.dim - 0.12 * 0.25) < 1e-12, "a quarter of the rain's gloom");
+    assert.equal(g.mist, 0.3, "the mist scalar is its cover of the VIEW — the mask does the rest");
+    assert.deepEqual(snapGloom(newGloom(), ["storm"]), { cloud: 0.5, dim: 0.03, mist: 0.3 }, "a join snaps to the same");
+    // the forced rows union with the field, whole
+    forceGloom("mist", true);
+    assert.equal(gloomTarget([]).mist, 1, "a forced mist is whole");
+    forceGloom("mist", false);
+    // a field with nothing at my feet and no mist in view: clear, whatever my cell's set says
+    setGloomField({ at: {}, mistInView: 0 });
+    assert.deepEqual(gloomTarget(["storm", "mist"]), { cloud: 0, dim: 0, mist: 0 });
+    // weights are clamped to 0..1 and an effect that grades nothing (thunder) grades nothing
+    setGloomField({ at: { thunder: 1, cloudy: 2 }, mistInView: 4 });
+    assert.deepEqual(gloomTarget([]), { cloud: 1, dim: 0, mist: 1 });
+    setGloomField({ at: { cloudy: -1 }, mistInView: -2 });
+    assert.deepEqual(gloomTarget([]), { cloud: 0, dim: 0, mist: 0 });
+    // released: the active set rules again
+    setGloomField(null);
+    assert.equal(gloomTarget(["storm"]).cloud, 1, "no field: the active set");
+  } finally {
+    setGloomField(null);
+    for (const n of forcedGloom()) forceGloom(n, false);
+  }
 });
 
 test("a row forced on in Settings reaches the gloom — and releasing it cannot brighten what the world rolled", () => {

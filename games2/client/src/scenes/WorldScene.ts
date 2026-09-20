@@ -174,7 +174,7 @@ import {
 import { SceneryLitPipeline, SCENERY_LIT_PIPELINE, SCENERY_LIT_OCC, type SceneryLitShape } from "../scenerylit";
 import { ShapeMapBuilder, shapeMapKey, decodeShape, type ShapeHitbox, type ShapeScale } from "../scenerylight";
 import { buildContactStamp, contactStampKey, type ContactCut, type ContactFoot } from "../scenerycontact";
-import type { ContactStamp } from "../nightlight";
+import type { ContactStamp, MistMask } from "../nightlight";
 import {
   reservedLights,
   WORLD_LIGHT_SLOTS,
@@ -6159,6 +6159,11 @@ export class WorldScene extends Phaser.Scene {
       },
       cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.gloom.cloud, this.curSun[3]) ?? 1,
       mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.gloom.mist) ?? 0,
+      // Ambient's zone mask for the mist (the boundaries, unit 2): a raster of
+      // the zone field's mist weight the mist pass multiplies by; null = none.
+      mistMask: (m: MistMask | null) => { this.night?.setMistMask(m); return !!m; },
+      // the mask's own twin, for gates: 1 without a mask
+      mistMaskAt: (wx: number, wy: number) => this.night?.maskAt(wx, wy) ?? 1,
       // Is the ground drawn at this world/screen point open water? (snow-melt QA)
       waterAtScreen: (wx: number, wy: number) => this.isWaterAtScreen(wx, wy),
       // Is it walkable dry TOP ground (not a cliff face / water)? (ambient bird landing)

@@ -96,6 +96,30 @@ await page.waitForFunction(() => window.__mlAmbient?.zone && document.querySelec
 await page.evaluate(() => { window.__ml.timeSpeed(0); window.__ml.timeOfDay("Day", true); });
 await page.waitForTimeout(2500);
 
+/* THE WORLD CAN BE PINNED, AND THEN THERE ARE NO ZONES AT ALL. `__ml.worldAmbient(set)`
+ * forces the room's sky on the SERVER and the server persists it in the shared
+ * clock document (WorldRoom.saveClock) — it outlives the page, so one earlier
+ * gate that forced a weather leaves every later zone gate reading `ruled:false`
+ * (coverage {any:true, mean:1, n:0}) and standing "outside" a zone that is not
+ * there. Clear it here (an empty `ambient` message re-rolls, which drops the
+ * force where zones rule) and refuse to run unruled. Local stacks only — never
+ * clear a pin the maintainer set on a live server. */
+const unpin = async () => {
+  if (!/localhost|127\.0\.0\.1/.test(URL)) return page.evaluate(() => window.__mlAmbient.zone().ruled);
+  for (let i = 0; i < 12; i++) {
+    const ruled = await page.evaluate(() => window.__mlAmbient.zone().ruled);
+    if (ruled) return true;
+    await page.evaluate(() => window.__ml.worldAmbient());
+    await page.waitForTimeout(1500);
+  }
+  return page.evaluate(() => window.__mlAmbient.zone().ruled);
+};
+if (!(await unpin())) {
+  fail("the zone field is not ruled: the world's sky is pinned (an earlier gate's __ml.worldAmbient) or it has no ambient.json");
+  await browser.close();
+  process.exit(1);
+}
+
 /* ---- the seam and the field ---- */
 const st = await page.evaluate(() => {
   const s = window.__ml.ambientZoneState();
