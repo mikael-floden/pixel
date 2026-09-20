@@ -376,7 +376,10 @@ export function mountGamepadStick(page: HTMLElement) {
       pad.style.zIndex = "4";
       pad.style.left = pad.style.top = pad.style.right = "";
       pad.style[leftHand ? "left" : "right"] = `calc(var(${leftHand ? "--gv-left" : "--gv-right"}, 0px) + ${sideInset(PORT_GHOST_INSET)}px)`;
-      pad.style.bottom = `calc(var(--hud-h, 38.2dvh) + ${bottomInset(PORT_GHOST_INSET)}px)`;
+      // …and never under the keyboard's floated chat box: the higher of the
+      // rail anchor and --ml-pad-floor, which the keyboard lift publishes as
+      // the chat log's line (the .ml-kb-up rule below); 0 with no keyboard.
+      pad.style.bottom = `max(calc(var(--hud-h, 38.2dvh) + ${bottomInset(PORT_GHOST_INSET)}px), var(--ml-pad-floor, 0px))`;
       padBlur.style.display = "block";
       padBlur.style.width = padBlur.style.height = `${well}px`;
       for (const k of ["left", "top", "right", "bottom"] as const) padBlur.style[k] = pad.style[k];
@@ -553,6 +556,21 @@ function injectStyles() {
      still snap. */
   :root.ml-subanim .ml-pad-stick,:root.ml-subanim .ml-pad-blur{
     transition:left .25s ease,top .25s ease,bottom .25s ease}
+  /* THE KEYBOARD LIFT (maintainer 2026-09-20, Chat tab, keys up: "the right
+     thumbstick is also not moved up to make room for the input the way the
+     chat-messages do"): hud.ts floats the focused chat box above the keys and
+     steps the chat log onto the line above it (--ml-inputlift + 56px). The
+     stick takes that same line — its portrait bottom is max(rail anchor,
+     --ml-pad-floor), and the floor is published here, only under .ml-kb-up,
+     so with no keyboard it is exactly the rail anchor. The glide is the log's
+     own .15s ease-out, declared for the lift and for the .ml-kb-drop window
+     hud.ts holds open while the box returns; outside the two the stick still
+     snaps, which rotation needs. Landscape anchors the stick by top and is
+     untouched. */
+  :root.ml-kb-up{--ml-pad-floor:calc(var(--ml-inputlift, 0px) + 56px)}
+  :root.ml-kb-up .ml-pad-stick,:root.ml-kb-up .ml-pad-blur,
+  :root.ml-kb-drop .ml-pad-stick,:root.ml-kb-drop .ml-pad-blur{
+    transition:left .25s ease,top .25s ease,bottom .15s ease-out}
   /* the WELL — the basin. Its own element (not the frame's background) so the
      cap can be MORE opaque than it: a parent's group opacity can only ever
      make a child fainter (child effective = parent x child). */

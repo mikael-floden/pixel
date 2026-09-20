@@ -153,6 +153,7 @@ try {
              barH: h(".ml-chat-inputbar"), logH: h(".ml-chat-log"),
              chatlogBottom: cssBottom(".ml-chatlog"), // the on-screen "game-view" chat overlay
              clockTop: top(".ml-clock"), wikibtnTop: top(".ml-wikibtn"), // top-right under the XP chip since 2026-09-17
+             stickBottom: (() => { const e = document.querySelector(".ml-pad-stick"); return e ? Math.round(window.innerHeight - e.getBoundingClientRect().bottom) : null; })(),
              firstLine: first ? Math.round(first.getBoundingClientRect().top) : null };
   });
 
@@ -173,14 +174,20 @@ try {
   // the box arms pinned at its resting spot, then a rAF raises --ml-kb to the
   // estimate and the 150ms bottom-transition rides up. Headless software-GL
   // frames run ~1s, so wait until the rect has actually reached the CSS target
-  // (bottom = --ml-kb + 10) with the estimate (≥ KB_MIN 80) in place.
+  // (bottom = --ml-kb + 20, KB_GAP) with the estimate (≥ KB_MIN 80) in place.
   await page.waitForFunction(() => {
     const el = document.querySelector(".ml-chat-input");
     if (!el) return false;
     const kb = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ml-kb")) || 0;
     if (kb < 80) return false; // still at the initial pin — the raise hasn't landed
-    return Math.abs(window.innerHeight - (kb + 10) - el.getBoundingClientRect().bottom) < 2;
+    return Math.abs(window.innerHeight - (kb + 20) - el.getBoundingClientRect().bottom) < 2;
   }, { timeout: 20000 }).catch(() => {}); // a genuine miss fails the geometry checks below
+  // …and the ghost stick's own .15s glide onto the log's line has landed.
+  await page.waitForFunction(() => {
+    const st = document.querySelector(".ml-pad-stick"), lg = document.querySelector(".ml-chatlog");
+    if (!st || !lg) return true;
+    return Math.abs((window.innerHeight - st.getBoundingClientRect().bottom) - parseFloat(getComputedStyle(lg).bottom)) < 2;
+  }, { timeout: 20000 }).catch(() => {});
   const lifted = await page.evaluate(() => {
     const el = document.querySelector(".ml-chat-input");
     const cs = getComputedStyle(el), r = el.getBoundingClientRect();
@@ -208,6 +215,9 @@ try {
         const r = e.getBoundingClientRect(); return Math.round(r.left + parseFloat(getComputedStyle(e).maxWidth)); })(),
       placeholder: getComputedStyle(document.querySelector(".ml-chat-input"), "::placeholder").color,
       firstLine: (() => { const e = document.querySelector(".ml-chat-log > *"); return e ? Math.round(e.getBoundingClientRect().top) : null; })(),
+      // the ghost stick: px above the viewport bottom, and its declared transition under the lift
+      stickBottom: (() => { const e = document.querySelector(".ml-pad-stick"); return e ? Math.round(window.innerHeight - e.getBoundingClientRect().bottom) : null; })(),
+      stickTr: (() => { const e = document.querySelector(".ml-pad-stick"); if (!e) return null; const c = getComputedStyle(e); return `${c.transitionProperty} ${c.transitionDuration}`; })(),
     };
   });
   // (2) the box actually left its bottom slot and sits ON SCREEN, clear of the keyboard
@@ -240,6 +250,21 @@ try {
   frameBefore.chatlogBottom != null && lifted.chatlogBottom != null && lifted.chatlogBottom > frameBefore.chatlogBottom + 20
     ? ok(`game-view chat log lifted to make room (bottom ${frameBefore.chatlogBottom} -> ${lifted.chatlogBottom})`)
     : fail(`game-view chat log not lifted: bottom ${frameBefore.chatlogBottom} -> ${lifted.chatlogBottom}`);
+  // (4b) THE GHOST STICK TAKES THE LOG'S LINE (maintainer 2026-09-20: "the
+  //      right thumbstick is also not moved up to make room for the input the
+  //      way the chat-messages do"): its bottom is the log's CSS bottom, up
+  //      from its rail anchor, and it declares the log's .15s glide for it.
+  lifted.stickBottom != null && Math.abs(lifted.stickBottom - lifted.chatlogBottom) <= 2 && lifted.stickBottom > frameBefore.stickBottom + 20
+    ? ok(`ghost stick lifted onto the chat log's line (bottom ${frameBefore.stickBottom} -> ${lifted.stickBottom}, log ${lifted.chatlogBottom})`)
+    : fail(`ghost stick not on the log's line: bottom ${frameBefore.stickBottom} -> ${lifted.stickBottom}, log at ${lifted.chatlogBottom}`);
+  lifted.stickTr && /bottom|all/.test(lifted.stickTr) && /0\.15s/.test(lifted.stickTr)
+    ? ok(`…and glides there on the log's curve (${lifted.stickTr})`)
+    : fail(`stick has no .15s bottom transition under the lift (${lifted.stickTr})`);
+  // (4c) the box sits KB_GAP (20px) above the keys, not 10 (maintainer
+  //      2026-09-20: "a little bit to close to my keyboard").
+  Math.abs(lifted.vh - lifted.rectBottom - (parseFloat(lifted.kb) + 20)) <= 2
+    ? ok(`box floats 20px above the keys (bottom ${lifted.vh - lifted.rectBottom} = --ml-kb ${lifted.kb} + 20)`)
+    : fail(`box clearance ${lifted.vh - lifted.rectBottom}px vs --ml-kb ${lifted.kb} + 20`);
   // …while the Wiki row and the time-of-day pill DON'T move: since 2026-09-17
   //     they are top-anchored under the XP chip in portrait (row first, pill
   //     one step under it), nowhere near the keys — the keyboard lift's
@@ -273,8 +298,14 @@ try {
   reflowed.length === 0
     ? ok(`chat page didn't reflow (row=${lifted.barH}px log=${lifted.logH}px, lines put)`)
     : fail(`chat page reflowed when the input floated: ${reflowed.map((k) => `${k} ${frameBefore[k]}->${lifted[k]}`).join(", ")}`);
-  // blur → the box returns to its HUD slot
-  await page.evaluate(() => document.querySelector(".ml-chat-input").blur());
+  // blur → the box returns to its HUD slot; in the same task the drop window
+  // (.ml-kb-drop) opens so the stick's glide DOWN is still declared.
+  const dropWin = await page.evaluate(() => {
+    document.querySelector(".ml-chat-input").blur();
+    const st = document.querySelector(".ml-pad-stick");
+    return { drop: document.documentElement.classList.contains("ml-kb-drop"), up: document.documentElement.classList.contains("ml-kb-up"),
+             stickTr: st ? getComputedStyle(st).transitionProperty + " " + getComputedStyle(st).transitionDuration : null };
+  });
   await page.waitForTimeout(150);
   const restored = await page.evaluate(() => {
     const cs = getComputedStyle(document.querySelector(".ml-chat-input"));
@@ -282,6 +313,19 @@ try {
   });
   restored.position !== "fixed" && !restored.up
     ? ok("input returns to the HUD when the box loses focus") : fail(`not restored on blur: ${JSON.stringify(restored)}`);
+  dropWin.drop && !dropWin.up && dropWin.stickTr && /bottom|all/.test(dropWin.stickTr)
+    ? ok(`the drop window keeps the stick's glide declared while it returns (${dropWin.stickTr})`)
+    : fail(`no drop window on blur: ${JSON.stringify(dropWin)}`);
+  // …and the stick is back on its rail anchor, the window closed behind it.
+  const back = await page.waitForFunction((want) => {
+    const st = document.querySelector(".ml-pad-stick");
+    if (!st) return true;
+    const b = window.innerHeight - st.getBoundingClientRect().bottom;
+    return Math.abs(b - want) < 2 && !document.documentElement.classList.contains("ml-kb-drop");
+  }, frameBefore.stickBottom, { timeout: 5000 }).then(() => true).catch(() => false);
+  back ? ok(`ghost stick back on its rail anchor after the drop (${frameBefore.stickBottom}px up), the drop window closed`)
+       : fail(`ghost stick did not return to ${frameBefore.stickBottom}px up after the drop: ${JSON.stringify(await page.evaluate(() => ({
+           b: window.innerHeight - document.querySelector(".ml-pad-stick")?.getBoundingClientRect().bottom, drop: document.documentElement.classList.contains("ml-kb-drop") })))}`);
 
   // A tap OUTSIDE the floating box retires it — the only way to hide the box on a
   // no-geometry device after the keyboard is dismissed with ▼/Back (which doesn't
@@ -410,6 +454,40 @@ try {
   cap.count === 1000 ? ok(`history capped at exactly 1000 lines`) : fail(`line count ${cap.count} (want 1000)`);
   !cap.hasFirst ? ok("oldest lines dropped past the cap") : fail("oldest line survived the cap");
   cap.hasBulkLast && !cap.hasBulk0 ? ok("newest kept, oldest bulk dropped") : fail(`cap window wrong (last=${cap.hasBulkLast} bulk0=${cap.hasBulk0})`);
+
+  // ── AN ARRIVING LINE IS APPENDED, NOT A REBUILD (maintainer 2026-09-20, the
+  //    Chat tab open while the keyboard lagged): with the tab shown at the cap,
+  //    the last row keeps its identity through five pushes (a rebuild would
+  //    re-create it), the count holds at 1000, the newest line is last, the
+  //    first row is still a divider, and a line from a new day brings its own
+  //    divider — for a fraction of the rebuild's time. ──
+  const app = await page.evaluate(() => {
+    const log = document.querySelector(".ml-chat-log");
+    const marked = log.lastElementChild;
+    const t0 = performance.now();
+    for (let i = 0; i < 5; i++) window.__ml.chatPush("App", `append-${i}`, Date.now());
+    const ms = +(performance.now() - t0).toFixed(1);
+    const rows = [...log.children];
+    const t1 = performance.now();
+    window.__ml.chatPush("App", "next-day line", Date.now() + 86400000);
+    const rows2 = [...log.children];
+    return {
+      ms, kept: log.contains(marked),
+      count: rows.filter((r) => r.classList.contains("ml-chat-line")).length,
+      lastText: rows[rows.length - 1].textContent, firstIsDay: rows[0].classList.contains("ml-chat-day"),
+      count2: rows2.filter((r) => r.classList.contains("ml-chat-line")).length,
+      dayBeforeLast: rows2[rows2.length - 2].classList.contains("ml-chat-day"), lastText2: rows2[rows2.length - 1].textContent,
+      firstIsDay2: rows2[0].classList.contains("ml-chat-day"), t1: +(performance.now() - t1).toFixed(1),
+    };
+  });
+  app.kept ? ok(`an arriving line is appended — the last row survived five pushes (${app.ms} ms for five at the cap)`)
+           : fail(`the log was rebuilt on an arriving line (last row re-created; ${app.ms} ms for five)`);
+  app.count === 1000 && /append-4/.test(app.lastText) && app.firstIsDay
+    ? ok("…the cap holds at 1000, the newest is last, the first row is still a divider")
+    : fail(`append broke the log's shape: count=${app.count} last="${app.lastText}" firstIsDay=${app.firstIsDay}`);
+  app.count2 === 1000 && app.dayBeforeLast && /next-day line/.test(app.lastText2) && app.firstIsDay2
+    ? ok("…and a line from a new day brings its divider with it")
+    : fail(`new-day append wrong: count=${app.count2} dividerBefore=${app.dayBeforeLast} last="${app.lastText2}" firstIsDay=${app.firstIsDay2}`);
 
   // ── scroll preservation: scrolled UP reading history, an arriving line must
   //    NOT yank the view to the top (the rebuild wipe resets scrollTop to 0). ──

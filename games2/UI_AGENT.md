@@ -169,7 +169,12 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   widths, the light palette's beige floor, and the backpack grid: exactly
   `INV_MAX_SLOTS` square cells — an empty cell is a free slot, a full pack
   shows none — empty / one-item / full packs driven through `__mlHud.inv`,
-  the real pack put back).
+  the real pack put back),
+  `scripts/verify-chatpage.mjs` (the Chat page: the history's rows, cap,
+  dividers and scroll hold, an arriving line APPENDED rather than rebuilt,
+  and the keyboard lift — the box 20px above the keys, the log and the ghost
+  stick on the line above it with their .15s glides both ways, the game, the
+  HUD and the top-right stack unmoved).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -429,6 +434,41 @@ from the games agent), #18 (title/landing screen).
   patched from here. Gate: `verify-hudtabs` (the exact count at three
   widths; empty / one / full packs through the `__mlHud.inv` probe in one
   synchronous evaluate, the real pack put back).
+- **THE KEYBOARD MOVES THE CHAT BOX, THE LOG AND THE STICK, AND NOTHING
+  ELSE — AND IT NEVER RE-LAYS OUT THE GAME** (maintainer 2026-09-20, two
+  Chat-tab screenshots: "open and close the keyboard the game lags … the
+  right thumbstick is also not moved up to make room for the input the way
+  the chat-messages do … the input box is a little bit to close to my
+  keyboard … when I close the keyboard the game lags like crazy").
+  `hud.ts mountChatKeyboardLift` floats the focused box `KB_GAP` (20px) above
+  the keys — 10 read as ~2 on his phone, the reported keyboard top sitting
+  under the keys' visible edge — and publishes `--ml-inputlift`; the chat log
+  (hud.ts) and the ghost stick (gamepad.ts: portrait `bottom` is
+  `max(rail anchor, --ml-pad-floor)`, the floor `--ml-inputlift + 56px`
+  under `.ml-kb-up`) take the line above it on the same .15s ease-out, the
+  stick's glide DOWN carried by the `.ml-kb-drop` window `drop()` holds for
+  220 ms (outside the two windows the stick snaps, which rotation needs). THE
+  LIFT'S OWN WORK IS FLOORED: `--ml-kb` is an inherited custom property on
+  `:root`, so each write recalculates the whole document (measured in the
+  harness: 1.2 ms with the Chat page hidden, 7 ms with its 1000-line history
+  shown — several times that on a phone) — never the same value twice, the
+  tracking writes coalesced to one per frame, the rail floor read from
+  `hudHpx` (applyLayout's px) instead of a computed-style read per poll. And
+  a browser that shrinks the LAYOUT viewport for its keys (Firefox, Samsung
+  Internet, older Chrome; not Chrome's resizes-visual or the VirtualKeyboard
+  overlay) cannot resize the canvas: the HUD's resize listener holds a
+  keyboard-shaped resize (same width) while a box is lifted and applies it
+  once at the drop, so `--hud-h-inv` stays and `#game` never changes size
+  (a canvas resize is the one ~2 s stall this codebase knows, and it would
+  fire on open AND close). THE CHAT PAGE APPENDS: `pushChat` → `appendChat`
+  adds one row (a day divider when the day turns) and trims the top past the
+  cap, keeping the first-row-is-a-divider rule; `renderChat` (the wipe and
+  rebuild, 43 ms per line at the cap in the harness) runs only when the tab
+  opens. Both build rows through `chatRow`/`chatDivider`. Measured in the
+  harness before the round: focus and blur add NO canvas resize, NO layout
+  run and NO viewport event over its baseline, so what remains on his phone
+  is the browser's own keyboard work plus whatever the DOM costs per write —
+  which is what this round cut. Gate: `verify-chatpage`.
 - **A PAGE'S SUB-TABS ARE A STRIP THE RAIL GROWS BY, NEVER THE PAGE SHRINKS
   BY** (maintainer 2026-09-19: "the subsection appears by sliding up the menu
   over it so the menu content area is just as big as the menu inner area we
@@ -848,7 +888,8 @@ from the games agent), #18 (title/landing screen).
   row directly under the chip in portrait and in landscape with either hand
   (the left hand joined last, on his report), the pill top-centred and no
   longer in the stack. The keyboard lift (`hud.ts :root.ml-kb-up`) writes
-  `bottom` on the chat log and the chat input only; the row's own lift rules
+  `bottom` on the chat log, the chat input and (through `--ml-pad-floor`,
+  gamepad.ts) the ghost stick, and nothing else; the row's own lift rules
   went with its last bottom anchor, so the keys move nothing of it —
   `verify-chatpage`
   AND `verify-wikibtn` assert the row and the pill stay put (the latter still

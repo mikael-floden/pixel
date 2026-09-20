@@ -118,8 +118,10 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
     input, the pill, the keyboard-floated chat box. verify-chat asserts the
     chat margin against the PILL's own rect, not a literal.
   - KEYBOARD: the phone keyboard covers both bottom corners; on chat focus
-    hud.ts lifts log AND pill onto one line above the floated input
-    (`:root.ml-kb-up`, `--ml-inputlift + 56`, .15s transitions). The lift
+    hud.ts floats the box 20px above the keys and lifts the log AND the ghost
+    stick onto one line above it (`:root.ml-kb-up`, `--ml-inputlift + 56`,
+    .15s transitions both ways; the pill is top-centred and no longer
+    rides). The lift
     recognises BOTH chat boxes (`.ml-chat-input` and the in-world
     `.ml-chatinput`; the latter is a direct child of `<body>`, so armLift()
     skips its hold-the-row-open step). Placeholders hide on focus. Gate:

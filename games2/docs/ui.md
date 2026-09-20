@@ -111,6 +111,21 @@ match logic `server/src/chess.ts`; dialog `client/src/chessui.ts`; gate
   six rows of five in portrait, ten of three in landscape, the page scrolls
   the rest. Gate: `verify-hudtabs` (exact count at three widths; empty / one
   / full packs through `__mlHud.inv`, the real pack put back).
+- **The keyboard lift moves the chat box, the log and the ghost stick, and
+  nothing else** (hud.ts `mountChatKeyboardLift`; maintainer 2026-09-20).
+  The box floats `KB_GAP` 20px above the keys (10 read as ~2 on his phone);
+  the log and the stick take the line above it (`--ml-inputlift + 56px`; the
+  stick's portrait `bottom` is `max(rail anchor, --ml-pad-floor)`, gamepad.ts)
+  on the same .15s ease-out both ways (`.ml-kb-drop`, a 220 ms window from
+  `drop()`, carries the stick's glide down). The lift's work is floored —
+  one root write per frame, never the same value twice, the rail floor from
+  applyLayout's px — because a `--ml-kb` write recalculates the whole
+  document (1.2 ms hidden Chat page / 7 ms with 1000 lines shown, harness).
+  A keyboard-shaped resize (same width) is HELD while a box is lifted and
+  applied at the drop, so a browser that shrinks the layout viewport for its
+  keys never resizes the canvas. The Chat page APPENDS an arriving line
+  (`appendChat`) and rebuilds only when the tab opens (43 ms per line at the
+  cap otherwise). Gate: `verify-chatpage`.
 
 ## Settings sub-tabs (the strip the rail grows by)
 
@@ -206,7 +221,8 @@ GROWS BY"); this holds the mechanics and the numbers.
   on EVERY tab, the gamepad tab included since 2026-09-19 (a HUD rebuild
   clears strays) — floating in the game view's bottom corner on the thumb's
   side (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
-  marked on two device screenshots; PORT_GHOST_INSET 10px in portrait), plus
+  marked on two device screenshots; PORT_GHOST_INSET 10px in portrait, lifted
+  to the chat log's line while the keyboard is up — `--ml-pad-floor`), plus
   his fine-tune (controls.ts stickNudge; gamepad.ts stickNudgeRange = well/4
   away from the corner, the inset toward it, per hand and orientation — the
   dials span exactly that, margin floored at 0 under it). The gamepad page

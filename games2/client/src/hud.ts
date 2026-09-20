@@ -286,7 +286,24 @@ export function mountPageFrame() {
   applyLayout();
   if (!layoutHooked) {
     layoutHooked = true;
-    window.addEventListener("resize", applyLayout);
+    // THE KEYBOARD NEVER RE-LAYS OUT THE GAME (maintainer 2026-09-20: "when I
+    // close the keyboard the game lags like crazy"). A browser that shrinks
+    // the LAYOUT viewport for its keys (Chrome's resizes-visual and the
+    // VirtualKeyboard overlay do not; Firefox, Samsung Internet and older
+    // Chrome do) fires this on open and on close, and applyLayout would then
+    // move the rail into a half-height window and resize the canvas — a
+    // framebuffer realloc plus a whole-world redraw, ~2 s, twice. While a chat
+    // box is lifted, a resize that keeps the WIDTH (a keyboard's shape; a
+    // rotation changes it) is held and applied once at the drop, on the
+    // settled viewport. The px layout vars stay, so #game keeps its size and
+    // main.ts's fitCanvas finds nothing to resize.
+    window.addEventListener("resize", () => {
+      if (document.documentElement.classList.contains("ml-kb-up") && window.innerWidth === layoutW) {
+        kbHeldResize = true;
+        return;
+      }
+      applyLayout();
+    });
     window.addEventListener("ml-hand", applyLayout);
   }
 }
@@ -506,10 +523,17 @@ function subStripHeight(land: boolean): number {
   return row ? Math.round(row.getBoundingClientRect().height) : 0;
 }
 
+/** The last laid-out viewport width, the rail's px height and a resize held
+ *  back while the keys are up — the resize listener above and the keyboard
+ *  lift (railFloor, drop) read them. */
+let layoutW = 0;
+let hudHpx = 0;
+let kbHeldResize = false;
 function applyLayout() {
   const root = document.documentElement;
   const w = window.innerWidth;
   const h = window.innerHeight;
+  layoutW = w;
   const land = root.classList.contains("ml-ingame") && touchDevice() && w > h;
   const left = getHand() === "left";
   // ORIENTATION changes run the flip (beginFlip above: veil + one canvas
@@ -539,6 +563,7 @@ function applyLayout() {
     // The game view runs the full height: consumers of --hud-h ("px above
     // the HUD rail") get 0 and land on the bottom edge, which is exactly
     // where the chat overlay and the clock pill belong in landscape.
+    hudHpx = 0;
     root.style.setProperty("--hud-h", `0px`);
     root.style.setProperty("--hud-h-inv", `${h}px`);
     root.style.setProperty("--gv-left", `${left ? 0 : menuW}px`);
@@ -556,6 +581,7 @@ function applyLayout() {
     // covered for as long as the strip is open.
     const subH = subStripHeight(false);
     const hudH = portraitHudHeight(w, h) + subH;
+    hudHpx = hudH;
     root.style.setProperty("--menu-w", `0px`);
     root.style.setProperty("--sub-h", `${subH}px`);
     root.style.setProperty("--hud-h", `${hudH}px`);
@@ -643,6 +669,8 @@ export class HudBar {
   private chatMsgs: { name: string; text: string; t: Date }[] = [];
   private chatLogEl: HTMLElement | null = null;
   private chatShown = false; // is the Chat tab currently visible? (skip renders otherwise)
+  private chatLastDay = ""; // the day the log's last divider names (appendChat)
+  private chatLines = 0; // .ml-chat-line rows in the log right now (appendChat's trim)
 
   constructor(private actions: HudActions) {
     injectStyles();
@@ -2167,10 +2195,45 @@ export class HudBar {
   }
 
   pushChat(name: string, text: string, t: Date = new Date()) {
-    this.chatMsgs.push({ name, text, t });
+    const m = { name, text, t };
+    this.chatMsgs.push(m);
     if (this.chatMsgs.length > CHAT_HISTORY_MAX)
       this.chatMsgs.splice(0, this.chatMsgs.length - CHAT_HISTORY_MAX);
-    if (this.chatShown) this.renderChat(false);
+    if (this.chatShown) this.appendChat(m);
+  }
+
+  /** ONE ARRIVING LINE IS ONE APPENDED ROW, NOT A REBUILD (maintainer
+   *  2026-09-20, the Chat tab open while he tested the keyboard: "the game
+   *  lags"). renderChat wipes and re-creates every row — 43 ms per line at
+   *  the 1000-line cap in the harness, several times that on a phone, paid
+   *  for every "Time of day" and every player's line while the tab is open.
+   *  This appends the row (and a day divider when the day turns), then trims
+   *  rows off the top until the log holds exactly chatMsgs, keeping the
+   *  first-row-is-a-divider rule renderChat gives. Scroll anchoring keeps a
+   *  reader's place through the trim; the newest is followed only when the
+   *  view was already at the bottom, as before. */
+  private appendChat(m: { name: string; text: string; t: Date }) {
+    const log = this.chatLogEl;
+    if (!log) return;
+    const nearBottom = log.scrollHeight - log.scrollTop - log.clientHeight < 48;
+    const day = fmtDay(m.t);
+    if (day !== this.chatLastDay) {
+      this.chatLastDay = day;
+      log.appendChild(chatDivider(day));
+    }
+    log.appendChild(chatRow(m));
+    this.chatLines++;
+    // Past the cap the oldest rows go, dividers among them included — a day
+    // whose lines all went takes its divider with it.
+    while (this.chatLines > this.chatMsgs.length && log.firstElementChild) {
+      const first = log.firstElementChild;
+      if (first.classList.contains("ml-chat-line")) this.chatLines--;
+      first.remove();
+    }
+    const first = log.firstElementChild;
+    if (first && first.classList.contains("ml-chat-line") && this.chatMsgs[0])
+      log.insertBefore(chatDivider(fmtDay(this.chatMsgs[0].t)), first);
+    if (nearBottom) log.scrollTop = log.scrollHeight;
   }
 
   /** Rebuild the Chat log from the history: one line per message (HH:MM time +
@@ -2195,18 +2258,12 @@ export class HudBar {
         // New day (and always before the first message, since lastDay starts "")
         // → a divider that looks like the Settings section header.
         lastDay = day;
-        const div = mk("div", "ml-chat-day");
-        div.textContent = day;
-        log.appendChild(div);
+        log.appendChild(chatDivider(day));
       }
-      const line = mk("div", "ml-chat-line");
-      const time = mk("span", "ml-chat-time");
-      time.textContent = fmtTime(m.t);
-      const who = mk("span", "ml-chat-who");
-      who.textContent = `${m.name}: `;
-      line.append(time, who, document.createTextNode(m.text));
-      log.appendChild(line);
+      log.appendChild(chatRow(m));
     }
+    this.chatLastDay = lastDay;
+    this.chatLines = this.chatMsgs.length;
     log.scrollTop = toBottom || nearBottom ? log.scrollHeight : keep;
   }
 }
@@ -2222,6 +2279,23 @@ function fmtDay(d: Date): string {
 /** Local wall-clock time, e.g. "14:27" — the per-message timestamp. */
 function fmtTime(d: Date): string {
   return `${p2(d.getHours())}:${p2(d.getMinutes())}`;
+}
+/** One history row: HH:MM, the name, the text. renderChat and appendChat build
+ *  rows through this alone, so the two can never drift. */
+function chatRow(m: { name: string; text: string; t: Date }): HTMLElement {
+  const line = mk("div", "ml-chat-line");
+  const time = mk("span", "ml-chat-time");
+  time.textContent = fmtTime(m.t);
+  const who = mk("span", "ml-chat-who");
+  who.textContent = `${m.name}: `;
+  line.append(time, who, document.createTextNode(m.text));
+  return line;
+}
+/** The day divider — the Settings section-header look. */
+function chatDivider(day: string): HTMLElement {
+  const div = mk("div", "ml-chat-day");
+  div.textContent = day;
+  return div;
 }
 
 /** Injected dials that are PLAYER settings (by the label they print) and so
@@ -2632,6 +2706,13 @@ function mk(tag: string, cls: string): HTMLElement {
 
 // Chat-input keyboard lift (see mountChatKeyboardLift).
 const KB_MIN = 80; // below this: no keyboard (address-bar-sized jitter)
+/** The floated box's clearance above the keys (--ml-inputlift = --ml-kb + this).
+ *  20, not 10 (maintainer 2026-09-20, keyboard up: "the input box is a little
+ *  bit to close to my keyboard, would be nice with a small margin here"): his
+ *  phone showed ~2 of the intended 10 — the reported keyboard top sits under
+ *  the keys' visible edge by most of it — and a small visible margin is the
+ *  ask, so the number moved rather than the guesswork. */
+const KB_GAP = 20;
 // Assumed keyboard height when nothing reports one. Erring HIGH is nearly free
 // (the box floats a little above the keys) while erring low HIDES the box, so
 // these lean generous: half the viewport, but never less than 0.9×WIDTH — a
@@ -2655,6 +2736,9 @@ let kbInit = false;
  *    default already overlays on the maintainer's phone; `overlaysContent = true`
  *    reinforces it where the API exists. Once the box is floated ABOVE the
  *    keyboard the browser has nothing to reveal, so it has no reason to pan.
+ *    And a browser that shrinks the layout viewport anyway cannot re-lay out
+ *    the game: a keyboard-shaped resize is held while the box is lifted and
+ *    applied at the drop (the resize listener at the HUD mount).
  *
  * 2. THE INPUT MUST RISE — even when the browser won't say how tall the keyboard
  *    is. That was the real bug: earlier tries gated the lift on a reported height
@@ -2718,14 +2802,16 @@ function mountChatKeyboardLift() {
       Math.round(probe.getBoundingClientRect().height),
       vv ? Math.round(window.innerHeight - vv.height - vv.offsetTop) : 0,
     );
-  // The box floats at --ml-kb + 10; to CLEAR the frame's bottom rail it must land
-  // above the rail's visible top (--hud-h up from the bottom), so --ml-kb is
-  // floored at hud-h + 2 (⇒ box bottom ≥ hud-h + 12). Flooring HERE (not in CSS)
+  // The box floats at --ml-kb + KB_GAP; to CLEAR the frame's bottom rail it must
+  // land above the rail's visible top (--hud-h up from the bottom), so --ml-kb is
+  // floored at hud-h + 2 (⇒ box bottom ≥ hud-h + 22). Flooring HERE (not in CSS)
   // keeps the initial arm at the box's resting spot, so it GLIDES up from rest
   // instead of snapping to the rail (maintainer: "pressed up by the keyboard… not
-  // snap"). Read live so it tracks the frame across resizes.
-  const railFloor = () =>
-    Math.round(parseFloat(getComputedStyle(root).getPropertyValue("--hud-h")) || 0) + 2;
+  // snap"). The rail height is the px applyLayout last published (hudHpx), read
+  // from the module and not from getComputedStyle: this runs from a 100 ms poll
+  // and from every viewport event while the keys are up, and a computed-style
+  // read there forces a style recalc each time.
+  const railFloor = () => Math.round(hudHpx) + 2;
   const kbHeight = () => {
     const r = reported();
     if (r >= KB_MIN) { sawReport = true; return Math.max(r, railFloor()); }
@@ -2741,22 +2827,63 @@ function mountChatKeyboardLift() {
     );
     return Math.max(est, railFloor());
   };
-  const setKb = (px: number) => root.style.setProperty("--ml-kb", `${px}px`);
+  // --ml-kb is an inherited custom property on :root, so every write is a style
+  // recalc of the whole document (1.2 ms with the Chat page hidden, 7 ms with its
+  // 1000-line history shown, in the harness — several times that on a phone).
+  // So: never the same value twice, and while the keys are up at most one write
+  // per frame — the tracking writes (sync) coalesce onto the next frame; the pin,
+  // the raise and the drop stay immediate so the glide starts from rest.
+  let kbPx = -1;
+  let kbRaf = 0;
+  let kbNext = 0;
+  const writeKb = (px: number) => {
+    if (px === kbPx) return;
+    kbPx = px;
+    root.style.setProperty("--ml-kb", `${px}px`);
+  };
+  const setKb = (px: number) => {
+    if (kbRaf) cancelAnimationFrame(kbRaf);
+    kbRaf = 0;
+    writeKb(px);
+  };
+  const setKbSoon = (px: number) => {
+    kbNext = px;
+    if (!kbRaf)
+      kbRaf = requestAnimationFrame(() => {
+        kbRaf = 0;
+        writeKb(kbNext);
+      });
+  };
   let barEl: HTMLElement | null = null; // the HUD row the input floats out of
+  let dropT = 0;
   const drop = () => {
     lifted = false;
     root.classList.remove("ml-kb-up");
+    // THE DROP WINDOW: the ghost stick declares its bottom transition only under
+    // .ml-kb-up and .ml-kb-drop (gamepad.ts — outside them it snaps, which is
+    // what rotation needs), so the class carrying its glide DOWN is held for
+    // the glide's own length.
+    root.classList.add("ml-kb-drop");
+    window.clearTimeout(dropT);
+    dropT = window.setTimeout(() => root.classList.remove("ml-kb-drop"), 220);
     setKb(0);
     if (barEl) {
       barEl.style.height = "";
       barEl = null;
+    }
+    // A keyboard-shaped resize that arrived while the keys were up was held
+    // back (the resize listener at the HUD mount): lay out once, now, on the
+    // settled viewport.
+    if (kbHeldResize) {
+      kbHeldResize = false;
+      applyLayout();
     }
   };
   const armLift = () => {
     if (!input) return;
     // Pin the input where it currently rests (fixed at the same spot, no jump)…
     const gap = Math.max(0, Math.round(window.innerHeight - input.getBoundingClientRect().bottom));
-    setKb(Math.max(0, gap - 10));
+    setKb(Math.max(0, gap - KB_GAP));
     // …and hold its HUD row open at the height it has NOW: going position:fixed
     // takes the box out of flow, which would otherwise collapse the row and slide
     // the chat log's lines down. ONLY the input may move (maintainer). The
@@ -2788,7 +2915,7 @@ function mountChatKeyboardLift() {
     const open = r >= KB_MIN || (!sawReport && touchDevice());
     if (open) {
       if (!lifted) armLift();
-      else setKb(kbHeight()); // track the keyboard (swap an estimate for a real report)
+      else setKbSoon(kbHeight()); // track the keyboard (swap an estimate for a real report), one write per frame
     } else if (lifted) {
       drop();
     }
@@ -3328,7 +3455,7 @@ function injectStyles() {
      clears the HUD's top edge; the on-screen chat log is pushed up above it.
      Never fires on desktop (no keyboard → --ml-kb stays 0, the class never
      sets). */
-  :root{--ml-inputlift:calc(var(--ml-kb,0px) + 10px)}
+  :root{--ml-inputlift:calc(var(--ml-kb,0px) + ${KB_GAP}px)}
   /* The floated box lives INSIDE the game view (maintainer 2026-08-05: "not
      stretch all the way from side to side") — the gv insets are 0 in
      portrait, so there this is the same full-width-minus-10px it always was;
