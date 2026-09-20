@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_NIGHT, WEATHER_CLEAR } from "../runtime/types";
+import { ZoneWatch } from "../runtime/zoneplace";
 
 // Fireflies — tiny wandering lanterns that own the night. Each fly is an
 // additive glow sprite tracing a slow Lissajous wander around a drifting
@@ -32,9 +33,13 @@ interface Fly {
   p0: number; // pulse phase
   t: number; // own clock (s)
   bright: number; // per-fly max alpha
+  zw: number; // the zone field where it last read it, and where that was
+  zx: number;
+  zy: number;
 }
 
 export function firefliesFeature(): AmbientFeature {
+  const zone = new ZoneWatch("fireflies");
   const flies: Fly[] = [];
   let gain = 0; // eased swarm-wide alpha multiplier
   let suppressed = false; // demo solo mode: another effect owns the stage
@@ -55,9 +60,20 @@ export function firefliesFeature(): AmbientFeature {
     g.destroy();
   };
 
-  const spawnInto = (fly: Fly, view: Phaser.Geom.Rectangle) => {
+  const spawnInto = (fly: Fly, view: Phaser.Geom.Rectangle, ctx?: AmbientCtx) => {
     fly.ax = view.x + rnd() * view.width;
     fly.ay = view.y + rnd() * view.height;
+    /* THE ZONE (runtime/zoneplace.ts): try a few times for a spot the field
+     * holds, and remember the weight there — a firefly DRAWS at its own
+     * weight, so the swarm dims out across the feather instead of stopping
+     * at the line. A dimming glow is honest; a half-transparent crab is not,
+     * which is why the crawlers thin their numbers instead. */
+    if (ctx) {
+      for (let t = 0; t < 5 && zone.seed(ctx, fly, fly.ax, fly.ay) <= 0.02; t++) {
+        fly.ax = view.x + rnd() * view.width;
+        fly.ay = view.y + rnd() * view.height;
+      }
+    }
     const sp = 2.5 + rnd() * 5; // anchor drift, world px/s — a lazy meander
     const dir = rnd() * Math.PI * 2;
     fly.vx = Math.cos(dir) * sp;
@@ -83,11 +99,14 @@ export function firefliesFeature(): AmbientFeature {
       ensureTexture(ctx.scene);
     },
     update(ctx, dt) {
+      zone.step(ctx, dt);
       const dts = Math.min(dt, 100) / 1000; // clamp laggy frames — ambient never lurches
       const view = ctx.view;
       // Night owns the swarm; heavy cloud thins it (a starless overcast night
       // still keeps a few — mystery beats realism).
-      const target = forced ? 1 : suppressed ? 0 : ctx.env.night * (1 - 0.4 * ctx.env.cloud);
+      // ...and only where their zone is: a swarm across the line is already
+      // lit when I walk up to it, which is the whole of the ask
+      const target = forced ? 1 : suppressed || !zone.any ? 0 : ctx.env.night * (1 - 0.4 * ctx.env.cloud);
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
       // OUTDOOR GAIN: every effect here is outdoor weather/wildlife, so it must
       // stop the moment the player steps inside (runtime/outdoor.ts). Applied
@@ -108,9 +127,9 @@ export function firefliesFeature(): AmbientFeature {
         const fly: Fly = {
           sprite,
           ax: 0, ay: 0, vx: 0, vy: 0, rx: 0, ry: 0,
-          wf1: 0, wf2: 0, pf: 0, p0: 0, t: 0, bright: 0,
+          wf1: 0, wf2: 0, pf: 0, p0: 0, t: 0, bright: 0, zw: 1, zx: 0, zy: 0,
         };
-        spawnInto(fly, view);
+        spawnInto(fly, view, ctx);
         flies.push(fly);
       }
       while (flies.length > want) flies.pop()!.sprite.destroy();
@@ -129,14 +148,16 @@ export function firefliesFeature(): AmbientFeature {
           f.ax < view.x - MARGIN || f.ax > view.right + MARGIN ||
           f.ay < view.y - MARGIN || f.ay > view.bottom + MARGIN
         ) {
-          spawnInto(f, view);
+          spawnInto(f, view, ctx);
         }
         const x = f.ax + Math.sin(f.t * f.wf1) * f.rx + Math.sin(f.t * f.wf2 * 1.7) * 2;
         const y = f.ay + Math.cos(f.t * f.wf2) * f.ry + Math.sin(f.t * f.wf1 * 2.3) * 1.5;
         // Pulse with dark rests: the lantern breathes bright, then truly rests.
         const s = Math.sin(f.t * f.pf + f.p0);
         const pulse = s > -0.35 ? 0.35 + 0.65 * ((s + 0.35) / 1.35) : 0.06;
-        f.sprite.setPosition(x, y).setAlpha(g * f.bright * pulse).setVisible(true);
+        // ...and by the zone under it, re-read as it drifts
+        const zw = zone.drift(ctx, f, f.ax, f.ay);
+        f.sprite.setPosition(x, y).setAlpha(g * f.bright * pulse * zw).setVisible(zw > 0.02);
       }
     },
     setSuppressed(on) {
@@ -148,11 +169,19 @@ export function firefliesFeature(): AmbientFeature {
     debug() {
       return {
         gain,
+        zone: zone.info(), // the boundary: is a firefly zone in view, and how much of it
         suppressed,
         forced,
         count: flies.length,
         lit: flies.filter((f) => f.sprite.visible && f.sprite.alpha > 0.05).length,
         sample: flies[0] ? { x: flies[0].sprite.x, y: flies[0].sprite.y, a: flies[0].sprite.alpha } : null,
+        /* `all` IS THE CHARTER'S FIELD: every drawn instance with the alpha it
+         * is DRAWN at. It was missing here, so nothing that reads the ambient
+         * report — the zone-boundary gate among them — could see this effect
+         * at all; it counted zero and called the boundary broken. */
+        all: flies
+          .filter((f) => f.sprite.visible && f.sprite.alpha > 0.02)
+          .map((f) => ({ x: Math.round(f.sprite.x), y: Math.round(f.sprite.y), a: +f.sprite.alpha.toFixed(3), z: +f.zw.toFixed(3) })),
       };
     },
     dispose() {

@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature, PHASE_DAY, WEATHER_CLEAR } from "../runtime/types";
+import { ZoneWatch } from "../runtime/zoneplace";
 
 // Pollen / sun motes — the drifting dust you see when light cuts through
 // forest air. Faint additive specks ride the same wind direction as the
@@ -32,9 +33,13 @@ interface Mote {
   g0: number; // glint phase
   t: number;
   size: number;
+  zw: number; // the zone field where it last read it, and where that was
+  zx: number;
+  zy: number;
 }
 
 export function pollenFeature(): AmbientFeature {
+  const zone = new ZoneWatch("pollen");
   const motes: Mote[] = [];
   let gain = 0;
   let suppressed = false; // demo solo mode: another effect owns the stage
@@ -51,7 +56,7 @@ export function pollenFeature(): AmbientFeature {
     g.destroy();
   };
 
-  const spawnInto = (m: Mote, view: Phaser.Geom.Rectangle, anywhere: boolean) => {
+  const spawnInto = (m: Mote, view: Phaser.Geom.Rectangle, anywhere: boolean, ctx?: AmbientCtx) => {
     // Steady state: enter from the upwind edge so the field flows through
     // the frame instead of popping in mid-air. Initial fill: anywhere.
     if (anywhere) {
@@ -68,6 +73,11 @@ export function pollenFeature(): AmbientFeature {
     m.g0 = rnd() * Math.PI * 2;
     m.t = rnd() * 20;
     m.size = 0.7 + rnd() * 0.7;
+    /* THE ZONE (runtime/zoneplace.ts): a mote DRAWS at the field's weight
+     * where it is, re-read as it drifts, so the haze thins out across the
+     * feather. A mote is a speck of light, so a partial alpha reads as
+     * distance rather than as a ghost. */
+    if (ctx) zone.seed(ctx, m, m.x, m.y);
   };
 
   const targetCount = (view: Phaser.Geom.Rectangle) =>
@@ -81,11 +91,13 @@ export function pollenFeature(): AmbientFeature {
       ensureTexture(ctx.scene);
     },
     update(ctx, dt) {
+      zone.step(ctx, dt);
       const dts = Math.min(dt, 100) / 1000;
       const view = ctx.view;
       // Sunlit air, clear-ish sky. The sun ramp already covers dawn/dusk;
       // cloud cover kills the beams the motes are supposed to hang in.
-      const target = forced ? 1 : suppressed ? 0 : ctx.env.sun * (1 - 0.85 * ctx.env.cloud);
+      // ...and only where its zone is, read on the VIEW rather than my cell
+      const target = forced ? 1 : suppressed || !zone.any ? 0 : ctx.env.sun * (1 - 0.85 * ctx.env.cloud);
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
       // OUTDOOR GAIN: every effect here is outdoor weather/wildlife, so it must
       // stop the moment the player steps inside (runtime/outdoor.ts). Applied
@@ -102,8 +114,8 @@ export function pollenFeature(): AmbientFeature {
           .setBlendMode(Phaser.BlendModes.ADD)
           .setTint(TINT)
           .setVisible(false);
-        const m: Mote = { sprite, x: 0, y: 0, ff: 0, f0: 0, fa: 0, gf: 0, g0: 0, t: 0, size: 1 };
-        spawnInto(m, view, true);
+        const m: Mote = { sprite, x: 0, y: 0, ff: 0, f0: 0, fa: 0, gf: 0, g0: 0, t: 0, size: 1, zw: 1, zx: 0, zy: 0 };
+        spawnInto(m, view, true, ctx);
         motes.push(m);
       }
       while (motes.length > want) motes.pop()!.sprite.destroy();
@@ -120,7 +132,7 @@ export function pollenFeature(): AmbientFeature {
           m.x > view.right + MARGIN || m.x < view.x - MARGIN * 2 ||
           m.y > view.bottom + MARGIN || m.y < view.y - MARGIN
         ) {
-          spawnInto(m, view, false);
+          spawnInto(m, view, false, ctx);
         }
         const flutter = Math.sin(m.t * m.ff + m.f0) * m.fa;
         // Sharpened slow sine: mostly a faint speck, occasionally a glint.
@@ -129,7 +141,7 @@ export function pollenFeature(): AmbientFeature {
         m.sprite
           .setPosition(m.x + flutter, m.y)
           .setScale(m.size)
-          .setAlpha(g * 0.5 * glint)
+          .setAlpha(g * 0.5 * glint * zone.drift(ctx, m, m.x, m.y))
           .setVisible(true);
       }
     },
@@ -142,11 +154,19 @@ export function pollenFeature(): AmbientFeature {
     debug() {
       return {
         gain,
+        zone: zone.info(), // the boundary: is a pollen zone in view, and how much of it
         suppressed,
         forced,
         count: motes.length,
         lit: motes.filter((m) => m.sprite.visible && m.sprite.alpha > 0.02).length,
         sample: motes[0] ? { x: motes[0].sprite.x, y: motes[0].sprite.y, a: motes[0].sprite.alpha } : null,
+        /* `all` IS THE CHARTER'S FIELD: every drawn instance with the alpha it
+         * is DRAWN at. It was missing here, so nothing that reads the ambient
+         * report — the zone-boundary gate among them — could see this effect
+         * at all; it counted zero and called the boundary broken. */
+        all: motes
+          .filter((m) => m.sprite.visible && m.sprite.alpha > 0.01)
+          .map((m) => ({ x: Math.round(m.sprite.x), y: Math.round(m.sprite.y), a: +m.sprite.alpha.toFixed(3), z: +m.zw.toFixed(3) })),
       };
     },
     dispose() {

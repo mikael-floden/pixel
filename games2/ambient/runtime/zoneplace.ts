@@ -31,6 +31,8 @@ import { AmbientCtx } from "./types";
 export const COVER_EVERY_MS = 100;
 /** Below this the field is off: no spot is accepted. */
 export const ZONE_MIN = 0.02;
+/** A drifting thing re-reads the field after this much travel (px). */
+export const DRIFT_REREAD_PX = 24;
 
 export interface ZoneCover {
   any: boolean;
@@ -85,6 +87,31 @@ export class ZoneWatch {
    *  already placed, where a coin flip would make it flicker.) */
   holds(ctx: AmbientCtx, x: number, y: number): boolean {
     return this.at(ctx, x, y) > ZONE_MIN;
+  }
+
+  /** A DRIFTING THING (a firefly, a pollen mote) is not placed once and left:
+   *  it wanders, so it re-reads the field as it goes and DRAWS at the weight
+   *  it last read. For a glow or a mote a partial alpha is honest — it reads
+   *  as distance or haze, not as a ghost, which is why the discrete animals
+   *  thin their population instead. The read is by DISTANCE travelled, never
+   *  per frame: eight reads across the three-cell ramp at any frame rate
+   *  (a frame count overshot the ramp by four cells at headless rates, which
+   *  the weather sheet paid for first). */
+  drift(ctx: AmbientCtx, d: { zw: number; zx: number; zy: number }, x: number, y: number): number {
+    if (Math.abs(x - d.zx) >= DRIFT_REREAD_PX || Math.abs(y - d.zy) >= DRIFT_REREAD_PX) {
+      d.zw = this.at(ctx, x, y);
+      d.zx = x;
+      d.zy = y;
+    }
+    return d.zw;
+  }
+
+  /** Start a drifting thing at (x, y): reads the field there and now. */
+  seed(ctx: AmbientCtx, d: { zw: number; zx: number; zy: number }, x: number, y: number): number {
+    d.zw = this.at(ctx, x, y);
+    d.zx = x;
+    d.zy = y;
+    return d.zw;
   }
 
   /** For `debug()`: what the boundary is doing to this effect right now. */
