@@ -488,6 +488,32 @@ Eligible = the DESIGN approved, and every one of the five states has ONE take
 whose eight directions are all approved. Two full takes of a state is not a tie
 to break here — it is his pick, and the monster waits and says so.
 
+**IT RUNS THE MOMENT HIS APPROVAL LANDS, not when an agent next wakes**
+(`.github/workflows/monsters-graduate.yml`, on a push to
+`live/feedback/monsters.json`). Before that it only ran at the tail of an
+agent's generate, and he found eleven monsters fully approved and still
+labelled "in the making" (2026-09-20: "As soon as all animations have been
+approved they should not be in state 'in the making' any more"). The workflow
+runs `--no-drop`: MOVING a monster he has finished is his standing
+instruction, DELETING an attempt he has never looked at is not something an
+unattended push does.
+
+**TWO TAKES CAN SHARE A PIXELLAB NAME, and that is how a monster graduates
+with a hole.** Names are `custom-` + the first ~30 characters of the action
+text, and `_slot_names` matches on 28 of them — so his cobra's attack south,
+generated from the ladder's "Lunge Attack …" wording, collided with its WALK
+south, generated from the same wording (the ladder bug), and first-come gave
+both to walk: the monster graduated 7/8 on attack while walk/south held the
+attack clip. PixelLab records the slot each group was generated under in
+`display_name` and that is the tie-break; with nothing to separate them the
+first claim stands and the run says so out loud. The repair needs no
+generation — point the roster rename at the right state and re-sync.
+
+**The candidate folder is the only copy until the mirror is proven**: the sync
+is verified 5 states x 8 directions on disk before anything is deleted, and a
+monster that came out with holes keeps its candidate folder and says what to
+repair.
+
 Then, in order: pin the roster entry FIRST (id = the candidate id, so his
 verdicts, the lore records and the wiki links survive the move — let sync
 discover it untagged and it invents an id from the prompt), delete the takes he

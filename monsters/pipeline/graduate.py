@@ -98,21 +98,46 @@ def _slot_names(client, man, chosen):
     text, which is the same prefix rule the client already uses to find takes.
     """
     detail = client.get_character(man["pixellab_id"])
-    names = [g.get("name") for g in client.normalized_animations("character", detail) if g.get("name")]
+    groups = [g for g in client.normalized_animations("character", detail) if g.get("name")]
+    names = [g["name"] for g in groups]
+    # PixelLab keeps the slot each group was GENERATED under in `display_name`
+    # ("walk", "attack_v3"). It can be stale (an old attempt's name), so it is
+    # only ever a TIE-BREAK — but it is the one thing that separates two action
+    # texts sharing a 28-character prefix.
+    slot_of = {g["name"]: (g.get("display_name") or "") for g in groups}
     anims = man.get("animations") or {}
     renames, claimed = {}, set()
+    wanted = {}                       # name -> [state, …] every state whose text matches it
     for state, slot in chosen.items():
         rec = anims.get(slot) or {}
         acts = {rec.get("action")} | {q.get("action") for q in (rec.get("directions") or {}).values()}
         for act in sorted((a for a in acts if a), key=len, reverse=True):
             key = act.strip()[:28].lower()
             for n in names:
-                if n in claimed:
-                    continue
                 body = n[len("custom-"):] if n.lower().startswith("custom-") else n
                 if body.strip()[:28].lower() == key:
-                    renames[n] = state
-                    claimed.add(n)
+                    wanted.setdefault(n, [])
+                    if state not in wanted[n]:
+                        wanted[n].append(state)
+    for n, states in wanted.items():
+        if len(states) > 1:
+            # TWO STATES CLAIM THE SAME NAME. His cobra: the attack's south was
+            # generated from the ladder's "Lunge Attack …" wording and so was
+            # its walk, both names agree for 100 characters, and first-come
+            # (walk) took it — the monster graduated with 7/8 attack and a walk
+            # whose south was the attack clip. The slot PixelLab recorded picks
+            # the right one; with no help there, first-come stands and says so.
+            dn = slot_of.get(n, "")
+            pick = next((st for st in states if dn == chosen[st] or dn == st), None)
+            if pick:
+                print(f"    name {n!r} claimed by {states} -> {pick} (PixelLab recorded slot {dn!r})")
+            else:
+                pick = states[0]
+                print(f"    !! name {n!r} claimed by {states}, nothing to tell them apart "
+                      f"(PixelLab slot {dn!r}) — taking {pick}; check the directions after the sync")
+            states = [pick]
+        renames[n] = states[0]
+        claimed.add(n)
     dead = [n for n in names if n not in claimed]
     return renames, dead
 
@@ -173,6 +198,22 @@ def graduate(cid, entries, client, apply=True, verbose=True):
     cfg.setdefault("graduated", []).append(dict(
         design, graduated_at=datetime.now(timezone.utc).isoformat(timespec="seconds"),
         takes={s: sl for s, sl in chosen.items()}))
+    # THE CANDIDATE IS THE ONLY COPY UNTIL THE SYNC IS PROVEN. His cobra came
+    # out of the mirror with 7/8 attack (two names collided); had the folder
+    # gone first, the art would have been in git history only. Verify five
+    # states x eight directions on disk before deleting anything.
+    holes = {}
+    for st in STATES:
+        p = os.path.join(sync_mod.ROOT, cid, "animations", st)
+        n = len([d for d in os.listdir(p)]) if os.path.isdir(p) else 0
+        if n != len(DIRS_8):
+            holes[st] = n
+    if holes:
+        print(f"  {cid}: SYNCED WITH HOLES {holes} — candidate folder KEPT. "
+              f"Repair the roster renames (two takes can share a name) and re-run sync --only {cid}")
+        cand.save_cfg(cfg)
+        cand.rebuild_index(cand.load_cfg())
+        return False
     cand.save_cfg(cfg)
     if os.path.isdir(cand.cdir(cid)):
         shutil.rmtree(cand.cdir(cid))
@@ -254,7 +295,7 @@ def drop_unapproved_takes(entries, client, apply=True, verbose=True, only=None):
     return dropped
 
 
-def run(apply=True, only=None, verbose=True):
+def run(apply=True, only=None, verbose=True, drop=True):
     try:
         entries = json.load(open(cand.FEEDBACK))["entries"]
     except (FileNotFoundError, ValueError):
@@ -263,7 +304,8 @@ def run(apply=True, only=None, verbose=True):
     if only:
         ids = [i for i in ids if i in set(only)]
     client = PixelLabClient() if apply else None
-    drop_unapproved_takes(entries, client, apply=apply, verbose=verbose, only=only)
+    if drop:
+        drop_unapproved_takes(entries, client, apply=apply, verbose=verbose, only=only)
     n = 0
     for cid in ids:
         if not os.path.isdir(os.path.join(cand.cdir(cid), "animations")):
@@ -282,8 +324,12 @@ def main():
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--only", help="comma-separated candidate ids")
+    ap.add_argument("--no-drop", dest="drop", action="store_false",
+                    help="graduate only; do not delete the attempts he never approved. What the "
+                         "on-approval workflow uses: MOVING a monster he has fully approved is his "
+                         "standing instruction, DELETING an attempt he has not looked at is not")
     a = ap.parse_args()
-    run(apply=not a.dry_run, only=a.only.split(",") if a.only else None)
+    run(apply=not a.dry_run, only=a.only.split(",") if a.only else None, drop=a.drop)
 
 
 if __name__ == "__main__":

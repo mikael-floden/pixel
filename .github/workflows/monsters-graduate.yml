@@ -1,0 +1,95 @@
+name: monsters graduate
+
+# A MONSTER LEAVES "IN THE MAKING" THE MOMENT HE FINISHES APPROVING IT
+# (maintainer 2026-09-20: "A lot of monsters show 'in the making', but I feel
+# they are done. As soon as all animations have been approved they should not
+# be in state 'in the making' any more.").
+#
+# He reviews from a phone and the wiki's admin save commits his verdicts to
+# live/feedback/monsters.json. Before this, graduation only ran at the tail of
+# an agent's generate — so a monster he finished sat as a candidate until some
+# agent happened to wake, which is exactly what he was looking at: eleven
+# monsters fully approved and still labelled "in the making".
+#
+# Graduation MOVES a monster he has fully approved (roster pinned, retagged
+# MONSTER, mirrored, candidate folder removed once the mirror is verified
+# whole). It is deliberately run with --no-drop: deleting an attempt he has
+# never looked at is not something a push should do unattended.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "live/feedback/monsters.json"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: monsters-graduate
+  cancel-in-progress: false
+
+jobs:
+  graduate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          # depth 1: the pack is >1 GiB of binary art — the run only needs the
+          # tip to commit and push, and the rebase-on-reject fetches the rest.
+          fetch-depth: 1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Graduate every monster he has fully approved
+        env:
+          PIXELLAB_API_KEY: ${{ secrets.PIXELLAB_API_KEY }}
+        run: |
+          if [ -z "$PIXELLAB_API_KEY" ]; then
+            echo "::warning::PIXELLAB_API_KEY secret is not set. Skipping."
+            exit 0
+          fi
+          git config user.name "pixel-monsters-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          python monsters/pipeline/graduate.py --no-drop
+
+      - name: Commit + push
+        id: push
+        run: |
+          git config user.name "pixel-monsters-bot"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add monsters/
+          git diff --cached --quiet && { echo "nobody graduated"; exit 0; }
+          git commit -m "monsters: graduate on his approval — a fully approved monster is not 'in the making'"
+          ok=0
+          for i in 1 2 3 4; do
+            if git push origin main; then ok=1; break; fi
+            git pull --rebase origin main
+          done
+          [ "$ok" = 1 ] || git push origin main
+          echo "pushed=1" >> "$GITHUB_OUTPUT"
+
+      # A push made with the default GITHUB_TOKEN does not fire the deploy
+      # (GitHub's recursive-trigger guard), so a graduated monster would sit on
+      # main unbaked. Dispatch it explicitly, same as the composer loop.
+      - name: Trigger deploy
+        if: steps.push.outputs.pushed == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          curl -sf -X POST \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/nangijala-deploy.yml/dispatches" \
+            -d '{"ref":"main"}'
+          echo "deploy dispatched"
