@@ -479,12 +479,17 @@ per effect — his process).
   whole rule, and every critter gets the same two: it is WANTED when its zone
   is anywhere in VIEW (`any`, coverage at the env cadence), never when my own
   cell says so — which is what makes them already be there as I walk up to the
-  line; and a spot is ACCEPTED with the probability of the field's weight
-  there (`accept`), so across the three-cell feather the POPULATION thins
-  instead of the sprites fading. A half-transparent crab is a ghost; half as
-  many crabs is a beach petering out. `holds` is the same test without the
-  dice, for re-validating something already placed (a coin flip there would
-  make it flicker). Where zones do not rule every answer is "yes, everywhere",
+  line; and a spot is ACCEPTED on the zone's OWN SIDE of the line with the
+  probability of the field's weight there (`accept`, floor `PLACE_MIN` 0.5),
+  so the POPULATION tapers toward the edge from the inside instead of the
+  sprites fading. A half-transparent crab is a ghost; half as many crabs is a
+  beach petering out. The floor is not decoration: at the old 0.02 a crab was
+  accepted two cells OUTSIDE the polygon and walked up to a player standing
+  there, which is the one thing he asked for by name. The blur puts 0.667 on
+  the first cell inside a straight edge and 0.333 on the first one outside, so
+  a half IS that line. `holds` keeps the permissive floor and no dice, for
+  re-validating something already placed (a coin flip there would make it
+  flicker, and killing it the instant it touches the line would too). Where zones do not rule every answer is "yes, everywhere",
   so a zoneless world behaves exactly as before.
   Gate `verify-critterzone.mjs` (`EFFECT=<name>`): stands outside a zone that
   carries the effect with ground it can use inside, and asserts the effect is
@@ -495,7 +500,10 @@ per effect — his process).
   **crabs**: the colony search rejects a candidate outside the zone before it
   pays for its water probes, and a colony whose ground leaves the zone (a
   window re-roll) is dropped like one whose water dried up. With no crab zone
-  in view it does not search at all.
+  in view it does not search at all. AND THE SHORELINE WALK STOPS AT THE
+  ZONE: an anchored colony is not enough, because the coast is followed for
+  up to 480 px and does not care where the zone ends — measured, a crab ran
+  out of its zone and up to a player standing four cells outside it.
   **spiders, gnats, butterflies**: the same `findGround` acceptance test — a
   spider spawns, a gnat column rises and a butterfly picks a meadow only where
   the field holds the ground.

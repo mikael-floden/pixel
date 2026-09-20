@@ -270,8 +270,15 @@ export function crabsFeature(): AmbientFeature {
 
   /** WALK THE SHORE from a point, turning to follow the water as it curves.
    * Returns the points in order, each with the local direction to the water. */
+  /** `inZone` stops the walk at the zone's line. THE COLONY BEING INSIDE IS
+   *  NOT ENOUGH: the shoreline is followed for up to ~480 px and the coast
+   *  does not care where the zone ends, so a colony anchored well inside sent
+   *  crabs scuttling out of it — measured, one ran up to a player standing
+   *  four cells outside, which is the one thing he asked not to see. The walk
+   *  ends where the zone does, in both directions, and the colony's span is
+   *  what is left. */
   const walkShore = (
-    x0: number, y0: number, tx0: number, ty0: number,
+    x0: number, y0: number, tx0: number, ty0: number, inZone?: (x: number, y: number) => boolean,
   ): { x: number; y: number; wx: number; wy: number; edge: number }[] => {
     const out: { x: number; y: number; wx: number; wy: number; edge: number }[] = [];
     let x = x0;
@@ -282,6 +289,7 @@ export function crabsFeature(): AmbientFeature {
       x += tx * SHORE_STEP;
       y += ty * SHORE_STEP;
       if (!landAt(x, y)) break;
+      if (inZone && !inZone(x, y)) break; // the zone has ended — so has this beach
       const w = waterDir(x, y);
       if (!w) break; // the sea has left us — this is no longer a beach
       out.push({ x, y, wx: w.wx, wy: w.wy, edge: waterEdge(x, y, w.wx, w.wy) });
@@ -318,8 +326,9 @@ export function crabsFeature(): AmbientFeature {
           const rx = -w0.wy;
           const ry = w0.wx;
           // WALK IT BOTH WAYS and stitch the halves into one shoreline.
-          const fwd = walkShore(x, y, rx, ry);
-          const back = walkShore(x, y, -rx, -ry);
+          const held = (px: number, py: number) => zone.holds(ctx, px, py);
+          const fwd = walkShore(x, y, rx, ry, held);
+          const back = walkShore(x, y, -rx, -ry, held);
           const pts = [
             ...back.slice().reverse(),
             { x, y, wx: w0.wx, wy: w0.wy, edge: waterEdge(x, y, w0.wx, w0.wy) },

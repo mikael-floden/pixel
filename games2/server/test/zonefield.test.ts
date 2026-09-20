@@ -11,7 +11,7 @@ import { AMBIENT_SCHEMA, CELL_WU, parseAmbientZones, type AmbientZoneDoc } from 
 import {
   BUCKET_CAP, FEATHER_CELLS, ZoneField, type ZonePick, type ZoneSource,
 } from "../../ambient/runtime/zonefield.js";
-import { ZoneWatch } from "../../ambient/runtime/zoneplace.js";
+import { PLACE_MIN, ZoneWatch } from "../../ambient/runtime/zoneplace.js";
 import type { AmbientCtx } from "../../ambient/runtime/types.js";
 
 const doc = (): AmbientZoneDoc =>
@@ -165,12 +165,20 @@ test("a field effect is wanted when its zone is in view, and a spot is taken wit
   assert.equal(w.accept(ctx, 5 * CELL_WU, 15 * CELL_WU, always), false, "outside is outside however the dice fall");
   assert.equal(w.holds(ctx, 15 * CELL_WU, 15 * CELL_WU), true);
   assert.equal(w.holds(ctx, 5 * CELL_WU, 15 * CELL_WU), false);
-  // on the ramp the odds ARE the weight: a rigged rnd just under it takes it, just over refuses
-  const onLine = 9.5 * CELL_WU;
-  const wl = f.weightAt("rain", onLine, 15 * CELL_WU);
-  assert.ok(wl > 0.05 && wl < 0.95, `the sample sits on the ramp (${wl})`);
-  assert.equal(w.accept(ctx, onLine, 15 * CELL_WU, () => wl - 0.01), true);
-  assert.equal(w.accept(ctx, onLine, 15 * CELL_WU, () => wl + 0.01), false);
+  // ON THE ZONE'S OWN SIDE ONLY. The blur reads 0.667 on the first cell inside
+  // a straight edge and 0.333 on the first one outside, so PLACE_MIN (a half)
+  // is that line: below it nothing is placed however the dice fall, above it
+  // the odds ARE the weight, which is the taper toward the edge from inside.
+  const inLine = 10.5 * CELL_WU;   // the first cell inside the wet zone
+  const outLine = 9.5 * CELL_WU;   // the first cell outside it
+  const wIn = f.weightAt("rain", inLine, 15 * CELL_WU);
+  const wOut = f.weightAt("rain", outLine, 15 * CELL_WU);
+  assert.ok(wIn >= PLACE_MIN, `the inside edge is on the zone's side (${wIn})`);
+  assert.ok(wOut > 0 && wOut < PLACE_MIN, `the outside edge is off it but not nothing (${wOut})`);
+  assert.equal(w.accept(ctx, outLine, 15 * CELL_WU, always), false, "nothing is placed past the line, whatever the dice say");
+  assert.equal(w.accept(ctx, inLine, 15 * CELL_WU, () => wIn - 0.01), true);
+  assert.equal(w.accept(ctx, inLine, 15 * CELL_WU, () => wIn + 0.01), false, "and it thins toward the edge from the inside");
+  assert.equal(w.holds(ctx, outLine, 15 * CELL_WU), true, "`holds` is the permissive twin: something already there is not killed at once");
   // no zones at all: everything is wanted everywhere, the old behaviour exactly
   const { f: sky } = field({ roomSky: true });
   const open = { zone: sky, view } as unknown as AmbientCtx;

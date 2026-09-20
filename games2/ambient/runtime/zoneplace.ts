@@ -29,8 +29,18 @@ import { AmbientCtx } from "./types";
 
 /** How often a watch re-reads its zone's coverage of the view (ms). */
 export const COVER_EVERY_MS = 100;
-/** Below this the field is off: no spot is accepted. */
+/** Below this the field is off: nothing is held here at all. */
 export const ZONE_MIN = 0.02;
+/** A DISCRETE ANIMAL is placed only at or above this — the field's own line.
+ *  The blur puts 0.667 on the first cell inside a straight edge and 0.333 on
+ *  the first cell outside, so a half is "the zone's own side" almost exactly.
+ *  Measured: with the old 0.02 floor a crab was accepted two cells OUTSIDE
+ *  the polygon and walked up to the player standing there, which is the one
+ *  thing the maintainer asked for by name — "I can stand outside a zone and
+ *  see a crab on the other side, but not on this side". The thinning he also
+ *  wants still happens, on the INSIDE ramp: a spot at the edge is taken half
+ *  the time, one well inside every time. */
+export const PLACE_MIN = 0.5;
 /** A drifting thing re-reads the field after this much travel (px). */
 export const DRIFT_REREAD_PX = 24;
 
@@ -75,12 +85,13 @@ export class ZoneWatch {
     return ctx.zone ? ctx.zone.weightAt(this.name, x, y) : 1;
   }
 
-  /** MAY SOMETHING LIVE HERE? Accepted with the probability of the weight,
-   *  so the population thins across the feather rather than cutting at it.
-   *  Pass the feature's own `rnd` so a seeded gate stays reproducible. */
+  /** MAY SOMETHING LIVE HERE? On the zone's own side of the line, accepted
+   *  with the probability of the weight — so the population tapers toward the
+   *  edge from the inside and nothing stands on the far side of it. Pass the
+   *  feature's own `rnd` so a seeded gate stays reproducible. */
   accept(ctx: AmbientCtx, x: number, y: number, rnd: () => number): boolean {
     const w = this.at(ctx, x, y);
-    return w > ZONE_MIN && rnd() < w;
+    return w >= PLACE_MIN && rnd() < w;
   }
 
   /** Is this spot still in the zone? (No dice — for re-validating something
