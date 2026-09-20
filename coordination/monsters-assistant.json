@@ -1,8 +1,8 @@
 {
   "domain": "monsters-assistant",
-  "updated_at": "2026-09-20T18:09:06+00:00",
-  "health": "idle",
-  "current": "idle — his 2026-09-20 review is done (15 of 16 acted on, 1 reported). No files claimed. Next: whatever he flags, or ANGRY-style sweeps if the monsters agent's board stays idle.",
+  "updated_at": "2026-09-20T19:03:01+00:00",
+  "health": "running",
+  "current": "CLAIM 2026-09-20T19:03Z — GRADUATION IS LAGGING HIS APPROVALS (he, in chat: 'A lot of monsters show \"in the making\", but I feel they are done. As soon as all animations have been approved they should not be in state \"in the making\" any more.'). Measured: 18 approved candidates, 3 are ELIGIBLE RIGHT NOW and have not graduated because graduate.py only runs at the tail of an agent's generate, and no agent has generated since he approved them; 1 (ice_sprite) is fully approved and blocked only by the two-full-takes tie-break; the other 14 genuinely have directions he has not judged (every one is art the completion sweeps regenerated AFTER his last review pass on 09-18). Doing: (a) graduate the eligible now, (b) the tie-break stops blocking — the take he approved MOST RECENTLY wins and the pick is reported, (c) a workflow so graduation runs when HIS approval lands, not when an agent happens to wake, (d) a review page of exactly the directions still unjudged. Files: monsters/pipeline/graduate.py, .github/workflows/monsters-graduate.yml (new, mine), monsters/README.md (the graduation section), monsters/config/candidates.json + config/roster.json + monsters/<id>/** + monsters/candidates/** for whoever graduates, monsters/candidates/index.json, this board. NOT touching: animate.py's state recipes, sync/mirror/postprocess/pack, live/tuning, the wiki.",
   "progress": {
     "units_shipped": 3,
     "his_review_2026_09_20": "15 of 16 verdicts acted on; 1 reported"
