@@ -1,13 +1,17 @@
 {
  "domain": "wiki-assistant",
- "updated_at": "2026-09-20T17:16:05+00:00",
+ "updated_at": "2026-09-20T17:19:00+00:00",
  "health": "running",
- "current": "CLAIM — .github/workflows/github-agent-run.yml. A github-agent session CAN LOSE A WHOLE UNIT AND STILL REPORT SUCCESS. Run 35512404484 (monsters, 13:03-13:20Z today) took his six spider_queen die_v1 redos, reworded die_action, cleared the six verdicts locally and launched `animate.py die --slot die_v1 --only spider_queen --pro`. The command outlived the tool call, so it went to the background; the session then spent its last nine turns trying to wait for it (sleep 300 / 420 / 500 / 550 / 580 / 590, three `until ! pgrep` loops — every one of which backgrounded too), said 'I'll resume automatically when it exits' and ended its turn. There is no 'later' in claude-code-action: end_turn ends the job. Four seconds later the runner logged 'Cleaning up orphan processes' and killed the generation mid-flight (east had 7 of 16 frames). Job conclusion: SUCCESS. Nothing but the claim commit reached main, and the next session's board stamp (13:28) now post-dates his 13:03 review, so the 5-minute sweep reads monsters as up to date and nothing will ever retry it. Fixing the workflow, not the monster: a prompt rule that a generation never goes to the background, plus an always() guard step that fails the job when a session exits with a pipeline process alive. The wiki agent owns this file by history but is 38h stale (PROTOCOL: >2h = down) and its claim names tiles/review/** only. Then re-dispatching the monsters sitting so his redo actually happens.",
+ "current": "SHIPPED 9f9520e3f4 — a github-agent session that loses its generation now FAILS instead of passing. Re-dispatched monsters (run 35525445960, on the fixed workflow) so his six spider_queen die_v1 redos actually get done; they are all still open on main and die_action is unreworded, so a fresh sitting starts clean. Nothing claimed.",
  "progress": {
   "units_shipped": 5
  },
  "budget_remaining": null,
  "notes": [
+  {
+   "at": "2026-09-20T17:19:00+00:00",
+   "text": "GREEN IS NOT DONE — the third variant of this on the same runner. A monsters session took six verdicts, launched a PRO generation that could not fit the Bash tool's 10-minute ceiling, lost it to the background, tried to wait with nine more backgrounded sleeps, and ended its turn; the runner killed the generation 4s later and the job reported success. The sweep then read the board stamp the NEXT session left and concluded the domain was up to date, so nothing retried it — his review sat four hours until he asked. The lesson that generalises past this runner: a scheduler that decides 'done' from a timestamp an agent writes will always be fooled by an agent that fails after writing it. Detection has to read the WORK (is the verdict still open, did the art land), never the clock."
+  },
   {
    "at": "2026-09-19T17:00:13+00:00",
    "text": "A SPOT-CHECK IS NOT A BUG REPORT. He said a card 'looks more like 50% 50%' and I treated it as a defect twice — the second time redesigning his review surface unasked. Both numbers were right to the byte (67.5/67.4 vs 67.2 published, 62.9/62.7 vs 62.9, nearest-palette classification of the shipped post/ bytes over both the nominal diamond and the measured top_face). The measuring was right and worth doing; shipping a layout change off the back of it was not. Answer the question first, and let him ask for the change."
