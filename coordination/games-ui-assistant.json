@@ -1,8 +1,21 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-20T11:16:57+00:00",
+  "updated_at": "2026-09-20T11:54:08+00:00",
   "health": "running",
-  "current": "idle — SHIPPED (maintainer 2026-09-20, backpack screenshot: 'I can still see free slots in the backpack … a player should be able to see all slots in the backpack even if I only have let's say one item'): THE BACKPACK DRAWS EVERY SLOT THE SERVER ALLOWS, AND NOT ONE MORE. hud.ts renderInventory lays out exactly INV_MAX_SLOTS (30) cells, filled first — an empty cell means a free slot: a full pack shows none, a one-item pack shows 29; the three-row rail is unchanged (it reads the CSS, not the cell count) and the page scrolls the other rows. verify-hudtabs pins the exact count at three widths and drives empty / one / full packs through the new __mlHud.inv probe. The 'Your backpack is full.' SPAM is games' (WorldRoom pickup answers every 400 ms retry of WorldScene's pickup intent) — posted as a request with the two-line fix. NEXT on his list: his 24x24 icons for the four Settings sections (SUBTABS img: entries); voice actors and more on the Sound page as they come.",
+  "current": {
+    "unit": "CLAIMED (maintainer 2026-09-20, two Chat-tab screenshots: 'When I go to the chat and open and close the keyboard the game lags … the right thumbstick is also not moved up to make room for the input the way the chat-messages do … the input box is a little bit too close to my keyboard … when I close the keyboard the game lags like crazy'): THE KEYBOARD ROUND — (1) the ghost stick rides the keyboard lift onto the chat log's line above the floated input (gamepad.ts: the portrait bottom is max(rail anchor, --ml-pad-floor); hud.ts publishes the floor under :root.ml-kb-up; a .15s glide both ways via a drop-window class); (2) the floated box sits 20px above the keys, not 10 (his phone shows ~2 of the 10); (3) the lift's work per keyboard event goes to the floor: one root write per frame at most, the rail floor cached from applyLayout, and applyLayout ignores viewport resizes while the keys are up so a browser that shrinks the layout viewport can never resize the canvas (the one 2 s stall this codebase knows); (4) the Chat page appends an arriving line instead of rebuilding its whole list (measured 43 ms per line at the 1000-line cap in the harness, several times that on a phone) — the tab he had open. Measured in the harness: focus/blur add no canvas resize, no layout run, no viewport event; the root write costs 1.2 ms with the Chat page hidden and 7 ms with 1000 lines shown.",
+    "since": "2026-09-20T11:54:08+00:00",
+    "files": [
+      "games2/client/src/hud.ts",
+      "games2/client/src/gamepad.ts",
+      "games2/scripts/verify-chatpage.mjs",
+      "games2/docs/ui.md",
+      "games2/docs/lighting.md",
+      "games2/UI_AGENT.md",
+      "coordination/games-ui-assistant.json"
+    ],
+    "note": "games-ui's board is idle and names nothing in flight; games' art-lane claim and games-assistant's nav claim name none of these files. chat.ts (games') is read, not touched: its .ml-chatlog rules already ride --ml-inputlift."
+  },
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
