@@ -59,9 +59,11 @@ place's signature or a door, never a blanket: there is no weather province.
 - **`effects`** maps an effect NAME to a **share: how often the effect should
   be active in this zone** (a target duty cycle over time, not an intensity)
   — `0.5` is a door (one window in two hundred), else a whole number 1..100.
-  Names are `games2/ambient`'s feature folders plus the six weather rows
-  (`drizzle rain heavyrain storm snow windy`); the gate refuses a name the
-  game does not register.
+  Names are `games2/ambient`'s feature folders plus the weather rows the
+  game itself lists (`games2/shared/src/ambient.ts` `WEATHER_EFFECTS` — eight
+  today: `cloudy mist drizzle rain heavyrain storm snow windy`; the generator
+  reads that list, never a typed copy: a typed six missed `cloudy` and `mist`
+  for a day); the gate refuses a name the game does not register.
 - **One signature, supports that never compete, a door.** Exactly one effect
   of a zone is at 85 or more (`SIGNATURE` = 90); every other whole-number
   share is at most `SUPPORT_MAX` = 20 and never in the signature's exclusive

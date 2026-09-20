@@ -52,6 +52,7 @@ import html
 import json
 import math
 import os
+import re
 import sys
 
 import numpy as np
@@ -104,65 +105,75 @@ CAP = 4               # places one effect may sign before the palette skips it f
 SAND = ("light_beach", "light_soil")
 PALETTES = {
     "sea":     [("bubbles", {"birds": 15}, ()), ("storm", {"thunder": 20}, ()),
-                ("thunder", {"windy": 15}, ()), ("birds", {"bubbles": 15}, ())],
+                ("thunder", {"windy": 15}, ()), ("birds", {"bubbles": 15}, ()),
+                ("cloudy", {"birds": 10}, ()), ("mist", {"bubbles": 10}, ())],
     "islet":   [("storm", {"thunder": 20, "crabs": 10}, ("grey_stone",)),      # Lighthouse Point
                 ("thunder", {"fireflies": 20}, ("grass",)),                    # the standing stones
                 ("crabs", {"birds": 15}, SAND),                                # the shoal
                 ("fireflies", {"gnats": 15, "dragonflies": 10}, ("dark_mud",)),  # the fen
-                ("windy", {"birds": 15}, ()), ("birds", {"gnats": 10}, ())],
+                ("windy", {"birds": 15}, ()), ("birds", {"gnats": 10}, ()),
+                ("mist", {"gnats": 10}, ())],
     "dunes":   [("sandstorm", {"windy": 15}, SAND), ("windy", {"crabs": 15}, ()),
                 ("crabs", {"birds": 15}, SAND), ("ants", {"birds": 10}, ()),
                 ("birds", {"ants": 10}, ()), ("gnats", {"crabs": 10}, ())],
-    "lake":    [("dragonflies", {"gnats": 15}, ()), ("fireflies", {"dragonflies": 10}, ()),
-                ("gnats", {"dragonflies": 10}, ()), ("drizzle", {"dragonflies": 10}, ())],
-    "tarn":    [("windy", {"thunder": 15}, ()), ("thunder", {"windy": 15}, ()),
-                ("gnats", {"thunder": 10}, ())],
+    "lake":    [("dragonflies", {"gnats": 15}, ()), ("mist", {"dragonflies": 10}, ()),
+                ("fireflies", {"dragonflies": 10}, ()), ("gnats", {"dragonflies": 10}, ()),
+                ("drizzle", {"dragonflies": 10}, ())],
+    "tarn":    [("mist", {"gnats": 10}, ()), ("windy", {"thunder": 15}, ()),
+                ("thunder", {"windy": 15}, ()), ("gnats", {"thunder": 10}, ())],
     "lava":    [("thunder", {"windy": 10}, ()), ("windy", {"thunder": 10}, ()),
                 ("bats", {"thunder": 10}, ())],
     "summit":  [("snow", {"thunder": 10}, ("snow", "ice")), ("storm", {"thunder": 20}, ()),
                 ("snow", {"bats": 10}, ("snow", "ice")), ("windy", {"thunder": 10}, ()),
-                ("snow", {"thunder": 15}, ("snow", "ice")), ("thunder", {"bats": 10}, ())],
+                ("cloudy", {"thunder": 10}, ()), ("snow", {"thunder": 15}, ("snow", "ice")),
+                ("thunder", {"bats": 10}, ())],
     "town":    [("snow", {"bats": 10}, ("snow", "ice")),                        # the cottage in the snow
                 ("birds", {"leaves": 10, "ants": 10}, ()),                     # the town
                 ("rain", {"birds": 10}, ()),                                   # the village where it rains
                 ("leaves", {"birds": 10}, ()), ("drizzle", {"birds": 10}, ()),
                 ("butterflies", {"birds": 10}, ("grass",)), ("ants", {"birds": 10}, ()),
                 ("gnats", {"birds": 10}, ())],
-    "marsh":   [("fireflies", {"gnats": 15}, ()), ("gnats", {"dragonflies": 10}, ()),
-                ("dragonflies", {"gnats": 10}, ()), ("drizzle", {"gnats": 10}, ()),
+    "marsh":   [("fireflies", {"gnats": 15}, ()), ("mist", {"gnats": 10}, ()),
+                ("gnats", {"dragonflies": 10}, ()), ("dragonflies", {"gnats": 10}, ()),
+                ("drizzle", {"gnats": 10}, ()),
                 ("spiders", {"gnats": 10}, ()), ("heavyrain", {"thunder": 15}, ()),
                 ("thunder", {"drizzle": 15}, ()), ("rain", {"gnats": 10}, ()),
                 ("bats", {"gnats": 10}, ()), ("storm", {"thunder": 15}, ()),
                 ("windy", {"leaves": 10}, ()), ("leaves", {"gnats": 10}, ())],
-    "forest":  [("leaves", {"fireflies": 20, "spiders": 10}, ()), ("pollen", {"leaves": 15}, ()),
-                ("fireflies", {"leaves": 15}, ()), ("spiders", {"leaves": 10}, ())],
+    "forest":  [("leaves", {"fireflies": 20, "spiders": 10}, ()), ("mist", {"spiders": 10}, ()),
+                ("pollen", {"leaves": 15}, ()), ("fireflies", {"leaves": 15}, ()),
+                ("spiders", {"leaves": 10}, ())],
     "pasture": [("birds", {"leaves": 10}, ()), ("windy", {"leaves": 15}, ()),
                 ("leaves", {"birds": 10}, ()), ("pollen", {"butterflies": 15}, ("grass",)),
-                ("ants", {"birds": 10}, ())],
+                ("mist", {"birds": 10}, ()), ("ants", {"birds": 10}, ())],
     "meadow":  [("butterflies", {"birds": 15}, ("grass",)), ("pollen", {"butterflies": 15}, ()),
                 ("leaves", {"birds": 10}, ()), ("birds", {"ants": 10}, ()),
                 ("fireflies", {"butterflies": 15}, ()), ("ants", {"birds": 10}, ()),
                 ("rain", {"birds": 5}, ()), ("windy", {"leaves": 10}, ()),
-                ("gnats", {"birds": 10}, ())],
-    "massif":  [("thunder", {"windy": 20}, ()), ("windy", {"thunder": 15}, ()),
-                ("bats", {"thunder": 10}, ()), ("spiders", {"windy": 10}, ())],
+                ("mist", {"birds": 5}, ()), ("gnats", {"birds": 10}, ())],
+    "massif":  [("thunder", {"windy": 20}, ()), ("cloudy", {"windy": 15}, ()),
+                ("windy", {"thunder": 15}, ()), ("bats", {"thunder": 10}, ()),
+                ("spiders", {"windy": 10}, ())],
     "sands":   [("crabs", {"birds": 15}, SAND), ("sandstorm", {"windy": 15}, SAND),
                 ("windy", {"birds": 10}, ()), ("ants", {"birds": 10}, ()),
                 ("birds", {"gnats": 10}, ()), ("gnats", {"birds": 10}, ()),
                 ("drizzle", {"gnats": 10}, ()), ("leaves", {"birds": 10}, ())],
-    "moor":    [("windy", {"leaves": 15}, ()), ("thunder", {"windy": 15}, ()),
-                ("gnats", {"spiders": 10}, ()), ("drizzle", {"gnats": 10}, ()),
+    "moor":    [("mist", {"gnats": 10}, ()), ("windy", {"leaves": 15}, ()),
+                ("thunder", {"windy": 15}, ()), ("gnats", {"spiders": 10}, ()),
+                ("drizzle", {"gnats": 10}, ()), ("cloudy", {"gnats": 10}, ()),
                 ("leaves", {"gnats": 10}, ()), ("spiders", {"gnats": 10}, ()),
                 ("bats", {"gnats": 10}, ()), ("heavyrain", {"thunder": 15}, ()),
                 ("rain", {"gnats": 10}, ()), ("birds", {"gnats": 10}, ())],
-    "heath":   [("snow", {"thunder": 10}, ("snow", "ice")), ("windy", {"birds": 10}, ()),
+    "heath":   [("snow", {"thunder": 10}, ("snow", "ice")), ("cloudy", {"windy": 10}, ()),
+                ("windy", {"birds": 10}, ()), ("mist", {"gnats": 10}, ()),
                 ("gnats", {"spiders": 10}, ()),
                 ("birds", {"gnats": 10}, ()), ("leaves", {"birds": 10}, ()),
                 ("drizzle", {"gnats": 10}, ()), ("spiders", {"gnats": 10}, ()),
                 ("thunder", {"windy": 15}, ()), ("ants", {"birds": 10}, ()),
                 ("bats", {"gnats": 10}, ()), ("rain", {"birds": 5}, ())],
     "shore":   [("crabs", {"birds": 15}, SAND), ("birds", {"gnats": 10}, ()),
-                ("windy", {"birds": 10}, ()), ("drizzle", {"gnats": 10}, ()),
+                ("mist", {"gnats": 10}, ()), ("windy", {"birds": 10}, ()),
+                ("drizzle", {"gnats": 10}, ()),
                 ("gnats", {"birds": 10}, ()), ("storm", {"thunder": 20}, ()),
                 ("rain", {"birds": 10}, ()), ("leaves", {"birds": 10}, ())],
     # INDOORS: every zone effect the game registers is outdoor-gated today,
@@ -186,14 +197,14 @@ KIND_ORDER = ("islet", "dunes", "lake", "tarn", "lava", "summit", "town", "marsh
 # is spent.
 DOORS = {
     "sea": ("snow", "heavyrain"), "islet": ("snow", "storm"), "dunes": ("snow", "heavyrain"),
-    "lake": ("snow", "storm"), "tarn": ("rain", "drizzle"), "lava": ("snow", "rain"),
+    "lake": ("snow", "mist"), "tarn": ("rain", "drizzle"), "lava": ("snow", "rain"),
     "summit": ("rain", "drizzle"), "town": ("snow", "storm"), "marsh": ("snow", "storm"),
-    "forest": ("snow", "storm"), "pasture": ("snow", "storm"), "meadow": ("snow", "storm"),
+    "forest": ("snow", "mist"), "pasture": ("snow", "storm"), "meadow": ("snow", "storm"),
     "massif": ("heavyrain", "drizzle"), "shore": ("snow", "storm"),
     "sands": ("snow", "heavyrain"), "moor": ("snow", "storm"), "heath": ("snow", "storm"),
     "cave": ("gnats", "spiders", "bats"), "slime": ("bats", "spiders", "gnats"),
 }
-DOOR_FALLBACK = ("snow", "storm", "heavyrain", "rain", "drizzle", "windy", "leaves", "thunder")
+DOOR_FALLBACK = ("snow", "storm", "mist", "heavyrain", "rain", "drizzle", "windy", "cloudy", "leaves", "thunder")
 
 
 def group_of(effect):
@@ -276,13 +287,26 @@ def dress(zones, W):
         z.pop("_place", None)
 
 
+def weather_rows():
+    """The weather folder's rows, read off the game's own list
+    (games2/shared/src/ambient.ts WEATHER_EFFECTS) - never typed here. The
+    first roster typed six and missed `cloudy` and `mist` for a day
+    (maintainer 2026-09-20: "I don't think you added all ambient effects")."""
+    src = open(os.path.join(REPO, "games2", "shared", "src", "ambient.ts")).read()
+    m = re.search(r"WEATHER_EFFECTS\s*=\s*\[([^\]]*)\]", src)
+    assert m, "games2/shared/src/ambient.ts: WEATHER_EFFECTS not found"
+    rows = re.findall(r'"([a-z]+)"', m.group(1))
+    assert len(rows) >= 6, rows
+    return rows
+
+
 def roster():
     """Every effect the game registers: one folder per feature under
-    games2/ambient, and the weather folder's six rows."""
+    games2/ambient, and the weather folder's rows."""
     d = os.path.join(REPO, "games2", "ambient")
     skip = {"runtime", "scripts", "art-original", "weather"}
     names = {n for n in os.listdir(d) if os.path.isdir(os.path.join(d, n)) and n not in skip}
-    return names | {"drizzle", "rain", "heavyrain", "storm", "snow", "windy"}
+    return names | set(weather_rows())
 
 
 # -- masks --------------------------------------------------------------------
