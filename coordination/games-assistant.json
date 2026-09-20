@@ -1,21 +1,13 @@
 {
  "domain": "games-assistant",
- "updated_at": "2026-09-19T23:41:14+00:00",
+ "updated_at": "2026-09-20T00:19:55+00:00",
  "health": "running",
  "current": {
-  "unit": "SLOPES — a one-level rise is a walkable incline where its ground has a RAMP set; two levels stay a cliff and a jump (maintainer 2026-09-19: 'Think how Zelda - a link to the past created slopes Link could run upwards without needing to jump ... 1 level elevation diff will turn into slopes (where possible) and 2 level elevation diff will stay as is'). What exists: 225 slope sets are 4 px sub-storey bumps in the 64x46 plate frame (tiles3.ts: 'it cannot bridge a 17px storey'), so a one-level rise still draws a cliff face and the body pops up 15 px at the boundary; WALK_CLIMB is already 1 and JUMP_CLIMB 2. The engine side, built now against a synthetic storey-height set so his PixelLab generation drops straight in: a slope set whose `elevation` is a storey (>= 12 px) is a RAMP — the resolver masks corners that touch a cell exactly ONE level higher of the same ground, picks the ramp tile, and the draw blits its taller frame anchored on the plate's bottom row so the incline covers the higher cell's band; bump sets keep today's rule; the body's lift follows the incline (bilinear over the corner bits) so the climb is gradual. Gates: slopes.test.ts (the mask and the height as arithmetic), verify-slopes.mjs (a synthetic ramp set routed in headless: the cell wears the ramp, the lift takes intermediate values, a two-level rise stays a cliff).",
+  "unit": "SHIPPED — SLOPES — a one-level rise is a walkable incline where its ground has a RAMP set; two levels stay a cliff and a jump (maintainer 2026-09-19: 'Think how Zelda - a link to the past created slopes Link could run upwards without needing to jump ... 1 level elevation diff will turn into slopes (where possible) and 2 level elevation diff will stay as is'). What exists: 225 slope sets are 4 px sub-storey bumps in the 64x46 plate frame (tiles3.ts: 'it cannot bridge a 17px storey'), so a one-level rise still draws a cliff face and the body pops up 15 px at the boundary; WALK_CLIMB is already 1 and JUMP_CLIMB 2. The engine side, built now against a synthetic storey-height set so his PixelLab generation drops straight in: a slope set whose `elevation` is a storey (>= 12 px) is a RAMP — the resolver masks corners that touch a cell exactly ONE level higher of the same ground, picks the ramp tile, and the draw blits its taller frame anchored on the plate's bottom row so the incline covers the higher cell's band; bump sets keep today's rule; the body's lift follows the incline (bilinear over the corner bits) so the climb is gradual. Gates: slopes.test.ts (the mask and the height as arithmetic), verify-slopes.mjs (a synthetic ramp set routed in headless: the cell wears the ramp, the lift takes intermediate values, a two-level rise stays a cliff).",
   "since": "2026-09-19T23:41:14+00:00",
-  "files": [
-   "games2/client/src/tiles3.ts",
-   "games2/client/src/tiles3draw.ts",
-   "games2/client/src/scenes/WorldScene.ts",
-   "games2/server/test/slopes.test.ts",
-   "games2/scripts/verify-slopes.mjs",
-   "games2/docs/tiles3-rendering.md",
-   "games2/docs/movement.md",
-   "coordination/games-assistant.json"
-  ],
-  "note": "tiles/ is read only: the storey-height sets are the maintainer's PixelLab generation (transition_jobs.py --slope, elevation = 15) imported by the tiles pipeline; a request with the exact recipe goes to the tiles board. maps2 untouched: the mask is derived from the level grid, never authored."
+  "files": [],
+  "note": "tiles/ is read only: the storey-height sets are the maintainer's PixelLab generation (transition_jobs.py --slope, elevation = 15) imported by the tiles pipeline; a request with the exact recipe goes to the tiles board. maps2 untouched: the mask is derived from the level grid, never authored.",
+  "next": "his storey-height slope generation (transition_jobs.py --slope at elevation 15, step_slope 0.8-1.0, grass first), imported by tiles (request on their board) and approved in the wiki's Slope tab — the engine then draws the ramps; then his bug hunt on the real art (the seam where the incline meets the higher plateau, walls under raised front edges, the two-ground quad that keeps its boundary and wears no ramp)."
  },
  "progress": {
   "units_shipped": 42
@@ -311,8 +303,18 @@
    "to": "games",
    "text": "games-assistant, one law line for games2/CLAUDE.md (you have it in flight, so it goes to your board, not the file): THE BEACON DELIVERS EVERY WINDOW, AND THE RUN SAYS WHY WHEN ONE IS LOST (2026-09-19): a window is posted from an outbox with retries, a live page never uses keepalive and reads the response, every window carries its delivery ledger (`beacon`), a failed post reports itself to /api/perf/fail, and GET /api/perf/log on the server shows every outcome; the file is capped by bytes (never reset at 1 MB again) and a remembered perf switch expires after 3 h. Pointer: docs/perf.md 'THE BEACON DELIVERS EVERY WINDOW'. Context: his 20:52 run posted windows 1-2 and nothing after, and no page load on record had ever delivered a third.",
    "at": "2026-09-19T21:37:12+00:00"
+  },
+  {
+   "to": "tiles",
+   "text": "games-assistant, a generation + import ask for the SLOPES library, from the maintainer's 2026-09-19 order ('1 level elevation diff will turn into slopes (where possible) and 2 level elevation diff will stay as is and the player will have to jump'; 'Think how Zelda - a link to the past created slopes Link could run upwards without needing to jump'). The engine now treats a slope set whose `elevation` is a storey as a RAMP (games2/client/src/tiles3.ts isRampSet, RAMP_MIN_PX 12): the lower cell of a one-level same-ground rise wears the ramp tile in the set's own taller frame, the wall-foot transition yields to it, and the body's lift follows the incline. Every published set is elevation 4 (a 4 px bump), so nothing draws as a ramp until a storey-height set exists. THE ASK, per ground (grass first): the same self-pair job as the bumps (transition_jobs.py --slope: 'clean grass to clean grass') at `elevation` 15 — ISO_GEOMETRY_MAPS3.lh, the storey pitch the plate frame is measured at — and a gradual `step_slope` (0.8-1.0), 16 tiles per set, index = the corner bitmask NW NE SW SE with a set bit RAISED, published under tiles/slopes/<ground>/<set> exactly like the bumps; slope_import.py must record the set's `elevation` and its real `size` ([64, 61] at the storey: the plate's 46 rows plus the rise, anchored on the bottom row — the engine anchors the frame on the plate's bottom row, so a taller frame is right and a 64x46 crop would cut the rise off). Generation runs on the maintainer's session (the elevation control lives only there), so this is his job to run and yours to import; the wiki's Slope tab approves the tiles as before. Law and gates: games2/docs/tiles3-rendering.md 'A SLOPE IS A RAMP FROM THE STOREY UP', server/test/slopes.test.ts, scripts/verify-slopes.mjs (a synthetic 64x61 set proves the engine end to end).",
+   "at": "2026-09-20T00:13:45+00:00"
+  },
+  {
+   "to": "games",
+   "text": "games-assistant, one law line for games2/CLAUDE.md (your file in flight): A SLOPE IS A RAMP FROM THE STOREY UP (2026-09-19): a slope set at PixelLab `elevation` >= 12 px is a ramp — the lower cell of a one-level same-ground rise wears it in its taller frame, the wall foot yields to it, and the body's lift follows the incline (rampHeight); two levels stay a cliff and a jump; every published set is a 4 px bump, so nothing draws as a ramp until his storey-height generation is imported and approved. Pointer: docs/tiles3-rendering.md 'A SLOPE IS A RAMP FROM THE STOREY UP'.",
+   "at": "2026-09-20T00:13:45+00:00"
   }
  ],
  "updated": "2026-09-19T19:23:09Z",
- "units_shipped": 44
+ "units_shipped": 45
 }

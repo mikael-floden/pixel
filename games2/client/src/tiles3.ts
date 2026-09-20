@@ -455,7 +455,7 @@ export interface PlateArt {
    *  ground's palette, alpha set to the silhouette) before drawing it. Using it
    *  verbatim puts 928 of 2012px in the wrong alpha. `clean` — the ground's flat
    *  colour plate. */
-  kind: "plate" | "conform" | "clean";
+  kind: "plate" | "conform" | "clean" | "ramp";
   /** Repo-relative file to load. */
   path: string;
   /** The base_tile_sets member string behind it, null for clean. */
@@ -542,6 +542,13 @@ export interface SlopeSet {
   /** `tiles/slopes/<ground>/<set>` — the verdict key's stem and the art root. */
   dir: string;
   complete?: boolean;
+  /** PixelLab's elevation control, in px: how far a raised corner stands above
+   *  the flat top. 4 on every set published so far (a sub-storey bump);
+   *  RAMP_MIN_PX and up makes the set a RAMP (see isRampSet). */
+  elevation?: number;
+  /** The published frame, [w, h]. A ramp's frame is taller than the 64x46
+   *  plate by its rise; the draw anchors it on the plate's bottom row. */
+  size?: [number, number];
   /** Index-aligned, 16 long, content-hashed: `<dir>/post/<post_files[i]>`. */
   post_files?: string[];
 }
@@ -656,7 +663,7 @@ export interface Tiles3Data {
    *  complete-set) slope tiles are 64x46, so an absent guard changes nothing —
    *  but the library has shipped 122 short tiles before, and
    *  `stats.unguardedSlopes` counts every pick made without one. */
-  slopeGuard?: (file: string) => boolean;
+  slopeGuard?: (file: string, h?: number) => boolean;
   /** LET UNJUDGED FADE ART SHIP (tier 3), and ONLY into pairs that would
    *  otherwise draw no fade at all. Default OFF, which is exactly today's
    *  picture: the fade layer is one the maintainer rates himself, and 1,800 of
@@ -890,7 +897,7 @@ export function columnY(f: Frame, x: number, y: number, storey: number): number 
  *  slab. It is a MASK, not a crop — the wall is a vertical extrusion under the
  *  diamond, so no source rectangle expresses it. */
 export type FieldArt =
-  | { kind: "plate" | "conform" | "clean"; path: string; w: number; h: number; topOnly?: boolean }
+  | { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number; topOnly?: boolean }
   | { kind: "liquid"; topRGB: [number, number, number]; w: number; h: number; topOnly?: boolean };
 
 /** GROUND PEOPLE WALK ON. Nothing grows where feet keep coming (maintainer
@@ -1005,7 +1012,7 @@ export interface FadePick {
 /** The resolved surface of one cell, before it is placed. `art` is what draws;
  *  the rest is the provenance a fixture and a gate check. */
 export interface Surface3 {
-  art: { kind: "plate" | "conform" | "clean"; path: string; w: number; h: number };
+  art: { kind: "plate" | "conform" | "clean" | "ramp"; path: string; w: number; h: number };
   set?: number;
   memberIndex?: number;
   plate?: PlateArt;
@@ -1022,6 +1029,41 @@ export interface SlopePick {
   /** `tiles/slopes/<ground>/<set>` — the set the chunk picked. */
   dir: string;
   file: string;
+  /** A STOREY-HEIGHT set (isRampSet): the raised corners stand one whole level
+   *  up, the cell is an incline a body walks up, and its art frame is `h` rows
+   *  tall (the plate's 46 plus the rise). False: a sub-storey bump in the plate
+   *  frame, today's every published set. */
+  ramp: boolean;
+  h: number;
+}
+
+/** THE SLOPE IS A RAMP FROM THIS ELEVATION UP (2026-09-19, maintainer: "1 level
+ *  elevation diff will turn into slopes (where possible) and 2 level elevation
+ *  diff will stay as is and the player will have to jump"). A published set's
+ *  `elevation` is PixelLab's control in px; every set so far is 4 (a bump that
+ *  softens the foot of any rise, drawn in the plate frame). A set generated at
+ *  the storey pitch — ISO_GEOMETRY_MAPS3.lh, 15 px — bridges a one-level rise
+ *  as an incline; 12 leaves room for a generation a texel or two short. */
+export const RAMP_MIN_PX = 12;
+export function isRampSet(st: { elevation?: number }): boolean {
+  return (st.elevation ?? 0) >= RAMP_MIN_PX;
+}
+
+/** THE HEIGHT OF A RAMP CELL'S SURFACE, in levels (0..1), at (u, v) inside the
+ *  cell — u along +x from the west edge, v along +y from the north edge — as
+ *  the bilinear blend of its four corner bits (NW 8, NE 4, SW 2, SE 1). It is
+ *  what the body's lift follows (WorldScene.rampLiftPx), so a climb is the
+ *  incline the art shows and not a 15 px step at the boundary: 1 all along
+ *  the raised edge, where the higher cell begins, and 0 along the opposite
+ *  one — continuous with both neighbours by construction. */
+export function rampHeight(mask: number, u: number, v: number): number {
+  const cu = u < 0 ? 0 : u > 1 ? 1 : u;
+  const cv = v < 0 ? 0 : v > 1 ? 1 : v;
+  const nw = (mask >> 3) & 1;
+  const ne = (mask >> 2) & 1;
+  const sw = (mask >> 1) & 1;
+  const se = mask & 1;
+  return (1 - cu) * (1 - cv) * nw + cu * (1 - cv) * ne + (1 - cu) * cv * sw + cu * cv * se;
 }
 
 export interface DetailPick {
@@ -2005,7 +2047,7 @@ export class Tiles3 {
    *  across all 15 seeds per ground meant roughly 14 of every 15 slope tiles came
    *  from a set he had never seen ("I kinda got the feeling you used a slope I
    *  never approved"). */
-  slopeSets(ground: string): SlopeSet[] {
+  slopeSets(ground: string, ramp = false): SlopeSet[] {
     if (!this.slopeCache) {
       const by = new Map<string, SlopeSet[]>();
       for (const st of this.data.slopes?.sets ?? []) {
@@ -2013,14 +2055,17 @@ export class Tiles3 {
         let any = false;
         for (let i = 0; i < 16 && !any; i++) any = this.slopeApproved(st.dir, i);
         if (!any) continue;
-        const list = by.get(st.ground);
+        // RAMPS AND BUMPS ARE TWO LISTS: a ground's storey-height sets serve
+        // its one-level rises, its sub-storey sets every other rise (isRampSet).
+        const key = `${isRampSet(st) ? "r" : "b"}|${st.ground}`;
+        const list = by.get(key);
         if (list) list.push(st);
-        else by.set(st.ground, [st]);
+        else by.set(key, [st]);
       }
       for (const list of by.values()) list.sort((a, b) => (a.dir < b.dir ? -1 : a.dir > b.dir ? 1 : 0));
       this.slopeCache = by;
     }
-    return this.slopeCache.get(ground) ?? [];
+    return this.slopeCache.get(`${ramp ? "r" : "b"}|${ground}`) ?? [];
   }
 
   /** HIS VERDICT, PER TILE — verdicts are keyed `<set dir>/tile_NN`. */
@@ -2033,23 +2078,28 @@ export class Tiles3 {
    *  hillside keeps one boundary character for the same reason a base set does.
    *  Null for an unjudged ground (light_soil, and every ground with no approved
    *  set) and for the flat/full indices 0 and 15. */
-  slopeTile(ground: string, index: number, x: number, y: number): SlopePick | null {
-    const ck = `${ground}|${index}|${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
+  slopeTile(ground: string, index: number, x: number, y: number, ramp = false): SlopePick | null {
+    const ck = `${ramp ? "r" : "b"}|${ground}|${index}|${Math.floor(x / REGION_CHUNK)},${Math.floor(y / REGION_CHUNK)}`;
     const hit = this.slopeTileCache.get(ck);
     if (hit !== undefined) return hit;
     let out: SlopePick | null = null;
-    if (index > 0 && index < 16) {
-      const sets = this.slopeSets(ground).filter((st) => this.slopeApproved(st.dir, index));
+    // A full plateau top (15) is no incline: a ramp pick refuses it; the bump
+    // library keeps its plateau tile for the cell whose every corner is up.
+    if (index > 0 && index < (ramp ? 15 : 16)) {
+      const sets = this.slopeSets(ground, ramp).filter((st) => this.slopeApproved(st.dir, index));
       if (sets.length) {
         const st = sets[fnv1a(`slope|${ground}|${Math.floor(x / REGION_CHUNK)}|${Math.floor(y / REGION_CHUNK)}`) % sets.length];
         const file = `${st.dir}/post/${(st.post_files as string[])[index]}`;
+        // A ramp's frame is the set's published height (never shorter than the
+        // plate); a bump's is the plate's, whatever the index says.
+        const h = ramp ? Math.max(PLATE_H, st.size?.[1] ?? PLATE_H) : PLATE_H;
         /* A MIS-SIZED PUBLICATION FALLS BACK TO THE FLAT PLATE, never crashes: a
          * 30-row tile cannot be masked by the 46-row silhouette. */
         if (this.data.slopeGuard) {
-          if (this.data.slopeGuard(file)) out = { index, dir: st.dir, file };
+          if (this.data.slopeGuard(file, h)) out = { index, dir: st.dir, file, ramp, h };
         } else {
           this.stats.unguardedSlopes++;
-          out = { index, dir: st.dir, file };
+          out = { index, dir: st.dir, file, ramp, h };
         }
       }
     }
@@ -2068,6 +2118,7 @@ export class Tiles3 {
     x: number,
     y: number,
     zl: number,
+    exactOne = false,
   ): number {
     /* Unrolled over the corner (i = 0..3 -> NW, NE, SW, SE) and the four cells
      * that touch it. Runs on every cell of every window, so it allocates
@@ -2079,13 +2130,36 @@ export class Tiles3 {
       for (let k = 0; k < 4; k++) {
         const ax = cx - 1 + (k & 1);
         const ay = cy - 1 + (k >> 1);
-        if (L(ax, ay) > zl && g(ax, ay) === ground) {
+        // A RAMP corner is raised by a cell exactly ONE level up (the incline
+        // bridges one storey and no more — two levels stay a cliff and a jump);
+        // a bump corner by any higher cell, as before.
+        const dl = L(ax, ay) - zl;
+        if ((exactOne ? dl === 1 : dl > 0) && g(ax, ay) === ground) {
           idx |= 8 >> i;
           break;
         }
       }
     }
     return idx;
+  }
+
+  /** THE RAMP THIS CELL WEARS, as its corner index, or 0: a ground with an
+   *  approved storey-height set, corners touching a cell exactly one level up,
+   *  never a full plateau top (15), and a tile the pick can hand out. One
+   *  question asked in two places — `wangSurface` (the foot yields to it) and
+   *  `surface` (the art) — so they cannot disagree. */
+  rampIndexFor(
+    g: (x: number, y: number) => string | null,
+    L: (x: number, y: number) => number,
+    ground: string,
+    x: number,
+    y: number,
+    zl: number,
+  ): number {
+    if (!this.slopeSets(ground, true).length) return 0;
+    const ridx = this.slopeIndexAt(g, L, ground, x, y, zl, true);
+    if (!ridx || ridx === 15) return 0;
+    return this.slopeTile(ground, ridx, x, y, true) ? ridx : 0;
   }
 
   /* -- fades --------------------------------------------------------------- */
@@ -2756,7 +2830,16 @@ export class Tiles3 {
     y: number,
     zl: number,
   ): Surface3 {
-    const b = this.boundaryAt(view, frame, g, L, x, y);
+    /* THE FOOT YIELDS TO THE RAMP (2026-09-19). A cell in front of a higher
+     * neighbour composes the wall-foot transition (`footBoundary`, his
+     * 2026-09-08 ask) INSTEAD of its plate — which is also why no slope tile
+     * has ever shown at a rise: the foot took every one of those cells. At a
+     * one-level rise the incline IS the foot, so a cell that wears a ramp
+     * composes no foot; a genuine two-ground quad still composes its boundary
+     * and wears no ramp (the tile is the boundary), and a cliff of two or more
+     * keeps its foot. Zero without a ramp set, so render3 parity holds. */
+    const ramp = this.rampIndexFor(g, L, gr, x, y, zl);
+    const b = this.boundaryAt(view, frame, g, L, x, y, ramp ? { foot: false } : undefined);
     if (b) {
       /* `art` names the cell's OWN half of the composed tile, so a draw layer
        * that has not composed the boundary yet paints something coherent under
@@ -2995,13 +3078,21 @@ export class Tiles3 {
       plate: p.art,
     };
 
-    const sidx = this.slopeIndexAt(g, L, gr, x, y, zl);
-    if (sidx) {
-      const sl = this.slopeTile(gr, sidx, x, y);
-      if (sl) {
-        out.slope = sl;
-        out.art = { kind: "plate", path: sl.file, w: TILE, h: PLATE_H };
-      }
+    /* THE RAMP BEFORE THE BUMP. A ground with a storey-height set (isRampSet)
+     * wears it on every cell whose corners touch a cell exactly one level up
+     * (never on a full plateau top, 15, which is no incline); every other rise,
+     * and every ground without one, keeps the sub-storey bump this library
+     * has always drawn. Its art is a "ramp": drawn raw in its taller frame,
+     * anchored on the plate's bottom row (tiles3draw), so the incline covers
+     * the higher cell's wall band where the two meet. */
+    const sidx = this.slopeIndexAt(g, L, gr, x, y, zl); // any rise: the bump's mask, and the detail veto below
+    let sl: SlopePick | null = null;
+    const ridx = sidx ? this.rampIndexFor(g, L, gr, x, y, zl) : 0;
+    if (ridx) sl = this.slopeTile(gr, ridx, x, y, true);
+    if (!sl && sidx) sl = this.slopeTile(gr, sidx, x, y);
+    if (sl) {
+      out.slope = sl;
+      out.art = { kind: sl.ramp ? "ramp" : "plate", path: sl.file, w: TILE, h: sl.h };
     }
 
     const fade = this.fadeFor(view, g, L, gr, x, y, zl);

@@ -214,7 +214,7 @@ import { ensureDetailDial } from "../detaildial";
 // the texture factory), the streaming per-cell runtime, and scenery. All four
 // are pure and Phaser-free; this scene is the only thing that knows about both
 // them and Phaser.
-import {
+import { rampHeight,
   Tiles3,
   DX as T3_DX,
   TOP_Y as T3_TOP_Y,
@@ -7075,6 +7075,41 @@ export class WorldScene extends Phaser.Scene {
       // THE RELOCATION VEIL'S STATE, for verify-respawnveil.mjs: what is up and
       // why the last one came down (`ready` is the honest answer; a deadline
       // is a fault to read).
+      // THE RESOLVED CELL AND THE BODY'S LIFT, for verify-slopes.mjs: what the
+      // cell wears (a ramp, a bump, nothing) and how high the feet are drawn.
+      t3cell: (col: number, row: number, fresh = false) => {
+        const c = this.t3 ? (fresh ? this.t3.cell(col, row) : this.t3cellOf(this.t3, col, row)) : null;
+        return c ? { level: c.level, kind: c.kind, ground: c.ground, slope: c.slope ?? null, art: c.art ? { kind: c.art.kind, h: c.art.h } : null } : null;
+      },
+      lift: () => this.avatars.get(this.myId)?.elev ?? null,
+      // What the resolver holds for a ground's slopes: how many bump and ramp
+      // sets are approved, and whether the north-edge tile (12) of the first
+      // of each is — the two numbers a "no ramp here" reads against.
+      // The resolver's own mask and pick for one cell, from the world doc the
+      // page holds — where a missing ramp is bisected first (no ramp set, an
+      // unapproved tile, a corner that is not exactly one level up, or a
+      // material boundary taking the cell — see wangSurface).
+      t3mask: (col: number, row: number) => {
+        const t = this.t3?.tiles;
+        const w = this.world;
+        if (!t || !w) return null;
+        const cellOf = (x: number, y: number) => w.rows[y]?.[x];
+        const g = (x: number, y: number) => cellOf(x, y)?.t ?? null;
+        const L = (x: number, y: number) => cellOf(x, y)?.l ?? -99;
+        const c = cellOf(col, row);
+        if (!c || !c.t) return null;
+        const zl = c.l ?? 0;
+        const mask = t.slopeIndexAt(g, L, c.t, col, row, zl);
+        const exact = t.slopeIndexAt(g, L, c.t, col, row, zl, true);
+        return { ground: c.t, level: zl, mask, exact, ramp: t.rampIndexFor(g, L, c.t, col, row, zl), north: [g(col, row - 1), L(col, row - 1)], east: [g(col + 1, row), L(col + 1, row)], pick: mask ? t.slopeTile(c.t, mask, col, row) : null };
+      },
+      t3slopes: (ground: string) => {
+        const t = this.t3?.tiles;
+        if (!t) return null;
+        const bump = t.slopeSets(ground);
+        const ramp = t.slopeSets(ground, true);
+        return { bump: bump.length, ramp: ramp.length, bump12: bump[0] ? t.slopeApproved(bump[0].dir, 12) : null, ramp12: ramp[0] ? t.slopeApproved(ramp[0].dir, 12) : null, bumpDir: bump[0]?.dir ?? null };
+      },
       relocate: () => ({
         active: this.relocate
           ? {
@@ -13866,7 +13901,7 @@ export class WorldScene extends Phaser.Scene {
       }
       // world@2: lift by the SURFACE level (deck when standing on it, else base),
       // not the cell's base level — so a player on the roof/bridge draws up there.
-      const targetElev = surfLevel * this.geom.lh - (swimming ? swimDrop : 0);
+      const targetElev = surfLevel * this.geom.lh + (swimming ? 0 : this.rampLiftPx(tx, ty, surfLevel)) - (swimming ? swimDrop : 0);
       // JUMP OUT of the water, don't teleport: reaching land from a swim means
       // the feet must rise ~swimDrop back to the surface. Ease that rise over a
       // short arc + a hop so it reads as leaping out instead of snapping up.
@@ -14208,7 +14243,7 @@ export class WorldScene extends Phaser.Scene {
         mv.fx = m.x;
         mv.fy = m.y;
         const g = this.projectFlat(m.x, m.y);
-        const targetElev = (m.elev ?? g.lvl) * this.geom.lh;
+        const targetElev = (m.elev ?? g.lvl) * this.geom.lh + this.rampLiftPx(m.x, m.y, m.elev ?? g.lvl);
         // Is any of this body's art inside the view? The anchor is at the FEET,
         // so the sprite occupies [y-h, y] and the shadow — which can be WIDER
         // than the sprite (a mammoth's ellipse spans ~190px) — straddles it.
@@ -25317,6 +25352,24 @@ export class WorldScene extends Phaser.Scene {
     const key = this.hurtClipKey(av);
     const frames = (key && this.anims.get(key)?.frames.length) || HURT_IMPACT_FRAME + 1;
     return hurtLeadMs(frames, ANIM_FPS.hurt);
+  }
+
+  /** THE LIFT A RAMP ADDS, in px: on a cell that wears a storey-height slope
+   *  (SlopePick.ramp) the body's feet follow the incline — rampHeight over the
+   *  corner bits at the body's position inside the cell, times the storey —
+   *  so a one-level climb is the slope the art shows, not a 15 px step at the
+   *  boundary (maintainer 2026-09-19, "think how Zelda - a link to the past
+   *  created slopes Link could run upwards"). Zero off a ramp, on a deck over
+   *  one (the deck is the surface then), and while the resolver has no cell. */
+  private rampLiftPx(x: number, y: number, level: number): number {
+    const t3 = this.t3;
+    if (!t3) return 0;
+    const col = Math.floor(x / CELL_WU);
+    const row = Math.floor(y / CELL_WU);
+    const cell = this.t3cellOf(t3, col, row);
+    const sl = cell?.slope;
+    if (!cell || !sl || !sl.ramp || cell.level !== level) return 0;
+    return rampHeight(sl.index, x / CELL_WU - col, y / CELL_WU - row) * this.geom.lh;
   }
 
   private stepElevation(av: Avatar, target: number, dt: number): void {

@@ -31,7 +31,7 @@
  * declares the first and third), so the whole module is provable under node.
  */
 
-import {
+import { PLATE_H,
   Tiles3,
   computeRegions,
   type BaseTileSetsDoc,
@@ -696,7 +696,9 @@ export function dressKey(t3: Tiles3Textures, cell: Tiles3Cell): { key: string; x
  *  way — that IS the column's top. */
 export function surfaceY(cell: Tiles3Cell): number | null {
   if (cell.kind === "wall") return null;
-  return cell.pasteY ?? cell.sy;
+  // A ramp's taller frame hangs above the plate's (tiles3draw's surface op).
+  const extra = cell.art && cell.art.kind !== "liquid" ? Math.max(0, cell.art.h - PLATE_H) : 0;
+  return (cell.pasteY ?? cell.sy) - extra;
 }
 
 /** The column's REPRESENTATIVE course — the streaming guard and the fallback,

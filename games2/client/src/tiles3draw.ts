@@ -573,6 +573,30 @@ export function conformPlate(sheets: PatternSheets, src: Pixels, wallRGB: readon
   return out;
 }
 
+/** A RAMP, TOP FACE ONLY: the rows above the plate frame (the rise) are kept
+ *  whole, and inside the frame the library's top-face silhouette applies row
+ *  for row — so the lifted top and the wall painted under a raised front edge
+ *  (both inside the diamond's rows) stay, and the ramp's own flat band below
+ *  the diamond is masked off. The frame is the source's own, never 64x46. */
+export function rampTopOnly(sheets: PatternSheets, src: Pixels): Pixels {
+  const { fw, fh, libTop } = sheets;
+  const extra = Math.max(0, src.h - fh);
+  const out = newPixels(src.w, src.h);
+  out.data.set(src.data);
+  for (let y = extra; y < src.h; y++) {
+    const ly = y - extra;
+    for (let x = 0; x < src.w; x++) {
+      if (x < fw && ly < fh && libTop[ly * fw + x]) continue;
+      const i = (y * src.w + x) * 4;
+      out.data[i] = 0;
+      out.data[i + 1] = 0;
+      out.data[i + 2] = 0;
+      out.data[i + 3] = 0;
+    }
+  }
+  return out;
+}
+
 /** A PLATE'S WALL BAND, REPAINTED IN ITS OWN SURFACE COLOUR.
  *
  *  The maintainer's dots measure EXACTLY (171,146,116) — light_beach's palette
@@ -1119,7 +1143,9 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
     if (!art) return [];
     const key = art.kind === "liquid" ? liquidKey(art.topRGB) : plateKey(art, cell.ground);
     const ops: Tiles3Blit[] = [
-      { key, x: cell.sx, y: cell.pasteY ?? cell.sy, sx: 0, sy: 0, sw: art.w, sh: art.h, role: "surface" },
+      // A RAMP'S TALLER FRAME HANGS ABOVE THE PLATE'S: anchored on the bottom
+      // row, so its extra rows rise into the higher neighbour's band.
+      { key, x: cell.sx, y: (cell.pasteY ?? cell.sy) - Math.max(0, art.h - PLATE_H), sx: 0, sy: 0, sw: art.w, sh: art.h, role: "surface" },
     ];
     /* ...AND THE FADE'S SCATTER ON TOP OF IT. A fade no longer replaces the
      * plate (see the resolver): it paints only the texels that are not the
@@ -1176,7 +1202,7 @@ function cellOpsBuild(cell: Tiles3Cell): Tiles3Blit[] {
     ops.push({
       key: plateKey(art, cell.ground),
       x: cell.sx,
-      y: cell.pasteY ?? cell.sy,
+      y: (cell.pasteY ?? cell.sy) - Math.max(0, art.h - PLATE_H), // a ramp's frame hangs above the plate's
       sx: 0,
       sy: 0,
       sw: art.w,
@@ -1685,6 +1711,21 @@ export class Tiles3Textures {
 
   plate(art: PlateLike, ground: string): string | null {
     const { key, skey } = this.keysFor(art, ground);
+    /* A RAMP IS DRAWN RAW. The cap-and-mask raster (`platePixels`) crops to
+     * the 64x46 plate frame and masks to its silhouette, which would cut the
+     * incline off at the diamond's top vertex — the rise is exactly what lies
+     * outside that frame. The published file is the picture. */
+    if (art.kind === "ramp") {
+      if (!art.topOnly) return this.o.textures.exists(key) ? key : null;
+      /* ON A WALL CELL the ramp goes on the cap TOP FACE ONLY, like any
+       * surface: its rise (the rows above the plate frame) and its lifted
+       * top are kept whole, its own flat wall band is masked off so the wall
+       * set's masonry stays the only lawful wall. */
+      return this.ensureHit(key) ?? this.ensure(key, () => {
+        const src = this.sourcePixels(artKey(art.path));
+        return src ? rampTopOnly(this.o.sheets, src) : null;
+      });
+    }
     /* A published or clean plate is drawn straight from its loaded file and is
      * never copied — UNLESS it is top-only, which is a different picture and so
      * a built raster under its own key. */

@@ -56,10 +56,14 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
 - **Movement (#17)** is server-authoritative and governed by **elevation**,
   not tile category: `buildTerrainGrid` reads each cell's `l` + category;
   `canEnter` allows a move if the destination is enterable and the UPWARD step
-  is within the climb allowance — dropping any height is free. Design
-  "Option 2B": `WALK_CLIMB = 0.5` (no walking up a full 1-level ledge); a
-  timed **jump** (`JUMP_CLIMB = 1`, Space) climbs it. `stepMovement` resolves
-  axis-separated (wall-slide), scaled by the current surface speed.
+  is within the climb allowance. `WALK_CLIMB = 1`: a one-level step is walked
+  (the client eases the lift up over it, `integrateFall`; on a cell that wears
+  a storey-height RAMP the feet follow the incline instead —
+  `WorldScene.rampLiftPx`, docs/tiles3-rendering.md "A SLOPE IS A RAMP"); a
+  timed **jump** (`JUMP_CLIMB = 2`, Space, or the auto-jump when stalled
+  against a ledge) climbs two. Descending one level eases, more falls
+  (`makeDrops`, FALL_TRIGGER_FRAC). `stepMovement` resolves axis-separated
+  (wall-slide), scaled by the current surface speed.
 - **A FOOTPRINT BELONGS TO THE FLOOR ITS PIECE STANDS ON, AND SO DOES A
   BODY** (`SceneryFootprints.lvl`, `FOOTPRINT_LEVEL_SLACK` 1.5; `nearBodies`
   in WorldScene). Position is flat (x, y) and a cave shares its x/y range with
