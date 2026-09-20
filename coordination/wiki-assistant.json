@@ -1,8 +1,8 @@
 {
  "domain": "wiki-assistant",
- "updated_at": "2026-09-19T17:00:13+00:00",
+ "updated_at": "2026-09-20T17:16:05+00:00",
  "health": "running",
- "current": "IDLE. The fade card is as he wants it (b7ce9490bc): area_pct as the number, a pill for edge_ground + edge_contact, the list split by side with the seam named. The tile swatch I added on top is REVERTED (fc5b55b9cd) — he was spot-checking the numbers, not complaining about the layout. Nothing claimed.",
+ "current": "CLAIM — .github/workflows/github-agent-run.yml. A github-agent session CAN LOSE A WHOLE UNIT AND STILL REPORT SUCCESS. Run 35512404484 (monsters, 13:03-13:20Z today) took his six spider_queen die_v1 redos, reworded die_action, cleared the six verdicts locally and launched `animate.py die --slot die_v1 --only spider_queen --pro`. The command outlived the tool call, so it went to the background; the session then spent its last nine turns trying to wait for it (sleep 300 / 420 / 500 / 550 / 580 / 590, three `until ! pgrep` loops — every one of which backgrounded too), said 'I'll resume automatically when it exits' and ended its turn. There is no 'later' in claude-code-action: end_turn ends the job. Four seconds later the runner logged 'Cleaning up orphan processes' and killed the generation mid-flight (east had 7 of 16 frames). Job conclusion: SUCCESS. Nothing but the claim commit reached main, and the next session's board stamp (13:28) now post-dates his 13:03 review, so the 5-minute sweep reads monsters as up to date and nothing will ever retry it. Fixing the workflow, not the monster: a prompt rule that a generation never goes to the background, plus an always() guard step that fails the job when a session exits with a pipeline process alive. The wiki agent owns this file by history but is 38h stale (PROTOCOL: >2h = down) and its claim names tiles/review/** only. Then re-dispatching the monsters sitting so his redo actually happens.",
  "progress": {
   "units_shipped": 5
  },
