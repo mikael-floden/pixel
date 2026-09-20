@@ -29,10 +29,11 @@
 // step back out to. The lid arm derives its own — the roofed deck that carries
 // a piece standing on top of it.
 import { spawn } from "node:child_process";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { chromium } from "playwright-core";
+import { PNG } from "pngjs";
 import { ensureClientDist } from "./clientdist.mjs";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..");
@@ -486,6 +487,199 @@ if (lid && lid.onLidIdx.length) {
         leaks.length === 0,
         `no light of the room under it reaches it while the mask is up (${leaks.length} leak(s), worst occ ${leaks.reduce((a, L) => Math.max(a, L.occ ?? 0), 0).toFixed(3)})`,
       );    }
+  }
+}
+
+// --- THE EXIT FADE AT THE DOOR (maintainer 2026-09-20, four screenshots of his
+//     hearth house): "the entire house is colored reddish during the indoor to
+//     outdoor animation ... the scenery light inside the house lights up the
+//     outside of the house", and "it looks a bit ugly that we can see the
+//     scenery through the roof during the animation". Two rules, both pinned:
+//     the house's OUTER FACES fade with the street (a face whose front cell is
+//     not my room's is outside it; the sun leaves my room only), and the
+//     furniture is GONE once the roof is opaque (indoorcurve.ts, leaving: the
+//     lesser of the light grade and the debris' complement). Measured on his
+//     frame before: the world at 0.62 of settled, the house's faces at 1.03, a
+//     table at 0.38 on a solid roof.
+//     The crossing is a HOP of 1.8 cells through the doorway — under the 2-cell
+//     correction bar, so the blend is not snapped and the real crossfade runs
+//     (a walk on this rig is ~1 cell per 24 s) — with the blend PINNED, and the
+//     pixels are read at the cells' own projections so the camera's glide after
+//     a crossing does not matter. Regions the small viewport cannot hold are
+//     skipped; at least one outer face must be in view or the arm is unmeasured.
+{
+  const floorL = doc.level?.[stand[1]]?.[stand[0]] ?? 0;
+  const cellsXY = [...house.cells].map((k) => k.split(",").map(Number));
+  const wallL = Math.max(...cellsXY.map(([x, y]) => doc.level?.[y]?.[x] ?? 0));
+  const roofL = house.d.level ?? wallL;
+  const maxX = Math.max(...cellsXY.map((c) => c[0]));
+  const maxY = Math.max(...cellsXY.map((c) => c[1]));
+  // THE DOOR: a deck cell at the floor level with the outside beside it.
+  let door = null;
+  for (const [x, y] of cellsXY) {
+    if ((doc.level?.[y]?.[x] ?? 99) !== floorL) continue;
+    for (const [ox, oy] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+      const lv = doc.level?.[y + oy]?.[x + ox];
+      if (typeof lv === "number" && lv <= floorL + 1 && !house.cells.has(`${x + ox},${y + oy}`)) { door = { x, y, ox, oy }; break; }
+    }
+    if (door) break;
+  }
+  if (!door || wallL <= floorL) {
+    check(false, `no doorway with the street beside it on this house (walls ${wallL}, floor ${floorL}) — the exit-fade arm is unmeasured`);
+  } else {
+    const inSpot = [door.x + 0.5 - 0.6 * door.ox, door.y + 0.5 - 0.6 * door.oy];
+    const hop = [door.x + 0.5 + 1.2 * door.ox, door.y + 0.5 + 1.2 * door.oy];
+    // The street cell: four cells out from the door, past the house's own cast
+    // shadow, on the same ground the door opens onto.
+    const streetCell = [door.x + 4 * door.ox, door.y + 4 * door.oy];
+    // The visible outer faces: the SW face of the south (max-y) wall row and the
+    // SE face of the east (max-x) wall column — the wall cell nearest the door
+    // but two cells clear of it (villagers gather at doors and a body in front
+    // of the face is a sample of the body), and with NO scenery on that face:
+    // a window's pane or a barrel against the wall draws its lit copy above the
+    // darkness overlay, so a "face" sample on it never fades with anything
+    // (measured on the meadow house: 180 luma on a pane, 98% of settled through
+    // the whole crossing).
+    const nearest = (cands) => cands
+      .filter(([x, y]) => Math.hypot(x - door.x, y - door.y) >= 2)
+      .sort((a, b) => Math.hypot(a[0] - door.x, a[1] - door.y) - Math.hypot(b[0] - door.x, b[1] - door.y))[0] ?? null;
+    const placed = doc.scenery ?? [];
+    const clearFace = (x, y, ox, oy) => !placed.some((p) => Math.abs(p.x - (x + 0.5 + ox)) < 1.3 && Math.abs(p.y - (y + 0.5 + oy)) < 1.3);
+    const southWall = nearest(cellsXY.filter(([x, y]) => y === maxY && (doc.level?.[y]?.[x] ?? 0) === wallL && clearFace(x, y, 0, 1)));
+    const eastWall = nearest(cellsXY.filter(([x, y]) => x === maxX && (doc.level?.[y]?.[x] ?? 0) === wallL && clearFace(x, y, 1, 0)));
+    const roofCell = nearest(cellsXY.filter(([x, y]) => (doc.level?.[y]?.[x] ?? 99) === floorL && x < maxX - 1 && y < maxY - 1));
+    // A TALLER VIEW, AND A PINNED CAMERA. At 480x320 the game's view is a
+    // 200 px strip under the HUD cards and the time pill, and a wall face two
+    // rows up from the player lands under the pill (measured: the "face" was
+    // the pill's own sky art). Portrait, like his phone, puts the door's wall
+    // in the clear band; the camera is parked on the cell above the door after
+    // each hop (a teleport re-attaches it) and again for the settled frame, so
+    // the two frames project identically.
+    await page.setViewportSize({ width: 480, height: 720 });
+    const camAt = [door.x - 2 * door.ox, door.y - 2 * door.oy];
+    const parkCam = async () => {
+      await page.evaluate(([c, r]) => window.__ml.lookAt(c, r), camAt);
+      await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+      await new Promise((r) => setTimeout(r, 500));
+    };
+    const hopOut = async () => {
+      await page.evaluate(([c, r]) => window.__ml.teleport(c, r), hop);
+      const ok = await page.waitForFunction(
+        ([c, r]) => { const f = window.__ml.indoorFade(); const m = window.__ml.me(); return f.exiting === true && !!m && Math.abs(m.x / 32 - c) < 0.7 && Math.abs(m.y / 32 - r) < 0.7; },
+        hop, { timeout: 60_000, polling: 100 },
+      ).then(() => true).catch(() => false);
+      await parkCam();
+      return ok;
+    };
+    const geom = () => page.evaluate(([sx, sy, wx, wy]) => {
+      const a = window.__ml.cellScreen(sx, sy), b = window.__ml.cellScreen(sx + 1, sy); // two street cells, equal level
+      const w = window.__ml.cellScreen(wx, wy); // a wall cell, at the wall's own level
+      const dx = b.x - a.x, dy = b.y - a.y;
+      // w vs a: (col+row) differ by (wx+wy) - (sx+sy) rows of dy, and (w.level - a.level) levels of lh
+      const lh = ((a.y + ((wx + wy) - (sx + sy)) * dy) - w.y) / Math.max(1e-6, w.level - a.level);
+      return { dx, dy, lh, zoom: a.zoom, vw: window.innerWidth, vh: window.innerHeight, dpr: window.devicePixelRatio };
+    }, [streetCell[0], streetCell[1], (southWall ?? eastWall)[0], (southWall ?? eastWall)[1]]);
+    const measure = async (label) => {
+      const buf = await page.screenshot({ type: "png" });
+      const png = PNG.sync.read(buf);
+      const g = await geom();
+      const { dx, dy, lh } = g;
+      const proj = await page.evaluate(([cells]) => cells.map(([c, r]) => (c === null ? null : window.__ml.cellScreen(c, r))),
+        [[southWall ?? [null, null], eastWall ?? [null, null], roofCell ?? [null, null], streetCell]]);
+      const [pS, pE, pR, pT] = proj;
+      // Boxes in the screenshot's own pixels: cellScreen answers in the canvas's
+      // pixels, and the canvas is the viewport at dpr 1 here.
+      const box = (cx, cy, hw, hh) => [Math.round(cx - hw), Math.round(cy - hh), Math.round(cx + hw), Math.round(cy + hh)];
+      const faceMid = (P, sign) => [P.x + (sign * dx) / 2, P.y + 1.5 * dy - (wallL - P.level) * lh + ((wallL - floorL) * lh) / 2];
+      const topMid = (P, lv) => [P.x, P.y + dy - (lv - P.level) * lh];
+      const regions = {
+        southFace: pS ? box(...faceMid(pS, -1), dx / 4, Math.max(2, lh * 0.9)) : null,
+        eastFace: pE ? box(...faceMid(pE, +1), dx / 4, Math.max(2, lh * 0.9)) : null,
+        roof: pR ? box(...topMid(pR, roofL), dx * 0.4, dy * 0.4) : null,
+        street: box(...topMid(pT, floorL), dx * 0.4, dy * 0.4),
+      };
+      const mean = (b) => {
+        if (!b) return null;
+        const [x0, y0, x1, y1] = b;
+        if (x0 < 0 || y0 < 0 || x1 > png.width || y1 > png.height) return null; // off the small viewport: unmeasured here
+        let r = 0, gg = 0, bb = 0, n = 0;
+        for (let y = y0; y < y1; y++) for (let x = x0; x < x1; x++) { const i = (y * png.width + x) * 4; r += png.data[i]; gg += png.data[i + 1]; bb += png.data[i + 2]; n++; }
+        return n ? [r / n, gg / n, bb / n] : null;
+      };
+      const stats = Object.fromEntries(Object.entries(regions).map(([k, b]) => [k, mean(b)]));
+      const f = await page.evaluate(() => ({ fade: window.__ml.indoorFade(), me: window.__ml.me(), tod: window.__ml.timeOfDay?.() }));
+      writeFileSync(join(ROOT, "scripts", `_tmp-exitfade-${label.replace(/[^a-z0-9.]+/gi, "-")}.png`), buf);
+      console.log(`  [${label}] mix ${f.fade.mix} debris ${f.fade.alpha} furniture ${f.fade.roofedDrawn} | ` +
+        Object.entries(stats).map(([k, v]) => `${k} ${v ? v.map((x) => x.toFixed(0)).join(",") : "off-view"}`).join(" | ") +
+        ` | ${f.tod?.name ?? "?"} t${f.tod?.phaseT?.toFixed?.(2)} | zoom ${g.zoom.toFixed(2)} dx ${dx.toFixed(1)} dy ${dy.toFixed(1)} lh ${lh.toFixed(1)} | boxes ${JSON.stringify(regions)}`);
+      return { stats, fade: f.fade };
+    };
+    console.log(`  exit-fade fixture: floor ${floorL} walls ${wallL} roof ${roofL}; door ${door.x},${door.y} facing ${door.ox},${door.oy}; in ${inSpot.map((v) => v.toFixed(1))} hop ${hop.map((v) => v.toFixed(1))}; south wall ${southWall} east wall ${eastWall} roof cell ${roofCell} street ${streetCell}`);
+    const luma = (v) => (v ? 0.299 * v[0] + 0.587 * v[1] + 0.114 * v[2] : NaN);
+
+    // CLEAR SKY, pinned on this client: the cloud field is a drifting shadow,
+    // and two frames minutes apart under a passing cloud edge differ by more
+    // than the bars below with nothing wrong (measured: one roof cell at 1.56x
+    // the street's ratio in one run, 0.53x in the next).
+    await page.evaluate(() => window.__ml.weather?.(0, true));
+    // ...AND DAY, the condition of his screenshots: at night the faces beside a
+    // door are lit by the street's own lamp and the panes' glow, neither of
+    // which rides the street's ambient fade this arm is about.
+    await page.evaluate(() => window.__ml.timeOfDay?.("day", true, 0.5));
+    await at(inSpot[0], inSpot[1], "just inside the door");
+    // The furniture must be DRAWN before the crossing means anything.
+    const furnished = await page.waitForFunction(() => { try { return window.__ml.sceneryIndoor().drawnRoofed > 0; } catch { return false; } }, null, { timeout: 120_000, polling: 500 }).then(() => true).catch(() => false);
+    check(furnished, "the room's furniture is drawn before the exit is measured");
+    // 1. Pinned at mix 0.5: the roof is opaque (debris 1) while the light grade is
+    //    still 0.25 — where the old rule left a table at 0.25 on a solid roof.
+    await page.evaluate(() => window.__ml.indoorMixPin(0.5));
+    const flipped = await hopOut();
+    check(flipped, "the hop through the doorway starts the exit crossfade (blend pinned at 0.5)");
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const half = await measure("exit pinned 0.5");
+    check(half.fade.alpha >= 0.999, `the roof debris is opaque at mix 0.5 (alpha ${half.fade.alpha})`);
+    check(
+      half.fade.roofedDrawn !== null && half.fade.roofedDrawn <= 0.02,
+      `under an opaque roof the furniture wears nothing (drawn alpha ${half.fade.roofedDrawn}; on the light grade alone it wore 0.25)`,
+    );
+    // 2. Pinned at mix 0.9: still a FADE, not a switch — the roof at 0.3, the
+    //    furniture at the lesser of the grade (0.85) and the roof's complement (0.7).
+    await page.evaluate(() => window.__ml.indoorMixPin(null));
+    await at(inSpot[0], inSpot[1], "just inside the door again");
+    await page.evaluate(() => window.__ml.indoorMixPin(0.9));
+    const flipped2 = await hopOut();
+    check(flipped2, "the second hop starts the exit crossfade (blend pinned at 0.9)");
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const early = await measure("exit pinned 0.9");
+    check(
+      early.fade.roofedDrawn !== null && Math.abs(early.fade.roofedDrawn - 0.7) <= 0.05,
+      `while the roof is still returning the furniture fades with it — 0.70 at mix 0.9 (drawn alpha ${early.fade.roofedDrawn}; the grade alone is 0.85)`,
+    );
+    // 3. The settled outdoor frame, and the light comparison: through the fade
+    //    the house's outer faces must fade with the street, not stay lit as the
+    //    room. Measured before at his geometry: the faces at 1.6x the street's
+    //    own fade ratio.
+    await page.evaluate(() => window.__ml.indoorMixPin(null));
+    const landed = await page.waitForFunction(() => { const f = window.__ml.indoorFade(); return !f.inside && f.mix <= 0 && !f.exiting; }, null, { timeout: 120_000, polling: 250 }).then(() => true).catch(() => false);
+    check(landed, "the exit crossfade lands outdoors");
+    await settle();
+    await parkCam();
+    const done = await measure("settled outside");
+    const ratio = (a, b, k) => luma(a.stats[k]) / Math.max(1, luma(b.stats[k]));
+    const streetK = ratio(half, done, "street");
+    check(streetK > 0.3 && streetK < 0.95, `mid-exit the street is fading up from black (${(streetK * 100).toFixed(0)}% of settled)`);
+    let facesInView = 0;
+    for (const k of ["southFace", "eastFace"]) {
+      if (!half.stats[k] || !done.stats[k]) continue;
+      facesInView++;
+      const rel = ratio(half, done, k) / streetK;
+      check(rel <= 1.2, `the house's outer face (${k}) fades WITH the street — ${(rel * 100).toFixed(0)}% of the street's own fade ratio (was ~160%)`);
+    }
+    check(facesInView > 0, "at least one outer face of the house is in view to measure");
+    if (half.stats.roof && done.stats.roof) {
+      const rel = ratio(half, done, "roof") / streetK;
+      check(rel >= 0.75 && rel <= 1.25, `the roof slab fades with the street too (${(rel * 100).toFixed(0)}% of the street's ratio)`);
+    }
   }
 }
 

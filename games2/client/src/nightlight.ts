@@ -126,6 +126,9 @@ export interface LightParts {
   occ: Float32Array;
   ao: number;
   sunF: number;
+  /** The sun STRENGTH `sunF` was computed with: the room's (eased down by the
+   *  grade) for a sample in my room, the world's for one outside it. */
+  sunW: number;
 }
 
 /* SCENERY OCCLUDER SIZING — see NightLights.setSceneryOccluders. */
@@ -381,7 +384,8 @@ uniform vec2 uHBlockN;     // the block grid's size
 uniform float uSkip;       // 1 = uHBlock is bound and the march may skip whole blocks
 uniform float uHScale;    // levels→byte pack scale (per-world; 16 unless the world tops ~15 levels)
 uniform vec3 uAmbient;    // night grade (what unlit white becomes)
-uniform vec4 uSun;        // directional sun: cast dir (grid x,y), slope (levels/cell), strength
+uniform vec4 uSun;        // directional sun: cast dir (grid x,y), slope (levels/cell), strength — MY ROOM's strength, eased down by the indoor grade
+uniform float uSunOut;    // the sun's strength OUTSIDE my room: the world's own, whatever the crossing is doing (see sunShare)
 uniform float uCloud;     // weather: cloud cover 0..1 (world-anchored drifting shadow field)
 uniform float uAurora;    // aurora night 0..1: northern-light curtains ADD colour to the ambient
 uniform float uFlip;      // 1 = invert fragment y (GL bottom-up), 0 = direct
@@ -1261,9 +1265,33 @@ void main() {
    * covers the soft sampling. */
   if (ownShare > 0.0 && z > groundTerrAt(cell) + 1.0) ownShare = 0.0;
   vec2 ownC = floor(cell) + 0.5;
+  // THE ROOM TERM — read here for the sun's share and reused by the ambient
+  // below (see roomAt: 1 outdoors and in my room, 0 outside it while a room is
+  // published).
+  float r = roomAt(cell, z);
+  // A FACE THAT LOOKS OUT OF MY ROOM IS OUTSIDE IT. Membership is per CELL and
+  // a wall cell of my building is my room's, so its OUTER face — the street
+  // side of the same column — took the interior ambient, the hearth's halo and
+  // the room's own sun grade, at every height, on both sides of the wall. Nobody
+  // sees that outer face while the cut-away stands (the near walls are stumps)
+  // — but through the EXIT fade the debris paints the whole outer wall again,
+  // lit as the room while the street beside it fades up from black: measured
+  // on his screenshot mid-exit, the world at 0.62 of its settled value and the
+  // house's outer faces at 1.03 (maintainer 2026-09-20: "the entire house is
+  // colored reddish during the indoor to outdoor animation ... the scenery
+  // light inside the house lights up the outside of the house"). The side a
+  // face is on is the cell in FRONT of it — the same test the wall-top fade
+  // already makes (front, below) — so a face whose front cell is not my room's
+  // is the street's: it fades with the street, takes no room light above the
+  // light (the back-face gate keeps the rest out) and none of the halo.
+  float outerFace = 0.0;
+  if (isFace && r > 0.5) {
+    outerFace = 1.0 - roomCellAt(baseF + 0.5 + mix(vec2(0.0, 1.0), vec2(1.0, 0.0), step(0.5, pickR)));
+    r *= 1.0 - outerFace;
+  }
   float sunF = 1.0;
   float dbgShadow = 0.0; // see the shadow debug switch below
-  if (uSun.w > 0.001) {
+  if (max(uSun.w, uSunOut) > 0.001) {
     // Terrain marches multiplicatively (long straight ridges project as
     // TERRAIN: the original multiplicative march, byte-identical to the
     // approved cliff look (maintainer: cliffs are PERFECT — locked). The
@@ -1358,7 +1386,15 @@ void main() {
       float cosS = dot(nrm, -uSun.xy);
       sunVis *= clamp(cosS * 1.4 + 0.55, 0.3, 1.0);
     }
-    float sunShare = 0.45 * uSun.w; // the sun's slice of the phase ambient
+    // THE SUN LEAVES MY ROOM ONLY. uSun.w is the room's strength — the scene
+    // eases it to 0 with the indoor grade, because a room with its roof cut
+    // away must not be daylit through the hole ("always dark as during the
+    // night"). It used to be the whole world's: through a doorway crossing
+    // every shadowed face and every cast shadow in the STREET lifted with the
+    // grade and dropped back at the landing — the house's own shaded faces
+    // read 1.38x over the fade with no light on them. A pixel outside my room
+    // keeps the world's sun (uSunOut); inside, the eased one.
+    float sunShare = 0.45 * mix(uSunOut, uSun.w, r); // the sun's slice of the phase ambient
     sunF = (1.0 - sunShare) + sunShare * clamp(sunVis, 0.0, 1.0);
     /* THE SHADOW DEBUG SWITCH (settings: "shadows"). The maintainer's tool for
      * telling a SHADOW from a TILE: a dotted line that survives mode 1 is
@@ -1396,7 +1432,7 @@ void main() {
   // 0.35s roll the indoor ambient itself rides, so crossing a doorway FADES the
   // outside to black under an interior that is still dimming, instead of
   // blacking half the screen a frame before the room has caught up.
-  float r = roomAt(cell, z);
+  // (r was read above the sun block, with the outer-face rule applied.)
   // OVER MY OWN ROOF: this pixel's cell is my room's and it sits at or above
   // ITS OWN deck's underside — the roof slab itself, and whatever stands on it
   // (a wall column with no deck over it is never "over" anything; see roomAt).
@@ -1404,8 +1440,10 @@ void main() {
   // the room's lights and its halo field are blocked here OUTRIGHT, at every
   // point of the crossing — the per-light ease below is for the street, which
   // has a doorway to see through. See the light loop and the uGlow block.
+  // ...AND SO IS THE OUTER FACE OF MY OWN WALL (outerFace, above): the wall is
+  // between it and every light in the room.
   float cz = roomCeilAt(cell);
-  float overMyRoom = cz > 0.5 && z >= cz ? roomConstrainedAt(cell) : 0.0;
+  float overMyRoom = max(cz > 0.5 && z >= cz ? roomConstrainedAt(cell) : 0.0, outerFace);
   // A LID: a top pixel of MY room on a column the cut-away draws lower than
   // it stands (the parapet of a lowered wall). See the lid skip in the march.
   bool lid = !isFace && uIndoorMix > 0.001 && roomCellAt(cell) > 0.5 && baseTerrAt(cell) > z + 0.05;
@@ -2828,6 +2866,9 @@ export class NightLights {
   private oArr!: Uint8Array;   // CPU solid-object flags
   private curLights: ShaderLight[] = [];
   private curStamps: GlowStamp[] = [];
+  /** The world's sun strength — what a sample OUTSIDE my room shades by while
+   *  `curSun[3]`, the room's, is eased to 0 with the indoor grade (uSunOut). */
+  private curSunOut = 0;
   private curAmbient: [number, number, number] = [0.075, 0.09, 0.14];
   private emission: EmissionMap;
   private emitList: EmissionEntry[] = []; // palette order (index = shader eIdx)
@@ -2983,6 +3024,7 @@ export class NightLights {
       // phone GPUs leave it at vec4(0) = sun permanently off (playtest:
       // "0 effect"). The inverse twin of the uAnimTime bug below.
       uSun: { type: "4f", value: { x: 0, y: 0, z: 1, w: 0 } },
+      uSunOut: { type: "1f", value: 0 }, // the world's sun strength, for pixels outside my room (the uSun lesson: declared)
       uCloud: { type: "1f", value: 0 },
       uAurora: { type: "1f", value: 0 },
       uFlip: { type: "1f", value: 1 },
@@ -4469,9 +4511,6 @@ export class NightLights {
     const geo = this.geo;
     const wxT = this.iso.ox + (col - row) * geo.dx + geo.dx;
     const wyT = this.iso.oy + (col + row) * geo.dy + geo.dy - z * geo.lh;
-    const sunOnly = this.sunFactorAt(col, row, z, this.curSun, selfR2, groundContact);
-    const sunF = sunOnly * this.cloudFactorAt(wxT, wyT);
-    const aur = this.auroraAt(wxT, wyT);
     // EXACT TWIN of the fragment's `inRoom` (roomAt): indoors, a sample outside
     // MY room gets no ambient and no sky glow — only the point lights below.
     // The shader and this must agree or a body standing just outside the
@@ -4481,6 +4520,13 @@ export class NightLights {
     // has to outlive the boolean or stepping out gives the whole world the
     // interior's light for the length of the fade.
     const hit = this.indoorMix > 0 ? this.inMyRoom(col, row, z, isObj) : 1;
+    // TWIN of the fragment's sunShare: the sun leaves MY ROOM only. A sample in
+    // my room shades by curSun (eased to 0 with the grade); one outside keeps
+    // the world's own strength through the crossing.
+    const sunW = hit > 0.5 ? this.curSun[3] : this.curSunOut;
+    const sunOnly = this.sunFactorAt(col, row, z, hit > 0.5 ? this.curSun : [this.curSun[0], this.curSun[1], this.curSun[2], sunW], selfR2, groundContact);
+    const sunF = sunOnly * this.cloudFactorAt(wxT, wyT);
+    const aur = this.auroraAt(wxT, wyT);
     // OVER MY OWN ROOF (the fragment's overMyRoom): my room's cell, at or above
     // its underside. The room's lights and its halo field are blocked here
     // outright — a roof is geometry, and the ease below belongs to the street.
@@ -4519,6 +4565,7 @@ export class NightLights {
       parts.base[1] = out[1];
       parts.base[2] = out[2];
       parts.sunF = sunOnly;
+      parts.sunW = sunW;
       parts.ao = 1;
       parts.occ.fill(1);
     }
@@ -5189,11 +5236,13 @@ export class NightLights {
     playerCol = 0,
     playerRow = 0,
     contact: ContactStamp[] = [],
+    sunOut = sun[3],
   ) {
     this.curLights = lights;
     this.curStamps = stamps;
     this.curAmbient = ambient;
     this.curSun = sun;
+    this.curSunOut = sunOut;
     this.curCloud = cloud;
     this.curAurora = aurora;
     if (this.atmoOff) mist = 0;
@@ -5363,6 +5412,7 @@ export class NightLights {
     s.setUniform("uSun.value.y", sun[1]);
     s.setUniform("uSun.value.z", sun[2]);
     s.setUniform("uSun.value.w", sun[3]);
+    s.setUniform("uSunOut.value", this.curSunOut);
     s.setUniform("uAmbient.value.x", ambient[0]);
     s.setUniform("uAmbient.value.y", ambient[1]);
     s.setUniform("uAmbient.value.z", ambient[2]);

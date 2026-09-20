@@ -84,9 +84,11 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
   `WorldScene.roofCutAwayAt` draws it only while `indoorMask` is up and that
   column's `cutAt` is finite and at/above the piece — i.e. exactly while the
   roof over it is not drawn. Gated on the DRAWN state like `aboveCut`, so the
-  furniture stays through the exit fade and goes when the slab returns; keyed
-  on the CUT, never on a room test, so the neighbour's house keeps both its
-  roof and its furniture. Gate: `scripts/verify-indoorscenery.mjs`.
+  furniture is still DRAWN through the exit fade (its opacity is the
+  crossing's — see the furniture curve below: gone once the roof is opaque)
+  and released when the slab returns; keyed on the CUT, never on a room
+  test, so the neighbour's house keeps both its roof and its furniture.
+  Gate: `scripts/verify-indoorscenery.mjs`.
 - **The transition is a DEBRIS CROSSFADE, not a pop**: on the indoor flip the
   REMOVED art (roof slab, wall bands above each cut, the cone's tops) is
   rebuilt as ordinary world-anchored images at occluder depths
@@ -130,7 +132,38 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     CPU light gain: fireRoomK, torch enable, outside fade, sealed fires,
     ambEff/sunIn/fogScale). The raw `indoorMix` stays the 0.45s easing
     substrate (what `indoor().mix` reports and the pin targets); consumers
-    take the grade or the alpha, never the raw mix.
+    take the grade or the alpha, never the raw mix. ALL OF THEM ARE PURE
+    FUNCTIONS OF THE MIX in `client/src/indoorcurve.ts`
+    (`server/test/indoorcurve.test.ts` holds every crossing to them, no
+    browser).
+  - **THE FURNITURE UNDER THE ROOF: IN WITH THE LIGHT, OUT UNDER THE ROOF**
+    (`roofedAlphaOf`: entering, the light grade; leaving, the LESSER of the
+    grade and the debris' complement — 0 from mix ⅔ on). A roofed piece's
+    lit copy draws above the darkness overlay and its base sprite sorts
+    against the roof's own rows, so whatever alpha it keeps once the debris
+    is opaque is a half-transparent table standing ON the roof: on the grade
+    alone it wore 0.5 with the roof already solid and 0.38 in his frame
+    (maintainer 2026-09-20: "it looks a bit ugly that we can see the scenery
+    through the roof during the animation ... the outdoor to indoor fade
+    looks much better"). Entering is unchanged: the roof dissolves faster
+    than the light lands, so the grade is the lesser there (2026-09-18: on the
+    debris' curve the furniture stood solid a third of a roll before the room
+    was lit). What stands ON the lid keeps the grade's complement.
+  - **THE ROLL BILLS WALL CLOCK, CAPPED TWO WAYS** (`easeStepMs`): the flip's
+    own frame — its repaint is the crossing's cost, not fade time — bills at
+    most 60 ms across the two eases that see it (its update, its render);
+    every other frame bills what it took, up to 300 ms. One 60 ms cap on
+    every frame made a cold start crawl: the first minute after a restart
+    his beacon shows 150-500 ms frames while the art decodes, each billed
+    as 60, so the 0.4 s crossing ran 1.5-2 s (maintainer 2026-09-20: after a
+    restart the room "is at first lighten up differently and a bit later it
+    get the real lights"; every later crossing was right). Replayed over the
+    beacon's cold window (490, 300, 300, 300 ms): the light lands with the
+    last long frame (1390 ms) instead of 255 ms of tail later, and on a run
+    of 200 ms frames at the fourth frame (1090 ms) instead of the ninth
+    (2090). A warm crossing is bit-identical (only the flip frame is long),
+    and a tab wakeup still moves the blend by under half its remaining
+    distance in one step.
   - **The exit swap lands WITH the light grade (mix ⅓), not at mix 0**: the
     debris is view-culled to the FLIP frame's camera, so the old mix-0
     landing ~2.4s later (5.4 tau) exposed cut-state cells the walking player had
@@ -144,6 +177,39 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     traded a dark slab for a sunlit one. The whole exit fade is lit as the
     outdoor world; the accepted cost is the mirror image, hidden under
     debris already covering it. Entry keeps the clamp from its own flip.
+  - **THE HOUSE'S OUTER FACES ARE THE STREET'S, AND THE SUN LEAVES MY ROOM
+    ONLY** (fragment `outerFace` / `uSunOut`, twin `LightParts.sunW`).
+    Membership is per cell and the shell is my room's, so a wall's OUTER
+    face — the street side of the same column — took the interior ambient,
+    the hearth's halo and the room's sun grade; unseen while the near walls
+    are stumps, painted whole by the exit debris while the street beside it
+    fades up from black. And the sun's share (`sunIn.w`) was eased to 0 with
+    the grade for the WHOLE WORLD, so every shadowed face and cast shadow in
+    the street lifted through each crossing and dropped back at the landing.
+    Measured on his screenshot mid-exit: the world at 0.62 of its settled
+    value, the house's outer faces at 1.03 (maintainer 2026-09-20: "the
+    entire house is colored reddish during the indoor to outdoor animation
+    ... the scenery light inside the house lights up the outside of the
+    house" — the fifth report of this crossing since 09-14; the chimney, the
+    torch on the roof, the correction snap and ambient's lightning were the
+    other four, each real and each fixed). A face's side is the cell in
+    FRONT of it (the wall-top fade's own `front` test): a face whose front
+    cell is not my room's is outside — black→outdoor with the street, blocked
+    from the room's lights and its halo like the roof (`overMyRoom`). The
+    sun share is per pixel: `mix(uSunOut, uSun.w, r)` — the world's strength
+    outside my room, the eased one inside; the twin shades a sample by the
+    strength its room test picks and the lit-copy pipeline re-weights by the
+    same one. Steady state indoors: the stumps' outer faces are black now
+    (they are the outside), the far walls' tops and inner faces unchanged.
+    Measured at his house, the blend pinned at mix 0.55 (roof opaque, grade
+    ⅓), each region as its share of its own settled value over the street's:
+    shaded south faces 1.46-1.48 → 0.96-0.99, sunlit east faces 1.14-1.21 →
+    0.98-1.08, the roof slab 1.03 → 1.03, the furniture 0.325 → 0. Gate: the
+    exit-fade arm of `scripts/verify-indoorscenery.mjs` (a 1.8-cell hop
+    through the doorway under a pinned blend, clear sky and day pinned, wall
+    cells with a pane or a hanging skipped — a pane's glow is the room's; the
+    faces within 20% of the street's ratio, the furniture at 0 under the
+    opaque roof and at 0.70 at mix 0.9).
   - `__ml.indoorMixPin(v?)` parks the blend anywhere in (0,1) — how the
     starved harness photographs the crossfade deterministically (pin BEFORE
     the teleport). An exit pin ≤ ⅓ IS the landed grade — the swap fires

@@ -1145,6 +1145,27 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   the chimney over it there is a roof at every frame of the crossing. Easing it
   on the mix let the hearth back in at (1 − mix) for the length of the exit
   roll — the walking-OUT half of his report.
+  AND SO IS THE OUTER FACE OF MY OWN WALL (`outerFace`, the fragment; the sun
+  half `uSunOut` / `LightParts.sunW`): the fifth report of this crossing
+  (maintainer 2026-09-20: "the entire house is colored reddish during the
+  indoor to outdoor animation ... the scenery light inside the house lights up
+  the outside of the house"). Measured on his screenshot mid-exit against the
+  settled outdoor frame: the street and the roof slab at 0.62 (the grade's
+  black→outdoor fade), the house's outer faces at 1.03, R−B +2 over. Two
+  rules, one cause each: the shell is my room's, so a wall's OUTER face took
+  the interior ambient blend, the hearth's halo and the room's own sun
+  grade (INDOOR.md, the outer-face bullet); and the sun's share was eased to
+  0 with the grade for the WHOLE WORLD (`sunIn.w`), so a shaded face's
+  `sunF` rose from 0.5 toward 1 through every crossing — ×1.38 on those
+  faces with no light on them — and every cast shadow in the street lifted
+  and dropped back at the landing. Now a face whose front cell is not my
+  room's is the street's (r = 0, `overMyRoom` = 1), and the sun share is per
+  pixel: `0.45·mix(uSunOut, uSun.w, r)` — the world's strength outside my
+  room, the eased one inside; the twin picks by the same room test and the
+  lit-copy pipeline re-weights (`sv`) by the strength the foot was shaded
+  with, not the uniform's. Nothing outdoors changes (r = 1 everywhere, uSunOut
+  = uSun.w); indoors the stumps' outer faces go to zero ambient with the
+  street they belong to.
   AND THE EASE ITSELF IS FOR LEAVING ONLY. Entering, the light arrives with the
   flip while the mix is still ~0.1, so a block that ramps with the mix is no
   block at all on the frame it is needed; `max(uIndoor, uIndoorMix)` blocks from

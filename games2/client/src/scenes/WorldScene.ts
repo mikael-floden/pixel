@@ -120,6 +120,15 @@ import { ensureAccelDial, accelS } from "../accel";
 import { roomCoverFraction, coversRoom, type ScreenBox, type ScreenPt } from "../scenerycover";
 import { ensureWallWrapDial, wallWrap, setWallWrap } from "../wallwrap";
 import { ensureDoorFadeDial, doorFadeSpeed, setDoorFadeSpeed, DOOR_FADE_MIN, DOOR_FADE_MAX } from "../doorfade";
+import {
+  INDOOR_FLIP_EASES,
+  aboveCutAlphaOf,
+  debrisAlphaOf,
+  easeStepMs,
+  indoorGradeOf,
+  roofedAlphaOf,
+  rollMix,
+} from "../indoorcurve";
 import { hiddenRing, setHiddenRing } from "../hiddenring";
 import { indoorWall, setIndoorWall, INDOOR_WALL_MIN, INDOOR_WALL_MAX } from "../indoorwall";
 import {
@@ -1510,23 +1519,11 @@ const IN_WALL = 2; // the building itself: any solid cell of the enclosure
  * will look even better", 2026-09-10, four photographs up the dungeon stairs).
  * The BASE is what moved, so the debris' 3x and the grade's 1.5x keep the
  * ratios he approved; do not slow those instead. */
-const INDOOR_TAU = 0.45;
-/** The most wall clock one ease step may bill (ms). A frame longer than this —
- *  a tab wakeup, a long GC, the flip's own repaint — advances the blend by no
- *  more than this much, so a stall cannot carry the crossing across a whole
- *  curve in one step (the shape of the one-frame pops he reports). Three of
- *  his worst measured flip frames (490 ms) would otherwise be a third of the
- *  roll each. */
-const INDOOR_STEP_CAP_MS = 60;
-// The transition's two speeds, as multiples of the eased indoor mix. The
-// GEOMETRY crossfade (debris) runs hot — hiding the repaint seams is its whole
-// job, and they hide better the less time they get (maintainer: 2× was not
-// enough, 3×). The LIGHT grade (darkening, light gains, fog) is "a bit
-// faster" than the raw roll and deliberately NOT roof-fast (maintainer
-// 2026-08-13: a first cut that ran everything at 3× read as one big snap —
-// "the roof fade is intended to be faster to hide bugs").
-const INDOOR_DEBRIS_RATE = 3;
-const INDOOR_GRADE_RATE = 1.5;
+// THE CURVES LIVE IN indoorcurve.ts (INDOOR_TAU 0.45 s; the debris' 3x and the
+// light grade's 1.5x, both his; the furniture's and the lid pieces' alphas;
+// what one ease may bill of a frame's wall clock) — pure functions of the
+// mix, so `server/test/indoorcurve.test.ts` holds every crossing to them
+// without a browser. This file only drives them.
 
 /** Minimum wall-clock between APPLIED indoor transitions. Layers 1 and 2 of the
  * hysteresis (the relaxed leave bar and the space identity, see
@@ -4272,7 +4269,7 @@ export class WorldScene extends Phaser.Scene {
   private contactPoints = new Map<string, { x: number; y: number }[]>();
   private contactStat = { built: 0, failed: 0, empty: 0, ms: 0 };
   private shapeStats = { built: 0, failed: 0, texels: 0, ms: 0, maxMs: 0 };
-  private sceneryLitParts: LightParts = { base: [0, 0, 0], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1 };
+  private sceneryLitParts: LightParts = { base: [0, 0, 0], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1, sunW: 0 };
   /** Per-frame JS cost of the feature (applyObjectLights' shaded branch + the
    *  job trickle): an EMA in ms and the last frame's piece count. */
   private sceneryLightStat = { emaMs: 0, lastMs: 0, pieces: 0, jobMs: 0 };
@@ -6578,7 +6575,7 @@ export class WorldScene extends Phaser.Scene {
       occAt: (col: number, row: number, z?: number) => {
         if (!this.night || !this.world) return null;
         const zz = z ?? (this.world.rows[Math.floor(row)]?.[Math.floor(col)]?.l ?? 0);
-        const parts = { base: [0, 0, 0] as [number, number, number], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1 };
+        const parts = { base: [0, 0, 0] as [number, number, number], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1, sunW: 1 };
         const l = this.night.lightAt(col, row, zz, false, 0, parts, true);
         // Both halves from ONE march: a grid probe that wants the picture's value AND
         // the shadow behind it must not pay for the march twice.
@@ -8833,7 +8830,7 @@ export class WorldScene extends Phaser.Scene {
               let lit: number[] = [];
               if (a) {
                 const zz = a[2] ?? (this.world.rows[Math.floor(a[1])]?.[Math.floor(a[0])]?.l ?? 0);
-                const parts = { base: [0, 0, 0] as [number, number, number], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1 };
+                const parts = { base: [0, 0, 0] as [number, number, number], occ: new Float32Array(MAX_SHADER_LIGHTS), ao: 1, sunF: 1, sunW: 1 };
                 lit = this.night.lightAt(a[0], a[1], zz, false, 0, parts, true).map((v) => +v.toFixed(4));
                 occ = [...parts.occ.slice(0, this.night.lightsNow().length)].map((v) => +v.toFixed(3));
               }
@@ -14899,6 +14896,10 @@ export class WorldScene extends Phaser.Scene {
         playerCol,
         playerRow,
         this.contactStampsNow(),
+        // THE WORLD'S sun strength, for pixels OUTSIDE my room: `sunIn` above
+        // carries the room's, eased to 0 with the grade, and it used to be the
+        // whole world's — the street's shading lifted with every crossing.
+        this.curSun[3],
       );
       this.pe("litPass");
     }
@@ -15391,7 +15392,9 @@ export class WorldScene extends Phaser.Scene {
         night!.lightAt(sh.fc, sh.fr, sh.fz + 0.5, true, lo.place !== undefined ? night!.sceneryExclR2(lo.place) : 0, parts, false, false);
         const ao = parts.ao;
         for (let i = 0; i < SCENERY_LIT_OCC; i++) sh.occ[i] = parts.occ[i] * ao;
-        sh.sv = parts.sunF - 1 + 0.45 * night!.sunStrength;
+        // The sun share this piece's foot was shaded with — the room's while it
+        // stands in my room, the world's outside it (LightParts.sunW).
+        sh.sv = parts.sunF - 1 + 0.45 * parts.sunW;
         lo.img.setTint((tint8(parts.base[0]) << 16) | (tint8(parts.base[1]) << 8) | tint8(parts.base[2]));
         litMs += performance.now() - t0;
         litN++;
@@ -17838,6 +17841,7 @@ export class WorldScene extends Phaser.Scene {
     this.indoorPending = inside;
     this.indoorFlipAt = now;
     this.indoorFlips++;
+    this.indoorFlipEases = INDOOR_FLIP_EASES; // this frame's repaint is not fade time (easeStepMs)
     if (inside) {
       const prevCuts = this.indoorCut;
       this.ps();
@@ -17963,6 +17967,9 @@ export class WorldScene extends Phaser.Scene {
    *  See easeIndoorMix: the crossing advances on wall clock, not on Phaser's
    *  clamped frame delta. */
   private indoorMixAt = 0;
+  /** Eases left that still pay for the flip's own frame (its update, then its
+   *  render) and bill at the small cap — set at every commitIndoor. */
+  private indoorFlipEases = 0;
   private winScene: Array<Record<string, unknown>> | null = null;
   private winAt: [number, number, number?] | null = null;
   private roomLitAt = 0;
@@ -17987,10 +17994,7 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private indoorGrade(): number {
-    const R = INDOOR_GRADE_RATE;
-    return this.indoorInside
-      ? Math.min(1, R * this.indoorMix)
-      : Math.max(0, R * this.indoorMix - (R - 1));
+    return indoorGradeOf(this.indoorMix, this.indoorInside);
   }
 
   /** The debris layer's opacity — its own 3× curves, the speed the maintainer
@@ -18000,10 +18004,7 @@ export class WorldScene extends Phaser.Scene {
    * than the light grade on purpose — the crossfade's whole job is hiding
    * repaint seams, and seams hide better the less time they get. */
   private debrisAlpha(): number {
-    const D = INDOOR_DEBRIS_RATE;
-    return this.indoorInside
-      ? Math.max(0, 1 - D * this.indoorMix)
-      : Math.min(1, D * (1 - this.indoorMix));
+    return debrisAlphaOf(this.indoorMix, this.indoorInside);
   }
 
   /** INDOOR FURNITURE'S OPACITY THROUGH THE CUT-AWAY CROSSFADE — THE ROOM'S
@@ -18297,16 +18298,14 @@ export class WorldScene extends Phaser.Scene {
   }
 
   private roofedFade(): number {
-    const f = this.indoorGrade();
-    return f < 0 ? 0 : f > 1 ? 1 : f;
+    return roofedAlphaOf(this.indoorMix, this.indoorInside);
   }
 
   /** ...AND WHAT STANDS ON THE LID GOES THE WAY THE ROOF'S LIGHT GOES — the
-   *  complement of the furniture's curve, for the same reason (see roofedFade).
+   *  complement of the light grade, for the same reason (see roofedFade).
    *  A chimney, a tree on a cave's mountain: subjects, not cover. */
   private aboveCutFade(): number {
-    const f = 1 - this.indoorGrade();
-    return f < 0 ? 0 : f > 1 ? 1 : f;
+    return aboveCutAlphaOf(this.indoorMix, this.indoorInside);
   }
 
   /** Build the TRANSITION DEBRIS: every piece of art the current cut removes,
@@ -18775,15 +18774,19 @@ export class WorldScene extends Phaser.Scene {
     // at 150-490 ms a frame (docs/perf.md), which is exactly when the crossing
     // he is watching turns into a crawl, and the longer each frame is the more
     // of the roll lands in one step — the shape of "it lasts for only a single
-    // frame". Capped at INDOOR_STEP_CAP_MS so a tab wakeup or a long GC pause
-    // cannot teleport the blend across the curve in one step.
+    // frame". CAPPED, TWO WAYS (easeStepMs): the flip's own frame — its repaint
+    // is the crossing's cost, not fade time — bills at most 60 ms across the
+    // two eases that see it; every other frame bills what it took, up to
+    // 300 ms, so a cold start's 150-500 ms frames no longer crawl the roll
+    // (maintainer 2026-09-20: after a restart the room "is at first lighten up
+    // differently and a bit later it get the real lights") while a tab wakeup
+    // still cannot carry the blend across a whole curve in one step.
     const now = performance.now();
     const raw = this.indoorMixAt === 0 ? this.game.loop.delta : now - this.indoorMixAt;
     this.indoorMixAt = now;
-    const stepMs = Math.max(0, Math.min(INDOOR_STEP_CAP_MS, raw));
-    const k = 1 - Math.exp(-((stepMs / 1000) * doorFadeSpeed()) / INDOOR_TAU);
-    this.indoorMix += (to - this.indoorMix) * k;
-    if (Math.abs(this.indoorMix - to) < 0.005) this.indoorMix = to;
+    const stepMs = easeStepMs(raw, this.indoorFlipEases);
+    if (this.indoorFlipEases > 0) this.indoorFlipEases--;
+    this.indoorMix = rollMix(this.indoorMix, to, stepMs, doorFadeSpeed());
     // QA PIN (__ml.indoorMixPin): parks the blend anywhere in (0,1) so a
     // headless gate can photograph a mid-transition frame deterministically.
     // At 3× the debris crosses its whole alpha range inside one or two

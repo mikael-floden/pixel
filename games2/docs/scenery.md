@@ -366,35 +366,33 @@ Off-grid set dressing: sizing, hitboxes, animation, windows on walls, indoor fur
   BEHIND its hitbox centre: a body 0.9 cells behind a signpost drew over it
   (body 11619.4 vs sign 11617.6). Measured after: behind the post the sign paints over the player (sign 11631.6 vs body 11619.9); in front of it the player paints over the sign (11647.9 vs 11631.6).
 
-- **INDOOR FURNITURE CROSSES WITH THE ROOM'S LIGHT** (`roofedFade()` =
-  `indoorGrade()`, and `aboveCutFade()` = 1 − it for what stands ON the lid;
-  applied to the base sprite, its LIT COPY and its fog). A roofed piece is
-  still DRAWN on the old binary gate (`roofCutAwayAt`, held to the end of the
-  roll so the roof never returns over empty floor) — only its OPACITY rides the
-  crossing. THE LIGHT'S CURVE, NOT THE DEBRIS' 3×: furniture and a chimney are
-  SUBJECTS of the crossing, the debris is the cover layer that hides the
-  repaint, and the two run at different rates, so on the debris' curve the
-  subjects finished a third of a roll before the room's light did. Measured on
-  the shipped build with the blend pinned (a pinned sweep of the blend,
-  `__ml.indoorMixPin` + `__ml.indoorFade` + `__ml.nightIndoor`): entering, the furniture was fully opaque at mix 0.40 against a
-  grade of 0.60 that did not land until 0.67; leaving, the roof-top pieces were
-  at 0.99 against a grade of 0.50 (maintainer 2026-09-18: "indoor scenery has
-  popped into full opacity before the fade is over" and "scenery on the roof
-  has popped into full opacity while the rest of the animation is still
-  fading"). On the grade the two land together to three decimals, in both
-  directions, and the debris keeps the 3× he tuned by eye. Bodies and walls
+- **INDOOR FURNITURE ARRIVES WITH THE ROOM'S LIGHT AND LEAVES UNDER THE ROOF**
+  (`roofedAlphaOf` in `client/src/indoorcurve.ts`: entering, the light grade;
+  leaving, the LESSER of the grade and the debris' complement — 0 from mix ⅔
+  on; `aboveCutAlphaOf` = 1 − the grade for what stands ON the lid; applied
+  to the base sprite, its LIT COPY and its fog, `server/test/indoorcurve.test.ts`).
+  A roofed piece is still DRAWN on the binary gate (`roofCutAwayAt`, held to
+  the end of the roll so the roof never returns over empty floor) — only its
+  OPACITY rides the crossing. Two facts make the rule: the furniture is a
+  SUBJECT of the crossing, not the cover layer that hides the repaint, and it
+  cannot be COVERED by that layer — its lit copy draws above the darkness
+  overlay and its base sprite sorts against the roof's own rows — so whatever
+  opacity it keeps once the debris is opaque is a piece standing ON the roof.
+  Entering, the debris (3×, gone by mix ⅓) is faster than the light (1.5×,
+  landed at ⅔), so the grade is the lesser: the furniture brightens as the
+  room's light does (on the debris' curve it stood solid at mix 0.40 against a
+  grade of 0.60 — maintainer 2026-09-18: "indoor scenery has popped into full
+  opacity before the fade is over"). Leaving, the debris is opaque by mix ⅔
+  while the grade is still 0.5, so the grade alone left a half-transparent
+  table on a solid roof for the rest of the roll — 0.38 in his frame
+  (maintainer 2026-09-20: "it looks a bit ugly that we can see the scenery
+  through the roof during the animation ... the outdoor to indoor fade looks
+  much better"); the complement takes it out as the roof arrives, and the
+  test holds it at 0 at every sample where the debris is 1, with no step of
+  the mix moving it more than a hundredth per hundredth. Bodies and walls
   above the cut keep `cutFade` (the debris curve) — a monster must dissolve
-  with the ground it stands on, which is that layer.
-  Leaving, the roof fades in while the furniture fades out;
-  entering, the furniture arrives as the roof dissolves. Before this a bed drew
-  at full opacity ON TOP of the returning roof for the whole exit and then
-  vanished in one frame (maintainer 2026-09-07: "they don't give a shit we are
-  currently fading into outdoor… until the very last millisecond where they pop
-  out of existence"). The LIT COPY needs it too — it draws above the darkness
-  overlay, so a copy left at alpha 1 stays solid over a roof that has already
-  come back. Measured entering: debris 0.48 → 0 while the furniture's measured
-  sprite alpha rose 0.52 → 1, complement exact at every sample.
-  Probe: `__ml.indoorFade()` reports `alpha`, `roofedAlpha` and the drawn mean.
+  with the ground it stands on, which is that layer. Probe:
+  `__ml.indoorFade()` reports `alpha` (debris), `roofedAlpha` and the drawn mean.
 - **A SCENERY SHARE BELONGS TO THE FLOOR ITS PIECE STANDS ON** — a pixel on a
   DECK above that floor does not read it (`z > groundTerrAt(cell) + 1` clears
   `ownShare`, shader and CPU twin alike). The share is a property of the CELL,
