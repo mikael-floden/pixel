@@ -8295,6 +8295,11 @@ class Grow:
         # the shipped world in place.
         import yards
         yards.apply(OUT, write=True)
+        # A PIECE NEVER CUTS THE WAY (spec/WORLD3.md, maintainer 2026-09-20):
+        # the same pass that mends the shipped world slides any piece the
+        # body cannot get past - four lawful pieces in a row are a fence.
+        import pathfix
+        pathfix.run(OUT, True)
         self.doc = json.load(open(os.path.join(OUT, "world.json")))
         # AMBIENT ZONES are read off the finished world (spec/AMBIENT.md): the
         # sidecar follows the world it describes, gated like the others.

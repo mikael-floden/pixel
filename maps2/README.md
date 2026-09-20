@@ -523,6 +523,13 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   thick, so a face is only usable where the cell behind it is floor
   (`spec/WORLD3.md` → a window needs a room behind it). `--apply <world_dir>`
   slides the windows of a world that already ships.
+- `pathfix.py` — a piece never cuts the way: the body's own collision (the
+  disc against every footprint's reach, 4 × 4 points per cell) walked a short
+  geodesic distance round every obstacle — pieces whose reaches touch are one
+  — and the apron round every house kept clear (`spec/WORLD3.md` → a piece
+  never cuts the way). `--check <world_dir>` reports; `--apply <world_dir>`
+  slides the cheapest member of each cut to the nearest lawful, nav-fit spot;
+  the last step of every build.
 - `ambient.py` — **AMBIENT ZONES: every ambient effect belongs to a place,
   with a share** (maintainer 2026-09-18; `spec/AMBIENT.md`). Writes
   `worlds3/<world>/ambient.json`: zones as spawns@1 polygons read off the

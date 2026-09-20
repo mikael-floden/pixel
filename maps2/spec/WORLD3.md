@@ -1133,6 +1133,61 @@ mountain is not a house. (`chimneys.py`.)
   and the finding goes to the scenery agent, whose art it is to re-roll.
 - the_game: 10 chimneys, one per indoor fire, all at `z = 6`.
 
+### a piece never cuts the way
+
+**The ground beside a footprint must still meet itself by a short walk with
+the piece standing, and the apron round a house is never stood on**
+(maintainer 2026-09-20, at the south-eastern cottage's door: *"When you place
+scenery, please try to think if you are blocking a critical path. I can't walk
+top-left here because you have placed so much stuff and blocked the only
+path."*). A lantern post, a water pump, a barrel and a woodpile stood in a row
+across the two-cell lane between the apron and the terrace behind it; every
+one was lawful alone — no wall, no doorway, no drop, its gap to its neighbours
+kept — and together they were a fence. (`pathfix.py`; the last step of
+`world3grow.run`, so no build ships one.)
+
+- **THE BODY, NOT THE NAV.** The player is a disc of `PLAYER_RADIUS` (12 wu)
+  and the game stops it where the disc penetrates a footprint
+  (`isBlockedAtWorld` → `footprintBlocks`, the raw ellipse at the probe
+  point), whether or not a whole nav cell is blocked: those four pieces
+  blocked **0 nav cells** and the lane. So the walk is sampled 4 × 4 points
+  per cell; a point is open when its cell has ground, is dry, is not a wall,
+  is not sealed under a slab, is nobody's nav cell, and no footprint's reach
+  (`navfit.penetration ≤ 0`, the game's own distance, a piece blocking only
+  its own floor) covers it — plus `COMFORT` = one sample (8 wu) of slack past
+  every reach, because a way is not a squeeze along the wall.
+- **THE OBSTACLE IS THE CLUSTER, NOT THE PIECE.** Pieces whose reaches touch
+  are one fence: each alone has open ground on one side only (the other side
+  is its neighbour's reach), so each alone passes. A piece belongs to the run
+  of every reach its reach touches within `NEAR` = 8 cells; a run of more
+  than `MAXCREW` = 5 pieces is terrain (a wood, a stone field) and is walked
+  round, not mended.
+- **A SHORT WALK IS GEODESIC.** From the obstacle's rim the open ground is
+  grown step by step for `WALKS` = 6 cells; the open points beside the
+  obstacle are grouped by the component they fall in. Two groups with
+  `MINSIDE` = 6 cells or more behind them each = a cut. The box test this
+  replaced counted the walk round the whole house — 30 cells — as the sides
+  meeting: that is the detour a player never finds. A group with fewer cells
+  behind it is a nook the piece fills (a brazier in a cave wall's niche), not
+  a way it cuts.
+- **THE APRON IS THE WAY ROUND THE HOUSE.** The paving ring against an
+  outdoor house wall is one cell wide, so a piece whose reach touches it
+  stands in the walkway, whatever detour exists — the door is where the
+  player is. Indoors a paved floor against a wall is where the cupboard
+  belongs and is not an apron.
+- **THE MEND.** A cut obstacle's cheapest member (fewest reach points; a
+  piece on the apron mends itself) slides to the nearest spot on a half-cell
+  spiral (`SLIDE` = 3 cells, `SLIDE_FAR` = 5 on the next round) that keeps
+  the footprint law, its room, the doors, the NPCs and the apron, and cuts
+  nothing — its own new obstacle and the old one's remainder both judged —
+  then is refined to the nav-fit offset nearest that spot when it passes the
+  same judgement. Rounds repeat until nothing cuts. A piece with nowhere to
+  go is removed by name only if it is outdoor dressing: never a fire (its
+  chimney and its light stand on it), never a room's furniture — those are
+  reported. Measured on the shipped world 2026-09-20: 49 slides, none
+  longer than five cells, nothing removed; the cottage lane open across all
+  of rows 198–199, the lantern post now beside the signpost.
+
 ### `scenery` — a placement stands where the game's NAV matches its hitbox
 
 **The footprint sits at the offset inside its cell where the cells the game
