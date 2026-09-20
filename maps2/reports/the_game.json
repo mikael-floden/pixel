@@ -6,6 +6,39 @@
   "subtitle": "Every push to main that changed the_game, newest first. Tap a title to mark it, copy the marks, paste them to maps2. Coordinates are the ones the game shows under the player.",
   "pushes": [
     {
+      "date": "2026-09-20",
+      "commit": "3058ec72ab",
+      "before": "eba37734a0",
+      "title": "Mist and cloudy were never zone effects — now they have their places (world.json unchanged)",
+      "artifact": "https://claude.ai/artifact/FTyYiGAP2gkMKrf56tn5ET",
+      "changes": [
+        {
+          "name": "The tarn: mist",
+          "what": "The game lists eight weather rows and the generator had typed six, so mist and cloudy could not be placed anywhere. The roster now reads the game's own list. The mountain tarn is the misty one; the eastern marsh, the southern lake, a meadow piece and a green on the heath are the others.",
+          "cell": [
+            240,
+            128
+          ]
+        },
+        {
+          "name": "The southern massif: cloudy",
+          "what": "Overcast places: the southern massif under cloud, the western rocks, the north-eastern moor, the western summit's second piece. Cloudy runs with anything in the game's own rules; mist never with wind, heavy rain, storm or snow, which the server's matrix enforces.",
+          "cell": [
+            215,
+            192
+          ]
+        },
+        {
+          "name": "Mist as a door",
+          "what": "Once in two hundred windows mist comes down in the woods and on the lakes that do not have it as their signature - a door, not a rule.",
+          "cell": [
+            193,
+            195
+          ]
+        }
+      ]
+    },
+    {
       "date": "2026-09-19",
       "commit": "aba79f80d2",
       "before": "af12dd5f78",
