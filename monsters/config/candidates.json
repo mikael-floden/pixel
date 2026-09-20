@@ -241,25 +241,6 @@
       "lore": "Grown cats of the dunes wear the sun as armour. This one has not yet, and hides from it in the noon shade."
     },
     {
-      "id": "ice_sprite",
-      "name": "Rimeling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 40,
-      "biome": [
-        "ice",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it, nothing dark behind it, no shadow of any kind.",
-      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
-      "attack_action": "Frost Burst - Throws both hands forward and releases a burst of frost",
-      "fx": true,
-      "attack_extreme": "Frost Nova - The sprite throws both arms wide and erupts in a burst of ice shards",
-      "die_action": "Death - Shatters into a scatter of ice shards on the ground that melt away and vanish"
-    },
-    {
       "id": "ash_hatchling",
       "name": "Ashling",
       "tier": "cute",
@@ -4604,6 +4585,33 @@
       "attack_extreme": "Chain Storm - The troll whips the iron chain in a huge arc over its head and lashes it forward",
       "die_action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
       "graduated_at": "2026-09-20T19:21:45+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "ice_sprite",
+      "name": "Rimeling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 40,
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it, nothing dark behind it, no shadow of any kind.",
+      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
+      "attack_action": "Frost Burst - Throws both hands forward and releases a burst of frost",
+      "fx": true,
+      "attack_extreme": "Frost Nova - The sprite throws both arms wide and erupts in a burst of ice shards",
+      "die_action": "Death - Shatters into a scatter of ice shards on the ground that melt away and vanish",
+      "graduated_at": "2026-09-20T19:31:26+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

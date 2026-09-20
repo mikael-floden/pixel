@@ -336,6 +336,20 @@
       }
     },
     {
+      "id": "ice_sprite",
+      "kind": "character",
+      "pixellab_id": "4a3b1707-1c63-4a62-a0ae-53a2524a6f4a",
+      "name": "Rimeling",
+      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Death - Shatters into a scatte": "die"
+      }
+    },
+    {
       "id": "cave_troll_boss",
       "kind": "character",
       "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",

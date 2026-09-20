@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-20T19:21:45+00:00",
+  "generated_at": "2026-09-20T19:31:26+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 64,
+  "count": 63,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -1774,144 +1774,6 @@
         "state": "waiting",
         "takes": {},
         "blocking": "design not approved"
-      }
-    },
-    {
-      "id": "ice_sprite",
-      "name": "Rimeling",
-      "tier": "cute",
-      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
-      "biome": [
-        "ice",
-        "snow"
-      ],
-      "items": [],
-      "size": [
-        40,
-        40
-      ],
-      "template_id": "mannequin",
-      "scale": "small",
-      "pixellab_id": "4a3b1707-1c63-4a62-a0ae-53a2524a6f4a",
-      "version": 2,
-      "sheet": "ice_sprite/sheet.webp",
-      "rotations": {
-        "south": "ice_sprite/rotations/south.webp",
-        "south-east": "ice_sprite/rotations/south-east.webp",
-        "east": "ice_sprite/rotations/east.webp",
-        "north-east": "ice_sprite/rotations/north-east.webp",
-        "north": "ice_sprite/rotations/north.webp",
-        "north-west": "ice_sprite/rotations/north-west.webp",
-        "west": "ice_sprite/rotations/west.webp",
-        "south-west": "ice_sprite/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.702,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.806,
-            "bbox": [
-              9,
-              4,
-              31,
-              37
-            ],
-            "fill": 0.454,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.781,
-            "bbox": [
-              11,
-              3,
-              29,
-              37
-            ],
-            "fill": 0.383,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.765,
-            "bbox": [
-              13,
-              3,
-              27,
-              37
-            ],
-            "fill": 0.297,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.729,
-            "bbox": [
-              12,
-              3,
-              29,
-              37
-            ],
-            "fill": 0.361,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.702,
-            "bbox": [
-              9,
-              3,
-              31,
-              37
-            ],
-            "fill": 0.468,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.732,
-            "bbox": [
-              11,
-              3,
-              28,
-              37
-            ],
-            "fill": 0.361,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.776,
-            "bbox": [
-              13,
-              3,
-              27,
-              37
-            ],
-            "fill": 0.297,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.782,
-            "bbox": [
-              11,
-              3,
-              29,
-              37
-            ],
-            "fill": 0.383,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "approved",
-      "notes": null,
-      "generated_at": "2026-09-09T19:02:42+00:00",
-      "graduation": {
-        "state": "waiting",
-        "takes": {
-          "idle": "idle",
-          "walk": "walk",
-          "angry": "angry_v1",
-          "die": "die_v1"
-        },
-        "blocking": "HIS pick, two full takes — attack: attack_v1, attack_v3"
       }
     },
     {

@@ -1,0 +1,867 @@
+{
+  "id": "ice_sprite",
+  "name": "Rimeling",
+  "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "4a3b1707-1c63-4a62-a0ae-53a2524a6f4a",
+    "url": "https://www.pixellab.ai/create-character/4a3b1707-1c63-4a62-a0ae-53a2524a6f4a",
+    "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it, nothing dark behind it, no shadow of any kind, calm serious expression, clean deliberate creature design, no cartoon grin, no drop shadow on the ground.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 40,
+    "height": 40
+  },
+  "native_size": {
+    "width": 40,
+    "height": 40
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "ice_sprite/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "ice_sprite/rotations/south.webp",
+    "west": "ice_sprite/rotations/west.webp",
+    "east": "ice_sprite/rotations/east.webp",
+    "north": "ice_sprite/rotations/north.webp",
+    "south-east": "ice_sprite/rotations/south-east.webp",
+    "north-east": "ice_sprite/rotations/north-east.webp",
+    "north-west": "ice_sprite/rotations/north-west.webp",
+    "south-west": "ice_sprite/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "638782c4-18ee-4490-9ee9-4849e0067fa5",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/angry__east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/angry/east/00.webp",
+            "ice_sprite/animations/angry/east/01.webp",
+            "ice_sprite/animations/angry/east/02.webp",
+            "ice_sprite/animations/angry/east/03.webp",
+            "ice_sprite/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:37 GMT",
+          "src_frames": 5,
+          "sub": "ba8cdeaf-7bfb-46ba-a6da-11b65606d230"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/angry__north.webp",
+          "frame_paths": [
+            "ice_sprite/animations/angry/north/00.webp",
+            "ice_sprite/animations/angry/north/01.webp",
+            "ice_sprite/animations/angry/north/02.webp",
+            "ice_sprite/animations/angry/north/03.webp",
+            "ice_sprite/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:39 GMT",
+          "src_frames": 5,
+          "sub": "798a8fc4-ced5-4801-bc74-f7a1deca7a7a"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/angry__north-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/angry/north-east/00.webp",
+            "ice_sprite/animations/angry/north-east/01.webp",
+            "ice_sprite/animations/angry/north-east/02.webp",
+            "ice_sprite/animations/angry/north-east/03.webp",
+            "ice_sprite/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:41 GMT",
+          "src_frames": 5,
+          "sub": "c3a9ac74-42fe-4bcc-81ad-bf4fc3e7ac1f"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/angry__south.webp",
+          "frame_paths": [
+            "ice_sprite/animations/angry/south/00.webp",
+            "ice_sprite/animations/angry/south/01.webp",
+            "ice_sprite/animations/angry/south/02.webp",
+            "ice_sprite/animations/angry/south/03.webp",
+            "ice_sprite/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:43 GMT",
+          "src_frames": 5,
+          "sub": "d02ace44-07df-4ec6-87a0-6fb05fb59991"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/angry__south-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/angry/south-east/00.webp",
+            "ice_sprite/animations/angry/south-east/01.webp",
+            "ice_sprite/animations/angry/south-east/02.webp",
+            "ice_sprite/animations/angry/south-east/03.webp",
+            "ice_sprite/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:44 GMT",
+          "src_frames": 5,
+          "sub": "36134c3b-a2d4-459d-bee8-cd1954813599"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/angry__south-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/angry/south-west/00.webp",
+            "ice_sprite/animations/angry/south-west/01.webp",
+            "ice_sprite/animations/angry/south-west/02.webp",
+            "ice_sprite/animations/angry/south-west/03.webp",
+            "ice_sprite/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/angry__west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/angry/west/00.webp",
+            "ice_sprite/animations/angry/west/01.webp",
+            "ice_sprite/animations/angry/west/02.webp",
+            "ice_sprite/animations/angry/west/03.webp",
+            "ice_sprite/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/angry__north-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/angry/north-west/00.webp",
+            "ice_sprite/animations/angry/north-west/01.webp",
+            "ice_sprite/animations/angry/north-west/02.webp",
+            "ice_sprite/animations/angry/north-west/03.webp",
+            "ice_sprite/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "ee9e54b6-f6c7-42ac-a4f7-df99ac4a64b8",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/idle__east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/idle/east/00.webp",
+            "ice_sprite/animations/idle/east/01.webp",
+            "ice_sprite/animations/idle/east/02.webp",
+            "ice_sprite/animations/idle/east/03.webp",
+            "ice_sprite/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:45 GMT",
+          "src_frames": 5,
+          "sub": "6b88f1f8-1738-49cf-bd62-0c9667aa5f47"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/idle__north.webp",
+          "frame_paths": [
+            "ice_sprite/animations/idle/north/00.webp",
+            "ice_sprite/animations/idle/north/01.webp",
+            "ice_sprite/animations/idle/north/02.webp",
+            "ice_sprite/animations/idle/north/03.webp",
+            "ice_sprite/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:46 GMT",
+          "src_frames": 5,
+          "sub": "b8bb559c-4fab-4df8-844c-94ae28ec1d49"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/idle__north-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/idle/north-east/00.webp",
+            "ice_sprite/animations/idle/north-east/01.webp",
+            "ice_sprite/animations/idle/north-east/02.webp",
+            "ice_sprite/animations/idle/north-east/03.webp",
+            "ice_sprite/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:48 GMT",
+          "src_frames": 5,
+          "sub": "d98964ac-80f9-40a2-a359-de04a2c5d317"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/idle__south.webp",
+          "frame_paths": [
+            "ice_sprite/animations/idle/south/00.webp",
+            "ice_sprite/animations/idle/south/01.webp",
+            "ice_sprite/animations/idle/south/02.webp",
+            "ice_sprite/animations/idle/south/03.webp",
+            "ice_sprite/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:49 GMT",
+          "src_frames": 5,
+          "sub": "6dd4011d-efd3-4c97-8a6a-c50a465dbf9e"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/idle__south-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/idle/south-east/00.webp",
+            "ice_sprite/animations/idle/south-east/01.webp",
+            "ice_sprite/animations/idle/south-east/02.webp",
+            "ice_sprite/animations/idle/south-east/03.webp",
+            "ice_sprite/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:50 GMT",
+          "src_frames": 5,
+          "sub": "e72b7ef9-ec3f-4b69-8bbd-1a85fe5cd431"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/idle__south-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/idle/south-west/00.webp",
+            "ice_sprite/animations/idle/south-west/01.webp",
+            "ice_sprite/animations/idle/south-west/02.webp",
+            "ice_sprite/animations/idle/south-west/03.webp",
+            "ice_sprite/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/idle__west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/idle/west/00.webp",
+            "ice_sprite/animations/idle/west/01.webp",
+            "ice_sprite/animations/idle/west/02.webp",
+            "ice_sprite/animations/idle/west/03.webp",
+            "ice_sprite/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "ice_sprite/animations/idle__north-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/idle/north-west/00.webp",
+            "ice_sprite/animations/idle/north-west/01.webp",
+            "ice_sprite/animations/idle/north-west/02.webp",
+            "ice_sprite/animations/idle/north-west/03.webp",
+            "ice_sprite/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "30d009d3-f287-4af2-9407-41532f52e9bb",
+      "source_name": "custom-Death - Shatters into a scatte",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/die__east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/die/east/00.webp",
+            "ice_sprite/animations/die/east/01.webp",
+            "ice_sprite/animations/die/east/02.webp",
+            "ice_sprite/animations/die/east/03.webp",
+            "ice_sprite/animations/die/east/04.webp",
+            "ice_sprite/animations/die/east/05.webp",
+            "ice_sprite/animations/die/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:51 GMT",
+          "src_frames": 7,
+          "sub": "c8f14a18-0cfe-413c-b0f0-aad524d9d11d"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/die__north.webp",
+          "frame_paths": [
+            "ice_sprite/animations/die/north/00.webp",
+            "ice_sprite/animations/die/north/01.webp",
+            "ice_sprite/animations/die/north/02.webp",
+            "ice_sprite/animations/die/north/03.webp",
+            "ice_sprite/animations/die/north/04.webp",
+            "ice_sprite/animations/die/north/05.webp",
+            "ice_sprite/animations/die/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:53 GMT",
+          "src_frames": 7,
+          "sub": "bf0130d9-ec3b-41ad-80ee-81abf27bd495"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/die__north-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/die/north-east/00.webp",
+            "ice_sprite/animations/die/north-east/01.webp",
+            "ice_sprite/animations/die/north-east/02.webp",
+            "ice_sprite/animations/die/north-east/03.webp",
+            "ice_sprite/animations/die/north-east/04.webp",
+            "ice_sprite/animations/die/north-east/05.webp",
+            "ice_sprite/animations/die/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:55 GMT",
+          "src_frames": 7,
+          "sub": "d7c46423-706f-4478-899d-e84ff5df8481"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "ice_sprite/animations/die__south.webp",
+          "frame_paths": [
+            "ice_sprite/animations/die/south/00.webp",
+            "ice_sprite/animations/die/south/01.webp",
+            "ice_sprite/animations/die/south/02.webp",
+            "ice_sprite/animations/die/south/03.webp",
+            "ice_sprite/animations/die/south/04.webp",
+            "ice_sprite/animations/die/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:57 GMT",
+          "src_frames": 7,
+          "sub": "b5e7fe5f-00d9-4dbf-b30f-63556d56547f"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/die__south-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/die/south-east/00.webp",
+            "ice_sprite/animations/die/south-east/01.webp",
+            "ice_sprite/animations/die/south-east/02.webp",
+            "ice_sprite/animations/die/south-east/03.webp",
+            "ice_sprite/animations/die/south-east/04.webp",
+            "ice_sprite/animations/die/south-east/05.webp",
+            "ice_sprite/animations/die/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:30:59 GMT",
+          "src_frames": 7,
+          "sub": "0585875b-1ad1-44b9-bbba-ecb00db970ff"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/die__south-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/die/south-west/00.webp",
+            "ice_sprite/animations/die/south-west/01.webp",
+            "ice_sprite/animations/die/south-west/02.webp",
+            "ice_sprite/animations/die/south-west/03.webp",
+            "ice_sprite/animations/die/south-west/04.webp",
+            "ice_sprite/animations/die/south-west/05.webp",
+            "ice_sprite/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/die__west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/die/west/00.webp",
+            "ice_sprite/animations/die/west/01.webp",
+            "ice_sprite/animations/die/west/02.webp",
+            "ice_sprite/animations/die/west/03.webp",
+            "ice_sprite/animations/die/west/04.webp",
+            "ice_sprite/animations/die/west/05.webp",
+            "ice_sprite/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/die__north-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/die/north-west/00.webp",
+            "ice_sprite/animations/die/north-west/01.webp",
+            "ice_sprite/animations/die/north-west/02.webp",
+            "ice_sprite/animations/die/north-west/03.webp",
+            "ice_sprite/animations/die/north-west/04.webp",
+            "ice_sprite/animations/die/north-west/05.webp",
+            "ice_sprite/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "39dd798f-7ccf-4f61-802f-9b566eb1e516",
+      "source_name": "custom-Lunge Attack - Throws its whole body forward in on",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "ice_sprite/animations/attack__east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/attack/east/00.webp",
+            "ice_sprite/animations/attack/east/01.webp",
+            "ice_sprite/animations/attack/east/02.webp",
+            "ice_sprite/animations/attack/east/03.webp",
+            "ice_sprite/animations/attack/east/04.webp",
+            "ice_sprite/animations/attack/east/05.webp",
+            "ice_sprite/animations/attack/east/06.webp",
+            "ice_sprite/animations/attack/east/07.webp",
+            "ice_sprite/animations/attack/east/08.webp",
+            "ice_sprite/animations/attack/east/09.webp",
+            "ice_sprite/animations/attack/east/10.webp",
+            "ice_sprite/animations/attack/east/11.webp",
+            "ice_sprite/animations/attack/east/12.webp",
+            "ice_sprite/animations/attack/east/13.webp",
+            "ice_sprite/animations/attack/east/14.webp",
+            "ice_sprite/animations/attack/east/15.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:00 GMT",
+          "src_frames": 16,
+          "sub": "30036288-74fa-4bb3-9185-76be7b4bfc37"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "ice_sprite/animations/attack__north.webp",
+          "frame_paths": [
+            "ice_sprite/animations/attack/north/00.webp",
+            "ice_sprite/animations/attack/north/01.webp",
+            "ice_sprite/animations/attack/north/02.webp",
+            "ice_sprite/animations/attack/north/03.webp",
+            "ice_sprite/animations/attack/north/04.webp",
+            "ice_sprite/animations/attack/north/05.webp",
+            "ice_sprite/animations/attack/north/06.webp",
+            "ice_sprite/animations/attack/north/07.webp",
+            "ice_sprite/animations/attack/north/08.webp",
+            "ice_sprite/animations/attack/north/09.webp",
+            "ice_sprite/animations/attack/north/10.webp",
+            "ice_sprite/animations/attack/north/11.webp",
+            "ice_sprite/animations/attack/north/12.webp",
+            "ice_sprite/animations/attack/north/13.webp",
+            "ice_sprite/animations/attack/north/14.webp",
+            "ice_sprite/animations/attack/north/15.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:03 GMT",
+          "src_frames": 16,
+          "sub": "01cc480d-f57c-4423-a084-868aa43946b8"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "ice_sprite/animations/attack__north-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/attack/north-east/00.webp",
+            "ice_sprite/animations/attack/north-east/01.webp",
+            "ice_sprite/animations/attack/north-east/02.webp",
+            "ice_sprite/animations/attack/north-east/03.webp",
+            "ice_sprite/animations/attack/north-east/04.webp",
+            "ice_sprite/animations/attack/north-east/05.webp",
+            "ice_sprite/animations/attack/north-east/06.webp",
+            "ice_sprite/animations/attack/north-east/07.webp",
+            "ice_sprite/animations/attack/north-east/08.webp",
+            "ice_sprite/animations/attack/north-east/09.webp",
+            "ice_sprite/animations/attack/north-east/10.webp",
+            "ice_sprite/animations/attack/north-east/11.webp",
+            "ice_sprite/animations/attack/north-east/12.webp",
+            "ice_sprite/animations/attack/north-east/13.webp",
+            "ice_sprite/animations/attack/north-east/14.webp",
+            "ice_sprite/animations/attack/north-east/15.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:05 GMT",
+          "src_frames": 16,
+          "sub": "f98fc336-67af-4548-a4f9-e4b8c84b4515"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "ice_sprite/animations/attack__south.webp",
+          "frame_paths": [
+            "ice_sprite/animations/attack/south/00.webp",
+            "ice_sprite/animations/attack/south/01.webp",
+            "ice_sprite/animations/attack/south/02.webp",
+            "ice_sprite/animations/attack/south/03.webp",
+            "ice_sprite/animations/attack/south/04.webp",
+            "ice_sprite/animations/attack/south/05.webp",
+            "ice_sprite/animations/attack/south/06.webp",
+            "ice_sprite/animations/attack/south/07.webp",
+            "ice_sprite/animations/attack/south/08.webp",
+            "ice_sprite/animations/attack/south/09.webp",
+            "ice_sprite/animations/attack/south/10.webp",
+            "ice_sprite/animations/attack/south/11.webp",
+            "ice_sprite/animations/attack/south/12.webp",
+            "ice_sprite/animations/attack/south/13.webp",
+            "ice_sprite/animations/attack/south/14.webp",
+            "ice_sprite/animations/attack/south/15.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:07 GMT",
+          "src_frames": 16,
+          "sub": "17cd886c-4427-41a9-82e3-3f826dd66fde"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "ice_sprite/animations/attack__south-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/attack/south-east/00.webp",
+            "ice_sprite/animations/attack/south-east/01.webp",
+            "ice_sprite/animations/attack/south-east/02.webp",
+            "ice_sprite/animations/attack/south-east/03.webp",
+            "ice_sprite/animations/attack/south-east/04.webp",
+            "ice_sprite/animations/attack/south-east/05.webp",
+            "ice_sprite/animations/attack/south-east/06.webp",
+            "ice_sprite/animations/attack/south-east/07.webp",
+            "ice_sprite/animations/attack/south-east/08.webp",
+            "ice_sprite/animations/attack/south-east/09.webp",
+            "ice_sprite/animations/attack/south-east/10.webp",
+            "ice_sprite/animations/attack/south-east/11.webp",
+            "ice_sprite/animations/attack/south-east/12.webp",
+            "ice_sprite/animations/attack/south-east/13.webp",
+            "ice_sprite/animations/attack/south-east/14.webp",
+            "ice_sprite/animations/attack/south-east/15.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:09 GMT",
+          "src_frames": 16,
+          "sub": "a5aebbda-40b1-4b3c-96c3-294173b7c8c1"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "ice_sprite/animations/attack__south-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/attack/south-west/00.webp",
+            "ice_sprite/animations/attack/south-west/01.webp",
+            "ice_sprite/animations/attack/south-west/02.webp",
+            "ice_sprite/animations/attack/south-west/03.webp",
+            "ice_sprite/animations/attack/south-west/04.webp",
+            "ice_sprite/animations/attack/south-west/05.webp",
+            "ice_sprite/animations/attack/south-west/06.webp",
+            "ice_sprite/animations/attack/south-west/07.webp",
+            "ice_sprite/animations/attack/south-west/08.webp",
+            "ice_sprite/animations/attack/south-west/09.webp",
+            "ice_sprite/animations/attack/south-west/10.webp",
+            "ice_sprite/animations/attack/south-west/11.webp",
+            "ice_sprite/animations/attack/south-west/12.webp",
+            "ice_sprite/animations/attack/south-west/13.webp",
+            "ice_sprite/animations/attack/south-west/14.webp",
+            "ice_sprite/animations/attack/south-west/15.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "ice_sprite/animations/attack__west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/attack/west/00.webp",
+            "ice_sprite/animations/attack/west/01.webp",
+            "ice_sprite/animations/attack/west/02.webp",
+            "ice_sprite/animations/attack/west/03.webp",
+            "ice_sprite/animations/attack/west/04.webp",
+            "ice_sprite/animations/attack/west/05.webp",
+            "ice_sprite/animations/attack/west/06.webp",
+            "ice_sprite/animations/attack/west/07.webp",
+            "ice_sprite/animations/attack/west/08.webp",
+            "ice_sprite/animations/attack/west/09.webp",
+            "ice_sprite/animations/attack/west/10.webp",
+            "ice_sprite/animations/attack/west/11.webp",
+            "ice_sprite/animations/attack/west/12.webp",
+            "ice_sprite/animations/attack/west/13.webp",
+            "ice_sprite/animations/attack/west/14.webp",
+            "ice_sprite/animations/attack/west/15.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "ice_sprite/animations/attack__north-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/attack/north-west/00.webp",
+            "ice_sprite/animations/attack/north-west/01.webp",
+            "ice_sprite/animations/attack/north-west/02.webp",
+            "ice_sprite/animations/attack/north-west/03.webp",
+            "ice_sprite/animations/attack/north-west/04.webp",
+            "ice_sprite/animations/attack/north-west/05.webp",
+            "ice_sprite/animations/attack/north-west/06.webp",
+            "ice_sprite/animations/attack/north-west/07.webp",
+            "ice_sprite/animations/attack/north-west/08.webp",
+            "ice_sprite/animations/attack/north-west/09.webp",
+            "ice_sprite/animations/attack/north-west/10.webp",
+            "ice_sprite/animations/attack/north-west/11.webp",
+            "ice_sprite/animations/attack/north-west/12.webp",
+            "ice_sprite/animations/attack/north-west/13.webp",
+            "ice_sprite/animations/attack/north-west/14.webp",
+            "ice_sprite/animations/attack/north-west/15.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_thrusts_both_hands_forward_and": {
+      "group_id": "958686af-0e48-4963-b73c-2957d4e46bb9",
+      "source_name": "custom-thrusts both hands forward and",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/custom_thrusts_both_hands_forward_and__east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/east/00.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/east/01.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/east/02.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/east/03.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/east/04.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/east/05.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:12 GMT",
+          "src_frames": 7,
+          "sub": "96ab701e-7859-47fb-936a-aa2c3c540bc3"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/custom_thrusts_both_hands_forward_and__north.webp",
+          "frame_paths": [
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north/00.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north/01.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north/02.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north/03.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north/04.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north/05.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:13 GMT",
+          "src_frames": 7,
+          "sub": "2e932373-319b-4494-a5e3-8bbd7ae7a134"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/custom_thrusts_both_hands_forward_and__north-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-east/00.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-east/01.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-east/02.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-east/03.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-east/04.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-east/05.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:14 GMT",
+          "src_frames": 7,
+          "sub": "d1b9b533-3057-41a3-8c20-7809d339c0d3"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/custom_thrusts_both_hands_forward_and__south.webp",
+          "frame_paths": [
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south/00.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south/01.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south/02.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south/03.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south/04.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south/05.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:15 GMT",
+          "src_frames": 7,
+          "sub": "31fb4c3c-9001-49df-81f3-25aa87d8a73d"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/custom_thrusts_both_hands_forward_and__south-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-east/00.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-east/01.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-east/02.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-east/03.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-east/04.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-east/05.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-east/06.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:16 GMT",
+          "src_frames": 7,
+          "sub": "87a1293d-9fc0-43bd-96bc-e9a7c8ee55f0"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/custom_thrusts_both_hands_forward_and__south-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-west/00.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-west/01.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-west/02.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-west/03.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-west/04.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-west/05.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/custom_thrusts_both_hands_forward_and__west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/west/00.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/west/01.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/west/02.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/west/03.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/west/04.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/west/05.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "ice_sprite/animations/custom_thrusts_both_hands_forward_and__north-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-west/00.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-west/01.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-west/02.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-west/03.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-west/04.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-west/05.webp",
+            "ice_sprite/animations/custom_thrusts_both_hands_forward_and/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "a89f5e10-8b47-4ad3-958b-765c324dc5b8",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "ice_sprite/animations/walk__east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/walk/east/00.webp",
+            "ice_sprite/animations/walk/east/01.webp",
+            "ice_sprite/animations/walk/east/02.webp",
+            "ice_sprite/animations/walk/east/03.webp",
+            "ice_sprite/animations/walk/east/04.webp",
+            "ice_sprite/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:18 GMT",
+          "src_frames": 6,
+          "sub": "d494e8c2-92e4-4e63-b495-3e672527bdde"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "ice_sprite/animations/walk__north.webp",
+          "frame_paths": [
+            "ice_sprite/animations/walk/north/00.webp",
+            "ice_sprite/animations/walk/north/01.webp",
+            "ice_sprite/animations/walk/north/02.webp",
+            "ice_sprite/animations/walk/north/03.webp",
+            "ice_sprite/animations/walk/north/04.webp",
+            "ice_sprite/animations/walk/north/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:19 GMT",
+          "src_frames": 6,
+          "sub": "bba64331-f6ff-46c9-b812-c27cd75a82a2"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "ice_sprite/animations/walk__north-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/walk/north-east/00.webp",
+            "ice_sprite/animations/walk/north-east/01.webp",
+            "ice_sprite/animations/walk/north-east/02.webp",
+            "ice_sprite/animations/walk/north-east/03.webp",
+            "ice_sprite/animations/walk/north-east/04.webp",
+            "ice_sprite/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:20 GMT",
+          "src_frames": 6,
+          "sub": "65525a34-4b22-4dc8-9ce3-9fb26fab27ab"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "ice_sprite/animations/walk__south.webp",
+          "frame_paths": [
+            "ice_sprite/animations/walk/south/00.webp",
+            "ice_sprite/animations/walk/south/01.webp",
+            "ice_sprite/animations/walk/south/02.webp",
+            "ice_sprite/animations/walk/south/03.webp",
+            "ice_sprite/animations/walk/south/04.webp",
+            "ice_sprite/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:22 GMT",
+          "src_frames": 6,
+          "sub": "426d9d89-4242-41e8-8ed3-8d37f1711e71"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "ice_sprite/animations/walk__south-east.webp",
+          "frame_paths": [
+            "ice_sprite/animations/walk/south-east/00.webp",
+            "ice_sprite/animations/walk/south-east/01.webp",
+            "ice_sprite/animations/walk/south-east/02.webp",
+            "ice_sprite/animations/walk/south-east/03.webp",
+            "ice_sprite/animations/walk/south-east/04.webp",
+            "ice_sprite/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 19:31:23 GMT",
+          "src_frames": 6,
+          "sub": "aba9ae4d-7c4f-4667-af37-2bf21ae6a494"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "ice_sprite/animations/walk__south-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/walk/south-west/00.webp",
+            "ice_sprite/animations/walk/south-west/01.webp",
+            "ice_sprite/animations/walk/south-west/02.webp",
+            "ice_sprite/animations/walk/south-west/03.webp",
+            "ice_sprite/animations/walk/south-west/04.webp",
+            "ice_sprite/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "ice_sprite/animations/walk__west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/walk/west/00.webp",
+            "ice_sprite/animations/walk/west/01.webp",
+            "ice_sprite/animations/walk/west/02.webp",
+            "ice_sprite/animations/walk/west/03.webp",
+            "ice_sprite/animations/walk/west/04.webp",
+            "ice_sprite/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "ice_sprite/animations/walk__north-west.webp",
+          "frame_paths": [
+            "ice_sprite/animations/walk/north-west/00.webp",
+            "ice_sprite/animations/walk/north-west/01.webp",
+            "ice_sprite/animations/walk/north-west/02.webp",
+            "ice_sprite/animations/walk/north-west/03.webp",
+            "ice_sprite/animations/walk/north-west/04.webp",
+            "ice_sprite/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "die_trim": {
+      "south": {
+        "auto_dropped": [
+          6
+        ]
+      }
+    }
+  }
+}

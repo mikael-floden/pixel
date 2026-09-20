@@ -64,7 +64,7 @@ def eligible(cid, entries, verbose=False):
     if not man:
         return False, {}, "no candidate on disk"
     anims = (man.get("animations") or {})
-    chosen, missing, ambiguous = {}, [], []
+    chosen, missing, ambiguous, picked_late = {}, [], [], []
     for state in STATES:
         full = []
         for slot, rec in anims.items():
@@ -77,13 +77,28 @@ def eligible(cid, entries, verbose=False):
         if not full:
             missing.append(state)
         elif len(full) > 1:
-            ambiguous.append(f"{state}: {', '.join(sorted(full))}")
+            # SEVERAL FULLY APPROVED TAKES NO LONGER BLOCK (maintainer
+            # 2026-09-20: "As soon as all animations have been approved they
+            # should not be in state 'in the making' any more"). The one he
+            # said yes to MOST RECENTLY ships — his latest word, never the
+            # agent's view of which looks better, which stays forbidden. His
+            # ice sprite: attack_v1 approved 09-10, attack_v3 on 09-18.
+            def last_yes(sl):
+                ts = [(entries.get(f"monsters/{cid}#{sl}#{d}") or {}).get("updated_at") or ""
+                      for d in DIRS_8]
+                return max(ts)
+            pick = max(sorted(full), key=last_yes)
+            chosen[state] = pick
+            picked_late.append(f"{state}: {pick} (his latest yes, over {', '.join(sorted(set(full) - {pick}))})")
         else:
             chosen[state] = full[0]
     if missing:
         return False, chosen, "not fully approved: " + ", ".join(missing)
     if ambiguous:
         return False, chosen, "HIS pick, two full takes — " + "; ".join(ambiguous)
+    if picked_late and verbose:
+        for line in picked_late:
+            print(f"    {cid}: {line}")
     return True, chosen, ""
 
 
