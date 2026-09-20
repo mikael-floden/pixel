@@ -1,10 +1,10 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-20T11:32:43+00:00",
+  "updated_at": "2026-09-20T11:44:42+00:00",
   "health": "running",
   "current": {
-    "unit": "SHIPPED \u2014 NAV: THE NAV LAYER ANSWERS PASSAGE, NOT ONLY PRESENCE, AND A TAP ROUTE IS WALKED BEFORE IT IS TAKEN (maintainer 2026-09-20, the pocket at 297.7,199.4 and the fence at 303.2,198.6). Replayed headlessly on the real grid: a nav position is now one the body may stand in (outside a wall's standoff, 2 wu of slack), a thin footprint's axis closes the cells it runs through (his fence: three), findPath refuses a step across an edge or corner no body fits on (lazy per cell), a tap's route is proven by walking (like the stick's escape since 09-13), a stall \u2014 1.5 s without progress or 1 s without net movement \u2014 names the step and the cell and re-plans proven (3 in all), every waypoint stands out of the footprints. Both taps arrive in all 18 replayed targets (7 s round the house, 3 s round the rail's end, no frozen frame); a tap costs 8 ms planned and proven against 4 bare; the stamp 30 \u2192 75 ms. Gates: server/test/navtap.test.ts (6 arms), sceneryslide's pinch. Law: docs/movement.md; two CLAUDE.md lines on games' board. No file in flight.",
-    "since": "2026-09-20T11:32:43+00:00",
+    "unit": "SHIPPED \u2014 NAV, THE NAV IS OPEN WHERE THE BODY FITS AND CLOSED WHERE IT DOES NOT, IN BOTH DIRECTIONS (maintainer 2026-09-20, on the first cut: 'we don't want bugs the other way around neither \u2014 I can walk straight through with manual input, but the nav system runs around'). The correction to 61a04fdd1e: the bake's body is the rescue's exactly (PLAYER_RADIUS; the 2 wu of slack closed 90 more cells, corridors of 24-28 wu the stick walks \u2014 rejected, NEVER above 0), a thin footprint's axis closes only the cells it crosses edge to edge (a rail's end cells stay open: a body goes round the tip), the tap proof's simulated frame is the client's to the wu (the surface's speed and the elevation per tick: at speed 1 the sim slid past a corner the body wedges on at 1.1), every waypoint stands the standoff off any wall (offWalls), TAP_PROVE_BUDGET_MS 16 (at 8 the second attempt went out unproven). Replayed: his fence 2.4-3.3 s round the rail's end and his pocket 7 s round the house, 18 targets, no frozen frame; 1,419 cells closed (1,401 by the union alone), stamp 30 \u2192 90 ms, a tap 9 ms proven against 5 bare. Gates navtap.test.ts (6), sceneryslide's pinch. No file in flight.",
+    "since": "2026-09-20T11:44:42+00:00",
     "files": []
   },
   "progress": {
@@ -67,7 +67,8 @@
     "[2026-09-15T10:54:57+00:00] SHIPPED (bfff2020b): the parity fixture is stale when its OWN WINDOWS moved, not when the world did. The sha256 of the whole 40 MB world.json is printed now instead of asserted \u2014 this morning's wall-hanging move proved the case, sixteen pieces none of them inside a window and a regenerated fixture that differed by that one line. Everything the fixture leans on is compared against today's doc by an arm that NAMES what moved: cells (ground/level/wall side), decks, and scenery3's placement loop \u2014 which had a real gap I closed, comparing piece/position/hflip only while the fit arm resolves each sprite from the fixture's own state, dir, lit and z. A re-dressed piece inside a window would have been tested at its old look for ever. Proven by mutating the fixture as if the world had moved: the cell fails as 'the_bay (328,193) ground', the re-dressed tree and the re-hung chimney by name.",
     "[2026-09-20T00:40:00+00:00] ack games (2026-09-17, verify-indoorscenery's two FAILs in the chimney arms): consumed \u2014 your own 2026-09-18 finding superseded it (the four PROD-server gates read a four-day-old client/dist, not a chimney-arm bug); nothing for me to change.",
     "[2026-09-20T00:44:28+00:00] SHIPPED (ea075f9003): the slopes proof skips where tiles/ is not checked out \u2014 deploy #4372's sparse test job (no tiles/) failed its three set-reading arms on ENOENT and refused the slope engine's rollout; the suite's NEEDS/MISSING guard applied, proven in a sparse worktree with the deploy's own patterns (3 not ok \u2192 0 fail); CI's full checkout still runs all four.",
-    "[2026-09-20T11:32:43+00:00] SHIPPED: nav passage + the tap's walked proof (his two reports beside the house). Suite on the rebased tree: 860/864 pass; the 3 reds are not this unit's \u2014 694 spawns3 wettest zone and 863 cross-border combat (pre-existing), and ambientreach's 'known orphans' arm, red since maps2's 09:55Z push gave mist a zone (games-ambient-assistant's ORPHANED entry to delete)."
+    "[2026-09-20T11:32:43+00:00] SHIPPED: nav passage + the tap's walked proof (his two reports beside the house). Suite on the rebased tree: 860/864 pass; the 3 reds are not this unit's \u2014 694 spawns3 wettest zone and 863 cross-border combat (pre-existing), and ambientreach's 'known orphans' arm, red since maps2's 09:55Z push gave mist a zone (games-ambient-assistant's ORPHANED entry to delete).",
+    "[2026-09-20T11:44:42+00:00] SHIPPED the correction to the nav unit: the nav's body is the rescue's (slack rejected), rail end cells open, the proof's frame exact (surface speed, elevation per tick), waypoints off walls, budget 16 ms. Suite 860/864, the same three reds (not this unit's)."
   ],
   "requests": [
     {
@@ -326,6 +327,6 @@
       "at": "2026-09-20T11:32:43+00:00"
     }
   ],
-  "updated": "2026-09-20T11:32:43+00:00",
+  "updated": "2026-09-20T11:44:42+00:00",
   "units_shipped": 47
 }
