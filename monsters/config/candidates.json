@@ -236,10 +236,11 @@
    "items": [],
    "prompt": "Fantasy giant cobra coiled tightly on the ground with its upper body raised, black and gold scales, a wide flared hood marked with a pale eye pattern, glowing green eyes, and long dripping fangs.",
    "lore": "It sways so you will watch the hood. The bite comes from where you were not watching.",
-   "walk_action": "Throws its whole body forward in one fast travelling lunge and gathers itself again, the head weaving and the tongue flicking, the coils sliding through one another, seamless loop whose last frame leads straight back into the first",
+   "walk_action": "slithers forward in place, body undulating in a smooth S-curve, hood and head held raised and steady, seamless loop, no turning",
    "attack_action": "Strike - Coils its head back, then strikes forward with fangs bared",
    "attack_extreme": "Fang Lunge - The cobra throws its whole body forward off the ground, hood flared wide, fangs bared",
-   "die_action": "Death - The raised body drops and it uncoils limp along the ground, then fades away"
+   "die_action": "Death - The raised body drops and it uncoils limp along the ground, then fades away",
+   "walk_slow": true
   },
   {
    "id": "fox_spirit",

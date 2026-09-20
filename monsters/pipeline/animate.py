@@ -1004,7 +1004,12 @@ def needed_dirs(man, slot, redo=None, reword_dirs=False):
         good = collections.Counter(n for d, n in gen.items()
                                    if rec["directions"].get(d, {}).get("status") in ("pass", "warn"))
         target = (good or collections.Counter(gen.values())).most_common(1)[0][0]
-        odd = [d for d in GEN_DIRS if gen.get(d) not in (None, target)]
+        # a HAND-SET verdict is not an accident of length: the two directions a
+        # body only animates in PRO come back at PRO's own frame count, and
+        # without this the next sweep re-rolls exactly the clips that finally
+        # worked, forever (his cobra north/south-east: 4 frames beside six 6s).
+        odd = [d for d in GEN_DIRS if gen.get(d) not in (None, target)
+               and not rec["directions"].get(d, {}).get("manual")]
         missing = [d for d in GEN_DIRS if d not in gen]
         failing = [d for d in GEN_DIRS if rec["directions"].get(d, {}).get("status") == "fail"]
         return sorted(set(odd + missing + failing), key=GEN_DIRS.index)
