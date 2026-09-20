@@ -63,29 +63,32 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
   //    2026-09-19 on a fresh server: 'd' into a chess table moved 0.0wu twice
   //    while the stick's east drag slid along it), so the first direction
   //    that moves the player is the one that counts.
-  const press = async (key, code, keyCode, ms) => {
-    await page.evaluate(([k, c, kc]) => {
-      const e = new KeyboardEvent("keydown", { key: k, code: c, bubbles: true });
-      Object.defineProperty(e, "keyCode", { get: () => kc });
-      window.dispatchEvent(e);
-    }, [key, code, keyCode]);
-    await page.waitForTimeout(ms);
-    await page.evaluate(([k, c, kc]) => {
-      const e = new KeyboardEvent("keyup", { key: k, code: c, bubbles: true });
-      Object.defineProperty(e, "keyCode", { get: () => kc });
-      window.dispatchEvent(e);
-    }, [key, code, keyCode]);
-  };
-  let d0 = 0, dirTried = "";
+  //    The key is HELD until the player has moved or 3 s pass: the first
+  //    client to land on a fresh server found the tick busy (2026-09-20:
+  //    four 700 ms presses read 0.0wu each while the stick moved the player
+  //    a moment later), and a bounded hold waits that out.
+  const keyEvent = (type, key, code, keyCode) => page.evaluate(([t, k, c, kc]) => {
+    const e = new KeyboardEvent(t, { key: k, code: c, bubbles: true });
+    Object.defineProperty(e, "keyCode", { get: () => kc });
+    window.dispatchEvent(e);
+  }, [type, key, code, keyCode]);
+  let d0 = 0, dirTried = "", heldMs = 0;
   for (const [key, code, keyCode] of [["d", "KeyD", 68], ["a", "KeyA", 65], ["w", "KeyW", 87], ["s", "KeyS", 83]]) {
     const p0 = await pos(page);
-    await press(key, code, keyCode, 700);
-    const p1 = await pos(page);
-    d0 = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+    await keyEvent("keydown", key, code, keyCode);
+    const t0 = Date.now();
+    do {
+      await page.waitForTimeout(150);
+      const p1 = await pos(page);
+      d0 = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+    } while (d0 <= 3 && Date.now() - t0 < 3000);
+    heldMs = Date.now() - t0;
+    await keyEvent("keyup", key, code, keyCode);
+    await page.waitForTimeout(300);
     dirTried += key;
     if (d0 > 3) break;
   }
-  d0 > 3 ? ok(`synthetic keydown moves the player (${d0.toFixed(1)}wu, key ${dirTried.slice(-1)})`) : fail(`synthetic key ignored in every direction (${dirTried}, last moved ${d0.toFixed(1)}wu)`);
+  d0 > 3 ? ok(`synthetic keydown moves the player (${d0.toFixed(1)}wu after ${heldMs} ms, key ${dirTried.slice(-1)})`) : fail(`synthetic key ignored in every direction (${dirTried}, 3 s each, last moved ${d0.toFixed(1)}wu)`);
 
   // open the gamepad tab, find the stick
   await page.evaluate(() => document.querySelector('[data-tab="gamepad"]').click());
