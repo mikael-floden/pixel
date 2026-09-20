@@ -244,7 +244,13 @@ export function mountGamepadStick(page: HTMLElement) {
   if (!localStorage.getItem("ml-hand-help")) {
     const help = mk("div", "ml-pad-help");
     const txt = mk("span", "");
-    txt.textContent = "Playing left-handed? Swap the stick side any time in Settings → controls.";
+    // ONE LINE, because the band above the labels is 33px tall (measured at
+    // 393x851: page top 618, label row 651). Two lines plus the old padding
+    // made the chip 52px and it covered JUMP/PICK UP/WALK outright — which
+    // only appeared when the page stick came back on 2026-09-20 and lifted
+    // the label row by half a well. The chip is a one-time hint; the labels
+    // are the page's permanent legend, so the hint is what gives way.
+    txt.textContent = "Swap the stick side in Settings → controls.";
     const x = mk("button", "ml-pad-help-x") as HTMLButtonElement;
     x.type = "button";
     x.textContent = "×";
@@ -707,15 +713,17 @@ function injectStyles() {
      it can't eat their input either (on a short viewport the chip can lie
      over the stick; a drag must start on the stick, not on a tooltip). Only
      the × is clickable. */
-  .ml-pad-help{position:absolute;left:16px;right:16px;top:10px;z-index:2;
+  .ml-pad-help{position:absolute;left:16px;right:16px;top:2px;z-index:2;
     display:flex;align-items:center;gap:8px;text-align:left;pointer-events:none;
+    white-space:nowrap;overflow:hidden;
     background:var(--surface);border:1px solid var(--border);border-radius:10px;
-    padding:8px 10px;color:var(--muted);font:500 12px/1.4 var(--sans);
+    padding:2px 8px;color:var(--muted);font:500 11.5px/1.35 var(--sans);
     box-shadow:var(--shadow)}
-  .ml-pad-help-x{flex:none;width:28px;height:28px;border-radius:8px;cursor:pointer;
+  .ml-pad-help span{overflow:hidden;text-overflow:ellipsis}
+  .ml-pad-help-x{flex:none;width:22px;height:22px;border-radius:7px;cursor:pointer;
     pointer-events:auto;
     background:var(--surface-2);border:1px solid var(--border);color:var(--ink);
-    font:600 16px/1 var(--sans);padding:0;
+    font:600 14px/1 var(--sans);padding:0;
     -webkit-tap-highlight-color:transparent}`;
   document.head.appendChild(s);
 }

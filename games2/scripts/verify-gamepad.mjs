@@ -301,6 +301,27 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     ok("ambient header not built (ambient layer down) — look-match check skipped");
   }
 
+  // ── THE ONE-TIME HELP CHIP NEVER COVERS THE LABELS. The page's band above
+  //    the label row is 33px at 393x851 (page top 618, labels 651), and the
+  //    chip is an absolute overlay at the page's top. When the page stick came
+  //    back on 2026-09-20 the label row rose by half a well and the old
+  //    two-line chip hid JUMP, PICK UP and WALK outright until a player
+  //    dismissed it — a legend lost behind a hint. The chip gives way: one
+  //    line, tight padding. Asserted as the rect relation, not a height. ──
+  {
+    const chip = await page.evaluate(() => {
+      const r = (e) => { if (!e) return null; const b = e.getBoundingClientRect(); return { t: b.top, b: b.bottom, l: b.left, r: b.right }; };
+      const c = r(document.querySelector(".ml-pad-help"));
+      const labels = [...document.querySelectorAll(".ml-pad-label")].map((e) => ({ text: e.textContent, ...r(e) }));
+      return { c, labels, over: c ? labels.filter((L) => L.t < c.b && c.t < L.b && L.l < c.r && c.l < L.r).map((L) => L.text) : [] };
+    });
+    if (!chip.c) ok("help chip already dismissed in this context — overlap check skipped");
+    else
+      chip.over.length === 0
+        ? ok(`the one-time help chip clears every control label (chip ends ${chip.c.b.toFixed(0)}, labels start ${Math.min(...chip.labels.map((L) => L.t)).toFixed(0)})`)
+        : fail(`the help chip covers ${chip.over.join(", ")} — chip ${chip.c.t.toFixed(0)}..${chip.c.b.toFixed(0)}, labels at ${chip.labels.map((L) => `${L.text} ${L.t.toFixed(0)}`).join(", ")}`);
+  }
+
   // ── WHERE HIS THUMBS ARE. JUMP's portrait centre is the spot he marked in
   //    red on a device screenshot (2026-09-17: "I have placed two red cross
   //    where I think the new WALK and JUMP input center should be. My new
