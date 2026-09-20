@@ -416,12 +416,22 @@ if (lid && lid.onLidIdx.length) {
           const lit = (window.__ml.sceneryLitCopy(q.place) ?? [])[0] ?? null;
           const ni = window.__ml.nightIndoor(q.col, q.row);
           const ceil = ni.ceil ?? 0;
-          // Every light of the room UNDER this piece: within reach, and below
-          // that room's own underside. None of them may touch it.
+          // Every light OF THE ROOM under this piece: within reach, below that
+          // room's own underside, AND standing on one of the room's own cells.
+          // None of them may touch it.
+          // THE LAST TEST IS NOT DECORATION. Without it this arm collected any
+          // light under the roof within 14 cells — including the torch in my
+          // own hand while I stand in the STREET, which is not a light of the
+          // room and has no wall between it and a chimney on the roof. The
+          // engine blocks my room's geometry against my room's lights (the
+          // fragment's lightMine), so a torch outside reads occ 1 here by
+          // design; asserting 0 on it asserted the bug that made the house's
+          // outer walls go black mid-fade. While I stand INSIDE, my torch IS
+          // one of the room's lights and this arm still holds it to 0.
           const room = window.__ml
             .lights()
-            .map((L, i) => ({ i, z: L.z, d: Math.hypot(L.col - q.col, L.row - q.row) }))
-            .filter((L) => ceil > 0 && L.z < ceil && L.d < 14);
+            .map((L, i) => ({ i, z: L.z, d: Math.hypot(L.col - q.col, L.row - q.row), mine: !!window.__ml.nightIndoor(L.col, L.row)?.cell?.room }))
+            .filter((L) => ceil > 0 && L.z < ceil && L.d < 14 && L.mine);
           return {
             mix: window.__ml.indoor().mix,
             l: window.__ml.lightAtCell(q.col, q.row, q.z),
@@ -431,7 +441,7 @@ if (lid && lid.onLidIdx.length) {
             fc: lit?.shape?.fc ?? null,
             fr: lit?.shape?.fr ?? null,
             roomCells: window.__ml.roomTex?.()?.cells ?? null,
-            roomLit: room.map((L) => ({ i: L.i, z: L.z, d: +L.d.toFixed(1), occ: lit?.shape?.occ?.[L.i] ?? null })),
+            roomLit: room.map((L) => ({ i: L.i, z: L.z, d: +L.d.toFixed(1), mine: L.mine, occ: lit?.shape?.occ?.[L.i] ?? null })),
             ni,
           };
         }, probe);
@@ -545,8 +555,8 @@ if (lid && lid.onLidIdx.length) {
       .sort((a, b) => Math.hypot(a[0] - door.x, a[1] - door.y) - Math.hypot(b[0] - door.x, b[1] - door.y))[0] ?? null;
     const placed = doc.scenery ?? [];
     const clearFace = (x, y, ox, oy) => !placed.some((p) => Math.abs(p.x - (x + 0.5 + ox)) < 1.3 && Math.abs(p.y - (y + 0.5 + oy)) < 1.3);
-    const southWall = nearest(cellsXY.filter(([x, y]) => y === maxY && (doc.level?.[y]?.[x] ?? 0) === wallL && clearFace(x, y, 0, 1)));
-    const eastWall = nearest(cellsXY.filter(([x, y]) => x === maxX && (doc.level?.[y]?.[x] ?? 0) === wallL && clearFace(x, y, 1, 0)));
+    let southWall = nearest(cellsXY.filter(([x, y]) => y === maxY && (doc.level?.[y]?.[x] ?? 0) === wallL && clearFace(x, y, 0, 1)));
+    let eastWall = nearest(cellsXY.filter(([x, y]) => x === maxX && (doc.level?.[y]?.[x] ?? 0) === wallL && clearFace(x, y, 1, 0)));
     const roofCell = nearest(cellsXY.filter(([x, y]) => (doc.level?.[y]?.[x] ?? 99) === floorL && x < maxX - 1 && y < maxY - 1));
     // A TALLER VIEW, AND A PINNED CAMERA. At 480x320 the game's view is a
     // 200 px strip under the HUD cards and the time pill, and a wall face two
@@ -557,8 +567,8 @@ if (lid && lid.onLidIdx.length) {
     // the two frames project identically.
     await page.setViewportSize({ width: 480, height: 720 });
     const camAt = [door.x - 2 * door.ox, door.y - 2 * door.oy];
-    const parkCam = async () => {
-      await page.evaluate(([c, r]) => window.__ml.lookAt(c, r), camAt);
+    const parkCam = async (at = camAt) => {
+      await page.evaluate(([c, r]) => window.__ml.lookAt(c, r), at);
       await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
       await new Promise((r) => setTimeout(r, 500));
     };
@@ -691,28 +701,42 @@ if (lid && lid.onLidIdx.length) {
     //       the light's height, none of the glow field. The same outer face,
     //       my torch beside it, switched on and off: 1.00 on that build.
     await page.evaluate(() => window.__ml.timeOfDay?.("night", true, 0.5));
-    await at(hop[0], hop[1], "outside the door at night, the torch beside the wall");
-    await page.evaluate(() => window.__ml.torch?.(true));
-    await new Promise((r) => setTimeout(r, 1200)); // the light slot's tenure ramp
-    await parkCam();
-    const torchOn = await measure("night torch on");
-    await page.evaluate(() => window.__ml.torch?.(false));
-    await new Promise((r) => setTimeout(r, 1200));
-    await parkCam();
-    const torchOff = await measure("night torch off");
-    await page.evaluate(() => window.__ml.torch?.(true));
+    // STAND IN FRONT OF THE FACE, not at the door: a torch is a 6-cell pool
+    // with square falloff, and the wall this arm can measure is whichever one
+    // has no scenery on it — four cells down the wall from the door on this
+    // house. At the door its lift on that face was 1.02 with the light
+    // working. One cell out from the face, the camera parked on the wall cell
+    // so both the face and the player are mid-frame.
+    const torchFace = southWall ? { cell: southWall, key: "southFace", out: [0, 1] } : eastWall ? { cell: eastWall, key: "eastFace", out: [1, 0] } : null;
     let bestLift = 0;
-    let liftFace = null;
-    for (const k of ["southFace", "eastFace"]) {
-      if (!torchOn.stats[k] || !torchOff.stats[k]) continue;
-      const lift = luma(torchOn.stats[k]) / Math.max(1, luma(torchOff.stats[k]));
-      console.log(`  night ${k}: torch on ${luma(torchOn.stats[k]).toFixed(1)} / off ${luma(torchOff.stats[k]).toFixed(1)} = ${lift.toFixed(2)}`);
-      if (lift > bestLift) { bestLift = lift; liftFace = k; }
+    if (!torchFace) {
+      check(false, "a scenery-free outer face of the house is available to measure the torch on");
+    } else {
+      const stand = [torchFace.cell[0] + 0.5 + 1.1 * torchFace.out[0], torchFace.cell[1] + 0.5 + 1.1 * torchFace.out[1]];
+      const camTorch = [torchFace.cell[0] + 2 * torchFace.out[0], torchFace.cell[1] + 2 * torchFace.out[1]];
+      await at(stand[0], stand[1], "outside at night, standing in front of the house's wall");
+      await page.evaluate(() => window.__ml.torch?.(true));
+      await new Promise((r) => setTimeout(r, 1500)); // the light slot's tenure ramp
+      await parkCam(camTorch);
+      const torchOn = await measure("night torch on");
+      await page.evaluate(() => window.__ml.torch?.(false));
+      await new Promise((r) => setTimeout(r, 1500));
+      await parkCam(camTorch);
+      const torchOff = await measure("night torch off");
+      await page.evaluate(() => window.__ml.torch?.(true));
+      const on = torchOn.stats[torchFace.key];
+      const off = torchOff.stats[torchFace.key];
+      if (!on || !off) {
+        check(false, `the wall face (${torchFace.key}) is in view to measure the torch on`);
+      } else {
+        bestLift = luma(on) / Math.max(0.5, luma(off));
+        console.log(`  night ${torchFace.key} at ${stand.map((v) => v.toFixed(1))}: torch on ${luma(on).toFixed(1)} / off ${luma(off).toFixed(1)} = ${bestLift.toFixed(2)}`);
+        check(
+          bestLift >= 1.25,
+          `at night my torch lights the house's outer face beside me (${torchFace.key}: ${(bestLift * 100).toFixed(0)}% of the same face with the torch off; 100% on the build whose outer-face rule ran outdoors)`,
+        );
+      }
     }
-    check(
-      bestLift >= 1.25,
-      `at night my torch lights the house's outer face beside me (${liftFace ?? "no face in view"}: ${(bestLift * 100).toFixed(0)}% of the same face with the torch off; 100% on the build whose outer-face rule ran outdoors)`,
-    );
     //    b) "The house still flashes red when I run out" (257.4,305.0 at night,
     //       the whole roof slab warm): the exit pinned where the roof is
     //       opaque, against the settled night frame — the slab no brighter
@@ -731,14 +755,134 @@ if (lid && lid.onLidIdx.length) {
     await parkCam();
     const nightDone = await measure("night settled outside");
     if (nightHalf.stats.roof && nightDone.stats.roof) {
-      const st = ratio(nightHalf, nightDone, "street");
-      const rel = ratio(nightHalf, nightDone, "roof") / st;
+      // ABSOLUTE, not a ratio of ratios: at night these are 8-12 luma out of
+      // 255, where a 25% band is two units of noise. What his report is about
+      // is a roof that LIGHTS UP and goes WARM, so that is what this asserts —
+      // no brighter than the settled night roof by more than 6 luma, and no
+      // warmer. (The day arm above keeps the proportional test, where the
+      // numbers are 50-100 and a ratio means something.)
       const warm = (v) => v[0] - v[2];
-      console.log(`  night roof: mid-exit ${luma(nightHalf.stats.roof).toFixed(1)} (R-B ${warm(nightHalf.stats.roof).toFixed(0)}) settled ${luma(nightDone.stats.roof).toFixed(1)} (R-B ${warm(nightDone.stats.roof).toFixed(0)}); street ratio ${st.toFixed(2)}`);
-      check(rel <= 1.25, `at night the roof slab fades with the street through the exit (${(rel * 100).toFixed(0)}% of the street's ratio)`);
+      const l0 = luma(nightDone.stats.roof);
+      const l1 = luma(nightHalf.stats.roof);
+      console.log(`  night roof: mid-exit ${l1.toFixed(1)} (R-B ${warm(nightHalf.stats.roof).toFixed(0)}) settled ${l0.toFixed(1)} (R-B ${warm(nightDone.stats.roof).toFixed(0)}); street ${luma(nightHalf.stats.street).toFixed(1)} -> ${luma(nightDone.stats.street).toFixed(1)}`);
+      check(l1 <= l0 + 6, `at night the roof does not light up through the exit (mid-exit ${l1.toFixed(1)} vs settled ${l0.toFixed(1)} luma)`);
       check(warm(nightHalf.stats.roof) <= warm(nightDone.stats.roof) + 6, `mid-exit the roof is no warmer than it settles (R-B ${warm(nightHalf.stats.roof).toFixed(0)} vs ${warm(nightDone.stats.roof).toFixed(0)})`);
     } else {
       check(false, "the roof cell is in view at night to measure");
+    }
+    //    c) THE TORCH ON THE WALL BESIDE ME, MID-FADE (maintainer 2026-09-20,
+    //       two screenshots: "the walls are super dark during the fade and get
+    //       normal brightness when the fade to outdoor has completed"). An
+    //       outer face is outside my room, so the two blocks meant for my
+    //       room's own lights — the roof/wall line of sight, and "a pixel
+    //       outside my room above a light takes none of it" — fired on the
+    //       torch in my hand, which stands lower than the face. The same face,
+    //       torch on, at mix 0.55 and settled, from the SAME spot: measured
+    //       from the door the far wall barely reads the torch at all (1.02
+    //       with the light working), so this uses the wall cell BESIDE the
+    //       door, one cell from where the hop lands.
+    const sideCells = [[door.x - 1, door.y], [door.x + 1, door.y], [door.x, door.y - 1], [door.x, door.y + 1]]
+      .filter(([x, y]) => house.cells.has(`${x},${y}`) && (doc.level?.[y]?.[x] ?? 0) === wallL && clearFace(x, y, door.ox, door.oy));
+    const sideWall = sideCells[0] ?? null;
+    if (!sideWall) {
+      check(false, "a scenery-free wall cell beside the door is available for the mid-fade torch arm");
+    } else {
+      const keptS = southWall, keptE = eastWall;
+      const sideKey = door.oy !== 0 ? "southFace" : "eastFace";
+      if (sideKey === "southFace") { southWall = sideWall; eastWall = null; } else { eastWall = sideWall; southWall = null; }
+      await page.evaluate(() => window.__ml.torch?.(true));
+      await at(inSpot[0], inSpot[1], "just inside the door at night, torch lit, for the mid-fade wall");
+      await page.waitForFunction(() => { try { return window.__ml.sceneryIndoor().drawnRoofed > 0; } catch { return false; } }, null, { timeout: 120_000, polling: 500 }).catch(() => {});
+      await page.evaluate(() => window.__ml.indoorMixPin(0.55));
+      const flippedW = await hopOut();
+      check(flippedW, "the torch-lit hop starts the exit crossfade (blend pinned at 0.55)");
+      await new Promise((r) => setTimeout(r, 1200)); // the torch's slot ramp
+      await parkCam();
+      const wallMid = await measure("night wall mid-fade, torch on");
+      await page.evaluate(() => window.__ml.indoorMixPin(null));
+      await page.waitForFunction(() => { const f = window.__ml.indoorFade(); return !f.inside && f.mix <= 0 && !f.exiting; }, null, { timeout: 120_000, polling: 100 }).catch(() => {});
+      await settle();
+      // the SAME spot, so the torch stands exactly where it stood
+      await page.evaluate(([c, r]) => window.__ml.teleport(c, r), hop);
+      await new Promise((r) => setTimeout(r, 1200));
+      await parkCam();
+      const wallDone = await measure("night wall settled, torch on");
+      const a = wallMid.stats[sideKey], b = wallDone.stats[sideKey];
+      if (!a || !b) {
+        check(false, `the wall beside the door (${sideKey}, cell ${sideWall}) is in view to measure the torch mid-fade`);
+      } else {
+        const keep = luma(a) / Math.max(0.5, luma(b));
+        console.log(`  night wall beside the door (${sideWall}): mid-fade ${luma(a).toFixed(1)} vs settled ${luma(b).toFixed(1)} = ${(keep * 100).toFixed(0)}%`);
+        check(keep >= 0.5, `mid-fade my torch still lights the wall beside me — ${(keep * 100).toFixed(0)}% of its settled torch-lit value (it went black and snapped at the landing when my room's light block ran on every light)`);
+      }
+      southWall = keptS; eastWall = keptE;
+    }
+    //    d) THE LANDING, TRACED PER FRAME — a still frame cannot see a transient,
+    //       and the pinned frames above were clean on the build he caught the
+    //       flash on. An UNPINNED exit with winTrace sampling the roof cell's
+    //       own light every frame (the CPU twin, the glow stamps included, the
+    //       same rule the night pass draws): at the landing that build deleted
+    //       the hearth from tenure (its gain at 0.01) and handed its pool stamp
+    //       back at FULL alpha with the room mask gone — the roof's light
+    //       jumped past its settled value, and warm. The stamp wears the
+    //       room's gain now (stampsToDraw), so the roof never exceeds what it
+    //       settles at.
+    if (roofCell) {
+      await at(inSpot[0], inSpot[1], "just inside the door at night, for the traced exit");
+      await page.waitForFunction(() => { try { return window.__ml.sceneryIndoor().drawnRoofed > 0 && window.__ml.indoorLight().roomHasLight; } catch { return false; } }, null, { timeout: 120_000, polling: 500 }).catch(() => {});
+      await page.evaluate(([c, r, z]) => window.__ml.winTrace(true, [c, r, z]), [roofCell[0], roofCell[1], roofL]);
+      //    ...AND THE GROUND UNDER THE FADE LAYER, SAMPLED EVERY FRAME (the frame
+      //    he caught): at the landing the per-cell repaint can only POISON the
+      //    latch — the house's cells exceed half the ground texture after the
+      //    splits, or a full paint is already owed — and the real roof lands
+      //    with the next frame's full paint. The build he caught it on dropped
+      //    the opaque roof layer in the landing frame regardless, so for that
+      //    frame the cut state showed where the roof stands: the parquet floor
+      //    and the wall stumps, lit as the street — a whole warm roof, one
+      //    frame long. The layer now outlives the swap until the latch is valid
+      //    and no slice is owed (easeIndoorMix's landing branch). A page-side
+      //    sampler reads the fade probe after every Phaser step.
+      await page.evaluate(() => {
+        const w = window;
+        w.__mlLand = [];
+        const tick = () => { try { const f = w.__ml.indoorFade(); w.__mlLand.push({ n: w.__mlLand.length, mix: f.mix, inside: f.inside, exiting: f.exiting, debris: f.debris, owed: f.groundOwed, slices: f.groundSlices, cellFull: f.cellFull }); } catch {} if (w.__mlLand.length < 100000) requestAnimationFrame(tick); };
+        requestAnimationFrame(tick);
+      });
+      await page.evaluate(() => window.__ml.indoorMixPin(null));
+      const flippedT = await hopOut();
+      check(flippedT, "the traced night hop starts the exit crossfade (unpinned)");
+      const landedT = await page.waitForFunction(() => { const f = window.__ml.indoorFade(); return !f.inside && f.mix <= 0 && !f.exiting; }, null, { timeout: 120_000, polling: 100 }).then(() => true).catch(() => false);
+      check(landedT, "the traced night exit lands");
+      // ...and the room's pieces are dropped by the rebuild that follows, so the
+      // last frames are the settled outdoors and not the window itself.
+      await page.waitForFunction(() => { try { return window.__ml.sceneryIndoor().drawnRoofed === 0; } catch { return false; } }, null, { timeout: 60_000, polling: 200 }).catch(() => {});
+      await new Promise((r) => setTimeout(r, 1500));
+      const tr = await page.evaluate(() => window.__ml.winTrace(false));
+      const frames = (tr?.scene ?? []).filter((r) => Array.isArray(r.lit) && r.lit.length === 3);
+      const out = frames.filter((r) => !r.inside);
+      const settledLit = out.length ? luma(out[out.length - 1].lit) : NaN;
+      let peak = 0;
+      let peakRow = null;
+      for (const r of out) { const l = luma(r.lit); if (l > peak) { peak = l; peakRow = r; } }
+      for (const r of out) console.log(`    f${r.f} mix ${r.mix} grade ${r.grade} roomOn ${r.roomOn} slots ${r.slots} lights ${r.lights} stamps drawn ${r.drawN}/${r.drawA} roofed ${r.roofed} lit ${r.lit.map((v) => v.toFixed(3)).join(",")}`);
+      console.log(`  traced exit: ${frames.length} frames, ${out.length} after the flip; the roof cell's light settles at ${settledLit.toFixed(3)}, peak ${peak.toFixed(3)} at f${peakRow?.f} (mix ${peakRow?.mix}, grade ${peakRow?.grade}, roomOn ${peakRow?.roomOn}, stamps drawn ${peakRow?.drawN}/${peakRow?.drawA})`);
+      check(out.length >= 3 && Number.isFinite(settledLit), `the trace holds the exit and its landing (${out.length} frames after the flip)`);
+      check(
+        peak <= settledLit * 1.15 + 0.02,
+        `through the traced exit the roof cell's light never exceeds what it settles at (peak ${peak.toFixed(3)} vs settled ${settledLit.toFixed(3)}; a sealed room's pool stamp wears the room's gain)`,
+      );
+      const land = await page.evaluate(() => { const w = window; const s = w.__mlLand ?? []; w.__mlLand = null; return s; });
+      const first = land.findIndex((r) => !r.inside);
+      const after = first < 0 ? [] : land.slice(first);
+      const fallback = after.length ? after[after.length - 1].cellFull - after[0].cellFull : 0;
+      const gaps = after.filter((r) => r.debris === 0 && (r.owed || r.slices > 0));
+      const landedAt = after.findIndex((r) => !r.exiting);
+      console.log(`  landing sampler: ${land.length} frames, ${after.length} after the flip, landed at +${landedAt}; per-cell repaint fell back to a full paint ${fallback} time(s); frames with the roof layer gone over an unpainted ground: ${gaps.length}` +
+        (gaps.length ? ` (first: ${JSON.stringify(gaps[0])})` : ""));
+      for (const r of after.slice(Math.max(0, landedAt - 2), landedAt + 4)) console.log(`    +${r.n - after[0].n} mix ${r.mix} exiting ${r.exiting} debris ${r.debris} owed ${r.owed} slices ${r.slices} cellFull ${r.cellFull}`);
+      check(after.length >= 3 && landedAt >= 0, `the landing sampler saw the exit land (${after.length} frames after the flip)`);
+      check(gaps.length === 0, `the roof layer is never gone while the ground under it is still owed a paint (${gaps.length} such frames; the build he caught the flash on dropped it in the landing frame regardless)`);
+      if (fallback === 0) console.log("  (the per-cell repaint landed in the frame on this viewport — the hold was not exercised here; it is exercised where the house's box exceeds half the ground texture)");
     }
   }
 }

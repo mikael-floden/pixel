@@ -579,6 +579,10 @@ const DEBRIS_WARM_PER_FRAME = 16;
 /** The crossfade layer's view cull, in world px past the camera (see
  *  buildIndoorDebris3). */
 const INDOOR_DEBRIS_PAD = 96;
+/** How long the exit's landing may hold the fade layer over a ground repaint
+ *  that did not land in the same frame (easeIndoorMix): the layer's cull is
+ *  the camera plus INDOOR_DEBRIS_PAD, which a walking player leaves in ~1 s. */
+const INDOOR_DEBRIS_HOLD_MS = 500;
 /** THE PINK MOCK (maintainer 2026-09-08, driving the bisection himself): one
  *  already-resident 64x64 magenta texture that EVERY monster and EVERY scenery
  *  piece is drawn with in "mock" mode. The bodies, sprites, shadows, lit copies,
@@ -5631,6 +5635,14 @@ export class WorldScene extends Phaser.Scene {
         snaps: this.indoorSnaps,
         alpha: +this.debrisAlpha().toFixed(3),
         exiting: !this.indoorInside && !!this.indoorMask,
+        /* THE GROUND UNDER THE FADE LAYER, for the landing gate: the latch
+         * poisoned (a full paint owed to the next frame), slices of a scroll
+         * still owed, and how often the per-cell repaint fell back to a full
+         * one (groundCellStats.full). The layer must never be gone while the
+         * first two say the picture beneath it is not the real thing yet. */
+        groundOwed: Number.isNaN(this.lastGround.x) || this.repaintGroundPending,
+        groundSlices: this.groundSliceQ.length,
+        cellFull: this.groundCellStats.full,
         mix: +this.indoorMix.toFixed(3),
         inside: this.indoorInside,
         // The furniture under the roof: how many are drawn and the opacity
@@ -17894,11 +17906,13 @@ export class WorldScene extends Phaser.Scene {
 
   /** Drop everything the cut-away DRAWS from — the mask, the per-cell cuts,
    * the signature and any transition debris. The caller repaints. */
-  private clearIndoorDrawState() {
+  /** Drop the drawn cut state. `keepDebris`: the exit's landing keeps the fade
+   *  layer up until the ground beneath it is repainted (see easeIndoorMix). */
+  private clearIndoorDrawState(keepDebris = false) {
     this.indoorMask = null;
     this.indoorCut = null;
     this.indoorMaskSig = "";
-    this.destroyIndoorDebris();
+    if (!keepDebris) this.destroyIndoorDebris();
   }
 
   private destroyIndoorDebris() {
@@ -17947,6 +17961,9 @@ export class WorldScene extends Phaser.Scene {
   /** Eases left that still pay for the flip's own frame (its update, then its
    *  render) and bill at the small cap — set at every commitIndoor. */
   private indoorFlipEases = 0;
+  /** When the exit's landing began holding the debris over the repaint (see
+   *  easeIndoorMix's landing branch). */
+  private indoorDebrisHeldAt = 0;
   private winScene: Array<Record<string, unknown>> | null = null;
   private winAt: [number, number, number?] | null = null;
   private roomLitAt = 0;
@@ -18901,12 +18918,31 @@ export class WorldScene extends Phaser.Scene {
       }
       // THE EXIT LANDS. The debris is fully opaque, i.e. the picture already
       // equals the real outdoor geometry — swap the real thing in underneath
-      // and drop the fade layer in the same frame. This is the repaint
-      // commitIndoor deliberately did not do at the flip.
+      // and drop the fade layer. This is the repaint commitIndoor deliberately
+      // did not do at the flip.
       if (this.indoorMask) {
         const prevCuts = this.indoorCut;
-        this.clearIndoorDrawState();
+        this.clearIndoorDrawState(true);
         this.repaintIndoorFlip(prevCuts);
+        this.indoorDebrisHeldAt = this.time.now;
+      }
+      // ...AND THE DEBRIS OUTLIVES THE SWAP BY EXACTLY THE GROUND'S LAG. The
+      // per-cell repaint above paints the cut cells NOW — unless their box
+      // exceeds half the ground texture after its splits (a house the size of
+      // his on a phone-sized texture), or a full paint is already owed: then
+      // it only POISONS the latch, and the real roof lands with the next
+      // frame's full paint. Dropping the fade layer here regardless showed the
+      // cut state for that one frame — the parquet floor and the wall stumps
+      // where the roof stands, lit as the street: a whole warm roof, one frame
+      // long, the frame he finally caught (maintainer 2026-09-20 at night,
+      // 257.4,305.0: "the house still flashes red when I run out ... so hard
+      // to capture"). The layer is the picture until the ground beneath it is
+      // the real thing: the latch valid and no slice of a scroll still owed.
+      // Capped, because the layer's cull is the camera plus INDOOR_DEBRIS_PAD
+      // and a walking player leaves that box in about a second.
+      if (this.indoorDebris) {
+        const groundReal = !Number.isNaN(this.lastGround.x) && this.groundSliceQ.length === 0 && !this.repaintGroundPending;
+        if (groundReal || this.time.now - this.indoorDebrisHeldAt > INDOOR_DEBRIS_HOLD_MS) this.destroyIndoorDebris();
       }
     }
   }

@@ -1595,7 +1595,25 @@ void main() {
     // the fade, which is a bright warm flash on a piece that is outdoors
     // (maintainer 2026-09-14). Nothing above a light inside my room has a line
     // to it, at any point in the crossing.
-    att *= 1.0 - max(overMyRoom, max(uIndoor, uIndoorMix) * (1.0 - r)) * step(lp.z - 0.05, z);
+    // ...AND ONLY MY ROOM'S OWN LIGHTS ARE STOPPED BY MY ROOM'S GEOMETRY.
+    // Both blocks above are about a line of sight THROUGH my room's roof or
+    // its wall — they say nothing about a light standing in the street, and
+    // applied to one they put the street's own light out. Measured on his
+    // frame: through every exit the house's outer walls went black and then
+    // SNAPPED to their torch-lit brightness at the landing, because an outer
+    // face is outside my room (r = 0, overMyRoom = 1) and sits ABOVE the
+    // torch at my feet, so both terms fired on the one light that should
+    // reach it (maintainer 2026-09-20: "the walls are super dark during the
+    // fade and get normal brightness when the fade to outdoor has completed").
+    // The wall is between the face and the HEARTH; nothing is between it and
+    // the torch in my hand. A light whose own cell is my room's is blocked as
+    // before (the chimney, the neighbour's roof), and every other light —
+    // the torch, a street lamp, a fire in the road — reaches what it can see.
+    // Indoors this changes nothing at all: the scene drops a light outside my
+    // room from the ledger entirely while the mask is up (1 - grade <= 0.01),
+    // so the only lights here are the room's own. Twin: lightAt's blockK.
+    float lightMine = roomCellAt(lp.xy);
+    att *= 1.0 - lightMine * max(overMyRoom, max(uIndoor, uIndoorMix) * (1.0 - r)) * step(lp.z - 0.05, z);
     if (att <= 0.001) continue;
 
     // Line of sight: march the heightmap toward the light. Occlusion scales
@@ -4600,8 +4618,12 @@ export class NightLights {
        * chimney on the roof still flashes in brightness when I walk in/out a
        * house"). `occ` is what both consumers read, so the block belongs
        * there. */
+      /* ...and only MY ROOM'S OWN lights are stopped by my room's geometry
+       * (the fragment's lightMine): the wall is between an outer face and the
+       * hearth, nothing is between it and the torch in my hand. */
+      const lightMine = this.indoorMix > 0 && this.roomCellAt(L.col, L.row) ? 1 : 0;
       const blockK =
-        1 - Math.max(overMyRoom, Math.max(this.indoor ? 1 : 0, this.indoorMix) * (1 - hit)) * (z >= L.z - 0.05 ? 1 : 0);
+        1 - lightMine * Math.max(overMyRoom, Math.max(this.indoor ? 1 : 0, this.indoorMix) * (1 - hit)) * (z >= L.z - 0.05 ? 1 : 0);
       att *= blockK;
       // Twin of the shader's top-surface rule: a GROUND sample takes nothing
       // from a light more than TOP_UNDER_FREE..TOP_UNDER_FADE levels under its

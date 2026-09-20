@@ -221,8 +221,37 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     cells with a pane or a hanging skipped — a pane's glow is the room's; the
     faces within 20% of the street's ratio, the furniture at 0 under the
     opaque roof and at 0.70 at mix 0.9; then NIGHT: my torch beside the outer
-    face lifts it ≥ 25% over the torch switched off, and the roof slab
-    mid-exit within 25% of the street's ratio and no warmer than it settles).
+    face lifts it ≥ 25% over the torch switched off, the roof slab mid-exit
+    within 25% of the street's ratio and no warmer than it settles, the exit
+    pinned at mix 0.335 — the frame the hearth leaves the ledger, grade
+    0.0025, the mask still up — with the street no brighter and no warmer
+    than it settles (the red-on-old proof of the stamp rule: the old map put
+    the hearth's full-alpha halo on the street there), and an UNPINNED exit
+    traced per frame at the roof cell — `winTrace`, the CPU twin with the
+    stamps — whose light never exceeds what it settles at by more than 15%,
+    a guard for a rig with real frames: this one's 2.7 s frames close the
+    landing's window inside a single frame).
+  - **MY ROOM'S GEOMETRY STOPS MY ROOM'S LIGHTS, AND NOTHING ELSE**
+    (fragment `lightMine` = `roomCellAt(lp.xy)`, twin `lightAt`'s `blockK`).
+    Two blocks say "there is a roof or a wall in the way": `overMyRoom` (the
+    roof slab, and a wall's outer face) and "a pixel outside my room above a
+    light takes none of it". Both are about a line of sight through MY ROOM's
+    own geometry, and both used to fire on EVERY light in the ledger — so the
+    torch in my own hand, which stands lower than a wall face, was cut off
+    from the house's outer walls for the whole crossing: they went black and
+    then SNAPPED to their torch-lit brightness at the landing, where the rule
+    switches off (maintainer 2026-09-20: "the walls are super dark during the
+    fade and get normal brightness when the fade to outdoor has completed").
+    A light whose own cell is my room's is blocked as before (the hearth, the
+    chimney over it, the neighbour's roof); every other light — the torch, a
+    street lamp, a fire in the road — reaches what it can see. Indoors this
+    changes nothing: while the mask is up the scene drops a light outside my
+    room from the ledger entirely (1 − grade ≤ 0.01), so the only lights there
+    are the room's own. Measured at the gate's house, the wall cell beside the
+    door with the torch lit: mid-fade 29.2 luma against 42.8 settled (68%,
+    was ~0 with a hard snap at the landing). The lit-copy leak arm tests the
+    ROOM's lights for the same reason — a torch in the street is not one, and
+    asserting 0 on it asserted this bug.
   - **A SEALED ROOM'S POOL STAMP WEARS THE ROOM'S GAIN, LIKE ITS LIGHT**
     (`stampsToDraw`, WorldScene). The glow field's pool stamp is the fallback
     for a source without a light slot, and a sealed fire LOSES its slot the
