@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-20T18:51:51.866Z",
+  "updated_at": "2026-09-20T18:54:18.684Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -6657,22 +6657,19 @@
       "updated_at": "2026-09-18T14:36:49.773Z"
     },
     "monsters/ash_hatchling#die_v1#south-east": {
-      "status": "approved",
-      "rating": 1,
-      "art": "3accbaea5a09a46b",
-      "updated_at": "2026-09-18T14:36:58.614Z"
+      "status": "redo",
+      "art": "5e1804df61203756",
+      "updated_at": "2026-09-20T18:52:34.565Z"
     },
     "monsters/ash_hatchling#die_v1#south-west": {
-      "status": "approved",
-      "rating": 1,
-      "art": "c65b7875611cd67b",
-      "updated_at": "2026-09-18T14:37:01.064Z"
+      "status": "redo",
+      "art": "a86e052ea7001e13",
+      "updated_at": "2026-09-20T18:52:29.809Z"
     },
     "monsters/ash_hatchling#die_v1#south": {
-      "status": "approved",
-      "rating": 1,
-      "art": "232ec24ca10761cc",
-      "updated_at": "2026-09-18T14:37:04.895Z"
+      "status": "redo",
+      "art": "57311e9a856bb5b6",
+      "updated_at": "2026-09-20T18:52:45.456Z"
     },
     "monsters/spider_queen#attack_v3#north-west": {
       "rating": 3,
@@ -7047,6 +7044,25 @@
       "status": "approved",
       "art": "9942753207d893a7",
       "updated_at": "2026-09-20T18:51:42.417Z"
+    },
+    "monsters/ash_hatchling#attack_v3#north-east": {
+      "rating": 3,
+      "status": "approved",
+      "art": "bac595c8507f8487",
+      "updated_at": "2026-09-20T18:53:57.133Z",
+      "note": "The fire renders outside the frame to the right, but it warps around and can be saved in post"
+    },
+    "monsters/ash_hatchling#attack_v3#north-west": {
+      "note": "The fire renders outside the frame to the right, but it warps around and can be saved in post",
+      "updated_at": "2026-09-20T18:54:05.055Z",
+      "status": "approved",
+      "rating": 1,
+      "art": "5570759180bcde5e"
+    },
+    "monsters/ash_hatchling#attack_v3#north": {
+      "status": "redo",
+      "art": "3f98efd6a4a1ab76",
+      "updated_at": "2026-09-20T18:54:09.845Z"
     }
   }
 }
