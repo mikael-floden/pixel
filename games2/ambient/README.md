@@ -463,6 +463,29 @@ per effect — his process).
   bank somewhere deep inside, the mask is whole inside and the field takes
   middle values on the line; inside looking out, the same from the other
   side; two pictures.
+- **A FIELD EFFECT LIVES IN ITS ZONE** (`runtime/zoneplace.ts`, unit 3).
+  Field effects used to self-gate on TERRAIN alone and never read the zone set
+  at all, so a crab appeared on every beach in the world. `ZoneWatch` is the
+  whole rule, and every critter gets the same two: it is WANTED when its zone
+  is anywhere in VIEW (`any`, coverage at the env cadence), never when my own
+  cell says so — which is what makes them already be there as I walk up to the
+  line; and a spot is ACCEPTED with the probability of the field's weight
+  there (`accept`), so across the three-cell feather the POPULATION thins
+  instead of the sprites fading. A half-transparent crab is a ghost; half as
+  many crabs is a beach petering out. `holds` is the same test without the
+  dice, for re-validating something already placed (a coin flip there would
+  make it flicker). Where zones do not rule every answer is "yes, everywhere",
+  so a zoneless world behaves exactly as before.
+  Gate `verify-critterzone.mjs` (`EFFECT=<name>`): stands outside a zone that
+  carries the effect with ground it can use inside, and asserts the effect is
+  running from out there, that everything drawn sits on the zone's ground, and
+  that nothing is drawn on the cells around me. It knows what terrain each
+  effect needs — a crab wants a beach, and a stand facing a zone whose inside
+  is all rock proves nothing.
+  **crabs**: the colony search rejects a candidate outside the zone before it
+  pays for its water probes, and a colony whose ground leaves the zone (a
+  window re-roll) is dropped like one whose water dried up. With no crab zone
+  in view it does not search at all.
 - **A PINNED WORLD HAS NO ZONES AT ALL, AND IT OUTLIVES THE PAGE.**
   `__ml.worldAmbient(set)` forces the room's sky on the SERVER, and the server
   persists it in the shared clock document, so one gate that forces a weather

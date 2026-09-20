@@ -11,6 +11,8 @@ import { AMBIENT_SCHEMA, CELL_WU, parseAmbientZones, type AmbientZoneDoc } from 
 import {
   BUCKET_CAP, FEATHER_CELLS, ZoneField, type ZonePick, type ZoneSource,
 } from "../../ambient/runtime/zonefield.js";
+import { ZoneWatch } from "../../ambient/runtime/zoneplace.js";
+import type { AmbientCtx } from "../../ambient/runtime/types.js";
 
 const doc = (): AmbientZoneDoc =>
   parseAmbientZones({
@@ -138,6 +140,45 @@ test("a re-roll in ONE zone drops only the cells that zone holds — the rest of
   assert.equal(f.weightAt("gnats", ...iso(35.5, 15.5)), 0, "the changed zone reads its new window");
   assert.ok(f.debug().resolves > resolvesBefore, "...by resolving again");
   assert.equal(f.debug().pruned, 1, "one zone changed");
+});
+
+test("a field effect is wanted when its zone is in view, and a spot is taken with the weight's own odds", () => {
+  // ZoneWatch is what every critter reads (runtime/zoneplace.ts): the view's
+  // coverage at the env cadence, and a stochastic accept so the POPULATION
+  // thins across the feather instead of the sprites fading.
+  const { f } = field({});
+  const view = { x: 13 * CELL_WU, y: 13 * CELL_WU, width: 4 * CELL_WU, height: 4 * CELL_WU }; // well inside the wet zone
+  const ctx = { zone: f, view } as unknown as AmbientCtx;
+  const w = new ZoneWatch("rain");
+  w.step(ctx, 1000);
+  assert.equal(w.any, true);
+  assert.ok(w.mean > 0.9, `deep inside the view is all zone (${w.mean})`);
+  // a view far away: the zone is not on screen and nothing is wanted
+  const away = { zone: f, view: { x: 40 * CELL_WU, y: 40 * CELL_WU, width: 4 * CELL_WU, height: 4 * CELL_WU } } as unknown as AmbientCtx;
+  const w2 = new ZoneWatch("rain");
+  w2.step(away, 1000);
+  assert.equal(w2.any, false);
+  assert.equal(w2.mean, 0);
+  // the accept: always inside, never outside, and IN PROPORTION on the line
+  const always = () => 0; // rnd below any positive weight
+  assert.equal(w.accept(ctx, 15 * CELL_WU, 15 * CELL_WU, always), true);
+  assert.equal(w.accept(ctx, 5 * CELL_WU, 15 * CELL_WU, always), false, "outside is outside however the dice fall");
+  assert.equal(w.holds(ctx, 15 * CELL_WU, 15 * CELL_WU), true);
+  assert.equal(w.holds(ctx, 5 * CELL_WU, 15 * CELL_WU), false);
+  // on the ramp the odds ARE the weight: a rigged rnd just under it takes it, just over refuses
+  const onLine = 9.5 * CELL_WU;
+  const wl = f.weightAt("rain", onLine, 15 * CELL_WU);
+  assert.ok(wl > 0.05 && wl < 0.95, `the sample sits on the ramp (${wl})`);
+  assert.equal(w.accept(ctx, onLine, 15 * CELL_WU, () => wl - 0.01), true);
+  assert.equal(w.accept(ctx, onLine, 15 * CELL_WU, () => wl + 0.01), false);
+  // no zones at all: everything is wanted everywhere, the old behaviour exactly
+  const { f: sky } = field({ roomSky: true });
+  const open = { zone: sky, view } as unknown as AmbientCtx;
+  const w3 = new ZoneWatch("rain");
+  w3.step(open, 1000);
+  assert.equal(w3.any, true);
+  assert.equal(w3.mean, 1);
+  assert.equal(w3.accept(open, 5 * CELL_WU, 15 * CELL_WU, () => 0.99), true);
 });
 
 test("the raster is the field over a rectangle, row 0 at the top, 255 inside, 0 outside, the ramp between", () => {

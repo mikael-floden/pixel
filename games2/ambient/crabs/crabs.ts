@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientEnv, AmbientFeature } from "../runtime/types";
 import { landableAt, paintPixels } from "../runtime/ground";
+import { ZoneWatch } from "../runtime/zoneplace";
 import { waterAt as harmlessWaterAt } from "../runtime/water";
 
 /* BEACH CRABS — the sideways scuttle at the water's edge.
@@ -28,6 +29,14 @@ import { waterAt as harmlessWaterAt } from "../runtime/water";
  *   - A frame with the gain at zero returns before all of it.
  * `__mlAmbient.cost()` reports the per-frame cost and `debug().probes` the
  * probe rate; the gate pins both.
+ *
+ * THE ZONE BOUNDARY (2026-09-20, runtime/zoneplace.ts): a beach is not enough
+ * — the colony must also stand where the maps2 zone that carries `crabs` is
+ * on. The search rejects a candidate outside it, so a crab colony is already
+ * scuttling on the far side of the line as I walk up to it and there is never
+ * one on my side; a colony whose ground leaves the zone (a window re-roll,
+ * or the player walking it out of view) is dropped like a colony whose water
+ * dried up. With no crab zone in view the feature does not even search.
  */
 
 const KEY = "amb-crab";
@@ -164,6 +173,7 @@ function crabGain(env: AmbientEnv): number {
 }
 
 export function crabsFeature(): AmbientFeature {
+  const zone = new ZoneWatch("crabs");
   const crabs: Crab[] = [];
   let colony: Colony | null = null;
   let sinceTry = 0;
@@ -294,6 +304,9 @@ export function crabsFeature(): AmbientFeature {
       const x = Math.round(v.x + rnd() * v.width);
       const y = Math.round(v.y + rnd() * v.height);
       if (!landAt(x, y)) continue;
+      // THE ZONE, before the costly water probes: accepted with the weight's
+      // own probability, so a colony thins out across the feather
+      if (!zone.accept(ctx, x, y, rnd)) continue;
       for (const [dx, dy] of DIRS) {
         for (let k = 1; k <= WATER_LOOK; k++) {
           const px = x + dx * WATER_STEP * k;
@@ -428,7 +441,10 @@ export function crabsFeature(): AmbientFeature {
       ]);
     },
     update(ctx, dt) {
-      const target = forced ? 1 : suppressed ? 0 : crabGain(ctx.env);
+      zone.step(ctx, dt);
+      // WANTED WHERE THE ZONE IS IN VIEW, not where my own cell is: a colony
+      // on the far side of the line is in view long before I cross it.
+      const target = forced ? 1 : suppressed || !zone.any ? 0 : crabGain(ctx.env);
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
       const g = gain * ctx.outdoor;
       if (g <= 0.02) {
@@ -446,7 +462,9 @@ export function crabsFeature(): AmbientFeature {
         let dry = false;
         if (sinceCheck >= RECHECK_MS) {
           sinceCheck = 0;
-          dry = !waterStill(colony.x, colony.y, colony.wx, colony.wy);
+          // its water must still be there, and its zone must still hold it
+          // (a window re-roll turns crabs off on this beach)
+          dry = !waterStill(colony.x, colony.y, colony.wx, colony.wy) || !zone.holds(ctx, colony.x, colony.y);
         }
         const off =
           colony.x < v.x - OFF_VIEW || colony.x > v.x + v.width + OFF_VIEW ||
@@ -537,6 +555,7 @@ export function crabsFeature(): AmbientFeature {
       const shown = crabs.filter((c) => c.sprite.visible);
       return {
         gain: +gain.toFixed(3),
+        zone: zone.info(), // the boundary: is a crab zone in view, and how much of it
         probes, // QA: this must stay small — the beach search is the costly call
         searches,
         colony: colony
