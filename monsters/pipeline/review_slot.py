@@ -67,12 +67,20 @@ def build_sheet(cid, slot):
     return w, h, [len(per[d]) for d in DIRECTIONS_8], base64.b64encode(buf.getvalue()).decode()
 
 
-def collect(slot, only=None):
+def collect(slot, only=None, pairs=None):
+    """`pairs` = {id: slot} — one page for several monsters each judged on a
+    DIFFERENT slot, which is the shape a review round actually has (he flags a
+    die on one creature and an attack on another). `slot`/`only` stay the
+    whole-slot sweep."""
     cfg = cand.load_cfg()
     out = []
     for design in cfg["candidates"]:
         cid = design["id"]
-        if only and cid not in only:
+        if pairs is not None:
+            if cid not in pairs:
+                continue
+            slot = pairs[cid]
+        elif only and cid not in only:
             continue
         man = cand.load_manifest(cid)
         if not man or man.get("review") != "approved":
@@ -88,7 +96,8 @@ def collect(slot, only=None):
                        "rolls": q.get("rolls"), "rung": q.get("rung"), "mirrored": bool(q.get("mirrored")),
                        "loop": q.get("loop"), "end_area": q.get("end_area"), "action": q.get("action")}
         w, h, counts, b64 = built or (0, 0, [0] * 8, "")
-        out.append({"id": cid, "name": design.get("name", cid), "tier": design.get("tier"), "scale": design.get("scale"),
+        out.append({"id": cid, "name": design.get("name", cid), "slot": slot,
+                    "tier": design.get("tier"), "scale": design.get("scale"),
                     "action": (rec or {}).get("action") or design.get(f"{slot.split('_')[0]}_action") or "",
                     "w": w, "h": h, "counts": counts, "b64": b64, "dirs": dirs})
     return out
@@ -154,7 +163,7 @@ for (const m of DATA) {
   const card = document.createElement('section'); card.className = 'm';
   card.dataset.name = (m.id + ' ' + m.name + ' ' + m.tier).toLowerCase();
   card.dataset.bad = DIRS.some(d => m.dirs[d].status !== 'pass') ? '1' : '';
-  card.innerHTML = `<div class="mh"><b>${m.name}</b><span class="mono">${m.id} · ${m.tier} · ${m.scale} · ${m.counts[0]} frames</span></div>
+  card.innerHTML = `<div class="mh"><b>${m.name}</b><span class="mono">${m.id} · ${m.slot} · ${m.tier} · ${m.scale} · ${m.counts[0]} frames</span></div>
     <div class="act">${m.action.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>`;
   const row = document.createElement('div'); row.className = 'row';
   const img = new Image(); img.src = 'data:image/webp;base64,' + m.b64;
@@ -209,18 +218,23 @@ document.getElementById('copy').onclick = () => { const t = document.getElementB
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--slot", required=True, help="e.g. die_v1")
+    ap.add_argument("--slot", help="e.g. die_v1")
+    ap.add_argument("--pairs", help="id:slot,id:slot — one page, a different slot per monster")
     ap.add_argument("--only", help="comma-separated ids")
     ap.add_argument("-o", "--out", default=None, help="output HTML (default: /tmp/monsters_<slot>.html)")
     ap.add_argument("--frame-ms", type=int, default=FRAME_MS)
     ap.add_argument("--hold-ms", type=int, default=HOLD_MS)
     args = ap.parse_args()
-    data = collect(args.slot, set(args.only.split(",")) if args.only else None)
-    page = (PAGE.replace("__TITLE__", html.escape(f"Monster {args.slot} review"))
+    pairs = dict(p.split(":", 1) for p in args.pairs.split(",")) if args.pairs else None
+    if not args.slot and not pairs:
+        ap.error("--slot or --pairs is required")
+    data = collect(args.slot, set(args.only.split(",")) if args.only else None, pairs)
+    title = f"Monster {args.slot} review" if args.slot else "Monster redo review"
+    page = (PAGE.replace("__TITLE__", html.escape(title))
                 .replace("__DATA__", json.dumps(data, separators=(",", ":")))
                 .replace("__FRAME_MS__", str(args.frame_ms)).replace("__HOLD_MS__", str(args.hold_ms))
                 .replace("__DIRS__", json.dumps(list(DIRECTIONS_8))))
-    out = args.out or f"/tmp/monsters_{args.slot}.html"
+    out = args.out or f"/tmp/monsters_{args.slot or 'redos'}.html"
     with open(out, "w") as f:
         f.write(page)
     n = sum(1 for m in data for d in m["dirs"].values() if d["status"] != "pass")

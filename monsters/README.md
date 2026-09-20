@@ -179,6 +179,25 @@ python monsters/pipeline/animate.py fetch --state idle --only a # re-download th
 python monsters/pipeline/animate.py status --state idle
 ```
 
+**THE LADDER IS PER STATE, AND ONLY AN ATTACK CLIMBS THE ATTACK'S RUNGS**
+(measured 2026-09-20 on his cobra walk redo). A failed direction escalates its
+wording one rung; `ladder_action` fell through to the ATTACK ladder for every
+state without its own, so Hoodfang's WALK at rung 3 was generated from the
+design's `attack_extreme` — "Fang Lunge - the cobra throws its whole body
+forward off the ground, fangs bared" — and at rung 1 a slither was asked for
+", a big aggressive swing". Idle, walk and angry had been climbing that ladder
+since they existed. Now: `attack` keeps its rungs (amplify → the simpler
+swooshing attack → the design's EVENT), `die` and `angry` keep their own, and
+every other state moves `MORE_MOTION` / `LESS_MOTION` and nothing else. A
+state's own rungs live on its `STATES` entry as `amplify`/`calm`.
+
+**`--reword-dirs` (on the state commands AND on `redo`) is how ONE direction
+takes new words** while the ones he approved keep theirs — the case his review
+actually produces. It resets the ladder only for a direction whose recorded
+`action` is not yet the config's, so the first roll on new words starts at rung
+0 and every roll after it climbs (reset unconditionally, a stubborn direction
+re-rolls the identical clip forever).
+
 What an idle is (maintainer): "very, very calm and still breathing" —
 PixelLab tends to give far too much or nothing at all. The rules that get
 there:

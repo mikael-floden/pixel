@@ -236,6 +236,24 @@ CALM = [
     ", a controlled strike, only the striking limb moves and the body stays planted",
     ", a small tight strike, the body barely moves",
 ]
+# EVERY STATE THAT IS NOT AN ATTACK CLIMBS THESE, never the attack's rungs
+# (measured 2026-09-20 on his cobra walk redo: the walk ladder at rung 3
+# returned the design's `attack_extreme` — "Fang Lunge - the cobra throws its
+# whole body forward off the ground, fangs bared" — as the WALK action, and at
+# rung 1 it appended ", a big aggressive swing" to a slither. A state with its
+# own rungs (die) keeps them; the rest get more or less MOTION, which is the
+# only dial a non-attack state has.)
+MORE_MOTION = [
+    "",
+    ", with clearly more movement",
+    ", with much more movement, the whole body committing to it",
+    ", with a lot of movement, large and unmistakable",
+]
+LESS_MOTION = [
+    "",
+    ", with less movement, calmer and more controlled",
+    ", almost still, only the smallest movement",
+]
 CLAW_SLASH = ("Claw Swipe - Raises one front paw and performs one quick swipe forward, "
               "white swoosh lines following the claws")
 SIMPLE_LUNGE = ("Lunge Attack - Throws its whole body forward in one fast lunge, "
@@ -270,8 +288,13 @@ def ladder_action(cid, rung, base_action, state="attack"):
     (`amplify`/`calm` on its STATES entry — die) climbs those and never
     borrows the attack's swing, claw or extreme event."""
     own = STATES.get(state) or {}
-    if own.get("amplify"):
-        amp, calm = own["amplify"], own.get("calm") or CALM
+    if state != "attack" or own.get("amplify"):
+        # the attack's rungs (a bigger swing, the claw fallback, the design's
+        # hand-written attack EVENT) are an attack's alone: they turned a
+        # slither into a fang lunge. A state with its own rungs uses them;
+        # every other state moves more or less, and nothing else changes.
+        amp = own.get("amplify") or MORE_MOTION
+        calm = own.get("calm") or LESS_MOTION
         if rung < 0:
             return base_action + calm[min(-rung, len(calm) - 1)]
         return base_action + amp[min(rung, len(amp) - 1)]
@@ -1035,6 +1058,19 @@ def cmd_state(args, state):
             # slot and promote it when every direction is there (maintainer).
             reworded.append(cid); continue
         dirs = needed_dirs(man, state, redo, getattr(args, 'reword_dirs', False))
+        if dirs and getattr(args, "reword_dirs", False):
+            # NEW WORDS, NEW LADDER — but only for a direction that has NOT yet
+            # been made with them. The stored rung escalated the OLD wording and
+            # carrying it forward amplifies a sentence that no longer exists
+            # (his cobra slither came back as the attack's fang lunge); once a
+            # direction HAS been rolled on the new words, its rung is real and
+            # the next redo must climb, or the same roll repeats forever.
+            want = state_action(cid, state)
+            for d in dirs:
+                q = rec_now.get("directions", {}).get(d)
+                if q and q.get("action") != want:
+                    q["rung"] = 0
+            write_manifest(cid, man)
         if dirs:
             plan.append((cid, dirs))
     if reworded:
@@ -1614,6 +1650,9 @@ def main():
     r.add_argument("--pin", action="store_true", help="pin start+end to the base (the maintainer's fallback for a clip that never loops)")
     r.add_argument("--try", dest="use_try", action="store_true")
     r.add_argument("--pro", action="store_true", help="PRO mode for this run (see the state command)")
+    r.add_argument("--reword-dirs", dest="reword_dirs", action="store_true",
+                   help="apply the config's NEW wording to just these directions, keeping the ones he approved "
+                        "(the state command has this too; redo is where a per-direction reword is actually asked for)")
     r.set_defaults(func=lambda a: cmd_state(a, a.state + (TRY if a.use_try else "")), dry_run=False)
     f = sub.add_parser("fetch", help="re-download + re-QA the last takes already on PixelLab (no generation)")
     f.add_argument("--state", default="idle"); f.add_argument("--only", required=True); f.add_argument("--dirs")
