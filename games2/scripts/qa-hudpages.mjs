@@ -11,9 +11,12 @@
 // wiki-theme QA geometry; no desktop-site zoom compensation exists any more);
 // the wide 980 view is kept as a geometry-only pass where the 560 cap engages.
 import { chromium } from "playwright-core";
+import { readFileSync } from "node:fs";
 
 const OUT = process.env.OUT || "/tmp/qa";
 const BASE = process.env.BASE || "http://localhost:5173";
+// The backpack draws exactly the server's cap (shared/src/combat.ts) — read, never copied.
+const CAP = Number(/INV_MAX_SLOTS = (\d+)/.exec(readFileSync(new URL("../shared/src/combat.ts", import.meta.url), "utf8"))[1]);
 const browser = await chromium.launch({
   executablePath: "/opt/pw-browsers/chromium",
   args: ["--no-sandbox"],
@@ -95,9 +98,9 @@ function checkGeo(label, g) {
   const contentW = g.contentRight - g.contentLeft;
   const want = Math.min(560, contentW); // the shared max-width:560px column
 
-  g.slotCount === 15
-    ? ok(`${label}: 15 slots`)
-    : fail(`${label}: ${g.slotCount} slots (want 15)`);
+  g.slotCount === CAP
+    ? ok(`${label}: ${CAP} slots — every one the server allows`)
+    : fail(`${label}: ${g.slotCount} slots (want INV_MAX_SLOTS = ${CAP})`);
   Math.abs(g.slotLeft - g.btnLeft) <= 2 && Math.abs(g.slotRight - g.btnRight) <= 2
     ? ok(`${label}: settings buttons share the slot column (Δleft ${(g.slotLeft - g.btnLeft).toFixed(1)}px, Δright ${(g.slotRight - g.btnRight).toFixed(1)}px)`)
     : fail(`${label}: button column [${g.btnLeft.toFixed(1)}..${g.btnRight.toFixed(1)}] != slot column [${g.slotLeft.toFixed(1)}..${g.slotRight.toFixed(1)}]`);

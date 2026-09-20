@@ -164,7 +164,12 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   exactly the strip while the page and the canvas keep their geometry, the
   lock-step slide by declaration with the ghost stick riding it, the four
   pages and their live controls, the admin-only Dev, the landscape
-  icons-only strip).
+  icons-only strip),
+  `scripts/verify-hudtabs.mjs` (the tab row and its 1x icons at three
+  widths, the light palette's beige floor, and the backpack grid: exactly
+  `INV_MAX_SLOTS` square cells — an empty cell is a free slot, a full pack
+  shows none — empty / one-item / full packs driven through `__mlHud.inv`,
+  the real pack put back).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -404,6 +409,26 @@ from the games agent), #18 (title/landing screen).
   His verdict on the whole portrait layout — top-right stack, corner ghost,
   three-row rail — on seeing it (2026-09-18): "Wow! This is perfect!" Do not
   re-litigate any of the three without his word.
+- **THE BACKPACK DRAWS EVERY SLOT THE SERVER ALLOWS, AND NOT ONE MORE**
+  (maintainer 2026-09-20, at a full pack scrolled to its last row with five
+  empty cells under it and "Your backpack is full." on the log: "I can still
+  see free slots in the backpack. It would be better if I can actually see I
+  have no more free slots … a player should be able to see all slots in the
+  backpack even if I only have let's say one item. This give the player a
+  feeling for how many slots he/she has left"). `hud.ts renderInventory`
+  lays out exactly `INV_MAX_SLOTS` cells (`@nangijala/shared`, 30 — the
+  server's own cap, so the two cannot drift), filled entries first, then
+  empties: an empty cell MEANS a free slot, so a full pack shows none and a
+  one-item pack shows the other 29. (The first grid padded to at least 15
+  cells and always one empty row past the last item, so 30/30 read as
+  30/35 — the "free slots" he saw.) Six rows of five in portrait, ten of
+  three in landscape; the page scrolls and the three-row rail is unchanged
+  (`portraitHudHeight` reads the CSS, never the cell count). The "full"
+  line answering every retried pickup is the games agent's (WorldRoom
+  `pickup`, WorldScene's 400 ms intent retry, chat.ts) — requested, never
+  patched from here. Gate: `verify-hudtabs` (the exact count at three
+  widths; empty / one / full packs through the `__mlHud.inv` probe in one
+  synchronous evaluate, the real pack put back).
 - **A PAGE'S SUB-TABS ARE A STRIP THE RAIL GROWS BY, NEVER THE PAGE SHRINKS
   BY** (maintainer 2026-09-19: "the subsection appears by sliding up the menu
   over it so the menu content area is just as big as the menu inner area we

@@ -15,13 +15,23 @@
 //    the hand-drawn art on non-square canvases; the old fixed 32/24 square
 //    both distorted the aspect and hit a fractional 48→32 scale) — and fits
 //    in its tab;
-//  - the backpack is a 5-column grid of 15 SQUARE .ml-slot cells sized by
-//    the grid tracks (no per-slot art);
+//  - the backpack is a 5-column grid of exactly INV_MAX_SLOTS SQUARE .ml-slot
+//    cells (read from shared/src/combat.ts: every slot the server allows and
+//    not one more, so an empty cell is a free slot and a full pack shows none —
+//    empty / one-item / full packs driven through the __mlHud.inv probe, the
+//    real pack put back) sized by the grid tracks (no per-slot art);
 //  - the clicked tab carries .sel with the accent-soft background (computed
 //    backgroundColor differs from an unselected tab's) + accent border.
 import { chromium } from "playwright-core";
+import { existsSync, readFileSync, readdirSync } from "node:fs";
 const EXE = "/opt/pw-browsers/chromium-1194/chrome-linux/chrome";
 const BASE = process.env.BASE || "http://localhost:5173";
+// The server's cap, read from the one place it is declared: the grid draws
+// exactly this many cells, so the gate wants exactly this many.
+const CAP = Number(/INV_MAX_SLOTS = (\d+)/.exec(readFileSync(new URL("../shared/src/combat.ts", import.meta.url), "utf8"))[1]);
+// A real item id for the injected packs (any sprite the items domain ships).
+const ITEMS_DIR = new URL("../../items/", import.meta.url);
+const ANY_ITEM = (existsSync(ITEMS_DIR) && readdirSync(ITEMS_DIR).find((d) => existsSync(new URL(`${d}/sprite.webp`, ITEMS_DIR)))) || "wood";
 const browser = await chromium.launch({ executablePath: EXE, args: ["--no-sandbox"] });
 let bad = false;
 const fail = (m) => { console.log("FAIL:", m); bad = true; };
@@ -127,10 +137,10 @@ async function check(label, ctxOpts) {
       ? ok(`${label}: .sel border carries the accent (${m.selBorder})`)
       : fail(`${label}: .sel border ${m.selBorder} == unselected ${m.unselBorder} — accent border missing`);
 
-    // ── backpack slots: 5-col grid of 15 square track-sized cells ──
-    m.slotCount === 15
-      ? ok(`${label}: 15 slots`)
-      : fail(`${label}: ${m.slotCount} slots (want 15)`);
+    // ── backpack slots: 5-col grid of exactly INV_MAX_SLOTS square track-sized cells ──
+    m.slotCount === CAP
+      ? ok(`${label}: ${CAP} slots — every one the server allows`)
+      : fail(`${label}: ${m.slotCount} slots (want INV_MAX_SLOTS = ${CAP})`);
     m.cols === 5
       ? ok(`${label}: slot grid has 5 columns`)
       : fail(`${label}: slot grid has ${m.cols} columns (want 5)`);
@@ -143,6 +153,38 @@ async function check(label, ctxOpts) {
     m.firstRowTopSpread <= 1 && m.row2Below
       ? ok(`${label}: 5 slots per row, second row below the first`)
       : fail(`${label}: slot rows misaligned (first-row top spread ${m.firstRowTopSpread.toFixed(1)}px, row2Below=${m.row2Below})`);
+
+    // ── EVERY SLOT IS DRAWN AND NOT ONE MORE (maintainer 2026-09-20): an empty
+    // cell means a free slot, so a full pack shows none and a one-item pack
+    // shows CAP-1. One synchronous evaluate, so no "inv" message can land
+    // between the states; the real pack goes back at the end. ──
+    const packs = await page.evaluate(([cap, anyItem]) => {
+      const keep = window.__mlHud.inv();
+      const item = keep[0]?.item ?? anyItem;
+      const count = () => ({
+        cells: document.querySelectorAll(".ml-slots .ml-slot").length,
+        filled: document.querySelectorAll(".ml-slots .ml-slot.filled").length,
+      });
+      const out = {};
+      window.__mlHud.inv([]); out.empty = count();
+      window.__mlHud.inv([{ item, n: 1 }]); out.one = count();
+      window.__mlHud.inv(Array.from({ length: cap }, () => ({ item, n: 1 }))); out.full = count();
+      window.__mlHud.inv(keep); out.back = count();
+      out.kept = keep.length;
+      return out;
+    }, [CAP, ANY_ITEM]);
+    packs.empty.cells === CAP && packs.empty.filled === 0
+      ? ok(`${label}: an empty pack shows all ${CAP} free slots`)
+      : fail(`${label}: empty pack shows ${packs.empty.cells} cells / ${packs.empty.filled} filled (want ${CAP} / 0)`);
+    packs.one.cells === CAP && packs.one.filled === 1
+      ? ok(`${label}: one item: 1 filled + ${CAP - 1} free, still ${CAP} cells`)
+      : fail(`${label}: one-item pack shows ${packs.one.cells} cells / ${packs.one.filled} filled (want ${CAP} / 1)`);
+    packs.full.cells === CAP && packs.full.filled === CAP
+      ? ok(`${label}: a full pack shows ${CAP} filled and NO free cell (no padding row)`)
+      : fail(`${label}: full pack shows ${packs.full.cells} cells / ${packs.full.filled} filled (want ${CAP} / ${CAP}) — an empty cell would lie about a free slot`);
+    packs.back.cells === CAP && packs.back.filled === packs.kept
+      ? ok(`${label}: the real pack is back (${packs.kept} filled)`)
+      : fail(`${label}: after the probe the grid shows ${packs.back.filled} filled (real pack ${packs.kept})`);
   } finally { await page.context().close(); }
 }
 

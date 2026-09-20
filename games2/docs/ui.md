@@ -101,6 +101,16 @@ match logic `server/src/chess.ts`; dialog `client/src/chessui.ts`; gate
   toggles, and the time-of-day button keeps the `.ml-hudbtn` hook (smoke). `.ml-plate-btn` survives as a plain-CSS class — the ambient
   agent's cycler expects it. Pointer events in the HUD never reach Phaser —
   e2e taps stay in the top 61.8% (canvas centre y = VH*0.309).
+- **The backpack grid is exactly `INV_MAX_SLOTS` cells** (30,
+  `@nangijala/shared`; hud.ts `renderInventory`), filled entries first: an
+  empty cell IS a free slot, so a full pack shows none and a one-item pack
+  shows the other 29 (maintainer 2026-09-20, five empty cells under a full
+  pack with "Your backpack is full." on the log). Never pad the grid — the
+  first cut padded to at least 15 and one empty row past the last item, so
+  30/30 read as 30/35. The three-row rail reads the CSS, not the cell count:
+  six rows of five in portrait, ten of three in landscape, the page scrolls
+  the rest. Gate: `verify-hudtabs` (exact count at three widths; empty / one
+  / full packs through `__mlHud.inv`, the real pack put back).
 
 ## Settings sub-tabs (the strip the rail grows by)
 
@@ -274,10 +284,11 @@ GROWS BY"); this holds the mechanics and the numbers.
 - Landscape column sizing: tabs keep 56px (the global ≤640px-HEIGHT shrink
   rule was written for short PORTRAIT phones and silently shrank every
   landscape strip; a ≤388px-height media keeps 48px for tiny screens);
-  strip 84px wide; the backpack grid turns 3 wide × 5 tall
+  strip 84px wide; the backpack grid turns 3 wide, its 30 slots ten rows
   (`:root.ml-land .ml-slots`, capped 320px; width cap HEIGHT-derived —
-  `calc((100dvh − 72px)*0.6 + 20px)` — so all five rows fit without the
-  1px scroll); the MAP sizes to the SHORT viewport side (same size portrait
+  `calc((100dvh − 72px)*0.6 + 20px)` — so five rows fill the visible column
+  exactly and the page scrolls for the rest); the MAP sizes to the SHORT
+  viewport side (same size portrait
   gives it), `.ml-map` overflow:hidden clips evenly so the you-are-here
   dot's percent offsets stay true; the keyboard-floated Chat input takes
   the gv insets (floats inside the game view). A ONE-TIME help chip on the

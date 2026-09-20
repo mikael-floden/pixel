@@ -80,7 +80,7 @@ import {
 import { withV } from "./assetver";
 import { minimapDotPct, mapImageUrls, loadMinimapMeta, type MinimapFeed, type MinimapMeta } from "./maps";
 import { gameAudio } from "../../composer/index";
-import { MAX_CHAT_LEN } from "@nangijala/shared";
+import { INV_MAX_SLOTS, MAX_CHAT_LEN } from "@nangijala/shared";
 
 // ── Ambient-effect switches (Settings) ───────────────────────────────────
 // The ambient-life agent (ambient/) exposes a per-effect TOGGLE controller on
@@ -774,6 +774,12 @@ export class HudBar {
       subs: (page: TabId) => (SUBTABS[page] ?? []).filter((s) => !this.subBtns.get(`${page}:${s.id}`)?.hidden).map((s) => s.id),
       /** Ask the server again whether this session is the admin. */
       admin: (force = false) => this.applyAdmin(force),
+      /** QA: the backpack as shown; with `items`, show THAT pack instead (a
+       *  stand-in until the next "inv" message puts the server's back). */
+      inv: (items?: { item: string; n: number }[]) => {
+        if (items) this.setInventory(items);
+        return this.invSnapshot();
+      },
     };
 
     // Keep the ambient switches tracking live state while Settings is open
@@ -1260,8 +1266,8 @@ export class HudBar {
     mountGamepadStick(this.pages.get("gamepad")!);
 
     // Backpack: the REAL inventory (server-owned, arrives as targeted "inv"
-    // messages -> setInventory). 5-col grid, padded to at least 15 cells so
-    // an empty pack still reads as the familiar wall of slots. A filled slot
+    // messages -> setInventory). 5-col grid of EVERY slot the server allows
+    // and not one more (renderInventory says why). A filled slot
     // DRAGS: pointer-captured ghost (the bird-density slider pattern);
     // releasing over the game view (above --hud-h) asks the game to drop it
     // there — releasing anywhere else snaps back.
@@ -1722,7 +1728,20 @@ export class HudBar {
     // than quietly re-pointing it at whatever moved in.
     if (this.invSel && this.invItems[this.invSel.slot]?.item !== this.invSel.item) this.invSel = null;
     grid.textContent = "";
-    const total = Math.max(15, Math.ceil((this.invItems.length + 1) / 5) * 5);
+    // EVERY SLOT THE SERVER ALLOWS IS DRAWN, AND NOT ONE MORE (maintainer
+    // 2026-09-20, at a full pack scrolled to its last row with five empty
+    // cells under it and "Your backpack is full." on the log: "I can still
+    // see free slots in the backpack … a player should be able to see all
+    // slots in the backpack even if I only have let's say one item. This give
+    // the player a feeling for how many slots he/she has left"). An empty
+    // cell MEANS a free slot: a full pack shows none, a one-item pack shows
+    // the other 29. The first grid padded to at least 15 cells and always
+    // one empty row past the last item, so 30/30 read as 30/35. The count is
+    // the server's own cap, so the two cannot drift; an entry past it (never
+    // — the server slices at join) still gets a cell rather than vanishing.
+    // The rail's three-row height is untouched: portraitHudHeight reads the
+    // CSS, never the cell count — the page scrolls the other rows.
+    const total = Math.max(INV_MAX_SLOTS, this.invItems.length);
     for (let i = 0; i < total; i++) {
       const entry = this.invItems[i];
       const cell = mk(entry ? "div" : "i", "ml-slot");
