@@ -496,6 +496,40 @@ per effect — his process).
   pays for its water probes, and a colony whose ground leaves the zone (a
   window re-roll) is dropped like one whose water dried up. With no crab zone
   in view it does not search at all.
+  **spiders, gnats, butterflies**: the same `findGround` acceptance test — a
+  spider spawns, a gnat column rises and a butterfly picks a meadow only where
+  the field holds the ground.
+  **fireflies, pollen**: these DRIFT, so they take the other half of the rule
+  (`seed`/`drift`): each one reads the field where it is, re-read every
+  `DRIFT_REREAD_PX` (24 px) of travel rather than per frame, and DRAWS at that
+  weight. For a glow or a speck of light a partial alpha reads as distance or
+  haze, which is honest; for an animal it reads as a ghost, which is why the
+  crawlers thin their numbers instead. Both were also missing `all` from their
+  debug — the charter's field, every drawn instance at its drawn alpha — so
+  nothing that reads the ambient report could see them at all; the boundary
+  gate counted zero and called it broken.
+  **bubbles**: a vent opens only where the zone holds the sea, tested before
+  the flow probe (one memo lookup against a real one).
+  **dragonflies: NOT GATED, deliberately, and maps2 has been asked.** They
+  belong to the REEDS, and measured against the world: of 124 waterline pieces
+  (reed beds, cattails, water lilies) exactly ZERO stand in either zone that
+  carries dragonflies at share 90, and only 3 stand in any zone that carries
+  them at all. Confining them to their zones deletes them from the game, so
+  the rule is written and held back until the data lines up. THE LESSON, which
+  outlives this one effect: a zone rule is only as good as the agreement
+  between the zone and the content it is supposed to govern, and the way to
+  find that out is to count, not to assume.
+  Found on the way, not fixed here (it is his look to change, not mine): a
+  pollen mote's drawn alpha multiplies the GLINT and not the feature's eased
+  gain — an inner `const g` shadows the outer one — so pollen pops in and out
+  at its visibility threshold instead of fading.
+  The gate learned four things doing this. It retries the teleport, because a
+  refused one made every later stand report the FIRST stand's position and read
+  as "this zone has no usable stand". It judges what is PLACED on ground, not
+  what a feature lists, since some report every pooled instance including ones
+  parked off the map. It prefers a stand that shows three rather than one. And
+  it stands four cells out, not six: the view is twenty cells wide but seven
+  tall, so a stand six cells north of a zone left the zone off screen.
   **ants**: `findGround` takes an acceptance test now (`ok`), asked BEFORE its
   five landable probes because rejecting a point outside the zone is one memo
   lookup and accepting one costs five ground picks — spiders, gnats,

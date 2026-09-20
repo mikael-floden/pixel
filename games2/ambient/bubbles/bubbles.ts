@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
+import { ZoneWatch } from "../runtime/zoneplace";
 import { drawnFlow, DrawnFlow } from "../deepwater/current";
 
 /* BUBBLES — a string of them rising out of the deep and bursting at the top.
@@ -95,6 +96,7 @@ interface Vent {
 
 export function bubblesFeature(): AmbientFeature {
   const bubbles: Bubble[] = [];
+  const zone = new ZoneWatch("bubbles");
   const vents: Vent[] = [];
   let sinceTry = 0;
   let probes = 0;
@@ -138,6 +140,9 @@ export function bubblesFeature(): AmbientFeature {
     for (let i = 0; i < TRIES; i++) {
       const x = Math.round(view.x + rnd() * view.width);
       const y = Math.round(view.y + rnd() * view.height);
+      // the zone before the flow probe: rejecting a point outside it is one
+      // memo lookup, and the field's own odds thin the vents across the feather
+      if (!zone.accept(ctx, x, y, rnd)) continue;
       const flow = flowAt(x, y);
       if (!flow) continue; // not open sea
       if (vents.some((o) => o !== v && o.open && Math.hypot(o.x - x, o.y - y) < 70)) continue;
@@ -193,7 +198,10 @@ export function bubblesFeature(): AmbientFeature {
       paint(ctx.scene, HI, 1, 1, [[0, 0]]);
     },
     update(ctx, dt) {
-      const target = forced ? 1 : suppressed ? 0 : 1; // self-gating is the SEA, not the sky
+      zone.step(ctx, dt);
+      // self-gating is the SEA, not the sky — and the zone that carries it,
+      // read on the VIEW so a vent across the line is already rising
+      const target = forced ? 1 : suppressed || !zone.any ? 0 : 1;
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
       const g = gain * ctx.outdoor;
       if (g <= 0.02) {
@@ -318,6 +326,7 @@ export function bubblesFeature(): AmbientFeature {
       const live = bubbles.filter((b) => b.live && b.sprite.visible);
       return {
         gain: +gain.toFixed(3),
+        zone: zone.info(), // the boundary: is a bubble zone in view, and how much of it
         probes, // QA: the vent hunt is the costly call and must stay rate-limited
         hunts,
         pops,
