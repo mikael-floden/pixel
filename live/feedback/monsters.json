@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-20T13:04:07.650Z",
+  "updated_at": "2026-09-20T13:07:31.270Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -1409,9 +1409,8 @@
     },
     "monsters/eye_bat#walk#south": {
       "status": "approved",
-      "art": "b7267858179d5d28",
-      "updated_at": "2026-09-18T14:39:10.932Z",
-      "note": "Doesn't look like walk",
+      "art": "2c84170b7801d46c",
+      "updated_at": "2026-09-20T13:04:32.321Z",
       "rating": 3
     },
     "monsters/eye_bat#walk#south-east": {
@@ -1505,10 +1504,8 @@
       "updated_at": "2026-09-18T11:07:32.736Z"
     },
     "monsters/eye_bat#attack_v3#south-west": {
-      "note": "Attack renders outside frame to much",
-      "updated_at": "2026-09-18T14:40:39.709Z",
-      "rating": 3,
-      "status": "approved",
+      "note": "Try a different attack animation. A wing slash attack this time.",
+      "updated_at": "2026-09-20T13:07:30.641Z",
       "art": "2b0d37e22fec75f1"
     },
     "monsters/ghoul#idle#south": {
@@ -6695,28 +6692,28 @@
       "updated_at": "2026-09-18T14:37:23.838Z"
     },
     "monsters/eye_bat#attack_v3#south": {
-      "rating": 3,
-      "status": "approved",
-      "art": "6fcd6c614f0d4072",
-      "updated_at": "2026-09-18T14:39:55.001Z"
+      "art": "c58c954753dde5f7",
+      "updated_at": "2026-09-20T13:06:53.255Z",
+      "status": "redo",
+      "note": "Try a different attack animation. A wing slash attack this time."
     },
     "monsters/eye_bat#attack_v3#south-east": {
-      "rating": 3,
-      "status": "approved",
-      "art": "30c1ff0084a51d1d",
-      "updated_at": "2026-09-18T14:39:59.416Z"
+      "status": "redo",
+      "art": "74b7596fbb0b7d97",
+      "updated_at": "2026-09-20T13:06:59.117Z",
+      "note": "Try a different attack animation. A wing slash attack this time."
     },
     "monsters/eye_bat#attack_v3#east": {
-      "rating": 3,
-      "status": "approved",
-      "art": "923308ee08274fcf",
-      "updated_at": "2026-09-18T14:40:01.552Z"
+      "status": "redo",
+      "art": "e29cf9f1a3f1c4f1",
+      "updated_at": "2026-09-20T13:07:05.574Z",
+      "note": "Try a different attack animation. A wing slash attack this time."
     },
     "monsters/eye_bat#attack_v3#west": {
-      "rating": 3,
-      "status": "approved",
-      "art": "e57866c22d3e1cc0",
-      "updated_at": "2026-09-18T14:40:37.621Z"
+      "status": "redo",
+      "art": "d83e46b08fa12125",
+      "updated_at": "2026-09-20T13:07:22.313Z",
+      "note": "Try a different attack animation. A wing slash attack this time."
     },
     "monsters/eye_bat#die_v1#south": {
       "rating": 3,
@@ -6989,6 +6986,24 @@
       "rating": 1,
       "art": "bc4504d8402d570b",
       "updated_at": "2026-09-20T13:04:05.550Z"
+    },
+    "monsters/eye_bat#attack_v3#north-east": {
+      "status": "redo",
+      "art": "3474182ab8e57904",
+      "updated_at": "2026-09-20T13:07:10.013Z",
+      "note": "Try a different attack animation. A wing slash attack this time."
+    },
+    "monsters/eye_bat#attack_v3#north": {
+      "status": "redo",
+      "art": "abf6caf7ad0fcdff",
+      "updated_at": "2026-09-20T13:07:13.285Z",
+      "note": "Try a different attack animation. A wing slash attack this time."
+    },
+    "monsters/eye_bat#attack_v3#north-west": {
+      "note": "Try a different attack animation. A wing slash attack this time.",
+      "updated_at": "2026-09-20T13:07:16.121Z",
+      "status": "redo",
+      "art": "cf4e4b2ef384848a"
     }
   }
 }
