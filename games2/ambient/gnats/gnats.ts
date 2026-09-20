@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { isRough } from "../runtime/env";
 import { AmbientCtx, AmbientEnv, AmbientFeature } from "../runtime/types";
 import { findGround, paintPixels } from "../runtime/ground";
+import { ZoneWatch } from "../runtime/zoneplace";
 
 /* GNATS — the column that hangs over one spot at dusk.
  *
@@ -167,6 +168,7 @@ export function gnatsFeature(): AmbientFeature {
   const gnats: Gnat[] = [];
   const cols: Column[] = [];
   let t = 0;
+  const zone = new ZoneWatch("gnats");
   let gain = 0;
   let suppressed = false;
   let forced = false;
@@ -217,7 +219,9 @@ export function gnatsFeature(): AmbientFeature {
       height: Math.max(1, v.height - (h + lift + 16) - 24),
     };
     for (let tries = 0; tries < 6; tries++) {
-      const spot = findGround(inset, rnd, 14, 6);
+      // the zone owns the ground: taken with the field's own odds, so the
+      // columns thin across the feather instead of stopping at the line
+      const spot = findGround(inset, rnd, 14, 6, (x, y) => zone.accept(ctx, x, y, rnd));
       if (!spot) break;
       if (cols.some((o) => o !== c && o.life > 0 && Math.hypot(o.x - spot.x, o.y - spot.y) < COL_APART)) continue;
       c.x = spot.x;
@@ -244,8 +248,11 @@ export function gnatsFeature(): AmbientFeature {
       paintPixels(ctx.scene, KEY_NEAR, 2, 1, 0xffffff, [[0, 0], [1, 0]]);
     },
     update(ctx, dt) {
+      zone.step(ctx, dt);
       lastPhase = ctx.env.phase;
-      const target = forced ? 1 : suppressed ? 0 : duskGain(ctx.env);
+      // out only where their zone is, and that is a question about the VIEW:
+      // the column is already dancing over there when I walk up to it
+      const target = forced ? 1 : suppressed || !zone.any ? 0 : duskGain(ctx.env);
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
       const g = gain * ctx.outdoor;
       if (g <= 0.02) {
@@ -388,6 +395,7 @@ export function gnatsFeature(): AmbientFeature {
       const shown = gnats.filter((q) => q.sprite.visible);
       return {
         gain: +gain.toFixed(3),
+        zone: zone.info(), // the boundary: is its zone in view, and how much of it
         phase: lastPhase,
         columns: cols.filter((c) => c.life > 0).length,
         placeFails,

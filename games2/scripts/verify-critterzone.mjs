@@ -52,14 +52,29 @@ const inArea = (area, x, y) => { let inn = false; for (let i = 0, j = area.lengt
 /* WHAT GROUND THIS EFFECT NEEDS INSIDE THE ZONE. A crab wants a beach; the
  * crawlers want dry ground. Without this the gate stands at a zone whose
  * inside can never grow the effect and calls the boundary broken. */
+const shore = (c, r) => {
+  if (!land(c, r)) return false;
+  for (let k = 1; k <= 3; k++) if (water(c + k, r) || water(c - k, r) || water(c, r + k) || water(c, r - k)) return true;
+  return false;
+};
 const TERRAIN = {
-  crabs: (c, r) => {
-    if (!land(c, r)) return false;
-    for (let k = 1; k <= 3; k++) if (water(c + k, r) || water(c - k, r) || water(c, r + k) || water(c, r - k)) return true;
-    return false;
-  },
+  crabs: shore,
+  // dragonflies belong to the REEDS, which are scenery and not a ground type:
+  // a marsh grows them with no water tile in sight, and demanding a shore hid
+  // the north-western marsh — the only dragonfly zone whose window was on.
+  // Plain land, and the stand retry does the rest.
+  bubbles: (c, r) => water(c, r) && water(c + 2, r) && water(c - 2, r) && water(c, r + 2) && water(c, r - 2), // open sea
 };
 const wants = TERRAIN[EFFECT] || land;
+
+/* AND WHAT HOUR IT KEEPS. A spider's gain is 0.25 + 0.75 x night by design,
+ * so holding the clock at Day and demanding a full gain fails a feature that
+ * is behaving exactly as written. The phase names are WorldScene's
+ * TIME_PHASES. */
+const HOURS = { spiders: "Night", fireflies: "Night", moths: "Night", bats: "Night", gnats: "Evening" };
+// how long to let a population build before judging it (ms per try x tries)
+const HOUR = process.env.HOUR || HOURS[EFFECT] || "Day";
+say(`holding the clock at ${HOUR} for ${EFFECT}`);
 
 const DIRS = [
   { name: "west", dc: -1, dr: 0 }, { name: "east", dc: 1, dr: 0 },
@@ -74,32 +89,51 @@ for (const z of doc.zones) {
   if (z.kind === "world" || !((z.effects[EFFECT] ?? 0) >= 50)) continue;
   const xs = z.area.map((p) => p[0]), ys = z.area.map((p) => p[1]);
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = Math.min(...ys), y1 = Math.max(...ys);
+  /* ANCHORS ON A GRID THROUGH THE ZONE, not the first cell of each row. The
+   * first-per-row rule always picked the zone's west edge, which for the sea
+   * is the map edge: every walk east then ran 200 cells without leaving the
+   * water and the gate reported that no sea zone had usable ground. */
   const anchors = [];
-  for (let r = y0; r <= y1 && anchors.length < 400; r++)
-    for (let c = x0; c <= x1; c++)
-      if (inArea(z.area, c + 0.5, r + 0.5) && wants(c, r)) { anchors.push({ c, r }); break; }
+  const step = Math.max(1, Math.round(Math.sqrt(((x1 - x0 + 1) * (y1 - y0 + 1)) / 600)));
+  for (let r = y0; r <= y1 && anchors.length < 600; r += step)
+    for (let c = x0; c <= x1 && anchors.length < 600; c += step)
+      if (inArea(z.area, c + 0.5, r + 0.5) && wants(c, r)) anchors.push({ c, r });
   if (!anchors.length) continue;
   for (const a of anchors) {
     for (const d of DIRS) {
       // walk out of the polygon from the anchor, then 5 cells further
+      // out of the polygon, and it has to be CLOSE: an anchor deep inside a
+      // 200-cell sea has no boundary within sight of it
       let k = 0;
-      while (k < 24 && inArea(z.area, a.c + d.dc * k + 0.5, a.r + d.dr * k + 0.5)) k++;
-      if (k >= 24) continue;
+      while (k < 14 && inArea(z.area, a.c + d.dc * k + 0.5, a.r + d.dr * k + 0.5)) k++;
+      if (k >= 14) continue;
       /* CLEAR OF THE WHOLE POLYGON, not just of the ray. Six steps east out
        * of the southern meadow landed beside another lobe of the same zone
        * and the field read 0.11 at my feet. Walk on until no cell within 3 is
        * inside it — that is what "outside" has to mean for a zone that bends
        * around you. */
-      let out = k + 6;
+      /* FOUR CELLS BEYOND, not six. The view is about twenty cells wide but
+       * only seven tall, so a stand six cells north of a zone left the zone
+       * off the bottom of the screen and the gate found nothing to look at.
+       * The clear-of-the-whole-polygon walk below still pushes further when
+       * the zone bends back, and `here <= 0.05` at the stand is what actually
+       * proves I am outside it. */
+      let out = k + 4;
       const clear = (c, r) => { for (let dr = -3; dr <= 3; dr++) for (let dc = -3; dc <= 3; dc++) if (inArea(z.area, c + dc + 0.5, r + dr + 0.5)) return false; return true; };
-      while (out < k + 14 && !clear(a.c + d.dc * out, a.r + d.dr * out)) out++;
+      while (out < k + 12 && !clear(a.c + d.dc * out, a.r + d.dr * out)) out++;
       const stand = { c: a.c + d.dc * out, r: a.r + d.dr * out };
       if (!clear(stand.c, stand.r)) continue;
       const dist = Math.abs(stand.c - a.c) + Math.abs(stand.r - a.r);
       if (dist > 22) continue;
       const line = [];
       for (let n = 0; n <= out; n++) line.push({ c: a.c + d.dc * n, r: a.r + d.dr * n });
-      if (!line.every((p) => land(p.c, p.r))) continue;
+      // ON THE MAP and not molten; I must be standing on dry land myself. The
+      // whole line used to have to be land, which can never be true for an
+      // effect whose ground IS water (bubbles) — a bay between me and the
+      // far side is not an obstacle, a cliff is, and `rise` below is what
+      // rules a cliff out.
+      if (!line.every((p) => land(p.c, p.r) || water(p.c, p.r))) continue;
+      if (!land(stand.c, stand.r)) continue;
       const rise = Math.max(...line.map((p) => lvl(p.c, p.r))) - Math.min(...line.map((p) => lvl(p.c, p.r)));
       if (rise > 3) continue;
       // no other zone over the stand may carry this effect above a trickle
@@ -108,7 +142,8 @@ for (const z of doc.zones) {
       spots.push({ id: z.id, name: z.name, kind: z.kind, dir: d.name, anchor: a, stand, rise, dist, cells: z.cells ?? 0, poly: z.area });
       break;
     }
-    if (spots.length && spots[spots.length - 1].id === z.id) break;
+    // a handful per zone is enough to survive a window that rolled the effect off
+    if (spots.filter((q) => q.id === z.id).length >= 3) break;
   }
 }
 spots.sort((a, b) => b.cells - a.cells || a.rise - b.rise || a.dist - b.dist); // the rise is already capped; a big zone makes the picture
@@ -123,7 +158,7 @@ await page.waitForFunction(() => window.__mlSelect, null, { timeout: 30_000 });
 await page.evaluate((w) => { const i = window.__mlSelect.worlds().findIndex((n) => n === w); if (i >= 0) window.__mlSelect.pickWorld(i); window.__mlSelect.commit(); }, WORLD);
 await page.waitForFunction(() => window.__ml && window.__ml.players() >= 1, null, { timeout: 120_000 });
 await page.waitForFunction(() => window.__mlAmbient?.zone && document.querySelector(".ml-tab") && window.__ml.myScreen?.() !== null, null, { timeout: 60_000 });
-await page.evaluate(() => { window.__ml.timeSpeed(0); window.__ml.timeOfDay("Day", true); });
+await page.evaluate((h) => { window.__ml.timeSpeed(0); window.__ml.timeOfDay(h, true); }, HOUR);
 await page.waitForTimeout(2500);
 
 /* THE WORLD CAN BE PINNED, AND THEN THERE ARE NO ZONES AT ALL — see
@@ -153,26 +188,29 @@ const settle = `async () => {
   const rl = window.__ml.relocate?.();
   return !!window.__ml?.myScreen?.() && !(rl && (rl.veil || rl.active));
 }`;
-const holdDay = `async () => {
+const holdDay = `async (want) => {
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   const sun = () => { const s = window.__ml.sunInfo(); return { phase: s.phase, sun: +((s.sun[0] + s.sun[1] + s.sun[2]) / 3).toFixed(3) }; };
   for (let tries = 0; tries < 8; tries++) {
     window.__ml.timeSpeed(0);
-    window.__ml.timeOfDay("Day", true);
+    window.__ml.timeOfDay(want, true);
     await wait(1500);
     const a = sun();
     await wait(1500);
     const b = sun();
-    if (a.phase === "Day" && b.phase === "Day" && Math.abs(a.sun - b.sun) < 0.01) return b;
+    if (a.phase === want && b.phase === want && Math.abs(a.sun - b.sun) < 0.01) return b;
   }
   return { ...sun(), stuck: true };
 }`;
 /* the colony search is rate limited and the fade is seconds: give it time */
 const grow = `async (name) => {
   const wait = (ms) => new Promise((r) => setTimeout(r, ms));
+  // wait for a POPULATION, not for the first one: spiders arrive one at a
+  // time and a picture of a single speck proves nothing. Settle for whatever
+  // has arrived by the end of the budget.
   for (let i = 0; i < 20; i++) {
     const d = window.__mlAmbient.debug(name);
-    if (d && d.gain > 0.5 && (d.all?.length ?? 0) > 0) break;
+    if (d && d.gain > 0.02 && (d.all?.length ?? 0) >= 3) break;
     await wait(2000);
   }
   return window.__mlAmbient.debug(name);
@@ -190,8 +228,10 @@ const look = (s) => withTimeout(page.evaluate(async ({ p, effect, grow }) => {
   const atMe = window.__ml.pickAt(v.x + me.sx / me.zoom, v.y + me.sy / me.zoom);
   const myC = atMe ? { c: Math.floor(atMe.x / 32), r: Math.floor(atMe.y / 32) } : null;
   let inZone = 0, outZone = 0, onMe = 0, unpicked = 0;
+  const onGround = [];
   for (const a of d.all ?? []) {
     const at = window.__ml.pickAt(a.x, a.y);
+    onGround.push(!!at);
     if (!at) { unpicked++; continue; }
     const c = Math.floor(at.x / 32), r = Math.floor(at.y / 32);
     if (near(c, r, 2)) inZone++; else outZone++;
@@ -203,7 +243,7 @@ const look = (s) => withTimeout(page.evaluate(async ({ p, effect, grow }) => {
   const toScreen = (wx, wy) => ({ sx: (wx - v.x) * me.zoom, sy: (wy - v.y) * me.zoom });
   const hull = (qs) => qs.reduce((b, q) => ({ x0: Math.min(b.x0, q.sx), y0: Math.min(b.y0, q.sy), x1: Math.max(b.x1, q.sx), y1: Math.max(b.y1, q.sy) }),
     { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
-  const pts = (d.all ?? []).map((a) => toScreen(a.x, a.y));
+  const pts = (d.all ?? []).map((a) => toScreen(a.x, a.y)).filter((q, i) => onGround[i]);
   /* THE PICTURE IS ME AND THE NEAREST ONE ACROSS THE LINE. An ant is one
    * pixel: a box round the whole colony is a photograph of a field. The
    * nearest drawn thing to my feet is by construction the one just over the
@@ -219,7 +259,12 @@ const look = (s) => withTimeout(page.evaluate(async ({ p, effect, grow }) => {
     const cy = pts.reduce((a, q) => a + q.sy, 0) / pts.length;
     box = { x0: cx - 210, y0: cy - 130, x1: cx + 210, y1: cy + 130 };
   }
-  return { gain: d.gain, zone: d.zone, drawn: (d.all ?? []).length, inZone, outZone, onMe, unpicked, home, box,
+  /* PLACED, not merely listed. Some features report every pooled instance in
+   * `all`, parked ones included — a butterfly waiting for a meadow sits at a
+   * sentinel position far off the map — so "drawn" counted four ghosts and
+   * one real animal. Only an instance the picker can put on a ground cell is
+   * judged, and every one of those is. */
+  return { gain: d.gain, zone: d.zone, drawn: (d.all ?? []).length, placed: inZone + outZone, inZone, outZone, onMe, unpicked, home, box,
     // the drawn positions in SCREEN pixels + mine, so the picture can be
     // ringed: several of these effects are ONE pixel and no crop makes a
     // 1 px ant on grass visible to a person judging a screenshot
@@ -229,33 +274,47 @@ const look = (s) => withTimeout(page.evaluate(async ({ p, effect, grow }) => {
 let picked = null;
 let survey = null;
 for (const s of spots.slice(0, 8)) {
-  const r = await withTimeout(page.evaluate(async ({ s, effect, settle, holdDay }) => {
+  const r = await withTimeout(page.evaluate(async ({ s, effect, settle, holdDay, hour }) => {
     const packed = window.__ml.ambientZoneState().packed;
     const set = (packed.split(";").find((p) => p.startsWith(s.id + "=")) ?? "=").split("=")[1];
     const on = set ? set.split(",").filter(Boolean) : [];
     if (!on.includes(effect)) return { skip: `window has no ${effect} on (${on.join(",") || "nothing"})` };
-    window.__ml.teleport(s.stand.c + 0.5, s.stand.r + 0.5);
-    if (!(await (0, eval)(settle)())) return { skip: "did not settle" };
+    /* ASK AGAIN IF IT DID NOT MOVE. A teleport can be refused or swallowed,
+     * and then every later stand reports the position of the FIRST one and
+     * the run reads as "this zone has no usable stand" when what happened is
+     * that I never left. Three asks, then give up on this stand honestly. */
+    let cell = null;
+    for (let t = 0; t < 3; t++) {
+      window.__ml.teleport(s.stand.c + 0.5, s.stand.r + 0.5);
+      if (!(await (0, eval)(settle)())) return { skip: "did not settle" };
+      const m0 = window.__ml.myScreen(); const v0 = window.__ml.camView();
+      const a0 = window.__ml.pickAt(v0.x + m0.sx / m0.zoom, v0.y + m0.sy / m0.zoom);
+      cell = a0 ? { col: Math.floor(a0.x / 32), row: Math.floor(a0.y / 32), lvl: a0.lvl } : null;
+      if (cell && Math.abs(cell.col - s.stand.c) <= 1 && Math.abs(cell.row - s.stand.r) <= 1) break;
+      await new Promise((r) => setTimeout(r, 2000));
+    }
+    if (!cell || Math.abs(cell.col - s.stand.c) > 1 || Math.abs(cell.row - s.stand.r) > 1) return { skip: `landed at ${JSON.stringify(cell)}, not the stand` };
     if (window.__ml.indoor?.().indoor) return { skip: "indoors" };
-    const day = await (0, eval)(holdDay)();
-    if (day.stuck) return { skip: "could not hold the clock at Day" };
+    const day = await (0, eval)(holdDay)(hour);
+    if (day.stuck) return { skip: `could not hold the clock at ${hour}` };
     const me = window.__ml.myScreen(); const v = window.__ml.camView();
     const fx = v.x + me.sx / me.zoom, fy = v.y + me.sy / me.zoom;
-    const at = window.__ml.pickAt(fx, fy);
-    const cell = at ? { col: Math.floor(at.x / 32), row: Math.floor(at.y / 32), lvl: at.lvl } : null;
-    if (!cell || Math.abs(cell.col - s.stand.c) > 1 || Math.abs(cell.row - s.stand.r) > 1) return { skip: `landed at ${JSON.stringify(cell)}, not the stand` };
     return { on, here: window.__mlAmbient.zone(effect, fx, fy), cov: window.__mlAmbient.zone(effect), cell };
-  }, { s, effect: EFFECT, settle, holdDay }), 90_000, "stand");
+  }, { s, effect: EFFECT, settle, holdDay, hour: HOUR }), 150_000, "stand");
   say(`stand: ${s.kind} "${s.name}" ${s.dir}, col ${s.stand.c} row ${s.stand.r} -> ${JSON.stringify(r)}`);
   if (r.skip) continue;
   if (!(r.here <= 0.05 && r.cov?.any)) continue;
   await page.evaluate(() => window.__mlAmbient.zoneLines(true));
   const o = await look(s);
   if (o.skip) { say(`  ${o.skip}`); continue; }
-  if (!(o.drawn > 0)) { say(`  nothing drawn from here (coverage ${JSON.stringify(r.cov)}) — too little of the zone on screen to place any; next stand`); continue; }
-  picked = { ...s, ...r };
-  survey = o;
-  break;
+  if (!(o.placed > 0)) { say(`  nothing placed from here (coverage ${JSON.stringify(r.cov)}) — too little of the zone on screen to place any; next stand`); continue; }
+  /* A STAND THAT SHOWS A FEW. One animal on the far side is a pass but a poor
+   * picture and a thin measurement, so keep the first usable stand as a
+   * fallback and go on looking for one with a real population. */
+  if (o.placed >= 3 || (picked && survey && survey.placed >= o.placed)) {
+    if (!picked || o.placed > survey.placed) { picked = { ...s, ...r }; survey = o; }
+    if (survey.placed >= 3) break;
+  } else { picked = { ...s, ...r }; survey = o; }
 }
 if (!picked) fail(`could not stand outside a ${EFFECT} zone with ${EFFECT} on and the zone on screen`);
 else {
@@ -265,8 +324,10 @@ else {
   if (out.skip) fail(`outside: ${out.skip}`);
   else {
     if (!out.zone?.any) fail(`${EFFECT} does not see its zone in view from here`);
-    if (!(out.gain > 0.5)) fail(`${EFFECT} is not running from outside (gain ${out.gain}) — "it already exists over there" is not there`);
-    if (!(out.drawn > 0)) fail(`nothing drawn: I cannot see the ${EFFECT} on the other side`);
+    // the bar is the feature's own visible threshold (0.02), not a half: a
+    // spider by day runs at 0.25 BY DESIGN and is still plainly out there
+    if (!(out.gain > 0.02)) fail(`${EFFECT} is not running from outside (gain ${out.gain}) — "it already exists over there" is not there`);
+    if (!(out.placed > 0)) fail(`nothing placed on the ground: I cannot see the ${EFFECT} on the other side`);
     if (out.home && !(out.home.w > 0.5)) fail(`the colony sits at field weight ${out.home.w} — it was placed outside its zone`);
     if (out.outZone > 0) fail(`${out.outZone} of ${out.drawn} drawn on ground outside the zone`);
     if (out.onMe > 0) fail(`${out.onMe} drawn on the cells around me, on my side of the line`);

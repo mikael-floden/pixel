@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { isRough } from "../runtime/env";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { findGround, groundSoundAt, landableAt, playerAt } from "../runtime/ground";
+import { ZoneWatch } from "../runtime/zoneplace";
 import { SPECIES, Species, bodyColour, darkPairs, pickSpecies } from "./species";
 import {
   ALT,
@@ -142,6 +143,7 @@ interface Flit {
 
 export function butterfliesFeature(): AmbientFeature {
   const flits: Flit[] = [];
+  const zone = new ZoneWatch("butterflies");
   let gain = 0;
   let suppressed = false;
   let forced = false;
@@ -201,9 +203,10 @@ export function butterfliesFeature(): AmbientFeature {
    *  on the first grass or on none at all — the earlier shape nested a 4-try
    *  ground search inside a 6-try meadow search and cost 130 probes over the
    *  sea, which is exactly where it never succeeds. */
-  const findMeadow = (view: Phaser.Geom.Rectangle): { x: number; y: number } | null => {
+  const findMeadow = (view: Phaser.Geom.Rectangle, ctx?: AmbientCtx): { x: number; y: number } | null => {
     for (let t = 0; t < PLACE_TRIES; t++) {
-      const p = findGround(view, rnd, MARGIN, 1);
+      // the zone owns the meadow too: its odds are the field's
+      const p = findGround(view, rnd, MARGIN, 1, ctx ? (x, y) => zone.accept(ctx, x, y, rnd) : undefined);
       if (!p) continue;
       const sound = groundSoundAt(p.x, p.y);
       // no probe at all (an older build) reads as "fine" rather than "never"
@@ -212,8 +215,8 @@ export function butterfliesFeature(): AmbientFeature {
     return null;
   };
 
-  const place = (f: Flit, view: Phaser.Geom.Rectangle): boolean => {
-    const p = findMeadow(view);
+  const place = (f: Flit, view: Phaser.Geom.Rectangle, ctx?: AmbientCtx): boolean => {
+    const p = findMeadow(view, ctx);
     if (!p) {
       stats.rejected++;
       placeWait = Math.min(PLACE_MAX_MS, placeWait * 2);
@@ -280,10 +283,13 @@ export function butterfliesFeature(): AmbientFeature {
       ensureTextures(ctx.scene);
     },
     update(ctx, dt) {
+      zone.step(ctx, dt);
       const dtc = Math.min(dt, 100);
       const view = ctx.view;
       const w = forced ? 1 : weight(ctx.env);
-      const target = suppressed ? 0 : w;
+      // ...and only where their zone is, judged on the VIEW rather than on
+      // the cell under my feet
+      const target = suppressed || (!forced && !zone.any) ? 0 : w;
       gain += (target - gain) * Math.min(1, (dtc / GAIN_TAU) * 3);
       const g = gain * ctx.outdoor;
       const want = g < 0.02 ? 0 : Math.min(MAX_FLIT, Math.round((view.width * view.height) / AREA_PER));
@@ -322,7 +328,7 @@ export function butterfliesFeature(): AmbientFeature {
             continue;
           }
           placeAge = 0;
-          if (!place(f, view)) {
+          if (!place(f, view, ctx)) {
             park();
             continue;
           }
@@ -411,6 +417,7 @@ export function butterfliesFeature(): AmbientFeature {
     debug() {
       return {
         gain,
+        zone: zone.info(), // the boundary: is a butterfly zone in view, and how much of it
         suppressed,
         forced,
         weight: +weight({ sun: 1, rain: 0, active: new Set<string>() }).toFixed(2),

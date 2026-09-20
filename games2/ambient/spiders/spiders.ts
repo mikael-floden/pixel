@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { crawlerTint, findGround, flatWith, landableAt, levelAt, paintPixels } from "../runtime/ground";
+import { ZoneWatch } from "../runtime/zoneplace";
 
 // SPIDERS — a FIELD effect, and the other half of the too-small-for-art pair
 // (see ants/ants.ts for why there is no sprite sheet here).
@@ -70,6 +71,7 @@ interface Spider {
 export function spidersFeature(): AmbientFeature {
   const spiders: Spider[] = [];
   let nextIn = 3000;
+  const zone = new ZoneWatch("spiders");
   let gain = 0;
   let suppressed = false;
   let forced = false;
@@ -109,9 +111,12 @@ export function spidersFeature(): AmbientFeature {
       ]);
     },
     update(ctx, dt) {
+      zone.step(ctx, dt);
       // Dusk and night creatures, but not exclusively — a quarter of them are
-      // out by day, so a daytime walk is not guaranteed spider-free.
-      const target = forced ? 1 : suppressed ? 0 : 0.25 + 0.75 * ctx.env.night;
+      // out by day, so a daytime walk is not guaranteed spider-free. Out only
+      // where their zone is, and that is a question about the VIEW, not about
+      // the cell under my feet: they are already there when I arrive.
+      const target = forced ? 1 : suppressed || !zone.any ? 0 : 0.25 + 0.75 * ctx.env.night;
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
       const g = gain * ctx.outdoor; // stops indoors, like every effect here
       const visible = g > 0.02;
@@ -140,7 +145,9 @@ export function spidersFeature(): AmbientFeature {
           width: v.width * (1 - 2 * SPAWN_INSET),
           height: v.height * (1 - 2 * SPAWN_INSET),
         };
-        const p = findGround(inner, rnd, MARGIN);
+        // the zone owns the ground: taken with the field's own odds, so the
+        // population thins across the feather instead of stopping at the line
+        const p = findGround(inner, rnd, MARGIN, 10, (x, y) => zone.accept(ctx, x, y, rnd));
         const who = playerAt(ctx);
         if (!p) return null;
         if (who && Math.hypot(p.x - who.x, p.y - who.y) <= PLAYER_CLEAR * 2) return null;
@@ -262,6 +269,7 @@ export function spidersFeature(): AmbientFeature {
       return {
         art: [3, 3], // QA: the crab gate measures itself against this
         gain: +gain.toFixed(3),
+        zone: zone.info(), // the boundary: is a spider zone in view, and how much of it
         spiders: spiders.length,
         nextInMs: Math.max(0, Math.round(nextIn)),
         /* ...AND ONLY WHAT IS ON SCREEN, like every sibling in this folder
