@@ -444,23 +444,45 @@ from the games agent), #18 (title/landing screen).
   the keys — 10 read as ~2 on his phone, the reported keyboard top sitting
   under the keys' visible edge — and publishes `--ml-inputlift`; the chat log
   (hud.ts) and the ghost stick (gamepad.ts: portrait `bottom` is
-  `max(rail anchor, --ml-pad-floor)`, the floor `--ml-inputlift + 56px`
-  under `.ml-kb-up`) take the line above it on the same .15s ease-out, the
-  stick's glide DOWN carried by the `.ml-kb-drop` window `drop()` holds for
-  220 ms (outside the two windows the stick snaps, which rotation needs). THE
-  LIFT'S OWN WORK IS FLOORED: `--ml-kb` is an inherited custom property on
-  `:root`, so each write recalculates the whole document (measured in the
-  harness: 1.2 ms with the Chat page hidden, 7 ms with its 1000-line history
-  shown — several times that on a phone) — never the same value twice, the
-  tracking writes coalesced to one per frame, the rail floor read from
-  `hudHpx` (applyLayout's px) instead of a computed-style read per poll. And
-  a browser that shrinks the LAYOUT viewport for its keys (Firefox, Samsung
-  Internet, older Chrome; not Chrome's resizes-visual or the VirtualKeyboard
-  overlay) cannot resize the canvas: the HUD's resize listener holds a
-  keyboard-shaped resize (same width) while a box is lifted and applies it
-  once at the drop, so `--hud-h-inv` stays and `#game` never changes size
-  (a canvas resize is the one ~2 s stall this codebase knows, and it would
-  fire on open AND close). THE CHAT PAGE APPENDS: `pushChat` → `appendChat`
+  `--ml-pad-bottom` with the rail anchor as its fallback, the var
+  `--ml-inputlift + 56px` under `.ml-kb-up` — it REPLACES the anchor, never
+  max()-es with it, because on a browser that resizes the page for its keys
+  the rail is below the viewport) take the line above it on the same .15s
+  ease-out, the stick's glide DOWN carried by the `.ml-kb-drop` window
+  `drop()` holds for 220 ms (outside the two windows the stick snaps, which
+  rotation needs). THE LIFT'S OWN WORK IS FLOORED: `--ml-kb` is an inherited
+  custom property on `:root`, so each write recalculates the whole document
+  (measured in the harness: 1.2 ms with the Chat page hidden, 7 ms with its
+  1000-line history shown — several times that on a phone) — never the same
+  value twice, the tracking writes coalesced to one per frame, the rail floor
+  read from `hudHpx` (applyLayout's px) instead of a computed-style read per
+  poll. THE KEYBOARD NEVER LAYS OUT (his four screenshots: a black game view
+  when the keys closed "as if the game render engine restarts"; his browser
+  resizes the page around its keys — the window shrinks under them on open
+  and grows back on close): a resize that keeps the width is not laid out
+  while a box is lifted nor for `KB_SETTLE_MS` (700) after the drop
+  (`kbHolding`); at the settle window's end the drop lays out once and only
+  if the viewport is not the one last laid out (`layoutW`/`layoutH`), which a
+  keyboard's close never leaves — an earlier cut laid out AT the drop, on the
+  still-shrunk page, and that was the black frame itself. So `--hud-h-inv`
+  stays and `#game` never changes size (a canvas resize is the one ~2 s stall
+  this codebase knows). The lift measures the keys from where `bottom:0`
+  LANDS (the probe's rect against the visual viewport's bottom), not from
+  innerHeight: a visual-viewport shrink lifts by the difference, a page
+  shrink (`layoutShrunk`, the fixed edge moved with the keys) lifts by 0 with
+  no rail floor, so the box, the log and the stick sit on the keys' top edge
+  on either kind of browser; a report has `KB_GRACE_MS` (250) from focus to
+  arrive before the estimate runs, so a page-resizing browser never sends the
+  box up the screen and back. And for as long as a chat box is focused the
+  viewport meta carries `interactive-widget=overlays-content` (restored at
+  the settle window's end): a Chrome that honours it keeps the window
+  full-size under the keys, so the HUD stays painted behind them ("it must
+  be possible to keep the UI behind the keyboard somehow") — declared around
+  the game's own chat boxes only; the select screen's name field, the wiki
+  drawer and the drop dialog keep the browser's default. Whether his browser
+  honours it is not known from the harness, which has no keys; the
+  page-shrink drive in `verify-chatpage` proves everything else. THE CHAT
+  PAGE APPENDS: `pushChat` → `appendChat`
   adds one row (a day divider when the day turns) and trims the top past the
   cap, keeping the first-row-is-a-divider rule; `renderChat` (the wipe and
   rebuild, 43 ms per line at the cap in the harness) runs only when the tab
@@ -468,7 +490,10 @@ from the games agent), #18 (title/landing screen).
   harness before the round: focus and blur add NO canvas resize, NO layout
   run and NO viewport event over its baseline, so what remains on his phone
   is the browser's own keyboard work plus whatever the DOM costs per write —
-  which is what this round cut. Gate: `verify-chatpage`.
+  which is what this round cut. Gate: `verify-chatpage` (the lift's geometry
+  and glides, the 20px, the drop window, and a real page shrink and grow
+  around the lift: no layout run, no canvas resize, the box/log/stick on the
+  keys' top edge, the meta's overlay mode on while focused and off after).
 - **A PAGE'S SUB-TABS ARE A STRIP THE RAIL GROWS BY, NEVER THE PAGE SHRINKS
   BY** (maintainer 2026-09-19: "the subsection appears by sliding up the menu
   over it so the menu content area is just as big as the menu inner area we

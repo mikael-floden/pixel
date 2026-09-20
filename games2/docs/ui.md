@@ -115,17 +115,25 @@ match logic `server/src/chess.ts`; dialog `client/src/chessui.ts`; gate
   nothing else** (hud.ts `mountChatKeyboardLift`; maintainer 2026-09-20).
   The box floats `KB_GAP` 20px above the keys (10 read as ~2 on his phone);
   the log and the stick take the line above it (`--ml-inputlift + 56px`; the
-  stick's portrait `bottom` is `max(rail anchor, --ml-pad-floor)`, gamepad.ts)
-  on the same .15s ease-out both ways (`.ml-kb-drop`, a 220 ms window from
-  `drop()`, carries the stick's glide down). The lift's work is floored —
-  one root write per frame, never the same value twice, the rail floor from
-  applyLayout's px — because a `--ml-kb` write recalculates the whole
-  document (1.2 ms hidden Chat page / 7 ms with 1000 lines shown, harness).
-  A keyboard-shaped resize (same width) is HELD while a box is lifted and
-  applied at the drop, so a browser that shrinks the layout viewport for its
-  keys never resizes the canvas. The Chat page APPENDS an arriving line
+  stick's portrait `bottom` is `--ml-pad-bottom` with the rail anchor as its
+  fallback, gamepad.ts) on the same .15s ease-out both ways (`.ml-kb-drop`, a
+  220 ms window from `drop()`, carries the stick's glide down). The lift's
+  work is floored — one root write per frame, never the same value twice,
+  the rail floor from applyLayout's px — because a `--ml-kb` write
+  recalculates the whole document (1.2 ms hidden Chat page / 7 ms with 1000
+  lines shown, harness). THE KEYBOARD NEVER LAYS OUT: a same-width resize is
+  held while a box is lifted and for 700 ms after the drop (`kbHolding`),
+  and the drop lays out once at the end of that window only if the viewport
+  differs from the one last laid out — laying out AT the drop on the
+  still-shrunk page was the black frame he filmed; the lift measures the
+  keys from where `bottom:0` lands (a page shrink lifts by 0, a
+  visual-viewport shrink by the difference; 250 ms grace before the
+  estimate); the viewport meta carries `interactive-widget=overlays-content`
+  while a chat box is focused so a Chrome that honours it keeps the HUD
+  painted behind the keys. The Chat page APPENDS an arriving line
   (`appendChat`) and rebuilds only when the tab opens (43 ms per line at the
-  cap otherwise). Gate: `verify-chatpage`.
+  cap otherwise). Gate: `verify-chatpage` (incl. a real page shrink/grow
+  around the lift: no layout run, no canvas resize).
 
 ## Settings sub-tabs (the strip the rail grows by)
 
@@ -222,7 +230,7 @@ GROWS BY"); this holds the mechanics and the numbers.
   clears strays) — floating in the game view's bottom corner on the thumb's
   side (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
   marked on two device screenshots; PORT_GHOST_INSET 10px in portrait, lifted
-  to the chat log's line while the keyboard is up — `--ml-pad-floor`), plus
+  to the chat log's line while the keyboard is up — `--ml-pad-bottom`), plus
   his fine-tune (controls.ts stickNudge; gamepad.ts stickNudgeRange = well/4
   away from the corner, the inset toward it, per hand and orientation — the
   dials span exactly that, margin floored at 0 under it). The gamepad page

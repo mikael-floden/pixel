@@ -286,20 +286,28 @@ export function mountPageFrame() {
   applyLayout();
   if (!layoutHooked) {
     layoutHooked = true;
-    // THE KEYBOARD NEVER RE-LAYS OUT THE GAME (maintainer 2026-09-20: "when I
-    // close the keyboard the game lags like crazy"). A browser that shrinks
-    // the LAYOUT viewport for its keys (Chrome's resizes-visual and the
-    // VirtualKeyboard overlay do not; Firefox, Samsung Internet and older
-    // Chrome do) fires this on open and on close, and applyLayout would then
-    // move the rail into a half-height window and resize the canvas — a
-    // framebuffer realloc plus a whole-world redraw, ~2 s, twice. While a chat
-    // box is lifted, a resize that keeps the WIDTH (a keyboard's shape; a
-    // rotation changes it) is held and applied once at the drop, on the
-    // settled viewport. The px layout vars stay, so #game keeps its size and
-    // main.ts's fitCanvas finds nothing to resize.
+    // THE KEYBOARD NEVER LAYS OUT THE GAME (maintainer 2026-09-20, four
+    // screenshots: a black game view when the keys closed, "as if the game
+    // render engine restarts"). His browser resizes the page around its keys —
+    // on open the window shrinks under them, on close it grows back — and a
+    // layout pass on either size moves the rail and resizes the canvas: a
+    // framebuffer realloc plus a whole-world redraw, the black frame. So a
+    // resize that keeps the WIDTH (a keyboard's shape; a rotation changes it)
+    // is not laid out while a chat box is lifted, nor for KB_SETTLE_MS after
+    // it drops (the keys are still closing then, and the page still growing
+    // back — an earlier cut laid out AT the drop and that was the black frame
+    // itself). At the settle window's end the drop lays out once, and only if
+    // the viewport is not the one last laid out: a keyboard's close returns
+    // exactly that one, so nothing runs. The px layout vars stay throughout,
+    // so #game keeps its size and main.ts's fitCanvas finds nothing to resize.
     window.addEventListener("resize", () => {
-      if (document.documentElement.classList.contains("ml-kb-up") && window.innerWidth === layoutW) {
-        kbHeldResize = true;
+      if (kbHolding() && window.innerWidth === layoutW) {
+        // A keyboard-shaped resize INSIDE the settle window extends it: the
+        // keys' close ends with the system bar's own transition (his black
+        // frame was a layout pass on a viewport still ~20px short of rest),
+        // so any layout waits for the viewport to be quiet for KB_QUIET_MS.
+        if (!document.documentElement.classList.contains("ml-kb-up"))
+          kbSettleUntil = Math.max(kbSettleUntil, performance.now() + KB_QUIET_MS);
         return;
       }
       applyLayout();
@@ -523,17 +531,24 @@ function subStripHeight(land: boolean): number {
   return row ? Math.round(row.getBoundingClientRect().height) : 0;
 }
 
-/** The last laid-out viewport width, the rail's px height and a resize held
- *  back while the keys are up — the resize listener above and the keyboard
- *  lift (railFloor, drop) read them. */
+/** The viewport applyLayout last laid out for, the rail's px height, and the
+ *  end of the keyboard's settle window — the resize listener above and the
+ *  keyboard lift (railFloor, layoutShrunk, drop) read them. */
 let layoutW = 0;
+let layoutH = 0;
 let hudHpx = 0;
-let kbHeldResize = false;
+let kbSettleUntil = 0;
+/** Is a chat box lifted, or did one drop less than KB_SETTLE_MS ago? While
+ *  either holds, a resize that keeps the width is the keyboard's and is not
+ *  laid out (see the resize listener). */
+const kbHolding = () =>
+  document.documentElement.classList.contains("ml-kb-up") || performance.now() < kbSettleUntil;
 function applyLayout() {
   const root = document.documentElement;
   const w = window.innerWidth;
   const h = window.innerHeight;
   layoutW = w;
+  layoutH = h;
   const land = root.classList.contains("ml-ingame") && touchDevice() && w > h;
   const left = getHand() === "left";
   // ORIENTATION changes run the flip (beginFlip above: veil + one canvas
@@ -2713,6 +2728,18 @@ const KB_MIN = 80; // below this: no keyboard (address-bar-sized jitter)
  *  the keys' visible edge by most of it — and a small visible margin is the
  *  ask, so the number moved rather than the guesswork. */
 const KB_GAP = 20;
+/** After a drop, how long same-width resizes stay held and the overlay
+ *  keyboard mode stays declared: the keys' close animation plus the page
+ *  growing back on a browser that resized it for them. */
+const KB_SETTLE_MS = 700;
+/** How long the viewport has to be quiet after a late keyboard-shaped resize
+ *  before the settle window may end. */
+const KB_QUIET_MS = 300;
+/** How long after focus the lift waits for a keyboard report before it
+ *  estimates: a browser that resizes the page for its keys reports within a
+ *  frame or two of the keys starting, and estimating first sent the box up the
+ *  screen and then back down to the keys. */
+const KB_GRACE_MS = 250;
 // Assumed keyboard height when nothing reports one. Erring HIGH is nearly free
 // (the box floats a little above the keys) while erring low HIDES the box, so
 // these lean generous: half the viewport, but never less than 0.9×WIDTH — a
@@ -2736,9 +2763,12 @@ let kbInit = false;
  *    default already overlays on the maintainer's phone; `overlaysContent = true`
  *    reinforces it where the API exists. Once the box is floated ABOVE the
  *    keyboard the browser has nothing to reveal, so it has no reason to pan.
- *    And a browser that shrinks the layout viewport anyway cannot re-lay out
- *    the game: a keyboard-shaped resize is held while the box is lifted and
- *    applied at the drop (the resize listener at the HUD mount).
+ *    And a browser that resizes the page anyway cannot lay out the game for
+ *    its keys: a keyboard-shaped resize is held while the box is lifted and
+ *    through the settle window after the drop (the resize listener at the
+ *    HUD mount, kbHolding); the lift then measures the keys from where
+ *    `bottom:0` lands, so the box, the log and the stick sit on the keys' top
+ *    edge on that browser too.
  *
  * 2. THE INPUT MUST RISE — even when the browser won't say how tall the keyboard
  *    is. That was the real bug: earlier tries gated the lift on a reported height
@@ -2774,6 +2804,22 @@ function mountChatKeyboardLift() {
   // scroll the game to reveal the focused box. (Absent → Chrome's default, which
   // already overlays here; the lift below no longer depends on this API.)
   if (vk) vk.overlaysContent = true;
+  // …and, for as long as a chat box is focused, the viewport meta says the same
+  // (interactive-widget=overlays-content): a Chrome that honours it keeps the
+  // window full-size under the keys, so the HUD stays painted behind them
+  // (maintainer 2026-09-20: the HUD region went black while the keys animated
+  // up; "it must be possible to keep the UI behind the keyboard somehow") and
+  // no viewport changes size at all. Declared only around the game's own chat
+  // boxes: the select screen's name field, the wiki drawer and the drop
+  // dialog's number box keep the browser's default. Restored at the settle
+  // window's end, when the keys are gone.
+  const meta = document.querySelector<HTMLMetaElement>('meta[name="viewport"]');
+  const metaRest = meta?.getAttribute("content") ?? "";
+  const overlayKeys = (on: boolean) => {
+    if (!meta) return;
+    const want = on ? `${metaRest}, interactive-widget=overlays-content` : metaRest;
+    if (meta.getAttribute("content") !== want) meta.setAttribute("content", want);
+  };
   const vv = window.visualViewport;
   // Hidden probe: the only way to READ env(keyboard-inset-height) from JS.
   const probe = mk("i", "");
@@ -2795,13 +2841,25 @@ function mountChatKeyboardLift() {
   // Site" it reads false — accepted (maintainer: "if that's what they want
   // they should blame themselves").
 
-  /** Keyboard height in CSS px from whichever source actually reports one. */
-  const reported = () =>
-    Math.max(
+  /** Keyboard height in CSS px from whichever source actually reports one —
+   *  measured from where `bottom:0` LANDS (the probe's rect), not from
+   *  innerHeight: the lift is a `bottom`, so what matters is how far the
+   *  visible area's bottom edge sits above the edge fixed positioning uses.
+   *  A browser that only shrinks the visual viewport for its keys reports the
+   *  keys' height here; one that resizes the page itself reports 0 — the
+   *  fixed edge moved WITH the keys — and layoutShrunk() says so instead. */
+  const reported = () => {
+    const pr = probe.getBoundingClientRect();
+    return Math.max(
       vk ? Math.round(vk.boundingRect.height) : 0,
-      Math.round(probe.getBoundingClientRect().height),
-      vv ? Math.round(window.innerHeight - vv.height - vv.offsetTop) : 0,
+      Math.round(pr.height),
+      vv ? Math.round(pr.bottom - (vv.offsetTop + vv.height)) : 0,
     );
+  };
+  /** How far the page itself has shrunk since the last layout: a browser that
+   *  resizes the page for its keys puts the keys' top exactly at the viewport's
+   *  bottom, so the lift there is 0 and the rail is below the viewport. */
+  const layoutShrunk = () => Math.max(0, Math.round(layoutH - probe.getBoundingClientRect().bottom));
   // The box floats at --ml-kb + KB_GAP; to CLEAR the frame's bottom rail it must
   // land above the rail's visible top (--hud-h up from the bottom), so --ml-kb is
   // floored at hud-h + 2 (⇒ box bottom ≥ hud-h + 22). Flooring HERE (not in CSS)
@@ -2815,11 +2873,17 @@ function mountChatKeyboardLift() {
   const kbHeight = () => {
     const r = reported();
     if (r >= KB_MIN) { sawReport = true; return Math.max(r, railFloor()); }
-    // Nothing reported — and on the maintainer's phone nothing EVER is (the
-    // keyboard overlays the page without shrinking any viewport JS can read). So
-    // ESTIMATE the height from THIS device's real innerHeight/innerWidth. The
-    // caller (sync) only asks once it knows a keyboard is coming (touchDevice),
-    // so this never floats a mouse desktop.
+    // The page itself shrank for the keys: their top IS the viewport's bottom,
+    // the box floats KB_GAP above it, and the rail (still at its px from the
+    // top) is below the viewport, so there is nothing to clear.
+    if (layoutShrunk() >= KB_MIN) { sawReport = true; return 0; }
+    // Nothing reported (yet). Give a report KB_GRACE_MS from focus to arrive
+    // before estimating; until then the box holds its pin. A device that never
+    // reports (the keyboard overlays the page without shrinking any viewport
+    // JS can read) then gets the ESTIMATE from its real innerHeight/innerWidth.
+    // The caller (sync) only asks once it knows a keyboard is coming
+    // (touchDevice), so this never floats a mouse desktop.
+    if (Date.now() - focusedAt < KB_GRACE_MS) return Math.max(0, kbPx);
     const ih = window.innerHeight;
     const est = Math.min(
       Math.round(ih * KB_GUESS_MAX_FRAC),
@@ -2856,6 +2920,7 @@ function mountChatKeyboardLift() {
   };
   let barEl: HTMLElement | null = null; // the HUD row the input floats out of
   let dropT = 0;
+  let settleT = 0;
   const drop = () => {
     lifted = false;
     root.classList.remove("ml-kb-up");
@@ -2871,13 +2936,27 @@ function mountChatKeyboardLift() {
       barEl.style.height = "";
       barEl = null;
     }
-    // A keyboard-shaped resize that arrived while the keys were up was held
-    // back (the resize listener at the HUD mount): lay out once, now, on the
-    // settled viewport.
-    if (kbHeldResize) {
-      kbHeldResize = false;
-      applyLayout();
-    }
+    // THE SETTLE WINDOW: the keys are still closing, and on a browser that
+    // resized the page for them the page is still growing back — same-width
+    // resizes stay held (kbHolding), the overlay mode stays declared. At its
+    // end the meta returns to the browser's default and the layout is redone
+    // ONLY if the viewport is not the one last laid out; a keyboard's close
+    // returns exactly that one, so nothing runs. Laying out AT the drop, on
+    // the still-shrunk page, was the black frame he filmed.
+    kbSettleUntil = performance.now() + KB_SETTLE_MS;
+    window.clearTimeout(settleT);
+    const settle = () => {
+      // a late resize pushed the window out (the resize listener): wait it out
+      const left = kbSettleUntil - performance.now();
+      if (left > 0) {
+        settleT = window.setTimeout(settle, left);
+        return;
+      }
+      kbSettleUntil = 0;
+      overlayKeys(false);
+      if (window.innerWidth !== layoutW || window.innerHeight !== layoutH) applyLayout();
+    };
+    settleT = window.setTimeout(settle, KB_SETTLE_MS);
   };
   const armLift = () => {
     if (!input) return;
@@ -2903,16 +2982,19 @@ function mountChatKeyboardLift() {
   const sync = () => {
     if (!input) return;
     const r = reported();
-    if (r >= KB_MIN) sawReport = true;
-    // Is the keyboard up right now? A real report is authoritative. A device that
-    // has NEVER reported one (the maintainer's phone: the keyboard overlays and
-    // shrinks nothing) can't tell — but this handler only runs while the chat box
-    // HOLDS FOCUS, and the only way to focus it is to TAP it, which on a touch
-    // device always opens the keyboard. So on a touch device that has never
-    // reported, ASSUME it's up and float. Once a device HAS reported (sawReport),
-    // trust it BOTH ways — so a real ▼/Back close drops the box AND the estimate
-    // never re-floats it (which flickered it down-then-up).
-    const open = r >= KB_MIN || (!sawReport && touchDevice());
+    const shrunk = layoutShrunk();
+    if (r >= KB_MIN || shrunk >= KB_MIN) sawReport = true;
+    // Is the keyboard up right now? A real report — a visual-viewport shrink,
+    // a VirtualKeyboard rect, env(), or the page itself shrunk for the keys —
+    // is authoritative. A device that has NEVER reported one (the keyboard
+    // overlays and shrinks nothing) can't tell — but this handler only runs
+    // while the chat box HOLDS FOCUS, and the only way to focus it is to TAP
+    // it, which on a touch device always opens the keyboard. So on a touch
+    // device that has never reported, ASSUME it's up and float. Once a device
+    // HAS reported (sawReport), trust it BOTH ways — so a real ▼/Back close
+    // drops the box AND the estimate never re-floats it (which flickered it
+    // down-then-up).
+    const open = r >= KB_MIN || shrunk >= KB_MIN || (!sawReport && touchDevice());
     if (open) {
       if (!lifted) armLift();
       else setKbSoon(kbHeight()); // track the keyboard (swap an estimate for a real report), one write per frame
@@ -2923,9 +3005,11 @@ function mountChatKeyboardLift() {
   // QA probe: why the box did (or didn't) lift — the two shipped attempts failed
   // precisely because nothing could see this state from outside.
   (window as unknown as { __mlKb?: () => unknown }).__mlKb = () => ({
-    hasInput: !!input, lifted, reported: reported(), kb: kbHeight(),
+    hasInput: !!input, lifted, reported: reported(), layoutShrunk: layoutShrunk(), kb: kbHeight(),
     touch: navigator.maxTouchPoints, touchDevice: touchDevice(),
-    innerH: window.innerHeight, innerW: window.innerWidth,
+    innerH: window.innerHeight, innerW: window.innerWidth, layoutH, layoutW,
+    fixedBottom: Math.round(probe.getBoundingClientRect().bottom),
+    meta: meta?.getAttribute("content") ?? null, settling: performance.now() < kbSettleUntil,
     screen: [screen.width, screen.height], sawReport,
     sinceFocus: focusedAt ? Date.now() - focusedAt : null, polling: poll !== 0,
   });
@@ -2943,6 +3027,11 @@ function mountChatKeyboardLift() {
     if (!isChatInput(e.target)) return;
     input = e.target as HTMLElement;
     focusedAt = Date.now();
+    // Overlay mode BEFORE the keys start (focusin precedes the keyboard), and
+    // a re-focus inside a settle window keeps it: the window is cancelled.
+    window.clearTimeout(settleT);
+    kbSettleUntil = 0;
+    overlayKeys(true);
     sync();
     // POLL: geometrychange/visualViewport don't fire on every device (that's how
     // the lift died twice) — a cheap timer while the box is focused can't miss.

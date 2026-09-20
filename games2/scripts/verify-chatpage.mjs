@@ -154,6 +154,7 @@ try {
              chatlogBottom: cssBottom(".ml-chatlog"), // the on-screen "game-view" chat overlay
              clockTop: top(".ml-clock"), wikibtnTop: top(".ml-wikibtn"), // top-right under the XP chip since 2026-09-17
              stickBottom: (() => { const e = document.querySelector(".ml-pad-stick"); return e ? Math.round(window.innerHeight - e.getBoundingClientRect().bottom) : null; })(),
+             lines: document.querySelectorAll(".ml-chat-log > *").length,
              firstLine: first ? Math.round(first.getBoundingClientRect().top) : null };
   });
 
@@ -215,6 +216,7 @@ try {
         const r = e.getBoundingClientRect(); return Math.round(r.left + parseFloat(getComputedStyle(e).maxWidth)); })(),
       placeholder: getComputedStyle(document.querySelector(".ml-chat-input"), "::placeholder").color,
       firstLine: (() => { const e = document.querySelector(".ml-chat-log > *"); return e ? Math.round(e.getBoundingClientRect().top) : null; })(),
+      lines: document.querySelectorAll(".ml-chat-log > *").length,
       // the ghost stick: px above the viewport bottom, and its declared transition under the lift
       stickBottom: (() => { const e = document.querySelector(".ml-pad-stick"); return e ? Math.round(window.innerHeight - e.getBoundingClientRect().bottom) : null; })(),
       stickTr: (() => { const e = document.querySelector(".ml-pad-stick"); if (!e) return null; const c = getComputedStyle(e); return `${c.transitionProperty} ${c.transitionDuration}`; })(),
@@ -294,7 +296,12 @@ try {
   moved.length === 0 && lifted.sy === frameBefore.sy && lifted.vh === frameBefore.h
     ? ok(`game/HUD unmoved while the input floats (game=${lifted.game} hud=${lifted.hud} tabs=${lifted.tabs}, scrollY=${lifted.sy})`)
     : fail(`the game moved: ${moved.join(",")} shifted; scrollY ${frameBefore.sy}->${lifted.sy}; vh ${frameBefore.h}->${lifted.vh}`);
-  const reflowed = ["barH", "logH", "firstLine"].filter((k) => frameBefore[k] !== lifted[k]);
+  // firstLine is a reflow reading only while the log holds the SAME rows: a
+  // line arriving between the two snapshots (the world's "Time of day") is
+  // appended and scrolls the bottom-following log up by one row, which is not
+  // the page reflowing. The row and log heights are the reading then.
+  const reflowKeys = frameBefore.lines === lifted.lines ? ["barH", "logH", "firstLine"] : ["barH", "logH"];
+  const reflowed = reflowKeys.filter((k) => frameBefore[k] !== lifted[k]);
   reflowed.length === 0
     ? ok(`chat page didn't reflow (row=${lifted.barH}px log=${lifted.logH}px, lines put)`)
     : fail(`chat page reflowed when the input floated: ${reflowed.map((k) => `${k} ${frameBefore[k]}->${lifted[k]}`).join(", ")}`);
@@ -343,6 +350,66 @@ try {
   }));
   !outside.up && !outside.focused
     ? ok("a tap outside the box retires the float (Android ▼/Back has no blur)") : fail(`outside tap didn't retire: ${JSON.stringify(outside)}`);
+
+  // ── A BROWSER THAT RESIZES THE PAGE FOR ITS KEYS (maintainer 2026-09-20: a
+  //    black game view when the keys closed, "as if the game render engine
+  //    restarts"; the HUD region black while they animated up). This harness
+  //    can drive exactly that: with the box lifted, shrink the viewport by a
+  //    keyboard's height. Nothing may lay out or resize the canvas; the box,
+  //    the log and the stick move to the keys' top edge (the viewport's
+  //    bottom). Grow it back: the lift drops (the close was reported), and
+  //    after the settle window no layout pass has run — the viewport came
+  //    back exactly as it was laid out. The viewport meta carries the overlay
+  //    keyboard mode for as long as the box is focused, and not after. ──
+  await page.evaluate(() => document.querySelector(".ml-chat-input").focus());
+  await page.waitForFunction(() => document.documentElement.classList.contains("ml-kb-up") &&
+    (parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--ml-kb")) || 0) >= 80, null, { timeout: 8000 }).catch(() => {});
+  const before = await page.evaluate(() => {
+    const c = (window.__cnt = window.__cnt || { resize: 0, layout: 0 });
+    if (!window.__cntHooked) {
+      window.__cntHooked = true;
+      const g = window.__mlGame; const o = g.scale.resize.bind(g.scale);
+      g.scale.resize = (...a) => { c.resize++; return o(...a); };
+      window.addEventListener("ml-layout", () => c.layout++);
+    }
+    return { ...c, hudInv: getComputedStyle(document.documentElement).getPropertyValue("--hud-h-inv").trim(),
+             gameH: document.getElementById("game").getBoundingClientRect().height,
+             meta: document.querySelector('meta[name=viewport]').getAttribute("content"), up: document.documentElement.classList.contains("ml-kb-up") };
+  });
+  before.up ? ok("re-focused: the box is lifted for the page-resize drive") : fail(`box not lifted before the page-resize drive: ${JSON.stringify(await page.evaluate(() => window.__mlKb()))}`);
+  /interactive-widget=overlays-content/.test(before.meta)
+    ? ok("the viewport meta carries interactive-widget=overlays-content while the box is focused")
+    : fail(`meta without overlays-content while focused: ${before.meta}`);
+  const VH = page.viewportSize().height, VW = page.viewportSize().width;
+  await page.setViewportSize({ width: VW, height: VH - 400 });
+  await page.waitForFunction(() => { const el = document.querySelector(".ml-chat-input"); return el && Math.abs(window.innerHeight - el.getBoundingClientRect().bottom - 20) < 2; }, null, { timeout: 8000 }).catch(() => {});
+  const shrunk = await page.evaluate(() => {
+    const r = (s) => { const e = document.querySelector(s); return e ? Math.round(window.innerHeight - e.getBoundingClientRect().bottom) : null; };
+    return { ...window.__cnt, vh: window.innerHeight, hudInv: getComputedStyle(document.documentElement).getPropertyValue("--hud-h-inv").trim(),
+             gameH: document.getElementById("game").getBoundingClientRect().height, box: r(".ml-chat-input"), log: r(".ml-chatlog"), stick: r(".ml-pad-stick"),
+             up: document.documentElement.classList.contains("ml-kb-up"), kb: window.__mlKb() };
+  });
+  shrunk.layout === before.layout && shrunk.resize === before.resize && shrunk.hudInv === before.hudInv && Math.abs(shrunk.gameH - before.gameH) < 1
+    ? ok(`a keyboard-sized page shrink lays out nothing and resizes no canvas (vh ${shrunk.vh}, --hud-h-inv ${shrunk.hudInv}, #game ${shrunk.gameH}px)`)
+    : fail(`the page shrink re-laid out: layout ${before.layout}->${shrunk.layout}, canvas resizes ${before.resize}->${shrunk.resize}, --hud-h-inv ${before.hudInv}->${shrunk.hudInv}, #game ${before.gameH}->${shrunk.gameH}`);
+  shrunk.up && Math.abs(shrunk.box - 20) <= 2 && Math.abs(shrunk.log - 76) <= 2 && Math.abs(shrunk.stick - 76) <= 2
+    ? ok(`…and the box, the log and the stick sit on the keys' top edge (box ${shrunk.box}, log ${shrunk.log}, stick ${shrunk.stick}px up)`)
+    : fail(`with the page shrunk the box/log/stick are ${shrunk.box}/${shrunk.log}/${shrunk.stick}px up (want 20/76/76), up=${shrunk.up}: ${JSON.stringify(shrunk.kb)}`);
+  await page.setViewportSize({ width: VW, height: VH });
+  const droppedOnGrow = await page.waitForFunction(() => !document.documentElement.classList.contains("ml-kb-up"), null, { timeout: 5000 }).then(() => true).catch(() => false);
+  droppedOnGrow ? ok("the page growing back reads as the keys closing: the lift drops")
+                : fail(`lift still up after the page grew back: ${JSON.stringify(await page.evaluate(() => window.__mlKb()))}`);
+  await page.waitForTimeout(1000); // past the settle window
+  const settled = await page.evaluate(() => ({ ...window.__cnt, hudInv: getComputedStyle(document.documentElement).getPropertyValue("--hud-h-inv").trim(),
+    gameH: document.getElementById("game").getBoundingClientRect().height, meta: document.querySelector('meta[name=viewport]').getAttribute("content") }));
+  settled.layout === before.layout && settled.resize === before.resize && settled.hudInv === before.hudInv && Math.abs(settled.gameH - before.gameH) < 1
+    ? ok(`…and after the settle window nothing has laid out: the viewport is the one last laid out (layout runs +${settled.layout - before.layout}, canvas resizes +${settled.resize - before.resize})`)
+    : fail(`a layout pass ran around the keys: layout ${before.layout}->${settled.layout}, canvas resizes ${before.resize}->${settled.resize}, --hud-h-inv ${before.hudInv}->${settled.hudInv}`);
+  !/interactive-widget/.test(settled.meta)
+    ? ok("the viewport meta is back to the browser's default after the settle")
+    : fail(`meta still carries interactive-widget after the settle: ${settled.meta}`);
+  await page.evaluate(() => document.querySelector(".ml-chat-input").blur());
+  await page.waitForTimeout(300);
 
   // ── req 1 (system side) + req 6: on login the world logs system events
   //    immediately (time-of-day sync, the join "star"). Wait for one, then the
