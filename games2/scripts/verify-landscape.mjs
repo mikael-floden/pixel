@@ -137,8 +137,8 @@ try {
         tabFirst: r(".ml-tab:first-child"),
         tabLast: r(".ml-tab:last-child"),
         stickOp: (() => {
-          const w = document.querySelector(".ml-pad-well");
-          const c = document.querySelector(".ml-pad-top");
+          const w = document.querySelector(".ml-pad-stick .ml-pad-well");
+          const c = document.querySelector(".ml-pad-stick .ml-pad-top");
           return w && c ? { well: getComputedStyle(w).opacity, cap: getComputedStyle(c).opacity } : null;
         })(),
         pages: r(".ml-pages"),
@@ -426,8 +426,8 @@ try {
   // must reposition instantly (the .anim class is transient).
   const tp = await page.evaluate(() => ({
     frame: getComputedStyle(document.querySelector(".ml-pad-stick")).transitionProperty,
-    well: getComputedStyle(document.querySelector(".ml-pad-well")).transitionProperty,
-    cap: getComputedStyle(document.querySelector(".ml-pad-top")).transitionProperty,
+    well: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-well")).transitionProperty,
+    cap: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-top")).transitionProperty,
   }));
   // The FRAME carries position only (and .anim-gated at that); the grab fade
   // lives on the two painted parts, which own their own alphas now.
@@ -455,8 +455,8 @@ try {
   await page.waitForTimeout(700);
   // IN USE the ghost fades to fully visible (maintainer 2026-08-05)
   const opHeld = await page.evaluate(() => ({
-    well: getComputedStyle(document.querySelector(".ml-pad-well")).opacity,
-    cap: getComputedStyle(document.querySelector(".ml-pad-top")).opacity,
+    well: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-well")).opacity,
+    cap: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-top")).opacity,
   }));
   Math.abs(parseFloat(opHeld.well) - 1) <= 0.02 && Math.abs(parseFloat(opHeld.cap) - 1) <= 0.02
     ? ok(`BOTH parts fade to 100% while held (well ${opHeld.well}, cap ${opHeld.cap})`)
@@ -464,7 +464,7 @@ try {
   await page.mouse.up();
   const faded = await page
     .waitForFunction(
-      () => Math.abs(parseFloat(getComputedStyle(document.querySelector(".ml-pad-well")).opacity) - 0.15) <= 0.02,
+      () => Math.abs(parseFloat(getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-well")).opacity) - 0.15) <= 0.02,
       null,
       { timeout: 8000, polling: 150 },
     )
@@ -473,7 +473,7 @@ try {
   faded
     ? ok("…and back to the ghost alphas on release")
     : fail(
-        `stick stuck at opacity ${await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-well")).opacity)} after release`,
+        `stick stuck at opacity ${await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-well")).opacity)} after release`,
       );
   const p1 = await page.evaluate(() => {
     const m = window.__ml.me();
@@ -882,8 +882,8 @@ try {
     await kpage.waitForTimeout(1200);
     const alphas = await kpage.evaluate(() => ({
       theme: document.documentElement.dataset.theme,
-      well: getComputedStyle(document.querySelector(".ml-pad-well")).opacity,
-      cap: getComputedStyle(document.querySelector(".ml-pad-top")).opacity,
+      well: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-well")).opacity,
+      cap: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-top")).opacity,
     }));
     alphas.theme === "dark" && Math.abs(+alphas.well - 0.4) <= 0.01 && Math.abs(+alphas.cap - 0.5) <= 0.01
       ? ok(`dark ghost: well ${alphas.well} (60% transparent), cap ${alphas.cap} (50%)`)
@@ -897,8 +897,8 @@ try {
     await kpage.mouse.move(r.x, r.y - 60, { steps: 3 });
     await kpage.waitForTimeout(600);
     const heldDark = await kpage.evaluate(() => ({
-      well: getComputedStyle(document.querySelector(".ml-pad-well")).opacity,
-      cap: getComputedStyle(document.querySelector(".ml-pad-top")).opacity,
+      well: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-well")).opacity,
+      cap: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-top")).opacity,
     }));
     await kpage.mouse.up();
     Math.abs(+heldDark.well - 1) <= 0.02 && Math.abs(+heldDark.cap - 1) <= 0.02

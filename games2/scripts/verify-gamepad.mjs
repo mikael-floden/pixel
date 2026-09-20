@@ -108,7 +108,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     Math.abs(geom.w - 120) < 0.5
       ? ok(`stick well mounted ${geom.w}px (120 tier) centre=(${geom.cx.toFixed(0)},${geom.cy.toFixed(0)})`)
       : fail(`stick well ${geom.w}px, want 120`);
-    const topTf = () => page.evaluate(() => document.querySelector(".ml-pad-top").style.transform);
+    const topTf = () => page.evaluate(() => document.querySelector(".ml-pad-stick .ml-pad-top").style.transform);
 
     // 2) drag EAST → moves; direction ≈ screen-east (world +x,+y)
     let a = await pos(page);
@@ -156,7 +156,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     const t90 = await topTf();
     t100 === t90 ? ok(`cap visual snaps to the octant (${t90})`) : fail(`cap not snapped: 100°=${t100} vs 90°=${t90}`);
     // and the glide is animated, not instant
-    const trans = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-top")).transitionDuration);
+    const trans = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-top")).transitionDuration);
     parseFloat(trans) > 0 ? ok(`snap glide animated (${trans})`) : fail("no snap transition");
     // ANALOG amplitude: a mid-tilt parks the cap at ~the finger distance
     // (angle snapped, amplitude NOT) — 28px sits between dead (16.1) and
@@ -223,8 +223,8 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     });
     const labels = await page.evaluate(() =>
       [...document.querySelectorAll(".ml-pad-label")].map((l) => l.textContent));
-    // the WALK label went with the stick's move off the page (2026-09-19)
-    labels.join("+") === "Jump+Pick up" ? ok("JUMP/PICK UP labels mounted (the stick floats, no WALK label on the page)") : fail(`labels [${labels}]`);
+    // the WALK label is back over the page stick (maintainer 2026-09-20)
+    labels.join("+") === "Jump+Pick up+Walk" ? ok("JUMP/PICK UP/WALK labels mounted (the page stick is back on its mark)") : fail(`labels [${labels}]`);
     if (!jb) fail("jump button not mounted");
     else {
       await page.mouse.move(jb.x, jb.y);
@@ -368,7 +368,7 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
           beside: hit(s.l - 30, s.t + s.h / 2),
           above: hit(s.l + s.w / 2, s.t - 30),
         },
-        op: { well: getComputedStyle(q(".ml-pad-well")).opacity, cap: getComputedStyle(q(".ml-pad-top")).opacity },
+        op: { well: getComputedStyle(q(".ml-pad-stick .ml-pad-well")).opacity, cap: getComputedStyle(q(".ml-pad-stick .ml-pad-top")).opacity },
       };
     });
   const gh = await ghostGeom();
@@ -421,8 +421,8 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     await page.waitForTimeout(500);
     const held = await page.evaluate(() => ({
       keys: window.__ghostKeys.slice(),
-      well: getComputedStyle(document.querySelector(".ml-pad-well")).opacity,
-      cap: getComputedStyle(document.querySelector(".ml-pad-top")).opacity,
+      well: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-well")).opacity,
+      cap: getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-top")).opacity,
       tab: document.querySelector(".ml-tab.sel")?.dataset.tab,
     }));
     await page.mouse.up();
@@ -458,23 +458,56 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
       const p = page_.getBoundingClientRect();
       return { fx: (r.left + r.width / 2 - p.left) / page_.clientWidth, cy: r.top + r.height / 2, w: r.width };
     };
-    return { W: page_?.clientWidth ?? 0, jump: mid(".ml-pad-jump"), pick: mid(".ml-pad-pickup") };
+    return { W: page_?.clientWidth ?? 0, jump: mid(".ml-pad-jump"), pick: mid(".ml-pad-pickup"), stick: mid(".ml-pad-pagestick") };
   });
-  const WANT = { jump: 0.19, pick: 0.454 };
-  if (!spots.jump || !spots.pick) fail("gamepad page buttons not mounted for the placement check");
+  // THE PAGE STICK IS BACK ON HIS MARK (maintainer 2026-09-20: "I want it back
+  // on the same location as before"): three controls, three fractions, and
+  // the row's rhythm rule with them.
+  const WANT = { jump: 0.19, pick: 0.454, stick: 0.771 };
+  if (!spots.jump || !spots.pick || !spots.stick) fail(`gamepad page controls not mounted for the placement check (${JSON.stringify(spots)})`);
   else {
-    for (const k of ["jump", "pick"]) {
+    for (const k of ["jump", "pick", "stick"]) {
       const got = spots[k];
       const offCss = (got.fx - WANT[k]) * spots.W;
       Math.abs(offCss) <= 3
         ? ok(`${k} centred on his mark (${(got.fx * 100).toFixed(1)}% of ${spots.W}px, ${offCss >= 0 ? "+" : ""}${offCss.toFixed(1)}px)`)
         : fail(`${k} sits at ${(got.fx * 100).toFixed(1)}% of the page, his mark is ${(WANT[k] * 100).toFixed(1)}% — ${offCss.toFixed(1)}css px off`);
     }
-    const mL = spots.jump.fx * spots.W - spots.jump.w / 2;
-    mL >= 26 ? ok(`jump clear of the edge (margin ${mL.toFixed(1)})`) : fail(`jump crowds the screen edge: margin ${mL.toFixed(1)}`);
-    Math.abs(spots.jump.cy - spots.pick.cy) <= 1.5
-      ? ok(`jump and pick up share one centre row (y ${spots.jump.cy.toFixed(0)})`)
-      : fail(`jump and pick up are not on one row: y ${spots.jump.cy.toFixed(0)} / ${spots.pick.cy.toFixed(0)}`);
+    // …the RHYTHM: the two inner gaps equal within 2.5 css px, and neither
+    // outer margin tighter than 26 — the two ways this row goes lopsided.
+    const ed = (v) => [v.fx * spots.W - v.w / 2, v.fx * spots.W + v.w / 2];
+    const [jl, jr] = ed(spots.jump), [pl, pr] = ed(spots.pick), [sl, sr] = ed(spots.stick);
+    const gapJP = pl - jr, gapPS = sl - pr, mL = jl, mR = spots.W - sr;
+    const g = `gaps ${gapJP.toFixed(1)}/${gapPS.toFixed(1)}, margins ${mL.toFixed(1)}/${mR.toFixed(1)}`;
+    Math.abs(gapJP - gapPS) <= 2.5
+      ? ok(`the two inner gaps are even (${g})`)
+      : fail(`the row is lopsided: ${g} — the inner gaps differ by ${Math.abs(gapJP - gapPS).toFixed(1)}css px`);
+    Math.min(mL, mR) >= 26
+      ? ok(`both outer margins clear of the edge (${mL.toFixed(1)}/${mR.toFixed(1)})`)
+      : fail(`a control crowds the screen edge: margins ${mL.toFixed(1)}/${mR.toFixed(1)}`);
+    // …and all three share ONE row: he moved them sideways, never up or down.
+    const ys = [spots.jump.cy, spots.pick.cy, spots.stick.cy];
+    Math.max(...ys) - Math.min(...ys) <= 1.5
+      ? ok(`jump, pick up and the page stick share one centre row (y ${ys[0].toFixed(0)})`)
+      : fail(`the three controls are not on one row: y ${ys.map((y) => y.toFixed(0)).join(", ")}`);
+    // THE PAGE STICK IS OPAQUE, INSIDE THE PAGE, BESIDE ONE GHOST: the ghost
+    // alphas are scoped to .ml-pad-stick (two sticks, one input path).
+    const pageStick = await page.evaluate(() => {
+      const el = document.querySelector(".ml-pad-pagestick");
+      if (!el) return null;
+      const w = el.querySelector(".ml-pad-well"), c = el.querySelector(".ml-pad-top");
+      return { well: getComputedStyle(w).opacity, cap: getComputedStyle(c).opacity, parent: el.parentElement?.className ?? null, ghosts: document.querySelectorAll(".ml-pad-stick").length };
+    });
+    pageStick && pageStick.well === "1" && pageStick.cap === "1" && /ml-page/.test(pageStick.parent) && pageStick.ghosts === 1
+      ? ok(`the page stick is opaque and inside the page, beside ONE ghost (well ${pageStick.well}, cap ${pageStick.cap})`)
+      : fail(`page stick state: ${JSON.stringify(pageStick)}`);
+    const pageStickFx = () => page.evaluate(() => {
+      const page_ = document.querySelector('.ml-page[data-page="gamepad"]');
+      const el = document.querySelector(".ml-pad-pagestick");
+      if (!el || !page_) return null;
+      const r = el.getBoundingClientRect(), p = page_.getBoundingClientRect();
+      return { fx: (r.left + r.width / 2 - p.left) / page_.clientWidth, cy: r.top + r.height / 2 };
+    });
     // THE FINE-TUNE (maintainer 2026-09-19): an x/y nudge of ± half the
     // radius (30 at the 120 well), +x right and +y up, with the margin to the
     // view's edge floored at 0 — toward the corner a nudge can only spend the
@@ -495,6 +528,12 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     Math.abs(393 - n2.s.r) <= 1.5 && Math.abs(n2.hudTop - n2.s.b) <= 1.5
       ? ok("nudge (+30, -30) stops at the corner: margin 0, never outside the view")
       : fail(`nudge (+30,-30): r=${n2.s.r.toFixed(1)} want 393, b=${n2.s.b.toFixed(1)} want ${n2.hudTop.toFixed(0)}`);
+    // …and the fine-tune moves the GHOST ONLY (maintainer 2026-09-20: "that
+    // only applies to the analog thumbstick that is drawn on top of the game")
+    const ps = await pageStickFx();
+    ps && Math.abs(ps.fx - spots.stick.fx) * spots.W < 0.5 && Math.abs(ps.cy - spots.stick.cy) < 0.5
+      ? ok("…and the fine-tune moves the ghost only: the page stick stays on its mark")
+      : fail(`the page stick moved with the nudge: ${JSON.stringify(ps)} vs ${JSON.stringify(spots.stick)}`);
     const n3 = await nudge(-64, 64);
     Math.abs(393 - 40 - n3.s.r) <= 1.5 && Math.abs(n3.hudTop - 40 - n3.s.b) <= 1.5
       ? ok("a stored nudge past the half radius is clamped to it (30 at the 120 well)")
@@ -526,6 +565,10 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
       Math.abs(lefty - (1 - WANT.jump)) * spots.W <= 3
         ? ok(`left-handed mirrors jump to ${(lefty * 100).toFixed(1)}%`)
         : fail(`left-handed jump at ${(lefty * 100).toFixed(1)}%, want ${((1 - WANT.jump) * 100).toFixed(1)}%`);
+    const lps = await pageStickFx();
+    lps && Math.abs(lps.fx - (1 - WANT.stick)) * spots.W <= 3
+      ? ok(`…and the page stick to ${(lps.fx * 100).toFixed(1)}%`)
+      : fail(`left-handed page stick at ${lps && (lps.fx * 100).toFixed(1)}%, want ${((1 - WANT.stick) * 100).toFixed(1)}%`);
     const lgOpen = await ghostGeom();
     lgOpen.s && lgOpen.parent === "BODY" && Math.abs(lgOpen.s.l - 10) <= 1.5
       ? ok(`…and the floating stick to the bottom-left with the page open (l=${lgOpen.s.l.toFixed(1)})`)

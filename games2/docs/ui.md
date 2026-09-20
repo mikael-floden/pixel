@@ -225,10 +225,13 @@ GROWS BY"); this holds the mechanics and the numbers.
 - ICONS ARE NOT ROTATED (the "icons rotate 90°" ask described the
   locked-page mental model; a sideways backpack is not a backpack) — the
   gate pins transform:none.
-- GAMEPAD: the stick is REPARENTED TO `<body>` in BOTH orientations — usable
-  on EVERY tab, the gamepad tab included since 2026-09-19 (a HUD rebuild
-  clears strays) — floating in the game view's bottom corner on the thumb's
-  side (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
+- GAMEPAD: the ghost stick is REPARENTED TO `<body>` in BOTH orientations —
+  usable on EVERY tab, the gamepad tab included since 2026-09-19 (a HUD
+  rebuild clears strays) — floating in the game view's bottom corner on the
+  thumb's side; since 2026-09-20 the gamepad PAGE draws its own opaque stick
+  again in portrait at his mark (`STICK_FX` .771, the WALK label over it,
+  `.ml-pad-pagestick`), fixed there — the Settings fine-tune moves the ghost
+  only, and the two share one input path (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
   marked on two device screenshots; PORT_GHOST_INSET 10px in portrait, lifted
   to the chat log's line while the keyboard is up — `--ml-pad-bottom`), plus
   his fine-tune (controls.ts stickNudge; gamepad.ts stickNudgeRange = well/4

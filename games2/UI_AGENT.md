@@ -277,11 +277,24 @@ from the games agent), #18 (title/landing screen).
   the gamepad tab too ("ONLY show the player analog thumbstick over the game
   screen and not in the gamepad menu. We do this in landscape mode already …
   also be visible on top of game view when the player select the gamepad").
-  `gamepad.ts` `layout()`: the stick is ONE element parented to `<body>`
-  (`position:fixed`, z 4, blur disc under it) in both branches; the page holds
-  jump and pick up alone, at his marks (`JUMP_FX` .19, `PICK_FX` .454, one
-  row). The root class `ml-stickghost` is always on and carries the ghost
-  alphas (light .15/.25, dark .4/.5, 1/1 while held).
+  `gamepad.ts` `layout()`: the ghost is ONE element parented to `<body>`
+  (`position:fixed`, z 4, blur disc under it) in both branches. AND SINCE
+  2026-09-20 THE PAGE HAS ITS OWN STICK AGAIN IN PORTRAIT (maintainer: "I
+  know we removed the analog thumbstick from this page. I want it back on
+  the same location as before. And when the user change the analog
+  thumbstick location (in settings) that only applies to the analog
+  thumbstick that is drawn on top of the game"): `.ml-pad-pagestick`, the
+  same two parts, OPAQUE, at his mark (`STICK_FX` .771 on the buttons'
+  midline, the WALK label over it, mirrored for the left hand), hidden in
+  landscape where the page stacks the two buttons. TWO STICKS, ONE INPUT
+  PATH: `attach()` wires each with its own drag and cap, the keys they
+  synthesize are one set, and ONLY THE GHOST takes the fine-tune. Every
+  gate's `.ml-pad-stick` is the ghost, and the ghost alphas are scoped to
+  it. The root class `ml-stickghost` is always on and carries those alphas
+  (light .15/.25, dark .4/.5, 1/1 while held). `verify-gamepad` pins the
+  three-control row (fractions ±3 css px, even inner gaps, margins ≥ 26,
+  one centre row, the left-handed mirror), the page stick opaque inside
+  the page beside one ghost, and the page stick unmoved by a nudge.
   PORTRAIT PLACEMENT: the game view's bottom-right CORNER on the one 10px
   margin (`PORT_GHOST_INSET`, anchored in CSS to `--hud-h` like the chat
   overlay, so it rides the rail and the open sub-tab strip — and GLIDES with

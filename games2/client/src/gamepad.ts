@@ -57,11 +57,16 @@ const CAP_VISUAL_FRAC = 0.65;
 // 1080px-wide image as the crosses, so every number is a ratio inside one
 // picture; his marks land within 0.7 css px of these fractions. JUMP is on
 // his cross; PICK UP sits where the row's inner gaps were even while the
-// stick was still on the page (2026-09-17). The stick itself has no page
-// fraction any more: since 2026-09-19 it floats over the game view in
-// portrait too (PORT_GHOST_INSET), and the page keeps only these two.
+// stick was still on the page (2026-09-17). THE PAGE STICK IS BACK ON ITS
+// MARK (maintainer 2026-09-20: "I want it back on the same location as
+// before … The joystick we show in the portrait game-controller menu option
+// should always draw at the location we had on this page before"): STICK_FX
+// is that mark, and the page stick never takes the fine-tune — that moves
+// the ghost over the game view only. The row reads balanced when its two
+// INNER GAPS are equal (.771/.454 give 35.8/36.1 at the <585w widths).
 const JUMP_FX = 0.19;
 const PICK_FX = 0.454;
+const STICK_FX = 0.771;
 // LANDSCAPE ghost inset from the game view's corner, css px. The maintainer
 // marked the centre he wants in red on two device screenshots (2026-08-05):
 // ~257 DEVICE px in from the side edge AND from the bottom, "the margins
@@ -89,7 +94,9 @@ const LAND_INSET = 38;
 // 118 css up the screen, and he wanted it lower). Anchored in CSS to --hud-h
 // like the chat overlay, so it rides the rail — and the open sub-tab strip.
 // Left-handed mirrors to the bottom-left over the chat overlay (its lines are
-// pointer-events:none, as in landscape). One stick, never two.
+// pointer-events:none, as in landscape). The ghost is one stick; the page
+// stick on the gamepad page in portrait is the other (2026-09-20), fixed on
+// his mark, and only the ghost takes the fine-tune.
 const PORT_GHOST_INSET = 10;
 
 /** The well's diameter for this viewport: the big 148 from 585 css px wide,
@@ -159,7 +166,7 @@ export function mountGamepadStick(page: HTMLElement) {
   // A HUD rebuild (rejoin) hands us a FRESH page element; the landscape stick
   // may be parented to <body> (see layout) and would survive the old HUD's
   // removal as a zombie — clear any strays first.
-  document.querySelectorAll(".ml-pad-stick, .ml-pad-blur").forEach((e) => e.remove());
+  document.querySelectorAll(".ml-pad-stick, .ml-pad-blur, .ml-pad-pagestick").forEach((e) => e.remove());
   // The stick is a TRANSPARENT frame holding two painted parts: the WELL
   // (the basin) and the CAP (the inner ring). They must carry INDEPENDENT
   // alphas — the maintainer wants the cap read stronger than the well, and
@@ -171,6 +178,18 @@ export function mountGamepadStick(page: HTMLElement) {
   const top = mk("div", "ml-pad-top");
   pad.append(basin, top);
   page.appendChild(pad);
+
+  // ── THE PAGE STICK (maintainer 2026-09-20): a second stick, on the page in
+  // portrait at his old mark (STICK_FX), opaque, never nudged — the ghost
+  // above floats over the game view and takes the fine-tune; this one is
+  // where his thumb learned it. Its own class, so every gate's .ml-pad-stick
+  // is still the ghost. Hidden in landscape, where the page stacks jump and
+  // pick up and the ghost floats in the corner.
+  const pagePad = mk("div", "ml-pad-pagestick");
+  const pageBasin = mk("div", "ml-pad-well");
+  const pageTop = mk("div", "ml-pad-top");
+  pagePad.append(pageBasin, pageTop);
+  page.appendChild(pagePad);
 
   // ── the landscape ghost's BLUR DISC (maintainer 2026-08-05: "the same blur
   // you use for the other on-top-of-game-view UI boxes"). It has to be its
@@ -215,7 +234,9 @@ export function mountGamepadStick(page: HTMLElement) {
   });
   const pickupLabel = mk("div", "ml-pad-label");
   pickupLabel.textContent = "Pick up";
-  page.append(jumpLabel, pickupLabel);
+  const walkLabel = mk("div", "ml-pad-label"); // over the page stick (portrait)
+  walkLabel.textContent = "Walk";
+  page.append(jumpLabel, pickupLabel, walkLabel);
 
   // ── ONE-TIME HELP (maintainer 2026-08-05): tell new players the stick side
   // is theirs to choose. An absolute overlay chip at the top of the page, so
@@ -258,7 +279,7 @@ export function mountGamepadStick(page: HTMLElement) {
   // rotation reposition instantly.
   let lastHand: boolean | null = null;
   let animTimer = 0;
-  const controls = () => [pad, padBlur, jump, pickup, jumpLabel, pickupLabel];
+  const controls = () => [pad, padBlur, pagePad, jump, pickup, jumpLabel, pickupLabel, walkLabel];
   const armAnim = () => {
     for (const el of controls()) el.classList.add("anim");
     window.clearTimeout(animTimer);
@@ -266,13 +287,24 @@ export function mountGamepadStick(page: HTMLElement) {
       for (const el of controls()) el.classList.remove("anim");
     }, 350);
   };
+  const capAt = (el: HTMLElement, sector: number, radius: number) => {
+    const a = (sector * Math.PI) / 4;
+    const dx = sector < 0 ? 0 : Math.cos(a) * radius;
+    const dy = sector < 0 ? 0 : Math.sin(a) * radius;
+    el.style.transform = `translate(${dx}px, ${dy}px)`;
+  };
   const setCap = (sector: number, radiusCss: number) => {
     visSector = sector;
     visRadius = sector < 0 ? 0 : radiusCss;
-    const a = (sector * Math.PI) / 4;
-    const dx = sector < 0 ? 0 : Math.cos(a) * visRadius;
-    const dy = sector < 0 ? 0 : Math.sin(a) * visRadius;
-    top.style.transform = `translate(${dx}px, ${dy}px)`;
+    capAt(top, visSector, visRadius);
+  };
+  // the page stick's cap keeps its own state — two thumbs, two caps
+  let pageSector = -1;
+  let pageRadius = 0;
+  const setPageCap = (sector: number, radiusCss: number) => {
+    pageSector = sector;
+    pageRadius = sector < 0 ? 0 : radiusCss;
+    capAt(pageTop, pageSector, pageRadius);
   };
   const layout = () => {
     well = stickWell();
@@ -283,6 +315,9 @@ export function mountGamepadStick(page: HTMLElement) {
     pad.style.width = pad.style.height = `${well}px`;
     top.style.width = top.style.height = `${cap}px`;
     top.style.left = top.style.top = `${Math.round((well - cap) / 2)}px`;
+    pagePad.style.width = pagePad.style.height = `${well}px`;
+    pageTop.style.width = pageTop.style.height = `${cap}px`;
+    pageTop.style.left = pageTop.style.top = `${Math.round((well - cap) / 2)}px`;
     const cs = getComputedStyle(page);
     const padTop = parseFloat(cs.paddingTop) || 0;
     const padBot = parseFloat(cs.paddingBottom) || 0;
@@ -296,6 +331,7 @@ export function mountGamepadStick(page: HTMLElement) {
     const leftHand = getHand() === "left";
     const jumpFx = leftHand ? 1 - JUMP_FX : JUMP_FX;
     const pickFx = leftHand ? 1 - PICK_FX : PICK_FX;
+    const stickFx = leftHand ? 1 - STICK_FX : STICK_FX;
     const pickD = Math.round(jumpD * 0.72);
     const land = document.documentElement.classList.contains("ml-land");
     // glide only when HANDEDNESS changes and the page is actually visible —
@@ -342,6 +378,10 @@ export function mountGamepadStick(page: HTMLElement) {
       padBlur.style.display = "block";
       padBlur.style.width = padBlur.style.height = `${well}px`;
       for (const k of ["left", "top", "right", "bottom"] as const) padBlur.style[k] = pad.style[k];
+      // no page stick in landscape: the page stacks the two buttons and the
+      // ghost floats in the corner
+      pagePad.style.display = "none";
+      walkLabel.style.display = "none";
       // JUMP sits UNDER PICK UP (maintainer 2026-08-05) — a centred vertical
       // stack around the column's midline, label above each button. Page-
       // relative writes only while the page is VISIBLE: while it is
@@ -386,20 +426,27 @@ export function mountGamepadStick(page: HTMLElement) {
       padBlur.style.display = "block";
       padBlur.style.width = padBlur.style.height = `${well}px`;
       for (const k of ["left", "top", "right", "bottom"] as const) padBlur.style[k] = pad.style[k];
-      // JUMP and PICK UP stay on the page at his marks, one row, labels a
-      // fixed gap above the taller of the two. Page-relative writes only
-      // while the page is VISIBLE (display:none reads a 0 width).
+      // JUMP, PICK UP and THE PAGE STICK sit on the page at his marks, one
+      // row, labels a fixed gap above the taller of the three (the well).
+      // Page-relative writes only while the page is VISIBLE (display:none
+      // reads a 0 width). The page stick takes STICK_FX and nothing else —
+      // the fine-tune above is the ghost's alone.
+      pagePad.style.display = "";
+      walkLabel.style.display = "";
       if (vis) {
+        pagePad.style.left = `${Math.round(page.clientWidth * stickFx - well / 2)}px`;
+        pagePad.style.top = `${Math.round(midY - well / 2)}px`;
         jump.style.width = jump.style.height = `${jumpD}px`;
         jump.style.left = `${Math.round(page.clientWidth * jumpFx - jumpD / 2)}px`;
         jump.style.top = `${Math.round(midY - jumpD / 2)}px`;
         pickup.style.width = pickup.style.height = `${pickD}px`;
         pickup.style.left = `${Math.round(page.clientWidth * pickFx - pickD / 2)}px`;
         pickup.style.top = `${Math.round(midY - pickD / 2)}px`;
-        const labelY = Math.round(midY - jumpD / 2 - 10);
+        const labelY = Math.round(midY - well / 2 - 10);
         for (const [el, fx] of [
           [jumpLabel, jumpFx],
           [pickupLabel, pickFx],
+          [walkLabel, stickFx],
         ] as const) {
           el.style.left = `${Math.round(page.clientWidth * fx)}px`;
           el.style.top = `${labelY}px`;
@@ -407,6 +454,7 @@ export function mountGamepadStick(page: HTMLElement) {
       }
     }
     setCap(visSector, visRadius);
+    setPageCap(pageSector, pageRadius);
   };
   layout();
   // "ml-layout" — hud.ts applyLayout fires this AFTER it has published
@@ -439,47 +487,55 @@ export function mountGamepadStick(page: HTMLElement) {
       }
     }
   };
-  let dragging = false;
-  const apply = (ev: PointerEvent) => {
-    const r = pad.getBoundingClientRect();
-    const dx = ev.clientX - (r.left + r.width / 2);
-    const dy = ev.clientY - (r.top + r.height / 2);
-    const len = Math.hypot(dx, dy);
-    // the ANGLE keeps working at any finger distance — only the cap's drawn
-    // deflection is clamped. All thresholds are CSS px (the feel tier), so
-    // the art-to-CSS remake did not change what the finger does.
-    const max = maxCss;
-    const sector = len < max * DEAD_FRAC ? -1 : (Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8;
-    // amplitude → gait: a light tilt WALKS, past RUN_FRAC it RUNS
-    setKeys(sector, len >= max * RUN_FRAC);
-    // angle snapped, amplitude analog (clamped to the travel radius, drawn
-    // damped by CAP_VISUAL_FRAC); the SNAP_MS transition smooths both the
-    // octant glide and the radius
-    setCap(sector, Math.min(len, max) * CAP_VISUAL_FRAC);
+  // ONE INPUT PATH, TWO STICKS: the ghost and the page stick each own their
+  // drag and their cap; the keys they synthesize are one set (setKeys), so
+  // whichever thumb moved last is what the player does.
+  const attach = (el: HTMLElement, cap: (sector: number, radiusCss: number) => void) => {
+    let dragging = false;
+    const apply = (ev: PointerEvent) => {
+      const r = el.getBoundingClientRect();
+      const dx = ev.clientX - (r.left + r.width / 2);
+      const dy = ev.clientY - (r.top + r.height / 2);
+      const len = Math.hypot(dx, dy);
+      // the ANGLE keeps working at any finger distance — only the cap's drawn
+      // deflection is clamped. All thresholds are CSS px (the feel tier), so
+      // the art-to-CSS remake did not change what the finger does.
+      const max = maxCss;
+      const sector = len < max * DEAD_FRAC ? -1 : (Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8;
+      // amplitude → gait: a light tilt WALKS, past RUN_FRAC it RUNS
+      setKeys(sector, len >= max * RUN_FRAC);
+      // angle snapped, amplitude analog (clamped to the travel radius, drawn
+      // damped by CAP_VISUAL_FRAC); the SNAP_MS transition smooths both the
+      // octant glide and the radius
+      cap(sector, Math.min(len, max) * CAP_VISUAL_FRAC);
+    };
+    const release = () => {
+      if (!dragging) return;
+      dragging = false;
+      setKeys(-1, false);
+      cap(-1, 0); // glide back to centre
+      el.classList.remove("held"); // the ghost fades back to rest
+      gameAudio.event("ui.release");
+    };
+    el.addEventListener("pointerdown", (ev) => {
+      dragging = true;
+      el.setPointerCapture(ev.pointerId); // the finger may leave the well — keep it
+      // IN USE = fully visible (maintainer 2026-08-05): both parts of the
+      // ghost fade to 1 while the thumb holds it (their opacity transitions
+      // are always on). The page stick is opaque already.
+      el.classList.add("held");
+      gameAudio.event("ui.press");
+      apply(ev);
+    });
+    el.addEventListener("pointermove", (ev) => {
+      if (dragging) apply(ev);
+    });
+    el.addEventListener("pointerup", release);
+    el.addEventListener("pointercancel", release);
+    return release;
   };
-  const release = () => {
-    if (!dragging) return;
-    dragging = false;
-    setKeys(-1, false);
-    setCap(-1, 0); // glide back to centre
-    pad.classList.remove("held"); // the landscape ghost fades back to rest
-    gameAudio.event("ui.release");
-  };
-  pad.addEventListener("pointerdown", (ev) => {
-    dragging = true;
-    pad.setPointerCapture(ev.pointerId); // the finger may leave the well — keep it
-    // IN USE = fully visible (maintainer 2026-08-05): both parts of the
-    // landscape ghost fade to 1 while the thumb holds it (their opacity
-    // transitions are always on).
-    pad.classList.add("held");
-    gameAudio.event("ui.press");
-    apply(ev);
-  });
-  pad.addEventListener("pointermove", (ev) => {
-    if (dragging) apply(ev);
-  });
-  pad.addEventListener("pointerup", release);
-  pad.addEventListener("pointercancel", release);
+  const release = attach(pad, setCap);
+  const releasePage = attach(pagePad, setPageCap);
 
   let jumpHeld = false;
   const jumpDown = (ev: PointerEvent) => {
@@ -514,12 +570,14 @@ export function mountGamepadStick(page: HTMLElement) {
   // never leave keys stuck if the tab/page goes away mid-drag
   window.addEventListener("blur", () => {
     release();
+    releasePage();
     jumpUp();
     pickUp();
   });
   document.addEventListener("visibilitychange", () => {
     if (document.hidden) {
       release();
+      releasePage();
       jumpUp();
       pickUp();
     }
@@ -547,6 +605,13 @@ function injectStyles() {
     box-sizing:border-box;transition:none;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .ml-pad-stick.anim{transition:left .25s ease,top .25s ease}
+  /* THE PAGE STICK (maintainer 2026-09-20): the same two parts, inside the
+     gamepad page at his mark, OPAQUE — the ghost alphas below are scoped to
+     .ml-pad-stick and never reach it. It glides only on a hand flip (.anim). */
+  .ml-pad-pagestick{position:absolute;border-radius:50%;touch-action:none;cursor:pointer;
+    box-sizing:border-box;transition:none;
+    -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+  .ml-pad-pagestick.anim{transition:left .25s ease,top .25s ease}
   /* THE SUB-TAB SLIDE (maintainer 2026-09-20, Settings open in portrait:
      "the thumbstick doesn't animate up like the chat messages does. It
      directly snaps into a new position"): in portrait the stick and its disc
@@ -606,13 +671,13 @@ function injectStyles() {
      Dark is BOTH the explicit choice and the OS default, exactly like the
      theme tokens (theme.ts deletes data-theme when following the OS), so
      each dark rule needs its media twin. ── */
-  :root.ml-stickghost .ml-pad-well{opacity:.15}
-  :root.ml-stickghost .ml-pad-top{opacity:.25}
-  :root[data-theme="dark"].ml-stickghost .ml-pad-well{opacity:.4}
-  :root[data-theme="dark"].ml-stickghost .ml-pad-top{opacity:.5}
+  :root.ml-stickghost .ml-pad-stick .ml-pad-well{opacity:.15}
+  :root.ml-stickghost .ml-pad-stick .ml-pad-top{opacity:.25}
+  :root[data-theme="dark"].ml-stickghost .ml-pad-stick .ml-pad-well{opacity:.4}
+  :root[data-theme="dark"].ml-stickghost .ml-pad-stick .ml-pad-top{opacity:.5}
   @media (prefers-color-scheme:dark){
-    :root:not([data-theme]).ml-stickghost .ml-pad-well{opacity:.4}
-    :root:not([data-theme]).ml-stickghost .ml-pad-top{opacity:.5}
+    :root:not([data-theme]).ml-stickghost .ml-pad-stick .ml-pad-well{opacity:.4}
+    :root:not([data-theme]).ml-stickghost .ml-pad-stick .ml-pad-top{opacity:.5}
   }
   /* IN USE both parts go fully visible, whatever their rest alpha. The
      :root.ml-stickghost prefix is LOAD-BEARING: the dark rest rules above carry an
