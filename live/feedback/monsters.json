@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-20T13:07:31.270Z",
+  "updated_at": "2026-09-20T13:08:31.573Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -6816,14 +6816,14 @@
     "monsters/cobra#walk#south": {
       "rating": 3,
       "status": "approved",
-      "art": "68d08714712502da",
-      "updated_at": "2026-09-18T14:42:51.089Z"
+      "art": "8599613c373ca241",
+      "updated_at": "2026-09-20T13:08:04.755Z"
     },
     "monsters/cobra#walk#south-east": {
-      "rating": 3,
-      "status": "approved",
-      "art": "ad528db28e14262e",
-      "updated_at": "2026-09-18T14:42:53.719Z"
+      "status": "redo",
+      "art": "3da4626ecbee294e",
+      "updated_at": "2026-09-20T13:08:17.736Z",
+      "note": "Doesn't look like a snake walk"
     },
     "monsters/cobra#walk#east": {
       "rating": 3,
@@ -7004,6 +7004,12 @@
       "updated_at": "2026-09-20T13:07:16.121Z",
       "status": "redo",
       "art": "cf4e4b2ef384848a"
+    },
+    "monsters/cobra#walk#north": {
+      "status": "redo",
+      "art": "94512bd5443359a3",
+      "updated_at": "2026-09-20T13:08:30.984Z",
+      "note": "Doest look like a snake walk"
     }
   }
 }
