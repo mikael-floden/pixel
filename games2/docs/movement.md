@@ -170,36 +170,54 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   south wall, the way out is the door — "the nav try to navigate me out of
   the house" is the nav he knows — and holding every escape under the roof
   put a body that had slid to the corner there for good (2026-09-13). AND THE ROUTE IS WALKED
-  BEFORE IT IS TAKEN (`routeStallCell`): the nav layer answers per CELL —
-  some body position exists in it — and a cell can hold a body without
-  letting one THROUGH. Between the spawn house's cupboard and its table the
-  cell is open along its west edge and 20 wu wide at its middle, the body 18
-  across at its corners, so findPath threaded it, the follower stood on the
-  first step, the walk dropped the route and planned the same one every
-  window (253.1,303.7 walking NW: "I can't fit through and was hoping the
-  player would have tried to run around using the nav system, but it
-  doesn't"). So an escape is followed on the movement tick itself, on a
-  copy, for `ROUTE_PROVE_STEPS` (60 frames of 33 ms, 2 s): one that arrives,
-  or consumes a waypoint and keeps its follower's progress clock running, is
-  real; one the walk would drop names the cell its LEADING EDGE stood in
-  (one radius ahead toward the waypoint, where the probe refused — not the
-  waypoint's cell: a waypoint at the pinch's own centre counts as reached
-  from its mouth, and the next sits in the free cell beyond), `findPath`
-  keeps out of it (`avoid`, threaded through `startTrip`) and the goal is
-  planned once more — the route that comes back goes round the table
-  (replayed: round it and 3.7 cells on within the hold). THE DROP AND THE
-  PROOF SHARE ONE CLOCK: a committed route with no progress toward its
-  waypoint for `ROUTE_STALL_MS` (250 ms, the follower's own
-  `progress.t`: 2 wu closer) is dropped — a stand or a dither alike — and
-  the proof fails a route by the same clock, so what it passes is what the
-  walk would keep. Not `bodyStalled`: its 0.08 s probe jumped a rect's
-  diagonal tip that the 33 ms frame did not (measured beside a south-facing
-  table: 0 wu at 0.033 and 0.05, 2.8 at 0.08) and kept a body that stood 45
-  frames on a route. TRAP: the probes are points at the substep's end, so a
-  frame the phone does not run at can still disagree with the proof at such
-  a tip; the walk's own drop then re-plans from the spot (synthetic pinches
-  of two small pieces, 378 placements: 357 round within 4 s). Gate: the
-  pinch in `server/test/sceneryslide.test.ts`. Replayed on the real grid: out of the pocket in under
+  BEFORE IT IS TAKEN (`routeStallCell`, `startProvenTrip`). THE NAV LAYER
+  ANSWERS PASSAGE, NOT ONLY PRESENCE (2026-09-20): a nav position is one the
+  body may STAND in — the bake's body (`PLAYER_RADIUS` + `NAV_SLACK_WU` 2)
+  clear of the footprints and outside a wall's standoff (`standoffAt`; his
+  297.7,199.4, where the route ran along the house wall through 299,198 and
+  every free position there hugged the wall the rescue pushes a body off);
+  a footprint thinner than the body and twice as long (`NAV_THIN_HALF_WU`,
+  `NAV_THIN_RATIO`: a rail, a fence, a cupboard — not a table, a barrel or a
+  tree) closes the cells its axis runs through, because a cell a rail cuts
+  keeps both corners and a body never gets from one to the other; and
+  `findPath` refuses a step across an edge, or a diagonal through a corner,
+  that holds no body position (`navPassBits`, lazy per cell — the whole map
+  is 350 ms against a 75 ms stamp — with the rescue's own body and
+  `NAV_PASS_TOL_WU` 3 of tolerance: the movement is soft at the skin, and
+  the brazier's pocket, 1.4 wu short, is walked). Measured on the_game:
+  1,401 cells closed by the union alone, 1,523 now. What the cells cannot
+  say, the walk does — a cell can hold a body without letting one THROUGH
+  (between the spawn house's cupboard and its table, 253.1,303.7, 2026-09-13:
+  findPath threaded it, the follower stood, the walk planned the same route
+  every window). So a route is followed on a copy for `ROUTE_PROVE_STEPS`
+  (60 frames of 33 ms) before it is taken — the stick's escape in its own
+  frame, a TAP in the client's frame for a trip (the tap floor's slide, the
+  rescue, its gait; `startBestTrip`, `TAP_PROVE_TRIES` 4 within
+  `TAP_PROVE_BUDGET_MS` 8 on the device's clock, since a search at its node
+  cap costs 77 ms): one that arrives, or consumes a waypoint and keeps its
+  progress clock running, is real; one the walk would drop — no 2 wu of
+  progress toward the waypoint for `ROUTE_STALL_MS` 250, or, for a tap, no
+  `ROUTE_NET_WU` of net movement in `ROUTE_NET_MS` (a dither makes slow fake
+  progress on the waypoint clock; his east-west at the fence covered 5 wu a
+  second) — names the STEP it was taking (its cell into the waypoint's: a
+  rail on the boundary closes no cell) and the CELL its leading edge stood
+  in when that is another cell; the planner keeps out of both (`avoid`,
+  `avoidSteps`) and plans once more. THE FOLLOWER'S STALL IS THE SAME RULE
+  (`stepAutopilot`): 1.5 s without progress or the dither names the step
+  and the cell, the trip carries the sets, and the re-plan is walked before
+  it is taken too, `ROUTE_REPLANS` 3 in all (one re-plan of the same route
+  was the old rule, and it planned the same route); a stall in the
+  waypoint's own cell with nothing to name passes the waypoint. Every
+  waypoint stands OUT of the footprints, inside its cell (`offFootprints`:
+  the barrel at 296.25,199.25 held a waypoint 17 wu from where the body
+  could reach, and the trip died circling it). Replayed on the real grid
+  (his two reports, 2026-09-20): the pocket's tap plans the way round the
+  house at once and arrives in 7 s, the fence's goes round the rail's end
+  in 3 s — nine targets each, no frozen frame; a tap costs 8 ms planned and
+  proven against 4 bare. Gates: `server/test/navtap.test.ts` (the standoff
+  cell against a doorway and a hop-able ledge, the pinch by the passage
+  layer and by the proof, a pinch beyond the proof's reach, the rail, the
+  real grid), the pinch in `server/test/sceneryslide.test.ts`. Replayed on the real grid: out of the pocket in under
   six seconds (the slide to the corner is most of it, the escalation a tenth
   of a second after); the brazier at 240.5,265.3 rounded east-then-north;
   square on the tables at 252.8,303.5 and 300.1,195.1 the body is round them

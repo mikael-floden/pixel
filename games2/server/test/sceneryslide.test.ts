@@ -126,7 +126,9 @@ test("the table faces south: its sides are the map's diagonals and it fills no n
   assert.equal(fp.n, 1);
   assert.equal(fp.rect[0], 1);
   assert.ok(Math.abs(fp.rsin[0]) < 1e-9, "south: no ground turn, the sides follow the screen axes");
-  assert.equal(g.blocked.filter(Boolean).length, 0, "the table blocks no nav cell — cellSolid could never have seen it");
+  // At most its middle cell: the bake keeps NAV_SLACK_WU to spare, so a table
+  // 52 px across fills one. The walk's rules never read it (below).
+  assert.ok(g.blocked.filter(Boolean).length <= 1, `the table fills at most one nav cell (${g.blocked.filter(Boolean).length})`);
   const p = touching(g);
   // An axis probe against a diagonal side glides along it, so no axis is ever
   // refused: the wall rules have nothing to rule on, square on or at 45.
@@ -222,10 +224,12 @@ test("a nav-open cell the body cannot fit through: the escape is walked before i
   // refused by the proof, the cell is taken out, and the route round is taken.
   // (Without the proof — the tree before it — the same hold ends at x 14.5,
   // the follower dithering at the pinch for the whole 3 s.)
-  // (90 ticks: the goal is 2 cells on and the honest walk then carries on west;
-  // a longer hold reaches the world's margin and stands there.)
-  const r = hold(g, p, -1, -1, 90, true);
-  assert.ok(r.x / CELL_WU < 13.5, `round the pieces within 3 s (x ${(r.x / CELL_WU).toFixed(2)})`);
+  // (120 ticks: the goal is 2 cells on and the honest walk then carries on
+  // west; a longer hold reaches the world's margin and stands there. The
+  // cupboard is thin, so the cell under its west half is closed and the way
+  // round is a cell longer than it was.)
+  const r = hold(g, p, -1, -1, 120, true);
+  assert.ok(r.x / CELL_WU < 13.5, `round the pieces within 4 s (x ${(r.x / CELL_WU).toFixed(2)})`);
   assert.ok(r.frozen < 10, `stands only for the window before the escape (${r.frozen} ticks)`);
   assert.ok(r.deflected > 0, "the route did it");
   // The planner itself: the proof's re-plan keeps the route out of the pinch cell.

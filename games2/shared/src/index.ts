@@ -1458,6 +1458,13 @@ export interface TerrainGrid {
    *  wall, and indoor.ts must keep telling the two apart. Absent on worlds with
    *  no scenery. Exactly `blocked && !propBlocked`. */
   sceneryBlocked?: boolean[];
+  /** THE NAV LAYER ANSWERS PASSAGE, NOT ONLY PRESENCE — per cell, three bits
+   *  (NAV_PASS_E, NAV_PASS_S, NAV_PASS_C): its east edge, its south edge and
+   *  its south-east corner hold no body position, so the step across is
+   *  refused whatever the cells say. See stampSceneryCollision, pass 4. */
+  navPass?: Uint8Array;
+  /** Which cells of `navPass` have been read (navPassBits fills lazily). */
+  navPassDone?: Uint8Array;
   /** THE COLLISION TRUTH: the scenery footprint ELLIPSES themselves, kept as
    *  drawn (centre in CELLS, semi-axes in SCREEN px) plus a per-cell bucket
    *  index. `blocked` above is derived FROM this; movement collides with this.
@@ -3525,11 +3532,20 @@ export function clearanceAdjust(
      * can never reach, which is the fly-at-a-window grind this exists to stop.
      * Two passes here as above, because pushing off one footprint can land the
      * point inside its neighbour. */
+    ({ x, y } = offFootprints(grid, x, y, margin, 1));
+  }
+  return { x, y };
+}
+
+/** A point pushed out of the footprints a body of `margin` at it would
+ *  overlap, along the ellipse's own normal (footprintContact) — `passes`
+ *  times, since leaving one footprint can land in its neighbour. */
+export function offFootprints(grid: TerrainGrid, x: number, y: number, margin: number, passes = 2): { x: number; y: number } {
+  for (let pass = 0; pass < passes; pass++) {
     const hit = footprintContact(grid, x, y, margin);
-    if (hit) {
-      x += hit.nx * hit.depth;
-      y += hit.ny * hit.depth;
-    }
+    if (!hit) break;
+    x += hit.nx * hit.depth;
+    y += hit.ny * hit.depth;
   }
   return { x, y };
 }
@@ -3557,6 +3573,12 @@ export function findPath(
      *  planner has WALKED and found the body does not fit through, whatever
      *  the nav layer says (see routeStallCell). */
     avoid?: Set<number>;
+    /** STEPS this search may not take — `from * cells + to`, both cell indices
+     *  — what the walk found the body does not fit through at a boundary: a
+     *  rail along a cell's edge or diagonal closes no cell, and the body's
+     *  leading edge stands in its own cell, so a cell is not what to name.
+     *  His fence at 303.7,199.7 (maintainer 2026-09-20). */
+    avoidSteps?: Set<number>;
     /** THE FARTHEST POINT ALONG THE ASK when the goal cannot be reached: the
      *  explored node with the most progress along the world direction
      *  (ux,uy) from the start — at least `min` and at most `max` cells on,
@@ -3618,8 +3640,22 @@ export function findPath(
     bc >= 0 && br >= 0 && bc < W && br < H && inBandX(bc) && inBandY(br);
   const elevOf = (i: number, layer: number) => (layer === 1 ? grid.deck[i] : grid.level[i]);
   const avoid = opts?.avoid;
+  const avoidSteps = opts?.avoidSteps;
+  const cellsN = W * H;
+  // The passage bits (stampSceneryCollision, pass 4): a cardinal step reads
+  // the shared edge, a diagonal the shared corner. A grid without scenery has
+  // none and every step passes, as before.
+  const lazyPass = !!grid.navPass;
+  const passOk = (ac: number, ar: number, bc: number, br: number): boolean => {
+    if (!lazyPass) return true;
+    if (br === ar) return !(navPassBits(grid, Math.min(ac, bc), ar) & NAV_PASS_E);
+    if (bc === ac) return !(navPassBits(grid, ac, Math.min(ar, br)) & NAV_PASS_S);
+    return !(navPassBits(grid, Math.min(ac, bc), Math.min(ar, br)) & NAV_PASS_C);
+  };
   const reach = (elev: number, ac: number, ar: number, bc: number, br: number) =>
-    inBand(bc, br) && !avoid?.has(br * W + bc) ? stepReach(grid, elev, ac, ar, bc, br, canSwim) : [];
+    inBand(bc, br) && !avoid?.has(br * W + bc) && !avoidSteps?.has((ar * W + ac) * cellsN + (br * W + bc)) && passOk(ac, ar, bc, br)
+      ? stepReach(grid, elev, ac, ar, bc, br, canSwim)
+      : [];
   // A DIAGONAL needs both flanking cardinals walk-reachable (the round body
   // can't squeeze a corner past a wall) AND near this level: a walk surface
   // into (bc,br) that is NOT a real drop below here (within WALK_CLIMB). A
@@ -3912,7 +3948,17 @@ export function findPath(
   for (const n of cells) {
     const c = n % W;
     const r = (n - c) / W;
-    pts.push(nudged(c, r));
+    /* AND OUT OF THE FOOTPRINTS. A cell the bake calls open can hold its
+     * centre inside an ellipse (the barrel at 296.25,199.25 leaves its cell
+     * open along the east side): the follower circled 17 wu from a waypoint
+     * it could never reach and the trip died in the waypoint's own cell
+     * (maintainer 2026-09-20, the pocket at 297.7,199.4). The same push the
+     * tapped point gets, at the body's own margin — kept INSIDE the cell like
+     * the wall nudge: pushed clean out of it, a waypoint beside his fence's
+     * end landed where the body could not follow and the trip died there. */
+    const q = nudged(c, r);
+    const o = offFootprints(grid, q.x, q.y, PLAYER_RADIUS + 2);
+    pts.push({ x: clamp(o.x, c * CELL_WU + 4, (c + 1) * CELL_WU - 4), y: clamp(o.y, r * CELL_WU + 4, (r + 1) * CELL_WU - 4) });
   }
   // Each waypoint's surface level, from the LAYER the search actually used —
   // `cells` is cell-only, so walk the sid chain again for the layers.
@@ -4017,7 +4063,22 @@ export interface AutopilotTrip {
    * (maintainer 2026-08-08: "the player walks to a spot that is under the
    * target-nav-symbol"). */
   endLevel?: number;
-  repathed: boolean; // one re-route per trip when progress stalls
+  repathed: boolean; // set by the first stall re-plan (its old readers); the count is `replans`
+  /** Stall re-plans spent on this trip, ROUTE_REPLANS at most. */
+  replans?: number;
+  /** Cells the route may not enter (findPath's `avoid`): the ones the body was
+   *  walked at and did not fit through. The tap's proof (startBestTrip) fills
+   *  it, the follower's stall (stepAutopilot) adds to it, every re-plan reads
+   *  it — so a pinch found is a pinch kept out of, for the whole trip. */
+  avoid?: Set<number>;
+  /** Steps the route may not take (findPath's `avoidSteps`), named the same way. */
+  avoidSteps?: Set<number>;
+  /** NET PROGRESS: the last position the body was ROUTE_NET_WU away from, and
+   *  when. A dither makes slow fake progress on the waypoint clock (each leg
+   *  dips the distance a couple of wu), so a body that has not got
+   *  ROUTE_NET_WU from its mark in ROUTE_NET_MS is stalled whatever that clock
+   *  says. */
+  mark?: { x: number; y: number; t: number };
   progress: { d: number; t: number }; // best waypoint distance so far + when
   lastPos: { x: number; y: number } | null; // last step's position (segment sweep)
   /** Committed detour heading while the direct heading is body-blocked.
@@ -4147,7 +4208,7 @@ export function startBestTrip(
   for (let ci = 0; ci < candidates.length; ci++) {
     const { x: toX, y: toY, goalLevel } = candidates[ci];
     const isDrawn = ci === 0;
-    const trip = startTrip(grid, fromX, fromY, toX, toY, run, nowMs, fromElev, goalLevel);
+    const trip = startProvenTrip(grid, fromX, fromY, toX, toY, run, nowMs, fromElev, goalLevel);
     if (!trip) continue;
     const arrived =
       goalLevel === undefined || trip.endLevel === undefined
@@ -5052,6 +5113,110 @@ const ROUTE_PROVE_DT = 0.033;
  *  frames. The proof fails a route by the same clock, so what it passes is
  *  what the walk would keep. */
 const ROUTE_STALL_MS = 250;
+/** Stall re-plans a trip may spend (stepAutopilot), each keeping out of the
+ *  cell the body stood at: three pinches along one route are a long way round
+ *  already, and a fourth is the walk's own drop. */
+const ROUTE_REPLANS = 3;
+/** Re-plans a tap's proof may spend before the route is taken as it is
+ *  (startProvenTrip): each walks ROUTE_PROVE_STEPS, ~1-3 ms on the phone. */
+const TAP_PROVE_TRIES = 4;
+/** The proof's time budget per tap, on the device's own clock: a search that
+ *  runs to its node cap costs 77 ms here (a tap into open sea), and five of
+ *  them would freeze a phone; past the budget the route is taken as it is and
+ *  the follower's own stall re-plan is the fallback. */
+const TAP_PROVE_BUDGET_MS = 8;
+/** NET PROGRESS: a route whose body has not got ROUTE_NET_WU (half a cell)
+ *  from where it was ROUTE_NET_MS ago is stalled — a stand or a dither alike.
+ *  A slide along a wall at a quarter of a walk covers 30 wu a second and
+ *  passes; his east-west dither at the fence covered 5. */
+const ROUTE_NET_WU = CELL_WU / 2;
+const ROUTE_NET_MS = 1000;
+
+/** What a stalled walk names for the planner: the STEP it was taking (the
+ *  body's cell into the waypoint's — a rail along the boundary), and the CELL
+ *  its leading edge stood in when that is another cell (a pinch inside the
+ *  next cell). Nothing when the waypoint is in the body's own cell: the body
+ *  is there, pinned a width short, which is the follower's arrival. */
+interface StallNames { step: number | null; cell: number | null; lead: number }
+function stallNames(grid: TerrainGrid, x: number, y: number, wp: { x: number; y: number }): StallNames {
+  const W = grid.width;
+  const from = Math.floor(y / CELL_WU) * W + Math.floor(x / CELL_WU);
+  const to = Math.floor(wp.y / CELL_WU) * W + Math.floor(wp.x / CELL_WU);
+  const lead = leadingCell(grid, x, y, wp);
+  return { step: to !== from ? from * (W * grid.height) + to : null, cell: lead !== from ? lead : null, lead };
+}
+/** Marks the trip's net-progress mark; true when the body has been stalled
+ *  by it (no ROUTE_NET_WU of net movement in ROUTE_NET_MS). */
+function netStalled(trip: { mark?: { x: number; y: number; t: number } }, x: number, y: number, nowMs: number): boolean {
+  const m = trip.mark;
+  if (!m || Math.hypot(x - m.x, y - m.y) >= ROUTE_NET_WU) {
+    trip.mark = { x, y, t: nowMs };
+    return false;
+  }
+  return nowMs - m.t >= ROUTE_NET_MS;
+}
+
+/** The cell the body's LEADING EDGE stands in toward `wp` — one radius ahead,
+ *  where the probe refused (row * width + col). Not the waypoint's cell: a
+ *  waypoint at a pinch's own centre counts as reached from its mouth, and the
+ *  next sits in the free cell beyond. What a walked route names for the planner
+ *  to keep out of (routeStallCell, the follower's stall). */
+function leadingCell(grid: TerrainGrid, x: number, y: number, wp: { x: number; y: number }): number {
+  const l = Math.hypot(wp.x - x, wp.y - y);
+  const ax = l > 1e-9 ? x + ((wp.x - x) / l) * PLAYER_RADIUS : wp.x;
+  const ay = l > 1e-9 ? y + ((wp.y - y) / l) * PLAYER_RADIUS : wp.y;
+  return Math.floor(ay / CELL_WU) * grid.width + Math.floor(ax / CELL_WU);
+}
+
+/** A TAP'S ROUTE IS WALKED BEFORE IT IS TAKEN, like the stick's escape has
+ *  been since 2026-09-13 (routeStallCell) — the tap trip never was, and its
+ *  one stall re-plan planned the same route (maintainer 2026-09-20, 303.2,198.6
+ *  tapping the path past the fence: a rail closes no cell, findPath ran
+ *  through it, and the follower "changed direction back and forth" at it for
+ *  3 s and gave up). The route is followed on a copy; one the walk would drop
+ *  names the cell the body stood at, the planner keeps out of it (`avoid`)
+ *  and plans once more, TAP_PROVE_TRIES times at most; the cells ride on the
+ *  trip for the follower's own stall. Replayed at his spot: round the rail's
+ *  end and on the path in under 4 s. */
+function startProvenTrip(
+  grid: TerrainGrid | null,
+  fromX: number,
+  fromY: number,
+  toX: number,
+  toY: number,
+  run: boolean,
+  nowMs: number,
+  fromElev: number | undefined,
+  goalLevel: number | undefined,
+): AutopilotTrip | null {
+  const t0 = performance.now();
+  const avoid = new Set<number>();
+  const avoidSteps = new Set<number>();
+  for (let attempt = 0; ; attempt++) {
+    const trip = startTrip(grid, fromX, fromY, toX, toY, run, nowMs, fromElev, goalLevel, undefined, undefined, avoid, undefined, avoidSteps);
+    if (!trip || !grid || attempt >= TAP_PROVE_TRIES || performance.now() - t0 > TAP_PROVE_BUDGET_MS) return trip;
+    if (proveRoute(grid, trip, fromX, fromY, nowMs, fromElev, avoid, avoidSteps)) return trip;
+  }
+}
+/** Walks `trip` from (x,y) (routeStall): true when it walks, or stalls at
+ *  something with no name; otherwise the names go into the sets and the
+ *  caller plans again. */
+function proveRoute(
+  grid: TerrainGrid,
+  trip: AutopilotTrip,
+  x: number,
+  y: number,
+  nowMs: number,
+  fromElev: number | undefined,
+  avoid: Set<number>,
+  avoidSteps: Set<number>,
+): boolean {
+  const stood = routeStall(grid, trip, x, y, nowMs, fromElev);
+  if (!stood || (stood.step === null && stood.cell === null)) return true;
+  if (stood.step !== null) avoidSteps.add(stood.step);
+  if (stood.cell !== null) avoid.add(stood.cell);
+  return false;
+}
 
 /** THE ROUTE IS WALKED BEFORE IT IS TAKEN. The nav layer answers per CELL —
  *  "some body position exists in it" — and a cell can hold a body without
@@ -5086,8 +5251,26 @@ function routeStallCell(
   nowMs: number,
   fromElev: number | undefined,
 ): number {
+  const s = routeStall(grid, trip, x, y, nowMs, fromElev, "escape");
+  return s ? s.lead : -1;
+}
+/** The walked proof itself: null when the route walks, else what the stalled
+ *  walk names (stallNames) toward the waypoint it stood short of. Two frames:
+ *  the ESCAPE's (walkHeading's route: the follower and the step, at a walk —
+ *  its contract since 2026-09-13) and the TAP's (WorldScene's frame for a
+ *  trip: the tap floor's slide, the rescue, the trip's own gait, and a
+ *  dither counted as a stall). */
+function routeStall(
+  grid: TerrainGrid,
+  trip: AutopilotTrip,
+  x: number,
+  y: number,
+  nowMs: number,
+  fromElev: number | undefined,
+  frame: "escape" | "tap" = "tap",
+): StallNames | null {
   const first = trip.path[0];
-  if (!first) return -1;
+  if (!first) return null;
   const sim: AutopilotTrip = {
     ...trip,
     target: { ...trip.target },
@@ -5095,6 +5278,10 @@ function routeStallCell(
     progress: { ...trip.progress },
     lastPos: null,
     steer: null,
+    mark: undefined,
+    // The proof names a stall; it never re-plans inside itself (a nested
+    // proof per stall would walk 60 frames per level).
+    replans: ROUTE_REPLANS,
   };
   const walk = { maxClimb: WALK_CLIMB, canSwim: true };
   const ge = fromElev === undefined ? undefined : () => fromElev;
@@ -5107,23 +5294,44 @@ function routeStallCell(
   let px = x;
   let py = y;
   let t = nowMs;
-  // The cell the body's leading edge stands in, toward `wp`.
-  const stoodAt = (wp: { x: number; y: number }) => {
-    const l = Math.hypot(wp.x - px, wp.y - py);
-    const ax = l > 1e-9 ? px + ((wp.x - px) / l) * PLAYER_RADIUS : wp.x;
-    const ay = l > 1e-9 ? py + ((wp.y - py) / l) * PLAYER_RADIUS : wp.y;
-    return Math.floor(ay / CELL_WU) * grid.width + Math.floor(ax / CELL_WU);
-  };
+  const stoodAt = (wp: { x: number; y: number }) => stallNames(grid, px, py, wp);
+  const net = { mark: undefined as { x: number; y: number; t: number } | undefined };
+  /* THE PROOF'S FRAME IS THE CLIENT'S FRAME: the follower, the tap floor's
+   * slide, the rescue, the step at the trip's own gait (WorldScene's tick for
+   * a trip). A walk without the rescue passed the first route out of his
+   * pocket, which the real body — pushed off the house wall every tick —
+   * dithered on for 2.5 s before the stall re-plan. */
+  const memo: SlideMemo = { ax: 0, ay: 0 };
+  const tap = frame === "tap";
   for (let i = 0; i < ROUTE_PROVE_STEPS; i++) {
     t += dt * 1000;
+    // The proof's stall rules run BEFORE the follower's own, which would
+    // otherwise spend the sim's re-plans on the same tick.
+    if (t - sim.progress.t >= ROUTE_STALL_MS || (tap && netStalled(net, px, py, t))) return stoodAt(sim.path[0] ?? sim.target);
     const d = stepAutopilot(grid, sim, px, py, t, W, H, fromElev);
-    if (d.done) return -1;
-    if (t - sim.progress.t >= ROUTE_STALL_MS) return stoodAt(sim.path[0] ?? sim.target);
-    const m = stepMovement(px, py, d.ax, d.ay, false, dt, fwd, 1, true, W, H, sideB);
+    if (d.done) return sim.path.length <= 1 ? null : stoodAt(sim.path[0]);
+    let ax = d.ax;
+    let ay = d.ay;
+    if (tap) {
+      if ((ax !== 0 || ay !== 0) && bodyStalled(grid, px, py, ax, ay, fromElev)) {
+        const sl = slideAlong(grid, px, py, ax, ay, memo, fromElev);
+        if (sl) {
+          ax = sl.ax;
+          ay = sl.ay;
+        }
+      } else {
+        memo.ax = 0;
+        memo.ay = 0;
+      }
+      const u = unstickFromSolids(grid, px, py, 80 * dt, undefined, fromElev);
+      px = u.x;
+      py = u.y;
+    }
+    const m = stepMovement(px, py, ax, ay, tap && d.running, dt, fwd, 1, true, W, H, sideB);
     px = m.x;
     py = m.y;
   }
-  return sim.path.length < n0 ? -1 : stoodAt(first);
+  return sim.path.length < n0 ? null : stoodAt(first);
 }
 
 /** How far AGAINST the stick an escape route may reach, in TILES: the exit
@@ -5270,6 +5478,8 @@ export function startTrip(
   // cells the body was walked at and did not fit through.
   avoid?: Set<number>,
   progress?: { ux: number; uy: number; min: number; max: number; lateral: number; back: number },
+  // Steps the route may not take (findPath's `avoidSteps`): the tap's proof's.
+  avoidSteps?: Set<number>,
 ): AutopilotTrip | null {
   const path = grid
     ? (findPath(grid, fromX, fromY, toX, toY, {
@@ -5279,6 +5489,7 @@ export function startTrip(
         ...(canSwim === undefined ? {} : { canSwim }),
         ...(avoid ? { avoid } : {}),
         ...(progress ? { progress } : {}),
+        ...(avoidSteps ? { avoidSteps } : {}),
       }) ?? [])
     : [{ x: toX, y: toY }];
   if (path.length === 0) return null;
@@ -5293,6 +5504,8 @@ export function startTrip(
     lastPos: null,
     steer: null,
     slow: false,
+    ...(avoid ? { avoid } : {}),
+    ...(avoidSteps ? { avoidSteps } : {}),
   };
 }
 
@@ -5398,19 +5611,56 @@ export function stepAutopilot(
   // Stall detection is per-WAYPOINT (euclid distance to the final target can
   // legitimately grow during a detour). One stall → re-plan from here (the
   // route may be stale); a second → give up.
-  if (dist < trip.progress.d - 2) trip.progress = { d: dist, t: nowMs };
-  else if (nowMs - trip.progress.t > 1500) {
-    // Pinned but essentially there (collision holds us a body-width short,
-    // e.g. a nudged target still snug between props): that's an arrival.
-    if (Math.hypot(t.x - x, t.y - y) < CELL_WU * 1.25) return AUTOPILOT_IDLE;
-    if (!trip.repathed && grid) {
-      trip.repathed = true;
-      trip.path = findPath(grid, x, y, t.x, t.y, { fromElev, goalLevel: trip.goalLevel }) ?? [];
+  const dithering = netStalled(trip, x, y, nowMs);
+  if (dist < trip.progress.d - 2 && !dithering) trip.progress = { d: dist, t: nowMs };
+  else if (nowMs - trip.progress.t > 1500 || dithering) {
+    /* A STALL NAMES THE CELL THE BODY DOES NOT FIT THROUGH — the one its
+     * leading edge stands in toward the waypoint, where the probe refused
+     * (leadingCell, the walked proof's rule) — and the route is planned again
+     * without it, ROUTE_REPLANS times at most; the cells stay on the trip. One
+     * re-plan of the same route was the old rule, and it planned the same
+     * route (maintainer 2026-09-20, the fence at 303.7,199.7: back and forth
+     * at the rail for 3 s, then the trip dropped). "Pinned but essentially
+     * there" (collision holding the body a width short of a target snug
+     * between props) is still an arrival — once no re-plan is left, or none
+     * finds a way: a target a body-width past a rail is reached round it. */
+    const replans = trip.replans ?? (trip.repathed ? 1 : 0);
+    const names = grid ? stallNames(grid, x, y, wp) : null;
+    if (grid && names && names.step === null && names.cell === null && trip.path.length > 1) {
+      /* STALLED IN THE WAYPOINT'S OWN CELL, short of a point the body cannot
+       * reach: the waypoint is passed and the next is aimed at. There is no
+       * step or cell to name here, and giving the trip up a cell from its
+       * route was the fly at the window one more way. */
+      trip.path.shift();
       trip.progress = { d: Infinity, t: nowMs };
+      trip.mark = { x, y, t: nowMs };
+      trip.steer = null;
+    } else if (grid && names && (names.step !== null || names.cell !== null) && replans < ROUTE_REPLANS) {
+      const avoid = trip.avoid ?? (trip.avoid = new Set<number>());
+      const avoidSteps = trip.avoidSteps ?? (trip.avoidSteps = new Set<number>());
+      if (names.cell !== null) avoid.add(names.cell);
+      if (names.step !== null) avoidSteps.add(names.step);
+      trip.replans = replans + 1;
+      trip.repathed = true;
+      /* AND THE NEW ROUTE IS WALKED BEFORE IT IS TAKEN, like the tap's: a rail
+       * crossed by three cells' steps cost three stalls of a second each
+       * before (his pocket's tap ended a cell and a half short at the fence,
+       * its re-plans spent), and one proof names them all. */
+      const t0 = performance.now();
+      let path: { x: number; y: number; lvl?: number }[] = [];
+      for (let attempt = 0; ; attempt++) {
+        path = findPath(grid, x, y, t.x, t.y, { fromElev, goalLevel: trip.goalLevel, avoid, avoidSteps }) ?? [];
+        if (path.length === 0 || attempt >= TAP_PROVE_TRIES || performance.now() - t0 > TAP_PROVE_BUDGET_MS) break;
+        const probe: AutopilotTrip = { ...trip, path, progress: { d: Infinity, t: nowMs }, lastPos: null, steer: null, mark: undefined };
+        if (proveRoute(grid, probe, x, y, nowMs, fromElev, avoid, avoidSteps)) break;
+      }
+      trip.path = path;
+      trip.progress = { d: Infinity, t: nowMs };
+      trip.mark = { x, y, t: nowMs };
       trip.steer = null;
       if (trip.path.length === 0) return AUTOPILOT_IDLE;
     } else {
-      return AUTOPILOT_IDLE; // truly blocked (wall/prop/water edge)
+      return AUTOPILOT_IDLE; // there, or truly blocked (wall/prop/water edge)
     }
   }
   // Blocked-aware 8-way steering. "Open" is decided by simulating a REAL
@@ -6247,6 +6497,8 @@ export function stampSceneryCollision(
   for (let i = 0; i < cells; i++) grid.blocked[i] = grid.propBlocked[i];
   grid.footprints = undefined;
   grid.sceneryBlocked = undefined;
+  grid.navPass = undefined;
+  grid.navPassDone = undefined;
   if (!bbox?.boxes || !bbox.pieces || !hitbox) return 0;
 
   /* PASS 1 — READ THE ELLIPSES OUT OF THE ART. Unchanged arithmetic; only the
@@ -6543,10 +6795,13 @@ export function stampSceneryCollision(
    *
    * Sampled on a lattice, coarse then refined where the coarse pass cannot
    * prove the answer — see navCellOpen for the density and the error it
-   * accepts. Measured on the_game: 13,442 candidate cells of 262,144, of which
-   * 2,568 come out blocked against the 3,185 the old raster produced. The nav
-   * layer comes out SMALLER, which is the point: a footprint blocks a cell only
-   * when it really fills it. */
+   * accepts. A legal position is one the body may STAND in: the bake's body
+   * (PLAYER_RADIUS + NAV_SLACK_WU) clear of every footprint and outside a
+   * wall's standoff (standoffAt). Measured on the_game 2026-09-20 (1,419
+   * footprints): 1,401 cells closed by the union alone, 1,523 with the
+   * standoff, the slack and the thin axes (pass 3b) — against the 3,185 the
+   * old raster produced. The nav layer comes out SMALLER, which is the point:
+   * a footprint blocks a cell only when it really fills it. */
   const nav = new Array<boolean>(cells).fill(false);
   const seen = new Uint8Array(cells);
   let blocked = 0;
@@ -6564,8 +6819,158 @@ export function stampSceneryCollision(
       }
     }
   }
+  /* PASS 3b — A THIN FOOTPRINT'S AXIS IS A WALL between the cells it runs
+   * through. A rail cuts a cell corner to corner and leaves both corners free,
+   * so the cell is open and its edges are open, each from its own side — and
+   * a body can never get from one side to the other inside it. The union
+   * question has no cell-sized answer for a line; the line's is: a footprint
+   * thinner than the body (NAV_THIN_HALF_WU across its minor axis) and at least
+   * NAV_THIN_RATIO longer than wide closes every cell its major axis passes
+   * through, on its own floor. Fences, rails, cupboards; not tables (as thick
+   * as the body), barrels or trees (round). His fence: three cells, and the
+   * route goes round the rail's end. */
+  for (let j = 0; j < n; j++) {
+    const alongX = fp.p[j] >= fp.q[j]; // the major axis: the frame's X or its Y
+    const major = alongX ? fp.p[j] : fp.q[j];
+    const minor = alongX ? fp.q[j] : fp.p[j];
+    if (!(minor * CELL_WU < NAV_THIN_HALF_WU && major >= minor * NAV_THIN_RATIO)) continue;
+    // The major axis in world cells: the frame's X (screen-horizontal, the
+    // world diagonal (1,-1)) or its Y (the diagonal (1,1)), turned by the
+    // box's own ground turn.
+    const ux = alongX ? (fp.rcos[j] + fp.rsin[j]) / Math.SQRT2 : (fp.rcos[j] - fp.rsin[j]) / Math.SQRT2;
+    const uy = alongX ? (fp.rsin[j] - fp.rcos[j]) / Math.SQRT2 : (fp.rsin[j] + fp.rcos[j]) / Math.SQRT2;
+    const steps = Math.max(2, Math.ceil((2 * major) / NAV_AXIS_STEP));
+    for (let k = 0; k < steps; k++) {
+      const f = -major + 2 * major * ((k + 0.5) / steps);
+      const c = Math.floor(fp.cx[j] + ux * f);
+      const r = Math.floor(fp.cy[j] + uy * f);
+      if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
+      const i = r * grid.width + c;
+      if (grid.propBlocked[i] || nav[i]) continue;
+      if (Math.abs(grid.level[i] - fp.lvl[j]) > FOOTPRINT_LEVEL_SLACK) continue; // another floor: a cave under a lid
+      nav[i] = true;
+      grid.blocked[i] = true;
+      blocked++;
+    }
+  }
   grid.sceneryBlocked = nav;
+  /* PASS 4 — PASSAGE, LAZILY: the bits are read per cell the first time a
+   * search asks (navPassBits, from findPath). Baked whole they cost 27,000
+   * cells x 19 probes, 500 ms of a stamp that was 30 (measured); a search
+   * touches hundreds. The tables live as long as the stamp. */
+  grid.navPass = new Uint8Array(cells);
+  grid.navPassDone = new Uint8Array(cells);
   return blocked;
+}
+
+/** THE NAV LAYER ANSWERS PASSAGE, NOT ONLY PRESENCE. A cell a rail crosses
+ *  keeps its far corners, so it is open, and a body in it can never get
+ *  THROUGH it: findPath crossed his fence at three cells and the follower
+ *  changed direction back and forth at the rail (maintainer 2026-09-20,
+ *  303.2,198.6). So a cell near a footprint also answers for its east edge,
+ *  its south edge and its south-east corner: no body position anywhere on that
+ *  edge (NAV_EDGE_SAMPLES every 4 wu, refined to the wu where a sample is
+ *  barely covered; the RESCUE's body, PLAYER_RADIUS, past NAV_PASS_TOL_WU)
+ *  closes the step across it in both directions; the corner point closes both
+ *  diagonals through it. Only where the footprint index reaches the cell or
+ *  its east/south neighbours; elsewhere every step passes. LAZY: filled the
+ *  first time a search asks (findPath's passOk), because a search touches
+ *  hundreds of cells and the whole map is 1,602 east edges, 1,604 south
+ *  edges and 4,955 corners over 27,000 cells — 350 ms, against a stamp of
+ *  30 ms before and 75 ms now (the standoff, the slack, the thin axes). */
+export function navPassBits(grid: TerrainGrid, c: number, r: number): number {
+  const i = r * grid.width + c;
+  const pass = grid.navPass;
+  if (!pass || !grid.navPassDone) return 0;
+  if (grid.navPassDone[i]) return pass[i];
+  const fp = grid.footprints;
+  let b = 0;
+  // Only the cells a footprint's reach touches can close anything: the
+  // bucket index answers for the cell and its east/south neighbours.
+  const near = (cc: number, rr: number) => !!fp && cc < grid.width && rr < grid.height && fp.start[rr * grid.width + cc + 1] > fp.start[rr * grid.width + cc];
+  if (near(c, r) || near(c + 1, r) || near(c, r + 1) || near(c + 1, r + 1)) {
+    const lvl = grid.level[i];
+    const walls = wallsInBlock(grid, c - 1, r - 1, c + 2, r + 2, lvl);
+    const x1 = (c + 1) * CELL_WU;
+    const y1 = (r + 1) * CELL_WU;
+    if (c + 1 < grid.width && !navEdgeOpen(grid, x1, r * CELL_WU, 0, CELL_WU, lvl, walls)) b |= NAV_PASS_E;
+    if (r + 1 < grid.height && !navEdgeOpen(grid, c * CELL_WU, y1, CELL_WU, 0, lvl, walls)) b |= NAV_PASS_S;
+    if (c + 1 < grid.width && r + 1 < grid.height && !navPointOpen(grid, x1, y1, lvl, walls)) b |= NAV_PASS_C;
+  }
+  pass[i] = b;
+  grid.navPassDone[i] = 1;
+  return b;
+}
+
+/** A thin footprint (pass 3b): its minor semi-axis under this, in wu, and its
+ *  major at least NAV_THIN_RATIO times the minor. The rail is 6.8 wu by 37,
+ *  the cupboard 9.7 by 21; the table 12.2 by 18 and the barrel 10.7 by 15
+ *  are not thin. */
+const NAV_THIN_HALF_WU = PLAYER_RADIUS * 0.9;
+const NAV_THIN_RATIO = 2;
+/** Along the axis, the cells are taken every quarter cell. */
+const NAV_AXIS_STEP = 0.25;
+/** The passage bits of `TerrainGrid.navPass`. */
+export const NAV_PASS_E = 1;
+export const NAV_PASS_S = 2;
+export const NAV_PASS_C = 4;
+/** Samples along one cell edge, both corners included: every 4 wu of the 32,
+ *  refined to 1 wu around a sample that is barely covered (navEdgeOpen). */
+const NAV_EDGE_SAMPLES = 9;
+const NAV_EDGE_STEP = CELL_WU / (NAV_EDGE_SAMPLES - 1);
+/** How deep a point is inside what the nav layer forbids — the deepest of
+ *  the footprints (the RESCUE's body, PLAYER_RADIUS: the passage tests ask
+ *  what the movement enforces, with no slack — a corridor exactly a body
+ *  wide is one the body walks) and the wall standoff — or <= 0 when it is a
+ *  body position. A LOWER bound: every point within that much of it is
+ *  forbidden too (moving a point by d moves its distance to a shape by at
+ *  most d), which is what lets an edge be settled from a few samples. */
+function navPointDepth(grid: TerrainGrid, x: number, y: number, lvl: number, walls: boolean): number {
+  let d = footprintDepth(grid, x, y, PLAYER_RADIUS, lvl);
+  if (!walls) return d;
+  const c0 = Math.floor(x / CELL_WU);
+  const r0 = Math.floor(y / CELL_WU);
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dc === 0 && dr === 0) continue;
+      const c = c0 + dc;
+      const r = r0 + dr;
+      if (!cellWallFrom(grid, c, r, lvl)) continue;
+      const nx = clamp(x, c * CELL_WU, (c + 1) * CELL_WU);
+      const ny = clamp(y, r * CELL_WU, (r + 1) * CELL_WU);
+      const inside = WALL_STANDOFF - Math.hypot(x - nx, y - ny);
+      if (inside > d) d = inside;
+    }
+  }
+  return d;
+}
+/** THE PASSAGE TESTS TOLERATE THE OVERLAP THE RESCUE RESOLVES. The movement
+ *  is soft at a body's edge: a corridor a hair narrower than the standoff plus
+ *  the body — the brazier in its pocket, 1.4 wu short — is walked, the rescue
+ *  nudging each tick; the geometry alone would seal it. A point no deeper than
+ *  this inside what the nav forbids still passes. */
+const NAV_PASS_TOL_WU = 3;
+/** A body position for the passage tests. */
+function navPointOpen(grid: TerrainGrid, x: number, y: number, lvl: number, walls: boolean): boolean {
+  return navPointDepth(grid, x, y, lvl, walls) <= NAV_PASS_TOL_WU;
+}
+/** Does ANY point of the edge from (x0,y0) along (dx,dy) hold a body? Coarse
+ *  every 4 wu; a sample covered by less than half the spacing cannot vouch
+ *  for its neighbourhood, so the wu around it are read one by one. */
+function navEdgeOpen(grid: TerrainGrid, x0: number, y0: number, dx: number, dy: number, lvl: number, walls: boolean): boolean {
+  const ux = dx / CELL_WU;
+  const uy = dy / CELL_WU;
+  for (let k = 0; k < NAV_EDGE_SAMPLES; k++) {
+    const f = k / (NAV_EDGE_SAMPLES - 1);
+    const d = navPointDepth(grid, x0 + dx * f, y0 + dy * f, lvl, walls) - NAV_PASS_TOL_WU;
+    if (d <= 0) return true;
+    if (d >= NAV_EDGE_STEP / 2) continue; // covers to the next sample either way
+    for (let w = 1; w < NAV_EDGE_STEP; w++) {
+      if (k > 0 && navPointOpen(grid, x0 + dx * f - ux * w, y0 + dy * f - uy * w, lvl, walls)) return true;
+      if (k < NAV_EDGE_SAMPLES - 1 && navPointOpen(grid, x0 + dx * f + ux * w, y0 + dy * f + uy * w, lvl, walls)) return true;
+    }
+  }
+  return false;
 }
 
 /**
@@ -6592,6 +6997,7 @@ export function stampSceneryCollision(
 function navCellOpen(grid: TerrainGrid, col: number, row: number): boolean {
   const step = CELL_WU / NAV_COARSE;
   const lvl = grid.level[row * grid.width + col]; // the nav layer is the BASE surface
+  const walls = wallsInBlock(grid, col - 1, row - 1, col + 1, row + 1, lvl);
 
   const cover = step * Math.SQRT1_2; // half-diagonal of one coarse tile
   const x0 = col * CELL_WU;
@@ -6599,8 +7005,10 @@ function navCellOpen(grid: TerrainGrid, col: number, row: number): boolean {
   let needy = 0;
   for (let a = 0; a < NAV_COARSE; a++) {
     for (let b = 0; b < NAV_COARSE; b++) {
-      const d = footprintDepth(grid, x0 + (b + 0.5) * step, y0 + (a + 0.5) * step, PLAYER_RADIUS, lvl);
-      if (d <= 0) return true; // a legal body position, proved
+      const sx = x0 + (b + 0.5) * step;
+      const sy = y0 + (a + 0.5) * step;
+      const d = footprintDepth(grid, sx, sy, PLAYER_RADIUS + NAV_SLACK_WU, lvl);
+      if (d <= 0 && !(walls && standoffAt(grid, sx, sy, lvl))) return true; // a legal body position, proved
       if (d < cover) _needyTiles[needy++] = a * NAV_COARSE + b;
     }
   }
@@ -6613,7 +7021,7 @@ function navCellOpen(grid: TerrainGrid, col: number, row: number): boolean {
       for (let b = 0; b < NAV_SUB; b++) {
         const x = x0 + tb * step + (b + 0.5) * sub;
         const y = y0 + ta * step + (a + 0.5) * sub;
-        if (footprintDepth(grid, x, y, PLAYER_RADIUS, lvl) <= 0) return true; // open, barely
+        if (footprintDepth(grid, x, y, PLAYER_RADIUS + NAV_SLACK_WU, lvl) <= 0 && !(walls && standoffAt(grid, x, y, lvl))) return true; // open, barely
       }
     }
   }
@@ -6622,6 +7030,47 @@ function navCellOpen(grid: TerrainGrid, col: number, row: number): boolean {
 /** Scratch for navCellOpen — the bake visits ~13k cells and this saves an array
  *  allocation on every one of them. */
 const _needyTiles = new Int32Array(NAV_COARSE * NAV_COARSE);
+/** Is a wall face (cellWallFrom, at `lvl`) anywhere in the block of cells
+ *  (c0..c1, r0..r1)? A standoff reaches a point only from the point's own
+ *  cell's eight neighbours, so a block that holds no face lets every sample
+ *  in it skip the scan — most cells near a footprint do. */
+function wallsInBlock(grid: TerrainGrid, c0: number, r0: number, c1: number, r1: number, lvl: number): boolean {
+  for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) if (cellWallFrom(grid, c, r, lvl)) return true;
+  return false;
+}
+/** THE BAKE'S BODY HAS ITS OWN LATTICE PITCH TO SPARE. A position a hair off
+ *  an ellipse is one the follower cannot hold — its steps are 4-6 wu and its
+ *  headings eight — so a cell whose only free positions are a sliver narrower
+ *  than the fine lattice is no cell to route through: his fence's cell
+ *  303,199 kept 6 of 256 positions on a 2 wu lattice, the route threaded it
+ *  and the body crawled into the rail. */
+const NAV_SLACK_WU = 2;
+
+/** A LEGAL BODY POSITION IS ONE THE BODY MAY STAND IN. Within WALL_STANDOFF of
+ *  a face it cannot get onto (`cellWallFrom`, the rescue's own predicate) the
+ *  rescue pushes a body off every tick (`unstickFromSolids`), so a point there
+ *  is no body position, whatever the ellipses leave free — and a cell whose
+ *  free samples all lie there holds no body. Maintainer 2026-09-20, 297.7,199.4
+ *  beside the house: the route ran along the wall through 299,198, whose 23
+ *  free samples every one hugged the wall within 12 wu, and the body was run
+ *  into the lantern post and stood. Only the WALL's standoff: a solid cell's
+ *  clearance is findPath's own (`nearSolid`). */
+function standoffAt(grid: TerrainGrid, x: number, y: number, lvl: number): boolean {
+  const c0 = Math.floor(x / CELL_WU);
+  const r0 = Math.floor(y / CELL_WU);
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      if (dc === 0 && dr === 0) continue;
+      const c = c0 + dc;
+      const r = r0 + dr;
+      if (!cellWallFrom(grid, c, r, lvl)) continue;
+      const nx = clamp(x, c * CELL_WU, (c + 1) * CELL_WU);
+      const ny = clamp(y, r * CELL_WU, (r + 1) * CELL_WU);
+      if (Math.hypot(x - nx, y - ny) < WALL_STANDOFF) return true;
+    }
+  }
+  return false;
+}
 
 /* -- THE DEEP-SEA CURRENT ----------------------------------------------------
  * Deep water is the END OF THE WORLD, and the maintainer's call (2026-08-29) is
