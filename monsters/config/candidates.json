@@ -279,25 +279,6 @@
    "attack_simple": "Wing Slash - Sweeps one wing forward and down in one fast hard slash, a white swoosh arc following the wing edge"
   },
   {
-   "id": "spider_queen",
-   "name": "Broodmother",
-   "tier": "boss",
-   "scale": "big",
-   "template_id": "bear",
-   "size": 240,
-   "biome": [
-    "dark_mud",
-    "black_rock"
-   ],
-   "items": [],
-   "prompt": "Gigantic fantasy spider queen with a bloated black abdomen covered in pale egg sacs, eight short thick armored legs folded tightly beneath her body, a crown of bone spikes, eight glowing violet eyes, and huge dripping fangs.",
-   "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper.",
-   "attack_action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs",
-   "claws": true,
-   "attack_extreme": "Fang Plunge - The queen rears up to full height on her back legs and plunges down, fangs and front legs stabbing",
-   "die_action": "Death - The Broodmother shrivels and shrinks rapidly down into a small ordinary spider that curls its legs up on the ground where she stood, then fades away"
-  },
-  {
    "id": "crystal_titan",
    "name": "Prismfather",
    "tier": "boss",
@@ -4516,6 +4497,33 @@
    "attack_extreme": "Stone Burst - The mite's rocky shell splits with a burst as it launches itself forward, stone shards flying",
    "die_action": "Death - Cracks apart into a small pile of loose pebbles on the ground and fades away",
    "graduated_at": "2026-09-20T13:24:58+00:00",
+   "takes": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry_v1",
+    "attack": "attack_v3",
+    "die": "die_v1"
+   }
+  },
+  {
+   "id": "spider_queen",
+   "name": "Broodmother",
+   "tier": "boss",
+   "scale": "big",
+   "template_id": "bear",
+   "size": 240,
+   "biome": [
+    "dark_mud",
+    "black_rock"
+   ],
+   "items": [],
+   "prompt": "Gigantic fantasy spider queen with a bloated black abdomen covered in pale egg sacs, eight short thick armored legs folded tightly beneath her body, a crown of bone spikes, eight glowing violet eyes, and huge dripping fangs.",
+   "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper.",
+   "attack_action": "Fang Stab - Rears high on her back legs and stabs down with fangs and front legs",
+   "claws": true,
+   "attack_extreme": "Fang Plunge - The queen rears up to full height on her back legs and plunges down, fangs and front legs stabbing",
+   "die_action": "Death - The Broodmother shrivels and shrinks rapidly down into a small ordinary spider that curls its legs up on the ground where she stood, then fades away",
+   "graduated_at": "2026-09-20T18:55:59+00:00",
    "takes": {
     "idle": "idle",
     "walk": "walk",

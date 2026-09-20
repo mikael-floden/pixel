@@ -1,0 +1,613 @@
+{
+  "id": "spider_queen",
+  "name": "Broodmother",
+  "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "7adc3e9d-b204-4b47-b2da-35a10264340a",
+    "url": "https://www.pixellab.ai/create-character/7adc3e9d-b204-4b47-b2da-35a10264340a",
+    "prompt": "Gigantic fantasy spider queen with a bloated black abdomen covered in pale egg sacs, eight short thick armored legs folded tightly beneath her body, a crown of bone spikes, eight glowing violet eyes, and huge dripping fangs, grim menacing expression, dark fantasy, imposing, no cartoon grin, no drop shadow on the ground.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 240,
+    "height": 240
+  },
+  "native_size": {
+    "width": 240,
+    "height": 240
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "spider_queen/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "spider_queen/rotations/south.webp",
+    "west": "spider_queen/rotations/west.webp",
+    "east": "spider_queen/rotations/east.webp",
+    "north": "spider_queen/rotations/north.webp",
+    "south-east": "spider_queen/rotations/south-east.webp",
+    "north-east": "spider_queen/rotations/north-east.webp",
+    "north-west": "spider_queen/rotations/north-west.webp",
+    "south-west": "spider_queen/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "a73458f1-9f1b-4ee5-8d80-2b65374b58cb",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "spider_queen/animations/angry__east.webp",
+          "frame_paths": [
+            "spider_queen/animations/angry/east/00.webp",
+            "spider_queen/animations/angry/east/01.webp",
+            "spider_queen/animations/angry/east/02.webp",
+            "spider_queen/animations/angry/east/03.webp",
+            "spider_queen/animations/angry/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:04 GMT",
+          "src_frames": 5,
+          "sub": "1352a14c-f67d-4ea3-ae58-627d5b7a43fa"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "spider_queen/animations/angry__north.webp",
+          "frame_paths": [
+            "spider_queen/animations/angry/north/00.webp",
+            "spider_queen/animations/angry/north/01.webp",
+            "spider_queen/animations/angry/north/02.webp",
+            "spider_queen/animations/angry/north/03.webp",
+            "spider_queen/animations/angry/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:06 GMT",
+          "src_frames": 5,
+          "sub": "0f6bcd85-038e-4dc1-a69f-462154ea77c6"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "spider_queen/animations/angry__north-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/angry/north-east/00.webp",
+            "spider_queen/animations/angry/north-east/01.webp",
+            "spider_queen/animations/angry/north-east/02.webp",
+            "spider_queen/animations/angry/north-east/03.webp",
+            "spider_queen/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:07 GMT",
+          "src_frames": 5,
+          "sub": "4ff689da-27be-4466-9265-abcca9ed5e00"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "spider_queen/animations/angry__south.webp",
+          "frame_paths": [
+            "spider_queen/animations/angry/south/00.webp",
+            "spider_queen/animations/angry/south/01.webp",
+            "spider_queen/animations/angry/south/02.webp",
+            "spider_queen/animations/angry/south/03.webp",
+            "spider_queen/animations/angry/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:08 GMT",
+          "src_frames": 5,
+          "sub": "eff08bc5-5ff4-4dc7-a472-75c1daf6e7f7"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "spider_queen/animations/angry__south-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/angry/south-east/00.webp",
+            "spider_queen/animations/angry/south-east/01.webp",
+            "spider_queen/animations/angry/south-east/02.webp",
+            "spider_queen/animations/angry/south-east/03.webp",
+            "spider_queen/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:10 GMT",
+          "src_frames": 5,
+          "sub": "b0f33737-a414-4832-a288-6fe6dd91bfc9"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "spider_queen/animations/angry__south-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/angry/south-west/00.webp",
+            "spider_queen/animations/angry/south-west/01.webp",
+            "spider_queen/animations/angry/south-west/02.webp",
+            "spider_queen/animations/angry/south-west/03.webp",
+            "spider_queen/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "spider_queen/animations/angry__west.webp",
+          "frame_paths": [
+            "spider_queen/animations/angry/west/00.webp",
+            "spider_queen/animations/angry/west/01.webp",
+            "spider_queen/animations/angry/west/02.webp",
+            "spider_queen/animations/angry/west/03.webp",
+            "spider_queen/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "spider_queen/animations/angry__north-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/angry/north-west/00.webp",
+            "spider_queen/animations/angry/north-west/01.webp",
+            "spider_queen/animations/angry/north-west/02.webp",
+            "spider_queen/animations/angry/north-west/03.webp",
+            "spider_queen/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "b6639c4f-3498-4e99-8b64-10f815fa9bf8",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "spider_queen/animations/idle__east.webp",
+          "frame_paths": [
+            "spider_queen/animations/idle/east/00.webp",
+            "spider_queen/animations/idle/east/01.webp",
+            "spider_queen/animations/idle/east/02.webp",
+            "spider_queen/animations/idle/east/03.webp",
+            "spider_queen/animations/idle/east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:12 GMT",
+          "src_frames": 5,
+          "sub": "238400b4-d669-4ab9-b344-a5ca34d0b453"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "spider_queen/animations/idle__north.webp",
+          "frame_paths": [
+            "spider_queen/animations/idle/north/00.webp",
+            "spider_queen/animations/idle/north/01.webp",
+            "spider_queen/animations/idle/north/02.webp",
+            "spider_queen/animations/idle/north/03.webp",
+            "spider_queen/animations/idle/north/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:13 GMT",
+          "src_frames": 5,
+          "sub": "ef51836a-b9da-497f-8a06-8866e57576a1"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "spider_queen/animations/idle__north-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/idle/north-east/00.webp",
+            "spider_queen/animations/idle/north-east/01.webp",
+            "spider_queen/animations/idle/north-east/02.webp",
+            "spider_queen/animations/idle/north-east/03.webp",
+            "spider_queen/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:14 GMT",
+          "src_frames": 5,
+          "sub": "aa267fb3-fd0c-4c2c-9df8-23c4dcdd2558"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "spider_queen/animations/idle__south.webp",
+          "frame_paths": [
+            "spider_queen/animations/idle/south/00.webp",
+            "spider_queen/animations/idle/south/01.webp",
+            "spider_queen/animations/idle/south/02.webp",
+            "spider_queen/animations/idle/south/03.webp",
+            "spider_queen/animations/idle/south/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:16 GMT",
+          "src_frames": 5,
+          "sub": "837fb0fa-3692-417b-a355-f86294460f46"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "spider_queen/animations/idle__south-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/idle/south-east/00.webp",
+            "spider_queen/animations/idle/south-east/01.webp",
+            "spider_queen/animations/idle/south-east/02.webp",
+            "spider_queen/animations/idle/south-east/03.webp",
+            "spider_queen/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:17 GMT",
+          "src_frames": 5,
+          "sub": "61a84bdf-f2a2-4c64-8af8-300417d7b9d6"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "spider_queen/animations/idle__south-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/idle/south-west/00.webp",
+            "spider_queen/animations/idle/south-west/01.webp",
+            "spider_queen/animations/idle/south-west/02.webp",
+            "spider_queen/animations/idle/south-west/03.webp",
+            "spider_queen/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "spider_queen/animations/idle__west.webp",
+          "frame_paths": [
+            "spider_queen/animations/idle/west/00.webp",
+            "spider_queen/animations/idle/west/01.webp",
+            "spider_queen/animations/idle/west/02.webp",
+            "spider_queen/animations/idle/west/03.webp",
+            "spider_queen/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "spider_queen/animations/idle__north-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/idle/north-west/00.webp",
+            "spider_queen/animations/idle/north-west/01.webp",
+            "spider_queen/animations/idle/north-west/02.webp",
+            "spider_queen/animations/idle/north-west/03.webp",
+            "spider_queen/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "6697c294-09f9-4bf2-97a5-4042a1ec6c96",
+      "source_name": "custom-Death - The Broodmother shrivels and shrinks rapid",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "spider_queen/animations/die__east.webp",
+          "frame_paths": [
+            "spider_queen/animations/die/east/00.webp",
+            "spider_queen/animations/die/east/01.webp",
+            "spider_queen/animations/die/east/02.webp",
+            "spider_queen/animations/die/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 17:28:45 GMT",
+          "src_frames": 4,
+          "sub": "c3ca026d-f8c4-4402-9ccc-725998f184bd"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "spider_queen/animations/die__north.webp",
+          "frame_paths": [
+            "spider_queen/animations/die/north/00.webp",
+            "spider_queen/animations/die/north/01.webp",
+            "spider_queen/animations/die/north/02.webp",
+            "spider_queen/animations/die/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 17:28:47 GMT",
+          "src_frames": 4,
+          "sub": "4e0b7543-ab91-47c8-afc5-aa7908789137"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "spider_queen/animations/die__north-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/die/north-east/00.webp",
+            "spider_queen/animations/die/north-east/01.webp",
+            "spider_queen/animations/die/north-east/02.webp",
+            "spider_queen/animations/die/north-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 17:28:46 GMT",
+          "src_frames": 4,
+          "sub": "63463f96-de63-4076-9db1-72dd17b94a34"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "spider_queen/animations/die__south.webp",
+          "frame_paths": [
+            "spider_queen/animations/die/south/00.webp",
+            "spider_queen/animations/die/south/01.webp",
+            "spider_queen/animations/die/south/02.webp",
+            "spider_queen/animations/die/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 17:28:42 GMT",
+          "src_frames": 4,
+          "sub": "5866fe13-7f06-4f25-88cd-d426dad4afbf"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "spider_queen/animations/die__south-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/die/south-east/00.webp",
+            "spider_queen/animations/die/south-east/01.webp",
+            "spider_queen/animations/die/south-east/02.webp",
+            "spider_queen/animations/die/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 17:28:43 GMT",
+          "src_frames": 4,
+          "sub": "52761929-0cd7-42b4-b997-0237511bbebe"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "spider_queen/animations/die__south-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/die/south-west/00.webp",
+            "spider_queen/animations/die/south-west/01.webp",
+            "spider_queen/animations/die/south-west/02.webp",
+            "spider_queen/animations/die/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "spider_queen/animations/die__west.webp",
+          "frame_paths": [
+            "spider_queen/animations/die/west/00.webp",
+            "spider_queen/animations/die/west/01.webp",
+            "spider_queen/animations/die/west/02.webp",
+            "spider_queen/animations/die/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "spider_queen/animations/die__north-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/die/north-west/00.webp",
+            "spider_queen/animations/die/north-west/01.webp",
+            "spider_queen/animations/die/north-west/02.webp",
+            "spider_queen/animations/die/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "73faab77-8d18-452d-a666-1fcf5dec5d29",
+      "source_name": "custom-Fang Stab - Rears high on her back legs and stabs ",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "spider_queen/animations/attack__east.webp",
+          "frame_paths": [
+            "spider_queen/animations/attack/east/00.webp",
+            "spider_queen/animations/attack/east/01.webp",
+            "spider_queen/animations/attack/east/02.webp",
+            "spider_queen/animations/attack/east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:34 GMT",
+          "src_frames": 4,
+          "sub": "13fe279f-10b6-455d-8079-eb477cd69759"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "spider_queen/animations/attack__north.webp",
+          "frame_paths": [
+            "spider_queen/animations/attack/north/00.webp",
+            "spider_queen/animations/attack/north/01.webp",
+            "spider_queen/animations/attack/north/02.webp",
+            "spider_queen/animations/attack/north/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:36 GMT",
+          "src_frames": 4,
+          "sub": "0f1a8ba3-6d36-4e87-a996-34955d44cf3a"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "spider_queen/animations/attack__south.webp",
+          "frame_paths": [
+            "spider_queen/animations/attack/south/00.webp",
+            "spider_queen/animations/attack/south/01.webp",
+            "spider_queen/animations/attack/south/02.webp",
+            "spider_queen/animations/attack/south/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:37 GMT",
+          "src_frames": 4,
+          "sub": "d8870cbc-b9b5-4fa1-a3bf-a81d55b4413d"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "spider_queen/animations/attack__south-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/attack/south-east/00.webp",
+            "spider_queen/animations/attack/south-east/01.webp",
+            "spider_queen/animations/attack/south-east/02.webp",
+            "spider_queen/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:38 GMT",
+          "src_frames": 4,
+          "sub": "c2a65093-bd7d-4a2b-a02a-371c117b9f76"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "spider_queen/animations/attack__south-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/attack/south-west/00.webp",
+            "spider_queen/animations/attack/south-west/01.webp",
+            "spider_queen/animations/attack/south-west/02.webp",
+            "spider_queen/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "spider_queen/animations/attack__west.webp",
+          "frame_paths": [
+            "spider_queen/animations/attack/west/00.webp",
+            "spider_queen/animations/attack/west/01.webp",
+            "spider_queen/animations/attack/west/02.webp",
+            "spider_queen/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "spider_queen/animations/attack__north-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/attack/north-east/00.webp",
+            "spider_queen/animations/attack/north-east/01.webp",
+            "spider_queen/animations/attack/north-east/02.webp",
+            "spider_queen/animations/attack/north-east/03.webp"
+          ],
+          "src_frames": 4,
+          "local_only": true,
+          "why": "his approved PRO 'Claw Swipe' take (monsters/spider_queen#attack_v3#north-east, approved 2026-09-18) no longer exists on PixelLab, so the mirror cannot reproduce it; restored byte-exact from the approved candidate art at graduation"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "spider_queen/animations/attack__north-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/attack/north-west/00.webp",
+            "spider_queen/animations/attack/north-west/01.webp",
+            "spider_queen/animations/attack/north-west/02.webp",
+            "spider_queen/animations/attack/north-west/03.webp"
+          ],
+          "src_frames": 4,
+          "local_only": true,
+          "why": "his approved PRO 'Claw Swipe' take (monsters/spider_queen#attack_v3#north-west, approved 2026-09-18) no longer exists on PixelLab, so the mirror cannot reproduce it; restored byte-exact from the approved candidate art at graduation"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "f6c53127-d834-47fe-8f9b-bd72706b2a00",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "spider_queen/animations/walk__east.webp",
+          "frame_paths": [
+            "spider_queen/animations/walk/east/00.webp",
+            "spider_queen/animations/walk/east/01.webp",
+            "spider_queen/animations/walk/east/02.webp",
+            "spider_queen/animations/walk/east/03.webp",
+            "spider_queen/animations/walk/east/04.webp",
+            "spider_queen/animations/walk/east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:48 GMT",
+          "src_frames": 6,
+          "sub": "a6d75123-8289-49e9-95b8-6a2c3d580a80"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "spider_queen/animations/walk__north.webp",
+          "frame_paths": [
+            "spider_queen/animations/walk/north/00.webp",
+            "spider_queen/animations/walk/north/01.webp",
+            "spider_queen/animations/walk/north/02.webp",
+            "spider_queen/animations/walk/north/03.webp",
+            "spider_queen/animations/walk/north/04.webp",
+            "spider_queen/animations/walk/north/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:49 GMT",
+          "src_frames": 6,
+          "sub": "8f88d720-cd78-4e2c-907b-fbd775876361"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "spider_queen/animations/walk__north-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/walk/north-east/00.webp",
+            "spider_queen/animations/walk/north-east/01.webp",
+            "spider_queen/animations/walk/north-east/02.webp",
+            "spider_queen/animations/walk/north-east/03.webp",
+            "spider_queen/animations/walk/north-east/04.webp",
+            "spider_queen/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:50 GMT",
+          "src_frames": 6,
+          "sub": "b44eaab0-5635-4bcc-b6e4-8f72f32263a4"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "spider_queen/animations/walk__south.webp",
+          "frame_paths": [
+            "spider_queen/animations/walk/south/00.webp",
+            "spider_queen/animations/walk/south/01.webp",
+            "spider_queen/animations/walk/south/02.webp",
+            "spider_queen/animations/walk/south/03.webp",
+            "spider_queen/animations/walk/south/04.webp",
+            "spider_queen/animations/walk/south/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:52 GMT",
+          "src_frames": 6,
+          "sub": "40ae1639-972b-43f6-903e-9c176c64171e"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "spider_queen/animations/walk__south-east.webp",
+          "frame_paths": [
+            "spider_queen/animations/walk/south-east/00.webp",
+            "spider_queen/animations/walk/south-east/01.webp",
+            "spider_queen/animations/walk/south-east/02.webp",
+            "spider_queen/animations/walk/south-east/03.webp",
+            "spider_queen/animations/walk/south-east/04.webp",
+            "spider_queen/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Sun, 20 Sep 2026 18:54:53 GMT",
+          "src_frames": 6,
+          "sub": "02bc7135-f398-4c9c-9c47-0c3827a44d86"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "spider_queen/animations/walk__south-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/walk/south-west/00.webp",
+            "spider_queen/animations/walk/south-west/01.webp",
+            "spider_queen/animations/walk/south-west/02.webp",
+            "spider_queen/animations/walk/south-west/03.webp",
+            "spider_queen/animations/walk/south-west/04.webp",
+            "spider_queen/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "spider_queen/animations/walk__west.webp",
+          "frame_paths": [
+            "spider_queen/animations/walk/west/00.webp",
+            "spider_queen/animations/walk/west/01.webp",
+            "spider_queen/animations/walk/west/02.webp",
+            "spider_queen/animations/walk/west/03.webp",
+            "spider_queen/animations/walk/west/04.webp",
+            "spider_queen/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "spider_queen/animations/walk__north-west.webp",
+          "frame_paths": [
+            "spider_queen/animations/walk/north-west/00.webp",
+            "spider_queen/animations/walk/north-west/01.webp",
+            "spider_queen/animations/walk/north-west/02.webp",
+            "spider_queen/animations/walk/north-west/03.webp",
+            "spider_queen/animations/walk/north-west/04.webp",
+            "spider_queen/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}

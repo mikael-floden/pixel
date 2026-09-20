@@ -322,6 +322,20 @@
       }
     },
     {
+      "id": "spider_queen",
+      "kind": "character",
+      "pixellab_id": "7adc3e9d-b204-4b47-b2da-35a10264340a",
+      "name": "Broodmother",
+      "lore": "Every spider in the dark is hers and every dark is a nursery. She does not hunt; she waits, and the dark brings supper.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Fang Stab - Rears high on her back legs and stabs ": "attack",
+        "custom-Death - The Broodmother shrivels and shrinks rapid": "die"
+      }
+    },
+    {
       "id": "rock_mite",
       "kind": "character",
       "pixellab_id": "f2dda240-a7d7-400c-9e64-64028e54e507",
