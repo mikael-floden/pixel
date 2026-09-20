@@ -4,7 +4,7 @@
 // exact-one-level corner mask and the pick — proven without a world or a GPU.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { Tiles3, PLATE_H, RAMP_MIN_PX, isRampSet, rampHeight } from "../../client/src/tiles3.js";
@@ -12,6 +12,29 @@ import { Tiles3, PLATE_H, RAMP_MIN_PX, isRampSet, rampHeight } from "../../clien
 const HERE = dirname(fileURLToPath(import.meta.url));
 const REPO = join(HERE, "..", "..", "..");
 const load = (rel: string) => JSON.parse(readFileSync(join(REPO, rel), "utf8"));
+
+// SKIPPED, NOT FAILED, WHEN THE DATA IS ABSENT. The deploy's test job
+// sparse-checks-out games2 + characters2 + live and no tiles/, so the three
+// arms that read the real sets skip there and run in CI's full checkout — the
+// suite's own guard (tiles3.test.ts). Without it, ENOENT on tiles/slopes/index.json
+// refused deploy #4372 and the slope engine stayed unshipped (2026-09-20).
+const NEEDS = [
+  "tiles/slopes/index.json",
+  "tiles/ground_types.json",
+  "tiles/resolve.json",
+  "tiles/patterns/index.json",
+  "tiles/review/manifest.json",
+  "tiles/tops/index.json",
+  "tiles/fades/index.json",
+  "live/tuning/base_tile_sets.json",
+  "live/tuning/base_tiles.json",
+  "live/tuning/tile_walls.json",
+  "live/tuning/top_walls.json",
+  "live/tuning/tile_tops.json",
+  "live/feedback/tiles.json",
+];
+const MISSING = NEEDS.filter((p) => !existsSync(join(REPO, p)));
+const skip = MISSING.length ? `not checked out: ${MISSING.join(", ")}` : false;
 
 test("rampHeight is the bilinear blend of the corner bits: 1 on the raised edge, 0 on the far one, half way between", () => {
   // 12 = NW+NE: the north edge is up (the higher cell lies north, v = 0).
@@ -33,7 +56,7 @@ test("rampHeight is the bilinear blend of the corner bits: 1 on the raised edge,
   for (const u of [0, 0.3, 0.7, 1]) assert.equal(rampHeight(12, u, 0), 1);
 });
 
-test("a set is a ramp from RAMP_MIN_PX up; every published set (elevation 4) is a bump", () => {
+test("a set is a ramp from RAMP_MIN_PX up; every published set (elevation 4) is a bump", { skip }, () => {
   assert.equal(isRampSet({ elevation: 4 }), false);
   assert.equal(isRampSet({}), false);
   assert.equal(isRampSet({ elevation: RAMP_MIN_PX }), true);
@@ -72,7 +95,7 @@ const RAMP = {
 };
 const approveAll = (dir: string) => Object.fromEntries(Array.from({ length: 16 }, (_, i) => [`${dir}/tile_${String(i).padStart(2, "0")}`, { status: "approved" }]));
 
-test("the corner mask: exact-one-level counts a corner only for a cell one level up; the bump mask for any higher cell", () => {
+test("the corner mask: exact-one-level counts a corner only for a cell one level up; the bump mask for any higher cell", { skip }, () => {
   const t = resolver([], {});
   const g = () => "grass";
   // a 3x3 patch: centre at level 5, north row at 6, the north-east corner cell at 7
@@ -86,7 +109,7 @@ test("the corner mask: exact-one-level counts a corner only for a cell one level
   assert.equal(t.slopeIndexAt(gd, L, "grass", 1, 1, 5, true), 0, "another ground's rise is not this ground's ramp");
 });
 
-test("the pick: a ground with an approved storey-height set draws the RAMP in its taller frame; without one, the bump as before", () => {
+test("the pick: a ground with an approved storey-height set draws the RAMP in its taller frame; without one, the bump as before", { skip }, () => {
   const withRamp = resolver([RAMP], approveAll(RAMP.dir));
   assert.equal(withRamp.slopeSets("grass").length, 1, "the one approved bump set for grass stays in the bump list");
   assert.equal(withRamp.slopeSets("grass", true).length, 1, "the ramp set is the ramp list");
