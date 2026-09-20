@@ -486,6 +486,20 @@ per effect — his process).
   pays for its water probes, and a colony whose ground leaves the zone (a
   window re-roll) is dropped like one whose water dried up. With no crab zone
   in view it does not search at all.
+  **ants**: `findGround` takes an acceptance test now (`ok`), asked BEFORE its
+  five landable probes because rejecting a point outside the zone is one memo
+  lookup and accepting one costs five ground picks — spiders, gnats,
+  butterflies and feathers place through the same call. A trail's anchor is
+  taken with the field's odds and its far end must be held by the zone too, or
+  the line walks out of it; a trail whose head leaves the zone re-lays.
+  The gate photographs what it measured: it writes the drawn screen positions
+  beside the shot, because several of these effects are ONE pixel and no crop
+  makes a 1 px ant on grass visible to a person judging a screenshot. It also
+  retries stands — a stand can be honestly outside the zone and still show too
+  little of it for the effect to place anything, which is a bad stand, not a
+  broken boundary — and it demands a stand clear of the WHOLE polygon, since
+  six steps east out of the southern meadow landed beside another lobe of the
+  same zone with the field still reading 0.11 underfoot.
 - **A PINNED WORLD HAS NO ZONES AT ALL, AND IT OUTLIVES THE PAGE.**
   `__ml.worldAmbient(set)` forces the room's sky on the SERVER, and the server
   persists it in the shared clock document, so one gate that forces a weather

@@ -33,15 +33,22 @@ export function landableAt(wx: number, wy: number): boolean {
  * lesson (the ambient water marks call it the hillside bug); this is the
  * ground version of it.
  */
+/** `ok` is an extra test a candidate must pass — the ZONE BOUNDARY, for every
+ *  effect that places through here (runtime/zoneplace.ts): it is asked FIRST,
+ *  before the five landable probes, because rejecting a point outside the
+ *  effect's zone is one memo lookup and accepting one costs five ground
+ *  picks. */
 export function findGround(
   view: { x: number; y: number; width: number; height: number },
   rnd: () => number,
   margin: number,
   tries = 10,
+  ok?: (x: number, y: number) => boolean,
 ): { x: number; y: number } | null {
   for (let t = 0; t < tries; t++) {
     const x = Math.round(view.x + rnd() * view.width);
     const y = Math.round(view.y + rnd() * view.height);
+    if (ok && !ok(x, y)) continue;
     if (
       landableAt(x, y) &&
       landableAt(x + margin, y) &&

@@ -1,6 +1,7 @@
 import Phaser from "phaser";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
 import { crawlerTint, findGround, flatWith, landableAt, levelAt, paintPixels } from "../runtime/ground";
+import { ZoneWatch } from "../runtime/zoneplace";
 
 // ANTS — a FIELD effect, and the smallest thing this agent draws.
 //
@@ -96,6 +97,7 @@ export function antsFeature(): AmbientFeature {
   let leaving = false; // the colony is thinning out, one ant at a time
   let life = 0;
   let relay = 0;
+  const zone = new ZoneWatch("ants");
   let gain = 0;
   let suppressed = false;
   let forced = false;
@@ -116,7 +118,10 @@ export function antsFeature(): AmbientFeature {
       width: v.width * (1 - 2 * ANCHOR_INSET),
       height: v.height * (1 - 2 * ANCHOR_INSET),
     };
-    const a = findGround(inner, rnd, MARGIN);
+    /* THE ZONE OWNS THE GROUND (runtime/zoneplace.ts): the anchor is taken
+     * with the field's own odds, so a colony thins out across the feather
+     * rather than the trail stopping dead at the line. */
+    const a = findGround(inner, rnd, MARGIN, 10, (x, y) => zone.accept(ctx, x, y, rnd));
     if (!a) return false;
     /* ONE TERRACE. Everything below is checked against the ANCHOR's level, so a
      * trail can never run over a cliff edge — see `levelAt`. */
@@ -137,6 +142,9 @@ export function antsFeature(): AmbientFeature {
         const L = full * frac;
         const cand = { x: Math.round(a.x + Math.cos(th) * L), y: Math.round(a.y + Math.sin(th) * L * 0.6) };
         if (!flatWith(lvl, cand.x, cand.y)) continue;
+        // the far end too, or the trail walks out of the zone (no dice here:
+        // the anchor already rolled for this colony)
+        if (!zone.holds(ctx, cand.x, cand.y)) continue;
         span = L;
         b = cand;
         break;
@@ -211,8 +219,11 @@ export function antsFeature(): AmbientFeature {
       paintPixels(ctx.scene, KEY_BIG, 2, 1, 0xffffff, [[0, 0], [1, 0]]);
     },
     update(ctx, dt) {
-      // Daytime foragers. Heavy cloud thins them; they are a fair-weather sight.
-      const target = forced ? 1 : suppressed ? 0 : ctx.env.sun * (1 - 0.5 * ctx.env.cloud);
+      zone.step(ctx, dt);
+      // Daytime foragers. Heavy cloud thins them; they are a fair-weather
+      // sight — and they are only out where their zone is, which is in VIEW
+      // rather than under my feet, so a trail is already running over there.
+      const target = forced ? 1 : suppressed || !zone.any ? 0 : ctx.env.sun * (1 - 0.5 * ctx.env.cloud);
       gain += (target - gain) * Math.min(1, (dt / GAIN_TAU) * 3);
       const g = gain * ctx.outdoor; // stops indoors, like every effect here
       const visible = g > 0.02;
@@ -239,7 +250,9 @@ export function antsFeature(): AmbientFeature {
         ? path.filter((q) => q.x >= v.x && q.x <= v.x + v.width && q.y >= v.y && q.y <= v.y + v.height).length /
           path.length
         : 0;
-      const off = path.length > 0 && inView < MIN_ON_SCREEN;
+      // ...or when its ground has left the zone (a window re-roll turns ants
+      // off here); the trail then re-lays wherever the zone still holds.
+      const off = path.length > 0 && (inView < MIN_ON_SCREEN || !zone.holds(ctx, path[0].x, path[0].y));
 
       /** Start a colony on a fresh trail: every ant re-rolled, each arriving on
        * its own delay. `instant` skips the stagger, for a colony nobody is
@@ -319,6 +332,7 @@ export function antsFeature(): AmbientFeature {
     debug() {
       return {
         gain: +gain.toFixed(3),
+        zone: zone.info(), // the boundary: is an ant zone in view, and how much of it
         trail: path.length ? { from: { x: Math.round(path[0].x), y: Math.round(path[0].y) }, len: Math.round(pathLen) } : null,
         lifeMs: Math.max(0, Math.round(life)),
         ants: ants.filter((a) => a.sprite.visible).length,

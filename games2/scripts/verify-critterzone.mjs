@@ -14,7 +14,7 @@
 //
 //   EFFECT=crabs node scripts/verify-critterzone.mjs   (needs the dev stack on :5173)
 import { chromium } from "playwright-core";
-import { existsSync, readdirSync, readFileSync, mkdirSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, mkdirSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { tmpdir } from "node:os";
 
@@ -85,25 +85,34 @@ for (const z of doc.zones) {
       let k = 0;
       while (k < 24 && inArea(z.area, a.c + d.dc * k + 0.5, a.r + d.dr * k + 0.5)) k++;
       if (k >= 24) continue;
-      const stand = { c: a.c + d.dc * (k + 4), r: a.r + d.dr * (k + 4) };
+      /* CLEAR OF THE WHOLE POLYGON, not just of the ray. Six steps east out
+       * of the southern meadow landed beside another lobe of the same zone
+       * and the field read 0.11 at my feet. Walk on until no cell within 3 is
+       * inside it — that is what "outside" has to mean for a zone that bends
+       * around you. */
+      let out = k + 6;
+      const clear = (c, r) => { for (let dr = -3; dr <= 3; dr++) for (let dc = -3; dc <= 3; dc++) if (inArea(z.area, c + dc + 0.5, r + dr + 0.5)) return false; return true; };
+      while (out < k + 14 && !clear(a.c + d.dc * out, a.r + d.dr * out)) out++;
+      const stand = { c: a.c + d.dc * out, r: a.r + d.dr * out };
+      if (!clear(stand.c, stand.r)) continue;
       const dist = Math.abs(stand.c - a.c) + Math.abs(stand.r - a.r);
-      if (dist > 18) continue;
+      if (dist > 22) continue;
       const line = [];
-      for (let n = 0; n <= k + 4; n++) line.push({ c: a.c + d.dc * n, r: a.r + d.dr * n });
+      for (let n = 0; n <= out; n++) line.push({ c: a.c + d.dc * n, r: a.r + d.dr * n });
       if (!line.every((p) => land(p.c, p.r))) continue;
       const rise = Math.max(...line.map((p) => lvl(p.c, p.r))) - Math.min(...line.map((p) => lvl(p.c, p.r)));
       if (rise > 3) continue;
       // no other zone over the stand may carry this effect above a trickle
       const others = doc.zones.filter((o) => o !== z && o.kind !== "world" && inArea(o.area, stand.c + 0.5, stand.r + 0.5));
       if (others.some((o) => (o.effects[EFFECT] ?? 0) >= 5)) continue;
-      spots.push({ id: z.id, name: z.name, kind: z.kind, dir: d.name, anchor: a, stand, rise, dist, poly: z.area });
+      spots.push({ id: z.id, name: z.name, kind: z.kind, dir: d.name, anchor: a, stand, rise, dist, cells: z.cells ?? 0, poly: z.area });
       break;
     }
     if (spots.length && spots[spots.length - 1].id === z.id) break;
   }
 }
-spots.sort((a, b) => a.rise - b.rise || a.dist - b.dist);
-say(`${WORLD}: ${EFFECT} — ${spots.length} stands; first: ${spots.slice(0, 4).map((s) => `${s.name} ${s.dir}@${s.stand.c},${s.stand.r} (anchor ${s.anchor.c},${s.anchor.r}) rise ${s.rise}`).join(" | ")}`);
+spots.sort((a, b) => b.cells - a.cells || a.rise - b.rise || a.dist - b.dist); // the rise is already capped; a big zone makes the picture
+say(`${WORLD}: ${EFFECT} — ${spots.length} stands; first: ${spots.slice(0, 4).map((s) => `${s.name} ${s.dir}@${s.stand.c},${s.stand.r} (anchor ${s.anchor.c},${s.anchor.r}) rise ${s.rise} cells ${s.cells}`).join(" | ")}`);
 if (!spots.length) { fail(`no zone carries ${EFFECT} with ground it can use and a flat way in`); process.exit(1); }
 
 const browser = await chromium.launch({ executablePath: chromePath(), args: ["--no-sandbox"] });
@@ -169,7 +178,56 @@ const grow = `async (name) => {
   return window.__mlAmbient.debug(name);
 }`;
 
+/* WALK THE FIELD AND READ IT: what is drawn, on whose ground, and where to
+ * cut the zoom. Run per candidate stand, because a stand can be honestly
+ * outside the zone and still show too little of it for the effect to place
+ * anything — that is a bad stand, not a broken boundary. */
+const look = (s) => withTimeout(page.evaluate(async ({ p, effect, grow }) => {
+  const d = await (0, eval)(grow)(effect);
+  const inArea = (area, x, y) => { let inn = false; for (let i = 0, j = area.length - 1; i < area.length; j = i++) { const [xi, yi] = area[i], [xj, yj] = area[j]; if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inn = !inn; } return inn; };
+  const near = (c, r, reach) => { for (let dr = -reach; dr <= reach; dr++) for (let dc = -reach; dc <= reach; dc++) if (inArea(p.poly, c + dc + 0.5, r + dr + 0.5)) return true; return false; };
+  const me = window.__ml.myScreen(); const v = window.__ml.camView();
+  const atMe = window.__ml.pickAt(v.x + me.sx / me.zoom, v.y + me.sy / me.zoom);
+  const myC = atMe ? { c: Math.floor(atMe.x / 32), r: Math.floor(atMe.y / 32) } : null;
+  let inZone = 0, outZone = 0, onMe = 0, unpicked = 0;
+  for (const a of d.all ?? []) {
+    const at = window.__ml.pickAt(a.x, a.y);
+    if (!at) { unpicked++; continue; }
+    const c = Math.floor(at.x / 32), r = Math.floor(at.y / 32);
+    if (near(c, r, 2)) inZone++; else outZone++;
+    if (myC && Math.abs(c - myC.c) <= 2 && Math.abs(r - myC.r) <= 2) onMe++;
+  }
+  const home = d.colony ? { x: d.colony.x, y: d.colony.y, w: +window.__mlAmbient.zone(effect, d.colony.x, d.colony.y).toFixed(3) } : null;
+  /* WHERE TO CUT THE ZOOM: the drawn things and me, in SCREEN pixels — a
+   * 1 px ant on a 1280-wide shot is not a picture anyone can judge. */
+  const toScreen = (wx, wy) => ({ sx: (wx - v.x) * me.zoom, sy: (wy - v.y) * me.zoom });
+  const hull = (qs) => qs.reduce((b, q) => ({ x0: Math.min(b.x0, q.sx), y0: Math.min(b.y0, q.sy), x1: Math.max(b.x1, q.sx), y1: Math.max(b.y1, q.sy) }),
+    { x0: 1e9, y0: 1e9, x1: -1e9, y1: -1e9 });
+  const pts = (d.all ?? []).map((a) => toScreen(a.x, a.y));
+  /* THE PICTURE IS ME AND THE NEAREST ONE ACROSS THE LINE. An ant is one
+   * pixel: a box round the whole colony is a photograph of a field. The
+   * nearest drawn thing to my feet is by construction the one just over the
+   * boundary, so that pair frames the line, the empty ground on my side and
+   * the effect on theirs — small enough to magnify. */
+  let box = null;
+  if (pts.length) {
+    // CENTRE THE PICTURE ON WHAT WAS DRAWN. An ant is one world pixel: a box
+    // stretched to take in my body as well photographs a field with nothing
+    // in it. The full frame beside this one shows where I stand; this one has
+    // to show the animals and the line they stop at.
+    const cx = pts.reduce((a, q) => a + q.sx, 0) / pts.length;
+    const cy = pts.reduce((a, q) => a + q.sy, 0) / pts.length;
+    box = { x0: cx - 210, y0: cy - 130, x1: cx + 210, y1: cy + 130 };
+  }
+  return { gain: d.gain, zone: d.zone, drawn: (d.all ?? []).length, inZone, outZone, onMe, unpicked, home, box,
+    // the drawn positions in SCREEN pixels + mine, so the picture can be
+    // ringed: several of these effects are ONE pixel and no crop makes a
+    // 1 px ant on grass visible to a person judging a screenshot
+    pts: pts.map((q) => [Math.round(q.sx), Math.round(q.sy)]), me: [Math.round(me.sx), Math.round(me.sy)] };
+}, { p: s, effect: EFFECT, grow }), 90_000, "outside");
+
 let picked = null;
+let survey = null;
 for (const s of spots.slice(0, 8)) {
   const r = await withTimeout(page.evaluate(async ({ s, effect, settle, holdDay }) => {
     const packed = window.__ml.ambientZoneState().packed;
@@ -190,30 +248,19 @@ for (const s of spots.slice(0, 8)) {
   }, { s, effect: EFFECT, settle, holdDay }), 90_000, "stand");
   say(`stand: ${s.kind} "${s.name}" ${s.dir}, col ${s.stand.c} row ${s.stand.r} -> ${JSON.stringify(r)}`);
   if (r.skip) continue;
-  if (r.here <= 0.05 && r.cov?.any) { picked = { ...s, ...r }; break; }
+  if (!(r.here <= 0.05 && r.cov?.any)) continue;
+  await page.evaluate(() => window.__mlAmbient.zoneLines(true));
+  const o = await look(s);
+  if (o.skip) { say(`  ${o.skip}`); continue; }
+  if (!(o.drawn > 0)) { say(`  nothing drawn from here (coverage ${JSON.stringify(r.cov)}) — too little of the zone on screen to place any; next stand`); continue; }
+  picked = { ...s, ...r };
+  survey = o;
+  break;
 }
 if (!picked) fail(`could not stand outside a ${EFFECT} zone with ${EFFECT} on and the zone on screen`);
 else {
   say(`outside "${picked.name}": field ${picked.here} at my feet, coverage ${JSON.stringify(picked.cov)}`);
-  await page.evaluate(() => window.__mlAmbient.zoneLines(true));
-  const out = await withTimeout(page.evaluate(async ({ p, effect, grow }) => {
-    const d = await (0, eval)(grow)(effect);
-    const inArea = (area, x, y) => { let inn = false; for (let i = 0, j = area.length - 1; i < area.length; j = i++) { const [xi, yi] = area[i], [xj, yj] = area[j]; if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inn = !inn; } return inn; };
-    const near = (c, r, reach) => { for (let dr = -reach; dr <= reach; dr++) for (let dc = -reach; dc <= reach; dc++) if (inArea(p.poly, c + dc + 0.5, r + dr + 0.5)) return true; return false; };
-    const me = window.__ml.myScreen(); const v = window.__ml.camView();
-    const atMe = window.__ml.pickAt(v.x + me.sx / me.zoom, v.y + me.sy / me.zoom);
-    const myC = atMe ? { c: Math.floor(atMe.x / 32), r: Math.floor(atMe.y / 32) } : null;
-    let inZone = 0, outZone = 0, onMe = 0, unpicked = 0;
-    for (const a of d.all ?? []) {
-      const at = window.__ml.pickAt(a.x, a.y);
-      if (!at) { unpicked++; continue; }
-      const c = Math.floor(at.x / 32), r = Math.floor(at.y / 32);
-      if (near(c, r, 2)) inZone++; else outZone++;
-      if (myC && Math.abs(c - myC.c) <= 2 && Math.abs(r - myC.r) <= 2) onMe++;
-    }
-    const home = d.colony ? { x: d.colony.x, y: d.colony.y, w: +window.__mlAmbient.zone(effect, d.colony.x, d.colony.y).toFixed(3) } : null;
-    return { gain: d.gain, zone: d.zone, drawn: (d.all ?? []).length, inZone, outZone, onMe, unpicked, home };
-  }, { p: picked, effect: EFFECT, grow }), 90_000, "outside");
+  const out = survey;
   say(`outside: ${JSON.stringify(out)}`);
   if (out.skip) fail(`outside: ${out.skip}`);
   else {
@@ -226,6 +273,26 @@ else {
     await page.waitForTimeout(500);
     await page.screenshot({ path: `${OUT}/critterzone-${EFFECT}-${picked.id}.png` });
     say(`picture: ${OUT}/critterzone-${EFFECT}-${picked.id}.png`);
+    writeFileSync(`${OUT}/critterzone-${EFFECT}-${picked.id}.json`,
+      JSON.stringify({ effect: EFFECT, zone: picked.id, name: picked.name, pts: out.pts, me: out.me, box: out.box, counts: { drawn: out.drawn, inZone: out.inZone, outZone: out.outZone, onMe: out.onMe } }, null, 1));
+    say(`marks: ${OUT}/critterzone-${EFFECT}-${picked.id}.json`);
+    /* AND THE ZOOM: the same frame clipped to what was drawn plus me, with a
+     * margin, inside the game's own viewport (the HUD sits below it). */
+    if (out.box && out.box.x1 > out.box.x0 - 1) {
+      const pad = 90;
+      const gameH = await page.evaluate(() => Math.round(document.querySelector("canvas")?.getBoundingClientRect().height ?? window.innerHeight));
+      const x = Math.max(0, Math.floor(out.box.x0 - pad));
+      const y = Math.max(0, Math.floor(out.box.y0 - pad));
+      const clip = {
+        x, y,
+        width: Math.min(VIEW.width - x, Math.ceil(out.box.x1 - out.box.x0) + 2 * pad),
+        height: Math.min(gameH - y, Math.ceil(out.box.y1 - out.box.y0) + 2 * pad),
+      };
+      if (clip.width > 20 && clip.height > 20) {
+        await page.screenshot({ path: `${OUT}/critterzone-${EFFECT}-${picked.id}-zoom.png`, clip });
+        say(`zoom: ${OUT}/critterzone-${EFFECT}-${picked.id}-zoom.png (${clip.width}x${clip.height})`);
+      }
+    }
   }
   const cost = await page.evaluate(async (effect) => { window.__mlAmbient.cost(true); await new Promise((r) => setTimeout(r, 3000)); return window.__mlAmbient.cost()[effect]; }, EFFECT);
   say(`cost: ${JSON.stringify(cost)}`);
