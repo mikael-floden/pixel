@@ -113,7 +113,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
         // re-rolled drops its memos here, ten times a second, never per frame.
         safe(() => { zone.refresh(); });
         safe(publishGloom);
-        safe(() => director.tick(ctx.env));
+        safe(() => director.tick(ctx.env, ctx));
         // The HudBar rebuilds on re-joins; keep the demo button alive/fresh.
         safe(() => demoButton.ensure());
       }

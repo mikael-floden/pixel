@@ -72,6 +72,14 @@ const wants = TERRAIN[EFFECT] || land;
  * is behaving exactly as written. The phase names are WorldScene's
  * TIME_PHASES. */
 const HOURS = { spiders: "Night", fireflies: "Night", moths: "Night", bats: "Night", gnats: "Evening" };
+/* AN EPISODE IS JUDGED DIFFERENTLY. Birds wheel ACROSS the sky and bats cross
+ * the whole frame: asking whether each one is over the zone's ground is the
+ * wrong question, and would fail a flock that is behaving perfectly. What the
+ * boundary means for an episode is that it is RUNNING while I stand outside
+ * with its zone in view — the director's half of the rule, pinned exactly by
+ * the unit test in server/test/zonefield.test.ts. */
+const EPISODES = new Set(["birds", "bats", "leaves", "sandstorm", "thunder"]);
+const EPISODE = EPISODES.has(EFFECT);
 // how long to let a population build before judging it (ms per try x tries)
 const HOUR = process.env.HOUR || HOURS[EFFECT] || "Day";
 say(`holding the clock at ${HOUR} for ${EFFECT}`);
@@ -264,7 +272,7 @@ const look = (s) => withTimeout(page.evaluate(async ({ p, effect, grow }) => {
    * sentinel position far off the map — so "drawn" counted four ghosts and
    * one real animal. Only an instance the picker can put on a ground cell is
    * judged, and every one of those is. */
-  return { gain: d.gain, zone: d.zone, drawn: (d.all ?? []).length, placed: inZone + outZone, inZone, outZone, onMe, unpicked, home, box,
+  return { gain: d.gain, running: d.active === true || d.gain > 0.02, zone: d.zone, drawn: (d.all ?? []).length, placed: inZone + outZone, inZone, outZone, onMe, unpicked, home, box,
     // the drawn positions in SCREEN pixels + mine, so the picture can be
     // ringed: several of these effects are ONE pixel and no crop makes a
     // 1 px ant on grass visible to a person judging a screenshot
@@ -307,10 +315,12 @@ for (const s of spots.slice(0, 8)) {
   await page.evaluate(() => window.__mlAmbient.zoneLines(true));
   const o = await look(s);
   if (o.skip) { say(`  ${o.skip}`); continue; }
-  if (!(o.placed > 0)) { say(`  nothing placed from here (coverage ${JSON.stringify(r.cov)}) — too little of the zone on screen to place any; next stand`); continue; }
+  if (!EPISODE && !(o.placed > 0)) { say(`  nothing placed from here (coverage ${JSON.stringify(r.cov)}) — too little of the zone on screen to place any; next stand`); continue; }
   /* A STAND THAT SHOWS A FEW. One animal on the far side is a pass but a poor
    * picture and a thin measurement, so keep the first usable stand as a
    * fallback and go on looking for one with a real population. */
+  // an episode reports `active`, a field effect reports `gain` — either is "it is running"
+  if (EPISODE) { if (o.running) { picked = { ...s, ...r }; survey = o; break; } say(`  the episode is not running here (active ${o.running}, gain ${o.gain}); next stand`); continue; }
   if (o.placed >= 3 || (picked && survey && survey.placed >= o.placed)) {
     if (!picked || o.placed > survey.placed) { picked = { ...s, ...r }; survey = o; }
     if (survey.placed >= 3) break;
@@ -323,14 +333,19 @@ else {
   say(`outside: ${JSON.stringify(out)}`);
   if (out.skip) fail(`outside: ${out.skip}`);
   else {
-    if (!out.zone?.any) fail(`${EFFECT} does not see its zone in view from here`);
+    // an EPISODE is switched centrally (runtime/director.ts) and keeps no
+    // watch of its own; the stand's own coverage above already proved its
+    // zone is on screen
+    if (!EPISODE && !out.zone?.any) fail(`${EFFECT} does not see its zone in view from here`);
     // the bar is the feature's own visible threshold (0.02), not a half: a
     // spider by day runs at 0.25 BY DESIGN and is still plainly out there
-    if (!(out.gain > 0.02)) fail(`${EFFECT} is not running from outside (gain ${out.gain}) — "it already exists over there" is not there`);
-    if (!(out.placed > 0)) fail(`nothing placed on the ground: I cannot see the ${EFFECT} on the other side`);
+    if (!out.running) fail(`${EFFECT} is not running from outside (gain ${out.gain}) — "it already exists over there" is not there`);
+    if (!EPISODE && !(out.placed > 0)) fail(`nothing placed on the ground: I cannot see the ${EFFECT} on the other side`);
     if (out.home && !(out.home.w > 0.5)) fail(`the colony sits at field weight ${out.home.w} — it was placed outside its zone`);
-    if (out.outZone > 0) fail(`${out.outZone} of ${out.drawn} drawn on ground outside the zone`);
-    if (out.onMe > 0) fail(`${out.onMe} drawn on the cells around me, on my side of the line`);
+    // an episode crosses the whole frame by design; only a FIELD effect is
+    // held to the zone's ground (see EPISODES above)
+    if (!EPISODE && out.outZone > 0) fail(`${out.outZone} of ${out.drawn} drawn on ground outside the zone`);
+    if (!EPISODE && out.onMe > 0) fail(`${out.onMe} drawn on the cells around me, on my side of the line`);
     await page.waitForTimeout(500);
     await page.screenshot({ path: `${OUT}/critterzone-${EFFECT}-${picked.id}.png` });
     say(`picture: ${OUT}/critterzone-${EFFECT}-${picked.id}.png`);

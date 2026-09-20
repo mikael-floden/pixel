@@ -552,14 +552,44 @@ per effect — his process).
   broken boundary — and it demands a stand clear of the WHOLE polygon, since
   six steps east out of the southern meadow landed beside another lobe of the
   same zone with the field still reading 0.11 underfoot.
+- **AN EPISODE IS ON WHEN ITS ZONE IS IN VIEW** (`runtime/director.ts`, unit 4:
+  bats, birds, leaves, sandstorm, thunder). They are switched centrally, and
+  the switch read `env.active` — the set at MY CELL — so the birds started the
+  moment I crossed the line instead of already wheeling over the far side. The
+  question is asked of the VIEW now. That answer changes as the CAMERA moves
+  and not only when the set or the phase does, so the director's early-out is
+  skipped while the field rules: five episodes x 48 field samples at the env
+  cadence, all of it off the memo.
+  ASKING THE VIEW OPENS A CONFLICT THE CELL NEVER HAD. The server resolves one
+  set per POINT, so birds and bats — which cannot share a stage — were never
+  both on; a view can hold a bird zone and a bat zone at once and then both
+  want it. The bigger presence in view wins and the loser is switched off, not
+  left running. With no field this is the server's set and no pair can clash,
+  so the rule costs nothing there.
+  An episode is judged differently by the gate (`EPISODES` in
+  `verify-critterzone.mjs`): a bird wheels ACROSS the sky and a bat crosses the
+  whole frame, so asking whether each one is over the zone's ground is the
+  wrong question and would fail a flock behaving perfectly. What the boundary
+  means for an episode is that it RUNS while I stand outside with its zone in
+  view. The director's own half is pinned by two unit tests, and its report now
+  carries its ledger — `on`, `wants` and tick counts — because a disagreement
+  between what it thinks is on and what a feature thinks is on is invisible
+  from outside, and that cost an afternoon.
 - **A PINNED WORLD HAS NO ZONES AT ALL, AND IT OUTLIVES THE PAGE.**
   `__ml.worldAmbient(set)` forces the room's sky on the SERVER, and the server
   persists it in the shared clock document, so one gate that forces a weather
   leaves every later zone gate reading `ruled:false` — coverage
   `{any:true, mean:1, n:0}`, every point "inside", every stand refused. The
-  three zone gates clear the pin at boot (an empty `ambient` message re-rolls,
+  four zone gates clear the pin at boot (an empty `ambient` message re-rolls,
   which drops the force where zones rule) and refuse to run unruled, on
   localhost only: never clear a pin the maintainer set on a live server.
+- **A DEV SERVER CAN SERVE A STALE MODULE, AND IT LOOKS EXACTLY LIKE A BUG IN
+  YOUR CODE.** Twice this session vite missed a write to `runtime/mount.ts`
+  and kept serving the previous copy: once the new probe was simply absent,
+  once the director read `ctx.zone` as undefined while `__mlAmbient.zone()`
+  reported the field ruled from the same page. Hours went into the second.
+  When an instrument and the code disagree about something they read from the
+  SAME object, restart the dev stack before believing either.
 - **THE OVERLAY** (`runtime/zonelines.ts`, Settings/dev "ambient zones",
   `__mlAmbient.zoneLines(on)`): every ambient polygon in the world in the
   zone-borders recipe he approved — a 2 px line sampled per cell so it climbs

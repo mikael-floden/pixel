@@ -233,3 +233,67 @@ test("a point the picker cannot place weighs 0, and the picker memo is bounded",
   for (let i = 0; i < BUCKET_CAP + 10; i++) f.cellAt(i * 40, 5);
   assert.ok(f.debug().buckets <= BUCKET_CAP, "the memo never outgrows its cap");
 });
+
+test("an EPISODE is on when its zone is in view, not when my cell is in it", async () => {
+  /* THE DIRECTOR's half of the boundary (runtime/director.ts). Episodes —
+   * birds, bats, leaves, sandstorm, thunder — are switched centrally, and the
+   * switch used to read `env.active`, the set at MY CELL: the birds started
+   * the moment I crossed the line instead of already wheeling over the far
+   * side. Now the question is asked of the VIEW. */
+  const { Director } = await import("../../ambient/runtime/director.js");
+  const made: Record<string, boolean> = {};
+  const episode = (name: string) => ({
+    name, weight: () => 1, init() {}, update() {}, debug: () => ({}), dispose() {},
+    setActive(on: boolean) { made[name] = on; },
+  });
+  const d = new Director([episode("birds"), episode("bats")] as never);
+  const { f } = field({ doc: parseAmbientZones({
+    schema: AMBIENT_SCHEMA, world: "t", size: 64, exclusive: [],
+    zones: [{ id: "wood", name: "the wood", kind: "forest", area: [[10, 10], [20, 10], [20, 20], [10, 20]], effects: { birds: 100, bats: 100 } }],
+  }), table: "wood=birds" });
+  const env = { phase: "Day", active: new Set<string>() } as never;
+  // the zone is on screen but my cell is nowhere near it: the birds are ON
+  const seeing = { zone: f, view: { x: 12 * CELL_WU, y: 12 * CELL_WU, width: 4 * CELL_WU, height: 4 * CELL_WU } } as never;
+  d.tick(env, seeing);
+  assert.equal(made.birds, true, "its window rolled birds: on while I stand outside");
+  assert.notEqual(made.bats, true, "the same zone did not roll bats: never switched on (untouched, so undefined)");
+  // walk away until no bird zone is in view at all: they stop
+  const away = { zone: f, view: { x: 40 * CELL_WU, y: 40 * CELL_WU, width: 4 * CELL_WU, height: 4 * CELL_WU } } as never;
+  d.tick(env, away);
+  assert.equal(made.birds, false, "no bird zone in view: the episode ends");
+  // and with no field at all the old rule stands, exactly: the room's set
+  const roomSet = { phase: "Day", active: new Set(["bats"]) } as never;
+  d.tick(roomSet);
+  assert.equal(made.bats, true, "zoneless: the active set rules, as it always did");
+  assert.notEqual(made.birds, true, "and birds, absent from that set, stay off");
+});
+
+test("two episodes that cannot share a stage: the bigger presence in view wins", async () => {
+  /* Asking the VIEW opens a conflict the CELL never had. The server resolves
+   * one set per point, so birds and bats were never both on; a view can hold
+   * a bird zone and a bat zone at once and then both want the stage. */
+  const { Director } = await import("../../ambient/runtime/director.js");
+  const made: Record<string, boolean> = {};
+  const episode = (name: string, conflicts: string[]) => ({
+    name, conflicts, weight: () => 1, init() {}, update() {}, debug: () => ({}), dispose() {},
+    setActive(on: boolean) { made[name] = on; },
+  });
+  const d = new Director([episode("birds", ["bats"]), episode("bats", ["birds"])] as never);
+  const doc2 = parseAmbientZones({
+    schema: AMBIENT_SCHEMA, world: "t", size: 64, exclusive: [],
+    zones: [
+      { id: "wood", name: "the wood", kind: "forest", area: [[10, 10], [14, 10], [14, 20], [10, 20]], effects: { birds: 100 } },
+      { id: "cave", name: "the cave", kind: "cave", area: [[16, 10], [30, 10], [30, 20], [16, 20]], effects: { bats: 100 } },
+    ],
+  });
+  const { f } = field({ doc: doc2, table: "wood=birds;cave=bats" });
+  const env = { phase: "Night", active: new Set<string>() } as never;
+  // a view holding a sliver of the wood and most of the cave: bats win
+  d.tick(env, { zone: f, view: { x: 13 * CELL_WU, y: 12 * CELL_WU, width: 12 * CELL_WU, height: 6 * CELL_WU } } as never);
+  assert.equal(made.bats, true, "the bigger presence takes the stage");
+  assert.notEqual(made.birds, true, "and the one it cannot share with waits");
+  // turn the view around onto the wood: the birds take it and the bats stop
+  d.tick(env, { zone: f, view: { x: 10 * CELL_WU, y: 12 * CELL_WU, width: 4 * CELL_WU, height: 6 * CELL_WU } } as never);
+  assert.equal(made.birds, true);
+  assert.equal(made.bats, false, "the loser is switched off, not left running");
+});

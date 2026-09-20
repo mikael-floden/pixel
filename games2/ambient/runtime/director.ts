@@ -1,4 +1,4 @@
-import { AmbientEnv, AmbientFeature } from "./types";
+import { AmbientCtx, AmbientEnv, AmbientFeature } from "./types";
 
 // The DIRECTOR (maintainer 2026-07-17): time-of-day × weather drive a
 // weighted lottery — every time either CHANGES, re-roll which episodic
@@ -21,6 +21,8 @@ export class Director {
    *  is parked; OFF = the old free client lottery (his Settings switch). */
   zoneControl = true;
   private lastWeights: Record<string, number> = {};
+  private lastWants: Record<string, boolean> = {};
+  private counts = { ticks: 0, applied: 0, ruled: 0 };
   private lastEnv: AmbientEnv | null = null;
   private pin: DirectorPin = null;
 
@@ -30,16 +32,28 @@ export class Director {
 
   /** Call once per env sample: detects phase/weather transitions and
    * re-rolls on change. First call (join) rolls too. Pinned (demo mode):
-   * transitions are tracked but never rolled — the pin owns the stage. */
-  tick(env: AmbientEnv) {
+   * transitions are tracked but never rolled — the pin owns the stage.
+   *
+   * THE BOUNDARY (maintainer 2026-09-20, with `ctx`): an episode is on when
+   * its zone is anywhere in VIEW, not when the cell under my feet is in it —
+   * the birds are already wheeling over the far side as I walk up, instead of
+   * starting the moment I cross. That answer changes as the CAMERA moves, not
+   * only when the set or the phase does, so the early-out below is skipped
+   * while the field rules: five episodes x 48 field samples at the env
+   * cadence, all of it off the memo. */
+  tick(env: AmbientEnv, ctx?: AmbientCtx) {
     this.lastEnv = env;
+    this.counts.ticks++;
+    const ruled = !!ctx?.zone?.ruled;
+    if (ruled) this.counts.ruled++;
     const packed = [...env.active].sort().join(",");
-    if (env.phase === this.lastPhase && packed === this.lastActive) return;
+    const still = env.phase === this.lastPhase && packed === this.lastActive;
+    if (still && !(ruled && this.zoneControl && this.pin === null)) return;
     this.lastPhase = env.phase;
     this.lastActive = packed;
     if (this.pin !== null) return;
-    if (this.zoneControl) this.applySet(env.active);
-    else this.reroll(env);
+    if (this.zoneControl) { this.counts.applied++; this.applySet(env.active, ruled ? ctx : undefined); }
+    else if (!still) this.reroll(env);
   }
 
   /** Demo-mode pin (the settings ambient button). null resumes auto and
@@ -55,10 +69,29 @@ export class Director {
 
   /** SERVER-DRIVEN: every episode named in the set is on, every other is
    *  off. Several may run at once here (thunder under rain) — the matrix on
-   *  the server already kept the set compatible. */
-  private applySet(active: ReadonlySet<string>) {
+   *  the server already kept the set compatible. With `ctx` the question is
+   *  asked of the VIEW rather than of my cell (see tick). */
+  private applySet(active: ReadonlySet<string>, ctx?: AmbientCtx) {
+    /* ASKING THE VIEW OPENS A CONFLICT THE CELL NEVER HAD. The server resolves
+     * one set per POINT, so birds and bats — which cannot run together — were
+     * never both on. A view can hold a bird zone and a bat zone at once, and
+     * then both want the stage. The bigger presence in view wins, the loser
+     * waits; with no field this is the server's set and no pair can clash, so
+     * the sort costs nothing and changes nothing. */
+    const wanted: { f: AmbientFeature; w: number }[] = [];
     for (const f of this.episodes) {
-      const want = active.has(f.name);
+      const cov = ctx ? ctx.zone.coverage(f.name, ctx.view) : null;
+      const want = cov ? cov.any : active.has(f.name);
+      if (want) wanted.push({ f, w: cov ? cov.max : 1 });
+    }
+    wanted.sort((a, b) => b.w - a.w || (a.f.name < b.f.name ? -1 : 1));
+    const keep = new Set<AmbientFeature>();
+    for (const { f } of wanted)
+      if ([...keep].every((k) => !(k.conflicts ?? []).includes(f.name) && !(f.conflicts ?? []).includes(k.name)))
+        keep.add(f);
+    for (const f of this.episodes) {
+      const want = keep.has(f);
+      this.lastWants[f.name] = want;
       const is = this.active === f || this.on.has(f);
       if (want && !is) { f.setActive!(true); this.on.add(f); }
       else if (!want && is) { f.setActive!(false); this.on.delete(f); }
@@ -104,6 +137,12 @@ export class Director {
       phase: this.lastPhase,
       set: this.lastActive,
       zoneControl: this.zoneControl,
+      // WHO IS SWITCHED ON, and what the boundary thinks of each episode: the
+      // ledger and the answer side by side, or a disagreement between them is
+      // invisible from outside (it cost an afternoon once).
+      on: [...this.on].map((f) => f.name),
+      counts: { ...this.counts },
+      wants: this.lastWants,
       weights: { ...this.lastWeights, quiet: QUIET_WEIGHT },
     };
   }
