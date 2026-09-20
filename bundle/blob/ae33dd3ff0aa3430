@@ -4,10 +4,15 @@
     <meta charset="UTF-8" />
     <!-- viewport-fit=cover: draw under notches/rounded corners in the installed
          app; user-scalable=no: pinch-zoom fights the game's own input. The soft
-         keyboard is handled in-game via virtualKeyboard.overlaysContent (hud.ts)
-         so it OVERLAYS the world+HUD without scrolling/resizing them — do NOT add
-         interactive-widget=resizes-visual here: it makes the browser scroll the
-         whole game up to reveal the focused chat box (maintainer). -->
+         keyboard is handled in-game by hud.ts's lift: while one of the game's
+         chat boxes is focused it adds interactive-widget=overlays-content to
+         THIS tag (and virtualKeyboard.overlaysContent where the API exists), so
+         the keys OVERLAY the world+HUD without scrolling or resizing them, and
+         restores the content below when the keys are gone — the select screen's
+         name field, the wiki drawer and the drop dialog keep the browser's
+         default. Do NOT add interactive-widget=resizes-visual here: it makes the
+         browser scroll the whole game up to reveal the focused chat box
+         (maintainer). -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no" />
     <meta name="theme-color" content="#000000" />
     <title>Nangijala</title>
@@ -108,6 +113,6 @@
     <div id="ml-safebar"></div>
     <div id="game"></div>
     <div id="ml-rotate"><div>📱<br />Rotate your phone<small>The menus play upright — landscape unlocks once you enter the world</small></div></div>
-    <script type="module" src="/assets/index-85783a9664.js"></script>
+    <script type="module" src="/assets/index-43e7b79748.js"></script>
   </body>
 </html>
