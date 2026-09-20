@@ -331,6 +331,36 @@ jobs:
                checks, `git fetch && git rebase origin/main`, re-run the checks if main
                moved under your domain, push to main, then release the claim saying what
                shipped and which entries you cleared.
+
+               A GENERATION NEVER GOES TO THE BACKGROUND. THERE IS NO LATER — when your
+               turn ends this job ends, the runner logs "Cleaning up orphan processes"
+               and kills anything still running, work paid for and unpushed. A tool call
+               that outlives its timeout is MOVED to the background, and that is the
+               whole trap: it looks like the command is still yours when it has already
+               stopped being this session's. Measured 2026-09-20, monsters run
+               35512404484: it took his six spider_queen die_v1 redos, reworded the
+               prompt, cleared the six verdicts, launched
+               `animate.py die --slot die_v1 --only spider_queen --pro`, lost it to the
+               background, spent its last nine turns trying to wait for it — every sleep
+               and every `until ! pgrep` loop backgrounding in turn — said "I'll resume
+               automatically when it exits" and ended. Four seconds later the runner
+               killed the generation with east 7 frames of 16 in. Conclusion: SUCCESS.
+               Nothing but the claim reached main, and the board stamp it left made the
+               sweep read the domain as up to date, so nothing ever retried it.
+
+               So: size every generation to FINISH INSIDE ONE FOREGROUND TOOL CALL.
+               The Bash tool's ceiling is 600000 ms — ten minutes — and anything longer
+               is backgrounded, whatever `timeout` you pass the command itself (that run
+               passed `timeout 3000`, i.e. fifty). So pass the TOOL an explicit timeout
+               at or under 600000, and if the whole unit does not fit inside it, cut it
+               into pieces that do — one direction, one state, one candidate at a time —
+               pushing after each so a piece that lands is a piece that survives. Five
+               PRO directions did not fit; two the day before did, which is exactly why
+               this had never bitten until it did. If a command has already gone to the background, do not
+               wait it out: the honest move is to say so on your board, push, and leave
+               the verdicts UNCLEARED so the next sitting can take them. A cleared verdict
+               whose art never landed is the one state nobody can recover from — he has
+               already reviewed it, and the wiki will never show it to him again.
             5. LEAVE AN ACCOUNT, AND PUSH IT. A RUN THAT LEAVES NO ACCOUNT DID NOT
                HAPPEN. Before you finish, write on your board and push it:
                  • what you TOOK — the verdicts you claimed, by key;
@@ -360,3 +390,42 @@ jobs:
             nothing, claim nothing, generate nothing, commit nothing — a dry run is the
             one case where the account stays in the report instead of the board. It is
             the smoke test for this workflow, not a pass over the queue.
+
+      # ---------------------------------------------------------------------
+      # DID THIS SESSION LEAVE WORK RUNNING? (measured 2026-09-20, monsters run
+      # 35512404484.) A session whose turn ends with a pipeline still alive is a
+      # session that lost that work: the runner's own orphan cleanup kills it
+      # seconds later, and until this step existed the job still went GREEN. A
+      # lost unit that reports success is worse than a failure — the sweep reads
+      # the board stamp the session left, decides the domain is up to date, and
+      # the review is never retried by anything.
+      #
+      # `if: always()` so it also speaks when the action itself failed, and it
+      # runs BEFORE the runner's cleanup because it is still a step. It names the
+      # survivor in the Step Summary — the one page he reads on a phone.
+      - name: A generation that outlived the session is a lost unit
+        if: always()
+        run: |
+          set +e
+          SURVIVORS=$(pgrep -af "python3? .*(pipeline|scripts)/.*\.py" | grep -v pgrep)
+          if [ -z "$SURVIVORS" ]; then
+            echo "no pipeline process outlived the session"
+            exit 0
+          fi
+          {
+            echo "### :rotating_light: A generation outlived the session"
+            echo
+            echo "This job ended with a pipeline still running. The runner kills it"
+            echo "moments from now, so whatever it was generating is lost and unpushed —"
+            echo "and any verdict the session cleared for it is gone from the wiki."
+            echo
+            echo '```'
+            echo "$SURVIVORS"
+            echo '```'
+            echo
+            echo "Check \`live/feedback/${{ inputs.domain }}.json\` for verdicts cleared"
+            echo "against art that never landed, and re-dispatch this domain."
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "::error title=Lost generation::a pipeline process outlived the session; the unit did not land"
+          echo "$SURVIVORS"
+          exit 1
