@@ -3,9 +3,9 @@
  * long design round: papercut family, Fern's palette, Sea glass's plain disc
  * sun, Storm's starfield + falling star).
  *
- * REAL PIXEL ART, not CSS: a 40×16 art-pixel scene painted into an ImageData
- * buffer and shown at ×2 (80×32 css px) with nearest-neighbour scaling, so the
- * pixel grid is exact. Flat cut-paper layers, hard edges, no dithering and no
+ * REAL PIXEL ART, not CSS: a 40×16 art-pixel scene (as many columns as the
+ * Wiki button is wide — fitPill) painted into an ImageData buffer and shown at
+ * ×2 with nearest-neighbour scaling, so the pixel grid is exact. Flat cut-paper layers, hard edges, no dithering and no
  * gradients anywhere.
  *
  * THE SKY HAS TWO BODIES, NOT ONE BELT (maintainer 2026-07-31, and it is the
@@ -47,13 +47,13 @@ import { TIME_PHASE_SECONDS } from "@nangijala/shared";
 // glow melts its remaining corners into the sky. Don't re-tune these to save
 // a few pixels of screen — shrink SCALE instead.
 // AW IS THE WIDTH THE MOCK WAS APPROVED AT, and `aw` is what is actually
-// drawn. The pill grows with the XP card, but only a THIRD as far. It took
-// the card's FULL width on the morning of 2026-09-19, then half of the extra
-// ("I just feel the pill got a little bit to wide… just extend it 50% that
-// additional width instead"), then a third ("that turned out also be to much.
-// Now I think you should have extended the pill only 33%"). EXT is that share
-// and it is the ONLY thing those three rounds changed: the width was never a
-// literal anywhere in this file, it is whatever `aw` says.
+// drawn: THE WIKI BUTTON'S WIDTH (maintainer 2026-09-20: "make it the same
+// size as the wiki button (same width as only the wiki button, not wiki +
+// search)"), measured by fitPill in whole art pixels. The width was never a
+// literal anywhere in this file — it is whatever `aw` says — and the rule
+// behind it moved four times in two days (the card's full width, half of the
+// extra, a third of it, now the button's own box) without the art changing
+// once, which is the point of the next paragraph.
 // NOTHING IS STRETCHED, and nothing can be: this scene is drawn COLUMN BY
 // COLUMN, so a wider pill is more sky and more hill at the SAME 2x pixel size.
 // The orbs keep r=3.4 and their glow, the hills keep their wavelength (they are
@@ -61,8 +61,6 @@ import { TIME_PHASE_SECONDS } from "@nangijala/shared";
 // six hand-placed stars keep their exact coordinates — see spotsFor().
 const AW = 40; // art pixels across, as approved
 let aw = AW; // …and as currently drawn
-const EXT = 1 / 3; // …of the card's extra width, in WHOLE art px (see fitPill)
-const TOP_CLS = "on-top"; // set by fitPill when the two cards leave room for it
 const AH = 16; // art pixels down
 const SCALE = 2; // 1 art px = 2 css px
 const HOR = 10; // horizon row: where the orbs cross the hills
@@ -297,39 +295,28 @@ function mount() {
   if (root) return;
   const style = document.createElement("style");
   style.textContent = `
-  /* CENTRED IN THE GAME VIEW, KEEPING ITS OWN TOP MARGIN (maintainer
-     2026-09-19: "lets center the pill at the top instead (with same top
-     margin)"). It had to move: at half the extension it is no longer the XP
-     card's width, so the right edge it used to share with the card and the
-     Wiki row lines up with nothing, and a box that is nearly-but-not-quite
-     aligned reads as a mistake.
-     TOP CENTRE IS THE CARDS' OWN LINE, on their 10px margin — "WHY DID YOU
-     PLACE THE time-of-day pill in the center and not TOP center!!!", after a
-     first cut put it a third of the way down the screen over the player's
-     head. It takes that line WHEN THE TWO CARDS LEAVE ROOM: fitPill measures
-     the gap between them and needs the pill plus 10px each side. On his phone
-     (495px) that gap is 174 for a 104px pill. At 393px it is 77 and the pill
-     would sit on top of an HP bar, so there it keeps the row it had before —
-     one --ml-stack-step under the Wiki row, the first row that is free all
-     the way across at every width. Two rows, one measurement, no guessing.
-     ONE RULE FOR EVERY ORIENTATION AND BOTH HANDS. It used to be three — a
-     bottom-right corner at rest plus two top-anchored overrides — because
-     the corner it wanted belonged to the thumb stick in landscape and to the
-     ghost stick in portrait. The centre of that row belongs to nothing in
-     any of them, so the special cases are gone, and with them the keyboard
-     lift: nothing down there can reach a box anchored to the top.
-     left and width are set from JS (fitPill) rather than calc()ed here,
-     because both have to land on WHOLE art pixels — CSS cannot round, and a
-     half-pixel box under a pixelated canvas is the smear this whole design
-     exists to avoid. What is here is the first-frame fallback. */
-  .ml-clock{position:fixed;
+  /* UNDER THE WIKI BUTTON, AS WIDE AS IT (maintainer 2026-09-20: "once again
+     place the time-of-day pill under the wiki button and make it the same
+     size as the wiki button (same width as only the wiki button, not wiki +
+     search). It doesn't look good when it's at the top"). It shares the
+     button's right edge — the button's own anchor, --gv-right + 10px — and
+     hangs one --ml-stack-step (the button's outer height + the 10px gap,
+     published by wikibtn.ts) under the row's top, in every orientation and
+     both hands: the row's anchor is the one anchor there is (wikibtn.ts), so
+     the row moves the pill and never the other way round. Top-anchored, so
+     the keyboard lift has nothing of it to lift. right/top transition like
+     the button's, so a hand flip moves the two together; :root.ml-noanim
+     (hud.ts) freezes both through a rotation.
+     The width is set from JS (fitPill) rather than calc()ed here, because it
+     has to land on WHOLE art pixels — CSS cannot round, and a half-pixel box
+     under a pixelated canvas is the smear this whole design exists to avoid.
+     What is here is the first-frame fallback. */
+  .ml-clock{position:fixed;right:calc(var(--gv-right,0px) + 10px);
     top:calc(var(--ml-safe-top, 0px) + var(--bars-r-h, 78px) + 20px + var(--ml-stack-step, 44px));
-    left:calc((100vw - ${AW * SCALE + 2}px) / 2);z-index:8;
-    width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
+    z-index:8;width:${AW * SCALE}px;height:${AH * SCALE}px;border-radius:7px;overflow:hidden;
     pointer-events:none;box-sizing:content-box;
-    border:1px solid var(--border-strong);box-shadow:var(--shadow)}
-  /* the cards' own line — fitPill adds this class only when they leave room */
-  .ml-clock.${TOP_CLS}{top:calc(var(--ml-safe-top, 0px) + 10px)}
+    border:1px solid var(--border-strong);box-shadow:var(--shadow);
+    transition:right .3s ease,top .3s ease}
   .ml-clock canvas{display:block;width:100%;height:100%;image-rendering:pixelated}`;
   document.head.appendChild(style);
   root = document.createElement("div");
@@ -341,65 +328,44 @@ function mount() {
   ctx = cv.getContext("2d");
   img = ctx?.createImageData(aw, AH) ?? null;
   paint(lastTau);
-  // sized and centred BEFORE it is in the document: fitPill reads :root vars
-  // and the viewport, never this box, so it needs no layout — and the pill is
-  // therefore never painted once at the fallback width on its way to the real
-  // one.
+  // sized BEFORE it is in the document: fitPill reads the Wiki button's box
+  // (another element), never this one, so the pill is not painted once at the
+  // fallback width on its way to the real one.
   fitPill();
   document.body.appendChild(root);
-  // the card's width is a media query, so it changes on exactly the events
-  // hud.ts re-publishes it on
+  // the button's width follows the XP card's, a media query — it changes on
+  // exactly the events hud.ts re-lays out on
   window.addEventListener("ml-layout", fitPill);
   window.addEventListener("resize", fitPill);
 }
 
 /**
- * THE PILL'S WIDTH AND ITS CENTRE, BOTH IN WHOLE ART PIXELS — the one
+ * THE PILL'S WIDTH IS THE WIKI BUTTON'S, IN WHOLE ART PIXELS — the one
  * function that stops this being a stretch.
  *
- * Width: AW plus EXT of whatever the XP card is wider than AW ("extended the
- * pill only 33%"). That extra is rounded to a WHOLE
- * art pixel and the box is then exactly `aw * SCALE` css px, so one art pixel
- * is always exactly SCALE css px and the canvas's backing store can never
- * disagree with its box — a disagreement is precisely the smearing he was
- * afraid of. Doing the same sum in calc() would land on odd css px (146 -> 113)
- * and hand the canvas a 1.98x scale.
+ * It MEASURES the button's box (another element, so no feedback loop — the
+ * rule against reading a rect is about the pill's OWN, which this is about
+ * to resize) rather than restating the button's calc() of the XP card's
+ * width: one source, and the day the button's box changes the pill follows
+ * it. The button's content width (its rect minus its two 1px borders) is
+ * floored to a WHOLE art pixel and the box is then exactly `aw * SCALE` css
+ * px, so one art pixel is always exactly SCALE css px and the canvas's
+ * backing store can never disagree with its box — a disagreement is
+ * precisely the smearing he was afraid of. Floored, not rounded: an odd
+ * content width leaves the pill 1 css px narrower than the button, on the
+ * shared right edge, never half an art pixel wider. The height is AH * SCALE
+ * = 32 = the button's content height (wikibtn.ts PILL_H): the two are the
+ * same height by construction, and the gate asserts it against both rects.
  *
- * Centre: rounded to a whole css px for the same reason. A fixed box centred
- * in an odd viewport lands on x.5 otherwise, which shifts the whole nearest-
- * neighbour grid by half a pixel.
- *
- * Reads --bars-r-w / --gv-left / --gv-right off :root (hud.ts publishes all
- * three in applyLayout) rather than its own rect: measuring a box you are
- * about to resize is how you get a feedback loop, and the rect would include
- * the 1px borders this content-box width does not.
+ * Before the button is in the document this draws at AW; the HUD's layout
+ * pass after it mounts fires `ml-layout` and this refits.
  */
 function fitPill() {
   if (!root || !cv) return;
-  const cs = getComputedStyle(document.documentElement);
-  const v = (name: string, dflt: number) => {
-    const n = parseFloat(cs.getPropertyValue(name));
-    return Number.isFinite(n) ? n : dflt;
-  };
-  // the card's CONTENT width in art px — --bars-r-w is its border-box rect
-  const card = Math.round((v("--bars-r-w", AW * SCALE + 2) - 2) / SCALE);
-  const w = Math.max(AW, AW + Math.round((card - AW) * EXT));
-  const box = w * SCALE;
-  const gl = v("--gv-left", 0);
-  const gr = v("--gv-right", 0);
-  // +2 for this box's own borders, which sit outside its content-box width
-  root.style.left = `${Math.round(gl + (window.innerWidth - gl - gr - box - 2) / 2)}px`;
-  root.style.width = `${box}px`;
-  // THE TOP ROW IF THE TWO CARDS LEAVE ROOM FOR IT, MEASURED, NOT ASSUMED.
-  // "Top center" is the cards' own line and that is where it belongs; the
-  // only thing that can stop it is the gap between them, which is the view
-  // minus their two margins and their two widths. It needs the pill plus the
-  // same 10px margin on each side — anything less and the pill sits on top of
-  // an HP bar. Measured on his phone (495px) the gap is 174 for a 104px
-  // pill; at 393px it is 77 and the pill drops to the row under the Wiki row,
-  // which is free all the way across at every width.
-  const free = window.innerWidth - gr - 10 - v("--bars-r-w", 0) - (gl + 10 + v("--bars-l-w", 0));
-  root.classList.toggle(TOP_CLS, free >= box + 2 + 20);
+  const btn = document.querySelector<HTMLElement>(".ml-wikibtn");
+  const inner = btn ? btn.getBoundingClientRect().width - 2 : AW * SCALE;
+  const w = Math.max(AW, Math.floor(inner / SCALE));
+  root.style.width = `${w * SCALE}px`;
   if (w === aw) return;
   aw = w;
   cv.width = aw;

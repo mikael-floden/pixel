@@ -384,16 +384,16 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
       : fail(`ghost r=${gh.s.r.toFixed(1)} b=${gh.s.b.toFixed(1)} — want r=${393 - 10}, b=${(gh.hudTop - 10).toFixed(0)}`);
     // …which the Wiki row and the pill left for it: the row TOP-right directly
     // under the XP chip with the 🔍 beside it, and the pill one step under the
-    // row but CENTRED (maintainer 2026-09-19), sharing an edge with neither.
+    // Wiki button on its right edge, as wide as it (maintainer 2026-09-20).
     gh.w && gh.xp && Math.abs(gh.w.t - gh.xp.b - 10) <= 2 && Math.abs(gh.w.r - gh.xp.r) <= 2
       ? ok(`Wiki row directly under the XP chip (t=${gh.w.t.toFixed(0)} = chip b ${gh.xp.b.toFixed(0)} + 10, right edges ${gh.w.r.toFixed(0)}/${gh.xp.r.toFixed(0)})`)
       : fail(`Wiki row ${JSON.stringify(gh.w)} not under the XP chip ${JSON.stringify(gh.xp)}`);
     gh.n && gh.w && Math.abs(gh.n.t - gh.w.t) <= 1 && Math.abs(gh.w.l - gh.n.r - 10) <= 2
       ? ok(`🔍 on the Wiki's line, 10px to its left (r=${gh.n.r.toFixed(0)}, wiki l=${gh.w.l.toFixed(0)})`)
       : fail(`🔍 ${JSON.stringify(gh.n)} vs Wiki ${JSON.stringify(gh.w)}`);
-    gh.c && gh.w && Math.abs(gh.c.t - gh.w.b - 10) <= 2 && Math.abs(gh.c.l + gh.c.w / 2 - gh.vw / 2) <= 2
-      ? ok(`clock pill one step under the Wiki row and centred (t=${gh.c.t.toFixed(0)} = row b ${gh.w.b.toFixed(0)} + 10, centre ${(gh.c.l + gh.c.w / 2).toFixed(0)} of ${gh.vw / 2})`)
-      : fail(`pill ${JSON.stringify(gh.c)} — want it ${10}px under the Wiki row ${JSON.stringify(gh.w)} and centred on ${gh.vw / 2}`);
+    gh.c && gh.w && Math.abs(gh.c.t - gh.w.b - 10) <= 2 && Math.abs(gh.c.r - gh.w.r) <= 2
+      ? ok(`clock pill one step under the Wiki button, on its right edge (t=${gh.c.t.toFixed(0)} = row b ${gh.w.b.toFixed(0)} + 10, right ${gh.c.r.toFixed(0)}/${gh.w.r.toFixed(0)})`)
+      : fail(`pill ${JSON.stringify(gh.c)} — want it ${10}px under the Wiki button ${JSON.stringify(gh.w)} on its right edge`);
     gh.c && gh.c.b < gh.s.t - 100 ? ok("the corner stack is out of the ghost's way") : fail(`pill b=${gh.c && gh.c.b} crowds the ghost t=${gh.s.t}`);
     // ONLY THE WELL FIRES; everything around it keeps its own press
     const h = gh.hits;

@@ -218,7 +218,7 @@ GROWS BY"); this holds the mechanics and the numbers.
   ResizeObserver). Left-handed landscape was the last placement to keep the
   game view's bottom corner instead (maintainer 2026-09-19: "Left-handed
   landscape mode has still not placed the wiki+search under the XP-card");
-  that corner holds no chrome since the pill went top-centre, so no
+  that corner holds no chrome since the pill hangs under the Wiki row, so no
   exception remains (wikibtn.ts / wikinear.ts: the `top` anchor sits in the
   base rule; there is no orientation, hand or keyboard-lift rule to keep in
   step with it).

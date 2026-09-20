@@ -315,18 +315,17 @@ try {
   // The stack leaves the thumb's corner in RIGHT-handed landscape and parks
   // under the XP chip (maintainer 2026-08-05). Since 2026-09-19 the WIKI ROW
   // is the thing directly under it — it is as wide as the chip, so it has to
-  // touch it — and the PILL is centred in the game view one step below the
-  // row, sharing an edge with nothing ("lets center the pill at the top
-  // instead (with same top margin)"). Its width is verify-wikibtn's subject;
-  // what belongs here is that the centre it takes is the GAME VIEW'S, not the
-  // window's — the landscape menu owns one side and this is the only gate
-  // that watches that boundary.
+  // touch it — and since 2026-09-20 the PILL hangs under the Wiki button
+  // again, as wide as it ("once again place the time-of-day pill under the
+  // wiki button"). Its art is verify-wikibtn's subject; what belongs here is
+  // that it follows the button into the landscape placement — the menu owns
+  // one side and this is the only gate that watches that boundary.
   Math.abs(g.wikibtn.r - g.barsR.r) <= 2 && Math.abs(g.wikibtn.t - g.barsR.b - 10) <= 2
     ? ok(`the Wiki row sits under the XP chip (top ${g.wikibtn.t} = chip bottom ${g.barsR.b} + 10, right edges ${g.wikibtn.r}/${g.barsR.r})`)
     : fail(`wiki row ${JSON.stringify(g.wikibtn)} vs XP chip ${JSON.stringify(g.barsR)}`);
-  Math.abs((g.clock.l + g.clock.w / 2) - (menuW + (851 - menuW) / 2)) <= 2 && g.clock.t > g.wikibtn.t
-    ? ok(`…and the pill centred in the game view below it (centre ${(g.clock.l + g.clock.w / 2).toFixed(0)} of ${(menuW + (851 - menuW) / 2).toFixed(0)}, top ${g.clock.t} under the row's ${g.wikibtn.t})`)
-    : fail(`clock ${JSON.stringify(g.clock)} vs the game view ${menuW}..851 and the row ${JSON.stringify(g.wikibtn)}`);
+  Math.abs(g.clock.r - g.wikibtn.r) <= 2 && Math.abs(g.clock.t - g.wikibtn.b - 10) <= 2 && Math.abs(g.clock.w - g.wikibtn.w) <= 1.5
+    ? ok(`…and the pill under the Wiki button, as wide as it (right ${g.clock.r}/${g.wikibtn.r}, top ${g.clock.t} = button bottom ${g.wikibtn.b} + 10, ${g.clock.w}/${g.wikibtn.w} wide)`)
+    : fail(`clock ${JSON.stringify(g.clock)} vs the Wiki button ${JSON.stringify(g.wikibtn)} — want it under the button, as wide as it`);
   // …and it clears the chips BY BEING A ROW BELOW THEM, not by fitting
   // between them: at 851 the two 192px chips leave 133px of centre and the
   // pill is 138 wide, so the cards' own row cannot hold it. This is the
@@ -334,7 +333,7 @@ try {
   // first — it fails the day someone raises the pill to the chips' line.
   g.clock.t >= g.barsL.b && g.clock.t >= g.barsR.b
     ? ok(`…a full row below both chips (pill top ${g.clock.t}, chips end ${Math.max(g.barsL.b, g.barsR.b)})`)
-    : fail(`the centred pill is on the chips' own line and overlaps them: ${JSON.stringify(g.clock)} vs ${JSON.stringify(g.barsL)} / ${JSON.stringify(g.barsR)}`);
+    : fail(`the pill is on the chips' own line and overlaps them: ${JSON.stringify(g.clock)} vs ${JSON.stringify(g.barsL)} / ${JSON.stringify(g.barsR)}`);
   g.clock.b < g.vh - 100
     ? ok("…and is clear of the stick's bottom corner")
     : fail(`clock still low (b=${g.clock.b} of ${g.vh})`);
@@ -527,14 +526,14 @@ try {
   // THE WIKI ROW HANGS UNDER THE XP CHIP HERE TOO (maintainer 2026-09-19:
   // "Left-handed landscape mode has still not placed the wiki+search under
   // the XP-card") — the last placement that kept the bottom corner. The pill
-  // is top-centred in every orientation and both hands, and is checked
-  // against the game view, which has swapped sides.
+  // hangs under the Wiki button in every orientation and both hands, so it is
+  // checked against the button, which has followed the game view across.
   Math.abs(g.wikibtn.r - g.barsR.r) <= 2 && Math.abs(g.wikibtn.t - g.barsR.b - 10) <= 2
     ? ok(`left-handed: Wiki row under the XP chip (top ${g.wikibtn.t} = chip bottom ${g.barsR.b} + 10, right edges ${g.wikibtn.r}/${g.barsR.r})`)
     : fail(`left-handed wiki row ${JSON.stringify(g.wikibtn)} vs XP chip ${JSON.stringify(g.barsR)} — want it under the chip, not the corner`);
-  Math.abs((g.clock.l + g.clock.w / 2) - (851 - menuW) / 2) <= 2 && g.clock.t < g.vh / 2
-    ? ok(`left-handed: the pill follows the game view to the LEFT of the menu (centre ${(g.clock.l + g.clock.w / 2).toFixed(0)} of ${((851 - menuW) / 2).toFixed(0)})`)
-    : fail(`clock ${JSON.stringify(g.clock)} — want it centred in a game view that now runs 0..${851 - menuW}`);
+  Math.abs(g.clock.r - g.wikibtn.r) <= 2 && Math.abs(g.clock.t - g.wikibtn.b - 10) <= 2 && g.clock.r <= 851 - menuW + 1
+    ? ok(`left-handed: the pill follows the Wiki button into the game view LEFT of the menu (right ${g.clock.r}/${g.wikibtn.r}, top ${g.clock.t} = button bottom ${g.wikibtn.b} + 10)`)
+    : fail(`clock ${JSON.stringify(g.clock)} vs the Wiki button ${JSON.stringify(g.wikibtn)} in a game view that now runs 0..${851 - menuW}`);
   Math.abs(g.chatlog.l - 10) <= 2 ? ok("chat log at the game view's bottom-left") : fail(`chatlog ${JSON.stringify(g.chatlog)}`);
   await page.screenshot({ path: `${OUT}/landscape-lh.png` });
 
@@ -608,10 +607,8 @@ try {
   const flip = await page.evaluate(() => window.__flip);
   const pillFinal = await page.evaluate(() => {
     const r = document.querySelector(".ml-clock").getBoundingClientRect();
-    const cs = getComputedStyle(document.documentElement);
-    const v = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
-    return { l: Math.round(r.left), r: Math.round(r.right), mid: Math.round(r.left + r.width / 2),
-             gl: v("--gv-left"), gr: v("--gv-right") };
+    const b = document.querySelector(".ml-wikibtn").getBoundingClientRect();
+    return { l: Math.round(r.left), r: Math.round(r.right), t: Math.round(r.top), btnR: Math.round(b.right), btnB: Math.round(b.bottom) };
   });
   flip.transforms === 0 && flip.glides === 0
     ? ok("rotation snaps — no pin transform, no glide class on the chrome")
@@ -622,8 +619,8 @@ try {
   flip.veilSeen && flip.veilGone && !flip.timedOut
     ? ok("theme veil covered the flip and lifted after")
     : fail(`veil lifecycle wrong: ${JSON.stringify(flip)}`);
-  Math.abs(pillFinal.mid - (pillFinal.gl + 851 - pillFinal.gr) / 2) <= 2
-    ? ok(`…and the pill sits on the landscape anchor (centre ${pillFinal.mid} of the ${pillFinal.gl}..${851 - pillFinal.gr} game view)`)
+  Math.abs(pillFinal.r - pillFinal.btnR) <= 2 && Math.abs(pillFinal.t - pillFinal.btnB - 10) <= 2
+    ? ok(`…and the pill sits on the landscape anchor, under the Wiki button (right ${pillFinal.r}/${pillFinal.btnR}, top ${pillFinal.t} = button bottom ${pillFinal.btnB} + 10)`)
     : fail(`pill landed wrong: ${JSON.stringify(pillFinal)}`);
   // back to portrait for the next section (and let ITS flip finish too)
   await page.setViewportSize({ width: 393, height: 851 });
@@ -684,12 +681,11 @@ try {
     : fail(`chrome animated across the stages: ${JSON.stringify(flip2)}`);
   const pillStaged = await page.evaluate(() => {
     const r = document.querySelector(".ml-clock").getBoundingClientRect();
-    const cs = getComputedStyle(document.documentElement);
-    const v = (n) => parseFloat(cs.getPropertyValue(n)) || 0;
-    return { mid: Math.round(r.left + r.width / 2), want: Math.round((v("--gv-left") + 851 - v("--gv-right")) / 2) };
+    const b = document.querySelector(".ml-wikibtn").getBoundingClientRect();
+    return { r: Math.round(r.right), t: Math.round(r.top), btnR: Math.round(b.right), btnB: Math.round(b.bottom) };
   });
-  Math.abs(pillStaged.mid - pillStaged.want) <= 2
-    ? ok(`…and the pill sits on the TRUE final anchor (centre ${pillStaged.mid} of ${pillStaged.want})`)
+  Math.abs(pillStaged.r - pillStaged.btnR) <= 2 && Math.abs(pillStaged.t - pillStaged.btnB - 10) <= 2
+    ? ok(`…and the pill sits on the TRUE final anchor under the Wiki button (right ${pillStaged.r}/${pillStaged.btnR}, top ${pillStaged.t})`)
     : fail(`staged rotation landed wrong: ${JSON.stringify(pillStaged)}`);
   const after = await page.evaluate(() => ({
     cv: document.querySelector("#game canvas").width,
@@ -737,19 +733,33 @@ try {
     st.parent === "BODY" && st.w > 100 && st.hitIsPad && st.tab === "backpack"
       ? ok(`${hand}-handed: rotating on the backpack tab keeps the stick on screen and tappable (${st.w}px at x=${st.x})`)
       : fail(`${hand}-handed rotation lost the stick: ${JSON.stringify(st)}`);
-    // …and it still DRIVES the player from there (whole input path)
-    const q0 = await page.evaluate(() => ({ x: window.__ml.me().x, y: window.__ml.me().y }));
+    // …and it still DRIVES the player from there (whole input path). ANY
+    // direction proves it, held until it has moved 10wu or 2.5 s pass: a
+    // fixed 700 ms north read 9.0wu once (2026-09-19, the previous arm had
+    // just walked 24wu north from a random spawn), and the starved harness
+    // paces the drag in ~750 ms driver round trips — the proof is that the
+    // player moves on the stick, not how far 700 ms of one heading gets.
     const c = { x: (st.x + st.x + st.w) / 2, y: st.b - st.w / 2 };
-    await page.mouse.move(c.x, c.y);
-    await page.mouse.down();
-    await page.mouse.move(c.x, c.y - 90, { steps: 4 }); // north: no wall bias
-    await page.waitForTimeout(700);
-    await page.mouse.up();
-    const q1 = await page.evaluate(() => ({ x: window.__ml.me().x, y: window.__ml.me().y }));
-    const moved = Math.hypot(q1.x - q0.x, q1.y - q0.y);
+    let moved = 0, heading = "";
+    for (const [name, dy] of [["north", -90], ["south", 90]]) {
+      const q0 = await page.evaluate(() => ({ x: window.__ml.me().x, y: window.__ml.me().y }));
+      await page.mouse.move(c.x, c.y);
+      await page.mouse.down();
+      await page.mouse.move(c.x, c.y + dy, { steps: 4 });
+      const t0 = Date.now();
+      do {
+        await page.waitForTimeout(100);
+        const q1 = await page.evaluate(() => ({ x: window.__ml.me().x, y: window.__ml.me().y }));
+        moved = Math.hypot(q1.x - q0.x, q1.y - q0.y);
+      } while (moved <= 10 && Date.now() - t0 < 2500);
+      await page.mouse.up();
+      await page.waitForTimeout(200);
+      heading = name;
+      if (moved > 10) break;
+    }
     moved > 10
-      ? ok(`…and steers the player from the hidden-tab rotation (${moved.toFixed(0)}wu)`)
-      : fail(`${hand}-handed stick did not steer after rotating on another tab (${moved.toFixed(1)}wu)`);
+      ? ok(`…and steers the player from the hidden-tab rotation (${moved.toFixed(0)}wu ${heading})`)
+      : fail(`${hand}-handed stick did not steer after rotating on another tab (${moved.toFixed(1)}wu, tried north then south)`);
   }
   await page.evaluate(() => window.__ml.hand("right"));
   await page.evaluate(() => document.querySelector('[data-tab="gamepad"]').click());

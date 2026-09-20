@@ -148,21 +148,16 @@ try {
     throw new Error(`chat left ${geo.logRect.left} != Wiki row right ${geo.wikiRect.rightGap}`);
   if (!(geo.wikiRect.top < geo.innerH / 2))
     throw new Error(`Wiki row at top ${geo.wikiRect.top} — in portrait it lives top-right under the XP chip`);
-  // THE PILL SHARES NO EDGE WITH THE ROW ANY MORE — it is CENTRED (maintainer
-  // 2026-09-19: "the pill will not align at the position it's currently at. So
-  // lets center the pill at the top instead (with same top margin)"). It keeps
-  // its row — one published step under the Wiki row — and what this gate cares
-  // about is that the chat's margin is unaffected by any of it.
-  if (!near(geo.clockRect.mid, geo.innerW / 2, 1))
-    throw new Error(`pill centre ${geo.clockRect.mid} != the view's ${geo.innerW / 2} — in portrait the game view is the whole window`);
-  // WHICH ROW the pill takes is verify-wikibtn's subject and not this gate's:
-  // it depends on whether the two cards leave room, so it is a different
-  // answer at 480px (this gate's view, where the pill is on the cards' line)
-  // than at 393. Asserting it from here meant two gates owning one rule and
-  // this one holding the stale copy — which is exactly what happened.
-  if (!(geo.clockRect.top < geo.innerH / 2))
-    throw new Error(`pill top ${geo.clockRect.top} — it belongs in the view's top half, whichever row it takes`);
-  console.log(`MARGIN OK — chat left and the Wiki row's right share ${geo.wikiRect.rightGap}px to the edge; the row is under the XP chip and the pill is centred at the top`);
+  // THE PILL SHARES THE ROW'S RIGHT EDGE AGAIN (maintainer 2026-09-20: "once
+  // again place the time-of-day pill under the wiki button"): the same gap to
+  // the edge as the row, one published step under the row's top. Its width
+  // against the button is verify-wikibtn's subject; what this gate cares about
+  // is that the chat's margin is the same one.
+  if (!near(geo.clockRect.rightGap, geo.wikiRect.rightGap, 1))
+    throw new Error(`pill right gap ${geo.clockRect.rightGap} != the Wiki row's ${geo.wikiRect.rightGap}`);
+  if (!near(geo.clockRect.top - geo.wikiRect.top, geo.step, 1))
+    throw new Error(`pill top ${geo.clockRect.top} != the Wiki row's ${geo.wikiRect.top} + the published ${geo.step}px step`);
+  console.log(`MARGIN OK — chat left and the Wiki row's right share ${geo.wikiRect.rightGap}px to the edge; the row is under the XP chip and the pill one step under the row`);
   if (geo.lineCount < 1 || !geo.msgShown)
     throw new Error(`chat overlay log missing the message chip (lines=${geo.lineCount}, shown=${geo.msgShown})`);
   console.log("GEO OK");

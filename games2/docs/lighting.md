@@ -101,10 +101,11 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   daylight arrives (the switch keeps the preference).
 - **The CLOCK PILL — "Fern starfall"** (client/src/clock.ts; the maintainer's
   pick from a 21-candidate design round: papercut family, Fern's greens, Sea
-  glass's plain disc sun, Storm's starfield + falling star). A 40×16
-  art-pixel landscape painted into ImageData, shown at ×2 (80×32 css,
-  pixelated), pass-through, at the game view's bottom-right, 10px from the
-  edge and 10px above the HUD rail. Flat cut-paper layers, hard edges, NO
+  glass's plain disc sun, Storm's starfield + falling star). A 16-row
+  art-pixel landscape, as many columns as the Wiki button is wide (clock.ts
+  `fitPill` measures it; 40 at the approved mock), painted into ImageData,
+  shown at ×2 (pixelated), pass-through, one `--ml-stack-step` under the Wiki
+  button and as wide as it (maintainer 2026-09-20). Flat cut-paper layers, hard edges, NO
   dithering, NO gradients (earlier rounds rejected for exactly those).
   - **The geometry is the approved mock's, VERBATIM** — AH 16, HOR 10, AMP 7,
     orb radius 3.4, sun glow radius 8 scaled by daylight, layer bases
@@ -120,8 +121,8 @@ The night shader and its CPU twins, the light slot ledger, scenery lights and sh
   - KEYBOARD: the phone keyboard covers both bottom corners; on chat focus
     hud.ts floats the box 20px above the keys and lifts the log AND the ghost
     stick onto one line above it (`:root.ml-kb-up`, `--ml-inputlift + 56`,
-    .15s transitions both ways; the pill is top-centred and no longer
-    rides). The lift
+    .15s transitions both ways; the pill hangs under the Wiki row,
+    top-anchored, and does not ride). The lift
     recognises BOTH chat boxes (`.ml-chat-input` and the in-world
     `.ml-chatinput`; the latter is a direct child of `<body>`, so armLift()
     skips its hold-the-row-open step). Placeholders hide on focus. Gate:

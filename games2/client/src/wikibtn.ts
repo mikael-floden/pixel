@@ -14,13 +14,15 @@
  * - LEFT-HANDED LANDSCAPE: the bottom corner is free (the stick is bottom-
  *   left), so this row takes the corner anchor, and the keyboard lift moves
  *   it.
- * IT USED TO BE THREE PLACEMENTS, EACH ONE THE TIME-OF-DAY PILL'S ± one
- * PILL_STEP — the two were a stack that moved together, and this file mirrored
- * clock.ts rule for rule. That ended on 2026-09-19 when the pill went to the
- * TOP CENTRE of the view ("lets center the pill at the top instead"): the two
- * no longer touch, and nothing here reads the pill's geometry. What survives
- * of the stack is --ml-stack-step, still published here because it is the row
- * HEIGHT other chrome steps by.
+ * THE TIME-OF-DAY PILL HANGS ONE --ml-stack-step UNDER THIS BUTTON, AS WIDE
+ * AS IT (maintainer 2026-09-20: "once again place the time-of-day pill under
+ * the wiki button and make it the same size as the wiki button … It doesn't
+ * look good when it's at the top"). The dependency runs ONE way: clock.ts
+ * measures this button's box and steps by the --ml-stack-step published
+ * below; nothing here reads the pill's geometry, so the row moves the pill
+ * and the pill can never move the row. (The two were a stack that moved
+ * together from 2026-08-13, parted on 2026-09-19 when the pill went to the
+ * top centre of the view, and are a stack again — this time the row leads.)
  *
  * Unlike the pill it is a real BUTTON (the pill is pass-through): it opens
  * the wiki drawer (wikipanel.ts), which now remembers where in the wiki you
@@ -30,20 +32,22 @@
 import { openWikiPanel } from "./wikipanel";
 import { withV } from "./assetver";
 
-// The pill's box: 40x16 art pixels at x2 (clock.ts AW/AH/SCALE), content-box
-// with a 1px border. The gate asserts this against the REAL pill's rect, so
-// a resized pill fails loudly instead of the two drifting apart.
+// The pill's box as approved: 40x16 art pixels at x2 (clock.ts AW/AH/SCALE),
+// content-box with a 1px border. PILL_H is this button's content height AND
+// the pill's (AH x SCALE): the same height by construction, asserted against
+// the REAL pill's rect by the gate. PILL_W is only the width fallback below —
+// the pill's real width is THIS button's (clock.ts fitPill measures it).
 const PILL_W = 80;
 /** The 🔍 square beside it (wikinear.ts) and the one gap between them — the
  *  row's other two terms, so this button can take the remainder of the card. */
 const NEAR_W = 34;
 const NEAR_GAP = 10;
 const PILL_H = 32;
-/** How far anything stacked ON TOP of this button has to clear it: its outer
- * height (2px of border) + the project's one 10px edge gap. Published as
- * `--ml-stack-step` below because THREE elements need it — this button, the
- * 🔍 beside it, and the pill above it — and the day the button's box changes,
- * three hardcoded copies would silently disagree. */
+/** How far anything stacked ON TOP OF OR UNDER this button has to clear it:
+ * its outer height (2px of border) + the project's one 10px edge gap.
+ * Published as `--ml-stack-step` below because THREE elements need it — this
+ * button, the 🔍 beside it, and the pill under it — and the day the button's
+ * box changes, three hardcoded copies would silently disagree. */
 const PILL_STEP = PILL_H + 2 + 10;
 
 let root: HTMLButtonElement | null = null;
@@ -120,7 +124,7 @@ function injectStyles(): void {
      last placement to keep the game view's bottom corner instead (maintainer
      2026-09-19: "Left-handed landscape mode has still not placed the
      wiki+search under the XP-card"), and that corner holds no chrome since
-     the pill went top-centre. Nothing hangs below this row, so the keyboard
-     lift (.ml-kb-up) has nothing of it to lift. */`;
+     the pill hangs under this row instead (clock.ts). Both are top-anchored,
+     so the keyboard lift (.ml-kb-up) has nothing of either to lift. */`;
   document.head.appendChild(s);
 }

@@ -43,56 +43,42 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   `wiki/site/wiki.css`, the light/dark choice (localStorage `wiki-theme`,
   shared with the wiki), and the `.ui-*` component recipes.
 - `client/src/clock.ts` — the day/night clock: the "Fern starfall" PILL, an
-  art-pixel landscape painted into a canvas and shown at x2, CENTRED in the
-  game view one `--ml-stack-step` under the Wiki row.
-  **IT TAKES A THIRD OF THE CARD'S EXTRA WIDTH, AND IT IS NEVER STRETCHED TO
-  GET THERE** (maintainer 2026-09-19, who asked for this nervously — "I love
-  the pill today, we just need to make it a bit wider … I think stretching the
-  graphics will kinda destroy the sun and moon" — then tuned it twice in one
-  day: the full card was "a little bit to wide", half the extra "turned out
-  also be to much. Now I think you should have extended the pill only 33%").
-  ONE CONSTANT MOVED ACROSS ALL THREE ROUNDS, which is the point:
-  `fitPill()` is the whole rule: `AW` (40) is the width the mock was approved
-  at, `EXT` (1/3) the share of the XP card's EXTRA width it takes, and `aw` is
-  what is drawn. The sum is done in WHOLE ART PIXELS in JS, not in `calc()`,
-  because CSS cannot round and the halved width lands on odd css px (146 →
-  113) which would hand the canvas a 1.98x scale. The box is then exactly
-  `aw * SCALE`, so one art pixel is always exactly 2 css px.
-  A wider pill is MORE SKY AND MORE HILL — the orbs keep `R` 3.4 and
-  their glow, the hills keep their wavelength (`sin(x*f+o)` gives more of them,
-  not longer ones), and `spotsFor()` keeps his six hand-placed stars at their
-  exact coordinates and scatters the extra ones beyond x=40 at the same
-  measured density (5.9 per 40 columns against the mock's 6), hashed off the
-  column so they never twinkle or crawl. Read the card from `--bars-r-w`, NOT
-  from the pill's own rect: an earlier cut divided its bounding rect, got one
-  art column too many from the 1px border and rendered at 1.973x — the exact
-  smear this exists to prevent, caught by the gate.
-  **AND IT IS CENTRED, IN ONE RULE FOR BOTH ORIENTATIONS AND BOTH HANDS**
-  ("This ofc means the pill will not align at the position it's currently at.
-  So lets center the pill at the top instead (with same top margin)"): at half
-  the extension it shares an edge with nothing, so it left the Wiki stack
-  entirely — three placement rules, the `:root.ml-kb-up` lift and every
-  pill↔row assertion went with it. Centred on the GAME VIEW (`--gv-left` /
-  `--gv-right`), not the window, or the landscape menu would slide under it,
-  and the left edge is rounded to a whole css px because an even box in an odd
-  view lands on x.5 and shifts the nearest-neighbour grid.
-  **TOP CENTRE IS THE CARDS' OWN LINE** ("WHY DID YOU PLACE THE time-of-day
-  pill in the center and not TOP center!!!", then a red box drawn in the gap
-  between the two cards: "Ofc it should be placed here") — and it takes that
-  line WHEN THE TWO CARDS LEAVE ROOM, which `fitPill` MEASURES: the view minus
-  their two 10px margins and their two widths, against the pill plus the same
-  10px each side. His phone (495px) leaves 179px for a 104px pill and gets
-  the top row; at 393px it leaves 77 and the pill would sit on an HP bar, so
-  there it keeps the row under the Wiki row, free all the way across at every
-  width. TWO ROWS, ONE MEASUREMENT — a first cut reasoned about the 393px case
-  and put the pill a third of the way down HIS screen, over the player's head,
-  which is the whole argument for measuring the thing itself.
-  `verify-wikibtn`'s `assertPill` asserts all of it — half-extension against
-  the MEASURED card, exact 2x on both axes, centred in the game view, the row
-  that follows from the SAME measurement the code makes, and the pill's rect
-  intersecting no other chrome. Section 8b runs at 490x1078 on purpose: every
-  other reading is at 393x851, where the fallback row wins, so without it the
-  placement he asked for is never executed. The sun
+  art-pixel landscape painted into a canvas and shown at x2, HANGING ONE
+  `--ml-stack-step` UNDER THE WIKI BUTTON AND AS WIDE AS IT (maintainer
+  2026-09-20: "once again place the time-of-day pill under the wiki button
+  and make it the same size as the wiki button (same width as only the wiki
+  button, not wiki + search). It doesn't look good when it's at the top").
+  That superseded 2026-09-19's top-centre placement and its
+  third-of-the-card's-extra-width rule; neither comes back without his word.
+  `fitPill()` is the whole rule: it MEASURES the Wiki button's box (another
+  element — the rule against reading a rect is about the pill's OWN, which
+  fitPill is about to resize), floors its content width to a WHOLE art pixel
+  and draws that many columns; the box is then exactly `aw * SCALE` css px,
+  so one art pixel is always exactly 2 css px (floored, so an odd button
+  leaves the pill 1px narrower on the shared right edge, never half an art
+  pixel wider). The height is `AH * SCALE` = 32 = the button's content
+  height (wikibtn.ts `PILL_H`) by construction. The placement is CSS:
+  `right` the button's own anchor (`--gv-right` + 10px), `top` the row's
+  anchor plus the published step, one rule for both orientations and both
+  hands — the row moves the pill and never the other way round (wikibtn.ts
+  reads nothing of it). Top-anchored, so the keyboard lift has nothing of it
+  to lift; `:root.ml-noanim` freezes its `right`/`top` transitions through a
+  rotation like the row's.
+  **NOTHING IS EVER STRETCHED TO GET THERE** ("I think stretching the
+  graphics will kinda destroy the sun and moon"): a wider pill is MORE SKY
+  AND MORE HILL — the orbs keep `R` 3.4 and their glow, the hills keep their
+  wavelength (`sin(x*f+o)` gives more of them, not longer ones), and
+  `spotsFor()` keeps his six hand-placed stars at their exact coordinates
+  and scatters the extra ones beyond x=40 at the same measured density (5.9
+  per 40 columns against the mock's 6), hashed off the column so they never
+  twinkle or crawl. An earlier cut divided the pill's own bounding rect, got
+  one art column too many from the 1px border and rendered at 1.973x — the
+  exact smear this exists to prevent, caught by the gate.
+  `verify-wikibtn`'s `assertPill` asserts all of it in every placement —
+  the button's width (at most 1px narrower), its height, its right edge, one
+  step under its top, an exact 2x on both axes, and the pill's rect
+  intersecting no other chrome; section 8b runs at his own 495x1111 so the
+  rule is read at his width as well as the common one. The sun
   and the moon are two independent bodies, each crossing in 2/3 of a day at
   the same speed and sharing the sky at dawn and dusk, so it needs no
   hand-off animation and the server needs no time freeze. Driven only by
@@ -343,7 +329,7 @@ from the games agent), #18 (title/landing screen).
   portrait mode it's hard to read the chat messages. Can we make the chat right
   aligned for this mode? … The chat is still left aligned for right-handed
   people and I'm only talking about portrait mode here"). In portrait the Wiki
-  row lives top-right and the pill top-centre, so the two bottom corners belong
+  row and the pill live top-right, so the two bottom corners belong
   to the ghost stick and the chat log ALONE — and never to both. Right-handed
   is untouched (stick bottom-right, log bottom-left, his default); left-handed
   the log hangs off the RIGHT on the same 10px margin and `align-items` flips
@@ -911,8 +897,8 @@ from the games agent), #18 (title/landing screen).
   `wikinear.ts`: `top: safe-top + --bars-r-h + 20px` in the base rule and no
   `bottom` anywhere — one anchor for every placement since 2026-09-19: the
   row directly under the chip in portrait and in landscape with either hand
-  (the left hand joined last, on his report), the pill top-centred and no
-  longer in the stack. The keyboard lift (`hud.ts :root.ml-kb-up`) writes
+  (the left hand joined last, on his report), the pill one step under the
+  row again since 2026-09-20 (clock.ts). The keyboard lift (`hud.ts :root.ml-kb-up`) writes
   `bottom` on the chat log, the chat input and (through `--ml-pad-floor`,
   gamepad.ts) the ghost stick, and nothing else; the row's own lift rules
   went with its last bottom anchor, so the keys move nothing of it —

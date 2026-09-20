@@ -17,20 +17,22 @@
 //   * they travel the same number of pixels per unit of world time
 //   * nothing jumps at a phase boundary or at the day's wrap
 //
-// WHERE IT SITS (maintainer 2026-09-19: "lets center the pill at the top
-// instead (with same top margin)"): CENTRED in the game view, one
-// --ml-stack-step under the Wiki row, which is itself under the XP chip. The
-// step is the row's own outer height + gap, PUBLISHED once by wikibtn.ts and
-// read by clock.ts — so this gate reads the same variable rather than
-// restating 44, and section 1 asserts that relationship, not a bare number.
+// WHERE IT SITS (maintainer 2026-09-20: "once again place the time-of-day
+// pill under the wiki button and make it the same size as the wiki button"):
+// on the Wiki button's right edge, one --ml-stack-step under the row, which
+// is itself under the XP chip. The step is the row's own outer height + gap,
+// PUBLISHED once by wikibtn.ts and read by clock.ts — so this gate reads the
+// same variable rather than restating 44, and section 1 asserts that
+// relationship, not a bare number.
 // THIS SECTION WAS RED ON MAIN, from 2026-09-17 until today: it still asserted
 // the game view's BOTTOM-RIGHT corner ("10px in, 10px above the HUD rail")
 // after the row and the pill had both moved to the top, and the first check
 // throws, so the ones behind it never ran to say so. Whatever this gate
 // asserts about placement has to be re-read whenever the pill moves — which
 // is the reason it now asserts as little of it as it can get away with: the
-// pill's own centre and its own step, nothing about the row's anchor, which is
-// verify-wikibtn's subject and is asserted there in every placement.
+// pill's own right edge against the button's and its own step, nothing about
+// the row's anchor or the pill's width, which are verify-wikibtn's subject and
+// are asserted there in every placement.
 //
 // Drives the REAL client headlessly against a dev stack.
 import { chromium } from "playwright-core";
@@ -205,13 +207,12 @@ try {
     };
   });
   if (s.pos !== "fixed" || s.pe !== "none") fail(`pill not a fixed pass-through (${s.pos}/${s.pe})`);
-  // CENTRED in the game view (portrait here, so the view is the window), and
-  // one published step under the Wiki row. 1px of tolerance: an even box in an
-  // odd view lands on x.5 and clock.ts rounds the left edge to a whole css px
-  // on purpose, because a half-pixel box under a pixelated canvas smears it.
-  if (Math.abs(s.mid - (s.gl + s.vw - s.gr) / 2) > 1)
-    fail(`pill centre ${s.mid}, game view centre ${(s.gl + s.vw - s.gr) / 2}`);
+  // UNDER THE WIKI BUTTON, on its right edge, one published step under the
+  // row (maintainer 2026-09-20). The width against the button is
+  // verify-wikibtn's subject.
   if (!s.wiki) fail("no .ml-wikibtn above the pill — the row the pill steps from is missing");
+  else if (Math.abs(s.right - s.wiki.right) > 1)
+    fail(`pill right ${s.right}, the Wiki button's ${s.wiki.right}`);
   if (!(s.step > 0)) fail(`--ml-stack-step "${s.step}" is not a published px height`);
   if (Math.abs(s.top - s.wiki.top - s.step) > 1)
     fail(`pill top ${s.top} != the Wiki row's ${s.wiki.top} + the published ${s.step}px step`);
@@ -229,7 +230,7 @@ try {
   if (s.smooth !== "pixelated") fail(`image-rendering ${s.smooth}, want pixelated`);
   if (s.imgs !== 0) fail(`${s.imgs} <img> inside the pill — the art is painted, not loaded`);
   if (s.relics !== 0) fail(`${s.relics} half-dial relics (hand/face/hub) still in the DOM`);
-  console.log(`structure OK (${s.cw}x${s.ch} art px at x2, pixelated, centred one ${s.step}px step under the Wiki row)`);
+  console.log(`structure OK (${s.cw}x${s.ch} art px at x2, pixelated, on the Wiki button's right edge one ${s.step}px step under the Wiki row)`);
 
   // ---- 2. NOON: the sun alone, at the apex, dead centre ----
   const noon = await both(DAY, 0.5);
