@@ -680,6 +680,66 @@ if (lid && lid.onLidIdx.length) {
       const rel = ratio(half, done, "roof") / streetK;
       check(rel >= 0.75 && rel <= 1.25, `the roof slab fades with the street too (${(rel * 100).toFixed(0)}% of the street's ratio)`);
     }
+
+    // 4. NIGHT (maintainer 2026-09-20, two more screenshots, on the build that
+    //    carried the rules above). Day hid both: the sun lights a face whatever
+    //    the torch does, and the room's warm ambient is near the street's.
+    //    a) "Completely broken player torch" (251.4,284.6, the wall beside her
+    //       black): the outer-face rule ran with NO room published — roomAt
+    //       answers 1 there and roomCellAt 0 — so every wall face in the world
+    //       was the outer face of a room nobody stood in: no point light above
+    //       the light's height, none of the glow field. The same outer face,
+    //       my torch beside it, switched on and off: 1.00 on that build.
+    await page.evaluate(() => window.__ml.timeOfDay?.("night", true, 0.5));
+    await at(hop[0], hop[1], "outside the door at night, the torch beside the wall");
+    await page.evaluate(() => window.__ml.torch?.(true));
+    await new Promise((r) => setTimeout(r, 1200)); // the light slot's tenure ramp
+    await parkCam();
+    const torchOn = await measure("night torch on");
+    await page.evaluate(() => window.__ml.torch?.(false));
+    await new Promise((r) => setTimeout(r, 1200));
+    await parkCam();
+    const torchOff = await measure("night torch off");
+    await page.evaluate(() => window.__ml.torch?.(true));
+    let bestLift = 0;
+    let liftFace = null;
+    for (const k of ["southFace", "eastFace"]) {
+      if (!torchOn.stats[k] || !torchOff.stats[k]) continue;
+      const lift = luma(torchOn.stats[k]) / Math.max(1, luma(torchOff.stats[k]));
+      console.log(`  night ${k}: torch on ${luma(torchOn.stats[k]).toFixed(1)} / off ${luma(torchOff.stats[k]).toFixed(1)} = ${lift.toFixed(2)}`);
+      if (lift > bestLift) { bestLift = lift; liftFace = k; }
+    }
+    check(
+      bestLift >= 1.25,
+      `at night my torch lights the house's outer face beside me (${liftFace ?? "no face in view"}: ${(bestLift * 100).toFixed(0)}% of the same face with the torch off; 100% on the build whose outer-face rule ran outdoors)`,
+    );
+    //    b) "The house still flashes red when I run out" (257.4,305.0 at night,
+    //       the whole roof slab warm): the exit pinned where the roof is
+    //       opaque, against the settled night frame — the slab no brighter
+    //       than the street's own ratio allows, and no warmer than it settles.
+    await at(inSpot[0], inSpot[1], "just inside the door at night");
+    await page.waitForFunction(() => { try { return window.__ml.sceneryIndoor().drawnRoofed > 0 && window.__ml.indoorLight().roomHasLight; } catch { return false; } }, null, { timeout: 120_000, polling: 500 }).catch(() => {});
+    await page.evaluate(() => window.__ml.indoorMixPin(0.55));
+    const flippedN = await hopOut();
+    check(flippedN, "the night hop through the doorway starts the exit crossfade (blend pinned at 0.55)");
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => requestAnimationFrame(r))));
+    const nightHalf = await measure("night exit pinned 0.55");
+    await page.evaluate(() => window.__ml.indoorMixPin(null));
+    const landedN = await page.waitForFunction(() => { const f = window.__ml.indoorFade(); return !f.inside && f.mix <= 0 && !f.exiting; }, null, { timeout: 120_000, polling: 250 }).then(() => true).catch(() => false);
+    check(landedN, "the night exit crossfade lands outdoors");
+    await settle();
+    await parkCam();
+    const nightDone = await measure("night settled outside");
+    if (nightHalf.stats.roof && nightDone.stats.roof) {
+      const st = ratio(nightHalf, nightDone, "street");
+      const rel = ratio(nightHalf, nightDone, "roof") / st;
+      const warm = (v) => v[0] - v[2];
+      console.log(`  night roof: mid-exit ${luma(nightHalf.stats.roof).toFixed(1)} (R-B ${warm(nightHalf.stats.roof).toFixed(0)}) settled ${luma(nightDone.stats.roof).toFixed(1)} (R-B ${warm(nightDone.stats.roof).toFixed(0)}); street ratio ${st.toFixed(2)}`);
+      check(rel <= 1.25, `at night the roof slab fades with the street through the exit (${(rel * 100).toFixed(0)}% of the street's ratio)`);
+      check(warm(nightHalf.stats.roof) <= warm(nightDone.stats.roof) + 6, `mid-exit the roof is no warmer than it settles (R-B ${warm(nightHalf.stats.roof).toFixed(0)} vs ${warm(nightDone.stats.roof).toFixed(0)})`);
+    } else {
+      check(false, "the roof cell is in view at night to measure");
+    }
   }
 }
 

@@ -193,9 +193,20 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     house" — the fifth report of this crossing since 09-14; the chimney, the
     torch on the roof, the correction snap and ambient's lightning were the
     other four, each real and each fixed). A face's side is the cell in
-    FRONT of it (the wall-top fade's own `front` test): a face whose front
-    cell is not my room's is outside — black→outdoor with the street, blocked
-    from the room's lights and its halo like the roof (`overMyRoom`). The
+    FRONT of it (the wall-top fade's own `front` test): a face of MY ROOM'S
+    CELL whose front cell is not my room's is outside — `outerFace =
+    roomCellAt(cell) · (1 − roomCellAt(front))`: black→outdoor with the
+    street, blocked from the room's lights and its halo like the roof
+    (`overMyRoom`). THE CELL'S OWN MEMBERSHIP IS NOT OPTIONAL: `roomAt` is 1
+    and `roomCellAt` 0 while no room is published, so the rule's first
+    version (`1 − front` under `r > 0.5`) made every wall face in the world
+    the outer face of a room nobody stood in — no point light above the
+    light's height and none of the glow on any face, all night (maintainer
+    2026-09-20, 251.4,284.6: "completely broken player torch"; day hid it,
+    the sun lights a face whatever the torch does). Outdoors the product is
+    0 and every pixel is byte-identical to the rule's absence
+    (`server/test/outerface.test.ts` holds the gate in the source; the
+    night arm of the exit-fade gate measures the torch on the face). The
     sun share is per pixel: `mix(uSunOut, uSun.w, r)` — the world's strength
     outside my room, the eased one inside; the twin shades a sample by the
     strength its room test picks and the lit-copy pipeline re-weights by the
@@ -209,7 +220,25 @@ Probes: `__ml.indoorWall(v?)` / `__ml.indoor()`.
     through the doorway under a pinned blend, clear sky and day pinned, wall
     cells with a pane or a hanging skipped — a pane's glow is the room's; the
     faces within 20% of the street's ratio, the furniture at 0 under the
-    opaque roof and at 0.70 at mix 0.9).
+    opaque roof and at 0.70 at mix 0.9; then NIGHT: my torch beside the outer
+    face lifts it ≥ 25% over the torch switched off, and the roof slab
+    mid-exit within 25% of the street's ratio and no warmer than it settles).
+  - **A SEALED ROOM'S POOL STAMP WEARS THE ROOM'S GAIN, LIKE ITS LIGHT**
+    (`stampsToDraw`, WorldScene). The glow field's pool stamp is the fallback
+    for a source without a light slot, and a sealed fire LOSES its slot the
+    frame its gain reaches 0.01 at the exit's landing — the stamp map then
+    handed its pool back at FULL alpha on the very frame the room mask
+    dropped: a warm halo the size of the fire's radius in a screen-space
+    field with no line of sight and nothing over the roof to stop it, held
+    until the scenery rebuild dropped the piece. That window is his red
+    house (maintainer 2026-09-20 at night, 257.4,305.0: "the house still
+    flashes red when I run out", the whole slab warm on the frame he caught);
+    the same exit PINNED at any mix is clean (roof at 1.03× the street's own
+    fade ratio at 0.55), which is why the pinned gate never saw it — a
+    transient needs a per-frame trace, not a still. The stamp rides the
+    source's own gain now: nothing outside its room, the grade inside it
+    (the ledger map's `gain`), and the trace probe reads the same function
+    the night pass draws from (winTrace's drawA/drawN).
   - `__ml.indoorMixPin(v?)` parks the blend anywhere in (0,1) — how the
     starved harness photographs the crossfade deterministically (pin BEFORE
     the teleport). An exit pin ≤ ⅓ IS the landed grade — the swap fires

@@ -1284,9 +1284,17 @@ void main() {
   // already makes (front, below) — so a face whose front cell is not my room's
   // is the street's: it fades with the street, takes no room light above the
   // light (the back-face gate keeps the rest out) and none of the halo.
+  // MY ROOM'S OWN CELL FIRST (the wall-top fade's own mine term), because the two
+  // room reads disagree while NO room is published: roomAt answers 1 there and
+  // roomCellAt 0. Read without it, every wall face in the world was the outer
+  // face of a room nobody stood in — no point light above the light's height
+  // and none of the glow field on any face, all night (maintainer 2026-09-20
+  // at 251.4,284.6: "completely broken player torch", on the build that
+  // carried this rule's first version). Outdoors the product is 0 and every
+  // pixel is byte-identical to the rule's absence.
   float outerFace = 0.0;
   if (isFace && r > 0.5) {
-    outerFace = 1.0 - roomCellAt(baseF + 0.5 + mix(vec2(0.0, 1.0), vec2(1.0, 0.0), step(0.5, pickR)));
+    outerFace = roomCellAt(cell) * (1.0 - roomCellAt(baseF + 0.5 + mix(vec2(0.0, 1.0), vec2(1.0, 0.0), step(0.5, pickR))));
     r *= 1.0 - outerFace;
   }
   float sunF = 1.0;

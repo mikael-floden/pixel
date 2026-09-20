@@ -8844,17 +8844,8 @@ export class WorldScene extends Phaser.Scene {
               let drawA = 0;
               let drawN = 0;
               for (const g of this.sceneryStamps) stampA += g.alpha;
-              for (const g of this.glowStamps.concat(this.sceneryStamps)) {
-                let a = g.alpha;
-                if (g.srcId && g.ry !== undefined && this.slotTenure.size) {
-                  const t = this.slotTenure.get(g.srcId);
-                  if (t && this.slotLit.has(g.srcId)) {
-                    if (t.ramp >= 1) continue;
-                    const k = t.ramp * t.ramp * (3 - 2 * t.ramp);
-                    a = g.alpha * (1 - k);
-                  }
-                }
-                drawA += a;
+              for (const g of this.stampsToDraw()) {
+                drawA += g.alpha;
                 drawN++;
               }
               this.winScene.push({ f: this.winFrames, t: Math.round(this.time.now),
@@ -14863,25 +14854,11 @@ export class WorldScene extends Phaser.Scene {
       const playerZ = meAv ? Math.max(0, meAv.elev / this.geom.lh) : 0;
       const playerCol = meAv ? meAv.fx / CELL_WU : 0;
       const playerRow = meAv ? meAv.fy / CELL_WU : 0;
-      // A source holding a REAL light slot hands its ground POOL stamp back —
-      // the light replaces it (keeping both double-brightens ground and
-      // characters: curLights and curStamps both feed lightAt). CROSSFADED on
-      // the tenure ramp: while the light fades in, the pool fades out under it
-      // at exactly the complementary weight, so acquiring a slot mid-view is a
-      // dissolve between the two looks, never a swap. High halos (ry unset)
-      // stay: they are the art's own bloom. The glow RT repaints from this
-      // array every frame, so this is a map, not a rebuild.
-      const allStamps = this.sceneryStamps.length ? this.glowStamps.concat(this.sceneryStamps) : this.glowStamps;
-      const stampsDrawn = this.slotTenure.size
-        ? allStamps.flatMap((g) => {
-            if (!g.srcId || g.ry === undefined) return [g];
-            const t = this.slotTenure.get(g.srcId);
-            if (!t || !this.slotLit.has(g.srcId)) return [g];
-            if (t.ramp >= 1) return [];
-            const k = t.ramp * t.ramp * (3 - 2 * t.ramp);
-            return [{ ...g, alpha: g.alpha * (1 - k) }];
-          })
-        : allStamps;
+      // The glow stamps as the field paints them this frame (stampsToDraw: a
+      // slot holder's pool crossfades out under its light, a sealed room's
+      // pool wears the room's gain). The glow RT repaints from this array
+      // every frame, so this is a map, not a rebuild.
+      const stampsDrawn = this.stampsToDraw();
       this.ps();
       this.night!.update(
         this.cameras.main,
@@ -17995,6 +17972,59 @@ export class WorldScene extends Phaser.Scene {
 
   private indoorGrade(): number {
     return indoorGradeOf(this.indoorMix, this.indoorInside);
+  }
+
+  /** THE GLOW STAMPS AS THE FIELD PAINTS THEM THIS FRAME — one rule for the
+   *  night pass and for the trace probe (winTrace's drawA/drawN), so a gate
+   *  reads what the frame draws.
+   *  A source holding a REAL light slot hands its ground POOL stamp back —
+   *  the light replaces it (keeping both double-brightens ground and
+   *  characters: curLights and curStamps both feed lightAt). CROSSFADED on
+   *  the tenure ramp: while the light fades in, the pool fades out under it
+   *  at exactly the complementary weight, so acquiring a slot mid-view is a
+   *  dissolve between the two looks, never a swap. High halos (ry unset)
+   *  stay: they are the art's own bloom.
+   *  A SEALED ROOM'S POOL STAMP WEARS THE ROOM'S OWN GAIN, LIKE ITS LIGHT.
+   *  The stamp is the field's fallback for a source without a slot, and a
+   *  sealed fire LOSES its slot the frame its gain reaches 0.01 at the exit's
+   *  landing — so the map handed its pool back at FULL alpha on the very
+   *  frame the room mask dropped: a warm halo the size of the fire's radius
+   *  in a screen-space field with no line of sight and, the mask gone,
+   *  nothing over the roof to stop it, until the scenery rebuild dropped the
+   *  piece (maintainer 2026-09-20 at night, 257.4,305.0: "the house still
+   *  flashes red when I run out", the whole slab warm on his frame; the
+   *  pinned frames of the same exit are clean at every mix — it is one
+   *  window, not a state). The stamp now rides the source's own gain: nothing
+   *  outside its room, the grade inside it — the rule its light already
+   *  rides in the ledger map (`gain`). */
+  private stampsToDraw(): GlowStamp[] {
+    const all = this.sceneryStamps.length ? this.glowStamps.concat(this.sceneryStamps) : this.glowStamps;
+    let sealedGain: Map<string, number> | null = null;
+    if (this.sceneryStamps.length) {
+      const g = this.indoorGrade();
+      for (const src of this.sceneryLightSources) {
+        if (!src.sealed) continue;
+        (sealedGain ??= new Map()).set(src.id, this.roomMask && this.inMyRoom(src.col, src.row) ? g : 0);
+      }
+    }
+    if (!this.slotTenure.size && !sealedGain) return all;
+    return all.flatMap((g) => {
+      let a = g.alpha;
+      const sg = g.srcId && sealedGain ? sealedGain.get(g.srcId) : undefined;
+      if (sg !== undefined) {
+        if (sg <= 0.01) return [];
+        a *= sg;
+      }
+      if (g.srcId && g.ry !== undefined) {
+        const t = this.slotTenure.get(g.srcId);
+        if (t && this.slotLit.has(g.srcId)) {
+          if (t.ramp >= 1) return [];
+          const k = t.ramp * t.ramp * (3 - 2 * t.ramp);
+          a *= 1 - k;
+        }
+      }
+      return a === g.alpha ? [g] : [{ ...g, alpha: a }];
+    });
   }
 
   /** The debris layer's opacity — its own 3× curves, the speed the maintainer
