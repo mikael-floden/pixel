@@ -195,15 +195,16 @@ function railWorld(): TerrainGrid {
 
 test("a rail is a wall between the cells its axis runs through: they close, the route goes round its end, no stall needed", () => {
   const g = railWorld();
-  // The axis runs from (14.7,16.3) to (16.3,14.7): cells (14,16), (15,15), (16,14).
-  for (const [c, r] of [[14, 16], [15, 15], [16, 14]]) assert.ok(g.blocked[r * W + c] && g.sceneryBlocked?.[r * W + c], `cell ${c},${r} on the axis is closed`);
-  for (const [c, r] of [[14, 15], [16, 16], [13, 17], [17, 13], [15, 16], [16, 15]]) assert.ok(!g.blocked[r * W + c], `cell ${c},${r} beside the rail stays open`);
+  // The axis runs from (14.7,16.3) to (16.3,14.7): it crosses (15,15) edge to
+  // edge and ENDS inside (14,16) and (16,14), where a body goes round the tip.
+  assert.ok(g.blocked[15 * W + 15] && g.sceneryBlocked?.[15 * W + 15], "the cell the axis crosses is closed");
+  for (const [c, r] of [[14, 16], [16, 14], [14, 15], [16, 16], [13, 17], [17, 13], [15, 16], [16, 15]]) assert.ok(!g.blocked[r * W + c], `cell ${c},${r} at the rail's end or beside it stays open`);
   // His tap: from the rail's north-west side to the path just past it.
   const from = { x: 15.2 * CELL_WU, y: 14.6 * CELL_WU };
   const to = { x: 16.5 * CELL_WU, y: 15.5 * CELL_WU, goalLevel: 0 };
   const trip = startBestTrip(g, from.x, from.y, true, 0, 0, [to]);
   assert.ok(trip, "a trip is planned");
-  assert.ok(trip!.path.every((p) => !inCell(p, 15, 15) && !inCell(p, 14, 16) && !inCell(p, 16, 14)), `no waypoint on the rail: ${trip!.path.map(cells).join(" ")}`);
+  assert.ok(trip!.path.every((p) => !inCell(p, 15, 15)), `no waypoint across the rail: ${trip!.path.map(cells).join(" ")}`);
   const r = follow(g, trip!, from.x, from.y, 300);
   assert.ok(Math.hypot(r.x - to.x, r.y - to.y) < CELL_WU * 1.25, `round the rail's end: ended ${cells(r)} done=${r.done} flips=${r.flips} frozen=${r.maxFrozen}`);
   assert.equal(trip!.replans ?? 0, 0, "the first route walks: no stall re-plan");
@@ -239,7 +240,14 @@ test("on the_game: his fence at 303.7,199.7 is walked round, and the wall corrid
   assert.ok(trip, "a trip is planned");
   const r = follow(g, trip!, from.x, from.y, 300, ww, wh);
   assert.ok(Math.hypot(r.x - to.x, r.y - to.y) < CELL_WU * 1.25, `round the fence within 10 s: ended ${cells(r)} done=${r.done} flips=${r.flips} frozen=${r.maxFrozen}`);
-  // 297.7,199.4: the corridor between the house wall and the lantern post
-  // holds no legal body position (its free positions all hug the wall).
-  assert.ok(g.blocked[198 * g.width + 299], "cell 299,198 is closed to the route");
+  // 297.7,199.4 -> the path: the pocket's exits are a hairline and the wall
+  // corridor past the post; the walked proof keeps the route to what the
+  // body walks, and the tap arrives (round the house) without standing.
+  const from2 = { x: 297.7 * CELL_WU, y: 199.4 * CELL_WU };
+  const to2 = { x: 302.4 * CELL_WU, y: 201.6 * CELL_WU, goalLevel: 0 };
+  const trip2 = startBestTrip(g, from2.x, from2.y, true, 0, 0, [to2]);
+  assert.ok(trip2, "a trip is planned out of the pocket");
+  const r2 = follow(g, trip2!, from2.x, from2.y, 400, ww, wh);
+  assert.ok(Math.hypot(r2.x - to2.x, r2.y - to2.y) < CELL_WU * 1.25, `out of the pocket and there within 13 s: ended ${cells(r2)} done=${r2.done} flips=${r2.flips} frozen=${r2.maxFrozen}`);
+  assert.ok(r2.maxFrozen < 45, `never stands for long (${r2.maxFrozen} frozen ticks)`);
 });

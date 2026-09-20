@@ -172,29 +172,39 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   put a body that had slid to the corner there for good (2026-09-13). AND THE ROUTE IS WALKED
   BEFORE IT IS TAKEN (`routeStallCell`, `startProvenTrip`). THE NAV LAYER
   ANSWERS PASSAGE, NOT ONLY PRESENCE (2026-09-20): a nav position is one the
-  body may STAND in — the bake's body (`PLAYER_RADIUS` + `NAV_SLACK_WU` 2)
-  clear of the footprints and outside a wall's standoff (`standoffAt`; his
+  body may STAND in — the rescue's body, `PLAYER_RADIUS` exactly, clear of
+  the footprints and outside a wall's standoff (`standoffAt`; his
   297.7,199.4, where the route ran along the house wall through 299,198 and
   every free position there hugged the wall the rescue pushes a body off);
   a footprint thinner than the body and twice as long (`NAV_THIN_HALF_WU`,
   `NAV_THIN_RATIO`: a rail, a fence, a cupboard — not a table, a barrel or a
-  tree) closes the cells its axis runs through, because a cell a rail cuts
+  tree) closes the cells its axis crosses edge to edge — not the cells its
+  ends lie in, where a body goes round the tip — because a cell a rail cuts
   keeps both corners and a body never gets from one to the other; and
   `findPath` refuses a step across an edge, or a diagonal through a corner,
   that holds no body position (`navPassBits`, lazy per cell — the whole map
-  is 350 ms against a 75 ms stamp — with the rescue's own body and
+  is 350 ms against a 90 ms stamp, 30 before — with the rescue's own body and
   `NAV_PASS_TOL_WU` 3 of tolerance: the movement is soft at the skin, and
-  the brazier's pocket, 1.4 wu short, is walked). Measured on the_game:
-  1,401 cells closed by the union alone, 1,523 now. What the cells cannot
+  the brazier's pocket, 1.4 wu short, is walked). THE NAV IS OPEN WHERE THE
+  BODY FITS AND CLOSED WHERE IT DOES NOT, IN BOTH DIRECTIONS (maintainer:
+  "we don't want bugs the other way around neither — I can walk straight
+  through with manual input, but the nav system runs around"): 2 wu of
+  slack on the bake's body closed 90 more cells, among them corridors of 24
+  to 28 wu the stick walks — rejected; the nav's body is the rescue's.
+  Measured on the_game: 1,401 cells closed by the union alone, 1,419 with
+  the standoff and the thin axes. What the cells cannot
   say, the walk does — a cell can hold a body without letting one THROUGH
   (between the spawn house's cupboard and its table, 253.1,303.7, 2026-09-13:
   findPath threaded it, the follower stood, the walk planned the same route
   every window). So a route is followed on a copy for `ROUTE_PROVE_STEPS`
   (60 frames of 33 ms) before it is taken — the stick's escape in its own
-  frame, a TAP in the client's frame for a trip (the tap floor's slide, the
-  rescue, its gait; `startBestTrip`, `TAP_PROVE_TRIES` 4 within
-  `TAP_PROVE_BUDGET_MS` 8 on the device's clock, since a search at its node
-  cap costs 77 ms): one that arrives, or consumes a waypoint and keeps its
+  frame, a TAP in the client's frame to the wu (the tap floor's slide, the
+  rescue, its gait, the surface's speed, the elevation per tick — at speed
+  1 the simulated body slid past a corner the real body wedges on at 1.1;
+  `startBestTrip`, `TAP_PROVE_TRIES` 4 within `TAP_PROVE_BUDGET_MS` 16 on
+  the device's clock, since a search at its node cap costs 77 ms and at 8
+  the second attempt went out unproven): one that arrives, or consumes a
+  waypoint and keeps its
   progress clock running, is real; one the walk would drop — no 2 wu of
   progress toward the waypoint for `ROUTE_STALL_MS` 250, or, for a tap, no
   `ROUTE_NET_WU` of net movement in `ROUTE_NET_MS` (a dither makes slow fake
@@ -208,13 +218,16 @@ Server-authoritative movement, decks, collision, steer assist, fall damage, tap/
   it is taken too, `ROUTE_REPLANS` 3 in all (one re-plan of the same route
   was the old rule, and it planned the same route); a stall in the
   waypoint's own cell with nothing to name passes the waypoint. Every
-  waypoint stands OUT of the footprints, inside its cell (`offFootprints`:
-  the barrel at 296.25,199.25 held a waypoint 17 wu from where the body
-  could reach, and the trip died circling it). Replayed on the real grid
+  waypoint stands OUT of the footprints, inside its cell, and the standoff
+  off any wall (`offFootprints`, `offWalls`: the barrel at 296.25,199.25
+  held a waypoint 17 wu from where the body could reach, and the trip died
+  circling it; pushed out of the woodpile, the next landed 4 wu from the
+  house wall). Replayed on the real grid
   (his two reports, 2026-09-20): the pocket's tap plans the way round the
   house at once and arrives in 7 s, the fence's goes round the rail's end
-  in 3 s — nine targets each, no frozen frame; a tap costs 8 ms planned and
-  proven against 4 bare. Gates: `server/test/navtap.test.ts` (the standoff
+  in 3 s — nine targets each, no frozen frame; a tap costs 9 ms planned and
+  proven against 5 bare, 18 at his pocket where the proof re-plans four
+  times. Gates: `server/test/navtap.test.ts` (the standoff
   cell against a doorway and a hop-able ledge, the pinch by the passage
   layer and by the proof, a pinch beyond the proof's reach, the rail, the
   real grid), the pinch in `server/test/sceneryslide.test.ts`. Replayed on the real grid: out of the pocket in under

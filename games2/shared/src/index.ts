@@ -3537,6 +3537,28 @@ export function clearanceAdjust(
   return { x, y };
 }
 
+/** A point pushed WALL_STANDOFF off any wall face a body at `lvl` cannot get
+ *  onto (cellWallFrom) — the rescue's own push, for a waypoint. */
+function offWalls(grid: TerrainGrid, x: number, y: number, lvl: number): { x: number; y: number } {
+  const c0 = Math.floor(x / CELL_WU);
+  const r0 = Math.floor(y / CELL_WU);
+  for (let dr = -1; dr <= 1; dr++) {
+    for (let dc = -1; dc <= 1; dc++) {
+      const c = c0 + dc;
+      const r = r0 + dr;
+      if ((dc === 0 && dr === 0) || !cellWallFrom(grid, c, r, lvl)) continue;
+      const nx = clamp(x, c * CELL_WU, (c + 1) * CELL_WU);
+      const ny = clamp(y, r * CELL_WU, (r + 1) * CELL_WU);
+      const dx = x - nx;
+      const dy = y - ny;
+      const d = Math.hypot(dx, dy);
+      if (d >= WALL_STANDOFF || d < 1e-6) continue;
+      x = nx + (dx / d) * WALL_STANDOFF;
+      y = ny + (dy / d) * WALL_STANDOFF;
+    }
+  }
+  return { x, y };
+}
 /** A point pushed out of the footprints a body of `margin` at it would
  *  overlap, along the ellipse's own normal (footprintContact) — `passes`
  *  times, since leaving one footprint can land in its neighbour. */
@@ -3958,7 +3980,10 @@ export function findPath(
      * end landed where the body could not follow and the trip died there. */
     const q = nudged(c, r);
     const o = offFootprints(grid, q.x, q.y, PLAYER_RADIUS + 2);
-    pts.push({ x: clamp(o.x, c * CELL_WU + 4, (c + 1) * CELL_WU - 4), y: clamp(o.y, r * CELL_WU + 4, (r + 1) * CELL_WU - 4) });
+    // ...and off the walls by the rescue's standoff: pushed out of the
+    // woodpile, the waypoint in his wall corridor landed 4 wu from the house
+    // wall, where the rescue never lets a body stand.
+    pts.push(offWalls(grid, clamp(o.x, c * CELL_WU + 4, (c + 1) * CELL_WU - 4), clamp(o.y, r * CELL_WU + 4, (r + 1) * CELL_WU - 4), grid.level[n]));
   }
   // Each waypoint's surface level, from the LAYER the search actually used —
   // `cells` is cell-only, so walk the sid chain again for the layers.
@@ -5123,8 +5148,10 @@ const TAP_PROVE_TRIES = 4;
 /** The proof's time budget per tap, on the device's own clock: a search that
  *  runs to its node cap costs 77 ms here (a tap into open sea), and five of
  *  them would freeze a phone; past the budget the route is taken as it is and
- *  the follower's own stall re-plan is the fallback. */
-const TAP_PROVE_BUDGET_MS = 8;
+ *  the follower's own stall re-plan is the fallback. Sixteen: at eight the
+ *  second attempt at his fence went out unproven (a plan and a proof are
+ *  6 ms there) and the body wedged where the proof would have said so. */
+const TAP_PROVE_BUDGET_MS = 16;
 /** NET PROGRESS: a route whose body has not got ROUTE_NET_WU (half a cell)
  *  from where it was ROUTE_NET_MS ago is stalled — a stand or a dither alike.
  *  A slide along a wall at a quarter of a walk covers 30 wu a second and
@@ -5303,18 +5330,26 @@ function routeStall(
    * dithered on for 2.5 s before the stall re-plan. */
   const memo: SlideMemo = { ax: 0, ay: 0 };
   const tap = frame === "tap";
+  /* THE TAP FRAME IS THE CLIENT'S TO THE WU: the surface's own speed and the
+   * elevation resolved per tick, like WorldScene's step. At speed 1 the
+   * simulated body slid past the corner at his fence's end that the real
+   * body, on a path at 1.1, wedges on two wu later — and the proof passed a
+   * route the walk then stood on for 23 frames. */
+  let elev = fromElev;
+  const walkCtx = { maxClimb: WALK_CLIMB, canSwim: true };
   for (let i = 0; i < ROUTE_PROVE_STEPS; i++) {
     t += dt * 1000;
     // The proof's stall rules run BEFORE the follower's own, which would
     // otherwise spend the sim's re-plans on the same tick.
     if (t - sim.progress.t >= ROUTE_STALL_MS || (tap && netStalled(net, px, py, t))) return stoodAt(sim.path[0] ?? sim.target);
-    const d = stepAutopilot(grid, sim, px, py, t, W, H, fromElev);
+    const d = stepAutopilot(grid, sim, px, py, t, W, H, elev);
     if (d.done) return sim.path.length <= 1 ? null : stoodAt(sim.path[0]);
     let ax = d.ax;
     let ay = d.ay;
+    let speed = 1;
     if (tap) {
-      if ((ax !== 0 || ay !== 0) && bodyStalled(grid, px, py, ax, ay, fromElev)) {
-        const sl = slideAlong(grid, px, py, ax, ay, memo, fromElev);
+      if ((ax !== 0 || ay !== 0) && bodyStalled(grid, px, py, ax, ay, elev)) {
+        const sl = slideAlong(grid, px, py, ax, ay, memo, elev);
         if (sl) {
           ax = sl.ax;
           ay = sl.ay;
@@ -5323,13 +5358,16 @@ function routeStall(
         memo.ax = 0;
         memo.ay = 0;
       }
-      const u = unstickFromSolids(grid, px, py, 80 * dt, undefined, fromElev);
+      const u = unstickFromSolids(grid, px, py, 80 * dt, undefined, elev);
       px = u.x;
       py = u.y;
+      speed = surfaceAtWorldElev(grid, px, py, elev ?? levelAtWorld(grid, px, py)).speed;
     }
-    const m = stepMovement(px, py, ax, ay, tap && d.running, dt, fwd, 1, true, W, H, sideB);
+    const ge = elev === undefined ? undefined : () => elev as number;
+    const m = stepMovement(px, py, ax, ay, tap && d.running, dt, ge ? makeBlockedElev(grid, walkCtx, ge) : fwd, speed, true, W, H, ge ? makeSideBlocked(grid, walkCtx, ge) : sideB);
     px = m.x;
     py = m.y;
+    if (tap && elev !== undefined) elev = resolveElevAt(grid, elev, px, py, walkCtx);
   }
   return sim.path.length < n0 ? null : stoodAt(first);
 }
@@ -6798,9 +6836,9 @@ export function stampSceneryCollision(
    * accepts. A legal position is one the body may STAND in: the bake's body
    * (PLAYER_RADIUS + NAV_SLACK_WU) clear of every footprint and outside a
    * wall's standoff (standoffAt). Measured on the_game 2026-09-20 (1,419
-   * footprints): 1,401 cells closed by the union alone, 1,523 with the
-   * standoff, the slack and the thin axes (pass 3b) — against the 3,185 the
-   * old raster produced. The nav layer comes out SMALLER, which is the point:
+   * footprints): 1,401 cells closed by the union alone, 1,419 with the
+   * standoff and the thin axes (pass 3b) — against the 3,185 the old raster
+   * produced. The nav layer comes out SMALLER, which is the point:
    * a footprint blocks a cell only when it really fills it. */
   const nav = new Array<boolean>(cells).fill(false);
   const seen = new Uint8Array(cells);
@@ -6825,10 +6863,10 @@ export function stampSceneryCollision(
    * a body can never get from one side to the other inside it. The union
    * question has no cell-sized answer for a line; the line's is: a footprint
    * thinner than the body (NAV_THIN_HALF_WU across its minor axis) and at least
-   * NAV_THIN_RATIO longer than wide closes every cell its major axis passes
-   * through, on its own floor. Fences, rails, cupboards; not tables (as thick
-   * as the body), barrels or trees (round). His fence: three cells, and the
-   * route goes round the rail's end. */
+   * NAV_THIN_RATIO longer than wide closes every cell its major axis crosses
+   * edge to edge, on its own floor. Fences, rails, cupboards; not tables (as
+   * thick as the body), barrels or trees (round). His fence: its middle
+   * cell, and the route goes round the rail's end. */
   for (let j = 0; j < n; j++) {
     const alongX = fp.p[j] >= fp.q[j]; // the major axis: the frame's X or its Y
     const major = alongX ? fp.p[j] : fp.q[j];
@@ -6839,6 +6877,12 @@ export function stampSceneryCollision(
     // box's own ground turn.
     const ux = alongX ? (fp.rcos[j] + fp.rsin[j]) / Math.SQRT2 : (fp.rcos[j] - fp.rsin[j]) / Math.SQRT2;
     const uy = alongX ? (fp.rsin[j] - fp.rcos[j]) / Math.SQRT2 : (fp.rsin[j] + fp.rcos[j]) / Math.SQRT2;
+    // Only the cells the axis crosses EDGE TO EDGE: in the cell holding an
+    // end of the rail a body can go round the tip, and the cell test, the
+    // passage bits and the walked proof answer for it (a rail inside one
+    // cell closes nothing by this rule).
+    const endA = Math.floor(fp.cy[j] - uy * major) * grid.width + Math.floor(fp.cx[j] - ux * major);
+    const endB = Math.floor(fp.cy[j] + uy * major) * grid.width + Math.floor(fp.cx[j] + ux * major);
     const steps = Math.max(2, Math.ceil((2 * major) / NAV_AXIS_STEP));
     for (let k = 0; k < steps; k++) {
       const f = -major + 2 * major * ((k + 0.5) / steps);
@@ -6846,6 +6890,7 @@ export function stampSceneryCollision(
       const r = Math.floor(fp.cy[j] + uy * f);
       if (c < 0 || r < 0 || c >= grid.width || r >= grid.height) continue;
       const i = r * grid.width + c;
+      if (i === endA || i === endB) continue;
       if (grid.propBlocked[i] || nav[i]) continue;
       if (Math.abs(grid.level[i] - fp.lvl[j]) > FOOTPRINT_LEVEL_SLACK) continue; // another floor: a cave under a lid
       nav[i] = true;
@@ -6877,7 +6922,7 @@ export function stampSceneryCollision(
  *  first time a search asks (findPath's passOk), because a search touches
  *  hundreds of cells and the whole map is 1,602 east edges, 1,604 south
  *  edges and 4,955 corners over 27,000 cells — 350 ms, against a stamp of
- *  30 ms before and 75 ms now (the standoff, the slack, the thin axes). */
+ *  30 ms before and 90 ms now (the standoff and the thin axes). */
 export function navPassBits(grid: TerrainGrid, c: number, r: number): number {
   const i = r * grid.width + c;
   const pass = grid.navPass;
@@ -7038,13 +7083,16 @@ function wallsInBlock(grid: TerrainGrid, c0: number, r0: number, c1: number, r1:
   for (let r = r0; r <= r1; r++) for (let c = c0; c <= c1; c++) if (cellWallFrom(grid, c, r, lvl)) return true;
   return false;
 }
-/** THE BAKE'S BODY HAS ITS OWN LATTICE PITCH TO SPARE. A position a hair off
- *  an ellipse is one the follower cannot hold — its steps are 4-6 wu and its
- *  headings eight — so a cell whose only free positions are a sliver narrower
- *  than the fine lattice is no cell to route through: his fence's cell
- *  303,199 kept 6 of 256 positions on a 2 wu lattice, the route threaded it
- *  and the body crawled into the rail. */
-const NAV_SLACK_WU = 2;
+/** THE BAKE'S BODY IS THE RESCUE'S BODY, EXACTLY — PLAYER_RADIUS and no more.
+ *  The nav is open where the body fits and closed where it does not, in
+ *  BOTH directions (maintainer 2026-09-20: "we don't want bugs the other way
+ *  around neither — I can walk straight through with manual input, but the
+ *  nav system runs around"). Two wu of slack were tried against hairline
+ *  cells (his fence's cell 303,199 kept 6 of 256 positions): they closed 90
+ *  more cells of the_game, among them corridors between 24 and 28 wu wide
+ *  that the stick walks. A hairline cell the follower cannot hold is the
+ *  walked proof's to refuse, not the bake's. NEVER above 0. */
+const NAV_SLACK_WU = 0;
 
 /** A LEGAL BODY POSITION IS ONE THE BODY MAY STAND IN. Within WALL_STANDOFF of
  *  a face it cannot get onto (`cellWallFrom`, the rescue's own predicate) the
