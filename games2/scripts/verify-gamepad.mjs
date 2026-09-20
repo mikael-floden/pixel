@@ -429,6 +429,82 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
       ? ok(`portrait ghost at rest carries the ghost alphas (well ${gh.op.well}, cap ${gh.op.cap})`)
       : fail(`portrait ghost alphas ${JSON.stringify(gh.op)}, want .15/.25 (light)`);
     await page.screenshot({ path: `${OUT}/gamepad-portrait-ghost.png` });
+
+    // ── THE GHOST GETS OUT OF THE WAY WHILE THE PAGE STICK DRIVES (maintainer
+    //    2026-09-20: "the analog thumbstick at the screen should fade invisible
+    //    while I am holding/using the thumbstick in the menu … it would just be
+    //    cooler if it fades to fully transparent"). Three states: held → the
+    //    ghost's two parts are 0 and the page stick stays opaque; a thumb on
+    //    the GHOST as well → the ghost wins itself back to 1, because the one
+    //    the player is touching on screen must be the visible one; released →
+    //    the rest alphas return.
+    //    READ AFTER A FULL FRAME, NOT AFTER THE TRANSITION'S 250ms: this
+    //    harness runs ~1s frames, so a computed opacity sampled sooner is the
+    //    value the transition STARTED from, and a settle-poll at 150ms
+    //    intervals reads the same stale frame twice and calls it settled. That
+    //    cost an hour of chasing a rule that was never wrong. ──
+    //    WAIT FOR THE VALUE, NEVER FOR A DURATION. A computed opacity read
+    //    before the page's next frame returns what the transition STARTED
+    //    from, and this dpr-2.75 context is the starved one the glide arm
+    //    below also fights: 2.6 s of wall clock still landed inside one frame
+    //    here and reported a working rule as dead, twice. So poll in-page
+    //    until the ghost reaches the target, then read what it actually is.
+    const fadeRead = async (want) => {
+      await page
+        .waitForFunction(
+          (w) => {
+            const o = (sel) => { const e = document.querySelector(sel); return e ? +getComputedStyle(e).opacity : null; };
+            const a = o(".ml-pad-stick .ml-pad-well"), b = o(".ml-pad-stick .ml-pad-top");
+            return a !== null && b !== null && Math.abs(a - w[0]) <= 0.02 && Math.abs(b - w[1]) <= 0.02;
+          },
+          want,
+          { timeout: 20000, polling: 250 },
+        )
+        .catch(() => {});
+      return page.evaluate(() => {
+        const o = (sel) => { const e = document.querySelector(sel); return e ? +(+getComputedStyle(e).opacity).toFixed(2) : null; };
+        return { ghostWell: o(".ml-pad-stick .ml-pad-well"), ghostCap: o(".ml-pad-stick .ml-pad-top"),
+                 pageWell: o(".ml-pad-pagestick .ml-pad-well"),
+                 cls: document.documentElement.classList.contains("ml-pad-usingpage") };
+      });
+    };
+    //    THE GAMEPAD TAB HAS TO BE OPEN for this: the enclosing section drives
+    //    the ghost with the page HIDDEN, and a display:none page gives the page
+    //    stick a 0x0 rect — pressing its "centre" lands at 0,0, nothing is held
+    //    and the fade never arms. The map tab is restored below so the arms
+    //    after this one see the hidden page they expect.
+    await page.evaluate(() => document.querySelector('[data-tab="gamepad"]')?.click());
+    await page.waitForTimeout(500);
+    const ps = await page.evaluate(() => {
+      const e = document.querySelector(".ml-pad-pagestick");
+      if (!e) return null;
+      const r = e.getBoundingClientRect();
+      if (r.width < 10) return { dead: true, w: r.width };
+      return { x: r.left + r.width / 2, y: r.top + r.height / 2 };
+    });
+    if (!ps || ps.dead) fail(`no page stick to drive the ghost fade with (${JSON.stringify(ps)})`);
+    else {
+      await page.mouse.move(ps.x, ps.y);
+      await page.mouse.down();
+      const held = await fadeRead([0, 0]);
+      held.cls && held.ghostWell === 0 && held.ghostCap === 0 && held.pageWell === 1
+        ? ok("the ghost fades to nothing while the page stick drives (well 0, cap 0; the page stick stays opaque)")
+        : fail(`page stick held: ${JSON.stringify(held)} — want the ghost at 0/0 and the page stick at 1`);
+      await page.evaluate(() => document.querySelector(".ml-pad-stick").classList.add("held"));
+      const both = await fadeRead([1, 1]);
+      both.ghostWell === 1 && both.ghostCap === 1
+        ? ok("…and a thumb on the GHOST wins it back to full (both sticks held)")
+        : fail(`both held: ${JSON.stringify(both)} — want the ghost at 1/1, the one being touched`);
+      await page.evaluate(() => document.querySelector(".ml-pad-stick").classList.remove("held"));
+      await page.mouse.up();
+      const done = await fadeRead([0.15, 0.25]);
+      !done.cls && Math.abs(done.ghostWell - 0.15) <= 0.02 && Math.abs(done.ghostCap - 0.25) <= 0.02
+        ? ok(`…and the rest alphas return on release (well ${done.ghostWell}, cap ${done.ghostCap})`)
+        : fail(`after release: ${JSON.stringify(done)} — want .15/.25 and the class gone`);
+    }
+    // back to the hidden page this section runs with
+    await page.evaluate(() => document.querySelector('[data-tab="map"]')?.click());
+    await page.waitForTimeout(400);
     // DRIVES THE PLAYER from there: a northward drag synthesizes W (+SHIFT
     // past the run radius); recorded at window level, timing-free.
     await page.evaluate(() => {

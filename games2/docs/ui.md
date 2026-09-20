@@ -231,7 +231,9 @@ GROWS BY"); this holds the mechanics and the numbers.
   thumb's side; since 2026-09-20 the gamepad PAGE draws its own opaque stick
   again in portrait at his mark (`STICK_FX` .771, the WALK label over it,
   `.ml-pad-pagestick`), fixed there — the Settings fine-tune moves the ghost
-  only, and the two share one input path (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
+  only, and the two share one input path; while the page stick is held the
+  ghost fades to `opacity:0` (`:root.ml-pad-usingpage`, its own .25s
+  transition), and a thumb on the ghost itself still wins it back (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
   marked on two device screenshots; PORT_GHOST_INSET 10px in portrait, lifted
   to the chat log's line while the keyboard is up — `--ml-pad-bottom`), plus
   his fine-tune (controls.ts stickNudge; gamepad.ts stickNudgeRange = well/4

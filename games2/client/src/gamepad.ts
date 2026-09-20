@@ -98,6 +98,9 @@ const LAND_INSET = 38;
 // stick on the gamepad page in portrait is the other (2026-09-20), fixed on
 // his mark, and only the ghost takes the fine-tune.
 const PORT_GHOST_INSET = 10;
+/** On :root while a thumb is driving the PAGE stick — the ghost over the world
+ *  fades to nothing for as long as it lasts (maintainer 2026-09-20). */
+const USING_PAGE = "ml-pad-usingpage";
 
 /** The well's diameter for this viewport: the big 148 from 585 css px wide,
  * 120 below it (his phone's portrait is 393). */
@@ -385,7 +388,10 @@ export function mountGamepadStick(page: HTMLElement) {
       padBlur.style.width = padBlur.style.height = `${well}px`;
       for (const k of ["left", "top", "right", "bottom"] as const) padBlur.style[k] = pad.style[k];
       // no page stick in landscape: the page stacks the two buttons and the
-      // ghost floats in the corner
+      // ghost floats in the corner. Clear the fade class too — a rotation
+      // mid-drag would otherwise leave the ghost invisible with nothing left
+      // on screen to release.
+      document.documentElement.classList.remove(USING_PAGE);
       pagePad.style.display = "none";
       walkLabel.style.display = "none";
       // JUMP sits UNDER PICK UP (maintainer 2026-08-05) — a centred vertical
@@ -496,7 +502,7 @@ export function mountGamepadStick(page: HTMLElement) {
   // ONE INPUT PATH, TWO STICKS: the ghost and the page stick each own their
   // drag and their cap; the keys they synthesize are one set (setKeys), so
   // whichever thumb moved last is what the player does.
-  const attach = (el: HTMLElement, cap: (sector: number, radiusCss: number) => void) => {
+  const attach = (el: HTMLElement, cap: (sector: number, radiusCss: number) => void, isPage = false) => {
     let dragging = false;
     const apply = (ev: PointerEvent) => {
       const r = el.getBoundingClientRect();
@@ -521,10 +527,20 @@ export function mountGamepadStick(page: HTMLElement) {
       setKeys(-1, false);
       cap(-1, 0); // glide back to centre
       el.classList.remove("held"); // the ghost fades back to rest
+      // …and the ghost over the world comes back (see the class below)
+      if (isPage) document.documentElement.classList.remove(USING_PAGE);
       gameAudio.event("ui.release");
     };
     el.addEventListener("pointerdown", (ev) => {
       dragging = true;
+      // THE GHOST GETS OUT OF THE WAY WHILE THE PAGE STICK IS DRIVING
+      // (maintainer 2026-09-20: "the analog thumbstick at the screen should
+      // fade invisible while I am holding/using the thumbstick in the menu …
+      // it would just be cooler if it fades to fully transparent"). One root
+      // class, the fade is the parts' own .25s opacity transition, so it
+      // dissolves rather than blinks — and a thumb ON the ghost still wins it
+      // back, because .held is declared after this (see injectStyles).
+      if (isPage) document.documentElement.classList.add(USING_PAGE);
       el.setPointerCapture(ev.pointerId); // the finger may leave the well — keep it
       // IN USE = fully visible (maintainer 2026-08-05): both parts of the
       // ghost fade to 1 while the thumb holds it (their opacity transitions
@@ -541,7 +557,7 @@ export function mountGamepadStick(page: HTMLElement) {
     return release;
   };
   const release = attach(pad, setCap);
-  const releasePage = attach(pagePad, setPageCap);
+  const releasePage = attach(pagePad, setPageCap, true);
 
   let jumpHeld = false;
   const jumpDown = (ev: PointerEvent) => {
@@ -685,6 +701,15 @@ function injectStyles() {
     :root:not([data-theme]).ml-stickghost .ml-pad-stick .ml-pad-well{opacity:.4}
     :root:not([data-theme]).ml-stickghost .ml-pad-stick .ml-pad-top{opacity:.5}
   }
+  /* …AND THE GHOST DISAPPEARS WHILE THE PAGE STICK IS DRIVING (maintainer
+     2026-09-20). Two classes on :root, so this is specificity 5 — the same as
+     the dark rest rules above — and it sits AFTER them, which is how it wins
+     the tie. It sits BEFORE the .held rule below for the same reason in
+     reverse: two thumbs can hold both sticks at once, and the one the player
+     is actually touching on screen must win. The fade itself is the parts'
+     own opacity transition; nothing here animates. */
+  :root.ml-stickghost.${USING_PAGE} .ml-pad-stick .ml-pad-well,
+  :root.ml-stickghost.${USING_PAGE} .ml-pad-stick .ml-pad-top{opacity:0}
   /* IN USE both parts go fully visible, whatever their rest alpha. The
      :root.ml-stickghost prefix is LOAD-BEARING: the dark rest rules above carry an
      attribute selector, so a plain .ml-pad-stick.held .ml-pad-well loses

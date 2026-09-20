@@ -291,7 +291,17 @@ from the games agent), #18 (title/landing screen).
   synthesize are one set, and ONLY THE GHOST takes the fine-tune. Every
   gate's `.ml-pad-stick` is the ghost, and the ghost alphas are scoped to
   it. The root class `ml-stickghost` is always on and carries those alphas
-  (light .15/.25, dark .4/.5, 1/1 while held). `verify-gamepad` pins the
+  (light .15/.25, dark .4/.5, 1/1 while held).
+  **AND THE GHOST DISAPPEARS WHILE THE PAGE STICK DRIVES** (maintainer
+  2026-09-20: "the analog thumbstick at the screen should fade invisible
+  while I am holding/using the thumbstick in the menu … it would just be
+  cooler if it fades to fully transparent"): the page stick's drag puts
+  `ml-pad-usingpage` on `:root` and the ghost's two parts go `opacity:0` on
+  their own .25s transition. TWO CLASSES ON `:root` = specificity 5, the
+  dark rest rules' equal, so the rule sits AFTER them to win the tie — and
+  BEFORE `.held`, so two thumbs on both sticks leave the one being touched
+  visible. Cleared on release, on blur, on visibilitychange and in the
+  landscape branch, where no page stick exists to release it. `verify-gamepad` pins the
   three-control row (fractions ±3 css px, even inner gaps, margins ≥ 26,
   one centre row, the left-handed mirror), the page stick opaque inside
   the page beside one ghost, and the page stick unmoved by a nudge.
