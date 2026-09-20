@@ -162,8 +162,9 @@ wiki-style remake (the frame and sprite clock no longer exist at runtime).
   geometry back the moment the insets are 0),
   `scripts/verify-subtabs.mjs` (the Settings sub-tabs: the rail growing by
   exactly the strip while the page and the canvas keep their geometry, the
-  lock-step slide by declaration, the four pages and their live controls,
-  the admin-only Dev, the landscape icons-only strip).
+  lock-step slide by declaration with the ghost stick riding it, the four
+  pages and their live controls, the admin-only Dev, the landscape
+  icons-only strip).
 - This file.
 
 **The games agent owns everything else**, notably: `client/src/scenes/`,
@@ -287,7 +288,12 @@ from the games agent), #18 (title/landing screen).
   alphas (light .15/.25, dark .4/.5, 1/1 while held).
   PORTRAIT PLACEMENT: the game view's bottom-right CORNER on the one 10px
   margin (`PORT_GHOST_INSET`, anchored in CSS to `--hud-h` like the chat
-  overlay, so it rides the rail and the open sub-tab strip).
+  overlay, so it rides the rail and the open sub-tab strip — and GLIDES with
+  it: under `:root.ml-subanim` the stick and its blur disc transition
+  `bottom` on the rail's own `.25s ease`, since `.ml-pad-stick` is otherwise
+  `transition:none` and the strip's height landed in one frame while the
+  rail slid; maintainer 2026-09-20: "the thumbstick doesn't animate up like
+  the chat messages does. It directly snaps into a new position").
   THE FINE-TUNE (maintainer 2026-09-19: "a new control to be able to
   fine-tune the analog stick location … ± half radius in player control …
   margin 0 is the min so the stick can never be rendered outside of
@@ -418,7 +424,11 @@ from the games agent), #18 (title/landing screen).
   `grid-template-rows` 0fr→1fr fold and the rail's `top` transitions under
   `:root.ml-subanim` (set for the slide only — resizes and rotations still
   snap, and `ml-noanim` covers both), both `.25s ease` from one style recalc,
-  so the page's top edge never moves; the LEAVING chip row stays `.show`
+  so the page's top edge never moves; the ghost stick and its blur disc
+  (`gamepad.ts`, anchored to `--hud-h`) transition `bottom` under the same
+  class on the same curve, so the 10px gap above the rail holds through the
+  slide (his 2026-09-20 report: the stick snapped while the chat glided);
+  the LEAVING chip row stays `.show`
   through the collapse or the fold has no content and the page jumps a frame
   (filmed). `.ml-subrow.open` is the truth, not the row. LANDSCAPE: the strip
   is the top of the page column (`.ml-body` = strip + pages, re-ordered beside

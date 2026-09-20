@@ -541,6 +541,18 @@ function injectStyles() {
     box-sizing:border-box;transition:none;
     -webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
   .ml-pad-stick.anim{transition:left .25s ease,top .25s ease}
+  /* THE SUB-TAB SLIDE (maintainer 2026-09-20, Settings open in portrait:
+     "the thumbstick doesn't animate up like the chat messages does. It
+     directly snaps into a new position"): in portrait the stick and its disc
+     hang off --hud-h, which grows by the strip's height when a page with
+     sub-tabs opens, and the rail slides up over .25s ease under
+     :root.ml-subanim (hud.ts) — so for that window the two transition
+     bottom on the same curve and the 10px gap above the rail holds frame
+     for frame. left/top ride along so a hand flip inside the window keeps
+     its .anim glide; rotation and a plain resize never carry the class and
+     still snap. */
+  :root.ml-subanim .ml-pad-stick,:root.ml-subanim .ml-pad-blur{
+    transition:left .25s ease,top .25s ease,bottom .25s ease}
   /* the WELL — the basin. Its own element (not the frame's background) so the
      cap can be MORE opaque than it: a parent's group opacity can only ever
      make a child fainter (child effective = parent x child). */

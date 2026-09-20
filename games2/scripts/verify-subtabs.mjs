@@ -117,6 +117,8 @@ async function settle(page) {
   }
 }
 const click = (page, sel) => page.evaluate((s) => { const e = document.querySelector(s); if (!e) return false; e.click(); return true; }, sel);
+/** The ghost stick's bottom edge — it hangs off --hud-h like the chat log. */
+const stickBottom = (page) => page.evaluate(() => Math.round(document.querySelector(".ml-pad-stick").getBoundingClientRect().bottom));
 
 try {
   // ---- 1. PORTRAIT, a player ------------------------------------------
@@ -124,6 +126,7 @@ try {
     const ctx = await browser.newContext({ viewport: { width: 393, height: 851 }, isMobile: true, hasTouch: true, deviceScaleFactor: 1 });
     const page = await join(ctx);
     const base = await geom(page);
+    const stick0 = await stickBottom(page);
     !base.open && base.subH === 0 && base.hudH === base.threeRows
       ? ok(`backpack: no strip, --sub-h 0, --hud-h ${base.hudH} = the three-row law`)
       : fail(`backpack: open=${base.open} subH=${base.subH} hudH=${base.hudH} threeRows=${base.threeRows}`);
@@ -146,6 +149,10 @@ try {
     near(s.game.h, base.game.h) && near(s.canvas.h, base.canvas.h) && near(s.game.b, s.hud.t + s.subH)
       ? ok(`the canvas was not resized (${s.canvas.h}px, its bottom under the strip)`)
       : fail(`game ${JSON.stringify(base.game)} -> ${JSON.stringify(s.game)}, canvas ${JSON.stringify(s.canvas)}`);
+    const stick1 = await stickBottom(page);
+    near(stick0, base.hud.t - 10) && near(stick1, s.hud.t - 10)
+      ? ok(`the ghost stick rides the rail: 10 px above its top in both states (${stick0} -> ${stick1})`)
+      : fail(`stick bottom ${stick0} -> ${stick1} against rail top ${base.hud.t} -> ${s.hud.t}`);
     near(s.strip.t, s.tabrow.b) && near(s.pages.t, s.strip.b)
       ? ok("the strip sits between the tab row and the pages")
       : fail(`strip ${JSON.stringify(s.strip)} tabrow ${JSON.stringify(s.tabrow)} pages ${JSON.stringify(s.pages)}`);
@@ -172,9 +179,22 @@ try {
       document.documentElement.classList.add("ml-subanim");
       const h = getComputedStyle(document.querySelector(".ml-hud")), st = getComputedStyle(document.querySelector(".ml-subrow"));
       const out = { hud: [h.transitionProperty, h.transitionDuration, h.transitionTimingFunction], strip: [st.transitionProperty, st.transitionDuration, st.transitionTimingFunction] };
+      // the ghost stick and its blur disc hang off --hud-h: under the class
+      // their bottom must ride the rail's own curve (maintainer 2026-09-20:
+      // "the thumbstick doesn't animate up like the chat messages does. It
+      // directly snaps into a new position")
+      const ride = (sel) => {
+        const c = getComputedStyle(document.querySelector(sel));
+        const props = c.transitionProperty.split(", "), durs = c.transitionDuration.split(", "), fns = c.transitionTimingFunction.split(", ");
+        const i = props.indexOf("bottom");
+        return i < 0 ? null : [durs[i % durs.length], fns[i % fns.length]];
+      };
+      out.stick = ride(".ml-pad-stick");
+      out.blur = ride(".ml-pad-blur");
       document.documentElement.classList.remove("ml-subanim");
       const off = getComputedStyle(document.querySelector(".ml-hud"));
       out.hudOff = [off.transitionProperty, off.transitionDuration];
+      out.stickOff = ride(".ml-pad-stick");
       return out;
     });
     tr.hud[0] === "top" && tr.strip[0] === "grid-template-rows" && tr.hud[1] === tr.strip[1] && tr.hud[2] === tr.strip[2] && tr.hud[1] !== "0s"
@@ -183,6 +203,12 @@ try {
     tr.hudOff[0] !== "top" || tr.hudOff[1] === "0s"
       ? ok("…and the rail's top snaps again once the slide's class is gone (resizes and rotations stay snaps)")
       : fail(`the rail keeps a top transition without ml-subanim: ${tr.hudOff.join(" ")}`);
+    tr.stick && tr.blur && tr.stick[0] === tr.hud[1] && tr.stick[1] === tr.hud[2] && tr.blur[0] === tr.hud[1] && tr.blur[1] === tr.hud[2]
+      ? ok(`the ghost stick and its disc ride the slide on the rail's curve (bottom ${tr.stick.join(" ")})`)
+      : fail(`stick ${JSON.stringify(tr.stick)} / blur ${JSON.stringify(tr.blur)} against the rail's ${tr.hud[1]} ${tr.hud[2]}`);
+    !tr.stickOff || tr.stickOff[0] === "0s"
+      ? ok("…and the stick's bottom snaps again without the class")
+      : fail(`the stick keeps a bottom transition without ml-subanim: ${tr.stickOff.join(" ")}`);
 
     // -- General: theme, the adopted Resolution dial, Log out --
     const gen = await page.evaluate(() => {

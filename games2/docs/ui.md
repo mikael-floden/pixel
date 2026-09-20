@@ -138,6 +138,15 @@ GROWS BY"); this holds the mechanics and the numbers.
   the contract instead: both computed transitions (`top` /
   `grid-template-rows`, `0.25s ease`), the rail's top snapping again without
   `ml-subanim`, the row shown through the collapse, and both end states.
+- **Everything hung off `--hud-h` needs its own transition to ride the
+  slide.** The variable jumps by the strip's height in the same task the
+  rail starts sliding; the chat log glides because it declares `transition:
+  bottom`, and the ghost stick snapped because `.ml-pad-stick` declares
+  `transition:none` (its `.anim` glide covers `left`/`top` for hand flips
+  only). Now `:root.ml-subanim .ml-pad-stick, .ml-pad-blur` transition
+  `bottom` (with `left`/`top`, so a hand flip inside the window keeps its
+  glide) on the rail's `.25s ease`; the gate pins the declaration against
+  the rail's and the stick's bottom 10px above the rail in both end states.
 - **The player pages' recipes are the page's own**: section title =
   `.ml-amb-title` (shared selector, `.first` drops the rule), segmented
   choice = the ambient mode switch (`.ml-choice`), switch row = the ambient
