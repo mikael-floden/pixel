@@ -1,8 +1,20 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-20T17:22:22+00:00",
+  "updated_at": "2026-09-20T17:22:23+00:00",
   "health": "running",
-  "current": "idle — SHIPPED (maintainer 2026-09-20: 'once again place the time-of-day pill under the wiki button and make it the same size as the wiki button … It doesn't look good when it's at the top'): THE PILL HANGS ONE --ml-stack-step UNDER THE WIKI BUTTON, AS WIDE AS IT. clock.ts fitPill measures the button's box and draws floor(content/2) art columns at an exact 2x (never stretched — more sky and hill); one CSS rule on the row's own anchor places it in both orientations and both hands, the row leading. The 2026-09-19 top-centre placement and the third-of-the-extra-width rule are gone. Gates re-pinned on the button rather than the view's centre: verify-wikibtn assertPill (width, height, right edge, step, 2x, no overlap; every placement incl. his 495x1111), verify-chat, verify-landscape (both hands, both rotation drives), verify-clockflip, verify-gamepad. NEXT on his list: his 24x24 icons for the four Settings sections (SUBTABS img: entries); voice actors and more on the Sound page as they come.",
+  "current": {
+    "unit": "CLAIMED (maintainer 2026-09-20: 'In portrait mode when I press on the game-controller menu option I know we removed the analog thumbstick from this page. I want it back on the same location as before. And when the user change the analog thumbstick location (in settings) that only applies to the analog thumbstick that is drawn on top of the game. The joystick we show in the portrait game-controller menu option should always draw at the location we had on this page before'): THE PAGE STICK RETURNS — a SECOND stick on the gamepad page in portrait, at his old mark (STICK_FX .771 of the page width on the buttons' midline, mirrored for the left hand, the WALK label above it), opaque, fixed there: the Settings fine-tune (stickNudge) moves the ghost over the game view only. The ghost keeps everything it has (corner, nudge, keyboard lift, sub-tab slide). Landscape is untouched (the page keeps jump + pick up stacked; the ghost floats). gamepad.ts: the stick's parts and pointer handling become a factory used twice; the page stick carries its own class so every gate's .ml-pad-stick still means the ghost. verify-gamepad: the three-control row arms return (fractions ±3 css px, even inner gaps, margins ≥ 26, one centre row, the left-handed mirror) and a nudge arm proves the page stick does not move when the ghost does.",
+    "since": "2026-09-20T17:22:23+00:00",
+    "files": [
+      "games2/client/src/gamepad.ts",
+      "games2/scripts/verify-gamepad.mjs",
+      "games2/scripts/verify-landscape.mjs",
+      "games2/docs/ui.md",
+      "games2/UI_AGENT.md",
+      "coordination/games-ui-assistant.json"
+    ],
+    "note": "games-ui's board is idle; games and games-assistant name none of these files. hud.ts is not touched (mountGamepadStick(page) keeps its signature)."
+  },
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
