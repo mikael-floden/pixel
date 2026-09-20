@@ -349,6 +349,62 @@ them; folder isolation beats DRY here).
   2026-09-07: `moths` 0.027 ms/frame at night, 0.018 by day (both at the
   timer's own noise floor — `performance.now()` granularity, not work).
 
+## The zone boundary — every effect respects it, spatially
+
+**EFFECTS ARE ON PER ZONE, AND A ZONE IS A PLACE ON THE MAP, NOT THE CELL I
+STAND ON** (maintainer 2026-09-20: "It should not suddenly start to snow. I
+should walk into an area/zone that is already snowing ... I can stand outside
+a zone and see effects like a crab on the other side, but not on this side ...
+it should already look like it's raining on the other side and look as if it's
+not raining if you are inside and looking out"). The server rolls a set per
+zone (`shared/ambientzones.ts`); the scene resolves it at MY cell into
+`env.active` — one answer for the whole screen. **Measured 2026-09-20: only
+the weather rows and the episodes even read that answer; every FIELD feature
+(crabs, ants, spiders, gnats, moths, butterflies, fireflies, dragonflies, fish,
+...) ran wherever its own world gate was met, zones or not**, so maps2's shares
+for them changed nothing on screen. The fix is a FIELD, and each effect is
+converted to it one at a time (a claim, a screenshot at the boundary, a push
+per effect — his process).
+
+- **`ctx.zone` (`runtime/zonefield.ts`) is the one place to ask.**
+  `weightAt(name, isoX, isoY)` is how much effect `name` is on at a DRAWN
+  point, 0..1: the server's own `resolveAmbientAt` asked per cell (memoised
+  until the table re-rolls), blurred `FEATHER_CELLS` each way and read
+  bilinearly between cell centres — 0 outside, 1 well inside, a ramp about
+  three cells wide across the line, monotone, half-on ON the line
+  (`zonefield.test.ts`). `coverage(name, view)` samples the view on an 8x6
+  grid: `.any` is "on anywhere on screen" and `.mean` the share of the view.
+- **THE RULE FOR A CONVERTED EFFECT:** it RUNS when `coverage(name).any`
+  (its zone is on screen — from outside too), it SPAWNS an instance only
+  where `weightAt` is > 0 (rejection-sample the placement), it DRAWS each
+  instance at its own weight (a crab that walks across the line fades, never
+  cuts), and a sheet SCALES its count by `coverage.mean`. Never gate on
+  `env.active` for placement: that is my cell's answer, not the world's.
+- **ISO PIXELS IN, CELLS INSIDE.** A drawn point's cell depends on the
+  terrain's height there (a summit six levels up is drawn ~100 px above its
+  cell), so the mapping goes through the game's picker (`__ml.pickAt`),
+  memoised per 16x8 px bucket and capped at 6,000 buckets. A particle asks
+  once per bucket it crosses; a per-particle pick would be the one way this
+  costs a frame.
+- **NO ZONES, NO BOUNDARY:** with no doc, a forced sky, or a table not yet
+  received, every weight is 1 — the room's rolled sky, exactly as before. An
+  effect NO zone names weighs 0 everywhere; `ambientreach.test.ts` is what
+  says that is a data bug and not a rule.
+- **THE SEAM** (`WorldScene`, additive): `__ml.ambientZoneState()` (the doc,
+  the packed table as the room sent it, whether the room's sky rules) and
+  `__ml.projectCell(col, row, level)` (the ground projection every mark goes
+  through). Ambient never re-derives the resolution or the projection.
+- **THE OVERLAY** (`runtime/zonelines.ts`, Settings/dev "ambient zones",
+  `__mlAmbient.zoneLines(on)`): every ambient polygon in the world in the
+  zone-borders recipe he approved — a 2 px line sampled per cell so it climbs
+  the terrain, inward TICKS every two cells saying which side is inside with
+  nothing painted over the ground, no tint — plus what a grid never needed: a
+  label with the zone's name and the set ON in it now, colour by KIND, and
+  the zones holding my cell in the zone borders' inner red. On top of
+  everything (900_002.5): the terrain between me and a boundary must not eat
+  it. Redrawn on toggle, on a re-rolled table and when the camera has moved a
+  third of a view; culled to the view plus a margin.
+
 ## Depth + blend conventions (inherited from the game — do not drift)
 
 - Darkness overlay at depth **900_000**; tap beacon 900_000.5; lit copies

@@ -1,3 +1,4 @@
+import type { ZoneField } from "./zonefield";
 import type Phaser from "phaser";
 
 /** Snapshot of the world's mood, sampled from the game's `__ml` probe
@@ -45,6 +46,14 @@ export interface AmbientCtx {
   env: AmbientEnv;
   view: Phaser.Geom.Rectangle;
   zoom: number;
+  /** THE ZONE FIELD (runtime/zonefield.ts): `zone.weightAt(name, x, y)` is
+   * how much effect `name` is on at a drawn point, 0..1 with a soft edge, and
+   * `zone.coverage(name, view)` whether and how much of the view its zones
+   * cover. A feature spawns only where its weight is > 0, draws each instance
+   * at its own weight, and runs when `coverage(...).any` — on ANYWHERE in
+   * view, not at my cell (maintainer 2026-09-20: "the crab on the other side,
+   * but not on this side"). Weighs 1 everywhere while zones do not rule. */
+  zone: ZoneField;
   /** 0..1 OUTDOOR gain — 1 outside, 0 once the player is in a house/cave.
    * EVERY feature must multiply its drawn opacity by this, and should skip its
    * simulation entirely at 0 (see runtime/outdoor.ts). All ambience here is

@@ -35,8 +35,9 @@ const NOT_A_FEATURE = new Set(["runtime", "scripts", "art-original", "weather"])
  *  works; the last test FAILS the day the zone lands, so an entry cannot
  *  outlive its fix and the list can only shrink. */
 const ORPHANED: Record<string, string> = {
-  mist: "2026-09-19 — asked of maps2 on games-ambient-assistant's board: no zone gives mist a share",
-  cloudy: "2026-09-19 — the same request",
+  // mist and cloudy sat here 2026-09-19 -> 2026-09-20 (maps2 3058ec72ab: the
+  // roster reads the game's weather list; the tarn and the southern lake sign
+  // mist, the massifs cloudy). Nothing is orphaned today.
 };
 
 function switchable(): string[] {

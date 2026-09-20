@@ -7,6 +7,8 @@ import { Demo } from "./demo";
 import { DemoButton } from "./hudbutton";
 import { birdDensity, setBirdDensity } from "./density";
 import { OUTDOOR_FADE_MS, OutdoorGain, readIndoor } from "./outdoor";
+import { ZoneField, pickFromProbe, sourceFromProbe } from "./zonefield";
+import { ZoneLines } from "./zonelines";
 
 const SCENE_KEY = "world"; // WorldScene's key
 const ENV_SAMPLE_MS = 100; // mood changes are seconds-long fades; 10 Hz is plenty
@@ -25,14 +27,20 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       if (++tries < 80) setTimeout(attach, 250); // give up quietly after ~20s
       return;
     }
+    /* THE ZONE FIELD, built before the ctx it is a member of — see zonefield.ts. */
+    const zone = new ZoneField(sourceFromProbe(), pickFromProbe());
     const ctx: AmbientCtx = {
       scene,
       env: defaultEnv(),
       view: new Phaser.Geom.Rectangle(0, 0, 1, 1),
+      zone,
       zoom: 1,
       outdoor: 1,
     };
     const outdoor = new OutdoorGain();
+    /* THE ZONE OVERLAY (Settings/dev "ambient zones"): the ambient polygons in
+     * the world, in the zone-borders recipe he approved — see zonelines.ts. */
+    const zoneLines = new ZoneLines(scene, zone);
     const director = new Director(features);
     const toggles = new Toggles(features, director);
     const demo = new Demo(features, toggles);
@@ -64,6 +72,9 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       if (envAge >= ENV_SAMPLE_MS) {
         envAge = 0;
         ctx.env = sampleEnv(ctx.env, cam.worldView.centerX, cam.worldView.centerY);
+        // The zone field re-reads the table on the same tick: a zone that
+        // re-rolled drops its memos here, ten times a second, never per frame.
+        safe(() => { zone.refresh(); });
         safe(() => director.tick(ctx.env));
         // The HudBar rebuilds on re-joins; keep the demo button alive/fresh.
         safe(() => demoButton.ensure());
@@ -75,6 +86,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       // the roof for up to 100 ms (~6 frames) after they stepped in.
       ctx.env.indoor = readIndoor();
       ctx.outdoor = outdoor.step(dt, ctx.env.indoor);
+      safe(() => zoneLines.step(ctx.view, ctx.zoom));
       if (!inited) {
         inited = true;
         for (const f of features) safe(() => f.init(ctx));
@@ -100,10 +112,28 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
     scene.events.once(Phaser.Scenes.Events.SHUTDOWN, () => {
       scene.events.off(Phaser.Scenes.Events.UPDATE, onUpdate);
       for (const f of features) safe(() => f.dispose());
+      zoneLines.dispose();
     });
     // QA probe surface, mirroring the game's __ml idiom.
     (window as unknown as { __mlAmbient?: unknown }).__mlAmbient = {
       list: () => features.map((f) => f.name),
+      /** THE ZONE FIELD, for gates: no args = its state; a name = its
+       *  coverage of the view; a name and a drawn point = the weight there. */
+      zone: (name?: string, x?: number, y?: number) => {
+        if (name === undefined) return zone.debug();
+        if (x === undefined || y === undefined) return zone.coverage(name, ctx.view);
+        return zone.weightAt(name, x, y);
+      },
+      /** The field in CELL space, for gates: the blurred presence of `name`
+       *  at a cell — the geometry itself, with no picker between. */
+      zoneCell: (name: string, col: number, row: number, lvl = 0) => ({
+        on: zone.on(name, col, row, lvl),
+        blurred: zone.blurred(name, col, row, lvl),
+        active: [...zone.activeAt(col, row, lvl)].sort(),
+      }),
+      /** Settings/dev "ambient zones": read with no argument, set with a
+       *  boolean, "toggle" flips. */
+      zoneLines: (on?: boolean | "toggle") => zoneLines.set(on === "toggle" ? !zoneLines.on : on),
       /** Per-feature update cost since the last reset: mean and worst ms of a
        * frame. `cost(true)` reads and resets, which is how an A/B is taken. */
       cost: (reset = false) => {

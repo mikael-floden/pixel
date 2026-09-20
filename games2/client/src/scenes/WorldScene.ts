@@ -181,7 +181,7 @@ import { ChatUI } from "../chat";
 import { Gloom, easeGloom, newGloom, snapGloom } from "../../../ambient/weather/gloom";
 import {
   LEGACY_INDEX, packAmbient, unpackAmbient, WEATHER_UNIVERSE,
-  type AmbientZoneDoc, parseAmbientZones, unpackZoneTable, resolveAmbientAt, zonesAt,
+  type AmbientZoneDoc, parseAmbientZones, unpackZoneTable, packZoneTable, resolveAmbientAt, zonesAt,
 } from "@nangijala/shared";
 import { Footsteps } from "../footsteps";
 import { setClockTime, clockStar } from "../clock";
@@ -5152,6 +5152,14 @@ export class WorldScene extends Phaser.Scene {
         { label: "spawn areas", act: () => this.toggleSpawnAreas(), get: () => this.spawnAreasOn },
         // The zone grid in the world, same shape of switch as spawn areas.
         { label: "zone borders", act: () => this.toggleZoneLines(), get: () => this.zoneLinesOn },
+        // The AMBIENT zones in the world (maintainer 2026-09-20: "a menu button
+        // under settings/dev where I can see the ambient zone boundaries") —
+        // ambient's own overlay, ambient/runtime/zonelines.ts, the same recipe.
+        {
+          label: "ambient zones",
+          act: () => (window as unknown as { __mlAmbient?: { zoneLines?: (on: "toggle") => boolean } }).__mlAmbient?.zoneLines?.("toggle"),
+          get: () => !!(window as unknown as { __mlAmbient?: { zoneLines?: () => boolean } }).__mlAmbient?.zoneLines?.(),
+        },
         // Aggro radii (combat round 2) — DEBUG rings, off by default: red =
         // a predator's proximity radius, gold = the provoke radius on the
         // sword-marked target.
@@ -6106,6 +6114,21 @@ export class WorldScene extends Phaser.Scene {
           active: [...this.ambientActive].sort(),
         };
       },
+      /* THE ZONE STATE FOR AMBIENT'S OWN FIELD (ambient/runtime/zonefield.ts):
+       * the parsed doc (read-only to the reader), the table exactly as the
+       * room sent it, and whether the room's sky rules instead. Ambient asks
+       * the same resolver per CELL to give every effect a spatial answer —
+       * "is it raining over THERE" — where `ambientActive` above is the one
+       * answer at my cell. */
+      ambientZoneState: () => ({
+        doc: this.ambientZoneDoc,
+        packed: packZoneTable(this.ambientZoneTable),
+        roomSky: this.ambientForced || !this.ambientZoneDoc || this.ambientZoneTable.size === 0,
+      }),
+      /** The ground projection, for an overlay drawn in the world by a module
+       *  that is not this scene (ambient/runtime/zonelines.ts): continuous
+       *  cells and a level, the same function every mark here goes through. */
+      projectCell: (col: number, row: number, level: number) => this.projectCellCorner(col, row, level),
       // Force the ROOM's set on the server (QA/gates; every client sees it).
       worldAmbient: (set?: string[]) => {
         this.ambientPinned = false;
