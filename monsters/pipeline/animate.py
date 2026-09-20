@@ -897,7 +897,11 @@ def clear_verdict(cid, slot, direction, reason="regenerated"):
     for d in {direction} | {m for m, src in MIRRORED.items() if src == direction}:
         key = f"monsters/{cid}#{slot}#{d}"
         v = entries.get(key)
-        if v and (v.get("status") or "").lower() in ("redo", "rejected"):
+        # ANY entry that is not an approval dies with the art: a redo, a
+        # rejection, AND a note-only entry (no status, his words still there —
+        # the wiki leaves one behind when a status is cleared but the comment
+        # is not, and it reads as his live comment under art he has never seen).
+        if v and (v.get("status") or "").lower() != "approved":
             entries.pop(key)
             gone += 1
     if gone:

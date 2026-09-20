@@ -128,6 +128,13 @@ PAGE = r"""<title>__TITLE__</title>
   .mh b { font-size:16px; font-weight:600; }
   .mono { font-family:"IBM Plex Mono", ui-monospace, monospace; font-size:12px; color:var(--muted); }
   .act { color:var(--muted); font-size:13px; margin:4px 0 8px; max-width:65ch; }
+  .asked, .did { font-size:13px; max-width:68ch; margin:0 0 4px; display:flex; gap:8px; align-items:baseline; }
+  .asked { color:var(--fg); }
+  .did { color:var(--muted); margin-bottom:10px; }
+  .tag { font:400 10px/1 "Silkscreen", "IBM Plex Mono", monospace; text-transform:uppercase; letter-spacing:.04em;
+         padding:3px 6px; border-radius:4px; flex:none; }
+  .asked .tag { background:color-mix(in srgb, var(--acc) 15%, transparent); color:var(--acc); }
+  .did .tag { background:color-mix(in srgb, var(--ok) 14%, transparent); color:var(--ok); }
   .row { display:flex; flex-wrap:wrap; gap:8px; }
   .cell { display:flex; flex-direction:column; align-items:center; gap:4px; min-width:0; }
   .well { border-radius:6px; padding:6px; background:repeating-conic-gradient(var(--checker) 0% 25%, var(--well) 0% 50%) 0 0/16px 16px; }
@@ -164,7 +171,9 @@ for (const m of DATA) {
   card.dataset.name = (m.id + ' ' + m.name + ' ' + m.tier).toLowerCase();
   card.dataset.bad = DIRS.some(d => m.dirs[d].status !== 'pass') ? '1' : '';
   card.innerHTML = `<div class="mh"><b>${m.name}</b><span class="mono">${m.id} · ${m.slot} · ${m.tier} · ${m.scale} · ${m.counts[0]} frames</span></div>
-    <div class="act">${m.action.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>`;
+    <div class="act">${m.action.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>` +
+    (m.asked ? `<div class="asked"><span class="tag">he asked</span>${m.asked.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>` : '') +
+    (m.did ? `<div class="did"><span class="tag">changed</span>${m.did.replace(/&/g,'&amp;').replace(/</g,'&lt;')}</div>` : '');
   const row = document.createElement('div'); row.className = 'row';
   const img = new Image(); img.src = 'data:image/webp;base64,' + m.b64;
   DIRS.forEach((d, i) => {
@@ -220,6 +229,7 @@ def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--slot", help="e.g. die_v1")
     ap.add_argument("--pairs", help="id:slot,id:slot — one page, a different slot per monster")
+    ap.add_argument("--notes", help="JSON file {id: {asked, did}} — HIS words and what changed, shown on the card")
     ap.add_argument("--only", help="comma-separated ids")
     ap.add_argument("-o", "--out", default=None, help="output HTML (default: /tmp/monsters_<slot>.html)")
     ap.add_argument("--frame-ms", type=int, default=FRAME_MS)
@@ -229,6 +239,10 @@ def main():
     if not args.slot and not pairs:
         ap.error("--slot or --pairs is required")
     data = collect(args.slot, set(args.only.split(",")) if args.only else None, pairs)
+    if args.notes:
+        notes = json.load(open(args.notes))
+        for m in data:
+            m.update({k: v for k, v in (notes.get(m["id"]) or {}).items() if k in ("asked", "did")})
     title = f"Monster {args.slot} review" if args.slot else "Monster redo review"
     page = (PAGE.replace("__TITLE__", html.escape(title))
                 .replace("__DATA__", json.dumps(data, separators=(",", ":")))
