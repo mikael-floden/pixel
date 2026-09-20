@@ -299,7 +299,13 @@ def ladder_action(cid, rung, base_action, state="attack"):
             return base_action + calm[min(-rung, len(calm) - 1)]
         return base_action + amp[min(rung, len(amp) - 1)]
     extreme = design_flag(cid, "attack_extreme")
-    simple = CLAW_SLASH if design_flag(cid, "claws") else SIMPLE_LUNGE
+    # rung 2 is "try something simpler". The generic simpler attack is a claw
+    # swipe or a body lunge — which THROWS AWAY the concept when the concept was
+    # his ("a wing slash attack this time"): the ladder answered a wing slash
+    # with a lunge two rolls later. A design may name its own simpler version in
+    # `attack_simple`, and that is what rung 2 asks for.
+    simple = (design_flag(cid, "attack_simple")
+              or (CLAW_SLASH if design_flag(cid, "claws") else SIMPLE_LUNGE))
     if rung < 0:
         return base_action + CALM[min(-rung, len(CALM) - 1)]
     if rung == 0:
@@ -1311,8 +1317,14 @@ def _feedback_doc():
 
 
 def _write_feedback(doc):
+    # WRITE IT BACK THE WAY THE WIKI WRITES IT (indent 2). This file is not
+    # ours: the running game server rewrites it through the GitHub contents API
+    # on every admin save, merging his delta onto the committed content. At
+    # indent 1 every agent write reformatted all 7,000 lines, so a two-line
+    # verdict removal landed as a 14,000-line diff that collides with his saves
+    # and with the other agent in this domain.
     with open(FEEDBACK, "w") as f:
-        json.dump(doc, f, indent=1, ensure_ascii=False)
+        json.dump(doc, f, indent=2, ensure_ascii=False)
         f.write("\n")
 
 
@@ -1452,9 +1464,7 @@ def cmd_prune_feedback(args):
         print(f"  pruned {key}  (judged {said[:19]}, regenerated {made[:19]})")
     if drop and not args.dry_run:
         doc["entries"] = entries
-        with open(FEEDBACK, "w") as f:
-            json.dump(doc, f, indent=1, ensure_ascii=False)
-            f.write("\n")
+        _write_feedback(doc)
     print(f"{len(drop)} obsolete verdict(s){' (dry run)' if args.dry_run else ' removed'}; "
           f"{len(entries)} left")
 

@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-20T13:11:02.952Z",
+  "updated_at": "2026-09-20T17:22:35Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -6691,30 +6691,6 @@
       "art": "d37c8e55fee4da63",
       "updated_at": "2026-09-18T14:37:23.838Z"
     },
-    "monsters/eye_bat#attack_v3#south": {
-      "art": "c58c954753dde5f7",
-      "updated_at": "2026-09-20T13:06:53.255Z",
-      "status": "redo",
-      "note": "Try a different attack animation. A wing slash attack this time."
-    },
-    "monsters/eye_bat#attack_v3#south-east": {
-      "status": "redo",
-      "art": "74b7596fbb0b7d97",
-      "updated_at": "2026-09-20T13:06:59.117Z",
-      "note": "Try a different attack animation. A wing slash attack this time."
-    },
-    "monsters/eye_bat#attack_v3#east": {
-      "status": "redo",
-      "art": "e29cf9f1a3f1c4f1",
-      "updated_at": "2026-09-20T13:07:05.574Z",
-      "note": "Try a different attack animation. A wing slash attack this time."
-    },
-    "monsters/eye_bat#attack_v3#west": {
-      "status": "redo",
-      "art": "d83e46b08fa12125",
-      "updated_at": "2026-09-20T13:07:22.313Z",
-      "note": "Try a different attack animation. A wing slash attack this time."
-    },
     "monsters/eye_bat#die_v1#south": {
       "rating": 3,
       "status": "approved",
@@ -6818,12 +6794,6 @@
       "status": "approved",
       "art": "8599613c373ca241",
       "updated_at": "2026-09-20T13:08:04.755Z"
-    },
-    "monsters/cobra#walk#south-east": {
-      "status": "redo",
-      "art": "3da4626ecbee294e",
-      "updated_at": "2026-09-20T13:08:17.736Z",
-      "note": "Doesn't look like a snake walk"
     },
     "monsters/cobra#walk#east": {
       "rating": 3,
@@ -6945,71 +6915,11 @@
       "art": "c2c24b466ee25f67",
       "updated_at": "2026-09-18T14:44:21.249Z"
     },
-    "monsters/spider_queen#die_v1#north": {
-      "status": "redo",
-      "art": "4b8c20518dc57418",
-      "updated_at": "2026-09-20T13:03:41.220Z",
-      "note": "Try a promt that shrinks the the Broodmother into a small spider"
-    },
-    "monsters/spider_queen#die_v1#south": {
-      "note": "Try a promt that shrinks the the Broodmother into a small spider",
-      "updated_at": "2026-09-20T13:03:17.540Z",
-      "status": "redo",
-      "art": "5b6f3d382d6a5d04"
-    },
-    "monsters/spider_queen#die_v1#south-east": {
-      "note": "Try a promt that shrinks the the Broodmother into a small spider",
-      "updated_at": "2026-09-20T13:03:22.351Z",
-      "status": "redo",
-      "art": "af17384a68768b76"
-    },
-    "monsters/spider_queen#die_v1#east": {
-      "status": "redo",
-      "art": "1528938fe10c14d8",
-      "updated_at": "2026-09-20T13:03:27.209Z",
-      "note": "Try a promt that shrinks the the Broodmother into a small spider"
-    },
-    "monsters/spider_queen#die_v1#north-east": {
-      "status": "redo",
-      "art": "74e2f06e2a1fdb01",
-      "updated_at": "2026-09-20T13:03:35.772Z",
-      "note": "Try a promt that shrinks the the Broodmother into a small spider"
-    },
-    "monsters/spider_queen#die_v1#west": {
-      "status": "redo",
-      "art": "961d8196adedec1b",
-      "updated_at": "2026-09-20T13:03:47.723Z",
-      "note": "Try a promt that shrinks the the Broodmother into a small spider"
-    },
     "monsters/vulture#attack_v3#south": {
       "status": "approved",
       "rating": 1,
       "art": "bc4504d8402d570b",
       "updated_at": "2026-09-20T13:04:05.550Z"
-    },
-    "monsters/eye_bat#attack_v3#north-east": {
-      "status": "redo",
-      "art": "3474182ab8e57904",
-      "updated_at": "2026-09-20T13:07:10.013Z",
-      "note": "Try a different attack animation. A wing slash attack this time."
-    },
-    "monsters/eye_bat#attack_v3#north": {
-      "status": "redo",
-      "art": "abf6caf7ad0fcdff",
-      "updated_at": "2026-09-20T13:07:13.285Z",
-      "note": "Try a different attack animation. A wing slash attack this time."
-    },
-    "monsters/eye_bat#attack_v3#north-west": {
-      "note": "Try a different attack animation. A wing slash attack this time.",
-      "updated_at": "2026-09-20T13:07:16.121Z",
-      "status": "redo",
-      "art": "cf4e4b2ef384848a"
-    },
-    "monsters/cobra#walk#north": {
-      "status": "redo",
-      "art": "94512bd5443359a3",
-      "updated_at": "2026-09-20T13:08:30.984Z",
-      "note": "Doest look like a snake walk"
     },
     "monsters/skeleton_archer#attack_v3#north": {
       "status": "approved",
