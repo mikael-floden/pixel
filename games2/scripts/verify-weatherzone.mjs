@@ -207,23 +207,30 @@ else {
     const near = (c, r) => { for (let dr = -2; dr <= 2; dr++) for (let dc = -2; dc <= 2; dc++) if (inside(p.poly, c + dc + 0.5, r + dr + 0.5)) return true; return false; };
     const me = window.__ml.myScreen(); const v = window.__ml.camView();
     const meX = v.x + me.sx / me.zoom, meY = v.y + me.sy / me.zoom;
+    const atMe = window.__ml.pickAt(meX, meY);
+    const myC = atMe ? { c: Math.floor(atMe.x / 32), r: Math.floor(atMe.y / 32) } : null;
     const cellNear = (x, y) => { const at = window.__ml.pickAt(x, y); return at ? near(Math.floor(at.x / 32), Math.floor(at.y / 32)) : null; };
     /* where each drop is DRAWN is judged against the polygon — the cell under
      * it, within the feather's reach; the few past it are the step's own
      * fade (FALL_RAMP_PX 40 along the fall) and must be faint */
     let over = 0, overMe = 0, unpicked = 0, outDrawn = 0, outMax = 0, outSum = 0;
     for (const s of info.sample) {
-      const c = cellNear(s.x, s.y);
-      if (c === null) { unpicked++; continue; }
+      const at = window.__ml.pickAt(s.x, s.y);
+      if (!at) { unpicked++; continue; }
+      const c = Math.floor(at.x / 32), r = Math.floor(at.y / 32);
+      const inZone = near(c, r);
       // over the zone's ground, or the step's faint fringe just past it (alpha x 0.15 is not rain)
-      if (c || s.w < 0.15) over++;
-      if (!c) { outDrawn++; outSum += s.w; if (s.w > outMax) outMax = s.w; }
-      // MY BODY: from my feet up (the zone's own line may pass just below my feet on screen)
-      if (Math.abs(s.x - meX) < 30 && s.y > meY - 100 && s.y < meY + 16 && s.w > 0.05) overMe++;
+      if (inZone || s.w < 0.15) over++;
+      if (!inZone) { outDrawn++; outSum += s.w; if (s.w > outMax) outMax = s.w; }
+      /* OVER MY HEAD is a question about GROUND, not about screen pixels: on
+       * an iso projection the pixels above me are the ground BEHIND me, which
+       * here is inside the zone — a screen box called a legitimate drop a leak.
+       * It rains on me iff a drop falls on a cell next to the one I stand on. */
+      if (myC && Math.abs(c - myC.c) <= 2 && Math.abs(r - myC.r) <= 2 && s.w > 0.05) overMe++;
     }
     return { gain: d.gain, cover: d.cover, drawn: info.drawn, w: info.w, shown: info.shown, target: info.target, n: info.sample.length, over, overMe, unpicked, outDrawn, outMax, outMean: outDrawn ? outSum / outDrawn : 0, meX: Math.round(meX) };
   }, { p: picked, fill });
-  say(`outside: gain ${out.gain}, cover ${out.cover}, ${out.drawn} drops drawn (pool ${out.shown} of target ${out.target}), drawn weights ${JSON.stringify(out.w)}, ${out.over} of ${out.n} sampled drops drawn over the zone's ground (${out.unpicked} unpicked), ${out.overMe} over my head (x ${out.meX}); ${out.outDrawn} drawn past the line at weight max ${out.outMax.toFixed(2)} mean ${out.outMean.toFixed(2)}`);
+  say(`outside: gain ${out.gain}, cover ${out.cover}, ${out.drawn} drops drawn (pool ${out.shown} of target ${out.target}), drawn weights ${JSON.stringify(out.w)}, ${out.over} of ${out.n} sampled drops drawn over the zone's ground (${out.unpicked} unpicked), ${out.overMe} falling on the cells around me; ${out.outDrawn} drawn past the line at weight max ${out.outMax.toFixed(2)} mean ${out.outMean.toFixed(2)}`);
   if (!(out.gain > 0)) fail("the row is not running with its zone in view");
   if (!(out.drawn > 0)) fail("no drops drawn with the zone on screen — 'already raining on the other side' is not there");
   if (out.w.min <= 0) fail("a drop is drawn at weight 0");
