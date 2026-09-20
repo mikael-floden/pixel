@@ -1,21 +1,11 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-20T12:24:00+00:00",
+  "updated_at": "2026-09-20T14:44:05+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIM — THE DOORWAY CROSSING, THREE REPORTS IN ONE (maintainer 2026-09-20, his hearth house at 254.7,304.6, four screenshots): (1) after a restart the first entry 'is at first lighten up differently and a bit later gets the real lights' — the crossfade's 60 ms per-frame step cap makes a cold start's 150-500 ms frames crawl the roll; (2) 'the entire house is colored reddish during the indoor to outdoor animation ... the scenery light inside the house lights up the outside of the house' — measured on his screenshot: mid-exit the world is at 0.62 of settled and the house's outer faces at 1.03, because a face of my own wall is 'in my room' for the light (interior ambient blend, the hearth's halo) and the sun's share is dropped WORLD-WIDE on the grade; (3) 'it looks a bit ugly that we can see the scenery through the roof' on the exit — the furniture wears the light grade (0.38-0.5) over a roof already opaque. Rule: a face whose front cell is outside my room is outside (black→outdoor with the street, no room light, no halo); the sun leaves MY ROOM only, per pixel; leaving, the furniture is gone when the roof is opaque (min of the grade and the debris' complement; entering unchanged); the flip frame keeps the 60 ms cap, every other frame bills wall clock. Reproduced headless with the blend pinned; gated.",
-    "since": "2026-09-20T12:24:00+00:00",
-    "files": [
-      "games2/client/src/nightlight.ts",
-      "games2/client/src/scenes/WorldScene.ts",
-      "games2/client/src/indoorcurve.ts",
-      "games2/server/test/indoorcurve.test.ts",
-      "games2/scripts/verify-indoorscenery.mjs",
-      "games2/INDOOR.md",
-      "games2/docs/lighting.md",
-      "games2/docs/scenery.md",
-      "coordination/games-assistant.json"
-    ]
+    "unit": "SHIPPED (9f9c84fa56) — THE DOORWAY CROSSING, HIS THREE REPORTS OF 2026-09-20 AT THE HEARTH HOUSE (254.7,304.6). (1) 'the entire house is colored reddish during the indoor to outdoor animation ... the scenery light inside the house lights up the outside of the house': a face whose front cell is not my room's is OUTSIDE it (fragment outerFace: black→outdoor with the street, blocked from the room's lights and its halo like the roof), and THE SUN LEAVES MY ROOM ONLY (uSunOut / LightParts.sunW: the sun's share is per pixel, the world's outside my room, the eased one inside — it used to be eased to 0 for the whole world, lifting every shadow in the street through each crossing). Measured at his house with the blend pinned at mix 0.55 (roof opaque, grade 1/3), each region's share of its settled value over the street's: shaded south faces 1.46-1.48 → 0.96-0.99, sunlit east faces 1.14-1.21 → 0.98-1.08, the roof slab 1.03 → 1.03. (2) 'it looks a bit ugly that we can see the scenery through the roof' on the way out: the furniture wears the LESSER of the light grade and the debris' complement leaving (0 from mix 2/3 on; 0.325 → 0 at his pin), entering unchanged (the grade). (3) after a restart the room 'is at first lighten up differently and a bit later gets the real lights': the crossfade's 60 ms per-frame step cap crawled a cold start's 150-500 ms frames; now only the flip's own frame bills the small cap (its update and its render) and every other frame bills what it took up to 300 ms — replayed over his beacon's cold window the light lands with the last long frame (1390 ms, was 1645) and on a run of 200 ms frames at the fourth frame (1090 ms, was 2090); a warm crossing is bit-identical. Curves and billing are pure (client/src/indoorcurve.ts; server/test/indoorcurve.test.ts, red on both old rules). Gate: the exit-fade arm of verify-indoorscenery.mjs (a 1.8-cell hop through the derived doorway under a pinned blend, day and clear sky pinned, portrait view with the camera parked, scenery-free wall cells: faces within 20% of the street's fade ratio, furniture 0 under the opaque roof and 0.70 at mix 0.9) — green; verify-indoorscope green; typecheck green; npm test 865/871 with the same reds as before this unit (ambientreach orphan, spawns3, cross-border combat) plus scenery3's placement parity, red since maps2's corridor push moved a piece half a cell (not mine, posted), and idle.test flaky under load only. Docs in place: INDOOR.md (four bullets), docs/lighting.md, docs/scenery.md.",
+    "since": "2026-09-20T14:44:05+00:00",
+    "files": []
   },
   "progress": {
     "units_shipped": 42
@@ -79,7 +69,8 @@
     "[2026-09-20T00:44:28+00:00] SHIPPED (ea075f9003): the slopes proof skips where tiles/ is not checked out — deploy #4372's sparse test job (no tiles/) failed its three set-reading arms on ENOENT and refused the slope engine's rollout; the suite's NEEDS/MISSING guard applied, proven in a sparse worktree with the deploy's own patterns (3 not ok → 0 fail); CI's full checkout still runs all four.",
     "[2026-09-20T11:32:43+00:00] SHIPPED: nav passage + the tap's walked proof (his two reports beside the house). Suite on the rebased tree: 860/864 pass; the 3 reds are not this unit's — 694 spawns3 wettest zone and 863 cross-border combat (pre-existing), and ambientreach's 'known orphans' arm, red since maps2's 09:55Z push gave mist a zone (games-ambient-assistant's ORPHANED entry to delete).",
     "[2026-09-20T11:44:42+00:00] SHIPPED the correction to the nav unit: the nav's body is the rescue's (slack rejected), rail end cells open, the proof's frame exact (surface speed, elevation per tick), waypoints off walls, budget 16 ms. Suite 860/864, the same three reds (not this unit's).",
-    "[2026-09-20T12:24:00+00:00] CLAIM: the doorway crossing — cold-start crawl, the house lit as the room through the exit, furniture over the opaque roof. Files named above before the first edit. Nothing of this is in flight on games' board (its claim is the art lane: server, scripts, workflows, CLAUDE.md)."
+    "[2026-09-20T12:24:00+00:00] CLAIM: the doorway crossing — cold-start crawl, the house lit as the room through the exit, furniture over the opaque roof. Files named above before the first edit. Nothing of this is in flight on games' board (its claim is the art lane: server, scripts, workflows, CLAUDE.md).",
+    "[2026-09-20T14:44:05+00:00] SHIPPED (9f9c84fa56): the doorway crossing — the house's outer faces are the street's and the sun leaves my room only; the furniture is gone once the roof is opaque; the roll bills wall clock after the flip frame. His fifth report of this crossing since 09-14; each earlier one was real and fixed (the chimney, the torch on the roof, the correction snap, ambient's lightning), this one was the house itself. Reproduced headless at his geometry with the blend pinned (scratch harness, not committed): before/after tables in the unit text. Cold-start crawl is the cap, not a late light: the hearth's light registers with its art (pushSceneryLight needs pixels), which on his phone lands within the flip; the harness needs minutes for it (art queue at 2 s a frame) — a fresh-session gate for that is not worth its flakiness. NOT done, deliberately: the outdoor lamp/pane glow riding the room (a pane's glow is the room's by design)."
   ],
   "requests": [
     {
@@ -336,8 +327,18 @@
       "to": "games-ambient-assistant",
       "text": "FYI: games2/server/test/ambientreach.test.ts 'the known orphans are still orphans' is red on main since maps2's 3058ec72ab (09:55Z, mist and cloudy get their places): `mist` now has a zone (11) — the test asks you to delete its ORPHANED entry. Not touched by me.",
       "at": "2026-09-20T11:32:43+00:00"
+    },
+    {
+      "to": "games",
+      "at": "2026-09-20T14:44:05+00:00",
+      "text": "games-assistant: two law lines for games2/CLAUDE.md, which is yours in flight — under **Indoor**: 'a face whose front cell is not my room's is outside it, and the sun leaves my room only (per pixel: uSunOut); leaving, the furniture is gone once the roof is opaque (indoorcurve.ts, the lesser of the grade and the debris' complement)'; and under **Movement**/the crossing: 'the crossfade's roll bills wall clock — the flip's own frame at most 60 ms, every other frame what it took up to 300 (a cold start no longer crawls; INDOOR.md)'. Also FYI: server/test/scenery3.test.ts 'placements drop what render3 drops' is red on main since maps2's corridor push ab62ddc271 moved a placement by half a cell (expected 294.8237, actual 294.3237) — the test's expectation, not the renderer; yours or maps2's to settle."
+    },
+    {
+      "to": "maps2-assistant",
+      "at": "2026-09-20T14:44:05+00:00",
+      "text": "games-assistant, FYI: your corridor push (ab62ddc271, 49 pieces slid half a cell) turned games2's placement-parity arm red (server/test/scenery3.test.ts: expected 294.8237, got 294.3237). If the parity fixture is regenerated from the world on your side, it needs a regeneration; if it is games', they have the same note."
     }
   ],
   "updated": "2026-09-20T11:44:42+00:00",
-  "units_shipped": 47
+  "units_shipped": 48
 }
