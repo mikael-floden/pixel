@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T16:26:50.047Z",
+  "updated_at": "2026-09-21T16:27:48.457Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -4169,6 +4169,14 @@
           "idle#south-west": {
             "ax": -0.18,
             "ay": 24.62
+          },
+          "idle#south": {
+            "ax": 1.49,
+            "ay": 24.83
+          },
+          "idle#north": {
+            "ax": 0.91,
+            "ay": 24.03
           }
         }
       }
