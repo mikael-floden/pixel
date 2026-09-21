@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T10:17:54.455Z",
+  "updated_at": "2026-09-21T10:20:17.630Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2009,7 +2009,45 @@
           "item": "scattered_small_teeth",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 27,
+        "ry": 10.5,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.69,
+            "ay": 42.23
+          },
+          "idle#east": {
+            "ax": -0.28,
+            "ay": 41.14
+          },
+          "idle#south-east": {
+            "ax": 0.42,
+            "ay": 42.41
+          },
+          "idle#north-east": {
+            "ax": -0.62,
+            "ay": 40.66
+          },
+          "idle#north": {
+            "ax": -0.54,
+            "ay": 42.33
+          },
+          "idle#north-west": {
+            "ax": 0.76,
+            "ay": 40.99
+          },
+          "idle#west": {
+            "ax": 0.55,
+            "ay": 40.55
+          },
+          "idle#south-west": {
+            "ax": -1.51,
+            "ay": 42.68
+          }
+        }
+      }
     },
     "glow_grub": {
       "level": 1,
