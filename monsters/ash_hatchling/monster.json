@@ -13,7 +13,7 @@
     ]
   },
   "size": {
-    "width": 50,
+    "width": 68,
     "height": 40
   },
   "native_size": {
@@ -21,7 +21,7 @@
     "height": 40
   },
   "pad": {
-    "x": 5,
+    "x": 14,
     "y": 0
   },
   "sprite": "ash_hatchling/sprite.webp",
@@ -47,7 +47,7 @@
   },
   "animations": {
     "angry": {
-      "group_id": "626d9725-052c-429f-9db0-9257b37216ca",
+      "group_id": "6b952eb6-73b0-4ab3-a389-85ea7e4f307a",
       "source_name": "custom-Angry combat idle, frustrated ",
       "directions": {
         "east": {
@@ -159,9 +159,57 @@
       }
     },
     "attack": {
-      "group_id": "07d3d3b7-1e77-427d-95f1-459e7405bfd4",
+      "group_id": "a67416d8-f524-4f1b-92fd-54371329b421",
       "source_name": "custom-Bite - Lunges forward and bites hard, embers puffi + custom-Ember Burst - The hatchling rears back and lunges,",
       "directions": {
+        "north-east": {
+          "frames": 16,
+          "strip": "ash_hatchling/animations/attack__north-east.webp",
+          "frame_paths": [
+            "ash_hatchling/animations/attack/north-east/00.webp",
+            "ash_hatchling/animations/attack/north-east/01.webp",
+            "ash_hatchling/animations/attack/north-east/02.webp",
+            "ash_hatchling/animations/attack/north-east/03.webp",
+            "ash_hatchling/animations/attack/north-east/04.webp",
+            "ash_hatchling/animations/attack/north-east/05.webp",
+            "ash_hatchling/animations/attack/north-east/06.webp",
+            "ash_hatchling/animations/attack/north-east/07.webp",
+            "ash_hatchling/animations/attack/north-east/08.webp",
+            "ash_hatchling/animations/attack/north-east/09.webp",
+            "ash_hatchling/animations/attack/north-east/10.webp",
+            "ash_hatchling/animations/attack/north-east/11.webp",
+            "ash_hatchling/animations/attack/north-east/12.webp",
+            "ash_hatchling/animations/attack/north-east/13.webp",
+            "ash_hatchling/animations/attack/north-east/14.webp",
+            "ash_hatchling/animations/attack/north-east/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:58:23 GMT",
+          "src_frames": 16,
+          "sub": "7ecddd64-d030-4d34-a0db-96fad3b49d0e"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "ash_hatchling/animations/attack__north-west.webp",
+          "frame_paths": [
+            "ash_hatchling/animations/attack/north-west/00.webp",
+            "ash_hatchling/animations/attack/north-west/01.webp",
+            "ash_hatchling/animations/attack/north-west/02.webp",
+            "ash_hatchling/animations/attack/north-west/03.webp",
+            "ash_hatchling/animations/attack/north-west/04.webp",
+            "ash_hatchling/animations/attack/north-west/05.webp",
+            "ash_hatchling/animations/attack/north-west/06.webp",
+            "ash_hatchling/animations/attack/north-west/07.webp",
+            "ash_hatchling/animations/attack/north-west/08.webp",
+            "ash_hatchling/animations/attack/north-west/09.webp",
+            "ash_hatchling/animations/attack/north-west/10.webp",
+            "ash_hatchling/animations/attack/north-west/11.webp",
+            "ash_hatchling/animations/attack/north-west/12.webp",
+            "ash_hatchling/animations/attack/north-west/13.webp",
+            "ash_hatchling/animations/attack/north-west/14.webp",
+            "ash_hatchling/animations/attack/north-west/15.webp"
+          ],
+          "mirrored_from": "north-east"
+        },
         "east": {
           "frames": 16,
           "strip": "ash_hatchling/animations/attack__east.webp",
@@ -183,9 +231,9 @@
             "ash_hatchling/animations/attack/east/14.webp",
             "ash_hatchling/animations/attack/east/15.webp"
           ],
+          "lm": "Mon, 21 Sep 2026 08:56:33 GMT",
           "src_frames": 16,
-          "restored_from": "monsters/candidates/ash_hatchling/animations/attack_v3/east",
-          "restored_note": "his approved attack_v3 take; the upstream clip was rolled under a third wording and was deleted by graduation as 'a take he did not pick', so the candidate folder is the only copy. No generation."
+          "sub": "41211be2-7707-417e-8949-857d75124747"
         },
         "north": {
           "frames": 16,
@@ -211,54 +259,6 @@
           "lm": "Mon, 21 Sep 2026 08:43:36 GMT",
           "src_frames": 16,
           "sub": "181cedc7-c625-49cb-9e42-4087ddf702e2"
-        },
-        "north-east": {
-          "frames": 16,
-          "strip": "ash_hatchling/animations/attack__north-east.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/attack/north-east/00.webp",
-            "ash_hatchling/animations/attack/north-east/01.webp",
-            "ash_hatchling/animations/attack/north-east/02.webp",
-            "ash_hatchling/animations/attack/north-east/03.webp",
-            "ash_hatchling/animations/attack/north-east/04.webp",
-            "ash_hatchling/animations/attack/north-east/05.webp",
-            "ash_hatchling/animations/attack/north-east/06.webp",
-            "ash_hatchling/animations/attack/north-east/07.webp",
-            "ash_hatchling/animations/attack/north-east/08.webp",
-            "ash_hatchling/animations/attack/north-east/09.webp",
-            "ash_hatchling/animations/attack/north-east/10.webp",
-            "ash_hatchling/animations/attack/north-east/11.webp",
-            "ash_hatchling/animations/attack/north-east/12.webp",
-            "ash_hatchling/animations/attack/north-east/13.webp",
-            "ash_hatchling/animations/attack/north-east/14.webp",
-            "ash_hatchling/animations/attack/north-east/15.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:43:28 GMT",
-          "src_frames": 16,
-          "sub": "54a22cd8-5f39-40d3-b2ce-f2b524533eaa"
-        },
-        "north-west": {
-          "frames": 16,
-          "strip": "ash_hatchling/animations/attack__north-west.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/attack/north-west/00.webp",
-            "ash_hatchling/animations/attack/north-west/01.webp",
-            "ash_hatchling/animations/attack/north-west/02.webp",
-            "ash_hatchling/animations/attack/north-west/03.webp",
-            "ash_hatchling/animations/attack/north-west/04.webp",
-            "ash_hatchling/animations/attack/north-west/05.webp",
-            "ash_hatchling/animations/attack/north-west/06.webp",
-            "ash_hatchling/animations/attack/north-west/07.webp",
-            "ash_hatchling/animations/attack/north-west/08.webp",
-            "ash_hatchling/animations/attack/north-west/09.webp",
-            "ash_hatchling/animations/attack/north-west/10.webp",
-            "ash_hatchling/animations/attack/north-west/11.webp",
-            "ash_hatchling/animations/attack/north-west/12.webp",
-            "ash_hatchling/animations/attack/north-west/13.webp",
-            "ash_hatchling/animations/attack/north-west/14.webp",
-            "ash_hatchling/animations/attack/north-west/15.webp"
-          ],
-          "mirrored_from": "north-east"
         },
         "south": {
           "frames": 16,
@@ -354,9 +354,7 @@
             "ash_hatchling/animations/attack/west/14.webp",
             "ash_hatchling/animations/attack/west/15.webp"
           ],
-          "src_frames": 16,
-          "restored_from": "monsters/candidates/ash_hatchling/animations/attack_v3/west",
-          "restored_note": "his approved attack_v3 take; the upstream clip was rolled under a third wording and was deleted by graduation as 'a take he did not pick', so the candidate folder is the only copy. No generation."
+          "mirrored_from": "east"
         }
       }
     },
@@ -669,136 +667,8 @@
         }
       }
     },
-    "custom_lunges_forward_and_bites_with": {
-      "group_id": "614199d5-65c5-4e73-b96e-41120e22e4cf",
-      "source_name": "custom-lunges forward and bites with ",
-      "directions": {
-        "east": {
-          "frames": 7,
-          "strip": "ash_hatchling/animations/custom_lunges_forward_and_bites_with__east.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/east/00.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/east/01.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/east/02.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/east/03.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/east/04.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/east/05.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/east/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:43:40 GMT",
-          "src_frames": 7,
-          "sub": "bf491cc1-ff2b-44b9-9ae2-08f643e4c2ea"
-        },
-        "north": {
-          "frames": 7,
-          "strip": "ash_hatchling/animations/custom_lunges_forward_and_bites_with__north.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north/00.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north/01.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north/02.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north/03.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north/04.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north/05.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:43:41 GMT",
-          "src_frames": 7,
-          "sub": "c5803177-c687-4dd6-b125-3941c653fe3c"
-        },
-        "north-east": {
-          "frames": 7,
-          "strip": "ash_hatchling/animations/custom_lunges_forward_and_bites_with__north-east.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-east/00.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-east/01.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-east/02.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-east/03.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-east/04.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-east/05.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-east/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:43:43 GMT",
-          "src_frames": 7,
-          "sub": "7f72ecdb-3d89-4ec9-95f2-67e45895e5b6"
-        },
-        "south": {
-          "frames": 7,
-          "strip": "ash_hatchling/animations/custom_lunges_forward_and_bites_with__south.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south/00.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south/01.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south/02.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south/03.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south/04.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south/05.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:43:45 GMT",
-          "src_frames": 7,
-          "sub": "e150c466-42ad-4f27-ad08-d55eefa75968"
-        },
-        "south-east": {
-          "frames": 7,
-          "strip": "ash_hatchling/animations/custom_lunges_forward_and_bites_with__south-east.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-east/00.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-east/01.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-east/02.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-east/03.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-east/04.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-east/05.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-east/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:43:46 GMT",
-          "src_frames": 7,
-          "sub": "a048069a-8217-4026-8fe0-c7152991cc90"
-        },
-        "south-west": {
-          "frames": 7,
-          "strip": "ash_hatchling/animations/custom_lunges_forward_and_bites_with__south-west.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-west/00.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-west/01.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-west/02.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-west/03.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-west/04.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-west/05.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/south-west/06.webp"
-          ],
-          "mirrored_from": "south-east"
-        },
-        "west": {
-          "frames": 7,
-          "strip": "ash_hatchling/animations/custom_lunges_forward_and_bites_with__west.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/west/00.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/west/01.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/west/02.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/west/03.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/west/04.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/west/05.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/west/06.webp"
-          ],
-          "mirrored_from": "east"
-        },
-        "north-west": {
-          "frames": 7,
-          "strip": "ash_hatchling/animations/custom_lunges_forward_and_bites_with__north-west.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-west/00.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-west/01.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-west/02.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-west/03.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-west/04.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-west/05.webp",
-            "ash_hatchling/animations/custom_lunges_forward_and_bites_with/north-west/06.webp"
-          ],
-          "mirrored_from": "north-east"
-        }
-      }
-    },
     "walk": {
-      "group_id": "b1cc2eb8-d119-4cef-89c9-ac90c032bd84",
+      "group_id": "f9dc4fc4-3ccc-4cc6-969d-99fc3d9f2ab8",
       "source_name": "custom-walk loop, full walk cycle in ",
       "directions": {
         "east": {
@@ -944,7 +814,7 @@
       40
     ],
     "pad": [
-      5,
+      14,
       0
     ],
     "fixes": [
@@ -987,25 +857,27 @@
         "overlap": 1.0,
         "strip_px": 21,
         "ext": 3
-      }
-    ],
-    "die_trim": {
-      "north": {
-        "dropped": [
-          14
-        ],
-        "sub": "d77b339e-19c3-48fd-899b-6d6a8ee78010"
       },
-      "south-east": {
-        "auto_dropped": [
-          14
-        ]
+      {
+        "key": "attack",
+        "dir": "east",
+        "frame": 7,
+        "side": "right",
+        "target": 7,
+        "overlap": 0.923,
+        "strip_px": 80,
+        "ext": 12
       },
-      "south-west": {
-        "auto_dropped": [
-          14
-        ]
+      {
+        "key": "attack",
+        "dir": "west",
+        "frame": 7,
+        "side": "left",
+        "target": 7,
+        "overlap": 0.923,
+        "strip_px": 80,
+        "ext": 12
       }
-    }
+    ]
   }
 }

@@ -714,8 +714,19 @@ def qa_clip(cid, state, d, frames, pinned=None, claw_take=False, want_frames=Non
 
 # --- manifest ------------------------------------------------------------------
 
+def designs():
+    """Every design, CANDIDATES AND GRADUATED. A monster that graduates moves
+    from `candidates` to `graduated` in the config, and a lookup that walked
+    only `candidates` then found nothing — so a re-roll after graduation fell
+    back to the generic state wording and asked a fire hatchling for a plain
+    "Strike - Quickly lunges forward". A design does not stop existing when
+    its monster ships."""
+    cfg = cand.load_cfg()
+    return list(cfg.get("candidates") or []) + list(cfg.get("graduated") or [])
+
+
 def design_flag(cid, key):
-    for c in cand.load_cfg()["candidates"]:
+    for c in designs():
         if c["id"] == cid:
             return c.get(key)
     return None
@@ -734,7 +745,7 @@ def state_action(cid, state, man=None):
     not here — this is rung 0."""
     slot, state = state, base_state(state)
     base = STATES[state]["action"]
-    for c in cand.load_cfg()["candidates"]:
+    for c in designs():
         if c["id"] == cid and c.get(f"{state}_action"):
             base = c[f"{state}_action"]; break
     return base

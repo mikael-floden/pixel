@@ -412,25 +412,6 @@
       ],
       "sub": "8ddb74ec-d95e-43d7-9f49-96c774293744",
       "of": 16
-    },
-    "ash_hatchling/south-east": {
-      "drop": [
-        11,
-        12
-      ],
-      "sub": "85b80da1-c2b5-4095-bd4c-dfb46c97c489",
-      "of": 16,
-      "slot": "die_v1",
-      "reason": "too much flash at the end (his note, removed in post as he asked)"
-    },
-    "ash_hatchling/north": {
-      "drop": [
-        14
-      ],
-      "sub": "d77b339e-19c3-48fd-899b-6d6a8ee78010",
-      "of": 16,
-      "slot": "die_v1",
-      "reason": "PixelLab's fade-out debris: the ash heap is gone by frame 13 and frame 14 is 131 stray pixels scattered to all four corners (what the wrap detector flagged). Frame 15 is the empty tail and stays."
     }
   },
   "reviewed_ok": []
