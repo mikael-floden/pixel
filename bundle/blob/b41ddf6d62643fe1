@@ -350,6 +350,21 @@
       }
     },
     {
+      "id": "ash_hatchling",
+      "kind": "character",
+      "pixellab_id": "ccf6589c-4af9-4ec3-bdfc-2c2da94e1e08",
+      "name": "Ashling",
+      "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Ember Burst - The hatchling rears back and lunges,": "attack",
+        "custom-Bite - Lunges forward and bites hard, embers puffi": "attack",
+        "custom-Death - The ember glow goes out and the body crumb": "die"
+      }
+    },
+    {
       "id": "turtle_hatchling",
       "kind": "character",
       "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
@@ -499,6 +514,22 @@
       }
     },
     {
+      "id": "basilisk",
+      "kind": "character",
+      "pixellab_id": "af64ca9e-8bb0-4e39-8423-ebcac8197678",
+      "name": "Stonegaze",
+      "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Claw Swipe - Raises one front paw and performs one": "attack",
+        "custom-Killing Bite - The basilisk hurls its whole body f": "attack",
+        "custom-Bite - Lunges forward with its jaws wide open and ": "attack",
+        "custom-Death - Its legs give out, it ": "die"
+      }
+    },
+    {
       "id": "octopus",
       "kind": "character",
       "pixellab_id": "22734026-d7a4-48dc-9ccb-102f2bc8f77f",
@@ -609,6 +640,21 @@
         "custom-Angry combat idle, frustrated ": "angry",
         "custom-Branch Smash - Swings one huge branch arm down in ": "attack",
         "custom-Death - Topples over sideways ": "die"
+      }
+    },
+    {
+      "id": "pebble_crab",
+      "kind": "character",
+      "pixellab_id": "18c91c91-e3c9-41a0-a1aa-fe76b922c7f8",
+      "name": "Pebblet",
+      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Rock Burst - The crab launches its whole body up o": "attack",
+        "custom-Claw Snap - Darts forward once and snaps its big c": "attack",
+        "custom-Death - The pebble cracks in half and the crab shr": "die"
       }
     },
     {

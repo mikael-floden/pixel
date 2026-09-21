@@ -34,30 +34,6 @@
       "scale": "standard"
     },
     {
-      "id": "pebble_crab",
-      "name": "Pebblet",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "light_beach",
-        "grey_stone"
-      ],
-      "items": [
-        "sea shells",
-        "curved pincer"
-      ],
-      "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
-      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
-      "walk_slow": true,
-      "attack_action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
-      "claws": true,
-      "attack_extreme": "Rock Burst - The crab launches its whole body up off the ground, both claws thrown wide, stone shards bursting out beneath it",
-      "die_action": "Death - The pebble cracks in half and the crab shrivels into a small dark heap, then fades away",
-      "attack_simple": "Claw Snap - Darts forward once and snaps its big claw shut hard, a white swoosh following it"
-    },
-    {
       "id": "gargoyle",
       "name": "Stonewing",
       "tier": "evil",
@@ -71,26 +47,6 @@
       "items": [],
       "prompt": "Fantasy gargoyle shown full body from head to feet, grey weathered stone skin, a horned bestial face with a fanged snarl, glowing red eyes, bat-like wings folded tightly against its back, clawed hands, and crouching legs.",
       "lore": "It kept watch from the chapel eaves for centuries. When the last bell fell silent, it came down."
-    },
-    {
-      "id": "basilisk",
-      "name": "Stonegaze",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 136,
-      "biome": [
-        "light_soil",
-        "grey_stone"
-      ],
-      "items": [],
-      "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail tucked close against its body.",
-      "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
-      "attack_action": "Bite - Lunges forward with its jaws wide open and bites hard",
-      "claws": true,
-      "attack_extreme": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared",
-      "die_action": "Death - Its legs give out, it collapses flat onto its belly with its head down and fades away",
-      "attack_simple": "Snap - Throws its head forward and snaps its jaws shut hard once"
     },
     {
       "id": "lava_toad",
@@ -179,27 +135,6 @@
       "items": [],
       "prompt": "Small fantasy desert cat kit with pale sand-coloured fur, oversized ears, large green eyes, faint dark stripes on its legs, and a tufted tail wrapped around its paws.",
       "lore": "Grown cats of the dunes wear the sun as armour. This one has not yet, and hides from it in the noon shade."
-    },
-    {
-      "id": "ash_hatchling",
-      "name": "Ashling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Small fantasy salamander hatchling with dark ash-grey scales, glowing ember-orange eyes, a short thick tail curled around it, small clawed feet, and faint heat glow between its scales.",
-      "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows.",
-      "attack_action": "Bite - Lunges forward and bites hard, embers puffing",
-      "claws": true,
-      "fx": true,
-      "attack_extreme": "Ember Burst - The hatchling rears back and lunges, a burst of embers erupting from its mouth",
-      "die_action": "Death - The ember glow goes out and the body crumbles apart into a small heap of grey ash on the ground, then fades away",
-      "attack_simple": "Snap - Throws its head forward and snaps its jaws shut hard once, embers puffing"
     },
     {
       "id": "cave_bear",
@@ -4639,6 +4574,95 @@
       "walk_action": "Hovering flight loop in place, wings beating steadily up and down, the body floating with a small even rise and fall, never touching the ground, seamless loop whose last frame leads straight back into the first",
       "attack_simple": "Wing Slash - Sweeps one wing forward and down in one fast hard slash, a white swoosh arc following the wing edge",
       "graduated_at": "2026-09-21T08:02:07+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "pebble_crab",
+      "name": "Pebblet",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "light_beach",
+        "grey_stone"
+      ],
+      "items": [
+        "sea shells",
+        "curved pincer"
+      ],
+      "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
+      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
+      "walk_slow": true,
+      "attack_action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
+      "claws": true,
+      "attack_extreme": "Rock Burst - The crab launches its whole body up off the ground, both claws thrown wide, stone shards bursting out beneath it",
+      "die_action": "Death - The pebble cracks in half and the crab shrivels into a small dark heap, then fades away",
+      "attack_simple": "Claw Snap - Darts forward once and snaps its big claw shut hard, a white swoosh following it",
+      "graduated_at": "2026-09-21T08:13:06+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "basilisk",
+      "name": "Stonegaze",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 136,
+      "biome": [
+        "light_soil",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail tucked close against its body.",
+      "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
+      "attack_action": "Bite - Lunges forward with its jaws wide open and bites hard",
+      "claws": true,
+      "attack_extreme": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared",
+      "die_action": "Death - Its legs give out, it collapses flat onto its belly with its head down and fades away",
+      "attack_simple": "Snap - Throws its head forward and snaps its jaws shut hard once",
+      "graduated_at": "2026-09-21T08:14:23+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "ash_hatchling",
+      "name": "Ashling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small fantasy salamander hatchling with dark ash-grey scales, glowing ember-orange eyes, a short thick tail curled around it, small clawed feet, and faint heat glow between its scales.",
+      "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows.",
+      "attack_action": "Bite - Lunges forward and bites hard, embers puffing",
+      "claws": true,
+      "fx": true,
+      "attack_extreme": "Ember Burst - The hatchling rears back and lunges, a burst of embers erupting from its mouth",
+      "die_action": "Death - The ember glow goes out and the body crumbles apart into a small heap of grey ash on the ground, then fades away",
+      "attack_simple": "Snap - Throws its head forward and snaps its jaws shut hard once, embers puffing",
+      "graduated_at": "2026-09-21T08:43:56+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",
