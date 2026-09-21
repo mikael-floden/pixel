@@ -120,6 +120,45 @@ the floor states the only thing always true — a species that lives on a world
 has at least one individual there, or it is not on the world at all, which is
 exactly what `MUST_HAVE_ALL` promises — and leaves the land as the only dial.
 
+## A zone is one walkable place
+
+**THE CELLS OF A ZONE MUST BE ONE PATCH — one place you can walk around
+without leaving the zone** (maintainer 2026-09-20, standing at 224.4,182.4 on
+the rim above the lava field: *"Why have you spawned so many monsters in this
+small area?! They can't even fit here!"*). Measured live at that cell: four
+monsters — two grey brutes, a crystal horn, a stone turtle — crammed onto a
+**25-cell island of grey stone at level 23** inside the lava field. That
+island lies inside the stone zone's outline and is sixty cells of black rock
+away from the zone's body, so a monster seeded there **can never leave it**
+and every roam target it draws is unreachable: it shuffles on the spot for
+ever, and the five other species sharing that polygon join it.
+
+A polygon sweeps in every island of its habitat that falls inside its outline,
+and the crowding law cannot see them: it measures `num / |zone cells|` smeared
+over every cell, so an island inherits the zone's comfortable average. Measured
+over the_game before the fix: **35,697 of 166,940 zone surfaces (16%)**, and
+~32 of the 307 monsters, stood on patches that are not their zone's main body.
+
+`spawnfit.py` splits every zone into its patches — 4-neighbour steps of at
+most `WALK_CLIMB` **either way**, so a drop you cannot climb back is a
+different place — traces each patch its own outline and gives it its own
+`elev` band, and drops any patch under `ROOM_MIN` (20 cells: a patch that
+cannot hold one monster legally holds none).
+
+**AND THE PLACE CARRIES THE MONSTERS, NOT THE ZONE.** This is the half the
+crowding law was missing, and splitting alone makes it worse: six species
+shared that one polygon, so each got its own zone on the same 25-cell island
+and each zone's floor of one monster put **six** of them on it — 0.24 per cell
+against a cap of 0.05, and `enforce_density` cannot help because it may never
+take a zone's last monster. So a patch has ONE budget, `cells × cap`, summed
+over every species standing on it; the species with the most habitat picks
+first, and one that does not fit does not live there — its monsters go to its
+own other patches. The 25-cell island now carries exactly one stone turtle.
+
+Measured on the shipped world: 109 zones → 160 places, 307 → 304 monsters,
+off-body surfaces 16% → 0%, the doctrine's own `--check` green. The pass is
+the last step of `Grow.spawns()`, so no build ships an island.
+
 ## The crowding law
 
 **NOTHING PILES UP** (maintainer: "LOL! Why have you placed this many monsters

@@ -4666,7 +4666,16 @@ class Grow:
         out = {"schema": spawns.SCHEMA3, "world": "the_game", "zones": zones}
         json.dump(out, open(os.path.join(OUT, "spawns.json"), "w"),
                   separators=(",", ":"))
-        self.placed += [("spawn zones", f"{len(zones)} derived, {sum(z['num'] for z in zones)} monsters, "
+        # A ZONE IS ONE WALKABLE PLACE (spec/SPAWNS.md, maintainer 2026-09-20):
+        # a polygon sweeps in every island of its habitat that falls inside the
+        # outline, and a monster seeded on one can never leave it. The same
+        # pass that mends the shipped world splits every zone into its patches
+        # and gives each PLACE one budget across all species.
+        import spawnfit
+        sdoc, _b, _d, _w, _g, _st = spawnfit.run(OUT, True)
+        json.dump(sdoc, open(os.path.join(OUT, "spawns.json"), "w"), separators=(",", ":"))
+        zones = sdoc["zones"]
+        self.placed += [("spawn zones", f"{len(zones)} places, {sum(z['num'] for z in zones)} monsters, "
                          f"peak {peak:.3f}/cell")]
 
     # -- the pier -------------------------------------------------------------

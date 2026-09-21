@@ -523,6 +523,13 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   thick, so a face is only usable where the cell behind it is floor
   (`spec/WORLD3.md` → a window needs a room behind it). `--apply <world_dir>`
   slides the windows of a world that already ships.
+- `spawnfit.py` — a spawn zone is one walkable place: every zone split into
+  its patches (a drop you cannot climb back is a different place), each with
+  its own outline and elevation band, patches too small to hold a monster
+  dropped, and ONE budget per place shared by every species standing on it
+  (`spec/SPAWNS.md` → a zone is one walkable place). `--check <world>` reports;
+  `--apply <world>` rewrites spawns.json in place; the last step of the build's
+  `spawns()`.
 - `pathfix.py` — a piece never cuts the way: the body's own collision (the
   disc against every footprint's reach, 4 × 4 points per cell) walked a short
   geodesic distance round every obstacle — pieces whose reaches touch are one
