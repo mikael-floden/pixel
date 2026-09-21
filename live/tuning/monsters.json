@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T16:30:56.085Z",
+  "updated_at": "2026-09-21T16:32:21.627Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -3934,11 +3934,11 @@
       ],
       "shadow": {
         "rx": 16,
-        "ry": 7.25,
+        "ry": 5.75,
         "offsets": {
           "idle#east": {
-            "ax": 0.17,
-            "ay": 23.87
+            "ax": 0.47,
+            "ay": 23.64
           },
           "idle#north-east": {
             "ax": -0.41,
@@ -3959,6 +3959,14 @@
           "idle#south-west": {
             "ax": -0.2,
             "ay": 25.79
+          },
+          "idle#south": {
+            "ax": 0.44,
+            "ay": 25.15
+          },
+          "idle#south-east": {
+            "ax": 0.85,
+            "ay": 23.36
           }
         }
       }
