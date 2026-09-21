@@ -1,0 +1,141 @@
+{
+  "id": "gnarl_shell",
+  "name": "Gnarlshell",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It does not retreat into its shell because it has never had to. Everything else moves instead.",
+  "biome": [
+    "water",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Fantasy adult snapping turtle with a ridged algae-bearded dark shell, a thick scaled neck, a hooked beak, small fierce eyes, heavy clawed feet, and a long saw-toothed tail.",
+  "size": [
+    144,
+    144
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "gnarl_shell/rotations/south.webp",
+    "south-east": "gnarl_shell/rotations/south-east.webp",
+    "east": "gnarl_shell/rotations/east.webp",
+    "north-east": "gnarl_shell/rotations/north-east.webp",
+    "north": "gnarl_shell/rotations/north.webp",
+    "north-west": "gnarl_shell/rotations/north-west.webp",
+    "west": "gnarl_shell/rotations/west.webp",
+    "south-west": "gnarl_shell/rotations/south-west.webp"
+  },
+  "sheet": "gnarl_shell/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5a1b8f86-0bb9-4049-8dfa-4ae02fa6c249",
+  "seed": 1375554863,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:22:48+00:00",
+  "elapsed_s": 270.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.674,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.674,
+        "bbox": [
+          9,
+          7,
+          134,
+          136
+        ],
+        "fill": 0.778,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.788,
+        "bbox": [
+          17,
+          12,
+          136,
+          131
+        ],
+        "fill": 0.683,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.791,
+        "bbox": [
+          8,
+          9,
+          135,
+          137
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.766,
+        "bbox": [
+          21,
+          9,
+          122,
+          125
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.789,
+        "bbox": [
+          22,
+          7,
+          120,
+          132
+        ],
+        "fill": 0.591,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.783,
+        "bbox": [
+          11,
+          22,
+          132,
+          134
+        ],
+        "fill": 0.654,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.754,
+        "bbox": [
+          16,
+          8,
+          126,
+          134
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.799,
+        "bbox": [
+          8,
+          17,
+          136,
+          137
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "id": "stone_hop",
+  "name": "Stonehop",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It jumps before it knows what startled it and lands somewhere it has never been.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy cave cricket with a humped pale brown back, enormously long thin antennae swept back over its body, folded powerful jumping legs, and small dark eyes.",
+  "size": [
+    44,
+    44
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "stone_hop/rotations/south.webp",
+    "south-east": "stone_hop/rotations/south-east.webp",
+    "east": "stone_hop/rotations/east.webp",
+    "north-east": "stone_hop/rotations/north-east.webp",
+    "north": "stone_hop/rotations/north.webp",
+    "north-west": "stone_hop/rotations/north-west.webp",
+    "west": "stone_hop/rotations/west.webp",
+    "south-west": "stone_hop/rotations/south-west.webp"
+  },
+  "sheet": "stone_hop/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a5c2379c-c399-45bc-9f1c-42fb682b8627",
+  "seed": 178058603,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:21:42+00:00",
+  "elapsed_s": 155.4,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.749,
+    "reasons": [
+      "west: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.781,
+        "bbox": [
+          1,
+          3,
+          43,
+          40
+        ],
+        "fill": 0.803,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.749,
+        "bbox": [
+          6,
+          3,
+          44,
+          40
+        ],
+        "fill": 0.726,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.794,
+        "bbox": [
+          0,
+          3,
+          38,
+          41
+        ],
+        "fill": 0.746,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.751,
+        "bbox": [
+          2,
+          7,
+          42,
+          40
+        ],
+        "fill": 0.682,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.821,
+        "bbox": [
+          1,
+          2,
+          41,
+          41
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.782,
+        "bbox": [
+          2,
+          6,
+          41,
+          42
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.758,
+        "bbox": [
+          6,
+          5,
+          42,
+          40
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.811,
+        "bbox": [
+          3,
+          2,
+          43,
+          41
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      }
+    }
+  }
+}

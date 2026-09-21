@@ -1,0 +1,140 @@
+{
+  "id": "stone_creep",
+  "name": "Stonecreep",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It comes out of the crack in the wall in one motion, as if the wall had decided something.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy cave centipede curled in a tight arc, armoured red-brown segments each with a pair of pale legs, long rear antennae, and a dark head with venom claws folded beneath it.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "stone_creep/rotations/south.webp",
+    "south-east": "stone_creep/rotations/south-east.webp",
+    "east": "stone_creep/rotations/east.webp",
+    "north-east": "stone_creep/rotations/north-east.webp",
+    "north": "stone_creep/rotations/north.webp",
+    "north-west": "stone_creep/rotations/north-west.webp",
+    "west": "stone_creep/rotations/west.webp",
+    "south-west": "stone_creep/rotations/south-west.webp"
+  },
+  "sheet": "stone_creep/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5821d58b-d7dd-46fd-9be6-5ec3f0c2d81e",
+  "seed": 968484993,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:21:46+00:00",
+  "elapsed_s": 165.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.678,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.678,
+        "bbox": [
+          5,
+          4,
+          98,
+          99
+        ],
+        "fill": 0.817,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.757,
+        "bbox": [
+          4,
+          17,
+          100,
+          76
+        ],
+        "fill": 0.524,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.753,
+        "bbox": [
+          5,
+          8,
+          100,
+          95
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.758,
+        "bbox": [
+          17,
+          5,
+          96,
+          94
+        ],
+        "fill": 0.65,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.799,
+        "bbox": [
+          5,
+          4,
+          100,
+          95
+        ],
+        "fill": 0.799,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.787,
+        "bbox": [
+          7,
+          10,
+          96,
+          93
+        ],
+        "fill": 0.683,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.788,
+        "bbox": [
+          12,
+          11,
+          99,
+          89
+        ],
+        "fill": 0.627,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.803,
+        "bbox": [
+          7,
+          15,
+          100,
+          89
+        ],
+        "fill": 0.636,
+        "touches_edge": false
+      }
+    }
+  }
+}

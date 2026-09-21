@@ -1,0 +1,140 @@
+{
+  "id": "meadow_coil",
+  "name": "Meadowcoil",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It would rather leave than bite and plays dead when leaving is not an option.",
+  "biome": [
+    "grass"
+  ],
+  "items": [],
+  "prompt": "Fantasy grass snake coiled in a low spiral, a slim olive body with a pale yellow collar behind the head, fine dark barring along the flanks, and a small head resting on its own coils.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "meadow_coil/rotations/south.webp",
+    "south-east": "meadow_coil/rotations/south-east.webp",
+    "east": "meadow_coil/rotations/east.webp",
+    "north-east": "meadow_coil/rotations/north-east.webp",
+    "north": "meadow_coil/rotations/north.webp",
+    "north-west": "meadow_coil/rotations/north-west.webp",
+    "west": "meadow_coil/rotations/west.webp",
+    "south-west": "meadow_coil/rotations/south-west.webp"
+  },
+  "sheet": "meadow_coil/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ddf67b24-c9f4-43c2-93f6-aacf3e0f251a",
+  "seed": 905654994,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:22:59+00:00",
+  "elapsed_s": 233.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.639,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.71,
+        "bbox": [
+          3,
+          2,
+          45,
+          46
+        ],
+        "fill": 0.802,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.702,
+        "bbox": [
+          4,
+          2,
+          46,
+          46
+        ],
+        "fill": 0.802,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.712,
+        "bbox": [
+          2,
+          2,
+          44,
+          46
+        ],
+        "fill": 0.802,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.639,
+        "bbox": [
+          3,
+          2,
+          44,
+          46
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.78,
+        "bbox": [
+          3,
+          2,
+          45,
+          46
+        ],
+        "fill": 0.802,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.711,
+        "bbox": [
+          3,
+          2,
+          44,
+          46
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.701,
+        "bbox": [
+          4,
+          2,
+          45,
+          46
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.747,
+        "bbox": [
+          4,
+          2,
+          45,
+          46
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      }
+    }
+  }
+}

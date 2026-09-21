@@ -1,0 +1,152 @@
+{
+  "id": "hush_wing",
+  "name": "Hushwing",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It arrives without a sound and leaves the same way. The field only knows afterwards.",
+  "biome": [
+    "grass",
+    "grey_stone"
+  ],
+  "items": [
+    "soft plume"
+  ],
+  "prompt": "Fantasy great owl perched upright, wings folded tight, a broad pale facial disc, soft mottled grey and brown plumage, large amber eyes, a small hooked beak, and feathered feet gripping stone.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hush_wing/rotations/south.webp",
+    "south-east": "hush_wing/rotations/south-east.webp",
+    "east": "hush_wing/rotations/east.webp",
+    "north-east": "hush_wing/rotations/north-east.webp",
+    "north": "hush_wing/rotations/north.webp",
+    "north-west": "hush_wing/rotations/north-west.webp",
+    "west": "hush_wing/rotations/west.webp",
+    "south-west": "hush_wing/rotations/south-west.webp"
+  },
+  "sheet": "hush_wing/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c1c5432d-3212-4c49-b66f-0e0577822bcd",
+  "seed": 733861576,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:23:00+00:00",
+  "elapsed_s": 244.1,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.675,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.675,
+        "bbox": [
+          23,
+          3,
+          96,
+          112
+        ],
+        "fill": 0.634,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.772,
+        "bbox": [
+          24,
+          2,
+          95,
+          112
+        ],
+        "fill": 0.623,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.785,
+        "bbox": [
+          15,
+          2,
+          89,
+          112
+        ],
+        "fill": 0.649,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.737,
+        "bbox": [
+          19,
+          2,
+          87,
+          112
+        ],
+        "fill": 0.596,
+        "touches_edge": true
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          23,
+          2,
+          90,
+          112
+        ],
+        "fill": 0.588,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.769,
+        "bbox": [
+          15,
+          2,
+          88,
+          112
+        ],
+        "fill": 0.64,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.763,
+        "bbox": [
+          23,
+          2,
+          89,
+          112
+        ],
+        "fill": 0.579,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.805,
+        "bbox": [
+          24,
+          2,
+          100,
+          112
+        ],
+        "fill": 0.666,
+        "touches_edge": true
+      }
+    }
+  }
+}

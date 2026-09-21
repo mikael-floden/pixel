@@ -1,0 +1,143 @@
+{
+  "id": "mud_piper",
+  "name": "Mudpiper",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It runs the tideline all day reading it like a page and never looks up at what is watching.",
+  "biome": [
+    "dark_mud",
+    "light_beach"
+  ],
+  "items": [
+    "soft plume"
+  ],
+  "prompt": "Fantasy small wading bird standing upright, speckled brown and cream plumage, wings folded close, a long slightly curved probing bill, thin dark legs, and a bright round eye.",
+  "size": [
+    44,
+    44
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mud_piper/rotations/south.webp",
+    "south-east": "mud_piper/rotations/south-east.webp",
+    "east": "mud_piper/rotations/east.webp",
+    "north-east": "mud_piper/rotations/north-east.webp",
+    "north": "mud_piper/rotations/north.webp",
+    "north-west": "mud_piper/rotations/north-west.webp",
+    "west": "mud_piper/rotations/west.webp",
+    "south-west": "mud_piper/rotations/south-west.webp"
+  },
+  "sheet": "mud_piper/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c6a21c21-3533-49d4-8dbc-a517a76c13f4",
+  "seed": 524666068,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:21:41+00:00",
+  "elapsed_s": 164.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.813,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.813,
+        "bbox": [
+          2,
+          4,
+          41,
+          42
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.83,
+        "bbox": [
+          2,
+          4,
+          42,
+          42
+        ],
+        "fill": 0.785,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.85,
+        "bbox": [
+          2,
+          2,
+          39,
+          41
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.835,
+        "bbox": [
+          6,
+          2,
+          35,
+          41
+        ],
+        "fill": 0.584,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.85,
+        "bbox": [
+          2,
+          3,
+          42,
+          42
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.839,
+        "bbox": [
+          10,
+          2,
+          33,
+          40
+        ],
+        "fill": 0.451,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.837,
+        "bbox": [
+          2,
+          3,
+          42,
+          42
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.823,
+        "bbox": [
+          9,
+          4,
+          35,
+          41
+        ],
+        "fill": 0.497,
+        "touches_edge": false
+      }
+    }
+  }
+}
