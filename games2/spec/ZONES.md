@@ -34,7 +34,13 @@ Kubernetes). Rules here are present tense; the measurements land in
   `zone:<world>:<zone>:edge`; each neighbour subscribes and upserts them into
   its own maps as GHOSTS (server-only `ghostOf` = the owner zone; the client
   cannot tell). A ghost is never stepped locally (no sim, no brain, no combat)
-  and expires 1 s after its last snapshot. Interest applies to ghosts like
+  and expires 1 s after its last snapshot; one its owner stops listing is
+  given 250 ms to be claimed by another zone first, so a body crossing between
+  two neighbours is handed over rather than deleted and rebuilt. A ROOM WHOSE
+  BAND HOLDS A GHOST PLAYER IS BEING WATCHED and never drops to the idle sim
+  rate — the edge snapshot rides the sim step, so an idling room published at
+  2.5 Hz and its monsters crawled for the player at the border, who is not its
+  client and could not wake it (docs/backend.md carries the measurement). Interest applies to ghosts like
   anything else, so a player near a border sees across it through ONE socket.
 - **Hand-off.** When a player's position enters another zone, the home room
   writes the player's hot state (`pos`, `elev`, `dir`, hp/ep/level/xp, `inv`,

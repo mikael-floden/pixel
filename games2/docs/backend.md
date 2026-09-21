@@ -106,9 +106,26 @@ found; gate `server/test/lawsize.test.ts`).
   two as a body crosses. A room publishes its band (`GHOST_BAND_WU` =
   `INTEREST_LEAVE_WU`, plus anything of its own standing outside its rect)
   every `EDGE_TICKS` (2) ticks; a receiver keeps what lies within the band of
-  ITS rect and skips ids it owns; a snapshot is that zone's whole band, so
-  what it no longer carries is dropped at once and a quiet owner's ghosts
-  expire after `GHOST_TTL_MS` (1 s).
+  ITS rect and skips ids it owns; a snapshot is that zone's whole band, so what
+  it no longer carries is ORPHANED — given `GHOST_ORPHAN_MS` (250) to be
+  claimed by another zone before the ordinary `GHOST_TTL_MS` (1 s) reaps it,
+  because a body crossing from one neighbour to another leaves the first
+  snapshot and enters the second a publish period later and deleting it in
+  between is a destroyed sprite (measured at his corner: a 51 ms hole on a
+  neighbour-to-neighbour crossing, up to 550 ms while the rooms idled).
+- **A CROSSING IS A HAND-OVER, NOT A DISAPPEARANCE.** The interest view's
+  `seen` is keyed by ID and records WHICH INSTANCE it holds, and a fresh
+  instance for an id a view already holds is added in the same patch as the
+  old one's delete (`reattachViews`, called from the `monster:xfer` receiver
+  and from every fresh ghost). The room a monster LEAVES keeps it as its own
+  ghost the moment it hands it on, so there is no window with neither. Before
+  this the delete shipped at once and the replacement waited for the next
+  interest pass (`INTEREST_TICKS` = 4 ticks, 200 ms — 800 ms in an idle room),
+  which destroyed and rebuilt the sprite on every crossing and lost the 32/36
+  cell hysteresis with it (maintainer 2026-09-21: "when they cross a zone they
+  often disappear and appear again"). Gate: "a monster crossing a border is
+  never missing from the client's view" (`server/test/zones.test.ts`), which
+  sampled a 191 ms hole on the old rule.
 - **The hand-off**: `stepZones` sees a body outside the rect, writes the hot
   state (`HotState`: position, dir, hp/ep/level/xp, backpack, the account
   record, seq, torch, no-aggro, `actionSeq`/`hitSeq` — mirrored by CHANGE on
@@ -247,13 +264,27 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
   stamping 1,335 scenery pieces was 850 MB rss for 16 rooms — over the 512
   MiB Cloud Run instance; shared, 400 MB (dev, tsx) and the 16 rooms warm in
   0.9 s. The instance is 1 GiB now (deploy workflow) for headroom.
-- **An empty room runs its sim every `IDLE_DIVISOR` (4) ticks** with the
-  accumulated dt (the clock still moves every tick; edge snapshots keep
-  flowing at the slower rate and a neighbour's client eases ghosts at rate
-  12). Idle with 16 warm rooms was ~20% of a core (the monster brains; zone 6
-  with 63 monsters ticks 2 ms p50); with the divisor it is 10%, 386 MB. A client
-  brings the full rate back on its first tick (`/api/stats` reports `simHz`
-  per room; gate `server/test/idle.test.ts`).
+- **An empty room NOBODY IS WATCHING runs its sim every `IDLE_DIVISOR` (4)
+  ticks** with the accumulated dt (the clock still moves every tick). Idle with
+  16 warm rooms was ~20% of a core (the monster brains; zone 6 with 63 monsters
+  ticks 2 ms p50); with the divisor it is 10%, 386 MB. A client brings the full
+  rate back on its first tick (`/api/stats` reports `simHz` per room; gate
+  `server/test/idle.test.ts`).
+  **A GHOST PLAYER IN THE STATE IS A WATCHER, and it wakes the room.** The edge
+  snapshot is published from inside the sim step, so the divisor divided it
+  too: an unwatched room published its band at 20/4/`EDGE_TICKS` = 2.5 Hz and
+  its monsters moved in one 200 ms leap per publish, while the player looking
+  across the border — not a client of that room — could not wake it. MEASURED
+  at the four-zone cross 297.2,96.4 with all 16 rooms warm and a client where
+  he stands (2026-09-21): monsters of his own zone updated every 51 ms
+  (19.6 Hz), monsters across a border every **416 ms (2.4 Hz)**, p90 488 ms,
+  and the ghost set took 20 adds and 23 removes in 20 s; with a client parked
+  in each neighbour the same ghosts ran at 102 ms. A ghost player exists only
+  because a neighbour that HAS a client published its band, which is what lies
+  within `GHOST_BAND_WU` of the shared edge — so it costs no message to know,
+  and it wakes at most the neighbours of the rooms a player stands in, falling
+  back one `GHOST_TTL_MS` after he leaves. After: **103 ms (9.7 Hz)**, churn
+  11 adds / 12 removes.
 - **A JOIN BURST IS A LIMIT OF ITS OWN**: 400 bots joining one zone within
   10 s from two processes on a box already at 100% CPU expired 65 seat
   reservations ("seat reservation expired"), 100 joins failed, and every
