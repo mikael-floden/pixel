@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T15:02:33.289Z",
+  "updated_at": "2026-09-21T15:05:36.673Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -5996,7 +5996,45 @@
           "item": "segmented_carapace",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 18.75,
+        "ry": 7.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -3.31,
+            "ay": 7.47
+          },
+          "idle#south": {
+            "ax": -0.64,
+            "ay": 8.82
+          },
+          "idle#south-east": {
+            "ax": -0.49,
+            "ay": 7.8
+          },
+          "idle#north-east": {
+            "ax": -1.54,
+            "ay": 8.17
+          },
+          "idle#north": {
+            "ax": -0.07,
+            "ay": 7.52
+          },
+          "idle#north-west": {
+            "ax": 1.27,
+            "ay": 7.61
+          },
+          "idle#west": {
+            "ax": 2.84,
+            "ay": 8.02
+          },
+          "idle#south-west": {
+            "ax": 0.9,
+            "ay": 7.65
+          }
+        }
+      }
     },
     "undead_charger": {
       "max_hp": 135,
