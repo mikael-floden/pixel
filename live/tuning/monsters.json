@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T10:20:17.630Z",
+  "updated_at": "2026-09-21T11:23:32.114Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -699,7 +699,45 @@
           "item": "yellowed_curved_fang",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 39,
+        "ry": 15.25,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.75,
+            "ay": 26.21
+          },
+          "idle#south": {
+            "ax": -0.27,
+            "ay": 28
+          },
+          "idle#south-east": {
+            "ax": 0.26,
+            "ay": 27.78
+          },
+          "idle#north-east": {
+            "ax": 0.08,
+            "ay": 25.32
+          },
+          "idle#north": {
+            "ax": 0.78,
+            "ay": 26.73
+          },
+          "idle#north-west": {
+            "ax": 2.55,
+            "ay": 26.11
+          },
+          "idle#west": {
+            "ax": 4.03,
+            "ay": 26.2
+          },
+          "idle#south-west": {
+            "ax": -0.76,
+            "ay": 27.38
+          }
+        }
+      }
     },
     "corrupt_stag": {
       "max_hp": 155,
