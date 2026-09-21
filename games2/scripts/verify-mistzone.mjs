@@ -298,6 +298,75 @@ else {
     say(`picture: ${OUT}/mistzone-inside-${picked.id}.png`);
   }
   await page.evaluate(() => window.__mlAmbient.zoneLines(false));
+
+  /* ---- RAISED GROUND: the fog must be GRADED there, never one bit ----
+   *
+   * MIST_FRAG's `pool` thins the banks with height (gone by ~2.4 levels), and
+   * for a day that thinning multiplied the density UPSTREAM of the five-band
+   * posterize. On level-2 ground pool is 0.2, so band 1 needed the bank's own
+   * value to be 1.0 EXACTLY and the whole effect was a single on/off bit that
+   * the drifting noise dithered about once a second — the maintainer's "the
+   * mist at the boundary still looks like crap and flicker in and out of
+   * existence". MEASURED at his cliff, 15 points over 12 s: 2.57 distinct
+   * drawn values a point before, 6 after. So: stand inside a mist zone whose
+   * ground is RAISED, and require the drawn fog to take real steps. */
+  /* ITS OWN STAND: `spots` keeps only LOW, flat edges (a low zone is what the
+   * boundary arms need), so the raised stand is found here — a mist zone whose
+   * land sits between 1 and 2.4 levels, deep inside it. His eastern marsh is
+   * 97% level 2, which is exactly where the bit showed. */
+  const raised = (() => {
+    let best = null;
+    for (const z of doc.zones) {
+      if (z.kind === "world" || z.kind === "cave" || !(z.effects.mist >= 50)) continue;
+      const xs = z.area.map((p) => p[0]), ys = z.area.map((p) => p[1]);
+      for (let r = Math.min(...ys); r <= Math.max(...ys); r++)
+        for (let c = Math.min(...xs); c <= Math.max(...xs); c++) {
+          if (!land(c, r) || !inside(z.area, c + 0.5, r + 0.5)) continue;
+          const L2 = lvl(c, r);
+          if (!(L2 >= 1 && L2 <= 2.4)) continue;
+          let deep = 0;
+          for (let k = 1; k <= 8; k++) {
+            if (inside(z.area, c + 0.5 + k, r + 0.5) && inside(z.area, c + 0.5 - k, r + 0.5)
+              && inside(z.area, c + 0.5, r + 0.5 + k) && inside(z.area, c + 0.5, r + 0.5 - k)) deep = k; else break;
+          }
+          if (deep >= 4 && (!best || deep > best.deep)) best = { name: z.name, id: z.id, innerStand: { c, r }, innerLevel: L2, deep };
+        }
+    }
+    return best;
+  })();
+  if (!raised) say("no mist zone on raised ground to stand in — the grading arm is skipped");
+  else {
+    const gr = await withTimeout(page.evaluate(async ({ p, settle, holdDay, rise }) => {
+      window.__ml.teleport(p.innerStand.c + 0.5, p.innerStand.r + 0.5);
+      if (!(await (0, eval)(settle)())) return { skip: "did not settle" };
+      const day = await (0, eval)(holdDay)();
+      if (day.stuck) return { skip: "could not hold the clock at Day" };
+      const fog = await (0, eval)(rise)();
+      const v = window.__ml.camView();
+      const vals = [];
+      for (let j = 0; j < 20; j++) for (let i = 0; i < 30; i++) {
+        const x = v.x + v.w * ((i + 0.5) / 30), y = v.y + v.h * ((j + 0.5) / 20);
+        if (!window.__ml.pickAt(x, y)) continue;
+        const d = window.__ml.mistDrawAt(x, y);
+        if (d > 0.001) vals.push(+d.toFixed(3));
+      }
+      const mx = vals.length ? Math.max(...vals) : 0;
+      const thin = vals.filter((v) => v < mx / 2).length;
+      return { fog: fog.mist, lit: vals.length, max: mx, thinShare: vals.length ? +(thin / vals.length).toFixed(2) : 0,
+               levels: [...new Set(vals)].sort((a, b) => a - b) };
+    }, { p: raised, settle, holdDay, rise }), 150_000, "raised");
+    say(`raised (${raised.name}, level ${raised.innerLevel.toFixed(1)}): ${JSON.stringify(gr).slice(0, 300)}`);
+    if (gr.skip) fail(`raised: ${gr.skip}`);
+    else if (gr.lit < 30) say(`only ${gr.lit} lit points on the raised stand — the window or the ground gives no bank; not judged`);
+    /* THE SIGNATURE OF A ONE-BIT BANK IS THAT IT HAS NO THIN EDGE. Measured in
+     * his eastern marsh at level 2: with pool upstream of the posterize, 62 lit
+     * points, every one of them between 0.134 and 0.148 — band 1 and nothing
+     * else, so NOTHING drew below half the maximum. With pool on the alpha,
+     * 426 lit points spanning 0.029 to 0.148, a third of them thin. A bank
+     * that is really a bank always shows its own fade. */
+    else if (gr.thinShare < 0.15) fail(`the fog on raised ground has no thin edge (${gr.thinShare} of ${gr.lit} points below half of ${gr.max}; values ${gr.levels.slice(0, 8).join(", ")}) — it is one bit there, not a bank`);
+    else say(`the fog on raised ground is graded: ${gr.levels.length} distinct values, ${gr.thinShare} of them below half of ${gr.max}`);
+  }
 }
 await browser.close();
 say(failed ? "verify-mistzone: FAILED" : "verify-mistzone: OK");

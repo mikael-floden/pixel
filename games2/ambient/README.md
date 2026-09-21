@@ -486,6 +486,22 @@ per effect — his process).
   are is the mask: the mount rasterises the field's mist weight over the view
   plus a quarter's margin (64 x 40 bytes, 2560 memo reads a tick,
   `__ml.mistMask`) and the pass multiplies it into the ALPHA it paints.
+- **EVERY MULTIPLIER IS A FADE, AND ALL THREE RIDE ON THE ALPHA** — the
+  ground's hold (`pool`), the mist scalar (`uMist`) and the zone mask. Only the
+  BANK'S OWN SHAPE goes through the five-band posterize. Moving the mask alone
+  cost a second round of the identical bug (maintainer 2026-09-21, after that
+  push: "The mist at the boundary still looks like crap and flicker in and out
+  of existence!"). MEASURED at his cliff (309.8,144.8, level 2), 15 fixed world
+  points at 10 Hz for 12 s: the mask held to a range of 0.082 and `uMist` did
+  not move at all, yet the drawn fog still flipped on and off 141 times with
+  every point capped at 0.148 — band 1. On level-2 ground `pool` is 0.2, so
+  reaching band 1 needed the bank's own value to be 1.0 EXACTLY: the effect was
+  ONE BIT there and the drifting noise dithered it about once a second. Same
+  points, both formulas on the same samples: 2.57 distinct drawn values a point
+  before, 6 after. Gate arm "raised ground" stands in his eastern marsh and
+  requires a THIN EDGE — a bank that is really a bank always shows its own
+  fade; measured 0 of 53 lit points below half the maximum before, 0.45 of 404
+  after.
 - **THE ZONE FADES HIS MIST; IT MAY NOT RESHAPE IT — THE MASK GOES ON THE
   ALPHA, AFTER THE POSTERIZE** (maintainer 2026-09-21: "My favorite mist
   effect is totally destroyed and look so different and buggy ... at the zone

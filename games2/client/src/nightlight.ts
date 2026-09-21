@@ -2399,11 +2399,29 @@ void main() {
   float roil = 0.55 + 0.45 * mNoise(p2);
   // Hug the ground: full in the low (lakes/open fields), gone by ~2.5 levels.
   float pool = clamp(1.0 - (z - 0.4) * 0.5, 0.0, 1.0);
-  float d = clamp(banks * roil * 1.55, 0.0, 1.0) * pool * uMist;
-  // Posterized bands = stylized pixel-art fog layers, capped so the ground
-  // still ghosts through the thickest bank.
+  // THE BANK'S OWN SHAPE, 0..1 — and NOTHING ELSE goes in here. Posterized
+  // bands = stylized pixel-art fog layers, capped so the ground still ghosts
+  // through the thickest bank.
+  float d = clamp(banks * roil * 1.55, 0.0, 1.0);
   float a = floor(d * 5.0 + 0.001) / 5.0 * 0.74;
-  // THE ZONE BOUNDARY (ambient's mask) IS A FADE ON THE ALPHA, AND IT IS
+  // EVERY MULTIPLIER IS A FADE, AND EVERY ONE OF THEM RIDES ON THE ALPHA,
+  // AFTER THE POSTERIZE: how much the fog hugs THIS ground (pool), how much
+  // mist is up at all (uMist), and the zone (the mask below).
+  //
+  // POOL AND uMIST WERE THE OTHER TWO, and leaving them upstream cost a second
+  // round of exactly the same bug (maintainer 2026-09-21, after the mask was
+  // moved: "The mist at the boundary still looks like crap and flicker in and
+  // out of existence!"). MEASURED at his cliff, 15 fixed world points at 10 Hz
+  // for 12 s while walking: the mask held to a range of 0.082, and the DRAWN
+  // mist still flipped on and off 141 times with every point capped at 0.148 —
+  // band 1. On level-2 ground pool is 0.2, so reaching band 1 needed
+  // banks*roil*1.55 to be 1.0 EXACTLY: the effect was one bit there, and the
+  // drifting noise dithered it about once a second. On the alpha the bank
+  // keeps all five of its layers at every height and simply thins with the
+  // ground, which is also what a cliff face wants — pool ramps down its
+  // height, so the face fades instead of stepping.
+  a *= pool * uMist;
+  // THE ZONE BOUNDARY (ambient's mask) IS A FADE ON THE ALPHA TOO, AND IT IS
   // APPLIED HERE — AFTER THE POSTERIZE — ON PURPOSE (maintainer 2026-09-21:
   // "Why didn't you just fade in the effect with transparency at the boundary
   // so we get a good looking fade and keep my favourite effect to look the
@@ -5733,18 +5751,17 @@ export class NightLights {
     return (at(x0, y0) * (1 - tx) + at(x1, y0) * tx) * (1 - ty) + (at(x0, y1) * (1 - tx) + at(x1, y1) * tx) * ty;
   }
 
-  /** EXACT JS twin of the shader's mist density at a WORLD point (probes +
-   * QA) — change together with MIST_FRAG. Returns 0..1 BEFORE the posterize
-   * and WITHOUT the zone mask: this is the bank the effect would paint if
-   * the whole world were its zone. What is actually DRAWN is mistDrawAt(). */
-  mistAt(wx: number, wy: number, mist = this.curMist): number {
-    if (mist <= 0.001 || !this.tArr) return 0;
+  /** THE BANK'S OWN SHAPE AND HOW MUCH THIS GROUND HOLDS IT, kept apart —
+   *  the two halves MIST_FRAG keeps apart, for the same reason: only `d` goes
+   *  through the posterize, `pool` is a fade on the alpha. Null off-world. */
+  private mistParts(wx: number, wy: number, mist = this.curMist): { d: number; pool: number } | null {
+    if (mist <= 0.001 || !this.tArr) return null;
     // ground-plane inverse projection (level-0 cell; probes sample flats)
     const u = (wx - this.iso.ox) / this.geo.dx - 1;
     const v = (wy - (this.iso.oy + 8)) / this.geo.dy;
     const col = Math.floor((u + v) / 2);
     const row = Math.floor((v - u) / 2);
-    if (col < 0 || row < 0 || col >= this.world.width || row >= this.world.height) return 0;
+    if (col < 0 || row < 0 || col >= this.world.width || row >= this.world.height) return null;
     const z = this.tArr[row * this.world.width + col];
     const t = this.scene.time.now / 1000;
     // Precision-exact integer hash — MUST stay identical to the shader's
@@ -5774,16 +5791,26 @@ export class NightLights {
     const p2x = wx * 0.0074 - t * 0.03, p2y = wy * 0.0074 + t * 0.048;
     const roil = 0.55 + 0.45 * noise(p2x, p2y);
     const pool = Math.min(1, Math.max(0, 1 - (z - 0.4) * 0.5));
-    return Math.min(1, banks * roil * 1.55) * pool * mist;
+    return { d: Math.min(1, banks * roil * 1.55), pool };
   }
 
-  /** WHAT THE PASS ACTUALLY PAINTS at a world point, 0..1 — the posterized
-   *  band, then the zone's fade. The twin of MIST_FRAG's last three lines,
-   *  in their order: the mask multiplies the ALPHA, never the density (see
-   *  the GLSL comment there). This is the honest "is it misting here". */
+  /** THE FOG'S COVER at a world point, 0..1 — the bank, how much this ground
+   *  holds it and how much mist is up, BEFORE the posterize and WITHOUT the
+   *  zone. "How much fog belongs here." What is DRAWN is mistDrawAt(). */
+  mistAt(wx: number, wy: number, mist = this.curMist): number {
+    const p = this.mistParts(wx, wy, mist);
+    return p ? p.d * p.pool * mist : 0;
+  }
+
+  /** WHAT THE PASS ACTUALLY PAINTS at a world point, 0..1 — the twin of
+   *  MIST_FRAG's last lines IN THEIR ORDER: the bank's own shape posterized
+   *  into its five layers, then every fade on the alpha (the ground's hold,
+   *  the mist scalar, the zone). Nothing but the shape goes through the
+   *  posterize; that is the whole law. The honest "is it misting here". */
   mistDrawAt(wx: number, wy: number, mist = this.curMist): number {
-    const d = this.mistAt(wx, wy, mist);
-    const a = (Math.floor(d * 5 + 0.001) / 5) * 0.74;
+    const p = this.mistParts(wx, wy, mist);
+    if (!p) return 0;
+    const a = (Math.floor(p.d * 5 + 0.001) / 5) * 0.74 * p.pool * mist;
     return a <= 0.001 ? 0 : a * this.maskAt(wx, wy);
   }
 
