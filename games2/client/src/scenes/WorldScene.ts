@@ -1230,13 +1230,6 @@ const T3_BOUNDARY_RETRY = 32;
  *  whole ring's rasters can land in one frame; the lookups are cheap, the
  *  repaint is a pass over the cells' bounding window, so it is bounded. */
 const T3_BOUNDARY_LAND = 12;
-/** How long a boundary or deck may stay owed before its repair stops waiting
- *  for a quiet frame. Under it the repair keeps its manners and runs only
- *  between paints; over it a walking player is no longer a reason to leave a
- *  hole in a cliff (see t3retryBoundaries). */
-const T3_BOUNDARY_DEADLINE_MS = 1500;
-/** The lost-claim repaint runs at most this often (onTerrainBatch). */
-const T3_LOST_CLAIM_MS = 2000;
 /** How many times a too-wide cell repaint may be halved before it gives up and
  *  paints in full — at most 2^N rects. */
 const T3_REPAINT_SPLITS = 2;
@@ -4104,8 +4097,6 @@ export class WorldScene extends Phaser.Scene {
    * full paint, extended by band paints); the cells a landed batch made drawable;
    * the ring of cells beyond the texture whose art is asked for ahead of time. */
   private t3missing = new Map<string, Set<number>>();
-  /** When the lost-claim repaint last ran (onTerrainBatch). */
-  private t3lostClaimAt = 0;
   /** THE CELLS WHOSE OPS DROPPED in the last pass that drew them — what the
    *  drop drain repaints, cell by cell, instead of the whole texture (see
    *  t3drainDrops). A cell leaves when a pass draws it whole. */
@@ -20565,21 +20556,6 @@ export class WorldScene extends Phaser.Scene {
     else if (cells.size) {
       for (const i of cells) this.groundDirtyCells.push(i);
       this.repaintGroundPartial = true;
-    } else if (this.t3boundaryOwed.size || this.t3deckOwed.size) {
-      /* ART LANDED THAT NO CELL IS WAITING FOR, WHILE CELLS ARE STILL OWED —
-       * the record that would have repainted them is gone. `t3missing` maps a
-       * path to the cells that asked for it and a FULL paint clears it (the
-       * window is new); when a batch lands after that, the file has nobody to
-       * repaint and the hole stays. His hour of screenshots is this: a
-       * reconnect or a hop forces a full paint while hundreds of files are in
-       * flight, every one of them loses its claim, and the ground keeps its
-       * hard edges and its holes until a later full repaint — tabbing out.
-       * One repaint, rate-limited, restores what the lost claims would have. */
-      const now = this.time.now;
-      if (now - this.t3lostClaimAt > T3_LOST_CLAIM_MS) {
-        this.t3lostClaimAt = now;
-        this.repaintGroundPending = true;
-      }
     }
     this.repaintOccPending = true;
     // Ring paths a slice left queued while this batch was in flight go now.
@@ -20875,33 +20851,14 @@ export class WorldScene extends Phaser.Scene {
    *  cell that was painted without its transition, ask the factory again, and
    *  repaint the ones that can now draw it. Costs nothing while the set is
    *  empty, which is the steady state once the ring has caught up. */
-  /** When the current repair backlog started (see the deadline below); 0 when
-   *  nothing is owed. */
-  private t3owedSince = 0;
-
   private t3retryBoundaries(): void {
-    if (!this.t3boundaryOwed.size && !this.t3deckOwed.size) {
-      this.t3owedSince = 0;
-      return;
-    }
-    if (!this.worldUp) return;
+    if ((!this.t3boundaryOwed.size && !this.t3deckOwed.size) || !this.worldUp) return;
     const t3 = this.t3;
     const world = this.world;
     if (!t3 || !world) return;
-    /* NEVER ON A FRAME THAT ALREADY SCROLLED OR PAINTED — those are the frames
-     * the player feels — UNTIL THE REPAIR IS OLD, because "no deadline" meant
-     * NEVER while he walked. A walking player scrolls the ground on nearly
-     * every frame, so this gate held the whole repair off for as long as he
-     * kept moving: the hard edges and the holes in the cliffs stayed where
-     * they were until something forced a full repaint, which is why TABBING
-     * OUT AND BACK fixed them and nothing else did (maintainer 2026-09-21, an
-     * hour of screenshots: "the tiles BOUNDARY looks so bad", "why can I see
-     * into the mountain walls", then "tabbed out and in again and now it looks
-     * good"). Past T3_BOUNDARY_DEADLINE_MS the repair runs anyway, on its same
-     * small per-frame budget — twelve cells is not a frame. */
-    const owedSince = this.t3owedSince || (this.t3owedSince = this.time.now);
-    const busy = this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length > 0;
-    if (busy && this.time.now - owedSince < T3_BOUNDARY_DEADLINE_MS) return;
+    // Never on a frame that already scrolled or painted — those are the frames
+    // the player feels, and this is repair work with no deadline.
+    if (this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
     const tex = this.ensureTiles3Textures();
     if (!tex) return;
     const ready: number[] = [];
