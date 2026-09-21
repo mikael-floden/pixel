@@ -4098,6 +4098,18 @@ export interface AutopilotTrip {
   avoid?: Set<number>;
   /** Steps the route may not take (findPath's `avoidSteps`), named the same way. */
   avoidSteps?: Set<number>;
+  /** THE LIMITS THIS TRIP WAS PLANNED UNDER, so a stall re-plan keeps them.
+   *  A monster's roam leg is budgeted (MONSTER_ROAM_MAX_NODES) and routes with
+   *  `canSwim` false, because water is the player's sanctuary; a player's tap
+   *  passes neither and keeps findPath's defaults (4000 nodes, swimming
+   *  allowed). The re-plan used to pass neither WHOEVER planned the trip, so a
+   *  land monster that stalled was handed a route across a lake it can never
+   *  enter — it walked to the shore, made no progress, stalled again a second
+   *  later, and burned another unbudgeted search doing it. `maxNodes` also
+   *  tells the two callers apart: a budgeted trip is a wander, and the walked
+   *  proof below is for a tap. */
+  maxNodes?: number;
+  canSwim?: boolean;
   /** NET PROGRESS: the last position the body was ROUTE_NET_WU away from, and
    *  when. A dither makes slow fake progress on the waypoint clock (each leg
    *  dips the distance a couple of wu), so a body that has not got
@@ -5542,6 +5554,8 @@ export function startTrip(
     lastPos: null,
     steer: null,
     slow: false,
+    ...(maxNodes ? { maxNodes } : {}),
+    ...(canSwim === undefined ? {} : { canSwim }),
     ...(avoid ? { avoid } : {}),
     ...(avoidSteps ? { avoidSteps } : {}),
   };
@@ -5683,14 +5697,40 @@ export function stepAutopilot(
       /* AND THE NEW ROUTE IS WALKED BEFORE IT IS TAKEN, like the tap's: a rail
        * crossed by three cells' steps cost three stalls of a second each
        * before (his pocket's tap ended a cell and a half short at the fence,
-       * its re-plans spent), and one proof names them all. */
-      const t0 = performance.now();
+       * its re-plans spent), and one proof names them all.
+       *
+       * THE PROOF IS THE TAP'S, AND SO IS ITS PRICE. A tap happens once, on
+       * one body, because a person asked for it; the proof may spend
+       * TAP_PROVE_BUDGET_MS of wall clock re-searching and SIMULATING
+       * ROUTE_PROVE_STEPS frames of walking, and that is a fair price for a
+       * route a person is waiting on. A BUDGETED trip is a monster's roam leg
+       * — hundreds of them, on the server's 20 Hz tick, and each one a wander
+       * with no one waiting. It gets ONE re-plan, under its own limits, which
+       * is what it had before the proof existed (maintainer 2026-09-21: "the
+       * new accurate pathfinder was meant for the player"). Either way the
+       * search keeps the trip's OWN node budget and its canSwim: a land
+       * monster handed a route across water walks to the shore, nets nothing,
+       * and stalls again a second later, which is a re-plan loop rather than a
+       * re-plan. */
+      const opts = {
+        fromElev,
+        goalLevel: trip.goalLevel,
+        avoid,
+        avoidSteps,
+        ...(trip.maxNodes ? { maxNodes: trip.maxNodes } : {}),
+        ...(trip.canSwim === undefined ? {} : { canSwim: trip.canSwim }),
+      };
       let path: { x: number; y: number; lvl?: number }[] = [];
-      for (let attempt = 0; ; attempt++) {
-        path = findPath(grid, x, y, t.x, t.y, { fromElev, goalLevel: trip.goalLevel, avoid, avoidSteps }) ?? [];
-        if (path.length === 0 || attempt >= TAP_PROVE_TRIES || performance.now() - t0 > TAP_PROVE_BUDGET_MS) break;
-        const probe: AutopilotTrip = { ...trip, path, progress: { d: Infinity, t: nowMs }, lastPos: null, steer: null, mark: undefined };
-        if (proveRoute(grid, probe, x, y, nowMs, fromElev, avoid, avoidSteps)) break;
+      if (trip.maxNodes) {
+        path = findPath(grid, x, y, t.x, t.y, opts) ?? [];
+      } else {
+        const t0 = performance.now();
+        for (let attempt = 0; ; attempt++) {
+          path = findPath(grid, x, y, t.x, t.y, opts) ?? [];
+          if (path.length === 0 || attempt >= TAP_PROVE_TRIES || performance.now() - t0 > TAP_PROVE_BUDGET_MS) break;
+          const probe: AutopilotTrip = { ...trip, path, progress: { d: Infinity, t: nowMs }, lastPos: null, steer: null, mark: undefined };
+          if (proveRoute(grid, probe, x, y, nowMs, fromElev, avoid, avoidSteps)) break;
+        }
       }
       trip.path = path;
       trip.progress = { d: Infinity, t: nowMs };

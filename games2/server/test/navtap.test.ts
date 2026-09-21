@@ -13,7 +13,7 @@ import {
   CHARACTER_BODY_PX, buildTerrainGrid, stampSceneryCollision, ISO_GEOMETRY_MAPS3, startBestTrip, startTrip,
   stepAutopilot, bodyStalled, slideAlong, unstickFromSolids, stepMovement, makeBlockedElev, makeSideBlocked,
   levelAtWorld, resolveElevAt, surfaceAtWorldElev, footprintBlocks, parseWorld,
-  CELL_WU, PLAYER_RADIUS, WALK_CLIMB, WALL_STANDOFF,
+  CELL_WU, PLAYER_RADIUS, WALK_CLIMB, WALL_STANDOFF, MONSTER_ROAM_MAX_NODES, surfaceFor,
   type TerrainGrid, type SceneryBboxDoc, type SceneryHitboxDoc, type SlideMemo, type AutopilotTrip,
 } from "@nangijala/shared";
 
@@ -250,4 +250,81 @@ test("on the_game: his fence at 303.7,199.7 is walked round, and the wall corrid
   const r2 = follow(g, trip2!, from2.x, from2.y, 400, ww, wh);
   assert.ok(Math.hypot(r2.x - to2.x, r2.y - to2.y) < CELL_WU * 1.25, `out of the pocket and there within 13 s: ended ${cells(r2)} done=${r2.done} flips=${r2.flips} frozen=${r2.maxFrozen}`);
   assert.ok(r2.maxFrozen < 45, `never stands for long (${r2.maxFrozen} frozen ticks)`);
+});
+
+/** THE PROVEN PATHFINDER IS THE PLAYER'S, AND SO ARE ITS COSTS (maintainer
+ *  2026-09-21: "the new accurate pathfinder was meant for the player"). A
+ *  monster's roam leg is planned BUDGETED (MONSTER_ROAM_MAX_NODES) and with
+ *  `canSwim` false, because water is the player's sanctuary. The stall re-plan
+ *  of 61a04fdd1e passed NEITHER, whoever planned the trip: a land monster that
+ *  stalled was handed a route across water it can never enter, walked to the
+ *  shore, netted nothing, stalled again a second later and burned another
+ *  UNBUDGETED search with a walked proof on it — on the server's 20 Hz tick,
+ *  307 monsters in the_game. The trip now remembers what it was planned under
+ *  and the re-plan keeps it; the walked proof stays the tap's. */
+function lakeWorld(): TerrainGrid {
+  // Grass, a lake across rows 12-16, and ONE dry cell wide corridor at column
+  // 15 — with the pinch pieces standing in it, so the only dry way south is
+  // one the nav layer threads per cell and the BODY cannot pass. Avoid that
+  // cell and there is no dry route at all: the re-plan's `canSwim` decides
+  // whether the monster is sent into the lake or gives the leg up.
+  const rows = Array.from({ length: H }, (_, r) =>
+    Array.from({ length: W }, (_, c) => ({ t: r >= 12 && r <= 16 && c !== 15 ? "water" : "grass", l: 0 })),
+  );
+  const g = buildTerrainGrid(W, H, rows, [], []);
+  const bbox: SceneryBboxDoc = {
+    pieces: { cup: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" }, tab: { wph: 100, cpx: CHARACTER_BODY_PX, sprite: "s" } },
+    boxes: { s: [0, 0, 100, 100, 100, 100] },
+  };
+  const hitbox: SceneryHitboxDoc = {
+    "scenery/cup": { boxes: [{ ax: 0, ay: 50, rx: 25, ry: 6, rot: 0 }] },
+    "scenery/tab": { boxes: [{ ax: 0, ay: 50, rx: 26, ry: 7.56, shape: "rect", rot: 0 }] },
+  };
+  stampSceneryCollision(g, [{ piece: "cup", x: 15, y: 15.0 }, { piece: "tab", x: 15, y: 16.7 }], bbox, hitbox, ISO_GEOMETRY_MAPS3);
+  return g;
+}
+const wet = (g: TerrainGrid, p: { x: number; y: number }) =>
+  surfaceFor(g.type[Math.floor(p.y / CELL_WU) * W + Math.floor(p.x / CELL_WU)]).swimmable;
+
+test("a monster's trip remembers its own limits, and its stall re-plan keeps them: never a route through water it cannot enter", () => {
+  const g = lakeWorld();
+  g.navPass = undefined; // cells only, as the tests above: the route threads the pinch
+  const from = { x: 15.5 * CELL_WU, y: 9.0 * CELL_WU };
+  const to = { x: 15.5 * CELL_WU, y: 22.0 * CELL_WU };
+  const trip = startTrip(g, from.x, from.y, to.x, to.y, false, 0, 0, undefined, MONSTER_ROAM_MAX_NODES, false);
+  assert.ok(trip, "a dry route south exists through the corridor");
+  assert.ok(trip!.path.every((p) => !wet(g, p)), `the first route is dry: ${trip!.path.map(cells).join(" ")}`);
+
+  // Walk it into the pinch. The body may not enter water either, so what the
+  // stall re-plan decides is the whole of what happens next.
+  const walk = { maxClimb: WALK_CLIMB, canSwim: false };
+  const memo: SlideMemo = { ax: 0, ay: 0 };
+  const dt = 1 / 30;
+  let x = from.x;
+  let y = from.y;
+  let t = 0;
+  let wetPath = 0;
+  for (let i = 0; i < 400; i++) {
+    t += dt * 1000;
+    const d = stepAutopilot(g, trip!, x, y, t, W * CELL_WU, H * CELL_WU, 0);
+    if (trip!.path.some((p) => wet(g, p))) wetPath++;
+    if (d.done) break;
+    let ax = d.ax;
+    let ay = d.ay;
+    if ((ax !== 0 || ay !== 0) && bodyStalled(g, x, y, ax, ay, 0)) {
+      const sl = slideAlong(g, x, y, ax, ay, memo, 0);
+      if (sl) { ax = sl.ax; ay = sl.ay; }
+    } else { memo.ax = 0; memo.ay = 0; }
+    const ge = () => 0;
+    const m = stepMovement(x, y, ax, ay, false, dt, makeBlockedElev(g, walk, ge), surfaceAtWorldElev(g, x, y, 0).speed, true, W * CELL_WU, H * CELL_WU, makeSideBlocked(g, walk, ge), { screenSlide: false });
+    x = m.x;
+    y = m.y;
+  }
+  assert.ok((trip!.replans ?? 0) >= 1, `the body stalled at the pinch and re-planned (replans ${trip!.replans})`);
+  // The limits themselves, asserted after the behaviour they produce.
+  assert.equal(trip!.maxNodes, MONSTER_ROAM_MAX_NODES, "the trip carries the budget it was planned under");
+  assert.equal(trip!.canSwim, false, "...and that it may not swim");
+  assert.equal(wetPath, 0, `no re-plan ever routed the monster into the lake (${wetPath} ticks holding a wet route; unbudgeted, findPath swims by default)`);
+  assert.ok(!wet(g, { x, y }), `and the body never stood in water (ended ${cells({ x, y })})`);
+  console.log(`# navtap: the monster stalled ${trip!.replans} time(s) at the pinch, named ${(trip!.avoid?.size ?? 0)} cell(s) and ${(trip!.avoidSteps?.size ?? 0)} step(s), and never took to the water`);
 });
