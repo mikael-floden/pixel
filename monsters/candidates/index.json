@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T11:32:01+00:00",
+  "generated_at": "2026-09-21T11:33:03+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 142,
+  "count": 143,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -18594,6 +18594,139 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:27:47+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "vent_gill",
+      "name": "Ventgill",
+      "tier": "evil",
+      "lore": "It swims where nothing should and surfaces only in the vents. The water around it boils.",
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "d94e967c-761b-448f-b371-7b88d2ad94b9",
+      "version": 1,
+      "sheet": "vent_gill/sheet.webp",
+      "rotations": {
+        "south": "vent_gill/rotations/south.webp",
+        "south-east": "vent_gill/rotations/south-east.webp",
+        "east": "vent_gill/rotations/east.webp",
+        "north-east": "vent_gill/rotations/north-east.webp",
+        "north": "vent_gill/rotations/north.webp",
+        "north-west": "vent_gill/rotations/north-west.webp",
+        "west": "vent_gill/rotations/west.webp",
+        "south-west": "vent_gill/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.609,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.609,
+            "bbox": [
+              8,
+              12,
+              93,
+              92
+            ],
+            "fill": 0.629,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.679,
+            "bbox": [
+              6,
+              16,
+              96,
+              88
+            ],
+            "fill": 0.599,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.707,
+            "bbox": [
+              8,
+              14,
+              97,
+              85
+            ],
+            "fill": 0.584,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.678,
+            "bbox": [
+              12,
+              15,
+              87,
+              89
+            ],
+            "fill": 0.513,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.752,
+            "bbox": [
+              4,
+              12,
+              92,
+              91
+            ],
+            "fill": 0.643,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.741,
+            "bbox": [
+              10,
+              13,
+              97,
+              92
+            ],
+            "fill": 0.635,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.71,
+            "bbox": [
+              16,
+              15,
+              99,
+              91
+            ],
+            "fill": 0.583,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.742,
+            "bbox": [
+              5,
+              15,
+              94,
+              90
+            ],
+            "fill": 0.617,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:33:02+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},
