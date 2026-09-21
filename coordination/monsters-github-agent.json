@@ -1,13 +1,13 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-21T07:54:59+00:00",
-  "health": "idle",
-  "current": "idle — took NOTHING this session: his basilisk attack_v3 south-east/south-west redos were already claimed by monsters-assistant (07:42:39Z, running), and a verdict claimed on any board is consumed. No files claimed, no art touched, no verdict cleared.",
+  "updated_at": "2026-09-21T08:06:00+00:00",
+  "health": "running",
+  "current": "CLAIM 2026-09-21T08:06Z — GRADUATE eye_bat on his approval, and repair the half-done state the graduate workflow left. What moved in his push (361c4384/48e791a0 + 5d210e6ef): 'monsters/eye_bat' -> approved rating 3 and 'monsters/eye_bat#attack_v3#north' -> approved rating 1 (07:58Z), i.e. his yes on the slash this board regenerated at 07:51Z. Both are APPROVALS, so nothing is cleared (review-contract law 2); what they DO is complete the set — all 42 eye_bat keys are now approved, design included, so graduate.py's eligibility rule fires. .github/workflows/monsters-graduate.yml ran on that push (35575498706), read 'eye_bat: ELIGIBLE', RETAGGED IT MONSTER ON PIXELLAB and mirrored it — then died on a rebase conflict in monsters/candidates/index.json and pushed NOTHING. So upstream says MONSTER while main still says candidate, which is the state a plain sync would import wrong. Finishing it here. Files: monsters/eye_bat/** (new), monsters/candidates/eye_bat/** (removed), monsters/candidates/index.json, monsters/config/roster.json, monsters/config/candidates.json, monsters/animation_map.json, this board. live/feedback/monsters.json stays BYTE-UNCHANGED. NOT touching: monsters-assistant's nine claimed verdicts (basilisk, pebble_crab, ash_hatchling, ember_king) or any file under their monsters; no promote, no discard, no reconcile --tags, no other monster.",
   "progress": {
-    "verdicts_taken": 0,
+    "verdicts_taken": 2,
     "verdicts_cleared": 0,
-    "unit": "none — the review that started me was already claimed"
+    "unit": "eye_bat graduation (both verdicts are approvals — none clearable)"
   },
   "budget_remaining": "PixelLab USD unchanged — this session spent no generations and made no API call",
   "notes": [
