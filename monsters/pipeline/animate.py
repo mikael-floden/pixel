@@ -36,6 +36,7 @@ from __future__ import annotations
 
 import argparse
 import collections
+import hashlib
 import json
 import os
 import re
@@ -1325,6 +1326,19 @@ def cmd_review(args):
     cand.rebuild_index(cfg)
 
 
+def strip_hash(cid, slot, d):
+    """The hash the WIKI stamps into every verdict: md5 of that direction's
+    sprite-sheet strip, first 16 hex (`wiki/build.mjs` hashes `clip.strip` for
+    every domain but characters2; verified against his live verdicts). A
+    verdict whose stamp is not this judges art that no longer exists, which is
+    the wiki's own "regenerated since — judge again" condition."""
+    for base in (cand.cdir(cid), os.path.join(mirror.ROOT, cid)):
+        p = os.path.join(base, "animations", f"{slot}__{d}{mirror.ART_EXT}")
+        if os.path.exists(p):
+            return hashlib.md5(open(p, "rb").read()).hexdigest()[:16]
+    return None
+
+
 def _feedback_doc():
     try:
         return json.load(open(FEEDBACK))
@@ -1475,6 +1489,19 @@ def cmd_prune_feedback(args):
         made, said = _iso(q.get("generated_at")), _iso(v.get("updated_at"))
         if made and said and made > said:
             drop.append((key, q.get("generated_at"), v.get("updated_at")))
+            continue
+        # THE CLOCK IS NOT THE ONLY WAY A NOTE GOES STALE (maintainer
+        # 2026-09-21: "Why is my old comment not cleared when you acted on it?
+        # This is the dangling bug I hate. Both you and the github agent does
+        # it! I want my comment cleared!"). Every verdict carries the hash of
+        # the exact strip it judged (md5 of the strip file, 16 hex — the wiki
+        # stamps it). When that is not the strip on disk, the art the note is
+        # about is gone, whoever replaced it and whatever the two clocks say.
+        # This catches the note he wrote against a page the deploy had not
+        # caught up with, and any regeneration that landed by another path.
+        stamped, now = v.get("art"), strip_hash(cid, slot, d)
+        if stamped and now and stamped != now:
+            drop.append((key, f"the strip on disk is {now}", f"he judged {stamped}"))
     for key, made, said in drop:
         entries.pop(key, None)
         print(f"  pruned {key}  (judged {said[:19]}, regenerated {made[:19]})")
