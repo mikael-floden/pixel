@@ -18599,6 +18599,661 @@
       "hoverPx": 0
     },
     {
+      "id": "ash_hatchling",
+      "name": "Ashling",
+      "frameW": 38,
+      "frameH": 40,
+      "root": "ash_hatchling",
+      "walkAnim": "walk",
+      "idleAnim": "idle",
+      "animations": {
+        "angry": {
+          "south": 5,
+          "south-west": 5,
+          "west": 5,
+          "north-west": 5,
+          "north": 5,
+          "north-east": 5,
+          "east": 5,
+          "south-east": 5
+        },
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "idle": {
+          "south": 5,
+          "south-west": 5,
+          "west": 5,
+          "north-west": 5,
+          "north": 5,
+          "north-east": 5,
+          "east": 5,
+          "south-east": 5
+        },
+        "die": {
+          "south": 16,
+          "south-west": 15,
+          "west": 16,
+          "north-west": 16,
+          "north": 15,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 15
+        },
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        }
+      },
+      "strips": {
+        "angry": {
+          "south": "/assets/monsters/ash_hatchling/packed/angry__south.46de79c0.webp",
+          "south-west": "/assets/monsters/ash_hatchling/packed/angry__south-west.8afb90c0.webp",
+          "west": "/assets/monsters/ash_hatchling/packed/angry__west.3cd129df.webp",
+          "north-west": "/assets/monsters/ash_hatchling/packed/angry__north-west.09471c0e.webp",
+          "north": "/assets/monsters/ash_hatchling/packed/angry__north.80fc8357.webp",
+          "north-east": "/assets/monsters/ash_hatchling/packed/angry__north-east.2386a409.webp",
+          "east": "/assets/monsters/ash_hatchling/packed/angry__east.f877de6d.webp",
+          "south-east": "/assets/monsters/ash_hatchling/packed/angry__south-east.55b84444.webp"
+        },
+        "attack": {
+          "south": "/assets/monsters/ash_hatchling/packed/attack__south.b8589c9d.webp",
+          "south-west": "/assets/monsters/ash_hatchling/packed/attack__south-west.5c2a91a8.webp",
+          "west": "/assets/monsters/ash_hatchling/packed/attack__west.240301bf.webp",
+          "north-west": "/assets/monsters/ash_hatchling/packed/attack__north-west.e0db836b.webp",
+          "north": "/assets/monsters/ash_hatchling/packed/attack__north.8e94e132.webp",
+          "north-east": "/assets/monsters/ash_hatchling/packed/attack__north-east.eda4ca8e.webp",
+          "east": "/assets/monsters/ash_hatchling/packed/attack__east.40afc2fd.webp",
+          "south-east": "/assets/monsters/ash_hatchling/packed/attack__south-east.6e0c595a.webp"
+        },
+        "idle": {
+          "south": "/assets/monsters/ash_hatchling/packed/idle__south.d234252a.webp",
+          "south-west": "/assets/monsters/ash_hatchling/packed/idle__south-west.b979f64b.webp",
+          "west": "/assets/monsters/ash_hatchling/packed/idle__west.4070037f.webp",
+          "north-west": "/assets/monsters/ash_hatchling/packed/idle__north-west.68a4a3f1.webp",
+          "north": "/assets/monsters/ash_hatchling/packed/idle__north.dcf8ecf6.webp",
+          "north-east": "/assets/monsters/ash_hatchling/packed/idle__north-east.a253e097.webp",
+          "east": "/assets/monsters/ash_hatchling/packed/idle__east.274e2fab.webp",
+          "south-east": "/assets/monsters/ash_hatchling/packed/idle__south-east.c817d242.webp"
+        },
+        "die": {
+          "south": "/assets/monsters/ash_hatchling/packed/die__south.b1298b6b.webp",
+          "south-west": "/assets/monsters/ash_hatchling/packed/die__south-west.33e6c1da.webp",
+          "west": "/assets/monsters/ash_hatchling/packed/die__west.5696dfa7.webp",
+          "north-west": "/assets/monsters/ash_hatchling/packed/die__north-west.ab71a2a6.webp",
+          "north": "/assets/monsters/ash_hatchling/packed/die__north.36a421ce.webp",
+          "north-east": "/assets/monsters/ash_hatchling/packed/die__north-east.b02a2625.webp",
+          "east": "/assets/monsters/ash_hatchling/packed/die__east.b793ebac.webp",
+          "south-east": "/assets/monsters/ash_hatchling/packed/die__south-east.2f871c05.webp"
+        },
+        "walk": {
+          "south": "/assets/monsters/ash_hatchling/packed/walk__south.ebfe73a6.webp",
+          "south-west": "/assets/monsters/ash_hatchling/packed/walk__south-west.d1a6d60a.webp",
+          "west": "/assets/monsters/ash_hatchling/packed/walk__west.7fe59888.webp",
+          "north-west": "/assets/monsters/ash_hatchling/packed/walk__north-west.37e2cb0f.webp",
+          "north": "/assets/monsters/ash_hatchling/packed/walk__north.daac904d.webp",
+          "north-east": "/assets/monsters/ash_hatchling/packed/walk__north-east.8c70f6a7.webp",
+          "east": "/assets/monsters/ash_hatchling/packed/walk__east.547fea50.webp",
+          "south-east": "/assets/monsters/ash_hatchling/packed/walk__south-east.9d4b1514.webp"
+        }
+      },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 37,
+            "h": 40
+          },
+          "south-west": {
+            "w": 37,
+            "h": 40
+          },
+          "west": {
+            "w": 38,
+            "h": 39
+          },
+          "north-west": {
+            "w": 37,
+            "h": 37
+          },
+          "north": {
+            "w": 30,
+            "h": 34
+          },
+          "north-east": {
+            "w": 37,
+            "h": 37
+          },
+          "east": {
+            "w": 38,
+            "h": 39
+          },
+          "south-east": {
+            "w": 37,
+            "h": 40
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 42,
+            "h": 39
+          },
+          "south-west": {
+            "w": 41,
+            "h": 39
+          },
+          "west": {
+            "w": 40,
+            "h": 38
+          },
+          "north-west": {
+            "w": 45,
+            "h": 35
+          },
+          "north": {
+            "w": 36,
+            "h": 39
+          },
+          "north-east": {
+            "w": 45,
+            "h": 35
+          },
+          "east": {
+            "w": 40,
+            "h": 38
+          },
+          "south-east": {
+            "w": 41,
+            "h": 39
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 37,
+            "h": 40
+          },
+          "south-west": {
+            "w": 37,
+            "h": 40
+          },
+          "west": {
+            "w": 38,
+            "h": 39
+          },
+          "north-west": {
+            "w": 37,
+            "h": 39
+          },
+          "north": {
+            "w": 30,
+            "h": 34
+          },
+          "north-east": {
+            "w": 37,
+            "h": 39
+          },
+          "east": {
+            "w": 38,
+            "h": 39
+          },
+          "south-east": {
+            "w": 37,
+            "h": 40
+          }
+        },
+        "die": {
+          "south": {
+            "w": 37,
+            "h": 39
+          },
+          "south-west": {
+            "w": 39,
+            "h": 39
+          },
+          "west": {
+            "w": 38,
+            "h": 39
+          },
+          "north-west": {
+            "w": 38,
+            "h": 35
+          },
+          "north": {
+            "w": 36,
+            "h": 32
+          },
+          "north-east": {
+            "w": 38,
+            "h": 35
+          },
+          "east": {
+            "w": 38,
+            "h": 39
+          },
+          "south-east": {
+            "w": 39,
+            "h": 39
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 37,
+            "h": 40
+          },
+          "south-west": {
+            "w": 37,
+            "h": 40
+          },
+          "west": {
+            "w": 38,
+            "h": 39
+          },
+          "north-west": {
+            "w": 38,
+            "h": 40
+          },
+          "north": {
+            "w": 29,
+            "h": 35
+          },
+          "north-east": {
+            "w": 38,
+            "h": 40
+          },
+          "east": {
+            "w": 38,
+            "h": 39
+          },
+          "south-east": {
+            "w": 37,
+            "h": 40
+          }
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      },
+      "ground": {
+        "south": {
+          "f": 0.8958,
+          "cx": 0.4917,
+          "contact": 5,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4917,
+            0.4917,
+            0.4917,
+            0.4917,
+            0.4917,
+            0.4917
+          ],
+          "air": [
+            0,
+            1,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-west": {
+          "f": 0.8857,
+          "cx": 0.4825,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4825,
+            0.4825,
+            0.4825,
+            0.4825,
+            0.4825,
+            0.4825
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "west": {
+          "f": 0.9161,
+          "cx": 0.4864,
+          "contact": 5,
+          "sink": 2,
+          "up": 3,
+          "shift": [
+            0.4864,
+            0.4864,
+            0.4864,
+            0.4864,
+            0.4864,
+            0.4864
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-west": {
+          "f": 0.8609,
+          "cx": 0.4054,
+          "contact": 1,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4054,
+            0.4054,
+            0.4054,
+            0.4054,
+            0.4054,
+            0.4054
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north": {
+          "f": 0.9107,
+          "cx": 0.5026,
+          "contact": 0,
+          "sink": 2,
+          "up": 3,
+          "shift": [
+            0.5026,
+            0.5026,
+            0.5026,
+            0.5026,
+            0.5026,
+            0.5026
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-east": {
+          "f": 0.8609,
+          "cx": 0.5815,
+          "contact": 1,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.5815,
+            0.5815,
+            0.5815,
+            0.5815,
+            0.5815,
+            0.5815
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "east": {
+          "f": 0.9161,
+          "cx": 0.5004,
+          "contact": 5,
+          "sink": 2,
+          "up": 3,
+          "shift": [
+            0.5004,
+            0.5004,
+            0.5004,
+            0.5004,
+            0.5004,
+            0.5004
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-east": {
+          "f": 0.8857,
+          "cx": 0.504,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.504,
+            0.504,
+            0.504,
+            0.504,
+            0.504,
+            0.504
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "gait": {
+        "cycleWu": 32,
+        "hopFrac": 0.036
+      },
+      "groundIdle": {
+        "south": {
+          "f": 0.925,
+          "cx": 0.4917,
+          "contact": 0,
+          "sink": 2,
+          "up": 3,
+          "shift": [
+            0.4917,
+            0.4917,
+            0.4917,
+            0.4917,
+            0.4917
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-west": {
+          "f": 0.8897,
+          "cx": 0.499,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.499,
+            0.499,
+            0.499,
+            0.499,
+            0.499
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "west": {
+          "f": 0.9063,
+          "cx": 0.5069,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.5069,
+            0.5069,
+            0.5069,
+            0.5069,
+            0.5069
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-west": {
+          "f": 0.9079,
+          "cx": 0.4319,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4319,
+            0.4319,
+            0.5303,
+            0.4319,
+            0.4319
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north": {
+          "f": 0.9333,
+          "cx": 0.4918,
+          "contact": 0,
+          "sink": 1,
+          "up": 2,
+          "shift": [
+            0.4918,
+            0.4918,
+            0.4918,
+            0.4918,
+            0.4918
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-east": {
+          "f": 0.9079,
+          "cx": 0.5546,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.5546,
+            0.5546,
+            0.4562,
+            0.5546,
+            0.5546
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "east": {
+          "f": 0.9063,
+          "cx": 0.4799,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4799,
+            0.4799,
+            0.4799,
+            0.4799,
+            0.4799
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-east": {
+          "f": 0.8897,
+          "cx": 0.4875,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4875,
+            0.4875,
+            0.4875,
+            0.4875,
+            0.4875
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "artBottom": 0.8958,
+      "footW": 24,
+      "bodyW": 32,
+      "shadowW": 30,
+      "shadowH": 12,
+      "radius": 14,
+      "hoverPx": 0
+    },
+    {
       "id": "turtle_hatchling",
       "name": "Shellet",
       "frameW": 40,
@@ -23472,8 +24127,8 @@
     {
       "id": "eye_bat",
       "name": "Glareling",
-      "frameW": 64,
-      "frameH": 64,
+      "frameW": 60,
+      "frameH": 59,
       "root": "eye_bat",
       "walkAnim": "walk",
       "idleAnim": "idle",
@@ -23518,16 +24173,6 @@
           "east": 16,
           "south-east": 16
         },
-        "custom_darts_forward_and_fires_a_shor": {
-          "south": 7,
-          "south-west": 7,
-          "west": 7,
-          "north-west": 7,
-          "north": 7,
-          "north-east": 7,
-          "east": 7,
-          "south-east": 7
-        },
         "walk": {
           "south": 6,
           "south-west": 6,
@@ -23541,269 +24186,225 @@
       },
       "strips": {
         "angry": {
-          "south": "/assets/monsters/eye_bat/animations/angry__south.webp",
-          "south-west": "/assets/monsters/eye_bat/animations/angry__south-west.webp",
-          "west": "/assets/monsters/eye_bat/animations/angry__west.webp",
-          "north-west": "/assets/monsters/eye_bat/animations/angry__north-west.webp",
-          "north": "/assets/monsters/eye_bat/animations/angry__north.webp",
-          "north-east": "/assets/monsters/eye_bat/animations/angry__north-east.webp",
-          "east": "/assets/monsters/eye_bat/animations/angry__east.webp",
-          "south-east": "/assets/monsters/eye_bat/animations/angry__south-east.webp"
+          "south": "/assets/monsters/eye_bat/packed/angry__south.be8c0645.webp",
+          "south-west": "/assets/monsters/eye_bat/packed/angry__south-west.1a218e5d.webp",
+          "west": "/assets/monsters/eye_bat/packed/angry__west.0466e8ea.webp",
+          "north-west": "/assets/monsters/eye_bat/packed/angry__north-west.308b029c.webp",
+          "north": "/assets/monsters/eye_bat/packed/angry__north.a1f5df7b.webp",
+          "north-east": "/assets/monsters/eye_bat/packed/angry__north-east.29f7e849.webp",
+          "east": "/assets/monsters/eye_bat/packed/angry__east.25e2aa5d.webp",
+          "south-east": "/assets/monsters/eye_bat/packed/angry__south-east.72f1488f.webp"
         },
         "idle": {
-          "south": "/assets/monsters/eye_bat/animations/idle__south.webp",
-          "south-west": "/assets/monsters/eye_bat/animations/idle__south-west.webp",
-          "west": "/assets/monsters/eye_bat/animations/idle__west.webp",
-          "north-west": "/assets/monsters/eye_bat/animations/idle__north-west.webp",
-          "north": "/assets/monsters/eye_bat/animations/idle__north.webp",
-          "north-east": "/assets/monsters/eye_bat/animations/idle__north-east.webp",
-          "east": "/assets/monsters/eye_bat/animations/idle__east.webp",
-          "south-east": "/assets/monsters/eye_bat/animations/idle__south-east.webp"
+          "south": "/assets/monsters/eye_bat/packed/idle__south.64418078.webp",
+          "south-west": "/assets/monsters/eye_bat/packed/idle__south-west.d70d2ce5.webp",
+          "west": "/assets/monsters/eye_bat/packed/idle__west.fee2fe26.webp",
+          "north-west": "/assets/monsters/eye_bat/packed/idle__north-west.6e0e0193.webp",
+          "north": "/assets/monsters/eye_bat/packed/idle__north.0829a5d3.webp",
+          "north-east": "/assets/monsters/eye_bat/packed/idle__north-east.90303ffe.webp",
+          "east": "/assets/monsters/eye_bat/packed/idle__east.647e1a33.webp",
+          "south-east": "/assets/monsters/eye_bat/packed/idle__south-east.86a8a4d1.webp"
         },
         "die": {
-          "south": "/assets/monsters/eye_bat/animations/die__south.webp",
-          "south-west": "/assets/monsters/eye_bat/animations/die__south-west.webp",
-          "west": "/assets/monsters/eye_bat/animations/die__west.webp",
-          "north-west": "/assets/monsters/eye_bat/animations/die__north-west.webp",
-          "north": "/assets/monsters/eye_bat/animations/die__north.webp",
-          "north-east": "/assets/monsters/eye_bat/animations/die__north-east.webp",
-          "east": "/assets/monsters/eye_bat/animations/die__east.webp",
-          "south-east": "/assets/monsters/eye_bat/animations/die__south-east.webp"
+          "south": "/assets/monsters/eye_bat/packed/die__south.0c4cac85.webp",
+          "south-west": "/assets/monsters/eye_bat/packed/die__south-west.1678dd6f.webp",
+          "west": "/assets/monsters/eye_bat/packed/die__west.a969a191.webp",
+          "north-west": "/assets/monsters/eye_bat/packed/die__north-west.ae4968c8.webp",
+          "north": "/assets/monsters/eye_bat/packed/die__north.69b32386.webp",
+          "north-east": "/assets/monsters/eye_bat/packed/die__north-east.f56c89eb.webp",
+          "east": "/assets/monsters/eye_bat/packed/die__east.acda1980.webp",
+          "south-east": "/assets/monsters/eye_bat/packed/die__south-east.bb46c0cb.webp"
         },
         "attack": {
-          "south": "/assets/monsters/eye_bat/animations/attack__south.webp",
-          "south-west": "/assets/monsters/eye_bat/animations/attack__south-west.webp",
-          "west": "/assets/monsters/eye_bat/animations/attack__west.webp",
-          "north-west": "/assets/monsters/eye_bat/animations/attack__north-west.webp",
-          "north": "/assets/monsters/eye_bat/animations/attack__north.webp",
-          "north-east": "/assets/monsters/eye_bat/animations/attack__north-east.webp",
-          "east": "/assets/monsters/eye_bat/animations/attack__east.webp",
-          "south-east": "/assets/monsters/eye_bat/animations/attack__south-east.webp"
-        },
-        "custom_darts_forward_and_fires_a_shor": {
-          "south": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__south.webp",
-          "south-west": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__south-west.webp",
-          "west": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__west.webp",
-          "north-west": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__north-west.webp",
-          "north": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__north.webp",
-          "north-east": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__north-east.webp",
-          "east": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__east.webp",
-          "south-east": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__south-east.webp"
+          "south": "/assets/monsters/eye_bat/packed/attack__south.98fb4dc2.webp",
+          "south-west": "/assets/monsters/eye_bat/packed/attack__south-west.733f309f.webp",
+          "west": "/assets/monsters/eye_bat/packed/attack__west.0605916a.webp",
+          "north-west": "/assets/monsters/eye_bat/packed/attack__north-west.0cc12b3f.webp",
+          "north": "/assets/monsters/eye_bat/packed/attack__north.4be57cc0.webp",
+          "north-east": "/assets/monsters/eye_bat/packed/attack__north-east.444ef951.webp",
+          "east": "/assets/monsters/eye_bat/packed/attack__east.42e1f59c.webp",
+          "south-east": "/assets/monsters/eye_bat/packed/attack__south-east.dbbfcfd5.webp"
         },
         "walk": {
-          "south": "/assets/monsters/eye_bat/animations/walk__south.webp",
-          "south-west": "/assets/monsters/eye_bat/animations/walk__south-west.webp",
-          "west": "/assets/monsters/eye_bat/animations/walk__west.webp",
-          "north-west": "/assets/monsters/eye_bat/animations/walk__north-west.webp",
-          "north": "/assets/monsters/eye_bat/animations/walk__north.webp",
-          "north-east": "/assets/monsters/eye_bat/animations/walk__north-east.webp",
-          "east": "/assets/monsters/eye_bat/animations/walk__east.webp",
-          "south-east": "/assets/monsters/eye_bat/animations/walk__south-east.webp"
+          "south": "/assets/monsters/eye_bat/packed/walk__south.8576e163.webp",
+          "south-west": "/assets/monsters/eye_bat/packed/walk__south-west.5922ed3f.webp",
+          "west": "/assets/monsters/eye_bat/packed/walk__west.827b5459.webp",
+          "north-west": "/assets/monsters/eye_bat/packed/walk__north-west.eced4801.webp",
+          "north": "/assets/monsters/eye_bat/packed/walk__north.7c614aff.webp",
+          "north-east": "/assets/monsters/eye_bat/packed/walk__north-east.d60d65da.webp",
+          "east": "/assets/monsters/eye_bat/packed/walk__east.79793a4e.webp",
+          "south-east": "/assets/monsters/eye_bat/packed/walk__south-east.ec4b9331.webp"
         }
       },
       "stripDims": {
         "angry": {
           "south": {
             "w": 64,
-            "h": 64
+            "h": 54
           },
           "south-west": {
-            "w": 64,
-            "h": 64
+            "w": 51,
+            "h": 58
           },
           "west": {
-            "w": 64,
-            "h": 64
+            "w": 40,
+            "h": 57
           },
           "north-west": {
-            "w": 64,
-            "h": 64
+            "w": 50,
+            "h": 56
           },
           "north": {
-            "w": 64,
-            "h": 64
+            "w": 60,
+            "h": 52
           },
           "north-east": {
-            "w": 64,
-            "h": 64
+            "w": 50,
+            "h": 56
           },
           "east": {
-            "w": 64,
-            "h": 64
+            "w": 40,
+            "h": 57
           },
           "south-east": {
-            "w": 64,
-            "h": 64
+            "w": 51,
+            "h": 58
           }
         },
         "idle": {
           "south": {
-            "w": 64,
-            "h": 64
+            "w": 62,
+            "h": 54
           },
           "south-west": {
-            "w": 64,
-            "h": 64
+            "w": 50,
+            "h": 58
           },
           "west": {
-            "w": 64,
-            "h": 64
+            "w": 37,
+            "h": 58
           },
           "north-west": {
-            "w": 64,
-            "h": 64
+            "w": 49,
+            "h": 56
           },
           "north": {
-            "w": 64,
-            "h": 64
+            "w": 60,
+            "h": 52
           },
           "north-east": {
-            "w": 64,
-            "h": 64
+            "w": 49,
+            "h": 56
           },
           "east": {
-            "w": 64,
-            "h": 64
+            "w": 37,
+            "h": 58
           },
           "south-east": {
-            "w": 64,
-            "h": 64
+            "w": 50,
+            "h": 58
           }
         },
         "die": {
           "south": {
             "w": 64,
-            "h": 64
+            "h": 56
           },
           "south-west": {
             "w": 64,
-            "h": 64
+            "h": 56
           },
           "west": {
-            "w": 64,
-            "h": 64
+            "w": 52,
+            "h": 60
           },
           "north-west": {
-            "w": 64,
-            "h": 64
+            "w": 55,
+            "h": 58
           },
           "north": {
             "w": 64,
-            "h": 64
+            "h": 53
           },
           "north-east": {
-            "w": 64,
-            "h": 64
+            "w": 55,
+            "h": 58
           },
           "east": {
-            "w": 64,
-            "h": 64
+            "w": 52,
+            "h": 60
           },
           "south-east": {
             "w": 64,
-            "h": 64
+            "h": 56
           }
         },
         "attack": {
           "south": {
-            "w": 64,
-            "h": 64
+            "w": 61,
+            "h": 58
           },
           "south-west": {
-            "w": 64,
-            "h": 64
+            "w": 59,
+            "h": 54
           },
           "west": {
-            "w": 64,
-            "h": 64
+            "w": 57,
+            "h": 57
           },
           "north-west": {
             "w": 64,
-            "h": 64
+            "h": 60
           },
           "north": {
-            "w": 64,
-            "h": 64
+            "w": 60,
+            "h": 55
           },
           "north-east": {
             "w": 64,
-            "h": 64
+            "h": 60
           },
           "east": {
-            "w": 64,
-            "h": 64
+            "w": 57,
+            "h": 57
           },
           "south-east": {
-            "w": 64,
-            "h": 64
-          }
-        },
-        "custom_darts_forward_and_fires_a_shor": {
-          "south": {
-            "w": 64,
-            "h": 64
-          },
-          "south-west": {
-            "w": 64,
-            "h": 64
-          },
-          "west": {
-            "w": 64,
-            "h": 64
-          },
-          "north-west": {
-            "w": 64,
-            "h": 64
-          },
-          "north": {
-            "w": 64,
-            "h": 64
-          },
-          "north-east": {
-            "w": 64,
-            "h": 64
-          },
-          "east": {
-            "w": 64,
-            "h": 64
-          },
-          "south-east": {
-            "w": 64,
-            "h": 64
+            "w": 59,
+            "h": 54
           }
         },
         "walk": {
           "south": {
-            "w": 64,
-            "h": 64
+            "w": 60,
+            "h": 55
           },
           "south-west": {
-            "w": 64,
-            "h": 64
+            "w": 54,
+            "h": 58
           },
           "west": {
-            "w": 64,
-            "h": 64
+            "w": 36,
+            "h": 59
           },
           "north-west": {
-            "w": 64,
-            "h": 64
+            "w": 52,
+            "h": 56
           },
           "north": {
-            "w": 64,
-            "h": 64
+            "w": 60,
+            "h": 55
           },
           "north-east": {
-            "w": 64,
-            "h": 64
+            "w": 52,
+            "h": 56
           },
           "east": {
-            "w": 64,
-            "h": 64
+            "w": 36,
+            "h": 59
           },
           "south-east": {
-            "w": 64,
-            "h": 64
+            "w": 54,
+            "h": 58
           }
         }
       },
@@ -23812,18 +24413,18 @@
       },
       "ground": {
         "south": {
-          "f": 0.8715,
-          "cx": 0.4936,
+          "f": 0.9414,
+          "cx": 0.4932,
           "contact": 0,
           "sink": 2,
           "up": 4,
           "shift": [
-            0.4936,
-            0.4936,
-            0.4936,
-            0.4936,
-            0.4936,
-            0.4936
+            0.4932,
+            0.4932,
+            0.4932,
+            0.4932,
+            0.4932,
+            0.4932
           ],
           "air": [
             0,
@@ -23835,18 +24436,18 @@
           ]
         },
         "south-west": {
-          "f": 0.8356,
-          "cx": 0.5384,
+          "f": 0.8703,
+          "cx": 0.5455,
           "contact": 0,
           "sink": 4,
           "up": 2,
           "shift": [
-            0.5384,
-            0.5384,
-            0.5384,
-            0.5384,
-            0.5384,
-            0.5384
+            0.5455,
+            0.5455,
+            0.5455,
+            0.5455,
+            0.5455,
+            0.5455
           ],
           "air": [
             0,
@@ -23858,18 +24459,18 @@
           ]
         },
         "west": {
-          "f": 0.8867,
-          "cx": 0.5309,
+          "f": 0.911,
+          "cx": 0.555,
           "contact": 5,
           "sink": 3,
           "up": 3,
           "shift": [
-            0.4639,
-            0.5309,
-            0.4835,
-            0.5309,
-            0.5309,
-            0.5309
+            0.555,
+            0.555,
+            0.4706,
+            0.555,
+            0.555,
+            0.555
           ],
           "air": [
             0,
@@ -23881,18 +24482,18 @@
           ]
         },
         "north-west": {
-          "f": 0.8559,
-          "cx": 0.49,
+          "f": 0.9246,
+          "cx": 0.4684,
           "contact": 0,
           "sink": 3,
           "up": 3,
           "shift": [
-            0.49,
-            0.49,
-            0.49,
-            0.49,
-            0.49,
-            0.49
+            0.4684,
+            0.4684,
+            0.4684,
+            0.4684,
+            0.4684,
+            0.4684
           ],
           "air": [
             0,
@@ -23904,18 +24505,18 @@
           ]
         },
         "north": {
-          "f": 0.8736,
-          "cx": 0.4916,
+          "f": 0.9438,
+          "cx": 0.491,
           "contact": 0,
           "sink": 2,
           "up": 4,
           "shift": [
-            0.4916,
-            0.4916,
-            0.4916,
-            0.4916,
-            0.4916,
-            0.4916
+            0.491,
+            0.491,
+            0.491,
+            0.491,
+            0.491,
+            0.491
           ],
           "air": [
             0,
@@ -23927,18 +24528,18 @@
           ]
         },
         "north-east": {
-          "f": 0.8559,
-          "cx": 0.5022,
+          "f": 0.9246,
+          "cx": 0.5219,
           "contact": 0,
           "sink": 3,
           "up": 3,
           "shift": [
-            0.5022,
-            0.5022,
-            0.5022,
-            0.5022,
-            0.5022,
-            0.5022
+            0.5219,
+            0.5219,
+            0.5219,
+            0.5219,
+            0.5219,
+            0.5219
           ],
           "air": [
             0,
@@ -23950,18 +24551,18 @@
           ]
         },
         "east": {
-          "f": 0.8867,
-          "cx": 0.4613,
+          "f": 0.911,
+          "cx": 0.4311,
           "contact": 5,
           "sink": 3,
           "up": 3,
           "shift": [
-            0.5282,
-            0.4613,
-            0.5087,
-            0.4613,
-            0.4613,
-            0.4613
+            0.4311,
+            0.4311,
+            0.5155,
+            0.4311,
+            0.4311,
+            0.4311
           ],
           "air": [
             0,
@@ -23973,18 +24574,18 @@
           ]
         },
         "south-east": {
-          "f": 0.8356,
-          "cx": 0.4538,
+          "f": 0.8703,
+          "cx": 0.4453,
           "contact": 0,
           "sink": 4,
           "up": 2,
           "shift": [
-            0.4538,
-            0.4538,
-            0.4538,
-            0.4538,
-            0.4538,
-            0.4538
+            0.4453,
+            0.4453,
+            0.4453,
+            0.4453,
+            0.4453,
+            0.4453
           ],
           "air": [
             0,
@@ -24002,17 +24603,17 @@
       },
       "groundIdle": {
         "south": {
-          "f": 0.8385,
-          "cx": 0.5089,
+          "f": 0.9012,
+          "cx": 0.5092,
           "contact": 3,
           "sink": 4,
           "up": 3,
           "shift": [
-            0.5089,
-            0.5089,
-            0.5089,
-            0.5089,
-            0.5089
+            0.5092,
+            0.5092,
+            0.5092,
+            0.5092,
+            0.5092
           ],
           "air": [
             0,
@@ -24023,17 +24624,17 @@
           ]
         },
         "south-west": {
-          "f": 0.8711,
-          "cx": 0.5469,
+          "f": 0.9095,
+          "cx": 0.5601,
           "contact": 3,
           "sink": 3,
           "up": 3,
           "shift": [
-            0.5469,
-            0.5469,
-            0.5469,
-            0.5469,
-            0.5469
+            0.5601,
+            0.5601,
+            0.5601,
+            0.5601,
+            0.5601
           ],
           "air": [
             1,
@@ -24044,17 +24645,17 @@
           ]
         },
         "north-west": {
-          "f": 0.8438,
-          "cx": 0.5036,
+          "f": 0.9107,
+          "cx": 0.4945,
           "contact": 0,
           "sink": 4,
           "up": 2,
           "shift": [
-            0.5036,
-            0.5036,
-            0.5036,
-            0.5036,
-            0.5036
+            0.4945,
+            0.4945,
+            0.4945,
+            0.4945,
+            0.4945
           ],
           "air": [
             0,
@@ -24065,17 +24666,17 @@
           ]
         },
         "north": {
-          "f": 0.8534,
-          "cx": 0.4933,
+          "f": 0.9541,
+          "cx": 0.4929,
           "contact": 1,
           "sink": 1,
           "up": 5,
           "shift": [
-            0.4933,
-            0.4933,
-            0.4933,
-            0.4933,
-            0.4933
+            0.4929,
+            0.4929,
+            0.4929,
+            0.4929,
+            0.4929
           ],
           "air": [
             0,
@@ -24086,17 +24687,17 @@
           ]
         },
         "north-east": {
-          "f": 0.8438,
-          "cx": 0.4886,
+          "f": 0.9107,
+          "cx": 0.4953,
           "contact": 0,
           "sink": 4,
           "up": 2,
           "shift": [
-            0.4886,
-            0.4886,
-            0.4886,
-            0.4886,
-            0.4886
+            0.4953,
+            0.4953,
+            0.4953,
+            0.4953,
+            0.4953
           ],
           "air": [
             0,
@@ -24107,17 +24708,17 @@
           ]
         },
         "south-east": {
-          "f": 0.8711,
-          "cx": 0.4453,
+          "f": 0.9095,
+          "cx": 0.4299,
           "contact": 3,
           "sink": 3,
           "up": 3,
           "shift": [
-            0.4453,
-            0.4453,
-            0.4453,
-            0.4453,
-            0.4453
+            0.4299,
+            0.4299,
+            0.4299,
+            0.4299,
+            0.4299
           ],
           "air": [
             1,
@@ -24128,7 +24729,7 @@
           ]
         }
       },
-      "artBottom": 0.8715,
+      "artBottom": 0.9246,
       "footW": 31,
       "bodyW": 52,
       "shadowW": 34,
@@ -25552,6 +26153,661 @@
       "shadowW": 51,
       "shadowH": 20,
       "radius": 23,
+      "hoverPx": 0
+    },
+    {
+      "id": "basilisk",
+      "name": "Stonegaze",
+      "frameW": 130,
+      "frameH": 133,
+      "root": "basilisk",
+      "walkAnim": "walk",
+      "idleAnim": "idle",
+      "animations": {
+        "angry": {
+          "south": 5,
+          "south-west": 5,
+          "west": 5,
+          "north-west": 5,
+          "north": 5,
+          "north-east": 5,
+          "east": 5,
+          "south-east": 5
+        },
+        "attack": {
+          "south": 4,
+          "south-west": 4,
+          "west": 4,
+          "north-west": 4,
+          "north": 4,
+          "north-east": 4,
+          "east": 4,
+          "south-east": 4
+        },
+        "idle": {
+          "south": 5,
+          "south-west": 5,
+          "west": 5,
+          "north-west": 5,
+          "north": 5,
+          "north-east": 5,
+          "east": 5,
+          "south-east": 5
+        },
+        "die": {
+          "south": 7,
+          "south-west": 7,
+          "west": 7,
+          "north-west": 7,
+          "north": 7,
+          "north-east": 7,
+          "east": 7,
+          "south-east": 7
+        },
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        }
+      },
+      "strips": {
+        "angry": {
+          "south": "/assets/monsters/basilisk/packed/angry__south.3b2be909.webp",
+          "south-west": "/assets/monsters/basilisk/packed/angry__south-west.1b5fb94b.webp",
+          "west": "/assets/monsters/basilisk/packed/angry__west.823013cf.webp",
+          "north-west": "/assets/monsters/basilisk/packed/angry__north-west.d55b469f.webp",
+          "north": "/assets/monsters/basilisk/packed/angry__north.a9e41527.webp",
+          "north-east": "/assets/monsters/basilisk/packed/angry__north-east.83045755.webp",
+          "east": "/assets/monsters/basilisk/packed/angry__east.86ad248b.webp",
+          "south-east": "/assets/monsters/basilisk/packed/angry__south-east.763b30c6.webp"
+        },
+        "attack": {
+          "south": "/assets/monsters/basilisk/packed/attack__south.96dd3e17.webp",
+          "south-west": "/assets/monsters/basilisk/packed/attack__south-west.bde9c950.webp",
+          "west": "/assets/monsters/basilisk/packed/attack__west.60e99953.webp",
+          "north-west": "/assets/monsters/basilisk/packed/attack__north-west.dc9d87f7.webp",
+          "north": "/assets/monsters/basilisk/packed/attack__north.d8c5769f.webp",
+          "north-east": "/assets/monsters/basilisk/packed/attack__north-east.d448eab2.webp",
+          "east": "/assets/monsters/basilisk/packed/attack__east.8b7ed495.webp",
+          "south-east": "/assets/monsters/basilisk/packed/attack__south-east.3a9e4871.webp"
+        },
+        "idle": {
+          "south": "/assets/monsters/basilisk/packed/idle__south.6901db0f.webp",
+          "south-west": "/assets/monsters/basilisk/packed/idle__south-west.0997c8bc.webp",
+          "west": "/assets/monsters/basilisk/packed/idle__west.655fbf08.webp",
+          "north-west": "/assets/monsters/basilisk/packed/idle__north-west.3fbde8dd.webp",
+          "north": "/assets/monsters/basilisk/packed/idle__north.0a6e5d14.webp",
+          "north-east": "/assets/monsters/basilisk/packed/idle__north-east.4bedb36b.webp",
+          "east": "/assets/monsters/basilisk/packed/idle__east.ea164490.webp",
+          "south-east": "/assets/monsters/basilisk/packed/idle__south-east.f31db894.webp"
+        },
+        "die": {
+          "south": "/assets/monsters/basilisk/packed/die__south.caa20a35.webp",
+          "south-west": "/assets/monsters/basilisk/packed/die__south-west.74441230.webp",
+          "west": "/assets/monsters/basilisk/packed/die__west.517838a5.webp",
+          "north-west": "/assets/monsters/basilisk/packed/die__north-west.86609553.webp",
+          "north": "/assets/monsters/basilisk/packed/die__north.4d88f483.webp",
+          "north-east": "/assets/monsters/basilisk/packed/die__north-east.8a0db58a.webp",
+          "east": "/assets/monsters/basilisk/packed/die__east.bc7067ef.webp",
+          "south-east": "/assets/monsters/basilisk/packed/die__south-east.cd94deeb.webp"
+        },
+        "walk": {
+          "south": "/assets/monsters/basilisk/packed/walk__south.b65698c0.webp",
+          "south-west": "/assets/monsters/basilisk/packed/walk__south-west.a414c4b0.webp",
+          "west": "/assets/monsters/basilisk/packed/walk__west.be293131.webp",
+          "north-west": "/assets/monsters/basilisk/packed/walk__north-west.ccd7361a.webp",
+          "north": "/assets/monsters/basilisk/packed/walk__north.29508d8c.webp",
+          "north-east": "/assets/monsters/basilisk/packed/walk__north-east.d59eecf8.webp",
+          "east": "/assets/monsters/basilisk/packed/walk__east.91fc2153.webp",
+          "south-east": "/assets/monsters/basilisk/packed/walk__south-east.24572c4e.webp"
+        }
+      },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 118,
+            "h": 124
+          },
+          "south-west": {
+            "w": 124,
+            "h": 123
+          },
+          "west": {
+            "w": 125,
+            "h": 119
+          },
+          "north-west": {
+            "w": 105,
+            "h": 118
+          },
+          "north": {
+            "w": 107,
+            "h": 116
+          },
+          "north-east": {
+            "w": 105,
+            "h": 118
+          },
+          "east": {
+            "w": 125,
+            "h": 119
+          },
+          "south-east": {
+            "w": 124,
+            "h": 123
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 127,
+            "h": 124
+          },
+          "south-west": {
+            "w": 126,
+            "h": 127
+          },
+          "west": {
+            "w": 134,
+            "h": 119
+          },
+          "north-west": {
+            "w": 118,
+            "h": 118
+          },
+          "north": {
+            "w": 110,
+            "h": 130
+          },
+          "north-east": {
+            "w": 118,
+            "h": 118
+          },
+          "east": {
+            "w": 134,
+            "h": 119
+          },
+          "south-east": {
+            "w": 126,
+            "h": 127
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 114,
+            "h": 124
+          },
+          "south-west": {
+            "w": 110,
+            "h": 123
+          },
+          "west": {
+            "w": 123,
+            "h": 119
+          },
+          "north-west": {
+            "w": 99,
+            "h": 122
+          },
+          "north": {
+            "w": 107,
+            "h": 116
+          },
+          "north-east": {
+            "w": 99,
+            "h": 122
+          },
+          "east": {
+            "w": 123,
+            "h": 119
+          },
+          "south-east": {
+            "w": 110,
+            "h": 123
+          }
+        },
+        "die": {
+          "south": {
+            "w": 119,
+            "h": 126
+          },
+          "south-west": {
+            "w": 136,
+            "h": 126
+          },
+          "west": {
+            "w": 135,
+            "h": 119
+          },
+          "north-west": {
+            "w": 128,
+            "h": 120
+          },
+          "north": {
+            "w": 133,
+            "h": 125
+          },
+          "north-east": {
+            "w": 128,
+            "h": 120
+          },
+          "east": {
+            "w": 135,
+            "h": 119
+          },
+          "south-east": {
+            "w": 136,
+            "h": 126
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 130,
+            "h": 133
+          },
+          "south-west": {
+            "w": 119,
+            "h": 127
+          },
+          "west": {
+            "w": 126,
+            "h": 122
+          },
+          "north-west": {
+            "w": 99,
+            "h": 119
+          },
+          "north": {
+            "w": 118,
+            "h": 125
+          },
+          "north-east": {
+            "w": 99,
+            "h": 119
+          },
+          "east": {
+            "w": 126,
+            "h": 122
+          },
+          "south-east": {
+            "w": 119,
+            "h": 127
+          }
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      },
+      "ground": {
+        "south": {
+          "f": 0.9454,
+          "cx": 0.5027,
+          "contact": 0,
+          "sink": 4,
+          "up": 4,
+          "shift": [
+            0.5027,
+            0.5027,
+            0.5027,
+            0.5027,
+            0.5027,
+            0.5027
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            3,
+            0
+          ]
+        },
+        "south-west": {
+          "f": 0.9566,
+          "cx": 0.5693,
+          "contact": 0,
+          "sink": 5,
+          "up": 7,
+          "shift": [
+            0.5693,
+            0.5152,
+            0.5339,
+            0.5322,
+            0.5302,
+            0.4493
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            1,
+            6,
+            3
+          ]
+        },
+        "west": {
+          "f": 0.9436,
+          "cx": 0.505,
+          "contact": 0,
+          "sink": 4,
+          "up": 10,
+          "shift": [
+            0.505,
+            0.5296,
+            0.529,
+            0.505,
+            0.469,
+            0.4547
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-west": {
+          "f": 0.9573,
+          "cx": 0.3893,
+          "contact": 0,
+          "sink": 4,
+          "up": 5,
+          "shift": [
+            0.3893,
+            0.4584,
+            0.4802,
+            0.496,
+            0.4597,
+            0.3893
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north": {
+          "f": 0.8604,
+          "cx": 0.4969,
+          "contact": 1,
+          "sink": 4,
+          "up": 8,
+          "shift": [
+            0.4969,
+            0.4969,
+            0.4969,
+            0.4969,
+            0.4557,
+            0.4969
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-east": {
+          "f": 0.9573,
+          "cx": 0.6056,
+          "contact": 0,
+          "sink": 4,
+          "up": 5,
+          "shift": [
+            0.6056,
+            0.5366,
+            0.5148,
+            0.499,
+            0.5353,
+            0.6056
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "east": {
+          "f": 0.9436,
+          "cx": 0.491,
+          "contact": 0,
+          "sink": 4,
+          "up": 10,
+          "shift": [
+            0.491,
+            0.4664,
+            0.467,
+            0.491,
+            0.527,
+            0.5414
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-east": {
+          "f": 0.9566,
+          "cx": 0.4265,
+          "contact": 0,
+          "sink": 5,
+          "up": 7,
+          "shift": [
+            0.4265,
+            0.4806,
+            0.4619,
+            0.4636,
+            0.4656,
+            0.5465
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            1,
+            6,
+            3
+          ]
+        }
+      },
+      "gait": {
+        "cycleWu": 92,
+        "hopFrac": 0.027
+      },
+      "groundIdle": {
+        "south": {
+          "f": 0.9646,
+          "cx": 0.4859,
+          "contact": 0,
+          "sink": 3,
+          "up": 4,
+          "shift": [
+            0.4859,
+            0.4859,
+            0.4859,
+            0.4859,
+            0.4859
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-west": {
+          "f": 0.9546,
+          "cx": 0.537,
+          "contact": 0,
+          "sink": 5,
+          "up": 6,
+          "shift": [
+            0.537,
+            0.537,
+            0.537,
+            0.537,
+            0.537
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "west": {
+          "f": 0.9654,
+          "cx": 0.4811,
+          "contact": 0,
+          "sink": 3,
+          "up": 9,
+          "shift": [
+            0.4811,
+            0.4811,
+            0.4811,
+            0.4811,
+            0.4811
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-west": {
+          "f": 0.9701,
+          "cx": 0.4473,
+          "contact": 0,
+          "sink": 3,
+          "up": 7,
+          "shift": [
+            0.4473,
+            0.4473,
+            0.4473,
+            0.4473,
+            0.4473
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north": {
+          "f": 0.9777,
+          "cx": 0.4952,
+          "contact": 0,
+          "sink": 2,
+          "up": 3,
+          "shift": [
+            0.4952,
+            0.4952,
+            0.4952,
+            0.4952,
+            0.4952
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-east": {
+          "f": 0.9701,
+          "cx": 0.5426,
+          "contact": 0,
+          "sink": 3,
+          "up": 7,
+          "shift": [
+            0.5426,
+            0.5426,
+            0.5426,
+            0.5426,
+            0.5426
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "east": {
+          "f": 0.9654,
+          "cx": 0.5149,
+          "contact": 0,
+          "sink": 3,
+          "up": 9,
+          "shift": [
+            0.5149,
+            0.5149,
+            0.5149,
+            0.5149,
+            0.5149
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-east": {
+          "f": 0.9546,
+          "cx": 0.4585,
+          "contact": 0,
+          "sink": 5,
+          "up": 6,
+          "shift": [
+            0.4585,
+            0.4585,
+            0.4585,
+            0.4585,
+            0.4585
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "artBottom": 0.9566,
+      "footW": 73,
+      "bodyW": 113,
+      "shadowW": 84,
+      "shadowH": 32,
+      "radius": 38,
       "hoverPx": 0
     },
     {
@@ -31202,6 +32458,691 @@
       "shadowW": 83,
       "shadowH": 32,
       "radius": 37,
+      "hoverPx": 0
+    },
+    {
+      "id": "pebble_crab",
+      "name": "Pebblet",
+      "frameW": 46,
+      "frameH": 40,
+      "root": "pebble_crab",
+      "walkAnim": "walk",
+      "idleAnim": "idle",
+      "animations": {
+        "angry": {
+          "south": 5,
+          "south-west": 5,
+          "west": 5,
+          "north-west": 5,
+          "north": 5,
+          "north-east": 5,
+          "east": 5,
+          "south-east": 5
+        },
+        "idle": {
+          "south": 5,
+          "south-west": 5,
+          "west": 5,
+          "north-west": 5,
+          "north": 5,
+          "north-east": 5,
+          "east": 5,
+          "south-east": 5
+        },
+        "attack": {
+          "south-west": 16,
+          "west": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "die": {
+          "south": 14,
+          "south-west": 15,
+          "west": 15,
+          "north-west": 15,
+          "north": 15,
+          "north-east": 15,
+          "east": 15,
+          "south-east": 15
+        },
+        "custom_darts_forward_and_pinches_with": {
+          "south": 7,
+          "south-west": 7,
+          "west": 7,
+          "north-west": 7,
+          "north": 7,
+          "north-east": 7,
+          "east": 7,
+          "south-east": 7
+        },
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        }
+      },
+      "strips": {
+        "angry": {
+          "south": "/assets/monsters/pebble_crab/animations/angry__south.webp",
+          "south-west": "/assets/monsters/pebble_crab/animations/angry__south-west.webp",
+          "west": "/assets/monsters/pebble_crab/animations/angry__west.webp",
+          "north-west": "/assets/monsters/pebble_crab/animations/angry__north-west.webp",
+          "north": "/assets/monsters/pebble_crab/animations/angry__north.webp",
+          "north-east": "/assets/monsters/pebble_crab/animations/angry__north-east.webp",
+          "east": "/assets/monsters/pebble_crab/animations/angry__east.webp",
+          "south-east": "/assets/monsters/pebble_crab/animations/angry__south-east.webp"
+        },
+        "idle": {
+          "south": "/assets/monsters/pebble_crab/animations/idle__south.webp",
+          "south-west": "/assets/monsters/pebble_crab/animations/idle__south-west.webp",
+          "west": "/assets/monsters/pebble_crab/animations/idle__west.webp",
+          "north-west": "/assets/monsters/pebble_crab/animations/idle__north-west.webp",
+          "north": "/assets/monsters/pebble_crab/animations/idle__north.webp",
+          "north-east": "/assets/monsters/pebble_crab/animations/idle__north-east.webp",
+          "east": "/assets/monsters/pebble_crab/animations/idle__east.webp",
+          "south-east": "/assets/monsters/pebble_crab/animations/idle__south-east.webp"
+        },
+        "attack": {
+          "south-west": "/assets/monsters/pebble_crab/animations/attack__south-west.webp",
+          "west": "/assets/monsters/pebble_crab/animations/attack__west.webp",
+          "east": "/assets/monsters/pebble_crab/animations/attack__east.webp",
+          "south-east": "/assets/monsters/pebble_crab/animations/attack__south-east.webp"
+        },
+        "die": {
+          "south": "/assets/monsters/pebble_crab/animations/die__south.webp",
+          "south-west": "/assets/monsters/pebble_crab/animations/die__south-west.webp",
+          "west": "/assets/monsters/pebble_crab/animations/die__west.webp",
+          "north-west": "/assets/monsters/pebble_crab/animations/die__north-west.webp",
+          "north": "/assets/monsters/pebble_crab/animations/die__north.webp",
+          "north-east": "/assets/monsters/pebble_crab/animations/die__north-east.webp",
+          "east": "/assets/monsters/pebble_crab/animations/die__east.webp",
+          "south-east": "/assets/monsters/pebble_crab/animations/die__south-east.webp"
+        },
+        "custom_darts_forward_and_pinches_with": {
+          "south": "/assets/monsters/pebble_crab/animations/custom_darts_forward_and_pinches_with__south.webp",
+          "south-west": "/assets/monsters/pebble_crab/animations/custom_darts_forward_and_pinches_with__south-west.webp",
+          "west": "/assets/monsters/pebble_crab/animations/custom_darts_forward_and_pinches_with__west.webp",
+          "north-west": "/assets/monsters/pebble_crab/animations/custom_darts_forward_and_pinches_with__north-west.webp",
+          "north": "/assets/monsters/pebble_crab/animations/custom_darts_forward_and_pinches_with__north.webp",
+          "north-east": "/assets/monsters/pebble_crab/animations/custom_darts_forward_and_pinches_with__north-east.webp",
+          "east": "/assets/monsters/pebble_crab/animations/custom_darts_forward_and_pinches_with__east.webp",
+          "south-east": "/assets/monsters/pebble_crab/animations/custom_darts_forward_and_pinches_with__south-east.webp"
+        },
+        "walk": {
+          "south": "/assets/monsters/pebble_crab/animations/walk__south.webp",
+          "south-west": "/assets/monsters/pebble_crab/animations/walk__south-west.webp",
+          "west": "/assets/monsters/pebble_crab/animations/walk__west.webp",
+          "north-west": "/assets/monsters/pebble_crab/animations/walk__north-west.webp",
+          "north": "/assets/monsters/pebble_crab/animations/walk__north.webp",
+          "north-east": "/assets/monsters/pebble_crab/animations/walk__north-east.webp",
+          "east": "/assets/monsters/pebble_crab/animations/walk__east.webp",
+          "south-east": "/assets/monsters/pebble_crab/animations/walk__south-east.webp"
+        }
+      },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 46,
+            "h": 40
+          },
+          "south-west": {
+            "w": 46,
+            "h": 40
+          },
+          "west": {
+            "w": 46,
+            "h": 40
+          },
+          "north-west": {
+            "w": 46,
+            "h": 40
+          },
+          "north": {
+            "w": 46,
+            "h": 40
+          },
+          "north-east": {
+            "w": 46,
+            "h": 40
+          },
+          "east": {
+            "w": 46,
+            "h": 40
+          },
+          "south-east": {
+            "w": 46,
+            "h": 40
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 46,
+            "h": 40
+          },
+          "south-west": {
+            "w": 46,
+            "h": 40
+          },
+          "west": {
+            "w": 46,
+            "h": 40
+          },
+          "north-west": {
+            "w": 46,
+            "h": 40
+          },
+          "north": {
+            "w": 46,
+            "h": 40
+          },
+          "north-east": {
+            "w": 46,
+            "h": 40
+          },
+          "east": {
+            "w": 46,
+            "h": 40
+          },
+          "south-east": {
+            "w": 46,
+            "h": 40
+          }
+        },
+        "attack": {
+          "south-west": {
+            "w": 46,
+            "h": 40
+          },
+          "west": {
+            "w": 46,
+            "h": 40
+          },
+          "east": {
+            "w": 46,
+            "h": 40
+          },
+          "south-east": {
+            "w": 46,
+            "h": 40
+          }
+        },
+        "die": {
+          "south": {
+            "w": 46,
+            "h": 40
+          },
+          "south-west": {
+            "w": 46,
+            "h": 40
+          },
+          "west": {
+            "w": 46,
+            "h": 40
+          },
+          "north-west": {
+            "w": 46,
+            "h": 40
+          },
+          "north": {
+            "w": 46,
+            "h": 40
+          },
+          "north-east": {
+            "w": 46,
+            "h": 40
+          },
+          "east": {
+            "w": 46,
+            "h": 40
+          },
+          "south-east": {
+            "w": 46,
+            "h": 40
+          }
+        },
+        "custom_darts_forward_and_pinches_with": {
+          "south": {
+            "w": 46,
+            "h": 40
+          },
+          "south-west": {
+            "w": 46,
+            "h": 40
+          },
+          "west": {
+            "w": 46,
+            "h": 40
+          },
+          "north-west": {
+            "w": 46,
+            "h": 40
+          },
+          "north": {
+            "w": 46,
+            "h": 40
+          },
+          "north-east": {
+            "w": 46,
+            "h": 40
+          },
+          "east": {
+            "w": 46,
+            "h": 40
+          },
+          "south-east": {
+            "w": 46,
+            "h": 40
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 46,
+            "h": 40
+          },
+          "south-west": {
+            "w": 46,
+            "h": 40
+          },
+          "west": {
+            "w": 46,
+            "h": 40
+          },
+          "north-west": {
+            "w": 46,
+            "h": 40
+          },
+          "north": {
+            "w": 46,
+            "h": 40
+          },
+          "north-east": {
+            "w": 46,
+            "h": 40
+          },
+          "east": {
+            "w": 46,
+            "h": 40
+          },
+          "south-east": {
+            "w": 46,
+            "h": 40
+          }
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      },
+      "ground": {
+        "south": {
+          "f": 0.8634,
+          "cx": 0.4938,
+          "contact": 5,
+          "sink": 2,
+          "up": 4,
+          "shift": [
+            0.4938,
+            0.4938,
+            0.4938,
+            0.4938,
+            0.4938,
+            0.4938
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-west": {
+          "f": 0.8142,
+          "cx": 0.5131,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.5131,
+            0.5131,
+            0.5131,
+            0.5131,
+            0.5131,
+            0.5131
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "west": {
+          "f": 0.8646,
+          "cx": 0.4882,
+          "contact": 4,
+          "sink": 2,
+          "up": 4,
+          "shift": [
+            0.4882,
+            0.4882,
+            0.4882,
+            0.4882,
+            0.4882,
+            0.4882
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-west": {
+          "f": 0.8725,
+          "cx": 0.4418,
+          "contact": 4,
+          "sink": 2,
+          "up": 4,
+          "shift": [
+            0.4418,
+            0.4418,
+            0.4418,
+            0.4418,
+            0.4418,
+            0.4418
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north": {
+          "f": 0.7797,
+          "cx": 0.4938,
+          "contact": 5,
+          "sink": 4,
+          "up": 2,
+          "shift": [
+            0.4938,
+            0.4938,
+            0.4938,
+            0.4938,
+            0.4938,
+            0.4938
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-east": {
+          "f": 0.8725,
+          "cx": 0.5473,
+          "contact": 4,
+          "sink": 2,
+          "up": 4,
+          "shift": [
+            0.5473,
+            0.5473,
+            0.5473,
+            0.5473,
+            0.5473,
+            0.5473
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "east": {
+          "f": 0.8646,
+          "cx": 0.5009,
+          "contact": 4,
+          "sink": 2,
+          "up": 4,
+          "shift": [
+            0.5009,
+            0.5009,
+            0.5009,
+            0.5009,
+            0.5009,
+            0.5009
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-east": {
+          "f": 0.8142,
+          "cx": 0.476,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.476,
+            0.476,
+            0.476,
+            0.476,
+            0.476,
+            0.476
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "gait": {
+        "cycleWu": 34,
+        "hopFrac": 0.042
+      },
+      "groundIdle": {
+        "south": {
+          "f": 0.8632,
+          "cx": 0.4933,
+          "contact": 1,
+          "sink": 2,
+          "up": 4,
+          "shift": [
+            0.4933,
+            0.4933,
+            0.4933,
+            0.4933,
+            0.4933
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-west": {
+          "f": 0.858,
+          "cx": 0.5079,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.5079,
+            0.5079,
+            0.5079,
+            0.5079,
+            0.5079
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "west": {
+          "f": 0.892,
+          "cx": 0.5193,
+          "contact": 2,
+          "sink": 1,
+          "up": 4,
+          "shift": [
+            0.5193,
+            0.5193,
+            0.5193,
+            0.5193,
+            0.5193
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-west": {
+          "f": 0.8672,
+          "cx": 0.4465,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4465,
+            0.4465,
+            0.4465,
+            0.4465,
+            0.4465
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north": {
+          "f": 0.8076,
+          "cx": 0.4933,
+          "contact": 0,
+          "sink": 4,
+          "up": 1,
+          "shift": [
+            0.4933,
+            0.4933,
+            0.4933,
+            0.4933,
+            0.4933
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-east": {
+          "f": 0.8672,
+          "cx": 0.5426,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.5426,
+            0.5426,
+            0.5426,
+            0.5426,
+            0.5426
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "east": {
+          "f": 0.892,
+          "cx": 0.4699,
+          "contact": 2,
+          "sink": 1,
+          "up": 4,
+          "shift": [
+            0.4699,
+            0.4699,
+            0.4699,
+            0.4699,
+            0.4699
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-east": {
+          "f": 0.858,
+          "cx": 0.4813,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4813,
+            0.4813,
+            0.4813,
+            0.4813,
+            0.4813
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "artBottom": 0.8646,
+      "footW": 32,
+      "bodyW": 34,
+      "shadowW": 33,
+      "shadowH": 13,
+      "radius": 15,
       "hoverPx": 0
     },
     {
