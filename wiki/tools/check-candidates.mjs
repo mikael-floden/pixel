@@ -269,7 +269,10 @@ const DATA_M = DATA.domains?.monsters ?? [];
 const pend = DATA_M.filter((m) => m.pending);
 ok(pend.length > 0, `the registry carries ${pend.length} approved design(s) still being animated, beside ${DATA_M.length - pend.length} shipped creature(s)`);
 if (pend.length) {
-  const one = pend[0];
+  // Prefer one that HAS animations: it exercises the state row, the version
+  // row and the order check. Since 2026-09-21 an approved design with nothing
+  // animated yet is also in the making, and those carry `static` alone.
+  const one = pend.find((m) => Object.keys(m.animations ?? {}).some((st) => st !== "static")) ?? pend[0];
   await p.evaluate((id) => { location.hash = `#/monsters/${id}`; }, one.id);
   await p.waitForTimeout(3000);
   const page = await p.evaluate(() => ({
@@ -306,8 +309,15 @@ if (pend.length) {
     on: [...document.querySelectorAll(".seg-states button.on")].map((b) => b.textContent.trim())[0],
   }));
   console.log("static:", JSON.stringify(base8));
+  // ...AND STATIC IS ALL THERE IS TO OPEN WHEN NOTHING IS ANIMATED YET. His
+  // rule names idle, so it only binds a creature that HAS one; a design
+  // approved before anyone animated it has the base and nothing else, and
+  // opening the only state it owns is the same rule, not an exception.
+  const hasIdle = base8.states.some((b) => /^idle$/i.test(b));
   ok(base8.states[0]?.toLowerCase() === "static", `"static" is the first state on the row (${base8.states.join(" | ")})`);
-  ok(base8.on?.toLowerCase() === "idle", `and idle is still the one that opens (${base8.on})`);
+  ok(base8.on?.toLowerCase() === (hasIdle ? "idle" : "static"),
+    hasIdle ? `and idle is still the one that opens (${base8.on})`
+            : `and with nothing animated yet the base is the only state, and it opens (${base8.on})`);
   await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((b) => /static/i.test(b.textContent)).click());
   await p.waitForTimeout(900);
   const stat = await p.evaluate(() => ({
@@ -318,21 +328,33 @@ if (pend.length) {
   console.log("static shown:", JSON.stringify(stat));
   ok(stat.ink > 100, `the base art draws (${stat.ink} opaque pixels)`);
   ok(stat.verdict === 0 && stat.note, "and it is looked at, not judged — no verdict row, a line saying where the base is judged");
-  // ...and back to a real animation for the checks below.
-  await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((b) => /^idle$/i.test(b.textContent.trim())).click());
-  await p.waitForTimeout(800);
+  // ...and back to a real animation for the checks below, where there is one.
+  if (hasIdle) {
+    await p.evaluate(() => [...document.querySelectorAll(".seg-states button")].find((b) => /^idle$/i.test(b.textContent.trim())).click());
+    await p.waitForTimeout(800);
+  }
 
   // ONE ANIMATION IS REDONE, NEVER REMOVED (maintainer 2026-09-10: "The
   // individual animations should only have a REDO. Not a remove!"). Removal is
   // a verdict about the whole creature and stays on the row beside its name.
+  //
+  // A per-animation row needs an animation. Since 2026-09-21 an approved design
+  // joins this list with only its base, so on a day when none of them has been
+  // animated yet there is nothing here to drive — the same "nothing to drive"
+  // the parallel-takes block below reports. It checks itself again the moment
+  // one state is finished on one of them.
   const rows = await p.evaluate(() => [...document.querySelectorAll(".fb-row")].map((r) => ({
     facet: !!r.closest(".facet-head"),
     buttons: [...r.querySelectorAll(".verdict button")].map((b) => b.textContent.trim()),
   })));
   console.log("rows:", JSON.stringify(rows));
   const facetRow = rows.find((r) => r.facet), wholeRow = rows.find((r) => !r.facet);
-  ok(facetRow && facetRow.buttons.some((b) => /redo/.test(b)) && !facetRow.buttons.some((b) => /remove/.test(b)),
-    `the per-animation row is approve + redo, with no remove (${facetRow?.buttons.join(" | ")})`);
+  if (hasIdle) {
+    ok(facetRow && facetRow.buttons.some((b) => /redo/.test(b)) && !facetRow.buttons.some((b) => /remove/.test(b)),
+      `the per-animation row is approve + redo, with no remove (${facetRow?.buttons.join(" | ")})`);
+  } else {
+    console.log("  (nothing animated on an in-the-making creature yet — no per-animation row to drive)");
+  }
   ok(wholeRow && wholeRow.buttons.some((b) => /remove/.test(b)),
     `while the creature as a whole can still be removed (${wholeRow?.buttons.join(" | ")})`);
 
@@ -438,7 +460,16 @@ if (pend.length) {
 
   await p.evaluate(() => document.querySelector(".showcase-card").click());
   await p.waitForTimeout(2600);
-  await p.evaluate(() => [...document.querySelectorAll(".seg button")].find((b) => /^attack$/i.test(b.textContent.trim()))?.click());
+  // Attack where the card has one; otherwise whatever state it does have —
+  // the rule under test is that the selection SURVIVES ‹ ›, and a design with
+  // only its base still has to keep the base selected.
+  const want = await p.evaluate(() => {
+    const btns = [...document.querySelectorAll(".seg button")];
+    const b = btns.find((x) => /^attack$/i.test(x.textContent.trim()))
+      ?? btns.find((x) => x.classList.contains("on")) ?? btns[0];
+    b?.click();
+    return b?.textContent.trim() ?? null;
+  });
   await p.waitForTimeout(800);
   const walk = [];
   for (let i = 0; i < 3; i++) {
@@ -451,7 +482,8 @@ if (pend.length) {
     })));
   }
   console.log("walk:", JSON.stringify(walk));
-  ok(walk.every((w) => /^Attack$/i.test(w.on ?? "")), `‹ › keeps the animation he is reviewing (${walk.map((w) => w.on).join(" → ")})`);
+  ok(want && walk.every((w) => (w.on ?? "").toLowerCase() === want.toLowerCase()),
+    `‹ › keeps the animation he is reviewing (${want}: ${walk.map((w) => w.on).join(" → ")})`);
   ok(walk.every((w) => w.pending && w.count.endsWith(`/ ${pend.length}`)), `and walks only the filtered ones (${walk.map((w) => w.count).join(" → ")})`);
 }
 

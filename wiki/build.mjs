@@ -2859,7 +2859,17 @@ function buildCandidateMonsters(shippedIds) {
   for (const c of ix.candidates) {
     if (!c?.id || shippedIds.has(c.id)) continue;
     const animRoot = join(base, c.id, "animations");
-    if (!isDir(animRoot)) continue;
+    // ANIMATIONS ON DISK **OR** HIS APPROVAL ON THE 8 DIRECTIONS (maintainer
+    // 2026-09-21: "I want all 61 to be moved from candidates to real monsters
+    // in the state 'in the making'"). "Has animations" was only ever a proxy
+    // for "he approved it", and it is wrong for a design approved before
+    // anyone has animated it — 61 of them the day he asked. `verdict` is the
+    // MAINTAINER's status, published into monsters/candidates/index.json by
+    // the monsters domain because this build runs in the image and never
+    // opens live/feedback. Such a creature comes in with its static 8
+    // directions as its only state, which is what "the rest are coming"
+    // means; `listDirs` returns [] for the missing folder.
+    if (!isDir(animRoot) && c.verdict !== "approved") continue;
     const frameW = c.size?.[0] ?? null, frameH = c.size?.[1] ?? frameW;
     const anims = {};
     const still = staticState(join(base, c.id, "rotations"), `monsters/candidates/${c.id}/rotations`);

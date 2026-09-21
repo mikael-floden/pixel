@@ -244,6 +244,18 @@ def rebuild_index(cfg):
                 "id", "name", "tier", "lore", "biome", "items", "size", "template_id",
                 "scale", "pixellab_id", "version", "sheet", "rotations", "qa", "review", "notes",
                 "generated_at")}
+            # HIS OWN VERDICT ON THE 8 DIRECTIONS, published for consumers that
+            # cannot read live/feedback themselves. `review` above is the
+            # AGENT's field (has it acted yet); this is the maintainer's. The
+            # wiki builds its registry at image-build time and never opens the
+            # feedback file, so without this it could only infer approval from
+            # "has animations on disk" — which is false for an approved design
+            # nobody has animated yet (maintainer 2026-09-21: he wants those
+            # listed as monsters in the making, not as candidates).
+            _fb = _feedback_entries()
+            _v = (_fb.get(f"monsters/{design['id']}")
+                  or _fb.get(f"monsters/candidates/{design['id']}") or {})
+            row["verdict"] = (_v.get("status") or "").lower() or None
             # WHERE THIS DESIGN IS ON ITS WAY TO BEING A MONSTER, for the wiki
             # to show (maintainer 2026-09-18: "If I have approved all animations
             # and the monster the monster should be a real monster and not a
