@@ -1,0 +1,141 @@
+{
+  "id": "tuft_ear",
+  "name": "Tuftear",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It crosses deep snow without sinking and arrives where nothing was watching.",
+  "biome": [
+    "grass",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Fantasy lynx with thick smoke-grey fur, black tufts standing from its ears, long ruffed cheeks, enormous padded feet, a short black-tipped tail, and pale green eyes.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "tuft_ear/rotations/south.webp",
+    "south-east": "tuft_ear/rotations/south-east.webp",
+    "east": "tuft_ear/rotations/east.webp",
+    "north-east": "tuft_ear/rotations/north-east.webp",
+    "north": "tuft_ear/rotations/north.webp",
+    "north-west": "tuft_ear/rotations/north-west.webp",
+    "west": "tuft_ear/rotations/west.webp",
+    "south-west": "tuft_ear/rotations/south-west.webp"
+  },
+  "sheet": "tuft_ear/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1a4d174c-6712-4aba-a925-ff859817d611",
+  "seed": 1542993492,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:15:38+00:00",
+  "elapsed_s": 174.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.656,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.656,
+        "bbox": [
+          11,
+          6,
+          82,
+          101
+        ],
+        "fill": 0.624,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.728,
+        "bbox": [
+          7,
+          4,
+          100,
+          100
+        ],
+        "fill": 0.825,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.743,
+        "bbox": [
+          4,
+          4,
+          97,
+          100
+        ],
+        "fill": 0.825,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.659,
+        "bbox": [
+          26,
+          3,
+          91,
+          100
+        ],
+        "fill": 0.583,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.772,
+        "bbox": [
+          3,
+          7,
+          89,
+          101
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.682,
+        "bbox": [
+          15,
+          3,
+          88,
+          99
+        ],
+        "fill": 0.648,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.691,
+        "bbox": [
+          11,
+          3,
+          99,
+          99
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.778,
+        "bbox": [
+          17,
+          7,
+          88,
+          101
+        ],
+        "fill": 0.617,
+        "touches_edge": false
+      }
+    }
+  }
+}
