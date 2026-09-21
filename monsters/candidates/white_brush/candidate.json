@@ -1,0 +1,141 @@
+{
+  "id": "white_brush",
+  "name": "Whitebrush",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It follows the big hunters at a distance and lives on what they leave behind.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Fantasy arctic fox in full winter coat, dense pure white fur, short round ears, a small black nose, dark eyes, and a thick tail wrapped around its feet.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "white_brush/rotations/south.webp",
+    "south-east": "white_brush/rotations/south-east.webp",
+    "east": "white_brush/rotations/east.webp",
+    "north-east": "white_brush/rotations/north-east.webp",
+    "north": "white_brush/rotations/north.webp",
+    "north-west": "white_brush/rotations/north-west.webp",
+    "west": "white_brush/rotations/west.webp",
+    "south-west": "white_brush/rotations/south-west.webp"
+  },
+  "sheet": "white_brush/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7acc1dde-6091-4e0c-9d9f-acbf5db8bc6b",
+  "seed": 415063619,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:30:31+00:00",
+  "elapsed_s": 238.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.69,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.76,
+        "bbox": [
+          6,
+          3,
+          38,
+          45
+        ],
+        "fill": 0.583,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.735,
+        "bbox": [
+          8,
+          2,
+          41,
+          44
+        ],
+        "fill": 0.602,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.754,
+        "bbox": [
+          7,
+          2,
+          40,
+          46
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.69,
+        "bbox": [
+          11,
+          3,
+          41,
+          45
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.786,
+        "bbox": [
+          6,
+          3,
+          40,
+          45
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.715,
+        "bbox": [
+          10,
+          3,
+          41,
+          45
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.713,
+        "bbox": [
+          9,
+          3,
+          42,
+          44
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.775,
+        "bbox": [
+          7,
+          3,
+          38,
+          45
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      }
+    }
+  }
+}
