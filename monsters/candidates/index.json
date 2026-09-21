@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T11:20:12+00:00",
+  "generated_at": "2026-09-21T11:20:34+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 106,
+  "count": 107,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -13913,6 +13913,138 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:19:06+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "leather_dead",
+      "name": "Leatherdead",
+      "tier": "evil",
+      "lore": "The bog kept it exactly as it was left. It has come back with the same intentions.",
+      "biome": [
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "d589d8ad-de66-4f9c-af35-825ba29f3427",
+      "version": 1,
+      "sheet": "leather_dead/sheet.webp",
+      "rotations": {
+        "south": "leather_dead/rotations/south.webp",
+        "south-east": "leather_dead/rotations/south-east.webp",
+        "east": "leather_dead/rotations/east.webp",
+        "north-east": "leather_dead/rotations/north-east.webp",
+        "north": "leather_dead/rotations/north.webp",
+        "north-west": "leather_dead/rotations/north-west.webp",
+        "west": "leather_dead/rotations/west.webp",
+        "south-west": "leather_dead/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.762,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.775,
+            "bbox": [
+              26,
+              3,
+              100,
+              122
+            ],
+            "fill": 0.537,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.829,
+            "bbox": [
+              42,
+              4,
+              86,
+              125
+            ],
+            "fill": 0.325,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.84,
+            "bbox": [
+              41,
+              4,
+              85,
+              125
+            ],
+            "fill": 0.325,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.762,
+            "bbox": [
+              30,
+              3,
+              99,
+              120
+            ],
+            "fill": 0.493,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.863,
+            "bbox": [
+              27,
+              4,
+              100,
+              125
+            ],
+            "fill": 0.539,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.812,
+            "bbox": [
+              38,
+              3,
+              94,
+              122
+            ],
+            "fill": 0.407,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.806,
+            "bbox": [
+              30,
+              3,
+              101,
+              122
+            ],
+            "fill": 0.516,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.859,
+            "bbox": [
+              28,
+              4,
+              95,
+              125
+            ],
+            "fill": 0.495,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:20:34+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},
