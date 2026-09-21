@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T14:34:31.768Z",
+  "updated_at": "2026-09-21T14:37:43.639Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -4056,7 +4056,45 @@
           "item": "coiled_purple_tentacle",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 42.5,
+        "ry": 18.25,
+        "offsets": {
+          "idle#south": {
+            "ax": -1.07,
+            "ay": 22.79
+          },
+          "idle#east": {
+            "ax": -0.56,
+            "ay": 19.24
+          },
+          "idle#south-east": {
+            "ax": 0.2,
+            "ay": 21.45
+          },
+          "idle#north-east": {
+            "ax": 0.18,
+            "ay": 20.2
+          },
+          "idle#north": {
+            "ax": -0.63,
+            "ay": 18.52
+          },
+          "idle#north-west": {
+            "ax": 0.18,
+            "ay": 19.66
+          },
+          "idle#west": {
+            "ax": 0.63,
+            "ay": 19.87
+          },
+          "idle#south-west": {
+            "ax": -1.49,
+            "ay": 21.1
+          }
+        }
+      }
     },
     "orc_warrior": {
       "level": 15,
