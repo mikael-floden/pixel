@@ -1,0 +1,763 @@
+{
+  "id": "hollow_knight",
+  "name": "Hollowplate",
+  "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "2f3aecad-cef3-4701-89a7-457b7eaf9007",
+    "url": "https://www.pixellab.ai/create-character/2f3aecad-cef3-4701-89a7-457b7eaf9007",
+    "prompt": "Fantasy hollow suit of rusted plate armor animated by green witchfire, nothing inside it, green flames burning in the empty helmet visor, a chipped greatsword held in one gauntlet, a torn dark cape, and cracks in the armor leaking green light.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 112,
+    "height": 112
+  },
+  "native_size": {
+    "width": 112,
+    "height": 112
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "hollow_knight/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "hollow_knight/rotations/south.webp",
+    "west": "hollow_knight/rotations/west.webp",
+    "east": "hollow_knight/rotations/east.webp",
+    "north": "hollow_knight/rotations/north.webp",
+    "south-east": "hollow_knight/rotations/south-east.webp",
+    "north-east": "hollow_knight/rotations/north-east.webp",
+    "north-west": "hollow_knight/rotations/north-west.webp",
+    "south-west": "hollow_knight/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "86e8c60a-63f5-4919-873c-c64ab0b1c93a",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/angry__east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/angry/east/00.webp",
+            "hollow_knight/animations/angry/east/01.webp",
+            "hollow_knight/animations/angry/east/02.webp",
+            "hollow_knight/animations/angry/east/03.webp",
+            "hollow_knight/animations/angry/east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:18 GMT",
+          "src_frames": 5,
+          "sub": "4f5210d2-f12d-4911-99e6-9ab587028072"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/angry__north.webp",
+          "frame_paths": [
+            "hollow_knight/animations/angry/north/00.webp",
+            "hollow_knight/animations/angry/north/01.webp",
+            "hollow_knight/animations/angry/north/02.webp",
+            "hollow_knight/animations/angry/north/03.webp",
+            "hollow_knight/animations/angry/north/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:20 GMT",
+          "src_frames": 5,
+          "sub": "90ef1277-587b-4f09-8426-235be00e1bf4"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/angry__north-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/angry/north-east/00.webp",
+            "hollow_knight/animations/angry/north-east/01.webp",
+            "hollow_knight/animations/angry/north-east/02.webp",
+            "hollow_knight/animations/angry/north-east/03.webp",
+            "hollow_knight/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:21 GMT",
+          "src_frames": 5,
+          "sub": "fa16b0f0-9da1-41bf-8685-c1a033840745"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/angry__south.webp",
+          "frame_paths": [
+            "hollow_knight/animations/angry/south/00.webp",
+            "hollow_knight/animations/angry/south/01.webp",
+            "hollow_knight/animations/angry/south/02.webp",
+            "hollow_knight/animations/angry/south/03.webp",
+            "hollow_knight/animations/angry/south/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:23 GMT",
+          "src_frames": 5,
+          "sub": "a9e3347a-c41e-4edc-b5b8-a967bbf0b201"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/angry__south-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/angry/south-east/00.webp",
+            "hollow_knight/animations/angry/south-east/01.webp",
+            "hollow_knight/animations/angry/south-east/02.webp",
+            "hollow_knight/animations/angry/south-east/03.webp",
+            "hollow_knight/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:25 GMT",
+          "src_frames": 5,
+          "sub": "75dac1f0-5f3e-437e-8fc2-618345d5aca2"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/angry__south-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/angry/south-west/00.webp",
+            "hollow_knight/animations/angry/south-west/01.webp",
+            "hollow_knight/animations/angry/south-west/02.webp",
+            "hollow_knight/animations/angry/south-west/03.webp",
+            "hollow_knight/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/angry__west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/angry/west/00.webp",
+            "hollow_knight/animations/angry/west/01.webp",
+            "hollow_knight/animations/angry/west/02.webp",
+            "hollow_knight/animations/angry/west/03.webp",
+            "hollow_knight/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/angry__north-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/angry/north-west/00.webp",
+            "hollow_knight/animations/angry/north-west/01.webp",
+            "hollow_knight/animations/angry/north-west/02.webp",
+            "hollow_knight/animations/angry/north-west/03.webp",
+            "hollow_knight/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "078ec232-c41f-4c11-880a-f73d64d45f56",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/idle__east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/idle/east/00.webp",
+            "hollow_knight/animations/idle/east/01.webp",
+            "hollow_knight/animations/idle/east/02.webp",
+            "hollow_knight/animations/idle/east/03.webp",
+            "hollow_knight/animations/idle/east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:26 GMT",
+          "src_frames": 5,
+          "sub": "40b2b17a-48a2-4184-b15e-c74f0f471962"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/idle__north.webp",
+          "frame_paths": [
+            "hollow_knight/animations/idle/north/00.webp",
+            "hollow_knight/animations/idle/north/01.webp",
+            "hollow_knight/animations/idle/north/02.webp",
+            "hollow_knight/animations/idle/north/03.webp",
+            "hollow_knight/animations/idle/north/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:28 GMT",
+          "src_frames": 5,
+          "sub": "39614bc7-fb49-422c-98bd-78cf093b455a"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/idle__north-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/idle/north-east/00.webp",
+            "hollow_knight/animations/idle/north-east/01.webp",
+            "hollow_knight/animations/idle/north-east/02.webp",
+            "hollow_knight/animations/idle/north-east/03.webp",
+            "hollow_knight/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:29 GMT",
+          "src_frames": 5,
+          "sub": "937bf38d-3dc1-4de0-aac1-c279abe5a52b"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/idle__south.webp",
+          "frame_paths": [
+            "hollow_knight/animations/idle/south/00.webp",
+            "hollow_knight/animations/idle/south/01.webp",
+            "hollow_knight/animations/idle/south/02.webp",
+            "hollow_knight/animations/idle/south/03.webp",
+            "hollow_knight/animations/idle/south/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:32 GMT",
+          "src_frames": 5,
+          "sub": "a93e25d2-c894-40fe-9faf-fccf0851ff6d"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/idle__south-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/idle/south-east/00.webp",
+            "hollow_knight/animations/idle/south-east/01.webp",
+            "hollow_knight/animations/idle/south-east/02.webp",
+            "hollow_knight/animations/idle/south-east/03.webp",
+            "hollow_knight/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:35 GMT",
+          "src_frames": 5,
+          "sub": "8cb31070-34ee-476b-a35f-e8f06ea1e1fc"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/idle__south-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/idle/south-west/00.webp",
+            "hollow_knight/animations/idle/south-west/01.webp",
+            "hollow_knight/animations/idle/south-west/02.webp",
+            "hollow_knight/animations/idle/south-west/03.webp",
+            "hollow_knight/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/idle__west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/idle/west/00.webp",
+            "hollow_knight/animations/idle/west/01.webp",
+            "hollow_knight/animations/idle/west/02.webp",
+            "hollow_knight/animations/idle/west/03.webp",
+            "hollow_knight/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "hollow_knight/animations/idle__north-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/idle/north-west/00.webp",
+            "hollow_knight/animations/idle/north-west/01.webp",
+            "hollow_knight/animations/idle/north-west/02.webp",
+            "hollow_knight/animations/idle/north-west/03.webp",
+            "hollow_knight/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "a204138b-6099-4ecd-b3d3-7d2638a66f20",
+      "source_name": "custom-Death - The green witchfire go",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/die__east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/die/east/00.webp",
+            "hollow_knight/animations/die/east/01.webp",
+            "hollow_knight/animations/die/east/02.webp",
+            "hollow_knight/animations/die/east/03.webp",
+            "hollow_knight/animations/die/east/04.webp",
+            "hollow_knight/animations/die/east/05.webp",
+            "hollow_knight/animations/die/east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:36 GMT",
+          "src_frames": 7,
+          "sub": "89f58ad3-0720-4829-8024-bb963494e734"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/die__north.webp",
+          "frame_paths": [
+            "hollow_knight/animations/die/north/00.webp",
+            "hollow_knight/animations/die/north/01.webp",
+            "hollow_knight/animations/die/north/02.webp",
+            "hollow_knight/animations/die/north/03.webp",
+            "hollow_knight/animations/die/north/04.webp",
+            "hollow_knight/animations/die/north/05.webp",
+            "hollow_knight/animations/die/north/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:38 GMT",
+          "src_frames": 7,
+          "sub": "8fa624c4-25a7-47dc-9578-ec110caa5d85"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/die__north-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/die/north-east/00.webp",
+            "hollow_knight/animations/die/north-east/01.webp",
+            "hollow_knight/animations/die/north-east/02.webp",
+            "hollow_knight/animations/die/north-east/03.webp",
+            "hollow_knight/animations/die/north-east/04.webp",
+            "hollow_knight/animations/die/north-east/05.webp",
+            "hollow_knight/animations/die/north-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:39 GMT",
+          "src_frames": 7,
+          "sub": "b0fca2c6-8646-423a-a441-41d04d7ed6ef"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/die__south.webp",
+          "frame_paths": [
+            "hollow_knight/animations/die/south/00.webp",
+            "hollow_knight/animations/die/south/01.webp",
+            "hollow_knight/animations/die/south/02.webp",
+            "hollow_knight/animations/die/south/03.webp",
+            "hollow_knight/animations/die/south/04.webp",
+            "hollow_knight/animations/die/south/05.webp",
+            "hollow_knight/animations/die/south/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:40 GMT",
+          "src_frames": 7,
+          "sub": "675f0392-9cf6-4b5e-92b2-e8875c736c2d"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/die__south-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/die/south-east/00.webp",
+            "hollow_knight/animations/die/south-east/01.webp",
+            "hollow_knight/animations/die/south-east/02.webp",
+            "hollow_knight/animations/die/south-east/03.webp",
+            "hollow_knight/animations/die/south-east/04.webp",
+            "hollow_knight/animations/die/south-east/05.webp",
+            "hollow_knight/animations/die/south-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:43 GMT",
+          "src_frames": 7,
+          "sub": "71497341-8666-4524-977e-2658aa357e19"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/die__south-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/die/south-west/00.webp",
+            "hollow_knight/animations/die/south-west/01.webp",
+            "hollow_knight/animations/die/south-west/02.webp",
+            "hollow_knight/animations/die/south-west/03.webp",
+            "hollow_knight/animations/die/south-west/04.webp",
+            "hollow_knight/animations/die/south-west/05.webp",
+            "hollow_knight/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/die__west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/die/west/00.webp",
+            "hollow_knight/animations/die/west/01.webp",
+            "hollow_knight/animations/die/west/02.webp",
+            "hollow_knight/animations/die/west/03.webp",
+            "hollow_knight/animations/die/west/04.webp",
+            "hollow_knight/animations/die/west/05.webp",
+            "hollow_knight/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/die__north-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/die/north-west/00.webp",
+            "hollow_knight/animations/die/north-west/01.webp",
+            "hollow_knight/animations/die/north-west/02.webp",
+            "hollow_knight/animations/die/north-west/03.webp",
+            "hollow_knight/animations/die/north-west/04.webp",
+            "hollow_knight/animations/die/north-west/05.webp",
+            "hollow_knight/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "c12c45ff-3787-4147-b3b0-c471f5a68aa1",
+      "source_name": "custom-Overhead Chop - Raises the greatsword high overhea",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "hollow_knight/animations/attack__east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/attack/east/00.webp",
+            "hollow_knight/animations/attack/east/01.webp",
+            "hollow_knight/animations/attack/east/02.webp",
+            "hollow_knight/animations/attack/east/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:44 GMT",
+          "src_frames": 4,
+          "sub": "21e2d0c6-1545-40c6-b182-879a823c7914"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "hollow_knight/animations/attack__north.webp",
+          "frame_paths": [
+            "hollow_knight/animations/attack/north/00.webp",
+            "hollow_knight/animations/attack/north/01.webp",
+            "hollow_knight/animations/attack/north/02.webp",
+            "hollow_knight/animations/attack/north/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:46 GMT",
+          "src_frames": 4,
+          "sub": "9caafebb-830f-4dfb-ac2d-ac6a0b60bf29"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "hollow_knight/animations/attack__north-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/attack/north-east/00.webp",
+            "hollow_knight/animations/attack/north-east/01.webp",
+            "hollow_knight/animations/attack/north-east/02.webp",
+            "hollow_knight/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:47 GMT",
+          "src_frames": 4,
+          "sub": "e5bf1b3a-2aab-439d-a28a-456cdc58532a"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "hollow_knight/animations/attack__south.webp",
+          "frame_paths": [
+            "hollow_knight/animations/attack/south/00.webp",
+            "hollow_knight/animations/attack/south/01.webp",
+            "hollow_knight/animations/attack/south/02.webp",
+            "hollow_knight/animations/attack/south/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:49 GMT",
+          "src_frames": 4,
+          "sub": "8e2b2339-5511-442f-a200-29d284e3b639"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "hollow_knight/animations/attack__south-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/attack/south-east/00.webp",
+            "hollow_knight/animations/attack/south-east/01.webp",
+            "hollow_knight/animations/attack/south-east/02.webp",
+            "hollow_knight/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:50 GMT",
+          "src_frames": 4,
+          "sub": "8ba956c8-c50d-4246-8130-95f5efc73c81"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "hollow_knight/animations/attack__south-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/attack/south-west/00.webp",
+            "hollow_knight/animations/attack/south-west/01.webp",
+            "hollow_knight/animations/attack/south-west/02.webp",
+            "hollow_knight/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "hollow_knight/animations/attack__west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/attack/west/00.webp",
+            "hollow_knight/animations/attack/west/01.webp",
+            "hollow_knight/animations/attack/west/02.webp",
+            "hollow_knight/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "hollow_knight/animations/attack__north-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/attack/north-west/00.webp",
+            "hollow_knight/animations/attack/north-west/01.webp",
+            "hollow_knight/animations/attack/north-west/02.webp",
+            "hollow_knight/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_swings_the_greatsword_in_one_h": {
+      "group_id": "0e8ab189-d11b-422b-a748-3231916c1da6",
+      "source_name": "custom-swings the greatsword in one h",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/custom_swings_the_greatsword_in_one_h__east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/east/00.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/east/01.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/east/02.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/east/03.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/east/04.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/east/05.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:52 GMT",
+          "src_frames": 7,
+          "sub": "68058f2b-a4a6-4309-a620-387b1fee4e07"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/custom_swings_the_greatsword_in_one_h__north.webp",
+          "frame_paths": [
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north/00.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north/01.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north/02.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north/03.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north/04.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north/05.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:54 GMT",
+          "src_frames": 7,
+          "sub": "fc355dd4-3179-4071-b646-9512a7389d70"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/custom_swings_the_greatsword_in_one_h__north-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-east/00.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-east/01.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-east/02.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-east/03.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-east/04.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-east/05.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:56 GMT",
+          "src_frames": 7,
+          "sub": "f03ff086-dae2-488f-a025-a3d5df88fa94"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/custom_swings_the_greatsword_in_one_h__south.webp",
+          "frame_paths": [
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south/00.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south/01.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south/02.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south/03.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south/04.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south/05.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:57 GMT",
+          "src_frames": 7,
+          "sub": "8b40c20a-c77e-4cdc-931d-782bc300b5a3"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/custom_swings_the_greatsword_in_one_h__south-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-east/00.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-east/01.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-east/02.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-east/03.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-east/04.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-east/05.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:38:59 GMT",
+          "src_frames": 7,
+          "sub": "c5cf02d5-fca0-48ea-8ce4-72922118254b"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/custom_swings_the_greatsword_in_one_h__south-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-west/00.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-west/01.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-west/02.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-west/03.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-west/04.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-west/05.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/custom_swings_the_greatsword_in_one_h__west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/west/00.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/west/01.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/west/02.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/west/03.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/west/04.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/west/05.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "hollow_knight/animations/custom_swings_the_greatsword_in_one_h__north-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-west/00.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-west/01.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-west/02.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-west/03.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-west/04.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-west/05.webp",
+            "hollow_knight/animations/custom_swings_the_greatsword_in_one_h/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "131c38c2-c657-486b-a5b1-d05911c38a98",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "hollow_knight/animations/walk__east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/walk/east/00.webp",
+            "hollow_knight/animations/walk/east/01.webp",
+            "hollow_knight/animations/walk/east/02.webp",
+            "hollow_knight/animations/walk/east/03.webp",
+            "hollow_knight/animations/walk/east/04.webp",
+            "hollow_knight/animations/walk/east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:39:01 GMT",
+          "src_frames": 6,
+          "sub": "f25d0cf6-9e7e-48df-b5e7-e31063804d37"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "hollow_knight/animations/walk__north.webp",
+          "frame_paths": [
+            "hollow_knight/animations/walk/north/00.webp",
+            "hollow_knight/animations/walk/north/01.webp",
+            "hollow_knight/animations/walk/north/02.webp",
+            "hollow_knight/animations/walk/north/03.webp",
+            "hollow_knight/animations/walk/north/04.webp",
+            "hollow_knight/animations/walk/north/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:39:03 GMT",
+          "src_frames": 6,
+          "sub": "5b66441d-d2e0-4813-9a6e-9ce589ec4580"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "hollow_knight/animations/walk__north-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/walk/north-east/00.webp",
+            "hollow_knight/animations/walk/north-east/01.webp",
+            "hollow_knight/animations/walk/north-east/02.webp",
+            "hollow_knight/animations/walk/north-east/03.webp",
+            "hollow_knight/animations/walk/north-east/04.webp",
+            "hollow_knight/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:39:05 GMT",
+          "src_frames": 6,
+          "sub": "22160438-ede9-4dd1-b215-c71f031db5ff"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "hollow_knight/animations/walk__south.webp",
+          "frame_paths": [
+            "hollow_knight/animations/walk/south/00.webp",
+            "hollow_knight/animations/walk/south/01.webp",
+            "hollow_knight/animations/walk/south/02.webp",
+            "hollow_knight/animations/walk/south/03.webp",
+            "hollow_knight/animations/walk/south/04.webp",
+            "hollow_knight/animations/walk/south/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:39:06 GMT",
+          "src_frames": 6,
+          "sub": "f5b46679-7014-41e4-9f23-0c64f3f47e6b"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "hollow_knight/animations/walk__south-east.webp",
+          "frame_paths": [
+            "hollow_knight/animations/walk/south-east/00.webp",
+            "hollow_knight/animations/walk/south-east/01.webp",
+            "hollow_knight/animations/walk/south-east/02.webp",
+            "hollow_knight/animations/walk/south-east/03.webp",
+            "hollow_knight/animations/walk/south-east/04.webp",
+            "hollow_knight/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:39:07 GMT",
+          "src_frames": 6,
+          "sub": "0d1dbf44-f7b2-4c91-9425-6fb547eb0c91"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "hollow_knight/animations/walk__south-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/walk/south-west/00.webp",
+            "hollow_knight/animations/walk/south-west/01.webp",
+            "hollow_knight/animations/walk/south-west/02.webp",
+            "hollow_knight/animations/walk/south-west/03.webp",
+            "hollow_knight/animations/walk/south-west/04.webp",
+            "hollow_knight/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "hollow_knight/animations/walk__west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/walk/west/00.webp",
+            "hollow_knight/animations/walk/west/01.webp",
+            "hollow_knight/animations/walk/west/02.webp",
+            "hollow_knight/animations/walk/west/03.webp",
+            "hollow_knight/animations/walk/west/04.webp",
+            "hollow_knight/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "hollow_knight/animations/walk__north-west.webp",
+          "frame_paths": [
+            "hollow_knight/animations/walk/north-west/00.webp",
+            "hollow_knight/animations/walk/north-west/01.webp",
+            "hollow_knight/animations/walk/north-west/02.webp",
+            "hollow_knight/animations/walk/north-west/03.webp",
+            "hollow_knight/animations/walk/north-west/04.webp",
+            "hollow_knight/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}
