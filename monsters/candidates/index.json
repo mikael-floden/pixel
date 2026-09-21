@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T11:29:40+00:00",
+  "generated_at": "2026-09-21T11:31:41+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 137,
+  "count": 141,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -14601,6 +14601,138 @@
       }
     },
     {
+      "id": "scyth_arm",
+      "name": "Scytharm",
+      "tier": "mid",
+      "lore": "It holds its arms as if praying and has never once been mistaken for harmless twice.",
+      "biome": [
+        "grass"
+      ],
+      "items": [],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "038df185-f180-4fbd-b15e-6d68d6d13002",
+      "version": 1,
+      "sheet": "scyth_arm/sheet.webp",
+      "rotations": {
+        "south": "scyth_arm/rotations/south.webp",
+        "south-east": "scyth_arm/rotations/south-east.webp",
+        "east": "scyth_arm/rotations/east.webp",
+        "north-east": "scyth_arm/rotations/north-east.webp",
+        "north": "scyth_arm/rotations/north.webp",
+        "north-west": "scyth_arm/rotations/north-west.webp",
+        "west": "scyth_arm/rotations/west.webp",
+        "south-west": "scyth_arm/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.772,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.772,
+            "bbox": [
+              7,
+              2,
+              85,
+              86
+            ],
+            "fill": 0.846,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.846,
+            "bbox": [
+              4,
+              3,
+              83,
+              86
+            ],
+            "fill": 0.847,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.845,
+            "bbox": [
+              8,
+              4,
+              81,
+              85
+            ],
+            "fill": 0.764,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.837,
+            "bbox": [
+              4,
+              3,
+              78,
+              86
+            ],
+            "fill": 0.793,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.839,
+            "bbox": [
+              17,
+              4,
+              73,
+              82
+            ],
+            "fill": 0.564,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.844,
+            "bbox": [
+              2,
+              4,
+              78,
+              85
+            ],
+            "fill": 0.795,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.865,
+            "bbox": [
+              13,
+              3,
+              74,
+              83
+            ],
+            "fill": 0.63,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.858,
+            "bbox": [
+              6,
+              4,
+              87,
+              86
+            ],
+            "fill": 0.858,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:31:39+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "elder_scute",
       "name": "Elderscute",
       "tier": "mid",
@@ -17272,6 +17404,139 @@
       }
     },
     {
+      "id": "white_brush",
+      "name": "Whitebrush",
+      "tier": "cute",
+      "lore": "It follows the big hunters at a distance and lives on what they leave behind.",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "7acc1dde-6091-4e0c-9d9f-acbf5db8bc6b",
+      "version": 1,
+      "sheet": "white_brush/sheet.webp",
+      "rotations": {
+        "south": "white_brush/rotations/south.webp",
+        "south-east": "white_brush/rotations/south-east.webp",
+        "east": "white_brush/rotations/east.webp",
+        "north-east": "white_brush/rotations/north-east.webp",
+        "north": "white_brush/rotations/north.webp",
+        "north-west": "white_brush/rotations/north-west.webp",
+        "west": "white_brush/rotations/west.webp",
+        "south-west": "white_brush/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.69,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.76,
+            "bbox": [
+              6,
+              3,
+              38,
+              45
+            ],
+            "fill": 0.583,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.735,
+            "bbox": [
+              8,
+              2,
+              41,
+              44
+            ],
+            "fill": 0.602,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.754,
+            "bbox": [
+              7,
+              2,
+              40,
+              46
+            ],
+            "fill": 0.63,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.69,
+            "bbox": [
+              11,
+              3,
+              41,
+              45
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.786,
+            "bbox": [
+              6,
+              3,
+              40,
+              45
+            ],
+            "fill": 0.62,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.715,
+            "bbox": [
+              10,
+              3,
+              41,
+              45
+            ],
+            "fill": 0.565,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.713,
+            "bbox": [
+              9,
+              3,
+              42,
+              44
+            ],
+            "fill": 0.587,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.775,
+            "bbox": [
+              7,
+              3,
+              38,
+              45
+            ],
+            "fill": 0.565,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:30:31+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "glacier_worm",
       "name": "Glacierworm",
       "tier": "evil",
@@ -18070,6 +18335,139 @@
       }
     },
     {
+      "id": "glass_sting",
+      "name": "Glassting",
+      "tier": "evil",
+      "lore": "Every plate on it came out of the same flow. It has never left the rock it cooled on.",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "items": [],
+      "size": [
+        120,
+        120
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "a1629a43-7dc0-462d-9f79-bf55ece6c73a",
+      "version": 1,
+      "sheet": "glass_sting/sheet.webp",
+      "rotations": {
+        "south": "glass_sting/rotations/south.webp",
+        "south-east": "glass_sting/rotations/south-east.webp",
+        "east": "glass_sting/rotations/east.webp",
+        "north-east": "glass_sting/rotations/north-east.webp",
+        "north": "glass_sting/rotations/north.webp",
+        "north-west": "glass_sting/rotations/north-west.webp",
+        "west": "glass_sting/rotations/west.webp",
+        "south-west": "glass_sting/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.667,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.667,
+            "bbox": [
+              6,
+              4,
+              113,
+              115
+            ],
+            "fill": 0.825,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.764,
+            "bbox": [
+              11,
+              22,
+              114,
+              107
+            ],
+            "fill": 0.608,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.773,
+            "bbox": [
+              8,
+              6,
+              114,
+              111
+            ],
+            "fill": 0.773,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.778,
+            "bbox": [
+              15,
+              27,
+              110,
+              108
+            ],
+            "fill": 0.534,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.793,
+            "bbox": [
+              19,
+              4,
+              102,
+              112
+            ],
+            "fill": 0.623,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.786,
+            "bbox": [
+              8,
+              20,
+              110,
+              105
+            ],
+            "fill": 0.602,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.802,
+            "bbox": [
+              12,
+              31,
+              107,
+              107
+            ],
+            "fill": 0.501,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.795,
+            "bbox": [
+              7,
+              11,
+              111,
+              109
+            ],
+            "fill": 0.708,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:31:40+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "cinder_bore",
       "name": "Cinderbore",
       "tier": "mid",
@@ -18196,6 +18594,141 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:27:47+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "rafter_creep",
+      "name": "Raftercreep",
+      "tier": "mid",
+      "lore": "It has lived in the same corner for years and considers the room an arrangement it allows.",
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [
+        "silk skein"
+      ],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "36f78ce8-35ef-426d-8592-172ebe6bd5b9",
+      "version": 1,
+      "sheet": "rafter_creep/sheet.webp",
+      "rotations": {
+        "south": "rafter_creep/rotations/south.webp",
+        "south-east": "rafter_creep/rotations/south-east.webp",
+        "east": "rafter_creep/rotations/east.webp",
+        "north-east": "rafter_creep/rotations/north-east.webp",
+        "north": "rafter_creep/rotations/north.webp",
+        "north-west": "rafter_creep/rotations/north-west.webp",
+        "west": "rafter_creep/rotations/west.webp",
+        "south-west": "rafter_creep/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.745,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.774,
+            "bbox": [
+              1,
+              2,
+              47,
+              45
+            ],
+            "fill": 0.859,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.751,
+            "bbox": [
+              2,
+              7,
+              46,
+              44
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.745,
+            "bbox": [
+              3,
+              7,
+              46,
+              44
+            ],
+            "fill": 0.691,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.769,
+            "bbox": [
+              1,
+              8,
+              46,
+              45
+            ],
+            "fill": 0.723,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.804,
+            "bbox": [
+              1,
+              3,
+              46,
+              46
+            ],
+            "fill": 0.84,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.768,
+            "bbox": [
+              2,
+              7,
+              46,
+              44
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.758,
+            "bbox": [
+              2,
+              7,
+              46,
+              44
+            ],
+            "fill": 0.707,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.768,
+            "bbox": [
+              2,
+              3,
+              47,
+              46
+            ],
+            "fill": 0.84,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:30:40+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},

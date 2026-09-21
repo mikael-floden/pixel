@@ -1,0 +1,140 @@
+{
+  "id": "scyth_arm",
+  "name": "Scytharm",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It holds its arms as if praying and has never once been mistaken for harmless twice.",
+  "biome": [
+    "grass"
+  ],
+  "items": [],
+  "prompt": "Fantasy praying mantis with a slender green body, folded raptorial forearms lined with spines held up in front, a triangular head turned to one side, large compound eyes, and wings closed flat along its back.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "scyth_arm/rotations/south.webp",
+    "south-east": "scyth_arm/rotations/south-east.webp",
+    "east": "scyth_arm/rotations/east.webp",
+    "north-east": "scyth_arm/rotations/north-east.webp",
+    "north": "scyth_arm/rotations/north.webp",
+    "north-west": "scyth_arm/rotations/north-west.webp",
+    "west": "scyth_arm/rotations/west.webp",
+    "south-west": "scyth_arm/rotations/south-west.webp"
+  },
+  "sheet": "scyth_arm/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "038df185-f180-4fbd-b15e-6d68d6d13002",
+  "seed": 403080459,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:31:39+00:00",
+  "elapsed_s": 243.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.772,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.772,
+        "bbox": [
+          7,
+          2,
+          85,
+          86
+        ],
+        "fill": 0.846,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.846,
+        "bbox": [
+          4,
+          3,
+          83,
+          86
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.845,
+        "bbox": [
+          8,
+          4,
+          81,
+          85
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.837,
+        "bbox": [
+          4,
+          3,
+          78,
+          86
+        ],
+        "fill": 0.793,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.839,
+        "bbox": [
+          17,
+          4,
+          73,
+          82
+        ],
+        "fill": 0.564,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.844,
+        "bbox": [
+          2,
+          4,
+          78,
+          85
+        ],
+        "fill": 0.795,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.865,
+        "bbox": [
+          13,
+          3,
+          74,
+          83
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.858,
+        "bbox": [
+          6,
+          4,
+          87,
+          86
+        ],
+        "fill": 0.858,
+        "touches_edge": false
+      }
+    }
+  }
+}
