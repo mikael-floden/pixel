@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T11:24:46+00:00",
+  "generated_at": "2026-09-21T11:24:52+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 121,
+  "count": 122,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -16057,6 +16057,139 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:21:46+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "drift_cat",
+      "name": "Driftcat",
+      "tier": "mid",
+      "lore": "It follows the herds up the passes and is never seen until it has already chosen.",
+      "biome": [
+        "snow",
+        "grey_stone"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "0959ba2c-92a4-4a19-ac45-d4baa2d3d120",
+      "version": 1,
+      "sheet": "drift_cat/sheet.webp",
+      "rotations": {
+        "south": "drift_cat/rotations/south.webp",
+        "south-east": "drift_cat/rotations/south-east.webp",
+        "east": "drift_cat/rotations/east.webp",
+        "north-east": "drift_cat/rotations/north-east.webp",
+        "north": "drift_cat/rotations/north.webp",
+        "north-west": "drift_cat/rotations/north-west.webp",
+        "west": "drift_cat/rotations/west.webp",
+        "south-west": "drift_cat/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.655,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.655,
+            "bbox": [
+              11,
+              6,
+              123,
+              123
+            ],
+            "fill": 0.8,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.658,
+            "bbox": [
+              4,
+              10,
+              121,
+              123
+            ],
+            "fill": 0.807,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.722,
+            "bbox": [
+              12,
+              15,
+              115,
+              123
+            ],
+            "fill": 0.679,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.697,
+            "bbox": [
+              7,
+              6,
+              97,
+              123
+            ],
+            "fill": 0.643,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.797,
+            "bbox": [
+              20,
+              8,
+              119,
+              124
+            ],
+            "fill": 0.701,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.709,
+            "bbox": [
+              6,
+              11,
+              123,
+              124
+            ],
+            "fill": 0.807,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.719,
+            "bbox": [
+              15,
+              6,
+              107,
+              121
+            ],
+            "fill": 0.646,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.767,
+            "bbox": [
+              2,
+              9,
+              124,
+              120
+            ],
+            "fill": 0.827,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:24:52+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},
