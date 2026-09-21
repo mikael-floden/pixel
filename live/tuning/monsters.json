@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T14:40:16.687Z",
+  "updated_at": "2026-09-21T14:42:33.052Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -6153,7 +6153,45 @@
           "item": "curved_ivory_fang",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 36.75,
+        "ry": 14.75,
+        "offsets": {
+          "idle#south": {
+            "ax": -2.71,
+            "ay": 55.63
+          },
+          "idle#east": {
+            "ax": -1.72,
+            "ay": 51.33
+          },
+          "idle#south-east": {
+            "ax": -0.74,
+            "ay": 53.88
+          },
+          "idle#north-east": {
+            "ax": 2.24,
+            "ay": 50.91
+          },
+          "idle#north": {
+            "ax": -0.96,
+            "ay": 51.43
+          },
+          "idle#north-west": {
+            "ax": -2.37,
+            "ay": 52.55
+          },
+          "idle#west": {
+            "ax": -0.65,
+            "ay": 52.6
+          },
+          "idle#south-west": {
+            "ax": 0.26,
+            "ay": 54.57
+          }
+        }
+      }
     },
     "white_horse": {
       "max_hp": 105,
