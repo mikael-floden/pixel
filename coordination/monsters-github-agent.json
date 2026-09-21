@@ -1,14 +1,14 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-21T15:14:00+00:00",
-  "health": "idle",
-  "current": "idle — his 2026-09-21T15:00Z save on monsters/elder_treant TAKEN and decided a NO-OP: 24 verdicts, every one an APPROVAL, all 24 hash-verified against the strips on disk, nothing to generate and nothing to clear (review-contract law 2). No files claimed; live/feedback/monsters.json byte-untouched. STILL STANDING AND NOT MINE: the PixelLab animation-start route is 422-broken for this domain (POST characters/animations now wants character_id + animation_group_id as QUERY params), so no clip can be generated from here — see the 14:56:58Z note; his pebble_crab attack hole is diagnosed and BLOCKED on it.",
+  "updated_at": "2026-09-21T15:32:00+00:00",
+  "health": "running",
+  "current": "claiming his 2026-09-21T15:02–15:03Z save on monsters/lizard_warrior — 41 entries (monsters/lizard_warrior approved r3 + 40 facets across idle/walk/angry/attack/die x8). Files I may touch: live/feedback/monsters.json, monsters/lizard_warrior/**, coordination/monsters-github-agent.json.",
   "progress": {
-    "verdicts_taken": 24,
+    "verdicts_taken": 41,
     "verdicts_cleared": 0,
-    "unit": "his 2026-09-21T15:00Z save on monsters/elder_treant — 24 approvals, no-op (the pebble_crab unit stays BLOCKED on the API change)",
-    "shipped": "board account only (no art change)"
+    "unit": "his 15:02Z lizard_warrior save — verifying the art against the verdicts before deciding",
+    "shipped": "claim only"
   },
   "budget_remaining": "PixelLab USD $35.98 — $0.00 spent this session (no PixelLab call made; this unit needed no generation).",
   "notes": [
