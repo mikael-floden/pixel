@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T14:46:07.202Z",
+  "updated_at": "2026-09-21T14:48:12.985Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1143,7 +1143,45 @@
           "item": "violet_crystal_shard",
           "chance": 0.044
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 57.5,
+        "ry": 18.25,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.08,
+            "ay": 103.27
+          },
+          "idle#east": {
+            "ax": 2.29,
+            "ay": 101.38
+          },
+          "idle#south-east": {
+            "ax": 0.37,
+            "ay": 100.56
+          },
+          "idle#north-east": {
+            "ax": 3.53,
+            "ay": 101.07
+          },
+          "idle#north": {
+            "ax": 1.43,
+            "ay": 99.59
+          },
+          "idle#north-west": {
+            "ax": -1.61,
+            "ay": 101.34
+          },
+          "idle#west": {
+            "ax": -0.76,
+            "ay": 101.31
+          },
+          "idle#south-west": {
+            "ax": 0.42,
+            "ay": 99.23
+          }
+        }
+      }
     },
     "dark_donkey": {
       "level": 11,
