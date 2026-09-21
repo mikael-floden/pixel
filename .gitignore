@@ -22,3 +22,10 @@ tiles/matrix/
 # Agent worktrees — a subagent running in isolation gets a throwaway checkout
 # here. They are temporary clones of this same repo and must never be committed.
 .claude/worktrees/
+
+# Agent scratch under games2/server/test. games2/.gitignore already ignores
+# `scripts/_*` by the same underscore convention; this is the other place a
+# probe gets written, and the rule lives HERE rather than there because
+# games2/** is the deploy's path filter — ignoring a scratch file must not
+# restart his world.
+games2/server/test/_*
