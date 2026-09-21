@@ -18,3 +18,7 @@ tiles/probes/
 # tiles 3.0 generated sheets — curated in the wiki, winners promoted out of here
 tiles/matrix/
 .claude/settings.local.json
+
+# Agent worktrees — a subagent running in isolation gets a throwaway checkout
+# here. They are temporary clones of this same repo and must never be committed.
+.claude/worktrees/
