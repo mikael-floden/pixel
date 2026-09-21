@@ -1,0 +1,141 @@
+{
+  "id": "bog_coil",
+  "name": "Bogcoil",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It takes one meal a season and spends the rest of the year digesting it in the same spot.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy swamp python wound in a heavy coil, a thick olive body with black saddle markings, a broad wedge head held low, heat pits along the upper lip, and dull unblinking eyes.",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bog_coil/rotations/south.webp",
+    "south-east": "bog_coil/rotations/south-east.webp",
+    "east": "bog_coil/rotations/east.webp",
+    "north-east": "bog_coil/rotations/north-east.webp",
+    "north": "bog_coil/rotations/north.webp",
+    "north-west": "bog_coil/rotations/north-west.webp",
+    "west": "bog_coil/rotations/west.webp",
+    "south-west": "bog_coil/rotations/south-west.webp"
+  },
+  "sheet": "bog_coil/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f7b9b2b1-c2ec-443b-bd4e-febcdc1ae800",
+  "seed": 1354679443,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:34:23+00:00",
+  "elapsed_s": 163.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.581,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.581,
+        "bbox": [
+          9,
+          7,
+          111,
+          112
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.669,
+        "bbox": [
+          9,
+          11,
+          111,
+          110
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.668,
+        "bbox": [
+          5,
+          11,
+          111,
+          112
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.645,
+        "bbox": [
+          9,
+          8,
+          111,
+          106
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.726,
+        "bbox": [
+          5,
+          7,
+          111,
+          112
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.712,
+        "bbox": [
+          12,
+          8,
+          110,
+          110
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.699,
+        "bbox": [
+          9,
+          8,
+          115,
+          109
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.723,
+        "bbox": [
+          9,
+          9,
+          110,
+          112
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      }
+    }
+  }
+}

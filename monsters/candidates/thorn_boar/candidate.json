@@ -1,0 +1,143 @@
+{
+  "id": "thorn_boar",
+  "name": "Thornboar",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It walks the same path through the thicket every night and widens it with its shoulders.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Fantasy wild boar with coarse black bristles standing in a ridge along its spine, curled yellow tusks, bramble and dried thorn tangled in its coat, a wet snout, and small hard eyes.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "thorn_boar/rotations/south.webp",
+    "south-east": "thorn_boar/rotations/south-east.webp",
+    "east": "thorn_boar/rotations/east.webp",
+    "north-east": "thorn_boar/rotations/north-east.webp",
+    "north": "thorn_boar/rotations/north.webp",
+    "north-west": "thorn_boar/rotations/north-west.webp",
+    "west": "thorn_boar/rotations/west.webp",
+    "south-west": "thorn_boar/rotations/south-west.webp"
+  },
+  "sheet": "thorn_boar/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b652321a-c9ae-4f5a-adb2-8bf0c9eb23a0",
+  "seed": 1945677508,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:34:21+00:00",
+  "elapsed_s": 281.3,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.607,
+    "reasons": [
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.607,
+        "bbox": [
+          8,
+          3,
+          122,
+          124
+        ],
+        "fill": 0.842,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.684,
+        "bbox": [
+          4,
+          3,
+          117,
+          123
+        ],
+        "fill": 0.828,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.698,
+        "bbox": [
+          16,
+          6,
+          119,
+          124
+        ],
+        "fill": 0.742,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.685,
+        "bbox": [
+          3,
+          4,
+          119,
+          125
+        ],
+        "fill": 0.857,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.737,
+        "bbox": [
+          28,
+          4,
+          99,
+          123
+        ],
+        "fill": 0.516,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.717,
+        "bbox": [
+          6,
+          7,
+          127,
+          119
+        ],
+        "fill": 0.827,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.694,
+        "bbox": [
+          31,
+          3,
+          99,
+          124
+        ],
+        "fill": 0.502,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.73,
+        "bbox": [
+          0,
+          5,
+          125,
+          121
+        ],
+        "fill": 0.885,
+        "touches_edge": true
+      }
+    }
+  }
+}

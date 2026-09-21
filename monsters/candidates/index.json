@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T11:33:03+00:00",
+  "generated_at": "2026-09-21T11:34:30+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 143,
+  "count": 142,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -8650,140 +8650,6 @@
       }
     },
     {
-      "id": "tide_serpent",
-      "name": "Tidecoil",
-      "tier": "boss",
-      "lore": "The oldest thing in the water and the least interested in you. It surfaces only to breathe.",
-      "biome": [
-        "deep_water"
-      ],
-      "items": [
-        "blue scales"
-      ],
-      "size": [
-        232,
-        232
-      ],
-      "template_id": "bear",
-      "scale": "big",
-      "pixellab_id": "1f46e1cf-dfd7-4b86-811d-56a242474ffd",
-      "version": 1,
-      "sheet": "tide_serpent/sheet.webp",
-      "rotations": {
-        "south": "tide_serpent/rotations/south.webp",
-        "south-east": "tide_serpent/rotations/south-east.webp",
-        "east": "tide_serpent/rotations/east.webp",
-        "north-east": "tide_serpent/rotations/north-east.webp",
-        "north": "tide_serpent/rotations/north.webp",
-        "north-west": "tide_serpent/rotations/north-west.webp",
-        "west": "tide_serpent/rotations/west.webp",
-        "south-west": "tide_serpent/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.652,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.652,
-            "bbox": [
-              23,
-              13,
-              208,
-              218
-            ],
-            "fill": 0.705,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.701,
-            "bbox": [
-              39,
-              13,
-              195,
-              218
-            ],
-            "fill": 0.594,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.702,
-            "bbox": [
-              40,
-              17,
-              202,
-              218
-            ],
-            "fill": 0.605,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.679,
-            "bbox": [
-              26,
-              10,
-              192,
-              211
-            ],
-            "fill": 0.62,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.697,
-            "bbox": [
-              24,
-              13,
-              210,
-              212
-            ],
-            "fill": 0.688,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.699,
-            "bbox": [
-              48,
-              14,
-              195,
-              219
-            ],
-            "fill": 0.56,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.704,
-            "bbox": [
-              30,
-              14,
-              204,
-              207
-            ],
-            "fill": 0.624,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.692,
-            "bbox": [
-              33,
-              14,
-              202,
-              219
-            ],
-            "fill": 0.644,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-21T11:06:07+00:00",
-      "graduation": {
-        "state": "waiting",
-        "takes": {},
-        "blocking": "design not approved"
-      }
-    },
-    {
       "id": "lobe_fish",
       "name": "Lobefin",
       "tier": "mid",
@@ -10129,139 +9995,6 @@
       }
     },
     {
-      "id": "reed_jaw",
-      "name": "Reedjaw",
-      "tier": "evil",
-      "lore": "It is the oldest resident of the reeds and remembers every crossing. It has never needed to hurry.",
-      "biome": [
-        "water",
-        "dark_mud"
-      ],
-      "items": [],
-      "size": [
-        224,
-        224
-      ],
-      "template_id": "bear",
-      "scale": "big",
-      "pixellab_id": "325d14fe-6adf-4c6a-bb77-c9acb68619fd",
-      "version": 1,
-      "sheet": "reed_jaw/sheet.webp",
-      "rotations": {
-        "south": "reed_jaw/rotations/south.webp",
-        "south-east": "reed_jaw/rotations/south-east.webp",
-        "east": "reed_jaw/rotations/east.webp",
-        "north-east": "reed_jaw/rotations/north-east.webp",
-        "north": "reed_jaw/rotations/north.webp",
-        "north-west": "reed_jaw/rotations/north-west.webp",
-        "west": "reed_jaw/rotations/west.webp",
-        "south-west": "reed_jaw/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.634,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.636,
-            "bbox": [
-              21,
-              27,
-              209,
-              199
-            ],
-            "fill": 0.644,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.65,
-            "bbox": [
-              13,
-              21,
-              195,
-              207
-            ],
-            "fill": 0.675,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.68,
-            "bbox": [
-              41,
-              28,
-              199,
-              205
-            ],
-            "fill": 0.557,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.641,
-            "bbox": [
-              15,
-              17,
-              183,
-              194
-            ],
-            "fill": 0.593,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.668,
-            "bbox": [
-              40,
-              33,
-              189,
-              197
-            ],
-            "fill": 0.487,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.661,
-            "bbox": [
-              17,
-              23,
-              205,
-              204
-            ],
-            "fill": 0.678,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.634,
-            "bbox": [
-              32,
-              17,
-              174,
-              206
-            ],
-            "fill": 0.535,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.653,
-            "bbox": [
-              8,
-              27,
-              209,
-              202
-            ],
-            "fill": 0.701,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-21T11:11:00+00:00",
-      "graduation": {
-        "state": "waiting",
-        "takes": {},
-        "blocking": "design not approved"
-      }
-    },
-    {
       "id": "gnarl_shell",
       "name": "Gnarlshell",
       "tier": "mid",
@@ -11070,277 +10803,6 @@
         "state": "waiting",
         "takes": {},
         "blocking": "not fully approved: idle, walk, angry, attack, die"
-      }
-    },
-    {
-      "id": "gnaw_tail",
-      "name": "Gnawtail",
-      "tier": "mid",
-      "lore": "It rebuilds the river to suit itself and takes any objection out on the trees.",
-      "biome": [
-        "water",
-        "grass"
-      ],
-      "items": [],
-      "size": [
-        104,
-        104
-      ],
-      "template_id": "bear",
-      "scale": "standard",
-      "pixellab_id": "1492e6da-016c-40f5-85db-a62067e62d04",
-      "version": 1,
-      "sheet": "gnaw_tail/sheet.webp",
-      "rotations": {
-        "south": "gnaw_tail/rotations/south.webp",
-        "south-east": "gnaw_tail/rotations/south-east.webp",
-        "east": "gnaw_tail/rotations/east.webp",
-        "north-east": "gnaw_tail/rotations/north-east.webp",
-        "north": "gnaw_tail/rotations/north.webp",
-        "north-west": "gnaw_tail/rotations/north-west.webp",
-        "west": "gnaw_tail/rotations/west.webp",
-        "south-west": "gnaw_tail/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "fail",
-        "min_run1": 0.654,
-        "reasons": [
-          "north-east: content touches the canvas edge (clipped)",
-          "south-west: content touches the canvas edge (clipped)"
-        ],
-        "directions": {
-          "south": {
-            "run1": 0.654,
-            "bbox": [
-              5,
-              5,
-              99,
-              99
-            ],
-            "fill": 0.817,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.721,
-            "bbox": [
-              3,
-              8,
-              98,
-              95
-            ],
-            "fill": 0.764,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.758,
-            "bbox": [
-              5,
-              8,
-              95,
-              96
-            ],
-            "fill": 0.732,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.686,
-            "bbox": [
-              6,
-              6,
-              84,
-              98
-            ],
-            "fill": 0.663,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.781,
-            "bbox": [
-              6,
-              6,
-              85,
-              99
-            ],
-            "fill": 0.679,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.734,
-            "bbox": [
-              0,
-              9,
-              96,
-              93
-            ],
-            "fill": 0.746,
-            "touches_edge": true
-          },
-          "north-west": {
-            "run1": 0.721,
-            "bbox": [
-              17,
-              5,
-              88,
-              98
-            ],
-            "fill": 0.61,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.786,
-            "bbox": [
-              4,
-              6,
-              104,
-              99
-            ],
-            "fill": 0.86,
-            "touches_edge": true
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-21T11:09:43+00:00",
-      "graduation": {
-        "state": "waiting",
-        "takes": {},
-        "blocking": "design not approved"
-      }
-    },
-    {
-      "id": "sharp_stoop",
-      "name": "Sharpstoop",
-      "tier": "mid",
-      "lore": "It watches the whole field from one post and moves once. Once is all it has ever needed.",
-      "biome": [
-        "grass",
-        "grey_stone"
-      ],
-      "items": [
-        "hawk quill"
-      ],
-      "size": [
-        104,
-        104
-      ],
-      "template_id": "bear",
-      "scale": "standard",
-      "pixellab_id": "9779bee9-893c-4063-b4cb-dc38e432bd1e",
-      "version": 1,
-      "sheet": "sharp_stoop/sheet.webp",
-      "rotations": {
-        "south": "sharp_stoop/rotations/south.webp",
-        "south-east": "sharp_stoop/rotations/south-east.webp",
-        "east": "sharp_stoop/rotations/east.webp",
-        "north-east": "sharp_stoop/rotations/north-east.webp",
-        "north": "sharp_stoop/rotations/north.webp",
-        "north-west": "sharp_stoop/rotations/north-west.webp",
-        "west": "sharp_stoop/rotations/west.webp",
-        "south-west": "sharp_stoop/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.672,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.672,
-            "bbox": [
-              14,
-              5,
-              93,
-              101
-            ],
-            "fill": 0.701,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.771,
-            "bbox": [
-              16,
-              4,
-              95,
-              99
-            ],
-            "fill": 0.694,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.785,
-            "bbox": [
-              12,
-              5,
-              86,
-              101
-            ],
-            "fill": 0.657,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.725,
-            "bbox": [
-              16,
-              3,
-              88,
-              101
-            ],
-            "fill": 0.652,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.815,
-            "bbox": [
-              20,
-              5,
-              87,
-              100
-            ],
-            "fill": 0.588,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.787,
-            "bbox": [
-              9,
-              5,
-              89,
-              100
-            ],
-            "fill": 0.703,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.751,
-            "bbox": [
-              17,
-              3,
-              84,
-              101
-            ],
-            "fill": 0.607,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.82,
-            "bbox": [
-              13,
-              6,
-              95,
-              101
-            ],
-            "fill": 0.72,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "pending",
-      "notes": null,
-      "generated_at": "2026-09-21T11:10:19+00:00",
-      "graduation": {
-        "state": "waiting",
-        "takes": {},
-        "blocking": "design not approved"
       }
     },
     {
@@ -15130,6 +14592,141 @@
       }
     },
     {
+      "id": "thorn_boar",
+      "name": "Thornboar",
+      "tier": "mid",
+      "lore": "It walks the same path through the thicket every night and widens it with its shoulders.",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "b652321a-c9ae-4f5a-adb2-8bf0c9eb23a0",
+      "version": 1,
+      "sheet": "thorn_boar/sheet.webp",
+      "rotations": {
+        "south": "thorn_boar/rotations/south.webp",
+        "south-east": "thorn_boar/rotations/south-east.webp",
+        "east": "thorn_boar/rotations/east.webp",
+        "north-east": "thorn_boar/rotations/north-east.webp",
+        "north": "thorn_boar/rotations/north.webp",
+        "north-west": "thorn_boar/rotations/north-west.webp",
+        "west": "thorn_boar/rotations/west.webp",
+        "south-west": "thorn_boar/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.607,
+        "reasons": [
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.607,
+            "bbox": [
+              8,
+              3,
+              122,
+              124
+            ],
+            "fill": 0.842,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.684,
+            "bbox": [
+              4,
+              3,
+              117,
+              123
+            ],
+            "fill": 0.828,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.698,
+            "bbox": [
+              16,
+              6,
+              119,
+              124
+            ],
+            "fill": 0.742,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.685,
+            "bbox": [
+              3,
+              4,
+              119,
+              125
+            ],
+            "fill": 0.857,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.737,
+            "bbox": [
+              28,
+              4,
+              99,
+              123
+            ],
+            "fill": 0.516,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.717,
+            "bbox": [
+              6,
+              7,
+              127,
+              119
+            ],
+            "fill": 0.827,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.694,
+            "bbox": [
+              31,
+              3,
+              99,
+              124
+            ],
+            "fill": 0.502,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.73,
+            "bbox": [
+              0,
+              5,
+              125,
+              121
+            ],
+            "fill": 0.885,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:34:21+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "loam_coil",
       "name": "Loamcoil",
       "tier": "cute",
@@ -15538,6 +15135,139 @@
       }
     },
     {
+      "id": "whisker_jaw",
+      "name": "Whiskerjaw",
+      "tier": "mid",
+      "lore": "It lives where the river is darkest and takes whatever the current brings it, whole.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "0a4d6ff0-0790-4416-869e-9416790440be",
+      "version": 1,
+      "sheet": "whisker_jaw/sheet.webp",
+      "rotations": {
+        "south": "whisker_jaw/rotations/south.webp",
+        "south-east": "whisker_jaw/rotations/south-east.webp",
+        "east": "whisker_jaw/rotations/east.webp",
+        "north-east": "whisker_jaw/rotations/north-east.webp",
+        "north": "whisker_jaw/rotations/north.webp",
+        "north-west": "whisker_jaw/rotations/north-west.webp",
+        "west": "whisker_jaw/rotations/west.webp",
+        "south-west": "whisker_jaw/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.653,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.653,
+            "bbox": [
+              4,
+              6,
+              106,
+              102
+            ],
+            "fill": 0.781,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.729,
+            "bbox": [
+              5,
+              7,
+              110,
+              105
+            ],
+            "fill": 0.82,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.728,
+            "bbox": [
+              5,
+              7,
+              106,
+              105
+            ],
+            "fill": 0.789,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.75,
+            "bbox": [
+              9,
+              5,
+              102,
+              96
+            ],
+            "fill": 0.675,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.761,
+            "bbox": [
+              22,
+              8,
+              106,
+              107
+            ],
+            "fill": 0.663,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.729,
+            "bbox": [
+              8,
+              6,
+              101,
+              95
+            ],
+            "fill": 0.66,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.733,
+            "bbox": [
+              11,
+              6,
+              100,
+              95
+            ],
+            "fill": 0.631,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.754,
+            "bbox": [
+              4,
+              8,
+              105,
+              109
+            ],
+            "fill": 0.813,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:33:31+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "leather_dead",
       "name": "Leatherdead",
       "tier": "evil",
@@ -15928,6 +15658,139 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:19:00+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "bog_coil",
+      "name": "Bogcoil",
+      "tier": "evil",
+      "lore": "It takes one meal a season and spends the rest of the year digesting it in the same spot.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        120,
+        120
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "f7b9b2b1-c2ec-443b-bd4e-febcdc1ae800",
+      "version": 1,
+      "sheet": "bog_coil/sheet.webp",
+      "rotations": {
+        "south": "bog_coil/rotations/south.webp",
+        "south-east": "bog_coil/rotations/south-east.webp",
+        "east": "bog_coil/rotations/east.webp",
+        "north-east": "bog_coil/rotations/north-east.webp",
+        "north": "bog_coil/rotations/north.webp",
+        "north-west": "bog_coil/rotations/north-west.webp",
+        "west": "bog_coil/rotations/west.webp",
+        "south-west": "bog_coil/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.581,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.581,
+            "bbox": [
+              9,
+              7,
+              111,
+              112
+            ],
+            "fill": 0.744,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.669,
+            "bbox": [
+              9,
+              11,
+              111,
+              110
+            ],
+            "fill": 0.701,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.668,
+            "bbox": [
+              5,
+              11,
+              111,
+              112
+            ],
+            "fill": 0.743,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.645,
+            "bbox": [
+              9,
+              8,
+              111,
+              106
+            ],
+            "fill": 0.694,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.726,
+            "bbox": [
+              5,
+              7,
+              111,
+              112
+            ],
+            "fill": 0.773,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.712,
+            "bbox": [
+              12,
+              8,
+              110,
+              110
+            ],
+            "fill": 0.694,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.699,
+            "bbox": [
+              9,
+              8,
+              115,
+              109
+            ],
+            "fill": 0.743,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.723,
+            "bbox": [
+              9,
+              9,
+              110,
+              112
+            ],
+            "fill": 0.722,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:34:23+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},
