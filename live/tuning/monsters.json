@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T14:56:01.259Z",
+  "updated_at": "2026-09-21T15:00:02.902Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1663,7 +1663,45 @@
           "item": "dark_hardwood_plank",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 54.25,
+        "ry": 22.25,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.28,
+            "ay": 91.79
+          },
+          "idle#east": {
+            "ax": 2.22,
+            "ay": 90
+          },
+          "idle#south-east": {
+            "ax": 2.52,
+            "ay": 92.58
+          },
+          "idle#north-east": {
+            "ax": 1.29,
+            "ay": 88.47
+          },
+          "idle#north": {
+            "ax": -1.11,
+            "ay": 91.19
+          },
+          "idle#north-west": {
+            "ax": -0.24,
+            "ay": 89.76
+          },
+          "idle#west": {
+            "ax": -3.15,
+            "ay": 90.36
+          },
+          "idle#south-west": {
+            "ax": -1.77,
+            "ay": 89.06
+          }
+        }
+      }
     },
     "eldritch_maw": {
       "max_hp": 205,
