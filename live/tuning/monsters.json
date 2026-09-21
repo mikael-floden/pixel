@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T11:29:01.452Z",
+  "updated_at": "2026-09-21T13:13:44.851Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -3490,7 +3490,45 @@
           "item": "tied_bone_bundle",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 29.25,
+        "ry": 11.5,
+        "offsets": {
+          "idle#south": {
+            "ax": -4.61,
+            "ay": 49.07
+          },
+          "idle#east": {
+            "ax": -0.33,
+            "ay": 45.46
+          },
+          "idle#south-east": {
+            "ax": -4.26,
+            "ay": 47.44
+          },
+          "idle#north-east": {
+            "ax": -1.54,
+            "ay": 46.57
+          },
+          "idle#north": {
+            "ax": 1.55,
+            "ay": 46.91
+          },
+          "idle#north-west": {
+            "ax": 0.42,
+            "ay": 46.88
+          },
+          "idle#west": {
+            "ax": -0.15,
+            "ay": 45.75
+          },
+          "idle#south-west": {
+            "ax": 2.2,
+            "ay": 47.27
+          }
+        }
+      }
     },
     "masked_shadow_creature": {
       "level": 8,
