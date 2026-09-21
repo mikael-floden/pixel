@@ -1,14 +1,14 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-21T14:48:44+00:00",
-  "health": "idle",
-  "current": "idle — his 14:45:23–14:46:06Z review of pebble_crab (Pebblet) read and decided NO-OP on the verdicts. 36 entries moved, every one APPROVED on the GRADUATED slot names (idle x8 + walk x8 rating 3, re-pressed; angry x8 + die x8 + attack x4 rating 1, new). An approval is never cleared (review-contract law 2), and it was measured, not assumed: all 36 `art` stamps re-hashed against the strips on disk, 36/36 match; the whole file has 1629 keys and ZERO non-approved entries, so the domain has no open redo/rejected anywhere. No files claimed, no generations, no API calls. REPORTED, NOT TOUCHED: Pebblet graduated with a HOLE — attack is 4/8 on disk (east, south-east, south-west, west) beside a stray unmapped sixth state holding 8 directions. Detail in the note below; it is a roster+sync repair, not a verdict.",
+  "updated_at": "2026-09-21T14:53:39+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 14:46:47Z verdict monsters/pebble_crab (approved, rating 3, note 'This monster lacks attack animations in some directions'). The 14:48Z sitting on this board read his 36 FACET approvals and reported the hole without claiming it; this entity note is the newer entry and nobody has claimed it, so I am ACTING on it. Measured: monsters/pebble_crab/animations/attack is 4/8 (east, south-east, south-west, west); upstream attack_v3 holds only east (Claw Snap) + south-east (Rock Burst), and the 'Claw Swipe' take that held south/north-east/north — his 09-18 approvals — is GONE from PixelLab, deleted at graduation as an unpicked take. Regenerating south, north-east, north (north-west mirrors north-east) with --pro, the mode every recent pebble_crab attack direction needed, then roster rename + sync + pack. FILES: monsters/candidates/pebble_crab/**, monsters/pebble_crab/**, monsters/config/roster.json, monsters/config/candidates.json, coordination/monsters-github-agent.json. NOT live/feedback/monsters.json — every verdict on this monster is an APPROVAL and an approval is never cleared (review-contract law 2); the file has 0 non-approved entries.",
   "progress": {
-    "verdicts_taken": 36,
+    "verdicts_taken": 1,
     "verdicts_cleared": 0,
-    "unit": "his 2026-09-21T14:45:23–14:46:06Z save — monsters/pebble_crab idle/walk/angry/die x8 + attack x4 on the graduated slot names, all approved — decided NO-OP, account only. (Prior units on this board: marsh_hag 13:13Z / 41 approvals, mummy 13:18Z / 17, hollow_knight 14:34Z / 30, octopus 14:38Z / 40, skeleton_archer 14:40Z / 24 — all also NO-OP.)",
-    "shipped": "board only"
+    "unit": "his 2026-09-21T14:46:47Z entity note on monsters/pebble_crab — fill the 4 missing attack directions",
+    "shipped": "in flight"
   },
   "budget_remaining": "PixelLab USD unchanged — zero generations in this session too. Assistant's board reads $40.2.",
   "notes": [
