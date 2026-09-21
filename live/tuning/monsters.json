@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T13:16:23.823Z",
+  "updated_at": "2026-09-21T13:19:08.174Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -3730,7 +3730,41 @@
           "item": "linen_thread_spool",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 32.5,
+        "ry": 11.25,
+        "offsets": {
+          "idle#south-east": {
+            "ax": -1.77,
+            "ay": 43.68
+          },
+          "idle#east": {
+            "ax": -1.55,
+            "ay": 41.98
+          },
+          "idle#north-east": {
+            "ax": -1.81,
+            "ay": 41.68
+          },
+          "idle#north": {
+            "ax": -1.4,
+            "ay": 42.08
+          },
+          "idle#north-west": {
+            "ax": -0.22,
+            "ay": 40.93
+          },
+          "idle#west": {
+            "ax": -1.69,
+            "ay": 40.58
+          },
+          "idle#south-west": {
+            "ax": 0.03,
+            "ay": 42.57
+          }
+        }
+      }
     },
     "mystical_frog": {
       "level": 1,
