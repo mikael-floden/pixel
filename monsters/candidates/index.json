@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T07:40:31+00:00",
+  "generated_at": "2026-09-21T07:43:07+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 62,
+  "count": 61,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -1370,145 +1370,6 @@
         "state": "waiting",
         "takes": {},
         "blocking": "design not approved"
-      }
-    },
-    {
-      "id": "turtle_hatchling",
-      "name": "Shellet",
-      "tier": "cute",
-      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
-      "biome": [
-        "light_beach",
-        "water"
-      ],
-      "items": [],
-      "size": [
-        40,
-        40
-      ],
-      "template_id": "bear",
-      "scale": "small",
-      "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
-      "version": 1,
-      "sheet": "turtle_hatchling/sheet.webp",
-      "rotations": {
-        "south": "turtle_hatchling/rotations/south.webp",
-        "south-east": "turtle_hatchling/rotations/south-east.webp",
-        "east": "turtle_hatchling/rotations/east.webp",
-        "north-east": "turtle_hatchling/rotations/north-east.webp",
-        "north": "turtle_hatchling/rotations/north.webp",
-        "north-west": "turtle_hatchling/rotations/north-west.webp",
-        "west": "turtle_hatchling/rotations/west.webp",
-        "south-west": "turtle_hatchling/rotations/south-west.webp"
-      },
-      "qa": {
-        "status": "pass",
-        "min_run1": 0.655,
-        "reasons": [],
-        "directions": {
-          "south": {
-            "run1": 0.665,
-            "bbox": [
-              2,
-              4,
-              38,
-              35
-            ],
-            "fill": 0.698,
-            "touches_edge": false
-          },
-          "south-east": {
-            "run1": 0.74,
-            "bbox": [
-              2,
-              4,
-              39,
-              36
-            ],
-            "fill": 0.74,
-            "touches_edge": false
-          },
-          "east": {
-            "run1": 0.689,
-            "bbox": [
-              2,
-              5,
-              38,
-              36
-            ],
-            "fill": 0.698,
-            "touches_edge": false
-          },
-          "north-east": {
-            "run1": 0.733,
-            "bbox": [
-              3,
-              6,
-              34,
-              35
-            ],
-            "fill": 0.562,
-            "touches_edge": false
-          },
-          "north": {
-            "run1": 0.655,
-            "bbox": [
-              5,
-              3,
-              35,
-              36
-            ],
-            "fill": 0.619,
-            "touches_edge": false
-          },
-          "north-west": {
-            "run1": 0.709,
-            "bbox": [
-              6,
-              6,
-              37,
-              35
-            ],
-            "fill": 0.562,
-            "touches_edge": false
-          },
-          "west": {
-            "run1": 0.69,
-            "bbox": [
-              2,
-              5,
-              38,
-              36
-            ],
-            "fill": 0.698,
-            "touches_edge": false
-          },
-          "south-west": {
-            "run1": 0.724,
-            "bbox": [
-              1,
-              4,
-              38,
-              36
-            ],
-            "fill": 0.74,
-            "touches_edge": false
-          }
-        }
-      },
-      "review": "approved",
-      "notes": null,
-      "generated_at": "2026-09-09T18:56:11+00:00",
-      "graduation": {
-        "state": "ready",
-        "takes": {
-          "idle": "idle",
-          "walk": "walk",
-          "angry": "angry_v1",
-          "attack": "attack_v3",
-          "die": "die_v1"
-        },
-        "blocking": null
       }
     },
     {

@@ -186,26 +186,6 @@
       "lore": "It stands in the reeds for hours without a breath. Whatever moves beneath the water is already chosen."
     },
     {
-      "id": "turtle_hatchling",
-      "name": "Shellet",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "light_beach",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
-      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
-      "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
-      "walk_slow": true,
-      "attack_action": "Beak Snap - Stretches its neck right out and snaps its beak shut",
-      "attack_extreme": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward",
-      "die_action": "Death - The shell cracks apart and the turtle melts into a small puddle, then fades away"
-    },
-    {
       "id": "sand_kit",
       "name": "Dunekit",
       "tier": "cute",
@@ -4620,6 +4600,34 @@
       "attack_extreme": "Greatsword Cleave - The knight heaves the greatsword far overhead and cleaves it down with its whole body",
       "die_action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
       "graduated_at": "2026-09-21T07:39:17+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "turtle_hatchling",
+      "name": "Shellet",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "light_beach",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
+      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+      "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
+      "walk_slow": true,
+      "attack_action": "Beak Snap - Stretches its neck right out and snaps its beak shut",
+      "attack_extreme": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward",
+      "die_action": "Death - The shell cracks apart and the turtle melts into a small puddle, then fades away",
+      "graduated_at": "2026-09-21T07:43:07+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

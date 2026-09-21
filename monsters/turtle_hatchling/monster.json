@@ -1,0 +1,1067 @@
+{
+  "id": "turtle_hatchling",
+  "name": "Shellet",
+  "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
+    "url": "https://www.pixellab.ai/create-character/fd162650-47e9-4699-ac47-9e5d3f6c8050",
+    "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell, calm serious expression, clean deliberate creature design, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 40,
+    "height": 40
+  },
+  "native_size": {
+    "width": 40,
+    "height": 40
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "turtle_hatchling/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "turtle_hatchling/rotations/south.webp",
+    "west": "turtle_hatchling/rotations/west.webp",
+    "east": "turtle_hatchling/rotations/east.webp",
+    "north": "turtle_hatchling/rotations/north.webp",
+    "south-east": "turtle_hatchling/rotations/south-east.webp",
+    "north-east": "turtle_hatchling/rotations/north-east.webp",
+    "north-west": "turtle_hatchling/rotations/north-west.webp",
+    "south-west": "turtle_hatchling/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "e3714191-c261-4528-8def-a4e3482827f9",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/angry__east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/angry/east/00.webp",
+            "turtle_hatchling/animations/angry/east/01.webp",
+            "turtle_hatchling/animations/angry/east/02.webp",
+            "turtle_hatchling/animations/angry/east/03.webp",
+            "turtle_hatchling/animations/angry/east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:39 GMT",
+          "src_frames": 5,
+          "sub": "5306491b-51b1-4770-8056-02617412e337"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/angry__north.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/angry/north/00.webp",
+            "turtle_hatchling/animations/angry/north/01.webp",
+            "turtle_hatchling/animations/angry/north/02.webp",
+            "turtle_hatchling/animations/angry/north/03.webp",
+            "turtle_hatchling/animations/angry/north/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:41 GMT",
+          "src_frames": 5,
+          "sub": "2aae7591-b4ce-4f29-b9ab-b0cc42e3a1e7"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/angry__north-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/angry/north-east/00.webp",
+            "turtle_hatchling/animations/angry/north-east/01.webp",
+            "turtle_hatchling/animations/angry/north-east/02.webp",
+            "turtle_hatchling/animations/angry/north-east/03.webp",
+            "turtle_hatchling/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:42 GMT",
+          "src_frames": 5,
+          "sub": "0e844d5e-23de-487a-8478-162f3d508e9b"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/angry__south.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/angry/south/00.webp",
+            "turtle_hatchling/animations/angry/south/01.webp",
+            "turtle_hatchling/animations/angry/south/02.webp",
+            "turtle_hatchling/animations/angry/south/03.webp",
+            "turtle_hatchling/animations/angry/south/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:43 GMT",
+          "src_frames": 5,
+          "sub": "0f112b28-3329-45ab-9475-6c362d3cf16b"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/angry__south-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/angry/south-east/00.webp",
+            "turtle_hatchling/animations/angry/south-east/01.webp",
+            "turtle_hatchling/animations/angry/south-east/02.webp",
+            "turtle_hatchling/animations/angry/south-east/03.webp",
+            "turtle_hatchling/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:45 GMT",
+          "src_frames": 5,
+          "sub": "eac35a23-7156-4af4-8554-89fc0a032cca"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/angry__south-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/angry/south-west/00.webp",
+            "turtle_hatchling/animations/angry/south-west/01.webp",
+            "turtle_hatchling/animations/angry/south-west/02.webp",
+            "turtle_hatchling/animations/angry/south-west/03.webp",
+            "turtle_hatchling/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/angry__west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/angry/west/00.webp",
+            "turtle_hatchling/animations/angry/west/01.webp",
+            "turtle_hatchling/animations/angry/west/02.webp",
+            "turtle_hatchling/animations/angry/west/03.webp",
+            "turtle_hatchling/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/angry__north-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/angry/north-west/00.webp",
+            "turtle_hatchling/animations/angry/north-west/01.webp",
+            "turtle_hatchling/animations/angry/north-west/02.webp",
+            "turtle_hatchling/animations/angry/north-west/03.webp",
+            "turtle_hatchling/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "c56b6ded-61fc-4c04-abdb-cbda3d95049c",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/idle__east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/idle/east/00.webp",
+            "turtle_hatchling/animations/idle/east/01.webp",
+            "turtle_hatchling/animations/idle/east/02.webp",
+            "turtle_hatchling/animations/idle/east/03.webp",
+            "turtle_hatchling/animations/idle/east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:46 GMT",
+          "src_frames": 5,
+          "sub": "0e14a90c-146d-475d-a0c8-6a75a2c75339"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/idle__north.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/idle/north/00.webp",
+            "turtle_hatchling/animations/idle/north/01.webp",
+            "turtle_hatchling/animations/idle/north/02.webp",
+            "turtle_hatchling/animations/idle/north/03.webp",
+            "turtle_hatchling/animations/idle/north/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:48 GMT",
+          "src_frames": 5,
+          "sub": "3a09892e-6510-4932-a4bf-d14f0e777768"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/idle__north-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/idle/north-east/00.webp",
+            "turtle_hatchling/animations/idle/north-east/01.webp",
+            "turtle_hatchling/animations/idle/north-east/02.webp",
+            "turtle_hatchling/animations/idle/north-east/03.webp",
+            "turtle_hatchling/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:49 GMT",
+          "src_frames": 5,
+          "sub": "e5344c20-203b-4696-8622-c1fa27095aef"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/idle__south.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/idle/south/00.webp",
+            "turtle_hatchling/animations/idle/south/01.webp",
+            "turtle_hatchling/animations/idle/south/02.webp",
+            "turtle_hatchling/animations/idle/south/03.webp",
+            "turtle_hatchling/animations/idle/south/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:51 GMT",
+          "src_frames": 5,
+          "sub": "c615e38d-0f28-43c8-bf00-c3bfb856e1f9"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/idle__south-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/idle/south-east/00.webp",
+            "turtle_hatchling/animations/idle/south-east/01.webp",
+            "turtle_hatchling/animations/idle/south-east/02.webp",
+            "turtle_hatchling/animations/idle/south-east/03.webp",
+            "turtle_hatchling/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:53 GMT",
+          "src_frames": 5,
+          "sub": "c9e33179-7299-4e87-8033-7aa2b6cc393f"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/idle__south-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/idle/south-west/00.webp",
+            "turtle_hatchling/animations/idle/south-west/01.webp",
+            "turtle_hatchling/animations/idle/south-west/02.webp",
+            "turtle_hatchling/animations/idle/south-west/03.webp",
+            "turtle_hatchling/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/idle__west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/idle/west/00.webp",
+            "turtle_hatchling/animations/idle/west/01.webp",
+            "turtle_hatchling/animations/idle/west/02.webp",
+            "turtle_hatchling/animations/idle/west/03.webp",
+            "turtle_hatchling/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "turtle_hatchling/animations/idle__north-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/idle/north-west/00.webp",
+            "turtle_hatchling/animations/idle/north-west/01.webp",
+            "turtle_hatchling/animations/idle/north-west/02.webp",
+            "turtle_hatchling/animations/idle/north-west/03.webp",
+            "turtle_hatchling/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "cc8b51b7-1159-4c74-a751-3ede0b25c69d",
+      "source_name": "custom-Death - The shell cracks apart and the turtle melt",
+      "directions": {
+        "east": {
+          "frames": 15,
+          "strip": "turtle_hatchling/animations/die__east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/die/east/00.webp",
+            "turtle_hatchling/animations/die/east/01.webp",
+            "turtle_hatchling/animations/die/east/02.webp",
+            "turtle_hatchling/animations/die/east/03.webp",
+            "turtle_hatchling/animations/die/east/04.webp",
+            "turtle_hatchling/animations/die/east/05.webp",
+            "turtle_hatchling/animations/die/east/06.webp",
+            "turtle_hatchling/animations/die/east/07.webp",
+            "turtle_hatchling/animations/die/east/08.webp",
+            "turtle_hatchling/animations/die/east/09.webp",
+            "turtle_hatchling/animations/die/east/10.webp",
+            "turtle_hatchling/animations/die/east/11.webp",
+            "turtle_hatchling/animations/die/east/12.webp",
+            "turtle_hatchling/animations/die/east/13.webp",
+            "turtle_hatchling/animations/die/east/14.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:54 GMT",
+          "src_frames": 16,
+          "sub": "e497bac5-991f-4c15-9abe-b7e26c3eac40"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/die__north.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/die/north/00.webp",
+            "turtle_hatchling/animations/die/north/01.webp",
+            "turtle_hatchling/animations/die/north/02.webp",
+            "turtle_hatchling/animations/die/north/03.webp",
+            "turtle_hatchling/animations/die/north/04.webp",
+            "turtle_hatchling/animations/die/north/05.webp",
+            "turtle_hatchling/animations/die/north/06.webp",
+            "turtle_hatchling/animations/die/north/07.webp",
+            "turtle_hatchling/animations/die/north/08.webp",
+            "turtle_hatchling/animations/die/north/09.webp",
+            "turtle_hatchling/animations/die/north/10.webp",
+            "turtle_hatchling/animations/die/north/11.webp",
+            "turtle_hatchling/animations/die/north/12.webp",
+            "turtle_hatchling/animations/die/north/13.webp",
+            "turtle_hatchling/animations/die/north/14.webp",
+            "turtle_hatchling/animations/die/north/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:57 GMT",
+          "src_frames": 16,
+          "sub": "ccbc922c-9684-4167-a744-253d7fec320b"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/die__north-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/die/north-east/00.webp",
+            "turtle_hatchling/animations/die/north-east/01.webp",
+            "turtle_hatchling/animations/die/north-east/02.webp",
+            "turtle_hatchling/animations/die/north-east/03.webp",
+            "turtle_hatchling/animations/die/north-east/04.webp",
+            "turtle_hatchling/animations/die/north-east/05.webp",
+            "turtle_hatchling/animations/die/north-east/06.webp",
+            "turtle_hatchling/animations/die/north-east/07.webp",
+            "turtle_hatchling/animations/die/north-east/08.webp",
+            "turtle_hatchling/animations/die/north-east/09.webp",
+            "turtle_hatchling/animations/die/north-east/10.webp",
+            "turtle_hatchling/animations/die/north-east/11.webp",
+            "turtle_hatchling/animations/die/north-east/12.webp",
+            "turtle_hatchling/animations/die/north-east/13.webp",
+            "turtle_hatchling/animations/die/north-east/14.webp",
+            "turtle_hatchling/animations/die/north-east/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:40:59 GMT",
+          "src_frames": 16,
+          "sub": "54a56a19-ffd5-4187-89f5-4340853f1be9"
+        },
+        "south": {
+          "frames": 15,
+          "strip": "turtle_hatchling/animations/die__south.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/die/south/00.webp",
+            "turtle_hatchling/animations/die/south/01.webp",
+            "turtle_hatchling/animations/die/south/02.webp",
+            "turtle_hatchling/animations/die/south/03.webp",
+            "turtle_hatchling/animations/die/south/04.webp",
+            "turtle_hatchling/animations/die/south/05.webp",
+            "turtle_hatchling/animations/die/south/06.webp",
+            "turtle_hatchling/animations/die/south/07.webp",
+            "turtle_hatchling/animations/die/south/08.webp",
+            "turtle_hatchling/animations/die/south/09.webp",
+            "turtle_hatchling/animations/die/south/10.webp",
+            "turtle_hatchling/animations/die/south/11.webp",
+            "turtle_hatchling/animations/die/south/12.webp",
+            "turtle_hatchling/animations/die/south/13.webp",
+            "turtle_hatchling/animations/die/south/14.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:01 GMT",
+          "src_frames": 16,
+          "sub": "b9fe169c-42be-41c0-a35d-80c766c05a15"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/die__south-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/die/south-east/00.webp",
+            "turtle_hatchling/animations/die/south-east/01.webp",
+            "turtle_hatchling/animations/die/south-east/02.webp",
+            "turtle_hatchling/animations/die/south-east/03.webp",
+            "turtle_hatchling/animations/die/south-east/04.webp",
+            "turtle_hatchling/animations/die/south-east/05.webp",
+            "turtle_hatchling/animations/die/south-east/06.webp",
+            "turtle_hatchling/animations/die/south-east/07.webp",
+            "turtle_hatchling/animations/die/south-east/08.webp",
+            "turtle_hatchling/animations/die/south-east/09.webp",
+            "turtle_hatchling/animations/die/south-east/10.webp",
+            "turtle_hatchling/animations/die/south-east/11.webp",
+            "turtle_hatchling/animations/die/south-east/12.webp",
+            "turtle_hatchling/animations/die/south-east/13.webp",
+            "turtle_hatchling/animations/die/south-east/14.webp",
+            "turtle_hatchling/animations/die/south-east/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:03 GMT",
+          "src_frames": 16,
+          "sub": "8afb4f5c-aa6e-4591-a645-1eb3f67cb6c4"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/die__south-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/die/south-west/00.webp",
+            "turtle_hatchling/animations/die/south-west/01.webp",
+            "turtle_hatchling/animations/die/south-west/02.webp",
+            "turtle_hatchling/animations/die/south-west/03.webp",
+            "turtle_hatchling/animations/die/south-west/04.webp",
+            "turtle_hatchling/animations/die/south-west/05.webp",
+            "turtle_hatchling/animations/die/south-west/06.webp",
+            "turtle_hatchling/animations/die/south-west/07.webp",
+            "turtle_hatchling/animations/die/south-west/08.webp",
+            "turtle_hatchling/animations/die/south-west/09.webp",
+            "turtle_hatchling/animations/die/south-west/10.webp",
+            "turtle_hatchling/animations/die/south-west/11.webp",
+            "turtle_hatchling/animations/die/south-west/12.webp",
+            "turtle_hatchling/animations/die/south-west/13.webp",
+            "turtle_hatchling/animations/die/south-west/14.webp",
+            "turtle_hatchling/animations/die/south-west/15.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 15,
+          "strip": "turtle_hatchling/animations/die__west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/die/west/00.webp",
+            "turtle_hatchling/animations/die/west/01.webp",
+            "turtle_hatchling/animations/die/west/02.webp",
+            "turtle_hatchling/animations/die/west/03.webp",
+            "turtle_hatchling/animations/die/west/04.webp",
+            "turtle_hatchling/animations/die/west/05.webp",
+            "turtle_hatchling/animations/die/west/06.webp",
+            "turtle_hatchling/animations/die/west/07.webp",
+            "turtle_hatchling/animations/die/west/08.webp",
+            "turtle_hatchling/animations/die/west/09.webp",
+            "turtle_hatchling/animations/die/west/10.webp",
+            "turtle_hatchling/animations/die/west/11.webp",
+            "turtle_hatchling/animations/die/west/12.webp",
+            "turtle_hatchling/animations/die/west/13.webp",
+            "turtle_hatchling/animations/die/west/14.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/die__north-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/die/north-west/00.webp",
+            "turtle_hatchling/animations/die/north-west/01.webp",
+            "turtle_hatchling/animations/die/north-west/02.webp",
+            "turtle_hatchling/animations/die/north-west/03.webp",
+            "turtle_hatchling/animations/die/north-west/04.webp",
+            "turtle_hatchling/animations/die/north-west/05.webp",
+            "turtle_hatchling/animations/die/north-west/06.webp",
+            "turtle_hatchling/animations/die/north-west/07.webp",
+            "turtle_hatchling/animations/die/north-west/08.webp",
+            "turtle_hatchling/animations/die/north-west/09.webp",
+            "turtle_hatchling/animations/die/north-west/10.webp",
+            "turtle_hatchling/animations/die/north-west/11.webp",
+            "turtle_hatchling/animations/die/north-west/12.webp",
+            "turtle_hatchling/animations/die/north-west/13.webp",
+            "turtle_hatchling/animations/die/north-west/14.webp",
+            "turtle_hatchling/animations/die/north-west/15.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "cdce98ad-26bd-40d7-9f93-f19e5c5351a4",
+      "source_name": "custom-Lunge Attack - Throws its whole body forward in on + custom-Shell Slam - The hatchling launches off the ground",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/attack__east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/attack/east/00.webp",
+            "turtle_hatchling/animations/attack/east/01.webp",
+            "turtle_hatchling/animations/attack/east/02.webp",
+            "turtle_hatchling/animations/attack/east/03.webp",
+            "turtle_hatchling/animations/attack/east/04.webp",
+            "turtle_hatchling/animations/attack/east/05.webp",
+            "turtle_hatchling/animations/attack/east/06.webp",
+            "turtle_hatchling/animations/attack/east/07.webp",
+            "turtle_hatchling/animations/attack/east/08.webp",
+            "turtle_hatchling/animations/attack/east/09.webp",
+            "turtle_hatchling/animations/attack/east/10.webp",
+            "turtle_hatchling/animations/attack/east/11.webp",
+            "turtle_hatchling/animations/attack/east/12.webp",
+            "turtle_hatchling/animations/attack/east/13.webp",
+            "turtle_hatchling/animations/attack/east/14.webp",
+            "turtle_hatchling/animations/attack/east/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:06 GMT",
+          "src_frames": 16,
+          "sub": "9fc893e8-93a3-43a0-b643-7de1672cc791"
+        },
+        "north": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/attack__north.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/attack/north/00.webp",
+            "turtle_hatchling/animations/attack/north/01.webp",
+            "turtle_hatchling/animations/attack/north/02.webp",
+            "turtle_hatchling/animations/attack/north/03.webp",
+            "turtle_hatchling/animations/attack/north/04.webp",
+            "turtle_hatchling/animations/attack/north/05.webp",
+            "turtle_hatchling/animations/attack/north/06.webp",
+            "turtle_hatchling/animations/attack/north/07.webp",
+            "turtle_hatchling/animations/attack/north/08.webp",
+            "turtle_hatchling/animations/attack/north/09.webp",
+            "turtle_hatchling/animations/attack/north/10.webp",
+            "turtle_hatchling/animations/attack/north/11.webp",
+            "turtle_hatchling/animations/attack/north/12.webp",
+            "turtle_hatchling/animations/attack/north/13.webp",
+            "turtle_hatchling/animations/attack/north/14.webp",
+            "turtle_hatchling/animations/attack/north/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:08 GMT",
+          "src_frames": 16,
+          "sub": "739e4463-0425-4e31-84ae-b663cb89bf4e"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/attack__south-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/attack/south-east/00.webp",
+            "turtle_hatchling/animations/attack/south-east/01.webp",
+            "turtle_hatchling/animations/attack/south-east/02.webp",
+            "turtle_hatchling/animations/attack/south-east/03.webp",
+            "turtle_hatchling/animations/attack/south-east/04.webp",
+            "turtle_hatchling/animations/attack/south-east/05.webp",
+            "turtle_hatchling/animations/attack/south-east/06.webp",
+            "turtle_hatchling/animations/attack/south-east/07.webp",
+            "turtle_hatchling/animations/attack/south-east/08.webp",
+            "turtle_hatchling/animations/attack/south-east/09.webp",
+            "turtle_hatchling/animations/attack/south-east/10.webp",
+            "turtle_hatchling/animations/attack/south-east/11.webp",
+            "turtle_hatchling/animations/attack/south-east/12.webp",
+            "turtle_hatchling/animations/attack/south-east/13.webp",
+            "turtle_hatchling/animations/attack/south-east/14.webp",
+            "turtle_hatchling/animations/attack/south-east/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:10 GMT",
+          "src_frames": 16,
+          "sub": "26d73be2-4119-48e5-ae87-5fde9580a4ce"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/attack__south-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/attack/south-west/00.webp",
+            "turtle_hatchling/animations/attack/south-west/01.webp",
+            "turtle_hatchling/animations/attack/south-west/02.webp",
+            "turtle_hatchling/animations/attack/south-west/03.webp",
+            "turtle_hatchling/animations/attack/south-west/04.webp",
+            "turtle_hatchling/animations/attack/south-west/05.webp",
+            "turtle_hatchling/animations/attack/south-west/06.webp",
+            "turtle_hatchling/animations/attack/south-west/07.webp",
+            "turtle_hatchling/animations/attack/south-west/08.webp",
+            "turtle_hatchling/animations/attack/south-west/09.webp",
+            "turtle_hatchling/animations/attack/south-west/10.webp",
+            "turtle_hatchling/animations/attack/south-west/11.webp",
+            "turtle_hatchling/animations/attack/south-west/12.webp",
+            "turtle_hatchling/animations/attack/south-west/13.webp",
+            "turtle_hatchling/animations/attack/south-west/14.webp",
+            "turtle_hatchling/animations/attack/south-west/15.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/attack__west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/attack/west/00.webp",
+            "turtle_hatchling/animations/attack/west/01.webp",
+            "turtle_hatchling/animations/attack/west/02.webp",
+            "turtle_hatchling/animations/attack/west/03.webp",
+            "turtle_hatchling/animations/attack/west/04.webp",
+            "turtle_hatchling/animations/attack/west/05.webp",
+            "turtle_hatchling/animations/attack/west/06.webp",
+            "turtle_hatchling/animations/attack/west/07.webp",
+            "turtle_hatchling/animations/attack/west/08.webp",
+            "turtle_hatchling/animations/attack/west/09.webp",
+            "turtle_hatchling/animations/attack/west/10.webp",
+            "turtle_hatchling/animations/attack/west/11.webp",
+            "turtle_hatchling/animations/attack/west/12.webp",
+            "turtle_hatchling/animations/attack/west/13.webp",
+            "turtle_hatchling/animations/attack/west/14.webp",
+            "turtle_hatchling/animations/attack/west/15.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-east": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/attack__north-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/attack/north-east/00.webp",
+            "turtle_hatchling/animations/attack/north-east/01.webp",
+            "turtle_hatchling/animations/attack/north-east/02.webp",
+            "turtle_hatchling/animations/attack/north-east/03.webp",
+            "turtle_hatchling/animations/attack/north-east/04.webp",
+            "turtle_hatchling/animations/attack/north-east/05.webp",
+            "turtle_hatchling/animations/attack/north-east/06.webp",
+            "turtle_hatchling/animations/attack/north-east/07.webp",
+            "turtle_hatchling/animations/attack/north-east/08.webp",
+            "turtle_hatchling/animations/attack/north-east/09.webp",
+            "turtle_hatchling/animations/attack/north-east/10.webp",
+            "turtle_hatchling/animations/attack/north-east/11.webp",
+            "turtle_hatchling/animations/attack/north-east/12.webp",
+            "turtle_hatchling/animations/attack/north-east/13.webp",
+            "turtle_hatchling/animations/attack/north-east/14.webp",
+            "turtle_hatchling/animations/attack/north-east/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:12 GMT",
+          "src_frames": 16,
+          "sub": "e2d0eb38-5dcb-4b46-b3cb-1f7f7f23a84a"
+        },
+        "south": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/attack__south.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/attack/south/00.webp",
+            "turtle_hatchling/animations/attack/south/01.webp",
+            "turtle_hatchling/animations/attack/south/02.webp",
+            "turtle_hatchling/animations/attack/south/03.webp",
+            "turtle_hatchling/animations/attack/south/04.webp",
+            "turtle_hatchling/animations/attack/south/05.webp",
+            "turtle_hatchling/animations/attack/south/06.webp",
+            "turtle_hatchling/animations/attack/south/07.webp",
+            "turtle_hatchling/animations/attack/south/08.webp",
+            "turtle_hatchling/animations/attack/south/09.webp",
+            "turtle_hatchling/animations/attack/south/10.webp",
+            "turtle_hatchling/animations/attack/south/11.webp",
+            "turtle_hatchling/animations/attack/south/12.webp",
+            "turtle_hatchling/animations/attack/south/13.webp",
+            "turtle_hatchling/animations/attack/south/14.webp",
+            "turtle_hatchling/animations/attack/south/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:15 GMT",
+          "src_frames": 16,
+          "sub": "53391c81-f0d6-42e6-a0ff-92fee6e229c0"
+        },
+        "north-west": {
+          "frames": 16,
+          "strip": "turtle_hatchling/animations/attack__north-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/attack/north-west/00.webp",
+            "turtle_hatchling/animations/attack/north-west/01.webp",
+            "turtle_hatchling/animations/attack/north-west/02.webp",
+            "turtle_hatchling/animations/attack/north-west/03.webp",
+            "turtle_hatchling/animations/attack/north-west/04.webp",
+            "turtle_hatchling/animations/attack/north-west/05.webp",
+            "turtle_hatchling/animations/attack/north-west/06.webp",
+            "turtle_hatchling/animations/attack/north-west/07.webp",
+            "turtle_hatchling/animations/attack/north-west/08.webp",
+            "turtle_hatchling/animations/attack/north-west/09.webp",
+            "turtle_hatchling/animations/attack/north-west/10.webp",
+            "turtle_hatchling/animations/attack/north-west/11.webp",
+            "turtle_hatchling/animations/attack/north-west/12.webp",
+            "turtle_hatchling/animations/attack/north-west/13.webp",
+            "turtle_hatchling/animations/attack/north-west/14.webp",
+            "turtle_hatchling/animations/attack/north-west/15.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "91671504-ff2e-45a3-bc04-cd1d308bf8a5",
+      "source_name": "custom-crawls forward in place, flipp",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/walk__east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/walk/east/00.webp",
+            "turtle_hatchling/animations/walk/east/01.webp",
+            "turtle_hatchling/animations/walk/east/02.webp",
+            "turtle_hatchling/animations/walk/east/03.webp",
+            "turtle_hatchling/animations/walk/east/04.webp",
+            "turtle_hatchling/animations/walk/east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:17 GMT",
+          "src_frames": 6,
+          "sub": "a7955a82-7861-4070-aa3e-494bc63cf9c7"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/walk__north.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/walk/north/00.webp",
+            "turtle_hatchling/animations/walk/north/01.webp",
+            "turtle_hatchling/animations/walk/north/02.webp",
+            "turtle_hatchling/animations/walk/north/03.webp",
+            "turtle_hatchling/animations/walk/north/04.webp",
+            "turtle_hatchling/animations/walk/north/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:18 GMT",
+          "src_frames": 6,
+          "sub": "decea888-f2c9-4f37-b584-100e4119368d"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/walk__north-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/walk/north-east/00.webp",
+            "turtle_hatchling/animations/walk/north-east/01.webp",
+            "turtle_hatchling/animations/walk/north-east/02.webp",
+            "turtle_hatchling/animations/walk/north-east/03.webp",
+            "turtle_hatchling/animations/walk/north-east/04.webp",
+            "turtle_hatchling/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:19 GMT",
+          "src_frames": 6,
+          "sub": "39aa88dc-cc57-47c1-8679-f67273fd6001"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/walk__south.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/walk/south/00.webp",
+            "turtle_hatchling/animations/walk/south/01.webp",
+            "turtle_hatchling/animations/walk/south/02.webp",
+            "turtle_hatchling/animations/walk/south/03.webp",
+            "turtle_hatchling/animations/walk/south/04.webp",
+            "turtle_hatchling/animations/walk/south/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:21 GMT",
+          "src_frames": 6,
+          "sub": "89051216-36e3-427e-85e8-e476c83c1094"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/walk__south-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/walk/south-east/00.webp",
+            "turtle_hatchling/animations/walk/south-east/01.webp",
+            "turtle_hatchling/animations/walk/south-east/02.webp",
+            "turtle_hatchling/animations/walk/south-east/03.webp",
+            "turtle_hatchling/animations/walk/south-east/04.webp",
+            "turtle_hatchling/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:23 GMT",
+          "src_frames": 6,
+          "sub": "5272b402-3656-4060-9c8c-8efffcbe8a13"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/walk__south-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/walk/south-west/00.webp",
+            "turtle_hatchling/animations/walk/south-west/01.webp",
+            "turtle_hatchling/animations/walk/south-west/02.webp",
+            "turtle_hatchling/animations/walk/south-west/03.webp",
+            "turtle_hatchling/animations/walk/south-west/04.webp",
+            "turtle_hatchling/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/walk__west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/walk/west/00.webp",
+            "turtle_hatchling/animations/walk/west/01.webp",
+            "turtle_hatchling/animations/walk/west/02.webp",
+            "turtle_hatchling/animations/walk/west/03.webp",
+            "turtle_hatchling/animations/walk/west/04.webp",
+            "turtle_hatchling/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/walk__north-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/walk/north-west/00.webp",
+            "turtle_hatchling/animations/walk/north-west/01.webp",
+            "turtle_hatchling/animations/walk/north-west/02.webp",
+            "turtle_hatchling/animations/walk/north-west/03.webp",
+            "turtle_hatchling/animations/walk/north-west/04.webp",
+            "turtle_hatchling/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_lunges_forward_and_snaps_with": {
+      "group_id": "f82724da-b45a-4690-a1e7-2d63be305fee",
+      "source_name": "custom-lunges forward and snaps with ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with__east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/east/00.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/east/01.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/east/02.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/east/03.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/east/04.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/east/05.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:24 GMT",
+          "src_frames": 7,
+          "sub": "29114723-331d-4603-aed2-d6e1de194057"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with__north.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north/00.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north/01.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north/02.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north/03.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north/04.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north/05.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:26 GMT",
+          "src_frames": 7,
+          "sub": "9dc0c262-35cc-4579-bb04-a6f18b970708"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with__north-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-east/00.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-east/01.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-east/02.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-east/03.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-east/04.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-east/05.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:27 GMT",
+          "src_frames": 7,
+          "sub": "8258141f-7c4c-4225-8f12-bc0e49b01c2c"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with__south.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south/00.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south/01.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south/02.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south/03.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south/04.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south/05.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:29 GMT",
+          "src_frames": 7,
+          "sub": "b71f55fd-804b-4161-9efd-e087b9e7b6b8"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with__south-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-east/00.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-east/01.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-east/02.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-east/03.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-east/04.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-east/05.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:31 GMT",
+          "src_frames": 7,
+          "sub": "891fab55-a94e-4c53-97be-2171d4bcfc78"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with__south-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-west/00.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-west/01.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-west/02.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-west/03.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-west/04.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-west/05.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with__west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/west/00.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/west/01.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/west/02.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/west/03.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/west/04.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/west/05.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with__north-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-west/00.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-west/01.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-west/02.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-west/03.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-west/04.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-west/05.webp",
+            "turtle_hatchling/animations/custom_lunges_forward_and_snaps_with/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_walk_loop_full_walk_cycle_in": {
+      "group_id": "b3089214-e614-4505-ace3-b930240a4246",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in__east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/east/00.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/east/01.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/east/02.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/east/03.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/east/04.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:32 GMT",
+          "src_frames": 6,
+          "sub": "7ef019a6-f3a8-4515-8286-7ba386dabc08"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in__north.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north/00.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north/01.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north/02.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north/03.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north/04.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:34 GMT",
+          "src_frames": 6,
+          "sub": "4b932fd1-626e-420a-a31c-3b85a8468330"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in__north-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-east/00.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-east/01.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-east/02.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-east/03.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-east/04.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:35 GMT",
+          "src_frames": 6,
+          "sub": "6502ed16-801d-4662-9232-ad6d60316d52"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in__south.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south/00.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south/01.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south/02.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south/03.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south/04.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:38 GMT",
+          "src_frames": 6,
+          "sub": "e6dec57f-983e-4b6e-829c-badaced14474"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in__south-east.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-east/00.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-east/01.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-east/02.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-east/03.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-east/04.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 07:41:39 GMT",
+          "src_frames": 6,
+          "sub": "cd509c8d-eb97-45de-9476-6e3f0147f244"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in__south-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-west/00.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-west/01.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-west/02.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-west/03.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-west/04.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in__west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/west/00.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/west/01.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/west/02.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/west/03.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/west/04.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in__north-west.webp",
+          "frame_paths": [
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-west/00.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-west/01.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-west/02.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-west/03.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-west/04.webp",
+            "turtle_hatchling/animations/custom_walk_loop_full_walk_cycle_in/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "die_trim": {
+      "east": {
+        "auto_dropped": [
+          14
+        ]
+      },
+      "south": {
+        "auto_dropped": [
+          14
+        ]
+      },
+      "west": {
+        "auto_dropped": [
+          14
+        ]
+      }
+    }
+  }
+}

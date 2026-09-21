@@ -350,6 +350,21 @@
       }
     },
     {
+      "id": "turtle_hatchling",
+      "kind": "character",
+      "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
+      "name": "Shellet",
+      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-crawls forward in place, flipp": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Shell Slam - The hatchling launches off the ground": "attack",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Death - The shell cracks apart and the turtle melt": "die"
+      }
+    },
+    {
       "id": "cave_troll_boss",
       "kind": "character",
       "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
