@@ -801,8 +801,15 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
             rung = r if rung is None else max(rung, r)
             tries[d] = (old.get("rolls", 0) + 1) if old.get("status") == "fail" else 1
         rung = rung or 0
-        if spec.get("ladder_restart"):
-            rung = 0        # a new generator starts from the design's own words
+        if spec.get("ladder_restart") and any(
+                (rec["directions"].get(d, {}) or {}).get("mode") != "pro" for d in dirs):
+            # A NEW GENERATOR starts from the design's own words — but only on
+            # the roll that SWITCHES to it. Resetting on every PRO roll pinned
+            # the ladder at rung 0 forever, so a stuck direction re-asked the
+            # identical wording: his ash hatchling sat at rung 0 after SEVEN
+            # rolls, and every "I said redo!" bought another copy of the clip
+            # he had just rejected.
+            rung = 0
         action = ladder_action(cid, rung, rec["action"], base_state(state))
         for d in dirs:
             actions[d], rungs[d], counts[d] = action, rung, spec["frames"]

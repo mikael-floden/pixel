@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T07:50:24+00:00",
+  "generated_at": "2026-09-21T08:00:04+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -963,14 +963,15 @@
       "notes": null,
       "generated_at": "2026-09-09T18:41:50+00:00",
       "graduation": {
-        "state": "waiting",
+        "state": "ready",
         "takes": {
           "idle": "idle",
           "walk": "walk",
           "angry": "angry_v1",
+          "attack": "attack_v3",
           "die": "die_v1"
         },
-        "blocking": "not fully approved: attack"
+        "blocking": null
       }
     },
     {
