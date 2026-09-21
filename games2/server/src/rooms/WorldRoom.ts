@@ -212,13 +212,26 @@ export function sceneryBbox(): SceneryBboxDoc | null {
 /** Ghosts reach GHOST_BAND_WU across a border: the interest rim, so a client
  *  standing on the line sees exactly as far into the neighbour as into home. */
 const GHOST_BAND_WU = INTEREST_LEAVE_WU;
-const EDGE_TICKS = 2; // edge snapshots at 10 Hz
+/** THE BORDER BAND GOES OUT EVERY TICK — 20 Hz, the rate the room simulates
+ *  at, so a monster one cell past a border moves exactly as smoothly as one a
+ *  cell before it. It was every 2nd tick (10 Hz), and a body's motion across
+ *  the line arrived at half the resolution of the same body's before it; the
+ *  maintainer's rule for the boundary is that it must not be visible at all
+ *  (2026-09-21: "the game needs to be super mega smooth between zones ... no
+ *  glitch at all"). What it costs is one JSON publish per neighbour per tick,
+ *  of the entities within GHOST_BAND_WU of an edge, and only while a neighbour
+ *  has players — an unwatched room still publishes at the idle rate. */
+const EDGE_TICKS = 1;
 const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this long
 /** ...and a ghost its owner has STOPPED listing gets this long to be claimed
  *  by another zone before the TTL reaps it. A body crossing from one
  *  neighbour to another leaves the first snapshot and enters the second up to
  *  a publish period later; deleting it in between is the blink. */
 const GHOST_ORPHAN_MS = 250;
+/** How long a neighbour's "I have players" outlives its last edge snapshot.
+ *  Snapshots flow at 10 Hz from an occupied room and 2.5 Hz from an empty
+ *  one, so this only has to cover a couple of publish periods plus the bus. */
+const NEIGHBOUR_LIVE_MS = 1500;
 const HANDOFF_TTL_S = 10; // the hot state waits on the bus this long for the receiving join
 const HANDOFF_TIMEOUT_MS = 10_000; // then the sending room forgets the attempt and keeps the body
 const HANDOFF_INPUT_CREDIT_S = 2; // integration credit granted to a handed-over body for the inputs it buffered
@@ -278,6 +291,12 @@ interface MonsterXfer {
   hp: number; hpMax: number; mstate: string; actionSeq: number; level: number; aggro: number;
   areaId: string; home: number; orbitSign: number; provoked: boolean; returning: boolean;
   targetSid: string; chaseOx: number; chaseOy: number;
+  /** THE LEG IT IS WALKING, so the border does not interrupt the walk. The
+   *  receiving room re-plans to the same goal and steps it on the next tick;
+   *  without them the body stood still for 200 ms at every crossing and then
+   *  set off on a NEW random heading, which is the stutter at a border with
+   *  the blink taken out of it. */
+  targetX: number; targetY: number; tripActive: boolean;
   /** THE DEBUG PIN CROSSES THE BORDER WITH THE BODY. `dbgmonster {pin}` means
    *  "stand exactly here", and a pin the hand-off drops is not a pin: the
    *  receiving room built a fresh Monster with pinned false and `nextMoveAt =
@@ -307,6 +326,12 @@ type CtlMessage =
 interface EdgeSnapshot {
   from: number;
   t: number;
+  /** This publisher HAS PLAYERS. A neighbour of an occupied zone is never
+   *  idle: it has to simulate the monsters at the shared edge at full rate
+   *  and be ready to take a body over the moment one crosses (see the idle
+   *  gate). The flag rides the band snapshot, which already flows between
+   *  every pair of neighbours, so knowing costs no channel and no poll. */
+  live?: boolean;
   players: Array<{
     id: string; name: string; character: string; x: number; y: number; dir: string; moving: boolean;
     running: boolean; elev: number; jumping: boolean; swimming: boolean; torch: boolean; level: number;
@@ -364,6 +389,11 @@ interface RoomStat {
   players: number;
   monsters: number;
   ghosts: number;
+  /** Of those, the ghost PLAYERS — a body of a neighbour's within my band.
+   *  Reported apart from the ghost monsters because it is the close-range
+   *  half of the "somebody depends on this room" test (see `watched`), and a
+   *  gate has to be able to tell the two wakes apart. */
+  ghostPlayers: number;
   ticks: number[];
   at: number;
   simTicks: number; // sim steps run (an idle room runs fewer than it ticks)
@@ -405,7 +435,7 @@ export function perfStats() {
       const secs = Math.max(0.001, (now - r.bytesAt) / 1000);
       const kbps = r.bytesOut / 1024 / secs; // KB/s to ALL clients of the room
       const out = {
-        id, world: r.world, zone: r.zone, clients: r.clients, players: r.players, monsters: r.monsters, ghosts: r.ghosts,
+        id, world: r.world, zone: r.zone, clients: r.clients, players: r.players, monsters: r.monsters, ghosts: r.ghosts, ghostPlayers: r.ghostPlayers,
         tickMs: { p50: +pct(t, 0.5).toFixed(2), p95: +pct(t, 0.95).toFixed(2), max: +(t[t.length - 1] ?? 0).toFixed(2), n: t.length },
         simHz: +(r.simTicks / secs).toFixed(1),
         outKBps: +kbps.toFixed(1),
@@ -1677,15 +1707,13 @@ export class WorldRoom extends Room<WorldState> {
     }
 
     // AN EMPTY ROOM runs the sim every IDLE_DIVISOR-th tick with the dt it
-    // skipped (the clock above still moved every tick) — UNLESS SOMEBODY IS
-    // WATCHING IT FROM THE OTHER SIDE OF A BORDER.
+    // skipped (the clock above still moved every tick) — UNLESS A NEIGHBOUR
+    // HAS PLAYERS (see `watched`).
     //
-    // A GHOST PLAYER IN MY STATE IS THAT SOMEBODY, and it costs no message to
-    // know: a ghost player only exists here because a neighbour that HAS a
-    // client published its band, and its band is what lies within
-    // GHOST_BAND_WU of our shared edge — so a ghost player means a real player
-    // is standing within 36 cells of my rect, looking at my monsters through
-    // my edge snapshots.
+    // THE BAND SNAPSHOT CARRIES THE ANSWER, so knowing costs no channel: a
+    // room with clients stamps its edge snapshot `live`, and every neighbour
+    // already subscribes to it. A ghost player of my own says the same thing
+    // from closer up.
     //
     // Idling anyway is what made his monsters crawl. The edge snapshot is
     // published from stepZones, which is inside this sim step, so the divisor
@@ -1703,7 +1731,7 @@ export class WorldRoom extends Room<WorldState> {
     // Bounded by construction: only rooms whose band holds a real player wake,
     // which is at most the 3 neighbours of the corner he stands on, and they
     // fall back 1 s (GHOST_TTL_MS) after he walks away.
-    if (this.clients.length === 0 && this.state.ghosts.size === 0) {
+    if (this.clients.length === 0 && !this.watched(Date.now())) {
       this.idleDt += dt;
       if (++this.idleTick < IDLE_DIVISOR) return;
       dt = this.idleDt;
@@ -3340,7 +3368,18 @@ export class WorldRoom extends Room<WorldState> {
       mon.tsid = mon.mstate === "roam" ? "" : victim;
       mon.returning = !victim && d.returning;
       mon.pinned = !!d.pinned; // a debug pin is a pin on both sides of the line
+      // THE WALK CONTINUES ACROSS THE LINE. The leg it was on comes with it
+      // (targetX/targetY), so this room re-plans to the same goal and steps
+      // the body on its very next tick. Only a body that had no leg — or one
+      // whose goal this room cannot route to — takes the old 200 ms pause.
+      mon.targetX = d.targetX ?? 0;
+      mon.targetY = d.targetY ?? 0;
       mon.nextMoveAt = now + 200;
+      if (d.tripActive && this.terrain && mon.mstate === "roam" && !mon.pinned) {
+        mon.trip = startTrip(this.terrain, mon.x, mon.y, mon.targetX, mon.targetY, false, now, mon.elev, undefined, MONSTER_ROAM_MAX_NODES, false);
+        mon.tripActive = !!mon.trip;
+        if (mon.tripActive) mon.nextMoveAt = now;
+      }
       this.state.ghostMonsters.delete(m.id);
       this.ghostOwner.delete(m.id);
       this.syncPos(mon);
@@ -3419,6 +3458,7 @@ export class WorldRoom extends Room<WorldState> {
       hp: m.hp, hpMax: m.hpMax, mstate: m.mstate, actionSeq: m.actionSeq, level: m.level, aggro: m.aggro,
       areaId: m.areaId, home: m.home, orbitSign: m.orbitSign, provoked: m.provoked, returning: m.returning,
       targetSid: m.targetSid, chaseOx: m.chaseOx, chaseOy: m.chaseOy, pinned: m.pinned,
+      targetX: m.targetX, targetY: m.targetY, tripActive: m.tripActive,
     };
     void bus().publish(this.chan.ctl(to), { type: "monster:xfer", id, m: data } satisfies CtlMessage);
     this.state.monsters.delete(id);
@@ -3455,7 +3495,7 @@ export class WorldRoom extends Room<WorldState> {
     const rect = this.rect!;
     const grid = this.grid!;
     const inBand = (x: number, y: number) => nearEdge(rect, grid, x, y, GHOST_BAND_WU) || distToRect(rect, x, y) > 0;
-    const msg: EdgeSnapshot = { from: this.zoneId, t: now, players: [], monsters: [], drops: [] };
+    const msg: EdgeSnapshot = { from: this.zoneId, t: now, live: this.clients.length > 0, players: [], monsters: [], drops: [] };
     this.state.players.forEach((p, pid) => {
       if (!inBand(p.x, p.y)) return;
       msg.players.push({
@@ -3486,6 +3526,7 @@ export class WorldRoom extends Room<WorldState> {
   private onEdgeSnapshot(m: EdgeSnapshot) {
     if (!m || typeof m.from !== "number" || !this.rect) return;
     const now = Date.now();
+    if (m.live) this.neighbourLive.set(m.from, now);
     const rect = this.rect;
     const keep = new Set<string>();
     const near = (x: number, y: number) => distToRect(rect, x, y) <= GHOST_BAND_WU;
@@ -3563,10 +3604,37 @@ export class WorldRoom extends Room<WorldState> {
 
   private idleTick = 0;
   private idleDt = 0;
+  /** Neighbour zone -> when it last said it has players (its edge snapshot's
+   *  `live`). See `watched`. */
+  private neighbourLive = new Map<number, number>();
+  /** IS ANYBODY DEPENDING ON THIS ROOM RUNNING AT FULL RATE? Two ways to be:
+   *  a NEIGHBOUR WITH PLAYERS — its people can see my edge, they can cross
+   *  into me at any step, and my monsters at that edge are half of what they
+   *  are looking at — or a ghost player of my own, which is the same thing
+   *  seen from closer up (a body within GHOST_BAND_WU of my rect).
+   *
+   *  The maintainer's rule, 2026-09-21: "A zone is not empty if any of the
+   *  zones next to it has players. If a neighbouring zone has players the zone
+   *  needs to be 100% active. Both to be able to simulate monsters at the
+   *  edge, but also to be able to take over the responsibility as fast as
+   *  possible when a player or a monster crosses the boundary." It is also
+   *  what makes the game TESTABLE: with one player and a quarter-rate
+   *  neighbourhood, what he tests is not what a populated world ships.
+   *
+   *  A snapshot flows between every pair of neighbours at 2.5 Hz even when
+   *  both are asleep, so NEIGHBOUR_LIVE_MS only has to outlast one of those
+   *  periods; a neighbour that empties stops saying `live` and this room is
+   *  idle again within it. The flag travels ONE HOP — neighbours of an
+   *  occupied zone wake, neighbours of THOSE do not. */
+  private watched(now: number): boolean {
+    if (this.state.ghosts.size > 0) return true;
+    for (const [, at] of this.neighbourLive) if (now - at < NEIGHBOUR_LIVE_MS) return true;
+    return false;
+  }
   private recordTick(ms: number) {
     let r = roomStats.get(this.roomId);
     if (!r) {
-      r = { world: this.worldName, zone: this.zoneId, clients: 0, players: 0, monsters: 0, ghosts: 0, ticks: [], at: 0, simTicks: 0, bytesOut: 0, bytesAt: Date.now() };
+      r = { world: this.worldName, zone: this.zoneId, clients: 0, players: 0, monsters: 0, ghosts: 0, ghostPlayers: 0, ticks: [], at: 0, simTicks: 0, bytesOut: 0, bytesAt: Date.now() };
       roomStats.set(this.roomId, r);
     }
     r.ticks.push(ms);
@@ -3575,6 +3643,7 @@ export class WorldRoom extends Room<WorldState> {
     r.players = this.state.players.size;
     r.monsters = this.state.monsters.size;
     r.ghosts = this.state.ghosts.size + this.state.ghostMonsters.size;
+    r.ghostPlayers = this.state.ghosts.size;
     r.at = Date.now();
   }
 

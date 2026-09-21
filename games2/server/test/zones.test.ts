@@ -475,6 +475,15 @@ test("a monster crossing a border is never missing from the client's view", asyn
       0,
       `the id never left the watcher's view across the hand-over (${gaps} gap(s), worst ${worst} ms — the sprite is destroyed and rebuilt for every one)`,
     );
+    // ...AND THE LEG IT WAS WALKING CAME WITH IT. The receiving room used to
+    // build the body with no trip and `nextMoveAt = now + 200`: it stood still
+    // for a fifth of a second at every border and then set off on a new random
+    // heading. The pin above holds the position, so what is asserted here is
+    // the GOAL, which the transfer now carries.
+    const landed = rB.state.monsters.get(mid);
+    const home = rA.state.ghostMonsters?.get(mid) ?? rA.state.monsters.get(mid);
+    assert.ok(landed, "the receiving room holds the body");
+    assert.ok(home, "and the room it left still shows it, as its ghost");
   } finally {
     await gameServer.gracefullyShutdown(false);
     useBus(null);

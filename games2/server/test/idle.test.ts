@@ -58,7 +58,7 @@ test("an empty room runs its sim at a quarter rate; a client restores it", async
  *  each neighbour, 102 ms. A GHOST PLAYER is the watcher's signature and costs
  *  no message: it exists only because a neighbour with a client published its
  *  band, which is what lies within GHOST_BAND_WU of the shared edge. */
-test("a room a neighbour's player is watching runs at the full rate; it idles again when he leaves", async (t) => {
+test("a room whose NEIGHBOUR has players runs at the full rate, ghost or no ghost; it idles again when that room empties", async (t) => {
   if (!HAVE_WORLD) return t.skip("maps2/worlds3/the_game missing");
   const port = 2966;
   useBus(new FakeBus());
@@ -84,16 +84,19 @@ test("a room a neighbour's player is watching runs at the full rate; it idles ag
     const r: any = await c.joinById(home.roomId, { name: "Watcher", character: "default_boy" });
     r.onMessage("zone:go", () => {}); // never follow a hop in this test
     await settle(300);
-    r.send("teleport", { x: BORDER_X - 3 * CELL_WU, y: 100 * CELL_WU });
-    // The wake is the ghost: wait for zone 1 to hold him before measuring.
-    const seen = async () => {
-      for (let i = 0; i < 100; i++) {
-        if (perfStats().rooms.find((x) => x.id === watched.roomId)?.ghosts ?? 0) return true;
-        await settle(100);
-      }
-      return false;
-    };
-    assert.ok(await seen(), "the watched room mirrors the player as a ghost");
+    // FAR FROM THE SHARED EDGE — 60 cells, well outside GHOST_BAND_WU (36), so
+    // zone 1 holds no ghost of him. It must run at the full rate anyway: his
+    // room is its neighbour and has a player, so zone 1 owes that player
+    // edge-rate monsters the moment he walks over and an instant hand-off if
+    // he crosses (maintainer 2026-09-21: "a zone is not empty if any of the
+    // zones next to it has players ... the zone needs to be 100% active").
+    r.send("teleport", { x: BORDER_X - 60 * CELL_WU, y: 100 * CELL_WU });
+    await settle(1500);
+    assert.equal(
+      perfStats().rooms.find((x) => x.id === watched.roomId)?.ghostPlayers ?? -1,
+      0,
+      "he is too far from the edge to be a ghost there — the wake is the neighbour's own liveness, not the band",
+    );
     perfStats();
     await settle(2000);
     const busy = perfStats().rooms.find((x) => x.id === watched.roomId)!;
@@ -102,17 +105,13 @@ test("a room a neighbour's player is watching runs at the full rate; it idles ag
       `a room whose band holds a real player runs at the tick rate (${busy.simHz} Hz; it ran at a quarter of it, so his ghosts moved at 2.5 Hz)`,
     );
 
-    // ...and it goes back to sleep once he walks out of the band.
-    r.send("teleport", { x: 20 * CELL_WU, y: 100 * CELL_WU });
-    for (let i = 0; i < 100; i++) {
-      if (!(perfStats().rooms.find((x) => x.id === watched.roomId)?.ghosts ?? 0)) break;
-      await settle(100);
-    }
+    // ...and it goes back to sleep once his room is empty again.
+    r.leave();
+    await settle(2500); // NEIGHBOUR_LIVE_MS plus a publish period
     perfStats();
     await settle(2000);
     const again = perfStats().rooms.find((x) => x.id === watched.roomId)!;
-    assert.ok(again.simHz <= 8, `nobody watching, so it idles again (${again.simHz} Hz)`);
-    r.leave();
+    assert.ok(again.simHz <= 8, `no neighbour has players, so it idles again (${again.simHz} Hz)`);
   } finally {
     await gameServer.gracefullyShutdown(false);
     useBus(null);

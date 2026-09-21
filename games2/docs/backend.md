@@ -105,7 +105,9 @@ found; gate `server/test/lawsize.test.ts`).
   sprite only when the id is in NEITHER map — the same id moves between the
   two as a body crosses. A room publishes its band (`GHOST_BAND_WU` =
   `INTEREST_LEAVE_WU`, plus anything of its own standing outside its rect)
-  every `EDGE_TICKS` (2) ticks; a receiver keeps what lies within the band of
+  every `EDGE_TICKS` (1) tick — 20 Hz, the simulation rate, so a body one cell
+  past a border moves as smoothly as one a cell before it; a receiver keeps
+  what lies within the band of
   ITS rect and skips ids it owns; a snapshot is that zone's whole band, so what
   it no longer carries is ORPHANED — given `GHOST_ORPHAN_MS` (250) to be
   claimed by another zone before the ordinary `GHOST_TTL_MS` (1 s) reaps it,
@@ -285,6 +287,19 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
   and it wakes at most the neighbours of the rooms a player stands in, falling
   back one `GHOST_TTL_MS` after he leaves. After: **103 ms (9.7 Hz)**, churn
   11 adds / 12 removes.
+  **THEN THE RULE GREW TO THE MAINTAINER'S** (2026-09-21: "a zone is not empty
+  if any of the zones next to it has players ... the zone needs to be 100%
+  active. Both to be able to simulate monsters at the edge, but also to be able
+  to take over the responsibility as fast as possible when a player or a
+  monster crosses the boundary", and: a world whose rooms doze is not the world
+  that ships, so it cannot be tested). A room with clients stamps its band
+  snapshot `live`; a receiver holds that for `NEIGHBOUR_LIVE_MS` (1500) and
+  does not idle while it stands. One hop only, so a player wakes his own room
+  and its neighbours — at most 9 of the_game's 16 — and the idle divisor still
+  covers an untouched corner of the map. With `EDGE_TICKS` at 1 the same
+  measurement then reads **52 ms (19.2 Hz) for ghosts against 52 ms for the
+  monsters of his own zone**: the border is no longer visible in the update
+  rate, and the churn in that window fell to 9 adds / 7 removes.
 - **A JOIN BURST IS A LIMIT OF ITS OWN**: 400 bots joining one zone within
   10 s from two processes on a box already at 100% CPU expired 65 seat
   reservations ("seat reservation expired"), 100 joins failed, and every
