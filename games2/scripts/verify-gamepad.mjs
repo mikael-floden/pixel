@@ -454,8 +454,9 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
         .waitForFunction(
           (w) => {
             const o = (sel) => { const e = document.querySelector(sel); return e ? +getComputedStyle(e).opacity : null; };
-            const a = o(".ml-pad-stick .ml-pad-well"), b = o(".ml-pad-stick .ml-pad-top");
-            return a !== null && b !== null && Math.abs(a - w[0]) <= 0.02 && Math.abs(b - w[1]) <= 0.02;
+            const a = o(".ml-pad-stick .ml-pad-well"), b = o(".ml-pad-stick .ml-pad-top"), c = o(".ml-pad-blur");
+            return a !== null && b !== null && c !== null &&
+              Math.abs(a - w[0]) <= 0.02 && Math.abs(b - w[1]) <= 0.02 && Math.abs(c - w[2]) <= 0.02;
           },
           want,
           { timeout: 20000, polling: 250 },
@@ -464,6 +465,11 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
       return page.evaluate(() => {
         const o = (sel) => { const e = document.querySelector(sel); return e ? +(+getComputedStyle(e).opacity).toFixed(2) : null; };
         return { ghostWell: o(".ml-pad-stick .ml-pad-well"), ghostCap: o(".ml-pad-stick .ml-pad-top"),
+                 // THE BLUR DISC COUNTS AS THE GHOST (maintainer 2026-09-21: "Its
+                 // blurry and make the background blurry"): it is a sibling
+                 // element carrying the backdrop-filter, so a fade that leaves
+                 // it at 1 still bends the world in a disc.
+                 blur: o(".ml-pad-blur"),
                  pageWell: o(".ml-pad-pagestick .ml-pad-well"),
                  cls: document.documentElement.classList.contains("ml-pad-usingpage") };
       });
@@ -486,21 +492,23 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     else {
       await page.mouse.move(ps.x, ps.y);
       await page.mouse.down();
-      const held = await fadeRead([0, 0]);
-      held.cls && held.ghostWell === 0 && held.ghostCap === 0 && held.pageWell === 1
-        ? ok("the ghost fades to nothing while the page stick drives (well 0, cap 0; the page stick stays opaque)")
-        : fail(`page stick held: ${JSON.stringify(held)} — want the ghost at 0/0 and the page stick at 1`);
+      const held = await fadeRead([0, 0, 0]);
+      held.cls && held.ghostWell === 0 && held.ghostCap === 0 && held.blur === 0 && held.pageWell === 1
+        ? ok("the ghost AND its blur disc fade to nothing while the page stick drives (well 0, cap 0, disc 0; the page stick stays opaque)")
+        : fail(`page stick held: ${JSON.stringify(held)} — want well/cap/disc all 0 and the page stick at 1`);
       await page.evaluate(() => document.querySelector(".ml-pad-stick").classList.add("held"));
-      const both = await fadeRead([1, 1]);
-      both.ghostWell === 1 && both.ghostCap === 1
-        ? ok("…and a thumb on the GHOST wins it back to full (both sticks held)")
-        : fail(`both held: ${JSON.stringify(both)} — want the ghost at 1/1, the one being touched`);
+      await page.evaluate(() => document.documentElement.classList.add("ml-pad-ghostheld"));
+      const both = await fadeRead([1, 1, 1]);
+      both.ghostWell === 1 && both.ghostCap === 1 && both.blur === 1
+        ? ok("…and a thumb on the GHOST wins it and its disc back to full (both sticks held)")
+        : fail(`both held: ${JSON.stringify(both)} — want well/cap/disc all 1, the stick being touched`);
+      await page.evaluate(() => document.documentElement.classList.remove("ml-pad-ghostheld"));
       await page.evaluate(() => document.querySelector(".ml-pad-stick").classList.remove("held"));
       await page.mouse.up();
-      const done = await fadeRead([0.15, 0.25]);
-      !done.cls && Math.abs(done.ghostWell - 0.15) <= 0.02 && Math.abs(done.ghostCap - 0.25) <= 0.02
-        ? ok(`…and the rest alphas return on release (well ${done.ghostWell}, cap ${done.ghostCap})`)
-        : fail(`after release: ${JSON.stringify(done)} — want .15/.25 and the class gone`);
+      const done = await fadeRead([0.15, 0.25, 1]);
+      !done.cls && Math.abs(done.ghostWell - 0.15) <= 0.02 && Math.abs(done.ghostCap - 0.25) <= 0.02 && done.blur === 1
+        ? ok(`…and the rest alphas return on release (well ${done.ghostWell}, cap ${done.ghostCap}, disc ${done.blur})`)
+        : fail(`after release: ${JSON.stringify(done)} — want .15/.25, the disc back at 1 and the class gone`);
     }
     // back to the hidden page this section runs with
     await page.evaluate(() => document.querySelector('[data-tab="map"]')?.click());

@@ -232,8 +232,11 @@ GROWS BY"); this holds the mechanics and the numbers.
   again in portrait at his mark (`STICK_FX` .771, the WALK label over it,
   `.ml-pad-pagestick`), fixed there — the Settings fine-tune moves the ghost
   only, and the two share one input path; while the page stick is held the
-  ghost fades to `opacity:0` (`:root.ml-pad-usingpage`, its own .25s
-  transition), and a thumb on the ghost itself still wins it back (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
+  ghost AND its blur disc fade to `opacity:0` (`:root.ml-pad-usingpage`,
+  their own .25s transition — the disc is a sibling carrying the
+  backdrop-filter, so leaving it out bent the world in a visible circle), and
+  a thumb on the ghost wins both back (`:root.ml-pad-ghostheld`, since the
+  disc precedes the stick and cannot be reached from its `.held`) (gamepad.ts LAND_INSET 38px in landscape, the centre the maintainer
   marked on two device screenshots; PORT_GHOST_INSET 10px in portrait, lifted
   to the chat log's line while the keyboard is up — `--ml-pad-bottom`), plus
   his fine-tune (controls.ts stickNudge; gamepad.ts stickNudgeRange = well/4

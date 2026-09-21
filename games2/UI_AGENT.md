@@ -296,8 +296,17 @@ from the games agent), #18 (title/landing screen).
   2026-09-20: "the analog thumbstick at the screen should fade invisible
   while I am holding/using the thumbstick in the menu … it would just be
   cooler if it fades to fully transparent"): the page stick's drag puts
-  `ml-pad-usingpage` on `:root` and the ghost's two parts go `opacity:0` on
-  their own .25s transition. TWO CLASSES ON `:root` = specificity 5, the
+  `ml-pad-usingpage` on `:root` and the ghost's two parts AND ITS BLUR DISC
+  go `opacity:0` on their own .25s transition. THE DISC IS PART OF THE GHOST
+  (maintainer 2026-09-21, on the first cut: "Its blurry and make the
+  background blurry. I want it to fade to real transparency"): it is a
+  SIBLING of the stick, not a child, so a rule scoped to `.ml-pad-stick`
+  never reaches it and the world keeps bending in a circle where an invisible
+  stick stands. `opacity:0` takes the backdrop filter with it, since the
+  filtered backdrop composites through the element's own opacity. It needs
+  its own held rule too (`:root.ml-pad-ghostheld`, published by the ghost's
+  drag) because the disc PRECEDES the stick in the DOM and CSS has no
+  backwards sibling combinator. TWO CLASSES ON `:root` = specificity 5, the
   dark rest rules' equal, so the rule sits AFTER them to win the tie — and
   BEFORE `.held`, so two thumbs on both sticks leave the one being touched
   visible. Cleared on release, on blur, on visibilitychange and in the

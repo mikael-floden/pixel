@@ -101,6 +101,11 @@ const PORT_GHOST_INSET = 10;
 /** On :root while a thumb is driving the PAGE stick — the ghost over the world
  *  fades to nothing for as long as it lasts (maintainer 2026-09-20). */
 const USING_PAGE = "ml-pad-usingpage";
+/** On :root while a thumb is on the GHOST. The blur disc is a SIBLING of the
+ *  stick and PRECEDES it in the DOM (body.append(padBlur, pad)), and CSS has
+ *  no backwards sibling combinator — so the disc cannot be reached from the
+ *  stick's own .held, and the held state has to be published on :root for it. */
+const GHOST_HELD = "ml-pad-ghostheld";
 
 /** The well's diameter for this viewport: the big 148 from 585 css px wide,
  * 120 below it (his phone's portrait is 393). */
@@ -527,8 +532,8 @@ export function mountGamepadStick(page: HTMLElement) {
       setKeys(-1, false);
       cap(-1, 0); // glide back to centre
       el.classList.remove("held"); // the ghost fades back to rest
-      // …and the ghost over the world comes back (see the class below)
-      if (isPage) document.documentElement.classList.remove(USING_PAGE);
+      // …and the ghost over the world comes back (see the classes below)
+      document.documentElement.classList.remove(isPage ? USING_PAGE : GHOST_HELD);
       gameAudio.event("ui.release");
     };
     el.addEventListener("pointerdown", (ev) => {
@@ -540,7 +545,7 @@ export function mountGamepadStick(page: HTMLElement) {
       // class, the fade is the parts' own .25s opacity transition, so it
       // dissolves rather than blinks — and a thumb ON the ghost still wins it
       // back, because .held is declared after this (see injectStyles).
-      if (isPage) document.documentElement.classList.add(USING_PAGE);
+      document.documentElement.classList.add(isPage ? USING_PAGE : GHOST_HELD);
       el.setPointerCapture(ev.pointerId); // the finger may leave the well — keep it
       // IN USE = fully visible (maintainer 2026-08-05): both parts of the
       // ghost fade to 1 while the thumb holds it (their opacity transitions
@@ -675,7 +680,7 @@ function injectStyles() {
      so ONLY the blur reads. z 3 keeps it under the stick (4) and therefore
      under the chat log (5) and the pill (8) too. */
   .ml-pad-blur{position:fixed;z-index:3;display:none;border-radius:50%;
-    pointer-events:none;
+    pointer-events:none;opacity:1;transition:opacity .25s ease;
     backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
   /* the CAP: a raised round knob; the cap glides between its snap positions —
      fast, not instant */
@@ -710,6 +715,19 @@ function injectStyles() {
      own opacity transition; nothing here animates. */
   :root.ml-stickghost.${USING_PAGE} .ml-pad-stick .ml-pad-well,
   :root.ml-stickghost.${USING_PAGE} .ml-pad-stick .ml-pad-top{opacity:0}
+  /* …AND THE BLUR DISC GOES WITH IT (maintainer 2026-09-21, on the first cut:
+     "The second thumbstick is still not invisible when I move the menu
+     thumbstick. Its blurry and make the background blurry"). The disc carries
+     the backdrop-filter and is a SIBLING of the stick, not a child, so the
+     rule above never reached it and the world kept bending in a circle where
+     an invisible stick stood. opacity 0 takes the backdrop filter with it —
+     the filtered backdrop is composited THROUGH the element's opacity — and
+     it rides the same .25s curve, so disc and stick dissolve together.
+     A thumb on the GHOST brings the pair back (:root.${GHOST_HELD}, published
+     by the ghost's own drag): the stick's .held cannot select this disc,
+     which precedes it in the DOM. */
+  :root.ml-stickghost.${USING_PAGE} .ml-pad-blur{opacity:0}
+  :root.ml-stickghost.${USING_PAGE}.${GHOST_HELD} .ml-pad-blur{opacity:1}
   /* IN USE both parts go fully visible, whatever their rest alpha. The
      :root.ml-stickghost prefix is LOAD-BEARING: the dark rest rules above carry an
      attribute selector, so a plain .ml-pad-stick.held .ml-pad-well loses
