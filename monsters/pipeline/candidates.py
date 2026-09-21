@@ -311,6 +311,18 @@ def generate_one(client, cfg, design, version, verbose=True):
     rots = client.character_rotations(pl_id)
     tag = dflt.get("candidate_tag", "MONSTER_CANDIDATE")
     client.set_character_tags(pl_id, [tag])
+    # FILED ONE COMPASS STEP LATE, AND FIXED IN POST BEFORE HE EVER SEES IT
+    # (maintainer 2026-09-21, twice — scyth_arm: "SE is S, E is SE (same
+    # offset on all directions), should be fixed in postprocess", then
+    # hollow_gulp). create-character-v3 sometimes returns the whole 8-set
+    # rotated; postprocess measures it from the art's own mirror symmetry and
+    # re-files it. Measured over 143 candidates: 18 were out.
+    import postprocess as _pp
+    _k = _pp.measure_direction_offset_images(rots)
+    if _k:
+        rots = {DIRECTIONS_8[i]: rots[DIRECTIONS_8[(i + _k) % 8]]
+                for i in range(len(DIRECTIONS_8)) if DIRECTIONS_8[(i + _k) % 8] in rots}
+        print(f"  {cid}: direction offset {_k} step(s) — re-filed in post")
     qa = qa_rotations(rots)
     man = write_candidate(cid, design, rots, {
         "pixellab_id": pl_id, "seed": seed, "version": version, "usage": usage,

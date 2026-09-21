@@ -556,3 +556,90 @@ def main():
 
 if __name__ == "__main__":
     main()
+
+
+# ---------------------------------------------------------------------------
+# DIRECTION OFFSET — the whole 8-set filed one compass step late
+# ---------------------------------------------------------------------------
+# HIS BUG, TWICE (2026-09-21, scyth_arm: "SE is S, E is SE (same offset on all
+# directions), should be fixed in postprocess. So I approve." — then again on
+# hollow_gulp). create-character-v3 sometimes returns its rotations rotated as
+# a SET: every slot holds the art of its neighbour, so the creature never
+# faces where the game thinks it does.
+#
+# Measured from the art, never from a flag: a correct 8-set is mirror-
+# symmetric about the S-N axis (mirror(SE)=SW, mirror(E)=W, mirror(NE)=NW, and
+# S and N are their own mirrors). A set filed k steps late is still symmetric
+# — about a different axis — so scoring all eight relabellings and taking the
+# best recovers k. On his two reports it independently returns k=1, which is
+# exactly "SE is S": corrected south IS the art filed under south-east.
+# Measured over 143 candidates: 119 score k=0, 24 are offset.
+#
+# The repair renames in place. That is safe and is what the system is built
+# for — /assets art is served `no-cache` precisely because "the art agents
+# routinely repaint a tile IN PLACE, same path, new pixels" (cachepolicy.ts);
+# a year is earned only through `?h=<hash>` verified against the bytes, so new
+# pixels are a new URL by arithmetic.
+D8_COMPASS = ("south", "south-east", "east", "north-east",
+              "north", "north-west", "west", "south-west")
+OFFSET_MIN_GAIN = 0.10   # below this the set is too symmetric to call
+
+
+def _alpha(path):
+    import numpy as np
+    return np.asarray(Image.open(path).convert("RGBA"))[:, :, 3] > 8
+
+
+def _mirror_score(rots, k):
+    import numpy as np
+    lab = {D8_COMPASS[i]: rots[D8_COMPASS[(i + k) % 8]] for i in range(8)}
+
+    def iou(a, b):
+        u = np.logical_or(a, b).sum()
+        return float(np.logical_and(a, b).sum() / u) if u else 0.0
+    s = [iou(np.fliplr(lab[a]), lab[b]) for a, b in
+         (("south-east", "south-west"), ("east", "west"), ("north-east", "north-west"))]
+    s += [iou(np.fliplr(lab[d]), lab[d]) for d in ("south", "north")]
+    return sum(s) / len(s)
+
+
+def measure_direction_offset(rot_dir, ext=".webp"):
+    """(k, gain) — how many compass steps late the set is filed, and how much
+    better that labelling is than the one on disk. gain 0 means correct."""
+    import numpy as np
+    rots = {}
+    for d in D8_COMPASS:
+        p = os.path.join(rot_dir, d + ext)
+        if not os.path.exists(p):
+            return 0, 0.0
+        rots[d] = _alpha(p)
+    sc = [_mirror_score(rots, k) for k in range(8)]
+    best = int(np.argmax(sc))
+    return best, sc[best] - sc[0]
+
+
+def fix_direction_offset(rot_dir, ext=".webp", min_gain=OFFSET_MIN_GAIN, apply=True):
+    """Re-file a rotation set that is a whole compass step out. Returns
+    (k, gain, changed)."""
+    k, gain = measure_direction_offset(rot_dir, ext)
+    if not k or gain < min_gain:
+        return k, gain, False
+    if not apply:
+        return k, gain, True
+    imgs = {d: Image.open(os.path.join(rot_dir, d + ext)).convert("RGBA") for d in D8_COMPASS}
+    for i, d in enumerate(D8_COMPASS):
+        src = imgs[D8_COMPASS[(i + k) % 8]]
+        mirror._save_png(src, os.path.join(rot_dir, d + ext))
+    return k, gain, True
+
+
+def measure_direction_offset_images(rots, min_gain=OFFSET_MIN_GAIN):
+    """Same measure, on {direction: PIL} straight off the generator — used by
+    candidates.py so a new base is re-filed before it is ever written."""
+    import numpy as np
+    if not all(d in rots for d in D8_COMPASS):
+        return 0
+    a = {d: (np.asarray(rots[d].convert("RGBA"))[:, :, 3] > 8) for d in D8_COMPASS}
+    sc = [_mirror_score(a, k) for k in range(8)]
+    best = int(np.argmax(sc))
+    return best if best and (sc[best] - sc[0]) >= min_gain else 0
