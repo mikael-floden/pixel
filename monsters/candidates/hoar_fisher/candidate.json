@@ -1,0 +1,141 @@
+{
+  "id": "hoar_fisher",
+  "name": "Hoarfisher",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It still works the hole it cut and will share the catch. Nobody has ever accepted.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Fantasy ice fisher spirit shown full body from head to feet, a hunched figure wrapped in frozen stiffened rags, a barbed fishing spear held upright, hollow black eye sockets, and rime across its shoulders.",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hoar_fisher/rotations/south.webp",
+    "south-east": "hoar_fisher/rotations/south-east.webp",
+    "east": "hoar_fisher/rotations/east.webp",
+    "north-east": "hoar_fisher/rotations/north-east.webp",
+    "north": "hoar_fisher/rotations/north.webp",
+    "north-west": "hoar_fisher/rotations/north-west.webp",
+    "west": "hoar_fisher/rotations/west.webp",
+    "south-west": "hoar_fisher/rotations/south-west.webp"
+  },
+  "sheet": "hoar_fisher/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "236e60f5-39b6-4323-b2ad-7c5f3f28fa80",
+  "seed": 1380178746,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:28:27+00:00",
+  "elapsed_s": 187.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.785,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.813,
+        "bbox": [
+          29,
+          3,
+          85,
+          115
+        ],
+        "fill": 0.436,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.83,
+        "bbox": [
+          37,
+          4,
+          94,
+          115
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.831,
+        "bbox": [
+          23,
+          4,
+          83,
+          115
+        ],
+        "fill": 0.463,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.785,
+        "bbox": [
+          31,
+          4,
+          85,
+          113
+        ],
+        "fill": 0.409,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.853,
+        "bbox": [
+          28,
+          4,
+          86,
+          116
+        ],
+        "fill": 0.451,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.816,
+        "bbox": [
+          25,
+          4,
+          90,
+          114
+        ],
+        "fill": 0.497,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.811,
+        "bbox": [
+          31,
+          4,
+          89,
+          114
+        ],
+        "fill": 0.443,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.865,
+        "bbox": [
+          28,
+          4,
+          92,
+          116
+        ],
+        "fill": 0.498,
+        "touches_edge": false
+      }
+    }
+  }
+}

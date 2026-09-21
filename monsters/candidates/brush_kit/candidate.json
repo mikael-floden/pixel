@@ -1,0 +1,141 @@
+{
+  "id": "brush_kit",
+  "name": "Brushkit",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "Too young to hunt well and too proud to admit it. It follows the older ones at a careful distance.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [],
+  "prompt": "Fantasy fox kit with russet fur and a cream chest, oversized ears and paws, a thick brush tail curled around its feet, a black nose, and watchful amber eyes.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "brush_kit/rotations/south.webp",
+    "south-east": "brush_kit/rotations/south-east.webp",
+    "east": "brush_kit/rotations/east.webp",
+    "north-east": "brush_kit/rotations/north-east.webp",
+    "north": "brush_kit/rotations/north.webp",
+    "north-west": "brush_kit/rotations/north-west.webp",
+    "west": "brush_kit/rotations/west.webp",
+    "south-west": "brush_kit/rotations/south-west.webp"
+  },
+  "sheet": "brush_kit/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a2e3222d-171a-4444-ae89-a5cb28cd4e62",
+  "seed": 86257460,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:29:23+00:00",
+  "elapsed_s": 230.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.581,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.661,
+        "bbox": [
+          9,
+          1,
+          38,
+          46
+        ],
+        "fill": 0.566,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.614,
+        "bbox": [
+          7,
+          1,
+          38,
+          45
+        ],
+        "fill": 0.592,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.612,
+        "bbox": [
+          10,
+          1,
+          40,
+          47
+        ],
+        "fill": 0.599,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.581,
+        "bbox": [
+          10,
+          1,
+          38,
+          46
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.65,
+        "bbox": [
+          10,
+          1,
+          38,
+          46
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.599,
+        "bbox": [
+          12,
+          1,
+          40,
+          47
+        ],
+        "fill": 0.559,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.601,
+        "bbox": [
+          9,
+          1,
+          38,
+          45
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.67,
+        "bbox": [
+          10,
+          1,
+          37,
+          46
+        ],
+        "fill": 0.527,
+        "touches_edge": false
+      }
+    }
+  }
+}

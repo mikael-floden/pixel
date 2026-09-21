@@ -1,0 +1,141 @@
+{
+  "id": "soot_wraith",
+  "name": "Sootwraith",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It comes down the flue when the fire is left to die and stands where the warmth was.",
+  "biome": [
+    "parquet_floor",
+    "grey_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy chimney wraith shown full body, a figure of hanging soot and grey ash loosely holding a human shape, two dull coal-red eyes, and fine black smoke pouring off its shoulders and hands.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "soot_wraith/rotations/south.webp",
+    "south-east": "soot_wraith/rotations/south-east.webp",
+    "east": "soot_wraith/rotations/east.webp",
+    "north-east": "soot_wraith/rotations/north-east.webp",
+    "north": "soot_wraith/rotations/north.webp",
+    "north-west": "soot_wraith/rotations/north-west.webp",
+    "west": "soot_wraith/rotations/west.webp",
+    "south-west": "soot_wraith/rotations/south-west.webp"
+  },
+  "sheet": "soot_wraith/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "acfb4a68-b3ee-4ae7-9f82-d82243ae15a7",
+  "seed": 958327074,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:29:33+00:00",
+  "elapsed_s": 290.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.653,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.653,
+        "bbox": [
+          26,
+          7,
+          86,
+          104
+        ],
+        "fill": 0.464,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.676,
+        "bbox": [
+          27,
+          8,
+          80,
+          104
+        ],
+        "fill": 0.406,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.719,
+        "bbox": [
+          30,
+          8,
+          86,
+          104
+        ],
+        "fill": 0.429,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.679,
+        "bbox": [
+          27,
+          7,
+          84,
+          104
+        ],
+        "fill": 0.441,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.765,
+        "bbox": [
+          26,
+          7,
+          85,
+          106
+        ],
+        "fill": 0.466,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.701,
+        "bbox": [
+          28,
+          8,
+          86,
+          104
+        ],
+        "fill": 0.444,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.7,
+        "bbox": [
+          25,
+          8,
+          84,
+          104
+        ],
+        "fill": 0.452,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.749,
+        "bbox": [
+          27,
+          7,
+          84,
+          106
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      }
+    }
+  }
+}

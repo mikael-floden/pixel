@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T11:28:27+00:00",
+  "generated_at": "2026-09-21T11:29:40+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 133,
+  "count": 137,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -13520,6 +13520,145 @@
       }
     },
     {
+      "id": "scale_wader",
+      "name": "Scalewader",
+      "tier": "evil",
+      "lore": "It holds the shallows the way a border is held. It has never once come further up the beach.",
+      "biome": [
+        "water",
+        "deep_water"
+      ],
+      "items": [
+        "blue scales"
+      ],
+      "size": [
+        136,
+        136
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "b065214b-af3b-4251-b8a3-e93981cb5da3",
+      "version": 1,
+      "sheet": "scale_wader/sheet.webp",
+      "rotations": {
+        "south": "scale_wader/rotations/south.webp",
+        "south-east": "scale_wader/rotations/south-east.webp",
+        "east": "scale_wader/rotations/east.webp",
+        "north-east": "scale_wader/rotations/north-east.webp",
+        "north": "scale_wader/rotations/north.webp",
+        "north-west": "scale_wader/rotations/north-west.webp",
+        "west": "scale_wader/rotations/west.webp",
+        "south-west": "scale_wader/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.755,
+        "reasons": [
+          "west: content touches the canvas edge (clipped)",
+          "north-west: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.755,
+            "bbox": [
+              15,
+              3,
+              122,
+              133
+            ],
+            "fill": 0.752,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.813,
+            "bbox": [
+              41,
+              0,
+              117,
+              132
+            ],
+            "fill": 0.542,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.809,
+            "bbox": [
+              28,
+              5,
+              92,
+              135
+            ],
+            "fill": 0.45,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.809,
+            "bbox": [
+              18,
+              1,
+              122,
+              129
+            ],
+            "fill": 0.72,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.831,
+            "bbox": [
+              36,
+              4,
+              104,
+              132
+            ],
+            "fill": 0.471,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.81,
+            "bbox": [
+              11,
+              2,
+              117,
+              130
+            ],
+            "fill": 0.734,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.802,
+            "bbox": [
+              31,
+              0,
+              99,
+              133
+            ],
+            "fill": 0.489,
+            "touches_edge": true
+          },
+          "south-west": {
+            "run1": 0.815,
+            "bbox": [
+              16,
+              0,
+              126,
+              134
+            ],
+            "fill": 0.797,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:29:39+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "blue_coil",
       "name": "Bluecoil",
       "tier": "mid",
@@ -13921,6 +14060,139 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:17:51+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "brush_kit",
+      "name": "Brushkit",
+      "tier": "cute",
+      "lore": "Too young to hunt well and too proud to admit it. It follows the older ones at a careful distance.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "a2e3222d-171a-4444-ae89-a5cb28cd4e62",
+      "version": 1,
+      "sheet": "brush_kit/sheet.webp",
+      "rotations": {
+        "south": "brush_kit/rotations/south.webp",
+        "south-east": "brush_kit/rotations/south-east.webp",
+        "east": "brush_kit/rotations/east.webp",
+        "north-east": "brush_kit/rotations/north-east.webp",
+        "north": "brush_kit/rotations/north.webp",
+        "north-west": "brush_kit/rotations/north-west.webp",
+        "west": "brush_kit/rotations/west.webp",
+        "south-west": "brush_kit/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.581,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.661,
+            "bbox": [
+              9,
+              1,
+              38,
+              46
+            ],
+            "fill": 0.566,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.614,
+            "bbox": [
+              7,
+              1,
+              38,
+              45
+            ],
+            "fill": 0.592,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.612,
+            "bbox": [
+              10,
+              1,
+              40,
+              47
+            ],
+            "fill": 0.599,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.581,
+            "bbox": [
+              10,
+              1,
+              38,
+              46
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.65,
+            "bbox": [
+              10,
+              1,
+              38,
+              46
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.599,
+            "bbox": [
+              12,
+              1,
+              40,
+              47
+            ],
+            "fill": 0.559,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.601,
+            "bbox": [
+              9,
+              1,
+              38,
+              45
+            ],
+            "fill": 0.554,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.67,
+            "bbox": [
+              10,
+              1,
+              37,
+              46
+            ],
+            "fill": 0.527,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:29:23+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},
@@ -17266,6 +17538,139 @@
       }
     },
     {
+      "id": "floe_pup",
+      "name": "Floepup",
+      "tier": "cute",
+      "lore": "It waits where it was left and calls at intervals. The calling carries a long way.",
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "64849298-3336-438e-ae06-be0122ecb779",
+      "version": 1,
+      "sheet": "floe_pup/sheet.webp",
+      "rotations": {
+        "south": "floe_pup/rotations/south.webp",
+        "south-east": "floe_pup/rotations/south-east.webp",
+        "east": "floe_pup/rotations/east.webp",
+        "north-east": "floe_pup/rotations/north-east.webp",
+        "north": "floe_pup/rotations/north.webp",
+        "north-west": "floe_pup/rotations/north-west.webp",
+        "west": "floe_pup/rotations/west.webp",
+        "south-west": "floe_pup/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.717,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.809,
+            "bbox": [
+              1,
+              4,
+              47,
+              46
+            ],
+            "fill": 0.839,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.74,
+            "bbox": [
+              2,
+              3,
+              47,
+              46
+            ],
+            "fill": 0.84,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.752,
+            "bbox": [
+              1,
+              3,
+              46,
+              46
+            ],
+            "fill": 0.84,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.747,
+            "bbox": [
+              2,
+              2,
+              46,
+              46
+            ],
+            "fill": 0.84,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.798,
+            "bbox": [
+              1,
+              4,
+              46,
+              46
+            ],
+            "fill": 0.82,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.717,
+            "bbox": [
+              3,
+              2,
+              44,
+              46
+            ],
+            "fill": 0.783,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.72,
+            "bbox": [
+              3,
+              2,
+              45,
+              46
+            ],
+            "fill": 0.802,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.803,
+            "bbox": [
+              3,
+              4,
+              47,
+              46
+            ],
+            "fill": 0.802,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:29:02+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "hoar_fisher",
       "name": "Hoarfisher",
       "tier": "evil",
@@ -17791,6 +18196,139 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:27:47+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "soot_wraith",
+      "name": "Sootwraith",
+      "tier": "evil",
+      "lore": "It comes down the flue when the fire is left to die and stands where the warmth was.",
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "size": [
+        112,
+        112
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "acfb4a68-b3ee-4ae7-9f82-d82243ae15a7",
+      "version": 1,
+      "sheet": "soot_wraith/sheet.webp",
+      "rotations": {
+        "south": "soot_wraith/rotations/south.webp",
+        "south-east": "soot_wraith/rotations/south-east.webp",
+        "east": "soot_wraith/rotations/east.webp",
+        "north-east": "soot_wraith/rotations/north-east.webp",
+        "north": "soot_wraith/rotations/north.webp",
+        "north-west": "soot_wraith/rotations/north-west.webp",
+        "west": "soot_wraith/rotations/west.webp",
+        "south-west": "soot_wraith/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.653,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.653,
+            "bbox": [
+              26,
+              7,
+              86,
+              104
+            ],
+            "fill": 0.464,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.676,
+            "bbox": [
+              27,
+              8,
+              80,
+              104
+            ],
+            "fill": 0.406,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.719,
+            "bbox": [
+              30,
+              8,
+              86,
+              104
+            ],
+            "fill": 0.429,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.679,
+            "bbox": [
+              27,
+              7,
+              84,
+              104
+            ],
+            "fill": 0.441,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.765,
+            "bbox": [
+              26,
+              7,
+              85,
+              106
+            ],
+            "fill": 0.466,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.701,
+            "bbox": [
+              28,
+              8,
+              86,
+              104
+            ],
+            "fill": 0.444,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.7,
+            "bbox": [
+              25,
+              8,
+              84,
+              104
+            ],
+            "fill": 0.452,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.749,
+            "bbox": [
+              27,
+              7,
+              84,
+              106
+            ],
+            "fill": 0.45,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:29:33+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},

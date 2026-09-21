@@ -1,0 +1,147 @@
+{
+  "id": "scale_wader",
+  "name": "Scalewader",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It holds the shallows the way a border is held. It has never once come further up the beach.",
+  "biome": [
+    "water",
+    "deep_water"
+  ],
+  "items": [
+    "blue scales"
+  ],
+  "prompt": "Fantasy fish-folk warrior shown full body from head to feet, overlapping blue scales, finned forearms and calves, gill slits at the ribs, a broad flat-eyed head, and a bone-tipped spear held upright.",
+  "size": [
+    136,
+    136
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "scale_wader/rotations/south.webp",
+    "south-east": "scale_wader/rotations/south-east.webp",
+    "east": "scale_wader/rotations/east.webp",
+    "north-east": "scale_wader/rotations/north-east.webp",
+    "north": "scale_wader/rotations/north.webp",
+    "north-west": "scale_wader/rotations/north-west.webp",
+    "west": "scale_wader/rotations/west.webp",
+    "south-west": "scale_wader/rotations/south-west.webp"
+  },
+  "sheet": "scale_wader/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b065214b-af3b-4251-b8a3-e93981cb5da3",
+  "seed": 235044976,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:29:39+00:00",
+  "elapsed_s": 219.5,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.755,
+    "reasons": [
+      "west: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.755,
+        "bbox": [
+          15,
+          3,
+          122,
+          133
+        ],
+        "fill": 0.752,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.813,
+        "bbox": [
+          41,
+          0,
+          117,
+          132
+        ],
+        "fill": 0.542,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.809,
+        "bbox": [
+          28,
+          5,
+          92,
+          135
+        ],
+        "fill": 0.45,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.809,
+        "bbox": [
+          18,
+          1,
+          122,
+          129
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.831,
+        "bbox": [
+          36,
+          4,
+          104,
+          132
+        ],
+        "fill": 0.471,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.81,
+        "bbox": [
+          11,
+          2,
+          117,
+          130
+        ],
+        "fill": 0.734,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.802,
+        "bbox": [
+          31,
+          0,
+          99,
+          133
+        ],
+        "fill": 0.489,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.815,
+        "bbox": [
+          16,
+          0,
+          126,
+          134
+        ],
+        "fill": 0.797,
+        "touches_edge": true
+      }
+    }
+  }
+}

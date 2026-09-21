@@ -1,0 +1,141 @@
+{
+  "id": "floe_pup",
+  "name": "Floepup",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It waits where it was left and calls at intervals. The calling carries a long way.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Fantasy seal pup lying on ice, soft white natal fur, enormous dark wet eyes, small dark nostrils, short foreflippers tucked under its chest, and fine whiskers.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "floe_pup/rotations/south.webp",
+    "south-east": "floe_pup/rotations/south-east.webp",
+    "east": "floe_pup/rotations/east.webp",
+    "north-east": "floe_pup/rotations/north-east.webp",
+    "north": "floe_pup/rotations/north.webp",
+    "north-west": "floe_pup/rotations/north-west.webp",
+    "west": "floe_pup/rotations/west.webp",
+    "south-west": "floe_pup/rotations/south-west.webp"
+  },
+  "sheet": "floe_pup/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "64849298-3336-438e-ae06-be0122ecb779",
+  "seed": 102304883,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:29:02+00:00",
+  "elapsed_s": 263.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.717,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.809,
+        "bbox": [
+          1,
+          4,
+          47,
+          46
+        ],
+        "fill": 0.839,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.74,
+        "bbox": [
+          2,
+          3,
+          47,
+          46
+        ],
+        "fill": 0.84,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.752,
+        "bbox": [
+          1,
+          3,
+          46,
+          46
+        ],
+        "fill": 0.84,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.747,
+        "bbox": [
+          2,
+          2,
+          46,
+          46
+        ],
+        "fill": 0.84,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.798,
+        "bbox": [
+          1,
+          4,
+          46,
+          46
+        ],
+        "fill": 0.82,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.717,
+        "bbox": [
+          3,
+          2,
+          44,
+          46
+        ],
+        "fill": 0.783,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.72,
+        "bbox": [
+          3,
+          2,
+          45,
+          46
+        ],
+        "fill": 0.802,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.803,
+        "bbox": [
+          3,
+          4,
+          47,
+          46
+        ],
+        "fill": 0.802,
+        "touches_edge": false
+      }
+    }
+  }
+}
