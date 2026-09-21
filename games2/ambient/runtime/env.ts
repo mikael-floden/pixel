@@ -95,7 +95,7 @@ const RAIN_INTENSITY: Record<string, number> = {
 /** Is the current weather a rainy/stormy one? Matches by NAME so thunder's
  * ×2 and the rainbow's rain weight pick up the games agent's rain weathers
  * (Drizzle/Rain/Heavy rain/Storm) automatically. */
-export function isRainy(env: AmbientEnv): boolean {
+export function isRainy(env: { active: ReadonlySet<string> }): boolean {
   for (const n of env.active) if (n === "thunder" || (RAIN_INTENSITY[n] ?? 0) > 0) return true;
   return false;
 }

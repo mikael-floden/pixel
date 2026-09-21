@@ -1,7 +1,7 @@
 import Phaser from "phaser";
-import { isRough } from "../runtime/env";
+import { isRainy, isRough } from "../runtime/env";
 import { AmbientCtx, AmbientFeature } from "../runtime/types";
-import { SceneryPiece, sceneryInView } from "../runtime/scenery";
+import { ABOVE_LIT, SRC_LIFT, SceneryPiece, sceneryInView } from "../runtime/scenery";
 import { MAX_SAT, saturation } from "../runtime/palette";
 import {
   ALT,
@@ -45,12 +45,28 @@ import {
  * need a lamp and the crabs need a beach. It is not a field that fills the
  * sky; it is a handful of creatures over a specific patch of marsh.
  *
+ * AND IT SORTS AGAINST ITS OWN REED, which is what makes it a creature you can
+ * actually see. Every scenery piece draws twice — once on the painter line and
+ * again as an opaque LIT COPY at `litDepth` (~900_001+) — while every ambient
+ * mark sits just over the darkness overlay at ~900_000.0x, so a dragonfly
+ * hovering 11-23 px over its reed's foot, and perching ON it, was painted
+ * underneath the very thing it belongs to (maintainer 2026-09-21: "I have
+ * never seen a dragonfly ever in this game"; measured at the marsh, dragonfly
+ * 900_000.090 under a reed copy at 900_001.053). That is the same trap the
+ * sparks and the moths paid for on 2026-09-09, and the same fix: take the
+ * PIECE's own drawn depth plus a hair. It is a sort, not an override — the lit
+ * band compresses painter depth by 1e-5, so a player standing in front of the
+ * reeds still draws over the dragonfly.
+ *
  * DAY, and warm: gone at night, gone in rain, gone in anything windy — a
  * hovering insect is the first thing a gust removes.
  */
 
 const NAME = "dragonflies";
-const DEPTH = 900_000.085; // between the butterflies and the landing dust
+/* The flies sort among THEMSELVES by this, never by their y: each one is
+ * already based on its OWN reed's copy, and reed copies are 1e-5 apart per
+ * painter pixel — a y-scaled bias (5.3e-3 at the marsh) would jump a fly in
+ * front of the NEXT reed along. Six flies, so at most 6e-6. */
 const DEPTH_BIAS = 1e-6;
 const GAIN_TAU = 1600;
 const MAX_FLIES = 6;
@@ -102,6 +118,7 @@ interface Fly {
   face: number;
   phase: number;
   a: number;
+  depth: number; // its reed's lit copy + SRC_LIFT — see the header
 }
 
 export function dragonfliesFeature(): AmbientFeature {
@@ -150,17 +167,21 @@ export function dragonfliesFeature(): AmbientFeature {
   };
 
   const make = (s: Phaser.Scene): Fly => ({
-    sprite: s.add.image(0, 0, KEY(0, 0)).setDepth(DEPTH).setVisible(false),
+    sprite: s.add.image(0, 0, KEY(0, 0)).setDepth(ABOVE_LIT).setVisible(false),
     x: 0, y: 0, alt: 16, cruise: 16, species: 0,
     mode: HOVER, t: 0, hold: 1000,
     fromX: 0, fromY: 0, toX: 0, toY: 0, dartAlt: 16,
-    homeX: 0, homeY: 0, face: 1, phase: 0, a: 0,
+    homeX: 0, homeY: 0, face: 1, phase: 0, a: 0, depth: ABOVE_LIT,
   });
+
+  /** In front of the piece it belongs to — see the header. */
+  const depthOf = (piece: SceneryPiece) => (piece.litDepth === null ? ABOVE_LIT : piece.litDepth + SRC_LIFT);
 
   /** Settle a dragonfly onto a piece's beat. */
   const place = (f: Fly, piece: SceneryPiece) => {
     f.homeX = piece.cx;
     f.homeY = piece.footY;
+    f.depth = depthOf(piece);
     f.x = piece.cx + (rnd() * 2 - 1) * BEAT_R * 0.5;
     f.y = piece.footY + (rnd() * 2 - 1) * BEAT_R * 0.5 * ISO_SQUASH;
     f.cruise = between(ALT);
@@ -197,10 +218,17 @@ export function dragonfliesFeature(): AmbientFeature {
   };
 
   /** Day, warm, still. */
-  const weight = (env: { sun: number; rain: number; active: ReadonlySet<string> }): number => {
+  const weight = (env: { sun: number; active: ReadonlySet<string> }): number => {
     if (isRough(env)) return 0; // storm, snow, wind — nothing small hangs in it
-    const day = Math.max(0, Math.min(1, (env.sun - 0.22) / 0.4));
-    return day * Math.max(0, 1 - Math.min(1, env.rain * 1.8));
+    /* GONE IN RAIN, read off the ACTIVE WEATHER and never off `env.rain`.
+     * Since the zones took over the weather sheet (2026-09-20) `env.rain` is
+     * the DRAWN splash intensity of this view — the drop count the sheet
+     * actually put on screen — so it reads 0 in a downpour whose zone is not
+     * in view, and the dragonflies kept hovering through one. `isRough` on the
+     * line above already asks the active set; this is the same question and
+     * must come from the same place. The 1.6 s gain ramp is the fade. */
+    if (isRainy(env)) return 0;
+    return Math.max(0, Math.min(1, (env.sun - 0.22) / 0.4));
   };
 
   return {
@@ -233,6 +261,20 @@ export function dragonfliesFeature(): AmbientFeature {
         pieces = sceneryInView(ctx.view, WATERLINE, SCAN_PAD);
         stats.pieces = pieces.length;
         stats.scans++;
+        /* A REBUILT COPY IS A NEW OBJECT at a new depth, so a fly that is
+         * already working a reed re-reads it here rather than keeping the
+         * number it was born with — otherwise one camera latch puts it back
+         * behind the reed. Matched on the home point, which `place` copied
+         * from the piece, so the match is exact until the piece moves. */
+        for (const f of flies) {
+          let best: SceneryPiece | null = null;
+          let bestD = 8;
+          for (const p of pieces) {
+            const d = Math.hypot(p.cx - f.homeX, p.footY - f.homeY);
+            if (d < bestD) { bestD = d; best = p; }
+          }
+          if (best) f.depth = depthOf(best);
+        }
       }
 
       const want = g < 0.02 || !pieces.length ? 0 : Math.min(MAX_FLIES, Math.ceil(pieces.length / PER_PIECE));
@@ -244,7 +286,8 @@ export function dragonfliesFeature(): AmbientFeature {
       }
       if (!flies.length) return;
 
-      for (const f of flies) {
+      for (let i = 0; i < flies.length; i++) {
+        const f = flies[i];
         f.t += dtc;
         // its reed left the view: adopt another one
         if (pieces.length && (f.homeX < ctx.view.x - 200 || f.homeX > ctx.view.x + ctx.view.width + 200))
@@ -294,7 +337,7 @@ export function dragonfliesFeature(): AmbientFeature {
           .setTexture(KEY(f.species, wing))
           .setFlipX(f.face < 0)
           .setPosition(Math.round(f.x + j.x), Math.round(f.y - f.alt + j.y))
-          .setDepth(DEPTH + f.y * DEPTH_BIAS)
+          .setDepth(f.depth + i * DEPTH_BIAS)
           .setAlpha(a)
           .setVisible(a > 0.02);
       }
@@ -306,7 +349,7 @@ export function dragonfliesFeature(): AmbientFeature {
         gain,
         suppressed,
         forced,
-        weight: +weight({ sun: 1, rain: 0, active: new Set<string>() }).toFixed(2),
+        weight: +weight({ sun: 1, active: new Set<string>() }).toFixed(2),
         count: flies.length,
         ...stats,
         maxSat: MAX_SAT,
@@ -319,6 +362,11 @@ export function dragonfliesFeature(): AmbientFeature {
           wing: wingOf(f.mode),
           species: f.species,
           home: Math.round(Math.hypot(f.homeX - f.x, (f.homeY - f.y) / ISO_SQUASH)),
+          // The reed it works, and the depth it took FROM that reed: the gate
+          // joins the two to prove the sort is per piece and not a constant.
+          hx: Math.round(f.homeX),
+          hy: Math.round(f.homeY),
+          depth: +f.depth.toFixed(6),
           a: +f.a.toFixed(3),
         })),
       };

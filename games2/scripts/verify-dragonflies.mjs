@@ -9,6 +9,18 @@
 //   STILL, LINE, STILL — all three modes happen, and a dart is a straight
 //                      segment at one speed that ENDS DEAD. An eased ending
 //                      would read as a bee and looks fine frozen.
+//   IN FRONT OF ITS REED — every scenery piece draws twice, once on the painter
+//                      line and again as an opaque LIT COPY at ~900_001+, and
+//                      every ambient mark sits at ~900_000.0x. A dragonfly
+//                      hovers 11-23 px over its reed's foot and PERCHES on it,
+//                      so it was painted under the very piece it belongs to
+//                      (maintainer 2026-09-21: "I have never seen a dragonfly
+//                      ever in this game"; measured at the marsh, dragonfly
+//                      900_000.090 under a reed copy at 900_001.053). The same
+//                      trap the sparks and the moths paid for on 2026-09-09.
+//   COUNTED ONCE     — and that pair is why: the raw display list says 20
+//                      waterline pieces where the marsh drew 10, so a
+//                      population of one per three came out double.
 //   IT SHOWS         — judged at the position the feature itself reports.
 //   MUTED            — under the domain's saturation cap.
 //   AND IT DOES NOT HITCH — the scenery probe walks the whole display list;
@@ -110,6 +122,64 @@ const d0 = await dbg();
 console.log(`reeds: ${d0.pieces} waterline pieces in view, ${d0.count} dragonflies, gain ${d0.gain.toFixed(2)}`);
 if (!d0.pieces) fail(`the scenery scan found no reeds/lilies at ${REEDS.c},${REEDS.r} — it is not reading the pieces`);
 if (!d0.count) fail("reeds in view and not one dragonfly");
+
+/* ---- COUNTED ONCE, AND IN FRONT OF ITS OWN REED ---------------------------- */
+/* Both read off the DRAWN objects, because both failures are invisible in the
+ * model: the effect's own `pieces` is only right if the seam paired the base
+ * image with its lit copy, and the sort can only be judged against the copy's
+ * depth. `objectsIn` rounds depth to three decimals — the 1e-6 lift is below
+ * that — so the assertion is "in the lit band, on ITS OWN reed's copy", which
+ * is the thousand-fold difference the bug was (900_000.090 -> 900_001.053). */
+{
+  const LIT_BAND = 900_001;
+  const seen = await page.evaluate(() => {
+    const v = window.__ml.camView();
+    const objs = window.__ml.objectsIn(v.x - 128, v.y - 128, v.x + v.w + 128, v.y + v.h + 128);
+    const wl = objs.filter((o) => /^s3:(reed_beds|cattail_clumps|water_lily_clumps)\//.test(String(o.key)) && o.alpha >= 0.5);
+    const g = new Map();
+    for (const o of wl) {
+      const id = `${o.key}|${o.frame}|${o.x},${o.y},${o.w},${o.h}`;
+      const e = g.get(id) ?? { base: [], lit: [] };
+      (o.depth >= 900_001 ? e.lit : e.base).push(o);
+      g.set(id, e);
+    }
+    const pieces = [...g.values()].flatMap((e) => {
+      const n = Math.max(e.base.length, e.lit.length);
+      const out = [];
+      for (let i = 0; i < n; i++) {
+        const o = e.base[i] ?? e.lit[i];
+        out.push({ cx: o.x + o.w / 2, footY: o.y + o.h, lit: e.lit[i] ? e.lit[i].depth : null });
+      }
+      return out;
+    });
+    return { images: wl.length, pieces, drawn: objs.filter((o) => String(o.key).startsWith("amb-dfly")).map((o) => o.depth) };
+  });
+  const d = await dbg();
+  console.log(`pairing: ${seen.images} waterline IMAGES -> ${seen.pieces.length} pieces; the effect reports ${d.pieces}`);
+  if (d.pieces !== seen.pieces.length)
+    fail(`the effect counts ${d.pieces} pieces where the display list holds ${seen.pieces.length} — the base/lit pair is not paired`);
+  if (seen.images > 0 && seen.pieces.length >= seen.images)
+    fail(`${seen.images} images collapsed to ${seen.pieces.length} pieces — the lit copies are not being paired off`);
+  const want = Math.min(6, Math.ceil(seen.pieces.length / 3));
+  if (d.count !== want) fail(`${d.count} dragonflies over ${seen.pieces.length} pieces; one per three, capped at six, is ${want}`);
+
+  for (const z of seen.drawn)
+    if (z < LIT_BAND) fail(`a fly is DRAWN at ${z}, in the ambient band — every reed's lit copy paints over it`);
+  let joined = 0;
+  for (const f of d.all) {
+    if (f.depth < LIT_BAND) { fail(`the model puts a fly at ${f.depth}, under the lit band`); continue; }
+    const reed = seen.pieces.filter((q) => q.lit !== null)
+      .map((q) => ({ q, dist: Math.hypot(q.cx - f.hx, q.footY - f.hy) }))
+      .sort((a, b) => a.dist - b.dist)[0];
+    if (!reed) continue;
+    if (reed.dist > 1) { fail(`a fly's home ${f.hx},${f.hy} is ${reed.dist.toFixed(1)} px from any drawn reed`); continue; }
+    if (Math.abs(f.depth - reed.q.lit) > 5e-4) fail(`a fly at ${f.depth} is not sorted against its own reed's copy at ${reed.q.lit}`);
+    else if (f.depth < reed.q.lit) fail(`a fly at ${f.depth} is BEHIND its own reed at ${reed.q.lit}`);
+    else joined++;
+  }
+  console.log(`sort: ${joined} of ${d.all.length} flies sorted onto their own reed's copy (${d.all.map((f) => f.depth.toFixed(6)).join(", ")})`);
+  if (d.all.length && !joined) fail("not one dragonfly is sorted against the reed it works");
+}
 
 /* ---- MUTED ---------------------------------------------------------------- */
 console.log(`colour: saturations ${JSON.stringify(d0.sats)}, the domain cap is ${d0.maxSat}`);
