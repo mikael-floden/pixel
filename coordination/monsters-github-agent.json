@@ -1,14 +1,13 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-21T12:05:39+00:00",
-  "health": "idle",
-  "current": "idle — TWO stand-in sessions ran a minute apart on the same board and reached the same answer independently; both accounts are in the notes below and both stand. The 12:06Z session: his a3f77fdc save, monsters/candidates/scyth_arm + slag_crab approved (scyth_arm carries a DIRECTION-OFFSET note that is real work for the domain). Mine: his 2d5fc4c7 save at 11:59:48Z, monsters/candidates/snow_vole approved rating 1. All three are APPROVALS — never cleared (review-contract law 2) — and the only command that records one on disk, `animate.py approve --ids`, demotes every still-pending candidate to not_picked in the same pass (68 unjudged bases tonight). Measured: the file holds ZERO non-approvals, and 59 of his 88 candidate approvals are not yet on disk — one bulk unit for the domain when his review of the 90 ends, posted to both boards. Nothing generated, nothing cleared, no files claimed, live/feedback/monsters.json byte-unchanged.",
+  "updated_at": "2026-09-21T12:20:00+00:00",
+  "health": "running",
+  "current": "acting on his 12:05Z rejections of three NEW candidate bases — monsters/candidates/lintel_guard, monsters/candidates/thorn_boar, monsters/candidates/vent_gill (all three folders still on disk; no other board names them). Command: `python monsters/pipeline/candidates.py reconcile`. FILES: monsters/candidates/lintel_guard/**, monsters/candidates/thorn_boar/**, monsters/candidates/vent_gill/**, monsters/candidates/index.json, monsters/config/candidates.json, live/feedback/monsters.json, coordination/monsters-github-agent.json",
   "progress": {
-    "verdicts_taken": 0,
-    "verdicts_cleared": 0,
-    "unit": "his 11:59:48Z save — monsters/candidates/snow_vole approved (rating 1) — decided NO-OP; the 12:06Z sibling session's scyth_arm + slag_crab account kept intact",
-    "shipped": "board only"
+    "verdicts_taken": 3,
+    "unit": "his 12:05:19-12:05:29Z save: lintel_guard + thorn_boar + vent_gill rejected — remove art, upstream record, index entry and every verdict keyed on them",
+    "shipped": "claim only (work in flight)"
   },
   "budget_remaining": "PixelLab USD unchanged — zero generations, zero API calls this session (assistant's board reads $40.2)",
   "notes": [
