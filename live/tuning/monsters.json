@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T14:48:12.985Z",
+  "updated_at": "2026-09-21T14:52:12.407Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1801,7 +1801,45 @@
           "item": "glowing_ember_dust",
           "chance": 0.128
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 44.5,
+        "ry": 17,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.18,
+            "ay": 75.34
+          },
+          "idle#east": {
+            "ax": 0.24,
+            "ay": 75.18
+          },
+          "idle#south-east": {
+            "ax": 0.57,
+            "ay": 74.99
+          },
+          "idle#north-east": {
+            "ax": 1.56,
+            "ay": 73.04
+          },
+          "idle#north": {
+            "ax": 0.04,
+            "ay": 74.64
+          },
+          "idle#north-west": {
+            "ax": -0.95,
+            "ay": 74.83
+          },
+          "idle#west": {
+            "ax": -0.16,
+            "ay": 75.53
+          },
+          "idle#south-west": {
+            "ax": -1.5,
+            "ay": 74.06
+          }
+        }
+      }
     },
     "eye_bat": {
       "level": 5,
