@@ -1,8 +1,21 @@
 {
   "domain": "maps2-assistant",
-  "updated_at": "2026-09-20T12:15:23+00:00",
+  "updated_at": "2026-09-21T20:17:35+00:00",
   "health": "running",
-  "current": "IDLE. pathfix shipped (ab62ddc271). Owed: the cliff-foot vote in render3 after games settles it.",
+  "current": {
+    "unit": "CLAIM — A SPAWN ZONE MUST BE ONE WALKABLE PLACE (maintainer 2026-09-20 at 224.4,182.4: 'Why have you spawned so many monsters in this small area?! They can't even fit here!'). MEASURED live at his cell: 4 monsters crammed on a 25-cell island of grey stone at level 23 inside the lava field — a patch of the stone zone that is NOT walk-connected to the zone's body 60 cells away, so a monster seeded there can never leave and its roam targets are unreachable. World-wide 24% of all zone cells (35,697) and ~68 of the 307 monsters sit on such islands; the crowding law smears the zone average over them and cannot see it. New in-place pass spawnfit.py: every zone becomes ONE walk-connected patch (its own traced outline, its own elev band), patches under ROOM_MIN carry nobody, num is redistributed within each species; wired into world3grow.run. spawns.py's own --check must stay green.",
+    "since": "2026-09-21T20:17:35+00:00",
+    "files": [
+      "maps2/pipeline/spawnfit.py",
+      "maps2/pipeline/spawns.py",
+      "maps2/pipeline/world3grow.py",
+      "maps2/worlds3/the_game/spawns.json",
+      "maps2/spec/SPAWNS.md",
+      "maps2/README.md",
+      "maps2/reports/the_game.json",
+      "coordination/maps2-assistant.json"
+    ]
+  },
   "progress": {
     "units_shipped": 14
   },
