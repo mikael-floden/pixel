@@ -399,6 +399,58 @@ class PixelLabClient:
         jobs = resp.get("background_job_ids") or []
         return jobs[0] if jobs else None
 
+    # --- the escape hatch, 2026-09-21 -------------------------------------
+    # PixelLab removed character-animation CREATION from the public API: the
+    # POST that attached a clip to a stored character now serves "Resolve
+    # Character Animation Group" (query params only, and it only re-runs a
+    # group that already EXISTS — a fresh uuid answers 404), and
+    # POST /characters/{id}/animations answers 405 with `Allow: DELETE`.
+    # The MODEL is untouched: /animate-with-text-v3 is the same v3, takes a
+    # first frame, an optional last frame and an action, and hands the frames
+    # straight back. Pinning both ends to the base rotation is exactly the
+    # idle recipe, so the art is the same art — it simply never lands on the
+    # PixelLab record, and this repo mirrors every frame locally anyway.
+    # Measured on plume_brawler/south: 5 frames from frame_count=4, ends
+    # identical, middle three breathing, $0.0228 with no_background.
+    def animate_text_v3(self, first_frame, action, frame_count=4, seed=None,
+                        last_frame=None, no_background=True):
+        """Start ONE standalone v3 clip from an image. Returns the job id."""
+        payload = {"first_frame": _image_to_b64obj(first_frame),
+                   "action": action, "frame_count": int(frame_count)}
+        if last_frame is not None:
+            payload["last_frame"] = _image_to_b64obj(last_frame)
+        if seed is not None:
+            payload["seed"] = int(seed)
+        if no_background:
+            payload["no_background"] = True
+        resp = self._request("POST", "animate-with-text-v3", json=payload)
+        return resp.get("background_job_id")
+
+    def job_images(self, job_id, timeout=900):
+        """Block on a background job and decode last_response.images -> [PIL].
+        `animate-with-text-v3` returns the frames in the job itself, so there
+        is no CDN download and no 404-retry window."""
+        j = self.wait_job(job_id, timeout=timeout)
+        out = []
+        for im in ((j.get("last_response") or {}).get("images") or []):
+            b64 = im.get("base64") if isinstance(im, dict) else im
+            if not b64:
+                continue
+            out.append(Image.open(io.BytesIO(base64.b64decode(b64))).convert("RGBA"))
+        return out
+
+    def character_animation_create_is_live(self):
+        """True while PixelLab serves the route that attaches a clip to a
+        stored character. Free: a fake id can only answer 4xx, and a 405 is
+        the router itself saying the route is gone."""
+        try:
+            r = requests.post(f"{V2_BASE}/characters/00000000-0000-0000-0000-000000000000/animations",
+                              headers=self._headers(), json={"mode": "v3", "directions": ["south"]},
+                              timeout=30)
+            return r.status_code != 405
+        except Exception:
+            return False
+
     def animate_pro(self, character_id, action, directions, name=None, seed=None):
         """PRO mode: the maintainer's own attacks are made with this, not v3
         (2026-09-11 — his Ground Bite is "4 FRAMES PRO" while every clip I made

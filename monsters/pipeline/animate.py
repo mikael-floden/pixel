@@ -866,21 +866,39 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
         action = ladder_action(cid, rung, rec["action"], base_state(state))
         actions[d] = action
         counts[d] = nf
-        job = client.animate_v3(man["pixellab_id"], state, action, d,
-                                frame_count=nf, end_frame=end, seed=seed,
-                                keep_first=spec.get("keep_first", True) or pin)
+        if _char_anim_live(client):
+            job = client.animate_v3(man["pixellab_id"], state, action, d,
+                                    frame_count=nf, end_frame=end, seed=seed,
+                                    keep_first=spec.get("keep_first", True) or pin)
+        else:
+            # PixelLab removed character-animation creation (2026-09-21).
+            # Same v3 model, standalone: the base rotation IS the first frame,
+            # and `end` — already the base for a pinned state — is the last.
+            job = client.animate_text_v3(rotation(cid, d), action,
+                                         frame_count=nf, seed=seed, last_frame=end)
         jobs[d] = job
         if verbose:
             print(f"  {cid:16s} {state} {d:11s} job {job} {nf}f roll {tries[d]} rung {rungs[d]:+d}", flush=True)
-    groups = {}
+    groups, frames_by_dir = {}, {}
+    live = _char_anim_live(client)
     for d, job in jobs.items():
-        if job:
-            try:
+        if not job:
+            continue
+        try:
+            if live:
                 j = client.wait_job(job, timeout=900)
                 groups[d] = (j.get("last_response") or {}).get("animation_group_id")
-            except PixelLabError as e:
-                print(f"  {cid} {d}: {e}")
-    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries, groups=groups, counts=counts, rungs=rungs)
+            else:
+                fr = client.job_images(job, timeout=900)
+                # the standalone route ALWAYS returns the first frame; a state
+                # that does not keep it drops it here, so the stored count is
+                # the same either way.
+                if not (spec.get("keep_first", True) or pin) and len(fr) > 1:
+                    fr = fr[1:]
+                frames_by_dir[d] = fr
+        except PixelLabError as e:
+            print(f"  {cid} {d}: {e}")
+    return collect_state(client, cid, state, dirs, version, verbose, pin=pin, actions=actions, tries=tries, groups=groups, counts=counts, rungs=rungs, frames_by_dir=frames_by_dir)
 
 
 def _iso(t):
@@ -935,7 +953,25 @@ def clear_verdict(cid, slot, direction, reason="regenerated"):
 
 
 
-def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None, groups=None, counts=None, rungs=None):
+_CHAR_ANIM_LIVE = None
+
+
+def _char_anim_live(client):
+    """Is PixelLab still serving the route that attaches a clip to a STORED
+    character? Probed once per process, free (a fake id can only answer 4xx;
+    405 is the router saying the route is gone). Since 2026-09-21 it is gone,
+    and generation goes through the standalone /animate-with-text-v3 — the
+    same v3 model, frames returned in the job instead of on the record."""
+    global _CHAR_ANIM_LIVE
+    if _CHAR_ANIM_LIVE is None:
+        _CHAR_ANIM_LIVE = client.character_animation_create_is_live()
+        print(f"  [pixellab] character-animation route: "
+              f"{'live' if _CHAR_ANIM_LIVE else 'GONE — using standalone animate-with-text-v3'}",
+              flush=True)
+    return _CHAR_ANIM_LIVE
+
+
+def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, actions=None, tries=None, groups=None, counts=None, rungs=None, frames_by_dir=None):
     """Download the LAST take of each direction from PixelLab, align it to the
     base canvas, QA, save, mirror. Used after generation and by `fetch`.
     `actions` = {direction: action text} when a direction was made from other
@@ -951,9 +987,41 @@ def collect_state(client, cid, state, dirs, version, verbose=True, pin=False, ac
     actions = dict(actions or {})
     for d in dirs:
         actions.setdefault(d, rec["directions"].get(d, {}).get("action") or rec["action"])
-    takes_by_action = {a: client.animation_takes(man["pixellab_id"], a) for a in set(actions.values())}
+    frames_by_dir = frames_by_dir or {}
+    # Nothing to look up on the record when the frames came back in the job.
+    takes_by_action = ({} if all(d in frames_by_dir for d in dirs)
+                       else {a: client.animation_takes(man["pixellab_id"], a) for a in set(actions.values())})
     out = {}
     for d in dirs:
+        if d in frames_by_dir:
+            # STANDALONE ROUTE: the frames came back inside the job, so there
+            # is no take to pick and no CDN download. Everything after this —
+            # unwrap, align, save, QA — is the same code the record path runs.
+            frames = frames_by_dir[d]
+            if not frames:
+                out[d] = {"status": "fail", "reasons": ["no frames returned"]}
+                continue
+            pinned = spec.get("keep_first", True) or pin
+            base_img = rotation(cid, d)
+            frames, upad, nfix = unwrap_clip(frames, base_img.size)
+            frames, pad = align_to_base(frames, base_img, pinned=pinned)
+            save_frames(cid, state, d, frames)
+            qa = qa_clip(cid, state, d, frames, pinned=pinned,
+                         claw_take=(rungs or {}).get(d, 0) >= 2,
+                         want_frames=(counts or {}).get(d))
+            if pin:
+                qa["pinned"] = True
+                qa["reasons"].append("PINNED fallback: base → walk → base, not a seamless loop (maintainer's last resort)")
+            qa.update({"sub": None, "group": None, "takes": 1, "version": version, "mirrored": False,
+                       "mode": "text-v3", "action": actions[d], "intensity": intensity_of(man, state),
+                       "rolls": (tries or {}).get(d, 1), "frames": len(frames),
+                       "rung": (rungs or {}).get(d, 0),
+                       "unwrapped": nfix or None,
+                       "tries": (tries or {}).get(d, rec["directions"].get(d, {}).get("tries", 1)),
+                       "generated_at": datetime.now(timezone.utc).isoformat(timespec="seconds")})
+            rec["directions"][d] = qa
+            out[d] = qa
+            continue
         cands = takes_by_action[actions[d]].get(d) or []
         want = (groups or {}).get(d)
         if want:
