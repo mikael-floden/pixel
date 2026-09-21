@@ -137,27 +137,6 @@
       "lore": "Grown cats of the dunes wear the sun as armour. This one has not yet, and hides from it in the noon shade."
     },
     {
-      "id": "ash_hatchling",
-      "name": "Ashling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "items": [],
-      "prompt": "Small fantasy salamander hatchling with dark ash-grey scales, glowing ember-orange eyes, a short thick tail curled around it, small clawed feet, and faint heat glow between its scales.",
-      "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows.",
-      "attack_action": "Bite - Lunges forward and bites hard, embers puffing",
-      "claws": true,
-      "fx": true,
-      "attack_extreme": "Ember Burst - The hatchling rears back and lunges, a burst of embers erupting from its mouth",
-      "die_action": "Death - The ember glow goes out and the body crumbles apart into a small heap of grey ash on the ground, then fades away",
-      "attack_simple": "Snap - Throws its head forward and snaps its jaws shut hard once, embers puffing"
-    },
-    {
       "id": "cave_bear",
       "name": "Deepclaw",
       "tier": "evil",
@@ -4655,6 +4634,35 @@
       "die_action": "Death - Its legs give out, it collapses flat onto its belly with its head down and fades away",
       "attack_simple": "Snap - Throws its head forward and snaps its jaws shut hard once",
       "graduated_at": "2026-09-21T08:14:23+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "ash_hatchling",
+      "name": "Ashling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "items": [],
+      "prompt": "Small fantasy salamander hatchling with dark ash-grey scales, glowing ember-orange eyes, a short thick tail curled around it, small clawed feet, and faint heat glow between its scales.",
+      "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows.",
+      "attack_action": "Bite - Lunges forward and bites hard, embers puffing",
+      "claws": true,
+      "fx": true,
+      "attack_extreme": "Ember Burst - The hatchling rears back and lunges, a burst of embers erupting from its mouth",
+      "die_action": "Death - The ember glow goes out and the body crumbles apart into a small heap of grey ash on the ground, then fades away",
+      "attack_simple": "Snap - Throws its head forward and snaps its jaws shut hard once, embers puffing",
+      "graduated_at": "2026-09-21T08:43:56+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

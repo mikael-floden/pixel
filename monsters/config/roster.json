@@ -350,6 +350,21 @@
       }
     },
     {
+      "id": "ash_hatchling",
+      "kind": "character",
+      "pixellab_id": "ccf6589c-4af9-4ec3-bdfc-2c2da94e1e08",
+      "name": "Ashling",
+      "lore": "Hatched in the cinder beds beneath the caldera. It will grow into a mouthful of flame; for now it only glows.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Ember Burst - The hatchling rears back and lunges,": "attack",
+        "custom-Bite - Lunges forward and bites hard, embers puffi": "attack",
+        "custom-Death - The ember glow goes out and the body crumb": "die"
+      }
+    },
+    {
       "id": "turtle_hatchling",
       "kind": "character",
       "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
