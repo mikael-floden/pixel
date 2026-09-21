@@ -157,9 +157,31 @@ Cost: 1 + ceil(size²·8/65536) generations (64 px → 2, 128 px → 3,
 176 px → 5, 240 px → 9), billed at $0.02/generation once the subscription
 pool is empty (measured 2026-09-09; the 100-set with re-rolls ran ≈ $10).
 The loop stops below `--min-usd` (default $5). Seeds are `crc32(id:vN)`, so
-a redo is reproducible and never re-rolls a kept one. Run workers with
-`setsid nohup … & disown` in disjoint `--only` batches; `drop` cleans the
-stray a killed worker leaves behind.
+a redo is reproducible and never re-rolls a kept one.
+
+**Parallel workers: run TWELVE, in disjoint `--only` batches, fixed before
+launch.** One base is ONE PixelLab background job and the account cap is 20
+concurrent (Tier 3, `pixellab_client._request`), so twelve is the safe level;
+per-base latency is flat in size (medians 192–220 s across every size band
+over 62 manifests), so the parallelism is real rather than queued. Three
+traps, each paid for:
+- **A batch cannot be re-split once a worker is running.** `cmd_generate`
+  builds its `todo` ONCE at startup and never re-checks inside the loop, so a
+  worker added over ids another worker still holds regenerates them as v2 over
+  the landed v1. To rebalance, stop every worker first, then recompute the
+  remaining set from the filesystem.
+- **Kill a worker only at an item boundary** — the moment its `qa=` line
+  lands, not mid-item — or its in-flight job is abandoned already paid for.
+  `drop` cleans the stray record.
+- **Stagger launches a few seconds.** Every worker runs `reconcile` at
+  startup, which rewrites `config/candidates.json` when he has rejected
+  something; twelve of those at once race on the same file.
+`candidates/index.json` is rewritten after EVERY landed base, so during a
+parallel run it belongs to nobody — rebuild it once from the filesystem at
+the end (`candidates.py qa`) instead of committing a mid-run snapshot.
+Never wait on workers with `pgrep -f "candidates.py generate"`: the checking
+shell's own command line contains that string, so the pattern matches itself
+and the wait never ends. Match `candidates[.]py generate`.
 
 ## Animating approved candidates — one state at a time
 
