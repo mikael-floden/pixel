@@ -973,22 +973,6 @@
       "items": []
     },
     {
-      "id": "tide_serpent",
-      "name": "Tidecoil",
-      "tier": "boss",
-      "scale": "big",
-      "size": 232,
-      "template_id": "bear",
-      "biome": [
-        "deep_water"
-      ],
-      "prompt": "Gigantic fantasy sea serpent coiled on itself, a heavy blue-green ridged body of overlapping scales, a tall finned crest running down its spine, gill slits behind the jaw, and long backward-curving teeth.",
-      "lore": "The oldest thing in the water and the least interested in you. It surfaces only to breathe.",
-      "items": [
-        "blue scales"
-      ]
-    },
-    {
       "id": "lobe_fish",
       "name": "Lobefin",
       "tier": "mid",
@@ -1187,21 +1171,6 @@
       "items": []
     },
     {
-      "id": "reed_jaw",
-      "name": "Reedjaw",
-      "tier": "evil",
-      "scale": "big",
-      "size": 224,
-      "template_id": "bear",
-      "biome": [
-        "water",
-        "dark_mud"
-      ],
-      "prompt": "Gigantic fantasy crocodile with an armoured ridged dark olive back, a long broad jaw closed on interlocking yellowed teeth, short powerful clawed legs held wide, and a heavy muscular tail curled alongside it.",
-      "lore": "It is the oldest resident of the reeds and remembers every crossing. It has never needed to hurry.",
-      "items": []
-    },
-    {
       "id": "gnarl_shell",
       "name": "Gnarlshell",
       "tier": "mid",
@@ -1294,38 +1263,6 @@
       "lore": "It carries its own air down with it and comes up only when that runs out.",
       "items": [
         "jewel beetle"
-      ]
-    },
-    {
-      "id": "gnaw_tail",
-      "name": "Gnawtail",
-      "tier": "mid",
-      "scale": "standard",
-      "size": 104,
-      "template_id": "bear",
-      "biome": [
-        "water",
-        "grass"
-      ],
-      "prompt": "Fantasy giant beaver with dense wet brown fur, heavy orange chisel incisors, small round ears, webbed hind feet, and a broad flat scaled tail folded alongside its body.",
-      "lore": "It rebuilds the river to suit itself and takes any objection out on the trees.",
-      "items": []
-    },
-    {
-      "id": "sharp_stoop",
-      "name": "Sharpstoop",
-      "tier": "mid",
-      "scale": "standard",
-      "size": 104,
-      "template_id": "bear",
-      "biome": [
-        "grass",
-        "grey_stone"
-      ],
-      "prompt": "Fantasy hunting hawk standing upright, wings folded tightly against its body, a barred cream and brown breast, a hooked grey beak, a fierce yellow eye, and yellow scaled feet with black talons.",
-      "lore": "It watches the whole field from one post and moves once. Once is all it has ever needed.",
-      "items": [
-        "hawk quill"
       ]
     },
     {
@@ -5412,6 +5349,81 @@
       "items": [],
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-19T12:56:51+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "tide_serpent",
+      "name": "Tidecoil",
+      "tier": "boss",
+      "scale": "big",
+      "size": 232,
+      "template_id": "bear",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Gigantic fantasy sea serpent coiled on itself, a heavy blue-green ridged body of overlapping scales, a tall finned crest running down its spine, gill slits behind the jaw, and long backward-curving teeth.",
+      "lore": "The oldest thing in the water and the least interested in you. It surfaces only to breathe.",
+      "items": [
+        "blue scales"
+      ],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:34:28+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "reed_jaw",
+      "name": "Reedjaw",
+      "tier": "evil",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "prompt": "Gigantic fantasy crocodile with an armoured ridged dark olive back, a long broad jaw closed on interlocking yellowed teeth, short powerful clawed legs held wide, and a heavy muscular tail curled alongside it.",
+      "lore": "It is the oldest resident of the reeds and remembers every crossing. It has never needed to hurry.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:34:28+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "gnaw_tail",
+      "name": "Gnawtail",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "grass"
+      ],
+      "prompt": "Fantasy giant beaver with dense wet brown fur, heavy orange chisel incisors, small round ears, webbed hind feet, and a broad flat scaled tail folded alongside its body.",
+      "lore": "It rebuilds the river to suit itself and takes any objection out on the trees.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:34:29+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "sharp_stoop",
+      "name": "Sharpstoop",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "prompt": "Fantasy hunting hawk standing upright, wings folded tightly against its body, a barred cream and brown breast, a hooked grey beak, a fierce yellow eye, and yellow scaled feet with black talons.",
+      "lore": "It watches the whole field from one post and moves once. Once is all it has ever needed.",
+      "items": [
+        "hawk quill"
+      ],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:34:29+00:00",
       "versions_tried": 1
     }
   ],
