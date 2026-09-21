@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T14:37:43.639Z",
+  "updated_at": "2026-09-21T14:40:16.687Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -4826,7 +4826,45 @@
           "item": "stained_marrow_bone",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 28,
+        "ry": 13,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.94,
+            "ay": 43.4
+          },
+          "idle#south-east": {
+            "ax": 1.61,
+            "ay": 42.76
+          },
+          "idle#east": {
+            "ax": 2.64,
+            "ay": 42.61
+          },
+          "idle#north-east": {
+            "ax": 1.27,
+            "ay": 39.59
+          },
+          "idle#north": {
+            "ax": -0.49,
+            "ay": 39.27
+          },
+          "idle#north-west": {
+            "ax": 0.61,
+            "ay": 39.44
+          },
+          "idle#west": {
+            "ax": -0.63,
+            "ay": 42.07
+          },
+          "idle#south-west": {
+            "ax": -1.33,
+            "ay": 43.27
+          }
+        }
+      }
     },
     "snow_demon": {
       "level": 17,
