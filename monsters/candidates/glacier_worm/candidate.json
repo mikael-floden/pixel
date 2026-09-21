@@ -1,0 +1,141 @@
+{
+  "id": "glacier_worm",
+  "name": "Glacierworm",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It moves through solid ice the way others move through water, and leaves the hole behind it.",
+  "biome": [
+    "ice",
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Fantasy ice worm with a pale segmented body under a translucent rime crust, a ring mouth of blue-black hooks, faint blue light within the segments, and frost forming along its length.",
+  "size": [
+    136,
+    136
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "glacier_worm/rotations/south.webp",
+    "south-east": "glacier_worm/rotations/south-east.webp",
+    "east": "glacier_worm/rotations/east.webp",
+    "north-east": "glacier_worm/rotations/north-east.webp",
+    "north": "glacier_worm/rotations/north.webp",
+    "north-west": "glacier_worm/rotations/north-west.webp",
+    "west": "glacier_worm/rotations/west.webp",
+    "south-west": "glacier_worm/rotations/south-west.webp"
+  },
+  "sheet": "glacier_worm/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7db83b5b-f3ff-4a3e-bbcf-98d761fd0174",
+  "seed": 1897789150,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:27:46+00:00",
+  "elapsed_s": 194.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.727,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.727,
+        "bbox": [
+          31,
+          4,
+          116,
+          131
+        ],
+        "fill": 0.584,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.789,
+        "bbox": [
+          27,
+          5,
+          121,
+          129
+        ],
+        "fill": 0.63,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.813,
+        "bbox": [
+          19,
+          7,
+          106,
+          133
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.787,
+        "bbox": [
+          17,
+          3,
+          103,
+          128
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.819,
+        "bbox": [
+          35,
+          5,
+          105,
+          130
+        ],
+        "fill": 0.473,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.802,
+        "bbox": [
+          8,
+          5,
+          111,
+          133
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.789,
+        "bbox": [
+          31,
+          2,
+          99,
+          127
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.806,
+        "bbox": [
+          23,
+          7,
+          129,
+          133
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      }
+    }
+  }
+}

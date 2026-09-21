@@ -1,0 +1,141 @@
+{
+  "id": "cinder_bore",
+  "name": "Cinderbore",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It eats the hot rock and leaves the cold. The tunnels it abandons are safe, eventually.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [],
+  "prompt": "Fantasy cinder worm with a ribbed ashen-grey body split by glowing ember seams, a rasping ring mouth of dark plates, smoke trailing from its segments, and no eyes.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cinder_bore/rotations/south.webp",
+    "south-east": "cinder_bore/rotations/south-east.webp",
+    "east": "cinder_bore/rotations/east.webp",
+    "north-east": "cinder_bore/rotations/north-east.webp",
+    "north": "cinder_bore/rotations/north.webp",
+    "north-west": "cinder_bore/rotations/north-west.webp",
+    "west": "cinder_bore/rotations/west.webp",
+    "south-west": "cinder_bore/rotations/south-west.webp"
+  },
+  "sheet": "cinder_bore/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a3a63b3a-66b4-4d4b-9b46-deef8bdff2ed",
+  "seed": 129267443,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:27:47+00:00",
+  "elapsed_s": 174.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.674,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.674,
+        "bbox": [
+          5,
+          5,
+          98,
+          99
+        ],
+        "fill": 0.808,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.777,
+        "bbox": [
+          3,
+          5,
+          98,
+          99
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.795,
+        "bbox": [
+          4,
+          4,
+          99,
+          98
+        ],
+        "fill": 0.826,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.754,
+        "bbox": [
+          7,
+          6,
+          94,
+          100
+        ],
+        "fill": 0.756,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.788,
+        "bbox": [
+          3,
+          4,
+          101,
+          100
+        ],
+        "fill": 0.87,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.797,
+        "bbox": [
+          6,
+          6,
+          94,
+          100
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.793,
+        "bbox": [
+          6,
+          5,
+          99,
+          98
+        ],
+        "fill": 0.8,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.812,
+        "bbox": [
+          8,
+          5,
+          97,
+          99
+        ],
+        "fill": 0.773,
+        "touches_edge": false
+      }
+    }
+  }
+}

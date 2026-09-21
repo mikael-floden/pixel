@@ -1,0 +1,143 @@
+{
+  "id": "dusk_hang",
+  "name": "Duskhang",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It hangs where the orchard ends and takes its share first. It has never been caught taking twice.",
+  "biome": [
+    "grey_stone",
+    "grass"
+  ],
+  "items": [
+    "pale wing"
+  ],
+  "prompt": "Fantasy fruit bat perched upright, large leathery wings furled around itself like a cloak, a fox-like face with big dark eyes, tall ears, and long clawed thumbs hooked over the ledge.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "dusk_hang/rotations/south.webp",
+    "south-east": "dusk_hang/rotations/south-east.webp",
+    "east": "dusk_hang/rotations/east.webp",
+    "north-east": "dusk_hang/rotations/north-east.webp",
+    "north": "dusk_hang/rotations/north.webp",
+    "north-west": "dusk_hang/rotations/north-west.webp",
+    "west": "dusk_hang/rotations/west.webp",
+    "south-west": "dusk_hang/rotations/south-west.webp"
+  },
+  "sheet": "dusk_hang/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "cb5023c6-dde1-4c73-830d-e83f02e34526",
+  "seed": 1795148230,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:25:32+00:00",
+  "elapsed_s": 200.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.713,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.732,
+        "bbox": [
+          5,
+          6,
+          83,
+          82
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.76,
+        "bbox": [
+          14,
+          4,
+          83,
+          83
+        ],
+        "fill": 0.704,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.761,
+        "bbox": [
+          4,
+          4,
+          72,
+          83
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.713,
+        "bbox": [
+          6,
+          7,
+          81,
+          81
+        ],
+        "fill": 0.717,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.79,
+        "bbox": [
+          7,
+          4,
+          76,
+          87
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.743,
+        "bbox": [
+          11,
+          5,
+          74,
+          82
+        ],
+        "fill": 0.626,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.733,
+        "bbox": [
+          13,
+          5,
+          77,
+          82
+        ],
+        "fill": 0.636,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.784,
+        "bbox": [
+          15,
+          4,
+          79,
+          87
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      }
+    }
+  }
+}

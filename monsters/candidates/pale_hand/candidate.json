@@ -1,0 +1,140 @@
+{
+  "id": "pale_hand",
+  "name": "Palehand",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It has lived so long without light that it now hunts by the sound of breathing.",
+  "biome": [
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy troglodyte shown full body from head to feet, a stooped pallid humanoid with loose grey skin, huge lidless colourless eyes, long groping fingers, flat blunt teeth, and no hair anywhere.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "pale_hand/rotations/south.webp",
+    "south-east": "pale_hand/rotations/south-east.webp",
+    "east": "pale_hand/rotations/east.webp",
+    "north-east": "pale_hand/rotations/north-east.webp",
+    "north": "pale_hand/rotations/north.webp",
+    "north-west": "pale_hand/rotations/north-west.webp",
+    "west": "pale_hand/rotations/west.webp",
+    "south-west": "pale_hand/rotations/south-west.webp"
+  },
+  "sheet": "pale_hand/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f4aad62b-74f9-46fc-bb51-3df8b847629b",
+  "seed": 1998325269,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:25:20+00:00",
+  "elapsed_s": 285.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.69,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.69,
+        "bbox": [
+          16,
+          5,
+          111,
+          123
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.784,
+        "bbox": [
+          36,
+          5,
+          86,
+          124
+        ],
+        "fill": 0.363,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.779,
+        "bbox": [
+          40,
+          5,
+          91,
+          124
+        ],
+        "fill": 0.37,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.747,
+        "bbox": [
+          16,
+          5,
+          112,
+          121
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          24,
+          6,
+          107,
+          124
+        ],
+        "fill": 0.598,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.75,
+        "bbox": [
+          29,
+          5,
+          103,
+          122
+        ],
+        "fill": 0.528,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.734,
+        "bbox": [
+          19,
+          5,
+          101,
+          122
+        ],
+        "fill": 0.586,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.802,
+        "bbox": [
+          22,
+          6,
+          102,
+          124
+        ],
+        "fill": 0.576,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "id": "mire_crane",
+  "name": "Mirecrane",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It stands in the shallows until it is part of them, then strikes once without bending.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [
+    "wing quills"
+  ],
+  "prompt": "Fantasy tall crane standing upright, wings folded against a pale grey body, a long neck drawn back into an S, a straight spear-like bill, a red crown patch, and long dark legs.",
+  "size": [
+    144,
+    144
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mire_crane/rotations/south.webp",
+    "south-east": "mire_crane/rotations/south-east.webp",
+    "east": "mire_crane/rotations/east.webp",
+    "north-east": "mire_crane/rotations/north-east.webp",
+    "north": "mire_crane/rotations/north.webp",
+    "north-west": "mire_crane/rotations/north-west.webp",
+    "west": "mire_crane/rotations/west.webp",
+    "south-west": "mire_crane/rotations/south-west.webp"
+  },
+  "sheet": "mire_crane/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "47f3f8a8-ff51-497a-8874-a526ddec7d6d",
+  "seed": 45992494,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:25:59+00:00",
+  "elapsed_s": 190.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.636,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.636,
+        "bbox": [
+          37,
+          5,
+          113,
+          140
+        ],
+        "fill": 0.495,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.7,
+        "bbox": [
+          30,
+          6,
+          110,
+          135
+        ],
+        "fill": 0.498,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.715,
+        "bbox": [
+          36,
+          7,
+          111,
+          140
+        ],
+        "fill": 0.481,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.713,
+        "bbox": [
+          34,
+          6,
+          108,
+          135
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.729,
+        "bbox": [
+          48,
+          7,
+          99,
+          136
+        ],
+        "fill": 0.317,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.744,
+        "bbox": [
+          29,
+          5,
+          120,
+          140
+        ],
+        "fill": 0.592,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.709,
+        "bbox": [
+          48,
+          5,
+          96,
+          134
+        ],
+        "fill": 0.299,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.738,
+        "bbox": [
+          22,
+          6,
+          118,
+          140
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      }
+    }
+  }
+}

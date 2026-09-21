@@ -1,0 +1,141 @@
+{
+  "id": "snow_vole",
+  "name": "Snowvole",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It tunnels under the snow all winter and comes up only where it means to.",
+  "biome": [
+    "snow",
+    "grass"
+  ],
+  "items": [],
+  "prompt": "Fantasy snow vole sitting up on its haunches, a round body in thick pale grey fur, small ears nearly buried, black bead eyes, a blunt nose, and tiny pink forepaws held together.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "snow_vole/rotations/south.webp",
+    "south-east": "snow_vole/rotations/south-east.webp",
+    "east": "snow_vole/rotations/east.webp",
+    "north-east": "snow_vole/rotations/north-east.webp",
+    "north": "snow_vole/rotations/north.webp",
+    "north-west": "snow_vole/rotations/north-west.webp",
+    "west": "snow_vole/rotations/west.webp",
+    "south-west": "snow_vole/rotations/south-west.webp"
+  },
+  "sheet": "snow_vole/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7d162694-17ec-4094-8ca0-f51efd8548c7",
+  "seed": 904676145,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:25:23+00:00",
+  "elapsed_s": 176.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.573,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.682,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.662,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.644,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.586,
+        "bbox": [
+          4,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.703,
+        "bbox": [
+          5,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.573,
+        "bbox": [
+          4,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.596,
+        "bbox": [
+          5,
+          2,
+          36,
+          38
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.703,
+        "bbox": [
+          4,
+          2,
+          35,
+          38
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      }
+    }
+  }
+}

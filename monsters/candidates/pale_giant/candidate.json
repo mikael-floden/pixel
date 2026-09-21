@@ -1,0 +1,141 @@
+{
+  "id": "pale_giant",
+  "name": "Palegiant",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It comes down with the worst weather and goes back up when the weather does.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy snow giant shown full body from head to feet, a shaggy white pelt over massive shoulders, blue-grey weathered skin, a flat brutal brow, small deep eyes, and huge bare hands.",
+  "size": [
+    240,
+    240
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "pale_giant/rotations/south.webp",
+    "south-east": "pale_giant/rotations/south-east.webp",
+    "east": "pale_giant/rotations/east.webp",
+    "north-east": "pale_giant/rotations/north-east.webp",
+    "north": "pale_giant/rotations/north.webp",
+    "north-west": "pale_giant/rotations/north-west.webp",
+    "west": "pale_giant/rotations/west.webp",
+    "south-west": "pale_giant/rotations/south-west.webp"
+  },
+  "sheet": "pale_giant/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "57e24a7c-1b76-4f59-a158-1f178cfef2c7",
+  "seed": 36463501,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:26:10+00:00",
+  "elapsed_s": 263.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.579,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.579,
+        "bbox": [
+          29,
+          12,
+          210,
+          228
+        ],
+        "fill": 0.679,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.682,
+        "bbox": [
+          74,
+          12,
+          174,
+          233
+        ],
+        "fill": 0.384,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.683,
+        "bbox": [
+          65,
+          12,
+          164,
+          233
+        ],
+        "fill": 0.38,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.639,
+        "bbox": [
+          35,
+          9,
+          205,
+          227
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.68,
+        "bbox": [
+          42,
+          13,
+          195,
+          232
+        ],
+        "fill": 0.582,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.652,
+        "bbox": [
+          48,
+          9,
+          186,
+          228
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.653,
+        "bbox": [
+          51,
+          10,
+          190,
+          228
+        ],
+        "fill": 0.526,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.675,
+        "bbox": [
+          44,
+          13,
+          197,
+          232
+        ],
+        "fill": 0.582,
+        "touches_edge": false
+      }
+    }
+  }
+}

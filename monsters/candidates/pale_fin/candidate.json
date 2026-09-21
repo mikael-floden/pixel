@@ -1,0 +1,141 @@
+{
+  "id": "pale_fin",
+  "name": "Palefin",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It maps the pool by pressure alone and knows the shape of every stone in it.",
+  "biome": [
+    "grey_stone",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy blind cave fish with a colourless smooth body showing pink beneath, skin grown over empty eye sockets, thin translucent fins, and fine sensory lines along its flanks.",
+  "size": [
+    44,
+    44
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "pale_fin/rotations/south.webp",
+    "south-east": "pale_fin/rotations/south-east.webp",
+    "east": "pale_fin/rotations/east.webp",
+    "north-east": "pale_fin/rotations/north-east.webp",
+    "north": "pale_fin/rotations/north.webp",
+    "north-west": "pale_fin/rotations/north-west.webp",
+    "west": "pale_fin/rotations/west.webp",
+    "south-west": "pale_fin/rotations/south-west.webp"
+  },
+  "sheet": "pale_fin/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "86cb1c73-215b-4c0b-91a7-ced99eb8caf8",
+  "seed": 1282412071,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:27:44+00:00",
+  "elapsed_s": 178.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.701,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.785,
+        "bbox": [
+          5,
+          8,
+          39,
+          37
+        ],
+        "fill": 0.509,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.701,
+        "bbox": [
+          6,
+          7,
+          39,
+          34
+        ],
+        "fill": 0.46,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.762,
+        "bbox": [
+          5,
+          8,
+          39,
+          37
+        ],
+        "fill": 0.509,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.747,
+        "bbox": [
+          11,
+          7,
+          36,
+          36
+        ],
+        "fill": 0.374,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.805,
+        "bbox": [
+          7,
+          7,
+          36,
+          37
+        ],
+        "fill": 0.449,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.789,
+        "bbox": [
+          5,
+          8,
+          38,
+          34
+        ],
+        "fill": 0.443,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.808,
+        "bbox": [
+          9,
+          7,
+          34,
+          36
+        ],
+        "fill": 0.374,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.783,
+        "bbox": [
+          5,
+          8,
+          39,
+          36
+        ],
+        "fill": 0.492,
+        "touches_edge": false
+      }
+    }
+  }
+}

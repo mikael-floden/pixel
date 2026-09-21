@@ -1,0 +1,143 @@
+{
+  "id": "dusk_moth",
+  "name": "Duskmoth",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "It is drawn to lit windows and cannot explain why. It has never harmed the lamp or itself.",
+  "biome": [
+    "grass",
+    "parquet_floor"
+  ],
+  "items": [
+    "moth wing"
+  ],
+  "prompt": "Fantasy moth at rest with broad grey and cream wings folded flat in a roof over its back, a thickly furred thorax, large feathered antennae, and small dark eyes.",
+  "size": [
+    72,
+    72
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "dusk_moth/rotations/south.webp",
+    "south-east": "dusk_moth/rotations/south-east.webp",
+    "east": "dusk_moth/rotations/east.webp",
+    "north-east": "dusk_moth/rotations/north-east.webp",
+    "north": "dusk_moth/rotations/north.webp",
+    "north-west": "dusk_moth/rotations/north-west.webp",
+    "west": "dusk_moth/rotations/west.webp",
+    "south-west": "dusk_moth/rotations/south-west.webp"
+  },
+  "sheet": "dusk_moth/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "5e60f029-9280-4576-ac90-e69e3d8af03a",
+  "seed": 1895700580,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:27:35+00:00",
+  "elapsed_s": 274.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.661,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.691,
+        "bbox": [
+          2,
+          3,
+          69,
+          68
+        ],
+        "fill": 0.84,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.717,
+        "bbox": [
+          18,
+          2,
+          66,
+          69
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.711,
+        "bbox": [
+          5,
+          2,
+          53,
+          69
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.661,
+        "bbox": [
+          3,
+          6,
+          69,
+          66
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.767,
+        "bbox": [
+          5,
+          2,
+          65,
+          69
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.7,
+        "bbox": [
+          7,
+          3,
+          58,
+          69
+        ],
+        "fill": 0.649,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.687,
+        "bbox": [
+          15,
+          3,
+          65,
+          69
+        ],
+        "fill": 0.637,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.772,
+        "bbox": [
+          6,
+          2,
+          66,
+          69
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      }
+    }
+  }
+}
