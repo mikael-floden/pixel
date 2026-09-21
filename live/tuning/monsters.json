@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T10:07:11.400Z",
+  "updated_at": "2026-09-21T10:17:54.455Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -1715,7 +1715,45 @@
           "item": "torn_brown_wing",
           "chance": 0.32
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 20.75,
+        "ry": 9.25,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.55,
+            "ay": 17.07
+          },
+          "idle#east": {
+            "ax": -0.51,
+            "ay": 18.77
+          },
+          "idle#south-east": {
+            "ax": 2.31,
+            "ay": 17.96
+          },
+          "idle#north-east": {
+            "ax": 0.15,
+            "ay": 16.74
+          },
+          "idle#north": {
+            "ax": 0.06,
+            "ay": 17.49
+          },
+          "idle#west": {
+            "ax": -0.97,
+            "ay": 17.67
+          },
+          "idle#south-west": {
+            "ax": -2,
+            "ay": 18.51
+          },
+          "idle#north-west": {
+            "ax": 1.17,
+            "ay": 18.56
+          }
+        }
+      }
     },
     "fire_elemental": {
       "level": 10,
