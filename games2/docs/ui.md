@@ -122,7 +122,12 @@ match logic `server/src/chess.ts`; dialog `client/src/chessui.ts`; gate
   the rail floor from applyLayout's px — because a `--ml-kb` write
   recalculates the whole document (1.2 ms hidden Chat page / 7 ms with 1000
   lines shown, harness). THE KEYBOARD NEVER LAYS OUT: a same-width resize is
-  held while a box is lifted and for 700 ms after the drop (`kbHolding`),
+  held while a chat box has FOCUS, while one is lifted, and for 700 ms after
+  the drop (`kbHolding`) — focus because arming is one-shot, so every open
+  after a session's first lost the race, laid the game out for the short
+  window and put the menu between the input and the keys; the shrink is
+  measured against `kbBaseH` (the height at focus) rather than `layoutH`,
+  which that stray layout overwrote, blinding the lift for the session,
   and the drop lays out once at the end of that window only if the viewport
   differs from the one last laid out — laying out AT the drop on the
   still-shrunk page was the black frame he filmed; the lift measures the

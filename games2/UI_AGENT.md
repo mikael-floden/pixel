@@ -478,8 +478,22 @@ from the games agent), #18 (title/landing screen).
   when the keys closed "as if the game render engine restarts"; his browser
   resizes the page around its keys — the window shrinks under them on open
   and grows back on close): a resize that keeps the width is not laid out
-  while a box is lifted nor for `KB_SETTLE_MS` (700) after the drop
-  (`kbHolding`); at the settle window's end the drop lays out once and only
+  while a chat box HAS FOCUS, while one is lifted, nor for `KB_SETTLE_MS`
+  (700) after the drop (`kbHolding`). FOCUS IS THE ONE THAT CANNOT LOSE THE
+  RACE (maintainer 2026-09-21: the menu wedged between the input and the keys
+  on the first open after a restart, gone on the second): the hold used to
+  start only once `armLift` had set `.ml-kb-up`, and arming at focus is
+  one-shot — `open` there is `(!sawReport && touchDevice())`, so after the
+  session's first keyboard the lift waits for evidence and the page shrink
+  lands first. Measured on the broken build: first open no layout run, rail
+  540, menu hidden, box floated; second open one layout run, rail 279, menu
+  VISIBLE, box never floated. `focusin` is synchronous on the tap, before any
+  keyboard exists. The shrink is measured against `kbBaseH`, the height at
+  focus, NOT `layoutH` — a stray layout overwrote the latter and the lift was
+  then blind to the keyboard for the rest of the session, which is why the
+  bad case had no floated box either; `kbBaseH` is captured only while
+  nothing is holding, so re-tapping with the keys up keeps the full height.
+  At the settle window's end the drop lays out once and only
   if the viewport is not the one last laid out (`layoutW`/`layoutH`), which a
   keyboard's close never leaves — an earlier cut laid out AT the drop, on the
   still-shrunk page, and that was the black frame itself. So `--hud-h-inv`

@@ -411,6 +411,48 @@ try {
   await page.evaluate(() => document.querySelector(".ml-chat-input").blur());
   await page.waitForTimeout(300);
 
+  // ── EVERY OPEN IS THE FIRST OPEN (maintainer 2026-09-21, two screenshots:
+  //    the menu wedged between the input and the keys after a restart, gone
+  //    when he closed and reopened). The hold used to begin only once armLift
+  //    had added .ml-kb-up, and arming at focus is one-shot — after the
+  //    session's first keyboard the lift waits for evidence, so the browser's
+  //    page shrink landed first, a layout ran for the short window and the
+  //    rail moved up into view. Measured on the broken build: first open no
+  //    layout run / rail 540 / menu hidden / lifted, second open one layout
+  //    run / rail 279 / menu VISIBLE / never lifted. So drive open, close,
+  //    open and require the two opens to be the SAME reading. ──
+  {
+    const cycle = async () => {
+      await page.evaluate(() => document.querySelector(".ml-chat-input").focus());
+      await page.waitForTimeout(150);
+      await page.setViewportSize({ width: VW, height: VH - 400 });
+      await page.waitForTimeout(2500);
+      const shot = await page.evaluate(() => {
+        const cs = getComputedStyle(document.documentElement);
+        const hud = document.querySelector(".ml-hud").getBoundingClientRect();
+        return { ...window.__cnt, hudInv: cs.getPropertyValue("--hud-h-inv").trim(),
+                 hudTop: Math.round(hud.top), menuVisible: hud.top < window.innerHeight - 2,
+                 lifted: document.documentElement.classList.contains("ml-kb-up") };
+      });
+      await page.setViewportSize({ width: VW, height: VH });
+      await page.waitForTimeout(400);
+      await page.evaluate(() => document.querySelector(".ml-chat-input").blur());
+      await page.waitForTimeout(1200);
+      return shot;
+    };
+    const first = await cycle();
+    const second = await cycle();
+    !first.menuVisible && first.lifted
+      ? ok(`first open: the menu stays out of sight and the box floats (rail ${first.hudTop}, --hud-h-inv ${first.hudInv})`)
+      : fail(`first open: menuVisible=${first.menuVisible} lifted=${first.lifted} rail=${first.hudTop} --hud-h-inv=${first.hudInv}`);
+    !second.menuVisible && second.lifted
+      ? ok(`second open: the same (rail ${second.hudTop}, --hud-h-inv ${second.hudInv})`)
+      : fail(`second open differs — menuVisible=${second.menuVisible} lifted=${second.lifted} rail=${second.hudTop} --hud-h-inv=${second.hudInv}`);
+    first.hudInv === second.hudInv && first.hudTop === second.hudTop && second.layout === first.layout
+      ? ok(`…and neither open laid the game out (layout runs +${second.layout - first.layout} between them)`)
+      : fail(`the two opens disagree: rail ${first.hudTop}/${second.hudTop}, --hud-h-inv ${first.hudInv}/${second.hudInv}, layout runs ${first.layout}/${second.layout}`);
+  }
+
   // ── req 1 (system side) + req 6: on login the world logs system events
   //    immediately (time-of-day sync, the join "star"). Wait for one, then the
   //    FIRST row must be a date divider (so the first message shows its date). ──

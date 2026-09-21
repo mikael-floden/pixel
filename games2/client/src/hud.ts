@@ -538,11 +538,23 @@ let layoutW = 0;
 let layoutH = 0;
 let hudHpx = 0;
 let kbSettleUntil = 0;
-/** Is a chat box lifted, or did one drop less than KB_SETTLE_MS ago? While
- *  either holds, a resize that keeps the width is the keyboard's and is not
- *  laid out (see the resize listener). */
+/** Has a chat box got FOCUS, is one lifted, or did one drop less than
+ *  KB_SETTLE_MS ago? While any of the three holds, a resize that keeps the
+ *  width is the keyboard's and is not laid out (see the resize listener).
+ *
+ *  FOCUS IS THE ONE THAT CANNOT LOSE A RACE (maintainer 2026-09-21, two
+ *  screenshots: the menu wedged between the input and the keys on the first
+ *  open after a restart, gone on the second). The hold used to start only
+ *  once `armLift` had added `.ml-kb-up`, and arming at focus is one-shot —
+ *  `open` is `(!sawReport && touchDevice())` there, so after the session's
+ *  first keyboard the lift waits for evidence and the browser's page shrink
+ *  lands FIRST. Measured: first open no layout run, rail 540, menu hidden;
+ *  second open one layout run, rail 279, menu visible and the box never
+ *  floated. focusin runs synchronously when the field is tapped, before any
+ *  keyboard can exist, so a hold that starts there is ahead of every shrink. */
+let kbFocused = false;
 const kbHolding = () =>
-  document.documentElement.classList.contains("ml-kb-up") || performance.now() < kbSettleUntil;
+  kbFocused || document.documentElement.classList.contains("ml-kb-up") || performance.now() < kbSettleUntil;
 function applyLayout() {
   const root = document.documentElement;
   const w = window.innerWidth;
@@ -2830,6 +2842,7 @@ function mountChatKeyboardLift() {
   document.body.appendChild(probe);
 
   let input: HTMLElement | null = null; // the focused chat input
+  let kbBaseH = 0; // viewport height with no keyboard up (captured at focus)
   let lifted = false; // currently floated above the keyboard
   let poll = 0;
   let focusedAt = 0;
@@ -2856,10 +2869,20 @@ function mountChatKeyboardLift() {
       vv ? Math.round(pr.bottom - (vv.offsetTop + vv.height)) : 0,
     );
   };
-  /** How far the page itself has shrunk since the last layout: a browser that
-   *  resizes the page for its keys puts the keys' top exactly at the viewport's
-   *  bottom, so the lift there is 0 and the rail is below the viewport. */
-  const layoutShrunk = () => Math.max(0, Math.round(layoutH - probe.getBoundingClientRect().bottom));
+  /** How far the page itself has shrunk since the keyboard arrived: a browser
+   *  that resizes the page for its keys puts the keys' top exactly at the
+   *  viewport's bottom, so the lift there is 0 and the rail is below the
+   *  viewport.
+   *
+   *  MEASURED AGAINST THE HEIGHT AT FOCUS, NOT `layoutH`. applyLayout
+   *  overwrites layoutH, so one stray layout while the keys were up (exactly
+   *  what the race above produced) made this read 0 — and then the lift could
+   *  not see the keyboard at all for the rest of that session, which is why
+   *  the bad case also had no floated box. `kbBaseH` is captured in focusin
+   *  and only when nothing is holding, so re-tapping the field while the keys
+   *  are already up keeps the full height rather than adopting the short one. */
+  const layoutShrunk = () =>
+    Math.max(0, Math.round((kbBaseH || layoutH) - probe.getBoundingClientRect().bottom));
   // The box floats at --ml-kb + KB_GAP; to CLEAR the frame's bottom rail it must
   // land above the rail's visible top (--hud-h up from the bottom), so --ml-kb is
   // floored at hud-h + 2 (⇒ box bottom ≥ hud-h + 22). Flooring HERE (not in CSS)
@@ -3025,6 +3048,14 @@ function mountChatKeyboardLift() {
     (t.classList.contains("ml-chat-input") || t.classList.contains("ml-chatinput"));
   document.addEventListener("focusin", (e) => {
     if (!isChatInput(e.target)) return;
+    // THE HOLD STARTS HERE, before anything can resize: kbHolding() is true
+    // from this line until the drop's settle window ends, so no keyboard-shaped
+    // resize can lay the game out whether or not the lift arms in time.
+    // The base height is the one to measure the keys against, and it is only
+    // taken when nothing is holding — a re-tap while the keys are already up
+    // must not adopt the shortened viewport as "no keyboard".
+    if (!kbFocused && !lifted && performance.now() >= kbSettleUntil) kbBaseH = window.innerHeight;
+    kbFocused = true;
     input = e.target as HTMLElement;
     focusedAt = Date.now();
     // Overlay mode BEFORE the keys start (focusin precedes the keyboard), and
@@ -3040,6 +3071,9 @@ function mountChatKeyboardLift() {
   });
   document.addEventListener("focusout", (e) => {
     if (!isChatInput(e.target)) return;
+    // the focus hold ends and drop() opens the settle window in the same task,
+    // so kbHolding() never has a gap the keys' close could slip through
+    kbFocused = false;
     input = null;
     window.clearInterval(poll);
     poll = 0;
