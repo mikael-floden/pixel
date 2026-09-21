@@ -257,12 +257,40 @@ export class ZoneField {
   raster(name: string, rect: { x: number; y: number; width: number; height: number }, cols: number, rows: number): Uint8Array {
     const out = new Uint8Array(cols * rows);
     if (!this.ruled) { out.fill(255); return out; }
+    /* A SAMPLE THE PICKER CANNOT PLACE IS UNKNOWN, NOT ZERO. weightAt answers
+     * 0 where no cell lies under the drawn point — right for a particle
+     * asking "am I in the zone", a LIE in a raster: sky over a ridge, and the
+     * cliff faces at a level boundary, punched 0-holes straight through the
+     * middle of a zone. Measured deep inside the south-eastern green, holes
+     * pulled the fade down to 0.892 where it should be whole. So they are
+     * filled from their known neighbours instead (four passes, which closes
+     * anything up to ~2 cells across); whatever is still unknown stays 0, and
+     * the mist pass never reads it — it paints only where its march FOUND a
+     * surface, which is the same test that failed the pick. */
+    const known = new Uint8Array(cols * rows);
     for (let j = 0; j < rows; j++)
       for (let i = 0; i < cols; i++) {
         const x = rect.x + rect.width * ((i + 0.5) / cols);
         const y = rect.y + rect.height * ((j + 0.5) / rows);
-        out[j * cols + i] = Math.round(255 * this.weightAt(name, x, y));
+        const k = j * cols + i;
+        if (this.cellAt(x, y)) { out[k] = Math.round(255 * this.weightAt(name, x, y)); known[k] = 1; }
       }
+    for (let pass = 0; pass < 4; pass++) {
+      let filled = 0;
+      const was = known.slice();
+      for (let j = 0; j < rows; j++)
+        for (let i = 0; i < cols; i++) {
+          const k = j * cols + i;
+          if (was[k]) continue;
+          let sum = 0, n = 0;
+          if (i > 0 && was[k - 1]) { sum += out[k - 1]; n++; }
+          if (i < cols - 1 && was[k + 1]) { sum += out[k + 1]; n++; }
+          if (j > 0 && was[k - cols]) { sum += out[k - cols]; n++; }
+          if (j < rows - 1 && was[k + cols]) { sum += out[k + cols]; n++; }
+          if (n) { out[k] = Math.round(sum / n); known[k] = 1; filled++; }
+        }
+      if (!filled) break;
+    }
     return out;
   }
 

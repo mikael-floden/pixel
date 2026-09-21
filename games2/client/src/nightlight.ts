@@ -2273,13 +2273,13 @@ uniform float uMaskOn;    // 1 = the density is multiplied by the mask; 0 = no m
  *     times a second does not survive. The mask was being read as hard
  *     squares one cell across.
  *   - Even filtered, plain bilinear is only C0: its gradient jumps at every
- *     texel border, and the density is POSTERIZED into five bands right
- *     after, so each band edge kinked along the grid — straight segments and
- *     corners where the fog should curl.
+ *     texel border, so the fade kinked along the grid — straight segments and
+ *     corners where a fade should curl.
  * So: four fetches, interpolated by hand, with the fractions run through
- * smoothstep (C1 at the borders). No sampler state to get wrong, no kinks,
- * and the band edges follow the noise again. The JS twin (maskAt) does
- * exactly this arithmetic. */
+ * smoothstep (C1 at the borders). No sampler state to get wrong, no kinks.
+ * The raster it reads is anchored to the WORLD, not to the camera (mount.ts),
+ * so walking does not slide the samples under the fade. The JS twin (maskAt)
+ * does exactly this arithmetic. */
 float maskField(vec2 w) {
   vec2 t = clamp((w - uMaskRect.xy) / uMaskRect.zw * uMaskN - 0.5, vec2(0.0), uMaskN - 1.0);
   vec2 i = floor(t);
@@ -2400,15 +2400,24 @@ void main() {
   // Hug the ground: full in the low (lakes/open fields), gone by ~2.5 levels.
   float pool = clamp(1.0 - (z - 0.4) * 0.5, 0.0, 1.0);
   float d = clamp(banks * roil * 1.55, 0.0, 1.0) * pool * uMist;
-  // THE ZONE BOUNDARY (ambient's mask, 2026-09-20): the banks live where the
-  // mist's zone is — the field read SMOOTHLY from a coarse raster (maskField
-  // above; a nearest-sampled one showed its grid through the posterize), so
-  // the fog thins across the three-cell ramp, band by band, and never cuts.
-  // Twin: mistAt() -> maskAt(). With the mask off this line is a no-op.
-  if (uMaskOn > 0.5) d *= maskField(w);
   // Posterized bands = stylized pixel-art fog layers, capped so the ground
   // still ghosts through the thickest bank.
   float a = floor(d * 5.0 + 0.001) / 5.0 * 0.74;
+  // THE ZONE BOUNDARY (ambient's mask) IS A FADE ON THE ALPHA, AND IT IS
+  // APPLIED HERE — AFTER THE POSTERIZE — ON PURPOSE (maintainer 2026-09-21:
+  // "Why didn't you just fade in the effect with transparency at the boundary
+  // so we get a good looking fade and keep my favourite effect to look the
+  // same?"). For a day it multiplied the DENSITY one line above, which does
+  // not fade fog: it MOVES THE BAND LINES. Every dip in the mask walks the
+  // density across a posterize step, so the zone was redrawing the bank's
+  // shape instead of dimming it — hard curved edges that jumped a whole band
+  // as the mask slid, worst on level-2 ground where pool is 0.2 and the
+  // WHOLE effect lives inside band 1, on or off ("smoke pop in and out of
+  // existence ... especially since this boundary also is at a level
+  // boundary"). On the alpha the posterized pattern is bit-identical to the
+  // effect before zones existed and the zone only fades it out.
+  // Twin: mistDrawAt() -> maskAt(). With the mask off this line is a no-op.
+  if (uMaskOn > 0.5) a *= maskField(w);
   if (a <= 0.001) { gl_FragColor = vec4(0.0); return; }
   float ambLum = (uAmbient.r + uAmbient.g + uAmbient.b) / 3.0;
   vec3 col = vec3(0.72, 0.78, 0.76) * clamp(0.22 + 0.95 * ambLum, 0.0, 1.0);
@@ -5725,8 +5734,9 @@ export class NightLights {
   }
 
   /** EXACT JS twin of the shader's mist density at a WORLD point (probes +
-   * QA) — change together with MIST_FRAG. Returns 0..1 opacity BEFORE the
-   * posterize/cap (the field's raw density), the zone mask included. */
+   * QA) — change together with MIST_FRAG. Returns 0..1 BEFORE the posterize
+   * and WITHOUT the zone mask: this is the bank the effect would paint if
+   * the whole world were its zone. What is actually DRAWN is mistDrawAt(). */
   mistAt(wx: number, wy: number, mist = this.curMist): number {
     if (mist <= 0.001 || !this.tArr) return 0;
     // ground-plane inverse projection (level-0 cell; probes sample flats)
@@ -5764,7 +5774,17 @@ export class NightLights {
     const p2x = wx * 0.0074 - t * 0.03, p2y = wy * 0.0074 + t * 0.048;
     const roil = 0.55 + 0.45 * noise(p2x, p2y);
     const pool = Math.min(1, Math.max(0, 1 - (z - 0.4) * 0.5));
-    return Math.min(1, banks * roil * 1.55) * pool * mist * this.maskAt(wx, wy);
+    return Math.min(1, banks * roil * 1.55) * pool * mist;
+  }
+
+  /** WHAT THE PASS ACTUALLY PAINTS at a world point, 0..1 — the posterized
+   *  band, then the zone's fade. The twin of MIST_FRAG's last three lines,
+   *  in their order: the mask multiplies the ALPHA, never the density (see
+   *  the GLSL comment there). This is the honest "is it misting here". */
+  mistDrawAt(wx: number, wy: number, mist = this.curMist): number {
+    const d = this.mistAt(wx, wy, mist);
+    const a = (Math.floor(d * 5 + 0.001) / 5) * 0.74;
+    return a <= 0.001 ? 0 : a * this.maskAt(wx, wy);
   }
 
   /** CPU DEPTH-FOG for a POINT already at grid (col,row) + level z — the

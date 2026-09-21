@@ -15,13 +15,14 @@ const SCENE_KEY = "world"; // WorldScene's key
 const ENV_SAMPLE_MS = 100; // mood changes are seconds-long fades; 10 Hz is plenty
 /** THE MIST MASK (unit 2 of the boundaries): the zone field's mist weight
  *  rasterised over the view plus a margin each env tick and handed to the
- *  game's mist pass (`__ml.mistMask`), which interpolates it smoothly.
+ *  game's mist pass (`__ml.mistMask`), which interpolates it smoothly and
+ *  multiplies it into the ALPHA the pass paints — a FADE, never a reshape of
+ *  the fog (see MIST_FRAG's last lines for what reshaping cost).
  *  64 x 40 over a view and a quarter is about half a cell per sample, and the
  *  ramp it has to draw is three cells wide; the margin covers the camera's
- *  travel between ticks and the pass's render span. 2560 memo reads a tick,
- *  ten times a second. (32 x 20 was a cell per sample and his mist came out
- *  BLOCKY: the pass posterizes into five bands right after the mask, so a
- *  coarse mask puts its own grid into every band edge.) */
+ *  travel between ticks and the pass's render span, and leaves room for the
+ *  world-anchoring snap below. 2560 memo reads a tick, ten times a second.
+ *  (32 x 20 was a cell per sample and his mist came out BLOCKY.) */
 const MASK_COLS = 64;
 const MASK_ROWS = 40;
 const MASK_MARGIN = 0.25;
@@ -71,6 +72,27 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       return { x: ctx.view.x + me.sx / me.zoom, y: ctx.view.y + me.sy / me.zoom };
     };
     const mistMask = (m: unknown) => (ml()?.mistMask as undefined | ((m: unknown) => unknown))?.(m);
+    /* THE MASK'S RECT, ANCHORED TO THE WORLD AND NOT TO THE CAMERA. The
+     * samples are half a cell apart and the field under them is a STEP
+     * function (a cell is in the zone or it is not, blurred over 3x3 — so it
+     * moves in ninths). Hung off the view, every sample slid as I walked and
+     * crossed cell lines constantly, so the fade rippled by a ninth all over
+     * the screen at walking pace. Snapping the origin to a whole sample step
+     * pins every sample to a fixed world point: the fade then holds still
+     * while the camera moves through it, which is what a fog bank does. The
+     * 25% margin means the snap can never uncover the view. */
+    const maskRect = () => {
+      const width = ctx.view.width * (1 + 2 * MASK_MARGIN);
+      const height = ctx.view.height * (1 + 2 * MASK_MARGIN);
+      const stepX = width / MASK_COLS;
+      const stepY = height / MASK_ROWS;
+      return {
+        x: Math.floor((ctx.view.x - ctx.view.width * MASK_MARGIN) / stepX) * stepX,
+        y: Math.floor((ctx.view.y - ctx.view.height * MASK_MARGIN) / stepY) * stepY,
+        width,
+        height,
+      };
+    };
     const publishGloom = () => {
       if (!zone.ruled) { setGloomField(null); mistMask(null); return; }
       const feet = myFeet();
@@ -79,9 +101,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       const cov = zone.coverage(MIST_EFFECT, ctx.view);
       setGloomField({ at, mistInView: cov.max });
       if (forcedGloom().includes(MIST_EFFECT)) { mistMask(null); return; }
-      const mx = ctx.view.width * MASK_MARGIN;
-      const my = ctx.view.height * MASK_MARGIN;
-      const rect = { x: ctx.view.x - mx, y: ctx.view.y - my, width: ctx.view.width + 2 * mx, height: ctx.view.height + 2 * my };
+      const rect = maskRect();
       mistMask({ x: rect.x, y: rect.y, w: rect.width, h: rect.height, cols: MASK_COLS, rows: MASK_ROWS, data: zone.raster(MIST_EFFECT, rect, MASK_COLS, MASK_ROWS) });
     };
     const safe = (fn: () => void) => {
@@ -175,9 +195,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
        *  covers, its size and a few bytes, for gates. */
       mistMask: () => {
         if (!zone.ruled) return null;
-        const mx = ctx.view.width * MASK_MARGIN;
-        const my = ctx.view.height * MASK_MARGIN;
-        const rect = { x: ctx.view.x - mx, y: ctx.view.y - my, width: ctx.view.width + 2 * mx, height: ctx.view.height + 2 * my };
+        const rect = maskRect();
         const data = zone.raster(MIST_EFFECT, rect, MASK_COLS, MASK_ROWS);
         let on = 0;
         for (const v of data) if (v > 0) on++;

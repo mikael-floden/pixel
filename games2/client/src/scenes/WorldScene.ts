@@ -6159,6 +6159,7 @@ export class WorldScene extends Phaser.Scene {
       },
       cloudAt: (wx: number, wy: number) => this.night?.cloudFactorAt(wx, wy, this.gloom.cloud, this.curSun[3]) ?? 1,
       mistAt: (wx: number, wy: number) => this.night?.mistAt(wx, wy, this.gloom.mist) ?? 0,
+      mistDrawAt: (wx: number, wy: number) => this.night?.mistDrawAt(wx, wy, this.gloom.mist) ?? 0,
       // Ambient's zone mask for the mist (the boundaries, unit 2): a raster of
       // the zone field's mist weight the mist pass multiplies by; null = none.
       mistMask: (m: MistMask | null) => { this.night?.setMistMask(m); return !!m; },

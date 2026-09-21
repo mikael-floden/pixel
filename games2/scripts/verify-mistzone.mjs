@@ -7,8 +7,9 @@
 // banks pool on level <= ~2 ground and nowhere else — nightlight's MIST_FRAG),
 // with the zone on screen: the mist scalar must be UP while my cell is outside
 // (the banks exist over there), the mask's twin must read 0 at my feet and
-// ramp to 1 inside, and the mist's own twin (__ml.mistAt, mask included) must
-// be 0 over ground outside the zone and > 0 somewhere inside. Then 6 cells
+// ramp to 1 inside, and what the pass actually PAINTS (__ml.mistDrawAt: the
+// posterized band times the zone's fade) must be 0 over ground outside the
+// zone and > 0 somewhere inside. Then 6 cells
 // inside looking out: the same, from the other side. Two pictures, overlay on.
 //
 //   node scripts/verify-mistzone.mjs      (needs the dev stack on :5173)
@@ -178,25 +179,25 @@ const survey = `(poly) => {
   const near = (c, r, reach) => { for (let dr = -reach; dr <= reach; dr++) for (let dc = -reach; dc <= reach; dc++) if (inside(poly, c + dc + 0.5, r + dr + 0.5)) return true; return false; };
   const deep = (c, r) => { for (let dr = -2; dr <= 2; dr++) for (let dc = -2; dc <= 2; dc++) if (!inside(poly, c + dc + 0.5, r + dr + 0.5)) return false; return true; };
   const v = window.__ml.camView(); // {x, y, w, h} — NOT width/height
-  /* THE BAND THE SHADER WOULD DRAW: MIST_FRAG posterizes the density into
-   * five layers (floor(d*5)/5*0.74) AFTER the mask, so anything under 0.2
-   * paints not one pixel. That is the honest test of "it is not misting
-   * here" — the mask's LINEAR read spreads about one texel (~1 cell) past
-   * the field, and this says whether that skirt can ever be seen. */
-  const band = (d) => Math.floor(d * 5 + 0.001) / 5 * 0.74;
-  const out = { outside: { n: 0, mistMax: 0, maskMax: 0, drawMax: 0 }, skirt: { n: 0, mistMax: 0, drawMax: 0 }, deep: { n: 0, mistMax: 0, maskMin: 1, maskMean: 0, mistMean: 0 }, ramp: { n: 0, mid: 0 }, unpicked: 0 };
+  /* TWO NUMBERS PER POINT, AND THE DIFFERENCE BETWEEN THEM IS THE WHOLE FIX.
+   * mist is the raw bank the effect would paint if the world were all its
+   * zone (mistAt, no mask); draw is what the pass PAINTS there — the
+   * posterized band, then the zone's fade on the alpha (mistDrawAt). Every
+   * "is it misting here" arm reads draw: the density is the same everywhere
+   * by design now, and only the fade says where it is seen. */
+  const out = { outside: { n: 0, mistMax: 0, maskMax: 0, drawMax: 0 }, skirt: { n: 0, mistMax: 0, drawMax: 0 }, deep: { n: 0, mistMax: 0, drawMax: 0, drawMean: 0, maskMin: 1, maskMean: 0, mistMean: 0 }, ramp: { n: 0, mid: 0 }, unpicked: 0 };
   for (let j = 0; j < 14; j++) for (let i = 0; i < 24; i++) {
     const x = v.x + v.w * ((i + 0.5) / 24), y = v.y + v.h * ((j + 0.5) / 14);
     const at = window.__ml.pickAt(x, y);
     if (!at) { out.unpicked++; continue; }
     const c = Math.floor(at.x / 32), r = Math.floor(at.y / 32);
-    const mist = window.__ml.mistAt(x, y), mask = window.__ml.mistMaskAt(x, y), field = window.__mlAmbient.zone("mist", x, y);
-    if (!near(c, r, 4)) { out.outside.n++; out.outside.mistMax = Math.max(out.outside.mistMax, mist); out.outside.maskMax = Math.max(out.outside.maskMax, mask); out.outside.drawMax = Math.max(out.outside.drawMax, band(mist)); }
-    else if (!near(c, r, 2)) { out.skirt.n++; out.skirt.mistMax = Math.max(out.skirt.mistMax, mist); out.skirt.drawMax = Math.max(out.skirt.drawMax, band(mist)); }
-    else if (deep(c, r)) { out.deep.n++; out.deep.mistMax = Math.max(out.deep.mistMax, mist); out.deep.maskMin = Math.min(out.deep.maskMin, mask); out.deep.maskMean += mask; out.deep.mistMean += mist; }
+    const mist = window.__ml.mistAt(x, y), draw = window.__ml.mistDrawAt(x, y), mask = window.__ml.mistMaskAt(x, y), field = window.__mlAmbient.zone("mist", x, y);
+    if (!near(c, r, 4)) { out.outside.n++; out.outside.mistMax = Math.max(out.outside.mistMax, mist); out.outside.maskMax = Math.max(out.outside.maskMax, mask); out.outside.drawMax = Math.max(out.outside.drawMax, draw); }
+    else if (!near(c, r, 2)) { out.skirt.n++; out.skirt.mistMax = Math.max(out.skirt.mistMax, mist); out.skirt.drawMax = Math.max(out.skirt.drawMax, draw); }
+    else if (deep(c, r)) { out.deep.n++; out.deep.mistMax = Math.max(out.deep.mistMax, mist); out.deep.drawMax = Math.max(out.deep.drawMax, draw); out.deep.drawMean += draw; out.deep.maskMin = Math.min(out.deep.maskMin, mask); out.deep.maskMean += mask; out.deep.mistMean += mist; }
     else { out.ramp.n++; if (field > 0.1 && field < 0.9) out.ramp.mid++; }
   }
-  if (out.deep.n) { out.deep.maskMean /= out.deep.n; out.deep.mistMean /= out.deep.n; }
+  if (out.deep.n) { out.deep.maskMean /= out.deep.n; out.deep.mistMean /= out.deep.n; out.deep.drawMean /= out.deep.n; }
   for (const k of ["outside", "skirt", "deep"]) for (const kk of Object.keys(out[k])) if (typeof out[k][kk] === "number") out[k][kk] = +out[k][kk].toFixed(3);
   return out;
 }`;
@@ -236,15 +237,15 @@ else {
     const fog = await (0, eval)(rise)();
     const me = window.__ml.myScreen(); const v = window.__ml.camView();
     const fx = v.x + me.sx / me.zoom, fy = v.y + me.sy / me.zoom;
-    return { fog, atMe: { mist: +window.__ml.mistAt(fx, fy).toFixed(3), mask: +window.__ml.mistMaskAt(fx, fy).toFixed(3) }, ...(0, eval)(survey)(p.poly) };
+    return { fog, atMe: { draw: +window.__ml.mistDrawAt(fx, fy).toFixed(3), mask: +window.__ml.mistMaskAt(fx, fy).toFixed(3) }, ...(0, eval)(survey)(p.poly) };
   }, { p: picked, rise, survey }), 120_000, "outside");
   say(`outside: ${JSON.stringify(out)}`);
   if (out.skip) fail(`outside: ${out.skip}`);
   else {
     if (!(out.fog.mist >= 0.9)) fail(`the mist scalar is ${out.fog.mist} with the mist's zone in view — the banks are not up over there`);
-    if (out.atMe.mask > 0.05 || out.atMe.mist > 0.01) fail(`mist at my feet outside the zone: mask ${out.atMe.mask}, mist ${out.atMe.mist}`);
+    if (out.atMe.mask > 0.05 || out.atMe.draw > 0.01) fail(`mist at my feet outside the zone: mask ${out.atMe.mask}, drawn ${out.atMe.draw}`);
     if (out.outside.n < 20) fail(`only ${out.outside.n} points outside sampled`);
-    if (out.outside.mistMax > 0.02 || out.outside.maskMax > 0.05) fail(`mist over ground outside the zone: max ${out.outside.mistMax}, mask max ${out.outside.maskMax}`);
+    if (out.outside.maskMax > 0.05) fail(`the zone's fade reaches ground outside it (mask max ${out.outside.maskMax})`);
     /* THE FEATHER IS THE POINT — "the mist also looks good at the boundary
      * (no hard cuts)": it may fade for the 3 cells of the field's ramp plus
      * the mask's texel, at no more than the FAINTEST of the five bands, and
@@ -252,8 +253,18 @@ else {
     if (out.outside.drawMax > 0) fail(`a band is DRAWN past the feather (${out.outside.drawMax})`);
     if (out.skirt.drawMax > BAND) fail(`the fade past the line is ${out.skirt.drawMax}, more than the faintest band (${BAND})`);
     if (out.deep.n < 10) fail(`only ${out.deep.n} points deep inside sampled — the zone is not on screen enough`);
-    if (out.deep.maskMin < 0.95) fail(`the mask is not whole deep inside the zone (min ${out.deep.maskMin})`);
+    /* WHAT "WHOLE INSIDE" IS WORTH, and the bar moved for a reason. The fade
+     * multiplies the pass's ALPHA, so a tenth off full deep inside is a tenth
+     * thinner fog and nothing else. It used to multiply the DENSITY one line
+     * before a five-band posterize, and there the same tenth DELETED the bank:
+     * on level-2 ground pool is 0.2, the whole effect sits exactly on band 1's
+     * edge, and a mask of 0.99 painted nothing at all — his "smoke pop in and
+     * out of existence". The screen-space raster reads 0.89 in places deep
+     * inside (a sample over a cliff picks a cell the zone does not hold), and
+     * that is now invisible instead of fatal. */
+    if (out.deep.maskMin < 0.85) fail(`the fade is not whole deep inside the zone (min ${out.deep.maskMin})`);
     if (!(out.deep.mistMax > 0.15)) fail(`no bank inside the zone (mist max ${out.deep.mistMax}) — 'the mist already exists in that zone' is not there`);
+    if (!(out.deep.drawMax > 0)) fail(`the bank inside the zone is not PAINTED (drawn max ${out.deep.drawMax})`);
     if (out.ramp.mid === 0) fail("no middle values across the line — a step, not a ramp");
     await page.waitForTimeout(500);
     await page.screenshot({ path: `${OUT}/mistzone-outside-${picked.id}.png` });
@@ -276,11 +287,12 @@ else {
   else {
     if (!(inn.here > 0.9 && inn.atMe.mask > 0.9)) fail(`deep inside the field at my feet is ${inn.here}, the mask ${inn.atMe.mask}`);
     if (!(inn.fog.mist >= 0.9)) fail(`the mist scalar is ${inn.fog.mist} inside the zone`);
-    if (inn.outside.n && (inn.outside.mistMax > 0.02 || inn.outside.maskMax > 0.05)) fail(`looking out, mist over ground outside: max ${inn.outside.mistMax}, mask max ${inn.outside.maskMax}`);
+    if (inn.outside.n && inn.outside.maskMax > 0.05) fail(`looking out, the zone's fade reaches ground outside it (mask max ${inn.outside.maskMax})`);
     if (inn.outside.drawMax > 0) fail(`looking out, a band is DRAWN past the feather (${inn.outside.drawMax})`);
     if (inn.skirt.drawMax > BAND) fail(`looking out, the fade past the line is ${inn.skirt.drawMax}, more than the faintest band (${BAND})`);
-    if (!(inn.deep.mistMean > 4 * (inn.skirt.mistMax || 0.001) || inn.deep.mistMean > 0.4)) fail(`the banks inside (${inn.deep.mistMean}) are not clearly thicker than the fade outside (${inn.skirt.mistMax})`);
+    if (!(inn.deep.drawMean > 4 * (inn.skirt.drawMax || 0.001) || inn.deep.drawMean > 0.4)) fail(`the banks inside (drawn mean ${inn.deep.drawMean}) are not clearly thicker than the fade outside (${inn.skirt.drawMax})`);
     if (!(inn.deep.mistMax > 0.15)) fail(`no bank around me inside (mist max ${inn.deep.mistMax})`);
+    if (!(inn.deep.drawMax > 0)) fail(`looking out, the bank around me is not PAINTED (drawn max ${inn.deep.drawMax})`);
     await page.waitForTimeout(500);
     await page.screenshot({ path: `${OUT}/mistzone-inside-${picked.id}.png` });
     say(`picture: ${OUT}/mistzone-inside-${picked.id}.png`);

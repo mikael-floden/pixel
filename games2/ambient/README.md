@@ -484,30 +484,57 @@ per effect — his process).
   top. The mist scalar (`uMist`) is the mist's largest weight anywhere in the
   VIEW, so the banks are up while a mist zone is on screen, and WHERE they
   are is the mask: the mount rasterises the field's mist weight over the view
-  plus a quarter's margin (32 x 20 bytes, 640 memo reads a tick, `__ml.mistMask`)
-  and the pass multiplies its density by it, interpolated SMOOTHLY, before
-  the bands — the fog thins across the ramp band by band and never cuts; the
-  JS twin `mistAt` reads the same raster the same way (`maskAt`). THE MASK IS
-  INTERPOLATED BY HAND, four texels with the fractions through smoothstep,
-  and that is not decoration (maintainer 2026-09-20: "the mist on this image
-  looks so blocky and ugly"): the game is `pixelArt: true`, so every texture
-  defaults to NEAREST and a LINEAR filter asked for on a canvas re-uploaded
-  ten times a second does not survive — the mask was being read as hard
-  squares a cell across. Even filtered, plain bilinear is only C0 and the
-  density is POSTERIZED into five bands immediately after, so every band edge
-  kinked along the texel grid. Hand interpolation needs no sampler state and
-  is C1 at the borders, and the raster is 64 x 40 (half a cell a sample, not
-  a cell) so the bands follow the noise again. A
-  forced mist covers the view (no mask). Null where zones do not rule: the
-  room's set grades as it always did. TRAP: the banks pool on ground at level
-  <= ~2 and nowhere else (MIST_FRAG's `pool`), so a mist zone on a summit, a
-  level-4 meadow or a level-12 lake shows nothing however the mask reads — of
-  the five 90-share mist zones only the south-eastern green (level 0) can show
-  it; the gate stands there. Gate `verify-mistzone.mjs`: outside the zone with
-  mist on, the scalar is up, the twin reads 0 over every outside cell and a
-  bank somewhere deep inside, the mask is whole inside and the field takes
-  middle values on the line; inside looking out, the same from the other
-  side; two pictures.
+  plus a quarter's margin (64 x 40 bytes, 2560 memo reads a tick,
+  `__ml.mistMask`) and the pass multiplies it into the ALPHA it paints.
+- **THE ZONE FADES HIS MIST; IT MAY NOT RESHAPE IT — THE MASK GOES ON THE
+  ALPHA, AFTER THE POSTERIZE** (maintainer 2026-09-21: "My favorite mist
+  effect is totally destroyed and look so different and buggy ... at the zone
+  boundary it behaves super weird and smoke pop in and out of existence.
+  Especially since this boundary also is at a level boundary ... Why didn't
+  you just fade in the effect with transparency at the boundary so we get a
+  good looking fade and keep my favourite effect to look the same?"). For a
+  day the mask multiplied the DENSITY, one line before MIST_FRAG posterizes it
+  into five bands — and that does not fade fog, it MOVES THE BAND LINES: every
+  dip in the mask walks the density across a step, so the zone was redrawing
+  the bank's shape instead of dimming it. THE ARITHMETIC, measured on his own
+  marsh at level 2: `pool` is 0.2 there, so the density tops out at exactly
+  0.2 — band 1's edge — and the WHOLE effect is one on/off band. A mask of
+  0.99 then paints nothing at all. The raster reads 0.97 mean and dips to 0.89
+  deep inside a zone (a sample over a cliff picks a cell the zone does not
+  hold), so 85 of 1199 sampled points were being blanked, in blobs that moved
+  as he walked. On the alpha the posterized pattern is bit-identical to the
+  effect before zones existed and the zone only fades it out. RULE FOR EVERY
+  EFFECT THAT EVER WEARS A ZONE MASK: multiply what is DRAWN, never what is
+  drawn FROM — a mask upstream of a threshold, a posterize, a count or a
+  spawn test is a reshape, not a fade.
+- The mask's raster is **anchored to the WORLD, not to the camera** (the
+  origin snaps to a whole sample step): the samples are half a cell apart over
+  a field that moves in ninths, so hung off the view they slid across cell
+  lines at walking pace and the fade rippled by a ninth all over the screen.
+  A sample the picker cannot place is UNKNOWN, filled from its known
+  neighbours (four passes) — 0 is a lie that punches holes through the middle
+  of a zone, which is what sky over a ridge and the faces at a level boundary
+  were doing. THE MASK IS INTERPOLATED BY HAND, four texels with the fractions
+  through smoothstep (maintainer 2026-09-20: "the mist on this image looks so
+  blocky and ugly"): the game is `pixelArt: true`, so every texture defaults
+  to NEAREST and a LINEAR filter asked for on a canvas re-uploaded ten times a
+  second does not survive — the mask was being read as hard squares a cell
+  across; and plain bilinear is only C0, so the fade kinked along the texel
+  grid. A forced mist covers the view (no mask). Null where zones do not rule:
+  the room's set grades as it always did.
+- TWO TWINS, AND THEY MEAN DIFFERENT THINGS: `__ml.mistAt` is the RAW density
+  (the bank the effect would paint if the world were all its zone, no mask);
+  `__ml.mistDrawAt` is what the pass PAINTS (the band, then the fade). Every
+  "is it misting here" test reads the second. TRAP: the banks pool on ground
+  at level <= ~2 and nowhere else (MIST_FRAG's `pool`), so a mist zone on a
+  summit, a level-4 meadow or a level-12 lake shows nothing however the mask
+  reads — of the five 90-share mist zones only the south-eastern green
+  (level 0) can show it; the gate stands there. Gate `verify-mistzone.mjs`:
+  outside the zone with mist on, the scalar is up, nothing is PAINTED over any
+  outside cell, a bank is painted deep inside, the fade is whole inside (>=
+  0.85 — what the eye can see now that it scales alpha; it was 0.95 when a
+  tenth deleted the bank) and the field takes middle values on the line;
+  inside looking out, the same from the other side; two pictures.
 - **A FIELD EFFECT LIVES IN ITS ZONE** (`runtime/zoneplace.ts`, unit 3).
   Field effects used to self-gate on TERRAIN alone and never read the zone set
   at all, so a crab appeared on every beach in the world. `ZoneWatch` is the
