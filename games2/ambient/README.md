@@ -371,6 +371,21 @@ them; folder isolation beats DRY here).
 
 ## The zone boundary — every effect respects it, spatially
 
+**THERE ARE TWO CATEGORIES AND A GLOBAL EFFECT IS NOT AN UNFINISHED ONE**
+(maintainer 2026-09-21, closing the boundary work: "I see it as two
+categories. The ambient effects that is bound to a zone and the global
+effects ... chimney, deepwater, drips, dust, embers, feathers, fish, foam,
+lava, moths, smoke, water should be world wide! That is their zone."). Do not
+"fix" the second column by wiring it to a polygon — the world zone IS its
+zone, and what bounds it is the thing it is attached to: a lit hearth, a lamp,
+a cave ceiling, water, lava, a footfall, a bird. The roster, 34 effects:
+
+| | |
+|---|---|
+| ZONE-BOUND, **21** | the 8 weather rows (rain, drizzle, heavyrain, storm, snow, windy, mist, cloudy) · the 8 field effects (ants, bubbles, butterflies, crabs, fireflies, gnats, pollen, spiders) · the 5 episodes (bats, birds, leaves, sandstorm, thunder) |
+| GLOBAL, **12** | chimney, deepwater, drips, dust, embers, feathers, fish, foam, lava, moths, smoke, water — his list, verbatim |
+| OPEN, **1** | dragonflies — ungated on purpose while the zone data is wrong; see the entry under the field rule |
+
 **EFFECTS ARE ON PER ZONE, AND A ZONE IS A PLACE ON THE MAP, NOT THE CELL I
 STAND ON** (maintainer 2026-09-20: "It should not suddenly start to snow. I
 should walk into an area/zone that is already snowing ... I can stand outside
@@ -539,10 +554,14 @@ per effect — his process).
   **bubbles**: a vent opens only where the zone holds the sea, tested before
   the flow probe (one memo lookup against a real one).
   **dragonflies: NOT GATED, deliberately, and maps2 has been asked.** They
-  belong to the REEDS, and measured against the world: of 124 waterline pieces
-  (reed beds, cattails, water lilies) exactly ZERO stand in either zone that
-  carries dragonflies at share 90, and only 3 stand in any zone that carries
-  them at all. Confining them to their zones deletes them from the game, so
+  belong to the REEDS, and measured against the world (re-measured 2026-09-21):
+  of 124 waterline pieces (35 reed beds, 35 cattails, 54 lilies) exactly FOUR
+  stand inside any of the 7 zones that carry dragonflies — 3 in islet "the fen"
+  and 1 in lake "the south-western lake 2", both share 10 — and the two zones
+  at share 90, lake "the northern lake" and marsh "the north-western marsh",
+  hold ZERO between them. The reeds are in the western marsh (13), the northern
+  moor (11), the north-eastern marsh (11), the western moor (10) and five more,
+  none of which carries dragonflies. Confining them to their zones deletes them from the game, so
   the rule is written and held back until the data lines up. THE LESSON, which
   outlives this one effect: a zone rule is only as good as the agreement
   between the zone and the content it is supposed to govern, and the way to
