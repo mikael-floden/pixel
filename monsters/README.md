@@ -185,6 +185,27 @@ and the wait never ends. Match `candidates[.]py generate`.
 
 ## Animating approved candidates — one state at a time
 
+**BLOCKED UPSTREAM SINCE 2026-09-21: PixelLab removed character-animation
+creation from its public API.** `POST /v2/characters/animations` with the
+animation in the JSON body 422s — the path was REUSED for a different
+operation, "Resolve Character Animation Group", taking `character_id` and
+`animation_group_id` as QUERY params and only re-running a group that already
+exists (a fresh uuid answers 404 `unknown animation_group_id for this
+character`). No create endpoint is left: `POST /v2/characters/{id}/animations`
+is 405, and neither the v2 nor the v1 spec publishes another.
+- **Objects are unaffected**: `POST /v2/objects/{object_id}/animations` still
+  takes exactly the body this client sends. The roster is 66 characters /
+  20 objects; only the characters are stuck.
+- Last clip generated here: 2026-09-21T07:50:52Z. Probing is FREE — 422/404/405
+  are not billed (balance unchanged across every probe) — so re-probe
+  `POST /v2/characters/{id}/animations` before assuming it is still down.
+- UNTESTED (costs a regeneration to find out): a state that already HAS a group
+  may still be re-runnable through the resolve endpoint, so redos might work
+  where new states cannot.
+- Every PixelLab domain keeps its own `pixellab_client.py`, so the fix lands in
+  each one separately. Posted to characters2, scenery, items, monsters.
+
+
 `pipeline/animate.py` gives an APPROVED candidate its states, one state for
 all monsters before the next (maintainer 2026-09-09: "get good at one
 animation at a time"). All five are built for the 39 picked (idle, walk,
