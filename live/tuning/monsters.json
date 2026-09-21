@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T13:19:08.174Z",
+  "updated_at": "2026-09-21T14:34:31.768Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2576,7 +2576,45 @@
           "item": "heavy_iron_links",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 29,
+        "ry": 11,
+        "offsets": {
+          "idle#south": {
+            "ax": -1.77,
+            "ay": 49.07
+          },
+          "idle#east": {
+            "ax": -0.83,
+            "ay": 48.65
+          },
+          "idle#south-east": {
+            "ax": 2.06,
+            "ay": 48.4
+          },
+          "idle#north-east": {
+            "ax": 0.99,
+            "ay": 47.83
+          },
+          "idle#north": {
+            "ax": -1.89,
+            "ay": 47.88
+          },
+          "idle#north-west": {
+            "ax": -0.93,
+            "ay": 48.28
+          },
+          "idle#west": {
+            "ax": -1.44,
+            "ay": 48.52
+          },
+          "idle#south-west": {
+            "ax": -0.9,
+            "ay": 48.45
+          }
+        }
+      }
     },
     "ice_crystal_golem": {
       "level": 19,
