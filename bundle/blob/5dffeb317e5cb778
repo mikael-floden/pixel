@@ -350,6 +350,21 @@
       }
     },
     {
+      "id": "turtle_hatchling",
+      "kind": "character",
+      "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
+      "name": "Shellet",
+      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-crawls forward in place, flipp": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Shell Slam - The hatchling launches off the ground": "attack",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Death - The shell cracks apart and the turtle melt": "die"
+      }
+    },
+    {
       "id": "cave_troll_boss",
       "kind": "character",
       "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
@@ -435,6 +450,21 @@
         "custom-Ice Burst - The mite rears up ": "attack",
         "custom-Ice Burst - The mite rears up and bursts forward i": "attack",
         "custom-Death - Shatters into a scatter of small ice shard": "die"
+      }
+    },
+    {
+      "id": "eye_bat",
+      "kind": "character",
+      "pixellab_id": "1c245303-0d67-44ac-a7c6-ae619fdf9401",
+      "name": "Glareling",
+      "lore": "It watches for something bigger. What it sees, the something bigger sees too.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Wing Slash - Snaps both leathery wings forward and": "attack",
+        "custom-Wing Slash - Sweeps one wing forward and down in o": "attack",
+        "custom-Death - The eye closes, the wi": "die"
       }
     },
     {
@@ -607,6 +637,20 @@
         "custom-Angry combat idle, frustrated ": "angry",
         "custom-Claw Snap - Lunges forward and snaps its big claw ": "attack",
         "custom-Death - The shell cracks open and the crab crumble": "die"
+      }
+    },
+    {
+      "id": "hollow_knight",
+      "kind": "character",
+      "pixellab_id": "2f3aecad-cef3-4701-89a7-457b7eaf9007",
+      "name": "Hollowplate",
+      "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Overhead Chop - Raises the greatsword high overhea": "attack",
+        "custom-Death - The green witchfire go": "die"
       }
     },
     {
