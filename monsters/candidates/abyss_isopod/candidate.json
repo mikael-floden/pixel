@@ -1,0 +1,140 @@
+{
+  "id": "abyss_isopod",
+  "name": "Abyssroll",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It eats what falls and is never in a hurry. Everything reaches the bottom eventually.",
+  "biome": [
+    "deep_water"
+  ],
+  "items": [],
+  "prompt": "Giant fantasy deep-sea isopod with overlapping pale bone-white armour plates like a woodlouse, seven pairs of jointed legs tucked beneath it, short segmented antennae, and small blind black eyespots.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "abyss_isopod/rotations/south.webp",
+    "south-east": "abyss_isopod/rotations/south-east.webp",
+    "east": "abyss_isopod/rotations/east.webp",
+    "north-east": "abyss_isopod/rotations/north-east.webp",
+    "north": "abyss_isopod/rotations/north.webp",
+    "north-west": "abyss_isopod/rotations/north-west.webp",
+    "west": "abyss_isopod/rotations/west.webp",
+    "south-west": "abyss_isopod/rotations/south-west.webp"
+  },
+  "sheet": "abyss_isopod/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "677d60c4-efcf-425f-bd5d-9eb50e11f70c",
+  "seed": 174961842,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T10:56:38+00:00",
+  "elapsed_s": 144.3,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.73,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.73,
+        "bbox": [
+          8,
+          8,
+          89,
+          90
+        ],
+        "fill": 0.721,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.776,
+        "bbox": [
+          6,
+          20,
+          90,
+          77
+        ],
+        "fill": 0.52,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.804,
+        "bbox": [
+          7,
+          12,
+          94,
+          84
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.783,
+        "bbox": [
+          19,
+          16,
+          86,
+          84
+        ],
+        "fill": 0.494,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.813,
+        "bbox": [
+          17,
+          5,
+          82,
+          89
+        ],
+        "fill": 0.592,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.803,
+        "bbox": [
+          7,
+          19,
+          88,
+          76
+        ],
+        "fill": 0.501,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.798,
+        "bbox": [
+          11,
+          13,
+          80,
+          87
+        ],
+        "fill": 0.554,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.801,
+        "bbox": [
+          2,
+          13,
+          90,
+          84
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      }
+    }
+  }
+}

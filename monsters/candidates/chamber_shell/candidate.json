@@ -1,0 +1,143 @@
+{
+  "id": "chamber_shell",
+  "name": "Chamberkin",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Older than the reefs it drifts over, and built in rooms it has already left behind.",
+  "biome": [
+    "deep_water",
+    "water"
+  ],
+  "items": [
+    "sea shells"
+  ],
+  "prompt": "Fantasy nautilus with a tightly coiled cream and rust-banded shell, a crown of short pale tentacles at the opening, a thick leathery hood folded over them, and two simple dark eyes.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "chamber_shell/rotations/south.webp",
+    "south-east": "chamber_shell/rotations/south-east.webp",
+    "east": "chamber_shell/rotations/east.webp",
+    "north-east": "chamber_shell/rotations/north-east.webp",
+    "north": "chamber_shell/rotations/north.webp",
+    "north-west": "chamber_shell/rotations/north-west.webp",
+    "west": "chamber_shell/rotations/west.webp",
+    "south-west": "chamber_shell/rotations/south-west.webp"
+  },
+  "sheet": "chamber_shell/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f1de84f0-41ec-43db-96a7-bb9054766856",
+  "seed": 2113886775,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T10:57:20+00:00",
+  "elapsed_s": 186.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.682,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.734,
+        "bbox": [
+          7,
+          8,
+          81,
+          81
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.785,
+        "bbox": [
+          22,
+          7,
+          69,
+          83
+        ],
+        "fill": 0.461,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.789,
+        "bbox": [
+          19,
+          7,
+          65,
+          83
+        ],
+        "fill": 0.451,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.682,
+        "bbox": [
+          7,
+          6,
+          81,
+          79
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.802,
+        "bbox": [
+          10,
+          8,
+          74,
+          83
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.718,
+        "bbox": [
+          10,
+          6,
+          69,
+          81
+        ],
+        "fill": 0.571,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.729,
+        "bbox": [
+          18,
+          7,
+          78,
+          82
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.81,
+        "bbox": [
+          14,
+          8,
+          77,
+          83
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      }
+    }
+  }
+}

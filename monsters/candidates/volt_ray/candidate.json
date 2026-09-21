@@ -1,0 +1,141 @@
+{
+  "id": "volt_ray",
+  "name": "Shockdisc",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It lies flat under the sand and charges quietly. The water tells you when you are too close.",
+  "biome": [
+    "deep_water",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy electric ray, a flat round slate-grey disc of a body with a short thick tail, small eyes set high on top, pale blue voltage lines crawling across its back, and a soft cream underside.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "volt_ray/rotations/south.webp",
+    "south-east": "volt_ray/rotations/south-east.webp",
+    "east": "volt_ray/rotations/east.webp",
+    "north-east": "volt_ray/rotations/north-east.webp",
+    "north": "volt_ray/rotations/north.webp",
+    "north-west": "volt_ray/rotations/north-west.webp",
+    "west": "volt_ray/rotations/west.webp",
+    "south-west": "volt_ray/rotations/south-west.webp"
+  },
+  "sheet": "volt_ray/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "ff18ad2c-d14e-4743-8edd-d6f485c812a1",
+  "seed": 1877254408,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:00:54+00:00",
+  "elapsed_s": 201.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.666,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.666,
+        "bbox": [
+          13,
+          5,
+          82,
+          88
+        ],
+        "fill": 0.621,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.715,
+        "bbox": [
+          13,
+          9,
+          85,
+          89
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.717,
+        "bbox": [
+          10,
+          9,
+          83,
+          89
+        ],
+        "fill": 0.634,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.671,
+        "bbox": [
+          14,
+          18,
+          83,
+          86
+        ],
+        "fill": 0.509,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.748,
+        "bbox": [
+          17,
+          6,
+          80,
+          90
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.685,
+        "bbox": [
+          15,
+          12,
+          80,
+          89
+        ],
+        "fill": 0.543,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.68,
+        "bbox": [
+          16,
+          12,
+          82,
+          89
+        ],
+        "fill": 0.551,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.737,
+        "bbox": [
+          16,
+          6,
+          78,
+          90
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      }
+    }
+  }
+}

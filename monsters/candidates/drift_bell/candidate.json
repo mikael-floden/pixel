@@ -1,0 +1,141 @@
+{
+  "id": "drift_bell",
+  "name": "Driftbell",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It goes where the cold water goes and has no say in the matter. It glows when it is touched.",
+  "biome": [
+    "deep_water",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Small fantasy jellyfish with a ribbed translucent pale blue bell, a faint glow inside the dome, short frilled oral arms gathered beneath it, and fine trailing tentacles held close.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "drift_bell/rotations/south.webp",
+    "south-east": "drift_bell/rotations/south-east.webp",
+    "east": "drift_bell/rotations/east.webp",
+    "north-east": "drift_bell/rotations/north-east.webp",
+    "north": "drift_bell/rotations/north.webp",
+    "north-west": "drift_bell/rotations/north-west.webp",
+    "west": "drift_bell/rotations/west.webp",
+    "south-west": "drift_bell/rotations/south-west.webp"
+  },
+  "sheet": "drift_bell/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "508af58d-a4c4-4bef-808a-3977984a93ac",
+  "seed": 923003334,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:00:36+00:00",
+  "elapsed_s": 213.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.741,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.779,
+        "bbox": [
+          7,
+          4,
+          41,
+          44
+        ],
+        "fill": 0.59,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.757,
+        "bbox": [
+          9,
+          5,
+          39,
+          44
+        ],
+        "fill": 0.508,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.751,
+        "bbox": [
+          9,
+          5,
+          39,
+          44
+        ],
+        "fill": 0.508,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.759,
+        "bbox": [
+          6,
+          4,
+          42,
+          44
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.772,
+        "bbox": [
+          8,
+          4,
+          40,
+          44
+        ],
+        "fill": 0.556,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.762,
+        "bbox": [
+          7,
+          4,
+          40,
+          43
+        ],
+        "fill": 0.559,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.741,
+        "bbox": [
+          8,
+          4,
+          40,
+          43
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.765,
+        "bbox": [
+          8,
+          4,
+          40,
+          44
+        ],
+        "fill": 0.556,
+        "touches_edge": false
+      }
+    }
+  }
+}

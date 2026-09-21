@@ -1,0 +1,140 @@
+{
+  "id": "angler_deep",
+  "name": "Deeplure",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It has never seen the sun and does not believe in it. The light it carries is the only one it trusts.",
+  "biome": [
+    "deep_water"
+  ],
+  "items": [],
+  "prompt": "Fantasy deep-sea anglerfish with a bulbous dark grey body, an oversized hinged jaw crowded with long glass-clear teeth, a drooping fleshy lure on a stalk over its brow with a pale glowing tip, small milky eyes, and tattered fins.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "angler_deep/rotations/south.webp",
+    "south-east": "angler_deep/rotations/south-east.webp",
+    "east": "angler_deep/rotations/east.webp",
+    "north-east": "angler_deep/rotations/north-east.webp",
+    "north": "angler_deep/rotations/north.webp",
+    "north-west": "angler_deep/rotations/north-west.webp",
+    "west": "angler_deep/rotations/west.webp",
+    "south-west": "angler_deep/rotations/south-west.webp"
+  },
+  "sheet": "angler_deep/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "97e802ab-10c1-46f2-b57f-9ad1de9f7321",
+  "seed": 1267701169,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T10:57:32+00:00",
+  "elapsed_s": 198.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.679,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.679,
+        "bbox": [
+          5,
+          5,
+          107,
+          104
+        ],
+        "fill": 0.805,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.776,
+        "bbox": [
+          18,
+          6,
+          108,
+          107
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.775,
+        "bbox": [
+          9,
+          7,
+          92,
+          107
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.752,
+        "bbox": [
+          6,
+          5,
+          103,
+          101
+        ],
+        "fill": 0.742,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.788,
+        "bbox": [
+          12,
+          6,
+          100,
+          106
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.763,
+        "bbox": [
+          5,
+          6,
+          102,
+          107
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.771,
+        "bbox": [
+          11,
+          5,
+          102,
+          102
+        ],
+        "fill": 0.704,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.787,
+        "bbox": [
+          6,
+          6,
+          105,
+          106
+        ],
+        "fill": 0.789,
+        "touches_edge": false
+      }
+    }
+  }
+}

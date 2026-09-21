@@ -1,0 +1,141 @@
+{
+  "id": "ghost_cuttle",
+  "name": "Ghostcuttle",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It changes its skin faster than you can decide what you saw. Whatever it was, it is not there now.",
+  "biome": [
+    "deep_water",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy cuttlefish with a broad mantle fringed by a rippling fin, eight short arms held together beneath, two W-shaped pupils in gold eyes, and bands of colour running down its flanks.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "ghost_cuttle/rotations/south.webp",
+    "south-east": "ghost_cuttle/rotations/south-east.webp",
+    "east": "ghost_cuttle/rotations/east.webp",
+    "north-east": "ghost_cuttle/rotations/north-east.webp",
+    "north": "ghost_cuttle/rotations/north.webp",
+    "north-west": "ghost_cuttle/rotations/north-west.webp",
+    "west": "ghost_cuttle/rotations/west.webp",
+    "south-west": "ghost_cuttle/rotations/south-west.webp"
+  },
+  "sheet": "ghost_cuttle/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "503fd8ef-23b9-4ec2-b114-75d79eaceb88",
+  "seed": 359449297,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:00:20+00:00",
+  "elapsed_s": 180.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.734,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.734,
+        "bbox": [
+          9,
+          2,
+          87,
+          93
+        ],
+        "fill": 0.77,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.805,
+        "bbox": [
+          7,
+          9,
+          89,
+          88
+        ],
+        "fill": 0.703,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.801,
+        "bbox": [
+          7,
+          9,
+          88,
+          88
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.788,
+        "bbox": [
+          9,
+          14,
+          88,
+          74
+        ],
+        "fill": 0.514,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.836,
+        "bbox": [
+          9,
+          5,
+          88,
+          93
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.816,
+        "bbox": [
+          7,
+          16,
+          88,
+          78
+        ],
+        "fill": 0.545,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.82,
+        "bbox": [
+          8,
+          17,
+          89,
+          78
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.835,
+        "bbox": [
+          8,
+          5,
+          87,
+          93
+        ],
+        "fill": 0.754,
+        "touches_edge": false
+      }
+    }
+  }
+}
