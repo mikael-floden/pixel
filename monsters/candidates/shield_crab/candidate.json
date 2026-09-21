@@ -1,0 +1,143 @@
+{
+  "id": "shield_crab",
+  "name": "Shieldcrab",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It has walked the same shallows since before the shore had a name. It has not been improved on.",
+  "biome": [
+    "water",
+    "light_beach"
+  ],
+  "items": [
+    "sea shells"
+  ],
+  "prompt": "Fantasy horseshoe crab with a smooth domed olive-brown shield, a jointed rear plate, a long rigid tail spine held straight behind, many small legs hidden beneath the rim, and two pairs of simple eyes on the shell.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "shield_crab/rotations/south.webp",
+    "south-east": "shield_crab/rotations/south-east.webp",
+    "east": "shield_crab/rotations/east.webp",
+    "north-east": "shield_crab/rotations/north-east.webp",
+    "north": "shield_crab/rotations/north.webp",
+    "north-west": "shield_crab/rotations/north-west.webp",
+    "west": "shield_crab/rotations/west.webp",
+    "south-west": "shield_crab/rotations/south-west.webp"
+  },
+  "sheet": "shield_crab/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "933911a9-7bba-4e18-ba5f-0a689cf1884d",
+  "seed": 165771902,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:07:05+00:00",
+  "elapsed_s": 195.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.699,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.699,
+        "bbox": [
+          2,
+          5,
+          86,
+          84
+        ],
+        "fill": 0.857,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.776,
+        "bbox": [
+          1,
+          8,
+          84,
+          84
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.769,
+        "bbox": [
+          4,
+          8,
+          87,
+          84
+        ],
+        "fill": 0.815,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.769,
+        "bbox": [
+          2,
+          21,
+          86,
+          79
+        ],
+        "fill": 0.629,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.806,
+        "bbox": [
+          3,
+          5,
+          86,
+          84
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.786,
+        "bbox": [
+          7,
+          20,
+          85,
+          82
+        ],
+        "fill": 0.624,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.787,
+        "bbox": [
+          3,
+          15,
+          83,
+          83
+        ],
+        "fill": 0.702,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.788,
+        "bbox": [
+          2,
+          5,
+          85,
+          84
+        ],
+        "fill": 0.847,
+        "touches_edge": false
+      }
+    }
+  }
+}

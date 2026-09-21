@@ -1,0 +1,141 @@
+{
+  "id": "rock_gill",
+  "name": "Rockgill",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It is a stone until the moment it is not. Most of what steps on it never learns the difference.",
+  "biome": [
+    "deep_water",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy stonefish, a lumpy mottled brown ambusher encrusted with algae and grit, a wide upturned mouth set in a permanent scowl, small high-set eyes, and a row of venomous dorsal spines.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rock_gill/rotations/south.webp",
+    "south-east": "rock_gill/rotations/south-east.webp",
+    "east": "rock_gill/rotations/east.webp",
+    "north-east": "rock_gill/rotations/north-east.webp",
+    "north": "rock_gill/rotations/north.webp",
+    "north-west": "rock_gill/rotations/north-west.webp",
+    "west": "rock_gill/rotations/west.webp",
+    "south-west": "rock_gill/rotations/south-west.webp"
+  },
+  "sheet": "rock_gill/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "2c5d90c8-e909-4006-a086-930f71f7819c",
+  "seed": 1442298520,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:06:58+00:00",
+  "elapsed_s": 228.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.73,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.746,
+        "bbox": [
+          5,
+          8,
+          83,
+          81
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.786,
+        "bbox": [
+          10,
+          7,
+          81,
+          82
+        ],
+        "fill": 0.688,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.793,
+        "bbox": [
+          11,
+          7,
+          78,
+          82
+        ],
+        "fill": 0.649,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.73,
+        "bbox": [
+          4,
+          6,
+          84,
+          78
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.816,
+        "bbox": [
+          10,
+          7,
+          80,
+          82
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.781,
+        "bbox": [
+          6,
+          6,
+          78,
+          81
+        ],
+        "fill": 0.697,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.792,
+        "bbox": [
+          10,
+          6,
+          76,
+          81
+        ],
+        "fill": 0.639,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.813,
+        "bbox": [
+          8,
+          9,
+          82,
+          82
+        ],
+        "fill": 0.698,
+        "touches_edge": false
+      }
+    }
+  }
+}

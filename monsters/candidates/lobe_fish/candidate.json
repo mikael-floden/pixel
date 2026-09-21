@@ -1,0 +1,147 @@
+{
+  "id": "lobe_fish",
+  "name": "Lobefin",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It was old before the first coast was drawn. It has changed nothing about itself since.",
+  "biome": [
+    "deep_water"
+  ],
+  "items": [
+    "blue scales"
+  ],
+  "prompt": "Fantasy coelacanth with thick steel-blue armoured scales flecked with white, heavy lobed fins set on fleshy muscular stalks, a blunt stubborn head, and small hard eyes.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "lobe_fish/rotations/south.webp",
+    "south-east": "lobe_fish/rotations/south-east.webp",
+    "east": "lobe_fish/rotations/east.webp",
+    "north-east": "lobe_fish/rotations/north-east.webp",
+    "north": "lobe_fish/rotations/north.webp",
+    "north-west": "lobe_fish/rotations/north-west.webp",
+    "west": "lobe_fish/rotations/west.webp",
+    "south-west": "lobe_fish/rotations/south-west.webp"
+  },
+  "sheet": "lobe_fish/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "d876927d-a554-49bc-8b84-60d87590fa16",
+  "seed": 1551607910,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:06:43+00:00",
+  "elapsed_s": 219.3,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.645,
+    "reasons": [
+      "west: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.645,
+        "bbox": [
+          2,
+          2,
+          101,
+          95
+        ],
+        "fill": 0.851,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.737,
+        "bbox": [
+          5,
+          18,
+          104,
+          87
+        ],
+        "fill": 0.632,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.756,
+        "bbox": [
+          4,
+          8,
+          100,
+          96
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.732,
+        "bbox": [
+          9,
+          13,
+          99,
+          103
+        ],
+        "fill": 0.749,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.785,
+        "bbox": [
+          8,
+          0,
+          96,
+          96
+        ],
+        "fill": 0.781,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.75,
+        "bbox": [
+          0,
+          22,
+          98,
+          93
+        ],
+        "fill": 0.643,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.776,
+        "bbox": [
+          8,
+          9,
+          94,
+          102
+        ],
+        "fill": 0.739,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.78,
+        "bbox": [
+          1,
+          23,
+          104,
+          96
+        ],
+        "fill": 0.695,
+        "touches_edge": true
+      }
+    }
+  }
+}

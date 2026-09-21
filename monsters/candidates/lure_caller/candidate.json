@@ -1,0 +1,141 @@
+{
+  "id": "lure_caller",
+  "name": "Lurecaller",
+  "tier": "boss",
+  "scale": "standard",
+  "lore": "The song is not for you. You are only what answered it, and it does not stop for that.",
+  "biome": [
+    "deep_water",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy drowned siren shown full body, a pale long-haired figure with fused finned legs, gill slits along the ribs, webbed hands with dark claws, hollow black eyes, and a mouth open on no sound.",
+  "size": [
+    152,
+    152
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "lure_caller/rotations/south.webp",
+    "south-east": "lure_caller/rotations/south-east.webp",
+    "east": "lure_caller/rotations/east.webp",
+    "north-east": "lure_caller/rotations/north-east.webp",
+    "north": "lure_caller/rotations/north.webp",
+    "north-west": "lure_caller/rotations/north-west.webp",
+    "west": "lure_caller/rotations/west.webp",
+    "south-west": "lure_caller/rotations/south-west.webp"
+  },
+  "sheet": "lure_caller/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "115d54b1-e93a-4357-ad78-79190d3b9d97",
+  "seed": 713656914,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:06:58+00:00",
+  "elapsed_s": 198.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.732,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.732,
+        "bbox": [
+          27,
+          3,
+          119,
+          149
+        ],
+        "fill": 0.581,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.804,
+        "bbox": [
+          51,
+          4,
+          125,
+          150
+        ],
+        "fill": 0.468,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.82,
+        "bbox": [
+          28,
+          4,
+          104,
+          150
+        ],
+        "fill": 0.48,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.772,
+        "bbox": [
+          32,
+          2,
+          123,
+          144
+        ],
+        "fill": 0.559,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.825,
+        "bbox": [
+          35,
+          4,
+          120,
+          151
+        ],
+        "fill": 0.541,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.778,
+        "bbox": [
+          32,
+          2,
+          120,
+          146
+        ],
+        "fill": 0.548,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.77,
+        "bbox": [
+          30,
+          3,
+          117,
+          146
+        ],
+        "fill": 0.538,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.821,
+        "bbox": [
+          32,
+          4,
+          118,
+          151
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      }
+    }
+  }
+}

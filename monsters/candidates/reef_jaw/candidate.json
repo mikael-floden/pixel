@@ -1,0 +1,141 @@
+{
+  "id": "reef_jaw",
+  "name": "Reefjaw",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It does not hunt so much as arrive. The reef knows the shape of it and empties.",
+  "biome": [
+    "deep_water",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy reef shark with a stout grey body and white belly, a blunt rounded snout, heavy pectoral fins held wide, black unblinking eyes, and a slightly open jaw showing ragged triangular teeth.",
+  "size": [
+    136,
+    136
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "reef_jaw/rotations/south.webp",
+    "south-east": "reef_jaw/rotations/south-east.webp",
+    "east": "reef_jaw/rotations/east.webp",
+    "north-east": "reef_jaw/rotations/north-east.webp",
+    "north": "reef_jaw/rotations/north.webp",
+    "north-west": "reef_jaw/rotations/north-west.webp",
+    "west": "reef_jaw/rotations/west.webp",
+    "south-west": "reef_jaw/rotations/south-west.webp"
+  },
+  "sheet": "reef_jaw/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "53b22efe-a69c-4b05-9429-b92af0d6ee5f",
+  "seed": 1433941387,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:06:22+00:00",
+  "elapsed_s": 183.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.611,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.611,
+        "bbox": [
+          6,
+          10,
+          128,
+          114
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.687,
+        "bbox": [
+          6,
+          12,
+          130,
+          125
+        ],
+        "fill": 0.758,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.707,
+        "bbox": [
+          10,
+          14,
+          130,
+          127
+        ],
+        "fill": 0.733,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.685,
+        "bbox": [
+          25,
+          16,
+          118,
+          128
+        ],
+        "fill": 0.563,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.744,
+        "bbox": [
+          24,
+          10,
+          127,
+          124
+        ],
+        "fill": 0.635,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.708,
+        "bbox": [
+          6,
+          17,
+          125,
+          125
+        ],
+        "fill": 0.695,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.693,
+        "bbox": [
+          21,
+          18,
+          113,
+          128
+        ],
+        "fill": 0.547,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.732,
+        "bbox": [
+          7,
+          11,
+          128,
+          124
+        ],
+        "fill": 0.739,
+        "touches_edge": false
+      }
+    }
+  }
+}

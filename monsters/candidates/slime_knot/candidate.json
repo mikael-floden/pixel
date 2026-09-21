@@ -1,0 +1,140 @@
+{
+  "id": "slime_knot",
+  "name": "Slimeknot",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It arrives as one thing and leaves as many. What it finishes with is clean to the bone.",
+  "biome": [
+    "deep_water"
+  ],
+  "items": [],
+  "prompt": "Fantasy knot of hagfish wound into one writhing mass of pale grey eel-like bodies, slime sheeting off the coils in strands, blind slit mouths ringed with small rasping teeth.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "slime_knot/rotations/south.webp",
+    "south-east": "slime_knot/rotations/south-east.webp",
+    "east": "slime_knot/rotations/east.webp",
+    "north-east": "slime_knot/rotations/north-east.webp",
+    "north": "slime_knot/rotations/north.webp",
+    "north-west": "slime_knot/rotations/north-west.webp",
+    "west": "slime_knot/rotations/west.webp",
+    "south-west": "slime_knot/rotations/south-west.webp"
+  },
+  "sheet": "slime_knot/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c7c98748-6103-4045-b053-ba9232fd5673",
+  "seed": 1968663251,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:07:19+00:00",
+  "elapsed_s": 235.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.661,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.661,
+        "bbox": [
+          7,
+          3,
+          89,
+          93
+        ],
+        "fill": 0.801,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.725,
+        "bbox": [
+          16,
+          5,
+          80,
+          95
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.746,
+        "bbox": [
+          16,
+          5,
+          80,
+          95
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.693,
+        "bbox": [
+          9,
+          4,
+          87,
+          88
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.773,
+        "bbox": [
+          9,
+          5,
+          85,
+          95
+        ],
+        "fill": 0.742,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.719,
+        "bbox": [
+          9,
+          4,
+          83,
+          91
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.716,
+        "bbox": [
+          13,
+          4,
+          87,
+          91
+        ],
+        "fill": 0.699,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.783,
+        "bbox": [
+          11,
+          5,
+          87,
+          95
+        ],
+        "fill": 0.742,
+        "touches_edge": false
+      }
+    }
+  }
+}

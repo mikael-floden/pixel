@@ -1,0 +1,140 @@
+{
+  "id": "hollow_gulp",
+  "name": "Hollowgulp",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "Almost all of it is mouth. What little is left exists to carry the mouth somewhere useful.",
+  "biome": [
+    "deep_water"
+  ],
+  "items": [],
+  "prompt": "Fantasy gulper eel curled tight on itself, an enormous black pelican-like jaw far larger than its thin whip of a body, loose dark skin, tiny eyes set far forward, and a faint luminous tail tip.",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "hollow_gulp/rotations/south.webp",
+    "south-east": "hollow_gulp/rotations/south-east.webp",
+    "east": "hollow_gulp/rotations/east.webp",
+    "north-east": "hollow_gulp/rotations/north-east.webp",
+    "north": "hollow_gulp/rotations/north.webp",
+    "north-west": "hollow_gulp/rotations/north-west.webp",
+    "west": "hollow_gulp/rotations/west.webp",
+    "south-west": "hollow_gulp/rotations/south-west.webp"
+  },
+  "sheet": "hollow_gulp/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "01e01ebd-002e-4c5f-ab49-cbc033076ebe",
+  "seed": 726055051,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:06:11+00:00",
+  "elapsed_s": 162.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.744,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.744,
+        "bbox": [
+          4,
+          5,
+          114,
+          118
+        ],
+        "fill": 0.863,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.819,
+        "bbox": [
+          13,
+          4,
+          106,
+          114
+        ],
+        "fill": 0.71,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.815,
+        "bbox": [
+          28,
+          5,
+          106,
+          117
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.822,
+        "bbox": [
+          13,
+          4,
+          108,
+          112
+        ],
+        "fill": 0.713,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.816,
+        "bbox": [
+          36,
+          5,
+          95,
+          115
+        ],
+        "fill": 0.451,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.844,
+        "bbox": [
+          11,
+          5,
+          116,
+          117
+        ],
+        "fill": 0.817,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.801,
+        "bbox": [
+          32,
+          3,
+          90,
+          115
+        ],
+        "fill": 0.451,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.842,
+        "bbox": [
+          3,
+          5,
+          115,
+          118
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      }
+    }
+  }
+}
