@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T16:24:57.497Z",
+  "updated_at": "2026-09-21T16:26:50.047Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -5311,6 +5311,30 @@
           "die#south-west": {
             "ax": -3.46,
             "ay": 28.74
+          },
+          "idle#south": {
+            "ax": 0.62,
+            "ay": 25.79
+          },
+          "idle#north": {
+            "ax": 1.29,
+            "ay": 22.55
+          },
+          "idle#north-west": {
+            "ax": 2.7,
+            "ay": 22.75
+          },
+          "idle#west": {
+            "ax": 10.54,
+            "ay": 23.19
+          },
+          "idle#south-west": {
+            "ax": 4.11,
+            "ay": 18.19
+          },
+          "angry#west": {
+            "ax": 7.3,
+            "ay": 29.22
           }
         }
       }
