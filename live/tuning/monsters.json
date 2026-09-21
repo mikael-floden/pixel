@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T14:52:12.407Z",
+  "updated_at": "2026-09-21T14:53:35.769Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -2854,7 +2854,21 @@
           "item": "clustered_ice_crystals",
           "chance": 0.044
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 9.75,
+        "ry": 4,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.35,
+            "ay": 14.97
+          },
+          "idle#south-east": {
+            "ax": 0.2,
+            "ay": 14.67
+          }
+        }
+      }
     },
     "ice_wolf": {
       "max_hp": 175,
