@@ -23470,6 +23470,673 @@
       "hoverPx": 0
     },
     {
+      "id": "eye_bat",
+      "name": "Glareling",
+      "frameW": 64,
+      "frameH": 64,
+      "root": "eye_bat",
+      "walkAnim": "walk",
+      "idleAnim": "idle",
+      "animations": {
+        "angry": {
+          "south": 5,
+          "south-west": 5,
+          "west": 5,
+          "north-west": 5,
+          "north": 5,
+          "north-east": 5,
+          "east": 5,
+          "south-east": 5
+        },
+        "idle": {
+          "south": 5,
+          "south-west": 5,
+          "west": 5,
+          "north-west": 5,
+          "north": 5,
+          "north-east": 5,
+          "east": 5,
+          "south-east": 5
+        },
+        "die": {
+          "south": 7,
+          "south-west": 7,
+          "west": 7,
+          "north-west": 7,
+          "north": 7,
+          "north-east": 7,
+          "east": 7,
+          "south-east": 7
+        },
+        "attack": {
+          "south": 16,
+          "south-west": 16,
+          "west": 16,
+          "north-west": 16,
+          "north": 16,
+          "north-east": 16,
+          "east": 16,
+          "south-east": 16
+        },
+        "custom_darts_forward_and_fires_a_shor": {
+          "south": 7,
+          "south-west": 7,
+          "west": 7,
+          "north-west": 7,
+          "north": 7,
+          "north-east": 7,
+          "east": 7,
+          "south-east": 7
+        },
+        "walk": {
+          "south": 6,
+          "south-west": 6,
+          "west": 6,
+          "north-west": 6,
+          "north": 6,
+          "north-east": 6,
+          "east": 6,
+          "south-east": 6
+        }
+      },
+      "strips": {
+        "angry": {
+          "south": "/assets/monsters/eye_bat/animations/angry__south.webp",
+          "south-west": "/assets/monsters/eye_bat/animations/angry__south-west.webp",
+          "west": "/assets/monsters/eye_bat/animations/angry__west.webp",
+          "north-west": "/assets/monsters/eye_bat/animations/angry__north-west.webp",
+          "north": "/assets/monsters/eye_bat/animations/angry__north.webp",
+          "north-east": "/assets/monsters/eye_bat/animations/angry__north-east.webp",
+          "east": "/assets/monsters/eye_bat/animations/angry__east.webp",
+          "south-east": "/assets/monsters/eye_bat/animations/angry__south-east.webp"
+        },
+        "idle": {
+          "south": "/assets/monsters/eye_bat/animations/idle__south.webp",
+          "south-west": "/assets/monsters/eye_bat/animations/idle__south-west.webp",
+          "west": "/assets/monsters/eye_bat/animations/idle__west.webp",
+          "north-west": "/assets/monsters/eye_bat/animations/idle__north-west.webp",
+          "north": "/assets/monsters/eye_bat/animations/idle__north.webp",
+          "north-east": "/assets/monsters/eye_bat/animations/idle__north-east.webp",
+          "east": "/assets/monsters/eye_bat/animations/idle__east.webp",
+          "south-east": "/assets/monsters/eye_bat/animations/idle__south-east.webp"
+        },
+        "die": {
+          "south": "/assets/monsters/eye_bat/animations/die__south.webp",
+          "south-west": "/assets/monsters/eye_bat/animations/die__south-west.webp",
+          "west": "/assets/monsters/eye_bat/animations/die__west.webp",
+          "north-west": "/assets/monsters/eye_bat/animations/die__north-west.webp",
+          "north": "/assets/monsters/eye_bat/animations/die__north.webp",
+          "north-east": "/assets/monsters/eye_bat/animations/die__north-east.webp",
+          "east": "/assets/monsters/eye_bat/animations/die__east.webp",
+          "south-east": "/assets/monsters/eye_bat/animations/die__south-east.webp"
+        },
+        "attack": {
+          "south": "/assets/monsters/eye_bat/animations/attack__south.webp",
+          "south-west": "/assets/monsters/eye_bat/animations/attack__south-west.webp",
+          "west": "/assets/monsters/eye_bat/animations/attack__west.webp",
+          "north-west": "/assets/monsters/eye_bat/animations/attack__north-west.webp",
+          "north": "/assets/monsters/eye_bat/animations/attack__north.webp",
+          "north-east": "/assets/monsters/eye_bat/animations/attack__north-east.webp",
+          "east": "/assets/monsters/eye_bat/animations/attack__east.webp",
+          "south-east": "/assets/monsters/eye_bat/animations/attack__south-east.webp"
+        },
+        "custom_darts_forward_and_fires_a_shor": {
+          "south": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__south.webp",
+          "south-west": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__south-west.webp",
+          "west": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__west.webp",
+          "north-west": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__north-west.webp",
+          "north": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__north.webp",
+          "north-east": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__north-east.webp",
+          "east": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__east.webp",
+          "south-east": "/assets/monsters/eye_bat/animations/custom_darts_forward_and_fires_a_shor__south-east.webp"
+        },
+        "walk": {
+          "south": "/assets/monsters/eye_bat/animations/walk__south.webp",
+          "south-west": "/assets/monsters/eye_bat/animations/walk__south-west.webp",
+          "west": "/assets/monsters/eye_bat/animations/walk__west.webp",
+          "north-west": "/assets/monsters/eye_bat/animations/walk__north-west.webp",
+          "north": "/assets/monsters/eye_bat/animations/walk__north.webp",
+          "north-east": "/assets/monsters/eye_bat/animations/walk__north-east.webp",
+          "east": "/assets/monsters/eye_bat/animations/walk__east.webp",
+          "south-east": "/assets/monsters/eye_bat/animations/walk__south-east.webp"
+        }
+      },
+      "stripDims": {
+        "angry": {
+          "south": {
+            "w": 64,
+            "h": 64
+          },
+          "south-west": {
+            "w": 64,
+            "h": 64
+          },
+          "west": {
+            "w": 64,
+            "h": 64
+          },
+          "north-west": {
+            "w": 64,
+            "h": 64
+          },
+          "north": {
+            "w": 64,
+            "h": 64
+          },
+          "north-east": {
+            "w": 64,
+            "h": 64
+          },
+          "east": {
+            "w": 64,
+            "h": 64
+          },
+          "south-east": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "idle": {
+          "south": {
+            "w": 64,
+            "h": 64
+          },
+          "south-west": {
+            "w": 64,
+            "h": 64
+          },
+          "west": {
+            "w": 64,
+            "h": 64
+          },
+          "north-west": {
+            "w": 64,
+            "h": 64
+          },
+          "north": {
+            "w": 64,
+            "h": 64
+          },
+          "north-east": {
+            "w": 64,
+            "h": 64
+          },
+          "east": {
+            "w": 64,
+            "h": 64
+          },
+          "south-east": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "die": {
+          "south": {
+            "w": 64,
+            "h": 64
+          },
+          "south-west": {
+            "w": 64,
+            "h": 64
+          },
+          "west": {
+            "w": 64,
+            "h": 64
+          },
+          "north-west": {
+            "w": 64,
+            "h": 64
+          },
+          "north": {
+            "w": 64,
+            "h": 64
+          },
+          "north-east": {
+            "w": 64,
+            "h": 64
+          },
+          "east": {
+            "w": 64,
+            "h": 64
+          },
+          "south-east": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "attack": {
+          "south": {
+            "w": 64,
+            "h": 64
+          },
+          "south-west": {
+            "w": 64,
+            "h": 64
+          },
+          "west": {
+            "w": 64,
+            "h": 64
+          },
+          "north-west": {
+            "w": 64,
+            "h": 64
+          },
+          "north": {
+            "w": 64,
+            "h": 64
+          },
+          "north-east": {
+            "w": 64,
+            "h": 64
+          },
+          "east": {
+            "w": 64,
+            "h": 64
+          },
+          "south-east": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "custom_darts_forward_and_fires_a_shor": {
+          "south": {
+            "w": 64,
+            "h": 64
+          },
+          "south-west": {
+            "w": 64,
+            "h": 64
+          },
+          "west": {
+            "w": 64,
+            "h": 64
+          },
+          "north-west": {
+            "w": 64,
+            "h": 64
+          },
+          "north": {
+            "w": 64,
+            "h": 64
+          },
+          "north-east": {
+            "w": 64,
+            "h": 64
+          },
+          "east": {
+            "w": 64,
+            "h": 64
+          },
+          "south-east": {
+            "w": 64,
+            "h": 64
+          }
+        },
+        "walk": {
+          "south": {
+            "w": 64,
+            "h": 64
+          },
+          "south-west": {
+            "w": 64,
+            "h": 64
+          },
+          "west": {
+            "w": 64,
+            "h": 64
+          },
+          "north-west": {
+            "w": 64,
+            "h": 64
+          },
+          "north": {
+            "w": 64,
+            "h": 64
+          },
+          "north-east": {
+            "w": 64,
+            "h": 64
+          },
+          "east": {
+            "w": 64,
+            "h": 64
+          },
+          "south-east": {
+            "w": 64,
+            "h": 64
+          }
+        }
+      },
+      "aliases": {
+        "walk": "walk"
+      },
+      "ground": {
+        "south": {
+          "f": 0.8715,
+          "cx": 0.4936,
+          "contact": 0,
+          "sink": 2,
+          "up": 4,
+          "shift": [
+            0.4936,
+            0.4936,
+            0.4936,
+            0.4936,
+            0.4936,
+            0.4936
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-west": {
+          "f": 0.8356,
+          "cx": 0.5384,
+          "contact": 0,
+          "sink": 4,
+          "up": 2,
+          "shift": [
+            0.5384,
+            0.5384,
+            0.5384,
+            0.5384,
+            0.5384,
+            0.5384
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "west": {
+          "f": 0.8867,
+          "cx": 0.5309,
+          "contact": 5,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4639,
+            0.5309,
+            0.4835,
+            0.5309,
+            0.5309,
+            0.5309
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-west": {
+          "f": 0.8559,
+          "cx": 0.49,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.49,
+            0.49,
+            0.49,
+            0.49,
+            0.49,
+            0.49
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        "north": {
+          "f": 0.8736,
+          "cx": 0.4916,
+          "contact": 0,
+          "sink": 2,
+          "up": 4,
+          "shift": [
+            0.4916,
+            0.4916,
+            0.4916,
+            0.4916,
+            0.4916,
+            0.4916
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        "north-east": {
+          "f": 0.8559,
+          "cx": 0.5022,
+          "contact": 0,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.5022,
+            0.5022,
+            0.5022,
+            0.5022,
+            0.5022,
+            0.5022
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            1,
+            1,
+            0
+          ]
+        },
+        "east": {
+          "f": 0.8867,
+          "cx": 0.4613,
+          "contact": 5,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.5282,
+            0.4613,
+            0.5087,
+            0.4613,
+            0.4613,
+            0.4613
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-east": {
+          "f": 0.8356,
+          "cx": 0.4538,
+          "contact": 0,
+          "sink": 4,
+          "up": 2,
+          "shift": [
+            0.4538,
+            0.4538,
+            0.4538,
+            0.4538,
+            0.4538,
+            0.4538
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        }
+      },
+      "gait": {
+        "cycleWu": 52,
+        "hopFrac": 0.037
+      },
+      "groundIdle": {
+        "south": {
+          "f": 0.8385,
+          "cx": 0.5089,
+          "contact": 3,
+          "sink": 4,
+          "up": 3,
+          "shift": [
+            0.5089,
+            0.5089,
+            0.5089,
+            0.5089,
+            0.5089
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-west": {
+          "f": 0.8711,
+          "cx": 0.5469,
+          "contact": 3,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.5469,
+            0.5469,
+            0.5469,
+            0.5469,
+            0.5469
+          ],
+          "air": [
+            1,
+            0,
+            0,
+            0,
+            1
+          ]
+        },
+        "north-west": {
+          "f": 0.8438,
+          "cx": 0.5036,
+          "contact": 0,
+          "sink": 4,
+          "up": 2,
+          "shift": [
+            0.5036,
+            0.5036,
+            0.5036,
+            0.5036,
+            0.5036
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north": {
+          "f": 0.8534,
+          "cx": 0.4933,
+          "contact": 1,
+          "sink": 1,
+          "up": 5,
+          "shift": [
+            0.4933,
+            0.4933,
+            0.4933,
+            0.4933,
+            0.4933
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "north-east": {
+          "f": 0.8438,
+          "cx": 0.4886,
+          "contact": 0,
+          "sink": 4,
+          "up": 2,
+          "shift": [
+            0.4886,
+            0.4886,
+            0.4886,
+            0.4886,
+            0.4886
+          ],
+          "air": [
+            0,
+            0,
+            0,
+            0,
+            0
+          ]
+        },
+        "south-east": {
+          "f": 0.8711,
+          "cx": 0.4453,
+          "contact": 3,
+          "sink": 3,
+          "up": 3,
+          "shift": [
+            0.4453,
+            0.4453,
+            0.4453,
+            0.4453,
+            0.4453
+          ],
+          "air": [
+            1,
+            0,
+            0,
+            0,
+            1
+          ]
+        }
+      },
+      "artBottom": 0.8715,
+      "footW": 31,
+      "bodyW": 52,
+      "shadowW": 34,
+      "shadowH": 13,
+      "radius": 15,
+      "hoverPx": 0
+    },
+    {
       "id": "cobra",
       "name": "Hoodfang",
       "frameW": 88,
