@@ -1,14 +1,14 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-21T15:01:00+00:00",
-  "health": "error",
-  "current": "error (not mine) — THE PIXELLAB ANIMATION-START ROUTE IS BROKEN FOR THIS DOMAIN, diagnosed by the 14:56:58Z sitting and left standing here verbatim below: POST characters/animations answers 422 'Field required' for character_id and animation_group_id (now QUERY params, and the route takes an EXISTING group), so no clip can be generated from this domain right now; his 14:46:47Z pebble_crab note is DIAGNOSED but NOT FIXED. MY UNIT, ON TOP OF THAT AND UNAFFECTED BY IT: his 14:56:07–14:56:32Z save on monsters/frost_mite (Rimemite) TAKEN and decided a NO-OP — 25 entries, every one an APPROVAL, all 24 facet keys hash-verified against the strips on disk, nothing to generate and nothing to clear (review-contract law 2). No files claimed by either sitting; live/feedback/monsters.json byte-untouched.",
+  "updated_at": "2026-09-21T15:12:00+00:00",
+  "health": "running",
+  "current": "CLAIM: his 2026-09-21T15:00:12-15:00:17Z save on monsters/elder_treant — 24 new facet verdicts (angry, attack, die x 8 directions), all `approved`. Files I may touch: coordination/monsters-github-agent.json (this board) and, only if a verdict turns out to need acting on, live/feedback/monsters.json + monsters/elder_treant/**. NOT touching the pebble_crab unit or its files. The PixelLab animation-start route is still 422-broken for this domain (see the 14:56:58Z note below) — unrelated to this unit unless it needs generation.",
   "progress": {
-    "verdicts_taken": 25,
+    "verdicts_taken": 24,
     "verdicts_cleared": 0,
-    "unit": "his 2026-09-21T14:56Z save on monsters/frost_mite — 25 approvals, no-op (the pebble_crab unit above stays BLOCKED on the API change)",
-    "shipped": "board account only (no art change)"
+    "unit": "his 2026-09-21T15:00Z save on monsters/elder_treant — 24 approvals (angry/attack/die x 8), in flight",
+    "shipped": "claim only so far"
   },
   "budget_remaining": "PixelLab USD $35.98 — zero spent this session (both generation attempts 422'd before any job started).",
   "notes": [
@@ -75,5 +75,5 @@
       "text": "BLOCKER, ABOVE ANY VERDICT: PIXELLAB'S ANIMATION ROUTE CHANGED AND NOTHING IN THIS DOMAIN CAN GENERATE. POST characters/animations — animate_v3, animate_pro AND animate_template all use it (pixellab_client.py:398/416/435) — returns 422 with 'character_id' and 'animation_group_id' required in the QUERY string, not the body. Measured 2026-09-21 15:05-15:15Z on two real redos (pebble_crab attack_v3 S/NE/N, with --pro and without): both died at the POST, $0.00 spent, no job started. The assistant's last successful PRO roll was 08:13Z today, so the change landed inside that window. ONE FREE PROBE, no job and no credit: the two ids as query params with an EMPTY json body returns 200 with the animation group id back (23 groups before, 23 after, USD 35.98 both sides) — so that route now creates/attaches an animation GROUP and the generate step has moved elsewhere. Reads are unaffected (get_character, usd_credits, CDN downloads). DO NOT brute-force the new shape: a POST that does start a job cannot be cancelled and holds one of the 20 concurrency slots for ~25 minutes. Read the current API docs, fix the client once, and tell characters2 (same v2/characters store) and every other PixelLab domain — each client is a copy of this shape, so they are all down the same way. UNTIL IT IS FIXED every 'I said redo!' he presses is a no-op no agent can act on, which is the exact failure he came to chat about twice this week.\nMY UNIT, LEFT UNDONE AND UNCLEARED FOR YOU: his 14:46:47Z note on monsters/pebble_crab, 'This monster lacks attack animations in some directions'. True — attack is 4/8 in the mirror (east, south-east, south-west, west). The take holding south/north-east/north (his 09-18 approvals, the 'Claw Swipe' wording) was deleted upstream at graduation as an unpicked take; those frames survive only in monsters/candidates/pebble_crab/animations/attack_v3/. Repair once generation works: redo --state attack_v3 --only pebble_crab --dirs south,north-east,north (the design's attack_simple 'Claw Snap' is what his newest east/west approvals hold), north-west mirrors north-east, then map the new animation_type in config/roster.json renames, sync --only pebble_crab, pack.py --only pebble_crab. His entity note is an APPROVAL, so it stays; there is nothing to clear."
     }
   ],
-  "updated": "2026-09-21T15:01:00+00:00"
+  "updated": "2026-09-21T15:12:00+00:00"
 }
