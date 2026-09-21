@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T15:05:36.673Z",
+  "updated_at": "2026-09-21T15:09:37.874Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -5890,7 +5890,45 @@
           "item": "curved_crab_pincer",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 56.75,
+        "ry": 24.5,
+        "offsets": {
+          "idle#south": {
+            "ax": -0.07,
+            "ay": 13.1
+          },
+          "idle#east": {
+            "ax": -5.11,
+            "ay": 11.02
+          },
+          "idle#south-east": {
+            "ax": 0.05,
+            "ay": 13.63
+          },
+          "idle#north-east": {
+            "ax": -1.1,
+            "ay": 16.12
+          },
+          "idle#north": {
+            "ax": -0.16,
+            "ay": 22.55
+          },
+          "idle#north-west": {
+            "ax": 3.86,
+            "ay": 17.33
+          },
+          "idle#west": {
+            "ax": 4.33,
+            "ay": 10.95
+          },
+          "idle#south-west": {
+            "ax": -0.45,
+            "ay": 11.76
+          }
+        }
+      }
     },
     "tree_stump": {
       "level": 10,
