@@ -1,8 +1,19 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-21T08:07:03+00:00",
+  "updated_at": "2026-09-21T15:33:37+00:00",
   "health": "running",
-  "current": "idle — SHIPPED (maintainer 2026-09-21: 'The second thumbstick is still not invisible … Its blurry and make the background blurry. I want it to fade to real transparency'): THE GHOST'S BLUR DISC FADES WITH IT. Yesterday's fade took .ml-pad-stick's well and cap to 0 but not .ml-pad-blur, a SIBLING element carrying the backdrop-filter — so the world still bent in a disc where an invisible stick stood. The disc now rests at opacity 1 with the same .25s transition and goes to 0 under :root.ml-pad-usingpage; :root.ml-pad-ghostheld (published by the ghost's own drag) brings the pair back when a thumb is on the ghost, because the disc precedes the stick in the DOM and CSS has no backwards sibling combinator. Measured on the page: rest .15/.25/1, page stick held 0/0/0 (screenshot: clean corner, world unbent), both held 1/1/1, released .15/.25/1. verify-gamepad's fade arm now reads the disc in all three states. NEXT on his list: his 24x24 icons for the four Settings sections (SUBTABS img: entries); voice actors and more on the Sound page as they come.",
+  "current": {
+    "unit": "CLAIMED (maintainer 2026-09-21, two screenshots: 'If I restart the game and open the chat keyboard … the menu buttons still visible when the keyboard has fully opened. If I then close the keyboard and reopen it … the menu is not visible'): THE KEYBOARD HOLD MUST NOT BE A RACE. Measured in the harness: the resize listener holds a same-width resize only while :root.ml-kb-up is already on, so whether the menu ends up wedged between the input and the keys depends on whether armLift won the race against the browser's page shrink. It is one-shot by construction: 'open' at focus is (!sawReport && touchDevice()), so after the first keyboard of a session focus no longer arms pre-emptively and the shrink lands first — first open lay+0, rail 540, menu hidden, lifted; second open lay+1, rail 279, menu VISIBLE and the box never floated at all. Second fault underneath: layoutShrunk() measures against layoutH, which that stray applyLayout overwrites, so the shrink then reads 0 and the lift is blind to the keyboard for the rest of the session. Fix: hold while a chat box has FOCUS (set synchronously in focusin, before any keyboard can appear) and measure the shrink against a kbBaseH captured at focus while not already holding. verify-chatpage drives open/close/open and asserts both opens identically: no layout run, the rail unmoved, the box lifted.",
+    "since": "2026-09-21T15:33:37+00:00",
+    "files": [
+      "games2/client/src/hud.ts",
+      "games2/scripts/verify-chatpage.mjs",
+      "games2/docs/ui.md",
+      "games2/UI_AGENT.md",
+      "coordination/games-ui-assistant.json"
+    ],
+    "note": "games-ui's board is idle; games and games-assistant name none of these files."
+  },
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
