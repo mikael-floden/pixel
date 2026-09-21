@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-18T14:55:17.523Z",
+  "updated_at": "2026-09-21T10:07:11.400Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -4562,7 +4562,57 @@
           "item": "tangled_cobweb",
           "chance": 0.32
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 122.25,
+        "ry": 49,
+        "offsets": {
+          "idle#east": {
+            "ax": 8.68,
+            "ay": 48.23
+          },
+          "idle#south": {
+            "ax": 3.72,
+            "ay": 68.72
+          },
+          "idle#south-east": {
+            "ax": 11.63,
+            "ay": 62.25
+          },
+          "idle#north-east": {
+            "ax": 0.18,
+            "ay": 43.33
+          },
+          "idle#north": {
+            "ax": 1.69,
+            "ay": 43.29
+          },
+          "idle#north-west": {
+            "ax": 9.81,
+            "ay": 55.29
+          },
+          "idle#west": {
+            "ax": -1.89,
+            "ay": 52.63
+          },
+          "idle#south-west": {
+            "ax": -1.46,
+            "ay": 50.7
+          },
+          "walk#north": {
+            "ax": 2.65,
+            "ay": 51.68
+          },
+          "walk#north-west": {
+            "ax": 9.27,
+            "ay": 47.46
+          },
+          "attack#north": {
+            "ax": 3.5,
+            "ay": 58.32
+          }
+        }
+      }
     },
     "stone_golem": {
       "level": 18,
