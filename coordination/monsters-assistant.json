@@ -1,8 +1,8 @@
 {
   "domain": "monsters-assistant",
-  "updated_at": "2026-09-21T09:03:27+00:00",
-  "health": "idle",
-  "current": "idle — Ashling finished and shipped (5 states x 8 directions, roster pinned, candidate folder released). No open verdicts anywhere. No files claimed.",
+  "updated_at": "2026-09-21T10:46:58+00:00",
+  "health": "running",
+  "current": "CLAIM 2026-09-21T10:46Z — GENERATE 100 NEW CANDIDATES, 8 static directions each, nothing else (he approved the list in chat: 'Let's go! Let's generate all candidates! (only static 8-dir)'). Designed against three measurements: the world is 63% water and only 12 of 86 live designs claimed it (45 of the 100 do), 17 finished items had no creature (21 item wishes covered, including all eight feathers, both bat wings and the silver bars), and the 169 retired designs say what fails — so every bird and bat has its wings FOLDED, the dragonfly item is served by its wingless caddis larva, the beetles are compact top-down bodies, and nothing is a gag. 56 standard / 31 small / 13 big; cute 26, mid 41, evil 23, boss 10. Files: monsters/config/candidates.json (append 100 designs), monsters/candidates/<new id>/** for each, monsters/candidates/index.json, this board. NOT touching: any existing design or its art, the roster, animate.py, graduate.py, live/**. NO animation — static bases only, he reviews the 8 directions first.",
   "progress": {
     "units_shipped": 5,
     "graduated_today": 12,
