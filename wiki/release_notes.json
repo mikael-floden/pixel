@@ -1,202 +1,278 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-21T15:34:22.609Z",
- "head": "e7eb2539a",
+ "generated_at": "2026-09-21T17:48:37.877Z",
+ "head": "00e82bc7c",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
   {
-   "sha": "e7eb2539a",
-   "at": "2026-09-21T12:30:16+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — lure_caller approval read, NO-OP (approval never cleared; approve --ids is a batch gate)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b42a47818",
-   "at": "2026-09-21T12:27:06+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — his pale_hand approval taken as a decided no-op (approvals are never cleared; approve --ids is round-wide)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "855c21c4d",
-   "at": "2026-09-21T14:24:00+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c07b9c904",
-   "at": "2026-09-21T14:23:18+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "5d437acff",
-   "at": "2026-09-21T12:10:34+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — frill_slug rejection already swept by the sibling session; no-op verified from disk",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "61018541e",
-   "at": "2026-09-21T12:08:35+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — four candidate rejections removed (a65f942ee), claim released",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "a65f942ee",
-   "at": "2026-09-21T12:08:16+00:00",
-   "author": "claude[bot]",
-   "subject": "monsters: act on his rejections — remove lintel_guard, thorn_boar, vent_gill (+ frill_slug), prune their verdicts",
+   "sha": "00e82bc7c",
+   "at": "2026-09-21T17:35:07+00:00",
+   "author": "Claude",
+   "subject": "monsters: route around PixelLab's removal — idle generates again",
    "agent": "monsters",
    "dirs": [
-    "live",
     "monsters"
    ],
-   "files": 43
+   "files": 52
   },
   {
-   "sha": "018191be1",
-   "at": "2026-09-21T12:07:39+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — claim his three candidate rejections (lintel_guard, thorn_boar, vent_gill)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8ade0b7ff",
-   "at": "2026-09-21T14:07:22+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "fba0d0dfd",
-   "at": "2026-09-21T12:05:46+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — snow_vole approval is a no-op, and why",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "9a860fb73",
-   "at": "2026-09-21T14:05:43+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "78e75a4e8",
-   "at": "2026-09-21T12:01:37+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — his two candidate approvals relayed (scyth_arm direction offset, slag_crab)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "2d5fc4c75",
-   "at": "2026-09-21T13:59:48+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "814f446f4",
-   "at": "2026-09-21T13:58:56+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b8803ad76",
-   "at": "2026-09-21T13:58:34+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c92c4f983",
-   "at": "2026-09-21T13:58:15+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "a3f77fdcb",
-   "at": "2026-09-21T13:58:03+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "9031a6c5d",
-   "at": "2026-09-21T11:44:24+00:00",
+   "sha": "8b9ed6535",
+   "at": "2026-09-21T17:33:33+00:00",
    "author": "Claude",
-   "subject": "board: monsters-assistant idle — the 100 bases are generated and pushed",
+   "subject": "board: games-assistant — the nav re-plan fix is live (730291dde1); and his blank transition tiles are the tile renderer's raw-plate fallback on the device, not a content change",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "730291dde",
+   "at": "2026-09-21T17:21:09+00:00",
+   "author": "Claude",
+   "subject": "games2: the walked proof is the tap's, and a stall re-plan keeps the trip's own budget and its canSwim",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "80bf3bf13",
+   "at": "2026-09-21T17:17:43+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant takes the nav stall re-plan on the maintainer's direct order — the trip's budget and canSwim, and the walked proof stays the tap's",
+   "agent": null,
+   "dirs": [
+    "coordination"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "d6f670bed",
+   "at": "2026-09-21T17:07:27+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant — the neighbour-awake rule and the tick-rate band are live (01b7460b58); ghosts now update at 52 ms, the same as a monster of your own zone",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8d241ddc4",
+   "at": "2026-09-21T17:01:59+00:00",
+   "author": "Claude",
+   "subject": "board: the mist fix is shipped — and the weather curtain has the same leak at its line",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "335bbca8f",
+   "at": "2026-09-21T17:01:59+00:00",
+   "author": "Claude",
+   "subject": "ambient: the zone FADES his mist — the mask moves onto the alpha, after the posterize",
+   "agent": null,
+   "dirs": [
+    "games2"
+   ],
+   "files": 6
+  },
+  {
+   "sha": "01b7460b5",
+   "at": "2026-09-21T16:57:43+00:00",
+   "author": "Claude",
+   "subject": "games2: a zone is not empty if a neighbour has players, the band goes out every tick, and the walk crosses the border",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 5
+  },
+  {
+   "sha": "a5fc1646b",
+   "at": "2026-09-21T16:54:10+00:00",
+   "author": "Claude",
+   "subject": "board: scenery-assistant — 1043 of his approvals read 'regenerated since' and the art never changed",
+   "agent": "scenery-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "03ad6a4b0",
+   "at": "2026-09-21T16:42:20+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant — the zone-border monster fix is live (3c55b072f7); ghosts 2.4 Hz -> 9.7 Hz and the crossing blink closed; the nav and spawn findings are with games and maps2-assistant",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "f82de9463",
+   "at": "2026-09-21T18:35:12+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6854f94e3",
+   "at": "2026-09-21T18:33:36+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "3c55b072f",
+   "at": "2026-09-21T16:33:12+00:00",
+   "author": "Claude",
+   "subject": "games2: a watched zone room is not idle, and a crossing is a hand-over — the monsters stop crawling and blinking at a border",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 7
+  },
+  {
+   "sha": "5b7ef96b4",
+   "at": "2026-09-21T18:32:22+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8af5708a6",
+   "at": "2026-09-21T18:30:56+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "3d40107a5",
+   "at": "2026-09-21T18:30:08+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "b6cadbed4",
+   "at": "2026-09-21T18:29:17+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c7dfc40df",
+   "at": "2026-09-21T18:27:49+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c9ac39cbc",
+   "at": "2026-09-21T18:26:50+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "490baa8e8",
+   "at": "2026-09-21T18:24:58+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "002b3fbf1",
+   "at": "2026-09-21T18:23:42+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "68cd21e71",
+   "at": "2026-09-21T16:16:57+00:00",
+   "author": "Claude",
+   "subject": "board: the mist claim also takes WorldScene.ts (one probe line) — checked, nobody holds it",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "b6f2b9596",
+   "at": "2026-09-21T16:15:29+00:00",
+   "author": "Claude",
+   "subject": "board: claim the mist fix — the zone fades his mist, it does not reshape it",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "7d709a699",
+   "at": "2026-09-21T16:08:54+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant claims the monster lag and blink — measured 2.4 Hz across a border against 19.6 Hz at home, and the interest pass's identity-keyed seen",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "e5b408603",
+   "at": "2026-09-21T16:00:49+00:00",
+   "author": "Claude",
+   "subject": "board: monsters-assistant — his end state, in his order, armed behind a canary",
    "agent": "monsters-assistant",
    "dirs": [
     "coordination"
@@ -204,89 +280,122 @@
    "files": 1
   },
   {
-   "sha": "1fb5e1528",
-   "at": "2026-09-21T11:43:45+00:00",
+   "sha": "44cc1b96e",
+   "at": "2026-09-21T15:58:06+00:00",
    "author": "Claude",
-   "subject": "monsters: the hundredth base, six more of his rejections, the wiki measured",
+   "subject": "board: games-ui-assistant shipped the keyboard hold that must not be a race — idle",
+   "agent": "games-ui-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "663764eaa",
+   "at": "2026-09-21T15:58:02+00:00",
+   "author": "Claude",
+   "subject": "games2: the keyboard hold starts at focus, so every open behaves like the first",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 4
+  },
+  {
+   "sha": "1c86abfd3",
+   "at": "2026-09-21T15:58:02+00:00",
+   "author": "Claude",
+   "subject": "games2: regenerate monsters.json — ash_hatchling, basilisk and pebble_crab join the catalog",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "23f9dbe74",
+   "at": "2026-09-21T15:48:28+00:00",
+   "author": "Claude",
+   "subject": "monsters: all 61 approved for animation — idle is armed, waiting on PixelLab",
+   "agent": "monsters-assistant",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 63
+  },
+  {
+   "sha": "7004d2100",
+   "at": "2026-09-21T15:46:28+00:00",
+   "author": "Claude",
+   "subject": "monsters: PixelLab removed character-animation creation — the 11 are blocked",
+   "agent": "monsters-assistant",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "d44786a0e",
+   "at": "2026-09-21T15:41:36+00:00",
+   "author": "Claude",
+   "subject": "monsters: `approve --ids` is additive, not round-wide",
    "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 13
+  },
+  {
+   "sha": "6ebe29b4d",
+   "at": "2026-09-21T15:40:39+00:00",
+   "author": "games-ambient-assistant",
+   "subject": "ambient: two categories — zone-bound and global — is the law, not a gap",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "12a651653",
+   "at": "2026-09-21T15:38:11+00:00",
+   "author": "Claude",
+   "subject": "monsters+wiki: the 61 approved designs are monsters in the making",
+   "agent": "monsters-assistant",
    "dirs": [
     "live",
     "monsters",
     "wiki"
    ],
-   "files": 77
+   "files": 10
   },
   {
-   "sha": "603b22011",
-   "at": "2026-09-21T11:43:31+00:00",
+   "sha": "05b791d10",
+   "at": "2026-09-21T15:34:27+00:00",
    "author": "Claude",
-   "subject": "monsters: qa writes the directions in canonical order",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 90
-  },
-  {
-   "sha": "46ee0622c",
-   "at": "2026-09-21T11:41:58+00:00",
-   "author": "Claude",
-   "subject": "board: monsters-assistant claims two lines in qa_rotations (deterministic direction order)",
-   "agent": "monsters-assistant",
+   "subject": "board: games-ui-assistant claims the keyboard hold that must not be a race — files named before the work",
+   "agent": "games-ui-assistant",
    "dirs": [
     "coordination"
    ],
    "files": 1
   },
   {
-   "sha": "0e9d77c36",
-   "at": "2026-09-21T11:39:17+00:00",
-   "author": "Claude",
-   "subject": "monsters: 4 more of the 100 new candidate bases (99/100 landed)",
-   "agent": "monsters",
+   "sha": "fd451915a",
+   "at": "2026-09-21T15:33:15+00:00",
+   "author": "games-ambient-assistant",
+   "subject": "board: the dragonfly zone measurement goes to maps2 — 4 of 124 reeds are in a dragonfly zone",
+   "agent": "games-ambient-assistant",
    "dirs": [
-    "monsters"
+    "coordination"
    ],
-   "files": 41
+   "files": 1
   },
   {
-   "sha": "db3cce646",
-   "at": "2026-09-21T11:38:18+00:00",
-   "author": "Claude",
-   "subject": "monsters: 6 more of the 100 new candidate bases (96/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 61
-  },
-  {
-   "sha": "5c0c81bfb",
-   "at": "2026-09-21T11:38:17+00:00",
-   "author": "Claude",
-   "subject": "monsters: act on his first rejections among the new candidates",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 41
-  },
-  {
-   "sha": "66231993e",
-   "at": "2026-09-21T11:38:08+00:00",
-   "author": "Claude",
-   "subject": "monsters: 3 more of the 100 new candidate bases (89/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 31
-  },
-  {
-   "sha": "cba67e5b6",
-   "at": "2026-09-21T11:36:16+00:00",
+   "sha": "541f83c2e",
+   "at": "2026-09-21T15:18:40+00:00",
    "author": "claude[bot]",
-   "subject": "board: monsters github agent — his 20 new-candidate verdicts are the assistant's run, and why",
+   "subject": "board: monsters-github-agent — his orc_warrior save taken, decided no-op (25 approvals, art hash-verified 40/40 on disk)",
    "agent": "monsters-github-agent",
    "dirs": [
     "coordination"
@@ -294,8 +403,8 @@
    "files": 1
   },
   {
-   "sha": "31c0d07b3",
-   "at": "2026-09-21T13:33:55+02:00",
+   "sha": "8617634cd",
+   "at": "2026-09-21T17:16:23+02:00",
    "author": "Mikael Flodén",
    "subject": "live: admin update — feedback/monsters.json",
    "agent": null,
@@ -305,21 +414,10 @@
    "files": 1
   },
   {
-   "sha": "1c3f5e764",
-   "at": "2026-09-21T11:33:13+00:00",
-   "author": "Claude",
-   "subject": "monsters: 1 more of the 100 new candidate bases (86/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 11
-  },
-  {
-   "sha": "235316715",
-   "at": "2026-09-21T11:32:47+00:00",
+   "sha": "3248c5d11",
+   "at": "2026-09-21T15:16:19+00:00",
    "author": "claude[bot]",
-   "subject": "board: monsters github agent — his 24 rock_mite approvals are a no-op, and why",
+   "subject": "board: monsters-github-agent — his basilisk save taken, decided no-op (25 approvals, art hash-verified 40/40 on disk)",
    "agent": "monsters-github-agent",
    "dirs": [
     "coordination"
@@ -327,74 +425,8 @@
    "files": 1
   },
   {
-   "sha": "38926ac5b",
-   "at": "2026-09-21T11:32:27+00:00",
-   "author": "Claude",
-   "subject": "monsters: 1 more of the 100 new candidate bases (85/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 11
-  },
-  {
-   "sha": "fb489eb34",
-   "at": "2026-09-21T11:31:47+00:00",
-   "author": "Claude",
-   "subject": "monsters: 2 more of the 100 new candidate bases (84/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 21
-  },
-  {
-   "sha": "6a9217db1",
-   "at": "2026-09-21T11:31:28+00:00",
-   "author": "Claude",
-   "subject": "monsters: 2 more of the 100 new candidate bases (82/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 20
-  },
-  {
-   "sha": "dcb1d0f2f",
-   "at": "2026-09-21T11:31:09+00:00",
-   "author": "Claude",
-   "subject": "monsters: 5 more of the 100 new candidate bases (80/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 51
-  },
-  {
-   "sha": "47166c418",
-   "at": "2026-09-21T11:30:07+00:00",
-   "author": "claude[bot]",
-   "subject": "monsters(github agent): no-op account — his seed_husk review is 40 approvals",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "9797664a0",
-   "at": "2026-09-21T13:29:40+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "d065b6046",
-   "at": "2026-09-21T13:29:02+02:00",
+   "sha": "50415f313",
+   "at": "2026-09-21T17:15:47+02:00",
    "author": "Mikael Flodén",
    "subject": "live: admin update — tuning/monsters.json",
    "agent": null,
@@ -404,30 +436,8 @@
    "files": 1
   },
   {
-   "sha": "dc312f99e",
-   "at": "2026-09-21T11:28:32+00:00",
-   "author": "Claude",
-   "subject": "monsters: 10 more of the 100 new candidate bases (76/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 101
-  },
-  {
-   "sha": "7055f5d6c",
-   "at": "2026-09-21T11:26:50+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters github agent — his 24 cobra approvals are a no-op, and why",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "f9b8498c3",
-   "at": "2026-09-21T13:26:02+02:00",
+   "sha": "306faad18",
+   "at": "2026-09-21T17:14:25+02:00",
    "author": "Mikael Flodén",
    "subject": "live: admin update — feedback/monsters.json",
    "agent": null,
@@ -437,19 +447,8 @@
    "files": 1
   },
   {
-   "sha": "657881cd3",
-   "at": "2026-09-21T11:25:03+00:00",
-   "author": "Claude",
-   "subject": "monsters: 2 more of the 100 new candidate bases (65/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 21
-  },
-  {
-   "sha": "597d32946",
-   "at": "2026-09-21T13:25:01+02:00",
+   "sha": "b984a2a54",
+   "at": "2026-09-21T17:13:23+02:00",
    "author": "Mikael Flodén",
    "subject": "live: admin update — tuning/monsters.json",
    "agent": null,
@@ -459,32 +458,10 @@
    "files": 1
   },
   {
-   "sha": "de54828ed",
-   "at": "2026-09-21T11:24:47+00:00",
-   "author": "Claude",
-   "subject": "monsters: 3 more of the 100 new candidate bases (64/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 31
-  },
-  {
-   "sha": "c9b4a8fd0",
-   "at": "2026-09-21T11:24:31+00:00",
-   "author": "Claude",
-   "subject": "monsters: 9 more of the 100 new candidate bases (60/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 91
-  },
-  {
-   "sha": "c117a55d5",
-   "at": "2026-09-21T11:23:42+00:00",
+   "sha": "65f2f9acb",
+   "at": "2026-09-21T15:13:09+00:00",
    "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — his 14 new candidate verdicts land inside the assistant's live generate; yielded",
+   "subject": "board: monsters-github-agent — his tide_crab save taken, decided no-op (27 approvals, art hash-verified 40/40 on disk)",
    "agent": "monsters-github-agent",
    "dirs": [
     "coordination"
@@ -492,8 +469,19 @@
    "files": 1
   },
   {
-   "sha": "7879fbf84",
-   "at": "2026-09-21T13:23:35+02:00",
+   "sha": "debbb6781",
+   "at": "2026-09-21T15:11:49+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters-github-agent — claim his tide_crab save (27 entries)",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6e544e597",
+   "at": "2026-09-21T17:10:31+02:00",
    "author": "Mikael Flodén",
    "subject": "live: admin update — feedback/monsters.json",
    "agent": null,
@@ -503,8 +491,8 @@
    "files": 1
   },
   {
-   "sha": "e66c42c45",
-   "at": "2026-09-21T13:23:32+02:00",
+   "sha": "e579f79c3",
+   "at": "2026-09-21T17:09:38+02:00",
    "author": "Mikael Flodén",
    "subject": "live: admin update — tuning/monsters.json",
    "agent": null,
@@ -514,8 +502,30 @@
    "files": 1
   },
   {
-   "sha": "7df1000b9",
-   "at": "2026-09-21T13:21:03+02:00",
+   "sha": "bf19777ed",
+   "at": "2026-09-21T15:08:35+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters-github-agent — his turtle_hatchling save taken, decided no-op (25 approvals, art hash-verified 40/40 on disk)",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "d9866228a",
+   "at": "2026-09-21T15:07:41+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters-github-agent — claim his 15:05Z turtle_hatchling save (25 entries, all approvals)",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a36ef0430",
+   "at": "2026-09-21T17:06:07+02:00",
    "author": "Mikael Flodén",
    "subject": "live: admin update — feedback/monsters.json",
    "agent": null,
@@ -525,37 +535,26 @@
    "files": 1
   },
   {
-   "sha": "ee7f11424",
-   "at": "2026-09-21T11:20:55+00:00",
-   "author": "Claude",
-   "subject": "monsters: 1 more of the 100 new candidate bases (51/100 landed)",
-   "agent": "monsters",
+   "sha": "ec3e4b709",
+   "at": "2026-09-21T17:05:37+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
    "dirs": [
-    "monsters"
+    "live"
    ],
-   "files": 11
+   "files": 1
   },
   {
-   "sha": "922bae9a0",
-   "at": "2026-09-21T11:20:39+00:00",
-   "author": "Claude",
-   "subject": "monsters: 1 more of the 100 new candidate bases (50/100 landed)",
-   "agent": "monsters",
+   "sha": "5b1228f1e",
+   "at": "2026-09-21T15:05:18+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters-github-agent — his lizard_warrior save taken, decided no-op (41 approvals, art hash-verified 40/40 on disk)",
+   "agent": "monsters-github-agent",
    "dirs": [
-    "monsters"
+    "coordination"
    ],
-   "files": 11
-  },
-  {
-   "sha": "275bb6e73",
-   "at": "2026-09-21T11:20:24+00:00",
-   "author": "Claude",
-   "subject": "monsters: 13 more of the 100 new candidate bases (49/100 landed)",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 131
+   "files": 1
   }
  ]
 }
