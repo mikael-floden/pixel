@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T11:25:00.796Z",
+  "updated_at": "2026-09-21T11:29:01.452Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -4148,7 +4148,101 @@
           "item": "grey_rock_pile",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 15.75,
+        "ry": 7.25,
+        "offsets": {
+          "idle#south-east": {
+            "ax": 0.29,
+            "ay": 9.51
+          },
+          "idle#south": {
+            "ax": 0.42,
+            "ay": 9.32
+          },
+          "idle#north-east": {
+            "ax": -0.09,
+            "ay": 8.19
+          },
+          "idle#north": {
+            "ax": 0.18,
+            "ay": 7.26
+          },
+          "idle#north-west": {
+            "ax": 0.01,
+            "ay": 8.54
+          },
+          "idle#west": {
+            "ax": 0.97,
+            "ay": 8.53
+          },
+          "idle#south-west": {
+            "ax": -0.92,
+            "ay": 9.34
+          },
+          "walk#south-east": {
+            "ax": -0.98,
+            "ay": 6.85
+          },
+          "walk#south": {
+            "ax": -1.31,
+            "ay": 7.46
+          },
+          "walk#east": {
+            "ax": -1.12,
+            "ay": 8.49
+          },
+          "walk#west": {
+            "ax": -0.96,
+            "ay": 9.41
+          },
+          "angry#south-east": {
+            "ax": -1.66,
+            "ay": 7.61
+          },
+          "angry#east": {
+            "ax": -1.13,
+            "ay": 8.18
+          },
+          "angry#north": {
+            "ax": -0.72,
+            "ay": 6.42
+          },
+          "angry#west": {
+            "ax": 0.16,
+            "ay": 7.94
+          },
+          "attack#east": {
+            "ax": -2.24,
+            "ay": 7.6
+          },
+          "die#east": {
+            "ax": -2.04,
+            "ay": 7.08
+          },
+          "die#south-east": {
+            "ax": 1.17,
+            "ay": 7.82
+          },
+          "die#north-west": {
+            "ax": -0.3,
+            "ay": 7.39
+          },
+          "die#west": {
+            "ax": -1.27,
+            "ay": 7.24
+          },
+          "die#south-west": {
+            "ax": -1.3,
+            "ay": 7.61
+          },
+          "idle#east": {
+            "ax": -1.89,
+            "ay": 8.57
+          }
+        }
+      }
     },
     "root_bear": {
       "max_hp": 165,
