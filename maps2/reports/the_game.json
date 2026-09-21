@@ -1212,6 +1212,57 @@
         }
       ],
       "artifact": "https://claude.ai/artifact/9aLnKvfSaYSebV8h3ctjhE"
+    },
+    {
+      "date": "2026-09-21",
+      "commit": "7b11fa4b0a",
+      "before": "092077a316",
+      "title": "A spawn zone is one walkable place — the islands that trapped monsters are gone (world.json unchanged)",
+      "changes": [
+        {
+          "name": "The island in the lava field",
+          "what": "You stood on the rim and eight monsters were within eight cells of you. Four were on a 25-cell scrap of grey stone at level 23 inside the lava field - an island of the massif's habitat that the stone zone's outline swept in, sixty cells of black rock from the zone itself. A monster seeded there can never leave it and every place it tries to roam to is unreachable, so it shuffles on the spot for ever - and the five other species sharing that polygon were joining it. It now carries exactly one stone turtle, which is what 25 cells are allowed. Measured live at your own cell: 8 monsters within 8 cells before, 1 after.",
+          "cell": [
+            227,
+            185
+          ],
+          "window": [
+            216,
+            174,
+            240,
+            196
+          ]
+        },
+        {
+          "name": "Every zone is a place you can walk round",
+          "what": "A zone's cells are now one patch - one place you can walk around without leaving it, where a drop you cannot climb back counts as a different place. Across the island that moved 16% of all spawn ground (35,697 surfaces) off islands and onto the bodies they belong to. 109 zones became 160 places; no species lost its home and the world went from 307 monsters to 304.",
+          "cell": [
+            224,
+            182
+          ],
+          "window": [
+            206,
+            168,
+            244,
+            200
+          ]
+        },
+        {
+          "name": "A place has one budget, not one per species",
+          "what": "Splitting alone made it worse: six species shared that one polygon, so each got its own zone on the same island and each zone's floor of one monster put six of them on it. The budget belongs to the PLACE now - its cells times the crowding cap, shared by every species standing on it - and a species that doesn't fit lives on its own other ground instead.",
+          "cell": [
+            214,
+            205
+          ],
+          "window": [
+            202,
+            194,
+            232,
+            220
+          ]
+        }
+      ],
+      "artifact": "https://claude.ai/artifact/3Hoy1uTSpCknFhs6uKEWnm"
     }
   ],
   "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",
