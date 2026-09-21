@@ -1004,6 +1004,20 @@ function perfBeaconTouch(): void {
  *  16.7 ms frame, so leaving it on is a frame-rate bug of its own — and he is
  *  now reporting lag. `?ground=legacy` still pins the full repaint for anyone
  *  bisecting, and the choice is remembered in `ml-ground-path`. */
+/** A DEBUG OVERLAY STARTS OFF ON EVERY LOAD, and clears any switch an older
+ *  build wrote down. See WorldScene.zoneLinesOn for what a remembered one
+ *  cost. */
+function debugOverlayOff(key: string): boolean {
+  try {
+    localStorage.removeItem(key);
+    // ...AND AMBIENT'S, from here. Its own file clears it too, but this one
+    // ships on the browser-code lane and reaches a phone in 33 seconds
+    // without restarting his world, and it runs before ambient mounts.
+    localStorage.removeItem("ml-ambient-zones");
+  } catch {}
+  return false;
+}
+
 function groundPathFast(): boolean {
   try {
     const q = new URLSearchParams(location.search).get("ground");
@@ -1216,6 +1230,13 @@ const T3_BOUNDARY_RETRY = 32;
  *  whole ring's rasters can land in one frame; the lookups are cheap, the
  *  repaint is a pass over the cells' bounding window, so it is bounded. */
 const T3_BOUNDARY_LAND = 12;
+/** How long a boundary or deck may stay owed before its repair stops waiting
+ *  for a quiet frame. Under it the repair keeps its manners and runs only
+ *  between paints; over it a walking player is no longer a reason to leave a
+ *  hole in a cliff (see t3retryBoundaries). */
+const T3_BOUNDARY_DEADLINE_MS = 1500;
+/** The lost-claim repaint runs at most this often (onTerrainBatch). */
+const T3_LOST_CLAIM_MS = 2000;
 /** How many times a too-wide cell repaint may be halved before it gives up and
  *  paints in full — at most 2^N rects. */
 const T3_REPAINT_SPLITS = 2;
@@ -1901,7 +1922,15 @@ export class WorldScene extends Phaser.Scene {
    *  2026-09-10: "I might not always have the map open when running around").
    *  World-space graphics like the spawn overlay — drawn once per toggle, the
    *  camera moves over them. */
-  private zoneLinesOn = localStorage.getItem("ml-zone-lines") === "1";
+  /** A DEBUG OVERLAY DOES NOT SURVIVE A RELOAD (2026-09-21). Remembered per
+   *  device is how one ruins a session: the maintainer played under the zone
+   *  lines, reinstalled the app and cleared his cache — site data outlives
+   *  both — and every screenshot came back covered in zigzags and labels over
+   *  terrain that was still streaming. The switches all still work for as long
+   *  as you are looking at them; none of them is written down, and the stored
+   *  keys are cleared on the way past so a device carrying one is freed by its
+   *  next load. */
+  private zoneLinesOn = debugOverlayOff("ml-zone-lines");
   private zoneLineGfx?: Phaser.GameObjects.Graphics;
   /** Which zone the overlay was last drawn for — the hem is one-sided and
    *  points into MY zone, so a hop has to redraw it. */
@@ -1909,7 +1938,7 @@ export class WorldScene extends Phaser.Scene {
   // Monster spawn-zone overlay: DEBUG, off by default and persisted like the
   // other switches (maintainer 2026-07-30 — the zones are map data, not part
   // of the played world).
-  private spawnAreasOn = localStorage.getItem("ml-spawn-areas") === "1";
+  private spawnAreasOn = debugOverlayOff("ml-spawn-areas"); // see zoneLinesOn
   /* THE TWO SUBTRACTION SWITCHES (maintainer 2026-09-08: "place the disable at
    * a smart location so we completely get rid of that feature and not only in
    * the draw call"). They exist to answer one question each — does the game
@@ -4075,6 +4104,8 @@ export class WorldScene extends Phaser.Scene {
    * full paint, extended by band paints); the cells a landed batch made drawable;
    * the ring of cells beyond the texture whose art is asked for ahead of time. */
   private t3missing = new Map<string, Set<number>>();
+  /** When the lost-claim repaint last ran (onTerrainBatch). */
+  private t3lostClaimAt = 0;
   /** THE CELLS WHOSE OPS DROPPED in the last pass that drew them — what the
    *  drop drain repaints, cell by cell, instead of the whole texture (see
    *  t3drainDrops). A cell leaves when a pass draws it whole. */
@@ -4460,7 +4491,7 @@ export class WorldScene extends Phaser.Scene {
   private monsterRings = new Map<string, Phaser.GameObjects.Image>(); // red outlines: engaged + hunters
   private itemRingImg?: Phaser.GameObjects.Image; // blue outline on the item being fetched
   private aggroGfx?: Phaser.GameObjects.Graphics; // aggro-radius debug rings
-  private aggroRadiusOn = localStorage.getItem("ml-aggro-radius") === "1";
+  private aggroRadiusOn = debugOverlayOff("ml-aggro-radius"); // see zoneLinesOn
   /** COLLISION DEBUG: paint what the body is actually held by. Asked for
    *  because the footprints are invisible and their faults are not (maintainer
    *  2026-08-30: "add a debug setting under settings so I can see the
@@ -11643,7 +11674,7 @@ export class WorldScene extends Phaser.Scene {
   private toggleAggroRadius(on = !this.aggroRadiusOn) {
     this.aggroRadiusOn = on;
     try {
-      localStorage.setItem("ml-aggro-radius", on ? "1" : "0");
+      // deliberately NOT remembered — see zoneLinesOn
     } catch {}
     this.chat.addLog("—", `Aggro radius: ${on ? "on" : "off"}`);
     return this.aggroRadiusOn;
@@ -15052,7 +15083,7 @@ export class WorldScene extends Phaser.Scene {
   private toggleSpawnAreas(on = !this.spawnAreasOn) {
     this.spawnAreasOn = on;
     try {
-      localStorage.setItem("ml-spawn-areas", on ? "1" : "0");
+      // deliberately NOT remembered — see zoneLinesOn
     } catch {}
     this.drawSpawnAreas();
     this.chat.addLog("—", `Spawn areas: ${on ? "on" : "off"}`);
@@ -15062,7 +15093,7 @@ export class WorldScene extends Phaser.Scene {
   private toggleZoneLines(on = !this.zoneLinesOn) {
     this.zoneLinesOn = on;
     try {
-      localStorage.setItem("ml-zone-lines", on ? "1" : "0");
+      // deliberately NOT remembered — see zoneLinesOn
     } catch {}
     this.drawZoneLines();
     this.chat.addLog("—", `Zone borders: ${on ? "on" : "off"}`);
@@ -20534,6 +20565,21 @@ export class WorldScene extends Phaser.Scene {
     else if (cells.size) {
       for (const i of cells) this.groundDirtyCells.push(i);
       this.repaintGroundPartial = true;
+    } else if (this.t3boundaryOwed.size || this.t3deckOwed.size) {
+      /* ART LANDED THAT NO CELL IS WAITING FOR, WHILE CELLS ARE STILL OWED —
+       * the record that would have repainted them is gone. `t3missing` maps a
+       * path to the cells that asked for it and a FULL paint clears it (the
+       * window is new); when a batch lands after that, the file has nobody to
+       * repaint and the hole stays. His hour of screenshots is this: a
+       * reconnect or a hop forces a full paint while hundreds of files are in
+       * flight, every one of them loses its claim, and the ground keeps its
+       * hard edges and its holes until a later full repaint — tabbing out.
+       * One repaint, rate-limited, restores what the lost claims would have. */
+      const now = this.time.now;
+      if (now - this.t3lostClaimAt > T3_LOST_CLAIM_MS) {
+        this.t3lostClaimAt = now;
+        this.repaintGroundPending = true;
+      }
     }
     this.repaintOccPending = true;
     // Ring paths a slice left queued while this batch was in flight go now.
@@ -20829,14 +20875,33 @@ export class WorldScene extends Phaser.Scene {
    *  cell that was painted without its transition, ask the factory again, and
    *  repaint the ones that can now draw it. Costs nothing while the set is
    *  empty, which is the steady state once the ring has caught up. */
+  /** When the current repair backlog started (see the deadline below); 0 when
+   *  nothing is owed. */
+  private t3owedSince = 0;
+
   private t3retryBoundaries(): void {
-    if ((!this.t3boundaryOwed.size && !this.t3deckOwed.size) || !this.worldUp) return;
+    if (!this.t3boundaryOwed.size && !this.t3deckOwed.size) {
+      this.t3owedSince = 0;
+      return;
+    }
+    if (!this.worldUp) return;
     const t3 = this.t3;
     const world = this.world;
     if (!t3 || !world) return;
-    // Never on a frame that already scrolled or painted — those are the frames
-    // the player feels, and this is repair work with no deadline.
-    if (this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length) return;
+    /* NEVER ON A FRAME THAT ALREADY SCROLLED OR PAINTED — those are the frames
+     * the player feels — UNTIL THE REPAIR IS OLD, because "no deadline" meant
+     * NEVER while he walked. A walking player scrolls the ground on nearly
+     * every frame, so this gate held the whole repair off for as long as he
+     * kept moving: the hard edges and the holes in the cliffs stayed where
+     * they were until something forced a full repaint, which is why TABBING
+     * OUT AND BACK fixed them and nothing else did (maintainer 2026-09-21, an
+     * hour of screenshots: "the tiles BOUNDARY looks so bad", "why can I see
+     * into the mountain walls", then "tabbed out and in again and now it looks
+     * good"). Past T3_BOUNDARY_DEADLINE_MS the repair runs anyway, on its same
+     * small per-frame budget — twelve cells is not a frame. */
+    const owedSince = this.t3owedSince || (this.t3owedSince = this.time.now);
+    const busy = this.groundRedrewThisFrame || this.groundDrainedThisFrame || this.groundSliceQ.length > 0;
+    if (busy && this.time.now - owedSince < T3_BOUNDARY_DEADLINE_MS) return;
     const tex = this.ensureTiles3Textures();
     if (!tex) return;
     const ready: number[] = [];
