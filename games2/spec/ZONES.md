@@ -29,26 +29,12 @@ Kubernetes). Rules here are present tense; the measurements land in
   from a bucket grid, never per entity per tick. Time, weather, chess boards
   and the spawn-area overlay stay global. A room option `interestRadius`
   (0 = the whole room) exists for tests and QA only.
-- **Border ghosts.** A room publishes, EVERY TICK (20 Hz — the rate it
-  simulates at, so a body one cell past a border moves exactly as smoothly as
-  one a cell before it), snapshots of its entities
+- **Border ghosts.** A room publishes, at 10 Hz, snapshots of its entities
   within the border band (`INTEREST_LEAVE_WU`) of an edge on the bus channel
   `zone:<world>:<zone>:edge`; each neighbour subscribes and upserts them into
   its own maps as GHOSTS (server-only `ghostOf` = the owner zone; the client
   cannot tell). A ghost is never stepped locally (no sim, no brain, no combat)
-  and expires 1 s after its last snapshot; one its owner stops listing is
-  given 250 ms to be claimed by another zone first, so a body crossing between
-  two neighbours is handed over rather than deleted and rebuilt.
-- **A ZONE IS NOT EMPTY IF A NEIGHBOUR HAS PLAYERS** (maintainer 2026-09-21).
-  It has to simulate the monsters at the shared edge at the full rate, and to
-  take a body over the instant one crosses — and a world where most rooms doze
-  is not the world that ships, so it cannot be tested. A room with clients
-  stamps its band snapshot `live` and every neighbour already subscribes, so
-  the signal costs no channel and no poll; the flag travels ONE HOP, and a
-  room falls back to the idle rate `NEIGHBOUR_LIVE_MS` after the last
-  neighbour empties. Its own ghost players count too. The idle divisor
-  (docs/backend.md) is what an untouched corner of the map costs, nothing
-  more. Interest applies to ghosts like
+  and expires 1 s after its last snapshot. Interest applies to ghosts like
   anything else, so a player near a border sees across it through ONE socket.
 - **Hand-off.** When a player's position enters another zone, the home room
   writes the player's hot state (`pos`, `elev`, `dir`, hp/ep/level/xp, `inv`,

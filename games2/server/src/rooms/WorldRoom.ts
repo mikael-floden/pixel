@@ -212,26 +212,8 @@ export function sceneryBbox(): SceneryBboxDoc | null {
 /** Ghosts reach GHOST_BAND_WU across a border: the interest rim, so a client
  *  standing on the line sees exactly as far into the neighbour as into home. */
 const GHOST_BAND_WU = INTEREST_LEAVE_WU;
-/** THE BORDER BAND GOES OUT EVERY TICK — 20 Hz, the rate the room simulates
- *  at, so a monster one cell past a border moves exactly as smoothly as one a
- *  cell before it. It was every 2nd tick (10 Hz), and a body's motion across
- *  the line arrived at half the resolution of the same body's before it; the
- *  maintainer's rule for the boundary is that it must not be visible at all
- *  (2026-09-21: "the game needs to be super mega smooth between zones ... no
- *  glitch at all"). What it costs is one JSON publish per neighbour per tick,
- *  of the entities within GHOST_BAND_WU of an edge, and only while a neighbour
- *  has players — an unwatched room still publishes at the idle rate. */
-const EDGE_TICKS = 1;
+const EDGE_TICKS = 2; // edge snapshots at 10 Hz
 const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this long
-/** ...and a ghost its owner has STOPPED listing gets this long to be claimed
- *  by another zone before the TTL reaps it. A body crossing from one
- *  neighbour to another leaves the first snapshot and enters the second up to
- *  a publish period later; deleting it in between is the blink. */
-const GHOST_ORPHAN_MS = 250;
-/** How long a neighbour's "I have players" outlives its last edge snapshot.
- *  Snapshots flow at 10 Hz from an occupied room and 2.5 Hz from an empty
- *  one, so this only has to cover a couple of publish periods plus the bus. */
-const NEIGHBOUR_LIVE_MS = 1500;
 const HANDOFF_TTL_S = 10; // the hot state waits on the bus this long for the receiving join
 const HANDOFF_TIMEOUT_MS = 10_000; // then the sending room forgets the attempt and keeps the body
 const HANDOFF_INPUT_CREDIT_S = 2; // integration credit granted to a handed-over body for the inputs it buffered
@@ -291,12 +273,6 @@ interface MonsterXfer {
   hp: number; hpMax: number; mstate: string; actionSeq: number; level: number; aggro: number;
   areaId: string; home: number; orbitSign: number; provoked: boolean; returning: boolean;
   targetSid: string; chaseOx: number; chaseOy: number;
-  /** THE LEG IT IS WALKING, so the border does not interrupt the walk. The
-   *  receiving room re-plans to the same goal and steps it on the next tick;
-   *  without them the body stood still for 200 ms at every crossing and then
-   *  set off on a NEW random heading, which is the stutter at a border with
-   *  the blink taken out of it. */
-  targetX: number; targetY: number; tripActive: boolean;
   /** THE DEBUG PIN CROSSES THE BORDER WITH THE BODY. `dbgmonster {pin}` means
    *  "stand exactly here", and a pin the hand-off drops is not a pin: the
    *  receiving room built a fresh Monster with pinned false and `nextMoveAt =
@@ -326,12 +302,6 @@ type CtlMessage =
 interface EdgeSnapshot {
   from: number;
   t: number;
-  /** This publisher HAS PLAYERS. A neighbour of an occupied zone is never
-   *  idle: it has to simulate the monsters at the shared edge at full rate
-   *  and be ready to take a body over the moment one crosses (see the idle
-   *  gate). The flag rides the band snapshot, which already flows between
-   *  every pair of neighbours, so knowing costs no channel and no poll. */
-  live?: boolean;
   players: Array<{
     id: string; name: string; character: string; x: number; y: number; dir: string; moving: boolean;
     running: boolean; elev: number; jumping: boolean; swimming: boolean; torch: boolean; level: number;
@@ -389,11 +359,6 @@ interface RoomStat {
   players: number;
   monsters: number;
   ghosts: number;
-  /** Of those, the ghost PLAYERS — a body of a neighbour's within my band.
-   *  Reported apart from the ghost monsters because it is the close-range
-   *  half of the "somebody depends on this room" test (see `watched`), and a
-   *  gate has to be able to tell the two wakes apart. */
-  ghostPlayers: number;
   ticks: number[];
   at: number;
   simTicks: number; // sim steps run (an idle room runs fewer than it ticks)
@@ -435,7 +400,7 @@ export function perfStats() {
       const secs = Math.max(0.001, (now - r.bytesAt) / 1000);
       const kbps = r.bytesOut / 1024 / secs; // KB/s to ALL clients of the room
       const out = {
-        id, world: r.world, zone: r.zone, clients: r.clients, players: r.players, monsters: r.monsters, ghosts: r.ghosts, ghostPlayers: r.ghostPlayers,
+        id, world: r.world, zone: r.zone, clients: r.clients, players: r.players, monsters: r.monsters, ghosts: r.ghosts,
         tickMs: { p50: +pct(t, 0.5).toFixed(2), p95: +pct(t, 0.95).toFixed(2), max: +(t[t.length - 1] ?? 0).toFixed(2), n: t.length },
         simHz: +(r.simTicks / secs).toFixed(1),
         outKBps: +kbps.toFixed(1),
@@ -1327,42 +1292,11 @@ export class WorldRoom extends Room<WorldState> {
    *  receives only the players, monsters and drops within `interestR` of its
    *  own player; `interestLeave` is the hysteresis rim; `seen` is what each
    *  view holds right now (the view's own sets are WeakSets, not iterable).
-   *  Infinity = the whole room (tests, QA).
-   *
-   *  `seen` HOLDS IDS, NOT SCHEMA INSTANCES. A body that crosses a zone border
-   *  keeps its id and gets a NEW instance — the sending room deletes its
-   *  `Monster`, the receiving room builds another from `monster:xfer`, and a
-   *  ghost is rebuilt from an edge snapshot the same way. Keyed by instance,
-   *  the view lost the body the moment it changed hands: the delete reached
-   *  the client at once and the replacement waited for the next interest pass
-   *  (INTEREST_TICKS = 4 ticks, 200 ms — 800 ms in an idle room), so the
-   *  sprite was destroyed and rebuilt on every crossing, and the 32/36-cell
-   *  hysteresis was lost with it (maintainer 2026-09-21: "when they cross a
-   *  zone they often disappear and appear again"). By id, the view keeps the
-   *  body across the hand-over, and it records WHICH INSTANCE it holds for
-   *  that id: when the instance changes — ghost to real on a hand-off, real to
-   *  ghost on a transfer out — the pass re-adds the new one instead of
-   *  believing the id is already there, and `reattachViews` does it in the
-   *  same patch as the old one's delete rather than an interest pass later. */
+   *  Infinity = the whole room (tests, QA). */
   private interestR = INTEREST_WU;
   private interestLeave = INTEREST_LEAVE_WU;
   private interestTick = 0;
-  private seen = new Map<string, Map<string, object>>();
-
-  /** A FRESH INSTANCE FOR AN ID A VIEW ALREADY HOLDS GOES IN NOW, in the same
-   *  patch that carries the old instance's delete — a hand-over, not a
-   *  disappearance. Without it the client saw the delete immediately and the
-   *  replacement up to an interest pass later (200 ms, 800 ms in an idle
-   *  room), destroyed the sprite and built a new one: his monsters blinking
-   *  at every border crossing. Costs one Set lookup per client per creation,
-   *  and only creations of an id somebody is already watching pay anything.
-   *  `seen` is not touched: the next pass recomputes it and the id is already
-   *  in it. */
-  private reattachViews(id: string, e: object) {
-    for (const client of this.clients) {
-      if (client.view && this.seen.get(client.sessionId)?.has(id)) client.view.add(e as any);
-    }
-  }
+  private seen = new Map<string, Set<object>>();
 
   /** Give a joiner its view with its own player AND ITS WHOLE NEIGHBOURHOOD
    *  in it — BEFORE the join snapshot is encoded (Colyseus sends the full
@@ -1388,7 +1322,7 @@ export class WorldRoom extends Room<WorldState> {
     };
     view.add(player);
     view.add(player, OWNER_VIEW_TAG); // the ack and the prediction fields: mine alone
-    this.seen.set(client.sessionId, new Map<string, object>([[player.pid, player]]));
+    this.seen.set(client.sessionId, new Set([player]));
     // INTEREST_FILL_AT_JOIN=0 is the bisect: the old me-only snapshot, which
     // scripts/verify-zonehop.mjs must then fail on.
     if (process.env.INTEREST_FILL_AT_JOIN !== "0") this.interestPass([{ client, me: player }]);
@@ -1414,20 +1348,15 @@ export class WorldRoom extends Room<WorldState> {
    *  pass and a joiner's first view are the same computation. */
   private interestPass(targets: { client: Client; me: Player }[]) {
     if (!targets.length) return;
-    type Ent = { id: string; e: object; x: number; y: number };
+    type Ent = { e: object; x: number; y: number };
     const all: Ent[] = [];
-    // GHOSTS FIRST, THE REAL BODIES SECOND. For one publish period after a
-    // hand-over a body exists as both here — the new owner has created it and
-    // the old owner's last snapshot has not yet dropped its ghost — and `byId`
-    // must answer the REAL one, which is the instance the client keeps.
-    this.state.ghosts.forEach((p, id) => all.push({ id, e: p, x: p.x, y: p.y }));
-    this.state.ghostMonsters.forEach((m, id) => all.push({ id, e: m, x: m.x, y: m.y }));
-    this.state.ghostDrops.forEach((g, id) => all.push({ id, e: g, x: g.x, y: g.y }));
-    this.state.players.forEach((p, id) => all.push({ id, e: p, x: p.x, y: p.y }));
-    this.state.monsters.forEach((m, id) => all.push({ id, e: m, x: m.x, y: m.y }));
-    this.state.drops.forEach((g, id) => all.push({ id, e: g, x: g.x, y: g.y }));
-    const byId = new Map<string, object>();
-    for (const a of all) byId.set(a.id, a.e);
+    this.state.players.forEach((p) => all.push({ e: p, x: p.x, y: p.y }));
+    this.state.monsters.forEach((m) => all.push({ e: m, x: m.x, y: m.y }));
+    this.state.drops.forEach((g) => all.push({ e: g, x: g.x, y: g.y }));
+    this.state.ghosts.forEach((p) => all.push({ e: p, x: p.x, y: p.y }));
+    this.state.ghostMonsters.forEach((m) => all.push({ e: m, x: m.x, y: m.y }));
+    this.state.ghostDrops.forEach((g) => all.push({ e: g, x: g.x, y: g.y }));
+    const live = new Set<object>(all.map((a) => a.e));
     const R = this.interestR;
     const L = this.interestLeave;
     const unlimited = !isFinite(R);
@@ -1446,12 +1375,12 @@ export class WorldRoom extends Room<WorldState> {
     for (const { client, me } of targets) {
       const view = client.view;
       if (!view) continue;
-      const had = this.seen.get(client.sessionId) ?? new Map<string, object>();
-      const keep = new Map<string, object>([[me.pid, me]]);
+      const had = this.seen.get(client.sessionId) ?? new Set<object>();
+      const keep = new Set<object>([me]);
       const consider = (a: Ent) => {
         if (a.e === me) return;
         const d = Math.max(Math.abs(a.x - me.x), Math.abs(a.y - me.y));
-        if (had.has(a.id) ? d <= L : d <= R) keep.set(a.id, a.e);
+        if (had.has(a.e) ? d <= L : d <= R) keep.add(a.e);
       };
       if (unlimited) for (const a of all) consider(a);
       else {
@@ -1463,10 +1392,8 @@ export class WorldRoom extends Room<WorldState> {
             if (b) for (const a of b) consider(a);
           }
       }
-      for (const [id, e] of had)
-        if (!keep.has(id) && byId.get(id) === e) view.remove(e as any); // an id that left state is gone on its own
-      for (const [id, e] of keep)
-        if (had.get(id) !== e) view.add(e as any); // new here, or the same body under a new instance
+      for (const e of had) if (!keep.has(e) && live.has(e)) view.remove(e as any);
+      for (const e of keep) if (!had.has(e)) view.add(e as any);
       this.seen.set(client.sessionId, keep);
     }
   }
@@ -1707,31 +1634,8 @@ export class WorldRoom extends Room<WorldState> {
     }
 
     // AN EMPTY ROOM runs the sim every IDLE_DIVISOR-th tick with the dt it
-    // skipped (the clock above still moved every tick) — UNLESS A NEIGHBOUR
-    // HAS PLAYERS (see `watched`).
-    //
-    // THE BAND SNAPSHOT CARRIES THE ANSWER, so knowing costs no channel: a
-    // room with clients stamps its edge snapshot `live`, and every neighbour
-    // already subscribes to it. A ghost player of my own says the same thing
-    // from closer up.
-    //
-    // Idling anyway is what made his monsters crawl. The edge snapshot is
-    // published from stepZones, which is inside this sim step, so the divisor
-    // divides it too: an unwatched room publishes its band at 20/4/EDGE_TICKS
-    // = 2.5 Hz, not the 10 Hz the spec promises, and its monsters move in one
-    // 200 ms leap per publish. MEASURED at his four-zone cross (297.2,96.4,
-    // all 16 rooms warm, a client where he stands): monsters of his own zone
-    // updated every 51 ms (19.6 Hz), monsters across a border every 416 ms
-    // (2.4 Hz, p90 488) — and with a client parked in each neighbour, those
-    // same monsters ran at 102 ms (9.8 Hz). At a corner three of the four
-    // quadrants are somebody else's room, so most of what he sees is a ghost
-    // (maintainer 2026-09-21: "the monsters lag a lot when they walk", "this
-    // is a general issue"). A solo player is the normal case, which is why
-    // every neighbour is empty.
-    // Bounded by construction: only rooms whose band holds a real player wake,
-    // which is at most the 3 neighbours of the corner he stands on, and they
-    // fall back 1 s (GHOST_TTL_MS) after he walks away.
-    if (this.clients.length === 0 && !this.watched(Date.now())) {
+    // skipped (the clock above still moved every tick).
+    if (this.clients.length === 0) {
       this.idleDt += dt;
       if (++this.idleTick < IDLE_DIVISOR) return;
       dt = this.idleDt;
@@ -3368,31 +3272,11 @@ export class WorldRoom extends Room<WorldState> {
       mon.tsid = mon.mstate === "roam" ? "" : victim;
       mon.returning = !victim && d.returning;
       mon.pinned = !!d.pinned; // a debug pin is a pin on both sides of the line
-      // THE WALK CONTINUES ACROSS THE LINE. The leg it was on comes with it
-      // (targetX/targetY), so this room re-plans to the same goal and steps
-      // the body on its very next tick. Only a body that had no leg — or one
-      // whose goal this room cannot route to — takes the old 200 ms pause.
-      mon.targetX = d.targetX ?? 0;
-      mon.targetY = d.targetY ?? 0;
       mon.nextMoveAt = now + 200;
-      if (d.tripActive && this.terrain && mon.mstate === "roam" && !mon.pinned) {
-        mon.trip = startTrip(this.terrain, mon.x, mon.y, mon.targetX, mon.targetY, false, now, mon.elev, undefined, MONSTER_ROAM_MAX_NODES, false);
-        mon.tripActive = !!mon.trip;
-        if (mon.tripActive) mon.nextMoveAt = now;
-      }
       this.state.ghostMonsters.delete(m.id);
       this.ghostOwner.delete(m.id);
       this.syncPos(mon);
       this.state.monsters.set(m.id, mon);
-      // The body a neighbour just handed over is the one already on screen:
-      // put the new instance in every view that held its id, in the patch that
-      // carries the ghost's delete (see reattachViews).
-      this.reattachViews(m.id, mon);
-      // ...and a ghost of it we were still mirroring is not a second body.
-      if (this.state.ghostMonsters.has(m.id)) {
-        this.state.ghostMonsters.delete(m.id);
-        this.ghostOwner.delete(m.id);
-      }
     } else if (m.type === "monster:respawn") {
       this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
     } else if (m.type === "kick") {
@@ -3458,33 +3342,10 @@ export class WorldRoom extends Room<WorldState> {
       hp: m.hp, hpMax: m.hpMax, mstate: m.mstate, actionSeq: m.actionSeq, level: m.level, aggro: m.aggro,
       areaId: m.areaId, home: m.home, orbitSign: m.orbitSign, provoked: m.provoked, returning: m.returning,
       targetSid: m.targetSid, chaseOx: m.chaseOx, chaseOy: m.chaseOy, pinned: m.pinned,
-      targetX: m.targetX, targetY: m.targetY, tripActive: m.tripActive,
     };
     void bus().publish(this.chan.ctl(to), { type: "monster:xfer", id, m: data } satisfies CtlMessage);
     this.state.monsters.delete(id);
     this.monsterDodgeStates.delete(id);
-    // ...AND IT BECOMES OUR GHOST OF IT IN THE SAME BREATH. The body is still
-    // standing there — it has changed owner, not existence — but the delete
-    // ships on the next patch while the new owner's first edge snapshot is up
-    // to one publish period away (100 ms awake, 400 ms idle) plus the bus, so
-    // the client had nothing under that id in between and destroyed the
-    // sprite: the blink at every crossing (maintainer 2026-09-21: "when they
-    // cross a zone they often disappear and appear again"). A fresh instance
-    // carrying the same id, handed to the views that already hold it
-    // (reattachViews), is the hand-over the client should see; the receiving
-    // room's snapshots take it over from here (`ghostOwner` names it), and if
-    // that room never answers, GHOST_TTL_MS reaps it exactly as it reaps any
-    // other ghost.
-    if (!this.state.ghostMonsters.has(id)) {
-      const g = new Monster();
-      g.kind = m.kind; g.x = m.x; g.y = m.y; g.dir = m.dir; g.moving = m.moving; g.elev = m.elev;
-      g.hp = m.hp; g.hpMax = m.hpMax; g.mstate = m.mstate; g.actionSeq = m.actionSeq; g.level = m.level;
-      g.aggro = m.aggro; g.tsid = m.tsid; g.lastSeen = Date.now();
-      this.syncPos(g);
-      this.state.ghostMonsters.set(id, g);
-      this.ghostOwner.set(id, to);
-      this.reattachViews(id, g);
-    }
   }
 
   /** The border band, complete, to every neighbour: what is inside this rect
@@ -3495,7 +3356,7 @@ export class WorldRoom extends Room<WorldState> {
     const rect = this.rect!;
     const grid = this.grid!;
     const inBand = (x: number, y: number) => nearEdge(rect, grid, x, y, GHOST_BAND_WU) || distToRect(rect, x, y) > 0;
-    const msg: EdgeSnapshot = { from: this.zoneId, t: now, live: this.clients.length > 0, players: [], monsters: [], drops: [] };
+    const msg: EdgeSnapshot = { from: this.zoneId, t: now, players: [], monsters: [], drops: [] };
     this.state.players.forEach((p, pid) => {
       if (!inBand(p.x, p.y)) return;
       msg.players.push({
@@ -3526,7 +3387,6 @@ export class WorldRoom extends Room<WorldState> {
   private onEdgeSnapshot(m: EdgeSnapshot) {
     if (!m || typeof m.from !== "number" || !this.rect) return;
     const now = Date.now();
-    if (m.live) this.neighbourLive.set(m.from, now);
     const rect = this.rect;
     const keep = new Set<string>();
     const near = (x: number, y: number) => distToRect(rect, x, y) <= GHOST_BAND_WU;
@@ -3542,10 +3402,7 @@ export class WorldRoom extends Room<WorldState> {
       g.actionSeq = p.actionSeq; g.hitSeq = p.hitSeq; g.sid = ""; g.pid = p.id; g.lastSeen = now;
       g.ghostNoAggro = !!p.noAggro;
       this.syncPos(g);
-      if (fresh) {
-        this.state.ghosts.set(p.id, g);
-        this.reattachViews(p.id, g); // the same body under a new instance — keep it on screen
-      }
+      if (fresh) this.state.ghosts.set(p.id, g);
       this.ghostOwner.set(p.id, m.from);
     }
     for (const d of m.monsters ?? []) {
@@ -3558,10 +3415,7 @@ export class WorldRoom extends Room<WorldState> {
       g.hpMax = d.hpMax; g.mstate = d.mstate; g.actionSeq = d.actionSeq; g.level = d.level; g.aggro = d.aggro;
       g.tsid = d.tsid; g.lastSeen = now;
       this.syncPos(g);
-      if (fresh) {
-        this.state.ghostMonsters.set(d.id, g);
-        this.reattachViews(d.id, g); // the same body under a new instance — keep it on screen
-      }
+      if (fresh) this.state.ghostMonsters.set(d.id, g);
       this.ghostOwner.set(d.id, m.from);
     }
     for (const d of m.drops ?? []) {
@@ -3572,69 +3426,26 @@ export class WorldRoom extends Room<WorldState> {
       if (!g) g = new GroundItem();
       g.item = d.item; g.x = d.x; g.y = d.y; g.elev = d.elev; g.lastSeen = now;
       this.syncPos(g);
-      if (fresh) {
-        this.state.ghostDrops.set(d.id, g);
-        this.reattachViews(d.id, g); // the same body under a new instance — keep it on screen
-      }
+      if (fresh) this.state.ghostDrops.set(d.id, g);
       this.ghostOwner.set(d.id, m.from);
     }
-    // A snapshot is that zone's whole band: what it no longer carries is
-    // LEAVING — but not necessarily gone. A body that crossed from this
-    // neighbour into ANOTHER neighbour (at a four-zone corner, the common
-    // case) drops out of this snapshot and reappears in the other zone's next
-    // one, up to a publish period later; deleting it outright put a hole
-    // between the two and the client destroyed the sprite and built a new one
-    // (measured at his corner: a 51 ms gap on a neighbour-to-neighbour
-    // crossing, and up to 550 ms when the rooms were idling). So an orphan is
-    // handed to the TTL that already reaps every unclaimed ghost, with
-    // GHOST_ORPHAN_MS to be claimed in: one late snapshot keeps it, silence
-    // reaps it, and a ghost that really walked out of the band still goes in
-    // a quarter of a second.
-    const orphanAt = now - (GHOST_TTL_MS - GHOST_ORPHAN_MS);
-    for (const [id, owner] of this.ghostOwner) {
-      if (owner !== m.from || keep.has(id)) continue;
-      const g = this.state.ghosts.get(id) ?? this.state.ghostMonsters.get(id) ?? this.state.ghostDrops.get(id);
-      if (g) {
-        if (g.lastSeen > orphanAt) g.lastSeen = orphanAt; // never extend a ghost's life
-      } else {
-        this.ghostOwner.delete(id);
-      }
+    // A snapshot is that zone's whole band: what it no longer carries is gone.
+    const gone: string[] = [];
+    for (const [id, owner] of this.ghostOwner) if (owner === m.from && !keep.has(id)) gone.push(id);
+    for (const id of gone) {
+      this.state.ghosts.delete(id);
+      this.state.ghostMonsters.delete(id);
+      this.state.ghostDrops.delete(id);
+      this.ghostOwner.delete(id);
     }
   }
 
   private idleTick = 0;
   private idleDt = 0;
-  /** Neighbour zone -> when it last said it has players (its edge snapshot's
-   *  `live`). See `watched`. */
-  private neighbourLive = new Map<number, number>();
-  /** IS ANYBODY DEPENDING ON THIS ROOM RUNNING AT FULL RATE? Two ways to be:
-   *  a NEIGHBOUR WITH PLAYERS — its people can see my edge, they can cross
-   *  into me at any step, and my monsters at that edge are half of what they
-   *  are looking at — or a ghost player of my own, which is the same thing
-   *  seen from closer up (a body within GHOST_BAND_WU of my rect).
-   *
-   *  The maintainer's rule, 2026-09-21: "A zone is not empty if any of the
-   *  zones next to it has players. If a neighbouring zone has players the zone
-   *  needs to be 100% active. Both to be able to simulate monsters at the
-   *  edge, but also to be able to take over the responsibility as fast as
-   *  possible when a player or a monster crosses the boundary." It is also
-   *  what makes the game TESTABLE: with one player and a quarter-rate
-   *  neighbourhood, what he tests is not what a populated world ships.
-   *
-   *  A snapshot flows between every pair of neighbours at 2.5 Hz even when
-   *  both are asleep, so NEIGHBOUR_LIVE_MS only has to outlast one of those
-   *  periods; a neighbour that empties stops saying `live` and this room is
-   *  idle again within it. The flag travels ONE HOP — neighbours of an
-   *  occupied zone wake, neighbours of THOSE do not. */
-  private watched(now: number): boolean {
-    if (this.state.ghosts.size > 0) return true;
-    for (const [, at] of this.neighbourLive) if (now - at < NEIGHBOUR_LIVE_MS) return true;
-    return false;
-  }
   private recordTick(ms: number) {
     let r = roomStats.get(this.roomId);
     if (!r) {
-      r = { world: this.worldName, zone: this.zoneId, clients: 0, players: 0, monsters: 0, ghosts: 0, ghostPlayers: 0, ticks: [], at: 0, simTicks: 0, bytesOut: 0, bytesAt: Date.now() };
+      r = { world: this.worldName, zone: this.zoneId, clients: 0, players: 0, monsters: 0, ghosts: 0, ticks: [], at: 0, simTicks: 0, bytesOut: 0, bytesAt: Date.now() };
       roomStats.set(this.roomId, r);
     }
     r.ticks.push(ms);
@@ -3643,7 +3454,6 @@ export class WorldRoom extends Room<WorldState> {
     r.players = this.state.players.size;
     r.monsters = this.state.monsters.size;
     r.ghosts = this.state.ghosts.size + this.state.ghostMonsters.size;
-    r.ghostPlayers = this.state.ghosts.size;
     r.at = Date.now();
   }
 
