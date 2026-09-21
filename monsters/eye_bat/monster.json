@@ -450,7 +450,9 @@
           ],
           "lm": "Mon, 21 Sep 2026 08:01:47 GMT",
           "src_frames": 16,
-          "sub": "50a7898a-5381-45c4-acb3-b9fdbafb2776"
+          "sub": "50a7898a-5381-45c4-acb3-b9fdbafb2776",
+          "local_only": true,
+          "why": "his approved take (monsters/eye_bat#attack_v3#north, approved 2026-09-21T07:58Z — the slash that replaced the 'this was not a slash attack' redo) is sub 24dbd004-8e55-41b7-a4f3-041fec0ea188 and no longer exists on PixelLab; the mirror downloaded a different take of the same animation name, so this direction is restored byte-exact from the approved candidate art (strip md5 f6d2f02963c9b49c = the `art` hash on his own approval)"
         },
         "north-east": {
           "frames": 16,
@@ -595,134 +597,6 @@
           "lm": "Mon, 21 Sep 2026 08:01:48 GMT",
           "src_frames": 16,
           "sub": "eaaf6a1b-9a62-4c89-a3e8-65cc823f764b"
-        }
-      }
-    },
-    "custom_darts_forward_and_fires_a_shor": {
-      "group_id": "e7198518-bd73-421a-9524-80612bb9a261",
-      "source_name": "custom-darts forward and fires a shor",
-      "directions": {
-        "east": {
-          "frames": 7,
-          "strip": "eye_bat/animations/custom_darts_forward_and_fires_a_shor__east.webp",
-          "frame_paths": [
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/east/00.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/east/01.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/east/02.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/east/03.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/east/04.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/east/05.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/east/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:01:49 GMT",
-          "src_frames": 7,
-          "sub": "5e7be9ae-3a13-4df1-994b-5275c0cbc279"
-        },
-        "north": {
-          "frames": 7,
-          "strip": "eye_bat/animations/custom_darts_forward_and_fires_a_shor__north.webp",
-          "frame_paths": [
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north/00.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north/01.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north/02.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north/03.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north/04.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north/05.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:01:51 GMT",
-          "src_frames": 7,
-          "sub": "2af7cce7-50e7-46dc-84bd-c1e491482d99"
-        },
-        "north-east": {
-          "frames": 7,
-          "strip": "eye_bat/animations/custom_darts_forward_and_fires_a_shor__north-east.webp",
-          "frame_paths": [
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-east/00.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-east/01.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-east/02.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-east/03.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-east/04.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-east/05.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-east/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:01:52 GMT",
-          "src_frames": 7,
-          "sub": "d44525f3-91f6-4db2-848f-54e6899c26fa"
-        },
-        "south": {
-          "frames": 7,
-          "strip": "eye_bat/animations/custom_darts_forward_and_fires_a_shor__south.webp",
-          "frame_paths": [
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south/00.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south/01.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south/02.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south/03.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south/04.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south/05.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:01:53 GMT",
-          "src_frames": 7,
-          "sub": "83ec4e3a-3ae2-4b17-b479-7045c06e196f"
-        },
-        "south-east": {
-          "frames": 7,
-          "strip": "eye_bat/animations/custom_darts_forward_and_fires_a_shor__south-east.webp",
-          "frame_paths": [
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-east/00.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-east/01.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-east/02.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-east/03.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-east/04.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-east/05.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-east/06.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:01:54 GMT",
-          "src_frames": 7,
-          "sub": "b519fe82-b670-42a5-ab54-f27f39af97cc"
-        },
-        "south-west": {
-          "frames": 7,
-          "strip": "eye_bat/animations/custom_darts_forward_and_fires_a_shor__south-west.webp",
-          "frame_paths": [
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-west/00.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-west/01.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-west/02.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-west/03.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-west/04.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-west/05.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/south-west/06.webp"
-          ],
-          "mirrored_from": "south-east"
-        },
-        "west": {
-          "frames": 7,
-          "strip": "eye_bat/animations/custom_darts_forward_and_fires_a_shor__west.webp",
-          "frame_paths": [
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/west/00.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/west/01.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/west/02.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/west/03.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/west/04.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/west/05.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/west/06.webp"
-          ],
-          "mirrored_from": "east"
-        },
-        "north-west": {
-          "frames": 7,
-          "strip": "eye_bat/animations/custom_darts_forward_and_fires_a_shor__north-west.webp",
-          "frame_paths": [
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-west/00.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-west/01.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-west/02.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-west/03.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-west/04.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-west/05.webp",
-            "eye_bat/animations/custom_darts_forward_and_fires_a_shor/north-west/06.webp"
-          ],
-          "mirrored_from": "north-east"
         }
       }
     },
