@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T15:13:22.481Z",
+  "updated_at": "2026-09-21T15:15:46.978Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -4348,7 +4348,45 @@
           "item": "stretched_tan_hide",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 35.25,
+        "ry": 13.5,
+        "offsets": {
+          "idle#south": {
+            "ax": -5.94,
+            "ay": 52.2
+          },
+          "idle#east": {
+            "ax": -0.07,
+            "ay": 51.74
+          },
+          "idle#south-east": {
+            "ax": -4.06,
+            "ay": 51.71
+          },
+          "idle#north-east": {
+            "ax": -1.11,
+            "ay": 50.32
+          },
+          "idle#north": {
+            "ax": 0.34,
+            "ay": 50.47
+          },
+          "idle#north-west": {
+            "ax": 0.97,
+            "ay": 49.09
+          },
+          "idle#west": {
+            "ax": 0.32,
+            "ay": 52.09
+          },
+          "idle#south-west": {
+            "ax": 2.76,
+            "ay": 51.08
+          }
+        }
+      }
     },
     "pebble_crab": {
       "level": 3,
