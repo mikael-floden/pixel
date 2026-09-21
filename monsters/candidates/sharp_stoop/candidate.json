@@ -1,0 +1,143 @@
+{
+  "id": "sharp_stoop",
+  "name": "Sharpstoop",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It watches the whole field from one post and moves once. Once is all it has ever needed.",
+  "biome": [
+    "grass",
+    "grey_stone"
+  ],
+  "items": [
+    "hawk quill"
+  ],
+  "prompt": "Fantasy hunting hawk standing upright, wings folded tightly against its body, a barred cream and brown breast, a hooked grey beak, a fierce yellow eye, and yellow scaled feet with black talons.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "sharp_stoop/rotations/south.webp",
+    "south-east": "sharp_stoop/rotations/south-east.webp",
+    "east": "sharp_stoop/rotations/east.webp",
+    "north-east": "sharp_stoop/rotations/north-east.webp",
+    "north": "sharp_stoop/rotations/north.webp",
+    "north-west": "sharp_stoop/rotations/north-west.webp",
+    "west": "sharp_stoop/rotations/west.webp",
+    "south-west": "sharp_stoop/rotations/south-west.webp"
+  },
+  "sheet": "sharp_stoop/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9779bee9-893c-4063-b4cb-dc38e432bd1e",
+  "seed": 1864239048,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:10:19+00:00",
+  "elapsed_s": 193.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.672,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.672,
+        "bbox": [
+          14,
+          5,
+          93,
+          101
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.771,
+        "bbox": [
+          16,
+          4,
+          95,
+          99
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.785,
+        "bbox": [
+          12,
+          5,
+          86,
+          101
+        ],
+        "fill": 0.657,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.725,
+        "bbox": [
+          16,
+          3,
+          88,
+          101
+        ],
+        "fill": 0.652,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.815,
+        "bbox": [
+          20,
+          5,
+          87,
+          100
+        ],
+        "fill": 0.588,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.787,
+        "bbox": [
+          9,
+          5,
+          89,
+          100
+        ],
+        "fill": 0.703,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.751,
+        "bbox": [
+          17,
+          3,
+          84,
+          101
+        ],
+        "fill": 0.607,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.82,
+        "bbox": [
+          13,
+          6,
+          95,
+          101
+        ],
+        "fill": 0.72,
+        "touches_edge": false
+      }
+    }
+  }
+}

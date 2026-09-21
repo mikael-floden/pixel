@@ -1,0 +1,143 @@
+{
+  "id": "clam_jaw",
+  "name": "Clamjaw",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It closes on whatever reaches inside and has nowhere else to be. It can wait longer than you can.",
+  "biome": [
+    "water",
+    "light_beach"
+  ],
+  "items": [
+    "great pearl"
+  ],
+  "prompt": "Fantasy giant clam with a thick fluted blue-grey shell parted on a rippling turquoise mantle, a row of small dark eyespots along the mantle edge, and pale grit and weed on the outer shell.",
+  "size": [
+    80,
+    80
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "clam_jaw/rotations/south.webp",
+    "south-east": "clam_jaw/rotations/south-east.webp",
+    "east": "clam_jaw/rotations/east.webp",
+    "north-east": "clam_jaw/rotations/north-east.webp",
+    "north": "clam_jaw/rotations/north.webp",
+    "north-west": "clam_jaw/rotations/north-west.webp",
+    "west": "clam_jaw/rotations/west.webp",
+    "south-west": "clam_jaw/rotations/south-west.webp"
+  },
+  "sheet": "clam_jaw/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "076ef2c5-87bc-4fa2-87f7-8a0aa7360b53",
+  "seed": 1184057360,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:09:39+00:00",
+  "elapsed_s": 210.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.763,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.776,
+        "bbox": [
+          5,
+          3,
+          74,
+          77
+        ],
+        "fill": 0.798,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.795,
+        "bbox": [
+          13,
+          4,
+          72,
+          77
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.794,
+        "bbox": [
+          7,
+          4,
+          66,
+          77
+        ],
+        "fill": 0.673,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.763,
+        "bbox": [
+          8,
+          4,
+          71,
+          73
+        ],
+        "fill": 0.679,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.825,
+        "bbox": [
+          8,
+          3,
+          74,
+          77
+        ],
+        "fill": 0.763,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.791,
+        "bbox": [
+          9,
+          5,
+          68,
+          76
+        ],
+        "fill": 0.655,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.795,
+        "bbox": [
+          11,
+          5,
+          71,
+          76
+        ],
+        "fill": 0.666,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.83,
+        "bbox": [
+          5,
+          3,
+          72,
+          77
+        ],
+        "fill": 0.775,
+        "touches_edge": false
+      }
+    }
+  }
+}

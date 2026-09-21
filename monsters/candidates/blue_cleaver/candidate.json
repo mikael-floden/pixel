@@ -1,0 +1,143 @@
+{
+  "id": "blue_cleaver",
+  "name": "Bluecleaver",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "One claw is for breaking and one is for cutting. It has never been observed using the wrong one.",
+  "biome": [
+    "water",
+    "light_beach"
+  ],
+  "items": [
+    "curved pincer"
+  ],
+  "prompt": "Fantasy blue lobster with a deep cobalt armoured body, one oversized crusher claw and one narrower cutter claw held forward, long antennae swept back over its shell, and stalked black eyes.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "blue_cleaver/rotations/south.webp",
+    "south-east": "blue_cleaver/rotations/south-east.webp",
+    "east": "blue_cleaver/rotations/east.webp",
+    "north-east": "blue_cleaver/rotations/north-east.webp",
+    "north": "blue_cleaver/rotations/north.webp",
+    "north-west": "blue_cleaver/rotations/north-west.webp",
+    "west": "blue_cleaver/rotations/west.webp",
+    "south-west": "blue_cleaver/rotations/south-west.webp"
+  },
+  "sheet": "blue_cleaver/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "046fef17-6969-48b1-8a4d-28a7755536e3",
+  "seed": 515567691,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:11:02+00:00",
+  "elapsed_s": 279.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.712,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.712,
+        "bbox": [
+          8,
+          7,
+          104,
+          105
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.796,
+        "bbox": [
+          7,
+          4,
+          105,
+          98
+        ],
+        "fill": 0.734,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.806,
+        "bbox": [
+          7,
+          4,
+          105,
+          98
+        ],
+        "fill": 0.734,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.777,
+        "bbox": [
+          7,
+          22,
+          104,
+          90
+        ],
+        "fill": 0.526,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.817,
+        "bbox": [
+          7,
+          4,
+          106,
+          107
+        ],
+        "fill": 0.813,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.803,
+        "bbox": [
+          12,
+          15,
+          104,
+          88
+        ],
+        "fill": 0.535,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.778,
+        "bbox": [
+          8,
+          18,
+          100,
+          88
+        ],
+        "fill": 0.513,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.815,
+        "bbox": [
+          6,
+          4,
+          105,
+          107
+        ],
+        "fill": 0.813,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,0 +1,148 @@
+{
+  "id": "mud_hopper",
+  "name": "Mudhopper",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It left the water on purpose and comes back only when it has to. It watches the tide like a debt.",
+  "biome": [
+    "water",
+    "dark_mud",
+    "light_beach"
+  ],
+  "items": [],
+  "prompt": "Fantasy mudskipper with a mottled brown body, bulging periscope eyes set on top of its head, muscular pectoral fins propping it upright, a wide mouth, and a spiny dorsal fin raised.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mud_hopper/rotations/south.webp",
+    "south-east": "mud_hopper/rotations/south-east.webp",
+    "east": "mud_hopper/rotations/east.webp",
+    "north-east": "mud_hopper/rotations/north-east.webp",
+    "north": "mud_hopper/rotations/north.webp",
+    "north-west": "mud_hopper/rotations/north-west.webp",
+    "west": "mud_hopper/rotations/west.webp",
+    "south-west": "mud_hopper/rotations/south-west.webp"
+  },
+  "sheet": "mud_hopper/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "46cea50a-fcc2-47f4-89f3-337f03659c27",
+  "seed": 1254707294,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:09:56+00:00",
+  "elapsed_s": 192.8,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.723,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "north-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.803,
+        "bbox": [
+          0,
+          2,
+          47,
+          44
+        ],
+        "fill": 0.857,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.756,
+        "bbox": [
+          3,
+          3,
+          48,
+          46
+        ],
+        "fill": 0.84,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.781,
+        "bbox": [
+          0,
+          3,
+          45,
+          46
+        ],
+        "fill": 0.84,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.723,
+        "bbox": [
+          1,
+          2,
+          47,
+          43
+        ],
+        "fill": 0.819,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.826,
+        "bbox": [
+          4,
+          3,
+          47,
+          45
+        ],
+        "fill": 0.784,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.75,
+        "bbox": [
+          0,
+          3,
+          44,
+          44
+        ],
+        "fill": 0.783,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.757,
+        "bbox": [
+          5,
+          3,
+          48,
+          45
+        ],
+        "fill": 0.784,
+        "touches_edge": true
+      },
+      "south-west": {
+        "run1": 0.812,
+        "bbox": [
+          1,
+          3,
+          47,
+          45
+        ],
+        "fill": 0.839,
+        "touches_edge": false
+      }
+    }
+  }
+}

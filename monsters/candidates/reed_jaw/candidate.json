@@ -1,0 +1,141 @@
+{
+  "id": "reed_jaw",
+  "name": "Reedjaw",
+  "tier": "evil",
+  "scale": "big",
+  "lore": "It is the oldest resident of the reeds and remembers every crossing. It has never needed to hurry.",
+  "biome": [
+    "water",
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy crocodile with an armoured ridged dark olive back, a long broad jaw closed on interlocking yellowed teeth, short powerful clawed legs held wide, and a heavy muscular tail curled alongside it.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "reed_jaw/rotations/south.webp",
+    "south-east": "reed_jaw/rotations/south-east.webp",
+    "east": "reed_jaw/rotations/east.webp",
+    "north-east": "reed_jaw/rotations/north-east.webp",
+    "north": "reed_jaw/rotations/north.webp",
+    "north-west": "reed_jaw/rotations/north-west.webp",
+    "west": "reed_jaw/rotations/west.webp",
+    "south-west": "reed_jaw/rotations/south-west.webp"
+  },
+  "sheet": "reed_jaw/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "325d14fe-6adf-4c6a-bb77-c9acb68619fd",
+  "seed": 391983862,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:11:00+00:00",
+  "elapsed_s": 242.1,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.634,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.636,
+        "bbox": [
+          21,
+          27,
+          209,
+          199
+        ],
+        "fill": 0.644,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.65,
+        "bbox": [
+          13,
+          21,
+          195,
+          207
+        ],
+        "fill": 0.675,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.68,
+        "bbox": [
+          41,
+          28,
+          199,
+          205
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.641,
+        "bbox": [
+          15,
+          17,
+          183,
+          194
+        ],
+        "fill": 0.593,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.668,
+        "bbox": [
+          40,
+          33,
+          189,
+          197
+        ],
+        "fill": 0.487,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.661,
+        "bbox": [
+          17,
+          23,
+          205,
+          204
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.634,
+        "bbox": [
+          32,
+          17,
+          174,
+          206
+        ],
+        "fill": 0.535,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.653,
+        "bbox": [
+          8,
+          27,
+          209,
+          202
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      }
+    }
+  }
+}

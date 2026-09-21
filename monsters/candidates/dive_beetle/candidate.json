@@ -1,0 +1,143 @@
+{
+  "id": "dive_beetle",
+  "name": "Divebeetle",
+  "tier": "mid",
+  "scale": "small",
+  "lore": "It carries its own air down with it and comes up only when that runs out.",
+  "biome": [
+    "water",
+    "dark_mud"
+  ],
+  "items": [
+    "jewel beetle"
+  ],
+  "prompt": "Fantasy great diving beetle seen from above, a smooth oval black carapace rimmed with gold, fringed paddle legs held out to the sides, short antennae, and a glossy domed head.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "dive_beetle/rotations/south.webp",
+    "south-east": "dive_beetle/rotations/south-east.webp",
+    "east": "dive_beetle/rotations/east.webp",
+    "north-east": "dive_beetle/rotations/north-east.webp",
+    "north": "dive_beetle/rotations/north.webp",
+    "north-west": "dive_beetle/rotations/north-west.webp",
+    "west": "dive_beetle/rotations/west.webp",
+    "south-west": "dive_beetle/rotations/south-west.webp"
+  },
+  "sheet": "dive_beetle/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "98ddf341-2301-4190-b6ad-19857be10fca",
+  "seed": 496591601,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:11:00+00:00",
+  "elapsed_s": 241.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.721,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.771,
+        "bbox": [
+          2,
+          4,
+          46,
+          44
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.725,
+        "bbox": [
+          3,
+          9,
+          44,
+          42
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.743,
+        "bbox": [
+          4,
+          9,
+          45,
+          42
+        ],
+        "fill": 0.587,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.724,
+        "bbox": [
+          3,
+          5,
+          45,
+          40
+        ],
+        "fill": 0.638,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.793,
+        "bbox": [
+          6,
+          5,
+          45,
+          45
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.751,
+        "bbox": [
+          3,
+          5,
+          44,
+          43
+        ],
+        "fill": 0.676,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.721,
+        "bbox": [
+          4,
+          5,
+          45,
+          43
+        ],
+        "fill": 0.676,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.792,
+        "bbox": [
+          3,
+          5,
+          42,
+          45
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      }
+    }
+  }
+}
