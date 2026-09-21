@@ -162,6 +162,56 @@
       "group_id": "07d3d3b7-1e77-427d-95f1-459e7405bfd4",
       "source_name": "custom-Bite - Lunges forward and bites hard, embers puffi + custom-Ember Burst - The hatchling rears back and lunges,",
       "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "ash_hatchling/animations/attack__east.webp",
+          "frame_paths": [
+            "ash_hatchling/animations/attack/east/00.webp",
+            "ash_hatchling/animations/attack/east/01.webp",
+            "ash_hatchling/animations/attack/east/02.webp",
+            "ash_hatchling/animations/attack/east/03.webp",
+            "ash_hatchling/animations/attack/east/04.webp",
+            "ash_hatchling/animations/attack/east/05.webp",
+            "ash_hatchling/animations/attack/east/06.webp",
+            "ash_hatchling/animations/attack/east/07.webp",
+            "ash_hatchling/animations/attack/east/08.webp",
+            "ash_hatchling/animations/attack/east/09.webp",
+            "ash_hatchling/animations/attack/east/10.webp",
+            "ash_hatchling/animations/attack/east/11.webp",
+            "ash_hatchling/animations/attack/east/12.webp",
+            "ash_hatchling/animations/attack/east/13.webp",
+            "ash_hatchling/animations/attack/east/14.webp",
+            "ash_hatchling/animations/attack/east/15.webp"
+          ],
+          "src_frames": 16,
+          "restored_from": "monsters/candidates/ash_hatchling/animations/attack_v3/east",
+          "restored_note": "his approved attack_v3 take; the upstream clip was rolled under a third wording and was deleted by graduation as 'a take he did not pick', so the candidate folder is the only copy. No generation."
+        },
+        "north": {
+          "frames": 16,
+          "strip": "ash_hatchling/animations/attack__north.webp",
+          "frame_paths": [
+            "ash_hatchling/animations/attack/north/00.webp",
+            "ash_hatchling/animations/attack/north/01.webp",
+            "ash_hatchling/animations/attack/north/02.webp",
+            "ash_hatchling/animations/attack/north/03.webp",
+            "ash_hatchling/animations/attack/north/04.webp",
+            "ash_hatchling/animations/attack/north/05.webp",
+            "ash_hatchling/animations/attack/north/06.webp",
+            "ash_hatchling/animations/attack/north/07.webp",
+            "ash_hatchling/animations/attack/north/08.webp",
+            "ash_hatchling/animations/attack/north/09.webp",
+            "ash_hatchling/animations/attack/north/10.webp",
+            "ash_hatchling/animations/attack/north/11.webp",
+            "ash_hatchling/animations/attack/north/12.webp",
+            "ash_hatchling/animations/attack/north/13.webp",
+            "ash_hatchling/animations/attack/north/14.webp",
+            "ash_hatchling/animations/attack/north/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:43:36 GMT",
+          "src_frames": 16,
+          "sub": "181cedc7-c625-49cb-9e42-4087ddf702e2"
+        },
         "north-east": {
           "frames": 16,
           "strip": "ash_hatchling/animations/attack__north-east.webp",
@@ -209,31 +259,6 @@
             "ash_hatchling/animations/attack/north-west/15.webp"
           ],
           "mirrored_from": "north-east"
-        },
-        "north": {
-          "frames": 16,
-          "strip": "ash_hatchling/animations/attack__north.webp",
-          "frame_paths": [
-            "ash_hatchling/animations/attack/north/00.webp",
-            "ash_hatchling/animations/attack/north/01.webp",
-            "ash_hatchling/animations/attack/north/02.webp",
-            "ash_hatchling/animations/attack/north/03.webp",
-            "ash_hatchling/animations/attack/north/04.webp",
-            "ash_hatchling/animations/attack/north/05.webp",
-            "ash_hatchling/animations/attack/north/06.webp",
-            "ash_hatchling/animations/attack/north/07.webp",
-            "ash_hatchling/animations/attack/north/08.webp",
-            "ash_hatchling/animations/attack/north/09.webp",
-            "ash_hatchling/animations/attack/north/10.webp",
-            "ash_hatchling/animations/attack/north/11.webp",
-            "ash_hatchling/animations/attack/north/12.webp",
-            "ash_hatchling/animations/attack/north/13.webp",
-            "ash_hatchling/animations/attack/north/14.webp",
-            "ash_hatchling/animations/attack/north/15.webp"
-          ],
-          "lm": "Mon, 21 Sep 2026 08:43:36 GMT",
-          "src_frames": 16,
-          "sub": "181cedc7-c625-49cb-9e42-4087ddf702e2"
         },
         "south": {
           "frames": 16,
@@ -307,6 +332,31 @@
             "ash_hatchling/animations/attack/south-west/15.webp"
           ],
           "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "ash_hatchling/animations/attack__west.webp",
+          "frame_paths": [
+            "ash_hatchling/animations/attack/west/00.webp",
+            "ash_hatchling/animations/attack/west/01.webp",
+            "ash_hatchling/animations/attack/west/02.webp",
+            "ash_hatchling/animations/attack/west/03.webp",
+            "ash_hatchling/animations/attack/west/04.webp",
+            "ash_hatchling/animations/attack/west/05.webp",
+            "ash_hatchling/animations/attack/west/06.webp",
+            "ash_hatchling/animations/attack/west/07.webp",
+            "ash_hatchling/animations/attack/west/08.webp",
+            "ash_hatchling/animations/attack/west/09.webp",
+            "ash_hatchling/animations/attack/west/10.webp",
+            "ash_hatchling/animations/attack/west/11.webp",
+            "ash_hatchling/animations/attack/west/12.webp",
+            "ash_hatchling/animations/attack/west/13.webp",
+            "ash_hatchling/animations/attack/west/14.webp",
+            "ash_hatchling/animations/attack/west/15.webp"
+          ],
+          "src_frames": 16,
+          "restored_from": "monsters/candidates/ash_hatchling/animations/attack_v3/west",
+          "restored_note": "his approved attack_v3 take; the upstream clip was rolled under a third wording and was deleted by graduation as 'a take he did not pick', so the candidate folder is the only copy. No generation."
         }
       }
     },
