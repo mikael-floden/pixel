@@ -34,29 +34,6 @@
       "scale": "standard"
     },
     {
-      "id": "pebble_crab",
-      "name": "Pebblet",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "light_beach",
-        "grey_stone"
-      ],
-      "items": [
-        "sea shells",
-        "curved pincer"
-      ],
-      "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
-      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
-      "walk_slow": true,
-      "attack_action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
-      "claws": true,
-      "attack_extreme": "Rock Burst - The crab launches its whole body up off the ground, both claws thrown wide, stone shards bursting out beneath it",
-      "die_action": "Death - The pebble cracks in half and the crab shrivels into a small dark heap, then fades away"
-    },
-    {
       "id": "gargoyle",
       "name": "Stonewing",
       "tier": "evil",
@@ -70,25 +47,6 @@
       "items": [],
       "prompt": "Fantasy gargoyle shown full body from head to feet, grey weathered stone skin, a horned bestial face with a fanged snarl, glowing red eyes, bat-like wings folded tightly against its back, clawed hands, and crouching legs.",
       "lore": "It kept watch from the chapel eaves for centuries. When the last bell fell silent, it came down."
-    },
-    {
-      "id": "basilisk",
-      "name": "Stonegaze",
-      "tier": "evil",
-      "scale": "standard",
-      "template_id": "bear",
-      "size": 136,
-      "biome": [
-        "light_soil",
-        "grey_stone"
-      ],
-      "items": [],
-      "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail tucked close against its body.",
-      "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
-      "attack_action": "Bite - Lunges forward with its jaws wide open and bites hard",
-      "claws": true,
-      "attack_extreme": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared",
-      "die_action": "Death - Its legs give out, it collapses flat onto its belly with its head down and fades away"
     },
     {
       "id": "lava_toad",
@@ -118,27 +76,6 @@
       "items": [],
       "prompt": "Fantasy fox spirit with pale cream fur, three bushy tails tipped with blue flame curled around its body, glowing blue eyes, red markings on its face, and small blue flames floating around it.",
       "lore": "Three tails, three lies, and one truth it will tell you for a price you will not like."
-    },
-    {
-      "id": "eye_bat",
-      "name": "Glareling",
-      "tier": "mid",
-      "scale": "standard",
-      "template_id": "mannequin",
-      "size": 64,
-      "biome": [
-        "black_rock",
-        "grey_paving_stone"
-      ],
-      "items": [],
-      "prompt": "Fantasy floating eyeball monster, a single large bloodshot eyeball with a green iris, two small leathery bat wings folded at its sides, thin trailing nerve tendrils beneath it, and a tiny fanged mouth.",
-      "lore": "It watches for something bigger. What it sees, the something bigger sees too.",
-      "attack_action": "Wing Slash - Snaps both leathery wings forward and slashes them hard across in front of itself, white swoosh lines trailing the wing edges",
-      "fx": true,
-      "attack_extreme": "Wing Storm - Both wings flare wide and beat forward in one violent slashing sweep that hurls the body after them, swoosh lines flying",
-      "die_action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
-      "walk_action": "Hovering flight loop in place, wings beating steadily up and down, the body floating with a small even rise and fall, never touching the ground, seamless loop whose last frame leads straight back into the first",
-      "attack_simple": "Wing Slash - Sweeps one wing forward and down in one fast hard slash, a white swoosh arc following the wing edge"
     },
     {
       "id": "fawn_spirit",
@@ -186,26 +123,6 @@
       "lore": "It stands in the reeds for hours without a breath. Whatever moves beneath the water is already chosen."
     },
     {
-      "id": "turtle_hatchling",
-      "name": "Shellet",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "light_beach",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
-      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
-      "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
-      "walk_slow": true,
-      "attack_action": "Beak Snap - Stretches its neck right out and snaps its beak shut",
-      "attack_extreme": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward",
-      "die_action": "Death - The shell cracks apart and the turtle melts into a small puddle, then fades away"
-    },
-    {
       "id": "sand_kit",
       "name": "Dunekit",
       "tier": "cute",
@@ -237,7 +154,8 @@
       "claws": true,
       "fx": true,
       "attack_extreme": "Ember Burst - The hatchling rears back and lunges, a burst of embers erupting from its mouth",
-      "die_action": "Death - The ember glow goes out, it slumps down onto its side and fades away"
+      "die_action": "Death - The ember glow goes out and the body crumbles apart into a small heap of grey ash on the ground, then fades away",
+      "attack_simple": "Snap - Throws its head forward and snaps its jaws shut hard once, embers puffing"
     },
     {
       "id": "cave_bear",
@@ -4620,6 +4538,123 @@
       "attack_extreme": "Greatsword Cleave - The knight heaves the greatsword far overhead and cleaves it down with its whole body",
       "die_action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
       "graduated_at": "2026-09-21T07:39:17+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "turtle_hatchling",
+      "name": "Shellet",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "light_beach",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
+      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+      "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
+      "walk_slow": true,
+      "attack_action": "Beak Snap - Stretches its neck right out and snaps its beak shut",
+      "attack_extreme": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward",
+      "die_action": "Death - The shell cracks apart and the turtle melts into a small puddle, then fades away",
+      "graduated_at": "2026-09-21T07:43:07+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "eye_bat",
+      "name": "Glareling",
+      "tier": "mid",
+      "scale": "standard",
+      "template_id": "mannequin",
+      "size": 64,
+      "biome": [
+        "black_rock",
+        "grey_paving_stone"
+      ],
+      "items": [],
+      "prompt": "Fantasy floating eyeball monster, a single large bloodshot eyeball with a green iris, two small leathery bat wings folded at its sides, thin trailing nerve tendrils beneath it, and a tiny fanged mouth.",
+      "lore": "It watches for something bigger. What it sees, the something bigger sees too.",
+      "attack_action": "Wing Slash - Snaps both leathery wings forward and slashes them hard across in front of itself, white swoosh lines trailing the wing edges",
+      "fx": true,
+      "attack_extreme": "Wing Storm - Both wings flare wide and beat forward in one violent slashing sweep that hurls the body after them, swoosh lines flying",
+      "die_action": "Death - The eye closes, the wings fold and it drops to the ground, then fades away",
+      "walk_action": "Hovering flight loop in place, wings beating steadily up and down, the body floating with a small even rise and fall, never touching the ground, seamless loop whose last frame leads straight back into the first",
+      "attack_simple": "Wing Slash - Sweeps one wing forward and down in one fast hard slash, a white swoosh arc following the wing edge",
+      "graduated_at": "2026-09-21T08:02:07+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "pebble_crab",
+      "name": "Pebblet",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "light_beach",
+        "grey_stone"
+      ],
+      "items": [
+        "sea shells",
+        "curved pincer"
+      ],
+      "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
+      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
+      "walk_slow": true,
+      "attack_action": "Claw Pinch - Darts forward and snaps both small claws shut hard",
+      "claws": true,
+      "attack_extreme": "Rock Burst - The crab launches its whole body up off the ground, both claws thrown wide, stone shards bursting out beneath it",
+      "die_action": "Death - The pebble cracks in half and the crab shrivels into a small dark heap, then fades away",
+      "attack_simple": "Claw Snap - Darts forward once and snaps its big claw shut hard, a white swoosh following it",
+      "graduated_at": "2026-09-21T08:13:06+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "basilisk",
+      "name": "Stonegaze",
+      "tier": "evil",
+      "scale": "standard",
+      "template_id": "bear",
+      "size": 136,
+      "biome": [
+        "light_soil",
+        "grey_stone"
+      ],
+      "items": [],
+      "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail tucked close against its body.",
+      "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
+      "attack_action": "Bite - Lunges forward with its jaws wide open and bites hard",
+      "claws": true,
+      "attack_extreme": "Killing Bite - The basilisk hurls its whole body forward, jaws thrown wide open, crest flared, teeth bared",
+      "die_action": "Death - Its legs give out, it collapses flat onto its belly with its head down and fades away",
+      "attack_simple": "Snap - Throws its head forward and snaps its jaws shut hard once",
+      "graduated_at": "2026-09-21T08:14:23+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",
