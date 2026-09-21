@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T13:13:44.851Z",
+  "updated_at": "2026-09-21T13:16:23.823Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -477,7 +477,41 @@
           "item": "heavy_iron_links",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 41,
+        "ry": 16.75,
+        "offsets": {
+          "idle#east": {
+            "ax": -2.67,
+            "ay": 52.93
+          },
+          "idle#south": {
+            "ax": 0.09,
+            "ay": 56.69
+          },
+          "idle#south-east": {
+            "ax": 0.35,
+            "ay": 55.41
+          },
+          "idle#north": {
+            "ax": -0.09,
+            "ay": 52.14
+          },
+          "idle#north-west": {
+            "ax": 1.15,
+            "ay": 52.84
+          },
+          "idle#west": {
+            "ax": 1.51,
+            "ay": 54.42
+          },
+          "idle#south-west": {
+            "ax": 1.08,
+            "ay": 53.32
+          }
+        }
+      }
     },
     "butterfly_dragon": {
       "level": 12,
