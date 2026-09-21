@@ -261,14 +261,16 @@ export interface LoaderLike {
   isLoading(): boolean;
   start(): void;
   once(event: string, cb: () => void): unknown;
-  /** EVERY file as it finishes — success or error — with its key. Without it
-   *  `pending` can only settle when a whole batch lands, which makes the
-   *  loading bar a staircase: measured on the_game, the 140-file terrain batch
-   *  held the bar at 54% for 8 s and then jumped it to 100% (maintainer
-   *  2026-09-02: "it loads 55% and the last 45% goes super fast"). Optional —
-   *  a caller that does not offer it still settles per batch, exactly as
-   *  before. */
-  onFile?(cb: (key: string) => void): unknown;
+  /** EVERY file as it finishes — success or error — with its key and which of
+   *  the two it was. Without it `pending` can only settle when a whole batch
+   *  lands, which makes the loading bar a staircase: measured on the_game, the
+   *  140-file terrain batch held the bar at 54% for 8 s and then jumped it to
+   *  100% (maintainer 2026-09-02: "it loads 55% and the last 45% goes super
+   *  fast"). `ok` is what separates a file that ARRIVED from one that FAILED,
+   *  and the two are not the same fact: see `retryFailed`. A caller that offers
+   *  neither the hook nor the flag still settles per batch and treats every
+   *  outcome as an arrival, exactly as before. */
+  onFile?(cb: (key: string, ok?: boolean) => void): unknown;
 }
 
 /** THE STREAMING ART CACHE. A draw pass asks for the files a window needs; this
@@ -279,18 +281,42 @@ export interface LoaderLike {
  *  A PATH IS REQUESTED ONCE, EVER. A 404 (a stale index, an unpublished tile)
  *  would otherwise re-fire on every redraw the cell is on screen — the requested
  *  set is the tombstone, exactly as `SceneryPieces` does for manifests. */
+/** A FAILED ART LOAD IS RETRIED, NOT TOMBSTONED. Phaser reports a 404 and a
+ *  dropped connection through the same FILE_LOAD_ERROR, and the old rule left
+ *  either in `asked` for the life of the page: one request lost while the
+ *  server was busy painted that cell's flat fallback until the app was
+ *  restarted, which is what every one of his reports ended with on 2026-09-21.
+ *  Bounded, so a file that really is missing still stops: four attempts over
+ *  ~20 s of linear backoff, then it is a tombstone after all. */
+const ART_RETRY_MAX = 4;
+const ART_RETRY_MS = 2000;
+/** At most this many retries are re-queued in one pass, so a server that
+ *  refused a whole batch does not get the whole batch back in one frame. */
+const ART_RETRY_BATCH = 24;
+
 export class Tiles3Loader {
   /** `done` counts FILES, so `requested - done` is honest progress mid-batch;
    *  `pending` is kept as its mirror because the loading hold and the probes
    *  read it. */
-  readonly stats = { requested: 0, batches: 0, pending: 0, done: 0 };
+  readonly stats = { requested: 0, batches: 0, pending: 0, done: 0, failed: 0, retries: 0, recovered: 0 };
   /** Keys this loader asked for and has not seen finish. The scene shares its
    *  Phaser loader with the SCENERY art, so a file event has to be matched
    *  against what THIS loader queued or terrain progress counts someone else's
    *  files. */
-  private inflight = new Set<string>();
+  private inflight = new Map<string, string>();
   private asked = new Set<string>();
   private queued: string[] = [];
+  /** Paths whose load FAILED, with how many times and when it last went out.
+   *  A FAILURE IS NOT A 404 AND MUST NOT TOMBSTONE LIKE ONE. Both arrive the
+   *  same way (Phaser reports one FILE_LOAD_ERROR for a missing file and for a
+   *  dropped connection alike) and the old rule left either in `asked` for the
+   *  life of the page, so one request caught in a Cloud Run rollout painted
+   *  that cell's flat fallback until he restarted the app — which is exactly
+   *  what every report of his ended with. `nangijala-deploy.yml` fires on
+   *  games2/** AND every art domain, so EVERY agent's push rolls a revision:
+   *  measured 2026-09-21, six rollouts in eighteen minutes, four of them the
+   *  monsters loop. The page has to survive that rate on its own. */
+  private failed = new Map<string, { tries: number; at: number }>();
 
   constructor(
     private o: {
@@ -298,12 +324,30 @@ export class Tiles3Loader {
       textures: TextureManagerLike;
       route?: UrlRoute;
       onBatch: (paths: string[]) => void;
+      /** The clock the retry backoff is measured on, so a failure can be
+       *  stamped WHEN IT HAPPENS rather than when something next looks at it.
+       *  The scene passes its Phaser clock; tests pass their own. */
+      now?: () => number;
     },
   ) {
-    this.o.loader.onFile?.((key) => {
-      if (!this.inflight.delete(key)) return; // scenery art, or a stray
+    this.o.loader.onFile?.((key, ok) => {
+      const path = this.inflight.get(key);
+      if (path === undefined) return; // scenery art, or a stray
+      this.inflight.delete(key);
       this.stats.done = Math.min(this.stats.requested, this.stats.done + 1);
       this.stats.pending = Math.max(0, this.stats.requested - this.stats.done);
+      /* `ok === undefined` is a loader that does not report the outcome: it
+       * counts as an arrival, which is the behaviour every caller had. */
+      if (ok === false) {
+        const rec = this.failed.get(path) ?? { tries: 0, at: 0 };
+        rec.tries++;
+        rec.at = this.o.now?.() ?? Date.now(); // the backoff runs from HERE
+        this.failed.set(path, rec);
+        this.stats.failed = this.failed.size;
+      } else if (this.failed.delete(path)) {
+        this.stats.failed = this.failed.size;
+        this.stats.recovered++;
+      }
     });
   }
 
@@ -323,7 +367,9 @@ export class Tiles3Loader {
   /** Is this path still coming — queued or in flight? False for a resident
    *  texture and for a tombstoned (404) path, which will never land. */
   wanted(path: string): boolean {
-    return this.inflight.has(artKey(path)) || this.queued.includes(path);
+    if (this.inflight.has(artKey(path)) || this.queued.includes(path)) return true;
+    const rec = this.failed.get(path);
+    return !!rec && rec.tries <= ART_RETRY_MAX; // a retry is still owed
   }
 
   /** Files asked for and not yet started (`flush()` starts them). */
@@ -345,6 +391,41 @@ export class Tiles3Loader {
     return this.stats.requested ? this.stats.done / this.stats.requested : 1;
   }
 
+  /** How many paths are waiting on a retry or have given up. Probes read it. */
+  get failedCount(): number {
+    return this.failed.size;
+  }
+
+  /** Re-queue every failed path whose backoff has elapsed, newest failure
+   *  last. Returns the paths it re-asked for, so the caller can make sure the
+   *  picture is redrawn when they land — a retry that nobody repaints is a
+   *  request spent for nothing. Costs one map walk while the map is empty,
+   *  which is the steady state. */
+  retryFailed(now: number): string[] {
+    if (!this.failed.size) return [];
+    const out: string[] = [];
+    for (const [path, rec] of this.failed) {
+      if (out.length >= ART_RETRY_BATCH) break;
+      if (rec.tries > ART_RETRY_MAX) continue; // given up: a real 404
+      const key = artKey(path);
+      if (this.o.textures.exists(key)) {
+        this.failed.delete(path); // landed by another route
+        continue;
+      }
+      if (this.inflight.has(key) || this.queued.includes(path)) continue;
+      // Linear backoff from the last failure, widening with each attempt: a
+      // server that refused one request is refusing others, and a tight loop
+      // spends the phone's connections on requests that cannot land.
+      if (now - rec.at < ART_RETRY_MS * rec.tries) continue;
+      rec.at = now;
+      this.asked.add(path); // keeps need() from queuing it a second time
+      this.queued.push(path);
+      this.stats.retries++;
+      out.push(path);
+    }
+    return out;
+  }
+
   /** Start the queued batch, if any. Safe to call every pass. */
   flush(): void {
     if (!this.queued.length) return;
@@ -354,7 +435,7 @@ export class Tiles3Loader {
     this.stats.pending = Math.max(0, this.stats.requested - this.stats.done);
     for (const path of batch) {
       const key = artKey(path);
-      this.inflight.add(key);
+      this.inflight.set(key, path);
       this.o.loader.image(key, routeUrl(path, this.o.route));
     }
     /* THE BATCH RECONCILES what the per-file events did not. Every file of this

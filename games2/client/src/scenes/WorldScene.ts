@@ -13531,6 +13531,7 @@ export class WorldScene extends Phaser.Scene {
     this.cullOccluderSubmits();
     this.pe("occCull");
     this.t3workerStep(); // a postMessage, unguarded — see t3workerStep
+    this.t3retryArt(); // unguarded too — see t3retryArt
     this.ps();
     this.t3prefetchStep();
     this.t3retryBoundaries();
@@ -19508,6 +19509,7 @@ export class WorldScene extends Phaser.Scene {
       textures: this.t3tm,
       route: this.t3route,
       onBatch: (paths) => this.onTerrainBatch(paths),
+      now: () => this.time.now,
     });
     // The index decides which sheets to fetch; preload queued the library's
     // published names, so this is a no-op unless a republish renamed one.
@@ -19613,9 +19615,12 @@ export class WorldScene extends Phaser.Scene {
        * batch. Registered once per loader; both the terrain loader and the
        * scenery art ride this one Phaser queue, so the key is what tells them
        * apart (`t2:` vs `s3:`). */
-      onFile: (cb: (key: string) => void) => {
-        l.on(Phaser.Loader.Events.FILE_COMPLETE, (key: string) => cb(key));
-        l.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: { key?: string }) => cb(file?.key ?? ""));
+      onFile: (cb: (key: string, ok?: boolean) => void) => {
+        l.on(Phaser.Loader.Events.FILE_COMPLETE, (key: string) => cb(key, true));
+        /* `false` is the whole point: the loader counts the file finished
+         * either way (the bar must not stall on a 404) but only a FAILURE is
+         * worth asking for again. See Tiles3Loader.retryFailed. */
+        l.on(Phaser.Loader.Events.FILE_LOAD_ERROR, (file: { key?: string }) => cb(file?.key ?? "", false));
       },
     };
   }
@@ -21021,6 +21026,37 @@ export class WorldScene extends Phaser.Scene {
     }
     this.t3workerAt = stop;
     this.t3worker.request(ahead);
+  }
+
+  /** RE-ASK FOR ART WHOSE LOAD FAILED, and do it OUTSIDE every stand-down.
+   *
+   *  Phaser reports a 404 and a dropped connection through the same
+   *  FILE_LOAD_ERROR, and Tiles3Loader used to leave both in `asked` for the
+   *  life of the page. So one art request lost while the server was busy
+   *  painted that cell's flat fallback until the app was restarted — which is
+   *  how every one of his reports on 2026-09-21 ended, over and over, on a
+   *  build whose art and world data were byte-identical to the repo and which
+   *  rendered the same coordinates correctly in the harness. Measured that
+   *  evening: production at 56-70% CPU with ZERO clients and event-loop stalls
+   *  to 1.9 s, so requests really were being dropped and refused (our own
+   *  publish pipeline got an HTTP 429 off it).
+   *
+   *  NOT inside t3prefetchStep, which returns early once the ring is spent and
+   *  on any frame that scrolled — repair work behind a "not while he is
+   *  walking" gate is repair work that never runs, which is the OTHER bug this
+   *  same evening shipped and reverted. Costs one walk over an empty map in
+   *  the steady state.
+   *
+   *  IT RE-REQUESTS AND NOTHING ELSE. It raises no repaint: a full repaint
+   *  raised outside the frame that owns the ground texture's scroll latch drew
+   *  his world black with his character alone in a corner, also tonight. The
+   *  landing path repaints the cells that still claim the file; anything else
+   *  is picked up by the next natural repaint as he moves. */
+  private t3retryArt(): void {
+    const load = this.t3load;
+    if (!load || !load.failedCount) return;
+    const again = load.retryFailed(this.time.now);
+    if (again.length && load.stats.pending === 0) load.flush();
   }
 
   private t3prefetchStep(): void {
