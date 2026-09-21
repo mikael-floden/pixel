@@ -1,6 +1,6 @@
 {
   "format": "pixel-wiki-tuning-monsters@1",
-  "updated_at": "2026-09-21T14:42:33.052Z",
+  "updated_at": "2026-09-21T14:46:07.202Z",
   "defaults": {
     "level": 1,
     "max_hp": 20,
@@ -4138,7 +4138,45 @@
           "item": "smooth_river_stone",
           "chance": 0.256
         }
-      ]
+      ],
+      "shadow": {
+        "rx": 19.75,
+        "ry": 7.5,
+        "offsets": {
+          "idle#south": {
+            "ax": 0.13,
+            "ay": 10.93
+          },
+          "idle#east": {
+            "ax": 0.18,
+            "ay": 11.68
+          },
+          "idle#south-east": {
+            "ax": 0.18,
+            "ay": 10.83
+          },
+          "idle#north-east": {
+            "ax": -0.8,
+            "ay": 10.6
+          },
+          "idle#north": {
+            "ax": 0.19,
+            "ay": 10.41
+          },
+          "idle#north-west": {
+            "ax": 0.85,
+            "ay": 9.68
+          },
+          "idle#west": {
+            "ax": -1.06,
+            "ay": 12.34
+          },
+          "idle#south-west": {
+            "ax": -0.11,
+            "ay": 9.72
+          }
+        }
+      }
     },
     "plague_hound": {
       "max_hp": 75,
