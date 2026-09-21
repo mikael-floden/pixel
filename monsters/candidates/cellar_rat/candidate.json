@@ -1,0 +1,141 @@
+{
+  "id": "cellar_rat",
+  "name": "Cellarrat",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It knows every gap in the floor and which one the cat cannot follow it into.",
+  "biome": [
+    "parquet_floor",
+    "brown_paving_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy cellar rat with coarse grey-brown fur, a long naked pink tail curled beside it, small clever forepaws held up, round dark eyes, and pink translucent ears.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "cellar_rat/rotations/south.webp",
+    "south-east": "cellar_rat/rotations/south-east.webp",
+    "east": "cellar_rat/rotations/east.webp",
+    "north-east": "cellar_rat/rotations/north-east.webp",
+    "north": "cellar_rat/rotations/north.webp",
+    "north-west": "cellar_rat/rotations/north-west.webp",
+    "west": "cellar_rat/rotations/west.webp",
+    "south-west": "cellar_rat/rotations/south-west.webp"
+  },
+  "sheet": "cellar_rat/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "a768c477-c2af-4780-9bc2-50a20bafad5b",
+  "seed": 1794894511,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:38:26+00:00",
+  "elapsed_s": 201.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.701,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.771,
+        "bbox": [
+          2,
+          3,
+          37,
+          37
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.738,
+        "bbox": [
+          2,
+          3,
+          38,
+          37
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.753,
+        "bbox": [
+          4,
+          3,
+          38,
+          37
+        ],
+        "fill": 0.723,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.72,
+        "bbox": [
+          3,
+          3,
+          38,
+          36
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.776,
+        "bbox": [
+          3,
+          3,
+          35,
+          37
+        ],
+        "fill": 0.68,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.701,
+        "bbox": [
+          7,
+          3,
+          33,
+          36
+        ],
+        "fill": 0.536,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.734,
+        "bbox": [
+          2,
+          3,
+          37,
+          36
+        ],
+        "fill": 0.722,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.777,
+        "bbox": [
+          8,
+          3,
+          33,
+          37
+        ],
+        "fill": 0.531,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "id": "silver_dart",
+  "name": "Silverdart",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It lives in the dark behind the skirting and is gone the instant a lamp is lit.",
+  "biome": [
+    "parquet_floor"
+  ],
+  "items": [],
+  "prompt": "Fantasy silverfish seen from above, a tapered body of overlapping metallic silver scales, three long tail filaments, two long antennae, and small dark eyes.",
+  "size": [
+    36,
+    36
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "silver_dart/rotations/south.webp",
+    "south-east": "silver_dart/rotations/south-east.webp",
+    "east": "silver_dart/rotations/east.webp",
+    "north-east": "silver_dart/rotations/north-east.webp",
+    "north": "silver_dart/rotations/north.webp",
+    "north-west": "silver_dart/rotations/north-west.webp",
+    "west": "silver_dart/rotations/west.webp",
+    "south-west": "silver_dart/rotations/south-west.webp"
+  },
+  "sheet": "silver_dart/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0cacc52e-4c9f-49bc-98d6-9c9a5178ebb3",
+  "seed": 1255722426,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:38:33+00:00",
+  "elapsed_s": 205.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.748,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.763,
+        "bbox": [
+          1,
+          1,
+          35,
+          34
+        ],
+        "fill": 0.866,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.748,
+        "bbox": [
+          4,
+          4,
+          34,
+          34
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.765,
+        "bbox": [
+          2,
+          5,
+          32,
+          35
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.802,
+        "bbox": [
+          7,
+          3,
+          29,
+          34
+        ],
+        "fill": 0.526,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.789,
+        "bbox": [
+          4,
+          2,
+          33,
+          35
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.788,
+        "bbox": [
+          2,
+          5,
+          33,
+          33
+        ],
+        "fill": 0.67,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.778,
+        "bbox": [
+          3,
+          4,
+          34,
+          33
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.793,
+        "bbox": [
+          3,
+          2,
+          32,
+          35
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      }
+    }
+  }
+}

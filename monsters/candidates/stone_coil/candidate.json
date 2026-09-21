@@ -1,0 +1,141 @@
+{
+  "id": "stone_coil",
+  "name": "Stonecoil",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It lies on the sun-warmed rock all day to pay for one night of hunting.",
+  "biome": [
+    "grey_stone",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Fantasy rock python coiled on warm stone, a heavy tan body with dark grey blotches, a broad flat head, deep heat pits along the upper lip, and vertical-slit gold eyes.",
+  "size": [
+    112,
+    112
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "stone_coil/rotations/south.webp",
+    "south-east": "stone_coil/rotations/south-east.webp",
+    "east": "stone_coil/rotations/east.webp",
+    "north-east": "stone_coil/rotations/north-east.webp",
+    "north": "stone_coil/rotations/north.webp",
+    "north-west": "stone_coil/rotations/north-west.webp",
+    "west": "stone_coil/rotations/west.webp",
+    "south-west": "stone_coil/rotations/south-west.webp"
+  },
+  "sheet": "stone_coil/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "caf5e483-ffb9-4c13-bb3a-14b9e1da16b9",
+  "seed": 513775491,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:38:51+00:00",
+  "elapsed_s": 247.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.606,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.606,
+        "bbox": [
+          4,
+          8,
+          108,
+          104
+        ],
+        "fill": 0.796,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.676,
+        "bbox": [
+          12,
+          7,
+          107,
+          107
+        ],
+        "fill": 0.757,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.706,
+        "bbox": [
+          4,
+          7,
+          99,
+          104
+        ],
+        "fill": 0.735,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.61,
+        "bbox": [
+          7,
+          5,
+          106,
+          104
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.73,
+        "bbox": [
+          5,
+          9,
+          104,
+          106
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.688,
+        "bbox": [
+          4,
+          7,
+          98,
+          101
+        ],
+        "fill": 0.704,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.681,
+        "bbox": [
+          14,
+          7,
+          108,
+          104
+        ],
+        "fill": 0.727,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.727,
+        "bbox": [
+          11,
+          9,
+          106,
+          108
+        ],
+        "fill": 0.75,
+        "touches_edge": false
+      }
+    }
+  }
+}
