@@ -34,27 +34,6 @@
       "scale": "standard"
     },
     {
-      "id": "hollow_knight",
-      "name": "Hollowplate",
-      "tier": "evil",
-      "template_id": "mannequin",
-      "size": 112,
-      "biome": [
-        "grey_paving_stone",
-        "grey_stone",
-        "parquet_floor"
-      ],
-      "items": [],
-      "prompt": "Fantasy hollow suit of rusted plate armor animated by green witchfire, nothing inside it, green flames burning in the empty helmet visor, a chipped greatsword held in one gauntlet, a torn dark cape, and cracks in the armor leaking green light.",
-      "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
-      "scale": "standard",
-      "attack_action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
-      "claws": true,
-      "fx": true,
-      "attack_extreme": "Greatsword Cleave - The knight heaves the greatsword far overhead and cleaves it down with its whole body",
-      "die_action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away"
-    },
-    {
       "id": "pebble_crab",
       "name": "Pebblet",
       "tier": "cute",
@@ -207,26 +186,6 @@
       "lore": "It stands in the reeds for hours without a breath. Whatever moves beneath the water is already chosen."
     },
     {
-      "id": "turtle_hatchling",
-      "name": "Shellet",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "bear",
-      "size": 40,
-      "biome": [
-        "light_beach",
-        "water"
-      ],
-      "items": [],
-      "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
-      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
-      "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
-      "walk_slow": true,
-      "attack_action": "Beak Snap - Stretches its neck right out and snaps its beak shut",
-      "attack_extreme": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward",
-      "die_action": "Death - The shell cracks apart and the turtle melts into a small puddle, then fades away"
-    },
-    {
       "id": "sand_kit",
       "name": "Dunekit",
       "tier": "cute",
@@ -239,25 +198,6 @@
       "items": [],
       "prompt": "Small fantasy desert cat kit with pale sand-coloured fur, oversized ears, large green eyes, faint dark stripes on its legs, and a tufted tail wrapped around its paws.",
       "lore": "Grown cats of the dunes wear the sun as armour. This one has not yet, and hides from it in the noon shade."
-    },
-    {
-      "id": "ice_sprite",
-      "name": "Rimeling",
-      "tier": "cute",
-      "scale": "small",
-      "template_id": "mannequin",
-      "size": 40,
-      "biome": [
-        "ice",
-        "snow"
-      ],
-      "items": [],
-      "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it, nothing dark behind it, no shadow of any kind.",
-      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
-      "attack_action": "Frost Burst - Throws both hands forward and releases a burst of frost",
-      "fx": true,
-      "attack_extreme": "Frost Nova - The sprite throws both arms wide and erupts in a burst of ice shards",
-      "die_action": "Death - Shatters into a scatter of ice shards on the ground that melt away and vanish"
     },
     {
       "id": "ash_hatchling",
@@ -4604,6 +4544,90 @@
       "attack_extreme": "Chain Storm - The troll whips the iron chain in a huge arc over its head and lashes it forward",
       "die_action": "Death - Faints, sinks to its knees and falls forward onto the ground, then fades away",
       "graduated_at": "2026-09-20T19:21:45+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "ice_sprite",
+      "name": "Rimeling",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "mannequin",
+      "size": 40,
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "items": [],
+      "prompt": "Small fantasy ice spirit with a slender body of pale translucent ice, a faceted crystal head with two glowing white eyes, thin arms, and a faint haze of frost around it, nothing dark behind it, no shadow of any kind.",
+      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
+      "attack_action": "Frost Burst - Throws both hands forward and releases a burst of frost",
+      "fx": true,
+      "attack_extreme": "Frost Nova - The sprite throws both arms wide and erupts in a burst of ice shards",
+      "die_action": "Death - Shatters into a scatter of ice shards on the ground that melt away and vanish",
+      "graduated_at": "2026-09-20T19:31:26+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "hollow_knight",
+      "name": "Hollowplate",
+      "tier": "evil",
+      "template_id": "mannequin",
+      "size": 112,
+      "biome": [
+        "grey_paving_stone",
+        "grey_stone",
+        "parquet_floor"
+      ],
+      "items": [],
+      "prompt": "Fantasy hollow suit of rusted plate armor animated by green witchfire, nothing inside it, green flames burning in the empty helmet visor, a chipped greatsword held in one gauntlet, a torn dark cape, and cracks in the armor leaking green light.",
+      "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
+      "scale": "standard",
+      "attack_action": "Overhead Chop - Raises the greatsword high overhead and chops it down hard",
+      "claws": true,
+      "fx": true,
+      "attack_extreme": "Greatsword Cleave - The knight heaves the greatsword far overhead and cleaves it down with its whole body",
+      "die_action": "Death - The green witchfire goes out and the empty armor collapses into a heap of plates on the ground, then fades away",
+      "graduated_at": "2026-09-21T07:39:17+00:00",
+      "takes": {
+        "idle": "idle",
+        "walk": "walk",
+        "angry": "angry_v1",
+        "attack": "attack_v3",
+        "die": "die_v1"
+      }
+    },
+    {
+      "id": "turtle_hatchling",
+      "name": "Shellet",
+      "tier": "cute",
+      "scale": "small",
+      "template_id": "bear",
+      "size": 40,
+      "biome": [
+        "light_beach",
+        "water"
+      ],
+      "items": [],
+      "prompt": "Small fantasy sea turtle hatchling with a domed dark green shell patterned with pale hexagons, small flippers, large dark eyes, and sand on its shell.",
+      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+      "walk_action": "crawls forward in place, flippers alternating in a slow paddling stride, shell steady, seamless loop, no turning",
+      "walk_slow": true,
+      "attack_action": "Beak Snap - Stretches its neck right out and snaps its beak shut",
+      "attack_extreme": "Shell Slam - The hatchling launches off the ground and slams down beak first, its shell spinning, dust bursting outward",
+      "die_action": "Death - The shell cracks apart and the turtle melts into a small puddle, then fades away",
+      "graduated_at": "2026-09-21T07:43:07+00:00",
       "takes": {
         "idle": "idle",
         "walk": "walk",

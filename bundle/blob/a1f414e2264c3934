@@ -336,6 +336,35 @@
       }
     },
     {
+      "id": "ice_sprite",
+      "kind": "character",
+      "pixellab_id": "4a3b1707-1c63-4a62-a0ae-53a2524a6f4a",
+      "name": "Rimeling",
+      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Death - Shatters into a scatte": "die"
+      }
+    },
+    {
+      "id": "turtle_hatchling",
+      "kind": "character",
+      "pixellab_id": "fd162650-47e9-4699-ac47-9e5d3f6c8050",
+      "name": "Shellet",
+      "lore": "The first of the clutch to reach the water, and the only one. It has been careful ever since.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-crawls forward in place, flipp": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Shell Slam - The hatchling launches off the ground": "attack",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Death - The shell cracks apart and the turtle melt": "die"
+      }
+    },
+    {
       "id": "cave_troll_boss",
       "kind": "character",
       "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
@@ -593,6 +622,20 @@
         "custom-Angry combat idle, frustrated ": "angry",
         "custom-Claw Snap - Lunges forward and snaps its big claw ": "attack",
         "custom-Death - The shell cracks open and the crab crumble": "die"
+      }
+    },
+    {
+      "id": "hollow_knight",
+      "kind": "character",
+      "pixellab_id": "2f3aecad-cef3-4701-89a7-457b7eaf9007",
+      "name": "Hollowplate",
+      "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Overhead Chop - Raises the greatsword high overhea": "attack",
+        "custom-Death - The green witchfire go": "die"
       }
     },
     {
