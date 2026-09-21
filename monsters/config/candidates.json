@@ -1233,22 +1233,6 @@
       "items": []
     },
     {
-      "id": "weed_pike",
-      "name": "Weedpike",
-      "tier": "mid",
-      "scale": "standard",
-      "size": 120,
-      "template_id": "bear",
-      "biome": [
-        "water"
-      ],
-      "prompt": "Fantasy northern pike with a long olive-green body marked by pale bars, a duck-billed jaw crowded with needle teeth, low-set fins near the tail, and a flat gold eye.",
-      "lore": "It holds still among the weed until the water forgets it. Then there is one fish fewer.",
-      "items": [
-        "blue scales"
-      ]
-    },
-    {
       "id": "dive_beetle",
       "name": "Divebeetle",
       "tier": "mid",
@@ -1651,21 +1635,6 @@
       "items": []
     },
     {
-      "id": "quick_stoat",
-      "name": "Quickstoat",
-      "tier": "cute",
-      "scale": "small",
-      "size": 44,
-      "template_id": "bear",
-      "biome": [
-        "grass",
-        "snow"
-      ],
-      "prompt": "Fantasy stoat stretched low mid-stride, a long slim body with chestnut fur and a cream belly, a black-tipped tail, small round ears, and bright black eyes.",
-      "lore": "Small enough to hide in a boot and bold enough to take on something ten times its size.",
-      "items": []
-    },
-    {
       "id": "scyth_arm",
       "name": "Scytharm",
       "tier": "mid",
@@ -1695,20 +1664,6 @@
       "items": []
     },
     {
-      "id": "spot_fawn",
-      "name": "Spotfawn",
-      "tier": "cute",
-      "scale": "small",
-      "size": 48,
-      "template_id": "bear",
-      "biome": [
-        "grass"
-      ],
-      "prompt": "Fantasy fawn lying with its thin legs folded beneath it, a warm brown coat dappled with white flank spots, large ears turned outward, a dark wet nose, and wide dark eyes.",
-      "lore": "It holds completely still because that is all it has. It usually works.",
-      "items": []
-    },
-    {
       "id": "meadow_coil",
       "name": "Meadowcoil",
       "tier": "cute",
@@ -1735,51 +1690,6 @@
       ],
       "prompt": "Fantasy wild boar with coarse black bristles standing in a ridge along its spine, curled yellow tusks, bramble and dried thorn tangled in its coat, a wet snout, and small hard eyes.",
       "lore": "It walks the same path through the thicket every night and widens it with its shoulders.",
-      "items": []
-    },
-    {
-      "id": "loam_coil",
-      "name": "Loamcoil",
-      "tier": "cute",
-      "scale": "small",
-      "size": 48,
-      "template_id": "bear",
-      "biome": [
-        "light_soil",
-        "grass"
-      ],
-      "prompt": "Fantasy giant earthworm rising part way out of dark soil, a glistening ringed pink-brown segmented body, a blunt questing head with no eyes, and a thick pale band near the front.",
-      "lore": "It turns the whole field over a handful at a time and asks nothing for the work.",
-      "items": []
-    },
-    {
-      "id": "field_hare",
-      "name": "Fieldhare",
-      "tier": "cute",
-      "scale": "small",
-      "size": 48,
-      "template_id": "bear",
-      "biome": [
-        "grass",
-        "light_soil"
-      ],
-      "prompt": "Fantasy hare crouched low in cover, tawny fur with a pale belly, long black-tipped ears laid flat along its back, powerful hind haunches gathered, and large dark eyes.",
-      "lore": "It waits until the last possible moment and then is simply elsewhere.",
-      "items": []
-    },
-    {
-      "id": "black_leech",
-      "name": "Blackleech",
-      "tier": "evil",
-      "scale": "small",
-      "size": 48,
-      "template_id": "bear",
-      "biome": [
-        "dark_mud",
-        "water"
-      ],
-      "prompt": "Fantasy giant leech arched up to strike, a ringed muscular body of black and dark olive, a flattened sucker at the front opened on a ring of rasping teeth, and a glistening slick skin.",
-      "lore": "It finds the warm water and waits in it. You will not feel the moment it decides.",
       "items": []
     },
     {
@@ -5424,6 +5334,114 @@
       ],
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-21T11:34:29+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "weed_pike",
+      "name": "Weedpike",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 120,
+      "template_id": "bear",
+      "biome": [
+        "water"
+      ],
+      "prompt": "Fantasy northern pike with a long olive-green body marked by pale bars, a duck-billed jaw crowded with needle teeth, low-set fins near the tail, and a flat gold eye.",
+      "lore": "It holds still among the weed until the water forgets it. Then there is one fish fewer.",
+      "items": [
+        "blue scales"
+      ],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:39:37+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "quick_stoat",
+      "name": "Quickstoat",
+      "tier": "cute",
+      "scale": "small",
+      "size": 44,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "snow"
+      ],
+      "prompt": "Fantasy stoat stretched low mid-stride, a long slim body with chestnut fur and a cream belly, a black-tipped tail, small round ears, and bright black eyes.",
+      "lore": "Small enough to hide in a boot and bold enough to take on something ten times its size.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:39:37+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "spot_fawn",
+      "name": "Spotfawn",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "grass"
+      ],
+      "prompt": "Fantasy fawn lying with its thin legs folded beneath it, a warm brown coat dappled with white flank spots, large ears turned outward, a dark wet nose, and wide dark eyes.",
+      "lore": "It holds completely still because that is all it has. It usually works.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:39:38+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "loam_coil",
+      "name": "Loamcoil",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "light_soil",
+        "grass"
+      ],
+      "prompt": "Fantasy giant earthworm rising part way out of dark soil, a glistening ringed pink-brown segmented body, a blunt questing head with no eyes, and a thick pale band near the front.",
+      "lore": "It turns the whole field over a handful at a time and asks nothing for the work.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:39:38+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "field_hare",
+      "name": "Fieldhare",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Fantasy hare crouched low in cover, tawny fur with a pale belly, long black-tipped ears laid flat along its back, powerful hind haunches gathered, and large dark eyes.",
+      "lore": "It waits until the last possible moment and then is simply elsewhere.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:39:39+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "black_leech",
+      "name": "Blackleech",
+      "tier": "evil",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fantasy giant leech arched up to strike, a ringed muscular body of black and dark olive, a flattened sucker at the front opened on a ring of rasping teeth, and a glistening slick skin.",
+      "lore": "It finds the warm water and waits in it. You will not feel the moment it decides.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T11:39:39+00:00",
       "versions_tried": 1
     }
   ],

@@ -1,0 +1,142 @@
+{
+  "id": "shaggy_horn",
+  "name": "Shaggyhorn",
+  "tier": "mid",
+  "scale": "big",
+  "lore": "It stands into the storm rather than turn from it, and the storm gets tired first.",
+  "biome": [
+    "snow"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy musk ox with a long shaggy dark brown skirt of hair hanging to the hooves, a broad boss of fused pale horns curving down and out, a low heavy head, and steam at its nostrils.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "shaggy_horn/rotations/south.webp",
+    "south-east": "shaggy_horn/rotations/south-east.webp",
+    "east": "shaggy_horn/rotations/east.webp",
+    "north-east": "shaggy_horn/rotations/north-east.webp",
+    "north": "shaggy_horn/rotations/north.webp",
+    "north-west": "shaggy_horn/rotations/north-west.webp",
+    "west": "shaggy_horn/rotations/west.webp",
+    "south-west": "shaggy_horn/rotations/south-west.webp"
+  },
+  "sheet": "shaggy_horn/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "f3e3ec79-c417-4c2f-9fc7-e8a333f5885f",
+  "seed": 574094533,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:39:29+00:00",
+  "elapsed_s": 276.7,
+  "qa": {
+    "status": "warn",
+    "min_run1": 0.452,
+    "reasons": [
+      "soft density: min run1 0.452 < 0.5 — eyeball it"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.452,
+        "bbox": [
+          37,
+          12,
+          183,
+          212
+        ],
+        "fill": 0.582,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.553,
+        "bbox": [
+          23,
+          12,
+          203,
+          213
+        ],
+        "fill": 0.721,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.527,
+        "bbox": [
+          8,
+          9,
+          214,
+          211
+        ],
+        "fill": 0.829,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.516,
+        "bbox": [
+          18,
+          9,
+          195,
+          215
+        ],
+        "fill": 0.727,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.513,
+        "bbox": [
+          39,
+          10,
+          188,
+          214
+        ],
+        "fill": 0.606,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.51,
+        "bbox": [
+          29,
+          9,
+          192,
+          215
+        ],
+        "fill": 0.669,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.516,
+        "bbox": [
+          6,
+          9,
+          217,
+          211
+        ],
+        "fill": 0.849,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.551,
+        "bbox": [
+          21,
+          12,
+          202,
+          213
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      }
+    }
+  }
+}

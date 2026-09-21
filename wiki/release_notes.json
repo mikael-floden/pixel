@@ -1,415 +1,69 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-19T03:27:34.483Z",
- "head": "783fb4d54",
+ "generated_at": "2026-09-21T11:40:48.939Z",
+ "head": "0e9d77c36",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
   {
-   "sha": "783fb4d54",
-   "at": "2026-09-19T03:26:14+00:00",
-   "author": "wiki-agent",
-   "subject": "wiki board: claim the restore of his 2,234 pair-approved tiles (tiles/review/**)",
-   "agent": "wiki",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "25041cde7",
-   "at": "2026-09-19T03:24:13+00:00",
-   "author": "wiki-agent",
-   "subject": "coordination: tell tiles that 3fefc0c2b6 deleted 2,234 PAIR-APPROVED tiles — and that git still has every one",
-   "agent": "wiki",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c5d9f16a8",
-   "at": "2026-09-19T03:18:10+00:00",
+   "sha": "0e9d77c36",
+   "at": "2026-09-21T11:39:17+00:00",
    "author": "Claude",
-   "subject": "games2: fastbuild can take the image's dist root instead of regenerating it",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "6a647f689",
-   "at": "2026-09-19T03:05:43+00:00",
-   "author": "Claude",
-   "subject": "fades: dark mud and grey stone pilot (lumps + piles, rep 2)",
-   "agent": "tiles",
-   "dirs": [
-    "tiles"
-   ],
-   "files": 265
-  },
-  {
-   "sha": "4959d9aa8",
-   "at": "2026-09-19T03:02:07+00:00",
-   "author": "claude[bot]",
-   "subject": "tiles github agent: the fade review was already applied — account only",
-   "agent": "tiles-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "0ad7271fc",
-   "at": "2026-09-19T02:57:23+00:00",
-   "author": "wiki-agent",
-   "subject": "wiki: the front door keeps the layout it chose, and lava/water wear their own ground",
-   "agent": "wiki",
-   "dirs": [
-    "wiki"
-   ],
-   "files": 5
-  },
-  {
-   "sha": "d85c5bcc5",
-   "at": "2026-09-19T02:56:56+00:00",
-   "author": "Claude",
-   "subject": "deploy: a client-only push builds no image",
-   "agent": "games",
-   "dirs": [
-    ".github",
-    "games2"
-   ],
-   "files": 4
-  },
-  {
-   "sha": "7931ca59c",
-   "at": "2026-09-19T02:53:18+00:00",
-   "author": "Claude",
-   "subject": "games2: say which lane served the page",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "065077423",
-   "at": "2026-09-19T02:50:57+00:00",
-   "author": "Claude",
-   "subject": "tiles board: claim the dark mud / grey stone fade pilot",
-   "agent": "tiles",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8efd129cc",
-   "at": "2026-09-19T02:50:29+00:00",
-   "author": "wiki-agent",
-   "subject": "wiki: fifty fade tiles at a time, drawn lazily, centred and clipped — and the front door stops ratcheting",
-   "agent": "wiki",
-   "dirs": [
-    "wiki"
-   ],
-   "files": 7
-  },
-  {
-   "sha": "0ed2a2ef3",
-   "at": "2026-09-19T02:48:11+00:00",
-   "author": "Claude",
-   "subject": "fades: apply the review - 669 rejected tiles leave the index",
-   "agent": "tiles",
-   "dirs": [
-    "tiles"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "f1f2c613d",
-   "at": "2026-09-19T02:46:52+00:00",
-   "author": "Claude",
-   "subject": "tiles board: claim the fade review apply",
-   "agent": "tiles",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "610b91b21",
-   "at": "2026-09-19T02:46:37+00:00",
-   "author": "Claude",
-   "subject": "games2: the fall-through set comes from the IMAGE, so the lane can serve",
-   "agent": "games",
-   "dirs": [
-    ".github",
-    "games2"
-   ],
-   "files": 6
-  },
-  {
-   "sha": "18e48cb66",
-   "at": "2026-09-19T02:42:54+00:00",
-   "author": "Claude",
-   "subject": "coordination: games-ui releases the update-dialog chip claim",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "3171d1440",
-   "at": "2026-09-19T02:42:26+00:00",
-   "author": "Claude",
-   "subject": "games2: the update dialog's chips wear the theme, and say HIS name for each agent",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "a4a4fe23a",
-   "at": "2026-09-19T04:28:34+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/tiles.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "0c80f2226",
-   "at": "2026-09-19T02:26:37+00:00",
-   "author": "Claude",
-   "subject": "games-ui board: claim the update dialog's chip redesign",
-   "agent": "games-ui",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "e4ef4285d",
-   "at": "2026-09-19T02:26:01+00:00",
-   "author": "Claude",
-   "subject": "coordination: why the fast lane has never served — the tie, and the fall-through set it cannot reproduce",
-   "agent": "games",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "95dec5115",
-   "at": "2026-09-19T04:18:57+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/tiles.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "7b4c6013c",
-   "at": "2026-09-19T04:17:50+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/tiles.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "414daebca",
-   "at": "2026-09-19T04:14:32+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/tiles.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "819704f8b",
-   "at": "2026-09-19T02:13:19+00:00",
-   "author": "Claude",
-   "subject": "games2: the ?v= stamp names the IMAGE, not the bundle",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "edeb291a8",
-   "at": "2026-09-19T02:11:55+00:00",
-   "author": "Claude",
-   "subject": "coordination: claim the ?v= image-sha stamp (assetver, main)",
-   "agent": "games",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "703ed1cd0",
-   "at": "2026-09-19T04:10:37+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/tiles.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "825f1f022",
-   "at": "2026-09-19T03:57:39+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/tiles.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "15b6b978e",
-   "at": "2026-09-18T23:40:32+00:00",
-   "author": "wiki-agent",
-   "subject": "docs: the github agent, in the two files every agent already reads",
-   "agent": null,
-   "dirs": [
-    ""
-   ],
-   "files": 2
-  },
-  {
-   "sha": "7d6cee287",
-   "at": "2026-09-18T23:40:12+00:00",
-   "author": "Claude",
-   "subject": "games2: the fast-lane gate polls the world at 250 ms, not 5 s",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "7b8165f0a",
-   "at": "2026-09-18T23:36:16+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: monsters-github-agent releases the claim — the account for this run",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "65d302dc8",
-   "at": "2026-09-18T23:35:47+00:00",
-   "author": "Claude",
-   "subject": "games2: a standing refusal is said once, and the lane doc carries measurements instead of projections",
-   "agent": "games",
-   "dirs": [
-    "games2"
-   ],
-   "files": 4
-  },
-  {
-   "sha": "17fee702c",
-   "at": "2026-09-18T23:35:08+00:00",
-   "author": "claude[bot]",
-   "subject": "monsters: act on his removal of fire_elemental, both ways",
+   "subject": "monsters: 4 more of the 100 new candidate bases (99/100 landed)",
    "agent": "monsters",
    "dirs": [
-    "live",
     "monsters"
    ],
-   "files": 2103
+   "files": 41
   },
   {
-   "sha": "9c49464c8",
-   "at": "2026-09-18T23:34:03+00:00",
-   "author": "claude[bot]",
-   "subject": "tiles: github agent account — the landed review was already consumed, nothing claimed",
-   "agent": "tiles-github-agent",
+   "sha": "db3cce646",
+   "at": "2026-09-21T11:38:18+00:00",
+   "author": "Claude",
+   "subject": "monsters: 6 more of the 100 new candidate bases (96/100 landed)",
+   "agent": "monsters",
    "dirs": [
-    "coordination"
+    "monsters"
    ],
-   "files": 1
+   "files": 61
   },
   {
-   "sha": "d2ff9d1cb",
-   "at": "2026-09-18T23:33:41+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: sounds-github-agent account — 58 rejected takes retired in 122e82038, 58 verdicts cleared",
-   "agent": "sounds-github-agent",
+   "sha": "5c0c81bfb",
+   "at": "2026-09-21T11:38:17+00:00",
+   "author": "Claude",
+   "subject": "monsters: act on his first rejections among the new candidates",
+   "agent": "monsters",
    "dirs": [
-    "coordination"
+    "monsters"
    ],
-   "files": 1
+   "files": 41
   },
   {
-   "sha": "f6c3b8259",
-   "at": "2026-09-18T23:33:17+00:00",
+   "sha": "66231993e",
+   "at": "2026-09-21T11:38:08+00:00",
+   "author": "Claude",
+   "subject": "monsters: 3 more of the 100 new candidate bases (89/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 31
+  },
+  {
+   "sha": "cba67e5b6",
+   "at": "2026-09-21T11:36:16+00:00",
    "author": "claude[bot]",
-   "subject": "monsters: his spider_queen die_v1 redo — reworded to losing the legs, the old take retired",
+   "subject": "board: monsters github agent — his 20 new-candidate verdicts are the assistant's run, and why",
    "agent": "monsters-github-agent",
    "dirs": [
-    "live",
-    "monsters"
-   ],
-   "files": 52
-  },
-  {
-   "sha": "122e82038",
-   "at": "2026-09-18T23:32:49+00:00",
-   "author": "claude[bot]",
-   "subject": "sounds: retire the 58 rejected takes — the recordings, the manifests and the verdicts",
-   "agent": "sounds",
-   "dirs": [
-    "live",
-    "sounds"
-   ],
-   "files": 92
-  },
-  {
-   "sha": "85ac7e751",
-   "at": "2026-09-18T23:31:38+00:00",
-   "author": "claude[bot]",
-   "subject": "sounds: claim the 58 rejected takes from the wiki review",
-   "agent": "sounds-github-agent",
-   "dirs": [
     "coordination"
    ],
    "files": 1
   },
   {
-   "sha": "6115248bc",
-   "at": "2026-09-18T23:31:29+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: scenery-github-agent account — owl_snag_001 LIT_1 + LIT_3 pruned in aa0531738, both verdicts cleared",
-   "agent": "scenery-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c30b60932",
-   "at": "2026-09-19T01:31:22+02:00",
+   "sha": "31c0d07b3",
+   "at": "2026-09-21T13:33:55+02:00",
    "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/objects.json",
+   "subject": "live: admin update — feedback/monsters.json",
    "agent": null,
    "dirs": [
     "live"
@@ -417,22 +71,76 @@
    "files": 1
   },
   {
-   "sha": "aa0531738",
-   "at": "2026-09-18T23:30:57+00:00",
-   "author": "claude[bot]",
-   "subject": "scenery: prune owl_snag_001 LIT_1 + LIT_3 — his rejections, and the verdicts die with the art",
-   "agent": "scenery",
+   "sha": "1c3f5e764",
+   "at": "2026-09-21T11:33:13+00:00",
+   "author": "Claude",
+   "subject": "monsters: 1 more of the 100 new candidate bases (86/100 landed)",
+   "agent": "monsters",
    "dirs": [
-    "live",
-    "scenery"
+    "monsters"
+   ],
+   "files": 11
+  },
+  {
+   "sha": "235316715",
+   "at": "2026-09-21T11:32:47+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters github agent — his 24 rock_mite approvals are a no-op, and why",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "38926ac5b",
+   "at": "2026-09-21T11:32:27+00:00",
+   "author": "Claude",
+   "subject": "monsters: 1 more of the 100 new candidate bases (85/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 11
+  },
+  {
+   "sha": "fb489eb34",
+   "at": "2026-09-21T11:31:47+00:00",
+   "author": "Claude",
+   "subject": "monsters: 2 more of the 100 new candidate bases (84/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 21
+  },
+  {
+   "sha": "6a9217db1",
+   "at": "2026-09-21T11:31:28+00:00",
+   "author": "Claude",
+   "subject": "monsters: 2 more of the 100 new candidate bases (82/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
    ],
    "files": 20
   },
   {
-   "sha": "86d80c2f0",
-   "at": "2026-09-18T23:30:39+00:00",
+   "sha": "dcb1d0f2f",
+   "at": "2026-09-21T11:31:09+00:00",
+   "author": "Claude",
+   "subject": "monsters: 5 more of the 100 new candidate bases (80/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 51
+  },
+  {
+   "sha": "47166c418",
+   "at": "2026-09-21T11:30:07+00:00",
    "author": "claude[bot]",
-   "subject": "coordination: monsters-github-agent claims his spider_queen die_v1 redo (8 directions)",
+   "subject": "monsters(github agent): no-op account — his seed_husk review is 40 approvals",
    "agent": "monsters-github-agent",
    "dirs": [
     "coordination"
@@ -440,127 +148,411 @@
    "files": 1
   },
   {
-   "sha": "a9a6a3620",
-   "at": "2026-09-18T23:30:31+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: claim world.json for heal after a scenery delete",
-   "agent": "scenery",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "c0d755e28",
-   "at": "2026-09-18T23:30:25+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: scenery-github-agent also claims owl_snag_001 LIT_1 — rejected 20:11, still on disk, on no board",
-   "agent": "scenery-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "5d21b5529",
-   "at": "2026-09-18T23:29:45+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: scenery-github-agent claims owl_snag_001 LIT_3 — his facet rejection in d5622105b",
-   "agent": "scenery-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "3b7ef2afb",
-   "at": "2026-09-18T23:29:33+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: characters2 github agent — review carried no characters verdict",
-   "agent": "characters2-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b1e3bb6b7",
-   "at": "2026-09-18T23:29:25+00:00",
-   "author": "claude[bot]",
-   "subject": "music: github agent account — review holds one approval, nothing to clear",
-   "agent": "music-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8d5117493",
-   "at": "2026-09-18T23:29:21+00:00",
-   "author": "claude[bot]",
-   "subject": "coordination: lore github agent — live/feedback/lore.json holds zero verdicts",
-   "agent": "lore-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "47dc77a9e",
-   "at": "2026-09-18T23:29:16+00:00",
-   "author": "claude[bot]",
-   "subject": "items: github agent account — no verdicts in live/feedback/items.json, nothing taken",
-   "agent": "items-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8d1639746",
-   "at": "2026-09-18T23:29:09+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: the sweep starts at most four domains at a time, newest review first",
+   "sha": "9797664a0",
+   "at": "2026-09-21T13:29:40+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
    "agent": null,
    "dirs": [
-    ".github"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "2cc838621",
-   "at": "2026-09-18T23:27:55+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: the sweep's reasoning goes to stderr — its stdout IS $GITHUB_OUTPUT",
-   "agent": null,
-   "dirs": [
-    ".github"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "65bb61fd8",
-   "at": "2026-09-18T23:27:10+00:00",
-   "author": "wiki-agent",
-   "subject": "ci: a sweep that starts reviews without anything being granted",
-   "agent": null,
-   "dirs": [
-    ".github",
     "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "d065b6046",
+   "at": "2026-09-21T13:29:02+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "dc312f99e",
+   "at": "2026-09-21T11:28:32+00:00",
+   "author": "Claude",
+   "subject": "monsters: 10 more of the 100 new candidate bases (76/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 101
+  },
+  {
+   "sha": "7055f5d6c",
+   "at": "2026-09-21T11:26:50+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters github agent — his 24 cobra approvals are a no-op, and why",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "f9b8498c3",
+   "at": "2026-09-21T13:26:02+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "657881cd3",
+   "at": "2026-09-21T11:25:03+00:00",
+   "author": "Claude",
+   "subject": "monsters: 2 more of the 100 new candidate bases (65/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 21
+  },
+  {
+   "sha": "597d32946",
+   "at": "2026-09-21T13:25:01+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "de54828ed",
+   "at": "2026-09-21T11:24:47+00:00",
+   "author": "Claude",
+   "subject": "monsters: 3 more of the 100 new candidate bases (64/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 31
+  },
+  {
+   "sha": "c9b4a8fd0",
+   "at": "2026-09-21T11:24:31+00:00",
+   "author": "Claude",
+   "subject": "monsters: 9 more of the 100 new candidate bases (60/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 91
+  },
+  {
+   "sha": "c117a55d5",
+   "at": "2026-09-21T11:23:42+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters-github-agent — his 14 new candidate verdicts land inside the assistant's live generate; yielded",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "7879fbf84",
+   "at": "2026-09-21T13:23:35+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "e66c42c45",
+   "at": "2026-09-21T13:23:32+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "7df1000b9",
+   "at": "2026-09-21T13:21:03+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ee7f11424",
+   "at": "2026-09-21T11:20:55+00:00",
+   "author": "Claude",
+   "subject": "monsters: 1 more of the 100 new candidate bases (51/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 11
+  },
+  {
+   "sha": "922bae9a0",
+   "at": "2026-09-21T11:20:39+00:00",
+   "author": "Claude",
+   "subject": "monsters: 1 more of the 100 new candidate bases (50/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 11
+  },
+  {
+   "sha": "275bb6e73",
+   "at": "2026-09-21T11:20:24+00:00",
+   "author": "Claude",
+   "subject": "monsters: 13 more of the 100 new candidate bases (49/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 131
+  },
+  {
+   "sha": "bae9ea4cf",
+   "at": "2026-09-21T11:15:52+00:00",
+   "author": "Claude",
+   "subject": "monsters: 1 more of the 100 new candidate bases (36/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 11
+  },
+  {
+   "sha": "3aaa724d2",
+   "at": "2026-09-21T11:15:18+00:00",
+   "author": "Claude",
+   "subject": "monsters: 9 more of the 100 new candidate bases (35/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 91
+  },
+  {
+   "sha": "b5d8cecd0",
+   "at": "2026-09-21T11:11:15+00:00",
+   "author": "Claude",
+   "subject": "monsters: 9 more of the 100 new candidate bases (26/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 91
+  },
+  {
+   "sha": "e464fdbaa",
+   "at": "2026-09-21T11:07:43+00:00",
+   "author": "Claude",
+   "subject": "monsters: 9 more of the 100 new candidate bases (17/100 landed)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 91
+  },
+  {
+   "sha": "ce5549bb6",
+   "at": "2026-09-21T11:04:54+00:00",
+   "author": "Claude",
+   "subject": "monsters: the parallel-worker rules for candidates.py generate",
+   "agent": "monsters-assistant",
+   "dirs": [
+    "monsters"
    ],
    "files": 2
   },
   {
-   "sha": "120c41965",
-   "at": "2026-09-18T23:24:10+00:00",
-   "author": "wiki-agent",
-   "subject": "wiki: show whether the wiki can start a github agent at all, and a button to test it",
-   "agent": "wiki",
+   "sha": "351fffc1d",
+   "at": "2026-09-21T11:02:06+00:00",
+   "author": "Claude",
+   "subject": "monsters: candidate index snapshot (mid-run)",
+   "agent": "monsters",
    "dirs": [
-    "games2",
-    "wiki"
+    "monsters"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "be77b39d8",
+   "at": "2026-09-21T11:01:22+00:00",
+   "author": "Claude",
+   "subject": "monsters: first 8 of the 100 new candidate bases",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 80
+  },
+  {
+   "sha": "b2a0a493c",
+   "at": "2026-09-21T10:55:32+00:00",
+   "author": "Claude",
+   "subject": "board: monsters-assistant — the 100 bases are generating now",
+   "agent": "monsters-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "f40b50dae",
+   "at": "2026-09-21T10:53:30+00:00",
+   "author": "Claude",
+   "subject": "monsters: 100 new candidate designs approved by the maintainer",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "de2639eb7",
+   "at": "2026-09-21T10:46:58+00:00",
+   "author": "Claude",
+   "subject": "board: monsters-assistant claims generating the 100 approved candidates (static 8-dir only)",
+   "agent": "monsters-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "879e8763a",
+   "at": "2026-09-21T10:22:54+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters github agent — his 24 ghoul approvals are a no-op, and why",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "3e31d81b1",
+   "at": "2026-09-21T12:20:57+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "63622f032",
+   "at": "2026-09-21T10:20:27+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters github agent — his 24 eye_bat approvals are a no-op, and why",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a8b896a37",
+   "at": "2026-09-21T12:20:18+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a51094cc6",
+   "at": "2026-09-21T12:18:29+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "e57c84fe4",
+   "at": "2026-09-21T12:17:55+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a97b65595",
+   "at": "2026-09-21T10:10:03+00:00",
+   "author": "claude[bot]",
+   "subject": "board: monsters github agent — his 24 spider_queen approvals are a no-op, and why",
+   "agent": "monsters-github-agent",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "63d92f2c4",
+   "at": "2026-09-21T12:08:02+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — feedback/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8907bf496",
+   "at": "2026-09-21T12:07:12+02:00",
+   "author": "Mikael Flodén",
+   "subject": "live: admin update — tuning/monsters.json",
+   "agent": null,
+   "dirs": [
+    "live"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "157f59c88",
+   "at": "2026-09-21T09:14:15+00:00",
+   "author": "games-ambient-assistant",
+   "subject": "ambient: dragonflies come out from behind the reeds",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "games2"
    ],
    "files": 7
+  },
+  {
+   "sha": "1c4aeb5f0",
+   "at": "2026-09-21T09:03:28+00:00",
+   "author": "Claude",
+   "subject": "board: Ashling finished; three graduation traps posted to the github agent",
+   "agent": "monsters-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
   }
  ]
 }
