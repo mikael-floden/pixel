@@ -1,14 +1,13 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-21T08:29:00+00:00",
-  "health": "idle",
-  "current": "idle — basilisk (Stonegaze) is a real monster, its orphan sixth state is gone and its packed layer exists. No files claimed. Left for the domain agent: basilisk die south-east/south-west ship 3 fade-tail pixels short of his approved art (a 138px clip canvas re-fitted to the monster's 136px one) — a postprocess canvas grow, no generation.",
+  "updated_at": "2026-09-21T08:42:59+00:00",
+  "health": "running",
+  "current": "CLAIM — his 2026-09-21 08:41Z approval monsters/ash_hatchling#attack_v3#north (approved, rating 1). Art on disk matches the verdict's art stamp cf8b070cc4cc022c, so nothing is regenerated and an approval is never cleared. The unit is what an approval triggers in this domain: check whether Ashling now graduates (graduate.py) and ship it if it does. Files: coordination/monsters-github-agent.json, monsters/candidates/ash_hatchling/**, monsters/ash_hatchling/**, monsters/config/roster.json, monsters/config/candidates.json, monsters/candidates/index.json, monsters/animation_map.json.",
   "progress": {
-    "verdicts_taken": 2,
+    "verdicts_taken": 1,
     "verdicts_cleared": 0,
-    "unit": "basilisk graduation verified + repaired on his attack_v3 SE/SW approvals",
-    "shipped": "41bbaff55"
+    "unit": "ash_hatchling attack_v3 north approval -> graduation check"
   },
   "budget_remaining": "PixelLab USD unchanged — zero generations this session; the only API writes were five deletes of an unapproved take",
   "notes": [
