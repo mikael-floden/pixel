@@ -853,6 +853,1553 @@
       "prompt": "Enormous hunched mass of cave rock in a body shape, with a perfectly round black opening where a face should be, smooth smiling masks fused into its shoulders and back like scales, and both stone hands cupped open and empty in front of it",
       "lore": "The hole under the mountain, standing up. It is new, and the oldest here say the worst part is who it has to be.",
       "items": []
+    },
+    {
+      "id": "angler_deep",
+      "name": "Deeplure",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 112,
+      "template_id": "bear",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Fantasy deep-sea anglerfish with a bulbous dark grey body, an oversized hinged jaw crowded with long glass-clear teeth, a drooping fleshy lure on a stalk over its brow with a pale glowing tip, small milky eyes, and tattered fins.",
+      "lore": "It has never seen the sun and does not believe in it. The light it carries is the only one it trusts.",
+      "items": []
+    },
+    {
+      "id": "abyss_isopod",
+      "name": "Abyssroll",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Giant fantasy deep-sea isopod with overlapping pale bone-white armour plates like a woodlouse, seven pairs of jointed legs tucked beneath it, short segmented antennae, and small blind black eyespots.",
+      "lore": "It eats what falls and is never in a hurry. Everything reaches the bottom eventually.",
+      "items": []
+    },
+    {
+      "id": "barb_squid",
+      "name": "Barbmantle",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 128,
+      "template_id": "mannequin",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Fantasy deep squid with a dark violet barbed mantle, eight short arms held close beneath it, two longer hunting tentacles coiled tight against its body, rows of hooked suckers, and large gold-ringed eyes.",
+      "lore": "It hunts by patience and takes hold with hooks. Nothing it has caught has ever been recovered.",
+      "items": []
+    },
+    {
+      "id": "chamber_shell",
+      "name": "Chamberkin",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "prompt": "Fantasy nautilus with a tightly coiled cream and rust-banded shell, a crown of short pale tentacles at the opening, a thick leathery hood folded over them, and two simple dark eyes.",
+      "lore": "Older than the reefs it drifts over, and built in rooms it has already left behind.",
+      "items": [
+        "sea shells"
+      ]
+    },
+    {
+      "id": "volt_ray",
+      "name": "Shockdisc",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "prompt": "Fantasy electric ray, a flat round slate-grey disc of a body with a short thick tail, small eyes set high on top, pale blue voltage lines crawling across its back, and a soft cream underside.",
+      "lore": "It lies flat under the sand and charges quietly. The water tells you when you are too close.",
+      "items": []
+    },
+    {
+      "id": "cloak_ray",
+      "name": "Cloakray",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Gigantic fantasy devil ray with enormous dark wings folded down around itself like a closed cloak, two horned cephalic fins curling forward beside a wide mouth, pale underside markings, and a thin whip tail curled close.",
+      "lore": "It passes over like weather. The shoals go quiet long before anything sees it.",
+      "items": []
+    },
+    {
+      "id": "drift_bell",
+      "name": "Driftbell",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "prompt": "Small fantasy jellyfish with a ribbed translucent pale blue bell, a faint glow inside the dome, short frilled oral arms gathered beneath it, and fine trailing tentacles held close.",
+      "lore": "It goes where the cold water goes and has no say in the matter. It glows when it is touched.",
+      "items": []
+    },
+    {
+      "id": "ghost_cuttle",
+      "name": "Ghostcuttle",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "prompt": "Fantasy cuttlefish with a broad mantle fringed by a rippling fin, eight short arms held together beneath, two W-shaped pupils in gold eyes, and bands of colour running down its flanks.",
+      "lore": "It changes its skin faster than you can decide what you saw. Whatever it was, it is not there now.",
+      "items": []
+    },
+    {
+      "id": "tide_serpent",
+      "name": "Tidecoil",
+      "tier": "boss",
+      "scale": "big",
+      "size": 232,
+      "template_id": "bear",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Gigantic fantasy sea serpent coiled on itself, a heavy blue-green ridged body of overlapping scales, a tall finned crest running down its spine, gill slits behind the jaw, and long backward-curving teeth.",
+      "lore": "The oldest thing in the water and the least interested in you. It surfaces only to breathe.",
+      "items": [
+        "blue scales"
+      ]
+    },
+    {
+      "id": "lobe_fish",
+      "name": "Lobefin",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Fantasy coelacanth with thick steel-blue armoured scales flecked with white, heavy lobed fins set on fleshy muscular stalks, a blunt stubborn head, and small hard eyes.",
+      "lore": "It was old before the first coast was drawn. It has changed nothing about itself since.",
+      "items": [
+        "blue scales"
+      ]
+    },
+    {
+      "id": "rock_gill",
+      "name": "Rockgill",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "prompt": "Fantasy stonefish, a lumpy mottled brown ambusher encrusted with algae and grit, a wide upturned mouth set in a permanent scowl, small high-set eyes, and a row of venomous dorsal spines.",
+      "lore": "It is a stone until the moment it is not. Most of what steps on it never learns the difference.",
+      "items": []
+    },
+    {
+      "id": "salt_mariner",
+      "name": "Saltmariner",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 128,
+      "template_id": "mannequin",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "prompt": "Fantasy drowned sailor shown full body from head to feet, bloated grey-green flesh, a waterlogged dark coat hanging heavy, barnacles crusting one shoulder and jaw, pale clouded eyes, and strands of weed in its hair.",
+      "lore": "It still walks the deck watch it was set. The ship is somewhere below and it has not been relieved.",
+      "items": []
+    },
+    {
+      "id": "reef_jaw",
+      "name": "Reefjaw",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 136,
+      "template_id": "bear",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "prompt": "Fantasy reef shark with a stout grey body and white belly, a blunt rounded snout, heavy pectoral fins held wide, black unblinking eyes, and a slightly open jaw showing ragged triangular teeth.",
+      "lore": "It does not hunt so much as arrive. The reef knows the shape of it and empties.",
+      "items": []
+    },
+    {
+      "id": "slime_knot",
+      "name": "Slimeknot",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Fantasy knot of hagfish wound into one writhing mass of pale grey eel-like bodies, slime sheeting off the coils in strands, blind slit mouths ringed with small rasping teeth.",
+      "lore": "It arrives as one thing and leaves as many. What it finishes with is clean to the bone.",
+      "items": []
+    },
+    {
+      "id": "hollow_gulp",
+      "name": "Hollowgulp",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 120,
+      "template_id": "bear",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Fantasy gulper eel curled tight on itself, an enormous black pelican-like jaw far larger than its thin whip of a body, loose dark skin, tiny eyes set far forward, and a faint luminous tail tip.",
+      "lore": "Almost all of it is mouth. What little is left exists to carry the mouth somewhere useful.",
+      "items": []
+    },
+    {
+      "id": "cloak_mantle",
+      "name": "Cloakmantle",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "deep_water"
+      ],
+      "prompt": "Fantasy vampire squid with webbed dark red arms drawn up over itself like a closed umbrella, pale spines lining the inside of the web, large red eyes visible in the fold, and two small fins on its mantle.",
+      "lore": "It folds itself shut and waits out whatever is passing. It has outwaited everything so far.",
+      "items": []
+    },
+    {
+      "id": "lure_caller",
+      "name": "Lurecaller",
+      "tier": "boss",
+      "scale": "standard",
+      "size": 152,
+      "template_id": "mannequin",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "prompt": "Fantasy drowned siren shown full body, a pale long-haired figure with fused finned legs, gill slits along the ribs, webbed hands with dark claws, hollow black eyes, and a mouth open on no sound.",
+      "lore": "The song is not for you. You are only what answered it, and it does not stop for that.",
+      "items": []
+    },
+    {
+      "id": "stone_moray",
+      "name": "Stonemoray",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "prompt": "Gigantic fantasy moray eel wedged among rocks, a thick muscular mottled green-brown body in a tight S-curve, a long jaw held agape on inward-pointing glassy teeth, small hard eyes, and a low dorsal ridge.",
+      "lore": "It holds one hole in the reef and has never needed another. The reef has grown around it.",
+      "items": []
+    },
+    {
+      "id": "shield_crab",
+      "name": "Shieldcrab",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "prompt": "Fantasy horseshoe crab with a smooth domed olive-brown shield, a jointed rear plate, a long rigid tail spine held straight behind, many small legs hidden beneath the rim, and two pairs of simple eyes on the shell.",
+      "lore": "It has walked the same shallows since before the shore had a name. It has not been improved on.",
+      "items": [
+        "sea shells"
+      ]
+    },
+    {
+      "id": "frill_slug",
+      "name": "Frillback",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "prompt": "Fantasy sea slug with a soft orange and cream banded body, a crown of feathery pale gills standing up at its rear, two short rhinophores on its head, and a smooth gliding foot.",
+      "lore": "Every bright colour on it is a warning, and it is telling the truth about all of them.",
+      "items": []
+    },
+    {
+      "id": "clam_jaw",
+      "name": "Clamjaw",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 80,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "prompt": "Fantasy giant clam with a thick fluted blue-grey shell parted on a rippling turquoise mantle, a row of small dark eyespots along the mantle edge, and pale grit and weed on the outer shell.",
+      "lore": "It closes on whatever reaches inside and has nowhere else to be. It can wait longer than you can.",
+      "items": [
+        "great pearl"
+      ]
+    },
+    {
+      "id": "mud_hopper",
+      "name": "Mudhopper",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "dark_mud",
+        "light_beach"
+      ],
+      "prompt": "Fantasy mudskipper with a mottled brown body, bulging periscope eyes set on top of its head, muscular pectoral fins propping it upright, a wide mouth, and a spiny dorsal fin raised.",
+      "lore": "It left the water on purpose and comes back only when it has to. It watches the tide like a debt.",
+      "items": []
+    },
+    {
+      "id": "reed_jaw",
+      "name": "Reedjaw",
+      "tier": "evil",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "prompt": "Gigantic fantasy crocodile with an armoured ridged dark olive back, a long broad jaw closed on interlocking yellowed teeth, short powerful clawed legs held wide, and a heavy muscular tail curled alongside it.",
+      "lore": "It is the oldest resident of the reeds and remembers every crossing. It has never needed to hurry.",
+      "items": []
+    },
+    {
+      "id": "gnarl_shell",
+      "name": "Gnarlshell",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 144,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "prompt": "Fantasy adult snapping turtle with a ridged algae-bearded dark shell, a thick scaled neck, a hooked beak, small fierce eyes, heavy clawed feet, and a long saw-toothed tail.",
+      "lore": "It does not retreat into its shell because it has never had to. Everything else moves instead.",
+      "items": []
+    },
+    {
+      "id": "blue_cleaver",
+      "name": "Bluecleaver",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 112,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "prompt": "Fantasy blue lobster with a deep cobalt armoured body, one oversized crusher claw and one narrower cutter claw held forward, long antennae swept back over its shell, and stalked black eyes.",
+      "lore": "One claw is for breaking and one is for cutting. It has never been observed using the wrong one.",
+      "items": [
+        "curved pincer"
+      ]
+    },
+    {
+      "id": "kelp_wader",
+      "name": "Kelpwader",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 136,
+      "template_id": "mannequin",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "prompt": "Fantasy humanoid shown full body from head to feet, built of braided brown kelp and grey driftwood with small shells knotted into the strands, hollow dark eye sockets, water streaming from its limbs.",
+      "lore": "It gathers what the tide leaves and stands it upright. Some of what it gathers used to walk.",
+      "items": []
+    },
+    {
+      "id": "bark_bull",
+      "name": "Barkbull",
+      "tier": "mid",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "prompt": "Gigantic fantasy bull sea lion with a thick-necked barrel body on heavy flippers, a coarse mane over the shoulders, a scarred chest, a blunt whiskered muzzle open on a roar, and small dark eyes.",
+      "lore": "It holds one stretch of beach and counts everything on it as its own, including the noise.",
+      "items": []
+    },
+    {
+      "id": "weed_pike",
+      "name": "Weedpike",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 120,
+      "template_id": "bear",
+      "biome": [
+        "water"
+      ],
+      "prompt": "Fantasy northern pike with a long olive-green body marked by pale bars, a duck-billed jaw crowded with needle teeth, low-set fins near the tail, and a flat gold eye.",
+      "lore": "It holds still among the weed until the water forgets it. Then there is one fish fewer.",
+      "items": [
+        "blue scales"
+      ]
+    },
+    {
+      "id": "dive_beetle",
+      "name": "Divebeetle",
+      "tier": "mid",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "prompt": "Fantasy great diving beetle seen from above, a smooth oval black carapace rimmed with gold, fringed paddle legs held out to the sides, short antennae, and a glossy domed head.",
+      "lore": "It carries its own air down with it and comes up only when that runs out.",
+      "items": [
+        "jewel beetle"
+      ]
+    },
+    {
+      "id": "gnaw_tail",
+      "name": "Gnawtail",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "grass"
+      ],
+      "prompt": "Fantasy giant beaver with dense wet brown fur, heavy orange chisel incisors, small round ears, webbed hind feet, and a broad flat scaled tail folded alongside its body.",
+      "lore": "It rebuilds the river to suit itself and takes any objection out on the trees.",
+      "items": []
+    },
+    {
+      "id": "sharp_stoop",
+      "name": "Sharpstoop",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "prompt": "Fantasy hunting hawk standing upright, wings folded tightly against its body, a barred cream and brown breast, a hooked grey beak, a fierce yellow eye, and yellow scaled feet with black talons.",
+      "lore": "It watches the whole field from one post and moves once. Once is all it has ever needed.",
+      "items": [
+        "hawk quill"
+      ]
+    },
+    {
+      "id": "hush_wing",
+      "name": "Hushwing",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 112,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "grey_stone"
+      ],
+      "prompt": "Fantasy great owl perched upright, wings folded tight, a broad pale facial disc, soft mottled grey and brown plumage, large amber eyes, a small hooked beak, and feathered feet gripping stone.",
+      "lore": "It arrives without a sound and leaves the same way. The field only knows afterwards.",
+      "items": [
+        "soft plume"
+      ]
+    },
+    {
+      "id": "prism_tail",
+      "name": "Prismtail",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 128,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Fantasy peafowl-like bird standing upright, an iridescent blue-green neck, a crest of thin spines, wings folded close, and a long closed tail train of eyed feathers held low behind it.",
+      "lore": "It is the loudest thing in the meadow and the hardest to see. Both are on purpose.",
+      "items": [
+        "prism plume",
+        "prism quill"
+      ]
+    },
+    {
+      "id": "red_crest",
+      "name": "Redcrest",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass"
+      ],
+      "prompt": "Fantasy large parrot perched upright, a crimson crest raised, teal and cobalt flight feathers folded to its body, a heavy curved pale beak, a white eye ring, and grey gripping feet.",
+      "lore": "It repeats what it hears in the voice it heard it in. People have learned to be careful near it.",
+      "items": [
+        "red plume",
+        "teal quill"
+      ]
+    },
+    {
+      "id": "blade_foot",
+      "name": "Bladefoot",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 152,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "prompt": "Fantasy cassowary standing upright, glossy black hair-like plumage, a bare blue neck with red wattles, a tall bony helmet casque, wings folded invisibly, and a long dagger claw on each inner toe.",
+      "lore": "It asks for nothing and gives no warning. The claw does the only talking it needs.",
+      "items": [
+        "plume bundle"
+      ]
+    },
+    {
+      "id": "mire_crane",
+      "name": "Mirecrane",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 144,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fantasy tall crane standing upright, wings folded against a pale grey body, a long neck drawn back into an S, a straight spear-like bill, a red crown patch, and long dark legs.",
+      "lore": "It stands in the shallows until it is part of them, then strikes once without bending.",
+      "items": [
+        "wing quills"
+      ]
+    },
+    {
+      "id": "gallow_crow",
+      "name": "Gallowcrow",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "grey_paving_stone"
+      ],
+      "prompt": "Fantasy oversized raven perched upright, glossy black plumage, shaggy throat hackles, wings folded tight, a heavy black bill, and one pale knowing eye.",
+      "lore": "It keeps count of the fields it visits and comes back in the right order. Nobody taught it that.",
+      "items": [
+        "wing quills"
+      ]
+    },
+    {
+      "id": "rime_fowl",
+      "name": "Rimefowl",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Fantasy ptarmigan in full winter white, plumage puffed against the cold, feathered feet, a small black bill, a black stripe through the eye, and wings folded invisibly into its body.",
+      "lore": "It vanishes by standing still. In summer it is a different bird and knows it.",
+      "items": [
+        "soft plume"
+      ]
+    },
+    {
+      "id": "reed_stalker",
+      "name": "Reedstalker",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 120,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fantasy bittern standing upright with its neck stretched straight up, streaked brown and cream plumage, wings folded flat, a long dagger bill pointed skyward, and yellow eyes turned forward.",
+      "lore": "It becomes a reed when watched and a bird when not. It is patient enough for both.",
+      "items": [
+        "wing quills"
+      ]
+    },
+    {
+      "id": "dusk_hang",
+      "name": "Duskhang",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone",
+        "grass"
+      ],
+      "prompt": "Fantasy fruit bat perched upright, large leathery wings furled around itself like a cloak, a fox-like face with big dark eyes, tall ears, and long clawed thumbs hooked over the ledge.",
+      "lore": "It hangs where the orchard ends and takes its share first. It has never been caught taking twice.",
+      "items": [
+        "pale wing"
+      ]
+    },
+    {
+      "id": "blood_wing",
+      "name": "Bloodwing",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 80,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone",
+        "dark_mud"
+      ],
+      "prompt": "Fantasy vampire bat crouched forward on its folded wing knuckles, a grey-brown body, a fleshy leaf-shaped nose, small sharp ears, exposed white incisors, and dark blood on its lower jaw.",
+      "lore": "It takes a little from many and is gone before morning. The herd wakes up merely tired.",
+      "items": [
+        "bat wing"
+      ]
+    },
+    {
+      "id": "jewel_back",
+      "name": "Jewelback",
+      "tier": "mid",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Fantasy stag beetle seen from above, an iridescent emerald and gold carapace, large mandibles held closed in front, short elbowed antennae, and six jointed legs tucked close to the body.",
+      "lore": "The jaws are for other beetles, not for you. It will still close them on a finger.",
+      "items": [
+        "jewel beetle"
+      ]
+    },
+    {
+      "id": "bone_picker",
+      "name": "Bonepicker",
+      "tier": "mid",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "grey_stone"
+      ],
+      "prompt": "Fantasy carrion beetle seen from above, a matte black carapace banded with burnt orange, short clubbed antennae, spined legs folded beneath it, and a small hard head.",
+      "lore": "It finds the dead before the crows do and buries them where only it can find them again.",
+      "items": [
+        "bone beetle"
+      ]
+    },
+    {
+      "id": "dusk_moth",
+      "name": "Duskmoth",
+      "tier": "cute",
+      "scale": "standard",
+      "size": 72,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "parquet_floor"
+      ],
+      "prompt": "Fantasy moth at rest with broad grey and cream wings folded flat in a roof over its back, a thickly furred thorax, large feathered antennae, and small dark eyes.",
+      "lore": "It is drawn to lit windows and cannot explain why. It has never harmed the lamp or itself.",
+      "items": [
+        "moth wing"
+      ]
+    },
+    {
+      "id": "twig_case",
+      "name": "Twigcase",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "dark_mud"
+      ],
+      "prompt": "Fantasy caddisfly larva inside a case it has built from short twigs and grit bound together, only its dark head and two clawed forelegs reaching out of the open end.",
+      "lore": "It builds its house from the riverbed and carries it. Everything it owns is glued on.",
+      "items": [
+        "twig skimmer"
+      ]
+    },
+    {
+      "id": "glass_nymph",
+      "name": "Glassnymph",
+      "tier": "cute",
+      "scale": "small",
+      "size": 44,
+      "template_id": "bear",
+      "biome": [
+        "water"
+      ],
+      "prompt": "Fantasy mayfly nymph with a flattened translucent amber body, three feathered tail filaments, feathery gills fringing its sides, six slim legs, and two dark eyes.",
+      "lore": "It spends a year under a stone for one evening in the air. It does not seem to mind the trade.",
+      "items": [
+        "clear wing"
+      ]
+    },
+    {
+      "id": "coal_back",
+      "name": "Coalback",
+      "tier": "mid",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Fantasy fire beetle seen from above, a soot-black shell cracked through with glowing orange heat lines, short thick legs, blunt antennae, and a faint shimmer of heat over its back.",
+      "lore": "It nests in the warm rock and takes the heat with it when it leaves. The nest cools within hours.",
+      "items": [
+        "jewel beetle"
+      ]
+    },
+    {
+      "id": "scale_wader",
+      "name": "Scalewader",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 136,
+      "template_id": "mannequin",
+      "biome": [
+        "water",
+        "deep_water"
+      ],
+      "prompt": "Fantasy fish-folk warrior shown full body from head to feet, overlapping blue scales, finned forearms and calves, gill slits at the ribs, a broad flat-eyed head, and a bone-tipped spear held upright.",
+      "lore": "It holds the shallows the way a border is held. It has never once come further up the beach.",
+      "items": [
+        "blue scales"
+      ]
+    },
+    {
+      "id": "blue_coil",
+      "name": "Bluecoil",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "prompt": "Fantasy banded sea snake coiled on itself, glossy blue-black rings along a slim body, a flattened paddle tail, a small blunt head held level, and dark unblinking eyes.",
+      "lore": "It comes ashore only to rest and has no interest in anything it cannot swallow whole.",
+      "items": [
+        "blue scales"
+      ]
+    },
+    {
+      "id": "slag_smith",
+      "name": "Slagsmith",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock",
+        "grey_stone"
+      ],
+      "prompt": "Fantasy forge goblin shown full body from head to feet, green-grey skin, a scorched leather apron over a squat muscular frame, heavy iron tongs gripped in one fist, and molten orange light across its face.",
+      "lore": "It smelts whatever is brought to it and asks no questions about where the metal came from.",
+      "items": [
+        "silver bars"
+      ]
+    },
+    {
+      "id": "bellows_back",
+      "name": "Bellowsback",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Gigantic fantasy crucible golem shown full body from head to feet, a furnace of a torso with bellows lungs at its back, a crust of black slag over glowing seams, and rivers of bright silver running in the cracks.",
+      "lore": "It was built to keep a fire and has kept one since. Nobody living remembers lighting it.",
+      "items": [
+        "silver bars"
+      ]
+    },
+    {
+      "id": "brush_kit",
+      "name": "Brushkit",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Fantasy fox kit with russet fur and a cream chest, oversized ears and paws, a thick brush tail curled around its feet, a black nose, and watchful amber eyes.",
+      "lore": "Too young to hunt well and too proud to admit it. It follows the older ones at a careful distance.",
+      "items": []
+    },
+    {
+      "id": "dig_claw",
+      "name": "Digclaw",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Fantasy badger with a low muscular body over short legs, coarse grey fur, a broad black and white striped head, small dark eyes, and heavy pale digging claws on the forefeet.",
+      "lore": "It gives ground to nothing and has the scars to prove the policy works.",
+      "items": []
+    },
+    {
+      "id": "tuft_ear",
+      "name": "Tuftear",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "snow"
+      ],
+      "prompt": "Fantasy lynx with thick smoke-grey fur, black tufts standing from its ears, long ruffed cheeks, enormous padded feet, a short black-tipped tail, and pale green eyes.",
+      "lore": "It crosses deep snow without sinking and arrives where nothing was watching.",
+      "items": []
+    },
+    {
+      "id": "quick_stoat",
+      "name": "Quickstoat",
+      "tier": "cute",
+      "scale": "small",
+      "size": 44,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "snow"
+      ],
+      "prompt": "Fantasy stoat stretched low mid-stride, a long slim body with chestnut fur and a cream belly, a black-tipped tail, small round ears, and bright black eyes.",
+      "lore": "Small enough to hide in a boot and bold enough to take on something ten times its size.",
+      "items": []
+    },
+    {
+      "id": "scyth_arm",
+      "name": "Scytharm",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 88,
+      "template_id": "bear",
+      "biome": [
+        "grass"
+      ],
+      "prompt": "Fantasy praying mantis with a slender green body, folded raptorial forearms lined with spines held up in front, a triangular head turned to one side, large compound eyes, and wings closed flat along its back.",
+      "lore": "It holds its arms as if praying and has never once been mistaken for harmless twice.",
+      "items": []
+    },
+    {
+      "id": "elder_scute",
+      "name": "Elderscute",
+      "tier": "mid",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Gigantic fantasy tortoise with a high domed shell of thick scutes worn smooth, wrinkled grey column legs, a long neck, a hooked beak, and old heavy-lidded eyes.",
+      "lore": "It has outlived the forest twice and shows no sign of having noticed either time.",
+      "items": []
+    },
+    {
+      "id": "spot_fawn",
+      "name": "Spotfawn",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "grass"
+      ],
+      "prompt": "Fantasy fawn lying with its thin legs folded beneath it, a warm brown coat dappled with white flank spots, large ears turned outward, a dark wet nose, and wide dark eyes.",
+      "lore": "It holds completely still because that is all it has. It usually works.",
+      "items": []
+    },
+    {
+      "id": "meadow_coil",
+      "name": "Meadowcoil",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "grass"
+      ],
+      "prompt": "Fantasy grass snake coiled in a low spiral, a slim olive body with a pale yellow collar behind the head, fine dark barring along the flanks, and a small head resting on its own coils.",
+      "lore": "It would rather leave than bite and plays dead when leaving is not an option.",
+      "items": []
+    },
+    {
+      "id": "thorn_boar",
+      "name": "Thornboar",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 128,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "prompt": "Fantasy wild boar with coarse black bristles standing in a ridge along its spine, curled yellow tusks, bramble and dried thorn tangled in its coat, a wet snout, and small hard eyes.",
+      "lore": "It walks the same path through the thicket every night and widens it with its shoulders.",
+      "items": []
+    },
+    {
+      "id": "loam_coil",
+      "name": "Loamcoil",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "light_soil",
+        "grass"
+      ],
+      "prompt": "Fantasy giant earthworm rising part way out of dark soil, a glistening ringed pink-brown segmented body, a blunt questing head with no eyes, and a thick pale band near the front.",
+      "lore": "It turns the whole field over a handful at a time and asks nothing for the work.",
+      "items": []
+    },
+    {
+      "id": "field_hare",
+      "name": "Fieldhare",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "prompt": "Fantasy hare crouched low in cover, tawny fur with a pale belly, long black-tipped ears laid flat along its back, powerful hind haunches gathered, and large dark eyes.",
+      "lore": "It waits until the last possible moment and then is simply elsewhere.",
+      "items": []
+    },
+    {
+      "id": "black_leech",
+      "name": "Blackleech",
+      "tier": "evil",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fantasy giant leech arched up to strike, a ringed muscular body of black and dark olive, a flattened sucker at the front opened on a ring of rasping teeth, and a glistening slick skin.",
+      "lore": "It finds the warm water and waits in it. You will not feel the moment it decides.",
+      "items": []
+    },
+    {
+      "id": "whisker_jaw",
+      "name": "Whiskerjaw",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 112,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fantasy giant catfish with a flat wide slate-grey head, long trailing barbels around a broad mouth, tiny eyes set far apart, smooth scaleless skin, and low soft fins.",
+      "lore": "It lives where the river is darkest and takes whatever the current brings it, whole.",
+      "items": []
+    },
+    {
+      "id": "leather_dead",
+      "name": "Leatherdead",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 128,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud"
+      ],
+      "prompt": "Fantasy bog body risen and shown full body from head to feet, skin tanned to dark brown leather stretched over bone, braided red hair, a twisted rope still knotted at its throat, and sunken empty eyes.",
+      "lore": "The bog kept it exactly as it was left. It has come back with the same intentions.",
+      "items": []
+    },
+    {
+      "id": "bellow_frog",
+      "name": "Bellowfrog",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fantasy enormous bullfrog with a warty olive-green back, a pale spotted underside, a swollen throat sac, gold-ringed bulging eyes, and thick muscular hind legs folded beneath it.",
+      "lore": "Its call carries across the whole fen and stops every other sound in it.",
+      "items": []
+    },
+    {
+      "id": "mire_shrew",
+      "name": "Mireshrew",
+      "tier": "cute",
+      "scale": "small",
+      "size": 44,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud"
+      ],
+      "prompt": "Fantasy water shrew with dense dark velvet fur beaded with water, a long pink pointed snout, tiny black eyes, small hidden ears, and stiff silver swimming hairs fringing its feet.",
+      "lore": "It must eat almost constantly or die, which explains the temper on something that small.",
+      "items": []
+    },
+    {
+      "id": "bog_coil",
+      "name": "Bogcoil",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 120,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fantasy swamp python wound in a heavy coil, a thick olive body with black saddle markings, a broad wedge head held low, heat pits along the upper lip, and dull unblinking eyes.",
+      "lore": "It takes one meal a season and spends the rest of the year digesting it in the same spot.",
+      "items": []
+    },
+    {
+      "id": "marsh_light",
+      "name": "Marshlight",
+      "tier": "mid",
+      "scale": "small",
+      "size": 48,
+      "template_id": "mannequin",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fantasy will-o-wisp, a cold pale green flame hovering above the water with the faint suggestion of a drowned face inside it, trailing small sparks, and a soft halo of mist.",
+      "lore": "It leads travellers off the path with a light that looks like a window. It never looks back.",
+      "items": []
+    },
+    {
+      "id": "mud_piper",
+      "name": "Mudpiper",
+      "tier": "cute",
+      "scale": "small",
+      "size": 44,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "light_beach"
+      ],
+      "prompt": "Fantasy small wading bird standing upright, speckled brown and cream plumage, wings folded close, a long slightly curved probing bill, thin dark legs, and a bright round eye.",
+      "lore": "It runs the tideline all day reading it like a page and never looks up at what is watching.",
+      "items": [
+        "soft plume"
+      ]
+    },
+    {
+      "id": "silt_eel",
+      "name": "Silteel",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "prompt": "Fantasy swamp eel half out of the silt, a thick smooth brown body without scales, a wide grim mouth, tiny eyes set high, and a low fin ridge running down its back.",
+      "lore": "It breathes air when the pool dries and crosses mud to find the next one.",
+      "items": []
+    },
+    {
+      "id": "den_mother",
+      "name": "Denmother",
+      "tier": "boss",
+      "scale": "big",
+      "size": 232,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "prompt": "Gigantic fantasy cave bear with a massive domed skull, a high shoulder hump of muscle, shaggy dark brown fur, a scarred muzzle, small deep-set eyes, and long claws worn blunt by stone.",
+      "lore": "The cave is hers and always has been. Everything else in it is a guest or a meal.",
+      "items": []
+    },
+    {
+      "id": "pale_gill",
+      "name": "Palegill",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone",
+        "water"
+      ],
+      "prompt": "Fantasy blind cave salamander with translucent pink-white skin showing faint organs beneath, feathery red external gills behind the head, four thin legs, and smooth skin grown over where eyes would be.",
+      "lore": "It has never needed light and does not register it. The dark is simply where things are.",
+      "items": []
+    },
+    {
+      "id": "stone_hop",
+      "name": "Stonehop",
+      "tier": "cute",
+      "scale": "small",
+      "size": 44,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Fantasy cave cricket with a humped pale brown back, enormously long thin antennae swept back over its body, folded powerful jumping legs, and small dark eyes.",
+      "lore": "It jumps before it knows what startled it and lands somewhere it has never been.",
+      "items": []
+    },
+    {
+      "id": "grub_snout",
+      "name": "Grubsnout",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "light_soil",
+        "grey_stone"
+      ],
+      "prompt": "Fantasy mole with dense black velvet fur, broad pink spade-like forepaws turned outward, a fleshy pink star-shaped snout, no visible eyes, and a short bare tail.",
+      "lore": "It reads the whole field through its nose and has never once seen the sky.",
+      "items": []
+    },
+    {
+      "id": "stone_coil",
+      "name": "Stonecoil",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 112,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "prompt": "Fantasy rock python coiled on warm stone, a heavy tan body with dark grey blotches, a broad flat head, deep heat pits along the upper lip, and vertical-slit gold eyes.",
+      "lore": "It lies on the sun-warmed rock all day to pay for one night of hunting.",
+      "items": []
+    },
+    {
+      "id": "pale_hand",
+      "name": "Palehand",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 128,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Fantasy troglodyte shown full body from head to feet, a stooped pallid humanoid with loose grey skin, huge lidless colourless eyes, long groping fingers, flat blunt teeth, and no hair anywhere.",
+      "lore": "It has lived so long without light that it now hunts by the sound of breathing.",
+      "items": []
+    },
+    {
+      "id": "quartz_leg",
+      "name": "Quartzleg",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "prompt": "Fantasy crystal spider with eight quartz-plated legs, a faceted translucent abdomen holding trapped light, a dark cephalothorax, and eight small glinting eyes in two rows.",
+      "lore": "It spins nothing. It waits at the narrow places where the cave decides for you.",
+      "items": []
+    },
+    {
+      "id": "stone_creep",
+      "name": "Stonecreep",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone"
+      ],
+      "prompt": "Fantasy cave centipede curled in a tight arc, armoured red-brown segments each with a pair of pale legs, long rear antennae, and a dark head with venom claws folded beneath it.",
+      "lore": "It comes out of the crack in the wall in one motion, as if the wall had decided something.",
+      "items": []
+    },
+    {
+      "id": "bore_worm",
+      "name": "Boreworm",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "prompt": "Gigantic fantasy tunnelling worm with a thick ringed grey segmented body, a circular boring mouth of grinding stone-coloured plates, bristles along each segment, and no eyes at all.",
+      "lore": "It makes the tunnels everything else lives in. It does not know they are there.",
+      "items": []
+    },
+    {
+      "id": "pale_fin",
+      "name": "Palefin",
+      "tier": "cute",
+      "scale": "small",
+      "size": 44,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone",
+        "water"
+      ],
+      "prompt": "Fantasy blind cave fish with a colourless smooth body showing pink beneath, skin grown over empty eye sockets, thin translucent fins, and fine sensory lines along its flanks.",
+      "lore": "It maps the pool by pressure alone and knows the shape of every stone in it.",
+      "items": []
+    },
+    {
+      "id": "drift_cat",
+      "name": "Driftcat",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 128,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "grey_stone"
+      ],
+      "prompt": "Fantasy snow leopard with thick pale smoke-grey fur patterned in dark rosettes, an enormously long thick tail curled around its paws, small round ears, and pale green eyes.",
+      "lore": "It follows the herds up the passes and is never seen until it has already chosen.",
+      "items": []
+    },
+    {
+      "id": "white_brush",
+      "name": "Whitebrush",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Fantasy arctic fox in full winter coat, dense pure white fur, short round ears, a small black nose, dark eyes, and a thick tail wrapped around its feet.",
+      "lore": "It follows the big hunters at a distance and lives on what they leave behind.",
+      "items": []
+    },
+    {
+      "id": "shaggy_horn",
+      "name": "Shaggyhorn",
+      "tier": "mid",
+      "scale": "big",
+      "size": 224,
+      "template_id": "bear",
+      "biome": [
+        "snow"
+      ],
+      "prompt": "Gigantic fantasy musk ox with a long shaggy dark brown skirt of hair hanging to the hooves, a broad boss of fused pale horns curving down and out, a low heavy head, and steam at its nostrils.",
+      "lore": "It stands into the storm rather than turn from it, and the storm gets tired first.",
+      "items": []
+    },
+    {
+      "id": "glacier_worm",
+      "name": "Glacierworm",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 136,
+      "template_id": "bear",
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "prompt": "Fantasy ice worm with a pale segmented body under a translucent rime crust, a ring mouth of blue-black hooks, faint blue light within the segments, and frost forming along its length.",
+      "lore": "It moves through solid ice the way others move through water, and leaves the hole behind it.",
+      "items": []
+    },
+    {
+      "id": "tusk_drift",
+      "name": "Tuskdrift",
+      "tier": "boss",
+      "scale": "big",
+      "size": 232,
+      "template_id": "bear",
+      "biome": [
+        "ice",
+        "water"
+      ],
+      "prompt": "Gigantic fantasy bull walrus with an immense wrinkled brown bulk on broad flippers, two long yellowed tusks, a heavy whiskered muzzle, small bloodshot eyes, and a scarred hide.",
+      "lore": "It owns the floe it is lying on and settles the question with its face.",
+      "items": []
+    },
+    {
+      "id": "floe_pup",
+      "name": "Floepup",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "prompt": "Fantasy seal pup lying on ice, soft white natal fur, enormous dark wet eyes, small dark nostrils, short foreflippers tucked under its chest, and fine whiskers.",
+      "lore": "It waits where it was left and calls at intervals. The calling carries a long way.",
+      "items": []
+    },
+    {
+      "id": "rime_moth",
+      "name": "Rimemoth",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Fantasy winter moth at rest with broad pale blue-white wings folded flat over its back and frost gathered along the wing edges, a thickly furred white thorax, and feathered antennae.",
+      "lore": "It flies in weather that grounds everything else, and only after dark.",
+      "items": [
+        "moth wing"
+      ]
+    },
+    {
+      "id": "hoar_fisher",
+      "name": "Hoarfisher",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 120,
+      "template_id": "mannequin",
+      "biome": [
+        "ice",
+        "snow"
+      ],
+      "prompt": "Fantasy ice fisher spirit shown full body from head to feet, a hunched figure wrapped in frozen stiffened rags, a barbed fishing spear held upright, hollow black eye sockets, and rime across its shoulders.",
+      "lore": "It still works the hole it cut and will share the catch. Nobody has ever accepted.",
+      "items": []
+    },
+    {
+      "id": "snow_vole",
+      "name": "Snowvole",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "snow",
+        "grass"
+      ],
+      "prompt": "Fantasy snow vole sitting up on its haunches, a round body in thick pale grey fur, small ears nearly buried, black bead eyes, a blunt nose, and tiny pink forepaws held together.",
+      "lore": "It tunnels under the snow all winter and comes up only where it means to.",
+      "items": []
+    },
+    {
+      "id": "pale_giant",
+      "name": "Palegiant",
+      "tier": "boss",
+      "scale": "big",
+      "size": 240,
+      "template_id": "mannequin",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "prompt": "Gigantic fantasy snow giant shown full body from head to feet, a shaggy white pelt over massive shoulders, blue-grey weathered skin, a flat brutal brow, small deep eyes, and huge bare hands.",
+      "lore": "It comes down with the worst weather and goes back up when the weather does.",
+      "items": []
+    },
+    {
+      "id": "slag_crab",
+      "name": "Slagcrab",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Fantasy crab of cooled volcanic slag, a crust of black basalt over its shell, joints glowing molten orange between the plates, heavy blunt claws, and small ember eyes on short stalks.",
+      "lore": "It walks out of the vents when they cool and goes back in when they do not.",
+      "items": [
+        "curved pincer"
+      ]
+    },
+    {
+      "id": "glass_sting",
+      "name": "Glassting",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 120,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Fantasy obsidian scorpion with plates of black volcanic glass, a raised segmented tail ending in a molten orange barb, open serrated pincers, and six small red eyes on a flat head.",
+      "lore": "Every plate on it came out of the same flow. It has never left the rock it cooled on.",
+      "items": []
+    },
+    {
+      "id": "cinder_bore",
+      "name": "Cinderbore",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "prompt": "Fantasy cinder worm with a ribbed ashen-grey body split by glowing ember seams, a rasping ring mouth of dark plates, smoke trailing from its segments, and no eyes.",
+      "lore": "It eats the hot rock and leaves the cold. The tunnels it abandons are safe, eventually.",
+      "items": []
+    },
+    {
+      "id": "vent_gill",
+      "name": "Ventgill",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "prompt": "Fantasy lava eel with a dark scaled body lit from within by moving orange light, gill slits venting small jets of steam, a narrow jaw of glassy teeth, and a low finned ridge.",
+      "lore": "It swims where nothing should and surfaces only in the vents. The water around it boils.",
+      "items": []
+    },
+    {
+      "id": "cellar_rat",
+      "name": "Cellarrat",
+      "tier": "cute",
+      "scale": "small",
+      "size": 40,
+      "template_id": "bear",
+      "biome": [
+        "parquet_floor",
+        "brown_paving_stone"
+      ],
+      "prompt": "Fantasy cellar rat with coarse grey-brown fur, a long naked pink tail curled beside it, small clever forepaws held up, round dark eyes, and pink translucent ears.",
+      "lore": "It knows every gap in the floor and which one the cat cannot follow it into.",
+      "items": []
+    },
+    {
+      "id": "rafter_creep",
+      "name": "Raftercreep",
+      "tier": "mid",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "prompt": "Fantasy house spider with long jointed brown legs gathered tight beneath it, a banded pale and dark abdomen, a low cephalothorax, and eight small dark eyes in two rows.",
+      "lore": "It has lived in the same corner for years and considers the room an arrangement it allows.",
+      "items": [
+        "silk skein"
+      ]
+    },
+    {
+      "id": "soot_wraith",
+      "name": "Sootwraith",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 112,
+      "template_id": "mannequin",
+      "biome": [
+        "parquet_floor",
+        "grey_paving_stone"
+      ],
+      "prompt": "Fantasy chimney wraith shown full body, a figure of hanging soot and grey ash loosely holding a human shape, two dull coal-red eyes, and fine black smoke pouring off its shoulders and hands.",
+      "lore": "It comes down the flue when the fire is left to die and stands where the warmth was.",
+      "items": []
+    },
+    {
+      "id": "lintel_guard",
+      "name": "Lintelguard",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_paving_stone",
+        "brown_paving_stone"
+      ],
+      "prompt": "Gigantic fantasy door guardian shown full body from head to feet, a carved grey stone warden stepping down off its plinth, chisel marks still across its face and arms, blank carved eyes, and a stone maul.",
+      "lore": "It was carved to let the right people through. Nobody now alive knows what the carver meant.",
+      "items": []
+    },
+    {
+      "id": "silver_dart",
+      "name": "Silverdart",
+      "tier": "cute",
+      "scale": "small",
+      "size": 36,
+      "template_id": "bear",
+      "biome": [
+        "parquet_floor"
+      ],
+      "prompt": "Fantasy silverfish seen from above, a tapered body of overlapping metallic silver scales, three long tail filaments, two long antennae, and small dark eyes.",
+      "lore": "It lives in the dark behind the skirting and is gone the instant a lamp is lit.",
+      "items": []
     }
   ],
   "retired": [
