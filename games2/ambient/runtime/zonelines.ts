@@ -50,15 +50,25 @@ export class ZoneLines {
   private drawnAt: { x: number; y: number; w: number; h: number; version: number; my: string } | null = null;
   private dirty = true;
 
+  /** A DEBUG OVERLAY DOES NOT SURVIVE A RELOAD. It used to be remembered per
+   *  device, and remembered is how it ruins a session: the maintainer ran with
+   *  it on, reinstalled the app and cleared his cache, and it came back — site
+   *  data outlives both — so his whole world was under green and salmon
+   *  zigzags and zone labels, on top of terrain that was still streaming
+   *  (2026-09-21: "THEY LOOK LIKE A GAME FROM 30 YEARS AGO"). It starts OFF on
+   *  every load now and the switch still works for as long as you are looking
+   *  at it; the stored key is cleared on the way past so a device that has one
+   *  from before is freed by the next load. */
   constructor(private readonly scene: Phaser.Scene, private readonly field: ZoneField) {
-    try { this.on = localStorage.getItem(STORE) === "1"; } catch { this.on = false; }
+    this.on = false;
+    try { localStorage.removeItem(STORE); } catch {}
   }
 
   set(on?: boolean): boolean {
     if (on !== undefined && on !== this.on) {
       this.on = on;
       this.dirty = true;
-      try { localStorage.setItem(STORE, on ? "1" : "0"); } catch {}
+      // Deliberately NOT remembered — see the constructor.
       if (!on) this.clear();
     }
     return this.on;
