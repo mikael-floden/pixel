@@ -1,0 +1,143 @@
+{
+  "id": "twig_case",
+  "name": "Twigcase",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It builds its house from the riverbed and carries it. Everything it owns is glued on.",
+  "biome": [
+    "water",
+    "dark_mud"
+  ],
+  "items": [
+    "twig skimmer"
+  ],
+  "prompt": "Fantasy caddisfly larva inside a case it has built from short twigs and grit bound together, only its dark head and two clawed forelegs reaching out of the open end.",
+  "size": [
+    40,
+    40
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "twig_case/rotations/south.webp",
+    "south-east": "twig_case/rotations/south-east.webp",
+    "east": "twig_case/rotations/east.webp",
+    "north-east": "twig_case/rotations/north-east.webp",
+    "north": "twig_case/rotations/north.webp",
+    "north-west": "twig_case/rotations/north-west.webp",
+    "west": "twig_case/rotations/west.webp",
+    "south-west": "twig_case/rotations/south-west.webp"
+  },
+  "sheet": "twig_case/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0087d67f-ff98-4a11-9358-230dc15fbc92",
+  "seed": 1481486476,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:16:53+00:00",
+  "elapsed_s": 170.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.697,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.817,
+        "bbox": [
+          7,
+          7,
+          33,
+          34
+        ],
+        "fill": 0.439,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.751,
+        "bbox": [
+          5,
+          9,
+          33,
+          33
+        ],
+        "fill": 0.42,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.742,
+        "bbox": [
+          7,
+          9,
+          35,
+          33
+        ],
+        "fill": 0.42,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.697,
+        "bbox": [
+          7,
+          7,
+          33,
+          31
+        ],
+        "fill": 0.39,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.817,
+        "bbox": [
+          5,
+          7,
+          35,
+          35
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.754,
+        "bbox": [
+          5,
+          7,
+          34,
+          33
+        ],
+        "fill": 0.471,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.735,
+        "bbox": [
+          6,
+          7,
+          35,
+          33
+        ],
+        "fill": 0.471,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.806,
+        "bbox": [
+          5,
+          7,
+          35,
+          35
+        ],
+        "fill": 0.525,
+        "touches_edge": false
+      }
+    }
+  }
+}

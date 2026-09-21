@@ -1,0 +1,142 @@
+{
+  "id": "glass_nymph",
+  "name": "Glassnymph",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It spends a year under a stone for one evening in the air. It does not seem to mind the trade.",
+  "biome": [
+    "water"
+  ],
+  "items": [
+    "clear wing"
+  ],
+  "prompt": "Fantasy mayfly nymph with a flattened translucent amber body, three feathered tail filaments, feathery gills fringing its sides, six slim legs, and two dark eyes.",
+  "size": [
+    44,
+    44
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "glass_nymph/rotations/south.webp",
+    "south-east": "glass_nymph/rotations/south-east.webp",
+    "east": "glass_nymph/rotations/east.webp",
+    "north-east": "glass_nymph/rotations/north-east.webp",
+    "north": "glass_nymph/rotations/north.webp",
+    "north-west": "glass_nymph/rotations/north-west.webp",
+    "west": "glass_nymph/rotations/west.webp",
+    "south-west": "glass_nymph/rotations/south-west.webp"
+  },
+  "sheet": "glass_nymph/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c2ed511d-32e4-441a-83b7-bf45beb08840",
+  "seed": 1186734584,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:16:02+00:00",
+  "elapsed_s": 155.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.787,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.799,
+        "bbox": [
+          4,
+          2,
+          40,
+          42
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.787,
+        "bbox": [
+          5,
+          6,
+          42,
+          40
+        ],
+        "fill": 0.65,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.796,
+        "bbox": [
+          3,
+          5,
+          40,
+          42
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.809,
+        "bbox": [
+          6,
+          3,
+          38,
+          42
+        ],
+        "fill": 0.645,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.836,
+        "bbox": [
+          6,
+          2,
+          38,
+          42
+        ],
+        "fill": 0.661,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.796,
+        "bbox": [
+          3,
+          7,
+          39,
+          41
+        ],
+        "fill": 0.632,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.832,
+        "bbox": [
+          7,
+          3,
+          39,
+          41
+        ],
+        "fill": 0.628,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.824,
+        "bbox": [
+          4,
+          5,
+          42,
+          42
+        ],
+        "fill": 0.726,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,0 +1,140 @@
+{
+  "id": "mire_shrew",
+  "name": "Mireshrew",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It must eat almost constantly or die, which explains the temper on something that small.",
+  "biome": [
+    "dark_mud"
+  ],
+  "items": [],
+  "prompt": "Fantasy water shrew with dense dark velvet fur beaded with water, a long pink pointed snout, tiny black eyes, small hidden ears, and stiff silver swimming hairs fringing its feet.",
+  "size": [
+    44,
+    44
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "mire_shrew/rotations/south.webp",
+    "south-east": "mire_shrew/rotations/south-east.webp",
+    "east": "mire_shrew/rotations/east.webp",
+    "north-east": "mire_shrew/rotations/north-east.webp",
+    "north": "mire_shrew/rotations/north.webp",
+    "north-west": "mire_shrew/rotations/north-west.webp",
+    "west": "mire_shrew/rotations/west.webp",
+    "south-west": "mire_shrew/rotations/south-west.webp"
+  },
+  "sheet": "mire_shrew/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9a14c2c0-f781-4ccc-8e2c-49410c88d40b",
+  "seed": 892004021,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:19:00+00:00",
+  "elapsed_s": 149.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.749,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.749,
+        "bbox": [
+          4,
+          2,
+          40,
+          41
+        ],
+        "fill": 0.725,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.752,
+        "bbox": [
+          2,
+          5,
+          42,
+          41
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.771,
+        "bbox": [
+          2,
+          5,
+          42,
+          41
+        ],
+        "fill": 0.744,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.753,
+        "bbox": [
+          6,
+          3,
+          37,
+          40
+        ],
+        "fill": 0.592,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.766,
+        "bbox": [
+          3,
+          4,
+          38,
+          42
+        ],
+        "fill": 0.687,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.765,
+        "bbox": [
+          3,
+          5,
+          40,
+          42
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.768,
+        "bbox": [
+          4,
+          5,
+          41,
+          42
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.765,
+        "bbox": [
+          6,
+          4,
+          41,
+          42
+        ],
+        "fill": 0.687,
+        "touches_edge": false
+      }
+    }
+  }
+}

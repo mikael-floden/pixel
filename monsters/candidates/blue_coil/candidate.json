@@ -1,0 +1,143 @@
+{
+  "id": "blue_coil",
+  "name": "Bluecoil",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It comes ashore only to rest and has no interest in anything it cannot swallow whole.",
+  "biome": [
+    "water",
+    "light_beach"
+  ],
+  "items": [
+    "blue scales"
+  ],
+  "prompt": "Fantasy banded sea snake coiled on itself, glossy blue-black rings along a slim body, a flattened paddle tail, a small blunt head held level, and dark unblinking eyes.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "blue_coil/rotations/south.webp",
+    "south-east": "blue_coil/rotations/south-east.webp",
+    "east": "blue_coil/rotations/east.webp",
+    "north-east": "blue_coil/rotations/north-east.webp",
+    "north": "blue_coil/rotations/north.webp",
+    "north-west": "blue_coil/rotations/north-west.webp",
+    "west": "blue_coil/rotations/west.webp",
+    "south-west": "blue_coil/rotations/south-west.webp"
+  },
+  "sheet": "blue_coil/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "91b9c13d-bbb7-44cf-86cb-bb3af1d081fd",
+  "seed": 1216959270,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:17:24+00:00",
+  "elapsed_s": 187.8,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.698,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.712,
+        "bbox": [
+          6,
+          5,
+          88,
+          90
+        ],
+        "fill": 0.756,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.758,
+        "bbox": [
+          14,
+          5,
+          81,
+          91
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.766,
+        "bbox": [
+          12,
+          5,
+          82,
+          89
+        ],
+        "fill": 0.638,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.698,
+        "bbox": [
+          14,
+          6,
+          90,
+          85
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.783,
+        "bbox": [
+          7,
+          5,
+          86,
+          86
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.726,
+        "bbox": [
+          14,
+          5,
+          76,
+          90
+        ],
+        "fill": 0.572,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.735,
+        "bbox": [
+          15,
+          5,
+          89,
+          88
+        ],
+        "fill": 0.666,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.782,
+        "bbox": [
+          14,
+          5,
+          87,
+          91
+        ],
+        "fill": 0.681,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,0 +1,141 @@
+{
+  "id": "bellow_frog",
+  "name": "Bellowfrog",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "Its call carries across the whole fen and stops every other sound in it.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy enormous bullfrog with a warty olive-green back, a pale spotted underside, a swollen throat sac, gold-ringed bulging eyes, and thick muscular hind legs folded beneath it.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bellow_frog/rotations/south.webp",
+    "south-east": "bellow_frog/rotations/south-east.webp",
+    "east": "bellow_frog/rotations/east.webp",
+    "north-east": "bellow_frog/rotations/north-east.webp",
+    "north": "bellow_frog/rotations/north.webp",
+    "north-west": "bellow_frog/rotations/north-west.webp",
+    "west": "bellow_frog/rotations/west.webp",
+    "south-west": "bellow_frog/rotations/south-west.webp"
+  },
+  "sheet": "bellow_frog/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "81b6caa7-b154-4a86-b4ac-ea84e1ce09f8",
+  "seed": 1915890380,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:18:53+00:00",
+  "elapsed_s": 195.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.642,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.642,
+        "bbox": [
+          4,
+          13,
+          92,
+          87
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.714,
+        "bbox": [
+          6,
+          8,
+          90,
+          88
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.719,
+        "bbox": [
+          6,
+          8,
+          90,
+          88
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.671,
+        "bbox": [
+          7,
+          9,
+          89,
+          86
+        ],
+        "fill": 0.685,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.754,
+        "bbox": [
+          6,
+          10,
+          86,
+          89
+        ],
+        "fill": 0.686,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.694,
+        "bbox": [
+          9,
+          7,
+          86,
+          89
+        ],
+        "fill": 0.685,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.711,
+        "bbox": [
+          11,
+          7,
+          87,
+          89
+        ],
+        "fill": 0.676,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.748,
+        "bbox": [
+          9,
+          10,
+          90,
+          89
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      }
+    }
+  }
+}

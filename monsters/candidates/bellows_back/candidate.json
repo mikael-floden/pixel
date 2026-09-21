@@ -1,0 +1,146 @@
+{
+  "id": "bellows_back",
+  "name": "Bellowsback",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It was built to keep a fire and has kept one since. Nobody living remembers lighting it.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [
+    "silver bars"
+  ],
+  "prompt": "Gigantic fantasy crucible golem shown full body from head to feet, a furnace of a torso with bellows lungs at its back, a crust of black slag over glowing seams, and rivers of bright silver running in the cracks.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bellows_back/rotations/south.webp",
+    "south-east": "bellows_back/rotations/south-east.webp",
+    "east": "bellows_back/rotations/east.webp",
+    "north-east": "bellows_back/rotations/north-east.webp",
+    "north": "bellows_back/rotations/north.webp",
+    "north-west": "bellows_back/rotations/north-west.webp",
+    "west": "bellows_back/rotations/west.webp",
+    "south-west": "bellows_back/rotations/south-west.webp"
+  },
+  "sheet": "bellows_back/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "7ab3cc5d-e552-4a1a-be46-494e7e837e70",
+  "seed": 1927738424,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:17:51+00:00",
+  "elapsed_s": 286.5,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.615,
+    "reasons": [
+      "south-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.615,
+        "bbox": [
+          7,
+          5,
+          217,
+          219
+        ],
+        "fill": 0.896,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.708,
+        "bbox": [
+          69,
+          4,
+          169,
+          223
+        ],
+        "fill": 0.436,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.709,
+        "bbox": [
+          56,
+          4,
+          155,
+          223
+        ],
+        "fill": 0.432,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.657,
+        "bbox": [
+          5,
+          8,
+          215,
+          218
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.687,
+        "bbox": [
+          9,
+          2,
+          185,
+          224
+        ],
+        "fill": 0.779,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.66,
+        "bbox": [
+          8,
+          5,
+          170,
+          222
+        ],
+        "fill": 0.701,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.66,
+        "bbox": [
+          46,
+          5,
+          217,
+          222
+        ],
+        "fill": 0.74,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.683,
+        "bbox": [
+          42,
+          2,
+          211,
+          224
+        ],
+        "fill": 0.748,
+        "touches_edge": true
+      }
+    }
+  }
+}

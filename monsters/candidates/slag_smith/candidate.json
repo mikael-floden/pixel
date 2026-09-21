@@ -1,0 +1,143 @@
+{
+  "id": "slag_smith",
+  "name": "Slagsmith",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It smelts whatever is brought to it and asks no questions about where the metal came from.",
+  "biome": [
+    "black_rock",
+    "grey_stone"
+  ],
+  "items": [
+    "silver bars"
+  ],
+  "prompt": "Fantasy forge goblin shown full body from head to feet, green-grey skin, a scorched leather apron over a squat muscular frame, heavy iron tongs gripped in one fist, and molten orange light across its face.",
+  "size": [
+    104,
+    104
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "slag_smith/rotations/south.webp",
+    "south-east": "slag_smith/rotations/south-east.webp",
+    "east": "slag_smith/rotations/east.webp",
+    "north-east": "slag_smith/rotations/north-east.webp",
+    "north": "slag_smith/rotations/north.webp",
+    "north-west": "slag_smith/rotations/north-west.webp",
+    "west": "slag_smith/rotations/west.webp",
+    "south-west": "slag_smith/rotations/south-west.webp"
+  },
+  "sheet": "slag_smith/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "292bfeed-72bb-4e74-a284-0bfa0b256e3d",
+  "seed": 1046113596,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:16:24+00:00",
+  "elapsed_s": 168.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.732,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.732,
+        "bbox": [
+          7,
+          5,
+          90,
+          99
+        ],
+        "fill": 0.721,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.783,
+        "bbox": [
+          28,
+          6,
+          70,
+          100
+        ],
+        "fill": 0.365,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.787,
+        "bbox": [
+          34,
+          6,
+          71,
+          100
+        ],
+        "fill": 0.322,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.732,
+        "bbox": [
+          13,
+          4,
+          98,
+          98
+        ],
+        "fill": 0.739,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.813,
+        "bbox": [
+          21,
+          5,
+          87,
+          99
+        ],
+        "fill": 0.574,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.748,
+        "bbox": [
+          20,
+          6,
+          97,
+          99
+        ],
+        "fill": 0.662,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.746,
+        "bbox": [
+          22,
+          6,
+          80,
+          99
+        ],
+        "fill": 0.499,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.819,
+        "bbox": [
+          5,
+          5,
+          84,
+          99
+        ],
+        "fill": 0.687,
+        "touches_edge": false
+      }
+    }
+  }
+}

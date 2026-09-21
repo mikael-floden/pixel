@@ -1,0 +1,143 @@
+{
+  "id": "coal_back",
+  "name": "Coalback",
+  "tier": "mid",
+  "scale": "small",
+  "lore": "It nests in the warm rock and takes the heat with it when it leaves. The nest cools within hours.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [
+    "jewel beetle"
+  ],
+  "prompt": "Fantasy fire beetle seen from above, a soot-black shell cracked through with glowing orange heat lines, short thick legs, blunt antennae, and a faint shimmer of heat over its back.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "coal_back/rotations/south.webp",
+    "south-east": "coal_back/rotations/south-east.webp",
+    "east": "coal_back/rotations/east.webp",
+    "north-east": "coal_back/rotations/north-east.webp",
+    "north": "coal_back/rotations/north.webp",
+    "north-west": "coal_back/rotations/north-west.webp",
+    "west": "coal_back/rotations/west.webp",
+    "south-west": "coal_back/rotations/south-west.webp"
+  },
+  "sheet": "coal_back/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "9ebdb063-3200-4b7a-8111-53eea2224604",
+  "seed": 53650525,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:19:06+00:00",
+  "elapsed_s": 240.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.742,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.742,
+        "bbox": [
+          1,
+          5,
+          47,
+          45
+        ],
+        "fill": 0.799,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.795,
+        "bbox": [
+          1,
+          8,
+          45,
+          45
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.787,
+        "bbox": [
+          3,
+          8,
+          47,
+          45
+        ],
+        "fill": 0.707,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.771,
+        "bbox": [
+          1,
+          3,
+          47,
+          40
+        ],
+        "fill": 0.739,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.803,
+        "bbox": [
+          2,
+          6,
+          47,
+          46
+        ],
+        "fill": 0.781,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.812,
+        "bbox": [
+          6,
+          6,
+          46,
+          46
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.814,
+        "bbox": [
+          2,
+          6,
+          43,
+          45
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.821,
+        "bbox": [
+          1,
+          6,
+          47,
+          46
+        ],
+        "fill": 0.799,
+        "touches_edge": false
+      }
+    }
+  }
+}
