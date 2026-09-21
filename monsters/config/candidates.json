@@ -1123,21 +1123,6 @@
       ]
     },
     {
-      "id": "frill_slug",
-      "name": "Frillback",
-      "tier": "cute",
-      "scale": "small",
-      "size": 48,
-      "template_id": "bear",
-      "biome": [
-        "water",
-        "light_beach"
-      ],
-      "prompt": "Fantasy sea slug with a soft orange and cream banded body, a crown of feathery pale gills standing up at its rear, two short rhinophores on its head, and a smooth gliding foot.",
-      "lore": "Every bright colour on it is a warning, and it is telling the truth about all of them.",
-      "items": []
-    },
-    {
       "id": "clam_jaw",
       "name": "Clamjaw",
       "tier": "mid",
@@ -1678,21 +1663,6 @@
       "items": []
     },
     {
-      "id": "thorn_boar",
-      "name": "Thornboar",
-      "tier": "mid",
-      "scale": "standard",
-      "size": 128,
-      "template_id": "bear",
-      "biome": [
-        "grass",
-        "dark_mud"
-      ],
-      "prompt": "Fantasy wild boar with coarse black bristles standing in a ridge along its spine, curled yellow tusks, bramble and dried thorn tangled in its coat, a wet snout, and small hard eyes.",
-      "lore": "It walks the same path through the thicket every night and widens it with its shoulders.",
-      "items": []
-    },
-    {
       "id": "whisker_jaw",
       "name": "Whiskerjaw",
       "tier": "mid",
@@ -2158,21 +2128,6 @@
       "items": []
     },
     {
-      "id": "vent_gill",
-      "name": "Ventgill",
-      "tier": "evil",
-      "scale": "standard",
-      "size": 104,
-      "template_id": "bear",
-      "biome": [
-        "lava",
-        "black_rock"
-      ],
-      "prompt": "Fantasy lava eel with a dark scaled body lit from within by moving orange light, gill slits venting small jets of steam, a narrow jaw of glassy teeth, and a low finned ridge.",
-      "lore": "It swims where nothing should and surfaces only in the vents. The water around it boils.",
-      "items": []
-    },
-    {
       "id": "cellar_rat",
       "name": "Cellarrat",
       "tier": "cute",
@@ -2217,21 +2172,6 @@
       ],
       "prompt": "Fantasy chimney wraith shown full body, a figure of hanging soot and grey ash loosely holding a human shape, two dull coal-red eyes, and fine black smoke pouring off its shoulders and hands.",
       "lore": "It comes down the flue when the fire is left to die and stands where the warmth was.",
-      "items": []
-    },
-    {
-      "id": "lintel_guard",
-      "name": "Lintelguard",
-      "tier": "boss",
-      "scale": "big",
-      "size": 224,
-      "template_id": "mannequin",
-      "biome": [
-        "grey_paving_stone",
-        "brown_paving_stone"
-      ],
-      "prompt": "Gigantic fantasy door guardian shown full body from head to feet, a carved grey stone warden stepping down off its plinth, chisel marks still across its face and arms, blank carved eyes, and a stone maul.",
-      "lore": "It was carved to let the right people through. Nobody now alive knows what the carver meant.",
       "items": []
     },
     {
@@ -5442,6 +5382,78 @@
       "items": [],
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-21T11:39:39+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "frill_slug",
+      "name": "Frillback",
+      "tier": "cute",
+      "scale": "small",
+      "size": 48,
+      "template_id": "bear",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "prompt": "Fantasy sea slug with a soft orange and cream banded body, a crown of feathery pale gills standing up at its rear, two short rhinophores on its head, and a smooth gliding foot.",
+      "lore": "Every bright colour on it is a warning, and it is telling the truth about all of them.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T12:07:48+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "thorn_boar",
+      "name": "Thornboar",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 128,
+      "template_id": "bear",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "prompt": "Fantasy wild boar with coarse black bristles standing in a ridge along its spine, curled yellow tusks, bramble and dried thorn tangled in its coat, a wet snout, and small hard eyes.",
+      "lore": "It walks the same path through the thicket every night and widens it with its shoulders.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T12:07:49+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "vent_gill",
+      "name": "Ventgill",
+      "tier": "evil",
+      "scale": "standard",
+      "size": 104,
+      "template_id": "bear",
+      "biome": [
+        "lava",
+        "black_rock"
+      ],
+      "prompt": "Fantasy lava eel with a dark scaled body lit from within by moving orange light, gill slits venting small jets of steam, a narrow jaw of glassy teeth, and a low finned ridge.",
+      "lore": "It swims where nothing should and surfaces only in the vents. The water around it boils.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T12:07:49+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "lintel_guard",
+      "name": "Lintelguard",
+      "tier": "boss",
+      "scale": "big",
+      "size": 224,
+      "template_id": "mannequin",
+      "biome": [
+        "grey_paving_stone",
+        "brown_paving_stone"
+      ],
+      "prompt": "Gigantic fantasy door guardian shown full body from head to feet, a carved grey stone warden stepping down off its plinth, chisel marks still across its face and arms, blank carved eyes, and a stone maul.",
+      "lore": "It was carved to let the right people through. Nobody now alive knows what the carver meant.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-21T12:07:55+00:00",
       "versions_tried": 1
     }
   ],
