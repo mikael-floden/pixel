@@ -1,0 +1,141 @@
+{
+  "id": "bore_worm",
+  "name": "Boreworm",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It makes the tunnels everything else lives in. It does not know they are there.",
+  "biome": [
+    "grey_stone",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy tunnelling worm with a thick ringed grey segmented body, a circular boring mouth of grinding stone-coloured plates, bristles along each segment, and no eyes at all.",
+  "size": [
+    224,
+    224
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bore_worm/rotations/south.webp",
+    "south-east": "bore_worm/rotations/south-east.webp",
+    "east": "bore_worm/rotations/east.webp",
+    "north-east": "bore_worm/rotations/north-east.webp",
+    "north": "bore_worm/rotations/north.webp",
+    "north-west": "bore_worm/rotations/north-west.webp",
+    "west": "bore_worm/rotations/west.webp",
+    "south-west": "bore_worm/rotations/south-west.webp"
+  },
+  "sheet": "bore_worm/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "8f104962-4e31-4511-881a-3e734a1ee484",
+  "seed": 262821749,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:37:48+00:00",
+  "elapsed_s": 180.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.616,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.616,
+        "bbox": [
+          21,
+          16,
+          204,
+          208
+        ],
+        "fill": 0.7,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.668,
+        "bbox": [
+          26,
+          11,
+          203,
+          208
+        ],
+        "fill": 0.695,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.699,
+        "bbox": [
+          61,
+          19,
+          177,
+          208
+        ],
+        "fill": 0.437,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.665,
+        "bbox": [
+          21,
+          11,
+          196,
+          207
+        ],
+        "fill": 0.684,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.698,
+        "bbox": [
+          53,
+          18,
+          170,
+          208
+        ],
+        "fill": 0.443,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.687,
+        "bbox": [
+          24,
+          17,
+          205,
+          205
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.678,
+        "bbox": [
+          56,
+          10,
+          157,
+          218
+        ],
+        "fill": 0.419,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.683,
+        "bbox": [
+          17,
+          16,
+          207,
+          209
+        ],
+        "fill": 0.731,
+        "touches_edge": false
+      }
+    }
+  }
+}

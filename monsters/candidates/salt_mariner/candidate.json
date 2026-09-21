@@ -1,0 +1,141 @@
+{
+  "id": "salt_mariner",
+  "name": "Saltmariner",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It still walks the deck watch it was set. The ship is somewhere below and it has not been relieved.",
+  "biome": [
+    "deep_water",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy drowned sailor shown full body from head to feet, bloated grey-green flesh, a waterlogged dark coat hanging heavy, barnacles crusting one shoulder and jaw, pale clouded eyes, and strands of weed in its hair.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "mannequin",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "salt_mariner/rotations/south.webp",
+    "south-east": "salt_mariner/rotations/south-east.webp",
+    "east": "salt_mariner/rotations/east.webp",
+    "north-east": "salt_mariner/rotations/north-east.webp",
+    "north": "salt_mariner/rotations/north.webp",
+    "north-west": "salt_mariner/rotations/north-west.webp",
+    "west": "salt_mariner/rotations/west.webp",
+    "south-west": "salt_mariner/rotations/south-west.webp"
+  },
+  "sheet": "salt_mariner/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0ad3825c-d374-4428-882e-0703426f68bd",
+  "seed": 895805521,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:37:37+00:00",
+  "elapsed_s": 186.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.672,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.672,
+        "bbox": [
+          15,
+          5,
+          113,
+          123
+        ],
+        "fill": 0.706,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.716,
+        "bbox": [
+          36,
+          5,
+          100,
+          123
+        ],
+        "fill": 0.461,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.755,
+        "bbox": [
+          28,
+          5,
+          92,
+          123
+        ],
+        "fill": 0.461,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.689,
+        "bbox": [
+          18,
+          5,
+          110,
+          121
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.788,
+        "bbox": [
+          25,
+          6,
+          104,
+          123
+        ],
+        "fill": 0.564,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.706,
+        "bbox": [
+          24,
+          5,
+          101,
+          123
+        ],
+        "fill": 0.555,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.71,
+        "bbox": [
+          27,
+          5,
+          104,
+          123
+        ],
+        "fill": 0.555,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.785,
+        "bbox": [
+          24,
+          6,
+          103,
+          123
+        ],
+        "fill": 0.564,
+        "touches_edge": false
+      }
+    }
+  }
+}

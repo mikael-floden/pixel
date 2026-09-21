@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T11:34:30+00:00",
+  "generated_at": "2026-09-21T11:37:58+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 142,
+  "count": 149,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -8922,6 +8922,139 @@
       }
     },
     {
+      "id": "salt_mariner",
+      "name": "Saltmariner",
+      "tier": "evil",
+      "lore": "It still walks the deck watch it was set. The ship is somewhere below and it has not been relieved.",
+      "biome": [
+        "deep_water",
+        "water"
+      ],
+      "items": [],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "mannequin",
+      "scale": "standard",
+      "pixellab_id": "0ad3825c-d374-4428-882e-0703426f68bd",
+      "version": 1,
+      "sheet": "salt_mariner/sheet.webp",
+      "rotations": {
+        "south": "salt_mariner/rotations/south.webp",
+        "south-east": "salt_mariner/rotations/south-east.webp",
+        "east": "salt_mariner/rotations/east.webp",
+        "north-east": "salt_mariner/rotations/north-east.webp",
+        "north": "salt_mariner/rotations/north.webp",
+        "north-west": "salt_mariner/rotations/north-west.webp",
+        "west": "salt_mariner/rotations/west.webp",
+        "south-west": "salt_mariner/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.672,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.672,
+            "bbox": [
+              15,
+              5,
+              113,
+              123
+            ],
+            "fill": 0.706,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.716,
+            "bbox": [
+              36,
+              5,
+              100,
+              123
+            ],
+            "fill": 0.461,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.755,
+            "bbox": [
+              28,
+              5,
+              92,
+              123
+            ],
+            "fill": 0.461,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.689,
+            "bbox": [
+              18,
+              5,
+              110,
+              121
+            ],
+            "fill": 0.651,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.788,
+            "bbox": [
+              25,
+              6,
+              104,
+              123
+            ],
+            "fill": 0.564,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.706,
+            "bbox": [
+              24,
+              5,
+              101,
+              123
+            ],
+            "fill": 0.555,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.71,
+            "bbox": [
+              27,
+              5,
+              104,
+              123
+            ],
+            "fill": 0.555,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.785,
+            "bbox": [
+              24,
+              6,
+              103,
+              123
+            ],
+            "fill": 0.564,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:37:37+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "reef_jaw",
       "name": "Reefjaw",
       "tier": "mid",
@@ -9316,6 +9449,138 @@
         "state": "waiting",
         "takes": {},
         "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
+    },
+    {
+      "id": "cloak_mantle",
+      "name": "Cloakmantle",
+      "tier": "evil",
+      "lore": "It folds itself shut and waits out whatever is passing. It has outwaited everything so far.",
+      "biome": [
+        "deep_water"
+      ],
+      "items": [],
+      "size": [
+        104,
+        104
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "bc676cad-3007-49b8-a072-f46222e536db",
+      "version": 1,
+      "sheet": "cloak_mantle/sheet.webp",
+      "rotations": {
+        "south": "cloak_mantle/rotations/south.webp",
+        "south-east": "cloak_mantle/rotations/south-east.webp",
+        "east": "cloak_mantle/rotations/east.webp",
+        "north-east": "cloak_mantle/rotations/north-east.webp",
+        "north": "cloak_mantle/rotations/north.webp",
+        "north-west": "cloak_mantle/rotations/north-west.webp",
+        "west": "cloak_mantle/rotations/west.webp",
+        "south-west": "cloak_mantle/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.723,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.723,
+            "bbox": [
+              6,
+              4,
+              98,
+              100
+            ],
+            "fill": 0.817,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.748,
+            "bbox": [
+              17,
+              3,
+              93,
+              100
+            ],
+            "fill": 0.682,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.762,
+            "bbox": [
+              11,
+              3,
+              87,
+              100
+            ],
+            "fill": 0.682,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.746,
+            "bbox": [
+              5,
+              6,
+              99,
+              93
+            ],
+            "fill": 0.756,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.791,
+            "bbox": [
+              11,
+              3,
+              95,
+              101
+            ],
+            "fill": 0.761,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.74,
+            "bbox": [
+              15,
+              4,
+              86,
+              101
+            ],
+            "fill": 0.637,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.743,
+            "bbox": [
+              19,
+              4,
+              90,
+              101
+            ],
+            "fill": 0.637,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.794,
+            "bbox": [
+              9,
+              3,
+              94,
+              101
+            ],
+            "fill": 0.77,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:37:40+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
       }
     },
     {
@@ -9717,6 +9982,139 @@
         "state": "waiting",
         "takes": {},
         "blocking": "not fully approved: idle, walk, angry, attack, die"
+      }
+    },
+    {
+      "id": "frill_slug",
+      "name": "Frillback",
+      "tier": "cute",
+      "lore": "Every bright colour on it is a warning, and it is telling the truth about all of them.",
+      "biome": [
+        "water",
+        "light_beach"
+      ],
+      "items": [],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "b3861860-f934-4ec1-9433-073f65c19af4",
+      "version": 1,
+      "sheet": "frill_slug/sheet.webp",
+      "rotations": {
+        "south": "frill_slug/rotations/south.webp",
+        "south-east": "frill_slug/rotations/south-east.webp",
+        "east": "frill_slug/rotations/east.webp",
+        "north-east": "frill_slug/rotations/north-east.webp",
+        "north": "frill_slug/rotations/north.webp",
+        "north-west": "frill_slug/rotations/north-west.webp",
+        "west": "frill_slug/rotations/west.webp",
+        "south-west": "frill_slug/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.766,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.781,
+            "bbox": [
+              3,
+              4,
+              44,
+              44
+            ],
+            "fill": 0.712,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.778,
+            "bbox": [
+              7,
+              6,
+              45,
+              43
+            ],
+            "fill": 0.61,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.81,
+            "bbox": [
+              3,
+              4,
+              44,
+              44
+            ],
+            "fill": 0.712,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.766,
+            "bbox": [
+              6,
+              8,
+              41,
+              44
+            ],
+            "fill": 0.547,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.825,
+            "bbox": [
+              9,
+              4,
+              40,
+              44
+            ],
+            "fill": 0.538,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.798,
+            "bbox": [
+              3,
+              6,
+              43,
+              43
+            ],
+            "fill": 0.642,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.789,
+            "bbox": [
+              9,
+              8,
+              41,
+              44
+            ],
+            "fill": 0.5,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.8,
+            "bbox": [
+              4,
+              4,
+              45,
+              44
+            ],
+            "fill": 0.712,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:36:54+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
       }
     },
     {
@@ -16203,6 +16601,141 @@
       }
     },
     {
+      "id": "den_mother",
+      "name": "Denmother",
+      "tier": "boss",
+      "lore": "The cave is hers and always has been. Everything else in it is a guest or a meal.",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        232,
+        232
+      ],
+      "template_id": "bear",
+      "scale": "big",
+      "pixellab_id": "1538e3a1-36c2-4977-ab3b-34a04eac1d40",
+      "version": 1,
+      "sheet": "den_mother/sheet.webp",
+      "rotations": {
+        "south": "den_mother/rotations/south.webp",
+        "south-east": "den_mother/rotations/south-east.webp",
+        "east": "den_mother/rotations/east.webp",
+        "north-east": "den_mother/rotations/north-east.webp",
+        "north": "den_mother/rotations/north.webp",
+        "north-west": "den_mother/rotations/north-west.webp",
+        "west": "den_mother/rotations/west.webp",
+        "south-west": "den_mother/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "warn",
+        "min_run1": 0.481,
+        "reasons": [
+          "soft density: min run1 0.481 < 0.5 — eyeball it"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.481,
+            "bbox": [
+              19,
+              8,
+              213,
+              224
+            ],
+            "fill": 0.779,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.556,
+            "bbox": [
+              16,
+              9,
+              192,
+              225
+            ],
+            "fill": 0.706,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.55,
+            "bbox": [
+              40,
+              9,
+              213,
+              225
+            ],
+            "fill": 0.694,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.521,
+            "bbox": [
+              20,
+              10,
+              208,
+              225
+            ],
+            "fill": 0.751,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.556,
+            "bbox": [
+              36,
+              9,
+              206,
+              224
+            ],
+            "fill": 0.679,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.521,
+            "bbox": [
+              42,
+              12,
+              192,
+              224
+            ],
+            "fill": 0.591,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.523,
+            "bbox": [
+              38,
+              12,
+              188,
+              224
+            ],
+            "fill": 0.591,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.552,
+            "bbox": [
+              29,
+              9,
+              197,
+              224
+            ],
+            "fill": 0.671,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:37:48+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "pale_gill",
       "name": "Palegill",
       "tier": "cute",
@@ -16994,6 +17527,139 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:21:46+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "bore_worm",
+      "name": "Boreworm",
+      "tier": "boss",
+      "lore": "It makes the tunnels everything else lives in. It does not know they are there.",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "items": [],
+      "size": [
+        224,
+        224
+      ],
+      "template_id": "bear",
+      "scale": "big",
+      "pixellab_id": "8f104962-4e31-4511-881a-3e734a1ee484",
+      "version": 1,
+      "sheet": "bore_worm/sheet.webp",
+      "rotations": {
+        "south": "bore_worm/rotations/south.webp",
+        "south-east": "bore_worm/rotations/south-east.webp",
+        "east": "bore_worm/rotations/east.webp",
+        "north-east": "bore_worm/rotations/north-east.webp",
+        "north": "bore_worm/rotations/north.webp",
+        "north-west": "bore_worm/rotations/north-west.webp",
+        "west": "bore_worm/rotations/west.webp",
+        "south-west": "bore_worm/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.616,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.616,
+            "bbox": [
+              21,
+              16,
+              204,
+              208
+            ],
+            "fill": 0.7,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.668,
+            "bbox": [
+              26,
+              11,
+              203,
+              208
+            ],
+            "fill": 0.695,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.699,
+            "bbox": [
+              61,
+              19,
+              177,
+              208
+            ],
+            "fill": 0.437,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.665,
+            "bbox": [
+              21,
+              11,
+              196,
+              207
+            ],
+            "fill": 0.684,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.698,
+            "bbox": [
+              53,
+              18,
+              170,
+              208
+            ],
+            "fill": 0.443,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.687,
+            "bbox": [
+              24,
+              17,
+              205,
+              205
+            ],
+            "fill": 0.678,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.678,
+            "bbox": [
+              56,
+              10,
+              157,
+              218
+            ],
+            "fill": 0.419,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.683,
+            "bbox": [
+              17,
+              16,
+              207,
+              209
+            ],
+            "fill": 0.731,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:37:48+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},
@@ -17799,6 +18465,141 @@
       }
     },
     {
+      "id": "rime_moth",
+      "name": "Rimemoth",
+      "tier": "cute",
+      "lore": "It flies in weather that grounds everything else, and only after dark.",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [
+        "moth wing"
+      ],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "9d6ebf2a-e011-46be-99b0-6b374148c724",
+      "version": 1,
+      "sheet": "rime_moth/sheet.webp",
+      "rotations": {
+        "south": "rime_moth/rotations/south.webp",
+        "south-east": "rime_moth/rotations/south-east.webp",
+        "east": "rime_moth/rotations/east.webp",
+        "north-east": "rime_moth/rotations/north-east.webp",
+        "north": "rime_moth/rotations/north.webp",
+        "north-west": "rime_moth/rotations/north-west.webp",
+        "west": "rime_moth/rotations/west.webp",
+        "south-west": "rime_moth/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.713,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.713,
+            "bbox": [
+              2,
+              4,
+              46,
+              44
+            ],
+            "fill": 0.764,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.789,
+            "bbox": [
+              15,
+              2,
+              31,
+              45
+            ],
+            "fill": 0.299,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.793,
+            "bbox": [
+              17,
+              2,
+              33,
+              45
+            ],
+            "fill": 0.299,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.735,
+            "bbox": [
+              2,
+              4,
+              46,
+              43
+            ],
+            "fill": 0.745,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.746,
+            "bbox": [
+              7,
+              3,
+              45,
+              45
+            ],
+            "fill": 0.693,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.731,
+            "bbox": [
+              7,
+              3,
+              41,
+              44
+            ],
+            "fill": 0.605,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.743,
+            "bbox": [
+              8,
+              3,
+              41,
+              44
+            ],
+            "fill": 0.587,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.763,
+            "bbox": [
+              3,
+              3,
+              41,
+              45
+            ],
+            "fill": 0.693,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:37:58+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
       "id": "hoar_fisher",
       "name": "Hoarfisher",
       "tier": "evil",
@@ -18191,6 +18992,141 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:26:10+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "slag_crab",
+      "name": "Slagcrab",
+      "tier": "mid",
+      "lore": "It walks out of the vents when they cool and goes back in when they do not.",
+      "biome": [
+        "black_rock",
+        "lava"
+      ],
+      "items": [
+        "curved pincer"
+      ],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "c2146908-5e8b-4243-a51c-16df21677a9a",
+      "version": 1,
+      "sheet": "slag_crab/sheet.webp",
+      "rotations": {
+        "south": "slag_crab/rotations/south.webp",
+        "south-east": "slag_crab/rotations/south-east.webp",
+        "east": "slag_crab/rotations/east.webp",
+        "north-east": "slag_crab/rotations/north-east.webp",
+        "north": "slag_crab/rotations/north.webp",
+        "north-west": "slag_crab/rotations/north-west.webp",
+        "west": "slag_crab/rotations/west.webp",
+        "south-west": "slag_crab/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.716,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.716,
+            "bbox": [
+              4,
+              14,
+              92,
+              85
+            ],
+            "fill": 0.678,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.783,
+            "bbox": [
+              7,
+              12,
+              91,
+              85
+            ],
+            "fill": 0.665,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.79,
+            "bbox": [
+              6,
+              12,
+              89,
+              85
+            ],
+            "fill": 0.657,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.781,
+            "bbox": [
+              7,
+              13,
+              89,
+              85
+            ],
+            "fill": 0.641,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.823,
+            "bbox": [
+              5,
+              9,
+              91,
+              86
+            ],
+            "fill": 0.719,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.786,
+            "bbox": [
+              5,
+              11,
+              89,
+              85
+            ],
+            "fill": 0.674,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.789,
+            "bbox": [
+              7,
+              11,
+              92,
+              85
+            ],
+            "fill": 0.683,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.82,
+            "bbox": [
+              5,
+              9,
+              92,
+              86
+            ],
+            "fill": 0.727,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:37:48+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},

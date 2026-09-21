@@ -1,0 +1,143 @@
+{
+  "id": "den_mother",
+  "name": "Denmother",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "The cave is hers and always has been. Everything else in it is a guest or a meal.",
+  "biome": [
+    "grey_stone",
+    "black_rock"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy cave bear with a massive domed skull, a high shoulder hump of muscle, shaggy dark brown fur, a scarred muzzle, small deep-set eyes, and long claws worn blunt by stone.",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "den_mother/rotations/south.webp",
+    "south-east": "den_mother/rotations/south-east.webp",
+    "east": "den_mother/rotations/east.webp",
+    "north-east": "den_mother/rotations/north-east.webp",
+    "north": "den_mother/rotations/north.webp",
+    "north-west": "den_mother/rotations/north-west.webp",
+    "west": "den_mother/rotations/west.webp",
+    "south-west": "den_mother/rotations/south-west.webp"
+  },
+  "sheet": "den_mother/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "1538e3a1-36c2-4977-ab3b-34a04eac1d40",
+  "seed": 1924533860,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:37:48+00:00",
+  "elapsed_s": 188.2,
+  "qa": {
+    "status": "warn",
+    "min_run1": 0.481,
+    "reasons": [
+      "soft density: min run1 0.481 < 0.5 — eyeball it"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.481,
+        "bbox": [
+          19,
+          8,
+          213,
+          224
+        ],
+        "fill": 0.779,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.556,
+        "bbox": [
+          16,
+          9,
+          192,
+          225
+        ],
+        "fill": 0.706,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.55,
+        "bbox": [
+          40,
+          9,
+          213,
+          225
+        ],
+        "fill": 0.694,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.521,
+        "bbox": [
+          20,
+          10,
+          208,
+          225
+        ],
+        "fill": 0.751,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.556,
+        "bbox": [
+          36,
+          9,
+          206,
+          224
+        ],
+        "fill": 0.679,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.521,
+        "bbox": [
+          42,
+          12,
+          192,
+          224
+        ],
+        "fill": 0.591,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.523,
+        "bbox": [
+          38,
+          12,
+          188,
+          224
+        ],
+        "fill": 0.591,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.552,
+        "bbox": [
+          29,
+          9,
+          197,
+          224
+        ],
+        "fill": 0.671,
+        "touches_edge": false
+      }
+    }
+  }
+}

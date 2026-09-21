@@ -1,0 +1,143 @@
+{
+  "id": "slag_crab",
+  "name": "Slagcrab",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It walks out of the vents when they cool and goes back in when they do not.",
+  "biome": [
+    "black_rock",
+    "lava"
+  ],
+  "items": [
+    "curved pincer"
+  ],
+  "prompt": "Fantasy crab of cooled volcanic slag, a crust of black basalt over its shell, joints glowing molten orange between the plates, heavy blunt claws, and small ember eyes on short stalks.",
+  "size": [
+    96,
+    96
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "slag_crab/rotations/south.webp",
+    "south-east": "slag_crab/rotations/south-east.webp",
+    "east": "slag_crab/rotations/east.webp",
+    "north-east": "slag_crab/rotations/north-east.webp",
+    "north": "slag_crab/rotations/north.webp",
+    "north-west": "slag_crab/rotations/north-west.webp",
+    "west": "slag_crab/rotations/west.webp",
+    "south-west": "slag_crab/rotations/south-west.webp"
+  },
+  "sheet": "slag_crab/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "c2146908-5e8b-4243-a51c-16df21677a9a",
+  "seed": 811652630,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:37:48+00:00",
+  "elapsed_s": 168.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.716,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.716,
+        "bbox": [
+          4,
+          14,
+          92,
+          85
+        ],
+        "fill": 0.678,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.783,
+        "bbox": [
+          7,
+          12,
+          91,
+          85
+        ],
+        "fill": 0.665,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.79,
+        "bbox": [
+          6,
+          12,
+          89,
+          85
+        ],
+        "fill": 0.657,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.781,
+        "bbox": [
+          7,
+          13,
+          89,
+          85
+        ],
+        "fill": 0.641,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.823,
+        "bbox": [
+          5,
+          9,
+          91,
+          86
+        ],
+        "fill": 0.719,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.786,
+        "bbox": [
+          5,
+          11,
+          89,
+          85
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.789,
+        "bbox": [
+          7,
+          11,
+          92,
+          85
+        ],
+        "fill": 0.683,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.82,
+        "bbox": [
+          5,
+          9,
+          92,
+          86
+        ],
+        "fill": 0.727,
+        "touches_edge": false
+      }
+    }
+  }
+}
