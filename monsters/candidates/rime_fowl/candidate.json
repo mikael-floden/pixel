@@ -1,0 +1,143 @@
+{
+  "id": "rime_fowl",
+  "name": "Rimefowl",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It vanishes by standing still. In summer it is a different bird and knows it.",
+  "biome": [
+    "snow",
+    "ice"
+  ],
+  "items": [
+    "soft plume"
+  ],
+  "prompt": "Fantasy ptarmigan in full winter white, plumage puffed against the cold, feathered feet, a small black bill, a black stripe through the eye, and wings folded invisibly into its body.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "rime_fowl/rotations/south.webp",
+    "south-east": "rime_fowl/rotations/south-east.webp",
+    "east": "rime_fowl/rotations/east.webp",
+    "north-east": "rime_fowl/rotations/north-east.webp",
+    "north": "rime_fowl/rotations/north.webp",
+    "north-west": "rime_fowl/rotations/north-west.webp",
+    "west": "rime_fowl/rotations/west.webp",
+    "south-west": "rime_fowl/rotations/south-west.webp"
+  },
+  "sheet": "rime_fowl/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3e06944d-f5e2-4d1a-b0c2-3c5a05eb22a2",
+  "seed": 207082944,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:13:35+00:00",
+  "elapsed_s": 192.9,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.684,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.687,
+        "bbox": [
+          6,
+          4,
+          43,
+          44
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.684,
+        "bbox": [
+          4,
+          4,
+          43,
+          44
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.688,
+        "bbox": [
+          5,
+          4,
+          42,
+          44
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.694,
+        "bbox": [
+          8,
+          4,
+          39,
+          44
+        ],
+        "fill": 0.538,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.723,
+        "bbox": [
+          8,
+          5,
+          40,
+          44
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.726,
+        "bbox": [
+          6,
+          4,
+          42,
+          44
+        ],
+        "fill": 0.625,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.734,
+        "bbox": [
+          8,
+          4,
+          40,
+          43
+        ],
+        "fill": 0.542,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.709,
+        "bbox": [
+          6,
+          4,
+          43,
+          44
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      }
+    }
+  }
+}

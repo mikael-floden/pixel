@@ -1,0 +1,143 @@
+{
+  "id": "reed_stalker",
+  "name": "Reedstalker",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It becomes a reed when watched and a bird when not. It is patient enough for both.",
+  "biome": [
+    "dark_mud",
+    "water"
+  ],
+  "items": [
+    "wing quills"
+  ],
+  "prompt": "Fantasy bittern standing upright with its neck stretched straight up, streaked brown and cream plumage, wings folded flat, a long dagger bill pointed skyward, and yellow eyes turned forward.",
+  "size": [
+    120,
+    120
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "reed_stalker/rotations/south.webp",
+    "south-east": "reed_stalker/rotations/south-east.webp",
+    "east": "reed_stalker/rotations/east.webp",
+    "north-east": "reed_stalker/rotations/north-east.webp",
+    "north": "reed_stalker/rotations/north.webp",
+    "north-west": "reed_stalker/rotations/north-west.webp",
+    "west": "reed_stalker/rotations/west.webp",
+    "south-west": "reed_stalker/rotations/south-west.webp"
+  },
+  "sheet": "reed_stalker/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "0e3ed1aa-9cd2-4da4-9745-5dd6b8da5d96",
+  "seed": 827286799,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:13:03+00:00",
+  "elapsed_s": 175.5,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.735,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.735,
+        "bbox": [
+          34,
+          7,
+          86,
+          116
+        ],
+        "fill": 0.394,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.83,
+        "bbox": [
+          22,
+          9,
+          99,
+          117
+        ],
+        "fill": 0.578,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.831,
+        "bbox": [
+          21,
+          9,
+          98,
+          117
+        ],
+        "fill": 0.578,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.763,
+        "bbox": [
+          33,
+          6,
+          86,
+          112
+        ],
+        "fill": 0.39,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.839,
+        "bbox": [
+          28,
+          8,
+          89,
+          116
+        ],
+        "fill": 0.458,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.834,
+        "bbox": [
+          29,
+          8,
+          92,
+          114
+        ],
+        "fill": 0.464,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.816,
+        "bbox": [
+          27,
+          8,
+          89,
+          114
+        ],
+        "fill": 0.456,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.838,
+        "bbox": [
+          31,
+          8,
+          92,
+          116
+        ],
+        "fill": 0.458,
+        "touches_edge": false
+      }
+    }
+  }
+}

@@ -1,0 +1,144 @@
+{
+  "id": "prism_tail",
+  "name": "Prismtail",
+  "tier": "mid",
+  "scale": "standard",
+  "lore": "It is the loudest thing in the meadow and the hardest to see. Both are on purpose.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [
+    "prism plume",
+    "prism quill"
+  ],
+  "prompt": "Fantasy peafowl-like bird standing upright, an iridescent blue-green neck, a crest of thin spines, wings folded close, and a long closed tail train of eyed feathers held low behind it.",
+  "size": [
+    128,
+    128
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "prism_tail/rotations/south.webp",
+    "south-east": "prism_tail/rotations/south-east.webp",
+    "east": "prism_tail/rotations/east.webp",
+    "north-east": "prism_tail/rotations/north-east.webp",
+    "north": "prism_tail/rotations/north.webp",
+    "north-west": "prism_tail/rotations/north-west.webp",
+    "west": "prism_tail/rotations/west.webp",
+    "south-west": "prism_tail/rotations/south-west.webp"
+  },
+  "sheet": "prism_tail/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "3168c216-3cdc-49c7-9054-e5a1803f9db3",
+  "seed": 1428619166,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:14:02+00:00",
+  "elapsed_s": 263.4,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.73,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.73,
+        "bbox": [
+          10,
+          5,
+          122,
+          123
+        ],
+        "fill": 0.807,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.811,
+        "bbox": [
+          22,
+          7,
+          123,
+          119
+        ],
+        "fill": 0.69,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.774,
+        "bbox": [
+          8,
+          11,
+          98,
+          125
+        ],
+        "fill": 0.626,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.818,
+        "bbox": [
+          8,
+          5,
+          100,
+          121
+        ],
+        "fill": 0.651,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.772,
+        "bbox": [
+          34,
+          11,
+          80,
+          123
+        ],
+        "fill": 0.314,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.815,
+        "bbox": [
+          3,
+          6,
+          112,
+          118
+        ],
+        "fill": 0.745,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.815,
+        "bbox": [
+          38,
+          6,
+          99,
+          122
+        ],
+        "fill": 0.432,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.81,
+        "bbox": [
+          10,
+          6,
+          124,
+          117
+        ],
+        "fill": 0.772,
+        "touches_edge": false
+      }
+    }
+  }
+}

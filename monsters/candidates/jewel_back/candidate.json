@@ -1,0 +1,143 @@
+{
+  "id": "jewel_back",
+  "name": "Jewelback",
+  "tier": "mid",
+  "scale": "small",
+  "lore": "The jaws are for other beetles, not for you. It will still close them on a finger.",
+  "biome": [
+    "grass",
+    "light_soil"
+  ],
+  "items": [
+    "jewel beetle"
+  ],
+  "prompt": "Fantasy stag beetle seen from above, an iridescent emerald and gold carapace, large mandibles held closed in front, short elbowed antennae, and six jointed legs tucked close to the body.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "jewel_back/rotations/south.webp",
+    "south-east": "jewel_back/rotations/south-east.webp",
+    "east": "jewel_back/rotations/east.webp",
+    "north-east": "jewel_back/rotations/north-east.webp",
+    "north": "jewel_back/rotations/north.webp",
+    "north-west": "jewel_back/rotations/north-west.webp",
+    "west": "jewel_back/rotations/west.webp",
+    "south-west": "jewel_back/rotations/south-west.webp"
+  },
+  "sheet": "jewel_back/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "eac0e4ee-3154-4988-bcd2-597be5617b38",
+  "seed": 836548828,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:12:43+00:00",
+  "elapsed_s": 179.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.779,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.817,
+        "bbox": [
+          2,
+          5,
+          46,
+          45
+        ],
+        "fill": 0.764,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.785,
+        "bbox": [
+          3,
+          9,
+          45,
+          45
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.8,
+        "bbox": [
+          3,
+          8,
+          45,
+          45
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.779,
+        "bbox": [
+          5,
+          3,
+          43,
+          40
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.844,
+        "bbox": [
+          5,
+          6,
+          44,
+          44
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.816,
+        "bbox": [
+          4,
+          3,
+          44,
+          42
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.812,
+        "bbox": [
+          4,
+          3,
+          44,
+          42
+        ],
+        "fill": 0.677,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.843,
+        "bbox": [
+          4,
+          6,
+          43,
+          44
+        ],
+        "fill": 0.643,
+        "touches_edge": false
+      }
+    }
+  }
+}

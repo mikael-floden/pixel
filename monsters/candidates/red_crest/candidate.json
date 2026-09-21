@@ -1,0 +1,143 @@
+{
+  "id": "red_crest",
+  "name": "Redcrest",
+  "tier": "cute",
+  "scale": "standard",
+  "lore": "It repeats what it hears in the voice it heard it in. People have learned to be careful near it.",
+  "biome": [
+    "grass"
+  ],
+  "items": [
+    "red plume",
+    "teal quill"
+  ],
+  "prompt": "Fantasy large parrot perched upright, a crimson crest raised, teal and cobalt flight feathers folded to its body, a heavy curved pale beak, a white eye ring, and grey gripping feet.",
+  "size": [
+    88,
+    88
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "red_crest/rotations/south.webp",
+    "south-east": "red_crest/rotations/south-east.webp",
+    "east": "red_crest/rotations/east.webp",
+    "north-east": "red_crest/rotations/north-east.webp",
+    "north": "red_crest/rotations/north.webp",
+    "north-west": "red_crest/rotations/north-west.webp",
+    "west": "red_crest/rotations/west.webp",
+    "south-west": "red_crest/rotations/south-west.webp"
+  },
+  "sheet": "red_crest/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "dd4df85a-3348-47bf-a7d8-cccce810029d",
+  "seed": 1090659000,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:13:26+00:00",
+  "elapsed_s": 209.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.695,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.695,
+        "bbox": [
+          4,
+          2,
+          72,
+          86
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.75,
+        "bbox": [
+          14,
+          2,
+          84,
+          86
+        ],
+        "fill": 0.759,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.751,
+        "bbox": [
+          2,
+          5,
+          77,
+          80
+        ],
+        "fill": 0.726,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.749,
+        "bbox": [
+          15,
+          4,
+          71,
+          81
+        ],
+        "fill": 0.557,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.761,
+        "bbox": [
+          2,
+          5,
+          79,
+          82
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.755,
+        "bbox": [
+          21,
+          3,
+          71,
+          81
+        ],
+        "fill": 0.504,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.761,
+        "bbox": [
+          8,
+          5,
+          86,
+          81
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.795,
+        "bbox": [
+          18,
+          2,
+          68,
+          83
+        ],
+        "fill": 0.523,
+        "touches_edge": false
+      }
+    }
+  }
+}

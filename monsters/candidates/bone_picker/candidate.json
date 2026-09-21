@@ -1,0 +1,150 @@
+{
+  "id": "bone_picker",
+  "name": "Bonepicker",
+  "tier": "mid",
+  "scale": "small",
+  "lore": "It finds the dead before the crows do and buries them where only it can find them again.",
+  "biome": [
+    "dark_mud",
+    "grey_stone"
+  ],
+  "items": [
+    "bone beetle"
+  ],
+  "prompt": "Fantasy carrion beetle seen from above, a matte black carapace banded with burnt orange, short clubbed antennae, spined legs folded beneath it, and a small hard head.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "bone_picker/rotations/south.webp",
+    "south-east": "bone_picker/rotations/south-east.webp",
+    "east": "bone_picker/rotations/east.webp",
+    "north-east": "bone_picker/rotations/north-east.webp",
+    "north": "bone_picker/rotations/north.webp",
+    "north-west": "bone_picker/rotations/north-west.webp",
+    "west": "bone_picker/rotations/west.webp",
+    "south-west": "bone_picker/rotations/south-west.webp"
+  },
+  "sheet": "bone_picker/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "78a9ca53-0530-4972-a3db-f2534fb7c88b",
+  "seed": 1270716931,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:13:48+00:00",
+  "elapsed_s": 207.5,
+  "qa": {
+    "status": "fail",
+    "min_run1": 0.657,
+    "reasons": [
+      "south: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
+      "south-east: content touches the canvas edge (clipped)",
+      "north-east: content touches the canvas edge (clipped)",
+      "south-west: content touches the canvas edge (clipped)"
+    ],
+    "directions": {
+      "south": {
+        "run1": 0.703,
+        "bbox": [
+          0,
+          2,
+          48,
+          47
+        ],
+        "fill": 0.938,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.695,
+        "bbox": [
+          1,
+          6,
+          48,
+          43
+        ],
+        "fill": 0.755,
+        "touches_edge": true
+      },
+      "east": {
+        "run1": 0.686,
+        "bbox": [
+          0,
+          6,
+          47,
+          43
+        ],
+        "fill": 0.755,
+        "touches_edge": true
+      },
+      "north": {
+        "run1": 0.657,
+        "bbox": [
+          3,
+          3,
+          45,
+          44
+        ],
+        "fill": 0.747,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.719,
+        "bbox": [
+          0,
+          2,
+          46,
+          47
+        ],
+        "fill": 0.898,
+        "touches_edge": true
+      },
+      "north-east": {
+        "run1": 0.674,
+        "bbox": [
+          0,
+          3,
+          46,
+          46
+        ],
+        "fill": 0.859,
+        "touches_edge": true
+      },
+      "north-west": {
+        "run1": 0.676,
+        "bbox": [
+          2,
+          3,
+          45,
+          46
+        ],
+        "fill": 0.803,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.726,
+        "bbox": [
+          2,
+          2,
+          48,
+          47
+        ],
+        "fill": 0.898,
+        "touches_edge": true
+      }
+    }
+  }
+}

@@ -1,0 +1,143 @@
+{
+  "id": "blood_wing",
+  "name": "Bloodwing",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It takes a little from many and is gone before morning. The herd wakes up merely tired.",
+  "biome": [
+    "grey_stone",
+    "dark_mud"
+  ],
+  "items": [
+    "bat wing"
+  ],
+  "prompt": "Fantasy vampire bat crouched forward on its folded wing knuckles, a grey-brown body, a fleshy leaf-shaped nose, small sharp ears, exposed white incisors, and dark blood on its lower jaw.",
+  "size": [
+    80,
+    80
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "blood_wing/rotations/south.webp",
+    "south-east": "blood_wing/rotations/south-east.webp",
+    "east": "blood_wing/rotations/east.webp",
+    "north-east": "blood_wing/rotations/north-east.webp",
+    "north": "blood_wing/rotations/north.webp",
+    "north-west": "blood_wing/rotations/north-west.webp",
+    "west": "blood_wing/rotations/west.webp",
+    "south-west": "blood_wing/rotations/south-west.webp"
+  },
+  "sheet": "blood_wing/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "dcb3de9a-5f03-48b0-8fcd-8c7ed86f426b",
+  "seed": 625609842,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:14:20+00:00",
+  "elapsed_s": 199.2,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.724,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.762,
+        "bbox": [
+          2,
+          2,
+          78,
+          76
+        ],
+        "fill": 0.879,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.785,
+        "bbox": [
+          18,
+          2,
+          62,
+          78
+        ],
+        "fill": 0.522,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.774,
+        "bbox": [
+          15,
+          2,
+          60,
+          78
+        ],
+        "fill": 0.534,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.724,
+        "bbox": [
+          2,
+          4,
+          78,
+          73
+        ],
+        "fill": 0.819,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.82,
+        "bbox": [
+          5,
+          2,
+          74,
+          78
+        ],
+        "fill": 0.819,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.744,
+        "bbox": [
+          7,
+          2,
+          72,
+          75
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.75,
+        "bbox": [
+          7,
+          2,
+          72,
+          75
+        ],
+        "fill": 0.741,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.817,
+        "bbox": [
+          6,
+          2,
+          74,
+          78
+        ],
+        "fill": 0.807,
+        "touches_edge": false
+      }
+    }
+  }
+}

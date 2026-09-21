@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-21T11:11:03+00:00",
+  "generated_at": "2026-09-21T11:15:05+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -18,7 +18,7 @@
     "rejected"
   ],
   "feedback_key": "monsters/candidates/<id>",
-  "count": 83,
+  "count": 92,
   "candidates": [
     {
       "id": "plume_brawler",
@@ -11070,6 +11070,1229 @@
       "review": "pending",
       "notes": null,
       "generated_at": "2026-09-21T11:10:19+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "prism_tail",
+      "name": "Prismtail",
+      "tier": "mid",
+      "lore": "It is the loudest thing in the meadow and the hardest to see. Both are on purpose.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [
+        "prism plume",
+        "prism quill"
+      ],
+      "size": [
+        128,
+        128
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "3168c216-3cdc-49c7-9054-e5a1803f9db3",
+      "version": 1,
+      "sheet": "prism_tail/sheet.webp",
+      "rotations": {
+        "south": "prism_tail/rotations/south.webp",
+        "south-east": "prism_tail/rotations/south-east.webp",
+        "east": "prism_tail/rotations/east.webp",
+        "north-east": "prism_tail/rotations/north-east.webp",
+        "north": "prism_tail/rotations/north.webp",
+        "north-west": "prism_tail/rotations/north-west.webp",
+        "west": "prism_tail/rotations/west.webp",
+        "south-west": "prism_tail/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.73,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.73,
+            "bbox": [
+              10,
+              5,
+              122,
+              123
+            ],
+            "fill": 0.807,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.811,
+            "bbox": [
+              22,
+              7,
+              123,
+              119
+            ],
+            "fill": 0.69,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.774,
+            "bbox": [
+              8,
+              11,
+              98,
+              125
+            ],
+            "fill": 0.626,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.818,
+            "bbox": [
+              8,
+              5,
+              100,
+              121
+            ],
+            "fill": 0.651,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.772,
+            "bbox": [
+              34,
+              11,
+              80,
+              123
+            ],
+            "fill": 0.314,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.815,
+            "bbox": [
+              3,
+              6,
+              112,
+              118
+            ],
+            "fill": 0.745,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.815,
+            "bbox": [
+              38,
+              6,
+              99,
+              122
+            ],
+            "fill": 0.432,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.81,
+            "bbox": [
+              10,
+              6,
+              124,
+              117
+            ],
+            "fill": 0.772,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:14:02+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "red_crest",
+      "name": "Redcrest",
+      "tier": "cute",
+      "lore": "It repeats what it hears in the voice it heard it in. People have learned to be careful near it.",
+      "biome": [
+        "grass"
+      ],
+      "items": [
+        "red plume",
+        "teal quill"
+      ],
+      "size": [
+        88,
+        88
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "dd4df85a-3348-47bf-a7d8-cccce810029d",
+      "version": 1,
+      "sheet": "red_crest/sheet.webp",
+      "rotations": {
+        "south": "red_crest/rotations/south.webp",
+        "south-east": "red_crest/rotations/south-east.webp",
+        "east": "red_crest/rotations/east.webp",
+        "north-east": "red_crest/rotations/north-east.webp",
+        "north": "red_crest/rotations/north.webp",
+        "north-west": "red_crest/rotations/north-west.webp",
+        "west": "red_crest/rotations/west.webp",
+        "south-west": "red_crest/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.695,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.695,
+            "bbox": [
+              4,
+              2,
+              72,
+              86
+            ],
+            "fill": 0.738,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.75,
+            "bbox": [
+              14,
+              2,
+              84,
+              86
+            ],
+            "fill": 0.759,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.751,
+            "bbox": [
+              2,
+              5,
+              77,
+              80
+            ],
+            "fill": 0.726,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.749,
+            "bbox": [
+              15,
+              4,
+              71,
+              81
+            ],
+            "fill": 0.557,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.761,
+            "bbox": [
+              2,
+              5,
+              79,
+              82
+            ],
+            "fill": 0.766,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.755,
+            "bbox": [
+              21,
+              3,
+              71,
+              81
+            ],
+            "fill": 0.504,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.761,
+            "bbox": [
+              8,
+              5,
+              86,
+              81
+            ],
+            "fill": 0.765,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.795,
+            "bbox": [
+              18,
+              2,
+              68,
+              83
+            ],
+            "fill": 0.523,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:13:26+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "blade_foot",
+      "name": "Bladefoot",
+      "tier": "evil",
+      "lore": "It asks for nothing and gives no warning. The claw does the only talking it needs.",
+      "biome": [
+        "grass",
+        "dark_mud"
+      ],
+      "items": [
+        "plume bundle"
+      ],
+      "size": [
+        152,
+        152
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "d5849936-1af1-49e5-a307-b0041b140b79",
+      "version": 1,
+      "sheet": "blade_foot/sheet.webp",
+      "rotations": {
+        "south": "blade_foot/rotations/south.webp",
+        "south-east": "blade_foot/rotations/south-east.webp",
+        "east": "blade_foot/rotations/east.webp",
+        "north-east": "blade_foot/rotations/north-east.webp",
+        "north": "blade_foot/rotations/north.webp",
+        "north-west": "blade_foot/rotations/north-west.webp",
+        "west": "blade_foot/rotations/west.webp",
+        "south-west": "blade_foot/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.639,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.639,
+            "bbox": [
+              36,
+              3,
+              115,
+              148
+            ],
+            "fill": 0.496,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.712,
+            "bbox": [
+              25,
+              2,
+              140,
+              150
+            ],
+            "fill": 0.737,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.7,
+            "bbox": [
+              11,
+              2,
+              127,
+              150
+            ],
+            "fill": 0.743,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.716,
+            "bbox": [
+              39,
+              2,
+              112,
+              138
+            ],
+            "fill": 0.43,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.709,
+            "bbox": [
+              23,
+              5,
+              113,
+              150
+            ],
+            "fill": 0.565,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.698,
+            "bbox": [
+              15,
+              2,
+              120,
+              142
+            ],
+            "fill": 0.636,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.688,
+            "bbox": [
+              34,
+              2,
+              135,
+              142
+            ],
+            "fill": 0.612,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.715,
+            "bbox": [
+              41,
+              5,
+              126,
+              150
+            ],
+            "fill": 0.533,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:15:05+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "gallow_crow",
+      "name": "Gallowcrow",
+      "tier": "evil",
+      "lore": "It keeps count of the fields it visits and comes back in the right order. Nobody taught it that.",
+      "biome": [
+        "grass",
+        "grey_paving_stone"
+      ],
+      "items": [
+        "wing quills"
+      ],
+      "size": [
+        96,
+        96
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "c939be44-2cf2-4c15-84df-88f8b2700473",
+      "version": 1,
+      "sheet": "gallow_crow/sheet.webp",
+      "rotations": {
+        "south": "gallow_crow/rotations/south.webp",
+        "south-east": "gallow_crow/rotations/south-east.webp",
+        "east": "gallow_crow/rotations/east.webp",
+        "north-east": "gallow_crow/rotations/north-east.webp",
+        "north": "gallow_crow/rotations/north.webp",
+        "north-west": "gallow_crow/rotations/north-west.webp",
+        "west": "gallow_crow/rotations/west.webp",
+        "south-west": "gallow_crow/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.597,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.597,
+            "bbox": [
+              22,
+              5,
+              75,
+              93
+            ],
+            "fill": 0.506,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.769,
+            "bbox": [
+              18,
+              6,
+              84,
+              92
+            ],
+            "fill": 0.616,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.765,
+            "bbox": [
+              11,
+              6,
+              79,
+              92
+            ],
+            "fill": 0.635,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.747,
+            "bbox": [
+              23,
+              4,
+              73,
+              92
+            ],
+            "fill": 0.477,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.72,
+            "bbox": [
+              18,
+              6,
+              73,
+              93
+            ],
+            "fill": 0.519,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.785,
+            "bbox": [
+              17,
+              5,
+              74,
+              91
+            ],
+            "fill": 0.532,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.785,
+            "bbox": [
+              21,
+              5,
+              79,
+              91
+            ],
+            "fill": 0.541,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.716,
+            "bbox": [
+              23,
+              6,
+              78,
+              93
+            ],
+            "fill": 0.519,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:14:16+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "rime_fowl",
+      "name": "Rimefowl",
+      "tier": "cute",
+      "lore": "It vanishes by standing still. In summer it is a different bird and knows it.",
+      "biome": [
+        "snow",
+        "ice"
+      ],
+      "items": [
+        "soft plume"
+      ],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "3e06944d-f5e2-4d1a-b0c2-3c5a05eb22a2",
+      "version": 1,
+      "sheet": "rime_fowl/sheet.webp",
+      "rotations": {
+        "south": "rime_fowl/rotations/south.webp",
+        "south-east": "rime_fowl/rotations/south-east.webp",
+        "east": "rime_fowl/rotations/east.webp",
+        "north-east": "rime_fowl/rotations/north-east.webp",
+        "north": "rime_fowl/rotations/north.webp",
+        "north-west": "rime_fowl/rotations/north-west.webp",
+        "west": "rime_fowl/rotations/west.webp",
+        "south-west": "rime_fowl/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.684,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.687,
+            "bbox": [
+              6,
+              4,
+              43,
+              44
+            ],
+            "fill": 0.642,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.684,
+            "bbox": [
+              4,
+              4,
+              43,
+              44
+            ],
+            "fill": 0.677,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.688,
+            "bbox": [
+              5,
+              4,
+              42,
+              44
+            ],
+            "fill": 0.642,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.694,
+            "bbox": [
+              8,
+              4,
+              39,
+              44
+            ],
+            "fill": 0.538,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.723,
+            "bbox": [
+              8,
+              5,
+              40,
+              44
+            ],
+            "fill": 0.542,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.726,
+            "bbox": [
+              6,
+              4,
+              42,
+              44
+            ],
+            "fill": 0.625,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.734,
+            "bbox": [
+              8,
+              4,
+              40,
+              43
+            ],
+            "fill": 0.542,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.709,
+            "bbox": [
+              6,
+              4,
+              43,
+              44
+            ],
+            "fill": 0.642,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:13:35+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "reed_stalker",
+      "name": "Reedstalker",
+      "tier": "evil",
+      "lore": "It becomes a reed when watched and a bird when not. It is patient enough for both.",
+      "biome": [
+        "dark_mud",
+        "water"
+      ],
+      "items": [
+        "wing quills"
+      ],
+      "size": [
+        120,
+        120
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "0e3ed1aa-9cd2-4da4-9745-5dd6b8da5d96",
+      "version": 1,
+      "sheet": "reed_stalker/sheet.webp",
+      "rotations": {
+        "south": "reed_stalker/rotations/south.webp",
+        "south-east": "reed_stalker/rotations/south-east.webp",
+        "east": "reed_stalker/rotations/east.webp",
+        "north-east": "reed_stalker/rotations/north-east.webp",
+        "north": "reed_stalker/rotations/north.webp",
+        "north-west": "reed_stalker/rotations/north-west.webp",
+        "west": "reed_stalker/rotations/west.webp",
+        "south-west": "reed_stalker/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.735,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.735,
+            "bbox": [
+              34,
+              7,
+              86,
+              116
+            ],
+            "fill": 0.394,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.83,
+            "bbox": [
+              22,
+              9,
+              99,
+              117
+            ],
+            "fill": 0.578,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.831,
+            "bbox": [
+              21,
+              9,
+              98,
+              117
+            ],
+            "fill": 0.578,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.763,
+            "bbox": [
+              33,
+              6,
+              86,
+              112
+            ],
+            "fill": 0.39,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.839,
+            "bbox": [
+              28,
+              8,
+              89,
+              116
+            ],
+            "fill": 0.458,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.834,
+            "bbox": [
+              29,
+              8,
+              92,
+              114
+            ],
+            "fill": 0.464,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.816,
+            "bbox": [
+              27,
+              8,
+              89,
+              114
+            ],
+            "fill": 0.456,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.838,
+            "bbox": [
+              31,
+              8,
+              92,
+              116
+            ],
+            "fill": 0.458,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:13:03+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "blood_wing",
+      "name": "Bloodwing",
+      "tier": "evil",
+      "lore": "It takes a little from many and is gone before morning. The herd wakes up merely tired.",
+      "biome": [
+        "grey_stone",
+        "dark_mud"
+      ],
+      "items": [
+        "bat wing"
+      ],
+      "size": [
+        80,
+        80
+      ],
+      "template_id": "bear",
+      "scale": "standard",
+      "pixellab_id": "dcb3de9a-5f03-48b0-8fcd-8c7ed86f426b",
+      "version": 1,
+      "sheet": "blood_wing/sheet.webp",
+      "rotations": {
+        "south": "blood_wing/rotations/south.webp",
+        "south-east": "blood_wing/rotations/south-east.webp",
+        "east": "blood_wing/rotations/east.webp",
+        "north-east": "blood_wing/rotations/north-east.webp",
+        "north": "blood_wing/rotations/north.webp",
+        "north-west": "blood_wing/rotations/north-west.webp",
+        "west": "blood_wing/rotations/west.webp",
+        "south-west": "blood_wing/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.724,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.762,
+            "bbox": [
+              2,
+              2,
+              78,
+              76
+            ],
+            "fill": 0.879,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.785,
+            "bbox": [
+              18,
+              2,
+              62,
+              78
+            ],
+            "fill": 0.522,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.774,
+            "bbox": [
+              15,
+              2,
+              60,
+              78
+            ],
+            "fill": 0.534,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.724,
+            "bbox": [
+              2,
+              4,
+              78,
+              73
+            ],
+            "fill": 0.819,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.82,
+            "bbox": [
+              5,
+              2,
+              74,
+              78
+            ],
+            "fill": 0.819,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.744,
+            "bbox": [
+              7,
+              2,
+              72,
+              75
+            ],
+            "fill": 0.741,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.75,
+            "bbox": [
+              7,
+              2,
+              72,
+              75
+            ],
+            "fill": 0.741,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.817,
+            "bbox": [
+              6,
+              2,
+              74,
+              78
+            ],
+            "fill": 0.807,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:14:20+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "jewel_back",
+      "name": "Jewelback",
+      "tier": "mid",
+      "lore": "The jaws are for other beetles, not for you. It will still close them on a finger.",
+      "biome": [
+        "grass",
+        "light_soil"
+      ],
+      "items": [
+        "jewel beetle"
+      ],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "eac0e4ee-3154-4988-bcd2-597be5617b38",
+      "version": 1,
+      "sheet": "jewel_back/sheet.webp",
+      "rotations": {
+        "south": "jewel_back/rotations/south.webp",
+        "south-east": "jewel_back/rotations/south-east.webp",
+        "east": "jewel_back/rotations/east.webp",
+        "north-east": "jewel_back/rotations/north-east.webp",
+        "north": "jewel_back/rotations/north.webp",
+        "north-west": "jewel_back/rotations/north-west.webp",
+        "west": "jewel_back/rotations/west.webp",
+        "south-west": "jewel_back/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "pass",
+        "min_run1": 0.779,
+        "reasons": [],
+        "directions": {
+          "south": {
+            "run1": 0.817,
+            "bbox": [
+              2,
+              5,
+              46,
+              45
+            ],
+            "fill": 0.764,
+            "touches_edge": false
+          },
+          "west": {
+            "run1": 0.785,
+            "bbox": [
+              3,
+              9,
+              45,
+              45
+            ],
+            "fill": 0.656,
+            "touches_edge": false
+          },
+          "east": {
+            "run1": 0.8,
+            "bbox": [
+              3,
+              8,
+              45,
+              45
+            ],
+            "fill": 0.674,
+            "touches_edge": false
+          },
+          "north": {
+            "run1": 0.779,
+            "bbox": [
+              5,
+              3,
+              43,
+              40
+            ],
+            "fill": 0.61,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.844,
+            "bbox": [
+              5,
+              6,
+              44,
+              44
+            ],
+            "fill": 0.643,
+            "touches_edge": false
+          },
+          "north-east": {
+            "run1": 0.816,
+            "bbox": [
+              4,
+              3,
+              44,
+              42
+            ],
+            "fill": 0.677,
+            "touches_edge": false
+          },
+          "north-west": {
+            "run1": 0.812,
+            "bbox": [
+              4,
+              3,
+              44,
+              42
+            ],
+            "fill": 0.677,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.843,
+            "bbox": [
+              4,
+              6,
+              43,
+              44
+            ],
+            "fill": 0.643,
+            "touches_edge": false
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:12:43+00:00",
+      "graduation": {
+        "state": "waiting",
+        "takes": {},
+        "blocking": "design not approved"
+      }
+    },
+    {
+      "id": "bone_picker",
+      "name": "Bonepicker",
+      "tier": "mid",
+      "lore": "It finds the dead before the crows do and buries them where only it can find them again.",
+      "biome": [
+        "dark_mud",
+        "grey_stone"
+      ],
+      "items": [
+        "bone beetle"
+      ],
+      "size": [
+        48,
+        48
+      ],
+      "template_id": "bear",
+      "scale": "small",
+      "pixellab_id": "78a9ca53-0530-4972-a3db-f2534fb7c88b",
+      "version": 1,
+      "sheet": "bone_picker/sheet.webp",
+      "rotations": {
+        "south": "bone_picker/rotations/south.webp",
+        "south-east": "bone_picker/rotations/south-east.webp",
+        "east": "bone_picker/rotations/east.webp",
+        "north-east": "bone_picker/rotations/north-east.webp",
+        "north": "bone_picker/rotations/north.webp",
+        "north-west": "bone_picker/rotations/north-west.webp",
+        "west": "bone_picker/rotations/west.webp",
+        "south-west": "bone_picker/rotations/south-west.webp"
+      },
+      "qa": {
+        "status": "fail",
+        "min_run1": 0.657,
+        "reasons": [
+          "south: content touches the canvas edge (clipped)",
+          "west: content touches the canvas edge (clipped)",
+          "east: content touches the canvas edge (clipped)",
+          "south-east: content touches the canvas edge (clipped)",
+          "north-east: content touches the canvas edge (clipped)",
+          "south-west: content touches the canvas edge (clipped)"
+        ],
+        "directions": {
+          "south": {
+            "run1": 0.703,
+            "bbox": [
+              0,
+              2,
+              48,
+              47
+            ],
+            "fill": 0.938,
+            "touches_edge": true
+          },
+          "west": {
+            "run1": 0.695,
+            "bbox": [
+              1,
+              6,
+              48,
+              43
+            ],
+            "fill": 0.755,
+            "touches_edge": true
+          },
+          "east": {
+            "run1": 0.686,
+            "bbox": [
+              0,
+              6,
+              47,
+              43
+            ],
+            "fill": 0.755,
+            "touches_edge": true
+          },
+          "north": {
+            "run1": 0.657,
+            "bbox": [
+              3,
+              3,
+              45,
+              44
+            ],
+            "fill": 0.747,
+            "touches_edge": false
+          },
+          "south-east": {
+            "run1": 0.719,
+            "bbox": [
+              0,
+              2,
+              46,
+              47
+            ],
+            "fill": 0.898,
+            "touches_edge": true
+          },
+          "north-east": {
+            "run1": 0.674,
+            "bbox": [
+              0,
+              3,
+              46,
+              46
+            ],
+            "fill": 0.859,
+            "touches_edge": true
+          },
+          "north-west": {
+            "run1": 0.676,
+            "bbox": [
+              2,
+              3,
+              45,
+              46
+            ],
+            "fill": 0.803,
+            "touches_edge": false
+          },
+          "south-west": {
+            "run1": 0.726,
+            "bbox": [
+              2,
+              2,
+              48,
+              47
+            ],
+            "fill": 0.898,
+            "touches_edge": true
+          }
+        }
+      },
+      "review": "pending",
+      "notes": null,
+      "generated_at": "2026-09-21T11:13:48+00:00",
       "graduation": {
         "state": "waiting",
         "takes": {},

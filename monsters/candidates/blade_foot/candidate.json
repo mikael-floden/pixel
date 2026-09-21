@@ -1,0 +1,143 @@
+{
+  "id": "blade_foot",
+  "name": "Bladefoot",
+  "tier": "evil",
+  "scale": "standard",
+  "lore": "It asks for nothing and gives no warning. The claw does the only talking it needs.",
+  "biome": [
+    "grass",
+    "dark_mud"
+  ],
+  "items": [
+    "plume bundle"
+  ],
+  "prompt": "Fantasy cassowary standing upright, glossy black hair-like plumage, a bare blue neck with red wattles, a tall bony helmet casque, wings folded invisibly, and a long dagger claw on each inner toe.",
+  "size": [
+    152,
+    152
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "blade_foot/rotations/south.webp",
+    "south-east": "blade_foot/rotations/south-east.webp",
+    "east": "blade_foot/rotations/east.webp",
+    "north-east": "blade_foot/rotations/north-east.webp",
+    "north": "blade_foot/rotations/north.webp",
+    "north-west": "blade_foot/rotations/north-west.webp",
+    "west": "blade_foot/rotations/west.webp",
+    "south-west": "blade_foot/rotations/south-west.webp"
+  },
+  "sheet": "blade_foot/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "d5849936-1af1-49e5-a307-b0041b140b79",
+  "seed": 1889234278,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:15:05+00:00",
+  "elapsed_s": 243.6,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.639,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.639,
+        "bbox": [
+          36,
+          3,
+          115,
+          148
+        ],
+        "fill": 0.496,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.712,
+        "bbox": [
+          25,
+          2,
+          140,
+          150
+        ],
+        "fill": 0.737,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.7,
+        "bbox": [
+          11,
+          2,
+          127,
+          150
+        ],
+        "fill": 0.743,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.716,
+        "bbox": [
+          39,
+          2,
+          112,
+          138
+        ],
+        "fill": 0.43,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.709,
+        "bbox": [
+          23,
+          5,
+          113,
+          150
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.698,
+        "bbox": [
+          15,
+          2,
+          120,
+          142
+        ],
+        "fill": 0.636,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.688,
+        "bbox": [
+          34,
+          2,
+          135,
+          142
+        ],
+        "fill": 0.612,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.715,
+        "bbox": [
+          41,
+          5,
+          126,
+          150
+        ],
+        "fill": 0.533,
+        "touches_edge": false
+      }
+    }
+  }
+}
