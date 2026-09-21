@@ -1,0 +1,141 @@
+{
+  "id": "tusk_drift",
+  "name": "Tuskdrift",
+  "tier": "boss",
+  "scale": "big",
+  "lore": "It owns the floe it is lying on and settles the question with its face.",
+  "biome": [
+    "ice",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Gigantic fantasy bull walrus with an immense wrinkled brown bulk on broad flippers, two long yellowed tusks, a heavy whiskered muzzle, small bloodshot eyes, and a scarred hide.",
+  "size": [
+    232,
+    232
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "tusk_drift/rotations/south.webp",
+    "south-east": "tusk_drift/rotations/south-east.webp",
+    "east": "tusk_drift/rotations/east.webp",
+    "north-east": "tusk_drift/rotations/north-east.webp",
+    "north": "tusk_drift/rotations/north.webp",
+    "north-west": "tusk_drift/rotations/north-west.webp",
+    "west": "tusk_drift/rotations/west.webp",
+    "south-west": "tusk_drift/rotations/south-west.webp"
+  },
+  "sheet": "tusk_drift/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "150b22f2-3538-4a4c-86b3-5aadc7089836",
+  "seed": 1496963421,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:24:42+00:00",
+  "elapsed_s": 180.0,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.563,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.563,
+        "bbox": [
+          30,
+          26,
+          216,
+          205
+        ],
+        "fill": 0.619,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.601,
+        "bbox": [
+          15,
+          26,
+          217,
+          205
+        ],
+        "fill": 0.672,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.608,
+        "bbox": [
+          15,
+          27,
+          216,
+          206
+        ],
+        "fill": 0.668,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.563,
+        "bbox": [
+          15,
+          20,
+          187,
+          211
+        ],
+        "fill": 0.61,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.634,
+        "bbox": [
+          18,
+          29,
+          200,
+          208
+        ],
+        "fill": 0.605,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.612,
+        "bbox": [
+          14,
+          22,
+          205,
+          212
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.609,
+        "bbox": [
+          32,
+          22,
+          203,
+          212
+        ],
+        "fill": 0.604,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.627,
+        "bbox": [
+          24,
+          29,
+          217,
+          208
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      }
+    }
+  }
+}

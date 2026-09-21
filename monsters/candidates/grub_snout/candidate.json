@@ -1,0 +1,141 @@
+{
+  "id": "grub_snout",
+  "name": "Grubsnout",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It reads the whole field through its nose and has never once seen the sky.",
+  "biome": [
+    "light_soil",
+    "grey_stone"
+  ],
+  "items": [],
+  "prompt": "Fantasy mole with dense black velvet fur, broad pink spade-like forepaws turned outward, a fleshy pink star-shaped snout, no visible eyes, and a short bare tail.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "grub_snout/rotations/south.webp",
+    "south-east": "grub_snout/rotations/south-east.webp",
+    "east": "grub_snout/rotations/east.webp",
+    "north-east": "grub_snout/rotations/north-east.webp",
+    "north": "grub_snout/rotations/north.webp",
+    "north-west": "grub_snout/rotations/north-west.webp",
+    "west": "grub_snout/rotations/west.webp",
+    "south-west": "grub_snout/rotations/south-west.webp"
+  },
+  "sheet": "grub_snout/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "b0e14e85-e3d5-42e9-ad85-b05d8bdc3d1d",
+  "seed": 399891336,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:24:38+00:00",
+  "elapsed_s": 163.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.659,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.736,
+        "bbox": [
+          4,
+          3,
+          44,
+          45
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.731,
+        "bbox": [
+          6,
+          3,
+          45,
+          45
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.74,
+        "bbox": [
+          2,
+          3,
+          42,
+          45
+        ],
+        "fill": 0.729,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.659,
+        "bbox": [
+          9,
+          3,
+          40,
+          45
+        ],
+        "fill": 0.565,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.761,
+        "bbox": [
+          9,
+          3,
+          45,
+          45
+        ],
+        "fill": 0.656,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.688,
+        "bbox": [
+          5,
+          3,
+          44,
+          45
+        ],
+        "fill": 0.711,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.693,
+        "bbox": [
+          4,
+          3,
+          41,
+          45
+        ],
+        "fill": 0.674,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.768,
+        "bbox": [
+          2,
+          3,
+          46,
+          45
+        ],
+        "fill": 0.802,
+        "touches_edge": false
+      }
+    }
+  }
+}

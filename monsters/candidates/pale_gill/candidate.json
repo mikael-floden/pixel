@@ -1,0 +1,141 @@
+{
+  "id": "pale_gill",
+  "name": "Palegill",
+  "tier": "cute",
+  "scale": "small",
+  "lore": "It has never needed light and does not register it. The dark is simply where things are.",
+  "biome": [
+    "grey_stone",
+    "water"
+  ],
+  "items": [],
+  "prompt": "Fantasy blind cave salamander with translucent pink-white skin showing faint organs beneath, feathery red external gills behind the head, four thin legs, and smooth skin grown over where eyes would be.",
+  "size": [
+    48,
+    48
+  ],
+  "template_id": "bear",
+  "directions": [
+    "south",
+    "south-east",
+    "east",
+    "north-east",
+    "north",
+    "north-west",
+    "west",
+    "south-west"
+  ],
+  "rotations": {
+    "south": "pale_gill/rotations/south.webp",
+    "south-east": "pale_gill/rotations/south-east.webp",
+    "east": "pale_gill/rotations/east.webp",
+    "north-east": "pale_gill/rotations/north-east.webp",
+    "north": "pale_gill/rotations/north.webp",
+    "north-west": "pale_gill/rotations/north-west.webp",
+    "west": "pale_gill/rotations/west.webp",
+    "south-west": "pale_gill/rotations/south-west.webp"
+  },
+  "sheet": "pale_gill/sheet.webp",
+  "review": "pending",
+  "pixellab_id": "94101e2e-f302-4a16-9a54-68377b76cdf6",
+  "seed": 1383304990,
+  "version": 1,
+  "usage": null,
+  "generated_at": "2026-09-21T11:24:31+00:00",
+  "elapsed_s": 258.7,
+  "qa": {
+    "status": "pass",
+    "min_run1": 0.736,
+    "reasons": [],
+    "directions": {
+      "south": {
+        "run1": 0.798,
+        "bbox": [
+          3,
+          4,
+          40,
+          44
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.786,
+        "bbox": [
+          10,
+          3,
+          35,
+          45
+        ],
+        "fill": 0.456,
+        "touches_edge": false
+      },
+      "east": {
+        "run1": 0.802,
+        "bbox": [
+          5,
+          3,
+          39,
+          45
+        ],
+        "fill": 0.62,
+        "touches_edge": false
+      },
+      "north": {
+        "run1": 0.738,
+        "bbox": [
+          8,
+          4,
+          45,
+          44
+        ],
+        "fill": 0.642,
+        "touches_edge": false
+      },
+      "south-east": {
+        "run1": 0.797,
+        "bbox": [
+          3,
+          4,
+          39,
+          45
+        ],
+        "fill": 0.641,
+        "touches_edge": false
+      },
+      "north-east": {
+        "run1": 0.741,
+        "bbox": [
+          11,
+          4,
+          38,
+          44
+        ],
+        "fill": 0.469,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.736,
+        "bbox": [
+          11,
+          4,
+          45,
+          45
+        ],
+        "fill": 0.605,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.783,
+        "bbox": [
+          9,
+          4,
+          37,
+          45
+        ],
+        "fill": 0.498,
+        "touches_edge": false
+      }
+    }
+  }
+}
