@@ -143,7 +143,12 @@ def qa_rotations(rots):
     if len(sizes) > 1:
         reasons.append(f"canvases differ: {sorted(sizes)}")
     worst = 1.0
-    for d, im in rots.items():
+    # CANONICAL ORDER, never insertion order: `rots` arrives in PixelLab's order
+    # from generate and in the manifest's key order from `qa`, so iterating it
+    # directly rewrote all 89 manifests with identical values in a different
+    # order on every qa run (measured 2026-09-21 — 89 touched, 89 equal).
+    for d in [x for x in DIRECTIONS_8 if x in rots] + [x for x in rots if x not in DIRECTIONS_8]:
+        im = rots[d]
         w, h = im.size
         bb = im.getbbox()
         r1 = round(run1(im), 3)

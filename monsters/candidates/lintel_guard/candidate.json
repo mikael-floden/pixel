@@ -48,12 +48,12 @@
     "min_run1": 0.582,
     "reasons": [
       "south: content touches the canvas edge (clipped)",
-      "west: content touches the canvas edge (clipped)",
-      "east: content touches the canvas edge (clipped)",
-      "north: content touches the canvas edge (clipped)",
       "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
       "north-east: content touches the canvas edge (clipped)",
+      "north: content touches the canvas edge (clipped)",
       "north-west: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
       "south-west: content touches the canvas edge (clipped)"
     ],
     "directions": {
@@ -68,15 +68,15 @@
         "fill": 0.825,
         "touches_edge": true
       },
-      "west": {
-        "run1": 0.655,
+      "south-east": {
+        "run1": 0.677,
         "bbox": [
-          24,
-          1,
-          156,
+          32,
+          3,
+          209,
           224
         ],
-        "fill": 0.587,
+        "fill": 0.78,
         "touches_edge": true
       },
       "east": {
@@ -90,28 +90,6 @@
         "fill": 0.649,
         "touches_edge": true
       },
-      "north": {
-        "run1": 0.582,
-        "bbox": [
-          26,
-          0,
-          192,
-          224
-        ],
-        "fill": 0.741,
-        "touches_edge": true
-      },
-      "south-east": {
-        "run1": 0.677,
-        "bbox": [
-          32,
-          3,
-          209,
-          224
-        ],
-        "fill": 0.78,
-        "touches_edge": true
-      },
       "north-east": {
         "run1": 0.608,
         "bbox": [
@@ -123,6 +101,17 @@
         "fill": 0.671,
         "touches_edge": true
       },
+      "north": {
+        "run1": 0.582,
+        "bbox": [
+          26,
+          0,
+          192,
+          224
+        ],
+        "fill": 0.741,
+        "touches_edge": true
+      },
       "north-west": {
         "run1": 0.595,
         "bbox": [
@@ -132,6 +121,17 @@
           224
         ],
         "fill": 0.751,
+        "touches_edge": true
+      },
+      "west": {
+        "run1": 0.655,
+        "bbox": [
+          24,
+          1,
+          156,
+          224
+        ],
+        "fill": 0.587,
         "touches_edge": true
       },
       "south-west": {

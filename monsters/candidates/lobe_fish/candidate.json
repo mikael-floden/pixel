@@ -48,9 +48,9 @@
     "status": "fail",
     "min_run1": 0.645,
     "reasons": [
-      "west: content touches the canvas edge (clipped)",
       "south-east: content touches the canvas edge (clipped)",
       "north-east: content touches the canvas edge (clipped)",
+      "west: content touches the canvas edge (clipped)",
       "south-west: content touches the canvas edge (clipped)"
     ],
     "directions": {
@@ -65,15 +65,15 @@
         "fill": 0.851,
         "touches_edge": false
       },
-      "west": {
-        "run1": 0.737,
+      "south-east": {
+        "run1": 0.785,
         "bbox": [
-          5,
-          18,
-          104,
-          87
+          8,
+          0,
+          96,
+          96
         ],
-        "fill": 0.632,
+        "fill": 0.781,
         "touches_edge": true
       },
       "east": {
@@ -87,28 +87,6 @@
         "fill": 0.781,
         "touches_edge": false
       },
-      "north": {
-        "run1": 0.732,
-        "bbox": [
-          9,
-          13,
-          99,
-          103
-        ],
-        "fill": 0.749,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.785,
-        "bbox": [
-          8,
-          0,
-          96,
-          96
-        ],
-        "fill": 0.781,
-        "touches_edge": true
-      },
       "north-east": {
         "run1": 0.75,
         "bbox": [
@@ -120,6 +98,17 @@
         "fill": 0.643,
         "touches_edge": true
       },
+      "north": {
+        "run1": 0.732,
+        "bbox": [
+          9,
+          13,
+          99,
+          103
+        ],
+        "fill": 0.749,
+        "touches_edge": false
+      },
       "north-west": {
         "run1": 0.776,
         "bbox": [
@@ -130,6 +119,17 @@
         ],
         "fill": 0.739,
         "touches_edge": false
+      },
+      "west": {
+        "run1": 0.737,
+        "bbox": [
+          5,
+          18,
+          104,
+          87
+        ],
+        "fill": 0.632,
+        "touches_edge": true
       },
       "south-west": {
         "run1": 0.78,

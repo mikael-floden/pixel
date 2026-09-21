@@ -47,8 +47,8 @@
     "status": "fail",
     "min_run1": 0.689,
     "reasons": [
-      "east: content touches the canvas edge (clipped)",
       "south-east: content touches the canvas edge (clipped)",
+      "east: content touches the canvas edge (clipped)",
       "north-east: content touches the canvas edge (clipped)"
     ],
     "directions": {
@@ -63,16 +63,16 @@
         "fill": 0.625,
         "touches_edge": false
       },
-      "west": {
-        "run1": 0.786,
+      "south-east": {
+        "run1": 0.79,
         "bbox": [
-          15,
-          3,
-          34,
+          11,
+          0,
+          36,
           47
         ],
-        "fill": 0.363,
-        "touches_edge": false
+        "fill": 0.51,
+        "touches_edge": true
       },
       "east": {
         "run1": 0.774,
@@ -83,28 +83,6 @@
           47
         ],
         "fill": 0.306,
-        "touches_edge": true
-      },
-      "north": {
-        "run1": 0.689,
-        "bbox": [
-          7,
-          1,
-          38,
-          44
-        ],
-        "fill": 0.579,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.79,
-        "bbox": [
-          11,
-          0,
-          36,
-          47
-        ],
-        "fill": 0.51,
         "touches_edge": true
       },
       "north-east": {
@@ -118,6 +96,17 @@
         "fill": 0.547,
         "touches_edge": true
       },
+      "north": {
+        "run1": 0.689,
+        "bbox": [
+          7,
+          1,
+          38,
+          44
+        ],
+        "fill": 0.579,
+        "touches_edge": false
+      },
       "north-west": {
         "run1": 0.717,
         "bbox": [
@@ -127,6 +116,17 @@
           45
         ],
         "fill": 0.458,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.786,
+        "bbox": [
+          15,
+          3,
+          34,
+          47
+        ],
+        "fill": 0.363,
         "touches_edge": false
       },
       "south-west": {
