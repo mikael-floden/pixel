@@ -1174,9 +1174,19 @@ def cmd_approve(args):
                 client.set_character_tags(man["pixellab_id"], [tag, APPROVED_TAG])
             except PixelLabError as e:
                 print(f"  {c['id']}: tag failed ({e})")
-        elif man.get("review") == "pending":
+            write_manifest(c["id"], man)
+        elif args.sweep and man.get("review") == "pending":
+            # ADDITIVE BY DEFAULT (maintainer 2026-09-21: "I don't want to
+            # remove monsters I'm not sure I will need in the future ... my
+            # goal is to have a big list of monsters I can at any time bring
+            # to life"). This used to mark every OTHER pending candidate
+            # `not_picked` on every run, so picking eleven to animate
+            # relabelled the hundred-odd he is still deciding about — and
+            # nothing reads `not_picked` anyway (wiki/docs/creatures.md: both
+            # it and `pending` "say nothing at all"). `--sweep` keeps the old
+            # round-wide behaviour for a round that really is closed.
             man["review"] = "not_picked"
-        write_manifest(c["id"], man)
+            write_manifest(c["id"], man)
     missing = ids - {c["id"] for c in cfg["candidates"]}
     if missing:
         print("unknown ids:", sorted(missing))
@@ -1697,7 +1707,11 @@ def cmd_status(args):
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sub = ap.add_subparsers(dest="cmd", required=True)
-    a = sub.add_parser("approve"); a.add_argument("--ids", required=True); a.set_defaults(func=cmd_approve)
+    a = sub.add_parser("approve"); a.add_argument("--ids", required=True)
+    a.add_argument("--sweep", action="store_true",
+                   help="also mark every OTHER pending candidate not_picked (a closed round). "
+                        "Off by default: the design list is his standing library, not a round.")
+    a.set_defaults(func=cmd_approve)
     for st in STATES:
         g = sub.add_parser(st, help=f"generate {st} for approved monsters (resumable)")
         g.add_argument("--only"); g.add_argument("--dry-run", action="store_true")
