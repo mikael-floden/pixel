@@ -294,6 +294,62 @@
       }
     },
     {
+      "id": "bridge_troll",
+      "kind": "character",
+      "pixellab_id": "c7255fb1-fd21-44b5-8b3d-baf0e51fb913",
+      "name": "Tollkeeper",
+      "lore": "The bridge is older than the town and the troll is older than the bridge. The toll has never once been coin.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Chain Lash - Whips the iron chain out forward in o": "attack",
+        "custom-Death - Faints, sinks to its k": "die"
+      }
+    },
+    {
+      "id": "orc_warrior",
+      "kind": "character",
+      "pixellab_id": "d7067157-1e5b-409e-bb72-651036edd596",
+      "name": "Warmaul",
+      "lore": "It fights for whoever pays in iron and eats whoever does not. The axe has a name; it will not say it.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Axe Cleave - Swings the battle axe across in one h": "attack",
+        "custom-Death - Drops the axe, faints ": "die"
+      }
+    },
+    {
+      "id": "vulture",
+      "kind": "character",
+      "pixellab_id": "199502f4-62c5-4618-90e5-502328a3f524",
+      "name": "Carrionwing",
+      "lore": "It circles the road for days and lands only when it is certain. It has never once been wrong.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Beak Stab - Spreads its wings wide and stabs forwa": "attack",
+        "custom-Death - Slumps forward onto it": "die"
+      }
+    },
+    {
+      "id": "ice_sprite",
+      "kind": "character",
+      "pixellab_id": "4a3b1707-1c63-4a62-a0ae-53a2524a6f4a",
+      "name": "Rimeling",
+      "lore": "A splinter of the glacier that walks ahead of the cold. Where it stands, the frost arrives early.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Death - Shatters into a scatte": "die"
+      }
+    },
+    {
       "id": "cave_troll_boss",
       "kind": "character",
       "pixellab_id": "47d4c9cb-9d07-4655-b7e7-bb2635ba42c8",
@@ -319,6 +375,20 @@
         "custom-Angry combat idle, frustrated ": "angry",
         "custom-Double Slam - Raises both arms high overhead and s": "attack",
         "custom-Death - The green lamps go out": "die"
+      }
+    },
+    {
+      "id": "crystal_titan",
+      "kind": "character",
+      "pixellab_id": "f6dad916-5b59-4639-a571-c2118f8dc6c6",
+      "name": "Prismfather",
+      "lore": "Light goes into it and comes out wrong. Miners follow the rainbows down and are found as rainbows themselves.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Arm Sweep - Swings one crystal-bladed arm across i": "attack",
+        "custom-Death - Cracks run through the": "die"
       }
     },
     {
@@ -368,6 +438,37 @@
       }
     },
     {
+      "id": "cobra",
+      "kind": "character",
+      "pixellab_id": "45be20e3-f240-458f-ab35-811670257508",
+      "name": "Hoodfang",
+      "lore": "It sways so you will watch the hood. The bite comes from where you were not watching.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-slithers forward in place, bod": "walk",
+        "custom-slithers forward in place, body undulating in a sm": "walk",
+        "custom-Lunge Attack - Throws its whol": "walk",
+        "custom-Lunge Attack - Throws its whole body forward in on": "attack",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Strike - Coils its head back, then strikes forward": "attack",
+        "custom-Death - The raised body drops ": "die"
+      }
+    },
+    {
+      "id": "mummy",
+      "kind": "character",
+      "pixellab_id": "968db5e3-3077-4a39-b88a-811f7aa91eb0",
+      "name": "Wrapwarden",
+      "lore": "Its name was carved off the tomb, so it went looking for it. It checks every face and none of them fit.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Grasping Swipe - Lunges forward with both bandaged": "attack",
+        "custom-Death - The green eyes go out ": "die"
+      }
+    },
+    {
       "id": "octopus",
       "kind": "character",
       "pixellab_id": "22734026-d7a4-48dc-9ccb-102f2bc8f77f",
@@ -382,6 +483,34 @@
       }
     },
     {
+      "id": "lizard_warrior",
+      "kind": "character",
+      "pixellab_id": "24ca34a9-e80c-4e6c-9b5f-8e13e09dd3c1",
+      "name": "Scaleblade",
+      "lore": "Its people ruled the marsh before the marsh drowned them. It still patrols the borders of a country that is gone.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Spear Thrust - Lunges forward and drives the spear": "attack",
+        "custom-Death - Drops the spear and sh": "die"
+      }
+    },
+    {
+      "id": "werewolf",
+      "kind": "character",
+      "pixellab_id": "a0f58ca6-7f8f-4997-b98c-fbbd25de0e4a",
+      "name": "Moonrend",
+      "lore": "It runs the ridge under every full moon and comes back fed. The village no longer asks what it ate.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Claw Swipe - Rears up and swipes one clawed paw ha": "attack",
+        "custom-Death - Staggers, falls forwar": "die"
+      }
+    },
+    {
       "id": "marsh_hag",
       "kind": "character",
       "pixellab_id": "2901a05b-9ba9-4fd2-9854-1c52f53192f4",
@@ -393,6 +522,20 @@
         "custom-Angry combat idle, frustrated ": "angry",
         "custom-Staff Curse - Jabs the staff out and green swamp m": "attack",
         "custom-Death - Drops the staff, faint": "die"
+      }
+    },
+    {
+      "id": "skeleton_archer",
+      "kind": "character",
+      "pixellab_id": "ae34b467-22ea-4d08-9461-f5d78f767353",
+      "name": "Marrowbolt",
+      "lore": "It cannot see and does not miss. The arrows are older than the bow, and the bow is older than the wall.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Bow Shot - Draws the bowstring back to its cheek a": "attack",
+        "custom-Death - The blue light in its ": "die"
       }
     },
     {
@@ -439,6 +582,20 @@
       }
     },
     {
+      "id": "ember_king",
+      "kind": "character",
+      "pixellab_id": "e31ae5b5-a1eb-4692-afe3-aa6c4fae398f",
+      "name": "Pyrelord",
+      "lore": "The mountain's first king and its only one. Every eruption since has been his voice.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Claw Slam - Raises one massive clawed hand high an": "attack",
+        "custom-Death - Sinks to its knees, th": "die"
+      }
+    },
+    {
       "id": "tide_crab",
       "kind": "character",
       "pixellab_id": "2d53ec75-f35d-4226-b081-2c392864c29c",
@@ -450,6 +607,20 @@
         "custom-Angry combat idle, frustrated ": "angry",
         "custom-Claw Snap - Lunges forward and snaps its big claw ": "attack",
         "custom-Death - The shell cracks open and the crab crumble": "die"
+      }
+    },
+    {
+      "id": "hollow_knight",
+      "kind": "character",
+      "pixellab_id": "2f3aecad-cef3-4701-89a7-457b7eaf9007",
+      "name": "Hollowplate",
+      "lore": "The knight left long ago. The armor kept the vigil, and the fire that keeps it standing has forgotten whose it was.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Overhead Chop - Raises the greatsword high overhea": "attack",
+        "custom-Death - The green witchfire go": "die"
       }
     },
     {
