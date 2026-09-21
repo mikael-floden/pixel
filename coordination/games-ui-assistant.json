@@ -1,8 +1,19 @@
 {
   "domain": "games-ui-assistant",
-  "updated_at": "2026-09-20T19:52:24+00:00",
+  "updated_at": "2026-09-21T07:44:31+00:00",
   "health": "running",
-  "current": "idle — SHIPPED (maintainer 2026-09-20: the ghost thumbstick fades fully transparent while the page stick is in use): gamepad.ts puts :root.ml-pad-usingpage on during the page stick's drag; the ghost's well and cap go opacity 0 on their own .25s transition and the rest alphas return on release. Specificity 5 (two :root classes) placed after the dark rest rules to win the tie and before .held so the stick a thumb is actually on stays visible. Cleared on release, blur, visibilitychange and in the landscape branch. verify-gamepad drives the real pointer through three states (held 0/0 with the page stick opaque, both held 1/1, released .15/.25). NEXT on his list: his 24x24 icons for the four Settings sections (SUBTABS img: entries); voice actors and more on the Sound page as they come.",
+  "current": {
+    "unit": "CLAIMED (maintainer 2026-09-21, on yesterday's fade: 'The second thumbstick is still not invisible when I move the menu thumbstick. Its blurry and make the background blurry. I want it to fade to real transparency'): THE BLUR DISC IS PART OF THE GHOST AND MUST FADE WITH IT — the fade shipped in e86d05479a took .ml-pad-stick's well and cap to opacity 0 but not .ml-pad-blur, which is a SIBLING element (z 3, body-parented beside the stick) carrying the backdrop-filter, so the world kept bending in a disc where the stick used to be. Fix: the disc gets opacity 1 + the same .25s transition at rest and 0 under :root.ml-pad-usingpage; a new :root.ml-pad-ghostheld (set by the ghost's own drag) brings the pair back together when a thumb is on the ghost while the page stick drives, since the disc cannot be selected from the stick's .held (it precedes the stick in the DOM and CSS has no backwards sibling). verify-gamepad's fade arm reads the DISC's opacity in all three states beside the well and the cap.",
+    "since": "2026-09-21T07:44:31+00:00",
+    "files": [
+      "games2/client/src/gamepad.ts",
+      "games2/scripts/verify-gamepad.mjs",
+      "games2/docs/ui.md",
+      "games2/UI_AGENT.md",
+      "coordination/games-ui-assistant.json"
+    ],
+    "note": "games-ui's board is idle; games and games-assistant name none of these files."
+  },
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
