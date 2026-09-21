@@ -1,0 +1,889 @@
+{
+  "id": "pebble_crab",
+  "name": "Pebblet",
+  "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "18c91c91-e3c9-41a0-a1aa-fe76b922c7f8",
+    "url": "https://www.pixellab.ai/create-character/18c91c91-e3c9-41a0-a1aa-fe76b922c7f8",
+    "prompt": "Tiny fantasy hermit crab living inside a round speckled grey pebble, two small orange pincers, four thin legs, two black eyes on short stalks, and a patch of wet green algae on the pebble.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 46,
+    "height": 40
+  },
+  "native_size": {
+    "width": 40,
+    "height": 40
+  },
+  "pad": {
+    "x": 3,
+    "y": 0
+  },
+  "sprite": "pebble_crab/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "pebble_crab/rotations/south.webp",
+    "west": "pebble_crab/rotations/west.webp",
+    "east": "pebble_crab/rotations/east.webp",
+    "north": "pebble_crab/rotations/north.webp",
+    "south-east": "pebble_crab/rotations/south-east.webp",
+    "north-east": "pebble_crab/rotations/north-east.webp",
+    "north-west": "pebble_crab/rotations/north-west.webp",
+    "south-west": "pebble_crab/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "e561ef8e-a793-45a6-ba71-8974d7dc099d",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/angry__east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/angry/east/00.webp",
+            "pebble_crab/animations/angry/east/01.webp",
+            "pebble_crab/animations/angry/east/02.webp",
+            "pebble_crab/animations/angry/east/03.webp",
+            "pebble_crab/animations/angry/east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:20 GMT",
+          "src_frames": 5,
+          "sub": "7d797a9f-bc0d-49bf-b107-94e68ea273d6"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/angry__north.webp",
+          "frame_paths": [
+            "pebble_crab/animations/angry/north/00.webp",
+            "pebble_crab/animations/angry/north/01.webp",
+            "pebble_crab/animations/angry/north/02.webp",
+            "pebble_crab/animations/angry/north/03.webp",
+            "pebble_crab/animations/angry/north/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:21 GMT",
+          "src_frames": 5,
+          "sub": "8c51a447-d91c-42c3-9716-cc70aea972c1"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/angry__north-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/angry/north-east/00.webp",
+            "pebble_crab/animations/angry/north-east/01.webp",
+            "pebble_crab/animations/angry/north-east/02.webp",
+            "pebble_crab/animations/angry/north-east/03.webp",
+            "pebble_crab/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:22 GMT",
+          "src_frames": 5,
+          "sub": "d5e6b6c9-94bc-4a25-898c-bc023e1569e0"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/angry__south.webp",
+          "frame_paths": [
+            "pebble_crab/animations/angry/south/00.webp",
+            "pebble_crab/animations/angry/south/01.webp",
+            "pebble_crab/animations/angry/south/02.webp",
+            "pebble_crab/animations/angry/south/03.webp",
+            "pebble_crab/animations/angry/south/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:24 GMT",
+          "src_frames": 5,
+          "sub": "4f84c824-07ea-4709-bf20-566deedc3c82"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/angry__south-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/angry/south-east/00.webp",
+            "pebble_crab/animations/angry/south-east/01.webp",
+            "pebble_crab/animations/angry/south-east/02.webp",
+            "pebble_crab/animations/angry/south-east/03.webp",
+            "pebble_crab/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:25 GMT",
+          "src_frames": 5,
+          "sub": "2e2544c8-7b25-42ac-95e1-b672a3fe77ba"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/angry__south-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/angry/south-west/00.webp",
+            "pebble_crab/animations/angry/south-west/01.webp",
+            "pebble_crab/animations/angry/south-west/02.webp",
+            "pebble_crab/animations/angry/south-west/03.webp",
+            "pebble_crab/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/angry__west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/angry/west/00.webp",
+            "pebble_crab/animations/angry/west/01.webp",
+            "pebble_crab/animations/angry/west/02.webp",
+            "pebble_crab/animations/angry/west/03.webp",
+            "pebble_crab/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/angry__north-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/angry/north-west/00.webp",
+            "pebble_crab/animations/angry/north-west/01.webp",
+            "pebble_crab/animations/angry/north-west/02.webp",
+            "pebble_crab/animations/angry/north-west/03.webp",
+            "pebble_crab/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "f096741f-ba5c-4683-86d8-c6f1ed0607bf",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/idle__east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/idle/east/00.webp",
+            "pebble_crab/animations/idle/east/01.webp",
+            "pebble_crab/animations/idle/east/02.webp",
+            "pebble_crab/animations/idle/east/03.webp",
+            "pebble_crab/animations/idle/east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:26 GMT",
+          "src_frames": 5,
+          "sub": "40e95878-50dc-4a9e-afae-e49fff7754c3"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/idle__north.webp",
+          "frame_paths": [
+            "pebble_crab/animations/idle/north/00.webp",
+            "pebble_crab/animations/idle/north/01.webp",
+            "pebble_crab/animations/idle/north/02.webp",
+            "pebble_crab/animations/idle/north/03.webp",
+            "pebble_crab/animations/idle/north/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:27 GMT",
+          "src_frames": 5,
+          "sub": "baf11d89-4291-427f-aefb-6f0997ed979b"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/idle__north-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/idle/north-east/00.webp",
+            "pebble_crab/animations/idle/north-east/01.webp",
+            "pebble_crab/animations/idle/north-east/02.webp",
+            "pebble_crab/animations/idle/north-east/03.webp",
+            "pebble_crab/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:29 GMT",
+          "src_frames": 5,
+          "sub": "02a4c294-3269-4afa-ae55-d72928ad4be5"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/idle__south.webp",
+          "frame_paths": [
+            "pebble_crab/animations/idle/south/00.webp",
+            "pebble_crab/animations/idle/south/01.webp",
+            "pebble_crab/animations/idle/south/02.webp",
+            "pebble_crab/animations/idle/south/03.webp",
+            "pebble_crab/animations/idle/south/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:31 GMT",
+          "src_frames": 5,
+          "sub": "d1f82e7c-835a-46c1-8484-6c06899fa30b"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/idle__south-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/idle/south-east/00.webp",
+            "pebble_crab/animations/idle/south-east/01.webp",
+            "pebble_crab/animations/idle/south-east/02.webp",
+            "pebble_crab/animations/idle/south-east/03.webp",
+            "pebble_crab/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:32 GMT",
+          "src_frames": 5,
+          "sub": "6764f7ae-c396-4141-93cd-fcc62122b35a"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/idle__south-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/idle/south-west/00.webp",
+            "pebble_crab/animations/idle/south-west/01.webp",
+            "pebble_crab/animations/idle/south-west/02.webp",
+            "pebble_crab/animations/idle/south-west/03.webp",
+            "pebble_crab/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/idle__west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/idle/west/00.webp",
+            "pebble_crab/animations/idle/west/01.webp",
+            "pebble_crab/animations/idle/west/02.webp",
+            "pebble_crab/animations/idle/west/03.webp",
+            "pebble_crab/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "pebble_crab/animations/idle__north-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/idle/north-west/00.webp",
+            "pebble_crab/animations/idle/north-west/01.webp",
+            "pebble_crab/animations/idle/north-west/02.webp",
+            "pebble_crab/animations/idle/north-west/03.webp",
+            "pebble_crab/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "11dc66f9-d6a1-42a6-8e79-77a2f901b5f1",
+      "source_name": "custom-Claw Snap - Darts forward once and snaps its big c + custom-Rock Burst - The crab launches its whole body up o",
+      "directions": {
+        "east": {
+          "frames": 16,
+          "strip": "pebble_crab/animations/attack__east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/attack/east/00.webp",
+            "pebble_crab/animations/attack/east/01.webp",
+            "pebble_crab/animations/attack/east/02.webp",
+            "pebble_crab/animations/attack/east/03.webp",
+            "pebble_crab/animations/attack/east/04.webp",
+            "pebble_crab/animations/attack/east/05.webp",
+            "pebble_crab/animations/attack/east/06.webp",
+            "pebble_crab/animations/attack/east/07.webp",
+            "pebble_crab/animations/attack/east/08.webp",
+            "pebble_crab/animations/attack/east/09.webp",
+            "pebble_crab/animations/attack/east/10.webp",
+            "pebble_crab/animations/attack/east/11.webp",
+            "pebble_crab/animations/attack/east/12.webp",
+            "pebble_crab/animations/attack/east/13.webp",
+            "pebble_crab/animations/attack/east/14.webp",
+            "pebble_crab/animations/attack/east/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:34 GMT",
+          "src_frames": 16,
+          "sub": "a2ad09a0-cdd8-43b4-be73-c7f456517a96"
+        },
+        "west": {
+          "frames": 16,
+          "strip": "pebble_crab/animations/attack__west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/attack/west/00.webp",
+            "pebble_crab/animations/attack/west/01.webp",
+            "pebble_crab/animations/attack/west/02.webp",
+            "pebble_crab/animations/attack/west/03.webp",
+            "pebble_crab/animations/attack/west/04.webp",
+            "pebble_crab/animations/attack/west/05.webp",
+            "pebble_crab/animations/attack/west/06.webp",
+            "pebble_crab/animations/attack/west/07.webp",
+            "pebble_crab/animations/attack/west/08.webp",
+            "pebble_crab/animations/attack/west/09.webp",
+            "pebble_crab/animations/attack/west/10.webp",
+            "pebble_crab/animations/attack/west/11.webp",
+            "pebble_crab/animations/attack/west/12.webp",
+            "pebble_crab/animations/attack/west/13.webp",
+            "pebble_crab/animations/attack/west/14.webp",
+            "pebble_crab/animations/attack/west/15.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "south-east": {
+          "frames": 16,
+          "strip": "pebble_crab/animations/attack__south-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/attack/south-east/00.webp",
+            "pebble_crab/animations/attack/south-east/01.webp",
+            "pebble_crab/animations/attack/south-east/02.webp",
+            "pebble_crab/animations/attack/south-east/03.webp",
+            "pebble_crab/animations/attack/south-east/04.webp",
+            "pebble_crab/animations/attack/south-east/05.webp",
+            "pebble_crab/animations/attack/south-east/06.webp",
+            "pebble_crab/animations/attack/south-east/07.webp",
+            "pebble_crab/animations/attack/south-east/08.webp",
+            "pebble_crab/animations/attack/south-east/09.webp",
+            "pebble_crab/animations/attack/south-east/10.webp",
+            "pebble_crab/animations/attack/south-east/11.webp",
+            "pebble_crab/animations/attack/south-east/12.webp",
+            "pebble_crab/animations/attack/south-east/13.webp",
+            "pebble_crab/animations/attack/south-east/14.webp",
+            "pebble_crab/animations/attack/south-east/15.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:46 GMT",
+          "src_frames": 16,
+          "sub": "80a0c07b-1a9c-42e1-8360-de568e60d461"
+        },
+        "south-west": {
+          "frames": 16,
+          "strip": "pebble_crab/animations/attack__south-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/attack/south-west/00.webp",
+            "pebble_crab/animations/attack/south-west/01.webp",
+            "pebble_crab/animations/attack/south-west/02.webp",
+            "pebble_crab/animations/attack/south-west/03.webp",
+            "pebble_crab/animations/attack/south-west/04.webp",
+            "pebble_crab/animations/attack/south-west/05.webp",
+            "pebble_crab/animations/attack/south-west/06.webp",
+            "pebble_crab/animations/attack/south-west/07.webp",
+            "pebble_crab/animations/attack/south-west/08.webp",
+            "pebble_crab/animations/attack/south-west/09.webp",
+            "pebble_crab/animations/attack/south-west/10.webp",
+            "pebble_crab/animations/attack/south-west/11.webp",
+            "pebble_crab/animations/attack/south-west/12.webp",
+            "pebble_crab/animations/attack/south-west/13.webp",
+            "pebble_crab/animations/attack/south-west/14.webp",
+            "pebble_crab/animations/attack/south-west/15.webp"
+          ],
+          "mirrored_from": "south-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "f62feac4-b8cb-47ce-92a4-a34bf3631401",
+      "source_name": "custom-Death - The pebble cracks in half and the crab shr",
+      "directions": {
+        "east": {
+          "frames": 15,
+          "strip": "pebble_crab/animations/die__east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/die/east/00.webp",
+            "pebble_crab/animations/die/east/01.webp",
+            "pebble_crab/animations/die/east/02.webp",
+            "pebble_crab/animations/die/east/03.webp",
+            "pebble_crab/animations/die/east/04.webp",
+            "pebble_crab/animations/die/east/05.webp",
+            "pebble_crab/animations/die/east/06.webp",
+            "pebble_crab/animations/die/east/07.webp",
+            "pebble_crab/animations/die/east/08.webp",
+            "pebble_crab/animations/die/east/09.webp",
+            "pebble_crab/animations/die/east/10.webp",
+            "pebble_crab/animations/die/east/11.webp",
+            "pebble_crab/animations/die/east/12.webp",
+            "pebble_crab/animations/die/east/13.webp",
+            "pebble_crab/animations/die/east/14.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:36 GMT",
+          "src_frames": 16,
+          "sub": "fa1f3a80-ab47-457f-b37c-09ad731103a6"
+        },
+        "north": {
+          "frames": 15,
+          "strip": "pebble_crab/animations/die__north.webp",
+          "frame_paths": [
+            "pebble_crab/animations/die/north/00.webp",
+            "pebble_crab/animations/die/north/01.webp",
+            "pebble_crab/animations/die/north/02.webp",
+            "pebble_crab/animations/die/north/03.webp",
+            "pebble_crab/animations/die/north/04.webp",
+            "pebble_crab/animations/die/north/05.webp",
+            "pebble_crab/animations/die/north/06.webp",
+            "pebble_crab/animations/die/north/07.webp",
+            "pebble_crab/animations/die/north/08.webp",
+            "pebble_crab/animations/die/north/09.webp",
+            "pebble_crab/animations/die/north/10.webp",
+            "pebble_crab/animations/die/north/11.webp",
+            "pebble_crab/animations/die/north/12.webp",
+            "pebble_crab/animations/die/north/13.webp",
+            "pebble_crab/animations/die/north/14.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:38 GMT",
+          "src_frames": 16,
+          "sub": "83cc6268-82cc-4b87-ae51-16a18b7a9bb9"
+        },
+        "north-east": {
+          "frames": 15,
+          "strip": "pebble_crab/animations/die__north-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/die/north-east/00.webp",
+            "pebble_crab/animations/die/north-east/01.webp",
+            "pebble_crab/animations/die/north-east/02.webp",
+            "pebble_crab/animations/die/north-east/03.webp",
+            "pebble_crab/animations/die/north-east/04.webp",
+            "pebble_crab/animations/die/north-east/05.webp",
+            "pebble_crab/animations/die/north-east/06.webp",
+            "pebble_crab/animations/die/north-east/07.webp",
+            "pebble_crab/animations/die/north-east/08.webp",
+            "pebble_crab/animations/die/north-east/09.webp",
+            "pebble_crab/animations/die/north-east/10.webp",
+            "pebble_crab/animations/die/north-east/11.webp",
+            "pebble_crab/animations/die/north-east/12.webp",
+            "pebble_crab/animations/die/north-east/13.webp",
+            "pebble_crab/animations/die/north-east/14.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:40 GMT",
+          "src_frames": 16,
+          "sub": "9b52848d-9d06-4f5b-81c9-22a1cd96c72b"
+        },
+        "south": {
+          "frames": 14,
+          "strip": "pebble_crab/animations/die__south.webp",
+          "frame_paths": [
+            "pebble_crab/animations/die/south/00.webp",
+            "pebble_crab/animations/die/south/01.webp",
+            "pebble_crab/animations/die/south/02.webp",
+            "pebble_crab/animations/die/south/03.webp",
+            "pebble_crab/animations/die/south/04.webp",
+            "pebble_crab/animations/die/south/05.webp",
+            "pebble_crab/animations/die/south/06.webp",
+            "pebble_crab/animations/die/south/07.webp",
+            "pebble_crab/animations/die/south/08.webp",
+            "pebble_crab/animations/die/south/09.webp",
+            "pebble_crab/animations/die/south/10.webp",
+            "pebble_crab/animations/die/south/11.webp",
+            "pebble_crab/animations/die/south/12.webp",
+            "pebble_crab/animations/die/south/13.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:42 GMT",
+          "src_frames": 16,
+          "sub": "38913cd7-b497-4de9-8c05-187627331ff2"
+        },
+        "south-east": {
+          "frames": 15,
+          "strip": "pebble_crab/animations/die__south-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/die/south-east/00.webp",
+            "pebble_crab/animations/die/south-east/01.webp",
+            "pebble_crab/animations/die/south-east/02.webp",
+            "pebble_crab/animations/die/south-east/03.webp",
+            "pebble_crab/animations/die/south-east/04.webp",
+            "pebble_crab/animations/die/south-east/05.webp",
+            "pebble_crab/animations/die/south-east/06.webp",
+            "pebble_crab/animations/die/south-east/07.webp",
+            "pebble_crab/animations/die/south-east/08.webp",
+            "pebble_crab/animations/die/south-east/09.webp",
+            "pebble_crab/animations/die/south-east/10.webp",
+            "pebble_crab/animations/die/south-east/11.webp",
+            "pebble_crab/animations/die/south-east/12.webp",
+            "pebble_crab/animations/die/south-east/13.webp",
+            "pebble_crab/animations/die/south-east/14.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:44 GMT",
+          "src_frames": 16,
+          "sub": "d5c032b6-1f77-485e-bda0-c1676c42a9d7"
+        },
+        "south-west": {
+          "frames": 15,
+          "strip": "pebble_crab/animations/die__south-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/die/south-west/00.webp",
+            "pebble_crab/animations/die/south-west/01.webp",
+            "pebble_crab/animations/die/south-west/02.webp",
+            "pebble_crab/animations/die/south-west/03.webp",
+            "pebble_crab/animations/die/south-west/04.webp",
+            "pebble_crab/animations/die/south-west/05.webp",
+            "pebble_crab/animations/die/south-west/06.webp",
+            "pebble_crab/animations/die/south-west/07.webp",
+            "pebble_crab/animations/die/south-west/08.webp",
+            "pebble_crab/animations/die/south-west/09.webp",
+            "pebble_crab/animations/die/south-west/10.webp",
+            "pebble_crab/animations/die/south-west/11.webp",
+            "pebble_crab/animations/die/south-west/12.webp",
+            "pebble_crab/animations/die/south-west/13.webp",
+            "pebble_crab/animations/die/south-west/14.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 15,
+          "strip": "pebble_crab/animations/die__west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/die/west/00.webp",
+            "pebble_crab/animations/die/west/01.webp",
+            "pebble_crab/animations/die/west/02.webp",
+            "pebble_crab/animations/die/west/03.webp",
+            "pebble_crab/animations/die/west/04.webp",
+            "pebble_crab/animations/die/west/05.webp",
+            "pebble_crab/animations/die/west/06.webp",
+            "pebble_crab/animations/die/west/07.webp",
+            "pebble_crab/animations/die/west/08.webp",
+            "pebble_crab/animations/die/west/09.webp",
+            "pebble_crab/animations/die/west/10.webp",
+            "pebble_crab/animations/die/west/11.webp",
+            "pebble_crab/animations/die/west/12.webp",
+            "pebble_crab/animations/die/west/13.webp",
+            "pebble_crab/animations/die/west/14.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 15,
+          "strip": "pebble_crab/animations/die__north-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/die/north-west/00.webp",
+            "pebble_crab/animations/die/north-west/01.webp",
+            "pebble_crab/animations/die/north-west/02.webp",
+            "pebble_crab/animations/die/north-west/03.webp",
+            "pebble_crab/animations/die/north-west/04.webp",
+            "pebble_crab/animations/die/north-west/05.webp",
+            "pebble_crab/animations/die/north-west/06.webp",
+            "pebble_crab/animations/die/north-west/07.webp",
+            "pebble_crab/animations/die/north-west/08.webp",
+            "pebble_crab/animations/die/north-west/09.webp",
+            "pebble_crab/animations/die/north-west/10.webp",
+            "pebble_crab/animations/die/north-west/11.webp",
+            "pebble_crab/animations/die/north-west/12.webp",
+            "pebble_crab/animations/die/north-west/13.webp",
+            "pebble_crab/animations/die/north-west/14.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_darts_forward_and_pinches_with": {
+      "group_id": "c9faf167-2cef-4964-b4e2-203e36e199e6",
+      "source_name": "custom-darts forward and pinches with",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "pebble_crab/animations/custom_darts_forward_and_pinches_with__east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/east/00.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/east/01.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/east/02.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/east/03.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/east/04.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/east/05.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:48 GMT",
+          "src_frames": 7,
+          "sub": "a1699c71-35e4-4f95-b0cf-4a26fc181c00"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "pebble_crab/animations/custom_darts_forward_and_pinches_with__north.webp",
+          "frame_paths": [
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north/00.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north/01.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north/02.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north/03.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north/04.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north/05.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:49 GMT",
+          "src_frames": 7,
+          "sub": "7463f54d-94c0-44fc-905d-8e47b5950eeb"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "pebble_crab/animations/custom_darts_forward_and_pinches_with__north-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-east/00.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-east/01.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-east/02.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-east/03.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-east/04.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-east/05.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:52 GMT",
+          "src_frames": 7,
+          "sub": "b7cbc4e7-a4be-478e-8ea8-e3db5f1d0eeb"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "pebble_crab/animations/custom_darts_forward_and_pinches_with__south.webp",
+          "frame_paths": [
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south/00.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south/01.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south/02.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south/03.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south/04.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south/05.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:54 GMT",
+          "src_frames": 7,
+          "sub": "0bd95d3a-3bb2-4733-82e8-c82df9ad7c7b"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "pebble_crab/animations/custom_darts_forward_and_pinches_with__south-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-east/00.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-east/01.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-east/02.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-east/03.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-east/04.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-east/05.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:55 GMT",
+          "src_frames": 7,
+          "sub": "f8f6cc10-43f2-43d2-893d-3f903fc6333b"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "pebble_crab/animations/custom_darts_forward_and_pinches_with__south-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-west/00.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-west/01.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-west/02.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-west/03.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-west/04.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-west/05.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "pebble_crab/animations/custom_darts_forward_and_pinches_with__west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/west/00.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/west/01.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/west/02.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/west/03.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/west/04.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/west/05.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "pebble_crab/animations/custom_darts_forward_and_pinches_with__north-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-west/00.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-west/01.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-west/02.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-west/03.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-west/04.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-west/05.webp",
+            "pebble_crab/animations/custom_darts_forward_and_pinches_with/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "ec24f6d6-0428-428c-89cc-21ea9855334c",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "pebble_crab/animations/walk__east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/walk/east/00.webp",
+            "pebble_crab/animations/walk/east/01.webp",
+            "pebble_crab/animations/walk/east/02.webp",
+            "pebble_crab/animations/walk/east/03.webp",
+            "pebble_crab/animations/walk/east/04.webp",
+            "pebble_crab/animations/walk/east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:57 GMT",
+          "src_frames": 6,
+          "sub": "e5622a7f-cb0d-4c57-a3aa-97e3bb0ad1bc"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "pebble_crab/animations/walk__north.webp",
+          "frame_paths": [
+            "pebble_crab/animations/walk/north/00.webp",
+            "pebble_crab/animations/walk/north/01.webp",
+            "pebble_crab/animations/walk/north/02.webp",
+            "pebble_crab/animations/walk/north/03.webp",
+            "pebble_crab/animations/walk/north/04.webp",
+            "pebble_crab/animations/walk/north/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:12:59 GMT",
+          "src_frames": 6,
+          "sub": "34a897af-7609-44c6-ae6a-5c7d29538876"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "pebble_crab/animations/walk__north-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/walk/north-east/00.webp",
+            "pebble_crab/animations/walk/north-east/01.webp",
+            "pebble_crab/animations/walk/north-east/02.webp",
+            "pebble_crab/animations/walk/north-east/03.webp",
+            "pebble_crab/animations/walk/north-east/04.webp",
+            "pebble_crab/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:00 GMT",
+          "src_frames": 6,
+          "sub": "71080d7c-97cd-4359-8af4-b5f337699ec3"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "pebble_crab/animations/walk__south.webp",
+          "frame_paths": [
+            "pebble_crab/animations/walk/south/00.webp",
+            "pebble_crab/animations/walk/south/01.webp",
+            "pebble_crab/animations/walk/south/02.webp",
+            "pebble_crab/animations/walk/south/03.webp",
+            "pebble_crab/animations/walk/south/04.webp",
+            "pebble_crab/animations/walk/south/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:01 GMT",
+          "src_frames": 6,
+          "sub": "1c2ca49e-cecf-435e-990a-12423a37a325"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "pebble_crab/animations/walk__south-east.webp",
+          "frame_paths": [
+            "pebble_crab/animations/walk/south-east/00.webp",
+            "pebble_crab/animations/walk/south-east/01.webp",
+            "pebble_crab/animations/walk/south-east/02.webp",
+            "pebble_crab/animations/walk/south-east/03.webp",
+            "pebble_crab/animations/walk/south-east/04.webp",
+            "pebble_crab/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:02 GMT",
+          "src_frames": 6,
+          "sub": "b3a2ca8a-f14e-447c-a548-4619a0fcc295"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "pebble_crab/animations/walk__south-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/walk/south-west/00.webp",
+            "pebble_crab/animations/walk/south-west/01.webp",
+            "pebble_crab/animations/walk/south-west/02.webp",
+            "pebble_crab/animations/walk/south-west/03.webp",
+            "pebble_crab/animations/walk/south-west/04.webp",
+            "pebble_crab/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "pebble_crab/animations/walk__west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/walk/west/00.webp",
+            "pebble_crab/animations/walk/west/01.webp",
+            "pebble_crab/animations/walk/west/02.webp",
+            "pebble_crab/animations/walk/west/03.webp",
+            "pebble_crab/animations/walk/west/04.webp",
+            "pebble_crab/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "pebble_crab/animations/walk__north-west.webp",
+          "frame_paths": [
+            "pebble_crab/animations/walk/north-west/00.webp",
+            "pebble_crab/animations/walk/north-west/01.webp",
+            "pebble_crab/animations/walk/north-west/02.webp",
+            "pebble_crab/animations/walk/north-west/03.webp",
+            "pebble_crab/animations/walk/north-west/04.webp",
+            "pebble_crab/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true,
+  "postprocess": {
+    "native_size": [
+      40,
+      40
+    ],
+    "pad": [
+      3,
+      0
+    ],
+    "fixes": [
+      {
+        "key": "die",
+        "dir": "north",
+        "frame": 3,
+        "side": "left",
+        "target": 3,
+        "overlap": 1.0,
+        "strip_px": 5,
+        "ext": 1
+      }
+    ],
+    "die_trim": {
+      "east": {
+        "auto_dropped": [
+          13
+        ]
+      },
+      "north": {
+        "auto_dropped": [
+          12
+        ]
+      },
+      "north-east": {
+        "auto_dropped": [
+          13
+        ]
+      },
+      "north-west": {
+        "auto_dropped": [
+          13
+        ]
+      },
+      "south": {
+        "auto_dropped": [
+          10,
+          11
+        ]
+      },
+      "south-east": {
+        "auto_dropped": [
+          12
+        ]
+      },
+      "south-west": {
+        "auto_dropped": [
+          12
+        ]
+      },
+      "west": {
+        "auto_dropped": [
+          13
+        ]
+      }
+    }
+  }
+}

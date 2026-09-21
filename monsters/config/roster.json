@@ -499,6 +499,22 @@
       }
     },
     {
+      "id": "basilisk",
+      "kind": "character",
+      "pixellab_id": "af64ca9e-8bb0-4e39-8423-ebcac8197678",
+      "name": "Stonegaze",
+      "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Claw Swipe - Raises one front paw and performs one": "attack",
+        "custom-Killing Bite - The basilisk hurls its whole body f": "attack",
+        "custom-Bite - Lunges forward with its jaws wide open and ": "attack",
+        "custom-Death - Its legs give out, it ": "die"
+      }
+    },
+    {
       "id": "octopus",
       "kind": "character",
       "pixellab_id": "22734026-d7a4-48dc-9ccb-102f2bc8f77f",
@@ -609,6 +625,21 @@
         "custom-Angry combat idle, frustrated ": "angry",
         "custom-Branch Smash - Swings one huge branch arm down in ": "attack",
         "custom-Death - Topples over sideways ": "die"
+      }
+    },
+    {
+      "id": "pebble_crab",
+      "kind": "character",
+      "pixellab_id": "18c91c91-e3c9-41a0-a1aa-fe76b922c7f8",
+      "name": "Pebblet",
+      "lore": "A pebble that pinches. The beach is full of stones, and some of them are waiting.",
+      "renames": {
+        "custom-Calm still idle, breathing ver": "idle",
+        "custom-walk loop, full walk cycle in ": "walk",
+        "custom-Angry combat idle, frustrated ": "angry",
+        "custom-Rock Burst - The crab launches its whole body up o": "attack",
+        "custom-Claw Snap - Darts forward once and snaps its big c": "attack",
+        "custom-Death - The pebble cracks in half and the crab shr": "die"
       }
     },
     {

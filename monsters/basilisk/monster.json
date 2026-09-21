@@ -1,0 +1,763 @@
+{
+  "id": "basilisk",
+  "name": "Stonegaze",
+  "lore": "Meet its eyes and become a landmark. The roadside is lined with people who did, still pointing the way.",
+  "source": {
+    "kind": "character",
+    "pixellab_id": "af64ca9e-8bb0-4e39-8423-ebcac8197678",
+    "url": "https://www.pixellab.ai/create-character/af64ca9e-8bb0-4e39-8423-ebcac8197678",
+    "prompt": "Fantasy basilisk with a stocky six-legged lizard body of dull green scales, a heavy head with a crest of spines, glowing pale green eyes, a wide fanged mouth, and a short thick tail tucked close against its body, grim menacing expression, dark fantasy, no cartoon grin.",
+    "view": "low top-down",
+    "tags": [
+      "MONSTER"
+    ]
+  },
+  "size": {
+    "width": 136,
+    "height": 136
+  },
+  "native_size": {
+    "width": 136,
+    "height": 136
+  },
+  "pad": {
+    "x": 0,
+    "y": 0
+  },
+  "sprite": "basilisk/sprite.webp",
+  "directions": [
+    "east",
+    "north",
+    "north-east",
+    "north-west",
+    "south",
+    "south-east",
+    "south-west",
+    "west"
+  ],
+  "rotations": {
+    "south": "basilisk/rotations/south.webp",
+    "west": "basilisk/rotations/west.webp",
+    "east": "basilisk/rotations/east.webp",
+    "north": "basilisk/rotations/north.webp",
+    "south-east": "basilisk/rotations/south-east.webp",
+    "north-east": "basilisk/rotations/north-east.webp",
+    "north-west": "basilisk/rotations/north-west.webp",
+    "south-west": "basilisk/rotations/south-west.webp"
+  },
+  "animations": {
+    "angry": {
+      "group_id": "d89b475d-6316-43f8-ba38-7725da90a024",
+      "source_name": "custom-Angry combat idle, frustrated ",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "basilisk/animations/angry__east.webp",
+          "frame_paths": [
+            "basilisk/animations/angry/east/00.webp",
+            "basilisk/animations/angry/east/01.webp",
+            "basilisk/animations/angry/east/02.webp",
+            "basilisk/animations/angry/east/03.webp",
+            "basilisk/animations/angry/east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:28 GMT",
+          "src_frames": 5,
+          "sub": "a9ebe082-dbad-4110-99f8-539c254f2d8c"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "basilisk/animations/angry__north.webp",
+          "frame_paths": [
+            "basilisk/animations/angry/north/00.webp",
+            "basilisk/animations/angry/north/01.webp",
+            "basilisk/animations/angry/north/02.webp",
+            "basilisk/animations/angry/north/03.webp",
+            "basilisk/animations/angry/north/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:30 GMT",
+          "src_frames": 5,
+          "sub": "c112177d-44f8-4af4-b603-7c1af7d9b37d"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "basilisk/animations/angry__north-east.webp",
+          "frame_paths": [
+            "basilisk/animations/angry/north-east/00.webp",
+            "basilisk/animations/angry/north-east/01.webp",
+            "basilisk/animations/angry/north-east/02.webp",
+            "basilisk/animations/angry/north-east/03.webp",
+            "basilisk/animations/angry/north-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:31 GMT",
+          "src_frames": 5,
+          "sub": "a2f06c72-38b6-4e98-bb1d-ae74821ab357"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "basilisk/animations/angry__south.webp",
+          "frame_paths": [
+            "basilisk/animations/angry/south/00.webp",
+            "basilisk/animations/angry/south/01.webp",
+            "basilisk/animations/angry/south/02.webp",
+            "basilisk/animations/angry/south/03.webp",
+            "basilisk/animations/angry/south/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:32 GMT",
+          "src_frames": 5,
+          "sub": "fe48714d-4205-4aa5-832c-c80c5fac2147"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "basilisk/animations/angry__south-east.webp",
+          "frame_paths": [
+            "basilisk/animations/angry/south-east/00.webp",
+            "basilisk/animations/angry/south-east/01.webp",
+            "basilisk/animations/angry/south-east/02.webp",
+            "basilisk/animations/angry/south-east/03.webp",
+            "basilisk/animations/angry/south-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:33 GMT",
+          "src_frames": 5,
+          "sub": "efe5359d-baf4-4ecc-9556-50c91c8c97f2"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "basilisk/animations/angry__south-west.webp",
+          "frame_paths": [
+            "basilisk/animations/angry/south-west/00.webp",
+            "basilisk/animations/angry/south-west/01.webp",
+            "basilisk/animations/angry/south-west/02.webp",
+            "basilisk/animations/angry/south-west/03.webp",
+            "basilisk/animations/angry/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "basilisk/animations/angry__west.webp",
+          "frame_paths": [
+            "basilisk/animations/angry/west/00.webp",
+            "basilisk/animations/angry/west/01.webp",
+            "basilisk/animations/angry/west/02.webp",
+            "basilisk/animations/angry/west/03.webp",
+            "basilisk/animations/angry/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "basilisk/animations/angry__north-west.webp",
+          "frame_paths": [
+            "basilisk/animations/angry/north-west/00.webp",
+            "basilisk/animations/angry/north-west/01.webp",
+            "basilisk/animations/angry/north-west/02.webp",
+            "basilisk/animations/angry/north-west/03.webp",
+            "basilisk/animations/angry/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "attack": {
+      "group_id": "d640f0e8-924d-4bf3-8ebe-593c4724431d",
+      "source_name": "custom-Bite - Lunges forward with its jaws wide open and  + custom-Claw Swipe - Raises one front paw and performs one + custom-Killing Bite - The basilisk hurls its whole body f",
+      "directions": {
+        "east": {
+          "frames": 4,
+          "strip": "basilisk/animations/attack__east.webp",
+          "frame_paths": [
+            "basilisk/animations/attack/east/00.webp",
+            "basilisk/animations/attack/east/01.webp",
+            "basilisk/animations/attack/east/02.webp",
+            "basilisk/animations/attack/east/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:35 GMT",
+          "src_frames": 4,
+          "sub": "5db48228-9305-434f-ba95-80b06fabdeef"
+        },
+        "north": {
+          "frames": 4,
+          "strip": "basilisk/animations/attack__north.webp",
+          "frame_paths": [
+            "basilisk/animations/attack/north/00.webp",
+            "basilisk/animations/attack/north/01.webp",
+            "basilisk/animations/attack/north/02.webp",
+            "basilisk/animations/attack/north/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:36 GMT",
+          "src_frames": 4,
+          "sub": "bb1716fe-98da-4d04-86db-eb8d12099121"
+        },
+        "south": {
+          "frames": 4,
+          "strip": "basilisk/animations/attack__south.webp",
+          "frame_paths": [
+            "basilisk/animations/attack/south/00.webp",
+            "basilisk/animations/attack/south/01.webp",
+            "basilisk/animations/attack/south/02.webp",
+            "basilisk/animations/attack/south/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:37 GMT",
+          "src_frames": 4,
+          "sub": "f33ac421-89f6-41c4-bf37-97cb07930c44"
+        },
+        "west": {
+          "frames": 4,
+          "strip": "basilisk/animations/attack__west.webp",
+          "frame_paths": [
+            "basilisk/animations/attack/west/00.webp",
+            "basilisk/animations/attack/west/01.webp",
+            "basilisk/animations/attack/west/02.webp",
+            "basilisk/animations/attack/west/03.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-east": {
+          "frames": 4,
+          "strip": "basilisk/animations/attack__north-east.webp",
+          "frame_paths": [
+            "basilisk/animations/attack/north-east/00.webp",
+            "basilisk/animations/attack/north-east/01.webp",
+            "basilisk/animations/attack/north-east/02.webp",
+            "basilisk/animations/attack/north-east/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:45 GMT",
+          "src_frames": 4,
+          "sub": "99c5afb9-d84f-485f-b4f1-88e347eb229d"
+        },
+        "north-west": {
+          "frames": 4,
+          "strip": "basilisk/animations/attack__north-west.webp",
+          "frame_paths": [
+            "basilisk/animations/attack/north-west/00.webp",
+            "basilisk/animations/attack/north-west/01.webp",
+            "basilisk/animations/attack/north-west/02.webp",
+            "basilisk/animations/attack/north-west/03.webp"
+          ],
+          "mirrored_from": "north-east"
+        },
+        "south-east": {
+          "frames": 4,
+          "strip": "basilisk/animations/attack__south-east.webp",
+          "frame_paths": [
+            "basilisk/animations/attack/south-east/00.webp",
+            "basilisk/animations/attack/south-east/01.webp",
+            "basilisk/animations/attack/south-east/02.webp",
+            "basilisk/animations/attack/south-east/03.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:53 GMT",
+          "src_frames": 4,
+          "sub": "11343ddd-a911-4e03-a6bd-462b9597b1bb"
+        },
+        "south-west": {
+          "frames": 4,
+          "strip": "basilisk/animations/attack__south-west.webp",
+          "frame_paths": [
+            "basilisk/animations/attack/south-west/00.webp",
+            "basilisk/animations/attack/south-west/01.webp",
+            "basilisk/animations/attack/south-west/02.webp",
+            "basilisk/animations/attack/south-west/03.webp"
+          ],
+          "mirrored_from": "south-east"
+        }
+      }
+    },
+    "idle": {
+      "group_id": "770d4195-8da8-4b31-ae35-5764f71ee6e4",
+      "source_name": "custom-Calm still idle, breathing ver",
+      "directions": {
+        "east": {
+          "frames": 5,
+          "strip": "basilisk/animations/idle__east.webp",
+          "frame_paths": [
+            "basilisk/animations/idle/east/00.webp",
+            "basilisk/animations/idle/east/01.webp",
+            "basilisk/animations/idle/east/02.webp",
+            "basilisk/animations/idle/east/03.webp",
+            "basilisk/animations/idle/east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:38 GMT",
+          "src_frames": 5,
+          "sub": "e60758a9-64bd-4e9b-adcb-412c303969e7"
+        },
+        "north": {
+          "frames": 5,
+          "strip": "basilisk/animations/idle__north.webp",
+          "frame_paths": [
+            "basilisk/animations/idle/north/00.webp",
+            "basilisk/animations/idle/north/01.webp",
+            "basilisk/animations/idle/north/02.webp",
+            "basilisk/animations/idle/north/03.webp",
+            "basilisk/animations/idle/north/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:40 GMT",
+          "src_frames": 5,
+          "sub": "73f9f123-f996-4a84-b4c1-4587042e2436"
+        },
+        "north-east": {
+          "frames": 5,
+          "strip": "basilisk/animations/idle__north-east.webp",
+          "frame_paths": [
+            "basilisk/animations/idle/north-east/00.webp",
+            "basilisk/animations/idle/north-east/01.webp",
+            "basilisk/animations/idle/north-east/02.webp",
+            "basilisk/animations/idle/north-east/03.webp",
+            "basilisk/animations/idle/north-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:41 GMT",
+          "src_frames": 5,
+          "sub": "876941fc-1a65-4b82-b74c-74cccb83b523"
+        },
+        "south": {
+          "frames": 5,
+          "strip": "basilisk/animations/idle__south.webp",
+          "frame_paths": [
+            "basilisk/animations/idle/south/00.webp",
+            "basilisk/animations/idle/south/01.webp",
+            "basilisk/animations/idle/south/02.webp",
+            "basilisk/animations/idle/south/03.webp",
+            "basilisk/animations/idle/south/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:42 GMT",
+          "src_frames": 5,
+          "sub": "a2f69ebd-ff44-4632-bab1-a1d5861d14da"
+        },
+        "south-east": {
+          "frames": 5,
+          "strip": "basilisk/animations/idle__south-east.webp",
+          "frame_paths": [
+            "basilisk/animations/idle/south-east/00.webp",
+            "basilisk/animations/idle/south-east/01.webp",
+            "basilisk/animations/idle/south-east/02.webp",
+            "basilisk/animations/idle/south-east/03.webp",
+            "basilisk/animations/idle/south-east/04.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:44 GMT",
+          "src_frames": 5,
+          "sub": "1e191c17-8ed6-4283-bb67-566f6ec84e91"
+        },
+        "south-west": {
+          "frames": 5,
+          "strip": "basilisk/animations/idle__south-west.webp",
+          "frame_paths": [
+            "basilisk/animations/idle/south-west/00.webp",
+            "basilisk/animations/idle/south-west/01.webp",
+            "basilisk/animations/idle/south-west/02.webp",
+            "basilisk/animations/idle/south-west/03.webp",
+            "basilisk/animations/idle/south-west/04.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 5,
+          "strip": "basilisk/animations/idle__west.webp",
+          "frame_paths": [
+            "basilisk/animations/idle/west/00.webp",
+            "basilisk/animations/idle/west/01.webp",
+            "basilisk/animations/idle/west/02.webp",
+            "basilisk/animations/idle/west/03.webp",
+            "basilisk/animations/idle/west/04.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 5,
+          "strip": "basilisk/animations/idle__north-west.webp",
+          "frame_paths": [
+            "basilisk/animations/idle/north-west/00.webp",
+            "basilisk/animations/idle/north-west/01.webp",
+            "basilisk/animations/idle/north-west/02.webp",
+            "basilisk/animations/idle/north-west/03.webp",
+            "basilisk/animations/idle/north-west/04.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "die": {
+      "group_id": "02096a36-825b-43e0-a82f-f7a8ccbba7bb",
+      "source_name": "custom-Death - Its legs give out, it ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "basilisk/animations/die__east.webp",
+          "frame_paths": [
+            "basilisk/animations/die/east/00.webp",
+            "basilisk/animations/die/east/01.webp",
+            "basilisk/animations/die/east/02.webp",
+            "basilisk/animations/die/east/03.webp",
+            "basilisk/animations/die/east/04.webp",
+            "basilisk/animations/die/east/05.webp",
+            "basilisk/animations/die/east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:47 GMT",
+          "src_frames": 7,
+          "sub": "b1623ed1-2551-491c-a269-8e95f6dce411"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "basilisk/animations/die__north.webp",
+          "frame_paths": [
+            "basilisk/animations/die/north/00.webp",
+            "basilisk/animations/die/north/01.webp",
+            "basilisk/animations/die/north/02.webp",
+            "basilisk/animations/die/north/03.webp",
+            "basilisk/animations/die/north/04.webp",
+            "basilisk/animations/die/north/05.webp",
+            "basilisk/animations/die/north/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:48 GMT",
+          "src_frames": 7,
+          "sub": "6a7695e9-1e20-4647-8527-7a6b5eaaafa6"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "basilisk/animations/die__north-east.webp",
+          "frame_paths": [
+            "basilisk/animations/die/north-east/00.webp",
+            "basilisk/animations/die/north-east/01.webp",
+            "basilisk/animations/die/north-east/02.webp",
+            "basilisk/animations/die/north-east/03.webp",
+            "basilisk/animations/die/north-east/04.webp",
+            "basilisk/animations/die/north-east/05.webp",
+            "basilisk/animations/die/north-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:49 GMT",
+          "src_frames": 7,
+          "sub": "715bab0e-40ee-47ee-8ebd-be3b30470fca"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "basilisk/animations/die__south.webp",
+          "frame_paths": [
+            "basilisk/animations/die/south/00.webp",
+            "basilisk/animations/die/south/01.webp",
+            "basilisk/animations/die/south/02.webp",
+            "basilisk/animations/die/south/03.webp",
+            "basilisk/animations/die/south/04.webp",
+            "basilisk/animations/die/south/05.webp",
+            "basilisk/animations/die/south/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:51 GMT",
+          "src_frames": 7,
+          "sub": "c6f32c39-fe36-4391-b4bb-2adf11f3bad0"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "basilisk/animations/die__south-east.webp",
+          "frame_paths": [
+            "basilisk/animations/die/south-east/00.webp",
+            "basilisk/animations/die/south-east/01.webp",
+            "basilisk/animations/die/south-east/02.webp",
+            "basilisk/animations/die/south-east/03.webp",
+            "basilisk/animations/die/south-east/04.webp",
+            "basilisk/animations/die/south-east/05.webp",
+            "basilisk/animations/die/south-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:52 GMT",
+          "src_frames": 7,
+          "sub": "88de6441-3ebd-4441-aa3f-17f134b196ef"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "basilisk/animations/die__south-west.webp",
+          "frame_paths": [
+            "basilisk/animations/die/south-west/00.webp",
+            "basilisk/animations/die/south-west/01.webp",
+            "basilisk/animations/die/south-west/02.webp",
+            "basilisk/animations/die/south-west/03.webp",
+            "basilisk/animations/die/south-west/04.webp",
+            "basilisk/animations/die/south-west/05.webp",
+            "basilisk/animations/die/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "basilisk/animations/die__west.webp",
+          "frame_paths": [
+            "basilisk/animations/die/west/00.webp",
+            "basilisk/animations/die/west/01.webp",
+            "basilisk/animations/die/west/02.webp",
+            "basilisk/animations/die/west/03.webp",
+            "basilisk/animations/die/west/04.webp",
+            "basilisk/animations/die/west/05.webp",
+            "basilisk/animations/die/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "basilisk/animations/die__north-west.webp",
+          "frame_paths": [
+            "basilisk/animations/die/north-west/00.webp",
+            "basilisk/animations/die/north-west/01.webp",
+            "basilisk/animations/die/north-west/02.webp",
+            "basilisk/animations/die/north-west/03.webp",
+            "basilisk/animations/die/north-west/04.webp",
+            "basilisk/animations/die/north-west/05.webp",
+            "basilisk/animations/die/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "custom_rears_its_head_back_and_bites": {
+      "group_id": "371290f0-4641-4fe9-92f3-09e604ddb823",
+      "source_name": "custom-rears its head back and bites ",
+      "directions": {
+        "east": {
+          "frames": 7,
+          "strip": "basilisk/animations/custom_rears_its_head_back_and_bites__east.webp",
+          "frame_paths": [
+            "basilisk/animations/custom_rears_its_head_back_and_bites/east/00.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/east/01.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/east/02.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/east/03.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/east/04.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/east/05.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:54 GMT",
+          "src_frames": 7,
+          "sub": "66ea3fbd-47ce-4d53-884c-e99c54bf76b1"
+        },
+        "north": {
+          "frames": 7,
+          "strip": "basilisk/animations/custom_rears_its_head_back_and_bites__north.webp",
+          "frame_paths": [
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north/00.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north/01.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north/02.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north/03.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north/04.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north/05.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:57 GMT",
+          "src_frames": 7,
+          "sub": "8c8064d1-eabd-48f6-9601-69d9a0401f00"
+        },
+        "north-east": {
+          "frames": 7,
+          "strip": "basilisk/animations/custom_rears_its_head_back_and_bites__north-east.webp",
+          "frame_paths": [
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-east/00.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-east/01.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-east/02.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-east/03.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-east/04.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-east/05.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:13:58 GMT",
+          "src_frames": 7,
+          "sub": "c6279ced-80d1-4147-8ba3-167089bea212"
+        },
+        "south": {
+          "frames": 7,
+          "strip": "basilisk/animations/custom_rears_its_head_back_and_bites__south.webp",
+          "frame_paths": [
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south/00.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south/01.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south/02.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south/03.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south/04.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south/05.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:14:00 GMT",
+          "src_frames": 7,
+          "sub": "770df3e3-4ef8-4564-8079-4bf147cac64f"
+        },
+        "south-east": {
+          "frames": 7,
+          "strip": "basilisk/animations/custom_rears_its_head_back_and_bites__south-east.webp",
+          "frame_paths": [
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-east/00.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-east/01.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-east/02.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-east/03.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-east/04.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-east/05.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-east/06.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:14:02 GMT",
+          "src_frames": 7,
+          "sub": "cb3289da-99da-408b-90c5-b5006e800b2e"
+        },
+        "south-west": {
+          "frames": 7,
+          "strip": "basilisk/animations/custom_rears_its_head_back_and_bites__south-west.webp",
+          "frame_paths": [
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-west/00.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-west/01.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-west/02.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-west/03.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-west/04.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-west/05.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/south-west/06.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 7,
+          "strip": "basilisk/animations/custom_rears_its_head_back_and_bites__west.webp",
+          "frame_paths": [
+            "basilisk/animations/custom_rears_its_head_back_and_bites/west/00.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/west/01.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/west/02.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/west/03.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/west/04.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/west/05.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/west/06.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 7,
+          "strip": "basilisk/animations/custom_rears_its_head_back_and_bites__north-west.webp",
+          "frame_paths": [
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-west/00.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-west/01.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-west/02.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-west/03.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-west/04.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-west/05.webp",
+            "basilisk/animations/custom_rears_its_head_back_and_bites/north-west/06.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    },
+    "walk": {
+      "group_id": "8bd340d4-05fd-4768-b478-408d6078d0ec",
+      "source_name": "custom-walk loop, full walk cycle in ",
+      "directions": {
+        "east": {
+          "frames": 6,
+          "strip": "basilisk/animations/walk__east.webp",
+          "frame_paths": [
+            "basilisk/animations/walk/east/00.webp",
+            "basilisk/animations/walk/east/01.webp",
+            "basilisk/animations/walk/east/02.webp",
+            "basilisk/animations/walk/east/03.webp",
+            "basilisk/animations/walk/east/04.webp",
+            "basilisk/animations/walk/east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:14:04 GMT",
+          "src_frames": 6,
+          "sub": "1ced765f-ea7c-47d5-a5a7-66744ce8ea8f"
+        },
+        "north": {
+          "frames": 6,
+          "strip": "basilisk/animations/walk__north.webp",
+          "frame_paths": [
+            "basilisk/animations/walk/north/00.webp",
+            "basilisk/animations/walk/north/01.webp",
+            "basilisk/animations/walk/north/02.webp",
+            "basilisk/animations/walk/north/03.webp",
+            "basilisk/animations/walk/north/04.webp",
+            "basilisk/animations/walk/north/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:14:05 GMT",
+          "src_frames": 6,
+          "sub": "268d830a-c118-4972-a468-b2da1db12c40"
+        },
+        "north-east": {
+          "frames": 6,
+          "strip": "basilisk/animations/walk__north-east.webp",
+          "frame_paths": [
+            "basilisk/animations/walk/north-east/00.webp",
+            "basilisk/animations/walk/north-east/01.webp",
+            "basilisk/animations/walk/north-east/02.webp",
+            "basilisk/animations/walk/north-east/03.webp",
+            "basilisk/animations/walk/north-east/04.webp",
+            "basilisk/animations/walk/north-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:14:07 GMT",
+          "src_frames": 6,
+          "sub": "edf18fe4-a997-411b-b92f-9cb42fe3ef2c"
+        },
+        "south": {
+          "frames": 6,
+          "strip": "basilisk/animations/walk__south.webp",
+          "frame_paths": [
+            "basilisk/animations/walk/south/00.webp",
+            "basilisk/animations/walk/south/01.webp",
+            "basilisk/animations/walk/south/02.webp",
+            "basilisk/animations/walk/south/03.webp",
+            "basilisk/animations/walk/south/04.webp",
+            "basilisk/animations/walk/south/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:14:08 GMT",
+          "src_frames": 6,
+          "sub": "018b56ce-3020-4308-b1d1-94ff78d427ad"
+        },
+        "south-east": {
+          "frames": 6,
+          "strip": "basilisk/animations/walk__south-east.webp",
+          "frame_paths": [
+            "basilisk/animations/walk/south-east/00.webp",
+            "basilisk/animations/walk/south-east/01.webp",
+            "basilisk/animations/walk/south-east/02.webp",
+            "basilisk/animations/walk/south-east/03.webp",
+            "basilisk/animations/walk/south-east/04.webp",
+            "basilisk/animations/walk/south-east/05.webp"
+          ],
+          "lm": "Mon, 21 Sep 2026 08:14:10 GMT",
+          "src_frames": 6,
+          "sub": "a135f4e6-fb38-4070-8534-830fc116756b"
+        },
+        "south-west": {
+          "frames": 6,
+          "strip": "basilisk/animations/walk__south-west.webp",
+          "frame_paths": [
+            "basilisk/animations/walk/south-west/00.webp",
+            "basilisk/animations/walk/south-west/01.webp",
+            "basilisk/animations/walk/south-west/02.webp",
+            "basilisk/animations/walk/south-west/03.webp",
+            "basilisk/animations/walk/south-west/04.webp",
+            "basilisk/animations/walk/south-west/05.webp"
+          ],
+          "mirrored_from": "south-east"
+        },
+        "west": {
+          "frames": 6,
+          "strip": "basilisk/animations/walk__west.webp",
+          "frame_paths": [
+            "basilisk/animations/walk/west/00.webp",
+            "basilisk/animations/walk/west/01.webp",
+            "basilisk/animations/walk/west/02.webp",
+            "basilisk/animations/walk/west/03.webp",
+            "basilisk/animations/walk/west/04.webp",
+            "basilisk/animations/walk/west/05.webp"
+          ],
+          "mirrored_from": "east"
+        },
+        "north-west": {
+          "frames": 6,
+          "strip": "basilisk/animations/walk__north-west.webp",
+          "frame_paths": [
+            "basilisk/animations/walk/north-west/00.webp",
+            "basilisk/animations/walk/north-west/01.webp",
+            "basilisk/animations/walk/north-west/02.webp",
+            "basilisk/animations/walk/north-west/03.webp",
+            "basilisk/animations/walk/north-west/04.webp",
+            "basilisk/animations/walk/north-west/05.webp"
+          ],
+          "mirrored_from": "north-east"
+        }
+      }
+    }
+  },
+  "states": {
+    "idle": "idle",
+    "walk": "walk",
+    "angry": "angry",
+    "attack": "attack",
+    "die": "die"
+  },
+  "unresolved_takes": [],
+  "synced_from_pixellab": true
+}
