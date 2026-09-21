@@ -1,16 +1,11 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-21T17:17:43+00:00",
+  "updated_at": "2026-09-21T17:33:32+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMED (maintainer-ordered, 2026-09-21: 'OMG! That is not good. The new accurate pathfinder was meant for the player! Can you please fix this!') — THE STALL RE-PLAN KEEPS THE TRIP'S OWN LIMITS. games' nav unit 61a04fdd1e (2026-09-20) gave stepAutopilot's stall branch a loop of up to TAP_PROVE_TRIES+1 findPath searches, each but the last followed by proveRoute simulating ROUTE_PROVE_STEPS frames — and it passes NEITHER the trip's maxNodes NOR its canSwim, whoever planned the trip. A monster's roam leg is planned with MONSTER_ROAM_MAX_NODES=300 and canSwim=false (WorldRoom.ts:2252); the re-plan therefore searched at findPath's default 4000 with swimming ALLOWED, on the server's 20 Hz tick, against 307 monsters. FIX: AutopilotTrip carries maxNodes and canSwim (startTrip records what it was given); the re-plan passes them; and the WALKED PROOF STAYS THE TAP'S — a budgeted trip gets one re-plan, which is what it had before that commit. FILES IN FLIGHT: games2/shared/src/index.ts, games2/server/test/navtap.test.ts. I checked games' board first: their claim does not name shared/src/index.ts and their last edit of it was 2026-09-20 11:44, so no collision; the request I posted them this morning is superseded by this and their board says so.",
-    "since": "2026-09-21T17:17:43+00:00",
-    "files": [
-      "games2/shared/src/index.ts",
-      "games2/server/test/navtap.test.ts",
-      "coordination/games-assistant.json",
-      "coordination/games.json"
-    ]
+    "unit": "LIVE (730291dde1) — THE WALKED PROOF IS THE TAP'S, taken on his direct order after I posted it to games ('the new accurate pathfinder was meant for the player! Can you please fix this!'). AutopilotTrip carries maxNodes and canSwim (startTrip records what it was handed), the stall re-plan passes them, and the TAP_PROVE_TRIES loop with proveRoute between its searches now runs only for an UNBUDGETED trip — a monster's roam leg gets one re-plan under its own limits, which is what it had before 61a04fdd1e. Gate: navtap.test.ts 'a monster's trip remembers its own limits ...' (a lake with one dry cell of corridor, the pinch in it, a movement context that may not swim), red on the shipped nav code (the trip carried no budget: undefined !== 300). HONEST LIMIT, in the commit and on games' board: I could not build a fixture where the shipped code actually swam or visibly overran its budget — a stall usually names a STEP and a step-avoid leaves a dry way — so the omission is demonstrated and its worst case reasoned. 51 tests green across the seven nav suites; both typechecks; suite 894 with the three pre-existing reds.\n\nOPEN, NOT MINE, REPORTED TO HIM: his 2026-09-21 17:2x screenshots at 337.1,252.0 and 323.6,247.0 (build 8d241ddc4) show the ground's TRANSITION TILES gone — grass/sand and sand/water as hard stair-steps, the ground flat, while scenery and bodies stay crisp. NOT the repo's tile code: I built the current tree and rendered his exact spot headless (scratchpad/beach/now.png) and the blends are intact; nothing has touched tiles/, maps2/worlds3 or tiles3draw in 30 hours; my own changes today are the zone server, the nav re-plan and the night pass, none of which draws ground. The symptom matches ONE path — tiles3draw's plate fallback: when a composed transition plate cannot be registered (registerRaster fails, stats.missing++), the draw falls back to the RAW tile (plateRawFallbacks++), which has no blend. That is a device-side texture/memory failure. Pressure that is new around it: maps2's 96ada1a8f9 took the world from 162 monsters to 307 three days ago (more resident art), and he has reloaded repeatedly through today's world restarts. The numbers that would settle it are __ml.ground().drain.raw and .missing from HIS client; the perf beacon's last report is 2026-09-19 and predates it. Owner: games / games-perf (tiles3draw and its texture budget). I could not capture production from this sandbox — the egress proxy refuses the game socket to nangijala.online.",
+    "since": "2026-09-21T17:33:32+00:00",
+    "files": []
   },
   "progress": {
     "units_shipped": 42
@@ -349,5 +344,5 @@
     }
   ],
   "updated": "2026-09-20T11:44:42+00:00",
-  "units_shipped": 51
+  "units_shipped": 52
 }
