@@ -529,7 +529,18 @@ jobs:
               --platform managed \
               --allow-unauthenticated \
               --port 8080 \
-              --cpu 1 --memory 1Gi \
+              `# TWO vCPU (maintainer 2026-09-22, once the registry bill was` \
+              `# brought down). NODE IS SINGLE-THREADED, so the second core does` \
+              `# NOT make the 20 Hz world loop faster - it takes the work that` \
+              `# already contends with it off the loop's core: the GC, and` \
+              `# libuv's threadpool, which is where brotli and the asset reads` \
+              `# for 50,121 art files run. That is what the loopLag MAX spikes` \
+              `# are made of (mean 1.9 ms, max 535 ms measured with zero` \
+              `# players), and it is the only part of them a core can absorb.` \
+              `# MEMORY IS THE TIGHTER RESOURCE, not CPU: measured the same` \
+              `# minute, 19.2% of one core against 643 MB of 1024 MB. An OOM` \
+              `# kills the world outright; CPU saturation only slows it.` \
+              --cpu 2 --memory 1Gi \
               --min-instances 0 \
               `# THE FAST LANE, ON. The running server reads published client` \
               `# generations from this branch (games2/server/src/bundlestore.ts)` \

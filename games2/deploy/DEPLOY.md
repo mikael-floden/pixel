@@ -7,8 +7,15 @@ the Colyseus WebSocket world on one port. Domain: **nangijala.online**.
 
 - **Scales to zero** — an instance only exists while someone is playing.
 - **Managed HTTPS + domain mapping** — no VM, no Caddy to run.
+- **`--cpu 2`** — Node is single-threaded, so the second core does not make the
+  20 Hz world loop faster; it moves what contends with it off the loop's core
+  (the GC, and libuv's threadpool, where brotli and the asset reads run). It
+  buys headroom against the loopLag *max*, never the mean.
 - **`--memory 1Gi`** — 16 warm zone rooms on one shared terrain grid are
   ~400 MB in dev; 512 MiB left no headroom (see `games2/docs/backend.md`).
+  This is the TIGHTER resource: 643 MB of 1024 MB against 19.2% of one core,
+  measured 2026-09-22 with zero players. An OOM kills the world; CPU
+  saturation only slows it.
 - **`--max-instances 1`** — one instance *is* the single shared world, so the
   "instances don't share state" caveat doesn't apply until we deliberately
   scale out (which needs Redis anyway — see *Scaling later*).
@@ -79,7 +86,8 @@ IMAGE=europe-north1-docker.pkg.dev/$PROJECT_ID/nangijala/nangijala
 docker build -f games2/Dockerfile -t $IMAGE:manual .   # from repo root
 docker push $IMAGE:manual
 gcloud run deploy nangijala --image $IMAGE:manual --region europe-north1 \
-  --allow-unauthenticated --port 8080 --min-instances 0 --max-instances 1 --memory 1Gi \
+  --allow-unauthenticated --port 8080 --min-instances 0 --max-instances 1 \
+  --cpu 2 --memory 1Gi \
   --no-cpu-throttling --session-affinity --timeout 3600
 ```
 
