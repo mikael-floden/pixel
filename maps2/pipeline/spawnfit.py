@@ -108,7 +108,7 @@ def split(w, zone):
     return out
 
 
-def run(world_dir, write):
+def run(world_dir, write, scale=1.0):
     name = os.path.basename(os.path.normpath(world_dir))
     doc = json.load(open(os.path.join(world_dir, "spawns.json")))
     w = spawns.load_world(name)
@@ -146,6 +146,31 @@ def run(world_dir, write):
     want = {}
     for z in doc["zones"]:
         want[z["monster"]] = want.get(z["monster"], 0) + z["num"]
+    # THE WORLD DIAL, APPLIED EVENLY BY AREA (maintainer 2026-09-22: "reduce
+    # the total numbers of monsters on the map by 50% (the reduction spread
+    # evenly by area). Don't put a monster on 0"). Every species' target is
+    # scaled by the same factor, and the allocation below shares it over that
+    # species' places by AREA with a floor of one - so the thinning lands
+    # everywhere at once and no place is emptied. The floor is what stops a
+    # true half: with one monster per place the world cannot go below the
+    # number of places, whatever the scale says.
+    if scale != 1.0:
+        zones_of = {}
+        for z in kept:
+            zones_of[z["monster"]] = zones_of.get(z["monster"], 0) + 1
+        target = round(sum(want.values()) * scale)
+        # the proportional share first, never below a species' own floor...
+        cut = {m: max(zones_of.get(m, 1), round(t * scale)) for m, t in want.items()}
+        # ...then trim what is still over the world target, taking from whoever
+        # stands furthest above its floor, until the target is met or every
+        # species is at one monster per place. THE FLOOR IS WHAT STOPS A TRUE
+        # HALF: the world can never hold fewer monsters than it has places.
+        while sum(cut.values()) > target:
+            m = max((v - zones_of.get(k, 1), k) for k, v in cut.items())[1]
+            if cut[m] <= zones_of.get(m, 1):
+                break
+            cut[m] -= 1
+        want = cut
     by_mon = {}
     for z in kept:
         by_mon.setdefault(z["monster"], []).append(z)
@@ -205,7 +230,9 @@ def main():
     name = [a for a in sys.argv[1:] if not a.startswith("-")][0]
     world_dir = os.path.join(spawns.WORLDS3, name)
     apply = "--apply" in sys.argv
-    doc, before, dropped, w, given, stuck = run(world_dir, apply)
+    scale = float(next((a.split("=", 1)[1] for a in sys.argv[1:]
+                        if a.startswith("--scale=")), 1.0))
+    doc, before, dropped, w, given, stuck = run(world_dir, apply, scale)
     off1 = report(doc, before, dropped, w)
     if given:
         print(f"  the crowding law took {given} monster(s) back where the split thickened an overlap"

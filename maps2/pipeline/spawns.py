@@ -330,9 +330,20 @@ CAVE_DENSITY_F = 0.4    # the cave's share of the open-ground cap -> 0.02/cell,
                         # one monster per 50 cells of floor. On the_island2 that
                         # is 9 in the cave where 18 stood: the maintainer's half.
 
-WORLD_CELLS_PER_MONSTER = 180       # world budget = land cells / this. ONE dial
+WORLD_CELLS_PER_MONSTER = 360       # world budget = land cells / this. ONE dial
                                     # for how busy a world feels, applied to every
-                                    # map so a change lands proportional to land
+                                    # map so a change lands proportional to land.
+                                    # DOUBLED from 180 on his order (2026-09-22:
+                                    # "reduce the total numbers of monsters on the
+                                    # map by 50% (the reduction spread evenly by
+                                    # area)"), which took the_game from 304 to 160
+                                    # in place. 160 IS THE FLOOR, not the half he
+                                    # asked for: the world has 160 places and none
+                                    # may be emptied ("Don't put a monster on 0"),
+                                    # so a true half of 152 is unreachable - the
+                                    # cut lands at 47.4% with one monster in every
+                                    # place. Lower this further and nothing moves;
+                                    # only fewer PLACES can take the world lower
                                     # instead of being trimmed off whichever map
                                     # someone was looking at. 137 -> 205 ("reduce
                                     # the total number of monsters by 25%"),

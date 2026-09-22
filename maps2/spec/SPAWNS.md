@@ -120,6 +120,24 @@ the floor states the only thing always true — a species that lives on a world
 has at least one individual there, or it is not on the world at all, which is
 exactly what `MUST_HAVE_ALL` promises — and leaves the land as the only dial.
 
+## How many monsters the world holds
+
+**`WORLD_CELLS_PER_MONSTER = 360`** — the world budget is `land cells ÷ this`,
+the one dial for how busy a world feels, and it lands proportional to land on
+any map. Doubled from 180 on the maintainer's order (2026-09-22: *"reduce the
+total numbers of monsters on the map by 50% (the reduction spread evenly by
+area). Don't put a monster on 0"*), applied to the shipped world in place with
+`spawnfit.py --scale=0.5`: **304 → 160 monsters**, all 57 species kept, no
+place emptied.
+
+**THE FLOOR IS THE NUMBER OF PLACES, AND IT BINDS BEFORE A HALF DOES.** A true
+half is 152 and the world has **160 places**, none of which may be emptied, so
+152 is not reachable: the cut lands at **47.4%** with exactly one monster in
+every place. The scale is shared out per species by area and then trimmed from
+whoever stands furthest above its own floor, so the thinning falls everywhere
+at once rather than emptying a region. Taking the world below 160 needs fewer
+PLACES, not a smaller dial — lower the dial further and nothing moves.
+
 ## A zone is one walkable place
 
 **THE CELLS OF A ZONE MUST BE ONE PATCH — one place you can walk around
