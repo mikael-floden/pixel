@@ -37,10 +37,33 @@ set -euo pipefail
 # assignment kills the script THERE, so without it a missing/erroring gcloud
 # exits silently with no diagnostic — verified by piping this script into bash
 # with gcloud off PATH.
+SELF="https://raw.githubusercontent.com/mikael-floden/pixel/main/games2/deploy/ar-cleanup.sh"
 PROJECT_ID="${PROJECT_ID:-${DEVSHELL_PROJECT_ID:-$(gcloud config get-value project 2>/dev/null || true)}}"
 if [ -z "$PROJECT_ID" ] || [ "$PROJECT_ID" = "(unset)" ]; then
-  echo "No project found. Re-run as:  PROJECT_ID=your-project bash ar-cleanup.sh" >&2
-  exit 1
+  # THE FALLBACK THAT ACTUALLY FIRES (measured 2026-09-22, on his phone): a
+  # fresh Cloud Shell that has never been pointed at a project opens as
+  # "(no project)", so DEVSHELL_PROJECT_ID is empty AND `config get-value`
+  # answers "(unset)" — and the paste this whole script exists to be died on
+  # its first line. Asking him to edit it is the thing the repo forbids
+  # ("Derive, don't ask", root CLAUDE.md: a hand-set variable left the backup
+  # silently backing up nothing for three nights). So derive it from the
+  # ACCOUNT: exactly one project is unambiguous and needs no human; several
+  # need his eye, and then he gets a line to PASTE rather than a lookup to go
+  # and perform. `|| true` on both, because under `set -e` a failing command
+  # substitution inside an assignment kills the script right there.
+  PROJECTS="$(gcloud projects list --format='value(projectId)' 2>/dev/null || true)"
+  COUNT="$(printf '%s\n' "$PROJECTS" | grep -c . || true)"
+  if [ "$COUNT" = "1" ]; then
+    PROJECT_ID="$PROJECTS"
+    echo "▶ no active project set; using the only one on this account: $PROJECT_ID"
+  else
+    echo "No active project, and this account has $COUNT of them:" >&2
+    printf '  %s\n' $PROJECTS >&2
+    echo >&2
+    echo "Paste this, with the one you want:" >&2
+    echo "  gcloud config set project THE-ID && curl -sS $SELF | bash" >&2
+    exit 1
+  fi
 fi
 REGION="${REGION:-europe-north1}"
 AR_REPO="${AR_REPO:-nangijala}"
