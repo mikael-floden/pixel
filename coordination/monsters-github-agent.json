@@ -1,14 +1,12 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-22T13:45:00+00:00",
-  "health": "idle",
-  "current": "idle — his 2026-09-22T13:25:52–13:26:19Z save (monsters/helm_hermit 'Helmcrab' + monsters/hoar_fisher) TAKEN and CLOSED. 18 new entries, ALL approvals: each creature's design key + idle x 8 directions. Law 2 — an approval is never cleared — so nothing was cleared; the two design approvals ask for the remaining four states and PixelLab still cannot create a character animation (re-probed, free, unchanged). No files claimed, no art changed, live/feedback/monsters.json byte-untouched.",
+  "updated_at": "2026-09-22T14:05:00+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 2026-09-22T13:28Z save on monsters/jewel_back 'Jewelback': 9 new entries, the design key + idle x 8 directions, every one APPROVED (rating 1). Files I may touch: coordination/monsters-github-agent.json only, unless the verdicts turn out to ask for art (then monsters/candidates/jewel_back/**). live/feedback/monsters.json not claimed for writing — law 2 says an approval is never cleared.",
   "progress": {
-    "unit": "helm_hermit + hoar_fisher design + idle x8 approvals — his 2026-09-22 13:25Z save",
-    "verdicts_taken": 18,
-    "verdicts_cleared": 0,
-    "shipped": "this board only; live/feedback/monsters.json byte-untouched"
+    "unit": "jewel_back design + idle x8 approvals — his 2026-09-22 13:28Z save",
+    "verdicts_taken": 9
   },
   "budget_remaining": "PixelLab USD $24.22 — unchanged by this session (405/404/422 probes are not billed).",
   "notes": [
