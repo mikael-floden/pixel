@@ -51,39 +51,6 @@
     "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.813,
-        "bbox": [
-          2,
-          4,
-          41,
-          42
-        ],
-        "fill": 0.765,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.85,
-        "bbox": [
-          2,
-          3,
-          42,
-          42
-        ],
-        "fill": 0.806,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.85,
-        "bbox": [
-          2,
-          2,
-          39,
-          41
-        ],
-        "fill": 0.745,
-        "touches_edge": false
-      },
-      "north-east": {
         "run1": 0.839,
         "bbox": [
           10,
@@ -94,7 +61,7 @@
         "fill": 0.451,
         "touches_edge": false
       },
-      "north": {
+      "south-east": {
         "run1": 0.835,
         "bbox": [
           6,
@@ -105,7 +72,7 @@
         "fill": 0.584,
         "touches_edge": false
       },
-      "north-west": {
+      "east": {
         "run1": 0.837,
         "bbox": [
           2,
@@ -116,7 +83,7 @@
         "fill": 0.806,
         "touches_edge": false
       },
-      "west": {
+      "north-east": {
         "run1": 0.83,
         "bbox": [
           2,
@@ -127,7 +94,7 @@
         "fill": 0.785,
         "touches_edge": false
       },
-      "south-west": {
+      "north": {
         "run1": 0.823,
         "bbox": [
           9,
@@ -136,6 +103,39 @@
           41
         ],
         "fill": 0.497,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.813,
+        "bbox": [
+          2,
+          4,
+          41,
+          42
+        ],
+        "fill": 0.765,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.85,
+        "bbox": [
+          2,
+          3,
+          42,
+          42
+        ],
+        "fill": 0.806,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.85,
+        "bbox": [
+          2,
+          2,
+          39,
+          41
+        ],
+        "fill": 0.745,
         "touches_edge": false
       }
     }

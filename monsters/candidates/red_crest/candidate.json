@@ -51,39 +51,6 @@
     "reasons": [],
     "directions": {
       "south": {
-        "run1": 0.695,
-        "bbox": [
-          4,
-          2,
-          72,
-          86
-        ],
-        "fill": 0.738,
-        "touches_edge": false
-      },
-      "south-east": {
-        "run1": 0.761,
-        "bbox": [
-          2,
-          5,
-          79,
-          82
-        ],
-        "fill": 0.766,
-        "touches_edge": false
-      },
-      "east": {
-        "run1": 0.751,
-        "bbox": [
-          2,
-          5,
-          77,
-          80
-        ],
-        "fill": 0.726,
-        "touches_edge": false
-      },
-      "north-east": {
         "run1": 0.755,
         "bbox": [
           21,
@@ -94,7 +61,7 @@
         "fill": 0.504,
         "touches_edge": false
       },
-      "north": {
+      "south-east": {
         "run1": 0.749,
         "bbox": [
           15,
@@ -105,7 +72,7 @@
         "fill": 0.557,
         "touches_edge": false
       },
-      "north-west": {
+      "east": {
         "run1": 0.761,
         "bbox": [
           8,
@@ -116,7 +83,7 @@
         "fill": 0.765,
         "touches_edge": false
       },
-      "west": {
+      "north-east": {
         "run1": 0.75,
         "bbox": [
           14,
@@ -127,7 +94,7 @@
         "fill": 0.759,
         "touches_edge": false
       },
-      "south-west": {
+      "north": {
         "run1": 0.795,
         "bbox": [
           18,
@@ -136,6 +103,39 @@
           83
         ],
         "fill": 0.523,
+        "touches_edge": false
+      },
+      "north-west": {
+        "run1": 0.695,
+        "bbox": [
+          4,
+          2,
+          72,
+          86
+        ],
+        "fill": 0.738,
+        "touches_edge": false
+      },
+      "west": {
+        "run1": 0.761,
+        "bbox": [
+          2,
+          5,
+          79,
+          82
+        ],
+        "fill": 0.766,
+        "touches_edge": false
+      },
+      "south-west": {
+        "run1": 0.751,
+        "bbox": [
+          2,
+          5,
+          77,
+          80
+        ],
+        "fill": 0.726,
         "touches_edge": false
       }
     }
