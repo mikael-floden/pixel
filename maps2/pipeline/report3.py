@@ -57,7 +57,89 @@ def world_at(commit, world, cache={}):
     return cache[key]
 
 
-def _window(doc, x0, y0, x1, y1, cutaway, roofcut=False):
+def sidecar_at(commit, world, name):
+    """A sidecar (spawns.json, ambient.json ...) as it was at a commit, or None
+    when that commit had none."""
+    key = (commit, world, name)
+    if key not in _side_cache:
+        try:
+            raw = subprocess.check_output(["git", "-C", MAPS2, "show",
+                                           f"{commit}:maps2/worlds3/{world}/{name}"],
+                                          stderr=subprocess.DEVNULL)
+            _side_cache[key] = json.loads(raw)
+        except (subprocess.CalledProcessError, ValueError):
+            _side_cache[key] = None
+    return _side_cache[key]
+
+
+_side_cache = {}
+
+
+def spawn_ground(doc, sdoc, world):
+    """Where a monster may be seeded, and whether it could ever LEAVE: {(x, y):
+    (level, trapped)}.
+
+    NOT the crowding law's density field. That field is `num / |zone cells|`
+    smeared over the zone, which is precisely the blind spot this page had to
+    show - painted, it made the island look emptier BEFORE the fix than after,
+    because a 25-cell island inherits a 1,777-cell zone's comfortable average.
+    What actually changed is which spawn ground is CUT OFF: a cell in a zone
+    whose patch is not walk-connected to that zone's body is ground a monster
+    can be put on and can never walk out of."""
+    if not sdoc:
+        return {}
+    import spawnfit
+    import spawns
+    w = spawns.W3(world, doc)
+    out = {}
+    for z in sdoc.get("zones", []):
+        try:
+            cells = spawns.spawn_cells(w, z)
+        except AssertionError:
+            continue
+        if not cells:
+            continue
+        ps = spawnfit.patches(cells)
+        body = ps[0]
+        for (x, y, lv) in cells:
+            trapped = (x, y, lv) not in body
+            k = (x, y)
+            if k not in out or out[k][0] < lv:
+                out[k] = (lv, trapped)
+            elif trapped:
+                out[k] = (out[k][0], True)
+    return out
+
+
+def paint_density(img, doc, dens, x0, y0, x1, y1):
+    """Paint the spawn ground over a rendered window: one diamond per cell,
+    BLUE where a monster may stand and RED where it would be trapped - ground
+    inside a zone whose patch that zone's body cannot reach. render3's own
+    projection (DX/DY, the measured storey pitch, the doc-wide max level), so
+    the diamond lands exactly on the cell's top face."""
+    if not dens:
+        return img
+    from PIL import Image, ImageDraw
+    DX, DY, LP = 32.0, 14.0, render3.storey_pitch(render3.over_tile("grey_stone", "grey_stone"))
+    maxL = max(max(r) for r in doc["level"])
+    ox = (y1 - 1 - y0) * DX + 8
+    oy = maxL * 17 + 24
+    lay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    d = ImageDraw.Draw(lay)
+    for (x, y), (lv, trapped) in sorted(dens.items(), key=lambda kv: (kv[0][1], kv[0][0])):
+        if not (x0 <= x < x1 and y0 <= y < y1):
+            continue
+        bx = ox + (x - x0 - (y - y0)) * DX - DX
+        by = oy + (x - x0 + y - y0) * DY - lv * LP - DY
+        # Never a terrain colour: a green ramp over the meadow and an orange
+        # one over the lava both read as ground, and the first cut of this
+        # page washed the plateau green and showed him nothing.
+        col = (235, 45, 55, 190) if trapped else (70, 120, 255, 70)
+        d.polygon([(bx + 32, by), (bx + 64, by + 14), (bx + 32, by + 28), (bx, by + 14)], fill=col)
+    return Image.alpha_composite(img.convert("RGBA"), lay)
+
+
+def _window(doc, x0, y0, x1, y1, cutaway, roofcut=False, dens=None):
     """The window, optionally with the lids over it lifted: `cutaway` takes
     the CAVE lids (what a card about a cave needs), `roofcut` the house ROOFS
     too — the only way a card about the furniture in a room shows it, since
@@ -68,7 +150,24 @@ def _window(doc, x0, y0, x1, y1, cutaway, roofcut=False):
         d = dict(doc)
         d["decks"] = [dk for dk in doc["decks"] if not (dk["kind"] in kinds and any(
             x0 <= c["x"] <= x1 and y0 <= c["y"] <= y1 for c in dk["cells"]))]
-    return render3.render(d, x0, y0, x1, y1, log=lambda *a: None)
+    img = render3.render(d, x0, y0, x1, y1, log=lambda *a: None)
+    return paint_density(img, doc, dens, x0, y0, x1, y1) if dens else img
+
+
+IDENTICAL = []
+
+
+def same_pixels(out, before, after, ch):
+    """A CARD MUST SHOW WHAT IT CLAIMS. A change page renders world.json, so a
+    push that only moved a SIDECAR (spawns, ambient, npcs) rendered the same
+    pixels twice and showed him nothing at all (maintainer 2026-09-22: "The
+    before and after images looks pixel perfect identical"). Collected here
+    and raised at the end, so every offending card is named at once: give the
+    card an `overlay` that draws what moved, or a window where it shows."""
+    a = open(os.path.join(out, before), "rb").read()
+    b = open(os.path.join(out, after), "rb").read()
+    if a == b:
+        IDENTICAL.append(ch.get("name", "?"))
 
 
 def build(spec, out, only=None):
@@ -87,15 +186,19 @@ def build(spec, out, only=None):
         cx, cy = ch["cell"]
         x0, y0, x1, y1 = ch.get("window") or (cx - 10, cy - 7, cx + 11, cy + 9)
         cut, rcut = bool(ch.get("cutaway")), bool(ch.get("roofcut"))
-        after = f"img/{n:02d}-after.webp"
-        _window(doc, x0, y0, x1, y1, cut, rcut).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
-        before = None
+        over = ch.get("overlay") or spec.get("overlay")
         bc = ch.get("before", spec.get("before"))
+        dn = spawn_ground(doc, json.load(open(os.path.join(wdir, "spawns.json"))), world) if over == "spawns" else None
+        after = f"img/{n:02d}-after.webp"
+        _window(doc, x0, y0, x1, y1, cut, rcut, dn).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
+        before = None
         if bc:
             bdoc = world_at(bc, world)
             if bdoc["size"] == doc["size"]:
+                bdn = spawn_ground(bdoc, sidecar_at(bc, world, "spawns.json"), world) if over == "spawns" else None
                 before = f"img/{n:02d}-before.webp"
-                _window(bdoc, x0, y0, x1, y1, cut, rcut).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
+                _window(bdoc, x0, y0, x1, y1, cut, rcut, bdn).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
+                same_pixels(out, before, after, ch)
         lvl = doc["level"][int(cy)][int(cx)]
         px = dot["kx"] * (cx - cy) + dot["x0"]
         py = dot["ky"] * (cx + cy) - dot["kz"] * lvl + dot["y0"]
@@ -225,17 +328,21 @@ def build_log(log, out, only=None):
             cx, cy = ch["cell"]
             x0, y0, x1, y1 = ch.get("window") or (cx - 10, cy - 7, cx + 11, cy + 9)
             cut, rcut = bool(ch.get("cutaway")), bool(ch.get("roofcut"))
+            over = ch.get("overlay") or push.get("overlay")
+            bc = ch.get("before", push.get("before"))
+            dn = spawn_ground(doc, sidecar_at(head, world, "spawns.json"), world) if over == "spawns" else None
             after = f"img/{n:03d}-after.webp"
             if not os.path.exists(os.path.join(out, after)):
-                _window(doc, x0, y0, x1, y1, cut, rcut).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
+                _window(doc, x0, y0, x1, y1, cut, rcut, dn).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
             before = None
-            bc = ch.get("before", push.get("before"))
             if bc:
                 bdoc = world_at(bc, world)
                 if bdoc["size"] == doc["size"]:
+                    bdn = spawn_ground(bdoc, sidecar_at(bc, world, "spawns.json"), world) if over == "spawns" else None
                     before = f"img/{n:03d}-before.webp"
                     if not os.path.exists(os.path.join(out, before)):
-                        _window(bdoc, x0, y0, x1, y1, cut, rcut).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
+                        _window(bdoc, x0, y0, x1, y1, cut, rcut, bdn).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
+                    same_pixels(out, before, after, ch)
             lvl = doc["level"][int(cy)][int(cx)]
             px = dot["kx"] * (cx - cy) + dot["x0"]
             py = dot["ky"] * (cx + cy) - dot["kz"] * lvl + dot["y0"]
@@ -406,3 +513,9 @@ if __name__ == "__main__":
     cards = build(spec, args[1], only)
     print(f"{len(cards)} change(s) rendered into {args[1]}"
           + (f" (push {only} only)" if only else " (the WHOLE log - not a link for a reply)"))
+    if IDENTICAL:
+        raise SystemExit(
+            "report3: these cards show the SAME PIXELS before and after, so they "
+            "show him nothing — give each an `overlay` that draws what moved (a "
+            "sidecar push does not touch world.json) or a window where the change "
+            "is visible:\n  " + "\n  ".join(IDENTICAL))

@@ -159,6 +159,14 @@ Measured on the shipped world: 109 zones → 160 places, 307 → 304 monsters,
 off-body surfaces 16% → 0%, the doctrine's own `--check` green. The pass is
 the last step of `Grow.spawns()`, so no build ships an island.
 
+**AND THE CHANGE PAGE CAN SHOW IT.** `report3.py` renders `world.json`, which
+a spawn push never touches, so this push's first page shipped two identical
+pictures per card. A change may now carry `"overlay": "spawns"`: the spawn
+ground is painted over the render, blue where a monster may stand and RED
+where it would be trapped. NOT the density field — `num / |zone cells|` is
+the blind spot this law exists to close, and painted it made the island look
+emptier before the fix than after.
+
 ## The crowding law
 
 **NOTHING PILES UP** (maintainer: "LOL! Why have you placed this many monsters

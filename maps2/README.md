@@ -523,6 +523,14 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   thick, so a face is only usable where the cell behind it is floor
   (`spec/WORLD3.md` → a window needs a room behind it). `--apply <world_dir>`
   slides the windows of a world that already ships.
+- `report3.py` — THE CHANGE PAGE, one per push. **A card must show what it
+  claims**: it renders `world.json`, so a push that moved only a SIDECAR came
+  out byte-identical before and after (maintainer 2026-09-22: *"The before and
+  after images looks pixel perfect identical"*). A change may carry
+  `"overlay": "spawns"`, which paints the spawn ground over the render — blue
+  where a monster may stand, RED where it would be trapped (a zone patch its
+  own body cannot reach) — and the run FAILS, naming every card whose two
+  pictures are the same bytes.
 - `spawnfit.py` — a spawn zone is one walkable place: every zone split into
   its patches (a drop you cannot climb back is a different place), each with
   its own outline and elevation band, patches too small to hold a monster
