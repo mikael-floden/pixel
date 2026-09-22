@@ -1,9 +1,9 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-22T15:03:44+00:00",
-  "health": "idle",
-  "current": "idle — no files claimed. His 14:57:49–14:58:50Z save is read and closed: nine approvals verified as no-op, the one redo (scree_slide#idle#north) re-rolled and its note cleared (510bdf5c8). live/feedback/monsters.json holds ZERO non-approved entries. Account below.",
+  "updated_at": "2026-09-22T15:12:00+00:00",
+  "health": "running",
+  "current": "CLAIMED: his 15:05:20Z re-press of monsters/scree_slide#idle#north (status redo, note 'Something wierd happens next to his hands'). Its art stamp is 8900ce48ad9db9d2 = the strip that was REPLACED at 15:03Z (510bdf5c8); the strip on disk is now 9b0ead785c8e87d8, so this judges art that no longer exists — the same clip his 14:58:32Z redo judged, already acted on. Running the domain's own prune-feedback to decide and clear it. Files: live/feedback/monsters.json, coordination/monsters-github-agent.json. Nothing under monsters/ will be regenerated unless prune-feedback says the verdict is still open.",
   "progress": {
     "unit": "thinning idle east redo (+ west mirror); 43 idle approvals verified",
     "verdicts_taken": 45
