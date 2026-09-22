@@ -1,14 +1,12 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-22T14:12:00+00:00",
-  "health": "idle",
-  "current": "idle — his 2026-09-22T13:28Z save on monsters/jewel_back 'Jewelback' TAKEN and CLOSED. 9 new entries, ALL approvals (design key + idle x 8, rating 1): law 2 — an approval is never cleared — so nothing was cleared, no art changed and live/feedback/monsters.json is byte-untouched. OPEN AND UNCLAIMED, NOT MINE: four redo verdicts on monsters/ice_fall#idle#{south-east,north-east,north-west,south-west}, written 13:27:56-13:28:12Z in the same save window. No files claimed.",
+  "updated_at": "2026-09-22T13:34:21+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 2026-09-22T13:31Z save on monsters/mire_shrew 'Mireshrew': 9 new entries, the design key + idle x 8 directions, every one APPROVED (rating 1). Files I may touch: coordination/monsters-github-agent.json only, unless the verdicts turn out to ask for art (then monsters/candidates/mire_shrew/**). live/feedback/monsters.json NOT claimed for writing — review-contract law 2: an approval is never cleared. Previous current on this board (a session whose runner is gone) was the 13:28Z jewel_back save, a different monster — no collision.",
   "progress": {
-    "unit": "jewel_back design + idle x8 approvals — his 2026-09-22 13:28Z save",
-    "verdicts_taken": 9,
-    "verdicts_cleared": 0,
-    "shipped": "this board only; live/feedback/monsters.json byte-untouched"
+    "unit": "mire_shrew design + idle x8 approvals — his 2026-09-22 13:31Z save",
+    "verdicts_taken": 9
   },
   "budget_remaining": "PixelLab USD $24.22 — unchanged by this session (405/404/422 probes are not billed).",
   "notes": [
@@ -109,6 +107,6 @@
       "text": "TIDE_CRAB (Tidecrab) IS FULLY APPROVED as of 2026-09-21 15:5xZ — the entity (rating 3) plus angry x 8, attack x 8 and die x 8 on the graduated slots, with walk east/west re-pressed. No action was needed and none was taken; verified, not assumed: all 40 graduated-slot facet stamps match the strips on disk 40/40, five states x 8 directions present (idle 5 frames, walk 6, angry 5, attack 4, die 4), states resolve identity, no animation_map gap, and the whole feedback file holds 1826 keys with ZERO non-approved entries. ONE NEW FACT THAT CHANGES YOUR STRAY-STATE SWEEP, and it is worth having before you write it: Tidecrab carries FOUR strays, not one — attack_left and attack_right (source names `attack-left` / `attack-right`, groups 2085dc2a-… and ab6064d0-…, EAST AND WEST ONLY), custom_claw_snap_lunges_slightly_fo (ff393ce2-…, east+west only) and custom_snaps_forward_with_its_big_cla (7ef3d12f-…, all 8). The first two are the SKELETON-TEMPLATE probe your README documents under 'mode: template' (attack-right on Tide Crab, reach 0.056, measured 09-10) — no `custom_` prefix and no v3 wording — and three of the four hold only 2 of 8 directions, where every stray on the eight graduates before this had 8. So a sweep written against 'the unpicked 8-direction custom_ attack take' would miss three of these four. All four records carry a group id, so delete-by-group-id handles them. THE OTHER STANDING ITEM IS UNCHANGED and this is the NINTH sitting to measure it: 24 approved facet verdicts on the retired candidate slots (angry_v1, attack_v3, die_v1) with no strip on disk, plus monsters/candidates/tide_crab — dangling by law 4, unclearable by law 2. One sweep in graduate.py and one decision from him. ALSO STILL TOP OF THE BOARD: the PixelLab animation-start route is 422-broken domain-wide (14:56:58Z note) — until it is fixed no redo he presses can be acted on by anyone here."
     }
   ],
-  "updated": "2026-09-22T13:22:00+00:00",
+  "updated": "2026-09-22T13:34:21+00:00",
   "notes_to_monsters": []
 }
