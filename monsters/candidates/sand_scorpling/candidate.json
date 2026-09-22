@@ -1747,43 +1747,42 @@
           "generated_at": "2026-09-22T20:35:15+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.295,
-          "step_max": 0.3343,
-          "drift": 1.9,
-          "loop": 0.3612,
-          "loop_ratio": 1.22,
-          "travel": 1.9,
+          "status": "warn",
+          "step_mean": 0.3104,
+          "step_max": 0.3881,
+          "drift": 1.56,
+          "loop": 0.5552,
+          "loop_ratio": 1.79,
+          "travel": 1.56,
           "pin": 1.0,
           "pad": 0,
-          "flash": 0.003,
+          "flash": 0.006,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.955,
-          "end_iou": 0.688,
+          "end_area": 0.976,
+          "end_iou": 0.561,
           "canvas": [
             32,
             32
           ],
           "reasons": [
-            "barely falls: last vs first 0.36 — eyeball it",
-            "still standing: the last frame matches the base at 0.69 (his dies end under 0.60)"
+            "ends near the base (0.56) — eyeball it"
           ],
-          "sub": "dcdf5c33-5a0d-41d5-9d58-51090e17b5cc",
-          "group": "e9193cb6-5692-44fb-b929-da971c9a4159",
+          "sub": "64352fd5-1cfa-4ab8-8225-5f0a15356f67",
+          "group": "b2acf8e3-5874-4c08-8fb9-98c06a8e9b90",
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "v3",
-          "action": "Death - Faints, collapses to the ground and fades away",
+          "action": "Death - Faints, collapses to the ground and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 7,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-22T20:35:20+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-22T20:41:14+00:00"
         },
         "east": {
           "status": "pass",
@@ -1970,6 +1969,45 @@
           "tries": 1,
           "generated_at": "2026-09-22T20:35:21+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.3104,
+          "step_max": 0.3881,
+          "drift": 1.56,
+          "loop": 0.5552,
+          "loop_ratio": 1.79,
+          "travel": 1.56,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.006,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.976,
+          "end_iou": 0.561,
+          "canvas": [
+            32,
+            32
+          ],
+          "reasons": [
+            "ends near the base (0.56) — eyeball it"
+          ],
+          "sub": "64352fd5-1cfa-4ab8-8225-5f0a15356f67",
+          "group": "b2acf8e3-5874-4c08-8fb9-98c06a8e9b90",
+          "takes": 1,
+          "version": 2,
+          "mirrored": true,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away, a heavy dramatic collapse, the whole body going down onto the ground",
+          "intensity": 0,
+          "rolls": 2,
+          "frames": 7,
+          "rung": 1,
+          "unwrapped": null,
+          "tries": 2,
+          "generated_at": "2026-09-22T20:41:14+00:00",
+          "source": "south-east"
         }
       },
       "action": "Death - Faints, collapses to the ground and fades away",
@@ -2036,6 +2074,15 @@
           "sand_scorpling/animations/die/north-west/04.webp",
           "sand_scorpling/animations/die/north-west/05.webp",
           "sand_scorpling/animations/die/north-west/06.webp"
+        ],
+        "south-west": [
+          "sand_scorpling/animations/die/south-west/00.webp",
+          "sand_scorpling/animations/die/south-west/01.webp",
+          "sand_scorpling/animations/die/south-west/02.webp",
+          "sand_scorpling/animations/die/south-west/03.webp",
+          "sand_scorpling/animations/die/south-west/04.webp",
+          "sand_scorpling/animations/die/south-west/05.webp",
+          "sand_scorpling/animations/die/south-west/06.webp"
         ]
       },
       "strips": {
@@ -2045,7 +2092,8 @@
         "north-east": "sand_scorpling/animations/die__north-east.webp",
         "north": "sand_scorpling/animations/die__north.webp",
         "west": "sand_scorpling/animations/die__west.webp",
-        "north-west": "sand_scorpling/animations/die__north-west.webp"
+        "north-west": "sand_scorpling/animations/die__north-west.webp",
+        "south-west": "sand_scorpling/animations/die__south-west.webp"
       }
     }
   }

@@ -265,6 +265,13 @@ TOO_LITTLE = ("no strike", "just a lean", "weak strike", "frozen", "shallow stri
               "still standing", "barely falls")
 TOO_MUCH = ("too much", "drifts", "walks across", "slides across", "wrapped around",
             "outside the frame", "out of frame", "outside the screen", "goes outside",
+            # a canvas that had to GROW to hold the clip is over-motion by
+            # definition, and a frame 0 that no longer matches the base means the
+            # roll threw the pinned pose away. Neither matched either list, so a
+            # clip that failed for being too big read as {up:0, down:0} and
+            # CLIMBED — his plume_brawler die went from "still standing" to 25 px
+            # of canvas growth and would have kept amplifying from there.
+            "canvas grown", "not the base rotation",
             # his own words on a review, which are what actually reach this list
             "calmer", "too wild", "too big", "too violent", "less movement",
             "still outside")
