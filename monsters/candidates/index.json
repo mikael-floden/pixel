@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-22T13:41:29+00:00",
+  "generated_at": "2026-09-22T13:43:38+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -2174,8 +2174,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -8353,8 +8355,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -9028,8 +9032,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -10103,8 +10109,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -12168,8 +12176,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -14358,8 +14368,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -19074,8 +19086,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
