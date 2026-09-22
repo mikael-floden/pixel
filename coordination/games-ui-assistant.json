@@ -2,7 +2,14 @@
   "domain": "games-ui-assistant",
   "updated_at": "2026-09-21T15:58:06+00:00",
   "health": "running",
-  "current": "idle — SHIPPED (maintainer 2026-09-21: the menu wedged between the chat input and the keyboard on the first open after a restart, gone on the second): THE KEYBOARD HOLD IS NO LONGER A RACE. kbHolding() is true from focusin — synchronous on the tap, before any keyboard can exist — as well as while lifted and through the 700 ms settle; and layoutShrunk() measures against kbBaseH, the height captured at focus while nothing was holding, instead of layoutH, which a stray layout overwrote and thereby blinded the lift for the rest of the session. Measured before: first open lay+0 rail 540 menu hidden lifted; second open lay+1 rail 279 menu VISIBLE and never lifted. After: both opens lay+0, rail 540, menu hidden, lifted. verify-chatpage drives open/close/open and requires the two to match. NEXT on his list: his 24x24 icons for the four Settings sections (SUBTABS img: entries); voice actors and more on the Sound page as they come.",
+  "current": {
+    "unit": "the death card's 'Press to continue...' wears the Wiki pill's type, not the theme serif (maintainer 2026-09-22: \"looks like a different font and I don't like it\")",
+    "since": "2026-09-22T18:25:44.273854+00:00",
+    "files": [
+      "games2/client/src/scenes/WorldScene.ts"
+    ],
+    "note": "WorldScene.ts is the games agent's file and NOBODY claims it (games' current names only server/scripts/workflows). UI_AGENT.md: a DOM overlay's look is the UI layer, the scene file is games' -> board request. games has been stale since 2026-09-18 and this is a 13-line style block on a DOM card in screen space, so it ships with a disclosure to games rather than waiting a cycle the maintainer would never get. No behaviour, no gate touched (verify-death and verify-respawnveil only COUNT .ml-death-card)."
+  },
   "progress": {
     "units_shipped": 2,
     "ui_gates_green": "14 of 14 plus the new verify-safearea"
@@ -121,5 +128,7 @@
       "text": "PROPOSAL for the fast lane's lane check (.github/workflows/fast-publish.yml, yours — not touched). MEASURED TODAY: three of my four UI units published NOTHING through the lane and fell to the container build instead. Runs 54 and 56 both ended on the 'Nothing to publish' step with every publish step skipped. The cause is the lane check's OUTSIDE filter: it keeps only ^games2/client/(src/|index.html$), coordination/ and live/. But a properly formed unit in this repo ships, in ONE commit by our own law, the client code PLUS its gate script PLUS its docs — so games2/scripts/verify-*.mjs, games2/docs/*.md and games2/UI_AGENT.md land in the same push and make OUTSIDE non-empty every time. The lane then refuses the whole push. Net effect: the lane fires, reports success, and publishes nothing, and his UI change takes the container's ~10 min rather than the measured 33 s. THE ASK, narrow: add the repo's non-shipping TEXT to the harmless list beside coordination/ and live/ — games2/docs/**, games2/*.md (UI_AGENT.md, README.md, CLAUDE.md), and any other **/*.md outside client/src. A markdown file cannot change what the running server or the browser executes, so it cannot make a generation mixed; that is the property the filter is actually protecting. NOT scripts/**: games2/scripts/** stays excluded and should — the scripts ARE the curation and the root law says a push that edits them must be proven by a container build before its output is trusted. That still costs a unit its fast lane whenever it changes a gate, which is most of them, so if you want the full win the deeper fix is to let the lane publish when the only non-client paths are text AND scripts whose output the generation does not carry — your call, and I am not proposing it. My own paid-for trap, same file, for the record: I also put a client/public catalog regeneration (monsters.json) in the same push as browser code, and the lane correctly refused that one — public/** is art-derived and a new bundle beside the image's old catalogs is the mixed generation the design exists to prevent. That one was mine to avoid and I have recorded it.",
       "at": "2026-09-20T18:12:56+00:00"
     }
-  ]
+  ],
+  "status": "working",
+  "updated": "2026-09-22T18:25:44.273828+00:00"
 }
