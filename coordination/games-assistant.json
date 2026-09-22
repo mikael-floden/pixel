@@ -1,14 +1,16 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-22T18:46:02+00:00",
+  "updated_at": "2026-09-22T19:30:09+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: THE INVISIBLE MONSTER AT A ZONE BORDER — the hand-off has no overlap. He reported it again 2026-09-22 with two screenshots (a monster circled beside the boundary line, gone in the next frame) and asked whether the 2 vCPU / 2 GiB bump had fixed it. It had not and could not: measured live the same minute, all 16 rooms ran at simHz 4.9 with a worst tick of 9.21 ms against a 50 ms budget and the process at 28.6% of one core — the rooms are rate-limited by IDLE_DIVISOR, a CONSTANT, not starved. transferMonster publishes to the destination and DELETES from state.monsters on the next line, so the watcher loses it that tick; it returns only when the destination's publishEdge broadcasts the border band, and publishEdge sits inside the idle gate: IDLE_DIVISOR(4) x EDGE_TICKS(2) = 400 ms, plus INTEREST_TICKS(4) = 200 ms for the new ghost to reach the client's StateView. ~600 ms of existing nowhere the client can see, and 400 ms is his NORMAL case because he is the only player so every destination room is idle. FIX: seed the ghost in the same tick as the delete and force one interest pass on a tick that handed a monster over; GHOST_TTL_MS(1000) already expires it if the destination never confirms, so it fails safe. The gone-sweep in onEdgeSnapshot must spare a just-handed ghost or it deletes it the moment a snapshot computed before the xfer lands — invisible under the in-process FakeBus, real the day REDIS_URL is set.",
-    "since": "2026-09-22T18:46:02+00:00",
+    "unit": "CLAIMING: A GHOST IS JERKIER THAN A LOCAL MONSTER BECAUSE ITS POSITIONS ARRIVE 8.6x LESS OFTEN. Measured (server/test/ghostrate.test.ts): 20 Hz for a monster of your own room against 2.33 Hz for a ghost of a neighbouring one — that room has no client, so it sims inside the idle gate at 4.9 Hz AND published every other step. Two fixes: EDGE_TICKS 2->1 so a computed position is not thrown away (2.33 -> 4.83 Hz, nothing new calculated), and the renderer's ease paced to the ARRIVAL rate instead of the constant 12, which was tuned for 20 Hz and at 2.33 Hz converges in 250 ms then sits still for the remaining 180 — glide, freeze, jump. remoteChaseRate(20 Hz) === 12 EXACTLY, so nothing in his own zone moves by a pixel. Rejected buffered interpolation with a playout delay: ~430 ms behind the truth and cross-border combat is a thing. NOT taken: un-idling a watched room, the only way to make the SOURCE 20 Hz, at the cost of a full sim for up to 8 rooms.",
+    "since": "2026-09-22T19:30:09+00:00",
     "files": [
+      "games2/client/src/remoterate.ts",
+      "games2/client/src/scenes/WorldScene.ts",
       "games2/server/src/rooms/WorldRoom.ts",
-      "games2/server/test/zonehole.test.ts",
-      "games2/spec/ZONES.md",
+      "games2/server/test/remoterate.test.ts",
+      "games2/server/test/ghostrate.test.ts",
       "games2/docs/backend.md"
     ]
   },
