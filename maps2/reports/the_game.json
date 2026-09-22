@@ -1250,6 +1250,29 @@
       ],
       "artifact": "https://claude.ai/artifact/3Hoy1uTSpCknFhs6uKEWnm",
       "overlay": "spawns"
+    },
+    {
+      "date": "2026-09-22",
+      "commit": "7fc7d86bdd",
+      "before": "4d9d339f8b",
+      "overlay": "spawndensity",
+      "title": "Half the monsters: 304 down to 160, every place keeps exactly one (world.json unchanged)",
+      "changes": [
+        {
+          "name": "The massif: five species, one monster each",
+          "what": "The warmer the tint, the more monsters that ground is expected to hold; both pictures are scaled by the SAME maximum, so the after is simply cooler everywhere. The world carried 304 monsters and now carries 160 - a 47.4% cut, spread over the whole map at once: every species' share was thinned by area, then trimmed from whoever stood furthest above its own floor. It is not the 50% you asked for and it cannot be: a true half is 152 and the world has 160 places that may not be emptied, so 160 is the floor and every place now holds exactly one. Nothing was removed - all 57 species are still on the map and no place is empty. Taking it below 160 needs fewer PLACES, not a smaller dial.",
+          "cell": [
+            224,
+            182
+          ],
+          "window": [
+            206,
+            168,
+            244,
+            200
+          ]
+        }
+      ]
     }
   ],
   "artifact_previous": "https://claude.ai/code/artifact/380e0818-32c4-4388-bd85-b73d37282f86",

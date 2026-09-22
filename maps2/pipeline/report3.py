@@ -75,6 +75,34 @@ def sidecar_at(commit, world, name):
 _side_cache = {}
 
 
+def spawn_field(doc, sdoc, world):
+    """The crowding law's own field - expected monsters on each surface - as
+    {(x, y): (level, density)}. THE OVERLAY FOR A POPULATION PUSH, and only
+    that: `num / |zone cells|` is the blind spot the island law closes, so a
+    push that changes WHERE monsters may stand must use `spawn_ground`
+    instead. A push that changes HOW MANY is exactly what this shows."""
+    if not sdoc:
+        return {}
+    import spawns
+    w = spawns.W3(world, doc)
+    out = {}
+    for z in sdoc.get("zones", []):
+        try:
+            cells = spawns.spawn_cells(w, z)
+        except AssertionError:
+            continue
+        if not cells:
+            continue
+        d = z["num"] / len(cells)
+        for (x, y, lv) in cells:
+            k = (x, y)
+            if k not in out or out[k][0] < lv:
+                out[k] = (lv, out.get(k, (0, 0.0))[1] + d)
+            else:
+                out[k] = (out[k][0], out[k][1] + d)
+    return out
+
+
 def spawn_ground(doc, sdoc, world):
     """Where a monster may be seeded, and whether it could ever LEAVE: {(x, y):
     (level, trapped)}.
@@ -111,7 +139,7 @@ def spawn_ground(doc, sdoc, world):
     return out
 
 
-def paint_density(img, doc, dens, x0, y0, x1, y1):
+def paint_density(img, doc, dens, x0, y0, x1, y1, vmax=None):
     """Paint the spawn ground over a rendered window: one diamond per cell,
     BLUE where a monster may stand and RED where it would be trapped - ground
     inside a zone whose patch that zone's body cannot reach. render3's own
@@ -126,7 +154,7 @@ def paint_density(img, doc, dens, x0, y0, x1, y1):
     oy = maxL * 17 + 24
     lay = Image.new("RGBA", img.size, (0, 0, 0, 0))
     d = ImageDraw.Draw(lay)
-    for (x, y), (lv, trapped) in sorted(dens.items(), key=lambda kv: (kv[0][1], kv[0][0])):
+    for (x, y), (lv, v) in sorted(dens.items(), key=lambda kv: (kv[0][1], kv[0][0])):
         if not (x0 <= x < x1 and y0 <= y < y1):
             continue
         bx = ox + (x - x0 - (y - y0)) * DX - DX
@@ -134,12 +162,19 @@ def paint_density(img, doc, dens, x0, y0, x1, y1):
         # Never a terrain colour: a green ramp over the meadow and an orange
         # one over the lava both read as ground, and the first cut of this
         # page washed the plateau green and showed him nothing.
-        col = (235, 45, 55, 190) if trapped else (70, 120, 255, 70)
+        if vmax is None:
+            col = (235, 45, 55, 190) if v else (70, 120, 255, 70)
+        else:
+            # A POPULATION PUSH IS A CHANGE OF DEGREE, so both pictures are
+            # scaled by the SAME maximum - the one from BEFORE - and the after
+            # picture is simply cooler everywhere.
+            t = min(1.0, (v / vmax) ** 0.55) if vmax > 0 else 0.0
+            col = (int(55 + 200 * t), int(120 - 80 * t), int(255 - 210 * t), int(60 + 130 * t))
         d.polygon([(bx + 32, by), (bx + 64, by + 14), (bx + 32, by + 28), (bx, by + 14)], fill=col)
     return Image.alpha_composite(img.convert("RGBA"), lay)
 
 
-def _window(doc, x0, y0, x1, y1, cutaway, roofcut=False, dens=None):
+def _window(doc, x0, y0, x1, y1, cutaway, roofcut=False, dens=None, vmax=None):
     """The window, optionally with the lids over it lifted: `cutaway` takes
     the CAVE lids (what a card about a cave needs), `roofcut` the house ROOFS
     too — the only way a card about the furniture in a room shows it, since
@@ -151,7 +186,7 @@ def _window(doc, x0, y0, x1, y1, cutaway, roofcut=False, dens=None):
         d["decks"] = [dk for dk in doc["decks"] if not (dk["kind"] in kinds and any(
             x0 <= c["x"] <= x1 and y0 <= c["y"] <= y1 for c in dk["cells"]))]
     img = render3.render(d, x0, y0, x1, y1, log=lambda *a: None)
-    return paint_density(img, doc, dens, x0, y0, x1, y1) if dens else img
+    return paint_density(img, doc, dens, x0, y0, x1, y1, vmax) if dens else img
 
 
 IDENTICAL = []
@@ -330,19 +365,29 @@ def build_log(log, out, only=None):
             cut, rcut = bool(ch.get("cutaway")), bool(ch.get("roofcut"))
             over = ch.get("overlay") or push.get("overlay")
             bc = ch.get("before", push.get("before"))
-            dn = spawn_ground(doc, sidecar_at(head, world, "spawns.json"), world) if over == "spawns" else None
+            dn = vmax = None
+            if over == "spawns":
+                dn = spawn_ground(doc, sidecar_at(head, world, "spawns.json"), world)
+            elif over == "spawndensity":
+                dn = spawn_field(doc, sidecar_at(head, world, "spawns.json"), world)
             after = f"img/{n:03d}-after.webp"
-            if not os.path.exists(os.path.join(out, after)):
-                _window(doc, x0, y0, x1, y1, cut, rcut, dn).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
             before = None
             if bc:
                 bdoc = world_at(bc, world)
                 if bdoc["size"] == doc["size"]:
-                    bdn = spawn_ground(bdoc, sidecar_at(bc, world, "spawns.json"), world) if over == "spawns" else None
+                    bdn = None
+                    if over == "spawns":
+                        bdn = spawn_ground(bdoc, sidecar_at(bc, world, "spawns.json"), world)
+                    elif over == "spawndensity":
+                        bdn = spawn_field(bdoc, sidecar_at(bc, world, "spawns.json"), world)
+                        vmax = max((v for _l, v in bdn.values()), default=0.0)
                     before = f"img/{n:03d}-before.webp"
                     if not os.path.exists(os.path.join(out, before)):
-                        _window(bdoc, x0, y0, x1, y1, cut, rcut, bdn).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
-                    same_pixels(out, before, after, ch)
+                        _window(bdoc, x0, y0, x1, y1, cut, rcut, bdn, vmax).convert("RGB").save(os.path.join(out, before), lossless=True, exact=True)
+            if not os.path.exists(os.path.join(out, after)):
+                _window(doc, x0, y0, x1, y1, cut, rcut, dn, vmax).convert("RGB").save(os.path.join(out, after), lossless=True, exact=True)
+            if before:
+                same_pixels(out, before, after, ch)
             lvl = doc["level"][int(cy)][int(cx)]
             px = dot["kx"] * (cx - cy) + dot["x0"]
             py = dot["ky"] * (cx + cy) - dot["kz"] * lvl + dot["y0"]
