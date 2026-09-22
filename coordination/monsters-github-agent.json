@@ -1,14 +1,14 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-22T13:35:13+00:00",
-  "health": "idle",
-  "current": "idle — no files claimed. His 2026-09-22T13:31Z mire_shrew save is read and closed (account in the notes below).",
+  "updated_at": "2026-09-22T13:38:35+00:00",
+  "health": "running",
+  "current": "CLAIMED, TWO UNITS (rebased onto the 13:35Z sitting's push, which closed mire_shrew and went idle naming no files — no collision). (1) His 2026-09-22T13:33:48-13:34:55Z save: 45 new entries on FIVE candidates — monsters/{pale_hand,peat_hand,pitcher_plant,plume_brawler,quag_maw} + #idle#<dir> x8 each, every one APPROVED (rating 1). Measured no-op: 40/40 art hashes match the strips on disk, and law 2 says an approval is never cleared. (2) THE FOUR OPEN REDOS NOBODY HAS TAKEN: monsters/ice_fall#idle#south-east, #north-east, #south-west, #north-west (status redo, his 13:27:56-13:28:12Z save; the 13:31Z sitting flagged them unclaimed and left them, the 13:34Z sitting took mire_shrew instead). Their `art` stamps equal the strips on disk, so the art he rejected is still there — genuinely unacted, and they are the ONLY non-approved entries in the whole file. FILES I MAY TOUCH: coordination/monsters-github-agent.json, monsters/candidates/ice_fall/** (candidate.json, animations/idle/**, animations/idle__*.webp), monsters/candidates/index.json, and live/feedback/monsters.json for the FOUR ice_fall redo keys ONLY (cleared by clear_verdict as each direction lands; the five monsters' 45 approvals are NOT claimed for writing). Not touching monsters/pebble_crab/**, config/roster.json, or any other creature. Generating ONE DIRECTION PER FOREGROUND CALL and pushing after each, so a piece that lands is a piece that survives.",
   "progress": {
-    "unit": "mire_shrew design + idle x8 approvals — his 2026-09-22 13:31Z save",
-    "verdicts_taken": 9,
-    "verdicts_cleared": 0,
-    "generated": 0
+    "unit": "5-monster idle-approval save (no-op, measured) + the 4 open ice_fall idle redos",
+    "verdicts_taken": 49,
+    "approvals_no_op": 45,
+    "redos_to_act_on": 4
   },
   "budget_remaining": "PixelLab USD 24.2209165987859 — unchanged by this session, measured before and after the probes (405/422 are not billed). Subscription pool 0/10000.",
   "notes": [
