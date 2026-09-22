@@ -23981,7 +23981,7 @@ export class WorldScene extends Phaser.Scene {
       // across the top of the screen (maintainer 2026-08-09: "way too high up
       // and doesn't follow the UI/UX style at all"). Everything else in this
       // game's chrome is DOM on the wiki theme, so this is too: the colours,
-      // the serif and the radii are the theme's own custom properties, which
+      // the type and the radii are the theme's own custom properties, which
       // also means it follows light/dark for free and needs no JS to do it.
       // Sits at 40% of the GAME VIEW's height — the camera centres the body
       // just below middle, so this lands over it without covering it.
@@ -24002,15 +24002,32 @@ export class WorldScene extends Phaser.Scene {
           "transform:translate(-50%,-50%)",
           "z-index:6",
           "pointer-events:none",
-          "font-family:var(--serif)",
-          "font-size:15px",
-          "font-weight:600",
+          // THE WIKI PILL'S LABEL, NOT THE THEME SERIF (maintainer 2026-09-22:
+          // "looks like a different font and I don't like it… I don't like it
+          // when it's this big"). --serif is "Iowan Old Style", Palatino,
+          // Georgia — none of which an Android has, so his phone fell through to
+          // ui-serif (Noto Serif) beside a HUD that is Roboto everywhere else:
+          // the one piece of chrome in another typeface, and the largest text on
+          // the screen. It now wears the Wiki/Report pill's own label and box
+          // (wikibtn.ts: 600 12px --sans at .03em, 1px --border-strong, radius
+          // 7, 32px content height, --shadow) so it reads as their sibling.
+          "font:600 12px/1 var(--sans)",
+          "letter-spacing:.03em",
           "color:var(--ink)",
+          // …but OPAQUE --surface where the pills are 76% --bg over a blur: they
+          // float over the world and want it showing through, this one sits on
+          // the death veil, where there is nothing behind it to see and a
+          // translucent chip only loses its presence on a near-black screen.
           "background:var(--surface)",
-          "border:1px solid var(--border)",
-          "border-radius:12px",
-          "padding:8px 16px",
-          "box-shadow:0 2px 10px rgba(0,0,0,.35)",
+          "border:1px solid var(--border-strong)",
+          "border-radius:7px",
+          "height:32px",
+          "box-sizing:content-box",
+          "padding:0 14px",
+          "display:flex",
+          "align-items:center",
+          "justify-content:center",
+          "box-shadow:var(--shadow)",
           "opacity:0",
           "transition:opacity .45s ease",
         ].join(";");
