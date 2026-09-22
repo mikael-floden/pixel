@@ -2,7 +2,7 @@
   "domain": "monsters-assistant",
   "updated_at": "2026-09-21T10:46:58+00:00",
   "health": "running",
-  "current": "DRIVING TO HIS END STATE, blocked only by PixelLab. His order, corrected by him twice: (1) idle for ALL 61 — that is HOW they move into 'in the making', each earning it with its own art; (2) all five states for the FIRST 11 (plume_brawler lava_toad fox_spirit ember_kit naga minotaur sand_scorpling mountain_ram burr_kin thorn_knot shore_urchin). I misread it as two separate goals and promoted the 61 by relaxing the wiki's guard instead. He said DO NOT REVERT, just reach the same end state — so the guard stays (it is correct for any approved design, and once idle lands the 61 qualify under the original rule anyway) and the idles still get generated. All 61 are approved for animation; `idle --dry-run` lists every one, 5 generated directions each, 305 clips ≈ $3.80. Cannot run: POST /v2/characters/{id}/animations 405, POST /v2/characters/animations 422 — re-probed three times since, unchanged. Nothing billed, balance $35.98. A free watcher polls both routes every 5 min and a 45-minute self check-in re-probes independently; on restoration the chain is scratchpad endstate.sh, gated behind a one-direction canary so a changed contract cannot burn the balance. No files claimed.",
+  "current": "BATCH 1 OF THE FIRST 10 — walk, angry, attack, die (2026-09-22: 'lets start to generate all needed animations for the first 10 monsters. We will take them in batches 10 by 10. Once you have animations for all states from the first 10 I will do the review'). The 10: plume_brawler lava_toad fox_spirit ember_kit naga minotaur sand_scorpling mountain_ram burr_kin thorn_knot. All 61 idles are approved; these 10 have idle only. FILES: monsters/candidates/<those 10>/animations/**, their candidate.json,  monsters/candidates/index.json, this board. NOT touching any other candidate, the roster, live/feedback, or the other 51. ROUTE: still the standalone /animate-with-text-v3 — PixelLab's character route has been 405 since 2026-09-21 15:00Z. Idle was that route's EASY case (both ends pinned to the base); walk/angry/attack/die have free ends, so interior drift should be worse. Doing walk across all 10 FIRST and eyeballing it before spending on the other three states.",
   "progress": {
     "units_shipped": 5,
     "graduated_today": 12,
@@ -94,5 +94,5 @@
       "at": "2026-09-21T15:46:09+00:00"
     }
   ],
-  "updated": "2026-09-21T16:00:45+00:00"
+  "updated": "2026-09-22T15:19:09+00:00"
 }
