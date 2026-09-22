@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-22T13:34:57.701Z",
+  "updated_at": "2026-09-22T13:36:05.478Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -13351,6 +13351,59 @@
       "rating": 1,
       "art": "4b31d68cde2b6544",
       "updated_at": "2026-09-22T13:34:55.842Z"
+    },
+    "monsters/quartz_leg": {
+      "status": "approved",
+      "rating": 1,
+      "updated_at": "2026-09-22T13:35:03.708Z"
+    },
+    "monsters/quartz_leg#idle#south": {
+      "status": "approved",
+      "rating": 1,
+      "art": "cf19f2b0234c5558",
+      "updated_at": "2026-09-22T13:35:05.312Z"
+    },
+    "monsters/quartz_leg#idle#south-east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "9ebf6d958961d4f0",
+      "updated_at": "2026-09-22T13:35:07.695Z"
+    },
+    "monsters/quartz_leg#idle#east": {
+      "status": "approved",
+      "rating": 1,
+      "art": "bc237e841f7aefb6",
+      "updated_at": "2026-09-22T13:35:09.049Z"
+    },
+    "monsters/quartz_leg#idle#north-east": {
+      "status": "redo",
+      "art": "d34054f0c684d65e",
+      "updated_at": "2026-09-22T13:35:52.714Z",
+      "note": "Not enough spider legs"
+    },
+    "monsters/quartz_leg#idle#north": {
+      "status": "redo",
+      "art": "e9a2686c0f218759",
+      "updated_at": "2026-09-22T13:35:36.262Z",
+      "note": "Now enough spider legs"
+    },
+    "monsters/quartz_leg#idle#north-west": {
+      "status": "redo",
+      "art": "979e4c8bfd8f0f5a",
+      "updated_at": "2026-09-22T13:36:04.272Z",
+      "note": "Not enough spider legs"
+    },
+    "monsters/quartz_leg#idle#west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "22f715499e0f33f8",
+      "updated_at": "2026-09-22T13:35:16.400Z"
+    },
+    "monsters/quartz_leg#idle#south-west": {
+      "status": "approved",
+      "rating": 1,
+      "art": "ce75f93a166479fc",
+      "updated_at": "2026-09-22T13:35:17.858Z"
     }
   }
 }
