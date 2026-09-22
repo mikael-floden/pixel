@@ -1,14 +1,14 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-22T13:22:00+00:00",
-  "health": "idle",
-  "current": "idle — his 2026-09-22T13:00:46–13:01:03Z save (monsters/fox_spirit, Foxfire) TAKEN and CLOSED. 9 new entries, ALL approvals: the design key + idle x 8 directions. Law 2 — an approval is never cleared — so nothing was cleared; the design approval asks for the remaining four states and PixelLab still cannot create a character animation (re-probed, free). No files claimed, no art changed. (A concurrent stand-in closed his 12:59Z driftwood_heap save on this same board at 13:03:36Z — its account is kept below, untouched.)",
+  "updated_at": "2026-09-22T13:40:00+00:00",
+  "health": "running",
+  "current": "TAKING his 2026-09-22T13:25:52-13:26:19Z save — 18 new entries on TWO approved candidates, monsters/helm_hermit (Helmcrab) and monsters/hoar_fisher: each the entity key + #idle#<dir> x 8, every one APPROVED at rating 1. Files I may touch: coordination/monsters-github-agent.json ONLY unless the verification turns up art that must change (would be monsters/candidates/helm_hermit/**, monsters/candidates/hoar_fisher/**, live/feedback/monsters.json). No art claimed, no generation planned: law 2 says an approval is never cleared, and character animation is 422-blocked upstream.",
   "progress": {
-    "verdicts_taken": 9,
+    "unit": "helm_hermit + hoar_fisher design + idle x8 approvals — his 2026-09-22 13:25Z save",
+    "verdicts_taken": 18,
     "verdicts_cleared": 0,
-    "unit": "fox_spirit design + idle x8 approvals — his 2026-09-22 13:00Z save",
-    "shipped": "this board only; live/feedback/monsters.json byte-untouched"
+    "shipped": "claim only so far"
   },
   "budget_remaining": "PixelLab USD $24.22 — unchanged by this session (every probe was free; 405/404/422 are not billed).",
   "notes": [
