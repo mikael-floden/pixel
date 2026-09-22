@@ -514,9 +514,25 @@ def _reach(ops, base_op, cap=48):
 
 
 def frames_for(rolls, state="attack"):
-    """How many frames this roll asks PixelLab for: the state's own ladder when
-    it has one (die), else FRAME_LADDER."""
-    ladder = (STATES.get(state) or {}).get("frame_ladder") or FRAME_LADDER
+    """How many frames this roll asks PixelLab for: ROLL 1 ASKS WHAT THE STATE
+    DECLARES, and the ladder is the shake-loose sequence for the rolls after it.
+
+    (Only the PRO path read `spec["frames"]`; every other path started at
+    FRAME_LADDER[0] = 4. That agreed with idle/attack, whose declared count IS
+    4, and with angry/die, whose own `frame_ladder` opens on their declared
+    count — so walk was the single state where the two disagreed, and PRO was
+    hiding it. PRO went 405 on 2026-09-21 and the whole of batch 1 shipped
+    4-frame walks against his 37 accepted 6-frame ones; a 4-frame cycle is two
+    half-steps, and he rejected 20 directions with "doesn't look like walk".)"""
+    spec = STATES.get(state) or {}
+    ladder = spec.get("frame_ladder") or FRAME_LADDER
+    want = spec.get("frames")
+    if want and ladder[0] != want:
+        # Only where the two DISAGREE, which today is walk alone — idle and
+        # attack declare 4 and the ladder opens on 4; angry and die bring their
+        # own. Prepending rather than rewriting leaves every approved state's
+        # retry sequence byte-identical.
+        ladder = [want] + list(ladder)
     return ladder[(max(1, int(rolls or 1)) - 1) % len(ladder)]
 
 
@@ -780,7 +796,7 @@ def mirror_direction(cid, state, d):
     return flipped
 
 
-def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
+def generate_state(client, cid, state, dirs, version, verbose=True, pin=False, want_frames=None):
     """Start one job per direction, wait, download the LAST take of each,
     QA, save, then mirror the three western directions from their eastern
     twins. Returns {direction: qa}."""
@@ -840,7 +856,24 @@ def generate_state(client, cid, state, dirs, version, verbose=True, pin=False):
     keep = collections.Counter(
         n for d, n in frame_counts(cid, state).items()
         if d in GEN_DIRS and (rec.get("directions", {}).get(d, {}).get("status") in ("pass", "warn")))
-    nf = keep.most_common(1)[0][0] - 1 if keep else frames_for(max(_prev) + 1 if _prev else 1, base_state(state))
+    # Reuse the working directions' STORED count, minus the base frame — but
+    # ONLY a state that stores one. (walk is `keep_first: False`: its six frames
+    # are all generated, so subtracting made a landed 4-frame walk re-ask for 3,
+    # which clamps back to 4 — pinned at the wrong count forever, and every
+    # "redo" bought another copy of the clip he had just rejected.)
+    _base_frame = 1 if (STATES.get(base_state(state)) or {}).get("keep_first") else 0
+    nf = (keep.most_common(1)[0][0] - _base_frame if keep
+          else frames_for(max(_prev) + 1 if _prev else 1, base_state(state)))
+    if want_frames:
+        # `--frames` overrules the working directions' count. (A redo inherits
+        # their length so the eight stay one animation — but when the
+        # MAINTAINER is the one who rejected these directions, their length is
+        # the thing on trial: his minotaur and plume_brawler kept six 4-frame
+        # walks he approved and failed N/S, where a biped's leg swing is
+        # edge-on and four frames cannot carry it. Inheriting 4 there re-buys
+        # the clip he just rejected. The redone directions are marked `manual`,
+        # which is what exempts a deliberate mix from the odd-length sweep.)
+        nf = int(want_frames)
     # PIXELLAB ONLY TAKES AN EVEN FRAME COUNT, 4..16. Locking to the working
     # directions' STORED count and subtracting the pinned base frame lands on an
     # odd number whenever those clips came from PRO (16 stored -> 15 asked), and
@@ -1212,9 +1245,23 @@ def cmd_state(args, state):
                     except PixelLabError as e:
                         print(f"  {cid} {d}: old take not deleted ({e})")
         try:
-            generate_state(client, cid, state, dirs, version, pin=bool(getattr(args, "pin", False)))
+            generate_state(client, cid, state, dirs, version, pin=bool(getattr(args, "pin", False)),
+                           want_frames=getattr(args, "frames", None))
         except PixelLabError as e:
             print(f"  {cid}: FAILED — {e}", flush=True)
+        if getattr(args, "frames", None):
+            # an ASKED-FOR length is a hand-set verdict, not an accident of it:
+            # mark the directions so the odd-length sweep leaves them alone
+            # (his cobra kept 4 frames beside six 6s the same way).
+            man2 = cand.load_manifest(cid) or {}
+            rec2 = (man2.get("animations") or {}).get(state) or {}
+            touched = False
+            for d in dirs:
+                q = (rec2.get("directions") or {}).get(d)
+                if q and not q.get("mirrored"):
+                    q["manual"] = True; touched = True
+            if touched:
+                write_manifest(cid, man2)
         cand.rebuild_index(cfg)
     # his notes are consumed by the regeneration they asked for — clear them
     # here so he never reads an old comment under a new clip
@@ -1835,6 +1882,9 @@ def main():
     r.add_argument("--pin", action="store_true", help="pin start+end to the base (the maintainer's fallback for a clip that never loops)")
     r.add_argument("--try", dest="use_try", action="store_true")
     r.add_argument("--pro", action="store_true", help="PRO mode for this run (see the state command)")
+    r.add_argument("--frames", type=int, help="ask for this many frames instead of the count the working "
+                        "directions use, and mark these directions `manual` so the deliberate mix survives "
+                        "the odd-length sweep (for when HE rejected the direction and the length is why)")
     r.add_argument("--reword-dirs", dest="reword_dirs", action="store_true",
                    help="apply the config's NEW wording to just these directions, keeping the ones he approved "
                         "(the state command has this too; redo is where a per-direction reword is actually asked for)")
