@@ -1284,45 +1284,42 @@
           "generated_at": "2026-09-22T19:44:35+00:00"
         },
         "south-east": {
-          "status": "fail",
-          "step_mean": 0.641,
-          "step_max": 0.7451,
-          "drift": 14.13,
-          "loop": 0.5669,
-          "loop_ratio": 0.88,
-          "travel": 16.08,
-          "pin": 0.531,
+          "status": "warn",
+          "step_mean": 0.1486,
+          "step_max": 0.2356,
+          "drift": 1.82,
+          "loop": 0.0482,
+          "loop_ratio": 0.32,
+          "travel": 1.91,
+          "pin": 0.51,
           "pad": 0,
-          "flash": 0.041,
-          "peak": 0.8247,
-          "reach": 0.435,
-          "turn": 2,
-          "end_area": 1.463,
+          "flash": 0.008,
+          "peak": 0.2356,
+          "reach": 0.159,
+          "turn": 0,
+          "end_area": 1.048,
           "end_iou": null,
           "canvas": [
             104,
             104
           ],
           "reasons": [
-            "body turned the wrong way: matches mirrored south-west (0.56) better than south-east (0.44)",
-            "drifts 14.1 px — eyeball it",
-            "some bright effect pixels (0.04) — eyeball it",
-            "16 px of travel — eyeball it"
+            "shallow strike: reach 0.16 — eyeball it"
           ],
-          "sub": "3eb0bf63-bade-4a0f-b1ef-101dcbd0a3a4",
-          "group": "ade1bfcc-2d65-4501-884b-163f0f7e1d26",
+          "sub": "b9d6afc8-cae4-469f-8b9a-bf93a08dad12",
+          "group": "2694fed1-6275-4d93-955f-ed2a29c07c2d",
           "takes": 1,
-          "version": 2,
+          "version": 3,
           "mirrored": false,
           "mode": "pro",
-          "action": "Strike - Quickly lunges forward and strikes once, a controlled strike, only the striking limb moves and the body stays planted",
+          "action": "Strike - Quickly lunges forward and strikes once, a small tight strike, the body barely moves",
           "intensity": 0,
-          "rolls": 2,
+          "rolls": 3,
           "frames": 4,
-          "rung": -1,
+          "rung": -2,
           "unwrapped": null,
-          "tries": 2,
-          "generated_at": "2026-09-22T20:23:57+00:00"
+          "tries": 3,
+          "generated_at": "2026-09-22T20:30:53+00:00"
         },
         "east": {
           "status": "warn",
@@ -1516,6 +1513,45 @@
           "tries": 1,
           "generated_at": "2026-09-22T19:44:39+00:00",
           "source": "north-east"
+        },
+        "south-west": {
+          "status": "warn",
+          "step_mean": 0.1486,
+          "step_max": 0.2356,
+          "drift": 1.82,
+          "loop": 0.0482,
+          "loop_ratio": 0.32,
+          "travel": 1.91,
+          "pin": 0.51,
+          "pad": 0,
+          "flash": 0.008,
+          "peak": 0.2356,
+          "reach": 0.159,
+          "turn": 0,
+          "end_area": 1.048,
+          "end_iou": null,
+          "canvas": [
+            104,
+            104
+          ],
+          "reasons": [
+            "shallow strike: reach 0.16 — eyeball it"
+          ],
+          "sub": "b9d6afc8-cae4-469f-8b9a-bf93a08dad12",
+          "group": "2694fed1-6275-4d93-955f-ed2a29c07c2d",
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "mode": "pro",
+          "action": "Strike - Quickly lunges forward and strikes once, a small tight strike, the body barely moves",
+          "intensity": 0,
+          "rolls": 3,
+          "frames": 4,
+          "rung": -2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-22T20:30:53+00:00",
+          "source": "south-east"
         }
       },
       "action": "Strike - Quickly lunges forward and strikes once",
@@ -1561,6 +1597,12 @@
           "plume_brawler/animations/attack/north-west/01.webp",
           "plume_brawler/animations/attack/north-west/02.webp",
           "plume_brawler/animations/attack/north-west/03.webp"
+        ],
+        "south-west": [
+          "plume_brawler/animations/attack/south-west/00.webp",
+          "plume_brawler/animations/attack/south-west/01.webp",
+          "plume_brawler/animations/attack/south-west/02.webp",
+          "plume_brawler/animations/attack/south-west/03.webp"
         ]
       },
       "strips": {
@@ -1570,7 +1612,262 @@
         "north-east": "plume_brawler/animations/attack__north-east.webp",
         "north": "plume_brawler/animations/attack__north.webp",
         "west": "plume_brawler/animations/attack__west.webp",
-        "north-west": "plume_brawler/animations/attack__north-west.webp"
+        "north-west": "plume_brawler/animations/attack__north-west.webp",
+        "south-west": "plume_brawler/animations/attack__south-west.webp"
+      }
+    },
+    "die": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.3148,
+          "step_max": 0.6767,
+          "drift": 33.3,
+          "loop": 1.1007,
+          "loop_ratio": 3.5,
+          "travel": 11.31,
+          "pin": 0.377,
+          "pad": 23,
+          "flash": -0.011,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.571,
+          "end_iou": 0.127,
+          "canvas": [
+            150,
+            150
+          ],
+          "reasons": [
+            "frame 0 is not the base rotation (IoU 0.38)",
+            "canvas grown by 23 px a side to hold the motion"
+          ],
+          "sub": "7dd45dd1-b103-4b6d-bda9-4c0683c55c0d",
+          "group": "dddf31b2-ba4e-40c1-ac1b-8e4a2449ddec",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:35:25+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.3185,
+          "step_max": 0.6017,
+          "drift": 27.52,
+          "loop": 1.3008,
+          "loop_ratio": 4.08,
+          "travel": 14.82,
+          "pin": 0.467,
+          "pad": 2,
+          "flash": -0.009,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.756,
+          "end_iou": 0.249,
+          "canvas": [
+            108,
+            108
+          ],
+          "reasons": [
+            "frame 0 is not the base rotation (IoU 0.47)",
+            "canvas grown by 2 px a side to hold the motion"
+          ],
+          "sub": "69fa2334-cb81-4777-9d0d-aecd833a70b6",
+          "group": "da857249-b632-45e9-b3b0-d51ddc0ccf41",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:35:27+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.2634,
+          "step_max": 0.5529,
+          "drift": 24.57,
+          "loop": 0.9153,
+          "loop_ratio": 3.47,
+          "travel": 9.68,
+          "pin": 0.45,
+          "pad": 15,
+          "flash": 0.015,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.931,
+          "end_iou": 0.292,
+          "canvas": [
+            134,
+            134
+          ],
+          "reasons": [
+            "frame 0 is not the base rotation (IoU 0.45)",
+            "canvas grown by 15 px a side to hold the motion"
+          ],
+          "sub": "8b655f01-8bef-404a-b8e0-8757f221e037",
+          "group": "72c3c9b5-4d9a-413e-83cb-81b137273a35",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:35:27+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.3104,
+          "step_max": 0.7984,
+          "drift": 33.9,
+          "loop": 1.1971,
+          "loop_ratio": 3.86,
+          "travel": 11.96,
+          "pin": 0.61,
+          "pad": 9,
+          "flash": -0.002,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.629,
+          "end_iou": 0.177,
+          "canvas": [
+            122,
+            122
+          ],
+          "reasons": [
+            "frame 0 is not the base rotation (IoU 0.61)",
+            "canvas grown by 9 px a side to hold the motion"
+          ],
+          "sub": "51690516-4412-4556-baeb-f6ea1e2ce3e7",
+          "group": "8c3bd4f6-2821-4e88-91ab-05098b0dc0d5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:35:28+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.3636,
+          "step_max": 0.7004,
+          "drift": 28.25,
+          "loop": 1.1609,
+          "loop_ratio": 3.19,
+          "travel": 9.85,
+          "pin": 0.273,
+          "pad": 28,
+          "flash": -0.003,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.773,
+          "end_iou": 0.1,
+          "canvas": [
+            160,
+            160
+          ],
+          "reasons": [
+            "frame 0 is not the base rotation (IoU 0.27)",
+            "canvas grown by 28 px a side to hold the motion"
+          ],
+          "sub": "12dc5b91-86a4-429f-8611-36fb1dfaf695",
+          "group": "d71fce86-404b-4d05-9b02-f9f020de3ba3",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:35:29+00:00"
+        }
+      },
+      "action": "Death - Faints, collapses to the ground and fades away",
+      "frame_paths": {
+        "south": [
+          "plume_brawler/animations/die/south/00.webp",
+          "plume_brawler/animations/die/south/01.webp",
+          "plume_brawler/animations/die/south/02.webp",
+          "plume_brawler/animations/die/south/03.webp",
+          "plume_brawler/animations/die/south/04.webp",
+          "plume_brawler/animations/die/south/05.webp",
+          "plume_brawler/animations/die/south/06.webp"
+        ],
+        "south-east": [
+          "plume_brawler/animations/die/south-east/00.webp",
+          "plume_brawler/animations/die/south-east/01.webp",
+          "plume_brawler/animations/die/south-east/02.webp",
+          "plume_brawler/animations/die/south-east/03.webp",
+          "plume_brawler/animations/die/south-east/04.webp",
+          "plume_brawler/animations/die/south-east/05.webp",
+          "plume_brawler/animations/die/south-east/06.webp"
+        ],
+        "east": [
+          "plume_brawler/animations/die/east/00.webp",
+          "plume_brawler/animations/die/east/01.webp",
+          "plume_brawler/animations/die/east/02.webp",
+          "plume_brawler/animations/die/east/03.webp",
+          "plume_brawler/animations/die/east/04.webp",
+          "plume_brawler/animations/die/east/05.webp",
+          "plume_brawler/animations/die/east/06.webp"
+        ],
+        "north-east": [
+          "plume_brawler/animations/die/north-east/00.webp",
+          "plume_brawler/animations/die/north-east/01.webp",
+          "plume_brawler/animations/die/north-east/02.webp",
+          "plume_brawler/animations/die/north-east/03.webp",
+          "plume_brawler/animations/die/north-east/04.webp",
+          "plume_brawler/animations/die/north-east/05.webp",
+          "plume_brawler/animations/die/north-east/06.webp"
+        ],
+        "north": [
+          "plume_brawler/animations/die/north/00.webp",
+          "plume_brawler/animations/die/north/01.webp",
+          "plume_brawler/animations/die/north/02.webp",
+          "plume_brawler/animations/die/north/03.webp",
+          "plume_brawler/animations/die/north/04.webp",
+          "plume_brawler/animations/die/north/05.webp",
+          "plume_brawler/animations/die/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "plume_brawler/animations/die__south.webp",
+        "south-east": "plume_brawler/animations/die__south-east.webp",
+        "east": "plume_brawler/animations/die__east.webp",
+        "north-east": "plume_brawler/animations/die__north-east.webp",
+        "north": "plume_brawler/animations/die__north.webp"
       }
     }
   },
