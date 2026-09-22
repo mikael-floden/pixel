@@ -287,10 +287,10 @@
         },
         "north": {
           "status": "pass",
-          "step_mean": 0.1285,
-          "step_max": 0.14,
-          "drift": 2.25,
-          "loop": 0.0,
+          "step_mean": 0.1201,
+          "step_max": 0.132,
+          "drift": 2.37,
+          "loop": 0.0001,
           "loop_ratio": 0.0,
           "travel": 0.11,
           "pin": 1.0,
@@ -309,7 +309,7 @@
           "sub": null,
           "group": null,
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "text-v3",
           "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -319,7 +319,7 @@
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-22T12:02:31+00:00"
+          "generated_at": "2026-09-22T12:58:55+00:00"
         },
         "south-west": {
           "status": "pass",
