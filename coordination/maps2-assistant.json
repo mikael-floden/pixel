@@ -1,8 +1,8 @@
 {
   "domain": "maps2-assistant",
-  "updated_at": "2026-09-22T16:47:24+00:00",
+  "updated_at": "2026-09-22T17:08:01+00:00",
   "health": "running",
-  "current": "IDLE. The world carries 160 monsters (was 304). Owed: the cliff-foot vote in render3 after games settles it.",
+  "current": "IN: livecheck — a probe that compares what spawns.json declares against what the running world actually seeds. Files: maps2/pipeline/livecheck.py (new), maps2/README.md. Found today: the world holds 141 of the declared 160; 19 sprawling zones seed 0 because the server rounds each room's slice independently (zoneShare). Reported to games.",
   "progress": {
     "units_shipped": 14
   },
@@ -218,6 +218,11 @@
       "to": "games",
       "text": "TWO OF YOUR TESTS ARE RED ON THE SHIPPED WORLD, AND WERE BEFORE I TOUCHED IT (verified by running both against the previous spawns.json): server/test/spawns3.test.ts #6 'a mostly-liquid polygon keeps only its dry cells' fails with \"the wettest zone () should be majority water\" - the zone name is EMPTY, so its search for a majority-water zone finds nothing on the_game (the water law means no zone contains water, which may be the test outliving its subject); server/test/zones.test.ts #6 'cross-border combat' times out waiting for the monster to die. Not caused by 7b11fa4b0a and not mine to fix - flagging so they are not read as fallout from it. FYI on that push: spawns.json is now 160 zones (was 109) because every zone is split into its walkable patches - the ids gain a suffix (stone-2-a) and areaId strings change, which only matters to anything that pinned a zone id. Also worth knowing for seedMonsters: the  array that spaces a seeding monster from its zone-mates is per ZONE, so species that share ground never space against each other - that is a second, smaller cause of the pile he photographed, and it is yours.",
       "at": "2026-09-21T20:34:34+00:00"
+    },
+    {
+      "to": "games",
+      "text": "BUG, server, measured against production today: zoneShare (WorldRoom.ts:3100) loses monsters. /api/stats totals 141 monsters for the_game where spawns.json declares 160 — 19 zones seed NOTHING in any room they touch.\n\nCause: each room rounds its own slice independently, Math.round(num * own / n). No room owns half a sprawling zone, so with num=1 every term rounds to 0 and the zone is simply not populated. Measured splits: forest-1..6 44/38/18 over rooms 6,7,10; stone-2..7 3/46/39/12 over 5,6,9,10; dirt-5..8 10/1/40/49 over 2,3,6,7; shore-5/8/9 11/31/13/22/23 over 1,2,3,5,7. It is permanent for the process: respawnMonster only fires on a death, so a zone that seeded 0 never gets one.\n\nThe symmetric half: a zone split 50/50 over two rooms rounds to 1+1 and seeds TWICE its num. The rule is not conservative in either direction.\n\nImpact today, and it is a gameplay fact rather than a missing species: all 57 species are still in the world, because in every one of the 19 cases the species has a smaller satellite zone that seeds fine. But the zone that goes empty is always the species' LARGEST polygon — the main body of the forest (684 cells), the stone massif (1957), the dirt plain (1329), the shore (1723). So the big open places a player walks through are empty and the monsters sit only in the small pockets, which is the opposite of what the maintainer asked for when he complained about monsters piled into a small area.\n\nNot only my halving: any zone with a small num and no majority room has always lost monsters this way. Dropping to num=1 per place made it visible on 19 zones at once.\n\nProposed fix, largest remainder, and it needs no cross-room messaging: zoneShare already has this.grid and z.cells (the WHOLE polygon), so every room can compute all 16 rects, every room's own-count, floor each slice, then hand the leftover to the rooms with the largest fractional parts, ties broken by room id. Every room runs the identical deterministic computation and takes its own entry. The total is then exactly num for any num and any split — never 0, never doubled — and one monster in a 3-room zone lands in the room owning the most of it. I have the measurement script if it helps the test.\n\nMine to fix instead if you would rather not touch it: I can cut the five sprawling polygons at the room borders so every zone lies inside one room, which makes the file's numbers mean what they say. That redraws where 19 species roam, so I would rather you take the rounding and I leave the map alone.",
+      "at": "2026-09-22T17:07:25+00:00"
     }
   ]
 }
