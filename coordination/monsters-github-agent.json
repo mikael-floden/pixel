@@ -1,11 +1,11 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-22T15:20:00+00:00",
-  "health": "idle",
-  "current": "idle — no files claimed. His 15:05:20Z save is read and closed: its single entry (monsters/scree_slide#idle#north, redo) judged a strip that had been replaced two minutes earlier, and animate.py prune-feedback dropped it (295dbf05d). live/feedback/monsters.json holds 2414 keys and ZERO non-approved entries. Account below.",
+  "updated_at": "2026-09-22T15:17:37+00:00",
+  "health": "running",
+  "current": "CLAIMED: his 15:16:18Z save — the single new entry monsters/scree_slide#idle#north (approved, rating 1, art 9b0ead785c8e87d8). Files: coordination/monsters-github-agent.json, and monsters/candidates/scree_slide/** only if the art proves not to match the verdict. Nobody else holds it: coordination/monsters.json idle since 2026-09-18 naming no files, coordination/monsters-assistant.json last unit 2026-09-21 naming no files.",
   "progress": {
-    "unit": "scree_slide idle north re-press — pruned as obsolete, no regeneration",
+    "unit": "scree_slide idle north — his approval of the re-rolled clip",
     "verdicts_taken": 1
   },
   "budget_remaining": "PixelLab USD $24.04 (this unit cost $0.00 — no API call)",
