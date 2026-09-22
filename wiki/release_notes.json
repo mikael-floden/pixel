@@ -1,9 +1,53 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-22T12:12:27.000Z",
- "head": "13b000333",
+ "generated_at": "2026-09-22T12:28:55.447Z",
+ "head": "e8e7e8b66",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "e8e7e8b66",
+   "at": "2026-09-22T12:28:36+00:00",
+   "author": "Claude",
+   "subject": "monsters: the last idles — sand_scorpling, burr_kin, ice_fall",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 99
+  },
+  {
+   "sha": "561cc782c",
+   "at": "2026-09-22T12:28:03+00:00",
+   "author": "Claude",
+   "subject": "monsters: ice_fall's redo and plume_brawler's recovered idle",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 55
+  },
+  {
+   "sha": "81f56ee61",
+   "at": "2026-09-22T12:25:24+00:00",
+   "author": "Claude",
+   "subject": "monsters: idle for the three recovered by regeneration",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 147
+  },
+  {
+   "sha": "b3277412c",
+   "at": "2026-09-22T12:14:35+00:00",
+   "author": "Claude",
+   "subject": "wiki: measure the 54 idles",
+   "agent": "wiki",
+   "dirs": [
+    "wiki"
+   ],
+   "files": 4
+  },
   {
    "sha": "13b000333",
    "at": "2026-09-22T12:11:39+00:00",
@@ -508,50 +552,6 @@
    "agent": null,
    "dirs": [
     "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "490baa8e8",
-   "at": "2026-09-21T18:24:58+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "002b3fbf1",
-   "at": "2026-09-21T18:23:42+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "68cd21e71",
-   "at": "2026-09-21T16:16:57+00:00",
-   "author": "Claude",
-   "subject": "board: the mist claim also takes WorldScene.ts (one probe line) — checked, nobody holds it",
-   "agent": "games-ambient-assistant",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b6f2b9596",
-   "at": "2026-09-21T16:15:29+00:00",
-   "author": "Claude",
-   "subject": "board: claim the mist fix — the zone fades his mist, it does not reshape it",
-   "agent": "games-ambient-assistant",
-   "dirs": [
-    "coordination"
    ],
    "files": 1
   }
