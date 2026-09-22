@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-22T12:58:55+00:00",
+  "generated_at": "2026-09-22T13:41:29+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -155,8 +155,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -422,8 +424,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -556,8 +560,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -824,8 +830,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -1761,8 +1769,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -1895,8 +1905,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -2698,8 +2710,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -2831,8 +2845,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -2965,8 +2981,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -3232,8 +3250,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -3365,8 +3385,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -3632,8 +3654,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -3899,8 +3923,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -4033,8 +4059,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -4300,8 +4328,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -4836,8 +4866,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -4969,8 +5001,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -6841,8 +6875,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -7242,8 +7278,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -7509,8 +7547,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -7642,8 +7682,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -9520,8 +9562,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -9787,8 +9831,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -10193,8 +10239,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -10334,8 +10382,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -10741,8 +10791,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -11016,8 +11068,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -12522,8 +12576,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -12665,8 +12721,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -13208,8 +13266,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -13484,8 +13544,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -14430,8 +14492,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -14563,8 +14627,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -14830,8 +14896,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -15099,8 +15167,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -16448,8 +16518,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
@@ -16579,11 +16651,11 @@
       "review": "approved",
       "notes": null,
       "generated_at": "2026-09-21T11:22:26+00:00",
-      "verdict": "approved",
+      "verdict": "rejected",
       "graduation": {
         "state": "waiting",
         "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "blocking": "design not approved"
       }
     },
     {
@@ -18058,8 +18130,10 @@
       "verdict": "approved",
       "graduation": {
         "state": "waiting",
-        "takes": {},
-        "blocking": "not fully approved: idle, walk, angry, attack, die"
+        "takes": {
+          "idle": "idle"
+        },
+        "blocking": "not fully approved: walk, angry, attack, die"
       }
     },
     {
