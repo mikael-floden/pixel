@@ -1,15 +1,15 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-22T18:07:49+00:00",
+  "updated_at": "2026-09-22T18:27:41+00:00",
   "health": "running",
   "current": {
-    "unit": "SHIPPED 00c6dae082: games2/deploy/ar-purge.sh — the Artifact Registry purge he can RUN TODAY, with the version count printed before and after. The keep rule is three arms and the FIRST is the one that matters: the newest 15 versions survive WHATEVER THEIR AGE. My first draft was age-only (delete >14 days) and argued safety from 'the fleet deploys many times a day' — but the service runs --min-instances 0, so a COLD START PULLS THE IMAGE FROM THIS REGISTRY, and the first fortnight the fleet goes quiet that rule deletes the image the world boots from. Symptom would be 'Nangijala could not start' with nothing in the logs about a registry. Arms 2 and 3: anything under 14 days, plus the digest Cloud Run serves and the one :latest points at, read live and excluded by name. Never <service>-buildcache. Gate deploy/ar-purge.test.sh, 48 arms, wired into npm test at 1.6s, needs no gcloud/network/project — S10 runs the REPLACED rule on an all-old fixture and shows it taking the serving digest and the whole repo; S2 runs the shipped rule on the same fixture and shows the boot image kept.",
-    "since": "2026-09-22T18:07:49+00:00",
+    "unit": "CLAIMING: V8's heap ceiling does NOT follow the container, and /api/stats cannot see it. PROVEN LOCALLY 2026-09-22: node 22.22.2 inside a cgroup capped at 900 MiB reports process.constrainedMemory()=900 MiB but v8 heap_size_limit=8204 MiB — Node SEES the cap and V8 IGNORES it, sizing old space at ~half the HOST's 16 GB. On Cloud Run with --memory 2Gi that would mean V8 never runs a near-limit GC and the kernel OOM-kills the instance instead, which is the exact failure --memory was just doubled to avoid. UNKNOWN and the reason for the probe: whether Cloud Run's sandbox reports the INSTANCE limit as MemTotal (in which case the default is already ~half the container and safe) or the host's RAM. So: perfStats() gains a `mem` block (heap used/total/LIMIT, external, arrayBuffers, os.totalmem, constrainedMemory) so the answer is a read of production rather than an argument, AND NODE_OPTIONS caps old space next to --memory in the deploy so the two numbers move together. The cap is chosen to be correct in BOTH worlds: today's WHOLE rss is 643 MB, so a 1200 MiB heap ceiling on a 2 GiB container leaves 848 MiB for native — more than everything the process uses today — while replacing an 8 GiB ceiling if that is what is there.",
+    "since": "2026-09-22T18:27:41+00:00",
     "files": [
-      "games2/deploy/ar-purge.sh",
-      "games2/deploy/ar-purge.test.sh",
-      "games2/deploy/DEPLOY.md",
-      "games2/package.json"
+      "games2/server/src/rooms/WorldRoom.ts",
+      "games2/server/test/memstats.test.ts",
+      ".github/workflows/nangijala-deploy.yml",
+      "games2/deploy/DEPLOY.md"
     ]
   },
   "progress": {
