@@ -1,15 +1,15 @@
 {
   "domain": "games-assistant",
-  "updated_at": "2026-09-22T18:27:41+00:00",
+  "updated_at": "2026-09-22T18:46:02+00:00",
   "health": "running",
   "current": {
-    "unit": "CLAIMING: V8's heap ceiling does NOT follow the container, and /api/stats cannot see it. PROVEN LOCALLY 2026-09-22: node 22.22.2 inside a cgroup capped at 900 MiB reports process.constrainedMemory()=900 MiB but v8 heap_size_limit=8204 MiB — Node SEES the cap and V8 IGNORES it, sizing old space at ~half the HOST's 16 GB. On Cloud Run with --memory 2Gi that would mean V8 never runs a near-limit GC and the kernel OOM-kills the instance instead, which is the exact failure --memory was just doubled to avoid. UNKNOWN and the reason for the probe: whether Cloud Run's sandbox reports the INSTANCE limit as MemTotal (in which case the default is already ~half the container and safe) or the host's RAM. So: perfStats() gains a `mem` block (heap used/total/LIMIT, external, arrayBuffers, os.totalmem, constrainedMemory) so the answer is a read of production rather than an argument, AND NODE_OPTIONS caps old space next to --memory in the deploy so the two numbers move together. The cap is chosen to be correct in BOTH worlds: today's WHOLE rss is 643 MB, so a 1200 MiB heap ceiling on a 2 GiB container leaves 848 MiB for native — more than everything the process uses today — while replacing an 8 GiB ceiling if that is what is there.",
-    "since": "2026-09-22T18:27:41+00:00",
+    "unit": "CLAIMING: THE INVISIBLE MONSTER AT A ZONE BORDER — the hand-off has no overlap. He reported it again 2026-09-22 with two screenshots (a monster circled beside the boundary line, gone in the next frame) and asked whether the 2 vCPU / 2 GiB bump had fixed it. It had not and could not: measured live the same minute, all 16 rooms ran at simHz 4.9 with a worst tick of 9.21 ms against a 50 ms budget and the process at 28.6% of one core — the rooms are rate-limited by IDLE_DIVISOR, a CONSTANT, not starved. transferMonster publishes to the destination and DELETES from state.monsters on the next line, so the watcher loses it that tick; it returns only when the destination's publishEdge broadcasts the border band, and publishEdge sits inside the idle gate: IDLE_DIVISOR(4) x EDGE_TICKS(2) = 400 ms, plus INTEREST_TICKS(4) = 200 ms for the new ghost to reach the client's StateView. ~600 ms of existing nowhere the client can see, and 400 ms is his NORMAL case because he is the only player so every destination room is idle. FIX: seed the ghost in the same tick as the delete and force one interest pass on a tick that handed a monster over; GHOST_TTL_MS(1000) already expires it if the destination never confirms, so it fails safe. The gone-sweep in onEdgeSnapshot must spare a just-handed ghost or it deletes it the moment a snapshot computed before the xfer lands — invisible under the in-process FakeBus, real the day REDIS_URL is set.",
+    "since": "2026-09-22T18:46:02+00:00",
     "files": [
       "games2/server/src/rooms/WorldRoom.ts",
-      "games2/server/test/memstats.test.ts",
-      ".github/workflows/nangijala-deploy.yml",
-      "games2/deploy/DEPLOY.md"
+      "games2/server/test/zonehole.test.ts",
+      "games2/spec/ZONES.md",
+      "games2/docs/backend.md"
     ]
   },
   "progress": {
