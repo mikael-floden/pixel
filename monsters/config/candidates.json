@@ -1871,21 +1871,6 @@
       "items": []
     },
     {
-      "id": "quartz_leg",
-      "name": "Quartzleg",
-      "tier": "mid",
-      "scale": "standard",
-      "size": 96,
-      "template_id": "bear",
-      "biome": [
-        "grey_stone",
-        "black_rock"
-      ],
-      "prompt": "Fantasy crystal spider with eight quartz-plated legs, a faceted translucent abdomen holding trapped light, a dark cephalothorax, and eight small glinting eyes in two rows.",
-      "lore": "It spins nothing. It waits at the narrow places where the cave decides for you.",
-      "items": []
-    },
-    {
       "id": "stone_creep",
       "name": "Stonecreep",
       "tier": "evil",
@@ -5454,6 +5439,24 @@
       "items": [],
       "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
       "retired_at": "2026-09-21T12:07:55+00:00",
+      "versions_tried": 1
+    },
+    {
+      "id": "quartz_leg",
+      "name": "Quartzleg",
+      "tier": "mid",
+      "scale": "standard",
+      "size": 96,
+      "template_id": "bear",
+      "biome": [
+        "grey_stone",
+        "black_rock"
+      ],
+      "prompt": "Fantasy crystal spider with eight quartz-plated legs, a faceted translucent abdomen holding trapped light, a dark cephalothorax, and eight small glinting eyes in two rows.",
+      "lore": "It spins nothing. It waits at the narrow places where the cave decides for you.",
+      "items": [],
+      "retired": "removed by the maintainer (rejected in the wiki or untagged on PixelLab); reconciled automatically",
+      "retired_at": "2026-09-22T13:49:08+00:00",
       "versions_tried": 1
     }
   ],
