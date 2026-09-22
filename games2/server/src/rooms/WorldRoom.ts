@@ -607,8 +607,37 @@ export class WorldRoom extends Room<WorldState> {
    *  second, so it is never published or persisted. Called every tick; the
    *  state only changes when a zone's window turned (~every 7 s world-wide,
    *  each zone holding ~10 min). */
+  /** The whole-second the packed table was last built for; -1 = never. */
+  private ambientBuiltSec = -1;
+
+  /** THE ZONE TABLE IS BUILT ONCE A SECOND, NOT ONCE A TICK.
+   *
+   *  This is called from update() ELEVEN LINES ABOVE the idle-divisor gate, so
+   *  it ran on every tick of every room whether or not a soul was connected:
+   *  16 rooms x 20 Hz = 320 builds a second. Each one walks 96 zones, seeds a
+   *  roll per zone, allocates a Map, joins 96 strings, sorts 96 keys and
+   *  concatenates a 3,141-character line — and then the cheap comparison
+   *  underneath discovers the answer is the one we already had and drops the
+   *  lot. Measured against the real doc: 197.8 us a build, 63 ms of CPU per
+   *  wall second, 6.3% of the single core the world runs on. It shipped on
+   *  2026-09-18 and was still there on the 21st, when a starved event loop on
+   *  that same core stopped his art reaching his phone for an evening.
+   *
+   *  THE MEMO KEY IS THE SECOND, AND NOT THE 10-MINUTE WINDOW, which is the
+   *  trap: `zoneWindow` offsets every zone by `hashStr(id) % AMBIENT_HOLD_S`,
+   *  so the 96 zones roll at up to 96 DIFFERENT moments and a
+   *  window-granularity memo would silently freeze the offset ones. Per second
+   *  is EXACT instead of merely close: `zoneSetAt` reads `nowMs` only through
+   *  `zoneWindow`, whose value changes when `nowMs/1000 + phase` crosses a
+   *  multiple of AMBIENT_HOLD_S — and with `phase` a whole number that
+   *  crossing always falls on a whole second. Nothing observable changes;
+   *  320 builds a second become 16 (3.2 ms/s), and `state.ambientZones` has
+   *  exactly one writer, which is this line, so nothing else can desync. */
   private refreshAmbientZones(nowMs = Date.now()) {
-    if (!this.ambientZones) return;
+    if (!this.ambientZones) return; // before the doc check, so a room without one never arms the memo
+    const sec = Math.floor(nowMs / 1000);
+    if (sec === this.ambientBuiltSec) return;
+    this.ambientBuiltSec = sec;
     const packed = packZoneTable(ambientTableAt(this.ambientZones, nowMs));
     if (packed !== this.state.ambientZones) this.state.ambientZones = packed;
   }
