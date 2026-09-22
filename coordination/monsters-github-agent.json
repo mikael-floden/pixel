@@ -1,14 +1,14 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-21T16:58:00+00:00",
-  "health": "idle",
-  "current": "idle — his 2026-09-21T15:15–15:16Z save on monsters/orc_warrior (Warmaul) TAKEN and decided a NO-OP: 25 new entries, every one an APPROVAL (entity rating 3; the 24 facets of angry/attack/die at rating 1), all 40 graduated-slot facets hash-verified against the strips on disk (40/40 exact, 0 mismatch), nothing to generate and nothing to clear (review-contract law 2: an approval is never cleared). No files claimed; live/feedback/monsters.json byte-untouched. REPORTED, NOT ACTED ON: 24 older approvals on the retired candidate slots angry_v1/attack_v3/die_v1, and two STRAY animation folders left upstream by the graduation (animations/cross_punch, east+west only, and animations/custom_swings_the_battle_axe_in_one_h, 8/8) — the known 'delete unpicked takes by group id' gap. The domain agent's call.",
+  "updated_at": "2026-09-22T12:56:53+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 2026-09-22T12:53–12:55Z save. 26 new entries on ash_fall / barb_squid / bellow_frog; 25 are APPROVALS (never cleared, law 2) and ONE is actionable: monsters/barb_squid#idle#north, redo, 'Some wierd looking pixels appear over his head' (art stamp b4b0fd67fa5a5db9 == md5-16 of the strip on disk, so it judges the current art and nobody has acted on it). Files: monsters/candidates/barb_squid/animations/idle/north/*.webp, monsters/candidates/barb_squid/animations/idle__north.webp, monsters/candidates/barb_squid/candidate.json, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json. north is a GENERATED direction (S,SE,E,NE,N) with no mirror of its own, so no approved direction moves.",
   "progress": {
-    "verdicts_taken": 25,
+    "verdicts_taken": 1,
     "verdicts_cleared": 0,
-    "unit": "his 2026-09-21T15:15–15:16Z save on monsters/orc_warrior — 25 approvals, no-op",
-    "shipped": "board account only (no art change)"
+    "unit": "barb_squid idle north redo (his 2026-09-22 12:55Z save)",
+    "shipped": "claim only, so far"
   },
   "budget_remaining": "PixelLab USD $35.98 — $0.00 spent this session (no PixelLab call made; this unit needed no generation).",
   "notes": [
