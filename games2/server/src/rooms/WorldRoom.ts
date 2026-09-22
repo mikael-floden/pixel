@@ -216,6 +216,15 @@ export function sceneryBbox(): SceneryBboxDoc | null {
 const GHOST_BAND_WU = INTEREST_LEAVE_WU;
 const EDGE_TICKS = 2; // edge snapshots at 10 Hz
 const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this long
+/** How long a ghost created BY A HAND-OFF is spared the "this snapshot no
+ *  longer carries it" sweep. It must outlast the destination's slowest edge
+ *  interval — IDLE_DIVISOR(4) x EDGE_TICKS(2) = 400 ms, the rate EVERY
+ *  neighbour runs at when one player is online — and stay under GHOST_TTL_MS,
+ *  which is the backstop if the destination never confirms at all. Without it
+ *  a snapshot the destination COMPUTED BEFORE the transfer arrived deletes the
+ *  overlap ghost on landing and the hole is back: invisible under the
+ *  in-process bus, real the day REDIS_URL is set. */
+const HANDOFF_GHOST_GRACE_MS = 600;
 /** A MONSTER THE MAP HAS BOXED IN MUST NOT COST THE SERVER ANYTHING.
  *
  *  A roam plan that finds NO route is the DEAREST search there is: A* only
@@ -1949,8 +1958,9 @@ export class WorldRoom extends Room<WorldState> {
     this.stepMonsters(dt, now);
     this.stepCombat(dt, now);
     if (this.zoneId !== WHOLE_WORLD) this.stepZones(now);
-    if (++this.interestTick >= INTEREST_TICKS) {
+    if (++this.interestTick >= INTEREST_TICKS || this.interestNow) {
       this.interestTick = 0;
+      this.interestNow = false;
       this.stepInterest();
     }
   }
@@ -3195,6 +3205,7 @@ export class WorldRoom extends Room<WorldState> {
     for (const [map, id] of gone) {
       map.delete(id);
       this.ghostOwner.delete(id);
+      this.handedGhostAt.delete(id);
     }
   }
 
@@ -3397,8 +3408,16 @@ export class WorldRoom extends Room<WorldState> {
       mon.nextMoveAt = now + 200;
       this.state.ghostMonsters.delete(m.id);
       this.ghostOwner.delete(m.id);
+      this.handedGhostAt.delete(m.id); // it is ours again; the overlap is over
       this.syncPos(mon);
       this.state.monsters.set(m.id, mon);
+      /* THE SAME HOLE, MIRRORED ON THE RECEIVING SIDE. The ghost above was
+       * already in every watching client's view and has just been dropped; the
+       * real monster replacing it is a NEW entity and is invisible until
+       * interestPass calls view.add. Measured over a round trip with the send
+       * side already fixed: a 95 ms residual gap, and up to INTEREST_TICKS
+       * (200 ms). Arriving is a hand-off too, so it asks for the same pass. */
+      this.interestNow = true;
     } else if (m.type === "monster:respawn") {
       this.respawnQueue.push({ areaId: m.areaId, at: now + MONSTER_RESPAWN_MS });
     } else if (m.type === "kick") {
@@ -3466,10 +3485,52 @@ export class WorldRoom extends Room<WorldState> {
       targetSid: m.targetSid, chaseOx: m.chaseOx, chaseOy: m.chaseOy, pinned: m.pinned,
     };
     void bus().publish(this.chan.ctl(to), { type: "monster:xfer", id, m: data } satisfies CtlMessage);
+    /* THE HAND-OFF OVERLAPS — this is the invisible monster at a border
+     * (maintainer 2026-09-22, two screenshots one frame apart).
+     *
+     * This method used to publish and then delete, and the watching client
+     * lost the monster THAT TICK. It could only come back as a ghost, and only
+     * once the destination broadcast its border band — publishEdge, which sits
+     * inside the idle gate. Measured by server/test/zonehole.test.ts against
+     * the old code: 496 ms of existing nowhere the client could see.
+     *
+     * It is NOT a performance bug and no hardware touches it: measured on
+     * production the hour it was fixed, all 16 rooms ran at simHz 4.9 with a
+     * worst tick of 9.21 ms against a 50 ms budget and the process at 28.6% of
+     * ONE core across two. 4.9 Hz is IDLE_DIVISOR, a constant.
+     *
+     * So the sender keeps showing it, as a ghost of the room that now owns it,
+     * from the same tick it stops owning it. The destination's first snapshot
+     * refreshes this very entry (same id), and GHOST_TTL_MS expires it on its
+     * own if that snapshot never comes — it fails CLOSED, toward the old
+     * behaviour, never toward a monster that cannot be killed or walked away
+     * from. A monster handed BACK is safe too: the receiving branch of
+     * `monster:xfer` already deletes the ghost before setting the real one. */
+    const g = new Monster();
+    g.kind = m.kind; g.x = m.x; g.y = m.y; g.dir = m.dir; g.moving = m.moving; g.elev = m.elev;
+    g.hp = m.hp; g.hpMax = m.hpMax; g.mstate = m.mstate; g.actionSeq = m.actionSeq;
+    g.level = m.level; g.aggro = m.aggro; g.tsid = m.tsid; g.lastSeen = Date.now();
+    this.syncPos(g);
+    this.state.ghostMonsters.set(id, g);
+    this.ghostOwner.set(id, to);
+    this.handedGhostAt.set(id, g.lastSeen);
+    /* ...and the ghost must reach the CLIENT this tick, not on the next
+     * interest tick. A new entity is invisible until interestPass calls
+     * view.add, so leaving it to INTEREST_TICKS would trade 400 ms of hole for
+     * 200 ms of hole. One extra pass on a tick that handed something over, and
+     * a tick that hands something over is rare. */
+    this.interestNow = true;
     this.state.monsters.delete(id);
     this.monsterDodgeStates.delete(id);
     this.noRoute.delete(id);
   }
+
+  /** Ghosts this room made itself by handing a monster over, and when — see
+   *  HANDOFF_GHOST_GRACE_MS. Cleared the moment the new owner's snapshot
+   *  carries the id, and wherever the ghost itself is dropped. */
+  private handedGhostAt = new Map<string, number>();
+  /** Set by a hand-off: run the interest pass on THIS tick. */
+  private interestNow = false;
 
   /** The border band, complete, to every neighbour: what is inside this rect
    *  within GHOST_BAND_WU of an edge, plus anything of ours standing outside
@@ -3540,6 +3601,7 @@ export class WorldRoom extends Room<WorldState> {
       this.syncPos(g);
       if (fresh) this.state.ghostMonsters.set(d.id, g);
       this.ghostOwner.set(d.id, m.from);
+      this.handedGhostAt.delete(d.id); // the new owner has confirmed it
     }
     for (const d of m.drops ?? []) {
       if (!near(d.x, d.y) || this.state.drops.has(d.id)) continue;
@@ -3554,12 +3616,21 @@ export class WorldRoom extends Room<WorldState> {
     }
     // A snapshot is that zone's whole band: what it no longer carries is gone.
     const gone: string[] = [];
-    for (const [id, owner] of this.ghostOwner) if (owner === m.from && !keep.has(id)) gone.push(id);
+    for (const [id, owner] of this.ghostOwner) {
+      if (owner !== m.from || keep.has(id)) continue;
+      // ...EXCEPT one this room has just handed over: a snapshot computed
+      // before the transfer landed does not know about it yet, and deleting
+      // the overlap ghost on that evidence puts the hole straight back.
+      const handed = this.handedGhostAt.get(id);
+      if (handed !== undefined && now - handed < HANDOFF_GHOST_GRACE_MS) continue;
+      gone.push(id);
+    }
     for (const id of gone) {
       this.state.ghosts.delete(id);
       this.state.ghostMonsters.delete(id);
       this.state.ghostDrops.delete(id);
       this.ghostOwner.delete(id);
+      this.handedGhostAt.delete(id);
     }
   }
 

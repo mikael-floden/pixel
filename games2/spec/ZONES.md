@@ -60,10 +60,36 @@ Kubernetes). Rules here are present tense; the measurements land in
   room. Avatars keyed by pid survive the swap; `bindRoom` in swap mode
   re-binds existing sprites and removes only what the new view lacks.
   Prediction continues: the new room acks from the handed `seq`.
-- **Monsters cross too.** A monster whose position leaves its rect is
-  transferred with its full brain state (`monster:xfer`); every room holds the
-  whole spawn-zone list but seeds only the cells inside its own rect (`num`
-  split by cell share), so a transferred monster's zone rules still resolve.
+- **Monsters cross too, AND THE HAND-OFF OVERLAPS.** A monster whose position
+  leaves its rect is transferred with its full brain state (`monster:xfer`);
+  every room holds the whole spawn-zone list but seeds only the cells inside
+  its own rect (`num` split by cell share), so a transferred monster's zone
+  rules still resolve. The sender does NOT simply delete it: in the same tick
+  it seeds a ghost of the id it is giving away, and the receiver asks for an
+  interest pass on arrival. Both halves are needed and both were measured
+  (`server/test/zonehole.test.ts`):
+  - **Delete-then-wait was 496 ms of invisibility.** The watcher lost the
+    monster the tick it was handed over, and got it back only when the
+    destination next broadcast its border band — `publishEdge` sits inside the
+    idle gate, so `IDLE_DIVISOR`(4) x `EDGE_TICKS`(2) = **400 ms** for any room
+    with no client in it, which is EVERY neighbour when one player is online.
+  - **A new entity is invisible until `view.add`**, so leaving it to the next
+    interest tick only traded 400 ms of hole for `INTEREST_TICKS` = 200 ms.
+    Measured on the return leg with the send side already fixed: 95 ms. A tick
+    that hands a monster over or takes one in runs the pass immediately.
+  - The gone-sweep (a snapshot is the owner's whole band, so what it omits is
+    dropped) **spares a ghost this room has just handed over** for
+    `HANDOFF_GHOST_GRACE_MS` (600 ms > the 400 ms idle edge interval, <
+    `GHOST_TTL_MS`). Without it a snapshot the destination computed before the
+    transfer landed deletes the overlap on arrival and the hole is back —
+    invisible under the in-process bus, real the day `REDIS_URL` is set.
+  - It fails CLOSED: if the destination never confirms, `GHOST_TTL_MS` expires
+    the ghost, which is the old behaviour, not a monster that cannot be killed.
+  - It is NOT a performance bug and no hardware touches it (maintainer asked
+    directly after the 2 vCPU / 2 GiB bump): measured on production the same
+    hour, all 16 rooms at `simHz` 4.9 with a worst tick of 9.21 ms against a
+    50 ms budget and the process at 28.6% of ONE core across two. 4.9 Hz is
+    `IDLE_DIVISOR`, a constant — the rooms are rate-limited, not starved.
 - **Cross-border combat runs in the MONSTER's room.** An `engage` on a ghost
   monster is relayed to its owner (`engage` on that zone's `ctl` channel),
   which fights the ghost PLAYER it already mirrors: the ghost swings there,
