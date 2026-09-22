@@ -32,9 +32,34 @@ Variables):
 GCP_PROJECT_ID  GCP_REGION  GCP_AR_REPO  GCP_SERVICE  GCP_WIF_PROVIDER  GCP_DEPLOY_SA
 ```
 
-Artifact Registry retention is a server-side cleanup policy
-(`deploy/ar-cleanup.sh`, pasted once into Cloud Shell): keep newest 15
-versions, delete >14 days. No CI job, no credentials.
+**Artifact Registry retention** is one rule in three places, all saying *keep
+the newest 15 versions, delete anything over 14 days*:
+
+- `deploy/ar-cleanup.sh` attaches it as a **server-side cleanup policy** — the
+  permanent answer, no CI job and no credentials. It sweeps asynchronously, so
+  it proves nothing on the day it is pasted.
+- `deploy/ar-purge.sh` applies the same rule **by hand, now**, and prints the
+  version count before and after. Use it when the space is wanted today.
+  (`DRY_RUN=1` lists without deleting. The VERSION COUNT is the proof; the
+  repository SIZE lags hours, because Artifact Registry frees a shared layer
+  only once nothing references it.)
+- `.github/workflows/ar-watch.yml` reads the repo every morning and fails if the
+  policy is gone or the size is over 60 GB.
+
+Both scripts are one Cloud-Shell paste with nothing to fill in, and both keep
+the newest 15 **whatever their age**. That arm is load-bearing, not decoration:
+the service runs `--min-instances 0`, so a cold start pulls the image from this
+repository, and an age-only rule deletes the image the world boots from the
+first fortnight the fleet goes quiet. `deploy/ar-purge.test.sh` (in `npm test`,
+1.6 s, no gcloud needed) runs the replaced age-only rule against exactly that
+fixture and shows it taking the serving digest.
+
+(The policy was written 2026-08-15 and had never once run, because the
+documented phone paste died on a Cloud Shell that opens as "(no project)" — and
+a commit a month earlier had declared that fixed without anyone executing it. In
+those 38 unwatched days the repo grew 285 GB → 488 GB, 5.3 GB/day, and was the
+only line on the bill going up. An ops paste is not fixed until it has been
+executed; a one-off fix with no watcher silently stops being true.)
 
 ### 2. Deploy = push to main
 `.github/workflows/nangijala-deploy.yml` builds the image (from the repo
