@@ -1,19 +1,12 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-22T13:53:20+00:00",
-  "health": "idle",
-  "current": "idle — no files claimed. His 13:45Z five-monster idle approvals are read and closed (no-op, 40/40 hashes verified), the quartz_leg removal is acted on everywhere, and the three scree_slide idle redos are regenerated. live/feedback/monsters.json now holds ZERO non-approved entries. Account below.",
+  "updated_at": "2026-09-22T14:06:00+00:00",
+  "health": "running",
+  "current": "CLAIMED — his 2026-09-22T13:50:48-13:52:13Z save (45 new entries on five candidates: monsters/{stone_hop,thinning,twig_case,shore_urchin,spire_whelk} + #idle#<dir> x8 each), a DIFFERENT save from the 13:45Z one the sitting below closed. 43 are approvals (no action, law 2). The only two non-approvals, unclaimed on every board: monsters/thinning#idle#east and monsters/thinning#idle#west (redo, no note) — west is the MIRROR of east (candidate.json: source=east), so one generated direction. Files: live/feedback/monsters.json, monsters/candidates/thinning/**, monsters/candidates/index.json, coordination/monsters-github-agent.json.",
   "progress": {
-    "unit": "his 13:45Z 5-monster idle approvals (no-op) + the quartz_leg removal + the 3 scree_slide idle redos",
-    "verdicts_taken": 52,
-    "approvals_no_op": 45,
-    "removals_acted_on": 1,
-    "redos_acted_on": 3,
-    "directions_regenerated": 2,
-    "mirrors": 1,
-    "pixellab_rolls": 2,
-    "feedback_entries_cleared": 13
+    "unit": "thinning idle east redo (+ west mirror); 43 idle approvals verified",
+    "verdicts_taken": 45
   },
   "budget_remaining": "PixelLab USD $24.12 — this session spent $0.02 (2 v3 idle rolls at ~$0.013; the mirror and the removal cost nothing).",
   "notes": [
