@@ -1621,6 +1621,264 @@
         "west": "lava_toad/animations/attack__west.webp",
         "north-west": "lava_toad/animations/attack__north-west.webp"
       }
+    },
+    "die": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0678,
+          "step_max": 0.1345,
+          "drift": 7.7,
+          "loop": 0.2429,
+          "loop_ratio": 3.58,
+          "travel": 1.85,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": -0.001,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.843,
+          "end_iou": 0.767,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.068 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame is only 0.24 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.77 (his dies end under 0.60)"
+          ],
+          "sub": "f890da94-41fe-4046-b950-e4de4db23564",
+          "group": "25d0607c-5af9-44f8-8b27-9d2f4165b389",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:23:33+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0911,
+          "step_max": 0.1925,
+          "drift": 10.91,
+          "loop": 0.4047,
+          "loop_ratio": 4.44,
+          "travel": 3.97,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.823,
+          "end_iou": 0.636,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.091 outside the calm band 0.1–0.9 — eyeball it",
+            "still standing: the last frame matches the base at 0.64 (his dies end under 0.60)"
+          ],
+          "sub": "b9e180ac-1981-4f8b-a05e-905e5fb29a4b",
+          "group": "6fc66b53-c3cf-4bf9-9174-ca73f70e7947",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:23:33+00:00"
+        },
+        "east": {
+          "status": "fail",
+          "step_mean": 0.0372,
+          "step_max": 0.0689,
+          "drift": 3.49,
+          "loop": 0.1785,
+          "loop_ratio": 4.81,
+          "travel": 2.48,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.003,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.952,
+          "end_iou": 0.832,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.037 per frame",
+            "still standing: the last frame is only 0.18 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.83 (his dies end under 0.60)"
+          ],
+          "sub": "c34d427f-e239-4925-86e2-d86022c79d64",
+          "group": "e99bcb69-a703-48de-8cef-7a7d303e33f5",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:23:34+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0572,
+          "step_max": 0.0853,
+          "drift": 5.26,
+          "loop": 0.2582,
+          "loop_ratio": 4.52,
+          "travel": 3.25,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.893,
+          "end_iou": 0.76,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "motion 0.057 outside the calm band 0.1–0.9 — eyeball it",
+            "barely falls: last vs first 0.26 — eyeball it",
+            "still standing: the last frame matches the base at 0.76 (his dies end under 0.60)"
+          ],
+          "sub": "4bdc4714-70fb-4964-8060-5f6fe1e2b1d8",
+          "group": "5a0fe29f-5863-4788-bd17-d372d4950a74",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:23:34+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0206,
+          "step_max": 0.0376,
+          "drift": 1.22,
+          "loop": 0.0453,
+          "loop_ratio": 2.19,
+          "travel": 1.22,
+          "pin": 1.0,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.974,
+          "end_iou": 0.955,
+          "canvas": [
+            96,
+            96
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.021 per frame",
+            "still standing: the last frame is only 0.05 of the silhouette away from the first — no collapse",
+            "still standing: the last frame matches the base at 0.96 (his dies end under 0.60)"
+          ],
+          "sub": "397fa58e-28e1-428a-92c4-79ecac2d182e",
+          "group": "9e18c5b4-bcc5-4662-a08d-dba165ee1e2f",
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "v3",
+          "action": "Death - Faints, collapses to the ground and fades away",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 7,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T20:23:35+00:00"
+        }
+      },
+      "action": "Death - Faints, collapses to the ground and fades away",
+      "frame_paths": {
+        "south": [
+          "lava_toad/animations/die/south/00.webp",
+          "lava_toad/animations/die/south/01.webp",
+          "lava_toad/animations/die/south/02.webp",
+          "lava_toad/animations/die/south/03.webp",
+          "lava_toad/animations/die/south/04.webp",
+          "lava_toad/animations/die/south/05.webp",
+          "lava_toad/animations/die/south/06.webp"
+        ],
+        "south-east": [
+          "lava_toad/animations/die/south-east/00.webp",
+          "lava_toad/animations/die/south-east/01.webp",
+          "lava_toad/animations/die/south-east/02.webp",
+          "lava_toad/animations/die/south-east/03.webp",
+          "lava_toad/animations/die/south-east/04.webp",
+          "lava_toad/animations/die/south-east/05.webp",
+          "lava_toad/animations/die/south-east/06.webp"
+        ],
+        "east": [
+          "lava_toad/animations/die/east/00.webp",
+          "lava_toad/animations/die/east/01.webp",
+          "lava_toad/animations/die/east/02.webp",
+          "lava_toad/animations/die/east/03.webp",
+          "lava_toad/animations/die/east/04.webp",
+          "lava_toad/animations/die/east/05.webp",
+          "lava_toad/animations/die/east/06.webp"
+        ],
+        "north-east": [
+          "lava_toad/animations/die/north-east/00.webp",
+          "lava_toad/animations/die/north-east/01.webp",
+          "lava_toad/animations/die/north-east/02.webp",
+          "lava_toad/animations/die/north-east/03.webp",
+          "lava_toad/animations/die/north-east/04.webp",
+          "lava_toad/animations/die/north-east/05.webp",
+          "lava_toad/animations/die/north-east/06.webp"
+        ],
+        "north": [
+          "lava_toad/animations/die/north/00.webp",
+          "lava_toad/animations/die/north/01.webp",
+          "lava_toad/animations/die/north/02.webp",
+          "lava_toad/animations/die/north/03.webp",
+          "lava_toad/animations/die/north/04.webp",
+          "lava_toad/animations/die/north/05.webp",
+          "lava_toad/animations/die/north/06.webp"
+        ]
+      },
+      "strips": {
+        "south": "lava_toad/animations/die__south.webp",
+        "south-east": "lava_toad/animations/die__south-east.webp",
+        "east": "lava_toad/animations/die__east.webp",
+        "north-east": "lava_toad/animations/die__north-east.webp",
+        "north": "lava_toad/animations/die__north.webp"
+      }
     }
   }
 }
