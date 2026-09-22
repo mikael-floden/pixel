@@ -1,9 +1,307 @@
 {
  "format": "pixel-wiki-releases@1",
- "generated_at": "2026-09-21T17:48:37.877Z",
- "head": "00e82bc7c",
+ "generated_at": "2026-09-22T12:12:27.000Z",
+ "head": "13b000333",
  "repo": "https://github.com/mikael-floden/pixel",
  "commits": [
+  {
+   "sha": "13b000333",
+   "at": "2026-09-22T12:11:39+00:00",
+   "author": "Claude",
+   "subject": "monsters: the 61 idles, generated on the standalone route",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 256
+  },
+  {
+   "sha": "3d9c711b3",
+   "at": "2026-09-22T12:11:38+00:00",
+   "author": "Claude",
+   "subject": "monsters: 52 idles from the standalone route",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 2499
+  },
+  {
+   "sha": "3b8d51211",
+   "at": "2026-09-22T12:11:37+00:00",
+   "author": "Claude",
+   "subject": "monsters: de-flicker on the standalone route, and one coherent idle batch",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 883
+  },
+  {
+   "sha": "639c013b0",
+   "at": "2026-09-22T09:24:29+00:00",
+   "author": "Claude",
+   "subject": "board: note the change-page fix",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "8257e6d56",
+   "at": "2026-09-22T09:24:12+00:00",
+   "author": "Claude",
+   "subject": "maps2: a change card must show what it claims — the spawn overlay, and a gate",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 4
+  },
+  {
+   "sha": "03fb4765e",
+   "at": "2026-09-22T09:16:36+00:00",
+   "author": "Claude",
+   "subject": "games2: build the ambient zone table once a second, not 320 times",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "a6e08bdc1",
+   "at": "2026-09-22T08:05:15+00:00",
+   "author": "Claude",
+   "subject": "games2: a monster the map has boxed in goes dormant — the server stops paying for bad spawn data",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "1e027c5ba",
+   "at": "2026-09-21T20:34:42+00:00",
+   "author": "Claude",
+   "subject": "maps2: log the spawn-island push with its page; flag two pre-existing red tests to games",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "7b11fa4b0",
+   "at": "2026-09-21T20:33:17+00:00",
+   "author": "Claude",
+   "subject": "maps2: a spawn zone is one walkable place — the islands that trapped monsters are gone",
+   "agent": "maps2",
+   "dirs": [
+    "maps2"
+   ],
+   "files": 5
+  },
+  {
+   "sha": "092077a31",
+   "at": "2026-09-21T20:24:33+00:00",
+   "author": "Claude",
+   "subject": "gitignore: agent scratch under server/test, by the same underscore rule as scripts/",
+   "agent": null,
+   "dirs": [
+    ""
+   ],
+   "files": 1
+  },
+  {
+   "sha": "dec836d2c",
+   "at": "2026-09-21T20:23:13+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant — the art-load retry is live (a6fcf6ba1f), and the three lessons his evening paid for",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "6b0fb1091",
+   "at": "2026-09-21T20:17:39+00:00",
+   "author": "Claude",
+   "subject": "board: claim the spawn-island fix — a zone must be one walkable place",
+   "agent": "maps2-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "a6fcf6ba1",
+   "at": "2026-09-21T20:15:21+00:00",
+   "author": "Claude",
+   "subject": "games2: a failed art load is retried, so a busy server stops costing him a restart",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 3
+  },
+  {
+   "sha": "bbece9ba6",
+   "at": "2026-09-21T19:16:11+00:00",
+   "author": "Claude",
+   "subject": "games2: revert tonight's zone work — the server is burning 69% CPU with nobody playing",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 5
+  },
+  {
+   "sha": "99719ca59",
+   "at": "2026-09-21T19:08:17+00:00",
+   "author": "Claude",
+   "subject": "gitignore: agent worktrees are throwaway checkouts, never repo content",
+   "agent": null,
+   "dirs": [
+    ""
+   ],
+   "files": 1
+  },
+  {
+   "sha": "ea7229fbf",
+   "at": "2026-09-21T19:01:34+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant — ground-repaint change rolled back (7e5f4c14df); the art-load tombstone stays open and parked",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "7e5f4c14d",
+   "at": "2026-09-21T19:01:05+00:00",
+   "author": "Claude",
+   "subject": "games2: roll back tonight's ground-repaint change — the black world and the player in the corner",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "e375aa651",
+   "at": "2026-09-21T18:15:35+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant — claim: a failed art load is never retried (the tombstone behind every 'I restarted and it looks good')",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "08bb27749",
+   "at": "2026-09-21T18:07:23+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant — late art repairs itself while walking (live 4a970e4b17, no restart); the ambient copy and its gate are parked on the mirror until he stops playing",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "afb6c9b8a",
+   "at": "2026-09-21T18:06:56+00:00",
+   "author": "Claude",
+   "subject": "games2: ambient's own copy of the no-remembered-debug-overlay rule, and the gate for all four",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 2
+  },
+  {
+   "sha": "4a970e4b1",
+   "at": "2026-09-21T18:04:02+00:00",
+   "author": "Claude",
+   "subject": "games2: late art repairs itself while you walk, and a debug overlay no longer outlives a reload",
+   "agent": "games2",
+   "dirs": [
+    "games2"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "5a1a019d4",
+   "at": "2026-09-21T18:03:08+00:00",
+   "author": "Claude",
+   "subject": "monsters: idle for 6 more (19 with an idle so far)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 294
+  },
+  {
+   "sha": "7f0bfd277",
+   "at": "2026-09-21T17:53:48+00:00",
+   "author": "Claude",
+   "subject": "monsters: the direction offset is fixed in post, as he asked — twice",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 280
+  },
+  {
+   "sha": "c28f48142",
+   "at": "2026-09-21T17:51:04+00:00",
+   "author": "Claude",
+   "subject": "board: claim the mist blink — the mask is steady, pool and uMist are still upstream of the posterize",
+   "agent": "games-ambient-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
+  {
+   "sha": "c851a6c78",
+   "at": "2026-09-21T17:49:34+00:00",
+   "author": "Claude",
+   "subject": "monsters: idle for 1 more (13 with an idle so far)",
+   "agent": "monsters",
+   "dirs": [
+    "monsters"
+   ],
+   "files": 49
+  },
+  {
+   "sha": "6dae757b0",
+   "at": "2026-09-21T17:48:52+00:00",
+   "author": "Claude",
+   "subject": "monsters: the first 11 idles — the in-the-making cards animate now",
+   "agent": "monsters",
+   "dirs": [
+    "monsters",
+    "wiki"
+   ],
+   "files": 495
+  },
+  {
+   "sha": "8ebfe3d89",
+   "at": "2026-09-21T17:41:34+00:00",
+   "author": "Claude",
+   "subject": "board: games-assistant corrects the diagnosis — his broken-looking world was tile art still streaming after four world restarts in an hour, three of them mine",
+   "agent": "games-assistant",
+   "dirs": [
+    "coordination"
+   ],
+   "files": 1
+  },
   {
    "sha": "00e82bc7c",
    "at": "2026-09-21T17:35:07+00:00",
@@ -252,305 +550,6 @@
    "author": "Claude",
    "subject": "board: claim the mist fix — the zone fades his mist, it does not reshape it",
    "agent": "games-ambient-assistant",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "7d709a699",
-   "at": "2026-09-21T16:08:54+00:00",
-   "author": "Claude",
-   "subject": "board: games-assistant claims the monster lag and blink — measured 2.4 Hz across a border against 19.6 Hz at home, and the interest pass's identity-keyed seen",
-   "agent": "games-assistant",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "e5b408603",
-   "at": "2026-09-21T16:00:49+00:00",
-   "author": "Claude",
-   "subject": "board: monsters-assistant — his end state, in his order, armed behind a canary",
-   "agent": "monsters-assistant",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "44cc1b96e",
-   "at": "2026-09-21T15:58:06+00:00",
-   "author": "Claude",
-   "subject": "board: games-ui-assistant shipped the keyboard hold that must not be a race — idle",
-   "agent": "games-ui-assistant",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "663764eaa",
-   "at": "2026-09-21T15:58:02+00:00",
-   "author": "Claude",
-   "subject": "games2: the keyboard hold starts at focus, so every open behaves like the first",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 4
-  },
-  {
-   "sha": "1c86abfd3",
-   "at": "2026-09-21T15:58:02+00:00",
-   "author": "Claude",
-   "subject": "games2: regenerate monsters.json — ash_hatchling, basilisk and pebble_crab join the catalog",
-   "agent": "games2",
-   "dirs": [
-    "games2"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "23f9dbe74",
-   "at": "2026-09-21T15:48:28+00:00",
-   "author": "Claude",
-   "subject": "monsters: all 61 approved for animation — idle is armed, waiting on PixelLab",
-   "agent": "monsters-assistant",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 63
-  },
-  {
-   "sha": "7004d2100",
-   "at": "2026-09-21T15:46:28+00:00",
-   "author": "Claude",
-   "subject": "monsters: PixelLab removed character-animation creation — the 11 are blocked",
-   "agent": "monsters-assistant",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 3
-  },
-  {
-   "sha": "d44786a0e",
-   "at": "2026-09-21T15:41:36+00:00",
-   "author": "Claude",
-   "subject": "monsters: `approve --ids` is additive, not round-wide",
-   "agent": "monsters",
-   "dirs": [
-    "monsters"
-   ],
-   "files": 13
-  },
-  {
-   "sha": "6ebe29b4d",
-   "at": "2026-09-21T15:40:39+00:00",
-   "author": "games-ambient-assistant",
-   "subject": "ambient: two categories — zone-bound and global — is the law, not a gap",
-   "agent": "games-ambient-assistant",
-   "dirs": [
-    "games2"
-   ],
-   "files": 2
-  },
-  {
-   "sha": "12a651653",
-   "at": "2026-09-21T15:38:11+00:00",
-   "author": "Claude",
-   "subject": "monsters+wiki: the 61 approved designs are monsters in the making",
-   "agent": "monsters-assistant",
-   "dirs": [
-    "live",
-    "monsters",
-    "wiki"
-   ],
-   "files": 10
-  },
-  {
-   "sha": "05b791d10",
-   "at": "2026-09-21T15:34:27+00:00",
-   "author": "Claude",
-   "subject": "board: games-ui-assistant claims the keyboard hold that must not be a race — files named before the work",
-   "agent": "games-ui-assistant",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "fd451915a",
-   "at": "2026-09-21T15:33:15+00:00",
-   "author": "games-ambient-assistant",
-   "subject": "board: the dragonfly zone measurement goes to maps2 — 4 of 124 reeds are in a dragonfly zone",
-   "agent": "games-ambient-assistant",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "541f83c2e",
-   "at": "2026-09-21T15:18:40+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — his orc_warrior save taken, decided no-op (25 approvals, art hash-verified 40/40 on disk)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "8617634cd",
-   "at": "2026-09-21T17:16:23+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "3248c5d11",
-   "at": "2026-09-21T15:16:19+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — his basilisk save taken, decided no-op (25 approvals, art hash-verified 40/40 on disk)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "50415f313",
-   "at": "2026-09-21T17:15:47+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "306faad18",
-   "at": "2026-09-21T17:14:25+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "b984a2a54",
-   "at": "2026-09-21T17:13:23+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "65f2f9acb",
-   "at": "2026-09-21T15:13:09+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — his tide_crab save taken, decided no-op (27 approvals, art hash-verified 40/40 on disk)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "debbb6781",
-   "at": "2026-09-21T15:11:49+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — claim his tide_crab save (27 entries)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "6e544e597",
-   "at": "2026-09-21T17:10:31+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "e579f79c3",
-   "at": "2026-09-21T17:09:38+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "bf19777ed",
-   "at": "2026-09-21T15:08:35+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — his turtle_hatchling save taken, decided no-op (25 approvals, art hash-verified 40/40 on disk)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "d9866228a",
-   "at": "2026-09-21T15:07:41+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — claim his 15:05Z turtle_hatchling save (25 entries, all approvals)",
-   "agent": "monsters-github-agent",
-   "dirs": [
-    "coordination"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "a36ef0430",
-   "at": "2026-09-21T17:06:07+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — feedback/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "ec3e4b709",
-   "at": "2026-09-21T17:05:37+02:00",
-   "author": "Mikael Flodén",
-   "subject": "live: admin update — tuning/monsters.json",
-   "agent": null,
-   "dirs": [
-    "live"
-   ],
-   "files": 1
-  },
-  {
-   "sha": "5b1228f1e",
-   "at": "2026-09-21T15:05:18+00:00",
-   "author": "claude[bot]",
-   "subject": "board: monsters-github-agent — his lizard_warrior save taken, decided no-op (41 approvals, art hash-verified 40/40 on disk)",
-   "agent": "monsters-github-agent",
    "dirs": [
     "coordination"
    ],
