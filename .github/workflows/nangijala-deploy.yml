@@ -537,10 +537,17 @@ jobs:
               `# for 50,121 art files run. That is what the loopLag MAX spikes` \
               `# are made of (mean 1.9 ms, max 535 ms measured with zero` \
               `# players), and it is the only part of them a core can absorb.` \
-              `# MEMORY IS THE TIGHTER RESOURCE, not CPU: measured the same` \
-              `# minute, 19.2% of one core against 643 MB of 1024 MB. An OOM` \
-              `# kills the world outright; CPU saturation only slows it.` \
-              --cpu 2 --memory 1Gi \
+              `# 2 GiB (maintainer 2026-09-22, same breath as the second core).` \
+              `# MEMORY WAS THE TIGHTER RESOURCE: measured 19.2% of one core` \
+              `# against 643 MB of 1024 MB, so CPU had five times the headroom` \
+              `# memory had. An OOM kills the world outright where CPU` \
+              `# saturation only slows it, and it is the cheap side of the` \
+              `# bill - a GiB-second costs a NINTH of a vCPU-second, so this` \
+              `# whole line is about a fifth the price of the core beside it.` \
+              `# It also raises what V8 will use: nothing sets` \
+              `# --max-old-space-size, so Node sizes its old space from the` \
+              `# CGROUP LIMIT, and doubling the container doubles that too.` \
+              --cpu 2 --memory 2Gi \
               --min-instances 0 \
               `# THE FAST LANE, ON. The running server reads published client` \
               `# generations from this branch (games2/server/src/bundlestore.ts)` \
