@@ -549,8 +549,8 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   with a share** (maintainer 2026-09-18; `spec/AMBIENT.md`). Writes
   `worlds3/<world>/ambient.json`: zones as spawns@1 polygons read off the
   terrain (sea quarters, shore, dunes, lakes, marsh, meadows, woods, pasture,
-  massif, summits, lava, caves, towns, slime, islets) plus five hand-placed
-  weather provinces, each with `effects: {name: share 1..100}` — how often
+  massif, summits, lava, caves, towns, slime, islets), each with
+  `effects: {name: share 1..100}` — how often
   the SERVER should have that effect on there; overlapping zones weight the
   draw among effects that cannot run together. The `world` zone carries foam,
   water and every other effect that finds its own object at 100. `--apply`,
@@ -561,6 +561,19 @@ ground NAME per cell), so a tiles publish never repoints anything here.
   functions): habitats, the difficulty gradient, the per-type budget, the
   crowding law, the water law, the town sanctuary, every cave a home
   (`spec/SPAWNS.md` → the_game).
+- `livecheck.py` — **what the file declares is not what the world seeds.**
+  The server cuts the map into the `games2/config/zones.json` room grid and
+  each room rounds its own slice of a zone's `num` independently
+  (`WorldRoom.zoneShare`), so the slices need not add up: a zone no room owns
+  half of rounds to 0 everywhere and is never populated (permanently — a
+  respawn only follows a death), and a 50/50 two-room split seeds twice.
+  Models that split from the server's own inputs and, with
+  `--origin https://nangijala.online`, checks it against the live totals
+  (per-room counts drift as monsters roam across a border and are
+  transferred; the total is conserved, so the total is what is compared).
+  Measured 2026-09-22: the_game declared 160 and production held 141, with 19
+  sprawling zones empty — `spawns.py --check` could not see it, because it
+  reads the file alone.
 - `sceneryscale.py` — the size the GAME draws scenery at.
 
 RETIRED 2026-09-09: the world@1/@2 pipeline (`tiles2lib`, `render2`,
