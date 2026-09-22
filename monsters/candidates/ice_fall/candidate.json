@@ -215,42 +215,40 @@
           "generated_at": "2026-09-22T11:44:14+00:00"
         },
         "east": {
-          "status": "fail",
-          "step_mean": 0.001,
-          "step_max": 0.0011,
-          "drift": 0.05,
-          "loop": 0.0007,
-          "loop_ratio": 0.75,
-          "travel": 0.03,
-          "pin": 0.999,
+          "status": "pass",
+          "step_mean": 0.0274,
+          "step_max": 0.0478,
+          "drift": 1.65,
+          "loop": 0.0011,
+          "loop_ratio": 0.04,
+          "travel": 0.18,
+          "pin": 0.998,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 1.0,
+          "end_area": 1.001,
           "end_iou": null,
           "canvas": [
             224,
             224
           ],
-          "reasons": [
-            "frozen: silhouette moves 0.001 per frame"
-          ],
+          "reasons": [],
           "sub": null,
           "group": null,
           "takes": 1,
-          "version": 1,
+          "version": 3,
           "mirrored": false,
           "mode": "text-v3",
-          "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+          "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in, with much more movement, the whole body committing to it",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 3,
           "frames": 5,
-          "rung": 0,
+          "rung": 2,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-22T11:44:14+00:00"
+          "tries": 3,
+          "generated_at": "2026-09-22T12:26:58+00:00"
         },
         "north-east": {
           "status": "pass",
@@ -289,42 +287,40 @@
           "generated_at": "2026-09-22T11:44:15+00:00"
         },
         "north": {
-          "status": "fail",
-          "step_mean": 0.0657,
-          "step_max": 0.0766,
-          "drift": 2.28,
-          "loop": 0.0011,
-          "loop_ratio": 0.02,
-          "travel": 0.13,
-          "pin": 0.909,
+          "status": "pass",
+          "step_mean": 0.0489,
+          "step_max": 0.0559,
+          "drift": 1.93,
+          "loop": 0.0016,
+          "loop_ratio": 0.03,
+          "travel": 0.04,
+          "pin": 0.998,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 1.0,
+          "end_area": 1.001,
           "end_iou": null,
           "canvas": [
             224,
             224
           ],
-          "reasons": [
-            "frame 0 is not the base rotation (IoU 0.91)"
-          ],
+          "reasons": [],
           "sub": null,
           "group": null,
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "text-v3",
-          "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
+          "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in, with clearly more movement",
           "intensity": 0,
-          "rolls": 1,
+          "rolls": 2,
           "frames": 5,
-          "rung": 0,
+          "rung": 1,
           "unwrapped": null,
-          "tries": 1,
-          "generated_at": "2026-09-22T11:44:16+00:00"
+          "tries": 2,
+          "generated_at": "2026-09-22T12:15:58+00:00"
         },
         "south-west": {
           "status": "pass",
@@ -399,6 +395,43 @@
           "tries": 1,
           "generated_at": "2026-09-22T11:44:15+00:00",
           "source": "north-east"
+        },
+        "west": {
+          "status": "pass",
+          "step_mean": 0.0274,
+          "step_max": 0.0478,
+          "drift": 1.65,
+          "loop": 0.0011,
+          "loop_ratio": 0.04,
+          "travel": 0.18,
+          "pin": 0.998,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 1.001,
+          "end_iou": null,
+          "canvas": [
+            224,
+            224
+          ],
+          "reasons": [],
+          "sub": null,
+          "group": null,
+          "takes": 1,
+          "version": 3,
+          "mirrored": true,
+          "mode": "text-v3",
+          "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in, with much more movement, the whole body committing to it",
+          "intensity": 0,
+          "rolls": 3,
+          "frames": 5,
+          "rung": 2,
+          "unwrapped": null,
+          "tries": 3,
+          "generated_at": "2026-09-22T12:26:58+00:00",
+          "source": "east"
         }
       },
       "action": "Calm still idle, breathing very slowly and subtly, chest and shoulders rise and fall a little, feet planted, no other movement, ends in the same neutral pose it started in",
@@ -451,6 +484,13 @@
           "ice_fall/animations/idle/north-west/02.webp",
           "ice_fall/animations/idle/north-west/03.webp",
           "ice_fall/animations/idle/north-west/04.webp"
+        ],
+        "west": [
+          "ice_fall/animations/idle/west/00.webp",
+          "ice_fall/animations/idle/west/01.webp",
+          "ice_fall/animations/idle/west/02.webp",
+          "ice_fall/animations/idle/west/03.webp",
+          "ice_fall/animations/idle/west/04.webp"
         ]
       },
       "strips": {
@@ -460,7 +500,8 @@
         "north-east": "ice_fall/animations/idle__north-east.webp",
         "north": "ice_fall/animations/idle__north.webp",
         "south-west": "ice_fall/animations/idle__south-west.webp",
-        "north-west": "ice_fall/animations/idle__north-west.webp"
+        "north-west": "ice_fall/animations/idle__north-west.webp",
+        "west": "ice_fall/animations/idle__west.webp"
       }
     }
   }
