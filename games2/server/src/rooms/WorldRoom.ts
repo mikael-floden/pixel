@@ -214,6 +214,42 @@ export function sceneryBbox(): SceneryBboxDoc | null {
 const GHOST_BAND_WU = INTEREST_LEAVE_WU;
 const EDGE_TICKS = 2; // edge snapshots at 10 Hz
 const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this long
+/** A MONSTER THE MAP HAS BOXED IN MUST NOT COST THE SERVER ANYTHING.
+ *
+ *  A roam plan that finds NO route is the DEAREST search there is: A* only
+ *  answers "impossible" after it has expanded its whole MONSTER_ROAM_MAX_NODES
+ *  (300) budget. The old rule paused for one ordinary roam pause and asked
+ *  again — 800-2600 ms — so a monster on an unwalkable spawn island, in a
+ *  sealed courtyard, or behind a door that closed burned a full failed search
+ *  every ~1.7 s for the life of the process, and the comment beside it called
+ *  that case "rare".
+ *
+ *  Measured on the_game, 2026-09-21: monsters stranded on unwalkable spawn
+ *  islands were the per-room tick spikes — 554 ms against a 50 ms budget, with
+ *  nobody connected. maps2 fixed the islands (7b11fa4b0a) and the spikes fell
+ *  to 21 ms. This is the other half, and it is the half that matters: THE MAP
+ *  IS ALLOWED TO BE WRONG. Spawn data is authored, it will be wrong again, and
+ *  the server must not care.
+ *
+ *  Not a permanent sleep, deliberately: the world changes under a monster (a
+ *  door opens, scenery moves, maps2 ships a fix) and a body that gave up
+ *  FOREVER would need a deploy to wake. It goes dormant instead — the retry
+ *  interval grows to a minute and stays there, so a boxed-in monster costs one
+ *  failed search a minute instead of thirty-five, and rejoins the world within
+ *  a minute of the map being fixed, with nobody doing anything. */
+const NO_ROUTE_DORMANT_AFTER = 3; // ordinary roam pauses before it stops asking at the roam rate
+const NO_ROUTE_BACKOFF_MS = 5_000; // ...then this much per further failure...
+const NO_ROUTE_MAX_MS = 60_000; // ...up to here, where it sits.
+
+/** How long a monster waits before asking for a route again, given how many
+ *  consecutive plans have failed and the ordinary roam pause it would have
+ *  taken. Pure, and exported so the gate can state the RATE rather than the
+ *  arithmetic: what matters is how many failed searches a boxed-in monster
+ *  costs per minute, not the shape of the curve. */
+export function noRouteRetryMs(streak: number, roamPauseMs: number): number {
+  if (streak <= NO_ROUTE_DORMANT_AFTER) return Math.floor(roamPauseMs);
+  return Math.min(NO_ROUTE_MAX_MS, NO_ROUTE_BACKOFF_MS * (streak - NO_ROUTE_DORMANT_AFTER));
+}
 const HANDOFF_TTL_S = 10; // the hot state waits on the bus this long for the receiving join
 const HANDOFF_TIMEOUT_MS = 10_000; // then the sending room forgets the attempt and keeps the body
 const HANDOFF_INPUT_CREDIT_S = 2; // integration credit granted to a handed-over body for the inputs it buffered
@@ -2171,10 +2207,17 @@ export class WorldRoom extends Room<WorldState> {
         m.trip = startTrip(grid, m.x, m.y, t.x, t.y, false, now, m.elev, undefined, MONSTER_ROAM_MAX_NODES, false);
         m.tripActive = !!m.trip;
         if (!m.tripActive) {
-          // No route (rare — target boxed in): pause and retry shortly.
-          m.nextMoveAt = now + Math.floor(randomPauseMs(this.monsterRng));
+          /* NO ROUTE. Once is an unlucky target and costs one pause; over and
+           * over is a monster the map has boxed in, and it goes dormant rather
+           * than spending a full failed A* every roam pause forever. See
+           * NO_ROUTE_DORMANT_AFTER for what this cost measured. */
+          const streak = (this.noRoute.get(id) ?? 0) + 1;
+          this.noRoute.set(id, streak);
+          m.nextMoveAt = now + noRouteRetryMs(streak, randomPauseMs(this.monsterRng));
           return;
         }
+        // It can get somewhere again: forget it was ever stuck.
+        if (this.noRoute.size) this.noRoute.delete(id);
       }
 
       // Active trip → autopilot toward the target, integrated like a player.
@@ -2338,6 +2381,11 @@ export class WorldRoom extends Room<WorldState> {
   /** Fractional HP owed by a harmful liquid (lava), per session — landed
    *  whole through hurtPlayer as it accrues. */
   private harmAcc = new Map<string, number>();
+  /** Consecutive roam plans that found no route, per monster id. Server-only
+   *  and deliberately NOT on the schema: it is bookkeeping, not world state,
+   *  and every schema field is bytes on every client's wire. See
+   *  NO_ROUTE_DORMANT_AFTER. */
+  private noRoute = new Map<string, number>();
   /** pid -> the fall hit waiting for the body to LAND: the hp it costs and the
    *  wall clock it is due. Dropped whenever an elevation is ASSIGNED rather
    *  than walked (spawn, teleport, revive, hand-off, leave) — the fall those
@@ -2570,6 +2618,7 @@ export class WorldRoom extends Room<WorldState> {
         this.lootChance === null ? stats.loot : stats.loot.map((l) => ({ ...l, chance: this.lootChance! }));
       for (const item of rollDrops(loot, idSalt(id), m.diedAt | 0)) this.spawnDrop(item, m.x, m.y, m.elev);
       this.state.monsters.delete(id);
+      this.noRoute.delete(id);
       this.queueRespawn(m.areaId, m.home, now);
     }
     if (this.respawnQueue.length && this.respawnQueue.some((r) => now >= r.at)) {
@@ -3346,6 +3395,7 @@ export class WorldRoom extends Room<WorldState> {
     void bus().publish(this.chan.ctl(to), { type: "monster:xfer", id, m: data } satisfies CtlMessage);
     this.state.monsters.delete(id);
     this.monsterDodgeStates.delete(id);
+    this.noRoute.delete(id);
   }
 
   /** The border band, complete, to every neighbour: what is inside this rect
