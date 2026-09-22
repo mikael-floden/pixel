@@ -413,10 +413,20 @@ class PixelLabClient:
     # Measured on plume_brawler/south: 5 frames from frame_count=4, ends
     # identical, middle three breathing, $0.0228 with no_background.
     def animate_text_v3(self, first_frame, action, frame_count=4, seed=None,
-                        last_frame=None, no_background=True):
-        """Start ONE standalone v3 clip from an image. Returns the job id."""
+                        last_frame=None, no_background=True, drift_threshold=0.0):
+        """Start ONE standalone v3 clip from an image. Returns the job id.
+
+        `drift_threshold` is the de-flicker correction: "frames whose foreground
+        drifts from the first frame beyond this are corrected toward it; 0
+        corrects every frame". 0 is right for an idle, where the creature must
+        stay itself. MEASURED 2026-09-22 on pebble_crab: it does NOT repair the
+        interior damage this route does to a small sprite - the face still
+        collapses at 0 and at 0.05, because the correction is on COLOUR, not
+        structure. Kept because it is directionally right and free."""
         payload = {"first_frame": _image_to_b64obj(first_frame),
                    "action": action, "frame_count": int(frame_count)}
+        if drift_threshold is not None:
+            payload["drift_threshold"] = float(drift_threshold)
         if last_frame is not None:
             payload["last_frame"] = _image_to_b64obj(last_frame)
         if seed is not None:
