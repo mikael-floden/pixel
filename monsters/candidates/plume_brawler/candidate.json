@@ -511,40 +511,43 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "pass",
-          "step_mean": 0.2897,
-          "step_max": 0.3491,
-          "drift": 4.63,
-          "loop": 0.4509,
-          "loop_ratio": 1.56,
-          "travel": 3.01,
-          "pin": 0.822,
+          "status": "warn",
+          "step_mean": 0.1985,
+          "step_max": 0.2226,
+          "drift": 2.67,
+          "loop": 0.4507,
+          "loop_ratio": 2.27,
+          "travel": 1.67,
+          "pin": 0.878,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.95,
+          "end_area": 0.838,
           "end_iou": null,
           "canvas": [
             104,
             104
           ],
-          "reasons": [],
+          "reasons": [
+            "last→first hand-off 2.3× a step — eyeball the loop"
+          ],
           "sub": null,
           "group": null,
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "text-v3",
           "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
           "intensity": 0,
           "rolls": 1,
-          "frames": 4,
+          "frames": 6,
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-22T15:21:47+00:00"
+          "generated_at": "2026-09-22T19:12:20+00:00",
+          "manual": true
         },
         "south-east": {
           "status": "pass",
@@ -814,7 +817,9 @@
           "plume_brawler/animations/walk/south/00.webp",
           "plume_brawler/animations/walk/south/01.webp",
           "plume_brawler/animations/walk/south/02.webp",
-          "plume_brawler/animations/walk/south/03.webp"
+          "plume_brawler/animations/walk/south/03.webp",
+          "plume_brawler/animations/walk/south/04.webp",
+          "plume_brawler/animations/walk/south/05.webp"
         ],
         "south-east": [
           "plume_brawler/animations/walk/south-east/00.webp",

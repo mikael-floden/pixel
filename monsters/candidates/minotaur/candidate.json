@@ -507,40 +507,44 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "pass",
-          "step_mean": 0.1036,
-          "step_max": 0.1102,
-          "drift": 2.39,
-          "loop": 0.197,
-          "loop_ratio": 1.9,
-          "travel": 1.18,
-          "pin": 0.893,
+          "status": "warn",
+          "step_mean": 0.081,
+          "step_max": 0.0996,
+          "drift": 1.5,
+          "loop": 0.1822,
+          "loop_ratio": 2.25,
+          "travel": 2.17,
+          "pin": 0.954,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 1.003,
+          "end_area": 1.011,
           "end_iou": null,
           "canvas": [
             160,
             160
           ],
-          "reasons": [],
+          "reasons": [
+            "motion 0.081 outside the calm band 0.1–0.4 — eyeball it",
+            "last→first hand-off 2.2× a step — eyeball the loop"
+          ],
           "sub": null,
           "group": null,
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "text-v3",
           "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
           "intensity": 0,
           "rolls": 1,
-          "frames": 4,
+          "frames": 6,
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-22T16:36:00+00:00"
+          "generated_at": "2026-09-22T19:14:01+00:00",
+          "manual": true
         },
         "south-east": {
           "status": "pass",
@@ -654,19 +658,19 @@
         },
         "north": {
           "status": "pass",
-          "step_mean": 0.1149,
-          "step_max": 0.1547,
-          "drift": 1.65,
-          "loop": 0.1708,
-          "loop_ratio": 1.49,
-          "travel": 1.65,
-          "pin": 0.882,
+          "step_mean": 0.1376,
+          "step_max": 0.1575,
+          "drift": 2.02,
+          "loop": 0.23,
+          "loop_ratio": 1.67,
+          "travel": 1.49,
+          "pin": 0.92,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.983,
+          "end_area": 0.968,
           "end_iou": null,
           "canvas": [
             160,
@@ -676,17 +680,18 @@
           "sub": null,
           "group": null,
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "text-v3",
           "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
           "intensity": 0,
           "rolls": 1,
-          "frames": 4,
+          "frames": 6,
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-22T16:36:02+00:00"
+          "generated_at": "2026-09-22T19:14:00+00:00",
+          "manual": true
         },
         "south-west": {
           "status": "pass",
@@ -808,7 +813,9 @@
           "minotaur/animations/walk/south/00.webp",
           "minotaur/animations/walk/south/01.webp",
           "minotaur/animations/walk/south/02.webp",
-          "minotaur/animations/walk/south/03.webp"
+          "minotaur/animations/walk/south/03.webp",
+          "minotaur/animations/walk/south/04.webp",
+          "minotaur/animations/walk/south/05.webp"
         ],
         "south-east": [
           "minotaur/animations/walk/south-east/00.webp",
@@ -832,7 +839,9 @@
           "minotaur/animations/walk/north/00.webp",
           "minotaur/animations/walk/north/01.webp",
           "minotaur/animations/walk/north/02.webp",
-          "minotaur/animations/walk/north/03.webp"
+          "minotaur/animations/walk/north/03.webp",
+          "minotaur/animations/walk/north/04.webp",
+          "minotaur/animations/walk/north/05.webp"
         ],
         "south-west": [
           "minotaur/animations/walk/south-west/00.webp",

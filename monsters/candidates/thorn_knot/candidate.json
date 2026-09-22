@@ -507,40 +507,44 @@
     "walk": {
       "directions": {
         "south": {
-          "status": "pass",
-          "step_mean": 0.1025,
-          "step_max": 0.1345,
-          "drift": 0.8,
-          "loop": 0.0981,
-          "loop_ratio": 0.96,
+          "status": "warn",
+          "step_mean": 0.0887,
+          "step_max": 0.1136,
+          "drift": 2.04,
+          "loop": 0.1861,
+          "loop_ratio": 2.1,
           "travel": 0.31,
-          "pin": 0.895,
+          "pin": 0.89,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.984,
+          "end_area": 0.993,
           "end_iou": null,
           "canvas": [
             88,
             88
           ],
-          "reasons": [],
+          "reasons": [
+            "motion 0.089 outside the calm band 0.1–0.4 — eyeball it",
+            "last→first hand-off 2.1× a step — eyeball the loop"
+          ],
           "sub": null,
           "group": null,
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "text-v3",
           "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
           "intensity": 0,
           "rolls": 1,
-          "frames": 4,
+          "frames": 6,
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-22T16:38:19+00:00"
+          "generated_at": "2026-09-22T19:12:10+00:00",
+          "manual": true
         },
         "south-east": {
           "status": "pass",
@@ -652,19 +656,19 @@
         },
         "north": {
           "status": "pass",
-          "step_mean": 0.1017,
-          "step_max": 0.1298,
-          "drift": 1.0,
-          "loop": 0.1312,
-          "loop_ratio": 1.29,
-          "travel": 0.17,
-          "pin": 0.884,
+          "step_mean": 0.1273,
+          "step_max": 0.1651,
+          "drift": 2.83,
+          "loop": 0.1447,
+          "loop_ratio": 1.14,
+          "travel": 0.26,
+          "pin": 0.868,
           "pad": 0,
           "flash": 0.0,
           "peak": null,
           "reach": null,
           "turn": null,
-          "end_area": 0.993,
+          "end_area": 0.938,
           "end_iou": null,
           "canvas": [
             88,
@@ -674,17 +678,18 @@
           "sub": null,
           "group": null,
           "takes": 1,
-          "version": 1,
+          "version": 2,
           "mirrored": false,
           "mode": "text-v3",
           "action": "walk loop, full walk cycle in place, legs alternate naturally, normal calm walking pace, body stays centered, seamless loop whose last frame leads straight back into the first, no turning",
           "intensity": 0,
           "rolls": 1,
-          "frames": 4,
+          "frames": 6,
           "rung": 0,
           "unwrapped": null,
           "tries": 1,
-          "generated_at": "2026-09-22T16:38:20+00:00"
+          "generated_at": "2026-09-22T19:12:09+00:00",
+          "manual": true
         },
         "south-west": {
           "status": "pass",
@@ -804,7 +809,9 @@
           "thorn_knot/animations/walk/south/00.webp",
           "thorn_knot/animations/walk/south/01.webp",
           "thorn_knot/animations/walk/south/02.webp",
-          "thorn_knot/animations/walk/south/03.webp"
+          "thorn_knot/animations/walk/south/03.webp",
+          "thorn_knot/animations/walk/south/04.webp",
+          "thorn_knot/animations/walk/south/05.webp"
         ],
         "south-east": [
           "thorn_knot/animations/walk/south-east/00.webp",
@@ -828,7 +835,9 @@
           "thorn_knot/animations/walk/north/00.webp",
           "thorn_knot/animations/walk/north/01.webp",
           "thorn_knot/animations/walk/north/02.webp",
-          "thorn_knot/animations/walk/north/03.webp"
+          "thorn_knot/animations/walk/north/03.webp",
+          "thorn_knot/animations/walk/north/04.webp",
+          "thorn_knot/animations/walk/north/05.webp"
         ],
         "south-west": [
           "thorn_knot/animations/walk/south-west/00.webp",

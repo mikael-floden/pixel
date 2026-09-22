@@ -1,6 +1,6 @@
 {
   "format": "monster-candidates@1",
-  "generated_at": "2026-09-22T18:41:15+00:00",
+  "generated_at": "2026-09-22T19:14:02+00:00",
   "art_ext": ".webp",
   "directions": [
     "south",
@@ -561,9 +561,10 @@
       "graduation": {
         "state": "waiting",
         "takes": {
-          "idle": "idle"
+          "idle": "idle",
+          "walk": "walk"
         },
-        "blocking": "not fully approved: walk, angry, attack, die"
+        "blocking": "not fully approved: angry, attack, die"
       }
     },
     {
@@ -831,9 +832,10 @@
       "graduation": {
         "state": "waiting",
         "takes": {
-          "idle": "idle"
+          "idle": "idle",
+          "walk": "walk"
         },
-        "blocking": "not fully approved: walk, angry, attack, die"
+        "blocking": "not fully approved: angry, attack, die"
       }
     },
     {
@@ -2175,9 +2177,10 @@
       "graduation": {
         "state": "waiting",
         "takes": {
-          "idle": "idle"
+          "idle": "idle",
+          "walk": "walk"
         },
-        "blocking": "not fully approved: walk, angry, attack, die"
+        "blocking": "not fully approved: angry, attack, die"
       }
     },
     {
@@ -2713,9 +2716,10 @@
       "graduation": {
         "state": "waiting",
         "takes": {
-          "idle": "idle"
+          "idle": "idle",
+          "walk": "walk"
         },
-        "blocking": "not fully approved: walk, angry, attack, die"
+        "blocking": "not fully approved: angry, attack, die"
       }
     },
     {
@@ -2848,9 +2852,10 @@
       "graduation": {
         "state": "waiting",
         "takes": {
-          "idle": "idle"
+          "idle": "idle",
+          "walk": "walk"
         },
-        "blocking": "not fully approved: walk, angry, attack, die"
+        "blocking": "not fully approved: angry, attack, die"
       }
     },
     {

@@ -871,6 +871,299 @@
         "west": "naga/animations/walk__west.webp",
         "north-west": "naga/animations/walk__north-west.webp"
       }
+    },
+    "walk_try": {
+      "directions": {
+        "south": {
+          "status": "fail",
+          "step_mean": 0.0425,
+          "step_max": 0.0527,
+          "drift": 0.8,
+          "loop": 0.0596,
+          "loop_ratio": 1.4,
+          "travel": 0.68,
+          "pin": 0.953,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.988,
+          "end_iou": null,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.042 per frame"
+          ],
+          "sub": null,
+          "group": null,
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "text-v3",
+          "action": "slither loop, the coiled serpent lower body pushing forward in smooth S-curves, the humanoid torso upright and steady above it, moving in place, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T19:11:07+00:00"
+        },
+        "south-east": {
+          "status": "fail",
+          "step_mean": 0.0485,
+          "step_max": 0.0561,
+          "drift": 1.5,
+          "loop": 0.0687,
+          "loop_ratio": 1.41,
+          "travel": 0.59,
+          "pin": 0.971,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.989,
+          "end_iou": null,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.049 per frame"
+          ],
+          "sub": null,
+          "group": null,
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "text-v3",
+          "action": "slither loop, the coiled serpent lower body pushing forward in smooth S-curves, the humanoid torso upright and steady above it, moving in place, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T19:11:08+00:00"
+        },
+        "east": {
+          "status": "warn",
+          "step_mean": 0.0551,
+          "step_max": 0.0639,
+          "drift": 1.27,
+          "loop": 0.1051,
+          "loop_ratio": 1.91,
+          "travel": 0.28,
+          "pin": 0.938,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.982,
+          "end_iou": null,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "motion 0.055 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "sub": null,
+          "group": null,
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "text-v3",
+          "action": "slither loop, the coiled serpent lower body pushing forward in smooth S-curves, the humanoid torso upright and steady above it, moving in place, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T19:11:08+00:00"
+        },
+        "north-east": {
+          "status": "fail",
+          "step_mean": 0.0347,
+          "step_max": 0.0535,
+          "drift": 1.04,
+          "loop": 0.0354,
+          "loop_ratio": 1.02,
+          "travel": 0.23,
+          "pin": 0.976,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.995,
+          "end_iou": null,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.035 per frame"
+          ],
+          "sub": null,
+          "group": null,
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "text-v3",
+          "action": "slither loop, the coiled serpent lower body pushing forward in smooth S-curves, the humanoid torso upright and steady above it, moving in place, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T19:11:09+00:00"
+        },
+        "north": {
+          "status": "fail",
+          "step_mean": 0.0233,
+          "step_max": 0.0341,
+          "drift": 1.38,
+          "loop": 0.0597,
+          "loop_ratio": 2.57,
+          "travel": 0.13,
+          "pin": 0.987,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.982,
+          "end_iou": null,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "frozen: silhouette moves 0.023 per frame",
+            "last→first hand-off 2.6× a step — eyeball the loop"
+          ],
+          "sub": null,
+          "group": null,
+          "takes": 1,
+          "version": 1,
+          "mirrored": false,
+          "mode": "text-v3",
+          "action": "slither loop, the coiled serpent lower body pushing forward in smooth S-curves, the humanoid torso upright and steady above it, moving in place, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T19:11:09+00:00"
+        },
+        "west": {
+          "status": "warn",
+          "step_mean": 0.0551,
+          "step_max": 0.0639,
+          "drift": 1.27,
+          "loop": 0.1051,
+          "loop_ratio": 1.91,
+          "travel": 0.28,
+          "pin": 0.938,
+          "pad": 0,
+          "flash": 0.0,
+          "peak": null,
+          "reach": null,
+          "turn": null,
+          "end_area": 0.982,
+          "end_iou": null,
+          "canvas": [
+            128,
+            128
+          ],
+          "reasons": [
+            "motion 0.055 outside the calm band 0.1–0.4 — eyeball it"
+          ],
+          "sub": null,
+          "group": null,
+          "takes": 1,
+          "version": 1,
+          "mirrored": true,
+          "mode": "text-v3",
+          "action": "slither loop, the coiled serpent lower body pushing forward in smooth S-curves, the humanoid torso upright and steady above it, moving in place, seamless loop whose last frame leads straight back into the first, no turning",
+          "intensity": 0,
+          "rolls": 1,
+          "frames": 6,
+          "rung": 0,
+          "unwrapped": null,
+          "tries": 1,
+          "generated_at": "2026-09-22T19:11:08+00:00",
+          "source": "east"
+        }
+      },
+      "action": "slither loop, the coiled serpent lower body pushing forward in smooth S-curves, the humanoid torso upright and steady above it, moving in place, seamless loop whose last frame leads straight back into the first, no turning",
+      "frame_paths": {
+        "south": [
+          "naga/animations/walk_try/south/00.webp",
+          "naga/animations/walk_try/south/01.webp",
+          "naga/animations/walk_try/south/02.webp",
+          "naga/animations/walk_try/south/03.webp",
+          "naga/animations/walk_try/south/04.webp",
+          "naga/animations/walk_try/south/05.webp"
+        ],
+        "south-east": [
+          "naga/animations/walk_try/south-east/00.webp",
+          "naga/animations/walk_try/south-east/01.webp",
+          "naga/animations/walk_try/south-east/02.webp",
+          "naga/animations/walk_try/south-east/03.webp",
+          "naga/animations/walk_try/south-east/04.webp",
+          "naga/animations/walk_try/south-east/05.webp"
+        ],
+        "east": [
+          "naga/animations/walk_try/east/00.webp",
+          "naga/animations/walk_try/east/01.webp",
+          "naga/animations/walk_try/east/02.webp",
+          "naga/animations/walk_try/east/03.webp",
+          "naga/animations/walk_try/east/04.webp",
+          "naga/animations/walk_try/east/05.webp"
+        ],
+        "north-east": [
+          "naga/animations/walk_try/north-east/00.webp",
+          "naga/animations/walk_try/north-east/01.webp",
+          "naga/animations/walk_try/north-east/02.webp",
+          "naga/animations/walk_try/north-east/03.webp",
+          "naga/animations/walk_try/north-east/04.webp",
+          "naga/animations/walk_try/north-east/05.webp"
+        ],
+        "north": [
+          "naga/animations/walk_try/north/00.webp",
+          "naga/animations/walk_try/north/01.webp",
+          "naga/animations/walk_try/north/02.webp",
+          "naga/animations/walk_try/north/03.webp",
+          "naga/animations/walk_try/north/04.webp",
+          "naga/animations/walk_try/north/05.webp"
+        ],
+        "west": [
+          "naga/animations/walk_try/west/00.webp",
+          "naga/animations/walk_try/west/01.webp",
+          "naga/animations/walk_try/west/02.webp",
+          "naga/animations/walk_try/west/03.webp",
+          "naga/animations/walk_try/west/04.webp",
+          "naga/animations/walk_try/west/05.webp"
+        ]
+      },
+      "strips": {
+        "south": "naga/animations/walk_try__south.webp",
+        "south-east": "naga/animations/walk_try__south-east.webp",
+        "east": "naga/animations/walk_try__east.webp",
+        "north-east": "naga/animations/walk_try__north-east.webp",
+        "north": "naga/animations/walk_try__north.webp",
+        "west": "naga/animations/walk_try__west.webp"
+      }
     }
   }
 }
