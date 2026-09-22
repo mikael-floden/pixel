@@ -1,0 +1,129 @@
+name: artifact registry watch
+
+# THE REGISTRY WATCHES ITSELF, so nobody has to remember to look.
+#
+# WHY THIS EXISTS (maintainer 2026-09-22: "I don't know if I can remember this
+# conversation in 2 days. I have so much todo. I like ticking things off"):
+# games2/deploy/ar-cleanup.sh was written on 2026-08-15 and had NEVER ONCE RUN
+# until 2026-09-22, because the documented phone paste died on a Cloud Shell
+# that opens as "(no project)" — and commit ecf1fb9562 ("make the AR cleanup
+# paste actually work from a phone") had already declared that fixed a month
+# earlier without anyone executing it. In those 38 unwatched days the repo grew
+# from 285 GB (measured, d54928100b) to 488 GB (measured on his phone), 5.3
+# GB/day, which by his own billing export was kr 181.73 in 21 days and the only
+# line on the bill going UP (+41% while Cloud Run fell 17%).
+#
+# So the lesson is not "run the script" — it is that a one-off manual fix with
+# no watcher is a fix that silently stops being true. The cleanup policy lives
+# server-side inside Artifact Registry and needs no CI, but NOTHING NOTICED for
+# five weeks that it was absent. This notices, every day, for free.
+#
+# WHAT IT ASSERTS, and both arms matter:
+#   1. THE POLICY IS STILL ATTACHED. A policy can be removed by a console click
+#      or a competing automation; its absence is the exact state that cost the
+#      38 days, and it is invisible from the outside until the bill arrives.
+#   2. THE REPO IS UNDER SIZE_ALARM_MB. The policy keeps the newest 15 versions
+#      and deletes anything over 14 days, which settled the repo at a small
+#      residual; a number climbing back means images are being retained faster
+#      than 14 days can reap them, which is a real regression in deploy rate.
+#
+# A RED RUN IN THE FIRST DAYS AFTER APPLYING THE POLICY IS EXPECTED AND NOT A
+# BUG: Artifact Registry sweeps asynchronously, typically within 24 h, and the
+# size falls over the following days as layers are actually deleted. Still red
+# after ~3 days means the policy is not doing what it says and wants a human.
+#
+# NO SECRETS: reuses the deploy's keyless Workload Identity Federation, exactly
+# as backup-gcs.yml does. The describe call is read-only; this workflow can
+# never delete anything.
+
+on:
+  schedule:
+    # Daily, 06:41 UTC. Unlike the weekly backup — which is weekly because
+    # Nearline bills a 30-day minimum per object, so more often costs money for
+    # nothing — a `describe` is one free API call, so the only question is how
+    # fast a regression should be caught. Daily. Off-round minute on purpose,
+    # and before the art loops' 02:30 pass has been superseded by a day of
+    # pushes, so the number read is a settled one.
+    - cron: "41 6 * * *"
+  workflow_dispatch: {}
+
+concurrency:
+  group: ar-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      id-token: write # Workload Identity Federation
+    steps:
+      - name: Authenticate to Google Cloud (keyless)
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      # No setup-gcloud: the SDK is preinstalled on ubuntu-latest and the auth
+      # step exports credentials the CLI picks up on its own — same reasoning
+      # and the same ~19 s saving documented in nangijala-deploy.yml.
+      - name: Read the registry, and say so out loud
+        env:
+          REGION: ${{ vars.GCP_REGION }}
+          AR_REPO: ${{ vars.GCP_AR_REPO }}
+          # The residual after `keep newest 15 + delete >14d` was expected at
+          # 10-25 GB against the 488 GB that provoked this. 60 GB is well clear
+          # of a healthy settled repo and well under the runaway, so it fires on
+          # a real regression and not on a busy week.
+          SIZE_ALARM_MB: "61440"
+        run: |
+          set -uo pipefail
+          : "${REGION:?GCP_REGION repo variable is not set}"
+          : "${AR_REPO:?GCP_AR_REPO repo variable is not set}"
+
+          if ! DESC="$(gcloud artifacts repositories describe "$AR_REPO" --location="$REGION" 2>&1)"; then
+            echo "::error::could not describe $AR_REPO in $REGION"
+            printf '%s\n' "$DESC"
+            exit 1
+          fi
+
+          # NOT --format='value(sizeBytes)': that field comes back EMPTY from
+          # this API and an arithmetic pipeline on it cheerfully printed
+          # "0.00 GB" over a 285 GB repository (measured 2026-08-15,
+          # d54928100b). The real number is only in the human-readable output.
+          SIZE_LINE="$(printf '%s\n' "$DESC" | grep -iE 'repository size' || true)"
+          SIZE_MB="$(printf '%s\n' "$SIZE_LINE" | grep -oiE '[0-9.]+ *[MG]B' | head -1 | awk '{
+            n = $0; sub(/[^0-9.].*$/, "", n);
+            if (toupper($0) ~ /GB/) printf "%.0f", n * 1024; else printf "%.0f", n;
+          }')"
+
+          POLICY="$(printf '%s\n' "$DESC" | grep -icE 'cleanuppolic|keep-newest|delete-older' || true)"
+
+          {
+            echo "## Artifact Registry — \`$AR_REPO\` in \`$REGION\`"
+            echo
+            echo "| | |"
+            echo "|---|---|"
+            echo "| size | ${SIZE_LINE:-(not reported by this API version)} |"
+            echo "| cleanup policy | $([ "${POLICY:-0}" -gt 0 ] && echo 'attached ✅' || echo 'MISSING ❌') |"
+            echo "| alarm above | $((SIZE_ALARM_MB / 1024)) GB |"
+            echo
+            echo "For context: 488,148 MB on 2026-09-22, the day the policy was first applied."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+          FAIL=0
+          if [ "${POLICY:-0}" -eq 0 ]; then
+            echo "::error::no cleanup policy on $AR_REPO — re-apply it: games2/deploy/ar-cleanup.sh"
+            FAIL=1
+          fi
+          if [ -n "${SIZE_MB:-}" ] && [ "${SIZE_MB%.*}" -gt "$SIZE_ALARM_MB" ]; then
+            echo "::error::registry is ${SIZE_MB} MB, over the ${SIZE_ALARM_MB} MB alarm."
+            echo "::notice::If the policy was applied within the last ~3 days this is expected — Artifact Registry sweeps asynchronously and the size falls over the following days."
+            FAIL=1
+          fi
+          if [ -z "${SIZE_MB:-}" ]; then
+            echo "::warning::this API version did not report a repository size; the policy arm still ran."
+          fi
+          echo "size_mb=${SIZE_MB:-unknown} policy=${POLICY:-0} fail=$FAIL"
+          exit "$FAIL"
