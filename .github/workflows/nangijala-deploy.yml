@@ -562,7 +562,28 @@ jobs:
               `# variable configured outside this workflow (a REDIS_URL, the` \
               `# wiki token). The update form merges one key and touches nothing` \
               `# else.` \
-              --update-env-vars "BUNDLE_STORE=github:${{ github.repository }}@bundle-store/bundle" \
+              `# ...AND THE HEAP CEILING RIDES WITH --memory, on the same` \
+              `# line, because the two numbers are only correct together.` \
+              `# MEASURED 2026-09-22, node 22.22.2 inside a cgroup capped at` \
+              `# 900 MiB: process.constrainedMemory() answered 900 MiB and v8` \
+              `# heap_size_limit answered 8204 MiB. Node SEES a container limit` \
+              `# and V8 IGNORES it, sizing old space at ~half the HOST's RAM.` \
+              `# A heap ceiling above the container is not a slow leak, it is` \
+              `# an OOM KILL: V8 never reaches the pressure that makes it` \
+              `# collect hard, so the kernel arrives first and the world dies` \
+              `# with nothing in the log about memory.` \
+              `# 1200 of 2048 is deliberately UNDER the usual 75%: the whole` \
+              `# process measured 643 MB of rss the hour this was set, so this` \
+              `# leaves 848 MiB for everything the ceiling does NOT govern (the` \
+              `# terrain grid, art buffers, brotli) - more than the process` \
+              `# used in total. /api/stats now carries the heap/native split` \
+              `# (perfStats' mem block), so the next move on this number is a` \
+              `# READ of production, never another guess.` \
+              `# Comma-joined into ONE --update-env-vars: a second flag would` \
+              `# REPLACE the first, not add to it. gcloud splits entries on` \
+              `# commas and each entry on its FIRST '=', so the value's own` \
+              `# '=' is safe and no escape form is needed.` \
+              --update-env-vars "BUNDLE_STORE=github:${{ github.repository }}@bundle-store/bundle,NODE_OPTIONS=--max-old-space-size=1200" \
               --max-instances 1 \
               --no-cpu-throttling \
               --no-session-affinity \

@@ -15,9 +15,23 @@ the Colyseus WebSocket world on one port. Domain: **nangijala.online**.
   ~400 MB in dev; 512 MiB left no headroom (see `games2/docs/backend.md`), and
   1 GiB was the TIGHTER of the two resources: 643 MB of 1024 MB against 19.2%
   of one core, measured 2026-09-22 with zero players. An OOM kills the world
-  where CPU saturation only slows it, a GiB-second costs a ninth of a
-  vCPU-second, and nothing sets `--max-old-space-size` — so Node sizes its old
-  space from the cgroup limit and doubling the container doubles that too.
+  where CPU saturation only slows it, and a GiB-second costs a ninth of a
+  vCPU-second.
+- **`NODE_OPTIONS=--max-old-space-size=1200`, and it must move whenever
+  `--memory` moves.** V8 DOES NOT READ THE CONTAINER LIMIT. Measured
+  2026-09-22, node 22.22.2 inside a cgroup capped at 900 MiB:
+  `process.constrainedMemory()` answered 900 MiB and `v8.heap_size_limit`
+  answered **8204 MiB** — Node sees the cap, V8 ignores it and sizes old space
+  at ~half the *host's* RAM. A heap ceiling above the container is not a slow
+  leak, it is an **OOM kill**: V8 never reaches the pressure that would make it
+  collect hard, so the kernel arrives first and the world dies with nothing in
+  the log about memory. 1200 of 2048 is under the usual 75% on purpose — the
+  whole process was 643 MB of rss when this was set, so 848 MiB is left for
+  what the ceiling does *not* govern (terrain grid, art buffers, brotli).
+  `/api/stats` now carries the heap/native split (`perfStats`' `mem` block:
+  `limitMb`, `nativeMb`, `constrainedMb`), so the next move on this number is a
+  read of production rather than another guess. `limitMb > constrainedMb` on a
+  live read is the dangerous state.
 - **`--max-instances 1`** — one instance *is* the single shared world, so the
   "instances don't share state" caveat doesn't apply until we deliberately
   scale out (which needs Redis anyway — see *Scaling later*).

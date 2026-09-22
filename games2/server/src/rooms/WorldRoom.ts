@@ -1,6 +1,8 @@
 import { Room, Client, ClientState } from "@colyseus/core";
 import { Encoder, StateView, MapSchema } from "@colyseus/schema";
 import { randomBytes } from "crypto";
+import { getHeapStatistics } from "node:v8";
+import { totalmem } from "node:os";
 import { bus } from "../bus.js";
 
 // THE ENCODER BUFFER IS SIZED HERE, WHERE THE ROOM IS, not in index.ts: every
@@ -423,6 +425,47 @@ function pct(sorted: number[], p: number): number {
   if (!sorted.length) return 0;
   return sorted[Math.min(sorted.length - 1, Math.floor(p * sorted.length))];
 }
+/** WHAT THE MEMORY ACTUALLY IS, because rss alone cannot answer the one
+ *  question that decides the instance's size: is this the JS HEAP or is it
+ *  NATIVE (the terrain grid, art buffers, brotli)? Only the first is governed
+ *  by --max-old-space-size, and only the second is freed by a bigger container
+ *  on its own.
+ *
+ *  `limitMb` is the field this exists for. PROVEN 2026-09-22, node 22.22.2
+ *  inside a cgroup capped at 900 MiB: process.constrainedMemory() answered
+ *  900 MiB and v8 heap_size_limit answered 8204 MiB — Node SEES a container
+ *  limit and V8 IGNORES it, sizing old space at ~half the HOST's RAM. A heap
+ *  ceiling above the container is not a slow leak, it is an OOM KILL: V8 never
+ *  reaches the pressure that would make it collect, so the kernel arrives
+ *  first and the world dies with nothing in the log. Whether Cloud Run's
+ *  sandbox reports the INSTANCE limit as MemTotal (making the default safe) or
+ *  the host's RAM (making it lethal) is not answerable from a dev box — it is
+ *  answerable by reading this from production, which is why it is here and not
+ *  in a comment. `totalMb` is what V8 sized itself from; `constrainedMb` is
+ *  what the cgroup actually allows. The two disagreeing IS the finding. */
+function memStats() {
+  const m = process.memoryUsage();
+  const h = getHeapStatistics();
+  const mb = (n: number) => +(n / 1048576).toFixed(1);
+  // constrainedMemory() is newer than some runtimes this may be built on and
+  // answers 0 when it cannot tell; never let a diagnostic throw the endpoint.
+  let constrained = 0;
+  try {
+    constrained = (process as any).constrainedMemory?.() ?? 0;
+  } catch {}
+  return {
+    rssMb: mb(m.rss),
+    heapUsedMb: mb(m.heapUsed),
+    heapTotalMb: mb(m.heapTotal),
+    limitMb: mb(h.heap_size_limit),
+    externalMb: mb(m.external),
+    arrayBuffersMb: mb(m.arrayBuffers),
+    nativeMb: mb(Math.max(0, m.rss - m.heapTotal)), // everything the heap ceiling does NOT govern
+    totalMb: mb(totalmem()),
+    constrainedMb: mb(constrained),
+  };
+}
+
 export function perfStats() {
   const now = Date.now();
   const cpu = process.cpuUsage(cpuLast);
@@ -452,6 +495,7 @@ export function perfStats() {
     cpuPct: +(((cpu.user + cpu.system) / 1000 / wall) * 100).toFixed(1), // of ONE core, since the last call
     loopLagMs: { mean: +(loopLagN ? loopLagSum / loopLagN : 0).toFixed(1), max: loopLagMax },
     rssMb: +(process.memoryUsage().rss / 1048576).toFixed(0),
+    mem: memStats(),
     rooms,
     totals: { clients: rooms.reduce((a, r) => a + r.clients, 0), players: rooms.reduce((a, r) => a + r.players, 0), monsters: rooms.reduce((a, r) => a + r.monsters, 0) },
   };
