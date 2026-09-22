@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { resolveDepthRule } from "../depthrule";
+import { trackGap, arrivalHz, remoteChaseRate } from "../remoterate";
 import { ART_IDLE_SHARE, ArtQueue } from "../artqueue";
 import { drawFrameInto, drawableSource, readFrameAlpha, readTexturePixels, readTextureRect } from "../framepixels";
 import { renderRes } from "../resolution";
@@ -1564,6 +1565,13 @@ interface MonsterAvatar {
   sprite: Phaser.GameObjects.Sprite;
   shadow: Phaser.GameObjects.Image;
   kind: string;
+  /** ARRIVAL PACING (remoterate.ts): when this body's authoritative position
+   *  last CHANGED, and the running estimate of the interval between changes.
+   *  A monster of this room arrives at 20 Hz; a GHOST of a neighbouring room
+   *  arrives on that room's edge snapshot, measured at 2.33 Hz when the room
+   *  has no client in it. The ease is paced to whichever this body is. */
+  posAt?: number;
+  gapMs?: number;
   lx: number;
   lyFlat: number;
   ly: number;
@@ -14292,6 +14300,13 @@ export class WorldScene extends Phaser.Scene {
       this.monsters.forEach((mv, id) => {
         const m = monsterState.get(id) ?? state.ghostMonsters?.get(id);
         if (!m) return;
+        // mv.fx/fy still hold the PREVIOUS authoritative position, so this is
+        // the cheapest possible arrival detector: no extra state, no listener.
+        if (m.x !== mv.fx || m.y !== mv.fy) {
+          const at = this.time.now;
+          if (mv.posAt !== undefined) mv.gapMs = trackGap(mv.gapMs ?? 0, at - mv.posAt);
+          mv.posAt = at;
+        }
         mv.fx = m.x;
         mv.fy = m.y;
         const g = this.projectFlat(m.x, m.y);
@@ -14385,7 +14400,13 @@ export class WorldScene extends Phaser.Scene {
           mv.fallV = 0;
           mv.falling = false;
         } else {
-          const k = Math.min(1, dt * 12);
+          /* PACED TO THE SOURCE, not to a constant (remoterate.ts). A 20 Hz
+           * body comes out at exactly the 12 this line used to hard-code, so
+           * nothing in his own zone moves by a pixel; a 2.33 Hz ghost eases
+           * proportionally slower and therefore never finishes early and sits
+           * there. Measured in server/test/remoterate.test.ts: frozen frames
+           * 18.8% -> 0.0%, peak/mean frame step 5.18 -> 1.31. */
+          const k = Math.min(1, dt * remoteChaseRate(arrivalHz(mv.gapMs ?? 0)));
           const px0 = mv.lx;
           const py0 = mv.lyFlat;
           mv.lx += (g.x - mv.lx) * k;

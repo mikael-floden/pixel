@@ -214,7 +214,19 @@ export function sceneryBbox(): SceneryBboxDoc | null {
 /** Ghosts reach GHOST_BAND_WU across a border: the interest rim, so a client
  *  standing on the line sees exactly as far into the neighbour as into home. */
 const GHOST_BAND_WU = INTEREST_LEAVE_WU;
-const EDGE_TICKS = 2; // edge snapshots at 10 Hz
+/** Edge snapshots every SIM tick — the cheapest half of "a ghost is jerkier
+ *  than a local monster" (maintainer 2026-09-22: "I still feel the monsters in
+ *  my own zone to way way smoother vs monsters in a neighbouring zone").
+ *
+ *  At 2 this threw away half of what the room had ALREADY COMPUTED: an idle
+ *  room steps its sim at IDLE_DIVISOR-rate (4.9 Hz measured) and published
+ *  every other step, so a watcher next door got 2.33 positions a second for a
+ *  body the server knew 4.9 of. At 1 nothing new is calculated — the same
+ *  positions are sent instead of dropped. Measured by
+ *  server/test/ghostrate.test.ts. The other half is client-side and is where
+ *  the smoothness actually comes from (client/src/remoterate.ts): a chase
+ *  paced to the arrival rate rather than a constant tuned for 20 Hz. */
+const EDGE_TICKS = 1;
 const GHOST_TTL_MS = 1000; // a ghost outlives its owner's last snapshot this long
 /** How long a ghost created BY A HAND-OFF is spared the "this snapshot no
  *  longer carries it" sweep. It must outlast the destination's slowest edge

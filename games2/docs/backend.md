@@ -249,11 +249,37 @@ grid, all bots packed within a few cells in one zone (the crowded-room case):
   0.9 s. The instance is 1 GiB now (deploy workflow) for headroom.
 - **An empty room runs its sim every `IDLE_DIVISOR` (4) ticks** with the
   accumulated dt (the clock still moves every tick; edge snapshots keep
-  flowing at the slower rate and a neighbour's client eases ghosts at rate
-  12). Idle with 16 warm rooms was ~20% of a core (the monster brains; zone 6
+  flowing at the slower rate). Idle with 16 warm rooms was ~20% of a core (the monster brains; zone 6
   with 63 monsters ticks 2 ms p50); with the divisor it is 10%, 386 MB. A client
   brings the full rate back on its first tick (`/api/stats` reports `simHz`
   per room; gate `server/test/idle.test.ts`).
+- **A GHOST IS CHASED AT THE RATE ITS POSITIONS ARRIVE, not at a constant**
+  (maintainer 2026-09-22: "I still feel the monsters in my own zone to way way
+  smoother vs monsters in a neighbouring zone"). Measured
+  (`server/test/ghostrate.test.ts`): a monster of your own room arrives at the
+  20 Hz patch rate; a ghost of a neighbouring room arrives on that room's edge
+  snapshot, and a room with no client in it sims inside the idle gate — 4.9 Hz.
+  Two fixes, and the cheap one is not the one that matters:
+  - `EDGE_TICKS` is **1**, not 2. At 2 an idle room published every OTHER sim
+    step: 2.33 Hz for a body it had already computed 4.9 positions of. Nothing
+    new is calculated at 1 — a computed position is simply not thrown away.
+    Gated: an idle room's edge rate must equal its sim rate.
+  - The renderer's ease is **paced to the source** (`client/src/remoterate.ts`,
+    gate `server/test/remoterate.test.ts`). `k = min(1, dt * 12)` is a filter
+    with tau = 83 ms, ~95% converged in 250 ms: right for a 50 ms source, and
+    for a 430 ms one it races to the target and then SITS STILL for the rest
+    of the interval. Glide, freeze, jump. Paced, a 20 Hz body comes out at
+    **exactly 12** (nothing in your own zone moves by a pixel — that equality
+    is arm 1 of the gate) and a slow one eases proportionally slower, so tau
+    always outlasts the interval. Measured at 2.33 Hz: frozen frames
+    18.8% -> 0.0%, peak/mean frame step 5.18 -> 1.31.
+  - REJECTED: buffered interpolation with a playout delay, the textbook
+    answer. It renders one arrival interval in the past, so a ghost would sit
+    ~430 ms behind the truth and you would swing at where it used to be —
+    and cross-border combat is a thing (`spec/ZONES.md`).
+  - NOT taken, and this is what still separates 4.1x from 1x: un-idling a room
+    whose neighbour has players. That is the only way to make a ghost's SOURCE
+    20 Hz, and it costs the full sim for up to 8 rooms.
 - **A JOIN BURST IS A LIMIT OF ITS OWN**: 400 bots joining one zone within
   10 s from two processes on a box already at 100% CPU expired 65 seat
   reservations ("seat reservation expired"), 100 joins failed, and every
@@ -332,7 +358,8 @@ Measured, 200 bots packed in one room, KB/s per client (means over the run):
 What is left per moving body per patch is framing (the ref id, a field index
 per axis) plus 4 bytes of position, so the next lever is the PATCH RATE (a
 10 Hz patch would halve it again for 50 ms of ack latency; not taken —
-remote motion is eased at rate 12 and the maintainer is sensitive to it) and,
+remote motion is eased at the ARRIVAL rate — see below — and the maintainer is
+sensitive to it) and,
 for the many bodies that walk routes (monsters, tap-to-move players), path
 replay: send the route once and let clients replay it with periodic
 corrections. Not built; a week-class subsystem with its own drift and
