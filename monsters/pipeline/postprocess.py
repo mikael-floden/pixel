@@ -618,6 +618,38 @@ def measure_direction_offset(rot_dir, ext=".webp"):
     return best, sc[best] - sc[0]
 
 
+def clear_acted_note(feedback_path, key):
+    """A NOTE on an APPROVED verdict dies with the work it asked for.
+
+    HIS RULE, and the one I broke (2026-09-22: "That must have been a dangling
+    comment because you didn't clear it!"). `clear_verdict` deliberately never
+    touches an approval — that is his pick and it has to outlive the review —
+    so a note riding an approval survived the repair it requested. His
+    plume_brawler and scyth_arm offset notes sat for FOUR DAYS after the fix,
+    and I then misread my own leftover as a fresh report from him.
+
+    The approval is untouched. Only the words go, and only when the repair
+    that answers them has actually run.
+    """
+    import json as _json
+    from datetime import datetime as _dt, timezone as _tz
+    try:
+        doc = _json.load(open(feedback_path))
+    except (FileNotFoundError, ValueError):
+        return False
+    v = (doc.get("entries") or {}).get(key)
+    if not v or not v.get("note"):
+        return False
+    v.pop("note", None)
+    doc["updated_at"] = _dt.now(_tz.utc).isoformat(timespec="seconds").replace("+00:00", "Z")
+    tmp = feedback_path + ".tmp"
+    with open(tmp, "w") as f:
+        _json.dump(doc, f, indent=2, ensure_ascii=False)
+        f.write("\n")
+    os.replace(tmp, feedback_path)
+    return True
+
+
 def fix_direction_offset(rot_dir, ext=".webp", min_gain=OFFSET_MIN_GAIN, apply=True):
     """Re-file a rotation set that is a whole compass step out. Returns
     (k, gain, changed)."""
@@ -630,6 +662,12 @@ def fix_direction_offset(rot_dir, ext=".webp", min_gain=OFFSET_MIN_GAIN, apply=T
     for i, d in enumerate(D8_COMPASS):
         src = imgs[D8_COMPASS[(i + k) % 8]]
         mirror._save_png(src, os.path.join(rot_dir, d + ext))
+    # the note that asked for this dies with the work, approval untouched
+    cid = os.path.basename(os.path.dirname(rot_dir))
+    fb = os.path.join(ROOT, "..", "live", "feedback", "monsters.json")
+    for key in (f"monsters/candidates/{cid}", f"monsters/{cid}"):
+        if clear_acted_note(os.path.normpath(fb), key):
+            print(f"  {cid}: cleared the note that asked for this")
     return k, gain, True
 
 
