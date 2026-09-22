@@ -452,10 +452,21 @@ class PixelLabClient:
     def character_animation_create_is_live(self):
         """True while PixelLab serves the route that attaches a clip to a
         stored character. Free: a fake id can only answer 4xx, and a 405 is
-        the router itself saying the route is gone."""
+        the router itself saying the route is gone.
+
+        PROBE THE ROUTE THE CLIENT ACTUALLY CALLS — `characters/animations`,
+        with the character in the BODY. (This asked `characters/<id>/animations`
+        instead, a per-character subpath nothing here posts to, and its 405 was
+        read as the whole route being gone. Every idle and every batch-1 walk was
+        then made through the standalone text-v3 escape hatch for no reason, and
+        it was reported to the maintainer as an outage on PixelLab's side while
+        `animate_pro` went on submitting jobs to the live route in the same run.
+        He said twice the old endpoint still worked. It did.)"""
         try:
-            r = requests.post(f"{V2_BASE}/characters/00000000-0000-0000-0000-000000000000/animations",
-                              headers=self._headers(), json={"mode": "v3", "directions": ["south"]},
+            r = requests.post(f"{V2_BASE}/characters/animations", headers=self._headers(),
+                              json={"character_id": "00000000-0000-0000-0000-000000000000",
+                                    "mode": "v3", "directions": ["south"],
+                                    "action_description": "probe", "frame_count": 4},
                               timeout=30)
             return r.status_code != 405
         except Exception:
