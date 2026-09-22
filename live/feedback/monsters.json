@@ -1,7 +1,7 @@
 {
   "format": "pixel-wiki-feedback@1",
   "domain": "monsters",
-  "updated_at": "2026-09-22T14:55:36Z",
+  "updated_at": "2026-09-22T14:58:41Z",
   "entries": {
     "monsters/candidates/seed_husk": {
       "status": "approved",
@@ -6634,7 +6634,6 @@
     "monsters/ash_hatchling#attack_v3#south-east": {
       "art": "629c31ebe20e545e",
       "updated_at": "2026-09-18T14:36:54.592Z",
-      "note": "Fire outside frame",
       "status": "approved",
       "rating": 1
     },
@@ -6738,8 +6737,7 @@
       "rating": 3,
       "status": "approved",
       "art": "851746ab3e85594e",
-      "updated_at": "2026-09-18T14:42:23.022Z",
-      "note": "The attack renders outside and must be copied over in postprocess"
+      "updated_at": "2026-09-18T14:42:23.022Z"
     },
     "monsters/marsh_hag#attack_v3#south-west": {
       "rating": 3,
@@ -6751,8 +6749,7 @@
       "rating": 3,
       "status": "approved",
       "art": "4111a7ff8b1d9c7f",
-      "updated_at": "2026-09-18T14:42:34.830Z",
-      "note": "The attack renders outside and must be copied over in postprocess"
+      "updated_at": "2026-09-18T14:42:34.830Z"
     },
     "monsters/cobra#walk#south": {
       "rating": 3,
@@ -7022,11 +7019,9 @@
       "rating": 3,
       "status": "approved",
       "art": "bac595c8507f8487",
-      "updated_at": "2026-09-20T18:53:57.133Z",
-      "note": "The fire renders outside the frame to the right, but it warps around and can be saved in post"
+      "updated_at": "2026-09-20T18:53:57.133Z"
     },
     "monsters/ash_hatchling#attack_v3#north-west": {
-      "note": "The fire renders outside the frame to the right, but it warps around and can be saved in post",
       "updated_at": "2026-09-20T18:54:05.055Z",
       "status": "approved",
       "rating": 1,

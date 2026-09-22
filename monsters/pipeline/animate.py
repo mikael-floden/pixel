@@ -1561,6 +1561,45 @@ def cmd_prune_feedback(args):
         print(f"no feedback at {FEEDBACK}"); return
     entries = doc.get("entries") or {}
     drop = []
+    # A NOTE DIES WITH THE ART IT JUDGED, WHATEVER THE VERDICT SAYS (maintainer
+    # 2026-09-22: "I can't remember if this is something I said on this image
+    # or not. It also takes time for me to clear it even if I see it. Dangling
+    # notes are just bad however you look at them.").
+    # The status is a separate question and is handled below: an APPROVAL is
+    # his pick and survives. His WORDS are about one image, and the moment that
+    # image changes they can only mislead — he should never be shown a note he
+    # cannot place against what is in front of him, and clearing it should
+    # never be his job.
+    note_only = []
+    for key, v in entries.items():
+        if not v.get("note") or "#" not in key:
+            continue
+        if (v.get("status") or "").lower() != "approved":
+            continue        # non-approvals are dropped whole, below
+        path, _, rest = key.partition("#")
+        slot, _, d = rest.partition("#")
+        cid = path.split("/")[-1]
+        man = cand.load_manifest(cid)
+        if man is None:
+            continue        # graduated: its takes moved, judged elsewhere
+        q = (((man.get("animations") or {}).get(slot, {}).get("directions") or {}).get(d))
+        if not q:
+            if not os.path.isdir(anim_dir(cid, slot, d)):
+                note_only.append((key, "the art it judged is gone"))
+            continue
+        stamped = (v.get("art") or "").lower()
+        now = strip_hash(cid, slot, d)
+        if stamped and now and stamped != now:
+            note_only.append((key, "the art changed under it"))
+            continue
+        made, said = _iso(q.get("generated_at")), _iso(v.get("updated_at"))
+        if made and said and made > said:
+            note_only.append((key, "regenerated after he wrote it"))
+    for key, why in note_only:
+        if not args.dry_run:
+            entries[key].pop("note", None)
+        print(f"  note cleared ({why}): {key}")
+
     for key, v in entries.items():
         if (v.get("status") or "").lower() not in ("redo", "rejected") or "#" not in key:
             continue
@@ -1594,11 +1633,11 @@ def cmd_prune_feedback(args):
     for key, made, said in drop:
         entries.pop(key, None)
         print(f"  pruned {key}  (judged {said[:19]}, regenerated {made[:19]})")
-    if drop and not args.dry_run:
+    if (drop or note_only) and not args.dry_run:
         doc["entries"] = entries
         _write_feedback(doc)
-    print(f"{len(drop)} obsolete verdict(s){' (dry run)' if args.dry_run else ' removed'}; "
-          f"{len(entries)} left")
+    print(f"{len(drop)} obsolete verdict(s){' (dry run)' if args.dry_run else ' removed'}, "
+          f"{len(note_only)} acted-on note(s) cleared; {len(entries)} left")
 
 
 def cmd_unwrap(args):
