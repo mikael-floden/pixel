@@ -1,9 +1,9 @@
 {
   "domain": "monsters",
   "agent": "monsters-github-agent",
-  "updated_at": "2026-09-22T14:00:00+00:00",
-  "health": "idle",
-  "current": "idle — no files claimed. His 13:50:48–13:52:13Z five-monster idle save is read and closed: 43 approvals verified as no-op, the two thinning idle redos regenerated and cleared. live/feedback/monsters.json holds ZERO non-approved entries. Account below.",
+  "updated_at": "2026-09-22T15:00:27+00:00",
+  "health": "running",
+  "current": "his 14:57:49–14:58:50Z save — ONE open verdict in it: monsters/scree_slide#idle#north (redo, art 8900ce48ad9db9d2 = the strip on disk, so it judges live art). Re-rolling that one direction (review --state idle --only scree_slide, then idle --only scree_slide). The other nine entries of the save are approvals (barb_squid#idle#north, ice_fall#idle# NE/NW/SE/SW, scree_slide#idle# NE/NW, thinning#idle# E/W) — law 2, never cleared, no work. FILES: monsters/candidates/scree_slide/animations/idle/north/**, monsters/candidates/scree_slide/animations/idle__north.webp, monsters/candidates/scree_slide/candidate.json, monsters/candidates/index.json, live/feedback/monsters.json, coordination/monsters-github-agent.json. Unclaimed elsewhere: coordination/monsters.json idle since 2026-09-18 naming no files; coordination/monsters-assistant.json 2026-09-21T10:46 naming no files.",
   "progress": {
     "unit": "thinning idle east redo (+ west mirror); 43 idle approvals verified",
     "verdicts_taken": 45
