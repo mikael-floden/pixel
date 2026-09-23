@@ -399,3 +399,23 @@ test("the counts cap has headroom for the GPU counters, the gap ledger and the r
   assert.equal(r.counts.rafLagMean, 2.31);
   assert.ok(Object.keys(r.counts).length >= 83);
 });
+
+test("the ambient block holds every effect, the mode row, the mount's own parts and the field's counters", () => {
+  // 24 effects plus `_` was already one over the old cap of 24: the mode row
+  // was the one dropped. The mount's `_env`/`_gloom`/`_director`/`_frame`
+  // rows and the `_zone` counters (games-perf 2026-09-23) ride beside them.
+  const ambient: Record<string, Record<string, number | string>> = {};
+  for (let i = 0; i < 24; i++) ambient[`effect${i}`] = { ms: 0.1, peak: 1, frames: 900 };
+  ambient._ = { mode: "zone", active: "birds" };
+  ambient._env = { ms: 1.2, peak: 9, frames: 300 };
+  ambient._gloom = { ms: 18.4, peak: 91, frames: 300 };
+  ambient._director = { ms: 2.1, peak: 30, frames: 300 };
+  ambient._frame = { ms: 0.05, peak: 2, frames: 900 };
+  ambient._zone = { picks: 3200, resolves: 9100, refreshes: 6, pruned: 3, cells: 40000, blur: 21000, buckets: 5900, zones: 96, ruled: 1 };
+  const r = perfReport({ ambient }, AT) as Record<string, any>;
+  assert.equal(Object.keys(r.ambient).length, 30);
+  assert.equal(r.ambient._.mode, "zone");
+  assert.equal(r.ambient._gloom.ms, 18.4);
+  assert.equal(r.ambient._zone.resolves, 9100);
+  assert.equal(r.ambient._zone.ruled, 1, "nine counters: the inner cap must hold them all");
+});

@@ -1064,16 +1064,36 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   (`client/src/gapledger.ts`): OUR share of the busy gap — the socket's
   message handler and the three workers' landings bill themselves. Busy gap
   minus the ledger is a foreign task, and `loaf.by` names it.
-  `lag` on the record and `counts.rafLagMean/rafLagMax`: how late the update
-  started after its rAF timestamp — what ran ahead of the frame — for EVERY
-  frame, where the LoAF split covers only the long ones.
+  `lag` on the record and `counts.rafLagMean/rafLagMax`: how late Phaser's
+  STEP began after its rAF timestamp — what ran ahead of the frame — for
+  EVERY frame, where the LoAF split covers only the long ones. THE GAP ENDS
+  WHERE THE STEP BEGINS: `preUpdate` and `hooks` run between the gap probe's
+  message and `update()`, and the first Beacon 2 run counted them twice —
+  as their sections and again inside `gapIdle` (hooks 831.9 inside gapIdle
+  833.7 on one frame; every "idle" census was the ambient mount). Fixed
+  2026-09-23; a run before that date reads `gapIdle` as `hooks + idle`.
   `longGroup` is the census read by GROUP (`sectionGroup`: ground, occ,
   light, sim, render, gl, engine, hooks, busy, idle, other) with idle and
   busy IN the argmax — beside `longWhy` (wait | task | gc, 2026-09-13), which
   says the population and this says WHICH work owned it:
   "cells:unattributed" in `longBy` is "cells:occ" (the occluder rebuild ran in
   a slice frame — a scheduling fix) or "cells:idle" (waiting on the compositor
-  — a GPU fix) here. Rejected: `performance.memory` per frame as a GC signal
+  — a GPU fix) here. WHAT HIS FIRST RUN ON IT SAID (2026-09-23, 17:34-17:39,
+  build dcead651f, ten windows): p50 30 ms and 120-206 frames over 50 ms a
+  window against p50 17 and 1-19 on 09-19 — and the difference was `hooks`,
+  the scene's UPDATE listeners (the ambient mount): 8.5-17.9 ms a frame
+  MEAN, the dominant section of 1,705 of ~1,900 long frames, all of it
+  inside the rAF callback by the browser's split (`loaf.raf` 3.9-13.1 s a
+  window against `pre` 0.3-1.5 s), the GPU idle (the finish clock p50 0.0).
+  The mount's own meter held ~5.5 ms of it (foam 2.4); the rest was its
+  10 Hz env tick — the mist raster and the coverage grids, where every memo
+  miss resolved a cell against all ~96 zone polygons twice and the picker
+  memo was dropped whole at its cap (`ambient/README.md`, the field's rules
+  since). The `ambient` block now carries the tick's parts (`_env`,
+  `_gloom`, `_director`, `_frame`) and the field's counters (`_zone`), so
+  the next run says what a tick costs. Measured offline on the_game's 96
+  zones (desktop; his phone is 3-5x slower): a walking tick 18.4 -> 2.5
+  ms, a standing one 5.3 -> 0.09 ms, a cold cell 173 -> 34 µs. Rejected: `performance.memory` per frame as a GC signal
   (bucketised and refreshed every 20 minutes without a flag); the WebGL1
   timer query (his driver withholds it — `gpu.reason`). GATE:
   `verify-beacon.mjs` opens its page with service workers BLOCKED — the

@@ -163,7 +163,10 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
      * `cost`): one row per effect — mean ms a frame, the peak, frames — and a
      * `_` row with the mode and what the director has on. NESTED, not mixed:
      * the rows are records and `mixed` would flatten them to {}. */
-    ambient: nested(body.ambient, 24, 6),
+    /* 48 x 16, not 24 x 6: 24 effects plus the `_` mode row already lost one
+     * to the cap, and the mount's own parts (`_env`, `_gloom`, `_director`,
+     * `_frame`) and the field's counters (`_zone`) ride here now. */
+    ambient: nested(body.ambient, 48, 16),
     // The compose worker (client/src/composeclient.ts), state and miss reasons included.
     compose: mixed(body.compose, 16),
     // THE ZONE CROSSINGS of this window (WorldScene's `zone` block): hops and

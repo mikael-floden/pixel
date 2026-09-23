@@ -2265,6 +2265,10 @@ export class WorldScene extends Phaser.Scene {
    *  rendering update). Per frame, where the LoAF split covers only frames
    *  over 50 ms. */
   private perfRafLag = 0;
+  /** When Phaser's step began this frame (the first PRE_UPDATE/UPDATE emit),
+   *  0 until it does; reset at POST_RENDER. The step's own listeners run
+   *  between the gap probe's message and update(), so the gap ends HERE. */
+  private perfStepAt = 0;
   private perfRafLagSum = 0;
   private perfRafLagMax = 0;
   private perfRafLagN = 0;
@@ -3566,6 +3570,7 @@ export class WorldScene extends Phaser.Scene {
     em.emit = (event: string | symbol, ...args: unknown[]): boolean => {
       if (!this.perfOn || (event !== PRE && event !== UPD)) return emit(event, ...args);
       const t0 = performance.now();
+      if (!this.perfStepAt) this.perfStepAt = t0;
       const r = emit(event, ...args);
       this.pAdd(event === PRE ? "preUpdate" : "hooks", performance.now() - t0);
       return r;
@@ -3645,7 +3650,11 @@ export class WorldScene extends Phaser.Scene {
    *  UPDATE event, outside every section — the `hooks` section is their sum.
    *  Absent when the ambient runtime is not mounted. */
   private perfAmbientTake(): Record<string, Record<string, number | string>> | undefined {
-    type Probe = { cost?: (reset?: boolean) => Record<string, { ms: number; peak: number; frames: number }>; director?: () => { active?: string | null } };
+    type Probe = {
+      cost?: (reset?: boolean) => Record<string, { ms: number; peak: number; frames: number }>;
+      director?: () => { active?: string | null };
+      zone?: () => Record<string, number | boolean>;
+    };
     const amb = (window as unknown as { __mlAmbient?: Probe }).__mlAmbient;
     if (!amb) return undefined;
     const out: Record<string, Record<string, number | string>> = {};
@@ -3653,11 +3662,25 @@ export class WorldScene extends Phaser.Scene {
       const cost = amb.cost?.(true) ?? {};
       for (const [k, v] of Object.entries(cost)) if (v.frames) out[k] = { ms: v.ms, peak: v.peak, frames: v.frames };
       out._ = { mode: this.perfAmbientMode(), active: String(amb.director?.()?.active ?? "") };
+      /* THE ZONE FIELD'S OWN COUNTERS (zonefield.ts `debug()`), the window's
+       * deltas: picks (the ground picker on a memo miss), resolves (a cell
+       * against its zones), refreshes and pruned memos, plus the memos held.
+       * A tick's cost is these misses; the `_gloom`/`_director` rows above
+       * are their ms. */
+      const z = amb.zone?.();
+      if (z && typeof z.picks === "number") {
+        const prev = this.perfZonePrev;
+        const d = (k: string) => (typeof z[k] === "number" ? (z[k] as number) - (prev[k] ?? 0) : 0);
+        out._zone = { picks: d("picks"), resolves: d("resolves"), refreshes: d("refreshes"), pruned: d("pruned"), cells: +(z.cells ?? 0), blur: +(z.blur ?? 0), buckets: +(z.buckets ?? 0), zones: +(z.zones ?? 0), ruled: z.ruled ? 1 : 0 };
+        for (const k of ["picks", "resolves", "refreshes", "pruned"]) prev[k] = typeof z[k] === "number" ? (z[k] as number) : 0;
+      }
     } catch {
       /* the probe is the ambient agent's; a broken arm reads as absent */
     }
     return Object.keys(out).length ? out : undefined;
   }
+
+  private perfZonePrev: Record<string, number> = {};
 
   /** The HUD's ambient mode as it stores it (hud.ts `AMB_MODE_KEY`, read only
    *  here): `zone` (the server's roll), `forced:N` (his N effects), `none`. */
@@ -3757,6 +3780,7 @@ export class WorldScene extends Phaser.Scene {
        * Idle time is not a problem to fix; busy time is. */
       this.perfPostAt = performance.now();
       this.perfMsgAt = 0;
+      this.perfStepAt = 0;
       this.perfPort?.postMessage(0);
     });
     try {
@@ -13550,25 +13574,32 @@ export class WorldScene extends Phaser.Scene {
     if (this.perfOn) {
       const now = performance.now();
       if (this.perfLast) this.perfFrames.push(now - this.perfLast);
-      /* HOW LATE THIS UPDATE RAN. `time` is the rAF timestamp — the vsync
-       * the browser scheduled this frame for — so `now - time` is what ran
-       * first: Phaser's own pre-step and, mostly, the tasks queued ahead of
-       * the rendering update. It belongs to the frame being closed below
-       * (it sits inside that frame's gap). Under the timeout fallback of a
+      /* THE GAP ENDS WHERE PHASER'S STEP BEGINS, not at update(). The step's
+       * own listeners — `preUpdate` (Phaser's systems) and `hooks` (the
+       * ambient mount) — run after the probe's message and before this line,
+       * and were counted TWICE: as their sections and again as gapIdle. His
+       * 17:34 run read hooks 831.9 inside gapIdle 833.7 on one frame, and
+       * every "idle" census was the mount. `lag` is likewise the delay
+       * before the step: `time` is the rAF timestamp — the vsync the browser
+       * scheduled this frame for — so `stepAt - time` is what ran ahead of
+       * the frame (the tasks queued before the rendering update). It belongs
+       * to the frame being closed below. Under the timeout fallback of a
        * hidden tab the stamp is performance.now() itself, hence ~0. */
-      const lag = time > 0 ? now - time : 0;
+      const stepAt = this.perfStepAt ? Math.min(now, this.perfStepAt) : now;
+      const lag = time > 0 ? stepAt - time : 0;
       this.perfRafLag = lag > 0 && lag < 5000 ? lag : 0;
       this.perfRafLagSum += this.perfRafLag;
       this.perfRafLagN++;
       if (this.perfRafLag > this.perfRafLagMax) this.perfRafLagMax = this.perfRafLag;
       // Close the gap the previous frame left open — see perfHookRender.
-      this.hitchIdle0 = now;
-      this.hitchIdle1 = now;
+      this.hitchIdle0 = stepAt;
+      this.hitchIdle1 = stepAt;
       if (this.perfPostAt) {
-        const msg = this.perfMsgAt || now; // never fired: treat the whole gap as busy
-        this.pAdd("gapBusy", Math.max(0, Math.min(msg, now) - this.perfPostAt));
-        this.pAdd("gapIdle", Math.max(0, now - Math.max(msg, this.perfPostAt)));
-        this.hitchIdle0 = Math.min(now, Math.max(msg, this.perfPostAt)); // what closeHitchFrame calls idle, on the clock
+        const msg = this.perfMsgAt || stepAt; // never fired: treat the whole gap as busy
+        const cut = Math.min(msg, stepAt);
+        this.pAdd("gapBusy", Math.max(0, cut - this.perfPostAt));
+        this.pAdd("gapIdle", Math.max(0, stepAt - Math.max(cut, this.perfPostAt)));
+        this.hitchIdle0 = Math.min(stepAt, Math.max(cut, this.perfPostAt)); // what closeHitchFrame calls idle, on the clock
         this.perfPostAt = 0;
       }
       if (this.hitchOn && this.perfLast) this.closeHitchFrame(now - this.perfLast, now);

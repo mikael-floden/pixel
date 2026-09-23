@@ -368,6 +368,25 @@ them; folder isolation beats DRY here).
   "does this feature lag" question is answered here and nowhere else. Measured
   2026-09-07: `moths` 0.027 ms/frame at night, 0.018 by day (both at the
   timer's own noise floor — `performance.now()` granularity, not work).
+  **The mount's OWN parts are rows too, named with a leading `_`, mean per
+  OCCURRENCE**: `_env` (the env sample + the field's refresh, per tick),
+  `_gloom` (the gloom weights, the mist coverage and its 64x40 raster, per
+  tick), `_director` (the per-episode coverage, per tick — on the frame AFTER
+  the tick, never the same one) and `_frame` (the indoor read, the outdoor
+  gain, the overlay's step, per frame). The beacon carries them, and the
+  field's counters, as the `ambient` block. (games-perf 2026-09-23: his run
+  put the scene's UPDATE listener at 8.5-17.9 ms a frame, the dominant
+  section of 1,705 long frames, while this meter held ~5.5 of it — the tick
+  was the unmetered rest. THE FIELD'S RULES SINCE THEN: a cell asks only the
+  zones whose bounding box holds it, one polygon pass; the picker memo is two
+  generations, never cleared whole; a raster for the same world-anchored
+  rect and table is answered from the last one — the overlap copied, the
+  new edge looked up. None changes an answer — `zonefield.test.ts` proves
+  it cell by cell against `zonesAt`. Measured on the_game's 96 zones
+  (median 77 vertices, one of 708; a desktop core, his phone is 3-5x
+  slower): a cold cell 173 -> 34 µs, a walking tick's raster + coverage
+  18.4 -> 2.5 ms, a standing one 5.3 -> 0.09 ms, the memo drop's worst
+  tick 377 -> 76 ms and now only the first.)
 
 ## The zone boundary — every effect respects it, spatially
 

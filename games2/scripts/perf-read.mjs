@@ -140,6 +140,6 @@ for (const r of rows) for (const [k, v] of Object.entries(r.ambient ?? {})) {
   const c = (amb[k] ??= { ms: 0, n: 0, peak: 0 }); c.ms += v.ms ?? 0; c.n++; c.peak = Math.max(c.peak, v.peak ?? 0);
 }
 const ae = Object.entries(amb).sort((a, b) => b[1].ms / b[1].n - a[1].ms / a[1].n).slice(0, 8);
-if (ae.length) console.log(`\nambient (ms/frame per effect, peak): ${ae.map(([k, v]) => `${k} ${(v.ms / v.n).toFixed(2)} (${v.peak.toFixed(1)})`).join("; ")}${ambMode.size ? `  — mode ${[...ambMode].join(", ")}` : ""}`);
+if (ae.length) console.log(`\nambient (ms/frame per effect, peak; a `_` row is the mount's own part, per tick for _env/_gloom/_director): ${ae.map(([k, v]) => `${k} ${(v.ms / v.n).toFixed(2)} (${v.peak.toFixed(1)})`).join("; ")}${ambMode.size ? `  — mode ${[...ambMode].join(", ")}` : ""}`);
 const gpuRe = rows.map((r) => r.gpu?.reason).filter(Boolean);
 if (gpuRe.length) console.log("gpu timer: " + [...new Set(gpuRe)].join(", "));

@@ -98,6 +98,9 @@ const MUST = {
   // The browser's split of the long frames (perfloaf.ts): `state` first, and
   // headless Chromium has the entries, so `n` must be a number here too.
   loaf: ["state", "n", "pre", "raf", "dom"], loafBy: [], longGroup: [],
+  // The ambient block (2026-09-23): the mode row, the mount's own parts and the
+  // zone field's counters — 30 rows against a cap that used to be 24.
+  ambient: ["_", "_env", "_gloom", "_director", "_frame", "_zone"],
 };
 let ok = 0;
 for (const [block, keys] of Object.entries(MUST)) {

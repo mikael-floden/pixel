@@ -7,7 +7,7 @@
 // injected as the identity on a flat world, so cells are cells.
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { AMBIENT_SCHEMA, CELL_WU, parseAmbientZones, type AmbientZoneDoc } from "@nangijala/shared";
+import { AMBIENT_SCHEMA, CELL_WU, parseAmbientZones, zonesAt, type AmbientZoneDoc } from "@nangijala/shared";
 import {
   BUCKET_CAP, FEATHER_CELLS, ZoneField, type ZonePick, type ZoneSource,
 } from "../../ambient/runtime/zonefield.js";
@@ -296,4 +296,78 @@ test("two episodes that cannot share a stage: the bigger presence in view wins",
   d.tick(env, { zone: f, view: { x: 10 * CELL_WU, y: 12 * CELL_WU, width: 4 * CELL_WU, height: 6 * CELL_WU } } as never);
   assert.equal(made.birds, true);
   assert.equal(made.bats, false, "the loser is switched off, not left running");
+});
+
+/* THE TICK'S COST (games-perf 2026-09-23, his run: the mount's UPDATE
+ * listener was 8.5-17.9 ms a frame, the env tick unmetered inside it). Three
+ * things changed in the field and none of them may change an answer: a cell
+ * asks only the zones whose bounding box holds it, the picker memo keeps its
+ * working set across the cap, and a raster asked twice for the same
+ * world-anchored rect is computed once. */
+test("the box index changes no answer: every cell of a big concave zone reads as the server's own rule", () => {
+  // A U-shaped zone: its box holds cells the polygon does not (the notch).
+  const u = parseAmbientZones({
+    schema: AMBIENT_SCHEMA, world: "t", size: 64, exclusive: [],
+    zones: [
+      { id: "u", name: "the u", kind: "marsh", area: [[10, 10], [30, 10], [30, 30], [24, 30], [24, 16], [16, 16], [16, 30], [10, 30]], effects: { gnats: 100 } },
+      { id: "far", name: "the far", kind: "heath", area: [[50, 50], [60, 50], [60, 60], [50, 60]], effects: { gnats: 100 } },
+    ],
+  })!;
+  const s: ZoneSource = { doc: u, packed: "u=gnats;far=gnats", roomSky: false };
+  const f = new ZoneField(() => s, flat());
+  f.refresh();
+  let inside = 0, notch = 0;
+  for (let row = 8; row < 33; row++)
+    for (let col = 8; col < 33; col++) {
+      const want = zonesAt(u, col, row, 0).length ? ["gnats"] : [];
+      assert.deepEqual([...f.activeAt(col, row, 0)], want, `cell ${col},${row}`);
+      if (want.length) inside++;
+      else if (col >= 16 && col < 24 && row >= 16 && row < 30) notch++;
+    }
+  assert.ok(inside > 200 && notch === 8 * 14, `the notch (${notch} cells) is inside the box and outside the zone`);
+  assert.deepEqual([...f.activeAt(55, 55, 0)], ["gnats"]);
+  assert.deepEqual([...f.activeAt(40, 40, 0)], [], "between the two boxes: no zone");
+});
+
+test("the picker memo keeps its working set across the cap — no whole-memo drop, and never over the cap", () => {
+  const s: ZoneSource = { doc: doc(), packed: "wet=rain", roomSky: false };
+  let calls = 0;
+  const f = new ZoneField(() => s, (x, y) => { calls++; return flat()(x, y); });
+  f.refresh();
+  // A working set of 200 buckets, asked again and again while a walk adds new
+  // ones past the cap: the old memo dropped EVERYTHING at the cap and re-picked
+  // the working set in one go; the generations keep what is still asked for.
+  const ask = () => { for (let i = 0; i < 200; i++) f.cellAt(i * 40, 5); };
+  ask();
+  const base = calls;
+  assert.equal(base, 200);
+  for (let i = 0; i < BUCKET_CAP * 2; i++) {
+    f.cellAt(100000 + i * 40, 5);
+    if (i % 500 === 0) ask();
+  }
+  assert.ok(f.debug().buckets <= BUCKET_CAP, `the two generations together stay under the cap (${f.debug().buckets})`);
+  const before = calls;
+  ask();
+  assert.equal(calls, before, "the working set was asked for all along, so it is still memoised");
+});
+
+test("a raster for the same world-anchored rect is computed once, and a new table computes it again", () => {
+  const s: ZoneSource = { doc: doc(), packed: "wet=rain,gnats;dry=gnats;deep=drips", roomSky: false };
+  const f = new ZoneField(() => s, flat());
+  f.refresh();
+  const rect = { x: 5 * CELL_WU, y: 12 * CELL_WU, width: 20 * CELL_WU, height: 4 * CELL_WU };
+  const a = f.raster("rain", rect, 20, 4);
+  const picks = f.stats.picks;
+  const b = f.raster("rain", rect, 20, 4);
+  assert.deepEqual([...b], [...a]);
+  assert.equal(f.stats.picks, picks, "the second ask touched no memo");
+  assert.notEqual(a, b, "a copy each time: the caller may keep or mutate its own");
+  b[0] = 7;
+  assert.equal(f.raster("rain", rect, 20, 4)[0], a[0], "a mutated copy does not leak into the memo");
+  // a different rect, or a re-rolled table, is a fresh computation
+  const c = f.raster("rain", { ...rect, x: rect.x + CELL_WU }, 20, 4);
+  assert.notDeepEqual([...c], [...a]);
+  s.packed = "wet=gnats;dry=gnats;deep=drips";
+  assert.equal(f.refresh(), true);
+  assert.ok(f.raster("rain", rect, 20, 4).every((v) => v === 0), "rain rolled off: the memo did not answer for the old table");
 });

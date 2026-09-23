@@ -114,6 +114,20 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
     };
     let lastTick = 0;
     const cost = new Map<string, { sum: number; n: number; peak: number }>();
+    const bill = (name: string, ms: number) => {
+      const c = cost.get(name) ?? { sum: 0, n: 0, peak: 0 };
+      c.sum += ms;
+      c.n++;
+      if (ms > c.peak) c.peak = ms;
+      cost.set(name, c);
+    };
+    /* THE TICK'S TWO HALVES NEVER SHARE A FRAME (games-perf 2026-09-23, his
+     * run: the mount's UPDATE listener was 8.5-17.9 ms a frame and the
+     * dominant section of 1,705 long frames; the effects' own meter held
+     * ~5.5 of it and the env tick the rest). The env sample, the field's
+     * refresh and the gloom's raster run on the tick's frame; the director's
+     * per-episode coverage waits for the next one. */
+    let directorDue = false;
     const onUpdate = (_time: number, phaserDt: number) => {
       const cam = scene.cameras?.main;
       if (!cam) return;
@@ -128,23 +142,37 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       envAge += dt;
       if (envAge >= ENV_SAMPLE_MS) {
         envAge = 0;
+        const t0 = performance.now();
         ctx.env = sampleEnv(ctx.env, cam.worldView.centerX, cam.worldView.centerY);
         // The zone field re-reads the table on the same tick: a zone that
         // re-rolled drops its memos here, ten times a second, never per frame.
         safe(() => { zone.refresh(); });
+        const t1 = performance.now();
         safe(publishGloom);
+        const t2 = performance.now();
+        // The mount's own parts ride the cost meter as `_` rows — mean per
+        // OCCURRENCE (a tick here), so `cost()` answers where the tick goes.
+        bill("_env", t1 - t0);
+        bill("_gloom", t2 - t1);
+        directorDue = true;
+      } else if (directorDue) {
+        directorDue = false;
+        const t0 = performance.now();
         safe(() => director.tick(ctx.env, ctx));
         // The HudBar rebuilds on re-joins; keep the demo button alive/fresh.
         safe(() => demoButton.ensure());
+        bill("_director", performance.now() - t0);
       }
       ctx.view = cam.worldView;
       ctx.zoom = cam.zoom;
+      const tf = performance.now();
       // EVERY FRAME, not on the 10 Hz env sample: this must stop the moment the
       // player is inside, and a sampled read would keep weather falling through
       // the roof for up to 100 ms (~6 frames) after they stepped in.
       ctx.env.indoor = readIndoor();
       ctx.outdoor = outdoor.step(dt, ctx.env.indoor);
       safe(() => zoneLines.step(ctx.view, ctx.zoom));
+      bill("_frame", performance.now() - tf); // the per-frame remainder: the indoor read, the gain, the overlay
       if (!inited) {
         inited = true;
         for (const f of features) safe(() => f.init(ctx));
@@ -158,12 +186,7 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
       for (const f of features) {
         const t0 = performance.now();
         safe(() => f.update(ctx, dt));
-        const ms = performance.now() - t0;
-        const c = cost.get(f.name) ?? { sum: 0, n: 0, peak: 0 };
-        c.sum += ms;
-        c.n++;
-        c.peak = Math.max(c.peak, ms);
-        cost.set(f.name, c);
+        bill(f.name, performance.now() - t0);
       }
     };
     scene.events.on(Phaser.Scenes.Events.UPDATE, onUpdate);
