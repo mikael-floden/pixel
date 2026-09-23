@@ -1397,6 +1397,25 @@ parquet_floor roof. `HOUSE_STYLES` (wall, roof, floor):
 | brick | brown_paving_stone | grey_paving_stone | parquet_floor |
 | highland | grey_paving_stone | snow | dark_mud |
 
+**A roof never wears the ground round the house** (maintainer 2026-09-23, the
+highland house on the snowfield: *"this house roof is snow and it's snow
+behind it as well so the player can't see where the house roof ends"*). A
+house's ring is a terrace six levels up, and a same-ground step is invisible
+from up-screen exactly as the slope rule says — but the roof is DRAWN FROM
+THE DECK (`decks[].ground`), which `terrace_grounds` never touched: it had
+repainted the ring's tops grey stone and the game drew the deck's snow over
+them. So the deck's ground and the ring's tops are ONE ground (`roofs.py`),
+and it differs from the dominant ground of the footprint's rim and from any
+ground lining 4 or more rim cells on the north or west side (the face-less
+edges). A roof that matches re-rolls from `ROOF_POOL` — paving 3+3, light
+soil 3 (his "Light Soil over Parquet Floor"), timber 2, grey stone 2, snow 2,
+mud, grass, ice, black rock 1 each: everything a roof may be, "open up for the
+unlikely" — less the grounds round the house and the wall's own material,
+seeded by the house's anchor; where the ring already contrasts the deck
+adopts it. It runs after `yards` because the apron is the second way a roof
+matches: the timber house at 298,225 wore brown paving over the brown-paving
+apron the yards laid. `--check` exits 1 on a matching roof.
+
 the_game ships 5 timber, 2 longhouse, 2 stone, 2 brick and one **highland on
 the mountain shelf** (`highest_pad`, level 46 — the massif's own materials, not
 grass). **A FLOOR IS RECORDED, NOT INFERRED**: `house()` writes every interior

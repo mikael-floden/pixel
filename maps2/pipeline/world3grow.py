@@ -8320,6 +8320,11 @@ class Grow:
         # the shipped world in place.
         import yards
         yards.apply(OUT, write=True)
+        # A ROOF NEVER WEARS THE GROUND ROUND THE HOUSE (spec/WORLD3.md, maintainer
+        # 2026-09-23): after the yards, because the apron is what it must differ
+        # from; the deck's ground and the ring's tops move together.
+        import roofs
+        roofs.apply(OUT, write=True, log=lambda *a: None)
         # A PIECE NEVER CUTS THE WAY (spec/WORLD3.md, maintainer 2026-09-20):
         # the same pass that mends the shipped world slides any piece the
         # body cannot get past - four lawful pieces in a row are a fence.
