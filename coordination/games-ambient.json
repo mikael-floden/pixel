@@ -1,8 +1,8 @@
 {
   "domain": "games-ambient",
-  "updated_at": "2026-09-23T19:11:52.500426+00:00",
+  "updated_at": "2026-09-23T19:12:11.634220+00:00",
   "health": "running",
-  "current": "SHIPPED — HIS MIST IS BACK, AND FOUR OF THE WORLD'S FIVE MIST ZONES WITH IT. Two units. (1) MIST_FRAG posterizes the bank's OWN shape and multiplies pool/uMist/mask onto the alpha; a scalar in front of a floor() quantises itself instead of dimming the picture. (2) The ground hug measures from THE ZONE'S OWN FLOOR, not sea level (runtime/zonefloor.ts, carried in the mask texture's free G channel). Gates: verify-misthigh (NEW) OK, verify-mistzone/mistrow/zonefield/critterzone/weatherzone OK, 10 unit tests, typecheck green, npm test 939/944 with the two known reds (spawns3, zones — neither reaches nightlight). Taken over from games-ambient-assistant's stale 2026-09-21 claim; posted to them.",
+  "current": "CLAIMED — DRAGONFLIES' SCENERY SCAN (games-perf 2026-09-23: 0.62 ms a frame mean, peak 15.6; \"sceneryInView filters the whole display list through __ml.objectsIn per scan; a spatial index would fix it\", left on my board rather than touched). Relayed by the maintainer. The scan is ALREADY throttled (96 px of travel, or 10 s holding pieces / 1.5 s holding none), so the cost is per-scan, not per-frame: __ml.objectsIn walks the ENTIRE display list, calls getBounds() and builds an 11-field record with string slices and three toFixed for every visible Image, sorts the lot — and only then does pairPieces throw away everything that is not s3:. Measuring first, then fixing; I will not re-attempt the rejected water pre-filter (reeds grow on mud). FILES: games2/ambient/runtime/scenery.ts, games2/ambient/dragonflies/dragonflies.ts, games2/client/src/scenes/WorldScene.ts (the objectsIn probe, additively), coordination/games-ambient.json.",
   "progress": {
     "features": 14,
     "fields": 9,
