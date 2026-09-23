@@ -27,6 +27,11 @@ const ENV_SAMPLE_MS = 100; // mood changes are seconds-long fades; 10 Hz is plen
 const MASK_COLS = 64;
 const MASK_ROWS = 40;
 const MASK_MARGIN = 0.25;
+/** The mask lattice (see maskRect): a step in whole world units, kept while
+ *  it covers and is not this much finer than needed, grown with headroom. */
+const MASK_STEP_Q = 2;
+const MASK_STEP_SLACK = 1.4;
+const MASK_STEP_GROW = 1.15;
 
 /** Attach the ambient features to the world scene from the OUTSIDE: poll for
  * the scene, ride its UPDATE event, add our own display objects. Zero edits
@@ -86,16 +91,39 @@ export function mountAmbient(game: Phaser.Game, features: AmbientFeature[]) {
      * pins every sample to a fixed world point: the fade then holds still
      * while the camera moves through it, which is what a fog bank does. The
      * 25% margin means the snap can never uncover the view. */
+    /* THE LATTICE IS ZOOM-PROOF (games-perf 2026-09-23). The camera zoom
+     * BREATHES with speed (updateChaseCam eases it every frame), and a step
+     * of exactly view/64 changed with it — so the field's raster memo, keyed
+     * on the exact step, was never reused while running: all 2,560 samples
+     * recomputed ten times a second, `_gloom:raster` 2.5-7.8 ms a tick on his
+     * phone (the split proved it: field 0.5, mask upload 0.2). The step is
+     * now a whole number of world units and is KEPT while it still covers
+     * the padded view and is not MASK_STEP_SLACK times finer than needed; a
+     * new step overshoots by MASK_STEP_GROW so a zoom-out crosses two or
+     * three lattices, not six. The lattice rect is the padded view widened
+     * to cols x step, the extra split to both sides, so the view is always
+     * inside it (the margin is 0.25 of the view, the step ~0.03). The mask
+     * is a little coarser than the ideal (16 wu at rest, 22 running, against
+     * 12.7 and 18.6) — the feather is a cell, 32 wu, so it still resolves. */
+    const lat = { stepX: 0, stepY: 0 };
+    const latticeStep = (have: number, need: number): number => {
+      if (have >= need && have <= need * MASK_STEP_SLACK) return have;
+      return Math.ceil((need * MASK_STEP_GROW) / MASK_STEP_Q) * MASK_STEP_Q;
+    };
     const maskRect = () => {
       const width = ctx.view.width * (1 + 2 * MASK_MARGIN);
       const height = ctx.view.height * (1 + 2 * MASK_MARGIN);
-      const stepX = width / MASK_COLS;
-      const stepY = height / MASK_ROWS;
+      lat.stepX = latticeStep(lat.stepX, width / MASK_COLS);
+      lat.stepY = latticeStep(lat.stepY, height / MASK_ROWS);
+      const w = lat.stepX * MASK_COLS;
+      const h = lat.stepY * MASK_ROWS;
+      const x0 = ctx.view.x - ctx.view.width * MASK_MARGIN - (w - width) / 2;
+      const y0 = ctx.view.y - ctx.view.height * MASK_MARGIN - (h - height) / 2;
       return {
-        x: Math.floor((ctx.view.x - ctx.view.width * MASK_MARGIN) / stepX) * stepX,
-        y: Math.floor((ctx.view.y - ctx.view.height * MASK_MARGIN) / stepY) * stepY,
-        width,
-        height,
+        x: Math.floor(x0 / lat.stepX) * lat.stepX,
+        y: Math.floor(y0 / lat.stepY) * lat.stepY,
+        width: w,
+        height: h,
       };
     };
     /* THE TICK'S PARTS ARE BILLED (games-perf, his 21:20 run: `_gloom` was

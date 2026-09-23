@@ -413,7 +413,15 @@ them; folder isolation beats DRY here).
   changes an answer — `zonefield.test.ts` proves it cell by cell against
   `zonesAt`, byte for byte against a cold raster after a re-roll, and
   across a hop. Offline on the_game's zones: a walking tick p50 0.7 ms,
-  a re-roll's refresh 33 -> 0.5 ms, a hop's first ruled tick 1.4-4.6 ms. Measured on the_game's 96 zones
+  a re-roll's refresh 33 -> 0.5 ms, a hop's first ruled tick 1.4-4.6 ms.
+  THE MASK LATTICE IS ZOOM-PROOF (mount.ts `maskRect`): the sample step is
+  a whole number of world units, kept while it covers the padded view and
+  is not 1.4x finer than needed, grown with 15% headroom — because the
+  camera zoom breathes with speed and a step of exactly view/64 changed
+  every frame, so the raster memo was never reused while running (his
+  21:43 run: `_gloom:raster` 2.5-7.8 ms a tick, ten times a second). The
+  mask is a little coarser than the ideal (16 wu at rest, 22 running); the
+  feather is a cell, so it still resolves. Measured on the_game's 96 zones
   (median 77 vertices, one of 708; a desktop core, his phone is 3-5x
   slower): a cold cell 173 -> 34 µs, a walking tick's raster + coverage
   18.4 -> 2.5 ms, a standing one 5.3 -> 0.09 ms, the memo drop's worst

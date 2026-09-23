@@ -1149,10 +1149,11 @@ The ground render texture (scroll, slices, cell repaints, prefetch, compose budg
   over 50 ms a window — the west and south-west (marsh, lake: storm, rain,
   foam, 3-6k occluders) are the slow windows. What is left, by owner:
   `_gloom` 3.5-9.7 ms A TICK, scaling with the frame time (3.5 at 43 fps,
-  9.7 at 21) = up to 4.5 ms/frame — a GPU-sync signature, most likely the
-  mask's texImage2D on a texture the in-flight frame samples
-  (`setMistMask` -> `tex.refresh()` each tick); billed in parts now
-  (`_gloom:field/raster/mask`) to prove it (games-perf). The three worst
+  9.7 at 21) = up to 4.5 ms/frame. Billed in parts, his 21:43 run said
+  RASTER (2.5-7.8 ms a tick; field 0.5, the mask upload 0.2), not a GPU
+  sync: the camera zoom breathes with speed, the mask step was view/64, and
+  the raster memo — keyed on the exact step — was never reused while
+  running. The lattice is zoom-proof now (`ambient/README.md`). The three worst
   frames were COLLECTIONS: 725 ms (depthSort 566, dh -29 MB, w=gc), 569
   (render 385 with 14 compositions uploaded in the one frame), 478 (hooks
   462, dh -291 MB — a major collection inside storm's update); `allocBy`
