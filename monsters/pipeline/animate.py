@@ -1212,6 +1212,17 @@ def cmd_state(args, state):
                 q = rec_now.get("directions", {}).get(d)
                 if q and q.get("action") != want:
                     q["rung"] = 0
+            # ...AND THE ROLL MUST ACTUALLY ASK FOR THEM. The record freezes the
+            # wording it was generated with (`_anim_record`), and rung 0 asks for
+            # exactly that string — so a reword reset the ladder and then bought
+            # another copy of the clip he had just rejected (measured 2026-09-23
+            # on his "more aggressive" sand_scorpling attack: three PRO rolls, all
+            # on the old Tail Sting text). The slot-level action is what
+            # `generate_state` prompts with, so a reword moves it; every direction
+            # keeps its own `action`, so the ones not re-rolled still say what
+            # they were made from.
+            if dirs:
+                rec_now["action"] = want
             write_manifest(cid, man)
         if dirs:
             plan.append((cid, dirs))
