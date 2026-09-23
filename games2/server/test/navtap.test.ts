@@ -328,3 +328,33 @@ test("a monster's trip remembers its own limits, and its stall re-plan keeps the
   assert.ok(!wet(g, { x, y }), `and the body never stood in water (ended ${cells({ x, y })})`);
   console.log(`# navtap: the monster stalled ${trip!.replans} time(s) at the pinch, named ${(trip!.avoid?.size ?? 0)} cell(s) and ${(trip!.avoidSteps?.size ?? 0)} step(s), and never took to the water`);
 });
+
+// ============================================================================
+// A RIM IS NEVER UNDER THE LID THE GOAL STANDS ON (maintainer 2026-09-23: an
+// unreachable tap on the mountain over the dungeon ran the player into the
+// dungeon). A cave: floor cells at 0 under a cave lid at 20, walled by rock
+// at 20, open to the south. The lid is unreachable; the floor under it is
+// two steps in. The best effort toward the lid must stop OUTSIDE the cave,
+// and a tap that means the floor itself (a house from its door) still arrives.
+test("an unreachable spot on a lid never best-efforts to the floor under it; the floor itself still arrives", () => {
+  const W = 9, H = 12;
+  const rows = Array.from({ length: H }, (_, r) => Array.from({ length: W }, (_, c) => {
+    const rock = r >= 2 && r <= 6 && c >= 2 && c <= 6 && !(c === 4 && r >= 3); // a 5x5 block with a corridor at col 4 open south
+    return { t: "grass", l: rock ? 20 : 0 };
+  }));
+  const decks = [{ level: 20, thickness: 0, mat: "grass", cells: [3, 4, 5].map((r) => ({ col: 4, row: r })) }];
+  const g = buildTerrainGrid(W, H, rows, [], decks);
+  const cx = (c: number) => (c + 0.5) * CELL_WU;
+  const from = { x: cx(4), y: cx(10) };
+  // The lid over (4,4): unreachable. Old rim: (4,4) itself on the floor.
+  const onLid = startTrip(g, from.x, from.y, cx(4), cx(4), true, 0, 0, 20);
+  assert.ok(onLid, "a best-effort trip exists");
+  const endRow = Math.floor(onLid!.target.y / CELL_WU);
+  assert.ok(endRow >= 6, `the rim toward the lid stops outside the cave (row ${endRow}), never on the floor under it`);
+  // The floor under the lid, meant on purpose (a house from its door): arrives.
+  const inside = startTrip(g, from.x, from.y, cx(4), cx(4), true, 0, 0, 0);
+  assert.ok(inside && Math.abs(inside.endLevel ?? 0) < 0.5 && Math.floor(inside.target.y / CELL_WU) === 4, "the floor itself is still a destination");
+  // And the tap's two readings together (startBestTrip): the floor arrives and wins.
+  const both = startBestTrip(g, from.x, from.y, true, 0, 0, [{ x: cx(4), y: cx(4), goalLevel: 20 }, { x: cx(4), y: cx(4), goalLevel: 0 }]);
+  assert.ok(both && Math.floor(both.target.y / CELL_WU) === 4, "with the floor offered as a reading, it wins as before");
+});

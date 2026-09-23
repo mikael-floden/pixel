@@ -1205,7 +1205,13 @@ clip, no tint.
   keeps both readings — you can see its door — and a cave you stand in makes
   its floor the visible reading through the cut-away, so neither is touched.
   `nearestGroundTo` is not offered in its place (screen-space nearest can be
-  that same floor).
+  that same floor). AND THE RIM IS NEVER UNDER THE LID THE GOAL STANDS ON
+  (`findPath`): the explored node closest to a spot on top, in plan, is the
+  cave floor beneath it (same cell, one layer down), which is where the first
+  cut of this still ran him; a base-layer node under a deck slab with the goal
+  above it never becomes the best-effort rim. A goal that is itself under the
+  slab (a house from its door) keeps every node. Gate: navtap.test.ts, the
+  cave-with-a-lid arm, red on the old pathfinder.
 - **A RESPAWN GOES THROUGH THE LOADING SCREEN, NEVER AN INSTANT SNAP**
   (maintainer 2026-09-19: "the player spawns so fast at the new location so
   the graphics has not finished preparing the new ground and

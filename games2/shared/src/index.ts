@@ -3869,7 +3869,21 @@ export function findPath(
     }
     if (!isSwim(cc, cr)) {
       const ch = hx(cc, cr);
-      if (ch < closestH) {
+      // A RIM IS NEVER UNDER THE LID THE GOAL STANDS ON. The closest explored
+      // node to a spot on top of a mountain, measured in plan, is the cave
+      // floor directly beneath it (the same cell, one layer down, twenty
+      // levels lower) — so an unreachable tap on the mountain over the dungeon
+      // walked the player INTO the dungeon (maintainer 2026-09-23: "the player
+      // was running inside the cave instead of up the mountain ... better to
+      // run as close as possible to the place on top"). A base-layer node
+      // under a deck slab, with the goal above that node, is hidden from the
+      // pixel that was tapped and cannot be what it meant: it never becomes
+      // the rim. A goal that is itself under the slab (a tap into a house
+      // from its door) keeps every node, and a found goal is untouched.
+      const curElevC = elevOf(curCell, sidLayer(cur));
+      const hiddenUnder =
+        goalLevel !== undefined && sidLayer(cur) === 0 && grid.deck[curCell] > curElevC + 0.5 && curElevC < goalLevel - 0.5;
+      if (!hiddenUnder && ch < closestH) {
         closestH = ch;
         closest = cur;
       }
