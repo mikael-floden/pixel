@@ -74,6 +74,8 @@ jobs:
         env:
           REGION: ${{ vars.GCP_REGION }}
           AR_REPO: ${{ vars.GCP_AR_REPO }}
+          PROJECT: ${{ vars.GCP_PROJECT_ID }}
+          SERVICE: ${{ vars.GCP_SERVICE }}
           # DERIVED, not picked. The repo converges on
           #   retention x push rate x size per version
           # and the three are measured (2026-09-23): 2 days x ~88 image builds
@@ -87,6 +89,8 @@ jobs:
           set -uo pipefail
           : "${REGION:?GCP_REGION repo variable is not set}"
           : "${AR_REPO:?GCP_AR_REPO repo variable is not set}"
+          : "${PROJECT:?GCP_PROJECT_ID repo variable is not set}"
+          : "${SERVICE:?GCP_SERVICE repo variable is not set}"
 
           if ! DESC="$(gcloud artifacts repositories describe "$AR_REPO" --location="$REGION" 2>&1)"; then
             echo "::error::could not describe $AR_REPO in $REGION"
@@ -106,6 +110,19 @@ jobs:
 
           POLICY="$(printf '%s\n' "$DESC" | grep -icE 'cleanuppolic|keep-newest|delete-older' || true)"
 
+          # THE BOOT IMAGE IS PINNED. The service runs --min-instances 0, so a
+          # cold start pulls from this repository; the deploy moves a `:live`
+          # tag onto whatever it rolled out and the policy keeps that tag
+          # forever. If the tag is missing, the Keep-by-name rule is protecting
+          # nothing and only the count rule stands between a long CI outage and
+          # an unbootable service — which is the one failure mode the
+          # maintainer named as the important one (2026-09-23). The tag step is
+          # deliberately non-fatal at deploy time, so THIS is where its absence
+          # gets noticed.
+          LIVE="$(gcloud artifacts docker images describe \
+                    "${REGION}-docker.pkg.dev/${PROJECT}/${AR_REPO}/${SERVICE}:live" \
+                    --format='value(version)' 2>/dev/null | sed 's#.*/##' || true)"
+
           {
             echo "## Artifact Registry — \`$AR_REPO\` in \`$REGION\`"
             echo
@@ -113,6 +130,7 @@ jobs:
             echo "|---|---|"
             echo "| size | ${SIZE_LINE:-(not reported by this API version)} |"
             echo "| cleanup policy | $([ "${POLICY:-0}" -gt 0 ] && echo 'attached ✅' || echo 'MISSING ❌') |"
+            echo "| \`:live\` (the boot image) | ${LIVE:-MISSING ❌} |"
             echo "| alarm above | $((SIZE_ALARM_MB / 1024)) GB |"
             echo
             echo "For context: 488,148 MB on 2026-09-22 under a 14-day window; the window is 2 days from 2026-09-23."
@@ -123,6 +141,10 @@ jobs:
             echo "::error::no cleanup policy on $AR_REPO — re-apply it: games2/deploy/ar-cleanup.sh"
             FAIL=1
           fi
+          if [ -z "${LIVE:-}" ]; then
+            echo "::error::no :live tag on $SERVICE — nothing names the image production boots from, so retention is only held off it by the count rule. Check the 'Pin the rolled-out image' step of the last deploy."
+            FAIL=1
+          fi
           if [ -n "${SIZE_MB:-}" ] && [ "${SIZE_MB%.*}" -gt "$SIZE_ALARM_MB" ]; then
             echo "::error::registry is ${SIZE_MB} MB, over the ${SIZE_ALARM_MB} MB alarm."
             echo "::notice::If the policy was applied within the last ~3 days this is expected — Artifact Registry sweeps asynchronously and the size falls over the following days."
@@ -131,5 +153,5 @@ jobs:
           if [ -z "${SIZE_MB:-}" ]; then
             echo "::warning::this API version did not report a repository size; the policy arm still ran."
           fi
-          echo "size_mb=${SIZE_MB:-unknown} policy=${POLICY:-0} fail=$FAIL"
+          echo "size_mb=${SIZE_MB:-unknown} policy=${POLICY:-0} live=${LIVE:-none} fail=$FAIL"
           exit "$FAIL"

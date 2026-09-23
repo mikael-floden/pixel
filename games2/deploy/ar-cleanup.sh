@@ -130,9 +130,14 @@ POLICY="$(mktemp)"
 cat > "$POLICY" <<'JSON'
 [
   {
-    "name": "keep-newest-15",
+    "name": "keep-live",
     "action": { "type": "Keep" },
-    "mostRecentVersions": { "keepCount": 15 }
+    "condition": { "tagState": "tagged", "tagPrefixes": ["live"] }
+  },
+  {
+    "name": "keep-newest-200",
+    "action": { "type": "Keep" },
+    "mostRecentVersions": { "keepCount": 200 }
   },
   {
     "name": "delete-older-than-2d",
@@ -142,7 +147,7 @@ cat > "$POLICY" <<'JSON'
 ]
 JSON
 
-echo "▶ applying cleanup policy (keep newest 15, delete >2 days)"
+echo "▶ applying cleanup policy (keep :live + newest 200, delete >2 days)"
 gcloud artifacts repositories set-cleanup-policies "$AR_REPO" \
   --location="$REGION" \
   --policy="$POLICY" \

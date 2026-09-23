@@ -52,7 +52,12 @@ case "$args" in
       esac; exit 0 ;;
   "run revisions describe"*) cat "$S/revision_digest" 2>/dev/null; exit 0 ;;
   "artifacts docker images describe"*)
-      ref="$5"; grep "^${ref##*:}," "$S/tags" 2>/dev/null | cut -d, -f2; exit 0 ;;
+      ref="$5"; tag="${ref##*:}"
+      # An unset tag 404s, exactly as gcloud does — which is what the script's
+      # `|| true` and empty-guard are written against.
+      out="$(grep "^${tag}," "$S/tags" 2>/dev/null | cut -d, -f2)"
+      [ -z "$out" ] && { echo "NOT_FOUND: $tag" >&2; exit 1; }
+      printf '%s\n' "$out"; exit 0 ;;
   "artifacts docker images list"*)
       case "$args" in *buildcache*) echo "buildcache was LISTED" >> "$S/violations"; exit 1 ;; esac
       # getline, NOT the NR==FNR idiom: with an EMPTY first file FNR never
@@ -94,7 +99,11 @@ gone_() { if grep -qx "$2" "$STATE/deleted"; then ok "$1"; else bad "$1: $2 was 
 says()  { if grep -q "$2" "$STATE/out"; then ok "$1"; else bad "$1: missing '$2'"; fi; }
 clean() { if [ -s "$STATE/violations" ]; then bad "stub violations:"; cat "$STATE/violations"
           else ok "no buildcache touched; every delete ref was <image>@<digest>"; fi; }
-run()   { bash "$SCRIPT" > "$STATE/out" 2>&1; echo $?; }
+# The arms below exercise the RULE at a known N, so they pin KEEP_NEWEST=15
+# rather than riding the shipped default — which is 200 and is asserted, along
+# with KEEP_DAYS, against ar-cleanup.sh's policy in S11. An arm can override by
+# passing its own (env takes the LAST assignment).
+run()   { env KEEP_NEWEST=15 "$@" bash "$SCRIPT" > "$STATE/out" 2>&1; echo $?; }
 nth()   { sort -t, -k2,2r "$STATE/versions" | sed -n "${1}p" | cut -d, -f1; }
 
 # DATES ARE RELATIVE TO NOW, never literals. They were hardcoded to September
@@ -167,7 +176,7 @@ clean
 
 echo "S6  DRY_RUN deletes nothing"
 reset; { fresh 20; old 50; } > "$STATE/versions"; serve sha256:new001
-DRY_RUN=1 bash "$SCRIPT" > "$STATE/out" 2>&1
+DRY_RUN=1 KEEP_NEWEST=15 bash "$SCRIPT" > "$STATE/out" 2>&1
 is   "dry run exit 0" "$?" "0"
 is   "dry run deleted nothing" "$(grep -c . "$STATE/deleted")" "0"
 says "lists 20 and counts the rest" "and 30 more"
@@ -219,6 +228,21 @@ kept ":latest's old digest kept" sha256:old007
 is   "deleted 30 - 1" "$(grep -c . "$STATE/deleted")" "29"
 clean
 
+echo "S8b THE BOOT IMAGE: an OLD digest wearing :live is never deleted"
+# Maintainer 2026-09-23: "the important point is the current version is not
+# purged so the game can always load/boot." :latest follows the BUILD; :live
+# follows the ROLLOUT, so it is the only tag that names what the service boots
+# from. --min-instances 0 means a cold start PULLS it: delete it and the next
+# scale-from-zero is "Nangijala could not start".
+reset; { fresh 5; old 40; } > "$STATE/versions"       # only 5 fresh: the newest-N
+serve sha256:new001                                    # rule cannot be what saves it
+LIVE="$(nth 25)"                                       # ...25th newest, and OLD
+printf 'live,%s\n' "$LIVE" >> "$STATE/tags"
+is   "exit 0" "$(run KEEP_NEWEST=10)" "0"
+kept "the :live digest survived, though old and outside the newest 10" "$LIVE"
+says "and it said which" ":live is:"
+clean
+
 echo "S9  empty registry"
 reset
 is   "exit 0 on an empty listing" "$(run)" "0"
@@ -237,6 +261,24 @@ gcloud artifacts docker images list "$IMG" --format='value(version)' \
       'gcloud artifacts docker images delete "$1@{}" --delete-tags --quiet >/dev/null 2>&1' _ "$IMG"
 gone_ "the replaced rule DELETES the serving image" "$SERV"
 is    "and takes the whole repository with it" "$(grep -c . "$STATE/deleted")" "40"
+
+echo "S11 the two scripts are ONE rule — the purge's defaults match the policy"
+# ar-cleanup.sh installs the rule server-side; ar-purge.sh runs the same rule by
+# hand. If they drift, the manual purge deletes what the policy means to keep,
+# or spares what it means to take. Nothing else checks this, and it is a
+# one-character edit away at all times.
+CLEANUP="$(cd "$(dirname "$0")" && pwd)/ar-cleanup.sh"
+pol_days="$(grep -oE '"olderThan": *"[0-9]+d"' "$CLEANUP" | grep -oE '[0-9]+' | head -1)"
+pol_keep="$(grep -oE '"keepCount": *[0-9]+' "$CLEANUP" | grep -oE '[0-9]+' | head -1)"
+scr_days="$(grep -E '^KEEP_DAYS=' "$SCRIPT" | grep -oE '[0-9]+' | head -1)"
+scr_keep="$(grep -E '^KEEP_NEWEST=' "$SCRIPT" | grep -oE '[0-9]+' | head -1)"
+is "policy window is 2 days"            "$pol_days"  "2"
+is "purge KEEP_DAYS matches it"         "$scr_days"  "$pol_days"
+is "purge KEEP_NEWEST matches keepCount" "$scr_keep" "$pol_keep"
+if grep -q '"name": *"keep-live"' "$CLEANUP"; then ok "the policy keeps :live by name"
+else bad "the policy has no keep-live rule — the boot image is only held by the count"; fi
+if grep -q 'LIVE_DIGEST' "$SCRIPT"; then ok "the purge protects :live too"
+else bad "the purge does not read :live"; fi
 
 echo
 echo "pass=$PASS fail=$FAIL"

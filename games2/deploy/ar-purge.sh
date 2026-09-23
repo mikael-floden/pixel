@@ -47,7 +47,11 @@ SELF="https://raw.githubusercontent.com/mikael-floden/pixel/main/games2/deploy/a
 # MUST MATCH ar-cleanup.sh's policy window, or the two fight: the manual
 # purge and the server-side sweep are the same rule run by different hands.
 KEEP_DAYS="${KEEP_DAYS:-2}"
-KEEP_NEWEST="${KEEP_NEWEST:-15}"
+# In step with ar-cleanup.sh's keep-newest-200. At ~88 image builds a day
+# (measured) 15 was four hours of cover; 200 is ~2.3 days, which is what it
+# takes to outlast a CI outage that keeps pushing images without rolling one
+# out. Costs ~nothing in steady state: the 2-day rule already keeps ~176.
+KEEP_NEWEST="${KEEP_NEWEST:-200}"
 PARALLEL="${PARALLEL:-8}"   # gcloud calls in flight; 8 is polite and ~8x faster
 DRY_RUN="${DRY_RUN:-}"
 
@@ -167,14 +171,21 @@ if [ -z "$SERVING_DIGEST" ] && [ -n "$REV" ]; then
     --format='value(status.imageDigest)' 2>/dev/null | sed 's#.*@##' || true)"
 fi
 LATEST_DIGEST="$(digest_of "${IMAGE}:latest")"
+# `:live` FOLLOWS THE ROLLOUT, `:latest` follows the BUILD. The deploy moves
+# :live onto the image it actually rolled out (nangijala-deploy.yml), so this
+# is the one tag that names what the service boots from — and the server-side
+# policy keeps it by the same name.
+LIVE_DIGEST="$(digest_of "${IMAGE}:live")"
 echo "▶ Cloud Run serves: ${SERVING:-<unreadable>} -> ${SERVING_DIGEST:-<digest unreadable>}"
-echo "▶ :latest is:       ${LATEST_DIGEST:-<none>}"
+echo "▶ :latest is:       ${LATEST_DIGEST:-<none>}   (follows the BUILD)"
+echo "▶ :live is:         ${LIVE_DIGEST:-<none>}   (follows the ROLLOUT — the boot image)"
 if [ -z "$SERVING_DIGEST" ]; then
   echo "▶ could not read the serving digest — the newest-$KEEP_NEWEST rule alone"
   echo "  protects the boot image, which is the arm designed for exactly this."
 fi
 [ -n "$SERVING_DIGEST" ] && printf '%s\n' "$SERVING_DIGEST" >> "$KEEP"
 [ -n "$LATEST_DIGEST" ]  && printf '%s\n' "$LATEST_DIGEST"  >> "$KEEP"
+[ -n "$LIVE_DIGEST" ]    && printf '%s\n' "$LIVE_DIGEST"    >> "$KEEP"
 
 CUTOFF="$(date -u -d "-${KEEP_DAYS} days" +%Y-%m-%dT%H:%M:%S 2>/dev/null \
   || date -u -v-"${KEEP_DAYS}"d +%Y-%m-%dT%H:%M:%S)"

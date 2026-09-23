@@ -615,6 +615,44 @@ jobs:
             echo "An older rollout had landed over it (\`$served\`); rolled out \`$MINE\` once more." >> "$GITHUB_STEP_SUMMARY"
           fi
 
+      # THE ROLLED-OUT IMAGE IS PINNED SO RETENTION CAN NEVER TAKE IT
+      # (maintainer 2026-09-23: "the important point is the current version is
+      # not purged so the game can always load/boot").
+      #
+      # He is right that this is THE constraint, and it is not theoretical. The
+      # service runs --min-instances 0, so a cold start PULLS FROM THE REGISTRY:
+      # delete the image production is on and the next scale-from-zero is
+      # "Nangijala could not start", with nothing in the log about a registry.
+      #
+      # The image is pushed ABOVE the test gate (line ~379 against ~421), so a
+      # red CI keeps minting versions while production stays on the last good
+      # one. `:latest` is no help — it follows the BUILD. And "keep newest 15"
+      # is only ~4 hours of cover at 88 pushes a day (measured 2026-09-23), so
+      # with a 2-day window the count rule is what stands between a long CI
+      # outage and an unbootable service.
+      #
+      # A tag points at exactly one version, so `:live` following the ROLLOUT —
+      # not the build — plus a Keep policy on that prefix (games2/deploy/
+      # ar-cleanup.sh) makes deleting the serving image inexpressible rather
+      # than unlikely. No sha can collide with the prefix: a digest is hex and
+      # "live" is not.
+      #
+      # NON-FATAL ON PURPOSE: failing a green rollout over a tag would be the
+      # worse bug. Its absence is caught instead — ar-watch.yml asserts every
+      # morning that a `:live` tag exists, so a silent failure has a day to
+      # live, not a fortnight.
+      - name: Pin the rolled-out image (`:live`) so retention cannot delete it
+        if: steps.fresh.outputs.roll != 'no'
+        env:
+          IMAGE: ${{ vars.GCP_REGION }}-docker.pkg.dev/${{ vars.GCP_PROJECT_ID }}/${{ vars.GCP_AR_REPO }}/${{ vars.GCP_SERVICE }}
+          MINE: ${{ needs.resolve.outputs.sha }}
+        run: |
+          if gcloud artifacts docker tags add "$IMAGE:$MINE" "$IMAGE:live" --quiet; then
+            echo "Pinned \`$IMAGE:live\` -> \`$MINE\`." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "::warning::could not move the :live tag to $MINE — retention's Keep-by-tag rule is now protecting an OLDER image than the one serving. ar-watch will flag it."
+          fi
+
       - name: Show URL
         if: steps.fresh.outputs.roll != 'no'
         run: |

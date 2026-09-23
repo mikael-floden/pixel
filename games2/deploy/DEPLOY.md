@@ -56,7 +56,24 @@ GCP_PROJECT_ID  GCP_REGION  GCP_AR_REPO  GCP_SERVICE  GCP_WIF_PROVIDER  GCP_DEPL
 ```
 
 **Artifact Registry retention** is one rule in three places, all saying *keep
-the newest 15 versions, delete anything over 2 days*.
+`:live` and the newest 200 versions, delete anything over 2 days*.
+
+**THE IMAGE PRODUCTION BOOTS FROM IS PINNED BY NAME** (maintainer 2026-09-23:
+"the important point is the current version is not purged so the game can
+always load/boot"). It is the one constraint that matters, because
+`--min-instances 0` means a cold start *pulls from this repository*: delete
+that image and the next scale-from-zero is "Nangijala could not start", with
+nothing in the log about a registry. Three facts make it a real risk rather
+than a theoretical one — the image is pushed ABOVE the test gate, so a red CI
+keeps minting versions while production stays put; `:latest` follows the
+*build*, not the rollout; and "keep newest 15" was only ~4 hours of cover at 88
+pushes a day. So the deploy moves a **`:live`** tag onto the image it actually
+rolled out, and the policy keeps that tag forever. A tag names one version, so
+deleting the serving image is not unlikely — it is inexpressible. (No sha can
+collide with the prefix: a digest is hex, `live` is not.) The tag step is
+non-fatal so it can never fail a green rollout; `ar-watch.yml` asserts the tag
+exists every morning instead. `keepCount` is 200 (~2.3 days of pushes) as the
+belt underneath it.
 
 **The window is the only lever on this bill.** The repo converges on
 `retention x push rate x size per version`, and all three are measured
@@ -65,7 +82,7 @@ exactly what sat there. It was never a leak and the policy was never broken —
 a manual purge on top of it found *eight* versions to take, because the policy
 had already swept the rest. Cross-check: 1229 commits in those 14 days touch a
 path that builds an image, against 1154 versions in the registry. At 2 days
-that is ~176 rollback points and ~70 GB (≈ kr 43/mo against kr 304); the image
+that is ~176 rollback points and ~70-85 GB (≈ kr 43-53/mo against kr 304); the image
 rebuilds from any commit, and the backup is `backup-gcs.yml`, never this
 registry.
 
