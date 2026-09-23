@@ -60,6 +60,14 @@ Kubernetes). Rules here are present tense; the measurements land in
   room. Avatars keyed by pid survive the swap; `bindRoom` in swap mode
   re-binds existing sprites and removes only what the new view lacks.
   Prediction continues: the new room acks from the handed `seq`.
+  THE BODY ALSO TRAVELS THROUGH THE CLIENT (2026-09-23): `zone:go` carries
+  the hot state (minus the account record and the minted pair) signed under
+  a server-wide secret the account store hands every process (`claimLogin`,
+  first-writer-wins); the join presents it (`handoffHot`/`handoffSig`), and a
+  receiving room whose bus has no document — another process, a rollout —
+  adopts from the copy: same body, same seq. Honoured only with a valid
+  signature, this pid and key, an age within the TTL and the account the
+  client's own claim resolves to; anything else is the ordinary join.
 - **Monsters cross too, AND THE HAND-OFF OVERLAPS.** A monster whose position
   leaves its rect is transferred with its full brain state (`monster:xfer`);
   every room holds the whole spawn-zone list but seeds only the cells inside

@@ -159,10 +159,9 @@ push, no PRs unless asked.
   only) — each pixel-identical to a forced full paint (`__ml.groundHash`). A
   tab-in poisons the latch. Keep the drop drain's repaint. `?ground=legacy`
   bisects.
-- The beacon's `sections` are window means and its `counts` snapshots — never
-  correlate them; its server side is an allowlist (add fields on both sides;
-  `verify-beacon.mjs` proves the POST survives it). Fields are in the doc;
-  read one with `perf-read.mjs` (`--diff shaA shaB` for two builds).
+- The beacon: `sections` are window means, `counts` snapshots — never
+  correlate them; the server side is an allowlist (`verify-beacon.mjs`);
+  `perf-read.mjs` reads a run.
 
 **Movement** (`docs/movement.md`)
 - Server-authoritative, elevation-governed (`WALK_CLIMB`, `JUMP_CLIMB`); the
@@ -221,7 +220,9 @@ stable player key, the warm-room table, the view API and their traps live
 THERE; read before touching the netcode)
 - ONE world, never instances (maintainer). Zones are rooms
   (`config/zones.json`; no entry = one room), ONE per zone per process; a
-  border is crossed by a HAND-OFF over the bus, and what a client sees across
+  border is crossed by a HAND-OFF over the bus and, signed, through the
+  client (`takeHandoffCopy`: a hop that lands on another process keeps its
+  body), and what a client sees across
   it are GHOSTS in their own maps, which no server loop steps or fights.
 - A client receives only what is within `INTEREST_WU` of itself (a `StateView`
   per client); THE JOIN SNAPSHOT IS A WHOLE VIEW, what a crossing binds on;

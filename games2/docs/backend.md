@@ -165,6 +165,32 @@ found; gate `server/test/lawsize.test.ts`).
   SAVES the body on adoption: a link dropped mid-hop that fails its seat
   reclaim rejoins from the last saved spot, which was minutes old — the
   house the maintainer was teleported into.
+  THE HAND-OFF SURVIVES A ROLLOUT (2026-09-23): the body also travels
+  THROUGH THE CLIENT. `zone:go` carries the hot state (minus the account
+  record and the minted pair) signed HMAC-SHA256 under a server-wide
+  secret; the client presents it on the hop join (`JoinOptions.handoffHot/
+  handoffSig`); a receiving room whose bus has no document adopts from the
+  copy (`takeHandoffCopy`) — same body, same seq, the join's latency old —
+  and only a hop with neither is an ordinary join, which the room logs. The
+  copy is honoured with a valid signature, this pid and key, an age within
+  HANDOFF_TTL_S and an account that the client's own claim resolves to; a
+  forged copy or a stranger's is an ordinary join. The secret is CLAIMED,
+  not configured: the first process to ask writes a random one under a
+  `logins` key (`claimLogin`, first-writer-wins, atomic in Firestore) and
+  every later process reads that one, so two revisions verify each other's
+  copies with no variable set from a laptop. (His two backwards jumps of 131
+  and 106 cells each carried seq 0 and the whole prediction log pending, and
+  each came within a minute of a revision going live: a hop's join is a NEW
+  connection, it landed on the new instance while the old one held the
+  document in its in-process bus, and the ordinary join restored the last
+  save — 20-70 s old, up the mountain. The bus document stays the first
+  choice: refreshed every tick, it is the fresher body.) A COLD hop — the
+  adopted seq is 0 while the crossing was noticed at a later one — replays
+  nothing and restarts prediction on the body as it is; the beacon's hop
+  row carries `baseSeq`, `behind`, `replayed`, `cold`. Gate:
+  `server/test/handoffcross.test.ts` (the receiving room's bus blinded to
+  hand-off keys — deleting the document is not enough, the sender rewrites
+  it every tick).
   MEASURED headless on the_game: the server's onJoin runs +230 ms after
   zone:go (matchmake + socket); a walked crossing samples at 100 ms show no
   step over 0.5 cells and `me` continuous across the hop. (The harness's own

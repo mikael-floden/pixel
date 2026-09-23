@@ -1,6 +1,6 @@
 import { Room, Client, ClientState } from "@colyseus/core";
 import { Encoder, StateView, MapSchema } from "@colyseus/schema";
-import { randomBytes } from "crypto";
+import { randomBytes, createHmac, timingSafeEqual } from "crypto";
 import { getHeapStatistics } from "node:v8";
 import { totalmem } from "node:os";
 import { bus } from "../bus.js";
@@ -276,6 +276,54 @@ export function noRouteRetryMs(streak: number, roamPauseMs: number): number {
 const HANDOFF_TTL_S = 10; // the hot state waits on the bus this long for the receiving join
 const HANDOFF_TIMEOUT_MS = 10_000; // then the sending room forgets the attempt and keeps the body
 const HANDOFF_INPUT_CREDIT_S = 2; // integration credit granted to a handed-over body for the inputs it buffered
+
+/* THE HAND-OFF SURVIVES A ROLLOUT (games-perf on the maintainer's order,
+ * 2026-09-23: "I was teleported back to the top of the mountain"). Both of
+ * his backwards jumps — 131 cells at 21:22:44, 106 cells at 21:46:35, each
+ * with seq 0 and the whole prediction log pending — came within a minute of
+ * a new Cloud Run revision going live. A hop's join is a NEW connection, so
+ * it lands on the new instance while the old one, still draining his
+ * socket, holds the hand-off document in its in-process bus; `takeHandoff`
+ * found nothing and the join fell to an ordinary one, which restores the
+ * account's last SAVE — the previous hop's adoption save or the 30 s flush,
+ * 20-70 s old. So the body now also travels THROUGH THE CLIENT: `zone:go`
+ * carries the hot state (minus the account record and the minted pair)
+ * signed with a server-wide secret, the client presents the copy on the hop
+ * join, and a receiving room whose bus has no document adopts from the
+ * copy instead of the store — same body, same seq, the join's own latency
+ * old. The secret is CLAIMED, not configured: the first process to ask
+ * writes a random one under a login key the account store keeps
+ * (first-writer-wins, `claimLogin`), every later process reads that one, so
+ * two revisions of the image verify each other's copies and nobody sets an
+ * environment variable from a laptop. A copy is bound to the client's own
+ * account claim (the copy's account must be the one the claim resolves to)
+ * and to its key, and dies with the document's TTL. */
+const HANDOFF_SECRET_KEY = "handoff-secret:v1";
+const handoffSecrets = new WeakMap<AccountStore, Promise<string>>();
+function handoffSecret(store: AccountStore): Promise<string> {
+  let p = handoffSecrets.get(store);
+  if (!p) {
+    p = store.claimLogin(HANDOFF_SECRET_KEY, randomBytes(32).toString("hex")).catch((e) => {
+      handoffSecrets.delete(store); // the next ask tries again
+      throw e;
+    });
+    handoffSecrets.set(store, p);
+  }
+  return p;
+}
+const signHot = (secret: string, body: string): string => createHmac("sha256", secret).update(body).digest("hex");
+function hotSigOk(secret: string, body: string, sig: string): boolean {
+  const want = Buffer.from(signHot(secret, body), "hex");
+  const got = Buffer.from(sig, "hex");
+  return want.length === got.length && timingSafeEqual(want, got);
+}
+/** The copy that rides through the client: the body without the account
+ *  record and the minted pair — the receiving room resolves those from the
+ *  client's own claim, as an ordinary join does. */
+function hotForClient(hot: HotState): string {
+  const { rec: _rec, mintedSecret: _minted, ...rest } = hot;
+  return JSON.stringify(rest);
+}
 const handoffKey = (world: string, pid: string) => `handoff:${world}:${pid}`;
 /** ONE ROOM PER ZONE PER PROCESS. joinOrCreate races: while the first room
  *  of a zone is still in onCreate (the terrain load, ~1 s), a second join
@@ -295,6 +343,8 @@ interface HotState {
   key: string;
   pid: string;
   from: number;
+  /** Date.now() when it was written — a copy presented after HANDOFF_TTL_S is refused. */
+  at?: number;
   name: string;
   character: string;
   accountId: string;
@@ -1563,8 +1613,6 @@ export class WorldRoom extends Room<WorldState> {
       if (typeof options.t0 === "number") console.log(`[zones] hand-off onJoin for ${hot.pid} into zone ${this.zoneId}: +${Date.now() - options.t0} ms after zone:go`);
       return this.joinHandedOff(client, hot);
     }
-    // Current live tuning straight to the joiner (updates arrive as broadcasts).
-    client.send("live:update", liveTuning());
     const player = new Player();
     player.name = (options.name || `wanderer-${client.sessionId.slice(0, 4)}`).slice(0, 24);
     player.character = options.character || "";
@@ -1573,6 +1621,16 @@ export class WorldRoom extends Room<WorldState> {
     // here, on the join call the client already makes — no screen, no extra
     // tap, no step added to the one that gets someone into the world.
     const acc = await resolveAccount(this.store, options.account, player.name, player.character);
+    // A HOP WHOSE DOCUMENT IS NOT ON THIS BUS (another process — a rollout)
+    // adopts the copy the client carried, bound to this very account; only
+    // when that fails too is a hop an ordinary join, and it says so.
+    if (typeof options.handoff === "string") {
+      const copy = await this.takeHandoffCopy(options, acc);
+      if (copy) return this.joinHandedOff(client, copy);
+      console.warn(`[zones] hop join for ${options.pid} into zone ${this.zoneId} found no document and no valid copy: an ordinary join from the store`);
+    }
+    // Current live tuning straight to the joiner (updates arrive as broadcasts).
+    client.send("live:update", liveTuning());
     player.accountId = acc.id;
     player.rec = acc.rec;
     // NOT pushed here — see Player.mintedSecret. The client asks once it is
@@ -3272,9 +3330,21 @@ export class WorldRoom extends Room<WorldState> {
     const key = randomBytes(16).toString("hex"); // 128 bits: the capability for ONE join
     p.handoff = { to, key, at: now };
     const hot = this.hotStateFor(p, pid, key);
+    const go = (extra: { hot?: string; sig?: string }) => client.send("zone:go", { zone: to, pid, key, seq: hot.seq, ...extra });
     void bus()
       .set(handoffKey(this.worldName, pid), JSON.stringify(hot), HANDOFF_TTL_S)
-      .then(() => client.send("zone:go", { zone: to, pid, key, seq: hot.seq }))
+      .then(async () => {
+        // The signed copy rides with zone:go (see takeHandoffCopy): a join
+        // that lands on another process adopts from it. A secret that cannot
+        // be had costs the copy, never the hop.
+        try {
+          const body = hotForClient(hot);
+          go({ hot: body, sig: signHot(await handoffSecret(this.store), body) });
+        } catch (e) {
+          console.warn("[zones] hand-off sent unsigned (no secret):", (e as Error)?.message ?? e);
+          go({});
+        }
+      })
       .catch((e) => {
         console.error("[zones] hand-off write failed:", e);
         p.handoff = null;
@@ -3287,6 +3357,7 @@ export class WorldRoom extends Room<WorldState> {
       key,
       pid,
       from: this.zoneId,
+      at: Date.now(),
       name: p.name,
       character: p.character,
       accountId: p.accountId,
@@ -3365,6 +3436,42 @@ export class WorldRoom extends Room<WorldState> {
     }
     if (hot.key !== options.handoff || hot.pid !== options.pid) return null;
     await bus().del(key);
+    return hot;
+  }
+
+  /** HAND-OFF, the receiving side when THE BUS HAS NO DOCUMENT (another
+   *  process: a rollout): the copy the client carried from `zone:go`, honoured
+   *  only with a valid signature, this pid and key, an age within the
+   *  document's own TTL, and an account that is the one the client's claim
+   *  resolves to (`acc`, resolved by the caller exactly as an ordinary join
+   *  would). It is the body as of `zone:go`, the join's latency old — what the
+   *  old room simulated during the join is lost, which the input credit and
+   *  the client's replay cover, as they did before the per-tick refresh. */
+  private async takeHandoffCopy(options: JoinOptions, acc: { id: string; rec: AccountRecord; secret?: string }): Promise<HotState | null> {
+    if (typeof options.pid !== "string" || typeof options.handoff !== "string") return null;
+    const body = options.handoffHot;
+    const sig = options.handoffSig;
+    if (typeof body !== "string" || typeof sig !== "string" || body.length > 65536 || !/^[0-9a-f]{64}$/.test(sig)) return null;
+    let secret: string;
+    try {
+      secret = await handoffSecret(this.store);
+    } catch {
+      return null;
+    }
+    if (!hotSigOk(secret, body, sig)) return null;
+    let hot: HotState;
+    try {
+      hot = JSON.parse(body) as HotState;
+    } catch {
+      return null;
+    }
+    if (hot.key !== options.handoff || hot.pid !== options.pid) return null;
+    const age = typeof hot.at === "number" ? Date.now() - hot.at : Infinity;
+    if (!(age <= HANDOFF_TTL_S * 1000) || !(age >= -5000)) return null;
+    if (hot.accountId !== acc.id) return null;
+    hot.rec = acc.rec;
+    hot.mintedSecret = acc.secret ?? "";
+    console.log(`[zones] hand-off for ${hot.pid} into zone ${this.zoneId} taken from the client's signed copy, ${Math.round(age)} ms old (the bus had no document: another process)`);
     return hot;
   }
 

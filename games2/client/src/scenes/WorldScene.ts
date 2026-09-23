@@ -9947,7 +9947,7 @@ export class WorldScene extends Phaser.Scene {
     });
     // A ZONE HAND-OFF: the room owning my body says the next zone holds my
     // hot state under a one-shot key.
-    room.onMessage("zone:go", (msg: { zone?: number; pid?: string; key?: string }) => void this.zoneGo(room, msg));
+    room.onMessage("zone:go", (msg: { zone?: number; pid?: string; key?: string; seq?: number; hot?: string; sig?: string }) => void this.zoneGo(room, msg));
     $(room.state).drops.onAdd((g: any, id: string) => this.addDrop(id, g));
 
     // ---------------- CHESS: boards in the world + my matches -------------
@@ -13085,7 +13085,7 @@ export class WorldScene extends Phaser.Scene {
    *  the inputs made meanwhile, then leave the old room. A failed hop keeps
    *  the old room — it forgets the attempt after ten seconds and keeps the
    *  body. */
-  private async zoneGo(from: Room, msg: { zone?: number; pid?: string; key?: string; seq?: number }) {
+  private async zoneGo(from: Room, msg: { zone?: number; pid?: string; key?: string; seq?: number; hot?: string; sig?: string }) {
     if (this.room !== from || this.zoneSwapping) return;
     if (typeof msg?.zone !== "number" || typeof msg.pid !== "string" || typeof msg.key !== "string") return;
     const fromSeq = typeof msg.seq === "number" ? msg.seq : Infinity;
@@ -13094,11 +13094,15 @@ export class WorldScene extends Phaser.Scene {
     this.zoneWatchT0 = this.time.now;
     this.zoneWatchUntil = this.time.now + ZONE_WATCH_MS;
     const t0 = performance.now();
-    const hop = { goAt: Date.now(), joinMs: 0, stateMs: 0, boundMs: 0, zone: msg.zone, baseSeq: 0, behind: 0, replayed: 0, snap: { players: 0, monsters: 0 }, removed: { avatars: 0, monsters: 0, drops: 0, inView: 0, seen: [] as string[] } };
+    const hop = { goAt: Date.now(), joinMs: 0, stateMs: 0, boundMs: 0, zone: msg.zone, baseSeq: 0, behind: 0, replayed: 0, cold: 0, snap: { players: 0, monsters: 0 }, removed: { avatars: 0, monsters: 0, drops: 0, inView: 0, seen: [] as string[] } };
     this.zoneLastHop = hop;
+    /* THE SIGNED COPY RIDES ALONG (WorldRoom.takeHandoffCopy): a join that
+     * lands on another process — a rollout — adopts this body from it instead
+     * of restoring the account's last save 20-70 s back up the mountain. */
+    const copy = typeof msg.hot === "string" && typeof msg.sig === "string" ? { handoffHot: msg.hot, handoffSig: msg.sig } : {};
     try {
       const next = await joinWorld(
-        { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: msg.zone, pid: msg.pid, handoff: msg.key, t0: hop.goAt },
+        { name: this.myName, character: this.myCharacter.uid, world: this.worldName, zone: msg.zone, pid: msg.pid, handoff: msg.key, t0: hop.goAt, ...copy },
         undefined,
         undefined,
         { route: zoneRoute(this.zonesCfg, msg.zone), fresh: true },
@@ -13178,21 +13182,36 @@ export class WorldScene extends Phaser.Scene {
       const baseSeq = typeof adopted?.seq === "number" ? Math.max(adopted.seq, 0) : fromSeq;
       hop.baseSeq = Number.isFinite(baseSeq) ? baseSeq : 0;
       hop.behind = Number.isFinite(fromSeq) ? hop.baseSeq - fromSeq : 0;
-      /* AND PREDICTION RESTARTS ON THAT SAME CUT. `pending` was emptied by the
-       * acks of the room I am LEAVING, so it no longer holds the windows that
-       * room integrated while I joined — and the new room has not integrated
-       * them either. Reconciling onto the new body with that gap is the
-       * backwards snap he reported ("sometimes teleport backwards",
-       * 2026-09-13): the body loses exactly the distance covered during the
-       * join, then springs forward when the replay below lands. `predLog`
-       * kept those records; take every one after the cut. */
-      this.pending = this.predLog.filter((q) => q.seq > baseSeq);
+      /* A COLD HOP: the new room built me from the STORE, not the hand-off
+       * (seq 0 while the crossing was noticed at a later one — the document
+       * was in another process and no copy could be honoured). The body is
+       * wherever the store said; replaying twelve seconds of inputs into it
+       * runs it somewhere else again and the reconcile snaps me after it.
+       * Nothing is replayed: prediction restarts on the body as it is, and
+       * the beacon's hop row says `cold`. */
+      const cold = !!adopted && typeof adopted.seq === "number" && adopted.seq === 0 && Number.isFinite(fromSeq) && fromSeq > 0;
       let replayed = 0;
-      for (const m of this.sentLog)
-        if (typeof m.seq === "number" && m.seq > baseSeq) {
-          next.send("input", m);
-          replayed++;
-        }
+      if (cold) {
+        hop.cold = 1;
+        this.pending = [];
+        this.predLog = [];
+        console.warn(`[zones] cold hop into zone ${msg.zone}: the room adopted nothing (seq 0, crossing noticed at ${fromSeq}) — no replay`);
+      } else {
+        /* AND PREDICTION RESTARTS ON THAT SAME CUT. `pending` was emptied by the
+         * acks of the room I am LEAVING, so it no longer holds the windows that
+         * room integrated while I joined — and the new room has not integrated
+         * them either. Reconciling onto the new body with that gap is the
+         * backwards snap he reported ("sometimes teleport backwards",
+         * 2026-09-13): the body loses exactly the distance covered during the
+         * join, then springs forward when the replay below lands. `predLog`
+         * kept those records; take every one after the cut. */
+        this.pending = this.predLog.filter((q) => q.seq > baseSeq);
+        for (const m of this.sentLog)
+          if (typeof m.seq === "number" && m.seq > baseSeq) {
+            next.send("input", m);
+            replayed++;
+          }
+      }
       hop.replayed = replayed;
       this.zoneSwapping = false;
       from.leave(true);
@@ -13229,6 +13248,12 @@ export class WorldScene extends Phaser.Scene {
       frames: vis.length,
       visMed: vis[Math.floor(vis.length / 2)] ?? 0,
       visFloor: vis[0] ?? 0,
+      // THE CUT (2026-09-23): the seq the new room adopted at, how far past
+      // zone:go's, what was replayed — and `cold` when it adopted nothing.
+      baseSeq: h.baseSeq,
+      behind: h.behind,
+      replayed: h.replayed,
+      cold: h.cold,
     };
     this.zoneHopLog.push(row);
     if (this.zoneHopLog.length > 8) this.zoneHopLog.shift();
@@ -13238,7 +13263,7 @@ export class WorldScene extends Phaser.Scene {
   private zoneWatch: { t: number; vis: number; tot: number; sw: number }[] = [];
   private zoneWatchT0 = 0;
   private zoneWatchUntil = 0;
-  private zoneLastHop: { goAt: number; joinMs: number; stateMs: number; boundMs: number; zone: number; snap: { players: number; monsters: number }; removed: { avatars: number; monsters: number; drops: number; inView: number; seen: string[] } } | null = null;
+  private zoneLastHop: { goAt: number; joinMs: number; stateMs: number; boundMs: number; zone: number; baseSeq: number; behind: number; replayed: number; cold: number; snap: { players: number; monsters: number }; removed: { avatars: number; monsters: number; drops: number; inView: number; seen: string[] } } | null = null;
 
   /** The connection died: freeze input, rejoin in place (immediately when
    * visible, else the moment the tab is shown again), retry with backoff,

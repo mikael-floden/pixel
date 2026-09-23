@@ -4039,6 +4039,12 @@ export interface JoinOptions {
    *  anything else is an ordinary join under a fresh id. */
   pid?: string;
   handoff?: string;
+  /** THE HAND-OFF'S SIGNED COPY (WorldRoom.takeHandoffCopy): the hot state
+   *  `zone:go` carried and the server's signature over it, presented so a
+   *  join that lands on another process (a rollout) adopts the same body
+   *  instead of restoring the account's last save. */
+  handoffHot?: string;
+  handoffSig?: string;
   /** Debug: when the client received zone:go (Date.now()), so the server can
    *  log the hop's latency at onJoin entry. */
   t0?: number;

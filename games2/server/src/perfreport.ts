@@ -180,7 +180,7 @@ export function perfReport(body: Record<string, unknown>, atISO: string) {
     // snapshot carried and the frames' visible-body floor.
     zone: (() => {
       const z = body.zone as { hops?: unknown; last?: unknown } | undefined;
-      const last = rows(z?.last, 4, 16);
+      const last = rows(z?.last, 4, 24); // 24, not 16: baseSeq/behind/replayed/cold joined the row (2026-09-23)
       if (!last) return null;
       return { hops: num(z?.hops, 0, 1e6) ?? 0, last };
     })(),
