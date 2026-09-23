@@ -270,6 +270,40 @@ from the games agent), #18 (title/landing screen).
   FRACTIONS (±3 css px) **and as the rule** (gaps within 2.5px, no margin under
   26), plus one shared centre row and the left-handed mirror — nothing held any
   of this before, so an edit could drift his marks silently.
+- **THE CAP DRAWS WHAT THE BODY WILL WALK — AND BOTH STICKS PUBLISH THE
+  FINGER'S BEARING** (maintainer 2026-09-23: "we have changed the game to be
+  able to navigate in more than 8 directions … I want the analog thumbstick to
+  reflect the player desired velocity more. So it will still 'snap' but allow
+  movement within the snap the same way the player movement does"). The KEYS
+  stay the eight — eight animations, and a keyboard has eight. What changed is
+  what rides beside them, and what is drawn:
+  - `gamepad.ts` `apply()` calls `setStickBearing(<atan2 in degrees>)` on every
+    move and `null` on release; the body leans off the octant toward it by his
+    Settings dial (shared `leanHeading`; 0.85 is his). **The page stick
+    published none**: it is `.ml-pad-pagestick` and the bearing was read off
+    `.ml-pad-stick` BY NAME (`stickdir.ts`), so the stick his thumb steers with
+    on the gamepad tab hard-snapped while the ghost in the corner leaned — the
+    complaint above, in one class name. **A SELECTOR IS NOT A CONTRACT**: when
+    another agent's code finds your element by name, hand it a FUNCTION (their
+    standing offer, `coordination/games.json` #432, taken here — their
+    listeners are gone and `ensureStickAngle()` is a kept no-op so WorldScene's
+    per-frame call site still compiles).
+  - The CAP's angle is the octant **plus `lean × the finger's residual`** — the
+    same fraction of the way toward the neighbouring octant that `leanHeading`
+    takes for the body, written in the stick's own compass frame rather than
+    the world's run headings, so "push right" still draws right. Dial 0 is the
+    old hard snap to the pixel; dial 1 puts the cap under the thumb. This is
+    the visible half of what he asked for on 2026-09-11 ("it makes it hard to
+    see if you are close to 'snap' to a new direction or not").
+  - **The glide is the SNAP's alone**: `capAt` writes `--cap-ms` = 0 while the
+    finger steers inside one octant and `SNAP_MS` (80) on a flip or the release
+    to centre. 80 ms of ease-out on an angle the thumb is steering is 80 ms of
+    lag; a CUSTOM PROPERTY rather than an inline `transition`, because that
+    shorthand also carries the ghost's .25s opacity fade and would go with it.
+  - `__mlStick()` is this module's probe (bearing, lean, sector, capDeg, and
+    the page stick's pair). `verify-gamepad` holds bearing↔the finger,
+    cap↔bearing×dial, pixels↔cap — RELATIONS, never an angle literal: the dial
+    is his to move, and a literal here goes stale the day he moves it.
 - **THE STICK IS A GHOST OVER THE GAME VIEW, ALWAYS** — landscape on every tab
   (2026-08-05), portrait whenever its page was hidden (2026-09-17: "I want the
   same semi transparent control [in portrait]… it's better to have it at a

@@ -147,17 +147,75 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     farHeld.includes("d") && farHeld.includes("Shift")
       ? ok(`input alive beyond max offset (holding ${farHeld.join("+")}, moved ${Math.hypot(b.x-a.x, b.y-a.y).toFixed(1)}wu)`)
       : fail(`input died past max offset: holding ${JSON.stringify(farHeld)}`);
-    // visual snap: a 100° park lands the cap at the SAME spot as 90° (S gate)
-    await page.mouse.move(geom.cx - 21, geom.cy + 118, { steps: 2 });
-    await page.waitForTimeout(250);
-    const t100 = await topTf();
-    await page.mouse.move(geom.cx, geom.cy + 120, { steps: 2 });
-    await page.waitForTimeout(250);
-    const t90 = await topTf();
-    t100 === t90 ? ok(`cap visual snaps to the octant (${t90})`) : fail(`cap not snapped: 100°=${t100} vs 90°=${t90}`);
-    // and the glide is animated, not instant
-    const trans = await page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-top")).transitionDuration);
-    parseFloat(trans) > 0 ? ok(`snap glide animated (${trans})`) : fail("no snap transition");
+    /* THE CAP DRAWS WHAT THE BODY WILL WALK (maintainer 2026-09-23: "I want
+       the analog thumbstick to reflect the player desired velocity more … it
+       will still snap, but allow movement within the snap the same way the
+       player movement does"). The KEYS are still the eight; inside the octant
+       the cap leans toward the finger by HIS dial. Asserted as RELATIONS —
+       bearing vs the finger, cap vs bearing×dial, pixels vs cap — because the
+       dial is his to move and a literal angle here would go stale the day he
+       moves it. */
+    const stick = () => page.evaluate(() => window.__mlStick());
+    const capXY = async () => {
+      const m = /translate\(([-\d.]+)px, ([-\d.]+)px\)/.exec(await topTf());
+      return m ? { x: +m[1], y: +m[2] } : null;
+    };
+    const park = async (deg, r = 120, steps = 2, settle = 250) => {
+      const t = (deg * Math.PI) / 180;
+      await page.mouse.move(geom.cx + r * Math.cos(t), geom.cy + r * Math.sin(t), { steps });
+      if (settle) await page.waitForTimeout(settle);
+    };
+    const wrap = (d) => ((d + 540) % 360) - 180;
+    // the shortest way from the octant's centre to the finger, ±22.5°
+    const resid = (st) => wrap(st.bearing - st.sector * 45);
+    await park(90); // dead on S: no residual, so no lean at any dial
+    const s90 = await stick();
+    Math.abs(wrap(s90.capDeg - 90)) < 0.3
+      ? ok(`dead on an octant the cap IS the octant (S, cap ${s90.capDeg.toFixed(2)}°)`)
+      : fail(`S park drew the cap at ${s90.capDeg}°`);
+    await park(100); // 10° past S, still inside the S octant (67.5–112.5)
+    const s100 = await stick();
+    const c100 = await capXY();
+    Math.abs(wrap(s100.bearing - 100)) < 0.6
+      ? ok(`the stick publishes the FINGER's bearing, not the octant's (${s100.bearing.toFixed(1)}°)`)
+      : fail(`bearing ${s100.bearing}, want 100 — the body has nothing to lean toward`);
+    const want = s100.sector * 45 + s100.lean * resid(s100);
+    s100.sector === s90.sector && Math.abs(wrap(s100.capDeg - want)) < 0.05
+      ? ok(`…and the cap leans ${wrap(s100.capDeg - 90).toFixed(2)}° inside the unmoved octant = dial ${s100.lean} × ${resid(s100).toFixed(2)}°`)
+      : fail(`sector ${s90.sector}→${s100.sector}, cap ${s100.capDeg}°, want ${want}°`);
+    // THE REGRESSION: at his dial that lean is VISIBLE, not a rounding error.
+    // (At dial 0 — his "snap" end — the old hard snap is the contract again.)
+    const leanDeg = Math.abs(wrap(s100.capDeg - 90));
+    (s100.lean >= 0.5 ? leanDeg > 5 : leanDeg < 0.3)
+      ? ok(`the lean is visible at his dial (${s100.lean}: ${leanDeg.toFixed(2)}° off the octant)`)
+      : fail(`dial ${s100.lean} drew ${leanDeg.toFixed(2)}° off the octant`);
+    // …and the PIXELS are where the probe says (the cap is drawn, not claimed)
+    const drawnDeg = (Math.atan2(c100.y, c100.x) * 180) / Math.PI;
+    const drawnR = Math.hypot(c100.x, c100.y);
+    Math.abs(wrap(drawnDeg - s100.capDeg)) < 0.5 && Math.abs(drawnR - travel * 0.65) < 1
+      ? ok(`the cap is DRAWN there (${drawnDeg.toFixed(2)}°, r ${drawnR.toFixed(1)} = travel×0.65)`)
+      : fail(`cap drawn at ${drawnDeg.toFixed(2)}° r ${drawnR.toFixed(1)}, probe says ${s100.capDeg}°`);
+    await park(80); // the other side of the same octant leans back as far
+    const s80 = await stick();
+    const back = wrap(s80.capDeg - 90);
+    s80.sector === s90.sector && back < 0 && Math.abs(Math.abs(back) - leanDeg) < 0.6
+      ? ok(`…and the other side of the octant leans back as far (${back.toFixed(2)}°)`)
+      : fail(`80° park: sector ${s80.sector}, cap ${back.toFixed(2)}° off S against ${leanDeg.toFixed(2)}° at 100°`);
+    // THE GLIDE IS THE SNAP'S ALONE: steering inside an octant tracks the
+    // thumb 1:1 (80ms of ease-out on that is 80ms of lag), an octant FLIP
+    // still glides — "the snap should not be instant".
+    const capMs = () => page.evaluate(() => getComputedStyle(document.querySelector(".ml-pad-stick .ml-pad-top")).transitionDuration);
+    await park(85); // …settled inside S, well clear of the last flip
+    const msSteer = await capMs();
+    // ONE event across the boundary, read at once: the glide belongs to the
+    // move that snapped. (Two interpolated steps would do, but this harness
+    // can put 100ms between them — longer than the glide itself — and the
+    // second, already inside SE, would honestly report tracking again.)
+    await park(40, 120, 1, 0); // S → SE
+    const msFlip = await capMs();
+    parseFloat(msSteer) === 0 && parseFloat(msFlip) > 0
+      ? ok(`the glide is the snap's alone (steering ${msSteer}, octant flip ${msFlip})`)
+      : fail(`transition: steering ${msSteer}, flip ${msFlip} — want 0s then a glide`);
     // ANALOG amplitude: a mid-tilt parks the cap at ~the finger distance
     // (angle snapped, amplitude NOT) — 28px sits between dead (16.1) and
     // full (46); cap draws 28*0.65 = 18.2, not the full 29.9
@@ -606,6 +664,27 @@ const pos = (page) => page.evaluate(() => { const m = window.__ml.me(); return {
     pageStick && pageStick.well === "1" && pageStick.cap === "1" && /ml-page/.test(pageStick.parent) && pageStick.ghosts === 1
       ? ok(`the page stick is opaque and inside the page, beside ONE ghost (well ${pageStick.well}, cap ${pageStick.cap})`)
       : fail(`page stick state: ${JSON.stringify(pageStick)}`);
+    /* …AND IT PUBLISHES A BEARING (maintainer 2026-09-23). This stick is
+       `.ml-pad-pagestick` — its own class on purpose — and while the body's
+       lean read the finger off `.ml-pad-stick` BY NAME, the stick his thumb
+       actually steers with on this tab fed no bearing at all: it hard-snapped
+       while the ghost in the corner leaned. gamepad.ts publishes for both. */
+    const pc = await page.evaluate(() => {
+      const r = document.querySelector(".ml-pad-pagestick").getBoundingClientRect();
+      return { cx: r.left + r.width / 2, cy: r.top + r.height / 2 };
+    });
+    await page.mouse.move(pc.cx, pc.cy);
+    await page.mouse.down();
+    await page.mouse.move(pc.cx + 40 * Math.cos((100 * Math.PI) / 180), pc.cy + 40 * Math.sin((100 * Math.PI) / 180), { steps: 2 });
+    await page.waitForTimeout(200);
+    const pgs = await page.evaluate(() => window.__mlStick());
+    await page.mouse.up();
+    await page.waitForTimeout(200);
+    const pgsRest = await page.evaluate(() => window.__mlStick());
+    const pgsOff = ((pgs.bearing - 100 + 540) % 360) - 180;
+    pgs.pageSector === 2 && Math.abs(pgsOff) < 0.6 && pgsRest.bearing === null
+      ? ok(`the PAGE stick publishes the finger's bearing too (${pgs.bearing.toFixed(1)}°, S octant) and clears it on release`)
+      : fail(`page stick bearing: ${JSON.stringify({ bearing: pgs.bearing, sector: pgs.pageSector, afterRelease: pgsRest.bearing })} — want ~100° in sector 2, null at rest`);
     const pageStickFx = () => page.evaluate(() => {
       const page_ = document.querySelector('.ml-page[data-page="gamepad"]');
       const el = document.querySelector(".ml-pad-pagestick");

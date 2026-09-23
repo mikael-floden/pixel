@@ -8,19 +8,33 @@
  * the jump control is a plain round wiki button. ONLY the visuals changed —
  * the input contract is byte-identical to the art era:
  *
- *  - The stick SNAPS TO 8 DIRECTIONS — it simulates the keyboard (WASD),
- *    nothing else: each octant maps to the same key set a keyboard player
- *    would hold (NE = W+D …), synthesized as real window KeyboardEvents.
- *    WorldScene's Phaser keyboard consumes them exactly like physical keys
- *    (prediction, server validation, keyboard-cancels-tap all identical) —
- *    no games-agent file is touched. Phaser reads event.keyCode, which the
- *    KeyboardEvent init dict can't set — defineProperty fills it in.
- *  - The CAP's ANGLE snaps to the 8 directions (octant changes glide there
- *    through a FAST transition — "the snap should not be instant"); its
- *    AMPLITUDE is analog, drawn damped by CAP_VISUAL_FRAC. The finger keeps
- *    steering at ANY distance past the travel radius without losing input
- *    (setPointerCapture keeps the drag alive far outside the well).
- *  - Dead zone around the centre releases all keys (rest = no input).
+ *  - The KEYS SNAP TO 8 DIRECTIONS — the stick simulates the keyboard
+ *    (WASD), nothing else: each octant maps to the same key set a keyboard
+ *    player would hold (NE = W+D …), synthesized as real window
+ *    KeyboardEvents. WorldScene's Phaser keyboard consumes them exactly like
+ *    physical keys (prediction, server validation, keyboard-cancels-tap all
+ *    identical). Phaser reads event.keyCode, which the KeyboardEvent init
+ *    dict can't set — defineProperty fills it in. Eight animations and a
+ *    keyboard's eight directions are why the snap itself stays.
+ *  - …AND THE FINGER'S BEARING RIDES BESIDE THEM (`setStickBearing`,
+ *    2026-09-23), because the body no longer walks the octant exactly: it
+ *    leans off it toward the bearing by his Settings dial (`stickdir.ts`,
+ *    shared `leanHeading`, 0.85 is his). BOTH sticks publish it — the page
+ *    stick is `.ml-pad-pagestick`, so while that bearing was read off
+ *    `.ml-pad-stick` BY NAME the gamepad TAB's walk stick fed none and the
+ *    body hard-snapped under the thumb that steers it most.
+ *  - The CAP DRAWS WHAT THE BODY DOES: its angle snaps to the octant and
+ *    then leans inside it — the same fraction of the way toward the
+ *    neighbouring octant that `leanHeading` takes — so the thumb can SEE
+ *    how close it is to snapping over (maintainer 2026-09-11, the ask the
+ *    dial was built for). Only a SNAP glides (SNAP_MS: "the snap should not
+ *    be instant"); an angle the finger is steering tracks it 1:1, because a
+ *    transition on that is lag under the thumb. AMPLITUDE is analog, drawn
+ *    damped by CAP_VISUAL_FRAC. The finger keeps steering at ANY distance
+ *    past the travel radius without losing input (setPointerCapture keeps
+ *    the drag alive far outside the well).
+ *  - Dead zone around the centre releases all keys AND the bearing (rest =
+ *    no input, so a keyboard player is bit-for-bit unaffected).
  *
  * FEEL (2026-07-30): the travel/dead/run distances are WELL-derived now
  * (maxCss = well * TRAVEL_FRAC — the maintainer wanted a longer drag than
@@ -31,6 +45,11 @@
 
 import { gameAudio } from "../../composer/index";
 import { getHand, stickNudge } from "./controls";
+// the games agent's dial + the bearing it consumes (their standing offer,
+// games.json #432: "if you would rather publish the bearing from gamepad.ts
+// yourself … I will delete my listeners and consume yours"). One-way: they
+// never import this file, so there is no cycle.
+import { stickLean, stickHeading, setStickBearing } from "./stickdir";
 
 // Full-gate travel is derived from the WELL since the wiki remake (maintainer
 // 2026-07-30: "you should be able to drag the thumbstick a longer distance" —
@@ -41,7 +60,8 @@ import { getHand, stickNudge } from "./controls";
 const TRAVEL_FRAC = 0.38;
 const DEAD_FRAC = 0.35; // of the max: inside this, all keys are up
 const RUN_FRAC = 0.75; // of the max: past this amplitude the gait is RUN (Shift), else walk
-const SNAP_MS = 80; // the fast (not instant) glide between snap positions
+const SNAP_MS = 80; // the fast (not instant) glide over a SNAP — see capAt
+const OCT = Math.PI / 4; // one octant; the finger's residual off its centre is ±OCT/2
 // the cap DRAWS at this fraction of the input radius — like a real thumbstick,
 // the cap's centre moves less than the thumb; the input circle (dead zone,
 // run, full gate) is untouched.
@@ -284,6 +304,7 @@ export function mountGamepadStick(page: HTMLElement) {
   // amplitude"). Radius kept in css px.
   let visSector = -1;
   let visRadius = 0;
+  let visResid = 0; // the finger's angle off the octant's centre, radians
   // Animate INTO position only on HANDEDNESS changes (maintainer 2026-08-05,
   // twice refined: "not when clicking from and to the game-controller page",
   // then "the UI animation feels laggy when switching orientation" — the
@@ -301,24 +322,77 @@ export function mountGamepadStick(page: HTMLElement) {
       for (const el of controls()) el.classList.remove("anim");
     }, 350);
   };
-  const capAt = (el: HTMLElement, sector: number, radius: number) => {
-    const a = (sector * Math.PI) / 4;
+  /* THE CAP DRAWS THE HEADING THE BODY WILL WALK (maintainer 2026-09-23:
+   * "I want the analog thumbstick to reflect the player desired velocity
+   * more … it will still snap, but allow movement within the snap the same
+   * way the player movement does"). The octant, plus `lean` of the way from
+   * its centre toward the finger's own bearing: the SAME fraction of the way
+   * to the boundary that shared `leanHeading` takes for the body, written in
+   * the stick's own compass frame rather than the world's run headings, so
+   * "push right" still draws right while the proportion is the body's. Dial
+   * 0 is the old hard snap to the pixel; dial 1 puts the cap under the
+   * thumb. */
+  const capAt = (el: HTMLElement, sector: number, radius: number, resid: number, glide: boolean) => {
+    const a = sector * OCT + stickLean() * resid;
     const dx = sector < 0 ? 0 : Math.cos(a) * radius;
     const dy = sector < 0 ? 0 : Math.sin(a) * radius;
+    // THE GLIDE IS FOR THE SNAP ALONE: an octant flip (a whole 45° at dial 0,
+    // only the dial's leftover at his 0.85) and the release to centre are
+    // steps the finger did not make. Steering inside an octant IS the finger,
+    // and 80ms of ease-out on that is 80ms of lag under the thumb. A custom
+    // property rather than an inline `transition`, so the shorthand's opacity
+    // fade (the ghost's) is untouched by this. The caller decides `glide` —
+    // and decides it over a WINDOW, not a single event: see setCap.
+    el.style.setProperty("--cap-ms", glide ? `${SNAP_MS}ms` : "0ms");
     el.style.transform = `translate(${dx}px, ${dy}px)`;
   };
-  const setCap = (sector: number, radiusCss: number) => {
+  /* A SNAP GLIDES FOR AS LONG AS THE GLIDE TAKES, not for the one pointermove
+   * that flipped the octant. Pointer events fire every frame while a thumb
+   * drags, so a flag that lasts one event is overwritten ~16ms later and the
+   * ease is cut off before it is visible — the snap goes instant again, which
+   * is the thing he said it must not be. The window is the glide's own
+   * duration; inside it every move keeps the ease, after it the cap is back
+   * under the thumb. */
+  let visGlideUntil = 0;
+  const setCap = (sector: number, radiusCss: number, resid = 0) => {
+    const now = performance.now();
+    if (sector !== visSector) visGlideUntil = now + SNAP_MS;
+    const glide = now < visGlideUntil;
     visSector = sector;
     visRadius = sector < 0 ? 0 : radiusCss;
-    capAt(top, visSector, visRadius);
+    visResid = sector < 0 ? 0 : resid;
+    capAt(top, visSector, visRadius, visResid, glide);
   };
   // the page stick's cap keeps its own state — two thumbs, two caps
   let pageSector = -1;
   let pageRadius = 0;
-  const setPageCap = (sector: number, radiusCss: number) => {
+  let pageResid = 0;
+  let pageGlideUntil = 0;
+  const setPageCap = (sector: number, radiusCss: number, resid = 0) => {
+    const now = performance.now();
+    if (sector !== pageSector) pageGlideUntil = now + SNAP_MS;
+    const glide = now < pageGlideUntil;
     pageSector = sector;
     pageRadius = sector < 0 ? 0 : radiusCss;
-    capAt(pageTop, pageSector, pageRadius);
+    pageResid = sector < 0 ? 0 : resid;
+    capAt(pageTop, pageSector, pageRadius, pageResid, glide);
+  };
+  /* THE PROBE THIS MODULE OWNS (hud.ts has __mlHud / __mlKb): what the thumb
+   * is asking for, in numbers, so a gate never has to read the lean off
+   * pixels. `bearing` is what the BODY leans toward, `capDeg` what the cap
+   * draws; holding the two against `lean` is the whole contract, and the page
+   * stick's pair is here because its bearing is the half that was missing. */
+  (window as unknown as { __mlStick?: () => unknown }).__mlStick = () => {
+    const deg = (sector: number, resid: number) =>
+      sector < 0 ? null : sector * 45 + (stickLean() * resid * 180) / Math.PI;
+    return {
+      bearing: stickHeading(),
+      lean: stickLean(),
+      sector: visSector,
+      capDeg: deg(visSector, visResid),
+      pageSector,
+      pageCapDeg: deg(pageSector, pageResid),
+    };
   };
   const layout = () => {
     well = stickWell();
@@ -470,8 +544,8 @@ export function mountGamepadStick(page: HTMLElement) {
         }
       }
     }
-    setCap(visSector, visRadius);
-    setPageCap(pageSector, pageRadius);
+    setCap(visSector, visRadius, visResid);
+    setPageCap(pageSector, pageRadius, pageResid);
   };
   layout();
   // "ml-layout" — hud.ts applyLayout fires this AFTER it has published
@@ -507,7 +581,11 @@ export function mountGamepadStick(page: HTMLElement) {
   // ONE INPUT PATH, TWO STICKS: the ghost and the page stick each own their
   // drag and their cap; the keys they synthesize are one set (setKeys), so
   // whichever thumb moved last is what the player does.
-  const attach = (el: HTMLElement, cap: (sector: number, radiusCss: number) => void, isPage = false) => {
+  const attach = (
+    el: HTMLElement,
+    cap: (sector: number, radiusCss: number, resid?: number) => void,
+    isPage = false,
+  ) => {
     let dragging = false;
     const apply = (ev: PointerEvent) => {
       const r = el.getBoundingClientRect();
@@ -518,18 +596,27 @@ export function mountGamepadStick(page: HTMLElement) {
       // deflection is clamped. All thresholds are CSS px (the feel tier), so
       // the art-to-CSS remake did not change what the finger does.
       const max = maxCss;
-      const sector = len < max * DEAD_FRAC ? -1 : (Math.round(Math.atan2(dy, dx) / (Math.PI / 4)) + 8) % 8;
+      const raw = Math.atan2(dy, dx);
+      const oct = Math.round(raw / OCT);
+      const rest = len < max * DEAD_FRAC;
+      const sector = rest ? -1 : (oct + 8) % 8;
       // amplitude → gait: a light tilt WALKS, past RUN_FRAC it RUNS
       setKeys(sector, len >= max * RUN_FRAC);
-      // angle snapped, amplitude analog (clamped to the travel radius, drawn
-      // damped by CAP_VISUAL_FRAC); the SNAP_MS transition smooths both the
-      // octant glide and the radius
-      cap(sector, Math.min(len, max) * CAP_VISUAL_FRAC);
+      // THE ANGLE THE KEYS THREW AWAY, for the body's lean (stickdir →
+      // WorldScene): degrees in the SAME screen frame as ax/ay. Null at rest,
+      // so a dead-zone thumb leans nothing — every threshold stays this
+      // file's, exactly as when the bearing was read off the element from
+      // outside; what changes is that the PAGE stick now has one too.
+      setStickBearing(rest ? null : (raw * 180) / Math.PI);
+      // angle snapped-then-leaned (capAt), amplitude analog — clamped to the
+      // travel radius and drawn damped by CAP_VISUAL_FRAC
+      cap(sector, Math.min(len, max) * CAP_VISUAL_FRAC, raw - oct * OCT);
     };
     const release = () => {
       if (!dragging) return;
       dragging = false;
       setKeys(-1, false);
+      setStickBearing(null); // no finger, no bearing, no lean
       cap(-1, 0); // glide back to centre
       el.classList.remove("held"); // the ghost fades back to rest
       // …and the ghost over the world comes back (see the classes below)
@@ -682,11 +769,14 @@ function injectStyles() {
   .ml-pad-blur{position:fixed;z-index:3;display:none;border-radius:50%;
     pointer-events:none;opacity:1;transition:opacity .25s ease;
     backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px)}
-  /* the CAP: a raised round knob; the cap glides between its snap positions —
-     fast, not instant */
+  /* the CAP: a raised round knob. It glides over a SNAP — an octant flip, the
+     release to centre — and tracks the thumb 1:1 while it steers inside one
+     octant; capAt writes --cap-ms per move. A VAR rather than an inline
+     transition because the opacity fade below shares this shorthand and must
+     not be switched off with it. */
   .ml-pad-top{position:absolute;border-radius:50%;pointer-events:none;box-sizing:border-box;
     background:var(--surface);border:1px solid var(--border-strong);box-shadow:var(--shadow);
-    transition:transform ${SNAP_MS}ms ease-out,opacity .25s ease}
+    --cap-ms:${SNAP_MS}ms;transition:transform var(--cap-ms) ease-out,opacity .25s ease}
   /* ── the GHOST's rest alphas — :root.ml-stickghost, set by layout(): the
      stick is a ghost over the game view in both orientations on every tab
      (maintainer 2026-08-05, two rounds; portrait too since 2026-09-19). The

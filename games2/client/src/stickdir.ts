@@ -22,17 +22,20 @@
 //     agent's code it is already one of nine grid vectors and the finger's
 //     actual bearing is gone.
 //
-//     So this reads the bearing itself, ADDITIVELY: its own pointer listeners
-//     on their `.ml-pad-stick` element, computing `atan2(dy, dx)` from the same
-//     element rect their `apply()` does. Nothing of theirs is edited, their
-//     contract is untouched, and — the part that matters — EVERY THRESHOLD
-//     STAYS THEIRS. The dead zone, the walk/run amplitude and which octant won
-//     all still come from the keys they synthesize; this contributes an angle
-//     and nothing else. No finger down, no angle, no lean: a keyboard player is
-//     bit-for-bit unaffected, which is what he asked for.
+//     So THE STICK PUBLISHES IT (`setStickBearing`, below): one call from their
+//     `apply()`, off the same dx/dy their keys already come from. EVERY
+//     THRESHOLD STAYS THEIRS — the dead zone, the walk/run amplitude and which
+//     octant won all still come from the keys they synthesize; this module
+//     contributes an angle and nothing else. No finger down, no angle, no lean:
+//     a keyboard player is bit-for-bit unaffected, which is what he asked for.
 //
-//     (Offered to games-ui on the board: if they would rather publish the
-//     bearing from `gamepad.ts` themselves, this half deletes cleanly.)
+//     (Until 2026-09-23 this half attached its OWN passive listeners to
+//     `.ml-pad-stick` instead, so that nothing of games-ui's was edited. It was
+//     wrong by one class name: their page stick is `.ml-pad-pagestick`, so the
+//     stick his thumb steers with on the gamepad tab published no bearing and
+//     the body hard-snapped there while the ghost leaned. They took the
+//     standing offer and push it in from both sticks. A SELECTOR IS NOT A
+//     CONTRACT — a function is.)
 
 import { STICK_LEAN_MIN, STICK_LEAN_MAX, STICK_LEAN_DEFAULT } from "@nangijala/shared";
 
@@ -71,51 +74,40 @@ export function setStickLean(v: number): void {
 }
 
 /* -- half 2: the finger's bearing ------------------------------------------- */
+//
+// PUSHED IN BY THE STICK ITSELF since 2026-09-23 (games-ui took the standing
+// offer above). This half used to attach its own passive pointer listeners to
+// `.ml-pad-stick` and read the bearing off that element's rect. It worked, and
+// it was wrong by one class name: the gamepad TAB's walk stick is
+// `.ml-pad-pagestick` — deliberately its own class — so the stick his thumb
+// actually steers with published NO bearing and the body hard-snapped there
+// while the ghost leaned. One call from `gamepad.ts` `apply()` covers both
+// sticks, uses the same dx/dy its keys are already derived from, and the dead
+// zone (rest = null) is the stick's own threshold rather than a 1px guard
+// re-invented here. No finger, no angle, no lean: a keyboard player is
+// bit-for-bit unaffected, which is what he asked for.
 
 let heading: number | null = null;
-let bound: HTMLElement | null = null;
 
 /** The finger's bearing on the stick in DEGREES, screen frame (+x right, +y
- *  down — the same frame `ax/ay` and their own `atan2(dy, dx)` use), or null
- *  when no finger is on the stick. */
+ *  down — the same frame `ax/ay` and the stick's own `atan2(dy, dx)` use), or
+ *  null when no finger is steering. */
 export function stickHeading(): number | null {
   return heading;
 }
 
-/** Idempotent: keep listeners on the live stick element. The HUD rebuilds
- *  itself on a rejoin and the landscape layout re-parents the stick, so the
- *  element this was bound to can be replaced — `isConnected` catches that and
- *  re-binds, exactly as the injected dials re-add themselves. */
-export function ensureStickAngle(): void {
-  const pad = document.querySelector<HTMLElement>(".ml-pad-stick");
-  if (!pad || pad === bound) {
-    if (bound && !bound.isConnected) {
-      bound = null;
-      heading = null;
-    }
-    return;
-  }
-  bound = pad;
-  heading = null;
-  const at = (ev: PointerEvent) => {
-    const r = pad.getBoundingClientRect();
-    if (!r.width || !r.height) return;
-    const dx = ev.clientX - (r.left + r.width / 2);
-    const dy = ev.clientY - (r.top + r.height / 2);
-    if (Math.hypot(dx, dy) < 1) return; // dead centre has no bearing
-    heading = (Math.atan2(dy, dx) * 180) / Math.PI;
-  };
-  const clear = () => {
-    heading = null;
-  };
-  // PASSIVE, and never preventDefault: their handlers must behave exactly as
-  // they did before anything here existed.
-  pad.addEventListener("pointerdown", at, { passive: true });
-  pad.addEventListener("pointermove", at, { passive: true });
-  pad.addEventListener("pointerup", clear, { passive: true });
-  pad.addEventListener("pointercancel", clear, { passive: true });
-  pad.addEventListener("lostpointercapture", clear, { passive: true });
+/** gamepad.ts publishes here on every pointer move, for EITHER stick, and
+ *  clears it on release. Last thumb to move wins — the same rule its
+ *  synthesized keys already follow (one key set, two sticks). */
+export function setStickBearing(deg: number | null): void {
+  heading = Number.isFinite(deg as number) ? (deg as number) : null;
 }
+
+/** Kept for WorldScene's per-frame call site, which used to (re)bind the
+ *  listeners this half no longer has. The bearing arrives by itself now, so
+ *  there is nothing to keep alive: a HUD rebuild or a landscape re-parent
+ *  hands the new stick the same import. */
+export function ensureStickAngle(): void {}
 
 /* -- the injected dial ------------------------------------------------------ */
 
