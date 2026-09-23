@@ -31,7 +31,9 @@
       ],
       "prompt": "Stocky flightless fantasy bird with a barrel chest, thick scaly yellow legs ending in hooked black talons, a heavy hooked beak, a tall crest of stiff feathers in teal, crimson and gold, barred brown-and-cream wing feathers, and a long fan of iridescent rainbow tail plumes.",
       "lore": "Too heavy to fly and too proud to hide. It settles every dispute with its talons, and it looks for disputes.",
-      "scale": "standard"
+      "scale": "standard",
+      "attack_action": "Talon Rake - Hops up off both legs, throws its wings out wide for balance and rakes both hooked talons down and forward through the air in one hard swipe, then drops back onto its feet",
+      "attack_extreme": "Crest Flare Rake - Hurls itself forward with the crest snapped up, both talons raking down hard, loose feathers flying"
     },
     {
       "id": "gargoyle",
@@ -61,7 +63,9 @@
       "items": [],
       "prompt": "Fat fantasy toad of cooled black rock with glowing orange cracks, bulging ember eyes, a wide mouth breathing a wisp of smoke, and a hot glowing throat sac, no drop shadow on the ground.",
       "lore": "It basks in the lava as other toads bask on stone. Its croak carries sulphur and its bite carries fire.",
-      "walk_action": "hop loop, the heavy toad crouching low then springing forward off its back legs, landing and settling, moving in place, seamless loop whose last frame leads straight back into the first, no turning"
+      "walk_action": "hop loop, the toad crouches down and pushes off with BOTH back legs at the same time, both feet leaving the ground together, body tucked in mid-air, then lands on both front hands and settles, moving in place, never one leg after the other, seamless loop whose last frame leads straight back into the first, no turning",
+      "attack_action": "Ground Slam - Springs straight up off both back legs, hangs a moment at the top, then drops and slams down on both front hands, the rock under it cracking and a burst of embers thrown out sideways along the ground",
+      "attack_extreme": "Magma Slam - Leaps high off both legs and crashes down flat, the ground splitting in a bright orange crack under it and embers spraying outward"
     },
     {
       "id": "fox_spirit",
@@ -211,7 +215,7 @@
       "items": [],
       "prompt": "Naga warrior with realistic proportions, a scaled serpent lower body coiled tightly beneath a humanoid torso, dark green scales with a pale belly, a hooded cobra-like head with yellow slit eyes, and a curved bronze blade held close.",
       "lore": "The temple in the swamp is hers and the swamp is the temple. Every stone step is guarded, and she is the steps.",
-      "walk_action": "slither cycle, the whole serpent body travelling forward, the long tail flowing behind it in a wide S-curve that visibly changes shape from frame to frame, the coil unwinding and re-forming as it goes, the torso rising and swaying with each push, seamless loop whose last frame leads straight back into the first, no turning"
+      "walk_action": "slither cycle in place, the serpent body FLEXES rather than slides: a wave starts behind the torso and travels backward down the tail to the tip, each coil pressing sideways against the ground and pushing the body along, the tail tip visibly whipping last, the torso held level and steady above it, the body NEVER moving as one rigid shape, seamless loop whose last frame leads straight back into the first, no turning"
     },
     {
       "id": "minotaur",
@@ -226,7 +230,8 @@
       ],
       "items": [],
       "prompt": "Minotaur shown full body from head to feet, realistic proportions, a massive bull's head with wide curved horns and a ring through the nose, dark brown hide over enormous muscle, a leather harness, cloven hooves, and a double-headed axe held low at its side.",
-      "lore": "The maze was built around it, not for it. It knows every turn, and it is always one turn behind you."
+      "lore": "The maze was built around it, not for it. It knows every turn, and it is always one turn behind you.",
+      "walk_action": "walk loop seen head-on, full walk cycle in place, the near leg swings forward and plants while the far leg pushes off behind, the legs clearly crossing past each other, the massive shoulders rocking side to side and the head dipping with each step, hooves lifting off the ground, seamless loop whose last frame leads straight back into the first, no turning"
     },
     {
       "id": "wild_bull",
